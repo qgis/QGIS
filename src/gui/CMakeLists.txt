@@ -202,6 +202,7 @@ qgsmessagelogviewer.cpp
 qgsmessageviewer.cpp
 qgsnewhttpconnection.cpp
 qgsnewmemorylayerdialog.cpp
+qgsnewnamedialog.cpp
 qgsnewvectorlayerdialog.cpp
 qgsnumericsortlistviewitem.cpp
 qgsoptionsdialogbase.cpp
@@ -309,6 +310,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsmessageviewer.h
   qgsnewhttpconnection.h
   qgsnewmemorylayerdialog.h
+  qgsnewnamedialog.h
   qgsnewvectorlayerdialog.h
   qgsoptionsdialogbase.h
   qgsowssourceselect.h

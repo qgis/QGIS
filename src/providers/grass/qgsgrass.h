@@ -29,6 +29,7 @@ extern "C"
 }
 
 #include <stdexcept>
+#include "qgsapplication.h"
 #include "qgsexception.h"
 #include <qgsrectangle.h>
 #include <QProcess>
@@ -78,6 +79,7 @@ class GRASS_LIB_EXPORT QgsGrassObject
     void setLocation( const QString& location ) { mLocation = location; }
     QString mapset() const { return mMapset; }
     void setMapset( const QString& mapset ) { mMapset = mapset; }
+    QString mapsetPath() const { return mGisdbase + "/" + mLocation + "/" + mMapset; }
     QString name() const { return mName; }
     void setName( const QString& name ) { mName = name; }
     QString fullName() const { return mName + "@" + mMapset; }
@@ -88,6 +90,8 @@ class GRASS_LIB_EXPORT QgsGrassObject
     // descriptive full name
     QString elementName() const;
     static QString elementName( Type type );
+    // returns true if gisdbase, location and mapset are the same
+    bool mapsetIdentical( const QgsGrassObject &other );
   private:
     QString mGisdbase;
     QString mLocation;
@@ -213,10 +217,18 @@ class QgsGrass
         const QString& mapsetName, const QString& element );
     static GRASS_LIB_EXPORT QStringList elements( const QString&  mapsetPath, const QString&  element );
 
+    // returns true if object (vector, raster, region) exists
+    static GRASS_LIB_EXPORT bool objectExists( const QgsGrassObject& grassObject );
+
     //! Initialize GRASS region
     static GRASS_LIB_EXPORT void initRegion( struct Cell_head *window );
     //! Set region extent
     static GRASS_LIB_EXPORT void setRegion( struct Cell_head *window, QgsRectangle rect );
+    /** Init region, set extent, rows and cols and adjust.
+     * Returns error if adjustment failed. */
+    static GRASS_LIB_EXPORT QString setRegion( struct Cell_head *window, QgsRectangle rect, int rows, int cols );
+    //! Get extent from region
+    static GRASS_LIB_EXPORT QgsRectangle extent( struct Cell_head *window );
 
     // ! Get map region
     static GRASS_LIB_EXPORT bool mapRegion( QgsGrassObject::Type type, QString gisdbase,
@@ -225,6 +237,10 @@ class QgsGrass
 
     // ! String representation of region
     static GRASS_LIB_EXPORT QString regionString( const struct Cell_head *window );
+
+    // ! Read location default region (DEFAULT_WIND)
+    static GRASS_LIB_EXPORT bool defaultRegion( const QString& gisdbase, const QString& location,
+                                         struct Cell_head *window );
 
     // ! Read current mapset region
     static GRASS_LIB_EXPORT bool region( const QString& gisdbase, const QString& location, const QString& mapset,
@@ -345,6 +361,9 @@ class QgsGrass
 #if defined(WIN32)
     static GRASS_LIB_EXPORT QString shortPath( const QString &path );
 #endif
+
+    // path to QGIS GRASS modules like qgis.g.info etc.
+    static QString qgisGrassModulePath() { return QgsApplication::libexecPath() + "grass/modules"; }
 
   private:
     static int initialized; // Set to 1 after initialization

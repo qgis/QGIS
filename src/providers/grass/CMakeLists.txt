@@ -5,6 +5,7 @@
 INCLUDE_DIRECTORIES(
   ../../core
   ../../core/raster
+  ../../gui
   ${GDAL_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
@@ -20,9 +21,9 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
     SET(GRASS_MAJOR_VERSION ${GRASS_MAJOR_VERSION${GRASS_BUILD_VERSION}})
     SET(GRASS_MINOR_VERSION ${GRASS_MINOR_VERSION${GRASS_BUILD_VERSION}})
 
-    QT4_WRAP_CPP(GRASS_LIBRARY_MOC_SRCS ../qgsgrassprovider.h)
+    QT4_WRAP_CPP(GRASS_LIBRARY_MOC_SRCS ../qgsgrassprovider.h ../qgsgrassimport.h)
 
-    ADD_LIBRARY(qgisgrass${GRASS_BUILD_VERSION} SHARED ../qgsgrass.cpp ../qgsgrassfeatureiterator.cpp ../qgsgrassprovider.cpp ${GRASS_LIBRARY_MOC_SRCS})
+    ADD_LIBRARY(qgisgrass${GRASS_BUILD_VERSION} SHARED ../qgsgrass.cpp ../qgsgrassfeatureiterator.cpp ../qgsgrassprovider.cpp ../qgsgrassimport.cpp ${GRASS_LIBRARY_MOC_SRCS})
 
     SET_TARGET_PROPERTIES(qgisgrass${GRASS_BUILD_VERSION} PROPERTIES
       CLEAN_DIRECT_OUTPUT 1
@@ -83,7 +84,10 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
     SET_TARGET_PROPERTIES(grassprovider${GRASS_BUILD_VERSION} PROPERTIES
       COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\" \"-DGRASS_EXPORT=${DLLEXPORT}\" \"-DGRASS_LIB_EXPORT=${DLLIMPORT}\""
     )
-    TARGET_LINK_LIBRARIES(grassprovider${GRASS_BUILD_VERSION} qgisgrass${GRASS_BUILD_VERSION})
+    TARGET_LINK_LIBRARIES(grassprovider${GRASS_BUILD_VERSION} 
+      qgisgrass${GRASS_BUILD_VERSION}
+      qgis_gui      
+    )
 
     #
     # grass raster provider
@@ -142,6 +146,32 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
       TARGET_LINK_LIBRARIES(qgis.g.info${GRASS_BUILD_VERSION} m)
     ENDIF (UNIX)
 
+    #
+    # grass raster import module
+    #
+    ADD_EXECUTABLE(qgis.r.in${GRASS_BUILD_VERSION} ../qgis.r.in.cpp)
+    SET_TARGET_PROPERTIES(qgis.r.in${GRASS_BUILD_VERSION} PROPERTIES
+      COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\" \"-DGRASS_LIB_EXPORT=${DLLEXPORT}\" \"-DGRASS_EXPORT=${DLLIMPORT}\""
+    )
+    IF (GRASS_MAJOR_VERSION LESS 7 )
+      TARGET_LINK_LIBRARIES(qgis.r.in${GRASS_BUILD_VERSION}
+        qgisgrass${GRASS_BUILD_VERSION}
+        ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_gis}
+        ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_datetime}
+        ${GDAL_LIBRARY}
+        qgis_core
+      )
+    ELSE (GRASS_MAJOR_VERSION LESS 7 )
+      TARGET_LINK_LIBRARIES(qgis.r.in${GRASS_BUILD_VERSION}
+        qgisgrass${GRASS_BUILD_VERSION}
+        ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_gis}
+        ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_datetime}
+        ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_raster}
+        ${GDAL_LIBRARY}
+        qgis_core
+      )
+    ENDIF (GRASS_MAJOR_VERSION LESS 7 )
+
     ########################################################
     # Install
 
@@ -158,7 +188,7 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
       RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
       LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
 
-    INSTALL(TARGETS qgis.d.rast${GRASS_BUILD_VERSION} qgis.g.info${GRASS_BUILD_VERSION}
+    INSTALL(TARGETS qgis.d.rast${GRASS_BUILD_VERSION} qgis.g.info${GRASS_BUILD_VERSION} qgis.r.in${GRASS_BUILD_VERSION}
       RUNTIME DESTINATION ${QGIS_LIBEXEC_DIR}/grass/modules
       PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
     )

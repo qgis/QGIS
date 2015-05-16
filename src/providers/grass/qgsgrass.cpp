@@ -104,6 +104,11 @@ QString QgsGrassObject::elementName( Type type )
     return "";
 }
 
+bool QgsGrassObject::mapsetIdentical( const QgsGrassObject &other )
+{
+  return mGisdbase == other.mGisdbase && mLocation == other.mLocation && mMapset == other.mMapset;
+}
+
 #ifdef Q_OS_WIN
 #include <windows.h>
 QString GRASS_LIB_EXPORT QgsGrass::shortPath( const QString &path )
@@ -1096,6 +1101,21 @@ QStringList GRASS_LIB_EXPORT QgsGrass::elements( const QString&  mapsetPath, con
   return list;
 }
 
+bool GRASS_LIB_EXPORT QgsGrass::objectExists( const QgsGrassObject& grassObject )
+{
+  QString path = grassObject.mapsetPath();
+  if ( grassObject.type() == QgsGrassObject::Raster )
+    path += "/cellhd";
+  else if ( grassObject.type() == QgsGrassObject::Vector )
+    path += "/vect";
+  else if ( grassObject.type() == QgsGrassObject::Region )
+    path += "/windows";
+
+  path += "/" + grassObject.name();
+  QFileInfo fi( path );
+  return fi.exists();
+}
+
 QString GRASS_LIB_EXPORT QgsGrass::regionString( const struct Cell_head *window )
 {
   QString reg;
@@ -1131,6 +1151,23 @@ QString GRASS_LIB_EXPORT QgsGrass::regionString( const struct Cell_head *window 
   reg += "n-s resol:" + QString( buf ) + ";";
 
   return reg;
+}
+
+
+bool GRASS_LIB_EXPORT QgsGrass::defaultRegion( const QString& gisdbase, const QString& location,
+                                               struct Cell_head *window )
+{
+  initRegion(window);
+  QgsGrass::setLocation( gisdbase, location );
+  try
+  {
+    G_get_default_window(window);
+    return true;
+  }
+  catch ( QgsGrass::Exception &e )
+  {
+    return false;
+  }
 }
 
 bool GRASS_LIB_EXPORT QgsGrass::region( const QString& gisdbase,
@@ -1244,6 +1281,45 @@ void GRASS_LIB_EXPORT QgsGrass::setRegion( struct Cell_head *window, QgsRectangl
   window->south = rect.yMinimum();
   window->east = rect.xMaximum();
   window->north = rect.yMaximum();
+}
+
+QString GRASS_LIB_EXPORT QgsGrass::setRegion( struct Cell_head *window, QgsRectangle rect, int rows, int cols )
+{
+  initRegion( window );
+  window->west = rect.xMinimum();
+  window->south = rect.yMinimum();
+  window->east = rect.xMaximum();
+  window->north = rect.yMaximum();
+  window->rows = rows;
+  window->cols = cols;
+
+  QString error;
+#if GRASS_VERSION_MAJOR < 7
+  char* err = G_adjust_Cell_head( window, 1, 1 );
+  if ( err )
+  {
+    error = QString( err );
+  }
+#else
+  try
+  {
+    G_adjust_Cell_head( window, 1, 1 );
+  }
+  catch ( QgsGrass::Exception &e )
+  {
+    error = e.what();
+  }
+#endif
+  return error;
+}
+
+QgsRectangle GRASS_LIB_EXPORT QgsGrass::extent( struct Cell_head *window )
+{
+  if (!window)
+  {
+    return QgsRectangle();
+  }
+  return QgsRectangle( window->west, window->south, window->east, window->north);
 }
 
 bool GRASS_LIB_EXPORT QgsGrass::mapRegion( QgsGrassObject::Type type, QString gisdbase,

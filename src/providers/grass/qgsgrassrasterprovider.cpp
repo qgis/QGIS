@@ -638,7 +638,7 @@ void QgsGrassRasterValue::start( QString gisdbase, QString location,
   mMapset = mapset;
   mMapName = map;
   // TODO: catch exceptions
-  QString module = QgsApplication::libexecPath() + "grass/modules/qgis.g.info";
+  QString module = QgsGrass::qgisGrassModulePath() + "/qgis.g.info";
   QStringList arguments;
 
   arguments.append( "info=query" );

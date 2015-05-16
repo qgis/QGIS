@@ -18,6 +18,9 @@
 
 #include "qgsdataitem.h"
 #include "qgsgrass.h"
+#include "qgsgrassimport.h"
+
+class QgsGrassImportItem;
 
 class QgsGrassLocationItem : public QgsDirectoryItem
 {
@@ -32,6 +35,7 @@ class QgsGrassLocationItem : public QgsDirectoryItem
 
 class QgsGrassMapsetItem : public QgsDirectoryItem
 {
+    Q_OBJECT
   public:
     QgsGrassMapsetItem( QgsDataItem* parent, QString dirPath, QString path );
 
@@ -39,9 +43,17 @@ class QgsGrassMapsetItem : public QgsDirectoryItem
 
     static bool isMapset( QString path );
     QVector<QgsDataItem*> createChildren() override;
+    virtual bool acceptDrop() override { return true; }
+    virtual bool handleDrop( const QMimeData * data, Qt::DropAction action ) override;
 
+  public slots:
+    void onImportFinished( QgsGrassImport* import );
+  private:
+    //void showImportError(const QString& error);
     QString mLocation;
     QString mGisdbase;
+    // running imports
+    static QList<QgsGrassImport*> mImports;
 };
 
 class QgsGrassObjectItemBase
@@ -121,6 +133,28 @@ class QgsGrassRasterItem : public QgsGrassObjectItem
 
   public slots:
     //void deleteMap();
+};
+
+// item representing a layer being imported
+class QgsGrassImportItem : public QgsDataItem, public QgsGrassObjectItemBase
+{
+    Q_OBJECT
+  public:
+    QgsGrassImportItem( QgsDataItem* parent, const QString& name, const QString& path, QgsGrassImport* import );
+
+    //virtual void setState( State state ) override {
+    //  QgsDataItem::setState(state);
+    //} // do nothing to keep Populating
+    //virtual QList<QAction*> actions() override;
+
+  public slots:
+    virtual void refresh() override {}
+    //void deleteGrassObject();
+
+  protected:
+    // override refresh to keep Populating state
+    virtual void refresh( QVector<QgsDataItem*> children ) override { Q_UNUSED( children )};
+    //bool mDeleteAction;
 };
 
 #endif // QGSGRASSPROVIDERMODULE_H
