@@ -86,9 +86,9 @@ int main( int argc, char **argv )
   name = map->answer;
 
   QFile stdinFile;
-  stdinFile.open(0, QIODevice::ReadOnly);
+  stdinFile.open( 0, QIODevice::ReadOnly );
 
-  QDataStream stdinStream(&stdinFile);
+  QDataStream stdinStream( &stdinFile );
 
   QgsRectangle extent;
   qint32 rows, cols;
@@ -97,10 +97,10 @@ int main( int argc, char **argv )
   //G_fatal_error("i = %d", i);
   //G_fatal_error( extent.toString().toAscii().data() );
 
-  QString err = QgsGrass::setRegion( &window, extent, rows, cols);
+  QString err = QgsGrass::setRegion( &window, extent, rows, cols );
   if ( !err.isEmpty() )
   {
-    G_fatal_error("Cannot set region: %s", err.toUtf8().data());
+    G_fatal_error( "Cannot set region: %s", err.toUtf8().data() );
   }
 
   G_set_window( &window );
@@ -108,11 +108,12 @@ int main( int argc, char **argv )
   QGis::DataType qgis_type;
   qint32 type;
   //stdinStream >> grass_type;
-  stdinStream >>type;
-  qgis_type = (QGis::DataType)type;
+  stdinStream >> type;
+  qgis_type = ( QGis::DataType )type;
 
   RASTER_MAP_TYPE grass_type;
-  switch ( qgis_type ) {
+  switch ( qgis_type )
+  {
     case QGis::Int32:
       grass_type = CELL_TYPE;
       break;
@@ -123,55 +124,57 @@ int main( int argc, char **argv )
       grass_type = DCELL_TYPE;
       break;
     default:
-      G_fatal_error("QGIS data type %d not supported", qgis_type);
+      G_fatal_error( "QGIS data type %d not supported", qgis_type );
   }
 
-  cf = G_open_raster_new(name, grass_type);
-  if (cf < 0)
+  cf = G_open_raster_new( name, grass_type );
+  if ( cf < 0 )
   {
-    G_fatal_error( "Unable to create raster map <%s>", name);
+    G_fatal_error( "Unable to create raster map <%s>", name );
   }
 
-  void *buf = G_allocate_raster_buf(grass_type);
+  void *buf = G_allocate_raster_buf( grass_type );
 
   int expectedSize = cols * QgsRasterBlock::typeSize( qgis_type );
   QByteArray byteArray;
-  for ( int row = 0; row < rows; row++ ) {
+  for ( int row = 0; row < rows; row++ )
+  {
     stdinStream >> byteArray;
-    if ( byteArray.size() != expectedSize ) {
-      G_fatal_error("Wrong byte array size, expected %d bytes, got %d", expectedSize, byteArray.size());
+    if ( byteArray.size() != expectedSize )
+    {
+      G_fatal_error( "Wrong byte array size, expected %d bytes, got %d", expectedSize, byteArray.size() );
     }
 
     qint32 *cell;
     float *fcell;
     double *dcell;
     if ( grass_type == CELL_TYPE )
-      cell = (qint32*) byteArray.data();
+      cell = ( qint32* ) byteArray.data();
     else if ( grass_type == FCELL_TYPE )
-      fcell = (float*) byteArray.data();
+      fcell = ( float* ) byteArray.data();
     else if ( grass_type == DCELL_TYPE )
-      dcell = (double*) byteArray.data();
+      dcell = ( double* ) byteArray.data();
 
     void *ptr = buf;
     for ( int col = 0; col < cols; col++ )
     {
       if ( grass_type == CELL_TYPE )
-        G_set_raster_value_c(ptr, (CELL)cell[col], grass_type);
+        G_set_raster_value_c( ptr, ( CELL )cell[col], grass_type );
       else if ( grass_type == FCELL_TYPE )
-        G_set_raster_value_f(ptr, (FCELL)fcell[col], grass_type);
+        G_set_raster_value_f( ptr, ( FCELL )fcell[col], grass_type );
       else if ( grass_type == DCELL_TYPE )
-        G_set_raster_value_d(ptr, (DCELL)dcell[col], grass_type);
+        G_set_raster_value_d( ptr, ( DCELL )dcell[col], grass_type );
 
-      ptr = G_incr_void_ptr( ptr, G_raster_size(grass_type) );
+      ptr = G_incr_void_ptr( ptr, G_raster_size( grass_type ) );
     }
-    G_put_raster_row(cf, buf, grass_type);
+    G_put_raster_row( cf, buf, grass_type );
   }
 
-  G_close_cell(cf);
+  G_close_cell( cf );
   struct History history;
-  G_short_history(name, "raster", &history);
-  G_command_history(&history);
-  G_write_history(name, &history);
+  G_short_history( name, "raster", &history );
+  G_command_history( &history );
+  G_write_history( name, &history );
 
   exit( EXIT_SUCCESS );
 }

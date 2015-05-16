@@ -57,8 +57,8 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
      * @param existing existing names
      * @return true if name exists
      */
-    static bool exists(const QString& name, const QStringList& extensions,
-                       const QStringList& existing, Qt::CaseSensitivity cs = Qt::CaseSensitive );
+    static bool exists( const QString& name, const QStringList& extensions,
+                        const QStringList& existing, Qt::CaseSensitivity cs = Qt::CaseSensitive );
   public slots:
     void nameChanged();
 
@@ -70,11 +70,11 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
     QLabel *mNamesLabel; // list of names with extensions
     QLabel *mErrorLabel;
     QString mOkString;
-    QString highlightText(const QString& text);
-    static QStringList fullNames(const QString& name, const QStringList& extensions);
+    QString highlightText( const QString& text );
+    static QStringList fullNames( const QString& name, const QStringList& extensions );
     // get list of existing names
-    static QStringList matching(const QStringList& newNames, const QStringList& existingNames,
-                                 Qt::CaseSensitivity cs = Qt::CaseSensitive);
+    static QStringList matching( const QStringList& newNames, const QStringList& existingNames,
+                                 Qt::CaseSensitivity cs = Qt::CaseSensitive );
 };
 
 #endif // QGSNEWNAMEDIALOG_H

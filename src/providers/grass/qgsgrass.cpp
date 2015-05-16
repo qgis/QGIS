@@ -1155,13 +1155,13 @@ QString GRASS_LIB_EXPORT QgsGrass::regionString( const struct Cell_head *window 
 
 
 bool GRASS_LIB_EXPORT QgsGrass::defaultRegion( const QString& gisdbase, const QString& location,
-                                               struct Cell_head *window )
+    struct Cell_head *window )
 {
-  initRegion(window);
+  initRegion( window );
   QgsGrass::setLocation( gisdbase, location );
   try
   {
-    G_get_default_window(window);
+    G_get_default_window( window );
     return true;
   }
   catch ( QgsGrass::Exception &e )
@@ -1315,11 +1315,11 @@ QString GRASS_LIB_EXPORT QgsGrass::setRegion( struct Cell_head *window, QgsRecta
 
 QgsRectangle GRASS_LIB_EXPORT QgsGrass::extent( struct Cell_head *window )
 {
-  if (!window)
+  if ( !window )
   {
     return QgsRectangle();
   }
-  return QgsRectangle( window->west, window->south, window->east, window->north);
+  return QgsRectangle( window->west, window->south, window->east, window->north );
 }
 
 bool GRASS_LIB_EXPORT QgsGrass::mapRegion( QgsGrassObject::Type type, QString gisdbase,

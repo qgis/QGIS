@@ -240,7 +240,7 @@ class QgsGrass
 
     // ! Read location default region (DEFAULT_WIND)
     static GRASS_LIB_EXPORT bool defaultRegion( const QString& gisdbase, const QString& location,
-                                         struct Cell_head *window );
+        struct Cell_head *window );
 
     // ! Read current mapset region
     static GRASS_LIB_EXPORT bool region( const QString& gisdbase, const QString& location, const QString& mapset,
@@ -363,7 +363,7 @@ class QgsGrass
 #endif
 
     // path to QGIS GRASS modules like qgis.g.info etc.
-    static QString qgisGrassModulePath() { return QgsApplication::libexecPath() + "grass/modules"; }
+    static GRASS_LIB_EXPORT QString qgisGrassModulePath() { return QgsApplication::libexecPath() + "grass/modules"; }
 
   private:
     static int initialized; // Set to 1 after initialization

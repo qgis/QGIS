@@ -99,7 +99,7 @@ void TestQgsGrassProvider::initTestCase()
   // in version different form which we are testing here and it would also load GRASS libs in different version
   // and result in segfault when __do_global_dtors_aux() is called.
   // => we must set QGIS_PROVIDER_FILE before QgsApplication::initQgis() to avoid loading GRASS provider in different version
-  setenv( "QGIS_PROVIDER_FILE", "gdal|ogr", 1 );
+  QgsGrass::putEnv( "QGIS_PROVIDER_FILE", "gdal|ogr" );
   QgsApplication::initQgis();
   QString mySettings = QgsApplication::showSettings();
   mySettings = mySettings.replace( "\n", "<br />\n" );

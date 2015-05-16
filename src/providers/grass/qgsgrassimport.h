@@ -25,7 +25,7 @@
 
 #include "qgsgrass.h"
 
-class QgsGrassImport : public QObject
+class GRASS_LIB_EXPORT QgsGrassImport : public QObject
 {
     Q_OBJECT
   public:
@@ -47,14 +47,14 @@ class QgsGrassImport : public QObject
     QString mError;
 };
 
-class QgsGrassRasterImport : public QgsGrassImport
+class GRASS_LIB_EXPORT QgsGrassRasterImport : public QgsGrassImport
 {
     Q_OBJECT
   public:
     // takes pipe ownership
     //QgsGrassRasterImport( QgsRasterDataProvider* provider, const QgsGrassObject& grassObject );
     QgsGrassRasterImport( QgsRasterPipe* pipe, const QgsGrassObject& grassObject,
-                          const QgsRectangle &extent, int xSize, int ySize);
+                          const QgsRectangle &extent, int xSize, int ySize );
     ~QgsGrassRasterImport();
     bool import();
     void importInThread();
