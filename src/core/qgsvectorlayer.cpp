@@ -3154,7 +3154,7 @@ QVariant QgsVectorLayer::maximumValue( int index )
   return QVariant();
 }
 
-QList<QVariant> QgsVectorLayer::getValues( const QString &fieldOrExpression, bool& ok )
+QList<QVariant> QgsVectorLayer::getValues( const QString &fieldOrExpression, bool& ok, bool selectedOnly )
 {
   QList<QVariant> values;
 
@@ -3179,11 +3179,21 @@ QList<QVariant> QgsVectorLayer::getValues( const QString &fieldOrExpression, boo
   else
     lst = expression->referencedColumns();
 
-  QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
-                                        .setFlags(( expression && expression->needsGeometry() ) ?
-                                                  QgsFeatureRequest::NoFlags :
-                                                  QgsFeatureRequest::NoGeometry )
-                                        .setSubsetOfAttributes( lst, pendingFields() ) );
+  QgsFeatureRequest request = QgsFeatureRequest()
+                              .setFlags(( expression && expression->needsGeometry() ) ?
+                                        QgsFeatureRequest::NoFlags :
+                                        QgsFeatureRequest::NoGeometry )
+                              .setSubsetOfAttributes( lst, pendingFields() );
+
+  QgsFeatureIterator fit;
+  if ( !selectedOnly )
+  {
+    fit = getFeatures( request );
+  }
+  else
+  {
+    fit = selectedFeaturesIterator( request );
+  }
 
   // create list of non-null attribute values
   while ( fit.nextFeature( f ) )
@@ -3195,11 +3205,11 @@ QList<QVariant> QgsVectorLayer::getValues( const QString &fieldOrExpression, boo
   return values;
 }
 
-QList<double> QgsVectorLayer::getDoubleValues( const QString &fieldOrExpression, bool& ok )
+QList<double> QgsVectorLayer::getDoubleValues( const QString &fieldOrExpression, bool& ok, bool selectedOnly )
 {
   QList<double> values;
 
-  QList<QVariant> variantValues = getValues( fieldOrExpression, ok );
+  QList<QVariant> variantValues = getValues( fieldOrExpression, ok, selectedOnly );
   if ( !ok )
     return values;
 
