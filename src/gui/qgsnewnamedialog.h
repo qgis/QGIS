@@ -55,6 +55,7 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
      * @param name name or base name
      * @param extensions base name extensions
      * @param existing existing names
+     * @param cs case sensitivity for new name to existing names comparison
      * @return true if name exists
      */
     static bool exists( const QString& name, const QStringList& extensions,
