@@ -16,7 +16,7 @@
 #include "qgsstatisticalsummary.h"
 #include <limits>
 #include <qmath.h>
-
+#include <QString>
 
 QgsStatisticalSummary::QgsStatisticalSummary( Statistics stats )
     : mStatistics( stats )
@@ -173,5 +173,85 @@ void QgsStatisticalSummary::calculate( const QList<double> &values )
     }
   }
 
+}
+
+double QgsStatisticalSummary::statistic( QgsStatisticalSummary::Statistic stat ) const
+{
+  switch ( stat )
+  {
+    case Count:
+      return mCount;
+    case Sum:
+      return mSum;
+    case Mean:
+      return mMean;
+    case Median:
+      return mMedian;
+    case StDev:
+      return mStdev;
+    case StDevSample:
+      return mSampleStdev;
+    case Min:
+      return mMin;
+    case Max:
+      return mMax;
+    case Range:
+      return mMax - mMin;
+    case Minority:
+      return mMinority;
+    case Majority:
+      return mMajority;
+    case Variety:
+      return mValueCount.count();
+    case FirstQuartile:
+      return mFirstQuartile;
+    case ThirdQuartile:
+      return mThirdQuartile;
+    case InterQuartileRange:
+      return mThirdQuartile - mFirstQuartile;
+    case All:
+      return 0;
+  }
+  return 0;
+}
+
+QString QgsStatisticalSummary::displayName( QgsStatisticalSummary::Statistic statistic )
+{
+  switch ( statistic )
+  {
+    case Count:
+      return QT_TR_NOOP( "Count" );
+    case Sum:
+      return QT_TR_NOOP( "Sum" );
+    case Mean:
+      return QT_TR_NOOP( "Mean" );
+    case Median:
+      return QT_TR_NOOP( "Median" );
+    case StDev:
+      return QT_TR_NOOP( "St dev (pop)" );
+    case StDevSample:
+      return QT_TR_NOOP( "St dev (sample)" );
+    case Min:
+      return QT_TR_NOOP( "Minimum" );
+    case Max:
+      return QT_TR_NOOP( "Maximum" );
+    case Range:
+      return QT_TR_NOOP( "Range" );
+    case Minority:
+      return QT_TR_NOOP( "Minority" );
+    case Majority:
+      return QT_TR_NOOP( "Majority" );
+    case Variety:
+      return QT_TR_NOOP( "Variety" );
+    case FirstQuartile:
+      return QT_TR_NOOP( "Q1" );
+    case ThirdQuartile:
+      return QT_TR_NOOP( "Q3" );
+    case InterQuartileRange:
+      return QT_TR_NOOP( "IQR" );
+    case All:
+      return QString();
+  }
+  return QString();
 }
 

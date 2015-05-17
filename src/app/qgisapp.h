@@ -76,6 +76,7 @@ class QgsBrowserDockWidget;
 class QgsAdvancedDigitizingDockWidget;
 class QgsSnappingDialog;
 class QgsGPSInformationWidget;
+class QgsStatisticalSummaryDockWidget;
 
 class QgsDecorationItem;
 
@@ -1226,6 +1227,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /** Make the user feel dizzy */
     void dizzy();
 
+    /** Shows the statistical summary dock widget and brings it to the foreground
+     */
+    void showStatisticsDockWidget();
+
   signals:
     /** emitted when a key is pressed and we want non widget sublasses to be able
       to pick up on this (e.g. maplayer) */
@@ -1615,6 +1620,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsBrowserDockWidget *mBrowserWidget2;
 
     QgsAdvancedDigitizingDockWidget *mAdvancedDigitizingDockWidget;
+    QgsStatisticalSummaryDockWidget* mStatisticalSummaryDockWidget;
 
     QgsSnappingDialog *mSnappingDialog;
 

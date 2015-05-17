@@ -103,6 +103,7 @@ SET(QGIS_APP_SRCS
   qgsprojectproperties.cpp
   qgsrastercalcdialog.cpp
   qgsrasterlayerproperties.cpp
+  qgsstatisticalsummarydockwidget.cpp
   qgstextannotationdialog.cpp
   qgsshortcutsmanager.cpp
   qgsguivectorlayertools.h
@@ -248,6 +249,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsrasterlayerproperties.h
   qgssnappingdialog.h
   qgssponsors.h
+  qgsstatisticalsummarydockwidget.h
   qgssvgannotationdialog.h
   qgstextannotationdialog.h
   qgstipgui.h
