@@ -560,6 +560,8 @@ class QgsVectorLayer : QgsMapLayer
      */
     virtual long featureCount() const;
 
+    void setDataSource(QString dataSource, QString baseName, QString provider, bool loadDefaultStyleFlag = true);
+
     /**
      * Number of features rendered with specified symbol. Features must be first
      * calculated by countSymbolFeatures()

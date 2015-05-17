@@ -931,6 +931,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     long featureCount( QgsSymbolV2* symbol );
 
     /**
+     * Update the data source of the layer
+     */
+    void setDataSource( QString dataSource, QString baseName, QString provider , bool loadDefaultStyleFlag = false );
+
+    /**
      * Count features for symbols. Feature counts may be get by featureCount( QgsSymbolV2*).
      * @param showProgress show progress dialog
      * @return true if calculated, false if failed or was canceled by user
@@ -1721,6 +1726,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     void writeCustomSymbology( QDomElement& element, QDomDocument& doc, QString& errorMessage ) const;
 
+
   private slots:
     void onRelationsLoaded();
     void onJoinedFieldsChanged();
@@ -1736,6 +1742,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** vector layers are not copyable */
     QgsVectorLayer & operator=( QgsVectorLayer const & rhs );
+
 
     /** bind layer to a specific data provider
        @param provider should be "postgres", "ogr", or ??
