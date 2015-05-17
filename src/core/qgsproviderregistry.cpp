@@ -29,6 +29,7 @@
 #include "qgsmessagelog.h"
 #include "qgsprovidermetadata.h"
 #include "qgsvectorlayer.h"
+#include "qgsmaplayerregistry.h"
 
 
 // typedefs for provider plugin functions of interest
@@ -93,10 +94,27 @@ QgsProviderRegistry::QgsProviderRegistry( QString pluginPath )
     return;
   }
 
+  // provider file regex pattern, only files matching the pattern are loaded if the variable is defined
+  QString filePattern = getenv( "QGIS_PROVIDER_FILE" );
+  QRegExp fileRegexp;
+  if ( !filePattern.isEmpty() )
+  {
+    fileRegexp.setPattern( filePattern );
+  }
+
   QListIterator<QFileInfo> it( mLibraryDirectory.entryInfoList() );
   while ( it.hasNext() )
   {
     QFileInfo fi( it.next() );
+
+    if ( !fileRegexp.isEmpty() )
+    {
+      if ( fileRegexp.indexIn( fi.fileName() ) == -1 )
+      {
+        QgsDebugMsg( "provider " + fi.fileName() + " skipped because doesn't match pattern " + filePattern );
+        continue;
+      }
+    }
 
     QLibrary myLib( fi.filePath() );
     if ( !myLib.load() )
@@ -204,11 +222,13 @@ typedef void cleanupProviderFunction_t();
 
 QgsProviderRegistry::~QgsProviderRegistry()
 {
+  QgsMapLayerRegistry::instance()->removeAllMapLayers();
+
   Providers::const_iterator it = mProviders.begin();
 
   while ( it != mProviders.end() )
   {
-    QgsDebugMsg( QString( "cleanup: %1" ).arg( it->first ) );
+    QgsDebugMsg( QString( "cleanup:%1" ).arg( it->first ) );
     QString lib = it->second->library();
     QLibrary myLib( lib );
     if ( myLib.isLoaded() )

@@ -72,7 +72,7 @@ void QgsQueryBuilder::populateFields()
   const QgsFields& fields = mLayer->pendingFields();
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
-    if ( fields.fieldOrigin(idx) != QgsFields::OriginProvider )
+    if ( fields.fieldOrigin( idx ) != QgsFields::OriginProvider )
     {
       // only consider native fields
       continue;

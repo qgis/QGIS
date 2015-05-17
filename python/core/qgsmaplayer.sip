@@ -103,9 +103,9 @@ class QgsMapLayer : QObject
     void setMetadataUrlFormat( const QString& metaUrlFormat );
     const QString& metadataUrlFormat() const;
 
-    /* Set the blending mode used for rendering a layer */
+    /** Set the blending mode used for rendering a layer */
     void setBlendMode( const QPainter::CompositionMode &blendMode );
-    /* Returns the current blending mode for a layer */
+    /** Returns the current blending mode for a layer */
     QPainter::CompositionMode blendMode() const;
 
     /**Synchronises with changes in the datasource

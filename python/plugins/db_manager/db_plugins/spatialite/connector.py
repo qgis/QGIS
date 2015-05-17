@@ -324,7 +324,7 @@ class SpatiaLiteDBConnector(DBConnector):
         c = self._get_cursor()
         schema, tablename = self.getSchemaTableName(table)
         sql = u"SELECT name, sql FROM sqlite_master WHERE tbl_name = %s AND type = 'trigger'" % (
-        self.quoteString(tablename))
+            self.quoteString(tablename))
         self._execute(c, sql)
         return c.fetchall()
 
@@ -447,7 +447,7 @@ class SpatiaLiteDBConnector(DBConnector):
         # update geometry_columns
         if self.has_geometry_columns:
             sql = u"UPDATE geometry_columns SET f_table_name = %s WHERE upper(f_table_name) = upper(%s)" % (
-            self.quoteString(new_table), self.quoteString(tablename))
+                self.quoteString(new_table), self.quoteString(tablename))
             self._execute(c, sql)
 
         self._commit()
@@ -511,14 +511,14 @@ class SpatiaLiteDBConnector(DBConnector):
         c = self._get_cursor()
         schema, tablename = self.getSchemaTableName(table)
         sql = u"SELECT count(*) > 0 FROM geometry_columns WHERE upper(f_table_name) = upper(%s) AND upper(f_geometry_column) = upper(%s)" % (
-        self.quoteString(tablename), self.quoteString(column))
+            self.quoteString(tablename), self.quoteString(column))
         self._execute(c, sql)
         return c.fetchone()[0] == 't'
 
     def addGeometryColumn(self, table, geom_column='geometry', geom_type='POINT', srid=-1, dim=2):
         schema, tablename = self.getSchemaTableName(table)
         sql = u"SELECT AddGeometryColumn(%s, %s, %d, %s, %s)" % (
-        self.quoteString(tablename), self.quoteString(geom_column), srid, self.quoteString(geom_type), dim)
+            self.quoteString(tablename), self.quoteString(geom_column), srid, self.quoteString(geom_type), dim)
         self._execute_and_commit(sql)
 
     def deleteGeometryColumn(self, table, geom_column):
@@ -544,7 +544,7 @@ class SpatiaLiteDBConnector(DBConnector):
         """ create index on one column using default options """
         unique_str = u"UNIQUE" if unique else ""
         sql = u"CREATE %s INDEX %s ON %s (%s)" % (
-        unique_str, self.quoteId(name), self.quoteId(table), self.quoteId(column))
+            unique_str, self.quoteId(name), self.quoteId(table), self.quoteId(column))
         self._execute_and_commit(sql)
 
     def deleteTableIndex(self, table, name):
@@ -581,7 +581,7 @@ class SpatiaLiteDBConnector(DBConnector):
         c = self._get_cursor()
         schema, tablename = self.getSchemaTableName(table)
         sql = u"SELECT spatial_index_enabled FROM geometry_columns WHERE upper(f_table_name) = upper(%s) AND upper(f_geometry_column) = upper(%s)" % (
-        self.quoteString(tablename), self.quoteString(geom_column))
+            self.quoteString(tablename), self.quoteString(geom_column))
         self._execute(c, sql)
         row = c.fetchone()
         return row is not None and row[0] == 1

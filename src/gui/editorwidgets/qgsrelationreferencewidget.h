@@ -176,7 +176,6 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 
     // UI
     QVBoxLayout* mTopLayout;
-    QHash<QgsFeatureId, QVariant> mFidFkMap; // Mapping from feature id => foreign key
     QToolButton* mMapIdentificationButton;
     QToolButton* mRemoveFKButton;
     QToolButton* mOpenFormButton;

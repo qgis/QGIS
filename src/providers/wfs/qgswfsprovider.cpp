@@ -122,11 +122,16 @@ QgsWFSProvider::QgsWFSProvider( const QString& uri )
     setDataSourceUri( bkUri );
   }
 
+#if 0 //non-cached mode is broken
   mCached = !uri.contains( "BBOX=" );
   if ( mCached )
   { //"Cache Features" option; get all features in layer immediately
     reloadData();
   } //otherwise, defer feature retrieval until layer is first rendered
+#endif //0
+
+  mCached = true;
+  reloadData();
 
   if ( mValid )
   {
@@ -336,7 +341,7 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist )
 
     //add geometry column (as gml)
     QDomElement geomElem = transactionDoc.createElementNS( mWfsNamespace, mGeometryAttribute );
-    QDomElement gmlElem = QgsOgcUtils::geometryToGML( featureIt->geometry(), transactionDoc );
+    QDomElement gmlElem = QgsOgcUtils::geometryToGML( featureIt->constGeometry(), transactionDoc );
     if ( !gmlElem.isNull() )
     {
       gmlElem.setAttribute( "srsName", crs().authid() );
@@ -1217,7 +1222,7 @@ int QgsWFSProvider::getFeaturesFromGML2( const QDomElement& wfsCollectionElement
       }
       currentAttributeChild = currentAttributeChild.nextSibling();
     }
-    if ( f->geometry() )
+    if ( f->constGeometry() )
     {
       //insert bbox and pointer to feature into search tree
       mSpatialIndex->insertFeature( *f );

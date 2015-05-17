@@ -181,6 +181,11 @@ void QgsImageOperation::runBlockOperationInThreads( QImage &image, BlockOperatio
 
 void QgsImageOperation::convertToGrayscale( QImage &image, const GrayscaleMode mode )
 {
+  if ( mode == GrayscaleOff )
+  {
+    return;
+  }
+
   GrayscalePixelOperation operation( mode );
   runPixelOperation( image, operation );
 }
@@ -191,6 +196,8 @@ void QgsImageOperation::GrayscalePixelOperation::operator()( QRgb &rgb, const in
   Q_UNUSED( y );
   switch ( mMode )
   {
+    case GrayscaleOff:
+      return;
     case GrayscaleLuminosity:
       grayscaleLuminosityOp( rgb );
       return;
@@ -392,19 +399,31 @@ void QgsImageOperation::distanceTransform( QImage &image, const DistanceTransfor
 
 void QgsImageOperation::ConvertToArrayPixelOperation::operator()( QRgb &rgb, const int x, const int y )
 {
-
-  // TODO - try initial distance = 1-alphaF, INF for alphaF = 0 only
-
   int idx = y * mWidth + x;
-  if (( mExterior && qAlpha( rgb ) >= mAlphaThreshold ) || ( !mExterior && qAlpha( rgb ) < mAlphaThreshold ) )
+  if ( mExterior )
   {
-    //opaque pixel, so zero distance
-    mArray[ idx ] = 0;
+    if ( qAlpha( rgb ) > 0 )
+    {
+      //opaque pixel, so zero distance
+      mArray[ idx ] = 1 - qAlpha( rgb ) / 255.0;
+    }
+    else
+    {
+      //transparent pixel, so initially set distance as infinite
+      mArray[ idx ] = INF;
+    }
   }
   else
   {
-    //transparent pixel, so initially set distance as infinite
-    mArray[ idx ] = INF;
+    //TODO - fix this for semi-transparent pixels
+    if ( qAlpha( rgb ) == 255 )
+    {
+      mArray[ idx ] = INF;
+    }
+    else
+    {
+      mArray[idx] = 0;
+    }
   }
 }
 
@@ -517,9 +536,18 @@ void QgsImageOperation::ShadeFromArrayOperation::operator()( QRgb &rgb, const in
     rgb = Qt::transparent;
     return;
   }
-  double val = squaredVal > 0 ? qMin(( sqrt( squaredVal ) / mSpread ), 1.0 ) : 0;
 
-  rgb = mProperties.ramp->color( val ).rgba();
+  double distance = sqrt( squaredVal );
+  double val = distance / mSpread;
+  QColor rampColor = mProperties.ramp->color( val );
+
+  if (( mProperties.shadeExterior && distance > mSpread - 1 ) )
+  {
+    //fade off final pixel to antialias edge
+    double alphaMultiplyFactor = mSpread - distance;
+    rampColor.setAlpha( rampColor.alpha() * alphaMultiplyFactor );
+  }
+  rgb = rampColor.rgba();
 }
 
 //stack blur
@@ -763,6 +791,44 @@ void QgsImageOperation::flipImage( QImage &image, QgsImageOperation::FlipType ty
 {
   FlipLineOperation flipOperation( type == QgsImageOperation::FlipHorizontal ? QgsImageOperation::ByRow : QgsImageOperation::ByColumn );
   runLineOperation( image, flipOperation );
+}
+
+QImage QgsImageOperation::cropTransparent( const QImage &image, const QSize &minSize )
+{
+  int width = image.width();
+  int height = image.height();
+  int xmin = width;
+  int xmax = 0;
+  int ymin = height;
+  int ymax = 0;
+
+  for ( int x = 0; x < width; ++x )
+  {
+    for ( int y = 0; y < height; ++y )
+    {
+      if ( qAlpha( image.pixel( x, y ) ) )
+      {
+        xmin = qMin( x, xmin );
+        xmax = qMax( x, xmax );
+        ymin = qMin( y, ymin );
+        ymax = qMax( y, ymax );
+      }
+    }
+  }
+  if ( minSize.isValid() )
+  {
+    if ( xmax - xmin < minSize.width() ) // centers image on x
+    {
+      xmin = qMax(( xmax + xmin ) / 2 - minSize.width() / 2, 0 );
+      xmax = xmin + minSize.width();
+    }
+    if ( ymax - ymin < minSize.height() ) // centers image on y
+    {
+      ymin = qMax(( ymax + ymin ) / 2 - minSize.height() / 2, 0 );
+      ymax = ymin + minSize.height();
+    }
+  }
+  return image.copy( xmin, ymin, xmax - xmin, ymax - ymin );
 }
 
 void QgsImageOperation::FlipLineOperation::operator()( QRgb *startRef, const int lineLength, const int bytesPerLine )

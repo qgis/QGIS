@@ -37,8 +37,12 @@
 
 
 QgsHtmlAnnotationItem::QgsHtmlAnnotationItem( QgsMapCanvas* canvas, QgsVectorLayer* vlayer, bool hasFeature, int feature )
-    : QgsAnnotationItem( canvas ), mWidgetContainer( 0 ), mWebView( 0 ), mVectorLayer( vlayer ),
-    mHasAssociatedFeature( hasFeature ), mFeatureId( feature )
+    : QgsAnnotationItem( canvas )
+    , mWidgetContainer( 0 )
+    , mWebView( 0 )
+    , mVectorLayer( vlayer )
+    , mHasAssociatedFeature( hasFeature )
+    , mFeatureId( feature )
 {
   mWebView = new QWebView();
   mWebView->page()->setNetworkAccessManager( QgsNetworkAccessManager::instance() );

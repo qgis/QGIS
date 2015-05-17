@@ -63,6 +63,18 @@ QgsServerProjectParser::QgsServerProjectParser( QDomDocument* xmlDoc, const QStr
 
     mRestrictedLayers = findRestrictedLayers();
     mUseLayerIDs = findUseLayerIDs();
+
+    mCustomLayerOrder.clear();
+
+    QDomElement customOrder = mXMLDoc->documentElement().firstChildElement( "layer-tree-canvas" ).firstChildElement( "custom-order" );
+    if ( customOrder.attribute( "enabled" ) == "1" )
+    {
+      QDomNodeList items = customOrder.childNodes();
+      for ( int i = 0; i < items.size(); ++i )
+      {
+        mCustomLayerOrder << items.item( i ).toElement().text();
+      }
+    }
   }
 }
 
@@ -349,7 +361,7 @@ int QgsServerProjectParser::numberOfLayers() const
 
 bool QgsServerProjectParser::updateLegendDrawingOrder() const
 {
-  return legendElem().attribute( "updateDrawingOrder", "true" ).compare( "true", Qt::CaseInsensitive ) == 0;
+  return !mCustomLayerOrder.isEmpty();
 }
 
 void QgsServerProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& service, bool sia2045 ) const
@@ -722,6 +734,10 @@ void QgsServerProjectParser::addLayerProjectSettings( QDomElement& layerElem, QD
     }
     //displayfield
     layerElem.setAttribute( "displayField", displayField );
+
+    //geometry type
+    layerElem.setAttribute( "geometryType", QGis::featureType( vLayer->wkbType() ) );
+
     layerElem.appendChild( attributesElem );
   }
 }
@@ -1069,7 +1085,7 @@ bool QgsServerProjectParser::findUseLayerIDs() const
 void QgsServerProjectParser::layerFromLegendLayer( const QDomElement& legendLayerElem, QMap< int, QgsMapLayer*>& layers, bool useCache ) const
 {
   QString id = legendLayerElem.firstChild().firstChild().toElement().attribute( "layerid" );
-  int drawingOrder = updateLegendDrawingOrder() ? -1 : legendLayerElem.attribute( "drawingOrder", "-1" ).toInt();
+  int drawingOrder = updateLegendDrawingOrder() ? -1 : mCustomLayerOrder.indexOf( id );
 
   QHash< QString, QDomElement >::const_iterator layerIt = mProjectLayerElementsById.find( id );
   if ( layerIt != mProjectLayerElementsById.constEnd() )

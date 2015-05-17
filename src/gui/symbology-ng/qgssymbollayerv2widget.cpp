@@ -28,7 +28,7 @@
 #include "qgssymbollayerv2utils.h"
 #include "qgsvectorcolorrampv2.h"
 #include "qgsvectorgradientcolorrampv2dialog.h"
-
+#include "qgsdatadefined.h"
 #include "qgsstylev2.h" //for symbol selector dialog
 
 #include "qgsapplication.h"
@@ -48,8 +48,8 @@
 
 void QgsSymbolLayerV2Widget::registerDataDefinedButton( QgsDataDefinedButton * button, const QString & propertyName, QgsDataDefinedButton::DataType type, const QString & description )
 {
-  QgsDataDefined dd( symbolLayer()->dataDefinedProperty( propertyName ) );
-  button->init( mVectorLayer, &dd, type, description );
+  const QgsDataDefined* dd = symbolLayer()->getDataDefinedProperty( propertyName );
+  button->init( mVectorLayer, dd, type, description );
   button->setProperty( "propertyName", propertyName );
   connect( button, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
   connect( button, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
@@ -59,10 +59,15 @@ void QgsSymbolLayerV2Widget::updateDataDefinedProperty()
 {
   QgsDataDefinedButton* button = qobject_cast<QgsDataDefinedButton*>( sender() );
   const QString propertyName( button->property( "propertyName" ).toString() );
-  if ( button->isActive() )
-    symbolLayer()->setDataDefinedProperty( propertyName, button->currentDefinition() );
-  else
-    symbolLayer()->removeDataDefinedProperty( propertyName );
+
+  QgsDataDefined* dd = symbolLayer()->getDataDefinedProperty( propertyName );
+  if ( !dd )
+  {
+    dd = new QgsDataDefined();
+    symbolLayer()->setDataDefinedProperty( propertyName, dd );
+  }
+  button->updateDataDefined( dd );
+
   emit changed();
 }
 
@@ -1528,47 +1533,47 @@ class QgsSvgListModel : public QAbstractListModel
     {
       Q_UNUSED( parent );
       return mSvgFiles.count();
-  }
+    }
 
     QVariant data( const QModelIndex & index, int role = Qt::DisplayRole ) const override
     {
       QString entry = mSvgFiles.at( index.row() );
 
       if ( role == Qt::DecorationRole ) // icon
-  {
-    QPixmap pixmap;
-    if ( !QPixmapCache::find( entry, pixmap ) )
       {
-        // render SVG file
-        QColor fill, outline;
-        double outlineWidth;
-        bool fillParam, outlineParam, outlineWidthParam;
-        QgsSvgCache::instance()->containsParams( entry, fillParam, fill, outlineParam, outline, outlineWidthParam, outlineWidth );
+        QPixmap pixmap;
+        if ( !QPixmapCache::find( entry, pixmap ) )
+        {
+          // render SVG file
+          QColor fill, outline;
+          double outlineWidth;
+          bool fillParam, outlineParam, outlineWidthParam;
+          QgsSvgCache::instance()->containsParams( entry, fillParam, fill, outlineParam, outline, outlineWidthParam, outlineWidth );
 
-        bool fitsInCache; // should always fit in cache at these sizes (i.e. under 559 px ^ 2, or half cache size)
-        const QImage& img = QgsSvgCache::instance()->svgAsImage( entry, 30.0, fill, outline, outlineWidth, 3.5 /*appr. 88 dpi*/, 1.0, fitsInCache );
-        pixmap = QPixmap::fromImage( img );
-        QPixmapCache::insert( entry, pixmap );
+          bool fitsInCache; // should always fit in cache at these sizes (i.e. under 559 px ^ 2, or half cache size)
+          const QImage& img = QgsSvgCache::instance()->svgAsImage( entry, 30.0, fill, outline, outlineWidth, 3.5 /*appr. 88 dpi*/, 1.0, fitsInCache );
+          pixmap = QPixmap::fromImage( img );
+          QPixmapCache::insert( entry, pixmap );
+        }
+
+        return pixmap;
+      }
+      else if ( role == Qt::UserRole || role == Qt::ToolTipRole )
+      {
+        return entry;
       }
 
-      return pixmap;
+      return QVariant();
     }
-    else if ( role == Qt::UserRole || role == Qt::ToolTipRole )
-  {
-    return entry;
-  }
 
-  return QVariant();
-}
-
-protected:
-  QStringList mSvgFiles;
+  protected:
+    QStringList mSvgFiles;
 };
 
 class QgsSvgGroupsModel : public QStandardItemModel
 {
-public:
-  QgsSvgGroupsModel( QObject* parent ) : QStandardItemModel( parent )
+  public:
+    QgsSvgGroupsModel( QObject* parent ) : QStandardItemModel( parent )
     {
       QStringList svgPaths = QgsApplication::svgPaths();
       QStandardItem *parentItem = invisibleRootItem();
@@ -1933,8 +1938,6 @@ void QgsSvgMarkerSymbolLayerV2Widget::on_mVerticalAnchorComboBox_currentIndexCha
 }
 
 /////////////
-
-#include <QFileDialog>
 
 QgsSVGFillSymbolLayerWidget::QgsSVGFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent ): QgsSymbolLayerV2Widget( parent, vl )
 {

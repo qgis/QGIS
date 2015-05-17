@@ -34,12 +34,14 @@ extern "C"
 
 class QgsField;
 
+/** Spatial column types */
 enum QgsPostgresGeometryColumnType
 {
   sctNone,
   sctGeometry,
   sctGeography,
-  sctTopoGeometry
+  sctTopoGeometry,
+  sctPcPatch
 };
 
 enum QgsPostgresPrimaryKeyType
@@ -187,6 +189,9 @@ class QgsPostgresConn : public QObject
     //! get status of topology capability
     bool hasTopology();
 
+    //! get status of Pointcloud capability
+    bool hasPointcloud();
+
     //! get status of GIST capability
     bool hasGIST();
 
@@ -299,7 +304,7 @@ class QgsPostgresConn : public QObject
     static int postgisWkbTypeDim( QGis::WkbType wkbType );
     static void postgisWkbType( QGis::WkbType wkbType, QString &geometryType, int &dim );
 
-    static QString postgisTypeFilter( QString geomCol, QGis::WkbType wkbType, bool isGeography );
+    static QString postgisTypeFilter( QString geomCol, QGis::WkbType wkbType, bool castToGeometry );
 
     static QGis::WkbType wkbTypeFromGeomType( QGis::GeometryType geomType );
     static QGis::WkbType wkbTypeFromOgcWkbType( unsigned int ogcWkbType );
@@ -353,6 +358,9 @@ class QgsPostgresConn : public QObject
 
     //! PROJ4 capability
     bool mProjAvailable;
+
+    //! pointcloud support available
+    bool mPointcloudAvailable;
 
     //! encode wkb in hex
     bool mUseWkbHex;

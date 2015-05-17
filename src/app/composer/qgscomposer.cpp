@@ -803,24 +803,38 @@ void QgsComposer::activate()
   }
 }
 
-#ifdef Q_OS_MAC
 void QgsComposer::changeEvent( QEvent* event )
 {
   QMainWindow::changeEvent( event );
   switch ( event->type() )
   {
+#ifdef Q_OS_MAC
     case QEvent::ActivationChange:
+    {
       if ( QApplication::activeWindow() == this )
       {
         mWindowAction->setChecked( true );
       }
       break;
-
+    }
+#endif
+    case QEvent::WindowStateChange:
+    {
+      /* Listen out for window un-minimisation and restore composer map states.
+       * We can't use showEvent to detect this due to QT Bug 36675 (see #6085).
+       */
+      QWindowStateChangeEvent* changeEv = static_cast< QWindowStateChangeEvent* >( event );
+      if ( changeEv->oldState() & Qt::WindowMinimized )
+      {
+        // Window restored, restore composers
+        restoreComposerMapStates();
+      }
+      break;
+    }
     default:
       break;
   }
 }
-#endif
 
 void QgsComposer::setTitle( const QString& title )
 {
@@ -1574,6 +1588,7 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
     }
 
     QProgressDialog progress( tr( "Rendering maps..." ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
+    progress.setWindowTitle( tr( "Exporting atlas" ) );
     QApplication::setOverrideCursor( Qt::BusyCursor );
 
     for ( int featureI = 0; featureI < atlasMap->numFeatures(); ++featureI )
@@ -1735,6 +1750,7 @@ void QgsComposer::printComposition( QgsComposer::OutputMode mode )
       return;
     }
     QProgressDialog progress( tr( "Rendering maps..." ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
+    progress.setWindowTitle( tr( "Exporting atlas" ) );
 
     for ( int i = 0; i < atlasMap->numFeatures(); ++i )
     {
@@ -2002,6 +2018,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
     }
 
     QProgressDialog progress( tr( "Rendering maps..." ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
+    progress.setWindowTitle( tr( "Exporting atlas" ) );
 
     for ( int feature = 0; feature < atlasMap->numFeatures(); ++feature )
     {
@@ -2276,6 +2293,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
     }
   }
   QProgressDialog progress( tr( "Rendering maps..." ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
+  progress.setWindowTitle( tr( "Exporting atlas" ) );
 
   do
   {
@@ -3003,21 +3021,16 @@ void QgsComposer::resizeEvent( QResizeEvent *e )
   saveWindowState();
 }
 
+#ifdef Q_OS_MAC
 void QgsComposer::showEvent( QShowEvent* event )
 {
-  if ( event->spontaneous() ) //event from the window system
-  {
-    restoreComposerMapStates();
-  }
-
-#ifdef Q_OS_MAC
   // add to menu if (re)opening window (event not due to unminimize)
   if ( !event->spontaneous() )
   {
     mQgis->addWindow( mWindowAction );
   }
-#endif
 }
+#endif
 
 void QgsComposer::saveWindowState()
 {
@@ -3562,15 +3575,18 @@ void QgsComposer::on_mActionPageSetup_triggered()
 
 void QgsComposer::restoreComposerMapStates()
 {
-  //go through maps and restore original preview modes (show on demand after loading from project file)
-  QMap< QgsComposerMap*, int >::iterator mapIt = mMapsToRestore.begin();
-  for ( ; mapIt != mMapsToRestore.end(); ++mapIt )
+  if ( !mMapsToRestore.isEmpty() )
   {
-    mapIt.key()->setPreviewMode(( QgsComposerMap::PreviewMode )( mapIt.value() ) );
-    mapIt.key()->cache();
-    mapIt.key()->update();
+    //go through maps and restore original preview modes (show on demand after loading from project file)
+    QMap< QgsComposerMap*, int >::iterator mapIt = mMapsToRestore.begin();
+    for ( ; mapIt != mMapsToRestore.end(); ++mapIt )
+    {
+      mapIt.key()->setPreviewMode(( QgsComposerMap::PreviewMode )( mapIt.value() ) );
+      mapIt.key()->cache();
+      mapIt.key()->update();
+    }
+    mMapsToRestore.clear();
   }
-  mMapsToRestore.clear();
 }
 
 void QgsComposer::populatePrintComposersMenu()

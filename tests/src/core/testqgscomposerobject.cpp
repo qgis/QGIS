@@ -19,6 +19,7 @@
 #include "qgscomposition.h"
 #include "qgscompositionchecker.h"
 #include "qgsdatadefined.h"
+#include "qgsexpression.h"
 #include <QObject>
 #include <QtTest/QtTest>
 

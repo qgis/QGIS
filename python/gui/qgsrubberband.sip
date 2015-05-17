@@ -161,7 +161,7 @@ class QgsRubberBand: QgsMapCanvasItem
      *  @param layer the layer containing the feature, used for coord transformation to map
      *               crs. In case of 0 pointer, the coordinates are not going to be transformed.
      */
-    void setToGeometry( QgsGeometry* geom, QgsVectorLayer* layer );
+    void setToGeometry( const QgsGeometry* geom, QgsVectorLayer* layer );
 
     /**
      * Sets this rubber band to a map canvas rectangle
@@ -180,7 +180,7 @@ class QgsRubberBand: QgsMapCanvasItem
      *  @param layer the layer containing the feature, used for coord transformation to map
      *               crs. In case of 0 pointer, the coordinates are not going to be transformed.
      */
-    void addGeometry( QgsGeometry* geom, QgsVectorLayer* layer );
+    void addGeometry( const QgsGeometry* geom, QgsVectorLayer* layer );
 
     /**
      * Adds translation to original coordinates (all in map coordinates)

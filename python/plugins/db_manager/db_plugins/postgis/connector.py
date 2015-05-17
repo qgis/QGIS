@@ -215,7 +215,7 @@ class PostGisDBConnector(DBConnector):
         t = self.quoteId(table)
         sql = u"""SELECT has_table_privilege(%(t)s, 'SELECT'), has_table_privilege(%(t)s, 'INSERT'),
                                 has_table_privilege(%(t)s, 'UPDATE'), has_table_privilege(%(t)s, 'DELETE')""" % {
-        't': self.quoteString(t)}
+            't': self.quoteString(t)}
         c = self._execute(None, sql)
         res = self._fetchone(c)
         self._close_cursor(c)
@@ -477,7 +477,7 @@ class PostGisDBConnector(DBConnector):
                                                 JOIN pg_namespace nsp ON pg_class.relnamespace = nsp.oid
                                                         WHERE pg_class.relname=%s %s
                                                         AND indisprimary != 't' """ % (
-        self.quoteString(tablename), schema_where)
+            self.quoteString(tablename), schema_where)
         c = self._execute(None, sql)
         res = self._fetchall(c)
         self._close_cursor(c)
@@ -512,7 +512,7 @@ class PostGisDBConnector(DBConnector):
                                                         LEFT JOIN pg_proc p ON trig.tgfoid = p.oid
                                                         JOIN pg_namespace nsp ON t.relnamespace = nsp.oid
                                                         WHERE t.relname = %s %s """ % (
-        self.quoteString(tablename), schema_where)
+            self.quoteString(tablename), schema_where)
 
         c = self._execute(None, sql)
         res = self._fetchall(c)
@@ -573,7 +573,7 @@ class PostGisDBConnector(DBConnector):
         schema_part = u"%s," % self.quoteString(schema) if schema is not None else ""
 
         subquery = u"SELECT st_estimated_extent(%s%s,%s) AS extent" % (
-        schema_part, self.quoteString(tablename), self.quoteString(geom))
+            schema_part, self.quoteString(tablename), self.quoteString(geom))
         sql = u"""SELECT st_xmin(extent), st_ymin(extent), st_xmax(extent), st_ymax(extent) FROM (%s) AS subquery """ % subquery
 
         try:
@@ -594,7 +594,7 @@ class PostGisDBConnector(DBConnector):
         sql = u"""SELECT pg_get_viewdef(c.oid) FROM pg_class c
                                                 JOIN pg_namespace nsp ON c.relnamespace = nsp.oid
                         WHERE relname=%s %s AND (relkind='v' OR relkind='m') """ % (
-        self.quoteString(tablename), schema_where)
+            self.quoteString(tablename), schema_where)
 
         c = self._execute(None, sql)
         res = self._fetchone(c)
@@ -626,7 +626,7 @@ class PostGisDBConnector(DBConnector):
         if self.has_geometry_columns and self.has_geometry_columns_access:
             schema, tablename = self.getSchemaTableName(table)
             sql = u"SELECT count(*) FROM geometry_columns WHERE f_table_schema = %s AND f_table_name = %s" % (
-            self.quoteString(schema), self.quoteString(tablename))
+                self.quoteString(schema), self.quoteString(tablename))
 
             c = self._execute(None, sql)
             res = self._fetchone(c)
@@ -639,7 +639,7 @@ class PostGisDBConnector(DBConnector):
         if self.has_raster_columns and self.has_raster_columns_access:
             schema, tablename = self.getSchemaTableName(table)
             sql = u"SELECT count(*) FROM raster_columns WHERE r_table_schema = %s AND r_table_name = %s" % (
-            self.quoteString(schema), self.quoteString(tablename))
+                self.quoteString(schema), self.quoteString(tablename))
 
             c = self._execute(None, sql)
             res = self._fetchone(c)
@@ -700,7 +700,7 @@ class PostGisDBConnector(DBConnector):
         if self.has_geometry_columns and not self.is_geometry_columns_view:
             schema_where = u" AND f_table_schema=%s " % self.quoteString(schema) if schema is not None else ""
             sql = u"UPDATE geometry_columns SET f_table_name=%s WHERE f_table_name=%s %s" % (
-            self.quoteString(new_table), self.quoteString(tablename), schema_where)
+                self.quoteString(new_table), self.quoteString(tablename), schema_where)
             self._execute(c, sql)
 
         self._commit()
@@ -720,7 +720,7 @@ class PostGisDBConnector(DBConnector):
             schema, tablename = self.getSchemaTableName(table)
             schema_where = u" AND f_table_schema=%s " % self.quoteString(schema) if schema is not None else ""
             sql = u"UPDATE geometry_columns SET f_table_schema=%s WHERE f_table_name=%s %s" % (
-            self.quoteString(new_schema), self.quoteString(tablename), schema_where)
+                self.quoteString(new_schema), self.quoteString(tablename), schema_where)
             self._execute(c, sql)
 
         self._commit()
@@ -752,7 +752,7 @@ class PostGisDBConnector(DBConnector):
             schema_where = u" f_table_schema=%s AND " % self.quoteString(schema) if schema is not None else ""
             schema_part = u" f_table_schema=%s, " % self.quoteString(new_schema) if schema is not None else ""
             sql = u"UPDATE geometry_columns SET %s f_table_name=%s WHERE %s f_table_name=%s" % (
-            schema_part, self.quoteString(new_table), schema_where, self.quoteString(tablename))
+                schema_part, self.quoteString(new_table), schema_where, self.quoteString(tablename))
             self._execute(c, sql)
 
         self._commit()
@@ -807,7 +807,7 @@ class PostGisDBConnector(DBConnector):
             schema, tablename = self.getSchemaTableName(table)
             schema_part = u"%s, " % self._quote_str(schema) if schema else ""
             sql = u"SELECT DropGeometryColumn(%s%s, %s)" % (
-            schema_part, self.quoteString(tablename), self.quoteString(column))
+                schema_part, self.quoteString(tablename), self.quoteString(column))
         else:
             sql = u"ALTER TABLE %s DROP %s" % (self.quoteId(table), self.quoteId(column))
         self._execute_and_commit(sql)
@@ -839,7 +839,7 @@ class PostGisDBConnector(DBConnector):
         # rename the column
         if new_name is not None and new_name != column:
             sql = u"ALTER TABLE %s RENAME %s TO %s" % (
-            self.quoteId(table), self.quoteId(column), self.quoteId(new_name))
+                self.quoteId(table), self.quoteId(column), self.quoteId(new_name))
             self._execute(c, sql)
 
             # update geometry_columns if postgis is enabled
@@ -847,7 +847,7 @@ class PostGisDBConnector(DBConnector):
                 schema, tablename = self.getSchemaTableName(table)
                 schema_where = u" f_table_schema=%s AND " % self.quoteString(schema) if schema is not None else ""
                 sql = u"UPDATE geometry_columns SET f_geometry_column=%s WHERE %s f_table_name=%s AND f_geometry_column=%s" % (
-                self.quoteString(new_name), schema_where, self.quoteString(tablename), self.quoteString(column))
+                    self.quoteString(new_name), schema_where, self.quoteString(tablename), self.quoteString(column))
                 self._execute(c, sql)
 
         self._commit()
@@ -876,7 +876,7 @@ class PostGisDBConnector(DBConnector):
         schema_where = u" f_table_schema=%s AND " % self.quoteString(schema) if schema is not None else ""
 
         sql = u"SELECT count(*) > 0 FROM geometry_columns WHERE %s f_table_name=%s AND f_geometry_column=%s" % (
-        schema_where, self.quoteString(tablename), self.quoteString(column))
+            schema_where, self.quoteString(tablename), self.quoteString(column))
 
         c = self._execute(None, sql)
         res = self._fetchone(c)[0] == 't'
@@ -888,7 +888,7 @@ class PostGisDBConnector(DBConnector):
         schema_part = u"%s, " % self.quoteString(schema) if schema else ""
 
         sql = u"SELECT AddGeometryColumn(%s%s, %s, %d, %s, %d)" % (
-        schema_part, self.quoteString(tablename), self.quoteString(geom_column), srid, self.quoteString(geom_type), dim)
+            schema_part, self.quoteString(tablename), self.quoteString(geom_column), srid, self.quoteString(geom_type), dim)
         self._execute_and_commit(sql)
 
     def deleteGeometryColumn(self, table, geom_column):

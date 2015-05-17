@@ -72,13 +72,18 @@ class QgsExpression
     //! @note added in 2.2
     static bool hasSpecialColumn( const QString& name );
 
+    /** Checks whether an expression consists only of a single field reference
+     * @note added in 2.9
+     */
+    bool isField() const;
+
     static bool isValid( const QString& text, const QgsFields& fields, QString &errorMessage );
 
     void setScale( double scale );
 
     double scale();
 
-    //! Return the expression string that was given when created.
+    //! Alias for dump()
     const QString expression() const;
 
     //! Return the expression string that represents this QgsExpression.
@@ -197,6 +202,13 @@ class QgsExpression
         /** Does this function use a geometry object. */
         bool usesgeometry();
 
+        /** Returns a list of possible aliases for the function. These include
+         * other permissible names for the function, eg deprecated names.
+         * @return list of known aliases
+         * @note added in QGIS 2.9
+         */
+        virtual QStringList aliases() const;
+
         /** True if this function should use lazy evaluation.  Lazy evaluation functions take QgsExpression::Node objects
          * rather than the node results when called.  You can use node->eval(parent, feature) to evaluate the node and return the result
          * Functions are non lazy default and will be given the node return value when called **/
@@ -226,7 +238,7 @@ class QgsExpression
     static bool isFunctionName( QString name );
 
     // return index of the function in Functions array
-    static int functionIndex( QString name );
+    static int functionIndex( const QString& name );
 
     /**  Returns the number of functions defined in the parser
       *  @return The number of function defined in the parser.
@@ -258,6 +270,20 @@ class QgsExpression
 
     class Node
     {
+      %ConvertToSubClassCode
+        switch (sipCpp->nodeType())
+        {
+          case QgsExpression::ntUnaryOperator:   sipClass = sipClass_QgsExpression_NodeUnaryOperator; break;
+          case QgsExpression::ntBinaryOperator:  sipClass = sipClass_QgsExpression_NodeBinaryOperator; break;
+          case QgsExpression::ntInOperator:      sipClass = sipClass_QgsExpression_NodeInOperator; break;
+          case QgsExpression::ntFunction:        sipClass = sipClass_QgsExpression_NodeFunction; break;
+          case QgsExpression::ntLiteral:         sipClass = sipClass_QgsExpression_NodeLiteral; break;
+          case QgsExpression::ntColumnRef:       sipClass = sipClass_QgsExpression_NodeColumnRef; break;
+          case QgsExpression::ntCondition:       sipClass = sipClass_QgsExpression_NodeCondition; break;
+          default:                               sipClass = 0; break;
+        }
+      %End
+
       public:
         virtual ~Node();
         virtual QgsExpression::NodeType nodeType() const = 0;

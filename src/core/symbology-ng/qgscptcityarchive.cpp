@@ -43,7 +43,8 @@ QMap< QString, QgsCptCityArchive* > QgsCptCityArchive::archiveRegistry() { retur
 QMap< QString, QMap< QString, QString > > QgsCptCityArchive::mCopyingInfoMap;
 
 QgsCptCityArchive::QgsCptCityArchive( QString archiveName, QString baseDir )
-    : mArchiveName( archiveName ), mBaseDir( baseDir )
+    : mArchiveName( archiveName )
+    , mBaseDir( baseDir )
 {
   QgsDebugMsg( "archiveName = " + archiveName + " baseDir = " + baseDir );
 
@@ -496,8 +497,9 @@ void QgsCptCityArchive::clearArchives()
 QgsCptCityDataItem::QgsCptCityDataItem( QgsCptCityDataItem::Type type, QgsCptCityDataItem* parent,
                                         QString name, QString path )
 // Do not pass parent to QObject, Qt would delete this when parent is deleted
-    : QObject(), mType( type ), mParent( parent ), mPopulated( false ),
-    mName( name ), mPath( path ), mValid( true )
+    : QObject()
+    , mType( type ), mParent( parent ), mPopulated( false )
+    , mName( name ), mPath( path ), mValid( true )
 {
 }
 
@@ -709,8 +711,9 @@ bool QgsCptCityDataItem::equal( const QgsCptCityDataItem *other )
 
 QgsCptCityColorRampItem::QgsCptCityColorRampItem( QgsCptCityDataItem* parent,
     QString name, QString path, QString variantName, bool initialize )
-    : QgsCptCityDataItem( ColorRamp, parent, name, path ),
-    mInitialised( false ), mRamp( path, variantName, false )
+    : QgsCptCityDataItem( ColorRamp, parent, name, path )
+    , mInitialised( false )
+    , mRamp( path, variantName, false )
 {
   // QgsDebugMsg( "name= " + name + " path= " + path );
   mPopulated = true;
@@ -720,8 +723,9 @@ QgsCptCityColorRampItem::QgsCptCityColorRampItem( QgsCptCityDataItem* parent,
 
 QgsCptCityColorRampItem::QgsCptCityColorRampItem( QgsCptCityDataItem* parent,
     QString name, QString path, QStringList variantList, bool initialize )
-    : QgsCptCityDataItem( ColorRamp, parent, name, path ),
-    mInitialised( false ), mRamp( path, variantList, QString(), false )
+    : QgsCptCityDataItem( ColorRamp, parent, name, path )
+    , mInitialised( false )
+    , mRamp( path, variantList, QString(), false )
 {
   // QgsDebugMsg( "name= " + name + " path= " + path );
   mPopulated = true;
@@ -836,7 +840,8 @@ QIcon QgsCptCityColorRampItem::icon( const QSize& size )
 // ---------------------------------------------------------------------
 QgsCptCityCollectionItem::QgsCptCityCollectionItem( QgsCptCityDataItem* parent,
     QString name, QString path )
-    : QgsCptCityDataItem( Collection, parent, name, path ), mPopulatedRamps( false )
+    : QgsCptCityDataItem( Collection, parent, name, path )
+    , mPopulatedRamps( false )
 {
 }
 

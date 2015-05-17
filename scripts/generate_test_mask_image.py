@@ -3,7 +3,7 @@
 # Generates (or updates) a unit test image mask, which is used to specify whether
 # a pixel in the control image should be checked (black pixel in mask) or not (white
 # pixel in mask). For non black or white pixels, the pixels lightness is used to
-# specify a maximum delta for each color component 
+# specify a maximum delta for each color component
 
 import os
 import sys
@@ -15,7 +15,7 @@ import struct
 def error ( msg ):
   print msg
   sys.exit( 1 )
-  
+
 def colorDiff( c1, c2 ):
   redDiff = abs( qRed( c1 ) - qRed( c2 ) )
   greenDiff = abs( qGreen( c1 ) - qGreen( c2 ) )
@@ -36,7 +36,7 @@ def updateMask(control_image_path, rendered_image_path, mask_image_path):
                                                                                    control_image.height(),
                                                                                    rendered_image.width(),
                                                                                    rendered_image.height()))
-    
+
   #read current mask, if it exist
   mask_image = QImage( mask_image_path )
   if mask_image.isNull():
@@ -69,18 +69,16 @@ def updateMask(control_image_path, rendered_image_path, mask_image_path):
         #update mask image
         mask_image.setPixel( x, y, qRgb( difference, difference, difference ) )
         mismatch_count += 1
-      
+
   if mismatch_count:
     #update mask
-    mask_image.save( mask_image_path, "png" );
+    mask_image.save( mask_image_path, "png" )
     print 'Updated {} pixels'.format( mismatch_count )
 
-parser = argparse.ArgumentParser() #OptionParser("usage: %prog control_image rendered_image mask_image")
+parser = argparse.ArgumentParser() # OptionParser("usage: %prog control_image rendered_image mask_image")
 parser.add_argument('control_image')
 parser.add_argument('rendered_image')
 parser.add_argument('mask_image')
 args = parser.parse_args()
 
-
 updateMask(args.control_image, args.rendered_image, args.mask_image)
-

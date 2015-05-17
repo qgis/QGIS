@@ -47,7 +47,12 @@
 
 extern "C"
 {
+#if GRASS_VERSION_MAJOR < 7
 #include <grass/Vect.h>
+#else
+#include <grass/vector.h>
+#define BOUND_BOX bound_box
+#endif
 }
 
 class QgsGrassEditLayer : public QgsMapCanvasItem

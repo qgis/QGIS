@@ -356,3 +356,20 @@ void QgsRectangle::invert()
   tmp = xmin; xmin = ymin; ymin = tmp;
   tmp = xmax; xmax = ymax; ymax = tmp;
 }
+
+QDataStream& operator<<( QDataStream& out, const QgsRectangle& rectangle )
+{
+  out << rectangle.xMinimum() << rectangle.yMinimum() << rectangle.xMaximum() << rectangle.yMaximum();
+  return out;
+}
+
+QDataStream& operator>>( QDataStream& in, QgsRectangle& rectangle )
+{
+  double xmin, ymin, xmax, ymax;
+  in >> xmin >> ymin >> xmax >> ymax;
+  rectangle.setXMinimum( xmin );
+  rectangle.setYMinimum( ymin );
+  rectangle.setXMaximum( xmax );
+  rectangle.setYMaximum( ymax );
+  return in;
+}

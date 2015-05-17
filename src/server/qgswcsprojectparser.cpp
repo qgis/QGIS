@@ -18,7 +18,6 @@
 #include "qgswcsprojectparser.h"
 #include "qgsconfigcache.h"
 #include "qgsconfigparserutils.h"
-#include "qgsconfigcache.h"
 #include "qgsrasterlayer.h"
 
 QgsWCSProjectParser::QgsWCSProjectParser( const QString& filePath )

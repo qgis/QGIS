@@ -285,6 +285,8 @@ class RAlgorithm(GeoAlgorithm):
         commands.append('options("repos"="http://cran.at.r-project.org/")')
 
         # Try to install packages if needed
+        if isWindows():
+            commands.append('.libPaths(\"' + str(RUtils.RLibs()).replace('\\','/') + '\")')
         packages = RUtils.getRequiredPackages(self.script)
         packages.extend(['rgdal', 'raster'])
         for p in packages:

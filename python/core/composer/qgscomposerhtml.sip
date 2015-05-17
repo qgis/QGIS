@@ -10,8 +10,8 @@ class QgsComposerHtml: QgsComposerMultiFrame
     */
     enum ContentMode
     {
-      Url, /*< Using this mode item fetches its content via a url*/
-      ManualHtml /*< HTML content is manually set for the item*/
+      Url, /*!< Using this mode item fetches its content via a url*/
+      ManualHtml /*!< HTML content is manually set for the item*/
     };
 
     QgsComposerHtml( QgsComposition* c /TransferThis/, bool createUndoCommands );

@@ -33,7 +33,6 @@
 
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsfield.h"
 #include "qgslogger.h"
 
 #include <QByteArray>

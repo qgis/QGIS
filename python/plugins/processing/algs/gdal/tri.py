@@ -52,7 +52,7 @@ class tri(GdalAlgorithm):
 
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output file')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         arguments = ['TRI']
         arguments.append(unicode(self.getParameterValue(self.INPUT)))
         arguments.append(unicode(self.getOutputValue(self.OUTPUT)))
@@ -63,5 +63,4 @@ class tri(GdalAlgorithm):
         if self.getParameterValue(self.COMPUTE_EDGES):
             arguments.append('-compute_edges')
 
-        GdalUtils.runGdal(['gdaldem',
-                          GdalUtils.escapeAndJoin(arguments)], progress)
+        return ['gdaldem', GdalUtils.escapeAndJoin(arguments)]

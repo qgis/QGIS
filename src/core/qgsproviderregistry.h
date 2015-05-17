@@ -36,6 +36,11 @@ class QgsCoordinateReferenceSystem;
   * A registry / canonical manager of data providers.
 
   This is a Singleton class that manages data provider access.
+
+  Loaded providers may be restricted using QGIS_PROVIDER_FILE environment variable.
+  QGIS_PROVIDER_FILE is regexp pattern applied to provider file name (not provider key).
+  For example, if the variable is set to gdal|ogr|postgres it will load only providers gdal,
+  ogr and postgres.
 */
 class CORE_EXPORT QgsProviderRegistry
 {

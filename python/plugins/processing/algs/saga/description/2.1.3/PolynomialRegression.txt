@@ -10,4 +10,4 @@ ParameterSelection|TARGET|Trend Surface|[0] user defined
 Extent TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX
 ParameterNumber|USER_SIZE|Cellsize|None|None|100.0
 OutputVector|RESIDUALS|Residuals
-OutputRaster|USER_GRID|Grid
+OutputRaster|USER_GRID|Regression

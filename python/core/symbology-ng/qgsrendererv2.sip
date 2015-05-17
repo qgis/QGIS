@@ -197,6 +197,20 @@ class QgsFeatureRendererV2
      */
     virtual void modifyRequestExtent( QgsRectangle& extent, QgsRenderContext& context );
 
+    /** Returns the current paint effect for the renderer.
+     * @returns paint effect
+     * @note added in QGIS 2.9
+     * @see setPaintEffect
+     */
+    QgsPaintEffect* paintEffect() const;
+
+    /** Sets the current paint effect for the renderer.
+     * @param effect paint effect. Ownership is transferred to the renderer.
+     * @note added in QGIS 2.9
+     * @see paintEffect
+     */
+    void setPaintEffect( QgsPaintEffect* effect /Transfer/);
+
   protected:
     QgsFeatureRendererV2( QString type );
 
@@ -215,10 +229,16 @@ class QgsFeatureRendererV2
     void renderVertexMarkerPolygon( QPolygonF& pts, QList<QPolygonF>* rings, QgsRenderContext& context );
 
     static const unsigned char* _getPoint( QPointF& pt, QgsRenderContext& context, const unsigned char* wkb );
-    static const unsigned char* _getLineString( QPolygonF& pts, QgsRenderContext& context, const unsigned char* wkb );
-    static const unsigned char* _getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, const unsigned char* wkb );
+    static const unsigned char* _getLineString( QPolygonF& pts, QgsRenderContext& context, const unsigned char* wkb, bool clipToExtent = true );
+    static const unsigned char* _getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, const unsigned char* wkb, bool clipToExtent = true );
 
     void setScaleMethodToSymbol( QgsSymbolV2* symbol, int scaleMethod );
+
+    /** Copies paint effect of this renderer to another renderer
+     * @param destRenderer destination renderer for copied effect
+     */
+    void copyPaintEffect( QgsFeatureRendererV2 *destRenderer ) const;
+
   private:
     QgsFeatureRendererV2( const QgsFeatureRendererV2 & );
     QgsFeatureRendererV2 & operator=( const QgsFeatureRendererV2 & );

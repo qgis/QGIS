@@ -135,9 +135,6 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 
     static const QString EXPR_SIZE;
 
-  private:
-    QgsExpression *mAngleExpression;
-    QgsExpression *mNameExpression;
 };
 
 //////////

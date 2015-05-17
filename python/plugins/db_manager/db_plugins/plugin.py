@@ -835,7 +835,7 @@ class Table(DbItemObject):
             trigger_action = parts[2]
 
             msg = QApplication.translate("DBManagerPlugin", "Do you want to %s trigger %s?") % (
-            trigger_action, trigger_name)
+                trigger_action, trigger_name)
             QApplication.restoreOverrideCursor()
             try:
                 if QMessageBox.question(None, QApplication.translate("DBManagerPlugin", "Table trigger"), msg,
@@ -932,7 +932,7 @@ class VectorTable(Table):
             spatialIndex_action = parts[1]
 
             msg = QApplication.translate("DBManagerPlugin", "Do you want to %s spatial index for field %s?") % (
-            spatialIndex_action, self.geomColumn )
+                spatialIndex_action, self.geomColumn )
             QApplication.restoreOverrideCursor()
             try:
                 if QMessageBox.question(None, QApplication.translate("DBManagerPlugin", "Spatial Index"), msg,

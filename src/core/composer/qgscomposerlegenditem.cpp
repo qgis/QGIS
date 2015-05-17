@@ -64,7 +64,6 @@ void QgsComposerLegendItem::writeXMLChildren( QDomElement& elem, QDomDocument& d
 
 ////////////////QgsComposerSymbolV2Item
 
-#include "qgssymbolv2.h"
 
 QgsComposerSymbolV2Item::QgsComposerSymbolV2Item(): QgsComposerLegendItem( QgsComposerLegendStyle::Symbol ), mSymbolV2( 0 )
 {

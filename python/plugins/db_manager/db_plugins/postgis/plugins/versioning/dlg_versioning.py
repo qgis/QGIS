@@ -176,11 +176,11 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
 
     def sql_alterTable(self):
         return u"ALTER TABLE %s ADD %s serial, ADD %s timestamp, ADD %s timestamp;" % (
-        self.schematable, self.colPkey, self.colStart, self.colEnd)
+            self.schematable, self.colPkey, self.colStart, self.colEnd)
 
     def sql_setPkey(self):
         return u"ALTER TABLE %s DROP CONSTRAINT %s, ADD PRIMARY KEY (%s);" % (
-        self.schematable, self.origPkeyName, self.colPkey)
+            self.schematable, self.origPkeyName, self.colPkey)
 
     def sql_currentView(self):
         cols = ",".join(self.columns)

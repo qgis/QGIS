@@ -464,7 +464,7 @@ void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, b
       layerProperty.types << detectedType;
     }
 
-    int srid = detectedSrid != -1 ? detectedSrid : ( qry.value( idx ).isNull() ? -1 : qry.value( idx ).toInt() );
+    int srid = detectedSrid > 0 ? detectedSrid : ( qry.value( idx ).isNull() ? -1 : qry.value( idx ).toInt() );
     layerProperty.srids << srid;
     srids << srid;
   }

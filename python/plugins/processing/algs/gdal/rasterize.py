@@ -27,7 +27,6 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterSelection
@@ -47,7 +46,6 @@ class rasterize(OgrAlgorithm):
     DIMENSIONS = 'DIMENSIONS'
     WIDTH = 'WIDTH'
     HEIGHT = 'HEIGHT'
-    WRITEOVER = 'WRITEOVER'
     RTYPE = 'RTYPE'
     OUTPUT = 'OUTPUT'
     TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64']
@@ -71,8 +69,6 @@ class rasterize(OgrAlgorithm):
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,
             self.tr('Attribute field'), self.INPUT))
-        self.addParameter(ParameterBoolean(self.WRITEOVER,
-            self.tr('Write values inside an existing raster layer(*)'), False))
         self.addParameter(ParameterSelection(self.DIMENSIONS,
             self.tr('Set output raster size (ignored if above option is checked)'),
             ['Output size in pixels', 'Output resolution in map units per pixel'], 1))
@@ -81,12 +77,12 @@ class rasterize(OgrAlgorithm):
         self.addParameter(ParameterNumber(self.HEIGHT,
             self.tr('Vertical'), 0.0, 99999999.999999, 100.0))
         self.addParameter(ParameterSelection(self.RTYPE, self.tr('Raster type'),
-            self.TYPE, 0))
+            self.TYPE, 1))
         self.addParameter(ParameterString(self.NO_DATA,
             self.tr("Nodata value"),
             '-9999'))
         self.addParameter(ParameterSelection(self.COMPRESS,
-            self.tr('GeoTIFF options. Compression type:'), self.COMPRESSTYPE, 0))
+            self.tr('GeoTIFF options. Compression type:'), self.COMPRESSTYPE, 4))
         self.addParameter(ParameterNumber(self.JPEGCOMPRESSION,
             self.tr('Set the JPEG compression level'),
             1, 100, 75))
@@ -101,12 +97,11 @@ class rasterize(OgrAlgorithm):
         self.addParameter(ParameterSelection(self.BIGTIFF,
             self.tr('Control whether the created file is a BigTIFF or a classic TIFF'), self.BIGTIFFTYPE, 0))
         self.addParameter(ParameterBoolean(self.TFW,
-            self.tr('Force the generation of an associated ESRI world file (.tfw))'), False))
+            self.tr('Force the generation of an associated ESRI world file (.tfw)'), False))
         self.addOutput(OutputRaster(self.OUTPUT,
-            self.tr('Output layer: mandatory to choose an existing raster layer if the (*) option is selected')))
+            self.tr('Rasterized')))
 
-    def processAlgorithm(self, progress):
-        writeOver = self.getParameterValue(self.WRITEOVER)
+    def getConsoleCommands(self):
         inLayer = self.getParameterValue(self.INPUT)
         ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
         noData = str(self.getParameterValue(self.NO_DATA))
@@ -123,24 +118,26 @@ class rasterize(OgrAlgorithm):
         arguments.append('-a')
         arguments.append(str(self.getParameterValue(self.FIELD)))
 
-        if not writeOver:
-             arguments.append('-ot')
-             arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
+
+        arguments.append('-ot')
+        arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
         dimType = self.getParameterValue(self.DIMENSIONS)
         if dimType == 0:
-            # size in pixels
-            arguments.append('-ts')
-            arguments.append(str(self.getParameterValue(self.WIDTH)))
-            arguments.append(str(self.getParameterValue(self.HEIGHT)))
+           # size in pixels
+           arguments.append('-ts')
+           arguments.append(str(self.getParameterValue(self.WIDTH)))
+           arguments.append(str(self.getParameterValue(self.HEIGHT)))
         else:
-             # resolution in map units per pixel
-             arguments.append('-tr')
-             arguments.append(str(self.getParameterValue(self.WIDTH)))
-             arguments.append(str(self.getParameterValue(self.HEIGHT)))
+           # resolution in map units per pixel
+           arguments.append('-tr')
+           arguments.append(str(self.getParameterValue(self.WIDTH)))
+           arguments.append(str(self.getParameterValue(self.HEIGHT)))
+
         if len(noData) > 0:
-            arguments.append('-a_nodata')
-            arguments.append(noData)
-        if (GdalUtils.getFormatShortNameFromFilename(out) == "GTiff") and (writeOver is False):
+           arguments.append('-a_nodata')
+           arguments.append(noData)
+
+        if (GdalUtils.getFormatShortNameFromFilename(out) == "GTiff"):
             arguments.append("-co COMPRESS="+compress)
             if compress == 'JPEG':
                arguments.append("-co JPEG_QUALITY="+jpegcompression)
@@ -159,5 +156,4 @@ class rasterize(OgrAlgorithm):
         arguments.append(ogrLayer)
 
         arguments.append(unicode(self.getOutputValue(self.OUTPUT)))
-        GdalUtils.runGdal(['gdal_rasterize',
-                          GdalUtils.escapeAndJoin(arguments)], progress)
+        return ['gdal_rasterize', GdalUtils.escapeAndJoin(arguments)]

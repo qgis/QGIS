@@ -15,17 +15,22 @@
 #ifndef QGSDATADEFINED_H
 #define QGSDATADEFINED_H
 
-#include "qgsfield.h"
-#include "qgsvectorlayer.h"
-
 #include <QStringList>
+#include <QDomElement>
+#include <QMap>
+#include <QExplicitlySharedDataPointer>
+#include "qgis.h"
+#include "qgsfield.h"
 
 class QgsExpression;
+class QgsVectorLayer;
+class QgsDataDefinedPrivate;
 
 
 /** \ingroup core
  * \class QgsDataDefined
  * A container class for data source field mapping or expression.
+ * \note QgsDataDefined objects are implicitly shared.
  */
 
 class CORE_EXPORT QgsDataDefined
@@ -45,14 +50,36 @@ class CORE_EXPORT QgsDataDefined
                     const QString& field = QString() );
 
     /**
-     * Construct a new data defined object, analyse the expression to determine
-     * if it's a simple field
-     *
+     * Construct a new data defined object, analysing the expression to determine
+     * if it's a simple field reference or an expression.
      * @param expression can be null
      */
     explicit QgsDataDefined( const QgsExpression * expression );
 
-    ~QgsDataDefined();
+    /**
+     * Construct a new data defined object, analysing the string to determine
+     * if it's a simple field reference or an expression
+     * @param string field reference or an expression, can be empty
+     * @note added in QGIS 2.9
+     */
+    explicit QgsDataDefined( const QString& string );
+
+    /**
+     * Copy constructor. Note that copies of data defined objects with expressions
+     * will not be prepared.
+     */
+    QgsDataDefined( const QgsDataDefined& other );
+
+    /** Creates a QgsDataDefined from a decoded QgsStringMap.
+     * @param map string map encoding of QgsDataDefined
+     * @param baseName base name for values in the string map
+     * @returns new QgsDataDefined if string map was successfully interpreted
+     * @see toMap
+     * @note added in QGIS 2.9
+     */
+    static QgsDataDefined* fromMap( const QgsStringMap& map, const QString& baseName = QString() );
+
+    virtual ~QgsDataDefined();
 
     /**Returns whether the data defined container is set to all the default
      * values, ie, disabled, with empty expression and no assigned field
@@ -61,32 +88,61 @@ class CORE_EXPORT QgsDataDefined
      */
     bool hasDefaultValues() const;
 
-    bool isActive() const { return mActive; }
-    void setActive( bool active ) { mActive = active; }
+    bool isActive() const;
+    void setActive( bool active );
 
-    bool useExpression() const { return mUseExpression; }
-    void setUseExpression( bool use ) { mUseExpression = use; }
+    bool useExpression() const;
+    void setUseExpression( bool use );
 
-    QString expressionString() const { return mExpressionString; }
+    QString expressionString() const;
     void setExpressionString( const QString& expr );
 
     // @note not available in python bindings
-    QMap<QString, QVariant> expressionParams() const { return mExpressionParams; }
+    QMap<QString, QVariant> expressionParams() const;
     // @note not available in python bindings
-    void setExpressionParams( QMap<QString, QVariant> params ) { mExpressionParams = params; }
+    void setExpressionParams( QMap<QString, QVariant> params );
     void insertExpressionParam( QString key, QVariant param );
 
+    /** Prepares the expression using a vector layer
+     * @param layer vector layer
+     * @returns true if expression was successfully prepared
+     */
     bool prepareExpression( QgsVectorLayer* layer );
-    bool expressionIsPrepared() const { return mExpressionPrepared; }
 
-    QgsExpression* expression() { return mExpression; }
+    /** Prepares the expression using a fields collection
+     * @param fields
+     * @returns true if expression was successfully prepared
+     * @note added in QGIS 2.9
+     */
+    bool prepareExpression( const QgsFields &fields = QgsFields() );
+
+    /** Returns whether the data defined object's expression is prepared
+     * @returns true if expression is prepared
+     */
+    bool expressionIsPrepared() const;
+
+    QgsExpression* expression();
+
+    /** Returns the columns referenced by the QgsDataDefined
+     * @param layer vector layer, used for preparing the expression if required
+     */
     QStringList referencedColumns( QgsVectorLayer* layer );
 
-    QString field() const { return mField; }
-    void setField( const QString& field ) { mField = field; }
+    /** Returns the columns referenced by the QgsDataDefined
+     * @param fields vector layer, used for preparing the expression if required
+     * @note added in QGIS 2.9
+     */
+    QStringList referencedColumns( const QgsFields& fields = QgsFields() );
 
-    // @note not available in python bindings
-    QMap< QString, QString > toMap();
+    QString field() const;
+    void setField( const QString& field );
+
+    /** Encodes the QgsDataDefined into a string map.
+     * @param baseName optional base name for values in the string map. Can be used
+     * to differentiate multiple QgsDataDefineds encoded in the same string map.
+     * @see fromMap
+     */
+    QgsStringMap toMap( const QString& baseName = QString() ) const;
 
     /**Returns a DOM element containing the properties of the data defined container.
      * @param document DOM document
@@ -109,17 +165,15 @@ class CORE_EXPORT QgsDataDefined
     bool operator==( const QgsDataDefined &other ) const;
     bool operator!=( const QgsDataDefined &other ) const;
 
+    /** Assignment operator. Note that after assignment the data defined
+     * object's expression will not be prepared.
+     */
+    QgsDataDefined& operator=( QgsDataDefined const & rhs );
+
   private:
-    QgsExpression* mExpression;
 
-    bool mActive;
-    bool mUseExpression;
-    QString mExpressionString;
-    QString mField;
+    QExplicitlySharedDataPointer<QgsDataDefinedPrivate> d;
 
-    QMap<QString, QVariant> mExpressionParams;
-    bool mExpressionPrepared;
-    QStringList mExprRefColmuns;
 };
 
 #endif // QGSDATADEFINED_H

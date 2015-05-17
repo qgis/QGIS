@@ -22,7 +22,7 @@
 #include "qgsnmeaconnection.h"
 #include "qgsgpsdconnection.h"
 
-#ifdef HAVE_QT_MOBILITY_LOCATION
+#if defined(HAVE_QT_MOBILITY_LOCATION ) || defined(QT_POSITIONING_LIB)
 #include "qgsqtlocationconnection.h"
 #endif
 
@@ -35,7 +35,7 @@ QList< QPair<QString, QString> > QgsGPSDetector::availablePorts()
   QList< QPair<QString, QString> > devs;
 
   // try local QtLocation first
-#ifdef HAVE_QT_MOBILITY_LOCATION
+#if defined(HAVE_QT_MOBILITY_LOCATION ) || defined(QT_POSITIONING_LIB)
   devs << QPair<QString, QString>( "internalGPS", tr( "internal GPS" ) );
 #endif
   // try local gpsd first
@@ -155,7 +155,7 @@ void QgsGPSDetector::advance()
     }
     else if ( mPortList[ mPortIndex ].first.contains( "internalGPS" ) )
     {
-#ifdef HAVE_QT_MOBILITY_LOCATION
+#if defined(HAVE_QT_MOBILITY_LOCATION ) || defined(QT_POSITIONING_LIB)
       mConn = new QgsQtLocationConnection();
 #else
       qWarning( "QT_MOBILITY_LOCATION not found and mPortList matches internalGPS, this should never happen" );

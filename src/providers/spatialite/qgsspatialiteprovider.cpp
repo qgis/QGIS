@@ -157,7 +157,7 @@ QgsSpatiaLiteProvider::createEmptyLayer(
         {
           // it already exists, try again with a new name
           primaryKey = QString( "%1_%2" ).arg( pk ).arg( index++ );
-          fldIdx = 0;
+          fldIdx = -1; // it is incremented in the for loop, i.e. restarts at 0
         }
       }
     }
@@ -3606,7 +3606,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
         if ( !mGeometryColumn.isEmpty() )
         {
           // binding GEOMETRY to Prepared Statement
-          if ( !feature->geometry() )
+          if ( !feature->constGeometry() )
           {
             sqlite3_bind_null( stmt, ++ia );
           }
@@ -3614,8 +3614,8 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
           {
             unsigned char *wkb = NULL;
             size_t wkb_size;
-            convertFromGeosWKB( feature->geometry()->asWkb(),
-                                feature->geometry()->wkbSize(),
+            convertFromGeosWKB( feature->constGeometry()->asWkb(),
+                                feature->constGeometry()->wkbSize(),
                                 &wkb, &wkb_size, nDims );
             if ( !wkb )
               sqlite3_bind_null( stmt, ++ia );

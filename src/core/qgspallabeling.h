@@ -21,17 +21,6 @@
 #ifndef QGSPALLABELING_H
 #define QGSPALLABELING_H
 
-class QFontMetricsF;
-class QPainter;
-class QPicture;
-class QgsGeometry;
-class QgsMapRenderer;
-class QgsRectangle;
-class QgsCoordinateTransform;
-class QgsLabelSearchTree;
-
-class QgsMapSettings;
-
 #include <QString>
 #include <QFont>
 #include <QFontDatabase>
@@ -39,6 +28,10 @@ class QgsMapSettings;
 #include <QHash>
 #include <QList>
 #include <QRectF>
+#include "qgspoint.h"
+#include "qgsmaprenderer.h" // definition of QgsLabelingEngineInterface
+#include "qgsdiagramrendererv2.h"
+#include "qgsmapunitscale.h"
 
 namespace pal
 {
@@ -47,19 +40,21 @@ namespace pal
   class LabelPosition;
 }
 
+class QgsRectangle;
 class QgsMapToPixel;
 class QgsFeature;
-
-#include "qgspoint.h"
-#include "qgsrectangle.h"
-#include "qgsmaprenderer.h" // definition of QgsLabelingEngineInterface
-#include "qgsexpression.h"
-#include "qgsdatadefined.h"
-#include "qgsdiagramrendererv2.h"
-#include "qgsmapunitscale.h"
-
 class QgsPalGeometry;
 class QgsVectorLayer;
+class QgsDataDefined;
+class QgsExpression;
+class QFontMetricsF;
+class QPainter;
+class QPicture;
+class QgsGeometry;
+class QgsMapRenderer;
+class QgsCoordinateTransform;
+class QgsLabelSearchTree;
+class QgsMapSettings;
 
 class CORE_EXPORT QgsPalLayerSettings
 {
@@ -104,16 +99,16 @@ class CORE_EXPORT QgsPalLayerSettings
 
     enum UpsideDownLabels
     {
-      Upright, // upside-down labels (90 <= angle < 270) are shown upright
-      ShowDefined, // show upside down when rotation is layer- or data-defined
-      ShowAll // show upside down for all labels, including dynamic ones
+      Upright, /*!< upside-down labels (90 <= angle < 270) are shown upright*/
+      ShowDefined, /*!< show upside down when rotation is layer- or data-defined*/
+      ShowAll /*!< show upside down for all labels, including dynamic ones*/
     };
 
     enum DirectionSymbols
     {
-      SymbolLeftRight, // place direction symbols on left/right of label
-      SymbolAbove, // place direction symbols on above label
-      SymbolBelow // place direction symbols on below label
+      SymbolLeftRight, /*!< place direction symbols on left/right of label*/
+      SymbolAbove, /*!< place direction symbols on above label*/
+      SymbolBelow /*!< place direction symbols on below label*/
     };
 
     enum MultiLineAlign
@@ -121,7 +116,7 @@ class CORE_EXPORT QgsPalLayerSettings
       MultiLeft = 0,
       MultiCenter,
       MultiRight,
-      MultiFollowPlacement /*< Alignment follows placement of label, eg labels to the left of a feature
+      MultiFollowPlacement /*!< Alignment follows placement of label, eg labels to the left of a feature
                                will be drawn with right alignment*/
     };
 
@@ -817,6 +812,27 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     //! @deprecated since 2.4 - settings are always stored in project
     Q_DECL_DEPRECATED void setStoredWithProject( bool store ) { Q_UNUSED( store ); }
 
+    /** Prepares a geometry for registration with PAL. Handles reprojection, rotation, clipping, etc.
+     * @param geometry geometry to prepare
+     * @param context render context
+     * @param ct coordinate transform
+     * @param minSize minimum allowable size for feature for registration with PAL
+     * @param clipGeometry geometry to clip features to, if applicable
+     * @returns prepared geometry
+     * @note added in QGIS 2.9
+     */
+    static QgsGeometry* prepareGeometry( const QgsGeometry *geometry, const QgsRenderContext &context, const QgsCoordinateTransform *ct, double minSize = 0, QgsGeometry *clipGeometry = 0 );
+
+    /** Checks whether a geometry requires preparation before registration with PAL
+     * @param geometry geometry to prepare
+     * @param context render context
+     * @param ct coordinate transform
+     * @param clipGeometry geometry to clip features to, if applicable
+     * @returns true if geometry requires preparation
+     * @note added in QGIS 2.9
+     */
+    static bool geometryRequiresPreparation( const QgsGeometry *geometry, const QgsRenderContext &context, const QgsCoordinateTransform *ct, QgsGeometry *clipGeometry = 0 );
+
   protected:
     // update temporary QgsPalLayerSettings with any data defined text style values
     void dataDefinedTextStyle( QgsPalLayerSettings& tmpLyr,
@@ -840,6 +856,15 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
 
     void deleteTemporaryData();
 
+    /** Checks whether a geometry exceeds the minimum required size for a geometry to be labeled.
+     * @param context render context
+     * @param geom geometry
+     * @param minSize minimum size for geometry
+     * @returns true if geometry exceeds minimum size
+     * @note added in QGIS 2.9
+     */
+    static bool checkMinimumSizeMM( const QgsRenderContext &context, QgsGeometry *geom, double minSize );
+
     // hashtable of layer settings, being filled during labeling (key = layer ID)
     QHash<QString, QgsPalLayerSettings> mActiveLayers;
     // hashtable of active diagram layers (key = layer ID)
@@ -861,6 +886,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     bool mDrawOutlineLabels; // whether to draw labels as text or outlines
 
     QgsLabelingResults* mResults;
+
 };
 Q_NOWARN_DEPRECATED_POP
 

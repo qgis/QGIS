@@ -95,7 +95,7 @@ class PGTableInfo(TableInfo):
             if self.table.rowCount is not None:
                 if abs(self.table.estimatedRowCount - self.table.rowCount) > 1 and \
                         (self.table.estimatedRowCount > 2 * self.table.rowCount or
-                                 self.table.rowCount > 2 * self.table.estimatedRowCount):
+                         self.table.rowCount > 2 * self.table.estimatedRowCount):
                     ret.append(HtmlParagraph(QApplication.translate("DBManagerPlugin",
                                                                     "<warning> There's a significant difference between estimated and real row count. "
                                                                     'Consider running <a href="action:vacuumanalyze/run">VACUUM ANALYZE</a>.')))
@@ -145,9 +145,9 @@ class PGTableInfo(TableInfo):
 
         # define the table header
         header = (
-        "#", QApplication.translate("DBManagerPlugin", "Name"), QApplication.translate("DBManagerPlugin", "Type"),
-        QApplication.translate("DBManagerPlugin", "Length"), QApplication.translate("DBManagerPlugin", "Null"),
-        QApplication.translate("DBManagerPlugin", "Default") )
+            "#", QApplication.translate("DBManagerPlugin", "Name"), QApplication.translate("DBManagerPlugin", "Type"),
+            QApplication.translate("DBManagerPlugin", "Length"), QApplication.translate("DBManagerPlugin", "Null"),
+            QApplication.translate("DBManagerPlugin", "Default") )
         tbl.append(HtmlTableHeader(header))
 
         # add table contents
@@ -173,8 +173,8 @@ class PGTableInfo(TableInfo):
         tbl = []
         # define the table header
         header = (
-        QApplication.translate("DBManagerPlugin", "Name"), QApplication.translate("DBManagerPlugin", "Function"),
-        QApplication.translate("DBManagerPlugin", "Type"), QApplication.translate("DBManagerPlugin", "Enabled") )
+            QApplication.translate("DBManagerPlugin", "Name"), QApplication.translate("DBManagerPlugin", "Function"),
+            QApplication.translate("DBManagerPlugin", "Type"), QApplication.translate("DBManagerPlugin", "Enabled") )
         tbl.append(HtmlTableHeader(header))
 
         # add table contents
@@ -183,9 +183,9 @@ class PGTableInfo(TableInfo):
                                                                                                 "action": "delete"}
 
             (enabled, action) = (QApplication.translate("DBManagerPlugin", "Yes"), "disable") if trig.enabled else (
-            QApplication.translate("DBManagerPlugin", "No"), "enable")
+                QApplication.translate("DBManagerPlugin", "No"), "enable")
             txt_enabled = u'%(enabled)s (<a href="action:trigger/%(name)s/%(action)s">%(action)s</a>)' % {
-            "name": trig.name, "action": action, "enabled": enabled}
+                "name": trig.name, "action": action, "enabled": enabled}
 
             tbl.append((name, trig.function, trig.type2String(), txt_enabled))
 
@@ -203,7 +203,7 @@ class PGTableInfo(TableInfo):
         tbl = []
         # define the table header
         header = (
-        QApplication.translate("DBManagerPlugin", "Name"), QApplication.translate("DBManagerPlugin", "Definition") )
+            QApplication.translate("DBManagerPlugin", "Name"), QApplication.translate("DBManagerPlugin", "Definition") )
         tbl.append(HtmlTableHeader(header))
 
         # add table contents

@@ -87,5 +87,5 @@ class RasterLayerHistogram(GeoAlgorithm):
         plotFilename = outputplot + '.png'
         lab.savefig(plotFilename)
         f = open(outputplot, 'w')
-        f.write('<img src="' + plotFilename + '"/>')
+        f.write('<html><img src="' + plotFilename + '"/></html>')
         f.close()

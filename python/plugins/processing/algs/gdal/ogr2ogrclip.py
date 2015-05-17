@@ -54,7 +54,7 @@ class Ogr2OgrClip(OgrAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
         ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
         clipLayer = self.getParameterValue(self.CLIP_LAYER)
@@ -85,4 +85,4 @@ class Ogr2OgrClip(OgrAlgorithm):
         else:
             commands = ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]
 
-        GdalUtils.runGdal(commands, progress)
+        return commands

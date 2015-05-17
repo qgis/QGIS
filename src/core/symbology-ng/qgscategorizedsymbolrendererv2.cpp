@@ -21,6 +21,7 @@
 #include "qgsvectorcolorrampv2.h"
 #include "qgspointdisplacementrenderer.h"
 #include "qgsinvertedpolygonrenderer.h"
+#include "qgspainteffect.h"
 
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
@@ -492,6 +493,8 @@ QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2::clone() const
   r->setRotationField( rotationField() );
   r->setSizeScaleField( sizeScaleField() );
   r->setScaleMethod( scaleMethod() );
+
+  copyPaintEffect( r );
   return r;
 }
 
@@ -657,6 +660,9 @@ QDomElement QgsCategorizedSymbolRendererV2::save( QDomDocument& doc )
     sizeScaleElem.setAttribute( "field", QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( mSizeScale.data() ) );
   sizeScaleElem.setAttribute( "scalemethod", QgsSymbolLayerV2Utils::encodeScaleMethod( mScaleMethod ) );
   rendererElem.appendChild( sizeScaleElem );
+
+  if ( mPaintEffect )
+    mPaintEffect->saveProperties( doc, rendererElem );
 
   return rendererElem;
 }

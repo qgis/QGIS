@@ -81,12 +81,12 @@ class CORE_EXPORT QgsMapToPixel
     * @return QgsPoint in map coordinates
     */
 
-    /* Transform device coordinates to map coordinates. Modifies the
+    /*! Transform device coordinates to map coordinates. Modifies the
        given coordinates in place. Intended as a fast way to do the
        transform. */
     void transformInPlace( qreal& x, qreal& y ) const;
 
-    /* Transform device coordinates to map coordinates. Modifies the
+    /*! Transform device coordinates to map coordinates. Modifies the
        given coordinates in place. Intended as a fast way to do the
        transform.
        @note not available in python bindings

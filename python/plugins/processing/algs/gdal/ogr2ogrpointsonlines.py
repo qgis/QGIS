@@ -61,7 +61,7 @@ class Ogr2OgrPointsOnLines(OgrAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
         ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
         layername = "'" + self.ogrLayerName(inLayer) + "'"
@@ -98,4 +98,4 @@ class Ogr2OgrPointsOnLines(OgrAlgorithm):
         else:
             commands = ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]
 
-        GdalUtils.runGdal(commands, progress)
+        return commands

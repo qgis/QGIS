@@ -34,8 +34,12 @@
 #include <QWidget>
 
 QgsFormAnnotationItem::QgsFormAnnotationItem( QgsMapCanvas* canvas, QgsVectorLayer* vlayer, bool hasFeature, int feature )
-    : QgsAnnotationItem( canvas ), mWidgetContainer( 0 ), mDesignerWidget( 0 ), mVectorLayer( vlayer ),
-    mHasAssociatedFeature( hasFeature ), mFeature( feature )
+    : QgsAnnotationItem( canvas )
+    , mWidgetContainer( 0 )
+    , mDesignerWidget( 0 )
+    , mVectorLayer( vlayer )
+    , mHasAssociatedFeature( hasFeature )
+    , mFeature( feature )
 {
   mWidgetContainer = new QGraphicsProxyWidget( this );
   mWidgetContainer->setData( 0, "AnnotationItem" ); //mark embedded widget as belonging to an annotation item (composer knows it needs to be printed)

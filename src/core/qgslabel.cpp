@@ -45,9 +45,9 @@
 #endif
 
 QgsLabel::QgsLabel( const QgsFields & fields )
-    : mMinScale( 0 ),
-    mMaxScale( 100000000 ),
-    mScaleBasedVisibility( false )
+    : mMinScale( 0 )
+    , mMaxScale( 100000000 )
+    , mScaleBasedVisibility( false )
 {
   mFields = fields;
   mLabelFieldIdx.resize( LabelFieldCount );
@@ -514,7 +514,7 @@ QgsLabelAttributes *QgsLabel::labelAttributes( void )
 
 void QgsLabel::labelPoint( std::vector<labelpoint>& points, QgsFeature & feature )
 {
-  QgsGeometry *geometry = feature.geometry();
+  const QgsGeometry *geometry = feature.constGeometry();
   const unsigned char *geom = geometry->asWkb();
   size_t geomlen = geometry->wkbSize();
   QGis::WkbType wkbType = geometry->wkbType();

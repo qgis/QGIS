@@ -18,7 +18,6 @@
 #include "qgswfsprojectparser.h"
 #include "qgsconfigcache.h"
 #include "qgsconfigparserutils.h"
-#include "qgsconfigcache.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvectordataprovider.h"
 

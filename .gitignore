@@ -61,3 +61,6 @@ tests/testdata/raster/band1_int16_noct_epsg4326.tif.aux.xml
 tests/testdata/raster/band3_float32_noct_epsg4326.tif.aux.xml
 tests/testdata/raster/band3_int16_noct_epsg4326.tif.aux.xml
 tests/testdata/checker360by180.asc.aux.xml
+tests/testdata/grass/wgs84/test/.gislock
+tests/testdata/grass/wgs84/test6/.gislock
+tests/testdata/grass/wgs84/test7/.gislock

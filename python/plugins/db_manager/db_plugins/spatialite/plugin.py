@@ -230,11 +230,11 @@ class SLRasterTable(SLTable, RasterTable):
         return uri
 
     def toMapLayer(self):
-        from qgis.core import QgsRasterLayer
+        from qgis.core import QgsRasterLayer, QgsContrastEnhancement
 
         rl = QgsRasterLayer(self.gdalUri(), self.name)
         if rl.isValid():
-            rl.setContrastEnhancementAlgorithm("StretchToMinimumMaximum")
+            rl.setContrastEnhancement(QgsContrastEnhancement.StretchToMinimumMaximum)
         return rl
 
 

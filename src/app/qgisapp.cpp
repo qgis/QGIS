@@ -199,6 +199,7 @@
 #include "qgstextannotationitem.h"
 #include "qgstipgui.h"
 #include "qgsundowidget.h"
+#include "qgsuserinputdockwidget.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
@@ -579,6 +580,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mInfoBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
   centralLayout->addWidget( mInfoBar, 0, 0, 1, 1 );
 
+  // User Input Dock Widget
+  mUserInputDockWidget = new QgsUserInputDockWidget( this );
+  mUserInputDockWidget->setObjectName( "UserInputDockWidget" );
+
   //set the focus to the map canvas
   mMapCanvas->setFocus();
 
@@ -636,6 +641,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
   addDockWidget( Qt::LeftDockWidgetArea, mAdvancedDigitizingDockWidget );
   mAdvancedDigitizingDockWidget->hide();
+
+  QMainWindow::addDockWidget( Qt::BottomDockWidgetArea, mUserInputDockWidget );
+  mUserInputDockWidget->setFloating( true );
 
   // create the GPS tool on starting QGIS - this is like the browser
   mpGpsWidget = new QgsGPSInformationWidget( mMapCanvas );
@@ -739,7 +747,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
     // enable Python in the Plugin Manager and pass the PythonUtils to it
     mPluginManager->setPythonUtils( mPythonUtils );
   }
-  else
+  else if ( mActionShowPythonDialog )
   {
     // python is disabled so get rid of the action for python console
     delete mActionShowPythonDialog;
@@ -1000,8 +1008,6 @@ QgisApp::~QgisApp()
   delete QgsProject::instance();
 
   delete mPythonUtils;
-
-  QgsMapLayerStyleGuiUtils::cleanup();
 }
 
 void QgisApp::dragEnterEvent( QDragEnterEvent *event )
@@ -1724,7 +1730,6 @@ void QgisApp::createToolBars()
   connect( bt, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
 
   // Help Toolbar
-
   QAction* actionWhatsThis = QWhatsThis::createAction( this );
   actionWhatsThis->setIcon( QgsApplication::getThemeIcon( "/mActionWhatsThis.svg" ) );
   mHelpToolBar->addAction( actionWhatsThis );
@@ -1773,7 +1778,7 @@ void QgisApp::createStatusBar()
   mCoordsLabel->setObjectName( "mCoordsLabel" );
   mCoordsLabel->setFont( myFont );
   mCoordsLabel->setMinimumWidth( 10 );
-  mCoordsLabel->setMaximumHeight( 20 );
+  //mCoordsLabel->setMaximumHeight( 20 );
   mCoordsLabel->setMargin( 3 );
   mCoordsLabel->setAlignment( Qt::AlignCenter );
   mCoordsLabel->setFrameStyle( QFrame::NoFrame );
@@ -1787,7 +1792,7 @@ void QgisApp::createStatusBar()
   mCoordsEdit->setFont( myFont );
   mCoordsEdit->setMinimumWidth( 10 );
   mCoordsEdit->setMaximumWidth( 300 );
-  mCoordsEdit->setMaximumHeight( 20 );
+  //mCoordsEdit->setMaximumHeight( 20 );
   mCoordsEdit->setContentsMargins( 0, 0, 0, 0 );
   mCoordsEdit->setAlignment( Qt::AlignCenter );
   QRegExp coordValidator( "[+-]?\\d+\\.?\\d*\\s*,\\s*[+-]?\\d+\\.?\\d*" );
@@ -1807,7 +1812,7 @@ void QgisApp::createStatusBar()
   mScaleLabel->setObjectName( "mScaleLable" );
   mScaleLabel->setFont( myFont );
   mScaleLabel->setMinimumWidth( 10 );
-  mScaleLabel->setMaximumHeight( 20 );
+  //mScaleLabel->setMaximumHeight( 20 );
   mScaleLabel->setMargin( 3 );
   mScaleLabel->setAlignment( Qt::AlignCenter );
   mScaleLabel->setFrameStyle( QFrame::NoFrame );
@@ -1823,7 +1828,7 @@ void QgisApp::createStatusBar()
   mScaleEdit->lineEdit()->setFont( myFont );
   mScaleEdit->setMinimumWidth( 10 );
   mScaleEdit->setMaximumWidth( 100 );
-  mScaleEdit->setMaximumHeight( 20 );
+  //mScaleEdit->setMaximumHeight( 20 );
   mScaleEdit->setContentsMargins( 0, 0, 0, 0 );
   mScaleEdit->setWhatsThis( tr( "Displays the current map scale" ) );
   mScaleEdit->setToolTip( tr( "Current map scale (formatted as x:y)" ) );
@@ -1838,7 +1843,7 @@ void QgisApp::createStatusBar()
     mRotationLabel->setObjectName( "mRotationLabel" );
     mRotationLabel->setFont( myFont );
     mRotationLabel->setMinimumWidth( 10 );
-    mRotationLabel->setMaximumHeight( 20 );
+    //mRotationLabel->setMaximumHeight( 20 );
     mRotationLabel->setMargin( 3 );
     mRotationLabel->setAlignment( Qt::AlignCenter );
     mRotationLabel->setFrameStyle( QFrame::NoFrame );
@@ -2403,6 +2408,11 @@ QgsMessageBar* QgisApp::messageBar()
 {
   Q_ASSERT( mInfoBar );
   return mInfoBar;
+}
+
+void QgisApp::addUserInputWidget( QWidget *widget )
+{
+  mUserInputDockWidget->addUserInputWidget( widget );
 }
 
 
@@ -5080,6 +5090,7 @@ void QgisApp::saveAsRasterFile()
     QProgressDialog pd( 0, tr( "Abort..." ), 0, 0 );
     // Show the dialo immediately because cloning pipe can take some time (WCS)
     pd.setLabelText( tr( "Reading raster" ) );
+    pd.setWindowTitle( tr( "Saving raster" ) );
     pd.show();
     pd.setWindowModality( Qt::WindowModal );
 
@@ -5320,11 +5331,13 @@ void QgisApp::checkForDeprecatedLabelsInProject()
         continue;
       }
 
+      Q_NOWARN_DEPRECATED_PUSH
       depLabelsUsed = vl->hasLabelsEnabled();
       if ( depLabelsUsed )
       {
         break;
       }
+      Q_NOWARN_DEPRECATED_POP
     }
     if ( depLabelsUsed )
     {
@@ -6245,7 +6258,7 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
 
     featureIt->setAttributes( dstAttr );
 
-    if ( featureIt->geometry() )
+    if ( featureIt->constGeometry() )
     {
       // convert geometry to match destination layer
       QGis::GeometryType destType = pasteVectorLayer->geometryType();
@@ -6258,7 +6271,7 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
       }
       if ( destType != QGis::UnknownGeometry )
       {
-        QgsGeometry* newGeometry = featureIt->geometry()->convertToType( destType, destIsMulti );
+        QgsGeometry* newGeometry = featureIt->constGeometry()->convertToType( destType, destIsMulti );
         if ( !newGeometry )
         {
           featureIt = features.erase( featureIt );
@@ -6357,10 +6370,10 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
   for ( int i = 0; i < features.size(); i++ )
   {
     QgsFeature &feature = features[i];
-    if ( !feature.geometry() )
+    if ( !feature.constGeometry() )
       continue;
 
-    QGis::WkbType type = QGis::flatType( feature.geometry()->wkbType() );
+    QGis::WkbType type = QGis::flatType( feature.constGeometry()->wkbType() );
 
     if ( type == QGis::WKBUnknown || type == QGis::WKBNoGeometry )
       continue;
@@ -6446,10 +6459,10 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
   for ( int i = 0; i < features.size(); i++ )
   {
     QgsFeature &feature = features[i];
-    if ( !feature.geometry() )
+    if ( !feature.constGeometry() )
       continue;
 
-    QGis::WkbType type = QGis::flatType( feature.geometry()->wkbType() );
+    QGis::WkbType type = QGis::flatType( feature.constGeometry()->wkbType() );
     if ( type == QGis::WKBUnknown || type == QGis::WKBNoGeometry )
       continue;
 
@@ -9157,7 +9170,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( it.value() );
     if ( !vlayer || !vlayer->isEditable() ||
-         ( !vlayer->diagramRenderer() && vlayer->customProperty( "labeling" ).toString() != QString( "pal" ) ) )
+         ( !vlayer->diagramsEnabled() && vlayer->customProperty( "labeling" ).toString() != QString( "pal" ) ) )
       continue;
 
     int colX, colY, colShow, colAng;
@@ -9877,6 +9890,10 @@ void QgisApp::keyReleaseEvent( QKeyEvent *event )
     event->setAccepted( accepted ); // don't close my Top Level Widget !
     accepted = false;// close the app next time when the user press back button
   }
+  else
+  {
+    QMainWindow::keyReleaseEvent( event );
+  }
 }
 #endif
 
@@ -10050,11 +10067,15 @@ void QgisApp::projectChanged( const QDomDocument &doc )
 
   QString expr;
   if ( !prevProjectDir.isNull() )
-    expr = QString( "sys.path.remove('%1'); " ).arg( prevProjectDir );
+  {
+    QString prev = prevProjectDir;
+    expr = QString( "sys.path.remove('%1'); " ).arg( prev.replace( "'", "\\'" ) );
+  }
 
   prevProjectDir = fi.canonicalPath();
 
-  expr += QString( "sys.path.append('%1')" ).arg( prevProjectDir );
+  QString prev = prevProjectDir;
+  expr += QString( "sys.path.append('%1')" ).arg( prev.replace( "'", "\\'" ) );
 
   QgsPythonRunner::run( expr );
 }

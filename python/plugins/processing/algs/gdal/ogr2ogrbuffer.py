@@ -69,9 +69,9 @@ class Ogr2OgrBuffer(OgrAlgorithm):
             self.tr('Additional creation options (see ogr2ogr manual)'),
             '', optional=True))
 
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Buffer')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
         ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
         layername = "'" + self.ogrLayerName(inLayer) + "'"
@@ -122,4 +122,4 @@ class Ogr2OgrBuffer(OgrAlgorithm):
         else:
             commands = ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]
 
-        GdalUtils.runGdal(commands, progress)
+        return commands

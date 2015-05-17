@@ -23,6 +23,7 @@
 #include "qgscomposermodel.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
+#include "qgsdistancearea.h"
 
 #include <QCoreApplication>
 #include <QDate>

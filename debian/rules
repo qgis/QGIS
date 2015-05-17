@@ -40,6 +40,7 @@ QGIS_MINOR=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_MINOR "\([0-9]*\)")/\1/p
 QGIS_PATCH=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_PATCH "\([0-9]*\)")/\1/p' CMakeLists.txt)
 QGIS_ABI=$(QGIS_MAJOR).$(QGIS_MINOR).$(QGIS_PATCH)
 GRASS=grass$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1,2))
+GRASSVER=$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1))
 
 CMAKE_OPTS := \
 	-DBUILDNAME=$(DEB_BUILD_NAME) \
@@ -51,6 +52,7 @@ CMAKE_OPTS := \
 	-DWITH_QSPATIALITE=TRUE \
 	-DWITH_SERVER=TRUE \
 	-DWITH_SERVER_PLUGINS=TRUE \
+	-DWITH_GRASS7=FALSE \
 	-DSERVER_SKIP_ECW=TRUE \
 	-DQGIS_CGIBIN_SUBDIR=/usr/lib/cgi-bin \
 	-DWITH_APIDOC=TRUE \
@@ -136,6 +138,7 @@ $(2): $(1)
 		-e "s#\{QT_PLUGIN_DIR\}#$(QT_PLUGIN_DIR)#g" \
 		-e "s/\{QGIS_ABI\}/$(QGIS_ABI)/g" \
 		-e "s/\{GRASS\}/$(GRASS)/g" \
+		-e "s/\{GRASSVER\}/$(GRASSVER)/g" \
 		$$^ >$$@
 
 templates:: $(2)

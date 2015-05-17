@@ -33,9 +33,9 @@ QMap< QString, QStringList > QgsRasterFormatSaveOptionsWidget::mBuiltinProfiles;
 
 QgsRasterFormatSaveOptionsWidget::QgsRasterFormatSaveOptionsWidget( QWidget* parent, QString format,
     QgsRasterFormatSaveOptionsWidget::Type type, QString provider )
-    : QWidget( parent ), mFormat( format ), mProvider( provider ), mRasterLayer( 0 ),
-    mRasterFileName( QString() ), mPyramids( false ),
-    mPyramidsFormat( QgsRaster::PyramidsGTiff )
+    : QWidget( parent ), mFormat( format ), mProvider( provider ), mRasterLayer( 0 )
+    , mRasterFileName( QString() ), mPyramids( false )
+    , mPyramidsFormat( QgsRaster::PyramidsGTiff )
 
 {
   setupUi( this );

@@ -29,6 +29,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import re
 from PyQt4.QtCore import QCoreApplication
 from qgis.core import QgsApplication
 import subprocess
@@ -130,7 +131,7 @@ class OTBUtils:
         loglines = []
         loglines.append(OTBUtils.tr("OTB execution console output"))
         os.putenv('ITK_AUTOLOAD_PATH', OTBUtils.otbLibPath())
-        fused_command = ''.join(['"%s" ' % c for c in commands])
+        fused_command = ''.join(['"%s" ' % re.sub(r'^"|"$', '', c) for c in commands])
         proc = subprocess.Popen(fused_command, shell=True, stdout=subprocess.PIPE, stdin=open(os.devnull),stderr=subprocess.STDOUT, universal_newlines=True).stdout
         for line in iter(proc.readline, ""):
             if "[*" in line:

@@ -74,5 +74,5 @@ class BarPlot(GeoAlgorithm):
         plotFilename = output + '.png'
         lab.savefig(plotFilename)
         f = open(output, 'w')
-        f.write('<img src="' + plotFilename + '"/>')
+        f.write('<html><img src="' + plotFilename + '"/></html>')
         f.close()

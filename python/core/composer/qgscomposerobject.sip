@@ -13,37 +13,37 @@ class QgsComposerObject : QObject
      */
     enum DataDefinedProperty
     {
-      NoProperty = 0, /*< no property */
-      AllProperties, /*< all properties for item */
-      TestProperty, /*< dummy property with no effect on item*/
+      NoProperty = 0, /*!< no property */
+      AllProperties, /*!< all properties for item */
+      TestProperty, /*!< dummy property with no effect on item*/
       //composer page properties
-      PresetPaperSize, /*< preset paper size for composition */
-      PaperWidth, /*< paper width */
-      PaperHeight, /*< paper height */
-      NumPages, /*< number of pages in composition */
-      PaperOrientation, /*< paper orientation */
+      PresetPaperSize, /*!< preset paper size for composition */
+      PaperWidth, /*!< paper width */
+      PaperHeight, /*!< paper height */
+      NumPages, /*!< number of pages in composition */
+      PaperOrientation, /*!< paper orientation */
       //general composer item properties
-      PageNumber, /*< page number for item placement */
-      PositionX, /*< x position on page */
-      PositionY, /*< y position on page */
-      ItemWidth, /*< width of item */
-      ItemHeight, /*< height of item */
-      ItemRotation, /*< rotation of item */
-      Transparency, /*< item transparency */
-      BlendMode, /*< item blend mode */
-      ExcludeFromExports, /*< exclude item from exports */
+      PageNumber, /*!< page number for item placement */
+      PositionX, /*!< x position on page */
+      PositionY, /*!< y position on page */
+      ItemWidth, /*!< width of item */
+      ItemHeight, /*!< height of item */
+      ItemRotation, /*!< rotation of item */
+      Transparency, /*!< item transparency */
+      BlendMode, /*!< item blend mode */
+      ExcludeFromExports, /*!< exclude item from exports */
       //composer map
-      MapRotation, /*< map rotation */
-      MapScale, /*< map scale */
-      MapXMin, /*< map extent x minimum */
-      MapYMin, /*< map extent y minimum */
-      MapXMax, /*< map extent x maximum */
-      MapYMax, /*< map extent y maximum */
-      MapAtlasMargin, /*< map atlas margin*/
+      MapRotation, /*!< map rotation */
+      MapScale, /*!< map scale */
+      MapXMin, /*!< map extent x minimum */
+      MapYMin, /*!< map extent y minimum */
+      MapXMax, /*!< map extent x maximum */
+      MapYMax, /*!< map extent y maximum */
+      MapAtlasMargin, /*!< map atlas margin*/
       //composer picture
-      PictureSource, /*< picture source url */
+      PictureSource, /*!< picture source url */
       //html item
-      SourceUrl /*< html source url */
+      SourceUrl /*!< html source url */
     };
 
     /** Specifies whether the value returned by a function should be the original, user
@@ -52,8 +52,8 @@ class QgsComposerObject : QObject
      */
     enum PropertyValueType
     {
-      EvaluatedValue = 0, /*< return the current evaluated value for the property */
-      OriginalValue /*< return the original, user set value */
+      EvaluatedValue = 0, /*!< return the current evaluated value for the property */
+      OriginalValue /*!< return the original, user set value */
     };
 
     /**Constructor

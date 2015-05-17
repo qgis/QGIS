@@ -106,7 +106,7 @@ void QgsAtlasComposition::setCoverageLayer( QgsVectorLayer* layer )
     QgsFeature fet;
     layer->getFeatures().nextFeature( fet );
     QgsExpression::setSpecialColumn( "$atlasfeatureid", fet.id() );
-    QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( *fet.geometry() ) );
+    QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( *fet.constGeometry() ) );
     QgsExpression::setSpecialColumn( "$atlasfeature", QVariant::fromValue( fet ) );
   }
 
@@ -402,7 +402,7 @@ bool QgsAtlasComposition::prepareForFeature( const int featureI, const bool upda
   mCoverageLayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeatureIds[ featureI ] ) ).nextFeature( mCurrentFeature );
 
   QgsExpression::setSpecialColumn( "$atlasfeatureid", mCurrentFeature.id() );
-  QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( *mCurrentFeature.geometry() ) );
+  QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( *mCurrentFeature.constGeometry() ) );
   QgsExpression::setSpecialColumn( "$atlasfeature", QVariant::fromValue( mCurrentFeature ) );
   QgsExpression::setSpecialColumn( "$feature", QVariant(( int )featureI + 1 ) );
 
@@ -490,7 +490,7 @@ void QgsAtlasComposition::computeExtent( QgsComposerMap* map )
   // QgsGeometry::boundingBox is expressed in the geometry"s native CRS
   // We have to transform the grometry to the destination CRS and ask for the bounding box
   // Note: we cannot directly take the transformation of the bounding box, since transformations are not linear
-  QgsGeometry tgeom( *mCurrentFeature.geometry() );
+  QgsGeometry tgeom( *mCurrentFeature.constGeometry() );
   tgeom.transform( mTransform );
   mTransformedFeatureBounds = tgeom.boundingBox();
 }

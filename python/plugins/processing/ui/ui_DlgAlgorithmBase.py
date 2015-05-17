@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'DlgAlgorithmBase.ui'
 #
-# Created: Fri Nov 21 13:25:46 2014
+# Created: Thu May 07 13:11:10 2015
 #      by: PyQt4 UI code generator 4.11.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,7 +26,7 @@ except AttributeError:
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName(_fromUtf8("Dialog"))
-        Dialog.resize(578, 406)
+        Dialog.resize(745, 525)
         self.verticalLayout = QtGui.QVBoxLayout(Dialog)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
         self.tabWidget = QtGui.QTabWidget(Dialog)

@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 import shutil
 from PyQt4.QtGui import QIcon, QFileDialog, QMessageBox
+from PyQt4.QtCore import QSettings, QFileInfo
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 from processing.modeler.WrongModelException import WrongModelException
@@ -43,11 +44,16 @@ class AddModelFromFileAction(ToolboxAction):
         return QIcon(os.path.dirname(__file__) + '/../images/model.png')
 
     def execute(self):
+        settings = QSettings()
+        lastDir = settings.value('Processing/lastModelsDir', '')
         filename = QFileDialog.getOpenFileName(self.toolbox,
-            self.tr('Open model', 'AddModelFromFileAction'), None,
+            self.tr('Open model', 'AddModelFromFileAction'), lastDir,
             self.tr('Processing model files (*.model *.MODEL)', 'AddModelFromFileAction'))
         if filename:
             try:
+                settings.setValue('Processing/lastModelsDir',
+                    QFileInfo(fileName).absoluteDir().absolutePath())
+
                 ModelerAlgorithm.fromFile(filename)
             except WrongModelException:
                 QMessageBox.warning(

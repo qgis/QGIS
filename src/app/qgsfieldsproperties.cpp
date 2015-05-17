@@ -250,7 +250,7 @@ void QgsFieldsProperties::setRow( int row, int idx, const QgsField& field )
     expressionWidget->setLayout( new QHBoxLayout );
     QToolButton* editExpressionButton = new QToolButton;
     editExpressionButton->setIcon( QgsApplication::getThemeIcon( "/mIconExpression.svg" ) );
-    connect( editExpressionButton, SIGNAL(clicked()), this, SLOT(updateExpression()) );
+    connect( editExpressionButton, SIGNAL( clicked() ), this, SLOT( updateExpression() ) );
     expressionWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
     expressionWidget->layout()->addWidget( editExpressionButton );
     expressionWidget->layout()->addWidget( new QLabel( mLayer->expressionField( idx ) ) );
@@ -751,7 +751,7 @@ QgsAttributeEditorElement* QgsFieldsProperties::createAttributeEditorWidget( QTr
 
     case DesignerTreeItemData::Container:
     {
-      QgsAttributeEditorContainer* container = new QgsAttributeEditorContainer( itemData.name(), parent );
+      QgsAttributeEditorContainer* container = new QgsAttributeEditorContainer( item->text( 0 ), parent );
 
       for ( int t = 0; t < item->childCount(); t++ )
       {

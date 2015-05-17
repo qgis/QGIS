@@ -50,10 +50,10 @@ class PGTableDataModel(TableDataModel):
         # get fields, ignore geometry columns
         if field.dataType.lower() == "geometry":
             return u"CASE WHEN %(fld)s IS NULL THEN NULL ELSE GeometryType(%(fld)s) END AS %(fld)s" % {
-            'fld': self.db.quoteId(field.name)}
+                'fld': self.db.quoteId(field.name)}
         elif field.dataType.lower() == "raster":
             return u"CASE WHEN %(fld)s IS NULL THEN NULL ELSE 'RASTER' END AS %(fld)s" % {
-            'fld': self.db.quoteId(field.name)}
+                'fld': self.db.quoteId(field.name)}
         return u"%s::text" % self.db.quoteId(field.name)
 
     def _deleteCursor(self):

@@ -93,7 +93,7 @@ int QgsInterpolator::cacheBaseData()
         }
       }
 
-      if ( addVerticesToCache( theFeature.geometry(), v_it->zCoordInterpolation, attributeValue ) != 0 )
+      if ( addVerticesToCache( theFeature.constGeometry(), v_it->zCoordInterpolation, attributeValue ) != 0 )
       {
         return 3;
       }
@@ -103,7 +103,7 @@ int QgsInterpolator::cacheBaseData()
   return 0;
 }
 
-int QgsInterpolator::addVerticesToCache( QgsGeometry* geom, bool zCoord, double attributeValue )
+int QgsInterpolator::addVerticesToCache( const QgsGeometry *geom, bool zCoord, double attributeValue )
 {
   if ( !geom )
     return 1;

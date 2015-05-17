@@ -158,7 +158,11 @@ void QgsFieldCalculator::accept()
     return;
   }
 
-  if ( mNewFieldGroupBox->isChecked() && mCreateVirtualFieldCheckbox->isChecked() )
+  // Test for creating expression field based on ! mUpdateExistingGroupBox checked rather
+  // than on mNewFieldGroupBox checked, as if the provider does not support adding attributes
+  // then mUpdateExistingGroupBox is set to not checkable, and hence is not checked.  This
+  // is a minimum fix to resolve this - better would be some GUI redesign...
+  if ( ! mUpdateExistingGroupBox->isChecked() && mCreateVirtualFieldCheckbox->isChecked() )
   {
     mVectorLayer->addExpressionField( calcString, fieldDefinition() );
   }

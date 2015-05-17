@@ -41,7 +41,6 @@
 #include "qgsmessagebar.h"
 #include "qgsexpressionselectiondialog.h"
 #include "qgsfeaturelistmodel.h"
-#include "qgsexpressionbuilderdialog.h"
 #include "qgsrubberband.h"
 
 class QgsAttributeTableDock : public QDockWidget

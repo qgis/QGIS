@@ -447,7 +447,7 @@ void QgsDelimitedTextFeatureIterator::fetchAttribute( QgsFeature& feature, int f
 
 QgsDelimitedTextFeatureSource::QgsDelimitedTextFeatureSource( const QgsDelimitedTextProvider* p )
     : mGeomRep( p->mGeomRep )
-    , mSubsetExpression( p->mSubsetExpression ? new QgsExpression(p->mSubsetExpression->expression()) : 0 )
+    , mSubsetExpression( p->mSubsetExpression ? new QgsExpression( p->mSubsetExpression->expression() ) : 0 )
     , mExtent( p->mExtent )
     , mUseSpatialIndex( p->mUseSpatialIndex )
     , mSpatialIndex( p->mSpatialIndex ? new QgsSpatialIndex( *p->mSpatialIndex ) : 0 )

@@ -239,11 +239,13 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   mOldJoins = layer->vectorJoins();
 
+  QVBoxLayout* diagLayout = new QVBoxLayout( mDiagramFrame );
+  diagLayout->setMargin( 0 );
   diagramPropertiesDialog = new QgsDiagramProperties( layer, mDiagramFrame );
-  diagramPropertiesDialog->layout()->setMargin( 0 );
-  mDiagramFrame->setLayout( new QVBoxLayout( mDiagramFrame ) );
-  mDiagramFrame->layout()->setMargin( 0 );
-  mDiagramFrame->layout()->addWidget( diagramPropertiesDialog );
+  diagramPropertiesDialog->layout()->setContentsMargins( -1, 0, -1, 0 );
+  diagLayout->addWidget( diagramPropertiesDialog );
+  mDiagramFrame->setLayout( diagLayout );
+
 
   //layer title and abstract
   mLayerTitleLineEdit->setText( layer->title() );
@@ -455,6 +457,7 @@ void QgsVectorLayerProperties::syncToLayer( void )
     labelingDialog->init();
   }
 
+  Q_NOWARN_DEPRECATED_PUSH
   if ( mOptsPage_LabelsOld )
   {
     if ( labelDialog && layer->hasGeometryType() )
@@ -475,6 +478,7 @@ void QgsVectorLayerProperties::syncToLayer( void )
     QgsProject::instance()->writeEntry( "DeprecatedLabels", "/Enabled", true );
     // (this also overrides any '/Enabled, false' project property the user may have manually set)
   }
+  Q_NOWARN_DEPRECATED_POP
 
   // delete deprecated labels tab if not already used by project
   // NOTE: this is not ideal, but a quick fix for QGIS 2.0 release
@@ -544,6 +548,7 @@ void QgsVectorLayerProperties::apply()
 
   actionDialog->apply();
 
+  Q_NOWARN_DEPRECATED_PUSH
   if ( mOptsPage_LabelsOld )
   {
     if ( labelDialog )
@@ -552,6 +557,7 @@ void QgsVectorLayerProperties::apply()
     }
     layer->enableLabels( labelCheckBox->isChecked() );
   }
+  Q_NOWARN_DEPRECATED_POP
 
   layer->setLayerName( mLayerOrigNameLineEdit->text() );
 

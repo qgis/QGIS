@@ -41,6 +41,7 @@ class RUtils:
     RSCRIPTS_FOLDER = 'R_SCRIPTS_FOLDER'
     R_FOLDER = 'R_FOLDER'
     R_USE64 = 'R_USE64'
+    R_LIBS_USER = 'R_LIBS_USER'
 
     @staticmethod
     def RFolder():
@@ -48,6 +49,15 @@ class RUtils:
         if folder is None:
             folder = ''
 
+        return os.path.abspath(unicode(folder))
+
+    @staticmethod
+    def RLibs():
+        folder = ProcessingConfig.getSetting(RUtils.R_LIBS_USER)
+        if folder is None:
+            folder = unicode(os.path.join(userFolder(), 'rlibs'))
+        mkdir(folder)
+        
         return os.path.abspath(unicode(folder))
 
     @staticmethod
@@ -90,8 +100,9 @@ class RUtils:
                 'BATCH',
                 '--vanilla',
                 RUtils.getRScriptFilename(),
-                RUtils.getConsoleOutputFilename(),
+                RUtils.getConsoleOutputFilename()
             ]
+
         else:
             os.chmod(RUtils.getRScriptFilename(), stat.S_IEXEC | stat.S_IREAD
                      | stat.S_IWRITE)

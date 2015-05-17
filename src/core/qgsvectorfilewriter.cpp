@@ -1880,7 +1880,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
         if ( onlySelected && !ids.contains( fet.id() ) )
           continue;
 
-        if ( fet.geometry() && fet.geometry()->wkbType() == QGis::multiType( wkbType ) )
+        if ( fet.constGeometry() && fet.constGeometry()->wkbType() == QGis::multiType( wkbType ) )
         {
           wkbType = QGis::multiType( wkbType );
           break;
@@ -1996,7 +1996,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
       }
     }
 
-    if ( fet.geometry() && filterExtent && !fet.geometry()->intersects( *filterExtent ) )
+    if ( fet.constGeometry() && filterExtent && !fet.constGeometry()->intersects( *filterExtent ) )
       continue;
 
     if ( allAttr.size() < 1 && skipAttributeCreation )

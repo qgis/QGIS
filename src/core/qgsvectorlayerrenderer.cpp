@@ -28,8 +28,10 @@
 #include "qgssymbolv2.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeatureiterator.h"
+#include "qgspainteffect.h"
 
 #include <QSettings>
+#include <QPicture>
 
 // TODO:
 // - passing of cache to QgsVectorLayer
@@ -115,6 +117,13 @@ bool QgsVectorLayerRenderer::render()
   {
     mErrors.append( QObject::tr( "No renderer for drawing." ) );
     return false;
+  }
+
+  bool usingEffect = false;
+  if ( mRendererV2->paintEffect() && mRendererV2->paintEffect()->enabled() )
+  {
+    usingEffect = true;
+    mRendererV2->paintEffect()->begin( mContext );
   }
 
   // Per feature blending mode
@@ -215,6 +224,11 @@ bool QgsVectorLayerRenderer::render()
   else
     drawRendererV2( fit );
 
+  if ( usingEffect )
+  {
+    mRendererV2->paintEffect()->end( mContext );
+  }
+
   //apply layer transparency for vector layers
   if ( mContext.useAdvancedEffects() && mLayerTransparency != 0 )
   {
@@ -250,7 +264,7 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
   {
     try
     {
-      if ( !fet.geometry() )
+      if ( !fet.constGeometry() )
         continue; // skip features without geometry
 
       if ( mContext.renderingStopped() )
@@ -268,7 +282,7 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
       if ( mCache )
       {
         // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
-        mCache->cacheGeometry( fet.id(), *fet.geometry() );
+        mCache->cacheGeometry( fet.id(), *fet.constGeometry() );
       }
 
       // labeling - register feature
@@ -313,7 +327,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
   QgsFeature fet;
   while ( fit.nextFeature( fet ) )
   {
-    if ( !fet.geometry() )
+    if ( !fet.constGeometry() )
       continue; // skip features without geometry
 
     if ( mContext.renderingStopped() )
@@ -338,7 +352,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
     if ( mCache )
     {
       // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
-      mCache->cacheGeometry( fet.id(), *fet.geometry() );
+      mCache->cacheGeometry( fet.id(), *fet.constGeometry() );
     }
 
     if ( mContext.labelingEngine() )
@@ -475,7 +489,7 @@ void QgsVectorLayerRenderer::prepareDiagrams( QgsVectorLayer* layer, QStringList
   if ( !mContext.labelingEngine() )
     return;
 
-  if ( !layer->diagramRenderer() || !layer->diagramLayerSettings() )
+  if ( !layer->diagramsEnabled() )
     return;
 
   mDiagrams = true;

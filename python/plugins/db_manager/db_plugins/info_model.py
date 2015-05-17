@@ -206,8 +206,8 @@ class TableInfo:
 
         # define the table header
         header = (
-        "#", QApplication.translate("DBManagerPlugin", "Name"), QApplication.translate("DBManagerPlugin", "Type"),
-        QApplication.translate("DBManagerPlugin", "Null"), QApplication.translate("DBManagerPlugin", "Default") )
+            "#", QApplication.translate("DBManagerPlugin", "Name"), QApplication.translate("DBManagerPlugin", "Type"),
+            QApplication.translate("DBManagerPlugin", "Null"), QApplication.translate("DBManagerPlugin", "Default") )
         tbl.append(HtmlTableHeader(header))
 
         # add table contents
@@ -251,7 +251,7 @@ class TableInfo:
 
         # define the table header
         header = (
-        QApplication.translate("DBManagerPlugin", "Name"), QApplication.translate("DBManagerPlugin", "Column(s)") )
+            QApplication.translate("DBManagerPlugin", "Name"), QApplication.translate("DBManagerPlugin", "Column(s)") )
         tbl.append(HtmlTableHeader(header))
 
         # add table contents
@@ -271,7 +271,7 @@ class TableInfo:
 
         # define the table header
         header = (
-        QApplication.translate("DBManagerPlugin", "Name"), QApplication.translate("DBManagerPlugin", "Function") )
+            QApplication.translate("DBManagerPlugin", "Name"), QApplication.translate("DBManagerPlugin", "Function") )
         tbl.append(HtmlTableHeader(header))
 
         # add table contents

@@ -174,10 +174,16 @@
 %Include symbology-ng/qgsstylev2exportimportdialog.sip
 %Include symbology-ng/qgssvgselectorwidget.sip
 
+%Include effects/qgseffectdrawmodecombobox.sip
+%Include effects/qgspainteffectpropertieswidget.sip
+%Include effects/qgspainteffectwidget.sip
+%Include effects/qgseffectstackpropertieswidget.sip
+
 %Include editorwidgets/core/qgseditorconfigwidget.sip
 %Include editorwidgets/core/qgseditorwidgetfactory.sip
 %Include editorwidgets/core/qgseditorwidgetregistry.sip
 %Include editorwidgets/core/qgseditorwidgetwrapper.sip
+%Include editorwidgets/core/qgswidgetwrapper.sip
 %Include editorwidgets/qgsdoublespinbox.sip
 %Include editorwidgets/qgsrelationreferencewidget.sip
 %Include editorwidgets/qgsrelationreferencewidgetwrapper.sip

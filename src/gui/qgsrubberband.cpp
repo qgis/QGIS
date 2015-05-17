@@ -182,6 +182,7 @@ void QgsRubberBand::addPoint( const QgsPoint & p, bool doUpdate /* = true */, in
 
   if ( doUpdate )
   {
+    setVisible( true );
     updateRect();
     update();
   }
@@ -258,7 +259,7 @@ void QgsRubberBand::movePoint( int index, const QgsPoint& p, int geometryIndex )
   update();
 }
 
-void QgsRubberBand::setToGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
+void QgsRubberBand::setToGeometry( const QgsGeometry* geom, QgsVectorLayer* layer )
 {
   if ( !geom )
   {
@@ -270,7 +271,7 @@ void QgsRubberBand::setToGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
   addGeometry( geom, layer );
 }
 
-void QgsRubberBand::addGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
+void QgsRubberBand::addGeometry( const QgsGeometry* geom, QgsVectorLayer* layer )
 {
   if ( !geom )
   {
@@ -418,6 +419,7 @@ void QgsRubberBand::addGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
       return;
   }
 
+  setVisible( true );
   updateRect();
   update();
 }
@@ -535,7 +537,8 @@ void QgsRubberBand::updateRect()
 
   const QgsMapToPixel& m2p = *( mMapCanvas->getCoordinateTransform() );
 
-  qreal w = ( mIconSize - 1 ) / 2 + mPen.width();
+  qreal res = m2p.mapUnitsPerPixel();
+  qreal w = (( mIconSize - 1 ) / 2 + mPen.width() ) / res;
 
   QgsRectangle r;
   for ( int i = 0; i < mPoints.size(); ++i )
@@ -547,23 +550,35 @@ void QgsRubberBand::updateRect()
       QgsPoint p( it->x() + mTranslationOffsetX, it->y() + mTranslationOffsetY );
       p = m2p.transform( p );
       QgsRectangle rect( p.x() - w, p.y() - w, p.x() + w, p.y() + w );
-      r.combineExtentWith( &rect );
+
+      if ( r.isEmpty() )
+      {
+        // Get rectangle of the first point
+        r = rect;
+      }
+      else
+      {
+        r.combineExtentWith( &rect );
+      }
     }
   }
 
   // This is an hack to pass QgsMapCanvasItem::setRect what it
   // expects (encoding of position and size of the item)
   QgsPoint topLeft = m2p.toMapPoint( r.xMinimum(), r.yMinimum() );
-  double res = m2p.mapUnitsPerPixel();
   QgsRectangle rect( topLeft.x(), topLeft.y(), topLeft.x() + r.width()*res, topLeft.y() - r.height()*res );
 
   setRect( rect );
-  setVisible( true );
 }
 
 void QgsRubberBand::updatePosition( )
 {
-  // nothing to do here...
+  // re-compute rectangle
+  // See http://hub.qgis.org/issues/12392
+  // NOTE: could be optimized by saving map-extent
+  //       of rubberband and simply re-projecting
+  //       that to device-rectange on "updatePosition"
+  updateRect();
 }
 
 void QgsRubberBand::setTranslationOffset( double dx, double dy )

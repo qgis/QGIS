@@ -1089,6 +1089,12 @@
      </gml:Envelope>
  </gml:featureMember>
  <gml:featureMember>
+   <gml:name>World</gml:name>
+     <gml:Envelope>
+      <gml:coordinates>-180,-90 180,90</gml:coordinates>
+     </gml:Envelope>
+ </gml:featureMember>
+ <gml:featureMember>
    <gml:name>Yemen</gml:name>
      <gml:Envelope>
       <gml:coordinates>42.45,12.12 53.74,19.51</gml:coordinates>

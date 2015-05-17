@@ -254,7 +254,7 @@ bool  QgsDistanceArea::setEllipsoid( double semiMajor, double semiMinor )
   return true;
 }
 
-double QgsDistanceArea::measure( QgsGeometry* geometry )
+double QgsDistanceArea::measure( const QgsGeometry *geometry ) const
 {
   if ( !geometry )
     return 0.0;
@@ -329,7 +329,7 @@ double QgsDistanceArea::measure( QgsGeometry* geometry )
   }
 }
 
-double QgsDistanceArea::measurePerimeter( QgsGeometry* geometry )
+double QgsDistanceArea::measurePerimeter( const QgsGeometry* geometry ) const
 {
   if ( !geometry )
     return 0.0;
@@ -389,7 +389,7 @@ double QgsDistanceArea::measurePerimeter( QgsGeometry* geometry )
 }
 
 
-const unsigned char* QgsDistanceArea::measureLine( const unsigned char* feature, double* area, bool hasZptr )
+const unsigned char* QgsDistanceArea::measureLine( const unsigned char* feature, double* area, bool hasZptr ) const
 {
   QgsConstWkbPtr wkbPtr( feature + 1 + sizeof( int ) );
   int nPoints;
@@ -416,7 +416,7 @@ const unsigned char* QgsDistanceArea::measureLine( const unsigned char* feature,
   return wkbPtr;
 }
 
-double QgsDistanceArea::measureLine( const QList<QgsPoint> &points )
+double QgsDistanceArea::measureLine( const QList<QgsPoint> &points ) const
 {
   if ( points.size() < 2 )
     return 0;
@@ -458,7 +458,7 @@ double QgsDistanceArea::measureLine( const QList<QgsPoint> &points )
 
 }
 
-double QgsDistanceArea::measureLine( const QgsPoint &p1, const QgsPoint &p2 )
+double QgsDistanceArea::measureLine( const QgsPoint &p1, const QgsPoint &p2 ) const
 {
   double result;
 
@@ -494,7 +494,7 @@ double QgsDistanceArea::measureLine( const QgsPoint &p1, const QgsPoint &p2 )
 }
 
 
-const unsigned char *QgsDistanceArea::measurePolygon( const unsigned char* feature, double* area, double* perimeter, bool hasZptr )
+const unsigned char *QgsDistanceArea::measurePolygon( const unsigned char* feature, double* area, double* perimeter, bool hasZptr ) const
 {
   if ( !feature )
   {
@@ -589,7 +589,7 @@ const unsigned char *QgsDistanceArea::measurePolygon( const unsigned char* featu
 }
 
 
-double QgsDistanceArea::measurePolygon( const QList<QgsPoint>& points )
+double QgsDistanceArea::measurePolygon( const QList<QgsPoint>& points ) const
 {
   try
   {
@@ -616,7 +616,7 @@ double QgsDistanceArea::measurePolygon( const QList<QgsPoint>& points )
 }
 
 
-double QgsDistanceArea::bearing( const QgsPoint& p1, const QgsPoint& p2 )
+double QgsDistanceArea::bearing( const QgsPoint& p1, const QgsPoint& p2 ) const
 {
   QgsPoint pp1 = p1, pp2 = p2;
   double bearing;
@@ -643,7 +643,7 @@ double QgsDistanceArea::bearing( const QgsPoint& p1, const QgsPoint& p2 )
 
 double QgsDistanceArea::computeDistanceBearing(
   const QgsPoint& p1, const QgsPoint& p2,
-  double* course1, double* course2 )
+  double* course1, double* course2 ) const
 {
   if ( p1.x() == p2.x() && p1.y() == p2.y() )
     return 0;
@@ -718,12 +718,12 @@ double QgsDistanceArea::computeDistanceBearing(
   return s;
 }
 
-double QgsDistanceArea::computeDistanceFlat( const QgsPoint& p1, const QgsPoint& p2 )
+double QgsDistanceArea::computeDistanceFlat( const QgsPoint& p1, const QgsPoint& p2 ) const
 {
   return sqrt(( p2.x() - p1.x() ) * ( p2.x() - p1.x() ) + ( p2.y() - p1.y() ) * ( p2.y() - p1.y() ) );
 }
 
-double QgsDistanceArea::computeDistance( const QList<QgsPoint>& points )
+double QgsDistanceArea::computeDistance( const QList<QgsPoint>& points ) const
 {
   if ( points.size() < 2 )
     return 0;
@@ -767,7 +767,7 @@ double QgsDistanceArea::computeDistance( const QList<QgsPoint>& points )
 // don't know how does it work, but it's working .)
 // see G_begin_ellipsoid_polygon_area() in area_poly1.c
 
-double QgsDistanceArea::getQ( double x )
+double QgsDistanceArea::getQ( double x ) const
 {
   double sinx, sinx2;
 
@@ -778,7 +778,7 @@ double QgsDistanceArea::getQ( double x )
 }
 
 
-double QgsDistanceArea::getQbar( double x )
+double QgsDistanceArea::getQbar( double x ) const
 {
   double cosx, cosx2;
 
@@ -824,7 +824,7 @@ void QgsDistanceArea::computeAreaInit()
 }
 
 
-double QgsDistanceArea::computePolygonArea( const QList<QgsPoint>& points )
+double QgsDistanceArea::computePolygonArea( const QList<QgsPoint>& points ) const
 {
   double x1, y1, x2, y2, dx, dy;
   double Qbar1, Qbar2;
@@ -881,7 +881,7 @@ double QgsDistanceArea::computePolygonArea( const QList<QgsPoint>& points )
   return area;
 }
 
-double QgsDistanceArea::computePolygonFlatArea( const QList<QgsPoint>& points )
+double QgsDistanceArea::computePolygonFlatArea( const QList<QgsPoint>& points ) const
 {
   // Normal plane area calculations.
   double area = 0.0;
@@ -1031,7 +1031,7 @@ QString QgsDistanceArea::textUnit( double value, int decimals, QGis::UnitType u,
   return QLocale::system().toString( value, 'f', decimals ) + unitLabel;
 }
 
-void QgsDistanceArea::convertMeasurement( double &measure, QGis::UnitType &measureUnits, QGis::UnitType displayUnits, bool isArea )
+void QgsDistanceArea::convertMeasurement( double &measure, QGis::UnitType &measureUnits, QGis::UnitType displayUnits, bool isArea ) const
 {
   // Helper for converting between meters and feet and degrees and NauticalMiles...
   // The parameters measure and measureUnits are in/out

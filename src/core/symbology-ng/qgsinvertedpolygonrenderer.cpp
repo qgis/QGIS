@@ -23,6 +23,7 @@
 #include "qgsvectorlayer.h"
 #include "qgssymbollayerv2.h"
 #include "qgsogcutils.h"
+#include "qgspainteffect.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -182,11 +183,11 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderCo
 
   // update the geometry
   CombinedFeature& cFeat = mFeaturesCategories[ mSymbolCategories[catId] ];
-  if ( !feature.geometry() )
+  if ( !feature.constGeometry() )
   {
     return false;
   }
-  QScopedPointer<QgsGeometry> geom( new QgsGeometry( *feature.geometry() ) );
+  QScopedPointer<QgsGeometry> geom( new QgsGeometry( *feature.constGeometry() ) );
 
   const QgsCoordinateTransform* xform = context.coordinateTransform();
   if ( xform )
@@ -284,7 +285,7 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext& context )
       }
       feat.setGeometry( QgsGeometry::fromMultiPolygon( finalMulti ) );
     }
-    if ( feat.geometry() )
+    if ( feat.constGeometry() )
       mSubRenderer->renderFeature( feat, mContext );
   }
   for ( FeatureCategoryVector::iterator cit = mFeaturesCategories.begin(); cit != mFeaturesCategories.end(); ++cit )
@@ -337,6 +338,7 @@ QgsFeatureRendererV2* QgsInvertedPolygonRenderer::clone() const
     newRenderer = new QgsInvertedPolygonRenderer( mSubRenderer->clone() );
   }
   newRenderer->setPreprocessingEnabled( preprocessingEnabled() );
+  copyPaintEffect( newRenderer );
   return newRenderer;
 }
 
@@ -364,6 +366,9 @@ QDomElement QgsInvertedPolygonRenderer::save( QDomDocument& doc )
     QDomElement embeddedRendererElem = mSubRenderer->save( doc );
     rendererElem.appendChild( embeddedRendererElem );
   }
+
+  if ( mPaintEffect )
+    mPaintEffect->saveProperties( doc, rendererElem );
 
   return rendererElem;
 }

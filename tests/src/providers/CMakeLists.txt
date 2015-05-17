@@ -23,11 +23,6 @@ ADD_DEFINITIONS(-DTEST_DATA_DIR="\\"${TEST_DATA_DIR}\\"")
 
 ADD_DEFINITIONS(-DINSTALL_PREFIX="\\"${CMAKE_INSTALL_PREFIX}\\"")
 
-# Temporarily set to old version until server is reconfigured 
-#SET(TEST_SERVER_URL "http://wcs.qgis.org/${COMPLETE_VERSION}")
-SET(TEST_SERVER_URL "http://wcs.qgis.org/1.9.0")
-ADD_DEFINITIONS(-DTEST_SERVER_URL="\\"${TEST_SERVER_URL}\\"")
-
 #############################################################
 # libraries
 
@@ -74,6 +69,14 @@ ENDMACRO (ADD_QGIS_TEST)
 # Tests:
 
 ADD_QGIS_TEST(wcsprovidertest testqgswcsprovider.cpp)
+# Temporarily set to old version until server is reconfigured
+#SET(TEST_SERVER_URL "http://wcs.qgis.org/${COMPLETE_VERSION}")
+SET(TEST_SERVER_URL "http://wcs.qgis.org/1.9.0")
+#ADD_DEFINITIONS(-DTEST_SERVER_URL="\\"${TEST_SERVER_URL}\\"")
+SET_TARGET_PROPERTIES(qgis_wcsprovidertest PROPERTIES
+  COMPILE_FLAGS "-DTEST_SERVER_URL=\\\"${TEST_SERVER_URL}\\\""
+)
+
 ADD_QGIS_TEST(gdalprovidertest testqgsgdalprovider.cpp)
 
 #############################################################
@@ -118,3 +121,5 @@ IF(UNIX AND NOT ANDROID AND CMAKE_BUILD_TYPE MATCHES Debug)
   INSTALL(FILES wcs-servers.json DESTINATION ${QGIS_DATA_DIR}/resources)
 
 ENDIF(UNIX AND NOT ANDROID AND CMAKE_BUILD_TYPE MATCHES Debug)
+
+ADD_SUBDIRECTORY(grass)

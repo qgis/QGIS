@@ -104,8 +104,8 @@ void QgsClipboard::setSystemClipboard()
     // TODO: Set up Paste Transformations to specify the order in which fields are added.
     if ( copyWKT )
     {
-      if ( it->geometry() )
-        textFields += it->geometry()->exportToWkt();
+      if ( it->constGeometry() )
+        textFields += it->constGeometry()->exportToWkt();
       else
       {
         textFields += settings.value( "qgis/nullValue", "NULL" ).toString();
@@ -198,7 +198,7 @@ void QgsClipboard::insert( QgsFeature& feature )
 {
   mFeatureClipboard.push_back( feature );
 
-  QgsDebugMsg( "inserted " + feature.geometry()->exportToWkt() );
+  QgsDebugMsg( "inserted " + feature.constGeometry()->exportToWkt() );
   mUseSystemClipboard = false;
   emit changed();
 }

@@ -24,7 +24,6 @@
 #include <QMenu>
 #include <QFile>
 #include <QTextStream>
-#include <QSettings>
 #include <QDir>
 #include <QComboBox>
 
@@ -409,6 +408,8 @@ void QgsExpressionBuilderWidget::updateFunctionTree()
       continue;
     if ( func->params() != 0 )
       name += "(";
+    else if ( !name.startsWith( "$" ) )
+      name += "()";
     registerItem( func->group(), func->name(), " " + name + " ", func->helptext() );
   }
 

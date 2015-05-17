@@ -196,6 +196,25 @@ expression:
           delete $1;
         }
 
+    | FUNCTION '(' ')'
+        {
+          int fnIndex = QgsExpression::functionIndex(*$1);
+          if (fnIndex == -1)
+          {
+            // this should not actually happen because already in lexer we check whether an identifier is a known function
+            // (if the name is not known the token is parsed as a column)
+            exp_error(parser_ctx, "Function is not known");
+            YYERROR;
+          }
+          if ( QgsExpression::Functions()[fnIndex]->params() != 0 )
+          {
+            exp_error(parser_ctx, "Function is called with wrong number of arguments");
+            YYERROR;
+          }
+          $$ = new QgsExpression::NodeFunction(fnIndex, new QgsExpression::NodeList());
+          delete $1;
+        }
+
     | expression IN '(' exp_list ')'     { $$ = new QgsExpression::NodeInOperator($1, $4, false);  }
     | expression NOT IN '(' exp_list ')' { $$ = new QgsExpression::NodeInOperator($1, $5, true); }
 

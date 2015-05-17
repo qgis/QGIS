@@ -76,7 +76,7 @@ class Processing:
     modeler = ModelerAlgorithmProvider()
 
     @staticmethod
-    def addProvider(provider, updateList=False):
+    def addProvider(provider, updateList=True):
         """Use this method to add algorithms from external providers.
         """
 
@@ -127,18 +127,18 @@ class Processing:
     @staticmethod
     def initialize():
         # Add the basic providers
-        Processing.addProvider(QGISAlgorithmProvider())
-        Processing.addProvider(ModelerOnlyAlgorithmProvider())
-        Processing.addProvider(GdalOgrAlgorithmProvider())
-        Processing.addProvider(LidarToolsAlgorithmProvider())
-        Processing.addProvider(OTBAlgorithmProvider())
-        Processing.addProvider(RAlgorithmProvider())
-        Processing.addProvider(SagaAlgorithmProvider())
-        Processing.addProvider(GrassAlgorithmProvider())
-        Processing.addProvider(Grass7AlgorithmProvider())
-        Processing.addProvider(ScriptAlgorithmProvider())
-        Processing.addProvider(TauDEMAlgorithmProvider())
-        Processing.addProvider(Processing.modeler)
+        Processing.addProvider(QGISAlgorithmProvider(), updateList=False)
+        Processing.addProvider(ModelerOnlyAlgorithmProvider(), updateList=False)
+        Processing.addProvider(GdalOgrAlgorithmProvider(), updateList=False)
+        Processing.addProvider(LidarToolsAlgorithmProvider(), updateList=False)
+        Processing.addProvider(OTBAlgorithmProvider(), updateList=False)
+        Processing.addProvider(RAlgorithmProvider(), updateList=False)
+        Processing.addProvider(SagaAlgorithmProvider(), updateList=False)
+        Processing.addProvider(GrassAlgorithmProvider(), updateList=False)
+        Processing.addProvider(Grass7AlgorithmProvider(), updateList=False)
+        Processing.addProvider(ScriptAlgorithmProvider(), updateList=False)
+        Processing.addProvider(TauDEMAlgorithmProvider(), updateList=False)
+        Processing.addProvider(Processing.modeler, updateList=False)
         Processing.modeler.initializeSettings()
 
         # And initialize

@@ -47,15 +47,17 @@ class OgrInfo(OgrAlgorithm):
 
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Layer information')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         arguments = []
         arguments.append('-al')
         arguments.append('-so')
         layer = self.getParameterValue(self.INPUT)
         conn = self.ogrConnectionString(layer)
         arguments.append(conn)
-        GdalUtils.runGdal(['ogrinfo', GdalUtils.escapeAndJoin(arguments)],
-                          progress)
+        return arguments
+
+    def processAlgorithm(self, progress):
+        GdalUtils.runGdal(self.getConsoleCommands(), progress)
         output = self.getOutputValue(self.OUTPUT)
         f = open(output, 'w')
         f.write('<pre>')
