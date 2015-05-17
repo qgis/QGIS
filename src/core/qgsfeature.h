@@ -64,6 +64,11 @@ class QgsFeatureId
     friend uint qHash( const QgsFeatureId &id );
 };
 
+/** Writes the feature id to stream out. QGIS version compatibility is not guaranteed. */
+CORE_EXPORT QDataStream& operator<<( QDataStream& out, const QgsFeatureId& featureId );
+/** Reads a feature id from stream in into feature id. QGIS version compatibility is not guaranteed. */
+CORE_EXPORT QDataStream& operator>>( QDataStream& in, QgsFeatureId& featureId );
+
 inline uint qHash( const QgsFeatureId &id )
 {
   return qHash( id.mId );
@@ -312,6 +317,11 @@ class CORE_EXPORT QgsFeature
     QgsFields mFields;
 
 }; // class QgsFeature
+
+/** Writes the feature to stream out. QGIS version compatibility is not guaranteed. */
+CORE_EXPORT QDataStream& operator<<( QDataStream& out, const QgsFeature& feature );
+/** Reads a feature from stream in into feature. QGIS version compatibility is not guaranteed. */
+CORE_EXPORT QDataStream& operator>>( QDataStream& in, QgsFeature& feature );
 
 // key = feature id, value = changed attributes
 typedef QMap<QgsFeatureId, QgsAttributeMap> QgsChangedAttributesMap;

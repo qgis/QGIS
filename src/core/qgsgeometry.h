@@ -721,6 +721,11 @@ class CORE_EXPORT QgsGeometry
 
 Q_DECLARE_METATYPE( QgsGeometry );
 
+/** Writes the geometry to stream out. QGIS version compatibility is not guaranteed. */
+CORE_EXPORT QDataStream& operator<<( QDataStream& out, const QgsGeometry& geometry );
+/** Reads a geometry from stream in into geometry. QGIS version compatibility is not guaranteed. */
+CORE_EXPORT QDataStream& operator>>( QDataStream& in, QgsGeometry& geometry );
+
 class CORE_EXPORT QgsWkbPtr
 {
     mutable unsigned char *mP;

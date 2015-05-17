@@ -252,3 +252,32 @@ int QgsFeature::fieldNameIndex( const QString& fieldName ) const
   }
   return -1;
 }
+
+QDataStream& operator<<( QDataStream& out, const QgsFeature& feature )
+{
+  out << feature.id();
+  out << feature.attributes();
+  if ( feature.geometry() )
+  {
+    out << *( feature.geometry() );
+  }
+  else
+  {
+    QgsGeometry geometry;
+    out << geometry;
+  }
+  out << feature.isValid();
+  return out;
+}
+
+QDataStream& operator>>( QDataStream& in, QgsFeature& feature )
+{
+  QgsFeatureId id;
+  QgsGeometry* geometry = new QgsGeometry();
+  bool valid;
+  in >> id >> feature.attributes() >> *geometry >> valid;
+  feature.setFeatureId( id );
+  feature.setGeometry( geometry );
+  feature.setValid( valid );
+  return in;
+}
