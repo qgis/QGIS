@@ -74,6 +74,8 @@ from processing.tools import dataobjects
 
 from processing.ui.ui_widgetParametersPanel import Ui_Form
 
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+
 
 class ParametersPanel(QWidget, Ui_Form):
 
@@ -132,8 +134,7 @@ class ParametersPanel(QWidget, Ui_Form):
                 layout.setMargin(0)
                 layout.addWidget(widget)
                 button = QToolButton()
-                icon = QIcon(
-                    os.path.dirname(__file__) + '/../images/iterate.png')
+                icon = QIcon(os.path.join(pluginPath, 'images', 'iterate.png'))
                 button.setIcon(icon)
                 button.setToolTip(self.tr('Iterate over this layer'))
                 button.setCheckable(True)

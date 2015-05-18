@@ -33,6 +33,9 @@ from processing.core.outputs import OutputRaster
 from processing.tools.system import getTempFilename, isWindows
 import SagaUtils
 
+pluginPath = os.path.normpath(os.path.join(
+    os.path.split(os.path.dirname(__file__))[0], os.pardir))
+
 
 class SplitRGBBands(GeoAlgorithm):
 
@@ -42,7 +45,7 @@ class SplitRGBBands(GeoAlgorithm):
     B = 'B'
 
     def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + '/../../images/saga.png')
+        return QtGui.QIcon(os.path.join(pluginPath, 'images', 'saga.png'))
 
     def defineCharacteristics(self):
         self.name = 'Split RGB bands'

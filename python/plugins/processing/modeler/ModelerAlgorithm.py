@@ -45,6 +45,9 @@ from processing.core.parameters import getParameterFromString, ParameterRaster, 
 from processing.tools import dataobjects
 from processing.gui.Help2Html import getHtmlFromDescriptionsDict
 
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+
+
 class ModelerParameter():
 
     def __init__(self, param=None, pos=None):
@@ -185,7 +188,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         GeoAlgorithm.__init__(self)
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../images/model.png')
+        return QIcon(os.path.join(pluginPath, 'images', 'model.png'))
 
     def defineCharacteristics(self):
         classes = [ParameterRaster, ParameterVector, ParameterTable, ParameterTableField,
@@ -338,7 +341,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                     value = self.resolveValue(alg.params[param.name])
                 else:
                     iface.messageBar().pushMessage(self.tr("Warning"),
-                                                   self.tr("Parameter %s in algorithm %s in the model is run with default value! Edit the model to make sure that this is correct." % (param.name, alg.name)), 
+                                                   self.tr("Parameter %s in algorithm %s in the model is run with default value! Edit the model to make sure that this is correct." % (param.name, alg.name)),
                                                    QgsMessageBar.WARNING, 4)
                     value = None
                 if value is None and isinstance(param, ParameterExtent):

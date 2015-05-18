@@ -33,6 +33,8 @@ from processing.modeler.ModelerAlgorithm import ModelerParameter, Algorithm, Mod
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+
 
 class ModelerGraphicItem(QGraphicsItem):
 
@@ -44,12 +46,12 @@ class ModelerGraphicItem(QGraphicsItem):
         self.model = model
         self.element = element
         if isinstance(element, ModelerParameter):
-            icon = QIcon(os.path.dirname(__file__) + '/../images/input.png')
+            icon = QIcon(os.path.join(pluginPath, 'images', 'input.png'))
             self.pixmap = icon.pixmap(20, 20, state=QIcon.On)
             self.text = element.param.description
         elif isinstance(element, ModelerOutput):
             # Output name
-            icon = QIcon(os.path.dirname(__file__) + '/../images/output.png')
+            icon = QIcon(os.path.join(pluginPath, 'images', 'output.png'))
             self.pixmap = icon.pixmap(20, 20, state=QIcon.On)
             self.text = element.description
         else:
@@ -62,14 +64,14 @@ class ModelerGraphicItem(QGraphicsItem):
         self.setZValue(1000)
 
         if not isinstance(element, ModelerOutput):
-            icon = QIcon(os.path.dirname(__file__) + '/../images/edit.png')
+            icon = QIcon(os.path.join(pluginPath, 'images', 'edit.png'))
             pt = QPointF(ModelerGraphicItem.BOX_WIDTH / 2
                          - FlatButtonGraphicItem.WIDTH / 2,
                          ModelerGraphicItem.BOX_HEIGHT / 2
                          - FlatButtonGraphicItem.HEIGHT / 2 + 1)
             self.editButton = FlatButtonGraphicItem(icon, pt, self.editElement)
             self.editButton.setParentItem(self)
-            icon = QIcon(os.path.dirname(__file__) + '/../images/delete.png')
+            icon = QIcon(os.path.join(pluginPath, 'images', 'delete.png'))
             pt = QPointF(ModelerGraphicItem.BOX_WIDTH / 2
                          - FlatButtonGraphicItem.WIDTH / 2,
                          - ModelerGraphicItem.BOX_HEIGHT / 2
@@ -378,10 +380,8 @@ class FoldButtonGraphicItem(FlatButtonGraphicItem):
     WIDTH = 11
     HEIGHT = 11
 
-    icons = {True: QIcon(os.path.dirname(__file__)
-             + '/../images/plus.png'),
-             False: QIcon(os.path.dirname(__file__)
-             + '/../images/minus.png')}
+    icons = {True: QIcon(os.path.join(pluginPath, 'images', 'plus.png')),
+             False: QIcon(os.path.join(pluginPath, 'images', 'minus.png'))}
 
     def __init__(self, position, action, folded):
         self.folded = folded

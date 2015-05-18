@@ -46,7 +46,7 @@ from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.script.ScriptUtils import ScriptUtils
 from processing.ui.ui_DlgScriptEditor import Ui_DlgScriptEditor
 
-import processing.resources_rc
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 
 class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
@@ -70,8 +70,10 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
             QgsApplication.getThemeIcon('/mActionFileSave.svg'))
         self.btnSaveAs.setIcon(
             QgsApplication.getThemeIcon('/mActionFileSaveAs.svg'))
-        self.btnEditHelp.setIcon(QIcon(':/processing/images/edithelp.png'))
-        self.btnRun.setIcon(QIcon(':/processing/images/runalgorithm.png'))
+        self.btnEditHelp.setIcon(
+            QIcon(os.path.join(pluginPath, 'images', 'edithelp.png')))
+        self.btnRun.setIcon(
+            QIcon(os.path.join(pluginPath, 'images', 'runalgorithm.png')))
         self.btnCut.setIcon(QgsApplication.getThemeIcon('/mActionEditCut.png'))
         self.btnCopy.setIcon(
             QgsApplication.getThemeIcon('/mActionEditCopy.png'))

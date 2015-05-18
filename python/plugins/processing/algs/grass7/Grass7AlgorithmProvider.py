@@ -35,6 +35,10 @@ from Grass7Algorithm import Grass7Algorithm
 from processing.tools.system import isWindows, isMac
 from nviz7 import nviz7
 
+pluginPath = os.path.normpath(os.path.join(
+    os.path.split(os.path.dirname(__file__))[0], os.pardir))
+
+
 class Grass7AlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
@@ -99,7 +103,7 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
         return 'grass70'
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../../images/grass.png')
+        return QIcon(os.path.join(pluginPath, 'images', 'grass.png'))
 
     def getSupportedOutputVectorLayerExtensions(self):
         return ['shp']

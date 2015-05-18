@@ -33,6 +33,8 @@ from processing.tools import dataobjects
 
 from processing.ui.ui_widgetLayerSelector import Ui_Form
 
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+
 
 class InputLayerSelectorPanel(QWidget, Ui_Form):
 
@@ -41,7 +43,7 @@ class InputLayerSelectorPanel(QWidget, Ui_Form):
         self.setupUi(self)
 
         self.btnIterate.setIcon(
-            QIcon(os.path.dirname(__file__) + '/../images/iterate.png'))
+            QIcon(os.path.join(pluginPath, 'images', 'iterate.png')))
         self.btnIterate.hide()
 
         self.param = param

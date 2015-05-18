@@ -47,7 +47,8 @@ from processing.modeler.WrongModelException import WrongModelException
 
 from processing.ui.ui_DlgModeler import Ui_DlgModeler
 
-import processing.resources_rc
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+
 
 class ModelerDialog(QDialog, Ui_DlgModeler):
 
@@ -157,8 +158,8 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         self.btnSave.setIcon(QgsApplication.getThemeIcon('/mActionFileSave.svg'))
         self.btnSaveAs.setIcon(QgsApplication.getThemeIcon('/mActionFileSaveAs.svg'))
         self.btnExportImage.setIcon(QgsApplication.getThemeIcon('/mActionSaveMapAsImage.png'))
-        self.btnEditHelp.setIcon(QIcon(':/processing/images/edithelp.png'))
-        self.btnRun.setIcon(QIcon(':/processing/images/runalgorithm.png'))
+        self.btnEditHelp.setIcon(QIcon(os.path.join(pluginPath, 'images', 'edithelp.png')))
+        self.btnRun.setIcon(QIcon(os.path.join(pluginPath, 'images', 'runalgorithm.png')))
 
         # Fill trees with inputs and algorithms
         self.fillInputsTree()
@@ -382,7 +383,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         return QPointF(newX, MARGIN + BOX_HEIGHT / 2)
 
     def fillInputsTree(self):
-        icon = QIcon(os.path.dirname(__file__) + '/../images/input.png')
+        icon = QIcon(os.path.join(pluginPath, 'images', 'input.png'))
         parametersItem = QTreeWidgetItem()
         parametersItem.setText(0, self.tr('Parameters'))
         for paramType in ModelerParameterDefinitionDialog.paramTypes:
