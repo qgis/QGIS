@@ -73,7 +73,7 @@ my %sdesc;
 my %md5;
 my $package;
 
-system "wget $wgetopt -O setup.ini -c $root$archpath/$ininame";
+system "wget $wgetopt -O setup.ini $root$archpath/$ininame";
 die "download of setup.ini failed" if $?;
 open F, "setup.ini" || die "setup.ini not found";
 while(<F>) {
