@@ -108,7 +108,7 @@ class translate(GdalAlgorithm):
             self.tr('Force the generation of an associated ESRI world file (.tfw))'), False))
         self.addParameter(ParameterString(self.EXTRA,
             self.tr('Additional creation parameters'), '', optional=True))
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Translated')))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Converted')))
 
     def getConsoleCommands(self):
         out = self.getOutputValue(translate.OUTPUT)

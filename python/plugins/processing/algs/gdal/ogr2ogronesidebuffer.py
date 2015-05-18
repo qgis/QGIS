@@ -78,7 +78,7 @@ class Ogr2OgrOneSideBuffer(OgrAlgorithm):
             self.tr('Additional creation options (see ogr2ogr manual)'),
             '', optional=True))
 
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Single sided buffer')))
 
     def getConsoleCommands(self):
         inLayer = self.getParameterValue(self.INPUT_LAYER)

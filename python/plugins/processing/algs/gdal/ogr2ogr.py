@@ -106,7 +106,7 @@ class Ogr2Ogr(OgrAlgorithm):
         self.addParameter(ParameterString(self.OPTIONS,
             self.tr('Creation options'), '', optional=True))
 
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Converted')))
 
     def getConsoleCommands(self):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
