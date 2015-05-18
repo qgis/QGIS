@@ -9,6 +9,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/composer
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/layertree
   ${CMAKE_SOURCE_DIR}/src/core/raster
@@ -100,6 +101,7 @@ ADD_QGIS_TEST(maprenderertest testqgsmaprenderer.cpp)
 ADD_QGIS_TEST(blendmodestest testqgsblendmodes.cpp)
 ADD_QGIS_TEST(geometrytest testqgsgeometry.cpp)
 ADD_QGIS_TEST(geometryimporttest testqgsgeometryimport.cpp)
+ADD_QGIS_TEST(geometryutilstest testqgsgeometryutils.cpp)
 ADD_QGIS_TEST(coordinatereferencesystemtest testqgscoordinatereferencesystem.cpp)
 ADD_QGIS_TEST(coordinatetransformtest testqgscoordinatetransform.cpp)
 ADD_DEPENDENCIES(qgis_coordinatereferencesystemtest synccrsdb)
@@ -156,4 +158,5 @@ ADD_QGIS_TEST(imageoperationtest testqgsimageoperation.cpp)
 ADD_QGIS_TEST(painteffecttest testqgspainteffect.cpp)
 ADD_QGIS_TEST(painteffectregistrytest testqgspainteffectregistry.cpp)
 ADD_QGIS_TEST(statisticalsummarytest testqgsstatisticalsummary.cpp)
+
 

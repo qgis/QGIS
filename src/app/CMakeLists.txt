@@ -452,6 +452,7 @@ INCLUDE_DIRECTORIES(
   ../core/gps
   ../core/composer
   ../core/dxf
+  ../core/geometry
   ../core/layertree
   ../core/raster
   ../core/symbology-ng

@@ -29,6 +29,7 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgswkbptr.h"
 
 // MSVC compiler doesn't have defined M_PI in math.h
 #ifndef M_PI

@@ -4,6 +4,7 @@
 
 INCLUDE_DIRECTORIES(
   ../../core
+  ../../core/geometry
   ../../core/raster
   ../../gui
   ${GDAL_INCLUDE_DIR}

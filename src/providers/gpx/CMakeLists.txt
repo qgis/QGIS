@@ -17,6 +17,7 @@ SET (GPX_MOC_HDRS
 
 INCLUDE_DIRECTORIES(
   ../../core
+  ../../core/geometry
   ${GEOS_INCLUDE_DIR}
   ${EXPAT_INCLUDE_DIR}
 )
