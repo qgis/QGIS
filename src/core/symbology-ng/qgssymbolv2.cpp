@@ -519,6 +519,7 @@ void QgsMarkerSymbolV2::setAngle( double ang )
   }
 }
 
+
 double QgsMarkerSymbolV2::angle()
 {
   QgsSymbolLayerV2List::const_iterator it = mLayers.begin();
@@ -529,6 +530,15 @@ double QgsMarkerSymbolV2::angle()
   // return angle of the first symbol layer
   const QgsMarkerSymbolLayerV2* layer = static_cast<const QgsMarkerSymbolLayerV2 *>( *it );
   return layer->angle();
+}
+
+void QgsMarkerSymbolV2::setLineAngle( double lineang )
+{
+  for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  {
+    QgsMarkerSymbolLayerV2* layer = ( QgsMarkerSymbolLayerV2* ) * it;
+    layer->setLineAngle( lineang );
+  }
 }
 
 void QgsMarkerSymbolV2::setSize( double s )
