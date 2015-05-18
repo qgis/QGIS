@@ -3,4 +3,4 @@ r.random.raster - Create random raster
 Raster (r.*)
 ParameterRaster|raster|Name of input raster map|False
 ParameterNumber|value|The number of points to allocate |None|None|1
-OutputRaster|output|Output layer
+OutputRaster|output|Random

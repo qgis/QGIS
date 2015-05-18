@@ -3,4 +3,4 @@ r.out.xyz - Export a raster map to a text file as x,y,z values based on cell cen
 Raster (r.*)
 ParameterRaster|input|Name of input raster map|False
 ParameterString|fs|Field separator|
-OutputFile|output|Name for output file
+OutputFile|output|xyz

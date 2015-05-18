@@ -4,5 +4,5 @@ Raster (r.*)
 ParameterRaster|input|Input raster layer|False
 ParameterRaster|cover|Input cover raster layer|False
 ParameterNumber|n|The number of points to allocate|0|None|10
-OutputRaster|raster_output|Output raster layer
-OutputVector|vector_output|Output vector layer
+OutputRaster|raster_output|Random raster
+OutputVector|vector_output|random vector

@@ -4,4 +4,4 @@ Raster (r.*)
 ParameterRaster|map1|Layer for x coefficient|False
 ParameterRaster|map2|Layer for y coefficient|False
 ParameterBoolean|-s|Slower but accurate|False
-OutputHTML|html|Regression data
+OutputHTML|html|Regression coefficients
