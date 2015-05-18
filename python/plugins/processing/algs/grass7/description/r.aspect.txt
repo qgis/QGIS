@@ -5,4 +5,4 @@ ParameterRaster|elevation|Elevation|False
 ParameterSelection|precision|Data type|CELL;FCELL;DCELL
 ParameterNumber|zfactor|Multiplicative factor to convert elevation units to meters|None|None|1.0
 ParameterNumber|min_slope|Minimum slope val. (in percent) for which aspect is computed|None|None|0.0
-OutputRaster|aspect|Output aspect layer
+OutputRaster|aspect|Aspect

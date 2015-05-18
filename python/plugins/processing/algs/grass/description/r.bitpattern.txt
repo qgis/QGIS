@@ -4,4 +4,4 @@ Raster (r.*)
 ParameterRaster|input|Input raster layer|False
 ParameterString|pattern|Bit pattern position(s)|
 ParameterString|patval|Bit pattern value|
-OutputRaster|output|Output raster layer
+OutputRaster|output|Bit pattern comparison
