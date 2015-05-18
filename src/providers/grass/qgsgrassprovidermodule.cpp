@@ -196,6 +196,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
   QgsCoordinateReferenceSystem mapsetCrs = QgsGrass::crsDirect( mGisdbase, mLocation );
 
   QStringList existingRasters = QgsGrass::rasters( mapsetObject.mapsetPath() );
+  QStringList existingVectors = QgsGrass::vectors( mapsetObject.mapsetPath() );
   // add currently being imported
   foreach ( QgsGrassImport* import, mImports )
   {
@@ -203,53 +204,85 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
     {
       existingRasters.append( import->names() );
     }
+    else if ( import && import->grassObject().type() == QgsGrassObject::Vector )
+    {
+      existingVectors.append( import->names() );
+    }
   }
-  QgsDebugMsg( "existingRasters = " + existingRasters.join( "," ) );
 
   QStringList errors;
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
+#ifdef WIN32
+  Qt::CaseSensitivity caseSensitivity = Qt::CaseInsensitive;
+#else
+  Qt::CaseSensitivity caseSensitivity = Qt::CaseSensitive;
+#endif
   foreach ( const QgsMimeDataUtils::Uri& u, lst )
   {
+    if ( u.layerType != "raster" && u.layerType != "vector" )
+    {
+      errors.append( tr( "%1 layer type not supported" ).arg( u.name ) );
+      continue;
+    }
+    QgsRasterDataProvider* rasterProvider = 0;
+    QgsVectorDataProvider* vectorProvider = 0;
+    QgsDataProvider* provider = 0;
+    QStringList extensions;
+    QStringList existingNames;
     if ( u.layerType == "raster" )
     {
-      QgsRasterDataProvider* provider = qobject_cast<QgsRasterDataProvider*>( QgsProviderRegistry::instance()->provider( u.providerKey, u.uri ) );
-      if ( !provider )
+      rasterProvider = qobject_cast<QgsRasterDataProvider*>( QgsProviderRegistry::instance()->provider( u.providerKey, u.uri ) );
+      provider = rasterProvider;
+      existingNames = existingRasters;
+    }
+    else if ( u.layerType == "vector" )
+    {
+      vectorProvider = qobject_cast<QgsVectorDataProvider*>( QgsProviderRegistry::instance()->provider( u.providerKey, u.uri ) );
+      provider = vectorProvider;
+      existingNames = existingVectors;
+    }
+    QgsDebugMsg( "existingNames = " + existingNames.join( "," ) );
+
+    if ( !provider )
+    {
+      errors.append( tr( "Cannot create provider %1 : %2" ).arg( u.providerKey ).arg( u.uri ) );
+      continue;
+    }
+    if ( !provider->isValid() )
+    {
+      errors.append( tr( "Provider is not valid  %1 : %2" ).arg( u.providerKey ).arg( u.uri ) );
+      delete provider;
+      continue;
+    }
+
+    if ( u.layerType == "raster" )
+    {
+      extensions = QgsGrassRasterImport::extensions( rasterProvider );
+    }
+
+    QString newName = u.name;
+    if ( QgsNewNameDialog::exists( u.name, extensions, existingNames, caseSensitivity ) )
+    {
+      QgsNewNameDialog dialog( u.name, u.name, extensions, existingNames, QRegExp(), caseSensitivity );
+      if ( dialog.exec() != QDialog::Accepted )
       {
-        errors.append( tr( "Cannot create provider %1 : %2" ).arg( u.providerKey ).arg( u.uri ) );
-        continue;
-      }
-      if ( !provider->isValid() )
-      {
-        errors.append( tr( "Provider is not valid  %1 : %2" ).arg( u.providerKey ).arg( u.uri ) );
         delete provider;
         continue;
       }
-#ifdef WIN32
-      Qt::CaseSensitivity cs = Qt::CaseInsensitive;
-#else
-      Qt::CaseSensitivity cs = Qt::CaseSensitive;
-#endif
-      QStringList extensions = QgsGrassRasterImport::extensions( provider );
-      QString newName = u.name;
-      if ( QgsNewNameDialog::exists( u.name, extensions, existingRasters, cs ) )
-      {
-        QgsNewNameDialog dialog( u.name, u.name, extensions, existingRasters, QRegExp(), cs );
-        if ( dialog.exec() != QDialog::Accepted )
-        {
-          delete provider;
-          continue;
-        }
-        newName = dialog.name();
-      }
+      newName = dialog.name();
+    }
 
-      QgsRectangle newExtent = provider->extent();
+    QgsGrassImport *import = 0;
+    if ( u.layerType == "raster" )
+    {
+      QgsRectangle newExtent = rasterProvider->extent();
       int newXSize;
       int newYSize;
       bool useSrcRegion = true;
-      if ( provider->capabilities() & QgsRasterInterface::Size )
+      if ( rasterProvider->capabilities() & QgsRasterInterface::Size )
       {
-        newXSize = provider->xSize();
-        newYSize = provider->ySize();
+        newXSize = rasterProvider->xSize();
+        newYSize = rasterProvider->ySize();
       }
       else
       {
@@ -260,7 +293,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
         if ( !QgsGrass::defaultRegion( mGisdbase, mLocation, &window ) )
         {
           errors.append( tr( "Cannot get default location region." ) );
-          delete provider;
+          delete rasterProvider;
           continue;
         }
         newXSize = window.cols;
@@ -271,9 +304,9 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
       }
 
       QgsRasterPipe* pipe = new QgsRasterPipe();
-      pipe->set( provider );
+      pipe->set( rasterProvider );
 
-      QgsCoordinateReferenceSystem providerCrs = provider->crs();
+      QgsCoordinateReferenceSystem providerCrs = rasterProvider->crs();
       QgsDebugMsg( "providerCrs = " + providerCrs.toWkt() );
       QgsDebugMsg( "mapsetCrs = " + mapsetCrs.toWkt() );
       if ( providerCrs.isValid() && mapsetCrs.isValid() && providerCrs != mapsetCrs )
@@ -282,7 +315,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
         projector->setCRS( providerCrs, mapsetCrs );
         if ( useSrcRegion )
         {
-          projector->destExtentSize( provider->extent(), provider->xSize(), provider->ySize(),
+          projector->destExtentSize( rasterProvider->extent(), rasterProvider->xSize(), rasterProvider->ySize(),
                                      newExtent, newXSize, newYSize );
         }
 
@@ -293,41 +326,50 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
 
       QString path = mPath + "/" + "raster" + "/" + u.name;
       QgsGrassObject rasterObject( mGisdbase, mLocation, mName, newName, QgsGrassObject::Raster );
-      QgsGrassRasterImport *import = new QgsGrassRasterImport( pipe, rasterObject,
-          newExtent, newXSize, newYSize ); // takes pipe ownership
-      connect( import, SIGNAL( finished( QgsGrassImport* ) ), SLOT( onImportFinished( QgsGrassImport* ) ) );
+      import = new QgsGrassRasterImport( pipe, rasterObject, newExtent, newXSize, newYSize ); // takes pipe ownership
+    }
+    else if ( u.layerType == "vector" )
+    {
+      QString path = mPath + "/" + "raster" + "/" + u.name;
+      QgsGrassObject vectorObject( mGisdbase, mLocation, mName, newName, QgsGrassObject::Vector );
+      import = new QgsGrassVectorImport( vectorProvider, vectorObject ); // takes provider ownership
+    }
 
-      // delete existing files (confirmed before in dialog)
-      bool deleteOk = true;
-      foreach ( QString name, import->names() )
+    connect( import, SIGNAL( finished( QgsGrassImport* ) ), SLOT( onImportFinished( QgsGrassImport* ) ) );
+
+    // delete existing files (confirmed before in dialog)
+    bool deleteOk = true;
+    foreach ( QString name, import->names() )
+    {
+      QgsGrassObject obj( import->grassObject() );
+      obj.setName( name );
+      if ( QgsGrass::objectExists( obj ) )
       {
-        QgsGrassObject obj( rasterObject );
-        obj.setName( name );
-        if ( QgsGrass::objectExists( obj ) )
+        QgsDebugMsg( name + " exists -> delete" );
+        if ( !QgsGrass::deleteObject( obj ) )
         {
-          QgsDebugMsg( name + " exists -> delete" );
-          if ( !QgsGrass::deleteObject( obj ) )
-          {
-            errors.append( tr( "Cannot delete %1" ).arg( name ) );
-            deleteOk = false;
-          }
+          errors.append( tr( "Cannot delete %1" ).arg( name ) );
+          deleteOk = false;
         }
       }
-      if ( !deleteOk )
-      {
-        delete import;
-        continue;
-      }
-
-      import->importInThread();
-      mImports.append( import );
-      existingRasters.append( import->names() );
-      refresh(); // after each new item so that it is visible if dialog is opened on next item
     }
-    else
+    if ( !deleteOk )
     {
-      errors.append( tr( "%1 layer type not supported" ).arg( u.name ) );
+      delete import;
+      continue;
     }
+
+    import->importInThread();
+    mImports.append( import );
+    if ( u.layerType == "raster" )
+    {
+      existingRasters.append( import->names() );
+    }
+    else if ( u.layerType == "vector" )
+    {
+      existingVectors.append( import->names() );
+    }
+    refresh(); // after each new item so that it is visible if dialog is opened on next item
   }
 
   if ( !errors.isEmpty() )

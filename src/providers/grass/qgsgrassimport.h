@@ -20,8 +20,8 @@
 #include <QObject>
 
 #include "qgslogger.h"
-#include "qgsrasterdataprovider.h"
 #include "qgsrasterpipe.h"
+#include "qgsvectordataprovider.h"
 
 #include "qgsgrass.h"
 
@@ -32,6 +32,7 @@ class GRASS_LIB_EXPORT QgsGrassImport : public QObject
     QgsGrassImport( QgsGrassObject grassObject );
     virtual ~QgsGrassImport() {}
     QgsGrassObject grassObject() const { return mGrassObject; }
+    virtual void importInThread() = 0;
     virtual QString uri() const = 0;
     // get error if import failed
     QString error();
@@ -52,12 +53,11 @@ class GRASS_LIB_EXPORT QgsGrassRasterImport : public QgsGrassImport
     Q_OBJECT
   public:
     // takes pipe ownership
-    //QgsGrassRasterImport( QgsRasterDataProvider* provider, const QgsGrassObject& grassObject );
     QgsGrassRasterImport( QgsRasterPipe* pipe, const QgsGrassObject& grassObject,
                           const QgsRectangle &extent, int xSize, int ySize );
     ~QgsGrassRasterImport();
     bool import();
-    void importInThread();
+    void importInThread() override;
     QString uri() const override;
     // get list of extensions (for bands)
     static QStringList extensions( QgsRasterDataProvider* provider );
@@ -67,11 +67,30 @@ class GRASS_LIB_EXPORT QgsGrassRasterImport : public QgsGrassImport
     void onFinished();
   private:
     static bool run( QgsGrassRasterImport *imp );
-    //QgsRasterDataProvider* mProvider;
     QgsRasterPipe* mPipe;
     QgsRectangle mExtent;
     int mXSize;
     int mYSize;
+    QFutureWatcher<bool>* mFutureWatcher;
+};
+
+class QgsGrassVectorImport : public QgsGrassImport
+{
+    Q_OBJECT
+  public:
+    // takes provider ownership
+    QgsGrassVectorImport( QgsVectorDataProvider* provider, const QgsGrassObject& grassObject );
+    ~QgsGrassVectorImport();
+    bool import();
+    void importInThread() override;
+    QString uri() const override;
+    // get list of all output names
+    QStringList names() const override;
+  public slots:
+    void onFinished();
+  private:
+    static bool run( QgsGrassVectorImport *imp );
+    QgsVectorDataProvider* mProvider;
     QFutureWatcher<bool>* mFutureWatcher;
 };
 

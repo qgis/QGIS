@@ -1874,6 +1874,8 @@ QString QgsGrassProvider::createTable( int field, const QString &key, const QStr
 {
   QgsDebugMsg( QString( "field = %1" ).arg( field ) );
 
+  // TODO: use QgsGrass::createTable
+
   // Read attributes
   struct field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
   if ( fi != NULL )
