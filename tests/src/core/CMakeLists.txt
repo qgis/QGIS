@@ -156,4 +156,5 @@ ADD_QGIS_TEST(imageoperationtest testqgsimageoperation.cpp)
 ADD_QGIS_TEST(painteffecttest testqgspainteffect.cpp)
 ADD_QGIS_TEST(painteffectregistrytest testqgspainteffectregistry.cpp)
 ADD_QGIS_TEST(statisticalsummarytest testqgsstatisticalsummary.cpp)
+ADD_QGIS_TEST(histogramtest testqgshistogram.cpp)
 

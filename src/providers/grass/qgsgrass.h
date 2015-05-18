@@ -26,11 +26,14 @@ extern "C"
 #include <grass/version.h>
 #include <grass/gis.h>
 #include <grass/form.h>
+#include <grass/dbmi.h>
 }
 
 #include <stdexcept>
 #include "qgsapplication.h"
 #include "qgsexception.h"
+#include "qgsfeature.h"
+#include "qgsfield.h"
 #include <qgsrectangle.h>
 #include <QProcess>
 #include <QString>
@@ -348,6 +351,13 @@ class QgsGrass
      *  @return true if confirmed
      */
     static GRASS_LIB_EXPORT bool deleteObjectDialog( const QgsGrassObject & object );
+
+    /** Create new table. Throws  QgsGrass::Exception */
+    static GRASS_LIB_EXPORT void createTable( dbDriver *driver, const QString tableName, const QgsFields &fields );
+
+    /** Insert row to table. Throws  QgsGrass::Exception */
+    static GRASS_LIB_EXPORT void insertRow( dbDriver *driver, const QString tableName,
+                                            const QgsAttributes& attributes );
 
     //! Library version
     static GRASS_LIB_EXPORT int versionMajor();

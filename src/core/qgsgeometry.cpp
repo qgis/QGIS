@@ -6781,3 +6781,20 @@ bool QgsGeometry::compare( const QgsMultiPolygon &p1, const QgsMultiPolygon &p2,
   }
   return true;
 }
+
+QDataStream& operator<<( QDataStream& out, const QgsGeometry& geometry )
+{
+  QByteArray byteArray = QByteArray::fromRawData(( char * )geometry.asWkb(), geometry.wkbSize() ); // does not copy data and does not take ownership
+  out << byteArray;
+  return out;
+}
+
+QDataStream& operator>>( QDataStream& in, QgsGeometry& geometry )
+{
+  QByteArray byteArray;
+  in >> byteArray;
+  char *data = new char[byteArray.size()];
+  memcpy( data, byteArray.data(), byteArray.size() );
+  geometry.fromWkb(( unsigned char* )data, byteArray.size() );
+  return in;
+}

@@ -511,7 +511,7 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
 
 QString QgsExpressionBuilderWidget::formatPreviewString( const QString& previewString ) const
 {
-  if ( previewString.length() > 60 )
+  if ( previewString.length() > 63 )
   {
     return QString( tr( "%1..." ) ).arg( previewString.left( 60 ) );
   }

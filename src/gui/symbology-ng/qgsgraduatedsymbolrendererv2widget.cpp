@@ -335,9 +335,16 @@ void QgsGraduatedSymbolRendererV2Model::sort( int column, Qt::SortOrder order )
   QgsDebugMsg( "Done" );
 }
 
-void QgsGraduatedSymbolRendererV2Model::updateSymbology()
+void QgsGraduatedSymbolRendererV2Model::updateSymbology( bool resetModel )
 {
-  emit dataChanged( createIndex( 0, 0 ), createIndex( mRenderer->ranges().size(), 0 ) );
+  if ( resetModel )
+  {
+    reset();
+  }
+  else
+  {
+    emit dataChanged( createIndex( 0, 0 ), createIndex( mRenderer->ranges().size(), 0 ) );
+  }
 }
 
 void QgsGraduatedSymbolRendererV2Model::updateLabels()
@@ -465,6 +472,11 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
   connect( mDataDefinedMenus, SIGNAL( sizeScaleFieldChanged( QString ) ), this, SLOT( sizeScaleFieldChanged( QString ) ) );
   connect( mDataDefinedMenus, SIGNAL( scaleMethodChanged( QgsSymbolV2::ScaleMethod ) ), this, SLOT( scaleMethodChanged( QgsSymbolV2::ScaleMethod ) ) );
   btnAdvanced->setMenu( advMenu );
+
+  mHistogramWidget->setLayer( mLayer );
+  mHistogramWidget->setRenderer( mRenderer );
+  connect( mHistogramWidget, SIGNAL( rangesModified( bool ) ), this, SLOT( refreshRanges( bool ) ) );
+  connect( mExpressionWidget, SIGNAL( fieldChanged( QString ) ), mHistogramWidget, SLOT( setSourceFieldExp( QString ) ) );
 }
 
 void QgsGraduatedSymbolRendererV2Widget::on_mSizeUnitWidget_changed()
@@ -543,6 +555,7 @@ void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer( bool updateCount 
   // set column
   QString attrName = mRenderer->classAttribute();
   mExpressionWidget->setField( attrName );
+  mHistogramWidget->setSourceFieldExp( attrName );
 
   // set source symbol
   if ( mRenderer->sourceSymbol() )
@@ -593,6 +606,8 @@ void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer( bool updateCount 
   viewGraduated->resizeColumnToContents( 1 );
   viewGraduated->resizeColumnToContents( 2 );
 
+  mHistogramWidget->refreshHistogram();
+
   connectUpdateHandlers();
 }
 
@@ -625,6 +640,14 @@ void QgsGraduatedSymbolRendererV2Widget::on_methodComboBox_currentIndexChanged( 
     mRenderer->setGraduatedMethod( QgsGraduatedSymbolRendererV2::GraduatedSize );
     reapplySizes();
   }
+}
+
+void QgsGraduatedSymbolRendererV2Widget::refreshRanges( bool reset )
+{
+  if ( !mModel )
+    return;
+
+  mModel->updateSymbology( reset );
 }
 
 void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
@@ -1052,6 +1075,7 @@ void QgsGraduatedSymbolRendererV2Widget::rowsMoved()
 
 void QgsGraduatedSymbolRendererV2Widget::modelDataChanged()
 {
+  mHistogramWidget->refreshHistogram();
 }
 
 void QgsGraduatedSymbolRendererV2Widget::keyPressEvent( QKeyEvent* event )
