@@ -114,12 +114,14 @@ int main( int argc, char **argv )
       break;
     default:
       G_fatal_error( "QGIS data type %d not supported", qgis_type );
+      return 1;
   }
 
   cf = G_open_raster_new( name, grass_type );
   if ( cf < 0 )
   {
     G_fatal_error( "Unable to create raster map <%s>", name );
+    return 1;
   }
 
   void *buf = G_allocate_raster_buf( grass_type );
@@ -132,6 +134,7 @@ int main( int argc, char **argv )
     if ( byteArray.size() != expectedSize )
     {
       G_fatal_error( "Wrong byte array size, expected %d bytes, got %d", expectedSize, byteArray.size() );
+      return 1;
     }
 
     qint32 *cell;
