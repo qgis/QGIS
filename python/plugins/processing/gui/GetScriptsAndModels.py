@@ -31,8 +31,9 @@ import json
 import urllib2
 from urllib2 import HTTPError
 
+from PyQt4 import uic
 from PyQt4.QtCore import Qt, QCoreApplication
-from PyQt4.QtGui import QIcon, QMessageBox, QCursor, QApplication, QDialog, QTreeWidgetItem
+from PyQt4.QtGui import QIcon, QMessageBox, QCursor, QApplication, QTreeWidgetItem
 
 from qgis.utils import iface
 
@@ -42,9 +43,9 @@ from processing.modeler.ModelerUtils import ModelerUtils
 from processing.gui import Help2Html
 from processing.gui.Help2Html import getDescription, ALG_DESC, ALG_VERSION, ALG_CREATOR
 
-from processing.ui.ui_DlgGetScriptsAndModels import Ui_DlgGetScriptsAndModels
-
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'DlgGetScriptsAndModels.ui'))
 
 
 class GetScriptsAction(ToolboxAction):
@@ -97,7 +98,7 @@ def readUrl(url):
         QApplication.restoreOverrideCursor()
 
 
-class GetScriptsAndModelsDialog(QDialog,  Ui_DlgGetScriptsAndModels):
+class GetScriptsAndModelsDialog(BASE, WIDGET):
 
     HELP_TEXT = QCoreApplication.translate('GetScriptsAndModelsDialog',
         '<h3> Processing resources manager </h3>'
@@ -114,7 +115,9 @@ class GetScriptsAndModelsDialog(QDialog,  Ui_DlgGetScriptsAndModels):
     SCRIPTS = 1
 
     def __init__(self, resourceType):
-        QDialog.__init__(self, iface.mainWindow())
+        super(GetScriptsAndModelsDialog, self).__init__(iface.mainWindow())
+        self.setupUi(self)
+
         self.resourceType = resourceType
         if self.resourceType == self.MODELS:
             self.folder = ModelerUtils.modelsFolder()
@@ -124,8 +127,8 @@ class GetScriptsAndModelsDialog(QDialog,  Ui_DlgGetScriptsAndModels):
             self.folder = ScriptUtils.scriptsFolder()
             self.urlBase = 'https://raw.githubusercontent.com/qgis/QGIS-Processing/master/scripts/'
             self.icon = QIcon(os.path.join(pluginPath, 'images', 'script.png'))
+
         self.lastSelectedItem = None
-        self.setupUi(self)
         self.populateTree()
         self.updateToolbox = False
         self.buttonBox.accepted.connect(self.okPressed)

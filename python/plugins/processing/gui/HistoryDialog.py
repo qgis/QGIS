@@ -25,17 +25,23 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from PyQt4 import uic
 from PyQt4.QtCore import Qt
-from PyQt4.QtGui import QAction, QDialog, QPushButton, QDialogButtonBox, QIcon, QStyle, QMessageBox, QFileDialog, QMenu, QTreeWidgetItem
+from PyQt4.QtGui import QAction, QPushButton, QDialogButtonBox, QIcon, QStyle, QMessageBox, QFileDialog, QMenu, QTreeWidgetItem
 from processing.gui import TestTools
 from processing.core.ProcessingLog import ProcessingLog
-from processing.ui.ui_DlgHistory import Ui_DlgHistory
+
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'DlgHistory.ui'))
 
 
-class HistoryDialog(QDialog, Ui_DlgHistory):
+class HistoryDialog(BASE, WIDGET):
 
     def __init__(self):
-        QDialog.__init__(self)
+        super(HistoryDialog, self).__init__(None)
         self.setupUi(self)
 
         self.groupIcon = QIcon()

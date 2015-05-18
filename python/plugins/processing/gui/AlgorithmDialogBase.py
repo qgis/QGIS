@@ -25,16 +25,22 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from PyQt4 import uic
 from PyQt4.QtCore import QCoreApplication, QUrl
-from PyQt4.QtGui import QDialog, QApplication, QDialogButtonBox
+from PyQt4.QtGui import QApplication, QDialogButtonBox
 
 from qgis.utils import iface
 
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.ui.ui_DlgAlgorithmBase import Ui_Dialog
+
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'DlgAlgorithmBase.ui'))
 
 
-class AlgorithmDialogBase(QDialog, Ui_Dialog):
+class AlgorithmDialogBase(BASE, WIDGET):
 
     class InvalidParameterValue(Exception):
 
@@ -43,7 +49,7 @@ class AlgorithmDialogBase(QDialog, Ui_Dialog):
 
 
     def __init__(self, alg):
-        QDialog.__init__(self, iface.mainWindow())
+        super(AlgorithmDialogBase, self).__init__(iface.mainWindow())
         self.setupUi(self)
 
         self.executed = False

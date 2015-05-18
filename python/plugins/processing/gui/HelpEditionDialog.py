@@ -30,13 +30,17 @@ __revision__ = '$Format:%H$'
 import os
 import json
 
+from PyQt4 import uic
 from PyQt4.QtGui import QDialog, QMessageBox, QTreeWidgetItem
 
-from processing.ui.ui_DlgHelpEdition import Ui_DlgHelpEdition
 from processing.core.ProcessingLog import ProcessingLog
 
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'DlgHelpEdition.ui'))
 
-class HelpEditionDialog(QDialog, Ui_DlgHelpEdition):
+
+class HelpEditionDialog(BASE, WIDGET):
 
     ALG_DESC = 'ALG_DESC'
     ALG_CREATOR = 'ALG_CREATOR'
@@ -44,8 +48,9 @@ class HelpEditionDialog(QDialog, Ui_DlgHelpEdition):
     ALG_VERSION = 'ALG_VERSION'
 
     def __init__(self, alg):
-        QDialog.__init__(self)
+        super(HelpEditionDialog, self).__init__(None)
         self.setupUi(self)
+
         self.alg = alg
         self.descriptions = {}
         if isinstance(self.alg, ModelerAlgorithm):

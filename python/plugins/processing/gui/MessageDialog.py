@@ -25,17 +25,21 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from PyQt4 import uic
 from PyQt4.QtCore import QUrl
-from PyQt4.QtGui import QDialog, QDesktopServices
+from PyQt4.QtGui import QDesktopServices
+
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'DlgMessage.ui'))
 
 
-from processing.ui.ui_DlgMessage import Ui_Dialog
-
-
-class MessageDialog(QDialog, Ui_Dialog):
+class MessageDialog(BASE, WIDGET):
 
     def __init__(self):
-        QDialog.__init__(self)
+        super(MessageDialog, self).__init__(None)
         self.setupUi(self)
 
         self.txtMessage.anchorClicked.connect(self.openLink)

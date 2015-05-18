@@ -31,8 +31,9 @@ import sys
 import json
 import os
 
+from PyQt4 import uic
 from PyQt4.QtCore import Qt
-from PyQt4.QtGui import QDialog, QIcon, QMenu, QAction, QCursor, QMessageBox, QFileDialog, QApplication
+from PyQt4.QtGui import QIcon, QMenu, QAction, QCursor, QMessageBox, QFileDialog, QApplication
 
 from qgis.core import QgsApplication
 from qgis.utils import iface
@@ -44,12 +45,13 @@ from processing.algs.r.RAlgorithm import RAlgorithm
 from processing.algs.r.RUtils import RUtils
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.script.ScriptUtils import ScriptUtils
-from processing.ui.ui_DlgScriptEditor import Ui_DlgScriptEditor
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'DlgScriptEditor.ui'))
 
 
-class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
+class ScriptEditorDialog(BASE, WIDGET):
 
     SCRIPT_PYTHON = 0
     SCRIPT_R = 1
@@ -57,7 +59,7 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
     hasChanged = False
 
     def __init__(self, algType, alg):
-        QDialog.__init__(self)
+        super(ScriptEditorDialog, self).__init__(None)
         self.setupUi(self)
 
         self.setWindowFlags(Qt.WindowMinimizeButtonHint |

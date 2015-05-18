@@ -29,8 +29,9 @@ import codecs
 import sys
 import os
 
+from PyQt4 import uic
 from PyQt4.QtCore import Qt, QRectF, QMimeData, QPoint, QPointF, QSettings
-from PyQt4.QtGui import QDialog, QGraphicsView, QTreeWidget, QIcon, QMessageBox, QFileDialog, QImage, QPainter, QTreeWidgetItem
+from PyQt4.QtGui import QGraphicsView, QTreeWidget, QIcon, QMessageBox, QFileDialog, QImage, QPainter, QTreeWidgetItem
 from qgis.core import QgsApplication
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -45,19 +46,18 @@ from processing.modeler.ModelerUtils import ModelerUtils
 from processing.modeler.ModelerScene import ModelerScene
 from processing.modeler.WrongModelException import WrongModelException
 
-from processing.ui.ui_DlgModeler import Ui_DlgModeler
-
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'DlgModeler.ui'))
 
 
-class ModelerDialog(QDialog, Ui_DlgModeler):
+class ModelerDialog(BASE, WIDGET):
 
     USE_CATEGORIES = '/Processing/UseSimplifiedInterface'
     CANVAS_SIZE = 4000
 
     def __init__(self, alg=None):
-        QDialog.__init__(self)
-
+        super(ModelerDialog, self).__init__(None)
         self.setupUi(self)
 
         self.zoom = 1

@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
+from PyQt4 import uic
 from PyQt4.QtCore import Qt, QEvent
 from PyQt4.QtGui import (QFileDialog, QDialog, QIcon, QStyle,
     QStandardItemModel, QStandardItem, QMessageBox, QStyledItemDelegate,
@@ -34,16 +35,18 @@ from PyQt4.QtGui import (QFileDialog, QDialog, QIcon, QStyle,
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.Processing import Processing
-from processing.ui.ui_DlgConfig import Ui_DlgConfig
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'DlgConfig.ui'))
 
 
-class ConfigDialog(QDialog, Ui_DlgConfig):
+class ConfigDialog(BASE, WIDGET):
 
     def __init__(self, toolbox):
-        QDialog.__init__(self)
+        super(ConfigDialog, self).__init__(None)
         self.setupUi(self)
+
         self.toolbox = toolbox
         self.groupIcon = QIcon()
         self.groupIcon.addPixmap(self.style().standardPixmap(

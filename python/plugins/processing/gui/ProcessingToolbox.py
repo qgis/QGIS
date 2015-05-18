@@ -26,9 +26,13 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from PyQt4 import uic
 from PyQt4.QtCore import Qt, QSettings, QCoreApplication
-from PyQt4.QtGui import QDockWidget, QMenu, QAction, QTreeWidgetItem
+from PyQt4.QtGui import QMenu, QAction, QTreeWidgetItem
 from qgis.utils import iface
+
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.core.Processing import Processing
 from processing.core.ProcessingLog import ProcessingLog
@@ -40,15 +44,17 @@ from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui.EditRenderingStylesDialog import EditRenderingStylesDialog
 
-from processing.ui.ui_ProcessingToolbox import Ui_ProcessingToolbox
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'ProcessingToolbox.ui'))
 
 
-class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
+class ProcessingToolbox(BASE, WIDGET):
 
     USE_CATEGORIES = '/Processing/UseSimplifiedInterface'
 
     def __init__(self):
-        QDockWidget.__init__(self, None)
+        super(ProcessingToolbox, self).__init__(None)
         self.setupUi(self)
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
 
@@ -100,7 +106,6 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
         else:
             item.setHidden(True)
             return False
-
 
     def modeHasChanged(self):
         idx = self.modeComboBox.currentIndex()

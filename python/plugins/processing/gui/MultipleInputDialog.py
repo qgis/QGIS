@@ -25,16 +25,21 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from PyQt4 import uic
 from PyQt4.QtCore import Qt
 from PyQt4.QtGui import QDialog, QAbstractItemView, QPushButton, QDialogButtonBox, QStandardItemModel, QStandardItem
 
-from processing.ui.ui_DlgMultipleSelection import Ui_DlgMultipleSelection
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'DlgMultipleSelection.ui'))
 
 
-class MultipleInputDialog(QDialog, Ui_DlgMultipleSelection):
+class MultipleInputDialog(BASE, WIDGET):
 
     def __init__(self, options, selectedoptions=None):
-        QDialog.__init__(self)
+        super(MultipleInputDialog, self).__init__(None)
         self.setupUi(self)
 
         self.lstLayers.setSelectionMode(QAbstractItemView.NoSelection)

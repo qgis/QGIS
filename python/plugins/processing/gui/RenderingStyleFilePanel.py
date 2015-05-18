@@ -25,21 +25,25 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtGui import QWidget, QFileDialog
+import os
+
+from PyQt4 import uic
+from PyQt4.QtGui import QFileDialog
 
 from processing.tools.system import isWindows
 
-from processing.ui.ui_widgetBaseSelector import Ui_Form
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'widgetBaseSelector.ui'))
 
 
-class RenderingStyleFilePanel(QWidget, Ui_Form):
+class RenderingStyleFilePanel(BASE, WIDGET):
 
     def __init__(self):
-        QWidget.__init__(self)
+        super(RenderingStyleFilePanel, self).__init__(None)
         self.setupUi(self)
 
         self.btnSelect.clicked.connect(self.showSelectionDialog)
-
 
     def showSelectionDialog(self):
         filename = QFileDialog.getOpenFileName(self,

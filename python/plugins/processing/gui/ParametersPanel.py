@@ -33,6 +33,7 @@ __revision__ = '$Format:%H$'
 import os
 import locale
 
+from PyQt4 import uic
 from PyQt4.QtCore import QCoreApplication, QVariant
 from PyQt4.QtGui import QWidget, QLayout, QVBoxLayout, QHBoxLayout, QToolButton, QIcon, QLabel, QCheckBox, QComboBox, QLineEdit, QPlainTextEdit
 
@@ -72,17 +73,17 @@ from processing.core.outputs import OutputVector
 
 from processing.tools import dataobjects
 
-from processing.ui.ui_widgetParametersPanel import Ui_Form
-
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'widgetParametersPanel.ui'))
 
 
-class ParametersPanel(QWidget, Ui_Form):
+class ParametersPanel(BASE, WIDGET):
 
     NOT_SELECTED = QCoreApplication.translate('ParametersPanel', '[Not selected]')
 
     def __init__(self, parent, alg):
-        QWidget.__init__(self)
+        super(ParametersPanel, self).__init__(None)
         self.setupUi(self)
 
         self.grpAdvanced.hide()
