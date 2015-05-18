@@ -243,7 +243,7 @@ class QgsMarkerSymbolV2 : QgsSymbolV2
      * @param lineangle Angle in degrees, valid values are between 0 and 360
      * @note added in QGIS 2.9
     */
-    void setLineAngle( double lineangle );
+    void setLineAngle( double lineAngle );
 
     void setSize( double size );
     double size();
