@@ -63,7 +63,7 @@ my $packages    = "packages" . ($arch eq "" ? "" : "-$arch");
 mkdir $packages, 0755 unless -d $packages;
 chdir $packages;
 
-system "wget $wgetopt -c http://nsis.sourceforge.net/mediawiki/images/9/9d/Untgz.zip" unless -f "Untgz.zip";
+system "wget $wgetopt -c http://qgis.org/downloads/Untgz.zip" unless -f "Untgz.zip";
 die "download of Untgz.zip failed" if $?;
 
 my %dep;
