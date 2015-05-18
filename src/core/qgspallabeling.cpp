@@ -1405,12 +1405,12 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
     }
     else
     {
-      text.prepend( dirSym + wrapchr ); // SymbolAbove or SymbolBelow
+      text.prepend( dirSym + QString( "\n" ) ); // SymbolAbove or SymbolBelow
     }
   }
 
   double w = 0.0, h = 0.0;
-  QStringList multiLineSplit = text.split( wrapchr );
+  QStringList multiLineSplit = QgsPalLabeling::splitToLines( text, wrapchr );
   int lines = multiLineSplit.size();
 
   double labelHeight = fm->ascent() + fm->descent(); // ignore +1 for baseline
@@ -3410,6 +3410,25 @@ void QgsPalLabeling::registerFeature( const QString& layerID, QgsFeature& f, con
   lyr.registerFeature( f, context, dxfLayer );
 }
 
+QStringList QgsPalLabeling::splitToLines( const QString &text, const QString &wrapCharacter )
+{
+  QStringList multiLineSplit;
+  if ( !wrapCharacter.isEmpty() && wrapCharacter != QString( "\n" ) )
+  {
+    //wrap on both the wrapchr and new line characters
+    foreach ( QString line, text.split( wrapCharacter ) )
+    {
+      multiLineSplit.append( line.split( QString( "\n" ) ) );
+    }
+  }
+  else
+  {
+    multiLineSplit = text.split( "\n" );
+  }
+
+  return multiLineSplit;
+}
+
 void QgsPalLabeling::registerDiagramFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context )
 {
   //get diagram layer settings, diagram renderer
@@ -4309,8 +4328,6 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
     QString txt = ( label->getPartId() == -1 ? text : QString( text[label->getPartId()] ) );
     QFontMetricsF* labelfm = (( QgsPalGeometry* )label->getFeaturePart()->getUserGeometry() )->getLabelFontMetrics();
 
-    QString wrapchr = !tmpLyr.wrapChar.isEmpty() ? tmpLyr.wrapChar : QString( "\n" );
-
     //add the direction symbol if needed
     if ( !txt.isEmpty() && tmpLyr.placement == QgsPalLayerSettings::Line &&
          tmpLyr.addDirectionSymbol )
@@ -4341,12 +4358,12 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
       if ( tmpLyr.placeDirectionSymbol == QgsPalLayerSettings::SymbolAbove )
       {
         prependSymb = true;
-        symb = symb + wrapchr;
+        symb = symb + QString( "\n" );
       }
       else if ( tmpLyr.placeDirectionSymbol == QgsPalLayerSettings::SymbolBelow )
       {
         prependSymb = false;
-        symb = wrapchr + symb;
+        symb = QString( "\n" ) + symb;
       }
 
       if ( prependSymb )
@@ -4360,8 +4377,7 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
     }
 
     //QgsDebugMsgLevel( "drawLabel " + txt, 4 );
-
-    QStringList multiLineList = txt.split( wrapchr );
+    QStringList multiLineList = QgsPalLabeling::splitToLines( text, tmpLyr.wrapChar );
     int lines = multiLineList.size();
 
     double labelWidest = 0.0;

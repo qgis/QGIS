@@ -815,6 +815,15 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     //! @deprecated since 2.4 - settings are always stored in project
     Q_DECL_DEPRECATED void setStoredWithProject( bool store ) { Q_UNUSED( store ); }
 
+  /** Splits a text string to a list of seperate lines, using a specified wrap character.
+     * The text string will be split on either newline characters or the wrap character.
+     * @param text text string to split
+     * @param wrapCharacter additional character to wrap on
+     * @returns list of text split to lines
+     * @note added in QGIS 2.9
+     */
+    static QStringList splitToLines( const QString& text, const QString& wrapCharacter );
+
   protected:
     // update temporary QgsPalLayerSettings with any data defined text style values
     void dataDefinedTextStyle( QgsPalLayerSettings& tmpLyr,
