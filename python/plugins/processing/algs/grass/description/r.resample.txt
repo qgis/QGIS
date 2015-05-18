@@ -2,4 +2,4 @@ r.resample
 r.resample - GRASS raster map layer data resampling capability using nearest neighbors.
 Raster (r.*)
 ParameterRaster|input|Input raster layer |False
-OutputRaster|output|Output raster layer
+OutputRaster|output|Resampled NN
