@@ -44,7 +44,7 @@ QgsHtmlAnnotationItem::QgsHtmlAnnotationItem( QgsMapCanvas* canvas, QgsVectorLay
     , mHasAssociatedFeature( hasFeature )
     , mFeatureId( feature )
 {
-  mWebView = new QWebView();
+  mWebView = new QgsWebView();
   mWebView->page()->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
 
   mWidgetContainer = new QGraphicsProxyWidget( this );

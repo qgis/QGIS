@@ -26,10 +26,11 @@
 #include "qgsproject.h"
 #include "qgsdistancearea.h"
 
+#include "qgswebpage.h"
+#include "qgswebframe.h"
+
 #include <QCoreApplication>
 #include <QPainter>
-#include <QWebFrame>
-#include <QWebPage>
 #include <QImage>
 #include <QNetworkReply>
 
