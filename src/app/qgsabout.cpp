@@ -39,8 +39,7 @@ QgsAbout::QgsAbout( QWidget *parent )
 #endif
 {
   setupUi( this );
-  QString title = QString( "%1 - %2 Bit" ).arg( windowTitle() ).arg( QSysInfo::WordSize );
-  initOptionsBase( true, title );
+  initOptionsBase( true, QString( "%1 - %2 Bit" ).arg( windowTitle() ).arg( QSysInfo::WordSize ) );
   init();
 }
 
@@ -55,9 +54,7 @@ void QgsAbout::init()
   // check internet connection in order to hide/show the developers map widget
   int DEVELOPERS_MAP_INDEX = 5;
   QTcpSocket socket;
-  QString host = "qgis.org";
-  int port = 80;
-  socket.connectToHost( host, port );
+  socket.connectToHost( "qgis.org", 80 );
   if ( socket.waitForConnected( 1000 ) )
     setDevelopersMap();
   else
@@ -65,6 +62,8 @@ void QgsAbout::init()
 
   developersMapView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
   developersMapView->setContextMenuPolicy( Qt::NoContextMenu );
+
+  connect( developersMapView, SIGNAL( linkClicked( const QUrl & ) ), this, SLOT( openUrl( const QUrl & ) ) );
 
   // set the 60x60 icon pixmap
   QPixmap icon( QgsApplication::iconsPath() + "qgis-icon-60x60.png" );
@@ -176,9 +175,8 @@ void QgsAbout::init()
     donorsHTML += "</table>";
 #endif
 
-    QString myStyle = QgsApplication::reportStyleSheet();
     txtDonors->clear();
-    txtDonors->document()->setDefaultStyleSheet( myStyle );
+    txtDonors->document()->setDefaultStyleSheet( QgsApplication::reportStyleSheet() );
     txtDonors->setHtml( donorsHTML );
     QgsDebugMsg( QString( "donorsHTML:%1" ).arg( donorsHTML.toAscii().constData() ) );
   }
@@ -218,8 +216,7 @@ void QgsAbout::setLicence()
 #endif
   if ( licenceFile.open( QIODevice::ReadOnly ) )
   {
-    QString content = licenceFile.readAll();
-    txtLicense->setText( content );
+    txtLicense->setText( licenceFile.readAll() );
   }
 }
 
@@ -232,9 +229,8 @@ void QgsAbout::setVersion( QString v )
 
 void QgsAbout::setWhatsNew()
 {
-  QString myStyle = QgsApplication::reportStyleSheet();
   txtWhatsNew->clear();
-  txtWhatsNew->document()->setDefaultStyleSheet( myStyle );
+  txtWhatsNew->document()->setDefaultStyleSheet( QgsApplication::reportStyleSheet() );
   txtWhatsNew->setSource( "file:///" + QgsApplication::pkgDataPath() + "/doc/news.html" );
 }
 
@@ -273,17 +269,15 @@ void QgsAbout::setPluginInfo()
 
 void QgsAbout::on_btnQgisUser_clicked()
 {
-  // find a browser
-  QString url = "http://lists.osgeo.org/mailman/listinfo/qgis-user";
-  openUrl( url );
+  openUrl( QString( "http://lists.osgeo.org/mailman/listinfo/qgis-user" ) );
 }
 
 void QgsAbout::on_btnQgisHome_clicked()
 {
-  openUrl( "http://qgis.org" );
+  openUrl( QString( "http://qgis.org" ) );
 }
 
-void QgsAbout::openUrl( QString url )
+void QgsAbout::openUrl( const QUrl &url )
 {
   //use the users default browser
   QDesktopServices::openUrl( url );
@@ -317,12 +311,6 @@ QString QgsAbout::fileSystemSafe( QString fileName )
   QgsDebugMsg( result );
 
   return result;
-}
-
-void QgsAbout::on_developersMapView_linkClicked( const QUrl &url )
-{
-  QString link = url.toString();
-  openUrl( link );
 }
 
 void QgsAbout::setDevelopersMap()

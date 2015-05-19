@@ -196,13 +196,14 @@ p, li { white-space: pre-wrap; }
             </layout>
            </item>
            <item>
-            <widget class="QWebView" name="txtVersion">
-             <property name="url">
-              <url>
-               <string>about:blank</string>
-              </url>
+            <widget class="QTextBrowser" name="txtVersion">
+             <property name="openExternalLinks">
+              <bool>true</bool>
              </property>
-            </widget>
+             <property name="openLinks">
+              <bool>true</bool>
+             </property>
+	    </widget>
            </item>
            <item>
             <spacer name="spacer_2">
