@@ -51,6 +51,11 @@ class QgsServerInterface
     // Commented because of problems with typedef QgsServerFiltersMap, provided
     // methods to alter the filters map into QgsRequestHandler API
     // virtual QgsServerFiltersMap filters( ) = 0;
+    /** Returns the configFilePath as seen by the server, this value is only
+     * available after requestReady has been called.*/
+    virtual QString configFilePath( ) = 0;
+    /** Set the config file path */
+    virtual void setConfigFilePath( QString configFilePath) = 0;
 
 private:
     /** Constructor */

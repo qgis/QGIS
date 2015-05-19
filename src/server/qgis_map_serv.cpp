@@ -389,6 +389,12 @@ int main( int argc, char * argv[] )
     QMap<QString, QString>::const_iterator paramIt;
     //Config file path
     QString configFilePath = configPath( defaultConfigFilePath, parameterMap );
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    // Pass the path to server interface
+    serverIface.setConfigFilePath( configFilePath );
+#endif
+
     //Service parameter
     QString serviceString = theRequestHandler->parameter( "SERVICE" );
 

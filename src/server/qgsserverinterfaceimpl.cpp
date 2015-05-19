@@ -43,6 +43,11 @@ void QgsServerInterfaceImpl::setRequestHandler( QgsRequestHandler * requestHandl
   mRequestHandler = requestHandler;
 }
 
+void QgsServerInterfaceImpl::setConfigFilePath( QString configFilePath )
+{
+  mConfigFilePath = configFilePath;
+}
+
 void QgsServerInterfaceImpl::registerFilter( QgsServerFilter *filter, int priority )
 {
   mFilters.insert( priority, filter );
