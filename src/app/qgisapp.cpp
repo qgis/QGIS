@@ -1827,7 +1827,7 @@ void QgisApp::createStatusBar()
   // so we need to set font for it separately
   mScaleEdit->lineEdit()->setFont( myFont );
   mScaleEdit->setMinimumWidth( 10 );
-  mScaleEdit->setMaximumWidth( 100 );
+  //mScaleEdit->setMaximumWidth( 100 );
   //mScaleEdit->setMaximumHeight( 20 );
   mScaleEdit->setContentsMargins( 0, 0, 0, 0 );
   mScaleEdit->setWhatsThis( tr( "Displays the current map scale" ) );
