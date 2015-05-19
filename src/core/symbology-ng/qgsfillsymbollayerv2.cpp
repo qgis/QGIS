@@ -2314,6 +2314,14 @@ QgsSymbolV2* QgsLinePatternFillSymbolLayer::subSymbol()
   return mFillLineSymbol;
 }
 
+QSet<QString> QgsLinePatternFillSymbolLayer::usedAttributes() const
+{
+  QSet<QString> attr = QgsFillSymbolLayerV2::usedAttributes();
+  if ( mFillLineSymbol )
+    attr.unite( mFillLineSymbol->usedAttributes() );
+  return attr;
+}
+
 double QgsLinePatternFillSymbolLayer::estimateMaxBleed() const
 {
   return 0;

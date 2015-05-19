@@ -1495,6 +1495,14 @@ QgsMapUnitScale QgsMarkerLineSymbolLayerV2::mapUnitScale() const
   return QgsMapUnitScale();
 }
 
+QSet<QString> QgsMarkerLineSymbolLayerV2::usedAttributes() const
+{
+  QSet<QString> attr = QgsLineSymbolLayerV2::usedAttributes();
+  if ( mMarker )
+    attr.unite( mMarker->usedAttributes() );
+  return attr;
+}
+
 double QgsMarkerLineSymbolLayerV2::estimateMaxBleed() const
 {
   return ( mMarker->size() / 2.0 ) + mOffset;

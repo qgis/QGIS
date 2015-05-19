@@ -207,6 +207,8 @@ class QgsMarkerLineSymbolLayerV2 : QgsLineSymbolLayerV2
     void setMapUnitScale( const QgsMapUnitScale& scale );
     QgsMapUnitScale mapUnitScale() const;
 
+    QSet<QString> usedAttributes() const;
+
   protected:
 
     void renderPolylineInterval( const QPolygonF& points, QgsSymbolV2RenderContext& context );
