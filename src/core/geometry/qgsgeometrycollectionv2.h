@@ -27,6 +27,8 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
     QgsGeometryCollectionV2& operator=( const QgsGeometryCollectionV2& c );
     virtual ~QgsGeometryCollectionV2();
 
+    virtual QgsAbstractGeometryV2* clone() const;
+
     int numGeometries() const;
     const QgsAbstractGeometryV2* geometryN( int n ) const;
     QgsAbstractGeometryV2* geometryN( int n );
@@ -46,6 +48,7 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
     virtual void draw( QPainter& p ) const;
 
     bool fromWkb( const unsigned char * wkb );
+    virtual bool fromWkt( const QString& wkt );
     int wkbSize() const;
     unsigned char* asWkb( int& binarySize ) const;
     QString asWkt( int precision = 17 ) const;

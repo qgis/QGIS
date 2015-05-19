@@ -21,7 +21,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsmessagelog.h"
 #include "qgsmulticurvev2.h"
 #include "qgsmultipointv2.h"
-#include "qgsmultisurfacev2.h"
+#include "qgsmultipolygonv2.h"
 #include "qgslogger.h"
 #include "qgspolygonv2.h"
 #include <cstdio>
@@ -793,7 +793,7 @@ QgsAbstractGeometryV2* QgsGeos::fromGeos( const GEOSGeometry* geos )
     }
     case GEOS_MULTIPOLYGON:
     {
-      QgsMultiSurfaceV2* multiSurface = new QgsMultiSurfaceV2();
+      QgsMultiPolygonV2* multiPolygon = new QgsMultiPolygonV2();
 
       int nParts = GEOSGetNumGeometries_r( geosinit.ctxt, geos );
       for ( int i = 0; i < nParts; ++i )
@@ -801,10 +801,10 @@ QgsAbstractGeometryV2* QgsGeos::fromGeos( const GEOSGeometry* geos )
         QgsPolygonV2* poly = fromGeosPolygon( GEOSGetGeometryN_r( geosinit.ctxt, geos, i ) );
         if ( poly )
         {
-          multiSurface->addGeometry( poly );
+          multiPolygon->addGeometry( poly );
         }
       }
-      return multiSurface;
+      return multiPolygon;
     }
   }
   return 0;
@@ -1076,6 +1076,9 @@ bool QgsGeos::relation( const QgsAbstractGeometryV2& geom, Relation r ) const
         case DISJOINT:
           result = ( GEOSPreparedDisjoint_r( geosinit.ctxt, mGeosPrepared, geosGeom ) == 1 );
           break;
+        case OVERLAPS:
+          result = ( GEOSPreparedOverlaps_r( geosinit.ctxt, mGeosPrepared, geosGeom ) == 1 );
+          break;
         default:
           GEOSGeom_destroy_r( geosinit.ctxt, geosGeom );
           return false;
@@ -1103,6 +1106,9 @@ bool QgsGeos::relation( const QgsAbstractGeometryV2& geom, Relation r ) const
         break;
       case DISJOINT:
         result = ( GEOSDisjoint_r( geosinit.ctxt, mGeos, geosGeom ) == 1 );
+        break;
+      case OVERLAPS:
+        result = ( GEOSOverlaps_r( geosinit.ctxt, mGeos, geosGeom ) == 1 );
         break;
       default:
         GEOSGeom_destroy_r( geosinit.ctxt, geosGeom );
@@ -1949,5 +1955,5 @@ int QgsGeos::geomDigits( const GEOSGeometry* geom )
 
 GEOSContextHandle_t QgsGeos::getGEOSHandler()
 {
-    return geosinit.ctxt;
+  return geosinit.ctxt;
 }

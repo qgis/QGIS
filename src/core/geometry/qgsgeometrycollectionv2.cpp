@@ -24,7 +24,7 @@ email                : marco.hugentobler at sourcepole dot com
 
 QgsGeometryCollectionV2::QgsGeometryCollectionV2(): QgsAbstractGeometryV2()
 {
-
+  mWkbType = QgsWKBTypes::GeometryCollection;
 }
 
 QgsGeometryCollectionV2::QgsGeometryCollectionV2( const QgsGeometryCollectionV2& c ): QgsAbstractGeometryV2( c )
@@ -55,6 +55,11 @@ QgsGeometryCollectionV2& QgsGeometryCollectionV2::operator=( const QgsGeometryCo
 QgsGeometryCollectionV2::~QgsGeometryCollectionV2()
 {
   clear();
+}
+
+QgsAbstractGeometryV2* QgsGeometryCollectionV2::clone() const
+{
+  return new QgsGeometryCollectionV2( *this );
 }
 
 void QgsGeometryCollectionV2::clear()
@@ -178,6 +183,11 @@ bool QgsGeometryCollectionV2::fromWkb( const unsigned char * wkb )
     wkbPtr += geom->wkbSize();
   }
   return true;
+}
+
+bool QgsGeometryCollectionV2::fromWkt( const QString& wkt )
+{
+  return fromCollectionWkt( wkt, QList<QgsAbstractGeometryV2*>() << new QgsGeometryCollectionV2, "GeometryCollection" );
 }
 
 int QgsGeometryCollectionV2::wkbSize() const

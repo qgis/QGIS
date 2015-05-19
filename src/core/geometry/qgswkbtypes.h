@@ -36,6 +36,7 @@ class CORE_EXPORT QgsWKBTypes
       MultiLineString = 5,
       MultiPolygon = 6,
       CircularString = 8,
+      GeometryCollection = 7,
       CompoundCurve = 9,
       CurvePolygon =  10, //13, //should be 10. Seems to be correct in newer postgis versions
       MultiCurve = 11,

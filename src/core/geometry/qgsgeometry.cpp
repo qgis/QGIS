@@ -579,16 +579,16 @@ int QgsGeometry::translate( double dx, double dy )
 
 int QgsGeometry::rotate( double rotation, const QgsPoint& center )
 {
-    if ( !d || !d->geometry )
-    {
-      return 1;
-    }
+  if ( !d || !d->geometry )
+  {
+    return 1;
+  }
 
-    QTransform t = QTransform::fromTranslate( center.x(), center.y() );
-    t.rotate( -rotation );
-    t.translate( -center.x(), -center.y() );
-    d->geometry->transform( t );
-    return 0;
+  QTransform t = QTransform::fromTranslate( center.x(), center.y() );
+  t.rotate( -rotation );
+  t.translate( -center.x(), -center.y() );
+  d->geometry->transform( t );
+  return 0;
 }
 
 int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeometry*>& newGeometries, bool topological, QList<QgsPoint> &topologyTestPoints )
@@ -730,7 +730,13 @@ bool QgsGeometry::disjoint( const QgsGeometry* geometry ) const
 
 bool QgsGeometry::equals( const QgsGeometry* geometry ) const
 {
-  return false; //todo //return geosRelOp( GEOSEquals, this, geometry );
+  if ( !d || !d->geometry || !geometry || !geometry->d || !geometry->d->geometry )
+  {
+    return false;
+  }
+
+  QgsGeos geos( d->geometry );
+  return geos.isEqual( *( geometry->d->geometry ) );
 }
 
 bool QgsGeometry::touches( const QgsGeometry* geometry ) const
@@ -783,7 +789,7 @@ QString QgsGeometry::exportToWkt( const int &precision ) const
   {
     return QString();
   }
-  return d->geometry->asWkt();
+  return d->geometry->asWkt( precision );
 }
 
 QString QgsGeometry::exportToGeoJSON( const int &precision ) const
@@ -1691,12 +1697,12 @@ void QgsGeometry::convertPolygon( const QgsPolygonV2& input, QgsPolygon& output 
 
 GEOSContextHandle_t QgsGeometry::getGEOSHandler()
 {
-    return QgsGeos::getGEOSHandler();
+  return QgsGeos::getGEOSHandler();
 }
 
 QgsGeometry *QgsGeometry::fromQPointF( const QPointF &point )
 {
-    return new QgsGeometry( new QgsPointV2( point.x(), point.y() ) );
+  return new QgsGeometry( new QgsPointV2( point.x(), point.y() ) );
 }
 
 QgsGeometry *QgsGeometry::fromQPolygonF( const QPolygonF &polygon )
@@ -1771,60 +1777,60 @@ bool QgsGeometry::compare( const QgsMultiPolygon &p1, const QgsMultiPolygon &p2,
 
 QgsGeometry* QgsGeometry::smooth( const unsigned int iterations, const double offset ) const
 {
-    switch ( wkbType() )
+  switch ( wkbType() )
+  {
+    case QGis::WKBPoint:
+    case QGis::WKBPoint25D:
+    case QGis::WKBMultiPoint:
+    case QGis::WKBMultiPoint25D:
+      //can't smooth a point based geometry
+      return new QgsGeometry( *this );
+
+    case QGis::WKBLineString:
+    case QGis::WKBLineString25D:
+    {
+      QgsPolyline line = asPolyline();
+      return QgsGeometry::fromPolyline( smoothLine( line, iterations, offset ) );
+    }
+
+    case QGis::WKBMultiLineString:
+    case QGis::WKBMultiLineString25D:
+    {
+      QgsMultiPolyline multiline = asMultiPolyline();
+      QgsMultiPolyline resultMultiline;
+      QgsMultiPolyline::const_iterator lineIt = multiline.constBegin();
+      for ( ; lineIt != multiline.constEnd(); ++lineIt )
       {
-        case QGis::WKBPoint:
-        case QGis::WKBPoint25D:
-        case QGis::WKBMultiPoint:
-        case QGis::WKBMultiPoint25D:
-          //can't smooth a point based geometry
-          return new QgsGeometry( *this );
-
-        case QGis::WKBLineString:
-        case QGis::WKBLineString25D:
-        {
-          QgsPolyline line = asPolyline();
-          return QgsGeometry::fromPolyline( smoothLine( line, iterations, offset ) );
-        }
-
-        case QGis::WKBMultiLineString:
-        case QGis::WKBMultiLineString25D:
-        {
-          QgsMultiPolyline multiline = asMultiPolyline();
-          QgsMultiPolyline resultMultiline;
-          QgsMultiPolyline::const_iterator lineIt = multiline.constBegin();
-          for ( ; lineIt != multiline.constEnd(); ++lineIt )
-          {
-            resultMultiline << smoothLine( *lineIt, iterations, offset );
-          }
-          return QgsGeometry::fromMultiPolyline( resultMultiline );
-        }
-
-        case QGis::WKBPolygon:
-        case QGis::WKBPolygon25D:
-        {
-          QgsPolygon poly = asPolygon();
-          return QgsGeometry::fromPolygon( smoothPolygon( poly, iterations, offset ) );
-        }
-
-        case QGis::WKBMultiPolygon:
-        case QGis::WKBMultiPolygon25D:
-        {
-          QgsMultiPolygon multipoly = asMultiPolygon();
-          QgsMultiPolygon resultMultipoly;
-          QgsMultiPolygon::const_iterator polyIt = multipoly.constBegin();
-          for ( ; polyIt != multipoly.constEnd(); ++polyIt )
-          {
-            resultMultipoly << smoothPolygon( *polyIt, iterations, offset );
-          }
-          return QgsGeometry::fromMultiPolygon( resultMultipoly );
-        }
-        break;
-
-        case QGis::WKBUnknown:
-        default:
-          return new QgsGeometry( *this );
+        resultMultiline << smoothLine( *lineIt, iterations, offset );
       }
+      return QgsGeometry::fromMultiPolyline( resultMultiline );
+    }
+
+    case QGis::WKBPolygon:
+    case QGis::WKBPolygon25D:
+    {
+      QgsPolygon poly = asPolygon();
+      return QgsGeometry::fromPolygon( smoothPolygon( poly, iterations, offset ) );
+    }
+
+    case QGis::WKBMultiPolygon:
+    case QGis::WKBMultiPolygon25D:
+    {
+      QgsMultiPolygon multipoly = asMultiPolygon();
+      QgsMultiPolygon resultMultipoly;
+      QgsMultiPolygon::const_iterator polyIt = multipoly.constBegin();
+      for ( ; polyIt != multipoly.constEnd(); ++polyIt )
+      {
+        resultMultipoly << smoothPolygon( *polyIt, iterations, offset );
+      }
+      return QgsGeometry::fromMultiPolygon( resultMultipoly );
+    }
+    break;
+
+    case QGis::WKBUnknown:
+    default:
+      return new QgsGeometry( *this );
+  }
 }
 
 inline QgsPoint interpolatePointOnLine( const QgsPoint& p1, const QgsPoint& p2, const double offset )
