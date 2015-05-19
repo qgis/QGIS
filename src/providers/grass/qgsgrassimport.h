@@ -74,7 +74,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterImport : public QgsGrassImport
     QFutureWatcher<bool>* mFutureWatcher;
 };
 
-class QgsGrassVectorImport : public QgsGrassImport
+class GRASS_LIB_EXPORT QgsGrassVectorImport : public QgsGrassImport
 {
     Q_OBJECT
   public:
