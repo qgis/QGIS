@@ -289,7 +289,7 @@ class CORE_EXPORT QgsGeometry
      @return 0 in case of success*/
     int translate( double dx, double dy );
 
-    /**Transform this geometry as described by CoordinateTranasform ct
+    /**Transform this geometry as described by CoordinateTransform ct
      @return 0 in case of success*/
     int transform( const QgsCoordinateTransform& ct );
 
