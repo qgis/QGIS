@@ -806,6 +806,19 @@ QgsAbstractGeometryV2* QgsGeos::fromGeos( const GEOSGeometry* geos )
       }
       return multiPolygon;
     }
+    case GEOS_GEOMETRYCOLLECTION:
+    {
+      QgsGeometryCollectionV2* geomCollection = new QgsGeometryCollectionV2();
+      int nParts = GEOSGetNumGeometries_r( geosinit.ctxt, geos );
+      for ( int i = 0; i < nParts; ++i )
+      {
+        QgsAbstractGeometryV2* geom = fromGeos( GEOSGetGeometryN_r( geosinit.ctxt, geos, i ) );
+        if ( geom )
+        {
+          geomCollection->addGeometry( geom );
+        }
+      }
+    }
   }
   return 0;
 }
@@ -954,38 +967,34 @@ GEOSGeometry* QgsGeos::asGeos( const QgsAbstractGeometryV2* geom )
     }
     return GEOSGeom_createCollection_r( geosinit.ctxt, GEOS_MULTIPOINT, geomarr, c->numGeometries() ); //todo: geos exceptions
   }
-  else if ( geom->geometryType() == "MultiCurve" || geom->geometryType() == "MultiLineString" )
+  else if ( QgsWKBTypes::isMultiType( geom->wkbType() ) )
   {
+    int geosType = GEOS_MULTIPOINT;
+    if ( geom->geometryType() == "MultiCurve" || geom->geometryType() == "MultiLineString" )
+    {
+      geosType = GEOS_MULTILINESTRING;
+    }
+    else if ( geom->geometryType() == "MultiSurface" || geom->geometryType() == "MultiPolygon" )
+    {
+      geosType = GEOS_MULTIPOLYGON;
+    }
+    else if ( geom->geometryType() == "GeometryCollection" )
+    {
+      geosType = GEOS_GEOMETRYCOLLECTION;
+    }
+
     const QgsGeometryCollectionV2* c = dynamic_cast<const QgsGeometryCollectionV2*>( geom );
     if ( !c )
     {
       return 0;
     }
-
     GEOSGeometry **geomarr = new GEOSGeometry*[ c->numGeometries()];
     for ( int i = 0; i < c->numGeometries(); ++i )
     {
-      geomarr[i] = createGeosLinestring( c->geometryN( i ) );
+      geomarr[i] = asGeos( c->geometryN( i ) );
     }
-    return GEOSGeom_createCollection_r( geosinit.ctxt, GEOS_MULTILINESTRING, geomarr, c->numGeometries() ); //todo: geos exceptions
+    return GEOSGeom_createCollection_r( geosinit.ctxt, geosType, geomarr, c->numGeometries() ); //todo: geos exceptions
   }
-  else if ( geom->geometryType() == "MultiSurface" || geom->geometryType() == "MultiPolygon" )
-  {
-    const QgsGeometryCollectionV2* c = dynamic_cast<const QgsGeometryCollectionV2*>( geom );
-    if ( !c )
-    {
-      return 0;
-    }
-
-    GEOSGeometry **geomarr = new GEOSGeometry*[ c->numGeometries()];
-    for ( int i = 0; i < c->numGeometries(); ++i )
-    {
-      geomarr[i] = createGeosPolygon( c->geometryN( i ) );
-    }
-    return GEOSGeom_createCollection_r( geosinit.ctxt, GEOS_MULTIPOLYGON, geomarr, c->numGeometries() ); //todo: geos exceptions
-  }
-
-  //todo: multitypes
 
   return 0;
 }

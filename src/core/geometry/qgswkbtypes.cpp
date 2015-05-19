@@ -173,5 +173,10 @@ QMap<QgsWKBTypes::Type, QgsWKBTypes::wkbEntry> QgsWKBTypes::registerTypes()
   entries.insert( MultiSurfaceZ, wkbEntry( "MultiSurfaceZ", true, MultiSurfaceZ, CurvePolygonZ, MultiSurface, PolygonGeometry ) );
   entries.insert( MultiSurfaceM, wkbEntry( "MultiSurfaceM", true, MultiSurfaceM, CurvePolygonM, MultiSurface, PolygonGeometry ) );
   entries.insert( MultiSurfaceZM, wkbEntry( "MultiSurfaceZM", true, MultiSurfaceZM, CurvePolygonZM, MultiSurface, PolygonGeometry ) );
+  //geometrycollection
+  entries.insert( GeometryCollection, wkbEntry( "GeometryCollection", true, GeometryCollection, Unknown, GeometryCollection, UnknownGeometry ) );
+  entries.insert( GeometryCollectionZ, wkbEntry( "GeometryCollectionZ", true, GeometryCollectionZ, Unknown, GeometryCollection, UnknownGeometry ) );
+  entries.insert( GeometryCollectionM, wkbEntry( "GeometryCollectionM", true, GeometryCollectionM, Unknown, GeometryCollection, UnknownGeometry ) );
+  entries.insert( GeometryCollectionZM, wkbEntry( "GeometryCollectionZM", true, GeometryCollectionZM, Unknown, GeometryCollection, UnknownGeometry ) );
   return entries;
 }

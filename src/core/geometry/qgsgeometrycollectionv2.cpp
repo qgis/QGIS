@@ -17,6 +17,8 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsapplication.h"
 #include "qgsgeometryimport.h"
 #include "qgsgeometryutils.h"
+#include "qgscircularstringv2.h"
+#include "qgscompoundcurvev2.h"
 #include "qgslinestringv2.h"
 #include "qgspointv2.h"
 #include "qgspolygonv2.h"
@@ -187,7 +189,8 @@ bool QgsGeometryCollectionV2::fromWkb( const unsigned char * wkb )
 
 bool QgsGeometryCollectionV2::fromWkt( const QString& wkt )
 {
-  return fromCollectionWkt( wkt, QList<QgsAbstractGeometryV2*>() << new QgsGeometryCollectionV2, "GeometryCollection" );
+  return fromCollectionWkt( wkt, QList<QgsAbstractGeometryV2*>() << new QgsPointV2 << new QgsLineStringV2
+                            << new QgsCircularStringV2 << new QgsCompoundCurveV2, "GeometryCollection" );
 }
 
 int QgsGeometryCollectionV2::wkbSize() const
