@@ -226,7 +226,7 @@ class CORE_EXPORT QgsMapToPixel
     double yMin; //!< @deprecated in 2.8
     QTransform mMatrix;
 
-    void updateMatrix();
+    bool updateMatrix();
 };
 
 
