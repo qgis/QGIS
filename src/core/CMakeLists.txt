@@ -291,6 +291,13 @@ SET(QGIS_CORE_SRCS
   raster/qgshuesaturationfilter.cpp
 )
 
+IF (NOT WITH_QTWEBKIT)
+  SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+    qgswebpage.cpp
+    qgswebframe.cpp
+  )
+ENDIF(WITH_QTWEBKIT)
+
 IF(ENABLE_MODELTEST)
   SET(MODELTEST_SRCS
     ../../tests/qt_modeltest/modeltest.cpp
@@ -322,7 +329,6 @@ IF (WITH_INTERNAL_QEXTSERIALPORT)
     gps/qextserialport/qextserialport.cpp
     gps/qextserialport/qextserialenumerator.cpp
   )
-
   IF(WIN32)
     SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
       gps/qextserialport/win_qextserialport.cpp
@@ -388,6 +394,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsvectorlayercache.h
   qgsvectorlayerjoinbuffer.h
   qgsgeometryvalidator.h
+  qgswebview.h
 
   composer/qgsaddremoveitemcommand.h
   composer/qgscomposerlegend.h
@@ -437,6 +444,13 @@ SET(QGIS_CORE_MOC_HDRS
   layertree/qgslayertreenode.h
   layertree/qgslayertreeregistrybridge.h
 )
+
+IF (NOT WITH_QTWEBKIT)
+  SET(QGIS_CORE_MOC_HDRS ${QGIS_CORE_MOC_HDRS}
+    qgswebpage.h
+    qgswebframe.h
+  )
+ENDIF(WITH_QTWEBKIT)
 
 IF (NOT QT5_BUILD)
   SET(QGIS_CORE_MOC_HDRS ${QGIS_CORE_MOC_HDRS}
@@ -572,12 +586,15 @@ SET(QGIS_CORE_HDRS
   qgsvectorlayerundocommand.h
   qgsvectorsimplifymethod.h
   qgsxmlutils.h
+  qgswebpage.h
+  qgswebframe.h
+  qgswebview.h
 
   diagram/qgsdiagram.h
   diagram/qgspiediagram.h
   diagram/qgstextdiagram.h
   diagram/qgshistogramdiagram.h
-  
+
   effects/qgsimageoperation.h
   effects/qgspainteffect.h
   effects/qgseffectstack.h

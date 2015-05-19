@@ -370,7 +370,7 @@
                    <number>0</number>
                   </property>
                   <item>
-                   <widget class="QWebView" name="wvDetails">
+                   <widget class="QgsWebView" name="wvDetails">
                     <property name="url">
                      <url>
                       <string>about:blank</string>
@@ -941,9 +941,9 @@ p, li { white-space: pre-wrap; }
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QWebView</class>
+   <class>QgsWebView</class>
    <extends>QWidget</extends>
-   <header>QtWebKit/QWebView</header>
+   <header>qgswebview.h</header>
   </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>

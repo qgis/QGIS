@@ -17,8 +17,8 @@
 #define QGSWEBVIEWWIDGETWRAPPER_H
 
 #include "qgseditorwidgetwrapper.h"
+#include "qgswebview.h"
 
-#include <QWebView>
 #include <QLineEdit>
 #include <QPushButton>
 

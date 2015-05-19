@@ -26,10 +26,16 @@
 #include "qgsproject.h"
 #include "qgsdistancearea.h"
 
+#ifdef WITH_QTWEBKIT
+#include <QtWebKitWidgets/QWebPage>
+#include <QtWebKitWidgets/QWebFrame>
+#else
+#include "qgswebpage.h"
+#include "qgswebframe.h"
+#endif
+
 #include <QCoreApplication>
 #include <QPainter>
-#include <QWebFrame>
-#include <QWebPage>
 #include <QImage>
 #include <QNetworkReply>
 

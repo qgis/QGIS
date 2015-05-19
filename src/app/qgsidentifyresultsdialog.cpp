@@ -33,6 +33,8 @@
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
+#include "qgswebview.h"
+#include "qgswebframe.h"
 
 #include <QCloseEvent>
 #include <QLabel>
@@ -45,13 +47,11 @@
 #include <QDockWidget>
 #include <QMenuBar>
 #include <QPushButton>
-#include <QWebView>
 #include <QPrinter>
 #include <QPrintDialog>
 #include <QDesktopServices>
 #include <QMessageBox>
 #include <QComboBox>
-#include <QWebFrame>
 
 //graph
 #include <qwt_plot.h>
@@ -61,7 +61,7 @@
 #include "qgsvectorcolorrampv2.h" // for random colors
 
 
-QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent ) : QWebView( parent )
+QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent ) : QgsWebView( parent )
 {
   setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum );
   page()->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
@@ -80,7 +80,7 @@ void QgsIdentifyResultsWebView::print( void )
   QPrintDialog *dialog = new QPrintDialog( &printer );
   if ( dialog->exec() == QDialog::Accepted )
   {
-    QWebView::print( &printer );
+    QgsWebView::print( &printer );
   }
 }
 
@@ -97,12 +97,12 @@ void QgsIdentifyResultsWebView::contextMenuEvent( QContextMenuEvent *e )
   delete menu;
 }
 
-QWebView *QgsIdentifyResultsWebView::createWindow( QWebPage::WebWindowType type )
+QgsWebView *QgsIdentifyResultsWebView::createWindow( QWebPage::WebWindowType type )
 {
   QDialog *d = new QDialog( this );
   QLayout *l = new QVBoxLayout( d );
 
-  QWebView *wv = new QWebView( d );
+  QgsWebView *wv = new QgsWebView( d );
   l->addWidget( wv );
 
   wv->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum );

@@ -57,7 +57,7 @@
 #include <QUuid>
 #include <QGroupBox>
 #include <QLabel>
-#include <QWebView>
+
 #include <QDesktopServices>
 
 QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *editor, QgsVectorLayer *vl, int idx, const QVariant &value )
