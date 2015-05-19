@@ -85,6 +85,10 @@ class QgsHistogramWidget : QWidget
      */
     void refreshHistogram();
 
+    /** Triggers a refresh and immediate redraw of the histogram.
+     */
+    void refreshAndRedraw();
+
     /** Sets the vector layer associated with the histogram.
      * @param layer source vector layer
      * @see setSourceFieldExp

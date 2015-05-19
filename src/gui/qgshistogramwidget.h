@@ -109,7 +109,7 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
      * @param ranges graduated range list
      * @see graduatedRanges
      */
-    void setGraduatedRanges( const QgsRangeList& ranges ) { mRanges = ranges; }
+    void setGraduatedRanges( const QgsRangeList& ranges );
 
     /** Returns the graduated ranges associated with the histogram. If set, the ranges will be used to colour the histogram
      * bars and for showing vertical dividers at the histogram breaks.
@@ -123,6 +123,10 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
     /** Triggers a refresh of the histogram when the widget is next repainted.
      */
     void refreshHistogram();
+
+    /** Triggers a refresh and immediate redraw of the histogram.
+     */
+    void refreshAndRedraw();
 
     /** Sets the vector layer associated with the histogram.
      * @param layer source vector layer

@@ -514,7 +514,6 @@ void QgsGraduatedSymbolRendererV2Widget::connectUpdateHandlers()
   connect( minSizeSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( reapplySizes() ) );
   connect( maxSizeSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( reapplySizes() ) );
 
-
   connect( mModel, SIGNAL( rowsMoved() ), this, SLOT( rowsMoved() ) );
   connect( mModel, SIGNAL( dataChanged( QModelIndex, QModelIndex ) ), this, SLOT( modelDataChanged() ) );
 }
@@ -606,7 +605,7 @@ void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer( bool updateCount 
   viewGraduated->resizeColumnToContents( 1 );
   viewGraduated->resizeColumnToContents( 2 );
 
-  mHistogramWidget->refreshHistogram();
+  mHistogramWidget->refreshAndRedraw();
 
   connectUpdateHandlers();
 }
@@ -874,6 +873,7 @@ void QgsGraduatedSymbolRendererV2Widget::changeRangeSymbol( int rangeIdx )
   }
 
   mRenderer->updateRangeSymbol( rangeIdx, newSymbol );
+  mHistogramWidget->refreshHistogram();
 }
 
 void QgsGraduatedSymbolRendererV2Widget::changeRange( int rangeIdx )
@@ -909,22 +909,26 @@ void QgsGraduatedSymbolRendererV2Widget::changeRange( int rangeIdx )
       }
     }
   }
+  mHistogramWidget->refreshHistogram();
 }
 
 void QgsGraduatedSymbolRendererV2Widget::addClass()
 {
   mModel->addClass( mGraduatedSymbol );
+  mHistogramWidget->refreshHistogram();
 }
 
 void QgsGraduatedSymbolRendererV2Widget::deleteClasses()
 {
   QList<int> classIndexes = selectedClasses();
   mModel->deleteRows( classIndexes );
+  mHistogramWidget->refreshHistogram();
 }
 
 void QgsGraduatedSymbolRendererV2Widget::deleteAllClasses()
 {
   mModel->removeAllRows();
+  mHistogramWidget->refreshHistogram();
 }
 
 bool QgsGraduatedSymbolRendererV2Widget::rowsOrdered()
@@ -1075,7 +1079,6 @@ void QgsGraduatedSymbolRendererV2Widget::rowsMoved()
 
 void QgsGraduatedSymbolRendererV2Widget::modelDataChanged()
 {
-  mHistogramWidget->refreshHistogram();
 }
 
 void QgsGraduatedSymbolRendererV2Widget::keyPressEvent( QKeyEvent* event )
