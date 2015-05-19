@@ -143,7 +143,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
     /**Maximum scale denominator for label display. Negative number means no scale limitation*/
     double mMaxLabelScaleDenominator;
 
-    typedef QMap<QgsFeatureId, QgsFeature> DisplacementGroup;
+    typedef QMap<QgsFeatureId, QPair< QgsFeature, QgsSymbolV2* > > DisplacementGroup;
     /**Groups of features that have the same position*/
     QList<DisplacementGroup> mDisplacementGroups;
     /**Mapping from feature ID to its group index*/
