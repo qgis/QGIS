@@ -19,6 +19,8 @@
 #include "qgsrendercontext.h"
 
 #include "qgsmapsettings.h"
+#include "qgsexpression.h"
+#include "qgsvectorlayer.h"
 
 QgsRenderContext::QgsRenderContext()
     : mFlags( DrawEditingInfo | UseAdvancedEffects | DrawSelection | UseRenderingOptimization )
@@ -31,12 +33,17 @@ QgsRenderContext::QgsRenderContext()
     , mLabelingEngine( NULL )
     , mLabelingEngine2( 0 )
     , mGeometry( 0 )
+    , mFeatureFilterProvider( NULL )
 {
   mVectorSimplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
 }
 
 QgsRenderContext::~QgsRenderContext()
 {
+  if ( mFeatureFilterProvider != NULL ) {
+    delete mFeatureFilterProvider;
+    mFeatureFilterProvider = NULL;
+  }
 }
 
 void QgsRenderContext::setFlags( const QgsRenderContext::Flags& flags )
@@ -139,4 +146,16 @@ bool QgsRenderContext::useRenderingOptimization() const
 void QgsRenderContext::setUseRenderingOptimization( bool enabled )
 {
   setFlag( UseRenderingOptimization, enabled );
+}
+
+void QgsRenderContext::setFeatureFilterProvider( const QgsFeatureFilterProvider* ffp )
+{
+  if ( mFeatureFilterProvider != NULL ) {
+    delete mFeatureFilterProvider;
+    mFeatureFilterProvider = NULL;
+  }
+  if ( ffp != NULL )
+  {
+    mFeatureFilterProvider = ffp->clone();
+  }
 }

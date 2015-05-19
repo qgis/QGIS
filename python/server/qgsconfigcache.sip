@@ -25,15 +25,16 @@ class QgsConfigCache: QObject
 {
 %TypeHeaderCode
 #include "qgsconfigcache.h"
+#include "qgsaccesscontrolfilter.h"
 %End
   public:
     static QgsConfigCache* instance();
     ~QgsConfigCache();
 
     QgsServerProjectParser* serverConfiguration( const QString& filePath );
-    QgsWCSProjectParser* wcsConfiguration( const QString& filePath );
-    QgsWFSProjectParser* wfsConfiguration( const QString& filePath );
-    QgsWMSConfigParser* wmsConfiguration( const QString& filePath, const QMap<QString, QString>& parameterMap = QMap< QString, QString >() );
+    QgsWCSProjectParser* wcsConfiguration( const QString& filePath, const QgsAccessControl* accessControl );
+    QgsWFSProjectParser* wfsConfiguration( const QString& filePath, const QgsAccessControl* accessControl );
+    QgsWMSConfigParser* wmsConfiguration( const QString& filePath, const QgsAccessControl* accessControl, const QMap<QString, QString>& parameterMap = QMap< QString, QString >() );
 
   private:
     QgsConfigCache();

@@ -50,6 +50,8 @@ class QgsServerInterface
     virtual void registerFilter( QgsServerFilter* filter /Transfer/, int priority = 0 ) = 0;
     /** Set the filters map */
     virtual void setFilters( QgsServerFiltersMap* filters /Transfer/) = 0;
+    /** Register a security module with the given priority.*/
+    virtual void registerAccessControl( QgsAccessControlFilter* accessControl /Transfer/, int priority = 0 ) = 0;
     /** Return an environment variable set by FCGI*/
     virtual QString getEnv(const QString& name ) const = 0;
     // Commented because of problems with typedef QgsServerFiltersMap, provided

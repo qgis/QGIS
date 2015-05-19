@@ -23,7 +23,7 @@ class QgsWCSProjectParser
 
 %End
   public:
-    QgsWCSProjectParser( const QString& filePath );
+    QgsWCSProjectParser( const QString& filePath, const QgsAccessControl* ac );
     ~QgsWCSProjectParser();
 
     void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;

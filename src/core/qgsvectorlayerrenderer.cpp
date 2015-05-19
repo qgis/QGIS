@@ -43,6 +43,7 @@
 QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRenderContext& context )
     : QgsMapLayerRenderer( layer->id() )
     , mContext( context )
+    , mLayer( layer )
     , mFields( layer->fields() )
     , mRendererV2( 0 )
     , mCache( 0 )
@@ -152,10 +153,23 @@ bool QgsVectorLayerRenderer::render()
                                      .setFilterRect( requestExtent )
                                      .setSubsetOfAttributes( mAttrNames, mFields );
 
-  if ( !rendererFilter.isEmpty() && rendererFilter != "TRUE" )
+  const QgsFeatureFilterProvider* featureFilterProvider = mContext.featureFilterProvider();
+  if ( featureFilterProvider != NULL)
   {
-    featureRequest.setFilterExpression( rendererFilter );
+    featureFilterProvider->filterFeatures( mLayer, featureRequest );
+  }
+  if ( !rendererFilter.isNull() )
+  {
     featureRequest.setExpressionContext( mContext.expressionContext() );
+    if ( featureRequest.filterExpression() == NULL )
+    {
+      featureRequest.setFilterExpression( rendererFilter );
+    }
+    else
+    {
+      featureRequest.setFilterExpression( QString( "(%s) AND (%s)" )
+        .arg( rendererFilter, featureRequest.filterExpression()->expression() ) );
+    }
   }
 
   // enable the simplification of the geometries (Using the current map2pixel context) before send it to renderer engine.

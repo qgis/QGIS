@@ -288,6 +288,10 @@ class QgsMapRenderer : QObject
      */
     bool splitLayersExtent( QgsMapLayer* layer, QgsRectangle& extent /In,Out/, QgsRectangle& r2 /Out/ );
 
+    /** Set a feature filter provider to filter the features
+     * @param ffp the feature filter provider
+     */
+    void setFeatureFilterProvider( const QgsFeatureFilterProvider* ffp );
   signals:
 
     //! @deprecated in 2.4 - not emitted anymore

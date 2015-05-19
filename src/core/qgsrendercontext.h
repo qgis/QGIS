@@ -25,6 +25,7 @@
 #include "qgsrectangle.h"
 #include "qgsvectorsimplifymethod.h"
 #include "qgsexpressioncontext.h"
+#include "qgsfeaturefilterprovider.h"
 
 class QPainter;
 
@@ -32,6 +33,9 @@ class QgsAbstractGeometryV2;
 class QgsLabelingEngineInterface;
 class QgsLabelingEngineV2;
 class QgsMapSettings;
+class QgsExpression;
+class QgsVectorLayer;
+
 
 /** \ingroup core
  * Contains information about the context of a rendering operation.
@@ -195,6 +199,18 @@ class CORE_EXPORT QgsRenderContext
     /** Sets pointer to original (unsegmentized) geometry*/
     void setGeometry( const QgsAbstractGeometryV2* geometry ) { mGeometry = geometry; }
 
+    /** Set a filter feature provider used to filter the features
+     * @param ffp the filter feature provider
+     * @note not available in Python bindings
+     */
+    void setFeatureFilterProvider( const QgsFeatureFilterProvider* ffp );
+
+    /** Get the filter feature provider used to filter the features
+     * @return the filter feature provider
+     * @note not available in Python bindings
+     */
+    const QgsFeatureFilterProvider* featureFilterProvider() { return mFeatureFilterProvider; }
+
   private:
 
     Flags mFlags;
@@ -238,6 +254,9 @@ class CORE_EXPORT QgsRenderContext
 
     /** Pointer to the (unsegmentized) geometry*/
     const QgsAbstractGeometryV2* mGeometry;
+
+    /** The feature filter provider */
+    const QgsFeatureFilterProvider* mFeatureFilterProvider;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsRenderContext::Flags )

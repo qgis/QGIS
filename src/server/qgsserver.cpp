@@ -39,6 +39,9 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsserverlogger.h"
 #include "qgseditorwidgetregistry.h"
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+#include "qgsaccesscontrolfilter.h"
+#endif
 
 #include <QDomDocument>
 #include <QNetworkDiskCache>
@@ -486,6 +489,10 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
 
   // Copy the parameters map
   QMap<QString, QString> parameterMap( theRequestHandler->parameterMap() );
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+  const QgsAccessControl* accessControl = NULL;
+  accessControl = mServerInterface->accessControls();
+#endif
 
   printRequestParameters( parameterMap, logLevel );
   QMap<QString, QString>::const_iterator paramIt;
@@ -520,40 +527,81 @@ QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString& queryStri
   {
     if ( serviceString == "WCS" )
     {
-      QgsWCSProjectParser* p = QgsConfigCache::instance()->wcsConfiguration( configFilePath );
+      QgsWCSProjectParser* p = QgsConfigCache::instance()->wcsConfiguration(
+	configFilePath
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+	, accessControl
+#endif
+      );
       if ( !p )
       {
         theRequestHandler->setServiceException( QgsMapServiceException( "Project file error", "Error reading the project file" ) );
       }
       else
       {
-        QgsWCSServer wcsServer( configFilePath, parameterMap, p, theRequestHandler.data() );
+        QgsWCSServer wcsServer(
+	  configFilePath
+	  , parameterMap
+	  , p
+	  , theRequestHandler.data()
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+	  , accessControl
+#endif
+	);
         wcsServer.executeRequest();
       }
     }
     else if ( serviceString == "WFS" )
     {
-      QgsWFSProjectParser* p = QgsConfigCache::instance()->wfsConfiguration( configFilePath );
+      QgsWFSProjectParser* p = QgsConfigCache::instance()->wfsConfiguration(
+	configFilePath
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+	, accessControl
+#endif
+      );
       if ( !p )
       {
         theRequestHandler->setServiceException( QgsMapServiceException( "Project file error", "Error reading the project file" ) );
       }
       else
       {
-        QgsWFSServer wfsServer( configFilePath, parameterMap, p, theRequestHandler.data() );
+        QgsWFSServer wfsServer(
+	  configFilePath
+	  , parameterMap
+	  , p
+	  , theRequestHandler.data()
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+	  , accessControl
+#endif
+	);
         wfsServer.executeRequest();
       }
     }
     else if ( serviceString == "WMS" )
     {
-      QgsWMSConfigParser* p = QgsConfigCache::instance()->wmsConfiguration( configFilePath, parameterMap );
+      QgsWMSConfigParser* p = QgsConfigCache::instance()->wmsConfiguration(
+	configFilePath
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+	, accessControl
+#endif
+      );
       if ( !p )
       {
         theRequestHandler->setServiceException( QgsMapServiceException( "WMS configuration error", "There was an error reading the project file or the SLD configuration" ) );
       }
       else
       {
-        QgsWMSServer wmsServer( configFilePath, parameterMap, p, theRequestHandler.data(), mMapRenderer, mCapabilitiesCache );
+        QgsWMSServer wmsServer(
+	  configFilePath
+	  , parameterMap
+	  , p
+	  , theRequestHandler.data()
+	  , mMapRenderer
+	  , mCapabilitiesCache
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+	  , accessControl
+#endif
+	);
         wmsServer.executeRequest();
       }
     }

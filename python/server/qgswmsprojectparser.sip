@@ -23,7 +23,7 @@ class QgsWMSProjectParser : public QgsWMSConfigParser
 
 %End
   public:
-    QgsWMSProjectParser( const QString& filePath );
+    QgsWMSProjectParser( const QString& filePath, const QgsAccessControl* ac );
     virtual ~QgsWMSProjectParser();
 
     /** Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.

@@ -335,6 +335,13 @@ class CORE_EXPORT QgsMapRenderer : public QObject
      */
     bool splitLayersExtent( QgsMapLayer* layer, QgsRectangle& extent, QgsRectangle& r2 );
 
+    /** Set a feature filter provider to filter the features
+     * @param ffp the feature filter provider
+     */
+    void setFeatureFilterProvider( const QgsFeatureFilterProvider* ffp ) {
+      mRenderContext.setFeatureFilterProvider( ffp );
+    }
+
   signals:
 
     //! @deprecated in 2.4 - not emitted anymore

@@ -678,6 +678,10 @@ QString QgsHttpRequestHandler::readPostBody() const
       QgsMessageLog::logMessage( "could not convert CONTENT_LENGTH to int" );
     }
   }
+  // Used by the tests
+  else if ( getenv( "REQUEST_BODY" ) != NULL ) {
+      inputString = getenv( "REQUEST_BODY" );
+  }
   return inputString;
 }
 

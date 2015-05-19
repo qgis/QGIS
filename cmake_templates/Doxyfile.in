@@ -604,6 +604,7 @@ INPUT                  = @CMAKE_SOURCE_DIR@/doc \
                          @CMAKE_SOURCE_DIR@/src/server/qgsmapserviceexception.h \
                          @CMAKE_SOURCE_DIR@/src/server/qgsrequesthandler.h \
                          @CMAKE_SOURCE_DIR@/src/server/qgsserverfilter.h \
+                         @CMAKE_SOURCE_DIR@/src/server/qgsaccesscontrolfilter.h \
                          @CMAKE_SOURCE_DIR@/src/server/qgsserverinterface.h
 
 # This tag can be used to specify the character encoding of the source files
