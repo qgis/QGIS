@@ -759,6 +759,8 @@ class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
     bool setSubSymbol( QgsSymbolV2* symbol );
     QgsSymbolV2* subSymbol();
 
+    QSet<QString> usedAttributes() const;
+
 };
 
 class QgsPointPatternFillSymbolLayer : QgsImageFillSymbolLayer
