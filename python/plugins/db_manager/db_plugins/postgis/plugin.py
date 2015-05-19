@@ -34,6 +34,8 @@ try:
 except ImportError:
         pass
 
+import re
+
 def classFactory():
         return PostGisDBPlugin
 
@@ -261,7 +263,7 @@ class PGRasterTable(PGTable, RasterTable):
                 return gdalUri
 
         def mimeUri(self):
-                uri = u"raster:gdal:%s:%s" % (self.name, self.gdalUri())
+                uri = u"raster:gdal:%s:%s" % (self.name, re.sub(":", "\:", self.gdalUri()))
                 return uri
 
         def toMapLayer(self):
