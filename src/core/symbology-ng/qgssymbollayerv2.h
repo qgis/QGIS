@@ -315,6 +315,14 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
     void setAngle( double angle ) { mAngle = angle; }
     double angle() const { return mAngle; }
 
+    /** Sets the line angle modification for the symbol's angle. This angle is added to 
+     * the marker's rotation and data defined rotation before rendering the symbol, and 
+     * is usually used for orienting symbols to match a line's angle.
+     * @param lineangle Angle in degrees, valid values are between 0 and 360
+     * @note added in QGIS 2.9
+    */
+    void setLineAngle( double lineAngle ) { mLineAngle = lineAngle; }
+
     void setSize( double size ) { mSize = size; }
     double size() const { return mSize; }
 
@@ -370,6 +378,7 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
     static QPointF _rotatedOffset( const QPointF& offset, double angle );
 
     double mAngle;
+    double mLineAngle;
     double mSize;
     QgsSymbolV2::OutputUnit mSizeUnit;
     QgsMapUnitScale mSizeMapUnitScale;

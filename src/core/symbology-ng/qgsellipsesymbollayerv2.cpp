@@ -251,11 +251,11 @@ void QgsEllipseSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Rend
   double rotation = 0.0;
   if ( hasDataDefinedProperty( "rotation" ) )
   {
-    rotation = evaluateDataDefinedProperty( "rotation", context.feature(), mAngle ).toDouble();
+    rotation = evaluateDataDefinedProperty( "rotation", context.feature(), mAngle ).toDouble() + mLineAngle;
   }
-  else if ( !qgsDoubleNear( mAngle, 0.0 ) )
+  else if ( !qgsDoubleNear( mAngle + mLineAngle, 0.0 ) )
   {
-    rotation = mAngle;
+    rotation = mAngle + mLineAngle;
   }
   if ( rotation )
     off = _rotatedOffset( off, rotation );
@@ -630,11 +630,11 @@ bool QgsEllipseSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFa
   double rotation = 0.0;
   if ( hasDataDefinedProperty( "rotation" ) )
   {
-    rotation = evaluateDataDefinedProperty( "rotation", f, mAngle ).toDouble();
+    rotation = evaluateDataDefinedProperty( "rotation", f, mAngle ).toDouble() + mLineAngle;
   }
-  else if ( !qgsDoubleNear( mAngle, 0.0 ) )
+  else if ( !qgsDoubleNear( mAngle + mLineAngle, 0.0 ) )
   {
-    rotation = mAngle;
+    rotation = mAngle + mLineAngle;
   }
   rotation = -rotation; //rotation in Qt is counterclockwise
   if ( rotation )
