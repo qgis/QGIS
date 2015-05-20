@@ -136,7 +136,6 @@ pluginPath = os.path.normpath(os.path.join(
 class QGISAlgorithmProvider(AlgorithmProvider):
 
     _icon = QIcon(os.path.join(pluginPath, 'images', 'qgis.png'))
-    print '***** ICON', pluginPath
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
