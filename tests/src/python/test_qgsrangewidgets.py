@@ -19,7 +19,7 @@ from qgis.core import QgsFeature, QgsGeometry, QgsPoint, QgsVectorLayer, NULL
 
 from qgis.gui import QgsEditorWidgetRegistry
 
-from PyQt4 import QtCore
+from PyQt4 import QtCore, QtGui
 
 from utilities import (unitTestDataPath,
                        getQgisTestApp,
@@ -30,6 +30,7 @@ QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
 
 class TestQgsRangeWidget(TestCase):
+
 
     def setUp(self):
         """
@@ -43,10 +44,10 @@ class TestQgsRangeWidget(TestCase):
         f.setAttributes(["Hello World", 123])
         f.setGeometry(QgsGeometry.fromPoint(QgsPoint(600000,200000)))
 
-        reg = QgsEditorWidgetRegistry.instance()
-        configWdg = reg.createConfigWidget('Range', self.layer, 1, None)
-        config = configWdg.config()
-        self.rangewidget = reg.create('Range', self.layer, 1, config, None, None )
+        self.reg = QgsEditorWidgetRegistry.instance()
+        self.configWdg = self.reg.createConfigWidget('Range', self.layer, 1, None)
+        self.config = self.configWdg.config()
+        self.rangewidget = self.reg.create('Range', self.layer, 1, self.config, None, None )
        
 
     def test_range_widget_numbers(self):
@@ -69,6 +70,17 @@ class TestQgsRangeWidget(TestCase):
 
         self.rangewidget.setValue(None)
         assert self.rangewidget.value() == 0
+
+        # allow NULL
+        self.config["AllowNull"] = True
+        self.rangewidget = self.reg.create('Range', self.layer, 1, self.config, None, None )
+
+        self.rangewidget.setValue(NULL)
+        assert self.rangewidget.value() == NULL
+
+        self.rangewidget.setValue(None)
+        assert self.rangewidget.value() == NULL
+
 
 
 if __name__ == '__main__':
