@@ -5,5 +5,5 @@ ParameterRaster|stream_raster|Input map: stream mask|False
 ParameterRaster|direction|Input map: flow direction|False
 ParameterNumber|multiplier|Multipier to store stream index value|1|None|1000
 ParameterBoolean|-s|Create new stream category sequence|False
-OutputFile|cells|File to store pixel's position
-OutputFile|lengths|File to store current stream length
+OutputFile|cells|Pixel position
+OutputFile|lengths|Stream length

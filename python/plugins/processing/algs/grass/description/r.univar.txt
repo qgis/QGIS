@@ -7,4 +7,4 @@ ParameterRaster|zones|Raster map used for zoning, must be of type CELL|True
 *ParameterBoolean|-g|Print the stats in shell script style|False
 *ParameterBoolean|-t|Table output format instead of standard output format|False
 *ParameterNumber|percentile|Percentile to calculate (requires extended statistics flag)|0.0|100.0|90
-OutputFile|output|Name for output text file
+OutputFile|output|Statistics

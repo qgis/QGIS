@@ -4,4 +4,4 @@ Raster (r.*)
 ParameterRaster|input|Input raster layer|False
 ParameterSelection|feature|Feature type|line;point;area
 ParameterBoolean|-s|Smooth corners of area features|False
-OutputVector|output|Output vector layer
+OutputVector|output|Vectorized

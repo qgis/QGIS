@@ -4,4 +4,4 @@ Raster (r.*)
 ParameterRaster|input|Name of input raster layer|False
 ParameterNumber|npoints|Number of interpolation points|1|None|12
 ParameterBoolean|-e|Output is the interpolation error|False
-OutputRaster|output|Output raster layer
+OutputRaster|output|Interpolated IDW

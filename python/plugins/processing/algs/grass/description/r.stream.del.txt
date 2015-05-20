@@ -5,4 +5,4 @@ ParameterRaster|stream|Input map: stream mask|False
 ParameterRaster|dir|Input map: flow direction|False
 ParameterNumber|threshold|Minimum number of cell in stream|1|None|1
 ParameterBoolean|-z|Create zero-value background|False
-OutputRaster|reduced|Output reduced stream map
+OutputRaster|reduced|Reduced stream

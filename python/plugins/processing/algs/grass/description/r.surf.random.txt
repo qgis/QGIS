@@ -4,4 +4,4 @@ Raster (r.*)
 ParameterNumber|min|Minimum random value|None|None|0
 ParameterNumber|max|Maximum random value|None|None|100
 ParameterBoolean|-i|Create an integer raster layer|False
-OutputRaster|output|Output raster layer
+OutputRaster|output|Random

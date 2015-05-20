@@ -4,8 +4,8 @@ Raster (r.*)
 ParameterRaster|stream|Input map: stream mask|False
 ParameterRaster|dir|Input map: direction map|False
 ParameterBoolean|-z|Create zero-value background|False
-OutputRaster|strahler|Output basin map (Strahler)
-OutputRaster|shreve|Output basin map (Shreve)
-OutputRaster|horton|Output basin map (Horton)
-OutputRaster|hack|Output basin map (Hack)
-OutputRaster|top|Output basin map (Top)
+OutputRaster|strahler|Basin (Strahler)
+OutputRaster|shreve|Basin (Shreve)
+OutputRaster|horton|Basin (Horton)
+OutputRaster|hack|Basin (Hack)
+OutputRaster|top|Basin (Top)
