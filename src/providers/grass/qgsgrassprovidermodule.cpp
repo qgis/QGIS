@@ -29,6 +29,7 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QLabel>
+#include <QObject>
 
 //----------------------- QgsGrassLocationItem ------------------------------
 
@@ -212,11 +213,8 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
 
   QStringList errors;
   QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
-#ifdef WIN32
-  Qt::CaseSensitivity caseSensitivity = Qt::CaseInsensitive;
-#else
-  Qt::CaseSensitivity caseSensitivity = Qt::CaseSensitive;
-#endif
+  Qt::CaseSensitivity caseSensitivity = QgsGrass::caseSensitivity();
+
   foreach ( const QgsMimeDataUtils::Uri& u, lst )
   {
     if ( u.layerType != "raster" && u.layerType != "vector" )
@@ -229,17 +227,20 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
     QgsDataProvider* provider = 0;
     QStringList extensions;
     QStringList existingNames;
+    QRegExp regExp;
     if ( u.layerType == "raster" )
     {
       rasterProvider = qobject_cast<QgsRasterDataProvider*>( QgsProviderRegistry::instance()->provider( u.providerKey, u.uri ) );
       provider = rasterProvider;
       existingNames = existingRasters;
+      regExp = QgsGrassObject::newNameRegExp( QgsGrassObject::Raster );
     }
     else if ( u.layerType == "vector" )
     {
       vectorProvider = qobject_cast<QgsVectorDataProvider*>( QgsProviderRegistry::instance()->provider( u.providerKey, u.uri ) );
       provider = vectorProvider;
       existingNames = existingVectors;
+      regExp = QgsGrassObject::newNameRegExp( QgsGrassObject::Vector );
     }
     QgsDebugMsg( "existingNames = " + existingNames.join( "," ) );
 
@@ -263,7 +264,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
     QString newName = u.name;
     if ( QgsNewNameDialog::exists( u.name, extensions, existingNames, caseSensitivity ) )
     {
-      QgsNewNameDialog dialog( u.name, u.name, extensions, existingNames, QRegExp(), caseSensitivity );
+      QgsNewNameDialog dialog( u.name, u.name, extensions, existingNames, regExp, caseSensitivity );
       if ( dialog.exec() != QDialog::Accepted )
       {
         delete provider;
@@ -374,10 +375,9 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
 
   if ( !errors.isEmpty() )
   {
-    QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
-    output->setTitle( tr( "Import to GRASS mapset" ) );
-    output->setMessage( tr( "Failed to import some layers!\n\n" ) + errors.join( "\n" ), QgsMessageOutput::MessageText );
-    output->showMessage();
+    QgsMessageOutput::showMessage( tr( "Import to GRASS mapset" ),
+                                   tr( "Failed to import some layers!\n\n" ) + errors.join( "\n" ),
+                                   QgsMessageOutput::MessageText );
   }
 
   return true;
@@ -407,6 +407,54 @@ QgsGrassObjectItemBase::QgsGrassObjectItemBase( QgsGrassObject grassObject ) :
 {
 }
 
+void QgsGrassObjectItemBase::renameGrassObject( QgsDataItem* parent )
+{
+  QgsDebugMsg( "Entered" );
+
+  QStringList existingNames = QgsGrass::grassObjects( mGrassObject.mapsetPath(), mGrassObject.type() );
+  // remove current name to avoid warning that exists
+  existingNames.removeOne( mGrassObject.name() );
+  QgsDebugMsg( "existingNames = " + existingNames.join( "," ) );
+  QRegExp regExp = QgsGrassObject::newNameRegExp( mGrassObject.type() );
+  Qt::CaseSensitivity caseSensitivity = QgsGrass::caseSensitivity();
+  QgsNewNameDialog dialog( mGrassObject.name(), mGrassObject.name(), QStringList(), existingNames, regExp, caseSensitivity );
+
+  if ( dialog.exec() != QDialog::Accepted || dialog.name() == mGrassObject.name() )
+  {
+    return;
+  }
+
+  QgsDebugMsg( "rename " + mGrassObject.name() + " -> " + dialog.name() );
+
+  QgsGrassObject obj( mGrassObject );
+  obj.setName( dialog.name() );
+  QString errorTitle = QObject::tr( "Rename GRASS %1" ).arg( mGrassObject.elementName() );
+  if ( QgsGrass::objectExists( obj ) )
+  {
+    QgsDebugMsg( obj.name() + " exists -> delete" );
+    if ( !QgsGrass::deleteObject( obj ) )
+    {
+      QgsMessageOutput::showMessage( errorTitle, QObject::tr( "Cannot delete %1" ).arg( obj.name() ), QgsMessageOutput::MessageText );
+      return;
+    }
+  }
+
+  try
+  {
+    QgsGrass::renameObject( mGrassObject, obj.name() );
+    if ( parent )
+    {
+      parent->refresh();
+    }
+  }
+  catch ( QgsGrass::Exception &e )
+  {
+    QgsMessageOutput::showMessage( errorTitle,
+                                   QObject::tr( "Cannot rename %1 to %2" ).arg( mGrassObject.name() ).arg( obj.name() ) + "\n" + e.what(),
+                                   QgsMessageOutput::MessageText );
+  }
+}
+
 void QgsGrassObjectItemBase::deleteGrassObject( QgsDataItem* parent )
 {
   QgsDebugMsg( "Entered" );
@@ -426,10 +474,10 @@ void QgsGrassObjectItemBase::deleteGrassObject( QgsDataItem* parent )
 QgsGrassObjectItem::QgsGrassObjectItem( QgsDataItem* parent, QgsGrassObject grassObject,
                                         QString name, QString path, QString uri,
                                         LayerType layerType, QString providerKey,
-                                        bool deleteAction )
+                                        bool showObjectActions )
     : QgsLayerItem( parent, name, path, uri, layerType, providerKey )
     , QgsGrassObjectItemBase( grassObject )
-    , mDeleteAction( deleteAction )
+    , mShowObjectActions( showObjectActions )
 {
   setState( Populated ); // no children, to show non expandable in browser
 }
@@ -438,14 +486,23 @@ QList<QAction*> QgsGrassObjectItem::actions()
 {
   QList<QAction*> lst;
 
-  if ( mDeleteAction )
+  if ( mShowObjectActions )
   {
+    QAction* actionRename = new QAction( tr( "Rename" ), this );
+    connect( actionRename, SIGNAL( triggered() ), this, SLOT( renameGrassObject() ) );
+    lst.append( actionRename );
+
     QAction* actionDelete = new QAction( tr( "Delete" ), this );
     connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteGrassObject() ) );
     lst.append( actionDelete );
   }
 
   return lst;
+}
+
+void QgsGrassObjectItem::renameGrassObject()
+{
+  QgsGrassObjectItemBase::renameGrassObject( parent() );
 }
 
 void QgsGrassObjectItem::deleteGrassObject()
@@ -467,11 +524,20 @@ QList<QAction*> QgsGrassVectorItem::actions()
 {
   QList<QAction*> lst;
 
+  QAction* actionRename = new QAction( tr( "Rename" ), this );
+  connect( actionRename, SIGNAL( triggered() ), this, SLOT( renameGrassObject() ) );
+  lst.append( actionRename );
+
   QAction* actionDelete = new QAction( tr( "Delete" ), this );
   connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteGrassObject() ) );
   lst.append( actionDelete );
 
   return lst;
+}
+
+void QgsGrassVectorItem::renameGrassObject()
+{
+  QgsGrassObjectItemBase::renameGrassObject( parent() );
 }
 
 void QgsGrassVectorItem::deleteGrassObject()
@@ -484,7 +550,7 @@ void QgsGrassVectorItem::deleteGrassObject()
 QgsGrassVectorLayerItem::QgsGrassVectorLayerItem( QgsDataItem* parent, QgsGrassObject grassObject, QString layerName,
     QString path, QString uri,
     LayerType layerType, bool singleLayer )
-    : QgsGrassObjectItem( parent, grassObject, layerName, path, uri, layerType, "grass" )
+    : QgsGrassObjectItem( parent, grassObject, layerName, path, uri, layerType, "grass", mSingleLayer )
     , mSingleLayer( singleLayer )
 {
 }

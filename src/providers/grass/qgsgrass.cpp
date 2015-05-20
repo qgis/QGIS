@@ -105,9 +105,40 @@ QString QgsGrassObject::elementName( Type type )
     return "";
 }
 
+QString QgsGrassObject::dirName() const
+{
+  return dirName( mType );
+}
+
+QString QgsGrassObject::dirName( Type type )
+{
+  if ( type == Raster )
+    return "cellhd";
+  else if ( type == Vector )
+    return "vector";
+  else if ( type == Region )
+    return "windows";
+  else
+    return "";
+}
+
 bool QgsGrassObject::mapsetIdentical( const QgsGrassObject &other )
 {
   return mGisdbase == other.mGisdbase && mLocation == other.mLocation && mMapset == other.mMapset;
+}
+
+QRegExp QgsGrassObject::newNameRegExp( Type type )
+{
+  QRegExp rx;
+  if ( type == QgsGrassObject::Vector )
+  {
+    rx.setPattern( "[A-Za-z_][A-Za-z0-9_]+" );
+  }
+  else
+  {
+    rx.setPattern( "[A-Za-z0-9_.]+" );
+  }
+  return rx;
 }
 
 #ifdef Q_OS_WIN
@@ -1085,7 +1116,7 @@ QStringList GRASS_LIB_EXPORT QgsGrass::elements( const QString& gisdbase, const 
 
 QStringList GRASS_LIB_EXPORT QgsGrass::elements( const QString&  mapsetPath, const QString&  element )
 {
-  QgsDebugMsg( QString( "mapsetPath = %1" ).arg( mapsetPath ) );
+  QgsDebugMsg( QString( "mapsetPath = %1 element = %2" ).arg( mapsetPath ).arg( element ) );
 
   QStringList list;
 
@@ -1093,7 +1124,14 @@ QStringList GRASS_LIB_EXPORT QgsGrass::elements( const QString&  mapsetPath, con
     return list;
 
   QDir d = QDir( mapsetPath + "/" + element );
-  d.setFilter( QDir::Files );
+  if ( element == "vector" )
+  {
+    d.setFilter( QDir::Dirs | QDir::NoDotAndDotDot );
+  }
+  else
+  {
+    d.setFilter( QDir::Files );
+  }
 
   for ( unsigned int i = 0; i < d.count(); i++ )
   {
@@ -1102,17 +1140,15 @@ QStringList GRASS_LIB_EXPORT QgsGrass::elements( const QString&  mapsetPath, con
   return list;
 }
 
+QStringList GRASS_LIB_EXPORT QgsGrass::grassObjects( const QString& mapsetPath, QgsGrassObject::Type type )
+{
+  return QgsGrass::elements( mapsetPath, QgsGrassObject::dirName( type ) );
+}
+
 bool GRASS_LIB_EXPORT QgsGrass::objectExists( const QgsGrassObject& grassObject )
 {
-  QString path = grassObject.mapsetPath();
-  if ( grassObject.type() == QgsGrassObject::Raster )
-    path += "/cellhd";
-  else if ( grassObject.type() == QgsGrassObject::Vector )
-    path += "/vector";
-  else if ( grassObject.type() == QgsGrassObject::Region )
-    path += "/windows";
-
-  path += "/" + grassObject.name();
+  QString path = grassObject.mapsetPath() + "/" + QgsGrassObject::dirName( grassObject.type() )
+                 + "/" + grassObject.name();
   QFileInfo fi( path );
   return fi.exists();
 }
@@ -1748,6 +1784,19 @@ QMap<QString, QString> GRASS_LIB_EXPORT QgsGrass::query( QString gisdbase, QStri
   return result;
 }
 
+void QgsGrass::renameObject( const QgsGrassObject & object, const QString& newName )
+{
+  QgsDebugMsg( "entered" );
+  QString cmd = "g.rename";
+  QStringList arguments;
+
+  arguments << object.elementShort() + "=" + object.name() + "," + newName;
+
+  int timeout = 10000; // What timeout to use? It can take long time on network or database
+  // throws QgsGrass::Exception
+  QgsGrass::runModule( object.gisdbase(), object.location(), object.mapset(), cmd, arguments, timeout, false );
+}
+
 bool QgsGrass::deleteObject( const QgsGrassObject & object )
 {
   QgsDebugMsg( "entered" );
@@ -1948,6 +1997,15 @@ int GRASS_LIB_EXPORT QgsGrass::versionRelease()
 QString GRASS_LIB_EXPORT QgsGrass::versionString()
 {
   return QString( GRASS_VERSION_STRING );
+}
+
+Qt::CaseSensitivity GRASS_LIB_EXPORT QgsGrass::caseSensitivity()
+{
+#ifdef WIN32
+  return Qt::CaseInsensitive;
+#else
+  return Qt::CaseSensitive;
+#endif
 }
 
 bool GRASS_LIB_EXPORT QgsGrass::isMapset( QString path )
