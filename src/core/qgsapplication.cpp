@@ -22,6 +22,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsproviderregistry.h"
+#include "qgsexpressioncontext.h"
 
 #include <QDir>
 #include <QFile>
@@ -623,6 +624,7 @@ void QgsApplication::initQgis()
 
 void QgsApplication::exitQgis()
 {
+  delete QgsGlobalExpressionContext::instance();
   delete QgsProviderRegistry::instance();
 }
 

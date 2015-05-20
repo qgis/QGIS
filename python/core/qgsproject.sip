@@ -21,6 +21,7 @@ class QgsProject : QObject
 {
 %TypeHeaderCode
 #include <qgsproject.h>
+#include <qgsexpressioncontext.h>
 %End
 
   public:
@@ -257,6 +258,19 @@ class QgsProject : QObject
      * @note added in 2.4
      */
     QgsLayerTreeRegistryBridge* layerTreeRegistryBridge() const;
+
+    /** Return pointer to the project's expression context. This context contains variables
+     * which are stored in the project file
+     * @returns project context
+     * @note added in 2.9
+     */
+    QgsProjectExpressionContext* projectExpressionContext() const;
+
+    /** Return pointer to the expression context stack at project level. This stack includes
+     * both the project's expression context and any contexts from lower level components.
+     * @note added in 2.9
+     */
+    QgsExpressionContextStack* expressionContextStack() const;
 
   protected:
 
