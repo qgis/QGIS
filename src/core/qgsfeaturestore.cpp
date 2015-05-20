@@ -42,13 +42,13 @@ void QgsFeatureStore::setFields( const QgsFields & fields )
   mFields = fields;
   foreach ( QgsFeature feature, mFeatures )
   {
-    feature.setFields( &mFields );
+    feature.setFields( mFields );
   }
 }
 
 void QgsFeatureStore::addFeature( const QgsFeature& feature )
 {
   QgsFeature f( feature );
-  f.setFields( &mFields );
+  f.setFields( mFields );
   mFeatures.append( f );
 }

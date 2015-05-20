@@ -4129,7 +4129,7 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
       {
         if ( QString( dit.key() + "d" ) == layerName )
         {
-          feature.setFields( &dit.value().fields );
+          feature.setFields( dit.value().fields );
           palGeometry->feature( feature );
 
           //calculate top-left point for diagram

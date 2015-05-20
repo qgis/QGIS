@@ -257,12 +257,14 @@ void TestQgsFeature::geometry()
   QCOMPARE( *feature.constGeometry()->asWkb(), *mGeometry.data()->asWkb() );
 
   //geometryAndOwnership
+Q_NOWARN_DEPRECATED_PUSH
   copy = feature;
   QCOMPARE( *copy.constGeometry()->asWkb(), *mGeometry.data()->asWkb() );
   QgsGeometry* geom1 = copy.geometryAndOwnership();
   QCOMPARE( *geom1->asWkb(), *mGeometry->asWkb() );
   QgsGeometry* geom2 = feature.geometryAndOwnership();
   QCOMPARE( *geom2->asWkb(), *mGeometry->asWkb() );
+Q_NOWARN_DEPRECATED_POP
   delete geom1;
   delete geom2;
 }
@@ -285,7 +287,7 @@ void TestQgsFeature::fields()
 {
   QgsFeature original;
   QVERIFY( original.fields()->isEmpty() );
-  original.setFields( &mFields );
+  original.setFields( mFields );
   QCOMPARE( *original.fields(), mFields );
   QgsFeature copy( original );
   QCOMPARE( *copy.fields(), *original.fields() );
@@ -293,7 +295,7 @@ void TestQgsFeature::fields()
   //test detach
   QgsFields newFields( mFields );
   newFields.remove( 2 );
-  copy.setFields( &newFields );
+  copy.setFields( newFields );
   QCOMPARE( *copy.fields(), newFields );
   QCOMPARE( *original.fields(), mFields );
 
@@ -303,7 +305,7 @@ void TestQgsFeature::fields()
   copy.setAttribute( 0, 1 );
   copy.setAttribute( 1, 2 );
   copy.setAttribute( 2, 3 );
-  copy.setFields( &mFields, false );
+  copy.setFields( mFields, false );
   QCOMPARE( *copy.fields(), mFields );
   //should be 3 invalid attributes
   QCOMPARE( copy.attributes().count(), 3 );
@@ -317,7 +319,7 @@ void TestQgsFeature::fields()
   copy.setAttribute( 0, 1 );
   copy.setAttribute( 1, 2 );
   copy.setAttribute( 2, 3 );
-  copy.setFields( &mFields, true );
+  copy.setFields( mFields, true );
   QCOMPARE( *copy.fields(), mFields );
   //should be 3 invalid attributes
   QCOMPARE( copy.attributes().count(), 3 );
@@ -328,7 +330,7 @@ void TestQgsFeature::fields()
 
   //test fieldNameIndex
   copy = original;
-  copy.setFields( &mFields );
+  copy.setFields( mFields );
   QCOMPARE( copy.fieldNameIndex( "bad" ), -1 );
   QCOMPARE( copy.fieldNameIndex( "field1" ), 0 );
   QCOMPARE( copy.fieldNameIndex( "field2" ), 1 );
@@ -337,7 +339,7 @@ void TestQgsFeature::fields()
 void TestQgsFeature::attributeUsingField()
 {
   QgsFeature feature;
-  feature.setFields( &mFields, true );
+  feature.setFields( mFields, true );
   feature.setAttribute( 0, QString( "attr1" ) );
   feature.setAttribute( 1, QString( "attr2" ) );
   feature.setAttribute( 2, QString( "attr3" ) );
