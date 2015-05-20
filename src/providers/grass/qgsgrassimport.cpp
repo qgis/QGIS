@@ -13,8 +13,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <unistd.h>
-
 #include <QByteArray>
 #include <QtConcurrentRun>
 
