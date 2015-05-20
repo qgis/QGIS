@@ -47,7 +47,7 @@ class CORE_EXPORT QgsFeaturePrivate : public QSharedData
         : QSharedData( other )
         , fid( other.fid )
         , attributes( other.attributes )
-        , geometry( other.ownsGeometry ? new QgsGeometry( *other.geometry ) : other.geometry )
+        , geometry( other.ownsGeometry && other.geometry ? new QgsGeometry( *other.geometry ) : other.geometry )
         , ownsGeometry( other.ownsGeometry )
         , valid( other.valid )
         , fields( other.fields )
