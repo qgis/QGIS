@@ -15,7 +15,7 @@ ParameterNumber|theta|Anisotropy angle (in degrees counterclockwise from East)|0
 ParameterNumber|scalex|Anisotropy scaling factor|None|None|0
 ParameterBoolean|-t|Use scale dependent tension|False
 ParameterBoolean|-d|Output partial derivatives instead of topographic parameters|False
-OutputRaster|elevation|Surface
+OutputRaster|elevation|Interpolated RST
 OutputRaster|slope|Slope
 OutputRaster|aspect|Aspect
 OutputRaster|pcurvature|Profile curvature
