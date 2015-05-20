@@ -190,7 +190,7 @@ bool QgsGPXFeatureIterator::readWaypoint( const QgsWaypoint& wpt, QgsFeature& fe
   }
   feature.setFeatureId( wpt.id );
   feature.setValid( true );
-  feature.setFields( &mSource->mFields ); // allow name-based attribute lookups
+  feature.setFields( mSource->mFields ); // allow name-based attribute lookups
   feature.initAttributes( mSource->mFields.count() );
 
   readAttributes( feature, wpt );
@@ -233,7 +233,7 @@ bool QgsGPXFeatureIterator::readRoute( const QgsRoute& rte, QgsFeature& feature 
   }
   feature.setFeatureId( rte.id );
   feature.setValid( true );
-  feature.setFields( &mSource->mFields ); // allow name-based attribute lookups
+  feature.setFields( mSource->mFields ); // allow name-based attribute lookups
   feature.initAttributes( mSource->mFields.count() );
 
   readAttributes( feature, rte );
@@ -275,7 +275,7 @@ bool QgsGPXFeatureIterator::readTrack( const QgsTrack& trk, QgsFeature& feature 
   }
   feature.setFeatureId( trk.id );
   feature.setValid( true );
-  feature.setFields( &mSource->mFields ); // allow name-based attribute lookups
+  feature.setFields( mSource->mFields ); // allow name-based attribute lookups
   feature.initAttributes( mSource->mFields.count() );
 
   readAttributes( feature, trk );

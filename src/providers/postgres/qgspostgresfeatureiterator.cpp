@@ -161,7 +161,7 @@ bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature& feature )
   mFetched++;
 
   feature.setValid( true );
-  feature.setFields( &mSource->mFields ); // allow name-based attribute lookups
+  feature.setFields( mSource->mFields ); // allow name-based attribute lookups
 
   return true;
 }

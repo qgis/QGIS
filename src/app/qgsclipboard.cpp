@@ -171,7 +171,7 @@ QgsFeatureList QgsClipboard::copyOf( const QgsFields &fields )
 
     QgsFeature feature;
     if ( !fields.isEmpty() )
-      feature.setFields( &fields, true );
+      feature.setFields( fields, true );
 
     feature.setGeometry( geometry );
     features.append( feature );

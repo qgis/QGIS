@@ -211,7 +211,7 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature& f )
       continue;
 
     // TODO[MD]: just one resize of attributes
-    f.setFields( &mSource->mFields );
+    f.setFields( mSource->mFields );
 
     // update attributes
     if ( mSource->mHasEditBuffer )
@@ -297,7 +297,7 @@ void QgsVectorLayerFeatureIterator::useAddedFeature( const QgsFeature& src, QgsF
 {
   f.setFeatureId( src.id() );
   f.setValid( true );
-  f.setFields( &mSource->mFields );
+  f.setFields( mSource->mFields );
 
   if ( src.constGeometry() && !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
   {
@@ -381,7 +381,7 @@ void QgsVectorLayerFeatureIterator::useChangedAttributeFeature( QgsFeatureId fid
 {
   f.setFeatureId( fid );
   f.setValid( true );
-  f.setFields( &mSource->mFields );
+  f.setFields( mSource->mFields );
 
   if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
   {
