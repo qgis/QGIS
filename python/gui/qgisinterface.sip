@@ -165,6 +165,9 @@ class QgisInterface : QObject
     /** Return the message bar of the main app */
     virtual QgsMessageBar * messageBar() = 0;
 
+    /** Adds a widget to the user input tool bar.*/
+    virtual void addUserInputWidget( QWidget* widget ) = 0;
+
     /** Return mainwindows / composer views of running composer instances (currently only one) */
     virtual QList<QgsComposerView*> activeComposers() = 0;
 
