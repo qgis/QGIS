@@ -493,10 +493,6 @@ ELSE (ANDROID)
   ADD_EXECUTABLE(${QGIS_APP_NAME} MACOSX_BUNDLE WIN32 main.cpp ${QGIS_APP_SRCS} ${QGIS_APP_MOC_SRCS} ${IMAGE_RCC_SRCS} ${TEST_RCC_SRCS})
 ENDIF (ANDROID)
 
-QT4_WRAP_CPP(tst_moc_srcs maprenderertest.h)
-ADD_EXECUTABLE(maprenderertest maprenderertest.cpp ${tst_moc_srcs})
-TARGET_LINK_LIBRARIES(maprenderertest qgis_core qgis_gui)
-
 IF (WIN32)
   IF (MSVC)
     ADD_DEFINITIONS("-DAPP_EXPORT=${DLLEXPORT}")
