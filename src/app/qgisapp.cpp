@@ -6998,14 +6998,20 @@ void QgisApp::showMouseCoordinate( const QgsPoint & p )
   {
     if ( mMapCanvas->mapUnits() == QGis::Degrees )
     {
+      QgsPoint geo = p;
+      if ( !mMapCanvas->mapSettings().destinationCrs().geographicFlag() )
+      {
+        QgsCoordinateTransform ct( mMapCanvas->mapSettings().destinationCrs(), QgsCoordinateReferenceSystem( GEOSRID ) );
+        geo = ct.transform( p );
+      }
       QString format = QgsProject::instance()->readEntry( "PositionPrecision", "/DegreeFormat", "D" );
 
       if ( format == "DM" )
-        mCoordsEdit->setText( p.toDegreesMinutes( mMousePrecisionDecimalPlaces ) );
+        mCoordsEdit->setText( geo.toDegreesMinutes( mMousePrecisionDecimalPlaces ) );
       else if ( format == "DMS" )
-        mCoordsEdit->setText( p.toDegreesMinutesSeconds( mMousePrecisionDecimalPlaces ) );
+        mCoordsEdit->setText( geo.toDegreesMinutesSeconds( mMousePrecisionDecimalPlaces ) );
       else
-        mCoordsEdit->setText( p.toString( mMousePrecisionDecimalPlaces ) );
+        mCoordsEdit->setText( geo.toString( mMousePrecisionDecimalPlaces ) );
     }
     else
     {
