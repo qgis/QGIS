@@ -30,22 +30,29 @@ class GRASS_LIB_EXPORT QgsGrassImport : public QObject
     Q_OBJECT
   public:
     QgsGrassImport( QgsGrassObject grassObject );
-    virtual ~QgsGrassImport() {}
+    virtual ~QgsGrassImport();
     QgsGrassObject grassObject() const { return mGrassObject; }
-    virtual void importInThread() = 0;
-    virtual QString uri() const = 0;
+    virtual void importInThread();
+    virtual bool import() = 0;
+    // source description for error message purposes (maybe uri or something similar)
+    virtual QString srcDescription() const = 0;
     // get error if import failed
     QString error();
-    virtual QStringList names() const = 0;
+    virtual QStringList names() const;
+
+  public slots:
+    void onFinished();
 
   signals:
     // sent when process finished
     void finished( QgsGrassImport *import );
 
   protected:
+    static bool run( QgsGrassImport *imp );
     void setError( QString error );
     QgsGrassObject mGrassObject;
     QString mError;
+    QFutureWatcher<bool>* mFutureWatcher;
 };
 
 class GRASS_LIB_EXPORT QgsGrassRasterImport : public QgsGrassImport
@@ -56,22 +63,18 @@ class GRASS_LIB_EXPORT QgsGrassRasterImport : public QgsGrassImport
     QgsGrassRasterImport( QgsRasterPipe* pipe, const QgsGrassObject& grassObject,
                           const QgsRectangle &extent, int xSize, int ySize );
     ~QgsGrassRasterImport();
-    bool import();
-    void importInThread() override;
-    QString uri() const override;
+    bool import() override;
+    QString srcDescription() const override;
     // get list of extensions (for bands)
     static QStringList extensions( QgsRasterDataProvider* provider );
     // get list of all output names (basename + extension for each band)
     QStringList names() const override;
-  public slots:
-    void onFinished();
+
   private:
-    static bool run( QgsGrassRasterImport *imp );
     QgsRasterPipe* mPipe;
     QgsRectangle mExtent;
     int mXSize;
     int mYSize;
-    QFutureWatcher<bool>* mFutureWatcher;
 };
 
 class GRASS_LIB_EXPORT QgsGrassVectorImport : public QgsGrassImport
@@ -81,17 +84,26 @@ class GRASS_LIB_EXPORT QgsGrassVectorImport : public QgsGrassImport
     // takes provider ownership
     QgsGrassVectorImport( QgsVectorDataProvider* provider, const QgsGrassObject& grassObject );
     ~QgsGrassVectorImport();
-    bool import();
-    void importInThread() override;
-    QString uri() const override;
-    // get list of all output names
-    QStringList names() const override;
-  public slots:
-    void onFinished();
+    bool import() override;
+    QString srcDescription() const override;
+
   private:
-    static bool run( QgsGrassVectorImport *imp );
     QgsVectorDataProvider* mProvider;
-    QFutureWatcher<bool>* mFutureWatcher;
+};
+
+class GRASS_LIB_EXPORT QgsGrassCopy : public QgsGrassImport
+{
+    Q_OBJECT
+  public:
+    // takes provider ownership
+    QgsGrassCopy( const QgsGrassObject& srcObject, const QgsGrassObject& destObject );
+    ~QgsGrassCopy();
+    bool import() override;
+    QString srcDescription() const override;
+
+  private:
+    QgsGrassObject mSrcObject;
+
 };
 
 #endif // QGSGRASSIMPORT_H

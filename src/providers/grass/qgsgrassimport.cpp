@@ -37,7 +37,17 @@ extern "C"
 QgsGrassImport::QgsGrassImport( QgsGrassObject grassObject )
     : QObject()
     , mGrassObject( grassObject )
+    , mFutureWatcher( 0 )
 {
+}
+
+QgsGrassImport::~QgsGrassImport()
+{
+  if ( mFutureWatcher && !mFutureWatcher->isFinished() )
+  {
+    QgsDebugMsg( "mFutureWatcher not finished -> waitForFinished()" );
+    mFutureWatcher->waitForFinished();
+  }
 }
 
 void QgsGrassImport::setError( QString error )
@@ -51,6 +61,34 @@ QString QgsGrassImport::error()
   return mError;
 }
 
+void QgsGrassImport::importInThread()
+{
+  QgsDebugMsg( "entered" );
+  mFutureWatcher = new QFutureWatcher<bool>( this );
+  connect( mFutureWatcher, SIGNAL( finished() ), SLOT( onFinished() ) );
+  mFutureWatcher->setFuture( QtConcurrent::run( run, this ) );
+}
+
+bool QgsGrassImport::run( QgsGrassImport *imp )
+{
+  QgsDebugMsg( "entered" );
+  imp->import();
+  return true;
+}
+
+void QgsGrassImport::onFinished()
+{
+  QgsDebugMsg( "entered" );
+  emit finished( this );
+}
+
+QStringList QgsGrassImport::names() const
+{
+  QStringList list;
+  list << mGrassObject.name();
+  return list;
+}
+
 //------------------------------ QgsGrassRasterImport ------------------------------------
 QgsGrassRasterImport::QgsGrassRasterImport( QgsRasterPipe* pipe, const QgsGrassObject& grassObject,
     const QgsRectangle &extent, int xSize, int ySize )
@@ -59,7 +97,6 @@ QgsGrassRasterImport::QgsGrassRasterImport( QgsRasterPipe* pipe, const QgsGrassO
     , mExtent( extent )
     , mXSize( xSize )
     , mYSize( ySize )
-    , mFutureWatcher( 0 )
 {
 }
 
@@ -71,21 +108,6 @@ QgsGrassRasterImport::~QgsGrassRasterImport()
     mFutureWatcher->waitForFinished();
   }
   delete mPipe;
-}
-
-void QgsGrassRasterImport::importInThread()
-{
-  QgsDebugMsg( "entered" );
-  mFutureWatcher = new QFutureWatcher<bool>( this );
-  connect( mFutureWatcher, SIGNAL( finished() ), SLOT( onFinished() ) );
-  mFutureWatcher->setFuture( QtConcurrent::run( run, this ) );
-}
-
-bool QgsGrassRasterImport::run( QgsGrassRasterImport *imp )
-{
-  QgsDebugMsg( "entered" );
-  imp->import();
-  return true;
 }
 
 bool QgsGrassRasterImport::import()
@@ -152,7 +174,7 @@ bool QgsGrassRasterImport::import()
     {
       name += QString( "_%1" ).arg( band );
     }
-    arguments.append( "output=" + name );
+    arguments.append( "output=" + name );    // get list of all output names
     QTemporaryFile gisrcFile;
     QProcess* process = 0;
     try
@@ -236,13 +258,7 @@ bool QgsGrassRasterImport::import()
   return true;
 }
 
-void QgsGrassRasterImport::onFinished()
-{
-  QgsDebugMsg( "entered" );
-  emit finished( this );
-}
-
-QString QgsGrassRasterImport::uri() const
+QString QgsGrassRasterImport::srcDescription() const
 {
   if ( !mPipe || !mPipe->provider() )
   {
@@ -285,7 +301,6 @@ QStringList QgsGrassRasterImport::names() const
 QgsGrassVectorImport::QgsGrassVectorImport( QgsVectorDataProvider* provider, const QgsGrassObject& grassObject )
     : QgsGrassImport( grassObject )
     , mProvider( provider )
-    , mFutureWatcher( 0 )
 {
 }
 
@@ -299,24 +314,8 @@ QgsGrassVectorImport::~QgsGrassVectorImport()
   delete mProvider;
 }
 
-void QgsGrassVectorImport::importInThread()
-{
-  QgsDebugMsg( "entered" );
-  mFutureWatcher = new QFutureWatcher<bool>( this );
-  connect( mFutureWatcher, SIGNAL( finished() ), SLOT( onFinished() ) );
-  mFutureWatcher->setFuture( QtConcurrent::run( run, this ) );
-}
-
-bool QgsGrassVectorImport::run( QgsGrassVectorImport *imp )
-{
-  QgsDebugMsg( "entered" );
-  imp->import();
-  return true;
-}
-
 bool QgsGrassVectorImport::import()
 {
-
   QgsDebugMsg( "entered" );
 
   if ( !mProvider )
@@ -432,13 +431,7 @@ bool QgsGrassVectorImport::import()
   return true;
 }
 
-void QgsGrassVectorImport::onFinished()
-{
-  QgsDebugMsg( "entered" );
-  emit finished( this );
-}
-
-QString QgsGrassVectorImport::uri() const
+QString QgsGrassVectorImport::srcDescription() const
 {
   if ( !mProvider )
   {
@@ -447,9 +440,36 @@ QString QgsGrassVectorImport::uri() const
   return mProvider->dataSourceUri();
 }
 
-QStringList QgsGrassVectorImport::names() const
+//------------------------------ QgsGrassCopy ------------------------------------
+QgsGrassCopy::QgsGrassCopy( const QgsGrassObject& srcObject, const QgsGrassObject& destObject )
+    : QgsGrassImport( destObject )
+    , mSrcObject( srcObject )
 {
-  QStringList list;
-  list << mGrassObject.name();
-  return list;
+}
+
+QgsGrassCopy::~QgsGrassCopy()
+{
+}
+
+bool QgsGrassCopy::import()
+{
+  QgsDebugMsg( "entered" );
+
+  try
+  {
+    QgsGrass::copyObject( mSrcObject, mGrassObject );
+  }
+  catch ( QgsGrass::Exception &e )
+  {
+    setError( e.what() );
+    return false;
+  }
+
+  return true;
+}
+
+
+QString QgsGrassCopy::srcDescription() const
+{
+  return mSrcObject.toString();
 }

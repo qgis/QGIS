@@ -76,6 +76,52 @@ QgsGrassObject::QgsGrassObject( const QString& gisdbase, const QString& location
 {
 }
 
+bool QgsGrassObject::setFromUri( const QString& uri )
+{
+  QgsDebugMsg( "uri = " + uri );
+  QFileInfo fi( uri );
+
+  if ( fi.isFile() )
+  {
+    QString path = fi.canonicalFilePath();
+    QgsDebugMsg( "path = " + path );
+    // /gisdbase_path/location/mapset/cellhd/raster_map
+    QRegExp rx( "(.*)/([^/]*)/([^/]*)/cellhd/([^/]*)", Qt::CaseInsensitive );
+    if ( rx.indexIn( path ) > -1 )
+    {
+      mGisdbase = rx.cap( 1 );
+      mLocation = rx.cap( 2 );
+      mMapset = rx.cap( 3 );
+      mName = rx.cap( 4 );
+      mType = Raster;
+      return QgsGrass::isLocation( mGisdbase + "/" + mLocation );
+    }
+  }
+  else
+  {
+    // /gisdbase_path/location/mapset/vector_map/layer
+    // QFileInfo.canonicalPath() on non existing file does not work (returns empty string)
+    // QFileInfo.absolutePath() does not necessarily remove symbolic links or redundant "." or ".."
+    QDir dir = fi.dir(); // .../mapset/vector_map - does not exist
+    if ( dir.cdUp() ) // .../mapset/
+    {
+      QString path = dir.canonicalPath();
+      QRegExp rx( "(.*)/([^/]*)/([^/]*)" );
+      if ( rx.indexIn( path ) > -1 )
+      {
+        mGisdbase = rx.cap( 1 );
+        mLocation = rx.cap( 2 );
+        mMapset = rx.cap( 3 );
+        mName = fi.dir().dirName();
+        mType = Vector;
+        QgsDebugMsg( "parsed : " + toString() );
+        return QgsGrass::isLocation( mGisdbase + "/" + mLocation );
+      }
+    }
+  }
+  return false;
+}
+
 QString QgsGrassObject::elementShort() const
 {
   if ( mType == Raster )
@@ -122,9 +168,23 @@ QString QgsGrassObject::dirName( Type type )
     return "";
 }
 
-bool QgsGrassObject::mapsetIdentical( const QgsGrassObject &other )
+QString QgsGrassObject::toString() const
 {
-  return mGisdbase == other.mGisdbase && mLocation == other.mLocation && mMapset == other.mMapset;
+  return elementName() + " : " + mapsetPath() + " : " + mName;
+}
+
+bool QgsGrassObject::locationIdentical( const QgsGrassObject &other ) const
+{
+  QFileInfo fi( locationPath() );
+  QFileInfo otherFi( other.locationPath() );
+  return fi == otherFi;
+}
+
+bool QgsGrassObject::mapsetIdentical( const QgsGrassObject &other ) const
+{
+  QFileInfo fi( mapsetPath() );
+  QFileInfo otherFi( other.mapsetPath() );
+  return fi == otherFi;
 }
 
 QRegExp QgsGrassObject::newNameRegExp( Type type )
@@ -1792,9 +1852,30 @@ void QgsGrass::renameObject( const QgsGrassObject & object, const QString& newNa
 
   arguments << object.elementShort() + "=" + object.name() + "," + newName;
 
-  int timeout = 10000; // What timeout to use? It can take long time on network or database
+  int timeout = -1; // What timeout to use? It can take long time on network or database
   // throws QgsGrass::Exception
   QgsGrass::runModule( object.gisdbase(), object.location(), object.mapset(), cmd, arguments, timeout, false );
+}
+
+void QgsGrass::copyObject( const QgsGrassObject & srcObject, const QgsGrassObject & destObject )
+{
+  QgsDebugMsg( "srcObject = " + srcObject.toString() );
+  QgsDebugMsg( "destObject = " + destObject.toString() );
+
+  if ( !srcObject.locationIdentical( destObject ) ) // should not happen
+  {
+    throw QgsGrass::Exception( QObject::tr( "Attempt to copy from different location." ) );
+  }
+
+  QString cmd = "g.copy";
+  QStringList arguments;
+
+  arguments << srcObject.elementShort() + "=" + srcObject.name() + "@" + srcObject.mapset() + "," + destObject.name();
+
+  int timeout = -1; // What timeout to use? It can take long time on network or database
+  // throws QgsGrass::Exception
+  // TODO: g.copy does not seem to return error code if fails (6.4.3RC1)
+  QgsGrass::runModule( destObject.gisdbase(), destObject.location(), destObject.mapset(), cmd, arguments, timeout, false );
 }
 
 bool QgsGrass::deleteObject( const QgsGrassObject & object )
@@ -2008,28 +2089,14 @@ Qt::CaseSensitivity GRASS_LIB_EXPORT QgsGrass::caseSensitivity()
 #endif
 }
 
-bool GRASS_LIB_EXPORT QgsGrass::isMapset( QString path )
+bool GRASS_LIB_EXPORT QgsGrass::isLocation( const QString& path )
 {
-#if 0
-  /* TODO: G_is_mapset() was added to GRASS 6.1 06-05-24,
-  enable its use after some period (others do update) */
+  return G_is_location( path.toUtf8().constData() ) == 1;
+}
 
-  if ( QgsGrass::versionMajor() > 6 || QgsGrass::versionMinor() > 0 )
-  {
-    if ( G_is_mapset( path.toUtf8().constData() ) )
-      return true;
-  }
-  else
-  {
-#endif
-    QString windf = path + "/WIND";
-    if ( QFile::exists( windf ) )
-      return true;
-#if 0
-  }
-#endif
-
-  return false;
+bool GRASS_LIB_EXPORT QgsGrass::isMapset( const QString& path )
+{
+  return G_is_mapset( path.toUtf8().constData() ) == 1;
 }
 
 QString GRASS_LIB_EXPORT QgsGrass::lockFilePath()
