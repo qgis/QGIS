@@ -90,3 +90,5 @@ def handleAlgorithmResults(alg, progress=None, showResults=True):
         QApplication.restoreOverrideCursor()
         dlg = ResultsDialog()
         dlg.exec_()
+        
+    return len(wrongLayers) == 0

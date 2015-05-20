@@ -219,7 +219,9 @@ class AlgorithmDialog(AlgorithmDialogBase):
         keepOpen = ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
 
         if self.iterateParam is None:
-            handleAlgorithmResults(self.alg, self, not keepOpen)
+            if not handleAlgorithmResults(self.alg, self, not keepOpen):
+                self.resetGUI()
+                return
 
         self.executed = True
         self.setInfo('Algorithm %s finished' % self.alg.name)
