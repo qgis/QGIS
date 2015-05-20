@@ -25,8 +25,17 @@
 #include <QDomDocument>
 #include <QDomElement>
 
-QgsEllipseSymbolLayerV2::QgsEllipseSymbolLayerV2(): mSymbolName( "circle" ), mSymbolWidth( 4 ), mSymbolWidthUnit( QgsSymbolV2::MM ), mSymbolHeight( 3 ),
-    mSymbolHeightUnit( QgsSymbolV2::MM ), mFillColor( Qt::white ), mOutlineColor( Qt::black ), mOutlineStyle( Qt::SolidLine ), mOutlineWidth( 0 ), mOutlineWidthUnit( QgsSymbolV2::MM )
+QgsEllipseSymbolLayerV2::QgsEllipseSymbolLayerV2()
+    : mSymbolName( "circle" )
+    , mSymbolWidth( 4 )
+    , mSymbolWidthUnit( QgsSymbolV2::MM )
+    , mSymbolHeight( 3 )
+    , mSymbolHeightUnit( QgsSymbolV2::MM )
+    , mFillColor( Qt::white )
+    , mOutlineColor( Qt::black )
+    , mOutlineStyle( Qt::SolidLine )
+    , mOutlineWidth( 0 )
+    , mOutlineWidthUnit( QgsSymbolV2::MM )
 {
   mPen.setColor( mOutlineColor );
   mPen.setStyle( mOutlineStyle );
@@ -722,7 +731,7 @@ bool QgsEllipseSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFa
       }
       //close ellipse with first point
       line.push_back( line.at( 0 ) );
-      e.writePolyline( line, layerName, "SOLID", oc, outlineWidth, true );
+      e.writePolyline( line, layerName, "CONTINUOUS", oc, outlineWidth );
     }
   }
   else if ( symbolName == "rectangle" )
