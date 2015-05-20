@@ -145,6 +145,7 @@ class GUI_EXPORT QgsDataDefinedValueDialog : public QDialog, public Ui::QgsDataD
     /** Constructor
      * @param symbolList must not be empty
      * @param layer must not be null
+     * @param label value label
      */
     QgsDataDefinedValueDialog( const QList<QgsSymbolV2*>& symbolList, QgsVectorLayer * layer, const QString & label );
     virtual ~QgsDataDefinedValueDialog() {}
