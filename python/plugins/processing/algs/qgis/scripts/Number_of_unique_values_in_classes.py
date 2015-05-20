@@ -4,6 +4,10 @@
 ##value_field=field input
 ##output=output vector
 
+from PyQt4.Qt import QVariant
+
+from qgis.core import QgsField, QgsFeature
+
 layer = processing.getObject(input)
 provider = layer.dataProvider()
 fields = provider.fields()
