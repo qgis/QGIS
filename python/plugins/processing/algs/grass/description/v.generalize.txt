@@ -15,5 +15,4 @@ ParameterNumber|alpha|Snakes alpha parameter|None|None|1.0
 ParameterNumber|beta|Snakes beta parameter|None|None|1.0
 ParameterNumber|iterations|Number of iterations|None|None|1
 ParameterBoolean|-c|Copy attributes|True
-OutputVector|output|Output layer
-
+OutputVector|output|Generalized

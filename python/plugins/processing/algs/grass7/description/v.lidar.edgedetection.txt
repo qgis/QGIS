@@ -10,5 +10,4 @@ ParameterString|tgl|Low gradient threshold for edge classification|3
 ParameterString|theta_g|Angle range for same direction detection|0.26
 ParameterString|lambda_r|Regularization weight in residual evaluation|2
 ParameterBoolean|-e|Estimate point density and distance|False
-OutputVector|output|Output vector layer
-
+OutputVector|output|Edges
