@@ -3,6 +3,6 @@ v.patch - Create a new vector map layer by combining other vector map layers.
 Vector (v.*)
 ParameterMultipleInput|input|Input layers|-1.0|False
 ParameterBoolean|-e|Copy also attribute table|True
-OutputVector|output|Name for output vector map
+OutputVector|output|Combined
 OutputVector|bbox|Bounding boxes
 

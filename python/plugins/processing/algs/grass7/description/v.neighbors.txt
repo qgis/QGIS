@@ -3,5 +3,4 @@ v.neighbors - Makes each cell value a function of attribute values and stores in
 Vector (v.*)
 ParameterVector|input|Input vector layer|-1|False
 ParameterNumber|size|Neighborhood diameter in map units|None|None|0.1
-OutputRaster|output|Output raster layer
-
+OutputRaster|output|Neighborhood
