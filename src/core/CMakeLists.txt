@@ -503,6 +503,7 @@ SET(QGIS_CORE_HDRS
   qgsexpression.h
   qgsexpressionfieldbuffer.h
   qgsfeature.h
+  qgsfeature_p.h
   qgsfeatureiterator.h
   qgsfeaturerequest.h
   qgsfeaturestore.h
