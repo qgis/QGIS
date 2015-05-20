@@ -121,7 +121,10 @@ def getSagaInstalledVersion(runSaga=False):
             stderr=subprocess.STDOUT,
             universal_newlines=True,
         ).stdout
-        lines = proc.readlines()
+        try:
+            lines = proc.readlines()
+        except:
+            return None
         for line in lines:
             if line.startswith("SAGA Version:"):
                 _installedVersion = line[len("SAGA Version:"):].strip().split(" ")[0]
@@ -145,17 +148,20 @@ def executeSaga(progress):
         stderr=subprocess.STDOUT,
         universal_newlines=True,
     ).stdout
-    for line in iter(proc.readline, ''):
-        if '%' in line:
-            s = ''.join([x for x in line if x.isdigit()])
-            try:
-                progress.setPercentage(int(s))
-            except:
-                pass
-        else:
-            line = line.strip()
-            if line != '/' and line != '-' and line != '\\' and line != '|':
-                loglines.append(line)
-                progress.setConsoleInfo(line)
+    try:
+        for line in iter(proc.readline, ''):
+            if '%' in line:
+                s = ''.join([x for x in line if x.isdigit()])
+                try:
+                    progress.setPercentage(int(s))
+                except:
+                    pass
+            else:
+                line = line.strip()
+                if line != '/' and line != '-' and line != '\\' and line != '|':
+                    loglines.append(line)
+                    progress.setConsoleInfo(line)
+    except:
+        pass
     if ProcessingConfig.getSetting(SAGA_LOG_CONSOLE):
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
