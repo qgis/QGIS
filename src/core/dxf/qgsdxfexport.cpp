@@ -3340,6 +3340,12 @@ void QgsDxfExport::writePoint( const QgsPoint& pt, const QString& layer, QColor 
 
 void QgsDxfExport::writePolyline( const QgsPolyline& line, const QString& layer, const QString& lineStyleName, QColor color, double width )
 {
+  if ( line.size() == 0 )
+  {
+    QgsDebugMsg( QString( "writePolyline: empty line layer=%1 lineStyleName=%2" ).arg( layer ).arg( lineStyleName ) );
+    return;
+  }
+
   writeGroup( 0, "LWPOLYLINE" );
   writeHandle();
   writeGroup( 8, layer );
