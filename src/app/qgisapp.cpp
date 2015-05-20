@@ -1790,14 +1790,14 @@ void QgisApp::createStatusBar()
   mToggleExtentsViewButton = new QToolButton( statusBar() );
   mToggleExtentsViewButton->setObjectName( "mToggleExtentsViewButton" );
   mToggleExtentsViewButton->setMaximumWidth( 20 );
-  mToggleExtentsViewButton->setMaximumHeight( 20 );
+  //mToggleExtentsViewButton->setMaximumHeight( 20 );
   mToggleExtentsViewButton->setIcon( QgsApplication::getThemeIcon( "tracking.png" ) );
   mToggleExtentsViewButton->setToolTip( tr( "Toggle extents and mouse position display" ) );
   mToggleExtentsViewButton->setCheckable( true );
   connect( mToggleExtentsViewButton, SIGNAL( toggled( bool ) ), this, SLOT( extentsViewToggled( bool ) ) );
   statusBar()->addPermanentWidget( mToggleExtentsViewButton, 0 );
 
-  // add a label to show current scale
+  // add a label to show current position
   mCoordsLabel = new QLabel( QString(), statusBar() );
   mCoordsLabel->setObjectName( "mCoordsLabel" );
   mCoordsLabel->setFont( myFont );
