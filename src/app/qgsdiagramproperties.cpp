@@ -464,11 +464,22 @@ void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int inde
     mAngleOffsetLabel->hide();
   }
 }
+
+QString QgsDiagramProperties::guessLegendText( const QString& expression )
+{
+  //trim unwanted characters from expression text for legend
+  QString text = expression.mid( expression.startsWith( "\"" ) ? 1 : 0 );
+  if ( text.endsWith( "\"" ) )
+    text.chop( 1 );
+  return text;
+}
+
 void QgsDiagramProperties::addAttribute( QTreeWidgetItem * item )
 {
   QTreeWidgetItem *newItem = new QTreeWidgetItem( mDiagramAttributesTreeWidget );
 
   newItem->setText( 0, item->text( 0 ) );
+  newItem->setText( 2, guessLegendText( item->text( 0 ) ) );
   newItem->setData( 0, Qt::UserRole, item->data( 0, Qt::UserRole ) );
   newItem->setFlags( newItem->flags() & ~Qt::ItemIsDropEnabled );
 
@@ -777,6 +788,7 @@ void QgsDiagramProperties::showAddAttributeExpressionDialog()
       QTreeWidgetItem *newItem = new QTreeWidgetItem( mDiagramAttributesTreeWidget );
 
       newItem->setText( 0, expression );
+      newItem->setText( 2, expression );
       newItem->setData( 0, Qt::UserRole, expression );
       newItem->setFlags( newItem->flags() & ~Qt::ItemIsDropEnabled );
 
