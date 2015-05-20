@@ -349,7 +349,7 @@ class TreeAlgorithmItem(QTreeWidgetItem):
         name = alg.name
         if useCategories:
             icon = GeoAlgorithm.getDefaultIcon()
-            (group, subgroup, name) = AlgorithmDecorator.getGroupsAndName(alg)
+        (group, subgroup, name) = AlgorithmDecorator.getGroupsAndName(alg)
         self.setIcon(0, icon)
         self.setToolTip(0, name)
         self.setText(0, name)
