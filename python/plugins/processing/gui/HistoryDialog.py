@@ -54,11 +54,11 @@ class HistoryDialog(BASE, WIDGET):
         self.keyIcon.addPixmap(self.style().standardPixmap(QStyle.SP_FileIcon))
 
         self.clearButton = QPushButton(self.tr('Clear'))
-        self.clearButton.setToolTip(self.tr('Clear history and log'))
+        self.clearButton.setToolTip(self.tr('Clear history'))
         self.buttonBox.addButton(self.clearButton, QDialogButtonBox.ActionRole)
 
         self.saveButton = QPushButton(self.tr('Save As...'))
-        self.saveButton.setToolTip(self.tr('Save history and log'))
+        self.saveButton.setToolTip(self.tr('Save history'))
         self.buttonBox.addButton(self.saveButton, QDialogButtonBox.ActionRole)
 
         self.tree.doubleClicked.connect(self.executeAlgorithm)
@@ -74,7 +74,7 @@ class HistoryDialog(BASE, WIDGET):
     def clearLog(self):
         reply = QMessageBox.question(self,
             self.tr('Confirmation'),
-            self.tr('Are you sure you want to clear log?'),
+            self.tr('Are you sure you want to clear the history?'),
             QMessageBox.Yes | QMessageBox.No,
             QMessageBox.No
         )
@@ -128,6 +128,7 @@ class HistoryDialog(BASE, WIDGET):
                 TestTools.createTest(item.entry.text)
 
     def showPopupMenu(self, point):
+        return
         item = self.tree.currentItem()
         if isinstance(item, TreeLogEntryItem):
             if item.isAlg:

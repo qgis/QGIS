@@ -415,27 +415,4 @@ class RAlgorithm(GeoAlgorithm):
                 'to know more about how to install and configure R to be used with QGIS</p>')
             return html
 
-    def getPostProcessingErrorMessage(self, wrongLayers):
-        html = GeoAlgorithm.getPostProcessingErrorMessage(self, wrongLayers)
-        msg = RUtils.checkRIsInstalled(True)
-        html += self.tr(
-            '<p>This algorithm requires R to be run. A test to check if '
-            'R is correctly installed and configured in your system has '
-            'been performed, with the following result:</p><ul><i>')
-        if msg is None:
-            html += self.tr(
-                'R seems to be correctly installed and configured</i></li></ul>'
-                '<p>The script you have executed needs the following packages:</p><ul>')
-            packages = RUtils.getRequiredPackages(self.script)
-            for p in packages:
-                html += '<li>' + p + '</li>'
-            html += self.tr(
-                '</ul><p>Make sure they are installed in your R '
-                'environment before trying to execute this script.</p>')
-        else:
-            html += msg + '</i></li></ul>'
-            html += self.tr(
-                '<p><a href= "http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html">Click here</a> '
-                'to know more about how to install and configure R to be used with QGIS</p>')
 
-        return html

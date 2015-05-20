@@ -29,7 +29,9 @@ import os
 
 from PyQt4 import uic
 from PyQt4.QtCore import QUrl
-from PyQt4.QtGui import QDesktopServices
+from PyQt4.QtGui import QDesktopServices, QDockWidget
+
+from qgis.utils import iface
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -51,4 +53,9 @@ class MessageDialog(BASE, WIDGET):
         self.txtMessage.setHtml(message)
 
     def openLink(self, url):
-        QDesktopServices.openUrl(QUrl(url))
+        if url.toString() == "log":
+            self.close()
+            logDock =  iface.mainWindow().findChild(QDockWidget, 'MessageLog')
+            logDock.show()
+        else:
+            QDesktopServices.openUrl(url)

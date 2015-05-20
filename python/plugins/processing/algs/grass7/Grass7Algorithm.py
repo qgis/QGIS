@@ -519,20 +519,3 @@ class Grass7Algorithm(GeoAlgorithm):
             func = getattr(module, 'checkParameterValuesBeforeExecuting')
             return func(self)
 
-    def getPostProcessingErrorMessage(self, wrongLayers):
-        html = GeoAlgorithm.getPostProcessingErrorMessage(self, wrongLayers)
-        msg = Grass7Utils.checkGrass7IsInstalled(True)
-        html += self.tr(
-            '<p>This algorithm requires GRASS GIS 7 to be run. A test '
-            'to check if GRASS GIS 7 is correctly installed and configured in '
-            'your system has been performed, with the following result:</p><ul><i>')
-        if msg is None:
-            html += self.tr(
-                'GRASS GIS 7 seems to be correctly installed and configured</i></li></ul>')
-        else:
-            html += msg + '</i></li></ul>'
-            html += self.tr(
-                '<p><a href="http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html">Click here</a> '
-                'to know more about how to install and configure GRASS GIS 7 to be used with QGIS</p>')
-
-        return html
