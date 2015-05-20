@@ -306,7 +306,7 @@ bool QgsDelimitedTextFeatureIterator::nextFeatureInternal( QgsFeature& feature )
     // At this point the current feature values are valid
 
     feature.setValid( true );
-    feature.setFields( &mSource->mFields ); // allow name-based attribute lookups
+    feature.setFields( mSource->mFields ); // allow name-based attribute lookups
     feature.setFeatureId( fid );
     feature.initAttributes( mSource->mFields.count() );
 

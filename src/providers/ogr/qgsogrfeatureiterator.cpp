@@ -277,7 +277,7 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
 {
   feature.setFeatureId( OGR_F_GetFID( fet ) );
   feature.initAttributes( mSource->mFields.count() );
-  feature.setFields( &mSource->mFields ); // allow name-based attribute lookups
+  feature.setFields( mSource->mFields ); // allow name-based attribute lookups
 
   bool useIntersect = mRequest.flags() & QgsFeatureRequest::ExactIntersect;
   bool geometryTypeFilter = mSource->mOgrGeometryTypeFilter != wkbUnknown;

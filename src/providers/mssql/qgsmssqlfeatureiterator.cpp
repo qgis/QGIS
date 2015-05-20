@@ -157,7 +157,7 @@ bool QgsMssqlFeatureIterator::fetchFeature( QgsFeature& feature )
   if ( mQuery->next() )
   {
     feature.initAttributes( mSource->mFields.count() );
-    feature.setFields( &mSource->mFields ); // allow name-based attribute lookups
+    feature.setFields( mSource->mFields ); // allow name-based attribute lookups
 
     for ( int i = 0; i < mAttributesToFetch.count(); i++ )
     {

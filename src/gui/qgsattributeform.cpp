@@ -279,7 +279,7 @@ void QgsAttributeForm::onAttributeAdded( int idx )
     QgsAttributes attrs = mFeature.attributes();
     Q_ASSERT( attrs.size() == idx );
     attrs.append( QVariant( layer()->pendingFields()[idx].type() ) );
-    mFeature.setFields( &layer()->pendingFields() );
+    mFeature.setFields( layer()->pendingFields() );
     mFeature.setAttributes( attrs );
   }
   init();
@@ -292,7 +292,7 @@ void QgsAttributeForm::onAttributeDeleted( int idx )
   {
     QgsAttributes attrs = mFeature.attributes();
     attrs.remove( idx );
-    mFeature.setFields( &layer()->pendingFields() );
+    mFeature.setFields( layer()->pendingFields() );
     mFeature.setAttributes( attrs );
   }
   init();

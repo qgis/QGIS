@@ -596,7 +596,7 @@ class TestQgsExpression: public QObject
       QgsFields fields;
       fields.append( QgsField( "col1" ) );
       fields.append( QgsField( "second_column", QVariant::Int ) );
-      f.setFields( &fields, true );
+      f.setFields( fields, true );
       f.setAttribute( QString( "col1" ), QString( "test value" ) );
       f.setAttribute( QString( "second_column" ), 5 );
       QgsExpression exp( "attribute($currentfeature,'col1')" );
