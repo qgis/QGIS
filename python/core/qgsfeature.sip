@@ -120,13 +120,14 @@ class QgsFeature
 
     SIP_PYOBJECT __iter__();
 %MethodCode
-    PyObject *attrs = sipConvertFromType( &sipCpp->attributes(), sipType_QgsAttributes, Py_None );
+    QgsAttributes attributes = sipCpp->attributes();
+    PyObject *attrs = sipConvertFromType( &attributes, sipType_QgsAttributes, Py_None );
     sipRes = PyObject_GetIter(attrs);
 %End
 
     SIP_PYOBJECT __getitem__(int key);
 %MethodCode
-  const QgsAttributes& attrs = sipCpp->attributes();
+  QgsAttributes attrs = sipCpp->attributes();
   if (a0 < 0 || a0 >= attrs.count())
   {
     PyErr_SetString(PyExc_KeyError, QByteArray::number(a0));
