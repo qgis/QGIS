@@ -5167,7 +5167,14 @@ void QgisApp::saveAsRasterFile()
     }
     else
     {
+      if ( d.addToCanvas() )
+      {
+        addRasterLayers( QStringList( d.outputFileName() ) );
+      }
       emit layerSavedAs( rasterLayer, d.outputFileName() );
+      messageBar()->pushMessage( tr( "Saving done" ),
+                                 tr( "Export to raster file has been completed" ),
+                                 QgsMessageBar::INFO, messageTimeout() );
     }
   }
 }

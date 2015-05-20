@@ -264,6 +264,11 @@ bool QgsRasterLayerSaveAsDialog::tileMode() const
   return mTileModeCheckBox->isChecked();
 }
 
+bool QgsRasterLayerSaveAsDialog::addToCanvas() const
+{
+  return mAddToCanvas->isChecked();
+}
+
 QString QgsRasterLayerSaveAsDialog::outputFileName() const
 {
   return mSaveAsLineEdit->text();
