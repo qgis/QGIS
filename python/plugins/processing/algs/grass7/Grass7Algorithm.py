@@ -78,7 +78,7 @@ class Grass7Algorithm(GeoAlgorithm):
         return QIcon(os.path.dirname(__file__) + '/../../images/grass.png')
 
     def help(self):
-        return False, 'http://grass.osgeo.org/grass70/manuals/' + self.grassName \
+        return False, 'http://grass.osgeo.org/grass70/manuals/' + self.grass7Name \
             + '.html'
 
     def getParameterDescriptions(self):
@@ -104,7 +104,7 @@ class Grass7Algorithm(GeoAlgorithm):
     def defineCharacteristicsFromFile(self):
         lines = open(self.descriptionFile)
         line = lines.readline().strip('\n').strip()
-        self.grassName = line
+        self.grass7Name = line
         line = lines.readline().strip('\n').strip()
         self.name = line
         line = lines.readline().strip('\n').strip()
@@ -288,7 +288,7 @@ class Grass7Algorithm(GeoAlgorithm):
 
         # 2: Set parameters and outputs
 
-        command = self.grassName
+        command = self.grass7Name
         for param in self.parameters:
             if param.value is None or param.value == '':
                 continue
@@ -358,7 +358,7 @@ class Grass7Algorithm(GeoAlgorithm):
                 commands.append('g.region raster=' + out.name + uniqueSufix)
                 outputCommands.append('g.region raster=' + out.name
                                       + uniqueSufix)
-                if self.grassName == 'r.composite':
+                if self.grass7Name == 'r.composite':
                     command = 'r.out.tiff -t --verbose' # FIXME r.out.tiff deprecated, use r.out.gdal
                     command += ' input='
                     command += out.name + uniqueSufix
@@ -369,7 +369,7 @@ class Grass7Algorithm(GeoAlgorithm):
                     command = 'r.out.gdal -c createopt="TFW=YES,COMPRESS=LZW"'
                     command += ' input='
 
-                if self.grassName == 'r.horizon':
+                if self.grass7Name == 'r.horizon':
                     command += out.name + uniqueSufix + '_0'
                 else:
                     command += out.name + uniqueSufix
