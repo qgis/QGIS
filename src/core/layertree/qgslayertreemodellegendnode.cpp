@@ -163,28 +163,19 @@ QSize QgsSymbolV2LegendNode::minimumIconSize() const
   if ( mItem.symbol() && mItem.symbol()->type() == QgsSymbolV2::Marker )
   {
     QScopedPointer<QgsRenderContext> context( createTemporaryRenderContext() );
-    QPixmap pix = QPixmap::fromImage(
-                    QgsImageOperation::cropTransparent(
-                      QgsSymbolLayerV2Utils::symbolPreviewPixmap(
-                        mItem.symbol(),
-                        QSize( 512, 512 ),
-                        context.data() ).toImage(),
-                      mIconSize,
-                      true ) );
-    minSz = pix.size();
+    minSz = QgsImageOperation::nonTransparentImageRect(
+              QgsSymbolLayerV2Utils::symbolPreviewPixmap( mItem.symbol(), QSize( 512, 512 ), context.data() ).toImage(),
+              mIconSize,
+              true ).size();
   }
   else if ( mItem.symbol() && mItem.symbol()->type() == QgsSymbolV2::Line )
   {
     QScopedPointer<QgsRenderContext> context( createTemporaryRenderContext() );
-    QPixmap pix = QPixmap::fromImage(
-                    QgsImageOperation::cropTransparent(
-                      QgsSymbolLayerV2Utils::symbolPreviewPixmap(
-                        mItem.symbol(),
-                        QSize( mIconSize.width(), 512 ),
-                        context.data() ).toImage(),
-                      mIconSize,
-                      true ) );
-    minSz = pix.size();
+    minSz = QgsImageOperation::nonTransparentImageRect(
+              QgsSymbolLayerV2Utils::symbolPreviewPixmap( mItem.symbol(), QSize( mIconSize.width(), 512 ),
+                  context.data() ).toImage(),
+              mIconSize,
+              true ).size();
   }
   else
   {

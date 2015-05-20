@@ -793,7 +793,7 @@ void QgsImageOperation::flipImage( QImage &image, QgsImageOperation::FlipType ty
   runLineOperation( image, flipOperation );
 }
 
-QImage QgsImageOperation::cropTransparent( const QImage &image, const QSize &minSize, bool center )
+QRect QgsImageOperation::nonTransparentImageRect( const QImage &image, const QSize &minSize, bool center )
 {
   int width = image.width();
   int height = image.height();
@@ -838,7 +838,13 @@ QImage QgsImageOperation::cropTransparent( const QImage &image, const QSize &min
     ymin = qMax( 0, height / 2 - dy );
     ymax = qMin( height, height / 2 + dy );
   }
-  return image.copy( xmin, ymin, xmax - xmin, ymax - ymin );
+
+  return QRect( xmin, ymin, xmax - xmin, ymax - ymin );
+}
+
+QImage QgsImageOperation::cropTransparent( const QImage &image, const QSize &minSize, bool center )
+{
+  return image.copy( QgsImageOperation::nonTransparentImageRect( image, minSize, center ) );
 }
 
 void QgsImageOperation::FlipLineOperation::operator()( QRgb *startRef, const int lineLength, const int bytesPerLine )
