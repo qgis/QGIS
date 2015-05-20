@@ -46,12 +46,6 @@ QgsGrassLocationItem::QgsGrassLocationItem( QgsDataItem* parent, QString dirPath
   mType = QgsDataItem::Directory;
 }
 
-bool QgsGrassLocationItem::isLocation( QString path )
-{
-  //QgsDebugMsg( "path = " + path );
-  return QFile::exists( path + "/" + "PERMANENT" + "/" + "DEFAULT_WIND" );
-}
-
 QVector<QgsDataItem*>QgsGrassLocationItem::createChildren()
 {
   QVector<QgsDataItem*> mapsets;
@@ -63,7 +57,7 @@ QVector<QgsDataItem*>QgsGrassLocationItem::createChildren()
   {
     QString path = dir.absoluteFilePath( name );
 
-    if ( QgsGrassMapsetItem::isMapset( path ) )
+    if ( QgsGrass::isMapset( path ) )
     {
       QgsGrassMapsetItem * mapset = new QgsGrassMapsetItem( this, path, mPath + "/" + name );
       mapsets.append( mapset );
@@ -87,11 +81,6 @@ QgsGrassMapsetItem::QgsGrassMapsetItem( QgsDataItem* parent, QString dirPath, QS
   mGisdbase = dir.path();
 
   mIconName = "grass_mapset.png";
-}
-
-bool QgsGrassMapsetItem::isMapset( QString path )
-{
-  return QFile::exists( path + "/WIND" );
 }
 
 QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
@@ -122,8 +111,8 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
       // somewhere not properly escaped (there was bug in QgsMimeDataUtils for example)
       QString uri = mDirPath + "/" + name + "/" + layerName;
       QgsLayerItem::LayerType layerType = QgsLayerItem::Vector;
-      QString typeName = layerName.split( "_" )[1];
-      QString baseLayerName = layerName.split( "_" )[0];
+      QString typeName = layerName.split( "_" ).value( 1 );
+      QString baseLayerName = layerName.split( "_" ).value( 0 );
 
       if ( typeName == "point" )
         layerType = QgsLayerItem::Point;
@@ -135,8 +124,8 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
       QString layerPath = mapPath + "/" + layerName;
       if ( !map )
       {
-        /* This may happen (one layer only) in GRASS 7 with points (no topo layers) */
-        QgsLayerItem *layer = new QgsGrassVectorLayerItem( this, vectorObject, name + " " + baseLayerName, layerPath, uri, layerType, true );
+        /* This may happen (one layer only) in GRASS 7 with points (no topo layers) or if topo layers are disabled */
+        QgsLayerItem *layer = new QgsGrassVectorLayerItem( this, vectorObject, name, layerPath, uri, layerType, true );
         //layer->setState( Populated );
         items.append( layer );
       }
@@ -228,53 +217,93 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
     QStringList extensions;
     QStringList existingNames;
     QRegExp regExp;
+    QgsGrassObject srcObject;
+    QString srcName;
+
+    // use g.copy for GRASS maps in the same location
+    bool useCopy = false;
+
     if ( u.layerType == "raster" )
     {
-      rasterProvider = qobject_cast<QgsRasterDataProvider*>( QgsProviderRegistry::instance()->provider( u.providerKey, u.uri ) );
-      provider = rasterProvider;
+      if ( u.providerKey == "grassraster" && srcObject.setFromUri( u.uri )
+           && srcObject.locationIdentical( mapsetObject ) )
+      {
+        useCopy = true;
+      }
+      else
+      {
+        rasterProvider = qobject_cast<QgsRasterDataProvider*>( QgsProviderRegistry::instance()->provider( u.providerKey, u.uri ) );
+        provider = rasterProvider;
+      }
       existingNames = existingRasters;
       regExp = QgsGrassObject::newNameRegExp( QgsGrassObject::Raster );
     }
     else if ( u.layerType == "vector" )
     {
-      vectorProvider = qobject_cast<QgsVectorDataProvider*>( QgsProviderRegistry::instance()->provider( u.providerKey, u.uri ) );
-      provider = vectorProvider;
+      if ( u.providerKey == "grass" && srcObject.setFromUri( u.uri )
+           && srcObject.locationIdentical( mapsetObject ) )
+      {
+        useCopy = true;
+      }
+      else
+      {
+        vectorProvider = qobject_cast<QgsVectorDataProvider*>( QgsProviderRegistry::instance()->provider( u.providerKey, u.uri ) );
+        provider = vectorProvider;
+      }
       existingNames = existingVectors;
       regExp = QgsGrassObject::newNameRegExp( QgsGrassObject::Vector );
     }
     QgsDebugMsg( "existingNames = " + existingNames.join( "," ) );
 
-    if ( !provider )
+    if ( useCopy )
     {
-      errors.append( tr( "Cannot create provider %1 : %2" ).arg( u.providerKey ).arg( u.uri ) );
-      continue;
+      srcName = srcObject.name();
     }
-    if ( !provider->isValid() )
+    else
     {
-      errors.append( tr( "Provider is not valid  %1 : %2" ).arg( u.providerKey ).arg( u.uri ) );
-      delete provider;
-      continue;
+      if ( !provider )
+      {
+        errors.append( tr( "Cannot create provider %1 : %2" ).arg( u.providerKey ).arg( u.uri ) );
+        continue;
+      }
+      if ( !provider->isValid() )
+      {
+        errors.append( tr( "Provider is not valid  %1 : %2" ).arg( u.providerKey ).arg( u.uri ) );
+        delete provider;
+        continue;
+      }
+      if ( u.layerType == "raster" )
+      {
+        extensions = QgsGrassRasterImport::extensions( rasterProvider );
+      }
+      srcName = u.name;
     }
 
-    if ( u.layerType == "raster" )
+    // TODO: add a method in QgsGrass to convert a name to GRASS valid name
+    QString destName = srcName.replace( " ", "_" );
+    if ( QgsNewNameDialog::exists( destName, extensions, existingNames, caseSensitivity ) )
     {
-      extensions = QgsGrassRasterImport::extensions( rasterProvider );
-    }
-
-    QString newName = u.name;
-    if ( QgsNewNameDialog::exists( u.name, extensions, existingNames, caseSensitivity ) )
-    {
-      QgsNewNameDialog dialog( u.name, u.name, extensions, existingNames, regExp, caseSensitivity );
+      QgsNewNameDialog dialog( srcName, destName, extensions, existingNames, regExp, caseSensitivity );
       if ( dialog.exec() != QDialog::Accepted )
       {
         delete provider;
         continue;
       }
-      newName = dialog.name();
+      destName = dialog.name();
     }
 
     QgsGrassImport *import = 0;
-    if ( u.layerType == "raster" )
+    QStringList newNames;
+    if ( useCopy )
+    {
+      QgsDebugMsg( "location is the same -> g.copy" );
+      QgsGrassObject destObject( mapsetObject );
+      destObject.setName( destName );
+      destObject.setType( srcObject.type() );
+      import = new QgsGrassCopy( srcObject, destObject );
+    }
+
+    else if ( u.layerType == "raster" )
     {
       QgsRectangle newExtent = rasterProvider->extent();
       int newXSize;
@@ -298,6 +327,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
           continue;
         }
         newXSize = window.cols;
+
         newYSize = window.rows;
 
         newExtent = QgsGrass::extent( &window );
@@ -326,13 +356,13 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
       QgsDebugMsg( QString( "newXSize = %1 newYSize = %2" ).arg( newXSize ).arg( newYSize ) );
 
       QString path = mPath + "/" + "raster" + "/" + u.name;
-      QgsGrassObject rasterObject( mGisdbase, mLocation, mName, newName, QgsGrassObject::Raster );
+      QgsGrassObject rasterObject( mGisdbase, mLocation, mName, destName, QgsGrassObject::Raster );
       import = new QgsGrassRasterImport( pipe, rasterObject, newExtent, newXSize, newYSize ); // takes pipe ownership
     }
     else if ( u.layerType == "vector" )
     {
       QString path = mPath + "/" + "raster" + "/" + u.name;
-      QgsGrassObject vectorObject( mGisdbase, mLocation, mName, newName, QgsGrassObject::Vector );
+      QgsGrassObject vectorObject( mGisdbase, mLocation, mName, destName, QgsGrassObject::Vector );
       import = new QgsGrassVectorImport( vectorProvider, vectorObject ); // takes provider ownership
     }
 
@@ -390,7 +420,7 @@ void QgsGrassMapsetItem::onImportFinished( QgsGrassImport* import )
   {
     QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
     output->setTitle( tr( "Import to GRASS mapset failed" ) );
-    output->setMessage( tr( "Failed to import %1 to %2: %3" ).arg( import->uri() ).arg( import->grassObject()
+    output->setMessage( tr( "Failed to import %1 to %2: %3" ).arg( import->srcDescription() ).arg( import->grassObject()
                         .mapsetPath() ).arg( import->error() ), QgsMessageOutput::MessageText );
     output->showMessage();
   }
@@ -553,12 +583,20 @@ QgsGrassVectorLayerItem::QgsGrassVectorLayerItem( QgsDataItem* parent, QgsGrassO
     : QgsGrassObjectItem( parent, grassObject, layerName, path, uri, layerType, "grass", mSingleLayer )
     , mSingleLayer( singleLayer )
 {
+
 }
 
 QString QgsGrassVectorLayerItem::layerName() const
 {
-  // to get map + layer when added from browser
-  return mGrassObject.name() + " " + name();
+  if ( mSingleLayer )
+  {
+    return name();
+  }
+  else
+  {
+    // to get map + layer when added from browser
+    return mGrassObject.name() + " " + name();
+  }
 }
 
 //----------------------- QgsGrassRasterItem ------------------------------
@@ -588,7 +626,7 @@ QGISEXTERN int dataCapabilities()
 
 QGISEXTERN QgsDataItem * dataItem( QString theDirPath, QgsDataItem* parentItem )
 {
-  if ( QgsGrassLocationItem::isLocation( theDirPath ) )
+  if ( QgsGrass::isLocation( theDirPath ) )
   {
     QString path;
     QDir dir( theDirPath );

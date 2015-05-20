@@ -81,6 +81,7 @@ class GRASS_LIB_EXPORT QgsGrassObject
     void setGisdbase( const QString& gisdbase ) { mGisdbase = gisdbase; }
     QString location() const { return mLocation; }
     void setLocation( const QString& location ) { mLocation = location; }
+    QString locationPath() const { return mGisdbase + "/" + mLocation; }
     QString mapset() const { return mMapset; }
     void setMapset( const QString& mapset ) { mMapset = mapset; }
     QString mapsetPath() const { return mGisdbase + "/" + mLocation + "/" + mMapset; }
@@ -89,6 +90,8 @@ class GRASS_LIB_EXPORT QgsGrassObject
     QString fullName() const { return mName + "@" + mMapset; }
     Type type() const { return mType; }
     void setType( Type type ) { mType = type; }
+    // set from QGIS layer uri, returns true if set correctly, verifies also if location is a GRASS location
+    bool setFromUri( const QString& uri );
     // element name used as modules param, e.g. g.remove element=name
     QString elementShort() const;
     // descriptive full name
@@ -97,8 +100,11 @@ class GRASS_LIB_EXPORT QgsGrassObject
     // name of directory in GRASS mapset to look for the object (cellhd,vector,window)
     QString dirName() const;
     static QString dirName( Type type );
+    QString toString() const;
+    // returns true if gisdbase and location are the same
+    bool locationIdentical( const QgsGrassObject &other ) const;
     // returns true if gisdbase, location and mapset are the same
-    bool mapsetIdentical( const QgsGrassObject &other );
+    bool mapsetIdentical( const QgsGrassObject &other ) const;
     // get regexp patter for new names, e.g. vectors should not start with number
     static QRegExp newNameRegExp( Type type );
   private:
@@ -277,8 +283,11 @@ class QgsGrass
 
     static GRASS_LIB_EXPORT void init( void );
 
+    //! test if the directory is location
+    static GRASS_LIB_EXPORT bool isLocation( const QString& path );;
+
     // ! test if the directory is mapset
-    static GRASS_LIB_EXPORT bool isMapset( QString path );
+    static GRASS_LIB_EXPORT bool isMapset( const QString& path );
 
     // ! Get the lock file
     static GRASS_LIB_EXPORT QString lockFilePath();
@@ -356,6 +365,9 @@ class QgsGrass
 
     // ! Rename GRASS object, throws QgsGrass::Exception
     static GRASS_LIB_EXPORT void renameObject( const QgsGrassObject & object, const QString& newName );
+
+    // ! Copy GRASS object, throws QgsGrass::Exception
+    static GRASS_LIB_EXPORT void copyObject( const QgsGrassObject & srcObject, const QgsGrassObject & destObject );
 
     // ! Delete map
     static GRASS_LIB_EXPORT bool deleteObject( const QgsGrassObject & object );

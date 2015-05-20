@@ -29,7 +29,6 @@ class QgsGrassLocationItem : public QgsDirectoryItem
 
     QIcon icon() override { return QgsDataItem::icon(); }
 
-    static bool isLocation( QString path );
     QVector<QgsDataItem*> createChildren() override;
 };
 
@@ -41,7 +40,6 @@ class QgsGrassMapsetItem : public QgsDirectoryItem
 
     QIcon icon() override { return QgsDataItem::icon(); }
 
-    static bool isMapset( QString path );
     QVector<QgsDataItem*> createChildren() override;
     virtual bool acceptDrop() override { return true; }
     virtual bool handleDrop( const QMimeData * data, Qt::DropAction action ) override;
