@@ -4,4 +4,4 @@ Raster (r.*)
 ParameterRaster|data|Layer representing data that will be summed within clumps|False
 ParameterRaster|clump|Clumps layer (preferably the output of r.clump)|False
 *ParameterBoolean|-f|Generate unformatted report|False
-OutputVector|centroids|Vector points map to contain clump centroids
+OutputVector|centroids|Centroids

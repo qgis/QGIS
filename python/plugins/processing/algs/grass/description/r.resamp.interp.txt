@@ -4,4 +4,4 @@ Raster (r.*)
 ParameterRaster|input|Input raster layer|False
 ParameterSelection|method|Interpolation method|nearest;bilinear;bicubic
 ParameterBoolean|-a_r.region|Align region to resolution (default = align to bounds) in r.region|False
-OutputRaster|output|Output raster layer
+OutputRaster|output|Resampled interpolated

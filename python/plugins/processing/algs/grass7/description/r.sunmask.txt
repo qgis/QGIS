@@ -15,4 +15,4 @@ ParameterNumber|east|Easting coordinate (point of interest)|None|None|0.0
 ParameterNumber|north|Northing coordinate (point of interest)|None|None|0.0
 ParameterBoolean|-z|Do not ignore zero elevation|True
 ParameterBoolean|-s|Calculate sun position only and exit|False
-OutputRaster|output|Output raster layer
+OutputRaster|output|Shadows

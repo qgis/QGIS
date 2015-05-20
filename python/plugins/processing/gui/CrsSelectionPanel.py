@@ -25,16 +25,22 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtGui import QWidget
+import os
+
+from PyQt4 import uic
+
 from qgis.core import QgsCoordinateReferenceSystem
 from qgis.gui import QgsGenericProjectionSelector
 
-from processing.ui.ui_widgetBaseSelector import Ui_Form
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'widgetBaseSelector.ui'))
 
-class CrsSelectionPanel(QWidget, Ui_Form):
+
+class CrsSelectionPanel(BASE, WIDGET):
 
     def __init__(self, default):
-        QWidget.__init__(self)
+        super(CrsSelectionPanel, self).__init__(None)
         self.setupUi(self)
 
         self.leText.setEnabled(False)

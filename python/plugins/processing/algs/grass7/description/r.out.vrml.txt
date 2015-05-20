@@ -4,4 +4,4 @@ Raster (r.*)
 ParameterRaster|elevation|Elevation layer|False
 ParameterRaster|color|Color layer|False
 ParameterNumber|exaggeration|Vertical exaggeration|None|None|1.0
-OutputFile|output|Output VRML file
+OutputFile|output|VRML

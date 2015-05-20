@@ -62,6 +62,7 @@ class QgsGrassObjectItemBase
     QgsGrassObjectItemBase( QgsGrassObject grassObject );
 
   public:
+    void renameGrassObject( QgsDataItem* parent );
     void deleteGrassObject( QgsDataItem* parent );
 
   protected:
@@ -75,16 +76,19 @@ class QgsGrassObjectItem : public QgsLayerItem, public QgsGrassObjectItemBase
     QgsGrassObjectItem( QgsDataItem* parent, QgsGrassObject grassObject,
                         QString name, QString path, QString uri,
                         LayerType layerType, QString providerKey,
-                        bool deleteAction = true );
+                        bool showObjectActions = true );
 
     virtual QList<QAction*> actions() override;
 
   public slots:
+    void renameGrassObject();
     void deleteGrassObject();
 
   protected:
     //QgsGrassObject mGrassObject;
-    bool mDeleteAction;
+    // indicates if it is really GRASS object like raster or vector map,
+    // for example
+    bool mShowObjectActions;
 };
 
 // Vector is collection of layers
@@ -98,6 +102,7 @@ class QgsGrassVectorItem : public QgsDataCollectionItem, public QgsGrassObjectIt
     virtual QList<QAction*> actions() override;
 
   public slots:
+    void renameGrassObject();
     void deleteGrassObject();
 
   private:

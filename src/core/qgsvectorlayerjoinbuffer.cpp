@@ -152,7 +152,7 @@ void QgsVectorLayerJoinBuffer::cacheJoinLayer( QgsVectorJoinInfo& joinInfo )
     QgsFeature f;
     while ( fit.nextFeature( f ) )
     {
-      const QgsAttributes& attrs = f.attributes();
+      QgsAttributes attrs = f.attributes();
       QString key = attrs[joinFieldIndex].toString();
       if ( hasSubset )
       {

@@ -195,7 +195,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /** Return the messageBar object which allows displaying unobtrusive messages to the user.*/
     QgsMessageBar *messageBar();
 
-    /** Adds a widget to the user input tool br.*/
+    /** Adds a widget to the user input tool bar.*/
     void addUserInputWidget( QWidget* widget );
 
     //! Set theme (icons)

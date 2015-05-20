@@ -6,4 +6,4 @@ ParameterSelection|method|Aggregation method|average;median;mode;minimum;maximum
 ParameterBoolean|-n|Propagate NULLs|False
 ParameterBoolean|-w|Weight according to area (slower)|False
 ParameterBoolean|-a_r.region|Align region to resolution (default = align to bounds) in r.region|False
-OutputRaster|output|Output raster layer
+OutputRaster|output|Resampled aggregated

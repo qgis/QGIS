@@ -41,6 +41,9 @@ from SagaGroupNameDecorator import SagaGroupNameDecorator
 from processing.tools import dataobjects
 from processing.tools.system import getTempFilename, isWindows, getTempFilenameInTempFolder
 
+pluginPath = os.path.normpath(os.path.join(
+    os.path.split(os.path.dirname(__file__))[0], os.pardir))
+
 sessionExportedLayers = {}
 
 
@@ -61,7 +64,7 @@ class SagaAlgorithm212(GeoAlgorithm):
         return newone
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../../images/saga.png')
+        return QIcon(os.path.join(pluginPath, 'images', 'saga.png'))
 
     def defineCharacteristicsFromFile(self):
         lines = open(self.descriptionFile)
@@ -357,6 +360,6 @@ class SagaAlgorithm212(GeoAlgorithm):
                             name + '.rst'))
         if html is None:
             return True, None
-        imgpath = os.path.join(os.path.dirname(__file__),os.pardir, os.pardir, 'images', 'saga100x100.jpg')
+        imgpath = os.path.join(pluginPath, 'images', 'saga.png')
         html = ('<img src="%s"/>' % imgpath) + html
         return True, html

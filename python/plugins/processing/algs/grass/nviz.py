@@ -40,6 +40,9 @@ from GrassUtils import GrassUtils
 from processing.tools.system import getNumExportedLayers
 from processing.tools import dataobjects
 
+pluginPath = os.path.normpath(os.path.join(
+    os.path.split(os.path.dirname(__file__))[0], os.pardir))
+
 
 class nviz(GeoAlgorithm):
 
@@ -50,7 +53,7 @@ class nviz(GeoAlgorithm):
     GRASS_REGION_CELLSIZE_PARAMETER = 'GRASS_REGION_CELLSIZE_PARAMETER'
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../images/grass.png')
+        return QIcon(os.path.join(pluginPath, 'images', 'grass.png'))
 
     def defineCharacteristics(self):
         self.name = 'nviz'

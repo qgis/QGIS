@@ -30,7 +30,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     Q_OBJECT
 
   public:
-    QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* style, QMenu* menu, QWidget* parent );
+    QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* style, QMenu* menu, QWidget* parent, const QgsVectorLayer * layer = 0 );
 
   public slots:
     void setSymbolFromStyle( const QModelIndex & index );
@@ -49,6 +49,10 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     void openStyleManager();
     void clipFeaturesToggled( bool checked );
 
+    void updateDataDefinedMarkerSize();
+    void updateDataDefinedMarkerAngle();
+    void updateDataDefinedLineWidth();
+
   signals:
     void changed();
 
@@ -57,6 +61,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     QgsStyleV2* mStyle;
     QMenu* mAdvancedMenu;
     QAction* mClipFeaturesAction;
+    const QgsVectorLayer* mLayer;
 
     void populateSymbolView();
     void populateSymbols( QStringList symbols );

@@ -8,6 +8,5 @@ ParameterString|lambda_c|Regularization weight in reclassification evaluation|1
 ParameterString|tch|High threshold for object to terrain reclassification|2
 ParameterString|tcl|Low threshold for object to terrain reclassification|1
 ParameterBoolean|-e|Estimate point density and distance|False
-OutputVector|output|Output classified layer
-OutputVector|terrain|Only 'terrain' points output layer
-
+OutputVector|output|Classified
+OutputVector|terrain|Only 'terrain' points

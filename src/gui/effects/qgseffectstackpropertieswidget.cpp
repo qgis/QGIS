@@ -260,10 +260,10 @@ void QgsEffectStackPropertiesWidget::setWidget( QWidget* widget )
 void QgsEffectStackPropertiesWidget::addEffect()
 {
   QgsPaintEffect* newEffect = new QgsDrawSourceEffect();
-  mStack->appendEffect( newEffect );
+  mStack->insertEffect( 0, newEffect );
 
   EffectItem *newEffectItem = new EffectItem( newEffect, this );
-  mModel->invisibleRootItem()->insertRow( 0, newEffectItem );
+  mModel->invisibleRootItem()->insertRow( mStack->count() - 1, newEffectItem );
 
   mEffectsList->setCurrentIndex( mModel->indexFromItem( newEffectItem ) );
   updateUi();

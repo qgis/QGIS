@@ -3,4 +3,4 @@ r.median - Finds the median of values in a cover layer within areas assigned the
 Raster (r.*)
 ParameterRaster|base|Base raster layer|False
 ParameterRaster|cover|Cover layer|False
-OutputRaster|output|Output raster layer
+OutputRaster|output|Median

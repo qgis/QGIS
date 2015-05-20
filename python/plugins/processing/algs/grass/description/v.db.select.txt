@@ -11,6 +11,4 @@ ParameterString|fs|Output field separator|,
 *ParameterString|nv|Null value indicator|
 *ParameterBoolean|-v|Vertical output (instead of horizontal)|False
 *ParameterBoolean|-r|Print minimal region extent of selected vector features instead of attributes|False
-OutputFile|file|Output file| 
-
-
+OutputFile|file|Attributes

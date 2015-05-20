@@ -12,4 +12,4 @@ ParameterRaster|moisture_live|Name of raster map containing LIVE fuel MOISTURE (
 *ParameterRaster|slope|Name of raster map containing SLOPE (degree)|False
 *ParameterRaster|aspect|Name of raster map containing ASPECT (degree, anti-clockwise from E)|False
 *ParameterRaster|elevation|Name of raster map containing ELEVATION (m) (required with -s)|False
-OutputRaster|output|Name of raster map to contain results (several new layers)
+OutputRaster|output|Fire maps

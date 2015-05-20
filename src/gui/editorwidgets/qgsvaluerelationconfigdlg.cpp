@@ -32,7 +32,7 @@ QgsEditorWidgetConfig QgsValueRelationConfigDlg::config()
 {
   QgsEditorWidgetConfig cfg;
 
-  cfg.insert( "Layer", mLayerName->currentLayer()->id() );
+  cfg.insert( "Layer", mLayerName->currentLayer() ? mLayerName->currentLayer()->id() : QString() );
   cfg.insert( "Key", mKeyColumn->currentField() );
   cfg.insert( "Value", mValueColumn->currentField() );
   cfg.insert( "AllowMulti", mAllowMulti->isChecked() );

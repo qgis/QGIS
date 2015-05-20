@@ -765,7 +765,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
     QSqlQuery query = QSqlQuery( mDatabase );
     query.setForwardOnly( true );
 
-    const QgsAttributes& attrs = it->attributes();
+    QgsAttributes attrs = it->attributes();
 
     for ( int i = 0; i < attrs.count(); ++i )
     {

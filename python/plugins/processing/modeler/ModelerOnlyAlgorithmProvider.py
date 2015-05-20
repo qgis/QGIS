@@ -32,6 +32,8 @@ from processing.modeler.CalculatorModelerAlgorithm import CalculatorModelerAlgor
 from processing.modeler.RasterLayerBoundsAlgorithm import RasterLayerBoundsAlgorithm
 from processing.modeler.VectorLayerBoundsAlgorithm import VectorLayerBoundsAlgorithm
 
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+
 
 class ModelerOnlyAlgorithmProvider(AlgorithmProvider):
 
@@ -45,7 +47,7 @@ class ModelerOnlyAlgorithmProvider(AlgorithmProvider):
         return self.tr('Modeler-only tools', 'ModelerOnlyAlgorithmProvider')
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../images/model.png')
+        return QIcon(os.path.join(pluginPath, 'images', 'model.png'))
 
     def _loadAlgorithms(self):
         self.algs = [CalculatorModelerAlgorithm(),

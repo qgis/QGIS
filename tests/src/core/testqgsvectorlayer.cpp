@@ -208,6 +208,11 @@ class TestQgsVectorLayer : public QObject
       f4.setAttribute( "col1", QVariant() );
       layer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 << f4 );
 
+      //make a selection
+      QgsFeatureIds ids;
+      ids << f2.id() << f3.id();
+      layer->setSelectedFeatures( ids );
+
       bool ok;
       QList<QVariant> varList = layer->getValues( "col1", ok );
       QVERIFY( ok );
@@ -217,12 +222,26 @@ class TestQgsVectorLayer : public QObject
       QCOMPARE( varList.at( 2 ), QVariant( 3 ) );
       QCOMPARE( varList.at( 3 ), QVariant() );
 
+      //check with selected features
+      varList = layer->getValues( "col1", ok, true );
+      QVERIFY( ok );
+      QCOMPARE( varList.length(), 2 );
+      QCOMPARE( varList.at( 0 ), QVariant( 2 ) );
+      QCOMPARE( varList.at( 1 ), QVariant( 3 ) );
+
       QList<double> doubleList = layer->getDoubleValues( "col1", ok );
       QVERIFY( ok );
       QCOMPARE( doubleList.length(), 3 );
       QCOMPARE( doubleList.at( 0 ), 1.0 );
       QCOMPARE( doubleList.at( 1 ), 2.0 );
       QCOMPARE( doubleList.at( 2 ), 3.0 );
+
+      //check with selected features
+      doubleList = layer->getDoubleValues( "col1", ok, true );
+      QVERIFY( ok );
+      QCOMPARE( doubleList.length(), 2 );
+      QCOMPARE( doubleList.at( 0 ), 2.0 );
+      QCOMPARE( doubleList.at( 1 ), 3.0 );
 
       QList<QVariant> expVarList = layer->getValues( "tostring(col1) || ' '", ok );
       QVERIFY( ok );

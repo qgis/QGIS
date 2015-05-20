@@ -16,6 +16,11 @@
 #include <QByteArray>
 #include <QtConcurrentRun>
 
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
+#include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
+#include "qgsgeometry.h"
 #include "qgsproviderregistry.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasteriterator.h"
@@ -50,7 +55,6 @@ QString QgsGrassImport::error()
 QgsGrassRasterImport::QgsGrassRasterImport( QgsRasterPipe* pipe, const QgsGrassObject& grassObject,
     const QgsRectangle &extent, int xSize, int ySize )
     : QgsGrassImport( grassObject )
-    //, mProvider( provider )
     , mPipe( pipe )
     , mExtent( extent )
     , mXSize( xSize )
@@ -66,7 +70,6 @@ QgsGrassRasterImport::~QgsGrassRasterImport()
     QgsDebugMsg( "mFutureWatcher not finished -> waitForFinished()" );
     mFutureWatcher->waitForFinished();
   }
-  //delete mProvider;
   delete mPipe;
 }
 
@@ -200,6 +203,8 @@ bool QgsGrassRasterImport::import()
       delete block;
     }
 
+    // TODO: send something back from module and read it here to close map correctly in module
+
     process->closeWriteChannel();
     process->waitForFinished( 5000 );
 
@@ -273,5 +278,178 @@ QStringList QgsGrassRasterImport::names() const
   {
     list << mGrassObject.name();
   }
+  return list;
+}
+
+//------------------------------ QgsGrassVectorImport ------------------------------------
+QgsGrassVectorImport::QgsGrassVectorImport( QgsVectorDataProvider* provider, const QgsGrassObject& grassObject )
+    : QgsGrassImport( grassObject )
+    , mProvider( provider )
+    , mFutureWatcher( 0 )
+{
+}
+
+QgsGrassVectorImport::~QgsGrassVectorImport()
+{
+  if ( mFutureWatcher && !mFutureWatcher->isFinished() )
+  {
+    QgsDebugMsg( "mFutureWatcher not finished -> waitForFinished()" );
+    mFutureWatcher->waitForFinished();
+  }
+  delete mProvider;
+}
+
+void QgsGrassVectorImport::importInThread()
+{
+  QgsDebugMsg( "entered" );
+  mFutureWatcher = new QFutureWatcher<bool>( this );
+  connect( mFutureWatcher, SIGNAL( finished() ), SLOT( onFinished() ) );
+  mFutureWatcher->setFuture( QtConcurrent::run( run, this ) );
+}
+
+bool QgsGrassVectorImport::run( QgsGrassVectorImport *imp )
+{
+  QgsDebugMsg( "entered" );
+  imp->import();
+  return true;
+}
+
+bool QgsGrassVectorImport::import()
+{
+
+  QgsDebugMsg( "entered" );
+
+  if ( !mProvider )
+  {
+    setError( "Provider is null." );
+    return false;
+  }
+
+  if ( !mProvider->isValid() )
+  {
+    setError( "Provider is not valid." );
+    return false;
+  }
+
+  QgsCoordinateReferenceSystem providerCrs = mProvider->crs();
+  QgsCoordinateReferenceSystem mapsetCrs = QgsGrass::crsDirect( mGrassObject.gisdbase(), mGrassObject.location() );
+  QgsDebugMsg( "providerCrs = " + providerCrs.toWkt() );
+  QgsDebugMsg( "mapsetCrs = " + mapsetCrs.toWkt() );
+  QgsCoordinateTransform coordinateTransform;
+  bool doTransform = false;
+  if ( providerCrs.isValid() && mapsetCrs.isValid() && providerCrs != mapsetCrs )
+  {
+    coordinateTransform.setSourceCrs( providerCrs );
+    coordinateTransform.setDestCRS( mapsetCrs );
+    doTransform = true;
+  }
+
+  QString module = QgsGrass::qgisGrassModulePath() + "/qgis.v.in";
+  QStringList arguments;
+  QString name = mGrassObject.name();
+  arguments.append( "output=" + name );
+  QTemporaryFile gisrcFile;
+  QProcess* process = 0;
+  try
+  {
+    process = QgsGrass::startModule( mGrassObject.gisdbase(), mGrassObject.location(), mGrassObject.mapset(), module, arguments, gisrcFile );
+  }
+  catch ( QgsGrass::Exception &e )
+  {
+    setError( e.what() );
+    return false;
+  }
+
+  QDataStream outStream( process );
+
+  QGis::WkbType wkbType = mProvider->geometryType();
+  bool isPolygon = QGis::singleType( QGis::flatType( wkbType ) ) == QGis::WKBPolygon;
+  outStream << ( qint32 )wkbType;
+
+  outStream << mProvider->fields();
+
+  QgsFeatureIterator iterator = mProvider->getFeatures();
+  QgsFeature feature;
+  for ( int i = 0; i < ( isPolygon ? 2 : 1 ); i++ ) // two cycles with polygons
+  {
+    if ( i > 0 )
+    {
+      //iterator.rewind(); // rewind does not work
+      iterator = mProvider->getFeatures();
+    }
+    QgsDebugMsg( "send features" );
+    while ( iterator.nextFeature( feature ) )
+    {
+      if ( !feature.isValid() )
+      {
+        continue;
+      }
+      if ( doTransform && feature.geometry() )
+      {
+        feature.geometry()->transform( coordinateTransform );
+      }
+      outStream << feature;
+    }
+    feature = QgsFeature(); // indicate end by invalid feature
+    outStream << feature;
+    QgsDebugMsg( "features sent" );
+  }
+  iterator.close();
+
+  process->setReadChannel( QProcess::StandardOutput );
+
+  bool result;
+  outStream >> result;
+  QgsDebugMsg( QString( "result = %1" ).arg( result ) );
+
+  process->closeWriteChannel();
+  process->waitForFinished( 5000 );
+
+  QString stdoutString = process->readAllStandardOutput().data();
+  QString stderrString = process->readAllStandardError().data();
+
+  QString processResult = QString( "exitStatus=%1, exitCode=%2, errorCode=%3, error=%4 stdout=%5, stderr=%6" )
+                          .arg( process->exitStatus() ).arg( process->exitCode() )
+                          .arg( process->error() ).arg( process->errorString() )
+                          .arg( stdoutString ).arg( stderrString );
+  QgsDebugMsg( "processResult: " + processResult );
+
+  if ( process->exitStatus() != QProcess::NormalExit )
+  {
+    setError( process->errorString() );
+    delete process;
+    return false;
+  }
+
+  if ( process->exitCode() != 0 )
+  {
+    setError( stderrString );
+    delete process;
+    return false;
+  }
+
+  delete process;
+  return true;
+}
+
+void QgsGrassVectorImport::onFinished()
+{
+  QgsDebugMsg( "entered" );
+  emit finished( this );
+}
+
+QString QgsGrassVectorImport::uri() const
+{
+  if ( !mProvider )
+  {
+    return "";
+  }
+  return mProvider->dataSourceUri();
+}
+
+QStringList QgsGrassVectorImport::names() const
+{
+  QStringList list;
+  list << mGrassObject.name();
   return list;
 }

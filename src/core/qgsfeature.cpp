@@ -14,127 +14,92 @@ email                : sherman at mrcc.com
  ***************************************************************************/
 
 #include "qgsfeature.h"
+#include "qgsfeature_p.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
 #include "qgsrectangle.h"
 
 #include "qgsmessagelog.h"
 
-/** \class QgsFeature
- * \brief Encapsulates a spatial feature with attributes
- */
-
 QgsFeature::QgsFeature( QgsFeatureId id )
-    : mFid( id )
-    , mGeometry( 0 )
-    , mOwnsGeometry( 0 )
-    , mValid( false )
 {
-  // NOOP
+  d = new QgsFeaturePrivate( id );
 }
 
 QgsFeature::QgsFeature( const QgsFields &fields, QgsFeatureId id )
-    : mFid( id )
-    , mGeometry( 0 )
-    , mOwnsGeometry( 0 )
-    , mValid( false )
-    , mFields( fields )
 {
-  initAttributes( fields.count() );
+  d = new QgsFeaturePrivate( id );
+  d->fields = fields;
+  initAttributes( d->fields.count() );
 }
 
 QgsFeature::QgsFeature( QgsFeature const & rhs )
-    : mFid( rhs.mFid )
-    , mAttributes( rhs.mAttributes )
-    , mGeometry( 0 )
-    , mOwnsGeometry( false )
-    , mValid( rhs.mValid )
-    , mFields( rhs.mFields )
+    : d( rhs.d )
 {
-
-  // copy embedded geometry
-  if ( rhs.mGeometry )
-  {
-    setGeometry( *rhs.mGeometry );
-  }
 }
-
 
 QgsFeature & QgsFeature::operator=( QgsFeature const & rhs )
 {
-  if ( &rhs == this )
-    return *this;
-
-  mFid =  rhs.mFid;
-  mAttributes =  rhs.mAttributes;
-  mValid =  rhs.mValid;
-  mFields = rhs.mFields;
-
-  // make sure to delete the old geometry (if exists)
-  if ( mGeometry && mOwnsGeometry )
-    delete mGeometry;
-
-  mGeometry = 0;
-  mOwnsGeometry = false;
-
-  if ( rhs.mGeometry )
-    setGeometry( *rhs.mGeometry );
-
+  d = rhs.d;
   return *this;
-} // QgsFeature::operator=( QgsFeature const & rhs )
+}
 
-
-
-//! Destructor
 QgsFeature::~QgsFeature()
 {
-  // Destruct the attached geometry only if we still own it.
-  if ( mOwnsGeometry && mGeometry )
-    delete mGeometry;
 }
 
-/**
- * Get the feature id for this feature
- * @return Feature id
- */
 QgsFeatureId QgsFeature::id() const
 {
-  return mFid;
+  return d->fid;
 }
 
-/**Deletes an attribute and its value*/
 void QgsFeature::deleteAttribute( int field )
 {
-  mAttributes.remove( field );
+  d.detach();
+  d->attributes.remove( field );
 }
 
-
-QgsGeometry *QgsFeature::geometry() const
+QgsGeometry *QgsFeature::geometry()
 {
-  return mGeometry;
+  d.detach();
+  return d->geometry;
 }
 
 const QgsGeometry* QgsFeature::constGeometry() const
 {
-  return mGeometry;
+  return d->geometry;
 }
 
 QgsGeometry *QgsFeature::geometryAndOwnership()
 {
-  mOwnsGeometry = false;
+  d.detach();
+  d->ownsGeometry = false;
 
-  return mGeometry;
+  return d->geometry;
 }
 
-
-
-/** Set the feature id
-*/
 void QgsFeature::setFeatureId( QgsFeatureId id )
 {
-  mFid = id;
+  if ( id == d->fid )
+    return;
+
+  d.detach();
+  d->fid = id;
 }
 
+QgsAttributes QgsFeature::attributes() const
+{
+  return d->attributes;
+}
+
+void QgsFeature::setAttributes( const QgsAttributes &attrs )
+{
+  if ( attrs == d->attributes )
+    return;
+
+  d.detach();
+  d->attributes = attrs;
+}
 
 void QgsFeature::setGeometry( const QgsGeometry& geom )
 {
@@ -143,15 +108,31 @@ void QgsFeature::setGeometry( const QgsGeometry& geom )
 
 void QgsFeature::setGeometry( QgsGeometry* geom )
 {
-  // Destruct the attached geometry only if we still own it, before assigning new one.
-  if ( mOwnsGeometry && mGeometry )
+  // we do a little bit of trickery here to avoid an unnecessary deep copy
+  // of the existing geometry by the detach function
+  // (since we are replacing the geometry anyway)
+
+  //first, store the old ownsGeometry status
+  QgsFeaturePrivate* old_d = d.data();
+  bool ownedGeom = d->ownsGeometry;
+
+  //then set owns geometry to false before the detach, so that the deep copy
+  //is not made
+  d->ownsGeometry = false;
+  d.detach();
+
+  //restore ownsGeometry setting if a detach was made
+  if ( old_d != d.data() )
   {
-    delete mGeometry;
-    mGeometry = 0;
+    old_d->ownsGeometry = ownedGeom;
+  }
+  else if ( ownedGeom )
+  {
+    delete d->geometry;
   }
 
-  mGeometry = geom;
-  mOwnsGeometry = true;
+  d->geometry = geom;
+  d->ownsGeometry = true;
 }
 
 /** Set the pointer to the feature geometry
@@ -165,28 +146,44 @@ void QgsFeature::setGeometryAndOwnership( unsigned char *geom, size_t length )
 
 void QgsFeature::setFields( const QgsFields* fields, bool init )
 {
-  mFields = *fields;
+  setFields( *fields, init );
+}
+
+void QgsFeature::setFields( const QgsFields &fields, bool init )
+{
+  d.detach();
+  d->fields = fields;
   if ( init )
   {
-    initAttributes( fields->count() );
+    initAttributes( d->fields.count() );
   }
+}
+
+const QgsFields *QgsFeature::fields() const
+{
+  return &( d->fields );
 }
 
 
 bool QgsFeature::isValid() const
 {
-  return mValid;
+  return d->valid;
 }
 
 void QgsFeature::setValid( bool validity )
 {
-  mValid = validity;
+  if ( d->valid == validity )
+    return;
+
+  d.detach();
+  d->valid = validity;
 }
 
 void QgsFeature::initAttributes( int fieldCount )
 {
-  mAttributes.resize( fieldCount );
-  QVariant* ptr = mAttributes.data();
+  d.detach();
+  d->attributes.resize( fieldCount );
+  QVariant* ptr = d->attributes.data();
   for ( int i = 0; i < fieldCount; ++i, ++ptr )
     ptr->clear();
 }
@@ -194,13 +191,14 @@ void QgsFeature::initAttributes( int fieldCount )
 
 bool QgsFeature::setAttribute( int idx, const QVariant &value )
 {
-  if ( idx < 0 || idx >= mAttributes.size() )
+  if ( idx < 0 || idx >= d->attributes.size() )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Attribute index %1 out of bounds [0;%2]" ).arg( idx ).arg( mAttributes.size() ), QString::null, QgsMessageLog::WARNING );
+    QgsMessageLog::logMessage( QObject::tr( "Attribute index %1 out of bounds [0;%2]" ).arg( idx ).arg( d->attributes.size() ), QString::null, QgsMessageLog::WARNING );
     return false;
   }
 
-  mAttributes[idx] = value;
+  d.detach();
+  d->attributes[idx] = value;
   return true;
 }
 
@@ -210,7 +208,8 @@ bool QgsFeature::setAttribute( const QString& name, QVariant value )
   if ( fieldIdx == -1 )
     return false;
 
-  mAttributes[fieldIdx] = value;
+  d.detach();
+  d->attributes[fieldIdx] = value;
   return true;
 }
 
@@ -220,15 +219,17 @@ bool QgsFeature::deleteAttribute( const QString& name )
   if ( fieldIdx == -1 )
     return false;
 
-  mAttributes[fieldIdx].clear();
+  d.detach();
+  d->attributes[fieldIdx].clear();
   return true;
 }
 
 QVariant QgsFeature::attribute( int fieldIdx ) const
 {
-  if ( fieldIdx < 0 || fieldIdx >= mAttributes.count() )
+  if ( fieldIdx < 0 || fieldIdx >= d->attributes.count() )
     return QVariant();
-  return mAttributes[fieldIdx];
+
+  return d->attributes[fieldIdx];
 }
 
 
@@ -238,17 +239,41 @@ QVariant QgsFeature::attribute( const QString& name ) const
   if ( fieldIdx == -1 )
     return QVariant();
 
-  return mAttributes[fieldIdx];
+  return d->attributes[fieldIdx];
 }
 
 int QgsFeature::fieldNameIndex( const QString& fieldName ) const
 {
-  for ( int i = 0; i < mFields.count(); ++i )
+  return d->fields.fieldNameIndex( fieldName );
+}
+
+QDataStream& operator<<( QDataStream& out, const QgsFeature& feature )
+{
+  out << feature.id();
+  out << feature.attributes();
+  if ( feature.constGeometry() )
   {
-    if ( QString::compare( mFields.at( i ).name(), fieldName, Qt::CaseInsensitive ) == 0 )
-    {
-      return i;
-    }
+    out << *( feature.constGeometry() );
   }
-  return -1;
+  else
+  {
+    QgsGeometry geometry;
+    out << geometry;
+  }
+  out << feature.isValid();
+  return out;
+}
+
+QDataStream& operator>>( QDataStream& in, QgsFeature& feature )
+{
+  QgsFeatureId id;
+  QgsGeometry* geometry = new QgsGeometry();
+  bool valid;
+  QgsAttributes attr;
+  in >> id >> attr >> *geometry >> valid;
+  feature.setFeatureId( id );
+  feature.setGeometry( geometry );
+  feature.setAttributes( attr );
+  feature.setValid( valid );
+  return in;
 }

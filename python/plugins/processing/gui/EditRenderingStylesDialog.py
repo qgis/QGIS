@@ -25,6 +25,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from PyQt4 import uic
 from PyQt4.QtCore import Qt
 from PyQt4.QtGui import QDialog, QHeaderView, QTableWidgetItem
 
@@ -33,13 +36,15 @@ from processing.gui.RenderingStyleFilePanel import RenderingStyleFilePanel
 from processing.core.outputs import OutputRaster
 from processing.core.outputs import OutputVector
 
-from processing.ui.ui_DlgRenderingStyles import Ui_DlgRenderingStyles
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'DlgRenderingStyles.ui'))
 
 
-class EditRenderingStylesDialog(QDialog, Ui_DlgRenderingStyles):
+class EditRenderingStylesDialog(BASE, WIDGET):
 
     def __init__(self, alg):
-        QDialog.__init__(self)
+        super(EditRenderingStylesDialog, self).__init__(None)
         self.setupUi(self)
 
         self.alg = alg.getCopy()

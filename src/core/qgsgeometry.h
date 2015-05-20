@@ -289,7 +289,7 @@ class CORE_EXPORT QgsGeometry
      @return 0 in case of success*/
     int translate( double dx, double dy );
 
-    /**Transform this geometry as described by CoordinateTranasform ct
+    /**Transform this geometry as described by CoordinateTransform ct
      @return 0 in case of success*/
     int transform( const QgsCoordinateTransform& ct );
 
@@ -720,6 +720,11 @@ class CORE_EXPORT QgsGeometry
 }; // class QgsGeometry
 
 Q_DECLARE_METATYPE( QgsGeometry );
+
+/** Writes the geometry to stream out. QGIS version compatibility is not guaranteed. */
+CORE_EXPORT QDataStream& operator<<( QDataStream& out, const QgsGeometry& geometry );
+/** Reads a geometry from stream in into geometry. QGIS version compatibility is not guaranteed. */
+CORE_EXPORT QDataStream& operator>>( QDataStream& in, QgsGeometry& geometry );
 
 class CORE_EXPORT QgsWkbPtr
 {

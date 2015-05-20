@@ -99,7 +99,7 @@ void QgsClipboard::setSystemClipboard()
   // then the field contents
   for ( QgsFeatureList::iterator it = mFeatureClipboard.begin(); it != mFeatureClipboard.end(); ++it )
   {
-    const QgsAttributes& attributes = it->attributes();
+    QgsAttributes attributes = it->attributes();
 
     // TODO: Set up Paste Transformations to specify the order in which fields are added.
     if ( copyWKT )
@@ -171,7 +171,7 @@ QgsFeatureList QgsClipboard::copyOf( const QgsFields &fields )
 
     QgsFeature feature;
     if ( !fields.isEmpty() )
-      feature.setFields( &fields, true );
+      feature.setFields( fields, true );
 
     feature.setGeometry( geometry );
     features.append( feature );

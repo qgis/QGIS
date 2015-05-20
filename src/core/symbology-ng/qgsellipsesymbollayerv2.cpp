@@ -26,8 +26,17 @@
 #include <QDomDocument>
 #include <QDomElement>
 
-QgsEllipseSymbolLayerV2::QgsEllipseSymbolLayerV2(): mSymbolName( "circle" ), mSymbolWidth( 4 ), mSymbolWidthUnit( QgsSymbolV2::MM ), mSymbolHeight( 3 ),
-    mSymbolHeightUnit( QgsSymbolV2::MM ), mFillColor( Qt::white ), mOutlineColor( Qt::black ), mOutlineStyle( Qt::SolidLine ), mOutlineWidth( 0 ), mOutlineWidthUnit( QgsSymbolV2::MM )
+QgsEllipseSymbolLayerV2::QgsEllipseSymbolLayerV2()
+    : mSymbolName( "circle" )
+    , mSymbolWidth( 4 )
+    , mSymbolWidthUnit( QgsSymbolV2::MM )
+    , mSymbolHeight( 3 )
+    , mSymbolHeightUnit( QgsSymbolV2::MM )
+    , mFillColor( Qt::white )
+    , mOutlineColor( Qt::black )
+    , mOutlineStyle( Qt::SolidLine )
+    , mOutlineWidth( 0 )
+    , mOutlineWidthUnit( QgsSymbolV2::MM )
 {
   mPen.setColor( mOutlineColor );
   mPen.setStyle( mOutlineStyle );
@@ -251,11 +260,11 @@ void QgsEllipseSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Rend
   double rotation = 0.0;
   if ( hasDataDefinedProperty( "rotation" ) )
   {
-    rotation = evaluateDataDefinedProperty( "rotation", context.feature(), mAngle ).toDouble();
+    rotation = evaluateDataDefinedProperty( "rotation", context.feature(), mAngle ).toDouble() + mLineAngle;
   }
-  else if ( !qgsDoubleNear( mAngle, 0.0 ) )
+  else if ( !qgsDoubleNear( mAngle + mLineAngle, 0.0 ) )
   {
-    rotation = mAngle;
+    rotation = mAngle + mLineAngle;
   }
   if ( rotation )
     off = _rotatedOffset( off, rotation );
@@ -630,11 +639,11 @@ bool QgsEllipseSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFa
   double rotation = 0.0;
   if ( hasDataDefinedProperty( "rotation" ) )
   {
-    rotation = evaluateDataDefinedProperty( "rotation", f, mAngle ).toDouble();
+    rotation = evaluateDataDefinedProperty( "rotation", f, mAngle ).toDouble() + mLineAngle;
   }
-  else if ( !qgsDoubleNear( mAngle, 0.0 ) )
+  else if ( !qgsDoubleNear( mAngle + mLineAngle, 0.0 ) )
   {
-    rotation = mAngle;
+    rotation = mAngle + mLineAngle;
   }
   rotation = -rotation; //rotation in Qt is counterclockwise
   if ( rotation )
@@ -670,7 +679,7 @@ bool QgsEllipseSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFa
       }
       //close ellipse with first point
       line.push_back( line.at( 0 ) );
-      e.writePolyline( line, layerName, "SOLID", oc, outlineWidth );
+      e.writePolyline( line, layerName, "CONTINUOUS", oc, outlineWidth );
     }
   }
   else if ( symbolName == "rectangle" )

@@ -26,6 +26,7 @@
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsfield.h"
 #include "qgsrectangle.h"
 #include "qgsconfig.h"
 
@@ -104,9 +105,40 @@ QString QgsGrassObject::elementName( Type type )
     return "";
 }
 
+QString QgsGrassObject::dirName() const
+{
+  return dirName( mType );
+}
+
+QString QgsGrassObject::dirName( Type type )
+{
+  if ( type == Raster )
+    return "cellhd";
+  else if ( type == Vector )
+    return "vector";
+  else if ( type == Region )
+    return "windows";
+  else
+    return "";
+}
+
 bool QgsGrassObject::mapsetIdentical( const QgsGrassObject &other )
 {
   return mGisdbase == other.mGisdbase && mLocation == other.mLocation && mMapset == other.mMapset;
+}
+
+QRegExp QgsGrassObject::newNameRegExp( Type type )
+{
+  QRegExp rx;
+  if ( type == QgsGrassObject::Vector )
+  {
+    rx.setPattern( "[A-Za-z_][A-Za-z0-9_]+" );
+  }
+  else
+  {
+    rx.setPattern( "[A-Za-z0-9_.]+" );
+  }
+  return rx;
 }
 
 #ifdef Q_OS_WIN
@@ -1084,7 +1116,7 @@ QStringList GRASS_LIB_EXPORT QgsGrass::elements( const QString& gisdbase, const 
 
 QStringList GRASS_LIB_EXPORT QgsGrass::elements( const QString&  mapsetPath, const QString&  element )
 {
-  QgsDebugMsg( QString( "mapsetPath = %1" ).arg( mapsetPath ) );
+  QgsDebugMsg( QString( "mapsetPath = %1 element = %2" ).arg( mapsetPath ).arg( element ) );
 
   QStringList list;
 
@@ -1092,7 +1124,14 @@ QStringList GRASS_LIB_EXPORT QgsGrass::elements( const QString&  mapsetPath, con
     return list;
 
   QDir d = QDir( mapsetPath + "/" + element );
-  d.setFilter( QDir::Files );
+  if ( element == "vector" )
+  {
+    d.setFilter( QDir::Dirs | QDir::NoDotAndDotDot );
+  }
+  else
+  {
+    d.setFilter( QDir::Files );
+  }
 
   for ( unsigned int i = 0; i < d.count(); i++ )
   {
@@ -1101,17 +1140,15 @@ QStringList GRASS_LIB_EXPORT QgsGrass::elements( const QString&  mapsetPath, con
   return list;
 }
 
+QStringList GRASS_LIB_EXPORT QgsGrass::grassObjects( const QString& mapsetPath, QgsGrassObject::Type type )
+{
+  return QgsGrass::elements( mapsetPath, QgsGrassObject::dirName( type ) );
+}
+
 bool GRASS_LIB_EXPORT QgsGrass::objectExists( const QgsGrassObject& grassObject )
 {
-  QString path = grassObject.mapsetPath();
-  if ( grassObject.type() == QgsGrassObject::Raster )
-    path += "/cellhd";
-  else if ( grassObject.type() == QgsGrassObject::Vector )
-    path += "/vect";
-  else if ( grassObject.type() == QgsGrassObject::Region )
-    path += "/windows";
-
-  path += "/" + grassObject.name();
+  QString path = grassObject.mapsetPath() + "/" + QgsGrassObject::dirName( grassObject.type() )
+                 + "/" + grassObject.name();
   QFileInfo fi( path );
   return fi.exists();
 }
@@ -1747,6 +1784,19 @@ QMap<QString, QString> GRASS_LIB_EXPORT QgsGrass::query( QString gisdbase, QStri
   return result;
 }
 
+void QgsGrass::renameObject( const QgsGrassObject & object, const QString& newName )
+{
+  QgsDebugMsg( "entered" );
+  QString cmd = "g.rename";
+  QStringList arguments;
+
+  arguments << object.elementShort() + "=" + object.name() + "," + newName;
+
+  int timeout = 10000; // What timeout to use? It can take long time on network or database
+  // throws QgsGrass::Exception
+  QgsGrass::runModule( object.gisdbase(), object.location(), object.mapset(), cmd, arguments, timeout, false );
+}
+
 bool QgsGrass::deleteObject( const QgsGrassObject & object )
 {
   QgsDebugMsg( "entered" );
@@ -1791,6 +1841,128 @@ bool QgsGrass::deleteObjectDialog( const QgsGrassObject & object )
                                 QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes;
 }
 
+void QgsGrass::createTable( dbDriver *driver, const QString tableName, const QgsFields &fields )
+{
+  if ( !driver ) // should not happen
+  {
+    throw QgsGrass::Exception( "driver is null" );
+  }
+
+  QStringList fieldsStringList;
+  for ( int i = 0; i < fields.size(); i++ )
+  {
+    QgsField field = fields.field( i );
+    QString name = field.name().toLower().replace( " ", "_" );
+    if ( name.at( 0 ).isDigit() )
+    {
+      name = "_" + name;
+    }
+    QString typeName;
+    switch ( field.type() )
+    {
+      case QVariant::Int:
+      case QVariant::LongLong:
+      case QVariant::Bool:
+        typeName = "integer";
+        break;
+      case QVariant::Double:
+        typeName = "double precision";
+        break;
+        // TODO: verify how is it with spatialite/dbf support for date, time, datetime, v.in.ogr is using all
+      case QVariant::Date:
+        typeName = "date";
+        break;
+      case QVariant::Time:
+        typeName = "time";
+        break;
+      case QVariant::DateTime:
+        typeName = "datetime";
+        break;
+      case QVariant::String:
+        typeName = QString( "varchar (%1)" ).arg( field.length() );
+        break;
+      default:
+        typeName = QString( "varchar (%1)" ).arg( field.length() > 0 ? field.length() : 255 );
+    }
+    fieldsStringList <<  name + " " + typeName;
+  }
+  QString sql = QString( "create table %1 (%2);" ).arg( tableName ).arg( fieldsStringList.join( ", " ) );
+
+  dbString dbstr;
+  db_init_string( &dbstr );
+  db_set_string( &dbstr, sql.toLatin1().data() );
+
+  int result = db_execute_immediate( driver, &dbstr );
+  db_free_string( &dbstr );
+  if ( result != DB_OK )
+  {
+    throw QgsGrass::Exception( QObject::tr( "Cannot create table" ) + ": " + QString::fromLatin1( db_get_error_msg() ) );
+  }
+}
+
+void QgsGrass::insertRow( dbDriver *driver, const QString tableName,
+                          const QgsAttributes& attributes )
+{
+  if ( !driver ) // should not happen
+  {
+    throw QgsGrass::Exception( "driver is null" );
+  }
+
+  QStringList valuesStringList;
+  foreach ( QVariant attribute, attributes )
+  {
+    QString valueString;
+
+    bool quote = true;
+    switch ( attribute.type() )
+    {
+      case QVariant::Int:
+      case QVariant::Double:
+      case QVariant::LongLong:
+        valueString = attribute.toString();
+        quote = false;
+        break;
+        // TODO: use rbool according to driver
+      case QVariant::Bool:
+        valueString = attribute.toBool() ? "1" : "0";
+        quote = false;
+        break;
+      case QVariant::Date:
+        valueString = attribute.toDate().toString( Qt::ISODate );
+        break;
+      case QVariant::Time:
+        valueString = attribute.toTime().toString( Qt::ISODate );
+        break;
+      case QVariant::DateTime:
+        valueString = attribute.toDateTime().toString( Qt::ISODate );
+        break;
+      default:
+        valueString = attribute.toString();
+    }
+    valueString.replace( "'", "''" );
+
+    if ( quote )
+    {
+      valueString = "'" + valueString + "'";
+    }
+
+    valuesStringList <<  valueString;
+  }
+  QString sql = QString( "insert into %1 values (%2);" ).arg( tableName ).arg( valuesStringList.join( ", " ) );
+
+  dbString dbstr;
+  db_init_string( &dbstr );
+  db_set_string( &dbstr, sql.toLatin1().data() );
+
+  int result = db_execute_immediate( driver, &dbstr );
+  db_free_string( &dbstr );
+  if ( result != DB_OK )
+  {
+    throw QgsGrass::Exception( QObject::tr( "Cannot insert, statement" ) + ": " + sql
+                               + QObject::tr( "error" ) + ": " + QString::fromLatin1( db_get_error_msg() ) );
+  }
+}
+
 // GRASS version constants have been changed on 26.4.2007
 // http://freegis.org/cgi-bin/viewcvs.cgi/grass6/include/version.h.in.diff?r1=1.4&r2=1.5
 // The following lines workaround this change
@@ -1825,6 +1997,15 @@ int GRASS_LIB_EXPORT QgsGrass::versionRelease()
 QString GRASS_LIB_EXPORT QgsGrass::versionString()
 {
   return QString( GRASS_VERSION_STRING );
+}
+
+Qt::CaseSensitivity GRASS_LIB_EXPORT QgsGrass::caseSensitivity()
+{
+#ifdef WIN32
+  return Qt::CaseInsensitive;
+#else
+  return Qt::CaseSensitive;
+#endif
 }
 
 bool GRASS_LIB_EXPORT QgsGrass::isMapset( QString path )

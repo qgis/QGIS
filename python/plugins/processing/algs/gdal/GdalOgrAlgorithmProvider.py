@@ -84,6 +84,9 @@ from ogr2ogronesidebuffer import Ogr2OgrOneSideBuffer
 from ogrinfo import OgrInfo
 from ogrsql import OgrSql
 
+pluginPath = os.path.normpath(os.path.join(
+    os.path.split(os.path.dirname(__file__))[0], os.pardir))
+
 
 class GdalOgrAlgorithmProvider(AlgorithmProvider):
     """This provider incorporates GDAL-based algorithms into the
@@ -117,7 +120,7 @@ class GdalOgrAlgorithmProvider(AlgorithmProvider):
         return 'gdalogr'
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../../images/gdal.png')
+        return QIcon(os.path.join(pluginPath, 'images', 'gdal.png'))
 
     def _loadAlgorithms(self):
         self.algs = self.preloadedAlgs

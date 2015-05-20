@@ -9,6 +9,6 @@ ParameterNumber|bound|Maximum number of segments per flowline|None|None|5.0
 ParameterBoolean|-u|Compute upslope flowlines instead of default downhill flowlines|False
 ParameterBoolean|-3|3-D lengths instead of 2-D|False
 *ParameterBoolean|-m|Use less memory, at a performance penalty|False
-OutputRaster|flowline|Output flow line vector layer
-OutputRaster|flowlength|Output flow path length raster layer
-OutputRaster|flowaccumulation|Output flow accumulation raster layer
+OutputRaster|flowline|Flow line
+OutputRaster|flowlength|Flow path length
+OutputRaster|flowaccumulation|Flow accumulation

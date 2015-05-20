@@ -6,4 +6,4 @@ ParameterNumber|direction|Direction in which you want to calculate the horizon h
 ParameterNumber|maxdistance|The maximum distance to consider when finding the horizon height|0|None|10000
 ParameterString|dist|Sampling distance step coefficient (0.5-1.5)|1.0
 ParameterBoolean|-d|Write output in degrees (default is radians)|False
-OutputRaster|horizon|Prefix of the horizon raster output maps
+OutputRaster|horizon|Horizon

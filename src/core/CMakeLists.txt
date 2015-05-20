@@ -107,6 +107,7 @@ SET(QGIS_CORE_SRCS
   qgsgeometryvalidator.cpp
   qgsgml.cpp
   qgsgmlschema.cpp
+  qgshistogram.cpp
   qgslayerdefinition.cpp
   qgslabel.cpp
   qgslabelattributes.cpp
@@ -502,6 +503,7 @@ SET(QGIS_CORE_HDRS
   qgsexpression.h
   qgsexpressionfieldbuffer.h
   qgsfeature.h
+  qgsfeature_p.h
   qgsfeatureiterator.h
   qgsfeaturerequest.h
   qgsfeaturestore.h
@@ -510,6 +512,7 @@ SET(QGIS_CORE_HDRS
   qgsfontutils.h
   qgsgeometry.h
   qgsgeometrycache.h
+  qgshistogram.h
   qgslayerdefinition.h
   qgslabel.h
   qgslabelattributes.h

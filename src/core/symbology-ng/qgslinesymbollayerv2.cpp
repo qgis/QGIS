@@ -881,7 +881,6 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineInterval( const QPolygonF& points
   QPointF lastPt = points[0];
   double lengthLeft = 0; // how much is left until next marker
   bool first = mOffsetAlongLine ? false : true; //only draw marker at first vertex when no offset along line is set
-  double origAngle = mMarker->angle();
 
   QgsRenderContext& rc = context.renderContext();
   double interval = mInterval;
@@ -923,7 +922,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineInterval( const QPolygonF& points
     // rotate marker (if desired)
     if ( mRotateMarker )
     {
-      mMarker->setAngle( origAngle + ( l.angle() * 180 / M_PI ) );
+      mMarker->setLineAngle( l.angle() * 180 / M_PI );
     }
 
     // draw first marker
@@ -945,10 +944,6 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineInterval( const QPolygonF& points
 
     lastPt = pt;
   }
-
-  // restore original rotation
-  mMarker->setAngle( origAngle );
-
 }
 
 static double _averageAngle( const QPointF& prevPt, const QPointF& pt, const QPointF& nextPt )
@@ -1472,6 +1467,14 @@ QgsMapUnitScale QgsMarkerLineSymbolLayerV2::mapUnitScale() const
     return mOffsetMapUnitScale;
   }
   return QgsMapUnitScale();
+}
+
+QSet<QString> QgsMarkerLineSymbolLayerV2::usedAttributes() const
+{
+  QSet<QString> attr = QgsLineSymbolLayerV2::usedAttributes();
+  if ( mMarker )
+    attr.unite( mMarker->usedAttributes() );
+  return attr;
 }
 
 double QgsMarkerLineSymbolLayerV2::estimateMaxBleed() const

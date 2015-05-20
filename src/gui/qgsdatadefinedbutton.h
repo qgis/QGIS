@@ -35,7 +35,7 @@ class QgsDataDefined;
 class GUI_EXPORT QgsDataDefinedAssistant: public QDialog
 {
   public:
-    virtual QgsDataDefined* dataDefined() const = 0;
+    virtual QgsDataDefined dataDefined() const = 0;
 };
 
 /** \ingroup gui

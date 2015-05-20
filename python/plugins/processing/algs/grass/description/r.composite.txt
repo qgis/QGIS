@@ -9,4 +9,4 @@ ParameterNumber|lev_green|Number of levels to be used for <green>|1|256|32
 ParameterNumber|lev_blue|Number of levels to be used for <blue>|1|256|32
 ParameterBoolean|-d|Dither|False
 ParameterBoolean|-c|Use closest color|False
-OutputRaster|output|Output RGB image
+OutputRaster|output|Composite

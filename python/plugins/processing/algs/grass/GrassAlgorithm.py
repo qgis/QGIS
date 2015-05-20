@@ -48,6 +48,9 @@ from GrassUtils import GrassUtils
 
 from processing.tools import dataobjects, system
 
+pluginPath = os.path.normpath(os.path.join(
+    os.path.split(os.path.dirname(__file__))[0], os.pardir))
+
 
 class GrassAlgorithm(GeoAlgorithm):
 
@@ -76,7 +79,7 @@ class GrassAlgorithm(GeoAlgorithm):
         return newone
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../../images/grass.png')
+        return QIcon(os.path.join(pluginPath, 'images', 'grass.png'))
 
     def help(self):
         return False, 'http://grass.osgeo.org/grass64/manuals/' + self.grassName + '.html'
@@ -507,20 +510,3 @@ class GrassAlgorithm(GeoAlgorithm):
             func = getattr(module, 'checkParameterValuesBeforeExecuting')
             return func(self)
 
-    def getPostProcessingErrorMessage(self, wrongLayers):
-        html = GeoAlgorithm.getPostProcessingErrorMessage(self, wrongLayers)
-        msg = GrassUtils.checkGrassIsInstalled(True)
-        html += self.tr(
-            '<p>This algorithm requires GRASS to be run. A test to check '
-            'if GRASS is correctly installed and configured in your system '
-            'has been performed, with the following result:</p><ul><i>')
-        if msg is None:
-            html += self.tr('GRASS seems to be correctly installed and '
-                            'configured</i></li></ul>')
-        else:
-            html += msg + '</i></li></ul>'
-            html += self.tr(
-                '<p><a href="http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html">Click here</a> '
-                'to know more about how to install and configure GRASS to be used with QGIS</p>')
-
-        return html

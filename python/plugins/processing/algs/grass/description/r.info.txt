@@ -11,4 +11,4 @@ ParameterBoolean|-u|Print raster map data units only|False
 ParameterBoolean|-d|Print raster map vertical datum only|False
 ParameterBoolean|-m|Print map title only|False
 ParameterBoolean|-p|Print raster map timestamp (day.month.year hour:minute:seconds) only|False
-OutputHTML|html|Layer info
+OutputHTML|html|Basic information

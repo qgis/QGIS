@@ -11,7 +11,7 @@ class QgsDataDefinedAssistant: QDialog
 #include <qgsdatadefinedbutton.h>
 %End
   public:
-    virtual QgsDataDefined* dataDefined() const = 0 /Factory/;
+    virtual QgsDataDefined dataDefined() const = 0;
 };
 
 /** \ingroup gui

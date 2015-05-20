@@ -89,7 +89,7 @@
      <item>
       <widget class="QCheckBox" name="mTileModeCheckBox">
        <property name="toolTip">
-        <string>Create GDAL Virtual Format composed of multiple 
+        <string>Create GDAL Virtual Format composed of multiple
 datasets with maximum width and height specified below.</string>
        </property>
        <property name="text">
@@ -164,6 +164,16 @@ datasets with maximum width and height specified below.</string>
     </layout>
    </item>
    <item>
+    <widget class="QCheckBox" name="mAddToCanvas">
+     <property name="text">
+      <string>Add saved file to map</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QScrollArea" name="mScrollArea">
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
@@ -178,9 +188,9 @@ datasets with maximum width and height specified below.</string>
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-179</y>
+        <y>0</y>
         <width>541</width>
-        <height>583</height>
+        <height>577</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_5">

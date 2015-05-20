@@ -4,4 +4,4 @@ Raster (r.*)
 ParameterRaster|input|Name of input raster map|False
 ParameterNumber|easting|Easting coordinate of outlet point|None|None|0
 ParameterNumber|northing|Northing coordinate of outlet point|None|None|0
-OutputRaster|output|Output basin layer
+OutputRaster|output|Basin

@@ -43,11 +43,6 @@ extern "C"
 #include "qgsrasterblock.h"
 #include "qgsgrass.h"
 
-//#ifdef _MSC_VER
-//#define INFINITY (DBL_MAX+DBL_MAX)
-//#define NAN (INFINITY-INFINITY)
-//#endif
-
 #if GRASS_VERSION_MAJOR >= 7
 #define G_allocate_raster_buf Rast_allocate_buf
 #define G_close_cell Rast_close
@@ -68,15 +63,13 @@ extern "C"
 int main( int argc, char **argv )
 {
   char *name;
-  struct GModule *module;
   struct Option *map;
   struct Cell_head window;
   int cf;
 
   G_gisinit( argv[0] );
 
-  module = G_define_module();
-  module->description = ( "Output raster map layers in a format suitable for display in QGIS" );
+  G_define_module();
 
   map = G_define_standard_option( G_OPT_R_OUTPUT );
 
@@ -94,9 +87,6 @@ int main( int argc, char **argv )
   qint32 rows, cols;
   stdinStream >> extent >> cols >> rows;
 
-  //G_fatal_error("i = %d", i);
-  //G_fatal_error( extent.toString().toAscii().data() );
-
   QString err = QgsGrass::setRegion( &window, extent, rows, cols );
   if ( !err.isEmpty() )
   {
@@ -107,7 +97,6 @@ int main( int argc, char **argv )
 
   QGis::DataType qgis_type;
   qint32 type;
-  //stdinStream >> grass_type;
   stdinStream >> type;
   qgis_type = ( QGis::DataType )type;
 
@@ -125,12 +114,14 @@ int main( int argc, char **argv )
       break;
     default:
       G_fatal_error( "QGIS data type %d not supported", qgis_type );
+      return 1;
   }
 
   cf = G_open_raster_new( name, grass_type );
   if ( cf < 0 )
   {
     G_fatal_error( "Unable to create raster map <%s>", name );
+    return 1;
   }
 
   void *buf = G_allocate_raster_buf( grass_type );
@@ -143,6 +134,7 @@ int main( int argc, char **argv )
     if ( byteArray.size() != expectedSize )
     {
       G_fatal_error( "Wrong byte array size, expected %d bytes, got %d", expectedSize, byteArray.size() );
+      return 1;
     }
 
     qint32 *cell;

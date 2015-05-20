@@ -9,4 +9,4 @@ ParameterBoolean|-h|Suppress page headers|True
 ParameterBoolean|-f|Use formfeeds between pages|True
 ParameterBoolean|-e|Scientific format|True
 ParameterBoolean|-n|Do not report no data cells|True
-OutputHTML|html|Output report file
+OutputHTML|html|Report

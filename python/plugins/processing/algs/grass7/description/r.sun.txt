@@ -16,8 +16,8 @@ ParameterNumber|day|No. of day of the year (1-365)|1|365|1
 *ParameterNumber|distance_step|Sampling distance step coefficient (0.5-1.5)|0.5|1.5|1.0
 ParameterBoolean|-p|Do not iIncorporate the shadowing effect of terrain|False
 *ParameterBoolean|-m|Use the low-memory version of the program|False
-OutputRaster|beam_rad|Output irradiation layer [Wh.m-2.day-1] 
-OutputRaster|insol_time|Output insolation time layer [h] 
-OutputRaster|diff_rad|Outpu diffuse irradiation layer [Wh.m-2.day-1]
-OutputRaster|refl_rad|Output ground reflected irradiation layer [Wh.m-2.day-1] 
-OutputRaster|glob_rad|Output global (total) irradiance/irradiation layer [Wh.m-2.day-1]
+OutputRaster|beam_rad|Irradiation [Wh.m-2.day-1] 
+OutputRaster|insol_time|Insolation time [h] 
+OutputRaster|diff_rad|Diffuse irradiation [Wh.m-2.day-1]
+OutputRaster|refl_rad|Ground reflected irradiation [Wh.m-2.day-1] 
+OutputRaster|glob_rad|Global (total) irradiance/irradiation [Wh.m-2.day-1]

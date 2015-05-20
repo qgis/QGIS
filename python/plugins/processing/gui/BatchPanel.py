@@ -25,6 +25,9 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from PyQt4 import uic
 from PyQt4.QtGui import QWidget, QIcon, QTableWidgetItem, QComboBox, QLineEdit
 
 from qgis.core import QgsApplication
@@ -49,13 +52,14 @@ from processing.core.parameters import ParameterFixedTable
 from processing.core.parameters import ParameterMultipleInput
 from processing.core.parameters import ParameterGeometryPredicate
 
-from processing.ui.ui_widgetBatchPanel import Ui_Form
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'widgetBatchPanel.ui'))
 
-
-class BatchPanel(QWidget, Ui_Form):
+class BatchPanel(BASE, WIDGET):
 
     def __init__(self, parent, alg):
-        QWidget.__init__(self)
+        super(BatchPanel, self).__init__(None)
         self.setupUi(self)
 
         self.btnAdvanced.hide()
@@ -63,7 +67,7 @@ class BatchPanel(QWidget, Ui_Form):
         # Set icons
         self.btnAdd.setIcon(QgsApplication.getThemeIcon('/mActionSignPlus.png'))
         self.btnRemove.setIcon(QgsApplication.getThemeIcon('/symbologyRemove.png'))
-        self.btnAdvanced.setIcon(QIcon(':/processing/images/alg.png'))
+        self.btnAdvanced.setIcon(QIcon(os.path.join(pluginPath, 'images', 'alg.png')))
 
         self.alg = alg
         self.parent = parent

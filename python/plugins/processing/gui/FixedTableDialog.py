@@ -25,15 +25,20 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from PyQt4 import uic
 from PyQt4.QtGui import QDialog, QPushButton, QAbstractItemView, QDialogButtonBox, QStandardItemModel, QStandardItem
 
-from processing.ui.ui_DlgFixedTable import Ui_DlgFixedTable
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'DlgFixedTable.ui'))
 
 
-class FixedTableDialog(QDialog, Ui_DlgFixedTable):
+class FixedTableDialog(BASE, WIDGET):
 
     def __init__(self, param, table):
-        QDialog.__init__(self)
+        super(FixedTableDialog, self).__init__(None)
         self.setupUi(self)
 
         self.tblView.setSelectionBehavior(QAbstractItemView.SelectRows)

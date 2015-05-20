@@ -16,11 +16,15 @@
 
 #include "qgssymbolslistwidget.h"
 
+#include "qgssizescalewidget.h"
+
 #include "qgsstylev2managerdialog.h"
+#include "qgsdatadefined.h"
 
 #include "qgssymbolv2.h"
 #include "qgsstylev2.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgsmarkersymbollayerv2.h"
 
 #include "qgsapplication.h"
 
@@ -33,16 +37,17 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QMenu>
+#include <QScopedPointer>
 
 
-QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* style, QMenu* menu, QWidget* parent )
+QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* style, QMenu* menu, QWidget* parent, const QgsVectorLayer * layer )
     : QWidget( parent )
+    , mSymbol( symbol )
+    , mStyle( style )
     , mAdvancedMenu( 0 )
     , mClipFeaturesAction( 0 )
+    , mLayer( layer )
 {
-  mSymbol = symbol;
-  mStyle = style;
-
   setupUi( this );
 
   mSymbolUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit );
@@ -93,6 +98,16 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
   connect( spinAngle, SIGNAL( valueChanged( double ) ), this, SLOT( setMarkerAngle( double ) ) );
   connect( spinSize, SIGNAL( valueChanged( double ) ), this, SLOT( setMarkerSize( double ) ) );
   connect( spinWidth, SIGNAL( valueChanged( double ) ), this, SLOT( setLineWidth( double ) ) );
+
+  connect( mRotationDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedMarkerAngle() ) );
+  connect( mRotationDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedMarkerAngle() ) );
+  connect( mSizeDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedMarkerSize() ) );
+  connect( mSizeDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedMarkerSize() ) );
+  connect( mWidthDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedLineWidth() ) );
+  connect( mWidthDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedLineWidth() ) );
+
+  if ( mSymbol->type() == QgsSymbolV2::Marker && mLayer )
+    mSizeDDBtn->setAssistant( new QgsSizeScaleWidget( mLayer, static_cast<const QgsMarkerSymbolV2*>( mSymbol ) ) );
 
   // Live color updates are not undoable to child symbol layers
   btnColor->setAcceptLiveUpdates( false );
@@ -198,6 +213,23 @@ void QgsSymbolsListWidget::setMarkerAngle( double angle )
   emit changed();
 }
 
+void QgsSymbolsListWidget::updateDataDefinedMarkerAngle()
+{
+  QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( mSymbol );
+  QgsDataDefined dd = mRotationDDBtn->currentDataDefined();
+
+  bool isDefault = dd.hasDefaultValues();
+
+  if ( // shall we remove datadefined expressions for layers ?
+    ( markerSymbol->dataDefinedAngle().hasDefaultValues() && isDefault )
+    // shall we set the "en masse" expression for properties ?
+    || !isDefault )
+  {
+    markerSymbol->setDataDefinedAngle( dd );
+    emit changed();
+  }
+}
+
 void QgsSymbolsListWidget::setMarkerSize( double size )
 {
   QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( mSymbol );
@@ -207,6 +239,23 @@ void QgsSymbolsListWidget::setMarkerSize( double size )
   emit changed();
 }
 
+void QgsSymbolsListWidget::updateDataDefinedMarkerSize()
+{
+  QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( mSymbol );
+  QgsDataDefined dd = mSizeDDBtn->currentDataDefined();
+
+  bool isDefault = dd.hasDefaultValues();
+
+  if ( // shall we remove datadefined expressions for layers ?
+    ( !markerSymbol->dataDefinedSize().hasDefaultValues() && isDefault )
+    // shall we set the "en masse" expression for properties ?
+    || !isDefault )
+  {
+    markerSymbol->setDataDefinedSize( dd );
+    emit changed();
+  }
+}
+
 void QgsSymbolsListWidget::setLineWidth( double width )
 {
   QgsLineSymbolV2* lineSymbol = static_cast<QgsLineSymbolV2*>( mSymbol );
@@ -214,6 +263,23 @@ void QgsSymbolsListWidget::setLineWidth( double width )
     return;
   lineSymbol->setWidth( width );
   emit changed();
+}
+
+void QgsSymbolsListWidget::updateDataDefinedLineWidth()
+{
+  QgsLineSymbolV2* lineSymbol = static_cast<QgsLineSymbolV2*>( mSymbol );
+  QgsDataDefined dd = mWidthDDBtn->currentDataDefined();
+
+  bool isDefault = dd.hasDefaultValues();
+
+  if ( // shall we remove datadefined expressions for layers ?
+    ( !lineSymbol->dataDefinedWidth().hasDefaultValues() && isDefault )
+    // shall we set the "en masse" expression for properties ?
+    || !isDefault )
+  {
+    lineSymbol->setDataDefinedWidth( dd );
+    emit changed();
+  }
 }
 
 void QgsSymbolsListWidget::symbolAddedToStyle( QString name, QgsSymbolV2* symbol )
@@ -297,11 +363,37 @@ void QgsSymbolsListWidget::updateSymbolInfo()
     QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( mSymbol );
     spinSize->setValue( markerSymbol->size() );
     spinAngle->setValue( markerSymbol->angle() );
+
+    if ( mLayer )
+    {
+      QgsDataDefined ddSize = markerSymbol->dataDefinedSize();
+      mSizeDDBtn->init( mLayer, &ddSize, QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doublePosDesc() );
+      spinSize->setEnabled( !mSizeDDBtn->isActive() );
+      QgsDataDefined ddAngle( markerSymbol->dataDefinedAngle() );
+      mRotationDDBtn->init( mLayer, &ddAngle, QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
+      spinAngle->setEnabled( !mRotationDDBtn->isActive() );
+    }
+    else
+    {
+      mSizeDDBtn->setEnabled( false );
+      mRotationDDBtn->setEnabled( false );
+    }
   }
   else if ( mSymbol->type() == QgsSymbolV2::Line )
   {
     QgsLineSymbolV2* lineSymbol = static_cast<QgsLineSymbolV2*>( mSymbol );
     spinWidth->setValue( lineSymbol->width() );
+
+    if ( mLayer )
+    {
+      QgsDataDefined dd( lineSymbol->dataDefinedWidth() );
+      mWidthDDBtn->init( mLayer, &dd, QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
+      spinWidth->setEnabled( !mWidthDDBtn->isActive() );
+    }
+    else
+    {
+      mWidthDDBtn->setEnabled( false );
+    }
   }
 
   mSymbolUnitWidget->blockSignals( true );

@@ -56,6 +56,7 @@
 %Include qgsfilterlineedit.sip
 %Include qgsformannotationitem.sip
 %Include qgsgenericprojectionselector.sip
+%Include qgshistogramwidget.sip
 %Include qgshtmlannotationitem.sip
 %Include qgsidentifymenu.sip
 %Include qgslegendinterface.sip
@@ -171,8 +172,10 @@
 %Include symbology-ng/characterwidget.sip
 %Include symbology-ng/qgsdashspacedialog.sip
 %Include symbology-ng/qgsdatadefinedsymboldialog.sip
+%Include symbology-ng/qgssizescalewidget.sip
 %Include symbology-ng/qgsstylev2exportimportdialog.sip
 %Include symbology-ng/qgssvgselectorwidget.sip
+%Include symbology-ng/qgsgraduatedhistogramwidget.sip
 
 %Include effects/qgseffectdrawmodecombobox.sip
 %Include effects/qgspainteffectpropertieswidget.sip

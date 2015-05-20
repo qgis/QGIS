@@ -143,7 +143,7 @@ void QgsWFSFeatureIterator::copyFeature( const QgsFeature* f, QgsFeature& featur
   //id and valid
   feature.setValid( true );
   feature.setFeatureId( f->id() );
-  feature.setFields( &mSource->mFields ); // allow name-based attribute lookups
+  feature.setFields( mSource->mFields ); // allow name-based attribute lookups
 }
 
 

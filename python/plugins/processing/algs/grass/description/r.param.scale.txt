@@ -9,4 +9,4 @@ ParameterSelection|param|Morphometric parameter in 'size' window to calculate|el
 ParameterNumber|exp|Exponent for distance weighting (0.0-4.0)|None|None|0.0
 ParameterNumber|zscale|Vertical scaling factor|None|None|1.0
 ParameterBoolean|-c|Constrain model through central window cell|False
-OutputRaster|output|Output raster layer containing morphometric parameter
+OutputRaster|output|Morphometric parameter
