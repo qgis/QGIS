@@ -5916,7 +5916,7 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
 
   vl->beginEditCommand( tr( "Merged feature attributes" ) );
 
-  const QgsAttributes &merged = d.mergedAttributes();
+  QgsAttributes merged = d.mergedAttributes();
 
   foreach ( QgsFeatureId fid, vl->selectedFeaturesIds() )
   {
@@ -6232,7 +6232,7 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
   QgsFeatureList::iterator featureIt = features.begin();
   while ( featureIt != features.end() )
   {
-    const QgsAttributes &srcAttr = featureIt->attributes();
+    QgsAttributes srcAttr = featureIt->attributes();
     QgsAttributes dstAttr( dstAttrCount );
 
     for ( int src = 0; src < srcAttr.count(); ++src )

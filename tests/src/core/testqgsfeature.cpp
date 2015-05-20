@@ -154,7 +154,7 @@ void TestQgsFeature::attributes()
   //test implicit sharing detachment
   QgsFeature copy( feature );
   QCOMPARE( copy.attributes(), feature.attributes() );
-  copy.attributes().clear();
+  copy.setAttributes( QgsAttributes() );
   QVERIFY( copy.attributes().isEmpty() );
   QCOMPARE( feature.attributes(), mAttrs );
 

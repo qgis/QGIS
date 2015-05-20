@@ -350,7 +350,7 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForFeature( QgsFeature& feature
 
 QgsSymbolV2* QgsGraduatedSymbolRendererV2::originalSymbolForFeature( QgsFeature& feature )
 {
-  const QgsAttributes& attrs = feature.attributes();
+  QgsAttributes attrs = feature.attributes();
   QVariant value;
   if ( mAttrNum < 0 || mAttrNum >= attrs.count() )
   {

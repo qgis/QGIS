@@ -993,7 +993,7 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
     }
   }
 
-  const QgsAttributes& attrs = f.attributes();
+  QgsAttributes attrs = f.attributes();
 
   char *oldlocale = setlocale( LC_NUMERIC, NULL );
   if ( oldlocale )

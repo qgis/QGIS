@@ -407,7 +407,7 @@ void QgsVectorDataProvider::fillMinMaxCache()
 
   while ( fi.nextFeature( f ) )
   {
-    const QgsAttributes& attrs = f.attributes();
+    QgsAttributes attrs = f.attributes();
     for ( QgsAttributeList::const_iterator it = keys.begin(); it != keys.end(); ++it )
     {
       const QVariant& varValue = attrs[*it];

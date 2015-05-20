@@ -980,8 +980,8 @@ bool QgsVectorLayer::updateFeature( QgsFeature &f )
     }
   }
 
-  const QgsAttributes &fa = f.attributes();
-  const QgsAttributes &ca = current.attributes();
+  QgsAttributes fa = f.attributes();
+  QgsAttributes ca = current.attributes();
 
   for ( int attr = 0; attr < fa.count(); ++attr )
   {

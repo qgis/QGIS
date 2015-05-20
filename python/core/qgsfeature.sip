@@ -241,8 +241,8 @@ class QgsFeature
      */
     void setFeatureId( qint64 id );
 
-    const QgsAttributes& attributes() const;
-    //QgsAttributes& attributes();
+    QgsAttributes attributes() const;
+
     void setAttributes( const QgsAttributes& attrs );
 
     /**
@@ -312,26 +312,36 @@ class QgsFeature
 
     /**
      * Get the geometry object associated with this feature
+     *
+     * It is possible to modify the geometry in place but this will
+     * be removed in 3.0 and therefore @link setGeometry @endlink should be called explicitly.
+     *
+     * @note will be modified to return by value in QGIS 3.0: `QgsGeometry geometry() const;`
      */
-    QgsGeometry* geometry() const;
+    QgsGeometry* geometry();
 
-    /** Gets a const pointer to the geometry object associated with this feature
+    /** Gets a const pointer to the geometry object associated with this feature.
+     * @note this is a temporary method for 2.x release cycle. Will be removed in QGIS 3.0.
      * @note added in QGIS 2.9
+     * @note will be removed in QGIS 3.0
      */
     const QgsGeometry* constGeometry() const;
 
     /**
      * Get the geometry object associated with this feature
      * The caller assumes responsibility for the QgsGeometry*'s destruction.
+     * @deprecated will be removed in QGIS 3.0
      */
-    QgsGeometry *geometryAndOwnership() /Factory/;
+    QgsGeometry *geometryAndOwnership() /Factory,Deprecated/;
 
     /** Set this feature's geometry from another QgsGeometry object (deep copy)
      */
     void setGeometry( const QgsGeometry& geom );
 
     /** Set this feature's geometry (takes geometry ownership)
+     *
      * @note not available in python bindings
+     * @deprecated will be removed in QGIS 3.0
      */
     // void setGeometry( QgsGeometry* geom /Transfer/ );
 
@@ -339,6 +349,8 @@ class QgsFeature
      * Set this feature's geometry from WKB
      *
      * This feature assumes responsibility for destroying geom.
+     *
+     * @deprecated will be removed in QGIS 3.0
      */
     void setGeometryAndOwnership( unsigned char * geom /Transfer/, size_t length );
 

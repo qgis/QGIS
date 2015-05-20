@@ -3549,7 +3549,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
 
   if ( flist.size() == 0 )
     return true;
-  const QgsAttributes & attributevec = flist[0].attributes();
+  QgsAttributes attributevec = flist[0].attributes();
 
   ret = sqlite3_exec( sqliteHandle, "BEGIN", NULL, NULL, &errMsg );
   if ( ret == SQLITE_OK )
@@ -3594,7 +3594,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
       for ( QgsFeatureList::iterator feature = flist.begin(); feature != flist.end(); ++feature )
       {
         // looping on each feature to insert
-        const QgsAttributes& attributevec = feature->attributes();
+        QgsAttributes attributevec = feature->attributes();
 
         // resetting Prepared Statement and bindings
         sqlite3_reset( stmt );

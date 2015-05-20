@@ -595,7 +595,7 @@ void eVisGenericEventBrowserGui::loadRecord()
   QString myCompassOffsetField = cboxCompassOffsetField->currentText();
   QString myEventImagePathField = cboxEventImagePathField->currentText();
   const QgsFields& myFields = mDataProvider->fields();
-  const QgsAttributes& myAttrs = myFeature->attributes();
+  QgsAttributes myAttrs = myFeature->attributes();
   //loop through the attributes and display their contents
   for ( int i = 0; i < myAttrs.count(); ++i )
   {
@@ -842,7 +842,7 @@ void eVisGenericEventBrowserGui::on_cboxEventImagePathField_currentIndexChanged(
     if ( 0 == myFeature )
       return;
 
-    const QgsAttributes& myAttrs = myFeature->attributes();
+    QgsAttributes myAttrs = myFeature->attributes();
     for ( int i = 0 ; i < myAttrs.count(); ++i )
     {
       if ( myFields[i].name() == cboxEventImagePathField->currentText() )
@@ -870,7 +870,7 @@ void eVisGenericEventBrowserGui::on_cboxCompassBearingField_currentIndexChanged(
     if ( 0 == myFeature )
       return;
 
-    const QgsAttributes& myAttrs = myFeature->attributes();
+    QgsAttributes myAttrs = myFeature->attributes();
     for ( int i = 0; i < myAttrs.count(); ++i )
     {
       if ( myFields[i].name() == cboxCompassBearingField->currentText() )
@@ -898,7 +898,7 @@ void eVisGenericEventBrowserGui::on_cboxCompassOffsetField_currentIndexChanged( 
     if ( 0 == myFeature )
       return;
 
-    const QgsAttributes& myAttrs = myFeature->attributes();
+    QgsAttributes myAttrs = myFeature->attributes();
     for ( int i = 0; i < myAttrs.count(); ++i )
     {
       if ( myFields[i].name() == cboxCompassOffsetField->currentText() )

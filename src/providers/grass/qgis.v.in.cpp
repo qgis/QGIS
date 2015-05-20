@@ -295,7 +295,9 @@ int main( int argc, char **argv )
         QgsFeature& centroid = centroids[id];
         if ( feature.geometry()->contains( centroid.geometry() ) )
         {
-          centroid.attributes().append( feature.id() );
+          QgsAttributes attr = centroid.attributes();
+          attr.append( feature.id() );
+          centroid.setAttributes( attr );
         }
       }
     }

@@ -3740,7 +3740,7 @@ void QgsGrassModuleSelection::updateSelection()
     if ( !selected.contains( feature.id() ) )
       continue;
 
-    const QgsAttributes& attr = feature.attributes();
+    QgsAttributes attr = feature.attributes();
     if ( attr.size() > keyField )
     {
       if ( i > 0 )

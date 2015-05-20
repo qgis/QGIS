@@ -455,7 +455,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
   }
 
   const QgsFields &fields = vlayer->pendingFields();
-  const QgsAttributes& attrs = f.attributes();
+  QgsAttributes attrs = f.attributes();
   bool featureLabeled = false;
   for ( int i = 0; i < attrs.count(); ++i )
   {
@@ -719,7 +719,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
   if ( feature.isValid() )
   {
     QgsDebugMsg( QString( "fields size = %1 attributes size = %2" ).arg( fields.size() ).arg( feature.attributes().size() ) );
-    const QgsAttributes& attrs = feature.attributes();
+    QgsAttributes attrs = feature.attributes();
     for ( int i = 0; i < attrs.count(); ++i )
     {
       if ( i >= fields.count() )

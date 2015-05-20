@@ -237,7 +237,7 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForFeature( QgsFeature& featu
 
 QgsSymbolV2* QgsCategorizedSymbolRendererV2::originalSymbolForFeature( QgsFeature& feature )
 {
-  const QgsAttributes& attrs = feature.attributes();
+  QgsAttributes attrs = feature.attributes();
   QVariant value;
   if ( mAttrNum == -1 )
   {

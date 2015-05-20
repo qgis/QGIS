@@ -219,7 +219,7 @@ bool QgsGPXProvider::addFeature( QgsFeature& f )
   QGis::WkbType wkbType = f.constGeometry()->wkbType();
   bool success = false;
   QgsGPSObject* obj = NULL;
-  const QgsAttributes& attrs = f.attributes();
+  QgsAttributes attrs = f.attributes();
   QgsAttributeMap::const_iterator it;
 
   // is it a waypoint?

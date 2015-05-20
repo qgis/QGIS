@@ -109,7 +109,7 @@ void QgsFeature::deleteAttribute( int field )
 }
 
 
-QgsGeometry *QgsFeature::geometry() const
+QgsGeometry *QgsFeature::geometry()
 {
   return mGeometry;
 }
@@ -257,9 +257,9 @@ QDataStream& operator<<( QDataStream& out, const QgsFeature& feature )
 {
   out << feature.id();
   out << feature.attributes();
-  if ( feature.geometry() )
+  if ( feature.constGeometry() )
   {
-    out << *( feature.geometry() );
+    out << *( feature.constGeometry() );
   }
   else
   {
@@ -275,9 +275,11 @@ QDataStream& operator>>( QDataStream& in, QgsFeature& feature )
   QgsFeatureId id;
   QgsGeometry* geometry = new QgsGeometry();
   bool valid;
-  in >> id >> feature.attributes() >> *geometry >> valid;
+  QgsAttributes attr;
+  in >> id >> attr >> *geometry >> valid;
   feature.setFeatureId( id );
   feature.setGeometry( geometry );
+  feature.setAttributes( attr );
   feature.setValid( valid );
   return in;
 }
