@@ -81,6 +81,8 @@ class FieldsCalculatorDialog(QDialog, Ui_FieldsCalculator):
             self.cmbInputLayer.addItem(layer.name())
         self.cmbInputLayer.blockSignals(False)
 
+        self.builder.loadRecent('fieldcalc')
+
         self.updateLayer()
 
     def updateLayer(self):
@@ -90,7 +92,6 @@ class FieldsCalculatorDialog(QDialog, Ui_FieldsCalculator):
         self.builder.loadFieldNames()
 
         self.populateFields()
-        #populateOutputFieldTypes()
 
     def setupSpinboxes(self, index):
         if index != 0:
