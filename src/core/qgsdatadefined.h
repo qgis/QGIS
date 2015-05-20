@@ -53,6 +53,7 @@ class CORE_EXPORT QgsDataDefined
      * Construct a new data defined object, analysing the expression to determine
      * if it's a simple field reference or an expression.
      * @param expression can be null
+     * @note added in QGIS 2.9
      */
     explicit QgsDataDefined( const QgsExpression * expression );
 

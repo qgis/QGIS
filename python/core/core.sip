@@ -36,6 +36,7 @@
 %Include qgseditorwidgetconfig.sip
 %Include qgserror.sip
 %Include qgsexpression.sip
+%Include qgsexpressioncontext.sip
 %Include qgsfeature.sip
 %Include qgsfeatureiterator.sip
 %Include qgsfeaturerequest.sip
