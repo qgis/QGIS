@@ -232,10 +232,11 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
   // set transformation from project CRS to ellipsoid coordinates
   mCoordTransform->setDestCRS( destCRS );
 
+  mEllipsoid = ellipsoid;
+
   // precalculate some values for area calculations
   computeAreaInit();
 
-  mEllipsoid = ellipsoid;
   return true;
 }
 
