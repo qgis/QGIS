@@ -38,6 +38,10 @@ class GUI_EXPORT QgsSizeScaleWidget : public QgsDataDefinedAssistant, private Ui
 
     QgsDataDefined dataDefined() const override;
 
+  protected:
+
+    virtual void showEvent( QShowEvent * ) override;
+
   private slots:
     void computeFromLayerTriggered();
     void updatePreview();
@@ -51,6 +55,8 @@ class GUI_EXPORT QgsSizeScaleWidget : public QgsDataDefinedAssistant, private Ui
     QStandardItemModel mPreviewList;
 
     QgsScaleExpression* createExpression() const;
+    void setFromSymbol();
+
 };
 
 #endif //QGSSIZESCALEWIDGET_H

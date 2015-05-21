@@ -47,6 +47,36 @@ class ItemDelegate : public QItemDelegate
 
 };
 
+void QgsSizeScaleWidget::setFromSymbol()
+{
+  if ( !mSymbol )
+  {
+    return;
+  }
+
+  QgsDataDefined ddSize = mSymbol->dataDefinedSize();
+  QgsScaleExpression expr( ddSize.expressionString() );
+  if ( expr )
+  {
+    for ( int i = 0; i < scaleMethodComboBox->count(); i++ )
+    {
+      if ( scaleMethodComboBox->itemData( i ).toInt() == int( expr.type() ) )
+      {
+        scaleMethodComboBox->setCurrentIndex( i );
+        break;
+      }
+    }
+
+    mExpressionWidget->setField( expr.baseExpression() );
+
+    minValueSpinBox->setValue( expr.minValue() );
+    maxValueSpinBox->setValue( expr.maxValue() );
+    minSizeSpinBox->setValue( expr.minSize() );
+    maxSizeSpinBox->setValue( expr.maxSize() );
+  }
+  updatePreview();
+}
+
 QgsSizeScaleWidget::QgsSizeScaleWidget( const QgsVectorLayer * layer, const QgsMarkerSymbolV2 * symbol )
     : mSymbol( symbol )
     // we just use the minimumValue and maximumValue from the layer, unfortunately they are
@@ -85,27 +115,7 @@ QgsSizeScaleWidget::QgsSizeScaleWidget( const QgsVectorLayer * layer, const QgsM
   maxValueSpinBox->setShowClearButton( false );
 
   // setup ui from expression if any
-  QgsDataDefined ddSize = mSymbol->dataDefinedSize();
-  QgsScaleExpression expr( ddSize.expressionString() );
-  if ( expr )
-  {
-    for ( int i = 0; i < scaleMethodComboBox->count(); i++ )
-    {
-      if ( scaleMethodComboBox->itemData( i ).toInt() == int( expr.type() ) )
-      {
-        scaleMethodComboBox->setCurrentIndex( i );
-        break;
-      }
-    }
-
-    mExpressionWidget->setField( expr.baseExpression() );
-
-    minValueSpinBox->setValue( expr.minValue() );
-    maxValueSpinBox->setValue( expr.maxValue() );
-    minSizeSpinBox->setValue( expr.minSize() );
-    maxSizeSpinBox->setValue( expr.maxSize() );
-    updatePreview();
-  }
+  setFromSymbol();
 
   connect( minSizeSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( updatePreview() ) );
   connect( maxSizeSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( updatePreview() ) );
@@ -122,6 +132,11 @@ QgsDataDefined QgsSizeScaleWidget::dataDefined() const
   return QgsDataDefined( exp.data() );
 }
 
+void QgsSizeScaleWidget::showEvent( QShowEvent* )
+{
+  setFromSymbol();
+}
+
 QgsScaleExpression *QgsSizeScaleWidget::createExpression() const
 {
   return new QgsScaleExpression( QgsScaleExpression::Type( scaleMethodComboBox->itemData( scaleMethodComboBox->currentIndex() ).toInt() ),
@@ -134,6 +149,9 @@ QgsScaleExpression *QgsSizeScaleWidget::createExpression() const
 
 void QgsSizeScaleWidget::updatePreview()
 {
+  if ( !mSymbol )
+    return;
+
   QScopedPointer<QgsScaleExpression> expr( createExpression() );
   QList<double> breaks = QgsSymbolLayerV2Utils::prettyBreaks( expr->minValue(), expr->maxValue(), 4 );
 

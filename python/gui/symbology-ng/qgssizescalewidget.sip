@@ -7,5 +7,9 @@ class QgsSizeScaleWidget : QgsDataDefinedAssistant
     QgsSizeScaleWidget( const QgsVectorLayer * layer, const QgsMarkerSymbolV2 * symbol );
 
     QgsDataDefined dataDefined() const;
+
+  protected:
+
+    virtual void showEvent( QShowEvent * );
 };
 
