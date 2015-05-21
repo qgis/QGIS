@@ -237,17 +237,21 @@ void GRASS_LIB_EXPORT QgsGrass::init( void )
   QSettings settings;
 
   // Is it active mode ?
+  active = false;
   if ( getenv( "GISRC" ) )
   {
-    active = true;
-    // Store default values
-    defaultGisdbase = G_gisdbase();
-    defaultLocation = G_location();
-    defaultMapset = G_mapset();
-  }
-  else
-  {
-    active = false;
+    G_TRY
+    {
+      // Store default values
+      defaultGisdbase = G_gisdbase();
+      defaultLocation = G_location();
+      defaultMapset = G_mapset();
+      active = true;
+    }
+    G_CATCH( QgsGrass::Exception &e )
+    {
+      QgsDebugMsg( QString( "GISRC set but cannot get gisdbase/location/mapset: %1" ).arg( e.what() ) );
+    }
   }
 
   // Don't use GISRC file and read/write GRASS variables (from location G_VAR_GISRC) to memory only.
