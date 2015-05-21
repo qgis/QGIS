@@ -42,6 +42,8 @@
 #include "qgsexpressionselectiondialog.h"
 #include "qgsfeaturelistmodel.h"
 #include "qgsrubberband.h"
+#include "qgsfield.h"
+#include "qgseditorwidgetregistry.h"
 
 class QgsAttributeTableDock : public QDockWidget
 {
@@ -64,6 +66,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
     , mDock( 0 )
     , mLayer( theLayer )
     , mRubberBand( 0 )
+    , mCurrentSearchWidget( 0 )
 {
   setupUi( this );
 
@@ -407,7 +410,24 @@ void QgsAttributeTableDialog::filterColumnChanged( QObject* filterAction )
   mFilterButton->setDefaultAction( qobject_cast<QAction *>( filterAction ) );
   mFilterButton->setPopupMode( QToolButton::InstantPopup );
   mCbxCaseSensitive->setVisible( true );
-  mFilterQuery->setVisible( true );
+  // replace the search line edit with a search widget that is suited to the selected field
+  mFilterQuery->setVisible( false );
+  // delete previous widget
+  if ( mCurrentSearchWidget != 0 )
+  {
+    //mFilterContainer->removeWidget(mCurrentSearchWidget);  
+    delete mCurrentSearchWidget;
+  }
+  QString fieldName = mFilterButton->defaultAction()->text();
+  // get the search widget
+  int fldIdx = mLayer->fieldNameIndex( fieldName );
+    if ( fldIdx < 0 )
+      return;
+  const QString widgetType = mLayer->editorWidgetV2( fldIdx );
+  const QgsEditorWidgetConfig widgetConfig = mLayer->editorWidgetV2Config( fldIdx );
+  QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetType, mLayer, fldIdx, widgetConfig, 0 , mFilterContainer);
+  mCurrentSearchWidget = eww->widget();
+
   mApplyFilterButton->setVisible( true );
 }
 
@@ -677,7 +697,6 @@ void QgsAttributeTableDialog::filterQueryChanged( const QString& query )
   else
   {
     QString fieldName = mFilterButton->defaultAction()->text();
-
     const QgsFields& flds = mLayer->pendingFields();
     int fldIndex = mLayer->fieldNameIndex( fieldName );
     if ( fldIndex < 0 )

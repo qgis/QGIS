@@ -61,6 +61,12 @@ class GUI_EXPORT QgsEditorWidgetFactory
     virtual QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const = 0;
 
     /**
+     * Override this in your implementation, to get
+     * something different than a QLineEdit
+     */
+    QgsEditorWidgetWrapper* createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent );
+
+    /**
      * Return The human readable identifier name of this widget type
      *
      * @return a name

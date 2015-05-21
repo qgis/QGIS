@@ -207,7 +207,8 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     QgsVectorLayer* mLayer;
     QgsFieldModel* mFieldModel;
 
-    QgsRubberBand *mRubberBand;
+    QgsRubberBand* mRubberBand;
+    QWidget* mCurrentSearchWidget;
 };
 
 #endif

@@ -541,7 +541,16 @@
       </widget>
      </item>
      <item>
-      <widget class="QgsFilterLineEdit" name="mFilterQuery"/>
+      <widget class="QWidget" name="mFilterContainer" native="true">
+       <layout class="QGridLayout" name="gridLayout_2">
+        <property name="margin">
+         <number>0</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QgsFilterLineEdit" name="mFilterQuery"/>
+        </item>
+       </layout>
+      </widget>
      </item>
      <item>
       <widget class="QWidget" name="mSpacer" native="true"/>
@@ -656,7 +665,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QgsFieldExpressionWidget" name="mUpdateExpressionText" native="true">
+       <widget class="QgsFieldExpressionWidget" name="mUpdateExpressionText">
         <property name="sizePolicy">
          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
