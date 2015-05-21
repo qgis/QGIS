@@ -2501,6 +2501,11 @@ QgsFontMarkerSymbolLayerV2Widget::QgsFontMarkerSymbolLayerV2Widget( const QgsVec
   spinOffsetX->setClearValue( 0.0 );
   spinOffsetY->setClearValue( 0.0 );
 
+  //make a temporary symbol for the size assistant preview
+  mAssistantPreviewSymbol = new QgsMarkerSymbolV2();
+
+  mSizeDDBtn->setAssistant( new QgsSizeScaleWidget( mVectorLayer, mAssistantPreviewSymbol ) );
+
   connect( cboFont, SIGNAL( currentFontChanged( const QFont & ) ), this, SLOT( setFontFamily( const QFont& ) ) );
   connect( spinSize, SIGNAL( valueChanged( double ) ), this, SLOT( setSize( double ) ) );
   connect( btnColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor( const QColor& ) ) );
@@ -2508,6 +2513,12 @@ QgsFontMarkerSymbolLayerV2Widget::QgsFontMarkerSymbolLayerV2Widget( const QgsVec
   connect( spinOffsetX, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
   connect( spinOffsetY, SIGNAL( valueChanged( double ) ), this, SLOT( setOffset() ) );
   connect( widgetChar, SIGNAL( characterSelected( const QChar & ) ), this, SLOT( setCharacter( const QChar & ) ) );
+  connect( this, SIGNAL( changed() ), this, SLOT( updateAssistantSymbol() ) );
+}
+
+QgsFontMarkerSymbolLayerV2Widget::~QgsFontMarkerSymbolLayerV2Widget()
+{
+  delete mAssistantPreviewSymbol;
 }
 
 void QgsFontMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
@@ -2557,6 +2568,15 @@ void QgsFontMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   mVerticalAnchorComboBox->setCurrentIndex( mLayer->verticalAnchorPoint() );
   mHorizontalAnchorComboBox->blockSignals( false );
   mVerticalAnchorComboBox->blockSignals( false );
+
+  registerDataDefinedButton( mSizeDDBtn, "size", QgsDataDefinedButton::Double, QgsDataDefinedButton::doublePosDesc() );
+  registerDataDefinedButton( mRotationDDBtn, "angle", QgsDataDefinedButton::Double, QgsDataDefinedButton::double180RotDesc() );
+  registerDataDefinedButton( mColorDDBtn, "color", QgsDataDefinedButton::String, QgsDataDefinedButton::colorAlphaDesc() );
+  registerDataDefinedButton( mOffsetDDBtn, "offset", QgsDataDefinedButton::String, QgsDataDefinedButton::doubleXYDesc() );
+  registerDataDefinedButton( mHorizontalAnchorDDBtn, "horizontal_anchor_point", QgsDataDefinedButton::String, QgsDataDefinedButton::horizontalAnchorDesc() );
+  registerDataDefinedButton( mVerticalAnchorDDBtn, "vertical_anchor_point", QgsDataDefinedButton::String, QgsDataDefinedButton::verticalAnchorDesc() );
+
+  updateAssistantSymbol();
 }
 
 QgsSymbolLayerV2* QgsFontMarkerSymbolLayerV2Widget::symbolLayer()
@@ -2638,6 +2658,18 @@ void QgsFontMarkerSymbolLayerV2Widget::on_mVerticalAnchorComboBox_currentIndexCh
     mLayer->setVerticalAnchorPoint( QgsMarkerSymbolLayerV2::VerticalAnchorPoint( index ) );
     emit changed();
   }
+}
+
+void QgsFontMarkerSymbolLayerV2Widget::updateAssistantSymbol()
+{
+  for ( int i = mAssistantPreviewSymbol->symbolLayerCount() - 1 ; i >= 0; --i )
+  {
+    mAssistantPreviewSymbol->deleteSymbolLayer( i );
+  }
+  mAssistantPreviewSymbol->appendSymbolLayer( mLayer->clone() );
+  QgsDataDefined* ddSize = mLayer->getDataDefinedProperty( "size" );
+  if ( ddSize )
+    mAssistantPreviewSymbol->setDataDefinedSize( *ddSize );
 }
 
 ///////////////

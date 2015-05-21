@@ -496,6 +496,8 @@ class GUI_EXPORT QgsFontMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
   public:
     QgsFontMarkerSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = NULL );
 
+    ~QgsFontMarkerSymbolLayerV2Widget();
+
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) { return new QgsFontMarkerSymbolLayerV2Widget( vl ); }
 
     // from base class
@@ -517,6 +519,14 @@ class GUI_EXPORT QgsFontMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
   protected:
     QgsFontMarkerSymbolLayerV2* mLayer;
     CharacterWidget* widgetChar;
+
+  private slots:
+
+    void updateAssistantSymbol();
+
+  private:
+
+    QgsMarkerSymbolV2* mAssistantPreviewSymbol;
 
 };
 

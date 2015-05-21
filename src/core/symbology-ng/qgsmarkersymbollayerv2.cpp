@@ -1687,6 +1687,9 @@ QgsSymbolLayerV2* QgsFontMarkerSymbolLayerV2::create( const QgsStringMap& props 
   {
     m->setVerticalAnchorPoint( QgsMarkerSymbolLayerV2::VerticalAnchorPoint( props[ "vertical_anchor_point" ].toInt() ) );
   }
+
+  m->restoreDataDefinedProperties( props );
+
   return m;
 }
 
@@ -1701,8 +1704,8 @@ void QgsFontMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
   mFont.setPixelSize( mSize * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mSizeUnit, mSizeMapUnitScale ) );
   QFontMetrics fm( mFont );
   mChrOffset = QPointF( fm.width( mChr ) / 2, -fm.ascent() / 2 );
-
   mOrigSize = mSize; // save in case the size would be data defined
+  prepareExpressions( context.fields(), context.renderContext().rendererScale() );
 }
 
 void QgsFontMarkerSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
@@ -1716,29 +1719,89 @@ void QgsFontMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2R
   if ( !p )
     return;
 
-  QColor penColor = context.selected() ? context.renderContext().selectionColor() : mColor;
-  penColor.setAlphaF( mColor.alphaF() * context.alpha() );
+  QColor penColor = mColor;
+  bool ok;
+  if ( hasDataDefinedProperty( "color" ) )
+  {
+    QString colorString = evaluateDataDefinedProperty( "color", context.feature(), QVariant(), &ok ).toString();
+    if ( ok )
+      penColor = QgsSymbolLayerV2Utils::decodeColor( colorString );
+  }
+  penColor = context.selected() ? context.renderContext().selectionColor() : penColor;
+  penColor.setAlphaF( penColor.alphaF() * context.alpha() );
+
   p->setPen( penColor );
   p->setFont( mFont );
 
   p->save();
+
+  double scaledSize = mSize;
+
+  bool hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale || hasDataDefinedProperty( "size" );
+
+  ok = true;
+  if ( hasDataDefinedProperty( "size" ) )
+  {
+    scaledSize = evaluateDataDefinedProperty( "size", context.feature(), mSize, &ok ).toDouble();
+  }
+
+  if ( hasDataDefinedSize && ok )
+  {
+    switch ( mScaleMethod )
+    {
+      case QgsSymbolV2::ScaleArea:
+        scaledSize = sqrt( scaledSize );
+        break;
+      case QgsSymbolV2::ScaleDiameter:
+        break;
+    }
+  }
+
   //offset
   double offsetX = 0;
   double offsetY = 0;
-  markerOffset( context, offsetX, offsetY );
+  markerOffset( context, scaledSize, scaledSize , offsetX, offsetY );
   QPointF outputOffset( offsetX, offsetY );
-  if ( !qgsDoubleNear( mAngle + mLineAngle, 0.0 ) )
-    outputOffset = _rotatedOffset( outputOffset, mAngle + mLineAngle );
+
+  double angle = mAngle + mLineAngle;
+  if ( hasDataDefinedProperty( "angle" ) )
+  {
+    angle = evaluateDataDefinedProperty( "angle", context.feature(), mAngle ).toDouble() + mLineAngle;
+  }
+
+  bool hasDataDefinedRotation = context.renderHints() & QgsSymbolV2::DataDefinedRotation || hasDataDefinedProperty( "angle" );
+  if ( hasDataDefinedRotation )
+  {
+    // For non-point markers, "dataDefinedRotation" means following the
+    // shape (shape-data defined). For them, "field-data defined" does
+    // not work at all. TODO: if "field-data defined" ever gets implemented
+    // we'll need a way to distinguish here between the two, possibly
+    // using another flag in renderHints()
+    const QgsFeature* f = context.feature();
+    if ( f )
+    {
+      const QgsGeometry *g = f->constGeometry();
+      if ( g && g->type() == QGis::Point )
+      {
+        const QgsMapToPixel& m2p = context.renderContext().mapToPixel();
+        angle += m2p.mapRotation();
+      }
+    }
+  }
+
+  if ( angle )
+    outputOffset = _rotatedOffset( outputOffset, angle );
   p->translate( point + outputOffset );
 
-  if ( context.renderHints() & QgsSymbolV2::DataDefinedSizeScale )
+  if ( !qgsDoubleNear( scaledSize, mOrigSize ) )
   {
-    double s = mSize / mOrigSize;
+    double s = scaledSize / mOrigSize;
     p->scale( s, s );
   }
 
-  if ( !qgsDoubleNear( mAngle + mLineAngle, 0.0 ) )
-    p->rotate( mAngle + mLineAngle );
+  bool rotated = !qgsDoubleNear( angle, 0 );
+  if ( rotated )
+    p->rotate( angle );
 
   p->drawText( -mChrOffset, mChr );
   p->restore();
@@ -1759,6 +1822,10 @@ QgsStringMap QgsFontMarkerSymbolLayerV2::properties() const
   props["offset_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mOffsetMapUnitScale );
   props["horizontal_anchor_point"] = QString::number( mHorizontalAnchorPoint );
   props["vertical_anchor_point"] = QString::number( mVerticalAnchorPoint );
+
+  //data define properties
+  saveDataDefinedProperties( props );
+
   return props;
 }
 
@@ -1772,6 +1839,7 @@ QgsSymbolLayerV2* QgsFontMarkerSymbolLayerV2::clone() const
   m->setSizeMapUnitScale( mSizeMapUnitScale );
   m->setHorizontalAnchorPoint( mHorizontalAnchorPoint );
   m->setVerticalAnchorPoint( mVerticalAnchorPoint );
+  copyDataDefinedProperties( m );
   copyPaintEffect( m );
   return m;
 }
