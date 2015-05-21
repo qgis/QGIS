@@ -1,395 +1,395 @@
-gdalogr:overviews,USE_ORIGINAL_NAME,Raster/Creation
-gdalogr:executesql,Execute SQL on vector layer,Vector/General tools
-gdalogr:rasterinfo,Raster layer information,Raster/General tools
-gdalogr:merge, Merge raster layers,Raster/General tools
-gdalogr:nearblack,USE_ORIGINAL_NAME,Raster/Analysis
-gdalogr:ogr2ogr,Export vector layer,Vector/General tools
-gdalogr:vectorinfo,Vector layer information,Vector/Statistics
-gdalogr:pcttorgb,PCT to RGB,Images/Image Manipulation
-gdalogr:proximity,USE_ORIGINAL_NAME,Raster/Analysis
-gdalogr:rgbtopct,RGB to PCT,Images/Image Manipulation
-gdalogr:sieve,Remove small pixel clumps (nearest neighbour),Raster/Edition
-gdalogr:translate,Export raster layer,Raster/General tools
-gdalogr:warpreproject,Reproject raster layer,Raster/General tools
-gdalogr:slope,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
-gdalogr:aspect,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
-gdalogr:hillshade,USE_ORIGINAL_NAME,Domain specific/Viewsheds\Lighting
-gdalogr:polygonize,Vectorize raster layer,Raster - vector/Raster -> Vector
-gdalogr:gridrasterize,Rasterize vector layer,Raster - vector/Vector -> Raster
-gdalogr:gridnearestneighbor, Interpolate (Nearest Neighbor),Raster - vector/Vector -> Raster
-gdalogr:griddatametrics, Interpolate (Data metrics),Raster - vector/Vector -> Raster
-gdalogr:gridinvdist, Interpolate (Inverse distance weighting),Raster - vector/Vector -> Raster
-gdalogr:gridaverage, Interpolate (Average),Raster - vector/Vector -> Raster
-gdalogr:contour, Contour lines,Raster - vector/Raster -> Vector
-otb:bandmath,USE_ORIGINAL_NAME,Images/Miscellaneous
-otb:binarymorphologicaloperation,USE_ORIGINAL_NAME,Images/Image Filtering
-otb:bundletoperfectsensor,USE_ORIGINAL_NAME,Images/Geometry
-otb:cartographictogeographiccoordinatesconversion,USE_ORIGINAL_NAME,Images/Geometry
-otb:classificationregularization,USE_ORIGINAL_NAME,Images/Learning
-otb:colormapping,USE_ORIGINAL_NAME,Images/Image Manipulation
-otb:computeconfusionmatrix,USE_ORIGINAL_NAME,Images/Learning
-otb:computeimagessecondorderstatistics,USE_ORIGINAL_NAME,Images/Learning
-otb:computepolylinefeaturefromimage,USE_ORIGINAL_NAME,Images/Feature Extraction
-otb:concatenate,USE_ORIGINAL_NAME,Images/Vector Data Manipulation
-otb:connectedcomponentsegmentation,USE_ORIGINAL_NAME,Images/Segmentation
-otb:convertsensorpointtogeographicpoint,USE_ORIGINAL_NAME,Images/Geometry
-otb:dimensionalityreductionapplication,USE_ORIGINAL_NAME,Images/Image Filtering
-otb:disparitymaptoelevationmap,USE_ORIGINAL_NAME,Images/Stereo
-otb:edgeextraction,USE_ORIGINAL_NAME,Images/Feature Extraction
-otb:edisonmeanshiftsegmentationlabeledrasteroutput,USE_ORIGINAL_NAME,Images/Segmentation
-otb:edisonmeanshiftsegmentationlargescalevectoroutput,USE_ORIGINAL_NAME,Images/Segmentation
-otb:extractroi,USE_ORIGINAL_NAME,Images/Image Manipulation
-otb:fineregistration,USE_ORIGINAL_NAME,Images/Stereo
-otb:fusionofclassifications,USE_ORIGINAL_NAME,Images/Learning
-otb:fuzzymodelestimation,USE_ORIGINAL_NAME,Images/Feature Extraction
-otb:grayscalemorphologicaloperation,USE_ORIGINAL_NAME,Images/Image Filtering
-otb:gridbasedimageresampling,USE_ORIGINAL_NAME,Images/Geometry
-otb:haralicktextureextraction,USE_ORIGINAL_NAME,Images/Feature Extraction
-otb:hoovercomparesegmentation,USE_ORIGINAL_NAME,Images/Segmentation
-otb:hyperspectraldataunmixing,USE_ORIGINAL_NAME,Images/Miscellaneous
-otb:imageconversion,USE_ORIGINAL_NAME,Images/Image Manipulation
-otb:imageenvelope,USE_ORIGINAL_NAME,Images/Geometry
-otb:imageresamplingwitharigidtransform,USE_ORIGINAL_NAME,Images/Geometry
-otb:imagescomparaison,USE_ORIGINAL_NAME,Images/Miscellaneous
-otb:imagesconcatenation,USE_ORIGINAL_NAME,Images/Image Manipulation
-otb:imagesvmclassification,USE_ORIGINAL_NAME,Images/Learning
-otb:imagetokmzexport,USE_ORIGINAL_NAME,Images/Miscellaneous
-otb:linesegmentdetection,USE_ORIGINAL_NAME,Images/Feature Extraction
-otb:localstatisticextraction,USE_ORIGINAL_NAME,Images/Feature Extraction
-otb:maximumautocorrelationfactordecomposition,USE_ORIGINAL_NAME,Images/Image Filtering
-otb:meanshiftfiltering,USE_ORIGINAL_NAME,Images/Image Filtering
-otb:meanshiftsegmentationlabeledrasteroutput,USE_ORIGINAL_NAME,Images/Segmentation
-otb:meanshiftsegmentationlargescalevectoroutput,USE_ORIGINAL_NAME,Images/Segmentation
-otb:morphologicalprofilesbasedsegmentationlabeledrasteroutput,USE_ORIGINAL_NAME,Images/Segmentation
-otb:morphologicalprofilesbasedsegmentationlargescalevectoroutput,USE_ORIGINAL_NAME,Images/Segmentation
-otb:multiresolutionpyramid,USE_ORIGINAL_NAME,Images/Image Manipulation
-otb:multivariatealterationdetector,USE_ORIGINAL_NAME,Images/Feature Extraction
-otb:obtainutmzonefromgeopoint,USE_ORIGINAL_NAME,Images/Miscellaneous
-otb:openstreetmaplayersimportationsapplications,USE_ORIGINAL_NAME,Images/Miscellaneous
-otb:opticalcalibration,USE_ORIGINAL_NAME,Images/Calibration
-otb:orthorectification,USE_ORIGINAL_NAME,Images/Geometry
-otb:pansharpening,USE_ORIGINAL_NAME,Images/Image Manipulation
-otb:pixelvalue,USE_ORIGINAL_NAME,Images/Miscellaneous
-otb:pixelwiseblockmatching,USE_ORIGINAL_NAME,Images/Stereo
-otb:pixelwiseblockmatching,USE_ORIGINAL_NAME,Images/Stereo
-otb:quicklook,USE_ORIGINAL_NAME,Images/Image Manipulation
-otb:radiometricindices,USE_ORIGINAL_NAME,Images/Feature Extraction
-otb:rasterization,USE_ORIGINAL_NAME,Images/Vector Data Manipulation
-otb:readimageinformation,USE_ORIGINAL_NAME,Images/Image Manipulation
-otb:rescaleimage,USE_ORIGINAL_NAME,Images/Image Manipulation
-otb:sarradiometriccalibration,USE_ORIGINAL_NAME,Images/Calibration
-otb:sfstextureextraction,USE_ORIGINAL_NAME,Images/Feature Extraction
-otb:simpleconnectedcomponentssegmentationlabeledrasteroutput,USE_ORIGINAL_NAME,Images/Segmentation
-otb:simpleconnectedcomponentssegmentationlargescalevectoroutput,USE_ORIGINAL_NAME,Images/Segmentation
-otb:smoothing,USE_ORIGINAL_NAME,Images/Image Filtering
-otb:somclassification,USE_ORIGINAL_NAME,Images/Learning
-otb:splitimage,USE_ORIGINAL_NAME,Images/Image Manipulation
-otb:stereorectificationdeformationgridgenerator,USE_ORIGINAL_NAME,Images/Geometry
-otb:stereosensormodeltoelevationmap,USE_ORIGINAL_NAME,Images/Stereo
-otb:superimposesensor,USE_ORIGINAL_NAME,Images/Geometry
-otb:trainsvmclassifierfrommultipleimages,USE_ORIGINAL_NAME,Images/Learning
-otb:unsupervisedkmeansimageclassification,USE_ORIGINAL_NAME,Images/Learning
-otb:validatesvmimagesclassifier,USE_ORIGINAL_NAME,Images/Learning
-otb:vectordataextractroi,USE_ORIGINAL_NAME,Images/Vector Data Manipulation
-otb:vectordatareprojection,USE_ORIGINAL_NAME,Images/Vector Data Manipulation
-otb:vectordatasetfield,USE_ORIGINAL_NAME,Images/Vector Data Manipulation
-otb:vectordatatransformation,USE_ORIGINAL_NAME,Images/Vector Data Manipulation
-otb:vectordatavalidation,USE_ORIGINAL_NAME,Images/Feature Extraction
-otb:vertexcomponentanalysis,USE_ORIGINAL_NAME,Images/Miscellaneous
-otb:watershedsegmentationlabeledrasteroutput,USE_ORIGINAL_NAME,Images/Segmentation
-otb:watershedsegmentationlargescalevectoroutput,USE_ORIGINAL_NAME,Images/Segmentation
-qgis:addautoincrementalfield,USE_ORIGINAL_NAME,Vector/Table tools
-qgis:addfieldtoattributestable,USE_ORIGINAL_NAME,Vector/Table tools
-qgis:advancedpythonfieldcalculator,USE_ORIGINAL_NAME,Vector/Table tools
-qgis:basicstatisticsfornumericfields,USE_ORIGINAL_NAME,Vector/Statistics
-qgis:basicstatisticsfortextfields,USE_ORIGINAL_NAME,Vector/Statistics
-qgis:clip,USE_ORIGINAL_NAME,Vector/Overlay
-qgis:convertgeometrytype,USE_ORIGINAL_NAME,Vector/General tools
-qgis:convexhull,USE_ORIGINAL_NAME,Vector/Geometry operations
-qgis:countpointsinpolygon,USE_ORIGINAL_NAME,Vector/Statistics
-qgis:countpointsinpolygonweighted,USE_ORIGINAL_NAME,Vector/Statistics
-qgis:countuniquepointsinpolygon,USE_ORIGINAL_NAME,Vector/Statistics
-qgis:createequivalentnumericalfield,USE_ORIGINAL_NAME,Vector/Table tools
-qgis:creategrid,Create graticule,Vector/Creation
-qgis:delaunaytriangulation,USE_ORIGINAL_NAME,Vector/Geometry operations
-qgis:deletecolumn,USE_ORIGINAL_NAME,Vector/Table tools
-qgis:deleteduplicategeometries,USE_ORIGINAL_NAME,Vector/General tools
-qgis:densifygeometries,USE_ORIGINAL_NAME,Vector/Geometry operations
-qgis:densifygeometriesgivenaninterval,USE_ORIGINAL_NAME,Vector/Geometry operations
-qgis:difference,USE_ORIGINAL_NAME,Vector/Overlay
-qgis:dissolve,USE_ORIGINAL_NAME,Vector/Geometry operations
-qgis:distancetonearesthub,USE_ORIGINAL_NAME,Vector/Analysis
-qgis:explodelines,USE_ORIGINAL_NAME,Vector/Lines
-qgis:exportaddgeometrycolumns,USE_ORIGINAL_NAME,Vector/Table tools
-qgis:extractnodes,USE_ORIGINAL_NAME,Vector/General tools
-qgis:fieldcalculator,USE_ORIGINAL_NAME,Vector/Table tools
-qgis:fixeddistancebuffer,USE_ORIGINAL_NAME,Vector/Geometry operations
-qgis:hublines,USE_ORIGINAL_NAME,Vector/Analysis
-qgis:intersection,USE_ORIGINAL_NAME,Vector/Overlay
-qgis:joinattributestable,USE_ORIGINAL_NAME,Vector/Table tools
-qgis:lineintersections,USE_ORIGINAL_NAME,Vector/Lines
-qgis:linestopolygons,USE_ORIGINAL_NAME,Vector/Lines
-qgis:listuniquevalues,USE_ORIGINAL_NAME,Vector/Table tools
-qgis:meancoordinates,USE_ORIGINAL_NAME,Vector/Statistics
-qgis:mergevectorlayers,USE_ORIGINAL_NAME,Vector/General tools
-qgis:multiparttosingleparts,USE_ORIGINAL_NAME,Vector/General tools
-qgis:nearestneighbouranalysis,USE_ORIGINAL_NAME,Vector/Points
-qgis:pointslayerfromtable,USE_ORIGINAL_NAME,Vector/Creation
-qgis:polygonfromlayerextent,USE_ORIGINAL_NAME,Vector/Creation
-qgis:polygonstolines,USE_ORIGINAL_NAME,Vector/Polygons
-qgis:polygoncentroids,USE_ORIGINAL_NAME,Vector/Polygons
-qgis:randomselection,USE_ORIGINAL_NAME,Vector/Selection
-qgis:randomselectionwithinsubsets,USE_ORIGINAL_NAME,Vector/Selection
-qgis:rasterlayerhistogram,USE_ORIGINAL_NAME,Raster/Statistics
-qgis:rasterlayerstatistics,USE_ORIGINAL_NAME,Raster/Statistics
-qgis:reprojectlayer,USE_ORIGINAL_NAME,Vector/General tools
-qgis:saveselectedfeatures,USE_ORIGINAL_NAME,Vector/General tools
-qgis:selectbyattribute,USE_ORIGINAL_NAME,Vector/Selection
-qgis:selectbylocation,USE_ORIGINAL_NAME,Vector/Selection
-qgis:simplifygeometries,USE_ORIGINAL_NAME,Vector/Geometry operations
-qgis:singlepartstomultipart,USE_ORIGINAL_NAME,Vector/General tools
-qgis:snappointstogrid,USE_ORIGINAL_NAME,Vector/General tools
-qgis:statisticsbycategories,USE_ORIGINAL_NAME,Vector/Statistics
-qgis:sumlinelengths,USE_ORIGINAL_NAME,Vector/Lines
-qgis:texttofloat,USE_ORIGINAL_NAME,Vector/Table tools
-qgis:union,USE_ORIGINAL_NAME,Vector/Overlay
-qgis:variabledistancebuffer,USE_ORIGINAL_NAME,Vector/Geometry operations
-qgis:vectorlayerhistogram,USE_ORIGINAL_NAME,Vector/Statistics
-qgis:vectorlayerscatterplot,USE_ORIGINAL_NAME,Vector/Statistics
-qgis:voronoipolygons,USE_ORIGINAL_NAME,Vector/Geometry operations
-saga:accumulatedcostanisotropic,USE_ORIGINAL_NAME,Domain specific/Cost analysis
-saga:accumulatedcostisotropic,USE_ORIGINAL_NAME,Domain specific/Cost analysis
-saga:addcoordinatestopoints,USE_ORIGINAL_NAME,Vector/Points
-saga:addgridvaluestopoints,USE_ORIGINAL_NAME,Raster - vector/Raster - vector operations
-saga:addgridvaluestoshapes,USE_ORIGINAL_NAME,Raster - vector/Raster - vector operations
-saga:addpolygonattributestopoints,USE_ORIGINAL_NAME,Vector/Points
-saga:aggregate,USE_ORIGINAL_NAME,Raster/Edition
-saga:aggregatepointobservations,USE_ORIGINAL_NAME,Vector/Points
-saga:aggregationindex,USE_ORIGINAL_NAME,Raster/Miscellaneous
-saga:analyticalhierarchyprocess,USE_ORIGINAL_NAME,Raster/Miscellaneous
-saga:basicterrainanalysis,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
-saga:bsplineapproximation,USE_ORIGINAL_NAME,Raster - vector/Raster -> Vector
-saga:burnstreamnetworkintodem,USE_ORIGINAL_NAME,Domain specific/Hydrology
-saga:catchmentarea,USE_ORIGINAL_NAME,Domain specific/Hydrology
-saga:cellbalance,USE_ORIGINAL_NAME,Domain specific/Hydrology
-saga:changedateformat,USE_ORIGINAL_NAME,Vector/Table tools
-saga:changedetection,USE_ORIGINAL_NAME,Raster/Analysis
-saga:changegridvalues,Reclassify (simple),Raster/Edition
-saga:changetimeformat,USE_ORIGINAL_NAME,Vector/Table tools
-saga:changevectoranalysis,USE_ORIGINAL_NAME,Raster/Analysis
-saga:channelnetwork,USE_ORIGINAL_NAME,Domain specific/Hydrology
-saga:channelnetworkanddrainagebasins,USE_ORIGINAL_NAME,Domain specific/Hydrology
-saga:clipgridwithpolygon,USE_ORIGINAL_NAME,Raster - vector/Raster - vector operations
-saga:clippointswithpolygons,USE_ORIGINAL_NAME,Vector/Overlay
-saga:closegaps,USE_ORIGINAL_NAME,Raster/General tools
-saga:closegapswithspline,USE_ORIGINAL_NAME,Raster/General tools
-saga:closeonecellgaps,USE_ORIGINAL_NAME,Raster/General tools
-saga:clusteranalysis,USE_ORIGINAL_NAME,Vector/General tools
-saga:clusteranalysisforgrids,USE_ORIGINAL_NAME,Raster/Analysis
-saga:combinegrids,USE_ORIGINAL_NAME,Raster/General tools
-saga:convergenceindex,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
-saga:convergenceindexsearchradius,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
-saga:convertdatastoragetype,USE_ORIGINAL_NAME,Raster/General tools
-saga:convertlinestopoints,USE_ORIGINAL_NAME,Vector/Lines
-saga:convertlinestopolygons,USE_ORIGINAL_NAME,Vector/Lines
-saga:convertmultipointstopoints,USE_ORIGINAL_NAME,Vector/Points
-saga:convertpointstolines,USE_ORIGINAL_NAME,Vector/Points
-saga:convertpolygonlineverticestopoints,USE_ORIGINAL_NAME,Vector/Polygons
-saga:convertpolygonstolines,USE_ORIGINAL_NAME,Vector/Polygons
-saga:converttabletopoints,USE_ORIGINAL_NAME,Vector/Table tools
-saga:coordinatetransformationgrid,USE_ORIGINAL_NAME,Raster/General tools
-saga:coordinatetransformationgridlist,USE_ORIGINAL_NAME,Raster/General tools
-saga:coordinatetransformationshapes,USE_ORIGINAL_NAME,Vector/General tools
-saga:coordinatetransformationshapeslist,USE_ORIGINAL_NAME,Vector/General tools
-saga:covereddistance,USE_ORIGINAL_NAME,Raster/Analysis
-saga:creategraticule,Create graticule from extent,Vector/Creation
-saga:croptodata,USE_ORIGINAL_NAME,Raster/General tools
-saga:crossclassificationandtabulation,USE_ORIGINAL_NAME,Raster/General tools
-saga:crossprofiles,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
-saga:cubicsplineapproximation, Interpolate (Cubic spline),Raster - vector/Vector -> Raster
-saga:curvatureclassification,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
-saga:cutshapeslayer,USE_ORIGINAL_NAME,Vector/Overlay
-saga:dailytohourlypet,USE_ORIGINAL_NAME,Domain specific/Miscellaneous
-saga:directionalaverage1,USE_ORIGINAL_NAME,Raster/Filters
-saga:directionalstatisticsforsinglegrid,USE_ORIGINAL_NAME,Raster/Statistics
-saga:distancematrix,USE_ORIGINAL_NAME,Vector/Points
-saga:diurnalanisotropicheating,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
-saga:downslopedistancegradient,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
-saga:dtmfilterslopebased,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
-saga:edgecontamination,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
-saga:effectiveairflowheights,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
-saga:enumeratetablefield,USE_ORIGINAL_NAME,Vector/Table tools
-saga:fillgapsinrecords,USE_ORIGINAL_NAME,Vector/Table tools
-saga:fillsinks,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
-saga:filterclumps,Remove small pixel clumps (to no-data),Raster/General tools
-saga:fitnpointstoshape,USE_ORIGINAL_NAME,Vector/Points
-saga:flatdetection,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
-saga:flowpathlength,USE_ORIGINAL_NAME,Domain specific/Hydrology
-saga:flowwidthandspecificcatchmentarea,USE_ORIGINAL_NAME,Domain specific/Hydrology
-saga:fractaldimensionofgridsurface,USE_ORIGINAL_NAME,Raster/Statistics
-saga:function,USE_ORIGINAL_NAME,Raster/Creation
-saga:fuzzify,USE_ORIGINAL_NAME,Raster/Analysis
-saga:fuzzyintersectionand,USE_ORIGINAL_NAME,Raster/Analysis
-saga:fuzzyunionor,USE_ORIGINAL_NAME,Raster/Analysis
-saga:gaussianfilter,USE_ORIGINAL_NAME,Raster/Filters
-saga:gaussianlandscapes,USE_ORIGINAL_NAME,Raster/Creation
-saga:geographicallyweightedmultipleregression,USE_ORIGINAL_NAME,Raster/Statistics
-saga:geographicallyweightedmultipleregressionpoints,USE_ORIGINAL_NAME,Raster/Statistics
-saga:geographicallyweightedmultipleregressionpoints/grids,USE_ORIGINAL_NAME,Raster/Statistics
-saga:geographicallyweightedregression,USE_ORIGINAL_NAME,Raster/Statistics
-saga:geographicallyweightedregressionpointsgrid,USE_ORIGINAL_NAME,Raster/Statistics
-saga:geometricfigures,USE_ORIGINAL_NAME,Vector/Miscellaneous
-saga:getshapesextents,USE_ORIGINAL_NAME,Vector/General tools
-saga:globalmoransiforgrids,USE_ORIGINAL_NAME,Domain specific/Geostatistics
-saga:gradientvectorfromcartesiantopolarcoordinates,USE_ORIGINAL_NAME,Domain specific/Cost analysis
-saga:gradientvectorfrompolartocartesiancoordinates,USE_ORIGINAL_NAME,Domain specific/Cost analysis
-saga:gradientvectorsfromdirectionalcomponents,USE_ORIGINAL_NAME,Raster - vector/Raster -> Vector
-saga:gradientvectorsfromdirectionandlength,USE_ORIGINAL_NAME,Raster - vector/Raster -> Vector
-saga:gradientvectorsfromsurface,USE_ORIGINAL_NAME,Raster - vector/Raster -> Vector
-saga:gridbuffer,USE_ORIGINAL_NAME,Raster/General tools
-saga:rastercalculator,USE_ORIGINAL_NAME,Raster/General tools
-saga:griddifference,USE_ORIGINAL_NAME,Raster/General tools
-saga:griddivision,USE_ORIGINAL_NAME,Raster/General tools
-saga:gridmasking,USE_ORIGINAL_NAME,Raster/General tools
-saga:gridnormalisation,USE_ORIGINAL_NAME,Raster/General tools
-saga:gridorientation,USE_ORIGINAL_NAME,Raster/General tools
-saga:gridproximitybuffer,USE_ORIGINAL_NAME,Raster/General tools
-saga:gridsfromclassifiedgridandtable,USE_ORIGINAL_NAME,Raster/Creation
-saga:gridshrinkexpand,USE_ORIGINAL_NAME,Raster/General tools
-saga:gridskeletonization,USE_ORIGINAL_NAME,Raster/General tools
-saga:gridsproduct,USE_ORIGINAL_NAME,Raster/General tools
-saga:gridssum,USE_ORIGINAL_NAME,Raster/General tools
-saga:gridstandardisation,USE_ORIGINAL_NAME,Raster/Edition
-saga:gridstatisticsforpolygons,USE_ORIGINAL_NAME,Raster - vector/Raster - vector statistics
-saga:gridvaluestopoints,USE_ORIGINAL_NAME,Raster - vector/Raster -> Vector
-saga:gridvaluestopointsrandomly,USE_ORIGINAL_NAME,Raster - vector/Raster -> Vector
-saga:gridvolume,USE_ORIGINAL_NAME,Raster/Miscellaneous
-saga:hypsometry,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
-saga:invertdatanodata,USE_ORIGINAL_NAME,Raster/General tools
-saga:kerneldensityestimation,USE_ORIGINAL_NAME,Raster/Statistics
-saga:lakeflood,USE_ORIGINAL_NAME,Raster/Miscellaneous
-saga:landsurfacetemperature,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
-saga:laplacianfilter,USE_ORIGINAL_NAME,Raster/Filters
-saga:layerofextremevalue,USE_ORIGINAL_NAME,Raster/General tools
-saga:leastcostpaths,USE_ORIGINAL_NAME,Domain specific/Cost analysis
-saga:line-polygonintersection,USE_ORIGINAL_NAME,Vector/Geometry operations
-saga:linedissolve,USE_ORIGINAL_NAME,Vector/Lines
-saga:lineproperties,USE_ORIGINAL_NAME,Vector/Lines
-saga:linesimplification,USE_ORIGINAL_NAME,Vector/Lines
-saga:localminimaandmaxima,USE_ORIGINAL_NAME,Raster - vector/Raster -> Vector
-saga:lsfactor,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
-saga:majorityfilter,USE_ORIGINAL_NAME,Raster/Filters
-saga:massbalanceindex,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
-saga:mergeshapeslayers,Merge vector layers,Vector/General tools
-saga:metricconversions,USE_ORIGINAL_NAME,Raster/Edition
-saga:minimumdistanceanalysis,USE_ORIGINAL_NAME,Vector/Points
-saga:modifedquadraticshepard,Interpolate (Modified quadratic shepard),Raster - vector/Vector -> Raster
-saga:morphologicalfilter,USE_ORIGINAL_NAME,Raster/Filters
-saga:morphometricprotectionindex,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
-saga:multibandvariation,USE_ORIGINAL_NAME,Raster/Analysis
-saga:multidirectionleefilter,USE_ORIGINAL_NAME,Raster/Filters
-saga:multilevelbsplineinterpolation,USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
-saga:multilevelbsplineinterpolationfromgrid,USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
-saga:multipleregressionanalysisgridgrids,USE_ORIGINAL_NAME,Raster/Statistics
-saga:multipleregressionanalysispointsgrid,USE_ORIGINAL_NAME,Raster - vector/Raster - vector statistics
-saga:multiresolutionindexofvalleybottomflatnessmrvbf,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
-saga:naturalneighbour, Interpolate (Natural neighbor),Raster - vector/Vector -> Raster
-saga:orderedweightedaveragingowa,USE_ORIGINAL_NAME,Raster/Analysis
-saga:ordinarykriging,USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
-saga:ordinarykrigingglobal,USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
-saga:overlandflowdistancetochannelnetwork,USE_ORIGINAL_NAME,Domain specific/Hydrology
-saga:overlandflowkinematicwaved8,USE_ORIGINAL_NAME,Domain specific/Hydrology
-saga:patching,USE_ORIGINAL_NAME,Raster/General tools
-saga:patternanalysis,USE_ORIGINAL_NAME,Raster/Analysis
-saga:pointsfilter,USE_ORIGINAL_NAME,Vector/Points
-saga:pointstatisticsforpolygons,USE_ORIGINAL_NAME,Raster - vector/Raster - vector statistics
-saga:pointsthinning,USE_ORIGINAL_NAME,Vector/Points
-saga:polartocartesiancoordinates,USE_ORIGINAL_NAME,Domain specific/Cost analysis
-saga:polygon-lineintersection,USE_ORIGINAL_NAME,Vector/Geometry operations
-saga:polygondissolve,USE_ORIGINAL_NAME,Vector/Polygons
-saga:polygondissolvebyattribute,Polygon dissolve (by attribute),Vector/Polygons
-saga:polygondissolveallpolygons,Polygon dissolve (all polygons),Vector/Polygons
-saga:intersect,Polygon intersection,Vector/Polygons
-saga:difference,Polygon difference,Vector/Polygons
-saga:update,Polygon update,Vector/Polygons
-saga:identity,Polygon identity,Vector/Polygons
-saga:union,Polygon union,Vector/Polygons
-saga:symmetricaldifference,Polygon symmetrical difference,Vector/Polygons
-saga:polygonpartstoseparatepolygons,USE_ORIGINAL_NAME,Vector/Polygons
-saga:polygonproperties,USE_ORIGINAL_NAME,Vector/Polygons
-saga:polygonshapeindices,USE_ORIGINAL_NAME,Vector/Polygons
-saga:polygonstoedgesandnodes,USE_ORIGINAL_NAME,Vector/Polygons
-saga:polynomialregression,USE_ORIGINAL_NAME,Raster/Statistics
-saga:polynomialtrendfromgrids,USE_ORIGINAL_NAME,Raster/Statistics
-saga:principlecomponentsanalysis,USE_ORIGINAL_NAME,Raster/Analysis
-saga:profilefrompoints,USE_ORIGINAL_NAME,Raster - vector/Raster - vector statistics
-saga:profilesfromlines,USE_ORIGINAL_NAME,Raster - vector/Raster - vector statistics
-saga:proximitygrid,USE_ORIGINAL_NAME,Raster/Analysis
-saga:pythagorastree,USE_ORIGINAL_NAME,Vector/Miscellaneous
-saga:quadtreestructuretoshapes,USE_ORIGINAL_NAME,Vector/Miscellaneous
-saga:radiusofvariancegrid,USE_ORIGINAL_NAME,Raster/Statistics
-saga:randomfield,USE_ORIGINAL_NAME,Raster/Creation
-saga:randomterraingeneration,USE_ORIGINAL_NAME,Raster/Creation
-saga:rankfilter,USE_ORIGINAL_NAME,Raster/Filters
-saga:realareacalculation,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
-saga:reclassifygridvalues,USE_ORIGINAL_NAME,Raster/Edition
-saga:regressionanalysispointsgrid,USE_ORIGINAL_NAME,Raster - vector/Raster - vector statistics
-saga:relativeheightsandslopepositions,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
-saga:removeduplicatepoints,USE_ORIGINAL_NAME,Vector/Points
-saga:representativenessgrid,USE_ORIGINAL_NAME,Domain specific/Geostatistics
-saga:resampling,USE_ORIGINAL_NAME,Raster/General tools
-saga:residualanalysisgrid,USE_ORIGINAL_NAME,Raster/Statistics
-saga:rgbcomposite,USE_ORIGINAL_NAME,Images/Image tools
-saga:runningaverage,USE_ORIGINAL_NAME,Vector/Table tools
-saga:sagawetnessindex,USE_ORIGINAL_NAME,Domain specific/Hydrology
-saga:separatepointsbydirection,USE_ORIGINAL_NAME,Vector/Points
-saga:shapesbuffer,USE_ORIGINAL_NAME,Vector/Geometry operations
-saga:simplefilter,USE_ORIGINAL_NAME,Raster/Filters
-saga:simulation,Fire spreading simulation,Domain specific/Miscellaneous
-saga:sinkdrainageroutedetection,USE_ORIGINAL_NAME,Domain specific/Hydrology
-saga:sinkremoval,USE_ORIGINAL_NAME,Domain specific/Hydrology
-saga:skyviewfactor,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
-saga:slopelength,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
-saga:sortgrid,USE_ORIGINAL_NAME,Raster/General tools
-saga:spatialpointpatternanalysis,USE_ORIGINAL_NAME,Vector/Points
-saga:splitrgbbands,USE_ORIGINAL_NAME,Images/Image tools
-saga:splitshapesbyattribute,USE_ORIGINAL_NAME,Vector/General tools
-saga:splitshapeslayer,USE_ORIGINAL_NAME,Vector/General tools
-saga:splitshapeslayercompletely,USE_ORIGINAL_NAME,Vector/General tools
-saga:splitshapeslayerrandomly,USE_ORIGINAL_NAME,Vector/General tools
-saga:statisticsforgrids,USE_ORIGINAL_NAME,Raster/Statistics
-saga:strahlerorder,USE_ORIGINAL_NAME,Domain specific/Hydrology
-saga:streampowerindex,USE_ORIGINAL_NAME,Domain specific/Hydrology
-saga:supervisedclassification,USE_ORIGINAL_NAME,Raster/Analysis
-saga:surfacespecificpoints,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
-saga:terrainruggednessindextri,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
-saga:thiessenpolygons,USE_ORIGINAL_NAME,Vector/Geometry operations
-saga:thinplatesplineglobal,USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
-saga:thinplatesplinelocal,USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
-saga:thinplatesplinetin,USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
-saga:thresholdbuffer,USE_ORIGINAL_NAME,Raster/General tools
-saga:topmodel,USE_ORIGINAL_NAME,Domain specific/Hydrology
-saga:topographiccorrection,USE_ORIGINAL_NAME,Domain specific/Viewsheds\Lighting
-saga:topographicpositionindextpi,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
-saga:topographicwetnessindextwi,USE_ORIGINAL_NAME,Domain specific/Hydrology
-saga:tpibasedlandformclassification,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
-saga:transectthroughpolygonshapefile,USE_ORIGINAL_NAME,Vector/Overlay
-saga:transformshapes,USE_ORIGINAL_NAME,Vector/Geometry operations
-saga:triangulation,USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
-saga:universalkriging,USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
-saga:universalkrigingglobal,USE_ORIGINAL_NAME,Raster - vector/Vector -> Raster
-saga:upslopearea,USE_ORIGINAL_NAME,Domain specific/Hydrology
-saga:userdefinedfilter,USE_ORIGINAL_NAME,Raster/Filters
-saga:variogramcloud,USE_ORIGINAL_NAME,Domain specific/Geostatistics
-saga:variogramsurface,USE_ORIGINAL_NAME,Domain specific/Geostatistics
-saga:vectorruggednessmeasurevrm,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
-saga:vegetationindexdistancebased,USE_ORIGINAL_NAME,Images/Image analysis
-saga:vegetationindexslopebased,USE_ORIGINAL_NAME,Images/Image analysis
-saga:verticaldistancetochannelnetwork,USE_ORIGINAL_NAME,Domain specific/Hydrology
-saga:waterretentioncapacity,USE_ORIGINAL_NAME,Domain specific/Hydrology
-saga:watershedbasins,USE_ORIGINAL_NAME,Domain specific/Hydrology
-saga:windeffectwindwardleewardindex,USE_ORIGINAL_NAME,Domain specific/Terrain analysis and geomorphometry
-saga:zonalgridstatistics,USE_ORIGINAL_NAME,Raster/Statistics
-modelertools:calculator,USE_ORIGINAL_NAME,Modeler/Modeler tools
-modelertools:rasterlayerbounds,USE_ORIGINAL_NAME,Modeler/Modeler tools
-modelertools:vectorlayerbounds,USE_ORIGINAL_NAME,Modeler/Modeler tools
+gdalogr:overviews,Raster/Creation
+gdalogr:executesql,Vector/General tools
+gdalogr:rasterinfo,Raster/General tools
+gdalogr:merge,Raster/General tools
+gdalogr:nearblack,Raster/Analysis
+gdalogr:ogr2ogr,Vector/General tools
+gdalogr:vectorinfo,Vector/Statistics
+gdalogr:pcttorgb,Images/Image Manipulation
+gdalogr:proximity,Raster/Analysis
+gdalogr:rgbtopct,Images/Image Manipulation
+gdalogr:sieve,Raster/Edition
+gdalogr:translate,Raster/General tools
+gdalogr:warpreproject,Raster/General tools
+gdalogr:slope,Domain specific/Terrain analysis and geomorphometry
+gdalogr:aspect,Domain specific/Terrain analysis and geomorphometry
+gdalogr:hillshade,Domain specific/Viewsheds\Lighting
+gdalogr:polygonize,Raster - vector/Raster -> Vector
+gdalogr:gridrasterize,Raster - vector/Vector -> Raster
+gdalogr:gridnearestneighbor,Raster - vector/Vector -> Raster
+gdalogr:griddatametrics,Raster - vector/Vector -> Raster
+gdalogr:gridinvdist,Raster - vector/Vector -> Raster
+gdalogr:gridaverage,Raster - vector/Vector -> Raster
+gdalogr:contour,Raster - vector/Raster -> Vector
+otb:bandmath,Images/Miscellaneous
+otb:binarymorphologicaloperation,Images/Image Filtering
+otb:bundletoperfectsensor,Images/Geometry
+otb:cartographictogeographiccoordinatesconversion,Images/Geometry
+otb:classificationregularization,Images/Learning
+otb:colormapping,Images/Image Manipulation
+otb:computeconfusionmatrix,Images/Learning
+otb:computeimagessecondorderstatistics,Images/Learning
+otb:computepolylinefeaturefromimage,Images/Feature Extraction
+otb:concatenate,Images/Vector Data Manipulation
+otb:connectedcomponentsegmentation,Images/Segmentation
+otb:convertsensorpointtogeographicpoint,Images/Geometry
+otb:dimensionalityreductionapplication,Images/Image Filtering
+otb:disparitymaptoelevationmap,Images/Stereo
+otb:edgeextraction,Images/Feature Extraction
+otb:edisonmeanshiftsegmentationlabeledrasteroutput,Images/Segmentation
+otb:edisonmeanshiftsegmentationlargescalevectoroutput,Images/Segmentation
+otb:extractroi,Images/Image Manipulation
+otb:fineregistration,Images/Stereo
+otb:fusionofclassifications,Images/Learning
+otb:fuzzymodelestimation,Images/Feature Extraction
+otb:grayscalemorphologicaloperation,Images/Image Filtering
+otb:gridbasedimageresampling,Images/Geometry
+otb:haralicktextureextraction,Images/Feature Extraction
+otb:hoovercomparesegmentation,Images/Segmentation
+otb:hyperspectraldataunmixing,Images/Miscellaneous
+otb:imageconversion,Images/Image Manipulation
+otb:imageenvelope,Images/Geometry
+otb:imageresamplingwitharigidtransform,Images/Geometry
+otb:imagescomparaison,Images/Miscellaneous
+otb:imagesconcatenation,Images/Image Manipulation
+otb:imagesvmclassification,Images/Learning
+otb:imagetokmzexport,Images/Miscellaneous
+otb:linesegmentdetection,Images/Feature Extraction
+otb:localstatisticextraction,Images/Feature Extraction
+otb:maximumautocorrelationfactordecomposition,Images/Image Filtering
+otb:meanshiftfiltering,Images/Image Filtering
+otb:meanshiftsegmentationlabeledrasteroutput,Images/Segmentation
+otb:meanshiftsegmentationlargescalevectoroutput,Images/Segmentation
+otb:morphologicalprofilesbasedsegmentationlabeledrasteroutput,Images/Segmentation
+otb:morphologicalprofilesbasedsegmentationlargescalevectoroutput,Images/Segmentation
+otb:multiresolutionpyramid,Images/Image Manipulation
+otb:multivariatealterationdetector,Images/Feature Extraction
+otb:obtainutmzonefromgeopoint,Images/Miscellaneous
+otb:openstreetmaplayersimportationsapplications,Images/Miscellaneous
+otb:opticalcalibration,Images/Calibration
+otb:orthorectification,Images/Geometry
+otb:pansharpening,Images/Image Manipulation
+otb:pixelvalue,Images/Miscellaneous
+otb:pixelwiseblockmatching,Images/Stereo
+otb:pixelwiseblockmatching,Images/Stereo
+otb:quicklook,Images/Image Manipulation
+otb:radiometricindices,Images/Feature Extraction
+otb:rasterization,Images/Vector Data Manipulation
+otb:readimageinformation,Images/Image Manipulation
+otb:rescaleimage,Images/Image Manipulation
+otb:sarradiometriccalibration,Images/Calibration
+otb:sfstextureextraction,Images/Feature Extraction
+otb:simpleconnectedcomponentssegmentationlabeledrasteroutput,Images/Segmentation
+otb:simpleconnectedcomponentssegmentationlargescalevectoroutput,Images/Segmentation
+otb:smoothing,Images/Image Filtering
+otb:somclassification,Images/Learning
+otb:splitimage,Images/Image Manipulation
+otb:stereorectificationdeformationgridgenerator,Images/Geometry
+otb:stereosensormodeltoelevationmap,Images/Stereo
+otb:superimposesensor,Images/Geometry
+otb:trainsvmclassifierfrommultipleimages,Images/Learning
+otb:unsupervisedkmeansimageclassification,Images/Learning
+otb:validatesvmimagesclassifier,Images/Learning
+otb:vectordataextractroi,Images/Vector Data Manipulation
+otb:vectordatareprojection,Images/Vector Data Manipulation
+otb:vectordatasetfield,Images/Vector Data Manipulation
+otb:vectordatatransformation,Images/Vector Data Manipulation
+otb:vectordatavalidation,Images/Feature Extraction
+otb:vertexcomponentanalysis,Images/Miscellaneous
+otb:watershedsegmentationlabeledrasteroutput,Images/Segmentation
+otb:watershedsegmentationlargescalevectoroutput,Images/Segmentation
+qgis:addautoincrementalfield,Vector/Table tools
+qgis:addfieldtoattributestable,Vector/Table tools
+qgis:advancedpythonfieldcalculator,Vector/Table tools
+qgis:basicstatisticsfornumericfields,Vector/Statistics
+qgis:basicstatisticsfortextfields,Vector/Statistics
+qgis:clip,Vector/Overlay
+qgis:convertgeometrytype,Vector/General tools
+qgis:convexhull,Vector/Geometry operations
+qgis:countpointsinpolygon,Vector/Statistics
+qgis:countpointsinpolygonweighted,Vector/Statistics
+qgis:countuniquepointsinpolygon,Vector/Statistics
+qgis:createequivalentnumericalfield,Vector/Table tools
+qgis:creategrid,Vector/Creation
+qgis:delaunaytriangulation,Vector/Geometry operations
+qgis:deletecolumn,Vector/Table tools
+qgis:deleteduplicategeometries,Vector/General tools
+qgis:densifygeometries,Vector/Geometry operations
+qgis:densifygeometriesgivenaninterval,Vector/Geometry operations
+qgis:difference,Vector/Overlay
+qgis:dissolve,Vector/Geometry operations
+qgis:distancetonearesthub,Vector/Analysis
+qgis:explodelines,Vector/Lines
+qgis:exportaddgeometrycolumns,Vector/Table tools
+qgis:extractnodes,Vector/General tools
+qgis:fieldcalculator,Vector/Table tools
+qgis:fixeddistancebuffer,Vector/Geometry operations
+qgis:hublines,Vector/Analysis
+qgis:intersection,Vector/Overlay
+qgis:joinattributestable,Vector/Table tools
+qgis:lineintersections,Vector/Lines
+qgis:linestopolygons,Vector/Lines
+qgis:listuniquevalues,Vector/Table tools
+qgis:meancoordinates,Vector/Statistics
+qgis:mergevectorlayers,Vector/General tools
+qgis:multiparttosingleparts,Vector/General tools
+qgis:nearestneighbouranalysis,Vector/Points
+qgis:pointslayerfromtable,Vector/Creation
+qgis:polygonfromlayerextent,Vector/Creation
+qgis:polygonstolines,Vector/Polygons
+qgis:polygoncentroids,Vector/Polygons
+qgis:randomselection,Vector/Selection
+qgis:randomselectionwithinsubsets,Vector/Selection
+qgis:rasterlayerhistogram,Raster/Statistics
+qgis:rasterlayerstatistics,Raster/Statistics
+qgis:reprojectlayer,Vector/General tools
+qgis:saveselectedfeatures,Vector/General tools
+qgis:selectbyattribute,Vector/Selection
+qgis:selectbylocation,Vector/Selection
+qgis:simplifygeometries,Vector/Geometry operations
+qgis:singlepartstomultipart,Vector/General tools
+qgis:snappointstogrid,Vector/General tools
+qgis:statisticsbycategories,Vector/Statistics
+qgis:sumlinelengths,Vector/Lines
+qgis:texttofloat,Vector/Table tools
+qgis:union,Vector/Overlay
+qgis:variabledistancebuffer,Vector/Geometry operations
+qgis:vectorlayerhistogram,Vector/Statistics
+qgis:vectorlayerscatterplot,Vector/Statistics
+qgis:voronoipolygons,Vector/Geometry operations
+saga:accumulatedcostanisotropic,Domain specific/Cost analysis
+saga:accumulatedcostisotropic,Domain specific/Cost analysis
+saga:addcoordinatestopoints,Vector/Points
+saga:addgridvaluestopoints,Raster - vector/Raster - vector operations
+saga:addgridvaluestoshapes,Raster - vector/Raster - vector operations
+saga:addpolygonattributestopoints,Vector/Points
+saga:aggregate,Raster/Edition
+saga:aggregatepointobservations,Vector/Points
+saga:aggregationindex,Raster/Miscellaneous
+saga:analyticalhierarchyprocess,Raster/Miscellaneous
+saga:basicterrainanalysis,Domain specific/Terrain analysis and geomorphometry
+saga:bsplineapproximation,Raster - vector/Raster -> Vector
+saga:burnstreamnetworkintodem,Domain specific/Hydrology
+saga:catchmentarea,Domain specific/Hydrology
+saga:cellbalance,Domain specific/Hydrology
+saga:changedateformat,Vector/Table tools
+saga:changedetection,Raster/Analysis
+saga:changegridvalues,Raster/Edition
+saga:changetimeformat,Vector/Table tools
+saga:changevectoranalysis,Raster/Analysis
+saga:channelnetwork,Domain specific/Hydrology
+saga:channelnetworkanddrainagebasins,Domain specific/Hydrology
+saga:clipgridwithpolygon,Raster - vector/Raster - vector operations
+saga:clippointswithpolygons,Vector/Overlay
+saga:closegaps,Raster/General tools
+saga:closegapswithspline,Raster/General tools
+saga:closeonecellgaps,Raster/General tools
+saga:clusteranalysis,Vector/General tools
+saga:clusteranalysisforgrids,Raster/Analysis
+saga:combinegrids,Raster/General tools
+saga:convergenceindex,Domain specific/Terrain analysis and geomorphometry
+saga:convergenceindexsearchradius,Domain specific/Terrain analysis and geomorphometry
+saga:convertdatastoragetype,Raster/General tools
+saga:convertlinestopoints,Vector/Lines
+saga:convertlinestopolygons,Vector/Lines
+saga:convertmultipointstopoints,Vector/Points
+saga:convertpointstolines,Vector/Points
+saga:convertpolygonlineverticestopoints,Vector/Polygons
+saga:convertpolygonstolines,Vector/Polygons
+saga:converttabletopoints,Vector/Table tools
+saga:coordinatetransformationgrid,Raster/General tools
+saga:coordinatetransformationgridlist,Raster/General tools
+saga:coordinatetransformationshapes,Vector/General tools
+saga:coordinatetransformationshapeslist,Vector/General tools
+saga:covereddistance,Raster/Analysis
+saga:creategraticule,Vector/Creation
+saga:croptodata,Raster/General tools
+saga:crossclassificationandtabulation,Raster/General tools
+saga:crossprofiles,Domain specific/Terrain analysis and geomorphometry
+saga:cubicsplineapproximation,Raster - vector/Vector -> Raster
+saga:curvatureclassification,Domain specific/Terrain analysis and geomorphometry
+saga:cutshapeslayer,Vector/Overlay
+saga:dailytohourlypet,Domain specific/Miscellaneous
+saga:directionalaverage1,Raster/Filters
+saga:directionalstatisticsforsinglegrid,Raster/Statistics
+saga:distancematrix,Vector/Points
+saga:diurnalanisotropicheating,Domain specific/Terrain analysis and geomorphometry
+saga:downslopedistancegradient,Domain specific/Terrain analysis and geomorphometry
+saga:dtmfilterslopebased,Domain specific/Terrain analysis and geomorphometry
+saga:edgecontamination,Domain specific/Terrain analysis and geomorphometry
+saga:effectiveairflowheights,Domain specific/Terrain analysis and geomorphometry
+saga:enumeratetablefield,Vector/Table tools
+saga:fillgapsinrecords,Vector/Table tools
+saga:fillsinks,Domain specific/Terrain analysis and geomorphometry
+saga:filterclumps,Raster/General tools
+saga:fitnpointstoshape,Vector/Points
+saga:flatdetection,Domain specific/Terrain analysis and geomorphometry
+saga:flowpathlength,Domain specific/Hydrology
+saga:flowwidthandspecificcatchmentarea,Domain specific/Hydrology
+saga:fractaldimensionofgridsurface,Raster/Statistics
+saga:function,Raster/Creation
+saga:fuzzify,Raster/Analysis
+saga:fuzzyintersectionand,Raster/Analysis
+saga:fuzzyunionor,Raster/Analysis
+saga:gaussianfilter,Raster/Filters
+saga:gaussianlandscapes,Raster/Creation
+saga:geographicallyweightedmultipleregression,Raster/Statistics
+saga:geographicallyweightedmultipleregressionpoints,Raster/Statistics
+saga:geographicallyweightedmultipleregressionpoints/grids,Raster/Statistics
+saga:geographicallyweightedregression,Raster/Statistics
+saga:geographicallyweightedregressionpointsgrid,Raster/Statistics
+saga:geometricfigures,Vector/Miscellaneous
+saga:getshapesextents,Vector/General tools
+saga:globalmoransiforgrids,Domain specific/Geostatistics
+saga:gradientvectorfromcartesiantopolarcoordinates,Domain specific/Cost analysis
+saga:gradientvectorfrompolartocartesiancoordinates,Domain specific/Cost analysis
+saga:gradientvectorsfromdirectionalcomponents,Raster - vector/Raster -> Vector
+saga:gradientvectorsfromdirectionandlength,Raster - vector/Raster -> Vector
+saga:gradientvectorsfromsurface,Raster - vector/Raster -> Vector
+saga:gridbuffer,Raster/General tools
+saga:rastercalculator,Raster/General tools
+saga:griddifference,Raster/General tools
+saga:griddivision,Raster/General tools
+saga:gridmasking,Raster/General tools
+saga:gridnormalisation,Raster/General tools
+saga:gridorientation,Raster/General tools
+saga:gridproximitybuffer,Raster/General tools
+saga:gridsfromclassifiedgridandtable,Raster/Creation
+saga:gridshrinkexpand,Raster/General tools
+saga:gridskeletonization,Raster/General tools
+saga:gridsproduct,Raster/General tools
+saga:gridssum,Raster/General tools
+saga:gridstandardisation,Raster/Edition
+saga:gridstatisticsforpolygons,Raster - vector/Raster - vector statistics
+saga:gridvaluestopoints,Raster - vector/Raster -> Vector
+saga:gridvaluestopointsrandomly,Raster - vector/Raster -> Vector
+saga:gridvolume,Raster/Miscellaneous
+saga:hypsometry,Domain specific/Terrain analysis and geomorphometry
+saga:invertdatanodata,Raster/General tools
+saga:kerneldensityestimation,Raster/Statistics
+saga:lakeflood,Raster/Miscellaneous
+saga:landsurfacetemperature,Domain specific/Terrain analysis and geomorphometry
+saga:laplacianfilter,Raster/Filters
+saga:layerofextremevalue,Raster/General tools
+saga:leastcostpaths,Domain specific/Cost analysis
+saga:line-polygonintersection,Vector/Geometry operations
+saga:linedissolve,Vector/Lines
+saga:lineproperties,Vector/Lines
+saga:linesimplification,Vector/Lines
+saga:localminimaandmaxima,Raster - vector/Raster -> Vector
+saga:lsfactor,Domain specific/Terrain analysis and geomorphometry
+saga:majorityfilter,Raster/Filters
+saga:massbalanceindex,Domain specific/Terrain analysis and geomorphometry
+saga:mergeshapeslayers,Vector/General tools
+saga:metricconversions,Raster/Edition
+saga:minimumdistanceanalysis,Vector/Points
+saga:modifedquadraticshepard,Raster - vector/Vector -> Raster
+saga:morphologicalfilter,Raster/Filters
+saga:morphometricprotectionindex,Domain specific/Terrain analysis and geomorphometry
+saga:multibandvariation,Raster/Analysis
+saga:multidirectionleefilter,Raster/Filters
+saga:multilevelbsplineinterpolation,Raster - vector/Vector -> Raster
+saga:multilevelbsplineinterpolationfromgrid,Raster - vector/Vector -> Raster
+saga:multipleregressionanalysisgridgrids,Raster/Statistics
+saga:multipleregressionanalysispointsgrid,Raster - vector/Raster - vector statistics
+saga:multiresolutionindexofvalleybottomflatnessmrvbf,Domain specific/Terrain analysis and geomorphometry
+saga:naturalneighbour,Raster - vector/Vector -> Raster
+saga:orderedweightedaveragingowa,Raster/Analysis
+saga:ordinarykriging,Raster - vector/Vector -> Raster
+saga:ordinarykrigingglobal,Raster - vector/Vector -> Raster
+saga:overlandflowdistancetochannelnetwork,Domain specific/Hydrology
+saga:overlandflowkinematicwaved8,Domain specific/Hydrology
+saga:patching,Raster/General tools
+saga:patternanalysis,Raster/Analysis
+saga:pointsfilter,Vector/Points
+saga:pointstatisticsforpolygons,Raster - vector/Raster - vector statistics
+saga:pointsthinning,Vector/Points
+saga:polartocartesiancoordinates,Domain specific/Cost analysis
+saga:polygon-lineintersection,Vector/Geometry operations
+saga:polygondissolve,Vector/Polygons
+saga:polygondissolvebyattribute,Vector/Polygons
+saga:polygondissolveallpolygons,Vector/Polygons
+saga:intersect,Vector/Polygons
+saga:difference,Vector/Polygons
+saga:update,Vector/Polygons
+saga:identity,Vector/Polygons
+saga:union,Vector/Polygons
+saga:symmetricaldifference,Vector/Polygons
+saga:polygonpartstoseparatepolygons,Vector/Polygons
+saga:polygonproperties,Vector/Polygons
+saga:polygonshapeindices,Vector/Polygons
+saga:polygonstoedgesandnodes,Vector/Polygons
+saga:polynomialregression,Raster/Statistics
+saga:polynomialtrendfromgrids,Raster/Statistics
+saga:principlecomponentsanalysis,Raster/Analysis
+saga:profilefrompoints,Raster - vector/Raster - vector statistics
+saga:profilesfromlines,Raster - vector/Raster - vector statistics
+saga:proximitygrid,Raster/Analysis
+saga:pythagorastree,Vector/Miscellaneous
+saga:quadtreestructuretoshapes,Vector/Miscellaneous
+saga:radiusofvariancegrid,Raster/Statistics
+saga:randomfield,Raster/Creation
+saga:randomterraingeneration,Raster/Creation
+saga:rankfilter,Raster/Filters
+saga:realareacalculation,Domain specific/Terrain analysis and geomorphometry
+saga:reclassifygridvalues,Raster/Edition
+saga:regressionanalysispointsgrid,Raster - vector/Raster - vector statistics
+saga:relativeheightsandslopepositions,Domain specific/Terrain analysis and geomorphometry
+saga:removeduplicatepoints,Vector/Points
+saga:representativenessgrid,Domain specific/Geostatistics
+saga:resampling,Raster/General tools
+saga:residualanalysisgrid,Raster/Statistics
+saga:rgbcomposite,Images/Image tools
+saga:runningaverage,Vector/Table tools
+saga:sagawetnessindex,Domain specific/Hydrology
+saga:separatepointsbydirection,Vector/Points
+saga:shapesbuffer,Vector/Geometry operations
+saga:simplefilter,Raster/Filters
+saga:simulation,Domain specific/Miscellaneous
+saga:sinkdrainageroutedetection,Domain specific/Hydrology
+saga:sinkremoval,Domain specific/Hydrology
+saga:skyviewfactor,Domain specific/Terrain analysis and geomorphometry
+saga:slopelength,Domain specific/Terrain analysis and geomorphometry
+saga:sortgrid,Raster/General tools
+saga:spatialpointpatternanalysis,Vector/Points
+saga:splitrgbbands,Images/Image tools
+saga:splitshapesbyattribute,Vector/General tools
+saga:splitshapeslayer,Vector/General tools
+saga:splitshapeslayercompletely,Vector/General tools
+saga:splitshapeslayerrandomly,Vector/General tools
+saga:statisticsforgrids,Raster/Statistics
+saga:strahlerorder,Domain specific/Hydrology
+saga:streampowerindex,Domain specific/Hydrology
+saga:supervisedclassification,Raster/Analysis
+saga:surfacespecificpoints,Domain specific/Terrain analysis and geomorphometry
+saga:terrainruggednessindextri,Domain specific/Terrain analysis and geomorphometry
+saga:thiessenpolygons,Vector/Geometry operations
+saga:thinplatesplineglobal,Raster - vector/Vector -> Raster
+saga:thinplatesplinelocal,Raster - vector/Vector -> Raster
+saga:thinplatesplinetin,Raster - vector/Vector -> Raster
+saga:thresholdbuffer,Raster/General tools
+saga:topmodel,Domain specific/Hydrology
+saga:topographiccorrection,Domain specific/Viewsheds\Lighting
+saga:topographicpositionindextpi,Domain specific/Terrain analysis and geomorphometry
+saga:topographicwetnessindextwi,Domain specific/Hydrology
+saga:tpibasedlandformclassification,Domain specific/Terrain analysis and geomorphometry
+saga:transectthroughpolygonshapefile,Vector/Overlay
+saga:transformshapes,Vector/Geometry operations
+saga:triangulation,Raster - vector/Vector -> Raster
+saga:universalkriging,Raster - vector/Vector -> Raster
+saga:universalkrigingglobal,Raster - vector/Vector -> Raster
+saga:upslopearea,Domain specific/Hydrology
+saga:userdefinedfilter,Raster/Filters
+saga:variogramcloud,Domain specific/Geostatistics
+saga:variogramsurface,Domain specific/Geostatistics
+saga:vectorruggednessmeasurevrm,Domain specific/Terrain analysis and geomorphometry
+saga:vegetationindexdistancebased,Images/Image analysis
+saga:vegetationindexslopebased,Images/Image analysis
+saga:verticaldistancetochannelnetwork,Domain specific/Hydrology
+saga:waterretentioncapacity,Domain specific/Hydrology
+saga:watershedbasins,Domain specific/Hydrology
+saga:windeffectwindwardleewardindex,Domain specific/Terrain analysis and geomorphometry
+saga:zonalgridstatistics,Raster/Statistics
+modelertools:calculator,Modeler/Modeler tools
+modelertools:rasterlayerbounds,Modeler/Modeler tools
+modelertools:vectorlayerbounds,Modeler/Modeler tools
