@@ -156,6 +156,15 @@ class RAlgorithm(GeoAlgorithm):
         elif tokens[1].lower().strip() == 'vector':
             param = ParameterVector(tokens[0], desc,
                                     [ParameterVector.VECTOR_TYPE_ANY])
+        elif tokens[1].lower().strip() == 'vector point':
+            param = ParameterVector(tokens[0], desc,
+                                    [ParameterVector.VECTOR_TYPE_POINT])
+        elif tokens[1].lower().strip() == 'vector line':
+            param = ParameterVector(tokens[0], desc,
+                                    [ParameterVector.VECTOR_TYPE_LINE])
+        elif tokens[1].lower().strip() == 'vector polygon':
+            param = ParameterVector(tokens[0], desc,
+                                    [ParameterVector.VECTOR_TYPE_POLYGON])
         elif tokens[1].lower().strip() == 'table':
             param = ParameterTable(tokens[0], desc, False)
         elif tokens[1].lower().strip().startswith('multiple raster'):
@@ -197,6 +206,9 @@ class RAlgorithm(GeoAlgorithm):
         elif tokens[1].lower().strip().startswith('string'):
             default = tokens[1].strip()[len('string') + 1:]
             param = ParameterString(tokens[0], desc, default)
+        elif tokens[1].lower().strip().startswith('longstring'):
+            default = tokens[1].strip()[len('longstring') + 1:]
+            param = ParameterString(tokens[0], desc, default, multiline=True)
         elif tokens[1].lower().strip().startswith('output raster'):
             out = OutputRaster()
         elif tokens[1].lower().strip().startswith('output vector'):
