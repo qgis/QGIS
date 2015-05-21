@@ -38,6 +38,7 @@ email                : morb at ozemail dot com dot au
 
 #include "qgsmulticurvev2.h"
 #include "qgsmultipointv2.h"
+#include "qgsmultipolygonv2.h"
 #include "qgsmultisurfacev2.h"
 #include "qgspointv2.h"
 #include "qgspolygonv2.h"
@@ -1017,18 +1018,18 @@ QgsMultiPoint QgsGeometry::asMultiPoint() const
 
 QgsMultiPolyline QgsGeometry::asMultiPolyline() const
 {
-  if ( !d || !d->geometry || d->geometry->geometryType() != "MultiCurve" )
+  if ( !d || !d->geometry )
   {
     return QgsMultiPolyline();
   }
 
-  QgsMultiCurveV2* multiCurve = dynamic_cast<QgsMultiCurveV2*>( d->geometry );
-  if ( !multiCurve )
+  QgsGeometryCollectionV2* geomCollection = dynamic_cast<QgsGeometryCollectionV2*>( d->geometry );
+  if ( !geomCollection )
   {
     return QgsMultiPolyline();
   }
 
-  int nLines = multiCurve->numGeometries();
+  int nLines = geomCollection->numGeometries();
   if ( nLines < 1 )
   {
     return QgsMultiPolyline();
@@ -1037,20 +1038,28 @@ QgsMultiPolyline QgsGeometry::asMultiPolyline() const
   QgsMultiPolyline mpl;
   for ( int i = 0; i < nLines; ++i )
   {
-    QgsCurveV2* curve = dynamic_cast<QgsCurveV2*>( multiCurve->geometryN( i ) );
-    if ( !curve )
+    bool deleteLine = false;
+    const QgsLineStringV2* line = dynamic_cast<const QgsLineStringV2*>( geomCollection->geometryN( i ) );
+    if ( !line )
     {
-      continue;
+      const QgsCurveV2* curve = dynamic_cast<const QgsCurveV2*>( geomCollection->geometryN( i ) );
+      if ( !curve )
+      {
+        continue;
+      }
+      deleteLine = true;
+      line = curve->curveToLine();
     }
-    QgsLineStringV2* linestring = curve->curveToLine();
-    if ( linestring )
+
+    QList< QgsPointV2 > lineCoords;
+    line->points( lineCoords );
+    QgsPolyline polyLine;
+    convertToPolyline( lineCoords, polyLine );
+    mpl.append( polyLine );
+
+    if ( deleteLine )
     {
-      QList< QgsPointV2 > lineCoords;
-      linestring->points( lineCoords );
-      delete linestring;
-      QgsPolyline polyLine;
-      convertToPolyline( lineCoords, polyLine );
-      mpl.append( polyLine );
+      delete line;
     }
   }
   return mpl;
@@ -1058,18 +1067,18 @@ QgsMultiPolyline QgsGeometry::asMultiPolyline() const
 
 QgsMultiPolygon QgsGeometry::asMultiPolygon() const
 {
-  if ( !d || !d->geometry || d->geometry->geometryType() != "MultiSurface" )
+  if ( !d || !d->geometry )
   {
     return QgsMultiPolygon();
   }
 
-  QgsMultiSurfaceV2* multiSurface = dynamic_cast<QgsMultiSurfaceV2*>( d->geometry );
-  if ( !multiSurface )
+  QgsGeometryCollectionV2* geomCollection = dynamic_cast<QgsGeometryCollectionV2*>( d->geometry );
+  if ( !geomCollection )
   {
     return QgsMultiPolygon();
   }
 
-  int nPolygons = multiSurface->numGeometries();
+  int nPolygons = geomCollection->numGeometries();
   if ( nPolygons < 1 )
   {
     return QgsMultiPolygon();
@@ -1078,15 +1087,22 @@ QgsMultiPolygon QgsGeometry::asMultiPolygon() const
   QgsMultiPolygon mp;
   for ( int i = 0; i < nPolygons; ++i )
   {
-    QgsCurvePolygonV2* curvePolygon = dynamic_cast<QgsCurvePolygonV2*>( multiSurface->geometryN( i ) );
-    if ( !curvePolygon )
+    const QgsPolygonV2* polygon = dynamic_cast<const QgsPolygonV2*>( geomCollection->geometryN( i ) );
+    if ( !polygon )
     {
-      continue;
+      const QgsCurvePolygonV2* cPolygon = dynamic_cast<const QgsCurvePolygonV2*>( geomCollection->geometryN( i ) );
+      if ( cPolygon )
+      {
+        polygon = cPolygon->toPolygon();
+      }
+      else
+      {
+        continue;
+      }
     }
-    QgsPolygonV2* polygon = curvePolygon->toPolygon();
+
     QgsPolygon poly;
     convertPolygon( *polygon, poly );
-    delete polygon;
     mp.append( poly );
   }
   return mp;

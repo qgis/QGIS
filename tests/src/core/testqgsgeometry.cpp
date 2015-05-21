@@ -418,31 +418,31 @@ void TestQgsGeometry::intersectionCheck2()
 
 void TestQgsGeometry::translateCheck1()
 {
-  QString wkt = "LINESTRING(0 0, 10 0, 10 10)";
+  QString wkt = "LineString (0 0, 10 0, 10 10)";
   QScopedPointer<QgsGeometry> geom( QgsGeometry::fromWkt( wkt ) );
   geom->translate( 10, -5 );
   QString obtained = geom->exportToWkt();
-  QString expected = "LINESTRING(10 -5, 20 -5, 20 5)";
+  QString expected = "LineString (10 -5, 20 -5, 20 5)";
   QCOMPARE( obtained, expected );
   geom->translate( -10, 5 );
   obtained = geom->exportToWkt();
   QCOMPARE( obtained, wkt );
 
-  wkt = "POLYGON((-2 4,-2 -10,2 3,-2 4),(1 1,-1 1,-1 -1,1 1))";
+  wkt = "Polygon ((-2 4, -2 -10, 2 3, -2 4),(1 1, -1 1, -1 -1, 1 1))";
   geom.reset( QgsGeometry::fromWkt( wkt ) );
   geom->translate( -2, 10 );
   obtained = geom->exportToWkt();
-  expected = "POLYGON((-4 14,-4 0,0 13,-4 14),(-1 11,-3 11,-3 9,-1 11))";
+  expected = "Polygon ((-4 14, -4 0, 0 13, -4 14),(-1 11, -3 11, -3 9, -1 11))";
   QCOMPARE( obtained, expected );
   geom->translate( 2, -10 );
   obtained = geom->exportToWkt();
   QCOMPARE( obtained, wkt );
 
-  wkt = "POINT(40 50)";
+  wkt = "Point (40 50)";
   geom.reset( QgsGeometry::fromWkt( wkt ) );
   geom->translate( -2, 10 );
   obtained = geom->exportToWkt();
-  expected = "POINT(38 60)";
+  expected = "Point (38 60)";
   QCOMPARE( obtained, expected );
   geom->translate( 2, -10 );
   obtained = geom->exportToWkt();
@@ -452,37 +452,37 @@ void TestQgsGeometry::translateCheck1()
 
 void TestQgsGeometry::rotateCheck1()
 {
-  QString wkt = "LINESTRING(0 0, 10 0, 10 10)";
+  QString wkt = "LineString (0 0, 10 0, 10 10)";
   QScopedPointer<QgsGeometry> geom( QgsGeometry::fromWkt( wkt ) );
   geom->rotate( 90, QgsPoint( 0, 0 ) );
   QString obtained = geom->exportToWkt();
-  QString expected = "LINESTRING(0 0, 0 -10, 10 -10)";
+  QString expected = "LineString (0 0, 0 -10, 10 -10)";
   QCOMPARE( obtained, expected );
   geom->rotate( -90, QgsPoint( 0, 0 ) );
   obtained = geom->exportToWkt();
   QCOMPARE( obtained, wkt );
 
-  wkt = "POLYGON((-2 4,-2 -10,2 3,-2 4),(1 1,-1 1,-1 -1,1 1))";
+  wkt = "Polygon ((-2 4, -2 -10, 2 3, -2 4),(1 1, -1 1, -1 -1, 1 1))";
   geom.reset( QgsGeometry::fromWkt( wkt ) );
   geom->rotate( 90, QgsPoint( 0, 0 ) );
   obtained = geom->exportToWkt();
-  expected = "POLYGON((4 2,-10 2,3 -2,4 2),(1 -1,1 1,-1 1,1 -1))";
+  expected = "Polygon ((4 2, -10 2, 3 -2, 4 2),(1 -1, 1 1, -1 1, 1 -1))";
   QCOMPARE( obtained, expected );
   geom->rotate( -90, QgsPoint( 0, 0 ) );
   obtained = geom->exportToWkt();
   QCOMPARE( obtained, wkt );
 
-  wkt = "POINT(40 50)";
+  wkt = "Point (40 50)";
   geom.reset( QgsGeometry::fromWkt( wkt ) );
   geom->rotate( 90, QgsPoint( 0, 0 ) );
   obtained = geom->exportToWkt();
-  expected = "POINT(50 -40)";
+  expected = "Point (50 -40)";
   QCOMPARE( obtained, expected );
   geom->rotate( -90, QgsPoint( 0, 0 ) );
   obtained = geom->exportToWkt();
   QCOMPARE( obtained, wkt );
   geom->rotate( 180, QgsPoint( 40, 0 ) );
-  expected = "POINT(40 -50)";
+  expected = "Point (40 -50)";
   obtained = geom->exportToWkt();
   QCOMPARE( obtained, expected );
   geom->rotate( 180, QgsPoint( 40, 0 ) ); // round-trip
@@ -555,7 +555,7 @@ void TestQgsGeometry::bufferCheck()
 void TestQgsGeometry::smoothCheck()
 {
   //can't smooth a point
-  QString wkt = "POINT(40 50)";
+  QString wkt = "Point (40 50)";
   QScopedPointer<QgsGeometry> geom( QgsGeometry::fromWkt( wkt ) );
   QgsGeometry* result = geom->smooth( 1, 0.25 );
   QString obtained = result->exportToWkt();
@@ -563,7 +563,7 @@ void TestQgsGeometry::smoothCheck()
   QCOMPARE( obtained, wkt );
 
   //linestring
-  wkt = "LINESTRING(0 0, 10 0, 10 10, 20 10)";
+  wkt = "LineString(0 0, 10 0, 10 10, 20 10)";
   geom.reset( QgsGeometry::fromWkt( wkt ) );
   result = geom->smooth( 1, 0.25 );
   QgsPolyline line = result->asPolyline();
@@ -573,7 +573,7 @@ void TestQgsGeometry::smoothCheck()
   << QgsPoint( 10.0, 7.5 ) << QgsPoint( 12.5, 10.0 ) << QgsPoint( 20.0, 10.0 );
   QVERIFY( QgsGeometry::compare( line, expectedLine ) );
 
-  wkt = "MULTILINESTRING((0 0, 10 0, 10 10, 20 10),(30 30, 40 30, 40 40, 50 40))";
+  wkt = "MultiLineString ((0 0, 10 0, 10 10, 20 10),(30 30, 40 30, 40 40, 50 40))";
   geom.reset( QgsGeometry::fromWkt( wkt ) );
   result = geom->smooth( 1, 0.25 );
   QgsMultiPolyline multiLine = result->asMultiPolyline();
@@ -586,7 +586,7 @@ void TestQgsGeometry::smoothCheck()
   QVERIFY( QgsGeometry::compare( multiLine, expectedMultiline ) );
 
   //polygon
-  wkt = "POLYGON((0 0, 10 0, 10 10, 0 10, 0 0 ),(2 2, 4 2, 4 4, 2 4, 2 2))";
+  wkt = "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0 ),(2 2, 4 2, 4 4, 2 4, 2 2))";
   geom.reset( QgsGeometry::fromWkt( wkt ) );
   result = geom->smooth( 1, 0.25 );
   QgsPolygon poly = result->asPolygon();
@@ -601,7 +601,7 @@ void TestQgsGeometry::smoothCheck()
   QVERIFY( QgsGeometry::compare( poly, expectedPolygon ) );
 
   //multipolygon
-  wkt = "MULTIPOLYGON(((0 0, 10 0, 10 10, 0 10, 0 0 )),((2 2, 4 2, 4 4, 2 4, 2 2)))";
+  wkt = "MultiPolygon (((0 0, 10 0, 10 10, 0 10, 0 0 )),((2 2, 4 2, 4 4, 2 4, 2 2)))";
   geom.reset( QgsGeometry::fromWkt( wkt ) );
   result = geom->smooth( 1, 0.1 );
   QgsMultiPolygon multipoly = result->asMultiPolygon();

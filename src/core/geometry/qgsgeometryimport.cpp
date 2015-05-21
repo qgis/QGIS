@@ -119,7 +119,7 @@ QgsAbstractGeometryV2* QgsGeometryImport::geomFromWkt( const QString& text )
   }
   else if ( text.startsWith( "MultiLineString", Qt::CaseInsensitive ) )
   {
-    geom = new QgsMultiCurveV2();
+    geom = new QgsMultiLineStringV2();
   }
   else if ( text.startsWith( "MultiSurface", Qt::CaseInsensitive ) )
   {
@@ -165,7 +165,12 @@ QgsAbstractGeometryV2* QgsGeometryImport::fromPolyline( const QgsPolyline& polyl
 
 QgsAbstractGeometryV2* QgsGeometryImport::fromMultiPolyline( const QgsMultiPolyline& multiline )
 {
-  return 0; //todo...
+  QgsMultiLineStringV2* mLine = new QgsMultiLineStringV2();
+  for ( int i = 0; i < multiline.size(); ++i )
+  {
+    mLine->addGeometry( fromPolyline( multiline.at( i ) ) );
+  }
+  return mLine;
 }
 
 QgsAbstractGeometryV2* QgsGeometryImport::fromPolygon( const QgsPolygon& polygon )
@@ -190,12 +195,27 @@ QgsAbstractGeometryV2* QgsGeometryImport::fromPolygon( const QgsPolygon& polygon
 
 QgsAbstractGeometryV2* QgsGeometryImport::fromMultiPolygon( const QgsMultiPolygon& multipoly )
 {
-  return 0; //todo...
+  QgsMultiPolygonV2* mp = new QgsMultiPolygonV2();
+  for ( int i = 0; i < multipoly.size(); ++i )
+  {
+    mp->addGeometry( fromPolygon( multipoly.at( i ) ) );
+  }
+  return mp;
 }
 
 QgsAbstractGeometryV2* QgsGeometryImport::fromRect( const QgsRectangle& rect )
 {
-  return 0; //todo...
+  QgsPolyline ring;
+  ring.append( QgsPoint( rect.xMinimum(), rect.yMinimum() ) );
+  ring.append( QgsPoint( rect.xMaximum(), rect.yMinimum() ) );
+  ring.append( QgsPoint( rect.xMaximum(), rect.yMaximum() ) );
+  ring.append( QgsPoint( rect.xMinimum(), rect.yMaximum() ) );
+  ring.append( QgsPoint( rect.xMinimum(), rect.yMinimum() ) );
+
+  QgsPolygon polygon;
+  polygon.append( ring );
+
+  return fromPolygon( polygon );
 }
 
 QgsLineStringV2* QgsGeometryImport::linestringFromPolyline( const QgsPolyline& polyline )
