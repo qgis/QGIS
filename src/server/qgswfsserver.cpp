@@ -760,6 +760,12 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
   {
     mPropertyName = pnIt.value();
   }
+  mGeometryName = "";
+  QMap<QString, QString>::const_iterator gnIt = mParameters.find( "GEOMETRYNAME" );
+  if ( gnIt != mParameters.end() )
+  {
+    mGeometryName = gnIt.value().toUpper();
+  }
 
   mTypeNames = mTypeName.split( "," );
   foreach ( const QString &tnStr, mTypeNames )
@@ -1683,7 +1689,7 @@ QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, int prec, QgsCoord
   fStr += ",\n";
 
   QgsGeometry* geom = feat->geometry();
-  if ( geom && mWithGeom )
+  if ( geom && mWithGeom && mGeometryName != "NONE" )
   {
     QgsRectangle box = geom->boundingBox();
 
@@ -1747,7 +1753,7 @@ QDomElement QgsWFSServer::createFeatureGML2( QgsFeature* feat, QDomDocument& doc
   typeNameElement.setAttribute( "fid", mTypeName + "." + QString::number( feat->id() ) );
   featureElement.appendChild( typeNameElement );
 
-  if ( mWithGeom )
+  if ( mWithGeom && mGeometryName != "NONE" )
   {
     //add geometry column (as gml)
     QgsGeometry* geom = feat->geometry();
@@ -1806,7 +1812,7 @@ QDomElement QgsWFSServer::createFeatureGML3( QgsFeature* feat, QDomDocument& doc
   typeNameElement.setAttribute( "gml:id", mTypeName + "." + QString::number( feat->id() ) );
   featureElement.appendChild( typeNameElement );
 
-  if ( mWithGeom )
+  if ( mWithGeom && mGeometryName != "NONE" )
   {
     //add geometry column (as gml)
     QgsGeometry* geom = feat->geometry();

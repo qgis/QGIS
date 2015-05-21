@@ -95,6 +95,7 @@ class QgsWFSServer: public QgsOWSServer
     /* The list of Feature's Type requested */
     QStringList mTypeNames;
     QString mPropertyName;
+    QString mGeometryName;
     bool mWithGeom;
     /* Error messages */
     QStringList mErrors;
