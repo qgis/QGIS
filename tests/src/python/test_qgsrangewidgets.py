@@ -76,8 +76,6 @@ class TestQgsRangeWidget(TestCase):
         rangewidget.setValue(0)
         assert rangewidget.value() == 0
 
-        rangewidget = None
-    
 
     def test_range_widget_no_null(self):
         """
