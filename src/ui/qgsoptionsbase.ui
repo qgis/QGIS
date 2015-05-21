@@ -310,7 +310,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>635</width>
+                <width>610</width>
                 <height>635</height>
                </rect>
               </property>
@@ -600,13 +600,6 @@
                   </item>
                   <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_32">
-                    <item>
-                     <widget class="QCheckBox" name="mCustomSideBarSide">
-                      <property name="text">
-                       <string>Custom side bar style</string>
-                      </property>
-                     </widget>
-                    </item>
                     <item>
                      <widget class="QCheckBox" name="cbxCanvasRotation">
                       <property name="text">
@@ -4929,7 +4922,6 @@
   <tabstop>mCustomGroupBoxChkBx</tabstop>
   <tabstop>mNativeColorDialogsChkBx</tabstop>
   <tabstop>mLiveColorDialogsChkBx</tabstop>
-  <tabstop>mCustomSideBarSide</tabstop>
   <tabstop>cbxCanvasRotation</tabstop>
   <tabstop>mProjectOnLaunchCmbBx</tabstop>
   <tabstop>mProjectOnLaunchLineEdit</tabstop>

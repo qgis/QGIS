@@ -103,11 +103,6 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     /** Slot to set whether to use custom group boxes */
     void on_mCustomGroupBoxChkBx_clicked( bool chkd );
 
-    /** Slot to set whether to use custom side bar style
-      * @note added in QGIS 2.2
-      */
-    void on_mCustomSideBarSide_clicked( bool chkd );
-
     void on_mProxyTypeComboBox_currentIndexChanged( int idx );
 
     /**Add a new URL to exclude from Proxy*/

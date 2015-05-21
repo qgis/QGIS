@@ -89,8 +89,6 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
   bool gbxCustom = ( mMacStyle ? true : false );
   opts.insert( "groupBoxCustom", settings.value( "groupBoxCustom", QVariant( gbxCustom ) ) );
 
-  opts.insert( "sidebarStyle", settings.value( "sidebarStyle", true ) );
-
   settings.endGroup(); // "qgis/stylesheet"
 
   return opts;
@@ -115,8 +113,6 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant>& opts )
   // QGroupBox and QgsCollapsibleGroupBox, mostly for Ubuntu and Mac
   bool gbxCustom = opts.value( "groupBoxCustom" ).toBool();
   QgsDebugMsg( QString( "groupBoxCustom: %1" ).arg( gbxCustom ) );
-
-  bool sidebar = opts.value( "sidebarStyle" ).toBool();
 
   ss += "QGroupBox{";
   // doesn't work for QGroupBox::title
@@ -151,31 +147,21 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant>& opts )
     ss += "} ";
   }
 
-  if ( sidebar )
-  {
-    QString style = "QListWidget#mOptionsListWidget {"
-                    "    background-color: rgb(69, 69, 69, 220);"
-                    "    outline: 0;"
-                    "}"
-                    "QListWidget#mOptionsListWidget::item {"
-                    "    color: white;"
-                    "    padding: 3px;"
-                    "}"
-                    "QListWidget#mOptionsListWidget::item::selected {"
-                    "    color: black;"
-                    "    background-color:palette(Window);"
-                    "    padding-right: 0px;"
-                    "}";
-    ss += style;
-  }
-
-  //fix background issue for gnome desktop
-  if ( mLinuxOS && mGtkStyle && !sidebar )
-  {
-    ss += "QListWidget#mOptionsListWidget{";
-    ss += "background-color: white;";
-    ss += "} ";
-  }
+  //sidebar style
+  QString style = "QListWidget#mOptionsListWidget {"
+                  "    background-color: rgb(69, 69, 69, 220);"
+                  "    outline: 0;"
+                  "}"
+                  "QListWidget#mOptionsListWidget::item {"
+                  "    color: white;"
+                  "    padding: 3px;"
+                  "}"
+                  "QListWidget#mOptionsListWidget::item::selected {"
+                  "    color: black;"
+                  "    background-color:palette(Window);"
+                  "    padding-right: 0px;"
+                  "}";
+  ss += style;
 
   // Fix selection color on loosing focus (Windows)
   const QPalette palette = qApp->palette();
