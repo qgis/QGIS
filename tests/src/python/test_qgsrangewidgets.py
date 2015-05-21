@@ -31,12 +31,15 @@ QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
 class TestQgsRangeWidget(TestCase):
 
+    @classmethod
+    def setUpClass(cls):
+        QgsEditorWidgetRegistry.initEditors()
+
 
     def setUp(self):
         """
         create a layer with one feature
         """
-        QgsEditorWidgetRegistry.initEditors()
         self.layer = QgsVectorLayer("Point?crs=EPSG:21781&field=fldtxt:string&field=fldint:integer",
                                "addfeat", "memory")
         pr = self.layer.dataProvider()
@@ -44,42 +47,62 @@ class TestQgsRangeWidget(TestCase):
         f.setAttributes(["Hello World", 123])
         f.setGeometry(QgsGeometry.fromPoint(QgsPoint(600000,200000)))
 
-        self.reg = QgsEditorWidgetRegistry.instance()
-        self.configWdg = self.reg.createConfigWidget('Range', self.layer, 1, None)
-        self.config = self.configWdg.config()
-        self.rangewidget = self.reg.create('Range', self.layer, 1, self.config, None, None )
+
+    def __createRangeWidget(self, allownull = False):
+        """
+        create a range widget
+        """
+        reg = QgsEditorWidgetRegistry.instance()
+        configWdg = reg.createConfigWidget('Range', self.layer, 1, None)
+        config = configWdg.config()
+
+        # if null shall be allowed
+        if allownull == True:
+            config["AllowNull"] = allownull
+
+        rangewidget = reg.create('Range', self.layer, 1, config, None, None )
+        return rangewidget
        
 
     def test_range_widget_numbers(self):
         """
         are the numbers being returned correctly
         """
-        self.rangewidget.setValue(1)
-        assert self.rangewidget.value() == 1
+        rangewidget = self.__createRangeWidget()
 
-        self.rangewidget.setValue(0)
-        assert self.rangewidget.value() == 0
+        rangewidget.setValue(1)
+        assert rangewidget.value() == 1
+
+        rangewidget.setValue(0)
+        assert rangewidget.value() == 0
+
+        rangewidget = None
     
 
-    def test_range_widget_null(self):
+    def test_range_widget_no_null(self):
         """
-        Is None being returned as expected
+        are None and NULL being returned as expected
         """
-        self.rangewidget.setValue(NULL)
-        assert self.rangewidget.value() == 0
+        rangewidget = self.__createRangeWidget()
 
-        self.rangewidget.setValue(None)
-        assert self.rangewidget.value() == 0
+        rangewidget.setValue(NULL)
+        assert rangewidget.value() == 0
 
-        # allow NULL
-        self.config["AllowNull"] = True
-        self.rangewidget = self.reg.create('Range', self.layer, 1, self.config, None, None )
+        rangewidget.setValue(None)
+        assert rangewidget.value() == 0
 
-        self.rangewidget.setValue(NULL)
-        assert self.rangewidget.value() == NULL
 
-        self.rangewidget.setValue(None)
-        assert self.rangewidget.value() == NULL
+    def test_range_widget_null_allowed(self):
+        """
+        are None and NULL being returned as expected
+        """
+        rangewidget = self.__createRangeWidget(True)
+
+        rangewidget.setValue(NULL)
+        assert rangewidget.value() == NULL
+
+        rangewidget.setValue(None)
+        assert rangewidget.value() == NULL
 
 
 
