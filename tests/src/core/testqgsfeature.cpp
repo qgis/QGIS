@@ -221,6 +221,12 @@ void TestQgsFeature::geometry()
   QVERIFY( ! copy.constGeometry() );
   QCOMPARE( *feature.constGeometry()->asWkb(), *mGeometry.data()->asWkb() );
 
+  //test no crash when setting an empty geometry and triggering a detach
+  QgsFeature emptyGeomFeature;
+  emptyGeomFeature.setGeometry( 0 );
+  copy = emptyGeomFeature;
+  copy.setFeatureId( 5 ); //force detach
+
   //setGeometry
   //always start with a copy so that we can test implicit sharing detachment is working
   copy = feature;
@@ -257,14 +263,14 @@ void TestQgsFeature::geometry()
   QCOMPARE( *feature.constGeometry()->asWkb(), *mGeometry.data()->asWkb() );
 
   //geometryAndOwnership
-Q_NOWARN_DEPRECATED_PUSH
+  Q_NOWARN_DEPRECATED_PUSH
   copy = feature;
   QCOMPARE( *copy.constGeometry()->asWkb(), *mGeometry.data()->asWkb() );
   QgsGeometry* geom1 = copy.geometryAndOwnership();
   QCOMPARE( *geom1->asWkb(), *mGeometry->asWkb() );
   QgsGeometry* geom2 = feature.geometryAndOwnership();
   QCOMPARE( *geom2->asWkb(), *mGeometry->asWkb() );
-Q_NOWARN_DEPRECATED_POP
+  Q_NOWARN_DEPRECATED_POP
   delete geom1;
   delete geom2;
 }
