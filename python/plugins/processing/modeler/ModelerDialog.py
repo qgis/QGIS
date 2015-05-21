@@ -226,6 +226,7 @@ class ModelerDialog(BASE, WIDGET):
         dlg = HelpEditionDialog(alg)
         dlg.exec_()
         if dlg.descriptions:
+            self.alg.helpContent = dlg.descriptions
             self.hasChanged = True
 
     def runModel(self):
