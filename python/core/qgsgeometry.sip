@@ -518,5 +518,21 @@ class QgsGeometry
     */
     static bool compare( const QgsMultiPolygon& p1, const QgsMultiPolygon& p2, double epsilon = 4 * DBL_EPSILON );
 
+    /** Attempts to repair the geometry if it is invalid.
+     * @note added in 2.4
+     **/
+    bool repairGeometry();
+
+    /** Indicates whether the geometry must be automatically validated and fixed after last conversion to GEOS 
+     * @note added in 2.4
+     **/
+    void setAutomaticGeosValidation( bool automaticValidation );
+    bool hasAutomaticGeosValidation() const;
+
+    /** Attempts to create a valid representation of a given invalid geometry without loosing any of the input vertices.
+     * @note added in 2.4
+     **/
+    QgsGeometry* makeValid() const;
+
 }; // class QgsGeometry
 

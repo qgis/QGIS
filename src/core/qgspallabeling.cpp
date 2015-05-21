@@ -1754,6 +1754,20 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
                          || placement == QgsPalLayerSettings::OverPoint )
                        && geom->type() == QGis::Polygon );
 
+  if ( !geom->asGeos() )
+    return;  // there is something really wrong with the geometry
+
+  // Rotate the geometry if needed, before clipping
+  const QgsMapToPixel& m2p = context.mapToPixel();
+  if ( m2p.mapRotation() )
+  {
+    if ( geom->rotate( m2p.mapRotation(), context.extent().center() ) )
+    {
+      QgsDebugMsg( QString( "Error rotating geometry" ).arg( geom->exportToWkt() ) );
+      return; // really ?
+    }
+  }
+
   // CLIP the geometry if it is bigger than the extent
   // don't clip if centroid is requested for whole feature
   bool doClip = false;

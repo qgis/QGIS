@@ -34,6 +34,24 @@ class CORE_EXPORT QgsGeometryValidator : public QThread
     /** Validate geometry and produce a list of geometry errors */
     static void validateGeometry( const QgsGeometry *g, QList<QgsGeometry::Error> &errors );
 
+    /** Attempts to create a valid representation of a given invalid geometry without loosing any of the input vertices.
+     * Already-valid geometries are returned w/out further intervention.
+     * In case of full or partial dimensional collapses, the output geometry may be a collection of 
+     * lower-to-equal dimension geometries or a geometry of lower dimension.
+     * Single polygons may become multi-geometries in case of self-intersections.
+     * @note added in 2.4
+     **/
+    static GEOSGeometry *makeValidGeometry( const GEOSGeometry *g );
+
+    /** Attempts to create a valid representation of a given invalid geometry without loosing any of the input vertices.
+     * Already-valid geometries are returned w/out further intervention.
+     * In case of full or partial dimensional collapses, the output geometry may be a collection of 
+     * lower-to-equal dimension geometries or a geometry of lower dimension.
+     * Single polygons may become multi-geometries in case of self-intersections.
+     * @note added in 2.4
+     **/
+    static QgsGeometry *makeValidGeometry( const QgsGeometry *g );
+
   signals:
     void errorFound( QgsGeometry::Error );
 

@@ -563,6 +563,26 @@ class CORE_EXPORT QgsGeometry
     */
     static bool compare( const QgsMultiPolygon& p1, const QgsMultiPolygon& p2, double epsilon = 4 * DBL_EPSILON );
 
+    /** Attempts to repair the geometry if it is invalid.
+     * @note added in 2.4
+     **/
+    bool repairGeometry();
+
+    /** Indicates whether the geometry must be automatically validated and fixed after last conversion to GEOS 
+     * @note added in 2.4
+     **/
+    void setAutomaticGeosValidation( bool automaticValidation );
+    bool hasAutomaticGeosValidation() const { return mAutovalidateGeos; }
+
+    /** Attempts to create a valid representation of a given invalid geometry without loosing any of the input vertices.
+     * Already-valid geometries are returned w/out further intervention.
+     * In case of full or partial dimensional collapses, the output geometry may be a collection of 
+     * lower-to-equal dimension geometries or a geometry of lower dimension.
+     * Single polygons may become multi-geometries in case of self-intersections.
+     * @note added in 2.4
+     */
+    QgsGeometry* makeValid() const;
+
   private:
     // Private variables
 
@@ -585,9 +605,11 @@ class CORE_EXPORT QgsGeometry
     /** If the geometry has been set since the last conversion to WKB **/
     mutable bool mDirtyWkb;
 
-    /** If the geometry has been set  since the last conversion to GEOS **/
+    /** If the geometry has been set since the last conversion to GEOS **/
     mutable bool mDirtyGeos;
 
+    /** If the geometry must be automatically validated and fixed after last conversion to GEOS **/
+    mutable bool mAutovalidateGeos;
 
     // Private functions
 
@@ -600,6 +622,9 @@ class CORE_EXPORT QgsGeometry
         @return   true in case of success and false else
      */
     bool exportGeosToWkb() const;
+
+    /** Execute the GEOS geometry validation and fix topology when needed **/
+    bool executeGeosValidation() const;
 
     /** Insert a new vertex before the given vertex index (first number is index 0)
      *  in the given GEOS Coordinate Sequence.

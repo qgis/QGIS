@@ -62,6 +62,8 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRender
   mSimplifyMethod = layer->simplifyMethod();
   mSimplifyGeometry = layer->simplifyDrawingCanbeApplied( mContext, QgsVectorSimplifyMethod::GeometrySimplification );
 
+  mValidateGeometry = layer->automaticGeometryValidation();
+
   QSettings settings;
   mVertexMarkerOnlyForSelection = settings.value( "/qgis/digitizing/marker_only_for_selected", false ).toBool();
 
@@ -276,6 +278,13 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
       bool sel = mContext.showSelection() && mSelectedFeatureIds.contains( fet.id() );
       bool drawMarker = ( mDrawVertexMarkers && mContext.drawEditingInformation() && ( !mVertexMarkerOnlyForSelection || sel ) );
 
+      // make valid the geometry when needed
+      if ( mValidateGeometry )
+      {
+        QgsGeometry* g = fet.geometry();
+        g->setAutomaticGeosValidation( true );
+      }
+
       // render feature
       bool rendered = mRendererV2->renderFeature( fet, mContext, -1, sel, drawMarker );
 
@@ -335,6 +344,13 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
       qDebug( "rendering stop!" );
       stopRendererV2( selRenderer );
       return;
+    }
+
+    // make valid the geometry when needed
+    if ( mValidateGeometry )
+    {
+      QgsGeometry* g = fet.geometry();
+      g->setAutomaticGeosValidation( true );
     }
 
     QgsSymbolV2* sym = mRendererV2->symbolForFeature( fet );

@@ -354,6 +354,496 @@ void QgsGeometryValidator::validateGeometry( const QgsGeometry *g, QList<QgsGeom
   gv->wait();
 }
 
+/**************************************************************************************
+ *                                                                                    *
+ * Helper MakeValid function from 'lwgeom_geos_clean.c' - potsgis repo                *
+ * https://github.com/postgis/postgis/blob/svn-trunk/liblwgeom/lwgeom_geos_clean.c    *
+ *                                                                                    *
+/**************************************************************************************
+ *                                                                                    *
+ * PostGIS - Spatial Types for PostgreSQL                                             *
+ * http://postgis.net                                                                 *
+ *                                                                                    *
+ * Copyright 2009-2010 Sandro Santilli <strk@keybit.net>                              *
+ *                                                                                    *
+ * This is free software; you can redistribute and/or modify it under                 *
+ * the terms of the GNU General Public Licence. See the COPYING file.                 *
+ *                                                                                    *
+ **************************************************************************************/
+
+#ifndef uint32_t
+typedef unsigned int uint32_t;
+#endif
+
+#ifndef lwrealloc
+#define lwrealloc realloc
+#endif
+#ifndef lwalloc
+#define lwalloc malloc
+#endif
+#ifndef lwfree
+#define lwfree free
+#endif
+
+/* Return Nth vertex in GEOSGeometry as a POINT.
+ * May return NULL if the geometry has NO vertexex.
+ */
+static GEOSGeometry* LWGEOM_GEOS_getPointN( const GEOSGeometry* g_in, uint32_t n )
+{
+  uint32_t dims;
+  const GEOSCoordSequence* seq_in;
+  GEOSCoordSeq seq_out;
+  double val;
+  uint32_t sz;
+  int gn;
+  GEOSGeometry* ret;
+
+  switch ( GEOSGeomTypeId( g_in ) )
+  {
+    case GEOS_MULTIPOINT:
+    case GEOS_MULTILINESTRING:
+    case GEOS_MULTIPOLYGON:
+    case GEOS_GEOMETRYCOLLECTION:
+    {
+      for ( gn = 0; gn < GEOSGetNumGeometries( g_in ); ++gn )
+      {
+        const GEOSGeometry* g = GEOSGetGeometryN( g_in, gn );
+        ret = LWGEOM_GEOS_getPointN( g, n );
+        if ( ret ) return ret;
+      }
+      break;
+    }
+    case GEOS_POLYGON:
+    {
+      ret = LWGEOM_GEOS_getPointN( GEOSGetExteriorRing( g_in ), n );
+      if ( ret ) return ret;
+
+      for ( gn = 0; gn < GEOSGetNumInteriorRings( g_in ); ++gn )
+      {
+        const GEOSGeometry* g = GEOSGetInteriorRingN( g_in, gn );
+        ret = LWGEOM_GEOS_getPointN( g, n );
+        if ( ret ) return ret;
+      }
+      break;
+    }
+    case GEOS_POINT:
+    case GEOS_LINESTRING:
+    case GEOS_LINEARRING:
+      break;
+  }
+
+  seq_in = GEOSGeom_getCoordSeq( g_in );
+  if ( !seq_in ) return NULL;
+  if ( !GEOSCoordSeq_getSize( seq_in, &sz ) ) return NULL;
+  if ( !sz ) return NULL;
+  if ( !GEOSCoordSeq_getDimensions( seq_in, &dims ) ) return NULL;
+
+  seq_out = GEOSCoordSeq_create( 1, dims );
+  if ( !seq_out ) return NULL;
+
+  if ( !GEOSCoordSeq_getX( seq_in, n, &val ) ) return NULL;
+  if ( !GEOSCoordSeq_setX( seq_out, n, val ) ) return NULL;
+  if ( !GEOSCoordSeq_getY( seq_in, n, &val ) ) return NULL;
+  if ( !GEOSCoordSeq_setY( seq_out, n, val ) ) return NULL;
+  if ( dims > 2 )
+  {
+    if ( !GEOSCoordSeq_getZ( seq_in, n, &val ) ) return NULL;
+    if ( !GEOSCoordSeq_setZ( seq_out, n, val ) ) return NULL;
+  }
+
+  return GEOSGeom_createPoint( seq_out );
+}
+
+/*
+ * Fully node given linework
+ */
+static GEOSGeometry* LWGEOM_GEOS_nodeLines( const GEOSGeometry* lines )
+{
+  GEOSGeometry* noded;
+  GEOSGeometry* point;
+
+  /*
+   * Union with first geometry point, obtaining full noding
+   * and dissolving of duplicated repeated points
+   *
+   * TODO: substitute this with UnaryUnion?
+   */
+  point = LWGEOM_GEOS_getPointN( lines, 0 );
+  if ( !point ) return NULL;
+
+  // LWDEBUGF(3, "Boundary point: %s", lwgeom_to_ewkt(GEOS2LWGEOM(point, 0)));
+
+  noded = GEOSUnion( lines, point );
+
+  if ( NULL == noded )
+  {
+    GEOSGeom_destroy( point );
+    return NULL;
+  }
+  GEOSGeom_destroy( point );
+
+  // LWDEBUGF(3, "LWGEOM_GEOS_nodeLines: in[%s] out[%s]", lwgeom_to_ewkt(GEOS2LWGEOM(lines, 0)), lwgeom_to_ewkt(GEOS2LWGEOM(noded, 0)));
+
+  return noded;
+}
+
+/* 
+ * Make valid the specified linestring.
+ */
+static GEOSGeometry* LWGEOM_GEOS_makeValidLine( const GEOSGeometry* gin )
+{
+  GEOSGeometry* gout = LWGEOM_GEOS_nodeLines( gin );
+  return gout;
+}
+
+/* 
+ * Make valid the specified multi-linestring.
+ */
+static GEOSGeometry* LWGEOM_GEOS_makeValidMultiLine( const GEOSGeometry* gin )
+{
+  GEOSGeometry** lines;
+  GEOSGeometry** points;
+  GEOSGeometry* mline_out = 0;
+  GEOSGeometry* mpoint_out = 0;
+  GEOSGeometry* gout = 0;
+  uint32_t nlines = 0, nlines_alloc;
+  uint32_t npoints = 0;
+  uint32_t ngeoms = 0, nsubgeoms;
+  uint32_t i, j;
+
+  ngeoms = GEOSGetNumGeometries( gin );
+  nlines_alloc = ngeoms;
+  lines  = ( GEOSGeometry** )lwalloc( sizeof( GEOSGeometry* ) * nlines_alloc );
+  points = ( GEOSGeometry** )lwalloc( sizeof( GEOSGeometry* ) * ngeoms );
+
+  for ( i = 0; i < ngeoms; ++i )
+  {
+    const GEOSGeometry* g = GEOSGetGeometryN( gin, i );
+    GEOSGeometry* vg;
+    vg = LWGEOM_GEOS_makeValidLine( g );
+
+    if ( GEOSisEmpty( vg ) )
+    {
+      /* we don't care about this one */
+      GEOSGeom_destroy( vg );
+      continue;
+    }
+    if ( GEOSGeomTypeId( vg ) == GEOS_POINT )
+    {
+      points[ npoints++ ] = vg;
+    }
+    else if ( GEOSGeomTypeId( vg ) == GEOS_LINESTRING )
+    {
+      lines[ nlines++ ] = vg;
+    }
+    else if ( GEOSGeomTypeId( vg ) == GEOS_MULTILINESTRING )
+    {
+      nsubgeoms = GEOSGetNumGeometries( vg );
+      nlines_alloc += nsubgeoms;
+      lines = ( GEOSGeometry** )lwrealloc( lines, sizeof( GEOSGeometry* ) * nlines_alloc );
+
+      for ( j = 0; j < nsubgeoms; ++j )
+      {
+        const GEOSGeometry* gc = GEOSGetGeometryN( vg, j );
+
+        /* NOTE: ownership of the cloned geoms will be taken by final collection */
+        lines[nlines++] = GEOSGeom_clone( gc );
+      }
+    }
+    else
+    {
+      /* NOTE: return from GEOSGeomType will leak but we really don't expect this to happen */
+      QgsDebugMsg( QString( "unexpected geom type returned by GEOS_makeValid: %1" ).arg( GEOSGeomType( vg ) ) );
+    }
+  }
+
+  if ( npoints )
+  {
+    if ( npoints > 1 )
+    {
+      mpoint_out = GEOSGeom_createCollection( GEOS_MULTIPOINT, points, npoints );
+    }
+    else
+    {
+      mpoint_out = points[0];
+    }
+  }
+  if ( nlines )
+  {
+    if ( nlines > 1 )
+    {
+      mline_out = GEOSGeom_createCollection( GEOS_MULTILINESTRING, lines, nlines );
+    }
+    else
+    {
+      mline_out = lines[0];
+    }
+  }
+  lwfree( lines );
+
+  if ( mline_out && mpoint_out )
+  {
+    points[0] = mline_out;
+    points[1] = mpoint_out;
+    gout = GEOSGeom_createCollection( GEOS_GEOMETRYCOLLECTION, points, 2 );
+  }
+  else if ( mline_out )
+  {
+    gout = mline_out;
+  }
+  else if ( mpoint_out )
+  {
+    gout = mpoint_out;
+  }
+  lwfree( points );
+
+  return gout;
+}
+
+/* Make valid the specified polygon.
+ * The original LWGEOM_GEOS_makeValidPolygon function implements other code 
+ * but GEOSBuffer seems to work fine.
+ */
+static GEOSGeometry* LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry* gin )
+{
+  GEOSGeometry* gout = GEOSBuffer( gin, 0, 0 );
+  return gout;
+}
+
+static GEOSGeometry* LWGEOM_GEOS_makeValid( const GEOSGeometry* );
+
+/* 
+ * Make valid the specified geometry collection.
+ */
+static GEOSGeometry* LWGEOM_GEOS_makeValidCollection( const GEOSGeometry* gin )
+{
+  unsigned int nvgeoms;
+  GEOSGeometry **vgeoms;
+  GEOSGeom gout;
+  unsigned int i;
+
+  nvgeoms = GEOSGetNumGeometries( gin );
+  if ( nvgeoms == -1 ) 
+  {
+    // lwerror("GEOSGetNumGeometries: %s", lwgeom_geos_errmsg);
+    return 0;
+  }
+
+  vgeoms = ( GEOSGeometry** )lwalloc( sizeof( GEOSGeometry* ) * nvgeoms );
+  if ( !vgeoms ) 
+  {
+    // lwerror("LWGEOM_GEOS_makeValidCollection: out of memory");
+    return 0;
+  }
+
+  for ( i = 0; i < nvgeoms; ++i ) 
+  {
+    vgeoms[i] = LWGEOM_GEOS_makeValid( GEOSGetGeometryN( gin, i ) );
+
+    if ( !vgeoms[i] ) 
+    {
+      while ( i-- ) GEOSGeom_destroy( vgeoms[i] );
+      lwfree( vgeoms );
+
+      /* we expect lwerror being called already by makeValid */
+      return NULL;
+    }
+  }
+
+  /* Collect areas and lines (if any line) */
+  gout = GEOSGeom_createCollection( GEOS_GEOMETRYCOLLECTION, vgeoms, nvgeoms );
+
+  if ( !gout ) /* an exception again */
+  {
+    /* cleanup and throw */
+    for ( i = 0; i < nvgeoms; ++i ) GEOSGeom_destroy( vgeoms[i] );
+    lwfree( vgeoms );
+
+    // lwerror("GEOSGeom_createCollection() threw an error: %s", lwgeom_geos_errmsg);
+    return NULL;
+  }
+  lwfree( vgeoms );
+
+  return gout;
+}
+
+/* 
+ * Make valid the specified geometry.
+ */
+static GEOSGeometry* LWGEOM_GEOS_makeValid( const GEOSGeometry* gin )
+{
+  GEOSGeometry* gout;
+  char ret_char;
+
+  /*
+   * Step 2: return what we got so far if already valid
+   */
+  ret_char = GEOSisValid( gin );
+
+  if ( ret_char == 2 )
+  {
+    /* I don't think should ever happen */
+    // lwerror("GEOSisValid(): %s", lwgeom_geos_errmsg);
+    return NULL;
+  }
+  else if ( ret_char )
+  {
+    // LWDEBUGF(3, "Geometry [%s] is valid. ", lwgeom_to_ewkt(GEOS2LWGEOM(gin, 0)));
+
+    /* It's valid at this step, return what we have */
+    return GEOSGeom_clone( gin );
+  }
+
+  // LWDEBUGF(3, "Geometry [%s] is still not valid: %s. Will try to clean up further.", lwgeom_to_ewkt(GEOS2LWGEOM(gin, 0)), lwgeom_geos_errmsg);
+
+  /*
+   * Step 3 : make what we got valid
+   */
+  switch ( GEOSGeomTypeId( gin ) )
+  {
+    case GEOS_MULTIPOINT:
+    case GEOS_POINT:
+      /* points are always valid, but we might have invalid ordinate values */
+      // lwnotice("PUNTUAL geometry resulted invalid to GEOS -- dunno how to clean that up");
+      return NULL;
+      break;
+
+    case GEOS_LINESTRING:
+      gout = LWGEOM_GEOS_makeValidLine( gin );
+
+      if ( !gout )  /* an exception or something */
+      {
+        /* cleanup and throw */
+        // lwerror("%s", lwgeom_geos_errmsg);
+        return NULL;
+      }
+      break; /* we've done */
+
+    case GEOS_MULTILINESTRING:
+      gout = LWGEOM_GEOS_makeValidMultiLine( gin );
+
+      if ( !gout )  /* an exception or something */
+      {
+        /* cleanup and throw */
+        // lwerror("%s", lwgeom_geos_errmsg);
+        return NULL;
+      }
+      break; /* we've done */
+
+    case GEOS_POLYGON:
+    case GEOS_MULTIPOLYGON:
+    {
+      gout = LWGEOM_GEOS_makeValidPolygon( gin );
+
+      if ( !gout )  /* an exception or something */
+      {
+        /* cleanup and throw */
+        // lwerror("%s", lwgeom_geos_errmsg);
+        return NULL;
+      }
+      break; /* we've done */
+    }
+    case GEOS_GEOMETRYCOLLECTION:
+    {
+      gout = LWGEOM_GEOS_makeValidCollection( gin );
+
+      if ( !gout )  /* an exception or something */
+      {
+        /* cleanup and throw */
+        // lwerror("%s", lwgeom_geos_errmsg);
+        return NULL;
+      }
+      break; /* we've done */
+    }
+    default:
+    {
+      char* typname = GEOSGeomType( gin );
+
+      // lwnotice("ST_MakeValid: doesn't support geometry type: %s", typname);
+      GEOSFree(typname);
+      return NULL;
+      break;
+    }
+  }
+
+  #if _DEBUG
+  /*
+   * Now check if every point of input is also found
+   * in output, or abort by returning NULL
+   *
+   * Input geometry was lwgeom_in
+   */
+  {
+    const int paranoia = 2;
+
+    /* TODO: check if the result is valid */
+    if (paranoia)
+    {
+      int loss;
+      GEOSGeometry *pi, *po, *pd;
+
+      /* TODO: handle some errors here...
+       * Lack of exceptions is annoying indeed,
+       * I'm getting old --strk;
+       */
+      pi = GEOSGeom_extractUniquePoints( gin );
+      po = GEOSGeom_extractUniquePoints( gout );
+      pd = GEOSDifference( pi, po ); /* input points - output points */
+      GEOSGeom_destroy( pi );
+      GEOSGeom_destroy( po );
+      loss = !GEOSisEmpty( pd );
+      GEOSGeom_destroy( pd );
+      if ( loss )
+      {
+        // lwnotice("Vertices lost in LWGEOM_GEOS_makeValid");
+        /* return NULL */
+      }
+    }
+  }
+  #endif
+
+  return gout;
+}
+
+/***********************************************************************/
+
+GEOSGeometry* QgsGeometryValidator::makeValidGeometry( const GEOSGeometry *g )
+{
+  if ( g )
+  {
+    GEOSGeometry* validGeos = LWGEOM_GEOS_makeValid( g );
+    return validGeos;
+  }
+  return NULL;
+}
+
+QgsGeometry* QgsGeometryValidator::makeValidGeometry( const QgsGeometry *g )
+{
+  QGis::WkbType flatType = QGis::flatType( g->wkbType() );
+
+  if ( flatType == QGis::WKBPoint || flatType == QGis::WKBUnknown || flatType == QGis::WKBNoGeometry )
+  {
+    return QgsGeometry::fromPoint( g->asPoint() );
+  }
+  else
+  {
+    const GEOSGeometry* geos = g->asGeos();
+
+    if ( geos )
+    {
+      GEOSGeometry* validGeos = QgsGeometryValidator::makeValidGeometry( geos );
+
+      if ( validGeos )
+      {
+        QgsGeometry* validGeom = new QgsGeometry;
+        validGeom->fromGeos( validGeos );
+        return validGeom;
+      }
+    }
+    return NULL;
+  }
+}
+
 //
 // distance of point q from line through p in direction v
 // return >0  => q lies left of the line

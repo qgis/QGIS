@@ -164,6 +164,10 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
   mSimplifyMethod.setThreshold( settings.value( "/qgis/simplifyDrawingTol", mSimplifyMethod.threshold() ).toFloat() );
   mSimplifyMethod.setForceLocalOptimization( settings.value( "/qgis/simplifyLocal", mSimplifyMethod.forceLocalOptimization() ).toBool() );
   mSimplifyMethod.setMaximumScale( settings.value( "/qgis/simplifyMaxScale", mSimplifyMethod.maximumScale() ).toFloat() );
+
+  // Default geometry validation settings
+  mAutomaticGeometryValidation = settings.value( "/qgis/automaticGeometryValidation", false ).toBool() && hasGeometryType() && geometryType() != QGis::Point;
+
 } // QgsVectorLayer ctor
 
 
@@ -1612,6 +1616,9 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     mSimplifyMethod.setForceLocalOptimization( e.attribute( "simplifyLocal", "1" ).toInt() );
     mSimplifyMethod.setMaximumScale( e.attribute( "simplifyMaxScale", "1" ).toFloat() );
 
+    // get the geometry validation settings
+    mAutomaticGeometryValidation = e.attribute( "automaticGeometryValidationFlag", "0" ) == "1";
+
     //also restore custom properties (for labeling-ng)
     readCustomProperties( node, "labeling" );
 
@@ -1848,6 +1855,9 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
     mapLayerNode.setAttribute( "simplifyDrawingTol", QString::number( mSimplifyMethod.threshold() ) );
     mapLayerNode.setAttribute( "simplifyLocal", mSimplifyMethod.forceLocalOptimization() ? 1 : 0 );
     mapLayerNode.setAttribute( "simplifyMaxScale", QString::number( mSimplifyMethod.maximumScale() ) );
+
+    // save the geometry validation settings
+    mapLayerNode.setAttribute( "automaticGeometryValidationFlag", mAutomaticGeometryValidation ? 1 : 0 );
 
     //save customproperties (for labeling ng)
     writeCustomProperties( node, doc );
