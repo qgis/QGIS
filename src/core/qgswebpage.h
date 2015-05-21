@@ -67,11 +67,21 @@ class QWebSettings : public QObject
         CaretBrowsingEnabled,
         NotificationsEnabled
     };
-    explicit QWebSettings( QObject* parent = 0 );
+    explicit QWebSettings( QObject* parent = 0 )
+      :QObject( parent )
+    {
 
-    void setUserStyleSheetUrl( const QUrl& );
+    }
 
-    void setAttribute( WebAttribute, bool on );
+    void setUserStyleSheetUrl( const QUrl& )
+    {
+
+    }
+
+    void setAttribute( WebAttribute, bool on )
+    {
+      Q_UNUSED( on );
+    }
 };
 
 class QWebPage : public QObject
@@ -91,29 +101,68 @@ class QWebPage : public QObject
         WebModalDialog
     };
 
-    explicit QWebPage( QObject* parent = 0 );
+    explicit QWebPage( QObject* parent = 0 )
+      : QObject( parent )
+      , mSettings( new QWebSettings() )
+      , mFrame( new QWebFrame() )
+    {
+    }
 
-    QPalette palette() const;
+    ~QWebPage()
+    {
+      delete mFrame;
+      delete mSettings;
+    }
 
-    void setPalette( const QPalette& palette );
+    QPalette palette() const
+    {
+      return QPalette();
+    }
 
-    void setViewportSize(const QSize & size) const;
+    void setPalette( const QPalette& palette )
+    {
+      Q_UNUSED( palette );
+    }
+
+    void setViewportSize(const QSize & size) const
+    {
+      Q_UNUSED( size );
+    }
 
     void setLinkDelegationPolicy( LinkDelegationPolicy );
 
-    void setNetworkAccessManager( QNetworkAccessManager* networkAccessManager );
+    void setNetworkAccessManager( QNetworkAccessManager* networkAccessManager )
+    {
+      Q_UNUSED( networkAccessManager );
+    }
 
-    QWebFrame* mainFrame() const;
+    QWebFrame* mainFrame() const
+    {
+      return mFrame;
+    }
 
-    QWebSettings* settings() const;
+    QWebSettings* settings() const
+    {
+      return mSettings;
+    }
 
-    QSize viewportSize() const;
+    QSize viewportSize() const
+    {
+      return QSize();
+    }
 
-    QMenu* createStandardContextMenu();
+    QMenu* createStandardContextMenu()
+    {
+      return new QMenu();
+    }
 
   signals:
 
   public slots:
+
+  private:
+    QWebSettings* mSettings;
+    QWebFrame* mFrame;
 };
 #endif
 

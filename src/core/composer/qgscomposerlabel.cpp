@@ -25,14 +25,9 @@
 #include "qgsproject.h"
 #include "qgsdistancearea.h"
 
-#ifdef WITH_QTWEBKIT
-#include <QtWebKitWidgets/QWebFrame>
-#include <QtWebKitWidgets/QWebPage>
-#else
 #include "qgswebview.h"
 #include "qgswebframe.h"
 #include "qgswebpage.h"
-#endif
 
 #include <QCoreApplication>
 #include <QDate>

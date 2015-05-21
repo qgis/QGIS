@@ -29,19 +29,43 @@ class QWebFrame : public QObject
   Q_OBJECT
 
   public:
-    QWebFrame();
+    QWebFrame( QObject* parent = 0 )
+      :QObject( parent )
+    {
 
-    void setZoomFactor( qreal factor );
+    }
 
-    void setScrollBarPolicy( Qt::Orientation, Qt::ScrollBarPolicy );
+    void setZoomFactor( qreal factor )
+    {
+      Q_UNUSED( factor );
+    }
 
-    void setHtml( const QString&, const QUrl = QUrl() );
+    void setScrollBarPolicy( Qt::Orientation orientation, Qt::ScrollBarPolicy scrollbarpolicy )
+    {
+      Q_UNUSED( orientation );
+      Q_UNUSED( scrollbarpolicy );
+    }
 
-    QSize contentsSize() const;
+    void setHtml( const QString& html, const QUrl& url = QUrl() )
+    {
+      Q_UNUSED( html );
+      Q_UNUSED( url );
+    }
 
-    void render( QPainter*, const QRegion = QRegion() );
+    QSize contentsSize() const
+    {
+      return QSize();
+    }
 
-    void addToJavaScriptWindowObject( const QString&, QObject* );
+    void render( QPainter*, const QRegion = QRegion() )
+    {
+
+    }
+
+    void addToJavaScriptWindowObject( const QString&, QObject* )
+    {
+
+    }
 
   signals:
     void javaScriptWindowObjectCleared();

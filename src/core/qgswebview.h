@@ -38,33 +38,43 @@ class QgsWebView : public QWidget
 {
     Q_OBJECT
   public:
-    explicit QgsWebView(QWidget *parent = 0) : QWidget(parent )
+    explicit QgsWebView(QWidget *parent = 0)
+      : QWidget(parent )
+      , mSettings( new QWebSettings() )
+      , mPage( new QWebPage() )
     {
+    }
+
+    ~QgsWebView()
+    {
+      delete mSettings;
+      delete mPage;
     }
 
     void setUrl( const QUrl& url )
     {
+      Q_UNUSED( url );
 
     }
 
     void load( const QUrl& url )
     {
-
+      Q_UNUSED( url );
     }
 
     QWebPage* page() const
     {
-
+      return mPage;
     }
 
     QWebSettings* settings() const
     {
-
+      return mSettings;
     }
 
-    void setHtml( const QString& )
+    void setHtml( const QString& html )
     {
-
+      Q_UNUSED( html );
     }
 
     virtual QgsWebView* createWindow(QWebPage::WebWindowType)
@@ -85,6 +95,10 @@ class QgsWebView : public QWidget
   signals:
 
   public slots:
+
+  private:
+    QWebSettings* mSettings;
+    QWebPage* mPage;
 };
 #endif
 
