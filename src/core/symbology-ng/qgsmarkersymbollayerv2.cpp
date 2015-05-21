@@ -469,19 +469,25 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
     return;
   }
 
+  double scaledSize = mSize;
+
   bool hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale || hasDataDefinedProperty( EXPR_SIZE );
 
-  double scaledSize = mSize;
-  bool ok;
-  if ( hasDataDefinedSize )
+  bool ok = true;
+  if ( hasDataDefinedProperty( EXPR_SIZE ) )
   {
-    if ( hasDataDefinedProperty( EXPR_SIZE ) )
+    scaledSize = evaluateDataDefinedProperty( EXPR_SIZE, context.feature(), mSize, &ok ).toDouble();
+  }
+
+  if ( hasDataDefinedSize && ok )
+  {
+    switch ( mScaleMethod )
     {
-      scaledSize = evaluateDataDefinedProperty( EXPR_SIZE, context.feature(), mSize, &ok ).toDouble();
-      if ( ok && mScaleMethod == QgsSymbolV2::ScaleArea )
-      {
+      case QgsSymbolV2::ScaleArea:
         scaledSize = sqrt( scaledSize );
-      }
+        break;
+      case QgsSymbolV2::ScaleDiameter:
+        break;
     }
   }
 
