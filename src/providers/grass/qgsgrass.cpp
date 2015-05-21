@@ -1007,10 +1007,13 @@ QStringList GRASS_LIB_EXPORT QgsGrass::vectorLayers( const QString& gisdbase, co
     return list;
   }
 
+  // TODO: Handle errors as exceptions. Do not open QMessageBox here! This method is also used in browser
+  // items which are populated in threads and creating dialog QPixmap is causing crash or even X server freeze.
   if ( level == 1 )
   {
     QgsDebugMsg( "Cannot open vector on level 2" );
-    QMessageBox::warning( 0, QObject::tr( "Warning" ), QObject::tr( "Cannot open vector %1 in mapset %2 on level 2 (topology not available, try to rebuild topology using v.build module)." ).arg( mapName ).arg( mapset ) );
+    // Do not open QMessageBox here!
+    //QMessageBox::warning( 0, QObject::tr( "Warning" ), QObject::tr( "Cannot open vector %1 in mapset %2 on level 2 (topology not available, try to rebuild topology using v.build module)." ).arg( mapName ).arg( mapset ) );
     // Vect_close here is correct, it should work, but it seems to cause
     // crash on win http://trac.osgeo.org/qgis/ticket/2003
     // disabled on win test it
@@ -1023,7 +1026,8 @@ QStringList GRASS_LIB_EXPORT QgsGrass::vectorLayers( const QString& gisdbase, co
   else if ( level < 1 )
   {
     QgsDebugMsg( "Cannot open vector" );
-    QMessageBox::warning( 0, QObject::tr( "Warning" ), QObject::tr( "Cannot open vector %1 in mapset %2" ).arg( mapName ).arg( mapset ) );
+    // Do not open QMessageBox here!
+    //QMessageBox::warning( 0, QObject::tr( "Warning" ), QObject::tr( "Cannot open vector %1 in mapset %2" ).arg( mapName ).arg( mapset ) );
     GRASS_UNLOCK
     return list;
   }

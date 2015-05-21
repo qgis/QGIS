@@ -39,9 +39,15 @@ class GRASS_LIB_EXPORT QgsGrassImport : public QObject
     // get error if import failed
     QString error();
     virtual QStringList names() const;
-
+    bool isCanceled() const { return mCanceled; }
   public slots:
     void onFinished();
+    // TODO: this is not completely kosher, because QgsGrassImport exist on the main thread
+    // but import is running in another thread, to do it right, we should have an import object
+    // created on another thread, send cancel signal to that object which regularly processes events
+    // and thus recieves the signal.
+    // Most probably however, it will work correctly, even if read/write the bool wasn't atomic
+    void cancel() { mCanceled = true; }
 
   signals:
     // sent when process finished
@@ -52,6 +58,7 @@ class GRASS_LIB_EXPORT QgsGrassImport : public QObject
     void setError( QString error );
     QgsGrassObject mGrassObject;
     QString mError;
+    bool mCanceled;
     QFutureWatcher<bool>* mFutureWatcher;
 };
 

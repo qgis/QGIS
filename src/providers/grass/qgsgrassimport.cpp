@@ -13,6 +13,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <unistd.h>
+
 #include <QByteArray>
 #include <QtConcurrentRun>
 
@@ -37,6 +39,7 @@ extern "C"
 QgsGrassImport::QgsGrassImport( QgsGrassObject grassObject )
     : QObject()
     , mGrassObject( grassObject )
+    , mCanceled( false )
     , mFutureWatcher( 0 )
 {
 }
@@ -220,15 +223,27 @@ bool QgsGrassRasterImport::import()
         char * data = block->bits( row, 0 );
         int size = iterCols * block->dataTypeSize();
         QByteArray byteArray = QByteArray::fromRawData( data, size ); // does not copy data and does not take ownership
+        if ( isCanceled() )
+        {
+          outStream << true; // cancel module
+          break;
+        }
+        outStream << false; // not canceled
         outStream << byteArray;
       }
       delete block;
+      if ( isCanceled() )
+      {
+        outStream << true; // cancel module
+        break;
+      }
     }
 
     // TODO: send something back from module and read it here to close map correctly in module
 
     process->closeWriteChannel();
-    process->waitForFinished( 5000 );
+    // TODO: best timeout?
+    process->waitForFinished( 30000 );
 
     QString stdoutString = process->readAllStandardOutput().data();
     QString stderrString = process->readAllStandardError().data();
@@ -387,9 +402,16 @@ bool QgsGrassVectorImport::import()
       {
         feature.geometry()->transform( coordinateTransform );
       }
+      if ( isCanceled() )
+      {
+        outStream << true; // cancel module
+        break;
+      }
+      outStream << false; // not canceled
       outStream << feature;
     }
     feature = QgsFeature(); // indicate end by invalid feature
+    outStream << false; // not canceled
     outStream << feature;
     QgsDebugMsg( "features sent" );
   }

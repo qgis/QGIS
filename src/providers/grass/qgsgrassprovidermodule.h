@@ -148,16 +148,17 @@ class QgsGrassImportItem : public QgsDataItem, public QgsGrassObjectItemBase
     //virtual void setState( State state ) override {
     //  QgsDataItem::setState(state);
     //} // do nothing to keep Populating
-    //virtual QList<QAction*> actions() override;
+    virtual QList<QAction*> actions() override;
 
   public slots:
     virtual void refresh() override {}
-    //void deleteGrassObject();
+    void cancel();
 
   protected:
     // override refresh to keep Populating state
     virtual void refresh( QVector<QgsDataItem*> children ) override { Q_UNUSED( children )};
     //bool mDeleteAction;
+    QgsGrassImport* mImport;
 };
 
 #endif // QGSGRASSPROVIDERMODULE_H

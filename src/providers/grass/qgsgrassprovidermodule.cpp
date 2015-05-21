@@ -99,7 +99,15 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
 
     QgsGrassObject vectorObject( mGisdbase, mLocation, mName, name, QgsGrassObject::Vector );
     QgsGrassVectorItem *map = 0;
-    if ( layerNames.size() > 1 )
+    if ( layerNames.size() == 0 )
+    {
+      // TODO: differentiate if it is layer with no layers or without topo (throw exception from QgsGrass::vectorLayers)
+      // TODO: refresh (remove) error if topo was build
+      QgsErrorItem * errorItem = new QgsErrorItem( this, name, mapPath );
+      items.append( errorItem );
+      continue;
+    }
+    else if ( layerNames.size() > 1 )
     {
       //map = new QgsDataCollectionItem( this, name, mapPath );
       //map->setCapabilities( QgsDataItem::NoCapabilities ); // disable fertility
@@ -612,9 +620,31 @@ QgsGrassRasterItem::QgsGrassRasterItem( QgsDataItem* parent, QgsGrassObject gras
 QgsGrassImportItem::QgsGrassImportItem( QgsDataItem* parent, const QString& name, const QString& path, QgsGrassImport* import )
     : QgsDataItem( QgsDataItem::Layer, parent, name, path )
     , QgsGrassObjectItemBase( import->grassObject() )
+    , mImport( import )
 {
   setCapabilities( QgsDataItem::NoCapabilities ); // disable fertility
   setState( Populating );
+}
+
+QList<QAction*> QgsGrassImportItem::actions()
+{
+  QList<QAction*> lst;
+
+  QAction* actionRename = new QAction( tr( "Cancel" ), this );
+  connect( actionRename, SIGNAL( triggered() ), this, SLOT( cancel() ) );
+  lst.append( actionRename );
+
+  return lst;
+}
+
+void QgsGrassImportItem::cancel()
+{
+  QgsDebugMsg( "Entered" );
+  if ( !mImport ) // should not happen
+  {
+    return;
+  }
+  mImport->cancel();
 }
 
 //-------------------------------------------------------------------------

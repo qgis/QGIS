@@ -58,6 +58,7 @@ extern "C"
 #define G_set_raster_value_d Rast_set_d_value
 #define G_put_raster_row Rast_put_row
 #define G_raster_size Rast_cell_size
+#define G_unopen_cell Rast_unopen
 #endif
 
 int main( int argc, char **argv )
@@ -127,9 +128,15 @@ int main( int argc, char **argv )
   void *buf = G_allocate_raster_buf( grass_type );
 
   int expectedSize = cols * QgsRasterBlock::typeSize( qgis_type );
+  bool isCanceled;
   QByteArray byteArray;
   for ( int row = 0; row < rows; row++ )
   {
+    stdinStream >> isCanceled;
+    if ( isCanceled )
+    {
+      break;
+    }
     stdinStream >> byteArray;
     if ( byteArray.size() != expectedSize )
     {
@@ -162,11 +169,18 @@ int main( int argc, char **argv )
     G_put_raster_row( cf, buf, grass_type );
   }
 
-  G_close_cell( cf );
-  struct History history;
-  G_short_history( name, "raster", &history );
-  G_command_history( &history );
-  G_write_history( name, &history );
+  if ( isCanceled )
+  {
+    G_unopen_cell( cf );
+  }
+  else
+  {
+    G_close_cell( cf );
+    struct History history;
+    G_short_history( name, "raster", &history );
+    G_command_history( &history );
+    G_write_history( name, &history );
+  }
 
   exit( EXIT_SUCCESS );
 }

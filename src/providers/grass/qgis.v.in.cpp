@@ -66,6 +66,33 @@ void writePolyline( struct Map_info* map, int type, QgsPolyline polyline, struct
   Vect_write_line( map, type, line, cats );
 }
 
+void exitIfCanceled( QDataStream& stdinStream, bool isPolygon,
+                     const QString & tmpName, struct Map_info * tmpMap,
+                     const QString & finalName, struct Map_info * finalMap )
+{
+  bool isCanceled;
+  stdinStream >> isCanceled;
+  if ( !isCanceled )
+  {
+    return;
+  }
+  if ( isPolygon )
+  {
+    Vect_close( tmpMap );
+    Vect_delete( tmpName.toUtf8().data() );
+  }
+  Vect_close( finalMap );
+  Vect_delete( finalName.toUtf8().data() );
+  G_warning( "import canceled -> maps deleted" );
+  exit( EXIT_SUCCESS );
+}
+
+// G_set_percent_routine only works in GRASS >= 7
+//int percent_routine (int)
+//{
+// TODO: use it to interrupt cleaning functions
+//}
+
 int main( int argc, char **argv )
 {
   struct Option *mapOption;
@@ -91,6 +118,7 @@ int main( int argc, char **argv )
   QGis::WkbType wkbFlatType = QGis::flatType( wkbType );
   bool isPolygon = QGis::singleType( wkbFlatType ) == QGis::WKBPolygon;
 
+  QString finalName = QString( mapOption->answer );
   struct Map_info finalMap, tmpMap;
   Vect_open_new( &finalMap, mapOption->answer, 0 );
   struct Map_info * map = &finalMap;
@@ -148,6 +176,7 @@ int main( int argc, char **argv )
   qint32 featureCount = 0;
   while ( true )
   {
+    exitIfCanceled( stdinStream, isPolygon, tmpName, &tmpMap, finalName, &finalMap );
     stdinStream >> feature;
     if ( !feature.isValid() )
     {
@@ -279,6 +308,7 @@ int main( int argc, char **argv )
     // read once more to assign centroids to polygons
     while ( true )
     {
+      exitIfCanceled( stdinStream, isPolygon, tmpName, &tmpMap, finalName, &finalMap );
       stdinStream >> feature;
       if ( !feature.isValid() )
       {
