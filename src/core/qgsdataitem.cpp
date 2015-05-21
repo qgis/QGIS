@@ -888,7 +888,8 @@ QgsDirectoryParamWidget::QgsDirectoryParamWidget( QString path, QWidget* parent 
   QStyle* style = QApplication::style();
   QIcon iconDirectory = QIcon( style->standardPixmap( QStyle::SP_DirClosedIcon ) );
   QIcon iconFile = QIcon( style->standardPixmap( QStyle::SP_FileIcon ) );
-  QIcon iconLink = QIcon( style->standardPixmap( QStyle::SP_FileLinkIcon ) ); // TODO: symlink to directory?
+  QIcon iconDirLink = QIcon( style->standardPixmap( QStyle::SP_DirLinkIcon ) );
+  QIcon iconFileLink = QIcon( style->standardPixmap( QStyle::SP_FileLinkIcon ) );
 
   QList<QTreeWidgetItem *> items;
 
@@ -932,20 +933,25 @@ QgsDirectoryParamWidget::QgsDirectoryParamWidget( QString path, QWidget* parent 
 
     QString type;
     QIcon icon;
-    if ( fi.isDir() )
+    if ( fi.isDir() && fi.isSymLink() )
+    {
+      type = tr( "folder" );
+      icon = iconDirLink;
+    }
+    else if ( fi.isDir() )
     {
       type = tr( "folder" );
       icon = iconDirectory;
+    }
+    else if ( fi.isFile() && fi.isSymLink() )
+    {
+      type = tr( "file" );
+      icon = iconFileLink;
     }
     else if ( fi.isFile() )
     {
       type = tr( "file" );
       icon = iconFile;
-    }
-    else if ( fi.isSymLink() )
-    {
-      type = tr( "link" );
-      icon = iconLink;
     }
 
     texts << type;
