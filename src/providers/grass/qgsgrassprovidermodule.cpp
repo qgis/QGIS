@@ -159,7 +159,14 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
     QgsDebugMsg( "uri = " + uri );
 
     QgsGrassObject rasterObject( mGisdbase, mLocation, mName, name, QgsGrassObject::Raster );
-    QgsGrassRasterItem *layer = new QgsGrassRasterItem( this, rasterObject, path, uri );
+    bool isExternal = false;
+    if ( QgsGrass::isExternal( rasterObject ) )
+    {
+      isExternal = true;
+      //rasterObject.setName( rasterObject.name() + " external" );
+    }
+    QgsGrassRasterItem *layer = new QgsGrassRasterItem( this, rasterObject, path, uri, QgsGrass::isExternal( rasterObject ) );
+
 
     items.append( layer );
   }
@@ -348,24 +355,34 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
       QgsCoordinateReferenceSystem providerCrs = rasterProvider->crs();
       QgsDebugMsg( "providerCrs = " + providerCrs.toWkt() );
       QgsDebugMsg( "mapsetCrs = " + mapsetCrs.toWkt() );
-      if ( providerCrs.isValid() && mapsetCrs.isValid() && providerCrs != mapsetCrs )
-      {
-        QgsRasterProjector * projector = new QgsRasterProjector;
-        projector->setCRS( providerCrs, mapsetCrs );
-        if ( useSrcRegion )
-        {
-          projector->destExtentSize( rasterProvider->extent(), rasterProvider->xSize(), rasterProvider->ySize(),
-                                     newExtent, newXSize, newYSize );
-        }
 
-        pipe->set( projector );
-      }
-      QgsDebugMsg( "newExtent = " + newExtent.toString() );
-      QgsDebugMsg( QString( "newXSize = %1 newYSize = %2" ).arg( newXSize ).arg( newYSize ) );
-
-      QString path = mPath + "/" + "raster" + "/" + u.name;
       QgsGrassObject rasterObject( mGisdbase, mLocation, mName, destName, QgsGrassObject::Raster );
-      import = new QgsGrassRasterImport( pipe, rasterObject, newExtent, newXSize, newYSize ); // takes pipe ownership
+      if ( providerCrs.isValid() && mapsetCrs.isValid() && providerCrs == mapsetCrs
+           && rasterProvider->name() == "gdal" )
+      {
+        import = new QgsGrassExternal( rasterProvider->dataSourceUri(), rasterObject );
+        delete rasterProvider;
+      }
+      else
+      {
+        if ( providerCrs.isValid() && mapsetCrs.isValid() && providerCrs != mapsetCrs )
+        {
+          QgsRasterProjector * projector = new QgsRasterProjector;
+          projector->setCRS( providerCrs, mapsetCrs );
+          if ( useSrcRegion )
+          {
+            projector->destExtentSize( rasterProvider->extent(), rasterProvider->xSize(), rasterProvider->ySize(),
+                                       newExtent, newXSize, newYSize );
+          }
+
+          pipe->set( projector );
+        }
+        QgsDebugMsg( "newExtent = " + newExtent.toString() );
+        QgsDebugMsg( QString( "newXSize = %1 newYSize = %2" ).arg( newXSize ).arg( newYSize ) );
+
+        //QString path = mPath + "/" + "raster" + "/" + u.name;
+        import = new QgsGrassRasterImport( pipe, rasterObject, newExtent, newXSize, newYSize ); // takes pipe ownership
+      }
     }
     else if ( u.layerType == "vector" )
     {
@@ -610,9 +627,25 @@ QString QgsGrassVectorLayerItem::layerName() const
 //----------------------- QgsGrassRasterItem ------------------------------
 
 QgsGrassRasterItem::QgsGrassRasterItem( QgsDataItem* parent, QgsGrassObject grassObject,
-                                        QString path, QString uri )
+                                        QString path, QString uri, bool isExternal )
     : QgsGrassObjectItem( parent, grassObject, grassObject.name(), path, uri, QgsLayerItem::Raster, "grassraster" )
+    , mExternal( isExternal )
 {
+}
+
+QIcon QgsGrassRasterItem::icon()
+{
+  static QIcon linkIcon;
+
+  if ( mExternal )
+  {
+    if ( linkIcon.isNull() )
+    {
+      linkIcon = QgsApplication::getThemeIcon( "/mIconRasterLink.svg" );
+    }
+    return linkIcon;
+  }
+  return QgsDataItem::icon();
 }
 
 //----------------------- QgsGrassImportItem ------------------------------

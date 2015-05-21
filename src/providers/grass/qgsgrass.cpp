@@ -56,6 +56,11 @@ extern "C"
 #endif
 }
 
+#if GRASS_VERSION_MAJOR >= 7
+#define G_get_gdal_link Rast_get_gdal_link
+#define G_close_gdal_link Rast_close_gdal_link
+#endif
+
 #if !defined(GRASS_VERSION_MAJOR) || \
     !defined(GRASS_VERSION_MINOR) || \
     GRASS_VERSION_MAJOR<6 || \
@@ -139,7 +144,7 @@ QString QgsGrassObject::elementName() const
   return elementName( mType );
 }
 
-QString QgsGrassObject::elementName( Type type )
+QString GRASS_LIB_EXPORT QgsGrassObject::elementName( Type type )
 {
   if ( type == Raster )
     return "raster";
@@ -156,7 +161,7 @@ QString QgsGrassObject::dirName() const
   return dirName( mType );
 }
 
-QString QgsGrassObject::dirName( Type type )
+QString GRASS_LIB_EXPORT QgsGrassObject::dirName( Type type )
 {
   if ( type == Raster )
     return "cellhd";
@@ -187,7 +192,7 @@ bool QgsGrassObject::mapsetIdentical( const QgsGrassObject &other ) const
   return fi == otherFi;
 }
 
-QRegExp QgsGrassObject::newNameRegExp( Type type )
+QRegExp GRASS_LIB_EXPORT QgsGrassObject::newNameRegExp( Type type )
 {
   QRegExp rx;
   if ( type == QgsGrassObject::Vector )
@@ -1852,7 +1857,7 @@ QMap<QString, QString> GRASS_LIB_EXPORT QgsGrass::query( QString gisdbase, QStri
   return result;
 }
 
-void QgsGrass::renameObject( const QgsGrassObject & object, const QString& newName )
+void GRASS_LIB_EXPORT QgsGrass::renameObject( const QgsGrassObject & object, const QString& newName )
 {
   QgsDebugMsg( "entered" );
   QString cmd = "g.rename";
@@ -1865,7 +1870,7 @@ void QgsGrass::renameObject( const QgsGrassObject & object, const QString& newNa
   QgsGrass::runModule( object.gisdbase(), object.location(), object.mapset(), cmd, arguments, timeout, false );
 }
 
-void QgsGrass::copyObject( const QgsGrassObject & srcObject, const QgsGrassObject & destObject )
+void GRASS_LIB_EXPORT QgsGrass::copyObject( const QgsGrassObject & srcObject, const QgsGrassObject & destObject )
 {
   QgsDebugMsg( "srcObject = " + srcObject.toString() );
   QgsDebugMsg( "destObject = " + destObject.toString() );
@@ -1886,7 +1891,7 @@ void QgsGrass::copyObject( const QgsGrassObject & srcObject, const QgsGrassObjec
   QgsGrass::runModule( destObject.gisdbase(), destObject.location(), destObject.mapset(), cmd, arguments, timeout, false );
 }
 
-bool QgsGrass::deleteObject( const QgsGrassObject & object )
+bool GRASS_LIB_EXPORT QgsGrass::deleteObject( const QgsGrassObject & object )
 {
   QgsDebugMsg( "entered" );
 
@@ -1921,7 +1926,7 @@ bool QgsGrass::deleteObject( const QgsGrassObject & object )
   return true;
 }
 
-bool QgsGrass::deleteObjectDialog( const QgsGrassObject & object )
+bool GRASS_LIB_EXPORT QgsGrass::deleteObjectDialog( const QgsGrassObject & object )
 {
   QgsDebugMsg( "entered" );
 
@@ -1930,7 +1935,7 @@ bool QgsGrass::deleteObjectDialog( const QgsGrassObject & object )
                                 QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes;
 }
 
-void QgsGrass::createTable( dbDriver *driver, const QString tableName, const QgsFields &fields )
+void GRASS_LIB_EXPORT QgsGrass::createTable( dbDriver *driver, const QString tableName, const QgsFields &fields )
 {
   if ( !driver ) // should not happen
   {
@@ -1989,8 +1994,8 @@ void QgsGrass::createTable( dbDriver *driver, const QString tableName, const Qgs
   }
 }
 
-void QgsGrass::insertRow( dbDriver *driver, const QString tableName,
-                          const QgsAttributes& attributes )
+void GRASS_LIB_EXPORT QgsGrass::insertRow( dbDriver *driver, const QString tableName,
+    const QgsAttributes& attributes )
 {
   if ( !driver ) // should not happen
   {
@@ -2050,6 +2055,24 @@ void QgsGrass::insertRow( dbDriver *driver, const QString tableName,
     throw QgsGrass::Exception( QObject::tr( "Cannot insert, statement" ) + ": " + sql
                                + QObject::tr( "error" ) + ": " + QString::fromLatin1( db_get_error_msg() ) );
   }
+}
+
+bool GRASS_LIB_EXPORT QgsGrass::isExternal( const QgsGrassObject & object )
+{
+  if ( object.type() != QgsGrassObject::Raster )
+  {
+    return false;
+  }
+  bool isExternal = false;
+  QgsGrass::setLocation( object.gisdbase(), object.location() );
+  struct GDAL_link *gdal;
+  gdal = G_get_gdal_link( object.name().toUtf8().data(), object.mapset().toUtf8().data() );
+  if ( gdal )
+  {
+    isExternal = true;
+    G_close_gdal_link( gdal );
+  }
+  return isExternal;
 }
 
 // GRASS version constants have been changed on 26.4.2007

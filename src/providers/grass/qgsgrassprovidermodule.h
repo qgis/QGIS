@@ -130,12 +130,13 @@ class QgsGrassRasterItem : public QgsGrassObjectItem
     Q_OBJECT
   public:
     QgsGrassRasterItem( QgsDataItem* parent, QgsGrassObject grassObject,
-                        QString path, QString uri );
+                        QString path, QString uri, bool isExternal );
 
-    //virtual QList<QAction*> actions() override;
+    virtual QIcon icon() override;
 
-  public slots:
-    //void deleteMap();
+  private:
+    // is external created by r.external
+    bool mExternal;
 };
 
 // item representing a layer being imported

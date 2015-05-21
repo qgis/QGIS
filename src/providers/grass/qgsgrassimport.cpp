@@ -495,3 +495,52 @@ QString QgsGrassCopy::srcDescription() const
 {
   return mSrcObject.toString();
 }
+
+//------------------------------ QgsGrassExternal ------------------------------------
+QgsGrassExternal::QgsGrassExternal( const QString& gdalSource, const QgsGrassObject& destObject )
+    : QgsGrassImport( destObject )
+    , mSource( gdalSource )
+{
+}
+
+QgsGrassExternal::~QgsGrassExternal()
+{
+}
+
+bool QgsGrassExternal::import()
+{
+  QgsDebugMsg( "entered" );
+
+  try
+  {
+    QString cmd = "r.external";
+    QStringList arguments;
+
+    if ( QFileInfo( mSource ).exists() )
+    {
+      arguments << "input=" + mSource;
+    }
+    else
+    {
+      arguments << "source=" + mSource;
+    }
+    arguments << "output=" + mGrassObject.name();
+
+    // TODO: best timeout
+    int timeout = -1;
+    // throws QgsGrass::Exception
+    QgsGrass::runModule( mGrassObject.gisdbase(), mGrassObject.location(), mGrassObject.mapset(), cmd, arguments, timeout, false );
+  }
+  catch ( QgsGrass::Exception &e )
+  {
+    setError( e.what() );
+    return false;
+  }
+
+  return true;
+}
+
+QString QgsGrassExternal::srcDescription() const
+{
+  return mSource;
+}

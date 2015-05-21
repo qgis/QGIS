@@ -384,6 +384,9 @@ class QgsGrass
     static GRASS_LIB_EXPORT void insertRow( dbDriver *driver, const QString tableName,
                                             const QgsAttributes& attributes );
 
+    /** Returns true if object is link to external data (created by r.external) */
+    static GRASS_LIB_EXPORT bool isExternal( const QgsGrassObject & object );
+
     //! Library version
     static GRASS_LIB_EXPORT int versionMajor();
     static GRASS_LIB_EXPORT int versionMinor();

@@ -113,4 +113,20 @@ class GRASS_LIB_EXPORT QgsGrassCopy : public QgsGrassImport
 
 };
 
+// Creates link to GDAL data source with r.external
+class GRASS_LIB_EXPORT QgsGrassExternal : public QgsGrassImport
+{
+    Q_OBJECT
+  public:
+    // takes provider ownership
+    QgsGrassExternal( const QString& gdalSource, const QgsGrassObject& destObject );
+    ~QgsGrassExternal();
+    bool import() override;
+    QString srcDescription() const override;
+
+  private:
+    QString mSource;
+
+};
+
 #endif // QGSGRASSIMPORT_H
