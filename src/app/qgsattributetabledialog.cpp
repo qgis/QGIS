@@ -66,7 +66,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
     , mDock( 0 )
     , mLayer( theLayer )
     , mRubberBand( 0 )
-    , mCurrentSearchWidget( 0 )
+    , mCurrentSearchWidgetWrapper( 0 )
 {
   setupUi( this );
 
@@ -413,10 +413,9 @@ void QgsAttributeTableDialog::filterColumnChanged( QObject* filterAction )
   // replace the search line edit with a search widget that is suited to the selected field
   mFilterQuery->setVisible( false );
   // delete previous widget
-  if ( mCurrentSearchWidget != 0 )
+  if ( mCurrentSearchWidgetWrapper != 0 )
   {
-    //mFilterContainer->removeWidget(mCurrentSearchWidget);  
-    delete mCurrentSearchWidget;
+    delete mCurrentSearchWidgetWrapper;
   }
   QString fieldName = mFilterButton->defaultAction()->text();
   // get the search widget
@@ -425,8 +424,11 @@ void QgsAttributeTableDialog::filterColumnChanged( QObject* filterAction )
       return;
   const QString widgetType = mLayer->editorWidgetV2( fldIdx );
   const QgsEditorWidgetConfig widgetConfig = mLayer->editorWidgetV2Config( fldIdx );
-  QgsEditorWidgetWrapper* eww = QgsEditorWidgetRegistry::instance()->create( widgetType, mLayer, fldIdx, widgetConfig, 0 , mFilterContainer);
-  mCurrentSearchWidget = eww->widget();
+ //replace with createSearch or so
+ //go to registry and create a create Search method
+  mCurrentSearchWidgetWrapper= QgsEditorWidgetRegistry::instance()->createSearch( widgetType, mLayer, fldIdx, widgetConfig, mFilterContainer);
+  mCurrentSearchWidgetWrapper->widget()->setObjectName("searchy");
+  mCurrentSearchWidgetWrapper->widget()->setVisible( true );
 
   mApplyFilterButton->setVisible( true );
 }

@@ -14,9 +14,11 @@
  ***************************************************************************/
 
 #include "qgseditorwidgetfactory.h"
-#include "qgsfilterlineedit.h"
+#include "qgsdefaultsearchwidgetwrapper.h"
 
 #include <QSettings>
+
+class QgsDefaultSearchWidgetWrapper;
 
 QgsEditorWidgetFactory::QgsEditorWidgetFactory( const QString& name )
     : mName( name )
@@ -27,9 +29,9 @@ QgsEditorWidgetFactory::~QgsEditorWidgetFactory()
 {
 }
 
-QgsEditorWidgetWrapper* QgsEditorWidgetFactory::createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ){
+QgsEditorWidgetWrapper* QgsEditorWidgetFactory::createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) {
 
-    return create(vl, fieldIdx, 0, parent);
+    return new QgsDefaultSearchWidgetWrapper(vl, fieldIdx, 0, parent);
 }
 
 QString QgsEditorWidgetFactory::name()

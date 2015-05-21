@@ -16,7 +16,7 @@
 #include "qgseditorwidgetregistry.h"
 
 #include "qgsattributeeditorcontext.h"
-#include "qgseditorwidgetfactory.h"
+//#include "qgseditorwidgetfactory.h"
 #include "qgslegacyhelpers.h"
 #include "qgsmessagelog.h"
 #include "qgsproject.h"
@@ -86,6 +86,25 @@ QgsEditorWidgetWrapper* QgsEditorWidgetRegistry::create( const QString& widgetId
   if ( mWidgetFactories.contains( widgetId ) )
   {
     QgsEditorWidgetWrapper* ww = mWidgetFactories[widgetId]->create( vl, fieldIdx, editor, parent );
+
+    if ( ww )
+    {
+      ww->setConfig( config );
+      ww->setContext( context );
+      // Make sure that there is a widget created at this point
+      // so setValue() et al won't crash
+      ww->widget();
+      return ww;
+    }
+  }
+  return 0;
+}
+
+QgsEditorWidgetWrapper* QgsEditorWidgetRegistry::createSearch( const QString& widgetId, QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, QWidget* parent, const QgsAttributeEditorContext &context )
+{
+  if ( mWidgetFactories.contains( widgetId ) )
+  {
+    QgsEditorWidgetWrapper* ww = mWidgetFactories[widgetId]->createSearchWidget( vl, fieldIdx, parent );
 
     if ( ww )
     {

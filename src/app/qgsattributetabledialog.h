@@ -29,6 +29,7 @@
 #include "qgsattributedialog.h"
 #include "qgsvectorlayer.h" //QgsFeatureIds
 #include "qgsfieldmodel.h"
+#include "qgseditorwidgetwrapper.h"
 
 class QDialogButtonBox;
 class QPushButton;
@@ -208,7 +209,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     QgsFieldModel* mFieldModel;
 
     QgsRubberBand* mRubberBand;
-    QWidget* mCurrentSearchWidget;
+    QgsEditorWidgetWrapper* mCurrentSearchWidgetWrapper;
 };
 
 #endif
