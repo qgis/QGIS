@@ -1492,6 +1492,11 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
       {
         continue;
       }
+      QgsMapLayer * registeredMapLayer = QgsMapLayerRegistry::instance()->mapLayer( currentLayer->id() );
+      if ( registeredMapLayer )
+      {
+        currentLayer = registeredMapLayer;
+      }
 
       //skip layer if not visible at current map scale
       bool useScaleConstraint = ( scaleDenominator > 0 && currentLayer->hasScaleBasedVisibility() );
