@@ -377,6 +377,7 @@ bool QgsGeometry::moveVertex( double x, double y, int atVertex )
     return false;
   }
 
+  removeWkbGeos();
   return d->geometry->moveVertex( id, QgsPointV2( x, y ) );
 }
 
@@ -393,6 +394,7 @@ bool QgsGeometry::moveVertex( const QgsPointV2& p, int atVertex )
     return false;
   }
 
+  removeWkbGeos();
   return d->geometry->moveVertex( id, p );
 }
 
@@ -409,6 +411,7 @@ bool QgsGeometry::deleteVertex( int atVertex )
     return false;
   }
 
+  removeWkbGeos();
   return d->geometry->deleteVertex( id );
 }
 
@@ -425,6 +428,7 @@ bool QgsGeometry::insertVertex( double x, double y, int beforeVertex )
     return false;
   }
 
+  removeWkbGeos();
   return d->geometry->insertVertex( id, QgsPointV2( x, y ) );
 }
 
@@ -495,6 +499,7 @@ double QgsGeometry::closestSegmentWithContext(
 
 int QgsGeometry::addRing( const QList<QgsPoint>& ring )
 {
+  removeWkbGeos();
   QgsLineStringV2* ringLine = new QgsLineStringV2();
   QList< QgsPointV2 > ringPoints;
   convertPointList( ring, ringPoints );
@@ -509,6 +514,7 @@ int QgsGeometry::addRing( QgsCurveV2* ring )
     return 1;
   }
 
+  removeWkbGeos();
   return QgsGeometryEditUtils::addRing( d->geometry, ring );
 }
 
@@ -532,11 +538,13 @@ int QgsGeometry::addPart( const QList<QgsPoint> &points, QGis::GeometryType geom
     ringLine->setPoints( partPoints );
     partGeom = ringLine;
   }
+  removeWkbGeos();
   return addPart( dynamic_cast<QgsCurveV2*>( partGeom ) );
 }
 
 int QgsGeometry::addPart( QgsCurveV2* part )
 {
+  removeWkbGeos();
   return QgsGeometryEditUtils::addPart( d->geometry, part );
 }
 
@@ -564,6 +572,7 @@ int QgsGeometry::addPart( GEOSGeometry *newPart )
   }
 
   QgsAbstractGeometryV2* geom = QgsGeos::fromGeos( newPart );
+  removeWkbGeos();
   return QgsGeometryEditUtils::addPart( d->geometry, geom );
 }
 
@@ -575,6 +584,7 @@ int QgsGeometry::translate( double dx, double dy )
   }
 
   d->geometry->transform( QTransform::fromTranslate( dx, dy ) );
+  removeWkbGeos();
   return 0;
 }
 
@@ -589,6 +599,7 @@ int QgsGeometry::rotate( double rotation, const QgsPoint& center )
   t.rotate( -rotation );
   t.translate( -center.x(), -center.y() );
   d->geometry->transform( t );
+  removeWkbGeos();
   return 0;
 }
 
@@ -616,6 +627,7 @@ int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeome
   }
 
   convertPointList( tp, topologyTestPoints );
+  removeWkbGeos();
   return result;
 }
 
@@ -642,6 +654,7 @@ int QgsGeometry::reshapeGeometry( const QList<QgsPoint>& reshapeWithLine )
     d->geometry = geom;
     return 0;
   }
+  removeWkbGeos();
   return errorCode;
 }
 
@@ -664,6 +677,7 @@ int QgsGeometry::makeDifference( const QgsGeometry* other )
 
   delete d->geometry;
   d->geometry = diffGeom;
+  removeWkbGeos();
   return 0;
 }
 
@@ -1455,6 +1469,7 @@ int QgsGeometry::avoidIntersections( QMap<QgsVectorLayer*, QSet< QgsFeatureId > 
   {
     delete d->geometry;
     d->geometry = diffGeom;
+    removeWkbGeos();
   }
   return 0;
 }
@@ -1532,6 +1547,7 @@ void QgsGeometry::convertToStraightSegment()
       return ;
     }
     d->geometry = curve->curveToLine();
+    removeWkbGeos();
     delete curve;
   }
   else if ( flatGeomType == QgsWKBTypes::CurvePolygon )
@@ -1542,6 +1558,7 @@ void QgsGeometry::convertToStraightSegment()
       return;
     }
     d->geometry = curvePolygon->toPolygon();
+    removeWkbGeos();
     delete curvePolygon;
   }
   else //no segmentation needed
@@ -1568,6 +1585,7 @@ int QgsGeometry::transform( const QgsCoordinateTransform& ct )
 
   detach();
   d->geometry->transform( ct );
+  removeWkbGeos();
   return 0;
 }
 
@@ -1586,6 +1604,7 @@ void QgsGeometry::clip( const QgsRectangle& rect )
   {
     detach();
     d->geometry->clip( rect );
+    removeWkbGeos();
   }
 }
 
