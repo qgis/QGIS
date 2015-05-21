@@ -83,10 +83,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   mStyleSheetNewOpts = mStyleSheetBuilder->defaultOptions();
   mStyleSheetOldOpts = QMap<QString, QVariant>( mStyleSheetNewOpts );
 
-  connect( cmbTheme, SIGNAL( activated( const QString& ) ), this, SLOT( themeChanged( const QString& ) ) );
-  connect( cmbTheme, SIGNAL( highlighted( const QString& ) ), this, SLOT( themeChanged( const QString& ) ) );
-  connect( cmbTheme, SIGNAL( textChanged( const QString& ) ), this, SLOT( themeChanged( const QString& ) ) );
-
   connect( mFontFamilyRadioCustom, SIGNAL( toggled( bool ) ), mFontFamilyComboBox, SLOT( setEnabled( bool ) ) );
 
   connect( cmbIconSize, SIGNAL( activated( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
@@ -301,9 +297,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   //wms search server
   leWmsSearch->setText( settings.value( "/qgis/WMSSearchUrl", "http://geopole.org/wms/search?search=%1&type=rss" ).toString() );
 
-  // set the current theme
-  cmbTheme->setItemText( cmbTheme->currentIndex(), settings.value( "/Themes" ).toString() );
-
   // set the attribute table default filter
   cmbAttrTableBehaviour->clear();
   cmbAttrTableBehaviour->addItem( tr( "Show all features" ), QgsAttributeTableFilterModel::ShowAll );
@@ -488,22 +481,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
     mKeepBaseUnitCheckBox->setChecked( false );
   }
 
-
-  // add the themes to the combo box on the option dialog
-  QDir myThemeDir( ":/images/themes/" );
-  myThemeDir.setFilter( QDir::Dirs );
-  QStringList myDirList = myThemeDir.entryList( QStringList( "*" ) );
-  cmbTheme->clear();
-  for ( int i = 0; i < myDirList.count(); i++ )
-  {
-    if ( myDirList[i] != "." && myDirList[i] != ".." )
-    {
-      cmbTheme->addItem( myDirList[i] );
-    }
-  }
-
-  // set the theme combo
-  cmbTheme->setCurrentIndex( cmbTheme->findText( settings.value( "/Themes", "default" ).toString() ) );
   cmbIconSize->setCurrentIndex( cmbIconSize->findText( settings.value( "/IconSize", QGIS_ICON_SIZE ).toString() ) );
 
   // set font size and family
@@ -945,12 +922,6 @@ void QgsOptions::on_pbnTemplateFolderReset_pressed()
   leTemplateFolder->setText( QgsApplication::qgisSettingsDirPath() + QString( "project_templates" ) );
 }
 
-void QgsOptions::themeChanged( const QString &newThemeName )
-{
-  // Slot to change the theme as user scrolls through the choices
-  QgisApp::instance()->setTheme( newThemeName );
-}
-
 void QgsOptions::iconSizeChanged( const QString &iconSize )
 {
   QgisApp::instance()->setIconSizes( iconSize.toInt() );
@@ -976,12 +947,6 @@ void QgsOptions::on_mProjectOnLaunchPushBtn_pressed()
   {
     mProjectOnLaunchLineEdit->setText( projPath );
   }
-}
-
-QString QgsOptions::theme()
-{
-  // returns the current theme (as selected in the cmbTheme combo box)
-  return cmbTheme->currentText();
 }
 
 void QgsOptions::saveOptions()
@@ -1142,16 +1107,6 @@ void QgsOptions::saveOptions()
 
   settings.setValue( "/qgis/nullValue", leNullValue->text() );
   settings.setValue( "/qgis/style", cmbStyle->currentText() );
-
-  if ( cmbTheme->currentText().length() == 0 )
-  {
-    settings.setValue( "/Themes", "default" );
-  }
-  else
-  {
-    settings.setValue( "/Themes", cmbTheme->currentText() );
-  }
-
   settings.setValue( "/IconSize", cmbIconSize->currentText() );
 
   settings.setValue( "/qgis/messageTimeout", mMessageTimeoutSpnBx->value() );
