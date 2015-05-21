@@ -1,8 +1,6 @@
 <RCC>
     <qresource prefix="/images/themes/default/grass">
         <file alias="grass_add_map.png">themes/default/grass_add_map.png</file>
-        <file alias="grass_add_raster.png">themes/default/grass_add_raster.png</file>
-        <file alias="grass_add_vector.png">themes/default/grass_add_vector.png</file>
         <file alias="grass_add_vertex.png">themes/default/grass_add_vertex.png</file>
         <file alias="grass_browser_raster_layer.png">themes/default/grass_browser_raster_layer.png</file>
         <file alias="grass_browser_vector_layer.png">themes/default/grass_browser_vector_layer.png</file>

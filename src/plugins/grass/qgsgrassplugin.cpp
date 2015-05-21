@@ -77,8 +77,6 @@ QgsGrassPlugin::QgsGrassPlugin( QgisInterface * theQgisInterFace )
     , mOpenMapsetAction( 0 )
     , mNewMapsetAction( 0 )
     , mCloseMapsetAction( 0 )
-    , mAddVectorAction( 0 )
-    , mAddRasterAction( 0 )
     , mOpenToolsAction( 0 )
     , mEditRegionAction( 0 )
     , mEditAction( 0 )
@@ -162,12 +160,6 @@ void QgsGrassPlugin::initGui()
   mCloseMapsetAction = new QAction( QIcon(), tr( "Close Mapset" ), this );
   mCloseMapsetAction->setObjectName( "mCloseMapsetAction" );
 
-  mAddVectorAction = new QAction( QIcon(), tr( "Add GRASS Vector Layer" ), this );
-  mAddVectorAction->setObjectName( "mAddVectorAction" );
-  mAddVectorAction->setWhatsThis( tr( "Adds a GRASS vector layer to the map canvas" ) );
-  mAddRasterAction = new QAction( QIcon(), tr( "Add GRASS raster layer" ), this );
-  mAddRasterAction->setObjectName( "mAddRasterAction" );
-  mAddRasterAction->setWhatsThis( tr( "Adds a GRASS raster layer to the map canvas" ) );
   mOpenToolsAction = new QAction( QIcon(), tr( "Open GRASS Tools" ), this );
   mOpenToolsAction->setObjectName( "mOpenToolsAction" );
   mOpenToolsAction->setWhatsThis( tr( "Open GRASS tools" ) );
@@ -187,8 +179,6 @@ void QgsGrassPlugin::initGui()
   mNewVectorAction->setObjectName( "mNewVectorAction" );
 
   // Connect the action
-  connect( mAddVectorAction, SIGNAL( triggered() ), this, SLOT( addVector() ) );
-  connect( mAddRasterAction, SIGNAL( triggered() ), this, SLOT( addRaster() ) );
   connect( mOpenToolsAction, SIGNAL( triggered() ), this, SLOT( openTools() ) );
   connect( mEditAction, SIGNAL( triggered() ), this, SLOT( edit() ) );
   connect( mNewVectorAction, SIGNAL( triggered() ), this, SLOT( newVector() ) );
@@ -202,8 +192,6 @@ void QgsGrassPlugin::initGui()
   qGisInterface->addPluginToMenu( tr( "&GRASS" ), mOpenMapsetAction );
   qGisInterface->addPluginToMenu( tr( "&GRASS" ), mNewMapsetAction );
   qGisInterface->addPluginToMenu( tr( "&GRASS" ), mCloseMapsetAction );
-  qGisInterface->addPluginToMenu( tr( "&GRASS" ), mAddVectorAction );
-  qGisInterface->addPluginToMenu( tr( "&GRASS" ), mAddRasterAction );
   qGisInterface->addPluginToMenu( tr( "&GRASS" ), mNewVectorAction );
   qGisInterface->addPluginToMenu( tr( "&GRASS" ), mEditAction );
   qGisInterface->addPluginToMenu( tr( "&GRASS" ), mOpenToolsAction );
@@ -219,8 +207,6 @@ void QgsGrassPlugin::initGui()
   mToolBarPointer->addAction( mNewMapsetAction );
   mToolBarPointer->addAction( mCloseMapsetAction );
   mToolBarPointer->addSeparator();
-  mToolBarPointer->addAction( mAddVectorAction );
-  mToolBarPointer->addAction( mAddRasterAction );
   mToolBarPointer->addAction( mNewVectorAction );
   mToolBarPointer->addAction( mEditAction );
   mToolBarPointer->addAction( mOpenToolsAction );
@@ -310,156 +296,6 @@ void QgsGrassPlugin::saveMapset()
 
   QgsProject::instance()->writeEntry( "GRASS", "/WorkingMapset",
                                       QgsGrass::getDefaultMapset() );
-}
-
-// Slot called when the "Add GRASS vector layer" menu item is triggered
-void QgsGrassPlugin::addVector()
-{
-// QgsDebugMsg("entered.");
-  QString uri;
-
-  QgsGrassSelect *sel = new QgsGrassSelect( qGisInterface->mainWindow(), QgsGrassSelect::VECTOR );
-  if ( sel->exec() )
-  {
-    uri = sel->gisdbase + "/" + sel->location + "/" + sel->mapset + "/" + sel->map + "/" + sel->layer;
-  }
-// QgsDebugMsg(QString("plugin URI: %1").arg(uri));
-  if ( uri.length() == 0 )
-  {
-// QgsDebugMsg("Nothing was selected");
-    return;
-  }
-  else
-  {
-// QgsDebugMsg("Add new vector layer");
-
-    // create vector name: vector layer
-    QString name = sel->map;
-
-    QString field;
-    QString type;
-
-    if ( !sel->layer.startsWith( "topo_" ) )
-    {
-      QRegExp rx( "(\\d+)_(.+)" );
-      if ( rx.indexIn( sel->layer ) != -1 )
-      {
-        field = rx.cap( 1 );
-        type = rx.cap( 2 );
-      }
-    }
-
-    // Set location
-    QgsGrass::setLocation( sel->gisdbase, sel->location );
-
-    /* Open vector */
-    try
-    {
-      //Vect_set_open_level( 2 );
-      struct Map_info map;
-      int level = Vect_open_old_head( &map, sel->map.toUtf8().data(),
-                                      sel->mapset.toUtf8().data() );
-
-      if ( level == 1 )
-      {
-        QgsDebugMsg( "Cannot open vector on level 2" );
-        QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot open vector %1 in mapset %2 on level 2 (topology not available, try to rebuild topology using v.build module)." ).arg( sel->map ).arg( sel->mapset ) );
-        Vect_close( &map );
-        return;
-      }
-      else if ( level < 1 )
-      {
-        QgsDebugMsg( "Cannot open vector" );
-        QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot open vector %1 in mapset %2" ).arg( sel->map ).arg( sel->mapset ) );
-        return;
-      }
-
-      if ( level >= 2 )
-      {
-        if ( !sel->layer.startsWith( "topo_" ) )
-        {
-          // Count layers
-          int cnt = 0;
-          int ncidx = Vect_cidx_get_num_fields( &map );
-
-          for ( int i = 0; i < ncidx; i++ )
-          {
-            int field = Vect_cidx_get_field_number( &map, i );
-
-            if ( Vect_cidx_get_type_count( &map, field, GV_POINT | GV_LINE | GV_AREA ) > 0 ||
-                 ( field > 1 && Vect_cidx_get_type_count( &map, field, GV_BOUNDARY ) ) )
-            {
-              cnt++;
-            }
-          }
-
-          if ( cnt > 1 )
-          {
-            name.append( " " + field );
-
-            // No need to ad type, the type is obvious from the legend
-          }
-        }
-        else
-        {
-          name.append( " " + sel->layer );
-        }
-      }
-
-      Vect_close( &map );
-    }
-    catch ( QgsGrass::Exception &e )
-    {
-      QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot open GRASS vector:\n %1" ).arg( e.what() ) );
-    }
-
-    qGisInterface->addVectorLayer( uri, name, "grass" );
-  }
-}
-
-// Slot called when the "Add GRASS raster layer" menu item is triggered
-void QgsGrassPlugin::addRaster()
-{
-// QgsDebugMsg("entered.");
-  QString uri;
-
-  QgsGrassSelect *sel = new QgsGrassSelect( qGisInterface->mainWindow(), QgsGrassSelect::RASTER );
-  if ( sel->exec() )
-  {
-    QString element;
-    if ( sel->selectedType == QgsGrassSelect::RASTER )
-    {
-      element = "cellhd";
-    }
-    else   // GROUP
-    {
-      element = "group";
-    }
-
-    uri = sel->gisdbase + "/" + sel->location + "/" + sel->mapset + "/" + element + "/" + sel->map;
-  }
-
-// QgsDebugMsg(QString("plugin URI: %1").arg(uri));
-
-  if ( uri.length() == 0 )
-  {
-// QgsDebugMsg("Nothing was selected");
-    return;
-  }
-  else
-  {
-
-// QgsDebugMsg("Add new raster layer");
-
-    // create raster name
-    int pos = uri.lastIndexOf( '/' );
-    pos = uri.lastIndexOf( '/', pos - 1 );
-    QString name = uri.right( uri.length() - pos - 1 );
-    name.replace( '/', ' ' );
-
-    //qGisInterface->addRasterLayer( uri, sel->map );
-    qGisInterface->addRasterLayer( uri, sel->map, "grassraster" );
-  }
 }
 
 // Open tools
@@ -859,8 +695,6 @@ void QgsGrassPlugin::unload()
   qGisInterface->removePluginMenu( tr( "&GRASS" ), mOpenMapsetAction );
   qGisInterface->removePluginMenu( tr( "&GRASS" ), mNewMapsetAction );
   qGisInterface->removePluginMenu( tr( "&GRASS" ), mCloseMapsetAction );
-  qGisInterface->removePluginMenu( tr( "&GRASS" ), mAddVectorAction );
-  qGisInterface->removePluginMenu( tr( "&GRASS" ), mAddRasterAction );
   qGisInterface->removePluginMenu( tr( "&GRASS" ), mOpenToolsAction );
   qGisInterface->removePluginMenu( tr( "&GRASS" ), mRegionAction );
   qGisInterface->removePluginMenu( tr( "&GRASS" ), mEditRegionAction );
@@ -870,8 +704,6 @@ void QgsGrassPlugin::unload()
   delete mOpenMapsetAction;
   delete mNewMapsetAction;
   delete mCloseMapsetAction;
-  delete mAddVectorAction;
-  delete mAddRasterAction;
   delete mOpenToolsAction;
   delete mRegionAction;
   delete mEditRegionAction;
@@ -904,8 +736,6 @@ void QgsGrassPlugin::setCurrentTheme( QString theThemeName )
     mNewMapsetAction->setIcon( getThemeIcon( "grass_new_mapset.png" ) );
     mCloseMapsetAction->setIcon( getThemeIcon( "grass_close_mapset.png" ) );
 
-    mAddVectorAction->setIcon( getThemeIcon( "grass_add_vector.png" ) );
-    mAddRasterAction->setIcon( getThemeIcon( "grass_add_raster.png" ) );
     mOpenToolsAction->setIcon( getThemeIcon( "grass_tools.png" ) );
 
     mRegionAction->setIcon( getThemeIcon( "grass_region.png" ) );

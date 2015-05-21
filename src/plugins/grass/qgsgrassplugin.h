@@ -85,10 +85,6 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
   public slots:
     //! init the gui
     virtual void initGui() override;
-    //! Show the dialog box for new vector
-    void addVector();
-    //! Show the dialog box for new raster
-    void addRaster();
     //! Start vector editing
     void edit();
     //! unload the plugin
@@ -164,8 +160,6 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     QAction *mOpenMapsetAction;
     QAction *mNewMapsetAction;
     QAction *mCloseMapsetAction;
-    QAction *mAddVectorAction;
-    QAction *mAddRasterAction;
     QAction *mOpenToolsAction;
     QAction *mEditRegionAction;
     QAction *mEditAction;
