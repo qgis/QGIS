@@ -280,3 +280,6 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
             commands = ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]
 
         return commands
+
+    def commandName(self):
+        return "ogr2ogr"

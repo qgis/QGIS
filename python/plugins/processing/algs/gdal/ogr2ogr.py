@@ -147,3 +147,5 @@ class Ogr2Ogr(OgrAlgorithm):
 
         return commands
 
+    def commandName(self):
+        return "ogr2ogr"

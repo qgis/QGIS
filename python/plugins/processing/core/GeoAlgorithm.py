@@ -119,7 +119,7 @@ class GeoAlgorithm:
 
         qgsVersion = QGis.QGIS_VERSION_INT
         major = qgsVersion / 10000
-        minor = minor = (qgsVersion - major * 10000) / 100
+        minor = (qgsVersion - major * 10000) / 100
         if minor % 2 == 1:
             qgsVersion = 'testing'
         else:

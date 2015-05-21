@@ -47,6 +47,23 @@ class GdalAlgorithm(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         GdalUtils.runGdal(self.getConsoleCommands(), progress)
+        
+    def help(self):
+        try:
+            return False, "http://www.gdal.org/%s.html" % self.commandName()   
+        except:
+            return False, None
+        
+    def commandName(self):
+        alg = self.getCopy()
+        for output in alg.outputs:
+            output.setValue("dummy")
+        for param in alg.parameters:
+            param.setValue("1")
+        name = alg.getConsoleCommands()[0]
+        if name.endswith(".py"):
+            name = name[:-3]
+        return name
 
 
 class GdalScriptAlgorithm(ScriptAlgorithm):

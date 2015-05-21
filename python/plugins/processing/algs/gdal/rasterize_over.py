@@ -54,7 +54,7 @@ class rasterize_over(OgrAlgorithm):
         self.addParameter(ParameterRaster(self.INPUT_RASTER,
             self.tr('Existing raster layer'), False))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self, progress):
         inLayer = self.getParameterValue(self.INPUT)
         ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
         inRasterLayer = self.getParameterValue(self.INPUT_RASTER)

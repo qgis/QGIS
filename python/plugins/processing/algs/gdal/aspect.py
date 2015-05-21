@@ -92,3 +92,4 @@ class aspect(GdalAlgorithm):
             arguments.append('-zero_for_flat')
 
         return ['gdaldem', GdalUtils.escapeAndJoin(arguments)]
+    

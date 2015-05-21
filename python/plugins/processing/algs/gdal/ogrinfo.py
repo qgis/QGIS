@@ -48,7 +48,7 @@ class OgrInfo(OgrAlgorithm):
         self.addOutput(OutputHTML(self.OUTPUT, self.tr('Layer information')))
 
     def getConsoleCommands(self):
-        arguments = []
+        arguments = ["orginfo"]
         arguments.append('-al')
         arguments.append('-so')
         layer = self.getParameterValue(self.INPUT)

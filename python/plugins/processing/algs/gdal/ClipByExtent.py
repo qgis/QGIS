@@ -83,3 +83,6 @@ class ClipByExtent(GdalAlgorithm):
         arguments.append(out)
 
         return ['gdal_translate', GdalUtils.escapeAndJoin(arguments)]
+
+    def commandName(self):
+        return "gdal_translate"
