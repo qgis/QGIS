@@ -497,7 +497,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
     closeDb();
     return;
   }
-  enabledCapabilities = QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId;
+  enabledCapabilities = mPrimaryKey.isEmpty() ? 0 : (QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId);
   if (( mTableBased || mViewBased ) &&  !mReadOnly )
   {
     // enabling editing only for Tables [excluding Views and VirtualShapes]
