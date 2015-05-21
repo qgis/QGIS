@@ -4377,7 +4377,7 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
     }
 
     //QgsDebugMsgLevel( "drawLabel " + txt, 4 );
-    QStringList multiLineList = QgsPalLabeling::splitToLines( text, tmpLyr.wrapChar );
+    QStringList multiLineList = QgsPalLabeling::splitToLines( txt, tmpLyr.wrapChar );
     int lines = multiLineList.size();
 
     double labelWidest = 0.0;
