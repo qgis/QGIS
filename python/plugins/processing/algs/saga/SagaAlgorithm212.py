@@ -352,14 +352,4 @@ class SagaAlgorithm212(GeoAlgorithm):
                         if extent != extent2:
                             return self.tr("Input layers do not have the same grid extent.")
 
-    def help(self):
-        name = self.cmdname.lower()
-        validChars = 'abcdefghijklmnopqrstuvwxyz'
-        name = ''.join(c for c in name if c in validChars)
-        html = getHtmlFromRstFile(os.path.join(os.path.dirname(__file__), 'help',
-                            name + '.rst'))
-        if html is None:
-            return True, None
-        imgpath = os.path.join(pluginPath, 'images', 'saga.png')
-        html = ('<img src="%s"/>' % imgpath) + html
-        return True, html
+                        

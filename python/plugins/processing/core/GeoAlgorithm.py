@@ -139,13 +139,6 @@ class GeoAlgorithm:
         helpUrl = 'http://docs.qgis.org/{}/en/docs/user_manual/processing_algs/{}/{}/{}.html'.format(qgsVersion, providerName, safeGroupName, safeAlgName)
         return False, helpUrl
 
-        # name = self.commandLineName().split(':')[1].lower()
-        # filename = os.path.join(os.path.dirname(inspect.getfile(self.__class__)), 'help', name + '.rst')
-        # try:
-        #   html = getHtmlFromRstFile(filename)
-        #   return True, html
-        # except:
-        #   return False, None
 
     def processAlgorithm(self):
         """Here goes the algorithm itself.
