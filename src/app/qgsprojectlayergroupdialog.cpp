@@ -102,6 +102,11 @@ QString QgsProjectLayerGroupDialog::selectedProjectFile() const
   return mProjectFileLineEdit->text();
 }
 
+bool QgsProjectLayerGroupDialog::isValid() const
+{
+  return mTreeView->layerTreeModel() != 0;
+}
+
 void QgsProjectLayerGroupDialog::on_mBrowseFileToolButton_clicked()
 {
   //line edit might emit editingFinished signal when loosing focus
