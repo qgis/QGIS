@@ -22,7 +22,7 @@ from utilities import (unitTestDataPath,
                        TestCase,
                        unittest
                        )
-from providertestutils import runGetFeatureTests
+from providertestutils import * # testGetFeaturesUncompiled
 
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 TEST_DATA_DIR = unitTestDataPath()
@@ -33,7 +33,7 @@ class TestPyQgsPostgresProvider(TestCase):
         """Run before all tests"""
 
         # Create test database
-        cls.vl = QgsVectorLayer( u'service=\'qgis_test\' key=\'pk\' table="qgis_test"."someData" sql=', 'test', 'postgres' )
+        cls.vl = QgsVectorLayer( u'dbname=\'qgis_test\' host=localhost port=5432 user=\'postgres\' password=\'postgres\' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=', 'test', 'postgres' )
 
 
     @classmethod
@@ -49,6 +49,9 @@ class TestPyQgsPostgresProvider(TestCase):
     def testGetFeaturesCompiled(self):
         QSettings().setValue( "/qgis/postgres/compileExpressions", True )
         runGetFeatureTests( self.vl )
+
+    def testGetFeaturesFilterRectTests(self):
+        runGetFilterRectTests( self.vl )
 
 if __name__ == '__main__':
     unittest.main()

@@ -12,15 +12,22 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+from qgis.core import QgsRectangle, QgsFeatureRequest
+
 def runGetFeatureTests( vl ):
     assert len( [f for f in vl.getFeatures()] ) == 5
-    assert len( [f for f in vl.getFeatures( 'name IS NOT NULL' )] ) == 4
-    assert len( [f for f in vl.getFeatures( 'name LIKE \'Apple\'' )] ) == 1
-    assert len( [f for f in vl.getFeatures( 'name ILIKE \'aPple\'' )] ) == 1
-    assert len( [f for f in vl.getFeatures( 'name ILIKE \'%pp%\'' )] ) == 1
-    assert len( [f for f in vl.getFeatures( 'cnt > 0' )] ) == 4
-    assert len( [f for f in vl.getFeatures( 'cnt < 0' )] ) == 1
-    assert len( [f for f in vl.getFeatures( 'cnt >= 100' )] ) == 4
-    assert len( [f for f in vl.getFeatures( 'cnt <= 100' )] ) == 2
-    assert len( [f for f in vl.getFeatures( 'pk IN (1, 2, 4, 8)' )] ) == 3
+    assert len( [f for f in vl.getFeatures( QgsFeatureRequest().setFilterExpression( 'name IS NOT NULL' ) )] ) == 4
+    assert len( [f for f in vl.getFeatures( QgsFeatureRequest().setFilterExpression('name LIKE \'Apple\'' ) )] ) == 1
+    assert len( [f for f in vl.getFeatures( QgsFeatureRequest().setFilterExpression('name ILIKE \'aPple\'' ) )] ) == 1
+    assert len( [f for f in vl.getFeatures( QgsFeatureRequest().setFilterExpression('name ILIKE \'%pp%\'' ) )] ) == 1
+    assert len( [f for f in vl.getFeatures( QgsFeatureRequest().setFilterExpression('cnt > 0' ) ) ] ) == 4
+    assert len( [f for f in vl.getFeatures( QgsFeatureRequest().setFilterExpression('cnt < 0' ) ) ] ) == 1
+    assert len( [f for f in vl.getFeatures( QgsFeatureRequest().setFilterExpression('cnt >= 100' ) ) ] ) == 4
+    assert len( [f for f in vl.getFeatures( QgsFeatureRequest().setFilterExpression('cnt <= 100' ) ) ] ) == 2
+    assert len( [f for f in vl.getFeatures( QgsFeatureRequest().setFilterExpression('pk IN (1, 2, 4, 8)' ) )] ) == 3
 
+def runGetFilterRectTests( vl ):
+    extent = QgsRectangle(-70, 67, -60, 80)
+    features = [ f.id() for f in vl.getFeatures( QgsFeatureRequest().setFilterRect( extent ) ) ]
+    print (features)
+    assert set( features ) == set( [2L, 4L] )
