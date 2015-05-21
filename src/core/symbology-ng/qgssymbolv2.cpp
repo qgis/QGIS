@@ -58,15 +58,15 @@ QgsDataDefined* scaleWholeSymbol( double scaleFactor, const QgsDataDefined& dd )
 }
 
 inline
-QgsDataDefined* scaleWholeSymbol( double scaleFactorX, double scaleFactorY, const QgsDataDefined& dd  )
+QgsDataDefined* scaleWholeSymbol( double scaleFactorX, double scaleFactorY, const QgsDataDefined& dd )
 {
   QgsDataDefined* scaledDD = new QgsDataDefined( dd );
   scaledDD->setUseExpression( true );
   QString exprString = dd.useExpression() ? dd.expressionString() : dd.field();
   scaledDD->setExpressionString(
-           ( scaleFactorX ? "tostring(" + QString::number( scaleFactorX ) + "*(" + exprString + "))" : "'0'" ) +
-           "|| ',' || " +
-           ( scaleFactorY ? "tostring(" + QString::number( scaleFactorY ) + "*(" + exprString + "))" : "'0'" ));
+    ( scaleFactorX ? "tostring(" + QString::number( scaleFactorX ) + "*(" + exprString + "))" : "'0'" ) +
+    "|| ',' || " +
+    ( scaleFactorY ? "tostring(" + QString::number( scaleFactorY ) + "*(" + exprString + "))" : "'0'" ) );
   return scaledDD;
 }
 
@@ -631,13 +631,13 @@ QgsDataDefined QgsMarkerSymbolV2::dataDefinedAngle() const
 
     if ( qgsDoubleNear( layer->angle(), symbolRotation ) )
     {
-      if ( *layerAngleDD != *symbolDD )
+      if ( !layerAngleDD || *layerAngleDD != *symbolDD )
         return QgsDataDefined();
     }
     else
     {
       QScopedPointer< QgsDataDefined > rotatedDD( rotateWholeSymbol( layer->angle() - symbolRotation, *symbolDD ) );
-      if ( *layerAngleDD != *( rotatedDD.data() ) )
+      if ( !layerAngleDD || *layerAngleDD != *( rotatedDD.data() ) )
         return QgsDataDefined();
     }
   }
@@ -707,8 +707,8 @@ void QgsMarkerSymbolV2::setDataDefinedSize( const QgsDataDefined &dd )
       if ( layer->offset().x() || layer->offset().y() )
       {
         layer->setDataDefinedProperty( "offset", scaleWholeSymbol(
-                                        layer->offset().x() / symbolSize, 
-                                        layer->offset().y() / symbolSize, dd ) );
+                                         layer->offset().x() / symbolSize,
+                                         layer->offset().y() / symbolSize, dd ) );
       }
     }
   }
@@ -757,10 +757,9 @@ QgsDataDefined QgsMarkerSymbolV2::dataDefinedSize() const
         return QgsDataDefined();
     }
 
-
     QScopedPointer< QgsDataDefined > scaledOffsetDD( scaleWholeSymbol( layer->offset().x() / symbolSize, layer->offset().y() / symbolSize, *symbolDD ) );
     if ( layerOffsetDD && *layerOffsetDD != *( scaledOffsetDD.data() ) )
-        return QgsDataDefined();
+      return QgsDataDefined();
   }
 
   return QgsDataDefined( *symbolDD );
@@ -961,7 +960,7 @@ QgsDataDefined QgsLineSymbolV2::dataDefinedWidth() const
 
     QScopedPointer< QgsDataDefined > scaledOffsetDD( scaleWholeSymbol( layer->offset() / symbolWidth, *symbolDD ) );
     if ( layerOffsetDD && *layerOffsetDD != *( scaledOffsetDD.data() ) )
-        return QgsDataDefined();
+      return QgsDataDefined();
   }
 
   return QgsDataDefined( *symbolDD );
