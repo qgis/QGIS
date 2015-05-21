@@ -89,9 +89,6 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
   bool gbxCustom = ( mMacStyle ? true : false );
   opts.insert( "groupBoxCustom", settings.value( "groupBoxCustom", QVariant( gbxCustom ) ) );
 
-  bool gbxBoldTitle = false;
-  opts.insert( "groupBoxBoldTitle", settings.value( "groupBoxBoldTitle", QVariant( gbxBoldTitle ) ) );
-
   opts.insert( "sidebarStyle", settings.value( "sidebarStyle", true ) );
 
   settings.endGroup(); // "qgis/stylesheet"
@@ -118,45 +115,40 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant>& opts )
   // QGroupBox and QgsCollapsibleGroupBox, mostly for Ubuntu and Mac
   bool gbxCustom = opts.value( "groupBoxCustom" ).toBool();
   QgsDebugMsg( QString( "groupBoxCustom: %1" ).arg( gbxCustom ) );
-  bool gbxBoldTitle = opts.value( "groupBoxBoldTitle" ).toBool();
-  QgsDebugMsg( QString( "groupBoxBoldTitle: %1" ).arg( gbxBoldTitle ) );
+
   bool sidebar = opts.value( "sidebarStyle" ).toBool();
-  if ( gbxCustom || gbxBoldTitle )
+
+  ss += "QGroupBox{";
+  // doesn't work for QGroupBox::title
+  ss += QString( "color: rgb(%1,%1,%1);" ).arg( mMacStyle ? 25 : 60 );
+  ss += "font-weight: bold;";
+
+  if ( gbxCustom )
   {
-    ss += "QGroupBox{";
-    if ( gbxBoldTitle )
+    ss += QString( "background-color: rgba(0,0,0,%1%);" )
+          .arg( mWinOS && mStyle.startsWith( "windows" ) ? 0 : 3 );
+    ss += "border: 1px solid rgba(0,0,0,20%);";
+    ss += "border-radius: 5px;";
+    ss += "margin-top: 2.5ex;";
+    ss += QString( "margin-bottom: %1ex;" ).arg( mMacStyle ? 1.5 : 1 );
+  }
+  ss += "} ";
+  if ( gbxCustom )
+  {
+    ss += "QGroupBox:flat{";
+    ss += "background-color: rgba(0,0,0,0);";
+    ss += "border: rgba(0,0,0,0);";
+    ss += "} ";
+
+    ss += "QGroupBox::title{";
+    ss += "subcontrol-origin: margin;";
+    ss += "subcontrol-position: top left;";
+    ss += "margin-left: 6px;";
+    if ( !( mWinOS && mStyle.startsWith( "windows" ) ) && !mOxyStyle )
     {
-      // doesn't work for QGroupBox::title
-      ss += QString( "color: rgb(%1,%1,%1);" ).arg( mMacStyle ? 25 : 60 );
-      ss += "font-weight: bold;";
-    }
-    if ( gbxCustom )
-    {
-      ss += QString( "background-color: rgba(0,0,0,%1%);" )
-            .arg( mWinOS && mStyle.startsWith( "windows" ) ? 0 : 3 );
-      ss += "border: 1px solid rgba(0,0,0,20%);";
-      ss += "border-radius: 5px;";
-      ss += "margin-top: 2.5ex;";
-      ss += QString( "margin-bottom: %1ex;" ).arg( mMacStyle ? 1.5 : 1 );
+      ss += "background-color: rgba(0,0,0,0);";
     }
     ss += "} ";
-    if ( gbxCustom )
-    {
-      ss += "QGroupBox:flat{";
-      ss += "background-color: rgba(0,0,0,0);";
-      ss += "border: rgba(0,0,0,0);";
-      ss += "} ";
-
-      ss += "QGroupBox::title{";
-      ss += "subcontrol-origin: margin;";
-      ss += "subcontrol-position: top left;";
-      ss += "margin-left: 6px;";
-      if ( !( mWinOS && mStyle.startsWith( "windows" ) ) && !mOxyStyle )
-      {
-        ss += "background-color: rgba(0,0,0,0);";
-      }
-      ss += "} ";
-    }
   }
 
   if ( sidebar )

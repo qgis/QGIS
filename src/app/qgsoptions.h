@@ -115,9 +115,6 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
       */
     void on_mCustomSideBarSide_clicked( bool chkd );
 
-    /** Slot to set whether to bold group box title. */
-    void on_mBoldGroupBoxTitleChkBx_clicked( bool chkd );
-
     void on_mProxyTypeComboBox_currentIndexChanged( int idx );
 
     /**Add a new URL to exclude from Proxy*/
