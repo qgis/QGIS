@@ -519,7 +519,7 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::clone() const
   r->setUsingSymbolLevels( usingSymbolLevels() );
   r->setRotationField( rotationField() );
   r->setSizeScaleField( sizeScaleField() );
-  r->setScaleMethod( scaleMethod() );
+  //r->setScaleMethod( scaleMethod() );
   r->setLabelFormat( labelFormat() );
   r->setGraduatedMethod( graduatedMethod() );
   copyPaintEffect( r );
@@ -937,6 +937,45 @@ void QgsGraduatedSymbolRendererV2::updateClasses( QgsVectorLayer *vlayer, Mode m
   updateColorRamp( 0, mInvertedColorRamp );
 }
 
+//!@note this function is duplicated in 3 cpp files, it's used to convert
+//! old sizeScale expresssions to symbol level DataDefined size
+inline void convertSymbolSizeScale( QgsSymbolV2 * symbol, QgsSymbolV2::ScaleMethod method, const QString & field )
+{
+  if ( symbol->type() == QgsSymbolV2::Marker )
+  {
+    QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( symbol );
+    if ( QgsSymbolV2::ScaleArea == method )
+    {
+      const QgsDataDefined dd( "sqrt(" + QString::number( s->size() ) + " * (" + field + "))" );
+      s->setDataDefinedSize( dd );
+    }
+    else
+    {
+      const QgsDataDefined dd( QString::number( s->size() ) + " * (" + field + ")" );
+      s->setDataDefinedSize( dd );
+    }
+  }
+  else if ( symbol->type() == QgsSymbolV2::Line )
+  {
+    QgsLineSymbolV2 * s = static_cast<QgsLineSymbolV2 *>( symbol );
+    const QgsDataDefined dd( QString::number( s->width() ) + " * (" + field + ")" );
+    s->setDataDefinedWidth( dd );
+  }
+}
+
+//!@note this function is duplicated in 3 cpp files, it's used to convert
+//! old rotations expresssions to symbol level DataDefined angle
+inline void convertSymbolRotation( QgsSymbolV2 * symbol, const QString & field )
+{
+  if ( symbol->type() == QgsSymbolV2::Marker )
+  {
+    QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( symbol );
+    const QgsDataDefined dd(( s->angle()
+                              ? QString::number( s->angle() ) + " + "
+                              : QString() ) + field );
+    s->setDataDefinedAngle( dd );
+  }
+}
 
 QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::create( QDomElement& element )
 {
@@ -1027,13 +1066,35 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::create( QDomElement& element
   }
 
   QDomElement rotationElem = element.firstChildElement( "rotation" );
-  if ( !rotationElem.isNull() )
-    r->setRotationField( rotationElem.attribute( "field" ) );
+  if ( !rotationElem.isNull() && !rotationElem.attribute( "field" ).isEmpty() )
+  {
+    const QgsDataDefined dd( rotationElem.attribute( "field" ) );
+    for ( QgsRangeList::iterator it = r->mRanges.begin(); it != r->mRanges.end(); ++it )
+    {
+      convertSymbolRotation( it->symbol(), rotationElem.attribute( "field" ) );
+    }
+    if ( r->mSourceSymbol.data() )
+    {
+      convertSymbolRotation( r->mSourceSymbol.data(), rotationElem.attribute( "field" ) );
+    }
+  }
 
   QDomElement sizeScaleElem = element.firstChildElement( "sizescale" );
-  if ( !sizeScaleElem.isNull() )
-    r->setSizeScaleField( sizeScaleElem.attribute( "field" ) );
-  r->setScaleMethod( QgsSymbolLayerV2Utils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ) );
+  if ( !sizeScaleElem.isNull() && !sizeScaleElem.attribute( "field" ).isEmpty() )
+  {
+    for ( QgsRangeList::iterator it = r->mRanges.begin(); it != r->mRanges.end(); ++it )
+    {
+      convertSymbolSizeScale( it->symbol(),
+                              QgsSymbolLayerV2Utils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ),
+                              sizeScaleElem.attribute( "field" ) );
+    }
+    if ( r->mSourceSymbol.data() && r->mSourceSymbol->type() == QgsSymbolV2::Marker )
+    {
+      convertSymbolSizeScale( r->mSourceSymbol.data(),
+                              QgsSymbolLayerV2Utils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ),
+                              sizeScaleElem.attribute( "field" ) );
+    }
+  }
 
   QDomElement labelFormatElem = element.firstChildElement( "labelformat" );
   if ( ! labelFormatElem.isNull() )

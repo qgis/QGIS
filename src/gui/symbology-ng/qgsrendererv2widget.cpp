@@ -241,8 +241,11 @@ QgsRendererV2DataDefinedMenus::QgsRendererV2DataDefinedMenus( QMenu* menu, QgsVe
 
   mSizeScaleMenu->addActions( mSizeMethodActionGroup->actions() );
 
-  menu->addMenu( mRotationMenu );
-  menu->addMenu( mSizeScaleMenu );
+  //@todo cleanup the class since Rotation and SizeScale are now
+  //defined using QgsDataDefinedButton
+  //
+  //menu->addMenu( mRotationMenu );
+  //menu->addMenu( mSizeScaleMenu );
 
   connect( mSizeMethodActionGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( scaleMethodSelected( QAction* ) ) );
   connect( mRotationAttributeActionGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( rotationFieldSelected( QAction* ) ) );
