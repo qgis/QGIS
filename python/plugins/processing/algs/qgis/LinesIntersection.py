@@ -61,7 +61,7 @@ class LinesIntersection(GeoAlgorithm):
             self.INPUT_B,
             optional=True))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Intersections')))
 
     def processAlgorithm(self, progress):
         layerA = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_A))

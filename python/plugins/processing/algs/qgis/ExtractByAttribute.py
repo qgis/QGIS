@@ -66,7 +66,7 @@ class ExtractByAttribute(GeoAlgorithm):
             self.tr('Operator'), self.OPERATORS))
         self.addParameter(ParameterString(self.VALUE, self.tr('Value')))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Extracted (attribute)')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))

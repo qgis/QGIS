@@ -66,7 +66,7 @@ class SelectByAttribute(GeoAlgorithm):
             self.tr('Operator'), self.OPERATORS))
         self.addParameter(ParameterString(self.VALUE, self.tr('Value')))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output'), True))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Selected (attribute)'), True))
 
     def processAlgorithm(self, progress):
         fileName = self.getParameterValue(self.INPUT)
