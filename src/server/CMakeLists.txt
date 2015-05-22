@@ -77,13 +77,13 @@ SET(qgis_mapserv_SRCS ${qgis_mapserv_SRCS}
     qgsserverinterfaceimpl.cpp
 )
 
+IF (NOT MSVC)
+  ADD_DEFINITIONS("-USERVER_EXPORT")
+  IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden")
+  ENDIF()
+ENDIF (NOT MSVC)
 ADD_DEFINITIONS("\"-DSERVER_EXPORT=${DLLEXPORT}\"")
-
-IF (WIN32)
-  IF (NOT MSVC)
-    ADD_DEFINITIONS("-USERVER_EXPORT")
-  ENDIF (NOT MSVC)
-ENDIF (WIN32)
 
 
 QT4_WRAP_CPP(qgis_mapserv_MOC_SRCS ${qgis_mapserv_MOC_HDRS})
