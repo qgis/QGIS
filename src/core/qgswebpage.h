@@ -28,8 +28,14 @@
 #include <QNetworkAccessManager>
 #include <QPalette>
 
+
+/**
+ * @brief The QWebSettings class is a collection of stubs to mimic the API of a QWebSettings on systems
+ * where QtWebkit is not available.
+ */
 class CORE_EXPORT QWebSettings : public QObject
 {
+/// @cond
     Q_OBJECT
 
   public:
@@ -83,10 +89,16 @@ class CORE_EXPORT QWebSettings : public QObject
     {
       Q_UNUSED( on );
     }
+/// @endcond
 };
 
+/**
+ * @brief The QWebPage class is a collection of stubs to mimic the API of a QWebPage on systems
+ * where QtWebkit is not available.
+ */
 class QWebPage : public QObject
 {
+/// @cond
     Q_OBJECT
 
   public:
@@ -166,6 +178,7 @@ class QWebPage : public QObject
   private:
     QWebSettings* mSettings;
     QWebFrame* mFrame;
+/// @endcond
 };
 #endif
 

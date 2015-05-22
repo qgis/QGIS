@@ -24,8 +24,13 @@
 #include <QPainter>
 #include <QUrl>
 
+/**
+ * @brief The QWebFrame class is a collection of stubs to mimic the API of a QWebFrame on systems
+ * where QtWebkit is not available.
+ */
 class CORE_EXPORT QWebFrame : public QObject
 {
+/// @cond
     Q_OBJECT
 
   public:
@@ -69,6 +74,7 @@ class CORE_EXPORT QWebFrame : public QObject
 
   signals:
     void javaScriptWindowObjectCleared();
+/// @endcond
 };
 #endif
 #endif // QGSWEBFRAME_H
