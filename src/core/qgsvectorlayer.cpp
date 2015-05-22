@@ -3205,9 +3205,12 @@ QList<QVariant> QgsVectorLayer::getValues( const QString &fieldOrExpression, boo
   return values;
 }
 
-QList<double> QgsVectorLayer::getDoubleValues( const QString &fieldOrExpression, bool& ok, bool selectedOnly )
+QList<double> QgsVectorLayer::getDoubleValues( const QString &fieldOrExpression, bool& ok, bool selectedOnly, int* nullCount )
 {
   QList<double> values;
+
+  if ( nullCount )
+    *nullCount = 0;
 
   QList<QVariant> variantValues = getValues( fieldOrExpression, ok, selectedOnly );
   if ( !ok )
@@ -3219,6 +3222,11 @@ QList<double> QgsVectorLayer::getDoubleValues( const QString &fieldOrExpression,
     double val = value.toDouble( &convertOk );
     if ( convertOk )
       values << val;
+    else if ( value.isNull() )
+    {
+      if ( nullCount )
+        *nullCount += 1;
+    }
   }
   ok = true;
   return values;

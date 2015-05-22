@@ -1514,11 +1514,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param fieldOrExpression field name or an expression string evaluating to a double value
      * @param ok will be set to false if field or expression is invalid, otherwise true
      * @param selectedOnly set to true to get values from selected features only
+     * @param nullCount optional pointer to integer to store number of null values encountered in
      * @returns list of fetched values
      * @note added in QGIS 2.9
      * @see getValues
      */
-    QList< double > getDoubleValues( const QString &fieldOrExpression, bool &ok, bool selectedOnly = false );
+    QList< double > getDoubleValues( const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, int* nullCount = 0 );
 
     /** Set the blending mode used for rendering each feature */
     void setFeatureBlendMode( const QPainter::CompositionMode &blendMode );
