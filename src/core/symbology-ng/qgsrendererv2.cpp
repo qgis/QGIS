@@ -642,7 +642,7 @@ void QgsFeatureRendererV2::setPaintEffect( QgsPaintEffect *effect )
   mPaintEffect = effect;
 }
 
-void QgsFeatureRendererV2::convertSymbolSizeScale( QgsSymbolV2 * symbol, int method, const QString & field )
+void QgsFeatureRendererV2::convertSymbolSizeScale( QgsSymbolV2 * symbol, QgsSymbolV2::ScaleMethod method, const QString & field )
 {
   if ( symbol->type() == QgsSymbolV2::Marker )
   {
