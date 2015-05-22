@@ -1637,6 +1637,7 @@ bool QgsSvgMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScale
 //////////
 
 QgsFontMarkerSymbolLayerV2::QgsFontMarkerSymbolLayerV2( QString fontFamily, QChar chr, double pointSize, QColor color, double angle )
+    : mFontMetrics( 0 )
 {
   mFontFamily = fontFamily;
   mChr = chr;
@@ -1647,6 +1648,11 @@ QgsFontMarkerSymbolLayerV2::QgsFontMarkerSymbolLayerV2( QString fontFamily, QCha
   mSizeUnit = QgsSymbolV2::MM;
   mOffset = QPointF( 0, 0 );
   mOffsetUnit = QgsSymbolV2::MM;
+}
+
+QgsFontMarkerSymbolLayerV2::~QgsFontMarkerSymbolLayerV2()
+{
+  delete mFontMetrics;
 }
 
 QgsSymbolLayerV2* QgsFontMarkerSymbolLayerV2::create( const QgsStringMap& props )
@@ -1702,8 +1708,9 @@ void QgsFontMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
 {
   mFont = QFont( mFontFamily );
   mFont.setPixelSize( mSize * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mSizeUnit, mSizeMapUnitScale ) );
-  QFontMetrics fm( mFont );
-  mChrOffset = QPointF( fm.width( mChr ) / 2, -fm.ascent() / 2 );
+  delete mFontMetrics;
+  mFontMetrics = new QFontMetrics( mFont );
+  mChrOffset = QPointF( mFontMetrics->width( mChr ) / 2.0, -mFontMetrics->ascent() / 2.0 );
   mOrigSize = mSize; // save in case the size would be data defined
   prepareExpressions( context.fields(), context.renderContext().rendererScale() );
 }
@@ -1734,6 +1741,17 @@ void QgsFontMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2R
   p->setFont( mFont );
 
   p->save();
+
+  QPointF chrOffset = mChrOffset;
+  QString charToRender = mChr;
+  if ( hasDataDefinedProperty( "char" ) )
+  {
+    charToRender = evaluateDataDefinedProperty( "char", context.feature(), mChr ).toString();
+    if ( charToRender != mChr )
+    {
+      chrOffset = QPointF( mFontMetrics->width( charToRender ) / 2.0, -mFontMetrics->ascent() / 2.0 );
+    }
+  }
 
   double scaledSize = mSize;
 
@@ -1803,7 +1821,7 @@ void QgsFontMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2R
   if ( rotated )
     p->rotate( angle );
 
-  p->drawText( -mChrOffset, mChr );
+  p->drawText( -chrOffset, charToRender );
   p->restore();
 }
 
