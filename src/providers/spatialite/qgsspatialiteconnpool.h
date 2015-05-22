@@ -35,6 +35,15 @@ inline void qgsConnectionPool_ConnectionDestroy( QgsSqliteHandle* c )
   QgsSqliteHandle::closeDb( c );  // will delete itself
 }
 
+inline void qgsConnectionPool_InvalidateConnection( QgsSqliteHandle* c )
+{
+}
+
+inline bool qgsConnectionPool_ConnectionIsValid( QgsSqliteHandle* c )
+{
+  return true;
+}
+
 
 class QgsSpatiaLiteConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsSqliteHandle*>
 {
