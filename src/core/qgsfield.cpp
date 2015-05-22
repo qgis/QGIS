@@ -203,8 +203,12 @@ void QgsFields::remove( int fieldIdx )
   if ( !exists( fieldIdx ) )
     return;
 
-  mNameToIndex.remove( mFields[fieldIdx].field.name() );
-  mFields.remove( fieldIdx );
+  d->fields.remove( fieldIdx );
+  d->nameToIndex.clear();
+  for ( int idx = 0; idx < count(); ++idx )
+  {
+    d->nameToIndex.insert( d->fields[idx].field.name(), idx );
+  }
 }
 
 void QgsFields::extend( const QgsFields& other )
