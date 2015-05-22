@@ -582,14 +582,13 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void copyStyle( QgsMapLayer *sourceLayer = 0 );
     //! pastes style on the clipboard to the active layer
     /**
-       \param destinatioLayer  The layer that the clipboard will be pasted to
+       \param destinationLayer  The layer that the clipboard will be pasted to
                                 (defaults to the active layer on the legend)
      */
     void pasteStyle( QgsMapLayer *destinationLayer = 0 );
 
     //! copies features to internal clipboard
     void copyFeatures( QgsFeatureStore & featureStore );
-
     void loadOGRSublayers( QString layertype, QString uri, QStringList list );
     void loadGDALSublayers( QString uri, QStringList list );
 
