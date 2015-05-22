@@ -35,26 +35,27 @@
 
 QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
     : QgsAbstractFeatureIteratorFromSource<QgsOgrFeatureSource>( source, ownSource, request )
+    , ogrDataSource( 0 )
     , ogrLayer( 0 )
     , mSubsetStringSet( false )
     , mGeometrySimplifier( NULL )
 {
   mFeatureFetched = false;
 
-  mConn = QgsOgrConnPool::instance()->acquireConnection( mSource->mFilePath );
+  ogrDataSource = OGROpen( TO8F( mSource->mFilePath ), false, NULL );
 
   if ( mSource->mLayerName.isNull() )
   {
-    ogrLayer = OGR_DS_GetLayer( mConn->ds, mSource->mLayerIndex );
+    ogrLayer = OGR_DS_GetLayer( ogrDataSource, mSource->mLayerIndex );
   }
   else
   {
-    ogrLayer = OGR_DS_GetLayerByName( mConn->ds, TO8( mSource->mLayerName ) );
+    ogrLayer = OGR_DS_GetLayerByName( ogrDataSource, TO8( mSource->mLayerName ) );
   }
 
   if ( !mSource->mSubsetString.isEmpty() )
   {
-    ogrLayer = QgsOgrUtils::setSubsetString( ogrLayer, mConn->ds, mSource->mEncoding, mSource->mSubsetString );
+    ogrLayer = QgsOgrUtils::setSubsetString( ogrLayer, ogrDataSource, mSource->mEncoding, mSource->mSubsetString );
     mSubsetStringSet = true;
   }
 
@@ -217,13 +218,13 @@ bool QgsOgrFeatureIterator::close()
 
   if ( mSubsetStringSet )
   {
-    OGR_DS_ReleaseResultSet( mConn->ds, ogrLayer );
+    OGR_DS_ReleaseResultSet( ogrDataSource, ogrLayer );
   }
 
-  QgsOgrConnPool::instance()->releaseConnection( mConn );
-  mConn = 0;
+  OGR_DS_Destroy( ogrDataSource );
 
   mClosed = true;
+  ogrDataSource = 0;
   return true;
 }
 
