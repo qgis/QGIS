@@ -29,7 +29,11 @@ QgsEditorWidgetFactory::~QgsEditorWidgetFactory()
 {
 }
 
-QgsEditorWidgetWrapper* QgsEditorWidgetFactory::createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) {
+/** Override in own factory to get something different than the default (a simple QgsFilterLineEdit)
+ *
+ */
+QgsEditorWidgetWrapper* QgsEditorWidgetFactory::createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
+{
 
     return new QgsDefaultSearchWidgetWrapper(vl, fieldIdx, 0, parent);
 }
