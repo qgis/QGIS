@@ -74,15 +74,9 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool 
   // spatial query to select features
   if ( mRequest.filterType() == QgsFeatureRequest::FilterRect )
   {
-    OGRGeometryH filter = 0;
-    QString wktExtent = QString( "POLYGON((%1))" ).arg( mRequest.filterRect().asPolygon() );
-    QByteArray ba = wktExtent.toAscii();
-    const char *wktText = ba;
+    const QgsRectangle& rect = mRequest.filterRect();
 
-    OGR_G_CreateFromWkt(( char ** )&wktText, NULL, &filter );
-    QgsDebugMsg( "Setting spatial filter using " + wktExtent );
-    OGR_L_SetSpatialFilter( ogrLayer, filter );
-    OGR_G_DestroyGeometry( filter );
+    OGR_L_SetSpatialFilterRect( ogrLayer, rect.xMinimum(), rect.yMinimum(), rect.xMaximum(), rect.yMaximum() );
   }
   else
   {
@@ -184,6 +178,9 @@ bool QgsOgrFeatureIterator::fetchFeature( QgsFeature& feature )
   while (( fet = OGR_L_GetNextFeature( ogrLayer ) ) )
   {
     if ( !readFeature( fet, feature ) )
+      continue;
+
+    if ( mRequest.filterType() == QgsFeatureRequest::FilterRect && !feature.constGeometry() )
       continue;
 
     // we have a feature, end this cycle

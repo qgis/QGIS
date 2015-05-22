@@ -144,6 +144,9 @@ bool QgsSpatiaLiteFeatureIterator::close()
 
 bool QgsSpatiaLiteFeatureIterator::prepareStatement( QString whereClause )
 {
+  if ( !mHandle )
+    return false;
+
   try
   {
     QString sql = QString( "SELECT %1" ).arg( mHasPrimaryKey ? quotedPrimaryKey() : "0" );

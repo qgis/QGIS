@@ -15,19 +15,23 @@ __revision__ = '$Format:%H$'
 from qgis.core import QgsRectangle, QgsFeatureRequest, QgsGeometry, NULL
 from utilities import TestCase
 
-class ProviderTestCase(object):
 
+class ProviderTestCase(object):
     def runGetFeatureTests(self, provider):
-        assert len( [f for f in provider.getFeatures()] ) == 5
-        assert len( [f for f in provider.getFeatures( QgsFeatureRequest().setFilterExpression( 'name IS NOT NULL' ) )] ) == 4
-        assert len( [f for f in provider.getFeatures( QgsFeatureRequest().setFilterExpression('name LIKE \'Apple\'' ) )] ) == 1
-        assert len( [f for f in provider.getFeatures( QgsFeatureRequest().setFilterExpression('name ILIKE \'aPple\'' ) )] ) == 1
-        assert len( [f for f in provider.getFeatures( QgsFeatureRequest().setFilterExpression('name ILIKE \'%pp%\'' ) )] ) == 1
-        assert len( [f for f in provider.getFeatures( QgsFeatureRequest().setFilterExpression('cnt > 0' ) ) ] ) == 4
-        assert len( [f for f in provider.getFeatures( QgsFeatureRequest().setFilterExpression('cnt < 0' ) ) ] ) == 1
-        assert len( [f for f in provider.getFeatures( QgsFeatureRequest().setFilterExpression('cnt >= 100' ) ) ] ) == 4
-        assert len( [f for f in provider.getFeatures( QgsFeatureRequest().setFilterExpression('cnt <= 100' ) ) ] ) == 2
-        assert len( [f for f in provider.getFeatures( QgsFeatureRequest().setFilterExpression('pk IN (1, 2, 4, 8)' ) )] ) == 3
+        assert len([f for f in provider.getFeatures()]) == 5
+        assert len([f for f in provider.getFeatures(QgsFeatureRequest().setFilterExpression('name IS NOT NULL'))]) == 4
+        assert len(
+            [f for f in provider.getFeatures(QgsFeatureRequest().setFilterExpression('name LIKE \'Apple\''))]) == 1
+        assert len(
+            [f for f in provider.getFeatures(QgsFeatureRequest().setFilterExpression('name ILIKE \'aPple\''))]) == 1
+        assert len(
+            [f for f in provider.getFeatures(QgsFeatureRequest().setFilterExpression('name ILIKE \'%pp%\''))]) == 1
+        assert len([f for f in provider.getFeatures(QgsFeatureRequest().setFilterExpression('cnt > 0'))]) == 4
+        assert len([f for f in provider.getFeatures(QgsFeatureRequest().setFilterExpression('cnt < 0'))]) == 1
+        assert len([f for f in provider.getFeatures(QgsFeatureRequest().setFilterExpression('cnt >= 100'))]) == 4
+        assert len([f for f in provider.getFeatures(QgsFeatureRequest().setFilterExpression('cnt <= 100'))]) == 2
+        assert len(
+            [f for f in provider.getFeatures(QgsFeatureRequest().setFilterExpression('pk IN (1, 2, 4, 8)'))]) == 3
 
     def testGetFeaturesUncompiled(self):
         try:
@@ -45,7 +49,7 @@ class ProviderTestCase(object):
 
     def testGetFeaturesFilterRectTests(self):
         extent = QgsRectangle(-70, 67, -60, 80)
-        features = [ f['pk'] for f in self.provider.getFeatures( QgsFeatureRequest().setFilterRect( extent ) ) ]
+        features = [f['pk'] for f in self.provider.getFeatures(QgsFeatureRequest().setFilterRect(extent))]
         assert set(features) == set([2L, 4L]), 'Got {} instead'.format(features)
 
     def testMinValue(self):
@@ -57,14 +61,16 @@ class ProviderTestCase(object):
         assert self.provider.maximumValue(2) == 'Pear'
 
     def testExtent(self):
-        reference = QgsGeometry.fromRect(QgsRectangle(-71.1230000000000047,66.3299999999999983,-65.3199999999999932,78.2999999999999972))
-        provider_extent=QgsGeometry.fromRect(self.provider.extent())
+        reference = QgsGeometry.fromRect(
+            QgsRectangle(-71.1230000000000047, 66.3299999999999983, -65.3199999999999932, 78.2999999999999972))
+        provider_extent = QgsGeometry.fromRect(self.provider.extent())
 
-        assert QgsGeometry.compare( provider_extent.asPolygon(), reference.asPolygon(), 0.000001)
+        assert QgsGeometry.compare(provider_extent.asPolygon(), reference.asPolygon(), 0.000001)
 
     def testUnique(self):
         assert set(self.provider.uniqueValues(1)) == set([-200, 100, 200, 300, 400])
-        assert set([u'Apple', u'Honey', u'Orange', u'Pear', NULL]) == set(self.provider.uniqueValues(2)), 'Got {}'.format(set(self.provider.uniqueValues(2)))
+        assert set([u'Apple', u'Honey', u'Orange', u'Pear', NULL]) == set(
+            self.provider.uniqueValues(2)), 'Got {}'.format(set(self.provider.uniqueValues(2)))
 
     def testFeatureCount(self):
         assert self.provider.featureCount() == 5
