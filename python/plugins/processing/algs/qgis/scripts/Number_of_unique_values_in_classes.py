@@ -1,8 +1,8 @@
 ##Vector table tools=group
-##input=vector
-##class_field=field input
-##value_field=field input
-##output=output vector
+##Input=vector
+##Class_field=field input
+##Value_field=field input
+##N unique values=output vector
 
 from PyQt4.Qt import QVariant
 

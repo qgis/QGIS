@@ -53,7 +53,7 @@ class StatisticsByCategories(GeoAlgorithm):
             self.tr('Field with categories'),
             self.INPUT_LAYER, ParameterTableField.DATA_TYPE_ANY))
 
-        self.addOutput(OutputTable(self.OUTPUT, self.tr('Statistics')))
+        self.addOutput(OutputTable(self.OUTPUT, self.tr('Statistics by category')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
