@@ -2491,9 +2491,10 @@ void QgsFontMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   // layer type is correct, we can do the cast
   mLayer = static_cast<QgsFontMarkerSymbolLayerV2*>( layer );
 
+  QFont layerFont( mLayer->fontFamily() );
   // set values
   cboFont->blockSignals( true );
-  cboFont->setCurrentFont( QFont( mLayer->fontFamily() ) );
+  cboFont->setCurrentFont( layerFont );
   cboFont->blockSignals( false );
   spinSize->blockSignals( true );
   spinSize->setValue( mLayer->size() );
@@ -2504,6 +2505,11 @@ void QgsFontMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   spinAngle->blockSignals( true );
   spinAngle->setValue( mLayer->angle() );
   spinAngle->blockSignals( false );
+
+  widgetChar->blockSignals( true );
+  widgetChar->updateFont( layerFont );
+  widgetChar->setCharacter( mLayer->character() );
+  widgetChar->blockSignals( false );
 
   //block
   spinOffsetX->blockSignals( true );
