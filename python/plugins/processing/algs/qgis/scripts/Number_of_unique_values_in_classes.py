@@ -1,12 +1,8 @@
 ##Vector table tools=group
-##Input=vector
-##Class_field=field input
-##Value_field=field input
+##input=vector
+##class_field=field input
+##value_field=field input
 ##N unique values=output vector
-
-from PyQt4.Qt import QVariant
-
-from qgis.core import QgsField, QgsFeature
 
 layer = processing.getObject(input)
 provider = layer.dataProvider()
