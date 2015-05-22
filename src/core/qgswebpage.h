@@ -144,7 +144,10 @@ class QWebPage : public QObject
       Q_UNUSED( size );
     }
 
-    void setLinkDelegationPolicy( LinkDelegationPolicy );
+    void setLinkDelegationPolicy( LinkDelegationPolicy linkDelegationPolicy )
+    {
+      Q_UNUSED( linkDelegationPolicy );
+    }
 
     void setNetworkAccessManager( QNetworkAccessManager* networkAccessManager )
     {

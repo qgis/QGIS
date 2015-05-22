@@ -51,6 +51,7 @@ class QUndoView;
 class QComboBox;
 class QLabel;
 class QTreeView;
+class QPrinter;
 
 /** \ingroup MapComposer
  * \brief A gui for composing a printable map.
