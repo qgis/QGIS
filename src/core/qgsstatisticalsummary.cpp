@@ -17,6 +17,7 @@
 #include <limits>
 #include <qmath.h>
 #include <QString>
+#include <QObject>
 
 QgsStatisticalSummary::QgsStatisticalSummary( Statistics stats )
     : mStatistics( stats )
@@ -220,35 +221,35 @@ QString QgsStatisticalSummary::displayName( QgsStatisticalSummary::Statistic sta
   switch ( statistic )
   {
     case Count:
-      return QT_TR_NOOP( "Count" );
+      return QObject::tr( "Count" );
     case Sum:
-      return QT_TR_NOOP( "Sum" );
+      return QObject::tr( "Sum" );
     case Mean:
-      return QT_TR_NOOP( "Mean" );
+      return QObject::tr( "Mean" );
     case Median:
-      return QT_TR_NOOP( "Median" );
+      return QObject::tr( "Median" );
     case StDev:
-      return QT_TR_NOOP( "St dev (pop)" );
+      return QObject::tr( "St dev (pop)" );
     case StDevSample:
-      return QT_TR_NOOP( "St dev (sample)" );
+      return QObject::tr( "St dev (sample)" );
     case Min:
-      return QT_TR_NOOP( "Minimum" );
+      return QObject::tr( "Minimum" );
     case Max:
-      return QT_TR_NOOP( "Maximum" );
+      return QObject::tr( "Maximum" );
     case Range:
-      return QT_TR_NOOP( "Range" );
+      return QObject::tr( "Range" );
     case Minority:
-      return QT_TR_NOOP( "Minority" );
+      return QObject::tr( "Minority" );
     case Majority:
-      return QT_TR_NOOP( "Majority" );
+      return QObject::tr( "Majority" );
     case Variety:
-      return QT_TR_NOOP( "Variety" );
+      return QObject::tr( "Variety" );
     case FirstQuartile:
-      return QT_TR_NOOP( "Q1" );
+      return QObject::tr( "Q1" );
     case ThirdQuartile:
-      return QT_TR_NOOP( "Q3" );
+      return QObject::tr( "Q3" );
     case InterQuartileRange:
-      return QT_TR_NOOP( "IQR" );
+      return QObject::tr( "IQR" );
     case All:
       return QString();
   }
