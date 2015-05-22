@@ -133,6 +133,7 @@ void QgsHttpRequestHandler::sendHeaders()
     }
     printf( "\n" );
   }
+  printf( "\n" );
   mHeaders.clear();
   mHeadersSent = TRUE;
 }
