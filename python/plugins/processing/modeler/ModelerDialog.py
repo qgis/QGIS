@@ -106,7 +106,6 @@ class ModelerDialog(BASE, WIDGET):
             if event.delta() > 0:
                 factor = 1/factor
             self.view.scale(factor, factor)
-            self.view.centerOn(event.pos().x(), event.pos().y())
             self.repaintModel()
 
         def _enterEvent(e):
