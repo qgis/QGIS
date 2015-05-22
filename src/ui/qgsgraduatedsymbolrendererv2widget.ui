@@ -7,20 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>759</width>
-    <height>394</height>
+    <height>409</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout" rowstretch="0,1,0">
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item row="1" column="0">
@@ -360,7 +351,11 @@ Negative rounds to powers of 10</string>
       </widget>
      </item>
      <item row="3" column="1" colspan="2">
-      <widget class="QComboBox" name="methodComboBox"/>
+      <widget class="QComboBox" name="methodComboBox">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Choose between color and size graduation. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;If you want to combine both, use a data-defined size for the symbol and graduate by color.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
      </item>
      <item row="2" column="5">
       <widget class="QCheckBox" name="cbxTrimTrailingZeroes">
@@ -391,16 +386,7 @@ Negative rounds to powers of 10</string>
        </property>
        <widget class="QWidget" name="page">
         <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,1,0,0">
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
+         <property name="margin">
           <number>0</number>
          </property>
          <item>
@@ -440,16 +426,7 @@ Negative rounds to powers of 10</string>
        </widget>
        <widget class="QWidget" name="page_2">
         <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1,0,1,1">
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
+         <property name="margin">
           <number>0</number>
          </property>
          <item>
