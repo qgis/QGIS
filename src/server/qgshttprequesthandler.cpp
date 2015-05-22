@@ -461,7 +461,7 @@ bool QgsHttpRequestHandler::startGetFeatureResponse( QByteArray* ba, const QStri
   else
     format = "text/xml";
 
-  setHeader( "Content-Type", format );
+  setInfoFormat( format );
   appendBody( *ba );
   // Streaming
   sendResponse();
