@@ -55,10 +55,11 @@ class TestServerBase(TestQgsPalLabeling):
             TestQgsPalLabeling.setUpClass()
         MAPSERV.startup()
         MAPSERV.web_dir_install(glob.glob(cls._PalDataDir + os.sep + '*.qml'))
+        MAPSERV.web_dir_install(glob.glob(cls._PalDataDir + os.sep + '*.qgs'))
 
         # noinspection PyArgumentList
         cls._TestProj = QgsProject.instance()
-        cls._TestProjName = 'pal_test.qgs'
+        cls._TestProjName = 'test-labeling.qgs'
         cls._TestProj.setFileName(
             os.path.join(MAPSERV.web_dir(), cls._TestProjName))
 
