@@ -363,6 +363,7 @@ IF (NOT USE_CXX_11)
   ADD_DEFINITIONS("-Doverride=")
 ENDIF()
 
+
 #############################################################
 # enable warnings
 
@@ -578,14 +579,20 @@ IF (WIN32)
   SET(DLLIMPORT "__declspec(dllimport)")
   SET(DLLEXPORT "__declspec(dllexport)")
 ELSE (WIN32)
+  IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+    SET(DLLEXPORT "__attribute__ ((visibility (\\\"default\\\")))")
+  ELSE()
+    SET(DLLEXPORT "")
+  ENDIF()
+
+  SET(DLLIMPORT "")
+
   IF(PEDANTIC AND NOT APPLE)
     SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
     SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,--no-undefined")
     SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--no-undefined")
   ENDIF(PEDANTIC AND NOT APPLE)
 
-  SET(DLLIMPORT "")
-  SET(DLLEXPORT "")
 ENDIF(WIN32)
 
 ADD_DEFINITIONS("-DCORE_EXPORT=${DLLIMPORT}")

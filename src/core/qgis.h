@@ -372,7 +372,7 @@ bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs );
 
 bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs );
 
-QString qgsVsiPrefix( QString path );
+CORE_EXPORT QString qgsVsiPrefix( QString path );
 
 /** Allocates size bytes and returns a pointer to the allocated  memory.
     Works like C malloc() but prints debug message by QgsLogger if allocation fails.
@@ -471,7 +471,11 @@ typedef unsigned long long qgssize;
 #    pragma warning(disable:4190)
 #  endif
 #else
-#  define QGISEXTERN extern "C"
+#  if defined(__GNUC__) || defined(__clang__)
+#    define QGISEXTERN extern "C" __attribute__ ((visibility ("default")))
+#  else
+#    define QGISEXTERN extern "C"
+#  endif
 #endif
 #endif
 #endif
