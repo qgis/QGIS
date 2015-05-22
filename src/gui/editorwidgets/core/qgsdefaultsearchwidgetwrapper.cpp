@@ -28,7 +28,7 @@ QgsDefaultSearchWidgetWrapper::QgsDefaultSearchWidgetWrapper( QgsVectorLayer* vl
 
 QVariant QgsDefaultSearchWidgetWrapper::value()
 {
-    return QString("foo");
+    return mLineEdit->text();
 }
 
 QWidget* QgsDefaultSearchWidgetWrapper::createWidget( QWidget* parent )
@@ -36,9 +36,10 @@ QWidget* QgsDefaultSearchWidgetWrapper::createWidget( QWidget* parent )
     return new QgsFilterLineEdit( parent );
 }
 
-void QgsDefaultSearchWidgetWrapper::initWidget( QWidget* editor )
+void QgsDefaultSearchWidgetWrapper::initWidget( QWidget* widget )
 {
-    connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( valueChanged( QString ) ) );
+    mLineEdit = qobject_cast<QgsFilterLineEdit*>( widget );
+    connect( widget, SIGNAL( textChanged( QString ) ), this, SLOT( valueChanged( QString ) ) );
 }
 
 void QgsDefaultSearchWidgetWrapper::setValue( const QVariant& value )

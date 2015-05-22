@@ -715,8 +715,9 @@ void QgsAttributeTableDialog::filterQueryChanged( const QString& query )
 
     QSettings settings;
     QString nullValue = settings.value( "qgis/nullValue", "NULL" ).toString();
+    QString value = mCurrentSearchWidgetWrapper->value().toString();
 
-    if ( mFilterQuery->displayText() == nullValue )
+    if (  value == nullValue )
     {
       str = QString( "%1 IS NULL" ).arg( QgsExpression::quotedColumnRef( fieldName ) );
     }
@@ -726,9 +727,9 @@ void QgsAttributeTableDialog::filterQueryChanged( const QString& query )
             .arg( QgsExpression::quotedColumnRef( fieldName ) )
             .arg( numeric ? "=" : sensString )
             .arg( numeric
-                  ? mFilterQuery->displayText().replace( "'", "''" )
+                  ? value.replace( "'", "''" )
                   :
-                  "%" + mFilterQuery->displayText().replace( "'", "''" ) + "%" ); // escape quotes
+                  "%" + value.replace( "'", "''" ) + "%" ); // escape quotes
     }
   }
 
@@ -738,7 +739,8 @@ void QgsAttributeTableDialog::filterQueryChanged( const QString& query )
 
 void QgsAttributeTableDialog::filterQueryAccepted()
 {
-  if ( mFilterQuery->text().isEmpty() )
+  if ( (mFilterQuery->isVisible() && mFilterQuery->text().isEmpty()) ||
+          (mCurrentSearchWidgetWrapper->widget()->isVisible() && mCurrentSearchWidgetWrapper->value().toString().isEmpty() ))
   {
     filterShowAll();
     return;
@@ -753,6 +755,10 @@ void QgsAttributeTableDialog::setFilterExpression( QString filterString )
   mFilterButton->setPopupMode( QToolButton::MenuButtonPopup );
   mCbxCaseSensitive->setVisible( false );
   mFilterQuery->setVisible( true );
+  if ( mCurrentSearchWidgetWrapper != 0 ) 
+  {
+    mCurrentSearchWidgetWrapper->widget()->setVisible( false );
+  }
   mApplyFilterButton->setVisible( true );
   mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowFilteredList );
 
