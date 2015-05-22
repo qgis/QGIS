@@ -34,8 +34,18 @@ class CORE_EXPORT QgsWebView : public QWebView
 #else
 #include "qgswebpage.h"
 
+/**
+ * @brief The QgsWebView class is a collection of stubs to mimic the API of QWebView on systems where the real
+ * library is not available. It should be used instead of QWebView inside QGIS.
+ *
+ * If QGIS is compiled WITH_QTWEBKIT This will simply be a subclass of QWebView. If it is compiled with
+ * WITH_QTWEBKIT=OFF then this will be an empty QWidget. If you miss methods in here that you would like to use,
+ * please add additional stubs.
+ */
 class CORE_EXPORT QgsWebView : public QWidget
 {
+
+/// @cond
     Q_OBJECT
   public:
     explicit QgsWebView( QWidget *parent = 0 )
@@ -99,6 +109,8 @@ class CORE_EXPORT QgsWebView : public QWidget
   private:
     QWebSettings* mSettings;
     QWebPage* mPage;
+
+/// @endcond
 };
 #endif
 

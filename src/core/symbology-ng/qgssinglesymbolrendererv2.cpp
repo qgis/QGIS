@@ -185,7 +185,7 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::clone() const
   r->setUsingSymbolLevels( usingSymbolLevels() );
   r->setRotationField( rotationField() );
   r->setSizeScaleField( sizeScaleField() );
-  r->setScaleMethod( scaleMethod() );
+  //r->setScaleMethod( scaleMethod() );
   copyPaintEffect( r );
   return r;
 }
@@ -216,6 +216,7 @@ QgsSymbolV2List QgsSingleSymbolRendererV2::symbols()
   return lst;
 }
 
+
 QgsFeatureRendererV2* QgsSingleSymbolRendererV2::create( QDomElement& element )
 {
   QDomElement symbolsElem = element.firstChildElement( "symbols" );
@@ -233,14 +234,17 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::create( QDomElement& element )
   QgsSymbolLayerV2Utils::clearSymbolMap( symbolMap );
 
   QDomElement rotationElem = element.firstChildElement( "rotation" );
-  if ( !rotationElem.isNull() )
-    r->setRotationField( rotationElem.attribute( "field" ) );
+  if ( !rotationElem.isNull() && !rotationElem.attribute( "field" ).isEmpty() )
+  {
+    convertSymbolRotation( r->mSymbol.data(), rotationElem.attribute( "field" ) );
+  }
 
   QDomElement sizeScaleElem = element.firstChildElement( "sizescale" );
-  if ( !sizeScaleElem.isNull() )
+  if ( !sizeScaleElem.isNull() && !sizeScaleElem.attribute( "field" ).isEmpty() )
   {
-    r->setSizeScaleField( sizeScaleElem.attribute( "field" ) );
-    r->setScaleMethod( QgsSymbolLayerV2Utils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ) );
+    convertSymbolSizeScale( r->mSymbol.data(),
+                            QgsSymbolLayerV2Utils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ),
+                            sizeScaleElem.attribute( "field" ) );
   }
 
   // TODO: symbol levels

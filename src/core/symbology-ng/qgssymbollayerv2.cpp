@@ -38,6 +38,9 @@ const QgsExpression* QgsSymbolLayerV2::dataDefinedProperty( const QString& prope
 
 QgsDataDefined *QgsSymbolLayerV2::getDataDefinedProperty( const QString &property ) const
 {
+  if ( mDataDefinedProperties.isEmpty() )
+    return 0;
+
   QMap< QString, QgsDataDefined* >::const_iterator it = mDataDefinedProperties.find( property );
   if ( it != mDataDefinedProperties.constEnd() )
   {
@@ -106,6 +109,9 @@ bool QgsSymbolLayerV2::hasDataDefinedProperties() const
 
 bool QgsSymbolLayerV2::hasDataDefinedProperty( const QString& property ) const
 {
+  if ( mDataDefinedProperties.isEmpty() )
+    return false;
+
   QgsDataDefined* dd = getDataDefinedProperty( property );
   return dd && dd->isActive();
 }

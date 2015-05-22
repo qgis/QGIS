@@ -79,6 +79,7 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QPrintDialog>
+#include <QPrinter>
 #include <QSettings>
 #include <QSizeGrip>
 #include <QSvgGenerator>

@@ -286,7 +286,7 @@ class CORE_EXPORT QgsExpression
     class CORE_EXPORT Function
     {
       public:
-        Function( QString fnname, int params, QString group, QString helpText = QString(), bool usesGeometry = false, QStringList referencedColumns = QStringList(), bool lazyEval = false )
+        Function( const QString& fnname, int params, QString group, QString helpText = QString(), bool usesGeometry = false, QStringList referencedColumns = QStringList(), bool lazyEval = false )
             : mName( fnname ), mParams( params ), mUsesGeometry( usesGeometry ), mGroup( group ), mHelpText( helpText ), mReferencedColumns( referencedColumns ), mLazyEval( lazyEval ) {}
         /** The name of the function. */
         QString name() { return mName; }
@@ -312,7 +312,7 @@ class CORE_EXPORT QgsExpression
         /** The group the function belongs to. */
         QString group() { return mGroup; }
         /** The help text for the function. */
-        QString helptext() { return mHelpText.isEmpty() ? QgsExpression::helptext( mName ) : mHelpText; }
+        const QString helptext() { return mHelpText.isEmpty() ? QgsExpression::helptext( mName ) : mHelpText; }
 
         virtual QVariant func( const QVariantList& values, const QgsFeature* f, QgsExpression* parent ) = 0;
 
@@ -352,11 +352,11 @@ class CORE_EXPORT QgsExpression
         QStringList mAliases;
     };
 
-    static const QList<Function*> &Functions();
     static QList<Function*> gmFunctions;
+    static const QList<Function*>& Functions();
 
     static QStringList gmBuiltinFunctions;
-    static const QStringList &BuiltinFunctions();
+    static const QStringList& BuiltinFunctions();
 
     static bool registerFunction( Function* function );
     static bool unregisterFunction( QString name );
@@ -424,6 +424,7 @@ class CORE_EXPORT QgsExpression
       public:
         NodeList() {}
         virtual ~NodeList() { qDeleteAll( mList ); }
+        /** Takes ownership of the provided node */
         void append( Node* node ) { mList.append( node ); }
         int count() { return mList.count(); }
         QList<Node*> list() { return mList; }
@@ -572,9 +573,9 @@ class CORE_EXPORT QgsExpression
     class CORE_EXPORT NodeLiteral : public Node
     {
       public:
-        NodeLiteral( QVariant value ) : mValue( value ) {}
+        NodeLiteral( const QVariant& value ) : mValue( value ) {}
 
-        QVariant value() const { return mValue; }
+        inline QVariant value() const { return mValue; }
 
         virtual NodeType nodeType() const override { return ntLiteral; }
         virtual bool prepare( QgsExpression* parent, const QgsFields &fields ) override;
@@ -592,7 +593,7 @@ class CORE_EXPORT QgsExpression
     class CORE_EXPORT NodeColumnRef : public Node
     {
       public:
-        NodeColumnRef( QString name ) : mName( name ), mIndex( -1 ) {}
+        NodeColumnRef( const QString& name ) : mName( name ), mIndex( -1 ) {}
 
         QString name() const { return mName; }
 

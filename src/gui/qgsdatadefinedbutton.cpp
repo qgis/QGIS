@@ -663,6 +663,11 @@ QString QgsDataDefinedButton::trString()
   return tr( "string " );
 }
 
+QString QgsDataDefinedButton::charDesc()
+{
+  return tr( "single character" );
+}
+
 QString QgsDataDefinedButton::boolDesc()
 {
   return tr( "bool [<b>1</b>=True|<b>0</b>=False]" );

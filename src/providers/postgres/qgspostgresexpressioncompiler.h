@@ -1,7 +1,7 @@
 /***************************************************************************
 
                ----------------------------------------------------
-              date                 : 19.5.2015
+              date                 : 22.4.2015
               copyright            : (C) 2015 by Matthias Kuhn
               email                : matthias (at) opengis.ch
  ***************************************************************************
@@ -13,40 +13,38 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgswebframe.h"
+#ifndef QGSPOSTGRESEXPRESSIONCOMPILER_H
+#define QGSPOSTGRESEXPRESSIONCOMPILER_H
 
-QWebFrame::QWebFrame()
+#include "qgsexpression.h"
+#include "qgspostgresfeatureiterator.h"
+
+class QgsPostgresExpressionCompiler
 {
+  public:
+    enum Result {
+      None,
+      Complete,
+      Partial,
+      Fail
+    };
 
-}
+    QgsPostgresExpressionCompiler( QgsPostgresFeatureSource* source );
+    ~QgsPostgresExpressionCompiler();
 
-void QWebFrame::setZoomFactor(qreal factor)
-{
+    Result compile( const QgsExpression* exp );
 
-}
+    inline Result success() { return mSuccess; }
 
-void QWebFrame::setScrollBarPolicy(Qt::Orientation, Qt::ScrollBarPolicy)
-{
+    const QString& result() { return mResult; }
 
-}
+  private:
+    Result compile( const QgsExpression::Node* node, QString& str );
 
-void QWebFrame::setHtml(const QString&, const QUrl)
-{
+  private:
+    Result mSuccess;
+    QString mResult;
+    QgsPostgresFeatureSource* mSource;
+};
 
-}
-
-QSize QWebFrame::contentsSize() const
-{
-
-}
-
-void QWebFrame::render( QPainter*, const QRegion )
-{
-
-}
-
-void QWebFrame::addToJavaScriptWindowObject(const QString&, QObject*)
-{
-
-}
-
+#endif // QGSPOSTGRESEXPRESSIONCOMPILER_H

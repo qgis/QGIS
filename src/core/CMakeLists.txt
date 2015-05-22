@@ -291,13 +291,6 @@ SET(QGIS_CORE_SRCS
   raster/qgshuesaturationfilter.cpp
 )
 
-IF (NOT WITH_QTWEBKIT)
-  SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
-    qgswebpage.cpp
-    qgswebframe.cpp
-  )
-ENDIF(NOT WITH_QTWEBKIT)
-
 IF(ENABLE_MODELTEST)
   SET(MODELTEST_SRCS
     ../../tests/qt_modeltest/modeltest.cpp

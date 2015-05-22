@@ -494,7 +494,7 @@ QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2::clone() const
   r->setUsingSymbolLevels( usingSymbolLevels() );
   r->setRotationField( rotationField() );
   r->setSizeScaleField( sizeScaleField() );
-  r->setScaleMethod( scaleMethod() );
+  //r->setScaleMethod( scaleMethod() );
 
   copyPaintEffect( r );
   return r;
@@ -586,14 +586,35 @@ QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2::create( QDomElement& eleme
   }
 
   QDomElement rotationElem = element.firstChildElement( "rotation" );
-  if ( !rotationElem.isNull() )
-    r->setRotationField( rotationElem.attribute( "field" ) );
+  if ( !rotationElem.isNull() && !rotationElem.attribute( "field" ).isEmpty() )
+  {
+    QgsCategoryList::iterator it = r->mCategories.begin();
+    for ( ; it != r->mCategories.end(); ++it )
+    {
+      convertSymbolRotation( it->symbol(), rotationElem.attribute( "field" ) );
+    }
+    if ( r->mSourceSymbol.data() )
+    {
+      convertSymbolRotation( r->mSourceSymbol.data(), rotationElem.attribute( "field" ) );
+    }
+  }
 
   QDomElement sizeScaleElem = element.firstChildElement( "sizescale" );
-  if ( !sizeScaleElem.isNull() )
+  if ( !sizeScaleElem.isNull() && !sizeScaleElem.attribute( "field" ).isEmpty() )
   {
-    r->setSizeScaleField( sizeScaleElem.attribute( "field" ) );
-    r->setScaleMethod( QgsSymbolLayerV2Utils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ) );
+    QgsCategoryList::iterator it = r->mCategories.begin();
+    for ( ; it != r->mCategories.end(); ++it )
+    {
+      convertSymbolSizeScale( it->symbol(),
+                              QgsSymbolLayerV2Utils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ),
+                              sizeScaleElem.attribute( "field" ) );
+    }
+    if ( r->mSourceSymbol.data() && r->mSourceSymbol->type() == QgsSymbolV2::Marker )
+    {
+      convertSymbolSizeScale( r->mSourceSymbol.data(),
+                              QgsSymbolLayerV2Utils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ),
+                              sizeScaleElem.attribute( "field" ) );
+    }
   }
 
   // TODO: symbol levels
