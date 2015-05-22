@@ -48,7 +48,7 @@ class SinglePartsToMultiparts(GeoAlgorithm):
         self.addParameter(ParameterTableField(self.FIELD,
             self.tr('Unique ID field'), self.INPUT))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Multipart')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))

@@ -1,9 +1,9 @@
 ##Vector geometry tools=group
-##lines=vector
-##distance=number 1
-##startpoint=number 0
-##endpoint=number 0
-##output=output vector
+##Lines=vector
+##Distance=number 1
+##Startpoint=number 0
+##Endpoint=number 0
+##Points along lines=output vector
 
 from PyQt4.QtCore import QVariant
 from qgis.core import QGis, QgsFeature, QgsField

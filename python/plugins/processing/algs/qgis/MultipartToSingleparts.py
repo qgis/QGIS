@@ -48,7 +48,7 @@ class MultipartToSingleparts(GeoAlgorithm):
         self.group = 'Vector geometry tools'
 
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Single parts')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))

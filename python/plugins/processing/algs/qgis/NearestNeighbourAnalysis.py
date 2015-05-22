@@ -53,7 +53,7 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
         self.addParameter(ParameterVector(self.POINTS,
             self.tr('Points'), [ParameterVector.VECTOR_TYPE_POINT]))
 
-        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Result')))
+        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Nearest neighbour')))
 
         self.addOutput(OutputNumber(self.OBSERVED_MD,
             self.tr('Observed mean distance')))

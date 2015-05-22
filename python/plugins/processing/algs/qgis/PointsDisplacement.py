@@ -53,7 +53,7 @@ class PointsDisplacement(GeoAlgorithm):
             0.00001, 999999999.999990, 0.00015))
         self.addParameter(ParameterBoolean(self.HORIZONTAL,
             self.tr('Horizontal distribution for two point case')))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Displaced')))
 
     def processAlgorithm(self, progress):
         radius = self.getParameterValue(self.DISTANCE)

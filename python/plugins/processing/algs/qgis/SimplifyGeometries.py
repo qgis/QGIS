@@ -51,7 +51,7 @@ class SimplifyGeometries(GeoAlgorithm):
         self.addParameter(ParameterNumber(self.TOLERANCE,
             self.tr('Tolerance'), 0.0, 10000000.0, 1.0))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Simplified layer')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Simplified')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))

@@ -55,7 +55,7 @@ class MeanCoords(GeoAlgorithm):
             self.tr('Unique ID field'), MeanCoords.POINTS,
             ParameterTableField.DATA_TYPE_NUMBER, optional=True))
 
-        self.addOutput(OutputVector(MeanCoords.OUTPUT, self.tr('Result')))
+        self.addOutput(OutputVector(MeanCoords.OUTPUT, self.tr('Mean coordinates')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.POINTS))

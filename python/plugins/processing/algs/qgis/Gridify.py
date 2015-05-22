@@ -52,7 +52,7 @@ class Gridify(GeoAlgorithm):
         self.addParameter(ParameterNumber(self.VSPACING,
             self.tr('Vertical spacing'), default=0.1))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Snapped')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
