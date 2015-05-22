@@ -216,45 +216,6 @@ QgsSymbolV2List QgsSingleSymbolRendererV2::symbols()
   return lst;
 }
 
-//!@note this function is duplicated in 3 cpp files, it's used to convert
-//! old sizeScale expresssions to symbol level DataDefined size
-inline void convertSymbolSizeScale( QgsSymbolV2 * symbol, QgsSymbolV2::ScaleMethod method, const QString & field )
-{
-  if ( symbol->type() == QgsSymbolV2::Marker )
-  {
-    QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( symbol );
-    if ( QgsSymbolV2::ScaleArea == method )
-    {
-      const QgsDataDefined dd( "sqrt(" + QString::number( s->size() ) + " * (" + field + "))" );
-      s->setDataDefinedSize( dd );
-    }
-    else
-    {
-      const QgsDataDefined dd( QString::number( s->size() ) + " * (" + field + ")" );
-      s->setDataDefinedSize( dd );
-    }
-  }
-  else if ( symbol->type() == QgsSymbolV2::Line )
-  {
-    QgsLineSymbolV2 * s = static_cast<QgsLineSymbolV2 *>( symbol );
-    const QgsDataDefined dd( QString::number( s->width() ) + " * (" + field + ")" );
-    s->setDataDefinedWidth( dd );
-  }
-}
-
-//!@note this function is duplicated in 3 cpp files, it's used to convert
-//! old rotations expresssions to symbol level DataDefined angle
-inline void convertSymbolRotation( QgsSymbolV2 * symbol, const QString & field )
-{
-  if ( symbol->type() == QgsSymbolV2::Marker )
-  {
-    QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( symbol );
-    const QgsDataDefined dd(( s->angle()
-                              ? QString::number( s->angle() ) + " + "
-                              : QString() ) + field );
-    s->setDataDefinedAngle( dd );
-  }
-}
 
 QgsFeatureRendererV2* QgsSingleSymbolRendererV2::create( QDomElement& element )
 {
