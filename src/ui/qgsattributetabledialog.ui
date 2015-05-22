@@ -542,7 +542,10 @@
      </item>
      <item>
       <widget class="QWidget" name="mFilterContainer" native="true">
-       <layout class="QGridLayout" name="gridLayout_2">
+       <layout class="QGridLayout" name="mFilterLayout">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetDefaultConstraint</enum>
+        </property>
         <property name="margin">
          <number>0</number>
         </property>
@@ -551,9 +554,6 @@
         </item>
        </layout>
       </widget>
-     </item>
-     <item>
-      <widget class="QWidget" name="mSpacer" native="true"/>
      </item>
      <item>
       <widget class="QToolButton" name="mApplyFilterButton">

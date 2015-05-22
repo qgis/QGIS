@@ -1,9 +1,9 @@
 /***************************************************************************
-    qgstexteditwrapper.h
+    qgsdefaultsearchwidgetwrapper.h
      --------------------------------------
-    Date                 : 5.1.2014
-    Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Date                 : 21.5.2015
+    Copyright            : (C) 2015 Karolina Alexiou
+    Email                : carolinegr at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *

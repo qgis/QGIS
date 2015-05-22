@@ -405,13 +405,20 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, QStrin
   mLayer->endEditCommand();
 }
 
+void QgsAttributeTableDialog::replaceSearchWidget(QWidget* oldw, QWidget* neww)
+{
+    mFilterLayout->removeWidget(oldw);
+    oldw->setVisible(false);
+    mFilterLayout->addWidget(neww,0,0,0);
+    neww->setVisible(true);
+}
+
 void QgsAttributeTableDialog::filterColumnChanged( QObject* filterAction )
 {
   mFilterButton->setDefaultAction( qobject_cast<QAction *>( filterAction ) );
   mFilterButton->setPopupMode( QToolButton::InstantPopup );
   mCbxCaseSensitive->setVisible( true );
   // replace the search line edit with a search widget that is suited to the selected field
-  mFilterQuery->setVisible( false );
   // delete previous widget
   if ( mCurrentSearchWidgetWrapper != 0 )
   {
@@ -427,8 +434,7 @@ void QgsAttributeTableDialog::filterColumnChanged( QObject* filterAction )
  //replace with createSearch or so
  //go to registry and create a create Search method
   mCurrentSearchWidgetWrapper= QgsEditorWidgetRegistry::instance()->createSearch( widgetType, mLayer, fldIdx, widgetConfig, mFilterContainer);
-  mCurrentSearchWidgetWrapper->widget()->setObjectName("searchy");
-  mCurrentSearchWidgetWrapper->widget()->setVisible( true );
+  replaceSearchWidget(mFilterQuery, mCurrentSearchWidgetWrapper->widget());
 
   mApplyFilterButton->setVisible( true );
 }
@@ -754,10 +760,11 @@ void QgsAttributeTableDialog::setFilterExpression( QString filterString )
   mFilterButton->setDefaultAction( mActionAdvancedFilter );
   mFilterButton->setPopupMode( QToolButton::MenuButtonPopup );
   mCbxCaseSensitive->setVisible( false );
+
   mFilterQuery->setVisible( true );
   if ( mCurrentSearchWidgetWrapper != 0 ) 
   {
-    mCurrentSearchWidgetWrapper->widget()->setVisible( false );
+      replaceSearchWidget(mCurrentSearchWidgetWrapper->widget(),mFilterQuery);
   }
   mApplyFilterButton->setVisible( true );
   mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowFilteredList );

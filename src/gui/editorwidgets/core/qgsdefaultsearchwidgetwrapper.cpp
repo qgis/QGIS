@@ -19,6 +19,7 @@
 #include "qgsfieldvalidator.h"
 
 #include <QSettings>
+#include <QSizePolicy>
 
 QgsDefaultSearchWidgetWrapper::QgsDefaultSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
@@ -39,6 +40,7 @@ QWidget* QgsDefaultSearchWidgetWrapper::createWidget( QWidget* parent )
 void QgsDefaultSearchWidgetWrapper::initWidget( QWidget* widget )
 {
     mLineEdit = qobject_cast<QgsFilterLineEdit*>( widget );
+    mLineEdit->setSizePolicy(QSizePolicy ::Expanding , QSizePolicy ::Fixed );
     connect( widget, SIGNAL( textChanged( QString ) ), this, SLOT( valueChanged( QString ) ) );
 }
 

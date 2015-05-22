@@ -159,6 +159,10 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     void updateTitle();
 
     void updateButtonStatus( QString fieldName, bool isValid );
+
+    /* replace the search widget with a new one */
+    void replaceSearchWidget(QWidget* oldw, QWidget* neww);
+
   signals:
     /**
      * Informs that editing mode has been toggled
