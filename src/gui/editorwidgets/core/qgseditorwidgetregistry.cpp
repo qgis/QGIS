@@ -100,7 +100,7 @@ QgsEditorWidgetWrapper* QgsEditorWidgetRegistry::create( const QString& widgetId
   return 0;
 }
 
-QgsEditorWidgetWrapper* QgsEditorWidgetRegistry::createSearch( const QString& widgetId, QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, QWidget* parent, const QgsAttributeEditorContext &context )
+QgsEditorWidgetWrapper* QgsEditorWidgetRegistry::createSearchWidget( const QString& widgetId, QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, QWidget* parent, const QgsAttributeEditorContext &context )
 {
   if ( mWidgetFactories.contains( widgetId ) )
   {

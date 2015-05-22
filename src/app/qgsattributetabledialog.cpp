@@ -431,9 +431,9 @@ void QgsAttributeTableDialog::filterColumnChanged( QObject* filterAction )
       return;
   const QString widgetType = mLayer->editorWidgetV2( fldIdx );
   const QgsEditorWidgetConfig widgetConfig = mLayer->editorWidgetV2Config( fldIdx );
- //replace with createSearch or so
- //go to registry and create a create Search method
-  mCurrentSearchWidgetWrapper= QgsEditorWidgetRegistry::instance()->createSearch( widgetType, mLayer, fldIdx, widgetConfig, mFilterContainer);
+  mCurrentSearchWidgetWrapper= QgsEditorWidgetRegistry::instance()->
+      createSearchWidget(widgetType, mLayer, fldIdx, widgetConfig, mFilterContainer);
+
   replaceSearchWidget(mFilterQuery, mCurrentSearchWidgetWrapper->widget());
 
   mApplyFilterButton->setVisible( true );
@@ -746,7 +746,8 @@ void QgsAttributeTableDialog::filterQueryChanged( const QString& query )
 void QgsAttributeTableDialog::filterQueryAccepted()
 {
   if ( (mFilterQuery->isVisible() && mFilterQuery->text().isEmpty()) ||
-          (mCurrentSearchWidgetWrapper->widget()->isVisible() && mCurrentSearchWidgetWrapper->value().toString().isEmpty() ))
+          (mCurrentSearchWidgetWrapper!=0 && mCurrentSearchWidgetWrapper->widget()->isVisible()
+           && mCurrentSearchWidgetWrapper->value().toString().isEmpty() ))
   {
     filterShowAll();
     return;

@@ -83,7 +83,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
                                     QWidget* parent,
                                     const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
 
-    QgsEditorWidgetWrapper* createSearch( const QString& widgetId,
+    QgsEditorWidgetWrapper* createSearchWidget( const QString& widgetId,
                                     QgsVectorLayer* vl,
                                     int fieldIdx,
                                     const QgsEditorWidgetConfig& config,
