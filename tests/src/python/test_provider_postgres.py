@@ -19,39 +19,32 @@ from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsFeature, QgsProvider
 from PyQt4.QtCore import QSettings
 from utilities import (unitTestDataPath,
                        getQgisTestApp,
-                       TestCase,
-                       unittest
+                       unittest,
+                       TestCase
                        )
-from providertestutils import * # testGetFeaturesUncompiled
+from providertestbase import ProviderTestCase
 
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 TEST_DATA_DIR = unitTestDataPath()
 
-class TestPyQgsPostgresProvider(TestCase):
+class TestPyQgsPostgresProvider(TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-
-        # Create test database
+        # Create test layer
         cls.vl = QgsVectorLayer( u'dbname=\'qgis_test\' host=localhost port=5432 user=\'postgres\' password=\'postgres\' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=', 'test', 'postgres' )
-
+        assert(cls.vl.isValid())
+        cls.provider = cls.vl.dataProvider()
 
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
 
-        # Delete test database
+    def enableCompiler(self):
+        QSettings().setValue(u'/qgis/postgres/compileExpressions', True)
 
-    def testGetFeaturesUncompiled(self):
-        QSettings().setValue( "/qgis/postgres/compileExpressions", False )
-        runGetFeatureTests( self.vl )
-
-    def testGetFeaturesCompiled(self):
-        QSettings().setValue( "/qgis/postgres/compileExpressions", True )
-        runGetFeatureTests( self.vl )
-
-    def testGetFeaturesFilterRectTests(self):
-        runGetFilterRectTests( self.vl )
+    def disableCompiler(self):
+        QSettings().setValue(u'/qgis/postgres/compileExpressions', False)
 
 if __name__ == '__main__':
     unittest.main()
