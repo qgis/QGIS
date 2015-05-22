@@ -64,7 +64,7 @@ class ProviderTestCase(object):
 
     def testUnique(self):
         assert set(self.provider.uniqueValues(1)) == set([-200, 100, 200, 300, 400])
-        # assert set([u'Apple', u'Honey', u'Orange', u'Pear', NULL]) == set(self.provider.uniqueValues(2)), 'Got {}'.format(set(self.provider.uniqueValues(2)))
+        assert set([u'Apple', u'Honey', u'Orange', u'Pear', NULL]) == set(self.provider.uniqueValues(2)), 'Got {}'.format(set(self.provider.uniqueValues(2)))
 
     def testFeatureCount(self):
         assert self.provider.featureCount() == 5
