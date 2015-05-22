@@ -28,4 +28,6 @@ class QgsPythonRunner
     virtual bool runCommand( QString command, QString messageOnError = QString() ) = 0;
 
     virtual bool evalCommand( QString command, QString& result ) = 0;
+
+    virtual void* evalToObject( const QString& command, const QString& siptype ) = 0;
 };

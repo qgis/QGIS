@@ -33,6 +33,43 @@
 #include <QStringList>
 #include <QDir>
 
+
+#include <sip.h>
+
+
+const sipAPIDef* get_sip_api()
+{
+#if defined(SIP_USE_PYCAPSULE)
+  return ( const sipAPIDef * )PyCapsule_Import( "sip._C_API", 0 );
+#else
+  PyObject *sip_module;
+  PyObject *sip_module_dict;
+  PyObject *c_api;
+
+  /* Import the SIP module. */
+  sip_module = PyImport_ImportModule( "sip" );
+
+  if ( sip_module == NULL )
+    return NULL;
+
+  /* Get the module's dictionary. */
+  sip_module_dict = PyModule_GetDict( sip_module );
+
+  /* Get the "_C_API" attribute. */
+  c_api = PyDict_GetItemString( sip_module_dict, "_C_API" );
+
+  if ( c_api == NULL )
+    return NULL;
+
+  /* Sanity check that it is the right type. */
+  if ( !PyCObject_Check( c_api ) )
+    return NULL;
+
+  /* Get the actual pointer from the object. */
+  return ( const sipAPIDef * )PyCObject_AsVoidPtr( c_api );
+#endif
+}
+
 PyThreadState* _mainState;
 
 QgsPythonUtilsImpl::QgsPythonUtilsImpl()
@@ -639,6 +676,52 @@ bool QgsPythonUtilsImpl::evalString( const QString& command, QString& result )
   PyGILState_Release( gstate );
 
   return success;
+}
+
+void* QgsPythonUtilsImpl::evalToObject( const QString& command, const QString& siptype )
+{
+  void* result;
+
+  // acquire global interpreter lock to ensure we are in a consistent state
+  PyGILState_STATE gstate;
+  gstate = PyGILState_Ensure();
+
+  PyObject* pyObj = PyRun_String( command.toUtf8().data(), Py_eval_input, mMainDict, mMainDict );
+
+  if ( !pyObj )
+  {
+    // TODO: use python implementation
+
+    QString traceback = getTraceback();
+    QString path, version;
+    evalString( "str(sys.path)", path );
+    evalString( "sys.version", version );
+
+    QString str = "<font color=\"red\">Error</font><br><pre>\n" + traceback + "\n</pre>"
+                  + QObject::tr( "Python version:" ) + "<br>" + version + "<br><br>"
+                  + QObject::tr( "QGIS version:" ) + "<br>" + QString( "%1 '%2', %3" ).arg( QGis::QGIS_VERSION ).arg( QGis::QGIS_RELEASE_NAME ).arg( QGis::QGIS_DEV_VERSION ) + "<br><br>"
+                  + QObject::tr( "Python path:" ) + "<br>" + path;
+    str.replace( "\n", "<br>" ).replace( "  ", "&nbsp; " );
+
+    QgsMessageOutput* msg = QgsMessageOutput::createMessageOutput();
+    msg->setTitle( QObject::tr( "Python error" ) );
+    msg->setMessage( str, QgsMessageOutput::MessageHtml );
+    msg->showMessage();
+  }
+
+  const sipAPIDef* sipAPI_core = get_sip_api();
+  const sipTypeDef* td = sipAPI_core->api_find_type( siptype.toUtf8().data() );
+
+  Q_ASSERT( td );
+
+  int state = 0;
+  int iserr = 0;
+  result = sipAPI_core->api_convert_to_type( pyObj, td, 0, 0, &state, &iserr );
+
+  // we are done calling python API, release global interpreter lock
+  PyGILState_Release( gstate );
+
+  return result;
 }
 
 QString QgsPythonUtilsImpl::pythonPath()

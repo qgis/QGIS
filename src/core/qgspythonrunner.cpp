@@ -58,6 +58,19 @@ void QgsPythonRunner::setInstance( QgsPythonRunner* runner )
   mInstance = runner;
 }
 
+void* QgsPythonRunner::evalToObjectHelper( const QString& command, const QString& siptype )
+{
+  if ( mInstance )
+  {
+    return mInstance->evalToObject( command, siptype );
+  }
+  else
+  {
+    QgsDebugMsg( "Unable to run Python command: runner not available!" );
+    return 0;
+  }
+}
+
 ///////////////////////////
 // non-static methods
 

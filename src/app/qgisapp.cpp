@@ -7531,6 +7531,15 @@ class QgsPythonRunnerImpl : public QgsPythonRunner
       return false;
     }
 
+    virtual void* evalToObject( const QString &command, const QString &siptype )
+    {
+      if ( mPythonUtils && mPythonUtils->isEnabled() )
+      {
+        return mPythonUtils->evalToObject( command, siptype );
+      }
+      return 0;
+    }
+
   protected:
     QgsPythonUtils* mPythonUtils;
 };
