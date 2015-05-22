@@ -1696,7 +1696,12 @@ QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, int prec, QgsCoord
     fStr += " \"bbox\": [ " + qgsDoubleToString( box.xMinimum(), prec ) + ", " + qgsDoubleToString( box.yMinimum(), prec ) + ", " + qgsDoubleToString( box.xMaximum(), prec ) + ", " + qgsDoubleToString( box.yMaximum(), prec ) + "],\n";
 
     fStr += "  \"geometry\": ";
-    fStr += geom->exportToGeoJSON( prec );
+    if ( mGeometryName == "EXTENT" )
+      fStr += QgsGeometry::fromRect( box )->exportToGeoJSON( prec );
+    else if ( mGeometryName == "CENTROID" )
+      fStr += geom->centroid()->exportToGeoJSON( prec );
+    else
+      fStr += geom->exportToGeoJSON( prec );
     fStr += ",\n";
   }
 
@@ -1759,7 +1764,13 @@ QDomElement QgsWFSServer::createFeatureGML2( QgsFeature* feat, QDomDocument& doc
     QgsGeometry* geom = feat->geometry();
 
     QDomElement geomElem = doc.createElement( "qgs:geometry" );
-    QDomElement gmlElem = QgsOgcUtils::geometryToGML( geom, doc, prec );
+    QDomElement gmlElem;
+    if ( mGeometryName == "EXTENT" )
+      gmlElem = QgsOgcUtils::geometryToGML( QgsGeometry::fromRect( geom->boundingBox() ), doc, prec );
+    else if ( mGeometryName == "CENTROID" )
+      gmlElem = QgsOgcUtils::geometryToGML( geom->centroid(), doc, prec );
+    else
+      gmlElem = QgsOgcUtils::geometryToGML( geom, doc, prec );
     if ( !gmlElem.isNull() )
     {
       QgsRectangle box = geom->boundingBox();
@@ -1818,7 +1829,13 @@ QDomElement QgsWFSServer::createFeatureGML3( QgsFeature* feat, QDomDocument& doc
     QgsGeometry* geom = feat->geometry();
 
     QDomElement geomElem = doc.createElement( "qgs:geometry" );
-    QDomElement gmlElem = QgsOgcUtils::geometryToGML( geom, doc, "GML3", prec );
+    QDomElement gmlElem;
+    if ( mGeometryName == "EXTENT" )
+      gmlElem = QgsOgcUtils::geometryToGML( QgsGeometry::fromRect( geom->boundingBox() ), doc, "GML3", prec );
+    else if ( mGeometryName == "CENTROID" )
+      gmlElem = QgsOgcUtils::geometryToGML( geom->centroid(), doc, "GML3", prec );
+    else
+      gmlElem = QgsOgcUtils::geometryToGML( geom, doc, "GML3", prec );
     if ( !gmlElem.isNull() )
     {
       QgsRectangle box = geom->boundingBox();
