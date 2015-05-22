@@ -183,7 +183,7 @@ class CORE_EXPORT QgsRecentColorScheme : public QgsColorScheme
 
     virtual ~QgsRecentColorScheme();
 
-    virtual QString schemeName() const override { return QT_TR_NOOP( "Recent colors" ); }
+    virtual QString schemeName() const override { return QObject::tr( "Recent colors" ); }
 
     virtual SchemeFlags flags() const override { return ShowInAllContexts; }
 
@@ -206,7 +206,7 @@ class CORE_EXPORT QgsCustomColorScheme : public QgsColorScheme
 
     virtual ~QgsCustomColorScheme();
 
-    virtual QString schemeName() const override { return QT_TR_NOOP( "Standard colors" ); }
+    virtual QString schemeName() const override { return QObject::tr( "Standard colors" ); }
 
     virtual SchemeFlags flags() const override { return ShowInAllContexts; }
 
@@ -233,7 +233,7 @@ class CORE_EXPORT QgsProjectColorScheme : public QgsColorScheme
 
     virtual ~QgsProjectColorScheme();
 
-    virtual QString schemeName() const override { return QT_TR_NOOP( "Project colors" ); }
+    virtual QString schemeName() const override { return QObject::tr( "Project colors" ); }
 
     virtual SchemeFlags flags() const override { return ShowInAllContexts; }
 
