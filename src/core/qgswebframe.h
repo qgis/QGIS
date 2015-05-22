@@ -24,13 +24,13 @@
 #include <QPainter>
 #include <QUrl>
 
-class QWebFrame : public QObject
+class CORE_EXPORT QWebFrame : public QObject
 {
-  Q_OBJECT
+    Q_OBJECT
 
   public:
     QWebFrame( QObject* parent = 0 )
-      :QObject( parent )
+        : QObject( parent )
     {
 
     }

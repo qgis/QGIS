@@ -22,26 +22,26 @@
 #ifdef WITH_QTWEBKIT
 #include <QtWebKit/QWebView>
 
-class QgsWebView : public QWebView
+class CORE_EXPORT QgsWebView : public QWebView
 {
     Q_OBJECT
 
   public:
-    explicit QgsWebView(QWidget* parent = 0)
-      : QWebView( parent )
+    explicit QgsWebView( QWidget* parent = 0 )
+        : QWebView( parent )
     {}
 };
 #else
 #include "qgswebpage.h"
 
-class QgsWebView : public QWidget
+class CORE_EXPORT QgsWebView : public QWidget
 {
     Q_OBJECT
   public:
-    explicit QgsWebView(QWidget *parent = 0)
-      : QWidget(parent )
-      , mSettings( new QWebSettings() )
-      , mPage( new QWebPage() )
+    explicit QgsWebView( QWidget *parent = 0 )
+        : QWidget( parent )
+        , mSettings( new QWebSettings() )
+        , mPage( new QWebPage() )
     {
     }
 
@@ -77,7 +77,7 @@ class QgsWebView : public QWidget
       Q_UNUSED( html );
     }
 
-    virtual QgsWebView* createWindow(QWebPage::WebWindowType)
+    virtual QgsWebView* createWindow( QWebPage::WebWindowType )
     {
       return new QgsWebView();
     }

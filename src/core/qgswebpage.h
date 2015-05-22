@@ -28,47 +28,48 @@
 #include <QNetworkAccessManager>
 #include <QPalette>
 
-class QWebSettings : public QObject
+class CORE_EXPORT QWebSettings : public QObject
 {
     Q_OBJECT
 
   public:
 
-    enum WebAttribute {
-        AutoLoadImages,
-        JavascriptEnabled,
-        JavaEnabled,
-        PluginsEnabled,
-        PrivateBrowsingEnabled,
-        JavascriptCanOpenWindows,
-        JavascriptCanAccessClipboard,
-        DeveloperExtrasEnabled,
-        LinksIncludedInFocusChain,
-        ZoomTextOnly,
-        PrintElementBackgrounds,
-        OfflineStorageDatabaseEnabled,
-        OfflineWebApplicationCacheEnabled,
-        LocalStorageEnabled,
-        LocalContentCanAccessRemoteUrls,
-        DnsPrefetchEnabled,
-        XSSAuditingEnabled,
-        AcceleratedCompositingEnabled,
-        SpatialNavigationEnabled,
-        LocalContentCanAccessFileUrls,
-        TiledBackingStoreEnabled,
-        FrameFlatteningEnabled,
-        SiteSpecificQuirksEnabled,
-        JavascriptCanCloseWindows,
-        WebGLEnabled,
-        CSSRegionsEnabled,
-        HyperlinkAuditingEnabled,
-        CSSGridLayoutEnabled,
-        ScrollAnimatorEnabled,
-        CaretBrowsingEnabled,
-        NotificationsEnabled
+    enum WebAttribute
+    {
+      AutoLoadImages,
+      JavascriptEnabled,
+      JavaEnabled,
+      PluginsEnabled,
+      PrivateBrowsingEnabled,
+      JavascriptCanOpenWindows,
+      JavascriptCanAccessClipboard,
+      DeveloperExtrasEnabled,
+      LinksIncludedInFocusChain,
+      ZoomTextOnly,
+      PrintElementBackgrounds,
+      OfflineStorageDatabaseEnabled,
+      OfflineWebApplicationCacheEnabled,
+      LocalStorageEnabled,
+      LocalContentCanAccessRemoteUrls,
+      DnsPrefetchEnabled,
+      XSSAuditingEnabled,
+      AcceleratedCompositingEnabled,
+      SpatialNavigationEnabled,
+      LocalContentCanAccessFileUrls,
+      TiledBackingStoreEnabled,
+      FrameFlatteningEnabled,
+      SiteSpecificQuirksEnabled,
+      JavascriptCanCloseWindows,
+      WebGLEnabled,
+      CSSRegionsEnabled,
+      HyperlinkAuditingEnabled,
+      CSSGridLayoutEnabled,
+      ScrollAnimatorEnabled,
+      CaretBrowsingEnabled,
+      NotificationsEnabled
     };
     explicit QWebSettings( QObject* parent = 0 )
-      :QObject( parent )
+        : QObject( parent )
     {
 
     }
@@ -90,21 +91,23 @@ class QWebPage : public QObject
 
   public:
 
-    enum LinkDelegationPolicy {
-        DontDelegateLinks,
-        DelegateExternalLinks,
-        DelegateAllLinks
+    enum LinkDelegationPolicy
+    {
+      DontDelegateLinks,
+      DelegateExternalLinks,
+      DelegateAllLinks
     };
 
-    enum WebWindowType {
-        WebBrowserWindow,
-        WebModalDialog
+    enum WebWindowType
+    {
+      WebBrowserWindow,
+      WebModalDialog
     };
 
     explicit QWebPage( QObject* parent = 0 )
-      : QObject( parent )
-      , mSettings( new QWebSettings() )
-      , mFrame( new QWebFrame() )
+        : QObject( parent )
+        , mSettings( new QWebSettings() )
+        , mFrame( new QWebFrame() )
     {
     }
 
@@ -124,7 +127,7 @@ class QWebPage : public QObject
       Q_UNUSED( palette );
     }
 
-    void setViewportSize(const QSize & size) const
+    void setViewportSize( const QSize & size ) const
     {
       Q_UNUSED( size );
     }
