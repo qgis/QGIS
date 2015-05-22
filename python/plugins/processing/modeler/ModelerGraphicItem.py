@@ -302,7 +302,7 @@ class ModelerGraphicItem(QGraphicsItem):
     def itemChange(self, change, value):
         if change == QGraphicsItem.ItemPositionHasChanged:
             for arrow in self.arrows:
-                arrow.updatePosition()
+                arrow.updatePath()
             self.element.pos = self.pos()
 
         return value
