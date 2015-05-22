@@ -588,7 +588,6 @@ QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2::create( QDomElement& eleme
   QDomElement rotationElem = element.firstChildElement( "rotation" );
   if ( !rotationElem.isNull() && !rotationElem.attribute( "field" ).isEmpty() )
   {
-    const QgsDataDefined dd( rotationElem.attribute( "field" ) );
     QgsCategoryList::iterator it = r->mCategories.begin();
     for ( ; it != r->mCategories.end(); ++it )
     {

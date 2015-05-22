@@ -1028,7 +1028,6 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::create( QDomElement& element
   QDomElement rotationElem = element.firstChildElement( "rotation" );
   if ( !rotationElem.isNull() && !rotationElem.attribute( "field" ).isEmpty() )
   {
-    const QgsDataDefined dd( rotationElem.attribute( "field" ) );
     for ( QgsRangeList::iterator it = r->mRanges.begin(); it != r->mRanges.end(); ++it )
     {
       convertSymbolRotation( it->symbol(), rotationElem.attribute( "field" ) );
