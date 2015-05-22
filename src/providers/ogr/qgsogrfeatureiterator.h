@@ -16,6 +16,7 @@
 #define QGSOGRFEATUREITERATOR_H
 
 #include "qgsfeatureiterator.h"
+#include "qgsogrconnpool.h"
 
 #include <ogr_api.h>
 
@@ -71,7 +72,7 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgr
 
     bool mFeatureFetched;
 
-    OGRDataSourceH ogrDataSource;
+    QgsOgrConn* mConn;
     OGRLayerH ogrLayer;
 
     bool mSubsetStringSet;
