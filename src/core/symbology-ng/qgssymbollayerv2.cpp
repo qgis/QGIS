@@ -29,6 +29,42 @@
 #include <QPointF>
 #include <QPolygonF>
 
+const QString QgsSymbolLayerV2::EXPR_SIZE( "size" );
+const QString QgsSymbolLayerV2::EXPR_ANGLE( "angle" );
+const QString QgsSymbolLayerV2::EXPR_NAME( "name" );
+const QString QgsSymbolLayerV2::EXPR_COLOR( "color" );
+const QString QgsSymbolLayerV2::EXPR_COLOR_BORDER( "color_border" );
+const QString QgsSymbolLayerV2::EXPR_OUTLINE_WIDTH( "outline_width" );
+const QString QgsSymbolLayerV2::EXPR_OUTLINE_STYLE( "outline_style" );
+const QString QgsSymbolLayerV2::EXPR_FILL( "fill" );
+const QString QgsSymbolLayerV2::EXPR_OUTLINE( "outline" );
+const QString QgsSymbolLayerV2::EXPR_OFFSET( "offset" );
+const QString QgsSymbolLayerV2::EXPR_CHAR( "char" );
+const QString QgsSymbolLayerV2::EXPR_FILL_COLOR( "fill_color" );
+const QString QgsSymbolLayerV2::EXPR_OUTLINE_COLOR( "outline_color" );
+const QString QgsSymbolLayerV2::EXPR_WIDTH( "width" );
+const QString QgsSymbolLayerV2::EXPR_HEIGHT( "height" );
+const QString QgsSymbolLayerV2::EXPR_SYMBOL_NAME( "symbol_name" );
+const QString QgsSymbolLayerV2::EXPR_ROTATION( "rotation" );
+const QString QgsSymbolLayerV2::EXPR_FILL_STYLE( "fill_style" );
+const QString QgsSymbolLayerV2::EXPR_WIDTH_BORDER( "width_border" );
+const QString QgsSymbolLayerV2::EXPR_BORDER_STYLE( "border_style" );
+const QString QgsSymbolLayerV2::EXPR_JOIN_STYLE( "join_style" );
+const QString QgsSymbolLayerV2::EXPR_BORDER_COLOR( "border_color" );
+const QString QgsSymbolLayerV2::EXPR_COLOR2( "color2" );
+const QString QgsSymbolLayerV2::EXPR_LINEANGLE( "lineangle" );
+const QString QgsSymbolLayerV2::EXPR_GRADIENT_TYPE( "gradient_type" );
+const QString QgsSymbolLayerV2::EXPR_COORDINATE_MODE( "coordinate_mode" );
+const QString QgsSymbolLayerV2::EXPR_SPREAD( "spread" );
+const QString QgsSymbolLayerV2::EXPR_REFERENCE1_X( "reference1_x" );
+const QString QgsSymbolLayerV2::EXPR_REFERENCE1_Y( "reference1_y" );
+const QString QgsSymbolLayerV2::EXPR_REFERENCE2_X( "reference2_x" );
+const QString QgsSymbolLayerV2::EXPR_REFERENCE2_Y( "reference2_y" );
+const QString QgsSymbolLayerV2::EXPR_REFERENCE1_ISCENTROID( "reference1_iscentroid" );
+const QString QgsSymbolLayerV2::EXPR_REFERENCE2_ISCENTROID( "reference2_iscentroid" );
+const QString QgsSymbolLayerV2::EXPR_BLUR_RADIUS( "blur_radius" );
+const QString QgsSymbolLayerV2::EXPR_DISTANCE( "distance" );
+
 const QgsExpression* QgsSymbolLayerV2::dataDefinedProperty( const QString& property ) const
 {
   Q_NOWARN_DEPRECATED_PUSH
@@ -415,9 +451,9 @@ void QgsMarkerSymbolLayerV2::markerOffset( const QgsSymbolV2RenderContext& conte
   offsetX = mOffset.x();
   offsetY = mOffset.y();
 
-  if ( hasDataDefinedProperty( "offset" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OFFSET ) )
   {
-    QPointF offset = QgsSymbolLayerV2Utils::decodePoint( evaluateDataDefinedProperty( "offset", context.feature() ).toString() );
+    QPointF offset = QgsSymbolLayerV2Utils::decodePoint( evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_OFFSET, context.feature() ).toString() );
     offsetX = offset.x();
     offsetY = offset.y();
   }

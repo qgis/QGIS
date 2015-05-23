@@ -45,8 +45,6 @@ static void _fixQPictureDPI( QPainter* p )
            ( double )qt_defaultDpiY() / p->device()->logicalDpiY() );
 }
 
-const QString QgsSimpleMarkerSymbolLayerV2::EXPR_SIZE( "size" );
-
 //////
 
 QgsSimpleMarkerSymbolLayerV2::QgsSimpleMarkerSymbolLayerV2( QString name, QColor color, QColor borderColor, double size, double angle, QgsSymbolV2::ScaleMethod scaleMethod )
@@ -183,16 +181,16 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
   mSelPen.setStyle( mOutlineStyle );
   mSelPen.setWidthF( mOutlineWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOutlineWidthUnit, mOutlineWidthMapUnitScale ) );
 
-  bool hasDataDefinedRotation = context.renderHints() & QgsSymbolV2::DataDefinedRotation || hasDataDefinedProperty( "angle" );
-  bool hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale || hasDataDefinedProperty( "size" );
+  bool hasDataDefinedRotation = context.renderHints() & QgsSymbolV2::DataDefinedRotation || hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_ANGLE );
+  bool hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale || hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_SIZE );
 
   // use caching only when:
   // - size, rotation, shape, color, border color is not data-defined
   // - drawing to screen (not printer)
   mUsingCache = !hasDataDefinedRotation && !hasDataDefinedSize && !context.renderContext().forceVectorOutput()
-                && !hasDataDefinedProperty( "name" ) && !hasDataDefinedProperty( "color" ) && !hasDataDefinedProperty( "color_border" )
-                && !hasDataDefinedProperty( "outline_width" ) && !hasDataDefinedProperty( "outline_style" ) &&
-                !hasDataDefinedProperty( "size" );
+                && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_NAME ) && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR ) && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR_BORDER )
+                && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_WIDTH ) && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_STYLE ) &&
+                !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_SIZE );
 
   // use either QPolygonF or QPainterPath for drawing
   // TODO: find out whether drawing directly doesn't bring overhead - if not, use it for all shapes
@@ -471,12 +469,12 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
 
   double scaledSize = mSize;
 
-  bool hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale || hasDataDefinedProperty( EXPR_SIZE );
+  bool hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale || hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_SIZE );
 
   bool ok = true;
-  if ( hasDataDefinedProperty( EXPR_SIZE ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_SIZE ) )
   {
-    scaledSize = evaluateDataDefinedProperty( EXPR_SIZE, context.feature(), mSize, &ok ).toDouble();
+    scaledSize = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_SIZE, context.feature(), mSize, &ok ).toDouble();
   }
 
   if ( hasDataDefinedSize && ok )
@@ -500,9 +498,9 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
   //angle
   double angle = mAngle + mLineAngle;
   bool usingDataDefinedRotation = false;
-  if ( hasDataDefinedProperty( "angle" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_ANGLE ) )
   {
-    angle = evaluateDataDefinedProperty( "angle", context.feature(), mAngle, &ok ).toDouble() + mLineAngle;
+    angle = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_ANGLE, context.feature(), mAngle, &ok ).toDouble() + mLineAngle;
     usingDataDefinedRotation = ok;
   }
 
@@ -531,9 +529,9 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
 
   //data defined shape?
   bool createdNewPath = false;
-  if ( hasDataDefinedProperty( "name" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_NAME ) )
   {
-    QString name = evaluateDataDefinedProperty( "name", context.feature(), QVariant(), &ok ).toString();
+    QString name = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_NAME, context.feature(), QVariant(), &ok ).toString();
     if ( ok )
     {
       if ( !prepareShape( name ) ) // drawing as a polygon
@@ -572,33 +570,33 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
     if ( angle != 0 && ( hasDataDefinedRotation || createdNewPath ) )
       transform.rotate( angle );
 
-    if ( hasDataDefinedProperty( "color" ) )
+    if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR ) )
     {
-      QString colorString = evaluateDataDefinedProperty( "color", context.feature(), QVariant(), &ok ).toString();
+      QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR, context.feature(), QVariant(), &ok ).toString();
       if ( ok )
         mBrush.setColor( QgsSymbolLayerV2Utils::decodeColor( colorString ) );
     }
-    if ( hasDataDefinedProperty( "color_border" ) )
+    if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR_BORDER ) )
     {
-      QString colorString = evaluateDataDefinedProperty( "color_border", context.feature(), QVariant(), &ok ).toString();
+      QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR_BORDER, context.feature(), QVariant(), &ok ).toString();
       if ( ok )
       {
         mPen.setColor( QgsSymbolLayerV2Utils::decodeColor( colorString ) );
         mSelPen.setColor( QgsSymbolLayerV2Utils::decodeColor( colorString ) );
       }
     }
-    if ( hasDataDefinedProperty( "outline_width" ) )
+    if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_WIDTH ) )
     {
-      double outlineWidth = evaluateDataDefinedProperty( "outline_width", context.feature(), QVariant(), &ok ).toDouble();
+      double outlineWidth = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_WIDTH, context.feature(), QVariant(), &ok ).toDouble();
       if ( ok )
       {
         mPen.setWidthF( outlineWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOutlineWidthUnit, mOutlineWidthMapUnitScale ) );
         mSelPen.setWidthF( outlineWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOutlineWidthUnit, mOutlineWidthMapUnitScale ) );
       }
     }
-    if ( hasDataDefinedProperty( "outline_style" ) )
+    if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_STYLE ) )
     {
-      QString outlineStyle = evaluateDataDefinedProperty( "outline_style", context.feature(), QVariant(), &ok ).toString();
+      QString outlineStyle = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_STYLE, context.feature(), QVariant(), &ok ).toString();
       if ( ok )
       {
         mPen.setStyle( QgsSymbolLayerV2Utils::decodePenStyle( outlineStyle ) );
@@ -809,16 +807,16 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
   bool hasDataDefinedSize = false;
   if ( context )
   {
-    hasDataDefinedSize = context->renderHints() & QgsSymbolV2::DataDefinedSizeScale || hasDataDefinedProperty( "size" );
+    hasDataDefinedSize = context->renderHints() & QgsSymbolV2::DataDefinedSizeScale || hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_SIZE );
   }
 
   //data defined size
   bool ok = true;
   if ( hasDataDefinedSize )
   {
-    if ( hasDataDefinedProperty( "size" ) )
+    if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_SIZE ) )
     {
-      size = evaluateDataDefinedProperty( "size", f, mSize, &ok ).toDouble();
+      size = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_SIZE, f, mSize, &ok ).toDouble();
     }
 
     if ( ok )
@@ -844,9 +842,9 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
   //outlineWidth
   double outlineWidth = mOutlineWidth;
 
-  if ( context && hasDataDefinedProperty( "outline_width" ) )
+  if ( context && hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_WIDTH ) )
   {
-    outlineWidth = evaluateDataDefinedProperty( "outline_width", f, mOutlineWidth ).toDouble();
+    outlineWidth = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_WIDTH, f, mOutlineWidth ).toDouble();
   }
   if ( mSizeUnit == QgsSymbolV2::MM )
   {
@@ -856,15 +854,15 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
   //color
   QColor pc = mPen.color();
   QColor bc = mBrush.color();
-  if ( hasDataDefinedProperty( "color" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR ) )
   {
-    QString colorString = evaluateDataDefinedProperty( "color", f, QVariant(), &ok ).toString();
+    QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR, f, QVariant(), &ok ).toString();
     if ( ok )
       bc = QgsSymbolLayerV2Utils::decodeColor( colorString );
   }
-  if ( hasDataDefinedProperty( "color_border" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR_BORDER ) )
   {
-    QString colorString = evaluateDataDefinedProperty( "color_border", f, QVariant(), &ok ).toString();
+    QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR_BORDER, f, QVariant(), &ok ).toString();
     if ( ok )
       pc = QgsSymbolLayerV2Utils::decodeColor( colorString );
   }
@@ -880,9 +878,9 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
 
   //angle
   double angle = mAngle + mLineAngle;
-  if ( context && hasDataDefinedProperty( "angle" ) )
+  if ( context && hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_ANGLE ) )
   {
-    angle = evaluateDataDefinedProperty( "angle", f, mAngle ).toDouble() + mLineAngle;
+    angle = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_ANGLE, f, mAngle ).toDouble() + mLineAngle;
   }
 
   angle = -angle; //rotation in Qt is counterclockwise
@@ -1241,12 +1239,12 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
 
   double scaledSize = mSize;
 
-  bool hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale || hasDataDefinedProperty( "size" );
+  bool hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale || hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_SIZE );
 
   bool ok = true;
-  if ( hasDataDefinedProperty( "size" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_SIZE ) )
   {
-    scaledSize = evaluateDataDefinedProperty( "size", context.feature(), mSize, &ok ).toDouble();
+    scaledSize = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_SIZE, context.feature(), mSize, &ok ).toDouble();
   }
 
   if ( hasDataDefinedSize && ok )
@@ -1278,12 +1276,12 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
   QPointF outputOffset( offsetX, offsetY );
 
   double angle = mAngle + mLineAngle;
-  if ( hasDataDefinedProperty( "angle" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_ANGLE ) )
   {
-    angle = evaluateDataDefinedProperty( "angle", context.feature(), mAngle ).toDouble() + mLineAngle;
+    angle = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_ANGLE, context.feature(), mAngle ).toDouble() + mLineAngle;
   }
 
-  bool hasDataDefinedRotation = context.renderHints() & QgsSymbolV2::DataDefinedRotation || hasDataDefinedProperty( "angle" );
+  bool hasDataDefinedRotation = context.renderHints() & QgsSymbolV2::DataDefinedRotation || hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_ANGLE );
   if ( hasDataDefinedRotation )
   {
     // For non-point markers, "dataDefinedRotation" means following the
@@ -1312,29 +1310,29 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
     p->rotate( angle );
 
   QString path = mPath;
-  if ( hasDataDefinedProperty( "name" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_NAME ) )
   {
-    path = evaluateDataDefinedProperty( "name", context.feature(), mPath ).toString();
+    path = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_NAME, context.feature(), mPath ).toString();
   }
 
   double outlineWidth = mOutlineWidth;
-  if ( hasDataDefinedProperty( "outline_width" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_WIDTH ) )
   {
-    outlineWidth = evaluateDataDefinedProperty( "outline_width", context.feature(), mOutlineWidth ).toDouble();
+    outlineWidth = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_WIDTH, context.feature(), mOutlineWidth ).toDouble();
   }
 
   QColor fillColor = mFillColor;
-  if ( hasDataDefinedProperty( "fill" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_FILL ) )
   {
-    QString colorString = evaluateDataDefinedProperty( "fill", context.feature(), QVariant(), &ok ).toString();
+    QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_FILL, context.feature(), QVariant(), &ok ).toString();
     if ( ok )
       fillColor = QgsSymbolLayerV2Utils::decodeColor( colorString );
   }
 
   QColor outlineColor = mOutlineColor;
-  if ( hasDataDefinedProperty( "outline" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE ) )
   {
-    QString colorString = evaluateDataDefinedProperty( "outline", context.feature(), QVariant(), &ok ).toString();
+    QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE, context.feature(), QVariant(), &ok ).toString();
     if ( ok )
       outlineColor = QgsSymbolLayerV2Utils::decodeColor( colorString );
   }
@@ -1563,12 +1561,12 @@ bool QgsSvgMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScale
   //size
   double size = mSize;
 
-  bool hasDataDefinedSize = context->renderHints() & QgsSymbolV2::DataDefinedSizeScale || hasDataDefinedProperty( "size" );
+  bool hasDataDefinedSize = context->renderHints() & QgsSymbolV2::DataDefinedSizeScale || hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_SIZE );
 
   bool ok = true;
-  if ( hasDataDefinedProperty( "size" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_SIZE ) )
   {
-    size = evaluateDataDefinedProperty( "size", f, mSize, &ok ).toDouble();
+    size = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_SIZE, f, mSize, &ok ).toDouble();
   }
 
   if ( hasDataDefinedSize && ok )
@@ -1593,9 +1591,9 @@ bool QgsSvgMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScale
   //offset, angle
   QPointF offset = mOffset;
 
-  if ( hasDataDefinedProperty( "offset" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OFFSET ) )
   {
-    QString offsetString = evaluateDataDefinedProperty( "offset", f, QVariant(), &ok ).toString();
+    QString offsetString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_OFFSET, f, QVariant(), &ok ).toString();
     if ( ok )
       offset = QgsSymbolLayerV2Utils::decodePoint( offsetString );
   }
@@ -1610,9 +1608,9 @@ bool QgsSvgMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScale
   QPointF outputOffset( offsetX, offsetY );
 
   double angle = mAngle + mLineAngle;
-  if ( hasDataDefinedProperty( "angle" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_ANGLE ) )
   {
-    angle = evaluateDataDefinedProperty( "angle", f, mAngle ).toDouble() + mLineAngle;
+    angle = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_ANGLE, f, mAngle ).toDouble() + mLineAngle;
   }
   //angle = -angle; //rotation in Qt is counterclockwise
   if ( angle )
@@ -1728,9 +1726,9 @@ void QgsFontMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2R
 
   QColor penColor = mColor;
   bool ok;
-  if ( hasDataDefinedProperty( "color" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR ) )
   {
-    QString colorString = evaluateDataDefinedProperty( "color", context.feature(), QVariant(), &ok ).toString();
+    QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR, context.feature(), QVariant(), &ok ).toString();
     if ( ok )
       penColor = QgsSymbolLayerV2Utils::decodeColor( colorString );
   }
@@ -1744,9 +1742,9 @@ void QgsFontMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2R
 
   QPointF chrOffset = mChrOffset;
   QString charToRender = mChr;
-  if ( hasDataDefinedProperty( "char" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_CHAR ) )
   {
-    charToRender = evaluateDataDefinedProperty( "char", context.feature(), mChr ).toString();
+    charToRender = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_CHAR, context.feature(), mChr ).toString();
     if ( charToRender != mChr )
     {
       chrOffset = QPointF( mFontMetrics->width( charToRender ) / 2.0, -mFontMetrics->ascent() / 2.0 );
@@ -1755,12 +1753,12 @@ void QgsFontMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2R
 
   double scaledSize = mSize;
 
-  bool hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale || hasDataDefinedProperty( "size" );
+  bool hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale || hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_SIZE );
 
   ok = true;
-  if ( hasDataDefinedProperty( "size" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_SIZE ) )
   {
-    scaledSize = evaluateDataDefinedProperty( "size", context.feature(), mSize, &ok ).toDouble();
+    scaledSize = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_SIZE, context.feature(), mSize, &ok ).toDouble();
   }
 
   if ( hasDataDefinedSize && ok )
@@ -1782,12 +1780,12 @@ void QgsFontMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2R
   QPointF outputOffset( offsetX, offsetY );
 
   double angle = mAngle + mLineAngle;
-  if ( hasDataDefinedProperty( "angle" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_ANGLE ) )
   {
-    angle = evaluateDataDefinedProperty( "angle", context.feature(), mAngle ).toDouble() + mLineAngle;
+    angle = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_ANGLE, context.feature(), mAngle ).toDouble() + mLineAngle;
   }
 
-  bool hasDataDefinedRotation = context.renderHints() & QgsSymbolV2::DataDefinedRotation || hasDataDefinedProperty( "angle" );
+  bool hasDataDefinedRotation = context.renderHints() & QgsSymbolV2::DataDefinedRotation || hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_ANGLE );
   if ( hasDataDefinedRotation )
   {
     // For non-point markers, "dataDefinedRotation" means following the

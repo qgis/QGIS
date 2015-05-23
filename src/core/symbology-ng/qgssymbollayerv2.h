@@ -284,6 +284,43 @@ class CORE_EXPORT QgsSymbolLayerV2
      * @note added in QGIS 2.9
      */
     void copyPaintEffect( QgsSymbolLayerV2* destLayer ) const;
+
+    static const QString EXPR_SIZE;
+    static const QString EXPR_ANGLE;
+    static const QString EXPR_NAME;
+    static const QString EXPR_COLOR;
+    static const QString EXPR_COLOR_BORDER;
+    static const QString EXPR_OUTLINE_WIDTH;
+    static const QString EXPR_OUTLINE_STYLE;
+    static const QString EXPR_FILL;
+    static const QString EXPR_OUTLINE;
+    static const QString EXPR_OFFSET;
+    static const QString EXPR_CHAR;
+    static const QString EXPR_FILL_COLOR;
+    static const QString EXPR_OUTLINE_COLOR;
+    static const QString EXPR_WIDTH;
+    static const QString EXPR_HEIGHT;
+    static const QString EXPR_SYMBOL_NAME;
+    static const QString EXPR_ROTATION;
+    static const QString EXPR_FILL_STYLE;
+    static const QString EXPR_WIDTH_BORDER;
+    static const QString EXPR_BORDER_STYLE;
+    static const QString EXPR_JOIN_STYLE;
+    static const QString EXPR_BORDER_COLOR;
+    static const QString EXPR_COLOR2;
+    static const QString EXPR_LINEANGLE;
+    static const QString EXPR_GRADIENT_TYPE;
+    static const QString EXPR_COORDINATE_MODE;
+    static const QString EXPR_SPREAD;
+    static const QString EXPR_REFERENCE1_X;
+    static const QString EXPR_REFERENCE1_Y;
+    static const QString EXPR_REFERENCE2_X;
+    static const QString EXPR_REFERENCE2_Y;
+    static const QString EXPR_REFERENCE1_ISCENTROID;
+    static const QString EXPR_REFERENCE2_ISCENTROID;
+    static const QString EXPR_BLUR_RADIUS;
+    static const QString EXPR_DISTANCE;
+
 };
 
 //////////////////////

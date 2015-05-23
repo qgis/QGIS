@@ -467,9 +467,9 @@ void QgsSimpleLineSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
 
   //data defined properties
   bool hasStrokeWidthExpression = false;
-  if ( hasDataDefinedProperty( "width" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_WIDTH ) )
   {
-    double scaledWidth = evaluateDataDefinedProperty( "width", context.feature(), mWidth ).toDouble()
+    double scaledWidth = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_WIDTH, context.feature(), mWidth ).toDouble()
                          * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mWidthUnit, mWidthMapUnitScale );
     pen.setWidthF( scaledWidth );
     selPen.setWidthF( scaledWidth );
@@ -478,17 +478,17 @@ void QgsSimpleLineSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
 
   //color
   bool ok;
-  if ( hasDataDefinedProperty( "color" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR ) )
   {
-    QString colorString = evaluateDataDefinedProperty( "color", context.feature(), QVariant(), &ok ).toString();
+    QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR, context.feature(), QVariant(), &ok ).toString();
     if ( ok )
       pen.setColor( QgsSymbolLayerV2Utils::decodeColor( colorString ) );
   }
 
   //offset
-  if ( hasDataDefinedProperty( "offset" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OFFSET ) )
   {
-    offset = evaluateDataDefinedProperty( "offset", context.feature(), offset ).toDouble();
+    offset = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_OFFSET, context.feature(), offset ).toDouble();
   }
 
   //dash dot vector
@@ -578,9 +578,9 @@ double QgsSimpleLineSymbolLayerV2::dxfWidth( const QgsDxfExport& e, const QgsSym
 {
   double width = mWidth;
 
-  if ( hasDataDefinedProperty( "width" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_WIDTH ) )
   {
-    width = evaluateDataDefinedProperty( "width", context.feature(), mWidth ).toDouble() * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), widthUnit(), e.mapUnits() );
+    width = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_WIDTH, context.feature(), mWidth ).toDouble() * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), widthUnit(), e.mapUnits() );
   }
   else if ( context.renderHints() & QgsSymbolV2::DataDefinedSizeScale )
   {
@@ -592,10 +592,10 @@ double QgsSimpleLineSymbolLayerV2::dxfWidth( const QgsDxfExport& e, const QgsSym
 
 QColor QgsSimpleLineSymbolLayerV2::dxfColor( const QgsSymbolV2RenderContext& context ) const
 {
-  if ( hasDataDefinedProperty( "color" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR ) )
   {
     bool ok;
-    QString colorString = evaluateDataDefinedProperty( "color", context.feature(), QVariant(), &ok ).toString();
+    QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR, context.feature(), QVariant(), &ok ).toString();
     if ( ok )
       return ( QgsSymbolLayerV2Utils::decodeColor( colorString ) );
   }
@@ -607,9 +607,9 @@ double QgsSimpleLineSymbolLayerV2::dxfOffset( const QgsDxfExport& e, const QgsSy
   Q_UNUSED( e );
   double offset = mOffset;
 
-  if ( hasDataDefinedProperty( "offset" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OFFSET ) )
   {
-    offset = evaluateDataDefinedProperty( "offset", context.feature(), mOffset ).toDouble();
+    offset = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_OFFSET, context.feature(), mOffset ).toDouble();
   }
   return offset;
 }
@@ -798,9 +798,9 @@ void QgsMarkerLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
 {
   double offset = mOffset;
 
-  if ( hasDataDefinedProperty( "offset" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OFFSET ) )
   {
-    offset = evaluateDataDefinedProperty( "offset", context.feature(), mOffset ).toDouble();
+    offset = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_OFFSET, context.feature(), mOffset ).toDouble();
   }
 
   Placement placement = mPlacement;
