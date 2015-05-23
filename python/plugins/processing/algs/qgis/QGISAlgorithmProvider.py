@@ -128,6 +128,7 @@ from SelectByAttributeSum import SelectByAttributeSum
 from HypsometricCurves import HypsometricCurves
 from SplitLinesWithLines import SplitLinesWithLines
 from processing.algs.qgis.FieldsMapper import FieldsMapper
+from Datasources2Vrt import Datasources2Vrt
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -175,7 +176,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         SetVectorStyle(), SetRasterStyle(),
                         SelectByExpression(), HypsometricCurves(),
                         SplitLinesWithLines(), CreateConstantRaster(),
-                        FieldsMapper(),SelectByAttributeSum()
+                        FieldsMapper(),SelectByAttributeSum(), Datasources2Vrt()
                         ]
 
         if hasMatplotlib:
