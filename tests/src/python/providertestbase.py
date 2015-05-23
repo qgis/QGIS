@@ -13,10 +13,18 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 from qgis.core import QgsRectangle, QgsFeatureRequest, QgsGeometry, NULL
-from utilities import TestCase
-
 
 class ProviderTestCase(object):
+    '''
+        This is a collection of tests for vector data providers and kept generic.
+        To make use of it, subclass it and set self.provider to a provider you want to test.
+        Make sure that your provider uses the default dataset by converting one of the provided datasets from the folder
+        tests/testdata/provider to a dataset your provider is able to handle.
+
+        To test expression compilation, add the methods `enableCompiler()` and `disableCompiler()` to your subclass.
+        If these methods are present, the tests will ensure that the result of server side and client side expression
+        evaluation are equal.
+    '''
     def runGetFeatureTests(self, provider):
         assert len([f for f in provider.getFeatures()]) == 5
         assert len([f for f in provider.getFeatures(QgsFeatureRequest().setFilterExpression('name IS NOT NULL'))]) == 4
@@ -62,7 +70,7 @@ class ProviderTestCase(object):
 
     def testExtent(self):
         reference = QgsGeometry.fromRect(
-            QgsRectangle(-71.1230000000000047, 66.3299999999999983, -65.3199999999999932, 78.2999999999999972))
+            QgsRectangle(-71.123, 66.33, -65.32, 78.3))
         provider_extent = QgsGeometry.fromRect(self.provider.extent())
 
         assert QgsGeometry.compare(provider_extent.asPolygon(), reference.asPolygon(), 0.000001)
