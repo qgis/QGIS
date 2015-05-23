@@ -34,6 +34,7 @@ modified.
  * SDTS
  * GeoTiff
  * Tiff with world file
+ * WMS
 
 ## Supported vector formats include:
 
@@ -42,6 +43,9 @@ modified.
  * GRASS
  * Spatialite
  * Other OGR supported formats
+ * MSSQL
+ * Oracle
+ * WFS
 
 ## Note
 
