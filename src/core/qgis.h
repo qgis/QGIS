@@ -471,7 +471,11 @@ typedef unsigned long long qgssize;
 #    pragma warning(disable:4190)
 #  endif
 #else
-#  define QGISEXTERN extern "C"
+#  if defined(__GNUC__) || defined(__clang__)
+#    define QGISEXTERN extern "C" __attribute__ ((visibility ("default")))
+#  else
+#    define QGISEXTERN extern "C"
+#  endif
 #endif
 #endif
 #endif

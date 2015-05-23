@@ -44,7 +44,7 @@ class QgsVectorLayerTools;
 #include <QPair>
 #include <map>
 
-#include <qgis.h>
+#include "qgis.h"
 
 
 /** \ingroup gui
@@ -591,14 +591,5 @@ class GUI_EXPORT QgisInterface : public QObject
     */
     void layerSavedAs( QgsMapLayer* l, QString path );
 };
-
-// FIXME: also in core/qgis.h
-#ifndef QGISEXTERN
-#ifdef WIN32
-#  define QGISEXTERN extern "C" __declspec( dllexport )
-#else
-#  define QGISEXTERN extern "C"
-#endif
-#endif
 
 #endif //#ifndef QGISINTERFACE_H
