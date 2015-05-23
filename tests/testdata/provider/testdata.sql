@@ -1,4 +1,4 @@
---
+﻿--
 -- PostgreSQL database dump
 --
 
@@ -35,9 +35,9 @@ SET default_with_oids = false;
 --
 
 CREATE TABLE "someData" (
-    pk integer NOT NULL,
+    pk SERIAL NOT NULL,
     cnt integer,
-    name text,
+    name text DEFAULT 'qgis',
     geom public.geometry(Point,4326)
 );
 

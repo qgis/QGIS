@@ -14,6 +14,7 @@ __revision__ = '$Format:%H$'
 
 import qgis
 import os
+from qgis.core import NULL
 
 from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsFeature, QgsProviderRegistry
 from PyQt4.QtCore import QSettings
@@ -45,6 +46,12 @@ class TestPyQgsPostgresProvider(TestCase, ProviderTestCase):
 
     def disableCompiler(self):
         QSettings().setValue(u'/qgis/postgres/compileExpressions', False)
+
+# HERE GO THE PROVIDER SPECIFIC TESTS
+    def testDefaultValue(self):
+        assert self.provider.defaultValue(0) == u'nextval(\'qgis_test."someData_pk_seq"\'::regclass)'
+        assert self.provider.defaultValue(1) == NULL
+        assert self.provider.defaultValue(2) == '\'qgis\'::text'
 
 if __name__ == '__main__':
     unittest.main()
