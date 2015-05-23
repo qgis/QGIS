@@ -31,7 +31,7 @@ email                : nyall dot dawson at gmail dot com
 
 #include "qgsgeometry.h"
 
-class CORE_EXPORT QgsFeaturePrivate : public QSharedData
+class QgsFeaturePrivate : public QSharedData
 {
   public:
 
