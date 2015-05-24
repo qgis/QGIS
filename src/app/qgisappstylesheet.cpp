@@ -18,6 +18,7 @@
 
 #include "qgisappstylesheet.h"
 #include "qgsapplication.h"
+#include "qgisapp.h"
 #include "qgslogger.h"
 
 #include <QFont>
@@ -91,6 +92,8 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
 
   settings.endGroup(); // "qgis/stylesheet"
 
+  opts.insert( "iconSize", settings.value( "/IconSize", QGIS_ICON_SIZE ) );
+  
   return opts;
 }
 
@@ -173,6 +176,11 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant>& opts )
         .arg( palette.highlight().color().name() )
         .arg( palette.highlightedText().color().name() );
 
+  QString iconSize = opts.value( "iconSize" ).toString();
+  QgsDebugMsg( QString( "iconSize: %1" ).arg( iconSize ) );
+  if ( iconSize.isEmpty() ) { return; }
+  ss += QString( "QDockWidget QToolButton { icon-size: %1px; }" ).arg( iconSize );
+  
   QgsDebugMsg( QString( "Stylesheet built: %1" ).arg( ss ) );
 
   emit appStyleSheetChanged( ss );
