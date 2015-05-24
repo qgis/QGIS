@@ -384,17 +384,30 @@ class Grass7Algorithm(GeoAlgorithm):
             if isinstance(out, OutputVector):
                 filename = out.value
                 # FIXME: check if needed: -c   Also export features without category (not labeled). Otherwise only features with category are exported.
-                command = 'v.out.ogr -s -e input=' + out.name + uniqueSufix
-                command += ' output="' + os.path.dirname(out.value) + '"'
-                command += ' format=ESRI_Shapefile'
-                command += ' olayer=' + os.path.basename(out.value)[:-4]
-                typeidx = \
-                    self.getParameterValue(self.GRASS_OUTPUT_TYPE_PARAMETER)
-                outtype = ('auto' if typeidx
-                           is None else self.OUTPUT_TYPES[typeidx])
-                command += ' type=' + outtype
-                commands.append(command)
-                outputCommands.append(command)
+                if self.grass7Name == 'r.flow':
+		  command = 'v.out.ogr type=line layer=0 -c -e input=' + out.name + uniqueSufix
+		  command += ' output="' + os.path.dirname(out.value) + '"'
+		  command += ' format=ESRI_Shapefile'
+		  command += ' olayer=' + os.path.basename(out.value)[:-4]
+		  typeidx = \
+		      self.getParameterValue(self.GRASS_OUTPUT_TYPE_PARAMETER)
+		  outtype = ('auto' if typeidx
+			    is None else self.OUTPUT_TYPES[typeidx])
+		  command += ' type=' + outtype
+                  commands.append(command)
+                  outputCommands.append(command)
+                else:
+		  command = 'v.out.ogr -s -e input=' + out.name + uniqueSufix
+		  command += ' output="' + os.path.dirname(out.value) + '"'
+		  command += ' format=ESRI_Shapefile'
+		  command += ' olayer=' + os.path.basename(out.value)[:-4]
+		  typeidx = \
+		      self.getParameterValue(self.GRASS_OUTPUT_TYPE_PARAMETER)
+		  outtype = ('auto' if typeidx
+			    is None else self.OUTPUT_TYPES[typeidx])
+		  command += ' type=' + outtype
+                  commands.append(command)
+                  outputCommands.append(command)
 
         # 4: Run GRASS
 
