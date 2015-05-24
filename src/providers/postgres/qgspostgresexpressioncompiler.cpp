@@ -16,8 +16,8 @@
 #include "qgspostgresexpressioncompiler.h"
 
 QgsPostgresExpressionCompiler::QgsPostgresExpressionCompiler( QgsPostgresFeatureSource* source )
-  : mResult( None )
-  , mSource( source )
+    : mResult( None )
+    , mSource( source )
 {
 }
 
@@ -29,19 +29,19 @@ QgsPostgresExpressionCompiler::~QgsPostgresExpressionCompiler()
 QgsPostgresExpressionCompiler::Result QgsPostgresExpressionCompiler::compile( const QgsExpression* exp )
 {
   if ( exp->rootNode() )
-    return compile ( exp->rootNode(), mResult );
+    return compile( exp->rootNode(), mResult );
   else
     return Fail;
 }
 
 QgsPostgresExpressionCompiler::Result QgsPostgresExpressionCompiler::compile( const QgsExpression::Node* node, QString& result )
 {
-  switch( node->nodeType() )
+  switch ( node->nodeType() )
   {
     case QgsExpression::ntUnaryOperator:
     {
       const QgsExpression::NodeUnaryOperator* n = static_cast<const QgsExpression::NodeUnaryOperator*>( node );
-      switch( n->op() )
+      switch ( n->op() )
       {
         case QgsExpression::uoNot:
           break;
@@ -55,14 +55,9 @@ QgsPostgresExpressionCompiler::Result QgsPostgresExpressionCompiler::compile( co
 
     case QgsExpression::ntBinaryOperator:
     {
-      QString op;
-      QString left;
-      QString right;
-      Result lr;
-      Result rr;
-
       const QgsExpression::NodeBinaryOperator* n = static_cast<const QgsExpression::NodeBinaryOperator*>( node );
 
+      QString op;
       switch ( n->op() )
       {
         case QgsExpression::boEQ:
@@ -85,12 +80,28 @@ QgsPostgresExpressionCompiler::Result QgsPostgresExpressionCompiler::compile( co
           op = "<";
           break;
 
+        case QgsExpression::boIs:
+          op = "IS";
+          break;
+
+        case QgsExpression::boIsNot:
+          op = "IS NOT";
+          break;
+
         case QgsExpression::boLike:
           op = "LIKE";
           break;
 
         case QgsExpression::boILike:
           op = "ILIKE";
+          break;
+
+        case QgsExpression::boNotLike:
+          op = "NOT LIKE";
+          break;
+
+        case QgsExpression::boNotILike:
+          op = "NOT ILIKE";
           break;
 
         case QgsExpression::boOr:
@@ -104,26 +115,54 @@ QgsPostgresExpressionCompiler::Result QgsPostgresExpressionCompiler::compile( co
         case QgsExpression::boNE:
           op = "<>";
           break;
+
+        case QgsExpression::boMul:
+          op = "*";
+          break;
+
+        case QgsExpression::boPlus:
+          op = "+";
+          break;
+
+        case QgsExpression::boMinus:
+          op = "-";
+          break;
+
+        case QgsExpression::boDiv:
+          return Fail;  // handle cast to real
+
+        case QgsExpression::boMod:
+          op = "%";
+          break;
+
+        case QgsExpression::boConcat:
+          op = "||";
+          break;
+
+        case QgsExpression::boIntDiv:
+          return Fail;  // handle cast to int
+
+        case QgsExpression::boPow:
+          op = "^";
+          break;
+
+        case QgsExpression::boRegexp:
+          op = "~";
+          break;
       }
 
-      if ( !op.isNull() )
-      {
-        lr = compile( n->opLeft(), left );
-        rr = compile( n->opRight(), right );
-        result = left + " " + op + " " + right;
-        return ( lr == Complete && rr == Complete ) ? Complete : Fail;
-      }
-      else
-      {
+      if ( op.isNull() )
         return Fail;
-      }
 
-      break;
+      QString left;
+      Result lr( compile( n->opLeft(), left ) );
+
+      QString right;
+      Result rr( compile( n->opRight(), right ) );
+
+      result = left + " " + op + " " + right;
+      return ( lr == Complete && rr == Complete ) ? Complete : Fail;
     }
-
-    case QgsExpression::ntFunction:
-      return Fail;
-      break;
 
     case QgsExpression::ntLiteral:
     {
@@ -136,17 +175,20 @@ QgsPostgresExpressionCompiler::Result QgsPostgresExpressionCompiler::compile( co
     {
       const QgsExpression::NodeColumnRef* n = static_cast<const QgsExpression::NodeColumnRef*>( node );
 
-      if ( mSource->mFields.indexFromName( n->name() ) != -1 )
-      {
-        result = QgsPostgresConn::quotedIdentifier( n->name() );
-        return Complete;
-      }
-      else
-      {
+      if ( mSource->mFields.indexFromName( n->name() ) == -1 )
         // Not a provider field
         return Fail;
-      }
+
+      result = QgsPostgresConn::quotedIdentifier( n->name() );
+
+      return Complete;
     }
+
+    case QgsExpression::ntFunction:
+    case QgsExpression::ntCondition:
+    case QgsExpression::ntInOperator:
+      break;
   }
+
   return Fail;
 }

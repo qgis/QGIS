@@ -2150,7 +2150,7 @@ int QgsWMSServer::featureInfoFromRasterLayer( QgsRasterLayer* layer,
       fields.append( QgsField( layer->bandName( it.key() ), QVariant::Double ) );
       feature.setAttribute( index++, QString::number( it.value().toDouble() ) );
     }
-    feature.setFields( &fields );
+    feature.setFields( fields );
 
     QgsCoordinateReferenceSystem layerCrs = layer->crs();
     int version = infoFormat.startsWith( "application/vnd.ogc.gml/3" ) ? 3 : 2;

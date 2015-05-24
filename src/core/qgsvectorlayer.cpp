@@ -598,6 +598,7 @@ QGis::GeometryType QgsVectorLayer::geometryType() const
         return QGis::Polygon;
 
       case QGis::WKBNoGeometry:
+      case QGis::WKBUnknown:
         return QGis::NoGeometry;
     }
     QgsDebugMsg( QString( "Data Provider Geometry type is not recognised, is %1" ).arg( type ) );

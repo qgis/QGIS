@@ -34,7 +34,7 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
     , mFeatureQueueSize( sFeatureQueueSize )
     , mFetched( 0 )
     , mFetchGeometry( false )
-    , mExpressionCompiled( false)
+    , mExpressionCompiled( false )
 {
   if ( !source->mTransactionConnection )
   {
@@ -165,8 +165,7 @@ bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature& feature )
   }
   else
   {
-    QgsGeometry* featureGeom = mFeatureQueue.front().geometryAndOwnership();
-    feature.setGeometry( featureGeom );
+    feature.setGeometry( mFeatureQueue.front().geometryAndOwnership() );
   }
   feature.setFeatureId( mFeatureQueue.front().id() );
   feature.setAttributes( mFeatureQueue.front().attributes() );

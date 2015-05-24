@@ -28,7 +28,7 @@ QgsPhotoWidgetWrapper::QgsPhotoWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, 
     , mButton( 0 )
 {
 #ifdef WITH_QTWEBKIT
-    mWebView = 0;
+  mWebView = 0;
 #endif
 }
 

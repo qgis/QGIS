@@ -22,7 +22,8 @@
 class QgsPostgresExpressionCompiler
 {
   public:
-    enum Result {
+    enum Result
+    {
       None,
       Complete,
       Partial,

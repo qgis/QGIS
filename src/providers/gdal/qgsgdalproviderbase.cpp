@@ -161,7 +161,9 @@ QGis::DataType QgsGdalProviderBase::dataTypeFromGdal( const GDALDataType theGdal
     case GDT_CInt32: return QGis::CInt32;
     case GDT_CFloat32: return QGis::CFloat32;
     case GDT_CFloat64: return QGis::CFloat64;
-    case GDT_Unknown: return QGis::UnknownDataType;
+    case GDT_Unknown:
+    case GDT_TypeCount:
+      return QGis::UnknownDataType;
   }
   return QGis::UnknownDataType;
 }

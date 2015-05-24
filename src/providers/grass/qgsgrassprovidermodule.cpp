@@ -159,15 +159,7 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
     QgsDebugMsg( "uri = " + uri );
 
     QgsGrassObject rasterObject( mGisdbase, mLocation, mName, name, QgsGrassObject::Raster );
-    bool isExternal = false;
-    if ( QgsGrass::isExternal( rasterObject ) )
-    {
-      isExternal = true;
-      //rasterObject.setName( rasterObject.name() + " external" );
-    }
     QgsGrassRasterItem *layer = new QgsGrassRasterItem( this, rasterObject, path, uri, QgsGrass::isExternal( rasterObject ) );
-
-
     items.append( layer );
   }
 

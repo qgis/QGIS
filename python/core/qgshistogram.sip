@@ -12,7 +12,7 @@ class QgsHistogram
 %End
 
   public:
-  
+
     QgsHistogram();
 
     virtual ~QgsHistogram();
@@ -61,6 +61,6 @@ class QgsHistogram
      * @note values must first be specified using @link setValues @endlink
      */
     QList<int> counts( int bins ) const;
-    
+
 };
 

@@ -130,7 +130,7 @@ void TestQgsHistogram::fromLayer()
 {
   QgsHistogram h;
 
-  QVERIFY( !h.setValues( 0, QString() ));
+  QVERIFY( !h.setValues( 0, QString() ) );
 
   QgsVectorLayer* layer = new QgsVectorLayer( "Point?field=col1:real", "layer", "memory" );
   QVERIFY( layer->isValid() );
@@ -143,7 +143,7 @@ void TestQgsHistogram::fromLayer()
   }
   layer->dataProvider()->addFeatures( features );
 
-  QVERIFY( !h.setValues( layer, QString() ));
+  QVERIFY( !h.setValues( layer, QString() ) );
   QVERIFY( h.setValues( layer, QString( "col1" ) ) );
   QList<int>counts = h.counts( 5 );
   QList<int> expected;

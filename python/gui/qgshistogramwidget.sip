@@ -21,7 +21,7 @@ class QgsHistogramWidget : QWidget
      * @param fieldOrExp field name or expression string
      */
     QgsHistogramWidget( QWidget *parent /TransferThis/ = 0, QgsVectorLayer* layer = 0, const QString& fieldOrExp = QString() );
-    
+
     ~QgsHistogramWidget();
 
     /** Returns the layer currently associated with the widget.

@@ -272,15 +272,15 @@ class CORE_EXPORT QgsFeatureRendererV2
 
     QgsPaintEffect* mPaintEffect;
 
-    /**@note this function is used to convert old sizeScale expresssions to symbol 
+    /**@note this function is used to convert old sizeScale expresssions to symbol
      * level DataDefined size
      */
     static void convertSymbolSizeScale( QgsSymbolV2 * symbol, QgsSymbolV2::ScaleMethod method, const QString & field );
-    /**@note this function is used to convert old rotations expresssions to symbol 
+    /**@note this function is used to convert old rotations expresssions to symbol
      * level DataDefined angle
      */
     static void convertSymbolRotation( QgsSymbolV2 * symbol, const QString & field );
-    
+
   private:
     Q_DISABLE_COPY( QgsFeatureRendererV2 )
 };
