@@ -60,7 +60,7 @@ class Datasources2Vrt(GeoAlgorithm):
         """
 
         # The name that the user will see in the toolbox
-        self.name = 'Merge datasources in VRT'
+        self.name = 'Build virtual vector'
 
         # The branch of the toolbox under which the algorithm will appear
         self.group = 'Vector general tools'
@@ -78,9 +78,9 @@ class Datasources2Vrt(GeoAlgorithm):
 
         # We add outputs
         self.addOutput(OutputFile(self.OUTPUT_VRT_FILE,
-                                  self.tr('Output vrt filename')))
+                                  self.tr('Virtual vector')))
         self.addOutput(OutputString(self.OUTPUT_VRT_STRING,
-                                    self.tr('Output vrt string')))
+                                    self.tr('Virtual string')))
 
 
     def processAlgorithm(self, progress):
