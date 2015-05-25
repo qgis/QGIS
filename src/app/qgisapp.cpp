@@ -6505,6 +6505,7 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
 void QgisApp::copyStyle( QgsMapLayer * sourceLayer )
 {
   QgsMapLayer *selectionLayer = sourceLayer ? sourceLayer : activeLayer();
+
   if ( selectionLayer )
   {
     QDomImplementation DomImplementation;
@@ -6515,14 +6516,31 @@ void QgisApp::copyStyle( QgsMapLayer * sourceLayer )
     QDomElement rootNode = doc.createElement( "qgis" );
     rootNode.setAttribute( "version", QString( "%1" ).arg( QGis::QGIS_VERSION ) );
     doc.appendChild( rootNode );
+
+    /*
+     * Check to see if the layer is vector - in which case we should also copy its geometryType
+     * to avoid eventually pasting to a layer with a different geometry
+    */
+    if ( selectionLayer->type() == 0 )
+    {
+        //Getting the selectionLayer geometry
+        QgsVectorLayer *SelectionGeometry = static_cast<QgsVectorLayer*>(selectionLayer);
+        QString geoType = QString::number(SelectionGeometry->geometryType());
+
+        //Adding geometryinformation
+        QDomElement layerGeometryType = doc.createElement("layerGeometryType");
+        QDomText type = doc.createTextNode(geoType);
+
+        layerGeometryType.appendChild(type);
+        rootNode.appendChild(layerGeometryType);
+    }
+
     QString errorMsg;
     if ( !selectionLayer->writeSymbology( rootNode, doc, errorMsg ) )
     {
-      QMessageBox::warning( this,
-                            tr( "Error" ),
-                            tr( "Cannot copy style: %1" )
-                            .arg( errorMsg ),
-                            QMessageBox::Ok );
+        messageBar()->pushMessage( errorMsg,
+                                   tr( "Cannot copy style: %1" ),
+                                   QgsMessageBar::CRITICAL, messageTimeout() );
       return;
     }
     // Copies data in text form as well, so the XML can be pasted into a text editor
@@ -6531,9 +6549,14 @@ void QgisApp::copyStyle( QgsMapLayer * sourceLayer )
     mActionPasteStyle->setEnabled( true );
   }
 }
+/**
+   \param destinatioLayer  The layer that the clipboard will be pasted to
+                            (defaults to the active layer on the legend)
+ */
+
 
 void QgisApp::pasteStyle( QgsMapLayer * destinationLayer )
-{
+{    
   QgsMapLayer *selectionLayer = destinationLayer ? destinationLayer : activeLayer();
   if ( selectionLayer )
   {
@@ -6544,24 +6567,35 @@ void QgisApp::pasteStyle( QgsMapLayer * destinationLayer )
       int errorLine, errorColumn;
       if ( !doc.setContent( clipboard()->data( QGSCLIPBOARD_STYLE_MIME ), false, &errorMsg, &errorLine, &errorColumn ) )
       {
-        QMessageBox::information( this,
-                                  tr( "Error" ),
-                                  tr( "Cannot parse style: %1:%2:%3" )
-                                  .arg( errorMsg )
-                                  .arg( errorLine )
-                                  .arg( errorColumn ),
-                                  QMessageBox::Ok );
-        return;
+
+          messageBar()->pushMessage( errorMsg,
+                                     tr( "Cannot parse style: %1:%2:%3" ),
+                                     QgsMessageBar::CRITICAL, messageTimeout() );
+          return;
       }
+
       QDomElement rootNode = doc.firstChildElement( "qgis" );
+
+      //Test for matching geometry type on vector layers when pasting
+      if (selectionLayer->type() == QgsMapLayer::LayerType::VectorLayer)
+      {
+          QgsVectorLayer *selectionVectorLayer = static_cast<QgsVectorLayer*>(selectionLayer);
+          int pasteLayerGeometryType = doc.elementsByTagName("layerGeometryType").item(0).toElement().text().toInt();
+          if ( selectionVectorLayer->geometryType() != pasteLayerGeometryType )
+          {
+              messageBar()->pushMessage( tr( "Cannot paste style to layer with a different geometry type" ),
+                                         tr( "Your copied style does not match the layer you are pasting to" ),
+                                         QgsMessageBar::INFO, messageTimeout() );
+              return;
+          }
+      }
+
       if ( !selectionLayer->readSymbology( rootNode, errorMsg ) )
       {
-        QMessageBox::information( this,
-                                  tr( "Error" ),
-                                  tr( "Cannot read style: %1" )
-                                  .arg( errorMsg ),
-                                  QMessageBox::Ok );
-        return;
+          messageBar()->pushMessage( errorMsg,
+                                     tr( "Cannot read style: %1" ),
+                                     QgsMessageBar::CRITICAL, messageTimeout() );
+          return;
       }
 
       mLayerTreeView->refreshLayerSymbology( selectionLayer->id() );
