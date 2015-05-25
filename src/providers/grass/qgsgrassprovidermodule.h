@@ -157,17 +157,42 @@ class QgsGrassRasterItem : public QgsGrassObjectItem
     bool mExternal;
 };
 
+// icon movie
+class QgsGrassImportItemIcon : public QObject
+{
+    Q_OBJECT
+  public:
+    QgsGrassImportItemIcon();
+
+    QIcon icon() { return mIcon; }
+    void addListener();
+    void removeListener();
+
+  public slots:
+    void onFrameChanged();
+
+  signals:
+    void frameChanged();
+
+  private:
+    void resetMovie();
+    int mCount;
+    QMovie * mMovie;
+    QIcon mIcon;
+};
+
 // item representing a layer being imported
 class QgsGrassImportItem : public QgsDataItem, public QgsGrassObjectItemBase
 {
     Q_OBJECT
   public:
     QgsGrassImportItem( QgsDataItem* parent, const QString& name, const QString& path, QgsGrassImport* import );
-
+    ~QgsGrassImportItem();
     //virtual void setState( State state ) override {
     //  QgsDataItem::setState(state);
     //} // do nothing to keep Populating
     virtual QList<QAction*> actions() override;
+    virtual QIcon icon() override;
 
   public slots:
     virtual void refresh() override {}
@@ -178,6 +203,9 @@ class QgsGrassImportItem : public QgsDataItem, public QgsGrassObjectItemBase
     virtual void refresh( QVector<QgsDataItem*> children ) override { Q_UNUSED( children )};
     //bool mDeleteAction;
     QgsGrassImport* mImport;
+
+  private:
+    static QgsGrassImportItemIcon mImportIcon;
 };
 
 #endif // QGSGRASSPROVIDERMODULE_H

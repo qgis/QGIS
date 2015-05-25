@@ -678,7 +678,40 @@ QIcon QgsGrassRasterItem::icon()
   return QgsDataItem::icon();
 }
 
+
 //----------------------- QgsGrassImportItem ------------------------------
+QgsGrassImportItemIcon::QgsGrassImportItemIcon()
+    : QObject()
+    , mCount( 0 )
+    , mMovie( 0 )
+{
+  // QApplication as parent to ensure that it is deleted before QApplication
+  mMovie = new QMovie( QApplication::instance() );
+  mMovie->setFileName( QgsApplication::iconPath( "/mIconImport.gif" ) );
+  mMovie->setCacheMode( QMovie::CacheAll );
+  connect( mMovie, SIGNAL( frameChanged( int ) ), SLOT( onFrameChanged() ) );
+}
+
+void QgsGrassImportItemIcon::onFrameChanged()
+{
+  mIcon = QIcon( mMovie->currentPixmap() );
+}
+
+void QgsGrassImportItemIcon::addListener()
+{
+  mCount++;
+  mMovie->setPaused( mCount == 0 );
+}
+
+void QgsGrassImportItemIcon::removeListener()
+{
+  mCount++;
+  mMovie->setPaused( mCount == 0 );
+}
+
+//----------------------- QgsGrassImportItem ------------------------------
+
+QgsGrassImportItemIcon QgsGrassImportItem::mImportIcon;
 
 QgsGrassImportItem::QgsGrassImportItem( QgsDataItem* parent, const QString& name, const QString& path, QgsGrassImport* import )
     : QgsDataItem( QgsDataItem::Layer, parent, name, path )
@@ -687,6 +720,14 @@ QgsGrassImportItem::QgsGrassImportItem( QgsDataItem* parent, const QString& name
 {
   setCapabilities( QgsDataItem::NoCapabilities ); // disable fertility
   setState( Populating );
+
+  connect( &mImportIcon, SIGNAL( frameChanged( int ) ), SLOT( emitDataChanged() ) );
+  mImportIcon.addListener();
+}
+
+QgsGrassImportItem::~QgsGrassImportItem()
+{
+  mImportIcon.removeListener();
 }
 
 QList<QAction*> QgsGrassImportItem::actions()
@@ -708,6 +749,11 @@ void QgsGrassImportItem::cancel()
     return;
   }
   mImport->cancel();
+}
+
+QIcon QgsGrassImportItem::icon()
+{
+  return mImportIcon.icon();
 }
 
 //-------------------------------------------------------------------------
