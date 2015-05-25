@@ -17,10 +17,11 @@ email                : marco.hugentobler at sourcepole dot com
 #define QGSVECTORTOPOLOGY_H
 
 #include "qgspointv2.h"
+#include "qgslinestringv2.h"
+
 #include <QList>
 
 class QgsAbstractGeometryV2;
-class QgsLineStringV2;
 
 class CORE_EXPORT QgsGeometryEngine
 {

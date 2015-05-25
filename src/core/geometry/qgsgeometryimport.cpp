@@ -43,7 +43,8 @@ QgsAbstractGeometryV2* QgsGeometryImport::geomFromWkb( const unsigned char* wkb 
 
   geom = geomFromWkbType( QgsWKBTypes::Type( type ) );
 
-  /*type = QgsWKBTypes::flatType( QgsWKBTypes::Type( type ) );
+#if 0
+  type = QgsWKBTypes::flatType( QgsWKBTypes::Type( type ) );
   switch ( type )
   {
     case QgsWKBTypes::Point:
@@ -75,7 +76,8 @@ QgsAbstractGeometryV2* QgsGeometryImport::geomFromWkb( const unsigned char* wkb 
       break;
     default:
       geom = 0;
-  }*/
+  }
+#endif
 
   if ( geom )
   {

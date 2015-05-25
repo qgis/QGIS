@@ -301,7 +301,7 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
                    .arg( mConn->majorVersion() < 2 ? "intersects" : "st_intersects" )
                    .arg( mConn->majorVersion() < 2 ? "curvetoline" : "st_curvetoline" )
                    .arg( QgsPostgresConn::quotedIdentifier( mSource->mGeometryColumn ) )
-                   .arg( mSource->mSpatialColType == sctGeography ? "::geometry" : "" )
+                   .arg( castToPatch ? "::geometry" : "" )
                    .arg( qBox );
   }
 

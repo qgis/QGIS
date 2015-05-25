@@ -753,7 +753,7 @@ double QgsCircularStringV2::closestSegment( const QgsPointV2& pt, QgsPointV2& se
   double minDist = std::numeric_limits<double>::max();
   QgsPointV2 minDistSegmentPoint;
   QgsVertexId minDistVertexAfter;
-  bool minDistLeftOf;
+  bool minDistLeftOf = false;
 
   double currentDist = 0.0;
 

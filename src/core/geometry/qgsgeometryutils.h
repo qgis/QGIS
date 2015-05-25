@@ -22,9 +22,6 @@ email                : marco.hugentobler at sourcepole dot com
 class CORE_EXPORT QgsGeometryUtils
 {
   public:
-
-
-
     static QgsPointV2 closestVertex( const QgsAbstractGeometryV2& geom, const QgsPointV2& pt, QgsVertexId& id );
     static void adjacentVertices( const QgsAbstractGeometryV2& geom, const QgsVertexId& atVertex, QgsVertexId& beforeVertex, QgsVertexId& afterVertex );
 
@@ -88,9 +85,9 @@ class CORE_EXPORT QgsGeometryUtils
     template<class T> static double closestSegmentFromComponents( T& container, componentType ctype, const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon )
     {
       double minDist = std::numeric_limits<double>::max();
-      double minDistSegmentX, minDistSegmentY;
+      double minDistSegmentX = 0.0, minDistSegmentY = 0.0;
       QgsVertexId minDistVertexAfter;
-      bool minDistLeftOf;
+      bool minDistLeftOf = false;
       double sqrDist = 0.0;
       int vertexOffset = 0;
       int ringOffset = 0;
