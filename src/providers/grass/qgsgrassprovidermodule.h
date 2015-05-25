@@ -20,6 +20,21 @@
 #include "qgsgrass.h"
 #include "qgsgrassimport.h"
 
+/** Class to share actions (we cannot inherit from multiple QObjects */
+class QgsGrassItemActions : public QObject
+{
+    Q_OBJECT
+  public:
+    QgsGrassItemActions() {};
+
+    QList<QAction*> actions();
+
+    static QgsGrassItemActions* instance();
+
+  public slots:
+    void openOptions();
+};
+
 class QgsGrassImportItem;
 
 class QgsGrassLocationItem : public QgsDirectoryItem
@@ -30,6 +45,7 @@ class QgsGrassLocationItem : public QgsDirectoryItem
     QIcon icon() override { return QgsDataItem::icon(); }
 
     QVector<QgsDataItem*> createChildren() override;
+    virtual QList<QAction*> actions() override;
 };
 
 class QgsGrassMapsetItem : public QgsDirectoryItem
@@ -41,11 +57,13 @@ class QgsGrassMapsetItem : public QgsDirectoryItem
     QIcon icon() override { return QgsDataItem::icon(); }
 
     QVector<QgsDataItem*> createChildren() override;
+    virtual QList<QAction*> actions() override;
     virtual bool acceptDrop() override { return true; }
     virtual bool handleDrop( const QMimeData * data, Qt::DropAction action ) override;
 
   public slots:
     void onImportFinished( QgsGrassImport* import );
+
   private:
     //void showImportError(const QString& error);
     QString mLocation;

@@ -214,7 +214,7 @@ bool QgsGrassRasterImport::import()
       {
         if ( !block->convert( qgis_out_type ) )
         {
-          setError( "cannot convert data type" );
+          setError( tr( "Cannot convert block (%1) to data type %2" ).arg( block->toString() ).arg( qgis_out_type ) );
           delete block;
           return false;
         }

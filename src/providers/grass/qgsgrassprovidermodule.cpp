@@ -23,6 +23,7 @@
 
 #include "qgsgrassprovidermodule.h"
 #include "qgsgrassprovider.h"
+#include "qgsgrassoptions.h"
 #include "qgsgrass.h"
 
 #include <QAction>
@@ -30,6 +31,28 @@
 #include <QDir>
 #include <QLabel>
 #include <QObject>
+
+//----------------------- QgsGrassItemActions ------------------------------
+QgsGrassItemActions* QgsGrassItemActions::instance()
+{
+  static QgsGrassItemActions mInstance;
+  return &mInstance;
+}
+
+QList<QAction*> QgsGrassItemActions::actions()
+{
+  QList<QAction*> lst;
+  QAction* actionOptions = new QAction( tr( "GRASS Options" ), this );
+  connect( actionOptions, SIGNAL( triggered() ), instance(), SLOT( openOptions() ) );
+  lst.append( actionOptions );
+  return lst;
+}
+
+void QgsGrassItemActions::openOptions()
+{
+  QgsGrassOptions dialog;
+  dialog.exec();
+}
 
 //----------------------- QgsGrassLocationItem ------------------------------
 
@@ -64,6 +87,11 @@ QVector<QgsDataItem*>QgsGrassLocationItem::createChildren()
     }
   }
   return mapsets;
+}
+
+QList<QAction*> QgsGrassLocationItem::actions()
+{
+  return QgsGrassItemActions::instance()->actions();
 }
 
 //----------------------- QgsGrassMapsetItem ------------------------------
@@ -184,10 +212,17 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
   return items;
 }
 
+QList<QAction*> QgsGrassMapsetItem::actions()
+{
+  return QgsGrassItemActions::instance()->actions();
+}
+
 bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
 {
   if ( !QgsMimeDataUtils::isUriList( data ) )
     return false;
+
+  QSettings settings;
 
   QgsGrassObject mapsetObject( mGisdbase, mLocation, mName );
   QgsCoordinateReferenceSystem mapsetCrs = QgsGrass::crsDirect( mGisdbase, mLocation );
@@ -348,9 +383,10 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
       QgsDebugMsg( "providerCrs = " + providerCrs.toWkt() );
       QgsDebugMsg( "mapsetCrs = " + mapsetCrs.toWkt() );
 
+      bool settingsExternal = settings.value( "/GRASS/browser/import/external", true ).toBool();
       QgsGrassObject rasterObject( mGisdbase, mLocation, mName, destName, QgsGrassObject::Raster );
       if ( providerCrs.isValid() && mapsetCrs.isValid() && providerCrs == mapsetCrs
-           && rasterProvider->name() == "gdal" )
+           && rasterProvider->name() == "gdal" && settingsExternal )
       {
         import = new QgsGrassExternal( rasterProvider->dataSourceUri(), rasterObject );
         delete rasterProvider;
@@ -366,6 +402,8 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
             projector->destExtentSize( rasterProvider->extent(), rasterProvider->xSize(), rasterProvider->ySize(),
                                        newExtent, newXSize, newYSize );
           }
+          QgsRasterProjector::Precision precision = ( QgsRasterProjector::Precision ) settings.value( "/GRASS/browser/import/crsTransform", QgsRasterProjector::Approximate ).toInt();
+          projector->setPrecision( precision );
 
           pipe->set( projector );
         }
@@ -531,7 +569,7 @@ QgsGrassObjectItem::QgsGrassObjectItem( QgsDataItem* parent, QgsGrassObject gras
 
 QList<QAction*> QgsGrassObjectItem::actions()
 {
-  QList<QAction*> lst;
+  QList<QAction*> lst = QgsGrassItemActions::instance()->actions();
 
   if ( mShowObjectActions )
   {

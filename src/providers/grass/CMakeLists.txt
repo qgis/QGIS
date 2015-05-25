@@ -22,9 +22,29 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
     SET(GRASS_MAJOR_VERSION ${GRASS_MAJOR_VERSION${GRASS_BUILD_VERSION}})
     SET(GRASS_MINOR_VERSION ${GRASS_MINOR_VERSION${GRASS_BUILD_VERSION}})
 
-    QT4_WRAP_CPP(GRASS_LIBRARY_MOC_SRCS ../qgsgrassprovider.h ../qgsgrassimport.h)
+    QT4_WRAP_CPP(GRASS_LIBRARY_MOC_SRCS 
+      ../qgsgrassprovider.h 
+      ../qgsgrassimport.h
+      ../qgsgrassoptions.h
+    )
 
-    ADD_LIBRARY(qgisgrass${GRASS_BUILD_VERSION} SHARED ../qgsgrass.cpp ../qgsgrassfeatureiterator.cpp ../qgsgrassprovider.cpp ../qgsgrassimport.cpp ${GRASS_LIBRARY_MOC_SRCS})
+    SET (GRASS_LIBRARY_SRCS
+      ../qgsgrass.cpp 
+      ../qgsgrassfeatureiterator.cpp 
+      ../qgsgrassprovider.cpp 
+      ../qgsgrassimport.cpp
+      ../qgsgrassoptions.cpp
+    )
+
+    QT4_WRAP_UI (GRASS_LIBRARY_UIS_H
+      ../qgsgrassoptionsbase.ui
+    )
+
+    ADD_LIBRARY(qgisgrass${GRASS_BUILD_VERSION} SHARED 
+      ${GRASS_LIBRARY_SRCS} 
+      ${GRASS_LIBRARY_MOC_SRCS}
+      ${GRASS_LIBRARY_UIS_H}
+    )
 
     SET_TARGET_PROPERTIES(qgisgrass${GRASS_BUILD_VERSION} PROPERTIES
       CLEAN_DIRECT_OUTPUT 1
@@ -53,6 +73,7 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
     IF (GRASS_MAJOR_VERSION LESS 7 )
       SET(GRASS_TARGET_LINK_LIBRARIES${GRASS_BUILD_VERSION}
           qgis_core
+          qgis_gui
           ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_gis}
           ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_vect}
           ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_dbmibase}
@@ -62,6 +83,7 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
     ELSE (GRASS_MAJOR_VERSION LESS 7 )
       SET(GRASS_TARGET_LINK_LIBRARIES${GRASS_BUILD_VERSION}
         qgis_core
+        qgis_gui
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_gis}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_vector}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_raster}

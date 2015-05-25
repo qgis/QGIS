@@ -201,7 +201,7 @@ QRegExp GRASS_LIB_EXPORT QgsGrassObject::newNameRegExp( Type type )
   }
   else
   {
-    rx.setPattern( "[A-Za-z0-9_.]+" );
+    rx.setPattern( "[A-Za-z0-9_\\-][A-Za-z0-9_\\-.]+" );
   }
   return rx;
 }
