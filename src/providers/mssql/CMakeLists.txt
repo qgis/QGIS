@@ -9,6 +9,7 @@ QT4_WRAP_CPP(MSSQL_MOC_SRCS ${MSSQL_MOC_HDRS})
 INCLUDE_DIRECTORIES(
   .
   ../../core
+  ../../core/geometry
   ${GDAL_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
   ${QT_INCLUDE_DIR}

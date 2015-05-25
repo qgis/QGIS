@@ -32,6 +32,7 @@ INCLUDE_DIRECTORIES(
      ${GEOS_INCLUDE_DIR}
      ${GDAL_INCLUDE_DIR}
      ../../core
+     ../../core/geometry
      ../../core/raster
      ../../gui
      ../../analysis/raster
