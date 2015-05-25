@@ -135,7 +135,7 @@ class QGis
     static double fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit );
 
     /** Converts a string to a double in a permissive way, eg allowing for incorrect
-     * numbers of digits between thousand seperators
+     * numbers of digits between thousand separators
      * @param string string to convert
      * @param ok will be set to true if conversion was successful
      * @returns string converted to double if possible
@@ -145,7 +145,7 @@ class QGis
     static double permissiveToDouble( QString string, bool& ok );
 
     /** Converts a string to an integer in a permissive way, eg allowing for incorrect
-     * numbers of digits between thousand seperators
+     * numbers of digits between thousand separators
      * @param string string to convert
      * @param ok will be set to true if conversion was successful
      * @returns string converted to int if possible

@@ -834,7 +834,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
      */
     static bool geometryRequiresPreparation( const QgsGeometry *geometry, const QgsRenderContext &context, const QgsCoordinateTransform *ct, QgsGeometry *clipGeometry = 0 );
 
-    /** Splits a text string to a list of seperate lines, using a specified wrap character.
+    /** Splits a text string to a list of separate lines, using a specified wrap character.
      * The text string will be split on either newline characters or the wrap character.
      * @param text text string to split
      * @param wrapCharacter additional character to wrap on

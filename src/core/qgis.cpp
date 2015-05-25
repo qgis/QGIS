@@ -187,14 +187,14 @@ double QGis::fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUni
 
 double QGis::permissiveToDouble( QString string, bool &ok )
 {
-  //remove any thousands seperators
+  //remove any thousands separators
   string.remove( QLocale::system().groupSeparator() );
   return QLocale::system().toDouble( string, &ok );
 }
 
 int QGis::permissiveToInt( QString string, bool &ok )
 {
-  //remove any thousands seperators
+  //remove any thousands separators
   string.remove( QLocale::system().groupSeparator() );
   return QLocale::system().toInt( string, &ok );
 }
