@@ -122,6 +122,8 @@ class SpatiaLiteDBConnector(DBConnector):
     def hasTableColumnEditingSupport(self):
         return False
 
+    def hasCreateSpatialViewSupport(self):
+        return True
 
     def fieldTypes(self):
         return [
@@ -135,22 +137,28 @@ class SpatiaLiteDBConnector(DBConnector):
     def getSchemas(self):
         return None
 
-    def getTables(self, schema=None):
+    def getTables(self, schema=None, add_sys_tables=False):
         """ get list of tables """
         tablenames = []
         items = []
 
-        sys_tables = ["geom_cols_ref_sys", "geometry_columns", "geometry_columns_auth",
+        sys_tables = ["SpatialIndex", "geom_cols_ref_sys", "geometry_columns", "geometry_columns_auth",
                       "views_geometry_columns", "virts_geometry_columns", "spatial_ref_sys",
                       "sqlite_sequence",  # "tableprefix_metadata", "tableprefix_rasters",
                       "layer_params", "layer_statistics", "layer_sub_classes", "layer_table_layout",
                       "pattern_bitmaps", "symbol_bitmaps", "project_defs", "raster_pyramids",
-                      "sqlite_stat1", "sqlite_stat2", "spatialite_history"]
+                      "sqlite_stat1", "sqlite_stat2", "spatialite_history",
+                      "geometry_columns_field_infos",
+                      "geometry_columns_statistics", "geometry_columns_time",
+                      "sql_statements_log","vector_layers", "vector_layers_auth", "vector_layers_field_infos", "vector_layers_statistics",
+                      "views_geometry_columns_auth", "views_geometry_columns_field_infos", "views_geometry_columns_statistics",
+                      "virts_geometry_columns_auth", "virts_geometry_columns_field_infos", "virts_geometry_columns_statistics"
+                  ]
 
         try:
             vectors = self.getVectorTables(schema)
             for tbl in vectors:
-                if tbl[1] in sys_tables:
+                if not add_sys_tables and tbl[1] in sys_tables:
                     continue
                 tablenames.append(tbl[1])
                 items.append(tbl)
@@ -160,7 +168,7 @@ class SpatiaLiteDBConnector(DBConnector):
         try:
             rasters = self.getRasterTables(schema)
             for tbl in rasters:
-                if tbl[1] in sys_tables:
+                if not add_sys_tables and tbl[1] in sys_tables:
                     continue
                 tablenames.append(tbl[1])
                 items.append(tbl)
@@ -183,7 +191,9 @@ class SpatiaLiteDBConnector(DBConnector):
         self._execute(c, sql)
 
         for tbl in c.fetchall():
-            if tablenames.count(tbl[0]) <= 0 and not (tbl[0].startswith('idx_') and tbl[0] in sys_tables):
+            if tablenames.count(tbl[0]) <= 0 and not tbl[0].startswith('idx_'):
+                if not add_sys_tables and tbl[0] in sys_tables:
+                    continue
                 item = list(tbl)
                 item.insert(0, Table.TableType)
                 items.append(item)
@@ -460,13 +470,61 @@ class SpatiaLiteDBConnector(DBConnector):
         self._execute_and_commit(sql)
 
     def deleteView(self, view):
+        c = self._get_cursor()
+
         sql = u"DROP VIEW %s" % self.quoteId(view)
-        self._execute_and_commit(sql)
+        self._execute(c, sql)
+
+        # update geometry_columns
+        if self.has_geometry_columns:
+            sql = u"DELETE FROM geometry_columns WHERE f_table_name = %s" % self.quoteString(view)
+            self._execute(c, sql)
+
+        self._commit()
 
     def renameView(self, view, new_name):
         """ rename view """
         return self.renameTable(view, new_name)
 
+    def createSpatialView(self, view, query):
+        self.createView(view, query)
+        # get type info about the view
+        sql = u"PRAGMA table_info(%s)" % self.quoteString(view)
+        c = self._execute( None, sql )
+        geom_col = None
+        for r in c.fetchall():        
+            if r[2].upper() in ('POINT', 'LINESTRING', 'POLYGON',
+                                'MULTIPOINT', 'MULTILINESTRING', 'MULTIPOLYGON'):
+                geom_col = r[1]
+                break
+        if geom_col is None:
+            return
+
+        # get geometry type and srid
+        sql = u"SELECT geometrytype(%s), srid(%s) FROM %s LIMIT 1" % (self.quoteId(geom_col), self.quoteId(geom_col), self.quoteId(view))
+        c = self._execute( None, sql )
+        r = c.fetchone()
+        if r is None:
+            return
+
+        gtype, gsrid = r
+        gdim = 'XY'
+        if ' ' in gtype:
+            zm = gtype.split(' ')[1]
+            gtype = gtype.split(' ')[0]
+            gdim += zm
+        try:
+            wkbType = ('POINT', 'LINESTRING', 'POLYGON', 'MULTIPOINT', 'MULTILINESTRING', 'MULTIPOLYGON').index(gtype) + 1
+        except:
+            wkbType = 0
+        if 'Z' in gdim:
+            wkbType += 1000
+        if 'M' in gdim:
+            wkbType += 2000
+        
+        sql = u"""INSERT INTO geometry_columns (f_table_name, f_geometry_column, geometry_type, coord_dimension, srid, spatial_index_enabled)
+                                        VALUES (%s, %s, %s, %s, %s, 0)""" % (self.quoteId(view), self.quoteId(geom_col), wkbType, len(gdim), gsrid)
+        self._execute_and_commit(sql)
 
     def runVacuum(self):
         """ run vacuum on the db """
@@ -638,3 +696,8 @@ class SpatiaLiteDBConnector(DBConnector):
 
         sql_dict["identifier"] = items
         return sql_dict
+
+    def getQueryBuilderDictionary(self):
+        from .sql_dictionary import getQueryBuilderDictionary
+
+        return getQueryBuilderDictionary()

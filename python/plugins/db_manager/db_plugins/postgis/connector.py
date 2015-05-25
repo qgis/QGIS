@@ -176,6 +176,8 @@ class PostGisDBConnector(DBConnector):
     def hasTableColumnEditingSupport(self):
         return True
 
+    def hasCreateSpatialViewSupport( self ):
+        return True
 
     def fieldTypes(self):
         return [
@@ -231,7 +233,7 @@ class PostGisDBConnector(DBConnector):
         self._close_cursor(c)
         return res
 
-    def getTables(self, schema=None):
+    def getTables(self, schema=None, add_sys_tables=False):
         """ get list of tables """
         tablenames = []
         items = []
@@ -242,7 +244,7 @@ class PostGisDBConnector(DBConnector):
         try:
             vectors = self.getVectorTables(schema)
             for tbl in vectors:
-                if tbl[1] in sys_tables and tbl[2] in ['', 'public']:
+                if not add_sys_tables and tbl[1] in sys_tables and tbl[2] in ['', 'public']:
                     continue
                 tablenames.append((tbl[2], tbl[1]))
                 items.append(tbl)
@@ -252,7 +254,7 @@ class PostGisDBConnector(DBConnector):
         try:
             rasters = self.getRasterTables(schema)
             for tbl in rasters:
-                if tbl[1] in sys_tables and tbl[2] in ['', 'public']:
+                if not add_sys_tables and tbl[1] in sys_tables and tbl[2] in ['', 'public']:
                     continue
                 tablenames.append((tbl[2], tbl[1]))
                 items.append(tbl)
@@ -761,6 +763,9 @@ class PostGisDBConnector(DBConnector):
         sql = u"CREATE VIEW %s AS %s" % (self.quoteId(view), query)
         self._execute_and_commit(sql)
 
+    def createSpatialView(self, view, query):
+        self.createView(view, query)
+
     def deleteView(self, view):
         sql = u"DROP VIEW %s" % self.quoteId(view)
         self._execute_and_commit(sql)
@@ -988,3 +993,9 @@ UNION SELECT attname FROM pg_attribute WHERE attnum > 0"""
 
         sql_dict["identifier"] = items
         return sql_dict
+
+    def getQueryBuilderDictionary(self):
+        from .sql_dictionary import getQueryBuilderDictionary
+
+        return getQueryBuilderDictionary()
+

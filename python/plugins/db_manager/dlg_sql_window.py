@@ -23,13 +23,14 @@ The content of this file is based on
 """
 
 from PyQt4.QtCore import Qt, QObject, QSettings, QByteArray, SIGNAL
-from PyQt4.QtGui import QDialog, QAction, QKeySequence, QDialogButtonBox, QApplication, QCursor, QMessageBox, QClipboard
+from PyQt4.QtGui import QDialog, QAction, QKeySequence, QDialogButtonBox, QApplication, QCursor, QMessageBox, QClipboard, QInputDialog
 from PyQt4.Qsci import QsciAPIs
 
 from qgis.core import QgsProject
 
 from .db_plugins.plugin import BaseError
 from .dlg_db_error import DlgDbError
+from .dlg_query_builder import QueryBuilderDlg
 
 try:
     from qgis.gui import QgsCodeEditorSQL
@@ -87,6 +88,14 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
             self.connect(self.getColumnsBtn, SIGNAL("clicked()"), self.fillColumnCombos)
             self.connect(self.loadAsLayerGroup, SIGNAL("toggled(bool)"), self.loadAsLayerToggled)
             self.loadAsLayerToggled(False)
+
+        self._createViewAvailable = self.db.connector.hasCreateSpatialViewSupport()
+        self.btnCreateView.setVisible( self._createViewAvailable )
+        if self._createViewAvailable:
+            self.connect( self.btnCreateView, SIGNAL("clicked()"), self.createView )
+
+        self.queryBuilderFirst = True
+        self.connect( self.queryBuilderBtn, SIGNAL("clicked()"), self.displayQueryBuilder )
 
     def updatePresetsCombobox(self):
         self.presetCombo.clear()
@@ -178,13 +187,16 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
         QApplication.restoreOverrideCursor()
 
     def loadSqlLayer(self):
-        uniqueFieldName = self.uniqueCombo.currentText()
-        geomFieldName = self.geomCombo.currentText()
-
-        if geomFieldName == "" or uniqueFieldName == "":
-            QMessageBox.warning(self, self.tr("DB Manager"), self.tr(
-                "You must fill the required fields: \ngeometry column - column with unique integer values"))
-            return
+        hasUniqueField = self.uniqueColumnCheck.checkState() == Qt.Checked
+        if hasUniqueField:
+            uniqueFieldName = self.uniqueCombo.currentText()
+        else:
+            uniqueFieldName = None
+        hasGeomCol = self.hasGeometryCol.checkState() == Qt.Checked
+        if hasGeomCol:
+            geomFieldName = self.geomCombo.currentText()
+        else:
+            geomFieldName = None
 
         query = self.editSql.text()
         if query == "":
@@ -323,3 +335,20 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
 
         api.prepare()
         self.editSql.lexer().setAPIs(api)
+
+    def displayQueryBuilder( self ):
+        dlg = QueryBuilderDlg( self.iface, self.db, self, reset = self.queryBuilderFirst )
+        self.queryBuilderFirst = False
+        r = dlg.exec_()
+        if r == QDialog.Accepted:
+            self.editSql.setText( dlg.query )
+
+    def createView( self ):
+        name, ok = QInputDialog.getText(None, "View name", "View name")
+        if ok:
+            try:
+                self.db.connector.createSpatialView( name, self.editSql.text() )
+            except BaseError as e:
+                DlgDbError.showError(e, self)
+
+
