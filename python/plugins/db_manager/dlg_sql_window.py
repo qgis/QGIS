@@ -344,13 +344,12 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
         if len(sql) == 0:
             sql = self.editSql.text()
         return sql
-      
 
     def createView( self ):
         name, ok = QInputDialog.getText(None, "View name", "View name")
         if ok:
             try:
-                self.db.connector.createSpatialView( name, self.editSql.text() )
+                self.db.connector.createSpatialView( name, self._getSqlQuery())
             except BaseError as e:
                 DlgDbError.showError(e, self)
 
