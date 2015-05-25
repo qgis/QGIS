@@ -1,0 +1,12 @@
+<h3>geom_from_wkt function</h3>
+Returns a geometry created from a Well-Known Text (WKT) representation.
+
+<h4>Syntax</h4>
+<pre>geom_from_wkt(text)</pre>
+
+<h4>Arguments</h4>
+text &rarr; Well-Known Text (WKT) representation of a geometry
+
+<h4>Example</h4>
+<pre> geom_from_wkt( 'POINT(4 5)' ) &rarr; returns a geometry</pre>
+

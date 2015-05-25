@@ -51,7 +51,7 @@ class DensifyGeometries(GeoAlgorithm):
             self.tr('Vertices to add'), 1, 10000000, 1))
 
         self.addOutput(OutputVector(self.OUTPUT,
-            self.tr('Densified layer')))
+            self.tr('Densified')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(

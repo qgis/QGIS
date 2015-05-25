@@ -28,17 +28,22 @@ __revision__ = '$Format:%H$'
 import os
 
 from PyQt4.QtGui import QIcon
+
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.gui.EditScriptAction import EditScriptAction
 from processing.gui.DeleteScriptAction import DeleteScriptAction
 from processing.gui.CreateNewScriptAction import CreateNewScriptAction
+from processing.script.WrongScriptException import WrongScriptException
+from processing.gui.GetScriptsAndModels import GetRScriptsAction
+from processing.tools.system import isWindows
+
 from RUtils import RUtils
 from RAlgorithm import RAlgorithm
-from processing.script.WrongScriptException import WrongScriptException
-from processing.tools.system import isWindows
-#import processing.resources_rc
+
+pluginPath = os.path.normpath(os.path.join(
+    os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
 
 class RAlgorithmProvider(AlgorithmProvider):
@@ -48,6 +53,7 @@ class RAlgorithmProvider(AlgorithmProvider):
         self.activate = False
         self.actions.append(CreateNewScriptAction(
             self.tr('Create new R script'), CreateNewScriptAction.SCRIPT_R))
+        self.actions.append(GetRScriptsAction())
         self.contextMenuActions = \
             [EditScriptAction(EditScriptAction.SCRIPT_R),
              DeleteScriptAction(DeleteScriptAction.SCRIPT_R)]
@@ -63,6 +69,9 @@ class RAlgorithmProvider(AlgorithmProvider):
                 RUtils.R_FOLDER, self.tr('R folder'), RUtils.RFolder()))
             ProcessingConfig.addSetting(Setting(
                 self.getDescription(),
+                RUtils.R_LIBS_USER, self.tr('R user library folder'), RUtils.RLibs()))
+            ProcessingConfig.addSetting(Setting(
+                self.getDescription(),
                 RUtils.R_USE64, self.tr('Use 64 bit version'), False))
 
     def unload(self):
@@ -70,10 +79,11 @@ class RAlgorithmProvider(AlgorithmProvider):
         ProcessingConfig.removeSetting(RUtils.RSCRIPTS_FOLDER)
         if isWindows():
             ProcessingConfig.removeSetting(RUtils.R_FOLDER)
+            ProcessingConfig.removeSetting(RUtils.R_LIBS_USER)
             ProcessingConfig.removeSetting(RUtils.R_USE64)
 
     def getIcon(self):
-        return QIcon(':/processing/images/r.png')
+        return QIcon(os.path.join(pluginPath, 'images', 'r.png'))
 
     def getDescription(self):
         return 'R scripts'

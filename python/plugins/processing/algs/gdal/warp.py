@@ -96,9 +96,9 @@ class warp(GdalAlgorithm):
             self.tr('Force the generation of an associated ESRI world file (.tfw))'), False))
         self.addParameter(ParameterString(self.EXTRA,
             self.tr('Additional creation parameters'), '', optional=True))
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Warped')))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Reprojected')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         noData = str(self.getParameterValue(self.NO_DATA))
         srccrs = self.getParameterValue(self.SOURCE_SRS)
         dstcrs = self.getParameterValue(self.DEST_SRS)
@@ -152,5 +152,4 @@ class warp(GdalAlgorithm):
         arguments.append(self.getParameterValue(self.INPUT))
         arguments.append(out)
 
-        GdalUtils.runGdal(['gdalwarp', GdalUtils.escapeAndJoin(arguments)],
-                          progress)
+        return ['gdalwarp', GdalUtils.escapeAndJoin(arguments)]

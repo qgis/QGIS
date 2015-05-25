@@ -50,7 +50,7 @@ class PointsFromPolygons(GeoAlgorithm):
             self.tr('Raster layer')))
         self.addParameter(ParameterVector(self.INPUT_VECTOR,
             self.tr('Vector layer'), [ParameterVector.VECTOR_TYPE_POLYGON]))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Points from polygons')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_VECTOR))

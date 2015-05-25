@@ -103,6 +103,11 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
 
     QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height ) override;
 
+    /** Calculate destination extent and size from source extent and size
+     */
+    bool destExtentSize( const QgsRectangle& theSrcExtent, int theSrcXSize, int theSrcYSize,
+                         QgsRectangle& theDestExtent, int& theDestXSize, int& theDesYSize );
+
   private:
     /** get source extent */
     QgsRectangle srcExtent() { return mSrcExtent; }
@@ -147,7 +152,7 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
     /** \brief insert columns to matrix */
     void insertCols( const QgsCoordinateTransform* ct );
 
-    /* calculate single control point in current matrix */
+    /** calculate single control point in current matrix */
     void calcCP( int theRow, int theCol, const QgsCoordinateTransform* ct );
 
     /** \brief calculate matrix row */

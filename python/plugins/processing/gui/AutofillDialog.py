@@ -25,19 +25,24 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from PyQt4 import uic
 from PyQt4.QtGui import QDialog
 
-from processing.ui.ui_DlgAutofill import Ui_DlgAutofill
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'DlgAutofill.ui'))
 
 
-class AutofillDialog(QDialog, Ui_DlgAutofill):
+class AutofillDialog(BASE, WIDGET):
 
     DO_NOT_AUTOFILL = 0
     FILL_WITH_NUMBERS = 1
     FILL_WITH_PARAMETER = 2
 
     def __init__(self, alg):
-        QDialog.__init__(self)
+        super(AutofillDialog, self).__init__(None)
         self.setupUi(self)
 
         self.cmbFillType.currentIndexChanged.connect(self.toggleParameters)

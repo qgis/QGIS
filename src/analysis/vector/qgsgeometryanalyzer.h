@@ -121,10 +121,10 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
                      bool forceSingleGeometry = false, QgsVectorDataProvider* memoryProvider = 0, QProgressDialog* p = 0 );
 
     /**Returns linear reference geometry as a multiline (or 0 if no match). Currently, the z-coordinates are considered to be the measures (no support for m-values in QGIS)*/
-    QgsGeometry* locateBetweenMeasures( double fromMeasure, double toMeasure, QgsGeometry* lineGeom );
+    QgsGeometry* locateBetweenMeasures( double fromMeasure, double toMeasure, const QgsGeometry *lineGeom );
     /**Returns linear reference geometry. Unlike the PostGIS function, this method always returns multipoint or 0 if no match (not geometry collection).
       Currently, the z-coordinates are considered to be the measures (no support for m-values in QGIS)*/
-    QgsGeometry* locateAlongMeasure( double measure, QgsGeometry* lineGeom );
+    QgsGeometry* locateAlongMeasure( double measure, const QgsGeometry* lineGeom );
 
   private:
 

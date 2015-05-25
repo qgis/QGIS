@@ -215,7 +215,7 @@ void checkDock::errorListClicked( const QModelIndex& index )
   mFixBox->setCurrentIndex( mFixBox->findText( tr( "Select automatic fix" ) ) );
 
   QgsFeature f;
-  QgsGeometry* g;
+  const QgsGeometry* g;
   FeatureLayer fl = mErrorList[row]->featurePairs().first();
   if ( !fl.layer )
   {
@@ -226,7 +226,7 @@ void checkDock::errorListClicked( const QModelIndex& index )
   //fl1.layer->getFeatures( QgsFeatureRequest().setFilterFid( fl1.feature.id() ) ).nextFeature( f1 );
 
   fl.layer->getFeatures( QgsFeatureRequest().setFilterFid( fl.feature.id() ) ).nextFeature( f );
-  g = f.geometry();
+  g = f.constGeometry();
   if ( !g )
   {
     QgsMessageLog::logMessage( tr( "Invalid first geometry" ), tr( "Topology plugin" ) );
@@ -259,7 +259,7 @@ void checkDock::errorListClicked( const QModelIndex& index )
 
 
   fl.layer->getFeatures( QgsFeatureRequest().setFilterFid( fl.feature.id() ) ).nextFeature( f );
-  g = f.geometry();
+  g = f.constGeometry();
   if ( !g )
   {
     QgsMessageLog::logMessage( tr( "Invalid second geometry" ), tr( "Topology plugin" ) );

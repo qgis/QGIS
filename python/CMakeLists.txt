@@ -83,6 +83,7 @@ INCLUDE_DIRECTORIES(
   ../src/core/diagram
   ../src/core/effects
   ../src/core/dxf
+  ../src/core/geometry
   ../src/core/gps
   ../src/core/layertree
   ../src/core/raster

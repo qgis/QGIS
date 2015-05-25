@@ -69,7 +69,7 @@ void QgsLabelPropertyDialog::init( const QString& layerId, int featureId, const 
   {
     return;
   }
-  const QgsAttributes& attributeValues = mCurLabelFeat.attributes();
+  QgsAttributes attributeValues = mCurLabelFeat.attributes();
 
   //get layerproperties. Problem: only for pallabeling...
 

@@ -119,9 +119,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void setMetadataUrlFormat( const QString& metaUrlFormat ) { mMetadataUrlFormat = metaUrlFormat; }
     const QString& metadataUrlFormat() const { return mMetadataUrlFormat; }
 
-    /* Set the blending mode used for rendering a layer */
+    /** Set the blending mode used for rendering a layer */
     void setBlendMode( const QPainter::CompositionMode &blendMode );
-    /* Returns the current blending mode for a layer */
+    /** Returns the current blending mode for a layer */
     QPainter::CompositionMode blendMode() const;
 
     /**Synchronises with changes in the datasource
@@ -352,6 +352,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     virtual bool readSld( const QDomNode &node, QString &errorMessage )
     { Q_UNUSED( node ); errorMessage = QString( "Layer type %1 not supported" ).arg( type() ); return false; }
+
 
 
     /** Read the symbology for the current layer from the Dom node supplied.

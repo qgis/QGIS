@@ -264,7 +264,7 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
   {
     try
     {
-      if ( !fet.geometry() )
+      if ( !fet.constGeometry() )
         continue; // skip features without geometry
 
       if ( mContext.renderingStopped() )
@@ -282,7 +282,7 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
       if ( mCache )
       {
         // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
-        mCache->cacheGeometry( fet.id(), *fet.geometry() );
+        mCache->cacheGeometry( fet.id(), *fet.constGeometry() );
       }
 
       // labeling - register feature
@@ -327,7 +327,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
   QgsFeature fet;
   while ( fit.nextFeature( fet ) )
   {
-    if ( !fet.geometry() )
+    if ( !fet.constGeometry() )
       continue; // skip features without geometry
 
     if ( mContext.renderingStopped() )
@@ -352,7 +352,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
     if ( mCache )
     {
       // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
-      mCache->cacheGeometry( fet.id(), *fet.geometry() );
+      mCache->cacheGeometry( fet.id(), *fet.constGeometry() );
     }
 
     if ( mContext.labelingEngine() )

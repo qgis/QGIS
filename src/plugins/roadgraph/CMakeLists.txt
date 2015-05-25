@@ -28,6 +28,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_BINARY_DIR}
   ${GEOS_INCLUDE_DIR}
   ../../core
+  ../../core/geometry
   ../../gui
   ../../analysis/network
   ..

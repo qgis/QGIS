@@ -80,7 +80,7 @@ class Eliminate(GeoAlgorithm):
         self.addParameter(ParameterSelection(self.MODE,
             self.tr('Merge selection with the neighbouring polygon with the'),
             self.MODES))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned layer')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned')))
 
     def processAlgorithm(self, progress):
         inLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
@@ -242,6 +242,9 @@ class Eliminate(GeoAlgorithm):
                     if geom2Eliminate.intersects(selGeom):
                         # We have a candidate
                         iGeom = geom2Eliminate.intersection(selGeom)
+
+                        if iGeom is None:
+                            continue
 
                         if boundary:
                             selValue = iGeom.length()

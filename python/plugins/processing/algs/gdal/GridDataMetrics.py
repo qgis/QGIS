@@ -82,7 +82,7 @@ class GridDataMetrics(GdalAlgorithm):
 
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Interpolated metrics')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         arguments = ['-l']
         arguments.append(
             os.path.basename(os.path.splitext(
@@ -120,5 +120,4 @@ class GridDataMetrics(GdalAlgorithm):
         arguments.append(unicode(self.getParameterValue(self.INPUT)))
         arguments.append(unicode(self.getOutputValue(self.OUTPUT)))
 
-        GdalUtils.runGdal(['gdal_grid',
-                          GdalUtils.escapeAndJoin(arguments)], progress)
+        return ['gdal_grid', GdalUtils.escapeAndJoin(arguments)]

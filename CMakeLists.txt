@@ -229,6 +229,10 @@ SET (HAVE_SPATIALITE TRUE)
 # following variable is used in qgsconfig.h
 SET (HAVE_MSSQL TRUE)
 
+SET (WITH_QTWEBKIT TRUE CACHE INTERNAL "Enable QtWebkit support")
+IF (WITH_QTWEBKIT)
+  ADD_DEFINITIONS(-DWITH_QTWEBKIT)
+ENDIF(WITH_QTWEBKIT)
 #############################################################
 # search for Qt4
 SET(QT_MIN_VERSION 4.7.0)
@@ -242,8 +246,11 @@ IF (ENABLE_QT5)
   FIND_PACKAGE(Qt5Svg REQUIRED)
   FIND_PACKAGE(Qt5Concurrent REQUIRED)
   FIND_PACKAGE(Qt5PrintSupport REQUIRED)
-  FIND_PACKAGE(Qt5WebKit REQUIRED)
-  FIND_PACKAGE(Qt5WebKitWidgets REQUIRED)
+  FIND_PACKAGE(Qt5Positioning)
+  IF (WITH_QTWEBKIT)
+    FIND_PACKAGE(Qt5WebKit REQUIRED)
+    FIND_PACKAGE(Qt5WebKitWidgets REQUIRED)
+  ENDIF(WITH_QTWEBKIT)
   FIND_PACKAGE(Qt5Test REQUIRED)
   FIND_PACKAGE(Qt5UiTools REQUIRED)
   FIND_PACKAGE(Qt5Script REQUIRED)
@@ -308,7 +315,7 @@ IF (ENABLE_TESTS)
     IMMEDIATE @ONLY)
   # For server side testing we have no X, we can use xfvb as a fake x
   # sudo apt-get install xfvb
-  add_custom_target(check-no-x COMMAND xvfb-run --server-args="-screen 10 1024x768x24" ctest --output-on-failure)
+  add_custom_target(check-no-x COMMAND xvfb-run --server-args=-screen\ 10\ 1024x768x24 ctest --output-on-failure)
 ENDIF (ENABLE_TESTS)
 
 IF (SUPPRESS_QT_WARNINGS)
@@ -355,6 +362,7 @@ ENDIF()
 IF (NOT USE_CXX_11)
   ADD_DEFINITIONS("-Doverride=")
 ENDIF()
+
 
 #############################################################
 # enable warnings
@@ -571,14 +579,18 @@ IF (WIN32)
   SET(DLLIMPORT "__declspec(dllimport)")
   SET(DLLEXPORT "__declspec(dllexport)")
 ELSE (WIN32)
+  IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+    SET(DLLEXPORT "__attribute__ ((visibility (\\\"default\\\")))")
+  ELSE()
+    SET(DLLEXPORT "")
+  ENDIF()
+
   IF(PEDANTIC AND NOT APPLE)
     SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
     SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,--no-undefined")
     SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--no-undefined")
   ENDIF(PEDANTIC AND NOT APPLE)
 
-  SET(DLLIMPORT "")
-  SET(DLLEXPORT "")
 ENDIF(WIN32)
 
 ADD_DEFINITIONS("-DCORE_EXPORT=${DLLIMPORT}")

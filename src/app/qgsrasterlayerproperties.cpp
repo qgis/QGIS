@@ -721,7 +721,8 @@ void QgsRasterLayerProperties::sync()
   }
 
   //get the thumbnail for the layer
-  pixmapThumbnail->setPixmap( mRasterLayer->previewAsPixmap( pixmapThumbnail->size() ) );
+  QPixmap thumbnail = QPixmap::fromImage( mRasterLayer->previewAsImage( pixmapThumbnail->size() ) );
+  pixmapThumbnail->setPixmap( thumbnail );
 
   // TODO fix legend + palette pixmap
 
@@ -927,7 +928,8 @@ void QgsRasterLayerProperties::apply()
   mRasterLayer->setBlendMode( mBlendModeComboBox->blendMode() );
 
   //get the thumbnail for the layer
-  pixmapThumbnail->setPixmap( mRasterLayer->previewAsPixmap( pixmapThumbnail->size() ) );
+  QPixmap thumbnail = QPixmap::fromImage( mRasterLayer->previewAsImage( pixmapThumbnail->size() ) );
+  pixmapThumbnail->setPixmap( thumbnail );
 
   mRasterLayer->setTitle( mLayerTitleLineEdit->text() );
   mRasterLayer->setAbstract( mLayerAbstractTextEdit->toPlainText() );

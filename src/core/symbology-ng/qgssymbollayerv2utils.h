@@ -426,6 +426,13 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
      */
     static QString fieldOrExpressionFromExpression( QgsExpression* expression );
 
+    /** Computes a sequence of about 'classes' equally spaced round values
+     *  which cover the range of values from 'minimum' to 'maximum'.
+     *  The values are chosen so that they are 1, 2 or 5 times a power of 10.
+     * @note added in 2.10
+     */
+    static QList<double> prettyBreaks( double minimum, double maximum, int classes );
+
 };
 
 class QPolygonF;

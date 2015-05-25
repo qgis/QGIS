@@ -47,7 +47,7 @@ class GUI_EXPORT QgsVectorFieldSymbolLayerWidget: public QgsSymbolLayerV2Widget,
     void on_mRadiansRadioButton_toggled( bool checked );
     void on_mClockwiseFromNorthRadioButton_toggled( bool checked );
     void on_mCounterclockwiseFromEastRadioButton_toggled( bool checked );
-    void on_mDistanceUnitComboBox_currentIndexChanged( int index );
+    void on_mDistanceUnitWidget_changed();
 };
 
 #endif // QGSVECTORFIELDSYMBOLLAYERWIDGET_H

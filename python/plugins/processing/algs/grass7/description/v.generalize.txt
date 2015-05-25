@@ -16,5 +16,4 @@ ParameterNumber|beta|Snakes beta parameter|None|None|1.0
 ParameterNumber|iterations|Number of iterations|None|None|1
 ParameterBoolean|-t|Do not copy attributes|False
 ParameterBoolean|-l|Disable loop support|True
-OutputVector|output|Output layer
-
+OutputVector|output|Generalized

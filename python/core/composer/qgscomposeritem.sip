@@ -143,10 +143,10 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
      */
     enum ZoomMode
     {
-      Zoom = 0, /*< Zoom to center of content */
-      ZoomRecenter, /*< Zoom and recenter content to point */
-      ZoomToPoint, /*< Zoom while maintaining relative position of point */
-      NoZoom /*< No zoom */
+      Zoom = 0, /*!< Zoom to center of content */
+      ZoomRecenter, /*!< Zoom and recenter content to point */
+      ZoomToPoint, /*!< Zoom while maintaining relative position of point */
+      NoZoom /*!< No zoom */
     };
 
     /**Constructor

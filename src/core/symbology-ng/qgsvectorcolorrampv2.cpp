@@ -262,8 +262,10 @@ void QgsVectorGradientColorRampV2::addStopsToGradient( QGradient* gradient, doub
 
 QgsVectorRandomColorRampV2::QgsVectorRandomColorRampV2( int count, int hueMin, int hueMax,
     int satMin, int satMax, int valMin, int valMax )
-    : mCount( count ), mHueMin( hueMin ), mHueMax( hueMax ),
-    mSatMin( satMin ), mSatMax( satMax ), mValMin( valMin ), mValMax( valMax )
+    : mCount( count )
+    , mHueMin( hueMin ), mHueMax( hueMax )
+    , mSatMin( satMin ), mSatMax( satMax )
+    , mValMin( valMin ), mValMax( valMax )
 {
   updateColors();
 }
@@ -520,9 +522,9 @@ QgsStringMap QgsVectorColorBrewerColorRampV2::properties() const
 
 QgsCptCityColorRampV2::QgsCptCityColorRampV2( QString schemeName, QString variantName,
     bool doLoadFile )
-    : QgsVectorGradientColorRampV2(),
-    mSchemeName( schemeName ), mVariantName( variantName ),
-    mVariantList( QStringList() ), mFileLoaded( false ), mMultiStops( false )
+    : QgsVectorGradientColorRampV2()
+    , mSchemeName( schemeName ), mVariantName( variantName )
+    , mVariantList( QStringList() ), mFileLoaded( false ), mMultiStops( false )
 {
   // TODO replace this with hard-coded data in the default case
   // don't load file if variant is missing
@@ -532,9 +534,9 @@ QgsCptCityColorRampV2::QgsCptCityColorRampV2( QString schemeName, QString varian
 
 QgsCptCityColorRampV2::QgsCptCityColorRampV2( QString schemeName,  QStringList variantList,
     QString variantName, bool doLoadFile )
-    : QgsVectorGradientColorRampV2(),
-    mSchemeName( schemeName ), mVariantName( variantName ),
-    mVariantList( variantList ), mFileLoaded( false ), mMultiStops( false )
+    : QgsVectorGradientColorRampV2()
+    , mSchemeName( schemeName ), mVariantName( variantName )
+    , mVariantList( variantList ), mFileLoaded( false ), mMultiStops( false )
 {
   mVariantList = variantList;
 

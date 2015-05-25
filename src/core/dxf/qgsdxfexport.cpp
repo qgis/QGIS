@@ -3338,9 +3338,14 @@ void QgsDxfExport::writePoint( const QgsPoint& pt, const QString& layer, QColor 
   }
 }
 
-void QgsDxfExport::writePolyline( const QgsPolyline& line, const QString& layer, const QString& lineStyleName, QColor color,
-                                  double width, bool polygon )
+void QgsDxfExport::writePolyline( const QgsPolyline& line, const QString& layer, const QString& lineStyleName, QColor color, double width )
 {
+  if ( line.size() == 0 )
+  {
+    QgsDebugMsg( QString( "writePolyline: empty line layer=%1 lineStyleName=%2" ).arg( layer ).arg( lineStyleName ) );
+    return;
+  }
+
   writeGroup( 0, "LWPOLYLINE" );
   writeHandle();
   writeGroup( 8, layer );
@@ -3349,16 +3354,17 @@ void QgsDxfExport::writePolyline( const QgsPolyline& line, const QString& layer,
   writeGroup( 6, lineStyleName );
   writeGroup( color );
 
-  writeGroup( 90, line.size() );
+  bool polygon = line[0] == line[ line.size() - 1 ];
+  int n = line.size();
+  if ( polygon )
+    --n;
 
+  writeGroup( 90, n );
   writeGroup( 70, polygon ? 1 : 0 );
   writeGroup( 43, width );
 
-  QgsPolyline::const_iterator lineIt = line.constBegin();
-  for ( ; lineIt != line.constEnd(); ++lineIt )
-  {
-    writeGroup( 0, *lineIt );
-  }
+  for ( int i = 0; i < n; i++ )
+    writeGroup( 0, line[i] );
 }
 
 void QgsDxfExport::writePolygon( const QgsPolygon& polygon, const QString& layer, const QString& hatchPattern, QColor color )
@@ -3405,7 +3411,7 @@ void QgsDxfExport::writeLine( const QgsPoint& pt1, const QgsPoint& pt2, const QS
   QgsPolyline line( 2 );
   line[0] = pt1;
   line[1] = pt2;
-  writePolyline( line, layer, lineStyleName, color, width, false );
+  writePolyline( line, layer, lineStyleName, color, width );
 }
 
 void QgsDxfExport::writePoint( const QString& layer, QColor color, const QgsPoint& pt )
@@ -3586,9 +3592,10 @@ void QgsDxfExport::addFeature( const QgsSymbolV2RenderContext& ctx, const QStrin
   if ( !fet )
     return;
 
-  QgsGeometry *geom = fet->geometry();
-  if ( !geom )
+  if ( !fet->constGeometry() )
     return;
+
+  const QgsGeometry *geom = fet->constGeometry();
 
   QGis::WkbType geometryType = geom->wkbType();
 
@@ -3646,58 +3653,65 @@ void QgsDxfExport::addFeature( const QgsSymbolV2RenderContext& ctx, const QStrin
     // single line
     if ( geometryType == QGis::WKBLineString || geometryType == QGis::WKBLineString25D )
     {
-      QgsGeometry *offsetLine = offset == 0.0 ? geom : geom->offsetCurve( offset, 0, GEOSBUF_JOIN_MITRE, 2.0 );
+      QgsGeometry* nonConstGeom = new QgsGeometry( *geom );
+      QgsGeometry* offsetLine = offset == 0.0 ? nonConstGeom : nonConstGeom->offsetCurve( offset, 0, GEOSBUF_JOIN_MITRE, 2.0 );
       if ( !offsetLine )
-        offsetLine = geom;
+        offsetLine = nonConstGeom;
 
-      writePolyline( offsetLine->asPolyline(), layer, lineStyleName, penColor, width, false );
+      writePolyline( offsetLine->asPolyline(), layer, lineStyleName, penColor, width );
 
-      if ( offsetLine != geom )
+      if ( offsetLine != nonConstGeom )
         delete offsetLine;
+      delete nonConstGeom;
     }
 
     // multiline
     if ( geometryType == QGis::WKBMultiLineString || geometryType == QGis::WKBMultiLineString25D )
     {
-      QgsGeometry *offsetLine = offset == 0.0 ? geom : geom->offsetCurve( offset, 0, GEOSBUF_JOIN_MITRE, 2.0 );
+      QgsGeometry* nonConstGeom = new QgsGeometry( *geom );
+      QgsGeometry *offsetLine = offset == 0.0 ? nonConstGeom : nonConstGeom->offsetCurve( offset, 0, GEOSBUF_JOIN_MITRE, 2.0 );
       if ( !offsetLine )
-        offsetLine = geom;
+        offsetLine = nonConstGeom;
 
       QgsMultiPolyline multiLine = offsetLine->asMultiPolyline();
       QgsMultiPolyline::const_iterator lIt = multiLine.constBegin();
       for ( ; lIt != multiLine.constEnd(); ++lIt )
       {
-        writePolyline( *lIt, layer, lineStyleName, penColor, width, false );
+        writePolyline( *lIt, layer, lineStyleName, penColor, width );
       }
 
-      if ( offsetLine != geom )
+      if ( offsetLine != nonConstGeom )
         delete offsetLine;
+      delete nonConstGeom;
     }
 
     // polygon
     if ( geometryType == QGis::WKBPolygon || geometryType == QGis::WKBPolygon25D )
     {
-      QgsGeometry *offsetPolygon = offset == 0.0 ? geom : geom->buffer( -offset, 0, GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, 2.0 );
+      QgsGeometry* nonConstGeom = new QgsGeometry( *geom );
+      QgsGeometry *offsetPolygon = offset == 0.0 ? nonConstGeom : nonConstGeom->buffer( -offset, 0, GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, 2.0 );
       if ( !offsetPolygon )
-        offsetPolygon = geom;
+        offsetPolygon = nonConstGeom;
 
       QgsPolygon polygon = offsetPolygon->asPolygon();
       QgsPolygon::const_iterator polyIt = polygon.constBegin();
       for ( ; polyIt != polygon.constEnd(); ++polyIt ) // iterate over rings
       {
-        writePolyline( *polyIt, layer, lineStyleName, penColor, width, false );
+        writePolyline( *polyIt, layer, lineStyleName, penColor, width );
       }
 
-      if ( offsetPolygon != geom )
+      if ( offsetPolygon != nonConstGeom )
         delete offsetPolygon;
+      delete nonConstGeom;
     }
 
     // multipolygon or polygon
     if ( geometryType == QGis::WKBMultiPolygon || geometryType == QGis::WKBMultiPolygon25D )
     {
-      QgsGeometry *offsetPolygon = offset == 0.0 ? geom : geom->buffer( -offset, 0, GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, 2.0 );
+      QgsGeometry* nonConstGeom = new QgsGeometry( *geom );
+      QgsGeometry *offsetPolygon = offset == 0.0 ? nonConstGeom : nonConstGeom->buffer( -offset, 0, GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, 2.0 );
       if ( !offsetPolygon )
-        offsetPolygon = geom;
+        offsetPolygon = nonConstGeom;
 
       QgsMultiPolygon mp = offsetPolygon->asMultiPolygon();
       QgsMultiPolygon::const_iterator mpIt = mp.constBegin();
@@ -3706,12 +3720,13 @@ void QgsDxfExport::addFeature( const QgsSymbolV2RenderContext& ctx, const QStrin
         QgsPolygon::const_iterator polyIt = mpIt->constBegin();
         for ( ; polyIt != mpIt->constEnd(); ++polyIt )
         {
-          writePolyline( *polyIt, layer, lineStyleName, penColor, width, true );
+          writePolyline( *polyIt, layer, lineStyleName, penColor, width );
         }
       }
 
-      if ( offsetPolygon != geom )
+      if ( offsetPolygon != nonConstGeom )
         delete offsetPolygon;
+      delete nonConstGeom;
     }
   }
 

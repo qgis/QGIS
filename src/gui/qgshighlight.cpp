@@ -50,7 +50,7 @@
   \brief The QgsHighlight class provides a transparent overlay widget
   for highlighting features on the map.
 */
-QgsHighlight::QgsHighlight( QgsMapCanvas* mapCanvas, QgsGeometry *geom, QgsMapLayer *layer )
+QgsHighlight::QgsHighlight( QgsMapCanvas* mapCanvas, const QgsGeometry *geom, QgsMapLayer *layer )
     : QgsMapCanvasItem( mapCanvas )
     , mLayer( layer )
     , mBuffer( 0 )
@@ -60,7 +60,7 @@ QgsHighlight::QgsHighlight( QgsMapCanvas* mapCanvas, QgsGeometry *geom, QgsMapLa
   init();
 }
 
-QgsHighlight::QgsHighlight( QgsMapCanvas* mapCanvas, QgsGeometry *geom, QgsVectorLayer *layer )
+QgsHighlight::QgsHighlight( QgsMapCanvas* mapCanvas, const QgsGeometry *geom, QgsVectorLayer *layer )
     : QgsMapCanvasItem( mapCanvas )
     , mLayer( static_cast<QgsMapLayer *>( layer ) )
     , mBuffer( 0 )
@@ -92,7 +92,7 @@ void QgsHighlight::init()
       {
         mGeometry->transform( *ct );
       }
-      else if ( mFeature.geometry() )
+      else if ( mFeature.constGeometry() )
       {
         mFeature.geometry()->transform( *ct );
       }
@@ -342,7 +342,7 @@ void QgsHighlight::paint( QPainter* p )
         return;
     }
   }
-  else if ( mFeature.geometry() )
+  else if ( mFeature.constGeometry() )
   {
     QgsVectorLayer *layer = qobject_cast<QgsVectorLayer*>( mLayer );
     if ( !layer )
@@ -419,7 +419,7 @@ void QgsHighlight::updateRect()
     setRect( r );
     setVisible( mGeometry );
   }
-  else if ( mFeature.geometry() )
+  else if ( mFeature.constGeometry() )
   {
     // We are currently using full map canvas extent for two reasons:
     // 1) currently there is no method in QgsFeatureRendererV2 to get rendered feature

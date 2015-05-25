@@ -4,4 +4,4 @@ Raster (r.*)
 ParameterRaster|input|Input raster layer to fill|False
 ParameterNumber|tension|Spline tension parameter|None|None|40.0
 ParameterNumber|smooth|Spline smoothing parameter|None|None|0.1
-OutputRaster|output|Filled layer
+OutputRaster|output|Filled

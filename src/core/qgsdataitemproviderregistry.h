@@ -16,8 +16,6 @@
 #ifndef QGSDATAITEMPROVIDERREGISTRY_H
 #define QGSDATAITEMPROVIDERREGISTRY_H
 
-#include "qgssingleton.h"
-
 #include <QList>
 
 class QgsDataItemProvider;
@@ -28,9 +26,11 @@ class QgsDataItemProvider;
  *
  * @note added in 2.10
  */
-class CORE_EXPORT QgsDataItemProviderRegistry : public QgsSingleton<QgsDataItemProviderRegistry>
+class CORE_EXPORT QgsDataItemProviderRegistry
 {
   public:
+    static QgsDataItemProviderRegistry* instance();
+
     ~QgsDataItemProviderRegistry();
 
     //! Get list of available providers
@@ -44,8 +44,6 @@ class CORE_EXPORT QgsDataItemProviderRegistry : public QgsSingleton<QgsDataItemP
 
   private:
     QgsDataItemProviderRegistry();
-
-    friend class QgsSingleton<QgsDataItemProviderRegistry>; // Let QgsSingleton access private constructor
 
     //! available providers. this class owns the pointers
     QList<QgsDataItemProvider*> mProviders;

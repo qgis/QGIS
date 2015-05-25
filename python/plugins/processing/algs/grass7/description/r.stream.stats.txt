@@ -4,4 +4,4 @@ Raster (r.*)
 ParameterRaster|stream_raster|Input map: stream mask|False
 ParameterRaster|direction|Input map: flow direction|False
 ParameterRaster|elevation|Input map: elevation|False
-OutputFile|output|Output stats
+OutputFile|output|Stream statistics

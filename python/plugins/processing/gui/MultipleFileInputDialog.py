@@ -29,16 +29,19 @@ __revision__ = '$Format:%H$'
 
 import os
 
+from PyQt4 import uic
 from PyQt4.QtCore import QSettings
 from PyQt4.QtGui import QDialog, QAbstractItemView, QPushButton, QDialogButtonBox, QFileDialog, QStandardItemModel, QStandardItem
 
-from processing.ui.ui_DlgMultipleSelection import Ui_DlgMultipleSelection
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'DlgMultipleSelection.ui'))
 
 
-class MultipleFileInputDialog(QDialog, Ui_DlgMultipleSelection):
+class MultipleFileInputDialog(BASE, WIDGET):
 
     def __init__(self, options):
-        QDialog.__init__(self)
+        super(MultipleFileInputDialog, self).__init__(None)
         self.setupUi(self)
 
         self.lstLayers.setSelectionMode(QAbstractItemView.ExtendedSelection)

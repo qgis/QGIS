@@ -14,6 +14,6 @@ ParameterRaster|start|Name of raster map containing STARTing sources|True
 *ParameterNumber|init_time|INITial TIME for current simulation (0) (min)|0|None|0
 *ParameterNumber|lag|Simulating time duration LAG (fill the region) (min)|0|None|0
 *ParameterRaster|backdrop|Name of raster map as a display backdrop|False
-OutputRaster|output|Name of raster map to contain OUTPUT spread time (min)
-OutputRaster|x_output|Name of raster map to contain X_BACK coordinates
-OutputRaster|y_output|Name of raster map to contain Y_BACK coordinates
+OutputRaster|output|Spread time (min)
+OutputRaster|x_output|X_BACK coordinates
+OutputRaster|y_output|Y_BACK coordinates

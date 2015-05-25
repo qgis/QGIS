@@ -52,9 +52,9 @@ class Ogr2OgrClip(OgrAlgorithm):
         self.addParameter(ParameterString(self.OPTIONS,
             self.tr('Additional creation options'), '', optional=True))
 
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Clipped (polygon)')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
         ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
         clipLayer = self.getParameterValue(self.CLIP_LAYER)
@@ -85,4 +85,7 @@ class Ogr2OgrClip(OgrAlgorithm):
         else:
             commands = ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]
 
-        GdalUtils.runGdal(commands, progress)
+        return commands
+    
+    def commandName(self):
+        return "ogr2ogr"

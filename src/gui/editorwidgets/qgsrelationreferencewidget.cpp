@@ -535,7 +535,7 @@ void QgsRelationReferenceWidget::init()
     mComboBox->setCurrentIndex( mComboBox->findData( mFeature.id(), QgsAttributeTableModel::FeatureIdRole ) );
 
     // Only connect after iterating, to have only one iterator on the referenced table at once
-    connect( mComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( comboReferenceChanged( int ) ) );
+    connect( mComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( comboReferenceChanged( int ) ) );
     QApplication::restoreOverrideCursor();
   }
 }
@@ -580,11 +580,12 @@ void QgsRelationReferenceWidget::highlightFeature( QgsFeature f, CanvasExtent ca
       return;
   }
 
-  QgsGeometry* geom = f.geometry();
-  if ( !geom )
+  if ( !f.constGeometry() )
   {
     return;
   }
+
+  const QgsGeometry* geom = f.constGeometry();
 
   // scale or pan
   if ( canvasExtent == Scale )

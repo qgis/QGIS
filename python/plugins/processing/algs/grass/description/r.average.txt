@@ -4,4 +4,4 @@ Raster (r.*)
 ParameterRaster|base|Base raster layer|False
 ParameterRaster|cover|Cover raster layer|False
 ParameterBoolean|-c|Cover values extracted from the category labels of the cover map|False
-OutputRaster|output|Average values
+OutputRaster|output|Average

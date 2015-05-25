@@ -239,11 +239,13 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   mOldJoins = layer->vectorJoins();
 
+  QVBoxLayout* diagLayout = new QVBoxLayout( mDiagramFrame );
+  diagLayout->setMargin( 0 );
   diagramPropertiesDialog = new QgsDiagramProperties( layer, mDiagramFrame );
-  diagramPropertiesDialog->layout()->setMargin( 0 );
-  mDiagramFrame->setLayout( new QVBoxLayout( mDiagramFrame ) );
-  mDiagramFrame->layout()->setMargin( 0 );
-  mDiagramFrame->layout()->addWidget( diagramPropertiesDialog );
+  diagramPropertiesDialog->layout()->setContentsMargins( -1, 0, -1, 0 );
+  diagLayout->addWidget( diagramPropertiesDialog );
+  mDiagramFrame->setLayout( diagLayout );
+
 
   //layer title and abstract
   mLayerTitleLineEdit->setText( layer->title() );

@@ -25,6 +25,7 @@
 #include "qgspointdisplacementrenderer.h"
 #include "qgsinvertedpolygonrenderer.h"
 #include "qgspainteffect.h"
+#include "qgsdatadefined.h"
 
 #include <QSet>
 
@@ -1219,11 +1220,11 @@ void QgsRuleBasedRendererV2::convertToDataDefinedSymbology( QgsSymbolV2* symbol,
         if ( ! sizeScaleField.isNull() )
         {
           sizeExpression = QString( "%1*(%2)" ).arg( msl->size() ).arg( sizeScaleField );
-          msl->setDataDefinedProperty( "size", sizeExpression );
+          msl->setDataDefinedProperty( "size", new QgsDataDefined( sizeExpression ) );
         }
         if ( ! rotationField.isNull() )
         {
-          msl->setDataDefinedProperty( "angle", rotationField );
+          msl->setDataDefinedProperty( "angle", new QgsDataDefined( true, false, QString(), rotationField ) );
         }
       }
       break;
@@ -1236,7 +1237,7 @@ void QgsRuleBasedRendererV2::convertToDataDefinedSymbology( QgsSymbolV2* symbol,
           {
             QgsLineSymbolLayerV2* lsl = static_cast<QgsLineSymbolLayerV2*>( symbol->symbolLayer( j ) );
             sizeExpression = QString( "%1*(%2)" ).arg( lsl->width() ).arg( sizeScaleField );
-            lsl->setDataDefinedProperty( "width", sizeExpression );
+            lsl->setDataDefinedProperty( "width", new QgsDataDefined( sizeExpression ) );
           }
           if ( symbol->symbolLayer( j )->layerType() == "MarkerLine" )
           {
@@ -1245,7 +1246,7 @@ void QgsRuleBasedRendererV2::convertToDataDefinedSymbology( QgsSymbolV2* symbol,
             {
               QgsMarkerSymbolLayerV2* msl = static_cast<QgsMarkerSymbolLayerV2*>( marker->symbolLayer( k ) );
               sizeExpression = QString( "%1*(%2)" ).arg( msl->size() ).arg( sizeScaleField );
-              msl->setDataDefinedProperty( "size", sizeExpression );
+              msl->setDataDefinedProperty( "size", new QgsDataDefined( sizeExpression ) );
             }
           }
         }

@@ -234,12 +234,13 @@ Region QgsSpatialIndex::rectToRegion( QgsRectangle rect )
 
 bool QgsSpatialIndex::featureInfo( const QgsFeature& f, SpatialIndex::Region& r, QgsFeatureId &id )
 {
-  QgsGeometry *g = f.geometry();
-  if ( !g )
+  if ( !f.constGeometry() )
     return false;
 
+  QgsGeometry g( *f.constGeometry() );
+
   id = f.id();
-  r = rectToRegion( g->boundingBox() );
+  r = rectToRegion( g.boundingBox() );
   return true;
 }
 

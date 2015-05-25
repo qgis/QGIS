@@ -32,6 +32,10 @@ QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar* scale
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, scaleBar );
   mainLayout->addWidget( itemPropertiesWidget );
 
+  mSegmentSizeRadioGroup.addButton( mFixedSizeRadio );
+  mSegmentSizeRadioGroup.addButton( mFitWidthRadio );
+  connect( &mSegmentSizeRadioGroup, SIGNAL( buttonClicked( QAbstractButton* ) ), this, SLOT( segmentSizeRadioChanged( QAbstractButton* ) ) );
+
   blockMemberSignals( true );
 
   //style combo box
@@ -220,6 +224,23 @@ void QgsComposerScaleBarWidget::setGuiElements()
 
   //units
   mUnitsComboBox->setCurrentIndex( mUnitsComboBox->findData(( int )mComposerScaleBar->units() ) );
+
+  if ( mComposerScaleBar->segmentSizeMode() == QgsComposerScaleBar::SegmentSizeFixed )
+  {
+    mFixedSizeRadio->setChecked( true );
+    mSegmentSizeSpinBox->setEnabled( true );
+    mMinWidthSpinBox->setEnabled( false );
+    mMaxWidthSpinBox->setEnabled( false );
+  }
+  else /*if(mComposerScaleBar->segmentSizeMode() == QgsComposerScaleBar::SegmentSizeFitWidth)*/
+  {
+    mFitWidthRadio->setChecked( true );
+    mSegmentSizeSpinBox->setEnabled( false );
+    mMinWidthSpinBox->setEnabled( true );
+    mMaxWidthSpinBox->setEnabled( true );
+  }
+  mMinWidthSpinBox->setValue( mComposerScaleBar->minBarWidth() );
+  mMaxWidthSpinBox->setValue( mComposerScaleBar->maxBarWidth() );
 
   blockMemberSignals( false );
 }
@@ -621,6 +642,7 @@ void QgsComposerScaleBarWidget::blockMemberSignals( bool block )
   mFillColorButton->blockSignals( block );
   mFillColor2Button->blockSignals( block );
   mStrokeColorButton->blockSignals( block );
+  mSegmentSizeRadioGroup.blockSignals( block );
 }
 
 void QgsComposerScaleBarWidget::connectUpdateSignal()
@@ -662,5 +684,63 @@ void QgsComposerScaleBarWidget::on_mLineCapStyleCombo_currentIndexChanged( int i
 
   mComposerScaleBar->beginCommand( tr( "Scalebar line cap style" ) );
   mComposerScaleBar->setLineCapStyle( mLineCapStyleCombo->penCapStyle() );
+  mComposerScaleBar->endCommand();
+}
+
+void QgsComposerScaleBarWidget::segmentSizeRadioChanged( QAbstractButton* radio )
+{
+  bool fixedSizeMode = radio == mFixedSizeRadio;
+  mMinWidthSpinBox->setEnabled( !fixedSizeMode );
+  mMaxWidthSpinBox->setEnabled( !fixedSizeMode );
+  mSegmentSizeSpinBox->setEnabled( fixedSizeMode );
+
+  if ( !mComposerScaleBar )
+  {
+    return;
+  }
+
+  mComposerScaleBar->beginCommand( tr( "Scalebar segment size mode" ), QgsComposerMergeCommand::ScaleBarSegmentSize );
+  disconnectUpdateSignal();
+  if ( mFixedSizeRadio->isChecked() )
+  {
+    mComposerScaleBar->setSegmentSizeMode( QgsComposerScaleBar::SegmentSizeFixed );
+    mComposerScaleBar->setNumUnitsPerSegment( mSegmentSizeSpinBox->value() );
+  }
+  else /*if(mFitWidthRadio->isChecked())*/
+  {
+    mComposerScaleBar->setSegmentSizeMode( QgsComposerScaleBar::SegmentSizeFitWidth );
+  }
+  mComposerScaleBar->update();
+  connectUpdateSignal();
+  mComposerScaleBar->endCommand();
+}
+
+void QgsComposerScaleBarWidget::on_mMinWidthSpinBox_valueChanged( int )
+{
+  if ( !mComposerScaleBar )
+  {
+    return;
+  }
+
+  mComposerScaleBar->beginCommand( tr( "Scalebar segment size mode" ), QgsComposerMergeCommand::ScaleBarSegmentSize );
+  disconnectUpdateSignal();
+  mComposerScaleBar->setMinBarWidth( mMinWidthSpinBox->value() );
+  mComposerScaleBar->update();
+  connectUpdateSignal();
+  mComposerScaleBar->endCommand();
+}
+
+void QgsComposerScaleBarWidget::on_mMaxWidthSpinBox_valueChanged( int )
+{
+  if ( !mComposerScaleBar )
+  {
+    return;
+  }
+
+  mComposerScaleBar->beginCommand( tr( "Scalebar segment size mode" ), QgsComposerMergeCommand::ScaleBarSegmentSize );
+  disconnectUpdateSignal();
+  mComposerScaleBar->setMaxBarWidth( mMaxWidthSpinBox->value() );
+  mComposerScaleBar->update();
+  connectUpdateSignal();
   mComposerScaleBar->endCommand();
 }

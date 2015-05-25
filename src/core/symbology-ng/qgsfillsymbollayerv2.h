@@ -925,6 +925,8 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     bool setSubSymbol( QgsSymbolV2* symbol ) override;
     QgsSymbolV2* subSymbol() override;
 
+    QSet<QString> usedAttributes() const override;
+
   protected:
     /**Distance (in mm or map units) between lines*/
     double mDistance;

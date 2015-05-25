@@ -25,6 +25,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
 from PyQt4.QtGui import QIcon
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
@@ -35,6 +37,8 @@ from processing.gui.CreateNewScriptAction import CreateNewScriptAction
 from processing.script.ScriptUtils import ScriptUtils
 from processing.script.AddScriptFromFileAction import AddScriptFromFileAction
 from processing.gui.GetScriptsAndModels import GetScriptsAction
+
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 
 class ScriptAlgorithmProvider(AlgorithmProvider):
@@ -61,7 +65,7 @@ class ScriptAlgorithmProvider(AlgorithmProvider):
         ProcessingConfig.addSetting(ScriptUtils.SCRIPTS_FOLDER)
 
     def getIcon(self):
-        return QIcon(':/processing/images/script.png')
+        return QIcon(os.path.join(pluginPath, 'images', 'script.png'))
 
     def getName(self):
         return 'script'

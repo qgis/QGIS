@@ -119,7 +119,7 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
   {
     verticalHeaderLabels << FID_TO_STRING( mFeatureList[i].id() );
 
-    const QgsAttributes &attrs = mFeatureList[i].attributes();
+    QgsAttributes attrs = mFeatureList[i].attributes();
 
     for ( int j = 0; j < mTableWidget->columnCount(); j++ )
     {
@@ -575,7 +575,7 @@ void QgsMergeAttributesDialog::createRubberBandForFeature( int featureId )
   mSelectionRubberBand->setColor( QColor( 255, 0, 0, 65 ) );
   QgsFeature featureToSelect;
   mVectorLayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( featureToSelect );
-  mSelectionRubberBand->setToGeometry( featureToSelect.geometry(), mVectorLayer );
+  mSelectionRubberBand->setToGeometry( featureToSelect.constGeometry(), mVectorLayer );
 }
 
 QgsAttributes QgsMergeAttributesDialog::mergedAttributes() const

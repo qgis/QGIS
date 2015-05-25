@@ -3,4 +3,4 @@ r.patch - Creates a composite raster layer by using one (or more) layer(s) to fi
 Raster (r.*)
 ParameterMultipleInput|input|Raster layers to be patched together|3|False
 ParameterBoolean|-z|Use zero (0) for transparency instead of NULL|False
-OutputRaster|output|Result
+OutputRaster|output|Patched

@@ -20,7 +20,7 @@ email                : jef at norbit dot de
 
 #include <QSettings>
 
-QgsGeometryValidator::QgsGeometryValidator( QgsGeometry *g, QList<QgsGeometry::Error> *errors )
+QgsGeometryValidator::QgsGeometryValidator( const QgsGeometry *g, QList<QgsGeometry::Error> *errors )
     : QThread()
     , mErrors( errors )
     , mStop( false )
@@ -346,7 +346,7 @@ void QgsGeometryValidator::addError( QgsGeometry::Error e )
     *mErrors << e;
 }
 
-void QgsGeometryValidator::validateGeometry( QgsGeometry *g, QList<QgsGeometry::Error> &errors )
+void QgsGeometryValidator::validateGeometry( const QgsGeometry *g, QList<QgsGeometry::Error> &errors )
 {
   QgsGeometryValidator *gv = new QgsGeometryValidator( g, &errors );
   connect( gv, SIGNAL( errorFound( QgsGeometry::Error ) ), gv, SLOT( addError( QgsGeometry::Error ) ) );

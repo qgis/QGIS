@@ -71,7 +71,7 @@ class FieldsPyculator(GeoAlgorithm):
             self.tr('Global expression'), multiline=True, optional=True))
         self.addParameter(ParameterString(self.FORMULA,
             self.tr('Formula'), 'value = ', multiline=True))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Calculated')))
 
     def processAlgorithm(self, progress):
         fieldName = self.getParameterValue(self.FIELD_NAME)

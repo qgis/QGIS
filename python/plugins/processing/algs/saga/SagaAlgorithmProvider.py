@@ -37,6 +37,10 @@ from SplitRGBBands import SplitRGBBands
 import SagaUtils
 from processing.tools.system import isWindows, isMac
 
+pluginPath = os.path.normpath(os.path.join(
+    os.path.split(os.path.dirname(__file__))[0], os.pardir))
+
+
 class SagaAlgorithmProvider(AlgorithmProvider):
 
     supportedVersions = {"2.1.2": ("2.1.2", SagaAlgorithm212),
@@ -63,6 +67,9 @@ class SagaAlgorithmProvider(AlgorithmProvider):
         ProcessingConfig.addSetting(Setting("SAGA",
             SagaUtils.SAGA_LOG_CONSOLE,
             self.tr('Log console output'), True))
+        ProcessingConfig.settingIcons["SAGA"] = self.getIcon()
+        ProcessingConfig.addSetting(Setting("SAGA", "ACTIVATE_SAGA",
+                                    self.tr('Activate'), self.activate))
 
     def unload(self):
         AlgorithmProvider.unload(self)
@@ -121,4 +128,4 @@ class SagaAlgorithmProvider(AlgorithmProvider):
         return ['dbf']
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../../images/saga.png')
+        return QIcon(os.path.join(pluginPath, 'images', 'saga.png'))

@@ -1,10 +1,9 @@
-
-/**
-  \class QgsField
-  \brief Class to encapsulate a field in an attribute table or data source.
-
-  QgsField stores metadata about an attribute field, including name, type
-  length, and if applicable, precision.
+/** \class QgsField
+  * \ingroup core
+  * Encapsulate a field in an attribute table or data source.
+  * QgsField stores metadata about an attribute field, including name, type
+  * length, and if applicable, precision.
+  * \note QgsField objects are implicitly shared.
  */
 
 class QgsField
@@ -34,14 +33,18 @@ public:
               int prec = 0,
               QString comment = QString() );
 
+    /** Copy constructor
+     */
+    QgsField( const QgsField& other );
+
     //! Destructor
-    ~QgsField();
+    virtual ~QgsField();
 
     bool operator==( const QgsField& other ) const;
     bool operator!=( const QgsField& other ) const;
 
     //! Gets the name of the field
-    const QString & name() const;
+    const QString& name() const;
 
     //! Gets variant type of the field as it will be retrieved from data source
     QVariant::Type type() const;
@@ -52,15 +55,13 @@ public:
       the data store reports it, with no attempt to standardize the value.
       @return QString containing the field type
      */
-    const QString & typeName() const;
-
+    const QString& typeName() const;
 
     /**
       Gets the length of the field.
       @return int containing the length of the field
      */
     int length() const;
-
 
     /**
       Gets the precision of the field. Not all field types have a related precision.
@@ -71,13 +72,13 @@ public:
     /**
     Returns the field comment
     */
-    const QString & comment() const;
+    const QString& comment() const;
 
     /**
       Set the field name.
-      @param nam Name of the field
+      @param name Name of the field
      */
-    void setName( const QString & nam );
+    void setName( const QString& name );
 
     /**
       Set variant type.
@@ -86,9 +87,9 @@ public:
 
     /**
       Set the field type.
-      @param typ Field type
+      @param typeName Field type
      */
-    void setTypeName( const QString & typ );
+    void setTypeName( const QString& typeName );
 
     /**
       Set the field length.
@@ -98,15 +99,14 @@ public:
 
     /**
       Set the field precision.
-      @param prec Precision of the field
+      @param precision Precision of the field
      */
-    void setPrecision( int prec );
-
+    void setPrecision( int precision );
 
     /**
       Set the field comment
       */
-    void setComment( const QString & comment );
+    void setComment( const QString& comment );
 
     /** Formats string for display*/
     QString displayString( const QVariant& v ) const;
@@ -171,6 +171,15 @@ public:
 }; // class QgsField
 
 
+/** \class QgsFields
+ * \ingroup core
+ * Container of fields for a vector layer.
+ *
+ * In addition to storing a list of QgsField instances, it also:
+ * - allows quick lookups of field names to index in the list
+ *- keeps track of where the field definition comes from (vector data provider, joined layer or newly added from an editing operation)
+ * \note QgsFields objects are implicitly shared.
+ */
 
 class QgsFields
 {
@@ -187,6 +196,16 @@ class QgsFields
       OriginEdit,      //!< field has been temporarily added in editing mode (originIndex = index in the list of added attributes)
       OriginExpression //!< field is calculated from an expression
     };
+
+    /** Constructor for an empty field container
+     */
+    QgsFields();
+
+    /** Copy constructor
+     */
+    QgsFields( const QgsFields& other );
+
+    virtual ~QgsFields();
 
     //! Remove all fields
     void clear();
@@ -217,7 +236,7 @@ class QgsFields
     bool exists( int i ) const;
 
     //! Get field at particular index (must be in range 0..N-1)
-    // inline const QgsField& operator[]( int i ) const;
+    // const QgsField& operator[]( int i ) const;
     QgsField& operator[](int i) /Factory/;
 %MethodCode
   SIP_SSIZE_T idx = sipConvertFromSequenceIndex(a0, sipCpp->count());

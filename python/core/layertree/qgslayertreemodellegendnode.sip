@@ -134,6 +134,16 @@ class QgsSymbolV2LegendNode : QgsLayerTreeModelLegendNode
     virtual bool isScaleOK( double scale ) const;
 
     virtual void invalidateMapBasedData();
+
+    //! Set the icon size
+    //! @note added in 2.10
+    void setIconSize( const QSize& sz );
+    //! @note added in 2.10
+    QSize iconSize() const;
+
+    //! Get the minimum icon size to prevent cropping
+    //! @note added in 2.10
+    QSize minimumIconSize() const;
 };
 
 
@@ -148,7 +158,7 @@ class QgsSimpleLegendNode : QgsLayerTreeModelLegendNode
 #include <qgslayertreemodellegendnode.h>
 %End
   public:
-    QgsSimpleLegendNode( QgsLayerTreeLayer* nodeLayer, const QString& label, const QIcon& icon = QIcon(), QObject* parent /TransferThis/ = 0 );
+    QgsSimpleLegendNode( QgsLayerTreeLayer* nodeLayer, const QString& label, const QIcon& icon = QIcon(), QObject* parent /TransferThis/ = 0, const QString& key = QString() );
 
     virtual QVariant data( int role ) const;
 };

@@ -321,6 +321,11 @@ QgsMessageBar * QgisAppInterface::messageBar()
   return qgis->messageBar();
 }
 
+void QgisAppInterface::addUserInputWidget( QWidget *widget )
+{
+  qgis->addUserInputWidget( widget );
+}
+
 QList<QgsComposerView*> QgisAppInterface::activeComposers()
 {
   QList<QgsComposerView*> composerViewList;

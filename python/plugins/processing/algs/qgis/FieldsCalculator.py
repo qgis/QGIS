@@ -70,7 +70,7 @@ class FieldsCalculator(GeoAlgorithm):
         self.addParameter(ParameterBoolean(self.NEW_FIELD,
             self.tr('Create new field'), True))
         self.addParameter(ParameterString(self.FORMULA, self.tr('Formula')))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Calculated')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
@@ -147,15 +147,13 @@ class FieldsCalculator(GeoAlgorithm):
 
     def checkParameterValuesBeforeExecuting(self):
         newField = self.getParameterValue(self.NEW_FIELD)
-        fieldName = self.getParameterValue(self.FIELD_NAME)
+        fieldName = self.getParameterValue(self.FIELD_NAME).strip()
         if newField and len(fieldName) == 0:
-            raise GeoAlgorithmExecutionException(
-                self.tr('Field name is not set. Please enter a field name'))
+            return self.tr('Field name is not set. Please enter a field name')
 
-        outputName = self.getOutputValue(self.OUTPUT_LAYER)
+        outputName = self.getOutputValue(self.OUTPUT_LAYER).strip()
         if outputName == '':
-            raise GeoAlgorithmExecutionException(
-                self.tr('Output is not set. Please specify valid filename'))
+            return self.tr('Output is not set. Please specify valid filename')
 
     def getCustomParametersDialog(self):
         return FieldsCalculatorDialog(self)

@@ -16,10 +16,11 @@
 #ifndef QGSGRASSTOOLS_H
 #define QGSGRASSTOOLS_H
 
+#include <QDockWidget>
+
 #include "ui_qgsgrasstoolsbase.h"
 
 class QgisInterface;
-class QgsGrassBrowser;
 class QgsMapCanvas;
 
 class QDomElement;
@@ -27,16 +28,14 @@ class QDomElement;
 //
 // For experimental filterable list model by Tim
 //
-class QDockWidget;
 class QSortFilterProxyModel;
 class QStandardItemModel;
-
 
 /*! \class QgsGrassTools
  *  \brief Interface to GRASS modules.
  *
  */
-class QgsGrassTools: public QDialog, private Ui::QgsGrassToolsBase
+class QgsGrassTools: public QDockWidget, private Ui::QgsGrassToolsBase
 {
     Q_OBJECT
 
@@ -101,9 +100,6 @@ class QgsGrassTools: public QDialog, private Ui::QgsGrassToolsBase
 
     //! Pointer to canvas
     QgsMapCanvas *mCanvas;
-
-    //! Browser
-    QgsGrassBrowser *mBrowser;
 
     // For model & filtered model by Tim
     QStandardItemModel * mModulesListModel;

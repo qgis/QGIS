@@ -78,4 +78,4 @@ class EquivalentNumField(GeoAlgorithm):
             self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterTableField(self.FIELD,
             self.tr('Class field'), self.INPUT))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Numeric field')))

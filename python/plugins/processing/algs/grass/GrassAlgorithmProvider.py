@@ -36,6 +36,9 @@ from GrassAlgorithm import GrassAlgorithm
 from nviz import nviz
 from processing.tools.system import isMac, isWindows
 
+pluginPath = os.path.normpath(os.path.join(
+    os.path.split(os.path.dirname(__file__))[0], os.pardir))
+
 
 class GrassAlgorithmProvider(AlgorithmProvider):
 
@@ -94,7 +97,7 @@ class GrassAlgorithmProvider(AlgorithmProvider):
         return 'grass'
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../../images/grass.png')
+        return QIcon(os.path.join(pluginPath, 'images', 'grass.png'))
 
     def getSupportedOutputVectorLayerExtensions(self):
         return ['shp']

@@ -34,6 +34,9 @@ from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 from processing.modeler.WrongModelException import WrongModelException
 from processing.modeler.ModelerUtils import ModelerUtils
 
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+
+
 class AddModelFromFileAction(ToolboxAction):
 
     def __init__(self):
@@ -41,7 +44,7 @@ class AddModelFromFileAction(ToolboxAction):
         self.group = self.tr('Tools', 'AddModelFromFileAction')
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../images/model.png')
+        return QIcon(os.path.join(pluginPath, 'images', 'model.png'))
 
     def execute(self):
         settings = QSettings()

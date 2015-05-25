@@ -13,51 +13,51 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2">
-   <item row="0" column="0">
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Font family</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QFontComboBox" name="cboFont"/>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>Color</string>
-       </property>
-      </widget>
-     </item>
      <item row="1" column="1">
-      <widget class="QgsColorButtonV2" name="btnColor">
-       <property name="minimumSize">
-        <size>
-         <width>120</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>120</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Size</string>
-       </property>
-      </widget>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QgsColorButtonV2" name="btnColor">
+         <property name="minimumSize">
+          <size>
+           <width>120</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>120</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QgsDataDefinedButton" name="mColorDDBtn">
+         <property name="text">
+          <string>...</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
      </item>
      <item row="2" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -81,8 +81,15 @@
          <property name="value">
           <double>12.000000000000000</double>
          </property>
-         <property name="showClearButton">
+         <property name="showClearButton" stdset="0">
           <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QgsDataDefinedButton" name="mSizeDDBtn">
+         <property name="text">
+          <string>...</string>
          </property>
         </widget>
        </item>
@@ -91,6 +98,13 @@
        </item>
       </layout>
      </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>Offset X,Y</string>
+       </property>
+      </widget>
+     </item>
      <item row="3" column="0">
       <widget class="QLabel" name="label_4">
        <property name="text">
@@ -98,26 +112,27 @@
        </property>
       </widget>
      </item>
-     <item row="3" column="1">
-      <widget class="QgsDoubleSpinBox" name="spinAngle">
-       <property name="suffix">
-        <string> °</string>
-       </property>
-       <property name="decimals">
-        <number>2</number>
-       </property>
-       <property name="maximum">
-        <double>360.000000000000000</double>
-       </property>
-       <property name="singleStep">
-        <double>0.500000000000000</double>
+     <item row="5" column="0">
+      <widget class="QLabel" name="mAnchorPointLabel">
+       <property name="text">
+        <string>Anchor point</string>
        </property>
       </widget>
      </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="label_5">
+     <item row="0" column="1">
+      <widget class="QFontComboBox" name="cboFont"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_3">
        <property name="text">
-        <string>Offset X,Y</string>
+        <string>Color</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Size</string>
        </property>
       </widget>
      </item>
@@ -168,16 +183,20 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsUnitSelectionWidget" name="mOffsetUnitWidget" native="true"/>
+        <widget class="QgsUnitSelectionWidget" name="mOffsetUnitWidget" native="true">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QgsDataDefinedButton" name="mOffsetDDBtn">
+         <property name="text">
+          <string>...</string>
+         </property>
+        </widget>
        </item>
       </layout>
-     </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="mAnchorPointLabel">
-       <property name="text">
-        <string>Anchor point</string>
-       </property>
-      </widget>
      </item>
      <item row="5" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_6">
@@ -201,6 +220,13 @@
         </widget>
        </item>
        <item>
+        <widget class="QgsDataDefinedButton" name="mHorizontalAnchorDDBtn">
+         <property name="text">
+          <string>...</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QComboBox" name="mVerticalAnchorComboBox">
          <item>
           <property name="text">
@@ -219,23 +245,88 @@
          </item>
         </widget>
        </item>
+       <item>
+        <widget class="QgsDataDefinedButton" name="mVerticalAnchorDDBtn">
+         <property name="text">
+          <string>...</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Font family</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
+        <widget class="QgsDoubleSpinBox" name="spinAngle">
+         <property name="suffix">
+          <string> °</string>
+         </property>
+         <property name="decimals">
+          <number>2</number>
+         </property>
+         <property name="maximum">
+          <double>360.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>0.500000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QgsDataDefinedButton" name="mRotationDDBtn">
+         <property name="text">
+          <string>...</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </item>
     </layout>
    </item>
-   <item row="1" column="0">
-    <widget class="QScrollArea" name="scrollArea">
-     <widget class="QWidget" name="scrollAreaWidgetContents">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>378</width>
-        <height>158</height>
-       </rect>
-      </property>
-     </widget>
-    </widget>
+   <item>
+    <layout class="QGridLayout" name="gridLayout_2">
+     <item row="0" column="1">
+      <widget class="QgsDataDefinedButton" name="mCharDDBtn">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="0" column="0" rowspan="2">
+      <widget class="QScrollArea" name="scrollArea">
+       <widget class="QWidget" name="scrollAreaWidgetContents">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>378</width>
+          <height>158</height>
+         </rect>
+        </property>
+       </widget>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
@@ -257,7 +348,30 @@
    <header>qgsunitselectionwidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsDataDefinedButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsdatadefinedbutton.h</header>
+  </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>cboFont</tabstop>
+  <tabstop>btnColor</tabstop>
+  <tabstop>mColorDDBtn</tabstop>
+  <tabstop>spinSize</tabstop>
+  <tabstop>mSizeDDBtn</tabstop>
+  <tabstop>spinAngle</tabstop>
+  <tabstop>mRotationDDBtn</tabstop>
+  <tabstop>spinOffsetX</tabstop>
+  <tabstop>spinOffsetY</tabstop>
+  <tabstop>mOffsetUnitWidget</tabstop>
+  <tabstop>mOffsetDDBtn</tabstop>
+  <tabstop>mHorizontalAnchorComboBox</tabstop>
+  <tabstop>mHorizontalAnchorDDBtn</tabstop>
+  <tabstop>mVerticalAnchorComboBox</tabstop>
+  <tabstop>mVerticalAnchorDDBtn</tabstop>
+  <tabstop>scrollArea</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

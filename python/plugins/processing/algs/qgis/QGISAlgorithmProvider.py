@@ -84,6 +84,7 @@ from DensifyGeometriesInterval import DensifyGeometriesInterval
 from Eliminate import Eliminate
 from SpatialJoin import SpatialJoin
 from DeleteColumn import DeleteColumn
+from DeleteHoles import DeleteHoles
 from DeleteDuplicateGeometries import DeleteDuplicateGeometries
 from TextToFloat import TextToFloat
 from ExtractByAttribute import ExtractByAttribute
@@ -127,13 +128,15 @@ from SelectByAttributeSum import SelectByAttributeSum
 from HypsometricCurves import HypsometricCurves
 from SplitLinesWithLines import SplitLinesWithLines
 from processing.algs.qgis.FieldsMapper import FieldsMapper
+from Datasources2Vrt import Datasources2Vrt
 
-import processing.resources_rc
+pluginPath = os.path.normpath(os.path.join(
+    os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
 
 class QGISAlgorithmProvider(AlgorithmProvider):
 
-    _icon = QIcon(':/processing/images/qgis.png')
+    _icon = QIcon(os.path.join(pluginPath, 'images', 'qgis.png'))
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
@@ -151,7 +154,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         VariableDistanceBuffer(), Dissolve(), Difference(),
                         Intersection(), Union(), Clip(), ExtentFromLayer(),
                         RandomSelection(), RandomSelectionWithinSubsets(),
-                        SelectByLocation(), RandomExtract(),
+                        SelectByLocation(), RandomExtract(), DeleteHoles(),
                         RandomExtractWithinSubsets(), ExtractByLocation(),
                         SpatialJoin(), RegularPoints(), SymmetricalDifference(),
                         VectorSplit(), VectorGrid(), DeleteColumn(),
@@ -173,7 +176,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         SetVectorStyle(), SetRasterStyle(),
                         SelectByExpression(), HypsometricCurves(),
                         SplitLinesWithLines(), CreateConstantRaster(),
-                        FieldsMapper(),SelectByAttributeSum()
+                        FieldsMapper(),SelectByAttributeSum(), Datasources2Vrt()
                         ]
 
         if hasMatplotlib:

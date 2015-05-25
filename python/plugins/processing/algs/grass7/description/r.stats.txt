@@ -18,4 +18,4 @@ ParameterBoolean|-n|Suppress reporting of any NULLs|False
 ParameterBoolean|-N|Suppress reporting of NULLs when all values are NULL|False
 ParameterBoolean|-C|Report for cats fp ranges (fp maps only)|False
 ParameterBoolean|-i|Read fp map as integer (use map's quant rules)|False
-OutputHTML|html|Output stats file
+OutputHTML|html|Statistics

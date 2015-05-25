@@ -52,7 +52,7 @@ class pct2rgb(GdalAlgorithm):
             self.tr('Band to convert'), options))
         self.addOutput(OutputRaster(pct2rgb.OUTPUT, self.tr('PCT to RGB')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         arguments = []
         arguments.append('-b')
         arguments.append(str(self.getParameterValue(pct2rgb.NBAND) + 1))
@@ -69,4 +69,4 @@ class pct2rgb(GdalAlgorithm):
         else:
             commands = ['pct2rgb.py', GdalUtils.escapeAndJoin(arguments)]
 
-        GdalUtils.runGdal(commands, progress)
+        return commands

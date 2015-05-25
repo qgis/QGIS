@@ -74,7 +74,7 @@ class GridNearest(GdalAlgorithm):
 
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Interpolated nearest neighbor')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         arguments = ['-l']
         arguments.append(
             os.path.basename(os.path.splitext(
@@ -98,5 +98,4 @@ class GridNearest(GdalAlgorithm):
         arguments.append(unicode(self.getParameterValue(self.INPUT)))
         arguments.append(unicode(self.getOutputValue(self.OUTPUT)))
 
-        GdalUtils.runGdal(['gdal_grid',
-                          GdalUtils.escapeAndJoin(arguments)], progress)
+        return ['gdal_grid', GdalUtils.escapeAndJoin(arguments)]

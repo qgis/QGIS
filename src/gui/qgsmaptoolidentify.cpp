@@ -297,15 +297,15 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
   QGis::WkbType wkbType = QGis::WKBNoGeometry;
   QGis::GeometryType geometryType = QGis::NoGeometry;
 
-  if ( feature->geometry() )
+  if ( feature->constGeometry() )
   {
-    geometryType = feature->geometry()->type();
-    wkbType = feature->geometry()->wkbType();
+    geometryType = feature->constGeometry()->type();
+    wkbType = feature->constGeometry()->wkbType();
   }
 
   if ( geometryType == QGis::Line )
   {
-    double dist = calc.measure( feature->geometry() );
+    double dist = calc.measure( feature->constGeometry() );
     QGis::UnitType myDisplayUnits;
     convertMeasurement( calc, dist, myDisplayUnits, false );
     QString str = calc.textUnit( dist, 3, myDisplayUnits, false );  // dist and myDisplayUnits are out params
@@ -313,12 +313,12 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
     if ( wkbType == QGis::WKBLineString || wkbType == QGis::WKBLineString25D )
     {
       // Add the start and end points in as derived attributes
-      QgsPoint pnt = mCanvas->mapSettings().layerToMapCoordinates( layer, feature->geometry()->asPolyline().first() );
+      QgsPoint pnt = mCanvas->mapSettings().layerToMapCoordinates( layer, feature->constGeometry()->asPolyline().first() );
       str = QLocale::system().toString( pnt.x(), 'g', 10 );
       derivedAttributes.insert( tr( "firstX", "attributes get sorted; translation for lastX should be lexically larger than this one" ), str );
       str = QLocale::system().toString( pnt.y(), 'g', 10 );
       derivedAttributes.insert( tr( "firstY" ), str );
-      pnt = mCanvas->mapSettings().layerToMapCoordinates( layer, feature->geometry()->asPolyline().last() );
+      pnt = mCanvas->mapSettings().layerToMapCoordinates( layer, feature->constGeometry()->asPolyline().last() );
       str = QLocale::system().toString( pnt.x(), 'g', 10 );
       derivedAttributes.insert( tr( "lastX", "attributes get sorted; translation for firstX should be lexically smaller than this one" ), str );
       str = QLocale::system().toString( pnt.y(), 'g', 10 );
@@ -327,8 +327,8 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
   }
   else if ( geometryType == QGis::Polygon )
   {
-    double area = calc.measure( feature->geometry() );
-    double perimeter = calc.measurePerimeter( feature->geometry() );
+    double area = calc.measure( feature->constGeometry() );
+    double perimeter = calc.measurePerimeter( feature->constGeometry() );
     QGis::UnitType myDisplayUnits;
     convertMeasurement( calc, area, myDisplayUnits, true );  // area and myDisplayUnits are out params
     QString str = calc.textUnit( area, 3, myDisplayUnits, true );
@@ -341,7 +341,7 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
             ( wkbType == QGis::WKBPoint || wkbType == QGis::WKBPoint25D ) )
   {
     // Include the x and y coordinates of the point as a derived attribute
-    QgsPoint pnt = mCanvas->mapSettings().layerToMapCoordinates( layer, feature->geometry()->asPoint() );
+    QgsPoint pnt = mCanvas->mapSettings().layerToMapCoordinates( layer, feature->constGeometry()->asPoint() );
     QString str = QLocale::system().toString( pnt.x(), 'g', 10 );
     derivedAttributes.insert( "X", str );
     str = QLocale::system().toString( pnt.y(), 'g', 10 );

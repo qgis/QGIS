@@ -52,7 +52,7 @@ class polygonize(GdalAlgorithm):
             self.tr('Output field name'), 'DN'))
         self.addOutput(OutputVector(polygonize.OUTPUT, self.tr('Vectorized')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         arguments = []
         arguments.append(self.getParameterValue(polygonize.INPUT))
         arguments.append('-f')
@@ -70,4 +70,4 @@ class polygonize(GdalAlgorithm):
             commands = ['gdal_polygonize.py',
                         GdalUtils.escapeAndJoin(arguments)]
 
-        GdalUtils.runGdal(commands, progress)
+        return commands

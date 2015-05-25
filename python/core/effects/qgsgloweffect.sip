@@ -17,8 +17,8 @@ class QgsGlowEffect : QgsPaintEffect
     /** Color sources for the glow */
     enum GlowColorType
     {
-      SingleColor, /*< use a single color and fade the color to totally transparent */
-      ColorRamp /*< use colors from a color ramp */
+      SingleColor, /*!< use a single color and fade the color to totally transparent */
+      ColorRamp /*!< use colors from a color ramp */
     };
 
     QgsGlowEffect();

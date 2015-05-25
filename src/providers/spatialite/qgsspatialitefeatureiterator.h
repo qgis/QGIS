@@ -71,6 +71,7 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource
 
     QString whereClauseRect();
     QString whereClauseFid();
+    QString whereClauseFids();
     QString mbr( const QgsRectangle& rect );
     bool prepareStatement( QString whereClause );
     QString quotedPrimaryKey();
@@ -92,6 +93,9 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource
 
     //! Set to true, if geometry is in the requested columns
     bool mFetchGeometry;
+
+    bool mHasPrimaryKey;
+    QgsFeatureId mRowNumber;
 };
 
 #endif // QGSSPATIALITEFEATUREITERATOR_H

@@ -1,17 +1,10 @@
 <RCC>
     <qresource prefix="/images/themes/default/grass">
-        <file alias="grass_add_map.png">themes/default/grass_add_map.png</file>
-        <file alias="grass_add_raster.png">themes/default/grass_add_raster.png</file>
-        <file alias="grass_add_vector.png">themes/default/grass_add_vector.png</file>
         <file alias="grass_add_vertex.png">themes/default/grass_add_vertex.png</file>
-        <file alias="grass_browser_raster_layer.png">themes/default/grass_browser_raster_layer.png</file>
-        <file alias="grass_browser_vector_layer.png">themes/default/grass_browser_vector_layer.png</file>
         <file alias="grass_clear_input.png">themes/default/grass_clear_input.png</file>
         <file alias="grass_close_edit.png">themes/default/grass_close_edit.png</file>
         <file alias="grass_close_mapset.png">themes/default/grass_close_mapset.png</file>
-        <file alias="grass_copy_map.png">themes/default/grass_copy_map.png</file>
         <file alias="grass_delete_line.png">themes/default/grass_delete_line.png</file>
-        <file alias="grass_delete_map.png">themes/default/grass_delete_map.png</file>
         <file alias="grass_delete_vertex.png">themes/default/grass_delete_vertex.png</file>
         <file alias="grass_edit_attributes.png">themes/default/grass_edit_attributes.png</file>
         <file alias="grass_edit.png">themes/default/grass_edit.png</file>
@@ -26,10 +19,8 @@
         <file alias="grass_new_point.png">themes/default/grass_new_point.png</file>
         <file alias="grass_new_vector_layer.png">themes/default/grass_new_vector_layer.png</file>
         <file alias="grass_open_mapset.png">themes/default/grass_open_mapset.png</file>
-        <file alias="grass_refresh.png">themes/default/grass_refresh.png</file>
         <file alias="grass_region_edit.png">themes/default/grass_region_edit.png</file>
         <file alias="grass_region.png">themes/default/grass_region.png</file>
-        <file alias="grass_rename_map.png">themes/default/grass_rename_map.png</file>
         <file alias="grass_set_region.png">themes/default/grass_set_region.png</file>
         <file alias="grass_shell.png">themes/default/grass_shell.png</file>
         <file alias="grass_split_line.png">themes/default/grass_split_line.png</file>

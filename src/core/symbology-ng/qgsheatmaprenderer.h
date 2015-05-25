@@ -197,7 +197,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRendererV2
     double epanechnikovKernel( const double distance, const int bandwidth ) const;
     double triangularKernel( const double distance, const int bandwidth ) const;
 
-    QgsMultiPoint convertToMultipoint( QgsGeometry *geom );
+    QgsMultiPoint convertToMultipoint( const QgsGeometry *geom );
     void initializeValues( QgsRenderContext& context );
     void renderImage( QgsRenderContext &context );
 };

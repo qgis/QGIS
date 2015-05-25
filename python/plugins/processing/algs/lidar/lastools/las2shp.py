@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Martin Isenburg'
 __date__ = 'September 2013'
 __copyright__ = '(C) 2013, Martin Isenburg'
@@ -29,7 +30,7 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterNumber
-from processing.core.outputs import OutputFile
+from processing.core.outputs import OutputVector
 
 class las2shp(LAStoolsAlgorithm):
 
@@ -46,7 +47,7 @@ class las2shp(LAStoolsAlgorithm):
             self.tr("use PointZ instead of MultiPointZ"), False))
         self.addParameter(ParameterNumber(las2shp.RECORD_SIZE,
             self.tr("number of points per record"), 0, None, 1024))
-        self.addOutput(OutputFile(las2shp.OUTPUT,
+        self.addOutput(OutputVector(las2shp.OUTPUT,
             self.tr("Output SHP file")))
         self.addParametersAdditionalGUI()
 
@@ -63,5 +64,4 @@ class las2shp(LAStoolsAlgorithm):
         commands.append("-o")
         commands.append(self.getOutputValue(las2shp.OUTPUT))
         self.addParametersAdditionalCommands(commands)
-
         LAStoolsUtils.runLAStools(commands, progress)

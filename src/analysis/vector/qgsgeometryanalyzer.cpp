@@ -122,13 +122,14 @@ bool QgsGeometryAnalyzer::simplify( QgsVectorLayer* layer,
 
 void QgsGeometryAnalyzer::simplifyFeature( QgsFeature& f, QgsVectorFileWriter* vfw, double tolerance )
 {
-  QgsGeometry* featureGeometry = f.geometry();
-  QgsGeometry* tmpGeometry = 0;
-
-  if ( !featureGeometry )
+  if ( !f.constGeometry() )
   {
     return;
   }
+
+  const QgsGeometry* featureGeometry = f.constGeometry();
+  QgsGeometry* tmpGeometry = 0;
+
   // simplify feature
   tmpGeometry = featureGeometry->simplify( tolerance );
 
@@ -238,13 +239,13 @@ bool QgsGeometryAnalyzer::centroids( QgsVectorLayer* layer, const QString& shape
 
 void QgsGeometryAnalyzer::centroidFeature( QgsFeature& f, QgsVectorFileWriter* vfw )
 {
-  QgsGeometry* featureGeometry = f.geometry();
-  QgsGeometry* tmpGeometry = 0;
-
-  if ( !featureGeometry )
+  if ( !f.constGeometry() )
   {
     return;
   }
+
+  const QgsGeometry* featureGeometry = f.constGeometry();
+  QgsGeometry* tmpGeometry = 0;
 
   tmpGeometry = featureGeometry->centroid();
 
@@ -572,14 +573,14 @@ bool QgsGeometryAnalyzer::convexHull( QgsVectorLayer* layer, const QString& shap
 
 void QgsGeometryAnalyzer::convexFeature( QgsFeature& f, int nProcessedFeatures, QgsGeometry** dissolveGeometry )
 {
-  QgsGeometry* featureGeometry = f.geometry();
-  QgsGeometry* tmpGeometry = 0;
-  QgsGeometry* convexGeometry = 0;
-
-  if ( !featureGeometry )
+  if ( !f.constGeometry() )
   {
     return;
   }
+
+  const QgsGeometry* featureGeometry = f.constGeometry();
+  QgsGeometry* tmpGeometry = 0;
+  QgsGeometry* convexGeometry = 0;
 
   convexGeometry = featureGeometry->convexHull();
 
@@ -732,12 +733,12 @@ bool QgsGeometryAnalyzer::dissolve( QgsVectorLayer* layer, const QString& shapef
 
 void QgsGeometryAnalyzer::dissolveFeature( QgsFeature& f, int nProcessedFeatures, QgsGeometry** dissolveGeometry )
 {
-  QgsGeometry* featureGeometry = f.geometry();
-
-  if ( !featureGeometry )
+  if ( !f.constGeometry() )
   {
     return;
   }
+
+  const QgsGeometry* featureGeometry = f.constGeometry();
 
   if ( nProcessedFeatures == 0 )
   {
@@ -862,15 +863,15 @@ bool QgsGeometryAnalyzer::buffer( QgsVectorLayer* layer, const QString& shapefil
 void QgsGeometryAnalyzer::bufferFeature( QgsFeature& f, int nProcessedFeatures, QgsVectorFileWriter* vfw, bool dissolve,
     QgsGeometry** dissolveGeometry, double bufferDistance, int bufferDistanceField )
 {
-  double currentBufferDistance;
-  QgsGeometry* featureGeometry = f.geometry();
-  QgsGeometry* tmpGeometry = 0;
-  QgsGeometry* bufferGeometry = 0;
-
-  if ( !featureGeometry )
+  if ( !f.constGeometry() )
   {
     return;
   }
+
+  double currentBufferDistance;
+  const QgsGeometry* featureGeometry = f.constGeometry();
+  QgsGeometry* tmpGeometry = 0;
+  QgsGeometry* bufferGeometry = 0;
 
   //create buffer
   if ( bufferDistanceField == -1 )
@@ -997,16 +998,16 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
     }
 
     QList<QgsFeature> featureIdList = lineLayerIdMap.values( fet.attribute( eventField ).toString() );
-    QList<QgsFeature>::const_iterator featureIdIt = featureIdList.constBegin();
-    for ( ; featureIdIt != featureIdList.constEnd(); ++featureIdIt )
+    QList<QgsFeature>::iterator featureIdIt = featureIdList.begin();
+    for ( ; featureIdIt != featureIdList.end(); ++featureIdIt )
     {
       if ( locationField2 == -1 )
       {
-        lrsGeom = locateAlongMeasure( measure1, featureIdIt->geometry() );
+        lrsGeom = locateAlongMeasure( measure1, featureIdIt->constGeometry() );
       }
       else
       {
-        lrsGeom = locateBetweenMeasures( measure1, measure2, featureIdIt->geometry() );
+        lrsGeom = locateBetweenMeasures( measure1, measure2, featureIdIt->constGeometry() );
       }
 
       if ( lrsGeom )
@@ -1194,7 +1195,7 @@ QgsPoint QgsGeometryAnalyzer::createPointOffset( double x, double y, double dist
   return QgsPoint( x - normalX, y - normalY ); //negative values -> left side, positive values -> right side
 }
 
-QgsGeometry* QgsGeometryAnalyzer::locateBetweenMeasures( double fromMeasure, double toMeasure, QgsGeometry* lineGeom )
+QgsGeometry* QgsGeometryAnalyzer::locateBetweenMeasures( double fromMeasure, double toMeasure, const QgsGeometry* lineGeom )
 {
   if ( !lineGeom )
   {
@@ -1238,7 +1239,7 @@ QgsGeometry* QgsGeometryAnalyzer::locateBetweenMeasures( double fromMeasure, dou
   return QgsGeometry::fromMultiPolyline( resultGeom );
 }
 
-QgsGeometry* QgsGeometryAnalyzer::locateAlongMeasure( double measure, QgsGeometry* lineGeom )
+QgsGeometry* QgsGeometryAnalyzer::locateAlongMeasure( double measure, const QgsGeometry *lineGeom )
 {
   if ( !lineGeom )
   {

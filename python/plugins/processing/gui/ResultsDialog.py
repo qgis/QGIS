@@ -25,18 +25,23 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from PyQt4 import uic
 from PyQt4.QtCore import QUrl
-from PyQt4.QtGui import QDialog, QIcon, QStyle, QTreeWidgetItem
+from PyQt4.QtGui import QIcon, QStyle, QTreeWidgetItem
 
 from processing.core.ProcessingResults import ProcessingResults
 
-from processing.ui.ui_DlgResults import Ui_DlgResults
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'DlgResults.ui'))
 
 
-class ResultsDialog(QDialog, Ui_DlgResults):
+class ResultsDialog(BASE, WIDGET):
 
     def __init__(self):
-        QDialog.__init__(self)
+        super(ResultsDialog, self).__init__(None)
         self.setupUi(self)
 
         self.keyIcon = QIcon()

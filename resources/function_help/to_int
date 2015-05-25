@@ -1,0 +1,13 @@
+<h3>to_int() function</h3>
+Converts a string to integer number. Nothing changed if a value cannot be converted to integer (e.g '123asd' is invalid).
+
+<p><h4>Syntax</h4>
+     to_int(<i>string</i>)</p>
+
+<p><h4>Arguments</h4>
+<!-- List args for functions here-->
+<i>  string</i> &rarr; is string.  The String to convert to integer number.</p>
+
+<p><h4>Example</h4>
+<!-- Show example of function.-->
+     to_int('123') &rarr; 123</p>

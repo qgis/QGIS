@@ -10,4 +10,4 @@ ParameterNumber|skip|Skip segments shorter than|1|None|5
 ParameterNumber|threshold|Max angle (degrees) beetwen stream segments to|1.0|360.0|150.0
 ParameterBoolean|-r|Output angles in radians|False
 ParameterBoolean|-e|Extended topology|False
-OutputVector|seg_vector|Vector to store new network with segments
+OutputVector|seg_vector|Network

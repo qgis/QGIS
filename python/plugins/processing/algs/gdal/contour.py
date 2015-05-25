@@ -59,9 +59,9 @@ class contour(GdalAlgorithm):
             self.tr('Additional creation parameters'), '', optional=True))
 
         self.addOutput(OutputVector(self.OUTPUT_VECTOR,
-            self.tr('Output file for contour lines (vector)')))
+            self.tr('Contours')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         interval = str(self.getParameterValue(self.INTERVAL))
         fieldName = str(self.getParameterValue(self.FIELD_NAME))
         extra = str(self.getParameterValue(self.EXTRA))
@@ -79,5 +79,4 @@ class contour(GdalAlgorithm):
         arguments.append(self.getParameterValue(self.INPUT_RASTER))
         arguments.append(self.getOutputValue(self.OUTPUT_VECTOR))
 
-        GdalUtils.runGdal(['gdal_contour',
-                          GdalUtils.escapeAndJoin(arguments)], progress)
+        return ['gdal_contour', GdalUtils.escapeAndJoin(arguments)]

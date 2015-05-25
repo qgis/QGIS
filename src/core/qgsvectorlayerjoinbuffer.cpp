@@ -152,7 +152,7 @@ void QgsVectorLayerJoinBuffer::cacheJoinLayer( QgsVectorJoinInfo& joinInfo )
     QgsFeature f;
     while ( fit.nextFeature( f ) )
     {
-      const QgsAttributes& attrs = f.attributes();
+      QgsAttributes attrs = f.attributes();
       QString key = attrs[joinFieldIndex].toString();
       if ( hasSubset )
       {
@@ -281,7 +281,7 @@ void QgsVectorLayerJoinBuffer::writeXml( QDomNode& layer_node, QDomDocument& doc
     else
       joinElem.setAttribute( "joinFieldName", joinIt->joinFieldName );
 
-    joinElem.setAttribute( "memoryCache", !joinIt->cachedAttributes.isEmpty() );
+    joinElem.setAttribute( "memoryCache", joinIt->memoryCache );
 
     if ( joinIt->joinFieldNamesSubset() )
     {

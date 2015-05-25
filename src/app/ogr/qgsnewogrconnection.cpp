@@ -32,8 +32,8 @@
 #endif
 
 QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString& connType, const QString& connName, Qt::WindowFlags fl )
-    : QDialog( parent, fl ),
-    mOriginalConnName( connName )
+    : QDialog( parent, fl )
+    , mOriginalConnName( connName )
 {
   setupUi( this );
 

@@ -165,7 +165,7 @@ class GrassUtils:
         output.write('g.gisenv.exe set="GISDBASE=' + gisdbase + '"\n')
         output.write('g.gisenv.exe set="GRASS_GUI=text"\n')
         for command in commands:
-            output.write(command + '\n')
+            output.write(command.encode('utf8') + '\n')
         output.write('\n')
         output.write('exit\n')
         output.close()
@@ -174,7 +174,7 @@ class GrassUtils:
     def createGrassBatchJobFileFromGrassCommands(commands):
         fout = codecs.open(GrassUtils.grassBatchJobFilename(), 'w', encoding='utf-8')
         for command in commands:
-            fout.write(command + '\n')
+            fout.write(command.encode('utf8') + '\n')
         fout.write('exit')
         fout.close()
 

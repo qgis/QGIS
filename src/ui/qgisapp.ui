@@ -105,6 +105,7 @@
     <addaction name="menuSelect"/>
     <addaction name="mActionIdentify"/>
     <addaction name="menuMeasure"/>
+    <addaction name="mActionStatisticalSummary"/>
     <addaction name="separator"/>
     <addaction name="mActionZoomFullExtent"/>
     <addaction name="mActionZoomToLayer"/>
@@ -410,6 +411,7 @@
    <addaction name="mActionSelectByExpression"/>
    <addaction name="mActionOpenTable"/>
    <addaction name="mActionOpenFieldCalc"/>
+   <addaction name="mActionStatisticalSummary"/>
    <addaction name="mActionMapTips"/>
    <addaction name="mActionNewBookmark"/>
    <addaction name="mActionShowBookmarks"/>
@@ -2281,6 +2283,21 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>New temporary scratch layer</string>
+   </property>
+  </action>
+  <action name="mActionStatisticalSummary">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSum.png</normaloff>:/images/themes/default/mActionSum.png</iconset>
+   </property>
+   <property name="text">
+    <string>Statistical Summary</string>
+   </property>
+   <property name="toolTip">
+    <string>Show statistical summary</string>
    </property>
   </action>
  </widget>

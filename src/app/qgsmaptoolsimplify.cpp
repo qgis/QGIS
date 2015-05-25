@@ -109,7 +109,7 @@ void QgsMapToolSimplify::updateSimplificationPreview()
   int i = 0;
   foreach ( const QgsFeature& fSel, mSelectedFeatures )
   {
-    if ( QgsGeometry* g = fSel.geometry()->simplify( layerTolerance ) )
+    if ( QgsGeometry* g = fSel.constGeometry()->simplify( layerTolerance ) )
     {
       mReducedVertexCount += vertexCount( g );
       mRubberBands[i]->setToGeometry( g, vl );
@@ -125,7 +125,7 @@ void QgsMapToolSimplify::updateSimplificationPreview()
 }
 
 
-int QgsMapToolSimplify::vertexCount( QgsGeometry* g ) const
+int QgsMapToolSimplify::vertexCount( const QgsGeometry* g ) const
 {
   switch ( g->type() )
   {
@@ -171,7 +171,7 @@ void QgsMapToolSimplify::storeSimplified()
   vlayer->beginEditCommand( tr( "Geometry simplified" ) );
   foreach ( const QgsFeature& feat, mSelectedFeatures )
   {
-    if ( QgsGeometry* g = feat.geometry()->simplify( layerTolerance ) )
+    if ( QgsGeometry* g = feat.constGeometry()->simplify( layerTolerance ) )
     {
       vlayer->changeGeometry( feat.id(), g );
       delete g;
@@ -233,6 +233,9 @@ void QgsMapToolSimplify::canvasReleaseEvent( QMouseEvent * e )
   if ( e->button() != Qt::LeftButton )
     return;
 
+  if ( !currentVectorLayer() )
+    return;
+
   delete mSelectionRubberBand;
   mSelectionRubberBand = 0;
 
@@ -257,7 +260,7 @@ void QgsMapToolSimplify::canvasReleaseEvent( QMouseEvent * e )
   mOriginalVertexCount = 0;
   foreach ( const QgsFeature& f, mSelectedFeatures )
   {
-    mOriginalVertexCount += vertexCount( f.geometry() );
+    mOriginalVertexCount += vertexCount( f.constGeometry() );
 
     QgsRubberBand* rb = new QgsRubberBand( mCanvas );
     rb->setColor( QColor( 255, 0, 0, 65 ) );
@@ -288,7 +291,7 @@ void QgsMapToolSimplify::selectOneFeature( const QPoint& canvasPoint )
   QgsFeature f;
   while ( fit.nextFeature( f ) )
   {
-    currentDistance = geometry->distance( *( f.geometry() ) );
+    currentDistance = geometry->distance( *( f.constGeometry() ) );
     if ( currentDistance < minDistance )
     {
       minDistance = currentDistance;

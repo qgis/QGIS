@@ -1,0 +1,11 @@
+<h3>x_at() function</h3>
+Retrieves a x coordinate of the current feature
+
+<h4>Syntax</h4>
+<code>x_at(i)</code>
+
+<h4>Arguments</h4>
+<code>i<code> - is int. index of point of a line (indices start at 0; negative values apply to the last index).
+
+<h4>Example</h4>
+<pre>x_at(1) &rarr; 5</pre>

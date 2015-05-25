@@ -52,7 +52,7 @@ class nearblack(GdalAlgorithm):
             False))
         self.addOutput(OutputRaster(nearblack.OUTPUT, self.tr('Nearblack')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         arguments = []
         arguments.append('-o')
         arguments.append(self.getOutputValue(nearblack.OUTPUT))
@@ -61,5 +61,4 @@ class nearblack(GdalAlgorithm):
         if self.getParameterValue(nearblack.WHITE):
             arguments.append('-white')
         arguments.append(self.getParameterValue(nearblack.INPUT))
-        GdalUtils.runGdal(['nearblack', GdalUtils.escapeAndJoin(arguments)],
-                          progress)
+        return ['nearblack', GdalUtils.escapeAndJoin(arguments)]

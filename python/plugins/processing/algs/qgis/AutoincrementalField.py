@@ -69,4 +69,4 @@ class AutoincrementalField(GeoAlgorithm):
         self.group = 'Vector table tools'
         self.addParameter(ParameterVector(self.INPUT,
             self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Incremented')))

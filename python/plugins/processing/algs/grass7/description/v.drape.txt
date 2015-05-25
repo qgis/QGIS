@@ -7,5 +7,4 @@ ParameterSelection|method|Sampling method|nearest;bilinear;cubic
 ParameterString|scale|Scale factor for sampled raster values|1.0
 ParameterString|where|WHERE conditions of SQL statement without 'where' keyword|
 ParameterString|null_value|Vector Z value for unknown height|
-OutputVector|output|Output layer
-
+OutputVector|output|3D vector

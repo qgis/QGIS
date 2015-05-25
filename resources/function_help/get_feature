@@ -1,0 +1,6 @@
+<h3>get_feature function</h3>
+Returns the first feature of a layer matching a given attribute value
+
+<h4>Syntax</h4>
+<pre>get_feature( layer, attributeField, value )</pre>
+

@@ -27,18 +27,21 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtGui import QWidget, QFileDialog
+from PyQt4 import uic
+from PyQt4.QtGui import QFileDialog
 from PyQt4.QtCore import QSettings
 
 from processing.tools.system import isWindows
 
-from processing.ui.ui_widgetBaseSelector import Ui_Form
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'widgetBaseSelector.ui'))
 
 
-class FileSelectionPanel(QWidget, Ui_Form):
+class FileSelectionPanel(BASE, WIDGET):
 
     def __init__(self, isFolder, ext=None):
-        QWidget.__init__(self)
+        super(FileSelectionPanel, self).__init__(None)
         self.setupUi(self)
 
         self.ext = ext or '*'

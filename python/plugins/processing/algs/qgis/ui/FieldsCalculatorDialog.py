@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 import re
 
+from PyQt4 import uic
 from PyQt4.QtCore import Qt, QSettings
 from PyQt4.QtGui import QDialog, QFileDialog, QApplication, QCursor, QMessageBox
 from qgis.gui import QgsEncodingFileDialog
@@ -38,12 +39,14 @@ from processing.gui.AlgorithmExecutor import runalg
 from processing.tools import dataobjects
 from processing.gui.Postprocessing import handleAlgorithmResults
 
-from ui_DlgFieldsCalculator import Ui_FieldsCalculator
+pluginPath = os.path.dirname(__file__)
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'DlgFieldsCalculator.ui'))
 
 
-class FieldsCalculatorDialog(QDialog, Ui_FieldsCalculator):
+class FieldsCalculatorDialog(BASE, WIDGET):
     def __init__(self, alg):
-        QDialog.__init__(self)
+        super(FieldsCalculatorDialog, self).__init__(None)
         self.setupUi(self)
 
         self.executed = False
@@ -81,6 +84,8 @@ class FieldsCalculatorDialog(QDialog, Ui_FieldsCalculator):
             self.cmbInputLayer.addItem(layer.name())
         self.cmbInputLayer.blockSignals(False)
 
+        self.builder.loadRecent('fieldcalc')
+
         self.updateLayer()
 
     def updateLayer(self):
@@ -90,7 +95,6 @@ class FieldsCalculatorDialog(QDialog, Ui_FieldsCalculator):
         self.builder.loadFieldNames()
 
         self.populateFields()
-        #populateOutputFieldTypes()
 
     def setupSpinboxes(self, index):
         if index != 0:
@@ -182,6 +186,12 @@ class FieldsCalculatorDialog(QDialog, Ui_FieldsCalculator):
         self.alg.setParameterValue('FORMULA', self.builder.expressionText())
         self.alg.setOutputValue('OUTPUT_LAYER',
                 self.leOutputFile.text())
+
+        msg = self.alg.checkParameterValuesBeforeExecuting()
+        if msg:
+            QMessageBox.warning(
+                self, self.tr('Unable to execute algorithm'), msg)
+            return False
         return True
 
     def accept(self):
@@ -199,11 +209,6 @@ class FieldsCalculatorDialog(QDialog, Ui_FieldsCalculator):
                                            not keepOpen)
                 if not keepOpen:
                     QDialog.reject(self)
-            else:
-                QMessageBox.critical(self,
-                                     self.tr('Unable to execute algorithm'),
-                                     self.tr('Wrong or missing parameter '
-                                             'values'))
         finally:
             QApplication.restoreOverrideCursor()
 

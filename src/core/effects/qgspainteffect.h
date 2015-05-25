@@ -57,9 +57,9 @@ class CORE_EXPORT QgsPaintEffect
     */
     enum DrawMode
     {
-      Modifier, /*< the result of the effect is not rendered, but is passed on to following effects in the stack */
-      Render, /*< the result of the effect is rendered on the destination, but does not affect subsequent effects in the stack */
-      ModifyAndRender /*< the result of the effect is both rendered and passed on to subsequent effects in the stack */
+      Modifier, /*!< the result of the effect is not rendered, but is passed on to following effects in the stack */
+      Render, /*!< the result of the effect is rendered on the destination, but does not affect subsequent effects in the stack */
+      ModifyAndRender /*!< the result of the effect is both rendered and passed on to subsequent effects in the stack */
     };
 
     QgsPaintEffect();

@@ -55,10 +55,14 @@ try:
     def __ne__(self, other):
         return not isinstance(other, QPyNullVariant) and other is not None
 
+    def __hash__(self):
+        return 2178309
+
     QPyNullVariant.__nonzero__ = MethodType(__nonzero__, None, QPyNullVariant)
     QPyNullVariant.__repr__ = MethodType(__repr__, None, QPyNullVariant)
-    QPyNullVariant.__eq__= MethodType(__eq__, None, QPyNullVariant)
-    QPyNullVariant.__ne__= MethodType(__ne__, None, QPyNullVariant)
+    QPyNullVariant.__eq__ = MethodType(__eq__, None, QPyNullVariant)
+    QPyNullVariant.__ne__ = MethodType(__ne__, None, QPyNullVariant)
+    QPyNullVariant.__hash__ = MethodType(__hash__, None, QPyNullVariant)
 
     # define a dummy QPyNullVariant instance NULL in qgis.core
     # this is mainly used to compare against

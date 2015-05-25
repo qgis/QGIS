@@ -785,11 +785,11 @@ void QgsDelimitedTextProvider::rescanFile()
     {
       if ( mNumberFeatures == 0 )
       {
-        mExtent = f.geometry()->boundingBox();
+        mExtent = f.constGeometry()->boundingBox();
       }
       else
       {
-        QgsRectangle bbox( f.geometry()->boundingBox() );
+        QgsRectangle bbox( f.constGeometry()->boundingBox() );
         mExtent.combineExtentWith( &bbox );
       }
       if ( buildSpatialIndex ) mSpatialIndex->insertFeature( f );

@@ -84,11 +84,17 @@ bool QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRender
   Q_UNUSED( layer );
 
   //check, if there is already a point at that position
-  if ( !feature.geometry() )
+  if ( !feature.constGeometry() )
+    return false;
+
+  QgsSymbolV2* symbol = firstSymbolForFeature( mRenderer, feature );
+
+  //if the feature has no symbol (eg, no matching rule in a rule-based renderer), skip it
+  if ( !symbol )
     return false;
 
   //point position in screen coords
-  QgsGeometry* geom = feature.geometry();
+  const QgsGeometry* geom = feature.constGeometry();
   QGis::WkbType geomType = geom->wkbType();
   if ( geomType != QGis::WKBPoint && geomType != QGis::WKBPoint25D )
   {
@@ -99,13 +105,13 @@ bool QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRender
   if ( selected )
     mSelectedFeatures.insert( feature.id() );
 
-  QList<QgsFeatureId> intersectList = mSpatialIndex->intersects( searchRect( feature.geometry()->asPoint() ) );
+  QList<QgsFeatureId> intersectList = mSpatialIndex->intersects( searchRect( feature.constGeometry()->asPoint() ) );
   if ( intersectList.empty() )
   {
     mSpatialIndex->insertFeature( feature );
     // create new group
     DisplacementGroup newGroup;
-    newGroup.insert( feature.id(), feature );
+    newGroup.insert( feature.id(), qMakePair( feature, symbol ) );
     mDisplacementGroups.push_back( newGroup );
     // add to group index
     mGroupIndex.insert( feature.id(), mDisplacementGroups.count() - 1 );
@@ -119,7 +125,7 @@ bool QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRender
   DisplacementGroup& group = mDisplacementGroups[groupIdx];
 
   // add to a group
-  group.insert( feature.id(), feature );
+  group.insert( feature.id(), qMakePair( feature, symbol ) );
   // add to group index
   mGroupIndex.insert( feature.id(), groupIdx );
   return true;
@@ -127,11 +133,11 @@ bool QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRender
 
 void QgsPointDisplacementRenderer::drawGroup( const DisplacementGroup& group, QgsRenderContext& context )
 {
-  const QgsFeature& feature = group.begin().value();
+  const QgsFeature& feature = group.begin().value().first;
   bool selected = mSelectedFeatures.contains( feature.id() ); // maybe we should highlight individual features instead of the whole group?
 
   QPointF pt;
-  _getPoint( pt, context, feature.geometry()->asWkb() );
+  _getPoint( pt, context, feature.constGeometry()->asWkb() );
 
   //get list of labels and symbols
   QStringList labelAttributeList;
@@ -139,9 +145,8 @@ void QgsPointDisplacementRenderer::drawGroup( const DisplacementGroup& group, Qg
 
   for ( DisplacementGroup::const_iterator attIt = group.constBegin(); attIt != group.constEnd(); ++attIt )
   {
-    labelAttributeList << ( mDrawLabels ? getLabel( attIt.value() ) : QString() );
-    QgsFeature& f = const_cast<QgsFeature&>( attIt.value() ); // other parts of API use non-const ref to QgsFeature :-/
-    symbolList << dynamic_cast<QgsMarkerSymbolV2*>( firstSymbolForFeature( mRenderer, f ) );
+    labelAttributeList << ( mDrawLabels ? getLabel( attIt.value().first ) : QString() );
+    symbolList << dynamic_cast<QgsMarkerSymbolV2*>( attIt.value().second );
   }
 
   //draw symbol
@@ -419,7 +424,7 @@ void QgsPointDisplacementRenderer::printInfoDisplacementGroups()
   for ( int i = 0; i < nGroups; ++i )
   {
     QgsDebugMsg( "***************displacement group " + QString::number( i ) );
-    QMap<QgsFeatureId, QgsFeature>::const_iterator it = mDisplacementGroups.at( i ).constBegin();
+    DisplacementGroup::const_iterator it = mDisplacementGroups.at( i ).constBegin();
     for ( ; it != mDisplacementGroups.at( i ).constEnd(); ++it )
     {
       QgsDebugMsg( FID_TO_STRING( it.key() ) );
@@ -430,7 +435,7 @@ void QgsPointDisplacementRenderer::printInfoDisplacementGroups()
 QString QgsPointDisplacementRenderer::getLabel( const QgsFeature& f )
 {
   QString attribute;
-  const QgsAttributes& attrs = f.attributes();
+  QgsAttributes attrs = f.attributes();
   if ( mLabelIndex >= 0 && mLabelIndex < attrs.count() )
   {
     attribute = attrs[mLabelIndex].toString();

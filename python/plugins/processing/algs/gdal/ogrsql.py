@@ -50,7 +50,7 @@ class OgrSql(OgrAlgorithm):
 
         self.addOutput(OutputVector(self.OUTPUT, self.tr('SQL result')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         sql = self.getParameterValue(self.SQL)
         if sql == '':
             raise GeoAlgorithmExecutionException(
@@ -68,5 +68,4 @@ class OgrSql(OgrAlgorithm):
         conn = self.ogrConnectionString(layer)
         arguments.append(conn)
 
-        GdalUtils.runGdal(['ogr2ogr', GdalUtils.escapeAndJoin(arguments)],
-                          progress)
+        return ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]

@@ -66,8 +66,7 @@ class QgsDxfExport
     int writeHandle( int code = 5, int handle = 0 );
 
     //draw dxf primitives
-    void writePolyline( const QgsPolyline &line, const QString &layer, const QString &lineStyleName, QColor color,
-                        double width = -1, bool polygon = false );
+    void writePolyline( const QgsPolyline &line, const QString &layer, const QString &lineStyleName, QColor color, double width = -1 );
 
     void writePolygon( const QgsPolygon &polygon, const QString &layer, const QString &hatchPattern, QColor color );
 

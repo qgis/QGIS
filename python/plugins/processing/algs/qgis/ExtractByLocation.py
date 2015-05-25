@@ -52,7 +52,7 @@ class ExtractByLocation(GeoAlgorithm):
         self.addParameter(ParameterGeometryPredicate(self.PREDICATE,
             self.tr('Geometric predicate'),
             left=self.INPUT, right=self.INTERSECT))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Selection')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Extracted (location)')))
 
     def processAlgorithm(self, progress):
         filename = self.getParameterValue(self.INPUT)

@@ -117,7 +117,7 @@ class DBTree(QTreeView):
             menu.addAction(self.tr("Rename"), self.rename)
             menu.addAction(self.tr("Delete"), self.delete)
 
-            if isinstance(item, Table):
+            if isinstance(item, Table) and item.canBeAddedToCanvas():
                 menu.addSeparator()
                 menu.addAction(self.tr("Add to canvas"), self.addLayer)
 

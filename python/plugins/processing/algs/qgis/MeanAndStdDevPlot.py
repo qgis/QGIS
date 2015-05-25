@@ -60,7 +60,7 @@ class MeanAndStdDevPlot(GeoAlgorithm):
         self.addParameter(ParameterTableField(self.STDDEV_FIELD,
             self.tr('StdDev field'), self.INPUT))
 
-        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Output')))
+        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Plot')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
@@ -84,5 +84,5 @@ class MeanAndStdDevPlot(GeoAlgorithm):
         plotFilename = output + '.png'
         lab.savefig(plotFilename)
         f = open(output, 'w')
-        f.write('<img src="' + plotFilename + '"/>')
+        f.write('<html><img src="' + plotFilename + '"/></html>')
         f.close()

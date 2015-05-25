@@ -497,7 +497,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
     closeDb();
     return;
   }
-  enabledCapabilities = QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId;
+  enabledCapabilities = mPrimaryKey.isEmpty() ? 0 : ( QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId );
   if (( mTableBased || mViewBased ) &&  !mReadOnly )
   {
     // enabling editing only for Tables [excluding Views and VirtualShapes]
@@ -3549,7 +3549,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
 
   if ( flist.size() == 0 )
     return true;
-  const QgsAttributes & attributevec = flist[0].attributes();
+  QgsAttributes attributevec = flist[0].attributes();
 
   ret = sqlite3_exec( sqliteHandle, "BEGIN", NULL, NULL, &errMsg );
   if ( ret == SQLITE_OK )
@@ -3594,7 +3594,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
       for ( QgsFeatureList::iterator feature = flist.begin(); feature != flist.end(); ++feature )
       {
         // looping on each feature to insert
-        const QgsAttributes& attributevec = feature->attributes();
+        QgsAttributes attributevec = feature->attributes();
 
         // resetting Prepared Statement and bindings
         sqlite3_reset( stmt );
@@ -3606,7 +3606,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
         if ( !mGeometryColumn.isEmpty() )
         {
           // binding GEOMETRY to Prepared Statement
-          if ( !feature->geometry() )
+          if ( !feature->constGeometry() )
           {
             sqlite3_bind_null( stmt, ++ia );
           }
@@ -3614,8 +3614,8 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
           {
             unsigned char *wkb = NULL;
             size_t wkb_size;
-            convertFromGeosWKB( feature->geometry()->asWkb(),
-                                feature->geometry()->wkbSize(),
+            convertFromGeosWKB( feature->constGeometry()->asWkb(),
+                                feature->constGeometry()->wkbSize(),
                                 &wkb, &wkb_size, nDims );
             if ( !wkb )
               sqlite3_bind_null( stmt, ++ia );

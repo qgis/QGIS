@@ -62,6 +62,7 @@ class QgsPythonUtils;
 class QgsRectangle;
 class QgsSnappingUtils;
 class QgsUndoWidget;
+class QgsUserInputDockWidget;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
 class QgsDoubleSpinBox;
@@ -75,6 +76,7 @@ class QgsBrowserDockWidget;
 class QgsAdvancedDigitizingDockWidget;
 class QgsSnappingDialog;
 class QgsGPSInformationWidget;
+class QgsStatisticalSummaryDockWidget;
 
 class QgsDecorationItem;
 
@@ -193,6 +195,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /** Return the messageBar object which allows displaying unobtrusive messages to the user.*/
     QgsMessageBar *messageBar();
+
+    /** Adds a widget to the user input tool bar.*/
+    void addUserInputWidget( QWidget* widget );
 
     //! Set theme (icons)
     void setTheme( QString themeName = "default" );
@@ -578,14 +583,13 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void copyStyle( QgsMapLayer *sourceLayer = 0 );
     //! pastes style on the clipboard to the active layer
     /**
-       \param destinatioLayer  The layer that the clipboard will be pasted to
+       \param destinationLayer  The layer that the clipboard will be pasted to
                                 (defaults to the active layer on the legend)
      */
     void pasteStyle( QgsMapLayer *destinationLayer = 0 );
 
     //! copies features to internal clipboard
     void copyFeatures( QgsFeatureStore & featureStore );
-
     void loadOGRSublayers( QString layertype, QString uri, QStringList list );
     void loadGDALSublayers( QString uri, QStringList list );
 
@@ -1222,6 +1226,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /** Make the user feel dizzy */
     void dizzy();
 
+    /** Shows the statistical summary dock widget and brings it to the foreground
+     */
+    void showStatisticsDockWidget();
+
   signals:
     /** emitted when a key is pressed and we want non widget sublasses to be able
       to pick up on this (e.g. maplayer) */
@@ -1611,6 +1619,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsBrowserDockWidget *mBrowserWidget2;
 
     QgsAdvancedDigitizingDockWidget *mAdvancedDigitizingDockWidget;
+    QgsStatisticalSummaryDockWidget* mStatisticalSummaryDockWidget;
 
     QgsSnappingDialog *mSnappingDialog;
 
@@ -1647,6 +1656,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! a bar to display warnings in a non-blocker manner
     QgsMessageBar *mInfoBar;
     QWidget *mMacrosWarn;
+
+    //! A tool bar for user input
+    QgsUserInputDockWidget* mUserInputDockWidget;
 
     QgsVectorLayerTools* mVectorLayerTools;
 

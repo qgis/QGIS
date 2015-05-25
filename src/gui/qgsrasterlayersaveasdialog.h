@@ -59,6 +59,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     int maximumTileSizeX() const;
     int maximumTileSizeY() const;
     bool tileMode() const;
+    bool addToCanvas() const;
     QString outputFileName() const;
     QString outputFormat() const;
     QgsCoordinateReferenceSystem outputCrs();

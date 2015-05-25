@@ -581,7 +581,7 @@ void QgsIdentifyMenu::handleMenuHover()
     if ( !vl )
       continue;
 
-    QgsHighlight *hl = new QgsHighlight( mCanvas, result.mFeature.geometry(), vl );
+    QgsHighlight *hl = new QgsHighlight( mCanvas, result.mFeature.constGeometry(), vl );
     QSettings settings;
     QColor color = QColor( settings.value( "/Map/highlight/color", QGis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
     int alpha = settings.value( "/Map/highlight/colorAlpha", QGis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toInt();

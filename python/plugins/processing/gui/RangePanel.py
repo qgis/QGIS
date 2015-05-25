@@ -25,15 +25,19 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtGui import QWidget
+import os
 
-from processing.ui.ui_widgetRangeSelector import Ui_Form
+from PyQt4 import uic
+
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'widgetRangeSelector.ui'))
 
 
-class RangePanel(QWidget, Ui_Form):
+class RangePanel(BASE, WIDGET):
 
     def __init__(self, param):
-        QWidget.__init__(self)
+        super(RangePanel, self).__init__(None)
         self.setupUi(self)
 
         self.isInteger = param.isInteger

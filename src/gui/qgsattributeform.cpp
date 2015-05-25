@@ -279,7 +279,7 @@ void QgsAttributeForm::onAttributeAdded( int idx )
     QgsAttributes attrs = mFeature.attributes();
     Q_ASSERT( attrs.size() == idx );
     attrs.append( QVariant( layer()->pendingFields()[idx].type() ) );
-    mFeature.setFields( &layer()->pendingFields() );
+    mFeature.setFields( layer()->pendingFields() );
     mFeature.setAttributes( attrs );
   }
   init();
@@ -292,7 +292,7 @@ void QgsAttributeForm::onAttributeDeleted( int idx )
   {
     QgsAttributes attrs = mFeature.attributes();
     attrs.remove( idx );
-    mFeature.setFields( &layer()->pendingFields() );
+    mFeature.setFields( layer()->pendingFields() );
     mFeature.setAttributes( attrs );
   }
   init();
@@ -530,7 +530,8 @@ void QgsAttributeForm::initPython()
     QString numArgs;
     QgsPythonRunner::eval( QString( "len(inspect.getargspec(%1)[0])" ).arg( module ), numArgs );
 
-    mPyFormVarName = QString( "_qgis_featureform_%1" ).arg( mFormNr );
+    static int sFormId = 0;
+    mPyFormVarName = QString( "_qgis_featureform_%1_%2" ).arg( mFormNr ).arg( sFormId++ );
 
     QString form = QString( "%1 = sip.wrapinstance( %2, qgis.gui.QgsAttributeForm )" )
                    .arg( mPyFormVarName )

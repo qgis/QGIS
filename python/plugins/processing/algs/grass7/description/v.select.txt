@@ -7,4 +7,4 @@ ParameterVector|binput|Input layer (B)|-1|False
 ParameterSelection|btype|Input layer (B) Type|area;line;point
 ParameterSelection|operator|Operator to use|overlap;equals;disjoint;intersect;touches;crosses;within;contains;relate
 ParameterBoolean|-r|Reverse selection|False
-OutputVector|output|Name for output vector map
+OutputVector|output|Selected

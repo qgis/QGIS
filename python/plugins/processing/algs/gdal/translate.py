@@ -108,9 +108,9 @@ class translate(GdalAlgorithm):
             self.tr('Force the generation of an associated ESRI world file (.tfw))'), False))
         self.addParameter(ParameterString(self.EXTRA,
             self.tr('Additional creation parameters'), '', optional=True))
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Translated')))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Converted')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         out = self.getOutputValue(translate.OUTPUT)
         outsize = str(self.getParameterValue(self.OUTSIZE))
         outsizePerc = str(self.getParameterValue(self.OUTSIZE_PERC))
@@ -178,5 +178,4 @@ class translate(GdalAlgorithm):
         arguments.append(self.getParameterValue(self.INPUT))
         arguments.append(out)
 
-        GdalUtils.runGdal(['gdal_translate',
-                          GdalUtils.escapeAndJoin(arguments)], progress)
+        return ['gdal_translate', GdalUtils.escapeAndJoin(arguments)]

@@ -8,5 +8,5 @@ ParameterSelection|method|Calculation method|upstream,downstream|1
 ParameterBoolean|-o|Calculate parameters for outlets|False
 ParameterBoolean|-s|Calculate parameters for subbasins|False
 ParameterBoolean|-n|Calculate nearest local maximum|False
-OutputRaster|elevation|Output elevation map
-OutputRaster|distance|Output distance map
+OutputRaster|elevation|Elevation
+OutputRaster|distance|Distance

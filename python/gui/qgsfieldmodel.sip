@@ -14,12 +14,12 @@ class QgsFieldModel : QAbstractItemModel
   public:
     enum FieldRoles
     {
-      FieldNameRole,  /* return field name if index corresponds to a field */
-      FieldIndexRole, /* return field index if index corresponds to a field */
-      ExpressionRole, /* return field name or expression */
-      IsExpressionRole, /* return if index corresponds to an expression */
-      ExpressionValidityRole, /* return if expression is valid or not */
-      FieldTypeRole /* return the field type (if a field, return QVariant if expression) */
+      FieldNameRole, /*!< return field name if index corresponds to a field */
+      FieldIndexRole, /*!< return field index if index corresponds to a field */
+      ExpressionRole, /*!< return field name or expression */
+      IsExpressionRole, /*!< return if index corresponds to an expression */
+      ExpressionValidityRole, /*!< return if expression is valid or not */
+      FieldTypeRole /*!< return the field type (if a field, return QVariant if expression) */
     };
 
     /**

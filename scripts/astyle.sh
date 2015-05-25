@@ -36,7 +36,6 @@ if ! type -p flip >/dev/null; then
 fi
 
 if ! type -p pep8 >/dev/null; then
-	echo "pep8 not found" >&2
 	pep8() {
 		:
 	}

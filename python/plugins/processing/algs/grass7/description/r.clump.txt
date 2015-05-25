@@ -3,4 +3,4 @@ r.clump - Recategorizes data in a raster map by grouping cells that form physica
 Raster (r.*)
 ParameterRaster|input|Input layer|False
 ParameterString|title|Title for output raster map|
-OutputRaster|output|Recategorized layer
+OutputRaster|output|Clumps

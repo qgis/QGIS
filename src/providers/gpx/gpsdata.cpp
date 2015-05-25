@@ -78,11 +78,11 @@ void QgsGPSPoint::writeXML( QTextStream& stream )
 
 
 QgsGPSExtended::QgsGPSExtended()
-    : xMin( std::numeric_limits<double>::max() ),
-    xMax( -std::numeric_limits<double>::max() ),
-    yMin( std::numeric_limits<double>::max() ),
-    yMax( -std::numeric_limits<double>::max() ),
-    number( std::numeric_limits<int>::max() )
+    : xMin( std::numeric_limits<double>::max() )
+    , xMax( -std::numeric_limits<double>::max() )
+    , yMin( std::numeric_limits<double>::max() )
+    , yMax( -std::numeric_limits<double>::max() )
+    , number( std::numeric_limits<int>::max() )
 {
 
 }

@@ -62,7 +62,7 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
         self.addParameter(ParameterNumber(self.NUMBER,
             self.tr('Number/percentage of selected features'), 1, None, 10))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Selection'), True))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Selection stratified'), True))
 
     def processAlgorithm(self, progress):
         filename = self.getParameterValue(self.INPUT)

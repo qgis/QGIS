@@ -27,39 +27,52 @@ __revision__ = '$Format:%H$'
 
 import os
 
+displayNames = {}
+classification = {}
 
-class AlgorithmDecorator:
-
-    classification = {}
-
-    @staticmethod
-    def loadClassification():
-        if not os.path.isfile(AlgorithmDecorator.classificationFile()):
-            return
-        lines = open(AlgorithmDecorator.classificationFile())
+def loadClassification():
+    global classification
+    if not os.path.isfile(classificationFile()):
+        return
+    lines = open(classificationFile())
+    line = lines.readline().strip('\n')
+    while line != '':
+        tokens = line.split(',')
+        subtokens = tokens[1].split('/')
+        try:
+            classification[tokens[0]] = subtokens
+        except:
+            raise Exception(line)
         line = lines.readline().strip('\n')
-        while line != '':
-            tokens = line.split(',')
-            subtokens = tokens[2].split('/')
-            try:
-                AlgorithmDecorator.classification[tokens[0]] = (subtokens[0],
-                        subtokens[1], tokens[1])
-            except:
-                raise Exception(line)
-            line = lines.readline().strip('\n')
-        lines.close()
+    lines.close()
+    
+def loadDisplayNames():
+    global displayNames
+    if not os.path.isfile(displayNamesFile()):
+        return
+    lines = open(displayNamesFile())
+    line = lines.readline().strip('\n')
+    while line != '':
+        tokens = line.split(',')
+        try:
+            displayNames[tokens[0]] = tokens[1]
+        except:
+            raise Exception(line)
+        line = lines.readline().strip('\n')
+    lines.close()
 
-    @staticmethod
-    def classificationFile():
-        return os.path.join(os.path.dirname(__file__), 'algclasssification.txt')
+def classificationFile():
+    return os.path.join(os.path.dirname(__file__), 'algclasssification.txt')
 
-    @staticmethod
-    def getGroupsAndName(alg):
-        if alg.commandLineName().lower() in AlgorithmDecorator.classification:
-            (group, subgroup, name) = \
-                AlgorithmDecorator.classification[alg.commandLineName()]
-            if name == 'USE_ORIGINAL_NAME':
-                name = alg.name
-            return (group, subgroup, name)
-        else:
-            return (None, None, alg.name)
+def displayNamesFile():
+    return os.path.join(os.path.dirname(__file__), 'algnames.txt')
+
+def getClassification(alg):
+    if alg.commandLineName().lower() in classification:
+        group, subgroup = classification[alg.commandLineName()]
+        return group, subgroup
+    else:
+        return None, None
+    
+def getDisplayName(alg):
+    return displayNames.get(alg.commandLineName().lower(), alg.name)

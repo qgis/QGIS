@@ -17,6 +17,7 @@
 
 #include "qgsgeometry.h"
 #include "qgsvectorlayer.h"
+#include "qgswkbptr.h"
 
 #include <spatialindex/SpatialIndex.h>
 
@@ -633,22 +634,43 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
   {
     QgsRectangle rect = *mExtent;
     if ( mTransform )
-      rect = mTransform->transformBoundingBox( rect, QgsCoordinateTransform::ReverseTransform );
+    {
+      try
+      {
+        rect = mTransform->transformBoundingBox( rect, QgsCoordinateTransform::ReverseTransform );
+      }
+      catch ( const QgsException& e )
+      {
+        // See http://hub.qgis.org/issues/12634
+        QgsDebugMsg( QString( "could not transform bounding box to map, skipping the snap filter (%1)" ).arg( e.what() ) );
+      }
+    }
     request.setFilterRect( rect );
   }
   QgsFeatureIterator fi = mLayer->getFeatures( request );
   int indexedCount = 0;
   while ( fi.nextFeature( f ) )
   {
-    if ( !f.geometry() )
+    if ( !f.constGeometry() )
       continue;
 
     if ( mTransform )
-      f.geometry()->transform( *mTransform );
+    {
+      try
+      {
+        f.geometry()->transform( *mTransform );
+      }
+      catch ( const QgsException& e )
+      {
+        // See http://hub.qgis.org/issues/12634
+        QgsDebugMsg( QString( "could not transform geometry to map, skipping the snap for it (%1)" ).arg( e.what() ) );
+        continue;
+      }
+    }
 
-    SpatialIndex::Region r( rect2region( f.geometry()->boundingBox() ) );
+    SpatialIndex::Region r( rect2region( f.constGeometry()->boundingBox() ) );
     dataList << new RTree::Data( 0, 0, r, f.id() );
-    mGeoms[f.id()] = new QgsGeometry( *f.geometry() );
+    mGeoms[f.id()] = new QgsGeometry( *f.constGeometry() );
     ++indexedCount;
 
     if ( maxFeaturesToIndex != -1 && indexedCount > maxFeaturesToIndex )
@@ -704,15 +726,26 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
   QgsFeature f;
   if ( mLayer->getFeatures( QgsFeatureRequest( fid ) ).nextFeature( f ) )
   {
-    if ( !f.geometry() )
+    if ( !f.constGeometry() )
       return;
 
     if ( mTransform )
-      f.geometry()->transform( *mTransform );
+    {
+      try
+      {
+        f.geometry()->transform( *mTransform );
+      }
+      catch ( const QgsException& e )
+      {
+        // See http://hub.qgis.org/issues/12634
+        QgsDebugMsg( QString( "could not transform geometry to map, skipping the snap for it (%1)" ).arg( e.what() ) );
+        return;
+      }
+    }
 
-    SpatialIndex::Region r( rect2region( f.geometry()->boundingBox() ) );
+    SpatialIndex::Region r( rect2region( f.constGeometry()->boundingBox() ) );
     mRTree->insertData( 0, 0, r, f.id() );
-    mGeoms[fid] = new QgsGeometry( *f.geometry() );
+    mGeoms[fid] = new QgsGeometry( *f.constGeometry() );
   }
 }
 

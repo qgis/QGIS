@@ -70,7 +70,7 @@ bool QgsWFSFeatureIterator::fetchFeature( QgsFeature& f )
     if (( mRequest.flags() & QgsFeatureRequest::ExactIntersect ) == 0 )
       break;
 
-    if ( fet->geometry() && fet->geometry()->intersects( mRequest.filterRect() ) )
+    if ( fet->constGeometry() && fet->constGeometry()->intersects( mRequest.filterRect() ) )
       break;
 
     ++mFeatureIterator;
@@ -115,7 +115,7 @@ void QgsWFSFeatureIterator::copyFeature( const QgsFeature* f, QgsFeature& featur
   }
 
   //copy the geometry
-  QgsGeometry* geometry = f->geometry();
+  const QgsGeometry* geometry = f->constGeometry();
   if ( geometry && fetchGeometry )
   {
     const unsigned char *geom = geometry->asWkb();
@@ -143,7 +143,7 @@ void QgsWFSFeatureIterator::copyFeature( const QgsFeature* f, QgsFeature& featur
   //id and valid
   feature.setValid( true );
   feature.setFeatureId( f->id() );
-  feature.setFields( &mSource->mFields ); // allow name-based attribute lookups
+  feature.setFields( mSource->mFields ); // allow name-based attribute lookups
 }
 
 

@@ -734,6 +734,10 @@ void QgsServerProjectParser::addLayerProjectSettings( QDomElement& layerElem, QD
     }
     //displayfield
     layerElem.setAttribute( "displayField", displayField );
+
+    //geometry type
+    layerElem.setAttribute( "geometryType", QGis::featureType( vLayer->wkbType() ) );
+
     layerElem.appendChild( attributesElem );
   }
 }

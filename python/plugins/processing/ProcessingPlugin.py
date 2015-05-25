@@ -42,7 +42,6 @@ from processing.gui.CommanderWindow import CommanderWindow
 from processing.modeler.ModelerDialog import ModelerDialog
 from processing.tools.system import tempFolder
 
-import processing.resources_rc
 
 cmd_folder = os.path.split(inspect.getfile(inspect.currentframe()))[0]
 if cmd_folder not in sys.path:
@@ -68,29 +67,34 @@ class ProcessingPlugin:
 
         self.toolboxAction = self.toolbox.toggleViewAction()
         self.toolboxAction.setObjectName('toolboxAction')
-        self.toolboxAction.setIcon(QIcon(':/processing/images/alg.png'))
+        self.toolboxAction.setIcon(
+            QIcon(os.path.join(cmd_folder, 'images', 'alg.png')))
         self.toolboxAction.setText(self.tr('&Toolbox'))
         self.menu.addAction(self.toolboxAction)
 
-        self.modelerAction = QAction(QIcon(':/processing/images/model.png'),
+        self.modelerAction = QAction(
+            QIcon(os.path.join(cmd_folder, 'images', 'model.png')),
             self.tr('Graphical &Modeler...'), self.iface.mainWindow())
         self.modelerAction.setObjectName('modelerAction')
         self.modelerAction.triggered.connect(self.openModeler)
         self.menu.addAction(self.modelerAction)
 
-        self.historyAction = QAction(QIcon(':/processing/images/history.gif'),
-            self.tr('&History and Log...'), self.iface.mainWindow())
+        self.historyAction = QAction(
+            QIcon(os.path.join(cmd_folder, 'images', 'history.gif')),
+            self.tr('&History...'), self.iface.mainWindow())
         self.historyAction.setObjectName('historyAction')
         self.historyAction.triggered.connect(self.openHistory)
         self.menu.addAction(self.historyAction)
 
-        self.configAction = QAction(QIcon(':/processing/images/config.png'),
+        self.configAction = QAction(
+            QIcon(os.path.join(cmd_folder, 'images', 'config.png')),
             self.tr('&Options...'), self.iface.mainWindow())
         self.configAction.setObjectName('configAction')
         self.configAction.triggered.connect(self.openConfig)
         self.menu.addAction(self.configAction)
 
-        self.resultsAction = QAction(QIcon(':/processing/images/results.png'),
+        self.resultsAction = QAction(
+            QIcon(os.path.join(cmd_folder, 'images', 'results.png')),
             self.tr('&Results Viewer...'), self.iface.mainWindow())
         self.resultsAction.setObjectName('resultsAction')
         self.resultsAction.triggered.connect(self.openResults)
@@ -101,7 +105,7 @@ class ProcessingPlugin:
             self.iface.firstRightStandardMenu().menuAction(), self.menu)
 
         self.commanderAction = QAction(
-            QIcon(':/processing/images/commander.png'),
+            QIcon(os.path.join(cmd_folder, 'images', 'commander.png')),
             self.tr('&Commander'), self.iface.mainWindow())
         self.commanderAction.setObjectName('commanderAction')
         self.commanderAction.triggered.connect(self.openCommander)

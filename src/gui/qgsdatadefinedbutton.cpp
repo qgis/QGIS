@@ -84,6 +84,7 @@ QgsDataDefinedButton::QgsDataDefinedButton( QWidget* parent,
   mActionPasteExpr = new QAction( tr( "Paste" ), this );
   mActionCopyExpr = new QAction( tr( "Copy" ), this );
   mActionClearExpr = new QAction( tr( "Clear" ), this );
+  mActionAssistant = new QAction( tr( "Assistant..." ), this );
 
   // set up sibling widget connections
   connect( this, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( disableEnabledWidgets( bool ) ) );
@@ -192,6 +193,24 @@ void QgsDataDefinedButton::init( const QgsVectorLayer* vl,
   updateGui();
 }
 
+void QgsDataDefinedButton::updateDataDefined( QgsDataDefined *dd ) const
+{
+  if ( !dd )
+    return;
+
+  dd->setActive( isActive() );
+  dd->setUseExpression( useExpression() );
+  dd->setExpressionString( getExpression() );
+  dd->setField( getField() );
+}
+
+QgsDataDefined QgsDataDefinedButton::currentDataDefined() const
+{
+  QgsDataDefined dd;
+  updateDataDefined( &dd );
+  return dd;
+}
+
 void QgsDataDefinedButton::mouseReleaseEvent( QMouseEvent *event )
 {
   // Ctrl-click to toggle activated state
@@ -250,6 +269,7 @@ void QgsDataDefinedButton::aboutToShowMenu()
 
   mDefineMenu->addSeparator();
 
+  bool fieldActive = false;
   if ( !mDataTypesString.isEmpty() )
   {
     QAction* fieldTitleAct = mDefineMenu->addAction( tr( "Attribute field" ) );
@@ -272,6 +292,7 @@ void QgsDataDefinedButton::aboutToShowMenu()
         {
           act->setCheckable( true );
           act->setChecked( !useExpression() );
+          fieldActive = !useExpression();
         }
       }
     }
@@ -283,6 +304,9 @@ void QgsDataDefinedButton::aboutToShowMenu()
 
     mDefineMenu->addSeparator();
   }
+
+  mFieldsMenu->menuAction()->setCheckable( true );
+  mFieldsMenu->menuAction()->setChecked( fieldActive );
 
   QAction* exprTitleAct = mDefineMenu->addAction( tr( "Expression" ) );
   exprTitleAct->setFont( titlefont );
@@ -322,6 +346,11 @@ void QgsDataDefinedButton::aboutToShowMenu()
     mDefineMenu->addAction( mActionPasteExpr );
   }
 
+  if ( mAssistant.data() )
+  {
+    mDefineMenu->addSeparator();
+    mDefineMenu->addAction( mActionAssistant );
+  }
 }
 
 void QgsDataDefinedButton::menuActionTriggered( QAction* action )
@@ -371,6 +400,10 @@ void QgsDataDefinedButton::menuActionTriggered( QAction* action )
     setExpression( QString( "" ) );
     updateGui();
   }
+  else if ( action == mActionAssistant )
+  {
+    showAssistant();
+  }
   else if ( mFieldsMenu->actions().contains( action ) )  // a field name clicked
   {
     if ( action->isEnabled() )
@@ -392,6 +425,25 @@ void QgsDataDefinedButton::showDescriptionDialog()
   mv->setWindowTitle( tr( "Data definition description" ) );
   mv->setMessageAsHtml( mFullDescription );
   mv->exec();
+}
+
+void QgsDataDefinedButton::showAssistant()
+{
+  if ( !mAssistant.data() )
+    return;
+
+  if ( mAssistant->exec() == QDialog::Accepted )
+  {
+    QgsDataDefined dd = mAssistant->dataDefined();
+    setUseExpression( dd.useExpression() );
+    setActive( dd.isActive() );
+    if ( dd.isActive() && dd.useExpression() )
+      setExpression( dd.expressionString() );
+    else if ( dd.isActive() )
+      setField( dd.field() );
+    updateGui();
+  }
+  activateWindow(); // reset focus to parent window
 }
 
 void QgsDataDefinedButton::showExpressionDialog()
@@ -576,6 +628,12 @@ QList<QWidget*> QgsDataDefinedButton::registeredCheckedWidgets()
   return wdgtList;
 }
 
+void QgsDataDefinedButton::setAssistant( QgsDataDefinedAssistant *assistant )
+{
+  mAssistant.reset( assistant );
+  mAssistant.data()->setParent( this, Qt::Dialog );
+}
+
 void QgsDataDefinedButton::checkCheckedWidgets( bool check )
 {
   // don't uncheck, only set to checked
@@ -603,6 +661,11 @@ QString QgsDataDefinedButton::trString()
 {
   // just something to reduce translation redundancy
   return tr( "string " );
+}
+
+QString QgsDataDefinedButton::charDesc()
+{
+  return tr( "single character" );
 }
 
 QString QgsDataDefinedButton::boolDesc()

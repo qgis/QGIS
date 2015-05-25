@@ -83,14 +83,14 @@ class OgrAlgorithm(GdalAlgorithm):
             if dsUri.username() != "":
                 ogrstr += dsUri.username()
                 if dsUri.password() != "":
-                    ogr += "/" + dsUri.password()
+                    ogrstr += "/" + dsUri.password()
                 delim = "@"
 
             if dsUri.host() != "":
                 ogrstr += delim + dsUri.host()
                 delim = ""
-                if dsUri.port() != "" and dsUri.port() != 1521:
-                    ogrstr += ":%d" % dsUri.port()
+                if dsUri.port() != "" and dsUri.port() != '1521':
+                    ogrstr += ":" + dsUri.port()
                 ogrstr += "/"
                 if dsUri.database() != "":
                     ogrstr += dsUri.database()

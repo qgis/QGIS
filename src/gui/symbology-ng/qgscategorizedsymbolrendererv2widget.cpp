@@ -37,6 +37,7 @@
 #include <QStandardItem>
 #include <QPen>
 #include <QPainter>
+#include <QFileDialog>
 
 QgsCategorizedSymbolRendererV2Model::QgsCategorizedSymbolRendererV2Model( QObject * parent ) : QAbstractItemModel( parent )
     , mRenderer( 0 )
@@ -443,6 +444,8 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
   // menus for data-defined rotation/size
   QMenu* advMenu = new QMenu;
 
+  advMenu->addAction( tr( "Match to saved symbols" ), this, SLOT( matchToSymbolsFromLibrary() ) );
+  advMenu->addAction( tr( "Match to symbols from file..." ), this, SLOT( matchToSymbolsFromXml() ) );
   advMenu->addAction( tr( "Symbol levels..." ), this, SLOT( showSymbolLevels() ) );
 
   mDataDefinedMenus = new QgsRendererV2DataDefinedMenus( advMenu, mLayer,
@@ -880,6 +883,80 @@ void QgsCategorizedSymbolRendererV2Widget::showSymbolLevels()
 void QgsCategorizedSymbolRendererV2Widget::rowsMoved()
 {
   viewCategories->selectionModel()->clear();
+}
+
+void QgsCategorizedSymbolRendererV2Widget::matchToSymbolsFromLibrary()
+{
+  int matched = matchToSymbols( QgsStyleV2::defaultStyle() );
+  if ( matched > 0 )
+  {
+    QMessageBox::information( this, tr( "Matched symbols" ),
+                              tr( "Matched %1 categories to symbols." ).arg( matched ) );
+  }
+  else
+  {
+    QMessageBox::warning( this, tr( "Matched symbols" ),
+                          tr( "No categories could be matched to symbols in library." ) );
+  }
+}
+
+int QgsCategorizedSymbolRendererV2Widget::matchToSymbols( QgsStyleV2* style )
+{
+  if ( !mLayer || !style )
+    return 0;
+
+  int matched = 0;
+  for ( int catIdx = 0; catIdx < mRenderer->categories().count(); ++catIdx )
+  {
+    QString val = mRenderer->categories().at( catIdx ).value().toString();
+    QgsSymbolV2* symbol = style->symbol( val );
+    if ( symbol &&
+         (( symbol->type() == QgsSymbolV2::Marker && mLayer->geometryType() == QGis::Point )
+          || ( symbol->type() == QgsSymbolV2::Line && mLayer->geometryType() == QGis::Line )
+          || ( symbol->type() == QgsSymbolV2::Fill && mLayer->geometryType() == QGis::Polygon ) ) )
+    {
+      matched++;
+      mRenderer->updateCategorySymbol( catIdx, symbol->clone() );
+    }
+  }
+  mModel->updateSymbology();
+  return matched;
+}
+
+void QgsCategorizedSymbolRendererV2Widget::matchToSymbolsFromXml()
+{
+  QSettings settings;
+  QString openFileDir = settings.value( "UI/lastMatchToSymbolsDir", "" ).toString();
+
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Match to symbols from file" ), openFileDir,
+                     tr( "XML files (*.xml *XML)" ) );
+  if ( fileName.isEmpty() )
+  {
+    return;
+  }
+
+  QFileInfo openFileInfo( fileName );
+  settings.setValue( "UI/lastMatchToSymbolsDir", openFileInfo.absolutePath() );
+
+  QgsStyleV2 importedStyle;
+  if ( !importedStyle.importXML( fileName ) )
+  {
+    QMessageBox::warning( this, tr( "Matching error" ),
+                          tr( "An error occured reading file:\n%1" ).arg( importedStyle.errorString() ) );
+    return;
+  }
+
+  int matched = matchToSymbols( &importedStyle );
+  if ( matched > 0 )
+  {
+    QMessageBox::information( this, tr( "Matched symbols" ),
+                              tr( "Matched %1 categories to symbols from file." ).arg( matched ) );
+  }
+  else
+  {
+    QMessageBox::warning( this, tr( "Matched symbols" ),
+                          tr( "No categories could be matched to symbols in file." ) );
+  }
 }
 
 void QgsCategorizedSymbolRendererV2Widget::keyPressEvent( QKeyEvent* event )

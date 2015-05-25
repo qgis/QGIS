@@ -66,10 +66,11 @@ class SelectByAttribute(GeoAlgorithm):
             self.tr('Operator'), self.OPERATORS))
         self.addParameter(ParameterString(self.VALUE, self.tr('Value')))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Selected (attribute)'), True))
 
     def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
+        fileName = self.getParameterValue(self.INPUT)
+        layer = dataobjects.getObjectFromUri(fileName)
         fieldName = self.getParameterValue(self.FIELD)
         operator = self.OPERATORS[self.getParameterValue(self.OPERATOR)]
         value = self.getParameterValue(self.VALUE)
@@ -119,4 +120,4 @@ class SelectByAttribute(GeoAlgorithm):
             progress.setPercentage(int(count * total))
 
         layer.setSelectedFeatures(selected)
-        self.setOutputValue(self.OUTPUT, self.getParameterValue(self.INPUT))
+        self.setOutputValue(self.OUTPUT, fileName)

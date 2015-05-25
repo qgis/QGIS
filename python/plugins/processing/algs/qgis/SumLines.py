@@ -54,7 +54,7 @@ class SumLines(GeoAlgorithm):
         self.addParameter(ParameterString(self.COUNT_FIELD,
             self.tr('Lines count field name', 'COUNT')))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Result')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Line length')))
 
     def processAlgorithm(self, progress):
         lineLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.LINES))

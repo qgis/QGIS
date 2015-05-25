@@ -29,7 +29,7 @@ struct QgsDiagramLayerSettings
 
     //pal placement properties
     Placement placement;
-    LinePlacementFlags placementFlags;
+    unsigned int placementFlags;
     int priority; // 0 = low, 10 = high
     bool obstacle; // whether it's an obstacle
     double dist; // distance from the feature (in mm)
@@ -75,6 +75,8 @@ class QgsDiagramSettings
     QFont font;
     QList< QColor > categoryColors;
     QList< QString > categoryAttributes;
+    //! @note added in 2.10
+    QList< QString > categoryLabels;
     QSizeF size; //size
     SizeType sizeType; //mm or map units
     QColor backgroundColor;
@@ -87,6 +89,7 @@ class QgsDiagramSettings
     bool scaleByArea;
     int angleOffset;
 
+    bool scaleBasedVisibility;
     //scale range (-1 if no lower / upper bound )
     double minScaleDenominator;
     double maxScaleDenominator;
@@ -96,6 +99,12 @@ class QgsDiagramSettings
 
     void readXML( const QDomElement& elem, const QgsVectorLayer* layer );
     void writeXML( QDomElement& rendererElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
+
+    /** Returns list of legend nodes for the diagram
+     * @note caller is responsible for deletion of QgsLayerTreeModelLegendNodes
+     * @note added in 2.10
+     */
+    QList< QgsLayerTreeModelLegendNode* > legendItems( QgsLayerTreeLayer* nodeLayer ) const /Factory/;
 };
 
 //additional diagram settings for interpolated size rendering
@@ -149,6 +158,12 @@ class QgsDiagramRendererV2
     virtual void readXML( const QDomElement& elem, const QgsVectorLayer* layer ) = 0;
     virtual void writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const = 0;
 
+    /** Returns list of legend nodes for the diagram
+     * @note caller is responsible for deletion of QgsLayerTreeModelLegendNodes
+     * @note added in 2.10
+     */
+    virtual QList< QgsLayerTreeModelLegendNode* > legendItems( QgsLayerTreeLayer* nodeLayer ) const /Factory/;
+
   protected:
 
     /**Returns diagram settings for a feature (or false if the diagram for the feature is not to be rendered). Used internally within renderDiagram()
@@ -195,6 +210,8 @@ class QgsSingleCategoryDiagramRenderer : QgsDiagramRendererV2
 
     void readXML( const QDomElement& elem, const QgsVectorLayer* layer );
     void writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
+
+    virtual QList< QgsLayerTreeModelLegendNode* > legendItems( QgsLayerTreeLayer* nodeLayer ) const /Factory/;
 
   protected:
     bool diagramSettings( const QgsFeature &feature, const QgsRenderContext& c, QgsDiagramSettings& s );
@@ -246,6 +263,8 @@ class QgsLinearlyInterpolatedDiagramRenderer : QgsDiagramRendererV2
 
     void readXML( const QDomElement& elem, const QgsVectorLayer* layer );
     void writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
+
+    virtual QList< QgsLayerTreeModelLegendNode* > legendItems( QgsLayerTreeLayer* nodeLayer ) const /Factory/;
 
   protected:
     bool diagramSettings( const QgsFeature &feature, const QgsRenderContext& c, QgsDiagramSettings& s );

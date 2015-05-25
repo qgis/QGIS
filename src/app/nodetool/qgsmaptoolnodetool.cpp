@@ -178,7 +178,7 @@ void QgsMapToolNodeTool::createTopologyRubberBands( QgsVectorLayer* vlayer, cons
       QgsFeature topolFeature;
 
       vlayer->getFeatures( QgsFeatureRequest().setFilterFid( resultIt.value().snappedAtGeometry ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( topolFeature );
-      QgsGeometry* topolGeometry = topolFeature.geometry();
+      const QgsGeometry* topolGeometry = topolFeature.constGeometry();
 
       while ( tVertex != -1 ) // looking for first vertex to rubberband
       {

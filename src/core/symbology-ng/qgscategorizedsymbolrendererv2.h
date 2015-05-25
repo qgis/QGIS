@@ -25,7 +25,7 @@
 class QgsVectorColorRampV2;
 class QgsVectorLayer;
 
-/* \brief categorized renderer */
+/** \brief categorized renderer */
 class CORE_EXPORT QgsRendererCategoryV2
 {
   public:
@@ -138,6 +138,9 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     //! return a list of item text / symbol
     //! @note not available in python bindings
     virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = QString() ) override;
+
+    //! @note added in 2.10
+    QgsLegendSymbolListV2 legendSymbolItemsV2() const override;
 
     QgsSymbolV2* sourceSymbol();
     void setSourceSymbol( QgsSymbolV2* sym );

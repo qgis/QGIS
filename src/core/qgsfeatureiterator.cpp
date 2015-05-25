@@ -55,7 +55,7 @@ bool QgsAbstractFeatureIterator::nextFeature( QgsFeature& f )
   // simplify the geometry using the simplifier configured
   if ( dataOk && mLocalSimplification )
   {
-    QgsGeometry* geometry = f.geometry();
+    const QgsGeometry* geometry = f.constGeometry();
     if ( geometry )
       simplify( f );
   }

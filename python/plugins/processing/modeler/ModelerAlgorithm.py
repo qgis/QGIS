@@ -35,6 +35,8 @@ import traceback
 from PyQt4.QtCore import QCoreApplication, QPointF
 from PyQt4.QtGui import QIcon
 from qgis.core import QgsRasterLayer, QgsVectorLayer
+from qgis.gui import QgsMessageBar
+from qgis.utils import iface
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.modeler.WrongModelException import WrongModelException
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -42,6 +44,9 @@ from processing.modeler.ModelerUtils import ModelerUtils
 from processing.core.parameters import getParameterFromString, ParameterRaster, ParameterVector, ParameterTable, ParameterTableField, ParameterBoolean, ParameterString, ParameterNumber, ParameterExtent, ParameterDataObject, ParameterMultipleInput
 from processing.tools import dataobjects
 from processing.gui.Help2Html import getHtmlFromDescriptionsDict
+
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+
 
 class ModelerParameter():
 
@@ -183,7 +188,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         GeoAlgorithm.__init__(self)
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../images/model.png')
+        return QIcon(os.path.join(pluginPath, 'images', 'model.png'))
 
     def defineCharacteristics(self):
         classes = [ParameterRaster, ParameterVector, ParameterTable, ParameterTableField,
@@ -332,7 +337,13 @@ class ModelerAlgorithm(GeoAlgorithm):
         algInstance = alg.algorithm
         for param in algInstance.parameters:
             if not param.hidden:
-                value = self.resolveValue(alg.params[param.name])
+                if param.name in alg.params:
+                    value = self.resolveValue(alg.params[param.name])
+                else:
+                    iface.messageBar().pushMessage(self.tr("Warning"),
+                                                   self.tr("Parameter %s in algorithm %s in the model is run with default value! Edit the model to make sure that this is correct." % (param.name, alg.name)),
+                                                   QgsMessageBar.WARNING, 4)
+                    value = None
                 if value is None and isinstance(param, ParameterExtent):
                     value = self.getMinCoveringExtent()
                 # We allow unexistent filepaths, since that allows
@@ -475,7 +486,6 @@ class ModelerAlgorithm(GeoAlgorithm):
             self.modelerdialog.repaintModel()
 
     def help(self):
-        print self.helpContent
         try:
             return True, getHtmlFromDescriptionsDict(self, self.helpContent)
         except:

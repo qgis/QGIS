@@ -55,7 +55,7 @@ class JoinAttributes(GeoAlgorithm):
         self.addParameter(ParameterTableField(self.TABLE_FIELD_2,
             self.tr('Table field 2'), self.INPUT_LAYER_2))
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
-            self.tr('Output layer')))
+            self.tr('Joined layer')))
 
     def processAlgorithm(self, progress):
         input = self.getParameterValue(self.INPUT_LAYER)

@@ -150,7 +150,7 @@ set LIB=%LIB%;%OSGEO4W_ROOT%\lib
 set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\include
 
 cmake %CMAKE_OPT% ^
-	-D BUILDNAME="%VERSION%-Nightly-VC10-%ARCH%" ^
+	-D BUILDNAME="%PACKAGENAME%-%VERSION%-Nightly-VC10-%ARCH%" ^
 	-D SITE="qgis.org" ^
 	-D PEDANTIC=TRUE ^
 	-D WITH_QSPATIALITE=TRUE ^
@@ -208,7 +208,7 @@ for %%g IN (%GRASS_VERSIONS%) do (
 )
 PATH %path%;%BUILDDIR%\output\plugins\%BUILDCONF%
 
-cmake --build %BUILDDIR% --target RUN_TESTS --config %BUILDCONF%
+cmake --build %BUILDDIR% --target Nightly --config %BUILDCONF%
 if errorlevel 1 echo TESTS WERE NOT SUCCESSFUL.
 
 PATH %oldpath%

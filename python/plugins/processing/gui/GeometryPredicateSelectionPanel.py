@@ -25,15 +25,20 @@ __copyright__ = '(C) 2015, Arnaud Morvan'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import os
 
-from PyQt4.QtGui import QWidget, QCheckBox
+from PyQt4 import uic
+from PyQt4.QtGui import QCheckBox
 from qgis.core import QGis, QgsVectorLayer
 
 from processing.core.parameters import ParameterGeometryPredicate
-from processing.ui.ui_widgetGeometryPredicateSelector import Ui_Form
+
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'widgetGeometryPredicateSelector.ui'))
 
 
-class GeometryPredicateSelectionPanel(QWidget, Ui_Form):
+class GeometryPredicateSelectionPanel(BASE, WIDGET):
 
     unusablePredicates = {
         QGis.Point : {
@@ -56,7 +61,7 @@ class GeometryPredicateSelectionPanel(QWidget, Ui_Form):
     def __init__(self,
                  enabledPredicated=ParameterGeometryPredicate.predicates,
                  rows=4):
-        QWidget.__init__(self)
+        super(GeometryPredicateSelectionPanel, self).__init__(None)
         self.setupUi(self)
 
         self.enabledPredicated = enabledPredicated

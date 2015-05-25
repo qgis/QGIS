@@ -4,5 +4,5 @@ Vector (v.*)
 ParameterVector|input|Layer to clean|-1|False
 ParameterString|tool|Cleaning tools (comma separated)|break
 ParameterNumber|threshold|Threshold|None|None|0.0001
-OutputVector|output|Cleaned vector layer
-OutputVector|error|Errors layer
+OutputVector|output|Cleaned
+OutputVector|error|Errors

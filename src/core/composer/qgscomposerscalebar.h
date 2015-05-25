@@ -48,6 +48,14 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
       NauticalMiles
     };
 
+    /** Modes for setting size for scale bar segments
+    */
+    enum SegmentSizeMode
+    {
+      SegmentSizeFixed = 0, /*!< Scale bar segment size is fixed to a map unit*/
+      SegmentSizeFitWidth = 1 /*!< Scale bar segment size is calculated to fit a size range*/
+    };
+
     QgsComposerScaleBar( QgsComposition* composition );
     ~QgsComposerScaleBar();
 
@@ -66,6 +74,65 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
 
     double numUnitsPerSegment() const {return mNumUnitsPerSegment;}
     void setNumUnitsPerSegment( double units );
+
+    /** Returns the size mode for scale bar segments.
+     * @see setSegmentSizeMode
+     * @see minBarWidth
+     * @see maxBarWidth
+     * @note added in QGIS 2.9
+     */
+    SegmentSizeMode segmentSizeMode() const { return mSegmentSizeMode; }
+
+    /** Sets the size mode for scale bar segments.
+     * @param mode size mode
+     * @see segmentSizeMode
+     * @see setMinBarWidth
+     * @see setMaxBarWidth
+     * @note added in QGIS 2.9
+     */
+    void setSegmentSizeMode( SegmentSizeMode mode );
+
+    /** Returns the minimum size (in millimeters) for scale bar segments. This
+     * property is only effective if the @link segmentSizeMode @endlink is set
+     * to @link SegmentSizeFitWidth @endlink.
+     * @see segmentSizeMode
+     * @see setMinBarWidth
+     * @see maxBarWidth
+     * @note added in QGIS 2.9
+     */
+    double minBarWidth() const { return mMinBarWidth; }
+
+    /** Sets the minimum size (in millimeters) for scale bar segments. This
+     * property is only effective if the @link segmentSizeMode @endlink is set
+     * to @link SegmentSizeFitWidth @endlink.
+     * @param minWidth minimum width in millimeters
+     * @see minBarWidth
+     * @see setMaxBarWidth
+     * @see setSegmentSizeMode
+     * @note added in QGIS 2.9
+     */
+    void setMinBarWidth( double minWidth );
+
+    /** Returns the maximum size (in millimeters) for scale bar segments. This
+     * property is only effective if the @link segmentSizeMode @endlink is set
+     * to @link SegmentSizeFitWidth @endlink.
+     * @see segmentSizeMode
+     * @see setMaxBarWidth
+     * @see minBarWidth
+     * @note added in QGIS 2.9
+     */
+    double maxBarWidth() const { return mMaxBarWidth; }
+
+    /** Sets the maximum size (in millimeters) for scale bar segments. This
+     * property is only effective if the @link segmentSizeMode @endlink is set
+     * to @link SegmentSizeFitWidth @endlink.
+     * @param maxWidth maximum width in millimeters
+     * @see minBarWidth
+     * @see setMaxBarWidth
+     * @see setSegmentSizeMode
+     * @note added in QGIS 2.9
+     */
+    void setMaxBarWidth( double maxWidth );
 
     double numMapUnitsPerScaleBarUnit() const {return mNumMapUnitsPerScaleBarUnit;}
     void setNumMapUnitsPerScaleBarUnit( double d ) {mNumMapUnitsPerScaleBarUnit = d;}
@@ -249,6 +316,12 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     double mNumUnitsPerSegment;
     /**Number of map units per scale bar units (e.g. 1000 to have km for a map with m units)*/
     double mNumMapUnitsPerScaleBarUnit;
+    /**Either fixed (i.e. mNumUnitsPerSegment) or try to best fit scale bar width (mMinBarWidth, mMaxBarWidth)*/
+    SegmentSizeMode mSegmentSizeMode;
+    /**Minimum allowed bar width, when mSegmentSizeMode is FitWidth*/
+    double mMinBarWidth;
+    /**Maximum allowed bar width, when mSegmentSizeMode is FitWidth*/
+    double mMaxBarWidth;
 
     /**Labeling of map units*/
     QString mUnitLabeling;

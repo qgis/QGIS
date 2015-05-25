@@ -2,4 +2,4 @@ r.out.gridatb
 r.out.gridatb - Exports GRASS raster map to GRIDATB.FOR map file (TOPMODEL)
 Raster (r.*)
 ParameterRaster|input|Name of input raster map|False
-OutputFile|output|GRIDATB i/o map file
+OutputFile|output|GRIDATB

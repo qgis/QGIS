@@ -20,9 +20,10 @@
 
 #include "qgsannotationitem.h"
 #include "qgsfeature.h"
+#include "qgswebview.h"
+#include "qgswebframe.h"
+
 #include <QObject>
-#include <QWebView>
-#include <QWebFrame>
 
 class QGraphicsProxyWidget;
 
@@ -62,7 +63,7 @@ class GUI_EXPORT QgsHtmlAnnotationItem: public QObject, public QgsAnnotationItem
 
   private:
     QGraphicsProxyWidget* mWidgetContainer;
-    QWebView* mWebView;
+    QgsWebView* mWebView;
     /**Associated vectorlayer (or 0 if attributes are not supposed to be replaced)*/
     QgsVectorLayer* mVectorLayer;
     /**True if the item is related to a vector feature*/

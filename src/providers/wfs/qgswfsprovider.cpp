@@ -341,7 +341,7 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist )
 
     //add geometry column (as gml)
     QDomElement geomElem = transactionDoc.createElementNS( mWfsNamespace, mGeometryAttribute );
-    QDomElement gmlElem = QgsOgcUtils::geometryToGML( featureIt->geometry(), transactionDoc );
+    QDomElement gmlElem = QgsOgcUtils::geometryToGML( featureIt->constGeometry(), transactionDoc );
     if ( !gmlElem.isNull() )
     {
       gmlElem.setAttribute( "srsName", crs().authid() );
@@ -1222,7 +1222,7 @@ int QgsWFSProvider::getFeaturesFromGML2( const QDomElement& wfsCollectionElement
       }
       currentAttributeChild = currentAttributeChild.nextSibling();
     }
-    if ( f->geometry() )
+    if ( f->constGeometry() )
     {
       //insert bbox and pointer to feature into search tree
       mSpatialIndex->insertFeature( *f );

@@ -76,8 +76,8 @@ class SpatialJoin(GeoAlgorithm):
             self.tr('Statistics for summary (comma separated)'),
             'sum,mean,min,max,median', optional=True))
         self.addParameter(ParameterSelection(self.KEEP,
-            self.tr('Output table'), self.KEEPS))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))
+            self.tr('Joined table'), self.KEEPS))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Joined layer')))
 
     def processAlgorithm(self, progress):
         target = dataobjects.getObjectFromUri(

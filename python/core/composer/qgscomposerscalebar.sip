@@ -25,6 +25,14 @@ class QgsComposerScaleBar: QgsComposerItem
       NauticalMiles
     };
 
+    /** Modes for setting size for scale bar segments
+    */
+    enum SegmentSizeMode
+    {
+      SegmentSizeFixed, /*!< Scale bar segment size is fixed to a map unit*/
+      SegmentSizeFitWidth /*!< Scale bar segment size is calculated to fit a size range*/
+    };
+
     QgsComposerScaleBar( QgsComposition* composition /TransferThis/ );
     ~QgsComposerScaleBar();
 
@@ -43,6 +51,65 @@ class QgsComposerScaleBar: QgsComposerItem
 
     double numUnitsPerSegment() const;
     void setNumUnitsPerSegment( double units );
+
+    /** Returns the size mode for scale bar segments.
+     * @see setSegmentSizeMode
+     * @see minBarWidth
+     * @see maxBarWidth
+     * @note added in QGIS 2.9
+     */
+    SegmentSizeMode segmentSizeMode() const;
+
+    /** Sets the size mode for scale bar segments.
+     * @param mode size mode
+     * @see segmentSizeMode
+     * @see setMinBarWidth
+     * @see setMaxBarWidth
+     * @note added in QGIS 2.9
+     */
+    void setSegmentSizeMode( SegmentSizeMode mode );
+
+    /** Returns the minimum size (in millimeters) for scale bar segments. This
+     * property is only effective if the @link segmentSizeMode @endlink is set
+     * to @link SegmentSizeFitWidth @endlink.
+     * @see segmentSizeMode
+     * @see setMinBarWidth
+     * @see maxBarWidth
+     * @note added in QGIS 2.9
+     */
+    double minBarWidth() const;
+
+    /** Sets the minimum size (in millimeters) for scale bar segments. This
+     * property is only effective if the @link segmentSizeMode @endlink is set
+     * to @link SegmentSizeFitWidth @endlink.
+     * @param minWidth minimum width in millimeters
+     * @see minBarWidth
+     * @see setMaxBarWidth
+     * @see setSegmentSizeMode
+     * @note added in QGIS 2.9
+     */
+    void setMinBarWidth( double minWidth );
+
+    /** Returns the maximum size (in millimeters) for scale bar segments. This
+     * property is only effective if the @link segmentSizeMode @endlink is set
+     * to @link SegmentSizeFitWidth @endlink.
+     * @see segmentSizeMode
+     * @see setMaxBarWidth
+     * @see minBarWidth
+     * @note added in QGIS 2.9
+     */
+    double maxBarWidth() const;
+
+    /** Sets the maximum size (in millimeters) for scale bar segments. This
+     * property is only effective if the @link segmentSizeMode @endlink is set
+     * to @link SegmentSizeFitWidth @endlink.
+     * @param minWidth maximum width in millimeters
+     * @see minBarWidth
+     * @see setMaxBarWidth
+     * @see setSegmentSizeMode
+     * @note added in QGIS 2.9
+     */
+    void setMaxBarWidth( double maxWidth );
 
     double numMapUnitsPerScaleBarUnit() const;
     void setNumMapUnitsPerScaleBarUnit( double d );
