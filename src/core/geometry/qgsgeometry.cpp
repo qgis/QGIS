@@ -522,6 +522,7 @@ int QgsGeometry::addRing( QgsCurveV2* ring )
 
 int QgsGeometry::addPart( const QList<QgsPoint> &points, QGis::GeometryType geomType )
 {
+  Q_UNUSED( geomType );
   if ( !d || !d->geometry )
   {
     return 2;
@@ -1084,6 +1085,7 @@ double QgsGeometry::area() const
   }
   QgsGeos g( d->geometry );
 
+#if 0
   //debug: compare geos area with calculation in QGIS
   double geosArea = g.area();
   double qgisArea = 0;
@@ -1092,6 +1094,7 @@ double QgsGeometry::area() const
   {
     qgisArea = surface->area();
   }
+#endif
 
   return g.area();
 }

@@ -958,7 +958,10 @@ bool QgsSLDConfigParser::labelSettingsFromUserStyle( const QDomElement& userStyl
   if ( userStyleElement.isNull() || !vec )
     return false;
 
+  Q_NOWARN_DEPRECATED_PUSH
   vec->enableLabels( false );
+  Q_NOWARN_DEPRECATED_POP
+
   QDomNodeList featureTypeList = userStyleElement.elementsByTagName( "FeatureTypeStyle" );
   if ( featureTypeList.size() <= 0 )
     return false;
@@ -1010,7 +1013,10 @@ bool QgsSLDConfigParser::labelSettingsFromUserStyle( const QDomElement& userStyl
   if ( propertyNameList.size() <= 0 )
     return false;
 
+  Q_NOWARN_DEPRECATED_PUSH
   vec->enableLabels( true );
+  Q_NOWARN_DEPRECATED_POP
+
   QDomElement propertyNameElement = propertyNameList.item( 0 ).toElement();
   QString labelAttribute = propertyNameElement.text();
   vec->label()->setLabelField( QgsLabel::Text, vec->dataProvider()->fieldNameIndex( labelAttribute ) );
@@ -1301,7 +1307,9 @@ bool QgsSLDConfigParser::labelSettingsFromUserStyle( const QDomElement& userStyl
       myLabelAttributes->setAngle( rotationAngle );
     }
   } // end labelPlacement
+  Q_NOWARN_DEPRECATED_PUSH
   vec->enableLabels( true );
+  Q_NOWARN_DEPRECATED_POP
 
   return true;
 }

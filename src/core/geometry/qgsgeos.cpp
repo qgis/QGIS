@@ -204,6 +204,7 @@ QgsAbstractGeometryV2* QgsGeos::symDifference( const QgsAbstractGeometryV2& geom
 
 double QgsGeos::distance( const QgsAbstractGeometryV2& geom ) const
 {
+  Q_UNUSED( geom );
   return 0.0;
 }
 
@@ -1230,6 +1231,10 @@ bool QgsGeos::pointOnSurface( QgsPointV2& pt ) const
   double x, y;
   GEOSGeomGetX_r( geosinit.ctxt, geos, &x );
   GEOSGeomGetY_r( geosinit.ctxt, geos, &y );
+
+  pt.setX( x );
+  pt.setY( y );
+
   return true;
 }
 
@@ -1354,69 +1359,67 @@ GEOSCoordSequence* QgsGeos::createCoordinateSequence( const QgsCurveV2* curve )
 GEOSGeometry* QgsGeos::createGeosPoint( const QgsAbstractGeometryV2* point, int coordDims )
 {
   const QgsPointV2* pt = dynamic_cast<const QgsPointV2*>( point );
-  if ( pt )
+  if ( !pt )
+    return 0;
+
+  GEOSCoordSequence* coordSeq = GEOSCoordSeq_create_r( geosinit.ctxt, 1, coordDims );
+  GEOSCoordSeq_setX_r( geosinit.ctxt, coordSeq, 0, pt->x() );
+  GEOSCoordSeq_setY_r( geosinit.ctxt, coordSeq, 0, pt->y() );
+  if ( pt->is3D() )
   {
-    GEOSCoordSequence* coordSeq = GEOSCoordSeq_create_r( geosinit.ctxt, 1, coordDims );
-    GEOSCoordSeq_setX_r( geosinit.ctxt, coordSeq, 0, pt->x() );
-    GEOSCoordSeq_setY_r( geosinit.ctxt, coordSeq, 0, pt->y() );
-    if ( pt->is3D() )
-    {
-      GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, 0, 2, pt->z() );
-    }
-    if ( pt->isMeasure() )
-    {
-      GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, 0, 3, pt->m() );
-    }
-    return GEOSGeom_createPoint_r( geosinit.ctxt, coordSeq );
+    GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, 0, 2, pt->z() );
   }
+  if ( pt->isMeasure() )
+  {
+    GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, 0, 3, pt->m() );
+  }
+  return GEOSGeom_createPoint_r( geosinit.ctxt, coordSeq );
 }
 
 GEOSGeometry* QgsGeos::createGeosLinestring( const QgsAbstractGeometryV2* curve )
 {
   const QgsCurveV2* c = dynamic_cast<const QgsCurveV2*>( curve );
-  if ( c )
-  {
-    GEOSCoordSequence* coordSeq = createCoordinateSequence( c );
-    if ( !coordSeq )
-    {
-      return 0;
-    }
-    return GEOSGeom_createLineString_r( geosinit.ctxt, coordSeq );
-  }
+  if ( !c )
+    return 0;
+
+  GEOSCoordSequence* coordSeq = createCoordinateSequence( c );
+  if ( !coordSeq )
+    return 0;
+
+  return GEOSGeom_createLineString_r( geosinit.ctxt, coordSeq );
 }
 
 GEOSGeometry* QgsGeos::createGeosPolygon( const QgsAbstractGeometryV2* poly )
 {
   const QgsCurvePolygonV2* polygon = dynamic_cast<const QgsCurvePolygonV2*>( poly );
-  if ( polygon )
+  if ( !polygon )
+    return 0;
+
+  const QgsCurveV2* exteriorRing = polygon->exteriorRing();
+  GEOSGeometry* exteriorRingGeos = GEOSGeom_createLinearRing_r( geosinit.ctxt, createCoordinateSequence( exteriorRing ) );
+
+  int nHoles = polygon->numInteriorRings();
+  GEOSGeometry** holes = 0;
+  if ( nHoles > 0 )
   {
-    const QgsCurveV2* exteriorRing = polygon->exteriorRing();
-    GEOSGeometry* exteriorRingGeos = GEOSGeom_createLinearRing_r( geosinit.ctxt, createCoordinateSequence( exteriorRing ) );
-
-    int nHoles = polygon->numInteriorRings();
-    GEOSGeometry** holes = 0;
-    if ( nHoles > 0 )
-    {
-      holes = new GEOSGeometry*[ nHoles ];
-    }
-
-    for ( int i = 0; i < nHoles; ++i )
-    {
-      const QgsCurveV2* interiorRing = polygon->interiorRing( i );
-      holes[i] = GEOSGeom_createLinearRing_r( geosinit.ctxt, createCoordinateSequence( interiorRing ) );
-    }
-    GEOSGeometry* geosPolygon = GEOSGeom_createPolygon_r( geosinit.ctxt, exteriorRingGeos, holes, nHoles );
-    delete[] holes;
-    return geosPolygon;
+    holes = new GEOSGeometry*[ nHoles ];
   }
+
+  for ( int i = 0; i < nHoles; ++i )
+  {
+    const QgsCurveV2* interiorRing = polygon->interiorRing( i );
+    holes[i] = GEOSGeom_createLinearRing_r( geosinit.ctxt, createCoordinateSequence( interiorRing ) );
+  }
+  GEOSGeometry* geosPolygon = GEOSGeom_createPolygon_r( geosinit.ctxt, exteriorRingGeos, holes, nHoles );
+  delete[] holes;
+
+  return geosPolygon;
 }
 
 QgsAbstractGeometryV2* QgsGeos::offsetCurve( double distance, int segments, int joinStyle, double mitreLimit ) const
 {
   if ( !mGeos )
-  {
     return 0;
-  }
 
   GEOSGeometry* offset = 0;
   try
