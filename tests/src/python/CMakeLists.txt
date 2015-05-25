@@ -1,3 +1,5 @@
+SET (ENABLE_PGTEST FALSE CACHE BOOL "Enable PostgreSQL provider tests")
+
 INCLUDE(UsePythonTest)
 ADD_PYTHON_TEST(PyQgsApplication test_qgsapplication.py)
 ADD_PYTHON_TEST(PyQgsLocalServer test_qgis_local_server.py)
@@ -43,7 +45,9 @@ ADD_PYTHON_TEST(PyQgsGraduatedSymbolRendererV2 test_qgsgraduatedsymbolrendererv2
 ADD_PYTHON_TEST(PyQgsNetworkContentFetcher test_qgsnetworkcontentfetcher.py)
 ADD_PYTHON_TEST(PyQgsEditWidgets test_qgseditwidgets.py)
 ADD_PYTHON_TEST(PyQgsRangeWidgets test_qgsrangewidgets.py)
-ADD_PYTHON_TEST(PyQgsPostgresProvider test_provider_postgres.py)
+IF (ENABLE_PGTEST)
+  ADD_PYTHON_TEST(PyQgsPostgresProvider test_provider_postgres.py)
+ENDIF (ENABLE_PGTEST)
 ADD_PYTHON_TEST(PyQgsSpatialiteProvider test_provider_spatialite.py)
 ADD_PYTHON_TEST(PyQgsShapefileProvider test_provider_shapefile.py)
 ADD_PYTHON_TEST(PyQgsSpatialiteProviderOther test_qgsspatialiteprovider.py)
