@@ -61,7 +61,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      */
     virtual QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const = 0;
 
-    virtual QgsEditorWidgetWrapper* createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent );
+    virtual QgsEditorWidgetWrapper* createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const;
 
     /**
      * Return The human readable identifier name of this widget type

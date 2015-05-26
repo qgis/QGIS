@@ -30,7 +30,7 @@ QgsEditorWidgetWrapper* QgsValueMapWidgetFactory::create( QgsVectorLayer* vl, in
 }
 
 
-QgsEditorWidgetWrapper* QgsValueMapWidgetFactory::createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
+QgsEditorWidgetWrapper* QgsValueMapWidgetFactory::createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
 {
   return new QgsValueMapWidgetWrapper( vl, fieldIdx, 0, parent );
 }
