@@ -455,6 +455,7 @@ IF (WITH_QTWEBKIT)
       ${QGIS_GUI_MOC_HDRS}
       editorwidgets/qgswebviewconfigdlg.h
       editorwidgets/qgswebviewwidgetwrapper.h
+      editorwidgets/qgswebviewwidgetfactory.h
   )
 ENDIF (WITH_QTWEBKIT)
 
@@ -517,35 +518,25 @@ SET(QGIS_GUI_HDRS
   raster/qgsrasterrendererwidget.h
 )
 
-IF (WITH_QTWEBKIT)
-  SET(QGIS_GUI_HDRS
-      ${QGIS_GUI_MOC_HDRS}
-      editorwidgets/qgswebviewconfigdlg.h
-      editorwidgets/qgswebviewwidgetwrapper.h
-      editorwidgets/qgswebviewwidgetfactory.h
-  )
-ENDIF (WITH_QTWEBKIT)
-
 IF (WITH_TOUCH)
   SET(QGIS_GUI_HDRS
       ${QGIS_GUI_HDRS}
       qgsmaptooltouch.h
   )
 ENDIF (WITH_TOUCH)
-
 SET(QGIS_GUI_UI_HDRS
-${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsdetaileditemwidgetbase.h
-${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsgenericprojectionselectorbase.h
-${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessageviewer.h
-${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessagelogviewer.h
-${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsowssourceselectbase.h
-${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscredentialdialog.h
-${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprojectionselectorbase.h
-${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsquerybuilderbase.h
-${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionbuilder.h
-${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionbuilderdialogbase.h
-${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionselectiondialogbase.h
-${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssublayersdialogbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsdetaileditemwidgetbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsgenericprojectionselectorbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessageviewer.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessagelogviewer.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsowssourceselectbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscredentialdialog.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprojectionselectorbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsquerybuilderbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionbuilder.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionbuilderdialogbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionselectiondialogbase.h
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssublayersdialogbase.h
 )
 
 IF(ENABLE_MODELTEST)
