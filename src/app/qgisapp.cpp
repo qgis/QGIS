@@ -6577,7 +6577,7 @@ void QgisApp::pasteStyle( QgsMapLayer * destinationLayer )
       QDomElement rootNode = doc.firstChildElement( "qgis" );
 
       //Test for matching geometry type on vector layers when pasting
-      if (selectionLayer->type() == QgsMapLayer::LayerType::VectorLayer)
+      if (selectionLayer->type() == QgsMapLayer::VectorLayer)
       {
           QgsVectorLayer *selectionVectorLayer = static_cast<QgsVectorLayer*>(selectionLayer);
           int pasteLayerGeometryType = doc.elementsByTagName("layerGeometryType").item(0).toElement().text().toInt();
