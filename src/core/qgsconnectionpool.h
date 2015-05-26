@@ -117,7 +117,9 @@ class QgsConnectionPoolGroup
         return 0;
       }
 
+      connMutex.lock();
       acquiredConns.append( c );
+      connMutex.unlock();
       return c;
     }
 
