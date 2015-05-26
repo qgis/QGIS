@@ -140,7 +140,10 @@ QgsAbstractGeometryV2* QgsGeometryImport::geomFromWkt( const QString& text )
 
   if ( geom )
   {
-    geom->fromWkt( text );
+    if ( !geom->fromWkt( text ) )
+    {
+      delete geom; return 0;
+    }
   }
   return geom;
 }
