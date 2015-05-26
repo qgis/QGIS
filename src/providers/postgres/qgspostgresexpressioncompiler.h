@@ -35,15 +35,12 @@ class QgsPostgresExpressionCompiler
 
     Result compile( const QgsExpression* exp );
 
-    inline Result success() { return mSuccess; }
-
     const QString& result() { return mResult; }
 
   private:
     Result compile( const QgsExpression::Node* node, QString& str );
 
   private:
-    Result mSuccess;
     QString mResult;
     QgsPostgresFeatureSource* mSource;
 };
