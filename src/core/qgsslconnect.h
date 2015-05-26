@@ -18,7 +18,7 @@
 
 #include <QHash>
 
-class sqlite3;
+struct sqlite3;
 
 class CORE_EXPORT QgsSLConnect
 {
