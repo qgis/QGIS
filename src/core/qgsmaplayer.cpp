@@ -49,13 +49,13 @@
 
 QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
                           QString lyrname,
-                          QString source ) :
-    mValid( false ), // assume the layer is invalid
-    mDataSource( source ),
-    mLayerOrigName( lyrname ), // store the original name
-    mID( "" ),
-    mLayerType( type ),
-    mBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal blending
+                          QString source )
+    : mValid( false ) // assume the layer is invalid
+    , mDataSource( source )
+    , mLayerOrigName( lyrname ) // store the original name
+    , mID( "" )
+    , mLayerType( type )
+    , mBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal blending
     , mLegend( 0 )
     , mStyleManager( new QgsMapLayerStyleManager( this ) )
 {
@@ -292,33 +292,54 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
     }
     // <<< BACKWARD COMPATIBILITY < 1.9
   }
-  else if ( provider == "gdal" )
+  else if ( provider == "gdal" && mDataSource.startsWith( "NETCDF:" ) )
   {
-    QStringList theURIParts = mDataSource.split( ":" );
-    if ( theURIParts[0] == "NETCDF" )
+    // NETCDF:filename:variable
+    // filename can be quoted with " as it can contain colons
+    QRegExp r( "NETCDF:(.+):([^:]+)" );
+    if ( r.exactMatch( mDataSource ) )
     {
-      QString src = theURIParts[1];
-      src.replace( "\"", "" );
-      src = QgsProject::instance()->readPath( src );
-      theURIParts[1] = "\"" + src + "\"";
+      QString filename = r.cap( 1 );
+      if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
+        filename = filename.mid( 1, filename.length() - 2 );
+      mDataSource = "NETCDF:\"" + QgsProject::instance()->readPath( filename ) + "\":" + r.cap( 2 );
     }
-    else if ( theURIParts[0] == "HDF4_SDS" )
+  }
+  else if ( provider == "gdal" && mDataSource.startsWith( "HDF4_SDS:" ) )
+  {
+    // HDF4_SDS:subdataset_type:file_name:subdataset_index
+    // filename can be quoted with " as it can contain colons
+    QRegExp r( "HDF4_SDS:([^:]+):(.+):([^:]+)" );
+    if ( r.exactMatch( mDataSource ) )
     {
-      theURIParts[2] = QgsProject::instance()->readPath( theURIParts[2] );
+      QString filename = r.cap( 2 );
+      if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
+        filename = filename.mid( 1, filename.length() - 2 );
+      mDataSource = "HDF4_SDS:" + r.cap( 1 ) + ":\"" + QgsProject::instance()->readPath( filename ) + "\":" + r.cap( 3 );
     }
-    else if ( theURIParts[0] == "HDF5" )
+  }
+  else if ( provider == "gdal" && mDataSource.startsWith( "HDF5:" ) )
+  {
+    // HDF5:file_name:subdataset
+    // filename can be quoted with " as it can contain colons
+    QRegExp r( "HDF5:(.+):([^:]+)" );
+    if ( r.exactMatch( mDataSource ) )
     {
-      theURIParts[1] = QgsProject::instance()->readPath( theURIParts[1] );
+      QString filename = r.cap( 1 );
+      if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
+        filename = filename.mid( 1, filename.length() - 2 );
+      mDataSource = "HDF5:\"" + QgsProject::instance()->readPath( filename ) + "\":" + r.cap( 2 );
     }
-    else if ( theURIParts[0] == "NITF_IM" )
+  }
+  else if ( provider == "gdal" && mDataSource.contains( QRegExp( "^(NITF_IM|RADARSAT_2_CALIB):" ) ) )
+  {
+    // NITF_IM:0:filename
+    // RADARSAT_2_CALIB:?:filename
+    QRegExp r( "([^:]+):([^:]+):(.+)" );
+    if ( r.exactMatch( mDataSource ) )
     {
-      theURIParts[2] = QgsProject::instance()->readPath( theURIParts[2] );
+      mDataSource = r.cap( 1 ) + ":" + r.cap( 2 ) + ":" + QgsProject::instance()->readPath( r.cap( 3 ) );
     }
-    else if ( theURIParts[0] == "RADARSAT_2_CALIB" )
-    {
-      theURIParts[2] = QgsProject::instance()->readPath( theURIParts[2] );
-    }
-    mDataSource = theURIParts.join( ":" );
   }
   else
   {
