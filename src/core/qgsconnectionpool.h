@@ -123,9 +123,8 @@ class QgsConnectionPoolGroup
 
     void release( T conn )
     {
-      acquiredConns.removeAll( conn );
-
       connMutex.lock();
+      acquiredConns.removeAll( conn );
       Item i;
       i.c = conn;
       i.lastUsedTime = QTime::currentTime();
@@ -254,6 +253,20 @@ class QgsConnectionPool
 
       group->release( conn );
     }
+
+    //! Invalidates all connections to the specified resource.
+    //! The internal state of certain handles (for instance OGR) are altered
+    //! when a dataset is modified. Consquently, all open handles need to be
+    //! invalidated when such datasets are changed to ensure the handles are
+    //! refreshed. See the OGR provider for an example where this is needed.
+    void invalidateConnections( const QString& connInfo )
+    {
+      mMutex.lock();
+      if ( mGroups.contains( connInfo ) )
+        mGroups[connInfo]->invalidateConnections();
+      mMutex.unlock();
+    }
+
 
   protected:
     T_Groups mGroups;

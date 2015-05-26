@@ -79,8 +79,6 @@ class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn*, QgsOgrConnPoolGroup
   public:
     static QgsOgrConnPool* instance();
 
-    void invalidateHandles( const QString& connInfo );
-
   protected:
     Q_DISABLE_COPY( QgsOgrConnPool )
 
