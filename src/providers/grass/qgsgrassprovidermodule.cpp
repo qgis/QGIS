@@ -710,8 +710,8 @@ QIcon QgsGrassGroupItem::icon()
 }
 
 //----------------------- QgsGrassImportItem ------------------------------
-QgsGrassImportItemIcon::QgsGrassImportItemIcon()
-    : QObject()
+QgsGrassImportItemIcon::QgsGrassImportItemIcon( QObject *parent )
+    : QObject( parent )
     , mCount( 0 )
     , mMovie( 0 )
 {
@@ -741,7 +741,7 @@ void QgsGrassImportItemIcon::removeListener()
 
 //----------------------- QgsGrassImportItem ------------------------------
 
-QgsGrassImportItemIcon QgsGrassImportItem::mImportIcon;
+QgsGrassImportItemIcon *QgsGrassImportItem::mImportIcon = 0;
 
 QgsGrassImportItem::QgsGrassImportItem( QgsDataItem* parent, const QString& name, const QString& path, QgsGrassImport* import )
     : QgsDataItem( QgsDataItem::Layer, parent, name, path )
@@ -751,13 +751,16 @@ QgsGrassImportItem::QgsGrassImportItem( QgsDataItem* parent, const QString& name
   setCapabilities( QgsDataItem::NoCapabilities ); // disable fertility
   setState( Populating );
 
-  connect( &mImportIcon, SIGNAL( frameChanged( int ) ), SLOT( emitDataChanged() ) );
-  mImportIcon.addListener();
+  if ( !mImportIcon )
+    mImportIcon = new QgsGrassImportItemIcon( import );
+
+  connect( mImportIcon, SIGNAL( frameChanged( int ) ), SLOT( emitDataChanged() ) );
+  mImportIcon->addListener();
 }
 
 QgsGrassImportItem::~QgsGrassImportItem()
 {
-  mImportIcon.removeListener();
+  mImportIcon->removeListener();
 }
 
 QList<QAction*> QgsGrassImportItem::actions()
@@ -783,7 +786,7 @@ void QgsGrassImportItem::cancel()
 
 QIcon QgsGrassImportItem::icon()
 {
-  return mImportIcon.icon();
+  return mImportIcon->icon();
 }
 
 //-------------------------------------------------------------------------

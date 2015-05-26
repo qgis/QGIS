@@ -174,7 +174,7 @@ class QgsGrassImportItemIcon : public QObject
 {
     Q_OBJECT
   public:
-    QgsGrassImportItemIcon();
+    QgsGrassImportItemIcon( QObject *parent );
 
     QIcon icon() { return mIcon; }
     void addListener();
@@ -217,7 +217,7 @@ class QgsGrassImportItem : public QgsDataItem, public QgsGrassObjectItemBase
     QgsGrassImport* mImport;
 
   private:
-    static QgsGrassImportItemIcon mImportIcon;
+    static QgsGrassImportItemIcon *mImportIcon;
 };
 
 #endif // QGSGRASSPROVIDERMODULE_H
