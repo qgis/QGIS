@@ -14,12 +14,9 @@
  ***************************************************************************/
 
 #include "qgsosmdatabase.h"
-
-#include <spatialite.h>
-
+#include "qgsslconnect.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
-
 
 
 QgsOSMDatabase::QgsOSMDatabase( const QString& dbFileName )
@@ -32,7 +29,6 @@ QgsOSMDatabase::QgsOSMDatabase( const QString& dbFileName )
     , mStmtWayNodePoints( 0 )
     , mStmtWayTags( 0 )
 {
-
 }
 
 QgsOSMDatabase::~QgsOSMDatabase()
@@ -49,11 +45,8 @@ bool QgsOSMDatabase::isOpen() const
 
 bool QgsOSMDatabase::open()
 {
-  // load spatialite extension
-  spatialite_init( 0 );
-
   // open database
-  int res = sqlite3_open_v2( mDbFileName.toUtf8().data(), &mDatabase, SQLITE_OPEN_READWRITE, 0 );
+  int res = QgsSLConnect::sqlite3_open_v2( mDbFileName.toUtf8().data(), &mDatabase, SQLITE_OPEN_READWRITE, 0 );
   if ( res != SQLITE_OK )
   {
     mError = QString( "Failed to open database [%1]: %2" ).arg( res ).arg( mDbFileName );
@@ -93,7 +86,7 @@ bool QgsOSMDatabase::close()
   Q_ASSERT( mStmtNode == 0 );
 
   // close database
-  if ( sqlite3_close( mDatabase ) != SQLITE_OK )
+  if ( QgsSLConnect::sqlite3_close( mDatabase ) != SQLITE_OK )
   {
     //mError = ( char * ) "Closing SQLite3 database failed.";
     //return false;
