@@ -173,6 +173,7 @@ SET(QGIS_CORE_SRCS
   qgsvectorlayerundocommand.cpp
   qgsvectorsimplifymethod.cpp
   qgsxmlutils.cpp
+  qgsslconnect.cpp
 
   composer/qgsaddremoveitemcommand.cpp
   composer/qgsaddremovemultiframecommand.cpp
