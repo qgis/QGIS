@@ -60,6 +60,7 @@ attributetable/qgsfeatureselectionmodel.cpp
 attributetable/qgsgenericfeatureselectionmanager.cpp
 attributetable/qgsvectorlayerselectionmanager.cpp
 
+editorwidgets/core/qgsdefaultsearchwidgetwrapper.cpp
 editorwidgets/core/qgseditorconfigwidget.cpp
 editorwidgets/core/qgseditorwidgetfactory.cpp
 editorwidgets/core/qgseditorwidgetregistry.cpp
@@ -407,6 +408,9 @@ SET(QGIS_GUI_MOC_HDRS
   effects/qgspainteffectwidget.h
   effects/qgseffectstackpropertieswidget.h
 
+  editorwidgets/core/qgsdefaultsearchwidgetwrapper.h
+  editorwidgets/core/qgseditorconfigwidget.h
+  editorwidgets/core/qgseditorwidgetregistry.h
   editorwidgets/core/qgseditorconfigwidget.h
   editorwidgets/core/qgseditorwidgetregistry.h
   editorwidgets/core/qgseditorwidgetwrapper.h
