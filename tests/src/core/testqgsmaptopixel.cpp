@@ -32,9 +32,7 @@ class TestQgsMapToPixel: public QObject
 
 void TestQgsMapToPixel::legacy()
 {
-  Q_NOWARN_DEPRECATED_PUSH
   QgsMapToPixel m2p( 2, 10, -4, 3 );
-  Q_NOWARN_DEPRECATED_POP
 
   QgsPoint p( 0, 0 ); // in geographical units
   QgsPoint d = m2p.transform( p ); // to device pixels
