@@ -36,6 +36,15 @@ inline void qgsConnectionPool_ConnectionDestroy( QgsPostgresConn* c )
   c->unref(); // will delete itself
 }
 
+inline void qgsConnectionPool_InvalidateConnection( QgsPostgresConn* c )
+{
+}
+
+inline bool qgsConnectionPool_ConnectionIsValid( QgsPostgresConn* c )
+{
+  return true;
+}
+
 
 class QgsPostgresConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsPostgresConn*>
 {
