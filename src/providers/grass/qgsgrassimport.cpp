@@ -32,6 +32,7 @@ extern "C"
 #include <grass/version.h>
 #include <grass/gis.h>
 #include <grass/raster.h>
+#include <grass/imagery.h>
 }
 
 QgsGrassImport::QgsGrassImport( QgsGrassObject grassObject )
@@ -133,9 +134,26 @@ bool QgsGrassRasterImport::import()
     return false;
   }
 
+  int redBand = 0;
+  int greenBand = 0;
+  int blueBand = 0;
   for ( int band = 1; band <= provider->bandCount(); band++ )
   {
     QgsDebugMsg( QString( "band = %1" ).arg( band ) );
+    int colorInterpretation = provider->colorInterpretation( band );
+    if ( colorInterpretation ==  QgsRaster::RedBand )
+    {
+      redBand = band;
+    }
+    else if ( colorInterpretation ==  QgsRaster::GreenBand )
+    {
+      greenBand = band;
+    }
+    else if ( colorInterpretation ==  QgsRaster::BlueBand )
+    {
+      blueBand = band;
+    }
+
     QGis::DataType qgis_out_type = QGis::UnknownDataType;
     RASTER_MAP_TYPE data_type = -1;
     switch ( provider->dataType( band ) )
@@ -267,6 +285,31 @@ bool QgsGrassRasterImport::import()
     }
 
     delete process;
+  }
+  QgsDebugMsg( QString( "redBand = %1 greenBand = %2 blueBand = %3" ).arg( redBand ).arg( greenBand ).arg( blueBand ) );
+  if ( redBand > 0 && greenBand > 0 && blueBand > 0 )
+  {
+    // TODO: check if the group exists
+    // I_find_group()
+    QString name = mGrassObject.name();
+
+    G_TRY
+    {
+      QgsGrass::setMapset( mGrassObject.gisdbase(), mGrassObject.location(), mGrassObject.mapset() );
+      struct Ref ref;
+      I_get_group_ref( name.toUtf8().data(), &ref );
+      QString redName = name + QString( "_%1" ).arg( redBand );
+      QString greenName = name + QString( "_%1" ).arg( greenBand );
+      QString blueName = name + QString( "_%1" ).arg( blueBand );
+      I_add_file_to_group_ref( redName.toUtf8().data(), mGrassObject.mapset().toUtf8().data(), &ref );
+      I_add_file_to_group_ref( greenName.toUtf8().data(), mGrassObject.mapset().toUtf8().data(), &ref );
+      I_add_file_to_group_ref( blueName.toUtf8().data(), mGrassObject.mapset().toUtf8().data(), &ref );
+      I_put_group_ref( name.toUtf8().data(), &ref );
+    }
+    G_CATCH( QgsGrass::Exception &e )
+    {
+      QgsDebugMsg( QString( "Cannot create group: %1" ).arg( e.what() ) );
+    }
   }
   return true;
 }

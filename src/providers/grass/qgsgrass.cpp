@@ -131,6 +131,8 @@ QString QgsGrassObject::elementShort() const
 {
   if ( mType == Raster )
     return "rast";
+  else if ( mType == Group )
+    return "group";
   else if ( mType == Vector )
     return "vect";
   else if ( mType == Region )
@@ -148,6 +150,8 @@ QString GRASS_LIB_EXPORT QgsGrassObject::elementName( Type type )
 {
   if ( type == Raster )
     return "raster";
+  else if ( type == Group )
+    return "group";
   else if ( type == Vector )
     return "vector";
   else if ( type == Region )
@@ -165,6 +169,8 @@ QString GRASS_LIB_EXPORT QgsGrassObject::dirName( Type type )
 {
   if ( type == Raster )
     return "cellhd";
+  else if ( type == Group )
+    return "group";
   else if ( type == Vector )
     return "vector";
   else if ( type == Region )
@@ -1176,6 +1182,17 @@ QStringList GRASS_LIB_EXPORT QgsGrass::rasters( const QString& mapsetPath )
   return list;
 }
 
+QStringList GRASS_LIB_EXPORT QgsGrass::groups( const QString& gisdbase, const QString& locationName,
+    const QString& mapsetName )
+{
+  return elements( gisdbase, locationName, mapsetName, "group" );
+}
+
+QStringList GRASS_LIB_EXPORT QgsGrass::groups( const QString& mapsetPath )
+{
+  return elements( mapsetPath, "group" );
+}
+
 QStringList GRASS_LIB_EXPORT QgsGrass::elements( const QString& gisdbase, const QString& locationName,
     const QString& mapsetName, const QString& element )
 {
@@ -1197,7 +1214,7 @@ QStringList GRASS_LIB_EXPORT QgsGrass::elements( const QString&  mapsetPath, con
     return list;
 
   QDir d = QDir( mapsetPath + "/" + element );
-  if ( element == "vector" )
+  if ( element == "vector" || element == "group" )
   {
     d.setFilter( QDir::Dirs | QDir::NoDotAndDotDot );
   }

@@ -191,6 +191,18 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
     items.append( layer );
   }
 
+  QStringList groupNames = QgsGrass::groups( mDirPath );
+  foreach ( QString name, groupNames )
+  {
+    QString path = mPath + "/" + "group" + "/" + name;
+    QString uri = mDirPath + "/" + "group" + "/" + name;
+    QgsDebugMsg( "uri = " + uri );
+
+    QgsGrassObject rasterObject( mGisdbase, mLocation, mName, name, QgsGrassObject::Group );
+    QgsGrassGroupItem *layer = new QgsGrassGroupItem( this, rasterObject, path, uri );
+    items.append( layer );
+  }
+
   QgsGrassObject mapsetObject( mGisdbase, mLocation, mName );
   foreach ( QgsGrassImport* import, mImports )
   {
@@ -678,6 +690,24 @@ QIcon QgsGrassRasterItem::icon()
   return QgsDataItem::icon();
 }
 
+//----------------------- QgsGrassGroupItem ------------------------------
+
+QgsGrassGroupItem::QgsGrassGroupItem( QgsDataItem* parent, QgsGrassObject grassObject,
+                                      QString path, QString uri )
+    : QgsGrassObjectItem( parent, grassObject, grassObject.name(), path, uri, QgsLayerItem::Raster, "grassraster" )
+{
+}
+
+QIcon QgsGrassGroupItem::icon()
+{
+  static QIcon linkIcon;
+
+  if ( linkIcon.isNull() )
+  {
+    linkIcon = QgsApplication::getThemeIcon( "/mIconRasterGroup.svg" );
+  }
+  return linkIcon;
+}
 
 //----------------------- QgsGrassImportItem ------------------------------
 QgsGrassImportItemIcon::QgsGrassImportItemIcon()

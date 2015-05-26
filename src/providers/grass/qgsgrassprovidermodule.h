@@ -157,6 +157,18 @@ class QgsGrassRasterItem : public QgsGrassObjectItem
     bool mExternal;
 };
 
+// Imagery group
+class QgsGrassGroupItem : public QgsGrassObjectItem
+{
+    Q_OBJECT
+  public:
+    QgsGrassGroupItem( QgsDataItem* parent, QgsGrassObject grassObject,
+                       QString path, QString uril );
+
+    virtual QIcon icon() override;
+
+};
+
 // icon movie
 class QgsGrassImportItemIcon : public QObject
 {
