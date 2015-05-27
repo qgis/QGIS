@@ -294,13 +294,13 @@
         "Committer": "Yes",
         "First Commit Message": "Add backbuffering option to resolve flickering on X11 systems",
         "First Commit Date": "07-08-2012",
-        "GIT Nickname": "matthias-kuhn"
+        "GIT Nickname": "m-kuhn"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          8.740423321723938,
-          47.4989812888759
+          7.6256,
+          46.7542
         ]
       }
     },
