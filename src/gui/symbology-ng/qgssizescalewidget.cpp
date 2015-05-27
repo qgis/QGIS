@@ -40,7 +40,7 @@ class ItemDelegate : public QItemDelegate
     QSize sizeHint( const QStyleOptionViewItem& /*option*/, const QModelIndex & index ) const override
     {
       return mModel->item( index.row() )->icon().actualSize( QSize( 512, 512 ) );
-    }
+  }
 
   private:
     QStandardItemModel* mModel;
@@ -162,7 +162,7 @@ void QgsSizeScaleWidget::updatePreview()
   {
     QScopedPointer< QgsMarkerSymbolV2 > symbol( dynamic_cast<QgsMarkerSymbolV2*>( mSymbol->clone() ) );
     symbol->setDataDefinedSize( QgsDataDefined() );
-    symbol->setDataDefinedAngle( "" ); // to avoid symbol not beeing drawn
+    symbol->setDataDefinedAngle( QgsDataDefined() ); // to avoid symbol not beeing drawn
     symbol->setSize( expr->size( breaks[i] ) );
     QgsSymbolV2LegendNode node( mLayerTreeLayer, QgsLegendSymbolItemV2( symbol.data(), QString::number( i ), 0 ) );
     const QSize sz( node.minimumIconSize() );

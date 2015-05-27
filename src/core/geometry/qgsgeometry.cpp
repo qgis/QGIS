@@ -446,7 +446,7 @@ QgsPoint QgsGeometry::vertexAt( int atVertex ) const
   }
 
   QgsVertexId vId;
-  vertexIdFromVertexNr( atVertex, vId );
+  ( void )vertexIdFromVertexNr( atVertex, vId );
   if ( vId.vertex < 0 )
   {
     return QgsPoint( 0, 0 );
@@ -982,7 +982,7 @@ QgsMultiPoint QgsGeometry::asMultiPoint() const
   QgsMultiPoint multiPoint( nPoints );
   for ( int i = 0; i < nPoints; ++i )
   {
-    const QgsPointV2* pt = dynamic_cast<const QgsPointV2*>( mp->geometryN( i ) );
+    const QgsPointV2* pt = static_cast<const QgsPointV2*>( mp->geometryN( i ) );
     multiPoint[i].setX( pt->x() );
     multiPoint[i].setY( pt->y() );
   }
