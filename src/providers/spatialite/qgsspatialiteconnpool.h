@@ -37,10 +37,12 @@ inline void qgsConnectionPool_ConnectionDestroy( QgsSqliteHandle* c )
 
 inline void qgsConnectionPool_InvalidateConnection( QgsSqliteHandle* c )
 {
+  Q_UNUSED( c );
 }
 
 inline bool qgsConnectionPool_ConnectionIsValid( QgsSqliteHandle* c )
 {
+  Q_UNUSED( c );
   return true;
 }
 

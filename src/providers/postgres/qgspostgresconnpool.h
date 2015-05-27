@@ -38,10 +38,12 @@ inline void qgsConnectionPool_ConnectionDestroy( QgsPostgresConn* c )
 
 inline void qgsConnectionPool_InvalidateConnection( QgsPostgresConn* c )
 {
+  Q_UNUSED( c );
 }
 
 inline bool qgsConnectionPool_ConnectionIsValid( QgsPostgresConn* c )
 {
+  Q_UNUSED( c );
   return true;
 }
 
