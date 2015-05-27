@@ -45,6 +45,7 @@ ADD_PYTHON_TEST(PyQgsGraduatedSymbolRendererV2 test_qgsgraduatedsymbolrendererv2
 ADD_PYTHON_TEST(PyQgsNetworkContentFetcher test_qgsnetworkcontentfetcher.py)
 ADD_PYTHON_TEST(PyQgsEditWidgets test_qgseditwidgets.py)
 ADD_PYTHON_TEST(PyQgsRangeWidgets test_qgsrangewidgets.py)
+ADD_PYTHON_TEST(PyQgsAttributeTableModel test_qgsattributetablemodel.py)
 IF (ENABLE_PGTEST)
   ADD_PYTHON_TEST(PyQgsPostgresProvider test_provider_postgres.py)
 ENDIF (ENABLE_PGTEST)
