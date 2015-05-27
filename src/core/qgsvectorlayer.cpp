@@ -145,6 +145,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mValidExtent( false )
     , mLazyExtent( true )
     , mSymbolFeatureCounted( false )
+    , mEditCommandActive( false )
 {
   mActions = new QgsAttributeAction( this );
 
@@ -1210,7 +1211,7 @@ bool QgsVectorLayer::startEditing()
   connect( mEditBuffer, SIGNAL( layerModified() ), this, SIGNAL( layerModified() ) ); // TODO[MD]: necessary?
   //connect( mEditBuffer, SIGNAL( layerModified() ), this, SLOT( triggerRepaint() ) ); // TODO[MD]: works well?
   connect( mEditBuffer, SIGNAL( featureAdded( QgsFeatureId ) ), this, SIGNAL( featureAdded( QgsFeatureId ) ) );
-  connect( mEditBuffer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SIGNAL( featureDeleted( QgsFeatureId ) ) );
+  connect( mEditBuffer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( onFeatureDeleted( QgsFeatureId ) ) );
   connect( mEditBuffer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry& ) ), this, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry& ) ) );
   connect( mEditBuffer, SIGNAL( attributeValueChanged( QgsFeatureId, int, QVariant ) ), this, SIGNAL( attributeValueChanged( QgsFeatureId, int, QVariant ) ) );
   connect( mEditBuffer, SIGNAL( attributeAdded( int ) ), this, SIGNAL( attributeAdded( int ) ) );
@@ -2783,6 +2784,7 @@ void QgsVectorLayer::beginEditCommand( QString text )
   if ( !mDataProvider->transaction() )
   {
     undoStack()->beginMacro( text );
+    mEditCommandActive = true;
     emit editCommandStarted( text );
   }
 }
@@ -2796,6 +2798,12 @@ void QgsVectorLayer::endEditCommand()
   if ( !mDataProvider->transaction() )
   {
     undoStack()->endMacro();
+    mEditCommandActive = false;
+    if ( mDeletedFids.count() )
+    {
+      emit featuresDeleted( mDeletedFids );
+      mDeletedFids.clear();
+    }
     emit editCommandEnded();
   }
 }
@@ -2810,6 +2818,8 @@ void QgsVectorLayer::destroyEditCommand()
   {
     undoStack()->endMacro();
     undoStack()->undo();
+    mEditCommandActive = false;
+    mDeletedFids.clear();
     emit editCommandDestroyed();
   }
 }
@@ -3760,6 +3770,16 @@ void QgsVectorLayer::onJoinedFieldsChanged()
 {
   // some of the fields of joined layers have changed -> we need to update this layer's fields too
   updateFields();
+}
+
+void QgsVectorLayer::onFeatureDeleted( const QgsFeatureId& fid )
+{
+  if ( mEditCommandActive )
+    mDeletedFids << fid;
+  else
+    emit featuresDeleted( QgsFeatureIds() << fid );
+
+  emit featureDeleted( fid );
 }
 
 QgsVectorLayer::ValueRelationData QgsVectorLayer::valueRelation( int idx )
