@@ -20209,7 +20209,7 @@ Prosim zmanjšate ločljivost ali velikost slike</translation>
         <translation>Enaka širina stolpcev</translation>
     </message>
     <message>
-        <source>Allow to split layer items into multiple columns.</source>
+        <source>Allow splitting layer items into multiple columns.</source>
         <translation>Dovoli razdelitev postavk na več stolpcev.</translation>
     </message>
     <message>

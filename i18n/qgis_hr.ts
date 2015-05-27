@@ -20167,7 +20167,7 @@ Pokušajte s nižom rezolucijom ili manjom veličinom papira</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Allow to split layer items into multiple columns.</source>
+        <source>Allow splitting layer items into multiple columns.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

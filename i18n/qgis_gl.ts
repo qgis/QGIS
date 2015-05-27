@@ -20277,7 +20277,7 @@ Ténteo cunha resolución baixa ou cun tamaño de papel menor</translation>
         <translation>Anchos de columna iguais</translation>
     </message>
     <message>
-        <source>Allow to split layer items into multiple columns.</source>
+        <source>Allow splitting layer items into multiple columns.</source>
         <translation>Permiti-la división de elementos do mapa en múltiples columnas.</translation>
     </message>
     <message>

@@ -20234,7 +20234,7 @@ Please try a lower resolution or a smaller papersize</source>
         <translation>等於行寬</translation>
     </message>
     <message>
-        <source>Allow to split layer items into multiple columns.</source>
+        <source>Allow splitting layer items into multiple columns.</source>
         <translation>允許分割圖層項目至多行中。</translation>
     </message>
     <message>

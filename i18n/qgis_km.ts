@@ -20252,7 +20252,7 @@ Please try a lower resolution or a smaller papersize</source>
         <translation>ទទឹង​ជួរឈរ​ស្មើ</translation>
     </message>
     <message>
-        <source>Allow to split layer items into multiple columns.</source>
+        <source>Allow splitting layer items into multiple columns.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

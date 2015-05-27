@@ -58,6 +58,7 @@ set:setting
 shorten:shortening
 simplify:simplifying
 speed-up:speeding up
+split:splitting
 store:storing
 surpress:surpressing
 use:using
