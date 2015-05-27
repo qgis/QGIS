@@ -29,7 +29,7 @@ class CORE_EXPORT QgsSLConnect
     static int sqlite3_open_v2( const char *filename, sqlite3 **ppDb, int flags, const char *zVfs );
     static int sqlite3_close_v2( sqlite3* );
 
-#if defined(SPATIALITE_VERSION_GE_4_0_0)
+#if defined(SPATIALITE_HAS_INIT_EX)
   private:
     static QHash<sqlite3 *, void *> mSLconns;
 #endif
