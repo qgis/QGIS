@@ -183,6 +183,7 @@ QgsGeometry* QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& f
           delete geomPart;
           return partGeo;
         }
+        delete partGeo;
       }
       break;
     }

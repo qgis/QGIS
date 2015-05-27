@@ -121,6 +121,10 @@ bool QgsCurvePolygonV2::fromWkb( const unsigned char* wkb )
     {
       currentCurve = new QgsCompoundCurveV2();
     }
+    else
+    {
+      return false;
+    }
     currentCurve->fromWkb( wkbPtr );
     currentCurveSize = currentCurve->wkbSize();
     if ( i == 0 )

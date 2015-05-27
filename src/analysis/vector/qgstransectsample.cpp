@@ -514,7 +514,7 @@ QgsGeometry* QgsTransectSample::closestMultilineElement( const QgsPoint& pt, Qgs
   double minDist = DBL_MAX;
   double currentDist = 0;
   QgsGeometry* currentLine = 0;
-  QgsGeometry* closestLine = 0;
+  QScopedPointer<QgsGeometry> closestLine;
   QgsGeometry* pointGeom = QgsGeometry::fromPoint( pt );
 
   QgsMultiPolyline multiPolyline = multiLine->asMultiPolyline();
@@ -526,7 +526,7 @@ QgsGeometry* QgsTransectSample::closestMultilineElement( const QgsPoint& pt, Qgs
     if ( currentDist < minDist )
     {
       minDist = currentDist;
-      closestLine = currentLine;
+      closestLine.reset( currentLine );
     }
     else
     {
@@ -535,7 +535,7 @@ QgsGeometry* QgsTransectSample::closestMultilineElement( const QgsPoint& pt, Qgs
   }
 
   delete pointGeom;
-  return closestLine;
+  return closestLine.take();
 }
 
 QgsGeometry* QgsTransectSample::clipBufferLine( const QgsGeometry* stratumGeom, QgsGeometry* clippedBaseline, double tolerance )

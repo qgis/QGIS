@@ -413,7 +413,7 @@ void QgsCompoundCurveV2::addVertex( const QgsPointV2& pt )
   }
   else //create new QgsLineStringV2* with point in it
   {
-    line = dynamic_cast<QgsLineStringV2*>( lastCurve );
+    line = static_cast<QgsLineStringV2*>( lastCurve );
   }
   line->addVertex( pt );
 }

@@ -920,6 +920,7 @@ QgisApp::QgisApp()
     , mBrowserWidget( 0 )
     , mBrowserWidget2( 0 )
     , mAdvancedDigitizingDockWidget( 0 )
+    , mStatisticalSummaryDockWidget( 0 )
     , mSnappingDialog( 0 )
     , mPluginManager( 0 )
     , mComposerManager( 0 )
@@ -930,6 +931,7 @@ QgisApp::QgisApp()
     , mLogViewer( 0 )
     , mTrustedMacros( false )
     , mMacrosWarn( 0 )
+    , mUserInputDockWidget( 0 )
     , mVectorLayerTools( 0 )
     , mBtnFilterLegend( 0 )
     , mSnappingUtils( 0 )
@@ -6523,24 +6525,24 @@ void QgisApp::copyStyle( QgsMapLayer * sourceLayer )
     */
     if ( selectionLayer->type() == 0 )
     {
-        //Getting the selectionLayer geometry
-        QgsVectorLayer *SelectionGeometry = static_cast<QgsVectorLayer*>(selectionLayer);
-        QString geoType = QString::number(SelectionGeometry->geometryType());
+      //Getting the selectionLayer geometry
+      QgsVectorLayer *SelectionGeometry = static_cast<QgsVectorLayer*>( selectionLayer );
+      QString geoType = QString::number( SelectionGeometry->geometryType() );
 
-        //Adding geometryinformation
-        QDomElement layerGeometryType = doc.createElement("layerGeometryType");
-        QDomText type = doc.createTextNode(geoType);
+      //Adding geometryinformation
+      QDomElement layerGeometryType = doc.createElement( "layerGeometryType" );
+      QDomText type = doc.createTextNode( geoType );
 
-        layerGeometryType.appendChild(type);
-        rootNode.appendChild(layerGeometryType);
+      layerGeometryType.appendChild( type );
+      rootNode.appendChild( layerGeometryType );
     }
 
     QString errorMsg;
     if ( !selectionLayer->writeSymbology( rootNode, doc, errorMsg ) )
     {
-        messageBar()->pushMessage( errorMsg,
-                                   tr( "Cannot copy style: %1" ),
-                                   QgsMessageBar::CRITICAL, messageTimeout() );
+      messageBar()->pushMessage( errorMsg,
+                                 tr( "Cannot copy style: %1" ),
+                                 QgsMessageBar::CRITICAL, messageTimeout() );
       return;
     }
     // Copies data in text form as well, so the XML can be pasted into a text editor
@@ -6556,7 +6558,7 @@ void QgisApp::copyStyle( QgsMapLayer * sourceLayer )
 
 
 void QgisApp::pasteStyle( QgsMapLayer * destinationLayer )
-{    
+{
   QgsMapLayer *selectionLayer = destinationLayer ? destinationLayer : activeLayer();
   if ( selectionLayer )
   {
@@ -6568,34 +6570,34 @@ void QgisApp::pasteStyle( QgsMapLayer * destinationLayer )
       if ( !doc.setContent( clipboard()->data( QGSCLIPBOARD_STYLE_MIME ), false, &errorMsg, &errorLine, &errorColumn ) )
       {
 
-          messageBar()->pushMessage( errorMsg,
-                                     tr( "Cannot parse style: %1:%2:%3" ),
-                                     QgsMessageBar::CRITICAL, messageTimeout() );
-          return;
+        messageBar()->pushMessage( errorMsg,
+                                   tr( "Cannot parse style: %1:%2:%3" ),
+                                   QgsMessageBar::CRITICAL, messageTimeout() );
+        return;
       }
 
       QDomElement rootNode = doc.firstChildElement( "qgis" );
 
       //Test for matching geometry type on vector layers when pasting
-      if (selectionLayer->type() == QgsMapLayer::VectorLayer)
+      if ( selectionLayer->type() == QgsMapLayer::VectorLayer )
       {
-          QgsVectorLayer *selectionVectorLayer = static_cast<QgsVectorLayer*>(selectionLayer);
-          int pasteLayerGeometryType = doc.elementsByTagName("layerGeometryType").item(0).toElement().text().toInt();
-          if ( selectionVectorLayer->geometryType() != pasteLayerGeometryType )
-          {
-              messageBar()->pushMessage( tr( "Cannot paste style to layer with a different geometry type" ),
-                                         tr( "Your copied style does not match the layer you are pasting to" ),
-                                         QgsMessageBar::INFO, messageTimeout() );
-              return;
-          }
+        QgsVectorLayer *selectionVectorLayer = static_cast<QgsVectorLayer*>( selectionLayer );
+        int pasteLayerGeometryType = doc.elementsByTagName( "layerGeometryType" ).item( 0 ).toElement().text().toInt();
+        if ( selectionVectorLayer->geometryType() != pasteLayerGeometryType )
+        {
+          messageBar()->pushMessage( tr( "Cannot paste style to layer with a different geometry type" ),
+                                     tr( "Your copied style does not match the layer you are pasting to" ),
+                                     QgsMessageBar::INFO, messageTimeout() );
+          return;
+        }
       }
 
       if ( !selectionLayer->readSymbology( rootNode, errorMsg ) )
       {
-          messageBar()->pushMessage( errorMsg,
-                                     tr( "Cannot read style: %1" ),
-                                     QgsMessageBar::CRITICAL, messageTimeout() );
-          return;
+        messageBar()->pushMessage( errorMsg,
+                                   tr( "Cannot read style: %1" ),
+                                   QgsMessageBar::CRITICAL, messageTimeout() );
+        return;
       }
 
       mLayerTreeView->refreshLayerSymbology( selectionLayer->id() );

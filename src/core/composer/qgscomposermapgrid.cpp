@@ -589,6 +589,8 @@ void QgsComposerMapGrid::calculateCRSTransformLines()
       {
         //look for intersections between lines
         QgsGeometry* intersects = ( *yLineIt )->intersection(( *xLineIt ) );
+        if ( !intersects )
+          continue;
 
         //go through all intersections and draw grid markers/crosses
         int i = 0;
@@ -599,6 +601,7 @@ void QgsComposerMapGrid::calculateCRSTransformLines()
           i = i + 1;
           vertex = intersects->vertexAt( i );
         }
+        delete intersects;
       }
     }
     //clean up
