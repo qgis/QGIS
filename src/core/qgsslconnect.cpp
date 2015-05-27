@@ -18,7 +18,9 @@
 #include <sqlite3.h>
 #include <spatialite.h>
 
+#if defined(SPATIALITE_VERSION_GE_4_0_0)
 QHash<sqlite3 *, void *> QgsSLConnect::mSLconns;
+#endif
 
 int QgsSLConnect::sqlite3_open( const char *filename, sqlite3 **ppDb )
 {
