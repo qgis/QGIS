@@ -77,7 +77,7 @@ def register_function(function, arg_count, group, usesgeometry=False, **kwargs):
     return f
 
 
-def qgsfunction(args, group, **kwargs):
+def qgsfunction(args='auto', group='custom', **kwargs):
     """
     Decorator function used to define a user expression function.
 
