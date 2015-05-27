@@ -139,6 +139,8 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   connect( mLayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
   connect( mLayer, SIGNAL( layerDeleted() ), this, SLOT( close() ) );
   connect( mLayer, SIGNAL( selectionChanged() ), this, SLOT( updateTitle() ) );
+  connect( mLayer, SIGNAL( featureAdded( QgsFeatureId ) ), this, SLOT( updateTitle() ) );
+  connect( mLayer, SIGNAL( featuresDeleted( QgsFeatureIds ) ), this, SLOT( updateTitle() ) );
   connect( mLayer, SIGNAL( attributeAdded( int ) ), this, SLOT( columnBoxInit() ) );
   connect( mLayer, SIGNAL( attributeDeleted( int ) ), this, SLOT( columnBoxInit() ) );
 
@@ -405,12 +407,12 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, QStrin
   mLayer->endEditCommand();
 }
 
-void QgsAttributeTableDialog::replaceSearchWidget(QWidget* oldw, QWidget* neww)
+void QgsAttributeTableDialog::replaceSearchWidget( QWidget* oldw, QWidget* neww )
 {
-    mFilterLayout->removeWidget(oldw);
-    oldw->setVisible(false);
-    mFilterLayout->addWidget(neww,0,0,0);
-    neww->setVisible(true);
+  mFilterLayout->removeWidget( oldw );
+  oldw->setVisible( false );
+  mFilterLayout->addWidget( neww, 0, 0, 0 );
+  neww->setVisible( true );
 }
 
 void QgsAttributeTableDialog::filterColumnChanged( QObject* filterAction )
@@ -427,14 +429,14 @@ void QgsAttributeTableDialog::filterColumnChanged( QObject* filterAction )
   QString fieldName = mFilterButton->defaultAction()->text();
   // get the search widget
   int fldIdx = mLayer->fieldNameIndex( fieldName );
-    if ( fldIdx < 0 )
-      return;
+  if ( fldIdx < 0 )
+    return;
   const QString widgetType = mLayer->editorWidgetV2( fldIdx );
   const QgsEditorWidgetConfig widgetConfig = mLayer->editorWidgetV2Config( fldIdx );
-  mCurrentSearchWidgetWrapper= QgsEditorWidgetRegistry::instance()->
-      createSearchWidget(widgetType, mLayer, fldIdx, widgetConfig, mFilterContainer);
+  mCurrentSearchWidgetWrapper = QgsEditorWidgetRegistry::instance()->
+                                createSearchWidget( widgetType, mLayer, fldIdx, widgetConfig, mFilterContainer );
 
-  replaceSearchWidget(mFilterQuery, mCurrentSearchWidgetWrapper->widget());
+  replaceSearchWidget( mFilterQuery, mCurrentSearchWidgetWrapper->widget() );
 
   mApplyFilterButton->setVisible( true );
 }
@@ -723,7 +725,7 @@ void QgsAttributeTableDialog::filterQueryChanged( const QString& query )
     QString nullValue = settings.value( "qgis/nullValue", "NULL" ).toString();
     QString value = mCurrentSearchWidgetWrapper->value().toString();
 
-    if (  value == nullValue )
+    if ( value == nullValue )
     {
       str = QString( "%1 IS NULL" ).arg( QgsExpression::quotedColumnRef( fieldName ) );
     }
@@ -745,9 +747,9 @@ void QgsAttributeTableDialog::filterQueryChanged( const QString& query )
 
 void QgsAttributeTableDialog::filterQueryAccepted()
 {
-  if ( (mFilterQuery->isVisible() && mFilterQuery->text().isEmpty()) ||
-          (mCurrentSearchWidgetWrapper!=0 && mCurrentSearchWidgetWrapper->widget()->isVisible()
-           && mCurrentSearchWidgetWrapper->value().toString().isEmpty() ))
+  if (( mFilterQuery->isVisible() && mFilterQuery->text().isEmpty() ) ||
+      ( mCurrentSearchWidgetWrapper != 0 && mCurrentSearchWidgetWrapper->widget()->isVisible()
+        && mCurrentSearchWidgetWrapper->value().toString().isEmpty() ) )
   {
     filterShowAll();
     return;
@@ -763,9 +765,9 @@ void QgsAttributeTableDialog::setFilterExpression( QString filterString )
   mCbxCaseSensitive->setVisible( false );
 
   mFilterQuery->setVisible( true );
-  if ( mCurrentSearchWidgetWrapper != 0 ) 
+  if ( mCurrentSearchWidgetWrapper != 0 )
   {
-      replaceSearchWidget(mCurrentSearchWidgetWrapper->widget(),mFilterQuery);
+    replaceSearchWidget( mCurrentSearchWidgetWrapper->widget(), mFilterQuery );
   }
   mApplyFilterButton->setVisible( true );
   mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowFilteredList );
