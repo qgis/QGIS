@@ -101,7 +101,7 @@ QgsAbstractGeometryV2* QgsGeometryImport::geomFromWkt( const QString& text )
   {
     geom = new QgsCircularStringV2();
   }
-  else if ( text.startsWith( "CompoundCurve" ), Qt::CaseInsensitive )
+  else if ( text.startsWith( "CompoundCurve" , Qt::CaseInsensitive ) )
   {
     geom = new QgsCompoundCurveV2();
   }
