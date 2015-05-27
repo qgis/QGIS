@@ -280,7 +280,9 @@ void pysqlite_connection_dealloc(pysqlite_Connection* self)
     if (self->db) {
         Py_BEGIN_ALLOW_THREADS
         sqlite3_close(self->db);
+#if defined(SPATIALITE_VERSION_GE_4_0_0)
         spatialite_cleanup_ex( self->slconn );
+#endif
         Py_END_ALLOW_THREADS
     } else if (self->apsw_connection) {
         ret = PyObject_CallMethod(self->apsw_connection, "close", "");
@@ -381,7 +383,9 @@ PyObject* pysqlite_connection_close(pysqlite_Connection* self, PyObject* args)
         } else {
             Py_BEGIN_ALLOW_THREADS
             rc = sqlite3_close(self->db);
+#if defined(SPATIALITE_VERSION_GE_4_0_0)
             spatialite_cleanup_ex( self->slconn );
+#endif
             Py_END_ALLOW_THREADS
 
             if (rc != SQLITE_OK) {
