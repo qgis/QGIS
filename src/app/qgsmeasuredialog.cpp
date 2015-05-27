@@ -207,7 +207,7 @@ void QgsMeasureDialog::removeLastPoint()
 
 void QgsMeasureDialog::closeEvent( QCloseEvent *e )
 {
-  saveWindowLocation();
+  reject();
   e->accept();
 }
 
@@ -349,6 +349,7 @@ void QgsMeasureDialog::convertMeasurement( double &measure, QGis::UnitType &u, b
 
 void QgsMeasureDialog::reject()
 {
+  saveWindowLocation();
   restart();
   QDialog::close();
 }
