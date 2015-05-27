@@ -55,6 +55,7 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WindowFlags f )
   updateSettings();
 
   connect( mUnitsCombo, SIGNAL( currentIndexChanged( const QString & ) ), this, SLOT( unitsChanged( const QString & ) ) );
+  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
 
   groupBox->setCollapsed( true );
 }
@@ -204,12 +205,6 @@ void QgsMeasureDialog::removeLastPoint()
   }
 }
 
-void QgsMeasureDialog::on_buttonBox_rejected( void )
-{
-  restart();
-  QDialog::close();
-}
-
 void QgsMeasureDialog::closeEvent( QCloseEvent *e )
 {
   saveWindowLocation();
@@ -349,4 +344,11 @@ void QgsMeasureDialog::convertMeasurement( double &measure, QGis::UnitType &u, b
 
   mDa.convertMeasurement( measure, myUnits, mDisplayUnits, isArea );
   u = myUnits;
+}
+
+
+void QgsMeasureDialog::reject()
+{
+  restart();
+  QDialog::close();
 }
