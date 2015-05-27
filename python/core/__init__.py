@@ -52,8 +52,6 @@ def register_function(function, arg_count, group, usesgeometry=False, **kwargs):
     helptext = function.__doc__ or ''
     helptext = helptext.strip()
     expandargs = False
-    if arg_count == 0 and not name[0] == '$':
-        name = '${0}'.format(name)
 
     if arg_count == "auto":
         # Work out the number of args we need.
