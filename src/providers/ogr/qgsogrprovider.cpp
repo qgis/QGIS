@@ -25,6 +25,7 @@ email                : sherman at mrcc.com
 #include <ogr_api.h>
 #include <ogr_srs_api.h>
 #include <cpl_string.h>
+#include <type_traits>
 
 #include <limits>
 
@@ -562,7 +563,7 @@ QString QgsOgrProvider::subsetString()
 QString QgsOgrProvider::ogrWkbGeometryTypeName( OGRwkbGeometryType type ) const
 {
   QString geom;
-  switch (( int )type )
+  switch ( (std::underlying_type<OGRwkbGeometryType>::type) type )
   {
     case wkbUnknown:            geom = "Unknown"; break;
     case wkbPoint:              geom = "Point"; break;
