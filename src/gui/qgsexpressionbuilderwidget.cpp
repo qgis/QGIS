@@ -132,6 +132,8 @@ void QgsExpressionBuilderWidget::runPythonCode( QString code )
     QgsPythonRunner::run( pythontext );
   }
   updateFunctionTree();
+  loadFieldNames();
+  loadRecent( mRecentKey );
 }
 
 void QgsExpressionBuilderWidget::saveFunctionFile( QString fileName )
@@ -347,6 +349,7 @@ void QgsExpressionBuilderWidget::saveToRecent( QString key )
 
 void QgsExpressionBuilderWidget::loadRecent( QString key )
 {
+  mRecentKey = key;
   QString name = tr( "Recent (%1)" ).arg( key );
   if ( mExpressionGroups.contains( name ) )
   {
