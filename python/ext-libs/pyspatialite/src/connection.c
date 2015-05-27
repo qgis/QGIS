@@ -106,13 +106,13 @@ int pysqlite_connection_init(pysqlite_Connection* self, PyObject* args, PyObject
         }
 
         Py_BEGIN_ALLOW_THREADS
-#if defined(SPATIALITE_VERSION_GE_4_0_0)
+#if defined(SPATIALITE_HAS_INIT_EX)
         self->slconn = spatialite_alloc_connection();
 #else
         spatialite_init( 0 );
 #endif
         rc = sqlite3_open(PyString_AsString(database_utf8), &self->db);
-#if defined(SPATIALITE_VERSION_GE_4_0_0)
+#if defined(SPATIALITE_HAS_INIT_EX)
         spatialite_init_ex( self->db, self->slconn, 0 );
 #endif
         Py_END_ALLOW_THREADS
@@ -280,7 +280,7 @@ void pysqlite_connection_dealloc(pysqlite_Connection* self)
     if (self->db) {
         Py_BEGIN_ALLOW_THREADS
         sqlite3_close(self->db);
-#if defined(SPATIALITE_VERSION_GE_4_0_0)
+#if defined(SPATIALITE_HAS_INIT_EX)
         spatialite_cleanup_ex( self->slconn );
 #endif
         Py_END_ALLOW_THREADS
@@ -383,7 +383,7 @@ PyObject* pysqlite_connection_close(pysqlite_Connection* self, PyObject* args)
         } else {
             Py_BEGIN_ALLOW_THREADS
             rc = sqlite3_close(self->db);
-#if defined(SPATIALITE_VERSION_GE_4_0_0)
+#if defined(SPATIALITE_HAS_INIT_EX)
             spatialite_cleanup_ex( self->slconn );
 #endif
             Py_END_ALLOW_THREADS
