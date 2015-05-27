@@ -212,6 +212,12 @@ QRegExp GRASS_LIB_EXPORT QgsGrassObject::newNameRegExp( Type type )
   return rx;
 }
 
+bool QgsGrassObject::operator==( const QgsGrassObject& other ) const
+{
+  return mGisdbase == other.mGisdbase && mLocation == other.mLocation && mMapset == other.mMapset
+         && mName == other.mName && mType == other.mType;
+}
+
 #ifdef Q_OS_WIN
 #include <windows.h>
 QString GRASS_LIB_EXPORT QgsGrass::shortPath( const QString &path )

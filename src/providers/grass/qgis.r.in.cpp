@@ -38,6 +38,7 @@ extern "C"
 #include <QDataStream>
 #include <QFile>
 #include <QIODevice>
+#include <QTextStream>
 
 #include "qgsrectangle.h"
 #include "qgsrasterblock.h"
@@ -80,9 +81,12 @@ int main( int argc, char **argv )
   name = map->answer;
 
   QFile stdinFile;
-  stdinFile.open( 0, QIODevice::ReadOnly );
-
+  stdinFile.open( stdin, QIODevice::ReadOnly );
   QDataStream stdinStream( &stdinFile );
+
+  QFile stdoutFile;
+  stdoutFile.open( stdout, QIODevice::WriteOnly );
+  QDataStream stdoutStream( &stdoutFile );
 
   QgsRectangle extent;
   qint32 rows, cols;
@@ -167,6 +171,9 @@ int main( int argc, char **argv )
       ptr = G_incr_void_ptr( ptr, G_raster_size( grass_type ) );
     }
     G_put_raster_row( cf, buf, grass_type );
+
+    stdoutStream << ( bool )true; // row written
+    stdoutFile.flush();
   }
 
   if ( isCanceled )

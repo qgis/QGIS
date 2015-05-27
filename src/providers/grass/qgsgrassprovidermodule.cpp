@@ -234,6 +234,9 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
   if ( !QgsMimeDataUtils::isUriList( data ) )
     return false;
 
+  // Init animated icon on main thread
+  QgsGrassImportItem::initIcon();
+
   QSettings settings;
 
   QgsGrassObject mapsetObject( mGisdbase, mLocation, mName );
@@ -581,6 +584,7 @@ QgsGrassObjectItem::QgsGrassObjectItem( QgsDataItem* parent, QgsGrassObject gras
 
 QList<QAction*> QgsGrassObjectItem::actions()
 {
+  QgsDebugMsg( QString( "mShowObjectActions = %1" ).arg( mShowObjectActions ) );
   QList<QAction*> lst = QgsGrassItemActions::instance()->actions();
 
   if ( mShowObjectActions )
@@ -595,6 +599,13 @@ QList<QAction*> QgsGrassObjectItem::actions()
   }
 
   return lst;
+}
+
+bool QgsGrassObjectItem::equal( const QgsDataItem *other )
+{
+  const QgsGrassObjectItem * item = qobject_cast<const QgsGrassObjectItem *>( other );
+  return QgsLayerItem::equal( other ) && item && mGrassObject == item->mGrassObject
+         && mShowObjectActions == item->mShowObjectActions;
 }
 
 void QgsGrassObjectItem::renameGrassObject()
@@ -647,10 +658,9 @@ void QgsGrassVectorItem::deleteGrassObject()
 QgsGrassVectorLayerItem::QgsGrassVectorLayerItem( QgsDataItem* parent, QgsGrassObject grassObject, QString layerName,
     QString path, QString uri,
     LayerType layerType, bool singleLayer )
-    : QgsGrassObjectItem( parent, grassObject, layerName, path, uri, layerType, "grass", mSingleLayer )
+    : QgsGrassObjectItem( parent, grassObject, layerName, path, uri, layerType, "grass", singleLayer )
     , mSingleLayer( singleLayer )
 {
-
 }
 
 QString QgsGrassVectorLayerItem::layerName() const
@@ -664,6 +674,12 @@ QString QgsGrassVectorLayerItem::layerName() const
     // to get map + layer when added from browser
     return mGrassObject.name() + " " + name();
   }
+}
+
+bool QgsGrassVectorLayerItem::equal( const QgsDataItem *other )
+{
+  const QgsGrassVectorLayerItem * item = qobject_cast<const QgsGrassVectorLayerItem *>( other );
+  return QgsGrassObjectItem::equal( other ) && item && mSingleLayer == item->mSingleLayer;
 }
 
 //----------------------- QgsGrassRasterItem ------------------------------
@@ -690,6 +706,12 @@ QIcon QgsGrassRasterItem::icon()
   return QgsDataItem::icon();
 }
 
+bool QgsGrassRasterItem::equal( const QgsDataItem *other )
+{
+  const QgsGrassRasterItem * item = qobject_cast<const QgsGrassRasterItem *>( other );
+  return QgsGrassObjectItem::equal( other ) && item && mExternal == item->mExternal;
+}
+
 //----------------------- QgsGrassGroupItem ------------------------------
 
 QgsGrassGroupItem::QgsGrassGroupItem( QgsDataItem* parent, QgsGrassObject grassObject,
@@ -710,38 +732,8 @@ QIcon QgsGrassGroupItem::icon()
 }
 
 //----------------------- QgsGrassImportItem ------------------------------
-QgsGrassImportItemIcon::QgsGrassImportItemIcon( QObject *parent )
-    : QObject( parent )
-    , mCount( 0 )
-    , mMovie( 0 )
-{
-  // QApplication as parent to ensure that it is deleted before QApplication
-  mMovie = new QMovie( QApplication::instance() );
-  mMovie->setFileName( QgsApplication::iconPath( "/mIconImport.gif" ) );
-  mMovie->setCacheMode( QMovie::CacheAll );
-  connect( mMovie, SIGNAL( frameChanged( int ) ), SLOT( onFrameChanged() ) );
-}
 
-void QgsGrassImportItemIcon::onFrameChanged()
-{
-  mIcon = QIcon( mMovie->currentPixmap() );
-}
-
-void QgsGrassImportItemIcon::addListener()
-{
-  mCount++;
-  mMovie->setPaused( mCount == 0 );
-}
-
-void QgsGrassImportItemIcon::removeListener()
-{
-  mCount++;
-  mMovie->setPaused( mCount == 0 );
-}
-
-//----------------------- QgsGrassImportItem ------------------------------
-
-QgsGrassImportItemIcon *QgsGrassImportItem::mImportIcon = 0;
+QgsAnimatedIcon *QgsGrassImportItem::mImportIcon = 0;
 
 QgsGrassImportItem::QgsGrassImportItem( QgsDataItem* parent, const QString& name, const QString& path, QgsGrassImport* import )
     : QgsDataItem( QgsDataItem::Layer, parent, name, path )
@@ -751,16 +743,18 @@ QgsGrassImportItem::QgsGrassImportItem( QgsDataItem* parent, const QString& name
   setCapabilities( QgsDataItem::NoCapabilities ); // disable fertility
   setState( Populating );
 
-  if ( !mImportIcon )
-    mImportIcon = new QgsGrassImportItemIcon( import );
-
-  connect( mImportIcon, SIGNAL( frameChanged( int ) ), SLOT( emitDataChanged() ) );
-  mImportIcon->addListener();
+  if ( mImportIcon )
+  {
+    mImportIcon->connectFrameChanged( this, SLOT( emitDataChanged() ) );
+  }
 }
 
 QgsGrassImportItem::~QgsGrassImportItem()
 {
-  mImportIcon->removeListener();
+  if ( mImportIcon )
+  {
+    mImportIcon->disconnectFrameChanged( this, SLOT( emitDataChanged() ) );
+  }
 }
 
 QList<QAction*> QgsGrassImportItem::actions()
@@ -779,6 +773,7 @@ void QgsGrassImportItem::cancel()
   QgsDebugMsg( "Entered" );
   if ( !mImport ) // should not happen
   {
+    QgsDebugMsg( "mImport is null" );
     return;
   }
   mImport->cancel();
@@ -786,7 +781,19 @@ void QgsGrassImportItem::cancel()
 
 QIcon QgsGrassImportItem::icon()
 {
-  return mImportIcon->icon();
+  if ( mImportIcon )
+  {
+    return mImportIcon->icon();
+  }
+  return QIcon();
+}
+
+void QgsGrassImportItem::initIcon()
+{
+  if ( !mImportIcon )
+  {
+    mImportIcon = new QgsAnimatedIcon( QgsApplication::iconPath( "/mIconImport.gif" ) );
+  }
 }
 
 //-------------------------------------------------------------------------

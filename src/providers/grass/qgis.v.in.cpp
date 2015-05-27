@@ -105,11 +105,11 @@ int main( int argc, char **argv )
     exit( EXIT_FAILURE );
 
   QFile stdinFile;
-  stdinFile.open( 0, QIODevice::ReadOnly );
+  stdinFile.open( stdin, QIODevice::ReadOnly );
   QDataStream stdinStream( &stdinFile );
 
   QFile stdoutFile;
-  stdoutFile.open( 0, QIODevice::ReadOnly );
+  stdoutFile.open( stdout, QIODevice::WriteOnly );
   QDataStream stdoutStream( &stdoutFile );
 
   qint32 typeQint32;
@@ -178,6 +178,8 @@ int main( int argc, char **argv )
   {
     exitIfCanceled( stdinStream, isPolygon, tmpName, &tmpMap, finalName, &finalMap );
     stdinStream >> feature;
+    stdoutStream << ( bool )true; // feature received
+    stdoutFile.flush();
     if ( !feature.isValid() )
     {
       break;
@@ -278,6 +280,29 @@ int main( int argc, char **argv )
         break;
       }
     }
+    // TODO: review if necessary and if there is GRASS function
+    // remove zero length
+    int nlines = Vect_get_num_lines( map );
+    struct line_pnts *line = Vect_new_line_struct();
+    for ( int i = 1; i <= nlines; i++ )
+    {
+      if ( !Vect_line_alive( map, i ) )
+      {
+        continue;
+      }
+
+      int type = Vect_read_line( map, line, NULL, i );
+      if ( !( type & GV_BOUNDARY ) )
+      {
+        continue;
+      }
+
+      if ( Vect_line_length( line ) == 0 )
+      {
+        Vect_delete_line( map, i );
+      }
+    }
+
     Vect_merge_lines( map, GV_BOUNDARY, NULL, NULL );
 #if GRASS_VERSION_MAJOR < 7
     Vect_remove_bridges( map, NULL );
@@ -310,6 +335,8 @@ int main( int argc, char **argv )
     {
       exitIfCanceled( stdinStream, isPolygon, tmpName, &tmpMap, finalName, &finalMap );
       stdinStream >> feature;
+      stdoutStream << ( bool )true; // feature received
+      stdoutFile.flush();
       if ( !feature.isValid() )
       {
         break;
@@ -357,6 +384,7 @@ int main( int argc, char **argv )
   Vect_close( &finalMap );
 
   stdoutStream << ( bool )true; // to keep caller waiting until finished
+  stdoutFile.flush();
   // TODO history
 
   exit( EXIT_SUCCESS );

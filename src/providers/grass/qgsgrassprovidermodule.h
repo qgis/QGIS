@@ -95,6 +95,7 @@ class QgsGrassObjectItem : public QgsLayerItem, public QgsGrassObjectItemBase
                         bool showObjectActions = true );
 
     virtual QList<QAction*> actions() override;
+    virtual bool equal( const QgsDataItem *other ) override;
 
   public slots:
     void renameGrassObject();
@@ -133,10 +134,7 @@ class QgsGrassVectorLayerItem : public QgsGrassObjectItem
                              QString path, QString uri, LayerType layerType, bool singleLayer );
 
     QString layerName() const override;
-    //virtual QList<QAction*> actions() override;
-
-  public slots:
-    //void deleteMap();
+    virtual bool equal( const QgsDataItem *other ) override;
 
   private:
     // layer from single layer vector map (cannot have delete action)
@@ -151,6 +149,7 @@ class QgsGrassRasterItem : public QgsGrassObjectItem
                         QString path, QString uri, bool isExternal );
 
     virtual QIcon icon() override;
+    virtual bool equal( const QgsDataItem *other ) override;
 
   private:
     // is external created by r.external
@@ -169,30 +168,6 @@ class QgsGrassGroupItem : public QgsGrassObjectItem
 
 };
 
-// icon movie
-class QgsGrassImportItemIcon : public QObject
-{
-    Q_OBJECT
-  public:
-    QgsGrassImportItemIcon( QObject *parent );
-
-    QIcon icon() { return mIcon; }
-    void addListener();
-    void removeListener();
-
-  public slots:
-    void onFrameChanged();
-
-  signals:
-    void frameChanged();
-
-  private:
-    void resetMovie();
-    int mCount;
-    QMovie * mMovie;
-    QIcon mIcon;
-};
-
 // item representing a layer being imported
 class QgsGrassImportItem : public QgsDataItem, public QgsGrassObjectItemBase
 {
@@ -205,6 +180,8 @@ class QgsGrassImportItem : public QgsDataItem, public QgsGrassObjectItemBase
     //} // do nothing to keep Populating
     virtual QList<QAction*> actions() override;
     virtual QIcon icon() override;
+    // Init animated icon, to be called from main UI thread
+    static void initIcon();
 
   public slots:
     virtual void refresh() override {}
@@ -217,7 +194,7 @@ class QgsGrassImportItem : public QgsDataItem, public QgsGrassObjectItemBase
     QgsGrassImport* mImport;
 
   private:
-    static QgsGrassImportItemIcon *mImportIcon;
+    static QgsAnimatedIcon *mImportIcon;
 };
 
 #endif // QGSGRASSPROVIDERMODULE_H

@@ -91,6 +91,17 @@ QStringList QgsGrassImport::names() const
   return list;
 }
 
+bool QgsGrassImport::isCanceled() const
+{
+  return mCanceled;
+}
+
+void QgsGrassImport::cancel()
+{
+  QgsDebugMsg( "entered" );
+  mCanceled = true;
+}
+
 //------------------------------ QgsGrassRasterImport ------------------------------------
 QgsGrassRasterImport::QgsGrassRasterImport( QgsRasterPipe* pipe, const QgsGrassObject& grassObject,
     const QgsRectangle &extent, int xSize, int ySize )
@@ -214,6 +225,11 @@ bool QgsGrassRasterImport::import()
     // calculate reasonable block size (5MB)
     int maximumTileHeight = 5000000 / mXSize;
     maximumTileHeight = std::max( 1, maximumTileHeight );
+    // smaller if reprojecting so that it can be canceled quickly
+    if ( mPipe->projector() )
+    {
+      maximumTileHeight = std::max( 1, 100000 / mXSize );
+    }
 
     QgsRasterIterator iter( mPipe->last() );
     iter.setMaximumTileWidth( mXSize );
@@ -226,6 +242,7 @@ bool QgsGrassRasterImport::import()
     int iterCols = 0;
     int iterRows = 0;
     QgsRasterBlock* block = 0;
+    process->setReadChannel( QProcess::StandardOutput );
     while ( iter.readNextRasterPart( band, iterCols, iterRows, &block, iterLeft, iterTop ) )
     {
       for ( int row = 0; row < iterRows; row++ )
@@ -246,6 +263,11 @@ bool QgsGrassRasterImport::import()
         }
         outStream << false; // not canceled
         outStream << byteArray;
+
+        // wait until the row is written to allow quick cancel (don't send data to buffer)
+        process->waitForReadyRead();
+        bool result;
+        outStream >> result;
       }
       delete block;
       if ( isCanceled() )
@@ -450,17 +472,25 @@ bool QgsGrassVectorImport::import()
       }
       outStream << false; // not canceled
       outStream << feature;
+
+      // wait until the feature is written to allow quick cancel (don't send data to buffer)
+      process->waitForReadyRead();
+      bool result;
+      outStream >> result;
     }
     feature = QgsFeature(); // indicate end by invalid feature
     outStream << false; // not canceled
     outStream << feature;
-    QgsDebugMsg( "features sent" );
+
+    process->waitForReadyRead();
+    bool result;
+    outStream >> result;
   }
   iterator.close();
 
   process->setReadChannel( QProcess::StandardOutput );
-
   bool result;
+  process->waitForReadyRead();
   outStream >> result;
   QgsDebugMsg( QString( "result = %1" ).arg( result ) );
 

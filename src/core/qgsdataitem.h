@@ -38,7 +38,7 @@ class QgsDataItem;
 typedef QgsDataItem * dataItem_t( QString, QgsDataItem* );
 
 /** Animated icon is keeping an animation running if there are listeners connected to frameChanged */
-class QgsAnimatedIcon : public QObject
+class CORE_EXPORT QgsAnimatedIcon : public QObject
 {
     Q_OBJECT
   public:

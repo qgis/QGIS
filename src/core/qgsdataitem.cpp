@@ -644,6 +644,7 @@ void QgsDataItem::setState( State state )
   {
     if ( !mPopulatingIcon )
     {
+      // TODO: ensure that QgsAnimatedIcon is created on UI thread only
       mPopulatingIcon = new QgsAnimatedIcon( QgsApplication::iconPath( "/mIconLoading.gif" ) );
     }
     mPopulatingIcon->connectFrameChanged( this, SLOT( emitDataChanged() ) );

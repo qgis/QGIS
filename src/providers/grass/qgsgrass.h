@@ -107,6 +107,8 @@ class GRASS_LIB_EXPORT QgsGrassObject
     bool mapsetIdentical( const QgsGrassObject &other ) const;
     // get regexp patter for new names, e.g. vectors should not start with number
     static QRegExp newNameRegExp( Type type );
+
+    bool operator==( const QgsGrassObject& other ) const;
   private:
     QString mGisdbase;
     QString mLocation;
