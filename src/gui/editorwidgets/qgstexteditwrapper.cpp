@@ -130,27 +130,33 @@ void QgsTextEditWrapper::initWidget( QWidget* editor )
   }
 }
 
-void QgsTextEditWrapper::setValue( const QVariant& value )
+void QgsTextEditWrapper::setValue( const QVariant& val )
 {
   QString v;
-  if ( value.isNull() )
+  if ( val.isNull() )
   {
     if ( !( field().type() == QVariant::Int || field().type() == QVariant::Double || field().type() == QVariant::LongLong || field().type() == QVariant::Date ) )
       v = QSettings().value( "qgis/nullValue", "NULL" ).toString();
   }
   else
-    v = value.toString();
+    v = val.toString();
 
   if ( mTextEdit )
   {
-    if ( config( "UseHtml" ).toBool() )
-      mTextEdit->setHtml( v );
-    else
-      mTextEdit->setPlainText( v );
+    if ( val != value() )
+    {
+      if ( config( "UseHtml" ).toBool() )
+        mTextEdit->setHtml( v );
+      else
+        mTextEdit->setPlainText( v );
+    }
   }
 
   if ( mPlainTextEdit )
-    mPlainTextEdit->setPlainText( v );
+  {
+    if ( val != value() )
+      mPlainTextEdit->setPlainText( v );
+  }
 
   if ( mLineEdit )
     mLineEdit->setText( v );
