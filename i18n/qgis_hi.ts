@@ -20231,7 +20231,7 @@ Please try a lower resolution or a smaller papersize</source>
         <translation>बराबर कॉलम चौडाई </translation>
     </message>
     <message>
-        <source>Allow to split layer items into multiple columns.</source>
+        <source>Allow splitting layer items into multiple columns.</source>
         <translation>लेयर वस्‍तुओं को बहु कॉलमों में विभाजित करने की अनुमति दें </translation>
     </message>
     <message>

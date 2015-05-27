@@ -20255,7 +20255,7 @@ Please try a lower resolution or a smaller papersize</source>
         <translation>Одинаковая ширина</translation>
     </message>
     <message>
-        <source>Allow to split layer items into multiple columns.</source>
+        <source>Allow splitting layer items into multiple columns.</source>
         <translation>Разрешить перенос элементов слоя в следующую колонку.</translation>
     </message>
     <message>

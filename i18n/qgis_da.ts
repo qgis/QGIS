@@ -20255,7 +20255,7 @@ Prøv en lavere opløsning eller en mindre papirstørrelse</translation>
         <translation>Ens kolonnebredder</translation>
     </message>
     <message>
-        <source>Allow to split layer items into multiple columns.</source>
+        <source>Allow splitting layer items into multiple columns.</source>
         <translation>Tillad at opdele lagelementer til flere kolonner.</translation>
     </message>
     <message>

@@ -20272,7 +20272,7 @@ Prašome pabandyti mažesnę raišką arba mažesnį lapą</translation>
         <translation>Vienodas stulpelių plotis</translation>
     </message>
     <message>
-        <source>Allow to split layer items into multiple columns.</source>
+        <source>Allow splitting layer items into multiple columns.</source>
         <translation>Leisti dalinti sluoksnio elementus į skirtingus stulpelius.</translation>
     </message>
     <message>

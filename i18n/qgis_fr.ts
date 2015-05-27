@@ -20403,7 +20403,7 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
         <translation>Égaliser la largeur des colonnes</translation>
     </message>
     <message>
-        <source>Allow to split layer items into multiple columns.</source>
+        <source>Allow splitting layer items into multiple columns.</source>
         <translation>Permet de répartir les couches dans plusieurs colonnes.</translation>
     </message>
     <message>

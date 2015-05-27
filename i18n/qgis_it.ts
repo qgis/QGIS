@@ -20270,7 +20270,7 @@ Prova una risoluzione minore o una minor dimensione di stampa</translation>
         <translation>Uguale larghezza delle colonne</translation>
     </message>
     <message>
-        <source>Allow to split layer items into multiple columns.</source>
+        <source>Allow splitting layer items into multiple columns.</source>
         <translation>Consenti di dividere gli oggetti del layer in colonne multiple.</translation>
     </message>
     <message>

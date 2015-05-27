@@ -20291,7 +20291,7 @@ Vă rog să încercați cu o rezoluție minimă sau mai mică a hârtiei</transl
         <translation>Coloane cu lățimi identice</translation>
     </message>
     <message>
-        <source>Allow to split layer items into multiple columns.</source>
+        <source>Allow splitting layer items into multiple columns.</source>
         <translation>Se permite divizarea elementelor dintr-un strat în coloane multiple.</translation>
     </message>
     <message>
