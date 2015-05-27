@@ -244,6 +244,26 @@ Description: QGIS - development files
  This package contains the headers and libraries needed to develop plugins for
  QGIS.
 
+Package: qgis-dbg
+Architecture: any
+Section: debug
+Priority: extra
+Depends:
+ libqgis-core{QGIS_ABI} (= ${binary:Version}),
+ libqgis-gui{QGIS_ABI} (= ${binary:Version}),
+ libqgis-analysis{QGIS_ABI} (= ${binary:Version}),
+ libqgis-networkanalysis{QGIS_ABI} (= ${binary:Version}),
+ libqgis-server{QGIS_ABI} (= ${binary:Version}),
+ libqgisgrass{QGIS_ABI} (= ${binary:Version}),
+ libqgispython{QGIS_ABI} (= ${binary:Version}),
+ ${misc:Depends}
+Suggests: gdb
+Description: QGIS - debugging symbols
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains debugging symbols.
+
 Package: qgis-plugin-grass
 Architecture: any
 Depends:
