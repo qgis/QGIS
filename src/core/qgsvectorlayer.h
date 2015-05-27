@@ -1656,8 +1656,31 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @see updatedFields()
      */
     void attributeDeleted( int idx );
+    /**
+     * Emitted when a new feature has been added to the layer
+     *
+     * @param fid The id of the new feature
+     */
     void featureAdded( QgsFeatureId fid );
+    /**
+     * Emitted when a feature has been deleted.
+     *
+     * If you do expensive operations in a slot connected to this, you should prever to use
+     * {@link featuresDeleted(QgsFeatureIds)}.
+     *
+     * @param fid The id of the feature which has been deleted
+     */
     void featureDeleted( QgsFeatureId fid );
+    /**
+     * Emitted when features have been deleted.
+     *
+     * If features are deleted within an edit command, this will only be emitted once at the end
+     * to allow connected slots to minimize the overhead.
+     * If features are delted outside of an edit command, this signal will be emitted once per feature.
+     *
+     * @param fids The feature ids that have been deleted.
+     */
+    void featuresDeleted( QgsFeatureIds fids );
     /**
      * Is emitted, whenever the fields available from this layer have been changed.
      * This can be due to manually adding attributes or due to a join.
@@ -1734,6 +1757,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
   private slots:
     void onRelationsLoaded();
     void onJoinedFieldsChanged();
+    void onFeatureDeleted( const QgsFeatureId& fid );
 
   protected:
     /** Set the extent */
@@ -1895,6 +1919,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     // Feature counts for each renderer symbol
     QMap<QgsSymbolV2*, long> mSymbolFeatureCountMap;
+
+    //! True while an undo command is active
+    bool mEditCommandActive;
+
+    QgsFeatureIds mDeletedFids;
 
     friend class QgsVectorLayerFeatureSource;
 };

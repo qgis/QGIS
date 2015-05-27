@@ -1293,6 +1293,16 @@ class QgsVectorLayer : QgsMapLayer
     void featureAdded( QgsFeatureId fid );
     void featureDeleted( QgsFeatureId fid );
     /**
+     * Emitted when features have been deleted.
+     *
+     * If features are deleted within an edit command, this will only be emitted once at the end
+     * to allow connected slots to minimize the overhead.
+     * If features are delted outside of an edit command, this signal will be emitted once per feature.
+     *
+     * @param fids The feature ids that have been deleted.
+     */
+    void featuresDeleted( QgsFeatureIds fids );
+    /**
      * Is emitted, whenever the fields available from this layer have been changed.
      * This can be due to manually adding attributes or due to a join.
      */
