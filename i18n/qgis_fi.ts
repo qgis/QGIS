@@ -20276,7 +20276,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
         <translation>Tasalevyiset sarakkeet</translation>
     </message>
     <message>
-        <source>Allow to split layer items into multiple columns.</source>
+        <source>Allow splitting layer items into multiple columns.</source>
         <translation>Salli tason jäsenten jako useammalle sarakkeelle.</translation>
     </message>
     <message>

@@ -20259,7 +20259,7 @@ Please try a lower resolution or a smaller papersize</source>
         <translation>列を等幅で作成</translation>
     </message>
     <message>
-        <source>Allow to split layer items into multiple columns.</source>
+        <source>Allow splitting layer items into multiple columns.</source>
         <translation>レイヤの複数列に分割を許可する.</translation>
     </message>
     <message>

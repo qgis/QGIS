@@ -20281,7 +20281,7 @@ Vennligst prøv en lavere oppløsning eller et mindre papirformat</translation>
         <translation>Samme kolonnebredde</translation>
     </message>
     <message>
-        <source>Allow to split layer items into multiple columns.</source>
+        <source>Allow splitting layer items into multiple columns.</source>
         <translation>Tillat oppdeling av lagelementer til flere kolonner.</translation>
     </message>
     <message>

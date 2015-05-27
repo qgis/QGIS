@@ -20284,8 +20284,8 @@ Please try a lower resolution or a smaller papersize</translation>
         <translation>Equal column widths</translation>
     </message>
     <message>
-        <source>Allow to split layer items into multiple columns.</source>
-        <translation>Allow to split layer items into multiple columns.</translation>
+        <source>Allow splitting layer items into multiple columns.</source>
+        <translation>Allow splitting layer items into multiple columns.</translation>
     </message>
     <message>
         <source>Split layers</source>

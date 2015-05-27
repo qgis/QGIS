@@ -20270,7 +20270,7 @@ Tente uma resolução ou um tamanho de papel menor</translation>
         <translation>Larguras de colunas iguais</translation>
     </message>
     <message>
-        <source>Allow to split layer items into multiple columns.</source>
+        <source>Allow splitting layer items into multiple columns.</source>
         <translation>Permite dividir itens da camada em múltiplas colunas.</translation>
     </message>
     <message>

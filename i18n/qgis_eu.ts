@@ -20253,7 +20253,7 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Zabalera bereko zutabeak</translation>
     </message>
     <message>
-        <source>Allow to split layer items into multiple columns.</source>
+        <source>Allow splitting layer items into multiple columns.</source>
         <translation>Onartu geruza-elementuak zutabe anitzetan zatitzea.</translation>
     </message>
     <message>

@@ -20133,7 +20133,7 @@ Skúste prosím nižšie rozlíšenie alebo menšiu veľkosť papiera</translati
         <translation>Rovnaké šírky stĺpca</translation>
     </message>
     <message>
-        <source>Allow to split layer items into multiple columns.</source>
+        <source>Allow splitting layer items into multiple columns.</source>
         <translation>Rozdeliť položky vrstvy do viacerých stĺpcov.</translation>
     </message>
     <message>
