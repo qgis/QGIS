@@ -27,48 +27,48 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
     QgsGeometryCollectionV2& operator=( const QgsGeometryCollectionV2& c );
     virtual ~QgsGeometryCollectionV2();
 
-    virtual QgsAbstractGeometryV2* clone() const;
+    virtual QgsAbstractGeometryV2* clone() const override;
 
     int numGeometries() const;
     const QgsAbstractGeometryV2* geometryN( int n ) const;
     QgsAbstractGeometryV2* geometryN( int n );
 
     //methods inherited from QgsAbstractGeometry
-    virtual int dimension() const;
-    virtual QString geometryType() const { return "GeometryCollection"; }
-    virtual void clear();
+    virtual int dimension() const override;
+    virtual QString geometryType() const override { return "GeometryCollection"; }
+    virtual void clear() override;
 
     /**Adds a geometry and takes ownership. Returns true in case of success*/
     virtual bool addGeometry( QgsAbstractGeometryV2* g );
     virtual bool removeGeometry( int nr );
 
-    virtual void transform( const QgsCoordinateTransform& ct );
-    void transform( const QTransform& t );
-    virtual void clip( const QgsRectangle& rect );
-    virtual void draw( QPainter& p ) const;
+    virtual void transform( const QgsCoordinateTransform& ct ) override;
+    void transform( const QTransform& t ) override;
+    virtual void clip( const QgsRectangle& rect ) override;
+    virtual void draw( QPainter& p ) const override;
 
-    bool fromWkb( const unsigned char * wkb );
-    virtual bool fromWkt( const QString& wkt );
-    int wkbSize() const;
-    unsigned char* asWkb( int& binarySize ) const;
-    QString asWkt( int precision = 17 ) const;
-    QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
-    QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
-    QString asJSON( int precision = 17 ) const;
+    bool fromWkb( const unsigned char * wkb ) override;
+    virtual bool fromWkt( const QString& wkt ) override;
+    int wkbSize() const override;
+    unsigned char* asWkb( int& binarySize ) const override;
+    QString asWkt( int precision = 17 ) const override;
+    QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
+    QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
+    QString asJSON( int precision = 17 ) const override;
 
-    virtual QgsRectangle calculateBoundingBox() const;
+    virtual QgsRectangle calculateBoundingBox() const override;
 
-    virtual void coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coord ) const;
-    virtual double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const;
-    bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const;
+    virtual void coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coord ) const override;
+    virtual double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const override;
+    bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const override;
 
     //low-level editing
-    virtual bool insertVertex( const QgsVertexId& position, const QgsPointV2& vertex );
-    virtual bool moveVertex( const QgsVertexId& position, const QgsPointV2& newPos );
-    virtual bool deleteVertex( const QgsVertexId& position );
+    virtual bool insertVertex( const QgsVertexId& position, const QgsPointV2& vertex ) override;
+    virtual bool moveVertex( const QgsVertexId& position, const QgsPointV2& newPos ) override;
+    virtual bool deleteVertex( const QgsVertexId& position ) override;
 
-    virtual double length() const;
-    virtual double area() const;
+    virtual double length() const override;
+    virtual double area() const override;
 
   protected:
     QVector< QgsAbstractGeometryV2* > mGeometries;

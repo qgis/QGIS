@@ -43,14 +43,14 @@ class HistogramItem: public QwtPlotItem
     void setPen( const QPen& pen );
     QPen pen() const;
 
-    virtual QwtDoubleRect boundingRect() const;
+    virtual QwtDoubleRect boundingRect() const override;
 
-    virtual int rtti() const;
+    virtual int rtti() const override;
 
     virtual void draw( QPainter *, const QwtScaleMap &xMap,
-                       const QwtScaleMap &yMap, const QRect & ) const;
+                       const QwtScaleMap &yMap, const QRect & ) const override;
 
-    virtual void updateLegend( QwtLegend * ) const;
+    virtual void updateLegend( QwtLegend * ) const override;
 
     void setBaseline( double reference );
     double baseline() const;

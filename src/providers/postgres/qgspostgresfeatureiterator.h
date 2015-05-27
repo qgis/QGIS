@@ -86,7 +86,7 @@ class QgsPostgresFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Q
     virtual bool fetchFeature( QgsFeature& feature ) override;
 
     //! fetch next feature filter expression
-    bool nextFeatureFilterExpression( QgsFeature& f );
+    bool nextFeatureFilterExpression( QgsFeature& f ) override;
 
     //! Setup the simplification of geometries to fetch using the specified simplify method
     virtual bool prepareSimplification( const QgsSimplifyMethod& simplifyMethod ) override;

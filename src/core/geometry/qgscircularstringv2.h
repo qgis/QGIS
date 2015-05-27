@@ -27,50 +27,50 @@ class CORE_EXPORT QgsCircularStringV2: public QgsCurveV2
     QgsCircularStringV2();
     ~QgsCircularStringV2();
 
-    virtual QString geometryType() const { return "CircularString"; }
-    virtual int dimension() const { return 1; }
-    virtual QgsAbstractGeometryV2* clone() const;
-    virtual void clear();
+    virtual QString geometryType() const override { return "CircularString"; }
+    virtual int dimension() const override { return 1; }
+    virtual QgsAbstractGeometryV2* clone() const override;
+    virtual void clear() override;
 
-    virtual QgsRectangle calculateBoundingBox() const;
+    virtual QgsRectangle calculateBoundingBox() const override;
 
-    virtual bool fromWkb( const unsigned char * wkb );
-    virtual bool fromWkt( const QString& wkt );
+    virtual bool fromWkb( const unsigned char * wkb ) override;
+    virtual bool fromWkt( const QString& wkt ) override;
 
-    int wkbSize() const;
-    unsigned char* asWkb( int& binarySize ) const;
-    QString asWkt( int precision = 17 ) const;
-    QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
-    QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
-    QString asJSON( int precision = 17 ) const;
+    int wkbSize() const override;
+    unsigned char* asWkb( int& binarySize ) const override;
+    QString asWkt( int precision = 17 ) const override;
+    QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
+    QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
+    QString asJSON( int precision = 17 ) const override;
 
-    int numPoints() const;
+    int numPoints() const override;
     QgsPointV2 pointN( int i ) const;
-    void points( QList<QgsPointV2>& pts ) const;
+    void points( QList<QgsPointV2>& pts ) const override;
     void setPoints( const QList<QgsPointV2>& points );
 
 
     //curve interface
-    virtual double length() const;
-    virtual QgsPointV2 startPoint() const;
-    virtual QgsPointV2 endPoint() const;
-    virtual QgsLineStringV2* curveToLine() const;
+    virtual double length() const override;
+    virtual QgsPointV2 startPoint() const override;
+    virtual QgsPointV2 endPoint() const override;
+    virtual QgsLineStringV2* curveToLine() const override;
 
-    void draw( QPainter& p ) const;
-    void transform( const QgsCoordinateTransform& ct );
-    void transform( const QTransform& t );
-    void clip( const QgsRectangle& rect );
-    void addToPainterPath( QPainterPath& path ) const;
-    void drawAsPolygon( QPainter& p ) const;
+    void draw( QPainter& p ) const override;
+    void transform( const QgsCoordinateTransform& ct ) override;
+    void transform( const QTransform& t ) override;
+    void clip( const QgsRectangle& rect ) override;
+    void addToPainterPath( QPainterPath& path ) const override;
+    void drawAsPolygon( QPainter& p ) const override;
 
-    virtual bool insertVertex( const QgsVertexId& position, const QgsPointV2& vertex );
-    virtual bool moveVertex( const QgsVertexId& position, const QgsPointV2& newPos );
-    virtual bool deleteVertex( const QgsVertexId& position );
+    virtual bool insertVertex( const QgsVertexId& position, const QgsPointV2& vertex ) override;
+    virtual bool moveVertex( const QgsVertexId& position, const QgsPointV2& newPos ) override;
+    virtual bool deleteVertex( const QgsVertexId& position ) override;
 
-    double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const;
-    bool pointAt( int i, QgsPointV2& vertex, QgsVertexId::VertexType& type ) const;
+    double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const override;
+    bool pointAt( int i, QgsPointV2& vertex, QgsVertexId::VertexType& type ) const override;
 
-    void sumUpArea( double& sum ) const;
+    void sumUpArea( double& sum ) const override;
 
   private:
     QVector<double> mX;

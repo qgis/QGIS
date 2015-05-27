@@ -30,29 +30,29 @@ class CORE_EXPORT QgsCurvePolygonV2: public QgsSurfaceV2
     QgsCurvePolygonV2& operator=( const QgsCurvePolygonV2& p );
     ~QgsCurvePolygonV2();
 
-    virtual QString geometryType() const { return "CurvePolygon"; }
-    virtual int dimension() const { return 2; }
-    virtual QgsAbstractGeometryV2* clone() const;
-    void clear();
+    virtual QString geometryType() const override { return "CurvePolygon"; }
+    virtual int dimension() const override { return 2; }
+    virtual QgsAbstractGeometryV2* clone() const override;
+    void clear() override;
 
 
-    virtual QgsRectangle calculateBoundingBox() const;
-    virtual bool fromWkb( const unsigned char* wkb );
-    virtual bool fromWkt( const QString& wkt );
+    virtual QgsRectangle calculateBoundingBox() const override;
+    virtual bool fromWkb( const unsigned char* wkb ) override;
+    virtual bool fromWkt( const QString& wkt ) override;
 
-    int wkbSize() const;
-    unsigned char* asWkb( int& binarySize ) const;
-    QString asWkt( int precision = 17 ) const;
-    QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
-    QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
-    QString asJSON( int precision = 17 ) const;
+    int wkbSize() const override;
+    unsigned char* asWkb( int& binarySize ) const override;
+    QString asWkt( int precision = 17 ) const override;
+    QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
+    QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
+    QString asJSON( int precision = 17 ) const override;
 
     //surface interface
-    virtual double area() const;
-    virtual double length() const;
-    QgsPointV2 centroid() const;
-    QgsPointV2 pointOnSurface() const;
-    QgsPolygonV2* surfaceToPolygon() const;
+    virtual double area() const override;
+    virtual double length() const override;
+    QgsPointV2 centroid() const override;
+    QgsPointV2 pointOnSurface() const override;
+    QgsPolygonV2* surfaceToPolygon() const override;
 
     //curve polygon interface
     int numInteriorRings() const;
@@ -68,17 +68,17 @@ class CORE_EXPORT QgsCurvePolygonV2: public QgsSurfaceV2
     /**Removes ring. Exterior ring is 0, first interior ring 1, ...*/
     bool removeInteriorRing( int nr );
 
-    virtual void draw( QPainter& p ) const;
-    void transform( const QgsCoordinateTransform& ct );
-    void transform( const QTransform& t );
+    virtual void draw( QPainter& p ) const override;
+    void transform( const QgsCoordinateTransform& ct ) override;
+    void transform( const QTransform& t ) override;
 
-    virtual bool insertVertex( const QgsVertexId& position, const QgsPointV2& vertex );
-    virtual bool moveVertex( const QgsVertexId& position, const QgsPointV2& newPos );
-    virtual bool deleteVertex( const QgsVertexId& position );
+    virtual bool insertVertex( const QgsVertexId& position, const QgsPointV2& vertex ) override;
+    virtual bool moveVertex( const QgsVertexId& position, const QgsPointV2& newPos ) override;
+    virtual bool deleteVertex( const QgsVertexId& position ) override;
 
-    virtual void coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coord ) const;
-    double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const;
-    bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const;
+    virtual void coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coord ) const override;
+    double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const override;
+    bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const override;
 
   protected:
 
