@@ -297,9 +297,12 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
 
   if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
   {
+    QString curveToLineFn; // in postgis < 1.5 the st_curvetoline function does not exist
+    if ( mConn->majorVersion() >= 2 || ( mConn->majorVersion() == 1 && mConn->minorVersion() >= 5 ) )
+      curveToLineFn = "st_curvetoline"; // st_ prefix is always used
     whereClause += QString( " AND %1(%2(%3%4),%5)" )
                    .arg( mConn->majorVersion() < 2 ? "intersects" : "st_intersects" )
-                   .arg( mConn->majorVersion() < 2 ? "curvetoline" : "st_curvetoline" )
+                   .arg( curveToLineFn )
                    .arg( QgsPostgresConn::quotedIdentifier( mSource->mGeometryColumn ) )
                    .arg( castToGeometry ? "::geometry" : "" )
                    .arg( qBox );
