@@ -361,20 +361,21 @@ class Grass7Algorithm(GeoAlgorithm):
                 commands.append('g.region raster=' + out.name + uniqueSufix)
                 outputCommands.append('g.region raster=' + out.name
                                       + uniqueSufix)
+
                 if self.grassName == 'r.statistics':
-                    # r.statistics saves its results in a non-qgis compatible way.
-                    # Post-Process with r.mapcalc.
+                    # r.statistics saves its results in a non-qgis compatible
+                    # way. Post-process them with r.mapcalc.
                     calcExpression = 'correctedoutput' + uniqueSufix
                     calcExpression += '=@' + out.name  + uniqueSufix
                     command = 'r.mapcalc expression="' + calcExpression + '"'
                     commands.append(command)
                     outputCommands.append(command)
-                
+
                     command = 'r.out.gdal -c createopt="TFW=YES,COMPRESS=LZW"'
                     command += ' input='
-                    command += out.name + uniqueSufix
+                    command += 'correctedoutput' + uniqueSufix
                     command += ' output="' + filename + '"'
-                elif self.grassName == 'r.statistics':
+                elif self.grass7Name == 'r.composite':
                     command = 'r.out.gdal -c createopt="TFW=YES,COMPRESS=LZW"'
                     command += ' input='
                     command += 'correctedoutput' + uniqueSufix
@@ -388,7 +389,7 @@ class Grass7Algorithm(GeoAlgorithm):
                 elif self.grass7Name == 'r.composite':
                     commands.append(command)
                     outputCommands.append(command)
-                elif self.grassName == 'r.statistics':
+                elif self.grass7Name == 'r.statistics':
                     commands.append(command)
                     outputCommands.append(command)
                 else:
