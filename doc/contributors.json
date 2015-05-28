@@ -651,6 +651,23 @@
            43.653226
         ]
       }
-    }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Alessandro Pasotti",
+        "Committer": "Yes",
+        "First Commit Message": "Initial GetStyles implementation",
+        "First Commit Date": "06-01-2014",
+        "GIT Nickname": "elpaso"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.251318,
+          44.815437
+        ]
+      }
+    }    
   ]
 }
