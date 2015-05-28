@@ -566,6 +566,13 @@ class CORE_EXPORT QgsGeometry
 
     void convertToStraightSegment();
 
+    /** Returns true if the geometry is a curved geometry type which requires conversion to
+     * display as straight line segments.
+     * @note added in QGIS 2.10
+     * @see convertToStraightSegment
+     */
+    bool requiresConversionToStraightSegments() const;
+
     void mapToPixel( const QgsMapToPixel& mtp );
     void clip( const QgsRectangle& rect );
     void draw( QPainter& p ) const;

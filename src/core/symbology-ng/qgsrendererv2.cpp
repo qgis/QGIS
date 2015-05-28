@@ -245,12 +245,19 @@ void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymb
 {
   QgsSymbolV2::SymbolType symbolType = symbol->type();
 
-  QgsGeometry* geom = feature.geometry();
+  const QgsGeometry* geom = feature.constGeometry();
   if ( !geom )
   {
     return;
   }
-  geom->convertToStraightSegment();
+
+  if ( geom->requiresConversionToStraightSegments() )
+  {
+    //geometry requires conversion to straight segments
+    QgsGeometry* straightGeom = new QgsGeometry( *geom );
+    feature.setGeometry( straightGeom );
+    geom = feature.constGeometry();
+  }
 
   switch ( geom->wkbType() )
   {

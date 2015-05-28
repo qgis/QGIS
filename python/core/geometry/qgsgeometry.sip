@@ -481,6 +481,13 @@ class QgsGeometry
     */
     static QgsGeometry *unaryUnion( const QList<QgsGeometry*>& geometryList ) /Factory/;
 
+    /** Returns true if the geometry is a curved geometry type which requires conversion to
+     * display as straight line segments.
+     * @note added in QGIS 2.10
+     * @see convertToStraightSegment
+     */
+    bool requiresConversionToStraightSegments() const;
+
     /** Compares two polylines for equality within a specified tolerance.
      * @param p1 first polyline
      * @param p2 second polyline

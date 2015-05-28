@@ -1479,7 +1479,7 @@ QgsGeometry *QgsGeometry::unaryUnion( const QList<QgsGeometry*> &geometryList )
 
 void QgsGeometry::convertToStraightSegment()
 {
-  if ( !d || !d->geometry )
+  if ( !d || !d->geometry || !requiresConversionToStraightSegments() )
   {
     return;
   }
@@ -1521,6 +1521,18 @@ void QgsGeometry::convertToStraightSegment()
   mWkbSize = 0;
   GEOSGeom_destroy( mGeos );
   mGeos = 0;
+}
+
+bool QgsGeometry::requiresConversionToStraightSegments() const
+{
+  if ( !d || !d->geometry )
+  {
+    return false;
+  }
+
+  QgsWKBTypes::Type flatGeomType = QgsWKBTypes::flatType( d->geometry->wkbType() );
+  return ( flatGeomType == QgsWKBTypes::CompoundCurve || flatGeomType == QgsWKBTypes::CircularString
+           || flatGeomType == QgsWKBTypes::CurvePolygon );
 }
 
 int QgsGeometry::transform( const QgsCoordinateTransform& ct )
