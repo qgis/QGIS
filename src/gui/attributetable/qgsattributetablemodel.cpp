@@ -369,6 +369,8 @@ void QgsAttributeTableModel::loadLayer()
 
   emit finished();
 
+  connect( mLayerCache, SIGNAL( invalidated() ), this, SLOT( loadLayer() ) );
+
   mFieldCount = mAttributes.size();
 }
 
