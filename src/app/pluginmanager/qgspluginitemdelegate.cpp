@@ -69,7 +69,7 @@ void QgsPluginItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
   if ( !iconPixmap.isNull() )
   {
     int iconSize = pixelsHigh;
-    painter->drawPixmap( option.rect.left() + 0.2 * pixelsHigh , option.rect.top() + 0.2 * pixelsHigh, iconSize, iconSize, iconPixmap );
+    painter->drawPixmap( option.rect.left() + 1.2 * pixelsHigh , option.rect.top() + 0.2 * pixelsHigh, iconSize, iconSize, iconPixmap );
   }
 
   // Draw the text
@@ -95,7 +95,7 @@ void QgsPluginItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     font.setBold( true );
     painter->setFont( font );
   }
-  painter->drawText( option.rect.left() + pixelsHigh * 1.4, option.rect.bottom() - pixelsHigh * 0.4, index.data( Qt::DisplayRole ).toString() );
+  painter->drawText( option.rect.left() + pixelsHigh * 2.4, option.rect.bottom() - pixelsHigh * 0.4, index.data( Qt::DisplayRole ).toString() );
 
   painter->restore();
 }
