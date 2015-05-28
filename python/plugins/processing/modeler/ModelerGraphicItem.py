@@ -100,11 +100,15 @@ class ModelerGraphicItem(QGraphicsItem):
             pt = self.getLinkPointForOutput(-1)
             pt = QPointF(0, pt.y())
             self.outButton.position = pt
+        for arrow in self.arrows:
+            arrow.updatePath()
         self.update()
 
     def foldOutput(self, folded):
         self.element.outputsFolded = folded
         self.prepareGeometryChange()
+        for arrow in self.arrows:
+            arrow.updatePath()
         self.update()
 
     def addArrow(self, arrow):
@@ -302,7 +306,7 @@ class ModelerGraphicItem(QGraphicsItem):
     def itemChange(self, change, value):
         if change == QGraphicsItem.ItemPositionHasChanged:
             for arrow in self.arrows:
-                arrow.updatePosition()
+                arrow.updatePath()
             self.element.pos = self.pos()
 
         return value

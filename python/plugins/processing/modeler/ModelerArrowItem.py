@@ -47,7 +47,7 @@
 """
 
 from PyQt4.QtCore import Qt, QPointF
-from PyQt4.QtGui import QGraphicsPathItem, QPen, QGraphicsItem, QPainterPath, QPolygonF
+from PyQt4.QtGui import QGraphicsPathItem, QPen, QGraphicsItem, QPainterPath, QPolygonF, QPainter
 from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
 from processing.modeler.ModelerAlgorithm import Algorithm
 
@@ -61,18 +61,15 @@ class ModelerArrowItem(QGraphicsPathItem):
         self.startIndex = startIndex
         self.startItem = startItem
         self.endItem = endItem
+        self.endPoints = []
         self.setFlag(QGraphicsItem.ItemIsSelectable, False)
         self.myColor = Qt.gray
         self.setPen(QPen(self.myColor, 1, Qt.SolidLine,
                     Qt.RoundCap, Qt.RoundJoin))
         self.setZValue(0)
 
-    def paint(self, painter, option, widget=None):
-        myPen = self.pen()
-        myPen.setColor(self.myColor)
-        painter.setPen(myPen)
-        painter.setBrush(self.myColor)
-
+    def updatePath(self):
+        self.endPoints = []
         controlPoints = []
         endPt = self.endItem.getLinkPointForParameter(self.endIndex)
         startPt = self.startItem.getLinkPointForOutput(self.startIndex)
@@ -80,37 +77,46 @@ class ModelerArrowItem(QGraphicsPathItem):
             if self.startIndex != -1:
                 controlPoints.append(self.startItem.pos() + startPt)
                 controlPoints.append(self.startItem.pos() + startPt
-                        + QPointF(ModelerGraphicItem.BOX_WIDTH / 2, 0))
+                        + QPointF(ModelerGraphicItem.BOX_WIDTH / 3, 0))
                 controlPoints.append(self.endItem.pos() + endPt
-                        - QPointF(ModelerGraphicItem.BOX_WIDTH / 2, 0))
+                        - QPointF(ModelerGraphicItem.BOX_WIDTH / 3, 0))
                 controlPoints.append(self.endItem.pos() + endPt)
                 pt = QPointF(self.startItem.pos() + startPt
                         + QPointF(-3, -3))
-                painter.drawEllipse(pt.x(), pt.y(), 6, 6)
+                self.endPoints.append(pt)
                 pt = QPointF(self.endItem.pos() + endPt +
                         QPointF(-3, -3))
-                painter.drawEllipse(pt.x(), pt.y(), 6, 6)
+                self.endPoints.append(pt)
             else:
                 # Case where there is a dependency on an algorithm not
                 # on an output
                 controlPoints.append(self.startItem.pos() + startPt)
                 controlPoints.append(self.startItem.pos() + startPt
-                        + QPointF(ModelerGraphicItem.BOX_WIDTH / 2, 0))
+                        + QPointF(ModelerGraphicItem.BOX_WIDTH / 3, 0))
                 controlPoints.append(self.endItem.pos() + endPt
-                        - QPointF(ModelerGraphicItem.BOX_WIDTH / 2, 0))
+                        - QPointF(ModelerGraphicItem.BOX_WIDTH / 3, 0))
                 controlPoints.append(self.endItem.pos() + endPt)
         else:
             controlPoints.append(self.startItem.pos())
             controlPoints.append(self.startItem.pos()
-                    + QPointF(ModelerGraphicItem.BOX_WIDTH / 2, 0))
+                    + QPointF(ModelerGraphicItem.BOX_WIDTH / 3, 0))
             controlPoints.append(self.endItem.pos() + endPt
-                    - QPointF(ModelerGraphicItem.BOX_WIDTH / 2, 0))
+                    - QPointF(ModelerGraphicItem.BOX_WIDTH / 3, 0))
             controlPoints.append(self.endItem.pos() + endPt)
             pt = QPointF(self.endItem.pos() + endPt + QPointF(-3, -3))
-            painter.drawEllipse(pt.x(), pt.y(), 6, 6)
-
+            self.endPoints.append(pt)
         path = QPainterPath()
         path.moveTo(controlPoints[0])
         path.cubicTo(*controlPoints[1:])
-        painter.strokePath(path, painter.pen())
         self.setPath(path)
+
+    def paint(self, painter, option, widget=None):
+        myPen = self.pen()
+        myPen.setColor(self.myColor)
+        painter.setPen(myPen)
+        painter.setBrush(self.myColor)
+        painter.setRenderHint(QPainter.Antialiasing)
+
+        for point in self.endPoints:
+            painter.drawEllipse(point.x(), point.y(), 6, 6)
+        painter.strokePath(self.shape(), painter.pen())
