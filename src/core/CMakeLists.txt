@@ -701,6 +701,8 @@ SET(QGIS_CORE_HDRS
   layertree/qgslayertreeutils.h
   
   geometry/qgsgeometry.h
+  geometry/qgsabstractgeometryv2.h
+  geometry/qgswkbtypes.h
 )
 
 IF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)

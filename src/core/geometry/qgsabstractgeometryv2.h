@@ -80,14 +80,16 @@ class CORE_EXPORT QgsAbstractGeometryV2
     bool is3D() const;
     bool isMeasure() const;
 
-    /*virtual bool transform( const QgsCoordinateTransform& ct ) =  0;
+#if 0
+    virtual bool transform( const QgsCoordinateTransform& ct ) =  0;
     virtual bool isEmpty() const = 0;
     virtual bool isSimple() const = 0;
     virtual bool isValid() const = 0;
     virtual QgsMultiPointV2* locateAlong() const = 0;
     virtual QgsMultiCurveV2* locateBetween() const = 0;
     virtual QgsCurveV2* boundary() const = 0;
-    virtual QgsRectangle envelope() const = 0;*/
+    virtual QgsRectangle envelope() const = 0;
+#endif
 
     //import
     virtual bool fromWkb( const unsigned char * wkb ) = 0;
