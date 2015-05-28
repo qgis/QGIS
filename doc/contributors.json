@@ -651,6 +651,23 @@
            43.653226
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Stéphane Brunner",
+        "Committer": "No",
+        "First Commit Message": "Typo in qgis_fr.ts",
+        "First Commit Date": "23-07-2013",
+        "GIT Nickname": "sbrunner"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.66946,
+          46.50825
+        ]
+      }
     }
   ]
 }
