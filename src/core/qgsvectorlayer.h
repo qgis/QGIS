@@ -1753,7 +1753,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     void writeCustomSymbology( QDomElement& element, QDomDocument& doc, QString& errorMessage ) const;
 
-
   private slots:
     void onRelationsLoaded();
     void onJoinedFieldsChanged();

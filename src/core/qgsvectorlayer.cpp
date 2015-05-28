@@ -1366,6 +1366,7 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
 {
   // XXX should I check for and possibly delete any pre-existing providers?
   // XXX How often will that scenario occur?
+  Q_ASSERT( !mDataProvider );
 
   mProviderKey = provider;     // XXX is this necessary?  Usually already set
   // XXX when execution gets here.
@@ -1457,6 +1458,8 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
     return false;
   }
 
+  connect( mDataProvider, SIGNAL( dataChanged() ), this, SIGNAL( dataChanged() ) );
+  connect( mDataProvider, SIGNAL( dataChanged() ), this, SLOT( removeSelection() ) );
   return true;
 
 } // QgsVectorLayer:: setDataProvider
