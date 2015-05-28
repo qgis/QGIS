@@ -255,12 +255,12 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
 {
   setupUi( this );
 
-  mExpandToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionExpandTree.png" ) );
-  mCollapseToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionCollapseTree.png" ) );
-  mExpandNewToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionExpandNewTree.png" ) );
+  mExpandToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionExpandTree.svg" ) );
+  mCollapseToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionCollapseTree.svg" ) );
+  mExpandNewToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionExpandNewTree.svg" ) );
   mCopyToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionEditCopy.png" ) );
   mPrintToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionFilePrint.png" ) );
-  mOpenFormButton->setIcon( QgsApplication::getThemeIcon( "/mActionPropertyItem.png" ) );
+  mOpenFormButton->setIcon( QgsApplication::getThemeIcon( "/mActionPropertyItem.svg" ) );
   mOpenFormButton->setDisabled( true );
 
   QSettings mySettings;

@@ -76,7 +76,7 @@
         </property>
         <property name="icon">
          <iconset resource="../../images/images.qrc">
-          <normaloff>:/images/themes/default/mActionFilter.png</normaloff>:/images/themes/default/mActionFilter.png</iconset>
+          <normaloff>:/images/themes/default/mActionFilter2.svg</normaloff>:/images/themes/default/mActionFilter2.svg</iconset>
         </property>
         <property name="checkable">
          <bool>true</bool>

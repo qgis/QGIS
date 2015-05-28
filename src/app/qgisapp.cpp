@@ -2457,7 +2457,7 @@ void QgisApp::initLayerTreeView()
   // add group tool button
   QToolButton* btnAddGroup = new QToolButton;
   btnAddGroup->setAutoRaise( true );
-  btnAddGroup->setIcon( QgsApplication::getThemeIcon( "/mActionFolder.png" ) );
+  btnAddGroup->setIcon( QgsApplication::getThemeIcon( "/mActionFolder.svg" ) );
   btnAddGroup->setToolTip( tr( "Add Group" ) );
   connect( btnAddGroup, SIGNAL( clicked() ), mLayerTreeView->defaultActions(), SLOT( addGroup() ) );
 
@@ -2465,7 +2465,7 @@ void QgisApp::initLayerTreeView()
   QToolButton* btnVisibilityPresets = new QToolButton;
   btnVisibilityPresets->setAutoRaise( true );
   btnVisibilityPresets->setToolTip( tr( "Manage Layer Visibility" ) );
-  btnVisibilityPresets->setIcon( QgsApplication::getThemeIcon( "/mActionShowAllLayers.png" ) );
+  btnVisibilityPresets->setIcon( QgsApplication::getThemeIcon( "/mActionShowAllLayers.svg" ) );
   btnVisibilityPresets->setPopupMode( QToolButton::InstantPopup );
   btnVisibilityPresets->setMenu( QgsVisibilityPresets::instance()->menu() );
 
@@ -2474,18 +2474,18 @@ void QgisApp::initLayerTreeView()
   mBtnFilterLegend->setAutoRaise( true );
   mBtnFilterLegend->setCheckable( true );
   mBtnFilterLegend->setToolTip( tr( "Filter Legend By Map Content" ) );
-  mBtnFilterLegend->setIcon( QgsApplication::getThemeIcon( "/mActionFilter.png" ) );
+  mBtnFilterLegend->setIcon( QgsApplication::getThemeIcon( "/mActionFilter2.svg" ) );
   connect( mBtnFilterLegend, SIGNAL( clicked() ), this, SLOT( toggleFilterLegendByMap() ) );
 
   // expand / collapse tool buttons
   QToolButton* btnExpandAll = new QToolButton;
   btnExpandAll->setAutoRaise( true );
-  btnExpandAll->setIcon( QgsApplication::getThemeIcon( "/mActionExpandTree.png" ) );
+  btnExpandAll->setIcon( QgsApplication::getThemeIcon( "/mActionExpandTree.svg" ) );
   btnExpandAll->setToolTip( tr( "Expand All" ) );
   connect( btnExpandAll, SIGNAL( clicked() ), mLayerTreeView, SLOT( expandAll() ) );
   QToolButton* btnCollapseAll = new QToolButton;
   btnCollapseAll->setAutoRaise( true );
-  btnCollapseAll->setIcon( QgsApplication::getThemeIcon( "/mActionCollapseTree.png" ) );
+  btnCollapseAll->setIcon( QgsApplication::getThemeIcon( "/mActionCollapseTree.svg" ) );
   btnCollapseAll->setToolTip( tr( "Collapse All" ) );
   connect( btnCollapseAll, SIGNAL( clicked() ), mLayerTreeView, SLOT( collapseAll() ) );
 
