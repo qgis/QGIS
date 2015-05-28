@@ -86,7 +86,7 @@ QgsServerProjectParser::QgsServerProjectParser()
 
 QgsServerProjectParser::~QgsServerProjectParser()
 {
-  delete mXMLDoc;
+
 }
 
 void QgsServerProjectParser::projectLayerMap( QMap<QString, QgsMapLayer*>& layerMap ) const
