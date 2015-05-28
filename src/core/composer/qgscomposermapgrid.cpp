@@ -667,7 +667,14 @@ void QgsComposerMapGrid::draw( QPainter* p )
   }
 
   p->restore();
+
+  //QPainter::setClipping(false) seems to be broken on OSX (#12747), setClipRect
+  //fails on other platforms...
+#ifndef Q_OS_MAC
   p->setClipping( false );
+#else
+  p->setClipRect( thisPaintRect, Qt::NoClip );
+#endif
 
   if ( mGridFrameStyle != QgsComposerMapGrid::NoFrame )
   {
