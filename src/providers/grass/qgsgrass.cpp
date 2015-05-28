@@ -1070,6 +1070,7 @@ QStringList GRASS_LIB_EXPORT QgsGrass::vectorLayers( const QString& gisdbase, co
         QString l = fs + "_point";
         list.append( l );
       }
+      QgsDebugMsg( QString( "npoints = %1" ).arg( npoints ) );
 
       /* Lines */
       /* Lines without category appears in layer 0, but not boundaries */
@@ -1085,6 +1086,7 @@ QStringList GRASS_LIB_EXPORT QgsGrass::vectorLayers( const QString& gisdbase, co
         QString l = fs + "_line";
         list.append( l );
       }
+      QgsDebugMsg( QString( "nlines = %1" ).arg( nlines ) );
 
       /* Faces */
       int nfaces = Vect_cidx_get_type_count( &map, field, GV_FACE );
@@ -1093,6 +1095,7 @@ QStringList GRASS_LIB_EXPORT QgsGrass::vectorLayers( const QString& gisdbase, co
         QString l = fs + "_face";
         list.append( l );
       }
+      QgsDebugMsg( QString( "nfaces = %1" ).arg( nfaces ) );
 
       /* Polygons */
       int nareas = Vect_cidx_get_type_count( &map, field, GV_AREA );
@@ -1101,7 +1104,9 @@ QStringList GRASS_LIB_EXPORT QgsGrass::vectorLayers( const QString& gisdbase, co
         QString l = fs + "_polygon";
         list.append( l );
       }
+      QgsDebugMsg( QString( "nareas = %1" ).arg( nareas ) );
     }
+    QgsDebugMsg( "standard layers listed: " + list.join( "," ) );
 
     // TODO: add option in GUI to set listTopoLayers
     QSettings settings;
@@ -1125,7 +1130,9 @@ QStringList GRASS_LIB_EXPORT QgsGrass::vectorLayers( const QString& gisdbase, co
       }
     }
 
+    QgsDebugMsg( "close map" );
     Vect_close( &map );
+    QgsDebugMsg( "map closed" );
   }
   G_CATCH( QgsGrass::Exception &e )
   {
