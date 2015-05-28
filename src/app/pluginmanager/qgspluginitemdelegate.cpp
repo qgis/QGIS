@@ -69,7 +69,7 @@ void QgsPluginItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
   if ( !iconPixmap.isNull() )
   {
     int iconSize = pixelsHigh;
-    painter->drawPixmap( option.rect.left() + 1.2 * pixelsHigh , option.rect.top() + 0.2 * pixelsHigh, iconSize, iconSize, iconPixmap );
+    painter->drawPixmap( option.rect.left() + 1.2 * pixelsHigh, option.rect.top() + 0.2 * pixelsHigh, iconSize, iconSize, iconPixmap );
   }
 
   // Draw the text
