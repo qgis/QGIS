@@ -664,7 +664,13 @@ void QgsComposerMapGrid::draw( QPainter* p )
   }
 
   p->restore();
+
   p->setClipping( false );
+#ifdef Q_OS_MAC
+  //QPainter::setClipping(false) seems to be broken on OSX (#12747). So we hack around it by
+  //setting a larger clip rect
+  p->setClipRect( mComposerMap->mapRectFromScene( mComposerMap->sceneBoundingRect() ).adjusted( -10, -10, 10, 10 ) );
+#endif
 
   if ( mGridFrameStyle != QgsComposerMapGrid::NoFrame )
   {
