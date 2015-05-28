@@ -292,6 +292,34 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
     }
     // <<< BACKWARD COMPATIBILITY < 1.9
   }
+  else if ( provider == "gdal" )
+  {
+    QStringList theURIParts = mDataSource.split( ":" );
+    if ( theURIParts[0] == "NETCDF" )
+    {
+      QString src = theURIParts[1];
+      src.replace( "\"", "" );
+      src = QgsProject::instance()->readPath( src );
+      theURIParts[1] = "\"" + src + "\"";
+    }
+    else if ( theURIParts[0] == "HDF4_SDS" )
+    {
+      theURIParts[2] = QgsProject::instance()->readPath( theURIParts[2] );
+    }
+    else if ( theURIParts[0] == "HDF5" )
+    {
+      theURIParts[1] = QgsProject::instance()->readPath( theURIParts[1] );
+    }
+    else if ( theURIParts[0] == "NITF_IM" )
+    {
+      theURIParts[2] = QgsProject::instance()->readPath( theURIParts[2] );
+    }
+    else if ( theURIParts[0] == "RADARSAT_2_CALIB" )
+    {
+      theURIParts[2] = QgsProject::instance()->readPath( theURIParts[2] );
+    }
+    mDataSource = theURIParts.join( ":" );
+  }
   else
   {
     bool handled = false;
@@ -548,6 +576,39 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
     QUrl urlDest = QUrl::fromLocalFile( QgsProject::instance()->writePath( urlSource.toLocalFile(), relativeBasePath ) );
     urlDest.setQueryItems( urlSource.queryItems() );
     src = QString::fromAscii( urlDest.toEncoded() );
+  }
+  else if ( !vlayer )
+  {
+    QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( this );
+    // Update path for subdataset
+    if ( rlayer && rlayer->providerType() == "gdal" )
+    {
+      QStringList theURIParts = src.split( ":" );
+      if ( theURIParts[0] == "NETCDF" )
+      {
+        src = theURIParts[1];
+        src.replace( "\"", "" );
+        src = QgsProject::instance()->writePath( src, relativeBasePath );
+        theURIParts[1] = "\"" + src + "\"";
+      }
+      else if ( theURIParts[0] == "HDF4_SDS" )
+      {
+        theURIParts[2] = QgsProject::instance()->writePath( theURIParts[2], relativeBasePath );
+      }
+      else if ( theURIParts[0] == "HDF5" )
+      {
+        theURIParts[1] = QgsProject::instance()->writePath( theURIParts[1], relativeBasePath );
+      }
+      else if ( theURIParts[0] == "NITF_IM" )
+      {
+        theURIParts[2] = QgsProject::instance()->writePath( theURIParts[2], relativeBasePath );
+      }
+      else if ( theURIParts[0] == "RADARSAT_2_CALIB" )
+      {
+        theURIParts[2] = QgsProject::instance()->writePath( theURIParts[2], relativeBasePath );
+      }
+      src = theURIParts.join( ":" );
+    }
   }
   else
   {
