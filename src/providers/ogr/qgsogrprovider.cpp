@@ -455,8 +455,6 @@ QgsOgrProvider::~QgsOgrProvider()
     OGR_DS_ReleaseResultSet( ogrDataSource, ogrLayer );
   }
 
-  repack();
-
   if ( ogrDataSource )
   {
     OGR_DS_Destroy( ogrDataSource );
