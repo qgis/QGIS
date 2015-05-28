@@ -103,6 +103,9 @@ void QgsMapToolZoom::canvasReleaseEvent( QMouseEvent * e )
     mZoomRect.setRight( e->pos().x() );
     mZoomRect.setBottom( e->pos().y() );
 
+    //account for bottom right -> top left dragging
+    mZoomRect = mZoomRect.normalized();
+
     // set center and zoom
     const QSize& zoomRectSize = mZoomRect.size();
     const QgsMapSettings& mapSettings = mCanvas->mapSettings();
