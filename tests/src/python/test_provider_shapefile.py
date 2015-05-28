@@ -29,27 +29,30 @@ from providertestbase import ProviderTestCase
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 TEST_DATA_DIR = unitTestDataPath()
 
+
 class TestPyQgsPostgresProvider(TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
         # Create test layer
-        basetestpath = tempfile.mkdtemp()
-        repackfilepath = tempfile.mkdtemp()
+        cls.basetestpath = tempfile.mkdtemp()
+        cls.repackfilepath = tempfile.mkdtemp()
 
         srcpath = os.path.join(TEST_DATA_DIR, 'provider')
         for file in glob.glob(os.path.join(srcpath, 'shapefile.*')):
-            shutil.copy(os.path.join(srcpath, file),basetestpath)
-            shutil.copy(os.path.join(srcpath, file),repackfilepath)
-        cls.basetestfile = os.path.join(basetestpath, 'shapefile.shp' )
-        cls.repackfile = os.path.join(repackfilepath, 'shapefile.shp')
-        cls.vl = QgsVectorLayer(u'{}|layerid=0'.format(cls.basetestfile), u'test', u'ogr' )
-        assert(cls.vl.isValid())
+            shutil.copy(os.path.join(srcpath, file), cls.basetestpath)
+            shutil.copy(os.path.join(srcpath, file), cls.repackfilepath)
+        cls.basetestfile = os.path.join(cls.basetestpath, 'shapefile.shp')
+        cls.repackfile = os.path.join(cls.repackfilepath, 'shapefile.shp')
+        cls.vl = QgsVectorLayer(u'{}|layerid=0'.format(cls.basetestfile), u'test', u'ogr')
+        assert (cls.vl.isValid())
         cls.provider = cls.vl.dataProvider()
 
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
+        shutil.rmtree(cls.basetestpath)
+        shutil.rmtree(cls.repackfilepath)
 
     def testUnique(self):
         """
@@ -58,20 +61,21 @@ class TestPyQgsPostgresProvider(TestCase, ProviderTestCase):
         in the future even better.
         """
         assert set(self.provider.uniqueValues(1)) == set([-200, 100, 200, 300, 400])
-        assert set([u'Apple', u'Honey', u'Orange', u'Pear']) == set(self.provider.uniqueValues(2)), 'Got {}'.format(set(self.provider.uniqueValues(2)))
+        assert set([u'Apple', u'Honey', u'Orange', u'Pear']) == set(self.provider.uniqueValues(2)), 'Got {}'.format(
+            set(self.provider.uniqueValues(2)))
 
     def testRepack(self):
-        print 'Working with {}'.format(self.repackfile)
         vl = QgsVectorLayer(u'{}|layerid=0'.format(self.repackfile), u'test', u'ogr')
 
-        ids = [f.id() for f in vl.getFeatures( QgsFeatureRequest().setFilterExpression('pk=1'))]
+        ids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk=1'))]
         vl.setSelectedFeatures(ids)
         assert vl.selectedFeaturesIds() == ids, vl.selectedFeaturesIds()
-        assert vl.pendingFeatureCount() == 5,  vl.pendingFeatureCount()
+        assert vl.pendingFeatureCount() == 5, vl.pendingFeatureCount()
         assert vl.startEditing()
         assert vl.deleteFeature(3)
         assert vl.commitChanges()
         assert vl.selectedFeatureCount() == 0 or vl.selectedFeatures()[0]['pk'] == 1
+
 
 if __name__ == '__main__':
     unittest.main()
