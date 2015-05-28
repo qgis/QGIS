@@ -131,7 +131,7 @@ void QgsAttributeTableModel::featuresDeleted( QgsFeatureIds fids )
 
 bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &parent )
 {
-  beginRemoveRows( parent, row, row + count );
+  beginRemoveRows( parent, row, row + count - 1 );
 #ifdef QGISDEBUG
   if ( 3 > QgsLogger::debugLevel() )
     QgsDebugMsgLevel( QString( "remove %2 rows at %1 (rows %3, ids %4)" ).arg( row ).arg( count ).arg( mRowIdMap.size() ).arg( mIdRowMap.size() ), 3 );
