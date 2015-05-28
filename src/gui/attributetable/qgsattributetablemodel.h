@@ -63,12 +63,6 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     QgsAttributeTableModel( QgsVectorLayerCache *layerCache, QObject *parent = 0 );
 
     /**
-     * Loads the layer into the model
-     * Preferably to be called, before basing any other models on this model
-     */
-    virtual void loadLayer();
-
-    /**
      * Returns the number of rows
      * @param parent parent index
      */
@@ -223,6 +217,13 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @return The context
      */
     const QgsAttributeEditorContext& editorContext() const { return mEditorContext; }
+
+  public slots:
+    /**
+     * Loads the layer into the model
+     * Preferably to be called, before using this model as source for any other proxy model
+     */
+    virtual void loadLayer();
 
   signals:
     /**

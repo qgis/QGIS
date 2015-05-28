@@ -375,11 +375,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Signal for notifying listeners of long running processes */
     void progressUpdate( int theValue );
 
-    /**
-     *   This is emitted whenever data or metadata (e.g. color table, extent) has changed
-     */
-    void dataChanged();
-
   protected:
     /** \brief Read the symbology for the current layer from the Dom node supplied */
     bool readSymbology( const QDomNode& node, QString& errorMessage ) override;

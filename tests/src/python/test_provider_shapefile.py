@@ -12,8 +12,10 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
 import os
+import tempfile
+import shutil
+import glob
 
 from qgis.core import QgsVectorLayer, QgsFeatureRequest, QgsFeature, QgsProviderRegistry
 from PyQt4.QtCore import QSettings
@@ -32,7 +34,16 @@ class TestPyQgsPostgresProvider(TestCase, ProviderTestCase):
     def setUpClass(cls):
         """Run before all tests"""
         # Create test layer
-        cls.vl = QgsVectorLayer(u'{}/provider/shapefile.shp|layerid=0'.format(TEST_DATA_DIR), u'test', u'ogr' )
+        basetestpath = tempfile.mkdtemp()
+        repackfilepath = tempfile.mkdtemp()
+
+        srcpath = os.path.join(TEST_DATA_DIR, 'provider')
+        for file in glob.glob(os.path.join(srcpath, 'shapefile.*')):
+            shutil.copy(os.path.join(srcpath, file),basetestpath)
+            shutil.copy(os.path.join(srcpath, file),repackfilepath)
+        cls.basetestfile = os.path.join(basetestpath, 'shapefile.shp' )
+        cls.repackfile = os.path.join(repackfilepath, 'shapefile.shp')
+        cls.vl = QgsVectorLayer(u'{}|layerid=0'.format(cls.basetestfile), u'test', u'ogr' )
         assert(cls.vl.isValid())
         cls.provider = cls.vl.dataProvider()
 
@@ -49,6 +60,14 @@ class TestPyQgsPostgresProvider(TestCase, ProviderTestCase):
         assert set(self.provider.uniqueValues(1)) == set([-200, 100, 200, 300, 400])
         assert set([u'Apple', u'Honey', u'Orange', u'Pear']) == set(self.provider.uniqueValues(2)), 'Got {}'.format(set(self.provider.uniqueValues(2)))
 
+    def testRepack(self):
+        print 'Working with {}'.format(self.repackfile)
+        vl = QgsVectorLayer(u'{}|layerid=0'.format(self.repackfile), u'test', u'ogr')
+        assert vl.pendingFeatureCount() == 5,  vl.pendingFeatureCount()
+        assert vl.startEditing()
+        assert vl.deleteFeature(3)
+        assert vl.commitChanges()
+        assert vl.pendingFeatureCount() == 4,  vl.pendingFeatureCount()
 
 if __name__ == '__main__':
     unittest.main()

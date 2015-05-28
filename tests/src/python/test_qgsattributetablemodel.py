@@ -78,9 +78,9 @@ class TestQgsAttributeTableModel(TestCase):
         assert self.am.rowCount() == 11, self.am.rowCount()
 
     def testRemoveColumns(self):
-        self.layer.startEditing()
+        assert self.layer.startEditing()
 
-        self.layer.deleteAttribute(1)
+        assert self.layer.deleteAttribute(1)
 
         assert self.am.columnCount() == 1, self.am.columnCount()
 
