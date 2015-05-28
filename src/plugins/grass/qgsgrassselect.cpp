@@ -345,9 +345,18 @@ void QgsGrassSelect::setLayers()
   if ( emap->count() < 1 )
     return;
 
-  QStringList layers = QgsGrass::vectorLayers( egisdbase->text(),
-                       elocation->currentText(), emapset->currentText(),
-                       emap->currentText().toUtf8() );
+  QStringList layers;
+  try
+  {
+    layers  = QgsGrass::vectorLayers( egisdbase->text(),
+                                      elocation->currentText(), emapset->currentText(),
+                                      emap->currentText().toUtf8() );
+  }
+  catch ( QgsGrass::Exception &e )
+  {
+    QgsDebugMsg( e.what() );
+    return;
+  }
 
   int idx = 0;
   int sel = -1;

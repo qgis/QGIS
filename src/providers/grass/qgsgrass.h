@@ -230,7 +230,7 @@ class QgsGrass
         const QString& mapsetName );
     static GRASS_LIB_EXPORT QStringList groups( const QString& mapsetPath );
 
-    //! Get list of vector layers
+    //! Get list of vector layers, throws QgsGrass::Exception
     static GRASS_LIB_EXPORT QStringList vectorLayers( const QString& gisdbase, const QString& location,
         const QString& mapset, const QString& mapName );
 

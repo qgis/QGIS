@@ -121,9 +121,18 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
 
   foreach ( QString name, vectorNames )
   {
-    QStringList layerNames = QgsGrass::vectorLayers( mGisdbase, mLocation, mName, name );
-
     QString mapPath = mPath + "/vector/" + name;
+    QStringList layerNames;
+    try
+    {
+      layerNames = QgsGrass::vectorLayers( mGisdbase, mLocation, mName, name );
+    }
+    catch ( QgsGrass::Exception &e )
+    {
+      QgsErrorItem * errorItem = new QgsErrorItem( this, name + " : " + e.what(), mapPath );
+      items.append( errorItem );
+      continue;
+    }
 
     QgsGrassObject vectorObject( mGisdbase, mLocation, mName, name, QgsGrassObject::Vector );
     QgsGrassVectorItem *map = 0;
