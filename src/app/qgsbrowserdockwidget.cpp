@@ -449,8 +449,8 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( QString name, QWidget * parent ) :
 
   mBtnRefresh->setIcon( QgsApplication::getThemeIcon( "mActionDraw.svg" ) );
   mBtnAddLayers->setIcon( QgsApplication::getThemeIcon( "mActionAdd.svg" ) );
-  mBtnCollapse->setIcon( QgsApplication::getThemeIcon( "mActionCollapseTree.png" ) );
-  mBtnPropertiesWidget->setIcon( QgsApplication::getThemeIcon( "mActionPropertiesWidget.png" ) );
+  mBtnCollapse->setIcon( QgsApplication::getThemeIcon( "mActionCollapseTree.svg" ) );
+  mBtnPropertiesWidget->setIcon( QgsApplication::getThemeIcon( "mActionPropertiesWidget.svg" ) );
 
   mWidgetFilter->hide();
   mLeFilter->setPlaceholderText( tr( "Type here to filter current item..." ) );
