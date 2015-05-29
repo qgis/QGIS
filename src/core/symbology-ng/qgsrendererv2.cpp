@@ -255,6 +255,7 @@ void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymb
   {
     //geometry requires conversion to straight segments
     QgsGeometry* straightGeom = new QgsGeometry( *geom );
+    straightGeom->convertToStraightSegment();
     feature.setGeometry( straightGeom );
     geom = feature.constGeometry();
   }
