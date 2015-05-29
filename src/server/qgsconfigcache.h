@@ -30,7 +30,7 @@ class QgsWMSConfigParser;
 
 class QDomDocument;
 
-class QgsConfigCache: public QObject
+class SERVER_EXPORT QgsConfigCache : public QObject
 {
     Q_OBJECT
   public:

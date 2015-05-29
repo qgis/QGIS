@@ -32,7 +32,7 @@ It provides a method to set data to the client*/
 class QgsHttpRequestHandler: public QgsRequestHandler
 {
   public:
-    QgsHttpRequestHandler();
+    QgsHttpRequestHandler( const bool captureOutput /*= FALSE*/ );
     ~QgsHttpRequestHandler();
 
     virtual void setGetMapResponse( const QString& service, QImage* img, int imageQuality ) override;
@@ -62,9 +62,16 @@ class QgsHttpRequestHandler: public QgsRequestHandler
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     virtual void setPluginFilters( QgsServerFiltersMap pluginFilters ) override;
 #endif
+    // TODO: if HAVE_SERVER_PYTHON
+    QByteArray getResponseHeader( ) { return mResponseHeader; }
+    QByteArray getResponseBody( ) { return mResponseBody; }
+    /** Return the response if capture output is activated */
+    QByteArray getResponse( const bool returnHeaders = TRUE,
+                            const bool returnBody = TRUE );
+
   protected:
     virtual void sendHeaders( ) override;
-    virtual void sendBody( ) const override;
+    virtual void sendBody( ) override;
     void setHttpResponse( QByteArray *ba, const QString &format );
     /**Converts format to official mimetype (e.g. 'jpg' to 'image/jpeg')
       @return mime string (or the entered string if not found)*/
@@ -86,6 +93,12 @@ class QgsHttpRequestHandler: public QgsRequestHandler
     static bool alphaCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 );
     /**Calculates a representative color for a box (pixel weighted average)*/
     static QRgb boxColor( const QgsColorBox& box, int boxPixels );
+    // TODO: if HAVE_SERVER_PYTHON
+    QByteArray mResponseHeader;
+    QByteArray mResponseBody;
+    bool mCaptureOutput;
+    void addToResponseHeader( const char * response );
+    void addToResponseBody( const char * response );
 };
 
 #endif

@@ -1,0 +1,152 @@
+Content-Type: text/xml; charset=utf-8
+Content-Length: 6231
+
+<?xml version="1.0" encoding="utf-8"?>
+<WMS_Capabilities xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.3.0" xmlns="http://www.opengis.net/wms" xsi:schemaLocation="http://www.opengis.net/wms http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/sld_capabilities.xsd http://www.qgis.org/wms http:?MAP=/home/ale/dev/QGIS/tests/testdata/qgis_server/testproject.qgs&amp;SERVICE=WMS&amp;REQUEST=GetSchemaExtension" xmlns:sld="http://www.opengis.net/sld" xmlns:qgs="http://www.qgis.org/wms">
+ <Service>
+  <Name>WMS</Name>
+  <Title>QGIS TestProject</Title>
+  <Abstract>Some UTF8 text èòù</Abstract>
+  <OnlineResource xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href=""/>
+  <ContactInformation>
+   <ContactPersonPrimary>
+    <ContactPerson>Alessandro Pasotti</ContactPerson>
+    <ContactOrganization>QGIS dev team</ContactOrganization>
+   </ContactPersonPrimary>
+   <ContactVoiceTelephone></ContactVoiceTelephone>
+   <ContactElectronicMailAddress>elpaso@itopen.it</ContactElectronicMailAddress>
+  </ContactInformation>
+  <Fees></Fees>
+  <AccessConstraints></AccessConstraints>
+ </Service>
+ <Capability>
+  <Request>
+   <GetCapabilities>
+    <Format>text/xml</Format>
+    <DCPType>
+     <HTTP>
+      <Get>
+       <OnlineResource xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http:?MAP=/home/ale/dev/QGIS/tests/testdata/qgis_server/testproject.qgs&amp;"/>
+      </Get>
+     </HTTP>
+    </DCPType>
+   </GetCapabilities>
+   <GetMap>
+    <Format>image/jpeg</Format>
+    <Format>image/png</Format>
+    <Format>image/png; mode=16bit</Format>
+    <Format>image/png; mode=8bit</Format>
+    <Format>image/png; mode=1bit</Format>
+    <DCPType>
+     <HTTP>
+      <Get>
+       <OnlineResource xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http:?MAP=/home/ale/dev/QGIS/tests/testdata/qgis_server/testproject.qgs&amp;"/>
+      </Get>
+     </HTTP>
+    </DCPType>
+   </GetMap>
+   <GetFeatureInfo>
+    <Format>text/plain</Format>
+    <Format>text/html</Format>
+    <Format>text/xml</Format>
+    <Format>application/vnd.ogc.gml</Format>
+    <Format>application/vnd.ogc.gml/3.1.1</Format>
+    <DCPType>
+     <HTTP>
+      <Get>
+       <OnlineResource xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http:?MAP=/home/ale/dev/QGIS/tests/testdata/qgis_server/testproject.qgs&amp;"/>
+      </Get>
+     </HTTP>
+    </DCPType>
+   </GetFeatureInfo>
+   <sld:GetLegendGraphic>
+    <Format>image/jpeg</Format>
+    <Format>image/png</Format>
+    <DCPType>
+     <HTTP>
+      <Get>
+       <OnlineResource xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http:?MAP=/home/ale/dev/QGIS/tests/testdata/qgis_server/testproject.qgs&amp;"/>
+      </Get>
+     </HTTP>
+    </DCPType>
+   </sld:GetLegendGraphic>
+   <sld:DescribeLayer>
+    <Format>text/xml</Format>
+    <DCPType>
+     <HTTP>
+      <Get>
+       <OnlineResource xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http:?MAP=/home/ale/dev/QGIS/tests/testdata/qgis_server/testproject.qgs&amp;"/>
+      </Get>
+     </HTTP>
+    </DCPType>
+   </sld:DescribeLayer>
+   <qgs:GetStyles>
+    <Format>text/xml</Format>
+    <DCPType>
+     <HTTP>
+      <Get>
+       <OnlineResource xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http:?MAP=/home/ale/dev/QGIS/tests/testdata/qgis_server/testproject.qgs&amp;"/>
+      </Get>
+     </HTTP>
+    </DCPType>
+   </qgs:GetStyles>
+   <GetPrint>
+    <Format>svg</Format>
+    <Format>png</Format>
+    <Format>pdf</Format>
+    <DCPType>
+     <HTTP>
+      <Get>
+       <OnlineResource xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http:?MAP=/home/ale/dev/QGIS/tests/testdata/qgis_server/testproject.qgs&amp;"/>
+      </Get>
+     </HTTP>
+    </DCPType>
+   </GetPrint>
+  </Request>
+  <Exception>
+   <Format>text/xml</Format>
+  </Exception>
+  <sld:UserDefinedSymbolization RemoteWFS="0" RemoteWCS="0" InlineFeature="0" UserStyle="1" SupportSLD="1" UserLayer="0"/>
+  <Layer queryable="1">
+   <Name>QGIS Test Project</Name>
+   <Title>QGIS Test Project</Title>
+   <CRS>EPSG:4326</CRS>
+   <CRS>EPSG:3857</CRS>
+   <EX_GeographicBoundingBox>
+    <westBoundLongitude>8.20315</westBoundLongitude>
+    <eastBoundLongitude>8.20416</eastBoundLongitude>
+    <southBoundLatitude>44.9012</southBoundLatitude>
+    <northBoundLatitude>44.9016</northBoundLatitude>
+   </EX_GeographicBoundingBox>
+   <BoundingBox CRS="EPSG:4326" maxx="44.9016" minx="44.9012" maxy="8.20416" miny="8.20315"/>
+   <Layer displayField="name" geometryType="WKBPoint" queryable="1" visible="1">
+    <Name>testlayer èé</Name>
+    <Title>A test vector layer</Title>
+    <Abstract>A test vector layer with unicode òà</Abstract>
+    <CRS>EPSG:4326</CRS>
+    <CRS>EPSG:3857</CRS>
+    <EX_GeographicBoundingBox>
+     <westBoundLongitude>8.20346</westBoundLongitude>
+     <eastBoundLongitude>8.20355</eastBoundLongitude>
+     <southBoundLatitude>44.9014</southBoundLatitude>
+     <northBoundLatitude>44.9015</northBoundLatitude>
+    </EX_GeographicBoundingBox>
+    <BoundingBox CRS="EPSG:4326" maxx="44.9015" minx="44.9014" maxy="8.20355" miny="8.20346"/>
+    <Style>
+     <Name>default</Name>
+     <Title>default</Title>
+     <LegendURL>
+      <Format>image/png</Format>
+      <OnlineResource xlink:type="simple" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http:?MAP=/home/ale/dev/QGIS/tests/testdata/qgis_server/testproject.qgs&amp;&amp;SERVICE=WMS&amp;VERSION=1.3.0&amp;REQUEST=GetLegendGraphic&amp;LAYER=testlayer èé&amp;FORMAT=image/png&amp;STYLE=default&amp;SLD_VERSION=1.1.0"/>
+     </LegendURL>
+    </Style>
+    <Attributes>
+     <Attribute typeName="Integer" precision="0" length="10" editType="TextEdit" type="int" comment="" name="id"/>
+     <Attribute typeName="String" precision="0" length="10" editType="TextEdit" type="QString" comment="" name="name"/>
+     <Attribute typeName="String" precision="0" length="13" editType="TextEdit" type="QString" comment="" name="utf8nameè"/>
+    </Attributes>
+   </Layer>
+  </Layer>
+  <LayerDrawingOrder>testlayer èé</LayerDrawingOrder>
+ </Capability>
+</WMS_Capabilities>

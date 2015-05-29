@@ -1,9 +1,9 @@
 /***************************************************************************
                               qgswfsprojectparser.h
-                              ---------------------
-  begin                : March 25, 2014
-  copyright            : (C) 2014 by Marco Hugentobler
-  email                : marco dot hugentobler at sourcepole dot ch
+                              ------------------------
+  begin                : May 2, 2015
+  copyright            : (C) 2015 by Alessandro Pasotti
+  email                : a dot pasotti at itopen dot it
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,13 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSWFSPROJECTPARSER_H
-#define QGSWFSPROJECTPARSER_H
 
-#include "qgsserverprojectparser.h"
-
-class SERVER_EXPORT QgsWFSProjectParser
+class QgsWFSProjectParser
 {
+%TypeHeaderCode
+#include "qgswfsprojectparser.h"
+
+%End
+
   public:
     QgsWFSProjectParser( const QString& filePath );
     ~QgsWFSProjectParser();
@@ -43,8 +44,4 @@ class SERVER_EXPORT QgsWFSProjectParser
     QSet<QString> wfstInsertLayers() const;
     QSet<QString> wfstDeleteLayers() const;
 
-  private:
-    QgsServerProjectParser* mProjectParser;
 };
-
-#endif // QGSWFSPROJECTPARSER_H
