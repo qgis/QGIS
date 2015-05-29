@@ -48,6 +48,11 @@ class SERVER_EXPORT QgsServerInterface
     virtual QgsServerFiltersMap filters( ) = 0;
     /*Pass  environment variables to python*/
     virtual QString getEnv( const QString& name ) const = 0;
+    virtual QString configFilePath( ) = 0;
+    virtual void setConfigFilePath( QString configFilePath) = 0;
+
+    private:
+        QString mConfigFilePath;
 
 };
 
