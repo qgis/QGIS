@@ -19,7 +19,9 @@ from qgis.server import QgsServer
 from qgis.core import QgsMessageLog
 from utilities import unitTestDataPath
 
-RE_STRIP_PATH=r'MAP=[^&]+'
+# Strip path and content lenght because path may vary
+RE_STRIP_PATH=r'MAP=[^&]+|Content-Length: \d+'
+
 
 class TestQgsServer(unittest.TestCase):
 
