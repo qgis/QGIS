@@ -264,10 +264,12 @@ bool QgsGrassRasterImport::import()
         outStream << false; // not canceled
         outStream << byteArray;
 
+#ifndef Q_OS_WIN
         // wait until the row is written to allow quick cancel (don't send data to buffer)
         process->waitForReadyRead();
         bool result;
         outStream >> result;
+#endif
       }
       delete block;
       if ( isCanceled() )

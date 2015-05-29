@@ -66,7 +66,7 @@ extern "C"
 // http://lists.qt-project.org/pipermail/interest/2012-May/002110.html
 // http://lists.qt-project.org/pipermail/interest/2012-May/002117.html
 // TODO: This is just test if it works on Windows
-QByteArray readData( QFile & file, quint32 size )
+QByteArray readData( QFile & file, qint32 size )
 {
   QByteArray byteArray;
   forever
@@ -233,8 +233,10 @@ int main( int argc, char **argv )
     }
     G_put_raster_row( cf, buf, grass_type );
 
+#ifndef Q_OS_WIN
     stdoutStream << ( bool )true; // row written
     stdoutFile.flush();
+#endif
   }
   //G_fatal_error( "%s", msg.toAscii().data() );
 
