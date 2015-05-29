@@ -251,6 +251,7 @@ void GRASS_LIB_EXPORT QgsGrass::init( void )
   if ( initialized )
     return;
 
+  QgsDebugMsg( "do init" );
   QSettings settings;
 
   // Is it active mode ?
@@ -1071,12 +1072,12 @@ QStringList GRASS_LIB_EXPORT QgsGrass::vectorLayers( const QString& gisdbase, co
 
       /* Points */
       int npoints = Vect_cidx_get_type_count( &map, field, GV_POINT );
+      QgsDebugMsg( QString( "npoints = %1" ).arg( npoints ) );
       if ( npoints > 0 )
       {
         QString l = fs + "_point";
         list.append( l );
       }
-      QgsDebugMsg( QString( "npoints = %1" ).arg( npoints ) );
 
       /* Lines */
       /* Lines without category appears in layer 0, but not boundaries */
@@ -1087,30 +1088,30 @@ QStringList GRASS_LIB_EXPORT QgsGrass::vectorLayers( const QString& gisdbase, co
         tp = GV_LINE | GV_BOUNDARY;
 
       int nlines = Vect_cidx_get_type_count( &map, field, tp );
+      QgsDebugMsg( QString( "nlines = %1" ).arg( nlines ) );
       if ( nlines > 0 )
       {
         QString l = fs + "_line";
         list.append( l );
       }
-      QgsDebugMsg( QString( "nlines = %1" ).arg( nlines ) );
 
       /* Faces */
       int nfaces = Vect_cidx_get_type_count( &map, field, GV_FACE );
+      QgsDebugMsg( QString( "nfaces = %1" ).arg( nfaces ) );
       if ( nfaces > 0 )
       {
         QString l = fs + "_face";
         list.append( l );
       }
-      QgsDebugMsg( QString( "nfaces = %1" ).arg( nfaces ) );
 
       /* Polygons */
       int nareas = Vect_cidx_get_type_count( &map, field, GV_AREA );
+      QgsDebugMsg( QString( "nareas = %1" ).arg( nareas ) );
       if ( nareas > 0 )
       {
         QString l = fs + "_polygon";
         list.append( l );
       }
-      QgsDebugMsg( QString( "nareas = %1" ).arg( nareas ) );
     }
     QgsDebugMsg( "standard layers listed: " + list.join( "," ) );
 

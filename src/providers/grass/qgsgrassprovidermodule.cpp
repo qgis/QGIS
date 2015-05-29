@@ -865,5 +865,9 @@ QGISEXTERN QString description()
 */
 QGISEXTERN bool isProvider()
 {
+  // Init GRASS in the first function called by provider registry so that it is called
+  // on main thread, not sure but suspicious that init in thread is causing problems,
+  // at least on Windows, not that dataItem() is called in thread
+  QgsGrass::init();
   return true;
 }
