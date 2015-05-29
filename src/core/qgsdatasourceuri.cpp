@@ -139,35 +139,7 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri )
       }
       else if ( pname == "type" )
       {
-        QString geomTypeUpper = pval.toUpper();
-        if ( geomTypeUpper == "POINT" )
-        {
-          mWkbType = QGis::WKBPoint;
-        }
-        else if ( geomTypeUpper == "LINESTRING" || geomTypeUpper == "LINE" )
-        {
-          mWkbType = QGis::WKBLineString;
-        }
-        else if ( geomTypeUpper == "POLYGON" )
-        {
-          mWkbType = QGis::WKBPolygon;
-        }
-        else if ( geomTypeUpper == "MULTIPOINT" )
-        {
-          mWkbType = QGis::WKBMultiPoint;
-        }
-        else if ( geomTypeUpper == "MULTILINESTRING" )
-        {
-          mWkbType = QGis::WKBMultiLineString;
-        }
-        else if ( geomTypeUpper == "MULTIPOLYGON" )
-        {
-          mWkbType = QGis::WKBMultiPolygon;
-        }
-        else
-        {
-          mWkbType = QGis::WKBUnknown;
-        }
+        mWkbType = ( QGis::WkbType )QgsWKBTypes::parseType( pval );
       }
       else if ( pname == "selectatid" )
       {

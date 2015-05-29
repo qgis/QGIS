@@ -319,7 +319,7 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
 
   if ( mSource->mRequestedGeomType != QGis::WKBUnknown && mSource->mRequestedGeomType != mSource->mDetectedGeomType )
   {
-    whereClause += QString( " AND %1" ).arg( QgsPostgresConn::postgisTypeFilter( mSource->mGeometryColumn, mSource->mRequestedGeomType, castToGeometry ) );
+    whereClause += QString( " AND %1" ).arg( QgsPostgresConn::postgisTypeFilter( mSource->mGeometryColumn, ( QgsWKBTypes::Type )mSource->mRequestedGeomType, castToGeometry ) );
   }
 
   return whereClause;

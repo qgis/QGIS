@@ -470,13 +470,16 @@ void QgsCompoundCurveV2::drawAsPolygon( QPainter& p ) const
 bool QgsCompoundCurveV2::insertVertex( const QgsVertexId& position, const QgsPointV2& vertex )
 {
   QList< QPair<int, QgsVertexId> > curveIds = curveVertexId( position );
-  QList< QPair<int, QgsVertexId> >::const_iterator idIt = curveIds.constBegin();
-  for ( ; idIt != curveIds.constEnd(); ++idIt )
+  if ( curveIds.size() < 1 )
   {
-    //return after first result
-    return mCurves[idIt->first]->insertVertex( idIt->second, vertex );
+    return false;
   }
-  return false;
+  int curveId = curveIds.at( 0 ).first;
+  if ( curveId >= mCurves.size() )
+  {
+    return false;
+  }
+  return mCurves[curveId]->insertVertex( curveIds.at( 0 ).second, vertex );
 }
 
 bool QgsCompoundCurveV2::moveVertex( const QgsVertexId& position, const QgsPointV2& newPos )
