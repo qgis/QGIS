@@ -925,7 +925,7 @@ void QgsOptions::on_pbnTemplateFolderReset_pressed()
 void QgsOptions::iconSizeChanged( const QString &iconSize )
 {
   QgisApp::instance()->setIconSizes( iconSize.toInt() );
-  
+
   mStyleSheetNewOpts.insert( "iconSize", QVariant( iconSize.toInt() ) );
   mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
 }

@@ -34,7 +34,7 @@ QgsEditorWidgetFactory::~QgsEditorWidgetFactory()
  */
 QgsEditorWidgetWrapper* QgsEditorWidgetFactory::createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
 {
-    return new QgsDefaultSearchWidgetWrapper(vl, fieldIdx, 0, parent);
+  return new QgsDefaultSearchWidgetWrapper( vl, fieldIdx, 0, parent );
 }
 
 QString QgsEditorWidgetFactory::name()

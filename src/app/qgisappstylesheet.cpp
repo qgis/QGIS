@@ -93,7 +93,7 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
   settings.endGroup(); // "qgis/stylesheet"
 
   opts.insert( "iconSize", settings.value( "/IconSize", QGIS_ICON_SIZE ) );
-  
+
   return opts;
 }
 
@@ -181,7 +181,7 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant>& opts )
   {
     iconSize -= 16;
   }
-  else if ( iconSize == 32 ) 
+  else if ( iconSize == 32 )
   {
     iconSize = 24;
   }
@@ -189,10 +189,10 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant>& opts )
   {
     iconSize = 16;
   }
-  
+
   QgsDebugMsg( QString( "iconSize: %1" ).arg( iconSize ) );
   ss += QString( "QDockWidget QToolButton { icon-size: %1px; }" ).arg( iconSize );
-  
+
   QgsDebugMsg( QString( "Stylesheet built: %1" ).arg( ss ) );
 
   emit appStyleSheetChanged( ss );

@@ -195,9 +195,9 @@ class QgsExpression
     {
       public:
         Function( const QString& fnname, int params, const QString& group, const QString& helpText = QString(), bool usesGeometry = false, QStringList referencedColumns = QStringList(), bool lazyEval = false );
-        
+
         virtual ~Function();
-        
+
         /** The name of the function. */
         QString name();
         /** The number of parameters this function takes. */

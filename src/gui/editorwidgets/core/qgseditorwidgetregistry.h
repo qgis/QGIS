@@ -84,11 +84,11 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
                                     const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
 
     QgsEditorWidgetWrapper* createSearchWidget( const QString& widgetId,
-                                    QgsVectorLayer* vl,
-                                    int fieldIdx,
-                                    const QgsEditorWidgetConfig& config,
-                                    QWidget* parent,
-                                    const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
+        QgsVectorLayer* vl,
+        int fieldIdx,
+        const QgsEditorWidgetConfig& config,
+        QWidget* parent,
+        const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
 
     /**
      * Creates a configuration widget

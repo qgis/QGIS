@@ -22,10 +22,10 @@
 
 class GRASS_LIB_EXPORT QgsGrassOptions : public QDialog, private Ui::QgsGrassOptionsBase
 {
-  Q_OBJECT
-  
+    Q_OBJECT
+
   public:
-    explicit QgsGrassOptions(QWidget *parent = 0);
+    explicit QgsGrassOptions( QWidget *parent = 0 );
     ~QgsGrassOptions();
 
   private slots:

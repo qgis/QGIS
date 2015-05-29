@@ -14,14 +14,14 @@
  ***************************************************************************/
 
 #ifndef QGSDEFAULTSEARCHWIDGETWRAPPER_H
-#define QGSDEFAULTSEARCHWIDGETWRAPPER_H 
+#define QGSDEFAULTSEARCHWIDGETWRAPPER_H
 
 #include "qgseditorwidgetwrapper.h"
 #include <qgsfilterlineedit.h>
 
 
 /**
- * Wraps a search widget. Default form is just a QgsLineFilterEdit 
+ * Wraps a search widget. Default form is just a QgsLineFilterEdit
  *
  */
 

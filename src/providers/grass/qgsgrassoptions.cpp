@@ -18,23 +18,23 @@
 #include "qgsgrassoptions.h"
 #include "ui_qgsgrassoptionsbase.h"
 
-QgsGrassOptions::QgsGrassOptions(QWidget *parent)
-  : QDialog(parent)
-  , QgsGrassOptionsBase()
-  , mImportSettingsPath("/GRASS/browser/import")
+QgsGrassOptions::QgsGrassOptions( QWidget *parent )
+    : QDialog( parent )
+    , QgsGrassOptionsBase()
+    , mImportSettingsPath( "/GRASS/browser/import" )
 {
-  setupUi(this);
+  setupUi( this );
 
   connect( this, SIGNAL( accepted() ), this, SLOT( saveOptions() ) );
 
   QSettings settings;
 
-  QgsRasterProjector::Precision crsTransform = (QgsRasterProjector::Precision) settings.value( mImportSettingsPath + "/crsTransform", QgsRasterProjector::Approximate).toInt();
-  mCrsTransformationComboBox->addItem ( QgsRasterProjector::precisionLabel(QgsRasterProjector::Approximate), QgsRasterProjector::Approximate);
-  mCrsTransformationComboBox->addItem ( QgsRasterProjector::precisionLabel(QgsRasterProjector::Exact), QgsRasterProjector::Exact);
-  mCrsTransformationComboBox->setCurrentIndex ( mCrsTransformationComboBox->findData(crsTransform) );
+  QgsRasterProjector::Precision crsTransform = ( QgsRasterProjector::Precision ) settings.value( mImportSettingsPath + "/crsTransform", QgsRasterProjector::Approximate ).toInt();
+  mCrsTransformationComboBox->addItem( QgsRasterProjector::precisionLabel( QgsRasterProjector::Approximate ), QgsRasterProjector::Approximate );
+  mCrsTransformationComboBox->addItem( QgsRasterProjector::precisionLabel( QgsRasterProjector::Exact ), QgsRasterProjector::Exact );
+  mCrsTransformationComboBox->setCurrentIndex( mCrsTransformationComboBox->findData( crsTransform ) );
 
-  mImportExternalCheckBox->setChecked( settings.value(mImportSettingsPath + "/external", true).toBool() );
+  mImportExternalCheckBox->setChecked( settings.value( mImportSettingsPath + "/external", true ).toBool() );
 }
 
 QgsGrassOptions::~QgsGrassOptions()
@@ -46,7 +46,7 @@ void QgsGrassOptions::saveOptions()
   QSettings settings;
 
   settings.setValue( mImportSettingsPath + "/crsTransform",
-    mCrsTransformationComboBox->itemData( mCrsTransformationComboBox->currentIndex() ).toInt() );
+                     mCrsTransformationComboBox->itemData( mCrsTransformationComboBox->currentIndex() ).toInt() );
 
   settings.setValue( mImportSettingsPath + "/external", mImportExternalCheckBox->isChecked() );
 }

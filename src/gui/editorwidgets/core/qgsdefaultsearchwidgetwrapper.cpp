@@ -29,31 +29,33 @@ QgsDefaultSearchWidgetWrapper::QgsDefaultSearchWidgetWrapper( QgsVectorLayer* vl
 
 QVariant QgsDefaultSearchWidgetWrapper::value()
 {
-    return mLineEdit->text();
+  return mLineEdit->text();
 }
 
 QWidget* QgsDefaultSearchWidgetWrapper::createWidget( QWidget* parent )
 {
-    return new QgsFilterLineEdit( parent );
+  return new QgsFilterLineEdit( parent );
 }
 
 void QgsDefaultSearchWidgetWrapper::initWidget( QWidget* widget )
 {
-    mLineEdit = qobject_cast<QgsFilterLineEdit*>( widget );
-    mLineEdit->setSizePolicy(QSizePolicy ::Expanding , QSizePolicy ::Fixed );
-    connect( widget, SIGNAL( textChanged( QString ) ), this, SLOT( valueChanged( QString ) ) );
+  mLineEdit = qobject_cast<QgsFilterLineEdit*>( widget );
+  mLineEdit->setSizePolicy( QSizePolicy ::Expanding , QSizePolicy ::Fixed );
+  connect( widget, SIGNAL( textChanged( QString ) ), this, SLOT( valueChanged( QString ) ) );
 }
 
 void QgsDefaultSearchWidgetWrapper::setValue( const QVariant& value )
 {
-    mLineEdit->setText( value.toString() ); //FIXME no  null check :(
+  mLineEdit->setText( value.toString() ); //FIXME no null check :(
 }
 
 void QgsDefaultSearchWidgetWrapper::setEnabled( bool enabled )
 {
-    mLineEdit->setReadOnly( !enabled );
-    //if ( enabled )
-      //mLineEdit->setPalette( mWritablePalette );
-    //else
-      //mLineEdit->setPalette( mReadOnlyPalette );
+  mLineEdit->setReadOnly( !enabled );
+#if 0
+  if ( enabled )
+    mLineEdit->setPalette( mWritablePalette );
+  else
+    mLineEdit->setPalette( mReadOnlyPalette );
+#endif
 }

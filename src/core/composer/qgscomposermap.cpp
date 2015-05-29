@@ -1530,7 +1530,7 @@ void QgsComposerMap::storeCurrentLayerSet()
 }
 
 
-void QgsComposerMap::setLayerStyleOverrides(const QMap<QString, QString>& overrides)
+void QgsComposerMap::setLayerStyleOverrides( const QMap<QString, QString>& overrides )
 {
   if ( overrides == mLayerStyleOverrides )
     return;
