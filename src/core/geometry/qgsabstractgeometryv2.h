@@ -131,6 +131,9 @@ class CORE_EXPORT QgsAbstractGeometryV2
 
     bool isEmpty() const;
 
+    virtual bool hasCurvedSegments() const { return false; }
+    /**Returns a geometry without curves. Caller takes ownership*/
+    virtual QgsAbstractGeometryV2* segmentize() const { return clone(); }
 
   protected:
     QgsWKBTypes::Type mWkbType;

@@ -80,6 +80,9 @@ class CORE_EXPORT QgsCurvePolygonV2: public QgsSurfaceV2
     double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const override;
     bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const override;
 
+    bool hasCurvedSegments() const override;
+    QgsAbstractGeometryV2* segmentize() const override;
+
   protected:
 
     QgsCurveV2* mExteriorRing;

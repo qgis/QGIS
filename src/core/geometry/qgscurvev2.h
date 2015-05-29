@@ -46,6 +46,9 @@ class CORE_EXPORT QgsCurveV2: public QgsAbstractGeometryV2
     virtual void coordinateSequence( QList< QList< QList< QgsPointV2 > > >& coord ) const override;
     virtual bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const override;
     virtual bool pointAt( int i, QgsPointV2& vertex, QgsVertexId::VertexType& type ) const = 0;
+
+    /**Returns a geometry without curves. Caller takes ownership*/
+    QgsAbstractGeometryV2* segmentize() const override;
 };
 
 #endif // QGSCURVEV2_H

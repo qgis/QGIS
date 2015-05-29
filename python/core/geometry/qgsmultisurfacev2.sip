@@ -19,4 +19,7 @@ class QgsMultiSurfaceV2: public QgsGeometryCollectionV2
 
     /**Adds a geometry and takes ownership. Returns true in case of success*/
     virtual bool addGeometry( QgsAbstractGeometryV2* g );
+
+    /**Returns a geometry without curves. Caller takes ownership*/
+    QgsAbstractGeometryV2* segmentize() const /Factory/;
 };

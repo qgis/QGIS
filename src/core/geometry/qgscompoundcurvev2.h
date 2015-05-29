@@ -78,6 +78,8 @@ class CORE_EXPORT QgsCompoundCurveV2: public QgsCurveV2
     /**Appends first point if not already closed*/
     void close();
 
+    bool hasCurvedSegments() const override;
+
   private:
     QList< QgsCurveV2* > mCurves;
     /**Turns a vertex id for the compound curve into one or more ids for the subcurves

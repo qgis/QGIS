@@ -70,6 +70,8 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
     virtual double length() const override;
     virtual double area() const override;
 
+    bool hasCurvedSegments() const override;
+
   protected:
     QVector< QgsAbstractGeometryV2* > mGeometries;
     void removeGeometries();

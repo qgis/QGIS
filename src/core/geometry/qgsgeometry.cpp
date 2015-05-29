@@ -1485,42 +1485,10 @@ void QgsGeometry::convertToStraightSegment()
   }
 
   detach();
-  QgsWKBTypes::Type flatGeomType = QgsWKBTypes::flatType( d->geometry->wkbType() );
-  if ( flatGeomType == QgsWKBTypes::CompoundCurve || flatGeomType == QgsWKBTypes::CircularString )
-  {
-    QgsCurveV2* curve = dynamic_cast<QgsCurveV2*>( d->geometry );
-    if ( !curve )
-    {
-      return ;
-    }
-    d->geometry = curve->curveToLine();
-    removeWkbGeos();
-    delete curve;
-  }
-  else if ( flatGeomType == QgsWKBTypes::CurvePolygon )
-  {
-    QgsCurvePolygonV2* curvePolygon = dynamic_cast<QgsCurvePolygonV2*>( d->geometry );
-    if ( !curvePolygon )
-    {
-      return;
-    }
-    d->geometry = curvePolygon->toPolygon();
-    removeWkbGeos();
-    delete curvePolygon;
-  }
-  else //no segmentation needed
-  {
-    return;
-  }
-
-  //compoundcurve / circularstring /multicurve ?
-
-  //curve polygon / multisurface?
-  delete[] mWkb;
-  mWkb = 0;
-  mWkbSize = 0;
-  GEOSGeom_destroy( mGeos );
-  mGeos = 0;
+  QgsAbstractGeometryV2* straightGeom = d->geometry->segmentize();
+  delete d->geometry;
+  d->geometry = straightGeom;
+  removeWkbGeos();
 }
 
 bool QgsGeometry::requiresConversionToStraightSegments() const
@@ -1530,9 +1498,7 @@ bool QgsGeometry::requiresConversionToStraightSegments() const
     return false;
   }
 
-  QgsWKBTypes::Type flatGeomType = QgsWKBTypes::flatType( d->geometry->wkbType() );
-  return ( flatGeomType == QgsWKBTypes::CompoundCurve || flatGeomType == QgsWKBTypes::CircularString
-           || flatGeomType == QgsWKBTypes::CurvePolygon );
+  return d->geometry->hasCurvedSegments();
 }
 
 int QgsGeometry::transform( const QgsCoordinateTransform& ct )

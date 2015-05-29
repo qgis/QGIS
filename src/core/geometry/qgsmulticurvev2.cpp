@@ -106,3 +106,14 @@ bool QgsMultiCurveV2::addGeometry( QgsAbstractGeometryV2* g )
   setZMTypeFromSubGeometry( g, QgsWKBTypes::MultiCurve );
   return QgsGeometryCollectionV2::addGeometry( g );
 }
+
+QgsAbstractGeometryV2* QgsMultiCurveV2::segmentize() const
+{
+  QgsMultiCurveV2* c = new QgsMultiCurveV2();
+  QVector< QgsAbstractGeometryV2* >::const_iterator geomIt = mGeometries.constBegin();
+  for ( ; geomIt != mGeometries.constEnd(); ++geomIt )
+  {
+    c->addGeometry(( *geomIt )->segmentize() );
+  }
+  return c;
+}

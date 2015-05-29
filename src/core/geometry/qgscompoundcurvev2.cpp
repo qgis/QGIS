@@ -333,24 +333,7 @@ QgsLineStringV2* QgsCompoundCurveV2::curveToLine() const
     line->append( currentLine );
     delete currentLine;
   }
-#if 0
-  if ( curveIt == mCurves.constBegin() )
-  {
-    line = ( *curveIt )->curveToLine();
-    if ( !line )
-    {
-      return 0;
-    }
-  }
-  else
-  {
-    currentLine = ( *curveIt )->curveToLine();
-    line->append( currentLine );
-    delete currentLine;
-  }
-}
-#endif //0
-return line;
+  return line;
 }
 
 const QgsCurveV2* QgsCompoundCurveV2::curveAt( int i ) const
@@ -566,5 +549,18 @@ void QgsCompoundCurveV2::close()
     return;
   }
   addVertex( startPoint() );
+}
+
+bool QgsCompoundCurveV2::hasCurvedSegments() const
+{
+  QList< QgsCurveV2* >::const_iterator curveIt = mCurves.constBegin();
+  for ( ; curveIt != mCurves.constEnd(); ++curveIt )
+  {
+    if (( *curveIt )->hasCurvedSegments() )
+    {
+      return true;
+    }
+  }
+  return false;
 }
 

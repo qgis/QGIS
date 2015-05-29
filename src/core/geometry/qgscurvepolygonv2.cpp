@@ -636,3 +636,26 @@ bool QgsCurvePolygonV2::deleteVertex( const QgsVertexId& vId )
   }
   return success;
 }
+
+bool QgsCurvePolygonV2::hasCurvedSegments() const
+{
+  if ( mExteriorRing && mExteriorRing->hasCurvedSegments() )
+  {
+    return true;
+  }
+
+  QList<QgsCurveV2*>::const_iterator it = mInteriorRings.constBegin();
+  for ( ; it != mInteriorRings.constEnd(); ++it )
+  {
+    if (( *it )->hasCurvedSegments() )
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+QgsAbstractGeometryV2* QgsCurvePolygonV2::segmentize() const
+{
+  return toPolygon();
+}

@@ -446,3 +446,16 @@ bool QgsGeometryCollectionV2::fromCollectionWkt( const QString &wkt, const QList
   qDeleteAll( subtypes );
   return true;
 }
+
+bool QgsGeometryCollectionV2::hasCurvedSegments() const
+{
+  QVector< QgsAbstractGeometryV2* >::const_iterator it = mGeometries.constBegin();
+  for ( ; it != mGeometries.constEnd(); ++it )
+  {
+    if (( *it )->hasCurvedSegments() )
+    {
+      return true;
+    }
+  }
+  return false;
+}

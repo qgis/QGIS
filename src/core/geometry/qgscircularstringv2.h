@@ -72,6 +72,8 @@ class CORE_EXPORT QgsCircularStringV2: public QgsCurveV2
 
     void sumUpArea( double& sum ) const override;
 
+    bool hasCurvedSegments() const override { return true; }
+
   private:
     QVector<double> mX;
     QVector<double> mY;
