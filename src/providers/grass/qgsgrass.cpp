@@ -1014,7 +1014,13 @@ QStringList GRASS_LIB_EXPORT QgsGrass::vectorLayers( const QString& gisdbase, co
 
   G_TRY
   {
+    // TODO: With Vect_open_old_head it crashes on Windows + GRASS 7 in Vect_cidx_get_type_count() when the first
+    // type is found. Try to open full map on win for now.
+#if defined(Q_OS_WIN) && GRASS_VERSION_MAJOR >= 7
+    level = Vect_open_old( &map, ( char * ) mapName.toUtf8().data(), ( char * ) mapset.toUtf8().data() );
+#else
     level = Vect_open_old_head( &map, ( char * ) mapName.toUtf8().data(), ( char * ) mapset.toUtf8().data() );
+#endif
   }
   G_CATCH( QgsGrass::Exception &e )
   {
