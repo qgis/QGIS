@@ -31,7 +31,7 @@
 #include <QStringList>
 #include <QUrl>
 #include <fcgi_stdio.h>
-#include <qt5/QtCore/qbytearray.h>
+
 
 QgsHttpRequestHandler::QgsHttpRequestHandler( const bool captureOutput /*= FALSE*/ )
     : QgsRequestHandler( )
