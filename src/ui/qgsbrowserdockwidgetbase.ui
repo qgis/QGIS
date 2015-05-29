@@ -33,10 +33,10 @@
        <number>6</number>
       </property>
       <property name="leftMargin">
-       <number>0</number>
+       <number>5</number>
       </property>
       <property name="rightMargin">
-       <number>0</number>
+       <number>5</number>
       </property>
       <item>
        <widget class="QToolButton" name="mBtnRefresh">
