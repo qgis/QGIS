@@ -1,9 +1,9 @@
 /***************************************************************************
-                              qgswcsserver.h
+                              qgswcsserver.sip
                               -------------------
-  begin                : December 9, 2013
-  copyright            : (C) 2013 by René-Luc D'Hont
-  email                : rldhont at 3liz dot com
+  begin                : May 2, 2015
+  copyright            : (C) 2015 by Alessandro Pasotti
+  email                : a dot pasotti at itopen dot it
  ***************************************************************************/
 
 /***************************************************************************

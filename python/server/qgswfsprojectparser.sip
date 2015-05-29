@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgswfsprojectparser.h
+                              qgswfsprojectparser.sip
                               ------------------------
   begin                : May 2, 2015
   copyright            : (C) 2015 by Alessandro Pasotti
