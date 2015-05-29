@@ -1697,9 +1697,17 @@ QString QgsWFSServer::createFeatureGeoJSON( QgsFeature* feat, int prec, QgsCoord
 
     fStr += "  \"geometry\": ";
     if ( mGeometryName == "EXTENT" )
-      fStr += QgsGeometry::fromRect( box )->exportToGeoJSON( prec );
+    {
+      QgsGeometry* bbox = QgsGeometry::fromRect( box );
+      fStr += bbox->exportToGeoJSON( prec );
+      delete bbox;
+    }
     else if ( mGeometryName == "CENTROID" )
-      fStr += geom->centroid()->exportToGeoJSON( prec );
+    {
+      QgsGeometry* centroid = geom->centroid();
+      fStr += centroid->exportToGeoJSON( prec );
+      delete centroid;
+    }
     else
       fStr += geom->exportToGeoJSON( prec );
     fStr += ",\n";
@@ -1766,9 +1774,17 @@ QDomElement QgsWFSServer::createFeatureGML2( QgsFeature* feat, QDomDocument& doc
     QDomElement geomElem = doc.createElement( "qgs:geometry" );
     QDomElement gmlElem;
     if ( mGeometryName == "EXTENT" )
-      gmlElem = QgsOgcUtils::geometryToGML( QgsGeometry::fromRect( geom->boundingBox() ), doc, prec );
+    {
+      QgsGeometry* bbox = QgsGeometry::fromRect( geom->boundingBox() );
+      gmlElem = QgsOgcUtils::geometryToGML( bbox , doc, prec );
+      delete bbox;
+    }
     else if ( mGeometryName == "CENTROID" )
-      gmlElem = QgsOgcUtils::geometryToGML( geom->centroid(), doc, prec );
+    {
+      QgsGeometry* centroid = geom->centroid();
+      gmlElem = QgsOgcUtils::geometryToGML( centroid, doc, prec );
+      delete centroid;
+    }
     else
       gmlElem = QgsOgcUtils::geometryToGML( geom, doc, prec );
     if ( !gmlElem.isNull() )
@@ -1831,9 +1847,17 @@ QDomElement QgsWFSServer::createFeatureGML3( QgsFeature* feat, QDomDocument& doc
     QDomElement geomElem = doc.createElement( "qgs:geometry" );
     QDomElement gmlElem;
     if ( mGeometryName == "EXTENT" )
-      gmlElem = QgsOgcUtils::geometryToGML( QgsGeometry::fromRect( geom->boundingBox() ), doc, "GML3", prec );
+    {
+      QgsGeometry* bbox = QgsGeometry::fromRect( geom->boundingBox() );
+      gmlElem = QgsOgcUtils::geometryToGML( bbox, doc, "GML3", prec );
+      delete bbox;
+    }
     else if ( mGeometryName == "CENTROID" )
-      gmlElem = QgsOgcUtils::geometryToGML( geom->centroid(), doc, "GML3", prec );
+    {
+      QgsGeometry* centroid = geom->centroid();
+      gmlElem = QgsOgcUtils::geometryToGML( centroid, doc, "GML3", prec );
+      delete centroid;
+    }
     else
       gmlElem = QgsOgcUtils::geometryToGML( geom, doc, "GML3", prec );
     if ( !gmlElem.isNull() )

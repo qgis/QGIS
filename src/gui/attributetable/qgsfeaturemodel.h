@@ -7,8 +7,7 @@
 class QgsFeatureModel
 {
   public:
-    ~ QgsFeatureModel()
-    {}
+    virtual ~QgsFeatureModel() {}
 
     virtual QModelIndex fidToIndex( QgsFeatureId fid ) = 0;
 };
