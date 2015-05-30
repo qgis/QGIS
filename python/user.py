@@ -23,8 +23,7 @@ def load_user_expressions(path):
         except:
             error = traceback.format_exc()
             msgtitle = QCoreApplication.translate("UserExpressions", "User expressions")
-            msg = QCoreApplication.translate("UserExpressions", 
-                                             "The user expression {0} is not valid".format(name))
+            msg = QCoreApplication.translate("UserExpressions", "The user expression {0} is not valid").format(name)
             QgsMessageLog.logMessage(msg +"\n"+ error, msgtitle, QgsMessageLog.WARNING)
 
 

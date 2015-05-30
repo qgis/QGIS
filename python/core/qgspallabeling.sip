@@ -772,7 +772,7 @@ class QgsPalLabeling : QgsLabelingEngineInterface
      * @note added in QGIS 2.9
      */
     static QStringList splitToLines( const QString& text, const QString& wrapCharacter );
-    
+
     /** Splits a text string to a list of graphemes, which are the smallest allowable character
      * divisions in the string. This accounts for scripts were individual characters are not
      * allowed to be split apart (eg Arabic and Indic based scripts)
