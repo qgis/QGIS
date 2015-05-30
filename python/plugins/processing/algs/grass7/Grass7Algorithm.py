@@ -362,7 +362,7 @@ class Grass7Algorithm(GeoAlgorithm):
                 outputCommands.append('g.region raster=' + out.name
                                       + uniqueSufix)
 
-                if self.grassName == 'r.statistics':
+                if self.grass7Name == 'r.statistics':
                     # r.statistics saves its results in a non-qgis compatible
                     # way. Post-process them with r.mapcalc.
                     calcExpression = 'correctedoutput' + uniqueSufix
