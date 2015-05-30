@@ -79,8 +79,7 @@ void QgsDxfPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& 
       return;
 
     //label text
-    QString text = g->text();
-    QString txt = label->getPartId() == -1 ? text : QString( text[ label->getPartId()] );
+    QString txt = g->text( label->getPartId() );
 
     //angle
     double angle = label->getAlpha() * 180 / M_PI;

@@ -4451,8 +4451,7 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
   {
 
     // TODO: optimize access :)
-    QString text = (( QgsPalGeometry* )label->getFeaturePart()->getUserGeometry() )->text();
-    QString txt = ( label->getPartId() == -1 ? text : QString( text[label->getPartId()] ) );
+    QString txt = (( QgsPalGeometry* )label->getFeaturePart()->getUserGeometry() )->text( label->getPartId() );
     QFontMetricsF* labelfm = (( QgsPalGeometry* )label->getFeaturePart()->getUserGeometry() )->getLabelFontMetrics();
 
     //add the direction symbol if needed
