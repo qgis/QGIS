@@ -5656,21 +5656,23 @@ void QgisApp::deletePrintComposers()
   QSet<QgsComposer*>::iterator it = mPrintComposers.begin();
   while ( it != mPrintComposers.end() )
   {
-    emit composerWillBeRemoved(( *it )->view() );
+    QgsComposer* c = ( *it );
+    emit composerWillBeRemoved( c->view() );
+    it = mPrintComposers.erase( it );
+    emit composerRemoved( c->view() );
 
     //save a reference to the composition
-    QgsComposition* composition = ( *it )->composition();
+    QgsComposition* composition = c->composition();
 
     //first, delete the composer. This must occur before deleting the composition as some of the cleanup code in
     //composer or in composer item widgets may require the composition to still be around
-    delete( *it );
+    delete( c );
 
     //next, delete the composition
     if ( composition )
     {
       delete composition;
     }
-    it = mPrintComposers.erase( it );
   }
   mLastComposerId = 0;
   markDirty();
