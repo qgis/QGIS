@@ -99,12 +99,12 @@ QVariant QgsRelationReferenceWidgetWrapper::value()
   }
 }
 
-void QgsRelationReferenceWidgetWrapper::setValue( const QVariant& value )
+void QgsRelationReferenceWidgetWrapper::setValue( const QVariant& val )
 {
-  if ( !mWidget )
+  if ( !mWidget || val == value() )
     return;
 
-  mWidget->setForeignKey( value );
+  mWidget->setForeignKey( val );
 }
 
 void QgsRelationReferenceWidgetWrapper::setEnabled( bool enabled )
