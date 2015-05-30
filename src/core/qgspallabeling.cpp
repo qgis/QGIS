@@ -3412,6 +3412,20 @@ QStringList QgsPalLabeling::splitToLines( const QString &text, const QString &wr
   return multiLineSplit;
 }
 
+QStringList QgsPalLabeling::splitToGraphemes( const QString &text )
+{
+  QStringList graphemes;
+  QTextBoundaryFinder boundaryFinder( QTextBoundaryFinder::Grapheme, text );
+  int currentBoundary = -1;
+  int previousBoundary = 0;
+  while (( currentBoundary = boundaryFinder.toNextBoundary() ) > 0 )
+  {
+    graphemes << text.mid( previousBoundary, currentBoundary - previousBoundary );
+    previousBoundary = currentBoundary;
+  }
+  return graphemes;
+}
+
 QgsGeometry* QgsPalLabeling::prepareGeometry( const QgsGeometry* geometry, const QgsRenderContext& context, const QgsCoordinateTransform* ct, double minSize, QgsGeometry* clipGeometry )
 {
   if ( !geometry )

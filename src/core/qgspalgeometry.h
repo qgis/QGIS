@@ -2,9 +2,9 @@
 #define QGSPALGEOMETRY_H
 
 #include "qgsgeometry.h"
+#include "qgspallabeling.h"
 #include <pal/feature.h>
 #include <pal/palgeometry.h>
-#include <QTextBoundaryFinder>
 
 using namespace pal;
 
@@ -90,14 +90,7 @@ class QgsPalGeometry : public PalGeometry
       qreal wordSpaceFix;
 
       //split string by valid grapheme boundaries - required for certain scripts (see #6883)
-      QTextBoundaryFinder boundaryFinder( QTextBoundaryFinder::Grapheme, mText );
-      int currentBoundary = -1;
-      int previousBoundary = 0;
-      while (( currentBoundary = boundaryFinder.toNextBoundary() ) > 0 )
-      {
-        mClusters << mText.mid( previousBoundary, currentBoundary - previousBoundary );
-        previousBoundary = currentBoundary;
-      }
+      mClusters = QgsPalLabeling::splitToGraphemes( mText );
 
       mInfo = new pal::LabelInfo( mClusters.count(), labelHeight, maxinangle, maxoutangle );
       for ( int i = 0; i < mClusters.count(); i++ )
