@@ -596,7 +596,6 @@ INPUT                  = @CMAKE_SOURCE_DIR@/doc \
                          @CMAKE_SOURCE_DIR@/src/analysis/raster \
                          @CMAKE_SOURCE_DIR@/src/analysis/vector \
                          @CMAKE_SOURCE_DIR@/src/plugins \
-                         @CMAKE_SOURCE_DIR@/src/server/qgsserver.h \
                          @CMAKE_SOURCE_DIR@/src/server/qgscapabilitiescache.h \
                          @CMAKE_SOURCE_DIR@/src/server/qgsmapserviceexception.h \
                          @CMAKE_SOURCE_DIR@/src/server/qgsrequesthandler.h \
