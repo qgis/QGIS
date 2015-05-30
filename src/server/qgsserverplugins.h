@@ -26,8 +26,15 @@ class SERVER_EXPORT QgsServerPlugins
 {
   public:
     explicit QgsServerPlugins();
+    /**
+       * Initialise the python plugins
+       * @param interface QgsServerInterface
+       * @return bool true on success
+       */
     static bool initPlugins( QgsServerInterface* interface );
+    //! Pointer to QgsPythonUtils
     static QgsPythonUtils* mPythonUtils;
+    //! List of available server plugin names
     static QStringList mServerPlugins;
 };
 
