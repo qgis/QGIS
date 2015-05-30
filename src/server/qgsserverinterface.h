@@ -71,9 +71,20 @@ class SERVER_EXPORT QgsServerInterface
      * @return QgsServerFiltersMap list of QgsServerFilter
      */
     virtual QgsServerFiltersMap filters( ) = 0;
-    //! Pass  environment variables to python
+
+    //! Return an enrironment variable, used to pass  environment variables to python
     virtual QString getEnv( const QString& name ) const = 0;
+
+    /**
+     * Return the configuration file path
+     * @return QString containing the configuration file path
+     */
     virtual QString configFilePath( ) = 0;
+
+    /**
+     * Set the configuration file path
+     * @param configFilePath QString with the configuration file path
+     */
     virtual void setConfigFilePath( QString configFilePath ) = 0;
 
   private:

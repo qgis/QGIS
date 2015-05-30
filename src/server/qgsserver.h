@@ -65,15 +65,32 @@ class  SERVER_EXPORT QgsServer
      * for testing purposes.
      * The query string is normally read from environment
      * but can be also passed in args and in this case overrides the environment
-     * variable */
+     * variable
+     *
+     * @param queryString optional QString containing the query string
+     * @return the response QByteArray if called from python bindings, empty otherwise
+     */
     QByteArray handleRequest( const QString queryString = QString( ) );
     QByteArray handleRequest( const QString queryString,
                               const bool returnHeaders,
                               const bool returnBody );
+    /**
+     * Handles the request and returns only the body
+     *
+     * @param queryString optional QString containing the query string
+     * @return the response body QByteArray if called from python bindings, empty otherwise
+     */
     QByteArray handleRequestGetBody( const QString queryString = QString( ) );
+
+    /**
+     * Handles the request and returns only the headers
+     *
+     * @param queryString optional QString containing the query string
+     * @return the response headers QByteArray if called from python bindings, empty otherwise
+     */
     QByteArray handleRequestGetHeaders( const QString queryString = QString( ) );
 
-    /** Returns the server context */
+    /** Returns a pointer to the server interface */
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsServerInterfaceImpl* serverInterface( ) { return mServerInterface; }
 #endif
