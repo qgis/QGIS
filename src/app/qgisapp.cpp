@@ -933,7 +933,7 @@ QgisApp::QgisApp()
     , mMacrosWarn( 0 )
     , mUserInputDockWidget( 0 )
     , mVectorLayerTools( 0 )
-    , mBtnFilterLegend( 0 )
+    , mActionFilterLegend( 0 )
     , mSnappingUtils( 0 )
     , mProjectLastModified()
 {
@@ -2454,12 +2454,11 @@ void QgisApp::initLayerTreeView()
   connect( QgsProject::instance()->layerTreeRegistryBridge(), SIGNAL( addedLayersToLayerTree( QList<QgsMapLayer*> ) ),
            this, SLOT( autoSelectAddedLayer( QList<QgsMapLayer*> ) ) );
 
-  // add group tool button
-  QToolButton* btnAddGroup = new QToolButton;
-  btnAddGroup->setAutoRaise( true );
-  btnAddGroup->setIcon( QgsApplication::getThemeIcon( "/mActionFolder.svg" ) );
-  btnAddGroup->setToolTip( tr( "Add Group" ) );
-  connect( btnAddGroup, SIGNAL( clicked() ), mLayerTreeView->defaultActions(), SLOT( addGroup() ) );
+  // add group action
+  QAction* actionAddGroup = new QAction( tr( "Add Group" ), this );
+  actionAddGroup->setIcon( QgsApplication::getThemeIcon( "/mActionFolder.svg" ) );
+  actionAddGroup->setToolTip( tr( "Add Group" ) );
+  connect( actionAddGroup, SIGNAL( triggered( bool ) ), mLayerTreeView->defaultActions(), SLOT( addGroup() ) );
 
   // visibility groups tool button
   QToolButton* btnVisibilityPresets = new QToolButton;
@@ -2469,43 +2468,35 @@ void QgisApp::initLayerTreeView()
   btnVisibilityPresets->setPopupMode( QToolButton::InstantPopup );
   btnVisibilityPresets->setMenu( QgsVisibilityPresets::instance()->menu() );
 
-  // filter legend tool button
-  mBtnFilterLegend = new QToolButton;
-  mBtnFilterLegend->setAutoRaise( true );
-  mBtnFilterLegend->setCheckable( true );
-  mBtnFilterLegend->setToolTip( tr( "Filter Legend By Map Content" ) );
-  mBtnFilterLegend->setIcon( QgsApplication::getThemeIcon( "/mActionFilter2.svg" ) );
-  connect( mBtnFilterLegend, SIGNAL( clicked() ), this, SLOT( toggleFilterLegendByMap() ) );
+  // filter legend action
+  mActionFilterLegend = new QAction( tr( "Filter Legend By Map Content" ), this );
+  mActionFilterLegend->setCheckable( true );
+  mActionFilterLegend->setToolTip( tr( "Filter Legend By Map Content" ) );
+  mActionFilterLegend->setIcon( QgsApplication::getThemeIcon( "/mActionFilter2.svg" ) );
+  connect( mActionFilterLegend, SIGNAL( triggered( bool ) ), this, SLOT( toggleFilterLegendByMap() ) );
 
   // expand / collapse tool buttons
-  QToolButton* btnExpandAll = new QToolButton;
-  btnExpandAll->setAutoRaise( true );
-  btnExpandAll->setIcon( QgsApplication::getThemeIcon( "/mActionExpandTree.svg" ) );
-  btnExpandAll->setToolTip( tr( "Expand All" ) );
-  connect( btnExpandAll, SIGNAL( clicked() ), mLayerTreeView, SLOT( expandAll() ) );
-  QToolButton* btnCollapseAll = new QToolButton;
-  btnCollapseAll->setAutoRaise( true );
-  btnCollapseAll->setIcon( QgsApplication::getThemeIcon( "/mActionCollapseTree.svg" ) );
-  btnCollapseAll->setToolTip( tr( "Collapse All" ) );
-  connect( btnCollapseAll, SIGNAL( clicked() ), mLayerTreeView, SLOT( collapseAll() ) );
+  QAction* actionExpandAll = new QAction( tr( "Expand All" ), this );
+  actionExpandAll->setIcon( QgsApplication::getThemeIcon( "/mActionExpandTree.svg" ) );
+  actionExpandAll->setToolTip( tr( "Expand All" ) );
+  connect( actionExpandAll, SIGNAL( triggered( bool ) ), mLayerTreeView, SLOT( expandAll() ) );
+  QAction* actionCollapseAll = new QAction( tr( "Collapse All" ), this );
+  actionCollapseAll->setIcon( QgsApplication::getThemeIcon( "/mActionCollapseTree.svg" ) );
+  actionCollapseAll->setToolTip( tr( "Collapse All" ) );
+  connect( actionCollapseAll, SIGNAL( triggered( bool ) ), mLayerTreeView, SLOT( collapseAll() ) );
 
-  QToolButton* btnRemoveItem = new QToolButton;
-  btnRemoveItem->setDefaultAction( this->mActionRemoveLayer );
-  btnRemoveItem->setAutoRaise( true );
-
-  QHBoxLayout* toolbarLayout = new QHBoxLayout;
-  toolbarLayout->setContentsMargins( QMargins( 5, 0, 5, 0 ) );
-  toolbarLayout->addWidget( btnAddGroup );
-  toolbarLayout->addWidget( btnVisibilityPresets );
-  toolbarLayout->addWidget( mBtnFilterLegend );
-  toolbarLayout->addWidget( btnExpandAll );
-  toolbarLayout->addWidget( btnCollapseAll );
-  toolbarLayout->addWidget( btnRemoveItem );
-  toolbarLayout->addStretch();
+  QToolBar* toolbar = new QToolBar();
+  toolbar->setIconSize( QSize( 16, 16 ) );
+  toolbar->addAction( actionAddGroup );
+  toolbar->addWidget( btnVisibilityPresets );
+  toolbar->addAction( mActionFilterLegend );
+  toolbar->addAction( actionExpandAll );
+  toolbar->addAction( actionCollapseAll );
+  toolbar->addAction( mActionRemoveLayer );
 
   QVBoxLayout* vboxLayout = new QVBoxLayout;
   vboxLayout->setMargin( 0 );
-  vboxLayout->addLayout( toolbarLayout );
+  vboxLayout->addWidget( toolbar );
   vboxLayout->addWidget( mLayerTreeView );
 
   QWidget* w = new QWidget;
@@ -4495,7 +4486,7 @@ void QgisApp::setFilterLegendByMapEnabled( bool enabled )
   if ( wasEnabled == enabled )
     return; // no change
 
-  mBtnFilterLegend->setChecked( enabled );
+  mActionFilterLegend->setChecked( enabled );
 
   if ( enabled )
   {
