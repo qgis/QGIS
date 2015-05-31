@@ -23,7 +23,6 @@
 
 #include "qgslogger.h"
 
-// @deprecated in 2.8
 QgsMapToPixel::QgsMapToPixel( double mapUnitsPerPixel,
                               double xc,
                               double yc,
@@ -56,6 +55,7 @@ QgsMapToPixel::QgsMapToPixel()
   updateMatrix();
 }
 
+// @deprecated in 2.8
 QgsMapToPixel::QgsMapToPixel( double mapUnitsPerPixel,
                               double height,
                               double ymin,

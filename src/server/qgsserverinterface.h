@@ -43,7 +43,7 @@ class SERVER_EXPORT QgsServerInterface
 
     /**
      * Set the request handler
-     * @param QgsRequestHandler
+     * @param requestHandler request handler
      */
     virtual void setRequestHandler( QgsRequestHandler* requestHandler ) = 0;
 

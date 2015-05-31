@@ -51,7 +51,7 @@ class QgsPalGeometry : public PalGeometry
     QString text() { return mText; }
 
     /** Returns the text component corresponding to a specified label part
-     * @param partId. Set to -1 for labels which are not broken into parts (eg, non-curved labels), or the required
+     * @param partId Set to -1 for labels which are not broken into parts (eg, non-curved labels), or the required
      * part index for labels which are broken into parts (curved labels)
      * @note added in QGIS 2.10
      */
