@@ -2127,17 +2127,12 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     }
   }
 
-  if ( repeatDist != 0 )
+  if ( !qgsDoubleNear( repeatDist, 0.0 ) )
   {
-    if ( repeatdistinmapunit ) //convert distance from mm/map units to pixels
+    if ( !repeatdistinmapunit )
     {
-      repeatDist /= repeatDistanceMapUnitScale.computeMapUnitsPerPixel( context ) * context.scaleFactor();
+      repeatDist *= mapUntsPerMM; //convert repeat distance from mm to map units
     }
-    else //mm
-    {
-      repeatDist *= vectorScaleFactor;
-    }
-    repeatDist *= qAbs( ptOne.x() - ptZero.x() );
   }
 
   //  feature to the layer
