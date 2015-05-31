@@ -85,6 +85,8 @@ class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn*, QgsOgrConnPoolGroup
   private:
     QgsOgrConnPool();
     ~QgsOgrConnPool();
+
+    static QgsOgrConnPool sInstance;
 };
 
 

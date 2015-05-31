@@ -17,7 +17,6 @@
 #define QGSSPATIALITECONPOOL_H
 
 #include "qgsconnectionpool.h"
-
 #include "qgsspatialiteconnection.h"
 
 inline QString qgsConnectionPool_ConnectionToName( QgsSqliteHandle* c )
@@ -67,9 +66,9 @@ class QgsSpatiaLiteConnPoolGroup : public QObject, public QgsConnectionPoolGroup
 /** SpatiaLite connection pool - singleton */
 class QgsSpatiaLiteConnPool : public QgsConnectionPool<QgsSqliteHandle*, QgsSpatiaLiteConnPoolGroup>
 {
+    static QgsSpatiaLiteConnPool sInstance;
   public:
     static QgsSpatiaLiteConnPool* instance();
-
 };
 
 

@@ -15,10 +15,10 @@
 
 #include "qgsogrconnpool.h"
 
+QgsOgrConnPool QgsOgrConnPool::sInstance;
 
 QgsOgrConnPool* QgsOgrConnPool::instance()
 {
-  static QgsOgrConnPool sInstance;
   return &sInstance;
 }
 
