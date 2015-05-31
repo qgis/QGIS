@@ -17,7 +17,6 @@
 #define QGSPOSTGRESCONNPOOL_H
 
 #include "qgsconnectionpool.h"
-
 #include "qgspostgresconn.h"
 
 
@@ -66,6 +65,8 @@ class QgsPostgresConnPool : public QgsConnectionPool<QgsPostgresConn*, QgsPostgr
   private:
     QgsPostgresConnPool();
     ~QgsPostgresConnPool();
+
+    static QgsPostgresConnPool sInstance;
 };
 
 

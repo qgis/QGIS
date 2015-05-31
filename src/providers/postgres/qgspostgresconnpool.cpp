@@ -16,21 +16,11 @@
 #include "qgspostgresconnpool.h"
 #include "qgspostgresconn.h"
 
+QgsPostgresConnPool QgsPostgresConnPool::sInstance;
 
 QgsPostgresConnPool* QgsPostgresConnPool::instance()
 {
-  static QgsPostgresConnPool *sInstance = 0;
-
-  if ( !sInstance )
-  {
-    static QMutex m;
-    m.lock();
-    if ( !sInstance )
-      sInstance = new QgsPostgresConnPool();
-    m.unlock();
-  }
-
-  return sInstance;
+  return &sInstance;
 }
 
 QgsPostgresConnPool::QgsPostgresConnPool() : QgsConnectionPool<QgsPostgresConn*, QgsPostgresConnPoolGroup>()
