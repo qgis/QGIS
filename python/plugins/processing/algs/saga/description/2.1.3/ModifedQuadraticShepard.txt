@@ -3,11 +3,10 @@ grid_gridding
 ParameterVector|SHAPES|Points|0|False
 ParameterTableField|FIELD|Attribute|SHAPES|-1|False
 Hardcoded|-TARGET_DEFINITION 0
-ParameterNumber|QUADRATIC_NEIGHBORS|Quadratic Neighbors|1.0|None|13
-ParameterNumber|WEIGHTING_NEIGHBORS|Weighting Neighbors|1.0|None|19
-ParameterNumber|USER_XMIN|Left|None|None|0.0
-ParameterNumber|USER_XMAX|Right|None|None|0.0
-ParameterNumber|USER_YMIN|Bottom|None|None|0.0
-ParameterNumber|USER_YMAX|Top|None|None|0.0
-ParameterNumber|USER_SIZE|Cellsize|None|None|100.0
-OutputRaster|USER_GRID|Grid
+ParameterNumber|QUADRATIC_NEIGHBORS|Quadratic Neighbors|5.0|None|13
+ParameterNumber|WEIGHTING_NEIGHBORS|Weighting Neighbors|3.0|None|19
+Extent TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX
+ParameterNumber|TARGET_USER_SIZE|Cellsize|None|None|100.0
+ParameterSelection|TARGET_USER_FITS|Fit|[0] nodes;[1] cells
+ParameterRaster|TARGET_TEMPLATE|Target System|True
+OutputRaster|TARGET_OUT_GRID|Grid
