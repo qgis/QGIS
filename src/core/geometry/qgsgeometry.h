@@ -474,7 +474,7 @@ class CORE_EXPORT QgsGeometry
      */
     QString exportToGeoJSON( const int &precision = 17 ) const;
 
-    /** try to convert the geometry to the requested type
+    /** Try to convert the geometry to the requested type
      * @param destType the geometry type to be converted to
      * @param destMultipart determines if the output geometry will be multipart or not
      * @return the converted geometry or NULL pointer if the conversion fails.
@@ -484,31 +484,31 @@ class CORE_EXPORT QgsGeometry
 
     /* Accessor functions for getting geometry data */
 
-    /** return contents of the geometry as a point
+    /** Return contents of the geometry as a point
         if wkbType is WKBPoint, otherwise returns [0,0] */
     QgsPoint asPoint() const;
 
-    /** return contents of the geometry as a polyline
+    /** Return contents of the geometry as a polyline
         if wkbType is WKBLineString, otherwise an empty list */
     QgsPolyline asPolyline() const;
 
-    /** return contents of the geometry as a polygon
+    /** Return contents of the geometry as a polygon
         if wkbType is WKBPolygon, otherwise an empty list */
     QgsPolygon asPolygon() const;
 
-    /** return contents of the geometry as a multi point
+    /** Return contents of the geometry as a multi point
         if wkbType is WKBMultiPoint, otherwise an empty list */
     QgsMultiPoint asMultiPoint() const;
 
-    /** return contents of the geometry as a multi linestring
+    /** Return contents of the geometry as a multi linestring
         if wkbType is WKBMultiLineString, otherwise an empty list */
     QgsMultiPolyline asMultiPolyline() const;
 
-    /** return contents of the geometry as a multi polygon
+    /** Return contents of the geometry as a multi polygon
         if wkbType is WKBMultiPolygon, otherwise an empty list */
     QgsMultiPolygon asMultiPolygon() const;
 
-    /** return contents of the geometry as a list of geometries
+    /** Return contents of the geometry as a list of geometries
      @note added in version 1.1 */
     QList<QgsGeometry*> asGeometryCollection() const;
 
@@ -536,9 +536,14 @@ class CORE_EXPORT QgsGeometry
       @note added in version 1.2 */
     bool deletePart( int partNum );
 
-    /**Converts single type geometry into multitype geometry
-     e.g. a polygon into a multipolygon geometry with one polygon
-    @return true in case of success and false else*/
+    /**
+     * Converts single type geometry into multitype geometry
+     * e.g. a polygon into a multipolygon geometry with one polygon
+     * If it is already a multipart geometry, it will return true and
+     * not change the geometry.
+     *
+     * @return true in case of success and false else
+     */
     bool convertToMultiType();
 
     /** Modifies geometry to avoid intersections with the layers specified in project properties
