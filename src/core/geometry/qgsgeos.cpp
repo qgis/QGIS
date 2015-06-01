@@ -270,7 +270,8 @@ double QgsGeos::area() const
 
   try
   {
-    area = GEOSArea_r( geosinit.ctxt, mGeos, &area );
+    if ( GEOSArea_r( geosinit.ctxt, mGeos, &area ) != 1 )
+      return -1.0;
   }
   CATCH_GEOS( -1.0 );
   return area;
@@ -285,7 +286,8 @@ double QgsGeos::length() const
   }
   try
   {
-    length = GEOSLength_r( geosinit.ctxt, mGeos, &length );
+    if ( GEOSLength_r( geosinit.ctxt, mGeos, &length ) != 1 )
+      return -1.0;
   }
   CATCH_GEOS( -1.0 )
   return length;
