@@ -482,7 +482,6 @@ class CORE_EXPORT QgsGeometry
      */
     QgsGeometry* convertToType( QGis::GeometryType destType, bool destMultipart = false ) const;
 
-
     /* Accessor functions for getting geometry data */
 
     /** return contents of the geometry as a point
@@ -598,14 +597,12 @@ class CORE_EXPORT QgsGeometry
      */
     void mapToPixel( const QgsMapToPixel& mtp );
 
-#if 0
     // not implemented for 2.10
     /** Clips the geometry using the specified rectangle
      * @param rect clip rectangle
      * @note added in QGIS 2.10
      */
-    void clip( const QgsRectangle& rect );
-#endif
+    // void clip( const QgsRectangle& rect );
 
     /** Draws the geometry onto a QPainter
      * @param p destination QPainter
@@ -665,34 +662,34 @@ class CORE_EXPORT QgsGeometry
     static QgsPolygon createPolygonFromQPolygonF( const QPolygonF &polygon );
 
     /** Compares two polylines for equality within a specified tolerance.
-    * @param p1 first polyline
-    * @param p2 second polyline
-    * @param epsilon maximum difference for coordinates between the polylines
-    * @returns true if polylines have the same number of points and all
-    * points are equal within the specified tolerance
-    * @note added in QGIS 2.9
-    */
+     * @param p1 first polyline
+     * @param p2 second polyline
+     * @param epsilon maximum difference for coordinates between the polylines
+     * @returns true if polylines have the same number of points and all
+     * points are equal within the specified tolerance
+     * @note added in QGIS 2.9
+     */
     static bool compare( const QgsPolyline& p1, const QgsPolyline& p2, double epsilon = 4 * DBL_EPSILON );
 
     /** Compares two polygons for equality within a specified tolerance.
-    * @param p1 first polygon
-    * @param p2 second polygon
-    * @param epsilon maximum difference for coordinates between the polygons
-    * @returns true if polygons have the same number of rings, and each ring has the same
-    * number of points and all points are equal within the specified tolerance
-    * @note added in QGIS 2.9
-    */
+     * @param p1 first polygon
+     * @param p2 second polygon
+     * @param epsilon maximum difference for coordinates between the polygons
+     * @returns true if polygons have the same number of rings, and each ring has the same
+     * number of points and all points are equal within the specified tolerance
+     * @note added in QGIS 2.9
+     */
     static bool compare( const QgsPolygon& p1, const QgsPolygon& p2, double epsilon = 4 * DBL_EPSILON );
 
     /** Compares two multipolygons for equality within a specified tolerance.
-    * @param p1 first multipolygon
-    * @param p2 second multipolygon
-    * @param epsilon maximum difference for coordinates between the multipolygons
-    * @returns true if multipolygons have the same number of polygons, the polygons have the same number
-    * of rings, and each ring has the same number of points and all points are equal within the specified
-    * tolerance
-    * @note added in QGIS 2.9
-    */
+     * @param p1 first multipolygon
+     * @param p2 second multipolygon
+     * @param epsilon maximum difference for coordinates between the multipolygons
+     * @returns true if multipolygons have the same number of polygons, the polygons have the same number
+     * of rings, and each ring has the same number of points and all points are equal within the specified
+     * tolerance
+     * @note added in QGIS 2.9
+     */
     static bool compare( const QgsMultiPolygon& p1, const QgsMultiPolygon& p2, double epsilon = 4 * DBL_EPSILON );
 
     /**Smooths a geometry by rounding off corners using the Chaikin algorithm. This operation
