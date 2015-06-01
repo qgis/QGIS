@@ -44,6 +44,9 @@ initfile = os.path.join(expressionspath, "__init__.py")
 if not os.path.exists(initfile):
     open(initfile, "w").close()
 
+import site
+reload(site)
+
 import expressions
 
 expressions.load = load_user_expressions
