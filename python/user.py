@@ -56,7 +56,7 @@ last args. Use args=-1 to pass a list of values as arguments
 from qgis.core import *
 from qgis.gui import *
 
-@qgsfunction(group='Custom')
+@qgsfunction(args='auto', group='Custom')
 def func(value1, feature, parent):
     return value1
 """
