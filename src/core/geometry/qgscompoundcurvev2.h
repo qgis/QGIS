@@ -20,6 +20,11 @@
 
 #include "qgscurvev2.h"
 
+/**\ingroup core
+ * \class QgsCompoundCurveV2
+ * \brief Compound curve geometry type
+ * \note added in QGIS 2.10
+ */
 class CORE_EXPORT QgsCompoundCurveV2: public QgsCurveV2
 {
   public:
@@ -52,12 +57,26 @@ class CORE_EXPORT QgsCompoundCurveV2: public QgsCurveV2
     virtual void points( QList<QgsPointV2>& pts ) const override;
     virtual int numPoints() const override;
     virtual QgsLineStringV2* curveToLine() const override;
+
+    /** Returns the number of curves in the geometry.
+     */
     int nCurves() const { return mCurves.size(); }
+
+    /** Returns the curve at the specified index.
+     */
     const QgsCurveV2* curveAt( int i ) const;
 
-    /**Adds curve (takes ownership)*/
+    /** Adds a curve to the geometr (takes ownership)
+     */
     void addCurve( QgsCurveV2* c );
+
+    /** Removes a curve from the geometry.
+     * @param i index of curve to remove
+     */
     void removeCurve( int i );
+
+    /** Adds a vertex to the end of the geometry.
+     */
     void addVertex( const QgsPointV2& pt );
 
     void draw( QPainter& p ) const override;
@@ -75,7 +94,7 @@ class CORE_EXPORT QgsCompoundCurveV2: public QgsCurveV2
 
     void sumUpArea( double& sum ) const override;
 
-    /**Appends first point if not already closed*/
+    /** Appends first point if not already closed.*/
     void close();
 
     bool hasCurvedSegments() const override;

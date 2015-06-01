@@ -33,11 +33,22 @@ typedef QVector<QgsPoint> QgsMultiPoint;
 typedef QVector<QgsPolyline> QgsMultiPolyline;
 typedef QVector<QgsPolygon> QgsMultiPolygon;
 
+/**\ingroup core
+ * \class QgsGeometryImport
+ * \brief Contains geometry importing routines.
+ * \note added in QGIS 2.10
+ */
 class CORE_EXPORT QgsGeometryImport
 {
   public:
+    /** Construct geometry from a WKB string.
+     */
     static QgsAbstractGeometryV2* geomFromWkb( const unsigned char* wkb );
+
+    /** Construct geometry from a WKT string.
+     */
     static QgsAbstractGeometryV2* geomFromWkt( const QString& text );
+
     /** construct geometry from a point */
     static QgsAbstractGeometryV2* fromPoint( const QgsPoint& point );
     /** construct geometry from a multipoint */

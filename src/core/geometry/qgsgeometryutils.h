@@ -19,19 +19,36 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgspointv2.h"
 #include <limits>
 
+/**\ingroup core
+ * \class QgsGeometryUtils
+ * \brief Contains various geometry utility functions.
+ * \note added in QGIS 2.10
+ */
 class CORE_EXPORT QgsGeometryUtils
 {
   public:
+
+    /** Returns the closest vertex to a geometry for a specified point
+     */
     static QgsPointV2 closestVertex( const QgsAbstractGeometryV2& geom, const QgsPointV2& pt, QgsVertexId& id );
+
+    /** Returns vertices adjacent to a specified vertex within a geometry.
+     */
     static void adjacentVertices( const QgsAbstractGeometryV2& geom, const QgsVertexId& atVertex, QgsVertexId& beforeVertex, QgsVertexId& afterVertex );
 
+    /** Returns the squared 2D distance between two points.
+     */
     static double sqrDistance2D( const QgsPointV2& pt1, const QgsPointV2& pt2 );
 
+    /** Returns the squared distance between a point and a line.
+     */
     static double sqrDistToLine( double ptX, double ptY, double x1, double y1, double x2, double y2, double& minDistX, double& minDistY, double epsilon );
 
     /**Returns < 0 if point(x/y) is left of the line x1,y1 -> x2,y2*/
     static double leftOfLine( double x, double y, double x1, double y1, double x2, double y2 );
 
+    /** Returns a point a specified distance toward a second point.
+     */
     static QgsPointV2 pointOnLineWithDistance( const QgsPointV2& startPoint, const QgsPointV2& directionPoint, double distance );
 
     /**Returns the counter clockwise angle between a line with components dx, dy and the line with dx > 0 and dy = 0*/
@@ -59,15 +76,15 @@ class CORE_EXPORT QgsGeometryUtils
     static bool segmentMidPoint( const QgsPointV2& p1, const QgsPointV2& p2, QgsPointV2& result, double radius, const QgsPointV2& mousePos );
 
     static QList<QgsPointV2> pointsFromWKT( const QString& wktCoordinateList, bool is3D, bool isMeasure );
-    // Returns a LinearRing { uint32 numPoints; Point points[numPoints]; }
+    /** Returns a LinearRing { uint32 numPoints; Point points[numPoints]; } */
     static void pointsToWKB( QgsWkbPtr &wkb, const QList<QgsPointV2>& points, bool is3D, bool isMeasure );
-    // Returns a WKT coordinate list
+    /** Returns a WKT coordinate list */
     static QString pointsToWKT( const QList<QgsPointV2>& points, int precision, bool is3D, bool isMeasure );
-    // Returns a gml::coordinates DOM element
+    /** Returns a gml::coordinates DOM element */
     static QDomElement pointsToGML2( const QList<QgsPointV2>& points, QDomDocument &doc, int precision, const QString& ns );
-    // Returns a gml::posList DOM element
+    /** Returns a gml::posList DOM element */
     static QDomElement pointsToGML3( const QList<QgsPointV2>& points, QDomDocument &doc, int precision, const QString& ns, bool is3D );
-    // Returns a geoJSON coordinates string
+    /** Returns a geoJSON coordinates string */
     static QString pointsToJSON( const QList<QgsPointV2>& points, int precision );
 
     // "TYPE (contents)" -> Pair(wkbType, "contents")

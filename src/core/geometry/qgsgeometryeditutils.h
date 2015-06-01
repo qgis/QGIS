@@ -24,7 +24,11 @@ class QgsVectorLayer;
 #include "qgsfeature.h"
 #include <QMap>
 
-/**Convenience functions for geometry editing*/
+/**\ingroup core
+ * \class QgsGeometryEditUtils
+ * \brief Convenience functions for geometry editing
+ * \note added in QGIS 2.10
+ */
 class QgsGeometryEditUtils
 {
   public:
@@ -38,12 +42,24 @@ class QgsGeometryEditUtils
     not disjoint with existing polygons of the feature*/
     static int addPart( QgsAbstractGeometryV2* geom, QgsAbstractGeometryV2* part );
 
+    /** Deletes a ring from a geometry.
+     * @returns true if delete was successful
+     */
     static bool deleteRing( QgsAbstractGeometryV2* geom, int ringNum, int partNum = 0 );
 
+    /** Deletes a part from a geometry.
+     * @returns true if delete was successful
+     */
     static bool deletePart( QgsAbstractGeometryV2* geom, int partNum );
 
+    /** Alters a geometry so that it avoids intersections with features from all open vector layers.
+     * @param geom geometry to alter
+     * @param ignoreFeatures map of layer to feature id of features to ignore
+     */
     static QgsAbstractGeometryV2* avoidIntersections( const QgsAbstractGeometryV2& geom, QMap<QgsVectorLayer*, QSet<QgsFeatureId> > ignoreFeatures = ( QMap<QgsVectorLayer*, QSet<QgsFeatureId> >() ) );
 
+    /** Creates and returns a new geometry engine
+     */
     static QgsGeometryEngine* createGeometryEngine( const QgsAbstractGeometryV2* geometry );
 };
 

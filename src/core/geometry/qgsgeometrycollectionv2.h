@@ -19,6 +19,11 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsabstractgeometryv2.h"
 #include <QVector>
 
+/**\ingroup core
+ * \class QgsGeometryCollectionV2
+ * \brief Geometry collection
+ * \note added in QGIS 2.10
+ */
 class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
 {
   public:
@@ -29,8 +34,18 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
 
     virtual QgsAbstractGeometryV2* clone() const override;
 
+    /** Returns the number of geometries within the collection.
+     */
     int numGeometries() const;
+
+    /** Returns a const reference to a geometry from within the collection.
+     * @param n index of geometry to return
+     */
     const QgsAbstractGeometryV2* geometryN( int n ) const;
+
+    /** Returns a geometry from within the collection.
+     * @param n index of geometry to return
+     */
     QgsAbstractGeometryV2* geometryN( int n );
 
     //methods inherited from QgsAbstractGeometry
@@ -38,8 +53,13 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
     virtual QString geometryType() const override { return "GeometryCollection"; }
     virtual void clear() override;
 
-    /**Adds a geometry and takes ownership. Returns true in case of success*/
+    /**Adds a geometry and takes ownership. Returns true in case of success.*/
     virtual bool addGeometry( QgsAbstractGeometryV2* g );
+
+    /** Removes a geometry from the collection.
+     * @param nr index of geometry to remove
+     * @returns true if removal was successful.
+     */
     virtual bool removeGeometry( int nr );
 
     virtual void transform( const QgsCoordinateTransform& ct ) override;
@@ -74,8 +94,9 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
 
   protected:
     QVector< QgsAbstractGeometryV2* > mGeometries;
-    void removeGeometries();
 
+    /** Reads a collection from a WKT string.
+     */
     bool fromCollectionWkt( const QString &wkt, const QList<QgsAbstractGeometryV2*>& subtypes, const QString& defaultChildWkbType = QString() );
 
 };

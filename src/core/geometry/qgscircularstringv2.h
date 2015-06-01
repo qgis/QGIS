@@ -21,6 +21,11 @@
 #include "qgscurvev2.h"
 #include <QVector>
 
+/**\ingroup core
+ * \class QgsCircularStringV2
+ * \brief Circular string geometry type
+ * \note added in QGIS 2.10
+ */
 class CORE_EXPORT QgsCircularStringV2: public QgsCurveV2
 {
   public:
@@ -45,10 +50,15 @@ class CORE_EXPORT QgsCircularStringV2: public QgsCurveV2
     QString asJSON( int precision = 17 ) const override;
 
     int numPoints() const override;
+
+    /** Returns the point at index i within the circular string.
+     */
     QgsPointV2 pointN( int i ) const;
     void points( QList<QgsPointV2>& pts ) const override;
-    void setPoints( const QList<QgsPointV2>& points );
 
+    /** Sets the circular string's points
+     */
+    void setPoints( const QList<QgsPointV2>& points );
 
     //curve interface
     virtual double length() const override;

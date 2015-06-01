@@ -444,7 +444,7 @@ class CORE_EXPORT QgsGeometry
     /* Return interpolated point on line at distance
      * @note added in 1.9
      */
-    QgsGeometry* interpolate( double distance );
+    QgsGeometry* interpolate( double distance ) const;
 
     /** Returns a geometry representing the points shared by this geometry and other. */
     QgsGeometry* intersection( const QgsGeometry* geometry ) const;
