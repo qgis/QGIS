@@ -91,30 +91,36 @@ class CORE_EXPORT QgsGeometry
       */
     QgsGeometry & operator=( QgsGeometry const & rhs );
 
+    /** Creates a geometry from an abstract geometry object.
+     * @note added in QGIS 2.10
+     */
     QgsGeometry( QgsAbstractGeometryV2* geom );
 
     //! Destructor
     ~QgsGeometry();
 
+    /** Returns the underlying geometry store.
+     * @note added in QGIS 2.10
+     */
     const QgsAbstractGeometryV2* geometry() const;
 
-    /** static method that creates geometry from Wkt */
+    /** Creates a new geometry from a WKT string */
     static QgsGeometry* fromWkt( QString wkt );
-
-    /** construct geometry from a point */
+    /** Creates a new geometry from a QgsPoint object*/
     static QgsGeometry* fromPoint( const QgsPoint& point );
-    /** construct geometry from a multipoint */
+    /** Creates a new geometry from a QgsMultiPoint object */
     static QgsGeometry* fromMultiPoint( const QgsMultiPoint& multipoint );
-    /** construct geometry from a polyline */
+    /** Creates a new geometry from a QgsPolyline object */
     static QgsGeometry* fromPolyline( const QgsPolyline& polyline );
-    /** construct geometry from a multipolyline*/
+    /** Creates a new geometry from a QgsMultiPolyline object*/
     static QgsGeometry* fromMultiPolyline( const QgsMultiPolyline& multiline );
-    /** construct geometry from a polygon */
+    /** Creates a new geometry from a QgsPolygon */
     static QgsGeometry* fromPolygon( const QgsPolygon& polygon );
-    /** construct geometry from a multipolygon */
+    /** Creates a new geometry from a QgsMultiPolygon */
     static QgsGeometry* fromMultiPolygon( const QgsMultiPolygon& multipoly );
-    /** construct geometry from a rectangle */
+    /** Creates a new geometry from a QgsRectangle */
     static QgsGeometry* fromRect( const QgsRectangle& rect );
+
     /**
       Set the geometry, feeding in a geometry in GEOS format.
       This class will take ownership of the buffer.
@@ -130,54 +136,63 @@ class CORE_EXPORT QgsGeometry
     /**
        Returns the buffer containing this geometry in WKB format.
        You may wish to use in conjunction with wkbSize().
+       @see wkbSize
     */
     const unsigned char* asWkb() const;
 
     /**
      * Returns the size of the WKB in asWkb().
+     * @see asWkb
      */
     size_t wkbSize() const;
 
-    /**Returns a geos geomtry. QgsGeometry keeps ownership, don't delete the returned object!
+    /** Returns a geos geometry. QgsGeometry retains ownership of the geometry, so the returned object should not be deleted.
         @note this method was added in version 1.1
         @note not available in python bindings
       */
     const GEOSGeometry* asGeos() const;
 
-    /** Returns type of wkb (point / linestring / polygon etc.) */
+    /** Returns type of the geometry as a WKB type (point / linestring / polygon etc.)
+     * @see type
+     */
     QGis::WkbType wkbType() const;
 
-    /** Returns type of the vector */
+    /** Returns type of the geometry as a QGis::GeometryType
+     * @see wkbType
+     */
     QGis::GeometryType type() const;
 
-    /** Returns true if wkb of the geometry is of WKBMulti* type */
+    /** Returns true if WKB of the geometry is of WKBMulti* type */
     bool isMultipart() const;
 
-    /** compare geometries using GEOS
+    /** Compares the geometry with another geometry using GEOS
       @note added in 1.5
      */
     bool isGeosEqual( const QgsGeometry& ) const;
 
-    /** check validity using GEOS
+    /** Checks validity of the geometry using GEOS
       @note added in 1.5
      */
     bool isGeosValid() const;
 
-    /** check if geometry is empty using GEOS
+    /** Check if the geometry is empty using GEOS
       @note added in 1.5
      */
     bool isGeosEmpty() const;
 
-    /** get area of geometry using GEOS
+    /** Returns the area of the geometry using GEOS
       @note added in 1.5
      */
     double area() const;
 
-    /** get length of geometry using GEOS
+    /** Returns the length of geometry using GEOS
       @note added in 1.5
      */
     double length() const;
 
+    /** Returns the minimum distanace between this geometry and another geometry, using GEOS
+     * @param geom geometry to find minimum distance to
+     */
     double distance( const QgsGeometry& geom ) const;
 
     /**
@@ -511,13 +526,13 @@ class CORE_EXPORT QgsGeometry
     */
     QPolygonF asQPolygonF() const;
 
-    /** delete a ring in polygon or multipolygon.
+    /** Delete a ring in polygon or multipolygon.
       Ring 0 is outer ring and can't be deleted.
       @return true on success
       @note added in version 1.2 */
     bool deleteRing( int ringNum, int partNum = 0 );
 
-    /** delete part identified by the part number
+    /** Delete part identified by the part number
       @return true on success
       @note added in version 1.2 */
     bool deletePart( int partNum );
@@ -547,7 +562,7 @@ class CORE_EXPORT QgsGeometry
         Error( QString m ) : message( m ), hasLocation( false ) {}
         Error( QString m, QgsPoint p ) : message( m ), location( p ), hasLocation( true ) {}
 
-        QString what() { return message; };
+        QString what() { return message; }
         QgsPoint where() { return location; }
         bool hasWhere() { return hasLocation; }
     };
@@ -564,6 +579,10 @@ class CORE_EXPORT QgsGeometry
     */
     static QgsGeometry *unaryUnion( const QList<QgsGeometry*>& geometryList );
 
+    /** Converts the geometry to straight line segments, if it is a curved geometry type.
+     * @note added in QGIS 2.10
+     * @see requiresConversionToStraightSegments
+     */
     void convertToStraightSegment();
 
     /** Returns true if the geometry is a curved geometry type which requires conversion to
@@ -573,17 +592,48 @@ class CORE_EXPORT QgsGeometry
      */
     bool requiresConversionToStraightSegments() const;
 
+    /** Transforms the geometry from map units to pixels in place.
+     * @param mtp map to pixel transform
+     * @note added in QGIS 2.10
+     */
     void mapToPixel( const QgsMapToPixel& mtp );
+
+#if 0
+    // not implemented for 2.10
+    /** Clips the geometry using the specified rectangle
+     * @param rect clip rectangle
+     * @note added in QGIS 2.10
+     */
     void clip( const QgsRectangle& rect );
+#endif
+
+    /** Draws the geometry onto a QPainter
+     * @param p destination QPainter
+     * @note added in QGIS 2.10
+     */
     void draw( QPainter& p ) const;
 
+    /** Calculates the vertex ID from a vertex number
+     * @param nr vertex number
+     * @param id reference to QgsVertexId for storing result
+     * @returns true if vertex was found
+     * @note added in QGIS 2.10
+     * @see vertexNrFromVertexId
+     */
     bool vertexIdFromVertexNr( int nr, QgsVertexId& id ) const;
+
+    /** Returns the vertex number corresponding to a vertex idd
+     * @param i vertex id
+     * @returns vertex number
+     * @note added in QGIS 2.10
+     * @see vertexIdFromVertexNr
+     */
     int vertexNrFromVertexId( const QgsVertexId& i ) const;
 
     /** return GEOS context handle
-         * @note added in 2.6
-         * @note not available in Python
-         */
+     * @note added in 2.6
+     * @note not available in Python
+     */
     static GEOSContextHandle_t getGEOSHandler();
 
     /**Construct geometry from a QPointF
@@ -599,7 +649,19 @@ class CORE_EXPORT QgsGeometry
     * @note added in QGIS 2.7
     */
     static QgsGeometry* fromQPolygonF( const QPolygonF& polygon );
+
+    /** Creates a QgsPolyline from a QPolygonF.
+     * @param polygon source polygon
+     * @returns QgsPolyline
+     * @see createPolygonFromQPolygonF
+     */
     static QgsPolyline createPolylineFromQPolygonF( const QPolygonF &polygon );
+
+    /** Creates a QgsPolygon from a QPolygonF.
+     * @param polygon source polygon
+     * @returns QgsPolygon
+     * @see createPolylineFromQPolygonF
+     */
     static QgsPolygon createPolygonFromQPolygonF( const QPolygonF &polygon );
 
     /** Compares two polylines for equality within a specified tolerance.

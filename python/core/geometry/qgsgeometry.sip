@@ -522,7 +522,8 @@ class QgsGeometry
     bool requiresConversionToStraightSegments() const;
 
     void mapToPixel( const QgsMapToPixel& mtp );
-    void clip( const QgsRectangle& rect );
+    
+    //void clip( const QgsRectangle& rect );
     void draw( QPainter& p ) const;
 
     bool vertexIdFromVertexNr( int nr, QgsVertexId& id ) const;

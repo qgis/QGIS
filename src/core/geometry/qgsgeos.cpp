@@ -204,8 +204,25 @@ QgsAbstractGeometryV2* QgsGeos::symDifference( const QgsAbstractGeometryV2& geom
 
 double QgsGeos::distance( const QgsAbstractGeometryV2& geom ) const
 {
-  Q_UNUSED( geom );
-  return 0.0;
+  double distance = -1.0;
+  if ( !mGeos )
+  {
+    return distance;
+  }
+
+  GEOSGeometry* otherGeosGeom = asGeos( &geom );
+  if ( !otherGeosGeom )
+  {
+    return distance;
+  }
+
+  try
+  {
+    GEOSDistance_r( geosinit.ctxt, mGeos, otherGeosGeom, &distance );
+  }
+  CATCH_GEOS( -1.0 )
+
+  return distance;
 }
 
 bool QgsGeos::intersects( const QgsAbstractGeometryV2& geom ) const
@@ -633,14 +650,14 @@ GEOSGeometry* QgsGeos::nodeGeometries( const GEOSGeometry *splitLine, const GEOS
     return 0;
 
   GEOSGeometry *geometryBoundary = 0;
-  if ( GEOSGeomTypeId( geom ) == GEOS_POLYGON || GEOSGeomTypeId( geom ) == GEOS_MULTIPOLYGON )
+  if ( GEOSGeomTypeId_r( geosinit.ctxt, geom ) == GEOS_POLYGON || GEOSGeomTypeId_r( geosinit.ctxt, geom ) == GEOS_MULTIPOLYGON )
     geometryBoundary = GEOSBoundary_r( geosinit.ctxt, geom );
   else
     geometryBoundary = GEOSGeom_clone_r( geosinit.ctxt, geom );
 
   GEOSGeometry *splitLineClone = GEOSGeom_clone_r( geosinit.ctxt, splitLine );
   GEOSGeometry *unionGeometry = GEOSUnion_r( geosinit.ctxt, splitLineClone, geometryBoundary );
-  GEOSGeom_destroy( splitLineClone );
+  GEOSGeom_destroy_r( geosinit.ctxt, splitLineClone );
 
   GEOSGeom_destroy_r( geosinit.ctxt, geometryBoundary );
   return unionGeometry;
@@ -692,7 +709,7 @@ int QgsGeos::mergeGeometriesMultiTypeSplit( QVector<GEOSGeometry*>& splitResult 
       else if ( type == GEOS_MULTIPOLYGON )
         splitResult << createGeosCollection( GEOS_MULTIPOLYGON, geomVector );
       else
-        GEOSGeom_destroy( copyList[i] );
+        GEOSGeom_destroy_r( geosinit.ctxt, copyList[i] );
     }
   }
 
@@ -1594,26 +1611,26 @@ GEOSGeometry* QgsGeos::reshapeLine( const GEOSGeometry* line, const GEOSGeometry
   GEOSGeometry* nodedGeometry = nodeGeometries( reshapeLineGeos, line );
   if ( !nodedGeometry )
   {
-    GEOSGeom_destroy( beginLineVertex );
-    GEOSGeom_destroy( endLineVertex );
+    GEOSGeom_destroy_r( geosinit.ctxt, beginLineVertex );
+    GEOSGeom_destroy_r( geosinit.ctxt, endLineVertex );
     return 0;
   }
 
   //and merge them together
   GEOSGeometry *mergedLines = GEOSLineMerge_r( geosinit.ctxt, nodedGeometry );
-  GEOSGeom_destroy( nodedGeometry );
+  GEOSGeom_destroy_r( geosinit.ctxt, nodedGeometry );
   if ( !mergedLines )
   {
-    GEOSGeom_destroy( beginLineVertex );
-    GEOSGeom_destroy( endLineVertex );
+    GEOSGeom_destroy_r( geosinit.ctxt, beginLineVertex );
+    GEOSGeom_destroy_r( geosinit.ctxt, endLineVertex );
     return 0;
   }
 
   int numMergedLines = GEOSGetNumGeometries_r( geosinit.ctxt, mergedLines );
   if ( numMergedLines < 2 ) //some special cases. Normally it is >2
   {
-    GEOSGeom_destroy( beginLineVertex );
-    GEOSGeom_destroy( endLineVertex );
+    GEOSGeom_destroy_r( geosinit.ctxt, beginLineVertex );
+    GEOSGeom_destroy_r( geosinit.ctxt, endLineVertex );
     if ( numMergedLines == 1 ) //reshape line is from begin to endpoint. So we keep the reshapeline
       return GEOSGeom_clone_r( geosinit.ctxt, reshapeLineGeos );
     else

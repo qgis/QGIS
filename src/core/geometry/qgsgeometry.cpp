@@ -428,6 +428,8 @@ bool QgsGeometry::insertVertex( double x, double y, int beforeVertex )
     return false;
   }
 
+  detach( true );
+
   QgsVertexId id;
   if ( !vertexIdFromVertexNr( beforeVertex, id ) )
   {
@@ -632,10 +634,17 @@ int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeome
   QgsGeos geos( d->geometry );
   int result = geos.splitGeometry( splitLineString, newGeoms, topological, tp );
 
-  newGeometries.clear();
-  for ( int i = 0; i < newGeoms.size(); ++i )
+  if ( result == 0 )
   {
-    newGeometries.push_back( new QgsGeometry( newGeoms.at( i ) ) );
+    detach( false );
+    delete d->geometry;
+    d->geometry = newGeoms.at( 0 );
+
+    newGeometries.clear();
+    for ( int i = 1; i < newGeoms.size(); ++i )
+    {
+      newGeometries.push_back( new QgsGeometry( newGeoms.at( i ) ) );
+    }
   }
 
   convertPointList( tp, topologyTestPoints );
@@ -1484,9 +1493,9 @@ void QgsGeometry::convertToStraightSegment()
     return;
   }
 
-  detach();
   QgsAbstractGeometryV2* straightGeom = d->geometry->segmentize();
-  delete d->geometry;
+  detach( false );
+
   d->geometry = straightGeom;
   removeWkbGeos();
 }
@@ -1536,6 +1545,7 @@ void QgsGeometry::mapToPixel( const QgsMapToPixel& mtp )
   }
 }
 
+#if 0
 void QgsGeometry::clip( const QgsRectangle& rect )
 {
   if ( d && d->geometry )
@@ -1545,7 +1555,7 @@ void QgsGeometry::clip( const QgsRectangle& rect )
     removeWkbGeos();
   }
 }
-
+#endif
 
 void QgsGeometry::draw( QPainter& p ) const
 {
