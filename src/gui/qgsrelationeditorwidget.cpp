@@ -153,6 +153,9 @@ void QgsRelationEditorWidget::setRelationFeature( const QgsRelation& relation, c
     mToggleEditingButton->setEnabled( false );
   }
 
+  setObjectName( mRelation.name() );
+  loadState();
+
   // If not yet initialized, it is not (yet) visible, so we don't load it to be faster (lazy loading)
   // If it is already initialized, it has been set visible before and the currently shown feature is changing
   // and the widget needs updating
@@ -174,6 +177,14 @@ void QgsRelationEditorWidget::setViewMode( QgsDualView::ViewMode mode )
 {
   mDualView->setView( mode );
   mViewMode = mode;
+}
+
+void QgsRelationEditorWidget::setQgisRelation( QString qgisRelationId )
+{
+  mRelationId = qgisRelationId;
+  // by setting the object name appropriately we can properly save the collapsed state
+  setObjectName( qgisRelationId );
+  loadState();
 }
 
 void QgsRelationEditorWidget::referencingLayerEditingToggled()
