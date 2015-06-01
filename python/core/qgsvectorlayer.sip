@@ -8,6 +8,22 @@ class QgsAttributeEditorElement : QObject
 #include "qgsvectorlayer.h"
 %End
 
+%ConvertToSubClassCode
+  QgsAttributeEditorElement* e = qobject_cast<QgsAttributeEditorElement*>( sipCpp );
+
+  sipClass = 0;
+  if ( e )
+  {
+    switch ( e->type() )
+    {
+      case QgsAttributeEditorElement::AeTypeContainer: sipClass = sipClass_QgsAttributeEditorContainer; break;
+      case QgsAttributeEditorElement::AeTypeField:   sipClass = sipClass_QgsAttributeEditorField; break;
+      case QgsAttributeEditorElement::AeTypeRelation:  sipClass = sipClass_QgsAttributeEditorRelation; break;
+    }
+  }
+%End
+
+
   public:
 
     enum AttributeEditorType
@@ -43,6 +59,7 @@ class QgsAttributeEditorContainer : QgsAttributeEditorElement
     virtual void addChildElement( QgsAttributeEditorElement *widget );
     virtual void setIsGroupBox( bool isGroupBox );
     virtual bool isGroupBox() const;
+    virtual void setName( const QString& name );
     QList<QgsAttributeEditorElement*> children() const;
 };
 

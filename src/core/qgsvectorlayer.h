@@ -64,6 +64,15 @@ class QgsVectorLayerJoinBuffer;
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
 
+/**
+ * This is an abstract base class for any elements of a drag and drop form.
+ *
+ * This can either be a container which will be represented on the screen
+ * as a tab widget or ca collapsible group box. Or it can be a field which will
+ * then be represented based on the QgsEditorWidgetV2 type and configuration.
+ * Or it can be a relation and embed the form of several children of another
+ * layer.
+ */
 class CORE_EXPORT QgsAttributeEditorElement : public QObject
 {
     Q_OBJECT
@@ -71,20 +80,46 @@ class CORE_EXPORT QgsAttributeEditorElement : public QObject
 
     enum AttributeEditorType
     {
-      AeTypeContainer,
-      AeTypeField,
-      AeTypeRelation,
-      AeTypeInvalid
+      AeTypeContainer, //!< A container
+      AeTypeField,     //!< A field
+      AeTypeRelation,  //!< A relation
+      AeTypeInvalid    //!< Invalid
     };
 
+    /**
+     * Constructor
+     *
+     * @param type The type of the new element. Should never
+     * @param name
+     * @param parent
+     */
     QgsAttributeEditorElement( AttributeEditorType type, QString name, QObject *parent = NULL )
         : QObject( parent ), mType( type ), mName( name ) {}
 
+    //! Destructor
     virtual ~QgsAttributeEditorElement() {}
 
+    /**
+     * Return the name of this element
+     *
+     * @return The name for this element
+     */
     QString name() const { return mName; }
+
+    /**
+     * The type of this element
+     *
+     * @return The type
+     */
     AttributeEditorType type() const { return mType; }
 
+    /**
+     * Is reimplemented in classes inheriting from this to serialize it.
+     *
+     * @param doc The QDomDocument which is used to create new XML elements
+     *
+     * @return An DOM element which represents this element
+     */
     virtual QDomElement toDomElement( QDomDocument& doc ) const = 0;
 
   protected:
@@ -92,60 +127,171 @@ class CORE_EXPORT QgsAttributeEditorElement : public QObject
     QString mName;
 };
 
+/**
+ * This is a container for attribute editors, used to group them visually in the
+ * attribute form if it is set to the drag and drop designer.
+ */
 class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
 {
   public:
+    /**
+     * Creates a new attribute editor container
+     *
+     * @param name   The name to show as title
+     * @param parent The parent. May be another container.
+     */
     QgsAttributeEditorContainer( QString name, QObject *parent )
         : QgsAttributeEditorElement( AeTypeContainer, name, parent )
         , mIsGroupBox( true )
     {}
 
-    ~QgsAttributeEditorContainer() {}
+    //! Destructor
+    virtual ~QgsAttributeEditorContainer() {}
 
+    /**
+     * Will serialize this containers information into a QDomElement for saving it in an XML file.
+     *
+     * @param doc The QDomDocument used to generate the QDomElement
+     *
+     * @return The XML element
+     */
     virtual QDomElement toDomElement( QDomDocument& doc ) const override;
-    virtual void addChildElement( QgsAttributeEditorElement *widget );
+
+    /**
+     * Add a child element to this container. This may be another container, a field or a relation.
+     *
+     * @param element The element to add as child
+     */
+    virtual void addChildElement( QgsAttributeEditorElement* element );
+
+    /**
+     * Determines if this container is rendered as collapsible group box or tab in a tabwidget
+     *
+     * @param isGroupBox If true, this will be a group box
+     */
     virtual void setIsGroupBox( bool isGroupBox ) { mIsGroupBox = isGroupBox; }
+
+    /**
+     * Returns if this  ccontainer is going to be rendered as a group box
+     *
+     * @return True if it will be a group box, false if it will be a tab
+     */
     virtual bool isGroupBox() const { return mIsGroupBox; }
+
+    /**
+     * Get a list of the children elements of this container
+     *
+     * @return A list of elements
+     */
     QList<QgsAttributeEditorElement*> children() const { return mChildren; }
+
+    /**
+     * Traverses the element tree to find any element of the specified type
+     *
+     * @param type The type which should be searched
+     *
+     * @return A list of elements of the type which has been searched for
+     */
     virtual QList<QgsAttributeEditorElement*> findElements( AttributeEditorType type ) const;
+
+    /**
+     * Change the name of this container
+     *
+     * @param name
+     */
+    void setName( const QString& name );
 
   private:
     bool mIsGroupBox;
     QList<QgsAttributeEditorElement*> mChildren;
 };
 
-
+/**
+ * This element will load a field's widget onto the form.
+ */
 class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
 {
   public:
+    /**
+     * Creates a new attribute editor element which represents a field
+     *
+     * @param name   The name of the element
+     * @param idx    The index of the field which should be embedded
+     * @param parent The parent of this widget (used as container)
+     */
     QgsAttributeEditorField( QString name, int idx, QObject *parent )
         : QgsAttributeEditorElement( AeTypeField, name, parent ), mIdx( idx ) {}
 
-    ~QgsAttributeEditorField() {}
+    //! Destructor
+    virtual ~QgsAttributeEditorField() {}
 
+    /**
+     * Will serialize this elements information into a QDomElement for saving it in an XML file.
+     *
+     * @param doc The QDomDocument used to generate the QDomElement
+     *
+     * @return The XML element
+     */
     virtual QDomElement toDomElement( QDomDocument& doc ) const override;
+
+    /**
+     * Return the index of the field
+     * @return
+     */
     int idx() const { return mIdx; }
 
   private:
     int mIdx;
 };
 
-/** @note Added in 2.1 */
+/**
+ * This element will load a relation editor onto the form.
+ *
+ * @note Added in 2.1
+ */
 class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
 {
   public:
+    /**
+     * Creates a new element which embeds a relation.
+     *
+     * @param name         The name of this element
+     * @param relationId   The id of the relation to embed
+     * @param parent       The parent (used as container)
+     */
     QgsAttributeEditorRelation( QString name, const QString &relationId, QObject *parent )
         : QgsAttributeEditorElement( AeTypeRelation, name, parent )
         , mRelationId( relationId ) {}
 
+    /**
+     * Creates a new element which embeds a relation.
+     *
+     * @param name         The name of this element
+     * @param relation     The relation to embed
+     * @param parent       The parent (used as container)
+     */
     QgsAttributeEditorRelation( QString name, const QgsRelation& relation, QObject *parent )
         : QgsAttributeEditorElement( AeTypeRelation, name, parent )
         , mRelationId( relation.id() )
         , mRelation( relation ) {}
 
-    ~QgsAttributeEditorRelation() {}
+    //! Destructor
+    virtual ~QgsAttributeEditorRelation() {}
 
+    /**
+     * Will serialize this elements information into a QDomElement for saving it in an XML file.
+     *
+     * @param doc The QDomDocument used to generate the QDomElement
+     *
+     * @return The XML element
+     */
     virtual QDomElement toDomElement( QDomDocument& doc ) const override;
+
+    /**
+     * Get the id of the relation which shall be embedded
+     *
+     * @return the id
+     */
     const QgsRelation& relation() const { return mRelation; }
 
     /**

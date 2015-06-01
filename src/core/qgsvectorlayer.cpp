@@ -3853,6 +3853,11 @@ void QgsAttributeEditorContainer::addChildElement( QgsAttributeEditorElement *wi
   mChildren.append( widget );
 }
 
+void QgsAttributeEditorContainer::setName( const QString& name )
+{
+  mName = name;
+}
+
 QList<QgsAttributeEditorElement*> QgsAttributeEditorContainer::findElements( QgsAttributeEditorElement::AttributeEditorType type ) const
 {
   QList<QgsAttributeEditorElement*> results;
