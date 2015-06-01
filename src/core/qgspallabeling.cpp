@@ -3325,6 +3325,11 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames,
 
   // rect for clipping
   lyr.extentGeom = QgsGeometry::fromRect( mMapSettings->visibleExtent() );
+  if ( !qgsDoubleNear( mMapSettings->rotation(), 0.0 ) )
+  {
+    //PAL features are prerotated, so extent also needs to be unrotated
+    lyr.extentGeom->rotate( -mMapSettings->rotation(), mMapSettings->visibleExtent().center() );
+  }
 
   lyr.mFeatsSendingToPal = 0;
 
@@ -3562,6 +3567,11 @@ void QgsPalLabeling::registerDiagramFeature( const QString& layerID, QgsFeature&
   //convert geom to geos
   const QgsGeometry* geom = feat.constGeometry();
   QScopedPointer<QgsGeometry> extentGeom( QgsGeometry::fromRect( mMapSettings->visibleExtent() ) );
+  if ( !qgsDoubleNear( mMapSettings->rotation(), 0.0 ) )
+  {
+    //PAL features are prerotated, so extent also needs to be unrotated
+    extentGeom->rotate( -mMapSettings->rotation(), mMapSettings->visibleExtent().center() );
+  }
 
   const GEOSGeometry* geos_geom = 0;
   QScopedPointer<QgsGeometry> preparedGeom;
@@ -4036,7 +4046,16 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
 {
   Q_ASSERT( mMapSettings != NULL );
   QPainter* painter = context.painter();
-  QgsRectangle extent = context.extent();
+
+  QgsGeometry* extentGeom( QgsGeometry::fromRect( mMapSettings->visibleExtent() ) );
+  if ( !qgsDoubleNear( mMapSettings->rotation(), 0.0 ) )
+  {
+    //PAL features are prerotated, so extent also needs to be unrotated
+    extentGeom->rotate( -mMapSettings->rotation(), mMapSettings->visibleExtent().center() );
+  }
+
+  QgsRectangle extent = extentGeom->boundingBox();
+  delete extentGeom;
 
   mPal->registerCancellationCallback( &_palIsCancelled, &context );
 
@@ -4048,8 +4067,7 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
 
   // do the labeling itself
   double scale = mMapSettings->scale(); // scale denominator
-  QgsRectangle r = extent;
-  double bbox[] = { r.xMinimum(), r.yMinimum(), r.xMaximum(), r.yMaximum() };
+  double bbox[] = { extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum() };
 
   std::list<LabelPosition*>* labels;
   pal::Problem* problem;
