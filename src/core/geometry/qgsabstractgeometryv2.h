@@ -223,9 +223,7 @@ class CORE_EXPORT QgsAbstractGeometryV2
      */
     virtual void transform( const QTransform& t ) = 0;
 
-#if 0
-    virtual void clip( const QgsRectangle& rect ) { Q_UNUSED( rect ); } //todo
-#endif
+    virtual void clip( const QgsRectangle& rect ); //todo
 
     /** Draws the geometry using the specified QPainter.
      * @param p destination QPainter
