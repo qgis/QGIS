@@ -471,10 +471,12 @@ void QgsOSMDatabase::exportSpatiaLiteWays( bool closed, const QString& tableName
       continue; // invalid way
 
     bool isArea = ( polyline.first() == polyline.last() ); // closed way?
-    // some closed ways are not really areas
+    // filter out closed way that are not areas through tags
     if ( isArea && ( t.contains( "highway" ) || t.contains( "barrier" ) ) )
     {
-      if ( t.value( "area" ) != "yes" ) // even though "highway" is line by default, "area"="yes" may override that
+      // make sure tags that indicate areas are taken into consideration when deciding on a closed way is or isn't an area
+      // and allow for a closed way to be exported both as a polygon and a line in case both area and non-area tags are present
+      if ( ( t.value( "area" ) != "yes" && !t.contains( "amenity" ) && !t.contains( "landuse" ) && !t.contains( "building" ) && !t.contains( "natural" ) ) || !closed )
         isArea = false;
     }
 
