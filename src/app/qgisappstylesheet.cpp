@@ -176,23 +176,6 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant>& opts )
         .arg( palette.highlight().color().name() )
         .arg( palette.highlightedText().color().name() );
 
-  int iconSize = opts.value( "iconSize" ).toInt();
-  if ( iconSize > 32 )
-  {
-    iconSize -= 16;
-  }
-  else if ( iconSize == 32 )
-  {
-    iconSize = 24;
-  }
-  else
-  {
-    iconSize = 16;
-  }
-
-  QgsDebugMsg( QString( "iconSize: %1" ).arg( iconSize ) );
-  ss += QString( "QDockWidget QToolButton { icon-size: %1px; }" ).arg( iconSize );
-
   QgsDebugMsg( QString( "Stylesheet built: %1" ).arg( ss ) );
 
   emit appStyleSheetChanged( ss );

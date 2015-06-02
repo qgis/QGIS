@@ -762,6 +762,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
     mActionShowPythonDialog = 0;
   }
 
+  // Set icon size of toolbars
+  int size = settings.value( "/IconSize", QGIS_ICON_SIZE ).toInt();
+  setIconSizes( size );
+
   mSplash->showMessage( tr( "Initializing file filters" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
 
@@ -1600,8 +1604,6 @@ void QgisApp::createMenus()
 void QgisApp::createToolBars()
 {
   QSettings settings;
-  int size = settings.value( "/IconSize", QGIS_ICON_SIZE ).toInt();
-  setIconSize( QSize( size, size ) );
   // QSize myIconSize ( 32,32 ); //large icons
   // Note: we need to set each object name to ensure that
   // qmainwindow::saveState and qmainwindow::restoreState
@@ -1927,6 +1929,20 @@ void QgisApp::createStatusBar()
 
 void QgisApp::setIconSizes( int size )
 {
+  int dockSize;
+  if ( size > 32 )
+  {
+    dockSize = size - 16;
+  }
+  else if ( size == 32 )
+  {
+    dockSize = 24;
+  }
+  else
+  {
+    dockSize = 16;
+  }
+
   //Set the icon size of for all the toolbars created in the future.
   setIconSize( QSize( size, size ) );
 
@@ -1934,7 +1950,15 @@ void QgisApp::setIconSizes( int size )
   QList<QToolBar *> toolbars = findChildren<QToolBar *>();
   foreach ( QToolBar * toolbar, toolbars )
   {
-    toolbar->setIconSize( QSize( size, size ) );
+    QString className = toolbar->parent()->metaObject()->className();
+    if ( className == "QgisApp" )
+    {
+      toolbar->setIconSize( QSize( size, size ) );
+    }
+    else
+    {
+      toolbar->setIconSize( QSize( dockSize, dockSize ) );
+    }
   }
 
   foreach ( QgsComposer *c, mPrintComposers )
