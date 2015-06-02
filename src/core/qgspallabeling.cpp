@@ -3457,6 +3457,33 @@ QgsGeometry* QgsPalLabeling::prepareGeometry( const QgsGeometry* geometry, const
     return 0;
   }
 
+  // Rotate the geometry if needed, before clipping
+  const QgsMapToPixel& m2p = context.mapToPixel();
+  if ( !qgsDoubleNear( m2p.mapRotation(), 0 ) )
+  {
+    QgsPoint center = context.extent().center();
+
+    if ( ct )
+    {
+      try
+      {
+        center = ct->transform( center );
+      }
+      catch ( QgsCsException &cse )
+      {
+        Q_UNUSED( cse );
+        QgsDebugMsgLevel( QString( "Ignoring feature due to transformation exception" ), 4 );
+        return 0;
+      }
+    }
+
+    if ( geom->rotate( m2p.mapRotation(), center ) )
+    {
+      QgsDebugMsg( QString( "Error rotating geometry" ).arg( geom->exportToWkt() ) );
+      return 0;
+    }
+  }
+
   if ( !geom->asGeos() )
     return 0;  // there is something really wrong with the geometry
 
@@ -3470,17 +3497,6 @@ QgsGeometry* QgsPalLabeling::prepareGeometry( const QgsGeometry* geometry, const
     }
     geom = bufferGeom;
     clonedGeometry.reset( geom );
-  }
-
-  // Rotate the geometry if needed, before clipping
-  const QgsMapToPixel& m2p = context.mapToPixel();
-  if ( !qgsDoubleNear( m2p.mapRotation(), 0 ) )
-  {
-    if ( geom->rotate( m2p.mapRotation(), context.extent().center() ) )
-    {
-      QgsDebugMsg( QString( "Error rotating geometry" ).arg( geom->exportToWkt() ) );
-      return 0;
-    }
   }
 
   if ( clipGeometry && !clipGeometry->contains( geom ) )
