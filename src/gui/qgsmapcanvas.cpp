@@ -555,6 +555,12 @@ void QgsMapCanvas::setCachingEnabled( bool enabled )
   if ( enabled == isCachingEnabled() )
     return;
 
+  if ( mJob && mJob->isActive() )
+  {
+    // wait for the current rendering to finish, before touching the cache
+    mJob->waitForFinished();
+  }
+
   if ( enabled )
   {
     mCache = new QgsMapRendererCache;
