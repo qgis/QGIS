@@ -136,7 +136,7 @@ int QgsGeometryEditUtils::addPart( QgsAbstractGeometryV2* geom, QgsAbstractGeome
 
 bool QgsGeometryEditUtils::deleteRing( QgsAbstractGeometryV2* geom, int ringNum, int partNum )
 {
-  if ( !geom )
+  if ( !geom || partNum < 0 )
   {
     return false;
   }
@@ -147,14 +147,15 @@ bool QgsGeometryEditUtils::deleteRing( QgsAbstractGeometryV2* geom, int ringNum,
   }
 
   QgsAbstractGeometryV2* g = geom;
-  if ( partNum > 0 )
+  QgsGeometryCollectionV2* c = dynamic_cast<QgsGeometryCollectionV2*>( geom );
+  if ( c )
   {
-    QgsMultiSurfaceV2* multiSurface = dynamic_cast<QgsMultiSurfaceV2*>( geom );
-    if ( !multiSurface )
-    {
-      return false;
-    }
-    g = multiSurface->geometryN( partNum );
+    g = c->geometryN( partNum );
+  }
+  else if ( partNum > 0 )
+  {
+    //part num specified, but not a multi part geometry type
+    return false;
   }
 
   QgsCurvePolygonV2* cpoly = dynamic_cast<QgsCurvePolygonV2*>( g );
