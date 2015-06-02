@@ -23,7 +23,7 @@ The content of this file is based on
 """
 
 from PyQt4.QtCore import Qt, QObject, QSettings, QByteArray, SIGNAL
-from PyQt4.QtGui import QDialog, QAction, QKeySequence, QDialogButtonBox, QApplication, QCursor, QMessageBox, QClipboard, QInputDialog
+from PyQt4.QtGui import QDialog, QAction, QKeySequence, QDialogButtonBox, QApplication, QCursor, QMessageBox, QClipboard, QInputDialog, QIcon
 from PyQt4.Qsci import QsciAPIs
 
 from qgis.core import QgsProject
@@ -95,6 +95,7 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
             self.connect( self.btnCreateView, SIGNAL("clicked()"), self.createView )
 
         self.queryBuilderFirst = True
+        self.queryBuilderBtn.setIcon(QIcon(":/db_manager/icons/sql.gif"))
         self.connect( self.queryBuilderBtn, SIGNAL("clicked()"), self.displayQueryBuilder )
 
     def updatePresetsCombobox(self):

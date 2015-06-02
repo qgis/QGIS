@@ -48,10 +48,6 @@
            <property name="text">
             <string/>
            </property>
-           <property name="icon">
-            <iconset resource="../resources.qrc">
-             <normaloff>:/db_manager/icons/sql.gif</normaloff>:/db_manager/icons/sql.gif</iconset>
-           </property>
           </widget>
          </item>
          <item>
@@ -390,9 +386,6 @@ columns</string>
   <tabstop>btnClear</tabstop>
   <tabstop>viewResult</tabstop>
  </tabstops>
- <resources>
-  <include location="../resources.qrc"/>
- </resources>
  <connections>
   <connection>
    <sender>loadAsLayerGroup</sender>
