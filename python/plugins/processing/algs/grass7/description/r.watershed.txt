@@ -19,7 +19,7 @@ OutputRaster|accumulation|Number of cells that drain through each cell
 OutputRaster|drainage|Drainage direction
 OutputRaster|basin|Unique label for each watershed basin
 OutputRaster|stream|Stream segments
-OutputRaster|half_basin|Half-basins output layer
+OutputRaster|half_basin|Half-basins
 OutputRaster|length_slope|Slope length and steepness (LS) factor for USLE
 OutputRaster|slope_steepness|Slope steepness (S) factor for USLE
 OutputRaster|tci|Topographic index ln(a / tan(b))

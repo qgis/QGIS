@@ -9,5 +9,4 @@ ParameterBoolean|-f|Import polyface meshes as 3D wire frame|True
 ParameterBoolean|-l|List available layers and exit|False
 ParameterBoolean|-i|Invert selection by layers (don't import layers in list)|False
 ParameterBoolean|-1|Import all objects into one layer|True
-OutputVector|output|Name for output vector map
-
+OutputVector|output|Converted

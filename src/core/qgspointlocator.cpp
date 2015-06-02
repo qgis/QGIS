@@ -17,6 +17,7 @@
 
 #include "qgsgeometry.h"
 #include "qgsvectorlayer.h"
+#include "qgswkbptr.h"
 
 #include <spatialindex/SpatialIndex.h>
 

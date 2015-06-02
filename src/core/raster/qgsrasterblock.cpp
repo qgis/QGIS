@@ -881,6 +881,12 @@ bool QgsRasterBlock::createNoDataBitmap()
   return true;
 }
 
+QString  QgsRasterBlock::toString() const
+{
+  return QString( "dataType = %1 width = %2 height = %3" )
+         .arg( mDataType ).arg( mWidth ).arg( mHeight );
+}
+
 QRect QgsRasterBlock::subRect( const QgsRectangle & theExtent, int theWidth, int theHeight, const QgsRectangle &  theSubExtent )
 {
   QgsDebugMsg( "theExtent = " + theExtent.toString() );

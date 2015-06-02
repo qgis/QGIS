@@ -33,6 +33,8 @@
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
+#include "qgswebview.h"
+#include "qgswebframe.h"
 
 #include <QCloseEvent>
 #include <QLabel>
@@ -45,13 +47,11 @@
 #include <QDockWidget>
 #include <QMenuBar>
 #include <QPushButton>
-#include <QWebView>
 #include <QPrinter>
 #include <QPrintDialog>
 #include <QDesktopServices>
 #include <QMessageBox>
 #include <QComboBox>
-#include <QWebFrame>
 
 //graph
 #include <qwt_plot.h>
@@ -61,7 +61,7 @@
 #include "qgsvectorcolorrampv2.h" // for random colors
 
 
-QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent ) : QWebView( parent )
+QgsIdentifyResultsWebView::QgsIdentifyResultsWebView( QWidget *parent ) : QgsWebView( parent )
 {
   setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum );
   page()->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
@@ -80,7 +80,7 @@ void QgsIdentifyResultsWebView::print( void )
   QPrintDialog *dialog = new QPrintDialog( &printer );
   if ( dialog->exec() == QDialog::Accepted )
   {
-    QWebView::print( &printer );
+    QgsWebView::print( &printer );
   }
 }
 
@@ -97,12 +97,12 @@ void QgsIdentifyResultsWebView::contextMenuEvent( QContextMenuEvent *e )
   delete menu;
 }
 
-QWebView *QgsIdentifyResultsWebView::createWindow( QWebPage::WebWindowType type )
+QgsWebView *QgsIdentifyResultsWebView::createWindow( QWebPage::WebWindowType type )
 {
   QDialog *d = new QDialog( this );
   QLayout *l = new QVBoxLayout( d );
 
-  QWebView *wv = new QWebView( d );
+  QgsWebView *wv = new QgsWebView( d );
   l->addWidget( wv );
 
   wv->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum );
@@ -255,13 +255,7 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
 {
   setupUi( this );
 
-  mExpandToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionExpandTree.png" ) );
-  mCollapseToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionCollapseTree.png" ) );
-  mExpandNewToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionExpandNewTree.png" ) );
-  mCopyToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionEditCopy.png" ) );
-  mPrintToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionFilePrint.png" ) );
-  mOpenFormButton->setIcon( QgsApplication::getThemeIcon( "/mActionPropertyItem.png" ) );
-  mOpenFormButton->setDisabled( true );
+  mOpenFormAction->setDisabled( true );
 
   QSettings mySettings;
   mDock = new QDockWidget( tr( "Identify Results" ), QgisApp::instance() );
@@ -273,8 +267,23 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   else
     QgisApp::instance()->panelMenu()->addAction( mDock->toggleViewAction() );
 
-  mExpandNewToolButton->setChecked( mySettings.value( "/Map/identifyExpand", false ).toBool() );
-  mCopyToolButton->setEnabled( false );
+  int size = mySettings.value( "/IconSize", 16 ).toInt();
+  if ( size > 32 )
+  {
+    size -= 16;
+  }
+  else if ( size == 32 )
+  {
+    size = 24;
+  }
+  else
+  {
+    size = 16;
+  }
+  mIdentifyToolbar->setIconSize( QSize( size, size ) );
+
+  mExpandNewAction->setChecked( mySettings.value( "/Map/identifyExpand", false ).toBool() );
+  mActionCopy->setEnabled( false );
   lstResults->setColumnCount( 2 );
   lstResults->sortByColumn( -1 );
   setColumnText( 0, tr( "Feature" ) );
@@ -327,9 +336,9 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   connect( lstResults, SIGNAL( itemClicked( QTreeWidgetItem*, int ) ),
            this, SLOT( itemClicked( QTreeWidgetItem*, int ) ) );
 
-  connect( mPrintToolButton, SIGNAL( clicked() ), this, SLOT( printCurrentItem() ) );
-  connect( mOpenFormButton, SIGNAL( clicked() ), this, SLOT( featureForm() ) );
-  connect( mClearToolButton, SIGNAL( clicked() ), this, SLOT( clear() ) );
+  connect( mActionPrint, SIGNAL( triggered( bool ) ), this, SLOT( printCurrentItem() ) );
+  connect( mOpenFormAction, SIGNAL( triggered( bool ) ), this, SLOT( featureForm() ) );
+  connect( mClearResultsAction, SIGNAL( triggered( bool ) ), this, SLOT( clear() ) );
   connect( mHelpToolButton, SIGNAL( clicked() ), this, SLOT( helpRequested() ) );
 }
 
@@ -455,7 +464,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
   }
 
   const QgsFields &fields = vlayer->pendingFields();
-  const QgsAttributes& attrs = f.attributes();
+  QgsAttributes attrs = f.attributes();
   bool featureLabeled = false;
   for ( int i = 0; i < attrs.count(); ++i )
   {
@@ -719,7 +728,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
   if ( feature.isValid() )
   {
     QgsDebugMsg( QString( "fields size = %1 attributes size = %2" ).arg( fields.size() ).arg( feature.attributes().size() ) );
-    const QgsAttributes& attrs = feature.attributes();
+    QgsAttributes attrs = feature.attributes();
     for ( int i = 0; i < attrs.count(); ++i )
     {
       if ( i >= fields.count() )
@@ -826,8 +835,8 @@ void QgsIdentifyResultsDialog::editingToggled()
       continue;
 
     QTreeWidgetItem *editItem = actions->child( j );
-    mOpenFormButton->setToolTip( vlayer->isEditable() ? tr( "Edit feature form" ) : tr( "View feature form" ) );
-    editItem->setText( 1, mOpenFormButton->toolTip() );
+    mOpenFormAction->setToolTip( vlayer->isEditable() ? tr( "Edit feature form" ) : tr( "View feature form" ) );
+    editItem->setText( 1, mOpenFormAction->toolTip() );
   }
 }
 
@@ -863,7 +872,7 @@ void QgsIdentifyResultsDialog::show()
   }
 
   // expand all if enabled
-  if ( mExpandNewToolButton->isChecked() )
+  if ( mExpandNewAction->isChecked() )
   {
     lstResults->expandAll();
   }
@@ -1080,7 +1089,7 @@ void QgsIdentifyResultsDialog::clear()
 
   // keep it visible but disabled, it can switch from disabled/enabled
   // after raster format change
-  mPrintToolButton->setDisabled( true );
+  mActionPrint->setDisabled( true );
 }
 
 void QgsIdentifyResultsDialog::updateViewModes()
@@ -1302,16 +1311,16 @@ void QgsIdentifyResultsDialog::handleCurrentItemChanged( QTreeWidgetItem *curren
 {
   Q_UNUSED( previous );
 
-  mPrintToolButton->setEnabled( false );
+  mActionPrint->setEnabled( false );
 
   QgsIdentifyResultsFeatureItem *featItem = dynamic_cast<QgsIdentifyResultsFeatureItem *>( featureItem( current ) );
-  mCopyToolButton->setEnabled( featItem && featItem->feature().isValid() );
-  mOpenFormButton->setEnabled( featItem && featItem->feature().isValid() );
+  mActionCopy->setEnabled( featItem && featItem->feature().isValid() );
+  mOpenFormAction->setEnabled( featItem && featItem->feature().isValid() );
 
   QgsVectorLayer *vlayer = vectorLayer( current );
   if ( vlayer )
   {
-    mOpenFormButton->setToolTip( vlayer->isEditable() ? tr( "Edit feature form" ) : tr( "View feature form" ) );
+    mOpenFormAction->setToolTip( vlayer->isEditable() ? tr( "Edit feature form" ) : tr( "View feature form" ) );
   }
 
   if ( !current )
@@ -1326,7 +1335,7 @@ void QgsIdentifyResultsDialog::handleCurrentItemChanged( QTreeWidgetItem *curren
     QgsIdentifyResultsWebViewItem *wv = dynamic_cast<QgsIdentifyResultsWebViewItem*>( current->child( i ) );
     if ( wv != 0 )
     {
-      mPrintToolButton->setEnabled( true );
+      mActionPrint->setEnabled( true );
       break;
     }
   }
@@ -1758,13 +1767,13 @@ void QgsIdentifyResultsDialog::on_cbxAutoFeatureForm_toggled( bool checked )
   settings.setValue( "/Map/identifyAutoFeatureForm", checked );
 }
 
-void QgsIdentifyResultsDialog::on_mExpandNewToolButton_toggled( bool checked )
+void QgsIdentifyResultsDialog::on_mExpandNewAction_triggered( bool checked )
 {
   QSettings settings;
   settings.setValue( "/Map/identifyExpand", checked );
 }
 
-void QgsIdentifyResultsDialog::on_mCopyToolButton_clicked( bool checked )
+void QgsIdentifyResultsDialog::on_mActionCopy_triggered( bool checked )
 {
   Q_UNUSED( checked );
   copyFeature();

@@ -1,24 +1,22 @@
 Universal Kriging (Global)
 statistics_kriging
-ParameterVector|SHAPES|Points|0|False
-ParameterTableField|FIELD|Attribute|SHAPES|-1|False
-ParameterBoolean|BVARIANCE              |Create Variance Grid|True
-Hardcoded|-TARGET_DEFINITION 0
-ParameterSelection|MODEL|Variogram Model|[0] Spherical Model;[1] Exponential Model;[2] Gaussian Model;[3] Linear Regression;[4] Exponential Regression;[5] Power Function Regression
+ParameterVector|POINTS|Points|0|False
+ParameterTableField|ZFIELD|Attribute|POINTS|-1|False
+ParameterSelection|TQUALITY|Type of Quality Measure|[0] standard deviation;[1] variance
+ParameterBoolean|LOG|Logarithmic Transformation|True
 ParameterBoolean|BLOCK|Block Kriging|True
-ParameterNumber|DBLOCK|Block Size|1|None|100
-ParameterBoolean|BLOG|Logarithmic Transformation|True
-ParameterNumber|NUGGET|Nugget|None|None|0.0
-ParameterNumber|SILL|Sill|None|None|0.0
-ParameterNumber|RANGE|Range|None|None|0.0
-ParameterNumber|LIN_B|Linear Regression|None|None|1
-ParameterNumber|EXP_B|Exponential Regression|None|None|0.5
-ParameterNumber|POW_A|Power Function - A|None|None|1.0
-ParameterNumber|POW_B|Power Function - B|None|None|0.1
-ParameterMultipleInput|GRIDS|Grids|3|False
+ParameterNumber|DBLOCK|Block Size|0|None|100
+ParameterNumber|VAR_MAXDIST|Maximum Distance|None|None|-1.0
+ParameterNumber|VAR_NCLASSES|Lag Distance Classes|1|None|100
+ParameterNumber|VAR_NSKIP|Skip|1|None|1
+ParameterString|VAR_MODEL|Variogram Model|a + b * x
+ParameterMultipleInput|GRIDS|Input Grids|3|True
 ParameterSelection|INTERPOL|Grid Interpolation|[0] Nearest Neighbor;[1] Bilinear Interpolation;[2] Inverse Distance Interpolation;[3] Bicubic Spline Interpolation;[4] B-Spline Interpolation
-ParameterNumber|USER_CELL_SIZE|Grid Size|0|None|1.0
-ParameterBoolean|USER_FIT_EXTENT        |Fit Extent|True
-Extent USER_X_EXTENT_MIN USER_X_EXTENT_MAX USER_Y_EXTENT_MIN USER_Y_EXTENT_MIN
-OutputRaster|GRID|Universal kriging global
-OutputRaster|VARIANCE|Variance
+ParameterBoolean|COORDS|Coordinates|False
+Hardcoded|-TARGET_DEFINITION 0
+Extent TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX
+ParameterNumber|TARGET_USER_SIZE|Cellsize|None|None|100.0
+ParameterSelection|TARGET_USER_FITS|Fit|[0] nodes;[1] cells
+ParameterRaster|TARGET_TEMPLATE|Target System|True
+OutputRaster|TARGET_PREDICTION|Prediction
+OutputRaster|TARGET_VARIANCE|Quality Measure

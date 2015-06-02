@@ -25,14 +25,16 @@
 #include "qgsproject.h"
 #include "qgsdistancearea.h"
 
+#include "qgswebview.h"
+#include "qgswebframe.h"
+#include "qgswebpage.h"
+
 #include <QCoreApplication>
 #include <QDate>
 #include <QDomElement>
 #include <QPainter>
 #include <QSettings>
 #include <QTimer>
-#include <QWebFrame>
-#include <QWebPage>
 #include <QEventLoop>
 
 QgsComposerLabel::QgsComposerLabel( QgsComposition *composition )

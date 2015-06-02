@@ -63,7 +63,7 @@ class BasicStatisticsNumbers(GeoAlgorithm):
             self.INPUT_LAYER, ParameterTableField.DATA_TYPE_NUMBER))
 
         self.addOutput(OutputHTML(self.OUTPUT_HTML_FILE,
-            self.tr('Statistics for numeric field')))
+            self.tr('Statistics')))
 
         self.addOutput(OutputNumber(self.CV, self.tr('Coefficient of Variation')))
         self.addOutput(OutputNumber(self.MIN, self.tr('Minimum value')))

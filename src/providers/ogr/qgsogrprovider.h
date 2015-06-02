@@ -322,13 +322,10 @@ class QgsOgrProvider : public QgsVectorDataProvider
     // Friendly name of the OGR Driver that was actually used to open the layer
     QString ogrDriverName;
 
-    bool valid;
+    bool mValid;
 
     OGRwkbGeometryType geomType;
-    long featuresCounted;
-
-    //! Data has been modified - REPACK before creating a spatialindex
-    bool mDataModified;
+    long mFeaturesCounted;
 
     mutable QStringList mSubLayerList;
 
@@ -346,6 +343,8 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     /** whether the file is opened in write mode*/
     bool mWriteAccess;
+
+    bool mShapefileMayBeCorrupted;
 };
 
 

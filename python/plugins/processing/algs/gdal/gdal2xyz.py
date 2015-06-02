@@ -68,4 +68,4 @@ class gdal2xyz(GdalAlgorithm):
         else:
             commands = ['gdal2xyz.py', GdalUtils.escapeAndJoin(arguments)]
 
-        return commands, progress
+        return commands

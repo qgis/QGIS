@@ -29,6 +29,12 @@ QgsEditorWidgetWrapper* QgsValueMapWidgetFactory::create( QgsVectorLayer* vl, in
   return new QgsValueMapWidgetWrapper( vl, fieldIdx, editor, parent );
 }
 
+
+QgsEditorWidgetWrapper* QgsValueMapWidgetFactory::createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
+{
+  return new QgsValueMapWidgetWrapper( vl, fieldIdx, 0, parent );
+}
+
 QgsEditorConfigWidget* QgsValueMapWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
 {
   return new QgsValueMapConfigDlg( vl, fieldIdx, parent );

@@ -1,7 +1,7 @@
 ##Vector geometry tools=group
 ##Polygons=vector polygon
 ##To_keep=number 1
-##Results=output vector
+##Biggest parts=output vector
 
 from qgis.core import QGis, QgsGeometry
 from operator import itemgetter

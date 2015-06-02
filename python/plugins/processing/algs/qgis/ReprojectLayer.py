@@ -48,7 +48,7 @@ class ReprojectLayer(GeoAlgorithm):
         self.addParameter(ParameterCrs(self.TARGET_CRS,
             self.tr('Target CRS'), 'EPSG:4326'))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Reprojected layer')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Reprojected')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))

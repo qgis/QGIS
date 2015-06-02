@@ -29,6 +29,7 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgswkbptr.h"
 
 // MSVC compiler doesn't have defined M_PI in math.h
 #ifndef M_PI
@@ -232,10 +233,11 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
   // set transformation from project CRS to ellipsoid coordinates
   mCoordTransform->setDestCRS( destCRS );
 
+  mEllipsoid = ellipsoid;
+
   // precalculate some values for area calculations
   computeAreaInit();
 
-  mEllipsoid = ellipsoid;
   return true;
 }
 

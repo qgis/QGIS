@@ -20227,7 +20227,7 @@ Vui lòng thử độ phân giải thấp hơn hoặc kích thước giấy nh�
         <translation>Chiều rộng cột bằng nhau</translation>
     </message>
     <message>
-        <source>Allow to split layer items into multiple columns.</source>
+        <source>Allow splitting layer items into multiple columns.</source>
         <translation>Cho phép ngắt các mục của lớp ra thành nhiều cột.</translation>
     </message>
     <message>

@@ -156,6 +156,15 @@ class RAlgorithm(GeoAlgorithm):
         elif tokens[1].lower().strip() == 'vector':
             param = ParameterVector(tokens[0], desc,
                                     [ParameterVector.VECTOR_TYPE_ANY])
+        elif tokens[1].lower().strip() == 'vector point':
+            param = ParameterVector(tokens[0], desc,
+                                    [ParameterVector.VECTOR_TYPE_POINT])
+        elif tokens[1].lower().strip() == 'vector line':
+            param = ParameterVector(tokens[0], desc,
+                                    [ParameterVector.VECTOR_TYPE_LINE])
+        elif tokens[1].lower().strip() == 'vector polygon':
+            param = ParameterVector(tokens[0], desc,
+                                    [ParameterVector.VECTOR_TYPE_POLYGON])
         elif tokens[1].lower().strip() == 'table':
             param = ParameterTable(tokens[0], desc, False)
         elif tokens[1].lower().strip().startswith('multiple raster'):
@@ -197,6 +206,9 @@ class RAlgorithm(GeoAlgorithm):
         elif tokens[1].lower().strip().startswith('string'):
             default = tokens[1].strip()[len('string') + 1:]
             param = ParameterString(tokens[0], desc, default)
+        elif tokens[1].lower().strip().startswith('longstring'):
+            default = tokens[1].strip()[len('longstring') + 1:]
+            param = ParameterString(tokens[0], desc, default, multiline=True)
         elif tokens[1].lower().strip().startswith('output raster'):
             out = OutputRaster()
         elif tokens[1].lower().strip().startswith('output vector'):
@@ -415,27 +427,4 @@ class RAlgorithm(GeoAlgorithm):
                 'to know more about how to install and configure R to be used with QGIS</p>')
             return html
 
-    def getPostProcessingErrorMessage(self, wrongLayers):
-        html = GeoAlgorithm.getPostProcessingErrorMessage(self, wrongLayers)
-        msg = RUtils.checkRIsInstalled(True)
-        html += self.tr(
-            '<p>This algorithm requires R to be run. A test to check if '
-            'R is correctly installed and configured in your system has '
-            'been performed, with the following result:</p><ul><i>')
-        if msg is None:
-            html += self.tr(
-                'R seems to be correctly installed and configured</i></li></ul>'
-                '<p>The script you have executed needs the following packages:</p><ul>')
-            packages = RUtils.getRequiredPackages(self.script)
-            for p in packages:
-                html += '<li>' + p + '</li>'
-            html += self.tr(
-                '</ul><p>Make sure they are installed in your R '
-                'environment before trying to execute this script.</p>')
-        else:
-            html += msg + '</i></li></ul>'
-            html += self.tr(
-                '<p><a href= "http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html">Click here</a> '
-                'to know more about how to install and configure R to be used with QGIS</p>')
 
-        return html

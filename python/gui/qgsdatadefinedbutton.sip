@@ -11,7 +11,7 @@ class QgsDataDefinedAssistant: QDialog
 #include <qgsdatadefinedbutton.h>
 %End
   public:
-    virtual QgsDataDefined* dataDefined() const = 0 /Factory/;
+    virtual QgsDataDefined dataDefined() const = 0;
 };
 
 /** \ingroup gui
@@ -181,6 +181,7 @@ class QgsDataDefinedButton : QToolButton
      * Common descriptions for expected input values
      */
     static QString trString();
+    static QString charDesc();
     static QString boolDesc();
     static QString anyStringDesc();
     static QString intDesc();

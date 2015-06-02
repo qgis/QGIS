@@ -152,6 +152,7 @@
         <file>themes/default/mActionChangeLabelProperties.png</file>
         <file>themes/default/mActionCheckQgisVersion.png</file>
         <file>themes/default/mActionCollapseTree.png</file>
+        <file>themes/default/mActionCollapseTree.svg</file>
         <file>themes/default/mActionComposerManager.svg</file>
         <file>themes/default/mActionContextHelp.png</file>
         <file>themes/default/mActionCopySelected.png</file>
@@ -172,7 +173,9 @@
         <file>themes/default/mActionEditCut.png</file>
         <file>themes/default/mActionEditPaste.png</file>
         <file>themes/default/mActionExpandNewTree.png</file>
+        <file>themes/default/mActionExpandNewTree.svg</file>
         <file>themes/default/mActionExpandTree.png</file>
+        <file>themes/default/mActionExpandTree.svg</file>
         <file>themes/default/mActionExportMapServer.png</file>
         <file>themes/default/mActionFileExit.png</file>
         <file>themes/default/mActionFileNew.svg</file>
@@ -184,7 +187,9 @@
         <file>themes/default/mActionFillRing.svg</file>
         <file>themes/default/mActionFilter.png</file>
         <file>themes/default/mActionFilter.svg</file>
+        <file>themes/default/mActionFilter2.svg</file>
         <file>themes/default/mActionFolder.png</file>
+        <file>themes/default/mActionFolder.svg</file>
         <file>themes/default/mActionFormAnnotation.png</file>
         <file>themes/default/mActionFromSelectedFeature.png</file>
         <file>themes/default/mActionFullCumulativeCutStretch.png</file>
@@ -195,6 +200,7 @@
         <file>themes/default/mActionHelpContents.svg</file>
         <file>themes/default/mActionHelpSponsors.png</file>
         <file>themes/default/mActionHideAllLayers.png</file>
+        <file>themes/default/mActionHideAllLayers.svg</file>
         <file>themes/default/mActionHideSelectedLayers.png</file>
         <file>themes/default/mActionIdentify.svg</file>
         <file>themes/default/mActionIncreaseBrightness.svg</file>
@@ -233,7 +239,9 @@
         <file>themes/default/mActionPinLabels.svg</file>
         <file>themes/default/mActionProjectProperties.png</file>
         <file>themes/default/mActionPropertiesWidget.png</file>
+        <file>themes/default/mActionPropertiesWidget.svg</file>
         <file>themes/default/mActionPropertyItem.png</file>
+        <file>themes/default/mActionPropertyItem.svg</file>
         <file>themes/default/mActionQgisHomePage.png</file>
         <file>themes/default/mActionRaiseItems.png</file>
         <file>themes/default/mActionRedo.png</file>
@@ -264,6 +272,7 @@
         <file>themes/default/mActionSelectRectangle.svg</file>
         <file>themes/default/mActionSetProjection.svg</file>
         <file>themes/default/mActionShowAllLayers.png</file>
+        <file>themes/default/mActionShowAllLayers.svg</file>
         <file>themes/default/mActionShowBookmarks.png</file>
         <file>themes/default/mActionShowHideLabels.svg</file>
         <file>themes/default/mActionShowPinnedLabels.svg</file>
@@ -326,6 +335,7 @@
         <file>themes/default/mIconFirst.png</file>
         <file>themes/default/mIconGeometryLayer.png</file>
         <file>themes/default/mIconInfo.png</file>
+        <file>themes/default/mIconImport.gif</file>
         <file>themes/default/mIconLabelQuadrantCenter.svg</file>
         <file>themes/default/mIconLabelQuadrantOffset.svg</file>
         <file>themes/default/mIconLast.png</file>
@@ -349,6 +359,8 @@
         <file>themes/default/mIconProperties.svg</file>
         <file>themes/default/mIconPyramid.png</file>
         <file>themes/default/mIconRaster.svg</file>
+        <file>themes/default/mIconRasterGroup.svg</file>
+        <file>themes/default/mIconRasterLink.svg</file>
         <file>themes/default/mIconRasterLayer.svg</file>
         <file>themes/default/mIconRenderingDisabled.png</file>
         <file>themes/default/mIconRenderingEnabled.png</file>

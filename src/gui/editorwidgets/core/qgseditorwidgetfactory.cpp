@@ -14,8 +14,11 @@
  ***************************************************************************/
 
 #include "qgseditorwidgetfactory.h"
+#include "qgsdefaultsearchwidgetwrapper.h"
 
 #include <QSettings>
+
+class QgsDefaultSearchWidgetWrapper;
 
 QgsEditorWidgetFactory::QgsEditorWidgetFactory( const QString& name )
     : mName( name )
@@ -24,6 +27,14 @@ QgsEditorWidgetFactory::QgsEditorWidgetFactory( const QString& name )
 
 QgsEditorWidgetFactory::~QgsEditorWidgetFactory()
 {
+}
+
+/** Override in own factory to get something different than the default (a simple QgsFilterLineEdit)
+ *
+ */
+QgsEditorWidgetWrapper* QgsEditorWidgetFactory::createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
+{
+  return new QgsDefaultSearchWidgetWrapper( vl, fieldIdx, 0, parent );
 }
 
 QString QgsEditorWidgetFactory::name()

@@ -415,7 +415,7 @@ void QgsDualView::progress( int i, bool& cancel )
 
   QCoreApplication::processEvents();
 
-  cancel = mProgressDlg->wasCanceled();
+  cancel = mProgressDlg && mProgressDlg->wasCanceled();
 }
 
 void QgsDualView::finished()

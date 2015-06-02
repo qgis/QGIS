@@ -24,6 +24,7 @@
 #include "qgspgtablemodel.h"
 #include "qgsproviderregistry.h"
 #include "qgsvectordataprovider.h"
+#include "qgswkbtypes.h"
 
 #include <QApplication>
 #include <QSettings>
@@ -1473,38 +1474,26 @@ QString QgsPostgresConn::postgisWkbTypeName( QGis::WkbType wkbType )
   return geometryType;
 }
 
-QString QgsPostgresConn::postgisTypeFilter( QString geomCol, QGis::WkbType geomType, bool castToGeometry )
+QString QgsPostgresConn::postgisTypeFilter( QString geomCol, QgsWKBTypes::Type wkbType, bool castToGeometry )
 {
   geomCol = quotedIdentifier( geomCol );
   if ( castToGeometry )
     geomCol += "::geometry";
 
+  QgsWKBTypes::GeometryType geomType = QgsWKBTypes::geometryType( wkbType );
   switch ( geomType )
   {
-    case QGis::WKBPoint:
-    case QGis::WKBPoint25D:
-    case QGis::WKBMultiPoint:
-    case QGis::WKBMultiPoint25D:
-      return QString( "upper(geometrytype(%1)) IN ('POINT','MULTIPOINT','POINTM','MULTIPOINTM')" ).arg( geomCol );
-    case QGis::WKBLineString:
-    case QGis::WKBLineString25D:
-    case QGis::WKBMultiLineString:
-    case QGis::WKBMultiLineString25D:
-      return QString( "upper(geometrytype(%1)) IN ('LINESTRING','MULTILINESTRING','LINESTRINGM','MULTILINESTRINGM')" ).arg( geomCol );
-    case QGis::WKBPolygon:
-    case QGis::WKBPolygon25D:
-    case QGis::WKBMultiPolygon:
-    case QGis::WKBMultiPolygon25D:
-      return QString( "upper(geometrytype(%1)) IN ('POLYGON','MULTIPOLYGON','POLYGONM','MULTIPOLYGONM','POLYHEDRALSURFACE','TIN')" ).arg( geomCol );
-    case QGis::WKBNoGeometry:
+    case QgsWKBTypes::PointGeometry:
+      return QString( "upper(geometrytype(%1)) IN ('POINT','POINTZ','POINTM','POINTZM','MULTIPOINT','MULTIPOINTZ','MULTIPOINTM','MULTIPOINTZM')" ).arg( geomCol );
+    case QgsWKBTypes::LineGeometry:
+      return QString( "upper(geometrytype(%1)) IN ('LINESTRING','LINESTRINGZ','LINESTRINGM','LINESTRINGZM','CIRCULARSTRING','CIRCULARSTRINGZ','CIRCULARSTRINGM','CIRCULARSTRINGZM','COMPOUNDCURVE','COMPOUNDCURVEZ','COMPOUNDCURVEM','COMPOUNDCURVEZM','MULTILINESTRING','MULTILINESTRINGZ','MULTILINESTRINGM','MULTILINESTRINGZM','MULTICURVE','MULTICURVEZ','MULTICURVEM','MULTICURVEZM')" ).arg( geomCol );
+    case QgsWKBTypes::PolygonGeometry:
+      return QString( "upper(geometrytype(%1)) IN ('POLYGON','POLYGONZ','POLYGONM','POLYGONZM','CURVEPOLYGON','CURVEPOLYGONZ','CURVEPOLYGONM','CURVEPOLYGONZM','MULTIPOLYGON','MULTIPOLYGONZ','MULTIPOLYGONM','MULTIPOLYGONZM','MULTIPOLYGONM','MULTISURFACE','MULTISURFACEZ','MULTISURFACEM','MULTISURFACEZM','POLYHEDRALSURFACE','TIN')" ).arg( geomCol );
+    case QgsWKBTypes::NullGeometry:
       return QString( "geometrytype(%1) IS NULL" ).arg( geomCol );
-    case QGis::WKBUnknown:
-      Q_ASSERT( !"unknown geometry unexpected" );
+    default: //unknown geometry
       return QString::null;
   }
-
-  Q_ASSERT( !"unexpected geomType" );
-  return QString::null;
 }
 
 int QgsPostgresConn::postgisWkbTypeDim( QGis::WkbType wkbType )
@@ -1519,58 +1508,7 @@ int QgsPostgresConn::postgisWkbTypeDim( QGis::WkbType wkbType )
 
 QGis::WkbType QgsPostgresConn::wkbTypeFromPostgis( QString type )
 {
-  if ( type == "POINT" )
-  {
-    return QGis::WKBPoint;
-  }
-  else if ( type == "POINTM" )
-  {
-    return QGis::WKBPoint25D;
-  }
-  else if ( type == "MULTIPOINT" )
-  {
-    return QGis::WKBMultiPoint;
-  }
-  else if ( type == "MULTIPOINTM" )
-  {
-    return QGis::WKBMultiPoint25D;
-  }
-  else if ( type == "LINESTRING" )
-  {
-    return QGis::WKBLineString;
-  }
-  else if ( type == "LINESTRINGM" )
-  {
-    return QGis::WKBLineString25D;
-  }
-  else if ( type == "MULTILINESTRING" )
-  {
-    return QGis::WKBMultiLineString;
-  }
-  else if ( type == "MULTILINESTRINGM" )
-  {
-    return QGis::WKBMultiLineString25D;
-  }
-  else if ( type == "POLYGON" )
-  {
-    return QGis::WKBPolygon;
-  }
-  else if ( type == "POLYGONM" )
-  {
-    return QGis::WKBPolygon25D;
-  }
-  else if ( type == "MULTIPOLYGON" )
-  {
-    return QGis::WKBMultiPolygon;
-  }
-  else if ( type == "MULTIPOLYGONM" || type == "TIN" || type == "POLYHEDRALSURFACE" )
-  {
-    return QGis::WKBMultiPolygon25D;
-  }
-  else
-  {
-    return QGis::WKBUnknown;
-  }
+  return ( QGis::WkbType )QgsWKBTypes::parseType( type );
 }
 
 QGis::WkbType QgsPostgresConn::wkbTypeFromOgcWkbType( unsigned int wkbType )
@@ -1599,41 +1537,7 @@ QGis::WkbType QgsPostgresConn::wkbTypeFromOgcWkbType( unsigned int wkbType )
 
 QString QgsPostgresConn::displayStringForWkbType( QGis::WkbType type )
 {
-  switch ( type )
-  {
-    case QGis::WKBPoint:
-    case QGis::WKBPoint25D:
-      return tr( "Point" );
-
-    case QGis::WKBMultiPoint:
-    case QGis::WKBMultiPoint25D:
-      return tr( "Multipoint" );
-
-    case QGis::WKBLineString:
-    case QGis::WKBLineString25D:
-      return tr( "Line" );
-
-    case QGis::WKBMultiLineString:
-    case QGis::WKBMultiLineString25D:
-      return tr( "Multiline" );
-
-    case QGis::WKBPolygon:
-    case QGis::WKBPolygon25D:
-      return tr( "Polygon" );
-
-    case QGis::WKBMultiPolygon:
-    case QGis::WKBMultiPolygon25D:
-      return tr( "Multipolygon" );
-
-    case QGis::WKBNoGeometry:
-      return tr( "No Geometry" );
-
-    case QGis::WKBUnknown:
-      return tr( "Unknown Geometry" );
-  }
-
-  Q_ASSERT( !"unexpected wkbType" );
-  return QString::null;
+  return QgsWKBTypes::displayString( QgsWKBTypes::Type( type ) );
 }
 
 QString QgsPostgresConn::displayStringForGeomType( QgsPostgresGeometryColumnType type )

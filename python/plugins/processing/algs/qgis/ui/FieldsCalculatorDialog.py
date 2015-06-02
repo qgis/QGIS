@@ -84,6 +84,8 @@ class FieldsCalculatorDialog(BASE, WIDGET):
             self.cmbInputLayer.addItem(layer.name())
         self.cmbInputLayer.blockSignals(False)
 
+        self.builder.loadRecent('fieldcalc')
+
         self.updateLayer()
 
     def updateLayer(self):
@@ -93,7 +95,6 @@ class FieldsCalculatorDialog(BASE, WIDGET):
         self.builder.loadFieldNames()
 
         self.populateFields()
-        #populateOutputFieldTypes()
 
     def setupSpinboxes(self, index):
         if index != 0:

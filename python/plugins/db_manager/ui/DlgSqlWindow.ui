@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>747</width>
+    <width>801</width>
     <height>525</height>
    </rect>
   </property>
@@ -42,6 +42,17 @@
             </size>
            </property>
           </spacer>
+         </item>
+         <item>
+          <widget class="QToolButton" name="queryBuilderBtn">
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../resources.qrc">
+             <normaloff>:/db_manager/icons/sql.gif</normaloff>:/db_manager/icons/sql.gif</iconset>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QLineEdit" name="presetName">
@@ -88,6 +99,13 @@
           <widget class="QLabel" name="lblResult">
            <property name="text">
             <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnCreateView">
+           <property name="text">
+            <string>Create a view</string>
            </property>
           </widget>
          </item>
@@ -181,7 +199,7 @@
          <item row="0" column="0">
           <layout class="QHBoxLayout" name="horizontalLayout_6">
            <item>
-            <widget class="QLabel" name="label_4">
+            <widget class="QCheckBox" name="uniqueColumnCheck">
              <property name="text">
               <string>Column with unique 
 integer values</string>
@@ -190,6 +208,9 @@ integer values</string>
            </item>
            <item>
             <widget class="QComboBox" name="uniqueCombo">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -205,12 +226,15 @@ integer values</string>
             </widget>
            </item>
            <item>
-            <widget class="QLabel" name="label_3">
+            <widget class="QCheckBox" name="hasGeometryCol">
              <property name="text">
               <string>Geometry column</string>
              </property>
-             <property name="indent">
-              <number>40</number>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+             <property name="tristate">
+              <bool>false</bool>
              </property>
             </widget>
            </item>
@@ -366,7 +390,9 @@ columns</string>
   <tabstop>btnClear</tabstop>
   <tabstop>viewResult</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>loadAsLayerGroup</sender>
@@ -381,6 +407,38 @@ columns</string>
     <hint type="destinationlabel">
      <x>142</x>
      <y>451</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>hasGeometryCol</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>geomCombo</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>379</x>
+     <y>385</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>525</x>
+     <y>385</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>uniqueColumnCheck</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>uniqueCombo</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>109</x>
+     <y>385</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>274</x>
+     <y>385</y>
     </hint>
    </hints>
   </connection>

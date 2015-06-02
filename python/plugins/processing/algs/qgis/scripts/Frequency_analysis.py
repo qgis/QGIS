@@ -1,7 +1,7 @@
 ##Table=group
-##input=vector
-##fields=string
-##output=output table
+##Input=vector
+##Fields=string
+##Frequency=output table
 
 from processing.tools.vector import TableWriter
 from collections import defaultdict

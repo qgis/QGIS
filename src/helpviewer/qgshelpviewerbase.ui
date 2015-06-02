@@ -26,7 +26,7 @@
     <number>0</number>
    </property>
    <item row="0" column="0">
-    <widget class="QWebView" name="webView">
+    <widget class="QgsWebView" name="webView">
      <property name="url">
       <url>
        <string>about:blank</string>
@@ -46,9 +46,9 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QWebView</class>
+   <class>QgsWebView</class>
    <extends>QWidget</extends>
-   <header>QtWebKit/QWebView</header>
+   <header>qgswebview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

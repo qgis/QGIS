@@ -18,6 +18,7 @@
 
 #include "qgsdatasourceuri.h"
 #include "qgslogger.h"
+#include "qgswkbtypes.h"
 
 #include <QStringList>
 #include <QRegExp>
@@ -138,35 +139,7 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri )
       }
       else if ( pname == "type" )
       {
-        QString geomTypeUpper = pval.toUpper();
-        if ( geomTypeUpper == "POINT" )
-        {
-          mWkbType = QGis::WKBPoint;
-        }
-        else if ( geomTypeUpper == "LINESTRING" || geomTypeUpper == "LINE" )
-        {
-          mWkbType = QGis::WKBLineString;
-        }
-        else if ( geomTypeUpper == "POLYGON" )
-        {
-          mWkbType = QGis::WKBPolygon;
-        }
-        else if ( geomTypeUpper == "MULTIPOINT" )
-        {
-          mWkbType = QGis::WKBMultiPoint;
-        }
-        else if ( geomTypeUpper == "MULTILINESTRING" )
-        {
-          mWkbType = QGis::WKBMultiLineString;
-        }
-        else if ( geomTypeUpper == "MULTIPOLYGON" )
-        {
-          mWkbType = QGis::WKBMultiPolygon;
-        }
-        else
-        {
-          mWkbType = QGis::WKBUnknown;
-        }
+        mWkbType = ( QGis::WkbType )QgsWKBTypes::parseType( pval );
       }
       else if ( pname == "selectatid" )
       {
@@ -541,49 +514,7 @@ QString QgsDataSourceURI::uri() const
   if ( mWkbType != QGis::WKBUnknown && mWkbType != QGis::WKBNoGeometry )
   {
     theUri += " type=";
-
-    switch ( mWkbType )
-    {
-      case QGis::WKBPoint:
-        theUri += "POINT";
-        break;
-      case QGis::WKBLineString:
-        theUri += "LINESTRING";
-        break;
-      case QGis::WKBPolygon:
-        theUri += "POLYGON";
-        break;
-      case QGis::WKBMultiPoint:
-        theUri += "MULTIPOINT";
-        break;
-      case QGis::WKBMultiLineString:
-        theUri += "MULTILINESTRING";
-        break;
-      case QGis::WKBMultiPolygon:
-        theUri += "MULTIPOLYGON";
-        break;
-      case QGis::WKBPoint25D:
-        theUri += "POINTM";
-        break;
-      case QGis::WKBLineString25D:
-        theUri += "LINESTRINGM";
-        break;
-      case QGis::WKBPolygon25D:
-        theUri += "POLYGONM";
-        break;
-      case QGis::WKBMultiPoint25D:
-        theUri += "MULTIPOINTM";
-        break;
-      case QGis::WKBMultiLineString25D:
-        theUri += "MULTILINESTRINGM";
-        break;
-      case QGis::WKBMultiPolygon25D:
-        theUri += "MULTIPOLYGONM";
-        break;
-      case QGis::WKBUnknown:
-      case QGis::WKBNoGeometry:
-        break;
-    }
+    theUri += QgsWKBTypes::displayString( QgsWKBTypes::flatType(( QgsWKBTypes::Type( mWkbType ) ) ) );
   }
 
   if ( mSelectAtIdDisabled )

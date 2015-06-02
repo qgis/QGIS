@@ -57,6 +57,8 @@ class DBConnector:
     def hasTableColumnEditingSupport(self):
         return False
 
+    def hasCreateSpatialViewSupport( self ):
+        return False
 
     def execution_error_types(self):
         raise Exception("DBConnector.execution_error_types() is an abstract method")
@@ -223,3 +225,7 @@ class DBConnector:
             return getSqlDictionary()
         except ImportError:
             return []
+
+    def getQueryBuilderDictionary(self):
+        return {}
+

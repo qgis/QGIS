@@ -31,6 +31,8 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
   mHandle = QgsSpatiaLiteConnPool::instance()->acquireConnection( mSource->mSqlitePath );
 
   mFetchGeometry = !mSource->mGeometryColumn.isNull() && !( mRequest.flags() & QgsFeatureRequest::NoGeometry );
+  mHasPrimaryKey = !mSource->mPrimaryKey.isEmpty();
+  mRowNumber = 0;
 
   QString whereClause;
   if ( request.filterType() == QgsFeatureRequest::FilterRect && !mSource->mGeometryColumn.isNull() )
@@ -108,6 +110,7 @@ bool QgsSpatiaLiteFeatureIterator::rewind()
 
   if ( sqlite3_reset( sqliteStatement ) == SQLITE_OK )
   {
+    mRowNumber = 0;
     return true;
   }
   else
@@ -141,9 +144,12 @@ bool QgsSpatiaLiteFeatureIterator::close()
 
 bool QgsSpatiaLiteFeatureIterator::prepareStatement( QString whereClause )
 {
+  if ( !mHandle )
+    return false;
+
   try
   {
-    QString sql = QString( "SELECT %1" ).arg( quotedPrimaryKey() );
+    QString sql = QString( "SELECT %1" ).arg( mHasPrimaryKey ? quotedPrimaryKey() : "0" );
     int colIdx = 1; // column 0 is primary key
 
     if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
@@ -312,7 +318,7 @@ bool QgsSpatiaLiteFeatureIterator::getFeature( sqlite3_stmt *stmt, QgsFeature &f
   }
 
   feature.initAttributes( mSource->mFields.count() );
-  feature.setFields( &mSource->mFields ); // allow name-based attribute lookups
+  feature.setFields( mSource->mFields ); // allow name-based attribute lookups
 
   int ic;
   int n_columns = sqlite3_column_count( stmt );
@@ -320,10 +326,19 @@ bool QgsSpatiaLiteFeatureIterator::getFeature( sqlite3_stmt *stmt, QgsFeature &f
   {
     if ( ic == 0 )
     {
-      // first column always contains the ROWID (or the primary key)
-      QgsFeatureId fid = sqlite3_column_int64( stmt, ic );
-      QgsDebugMsgLevel( QString( "fid=%1" ).arg( fid ), 3 );
-      feature.setFeatureId( fid );
+      if ( mHasPrimaryKey )
+      {
+        // first column always contains the ROWID (or the primary key)
+        QgsFeatureId fid = sqlite3_column_int64( stmt, ic );
+        QgsDebugMsgLevel( QString( "fid=%1" ).arg( fid ), 3 );
+        feature.setFeatureId( fid );
+      }
+      else
+      {
+        // autoincrement a row number
+        mRowNumber++;
+        feature.setFeatureId( mRowNumber );
+      }
     }
     else if ( mFetchGeometry && ic == mGeomColIdx )
     {

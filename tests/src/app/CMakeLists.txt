@@ -5,6 +5,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/composer
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
   ${CMAKE_BINARY_DIR}/src/ui

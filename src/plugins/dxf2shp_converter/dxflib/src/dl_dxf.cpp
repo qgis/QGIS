@@ -928,7 +928,7 @@ void DL_Dxf::addTextStyle(DL_CreationInterface* creationInterface) {
         name,
         // flags
         getIntValue(70, 0),
-        // fixed text heigth:
+        // fixed text height:
         getRealValue(40, 0.0),
         // width factor:
         getRealValue(41, 0.0),

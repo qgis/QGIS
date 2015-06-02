@@ -21,6 +21,8 @@
 #include "qgspointdisplacementrenderer.h"
 #include "qgsinvertedpolygonrenderer.h"
 #include "qgspainteffect.h"
+#include "qgsscaleexpression.h"
+#include "qgsdatadefined.h"
 
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
@@ -348,7 +350,7 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForFeature( QgsFeature& feature
 
 QgsSymbolV2* QgsGraduatedSymbolRendererV2::originalSymbolForFeature( QgsFeature& feature )
 {
-  const QgsAttributes& attrs = feature.attributes();
+  QgsAttributes attrs = feature.attributes();
   QVariant value;
   if ( mAttrNum < 0 || mAttrNum >= attrs.count() )
   {
@@ -517,7 +519,7 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::clone() const
   r->setUsingSymbolLevels( usingSymbolLevels() );
   r->setRotationField( rotationField() );
   r->setSizeScaleField( sizeScaleField() );
-  r->setScaleMethod( scaleMethod() );
+  //r->setScaleMethod( scaleMethod() );
   r->setLabelFormat( labelFormat() );
   r->setGraduatedMethod( graduatedMethod() );
   copyPaintEffect( r );
@@ -935,7 +937,6 @@ void QgsGraduatedSymbolRendererV2::updateClasses( QgsVectorLayer *vlayer, Mode m
   updateColorRamp( 0, mInvertedColorRamp );
 }
 
-
 QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::create( QDomElement& element )
 {
   QDomElement symbolsElem = element.firstChildElement( "symbols" );
@@ -1025,13 +1026,34 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::create( QDomElement& element
   }
 
   QDomElement rotationElem = element.firstChildElement( "rotation" );
-  if ( !rotationElem.isNull() )
-    r->setRotationField( rotationElem.attribute( "field" ) );
+  if ( !rotationElem.isNull() && !rotationElem.attribute( "field" ).isEmpty() )
+  {
+    for ( QgsRangeList::iterator it = r->mRanges.begin(); it != r->mRanges.end(); ++it )
+    {
+      convertSymbolRotation( it->symbol(), rotationElem.attribute( "field" ) );
+    }
+    if ( r->mSourceSymbol.data() )
+    {
+      convertSymbolRotation( r->mSourceSymbol.data(), rotationElem.attribute( "field" ) );
+    }
+  }
 
   QDomElement sizeScaleElem = element.firstChildElement( "sizescale" );
-  if ( !sizeScaleElem.isNull() )
-    r->setSizeScaleField( sizeScaleElem.attribute( "field" ) );
-  r->setScaleMethod( QgsSymbolLayerV2Utils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ) );
+  if ( !sizeScaleElem.isNull() && !sizeScaleElem.attribute( "field" ).isEmpty() )
+  {
+    for ( QgsRangeList::iterator it = r->mRanges.begin(); it != r->mRanges.end(); ++it )
+    {
+      convertSymbolSizeScale( it->symbol(),
+                              QgsSymbolLayerV2Utils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ),
+                              sizeScaleElem.attribute( "field" ) );
+    }
+    if ( r->mSourceSymbol.data() && r->mSourceSymbol->type() == QgsSymbolV2::Marker )
+    {
+      convertSymbolSizeScale( r->mSourceSymbol.data(),
+                              QgsSymbolLayerV2Utils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ),
+                              sizeScaleElem.attribute( "field" ) );
+    }
+  }
 
   QDomElement labelFormatElem = element.firstChildElement( "labelformat" );
   if ( ! labelFormatElem.isNull() )
@@ -1149,6 +1171,56 @@ QgsLegendSymbologyList QgsGraduatedSymbolRendererV2::legendSymbologyItems( QSize
     lst << qMakePair( range.label(), pix );
   }
   return lst;
+}
+
+QgsLegendSymbolListV2 QgsGraduatedSymbolRendererV2::legendSymbolItemsV2() const
+{
+  QgsLegendSymbolListV2 list;
+  if ( mSourceSymbol.data() && mSourceSymbol->type() == QgsSymbolV2::Marker )
+  {
+    // check that all symbols that have the same size expression
+    QgsDataDefined ddSize;
+    foreach ( QgsRendererRangeV2 range, mRanges )
+    {
+      const QgsMarkerSymbolV2 * symbol = static_cast<const QgsMarkerSymbolV2 *>( range.symbol() );
+      if ( !ddSize.hasDefaultValues() && symbol->dataDefinedSize() != ddSize )
+      {
+        // no common size expression
+        return QgsFeatureRendererV2::legendSymbolItemsV2();
+      }
+      else
+      {
+        ddSize = symbol->dataDefinedSize();
+      }
+    }
+
+    if ( !ddSize.isActive() || !ddSize.useExpression() )
+    {
+      return QgsFeatureRendererV2::legendSymbolItemsV2();
+    }
+
+    QgsScaleExpression exp( ddSize.expressionString() );
+    if ( exp.type() != QgsScaleExpression::Unknown )
+    {
+      QgsLegendSymbolItemV2 title( NULL, exp.baseExpression(), "" );
+      list << title;
+      foreach ( double v, QgsSymbolLayerV2Utils::prettyBreaks( exp.minValue(), exp.maxValue(), 4 ) )
+      {
+        QgsLegendSymbolItemV2 si( mSourceSymbol.data(), QString::number( v ), "" );
+        QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( si.symbol() );
+        s->setDataDefinedSize( QgsDataDefined() );
+        s->setSize( exp.size( v ) );
+        list << si;
+      }
+      // now list the graduated symbols
+      const QgsLegendSymbolListV2 list2 = QgsFeatureRendererV2::legendSymbolItemsV2() ;
+      foreach ( QgsLegendSymbolItemV2 item, list2 )
+        list << item;
+      return list;
+    }
+  }
+
+  return QgsFeatureRendererV2::legendSymbolItemsV2();
 }
 
 QgsLegendSymbolList QgsGraduatedSymbolRendererV2::legendSymbolItems( double scaleDenominator, QString rule )

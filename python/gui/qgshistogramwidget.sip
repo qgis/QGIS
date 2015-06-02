@@ -21,7 +21,7 @@ class QgsHistogramWidget : QWidget
      * @param fieldOrExp field name or expression string
      */
     QgsHistogramWidget( QWidget *parent /TransferThis/ = 0, QgsVectorLayer* layer = 0, const QString& fieldOrExp = QString() );
-    
+
     ~QgsHistogramWidget();
 
     /** Returns the layer currently associated with the widget.
@@ -84,6 +84,10 @@ class QgsHistogramWidget : QWidget
     /** Triggers a refresh of the histogram when the widget is next repainted.
      */
     void refreshHistogram();
+
+    /** Triggers a refresh and immediate redraw of the histogram.
+     */
+    void refreshAndRedraw();
 
     /** Sets the vector layer associated with the histogram.
      * @param layer source vector layer

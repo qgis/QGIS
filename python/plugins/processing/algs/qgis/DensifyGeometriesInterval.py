@@ -53,7 +53,7 @@ class DensifyGeometriesInterval(GeoAlgorithm):
         self.addParameter(ParameterNumber(self.INTERVAL,
             self.tr('Interval between vertices to add'), 0.0, 10000000.0, 1.0))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Densified layer')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Densified')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))

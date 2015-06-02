@@ -1203,7 +1203,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
       }
     }
 
-    const QgsAttributes &attributevec = flist[0].attributes();
+    QgsAttributes attributevec = flist[0].attributes();
 
     // look for unique attribute values to place in statement instead of passing as parameter
     // e.g. for defaults
@@ -1226,7 +1226,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
       int i;
       for ( i = 1; i < flist.size(); i++ )
       {
-        const QgsAttributes &attributevec = flist[i].attributes();
+        QgsAttributes attributevec = flist[i].attributes();
         QVariant v2 = attributevec[idx];
 
         if ( !v2.isValid() )
@@ -1283,7 +1283,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
 
     for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); ++features )
     {
-      const QgsAttributes &attributevec = features->attributes();
+      QgsAttributes attributevec = features->attributes();
 
       QgsDebugMsg( QString( "insert feature %1" ).arg( features->id() ) );
 
@@ -1340,7 +1340,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
     {
       for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); ++features )
       {
-        const QgsAttributes &attributevec = features->attributes();
+        QgsAttributes attributevec = features->attributes();
 
         if ( mPrimaryKeyType == pktInt )
         {

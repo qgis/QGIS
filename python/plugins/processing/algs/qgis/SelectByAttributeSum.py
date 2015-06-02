@@ -52,7 +52,7 @@ class SelectByAttributeSum(GeoAlgorithm):
             self.tr('Selection attribute'), self.INPUT, ParameterTableField.DATA_TYPE_NUMBER))
         self.addParameter(ParameterNumber(self.VALUE, self.tr('Value')))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output'), True))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Selected (attribute sum)'), True))
 
     def processAlgorithm(self, progress):
         fileName = self.getParameterValue(self.INPUT)

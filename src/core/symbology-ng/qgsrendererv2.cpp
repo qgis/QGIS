@@ -17,6 +17,7 @@
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgsrulebasedrendererv2.h"
+#include "qgsdatadefined.h"
 
 #include "qgssinglesymbolrendererv2.h" // for default renderer
 
@@ -31,6 +32,7 @@
 #include "qgspainteffect.h"
 #include "qgseffectstack.h"
 #include "qgspainteffectregistry.h"
+#include "qgswkbptr.h"
 
 #include <QDomElement>
 #include <QDomDocument>
@@ -244,6 +246,20 @@ void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymb
   QgsSymbolV2::SymbolType symbolType = symbol->type();
 
   const QgsGeometry* geom = feature.constGeometry();
+  if ( !geom )
+  {
+    return;
+  }
+
+  if ( geom->requiresConversionToStraightSegments() )
+  {
+    //geometry requires conversion to straight segments
+    QgsGeometry* straightGeom = new QgsGeometry( *geom );
+    straightGeom->convertToStraightSegment();
+    feature.setGeometry( straightGeom );
+    geom = feature.constGeometry();
+  }
+
   switch ( geom->wkbType() )
   {
     case QGis::WKBPoint:
@@ -639,4 +655,40 @@ void QgsFeatureRendererV2::setPaintEffect( QgsPaintEffect *effect )
 {
   delete mPaintEffect;
   mPaintEffect = effect;
+}
+
+void QgsFeatureRendererV2::convertSymbolSizeScale( QgsSymbolV2 * symbol, QgsSymbolV2::ScaleMethod method, const QString & field )
+{
+  if ( symbol->type() == QgsSymbolV2::Marker )
+  {
+    QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( symbol );
+    if ( QgsSymbolV2::ScaleArea == QgsSymbolV2::ScaleMethod( method ) )
+    {
+      const QgsDataDefined dd( "sqrt(" + QString::number( s->size() ) + " * (" + field + "))" );
+      s->setDataDefinedSize( dd );
+    }
+    else
+    {
+      const QgsDataDefined dd( QString::number( s->size() ) + " * (" + field + ")" );
+      s->setDataDefinedSize( dd );
+    }
+  }
+  else if ( symbol->type() == QgsSymbolV2::Line )
+  {
+    QgsLineSymbolV2 * s = static_cast<QgsLineSymbolV2 *>( symbol );
+    const QgsDataDefined dd( QString::number( s->width() ) + " * (" + field + ")" );
+    s->setDataDefinedWidth( dd );
+  }
+}
+
+void QgsFeatureRendererV2::convertSymbolRotation( QgsSymbolV2 * symbol, const QString & field )
+{
+  if ( symbol->type() == QgsSymbolV2::Marker )
+  {
+    QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( symbol );
+    const QgsDataDefined dd(( s->angle()
+                              ? QString::number( s->angle() ) + " + "
+                              : QString() ) + field );
+    s->setDataDefinedAngle( dd );
+  }
 }

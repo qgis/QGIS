@@ -2127,17 +2127,12 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     }
   }
 
-  if ( repeatDist != 0 )
+  if ( !qgsDoubleNear( repeatDist, 0.0 ) )
   {
-    if ( repeatdistinmapunit ) //convert distance from mm/map units to pixels
+    if ( !repeatdistinmapunit )
     {
-      repeatDist /= repeatDistanceMapUnitScale.computeMapUnitsPerPixel( context ) * context.scaleFactor();
+      repeatDist *= mapUntsPerMM; //convert repeat distance from mm to map units
     }
-    else //mm
-    {
-      repeatDist *= vectorScaleFactor;
-    }
-    repeatDist *= qAbs( ptOne.x() - ptZero.x() );
   }
 
   //  feature to the layer
@@ -3330,6 +3325,11 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames,
 
   // rect for clipping
   lyr.extentGeom = QgsGeometry::fromRect( mMapSettings->visibleExtent() );
+  if ( !qgsDoubleNear( mMapSettings->rotation(), 0.0 ) )
+  {
+    //PAL features are prerotated, so extent also needs to be unrotated
+    lyr.extentGeom->rotate( -mMapSettings->rotation(), mMapSettings->visibleExtent().center() );
+  }
 
   lyr.mFeatsSendingToPal = 0;
 
@@ -3410,6 +3410,20 @@ QStringList QgsPalLabeling::splitToLines( const QString &text, const QString &wr
   }
 
   return multiLineSplit;
+}
+
+QStringList QgsPalLabeling::splitToGraphemes( const QString &text )
+{
+  QStringList graphemes;
+  QTextBoundaryFinder boundaryFinder( QTextBoundaryFinder::Grapheme, text );
+  int currentBoundary = -1;
+  int previousBoundary = 0;
+  while (( currentBoundary = boundaryFinder.toNextBoundary() ) > 0 )
+  {
+    graphemes << text.mid( previousBoundary, currentBoundary - previousBoundary );
+    previousBoundary = currentBoundary;
+  }
+  return graphemes;
 }
 
 QgsGeometry* QgsPalLabeling::prepareGeometry( const QgsGeometry* geometry, const QgsRenderContext& context, const QgsCoordinateTransform* ct, double minSize, QgsGeometry* clipGeometry )
@@ -3553,6 +3567,11 @@ void QgsPalLabeling::registerDiagramFeature( const QString& layerID, QgsFeature&
   //convert geom to geos
   const QgsGeometry* geom = feat.constGeometry();
   QScopedPointer<QgsGeometry> extentGeom( QgsGeometry::fromRect( mMapSettings->visibleExtent() ) );
+  if ( !qgsDoubleNear( mMapSettings->rotation(), 0.0 ) )
+  {
+    //PAL features are prerotated, so extent also needs to be unrotated
+    extentGeom->rotate( -mMapSettings->rotation(), mMapSettings->visibleExtent().center() );
+  }
 
   const GEOSGeometry* geos_geom = 0;
   QScopedPointer<QgsGeometry> preparedGeom;
@@ -4027,7 +4046,16 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
 {
   Q_ASSERT( mMapSettings != NULL );
   QPainter* painter = context.painter();
-  QgsRectangle extent = context.extent();
+
+  QgsGeometry* extentGeom( QgsGeometry::fromRect( mMapSettings->visibleExtent() ) );
+  if ( !qgsDoubleNear( mMapSettings->rotation(), 0.0 ) )
+  {
+    //PAL features are prerotated, so extent also needs to be unrotated
+    extentGeom->rotate( -mMapSettings->rotation(), mMapSettings->visibleExtent().center() );
+  }
+
+  QgsRectangle extent = extentGeom->boundingBox();
+  delete extentGeom;
 
   mPal->registerCancellationCallback( &_palIsCancelled, &context );
 
@@ -4039,8 +4067,7 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
 
   // do the labeling itself
   double scale = mMapSettings->scale(); // scale denominator
-  QgsRectangle r = extent;
-  double bbox[] = { r.xMinimum(), r.yMinimum(), r.xMaximum(), r.yMaximum() };
+  double bbox[] = { extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum() };
 
   std::list<LabelPosition*>* labels;
   pal::Problem* problem;
@@ -4129,7 +4156,7 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
       {
         if ( QString( dit.key() + "d" ) == layerName )
         {
-          feature.setFields( &dit.value().fields );
+          feature.setFields( dit.value().fields );
           palGeometry->feature( feature );
 
           //calculate top-left point for diagram
@@ -4451,8 +4478,7 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
   {
 
     // TODO: optimize access :)
-    QString text = (( QgsPalGeometry* )label->getFeaturePart()->getUserGeometry() )->text();
-    QString txt = ( label->getPartId() == -1 ? text : QString( text[label->getPartId()] ) );
+    QString txt = (( QgsPalGeometry* )label->getFeaturePart()->getUserGeometry() )->text( label->getPartId() );
     QFontMetricsF* labelfm = (( QgsPalGeometry* )label->getFeaturePart()->getUserGeometry() )->getLabelFontMetrics();
 
     //add the direction symbol if needed
@@ -4504,7 +4530,7 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
     }
 
     //QgsDebugMsgLevel( "drawLabel " + txt, 4 );
-    QStringList multiLineList = QgsPalLabeling::splitToLines( text, tmpLyr.wrapChar );
+    QStringList multiLineList = QgsPalLabeling::splitToLines( txt, tmpLyr.wrapChar );
     int lines = multiLineList.size();
 
     double labelWidest = 0.0;

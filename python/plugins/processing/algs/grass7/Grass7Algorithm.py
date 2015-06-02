@@ -81,7 +81,7 @@ class Grass7Algorithm(GeoAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'grass.png'))
 
     def help(self):
-        return False, 'http://grass.osgeo.org/grass70/manuals/' + self.grassName \
+        return False, 'http://grass.osgeo.org/grass70/manuals/' + self.grass7Name \
             + '.html'
 
     def getParameterDescriptions(self):
@@ -107,7 +107,7 @@ class Grass7Algorithm(GeoAlgorithm):
     def defineCharacteristicsFromFile(self):
         lines = open(self.descriptionFile)
         line = lines.readline().strip('\n').strip()
-        self.grassName = line
+        self.grass7Name = line
         line = lines.readline().strip('\n').strip()
         self.name = line
         line = lines.readline().strip('\n').strip()
@@ -291,7 +291,7 @@ class Grass7Algorithm(GeoAlgorithm):
 
         # 2: Set parameters and outputs
 
-        command = self.grassName
+        command = self.grass7Name
         for param in self.parameters:
             if param.value is None or param.value == '':
                 continue
@@ -361,21 +361,21 @@ class Grass7Algorithm(GeoAlgorithm):
                 commands.append('g.region raster=' + out.name + uniqueSufix)
                 outputCommands.append('g.region raster=' + out.name
                                       + uniqueSufix)
-                if self.grassName == 'r.statistics':
-                    # r.statistics saves its results in a non-qgis compatible way.
-                    # Post-Process with r.mapcalc.
+
+                if self.grass7Name == 'r.statistics':
+                    # r.statistics saves its results in a non-qgis compatible
+                    # way. Post-process them with r.mapcalc.
                     calcExpression = 'correctedoutput' + uniqueSufix
                     calcExpression += '=@' + out.name  + uniqueSufix
                     command = 'r.mapcalc expression="' + calcExpression + '"'
                     commands.append(command)
                     outputCommands.append(command)
-                
-                if self.grassName == 'r.composite':
+
                     command = 'r.out.gdal -c createopt="TFW=YES,COMPRESS=LZW"'
                     command += ' input='
-                    command += out.name + uniqueSufix
+                    command += 'correctedoutput' + uniqueSufix
                     command += ' output="' + filename + '"'
-                elif self.grassName == 'r.statistics':
+                elif self.grass7Name == 'r.composite':
                     command = 'r.out.gdal -c createopt="TFW=YES,COMPRESS=LZW"'
                     command += ' input='
                     command += 'correctedoutput' + uniqueSufix
@@ -384,12 +384,12 @@ class Grass7Algorithm(GeoAlgorithm):
                     command = 'r.out.gdal -c createopt="TFW=YES,COMPRESS=LZW"'
                     command += ' input='
 
-                if self.grassName == 'r.horizon':
+                if self.grass7Name == 'r.horizon':
                     command += out.name + uniqueSufix + '_0'
-                elif self.grassName == 'r.composite':
+                elif self.grass7Name == 'r.composite':
                     commands.append(command)
                     outputCommands.append(command)
-                elif self.grassName == 'r.statistics':
+                elif self.grass7Name == 'r.statistics':
                     commands.append(command)
                     outputCommands.append(command)
                 else:
@@ -401,17 +401,30 @@ class Grass7Algorithm(GeoAlgorithm):
             if isinstance(out, OutputVector):
                 filename = out.value
                 # FIXME: check if needed: -c   Also export features without category (not labeled). Otherwise only features with category are exported.
-                command = 'v.out.ogr -s -e input=' + out.name + uniqueSufix
-                command += ' output="' + os.path.dirname(out.value) + '"'
-                command += ' format=ESRI_Shapefile'
-                command += ' olayer=' + os.path.basename(out.value)[:-4]
-                typeidx = \
-                    self.getParameterValue(self.GRASS_OUTPUT_TYPE_PARAMETER)
-                outtype = ('auto' if typeidx
+                if self.grass7Name == 'r.flow':
+                   command = 'v.out.ogr type=line layer=0 -c -e input=' + out.name + uniqueSufix
+                   command += ' output="' + os.path.dirname(out.value) + '"'
+                   command += ' format=ESRI_Shapefile'
+                   command += ' olayer=' + os.path.basename(out.value)[:-4]
+                   typeidx = \
+                           self.getParameterValue(self.GRASS_OUTPUT_TYPE_PARAMETER)
+                   outtype = ('auto' if typeidx
                            is None else self.OUTPUT_TYPES[typeidx])
-                command += ' type=' + outtype
-                commands.append(command)
-                outputCommands.append(command)
+                   command += ' type=' + outtype
+                   commands.append(command)
+                   outputCommands.append(command)
+                else:
+                   command = 'v.out.ogr -s -e input=' + out.name + uniqueSufix
+                   command += ' output="' + os.path.dirname(out.value) + '"'
+                   command += ' format=ESRI_Shapefile'
+                   command += ' olayer=' + os.path.basename(out.value)[:-4]
+                   typeidx = \
+                           self.getParameterValue(self.GRASS_OUTPUT_TYPE_PARAMETER)
+                   outtype = ('auto' if typeidx
+                           is None else self.OUTPUT_TYPES[typeidx])
+                   command += ' type=' + outtype
+                   commands.append(command)
+                   outputCommands.append(command)
 
         # 4: Run GRASS
 
@@ -536,20 +549,3 @@ class Grass7Algorithm(GeoAlgorithm):
             func = getattr(module, 'checkParameterValuesBeforeExecuting')
             return func(self)
 
-    def getPostProcessingErrorMessage(self, wrongLayers):
-        html = GeoAlgorithm.getPostProcessingErrorMessage(self, wrongLayers)
-        msg = Grass7Utils.checkGrass7IsInstalled(True)
-        html += self.tr(
-            '<p>This algorithm requires GRASS GIS 7 to be run. A test '
-            'to check if GRASS GIS 7 is correctly installed and configured in '
-            'your system has been performed, with the following result:</p><ul><i>')
-        if msg is None:
-            html += self.tr(
-                'GRASS GIS 7 seems to be correctly installed and configured</i></li></ul>')
-        else:
-            html += msg + '</i></li></ul>'
-            html += self.tr(
-                '<p><a href="http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html">Click here</a> '
-                'to know more about how to install and configure GRASS GIS 7 to be used with QGIS</p>')
-
-        return html

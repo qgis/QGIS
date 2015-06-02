@@ -99,16 +99,16 @@ class CORE_EXPORT QgsPalLayerSettings
 
     enum UpsideDownLabels
     {
-      Upright, /*!< upside-down labels (90 <= angle < 270) are shown upright*/
-      ShowDefined, /*!< show upside down when rotation is layer- or data-defined*/
-      ShowAll /*!< show upside down for all labels, including dynamic ones*/
+      Upright, /*!< upside-down labels (90 <= angle < 270) are shown upright */
+      ShowDefined, /*!< show upside down when rotation is layer- or data-defined */
+      ShowAll /*!< show upside down for all labels, including dynamic ones */
     };
 
     enum DirectionSymbols
     {
-      SymbolLeftRight, /*!< place direction symbols on left/right of label*/
-      SymbolAbove, /*!< place direction symbols on above label*/
-      SymbolBelow /*!< place direction symbols on below label*/
+      SymbolLeftRight, /*!< place direction symbols on left/right of label */
+      SymbolAbove, /*!< place direction symbols on above label */
+      SymbolBelow /*!< place direction symbols on below label */
     };
 
     enum MultiLineAlign
@@ -834,7 +834,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
      */
     static bool geometryRequiresPreparation( const QgsGeometry *geometry, const QgsRenderContext &context, const QgsCoordinateTransform *ct, QgsGeometry *clipGeometry = 0 );
 
-    /** Splits a text string to a list of seperate lines, using a specified wrap character.
+    /** Splits a text string to a list of separate lines, using a specified wrap character.
      * The text string will be split on either newline characters or the wrap character.
      * @param text text string to split
      * @param wrapCharacter additional character to wrap on
@@ -842,6 +842,15 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
      * @note added in QGIS 2.9
      */
     static QStringList splitToLines( const QString& text, const QString& wrapCharacter );
+
+    /** Splits a text string to a list of graphemes, which are the smallest allowable character
+     * divisions in the string. This accounts for scripts were individual characters are not
+     * allowed to be split apart (eg Arabic and Indic based scripts)
+     * @param text string to split
+     * @returns list of graphemes
+     * @note added in QGIS 2.10
+     */
+    static QStringList splitToGraphemes( const QString& text );
 
   protected:
     // update temporary QgsPalLayerSettings with any data defined text style values

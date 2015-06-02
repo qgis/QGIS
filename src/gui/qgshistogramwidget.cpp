@@ -65,9 +65,9 @@ QgsHistogramWidget::QgsHistogramWidget( QWidget *parent, QgsVectorLayer* layer, 
   mMeanCheckBox->setChecked( settings.value( "/HistogramWidget/showMean", false ).toBool() );
   mStdevCheckBox->setChecked( settings.value( "/HistogramWidget/showStdev", false ).toBool() );
 
-  connect( mBinsSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( refreshHistogram() ) );
-  connect( mMeanCheckBox, SIGNAL( toggled( bool ) ), this, SLOT( refreshHistogram() ) );
-  connect( mStdevCheckBox, SIGNAL( toggled( bool ) ), this, SLOT( refreshHistogram() ) );
+  connect( mBinsSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( refreshAndRedraw() ) );
+  connect( mMeanCheckBox, SIGNAL( toggled( bool ) ), this, SLOT( refreshAndRedraw() ) );
+  connect( mStdevCheckBox, SIGNAL( toggled( bool ) ), this, SLOT( refreshAndRedraw() ) );
 
   mGridPen = QPen( QColor( 0, 0, 0, 40 ) );
   mMeanPen = QPen( QColor( 10, 10, 10, 220 ) );
@@ -88,6 +88,17 @@ QgsHistogramWidget::~QgsHistogramWidget()
   settings.setValue( "/HistogramWidget/showStdev", mStdevCheckBox->isChecked() );
 }
 
+static bool _rangesByLower( const QgsRendererRangeV2& a, const QgsRendererRangeV2& b )
+{
+  return a.lowerValue() < b.lowerValue() ? -1 : 0;
+}
+
+void QgsHistogramWidget::setGraduatedRanges( const QgsRangeList &ranges )
+{
+  mRanges = ranges;
+  qSort( mRanges.begin(), mRanges.end(), _rangesByLower );
+}
+
 void QgsHistogramWidget::setLayer( QgsVectorLayer *layer )
 {
   if ( layer == mVectorLayer )
@@ -101,6 +112,12 @@ void QgsHistogramWidget::setLayer( QgsVectorLayer *layer )
 void QgsHistogramWidget::refreshHistogram()
 {
   mRedrawRequired = true;
+}
+
+void QgsHistogramWidget::refreshAndRedraw()
+{
+  refreshHistogram();
+  drawHistogram();
 }
 
 void QgsHistogramWidget::setSourceFieldExp( const QString &fieldOrExp )

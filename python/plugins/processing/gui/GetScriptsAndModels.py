@@ -39,6 +39,7 @@ from qgis.utils import iface
 
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.script.ScriptUtils import ScriptUtils
+from processing.algs.r.RUtils import RUtils
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.gui import Help2Html
 from processing.gui.Help2Html import getDescription, ALG_DESC, ALG_VERSION, ALG_CREATOR
@@ -67,6 +68,27 @@ class GetScriptsAction(ToolboxAction):
             QMessageBox.critical(iface.mainWindow(),
                 self.tr('Connection problem', 'GetScriptsAction'),
                 self.tr('Could not connect to scripts/models repository', 'GetScriptsAction'))
+
+
+class GetRScriptsAction(ToolboxAction):
+
+    def __init__(self):
+        self.name = self.tr('Get R scripts from on-line scripts collection', 'GetRScriptsAction')
+        self.group = self.tr('Tools', 'GetRScriptsAction')
+
+    def getIcon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'r.png'))
+
+    def execute(self):
+        try:
+            dlg = GetScriptsAndModelsDialog(GetScriptsAndModelsDialog.RSCRIPTS)
+            dlg.exec_()
+            if dlg.updateToolbox:
+                self.toolbox.updateProvider('r')
+        except HTTPError:
+            QMessageBox.critical(iface.mainWindow(),
+                self.tr('Connection problem', 'GetRScriptsAction'),
+                self.tr('Could not connect to scripts/models repository', 'GetRScriptsAction'))
 
 
 class GetModelsAction(ToolboxAction):
@@ -113,6 +135,7 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
         'system</li></ul>')
     MODELS = 0
     SCRIPTS = 1
+    RSCRIPTS = 2
 
     def __init__(self, resourceType):
         super(GetScriptsAndModelsDialog, self).__init__(iface.mainWindow())
@@ -123,10 +146,14 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
             self.folder = ModelerUtils.modelsFolder()
             self.urlBase = 'https://raw.githubusercontent.com/qgis/QGIS-Processing/master/models/'
             self.icon = QIcon(os.path.join(pluginPath, 'images', 'model.png'))
-        else:
+        elif self.resourceType == self.SCRIPTS:
             self.folder = ScriptUtils.scriptsFolder()
             self.urlBase = 'https://raw.githubusercontent.com/qgis/QGIS-Processing/master/scripts/'
             self.icon = QIcon(os.path.join(pluginPath, 'images', 'script.png'))
+        else:
+            self.folder = RUtils.RScriptsFolder()
+            self.urlBase = 'https://raw.githubusercontent.com/qgis/QGIS-Processing/master/rscripts/'
+            self.icon = QIcon(os.path.join(pluginPath, 'images', 'r.png'))
 
         self.lastSelectedItem = None
         self.populateTree()

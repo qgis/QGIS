@@ -2,6 +2,7 @@
 
 #include "qgsexpression.h"
 #include "qgsgeometry.h"
+#include "qgswkbptr.h"
 
 #include <QColor>
 #include <QStringList>

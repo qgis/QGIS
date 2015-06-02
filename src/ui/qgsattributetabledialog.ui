@@ -349,6 +349,35 @@
       </widget>
      </item>
      <item>
+      <widget class="QToolButton" name="mPasteFeatures">
+       <property name="toolTip">
+        <string>Paste features from clipboard (Ctrl+V)</string>
+       </property>
+       <property name="whatsThis">
+        <string/>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionEditPaste.png</normaloff>:/images/themes/default/mActionEditPaste.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>18</width>
+         <height>18</height>
+        </size>
+       </property>
+       <property name="shortcut">
+        <string>Ctrl+V</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="Line" name="line_3">
        <property name="orientation">
         <enum>Qt::Vertical</enum>
@@ -512,10 +541,19 @@
       </widget>
      </item>
      <item>
-      <widget class="QgsFilterLineEdit" name="mFilterQuery"/>
-     </item>
-     <item>
-      <widget class="QWidget" name="mSpacer" native="true"/>
+      <widget class="QWidget" name="mFilterContainer" native="true">
+       <layout class="QGridLayout" name="mFilterLayout">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetDefaultConstraint</enum>
+        </property>
+        <property name="margin">
+         <number>0</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QgsFilterLineEdit" name="mFilterQuery"/>
+        </item>
+       </layout>
+      </widget>
      </item>
      <item>
       <widget class="QToolButton" name="mApplyFilterButton">
@@ -627,7 +665,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QgsFieldExpressionWidget" name="mUpdateExpressionText" native="true">
+       <widget class="QgsFieldExpressionWidget" name="mUpdateExpressionText">
         <property name="sizePolicy">
          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
           <horstretch>0</horstretch>

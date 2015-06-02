@@ -6,5 +6,5 @@ ParameterNumber|azimuth|Azimuth of the plane. Value must be between 0 and 360 de
 ParameterNumber|easting|Easting coordinate of a point on the plane|None|None|0.0
 ParameterNumber|northing|Northing coordinate of a point on the plane|None|None|0.0
 ParameterNumber|elevation|Elevation coordinate of a point on the plane|None|None|0.0
-ParameterSelection|type|Data type of resulting layer|int;float;double
+ParameterSelection|type|Data type of resulting layer|CELL;FCELL;DCELL
 OutputRaster|output|Plane

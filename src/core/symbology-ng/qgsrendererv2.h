@@ -19,6 +19,7 @@
 #include "qgis.h"
 #include "qgsrectangle.h"
 #include "qgsrendercontext.h"
+#include "qgssymbolv2.h"
 
 #include <QList>
 #include <QString>
@@ -28,7 +29,6 @@
 #include <QDomDocument>
 #include <QDomElement>
 
-class QgsSymbolV2;
 class QgsFeature;
 class QgsFields;
 class QgsVectorLayer;
@@ -271,6 +271,15 @@ class CORE_EXPORT QgsFeatureRendererV2
     int mCurrentVertexMarkerSize;
 
     QgsPaintEffect* mPaintEffect;
+
+    /**@note this function is used to convert old sizeScale expresssions to symbol
+     * level DataDefined size
+     */
+    static void convertSymbolSizeScale( QgsSymbolV2 * symbol, QgsSymbolV2::ScaleMethod method, const QString & field );
+    /**@note this function is used to convert old rotations expresssions to symbol
+     * level DataDefined angle
+     */
+    static void convertSymbolRotation( QgsSymbolV2 * symbol, const QString & field );
 
   private:
     Q_DISABLE_COPY( QgsFeatureRendererV2 )

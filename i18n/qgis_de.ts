@@ -20266,7 +20266,7 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
         <translation>Gleiche Spaltenbreite</translation>
     </message>
     <message>
-        <source>Allow to split layer items into multiple columns.</source>
+        <source>Allow splitting layer items into multiple columns.</source>
         <translation>Aufteilung der Layerelemente in mehrere Spalten erlauben.</translation>
     </message>
     <message>

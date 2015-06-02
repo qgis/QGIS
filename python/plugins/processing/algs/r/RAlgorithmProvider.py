@@ -36,7 +36,7 @@ from processing.gui.EditScriptAction import EditScriptAction
 from processing.gui.DeleteScriptAction import DeleteScriptAction
 from processing.gui.CreateNewScriptAction import CreateNewScriptAction
 from processing.script.WrongScriptException import WrongScriptException
-
+from processing.gui.GetScriptsAndModels import GetRScriptsAction
 from processing.tools.system import isWindows
 
 from RUtils import RUtils
@@ -53,6 +53,7 @@ class RAlgorithmProvider(AlgorithmProvider):
         self.activate = False
         self.actions.append(CreateNewScriptAction(
             self.tr('Create new R script'), CreateNewScriptAction.SCRIPT_R))
+        self.actions.append(GetRScriptsAction())
         self.contextMenuActions = \
             [EditScriptAction(EditScriptAction.SCRIPT_R),
              DeleteScriptAction(DeleteScriptAction.SCRIPT_R)]

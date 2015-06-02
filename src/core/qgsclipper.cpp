@@ -18,6 +18,7 @@
 
 #include "qgsclipper.h"
 #include "qgsgeometry.h"
+#include "qgswkbptr.h"
 
 // Where has all the code gone?
 

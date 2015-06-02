@@ -20225,7 +20225,7 @@ Pokušajte sa nižom rezolucijom ili manjom veličinom papira</translation>
         <translation>Jednaka širina kolona</translation>
     </message>
     <message>
-        <source>Allow to split layer items into multiple columns.</source>
+        <source>Allow splitting layer items into multiple columns.</source>
         <translation>Dozvoli dijeljenje stavki sloja u više kolona.</translation>
     </message>
     <message>

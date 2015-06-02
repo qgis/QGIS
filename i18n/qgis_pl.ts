@@ -20286,7 +20286,7 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
         <translation>Równa szerokość kolumn</translation>
     </message>
     <message>
-        <source>Allow to split layer items into multiple columns.</source>
+        <source>Allow splitting layer items into multiple columns.</source>
         <translation>Klasy warstwy w różnych kolumnach.</translation>
     </message>
     <message>

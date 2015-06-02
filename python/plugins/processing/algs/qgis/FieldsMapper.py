@@ -56,7 +56,7 @@ class FieldsMapper(GeoAlgorithm):
         self.addParameter(ParameterFieldsMapping(self.FIELDS_MAPPING,
             self.tr('Fields mapping'), self.INPUT_LAYER))
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
-            self.tr('Output layer')))
+            self.tr('Refactored')))
 
     def getCustomParametersDialog(self):
         return FieldsMapperParametersDialog(self)

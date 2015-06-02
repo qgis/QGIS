@@ -32,7 +32,7 @@
 #include <QSharedData>
 #include "qgsfield.h"
 
-class CORE_EXPORT QgsFieldPrivate : public QSharedData
+class QgsFieldPrivate : public QSharedData
 {
   public:
 

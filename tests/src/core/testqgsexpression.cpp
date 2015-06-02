@@ -596,7 +596,7 @@ class TestQgsExpression: public QObject
       QgsFields fields;
       fields.append( QgsField( "col1" ) );
       fields.append( QgsField( "second_column", QVariant::Int ) );
-      f.setFields( &fields, true );
+      f.setFields( fields, true );
       f.setAttribute( QString( "col1" ), QString( "test value" ) );
       f.setAttribute( QString( "second_column" ), 5 );
       QgsExpression exp( "attribute($currentfeature,'col1')" );
@@ -801,19 +801,19 @@ class TestQgsExpression: public QObject
 
       QgsExpression exp1( "geomToWKT($geometry)" );
       QVariant vWktLine = exp1.evaluate( &fPolyline );
-      QCOMPARE( vWktLine.toString(), QString( "LINESTRING(0 0, 10 0)" ) );
+      QCOMPARE( vWktLine.toString(), QString( "LineString (0 0, 10 0)" ) );
 
       QgsExpression exp2( "geomToWKT($geometry)" );
       QVariant vWktPolygon = exp2.evaluate( &fPolygon );
-      QCOMPARE( vWktPolygon.toString(), QString( "POLYGON((2 1,10 1,10 6,2 6,2 1))" ) );
+      QCOMPARE( vWktPolygon.toString(), QString( "Polygon ((2 1, 10 1, 10 6, 2 6, 2 1))" ) );
 
       QgsExpression exp3( "geomToWKT($geometry)" );
       QVariant vWktPoint = exp3.evaluate( &fPoint );
-      QCOMPARE( vWktPoint.toString(), QString( "POINT(-1.23456789 9.87654321)" ) );
+      QCOMPARE( vWktPoint.toString(), QString( "Point (-1.23456789 9.87654321)" ) );
 
       QgsExpression exp4( "geomToWKT($geometry, 3)" );
       QVariant vWktPointSimplify = exp4.evaluate( &fPoint );
-      QCOMPARE( vWktPointSimplify.toString(), QString( "POINT(-1.235 9.877)" ) );
+      QCOMPARE( vWktPointSimplify.toString(), QString( "Point (-1.235 9.877)" ) );
     }
 
     void eval_geometry_constructor_data()

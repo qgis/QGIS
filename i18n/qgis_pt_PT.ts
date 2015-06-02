@@ -20268,7 +20268,7 @@ Por favor, tente uma resolução mais baixa ou um tamanho de papel mais pequeno<
         <translation>Igual largura de colunas</translation>
     </message>
     <message>
-        <source>Allow to split layer items into multiple columns.</source>
+        <source>Allow splitting layer items into multiple columns.</source>
         <translation>Permite dividir os itens de camada em múltiplas colunas.</translation>
     </message>
     <message>

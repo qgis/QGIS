@@ -133,8 +133,6 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     //Maximum width/height of cache image
     static const int mMaximumCacheWidth = 3000;
 
-    static const QString EXPR_SIZE;
-
 };
 
 //////////
@@ -231,6 +229,8 @@ class CORE_EXPORT QgsFontMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
                                 QColor color = DEFAULT_FONTMARKER_COLOR,
                                 double angle = DEFAULT_FONTMARKER_ANGLE );
 
+    ~QgsFontMarkerSymbolLayerV2();
+
     // static stuff
 
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
@@ -263,11 +263,13 @@ class CORE_EXPORT QgsFontMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
   protected:
 
     QString mFontFamily;
+    QFontMetrics* mFontMetrics;
     QChar mChr;
 
     QPointF mChrOffset;
     QFont mFont;
     double mOrigSize;
+
 };
 
 

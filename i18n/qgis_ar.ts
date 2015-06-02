@@ -20192,7 +20192,7 @@ Please try a lower resolution or a smaller papersize</source>
         <translation>أعمدة متساوية العرض</translation>
     </message>
     <message>
-        <source>Allow to split layer items into multiple columns.</source>
+        <source>Allow splitting layer items into multiple columns.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

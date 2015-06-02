@@ -43,6 +43,57 @@
 #include "cpl_vsi.h"
 #include "cpl_string.h"
 
+QgsAnimatedIcon::QgsAnimatedIcon( const QString & iconPath )
+    : QObject()
+    , mCount( 0 )
+    , mMovie( 0 )
+{
+  // QApplication as parent to ensure that it is deleted before QApplication
+  mMovie = new QMovie( QApplication::instance() );
+  if ( !iconPath.isEmpty() )
+  {
+    mMovie->setFileName( iconPath );
+  }
+  mMovie->setCacheMode( QMovie::CacheAll );
+  connect( mMovie, SIGNAL( frameChanged( int ) ), SLOT( onFrameChanged() ) );
+}
+
+QString QgsAnimatedIcon::iconPath() const
+{
+  return mMovie->fileName();
+}
+
+void QgsAnimatedIcon::setIconPath( const QString & iconPath )
+{
+  mMovie->setFileName( iconPath );
+}
+
+void QgsAnimatedIcon::onFrameChanged()
+{
+  mIcon = QIcon( mMovie->currentPixmap() );
+  emit frameChanged();
+}
+
+void QgsAnimatedIcon::connectFrameChanged( const QObject * receiver, const char * method )
+{
+  if ( connect( this, SIGNAL( frameChanged() ), receiver, method ) )
+  {
+    mCount++;
+  }
+  mMovie->setPaused( mCount == 0 );
+  QgsDebugMsg( QString( "mCount = %1" ).arg( mCount ) );
+}
+
+void QgsAnimatedIcon::disconnectFrameChanged( const QObject * receiver, const char * method )
+{
+  if ( disconnect( this, SIGNAL( frameChanged() ), receiver, method ) )
+  {
+    mCount--;
+  }
+  mMovie->setPaused( mCount == 0 );
+  QgsDebugMsg( QString( "mCount = %1" ).arg( mCount ) );
+}
+
 // shared icons
 const QIcon &QgsLayerItem::iconPoint()
 {
@@ -153,9 +204,7 @@ const QIcon &QgsZipItem::iconZip()
 
 QMap<QString, QIcon> QgsDataItem::mIconMap = QMap<QString, QIcon>();
 
-int QgsDataItem::mPopulatingCount = 0;
-QMovie * QgsDataItem::mPopulatingMovie = 0;
-QIcon QgsDataItem::mPopulatingIcon = QIcon();
+QgsAnimatedIcon * QgsDataItem::mPopulatingIcon = 0;
 
 QgsDataItem::QgsDataItem( QgsDataItem::Type type, QgsDataItem* parent, QString name, QString path )
 // Do not pass parent to QObject, Qt would delete this when parent is deleted
@@ -247,8 +296,8 @@ void QgsDataItem::moveToThread( QThread * targetThread )
 
 QIcon QgsDataItem::icon()
 {
-  if ( state() == Populating )
-    return mPopulatingIcon;
+  if ( state() == Populating && mPopulatingIcon )
+    return mPopulatingIcon->icon();
 
   if ( !mIcon.isNull() )
     return mIcon;
@@ -574,11 +623,6 @@ bool QgsDataItem::equal( const QgsDataItem *other )
   return false;
 }
 
-void QgsDataItem::setPopulatingIcon()
-{
-  mPopulatingIcon = QIcon( mPopulatingMovie->currentPixmap() );
-}
-
 QgsDataItem::State QgsDataItem::state() const
 {
   // for backward compatibility (if subclass set mPopulated directly)
@@ -598,26 +642,16 @@ void QgsDataItem::setState( State state )
 
   if ( state == Populating ) // start loading
   {
-    if ( !mPopulatingMovie )
+    if ( !mPopulatingIcon )
     {
-      // QApplication as parent to ensure that it is deleted before QApplication
-      mPopulatingMovie = new QMovie( QApplication::instance() );
-      mPopulatingMovie->setFileName( QgsApplication::iconPath( "/mIconLoading.gif" ) );
-      mPopulatingMovie->setCacheMode( QMovie::CacheAll );
-      connect( mPopulatingMovie, SIGNAL( frameChanged( int ) ), SLOT( setPopulatingIcon() ) );
+      // TODO: ensure that QgsAnimatedIcon is created on UI thread only
+      mPopulatingIcon = new QgsAnimatedIcon( QgsApplication::iconPath( "/mIconLoading.gif" ) );
     }
-    connect( mPopulatingMovie, SIGNAL( frameChanged( int ) ), SLOT( emitDataChanged() ) );
-    mPopulatingCount++;
-    mPopulatingMovie->setPaused( false );
+    mPopulatingIcon->connectFrameChanged( this, SLOT( emitDataChanged() ) );
   }
-  else if ( mState == Populating && mPopulatingMovie ) // stop loading
+  else if ( mState == Populating && mPopulatingIcon ) // stop loading
   {
-    disconnect( mPopulatingMovie, SIGNAL( frameChanged( int ) ), this, SLOT( emitDataChanged() ) );
-    mPopulatingCount--;
-    if ( mPopulatingCount == 0 )
-    {
-      mPopulatingMovie->setPaused( true );
-    }
+    mPopulatingIcon->disconnectFrameChanged( this, SLOT( emitDataChanged() ) );
   }
 
   mState = state;
@@ -730,7 +764,7 @@ QgsDirectoryItem::~QgsDirectoryItem()
 QIcon QgsDirectoryItem::icon()
 {
   if ( state() == Populating )
-    return populatingIcon();
+    return QgsDataItem::icon();
   return iconDir();
 }
 
@@ -888,7 +922,8 @@ QgsDirectoryParamWidget::QgsDirectoryParamWidget( QString path, QWidget* parent 
   QStyle* style = QApplication::style();
   QIcon iconDirectory = QIcon( style->standardPixmap( QStyle::SP_DirClosedIcon ) );
   QIcon iconFile = QIcon( style->standardPixmap( QStyle::SP_FileIcon ) );
-  QIcon iconLink = QIcon( style->standardPixmap( QStyle::SP_FileLinkIcon ) ); // TODO: symlink to directory?
+  QIcon iconDirLink = QIcon( style->standardPixmap( QStyle::SP_DirLinkIcon ) );
+  QIcon iconFileLink = QIcon( style->standardPixmap( QStyle::SP_FileLinkIcon ) );
 
   QList<QTreeWidgetItem *> items;
 
@@ -932,20 +967,25 @@ QgsDirectoryParamWidget::QgsDirectoryParamWidget( QString path, QWidget* parent 
 
     QString type;
     QIcon icon;
-    if ( fi.isDir() )
+    if ( fi.isDir() && fi.isSymLink() )
+    {
+      type = tr( "folder" );
+      icon = iconDirLink;
+    }
+    else if ( fi.isDir() )
     {
       type = tr( "folder" );
       icon = iconDirectory;
+    }
+    else if ( fi.isFile() && fi.isSymLink() )
+    {
+      type = tr( "file" );
+      icon = iconFileLink;
     }
     else if ( fi.isFile() )
     {
       type = tr( "file" );
       icon = iconFile;
-    }
-    else if ( fi.isSymLink() )
-    {
-      type = tr( "link" );
-      icon = iconLink;
     }
 
     texts << type;

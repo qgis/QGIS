@@ -6,5 +6,4 @@ ParameterSelection|option|Value to calculate|area;length;coor
 ParameterSelection|units|units|miles;feet;meters;kilometers;acres;hectares;percent
 ParameterBoolean|-r|Reverse sort the result|False
 ParameterBoolean|-s|Sort the result|False
-OutputHTML|html|Report HTML file
-
+OutputHTML|html|Report

@@ -96,7 +96,7 @@ void TestQgsScaleComboBox::basic()
   QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( str ) );
   QCOMPARE( s->scale(), ( double ) 1.0 / ( double ) 1000000.0 );
 
-  // Testing conversion from number to "1:x,000" with wonky seperators
+  // Testing conversion from number to "1:x,000" with wonky separators
   //(eg four digits between thousands, which should be fixed automatically)
   l->setText( "" );
   str = QString( "1%010000%01000" ).arg( QLocale::system().groupSeparator() );

@@ -435,7 +435,7 @@ void QgsPointDisplacementRenderer::printInfoDisplacementGroups()
 QString QgsPointDisplacementRenderer::getLabel( const QgsFeature& f )
 {
   QString attribute;
-  const QgsAttributes& attrs = f.attributes();
+  QgsAttributes attrs = f.attributes();
   if ( mLabelIndex >= 0 && mLabelIndex < attrs.count() )
   {
     attribute = attrs[mLabelIndex].toString();

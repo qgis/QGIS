@@ -11,19 +11,43 @@ notifications:
   on_success: change
   skip_join: true
 
+addons:
+  postgresql: "9.1"
+
 before_install:
   - sudo add-apt-repository ppa:ubuntugis/ppa -y
+  - sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable -y # For postgresql-9.1-postgis-2.1
   - sudo add-apt-repository ppa:smspillaz/cmake-3.0.2 -y
+  - sudo rm -f /etc/apt/sources.list.d/pgdg-source.list # postgis from pgdg requires different gdal package than the grass package
   - sudo apt-get update -qq
-  - sudo apt-get install --no-install-recommends bison cmake cmake-data doxygen flex git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal1-dev libgeos-dev libgsl0-dev libpq-dev libproj-dev libqscintilla2-dev libqt4-dev libqt4-opengl-dev libqtwebkit-dev libqwt-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd pkg-config poppler-utils pyqt4-dev-tools python python-dev python-qt4 python-qt4-dev python-sip python-sip-dev spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb
+  - sudo apt-get remove postgresql-9.1-postgis-2.1 # Remove postgis from pgdg, will install postgis from ubuntugis-unstable instead
+  - sudo apt-get install --no-install-recommends
+                         bison cmake cmake-data doxygen flex git graphviz
+                         grass-dev libexpat1-dev libfcgi-dev libgdal1-dev
+                         libgeos-dev libgsl0-dev libpq-dev libproj-dev
+                         libqscintilla2-dev libqt4-dev libqt4-opengl-dev
+                         libqtwebkit-dev libqwt-dev libspatialindex-dev
+                         libspatialite-dev libsqlite3-dev lighttpd pkg-config
+                         poppler-utils pyqt4-dev-tools python python-dev
+                         python-qt4 python-qt4-dev python-sip python-sip-dev
+                         spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi
+                         xfonts-base xfonts-scalable xvfb
+                         postgresql-9.1-postgis-2.1
   - cmake --version
   - clang --version
 
 install:
   - mkdir build
   - cd build
-  - cmake -DWITH_SERVER=ON -DWITH_STAGED_PLUGINS=OFF -DWITH_GRASS=OFF \
-          -DSUPPRESS_QT_WARNINGS=ON -DENABLE_MODELTEST=ON -DWITH_QWTPOLAR=OFF -DWITH_APIDOC=ON ..
+  - cmake -DWITH_SERVER=ON -DWITH_STAGED_PLUGINS=OFF -DWITH_GRASS=OFF
+          -DSUPPRESS_QT_WARNINGS=ON -DENABLE_MODELTEST=ON -DENABLE_PGTEST=ON
+          -DWITH_QWTPOLAR=OFF -DWITH_APIDOC=ON -DWITH_PYSPATIALITE=ON ..
 
-script: xvfb-run ctest -V -E 'PyQgsPalLabelingServer|qgis_wcsprovidertest' -S ../qgis-test-travis.ctest --output-on-failure
+before_script:
+  - printf "[qgis_test]\nhost=localhost\ndbname=qgis_test\nuser=postgres" > ~/.pg_service.conf
+  - psql -c 'CREATE DATABASE qgis_test;' -U postgres
+  - psql -c 'CREATE EXTENSION postgis;' -U postgres -d qgis_test
+  - psql -f $TRAVIS_BUILD_DIR/tests/testdata/provider/testdata.sql -U postgres -d qgis_test
+
+script: xvfb-run ctest -V -E 'qgis_openstreetmaptest|PyQgsPalLabelingServer|qgis_wcsprovidertest' -S ../qgis-test-travis.ctest --output-on-failure
 

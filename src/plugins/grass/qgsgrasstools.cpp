@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgsgrasstools.h"
-#include "qgsgrassbrowser.h"
 #include "qgsgrassmodule.h"
 #include "qgsgrassshell.h"
 #include "qgsgrass.h"
@@ -50,7 +49,6 @@
 
 QgsGrassTools::QgsGrassTools( QgisInterface *iface, QWidget * parent, const char * name, Qt::WindowFlags f )
     : QDockWidget( parent, f )
-    , mBrowser( 0 )
     , mModulesListModel( 0 )
     , mModelProxy( 0 )
     , mDirectModulesListModel( 0 )
@@ -72,12 +70,6 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface, QWidget * parent, const char
   // set the dialog title
   QString title = tr( "GRASS Tools: %1/%2" ).arg( QgsGrass::getDefaultLocation() ).arg( QgsGrass::getDefaultMapset() );
   setWindowTitle( title );
-
-  // Add map browser
-  mBrowser = new QgsGrassBrowser( mIface, this );
-
-  connect( mBrowser, SIGNAL( regionChanged() ),
-           this, SLOT( emitRegionChanged() ) );
 
   // Tree view code.
   mModulesTree->header()->hide();
@@ -120,7 +112,6 @@ void QgsGrassTools::showTabs()
   if ( QgsGrass::activeMode() )
   {
     title = tr( "GRASS Tools: %1/%2" ).arg( QgsGrass::getDefaultLocation() ).arg( QgsGrass::getDefaultMapset() );
-    mBrowser->setLocation( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation() );
   }
   else
   {
@@ -136,14 +127,9 @@ void QgsGrassTools::showTabs()
   // direct mode currently disabled
   mTabWidget->removeTab( mTabWidget->indexOf( mDirectModulesTreeTab ) );
   mTabWidget->removeTab( mTabWidget->indexOf( mDirectModulesListTab ) );
-  if ( mTabWidget->indexOf( mBrowser ) < 0 )
-  {
-    mTabWidget->insertTab( 2, mBrowser, tr( "Browser" ) );
-  }
 #if 0
   mTabWidget->removeTab( mTabWidget->indexOf( mModulesListTab ) );
   mTabWidget->removeTab( mTabWidget->indexOf( mModulesTreeTab ) );
-  mTabWidget->removeTab( mTabWidget->indexOf( mBrowser ) );
 
   mTabWidget->insertTab( 0, mModulesTreeTab, tr( "Modules Tree" ) );
   mTabWidget->insertTab( 1, mModulesListTab, tr( "Modules List" ) );
@@ -253,9 +239,6 @@ void QgsGrassTools::runModule( QString name, bool direct )
   else
   {
     QgsGrassModule *gmod = new QgsGrassModule( this, name, mIface, path, direct, mTabWidget );
-    connect( gmod, SIGNAL( moduleStarted() ), mBrowser, SLOT( moduleStarted() ) );
-    connect( gmod, SIGNAL( moduleFinished() ), mBrowser, SLOT( moduleFinished() ) );
-
     m = qobject_cast<QWidget *>( gmod );
   }
 
@@ -534,7 +517,7 @@ void QgsGrassTools::closeTools()
 {
   QgsDebugMsg( "entered." );
 
-  for ( int i = mTabWidget->count() - 1; i > 2; i-- )
+  for ( int i = mTabWidget->count() - 1; i > 1; i-- ) // first two are module tree and module list
   {
     delete mTabWidget->widget( i );
   }

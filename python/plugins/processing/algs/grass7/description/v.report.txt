@@ -5,4 +5,4 @@ ParameterVector|map|Input layer|-1|False
 ParameterSelection|option|Value to calculate|area;length;coor
 ParameterSelection|units|units|miles;feet;meters;kilometers;acres;hectares;percent
 ParameterSelection|sort|Sort the result (ascending, descending)|asc;desc
-OutputHTML|html|Report HTML file
+OutputHTML|html|Report

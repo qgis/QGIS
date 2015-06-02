@@ -218,6 +218,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QgsExpressionHighlighter* highlighter;
     bool mExpressionValid;
     QgsDistanceArea mDa;
+    QString mRecentKey;
 
 };
 

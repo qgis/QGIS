@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from PyQt4.QtGui import QFileDialog, QIcon, QMessageBox
+from PyQt4.QtCore import QSettings, QFileInfo
 
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.gui.ToolboxAction import ToolboxAction
@@ -50,13 +51,12 @@ class AddScriptFromFileAction(ToolboxAction):
         settings = QSettings()
         lastDir = settings.value('Processing/lastScriptsDir', '')
         filename = QFileDialog.getOpenFileName(self.toolbox,
-            self.tr('Script files', 'AddScriptFromFileAction'), None,
+            self.tr('Script files', 'AddScriptFromFileAction'), lastDir,
             self.tr('Script files (*.py *.PY)', 'AddScriptFromFileAction'))
         if filename:
             try:
                 settings.setValue('Processing/lastScriptsDir',
-                    QFileInfo(fileName).absoluteDir().absolutePath())
-
+                    QFileInfo(filename).absoluteDir().absolutePath())
                 script = ScriptAlgorithm(filename)
             except WrongScriptException:
                 QMessageBox.warning(self.toolbox,

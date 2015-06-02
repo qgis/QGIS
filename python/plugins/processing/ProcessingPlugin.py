@@ -81,7 +81,7 @@ class ProcessingPlugin:
 
         self.historyAction = QAction(
             QIcon(os.path.join(cmd_folder, 'images', 'history.gif')),
-            self.tr('&History and Log...'), self.iface.mainWindow())
+            self.tr('&History...'), self.iface.mainWindow())
         self.historyAction.setObjectName('historyAction')
         self.historyAction.triggered.connect(self.openHistory)
         self.menu.addAction(self.historyAction)

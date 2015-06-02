@@ -39,6 +39,7 @@ extern "C"
 #include <QString>
 #include <QMap>
 #include <QHash>
+#include <QRegExp>
 #include <QTemporaryFile>
 class QgsCoordinateReferenceSystem;
 class QgsRectangle;
@@ -70,7 +71,7 @@ class GRASS_LIB_EXPORT QgsGrassObject
 {
   public:
     //! Element type
-    enum Type { None, Raster, Vector, Region };
+    enum Type { None, Raster, Group, Vector, Region };
 
     QgsGrassObject() : mType( None ) {}
     QgsGrassObject( const QString& gisdbase, const QString& location = QString::null,
@@ -80,6 +81,7 @@ class GRASS_LIB_EXPORT QgsGrassObject
     void setGisdbase( const QString& gisdbase ) { mGisdbase = gisdbase; }
     QString location() const { return mLocation; }
     void setLocation( const QString& location ) { mLocation = location; }
+    QString locationPath() const { return mGisdbase + "/" + mLocation; }
     QString mapset() const { return mMapset; }
     void setMapset( const QString& mapset ) { mMapset = mapset; }
     QString mapsetPath() const { return mGisdbase + "/" + mLocation + "/" + mMapset; }
@@ -88,13 +90,25 @@ class GRASS_LIB_EXPORT QgsGrassObject
     QString fullName() const { return mName + "@" + mMapset; }
     Type type() const { return mType; }
     void setType( Type type ) { mType = type; }
+    // set from QGIS layer uri, returns true if set correctly, verifies also if location is a GRASS location
+    bool setFromUri( const QString& uri );
     // element name used as modules param, e.g. g.remove element=name
     QString elementShort() const;
     // descriptive full name
     QString elementName() const;
     static QString elementName( Type type );
+    // name of directory in GRASS mapset to look for the object (cellhd,vector,window)
+    QString dirName() const;
+    static QString dirName( Type type );
+    QString toString() const;
+    // returns true if gisdbase and location are the same
+    bool locationIdentical( const QgsGrassObject &other ) const;
     // returns true if gisdbase, location and mapset are the same
-    bool mapsetIdentical( const QgsGrassObject &other );
+    bool mapsetIdentical( const QgsGrassObject &other ) const;
+    // get regexp patter for new names, e.g. vectors should not start with number
+    static QRegExp newNameRegExp( Type type );
+
+    bool operator==( const QgsGrassObject& other ) const;
   private:
     QString mGisdbase;
     QString mLocation;
@@ -208,17 +222,26 @@ class QgsGrass
     static GRASS_LIB_EXPORT QStringList vectors( const QString& mapsetPath );
 
     static GRASS_LIB_EXPORT QStringList rasters( const QString& gisdbase, const QString& locationName,
-        const QString& mapsetNamee );
+        const QString& mapsetName );
     static GRASS_LIB_EXPORT QStringList rasters( const QString& mapsetPath );
 
-    //! Get list of vector layers
+    // imagery groups
+    static GRASS_LIB_EXPORT QStringList groups( const QString& gisdbase, const QString& locationName,
+        const QString& mapsetName );
+    static GRASS_LIB_EXPORT QStringList groups( const QString& mapsetPath );
+
+    //! Get list of vector layers, throws QgsGrass::Exception
     static GRASS_LIB_EXPORT QStringList vectorLayers( const QString& gisdbase, const QString& location,
         const QString& mapset, const QString& mapName );
 
     //! List of elements
+    // TODO rename elements to objects
     static GRASS_LIB_EXPORT QStringList elements( const QString& gisdbase, const QString& locationName,
         const QString& mapsetName, const QString& element );
     static GRASS_LIB_EXPORT QStringList elements( const QString&  mapsetPath, const QString&  element );
+
+    //! List of existing objects
+    static GRASS_LIB_EXPORT QStringList grassObjects( const QString& mapsetPath, QgsGrassObject::Type type );
 
     // returns true if object (vector, raster, region) exists
     static GRASS_LIB_EXPORT bool objectExists( const QgsGrassObject& grassObject );
@@ -267,8 +290,11 @@ class QgsGrass
 
     static GRASS_LIB_EXPORT void init( void );
 
+    //! test if the directory is location
+    static GRASS_LIB_EXPORT bool isLocation( const QString& path );;
+
     // ! test if the directory is mapset
-    static GRASS_LIB_EXPORT bool isMapset( QString path );
+    static GRASS_LIB_EXPORT bool isMapset( const QString& path );
 
     // ! Get the lock file
     static GRASS_LIB_EXPORT QString lockFilePath();
@@ -344,6 +370,12 @@ class QgsGrass
     static GRASS_LIB_EXPORT QMap<QString, QString> query( QString gisdbase, QString location,
         QString mapset, QString map, QgsGrassObject::Type type, double x, double y );
 
+    // ! Rename GRASS object, throws QgsGrass::Exception
+    static GRASS_LIB_EXPORT void renameObject( const QgsGrassObject & object, const QString& newName );
+
+    // ! Copy GRASS object, throws QgsGrass::Exception
+    static GRASS_LIB_EXPORT void copyObject( const QgsGrassObject & srcObject, const QgsGrassObject & destObject );
+
     // ! Delete map
     static GRASS_LIB_EXPORT bool deleteObject( const QgsGrassObject & object );
 
@@ -359,12 +391,17 @@ class QgsGrass
     static GRASS_LIB_EXPORT void insertRow( dbDriver *driver, const QString tableName,
                                             const QgsAttributes& attributes );
 
+    /** Returns true if object is link to external data (created by r.external) */
+    static GRASS_LIB_EXPORT bool isExternal( const QgsGrassObject & object );
+
     //! Library version
     static GRASS_LIB_EXPORT int versionMajor();
     static GRASS_LIB_EXPORT int versionMinor();
     static GRASS_LIB_EXPORT int versionRelease();
     static GRASS_LIB_EXPORT QString versionString();
 
+    // files case sensitivity (insensitive on windows)
+    static GRASS_LIB_EXPORT Qt::CaseSensitivity caseSensitivity();
     // set environment variable
     static GRASS_LIB_EXPORT void putEnv( QString name, QString value );
 

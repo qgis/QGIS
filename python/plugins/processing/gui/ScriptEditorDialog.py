@@ -168,11 +168,9 @@ class ScriptEditorDialog(BASE, WIDGET):
 
         dlg = HelpEditionDialog(alg)
         dlg.exec_()
-
-        # We store the description string in case there were not saved
-        # because there was no filename defined yet
-        if self.alg is None and dlg.descriptions:
+        if dlg.descriptions:
             self.help = dlg.descriptions
+            self.setHasChanged(True)
 
     def openScript(self):
         if self.hasChanged:

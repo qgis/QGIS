@@ -17,7 +17,6 @@
 ***************************************************************************
 """
 
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -34,11 +33,11 @@ from PyQt4.QtGui import QApplication, QCursor
 from qgis.utils import iface
 
 import processing
+from processing.gui import AlgorithmClassification
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
-from processing.gui.AlgorithmClassification import AlgorithmDecorator
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.RenderingStyles import RenderingStyles
 from processing.gui.Postprocessing import handleAlgorithmResults
@@ -142,7 +141,8 @@ class Processing:
         Processing.modeler.initializeSettings()
 
         # And initialize
-        AlgorithmDecorator.loadClassification()
+        AlgorithmClassification.loadClassification()
+        AlgorithmClassification.loadDisplayNames()
         ProcessingLog.startLogging()
         ProcessingConfig.initialize()
         ProcessingConfig.readSettings()

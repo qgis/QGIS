@@ -80,21 +80,6 @@ class HelpEditionDialog(BASE, WIDGET):
 
     def accept(self):
         self.descriptions[self.currentName] = unicode(self.text.toPlainText())
-        if isinstance(self.alg, ModelerAlgorithm):
-            self.alg.helpContent = self.descriptions
-        else:
-            if self.alg.descriptionFile is not None:
-                try:
-                    with open(self.alg.descriptionFile + '.help', 'w') as f:
-                        json.dump(self.descriptions, f)
-                except Exception, e:
-                    QMessageBox.warning(self, self.tr('Error saving help file'),
-                        self.tr('Help file could not be saved.\n'
-                                'Check that you have permission to modify the help\n'
-                                'file. You might not have permission if you are \n'
-                                'editing an example model or script, since they \n'
-                                'are stored on the installation folder'))
-
         QDialog.accept(self)
 
     def getHtml(self):

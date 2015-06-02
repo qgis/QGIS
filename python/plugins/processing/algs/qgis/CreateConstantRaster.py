@@ -49,7 +49,7 @@ class CreateConstantRaster(GeoAlgorithm):
             self.tr('Constant value'), default=1.0))
 
         self.addOutput(OutputRaster(self.OUTPUT,
-            self.tr('Output layer')))
+            self.tr('Constant')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(

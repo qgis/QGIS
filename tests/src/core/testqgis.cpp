@@ -84,7 +84,7 @@ void TestQGis::permissiveToDouble()
   result = QGis::permissiveToDouble( QString( "a" ), ok );
   QVERIFY( !ok );
 
-  //messy input (invalid thousand seperator position), should still be converted
+  //messy input (invalid thousand separator position), should still be converted
   ok = false;
   result = QGis::permissiveToDouble( QString( "10%0100" ).arg( QLocale::system().groupSeparator() ), ok );
   QVERIFY( ok );
@@ -112,7 +112,7 @@ void TestQGis::permissiveToInt()
   result = QGis::permissiveToInt( QString( "a" ), ok );
   QVERIFY( !ok );
 
-  //messy input (invalid thousand seperator position), should still be converted
+  //messy input (invalid thousand separator position), should still be converted
   ok = false;
   result = QGis::permissiveToInt( QString( "10%0100" ).arg( QLocale::system().groupSeparator() ), ok );
   QVERIFY( ok );

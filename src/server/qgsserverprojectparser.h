@@ -32,7 +32,7 @@ class QDomDocument;
 class QgsServerProjectParser
 {
   public:
-    /**Takes ownership of the document*/
+
     QgsServerProjectParser( QDomDocument* xmlDoc, const QString& filePath );
     ~QgsServerProjectParser();
 

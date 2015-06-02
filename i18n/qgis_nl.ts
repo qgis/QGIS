@@ -20283,7 +20283,7 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
         <translation>Gelijke kolombreedtes</translation>
     </message>
     <message>
-        <source>Allow to split layer items into multiple columns.</source>
+        <source>Allow splitting layer items into multiple columns.</source>
         <translation>Splitsen van klasses van een kaartlaag over meerdere kolommen toestaan.</translation>
     </message>
     <message>

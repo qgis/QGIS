@@ -571,7 +571,7 @@ QString QgsPostgresProvider::filterWhereClause() const
 
   if ( mRequestedGeomType != QGis::WKBUnknown && mRequestedGeomType != mDetectedGeomType )
   {
-    where += delim + QgsPostgresConn::postgisTypeFilter( mGeometryColumn, mRequestedGeomType, mSpatialColType == sctGeography );
+    where += delim + QgsPostgresConn::postgisTypeFilter( mGeometryColumn, ( QgsWKBTypes::Type )mRequestedGeomType, mSpatialColType == sctGeography );
     delim = " AND ";
   }
 
@@ -1664,7 +1664,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
       }
     }
 
-    const QgsAttributes &attributevec = flist[0].attributes();
+    QgsAttributes attributevec = flist[0].attributes();
 
     // look for unique attribute values to place in statement instead of passing as parameter
     // e.g. for defaults
@@ -1688,7 +1688,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
       int i;
       for ( i = 1; i < flist.size(); i++ )
       {
-        const QgsAttributes &attrs2 = flist[i].attributes();
+        QgsAttributes attrs2 = flist[i].attributes();
         QVariant v2 = attrs2[idx];
 
         if ( v2 != v )
@@ -1768,7 +1768,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
 
     for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); ++features )
     {
-      const QgsAttributes &attrs = features->attributes();
+      QgsAttributes attrs = features->attributes();
 
       QStringList params;
       if ( !mGeometryColumn.isNull() )
@@ -1817,7 +1817,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
     {
       for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); ++features )
       {
-        const QgsAttributes &attrs = features->attributes();
+        QgsAttributes attrs = features->attributes();
 
         if ( mPrimaryKeyType == pktInt )
         {

@@ -5,4 +5,4 @@ ParameterNumber|npoints|Number of points to be created|None|None|100
 ParameterNumber|zmin|Minimum z height for 3D output|None|None|0.0
 ParameterNumber|zmax|Maximum z height for 3D output|None|None|0.0
 ParameterString|column|Column for Z values|z
-OutputVector|output|Output vector layer
+OutputVector|output|Random

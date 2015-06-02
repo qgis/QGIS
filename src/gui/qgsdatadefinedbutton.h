@@ -35,7 +35,7 @@ class QgsDataDefined;
 class GUI_EXPORT QgsDataDefinedAssistant: public QDialog
 {
   public:
-    virtual QgsDataDefined* dataDefined() const = 0;
+    virtual QgsDataDefined dataDefined() const = 0;
 };
 
 /** \ingroup gui
@@ -207,6 +207,7 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
      * Common descriptions for expected input values
      */
     static QString trString();
+    static QString charDesc();
     static QString boolDesc();
     static QString anyStringDesc();
     static QString intDesc();

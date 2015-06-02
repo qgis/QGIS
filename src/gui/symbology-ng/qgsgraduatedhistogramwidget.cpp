@@ -82,7 +82,7 @@ void QgsGraduatedHistogramWidget::drawHistogram()
   if ( !mRenderer )
     return;
 
-  mRanges = mRenderer->ranges();
+  setGraduatedRanges( mRenderer->ranges() );
   QgsHistogramWidget::drawHistogram();
 
   // histo picker
@@ -123,7 +123,7 @@ void QgsGraduatedHistogramWidget::mouseRelease( double value )
     if ( value <= mRenderer->ranges().at( closestRangeIndex ).lowerValue() ||
          value >= mRenderer->ranges().at( closestRangeIndex + 1 ).upperValue() )
     {
-      refreshHistogram();
+      refreshAndRedraw();
       return;
     }
 
@@ -138,7 +138,7 @@ void QgsGraduatedHistogramWidget::mouseRelease( double value )
     emit rangesModified( true );
   }
 
-  drawHistogram();
+  refreshAndRedraw();
 }
 
 void QgsGraduatedHistogramWidget::findClosestRange( double value, int &closestRangeIndex, int& pixelDistance ) const
@@ -171,7 +171,7 @@ bool QgsGraduatedHistogramEventFilter::eventFilter( QObject *object, QEvent *eve
   {
     case QEvent::MouseButtonPress:
     {
-      const QMouseEvent* mouseEvent = dynamic_cast<QMouseEvent* >( event );
+      const QMouseEvent* mouseEvent = static_cast<QMouseEvent* >( event );
       if ( mouseEvent->button() == Qt::LeftButton )
       {
         emit mousePress( posToValue( mouseEvent->pos() ) );
@@ -180,7 +180,7 @@ bool QgsGraduatedHistogramEventFilter::eventFilter( QObject *object, QEvent *eve
     }
     case QEvent::MouseButtonRelease:
     {
-      const QMouseEvent* mouseEvent = dynamic_cast<QMouseEvent* >( event );
+      const QMouseEvent* mouseEvent = static_cast<QMouseEvent* >( event );
       if ( mouseEvent->button() == Qt::LeftButton )
       {
         emit mouseRelease( posToValue( mouseEvent->pos() ) );

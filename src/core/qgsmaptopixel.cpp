@@ -23,7 +23,6 @@
 
 #include "qgslogger.h"
 
-// @deprecated in 2.8
 QgsMapToPixel::QgsMapToPixel( double mapUnitsPerPixel,
                               double xc,
                               double yc,
@@ -56,6 +55,7 @@ QgsMapToPixel::QgsMapToPixel()
   updateMatrix();
 }
 
+// @deprecated in 2.8
 QgsMapToPixel::QgsMapToPixel( double mapUnitsPerPixel,
                               double height,
                               double ymin,
@@ -88,33 +88,7 @@ int QgsMapToPixel::mapWidth() const
 
 void QgsMapToPixel::updateMatrix()
 {
-  double rotation = mapRotation();
-
-#if 0 // debugging
-  QgsDebugMsg( QString( "XXX %7 -- xCent:%1 yCent:%2 mWidth:%3 mHeight:%4 uPP:%5 rot:%6" )
-               .arg( xCenter ).arg( yCenter ).arg( mWidth ).arg( mHeight )
-               .arg( mMapUnitsPerPixel ).arg( rotation ).arg(( quintptr )this, QT_POINTER_SIZE *2, 15, QChar( '0' ) ) );
-#endif
-
-  // NOTE: operations are done in the reverse order in which
-  //       they are configured, so translation to geographical
-  //       center happens first, then scaling, then rotation
-  //       and finally translation to output viewport center
-
-  if ( qgsDoubleNear( rotation, 0.0 ) )
-  {
-    //no rotation, return a simplified matrix
-    mMatrix = QTransform::fromScale( 1.0 / mMapUnitsPerPixel, -1.0 / mMapUnitsPerPixel )
-              .translate( -xMin, - ( yMin + mHeight * mMapUnitsPerPixel ) );
-    return;
-  }
-
-  double cy = mapHeight() / 2.0;
-  double cx = mapWidth() / 2.0;
-  mMatrix = QTransform::fromTranslate( cx, cy )
-            .rotate( rotation )
-            .scale( 1 / mMapUnitsPerPixel, -1 / mMapUnitsPerPixel )
-            .translate( -xCenter, -yCenter );
+  mMatrix = transform();
 }
 
 QgsPoint QgsMapToPixel::toMapPoint( qreal x, qreal y ) const
@@ -259,4 +233,22 @@ void QgsMapToPixel::transformInPlace( qreal &x, qreal &y ) const
   mMatrix.map( x, y, &mx, &my );
   //QgsDebugMsg(QString("XXX transformInPlace X : %1-->%2, Y: %3 -->%4").arg(x).arg(mx).arg(y).arg(my));
   x = mx; y = my;
+}
+
+QTransform QgsMapToPixel::transform() const
+{
+  double rotation = mapRotation();
+  if ( qgsDoubleNear( rotation, 0.0 ) )
+  {
+    //no rotation, return a simplified matrix
+    return QTransform::fromScale( 1.0 / mMapUnitsPerPixel, -1.0 / mMapUnitsPerPixel )
+           .translate( -xMin, - ( yMin + mHeight * mMapUnitsPerPixel ) );
+  }
+
+  double cy = mapHeight() / 2.0;
+  double cx = mapWidth() / 2.0;
+  return QTransform::fromTranslate( cx, cy )
+         .rotate( rotation )
+         .scale( 1 / mMapUnitsPerPixel, -1 / mMapUnitsPerPixel )
+         .translate( -xCenter, -yCenter );
 }

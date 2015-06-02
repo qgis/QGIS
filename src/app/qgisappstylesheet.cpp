@@ -18,6 +18,7 @@
 
 #include "qgisappstylesheet.h"
 #include "qgsapplication.h"
+#include "qgisapp.h"
 #include "qgslogger.h"
 
 #include <QFont>
@@ -89,12 +90,9 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
   bool gbxCustom = ( mMacStyle ? true : false );
   opts.insert( "groupBoxCustom", settings.value( "groupBoxCustom", QVariant( gbxCustom ) ) );
 
-  bool gbxBoldTitle = false;
-  opts.insert( "groupBoxBoldTitle", settings.value( "groupBoxBoldTitle", QVariant( gbxBoldTitle ) ) );
-
-  opts.insert( "sidebarStyle", settings.value( "sidebarStyle", true ) );
-
   settings.endGroup(); // "qgis/stylesheet"
+
+  opts.insert( "iconSize", settings.value( "/IconSize", QGIS_ICON_SIZE ) );
 
   return opts;
 }
@@ -118,72 +116,55 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant>& opts )
   // QGroupBox and QgsCollapsibleGroupBox, mostly for Ubuntu and Mac
   bool gbxCustom = opts.value( "groupBoxCustom" ).toBool();
   QgsDebugMsg( QString( "groupBoxCustom: %1" ).arg( gbxCustom ) );
-  bool gbxBoldTitle = opts.value( "groupBoxBoldTitle" ).toBool();
-  QgsDebugMsg( QString( "groupBoxBoldTitle: %1" ).arg( gbxBoldTitle ) );
-  bool sidebar = opts.value( "sidebarStyle" ).toBool();
-  if ( gbxCustom || gbxBoldTitle )
+
+  ss += "QGroupBox{";
+  // doesn't work for QGroupBox::title
+  ss += QString( "color: rgb(%1,%1,%1);" ).arg( mMacStyle ? 25 : 60 );
+  ss += "font-weight: bold;";
+
+  if ( gbxCustom )
   {
-    ss += "QGroupBox{";
-    if ( gbxBoldTitle )
-    {
-      // doesn't work for QGroupBox::title
-      ss += QString( "color: rgb(%1,%1,%1);" ).arg( mMacStyle ? 25 : 60 );
-      ss += "font-weight: bold;";
-    }
-    if ( gbxCustom )
-    {
-      ss += QString( "background-color: rgba(0,0,0,%1%);" )
-            .arg( mWinOS && mStyle.startsWith( "windows" ) ? 0 : 3 );
-      ss += "border: 1px solid rgba(0,0,0,20%);";
-      ss += "border-radius: 5px;";
-      ss += "margin-top: 2.5ex;";
-      ss += QString( "margin-bottom: %1ex;" ).arg( mMacStyle ? 1.5 : 1 );
-    }
+    ss += QString( "background-color: rgba(0,0,0,%1%);" )
+          .arg( mWinOS && mStyle.startsWith( "windows" ) ? 0 : 3 );
+    ss += "border: 1px solid rgba(0,0,0,20%);";
+    ss += "border-radius: 5px;";
+    ss += "margin-top: 2.5ex;";
+    ss += QString( "margin-bottom: %1ex;" ).arg( mMacStyle ? 1.5 : 1 );
+  }
+  ss += "} ";
+  if ( gbxCustom )
+  {
+    ss += "QGroupBox:flat{";
+    ss += "background-color: rgba(0,0,0,0);";
+    ss += "border: rgba(0,0,0,0);";
     ss += "} ";
-    if ( gbxCustom )
+
+    ss += "QGroupBox::title{";
+    ss += "subcontrol-origin: margin;";
+    ss += "subcontrol-position: top left;";
+    ss += "margin-left: 6px;";
+    if ( !( mWinOS && mStyle.startsWith( "windows" ) ) && !mOxyStyle )
     {
-      ss += "QGroupBox:flat{";
       ss += "background-color: rgba(0,0,0,0);";
-      ss += "border: rgba(0,0,0,0);";
-      ss += "} ";
-
-      ss += "QGroupBox::title{";
-      ss += "subcontrol-origin: margin;";
-      ss += "subcontrol-position: top left;";
-      ss += "margin-left: 6px;";
-      if ( !( mWinOS && mStyle.startsWith( "windows" ) ) && !mOxyStyle )
-      {
-        ss += "background-color: rgba(0,0,0,0);";
-      }
-      ss += "} ";
     }
-  }
-
-  if ( sidebar )
-  {
-    QString style = "QListWidget#mOptionsListWidget {"
-                    "    background-color: rgb(69, 69, 69, 220);"
-                    "    outline: 0;"
-                    "}"
-                    "QListWidget#mOptionsListWidget::item {"
-                    "    color: white;"
-                    "    padding: 3px;"
-                    "}"
-                    "QListWidget#mOptionsListWidget::item::selected {"
-                    "    color: black;"
-                    "    background-color:palette(Window);"
-                    "    padding-right: 0px;"
-                    "}";
-    ss += style;
-  }
-
-  //fix background issue for gnome desktop
-  if ( mLinuxOS && mGtkStyle && !sidebar )
-  {
-    ss += "QListWidget#mOptionsListWidget{";
-    ss += "background-color: white;";
     ss += "} ";
   }
+
+  //sidebar style
+  QString style = "QListWidget#mOptionsListWidget {"
+                  "    background-color: rgb(69, 69, 69, 220);"
+                  "    outline: 0;"
+                  "}"
+                  "QListWidget#mOptionsListWidget::item {"
+                  "    color: white;"
+                  "    padding: 3px;"
+                  "}"
+                  "QListWidget#mOptionsListWidget::item::selected {"
+                  "    color: black;"
+                  "    background-color:palette(Window);"
+                  "    padding-right: 0px;"
+                  "}";
+  ss += style;
 
   // Fix selection color on loosing focus (Windows)
   const QPalette palette = qApp->palette();

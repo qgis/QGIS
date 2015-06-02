@@ -14,24 +14,23 @@ email                : a.furieri@lqt.it
  *                                                                         *
  ***************************************************************************/
 
-#include <qgis.h>
-#include <qgsapplication.h>
-#include <qgsfeature.h>
-#include <qgsfield.h>
-#include <qgsgeometry.h>
-#include <qgsmessageoutput.h>
-#include <qgsrectangle.h>
-#include <qgscoordinatereferencesystem.h>
+#include "qgis.h"
+#include "qgsapplication.h"
+#include "qgsfeature.h"
+#include "qgsfield.h"
+#include "qgsgeometry.h"
+#include "qgsmessageoutput.h"
+#include "qgsrectangle.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsvectorlayerimport.h"
-
-#include <QMessageBox>
-
+#include "qgsslconnect.h"
 #include "qgsspatialiteprovider.h"
 #include "qgsspatialiteconnpool.h"
 #include "qgsspatialitefeatureiterator.h"
 
+#include <QMessageBox>
 #include <QFileInfo>
 #include <QDir>
 
@@ -41,8 +40,6 @@ email                : a.furieri@lqt.it
 
 const QString SPATIALITE_KEY = "spatialite";
 const QString SPATIALITE_DESCRIPTION = "SpatiaLite data provider";
-
-
 
 
 bool QgsSpatiaLiteProvider::convertField( QgsField &field )
@@ -96,6 +93,7 @@ bool QgsSpatiaLiteProvider::convertField( QgsField &field )
   return true;
 }
 
+
 QgsVectorLayerImport::ImportError
 QgsSpatiaLiteProvider::createEmptyLayer(
   const QString& uri,
@@ -133,9 +131,8 @@ QgsSpatiaLiteProvider::createEmptyLayer(
     QString sql;
 
     // trying to open the SQLite DB
-    spatialite_init( 0 );
     handle = QgsSqliteHandle::openDb( sqlitePath );
-    if ( handle == NULL )
+    if ( !handle )
     {
       QgsDebugMsg( "Connection to database failed. Import of layer aborted." );
       if ( errorMessage )
@@ -182,12 +179,13 @@ QgsSpatiaLiteProvider::createEmptyLayer(
     if ( primaryKeyType.isEmpty() )
     {
       primaryKeyType = "INTEGER";
-      /* TODO
+#if 0 // TODO
       // check the feature count to choose if create a bigint pk field
       if ( layer->featureCount() > 0xFFFFFF )
       {
         primaryKeyType = "BIGINT";
-      }*/
+      }
+#endif
     }
 
     try
@@ -408,7 +406,6 @@ QgsSpatiaLiteProvider::createEmptyLayer(
 }
 
 
-
 QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
     : QgsVectorDataProvider( uri )
     , valid( false )
@@ -440,9 +437,8 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
   mQuery = mTableName;
 
   // trying to open the SQLite DB
-  spatialite_init( 0 );
   handle = QgsSqliteHandle::openDb( mSqlitePath );
-  if ( handle == NULL )
+  if ( !handle )
   {
     return;
   }
@@ -497,7 +493,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
     closeDb();
     return;
   }
-  enabledCapabilities = QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId;
+  enabledCapabilities = mPrimaryKey.isEmpty() ? 0 : ( QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId );
   if (( mTableBased || mViewBased ) &&  !mReadOnly )
   {
     // enabling editing only for Tables [excluding Views and VirtualShapes]
@@ -3549,7 +3545,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
 
   if ( flist.size() == 0 )
     return true;
-  const QgsAttributes & attributevec = flist[0].attributes();
+  QgsAttributes attributevec = flist[0].attributes();
 
   ret = sqlite3_exec( sqliteHandle, "BEGIN", NULL, NULL, &errMsg );
   if ( ret == SQLITE_OK )
@@ -3594,7 +3590,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
       for ( QgsFeatureList::iterator feature = flist.begin(); feature != flist.end(); ++feature )
       {
         // looping on each feature to insert
-        const QgsAttributes& attributevec = feature->attributes();
+        QgsAttributes attributevec = feature->attributes();
 
         // resetting Prepared Statement and bindings
         sqlite3_reset( stmt );
@@ -5059,15 +5055,14 @@ QGISEXTERN bool createDb( const QString& dbPath, QString& errCause )
   QDir().mkpath( path.absolutePath() );
 
   // creating/opening the new database
-  spatialite_init( 0 );
   sqlite3 *sqlite_handle;
-  int ret = sqlite3_open_v2( dbPath.toUtf8().constData(), &sqlite_handle, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL );
+  int ret = QgsSLConnect::sqlite3_open_v2( dbPath.toUtf8().constData(), &sqlite_handle, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL );
   if ( ret )
   {
     // an error occurred
     errCause = QObject::tr( "Could not create a new database\n" );
     errCause += QString::fromUtf8( sqlite3_errmsg( sqlite_handle ) );
-    sqlite3_close( sqlite_handle );
+    QgsSLConnect::sqlite3_close( sqlite_handle );
     return false;
   }
   // activating Foreign Key constraints
@@ -5077,13 +5072,13 @@ QGISEXTERN bool createDb( const QString& dbPath, QString& errCause )
   {
     errCause = QObject::tr( "Unable to activate FOREIGN_KEY constraints [%1]" ).arg( errMsg );
     sqlite3_free( errMsg );
-    sqlite3_close( sqlite_handle );
+    QgsSLConnect::sqlite3_close( sqlite_handle );
     return false;
   }
   bool init_res = ::initializeSpatialMetadata( sqlite_handle, errCause );
 
   // all done: closing the DB connection
-  sqlite3_close( sqlite_handle );
+  QgsSLConnect::sqlite3_close( sqlite_handle );
 
   return init_res;
 }
@@ -5094,7 +5089,6 @@ QGISEXTERN bool deleteLayer( const QString& dbPath, const QString& tableName, QS
 {
   QgsDebugMsg( "deleting layer " + tableName );
 
-  spatialite_init( 0 );
   QgsSqliteHandle* hndl = QgsSqliteHandle::openDb( dbPath );
   if ( !hndl )
   {
@@ -5175,9 +5169,8 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
   QgsDebugMsg( "Database is: " + sqlitePath );
 
   // trying to open the SQLite DB
-  spatialite_init( 0 );
   handle = QgsSqliteHandle::openDb( sqlitePath );
-  if ( NULL == handle )
+  if ( !handle )
   {
     QgsDebugMsg( "Connection to database failed. Save style aborted." );
     errCause = QObject::tr( "Connection to database failed" );
@@ -5365,9 +5358,8 @@ QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
   QgsDebugMsg( "Database is: " + sqlitePath );
 
   // trying to open the SQLite DB
-  spatialite_init( 0 );
   handle = QgsSqliteHandle::openDb( sqlitePath );
-  if ( NULL == handle )
+  if ( !handle )
   {
     QgsDebugMsg( "Connection to database failed. Save style aborted." );
     errCause = QObject::tr( "Connection to database failed" );
@@ -5421,7 +5413,6 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
   QgsDebugMsg( "Database is: " + sqlitePath );
 
   // trying to open the SQLite DB
-  spatialite_init( 0 );
   handle = QgsSqliteHandle::openDb( sqlitePath );
   if ( NULL == handle )
   {
@@ -5534,9 +5525,8 @@ QGISEXTERN QString getStyleById( const QString& uri, QString styleId, QString& e
   QgsDebugMsg( "Database is: " + sqlitePath );
 
   // trying to open the SQLite DB
-  spatialite_init( 0 );
   handle = QgsSqliteHandle::openDb( sqlitePath );
-  if ( NULL == handle )
+  if ( !handle )
   {
     QgsDebugMsg( "Connection to database failed. Save style aborted." );
     errCause = QObject::tr( "Connection to database failed" );

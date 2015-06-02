@@ -355,7 +355,9 @@ bool QgsMemoryProvider::addAttributes( const QList<QgsField> &attributes )
     for ( QgsFeatureMap::iterator fit = mFeatures.begin(); fit != mFeatures.end(); ++fit )
     {
       QgsFeature& f = fit.value();
-      f.attributes().append( QVariant() );
+      QgsAttributes attr = f.attributes();
+      attr.append( QVariant() );
+      f.setAttributes( attr );
     }
   }
   return true;
@@ -375,7 +377,9 @@ bool QgsMemoryProvider::deleteAttributes( const QgsAttributeIds& attributes )
     for ( QgsFeatureMap::iterator fit = mFeatures.begin(); fit != mFeatures.end(); ++fit )
     {
       QgsFeature& f = fit.value();
-      f.attributes().remove( idx );
+      QgsAttributes attr = f.attributes();
+      attr.remove( idx );
+      f.setAttributes( attr );
     }
   }
   return true;

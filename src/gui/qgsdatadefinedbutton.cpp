@@ -434,13 +434,13 @@ void QgsDataDefinedButton::showAssistant()
 
   if ( mAssistant->exec() == QDialog::Accepted )
   {
-    QScopedPointer<QgsDataDefined> dd( mAssistant->dataDefined() );
-    setUseExpression( dd->useExpression() );
-    setActive( dd->isActive() );
-    if ( dd->isActive() && dd->useExpression() )
-      setExpression( dd->expressionString() );
-    else if ( dd->isActive() )
-      setField( dd->field() );
+    QgsDataDefined dd = mAssistant->dataDefined();
+    setUseExpression( dd.useExpression() );
+    setActive( dd.isActive() );
+    if ( dd.isActive() && dd.useExpression() )
+      setExpression( dd.expressionString() );
+    else if ( dd.isActive() )
+      setField( dd.field() );
     updateGui();
   }
   activateWindow(); // reset focus to parent window
@@ -661,6 +661,11 @@ QString QgsDataDefinedButton::trString()
 {
   // just something to reduce translation redundancy
   return tr( "string " );
+}
+
+QString QgsDataDefinedButton::charDesc()
+{
+  return tr( "single character" );
 }
 
 QString QgsDataDefinedButton::boolDesc()

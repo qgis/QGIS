@@ -138,6 +138,7 @@ QgsGeometry* QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& f
       {
         fid = match.featureId();
         partNum = snapVertex;
+        delete geomPart;
         return QgsGeometry::fromPoint( match.point() );
       }
       if ( g->wkbType() == QGis::WKBMultiLineString || g->wkbType() == QGis::WKBMultiLineString25D )
@@ -149,6 +150,7 @@ QgsGeometry* QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& f
           {
             fid = match.featureId();
             partNum = part;
+            delete geomPart;
             return QgsGeometry::fromPolyline( mline[part] );
           }
           snapVertex -= mline[part].count();
@@ -178,8 +180,10 @@ QgsGeometry* QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& f
         {
           fid = f.id();
           partNum = part;
+          delete geomPart;
           return partGeo;
         }
+        delete partGeo;
       }
       break;
     }

@@ -211,7 +211,7 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature& f )
       continue;
 
     // TODO[MD]: just one resize of attributes
-    f.setFields( &mSource->mFields );
+    f.setFields( mSource->mFields );
 
     // update attributes
     if ( mSource->mHasEditBuffer )
@@ -297,7 +297,7 @@ void QgsVectorLayerFeatureIterator::useAddedFeature( const QgsFeature& src, QgsF
 {
   f.setFeatureId( src.id() );
   f.setValid( true );
-  f.setFields( &mSource->mFields );
+  f.setFields( mSource->mFields );
 
   if ( src.constGeometry() && !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
   {
@@ -381,7 +381,7 @@ void QgsVectorLayerFeatureIterator::useChangedAttributeFeature( QgsFeatureId fid
 {
   f.setFeatureId( fid );
   f.setValid( true );
-  f.setFields( &mSource->mFields );
+  f.setFields( mSource->mFields );
 
   if ( !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
   {
@@ -547,7 +547,9 @@ void QgsVectorLayerFeatureIterator::addJoinedAttributes( QgsFeature &f )
 void QgsVectorLayerFeatureIterator::addVirtualAttributes( QgsFeature& f )
 {
   // make sure we have space for newly added attributes
-  f.attributes().resize( mSource->mFields.count() );  // Provider attrs count + joined attrs count + expression attrs count
+  QgsAttributes attr = f.attributes();
+  attr.resize( mSource->mFields.count() );  // Provider attrs count + joined attrs count + expression attrs count
+  f.setAttributes( attr );
 
   if ( !mFetchJoinInfo.isEmpty() )
     addJoinedAttributes( f );
@@ -684,7 +686,7 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
   if ( fi.nextFeature( fet ) )
   {
     int index = indexOffset;
-    const QgsAttributes& attr = fet.attributes();
+    QgsAttributes attr = fet.attributes();
     if ( hasSubset )
     {
       for ( int i = 0; i < subsetIndices.count(); ++i )
@@ -756,7 +758,7 @@ bool QgsVectorLayerFeatureIterator::nextFeatureFid( QgsFeature& f )
 
 void QgsVectorLayerFeatureIterator::updateChangedAttributes( QgsFeature &f )
 {
-  QgsAttributes& attrs = f.attributes();
+  QgsAttributes attrs = f.attributes();
 
   // remove all attributes that will disappear - from higher indices to lower
   for ( int idx = mSource->mDeletedAttributeIds.count() - 1; idx >= 0; --idx )
@@ -774,6 +776,7 @@ void QgsVectorLayerFeatureIterator::updateChangedAttributes( QgsFeature &f )
     for ( QgsAttributeMap::const_iterator it = map.begin(); it != map.end(); ++it )
       attrs[it.key()] = it.value();
   }
+  f.setAttributes( attrs );
 }
 
 void QgsVectorLayerFeatureIterator::updateFeatureGeometry( QgsFeature &f )

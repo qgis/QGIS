@@ -17,7 +17,6 @@
 ***************************************************************************
 """
 
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -39,7 +38,7 @@ from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.gui.MessageDialog import MessageDialog
-from processing.gui.AlgorithmClassification import AlgorithmDecorator
+from processing.gui import AlgorithmClassification
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui.EditRenderingStylesDialog import EditRenderingStylesDialog
@@ -280,11 +279,11 @@ class ProcessingToolbox(BASE, WIDGET):
             for alg in algs:
                 if not alg.showInToolbox:
                     continue
-                (altgroup, altsubgroup, altname) = \
-                    AlgorithmDecorator.getGroupsAndName(alg)
+                altgroup, altsubgroup = AlgorithmClassification.getClassification(alg)
                 if altgroup is None:
                     continue
-                if text == '' or text.lower() in altname.lower():
+                algName = AlgorithmClassification.getDisplayName(alg)
+                if text == '' or text.lower() in algName.lower():
                     if altgroup not in groups:
                         groups[altgroup] = {}
                     group = groups[altgroup]
@@ -346,10 +345,9 @@ class TreeAlgorithmItem(QTreeWidgetItem):
         QTreeWidgetItem.__init__(self)
         self.alg = alg
         icon = alg.getIcon()
-        name = alg.name
         if useCategories:
             icon = GeoAlgorithm.getDefaultIcon()
-            (group, subgroup, name) = AlgorithmDecorator.getGroupsAndName(alg)
+        name = AlgorithmClassification.getDisplayName(alg)
         self.setIcon(0, icon)
         self.setToolTip(0, name)
         self.setText(0, name)

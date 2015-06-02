@@ -26,6 +26,7 @@
 
 #include "qgis.h"
 #include "qgsdatasourceuri.h"
+#include "qgswkbtypes.h"
 
 extern "C"
 {
@@ -304,7 +305,7 @@ class QgsPostgresConn : public QObject
     static int postgisWkbTypeDim( QGis::WkbType wkbType );
     static void postgisWkbType( QGis::WkbType wkbType, QString &geometryType, int &dim );
 
-    static QString postgisTypeFilter( QString geomCol, QGis::WkbType wkbType, bool castToGeometry );
+    static QString postgisTypeFilter( QString geomCol, QgsWKBTypes::Type wkbType, bool castToGeometry );
 
     static QGis::WkbType wkbTypeFromGeomType( QGis::GeometryType geomType );
     static QGis::WkbType wkbTypeFromOgcWkbType( unsigned int ogcWkbType );

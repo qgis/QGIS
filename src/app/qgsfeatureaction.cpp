@@ -229,7 +229,7 @@ void QgsFeatureAction::onFeatureSaved( const QgsFeature& feature )
     QgsFields fields = mLayer->pendingFields();
     for ( int idx = 0; idx < fields.count(); ++idx )
     {
-      const QgsAttributes &newValues = feature.attributes();
+      QgsAttributes newValues = feature.attributes();
       QgsAttributeMap origValues = sLastUsedValues[ mLayer ];
       if ( origValues[idx] != newValues[idx] )
       {

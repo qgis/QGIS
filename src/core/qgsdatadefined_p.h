@@ -32,7 +32,7 @@
 #include "qgsexpression.h"
 
 
-class CORE_EXPORT QgsDataDefinedPrivate : public QSharedData
+class QgsDataDefinedPrivate : public QSharedData
 {
   public:
 

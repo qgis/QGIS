@@ -1345,6 +1345,11 @@ static QVariant fcnFormatNumber( const QVariantList& values, const QgsFeature*, 
 {
   double value = getDoubleValue( values.at( 0 ), parent );
   int places = getIntValue( values.at( 1 ), parent );
+  if ( places < 0 )
+  {
+    parent->setEvalErrorString( QObject::tr( "Number of places must be positive" ) );
+    return QVariant();
+  }
   return QString( "%L1" ).arg( value, 0, 'f', places );
 }
 
@@ -1657,7 +1662,7 @@ bool QgsExpression::unregisterFunction( QString name )
 
 QStringList QgsExpression::gmBuiltinFunctions;
 
-const QStringList &QgsExpression::BuiltinFunctions()
+const QStringList& QgsExpression::BuiltinFunctions()
 {
   if ( gmBuiltinFunctions.isEmpty() )
   {
@@ -1700,7 +1705,7 @@ const QStringList &QgsExpression::BuiltinFunctions()
 
 QList<QgsExpression::Function*> QgsExpression::gmFunctions;
 
-const QList<QgsExpression::Function*> &QgsExpression::Functions()
+const QList<QgsExpression::Function*>& QgsExpression::Functions()
 {
   if ( gmFunctions.isEmpty() )
   {

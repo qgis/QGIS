@@ -66,6 +66,33 @@ void writePolyline( struct Map_info* map, int type, QgsPolyline polyline, struct
   Vect_write_line( map, type, line, cats );
 }
 
+void exitIfCanceled( QDataStream& stdinStream, bool isPolygon,
+                     const QString & tmpName, struct Map_info * tmpMap,
+                     const QString & finalName, struct Map_info * finalMap )
+{
+  bool isCanceled;
+  stdinStream >> isCanceled;
+  if ( !isCanceled )
+  {
+    return;
+  }
+  if ( isPolygon )
+  {
+    Vect_close( tmpMap );
+    Vect_delete( tmpName.toUtf8().data() );
+  }
+  Vect_close( finalMap );
+  Vect_delete( finalName.toUtf8().data() );
+  G_warning( "import canceled -> maps deleted" );
+  exit( EXIT_SUCCESS );
+}
+
+// G_set_percent_routine only works in GRASS >= 7
+//int percent_routine (int)
+//{
+// TODO: use it to interrupt cleaning functions
+//}
+
 int main( int argc, char **argv )
 {
   struct Option *mapOption;
@@ -78,11 +105,11 @@ int main( int argc, char **argv )
     exit( EXIT_FAILURE );
 
   QFile stdinFile;
-  stdinFile.open( 0, QIODevice::ReadOnly );
+  stdinFile.open( stdin, QIODevice::ReadOnly );
   QDataStream stdinStream( &stdinFile );
 
   QFile stdoutFile;
-  stdoutFile.open( 0, QIODevice::ReadOnly );
+  stdoutFile.open( stdout, QIODevice::WriteOnly );
   QDataStream stdoutStream( &stdoutFile );
 
   qint32 typeQint32;
@@ -91,6 +118,7 @@ int main( int argc, char **argv )
   QGis::WkbType wkbFlatType = QGis::flatType( wkbType );
   bool isPolygon = QGis::singleType( wkbFlatType ) == QGis::WKBPolygon;
 
+  QString finalName = QString( mapOption->answer );
   struct Map_info finalMap, tmpMap;
   Vect_open_new( &finalMap, mapOption->answer, 0 );
   struct Map_info * map = &finalMap;
@@ -148,7 +176,10 @@ int main( int argc, char **argv )
   qint32 featureCount = 0;
   while ( true )
   {
+    exitIfCanceled( stdinStream, isPolygon, tmpName, &tmpMap, finalName, &finalMap );
     stdinStream >> feature;
+    stdoutStream << ( bool )true; // feature received
+    stdoutFile.flush();
     if ( !feature.isValid() )
     {
       break;
@@ -249,6 +280,29 @@ int main( int argc, char **argv )
         break;
       }
     }
+    // TODO: review if necessary and if there is GRASS function
+    // remove zero length
+    int nlines = Vect_get_num_lines( map );
+    struct line_pnts *line = Vect_new_line_struct();
+    for ( int i = 1; i <= nlines; i++ )
+    {
+      if ( !Vect_line_alive( map, i ) )
+      {
+        continue;
+      }
+
+      int type = Vect_read_line( map, line, NULL, i );
+      if ( !( type & GV_BOUNDARY ) )
+      {
+        continue;
+      }
+
+      if ( Vect_line_length( line ) == 0 )
+      {
+        Vect_delete_line( map, i );
+      }
+    }
+
     Vect_merge_lines( map, GV_BOUNDARY, NULL, NULL );
 #if GRASS_VERSION_MAJOR < 7
     Vect_remove_bridges( map, NULL );
@@ -279,7 +333,10 @@ int main( int argc, char **argv )
     // read once more to assign centroids to polygons
     while ( true )
     {
+      exitIfCanceled( stdinStream, isPolygon, tmpName, &tmpMap, finalName, &finalMap );
       stdinStream >> feature;
+      stdoutStream << ( bool )true; // feature received
+      stdoutFile.flush();
       if ( !feature.isValid() )
       {
         break;
@@ -295,7 +352,9 @@ int main( int argc, char **argv )
         QgsFeature& centroid = centroids[id];
         if ( feature.geometry()->contains( centroid.geometry() ) )
         {
-          centroid.attributes().append( feature.id() );
+          QgsAttributes attr = centroid.attributes();
+          attr.append( feature.id() );
+          centroid.setAttributes( attr );
         }
       }
     }
@@ -325,6 +384,7 @@ int main( int argc, char **argv )
   Vect_close( &finalMap );
 
   stdoutStream << ( bool )true; // to keep caller waiting until finished
+  stdoutFile.flush();
   // TODO history
 
   exit( EXIT_SUCCESS );

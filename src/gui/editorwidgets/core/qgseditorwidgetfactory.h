@@ -18,6 +18,7 @@
 
 #include "qgseditorwidgetwrapper.h"
 #include "qgsapplication.h"
+#include "qgsdefaultsearchwidgetwrapper.h"
 
 #include <QDomNode>
 #include <QMap>
@@ -59,6 +60,8 @@ class GUI_EXPORT QgsEditorWidgetFactory
      * @return         A new widget wrapper
      */
     virtual QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const = 0;
+
+    virtual QgsEditorWidgetWrapper* createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const;
 
     /**
      * Return The human readable identifier name of this widget type

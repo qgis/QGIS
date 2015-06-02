@@ -96,9 +96,9 @@ class TestQgsMemoryProvider(TestCase):
             geom = f.geometry()
 
             myMessage = ('Expected: %s\nGot: %s\n' %
-                         ("POINT(10.0 10.0)", str(geom.exportToWkt())))
+                         ("Point (10 10)", str(geom.exportToWkt())))
 
-            assert compareWkt( str(geom.exportToWkt()), "POINT(10.0 10.0)" ), myMessage
+            assert compareWkt( str(geom.exportToWkt()), "Point (10 10)" ), myMessage
 
     def testGetFields(self):
         layer = QgsVectorLayer("Point", "test", "memory")

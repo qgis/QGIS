@@ -113,4 +113,4 @@ class Polygonize(GeoAlgorithm):
             self.tr('Keep table structure of line layer'), False))
         self.addParameter(ParameterBoolean(self.GEOMETRY,
             self.tr('Create geometry columns'), True))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Polygons from lines')))

@@ -229,19 +229,22 @@ class TestQgsVectorLayer : public QObject
       QCOMPARE( varList.at( 0 ), QVariant( 2 ) );
       QCOMPARE( varList.at( 1 ), QVariant( 3 ) );
 
-      QList<double> doubleList = layer->getDoubleValues( "col1", ok );
+      int nulls = 0;
+      QList<double> doubleList = layer->getDoubleValues( "col1", ok, false, &nulls );
       QVERIFY( ok );
       QCOMPARE( doubleList.length(), 3 );
       QCOMPARE( doubleList.at( 0 ), 1.0 );
       QCOMPARE( doubleList.at( 1 ), 2.0 );
       QCOMPARE( doubleList.at( 2 ), 3.0 );
+      QCOMPARE( nulls, 1 );
 
       //check with selected features
-      doubleList = layer->getDoubleValues( "col1", ok, true );
+      doubleList = layer->getDoubleValues( "col1", ok, true, &nulls );
       QVERIFY( ok );
       QCOMPARE( doubleList.length(), 2 );
       QCOMPARE( doubleList.at( 0 ), 2.0 );
       QCOMPARE( doubleList.at( 1 ), 3.0 );
+      QCOMPARE( nulls, 0 );
 
       QList<QVariant> expVarList = layer->getValues( "tostring(col1) || ' '", ok );
       QVERIFY( ok );
@@ -251,12 +254,13 @@ class TestQgsVectorLayer : public QObject
       QCOMPARE( expVarList.at( 2 ).toString(), QString( "3 " ) );
       QCOMPARE( expVarList.at( 3 ), QVariant() );
 
-      QList<double> expDoubleList = layer->getDoubleValues( "col1 * 2", ok );
+      QList<double> expDoubleList = layer->getDoubleValues( "col1 * 2", ok, false, &nulls );
       QVERIFY( ok );
       QCOMPARE( expDoubleList.length(), 3 );
       QCOMPARE( expDoubleList.at( 0 ), 2.0 );
       QCOMPARE( expDoubleList.at( 1 ), 4.0 );
       QCOMPARE( expDoubleList.at( 2 ), 6.0 );
+      QCOMPARE( nulls, 1 );
 
       delete layer;
     }

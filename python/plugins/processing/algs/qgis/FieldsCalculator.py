@@ -70,7 +70,7 @@ class FieldsCalculator(GeoAlgorithm):
         self.addParameter(ParameterBoolean(self.NEW_FIELD,
             self.tr('Create new field'), True))
         self.addParameter(ParameterString(self.FORMULA, self.tr('Formula')))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Calculated')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))

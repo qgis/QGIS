@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from processing.gui import AlgorithmClassification
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -38,7 +39,7 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
-from processing.gui.AlgorithmClassification import AlgorithmDecorator
+import processing.gui.AlgorithmClassification
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
 from processing.modeler.ModelerAlgorithm import ModelerAlgorithm, ModelerParameter
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
@@ -105,7 +106,6 @@ class ModelerDialog(BASE, WIDGET):
             if event.delta() > 0:
                 factor = 1/factor
             self.view.scale(factor, factor)
-            self.view.centerOn(event.pos().x(), event.pos().y())
             self.repaintModel()
 
         def _enterEvent(e):
@@ -225,6 +225,7 @@ class ModelerDialog(BASE, WIDGET):
         dlg = HelpEditionDialog(alg)
         dlg.exec_()
         if dlg.descriptions:
+            self.alg.helpContent = dlg.descriptions
             self.hasChanged = True
 
     def runModel(self):
@@ -471,11 +472,11 @@ class ModelerDialog(BASE, WIDGET):
             for alg in algs:
                 if not alg.showInModeler or alg.allowOnlyOpenedLayers:
                     continue
-                (altgroup, altsubgroup, altname) = \
-                    AlgorithmDecorator.getGroupsAndName(alg)
+                altgroup, altsubgroup = AlgorithmClassification.getClassification(alg)
                 if altgroup is None:
                     continue
-                if text == '' or text.lower() in altname.lower():
+                algName = AlgorithmClassification.getDisplayName(alg)
+                if text == '' or text.lower() in algName.lower():
                     if altgroup not in groups:
                         groups[altgroup] = {}
                     group = groups[altgroup]
@@ -597,10 +598,9 @@ class TreeAlgorithmItem(QTreeWidgetItem):
         QTreeWidgetItem.__init__(self)
         self.alg = alg
         icon = alg.getIcon()
-        name = alg.name
         if useCategories:
             icon = GeoAlgorithm.getDefaultIcon()
-            (group, subgroup, name) = AlgorithmDecorator.getGroupsAndName(alg)
+        name = AlgorithmClassification.getDisplayName(alg)
         self.setIcon(0, icon)
         self.setToolTip(0, name)
         self.setText(0, name)

@@ -56,7 +56,7 @@ class VectorLayerHistogram(GeoAlgorithm):
         self.addParameter(ParameterNumber(self.BINS,
             self.tr('number of bins'), 2, None, 10))
 
-        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Output')))
+        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Histogram')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(

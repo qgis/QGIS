@@ -138,15 +138,10 @@ def getQgisTestApp():
 
 
 def unitTestDataPath(theSubdir=None):
-    """Return the absolute path to the InaSAFE unit test data dir.
-
-    .. note:: This is not the same thing as the SVN inasafe_data dir. Rather
-       this is a new dataset where the test datasets are all tiny for fast
-       testing and the datasets live in the same repo as the code.
+    """Return the absolute path to the QGIS unit test data dir.
 
     Args:
-       * theSubdir: (Optional) Additional subdir to add to the path - typically
-         'hazard' or 'exposure'.
+       * theSubdir: (Optional) Additional subdir to add to the path
     """
     myPath = __file__
     tmpPath = os.path.split(os.path.dirname(myPath))

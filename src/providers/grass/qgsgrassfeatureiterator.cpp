@@ -258,7 +258,7 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
 
   feature.setFeatureId( featureId );
   feature.initAttributes( mSource->mFields.count() );
-  feature.setFields( &mSource->mFields ); // allow name-based attribute lookups
+  feature.setFields( mSource->mFields ); // allow name-based attribute lookups
 
   if ( mRequest.flags() & QgsFeatureRequest::NoGeometry )
     feature.setGeometry( 0 );

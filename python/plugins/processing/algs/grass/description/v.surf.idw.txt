@@ -6,4 +6,4 @@ ParameterNumber|npoints|Number of interpolation points|None|None|12
 ParameterNumber|power|Power parameter; greater values assign greater influence to closer points|None|None|2.0
 ParameterTableField|column|Attribute table column with values to interpolate|input|-1|False
 ParameterBoolean|-n|Don't index points by raster cell|False
-OutputRaster|output|Output raster
+OutputRaster|output|Interpolated IDW

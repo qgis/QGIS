@@ -4,4 +4,4 @@ Vector (v.*)
 ParameterVector|map|Input layer|-1|False
 ParameterNumber|npartitions|Number of partitions|2.0|32767|10
 ParameterString|column|Name for new column to which partition number is written|part
-OutputVector|output|Output layer
+OutputVector|output|Partition

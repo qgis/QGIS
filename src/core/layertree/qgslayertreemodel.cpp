@@ -24,6 +24,7 @@
 #include "qgsdataitem.h"
 #include "qgsmaphittest.h"
 #include "qgsmaplayerlegend.h"
+#include "qgsmaplayerstylemanager.h"
 #include "qgspluginlayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrendererv2.h"
@@ -192,7 +193,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
         if ( testFlag( ShowRasterPreviewIcon ) )
         {
           QgsRasterLayer* rlayer = qobject_cast<QgsRasterLayer *>( layer );
-          return QIcon( rlayer->previewAsPixmap( QSize( 32, 32 ) ) );
+          return QIcon( QPixmap::fromImage( rlayer->previewAsImage( QSize( 32, 32 ) ) ) );
         }
         else
         {
@@ -600,6 +601,16 @@ void QgsLayerTreeModel::legendMapViewData( double* mapUnitsPerPixel, int* dpi, d
   if ( mapUnitsPerPixel ) *mapUnitsPerPixel = mLegendMapViewMupp;
   if ( dpi ) *dpi = mLegendMapViewDpi;
   if ( scale ) *scale = mLegendMapViewScale;
+}
+
+QMap<QString, QString> QgsLayerTreeModel::layerStyleOverrides() const
+{
+  return mLayerStyleOverrides;
+}
+
+void QgsLayerTreeModel::setLayerStyleOverrides( const QMap<QString, QString>& overrides )
+{
+  mLayerStyleOverrides = overrides;
 }
 
 void QgsLayerTreeModel::nodeWillAddChildren( QgsLayerTreeNode* node, int indexFrom, int indexTo )
@@ -1064,9 +1075,14 @@ void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer* nodeL )
   if ( !nodeL->layer() )
     return;
 
-  QgsMapLayerLegend* layerLegend = nodeL->layer()->legend();
+  QgsMapLayer* ml = nodeL->layer();
+  QgsMapLayerLegend* layerLegend = ml->legend();
   if ( !layerLegend )
     return;
+
+  bool hasStyleOverride = mLayerStyleOverrides.contains( ml->id() );
+  if ( hasStyleOverride )
+    ml->styleManager()->setOverrideStyle( mLayerStyleOverrides.value( ml->id() ) );
 
   QList<QgsLayerTreeModelLegendNode*> lstNew = layerLegend->createLayerTreeModelLegendNodes( nodeL );
 
@@ -1099,6 +1115,9 @@ void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer* nodeL )
   mLegend[nodeL] = data;
 
   if ( ! isEmbedded ) endInsertRows();
+
+  if ( hasStyleOverride )
+    ml->styleManager()->restoreOverrideStyle();
 }
 
 

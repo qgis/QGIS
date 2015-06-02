@@ -6,13 +6,13 @@ Priority: optional
 Build-Depends:
  bison,
  cmake (>= 2.8),
-#sid jessie wheezy saucy sid-oracle trusty utopic vivid# debhelper (>= 9),
+#sid stretch jessie wheezy saucy sid-oracle trusty utopic vivid# debhelper (>= 9),
 #precise# debhelper (>= 7),
  flex,
  grass-dev (<< 7),
  libexpat1-dev,
  libfcgi-dev,
-#sid jessie sid-oracle trusty utopic vivid# libgdal-dev (>= 1.10.1-0~),
+#sid stretch jessie sid-oracle trusty utopic vivid# libgdal-dev (>= 1.10.1-0~),
 #precise# libgdal-dev (>= 1.9.0) | libgdal1-dev (<< 1.9.0),
 #saucy# libgdal-dev (>= 1.9.0),
 #wheezy# libgdal1-dev,
@@ -23,7 +23,7 @@ Build-Depends:
  libqt4-dev (>= 4.7.0),
  libqt4-opengl-dev,
  libqtwebkit-dev,
-#sid jessie wheezy sid-oracle# libqwt-dev,
+#sid stretch jessie wheezy sid-oracle# libqwt-dev,
 #precise saucy trusty utopic vivid# libqwt5-qt4-dev,
  libspatialite-dev,
  libsqlite3-dev,
@@ -35,9 +35,9 @@ Build-Depends:
 #precise saucy# python-central (>= 0.5),
 #saucy wheezy# python-dev,
 #saucy# libpython2.7-dev,
-#sid jessie sid-oracle trusty utopic vivid# python-all (>= 2.6.6-3~), python-all-dev (>= 2.6.6-3~),
-#sid jessie wheezy precise saucy sid-oracle trusty utopic vivid# python-qt4 (>= 4.1.0), python-qt4-dev,
-#sid# pyqt4.qsci-dev,
+#sid stretch jessie sid-oracle trusty utopic vivid# python-all (>= 2.6.6-3~), python-all-dev (>= 2.6.6-3~),
+#sid stretch jessie wheezy precise saucy sid-oracle trusty utopic vivid# python-qt4 (>= 4.1.0), python-qt4-dev,
+#sid stretch jessie# pyqt4.qsci-dev,
  python-sip (>= 4.5.0),
  python-sip-dev (>= 4.5.0),
  libosgearth-dev,
@@ -52,10 +52,10 @@ Build-Depends:
 #sid-oracle# oracle-instantclient11.2-devel,
  spawn-fcgi, lighttpd, poppler-utils, locales
 Build-Conflicts: libqgis-dev, qgis-dev
-#sid jessie sid-oracle vivid#Standards-Version: 3.9.6
+#sid stretch jessie sid-oracle vivid#Standards-Version: 3.9.6
 #wheezy#Standards-Version: 3.9.3
 #precise saucy trusty utopic#Standards-Version: 3.8.4
-#sid jessie sid-oracle#X-Python-Version: >= 2.7, << 2.8
+#sid stretch jessie sid-oracle#X-Python-Version: >= 2.7, << 2.8
 #wheezy precise saucy trusty utopic vivid#XS-Python-Version: current
 Vcs-Browser: https://github.com/qgis/QGIS/
 Vcs-Git: https://github.com/qgis/QGIS.git
@@ -212,7 +212,7 @@ Section: libdevel
 Depends:
  grass-dev (<< 7),
  libexpat1-dev,
-#sid jessie sid-oracle trusty utopic vivid# libgdal-dev (>= 1.10.1-0~),
+#sid stretch jessie sid-oracle trusty utopic vivid# libgdal-dev (>= 1.10.1-0~),
 #precise# libgdal-dev (>= 1.9.0) | libgdal1-dev (<< 1.9.0),
 #saucy# libgdal-dev (>= 1.9.0),
 #wheezy# libgdal1-dev,
@@ -244,6 +244,26 @@ Description: QGIS - development files
  This package contains the headers and libraries needed to develop plugins for
  QGIS.
 
+Package: qgis-dbg
+Architecture: any
+Section: debug
+Priority: extra
+Depends:
+ libqgis-core{QGIS_ABI} (= ${binary:Version}),
+ libqgis-gui{QGIS_ABI} (= ${binary:Version}),
+ libqgis-analysis{QGIS_ABI} (= ${binary:Version}),
+ libqgis-networkanalysis{QGIS_ABI} (= ${binary:Version}),
+ libqgis-server{QGIS_ABI} (= ${binary:Version}),
+ libqgisgrass{QGIS_ABI} (= ${binary:Version}),
+ libqgispython{QGIS_ABI} (= ${binary:Version}),
+ ${misc:Depends}
+Suggests: gdb
+Description: QGIS - debugging symbols
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains debugging symbols.
+
 Package: qgis-plugin-grass
 Architecture: any
 Depends:
@@ -262,7 +282,7 @@ Description: GRASS plugin for QGIS
 Package: qgis-plugin-grass-common
 Architecture: all
 Depends:
-#sid jessie saucy sid-oracle trusty# python2.7,
+#sid stretch jessie saucy sid-oracle trusty# python2.7,
 #wheezy precise# python,
  ${misc:Depends}
 Breaks: qgis-common (<< 1.5)
@@ -315,7 +335,9 @@ Depends:
  python-dateutil,
  python-tz,
  python-six,
-#sid jessie trusty utopic vivid sid-oracle# python-pyspatialite,
+#sid stretch jessie trusty utopic vivid sid-oracle# python-pyspatialite,
+#sid stretch# liblwgeom-2.1.7,
+#jessie# liblwgeom-2.1.4,
  libqgispython{QGIS_ABI},
  ${shlibs:Depends},
  ${python:Depends},
