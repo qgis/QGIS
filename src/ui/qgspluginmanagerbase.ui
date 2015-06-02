@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>936</width>
-    <height>565</height>
+    <width>796</width>
+    <height>594</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -370,8 +370,8 @@
                    <number>0</number>
                   </property>
                   <item>
-                   <widget class="QgsWebView" name="wvDetails">
-                    <property name="url">
+                   <widget class="QgsWebView" name="wvDetails" native="true">
+                    <property name="url" stdset="0">
                      <url>
                       <string>about:blank</string>
                      </url>
@@ -519,8 +519,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>355</width>
-                   <height>695</height>
+                   <width>552</width>
+                   <height>611</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -618,22 +618,6 @@ p, li { white-space: pre-wrap; }
                    </widget>
                   </item>
                   <item>
-                   <spacer name="verticalSpacer">
-                    <property name="orientation">
-                     <enum>Qt::Vertical</enum>
-                    </property>
-                    <property name="sizeType">
-                     <enum>QSizePolicy::Fixed</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>20</width>
-                      <height>10</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item>
                    <widget class="QgsCollapsibleGroupBox" name="ckbExperimental">
                     <property name="title">
                      <string>Show also experimental plugins</string>
@@ -688,22 +672,6 @@ p, li { white-space: pre-wrap; }
                      </item>
                     </layout>
                    </widget>
-                  </item>
-                  <item>
-                   <spacer name="verticalSpacer_2">
-                    <property name="orientation">
-                     <enum>Qt::Vertical</enum>
-                    </property>
-                    <property name="sizeType">
-                     <enum>QSizePolicy::Fixed</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>20</width>
-                      <height>10</height>
-                     </size>
-                    </property>
-                   </spacer>
                   </item>
                   <item>
                    <widget class="QgsCollapsibleGroupBox" name="ckbDeprecated">
@@ -762,157 +730,145 @@ p, li { white-space: pre-wrap; }
                    </widget>
                   </item>
                   <item>
-                   <spacer name="verticalSpacer_3">
-                    <property name="orientation">
-                     <enum>Qt::Vertical</enum>
-                    </property>
-                    <property name="sizeType">
-                     <enum>QSizePolicy::Fixed</enum>
-                    </property>
-                    <property name="sizeHint" stdset="0">
-                     <size>
-                      <width>20</width>
-                      <height>10</height>
-                     </size>
-                    </property>
-                   </spacer>
-                  </item>
-                  <item>
-                   <widget class="QLabel" name="lblRepositories">
-                    <property name="text">
+                   <widget class="QGroupBox" name="groupBox">
+                    <property name="title">
                      <string>Plugin repositories</string>
                     </property>
-                    <property name="buddy">
-                     <cstring>treeRepositories</cstring>
+                    <property name="flat">
+                     <bool>true</bool>
                     </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QTreeWidget" name="treeRepositories">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="minimumSize">
-                     <size>
-                      <width>0</width>
-                      <height>30</height>
-                     </size>
-                    </property>
-                    <property name="rootIsDecorated">
-                     <bool>false</bool>
-                    </property>
-                    <property name="itemsExpandable">
-                     <bool>false</bool>
-                    </property>
-                    <column>
-                     <property name="text">
-                      <string>Status</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>Name</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>URL</string>
-                     </property>
-                    </column>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QFrame" name="frameRepBut">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="frameShape">
-                     <enum>QFrame::NoFrame</enum>
-                    </property>
-                    <property name="frameShadow">
-                     <enum>QFrame::Raised</enum>
-                    </property>
-                    <layout class="QHBoxLayout" name="horizontalLayout_3">
-                     <property name="margin">
-                      <number>0</number>
-                     </property>
+                    <layout class="QVBoxLayout" name="verticalLayout_13">
                      <item>
-                      <widget class="QPushButton" name="buttonRefreshRepos">
-                       <property name="toolTip">
-                        <string>Reload repository contents
-(useful when you uploaded a plugin there)</string>
-                       </property>
-                       <property name="text">
-                        <string>Reload repository</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <spacer name="spacer_3">
-                       <property name="orientation">
-                        <enum>Qt::Horizontal</enum>
-                       </property>
-                       <property name="sizeHint" stdset="0">
-                        <size>
-                         <width>316</width>
-                         <height>10</height>
-                        </size>
-                       </property>
-                      </spacer>
-                     </item>
-                     <item>
-                      <widget class="QPushButton" name="buttonAddRep">
-                       <property name="toolTip">
-                        <string>Configure an additional plugin repository</string>
-                       </property>
-                       <property name="whatsThis">
-                        <string>Add a new plugin repository</string>
-                       </property>
-                       <property name="text">
-                        <string>Add...</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
-                      <widget class="QPushButton" name="buttonEditRep">
+                      <widget class="QTreeWidget" name="treeRepositories">
                        <property name="sizePolicy">
-                        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                        <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
                          <horstretch>0</horstretch>
                          <verstretch>0</verstretch>
                         </sizepolicy>
                        </property>
-                       <property name="toolTip">
-                        <string>Edit the selected repository</string>
+                       <property name="minimumSize">
+                        <size>
+                         <width>0</width>
+                         <height>30</height>
+                        </size>
                        </property>
-                       <property name="whatsThis">
-                        <string>Edit the selected repository</string>
+                       <property name="maximumSize">
+                        <size>
+                         <width>16777215</width>
+                         <height>100</height>
+                        </size>
                        </property>
-                       <property name="text">
-                        <string>Edit...</string>
+                       <property name="rootIsDecorated">
+                        <bool>false</bool>
                        </property>
+                       <property name="itemsExpandable">
+                        <bool>false</bool>
+                       </property>
+                       <column>
+                        <property name="text">
+                         <string>Status</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string>Name</string>
+                        </property>
+                       </column>
+                       <column>
+                        <property name="text">
+                         <string>URL</string>
+                        </property>
+                       </column>
                       </widget>
                      </item>
                      <item>
-                      <widget class="QPushButton" name="buttonDeleteRep">
-                       <property name="toolTip">
-                        <string>Remove the selected repository</string>
-                       </property>
-                       <property name="whatsThis">
-                        <string>Remove the selected repository</string>
-                       </property>
-                       <property name="text">
-                        <string>Delete</string>
-                       </property>
-                      </widget>
+                      <layout class="QHBoxLayout" name="horizontalLayout">
+                       <item>
+                        <widget class="QPushButton" name="buttonRefreshRepos">
+                         <property name="toolTip">
+                          <string>Reload repository contents
+(useful when you uploaded a plugin there)</string>
+                         </property>
+                         <property name="text">
+                          <string>Reload repository</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <spacer name="spacer_3">
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>316</width>
+                           <height>10</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
+                       <item>
+                        <widget class="QPushButton" name="buttonAddRep">
+                         <property name="toolTip">
+                          <string>Configure an additional plugin repository</string>
+                         </property>
+                         <property name="whatsThis">
+                          <string>Add a new plugin repository</string>
+                         </property>
+                         <property name="text">
+                          <string>Add...</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QPushButton" name="buttonEditRep">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="toolTip">
+                          <string>Edit the selected repository</string>
+                         </property>
+                         <property name="whatsThis">
+                          <string>Edit the selected repository</string>
+                         </property>
+                         <property name="text">
+                          <string>Edit...</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QPushButton" name="buttonDeleteRep">
+                         <property name="toolTip">
+                          <string>Remove the selected repository</string>
+                         </property>
+                         <property name="whatsThis">
+                          <string>Remove the selected repository</string>
+                         </property>
+                         <property name="text">
+                          <string>Delete</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
                      </item>
                     </layout>
                    </widget>
+                  </item>
+                  <item>
+                   <spacer name="verticalSpacer">
+                    <property name="orientation">
+                     <enum>Qt::Vertical</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>20</width>
+                      <height>40</height>
+                     </size>
+                    </property>
+                   </spacer>
                   </item>
                  </layout>
                 </widget>
