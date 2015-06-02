@@ -246,24 +246,35 @@ void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymb
   QgsSymbolV2::SymbolType symbolType = symbol->type();
 
   const QgsGeometry* geom = feature.constGeometry();
-  if ( !geom )
+  if ( !geom || !geom->geometry() )
   {
     return;
   }
 
-  if ( geom->requiresConversionToStraightSegments() )
+  //convert curve types to normal point/line/polygon ones
+  switch ( QgsWKBTypes::flatType( geom->geometry()->wkbType() ) )
   {
-    //geometry requires conversion to straight segments
-    QgsGeometry* straightGeom = new QgsGeometry( *geom );
-    straightGeom->convertToStraightSegment();
-    feature.setGeometry( straightGeom );
-    geom = feature.constGeometry();
+    case QgsWKBTypes::CurvePolygon:
+    case QgsWKBTypes::CircularString:
+    case QgsWKBTypes::CompoundCurve:
+    case QgsWKBTypes::MultiSurface:
+    case QgsWKBTypes::MultiCurve:
+    {
+      QgsAbstractGeometryV2* g = geom->geometry()->segmentize();
+      if ( !g )
+      {
+        return;
+      }
+      feature.setGeometry( new QgsGeometry( g ) );
+      geom = feature.constGeometry();
+    }
+    default:
+      break;
   }
 
-  switch ( geom->wkbType() )
+  switch ( QgsWKBTypes::flatType( geom->geometry()->wkbType() ) )
   {
-    case QGis::WKBPoint:
-    case QGis::WKBPoint25D:
+    case QgsWKBTypes::Point:
     {
       if ( symbolType != QgsSymbolV2::Marker )
       {
@@ -278,9 +289,7 @@ void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymb
       //  renderVertexMarker( pt, context );
     }
     break;
-
-    case QGis::WKBLineString:
-    case QGis::WKBLineString25D:
+    case QgsWKBTypes::LineString:
     {
       if ( symbolType != QgsSymbolV2::Line )
       {
@@ -295,9 +304,7 @@ void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymb
         renderVertexMarkerPolyline( pts, context );
     }
     break;
-
-    case QGis::WKBPolygon:
-    case QGis::WKBPolygon25D:
+    case QgsWKBTypes::Polygon:
     {
       if ( symbolType != QgsSymbolV2::Fill )
       {
@@ -314,8 +321,7 @@ void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymb
     }
     break;
 
-    case QGis::WKBMultiPoint:
-    case QGis::WKBMultiPoint25D:
+    case QgsWKBTypes::MultiPoint:
     {
       if ( symbolType != QgsSymbolV2::Marker )
       {
@@ -340,8 +346,7 @@ void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymb
     }
     break;
 
-    case QGis::WKBMultiLineString:
-    case QGis::WKBMultiLineString25D:
+    case QgsWKBTypes::MultiLineString:
     {
       if ( symbolType != QgsSymbolV2::Line )
       {
@@ -366,8 +371,7 @@ void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymb
     }
     break;
 
-    case QGis::WKBMultiPolygon:
-    case QGis::WKBMultiPolygon25D:
+    case QgsWKBTypes::MultiPolygon:
     {
       if ( symbolType != QgsSymbolV2::Fill )
       {
@@ -390,9 +394,8 @@ void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymb
         if ( drawVertexMarker )
           renderVertexMarkerPolygon( pts, ( holes.count() ? &holes : NULL ), context );
       }
+      break;
     }
-    break;
-
     default:
       QgsDebugMsg( QString( "feature %1: unsupported wkb type 0x%2 for rendering" ).arg( feature.id() ).arg( geom->wkbType(), 0, 16 ) );
   }

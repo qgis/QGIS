@@ -43,42 +43,6 @@ QgsAbstractGeometryV2* QgsGeometryImport::geomFromWkb( const unsigned char* wkb 
 
   geom = geomFromWkbType( QgsWKBTypes::Type( type ) );
 
-#if 0
-  type = QgsWKBTypes::flatType( QgsWKBTypes::Type( type ) );
-  switch ( type )
-  {
-    case QgsWKBTypes::Point:
-      geom = new QgsPointV2();
-      break;
-    case QgsWKBTypes::LineString:
-      geom = new QgsLineStringV2();
-      break;
-    case QgsWKBTypes::CircularString:
-      geom = new QgsCircularStringV2();
-      break;
-    case QgsWKBTypes::CompoundCurve:
-      geom = new QgsCompoundCurveV2();
-      break;
-    case QgsWKBTypes::Polygon:
-      geom = new QgsPolygonV2();
-      break;
-    case QgsWKBTypes::CurvePolygon:
-      geom = new QgsCurvePolygonV2();
-      break;
-    case QgsWKBTypes::MultiLineString:
-      geom = new QgsMultiLineStringV2();
-      break;
-    case QgsWKBTypes::MultiPolygon:
-      geom = new QgsMultiPolygonV2();
-      break;
-    case QgsWKBTypes::MultiPoint:
-      geom = new QgsMultiPointV2();
-      break;
-    default:
-      geom = 0;
-  }
-#endif
-
   if ( geom )
   {
     geom->fromWkb( wkb );
