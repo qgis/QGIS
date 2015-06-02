@@ -111,6 +111,7 @@ def parseDocs(path):
 class TestQgsDocCoverage(TestCase):
 
     def testCoverage(self):
+        print 'CTEST_FULL_OUTPUT'
         prefixPath = os.environ['QGIS_PREFIX_PATH']
         docPath = os.path.join(prefixPath, '..', 'doc', 'api', 'xml' )
 
