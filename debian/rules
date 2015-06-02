@@ -65,7 +65,9 @@ CMAKE_OPTS := \
 	-DWITH_INTERNAL_PYGMENTS=FALSE \
 	-DWITH_INTERNAL_DATEUTIL=FALSE \
 	-DWITH_INTERNAL_PYTZ=FALSE \
-	-DWITH_INTERNAL_SIX=FALSE
+	-DWITH_INTERNAL_SIX=FALSE \
+	-DQT_TAG_FILE=/usr/share/qt4/doc/html/qt.tags \
+	-DQT_DOC_URL=/usr/share/qt4/doc/html/
 
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 	NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))

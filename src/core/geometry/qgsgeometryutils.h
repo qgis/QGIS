@@ -98,7 +98,7 @@ class CORE_EXPORT QgsGeometryUtils
 
     /** Parses a WKT string and returns of list of blocks contained in the WKT.
      * @param wkt WKT string in the format "TYPE1 (contents1), TYPE2 (TYPE3 (contents3), TYPE4 (contents4))"
-     * @param defaultTYpe
+     * @param defaultType default geometry type for childen
      * @returns list of WKT child block strings, eg List("TYPE1 (contents1)", "TYPE2 (TYPE3 (contents3), TYPE4 (contents4))")
      */
     static QStringList wktGetChildBlocks( const QString& wkt , const QString &defaultType = "" );

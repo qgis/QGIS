@@ -50,7 +50,7 @@ Build-Depends:
  xvfb, xauth,
  xfonts-base, xfonts-100dpi, xfonts-75dpi, xfonts-scalable,
 #sid-oracle# oracle-instantclient11.2-devel,
- spawn-fcgi, lighttpd, poppler-utils, locales
+ spawn-fcgi, lighttpd, poppler-utils, locales, qt4-doc-html
 Build-Conflicts: libqgis-dev, qgis-dev
 #sid stretch jessie sid-oracle vivid#Standards-Version: 3.9.6
 #wheezy#Standards-Version: 3.9.3
@@ -417,6 +417,8 @@ Section: doc
 Depends:
  libjs-jquery,
  ${misc:Depends}
+Recommends:
+ qt4-doc-html
 Description: QGIS API documentation
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
