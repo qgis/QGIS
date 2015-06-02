@@ -598,7 +598,7 @@ class CORE_EXPORT QgsGeometry
     void mapToPixel( const QgsMapToPixel& mtp );
 
     // not implemented for 2.10
-    /** Clips the geometry using the specified rectangle
+    /* Clips the geometry using the specified rectangle
      * @param rect clip rectangle
      * @note added in QGIS 2.10
      */
