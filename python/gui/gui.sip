@@ -107,6 +107,7 @@
 %Include qgsvertexmarker.sip
 %Include qgsvectorlayertools.sip
 %Include qgssublayersdialog.sip
+%Include qgsuserinputdockwidget.sip
 %Include qgscharacterselectdialog.sip
 %Include qgscomposerruler.sip
 %Include qgsdatadefinedbutton.sip
