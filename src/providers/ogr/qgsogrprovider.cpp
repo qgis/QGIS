@@ -1072,7 +1072,9 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
   }
   else
   {
-    f.setFeatureId( OGR_F_GetFID( feature ) );
+    long id = OGR_F_GetFID( feature );
+    if ( id >= 0 )
+      f.setFeatureId( id );
   }
   OGR_F_Destroy( feature );
 
