@@ -80,15 +80,17 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterMatrix*>& rasterData, 
     }
 
     int nEntries = ( *it )->nColumns() * ( *it )->nRows();
-    float* data = new float[nEntries];
-    memcpy( data, ( *it )->data(), nEntries * sizeof( float ) );
+    double* data = new double[nEntries];
+    memcpy( data, ( *it )->data(), nEntries * sizeof( double ) );
     result.setData(( *it )->nColumns(), ( *it )->nRows(), data, ( *it )->nodataValue() );
     return true;
   }
   else if ( mType == tOperator )
   {
     QgsRasterMatrix leftMatrix, rightMatrix;
-    QgsRasterMatrix resultMatrix;
+    leftMatrix.setNodataValue( result.nodataValue() );
+    rightMatrix.setNodataValue( result.nodataValue() );
+
     if ( !mLeft || !mLeft->calculate( rasterData, leftMatrix ) )
     {
       return false;
@@ -179,9 +181,9 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterMatrix*>& rasterData, 
   }
   else if ( mType == tNumber )
   {
-    float* data = new float[1];
+    double* data = new double[1];
     data[0] = mNumber;
-    result.setData( 1, 1, data, -FLT_MAX );
+    result.setData( 1, 1, data, result.nodataValue() );
     return true;
   }
   return false;

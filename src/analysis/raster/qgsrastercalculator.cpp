@@ -111,7 +111,7 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
     double nodataValue = GDALGetRasterNoDataValue( inputRasterBand, &nodataSuccess );
 
     mInputRasterBands.insert( it->ref, inputRasterBand );
-    inputScanLineData.insert( it->ref, new QgsRasterMatrix( mNumOutputColumns, 1, new float[mNumOutputColumns], nodataValue ) );
+    inputScanLineData.insert( it->ref, new QgsRasterMatrix( mNumOutputColumns, 1, new double[mNumOutputColumns], nodataValue ) );
   }
 
   //open output dataset for writing
@@ -183,35 +183,25 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
         qWarning( "GDALGetGeoTransform failed!" );
       }
 
+      float* inputScanLine = ( float * ) CPLMalloc( sizeof( float ) * mNumOutputColumns );
+
       //the function readRasterPart calls GDALRasterIO (and ev. does some conversion if raster transformations are not the same)
-      readRasterPart( targetGeoTransform, 0, i, mNumOutputColumns, 1, sourceTransformation, sourceRasterBand, bufferIt.value()->data() );
+      readRasterPart( targetGeoTransform, 0, i, mNumOutputColumns, 1, sourceTransformation, sourceRasterBand, inputScanLine );
+      for ( int col = 0; col < mNumOutputColumns; ++col )
+      {
+        bufferIt.value()->data()[col] = ( double )inputScanLine[col];
+      }
     }
 
     if ( calcNode->calculate( inputScanLineData, resultMatrix ) )
     {
       bool resultIsNumber = resultMatrix.isNumber();
-      float* calcData;
+      float* calcData = new float[mNumOutputColumns];
 
-      if ( resultIsNumber ) //scalar result. Insert number for every pixel
-      {
-        calcData = new float[mNumOutputColumns];
-        for ( int j = 0; j < mNumOutputColumns; ++j )
-        {
-          calcData[j] = resultMatrix.number();
-        }
-      }
-      else //result is real matrix
-      {
-        calcData = resultMatrix.data();
-      }
-
-      //replace all matrix nodata values with output nodatas
       for ( int j = 0; j < mNumOutputColumns; ++j )
       {
-        if ( calcData[j] == resultMatrix.nodataValue() )
-        {
-          calcData[j] = outputNodataValue;
-        }
+        double result = resultIsNumber ? resultMatrix.number() : resultMatrix.data()[j];
+        calcData[j] = ( calcData[j] == resultMatrix.nodataValue() ? outputNodataValue : ( float ) result );
       }
 
       //write scanline to the dataset
