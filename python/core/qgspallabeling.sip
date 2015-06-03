@@ -747,12 +747,11 @@ class QgsPalLabeling : QgsLabelingEngineInterface
      * @param geometry geometry to prepare
      * @param context render context
      * @param ct coordinate transform
-     * @param minSize minimum allowable size for feature for registration with PAL
      * @param clipGeometry geometry to clip features to, if applicable
      * @returns prepared geometry
      * @note added in QGIS 2.9
      */
-    static QgsGeometry* prepareGeometry( const QgsGeometry *geometry, const QgsRenderContext &context, const QgsCoordinateTransform *ct, double minSize = 0, QgsGeometry *clipGeometry = 0 ) /Factory/;
+    static QgsGeometry* prepareGeometry( const QgsGeometry *geometry, const QgsRenderContext &context, const QgsCoordinateTransform *ct, QgsGeometry *clipGeometry = 0 ) /Factory/;
 
     /** Checks whether a geometry requires preparation before registration with PAL
      * @param geometry geometry to prepare

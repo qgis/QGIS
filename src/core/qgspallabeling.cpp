@@ -1730,23 +1730,24 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   }
 
   const GEOSGeometry* geos_geom = 0;
-  QScopedPointer<QgsGeometry> preparedGeom;
+  const QgsGeometry* preparedGeom = geom;
+  QScopedPointer<QgsGeometry> scpoedPreparedGeom;
 
-  if ( minFeatureSize > 0 && !checkMinimumSizeMM( context, geom, minFeatureSize ) )
+  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, doClip ? extentGeom : 0 ) )
   {
-    return;
-  }
-  else if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, doClip ? extentGeom : 0 ) )
-  {
-    preparedGeom.reset( QgsPalLabeling::prepareGeometry( geom, context, ct, minFeatureSize, doClip ? extentGeom : 0 ) );
-    if ( !preparedGeom.data() )
+    scpoedPreparedGeom.reset( QgsPalLabeling::prepareGeometry( geom, context, ct, doClip ? extentGeom : 0 ) );
+    if ( !scpoedPreparedGeom.data() )
       return;
-    geos_geom = preparedGeom.data()->asGeos();
+    preparedGeom = scpoedPreparedGeom.data();
+    geos_geom = scpoedPreparedGeom.data()->asGeos();
   }
   else
   {
     geos_geom = geom->asGeos();
   }
+
+  if ( minFeatureSize > 0 && !checkMinimumSizeMM( context, preparedGeom, minFeatureSize ) )
+    return;
 
   if ( geos_geom == NULL )
     return; // invalid geometry
@@ -3398,10 +3399,8 @@ QStringList QgsPalLabeling::splitToGraphemes( const QString &text )
   return graphemes;
 }
 
-QgsGeometry* QgsPalLabeling::prepareGeometry( const QgsGeometry* geometry, const QgsRenderContext& context, const QgsCoordinateTransform* ct, double minSize, QgsGeometry* clipGeometry )
+QgsGeometry* QgsPalLabeling::prepareGeometry( const QgsGeometry* geometry, const QgsRenderContext& context, const QgsCoordinateTransform* ct, QgsGeometry* clipGeometry )
 {
-  Q_UNUSED( minSize );
-
   if ( !geometry )
   {
     return 0;
@@ -3562,7 +3561,7 @@ void QgsPalLabeling::registerDiagramFeature( const QString& layerID, QgsFeature&
   QScopedPointer<QgsGeometry> preparedGeom;
   if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, layerIt.value().ct, extentGeom.data() ) )
   {
-    preparedGeom.reset( QgsPalLabeling::prepareGeometry( geom, context, layerIt.value().ct, 0, extentGeom.data() ) );
+    preparedGeom.reset( QgsPalLabeling::prepareGeometry( geom, context, layerIt.value().ct, extentGeom.data() ) );
     if ( !preparedGeom.data() )
       return;
     geos_geom = preparedGeom.data()->asGeos();
