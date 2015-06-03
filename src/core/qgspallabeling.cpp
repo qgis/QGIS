@@ -1240,42 +1240,9 @@ bool QgsPalLayerSettings::dataDefinedUseExpression( DataDefinedProperties p ) co
   return useExpression;
 }
 
-bool QgsPalLayerSettings::checkMinimumSizeMM( const QgsRenderContext& ct, QgsGeometry* geom, double minSize ) const
+bool QgsPalLayerSettings::checkMinimumSizeMM( const QgsRenderContext& ct, const QgsGeometry* geom, double minSize ) const
 {
-  if ( minSize <= 0 )
-  {
-    return true;
-  }
-
-  if ( !geom )
-  {
-    return false;
-  }
-
-  QGis::GeometryType featureType = geom->type();
-  if ( featureType == QGis::Point ) //minimum size does not apply to point features
-  {
-    return true;
-  }
-
-  double mapUnitsPerMM = ct.mapToPixel().mapUnitsPerPixel() * ct.scaleFactor();
-  if ( featureType == QGis::Line )
-  {
-    double length = geom->length();
-    if ( length >= 0.0 )
-    {
-      return ( length >= ( minSize * mapUnitsPerMM ) );
-    }
-  }
-  else if ( featureType == QGis::Polygon )
-  {
-    double area = geom->area();
-    if ( area >= 0.0 )
-    {
-      return ( sqrt( area ) >= ( minSize * mapUnitsPerMM ) );
-    }
-  }
-  return true; //should never be reached. Return true in this case to label such geometries anyway.
+  return QgsPalLabeling::checkMinimumSizeMM( ct, geom, minSize );
 }
 
 void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString text, double& labelX, double& labelY, QgsFeature* f )
@@ -1764,7 +1731,12 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
 
   const GEOSGeometry* geos_geom = 0;
   QScopedPointer<QgsGeometry> preparedGeom;
-  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, doClip ? extentGeom : 0 ) )
+
+  if ( minFeatureSize > 0 && !checkMinimumSizeMM( context, geom, minFeatureSize ) )
+  {
+    return;
+  }
+  else if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, doClip ? extentGeom : 0 ) )
   {
     preparedGeom.reset( QgsPalLabeling::prepareGeometry( geom, context, ct, minFeatureSize, doClip ? extentGeom : 0 ) );
     if ( !preparedGeom.data() )
@@ -3452,11 +3424,6 @@ QgsGeometry* QgsPalLabeling::prepareGeometry( const QgsGeometry* geometry, const
     }
   }
 
-  if ( minSize > 0 && !checkMinimumSizeMM( context, geom, minSize ) )
-  {
-    return 0;
-  }
-
   // Rotate the geometry if needed, before clipping
   const QgsMapToPixel& m2p = context.mapToPixel();
   if ( !qgsDoubleNear( m2p.mapRotation(), 0 ) )
@@ -3513,7 +3480,7 @@ QgsGeometry* QgsPalLabeling::prepareGeometry( const QgsGeometry* geometry, const
   return clonedGeometry.take();
 }
 
-bool QgsPalLabeling::checkMinimumSizeMM( const QgsRenderContext& context, QgsGeometry* geom, double minSize )
+bool QgsPalLabeling::checkMinimumSizeMM( const QgsRenderContext& context, const QgsGeometry* geom, double minSize )
 {
   if ( minSize <= 0 )
   {

@@ -558,7 +558,7 @@ class CORE_EXPORT QgsPalLayerSettings
 
     /**Checks if a feature is larger than a minimum size (in mm)
     @return true if above size, false if below*/
-    bool checkMinimumSizeMM( const QgsRenderContext& ct, QgsGeometry* geom, double minSize ) const;
+    bool checkMinimumSizeMM( const QgsRenderContext& ct, const QgsGeometry* geom, double minSize ) const;
 
 
     QMap<DataDefinedProperties, QVariant> dataDefinedValues;
@@ -882,7 +882,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
      * @returns true if geometry exceeds minimum size
      * @note added in QGIS 2.9
      */
-    static bool checkMinimumSizeMM( const QgsRenderContext &context, QgsGeometry *geom, double minSize );
+    static bool checkMinimumSizeMM( const QgsRenderContext &context, const QgsGeometry *geom, double minSize );
 
     // hashtable of layer settings, being filled during labeling (key = layer ID)
     QHash<QString, QgsPalLayerSettings> mActiveLayers;
@@ -906,6 +906,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
 
     QgsLabelingResults* mResults;
 
+    friend class QgsPalLayerSettings;
 };
 Q_NOWARN_DEPRECATED_POP
 
