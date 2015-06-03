@@ -868,12 +868,15 @@ QString QgsPostgresConn::postgisVersion()
 
   mGotPostgisVersion = true;
 
-  QgsDebugMsg( "Checking for pointcloud support" );
-  result = PQexec( "SELECT oid FROM pg_catalog.pg_extension WHERE extname = 'pointcloud_postgis'", false );
-  if ( result.PQntuples() == 1 )
+  if ( mPostgresqlVersion >= 90000 )
   {
-    mPointcloudAvailable = true;
-    QgsDebugMsg( "Pointcloud support available!" );
+    QgsDebugMsg( "Checking for pointcloud support" );
+    result = PQexec( "SELECT oid FROM pg_catalog.pg_extension WHERE extname = 'pointcloud_postgis'", false );
+    if ( result.PQntuples() == 1 )
+    {
+      mPointcloudAvailable = true;
+      QgsDebugMsg( "Pointcloud support available!" );
+    }
   }
 
   return mPostgisVersionInfo;
