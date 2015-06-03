@@ -20,7 +20,7 @@ QgsLoadStyleFromDBDialog::QgsLoadStyleFromDBDialog( QWidget *parent )
 {
   setupUi( this );
   setWindowTitle( "Load style from database" );
-  mSelectedStyleId = tr( "" );
+  mSelectedStyleId = "";
 
   mLoadButton->setDisabled( true );
   mRelatedTable->setEditTriggers( QTableWidget::NoEditTriggers );
@@ -35,10 +35,8 @@ QgsLoadStyleFromDBDialog::QgsLoadStyleFromDBDialog( QWidget *parent )
 
   connect( mRelatedTable, SIGNAL( cellClicked( int, int ) ), this, SLOT( cellSelectedRelatedTable( int ) ) );
   connect( mOthersTable, SIGNAL( cellClicked( int, int ) ), this, SLOT( cellSelectedOthersTable( int ) ) );
-  connect( mRelatedTable, SIGNAL( doubleClicked( QModelIndex ) ),
-           this, SLOT( accept() ) );
-  connect( mOthersTable, SIGNAL( doubleClicked( QModelIndex ) ),
-           this, SLOT( accept() ) );
+  connect( mRelatedTable, SIGNAL( doubleClicked( QModelIndex ) ), this, SLOT( accept() ) );
+  connect( mOthersTable, SIGNAL( doubleClicked( QModelIndex ) ), this, SLOT( accept() ) );
   connect( mCancelButton, SIGNAL( clicked() ), this, SLOT( reject() ) );
   connect( mLoadButton, SIGNAL( clicked() ), this, SLOT( accept() ) );
 
@@ -59,16 +57,13 @@ QgsLoadStyleFromDBDialog::~QgsLoadStyleFromDBDialog()
 
 void QgsLoadStyleFromDBDialog::initializeLists( QStringList ids, QStringList names, QStringList descriptions, int sectionLimit )
 {
-  mIds = ids;
-  mNames = names;
-  mDescriptions = descriptions;
   mSectionLimit = sectionLimit;
-  int relatedTableNOfCols = ( sectionLimit > 0 ) ? 2 : 1;
-  int othersTableNOfCols = ( ids.count() - sectionLimit > 0 ) ? 2 : 1;
+  int relatedTableNOfCols = sectionLimit > 0 ? 2 : 1;
+  int othersTableNOfCols = ids.count() - sectionLimit > 0 ? 2 : 1;
   QString twoColsHeader( "Name;Description" );
   QString oneColsHeader( "No styles found in the database" );
-  QString relatedTableHeader = ( relatedTableNOfCols == 1 ) ? oneColsHeader : twoColsHeader;
-  QString othersTableHeader = ( othersTableNOfCols == 1 ) ? oneColsHeader : twoColsHeader;
+  QString relatedTableHeader = relatedTableNOfCols == 1 ? oneColsHeader : twoColsHeader;
+  QString othersTableHeader = othersTableNOfCols == 1 ? oneColsHeader : twoColsHeader;
 
   mRelatedTable->setColumnCount( relatedTableNOfCols );
   mOthersTable->setColumnCount( othersTableNOfCols );
@@ -76,18 +71,22 @@ void QgsLoadStyleFromDBDialog::initializeLists( QStringList ids, QStringList nam
   mOthersTable->setHorizontalHeaderLabels( othersTableHeader.split( ";" ) );
   mRelatedTable->setRowCount( sectionLimit );
   mOthersTable->setRowCount( ids.count() - sectionLimit );
-  mRelatedTable->setDisabled(( relatedTableNOfCols == 1 ) );
-  mOthersTable->setDisabled(( othersTableNOfCols == 1 ) );
+  mRelatedTable->setDisabled( relatedTableNOfCols == 1 );
+  mOthersTable->setDisabled( othersTableNOfCols == 1 );
 
   for ( int i = 0; i < sectionLimit; i++ )
   {
-    mRelatedTable->setItem( i, 0, new QTableWidgetItem( names.value( i, "" ) ) );
+    QTableWidgetItem *item = new QTableWidgetItem( names.value( i, "" ) );
+    item->setData( Qt::UserRole, ids[i] );
+    mRelatedTable->setItem( i, 0, item );
     mRelatedTable->setItem( i, 1, new QTableWidgetItem( descriptions.value( i, "" ) ) );
   }
   for ( int i = sectionLimit; i < ids.count(); i++ )
   {
     int j = i - sectionLimit;
-    mOthersTable->setItem( j, 0, new QTableWidgetItem( names.value( i, "" ) ) );
+    QTableWidgetItem *item = new QTableWidgetItem( names.value( i, "" ) );
+    item->setData( Qt::UserRole, ids[i] );
+    mOthersTable->setItem( j, 0, item );
     mOthersTable->setItem( j, 1, new QTableWidgetItem( descriptions.value( i, "" ) ) );
   }
 }
@@ -100,11 +99,11 @@ QString QgsLoadStyleFromDBDialog::getSelectedStyleId()
 void QgsLoadStyleFromDBDialog::cellSelectedRelatedTable( int r )
 {
   mLoadButton->setEnabled( true );
-  mSelectedStyleId = mIds.value( r );
+  mSelectedStyleId = mRelatedTable->item( r, 0 )->data( Qt::UserRole ).toString();
 }
 
 void QgsLoadStyleFromDBDialog::cellSelectedOthersTable( int r )
 {
   mLoadButton->setEnabled( true );
-  mSelectedStyleId = mIds.value( r + mSectionLimit );
+  mSelectedStyleId = mOthersTable->item( r, 0 )->data( Qt::UserRole ).toString();
 }

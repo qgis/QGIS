@@ -3400,6 +3400,8 @@ QStringList QgsPalLabeling::splitToGraphemes( const QString &text )
 
 QgsGeometry* QgsPalLabeling::prepareGeometry( const QgsGeometry* geometry, const QgsRenderContext& context, const QgsCoordinateTransform* ct, double minSize, QgsGeometry* clipGeometry )
 {
+  Q_UNUSED( minSize );
+
   if ( !geometry )
   {
     return 0;
