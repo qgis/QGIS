@@ -11,3 +11,5 @@ None
 <pre> 'A' LIKE 'A'  &rarr; returns 1 </pre>
 <pre> 'A' LIKE 'a'  &rarr; returns 0 </pre>
 <pre> 'A' LIKE 'B'  &rarr; returns 0 </pre>
+<pre> 'ABC' LIKE 'B'  &rarr; returns 0 </pre>
+<pre> 'ABC' LIKE '%B%'  &rarr; returns 1 </pre>
