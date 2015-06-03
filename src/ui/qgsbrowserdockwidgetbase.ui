@@ -220,7 +220,10 @@
      <normaloff>:/images/themes/default/mActionFilter2.svg</normaloff>:/images/themes/default/mActionFilter2.svg</iconset>
    </property>
    <property name="text">
-    <string>Filter browser</string>
+    <string>Filter Browser</string>
+   </property>
+   <property name="iconText">
+    <string>Filter Browser</string>
    </property>
    <property name="toolTip">
     <string>Filter Browser</string>

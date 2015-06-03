@@ -1356,7 +1356,7 @@
   </action>
   <action name="mActionLayerSubsetString">
    <property name="text">
-    <string>Query...</string>
+    <string>Filter...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+F</string>
