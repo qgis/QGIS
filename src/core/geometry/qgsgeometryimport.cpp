@@ -21,6 +21,7 @@
 #include "qgscurvepolygonv2.h"
 #include "qgspointv2.h"
 #include "qgspolygonv2.h"
+#include "qgscurvepolygonv2.h"
 #include "qgslinestringv2.h"
 #include "qgsmulticurvev2.h"
 #include "qgsmultilinestringv2.h"
@@ -229,6 +230,12 @@ QgsAbstractGeometryV2* QgsGeometryImport::geomFromWkbType( QgsWKBTypes::Type t )
       return new QgsMultiPolygonV2();
     case QgsWKBTypes::MultiPoint:
       return new QgsMultiPointV2();
+    case QgsWKBTypes::MultiCurve:
+      return new QgsMultiCurveV2();
+    case QgsWKBTypes::MultiSurface:
+      return new QgsMultiSurfaceV2();
+    case QgsWKBTypes::GeometryCollection:
+      return new QgsGeometryCollectionV2();
     default:
       return 0;
   }

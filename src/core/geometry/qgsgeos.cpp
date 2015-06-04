@@ -1009,12 +1009,42 @@ GEOSGeometry* QgsGeos::asGeos( const QgsAbstractGeometryV2* geom )
     {
       return 0;
     }
-    GEOSGeometry **geomarr = new GEOSGeometry*[ c->numGeometries()];
-    for ( int i = 0; i < c->numGeometries(); ++i )
+
+    try
     {
-      geomarr[i] = asGeos( c->geometryN( i ) );
+
+      //GEOSGeometry **geomarr = new GEOSGeometry*[ c->numGeometries()];
+      QList< GEOSGeometry* > validGeoms;
+      GEOSGeometry* geosGeom = 0;
+      for ( int i = 0; i < c->numGeometries(); ++i )
+      {
+        geosGeom = asGeos( c->geometryN( i ) );
+        if ( geosGeom )
+        {
+          validGeoms.append( geosGeom );
+        }
+      }
+
+      if ( validGeoms.size() < 1 )
+      {
+        return 0;
+      }
+
+      GEOSGeometry **geomarr = new GEOSGeometry*[ validGeoms.size()];
+      for ( int i = 0; i < validGeoms.size(); ++i )
+      {
+        geomarr[i] = validGeoms.at( i );
+      }
+
+      return GEOSGeom_createCollection_r( geosinit.ctxt, geosType, geomarr, validGeoms.size() );
     }
-    return GEOSGeom_createCollection_r( geosinit.ctxt, geosType, geomarr, c->numGeometries() ); //todo: geos exceptions
+
+    catch ( GEOSException &e )
+    {
+      Q_UNUSED( e );
+      //delete?
+      return 0;
+    }
   }
 
   return 0;
@@ -1415,6 +1445,10 @@ GEOSGeometry* QgsGeos::createGeosPolygon( const QgsAbstractGeometryV2* poly )
     return 0;
 
   const QgsCurveV2* exteriorRing = polygon->exteriorRing();
+  if ( !exteriorRing )
+  {
+    return 0;
+  }
   GEOSGeometry* exteriorRingGeos = GEOSGeom_createLinearRing_r( geosinit.ctxt, createCoordinateSequence( exteriorRing ) );
 
   int nHoles = polygon->numInteriorRings();
