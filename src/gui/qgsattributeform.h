@@ -164,6 +164,11 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      */
     void resetValues();
 
+    /**
+     * reload current feature
+     */
+    void refreshFeature();
+
   private slots:
     void onAttributeChanged( const QVariant& value );
     void onAttributeAdded( int idx );
