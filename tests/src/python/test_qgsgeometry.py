@@ -1103,6 +1103,11 @@ class TestQgsGeometry(TestCase):
         bb = polygon.boundingBox()
         assert expbb == bb, "Expected:\n%s\nGot:\n%s\n" % (expbb.toString(), bb.toString())
 
+        # NULL
+        points = []
+        line = QgsGeometry.fromPolyline(points)
+        assert line.boundingBox().isNull()
+
     def testAddPart(self):
         #   2-3 6-+-7
         #   | | |   |
