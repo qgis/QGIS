@@ -77,6 +77,9 @@ void QgsRectangle::set( double xmin_, double ymin_, double xmax_, double ymax_ )
 
 void QgsRectangle::normalize()
 {
+  if ( isNull() )
+    return;
+
   if ( xmin > xmax )
   {
     std::swap( xmin, xmax );

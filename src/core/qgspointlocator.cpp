@@ -709,8 +709,8 @@ void QgsPointLocator::destroyIndex()
 
   mIsEmptyLayer = false;
 
-  foreach ( QgsGeometry* g, mGeoms )
-    delete g;
+  qDeleteAll( mGeoms );
+
   mGeoms.clear();
 }
 
@@ -743,9 +743,13 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
       }
     }
 
-    SpatialIndex::Region r( rect2region( f.constGeometry()->boundingBox() ) );
-    mRTree->insertData( 0, 0, r, f.id() );
-    mGeoms[fid] = new QgsGeometry( *f.constGeometry() );
+    QgsRectangle bbox = f.constGeometry()->boundingBox();
+    if ( !bbox.isNull() )
+    {
+      SpatialIndex::Region r( rect2region( bbox ) );
+      mRTree->insertData( 0, 0, r, f.id() );
+      mGeoms[fid] = new QgsGeometry( *f.constGeometry() );
+    }
   }
 }
 
