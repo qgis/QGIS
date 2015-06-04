@@ -115,9 +115,11 @@ class ANALYSIS_EXPORT QgsRasterMatrix
 
     /**+,-,*,/,^,<,>,<=,>=,=,!=, and, or*/
     bool twoArgumentOperation( TwoArgOperator op, const QgsRasterMatrix& other );
+    double calculateTwoArgumentOp( TwoArgOperator op, double arg1, double arg2 ) const;
+
     /*sqrt, sin, cos, tan, asin, acos, atan*/
     bool oneArgumentOperation( OneArgOperator op );
-    bool testPowerValidity( double base, double power );
+    bool testPowerValidity( double base, double power ) const;
 };
 
 #endif // QGSRASTERMATRIX_H

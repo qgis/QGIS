@@ -264,6 +264,54 @@ bool QgsRasterMatrix::oneArgumentOperation( OneArgOperator op )
   return true;
 }
 
+double QgsRasterMatrix::calculateTwoArgumentOp( TwoArgOperator op, double arg1, double arg2 ) const
+{
+  switch ( op )
+  {
+    case opPLUS:
+      return arg1 + arg2;
+    case opMINUS:
+      return arg1 - arg2;
+    case opMUL:
+      return arg1 * arg2;
+    case opDIV:
+      if ( arg2 == 0 )
+      {
+        return mNodataValue;
+      }
+      else
+      {
+        return arg1 / arg2;
+      }
+    case opPOW:
+      if ( !testPowerValidity( arg1, arg2 ) )
+      {
+        return mNodataValue;
+      }
+      else
+      {
+        return qPow( arg1, arg2 );
+      }
+    case opEQ:
+      return ( arg1 == arg2 ? 1.0 : 0.0 );
+    case opNE:
+      return ( arg1 == arg2 ? 0.0 : 1.0 );
+    case opGT:
+      return ( arg1 > arg2 ? 1.0 : 0.0 );
+    case opLT:
+      return ( arg1 < arg2 ? 1.0 : 0.0 );
+    case opGE:
+      return ( arg1 >= arg2 ? 1.0 : 0.0 );
+    case opLE:
+      return ( arg1 <= arg2 ? 1.0 : 0.0 );
+    case opAND:
+      return ( arg1 && arg2 ? 1.0 : 0.0 );
+    case opOR:
+      return ( arg1 || arg2 ? 1.0 : 0.0 );
+  }
+  return mNodataValue;
+}
+
 bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMatrix& other )
 {
   if ( isNumber() && other.isNumber() ) //operation on two 1x1 matrices
@@ -272,63 +320,10 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
     if ( mData[0] == mNodataValue || other.number() == other.nodataValue() )
     {
       mData[0] = mNodataValue;
-      return true;
     }
-    switch ( op )
+    else
     {
-      case opPLUS:
-        mData[0] = number() + other.number();
-        break;
-      case opMINUS:
-        mData[0] = number() - other.number();
-        break;
-      case opMUL:
-        mData[0] = number() * other.number();
-        break;
-      case opDIV:
-        if ( other.number() == 0 )
-        {
-          mData[0] = mNodataValue;
-        }
-        else
-        {
-          mData[0] = number() / other.number();
-        }
-        break;
-      case opPOW:
-        if ( !testPowerValidity( mData[0], other.number() ) )
-        {
-          mData[0] = mNodataValue;
-        }
-        else
-        {
-          mData[0] = qPow( mData[0], other.number() );
-        }
-        break;
-      case opEQ:
-        mData[0] = mData[0] == other.number() ? 1.0 : 0.0;
-        break;
-      case opNE:
-        mData[0] = mData[0] == other.number() ? 0.0 : 1.0;
-        break;
-      case opGT:
-        mData[0] = mData[0] > other.number() ? 1.0 : 0.0;
-        break;
-      case opLT:
-        mData[0] = mData[0] < other.number() ? 1.0 : 0.0;
-        break;
-      case opGE:
-        mData[0] = mData[0] >= other.number() ? 1.0 : 0.0;
-        break;
-      case opLE:
-        mData[0] = mData[0] <= other.number() ? 1.0 : 0.0;
-        break;
-      case opAND:
-        mData[0] = mData[0] && other.number() ? 1.0 : 0.0;
-        break;
-      case opOR:
-        mData[0] = mData[0] || other.number() ? 1.0 : 0.0;
-        break;
+      mData[0] = calculateTwoArgumentOp( op, mData[0], other.number() );
     }
     return true;
   }
@@ -349,62 +344,7 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
       }
       else
       {
-        switch ( op )
-        {
-          case opPLUS:
-            mData[i] = value1 + value2;
-            break;
-          case opMINUS:
-            mData[i] = value1 - value2;
-            break;
-          case opMUL:
-            mData[i] = value1 * value2;
-            break;
-          case opDIV:
-            if ( value2 == 0 )
-            {
-              mData[i] = mNodataValue;
-            }
-            else
-            {
-              mData[i] = value1 / value2;
-            }
-            break;
-          case opPOW:
-            if ( !testPowerValidity( value1, value2 ) )
-            {
-              mData[i] = mNodataValue;
-            }
-            else
-            {
-              mData[i] = pow( value1, value2 );
-            }
-            break;
-          case opEQ:
-            mData[i] = value1 == value2 ? 1.0 : 0.0;
-            break;
-          case opNE:
-            mData[i] = value1 == value2 ? 0.0 : 1.0;
-            break;
-          case opGT:
-            mData[i] = value1 > value2 ? 1.0 : 0.0;
-            break;
-          case opLT:
-            mData[i] = value1 < value2 ? 1.0 : 0.0;
-            break;
-          case opGE:
-            mData[i] = value1 >= value2 ? 1.0 : 0.0;
-            break;
-          case opLE:
-            mData[i] = value1 <= value2 ? 1.0 : 0.0;
-            break;
-          case opAND:
-            mData[i] = value1 && value2 ? 1.0 : 0.0;
-            break;
-          case opOR:
-            mData[i] = value1 || value2 ? 1.0 : 0.0;
-            break;
-        }
+        mData[i] = calculateTwoArgumentOp( op, value1, value2 );
       }
     }
     return true;
@@ -437,62 +377,7 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
         continue;
       }
 
-      switch ( op )
-      {
-        case opPLUS:
-          mData[i] =  value + matrix[i];
-          break;
-        case opMINUS:
-          mData[i] = value - matrix[i];
-          break;
-        case opMUL:
-          mData[i] =  value * matrix[i];
-          break;
-        case opDIV:
-          if ( matrix[i] == 0 )
-          {
-            mData[i] = mNodataValue;
-          }
-          else
-          {
-            mData[i] = value / matrix[i] ;
-          }
-          break;
-        case opPOW:
-          if ( !testPowerValidity( value, matrix[i] ) )
-          {
-            mData[i] = mNodataValue;
-          }
-          else
-          {
-            mData[i] = qPow( value, matrix[i] );
-          }
-          break;
-        case opEQ:
-          mData[i] = value == matrix[i] ? 1.0 : 0.0;
-          break;
-        case opNE:
-          mData[i] = value == matrix[i] ? 0.0 : 1.0;
-          break;
-        case opGT:
-          mData[i] = value > matrix[i] ? 1.0 : 0.0;
-          break;
-        case opLT:
-          mData[i] = value < matrix[i] ? 1.0 : 0.0;
-          break;
-        case opGE:
-          mData[i] = value >= matrix[i] ? 1.0 : 0.0;
-          break;
-        case opLE:
-          mData[i] = value <= matrix[i] ? 1.0 : 0.0;
-          break;
-        case opAND:
-          mData[i] = value && matrix[i] ? 1.0 : 0.0;
-          break;
-        case opOR:
-          mData[i] = value || matrix[i] ? 1.0 : 0.0;
-          break;
-      }
+      mData[i] = calculateTwoArgumentOp( op, value, matrix[i] );
     }
     return true;
   }
@@ -517,68 +402,13 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
         continue;
       }
 
-      switch ( op )
-      {
-        case opPLUS:
-          mData[i] = mData[i] + value;
-          break;
-        case opMINUS:
-          mData[i] = mData[i] - value;
-          break;
-        case opMUL:
-          mData[i] = mData[i] * value;
-          break;
-        case opDIV:
-          if ( value == 0 )
-          {
-            mData[i] = mNodataValue;
-          }
-          else
-          {
-            mData[i] = mData[i] / value;
-          }
-          break;
-        case opPOW:
-          if ( !testPowerValidity( mData[i], value ) )
-          {
-            mData[i] = mNodataValue;
-          }
-          else
-          {
-            mData[i] = qPow( mData[i], value );
-          }
-          break;
-        case opEQ:
-          mData[i] = mData[i] == value ? 1.0 : 0.0;
-          break;
-        case opNE:
-          mData[i] = mData[i] == value ? 0.0 : 1.0;
-          break;
-        case opGT:
-          mData[i] = mData[i] > value ? 1.0 : 0.0;
-          break;
-        case opLT:
-          mData[i] = mData[i] < value ? 1.0 : 0.0;
-          break;
-        case opGE:
-          mData[i] = mData[i] >= value ? 1.0 : 0.0;
-          break;
-        case opLE:
-          mData[i] = mData[i] <= value ? 1.0 : 0.0;
-          break;
-        case opAND:
-          mData[i] = mData[i] && value ? 1.0 : 0.0;
-          break;
-        case opOR:
-          mData[i] = mData[i] || value ? 1.0 : 0.0;
-          break;
-      }
+      mData[i] = calculateTwoArgumentOp( op, mData[i], value );
     }
     return true;
   }
 }
 
-bool QgsRasterMatrix::testPowerValidity( double base, double power )
+bool QgsRasterMatrix::testPowerValidity( double base, double power ) const
 {
   if (( base == 0 && power < 0 ) || ( base < 0 && ( power - floor( power ) ) > 0 ) )
   {
