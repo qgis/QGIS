@@ -501,7 +501,7 @@
                   </sizepolicy>
                  </property>
                  <property name="title">
-                  <string>Feature subset</string>
+                  <string>Provider feature filter</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_4">
                   <item row="1" column="1">

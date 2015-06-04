@@ -20,6 +20,11 @@
 
 #include "qgscurvev2.h"
 
+/**\ingroup core
+ * \class QgsCompoundCurveV2
+ * \brief Compound curve geometry type
+ * \note added in QGIS 2.10
+ */
 class CORE_EXPORT QgsCompoundCurveV2: public QgsCurveV2
 {
   public:
@@ -28,55 +33,71 @@ class CORE_EXPORT QgsCompoundCurveV2: public QgsCurveV2
     QgsCompoundCurveV2& operator=( const QgsCompoundCurveV2& curve );
     ~QgsCompoundCurveV2();
 
-    virtual QString geometryType() const { return "CompoundCurve"; }
-    virtual int dimension() const { return 1; }
-    virtual QgsAbstractGeometryV2* clone() const;
-    virtual void clear();
+    virtual QString geometryType() const override { return "CompoundCurve"; }
+    virtual int dimension() const override { return 1; }
+    virtual QgsAbstractGeometryV2* clone() const override;
+    virtual void clear() override;
 
-    virtual QgsRectangle calculateBoundingBox() const;
+    virtual QgsRectangle calculateBoundingBox() const override;
 
-    virtual bool fromWkb( const unsigned char* wkb );
-    virtual bool fromWkt( const QString& wkt );
+    virtual bool fromWkb( const unsigned char* wkb ) override;
+    virtual bool fromWkt( const QString& wkt ) override;
 
-    int wkbSize() const;
-    unsigned char* asWkb( int& binarySize ) const;
-    QString asWkt( int precision = 17 ) const;
-    QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
-    QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
-    QString asJSON( int precision = 17 ) const;
+    int wkbSize() const override;
+    unsigned char* asWkb( int& binarySize ) const override;
+    QString asWkt( int precision = 17 ) const override;
+    QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
+    QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const override;
+    QString asJSON( int precision = 17 ) const override;
 
     //curve interface
-    virtual double length() const;
-    virtual QgsPointV2 startPoint() const;
-    virtual QgsPointV2 endPoint() const;
-    virtual void points( QList<QgsPointV2>& pts ) const;
-    virtual int numPoints() const;
-    virtual QgsLineStringV2* curveToLine() const;
+    virtual double length() const override;
+    virtual QgsPointV2 startPoint() const override;
+    virtual QgsPointV2 endPoint() const override;
+    virtual void points( QList<QgsPointV2>& pts ) const override;
+    virtual int numPoints() const override;
+    virtual QgsLineStringV2* curveToLine() const override;
+
+    /** Returns the number of curves in the geometry.
+     */
     int nCurves() const { return mCurves.size(); }
+
+    /** Returns the curve at the specified index.
+     */
     const QgsCurveV2* curveAt( int i ) const;
 
-    /**Adds curve (takes ownership)*/
+    /** Adds a curve to the geometr (takes ownership)
+     */
     void addCurve( QgsCurveV2* c );
+
+    /** Removes a curve from the geometry.
+     * @param i index of curve to remove
+     */
     void removeCurve( int i );
+
+    /** Adds a vertex to the end of the geometry.
+     */
     void addVertex( const QgsPointV2& pt );
 
-    void draw( QPainter& p ) const;
-    void transform( const QgsCoordinateTransform& ct );
-    void transform( const QTransform& t );
-    void addToPainterPath( QPainterPath& path ) const;
-    void drawAsPolygon( QPainter& p ) const;
+    void draw( QPainter& p ) const override;
+    void transform( const QgsCoordinateTransform& ct ) override;
+    void transform( const QTransform& t ) override;
+    void addToPainterPath( QPainterPath& path ) const override;
+    void drawAsPolygon( QPainter& p ) const override;
 
-    virtual bool insertVertex( const QgsVertexId& position, const QgsPointV2& vertex );
-    virtual bool moveVertex( const QgsVertexId& position, const QgsPointV2& newPos );
-    virtual bool deleteVertex( const QgsVertexId& position );
+    virtual bool insertVertex( const QgsVertexId& position, const QgsPointV2& vertex ) override;
+    virtual bool moveVertex( const QgsVertexId& position, const QgsPointV2& newPos ) override;
+    virtual bool deleteVertex( const QgsVertexId& position ) override;
 
-    virtual double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const;
-    bool pointAt( int i, QgsPointV2& vertex, QgsVertexId::VertexType& type ) const;
+    virtual double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const override;
+    bool pointAt( int i, QgsPointV2& vertex, QgsVertexId::VertexType& type ) const override;
 
-    void sumUpArea( double& sum ) const;
+    void sumUpArea( double& sum ) const override;
 
-    /**Appends first point if not already closed*/
+    /** Appends first point if not already closed.*/
     void close();
+
+    bool hasCurvedSegments() const override;
 
   private:
     QList< QgsCurveV2* > mCurves;

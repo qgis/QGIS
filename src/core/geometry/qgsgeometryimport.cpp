@@ -21,6 +21,7 @@
 #include "qgscurvepolygonv2.h"
 #include "qgspointv2.h"
 #include "qgspolygonv2.h"
+#include "qgscurvepolygonv2.h"
 #include "qgslinestringv2.h"
 #include "qgsmulticurvev2.h"
 #include "qgsmultilinestringv2.h"
@@ -42,42 +43,6 @@ QgsAbstractGeometryV2* QgsGeometryImport::geomFromWkb( const unsigned char* wkb 
   QgsAbstractGeometryV2* geom = 0;
 
   geom = geomFromWkbType( QgsWKBTypes::Type( type ) );
-
-#if 0
-  type = QgsWKBTypes::flatType( QgsWKBTypes::Type( type ) );
-  switch ( type )
-  {
-    case QgsWKBTypes::Point:
-      geom = new QgsPointV2();
-      break;
-    case QgsWKBTypes::LineString:
-      geom = new QgsLineStringV2();
-      break;
-    case QgsWKBTypes::CircularString:
-      geom = new QgsCircularStringV2();
-      break;
-    case QgsWKBTypes::CompoundCurve:
-      geom = new QgsCompoundCurveV2();
-      break;
-    case QgsWKBTypes::Polygon:
-      geom = new QgsPolygonV2();
-      break;
-    case QgsWKBTypes::CurvePolygon:
-      geom = new QgsCurvePolygonV2();
-      break;
-    case QgsWKBTypes::MultiLineString:
-      geom = new QgsMultiLineStringV2();
-      break;
-    case QgsWKBTypes::MultiPolygon:
-      geom = new QgsMultiPolygonV2();
-      break;
-    case QgsWKBTypes::MultiPoint:
-      geom = new QgsMultiPointV2();
-      break;
-    default:
-      geom = 0;
-  }
-#endif
 
   if ( geom )
   {
@@ -101,7 +66,7 @@ QgsAbstractGeometryV2* QgsGeometryImport::geomFromWkt( const QString& text )
   {
     geom = new QgsCircularStringV2();
   }
-  else if ( text.startsWith( "CompoundCurve" ), Qt::CaseInsensitive )
+  else if ( text.startsWith( "CompoundCurve" , Qt::CaseInsensitive ) )
   {
     geom = new QgsCompoundCurveV2();
   }
@@ -140,7 +105,10 @@ QgsAbstractGeometryV2* QgsGeometryImport::geomFromWkt( const QString& text )
 
   if ( geom )
   {
-    geom->fromWkt( text );
+    if ( !geom->fromWkt( text ) )
+    {
+      delete geom; return 0;
+    }
   }
   return geom;
 }
@@ -262,6 +230,12 @@ QgsAbstractGeometryV2* QgsGeometryImport::geomFromWkbType( QgsWKBTypes::Type t )
       return new QgsMultiPolygonV2();
     case QgsWKBTypes::MultiPoint:
       return new QgsMultiPointV2();
+    case QgsWKBTypes::MultiCurve:
+      return new QgsMultiCurveV2();
+    case QgsWKBTypes::MultiSurface:
+      return new QgsMultiSurfaceV2();
+    case QgsWKBTypes::GeometryCollection:
+      return new QgsGeometryCollectionV2();
     default:
       return 0;
   }

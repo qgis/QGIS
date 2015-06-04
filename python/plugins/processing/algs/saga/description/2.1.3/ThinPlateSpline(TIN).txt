@@ -5,8 +5,9 @@ ParameterTableField|FIELD|Attribute|SHAPES|-1|False
 Hardcoded|-TARGET_DEFINITION 0
 ParameterNumber|REGULARISATION|Regularisation|0.0000|None|0.0001
 ParameterSelection|LEVEL|Neighbourhood|[0] immediate;[1] level 1;[2] level 2
-ParameterBoolean|FRAME          |Add Frame|True
+ParameterBoolean|FRAME|Add Frame|True
 Extent TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX
-ParameterNumber|USER_SIZE|Cellsize|None|None|100.0
-ParameterSelection|USER_FIT|Method|[0] nodes;[1] cells
-OutputRaster|USER_GRID|TIN
+ParameterNumber|TARGET_USER_SIZE|Cellsize|None|None|100.0
+ParameterSelection|TARGET_USER_FITS|Fit|[0] nodes;[1] cells
+ParameterRaster|TARGET_TEMPLATE|Target System|True
+OutputRaster|TARGET_OUT_GRID|Grid

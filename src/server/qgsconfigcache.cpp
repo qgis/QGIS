@@ -166,9 +166,12 @@ QDomDocument* QgsConfigCache::xmlDocument( const QString& filePath )
 
 void QgsConfigCache::removeChangedEntry( const QString& path )
 {
-  mXmlDocumentCache.remove( path );
   mWMSConfigCache.remove( path );
   mWFSConfigCache.remove( path );
   mWCSConfigCache.remove( path );
+
+  //xml document must be removed last, as other config cache destructors may require it
+  mXmlDocumentCache.remove( path );
+
   mFileSystemWatcher.removePath( path );
 }

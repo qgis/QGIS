@@ -137,7 +137,8 @@ void QgsRendererV2Widget::changeSymbolWidth()
       QList<QgsSymbolV2*>::iterator symbolIt = symbolList.begin();
       for ( ; symbolIt != symbolList.end(); ++symbolIt )
       {
-        dynamic_cast<QgsLineSymbolV2*>( *symbolIt )->setWidth( dlg.mSpinBox->value() );
+        if (( *symbolIt )->type() == QgsSymbolV2::Line )
+          static_cast<QgsLineSymbolV2*>( *symbolIt )->setWidth( dlg.mSpinBox->value() );
       }
     }
     refreshSymbolView();
@@ -161,7 +162,8 @@ void QgsRendererV2Widget::changeSymbolSize()
       QList<QgsSymbolV2*>::iterator symbolIt = symbolList.begin();
       for ( ; symbolIt != symbolList.end(); ++symbolIt )
       {
-        dynamic_cast<QgsMarkerSymbolV2*>( *symbolIt )->setSize( dlg.mSpinBox->value() );
+        if (( *symbolIt )->type() == QgsSymbolV2::Marker )
+          static_cast<QgsMarkerSymbolV2*>( *symbolIt )->setSize( dlg.mSpinBox->value() );
       }
     }
     refreshSymbolView();
@@ -185,7 +187,8 @@ void QgsRendererV2Widget::changeSymbolAngle()
       QList<QgsSymbolV2*>::iterator symbolIt = symbolList.begin();
       for ( ; symbolIt != symbolList.end(); ++symbolIt )
       {
-        dynamic_cast<QgsMarkerSymbolV2*>( *symbolIt )->setAngle( dlg.mSpinBox->value() );
+        if (( *symbolIt )->type() == QgsSymbolV2::Marker )
+          static_cast<QgsMarkerSymbolV2*>( *symbolIt )->setAngle( dlg.mSpinBox->value() );
       }
     }
     refreshSymbolView();

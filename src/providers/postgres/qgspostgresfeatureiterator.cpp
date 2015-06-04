@@ -297,11 +297,14 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
 
   if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
   {
+    QString curveToLineFn; // in postgis < 1.5 the st_curvetoline function does not exist
+    if ( mConn->majorVersion() >= 2 || ( mConn->majorVersion() == 1 && mConn->minorVersion() >= 5 ) )
+      curveToLineFn = "st_curvetoline"; // st_ prefix is always used
     whereClause += QString( " AND %1(%2(%3%4),%5)" )
                    .arg( mConn->majorVersion() < 2 ? "intersects" : "st_intersects" )
-                   .arg( mConn->majorVersion() < 2 ? "curvetoline" : "st_curvetoline" )
+                   .arg( curveToLineFn )
                    .arg( QgsPostgresConn::quotedIdentifier( mSource->mGeometryColumn ) )
-                   .arg( castToPatch ? "::geometry" : "" )
+                   .arg( castToGeometry ? "::geometry" : "" )
                    .arg( qBox );
   }
 
@@ -316,7 +319,7 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
 
   if ( mSource->mRequestedGeomType != QGis::WKBUnknown && mSource->mRequestedGeomType != mSource->mDetectedGeomType )
   {
-    whereClause += QString( " AND %1" ).arg( QgsPostgresConn::postgisTypeFilter( mSource->mGeometryColumn, mSource->mRequestedGeomType, castToGeometry ) );
+    whereClause += QString( " AND %1" ).arg( QgsPostgresConn::postgisTypeFilter( mSource->mGeometryColumn, ( QgsWKBTypes::Type )mSource->mRequestedGeomType, castToGeometry ) );
   }
 
   return whereClause;

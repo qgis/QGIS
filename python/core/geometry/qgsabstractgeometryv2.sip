@@ -112,4 +112,8 @@ class QgsAbstractGeometryV2
     /**Length for linear geometries,perimeter for area geometries*/
     virtual double length() const;
     virtual double area() const;
+
+    virtual bool hasCurvedSegments() const;
+    /**Returns a geometry without curves. Caller takes ownership*/
+    virtual QgsAbstractGeometryV2* segmentize() const /Factory/;
 };

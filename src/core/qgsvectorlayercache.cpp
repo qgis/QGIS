@@ -35,7 +35,8 @@ QgsVectorLayerCache::QgsVectorLayerCache( QgsVectorLayer* layer, int cacheSize, 
   setCacheAddedAttributes( true );
 
   connect( mLayer, SIGNAL( attributeDeleted( int ) ), SLOT( attributeDeleted( int ) ) );
-  connect( mLayer, SIGNAL( updatedFields() ), SLOT( updatedFields() ) );
+  connect( mLayer, SIGNAL( updatedFields() ), SLOT( invalidate() ) );
+  connect( mLayer, SIGNAL( dataChanged() ), SLOT( invalidate() ) );
   connect( mLayer, SIGNAL( attributeValueChanged( QgsFeatureId, int, const QVariant& ) ), SLOT( onAttributeValueChanged( QgsFeatureId, int, const QVariant& ) ) );
 }
 
@@ -231,9 +232,15 @@ void QgsVectorLayerCache::attributeAdded( int field )
 
 void QgsVectorLayerCache::attributeDeleted( int field )
 {
-  foreach ( QgsFeatureId fid, mCache.keys() )
+  QgsAttributeList attrs = mCachedAttributes;
+  mCachedAttributes.clear();
+
+  Q_FOREACH ( int attr, attrs )
   {
-    mCache[ fid ]->mFeature->deleteAttribute( field );
+    if ( attr < field )
+      mCachedAttributes << attr;
+    else if ( attr > field )
+      mCachedAttributes << attr - 1;
   }
 }
 
@@ -253,9 +260,10 @@ void QgsVectorLayerCache::layerDeleted()
   mLayer = NULL;
 }
 
-void QgsVectorLayerCache::updatedFields()
+void QgsVectorLayerCache::invalidate()
 {
   mCache.clear();
+  emit invalidated();
 }
 
 QgsFeatureIterator QgsVectorLayerCache::getFeatures( const QgsFeatureRequest &featureRequest )

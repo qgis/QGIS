@@ -198,10 +198,10 @@ class QgsAttributeTableModel : QAbstractTableModel
      */
     virtual void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
     /**
-     * Launched when a feature has been deleted
-     * @param fid feature id
+     * Launched when eatures have been deleted
+     * @param fids feature ids
      */
-    virtual void featureDeleted( QgsFeatureId fid );
+    virtual void featuresDeleted( QgsFeatureIds fid );
     /**
      * Launched when a feature has been added
      * @param fid feature id

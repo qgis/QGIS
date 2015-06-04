@@ -53,7 +53,7 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
   loadAttributes();
 
   connect( mLayerCache, SIGNAL( attributeValueChanged( QgsFeatureId, int, const QVariant& ) ), this, SLOT( attributeValueChanged( QgsFeatureId, int, const QVariant& ) ) );
-  connect( layer(), SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( featureDeleted( QgsFeatureId ) ) );
+  connect( layer(), SIGNAL( featuresDeleted( QgsFeatureIds ) ), this, SLOT( featuresDeleted( QgsFeatureIds ) ) );
   connect( layer(), SIGNAL( attributeDeleted( int ) ), this, SLOT( attributeDeleted( int ) ) );
   connect( layer(), SIGNAL( updatedFields() ), this, SLOT( updatedFields() ) );
   connect( layer(), SIGNAL( editCommandEnded() ), this, SLOT( editCommandEnded() ) );
@@ -73,29 +73,74 @@ bool QgsAttributeTableModel::loadFeatureAtId( QgsFeatureId fid ) const
   return mLayerCache->featureAtId( fid, mFeat );
 }
 
-void QgsAttributeTableModel::featureDeleted( QgsFeatureId fid )
+void QgsAttributeTableModel::featuresDeleted( QgsFeatureIds fids )
 {
-  QgsDebugMsgLevel( QString( "(%2) fid: %1" ).arg( fid ).arg( mFeatureRequest.filterType() ), 4 );
-  mFieldCache.remove( fid );
+  QList<int> rows;
 
-  int row = idToRow( fid );
-
-  if ( row != -1 )
+  Q_FOREACH ( const QgsFeatureId& fid, fids )
   {
-    beginRemoveRows( QModelIndex(), row, row );
-    removeRow( row );
-    endRemoveRows();
+    QgsDebugMsgLevel( QString( "(%2) fid: %1" ).arg( fid ).arg( mFeatureRequest.filterType() ), 4 );
+
+    int row = idToRow( fid );
+    if ( row != -1 )
+      rows << row;
   }
+
+  qSort( rows );
+
+  int lastRow = -1;
+  int beginRow = -1;
+  int currentRowCount = 0;
+  int removedRows = 0;
+  bool reset = false;
+
+  Q_FOREACH ( int row, rows )
+  {
+#if 0
+    qDebug() << "Row: " << row << ", begin " << beginRow << ", last " << lastRow << ", current " << currentRowCount << ", removed " << removedRows;
+#endif
+    if ( lastRow == -1 )
+    {
+      beginRow = row;
+    }
+
+    if ( row != lastRow + 1 && lastRow != -1 )
+    {
+      if ( rows.count() > 100 && currentRowCount < 10 )
+      {
+        reset = true;
+        break;
+      }
+      removeRows( beginRow - removedRows, currentRowCount );
+
+      beginRow = row;
+      removedRows += currentRowCount;
+      currentRowCount = 0;
+    }
+
+    currentRowCount++;
+
+    lastRow = row;
+  }
+
+  if ( !reset )
+    removeRows( beginRow - removedRows, currentRowCount );
+  else
+    resetModel();
 }
 
 bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &parent )
 {
-  Q_UNUSED( parent );
-  QgsDebugMsgLevel( QString( "remove %2 rows at %1 (rows %3, ids %4)" ).arg( row ).arg( count ).arg( mRowIdMap.size() ).arg( mIdRowMap.size() ), 3 );
+  beginRemoveRows( parent, row, row + count - 1 );
+#ifdef QGISDEBUG
+  if ( 3 > QgsLogger::debugLevel() )
+    QgsDebugMsgLevel( QString( "remove %2 rows at %1 (rows %3, ids %4)" ).arg( row ).arg( count ).arg( mRowIdMap.size() ).arg( mIdRowMap.size() ), 3 );
+#endif
 
   // clean old references
   for ( int i = row; i < row + count; i++ )
   {
+    mFieldCache.remove( mRowIdMap[i] );
     mIdRowMap.remove( mRowIdMap[ i ] );
     mRowIdMap.remove( i );
   }
@@ -111,19 +156,24 @@ bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &
   }
 
 #ifdef QGISDEBUG
-  QgsDebugMsgLevel( QString( "after removal rows %1, ids %2" ).arg( mRowIdMap.size() ).arg( mIdRowMap.size() ), 4 );
-  QgsDebugMsgLevel( "id->row", 4 );
-  for ( QHash<QgsFeatureId, int>::iterator it = mIdRowMap.begin(); it != mIdRowMap.end(); ++it )
-    QgsDebugMsgLevel( QString( "%1->%2" ).arg( FID_TO_STRING( it.key() ) ).arg( *it ), 4 );
+  if ( 4 > QgsLogger::debugLevel() )
+  {
+    QgsDebugMsgLevel( QString( "after removal rows %1, ids %2" ).arg( mRowIdMap.size() ).arg( mIdRowMap.size() ), 4 );
+    QgsDebugMsgLevel( "id->row", 4 );
+    for ( QHash<QgsFeatureId, int>::iterator it = mIdRowMap.begin(); it != mIdRowMap.end(); ++it )
+      QgsDebugMsgLevel( QString( "%1->%2" ).arg( FID_TO_STRING( it.key() ) ).arg( *it ), 4 );
 
-  QHash<QgsFeatureId, int>::iterator idit;
+    QHash<QgsFeatureId, int>::iterator idit;
 
-  QgsDebugMsgLevel( "row->id", 4 );
-  for ( QHash<int, QgsFeatureId>::iterator it = mRowIdMap.begin(); it != mRowIdMap.end(); ++it )
-    QgsDebugMsgLevel( QString( "%1->%2" ).arg( it.key() ).arg( FID_TO_STRING( *it ) ), 4 );
+    QgsDebugMsgLevel( "row->id", 4 );
+    for ( QHash<int, QgsFeatureId>::iterator it = mRowIdMap.begin(); it != mRowIdMap.end(); ++it )
+      QgsDebugMsgLevel( QString( "%1->%2" ).arg( it.key() ).arg( FID_TO_STRING( *it ) ), 4 );
+  }
 #endif
 
   Q_ASSERT( mRowIdMap.size() == mIdRowMap.size() );
+
+  endRemoveRows();
 
   return true;
 }
@@ -179,9 +229,7 @@ void QgsAttributeTableModel::layerDeleted()
 {
   QgsDebugMsg( "entered." );
 
-  beginRemoveRows( QModelIndex(), 0, rowCount() - 1 );
   removeRows( 0, rowCount() );
-  endRemoveRows();
 
   mAttributeWidgetCaches.clear();
   mAttributes.clear();
@@ -223,7 +271,7 @@ void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, c
         if ( mIdRowMap.contains( fid ) )
         {
           // Feature changed such, that it is no longer shown
-          featureDeleted( fid );
+          featuresDeleted( QgsFeatureIds() << fid );
         }
         // else: we don't care
       }
@@ -291,9 +339,7 @@ void QgsAttributeTableModel::loadLayer()
 
   if ( rowCount() != 0 )
   {
-    beginRemoveRows( QModelIndex(), 0, rowCount() - 1 );
     removeRows( 0, rowCount() );
-    endRemoveRows();
   }
 
   QgsFeatureIterator features = mLayerCache->getFeatures( mFeatureRequest );
@@ -322,6 +368,8 @@ void QgsAttributeTableModel::loadLayer()
   }
 
   emit finished();
+
+  connect( mLayerCache, SIGNAL( invalidated() ), this, SLOT( loadLayer() ) );
 
   mFieldCount = mAttributes.size();
 }
@@ -575,6 +623,7 @@ void QgsAttributeTableModel::reload( const QModelIndex &index1, const QModelInde
 void QgsAttributeTableModel::resetModel()
 {
   beginResetModel();
+  loadLayer();
   endResetModel();
 }
 

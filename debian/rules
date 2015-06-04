@@ -16,6 +16,7 @@ DEB_BUILD_MULTIARCH ?= $(shell dpkg-architecture -qDEB_BUILD_MULTIARCH)
 QT_PLUGIN_DIR = usr/lib/$(DEB_BUILD_MULTIARCH)/qt4/plugins
 
 DEB_TEST_TARGET ?= Experimental
+BUILDDIR ?= debian/build
 
 QGIS_VERSION=$(shell dpkg-parsechangelog | sed -ne 's/^Version: \(.*\)-.*/\1/p')
 
@@ -64,7 +65,9 @@ CMAKE_OPTS := \
 	-DWITH_INTERNAL_PYGMENTS=FALSE \
 	-DWITH_INTERNAL_DATEUTIL=FALSE \
 	-DWITH_INTERNAL_PYTZ=FALSE \
-	-DWITH_INTERNAL_SIX=FALSE
+	-DWITH_INTERNAL_SIX=FALSE \
+	-DQT_TAG_FILE=/usr/share/qt4/doc/html/qt.tags \
+	-DQT_DOC_URL=/usr/share/qt4/doc/html/
 
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 	NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
@@ -155,7 +158,7 @@ cleantemplates:
 	$(MAKE) -f debian/rules debian/control debian/compat
 
 binary binary-arch binary-indep build build-arch build-indep clean install install-arch install-indep:
-	dh $@ --with python2 --parallel --builddirectory=debian/build
+	dh $@ --with python2 --parallel --builddirectory=$(BUILDDIR)
 
 override_dh_clean: cleantemplates
 	dh_clean
@@ -164,7 +167,7 @@ override_dh_clean: cleantemplates
 	-$(RM) $(CURDIR)/src/core/qgscontexthelp_texts.cpp
 	-$(RM) $(CURDIR)/src/core/qgsexpression_texts.cpp
 
-	-$(RM) -r $(CURDIR)/debian/build/
+	-$(RM) -r $(CURDIR)/$(BUILDDIR)/
 
 override_dh_auto_configure: templates
 	dh_auto_configure -- $(CMAKE_OPTS)
@@ -176,9 +179,9 @@ override_dh_auto_test:
 	localedef -f UTF-8 -i en_US ./debian/tmp/locale/en_US.UTF-8/
 	-LOCPATH=$(CURDIR)/debian/tmp/locale/ \
 	LC_ALL=en_US.UTF-8 \
-	LD_LIBRARY_PATH=$(CURDIR)/debian/build/output/lib:$(LD_LIBRARY_PATH) \
+	LD_LIBRARY_PATH=$(CURDIR)/$(BUILDDIR)/output/lib:$(LD_LIBRARY_PATH) \
 	PATH=/usr/sbin:$(PATH) \
-	$(TESTMAKE) -C debian/build $(DEB_TEST_TARGET)
+	$(TESTMAKE) -C $(BUILDDIR) $(DEB_TEST_TARGET)
 else
 override_dh_auto_test:
 	@echo Skipping tests.
@@ -274,3 +277,7 @@ override_dh_makeshlibs:
 
 override_dh_shlibdeps:
 	dh_shlibdeps -l/usr/lib/$(GRASS)/lib
+
+override_dh_strip:
+	dh_strip --dbg-package=qgis-dbg
+

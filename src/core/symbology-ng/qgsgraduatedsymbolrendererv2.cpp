@@ -1208,7 +1208,6 @@ QgsLegendSymbolListV2 QgsGraduatedSymbolRendererV2::legendSymbolItemsV2() const
       {
         QgsLegendSymbolItemV2 si( mSourceSymbol.data(), QString::number( v ), "" );
         QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( si.symbol() );
-        s->setColor( QColor( 0, 0, 0 ) );
         s->setDataDefinedSize( QgsDataDefined() );
         s->setSize( exp.size( v ) );
         list << si;

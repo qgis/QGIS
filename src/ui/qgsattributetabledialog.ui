@@ -541,10 +541,19 @@
       </widget>
      </item>
      <item>
-      <widget class="QgsFilterLineEdit" name="mFilterQuery"/>
-     </item>
-     <item>
-      <widget class="QWidget" name="mSpacer" native="true"/>
+      <widget class="QWidget" name="mFilterContainer" native="true">
+       <layout class="QGridLayout" name="mFilterLayout">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetDefaultConstraint</enum>
+        </property>
+        <property name="margin">
+         <number>0</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QgsFilterLineEdit" name="mFilterQuery"/>
+        </item>
+       </layout>
+      </widget>
      </item>
      <item>
       <widget class="QToolButton" name="mApplyFilterButton">
@@ -656,7 +665,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QgsFieldExpressionWidget" name="mUpdateExpressionText" native="true">
+       <widget class="QgsFieldExpressionWidget" name="mUpdateExpressionText">
         <property name="sizePolicy">
          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
           <horstretch>0</horstretch>

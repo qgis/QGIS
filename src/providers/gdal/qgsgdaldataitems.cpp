@@ -38,6 +38,12 @@ QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem* parent,
   }
   else
     setState( Populated );
+
+  GDALAllRegister();
+  GDALDatasetH hDS = GDALOpen( TO8F( mPath ), GA_Update );
+
+  if ( hDS )
+    mCapabilities |= SetCrs;
 }
 
 QgsGdalLayerItem::~QgsGdalLayerItem()
@@ -46,32 +52,23 @@ QgsGdalLayerItem::~QgsGdalLayerItem()
 
 QgsLayerItem::Capability QgsGdalLayerItem::capabilities()
 {
-  // Check if data source can be opened for update
-  QgsDebugMsg( "mPath = " + mPath );
-  GDALAllRegister();
-  GDALDatasetH hDS = GDALOpen( TO8F( mPath ), GA_Update );
-
-  if ( !hDS )
-    return NoCapabilities;
-
-  return SetCrs;
+  return mCapabilities & SetCrs ? SetCrs : NoCapabilities;
 }
 
 bool QgsGdalLayerItem::setCrs( QgsCoordinateReferenceSystem crs )
 {
-  QgsDebugMsg( "mPath = " + mPath );
-  GDALAllRegister();
   GDALDatasetH hDS = GDALOpen( TO8F( mPath ), GA_Update );
-
   if ( !hDS )
     return false;
 
   QString wkt = crs.toWkt();
   if ( GDALSetProjection( hDS, wkt.toLocal8Bit().data() ) != CE_None )
   {
+    GDALClose( hDS );
     QgsDebugMsg( "Could not set CRS" );
     return false;
   }
+
   GDALClose( hDS );
   return true;
 }

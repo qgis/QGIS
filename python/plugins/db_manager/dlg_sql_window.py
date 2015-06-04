@@ -23,7 +23,7 @@ The content of this file is based on
 """
 
 from PyQt4.QtCore import Qt, QObject, QSettings, QByteArray, SIGNAL
-from PyQt4.QtGui import QDialog, QAction, QKeySequence, QDialogButtonBox, QApplication, QCursor, QMessageBox, QClipboard, QInputDialog
+from PyQt4.QtGui import QDialog, QAction, QKeySequence, QDialogButtonBox, QApplication, QCursor, QMessageBox, QClipboard, QInputDialog, QIcon
 from PyQt4.Qsci import QsciAPIs
 
 from qgis.core import QgsProject
@@ -95,6 +95,7 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
             self.connect( self.btnCreateView, SIGNAL("clicked()"), self.createView )
 
         self.queryBuilderFirst = True
+        self.queryBuilderBtn.setIcon(QIcon(":/db_manager/icons/sql.gif"))
         self.connect( self.queryBuilderBtn, SIGNAL("clicked()"), self.displayQueryBuilder )
 
     def updatePresetsCombobox(self):
@@ -111,7 +112,8 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
         self.presetCombo.setCurrentIndex(-1)
 
     def storePreset(self):
-        query = self.editSql.text()
+        query = self._getSqlQuery()
+        if query == "": return
         name = self.presetName.text()
         QgsProject.instance().writeEntry('DBManager', 'savedQueries/q' + str(name.__hash__()) + '/name', name)
         QgsProject.instance().writeEntry('DBManager', 'savedQueries/q' + str(name.__hash__()) + '/query', query)
@@ -150,12 +152,8 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
 
     def executeSql(self):
 
-        sql = self.editSql.selectedText()
-        if len(sql) == 0:
-            sql = self.editSql.text()
-
-        if sql == "":
-            return
+        sql = self._getSqlQuery()
+        if sql == "": return
 
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 
@@ -198,9 +196,8 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
         else:
             geomFieldName = None
 
-        query = self.editSql.text()
-        if query == "":
-            return
+        query = self._getSqlQuery()
+        if query == "": return
 
         # remove a trailing ';' from query if present
         if query.strip().endswith(';'):
@@ -235,7 +232,7 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
         QApplication.restoreOverrideCursor()
 
     def fillColumnCombos(self):
-        query = self.editSql.text()
+        query = self._getSqlQuery()
         if query == "": return
 
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
@@ -347,8 +344,13 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
         name, ok = QInputDialog.getText(None, "View name", "View name")
         if ok:
             try:
-                self.db.connector.createSpatialView( name, self.editSql.text() )
+                self.db.connector.createSpatialView( name, self._getSqlQuery() )
             except BaseError as e:
                 DlgDbError.showError(e, self)
 
-
+    def _getSqlQuery(self):
+        sql = self.editSql.selectedText()
+        if len(sql) == 0:
+            sql = self.editSql.text()
+        return sql
+      

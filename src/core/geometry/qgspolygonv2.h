@@ -23,19 +23,19 @@
 class CORE_EXPORT QgsPolygonV2: public QgsCurvePolygonV2
 {
   public:
-    virtual QString geometryType() const { return "Polygon"; }
-    virtual QgsAbstractGeometryV2* clone() const;
+    virtual QString geometryType() const override { return "Polygon"; }
+    virtual QgsAbstractGeometryV2* clone() const override;
 
-    virtual bool fromWkb( const unsigned char* wkb );
+    virtual bool fromWkb( const unsigned char* wkb ) override;
     // inherited: bool fromWkt( const QString &wkt );
 
-    int wkbSize() const;
-    unsigned char* asWkb( int& binarySize ) const;
+    int wkbSize() const override;
+    unsigned char* asWkb( int& binarySize ) const override;
     // inherited: QString asWkt( int precision = 17 ) const;
     // inherited: QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
     // inherited: QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
     // inherited: QString asJSON( int precision = 17 ) const;
 
-    QgsPolygonV2* surfaceToPolygon() const;
+    QgsPolygonV2* surfaceToPolygon() const override;
 };
 #endif // QGSPOLYGONV2_H

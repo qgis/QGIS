@@ -52,4 +52,9 @@ class QgsCircularStringV2: public QgsCurveV2
     bool pointAt( int i, QgsPointV2& vertex, QgsVertexId::VertexType& type ) const;
 
     void sumUpArea( double& sum ) const;
+
+    bool hasCurvedSegments() const;
+
+  private:
+    void segmentize( const QgsPointV2& p1, const QgsPointV2& p2, const QgsPointV2& p3, QList<QgsPointV2>& points ) const;
 };

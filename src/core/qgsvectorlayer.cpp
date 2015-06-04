@@ -145,6 +145,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mValidExtent( false )
     , mLazyExtent( true )
     , mSymbolFeatureCounted( false )
+    , mEditCommandActive( false )
 {
   mActions = new QgsAttributeAction( this );
 
@@ -1210,7 +1211,7 @@ bool QgsVectorLayer::startEditing()
   connect( mEditBuffer, SIGNAL( layerModified() ), this, SIGNAL( layerModified() ) ); // TODO[MD]: necessary?
   //connect( mEditBuffer, SIGNAL( layerModified() ), this, SLOT( triggerRepaint() ) ); // TODO[MD]: works well?
   connect( mEditBuffer, SIGNAL( featureAdded( QgsFeatureId ) ), this, SIGNAL( featureAdded( QgsFeatureId ) ) );
-  connect( mEditBuffer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SIGNAL( featureDeleted( QgsFeatureId ) ) );
+  connect( mEditBuffer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( onFeatureDeleted( QgsFeatureId ) ) );
   connect( mEditBuffer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry& ) ), this, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry& ) ) );
   connect( mEditBuffer, SIGNAL( attributeValueChanged( QgsFeatureId, int, QVariant ) ), this, SIGNAL( attributeValueChanged( QgsFeatureId, int, QVariant ) ) );
   connect( mEditBuffer, SIGNAL( attributeAdded( int ) ), this, SIGNAL( attributeAdded( int ) ) );
@@ -1365,6 +1366,7 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
 {
   // XXX should I check for and possibly delete any pre-existing providers?
   // XXX How often will that scenario occur?
+  Q_ASSERT( !mDataProvider );
 
   mProviderKey = provider;     // XXX is this necessary?  Usually already set
   // XXX when execution gets here.
@@ -1456,6 +1458,8 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
     return false;
   }
 
+  connect( mDataProvider, SIGNAL( dataChanged() ), this, SIGNAL( dataChanged() ) );
+  connect( mDataProvider, SIGNAL( dataChanged() ), this, SLOT( removeSelection() ) );
   return true;
 
 } // QgsVectorLayer:: setDataProvider
@@ -2120,6 +2124,9 @@ const QString QgsVectorLayer::editorWidgetV2( const QString& fieldName ) const
 
 const QgsEditorWidgetConfig QgsVectorLayer::editorWidgetV2Config( int fieldIdx ) const
 {
+  if ( fieldIdx < 0 || fieldIdx >= mUpdatedFields.count() )
+    return QgsEditorWidgetConfig();
+
   return mEditorWidgetV2Configs.value( mUpdatedFields[fieldIdx].name() );
 }
 
@@ -2618,6 +2625,9 @@ bool QgsVectorLayer::isModified() const
 
 QgsVectorLayer::EditType QgsVectorLayer::editType( int idx )
 {
+  if ( idx < 0 || idx >= mUpdatedFields.count() )
+    return Hidden;
+
   Q_NOWARN_DEPRECATED_PUSH
   return QgsLegacyHelpers::convertEditType( editorWidgetV2( idx ), editorWidgetV2Config( idx ), this, mUpdatedFields[ idx ].name() );
   Q_NOWARN_DEPRECATED_POP
@@ -2625,6 +2635,9 @@ QgsVectorLayer::EditType QgsVectorLayer::editType( int idx )
 
 void QgsVectorLayer::setEditType( int idx, EditType type )
 {
+  if ( idx < 0 || idx >= mUpdatedFields.count() )
+    return;
+
   QgsEditorWidgetConfig cfg;
 
   Q_NOWARN_DEPRECATED_PUSH
@@ -2647,11 +2660,17 @@ void QgsVectorLayer::setEditorLayout( EditorLayout editorLayout )
 
 void QgsVectorLayer::setEditorWidgetV2( int attrIdx, const QString& widgetType )
 {
+  if ( attrIdx < 0 || attrIdx >= mUpdatedFields.count() )
+    return;
+
   mEditorWidgetV2Types[ mUpdatedFields[ attrIdx ].name()] = widgetType;
 }
 
 void QgsVectorLayer::setEditorWidgetV2Config( int attrIdx, const QgsEditorWidgetConfig& config )
 {
+  if ( attrIdx < 0 || attrIdx >= mUpdatedFields.count() )
+    return;
+
   mEditorWidgetV2Configs[ mUpdatedFields[ attrIdx ].name()] = config;
 }
 
@@ -2783,6 +2802,7 @@ void QgsVectorLayer::beginEditCommand( QString text )
   if ( !mDataProvider->transaction() )
   {
     undoStack()->beginMacro( text );
+    mEditCommandActive = true;
     emit editCommandStarted( text );
   }
 }
@@ -2796,6 +2816,12 @@ void QgsVectorLayer::endEditCommand()
   if ( !mDataProvider->transaction() )
   {
     undoStack()->endMacro();
+    mEditCommandActive = false;
+    if ( mDeletedFids.count() )
+    {
+      emit featuresDeleted( mDeletedFids );
+      mDeletedFids.clear();
+    }
     emit editCommandEnded();
   }
 }
@@ -2810,6 +2836,8 @@ void QgsVectorLayer::destroyEditCommand()
   {
     undoStack()->endMacro();
     undoStack()->undo();
+    mEditCommandActive = false;
+    mDeletedFids.clear();
     emit editCommandDestroyed();
   }
 }
@@ -3762,6 +3790,16 @@ void QgsVectorLayer::onJoinedFieldsChanged()
   updateFields();
 }
 
+void QgsVectorLayer::onFeatureDeleted( const QgsFeatureId& fid )
+{
+  if ( mEditCommandActive )
+    mDeletedFids << fid;
+  else
+    emit featuresDeleted( QgsFeatureIds() << fid );
+
+  emit featureDeleted( fid );
+}
+
 QgsVectorLayer::ValueRelationData QgsVectorLayer::valueRelation( int idx )
 {
   if ( editorWidgetV2( idx ) == "ValueRelation" )
@@ -3813,6 +3851,11 @@ QDomElement QgsAttributeEditorContainer::toDomElement( QDomDocument& doc ) const
 void QgsAttributeEditorContainer::addChildElement( QgsAttributeEditorElement *widget )
 {
   mChildren.append( widget );
+}
+
+void QgsAttributeEditorContainer::setName( const QString& name )
+{
+  mName = name;
 }
 
 QList<QgsAttributeEditorElement*> QgsAttributeEditorContainer::findElements( QgsAttributeEditorElement::AttributeEditorType type ) const

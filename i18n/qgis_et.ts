@@ -20170,7 +20170,7 @@ Please try a lower resolution or a smaller papersize</source>
         <translation>Võrdsusta veeru laiused</translation>
     </message>
     <message>
-        <source>Allow to split layer items into multiple columns.</source>
+        <source>Allow splitting layer items into multiple columns.</source>
         <translation>Luba kihi elemente mitmeks veeruks tükeldada</translation>
     </message>
     <message>

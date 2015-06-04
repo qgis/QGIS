@@ -37,6 +37,8 @@
  * - void qgsConnectionPool_ConnectionCreate(QString name, T& c)  ... create a new connection
  * - void qgsConnectionPool_ConnectionDestroy(T c)                ... destroy the connection
  * - QString qgsConnectionPool_ConnectionToName(T c)              ... lookup connection's name (path)
+ * - void qgsConnectionPool_InvalidateConnection(T c)             ... flag a connection as invalid
+ * - bool qgsConnectionPool_ConnectionIsValid(T c)                ... return whether a connection is valid
  *
  * Because of issues with templates and QObject's signals and slots, this class only provides helper functions for QObject-related
  * functionality - the place which uses the template is resonsible for:
@@ -87,6 +89,11 @@ class QgsConnectionPoolGroup
         if ( !conns.isEmpty() )
         {
           Item i = conns.pop();
+          if ( !qgsConnectionPool_ConnectionIsValid( i.c ) )
+          {
+            qgsConnectionPool_ConnectionDestroy( i.c );
+            qgsConnectionPool_ConnectionCreate( connInfo, i.c );
+          }
 
           // no need to run if nothing can expire
           if ( conns.isEmpty() )
@@ -94,6 +101,8 @@ class QgsConnectionPoolGroup
             // will call the slot directly or queue the call (if the object lives in a different thread)
             QMetaObject::invokeMethod( expirationTimer->parent(), "stopExpirationTimer" );
           }
+
+          acquiredConns.append( i.c );
 
           return i.c;
         }
@@ -108,12 +117,14 @@ class QgsConnectionPoolGroup
         return 0;
       }
 
+      acquiredConns.append( c );
       return c;
     }
 
     void release( T conn )
     {
       connMutex.lock();
+      acquiredConns.removeAll( conn );
       Item i;
       i.c = conn;
       i.lastUsedTime = QTime::currentTime();
@@ -128,6 +139,18 @@ class QgsConnectionPoolGroup
       connMutex.unlock();
 
       sem.release(); // this can unlock a thread waiting in acquire()
+    }
+
+    void invalidateConnections()
+    {
+      connMutex.lock();
+      foreach ( Item i, conns )
+      {
+        qgsConnectionPool_InvalidateConnection( i.c );
+      }
+      foreach ( T c, acquiredConns )
+        qgsConnectionPool_InvalidateConnection( c );
+      connMutex.unlock();
     }
 
   protected:
@@ -174,6 +197,7 @@ class QgsConnectionPoolGroup
 
     QString connInfo;
     QStack<Item> conns;
+    QList<T> acquiredConns;
     QMutex connMutex;
     QSemaphore sem;
     QTimer* expirationTimer;
@@ -230,10 +254,22 @@ class QgsConnectionPool
       group->release( conn );
     }
 
+    //! Invalidates all connections to the specified resource.
+    //! The internal state of certain handles (for instance OGR) are altered
+    //! when a dataset is modified. Consquently, all open handles need to be
+    //! invalidated when such datasets are changed to ensure the handles are
+    //! refreshed. See the OGR provider for an example where this is needed.
+    void invalidateConnections( const QString& connInfo )
+    {
+      mMutex.lock();
+      if ( mGroups.contains( connInfo ) )
+        mGroups[connInfo]->invalidateConnections();
+      mMutex.unlock();
+    }
+
+
   protected:
     T_Groups mGroups;
-
-  private:
     QMutex mMutex;
 };
 

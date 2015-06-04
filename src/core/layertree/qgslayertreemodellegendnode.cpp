@@ -99,7 +99,7 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings& set
 
   labelSize.rheight() = lines.count() * textHeight + ( lines.count() - 1 ) * settings.lineSpacing();
 
-  double labelX, labelY;
+  double labelX = 0.0, labelY = 0.0;
   if ( ctx )
   {
     ctx->painter->setPen( settings.fontColor() );

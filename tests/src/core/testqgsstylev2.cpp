@@ -80,6 +80,9 @@ class TestStyleV2 : public QObject
 
 TestStyleV2::TestStyleV2()
     : mStyle( NULL )
+    , mpPointsLayer( 0 )
+    , mpLinesLayer( 0 )
+    , mpPolysLayer( 0 )
 {
 
 }

@@ -1906,10 +1906,19 @@ void QgsGrassModule::viewOutput()
     }
     else
     {
-      QStringList layers = QgsGrass::vectorLayers(
-                             QgsGrass::getDefaultGisdbase(),
-                             QgsGrass::getDefaultLocation(),
-                             QgsGrass::getDefaultMapset(), map );
+      QStringList layers;
+      try
+      {
+        layers = QgsGrass::vectorLayers(
+                   QgsGrass::getDefaultGisdbase(),
+                   QgsGrass::getDefaultLocation(),
+                   QgsGrass::getDefaultMapset(), map );
+      }
+      catch ( QgsGrass::Exception &e )
+      {
+        QgsDebugMsg( e.what() );
+        continue;
+      }
 
       // check whether there are 1_* layers
       // if so, 0_* layers won't be added

@@ -15,6 +15,10 @@ __revision__ = '$Format:%H$'
 from qgis.core import QgsRectangle, QgsFeatureRequest, QgsGeometry, NULL
 
 class ProviderTestCase(object):
+    def assert_query(self, provider, expression, expected):
+        result = set([f['pk'] for f in provider.getFeatures(QgsFeatureRequest().setFilterExpression(expression))])
+        assert set(expected) == result, 'Expected {} and got {} when testing expression "{}"'.format(set(expected), result, expression)
+
     '''
         This is a collection of tests for vector data providers and kept generic.
         To make use of it, subclass it and set self.provider to a provider you want to test.
@@ -27,19 +31,27 @@ class ProviderTestCase(object):
     '''
     def runGetFeatureTests(self, provider):
         assert len([f for f in provider.getFeatures()]) == 5
-        assert len([f for f in provider.getFeatures(QgsFeatureRequest().setFilterExpression('name IS NOT NULL'))]) == 4
-        assert len(
-            [f for f in provider.getFeatures(QgsFeatureRequest().setFilterExpression('name LIKE \'Apple\''))]) == 1
-        assert len(
-            [f for f in provider.getFeatures(QgsFeatureRequest().setFilterExpression('name ILIKE \'aPple\''))]) == 1
-        assert len(
-            [f for f in provider.getFeatures(QgsFeatureRequest().setFilterExpression('name ILIKE \'%pp%\''))]) == 1
-        assert len([f for f in provider.getFeatures(QgsFeatureRequest().setFilterExpression('cnt > 0'))]) == 4
-        assert len([f for f in provider.getFeatures(QgsFeatureRequest().setFilterExpression('cnt < 0'))]) == 1
-        assert len([f for f in provider.getFeatures(QgsFeatureRequest().setFilterExpression('cnt >= 100'))]) == 4
-        assert len([f for f in provider.getFeatures(QgsFeatureRequest().setFilterExpression('cnt <= 100'))]) == 2
-        assert len(
-            [f for f in provider.getFeatures(QgsFeatureRequest().setFilterExpression('pk IN (1, 2, 4, 8)'))]) == 3
+        self.assert_query(provider, 'name ILIKE \'QGIS\'', [])
+        self.assert_query(provider, '"name" IS NULL', [5])
+        self.assert_query(provider, '"name" IS NOT NULL', [1, 2, 3, 4])
+        self.assert_query(provider, '"name" NOT LIKE \'Ap%\'', [1, 3, 4])
+        self.assert_query(provider, '"name" NOT ILIKE \'QGIS\'', [1, 2, 3, 4])
+        self.assert_query(provider, '"name" NOT ILIKE \'pEAR\'', [1, 2, 4])
+        self.assert_query(provider, 'name LIKE \'Apple\'', [2])
+        self.assert_query(provider, 'name ILIKE \'aPple\'', [2])
+        self.assert_query(provider, 'name ILIKE \'%pp%\'', [2])
+        self.assert_query(provider, 'cnt > 0', [1, 2, 3, 4])
+        self.assert_query(provider, 'cnt < 0', [5])
+        self.assert_query(provider, 'cnt >= 100', [1, 2, 3, 4])
+        self.assert_query(provider, 'cnt <= 100', [1, 5])
+        self.assert_query(provider, 'pk IN (1, 2, 4, 8)', [1, 2, 4])
+        self.assert_query(provider, 'cnt = 50 * 2', [1])
+        self.assert_query(provider, 'cnt = 99 + 1', [1])
+        self.assert_query(provider, 'cnt = 1100 % 1000', [1])
+        self.assert_query(provider, '"name" || \' \' || "cnt" = \'Orange 100\'', [1])
+        self.assert_query(provider, 'cnt = 10 ^ 2', [1])
+        self.assert_query(provider, '"name" ~ \'[OP]ra[gne]+\'', [1])
+
 
     def testGetFeaturesUncompiled(self):
         try:
@@ -77,8 +89,7 @@ class ProviderTestCase(object):
 
     def testUnique(self):
         assert set(self.provider.uniqueValues(1)) == set([-200, 100, 200, 300, 400])
-        assert set([u'Apple', u'Honey', u'Orange', u'Pear', NULL]) == set(
-            self.provider.uniqueValues(2)), 'Got {}'.format(set(self.provider.uniqueValues(2)))
+        assert set([u'Apple', u'Honey', u'Orange', u'Pear', NULL]) == set(self.provider.uniqueValues(2)), 'Got {}'.format(set(self.provider.uniqueValues(2)))
 
     def testFeatureCount(self):
         assert self.provider.featureCount() == 5

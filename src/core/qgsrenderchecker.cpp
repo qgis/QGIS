@@ -27,16 +27,16 @@
 #include <QDebug>
 #include <QBuffer>
 
-QgsRenderChecker::QgsRenderChecker() :
-    mReport( "" ),
-    mMatchTarget( 0 ),
-    mElapsedTime( 0 ),
-    mRenderedImageFile( "" ),
-    mExpectedImageFile( "" ),
-    mMismatchCount( 0 ),
-    mColorTolerance( 0 ),
-    mElapsedTimeTarget( 0 ),
-    mBufferDashMessages( false )
+QgsRenderChecker::QgsRenderChecker()
+    : mReport( "" )
+    , mMatchTarget( 0 )
+    , mElapsedTime( 0 )
+    , mRenderedImageFile( "" )
+    , mExpectedImageFile( "" )
+    , mMismatchCount( 0 )
+    , mColorTolerance( 0 )
+    , mElapsedTimeTarget( 0 )
+    , mBufferDashMessages( false )
 {
 }
 
@@ -359,7 +359,6 @@ bool QgsRenderChecker::compareImages( QString theTestName,
   //
   emitDashMessage( "Rendered Image " + theTestName + prefix, QgsDartMeasurement::ImagePng, mRenderedImageFile );
   emitDashMessage( "Expected Image " + theTestName + prefix, QgsDartMeasurement::ImagePng, mExpectedImageFile );
-  emitDashMessage( "Difference Image " + theTestName + prefix, QgsDartMeasurement::ImagePng, myDiffImageFile );
 
   //
   // Put the same info to debug too
@@ -430,6 +429,7 @@ bool QgsRenderChecker::compareImages( QString theTestName,
   //save the diff image to disk
   //
   myDifferenceImage.save( myDiffImageFile );
+  emitDashMessage( "Difference Image " + theTestName + prefix, QgsDartMeasurement::ImagePng, myDiffImageFile );
   delete maskImage;
 
   //

@@ -33,6 +33,11 @@ QgsEditorWidgetWrapper* QgsValueRelationWidgetFactory::create( QgsVectorLayer* v
   return new QgsValueRelationWidgetWrapper( vl, fieldIdx, editor, parent );
 }
 
+QgsEditorWidgetWrapper *QgsValueRelationWidgetFactory::createSearchWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const
+{
+  return new QgsValueRelationWidgetWrapper( vl, fieldIdx, 0, parent );
+}
+
 QgsEditorConfigWidget* QgsValueRelationWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
 {
   return new QgsValueRelationConfigDlg( vl, fieldIdx, parent );

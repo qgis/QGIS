@@ -131,6 +131,8 @@ QString QgsGrassObject::elementShort() const
 {
   if ( mType == Raster )
     return "rast";
+  else if ( mType == Group )
+    return "group";
   else if ( mType == Vector )
     return "vect";
   else if ( mType == Region )
@@ -148,6 +150,8 @@ QString GRASS_LIB_EXPORT QgsGrassObject::elementName( Type type )
 {
   if ( type == Raster )
     return "raster";
+  else if ( type == Group )
+    return "group";
   else if ( type == Vector )
     return "vector";
   else if ( type == Region )
@@ -165,6 +169,8 @@ QString GRASS_LIB_EXPORT QgsGrassObject::dirName( Type type )
 {
   if ( type == Raster )
     return "cellhd";
+  else if ( type == Group )
+    return "group";
   else if ( type == Vector )
     return "vector";
   else if ( type == Region )
@@ -201,9 +207,15 @@ QRegExp GRASS_LIB_EXPORT QgsGrassObject::newNameRegExp( Type type )
   }
   else
   {
-    rx.setPattern( "[A-Za-z0-9_.]+" );
+    rx.setPattern( "[A-Za-z0-9_\\-][A-Za-z0-9_\\-.]+" );
   }
   return rx;
+}
+
+bool QgsGrassObject::operator==( const QgsGrassObject& other ) const
+{
+  return mGisdbase == other.mGisdbase && mLocation == other.mLocation && mMapset == other.mMapset
+         && mName == other.mName && mType == other.mType;
 }
 
 #ifdef Q_OS_WIN
@@ -239,6 +251,7 @@ void GRASS_LIB_EXPORT QgsGrass::init( void )
   if ( initialized )
     return;
 
+  QgsDebugMsg( "do init" );
   QSettings settings;
 
   // Is it active mode ?
@@ -1002,14 +1015,19 @@ QStringList GRASS_LIB_EXPORT QgsGrass::vectorLayers( const QString& gisdbase, co
 
   G_TRY
   {
+    // TODO: With Vect_open_old_head it crashes on Windows + GRASS 7 in Vect_cidx_get_type_count() when the first
+    // type is found. Try to open full map on win for now.
+#if defined(Q_OS_WIN) && GRASS_VERSION_MAJOR >= 7
+    level = Vect_open_old( &map, ( char * ) mapName.toUtf8().data(), ( char * ) mapset.toUtf8().data() );
+#else
     level = Vect_open_old_head( &map, ( char * ) mapName.toUtf8().data(), ( char * ) mapset.toUtf8().data() );
+#endif
   }
   G_CATCH( QgsGrass::Exception &e )
   {
-    Q_UNUSED( e );
     QgsDebugMsg( QString( "Cannot open GRASS vector: %1" ).arg( e.what() ) );
     GRASS_UNLOCK
-    return list;
+    throw e;
   }
 
   // TODO: Handle errors as exceptions. Do not open QMessageBox here! This method is also used in browser
@@ -1026,7 +1044,7 @@ QStringList GRASS_LIB_EXPORT QgsGrass::vectorLayers( const QString& gisdbase, co
     Vect_close( &map );
 #endif
     GRASS_UNLOCK
-    return list;
+    throw QgsGrass::Exception( QObject::tr( "Cannot open vector on level 2" ) );
   }
   else if ( level < 1 )
   {
@@ -1034,86 +1052,101 @@ QStringList GRASS_LIB_EXPORT QgsGrass::vectorLayers( const QString& gisdbase, co
     // Do not open QMessageBox here!
     //QMessageBox::warning( 0, QObject::tr( "Warning" ), QObject::tr( "Cannot open vector %1 in mapset %2" ).arg( mapName ).arg( mapset ) );
     GRASS_UNLOCK
-    return list;
+    throw QgsGrass::Exception( QObject::tr( "Cannot open vector" ) );
   }
 
   QgsDebugMsg( "GRASS vector successfully opened" );
 
-
-  // Get layers
-  int ncidx = Vect_cidx_get_num_fields( &map );
-
-  for ( int i = 0; i < ncidx; i++ )
+  G_TRY
   {
-    int field = Vect_cidx_get_field_number( &map, i );
-    QString fs;
-    fs.sprintf( "%d", field );
+    // Get layers
+    int ncidx = Vect_cidx_get_num_fields( &map );
 
-    QgsDebugMsg( QString( "i = %1 layer = %2" ).arg( i ).arg( field ) );
-
-    /* Points */
-    int npoints = Vect_cidx_get_type_count( &map, field, GV_POINT );
-    if ( npoints > 0 )
+    for ( int i = 0; i < ncidx; i++ )
     {
-      QString l = fs + "_point";
-      list.append( l );
+      int field = Vect_cidx_get_field_number( &map, i );
+      QString fs;
+      fs.sprintf( "%d", field );
+
+      QgsDebugMsg( QString( "i = %1 layer = %2" ).arg( i ).arg( field ) );
+
+      /* Points */
+      int npoints = Vect_cidx_get_type_count( &map, field, GV_POINT );
+      QgsDebugMsg( QString( "npoints = %1" ).arg( npoints ) );
+      if ( npoints > 0 )
+      {
+        QString l = fs + "_point";
+        list.append( l );
+      }
+
+      /* Lines */
+      /* Lines without category appears in layer 0, but not boundaries */
+      int tp;
+      if ( field == 0 )
+        tp = GV_LINE;
+      else
+        tp = GV_LINE | GV_BOUNDARY;
+
+      int nlines = Vect_cidx_get_type_count( &map, field, tp );
+      QgsDebugMsg( QString( "nlines = %1" ).arg( nlines ) );
+      if ( nlines > 0 )
+      {
+        QString l = fs + "_line";
+        list.append( l );
+      }
+
+      /* Faces */
+      int nfaces = Vect_cidx_get_type_count( &map, field, GV_FACE );
+      QgsDebugMsg( QString( "nfaces = %1" ).arg( nfaces ) );
+      if ( nfaces > 0 )
+      {
+        QString l = fs + "_face";
+        list.append( l );
+      }
+
+      /* Polygons */
+      int nareas = Vect_cidx_get_type_count( &map, field, GV_AREA );
+      QgsDebugMsg( QString( "nareas = %1" ).arg( nareas ) );
+      if ( nareas > 0 )
+      {
+        QString l = fs + "_polygon";
+        list.append( l );
+      }
     }
+    QgsDebugMsg( "standard layers listed: " + list.join( "," ) );
 
-    /* Lines */
-    /* Lines without category appears in layer 0, but not boundaries */
-    int tp;
-    if ( field == 0 )
-      tp = GV_LINE;
-    else
-      tp = GV_LINE | GV_BOUNDARY;
-
-    int nlines = Vect_cidx_get_type_count( &map, field, tp );
-    if ( nlines > 0 )
+    // TODO: add option in GUI to set listTopoLayers
+    QSettings settings;
+    bool listTopoLayers =  settings.value( "/GRASS/listTopoLayers", false ).toBool();
+    if ( listTopoLayers )
     {
-      QString l = fs + "_line";
-      list.append( l );
-    }
-
-    /* Faces */
-    int nfaces = Vect_cidx_get_type_count( &map, field, GV_FACE );
-    if ( nfaces > 0 )
-    {
-      QString l = fs + "_face";
-      list.append( l );
-    }
-
-    /* Polygons */
-    int nareas = Vect_cidx_get_type_count( &map, field, GV_AREA );
-    if ( nareas > 0 )
-    {
-      QString l = fs + "_polygon";
-      list.append( l );
-    }
-  }
-
-  // TODO: add option in GUI to set listTopoLayers
-  QSettings settings;
-  bool listTopoLayers =  settings.value( "/GRASS/listTopoLayers", false ).toBool();
-  if ( listTopoLayers )
-  {
-    // add topology layers
-    if ( Vect_get_num_primitives( &map, GV_POINTS ) > 0 )
-    {
+      // add topology layers
+      if ( Vect_get_num_primitives( &map, GV_POINTS ) > 0 )
+      {
 #if GRASS_VERSION_MAJOR < 7 /* no more point in GRASS 7 topo */
-      list.append( "topo_point" );
+        list.append( "topo_point" );
 #endif
+      }
+      if ( Vect_get_num_primitives( &map, GV_LINES ) > 0 )
+      {
+        list.append( "topo_line" );
+      }
+      if ( Vect_get_num_nodes( &map ) > 0 )
+      {
+        list.append( "topo_node" );
+      }
     }
-    if ( Vect_get_num_primitives( &map, GV_LINES ) > 0 )
-    {
-      list.append( "topo_line" );
-    }
-    if ( Vect_get_num_nodes( &map ) > 0 )
-    {
-      list.append( "topo_node" );
-    }
-  }
 
-  Vect_close( &map );
+    QgsDebugMsg( "close map" );
+    Vect_close( &map );
+    QgsDebugMsg( "map closed" );
+  }
+  G_CATCH( QgsGrass::Exception &e )
+  {
+    QgsDebugMsg( QString( "Cannot get vector layers: %1" ).arg( e.what() ) );
+    GRASS_UNLOCK
+    throw e;
+  }
 
   GRASS_UNLOCK
   return list;
@@ -1176,6 +1209,17 @@ QStringList GRASS_LIB_EXPORT QgsGrass::rasters( const QString& mapsetPath )
   return list;
 }
 
+QStringList GRASS_LIB_EXPORT QgsGrass::groups( const QString& gisdbase, const QString& locationName,
+    const QString& mapsetName )
+{
+  return elements( gisdbase, locationName, mapsetName, "group" );
+}
+
+QStringList GRASS_LIB_EXPORT QgsGrass::groups( const QString& mapsetPath )
+{
+  return elements( mapsetPath, "group" );
+}
+
 QStringList GRASS_LIB_EXPORT QgsGrass::elements( const QString& gisdbase, const QString& locationName,
     const QString& mapsetName, const QString& element )
 {
@@ -1197,7 +1241,7 @@ QStringList GRASS_LIB_EXPORT QgsGrass::elements( const QString&  mapsetPath, con
     return list;
 
   QDir d = QDir( mapsetPath + "/" + element );
-  if ( element == "vector" )
+  if ( element == "vector" || element == "group" )
   {
     d.setFilter( QDir::Dirs | QDir::NoDotAndDotDot );
   }

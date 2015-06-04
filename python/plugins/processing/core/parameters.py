@@ -620,9 +620,10 @@ class ParameterTable(ParameterDataObject):
             self.value = source
             return True
         else:
-            layers = dataobjects.getVectorLayers()
+            self.value = unicode(obj)
+            layers = dataobjects.getTables()
             for layer in layers:
-                if layer.name() == self.value:
+                if layer.name() == self.value or layer.source() == self.value:
                     source = unicode(layer.source())
                     self.value = source
                     return True

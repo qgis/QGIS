@@ -204,8 +204,25 @@ QgsAbstractGeometryV2* QgsGeos::symDifference( const QgsAbstractGeometryV2& geom
 
 double QgsGeos::distance( const QgsAbstractGeometryV2& geom ) const
 {
-  Q_UNUSED( geom );
-  return 0.0;
+  double distance = -1.0;
+  if ( !mGeos )
+  {
+    return distance;
+  }
+
+  GEOSGeometry* otherGeosGeom = asGeos( &geom );
+  if ( !otherGeosGeom )
+  {
+    return distance;
+  }
+
+  try
+  {
+    GEOSDistance_r( geosinit.ctxt, mGeos, otherGeosGeom, &distance );
+  }
+  CATCH_GEOS( -1.0 )
+
+  return distance;
 }
 
 bool QgsGeos::intersects( const QgsAbstractGeometryV2& geom ) const
@@ -253,7 +270,8 @@ double QgsGeos::area() const
 
   try
   {
-    area = GEOSArea_r( geosinit.ctxt, mGeos, &area );
+    if ( GEOSArea_r( geosinit.ctxt, mGeos, &area ) != 1 )
+      return -1.0;
   }
   CATCH_GEOS( -1.0 );
   return area;
@@ -268,7 +286,8 @@ double QgsGeos::length() const
   }
   try
   {
-    length = GEOSLength_r( geosinit.ctxt, mGeos, &length );
+    if ( GEOSLength_r( geosinit.ctxt, mGeos, &length ) != 1 )
+      return -1.0;
   }
   CATCH_GEOS( -1.0 )
   return length;
@@ -633,14 +652,14 @@ GEOSGeometry* QgsGeos::nodeGeometries( const GEOSGeometry *splitLine, const GEOS
     return 0;
 
   GEOSGeometry *geometryBoundary = 0;
-  if ( GEOSGeomTypeId( geom ) == GEOS_POLYGON || GEOSGeomTypeId( geom ) == GEOS_MULTIPOLYGON )
+  if ( GEOSGeomTypeId_r( geosinit.ctxt, geom ) == GEOS_POLYGON || GEOSGeomTypeId_r( geosinit.ctxt, geom ) == GEOS_MULTIPOLYGON )
     geometryBoundary = GEOSBoundary_r( geosinit.ctxt, geom );
   else
     geometryBoundary = GEOSGeom_clone_r( geosinit.ctxt, geom );
 
   GEOSGeometry *splitLineClone = GEOSGeom_clone_r( geosinit.ctxt, splitLine );
   GEOSGeometry *unionGeometry = GEOSUnion_r( geosinit.ctxt, splitLineClone, geometryBoundary );
-  GEOSGeom_destroy( splitLineClone );
+  GEOSGeom_destroy_r( geosinit.ctxt, splitLineClone );
 
   GEOSGeom_destroy_r( geosinit.ctxt, geometryBoundary );
   return unionGeometry;
@@ -692,7 +711,7 @@ int QgsGeos::mergeGeometriesMultiTypeSplit( QVector<GEOSGeometry*>& splitResult 
       else if ( type == GEOS_MULTIPOLYGON )
         splitResult << createGeosCollection( GEOS_MULTIPOLYGON, geomVector );
       else
-        GEOSGeom_destroy( copyList[i] );
+        GEOSGeom_destroy_r( geosinit.ctxt, copyList[i] );
     }
   }
 
@@ -712,20 +731,32 @@ int QgsGeos::mergeGeometriesMultiTypeSplit( QVector<GEOSGeometry*>& splitResult 
   return 0;
 }
 
-GEOSGeometry* QgsGeos::createGeosCollection( int typeId, QVector<GEOSGeometry*> geoms ) const
+GEOSGeometry* QgsGeos::createGeosCollection( int typeId, const QVector<GEOSGeometry*>& geoms )
 {
-  GEOSGeometry **geomarr = new GEOSGeometry*[ geoms.size()];
+  int nNullGeoms = geoms.count( 0 );
+  int nNotNullGeoms = geoms.size() - nNullGeoms;
+
+  GEOSGeometry **geomarr = new GEOSGeometry*[ nNotNullGeoms ];
   if ( !geomarr )
+  {
     return 0;
+  }
 
-  for ( int i = 0; i < geoms.size(); i++ )
-    geomarr[i] = geoms[i];
-
+  int i = 0;
+  QVector<GEOSGeometry*>::const_iterator geomIt = geoms.constBegin();
+  for ( ; geomIt != geoms.constEnd(); ++geomIt )
+  {
+    if ( *geomIt )
+    {
+      geomarr[i] = *geomIt;
+      ++i;
+    }
+  }
   GEOSGeometry *geom = 0;
 
   try
   {
-    geom = GEOSGeom_createCollection_r( geosinit.ctxt, typeId, geomarr, geoms.size() );
+    geom = GEOSGeom_createCollection_r( geosinit.ctxt, typeId, geomarr, nNotNullGeoms );
   }
   catch ( GEOSException &e )
   {
@@ -954,24 +985,13 @@ GEOSGeometry* QgsGeos::asGeos( const QgsAbstractGeometryV2* geom )
   {
     return createGeosPoint( geom, coordDims );
   }
-  else if ( geom->geometryType() == "MultiPoint" )
-  {
-    const QgsGeometryCollectionV2* c = dynamic_cast<const QgsGeometryCollectionV2*>( geom );
-    if ( !c )
-    {
-      return 0;
-    }
-
-    GEOSGeometry **geomarr = new GEOSGeometry*[ c->numGeometries()];
-    for ( int i = 0; i < c->numGeometries(); ++i )
-    {
-      geomarr[i] = createGeosPoint( c->geometryN( i ), coordDims );
-    }
-    return GEOSGeom_createCollection_r( geosinit.ctxt, GEOS_MULTIPOINT, geomarr, c->numGeometries() ); //todo: geos exceptions
-  }
   else if ( QgsWKBTypes::isMultiType( geom->wkbType() ) )
   {
     int geosType = GEOS_MULTIPOINT;
+    if ( geom->geometryType() == "MultiPoint" )
+    {
+      geosType = GEOS_MULTIPOINT;
+    }
     if ( geom->geometryType() == "MultiCurve" || geom->geometryType() == "MultiLineString" )
     {
       geosType = GEOS_MULTILINESTRING;
@@ -990,12 +1010,13 @@ GEOSGeometry* QgsGeos::asGeos( const QgsAbstractGeometryV2* geom )
     {
       return 0;
     }
-    GEOSGeometry **geomarr = new GEOSGeometry*[ c->numGeometries()];
+
+    QVector< GEOSGeometry* > geomVector( c->numGeometries() );
     for ( int i = 0; i < c->numGeometries(); ++i )
     {
-      geomarr[i] = asGeos( c->geometryN( i ) );
+      geomVector[i] = asGeos( c->geometryN( i ) );
     }
-    return GEOSGeom_createCollection_r( geosinit.ctxt, geosType, geomarr, c->numGeometries() ); //todo: geos exceptions
+    return createGeosCollection( geosType, geomVector );
   }
 
   return 0;
@@ -1396,6 +1417,10 @@ GEOSGeometry* QgsGeos::createGeosPolygon( const QgsAbstractGeometryV2* poly )
     return 0;
 
   const QgsCurveV2* exteriorRing = polygon->exteriorRing();
+  if ( !exteriorRing )
+  {
+    return 0;
+  }
   GEOSGeometry* exteriorRingGeos = GEOSGeom_createLinearRing_r( geosinit.ctxt, createCoordinateSequence( exteriorRing ) );
 
   int nHoles = polygon->numInteriorRings();
@@ -1594,26 +1619,26 @@ GEOSGeometry* QgsGeos::reshapeLine( const GEOSGeometry* line, const GEOSGeometry
   GEOSGeometry* nodedGeometry = nodeGeometries( reshapeLineGeos, line );
   if ( !nodedGeometry )
   {
-    GEOSGeom_destroy( beginLineVertex );
-    GEOSGeom_destroy( endLineVertex );
+    GEOSGeom_destroy_r( geosinit.ctxt, beginLineVertex );
+    GEOSGeom_destroy_r( geosinit.ctxt, endLineVertex );
     return 0;
   }
 
   //and merge them together
   GEOSGeometry *mergedLines = GEOSLineMerge_r( geosinit.ctxt, nodedGeometry );
-  GEOSGeom_destroy( nodedGeometry );
+  GEOSGeom_destroy_r( geosinit.ctxt, nodedGeometry );
   if ( !mergedLines )
   {
-    GEOSGeom_destroy( beginLineVertex );
-    GEOSGeom_destroy( endLineVertex );
+    GEOSGeom_destroy_r( geosinit.ctxt, beginLineVertex );
+    GEOSGeom_destroy_r( geosinit.ctxt, endLineVertex );
     return 0;
   }
 
   int numMergedLines = GEOSGetNumGeometries_r( geosinit.ctxt, mergedLines );
   if ( numMergedLines < 2 ) //some special cases. Normally it is >2
   {
-    GEOSGeom_destroy( beginLineVertex );
-    GEOSGeom_destroy( endLineVertex );
+    GEOSGeom_destroy_r( geosinit.ctxt, beginLineVertex );
+    GEOSGeom_destroy_r( geosinit.ctxt, endLineVertex );
     if ( numMergedLines == 1 ) //reshape line is from begin to endpoint. So we keep the reshapeline
       return GEOSGeom_clone_r( geosinit.ctxt, reshapeLineGeos );
     else

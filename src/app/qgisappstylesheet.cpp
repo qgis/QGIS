@@ -18,6 +18,7 @@
 
 #include "qgisappstylesheet.h"
 #include "qgsapplication.h"
+#include "qgisapp.h"
 #include "qgslogger.h"
 
 #include <QFont>
@@ -90,6 +91,8 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
   opts.insert( "groupBoxCustom", settings.value( "groupBoxCustom", QVariant( gbxCustom ) ) );
 
   settings.endGroup(); // "qgis/stylesheet"
+
+  opts.insert( "iconSize", settings.value( "/IconSize", QGIS_ICON_SIZE ) );
 
   return opts;
 }

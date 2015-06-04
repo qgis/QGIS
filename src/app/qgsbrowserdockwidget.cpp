@@ -447,11 +447,6 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( QString name, QWidget * parent ) :
   mBrowserView = new QgsDockBrowserTreeView( this );
   mLayoutBrowser->addWidget( mBrowserView );
 
-  mBtnRefresh->setIcon( QgsApplication::getThemeIcon( "mActionDraw.svg" ) );
-  mBtnAddLayers->setIcon( QgsApplication::getThemeIcon( "mActionAdd.svg" ) );
-  mBtnCollapse->setIcon( QgsApplication::getThemeIcon( "mActionCollapseTree.png" ) );
-  mBtnPropertiesWidget->setIcon( QgsApplication::getThemeIcon( "mActionPropertiesWidget.png" ) );
-
   mWidgetFilter->hide();
   mLeFilter->setPlaceholderText( tr( "Type here to filter current item..." ) );
   // icons from http://www.fatcow.com/free-icons License: CC Attribution 3.0
@@ -483,11 +478,11 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( QString name, QWidget * parent ) :
   action->setCheckable( true );
   menu->addAction( action );
 
-  connect( mBtnRefresh, SIGNAL( clicked() ), this, SLOT( refresh() ) );
-  connect( mBtnAddLayers, SIGNAL( clicked() ), this, SLOT( addSelectedLayers() ) );
-  connect( mBtnCollapse, SIGNAL( clicked() ), mBrowserView, SLOT( collapseAll() ) );
-  connect( mBtnFilterShow, SIGNAL( toggled( bool ) ), this, SLOT( showFilterWidget( bool ) ) );
-  connect( mBtnPropertiesWidget, SIGNAL( toggled( bool ) ), this, SLOT( enablePropertiesWidget( bool ) ) );
+  connect( mActionRefresh, SIGNAL( triggered( bool ) ), this, SLOT( refresh() ) );
+  connect( mActionAddLayers, SIGNAL( triggered( bool ) ), this, SLOT( addSelectedLayers() ) );
+  connect( mActionCollapse, SIGNAL( triggered( bool ) ), mBrowserView, SLOT( collapseAll() ) );
+  connect( mActionShowFilter, SIGNAL( triggered( bool ) ), this, SLOT( showFilterWidget( bool ) ) );
+  connect( mActionPropertiesWidget, SIGNAL( triggered( bool ) ), this, SLOT( enablePropertiesWidget( bool ) ) );
   connect( mLeFilter, SIGNAL( returnPressed() ), this, SLOT( setFilter() ) );
   connect( mLeFilter, SIGNAL( cleared() ), this, SLOT( setFilter() ) );
   connect( mLeFilter, SIGNAL( textChanged( const QString & ) ), this, SLOT( setFilter() ) );
@@ -530,7 +525,7 @@ void QgsBrowserDockWidget::showEvent( QShowEvent * e )
     // objectName used by settingsSection() is not yet set in constructor
     QSettings settings;
     mPropertiesWidgetEnabled = settings.value( settingsSection() + "/propertiesWidgetEnabled", false ).toBool();
-    mBtnPropertiesWidget->setChecked( mPropertiesWidgetEnabled );
+    mActionPropertiesWidget->setChecked( mPropertiesWidgetEnabled );
     mPropertiesWidget->setVisible( false ); // false until item is selected
 
     mPropertiesWidgetHeight = settings.value( settingsSection() + "/propertiesWidgetHeight" ).toFloat();

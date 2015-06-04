@@ -20253,7 +20253,7 @@ Please try a lower resolution or a smaller papersize</source>
         <translation>Stejné šířky sloupců</translation>
     </message>
     <message>
-        <source>Allow to split layer items into multiple columns.</source>
+        <source>Allow splitting layer items into multiple columns.</source>
         <translation>Umožňuje rozdělit položky vrstvy do více sloupců.</translation>
     </message>
     <message>

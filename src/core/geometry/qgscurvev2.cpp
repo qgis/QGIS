@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgscurvev2.h"
+#include "qgslinestringv2.h"
 
 QgsCurveV2::QgsCurveV2(): QgsAbstractGeometryV2()
 {}
@@ -78,4 +79,9 @@ double QgsCurveV2::area() const
   double area = 0.0;
   sumUpArea( area );
   return qAbs( area );
+}
+
+QgsAbstractGeometryV2* QgsCurveV2::segmentize() const
+{
+  return curveToLine();
 }

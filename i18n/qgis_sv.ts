@@ -20273,7 +20273,7 @@ Var vänlig försök med en lägre upplösning eller mindre pappersstorlek</tran
         <translation>Samma kolumnbredd</translation>
     </message>
     <message>
-        <source>Allow to split layer items into multiple columns.</source>
+        <source>Allow splitting layer items into multiple columns.</source>
         <translation>Tillåt lager att delas på flera kolumner.</translation>
     </message>
     <message>

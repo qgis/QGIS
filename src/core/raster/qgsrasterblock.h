@@ -301,6 +301,8 @@ class CORE_EXPORT QgsRasterBlock
     /** \brief Set error */
     void setError( const QgsError & theError ) { mError = theError;}
 
+    QString toString() const;
+
     /** \brief For theExtent and theWidht, theHeight find rectangle covered by subextent.
      * The output rect has x oriented from left to right and y from top to bottom
      * (upper-left to lower-right orientation).

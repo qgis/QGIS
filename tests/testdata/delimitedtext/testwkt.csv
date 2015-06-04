@@ -1,6 +1,6 @@
 id|description|geom_wkt
 1|Point wkt|POINT(10 20)
-2|Multipoint wkt|MULTIPOINT(10 20,11 21)
+2|Multipoint wkt|MULTIPOINT((10 20),(11 21))
 3|Linestring wkt|LINESTRING(10 20,11 21)
 4|Multiline string wkt|MULTILINESTRING((10 20,11 21),(20 30,21 31))
 5|Polygon wkt|POLYGON((10 10,10 20,20 20,20 10,10 10),(14 14,14 16,16 16,14 14))

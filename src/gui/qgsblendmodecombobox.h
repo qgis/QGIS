@@ -37,7 +37,7 @@ class GUI_EXPORT QgsBlendModeComboBox : public QComboBox
     //! Function to set the selected blend mode from QPainter::CompositionMode
     void setBlendMode( QPainter::CompositionMode blendMode );
   private:
-    //! Returns a list of grouped blend modes (with seperators)
+    //! Returns a list of grouped blend modes (with separators)
     QStringList blendModesList() const;
 
     //! Used to map blend modes across to their corresponding

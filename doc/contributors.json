@@ -294,13 +294,13 @@
         "Committer": "Yes",
         "First Commit Message": "Add backbuffering option to resolve flickering on X11 systems",
         "First Commit Date": "07-08-2012",
-        "GIT Nickname": "matthias-kuhn"
+        "GIT Nickname": "m-kuhn"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          8.740423321723938,
-          47.4989812888759
+          7.6256,
+          46.7542
         ]
       }
     },
@@ -649,6 +649,40 @@
         "coordinates": [
           -79.383184,
            43.653226
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Alessandro Pasotti",
+        "Committer": "Yes",
+        "First Commit Message": "Initial GetStyles implementation",
+        "First Commit Date": "06-01-2014",
+        "GIT Nickname": "elpaso"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.251318,
+          44.815437
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Stéphane Brunner",
+        "Committer": "No",
+        "First Commit Message": "Typo in qgis_fr.ts",
+        "First Commit Date": "23-07-2013",
+        "GIT Nickname": "sbrunner"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.66946,
+          46.50825
         ]
       }
     }

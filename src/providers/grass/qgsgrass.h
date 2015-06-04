@@ -71,7 +71,7 @@ class GRASS_LIB_EXPORT QgsGrassObject
 {
   public:
     //! Element type
-    enum Type { None, Raster, Vector, Region };
+    enum Type { None, Raster, Group, Vector, Region };
 
     QgsGrassObject() : mType( None ) {}
     QgsGrassObject( const QString& gisdbase, const QString& location = QString::null,
@@ -107,6 +107,8 @@ class GRASS_LIB_EXPORT QgsGrassObject
     bool mapsetIdentical( const QgsGrassObject &other ) const;
     // get regexp patter for new names, e.g. vectors should not start with number
     static QRegExp newNameRegExp( Type type );
+
+    bool operator==( const QgsGrassObject& other ) const;
   private:
     QString mGisdbase;
     QString mLocation;
@@ -220,10 +222,15 @@ class QgsGrass
     static GRASS_LIB_EXPORT QStringList vectors( const QString& mapsetPath );
 
     static GRASS_LIB_EXPORT QStringList rasters( const QString& gisdbase, const QString& locationName,
-        const QString& mapsetNamee );
+        const QString& mapsetName );
     static GRASS_LIB_EXPORT QStringList rasters( const QString& mapsetPath );
 
-    //! Get list of vector layers
+    // imagery groups
+    static GRASS_LIB_EXPORT QStringList groups( const QString& gisdbase, const QString& locationName,
+        const QString& mapsetName );
+    static GRASS_LIB_EXPORT QStringList groups( const QString& mapsetPath );
+
+    //! Get list of vector layers, throws QgsGrass::Exception
     static GRASS_LIB_EXPORT QStringList vectorLayers( const QString& gisdbase, const QString& location,
         const QString& mapset, const QString& mapName );
 

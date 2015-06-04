@@ -229,7 +229,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
     }
 
     feature.setValid( true );
-    feature.setFields( &mSource->mFields ); // allow name-based attribute lookups
+    feature.setFields( mSource->mFields ); // allow name-based attribute lookups
 
     return true;
   }

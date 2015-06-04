@@ -24,10 +24,11 @@
 #include "qgsapplication.h"
 #include "qgsproviderregistry.h"
 #include "qgisapp.h" // <- for theme icons
-#include <qgsvectorlayer.h>
-#include <qgsmaplayerregistry.h>
+#include "qgsvectorlayer.h"
+#include "qgsmaplayerregistry.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgenericprojectionselector.h"
+#include "qgsslconnect.h"
 
 #include "qgslogger.h"
 
@@ -196,14 +197,11 @@ void QgsNewSpatialiteLayerDialog::on_pbnFindSRID_clicked()
   // to build filter for projection selector
   sqlite3 *db = 0;
   bool status = true;
-  if ( !db )
+  int rc = sqlite3_open_v2( mDatabaseComboBox->currentText().toUtf8(), &db, SQLITE_OPEN_READONLY, NULL );
+  if ( rc != SQLITE_OK )
   {
-    int rc = sqlite3_open_v2( mDatabaseComboBox->currentText().toUtf8(), &db, SQLITE_OPEN_READONLY, NULL );
-    if ( rc != SQLITE_OK )
-    {
-      QMessageBox::warning( this, tr( "SpatiaLite Database" ), tr( "Unable to open the database" ) );
-      return;
-    }
+    QMessageBox::warning( this, tr( "SpatiaLite Database" ), tr( "Unable to open the database" ) );
+    return;
   }
 
   // load up the srid table
@@ -213,7 +211,7 @@ void QgsNewSpatialiteLayerDialog::on_pbnFindSRID_clicked()
 
   QSet<QString> myCRSs;
 
-  int rc = sqlite3_prepare( db, sql.toUtf8(), sql.toUtf8().length(), &ppStmt, &pzTail );
+  rc = sqlite3_prepare( db, sql.toUtf8(), sql.toUtf8().length(), &ppStmt, &pzTail );
   // XXX Need to free memory from the error msg if one is set
   if ( rc == SQLITE_OK )
   {
@@ -381,10 +379,8 @@ bool QgsNewSpatialiteLayerDialog::apply()
                            .arg( quotedValue( leGeometryColumn->text() ) );
   QgsDebugMsg( sqlCreateIndex ); // OK
 
-  spatialite_init( 0 );
-
   sqlite3 *db;
-  int rc = sqlite3_open( mDatabaseComboBox->currentText().toUtf8(), &db );
+  int rc = QgsSLConnect::sqlite3_open( mDatabaseComboBox->currentText().toUtf8(), &db );
   if ( rc != SQLITE_OK )
   {
     QMessageBox::warning( this,
@@ -447,6 +443,8 @@ bool QgsNewSpatialiteLayerDialog::apply()
         }
       }
     }
+
+    QgsSLConnect::sqlite3_close( db );
   }
 
   return false;

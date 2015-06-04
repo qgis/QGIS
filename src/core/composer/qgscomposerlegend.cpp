@@ -510,6 +510,7 @@ void QgsComposerLegend::setComposerMap( const QgsComposerMap* map )
     disconnect( mComposerMap, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
     disconnect( mComposerMap, SIGNAL( itemChanged() ), this, SLOT( updateFilterByMap() ) );
     disconnect( mComposerMap, SIGNAL( extentChanged() ), this, SLOT( updateFilterByMap() ) );
+    disconnect( mComposerMap, SIGNAL( layerStyleOverridesChanged() ), this, SLOT( mapLayerStyleOverridesChanged() ) );
   }
 
   mComposerMap = map;
@@ -519,6 +520,7 @@ void QgsComposerLegend::setComposerMap( const QgsComposerMap* map )
     QObject::connect( map, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
     QObject::connect( map, SIGNAL( itemChanged() ), this, SLOT( updateFilterByMap() ) );
     QObject::connect( map, SIGNAL( extentChanged() ), this, SLOT( updateFilterByMap() ) );
+    QObject::connect( map, SIGNAL( layerStyleOverridesChanged() ), this, SLOT( mapLayerStyleOverridesChanged() ) );
   }
 
   updateFilterByMap();
@@ -529,10 +531,32 @@ void QgsComposerLegend::invalidateCurrentMap()
   setComposerMap( 0 );
 }
 
+void QgsComposerLegend::mapLayerStyleOverridesChanged()
+{
+  if ( !mComposerMap )
+    return;
+
+  // map's style has been changed, so make sure to update the legend here
+
+  mLegendModel2->setLayerStyleOverrides( mComposerMap->layerStyleOverrides() );
+
+  foreach ( QgsLayerTreeLayer* nodeLayer, mLegendModel2->rootGroup()->findLayers() )
+    mLegendModel2->refreshLayerLegend( nodeLayer );
+
+  adjustBoxSize();
+  update();
+}
+
 void QgsComposerLegend::updateFilterByMap()
 {
   if ( isRemoved() )
     return;
+
+  if ( mComposerMap )
+    mLegendModel2->setLayerStyleOverrides( mComposerMap->layerStyleOverrides() );
+  else
+    mLegendModel2->setLayerStyleOverrides( QMap<QString, QString>() );
+
 
   if ( mComposerMap && mLegendFilterByMap )
   {

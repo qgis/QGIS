@@ -20,6 +20,21 @@
 #include "qgsgrass.h"
 #include "qgsgrassimport.h"
 
+/** Class to share actions (we cannot inherit from multiple QObjects */
+class QgsGrassItemActions : public QObject
+{
+    Q_OBJECT
+  public:
+    QgsGrassItemActions() {};
+
+    QList<QAction*> actions();
+
+    static QgsGrassItemActions* instance();
+
+  public slots:
+    void openOptions();
+};
+
 class QgsGrassImportItem;
 
 class QgsGrassLocationItem : public QgsDirectoryItem
@@ -30,6 +45,7 @@ class QgsGrassLocationItem : public QgsDirectoryItem
     QIcon icon() override { return QgsDataItem::icon(); }
 
     QVector<QgsDataItem*> createChildren() override;
+    virtual QList<QAction*> actions() override;
 };
 
 class QgsGrassMapsetItem : public QgsDirectoryItem
@@ -41,11 +57,13 @@ class QgsGrassMapsetItem : public QgsDirectoryItem
     QIcon icon() override { return QgsDataItem::icon(); }
 
     QVector<QgsDataItem*> createChildren() override;
+    virtual QList<QAction*> actions() override;
     virtual bool acceptDrop() override { return true; }
     virtual bool handleDrop( const QMimeData * data, Qt::DropAction action ) override;
 
   public slots:
     void onImportFinished( QgsGrassImport* import );
+
   private:
     //void showImportError(const QString& error);
     QString mLocation;
@@ -77,6 +95,7 @@ class QgsGrassObjectItem : public QgsLayerItem, public QgsGrassObjectItemBase
                         bool showObjectActions = true );
 
     virtual QList<QAction*> actions() override;
+    virtual bool equal( const QgsDataItem *other ) override;
 
   public slots:
     void renameGrassObject();
@@ -115,10 +134,7 @@ class QgsGrassVectorLayerItem : public QgsGrassObjectItem
                              QString path, QString uri, LayerType layerType, bool singleLayer );
 
     QString layerName() const override;
-    //virtual QList<QAction*> actions() override;
-
-  public slots:
-    //void deleteMap();
+    virtual bool equal( const QgsDataItem *other ) override;
 
   private:
     // layer from single layer vector map (cannot have delete action)
@@ -133,10 +149,23 @@ class QgsGrassRasterItem : public QgsGrassObjectItem
                         QString path, QString uri, bool isExternal );
 
     virtual QIcon icon() override;
+    virtual bool equal( const QgsDataItem *other ) override;
 
   private:
     // is external created by r.external
     bool mExternal;
+};
+
+// Imagery group
+class QgsGrassGroupItem : public QgsGrassObjectItem
+{
+    Q_OBJECT
+  public:
+    QgsGrassGroupItem( QgsDataItem* parent, QgsGrassObject grassObject,
+                       QString path, QString uril );
+
+    virtual QIcon icon() override;
+
 };
 
 // item representing a layer being imported
@@ -145,11 +174,14 @@ class QgsGrassImportItem : public QgsDataItem, public QgsGrassObjectItemBase
     Q_OBJECT
   public:
     QgsGrassImportItem( QgsDataItem* parent, const QString& name, const QString& path, QgsGrassImport* import );
-
+    ~QgsGrassImportItem();
     //virtual void setState( State state ) override {
     //  QgsDataItem::setState(state);
     //} // do nothing to keep Populating
     virtual QList<QAction*> actions() override;
+    virtual QIcon icon() override;
+    // Init animated icon, to be called from main UI thread
+    static void initIcon();
 
   public slots:
     virtual void refresh() override {}
@@ -160,6 +192,9 @@ class QgsGrassImportItem : public QgsDataItem, public QgsGrassObjectItemBase
     virtual void refresh( QVector<QgsDataItem*> children ) override { Q_UNUSED( children )};
     //bool mDeleteAction;
     QgsGrassImport* mImport;
+
+  private:
+    static QgsAnimatedIcon *mImportIcon;
 };
 
 #endif // QGSGRASSPROVIDERMODULE_H

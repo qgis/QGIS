@@ -50,7 +50,7 @@ Build-Depends:
  xvfb, xauth,
  xfonts-base, xfonts-100dpi, xfonts-75dpi, xfonts-scalable,
 #sid-oracle# oracle-instantclient11.2-devel,
- spawn-fcgi, lighttpd, poppler-utils, locales
+ spawn-fcgi, lighttpd, poppler-utils, locales, qt4-doc-html
 Build-Conflicts: libqgis-dev, qgis-dev
 #sid stretch jessie sid-oracle vivid#Standards-Version: 3.9.6
 #wheezy#Standards-Version: 3.9.3
@@ -244,6 +244,26 @@ Description: QGIS - development files
  This package contains the headers and libraries needed to develop plugins for
  QGIS.
 
+Package: qgis-dbg
+Architecture: any
+Section: debug
+Priority: extra
+Depends:
+ libqgis-core{QGIS_ABI} (= ${binary:Version}),
+ libqgis-gui{QGIS_ABI} (= ${binary:Version}),
+ libqgis-analysis{QGIS_ABI} (= ${binary:Version}),
+ libqgis-networkanalysis{QGIS_ABI} (= ${binary:Version}),
+ libqgis-server{QGIS_ABI} (= ${binary:Version}),
+ libqgisgrass{QGIS_ABI} (= ${binary:Version}),
+ libqgispython{QGIS_ABI} (= ${binary:Version}),
+ ${misc:Depends}
+Suggests: gdb
+Description: QGIS - debugging symbols
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains debugging symbols.
+
 Package: qgis-plugin-grass
 Architecture: any
 Depends:
@@ -397,6 +417,8 @@ Section: doc
 Depends:
  libjs-jquery,
  ${misc:Depends}
+Recommends:
+ qt4-doc-html
 Description: QGIS API documentation
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.

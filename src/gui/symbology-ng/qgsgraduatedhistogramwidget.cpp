@@ -171,7 +171,7 @@ bool QgsGraduatedHistogramEventFilter::eventFilter( QObject *object, QEvent *eve
   {
     case QEvent::MouseButtonPress:
     {
-      const QMouseEvent* mouseEvent = dynamic_cast<QMouseEvent* >( event );
+      const QMouseEvent* mouseEvent = static_cast<QMouseEvent* >( event );
       if ( mouseEvent->button() == Qt::LeftButton )
       {
         emit mousePress( posToValue( mouseEvent->pos() ) );
@@ -180,7 +180,7 @@ bool QgsGraduatedHistogramEventFilter::eventFilter( QObject *object, QEvent *eve
     }
     case QEvent::MouseButtonRelease:
     {
-      const QMouseEvent* mouseEvent = dynamic_cast<QMouseEvent* >( event );
+      const QMouseEvent* mouseEvent = static_cast<QMouseEvent* >( event );
       if ( mouseEvent->button() == Qt::LeftButton )
       {
         emit mouseRelease( posToValue( mouseEvent->pos() ) );

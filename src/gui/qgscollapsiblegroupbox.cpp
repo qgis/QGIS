@@ -601,7 +601,7 @@ void QgsCollapsibleGroupBox::loadState()
   setUpdatesEnabled( true );
 }
 
-void QgsCollapsibleGroupBox::saveState()
+void QgsCollapsibleGroupBox::saveState() const
 {
   //QgsDebugMsg( "Entered" );
   if ( !mSettings )

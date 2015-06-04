@@ -333,24 +333,7 @@ QgsLineStringV2* QgsCompoundCurveV2::curveToLine() const
     line->append( currentLine );
     delete currentLine;
   }
-#if 0
-  if ( curveIt == mCurves.constBegin() )
-  {
-    line = ( *curveIt )->curveToLine();
-    if ( !line )
-    {
-      return 0;
-    }
-  }
-  else
-  {
-    currentLine = ( *curveIt )->curveToLine();
-    line->append( currentLine );
-    delete currentLine;
-  }
-}
-#endif //0
-return line;
+  return line;
 }
 
 const QgsCurveV2* QgsCompoundCurveV2::curveAt( int i ) const
@@ -413,7 +396,7 @@ void QgsCompoundCurveV2::addVertex( const QgsPointV2& pt )
   }
   else //create new QgsLineStringV2* with point in it
   {
-    line = dynamic_cast<QgsLineStringV2*>( lastCurve );
+    line = static_cast<QgsLineStringV2*>( lastCurve );
   }
   line->addVertex( pt );
 }
@@ -470,13 +453,16 @@ void QgsCompoundCurveV2::drawAsPolygon( QPainter& p ) const
 bool QgsCompoundCurveV2::insertVertex( const QgsVertexId& position, const QgsPointV2& vertex )
 {
   QList< QPair<int, QgsVertexId> > curveIds = curveVertexId( position );
-  QList< QPair<int, QgsVertexId> >::const_iterator idIt = curveIds.constBegin();
-  for ( ; idIt != curveIds.constEnd(); ++idIt )
+  if ( curveIds.size() < 1 )
   {
-    //return after first result
-    return mCurves[idIt->first]->insertVertex( idIt->second, vertex );
+    return false;
   }
-  return false;
+  int curveId = curveIds.at( 0 ).first;
+  if ( curveId >= mCurves.size() )
+  {
+    return false;
+  }
+  return mCurves[curveId]->insertVertex( curveIds.at( 0 ).second, vertex );
 }
 
 bool QgsCompoundCurveV2::moveVertex( const QgsVertexId& position, const QgsPointV2& newPos )
@@ -563,5 +549,18 @@ void QgsCompoundCurveV2::close()
     return;
   }
   addVertex( startPoint() );
+}
+
+bool QgsCompoundCurveV2::hasCurvedSegments() const
+{
+  QList< QgsCurveV2* >::const_iterator curveIt = mCurves.constBegin();
+  for ( ; curveIt != mCurves.constEnd(); ++curveIt )
+  {
+    if (( *curveIt )->hasCurvedSegments() )
+    {
+      return true;
+    }
+  }
+  return false;
 }
 

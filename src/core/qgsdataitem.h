@@ -37,6 +37,38 @@ class QgsDataItem;
 
 typedef QgsDataItem * dataItem_t( QString, QgsDataItem* );
 
+/** Animated icon is keeping an animation running if there are listeners connected to frameChanged */
+class CORE_EXPORT QgsAnimatedIcon : public QObject
+{
+    Q_OBJECT
+  public:
+
+    /** Constructor
+     * @param iconPath path to a movie, e.g. animated GIF */
+    QgsAnimatedIcon( const QString & iconPath = QString::null );
+
+    QString iconPath() const;
+    void setIconPath( const QString & iconPath );
+    QIcon icon() const { return mIcon; }
+
+    /** Connect listener to frameChanged() signal */
+    void connectFrameChanged( const QObject * receiver, const char * method );
+    /** Disconnect listener from frameChanged() signal */
+    void disconnectFrameChanged( const QObject * receiver, const char * method );
+
+  public slots:
+    void onFrameChanged();
+
+  signals:
+    /** Emited when icon changed */
+    void frameChanged();
+
+  private:
+    void resetMovie();
+    int mCount; // number of listeners
+    QMovie * mMovie;
+    QIcon mIcon;
+};
 
 /** Base class for all items in the model.
  *  Parent/children hierarchy is not based on QObject. */
@@ -172,7 +204,6 @@ class CORE_EXPORT QgsDataItem : public QObject
   protected:
     virtual void populate( QVector<QgsDataItem*> children );
     virtual void refresh( QVector<QgsDataItem*> children );
-    QIcon populatingIcon() { return mPopulatingIcon; }
     /** The item is scheduled to be deleted. E.g. if deleteLater() is called when
      * item is in Populating state (createChildren() running in another thread),
      * the deferredDelete() returns true and item will be deleted once Populating finished.
@@ -225,7 +256,6 @@ class CORE_EXPORT QgsDataItem : public QObject
     void emitDataChanged( );
     void emitStateChanged( QgsDataItem* item, QgsDataItem::State oldState );
     virtual void childrenCreated();
-    void setPopulatingIcon();
 
   signals:
     void beginInsertItems( QgsDataItem* parent, int first, int last );
@@ -242,9 +272,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     bool mDeferredDelete;
     QFutureWatcher< QVector <QgsDataItem*> > *mFutureWatcher;
     // number of items currently in loading (populating) state
-    static int mPopulatingCount;
-    static QMovie * mPopulatingMovie;
-    static QIcon mPopulatingIcon;
+    static QgsAnimatedIcon * mPopulatingIcon;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsDataItem::Capabilities )

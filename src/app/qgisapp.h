@@ -1662,7 +1662,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsVectorLayerTools* mVectorLayerTools;
 
-    QToolButton* mBtnFilterLegend;
+    QAction* mActionFilterLegend;
 
     QgsSnappingUtils* mSnappingUtils;
 

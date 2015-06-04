@@ -84,7 +84,6 @@
          <property name="text">
           <string/>
          </property>
-         <zorder>stackedWidget</zorder>
         </widget>
        </item>
        <item row="0" column="1">

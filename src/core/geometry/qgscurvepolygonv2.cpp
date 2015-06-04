@@ -121,6 +121,10 @@ bool QgsCurvePolygonV2::fromWkb( const unsigned char* wkb )
     {
       currentCurve = new QgsCompoundCurveV2();
     }
+    else
+    {
+      return false;
+    }
     currentCurve->fromWkb( wkbPtr );
     currentCurveSize = currentCurve->wkbSize();
     if ( i == 0 )
@@ -631,4 +635,27 @@ bool QgsCurvePolygonV2::deleteVertex( const QgsVertexId& vId )
     mBoundingBox = QgsRectangle();
   }
   return success;
+}
+
+bool QgsCurvePolygonV2::hasCurvedSegments() const
+{
+  if ( mExteriorRing && mExteriorRing->hasCurvedSegments() )
+  {
+    return true;
+  }
+
+  QList<QgsCurveV2*>::const_iterator it = mInteriorRings.constBegin();
+  for ( ; it != mInteriorRings.constEnd(); ++it )
+  {
+    if (( *it )->hasCurvedSegments() )
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+QgsAbstractGeometryV2* QgsCurvePolygonV2::segmentize() const
+{
+  return toPolygon();
 }

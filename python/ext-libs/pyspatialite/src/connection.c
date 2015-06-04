@@ -29,6 +29,7 @@
 #include "prepare_protocol.h"
 #include "util.h"
 #include "sqlitecompat.h"
+#include "spatialite.h"
 
 #include "pythread.h"
 
@@ -81,7 +82,6 @@ int pysqlite_connection_init(pysqlite_Connection* self, PyObject* args, PyObject
     }
 
     self->initialized = 1;
-    spatialite_init(0);
     self->begin_statement = NULL;
 
     self->statement_cache = NULL;
@@ -106,7 +106,15 @@ int pysqlite_connection_init(pysqlite_Connection* self, PyObject* args, PyObject
         }
 
         Py_BEGIN_ALLOW_THREADS
+#if defined(SPATIALITE_HAS_INIT_EX)
+        self->slconn = spatialite_alloc_connection();
+#else
+        spatialite_init( 0 );
+#endif
         rc = sqlite3_open(PyString_AsString(database_utf8), &self->db);
+#if defined(SPATIALITE_HAS_INIT_EX)
+        spatialite_init_ex( self->db, self->slconn, 0 );
+#endif
         Py_END_ALLOW_THREADS
 
         Py_DECREF(database_utf8);
@@ -272,6 +280,9 @@ void pysqlite_connection_dealloc(pysqlite_Connection* self)
     if (self->db) {
         Py_BEGIN_ALLOW_THREADS
         sqlite3_close(self->db);
+#if defined(SPATIALITE_HAS_INIT_EX)
+        spatialite_cleanup_ex( self->slconn );
+#endif
         Py_END_ALLOW_THREADS
     } else if (self->apsw_connection) {
         ret = PyObject_CallMethod(self->apsw_connection, "close", "");
@@ -372,6 +383,9 @@ PyObject* pysqlite_connection_close(pysqlite_Connection* self, PyObject* args)
         } else {
             Py_BEGIN_ALLOW_THREADS
             rc = sqlite3_close(self->db);
+#if defined(SPATIALITE_HAS_INIT_EX)
+            spatialite_cleanup_ex( self->slconn );
+#endif
             Py_END_ALLOW_THREADS
 
             if (rc != SQLITE_OK) {

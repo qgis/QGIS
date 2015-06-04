@@ -177,13 +177,24 @@ bool QgsGeometryCollectionV2::fromWkb( const unsigned char * wkb )
   wkbPtr >> mWkbType;
   int nGeometries = 0;
   wkbPtr >> nGeometries;
-  mGeometries.resize( nGeometries );
+
+  QList<QgsAbstractGeometryV2*> geometryList;
   for ( int i = 0; i < nGeometries; ++i )
   {
     QgsAbstractGeometryV2* geom = QgsGeometryImport::geomFromWkb( wkbPtr );
-    mGeometries[i] = geom;
-    wkbPtr += geom->wkbSize();
+    if ( geom )
+    {
+      geometryList.append( geom );
+      wkbPtr += geom->wkbSize();
+    }
   }
+
+  mGeometries.resize( geometryList.size() );
+  for ( int i = 0; i < geometryList.size(); ++i )
+  {
+    mGeometries[i] = geometryList.at( i );
+  }
+
   return true;
 }
 
@@ -198,7 +209,10 @@ int QgsGeometryCollectionV2::wkbSize() const
   int size = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
   foreach ( const QgsAbstractGeometryV2 *geom, mGeometries )
   {
-    size += geom->wkbSize();
+    if ( geom )
+    {
+      size += geom->wkbSize();
+    }
   }
   return size;
 }
@@ -214,10 +228,13 @@ unsigned char* QgsGeometryCollectionV2::asWkb( int& binarySize ) const
   foreach ( const QgsAbstractGeometryV2 *geom, mGeometries )
   {
     int geomWkbLen = 0;
-    unsigned char* geomWkb = geom->asWkb( geomWkbLen );
-    memcpy( wkb, geomWkb, geomWkbLen );
-    wkb += geomWkbLen;
-    delete[] geomWkb;
+    if ( geom )
+    {
+      unsigned char* geomWkb = geom->asWkb( geomWkbLen );
+      memcpy( wkb, geomWkb, geomWkbLen );
+      wkb += geomWkbLen;
+      delete[] geomWkb;
+    }
   }
   return geomPtr;
 }
@@ -445,4 +462,17 @@ bool QgsGeometryCollectionV2::fromCollectionWkt( const QString &wkt, const QList
   }
   qDeleteAll( subtypes );
   return true;
+}
+
+bool QgsGeometryCollectionV2::hasCurvedSegments() const
+{
+  QVector< QgsAbstractGeometryV2* >::const_iterator it = mGeometries.constBegin();
+  for ( ; it != mGeometries.constEnd(); ++it )
+  {
+    if (( *it )->hasCurvedSegments() )
+    {
+      return true;
+    }
+  }
+  return false;
 }

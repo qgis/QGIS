@@ -32,6 +32,7 @@ extern "C"
 #include <grass/version.h>
 #include <grass/gis.h>
 #include <grass/raster.h>
+#include <grass/imagery.h>
 }
 
 QgsGrassImport::QgsGrassImport( QgsGrassObject grassObject )
@@ -90,6 +91,17 @@ QStringList QgsGrassImport::names() const
   return list;
 }
 
+bool QgsGrassImport::isCanceled() const
+{
+  return mCanceled;
+}
+
+void QgsGrassImport::cancel()
+{
+  QgsDebugMsg( "entered" );
+  mCanceled = true;
+}
+
 //------------------------------ QgsGrassRasterImport ------------------------------------
 QgsGrassRasterImport::QgsGrassRasterImport( QgsRasterPipe* pipe, const QgsGrassObject& grassObject,
     const QgsRectangle &extent, int xSize, int ySize )
@@ -133,9 +145,26 @@ bool QgsGrassRasterImport::import()
     return false;
   }
 
+  int redBand = 0;
+  int greenBand = 0;
+  int blueBand = 0;
   for ( int band = 1; band <= provider->bandCount(); band++ )
   {
     QgsDebugMsg( QString( "band = %1" ).arg( band ) );
+    int colorInterpretation = provider->colorInterpretation( band );
+    if ( colorInterpretation ==  QgsRaster::RedBand )
+    {
+      redBand = band;
+    }
+    else if ( colorInterpretation ==  QgsRaster::GreenBand )
+    {
+      greenBand = band;
+    }
+    else if ( colorInterpretation ==  QgsRaster::BlueBand )
+    {
+      blueBand = band;
+    }
+
     QGis::DataType qgis_out_type = QGis::UnknownDataType;
     RASTER_MAP_TYPE data_type = -1;
     switch ( provider->dataType( band ) )
@@ -196,6 +225,11 @@ bool QgsGrassRasterImport::import()
     // calculate reasonable block size (5MB)
     int maximumTileHeight = 5000000 / mXSize;
     maximumTileHeight = std::max( 1, maximumTileHeight );
+    // smaller if reprojecting so that it can be canceled quickly
+    if ( mPipe->projector() )
+    {
+      maximumTileHeight = std::max( 1, 100000 / mXSize );
+    }
 
     QgsRasterIterator iter( mPipe->last() );
     iter.setMaximumTileWidth( mXSize );
@@ -208,13 +242,14 @@ bool QgsGrassRasterImport::import()
     int iterCols = 0;
     int iterRows = 0;
     QgsRasterBlock* block = 0;
+    process->setReadChannel( QProcess::StandardOutput );
     while ( iter.readNextRasterPart( band, iterCols, iterRows, &block, iterLeft, iterTop ) )
     {
       for ( int row = 0; row < iterRows; row++ )
       {
         if ( !block->convert( qgis_out_type ) )
         {
-          setError( "cannot convert data type" );
+          setError( tr( "Cannot convert block (%1) to data type %2" ).arg( block->toString() ).arg( qgis_out_type ) );
           delete block;
           return false;
         }
@@ -228,6 +263,13 @@ bool QgsGrassRasterImport::import()
         }
         outStream << false; // not canceled
         outStream << byteArray;
+
+#ifndef Q_OS_WIN
+        // wait until the row is written to allow quick cancel (don't send data to buffer)
+        process->waitForReadyRead();
+        bool result;
+        outStream >> result;
+#endif
       }
       delete block;
       if ( isCanceled() )
@@ -267,6 +309,31 @@ bool QgsGrassRasterImport::import()
     }
 
     delete process;
+  }
+  QgsDebugMsg( QString( "redBand = %1 greenBand = %2 blueBand = %3" ).arg( redBand ).arg( greenBand ).arg( blueBand ) );
+  if ( redBand > 0 && greenBand > 0 && blueBand > 0 )
+  {
+    // TODO: check if the group exists
+    // I_find_group()
+    QString name = mGrassObject.name();
+
+    G_TRY
+    {
+      QgsGrass::setMapset( mGrassObject.gisdbase(), mGrassObject.location(), mGrassObject.mapset() );
+      struct Ref ref;
+      I_get_group_ref( name.toUtf8().data(), &ref );
+      QString redName = name + QString( "_%1" ).arg( redBand );
+      QString greenName = name + QString( "_%1" ).arg( greenBand );
+      QString blueName = name + QString( "_%1" ).arg( blueBand );
+      I_add_file_to_group_ref( redName.toUtf8().data(), mGrassObject.mapset().toUtf8().data(), &ref );
+      I_add_file_to_group_ref( greenName.toUtf8().data(), mGrassObject.mapset().toUtf8().data(), &ref );
+      I_add_file_to_group_ref( blueName.toUtf8().data(), mGrassObject.mapset().toUtf8().data(), &ref );
+      I_put_group_ref( name.toUtf8().data(), &ref );
+    }
+    G_CATCH( QgsGrass::Exception &e )
+    {
+      QgsDebugMsg( QString( "Cannot create group: %1" ).arg( e.what() ) );
+    }
   }
   return true;
 }
@@ -407,17 +474,25 @@ bool QgsGrassVectorImport::import()
       }
       outStream << false; // not canceled
       outStream << feature;
+
+      // wait until the feature is written to allow quick cancel (don't send data to buffer)
+      process->waitForReadyRead();
+      bool result;
+      outStream >> result;
     }
     feature = QgsFeature(); // indicate end by invalid feature
     outStream << false; // not canceled
     outStream << feature;
-    QgsDebugMsg( "features sent" );
+
+    process->waitForReadyRead();
+    bool result;
+    outStream >> result;
   }
   iterator.close();
 
   process->setReadChannel( QProcess::StandardOutput );
-
   bool result;
+  process->waitForReadyRead();
   outStream >> result;
   QgsDebugMsg( QString( "result = %1" ).arg( result ) );
 

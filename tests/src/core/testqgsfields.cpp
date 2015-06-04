@@ -230,6 +230,7 @@ void TestQgsFields::remove()
   fields.remove( 0 );
   QCOMPARE( fields.count(), 1 );
   QCOMPARE( fields.at( 0 ).name(), QString( "testfield2" ) );
+  QCOMPARE( fields.indexFromName( "testfield2" ), 0 );
 }
 
 void TestQgsFields::extend()

@@ -63,12 +63,6 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     QgsAttributeTableModel( QgsVectorLayerCache *layerCache, QObject *parent = 0 );
 
     /**
-     * Loads the layer into the model
-     * Preferably to be called, before basing any other models on this model
-     */
-    virtual void loadLayer();
-
-    /**
      * Returns the number of rows
      * @param parent parent index
      */
@@ -224,6 +218,13 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      */
     const QgsAttributeEditorContext& editorContext() const { return mEditorContext; }
 
+  public slots:
+    /**
+     * Loads the layer into the model
+     * Preferably to be called, before using this model as source for any other proxy model
+     */
+    virtual void loadLayer();
+
   signals:
     /**
      * Model has been changed
@@ -261,10 +262,10 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      */
     virtual void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
     /**
-     * Launched when a feature has been deleted
-     * @param fid feature id
+     * Launched when eatures have been deleted
+     * @param fids feature ids
      */
-    virtual void featureDeleted( QgsFeatureId fid );
+    virtual void featuresDeleted( QgsFeatureIds fids );
     /**
      * Launched when a feature has been added
      * @param fid feature id
