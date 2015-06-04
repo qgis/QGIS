@@ -675,6 +675,7 @@ void QgsFeatureRendererV2::convertSymbolSizeScale( QgsSymbolV2 * symbol, QgsSymb
       const QgsDataDefined dd( QString::number( s->size() ) + " * (" + field + ")" );
       s->setDataDefinedSize( dd );
     }
+    s->setScaleMethod( QgsSymbolV2::ScaleDiameter );
   }
   else if ( symbol->type() == QgsSymbolV2::Line )
   {
