@@ -112,7 +112,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     static int numberOfGeometries( GEOSGeometry* g );
     static GEOSGeometry* nodeGeometries( const GEOSGeometry *splitLine, const GEOSGeometry *geom );
     int mergeGeometriesMultiTypeSplit( QVector<GEOSGeometry*>& splitResult ) const;
-    GEOSGeometry* createGeosCollection( int typeId, QVector<GEOSGeometry*> geoms ) const;
+    static GEOSGeometry* createGeosCollection( int typeId, const QVector<GEOSGeometry*>& geoms );
 
     static GEOSGeometry* createGeosPoint( const QgsAbstractGeometryV2* point, int coordDims );
     static GEOSGeometry* createGeosLinestring( const QgsAbstractGeometryV2* curve );

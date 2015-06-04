@@ -731,20 +731,32 @@ int QgsGeos::mergeGeometriesMultiTypeSplit( QVector<GEOSGeometry*>& splitResult 
   return 0;
 }
 
-GEOSGeometry* QgsGeos::createGeosCollection( int typeId, QVector<GEOSGeometry*> geoms ) const
+GEOSGeometry* QgsGeos::createGeosCollection( int typeId, const QVector<GEOSGeometry*>& geoms )
 {
-  GEOSGeometry **geomarr = new GEOSGeometry*[ geoms.size()];
+  int nNullGeoms = geoms.count( 0 );
+  int nNotNullGeoms = geoms.size() - nNullGeoms;
+
+  GEOSGeometry **geomarr = new GEOSGeometry*[ nNotNullGeoms ];
   if ( !geomarr )
+  {
     return 0;
+  }
 
-  for ( int i = 0; i < geoms.size(); i++ )
-    geomarr[i] = geoms[i];
-
+  int i = 0;
+  QVector<GEOSGeometry*>::const_iterator geomIt = geoms.constBegin();
+  for ( ; geomIt != geoms.constEnd(); ++geomIt )
+  {
+    if ( *geomIt )
+    {
+      geomarr[i] = *geomIt;
+      ++i;
+    }
+  }
   GEOSGeometry *geom = 0;
 
   try
   {
-    geom = GEOSGeom_createCollection_r( geosinit.ctxt, typeId, geomarr, geoms.size() );
+    geom = GEOSGeom_createCollection_r( geosinit.ctxt, typeId, geomarr, nNotNullGeoms );
   }
   catch ( GEOSException &e )
   {
@@ -973,24 +985,13 @@ GEOSGeometry* QgsGeos::asGeos( const QgsAbstractGeometryV2* geom )
   {
     return createGeosPoint( geom, coordDims );
   }
-  else if ( geom->geometryType() == "MultiPoint" )
-  {
-    const QgsGeometryCollectionV2* c = dynamic_cast<const QgsGeometryCollectionV2*>( geom );
-    if ( !c )
-    {
-      return 0;
-    }
-
-    GEOSGeometry **geomarr = new GEOSGeometry*[ c->numGeometries()];
-    for ( int i = 0; i < c->numGeometries(); ++i )
-    {
-      geomarr[i] = createGeosPoint( c->geometryN( i ), coordDims );
-    }
-    return GEOSGeom_createCollection_r( geosinit.ctxt, GEOS_MULTIPOINT, geomarr, c->numGeometries() ); //todo: geos exceptions
-  }
   else if ( QgsWKBTypes::isMultiType( geom->wkbType() ) )
   {
     int geosType = GEOS_MULTIPOINT;
+    if ( geom->geometryType() == "MultiPoint" )
+    {
+      geosType = GEOS_MULTIPOINT;
+    }
     if ( geom->geometryType() == "MultiCurve" || geom->geometryType() == "MultiLineString" )
     {
       geosType = GEOS_MULTILINESTRING;
@@ -1010,41 +1011,12 @@ GEOSGeometry* QgsGeos::asGeos( const QgsAbstractGeometryV2* geom )
       return 0;
     }
 
-    try
+    QVector< GEOSGeometry* > geomVector( c->numGeometries() );
+    for ( int i = 0; i < c->numGeometries(); ++i )
     {
-
-      //GEOSGeometry **geomarr = new GEOSGeometry*[ c->numGeometries()];
-      QList< GEOSGeometry* > validGeoms;
-      GEOSGeometry* geosGeom = 0;
-      for ( int i = 0; i < c->numGeometries(); ++i )
-      {
-        geosGeom = asGeos( c->geometryN( i ) );
-        if ( geosGeom )
-        {
-          validGeoms.append( geosGeom );
-        }
-      }
-
-      if ( validGeoms.size() < 1 )
-      {
-        return 0;
-      }
-
-      GEOSGeometry **geomarr = new GEOSGeometry*[ validGeoms.size()];
-      for ( int i = 0; i < validGeoms.size(); ++i )
-      {
-        geomarr[i] = validGeoms.at( i );
-      }
-
-      return GEOSGeom_createCollection_r( geosinit.ctxt, geosType, geomarr, validGeoms.size() );
+      geomVector[i] = asGeos( c->geometryN( i ) );
     }
-
-    catch ( GEOSException &e )
-    {
-      Q_UNUSED( e );
-      //delete?
-      return 0;
-    }
+    return createGeosCollection( geosType, geomVector );
   }
 
   return 0;
