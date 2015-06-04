@@ -7146,7 +7146,12 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
       }
       else if ( vlayer )
       {
-        dupLayer = new QgsVectorLayer( vlayer->source(), layerDupName, vlayer->providerType() );
+        QgsVectorLayer *dupVLayer = new QgsVectorLayer( vlayer->source(), layerDupName, vlayer->providerType() );
+        if ( vlayer->dataProvider() )
+        {
+          dupVLayer->setProviderEncoding( vlayer->dataProvider()->encoding() );
+        }
+        dupLayer = dupVLayer;
       }
     }
 
