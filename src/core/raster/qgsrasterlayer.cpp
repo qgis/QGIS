@@ -708,7 +708,19 @@ void QgsRasterLayer::setDataProvider( QString const & provider )
   QgsDebugMsg( "dataType = " + QString::number( mDataProvider->dataType( 1 ) ) );
   if (( mDataProvider->bandCount() > 1 ) )
   {
-    mRasterType = Multiband;
+    // handle singleband gray with alpha
+    if ( mDataProvider->bandCount() == 2
+         && (( mDataProvider->colorInterpretation( 1 ) == QgsRaster::GrayIndex
+               && mDataProvider->colorInterpretation( 2 ) == QgsRaster::AlphaBand )
+             || ( mDataProvider->colorInterpretation( 1 ) == QgsRaster::AlphaBand
+                  && mDataProvider->colorInterpretation( 2 ) == QgsRaster::GrayIndex ) ) )
+    {
+      mRasterType = GrayOrUndefined;
+    }
+    else
+    {
+      mRasterType = Multiband;
+    }
   }
   else if ( mDataProvider->dataType( 1 ) == QGis::ARGB32
             ||  mDataProvider->dataType( 1 ) == QGis::ARGB32_Premultiplied )
