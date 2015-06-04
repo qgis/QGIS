@@ -20,6 +20,7 @@ QgsRasterCalcNode::QgsRasterCalcNode()
     , mLeft( 0 )
     , mRight( 0 )
     , mNumber( 0 )
+    , mMatrix( 0 )
     , mOperator( opNONE )
 {
 }
@@ -29,8 +30,20 @@ QgsRasterCalcNode::QgsRasterCalcNode( double number )
     , mLeft( 0 )
     , mRight( 0 )
     , mNumber( number )
+    , mMatrix( 0 )
     , mOperator( opNONE )
 {
+}
+
+QgsRasterCalcNode::QgsRasterCalcNode( QgsRasterMatrix* matrix )
+    : mType( tMatrix )
+    , mLeft( 0 )
+    , mRight( 0 )
+    , mNumber( 0 )
+    , mMatrix( matrix )
+    , mOperator( opNONE )
+{
+
 }
 
 QgsRasterCalcNode::QgsRasterCalcNode( Operator op, QgsRasterCalcNode* left, QgsRasterCalcNode* right )
@@ -38,6 +51,7 @@ QgsRasterCalcNode::QgsRasterCalcNode( Operator op, QgsRasterCalcNode* left, QgsR
     , mLeft( left )
     , mRight( right )
     , mNumber( 0 )
+    , mMatrix( 0 )
     , mOperator( op )
 {
 }
@@ -48,6 +62,7 @@ QgsRasterCalcNode::QgsRasterCalcNode( const QString& rasterName )
     , mRight( 0 )
     , mNumber( 0 )
     , mRasterName( rasterName )
+    , mMatrix( 0 )
     , mOperator( opNONE )
 {
   if ( mRasterName.startsWith( '"' ) && mRasterName.endsWith( '"' ) )
@@ -81,8 +96,12 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterMatrix*>& rasterData, 
 
     int nEntries = ( *it )->nColumns() * ( *it )->nRows();
     double* data = new double[nEntries];
-    memcpy( data, ( *it )->data(), nEntries * sizeof( double ) );
-    result.setData(( *it )->nColumns(), ( *it )->nRows(), data, ( *it )->nodataValue() );
+
+    for ( int i = 0; i < nEntries; ++i )
+    {
+      data[i] = ( *it )->data()[i] == ( *it )->nodataValue() ? result.nodataValue() : ( *it )->data()[i];
+    }
+    result.setData(( *it )->nColumns(), ( *it )->nRows(), data, result.nodataValue() );
     return true;
   }
   else if ( mType == tOperator )
@@ -184,6 +203,17 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterMatrix*>& rasterData, 
     double* data = new double[1];
     data[0] = mNumber;
     result.setData( 1, 1, data, result.nodataValue() );
+    return true;
+  }
+  else if ( mType == tMatrix )
+  {
+    int nEntries = mMatrix->nColumns() * mMatrix->nRows();
+    double* data = new double[nEntries];
+    for ( int i = 0; i < nEntries; ++i )
+    {
+      data[i] = mMatrix->data()[i] == mMatrix->nodataValue() ? result.nodataValue() : mMatrix->data()[i];
+    }
+    result.setData( mMatrix->nColumns(), mMatrix->nRows(), data, result.nodataValue() );
     return true;
   }
   return false;

@@ -40,6 +40,14 @@ class TestQgsRasterCalculator : public QObject
     void singleOp_data();
     void singleOp(); //test operators which operate on a single value
 
+    void singleOpMatrices(); // test single op using matrix
+    void dualOpNumberMatrix(); // test dual op run on number and matrix
+    void dualOpMatrixNumber(); // test dual op run on matrix and number
+    void dualOpMatrixMatrix(); // test dual op run on matrix and matrix
+
+    void rasterRefOp();
+    void dualOpRasterRaster(); //test dual op on raster ref and raster ref
+
 };
 
 void  TestQgsRasterCalculator::initTestCase()
@@ -176,6 +184,210 @@ void TestQgsRasterCalculator::singleOp()
   qDebug() << "Result: " << result.number() << " expected: " << expected;
   QVERIFY( qgsDoubleNear( result.number(), expected, 0.0000000001 ) );
 
+}
+
+void TestQgsRasterCalculator::singleOpMatrices()
+{
+  // test single op run on matrix
+  double* d = new double[6];
+  d[0] = 1.0;
+  d[1] = 2.0;
+  d[2] = 3.0;
+  d[3] = 4.0;
+  d[4] = 5.0;
+  d[5] = -1.0;
+
+  QgsRasterMatrix m( 2, 3, d, -1.0 );
+
+  QgsRasterCalcNode node( QgsRasterCalcNode::opSIGN, new QgsRasterCalcNode( &m ) , 0 );
+
+  QgsRasterMatrix result;
+  result.setNodataValue( -9999 );
+  QMap<QString, QgsRasterMatrix*> rasterData;
+
+  QVERIFY( node.calculate( rasterData, result ) );
+
+  QCOMPARE( result.data()[0], -d[0] );
+  QCOMPARE( result.data()[1], -d[1] );
+  QCOMPARE( result.data()[2], -d[2] );
+  QCOMPARE( result.data()[3], -d[3] );
+  QCOMPARE( result.data()[4], -d[4] );
+  QCOMPARE( result.data()[5], -9999.0 );
+}
+
+void TestQgsRasterCalculator::dualOpNumberMatrix()
+{
+  // test dual op run on number and matrix
+  double* d = new double[6];
+  d[0] = 1.0;
+  d[1] = 2.0;
+  d[2] = 3.0;
+  d[3] = 4.0;
+  d[4] = 5.0;
+  d[5] = -1.0;
+
+  QgsRasterMatrix m( 2, 3, d, -1.0 );
+
+  QgsRasterCalcNode node( QgsRasterCalcNode::opPLUS, new QgsRasterCalcNode( 5.0 ), new QgsRasterCalcNode( &m ) );
+
+  QgsRasterMatrix result;
+  result.setNodataValue( -9999 );
+  QMap<QString, QgsRasterMatrix*> rasterData;
+
+  QVERIFY( node.calculate( rasterData, result ) );
+
+  QCOMPARE( result.data()[0], 6.0 );
+  QCOMPARE( result.data()[1], 7.0 );
+  QCOMPARE( result.data()[2], 8.0 );
+  QCOMPARE( result.data()[3], 9.0 );
+  QCOMPARE( result.data()[4], 10.0 );
+  QCOMPARE( result.data()[5], -9999.0 );
+
+  //also check adding no data number
+  QgsRasterCalcNode nodeNoData( QgsRasterCalcNode::opPLUS, new QgsRasterCalcNode( -9999 ), new QgsRasterCalcNode( &m ) );
+  QVERIFY( nodeNoData.calculate( rasterData, result ) );
+  QCOMPARE( result.data()[0], -9999.0 );
+}
+
+void TestQgsRasterCalculator::dualOpMatrixNumber()
+{
+  // test dual op run on matrix and number
+  double* d = new double[6];
+  d[0] = 1.0;
+  d[1] = 2.0;
+  d[2] = 3.0;
+  d[3] = 4.0;
+  d[4] = 5.0;
+  d[5] = -1.0;
+
+  QgsRasterMatrix m( 2, 3, d, -1.0 );
+
+  QgsRasterCalcNode node( QgsRasterCalcNode::opPLUS, new QgsRasterCalcNode( &m ), new QgsRasterCalcNode( 5.0 ) );
+
+  QgsRasterMatrix result;
+  result.setNodataValue( -9999 );
+  QMap<QString, QgsRasterMatrix*> rasterData;
+
+  QVERIFY( node.calculate( rasterData, result ) );
+
+  QCOMPARE( result.data()[0], 6.0 );
+  QCOMPARE( result.data()[1], 7.0 );
+  QCOMPARE( result.data()[2], 8.0 );
+  QCOMPARE( result.data()[3], 9.0 );
+  QCOMPARE( result.data()[4], 10.0 );
+  QCOMPARE( result.data()[5], -9999.0 );
+
+  //also check adding no data number
+  QgsRasterCalcNode nodeNoData( QgsRasterCalcNode::opPLUS, new QgsRasterCalcNode( &m ), new QgsRasterCalcNode( -9999 ) );
+  QVERIFY( nodeNoData.calculate( rasterData, result ) );
+  QCOMPARE( result.data()[0], -9999.0 );
+}
+
+void TestQgsRasterCalculator::dualOpMatrixMatrix()
+{
+  // test dual op run on matrix and matrix
+  double* d = new double[6];
+  d[0] = 1.0;
+  d[1] = 2.0;
+  d[2] = -2.0;
+  d[3] = -1.0; //nodata
+  d[4] = 5.0;
+  d[5] = -1.0; //nodata
+  QgsRasterMatrix m1( 2, 3, d, -1.0 );
+
+  double* d2 = new double[6];
+  d2[0] = -1.0;
+  d2[1] = -2.0; //nodata
+  d2[2] = 13.0;
+  d2[3] = -2.0; //nodata
+  d2[4] = 15.0;
+  d2[5] = -1.0;
+  QgsRasterMatrix m2( 2, 3, d2, -2.0 ); //different no data value
+
+  QgsRasterCalcNode node( QgsRasterCalcNode::opPLUS, new QgsRasterCalcNode( &m1 ), new QgsRasterCalcNode( &m2 ) );
+
+  QgsRasterMatrix result;
+  result.setNodataValue( -9999 );
+  QMap<QString, QgsRasterMatrix*> rasterData;
+
+  QVERIFY( node.calculate( rasterData, result ) );
+
+  QCOMPARE( result.data()[0], 0.0 );
+  QCOMPARE( result.data()[1], -9999.0 );
+  QCOMPARE( result.data()[2], 11.0 );
+  QCOMPARE( result.data()[3], -9999.0 );
+  QCOMPARE( result.data()[4], 20.0 );
+  QCOMPARE( result.data()[5], -9999.0 );
+}
+
+void TestQgsRasterCalculator::rasterRefOp()
+{
+  // test single op run on raster ref
+  QgsRasterCalcNode node( QgsRasterCalcNode::opSIGN, new QgsRasterCalcNode( "raster" ), 0 );
+
+  QgsRasterMatrix result;
+  result.setNodataValue( -9999 );
+  QMap<QString, QgsRasterMatrix*> rasterData;
+
+  //first test invalid raster ref
+  QVERIFY( !node.calculate( rasterData, result ) );
+
+  //now create raster ref
+  double* d = new double[6];
+  d[0] = 1.0;
+  d[1] = 2.0;
+  d[2] = 3.0;
+  d[3] = 4.0;
+  d[4] = 5.0;
+  d[5] = -1.0;
+  QgsRasterMatrix m( 2, 3, d, -1.0 );
+  rasterData.insert( "raster", &m );
+
+  QVERIFY( node.calculate( rasterData, result ) );
+  QCOMPARE( result.data()[0], -d[0] );
+  QCOMPARE( result.data()[1], -d[1] );
+  QCOMPARE( result.data()[2], -d[2] );
+  QCOMPARE( result.data()[3], -d[3] );
+  QCOMPARE( result.data()[4], -d[4] );
+  QCOMPARE( result.data()[5], -9999.0 );
+}
+
+void TestQgsRasterCalculator::dualOpRasterRaster()
+{
+  // test dual op run on matrix and matrix
+  double* d = new double[6];
+  d[0] = 1.0;
+  d[1] = 2.0;
+  d[2] = -2.0;
+  d[3] = -1.0; //nodata
+  d[4] = 5.0;
+  d[5] = -1.0; //nodata
+  QgsRasterMatrix m1( 2, 3, d, -1.0 );
+  QMap<QString, QgsRasterMatrix*> rasterData;
+  rasterData.insert( "raster1", &m1 );
+
+  double* d2 = new double[6];
+  d2[0] = -1.0;
+  d2[1] = -2.0; //nodata
+  d2[2] = 13.0;
+  d2[3] = -2.0; //nodata
+  d2[4] = 15.0;
+  d2[5] = -1.0;
+  QgsRasterMatrix m2( 2, 3, d2, -2.0 ); //different no data value
+  rasterData.insert( "raster2", &m2 );
+
+  QgsRasterCalcNode node( QgsRasterCalcNode::opPLUS, new QgsRasterCalcNode( "raster1" ), new QgsRasterCalcNode( "raster2" ) );
+
+  QgsRasterMatrix result;
+  result.setNodataValue( -9999 );
+
+  QVERIFY( node.calculate( rasterData, result ) );
+  QCOMPARE( result.data()[0], 0.0 );
+  QCOMPARE( result.data()[1], -9999.0 );
+  QCOMPARE( result.data()[2], 11.0 );
+  QCOMPARE( result.data()[3], -9999.0 );
+  QCOMPARE( result.data()[4], 20.0 );
+  QCOMPARE( result.data()[5], -9999.0 );
 }
 
 QTEST_MAIN( TestQgsRasterCalculator )

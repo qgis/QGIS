@@ -9,7 +9,8 @@ class QgsRasterCalcNode
     {
       tOperator,
       tNumber,
-      tRasterRef
+      tRasterRef,
+      tMatrix
     };
 
     //! possible operators
@@ -41,6 +42,7 @@ class QgsRasterCalcNode
 
     QgsRasterCalcNode();
     QgsRasterCalcNode( double number );
+    QgsRasterCalcNode( QgsRasterMatrix* matrix );
     QgsRasterCalcNode( Operator op, QgsRasterCalcNode* left, QgsRasterCalcNode* right );
     QgsRasterCalcNode( const QString& rasterName );
     ~QgsRasterCalcNode();

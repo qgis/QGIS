@@ -31,7 +31,8 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     {
       tOperator = 1,
       tNumber,
-      tRasterRef
+      tRasterRef,
+      tMatrix
     };
 
     //! possible operators
@@ -65,6 +66,7 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
 
     QgsRasterCalcNode();
     QgsRasterCalcNode( double number );
+    QgsRasterCalcNode( QgsRasterMatrix* matrix );
     QgsRasterCalcNode( Operator op, QgsRasterCalcNode* left, QgsRasterCalcNode* right );
     QgsRasterCalcNode( const QString& rasterName );
     ~QgsRasterCalcNode();
@@ -86,6 +88,7 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
     QgsRasterCalcNode* mRight;
     double mNumber;
     QString mRasterName;
+    QgsRasterMatrix* mMatrix;
     Operator mOperator;
 };
 
