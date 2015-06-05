@@ -1354,21 +1354,26 @@ GEOSCoordSequence* QgsGeos::createCoordinateSequence( const QgsCurveV2* curve )
   }
 
   int numPoints = line->numPoints();
-  GEOSCoordSequence* coordSeq = GEOSCoordSeq_create_r( geosinit.ctxt, numPoints, coordDims );
-  for ( int i = 0; i < numPoints; ++i )
+  GEOSCoordSequence* coordSeq = 0;
+  try
   {
-    QgsPointV2 pt = line->pointN( i ); //todo: create method to get const point reference
-    GEOSCoordSeq_setX_r( geosinit.ctxt, coordSeq, i, pt.x() );
-    GEOSCoordSeq_setY_r( geosinit.ctxt, coordSeq, i, pt.y() );
-    if ( hasZ )
+    coordSeq = GEOSCoordSeq_create_r( geosinit.ctxt, numPoints, coordDims );
+    for ( int i = 0; i < numPoints; ++i )
     {
-      GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, i, 2, pt.z() );
-    }
-    if ( hasM )
-    {
-      GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, i, 3, pt.m() );
+      QgsPointV2 pt = line->pointN( i ); //todo: create method to get const point reference
+      GEOSCoordSeq_setX_r( geosinit.ctxt, coordSeq, i, pt.x() );
+      GEOSCoordSeq_setY_r( geosinit.ctxt, coordSeq, i, pt.y() );
+      if ( hasZ )
+      {
+        GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, i, 2, pt.z() );
+      }
+      if ( hasM )
+      {
+        GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, i, 3, pt.m() );
+      }
     }
   }
+  CATCH_GEOS( 0 )
 
   if ( segmentize )
   {
@@ -1383,18 +1388,25 @@ GEOSGeometry* QgsGeos::createGeosPoint( const QgsAbstractGeometryV2* point, int 
   if ( !pt )
     return 0;
 
-  GEOSCoordSequence* coordSeq = GEOSCoordSeq_create_r( geosinit.ctxt, 1, coordDims );
-  GEOSCoordSeq_setX_r( geosinit.ctxt, coordSeq, 0, pt->x() );
-  GEOSCoordSeq_setY_r( geosinit.ctxt, coordSeq, 0, pt->y() );
-  if ( pt->is3D() )
+  GEOSGeometry* geosPoint = 0;
+
+  try
   {
-    GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, 0, 2, pt->z() );
+    GEOSCoordSequence* coordSeq = GEOSCoordSeq_create_r( geosinit.ctxt, 1, coordDims );
+    GEOSCoordSeq_setX_r( geosinit.ctxt, coordSeq, 0, pt->x() );
+    GEOSCoordSeq_setY_r( geosinit.ctxt, coordSeq, 0, pt->y() );
+    if ( pt->is3D() )
+    {
+      GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, 0, 2, pt->z() );
+    }
+    if ( pt->isMeasure() )
+    {
+      GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, 0, 3, pt->m() );
+    }
+    geosPoint = GEOSGeom_createPoint_r( geosinit.ctxt, coordSeq );
   }
-  if ( pt->isMeasure() )
-  {
-    GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, 0, 3, pt->m() );
-  }
-  return GEOSGeom_createPoint_r( geosinit.ctxt, coordSeq );
+  CATCH_GEOS( 0 )
+  return geosPoint;
 }
 
 GEOSGeometry* QgsGeos::createGeosLinestring( const QgsAbstractGeometryV2* curve )
@@ -1407,7 +1419,13 @@ GEOSGeometry* QgsGeos::createGeosLinestring( const QgsAbstractGeometryV2* curve 
   if ( !coordSeq )
     return 0;
 
-  return GEOSGeom_createLineString_r( geosinit.ctxt, coordSeq );
+  GEOSGeometry* geosGeom = 0;
+  try
+  {
+    geosGeom = GEOSGeom_createLineString_r( geosinit.ctxt, coordSeq );
+  }
+  CATCH_GEOS( 0 )
+  return geosGeom;
 }
 
 GEOSGeometry* QgsGeos::createGeosPolygon( const QgsAbstractGeometryV2* poly )
@@ -1421,22 +1439,29 @@ GEOSGeometry* QgsGeos::createGeosPolygon( const QgsAbstractGeometryV2* poly )
   {
     return 0;
   }
-  GEOSGeometry* exteriorRingGeos = GEOSGeom_createLinearRing_r( geosinit.ctxt, createCoordinateSequence( exteriorRing ) );
 
-  int nHoles = polygon->numInteriorRings();
-  GEOSGeometry** holes = 0;
-  if ( nHoles > 0 )
+  GEOSGeometry* geosPolygon = 0;
+  try
   {
-    holes = new GEOSGeometry*[ nHoles ];
-  }
+    GEOSGeometry* exteriorRingGeos = GEOSGeom_createLinearRing_r( geosinit.ctxt, createCoordinateSequence( exteriorRing ) );
 
-  for ( int i = 0; i < nHoles; ++i )
-  {
-    const QgsCurveV2* interiorRing = polygon->interiorRing( i );
-    holes[i] = GEOSGeom_createLinearRing_r( geosinit.ctxt, createCoordinateSequence( interiorRing ) );
+
+    int nHoles = polygon->numInteriorRings();
+    GEOSGeometry** holes = 0;
+    if ( nHoles > 0 )
+    {
+      holes = new GEOSGeometry*[ nHoles ];
+    }
+
+    for ( int i = 0; i < nHoles; ++i )
+    {
+      const QgsCurveV2* interiorRing = polygon->interiorRing( i );
+      holes[i] = GEOSGeom_createLinearRing_r( geosinit.ctxt, createCoordinateSequence( interiorRing ) );
+    }
+    geosPolygon = GEOSGeom_createPolygon_r( geosinit.ctxt, exteriorRingGeos, holes, nHoles );
+    delete[] holes;
   }
-  GEOSGeometry* geosPolygon = GEOSGeom_createPolygon_r( geosinit.ctxt, exteriorRingGeos, holes, nHoles );
-  delete[] holes;
+  CATCH_GEOS( 0 )
 
   return geosPolygon;
 }
