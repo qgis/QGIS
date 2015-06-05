@@ -188,9 +188,14 @@ QgsAbstractGeometryV2* QgsGeos::combine( const QList< const QgsAbstractGeometryV
     geosGeometries[i] = asGeos( geomList.at( i ) );
   }
 
-  GEOSGeometry* geomCollection =  createGeosCollection( GEOS_GEOMETRYCOLLECTION, geosGeometries );
-  GEOSGeometry* geomUnion = GEOSUnaryUnion_r( geosinit.ctxt, geomCollection );
-  GEOSGeom_destroy_r( geosinit.ctxt, geomCollection );
+  GEOSGeometry* geomUnion = 0;
+  try
+  {
+    GEOSGeometry* geomCollection =  createGeosCollection( GEOS_GEOMETRYCOLLECTION, geosGeometries );
+    geomUnion = GEOSUnaryUnion_r( geosinit.ctxt, geomCollection );
+    GEOSGeom_destroy_r( geosinit.ctxt, geomCollection );
+  }
+  CATCH_GEOS( 0 )
 
   QgsAbstractGeometryV2* result = fromGeos( geomUnion );
   GEOSGeom_destroy_r( geosinit.ctxt, geomUnion );
@@ -385,46 +390,51 @@ int QgsGeos::topologicalTestPointsSplit( const GEOSGeometry* splitLine, QList<Qg
     return 1;
   }
 
-  testPoints.clear();
-  GEOSGeometry* intersectionGeom = GEOSIntersection_r( geosinit.ctxt, mGeos, splitLine );
-  if ( !intersectionGeom )
-    return 1;
-
-  bool simple = false;
-  int nIntersectGeoms = 1;
-  if ( GEOSGeomTypeId_r( geosinit.ctxt, intersectionGeom ) == GEOS_LINESTRING
-       || GEOSGeomTypeId_r( geosinit.ctxt, intersectionGeom ) == GEOS_POINT )
-    simple = true;
-
-  if ( !simple )
-    nIntersectGeoms = GEOSGetNumGeometries_r( geosinit.ctxt, intersectionGeom );
-
-  for ( int i = 0; i < nIntersectGeoms; ++i )
+  try
   {
-    const GEOSGeometry* currentIntersectGeom;
-    if ( simple )
-      currentIntersectGeom = intersectionGeom;
-    else
-      currentIntersectGeom = GEOSGetGeometryN_r( geosinit.ctxt, intersectionGeom, i );
+    testPoints.clear();
+    GEOSGeometry* intersectionGeom = GEOSIntersection_r( geosinit.ctxt, mGeos, splitLine );
+    if ( !intersectionGeom )
+      return 1;
 
-    const GEOSCoordSequence* lineSequence = GEOSGeom_getCoordSeq_r( geosinit.ctxt, currentIntersectGeom );
-    unsigned int sequenceSize = 0;
-    double x, y;
-    if ( GEOSCoordSeq_getSize_r( geosinit.ctxt, lineSequence, &sequenceSize ) != 0 )
+    bool simple = false;
+    int nIntersectGeoms = 1;
+    if ( GEOSGeomTypeId_r( geosinit.ctxt, intersectionGeom ) == GEOS_LINESTRING
+         || GEOSGeomTypeId_r( geosinit.ctxt, intersectionGeom ) == GEOS_POINT )
+      simple = true;
+
+    if ( !simple )
+      nIntersectGeoms = GEOSGetNumGeometries_r( geosinit.ctxt, intersectionGeom );
+
+    for ( int i = 0; i < nIntersectGeoms; ++i )
     {
-      for ( unsigned int i = 0; i < sequenceSize; ++i )
+      const GEOSGeometry* currentIntersectGeom;
+      if ( simple )
+        currentIntersectGeom = intersectionGeom;
+      else
+        currentIntersectGeom = GEOSGetGeometryN_r( geosinit.ctxt, intersectionGeom, i );
+
+      const GEOSCoordSequence* lineSequence = GEOSGeom_getCoordSeq_r( geosinit.ctxt, currentIntersectGeom );
+      unsigned int sequenceSize = 0;
+      double x, y;
+      if ( GEOSCoordSeq_getSize_r( geosinit.ctxt, lineSequence, &sequenceSize ) != 0 )
       {
-        if ( GEOSCoordSeq_getX_r( geosinit.ctxt, lineSequence, i, &x ) != 0 )
+        for ( unsigned int i = 0; i < sequenceSize; ++i )
         {
-          if ( GEOSCoordSeq_getY_r( geosinit.ctxt, lineSequence, i, &y ) != 0 )
+          if ( GEOSCoordSeq_getX_r( geosinit.ctxt, lineSequence, i, &x ) != 0 )
           {
-            testPoints.push_back( QgsPointV2( x, y ) );
+            if ( GEOSCoordSeq_getY_r( geosinit.ctxt, lineSequence, i, &y ) != 0 )
+            {
+              testPoints.push_back( QgsPointV2( x, y ) );
+            }
           }
         }
       }
     }
+    GEOSGeom_destroy_r( geosinit.ctxt, intersectionGeom );
   }
-  GEOSGeom_destroy_r( geosinit.ctxt, intersectionGeom );
+  CATCH_GEOS( 1 )
+
   return 0;
 }
 
@@ -1526,61 +1536,65 @@ QgsAbstractGeometryV2* QgsGeos::reshapeGeometry( const QgsLineStringV2& reshapeW
   }
   else
   {
-    //call reshape for each geometry part and replace mGeos with new geometry if reshape took place
-    bool reshapeTookPlace = false;
-
-    GEOSGeometry* currentReshapeGeometry = 0;
-    GEOSGeometry** newGeoms = new GEOSGeometry*[numGeoms];
-
-    for ( int i = 0; i < numGeoms; ++i )
+    try
     {
+      //call reshape for each geometry part and replace mGeos with new geometry if reshape took place
+      bool reshapeTookPlace = false;
+
+      GEOSGeometry* currentReshapeGeometry = 0;
+      GEOSGeometry** newGeoms = new GEOSGeometry*[numGeoms];
+
+      for ( int i = 0; i < numGeoms; ++i )
+      {
+        if ( isLine )
+          currentReshapeGeometry = reshapeLine( GEOSGetGeometryN_r( geosinit.ctxt, mGeos, i ), reshapeLineGeos );
+        else
+          currentReshapeGeometry = reshapePolygon( GEOSGetGeometryN_r( geosinit.ctxt, mGeos, i ), reshapeLineGeos );
+
+        if ( currentReshapeGeometry )
+        {
+          newGeoms[i] = currentReshapeGeometry;
+          reshapeTookPlace = true;
+        }
+        else
+        {
+          newGeoms[i] = GEOSGeom_clone_r( geosinit.ctxt, GEOSGetGeometryN( mGeos, i ) );
+        }
+      }
+      GEOSGeom_destroy_r( geosinit.ctxt, reshapeLineGeos );
+
+      GEOSGeometry* newMultiGeom = 0;
       if ( isLine )
-        currentReshapeGeometry = reshapeLine( GEOSGetGeometryN_r( geosinit.ctxt, mGeos, i ), reshapeLineGeos );
-      else
-        currentReshapeGeometry = reshapePolygon( GEOSGetGeometryN_r( geosinit.ctxt, mGeos, i ), reshapeLineGeos );
-
-      if ( currentReshapeGeometry )
       {
-        newGeoms[i] = currentReshapeGeometry;
-        reshapeTookPlace = true;
+        newMultiGeom = GEOSGeom_createCollection_r( geosinit.ctxt, GEOS_MULTILINESTRING, newGeoms, numGeoms );
+      }
+      else //multipolygon
+      {
+        newMultiGeom = GEOSGeom_createCollection_r( geosinit.ctxt, GEOS_MULTIPOLYGON, newGeoms, numGeoms );
+      }
+
+      delete[] newGeoms;
+      if ( !newMultiGeom )
+      {
+        if ( errorCode ) { *errorCode = 3; }
+        return 0;
+      }
+
+      if ( reshapeTookPlace )
+      {
+        if ( errorCode ) { *errorCode = 0; }
+        QgsAbstractGeometryV2* reshapedMultiGeom = fromGeos( newMultiGeom );
+        GEOSGeom_destroy_r( geosinit.ctxt, newMultiGeom );
+        return reshapedMultiGeom;
       }
       else
       {
-        newGeoms[i] = GEOSGeom_clone_r( geosinit.ctxt, GEOSGetGeometryN( mGeos, i ) );
+        GEOSGeom_destroy_r( geosinit.ctxt, newMultiGeom );
+        if ( errorCode ) { *errorCode = 1; }
+        return 0;
       }
     }
-    GEOSGeom_destroy_r( geosinit.ctxt, reshapeLineGeos );
-
-    GEOSGeometry* newMultiGeom = 0;
-    if ( isLine )
-    {
-      newMultiGeom = GEOSGeom_createCollection_r( geosinit.ctxt, GEOS_MULTILINESTRING, newGeoms, numGeoms );
-    }
-    else //multipolygon
-    {
-      newMultiGeom = GEOSGeom_createCollection_r( geosinit.ctxt, GEOS_MULTIPOLYGON, newGeoms, numGeoms );
-    }
-
-    delete[] newGeoms;
-    if ( !newMultiGeom )
-    {
-      if ( errorCode ) { *errorCode = 3; }
-      return 0;
-    }
-
-    if ( reshapeTookPlace )
-    {
-      if ( errorCode ) { *errorCode = 0; }
-      QgsAbstractGeometryV2* reshapedMultiGeom = fromGeos( newMultiGeom );
-      GEOSGeom_destroy_r( geosinit.ctxt, newMultiGeom );
-      return reshapedMultiGeom;
-    }
-    else
-    {
-      GEOSGeom_destroy_r( geosinit.ctxt, newMultiGeom );
-      if ( errorCode ) { *errorCode = 1; }
-      return 0;
-    }
+    CATCH_GEOS( 0 )
   }
   return 0;
 }
