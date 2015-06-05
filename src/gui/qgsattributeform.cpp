@@ -682,7 +682,7 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
         ++index;
       }
       QWidget* spacer = new QWidget();
-      spacer->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
+      spacer->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
       gbLayout->addWidget( spacer, index, 0 );
 
       labelText = QString::null;
