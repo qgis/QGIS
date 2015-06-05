@@ -667,12 +667,12 @@ void QgsFeatureRendererV2::convertSymbolSizeScale( QgsSymbolV2 * symbol, QgsSymb
     QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( symbol );
     if ( QgsSymbolV2::ScaleArea == QgsSymbolV2::ScaleMethod( method ) )
     {
-      const QgsDataDefined dd( "sqrt(" + QString::number( s->size() ) + " * (" + field + "))" );
+      const QgsDataDefined dd( "coalesce(sqrt(" + QString::number( s->size() ) + " * (" + field + ")),0)" );
       s->setDataDefinedSize( dd );
     }
     else
     {
-      const QgsDataDefined dd( QString::number( s->size() ) + " * (" + field + ")" );
+      const QgsDataDefined dd( "coalesce(" + QString::number( s->size() ) + " * (" + field + "),0)" );
       s->setDataDefinedSize( dd );
     }
     s->setScaleMethod( QgsSymbolV2::ScaleDiameter );
@@ -680,7 +680,7 @@ void QgsFeatureRendererV2::convertSymbolSizeScale( QgsSymbolV2 * symbol, QgsSymb
   else if ( symbol->type() == QgsSymbolV2::Line )
   {
     QgsLineSymbolV2 * s = static_cast<QgsLineSymbolV2 *>( symbol );
-    const QgsDataDefined dd( QString::number( s->width() ) + " * (" + field + ")" );
+    const QgsDataDefined dd( "coalesce(" + QString::number( s->width() ) + " * (" + field + "),0)" );
     s->setDataDefinedWidth( dd );
   }
 }
