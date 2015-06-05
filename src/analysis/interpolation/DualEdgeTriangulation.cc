@@ -77,7 +77,9 @@ void DualEdgeTriangulation::addLine( Line3D* line, bool breakline )
     for ( i = 0; i < line->getSize(); i++ )
     {
       line->goToNext();
-      actpoint = mDecorator->addPoint( line->getPoint() );
+      // Use copy ctor since line can be deleted as well as its
+      // associated Node and Point3D
+      actpoint = mDecorator->addPoint( new Point3D( *line->getPoint() ) );
       if ( actpoint != -100 )
       {
         i++;
@@ -94,7 +96,7 @@ void DualEdgeTriangulation::addLine( Line3D* line, bool breakline )
     for ( ; i < line->getSize(); i++ )
     {
       line->goToNext();
-      currentpoint = mDecorator->addPoint( line->getPoint() );
+      currentpoint = mDecorator->addPoint( new Point3D( *line->getPoint() ) );
       if ( currentpoint != -100 && actpoint != -100 && currentpoint != actpoint )//-100 is the return value if the point could not be not inserted
       {
         insertForcedSegment( actpoint, currentpoint, breakline );
