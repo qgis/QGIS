@@ -2270,6 +2270,13 @@ bool QgsVectorFileWriter::driverMetadata( QString driverName, QString &longName,
     glob = "*.geojson";
     ext = "geojson";
   }
+  else if ( driverName.startsWith( "GPKG" ) )
+  {
+    longName = "GeoPackage";
+    trLongName = QObject::tr( "GeoPackage" );
+    glob = "*.gpkg";
+    ext = "gpkg";
+  }
   else if ( driverName.startsWith( "GeoRSS" ) )
   {
     longName = "GeoRSS";
