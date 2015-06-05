@@ -105,6 +105,7 @@ class fToolsPlugin:
     self.vectGrid.setIcon(QIcon(self.getThemeIcon("vector_grid.png")))
     self.selectLocation.setIcon(QIcon(self.getThemeIcon("select_location.png")))
     self.layerExtent.setIcon(QIcon(self.getThemeIcon("layer_extent.png")))
+    self.OMBBox.setIcon(QIcon(self.getThemeIcon("ombbox.png")))
 
     self.geoMenu.setIcon(QIcon(self.getThemeIcon("geoprocessing.png")))
     self.minConvex.setIcon(QIcon(self.getThemeIcon("convex_hull.png")))
@@ -185,9 +186,11 @@ class fToolsPlugin:
     self.selectLocation.setObjectName("selectLocation")
     self.layerExtent = QAction(QCoreApplication.translate("fTools", "Polygon from Layer Extent..."), self.iface.mainWindow())
     self.layerExtent.setObjectName("layerExtent")
+    self.OMBBox = QAction(QCoreApplication.translate("fTools", "Oriented Minimum Bounding Box from Layer..."), self.iface.mainWindow())
+    self.OMBBox.setObjectName("OMBBox")
     self.researchMenu.addActions([
         self.randSel, self.randSub, self.randPoints,
-        self.regPoints, self.vectGrid, self.selectLocation, self.layerExtent])
+        self.regPoints, self.vectGrid, self.selectLocation, self.layerExtent, self.OMBBox])
 
     self.geoMenu = QMenu(QCoreApplication.translate("fTools", "&Geoprocessing Tools"))
     self.geoMenu.setObjectName("geoMenu")
@@ -284,6 +287,7 @@ class fToolsPlugin:
     QObject.connect(self.vectGrid, SIGNAL("triggered()"), self.dovectGrid)
     QObject.connect(self.selectLocation, SIGNAL("triggered()"), self.doselectLocation)
     QObject.connect(self.layerExtent, SIGNAL("triggered()"), self.doextent)
+    QObject.connect(self.OMBBox, SIGNAL("triggered()"), self.doombbox)
 
     QObject.connect(self.minConvex, SIGNAL("triggered()"), self.dominConvex)
     QObject.connect(self.intersect, SIGNAL("triggered()"), self.dointersect)
@@ -415,7 +419,11 @@ class fToolsPlugin:
   def doextent(self):
     d = doGeometry.GeometryDialog(self.iface, 9)
     d.exec_()
-
+    
+  def doombbox(self):
+    d = doGeometry.GeometryDialog(self.iface, 12)
+    d.exec_()
+    
   def dosumLines(self):
     d = doSumLines.Dialog(self.iface)
     d.exec_()
