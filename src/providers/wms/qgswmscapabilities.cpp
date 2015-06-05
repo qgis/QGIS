@@ -1381,6 +1381,8 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
         bb.crs = DEFAULT_LATLON_CRS;
         bb.box = QgsRectangle( QgsPoint( ll[0].toDouble(), ll[1].toDouble() ),
                                QgsPoint( ur[0].toDouble(), ur[1].toDouble() ) );
+
+        l.boundingBoxes << bb;
       }
     }
 
