@@ -48,10 +48,10 @@ bool QgsPolygonV2::fromWkb( const unsigned char* wkb )
   {
     QgsLineStringV2* line = new QgsLineStringV2();
     line->fromWkbPoints( mWkbType, wkbPtr );
-    if ( !line->isRing() )
+    /*if ( !line->isRing() )
     {
       delete line; continue;
-    }
+    }*/
 
     if ( !mExteriorRing )
     {
