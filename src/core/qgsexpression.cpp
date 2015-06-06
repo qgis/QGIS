@@ -1741,7 +1741,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "to_date", 1, fcnToDate, "Conversions", QString(), false, QStringList(), false, QStringList() << "todate" )
     << new StaticFunction( "to_time", 1, fcnToTime, "Conversions", QString(), false, QStringList(), false, QStringList() << "totime" )
     << new StaticFunction( "to_interval", 1, fcnToInterval, "Conversions", QString(), false, QStringList(), false, QStringList() << "tointerval" )
-    << new StaticFunction( "coalesce", -1, fcnCoalesce, "Conditionals" )
+    << new StaticFunction( "coalesce", -1, fcnCoalesce, "Conditionals", QString(), false, QStringList(), false, QStringList(), true )
     << new StaticFunction( "if", 3, fcnIf, "Conditionals", "", False, QStringList(), true )
     << new StaticFunction( "regexp_match", 2, fcnRegexpMatch, "Conditionals" )
     << new StaticFunction( "now", 0, fcnNow, "Date and Time", QString(), false, QStringList(), false, QStringList() << "$now" )
@@ -1763,7 +1763,7 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "regexp_replace", 3, fcnRegexpReplace, "String" )
     << new StaticFunction( "regexp_substr", 2, fcnRegexpSubstr, "String" )
     << new StaticFunction( "substr", 3, fcnSubstr, "String" )
-    << new StaticFunction( "concat", -1, fcnConcat, "String" )
+    << new StaticFunction( "concat", -1, fcnConcat, "String", QString(), false, QStringList(), false, QStringList(), true )
     << new StaticFunction( "strpos", 2, fcnStrpos, "String" )
     << new StaticFunction( "left", 2, fcnLeft, "String" )
     << new StaticFunction( "right", 2, fcnRight, "String" )
@@ -2638,7 +2638,7 @@ QVariant QgsExpression::NodeFunction::eval( QgsExpression* parent, const QgsFeat
       {
         v = n->eval( parent, f );
         ENSURE_NO_EVAL_ERROR;
-        if ( isNull( v ) && fd->name() != "coalesce" )
+        if ( isNull( v ) && !fd->handlesNull() )
           return QVariant(); // all "normal" functions return NULL, when any parameter is NULL (so coalesce is abnormal)
       }
       argValues.append( v );

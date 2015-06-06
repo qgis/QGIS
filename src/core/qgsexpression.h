@@ -286,8 +286,23 @@ class CORE_EXPORT QgsExpression
     class CORE_EXPORT Function
     {
       public:
-        Function( const QString& fnname, int params, QString group, QString helpText = QString(), bool usesGeometry = false, QStringList referencedColumns = QStringList(), bool lazyEval = false )
-            : mName( fnname ), mParams( params ), mUsesGeometry( usesGeometry ), mGroup( group ), mHelpText( helpText ), mReferencedColumns( referencedColumns ), mLazyEval( lazyEval ) {}
+        Function( const QString& fnname,
+                  int params,
+                  QString group,
+                  QString helpText = QString(),
+                  bool usesGeometry = false,
+                  QStringList referencedColumns = QStringList(),
+                  bool lazyEval = false,
+                  bool handlesNull = false )
+            : mName( fnname )
+            , mParams( params )
+            , mUsesGeometry( usesGeometry )
+            , mGroup( group )
+            , mHelpText( helpText )
+            , mReferencedColumns( referencedColumns )
+            , mLazyEval( lazyEval )
+            , mHandlesNull( handlesNull )
+        {}
 
         virtual ~Function() {}
 
@@ -327,6 +342,8 @@ class CORE_EXPORT QgsExpression
           return false;
         }
 
+        virtual bool handlesNull() const { return mHandlesNull; }
+
       private:
         QString mName;
         int mParams;
@@ -335,13 +352,26 @@ class CORE_EXPORT QgsExpression
         QString mHelpText;
         QStringList mReferencedColumns;
         bool mLazyEval;
+        bool mHandlesNull;
     };
 
     class StaticFunction : public Function
     {
       public:
-        StaticFunction( QString fnname, int params, FcnEval fcn, QString group, QString helpText = QString(), bool usesGeometry = false, QStringList referencedColumns = QStringList(), bool lazyEval = false, const QStringList& aliases = QStringList() )
-            : Function( fnname, params, group, helpText, usesGeometry, referencedColumns, lazyEval ), mFnc( fcn ), mAliases( aliases ) {}
+        StaticFunction( QString fnname,
+                        int params,
+                        FcnEval fcn,
+                        QString group,
+                        QString helpText = QString(),
+                        bool usesGeometry = false,
+                        QStringList referencedColumns = QStringList(),
+                        bool lazyEval = false,
+                        const QStringList& aliases = QStringList(),
+                        bool handlesNull = false )
+            : Function( fnname, params, group, helpText, usesGeometry, referencedColumns, lazyEval, handlesNull )
+            , mFnc( fcn )
+            , mAliases( aliases )
+        {}
 
         virtual ~StaticFunction() {}
 

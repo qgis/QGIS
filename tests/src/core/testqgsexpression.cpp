@@ -393,7 +393,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "wordwrap" ) << "wordwrap('university of qgis\nsupports many multiline',-5,' ')" << false << QVariant( "university\nof qgis\nsupports\nmany multiline" );
       QTest::newRow( "format" ) << "format('%1 %2 %3 %1', 'One', 'Two', 'Three')" << false << QVariant( "One Two Three One" );
       QTest::newRow( "concat" ) << "concat('a', 'b', 'c', 'd')" << false << QVariant( "abcd" );
-      QTest::newRow( "concat single" ) << "concat('a')" << false << QVariant( "a" );
+      QTest::newRow( "concat function single" ) << "concat('a')" << false << QVariant( "a" );
+      QTest::newRow( "concat function with NULL" ) << "concat(NULL,'a','b')" << false << QVariant( "ab" );
 
       // implicit conversions
       QTest::newRow( "implicit int->text" ) << "length(123)" << false << QVariant( 3 );
