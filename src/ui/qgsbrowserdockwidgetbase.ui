@@ -41,8 +41,8 @@
       <property name="floatable">
        <bool>false</bool>
       </property>
-      <addaction name="mActionRefresh"/>
       <addaction name="mActionAddLayers"/>
+      <addaction name="mActionRefresh"/>
       <addaction name="mActionShowFilter"/>
       <addaction name="mActionCollapse"/>
       <addaction name="mActionPropertiesWidget"/>
@@ -190,6 +190,18 @@
     </item>
    </layout>
   </widget>
+  <action name="mActionAddLayers">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddLayer.svg</normaloff>:/images/themes/default/mActionAddLayer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add Layers</string>
+   </property>
+   <property name="toolTip">
+    <string>Add Selected Layers</string>
+   </property>
+  </action>
   <action name="mActionRefresh">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -197,18 +209,6 @@
    </property>
    <property name="text">
     <string>Refresh</string>
-   </property>
-  </action>
-  <action name="mActionAddLayers">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAdd.svg</normaloff>:/images/themes/default/mActionAdd.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Add Layers</string>
-   </property>
-   <property name="toolTip">
-    <string>Add Selected Layers</string>
    </property>
   </action>
   <action name="mActionShowFilter">
