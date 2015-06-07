@@ -2480,7 +2480,7 @@ void QgisApp::initLayerTreeView()
 
   // add group action
   QAction* actionAddGroup = new QAction( tr( "Add Group" ), this );
-  actionAddGroup->setIcon( QgsApplication::getThemeIcon( "/mActionFolder.svg" ) );
+  actionAddGroup->setIcon( QgsApplication::getThemeIcon( "/mActionAddGroup.svg" ) );
   actionAddGroup->setToolTip( tr( "Add Group" ) );
   connect( actionAddGroup, SIGNAL( triggered( bool ) ), mLayerTreeView->defaultActions(), SLOT( addGroup() ) );
 
