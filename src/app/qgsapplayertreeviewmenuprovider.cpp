@@ -34,8 +34,8 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
     // global menu
     menu->addAction( actions->actionAddGroup( menu ) );
 
-    menu->addAction( QgsApplication::getThemeIcon( "/mActionExpandTree.png" ), tr( "&Expand All" ), mView, SLOT( expandAll() ) );
-    menu->addAction( QgsApplication::getThemeIcon( "/mActionCollapseTree.png" ), tr( "&Collapse All" ), mView, SLOT( collapseAll() ) );
+    menu->addAction( QgsApplication::getThemeIcon( "/mActionExpandTree.svg" ), tr( "&Expand All" ), mView, SLOT( expandAll() ) );
+    menu->addAction( QgsApplication::getThemeIcon( "/mActionCollapseTree.svg" ), tr( "&Collapse All" ), mView, SLOT( collapseAll() ) );
 
     // TODO: update drawing order
   }
