@@ -315,7 +315,11 @@ QGis::GeometryType QgsGeometry::type() const
 
 bool QgsGeometry::isMultipart() const
 {
-  return QGis::isMultiType( wkbType() );
+  if ( !d || !d->geometry )
+  {
+    return false;
+  }
+  return QgsWKBTypes::isMultiType( d->geometry->wkbType() );
 }
 
 void QgsGeometry::fromGeos( GEOSGeometry *geos )
@@ -538,13 +542,29 @@ int QgsGeometry::addRing( QgsCurveV2* ring )
 
 int QgsGeometry::addPart( const QList<QgsPoint> &points, QGis::GeometryType geomType )
 {
-  Q_UNUSED( geomType );
-  if ( !d || !d->geometry )
+  if ( !d )
   {
-    return 2;
+    return 1;
   }
 
-  detach( true );
+  if ( !d->geometry )
+  {
+    detach( false );
+    switch ( geomType )
+    {
+      case QGis::Point:
+        d->geometry = new QgsMultiPointV2();
+        break;
+      case QGis::Line:
+        d->geometry = new QgsMultiLineStringV2();
+        break;
+      case QGis::Polygon:
+        d->geometry = new QgsMultiPolygonV2();
+        break;
+      default:
+        return 1;
+    }
+  }
 
   if ( !isMultipart() )
   {
@@ -564,14 +584,12 @@ int QgsGeometry::addPart( const QList<QgsPoint> &points, QGis::GeometryType geom
     ringLine->setPoints( partPoints );
     partGeom = ringLine;
   }
-  removeWkbGeos();
-  return addPart( dynamic_cast<QgsCurveV2*>( partGeom ) );
+  return addPart( partGeom );
 }
 
-int QgsGeometry::addPart( QgsCurveV2* part )
+int QgsGeometry::addPart( QgsAbstractGeometryV2* part )
 {
   detach( true );
-
   removeWkbGeos();
   return QgsGeometryEditUtils::addPart( d->geometry, part );
 }
@@ -583,15 +601,7 @@ int QgsGeometry::addPart( const QgsGeometry *newPart )
     return 1;
   }
 
-  detach( true );
-
-  QgsAbstractGeometryV2* g = d->geometry->clone();
-  QgsCurveV2* curve = dynamic_cast<QgsCurveV2*>( g );
-  if ( !curve )
-  {
-    delete g; return 1;
-  }
-  return addPart( curve );
+  return addPart( newPart->d->geometry->clone() );
 }
 
 int QgsGeometry::addPart( GEOSGeometry *newPart )
@@ -1435,8 +1445,9 @@ bool QgsGeometry::deletePart( int partNum )
   }
 
   detach( true );
-
-  return QgsGeometryEditUtils::deletePart( d->geometry, partNum );
+  bool ok = QgsGeometryEditUtils::deletePart( d->geometry, partNum );
+  removeWkbGeos();
+  return ok;
 }
 
 int QgsGeometry::avoidIntersections( QMap<QgsVectorLayer*, QSet< QgsFeatureId > > ignoreFeatures )

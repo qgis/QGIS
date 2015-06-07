@@ -308,7 +308,7 @@ class CORE_EXPORT QgsGeometry
     /**Adds a new part to this geometry (takes ownership)
      @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
      not disjoint with existing polygons of the feature*/
-    int addPart( QgsCurveV2* part );
+    int addPart( QgsAbstractGeometryV2* part );
 
     /**Adds a new island polygon to a multipolygon feature
      @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
