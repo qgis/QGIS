@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrastercalcnode.h"
+#include "qgsrasterblock.h"
 #include <cfloat>
 
 QgsRasterCalcNode::QgsRasterCalcNode()
@@ -83,25 +84,57 @@ QgsRasterCalcNode::~QgsRasterCalcNode()
 
 bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterMatrix*>& rasterData, QgsRasterMatrix& result ) const
 {
+  //deprecated method
+  //convert QgsRasterMatrix to QgsRasterBlock and call replacement method
+  QMap<QString, QgsRasterBlock* > rasterBlockData;
+  QMap<QString, QgsRasterMatrix*>::const_iterator it = rasterData.constBegin();
+  for ( ; it != rasterData.constEnd(); ++it )
+  {
+    QgsRasterBlock* block = new QgsRasterBlock( QGis::Float32, it.value()->nColumns(), it.value()->nRows(), it.value()->nodataValue() );
+    for ( int row = 0; row < it.value()->nRows(); ++row )
+    {
+      for ( int col = 0; col < it.value()->nColumns(); ++col )
+      {
+        block->setValue( row, col, it.value()->data()[ row * it.value()->nColumns() + col ] );
+      }
+    }
+    rasterBlockData.insert( it.key(), block );
+  }
+
+  return calculate( rasterBlockData, result );
+}
+
+bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock* >& rasterData, QgsRasterMatrix& result, int row ) const
+{
   //if type is raster ref: return a copy of the corresponding matrix
 
   //if type is operator, call the proper matrix operations
   if ( mType == tRasterRef )
   {
-    QMap<QString, QgsRasterMatrix*>::iterator it = rasterData.find( mRasterName );
+    QMap<QString, QgsRasterBlock*>::iterator it = rasterData.find( mRasterName );
     if ( it == rasterData.end() )
     {
       return false;
     }
 
-    int nEntries = ( *it )->nColumns() * ( *it )->nRows();
+    int nRows = ( row >= 0 ? 1 : ( *it )->height() );
+    int startRow = ( row >= 0 ? row : 0 );
+    int endRow = startRow + nRows;
+    int nCols = ( *it )->width();
+    int nEntries = nCols * nRows;
     double* data = new double[nEntries];
 
-    for ( int i = 0; i < nEntries; ++i )
+    //convert input raster values to double, also convert input no data to result no data
+
+    int outRow = 0;
+    for ( int dataRow = startRow; dataRow < endRow ; ++dataRow, ++outRow )
     {
-      data[i] = ( *it )->data()[i] == ( *it )->nodataValue() ? result.nodataValue() : ( *it )->data()[i];
+      for ( int dataCol = 0; dataCol < nCols; ++dataCol )
+      {
+        data[ dataCol + nCols * outRow] = ( *it )->isNoData( dataRow , dataCol ) ? result.nodataValue() : ( *it )->value( dataRow, dataCol );
+      }
     }
-    result.setData(( *it )->nColumns(), ( *it )->nRows(), data, result.nodataValue() );
+    result.setData( nCols, nRows, data, result.nodataValue() );
     return true;
   }
   else if ( mType == tOperator )
@@ -110,11 +143,11 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterMatrix*>& rasterData, 
     leftMatrix.setNodataValue( result.nodataValue() );
     rightMatrix.setNodataValue( result.nodataValue() );
 
-    if ( !mLeft || !mLeft->calculate( rasterData, leftMatrix ) )
+    if ( !mLeft || !mLeft->calculate( rasterData, leftMatrix, row ) )
     {
       return false;
     }
-    if ( mRight && !mRight->calculate( rasterData, rightMatrix ) )
+    if ( mRight && !mRight->calculate( rasterData, rightMatrix, row ) )
     {
       return false;
     }

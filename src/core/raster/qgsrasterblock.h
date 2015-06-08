@@ -331,6 +331,18 @@ class CORE_EXPORT QgsRasterBlock
      */
     static QRect subRect( const QgsRectangle &theExtent, int theWidth, int theHeight, const QgsRectangle &theSubExtent );
 
+    /** Returns the width (number of columns) of the raster block.
+     * @see height
+     * @note added in QGIS 2.10
+     */
+    int width() const { return mWidth; }
+
+    /** Returns the height (number of rows) of the raster block.
+     * @see width
+     * @note added in QGIS 2.10
+     */
+    int height() const { return mHeight; }
+
   private:
     static QImage::Format imageFormat( QGis::DataType theDataType );
     static QGis::DataType dataType( QImage::Format theFormat );

@@ -266,5 +266,17 @@ class QgsRasterBlock
      * @return the rectangle covered by sub extent
      */
     static QRect subRect( const QgsRectangle &theExtent, int theWidth, int theHeight, const QgsRectangle &theSubExtent );
+
+    /** Returns the width (number of columns) of the raster block.
+     * @see height
+     * @note added in QGIS 2.10
+     */
+    int width() const;
+
+    /** Returns the height (number of rows) of the raster block.
+     * @see width
+     * @note added in QGIS 2.10
+     */
+    int height() const;
 };
 
