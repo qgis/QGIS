@@ -39,7 +39,7 @@ QList<QAction*> QgsSLLayerItem::actions()
 {
   QList<QAction*> lst;
 
-  QAction* actionDeleteLayer = new QAction( tr( "Delete layer" ), this );
+  QAction* actionDeleteLayer = new QAction( tr( "Delete Layer" ), this );
   connect( actionDeleteLayer, SIGNAL( triggered() ), this, SLOT( deleteLayer() ) );
   lst.append( actionDeleteLayer );
 
@@ -48,16 +48,21 @@ QList<QAction*> QgsSLLayerItem::actions()
 
 void QgsSLLayerItem::deleteLayer()
 {
+  if ( QMessageBox::question( 0, QObject::tr( "Delete Object" ),
+                              QObject::tr( "Are you sure you want to delete %1?" ).arg( mName ),
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+    return;
+
   QgsDataSourceURI uri( mUri );
   QString errCause;
   bool res = ::deleteLayer( uri.database(), uri.table(), errCause );
   if ( !res )
   {
-    QMessageBox::warning( 0, tr( "Delete layer" ), errCause );
+    QMessageBox::warning( 0, tr( "Delete Layer" ), errCause );
   }
   else
   {
-    QMessageBox::information( 0, tr( "Delete layer" ), tr( "Layer deleted successfully." ) );
+    QMessageBox::information( 0, tr( "Delete Layer" ), tr( "Layer deleted successfully." ) );
     mParent->refresh();
   }
 }
@@ -167,6 +172,11 @@ void QgsSLConnectionItem::editConnection()
 
 void QgsSLConnectionItem::deleteConnection()
 {
+  if ( QMessageBox::question( 0, QObject::tr( "Delete Connection" ),
+                              QObject::tr( "Are you sure you want to delete the connection to %1?" ).arg( mName ),
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+    return;
+
   QgsSpatiaLiteConnection::deleteConnection( mName );
   // the parent should be updated
   mParent->refresh();
