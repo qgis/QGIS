@@ -1558,7 +1558,7 @@ QgsAbstractGeometryV2* QgsGeos::reshapeGeometry( const QgsLineStringV2& reshapeW
         }
         else
         {
-          newGeoms[i] = GEOSGeom_clone_r( geosinit.ctxt, GEOSGetGeometryN( mGeos, i ) );
+          newGeoms[i] = GEOSGeom_clone_r( geosinit.ctxt, GEOSGetGeometryN_r( geosinit.ctxt, mGeos, i ) );
         }
       }
       GEOSGeom_destroy_r( geosinit.ctxt, reshapeLineGeos );
