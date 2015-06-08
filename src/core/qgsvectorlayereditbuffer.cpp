@@ -164,9 +164,6 @@ bool QgsVectorLayerEditBuffer::deleteFeature( QgsFeatureId fid )
 
 bool QgsVectorLayerEditBuffer::changeGeometry( QgsFeatureId fid, QgsGeometry* geom )
 {
-  if ( !( L->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries ) )
-    return false;
-
   if ( !L->hasGeometryType() )
   {
     return false;
@@ -177,6 +174,8 @@ bool QgsVectorLayerEditBuffer::changeGeometry( QgsFeatureId fid, QgsGeometry* ge
     if ( !mAddedFeatures.contains( fid ) )
       return false;
   }
+  else if ( !( L->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries ) )
+    return false;
 
   // TODO: check compatible geometry
 
@@ -187,13 +186,14 @@ bool QgsVectorLayerEditBuffer::changeGeometry( QgsFeatureId fid, QgsGeometry* ge
 
 bool QgsVectorLayerEditBuffer::changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue )
 {
-  if ( !( L->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) )
-    return false;
-
   if ( FID_IS_NEW( fid ) )
   {
     if ( !mAddedFeatures.contains( fid ) )
       return false;
+  }
+  else if ( !( L->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) )
+  {
+    return false;
   }
 
   if ( field < 0 || field >= L->pendingFields().count() ||
