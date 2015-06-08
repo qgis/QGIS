@@ -350,14 +350,14 @@ QVector<QgsDataItem*> QgsDataItem::createChildren()
   return QVector<QgsDataItem*>();
 }
 
-void QgsDataItem::populate()
+void QgsDataItem::populate( bool foreground )
 {
   if ( state() == Populated || state() == Populating )
     return;
 
   QgsDebugMsg( "mPath = " + mPath );
 
-  if ( capabilities2() & QgsDataItem::Fast )
+  if ( capabilities2() & QgsDataItem::Fast || foreground )
   {
     populate( createChildren() );
   }
@@ -390,7 +390,7 @@ QVector<QgsDataItem*> QgsDataItem::runCreateChildren( QgsDataItem* item )
     QgsDebugMsg( "moveToThread child " + child->path() );
     child->moveToThread( QApplication::instance()->thread() ); // moves also children
   }
-  QgsDebugMsg( "finished path = " + item->path() );
+  QgsDebugMsg( QString( "finished path %1: %2 children" ).arg( item->path() ).arg( children.size() ) );
   return children;
 }
 
