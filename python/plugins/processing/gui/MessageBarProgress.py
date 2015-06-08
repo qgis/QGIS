@@ -33,9 +33,9 @@ from qgis.gui import QgsMessageBar
 
 class MessageBarProgress:
 
-    def __init__(self):
+    def __init__(self, algname=None):
         self.progressMessageBar = \
-            iface.messageBar().createMessage(self.tr('Executing algorithm'))
+            iface.messageBar().createMessage(self.tr('Executing algorithm <i>{0}</i>'.format(algname if algname else '')))
         self.progress = QProgressBar()
         self.progress.setMaximum(100)
         self.progress.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
