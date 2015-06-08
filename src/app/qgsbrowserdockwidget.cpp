@@ -386,6 +386,22 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem* item )
   }
 }
 
+void QgsBrowserLayerProperties::setCondensedMode( bool condensedMode )
+{
+  if ( condensedMode )
+  {
+    mUriLabel->setLineWrapMode( QTextEdit::NoWrap );
+    mUriLabel->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+    mUriLabel->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+  }
+  else
+  {
+    mUriLabel->setLineWrapMode( QTextEdit::WidgetWidth );
+    mUriLabel->setHorizontalScrollBarPolicy( Qt::ScrollBarAsNeeded );
+    mUriLabel->setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
+  }
+}
+
 QgsBrowserDirectoryProperties::QgsBrowserDirectoryProperties( QWidget* parent ) :
     QgsBrowserPropertiesWidget( parent )
     , mDirectoryWidget( 0 )
@@ -863,7 +879,11 @@ void QgsBrowserDockWidget::setPropertiesWidget()
       QModelIndex index = mProxyModel->mapToSource( indexes.value( 0 ) );
       QgsDataItem* item = mModel->dataItem( index );
       QgsBrowserPropertiesWidget* propertiesWidget = QgsBrowserPropertiesWidget::createWidget( item, mPropertiesWidget );
-      mPropertiesLayout->addWidget( propertiesWidget );
+      if ( propertiesWidget )
+      {
+        propertiesWidget->setCondensedMode( true );
+        mPropertiesLayout->addWidget( propertiesWidget );
+      }
     }
   }
   mPropertiesWidget->setVisible( mPropertiesLayout->count() > 0 );
