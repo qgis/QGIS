@@ -6929,6 +6929,9 @@ void QgisApp::showMouseCoordinate( const QgsPoint & p )
   {
     if ( mMapCanvas->mapUnits() == QGis::Degrees )
     {
+      if ( !mMapCanvas->mapSettings().destinationCrs().isValid() )
+        return;
+
       QgsPoint geo = p;
       if ( !mMapCanvas->mapSettings().destinationCrs().geographicFlag() )
       {
