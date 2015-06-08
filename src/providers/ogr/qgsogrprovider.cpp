@@ -82,6 +82,8 @@ bool QgsOgrProvider::convertField( QgsField &field, const QTextCodec &encoding )
   OGRFieldType ogrType = OFTString; //default to string
   int ogrWidth = field.length();
   int ogrPrecision = field.precision();
+  if ( ogrPrecision > 0 )
+    ogrWidth += 1;
   switch ( field.type() )
   {
     case QVariant::LongLong:
@@ -791,6 +793,11 @@ void QgsOgrProvider::loadFields()
         }
       }
 
+      int width = OGR_Fld_GetWidth( fldDef );
+      int prec = OGR_Fld_GetPrecision( fldDef );
+      if ( prec > 0 )
+        width -= 1;
+
       mAttributeFields.append(
         QgsField(
           name,
@@ -800,8 +807,9 @@ void QgsOgrProvider::loadFields()
 #else
           mEncoding->toUnicode( OGR_GetFieldTypeName( ogrType ) ),
 #endif
-          OGR_Fld_GetWidth( fldDef ),
-          OGR_Fld_GetPrecision( fldDef ) ) );
+          width, prec
+        )
+      );
     }
   }
 }
@@ -1144,7 +1152,10 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
     }
 
     OGRFieldDefnH fielddefn = OGR_Fld_Create( mEncoding->fromUnicode( iter->name() ).constData(), type );
-    OGR_Fld_SetWidth( fielddefn, iter->length() );
+    int width = iter->length();
+    if ( iter->precision() )
+      width += 1;
+    OGR_Fld_SetWidth( fielddefn, width );
     OGR_Fld_SetPrecision( fielddefn, iter->precision() );
 
     if ( OGR_L_CreateField( ogrLayer, fielddefn, true ) != OGRERR_NONE )
@@ -2172,6 +2183,8 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
 
     int width = fields.size() > 1 ? fields[1].toInt() : -1;
     int precision = fields.size() > 2 ? fields[2].toInt() : -1;
+    if ( precision > 0 )
+      width += 1;
 
     OGRFieldDefnH field;
     if ( fields[0] == "Real" )
