@@ -20,12 +20,8 @@
 #include "qgswmscapabilities.h"
 #include "qgswmsconnection.h"
 #include "qgswmssourceselect.h"
-
 #include "qgsnewhttpconnection.h"
-
 #include "qgstilescalewidget.h"
-
-#include "qgsapplication.h"
 
 // ---------------------------------------------------------------------------
 QgsWMSConnectionItem::QgsWMSConnectionItem( QgsDataItem* parent, QString name, QString path, QString uri )
@@ -46,19 +42,7 @@ QVector<QgsDataItem*> QgsWMSConnectionItem::createChildren()
 
   QgsDataSourceURI uri;
   uri.setEncodedUri( mUri );
-#if 0
-  if ( mPath.contains( "url=" ) )
-  {
-    encodedUri = mPath;
-    uri.setEncodedUri( encodedUri );
-  }
-  else
-  {
-    QgsWMSConnection connection( mName );
-    uri = connection.uri();
-    encodedUri = uri.encodedUri();
-  }
-#endif
+
   QgsDebugMsg( "mUri = " + mUri );
 
   QgsWmsSettings wmsSettings;
@@ -69,25 +53,6 @@ QVector<QgsDataItem*> QgsWMSConnectionItem::createChildren()
   }
 
   QgsWmsCapabilitiesDownload capDownload( wmsSettings.baseUrl(), wmsSettings.authorization() );
-
-#if 0
-  QWidget *mainWindow = 0;
-
-  QWidgetList topLevelWidgets = qApp->topLevelWidgets();
-  for ( QWidgetList::iterator it = topLevelWidgets.begin(); it != topLevelWidgets.end(); ++it )
-  {
-    if (( *it )->objectName() == "QgisApp" )
-    {
-      mainWindow = *it;
-      break;
-    }
-  }
-
-  if ( mainWindow )
-  {
-    connect( &capDownload, SIGNAL( statusChanged( QString ) ), mainWindow, SLOT( showStatusMessage( QString ) ) );
-  }
-#endif
 
   bool res = capDownload.downloadCapabilities();
 
@@ -402,6 +367,7 @@ QWidget * QgsWMSRootItem::paramWidget()
   connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
   return select;
 }
+
 void QgsWMSRootItem::connectionsChanged()
 {
   refresh();

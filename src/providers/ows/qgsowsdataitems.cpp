@@ -69,7 +69,7 @@ QVector<QgsDataItem*> QgsOWSConnectionItem::createChildren()
       continue;
     }
 
-    item->populate();
+    item->populate( true ); // populate in foreground - this is already run in a thread
 
     layerCount += item->rowCount();
     if ( item->rowCount() > 0 )
