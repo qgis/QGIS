@@ -21,7 +21,6 @@
 #include "qgscurvepolygonv2.h"
 #include "qgspointv2.h"
 #include "qgspolygonv2.h"
-#include "qgscurvepolygonv2.h"
 #include "qgslinestringv2.h"
 #include "qgsmulticurvev2.h"
 #include "qgsmultilinestringv2.h"
