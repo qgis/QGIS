@@ -1907,7 +1907,7 @@ GEOSGeometry* QgsGeos::reshapePolygon( const GEOSGeometry* polygon, const GEOSGe
   QList<GEOSGeometry*> ringList;
   if ( nRings > 0 )
   {
-    GEOSGeometry* outerRingPoly = GEOSGeom_createPolygon_r( geosinit.ctxt, GEOSGeom_clone( newOuterRing ), 0, 0 );
+    GEOSGeometry* outerRingPoly = GEOSGeom_createPolygon_r( geosinit.ctxt, GEOSGeom_clone_r( geosinit.ctxt, newOuterRing ), 0, 0 );
     if ( outerRingPoly )
     {
       GEOSGeometry* currentRing = 0;
