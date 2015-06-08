@@ -123,6 +123,11 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
     void loadFieldNames( const QgsFields& fields );
 
+    /** Loads field names and values from the specified map.
+     *  @note The field values must be quoted appropriately if they are strings.
+     */
+    void loadFieldsAndValues( const QMap<QString, QStringList>& fieldValues );
+
     /** Sets geometry calculator used in distance/area calculations. */
     void setGeomCalculator( const QgsDistanceArea & da );
 
@@ -200,7 +205,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
   private:
     void runPythonCode( QString code );
     void updateFunctionTree();
-    void fillFieldValues( int fieldIndex, int countLimit );
+    void fillFieldValues( const QString &fieldName, int countLimit );
     QString loadFunctionHelp( QgsExpressionItem* functionName );
 
     /** Formats an expression preview result for display in the widget
@@ -219,6 +224,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     bool mExpressionValid;
     QgsDistanceArea mDa;
     QString mRecentKey;
+    QMap<QString, QStringList> mFieldValues;
 
 };
 

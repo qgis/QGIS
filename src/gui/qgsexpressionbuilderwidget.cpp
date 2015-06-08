@@ -103,13 +103,22 @@ void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const
   if ( !item )
     return;
 
-  if ( item->getItemType() != QgsExpressionItem::Field )
+  mValueListWidget->clear();
+  if ( item->getItemType() == QgsExpressionItem::Field && mFieldValues.contains( item->text() ) )
   {
-    mValueListWidget->clear();
+    const QStringList& values = mFieldValues[item->text()];
+    mValueListWidget->setUpdatesEnabled( false );
+    mValueListWidget->blockSignals( true );
+    foreach ( const QString& value, values )
+      mValueListWidget->addItem( value );
+
+    mValueListWidget->setUpdatesEnabled( true );
+    mValueListWidget->blockSignals( false );
   }
 
+
   mLoadGroupBox->setVisible( item->getItemType() == QgsExpressionItem::Field && mLayer );
-  mValueGroupBox->setVisible( item->getItemType() == QgsExpressionItem::Field && mLayer );
+  mValueGroupBox->setVisible( item->getItemType() == QgsExpressionItem::Field && mLayer || mValueListWidget->count() > 0 );
 
   // Show the help for the current item.
   QString help = loadFunctionHelp( item );
@@ -266,7 +275,18 @@ void QgsExpressionBuilderWidget::loadFieldNames( const QgsFields& fields )
 //  highlighter->addFields( fieldNames );
 }
 
-void QgsExpressionBuilderWidget::fillFieldValues( int fieldIndex, int countLimit )
+void QgsExpressionBuilderWidget::loadFieldsAndValues( const QMap<QString, QStringList> &fieldValues )
+{
+  QgsFields fields;
+  foreach ( const QString& fieldName, fieldValues.keys() )
+  {
+    fields.append( QgsField( fieldName ) );
+  }
+  loadFieldNames( fields );
+  mFieldValues = fieldValues;
+}
+
+void QgsExpressionBuilderWidget::fillFieldValues( const QString& fieldName, int countLimit )
 {
   // TODO We should really return a error the user of the widget that
   // the there is no layer set.
@@ -276,6 +296,8 @@ void QgsExpressionBuilderWidget::fillFieldValues( int fieldIndex, int countLimit
   // TODO We should thread this so that we don't hold the user up if the layer is massive.
   mValueListWidget->clear();
 
+  int fieldIndex = mLayer->fieldNameIndex( fieldName );
+
   if ( fieldIndex < 0 )
     return;
 
@@ -283,16 +305,21 @@ void QgsExpressionBuilderWidget::fillFieldValues( int fieldIndex, int countLimit
   mValueListWidget->blockSignals( true );
 
   QList<QVariant> values;
+  QStringList strValues;
   mLayer->uniqueValues( fieldIndex, values, countLimit );
   foreach ( QVariant value, values )
   {
+    QString strValue;
     if ( value.isNull() )
-      mValueListWidget->addItem( "NULL" );
+      strValue = "NULL";
     else if ( value.type() == QVariant::Int || value.type() == QVariant::Double || value.type() == QVariant::LongLong )
-      mValueListWidget->addItem( value.toString() );
+      strValue = value.toString();
     else
-      mValueListWidget->addItem( "'" + value.toString().replace( "'", "''" ) + "'" );
+      strValue = "'" + value.toString().replace( "'", "''" ) + "'";
+    mValueListWidget->addItem( strValue );
+    strValues.append( strValue );
   }
+  mFieldValues[fieldName] = strValues;
 
   mValueListWidget->setUpdatesEnabled( true );
   mValueListWidget->blockSignals( false );
@@ -585,9 +612,7 @@ void QgsExpressionBuilderWidget::loadSampleValues()
     return;
 
   mValueGroupBox->show();
-  int fieldIndex = mLayer->fieldNameIndex( item->text() );
-
-  fillFieldValues( fieldIndex, 10 );
+  fillFieldValues( item->text(), 10 );
 }
 
 void QgsExpressionBuilderWidget::loadAllValues()
@@ -600,8 +625,7 @@ void QgsExpressionBuilderWidget::loadAllValues()
     return;
 
   mValueGroupBox->show();
-  int fieldIndex = mLayer->fieldNameIndex( item->text() );
-  fillFieldValues( fieldIndex, -1 );
+  fillFieldValues( item->text(), -1 );
 }
 
 void QgsExpressionBuilderWidget::setExpressionState( bool state )
