@@ -347,7 +347,7 @@ class Processing:
 
         progress = None
         if iface is not None :
-            progress = MessageBarProgress()
+            progress = MessageBarProgress(alg.name)
         ret = runalg(alg, progress)
         if onFinish is not None and ret:
             onFinish(alg, progress)
