@@ -157,14 +157,14 @@ QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsSt
     layout()->setContentsMargins( 0, 0, 0, 0 );
   }
   // setup icons
-  btnAddLayer->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.png" ) ) );
-  btnRemoveLayer->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.png" ) ) );
+  btnAddLayer->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );
+  btnRemoveLayer->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.svg" ) ) );
   QIcon iconLock;
   iconLock.addFile( QgsApplication::iconPath( "locked.svg" ), QSize(), QIcon::Normal, QIcon::On );
   iconLock.addFile( QgsApplication::iconPath( "unlocked.svg" ), QSize(), QIcon::Normal, QIcon::Off );
   btnLock->setIcon( iconLock );
-  btnUp->setIcon( QIcon( QgsApplication::iconPath( "symbologyUp.png" ) ) );
-  btnDown->setIcon( QIcon( QgsApplication::iconPath( "symbologyDown.png" ) ) );
+  btnUp->setIcon( QIcon( QgsApplication::iconPath( "symbologyUp.svg" ) ) );
+  btnDown->setIcon( QIcon( QgsApplication::iconPath( "symbologyDown.svg" ) ) );
 
   model = new QStandardItemModel();
   // Set the symbol
