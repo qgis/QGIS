@@ -38,10 +38,11 @@ QList< QPair<QString, QString> > QgsGPSDetector::availablePorts()
 #if defined(HAVE_QT_MOBILITY_LOCATION ) || defined(QT_POSITIONING_LIB)
   devs << QPair<QString, QString>( "internalGPS", tr( "internal GPS" ) );
 #endif
+
   // try local gpsd first
   devs << QPair<QString, QString>( "localhost:2947:", tr( "local gpsd" ) );
 
-#ifdef linux
+#ifdef Q_OS_LINUX
   // look for linux serial devices
   foreach ( QString linuxDev, QStringList() << "/dev/ttyS%1" << "/dev/ttyUSB%1" << "/dev/rfcomm%1" << "/dev/ttyACM%1" )
   {
@@ -55,7 +56,7 @@ QList< QPair<QString, QString> > QgsGPSDetector::availablePorts()
   }
 #endif
 
-#ifdef __FreeBSD__ // freebsd
+#ifdef Q_OS_FREEBSD
   // and freebsd devices (untested)
   foreach ( QString freebsdDev, QStringList() << "/dev/cuaa%1" << "/dev/ucom%1" )
   {
@@ -69,7 +70,7 @@ QList< QPair<QString, QString> > QgsGPSDetector::availablePorts()
   }
 #endif
 
-#ifdef sparc
+#ifdef Q_OS_SOLARIS
   // and solaris devices (also untested)
   QString solarisDev( "/dev/cua/%1" );
   for ( char i = 'a'; i < 'k'; ++i )
@@ -161,7 +162,6 @@ void QgsGPSDetector::advance()
       qWarning( "QT_MOBILITY_LOCATION not found and mPortList matches internalGPS, this should never happen" );
 #endif
     }
-
     else
     {
       QextSerialPort *serial = new QextSerialPort( mPortList[ mPortIndex ].first, QextSerialPort::EventDriven );
