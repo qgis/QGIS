@@ -126,14 +126,3 @@ bool QgsMultiSurfaceV2::addGeometry( QgsAbstractGeometryV2* g )
   setZMTypeFromSubGeometry( g, QgsWKBTypes::MultiSurface );
   return QgsGeometryCollectionV2::addGeometry( g );
 }
-
-QgsAbstractGeometryV2* QgsMultiSurfaceV2::segmentize() const
-{
-  QgsMultiSurfaceV2* c = new QgsMultiSurfaceV2();
-  QVector< QgsAbstractGeometryV2* >::const_iterator geomIt = mGeometries.constBegin();
-  for ( ; geomIt != mGeometries.constEnd(); ++geomIt )
-  {
-    c->addGeometry(( *geomIt )->segmentize() );
-  }
-  return c;
-}

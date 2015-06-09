@@ -92,6 +92,9 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
 
     bool hasCurvedSegments() const override;
 
+    /**Returns a geometry without curves. Caller takes ownership*/
+    QgsAbstractGeometryV2* segmentize() const override;
+
   protected:
     QVector< QgsAbstractGeometryV2* > mGeometries;
 
