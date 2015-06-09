@@ -150,7 +150,7 @@ QgsSpatiaLiteProvider::createEmptyLayer(
       QString pk = primaryKey = "pk";
       for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
       {
-        if ( fields[fldIdx].name() == pk )
+        if ( fields[fldIdx].name() == primaryKey )
         {
           // it already exists, try again with a new name
           primaryKey = QString( "%1_%2" ).arg( pk ).arg( index++ );
