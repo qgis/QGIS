@@ -25,7 +25,6 @@
 
 #include <cpl_string.h>
 #include <gdalwarper.h>
-#include <ogr_srs_api.h>
 
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
 #define TO8(x)   (x).toUtf8().constData()
@@ -229,115 +228,6 @@ GDALDatasetH QgsRasterCalculator::openOutputFile( GDALDriverH outputDriver )
   GDALSetGeoTransform( outputDataset, geotransform );
 
   return outputDataset;
-}
-
-void QgsRasterCalculator::readRasterPart( double* targetGeotransform, int xOffset, int yOffset, int nCols, int nRows, double* sourceTransform, GDALRasterBandH sourceBand, float* rasterBuffer )
-{
-  //If dataset transform is the same as the requested transform, do a normal GDAL raster io
-  if ( transformationsEqual( targetGeotransform, sourceTransform ) )
-  {
-    GDALRasterIO( sourceBand, GF_Read, xOffset, yOffset, nCols, nRows, rasterBuffer, nCols, nRows, GDT_Float32, 0, 0 );
-    return;
-  }
-
-  int sourceBandXSize = GDALGetRasterBandXSize( sourceBand );
-  int sourceBandYSize = GDALGetRasterBandYSize( sourceBand );
-
-  //pixel calculation needed because of different raster position / resolution
-  int nodataSuccess;
-  double nodataValue = GDALGetRasterNoDataValue( sourceBand, &nodataSuccess );
-  QgsRectangle targetRect( targetGeotransform[0] + targetGeotransform[1] * xOffset, targetGeotransform[3] + yOffset * targetGeotransform[5] + nRows * targetGeotransform[5]
-                           , targetGeotransform[0] + targetGeotransform[1] * xOffset + targetGeotransform[1] * nCols, targetGeotransform[3] + yOffset * targetGeotransform[5] );
-  QgsRectangle sourceRect( sourceTransform[0], sourceTransform[3] + GDALGetRasterBandYSize( sourceBand ) * sourceTransform[5],
-                           sourceTransform[0] +  GDALGetRasterBandXSize( sourceBand )* sourceTransform[1], sourceTransform[3] );
-  QgsRectangle intersection = targetRect.intersect( &sourceRect );
-
-  //no intersection, fill all the pixels with nodata values
-  if ( intersection.isEmpty() )
-  {
-    int nPixels = nCols * nRows;
-    for ( int i = 0; i < nPixels; ++i )
-    {
-      rasterBuffer[i] = nodataValue;
-    }
-    return;
-  }
-
-  //do raster io in source resolution
-  int sourcePixelOffsetXMin = floor(( intersection.xMinimum() - sourceTransform[0] ) / sourceTransform[1] );
-  int sourcePixelOffsetXMax = ceil(( intersection.xMaximum() - sourceTransform[0] ) / sourceTransform[1] );
-  if ( sourcePixelOffsetXMax > sourceBandXSize )
-  {
-    sourcePixelOffsetXMax = sourceBandXSize;
-  }
-  int nSourcePixelsX = sourcePixelOffsetXMax - sourcePixelOffsetXMin;
-
-  int sourcePixelOffsetYMax = floor(( intersection.yMaximum() - sourceTransform[3] ) / sourceTransform[5] );
-  int sourcePixelOffsetYMin = ceil(( intersection.yMinimum() - sourceTransform[3] ) / sourceTransform[5] );
-  if ( sourcePixelOffsetYMin > sourceBandYSize )
-  {
-    sourcePixelOffsetYMin = sourceBandYSize;
-  }
-  int nSourcePixelsY = sourcePixelOffsetYMin - sourcePixelOffsetYMax;
-  float* sourceRaster = ( float * ) CPLMalloc( sizeof( float ) * nSourcePixelsX * nSourcePixelsY );
-  double sourceRasterXMin = sourceRect.xMinimum() + sourcePixelOffsetXMin * sourceTransform[1];
-  double sourceRasterYMax = sourceRect.yMaximum() + sourcePixelOffsetYMax * sourceTransform[5];
-  if ( GDALRasterIO( sourceBand, GF_Read, sourcePixelOffsetXMin, sourcePixelOffsetYMax, nSourcePixelsX, nSourcePixelsY,
-                     sourceRaster, nSourcePixelsX, nSourcePixelsY, GDT_Float32, 0, 0 ) != CE_None )
-  {
-    //IO error, fill array with nodata values
-    CPLFree( sourceRaster );
-    int npixels = nRows * nCols;
-    for ( int i = 0; i < npixels; ++i )
-    {
-      rasterBuffer[i] = nodataValue;
-    }
-    return;
-  }
-
-
-  double targetPixelX;
-  double targetPixelXMin = targetGeotransform[0] + targetGeotransform[1] * xOffset + targetGeotransform[1] / 2.0;
-  double targetPixelY = targetGeotransform[3] + targetGeotransform[5] * yOffset + targetGeotransform[5] / 2.0; //coordinates of current target pixel
-  int sourceIndexX, sourceIndexY; //current raster index in  source pixels
-  double sx, sy;
-  for ( int i = 0; i < nRows; ++i )
-  {
-    targetPixelX = targetPixelXMin;
-    for ( int j = 0; j < nCols; ++j )
-    {
-      sx = ( targetPixelX - sourceRasterXMin ) / sourceTransform[1];
-      sourceIndexX = sx > 0 ? sx : floor( sx );
-      sy = ( targetPixelY - sourceRasterYMax ) / sourceTransform[5];
-      sourceIndexY = sy > 0 ? sy : floor( sy );
-      if ( sourceIndexX >= 0 && sourceIndexX < nSourcePixelsX
-           && sourceIndexY >= 0 && sourceIndexY < nSourcePixelsY )
-      {
-        rasterBuffer[j + i*nRows] = sourceRaster[ sourceIndexX  + nSourcePixelsX * sourceIndexY ];
-      }
-      else
-      {
-        rasterBuffer[j + i*j] = nodataValue;
-      }
-      targetPixelX += targetGeotransform[1];
-    }
-    targetPixelY += targetGeotransform[5];
-  }
-
-  CPLFree( sourceRaster );
-  return;
-}
-
-bool QgsRasterCalculator::transformationsEqual( double* t1, double* t2 ) const
-{
-  for ( int i = 0; i < 6; ++i )
-  {
-    if ( !qgsDoubleNear( t1[i], t2[i], 0.00001 ) )
-    {
-      return false;
-    }
-  }
-  return true;
 }
 
 void QgsRasterCalculator::outputGeoTransform( double* transform ) const

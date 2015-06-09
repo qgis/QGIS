@@ -87,27 +87,6 @@ class ANALYSIS_EXPORT QgsRasterCalculator
       @return the output dataset or NULL in case of error*/
     GDALDatasetH openOutputFile( GDALDriverH outputDriver );
 
-    /**Reads raster pixels from a dataset/band
-      @param targetGeotransform transformation parameters of the requested raster array
-                                (not necessarily the same as the transform of the source dataset)
-      @param xOffset x offset
-      @param yOffset y offset
-      @param nCols number of columns
-      @param nRows number of rows
-      @param sourceTransform source transformation
-      @param sourceBand source band
-      @param rasterBuffer raster buffer
-      */
-    void readRasterPart( double* targetGeotransform,
-                         int xOffset, int yOffset,
-                         int nCols, int nRows,
-                         double* sourceTransform,
-                         GDALRasterBandH sourceBand,
-                         float* rasterBuffer );
-
-    /**Compares two geotransformations (six parameter double arrays*/
-    bool transformationsEqual( double* t1, double* t2 ) const;
-
     /**Sets gdal 6 parameters array from mOutputRectangle, mNumOutputColumns, mNumOutputRows
       @param transform double[6] array that receives the GDAL parameters*/
     void outputGeoTransform( double* transform ) const;
