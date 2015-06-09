@@ -62,17 +62,18 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
     }
     else if ( QgsLayerTree::isLayer( node ) )
     {
-      QgsMapLayer* layer = QgsLayerTree::toLayer( node )->layer();
+      QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer();
+      QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
+      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
 
       menu->addAction( actions->actionZoomToLayer( mCanvas, menu ) );
       menu->addAction( actions->actionShowInOverview( menu ) );
 
-      if ( layer && layer->type() == QgsMapLayer::RasterLayer )
+      if ( rlayer )
       {
         menu->addAction( tr( "&Zoom to Best Scale (100%)" ), QgisApp::instance(), SLOT( legendLayerZoomNative() ) );
 
-        QgsRasterLayer* rasterLayer =  qobject_cast<QgsRasterLayer *>( layer );
-        if ( rasterLayer && rasterLayer->rasterType() != QgsRasterLayer::Palette )
+        if ( rlayer->rasterType() != QgsRasterLayer::Palette )
           menu->addAction( tr( "&Stretch Using Current Extent" ), QgisApp::instance(), SLOT( legendLayerStretchUsingCurrentExtent() ) );
       }
 
@@ -81,21 +82,24 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
       // duplicate layer
       QAction* duplicateLayersAction = menu->addAction( QgsApplication::getThemeIcon( "/mActionDuplicateLayer.svg" ), tr( "&Duplicate" ), QgisApp::instance(), SLOT( duplicateLayers() ) );
 
-      // set layer scale visibility
-      menu->addAction( tr( "&Set Layer Scale Visibility" ), QgisApp::instance(), SLOT( setLayerScaleVisibility() ) );
+      if ( !vlayer || vlayer->geometryType() != QGis::NoGeometry )
+      {
+        // set layer scale visibility
+        menu->addAction( tr( "&Set Layer Scale Visibility" ), QgisApp::instance(), SLOT( setLayerScaleVisibility() ) );
 
-      // set layer crs
-      menu->addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ), tr( "&Set Layer CRS" ), QgisApp::instance(), SLOT( setLayerCRS() ) );
+        // set layer crs
+        menu->addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ), tr( "&Set Layer CRS" ), QgisApp::instance(), SLOT( setLayerCRS() ) );
 
-      // assign layer crs to project
-      menu->addAction( QgsApplication::getThemeIcon( "/mActionSetProjectCRS.png" ), tr( "Set &Project CRS from Layer" ), QgisApp::instance(), SLOT( setProjectCRSFromLayer() ) );
+        // assign layer crs to project
+        menu->addAction( QgsApplication::getThemeIcon( "/mActionSetProjectCRS.png" ), tr( "Set &Project CRS from Layer" ), QgisApp::instance(), SLOT( setProjectCRSFromLayer() ) );
+      }
 
       // style-related actions
       if ( layer && mView->selectedLayerNodes().count() == 1 )
       {
-        QMenu* menuStyleManager = new QMenu( tr( "Styles" ) );
+        QMenu *menuStyleManager = new QMenu( tr( "Styles" ) );
 
-        QgisApp* app = QgisApp::instance();
+        QgisApp *app = QgisApp::instance();
         menuStyleManager->addAction( tr( "Copy Style" ), app, SLOT( copyStyle() ) );
         if ( app->clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
         {
@@ -110,10 +114,8 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       menu->addSeparator();
 
-      if ( layer && layer->type() == QgsMapLayer::VectorLayer )
+      if ( vlayer )
       {
-        QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( layer );
-
         QAction *toggleEditingAction = QgisApp::instance()->actionToggleEditing();
         QAction *saveLayerEditsAction = QgisApp::instance()->actionSaveActiveLayerEdits();
         QAction *allEditsAction = QgisApp::instance()->actionAllEdits();
@@ -155,7 +157,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
         menu->addSeparator();
       }
-      else if ( layer && layer->type() == QgsMapLayer::RasterLayer )
+      else if ( rlayer )
       {
         menu->addAction( tr( "Save As..." ), QgisApp::instance(), SLOT( saveAsRasterFile() ) );
         menu->addAction( tr( "Save As Layer Definition File..." ), QgisApp::instance(), SLOT( saveAsLayerDefinition() ) );
