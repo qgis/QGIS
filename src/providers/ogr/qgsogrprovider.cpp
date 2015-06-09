@@ -2530,6 +2530,12 @@ void QgsOgrProvider::recalculateFeatureCount()
   QgsOgrConnPool::instance()->invalidateConnections( filePath() );
 }
 
+bool QgsOgrProvider::doesStrictFeatureTypeCheck() const
+{
+  // FIXME probably other drivers too...
+  return ogrDriverName != "ESRI Shapefile" || geomType == wkbPoint;
+}
+
 OGRwkbGeometryType QgsOgrProvider::ogrWkbSingleFlatten( OGRwkbGeometryType type )
 {
   type = wkbFlatten( type );
