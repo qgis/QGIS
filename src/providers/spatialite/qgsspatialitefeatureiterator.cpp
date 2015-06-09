@@ -369,8 +369,16 @@ QVariant QgsSpatiaLiteFeatureIterator::getFeatureAttribute( sqlite3_stmt* stmt, 
 {
   if ( sqlite3_column_type( stmt, ic ) == SQLITE_INTEGER )
   {
-    // INTEGER value
-    return sqlite3_column_int( stmt, ic );
+    if ( type == QVariant::Int )
+    {
+      // INTEGER value
+      return sqlite3_column_int( stmt, ic );
+    }
+    else
+    {
+      // INTEGER value
+      return ( qint64 ) sqlite3_column_int64( stmt, ic );
+    }
   }
 
   if ( sqlite3_column_type( stmt, ic ) == SQLITE_FLOAT )
