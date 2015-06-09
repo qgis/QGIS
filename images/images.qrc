@@ -443,10 +443,14 @@
         <file>themes/default/styleicons/style-point.png</file>
         <file>themes/default/styleicons/style-polygon.png</file>
         <file>themes/default/symbologyAdd.png</file>
+        <file>themes/default/symbologyAdd.svg</file>
         <file>themes/default/symbologyDown.png</file>
+        <file>themes/default/symbologyDown.svg</file>
         <file>themes/default/symbologyEdit.png</file>
         <file>themes/default/symbologyRemove.png</file>
+        <file>themes/default/symbologyRemove.svg</file>
         <file>themes/default/symbologyUp.png</file>
+        <file>themes/default/symbologyUp.svg</file>
         <file>themes/default/text.png</file>
         <file>themes/default/tracking.png</file>
         <file>themes/default/transformed.png</file>

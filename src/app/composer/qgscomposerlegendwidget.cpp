@@ -93,11 +93,11 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend )
   setupUi( this );
 
   // setup icons
-  mAddToolButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.png" ) ) );
+  mAddToolButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );
   mEditPushButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyEdit.png" ) ) );
-  mRemoveToolButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.png" ) ) );
-  mMoveUpToolButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyUp.png" ) ) );
-  mMoveDownToolButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyDown.png" ) ) );
+  mRemoveToolButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.svg" ) ) );
+  mMoveUpToolButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyUp.svg" ) ) );
+  mMoveDownToolButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyDown.svg" ) ) );
   mCountToolButton->setIcon( QIcon( QgsApplication::iconPath( "mActionSum.png" ) ) );
 
   mFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
