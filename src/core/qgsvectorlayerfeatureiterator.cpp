@@ -90,12 +90,11 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
     , mFetchedFid( false )
     , mEditGeometrySimplifier( 0 )
 {
+  prepareExpressions();
 
   // prepare joins: may add more attributes to fetch (in order to allow join)
   if ( mSource->mJoinBuffer->containsJoins() )
     prepareJoins();
-
-  prepareExpressions();
 
   mHasVirtualAttributes = !mFetchJoinInfo.isEmpty() || !mExpressionFieldInfo.isEmpty();
 
@@ -507,7 +506,7 @@ void QgsVectorLayerFeatureIterator::prepareExpressions()
         if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
         {
           QgsAttributeList attrs;
-          Q_FOREACH ( const QString& col, exp->referencedColumns() )
+          Q_FOREACH( const QString& col, exp->referencedColumns() )
           {
             attrs.append( mSource->mFields.fieldNameIndex( col ) );
           }
