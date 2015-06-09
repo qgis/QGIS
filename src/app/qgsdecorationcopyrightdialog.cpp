@@ -16,8 +16,8 @@
 #include "qgscontexthelp.h"
 
 //qt includes
-#include <QColorDialog>
 #include <QColor>
+#include <QColorDialog>
 #include <QFont>
 #include <QSettings>
 

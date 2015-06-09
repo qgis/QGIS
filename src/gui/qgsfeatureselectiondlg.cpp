@@ -15,8 +15,8 @@
 
 #include "qgsfeatureselectiondlg.h"
 
-#include "qgsgenericfeatureselectionmanager.h"
 #include "qgsdistancearea.h"
+#include "qgsgenericfeatureselectionmanager.h"
 
 QgsFeatureSelectionDlg::QgsFeatureSelectionDlg( QgsVectorLayer* vl, QWidget *parent )
     : QDialog( parent )

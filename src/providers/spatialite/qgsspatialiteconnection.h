@@ -15,14 +15,14 @@
 #ifndef QGSSPATIALITECONNECTION_H
 #define QGSSPATIALITECONNECTION_H
 
-#include <QStringList>
 #include <QObject>
+#include <QStringList>
 
 extern "C"
 {
-#include <sqlite3.h>
 #include <spatialite/gaiageo.h>
 #include <spatialite.h>
+#include <sqlite3.h>
 }
 
 class QgsSpatiaLiteConnection : public QObject

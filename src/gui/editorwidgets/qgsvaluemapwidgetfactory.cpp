@@ -15,8 +15,8 @@
 
 #include "qgsvaluemapwidgetfactory.h"
 
-#include "qgsvaluemapwidgetwrapper.h"
 #include "qgsvaluemapconfigdlg.h"
+#include "qgsvaluemapwidgetwrapper.h"
 
 QgsValueMapWidgetFactory::QgsValueMapWidgetFactory( const QString& name )
     : QgsEditorWidgetFactory( name )

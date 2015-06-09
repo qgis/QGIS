@@ -14,14 +14,14 @@
  ***************************************************************************/
 #include "qgsspatialitedataitems.h"
 
-#include "qgsspatialiteprovider.h"
 #include "qgsspatialiteconnection.h"
+#include "qgsspatialiteprovider.h"
 #include "qgsspatialitesourceselect.h"
 
 #include "qgslogger.h"
+#include "qgsmessageoutput.h"
 #include "qgsmimedatautils.h"
 #include "qgsvectorlayerimport.h"
-#include "qgsmessageoutput.h"
 
 #include <QAction>
 #include <QMessageBox>

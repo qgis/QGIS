@@ -7,19 +7,19 @@
  *****************************************************************************/
 
 #include <qpainter.h>
-#include "qwt_global.h"
-#include "qwt_painter.h"
-#include "qwt_polar.h"
-#include "qwt_scale_map.h"
+#include "qwt_clipper.h"
+#include "qwt_curve_fitter.h"
 #include "qwt_double_rect.h"
-#include "qwt_math.h"
-#include "qwt_polygon.h"
-#include "qwt_symbol.h"
+#include "qwt_global.h"
 #include "qwt_legend.h"
 #include "qwt_legend_item.h"
-#include "qwt_curve_fitter.h"
-#include "qwt_clipper.h"
+#include "qwt_math.h"
+#include "qwt_painter.h"
 #include "qwt_polar_curve.h"
+#include "qwt_polar.h"
+#include "qwt_polygon.h"
+#include "qwt_scale_map.h"
+#include "qwt_symbol.h"
 
 static int verifyRange( int size, int &i1, int &i2 )
 {

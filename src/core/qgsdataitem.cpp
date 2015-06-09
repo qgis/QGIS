@@ -16,32 +16,32 @@
  ***************************************************************************/
 
 #include <QApplication>
-#include <QtConcurrentMap>
-#include <QtConcurrentRun>
 #include <QDateTime>
 #include <QDir>
 #include <QFileInfo>
 #include <QMenu>
 #include <QMouseEvent>
+#include <QSettings>
+#include <QStyle>
+#include <QtConcurrentMap>
+#include <QtConcurrentRun>
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 #include <QVector>
-#include <QStyle>
-#include <QSettings>
 
 #include "qgis.h"
 #include "qgsdataitem.h"
 
+#include "qgsconfig.h"
 #include "qgsdataitemprovider.h"
 #include "qgsdataitemproviderregistry.h"
 #include "qgsdataprovider.h"
 #include "qgslogger.h"
 #include "qgsproviderregistry.h"
-#include "qgsconfig.h"
 
 // use GDAL VSI mechanism
-#include "cpl_vsi.h"
 #include "cpl_string.h"
+#include "cpl_vsi.h"
 
 QgsAnimatedIcon::QgsAnimatedIcon( const QString & iconPath )
     : QObject()

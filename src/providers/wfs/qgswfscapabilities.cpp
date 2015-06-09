@@ -12,17 +12,17 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgswfscapabilities.h"
+#include <QDomDocument>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QSettings>
+#include <QStringList>
 #include "qgsexpression.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsogcutils.h"
-#include <QDomDocument>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QSettings>
-#include <QStringList>
+#include "qgswfscapabilities.h"
 
 static const QString WFS_NAMESPACE = "http://www.opengis.net/wfs";
 

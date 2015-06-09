@@ -30,17 +30,17 @@
 #include <stdlib.h>
 
 // Qt
-#include <QtGui/QApplication>
+#include <QtCore>
 #include <QtCore/QByteRef>
 #include <QtCore/QDir>
 #include <QtCore/QFile>
 #include <QtCore/QRegExp>
 #include <QtCore/QStringList>
-#include <QtCore>
+#include <QtGui/QApplication>
 
 #include "Pty.h"
-#include "TerminalDisplay.h"
 #include "ShellCommand.h"
+#include "TerminalDisplay.h"
 #include "Vt102Emulation.h"
 
 using namespace Konsole;

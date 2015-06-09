@@ -14,16 +14,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmaptoolselectrectangle.h"
-#include "qgsmaptoolselectutils.h"
-#include "qgsrubberband.h"
-#include "qgsmapcanvas.h"
-#include "qgsmaptopixel.h"
-#include "qgsvectorlayer.h"
+#include "qgis.h"
 #include "qgscursors.h"
 #include "qgsgeometry.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaptoolselectrectangle.h"
+#include "qgsmaptoolselectutils.h"
+#include "qgsmaptopixel.h"
 #include "qgspoint.h"
-#include "qgis.h"
+#include "qgsrubberband.h"
+#include "qgsvectorlayer.h"
 
 #include <QMouseEvent>
 #include <QRect>

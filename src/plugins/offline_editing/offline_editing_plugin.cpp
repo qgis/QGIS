@@ -16,15 +16,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "offline_editing_plugin.h"
 #include "offline_editing_plugin_gui.h"
+#include "offline_editing_plugin.h"
 #include "offline_editing_progress_dialog.h"
 
-#include <qgisinterface.h>
 #include <qgisgui.h>
+#include <qgisinterface.h>
 #include <qgsmaplayerregistry.h>
-#include <qgsproject.h>
 #include <qgsmessagebar.h>
+#include <qgsproject.h>
 
 #include <QAction>
 

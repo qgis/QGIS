@@ -17,11 +17,11 @@
 #ifndef QGSCREDENTIALS_H
 #define QGSCREDENTIALS_H
 
-#include <QString>
-#include <QObject>
-#include <QPair>
 #include <QMap>
 #include <QMutex>
+#include <QObject>
+#include <QPair>
+#include <QString>
 
 /** \ingroup core
  * Interface for requesting credentials in QGIS in GUI independent way.

@@ -17,11 +17,11 @@
 #ifndef QGSCOMPOSEROBJECT_H
 #define QGSCOMPOSEROBJECT_H
 
-#include <QObject>
 #include <QDomNode>
+#include <QMap>
+#include <QObject>
 #include <QPointF>
 #include <QRectF>
-#include <QMap>
 
 class QgsComposition;
 class QPainter;

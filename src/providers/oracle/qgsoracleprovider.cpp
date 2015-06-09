@@ -15,27 +15,27 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgscoordinatereferencesystem.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
-#include "qgsmessageoutput.h"
-#include "qgsmessagelog.h"
-#include "qgsrectangle.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsvectorlayerimport.h"
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsmessageoutput.h"
+#include "qgsrectangle.h"
+#include "qgsvectorlayerimport.h"
 
 #include "qgsprovidercountcalcevent.h"
 #include "qgsproviderextentcalcevent.h"
 
-#include "qgsoracleprovider.h"
-#include "qgsoracletablemodel.h"
-#include "qgsoraclesourceselect.h"
 #include "qgsoracledataitems.h"
 #include "qgsoraclefeatureiterator.h"
+#include "qgsoracleprovider.h"
+#include "qgsoraclesourceselect.h"
+#include "qgsoracletablemodel.h"
 
-#include <QSqlRecord>
 #include <QSqlField>
+#include <QSqlRecord>
 
 #include "ocispatial/wkbptr.h"
 

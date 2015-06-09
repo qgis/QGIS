@@ -16,10 +16,10 @@ email                : ersts@amnh.org
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsrasterinterface.h"
-#include "qgsrastertransparency.h"
 #include "qgis.h"
 #include "qgslogger.h"
+#include "qgsrasterinterface.h"
+#include "qgsrastertransparency.h"
 
 #include <QDomDocument>
 #include <QDomElement>

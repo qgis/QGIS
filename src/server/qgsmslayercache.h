@@ -18,12 +18,12 @@
 #ifndef QGSMSLAYERCACHE_H
 #define QGSMSLAYERCACHE_H
 
-#include <time.h>
 #include <QFileSystemWatcher>
 #include <QHash>
 #include <QObject>
 #include <QPair>
 #include <QString>
+#include <time.h>
 
 class QgsMapLayer;
 

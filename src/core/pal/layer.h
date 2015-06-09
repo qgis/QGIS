@@ -36,8 +36,8 @@
 
 #include <fstream>
 
-#include <pal/pal.h>
 #include <pal/palgeometry.h>
+#include <pal/pal.h>
 
 
 namespace pal

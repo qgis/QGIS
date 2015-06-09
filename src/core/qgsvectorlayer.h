@@ -19,19 +19,19 @@
 #ifndef QGSVECTORLAYER_H
 #define QGSVECTORLAYER_H
 
+#include <QList>
 #include <QMap>
 #include <QSet>
-#include <QList>
 #include <QStringList>
 
 #include "qgis.h"
-#include "qgsmaplayer.h"
+#include "qgseditorwidgetconfig.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
-#include "qgseditorwidgetconfig.h"
 #include "qgsfield.h"
-#include "qgssnapper.h"
+#include "qgsmaplayer.h"
 #include "qgsrelation.h"
+#include "qgssnapper.h"
 #include "qgsvectorsimplifymethod.h"
 
 class QPainter;

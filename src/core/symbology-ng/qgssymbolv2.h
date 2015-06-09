@@ -16,9 +16,9 @@
 #ifndef QGSSYMBOLV2_H
 #define QGSSYMBOLV2_H
 
-#include "qgis.h"
 #include <QList>
 #include <QMap>
+#include "qgis.h"
 #include "qgsmapunitscale.h"
 
 class QColor;

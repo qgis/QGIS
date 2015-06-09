@@ -18,11 +18,11 @@
 #ifndef QGSCOMPOSERTABLE_H
 #define QGSCOMPOSERTABLE_H
 
+#include <QObject>
+#include <QSet>
 #include "qgscomposeritem.h"
 #include "qgscomposition.h"
 #include "qgsfeature.h"
-#include <QSet>
-#include <QObject>
 
 class QgsComposerTableColumn;
 

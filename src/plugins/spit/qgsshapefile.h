@@ -18,11 +18,11 @@
 #ifndef QGSSHAPEFILE_H
 #define QGSSHAPEFILE_H
 
-#include <vector>
+#include <ogr_api.h>
+#include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QObject>
-#include <ogr_api.h>
+#include <vector>
 
 class QProgressDialog;
 class QTextCodec;

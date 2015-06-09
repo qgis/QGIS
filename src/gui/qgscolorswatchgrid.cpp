@@ -13,12 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscolorswatchgrid.h"
-#include "qgsapplication.h"
-#include "qgslogger.h"
-#include <QPainter>
-#include <QMouseEvent>
 #include <QMenu>
+#include <QMouseEvent>
+#include <QPainter>
+#include "qgsapplication.h"
+#include "qgscolorswatchgrid.h"
+#include "qgslogger.h"
 
 #define NUMBER_COLORS_PER_ROW 10 //number of color swatches per row
 #define SWATCH_SIZE 14 //width/height of color swatches

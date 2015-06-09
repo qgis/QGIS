@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsrastermatrix.h"
 #include <string.h>
+#include "qgsrastermatrix.h"
 
 #include <cmath>
 

@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsrasterdataprovider.h"
 #include "qgshuesaturationfilter.h"
+#include "qgsrasterdataprovider.h"
 
 #include <QDomDocument>
 #include <QDomElement>

@@ -20,9 +20,9 @@
 #ifndef QGSHTTPREQUESTHANDLER_H
 #define QGSHTTPREQUESTHANDLER_H
 
-#include "qgsrequesthandler.h"
 #include <QColor>
 #include <QPair>
+#include "qgsrequesthandler.h"
 
 typedef QList< QPair<QRgb, int> > QgsColorBox; //Color / number of pixels
 typedef QMultiMap< int, QgsColorBox > QgsColorBoxMap; // sum of pixels / color box

@@ -7,9 +7,9 @@
  *****************************************************************************/
 
 #include <qpainter.h>
-#include <qwt_scale_map.h>
-#include <qwt_raster_data.h>
 #include <qwt_color_map.h>
+#include <qwt_raster_data.h>
+#include <qwt_scale_map.h>
 #include "qwt_polar.h"
 #include "qwt_polar_plot.h"
 #include "qwt_polar_spectrogram.h"

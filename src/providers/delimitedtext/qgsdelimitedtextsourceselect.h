@@ -16,8 +16,8 @@
 #include "ui_qgsdelimitedtextsourceselectbase.h"
 
 #include <QTextStream>
-#include "qgscontexthelp.h"
 #include "qgisgui.h"
+#include "qgscontexthelp.h"
 
 class QButtonGroup;
 class QgisInterface;

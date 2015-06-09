@@ -15,35 +15,35 @@ email                : sherman at mrcc.com
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsogrprovider.h"
-#include "qgsogrfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgsogrfeatureiterator.h"
+#include "qgsogrprovider.h"
 
 #define CPL_SUPRESS_CPLUSPLUS
+#include <cpl_string.h>
 #include <gdal.h>         // to collect version information
 #include <ogr_api.h>
 #include <ogr_srs_api.h>
-#include <cpl_string.h>
 
 #include <limits>
 
-#include <QtDebug>
-#include <QFile>
 #include <QDir>
+#include <QFile>
 #include <QFileInfo>
 #include <QMap>
-#include <QString>
-#include <QTextCodec>
 #include <QSettings>
+#include <QString>
+#include <QtDebug>
+#include <QTextCodec>
 
 #include "qgsapplication.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsdataitem.h"
 #include "qgsdataprovider.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
-#include "qgscoordinatereferencesystem.h"
 #include "qgsvectorlayerimport.h"
 
 static const QString TEXT_PROVIDER_KEY = "ogr";

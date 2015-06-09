@@ -27,17 +27,17 @@
 #include "qgsproject.h"
 #include "qgssymbollayerv2utils.h" //for pointOnLineWithDistance
 
-#include <QPainter>
 #include <QAction>
+#include <QColor>
+#include <QFile>
+#include <QFont>
+#include <QFontMetrics>
+#include <QLocale>
+#include <QMenu>
+#include <QPainter>
 #include <QPen>
 #include <QPolygon>
 #include <QString>
-#include <QFontMetrics>
-#include <QFont>
-#include <QColor>
-#include <QMenu>
-#include <QFile>
-#include <QLocale>
 
 //non qt includes
 #include <cmath>

@@ -15,9 +15,9 @@
 #ifndef QGSLEASTSQUARES_H
 #define QGSLEASTSQUARES_H
 
-#include <vector>
 #include <cstdarg>
 #include <stdexcept>
+#include <vector>
 
 #include "qgspoint.h"
 

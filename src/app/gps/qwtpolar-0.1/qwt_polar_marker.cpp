@@ -7,12 +7,12 @@
  *****************************************************************************/
 
 #include <qpainter.h>
+#include "qwt_math.h"
 #include "qwt_polar.h"
-#include "qwt_scale_map.h"
 #include "qwt_polar_marker.h"
+#include "qwt_scale_map.h"
 #include "qwt_symbol.h"
 #include "qwt_text.h"
-#include "qwt_math.h"
 
 static const int LabelDist = 2;
 

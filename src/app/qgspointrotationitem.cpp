@@ -13,9 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgspointrotationitem.h"
-#include <QPainter>
 #include <cmath>
+#include <QPainter>
+#include "qgspointrotationitem.h"
 
 QgsPointRotationItem::QgsPointRotationItem( QgsMapCanvas* canvas )
     : QgsMapCanvasItem( canvas )

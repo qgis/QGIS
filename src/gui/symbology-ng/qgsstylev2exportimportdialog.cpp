@@ -15,15 +15,15 @@
  ***************************************************************************/
 #include "qgsstylev2exportimportdialog.h"
 
-#include "qgsstylev2.h"
-#include "qgssymbolv2.h"
-#include "qgssymbollayerv2utils.h"
-#include "qgsvectorcolorrampv2.h"
 #include "qgslogger.h"
+#include "qgsstylev2.h"
+#include "qgssymbollayerv2utils.h"
+#include "qgssymbolv2.h"
+#include "qgsvectorcolorrampv2.h"
 
-#include <QInputDialog>
 #include <QCloseEvent>
 #include <QFileDialog>
+#include <QInputDialog>
 #include <QMessageBox>
 #include <QPushButton>
 #include <QStandardItemModel>

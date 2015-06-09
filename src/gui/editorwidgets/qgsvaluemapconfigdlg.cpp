@@ -17,9 +17,9 @@
 
 #include "qgsattributetypeloaddialog.h"
 
-#include <QSettings>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QSettings>
 #include <QTextStream>
 
 QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )

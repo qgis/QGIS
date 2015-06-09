@@ -15,9 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QMouseEvent>
 #include "qgsmaptoolsvgannotation.h"
 #include "qgssvgannotationitem.h"
-#include <QMouseEvent>
 
 QgsMapToolSvgAnnotation::QgsMapToolSvgAnnotation( QgsMapCanvas* canvas ): QgsMapToolAnnotation( canvas )
 {

@@ -13,16 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscolorschemelist.h"
+#include <QClipboard>
+#include <QColorDialog>
+#include <QKeyEvent>
+#include <QMimeData>
+#include <QPainter>
 #include "qgsapplication.h"
+#include "qgscolordialog.h"
+#include "qgscolorschemelist.h"
 #include "qgslogger.h"
 #include "qgssymbollayerv2utils.h"
-#include "qgscolordialog.h"
-#include <QPainter>
-#include <QColorDialog>
-#include <QMimeData>
-#include <QClipboard>
-#include <QKeyEvent>
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"

@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgspythonrunner.h"
 #include "qgslogger.h"
+#include "qgspythonrunner.h"
 
 QgsPythonRunner* QgsPythonRunner::mInstance = NULL;
 

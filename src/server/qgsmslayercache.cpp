@@ -15,10 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QFile>
+#include "qgslogger.h"
 #include "qgsmslayercache.h"
 #include "qgsvectorlayer.h"
-#include "qgslogger.h"
-#include <QFile>
 
 QgsMSLayerCache* QgsMSLayerCache::instance()
 {

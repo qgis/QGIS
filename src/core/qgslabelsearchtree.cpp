@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgslabelsearchtree.h"
 #include "labelposition.h"
+#include "qgslabelsearchtree.h"
 
 bool searchCallback( QgsLabelPosition* pos, void* context )
 {

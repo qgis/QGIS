@@ -6,21 +6,21 @@
  * modify it under the terms of the Qwt License, Version 1.0
  *****************************************************************************/
 
-#include "qwt_polar_plot.h"
-#include "qwt_polar_canvas.h"
-#include "qwt_polar_layout.h"
-#include <qwt_painter.h>
-#include <qwt_scale_engine.h>
-#include <qwt_scale_div.h>
-#include <qwt_text_label.h>
-#include <qwt_round_scale_draw.h>
-#include <qwt_legend.h>
-#include <qwt_legend_item.h>
-#include <qwt_dyngrid_layout.h>
-#include <qpointer.h>
+#include <qevent.h>
 #include <qpaintengine.h>
 #include <qpainter.h>
-#include <qevent.h>
+#include <qpointer.h>
+#include <qwt_dyngrid_layout.h>
+#include <qwt_legend.h>
+#include <qwt_legend_item.h>
+#include <qwt_painter.h>
+#include <qwt_round_scale_draw.h>
+#include <qwt_scale_div.h>
+#include <qwt_scale_engine.h>
+#include <qwt_text_label.h>
+#include "qwt_polar_canvas.h"
+#include "qwt_polar_layout.h"
+#include "qwt_polar_plot.h"
 
 static inline double qwtDistance(
     const QPointF &p1, const QPointF &p2 )

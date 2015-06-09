@@ -24,16 +24,16 @@
 #include "Screen.h"
 
 // Standard
+#include <assert.h>
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <assert.h>
 #include <string.h>
-#include <ctype.h>
+#include <unistd.h>
 
 // Qt
-#include <QtCore/QTextStream>
 #include <QtCore/QDate>
+#include <QtCore/QTextStream>
 
 // Konsole
 #include "konsole_wcwidth.h"

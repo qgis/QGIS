@@ -9,11 +9,11 @@
 #ifndef QWT_POLAR_ITEM_H
 #define QWT_POLAR_ITEM_H
 
-#include "qwt_polar_global.h"
-#include "qwt_text.h"
-#include "qwt_legend_itemmanager.h"
 #include "qwt_double_interval.h"
 #include "qwt_double_rect.h"
+#include "qwt_legend_itemmanager.h"
+#include "qwt_polar_global.h"
+#include "qwt_text.h"
 
 class QString;
 class QRect;

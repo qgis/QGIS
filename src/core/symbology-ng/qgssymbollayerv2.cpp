@@ -13,21 +13,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgssymbollayerv2.h"
 #include "qgsclipper.h"
-#include "qgsexpression.h"
-#include "qgsrendercontext.h"
-#include "qgsvectorlayer.h"
+#include "qgsdatadefined.h"
 #include "qgsdxfexport.h"
+#include "qgseffectstack.h"
+#include "qgsexpression.h"
 #include "qgsgeometrysimplifier.h"
 #include "qgspainteffect.h"
-#include "qgseffectstack.h"
-#include "qgsdatadefined.h"
+#include "qgsrendercontext.h"
+#include "qgssymbollayerv2.h"
+#include "qgsvectorlayer.h"
 
-#include <QSize>
 #include <QPainter>
 #include <QPointF>
 #include <QPolygonF>
+#include <QSize>
 
 const QString QgsSymbolLayerV2::EXPR_SIZE( "size" );
 const QString QgsSymbolLayerV2::EXPR_ANGLE( "angle" );

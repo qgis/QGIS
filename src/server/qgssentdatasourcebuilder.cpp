@@ -15,14 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgssentdatasourcebuilder.h"
-#include "qgslogger.h"
-#include "qgsrasterlayer.h"
-#include "qgsvectorlayer.h"
 #include <QDataStream>
 #include <QDomElement>
 #include <QTemporaryFile>
 #include <QTextStream>
+#include "qgslogger.h"
+#include "qgsrasterlayer.h"
+#include "qgssentdatasourcebuilder.h"
+#include "qgsvectorlayer.h"
 
 QgsSentDataSourceBuilder::QgsSentDataSourceBuilder()
 {

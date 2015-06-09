@@ -18,18 +18,18 @@
 
 #include <QUndoCommand>
 
-#include <QVariant>
-#include <QSet>
 #include <QList>
+#include <QSet>
+#include <QVariant>
 
-#include "qgsfield.h"
 #include "qgsfeature.h"
+#include "qgsfield.h"
 
 class QgsGeometry;
 class QgsGeometryCache;
 
-#include "qgsvectorlayer.h"
 #include "qgsvectorlayereditbuffer.h"
+#include "qgsvectorlayer.h"
 
 
 class CORE_EXPORT QgsVectorLayerUndoCommand : public QUndoCommand

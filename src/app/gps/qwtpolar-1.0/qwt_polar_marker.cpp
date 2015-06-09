@@ -6,12 +6,12 @@
  * modify it under the terms of the Qwt License, Version 1.0
  *****************************************************************************/
 
-#include "qwt_polar_marker.h"
-#include "qwt_polar.h"
+#include <qpainter.h>
 #include <qwt_scale_map.h>
 #include <qwt_symbol.h>
 #include <qwt_text.h>
-#include <qpainter.h>
+#include "qwt_polar.h"
+#include "qwt_polar_marker.h"
 
 static const int LabelDist = 2;
 

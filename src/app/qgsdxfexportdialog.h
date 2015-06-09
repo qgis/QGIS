@@ -22,10 +22,10 @@
 #include "qgsdxfexport.h"
 #include "qgslayertreemodel.h"
 
+#include <QItemDelegate>
 #include <QList>
 #include <QPair>
 #include <QSet>
-#include <QItemDelegate>
 
 class QgsLayerTreeGroup;
 class QgsLayerTreeNode;

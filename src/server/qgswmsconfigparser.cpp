@@ -15,16 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgswmsconfigparser.h"
 #include "qgsmaplayer.h"
 #include "qgsmapserviceexception.h"
+#include "qgswmsconfigparser.h"
 
+#include "qgscomposerframe.h"
+#include "qgscomposerhtml.h"
 #include "qgscomposerlabel.h"
 #include "qgscomposerlegend.h"
-#include "qgscomposermap.h"
 #include "qgscomposermapgrid.h"
-#include "qgscomposerhtml.h"
-#include "qgscomposerframe.h"
+#include "qgscomposermap.h"
 #include "qgscomposition.h"
 
 #include "qgslayertreegroup.h"

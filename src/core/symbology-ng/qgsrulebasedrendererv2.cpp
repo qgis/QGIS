@@ -13,19 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsrulebasedrendererv2.h"
-#include "qgssymbollayerv2.h"
+#include "qgsdatadefined.h"
 #include "qgsexpression.h"
-#include "qgssymbollayerv2utils.h"
-#include "qgsrendercontext.h"
-#include "qgsvectorlayer.h"
+#include "qgsinvertedpolygonrenderer.h"
 #include "qgslogger.h"
 #include "qgsogcutils.h"
-#include "qgssinglesymbolrendererv2.h"
-#include "qgspointdisplacementrenderer.h"
-#include "qgsinvertedpolygonrenderer.h"
 #include "qgspainteffect.h"
-#include "qgsdatadefined.h"
+#include "qgspointdisplacementrenderer.h"
+#include "qgsrendercontext.h"
+#include "qgsrulebasedrendererv2.h"
+#include "qgssinglesymbolrendererv2.h"
+#include "qgssymbollayerv2.h"
+#include "qgssymbollayerv2utils.h"
+#include "qgsvectorlayer.h"
 
 #include <QSet>
 

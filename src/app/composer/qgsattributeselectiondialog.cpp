@@ -15,13 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsattributeselectiondialog.h"
-#include "qgscomposerattributetablev2.h"
-#include "qgscomposerattributetablemodel.h"
-#include "qgscomposerattributetablemodelv2.h"
-#include "qgsvectorlayer.h"
-#include "qgsfieldexpressionwidget.h"
-#include "qgsdoublespinbox.h"
 #include <QCheckBox>
 #include <QDialogButtonBox>
 #include <QGridLayout>
@@ -30,8 +23,15 @@
 #include <QPushButton>
 #include <QScrollArea>
 #include <QSettings>
-#include <QSpinBox>
 #include <QSortFilterProxyModel>
+#include <QSpinBox>
+#include "qgsattributeselectiondialog.h"
+#include "qgscomposerattributetablemodel.h"
+#include "qgscomposerattributetablemodelv2.h"
+#include "qgscomposerattributetablev2.h"
+#include "qgsdoublespinbox.h"
+#include "qgsfieldexpressionwidget.h"
+#include "qgsvectorlayer.h"
 
 
 // QgsComposerColumnAlignmentDelegate

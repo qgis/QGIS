@@ -1,8 +1,8 @@
 #ifndef QGSRELATIONADDDLG_H
 #define QGSRELATIONADDDLG_H
 
-#include <QDialog>
 #include "ui_qgsrelationadddlgbase.h"
+#include <QDialog>
 
 class QgsVectorLayer;
 

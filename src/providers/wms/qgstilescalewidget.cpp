@@ -15,16 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstilescalewidget.h"
-#include "qgsmapcanvas.h"
-#include "qgsrasterlayer.h"
-#include "qgsmessagelog.h"
 #include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsmessagelog.h"
+#include "qgsrasterlayer.h"
+#include "qgstilescalewidget.h"
 
 #include <QDockWidget>
+#include <QGraphicsView>
 #include <QMainWindow>
 #include <QMenu>
-#include <QGraphicsView>
 
 QgsTileScaleWidget::QgsTileScaleWidget( QgsMapCanvas * mapCanvas, QWidget * parent, Qt::WindowFlags f )
     : QWidget( parent, f )

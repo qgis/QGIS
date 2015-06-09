@@ -16,10 +16,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgspluginlayerregistry.h"
 #include "qgslogger.h"
-#include "qgspluginlayer.h"
 #include "qgsmaplayerregistry.h"
+#include "qgspluginlayer.h"
+#include "qgspluginlayerregistry.h"
 
 QgsPluginLayerType::QgsPluginLayerType( QString name )
     : mName( name )

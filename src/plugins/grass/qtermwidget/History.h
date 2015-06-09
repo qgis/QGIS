@@ -24,9 +24,9 @@
 #define TEHISTORY_H
 
 // Qt
+#include <QtCore>
 #include <QtCore/QBitRef>
 #include <QtCore/QHash>
-#include <QtCore>
 
 // Konsole
 #include "BlockArray.h"

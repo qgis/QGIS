@@ -13,14 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsrubberband.h"
+#include <QPainter>
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaprenderer.h"
+#include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
-#include <QPainter>
 
 /*!
   \class QgsRubberBand

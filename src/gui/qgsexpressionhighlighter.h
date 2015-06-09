@@ -16,12 +16,12 @@
 #ifndef QGSEXPRESSIONHIGHLIGHTER_H
 #define QGSEXPRESSIONHIGHLIGHTER_H
 
-#include "qgsfield.h"
 #include <QSyntaxHighlighter>
+#include "qgsfield.h"
 
 #include <QHash>
-#include <QTextCharFormat>
 #include <QStringList>
+#include <QTextCharFormat>
 
 class QTextDocument;
 

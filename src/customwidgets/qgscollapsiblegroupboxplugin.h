@@ -16,8 +16,8 @@
 #ifndef QGSCOLLAPSIBLEGROUPBOXPLUGIN_H
 #define QGSCOLLAPSIBLEGROUPBOXPLUGIN_H
 
-#include <QDesignerExportWidget>
 #include <QDesignerCustomWidgetInterface>
+#include <QDesignerExportWidget>
 
 
 class CUSTOMWIDGETS_EXPORT QgsCollapsibleGroupBoxPlugin : public QObject, public QDesignerCustomWidgetInterface

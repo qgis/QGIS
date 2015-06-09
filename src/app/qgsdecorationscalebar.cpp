@@ -23,8 +23,8 @@ email                : sbr00pwb@users.sourceforge.net
 
 #include "qgsdecorationscalebardialog.h"
 
-#include "qgis.h"
 #include "qgisapp.h"
+#include "qgis.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
@@ -33,17 +33,17 @@ email                : sbr00pwb@users.sourceforge.net
 #include "qgsproject.h"
 
 
-#include <QPainter>
 #include <QAction>
+#include <QColor>
+#include <QFile>
+#include <QFont>
+#include <QFontMetrics>
+#include <QLocale>
+#include <QMenu>
+#include <QPainter>
 #include <QPen>
 #include <QPolygon>
 #include <QString>
-#include <QFontMetrics>
-#include <QFont>
-#include <QColor>
-#include <QMenu>
-#include <QFile>
-#include <QLocale>
 
 //non qt includes
 #include <cmath>

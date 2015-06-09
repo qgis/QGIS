@@ -14,9 +14,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsbookmarks.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
+#include "qgsbookmarks.h"
 #include "qgscontexthelp.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaprenderer.h"
@@ -24,14 +24,14 @@
 
 #include "qgslogger.h"
 
-#include <QFileInfo>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QMessageBox>
-#include <QSettings>
 #include <QPushButton>
-#include <QSqlTableModel>
+#include <QSettings>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QSqlTableModel>
 
 QgsBookmarks *QgsBookmarks::sInstance = 0;
 

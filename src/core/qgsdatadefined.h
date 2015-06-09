@@ -15,10 +15,10 @@
 #ifndef QGSDATADEFINED_H
 #define QGSDATADEFINED_H
 
-#include <QStringList>
 #include <QDomElement>
-#include <QMap>
 #include <QExplicitlySharedDataPointer>
+#include <QMap>
+#include <QStringList>
 #include "qgis.h"
 #include "qgsfield.h"
 

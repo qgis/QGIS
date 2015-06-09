@@ -23,6 +23,7 @@
 
 #include <limits>
 
+#include <QDomNode>
 #include <QImage>
 #include <QPainter>
 #include <QPainterPath>
@@ -30,7 +31,6 @@
 #include <QProgressDialog>
 #include <QSettings>
 #include <QString>
-#include <QDomNode>
 #include <QVector>
 
 #include "qgsvectorlayer.h"
@@ -72,15 +72,15 @@
 #include "qgsvectorlayerrenderer.h"
 #include "qgsvectorlayerundocommand.h"
 
-#include "qgsrendererv2.h"
-#include "qgssymbolv2.h"
-#include "qgssymbollayerv2.h"
-#include "qgssinglesymbolrendererv2.h"
 #include "qgsdiagramrendererv2.h"
-#include "qgsstylev2.h"
-#include "qgssymbologyv2conversion.h"
 #include "qgspallabeling.h"
+#include "qgsrendererv2.h"
 #include "qgssimplifymethod.h"
+#include "qgssinglesymbolrendererv2.h"
+#include "qgsstylev2.h"
+#include "qgssymbollayerv2.h"
+#include "qgssymbologyv2conversion.h"
+#include "qgssymbolv2.h"
 
 #include "diagram/qgsdiagram.h"
 

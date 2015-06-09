@@ -19,11 +19,11 @@
 
 #include "qgisinterface.h"
 //#include "qgscontexthelp.h"
-#include "qgslogger.h"
 #include <QPainter>
+#include "qgslogger.h"
 
-#include "qgscompassplugingui.h"
 #include "compass.h"
+#include "qgscompassplugingui.h"
 
 QgsCompassPluginGui::QgsCompassPluginGui( QWidget * parent, Qt::WindowFlags fl )
     : QWidget( parent, fl )

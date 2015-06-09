@@ -18,18 +18,18 @@
  ***************************************************************************/
 
 #include <algorithm>
-#include <limits>
-#include <cstring>
 #include <cmath>
+#include <cstring>
+#include <limits>
 
 // Changed #include <qapp.h> to <qapplication.h>. Apparently some
 // debian distros do not include the qapp.h wrapper and the compilation
 // fails. [gsherman]
 #include <QApplication>
 #include <QFile>
+#include <QObject>
 #include <QTextCodec>
 #include <QTextStream>
-#include <QObject>
 
 #include "qgis.h"
 #include "qgsapplication.h"
@@ -41,9 +41,9 @@
 #include "qgslogger.h"
 #include "qgsrectangle.h"
 
+#include "gpsdata.h"
 #include "qgsgpxfeatureiterator.h"
 #include "qgsgpxprovider.h"
-#include "gpsdata.h"
 
 const char* QgsGPXProvider::attr[] = { "name", "elevation", "symbol", "number",
                                        "comment", "description", "source",

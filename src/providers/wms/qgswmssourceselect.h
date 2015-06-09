@@ -18,14 +18,14 @@
 #ifndef QGSWMSSOURCESELECT_H
 #define QGSWMSSOURCESELECT_H
 #include "ui_qgswmssourceselectbase.h"
-#include "qgsdatasourceuri.h"
 #include "qgisgui.h"
 #include "qgscontexthelp.h"
+#include "qgsdatasourceuri.h"
 
 #include "qgswmsprovider.h"
 
-#include <QStringList>
 #include <QPushButton>
+#include <QStringList>
 
 class QgisApp;
 class QgsWmsProvider;

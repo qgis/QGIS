@@ -24,14 +24,14 @@
 #define TERMINALDISPLAY_H
 
 // Qt
-#include <QtGui/QColor>
 #include <QtCore/QPointer>
+#include <QtGui/QColor>
 #include <QtGui/QWidget>
 
 // Konsole
-#include "Filter.h"
 #include "Character.h"
 #include "ColorTables.h"
+#include "Filter.h"
 
 class QDrag;
 class QDragEnterEvent;

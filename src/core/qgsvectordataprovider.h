@@ -17,10 +17,10 @@
 
 class QTextCodec;
 
-#include <QList>
-#include <QSet>
-#include <QMap>
 #include <QHash>
+#include <QList>
+#include <QMap>
+#include <QSet>
 
 //QGIS Includes
 #include "qgis.h"

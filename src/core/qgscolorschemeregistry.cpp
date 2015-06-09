@@ -15,11 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscolorschemeregistry.h"
-#include "qgscolorscheme.h"
-#include "qgsapplication.h"
 #include <QDir>
 #include <QFileInfoList>
+#include "qgsapplication.h"
+#include "qgscolorscheme.h"
+#include "qgscolorschemeregistry.h"
 
 //
 // Static calls to enforce singleton behaviour

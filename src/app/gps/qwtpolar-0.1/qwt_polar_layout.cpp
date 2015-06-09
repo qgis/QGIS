@@ -7,12 +7,12 @@
  *****************************************************************************/
 
 #include <qscrollbar.h>
-#include "qwt_text.h"
-#include "qwt_text_label.h"
 #include "qwt_legend.h"
-#include "qwt_polar_plot.h"
 #include "qwt_polar_canvas.h"
 #include "qwt_polar_layout.h"
+#include "qwt_polar_plot.h"
+#include "qwt_text.h"
+#include "qwt_text_label.h"
 
 class QwtPolarLayout::LayoutData
 {

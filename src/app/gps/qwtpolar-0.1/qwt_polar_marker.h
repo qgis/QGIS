@@ -11,8 +11,8 @@
 
 #include <qstring.h>
 #include "qwt_polar_global.h"
-#include "qwt_polar_point.h"
 #include "qwt_polar_item.h"
+#include "qwt_polar_point.h"
 
 class QRect;
 class QwtText;

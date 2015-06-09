@@ -25,11 +25,11 @@
 #define DEFAULT_SIMPLEMARKER_SIZE         DEFAULT_POINT_SIZE
 #define DEFAULT_SIMPLEMARKER_ANGLE        0
 
-#include <QPen>
 #include <QBrush>
+#include <QFont>
+#include <QPen>
 #include <QPicture>
 #include <QPolygonF>
-#include <QFont>
 
 class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 {

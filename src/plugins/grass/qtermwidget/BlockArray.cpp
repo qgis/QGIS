@@ -28,10 +28,10 @@
 
 // System
 #include <assert.h>
+#include <stdio.h>
 #include <sys/mman.h>
 #include <sys/param.h>
 #include <unistd.h>
-#include <stdio.h>
 
 
 using namespace Konsole;

@@ -17,11 +17,11 @@
  ***************************************************************************/
 
 
-#include "qgsoptionsdialogbase.h"
 #include "ui_qgsprojectpropertiesbase.h"
-#include "qgis.h"
 #include "qgisgui.h"
+#include "qgis.h"
 #include "qgscontexthelp.h"
+#include "qgsoptionsdialogbase.h"
 
 class QgsMapCanvas;
 class QgsRelationManagerDialog;

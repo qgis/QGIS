@@ -15,10 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslegendmodel.h"
+#include <QApplication>
+#include <QDomDocument>
+#include <QDomElement>
+#include <QMessageBox>
+#include <QMimeData>
+#include <QSettings>
 #include "qgscomposerlegenditem.h"
 #include "qgsfield.h"
 #include "qgslayertree.h"
+#include "qgslegendmodel.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsrasterlayer.h"
@@ -26,12 +32,6 @@
 #include "qgssymbollayerv2utils.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include <QApplication>
-#include <QDomDocument>
-#include <QDomElement>
-#include <QMimeData>
-#include <QSettings>
-#include <QMessageBox>
 
 QgsLegendModel::QgsLegendModel(): QStandardItemModel(), mAutoUpdate( true )
 {

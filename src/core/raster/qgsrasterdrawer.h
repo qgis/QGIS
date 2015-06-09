@@ -18,8 +18,8 @@
 #ifndef QGSRASTERDRAWER_H
 #define QGSRASTERDRAWER_H
 
-#include "qgsrasterinterface.h"
 #include <QMap>
+#include "qgsrasterinterface.h"
 
 class QPainter;
 class QImage;

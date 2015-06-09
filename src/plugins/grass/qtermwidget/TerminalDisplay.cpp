@@ -26,28 +26,28 @@
 #include "TerminalDisplay.h"
 
 // Qt
+#include <QtCore>
+#include <QtCore/QEvent>
+#include <QtCore/QFile>
+#include <QtCore/QTime>
+#include <QtGui>
 #include <QtGui/QApplication>
 #include <QtGui/QBoxLayout>
 #include <QtGui/QClipboard>
-#include <QtGui/QKeyEvent>
-#include <QtCore/QEvent>
-#include <QtCore/QTime>
-#include <QtCore/QFile>
 #include <QtGui/QGridLayout>
+#include <QtGui/QKeyEvent>
 #include <QtGui/QLabel>
 #include <QtGui/QLayout>
 #include <QtGui/QPainter>
 #include <QtGui/QPixmap>
 #include <QtGui/QScrollBar>
 #include <QtGui/QStyle>
-#include <QtCore>
-#include <QtGui>
 
+#include "ColorTables.h"
 #include "Filter.h"
 #include "konsole_wcwidth.h"
 #include "ScreenWindow.h"
 #include "TerminalCharacterDecoder.h"
-#include "ColorTables.h"
 
 using namespace Konsole;
 

@@ -18,12 +18,12 @@
 
 #include <stdio.h>
 
-#include <QString>
 #include <QApplication>
 #include <QSettings>
+#include <QString>
 
-#include "qgshelpviewer.h"
 #include "qgsapplication.h"
+#include "qgshelpviewer.h"
 #include "qgslogger.h"
 
 QgsReaderThread::QgsReaderThread()

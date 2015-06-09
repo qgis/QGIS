@@ -14,8 +14,8 @@
 ***************************************************************************/
 
 #include "qgiscustomwidgets.h"
-#include "qgsscalewidgetplugin.h"
 #include "qgsscalewidget.h"
+#include "qgsscalewidgetplugin.h"
 
 
 QgsScaleWidgetPlugin::QgsScaleWidgetPlugin( QObject *parent )

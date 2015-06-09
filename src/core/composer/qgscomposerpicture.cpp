@@ -15,27 +15,27 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscomposerpicture.h"
-#include "qgscomposerutils.h"
-#include "qgscomposermap.h"
-#include "qgscomposition.h"
-#include "qgsatlascomposition.h"
-#include "qgsproject.h"
-#include "qgsexpression.h"
-#include "qgsvectorlayer.h"
-#include "qgsmessagelog.h"
-#include "qgsdatadefined.h"
-#include "qgsnetworkcontentfetcher.h"
+#include <QCoreApplication>
 #include <QDomDocument>
 #include <QDomElement>
+#include <QEventLoop>
 #include <QFileInfo>
 #include <QImageReader>
+#include <QNetworkReply>
+#include <QNetworkRequest>
 #include <QPainter>
 #include <QSvgRenderer>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QEventLoop>
-#include <QCoreApplication>
+#include "qgsatlascomposition.h"
+#include "qgscomposermap.h"
+#include "qgscomposerpicture.h"
+#include "qgscomposerutils.h"
+#include "qgscomposition.h"
+#include "qgsdatadefined.h"
+#include "qgsexpression.h"
+#include "qgsmessagelog.h"
+#include "qgsnetworkcontentfetcher.h"
+#include "qgsproject.h"
+#include "qgsvectorlayer.h"
 
 QgsComposerPicture::QgsComposerPicture( QgsComposition *composition )
     : QgsComposerItem( composition )

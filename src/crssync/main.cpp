@@ -16,8 +16,8 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsapplication.h"
-#include "qgscoordinatereferencesystem.h"
 #include "qgsconfig.h"
+#include "qgscoordinatereferencesystem.h"
 
 #include <QRegExp>
 

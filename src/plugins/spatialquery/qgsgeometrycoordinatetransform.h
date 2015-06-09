@@ -18,9 +18,9 @@
 #ifndef GEOMETRYCOORDINATETRANSFORM_H
 #define GEOMETRYCOORDINATETRANSFORM_H
 
+#include "qgscoordinatetransform.h"
 #include "qgsgeometry.h"
 #include "qgsvectorlayer.h"
-#include "qgscoordinatetransform.h"
 
 /**
 * \class QgsGeometryCoordinateTransform

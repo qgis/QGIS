@@ -11,9 +11,9 @@
 
 /*! \file !*/
 
+#include <qlist.h>
 #include "qwt_polar_global.h"
 #include "qwt_polar_item.h"
-#include <qlist.h>
 
 typedef QList<QwtPolarItem *>::ConstIterator QwtPolarItemIterator;
 /// \var typedef QList< QwtPolarItem *> QwtPolarItemList

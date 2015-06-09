@@ -17,8 +17,8 @@
 
 #include "qgsgeometry.h"
 #include "qgslogger.h"
-#include "qgsspatialindex.h"
 #include "qgsmessagelog.h"
+#include "qgsspatialindex.h"
 
 
 

@@ -18,10 +18,10 @@
 #ifndef QGSWCSSERVER_H
 #define QGSWCSSERVER_H
 
+#include <map>
 #include <QDomDocument>
 #include <QMap>
 #include <QString>
-#include <map>
 #include "qgis.h"
 #include "qgsowsserver.h"
 

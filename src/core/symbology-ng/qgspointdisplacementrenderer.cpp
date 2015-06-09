@@ -15,15 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgspointdisplacementrenderer.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
-#include "qgsspatialindex.h"
-#include "qgssymbolv2.h"
-#include "qgssymbollayerv2utils.h"
-#include "qgsvectorlayer.h"
-#include "qgssinglesymbolrendererv2.h"
 #include "qgspainteffect.h"
+#include "qgspointdisplacementrenderer.h"
+#include "qgssinglesymbolrendererv2.h"
+#include "qgsspatialindex.h"
+#include "qgssymbollayerv2utils.h"
+#include "qgssymbolv2.h"
+#include "qgsvectorlayer.h"
 
 #include <QDomElement>
 #include <QPainter>

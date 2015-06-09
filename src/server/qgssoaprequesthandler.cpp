@@ -15,9 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgssoaprequesthandler.h"
-#include "qgslogger.h"
-#include "qgsmapserviceexception.h"
+#include <fcgi_stdio.h>
 #include <QBuffer>
 #include <QDir>
 #include <QDomDocument>
@@ -25,7 +23,9 @@
 #include <QImage>
 #include <QTextStream>
 #include <time.h>
-#include <fcgi_stdio.h>
+#include "qgslogger.h"
+#include "qgsmapserviceexception.h"
+#include "qgssoaprequesthandler.h"
 
 QgsSOAPRequestHandler::QgsSOAPRequestHandler()
 {

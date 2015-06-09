@@ -19,9 +19,9 @@
 
 #include "ui_qgsmeasurebase.h"
 
-#include "qgspoint.h"
-#include "qgsdistancearea.h"
 #include "qgscontexthelp.h"
+#include "qgsdistancearea.h"
+#include "qgspoint.h"
 
 class QCloseEvent;
 class QgsMeasureTool;

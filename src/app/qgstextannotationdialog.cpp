@@ -15,11 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstextannotationdialog.h"
-#include "qgsannotationwidget.h"
-#include "qgstextannotationitem.h"
 #include <QColorDialog>
 #include <QGraphicsScene>
+#include "qgsannotationwidget.h"
+#include "qgstextannotationdialog.h"
+#include "qgstextannotationitem.h"
 
 QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsTextAnnotationItem* item, QWidget * parent, Qt::WindowFlags f ): QDialog( parent, f ), mItem( item ), mTextDocument( 0 )
 {

@@ -14,8 +14,8 @@
  ***************************************************************************/
 #include "qgslabelengineconfigdialog.h"
 
-#include "qgspallabeling.h"
 #include <pal/pal.h>
+#include "qgspallabeling.h"
 
 #include <QPushButton>
 

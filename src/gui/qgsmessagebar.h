@@ -19,11 +19,11 @@
 
 #include <qgisgui.h>
 
-#include <QString>
+#include <QColor>
 #include <QFrame>
 #include <QIcon>
-#include <QColor>
 #include <QList>
+#include <QString>
 
 class QWidget;
 class QGridLayout;

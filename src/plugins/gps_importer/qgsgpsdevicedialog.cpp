@@ -10,8 +10,8 @@
  *   (at your option) any later version.                                   *
  ***************************************************************************/
 
-#include "qgsgpsdevicedialog.h"
 #include "qgisgui.h"
+#include "qgsgpsdevicedialog.h"
 
 #include <QMessageBox>
 #include <QSettings>

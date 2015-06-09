@@ -20,9 +20,9 @@
 #ifndef QGSFIELDVALIDATOR_H
 #define QGSFIELDVALIDATOR_H
 
+#include <QSettings>
 #include <QValidator>
 #include <QVariant>
-#include <QSettings>
 #include "qgsfield.h"
 
 

@@ -12,19 +12,19 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsellipsesymbollayerv2.h"
+#include "qgsdatadefined.h"
 #include "qgsdxfexport.h"
+#include "qgsellipsesymbollayerv2.h"
 #include "qgsexpression.h"
 #include "qgsfeature.h"
+#include "qgslogger.h"
 #include "qgsrendercontext.h"
 #include "qgsvectorlayer.h"
-#include "qgsdatadefined.h"
-#include "qgslogger.h"
 
-#include <QPainter>
-#include <QSet>
 #include <QDomDocument>
 #include <QDomElement>
+#include <QPainter>
+#include <QSet>
 
 QgsEllipseSymbolLayerV2::QgsEllipseSymbolLayerV2()
     : mSymbolName( "circle" )

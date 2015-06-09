@@ -16,15 +16,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsfield.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsdatasourceuri.h"
 #include "qgsfeature.h"
+#include "qgsfield.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsvectorlayerimport.h"
 #include "qgsproviderregistry.h"
-#include "qgsdatasourceuri.h"
+#include "qgsvectorlayerimport.h"
 
 #include <QProgressDialog>
 

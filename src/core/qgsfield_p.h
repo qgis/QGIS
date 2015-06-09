@@ -27,9 +27,9 @@
 // version without notice, or even be removed.
 //
 
+#include <QSharedData>
 #include <QString>
 #include <QVariant>
-#include <QSharedData>
 #include "qgsfield.h"
 
 class QgsFieldPrivate : public QSharedData

@@ -9,10 +9,10 @@
 #ifndef QWT_POLAR_PICKER_H
 #define QWT_POLAR_PICKER_H
 
-#include "qwt_polar_global.h"
-#include "qwt_picker.h"
-#include <qvector.h>
 #include <qpainterpath.h>
+#include <qvector.h>
+#include "qwt_picker.h"
+#include "qwt_polar_global.h"
 
 class QwtPolarPlot;
 class QwtPolarCanvas;

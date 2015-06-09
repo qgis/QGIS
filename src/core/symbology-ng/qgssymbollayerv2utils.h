@@ -17,15 +17,15 @@
 #ifndef QGSSYMBOLLAYERV2UTILS_H
 #define QGSSYMBOLLAYERV2UTILS_H
 
+#include <QColor>
+#include <QFont>
 #include <QMap>
+#include <QPainter>
 #include <Qt>
 #include <QtCore>
-#include <QFont>
-#include <QColor>
-#include <QPainter>
-#include "qgssymbolv2.h"
 #include "qgis.h"
 #include "qgsmapunitscale.h"
+#include "qgssymbolv2.h"
 
 class QgsExpression;
 class QgsSymbolLayerV2;

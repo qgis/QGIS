@@ -22,8 +22,8 @@
 #ifndef K3PROCCTRL_H
 #define K3PROCCTRL_H
 
-#include <QtCore/QList>
 #include <k3process.h>
+#include <QtCore/QList>
 
 
 /**

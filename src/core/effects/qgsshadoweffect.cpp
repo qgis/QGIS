@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsshadoweffect.h"
 #include "qgsimageoperation.h"
+#include "qgsshadoweffect.h"
 #include "qgssymbollayerv2utils.h"
 
 QgsShadowEffect::QgsShadowEffect()

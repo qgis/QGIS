@@ -22,35 +22,35 @@
 #include "qgsapplication.h"
 #include "qgscapabilitiescache.h"
 #include "qgsconfigcache.h"
+#include "qgseditorwidgetregistry.h"
 #include "qgsfontutils.h"
 #include "qgsgetrequesthandler.h"
-#include "qgspostrequesthandler.h"
-#include "qgssoaprequesthandler.h"
-#include "qgsproviderregistry.h"
 #include "qgslogger.h"
-#include "qgswmsserver.h"
-#include "qgswfsserver.h"
-#include "qgswcsserver.h"
+#include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
 #include "qgsmapserviceexception.h"
-#include "qgspallabeling.h"
 #include "qgsnetworkaccessmanager.h"
-#include "qgsmaplayerregistry.h"
+#include "qgspallabeling.h"
+#include "qgspostrequesthandler.h"
+#include "qgsproviderregistry.h"
 #include "qgsserverlogger.h"
-#include "qgseditorwidgetregistry.h"
+#include "qgssoaprequesthandler.h"
+#include "qgswcsserver.h"
+#include "qgswfsserver.h"
+#include "qgswmsserver.h"
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-#include "qgsserverplugins.h"
 #include "qgsserverfilter.h"
 #include "qgsserverinterfaceimpl.h"
+#include "qgsserverplugins.h"
 #endif
 
-#include <QDomDocument>
-#include <QNetworkDiskCache>
-#include <QImage>
-#include <QSettings>
 #include <QDateTime>
+#include <QDomDocument>
+#include <QImage>
+#include <QNetworkDiskCache>
 #include <QScopedPointer>
+#include <QSettings>
 
 #include <fcgi_stdio.h>
 

@@ -15,8 +15,8 @@ email                : jef at norbit dot de
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsoraclecolumntypethread.h"
 #include "qgslogger.h"
+#include "qgsoraclecolumntypethread.h"
 
 #include <QMetaType>
 

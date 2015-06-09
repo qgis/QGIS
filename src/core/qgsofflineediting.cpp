@@ -26,10 +26,10 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsofflineediting.h"
 #include "qgsproject.h"
+#include "qgsslconnect.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayereditbuffer.h"
 #include "qgsvectorlayerjoinbuffer.h"
-#include "qgsslconnect.h"
 
 #include <QDir>
 #include <QDomDocument>
@@ -39,8 +39,8 @@
 
 extern "C"
 {
-#include <sqlite3.h>
 #include <spatialite.h>
+#include <sqlite3.h>
 }
 
 // TODO: DEBUG

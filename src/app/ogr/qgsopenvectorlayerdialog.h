@@ -19,8 +19,8 @@
 #ifndef QGSOPENVECTORLAYERDIALOG_H
 #define QGSOPENVECTORLAYERDIALOG_H
 
-#include <ui_qgsopenvectorlayerdialogbase.h>
 #include <QDialog>
+#include <ui_qgsopenvectorlayerdialogbase.h>
 #include "qgscontexthelp.h"
 
 /**

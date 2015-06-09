@@ -14,10 +14,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsticksscalebarstyle.h"
+#include <QPainter>
 #include "qgscomposerscalebar.h"
 #include "qgscomposerutils.h"
-#include <QPainter>
+#include "qgsticksscalebarstyle.h"
 
 QgsTicksScaleBarStyle::QgsTicksScaleBarStyle( const QgsComposerScaleBar* bar ): QgsScaleBarStyle( bar )
 {

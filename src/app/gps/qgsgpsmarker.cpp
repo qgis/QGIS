@@ -15,8 +15,8 @@
 
 #include <QPainter>
 
-#include "qgsgpsmarker.h"
 #include "qgscoordinatetransform.h"
+#include "qgsgpsmarker.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaprenderer.h"
 

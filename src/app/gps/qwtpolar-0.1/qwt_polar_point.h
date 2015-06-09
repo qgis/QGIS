@@ -9,8 +9,8 @@
 #ifndef QWT_POLAR_POINT_H
 #define QWT_POLAR_POINT_H 1
 
-#include "qwt_polar_global.h"
 #include "qwt_double_rect.h"
+#include "qwt_polar_global.h"
 
 /*!
   \brief A point in polar coordinates

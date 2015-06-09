@@ -13,20 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgseffectstackpropertieswidget.h"
-#include "qgspainteffectregistry.h"
-#include "qgspainteffect.h"
-#include "qgseffectstack.h"
-#include "qgspainteffectpropertieswidget.h"
-#include "qgspainteffectwidget.h"
 #include "qgsapplication.h"
+#include "qgseffectstack.h"
+#include "qgseffectstackpropertieswidget.h"
+#include "qgspainteffect.h"
+#include "qgspainteffectpropertieswidget.h"
+#include "qgspainteffectregistry.h"
+#include "qgspainteffectwidget.h"
 #include "qgssymbollayerv2utils.h"
 
-#include <QPicture>
-#include <QPainter>
-#include <QStandardItemModel>
-#include <QStandardItem>
 #include <QCheckBox>
+#include <QPainter>
+#include <QPicture>
+#include <QStandardItem>
+#include <QStandardItemModel>
 #include <QToolButton>
 
 static const int EffectItemType = QStandardItem::UserType + 1;

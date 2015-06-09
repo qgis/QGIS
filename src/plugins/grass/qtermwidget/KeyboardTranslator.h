@@ -25,12 +25,12 @@
 #define KEYBOARDTRANSLATOR_H
 
 // Qt
+#include <QtCore>
 #include <QtCore/QHash>
 #include <QtCore/QList>
-#include <QtGui/QKeySequence>
 #include <QtCore/QMetaType>
 #include <QtCore/QVarLengthArray>
-#include <QtCore>
+#include <QtGui/QKeySequence>
 
 typedef void ( *CleanUpFunction )();
 

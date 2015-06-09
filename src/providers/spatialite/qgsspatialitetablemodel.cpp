@@ -15,9 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsspatialitetablemodel.h"
 #include "qgsapplication.h"
 #include "qgsdataitem.h" // for icons
+#include "qgsspatialitetablemodel.h"
 
 QgsSpatiaLiteTableModel::QgsSpatiaLiteTableModel(): QStandardItemModel(), mTableCount( 0 )
 {

@@ -26,13 +26,13 @@
 #include <iostream>
 
 // Qt
+#include <QtCore/QString>
 #include <QtGui/QAction>
 #include <QtGui/QApplication>
 #include <QtGui/QClipboard>
-#include <QtCore/QString>
 
-#include <QtCore/QSharedData>
 #include <QtCore>
+#include <QtCore/QSharedData>
 
 // KDE
 //#include <KLocale>

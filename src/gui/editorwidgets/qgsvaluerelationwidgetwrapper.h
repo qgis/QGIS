@@ -19,8 +19,8 @@
 #include "qgseditorwidgetwrapper.h"
 
 #include <QComboBox>
-#include <QListWidget>
 #include <QLineEdit>
+#include <QListWidget>
 
 class QgsValueRelationWidgetFactory;
 

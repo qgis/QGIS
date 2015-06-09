@@ -6,10 +6,10 @@
  * modify it under the terms of the Qwt License, Version 1.0
  *****************************************************************************/
 
-#include "qwt_polar_plot.h"
 #include "qwt_legend.h"
 #include "qwt_legend_item.h"
 #include "qwt_polar_item.h"
+#include "qwt_polar_plot.h"
 
 class QwtPolarItem::PrivateData
 {

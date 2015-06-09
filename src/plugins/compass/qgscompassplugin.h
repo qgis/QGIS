@@ -18,8 +18,8 @@
  ***************************************************************************/
 #ifndef PLUGIN
 #define PLUGIN
-#include "../qgisplugin.h"
 #include "ui_qgscompasspluginguibase.h"
+#include "../qgisplugin.h"
 #include "qgscompassplugingui.h"
 
 class QgisInterface;

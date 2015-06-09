@@ -13,13 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsapplication.h"
+#include "qgsdatasourceuri.h"
+#include "qgslogger.h"
+#include "qgsnewhttpconnection.h"
+#include "qgsowsconnection.h"
 #include "qgswcsdataitems.h"
 #include "qgswcsprovider.h"
-#include "qgslogger.h"
-#include "qgsdatasourceuri.h"
 #include "qgswcssourceselect.h"
-#include "qgsowsconnection.h"
-#include "qgsnewhttpconnection.h"
 
 #include <QFileInfo>
 #include <QSettings>

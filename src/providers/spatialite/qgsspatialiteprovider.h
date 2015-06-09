@@ -19,19 +19,19 @@ email                : a.furieri@lqt.it
 
 extern "C"
 {
-#include <sys/types.h>
-#include <sqlite3.h>
 #include <spatialite/gaiageo.h>
 #include <spatialite.h>
+#include <sqlite3.h>
+#include <sys/types.h>
 }
 
-#include "qgsvectordataprovider.h"
-#include "qgsrectangle.h"
-#include "qgsvectorlayerimport.h"
+#include <fstream>
 #include <list>
 #include <queue>
-#include <fstream>
 #include <set>
+#include "qgsrectangle.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayerimport.h"
 
 class QgsFeature;
 class QgsField;

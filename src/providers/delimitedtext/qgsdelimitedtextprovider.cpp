@@ -17,17 +17,18 @@
 
 #include "qgsdelimitedtextprovider.h"
 
-#include <QtGlobal>
+#include <QDataStream>
 #include <QFile>
 #include <QFileInfo>
-#include <QDataStream>
-#include <QTextStream>
-#include <QStringList>
 #include <QMessageBox>
-#include <QSettings>
 #include <QRegExp>
+#include <QSettings>
+#include <QStringList>
+#include <QTextStream>
+#include <QtGlobal>
 #include <QUrl>
 
+#include "qgis.h"
 #include "qgsapplication.h"
 #include "qgsdataprovider.h"
 #include "qgsexpression.h"
@@ -39,11 +40,10 @@
 #include "qgsmessageoutput.h"
 #include "qgsrectangle.h"
 #include "qgsspatialindex.h"
-#include "qgis.h"
 
-#include "qgsdelimitedtextsourceselect.h"
 #include "qgsdelimitedtextfeatureiterator.h"
 #include "qgsdelimitedtextfile.h"
+#include "qgsdelimitedtextsourceselect.h"
 
 static const QString TEXT_PROVIDER_KEY = "delimitedtext";
 static const QString TEXT_PROVIDER_DESCRIPTION = "Delimited text data provider";

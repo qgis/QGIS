@@ -15,12 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmaptoolmovelabel.h"
+#include <QMouseEvent>
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsmaptoolmovelabel.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
-#include <QMouseEvent>
 
 QgsMapToolMoveLabel::QgsMapToolMoveLabel( QgsMapCanvas* canvas )
     : QgsMapToolLabel( canvas )

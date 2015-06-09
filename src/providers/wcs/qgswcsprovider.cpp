@@ -21,40 +21,40 @@
 
 #include <typeinfo>
 
-#include "qgslogger.h"
-#include "qgswcsprovider.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdatasourceuri.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsmessageoutput.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsnetworkreplyparser.h"
 #include "qgsrasteridentifyresult.h"
 #include "qgsrasterlayer.h"
 #include "qgsrectangle.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsnetworkaccessmanager.h"
-#include "qgsnetworkreplyparser.h"
-#include "qgsmessageoutput.h"
-#include "qgsmessagelog.h"
+#include "qgswcsprovider.h"
 
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QNetworkProxy>
 #include <QNetworkDiskCache>
+#include <QNetworkProxy>
+#include <QNetworkReply>
+#include <QNetworkRequest>
 
-#include <QUrl>
+#include <QCoreApplication>
+#include <QEventLoop>
+#include <QFile>
 #include <QRegExp>
 #include <QSettings>
-#include <QEventLoop>
-#include <QCoreApplication>
 #include <QTime>
-#include <QFile>
+#include <QUrl>
 
 #ifdef QGISDEBUG
 #include <QDir>
 #endif
 
-#include "gdalwarper.h"
-#include "ogr_spatialref.h"
 #include "cpl_conv.h"
 #include "cpl_string.h"
+#include "gdalwarper.h"
+#include "ogr_spatialref.h"
 
 #define TINY_VALUE  std::numeric_limits<double>::epsilon() * 20
 

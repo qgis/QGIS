@@ -9,8 +9,8 @@
 #ifndef QWT_POLAR_PANNER_H
 #define QWT_POLAR_PANNER_H 1
 
-#include "qwt_polar_global.h"
 #include "qwt_panner.h"
+#include "qwt_polar_global.h"
 
 class QwtPolarPlot;
 class QwtPolarCanvas;

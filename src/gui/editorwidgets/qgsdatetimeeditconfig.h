@@ -16,8 +16,8 @@
 #ifndef QGSDATETIMEEDITCONFIG_H
 #define QGSDATETIMEEDITCONFIG_H
 
-#include "qgseditorconfigwidget.h"
 #include "ui_qgsdatetimeeditconfig.h"
+#include "qgseditorconfigwidget.h"
 
 class GUI_EXPORT QgsDateTimeEditConfig : public QgsEditorConfigWidget, private Ui::QgsDateTimeEditConfig
 {

@@ -20,10 +20,10 @@
 
 #include "qgsrunprocess.h"
 
+#include <QMessageBox>
+#include <QProcess>
 #include "qgslogger.h"
 #include "qgsmessageoutput.h"
-#include <QProcess>
-#include <QMessageBox>
 
 QgsRunProcess::QgsRunProcess( const QString& action, bool capture )
     : mProcess( NULL ), mOutput( NULL )

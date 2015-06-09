@@ -25,10 +25,10 @@
 #include "dl_dxf.h"
 
 #include <algorithm>
-#include <string>
-#include <cstdio>
 #include <cassert>
 #include <cmath>
+#include <cstdio>
+#include <string>
 
 #include "dl_attributes.h"
 #include "dl_codes.h"

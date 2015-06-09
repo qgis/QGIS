@@ -13,8 +13,8 @@
 *                                                                         *
 ***************************************************************************/
 
-#include <QGridLayout>
 #include <QDialogButtonBox>
+#include <QGridLayout>
 
 
 #include "qgsscalevisibilitydialog.h"

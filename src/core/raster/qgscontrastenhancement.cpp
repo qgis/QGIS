@@ -20,13 +20,13 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 
 #include "qgslogger.h"
 
-#include "qgscontrastenhancement.h"
-#include "qgscontrastenhancementfunction.h"
-#include "qgslinearminmaxenhancement.h"
-#include "qgslinearminmaxenhancementwithclip.h"
-#include "qgscliptominmaxenhancement.h"
 #include <QDomDocument>
 #include <QDomElement>
+#include "qgscliptominmaxenhancement.h"
+#include "qgscontrastenhancementfunction.h"
+#include "qgscontrastenhancement.h"
+#include "qgslinearminmaxenhancement.h"
+#include "qgslinearminmaxenhancementwithclip.h"
 
 QgsContrastEnhancement::QgsContrastEnhancement( QGis::DataType theDataType )
 {

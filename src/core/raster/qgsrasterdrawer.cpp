@@ -15,14 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslogger.h"
-#include "qgsrasterdrawer.h"
-#include "qgsrasteriterator.h"
-#include "qgsrasterviewport.h"
-#include "qgsmaptopixel.h"
 #include <QImage>
 #include <QPainter>
 #include <QPrinter>
+#include "qgslogger.h"
+#include "qgsmaptopixel.h"
+#include "qgsrasterdrawer.h"
+#include "qgsrasteriterator.h"
+#include "qgsrasterviewport.h"
 
 QgsRasterDrawer::QgsRasterDrawer( QgsRasterIterator* iterator ): mIterator( iterator )
 {

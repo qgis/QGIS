@@ -37,10 +37,10 @@
 #include <cassert>
 #endif
 
-#include <string.h>
-#include <string>
-#include <vector>
 #include <cctype>
+#include <string>
+#include <string.h>
+#include <vector>
 
 #ifdef _WIN32
 #define STDCALL __stdcall

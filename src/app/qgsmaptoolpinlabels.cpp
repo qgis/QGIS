@@ -23,10 +23,10 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
 
-#include "qgsmaptoolselectutils.h"
-#include "qgsrubberband.h"
 #include <qgslogger.h>
 #include <QMouseEvent>
+#include "qgsmaptoolselectutils.h"
+#include "qgsrubberband.h"
 
 QgsMapToolPinLabels::QgsMapToolPinLabels( QgsMapCanvas* canvas )
     : QgsMapToolLabel( canvas )

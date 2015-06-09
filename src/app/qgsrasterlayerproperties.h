@@ -19,12 +19,12 @@
 #ifndef QGSRASTERLAYERPROPERTIES_H
 #define QGSRASTERLAYERPROPERTIES_H
 
-#include "qgsoptionsdialogbase.h"
 #include "ui_qgsrasterlayerpropertiesbase.h"
 #include "qgisgui.h"
-#include "qgsmaptool.h"
 #include "qgscolorrampshader.h"
 #include "qgscontexthelp.h"
+#include "qgsmaptool.h"
+#include "qgsoptionsdialogbase.h"
 
 class QgsMapLayer;
 class QgsMapCanvas;

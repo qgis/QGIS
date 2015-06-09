@@ -9,8 +9,8 @@
 #ifndef QWT_POLAR_FITTER_H
 #define QWT_POLAR_FITTER_H
 
-#include "qwt_polar_global.h"
 #include "qwt_curve_fitter.h"
+#include "qwt_polar_global.h"
 
 /*!
   \brief A simple curve fitter for polar points

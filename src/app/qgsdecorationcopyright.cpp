@@ -21,21 +21,21 @@ email                : tim@linfiniti.com
 
 // includes
 
-#include "qgsdecorationcopyright.h"
 #include "qgsdecorationcopyrightdialog.h"
+#include "qgsdecorationcopyright.h"
 
+#include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
-#include "qgisapp.h"
 
-#include <QPainter>
-#include <QMenu>
 #include <QDate>
-#include <QTextDocument>
-#include <QMatrix>
 #include <QFile>
+#include <QMatrix>
+#include <QMenu>
+#include <QPainter>
+#include <QTextDocument>
 
 //non qt includes
 #include <cmath>

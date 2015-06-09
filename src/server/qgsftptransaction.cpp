@@ -15,9 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsftptransaction.h"
 #include <QApplication>
 #include <QUrl>
+#include "qgsftptransaction.h"
 
 QgsFtpTransaction::QgsFtpTransaction(): mFtp( new QFtp( 0 ) ), mRequestFinished( false ), mErrorFlag( false )
 {

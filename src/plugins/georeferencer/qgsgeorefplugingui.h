@@ -17,8 +17,8 @@
 #include "qgsgeoreftransform.h"
 
 #include "qgsgcplist.h"
-#include "qgsmapcoordsdialog.h"
 #include "qgsimagewarper.h"
+#include "qgsmapcoordsdialog.h"
 
 #include <QPointer>
 

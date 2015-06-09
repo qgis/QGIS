@@ -15,27 +15,27 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgisapp.h"
 #include "qgsattributetypedialog.h"
 #include "qgsattributetypeloaddialog.h"
-#include "qgsvectordataprovider.h"
-#include "qgsmaplayerregistry.h"
-#include "qgsmapcanvas.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgisapp.h"
-#include "qgsproject.h"
-#include "qgslogger.h"
 #include "qgseditorwidgetfactory.h"
 #include "qgseditorwidgetregistry.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
+#include "qgsvectordataprovider.h"
 
-#include <QTableWidgetItem>
 #include <QFile>
-#include <QMessageBox>
 #include <QFileDialog>
-#include <QTextStream>
+#include <QMessageBox>
 #include <QScrollBar>
+#include <QTableWidgetItem>
+#include <QTextStream>
 
-#include <climits>
 #include <cfloat>
+#include <climits>
 
 QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx )
     : QDialog()

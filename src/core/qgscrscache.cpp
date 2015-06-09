@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscrscache.h"
 #include "qgscoordinatetransform.h"
+#include "qgscrscache.h"
 
 
 QgsCoordinateTransformCache* QgsCoordinateTransformCache::instance()

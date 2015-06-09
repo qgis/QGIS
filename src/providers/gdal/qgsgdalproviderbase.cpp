@@ -19,8 +19,8 @@
 #include "cpl_conv.h"
 
 #include "qgsapplication.h"
-#include "qgslogger.h"
 #include "qgsgdalproviderbase.h"
+#include "qgslogger.h"
 
 #include <QSettings>
 

@@ -24,9 +24,9 @@
 
 #include <QtCore/QObject>
 
+#include <signal.h>
 #include <sys/types.h> // for pid_t
 #include <sys/wait.h>
-#include <signal.h>
 #include <unistd.h>
 
 class QSocketNotifier;

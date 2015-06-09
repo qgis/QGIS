@@ -16,8 +16,8 @@
 #ifndef QGSDOUBLESPINBOXPLUGIN_H
 #define QGSDOUBLESPINBOXPLUGIN_H
 
-#include <QDesignerExportWidget>
 #include <QDesignerCustomWidgetInterface>
+#include <QDesignerExportWidget>
 
 
 class CUSTOMWIDGETS_EXPORT QgsDoubleSpinBoxPlugin : public QObject, public QDesignerCustomWidgetInterface

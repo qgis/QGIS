@@ -12,12 +12,12 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsformannotationdialog.h"
-#include "qgsannotationwidget.h"
-#include "qgsvectorlayer.h"
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QGraphicsScene>
+#include "qgsannotationwidget.h"
+#include "qgsformannotationdialog.h"
+#include "qgsvectorlayer.h"
 
 QgsFormAnnotationDialog::QgsFormAnnotationDialog( QgsFormAnnotationItem* item, QWidget * parent, Qt::WindowFlags f )
     : QDialog( parent, f ), mItem( item ), mEmbeddedWidget( 0 )

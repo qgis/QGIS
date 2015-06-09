@@ -29,10 +29,10 @@
 #include <stdio.h>
 
 // Qt
+#include <QtCore>
 #include <QtCore/QBuffer>
 #include <QtCore/QFile>
 #include <QtCore/QFileInfo>
-#include <QtCore>
 #include <QtGui>
 
 

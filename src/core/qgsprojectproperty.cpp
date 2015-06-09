@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsprojectproperty.h"
 #include "qgslogger.h"
+#include "qgsprojectproperty.h"
 
 #include <QDomDocument>
 #include <QStringList>

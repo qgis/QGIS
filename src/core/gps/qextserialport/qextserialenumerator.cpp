@@ -1,6 +1,6 @@
-#include "qextserialenumerator.h"
 #include <QDebug>
 #include <QMetaType>
+#include "qextserialenumerator.h"
 
 #ifdef Q_OS_WIN
 #ifdef UNICODE
@@ -31,8 +31,8 @@ QextSerialEnumerator::~QextSerialEnumerator( )
 
 #ifdef Q_OS_WIN
 
-    #include <objbase.h>
     #include <initguid.h>
+    #include <objbase.h>
     #include "qextserialport.h"
     #include <QRegExp>
 
@@ -231,8 +231,8 @@ QextSerialEnumerator::~QextSerialEnumerator( )
 #ifdef Q_OS_UNIX
 
 #ifdef Q_OS_MAC
-#include <IOKit/serial/IOSerialKeys.h>
 #include <CoreFoundation/CFNumber.h>
+#include <IOKit/serial/IOSerialKeys.h>
 #include <sys/param.h>
 
 // static

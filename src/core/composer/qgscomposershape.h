@@ -18,9 +18,9 @@
 #ifndef QGSCOMPOSERSHAPE_H
 #define QGSCOMPOSERSHAPE_H
 
-#include "qgscomposeritem.h"
 #include <QBrush>
 #include <QPen>
+#include "qgscomposeritem.h"
 
 class QgsFillSymbolV2;
 

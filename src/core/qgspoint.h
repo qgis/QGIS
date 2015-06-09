@@ -21,8 +21,8 @@
 #include <qgis.h>
 
 #include <iostream>
-#include <QString>
 #include <QPoint>
+#include <QString>
 
 /** \ingroup core
  * A class to represent a vector.

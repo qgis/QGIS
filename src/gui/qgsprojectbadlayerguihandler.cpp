@@ -21,8 +21,8 @@
 #include <QMessageBox>
 #include <QPushButton>
 
-#include "qgslogger.h"
 #include "qgisgui.h"
+#include "qgslogger.h"
 #include "qgsproviderregistry.h"
 
 QgsProjectBadLayerGuiHandler::QgsProjectBadLayerGuiHandler()

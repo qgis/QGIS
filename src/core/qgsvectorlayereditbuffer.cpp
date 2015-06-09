@@ -16,9 +16,9 @@
 
 #include "qgsgeometry.h"
 #include "qgslogger.h"
-#include "qgsvectorlayerundocommand.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerundocommand.h"
 
 
 //! populate two lists (ks, vs) from map - in reverse order

@@ -6,19 +6,19 @@
  * modify it under the terms of the Qwt License, Version 1.0
  *****************************************************************************/
 
-#include "qwt_polar_renderer.h"
-#include "qwt_polar_plot.h"
-#include "qwt_polar_layout.h"
-#include <qwt_legend.h>
-#include <qwt_legend_item.h>
-#include <qwt_dyngrid_layout.h>
-#include <qwt_text_label.h>
-#include <qwt_text.h>
+#include <qfileinfo.h>
+#include <qimagewriter.h>
+#include <qmath.h>
 #include <qpainter.h>
 #include <qprinter.h>
-#include <qimagewriter.h>
-#include <qfileinfo.h>
-#include <qmath.h>
+#include <qwt_dyngrid_layout.h>
+#include <qwt_legend.h>
+#include <qwt_legend_item.h>
+#include <qwt_text.h>
+#include <qwt_text_label.h>
+#include "qwt_polar_layout.h"
+#include "qwt_polar_plot.h"
+#include "qwt_polar_renderer.h"
 #ifndef QWT_NO_POLAR_POLAR_SVG
 #ifdef QT_SVG_LIB
 #include <qsvggenerator.h>
