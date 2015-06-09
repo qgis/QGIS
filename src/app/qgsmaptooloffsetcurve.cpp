@@ -334,7 +334,7 @@ void QgsMapToolOffsetCurve::createDistanceWidget()
   mDistanceWidget = new QgsDoubleSpinBox();
   mDistanceWidget->setMinimum( -99999999 );
   mDistanceWidget->setMaximum( 99999999 );
-  mDistanceWidget->setDecimals( 2 );
+  mDistanceWidget->setDecimals( 6 );
   mDistanceWidget->setPrefix( tr( "Offset: " ) );
   QgisApp::instance()->addUserInputWidget( mDistanceWidget );
 
