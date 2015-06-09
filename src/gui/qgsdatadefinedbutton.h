@@ -19,8 +19,8 @@
 #include <QFlags>
 #include <QMap>
 #include <QPointer>
-#include <QToolButton>
 #include <QScopedPointer>
+#include <QToolButton>
 
 class QgsVectorLayer;
 class QgsDataDefined;

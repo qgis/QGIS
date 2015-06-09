@@ -13,16 +13,16 @@
  *                                                                       *
  *************************************************************************/
 
+#include "qgsgrass.h"
 #include "qgsgrassmapcalc.h"
 #include "qgsgrassselect.h"
-#include "qgsgrass.h"
 
 #include "qgisinterface.h"
 #include "qgsapplication.h"
+#include "qgsgrassplugin.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
-#include "qgsgrassplugin.h"
 
 #include <cmath>
 

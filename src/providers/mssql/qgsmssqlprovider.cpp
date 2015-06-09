@@ -17,23 +17,24 @@
 
 #include "qgsmssqlprovider.h"
 
-#include <QtGlobal>
-#include <QFileInfo>
 #include <QDataStream>
-#include <QStringList>
+#include <QFileInfo>
 #include <QMessageBox>
-#include <QSettings>
 #include <QRegExp>
-#include <QUrl>
-#include <QtSql/QSqlDatabase>
-#include <QtSql/QSqlQuery>
-#include <QtSql/QSqlError>
-#include <QtSql/QSqlRecord>
-#include <QtSql/QSqlField>
+#include <QSettings>
 #include <QStringBuilder>
+#include <QStringList>
+#include <QtGlobal>
+#include <QtSql/QSqlDatabase>
+#include <QtSql/QSqlError>
+#include <QtSql/QSqlField>
+#include <QtSql/QSqlQuery>
+#include <QtSql/QSqlRecord>
+#include <QUrl>
 #include <QWaitCondition>
 
 
+#include "qgis.h"
 #include "qgsapplication.h"
 #include "qgsdataprovider.h"
 #include "qgsfeature.h"
@@ -42,10 +43,9 @@
 #include "qgslogger.h"
 #include "qgsmessageoutput.h"
 #include "qgsrectangle.h"
-#include "qgis.h"
 
-#include "qgsmssqlsourceselect.h"
 #include "qgsmssqldataitems.h"
+#include "qgsmssqlsourceselect.h"
 
 #include "qgsmssqlfeatureiterator.h"
 

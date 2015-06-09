@@ -11,23 +11,23 @@
 #include <qguardedptr.h>
 #include <qpaintdevicemetrics.h>
 #else
-#include <qpointer.h>
 #include <qpaintengine.h>
+#include <qpointer.h>
 #endif
-#include <qpainter.h>
 #include <qevent.h>
-#include "qwt_painter.h"
-#include "qwt_math.h"
-#include "qwt_scale_engine.h"
-#include "qwt_scale_div.h"
-#include "qwt_text_label.h"
-#include "qwt_round_scale_draw.h"
-#include "qwt_polar_canvas.h"
+#include <qpainter.h>
+#include "qwt_dyngrid_layout.h"
 #include "qwt_legend.h"
 #include "qwt_legend_item.h"
-#include "qwt_dyngrid_layout.h"
+#include "qwt_math.h"
+#include "qwt_painter.h"
+#include "qwt_polar_canvas.h"
 #include "qwt_polar_layout.h"
 #include "qwt_polar_plot.h"
+#include "qwt_round_scale_draw.h"
+#include "qwt_scale_div.h"
+#include "qwt_scale_engine.h"
+#include "qwt_text_label.h"
 
 static inline double qwtDistance(
   const QwtDoublePoint &p1, const QwtDoublePoint &p2 )

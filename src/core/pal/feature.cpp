@@ -40,17 +40,17 @@
 
 #include <qglobal.h>
 
+#include <cfloat>
 #include <cmath>
 #include <cstring>
-#include <cfloat>
 
-#include <pal/pal.h>
 #include <pal/layer.h>
+#include <pal/pal.h>
 
-#include "linkedlist.hpp"
 #include "feature.h"
 #include "geomfunction.h"
 #include "labelposition.h"
+#include "linkedlist.hpp"
 #include "pointset.h"
 #include "simplemutex.h"
 #include "util.h"

@@ -19,11 +19,11 @@
 #include "dxflib/src/dl_dxf.h"
 
 //qt includes
+#include <QDir>
+#include <QFile>
+#include <QFileDialog>
 #include <qmessagebox.h>
 #include <QSettings>
-#include <QFileDialog>
-#include <QFile>
-#include <QDir>
 
 #include "qgslogger.h"
 

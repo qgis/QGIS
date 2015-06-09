@@ -15,16 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsformannotationitem.h"
-#include "qgsattributeeditor.h"
-#include "qgsfeature.h"
-#include "qgslogger.h"
-#include "qgsmapcanvas.h"
-#include "qgsmaplayerregistry.h"
-#include "qgsmaptool.h"
-#include "qgsvectorlayer.h"
-#include <QDomElement>
 #include <QDir>
+#include <QDomElement>
 #include <QFile>
 #include <QFileInfo>
 #include <QGraphicsProxyWidget>
@@ -32,6 +24,14 @@
 #include <QSettings>
 #include <QUiLoader>
 #include <QWidget>
+#include "qgsattributeeditor.h"
+#include "qgsfeature.h"
+#include "qgsformannotationitem.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaplayerregistry.h"
+#include "qgsmaptool.h"
+#include "qgsvectorlayer.h"
 
 QgsFormAnnotationItem::QgsFormAnnotationItem( QgsMapCanvas* canvas, QgsVectorLayer* vlayer, bool hasFeature, int feature )
     : QgsAnnotationItem( canvas )

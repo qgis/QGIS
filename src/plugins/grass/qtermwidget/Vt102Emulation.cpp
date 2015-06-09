@@ -37,14 +37,14 @@
 #endif
 
 // Standard
+#include <assert.h>
 #include <stdio.h>
 #include <unistd.h>
-#include <assert.h>
 
 // Qt
+#include <QtCore/QByteRef>
 #include <QtCore/QEvent>
 #include <QtGui/QKeyEvent>
-#include <QtCore/QByteRef>
 
 // KDE
 //#include <kdebug.h>

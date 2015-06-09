@@ -18,9 +18,9 @@
 #ifndef QGSWMSPROJECTPARSER_H
 #define QGSWMSPROJECTPARSER_H
 
-#include "qgswmsconfigparser.h"
-#include "qgsserverprojectparser.h"
 #include "qgslayertreegroup.h"
+#include "qgsserverprojectparser.h"
+#include "qgswmsconfigparser.h"
 
 class QTextDocument;
 class QSvgRenderer;

@@ -25,8 +25,8 @@
 
 extern "C"
 {
-#include <sqlite3.h>
 #include <spatialite.h>
+#include <sqlite3.h>
 }
 
 class APP_EXPORT QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNewSpatialiteLayerDialogBase

@@ -18,16 +18,16 @@
 #ifndef QGSDECORATIONGRID_H
 #define QGSDECORATIONGRID_H
 
-#include "qgsdecorationitem.h"
 #include <qgis.h>
+#include "qgsdecorationitem.h"
 
 class QPainter;
 class QgsLineSymbolV2;
 class QgsMarkerSymbolV2;
 
 #include <QColor>
-#include <QPen>
 #include <QFont>
+#include <QPen>
 
 class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
 {

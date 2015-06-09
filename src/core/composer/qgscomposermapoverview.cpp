@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscomposermapoverview.h"
 #include "qgscomposermap.h"
+#include "qgscomposermapoverview.h"
 #include "qgscomposition.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgssymbolv2.h"

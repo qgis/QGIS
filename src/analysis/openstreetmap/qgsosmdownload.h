@@ -17,9 +17,9 @@
 #define OSMDOWNLOAD_H
 
 
-#include <QObject>
 #include <QFile>
 #include <QNetworkReply>
+#include <QObject>
 
 class QgsRectangle;
 

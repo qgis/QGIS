@@ -13,27 +13,27 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QClipboard>
 #include <QDesktopWidget>
 #include <QDialogButtonBox>
-#include <QClipboard>
 #include <QFileDialog>
 #include <QFileInfo>
+#include <QList>
 #include <QMessageBox>
 #include <QMouseEvent>
 #include <QPainter>
+#include <QPen>
 #include <QPlainTextEdit>
 #include <QPrinter>
 #include <QProgressDialog>
 #include <QPushButton>
 #include <QSettings>
-#include <QTextStream>
-#include <QPen>
 #include <QStringList>
-#include <QList>
+#include <QTextStream>
 
 #include "qgisinterface.h"
-#include "qgslegendinterface.h"
 #include "qgsapplication.h"
+#include "qgslegendinterface.h"
 
 #include "qgscomposerlabel.h"
 #include "qgscomposermap.h"
@@ -42,21 +42,21 @@
 #include "qgsmapcoordsdialog.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
-#include "qgsmaptoolzoom.h"
 #include "qgsmaptoolpan.h"
+#include "qgsmaptoolzoom.h"
 
-#include "qgsproject.h"
-#include "qgsrasterlayer.h"
 #include "../../app/qgsrasterlayerproperties.h"
+#include "qgsproject.h"
 #include "qgsproviderregistry.h"
+#include "qgsrasterlayer.h"
 
 #include "qgsgeorefdatapoint.h"
 #include "qgsgeoreftooladdpoint.h"
 #include "qgsgeoreftooldeletepoint.h"
 #include "qgsgeoreftoolmovepoint.h"
 
-#include "qgsleastsquares.h"
 #include "qgsgcplistwidget.h"
+#include "qgsleastsquares.h"
 
 #include "qgsgeorefconfigdialog.h"
 #include "qgsgeorefdescriptiondialog.h"

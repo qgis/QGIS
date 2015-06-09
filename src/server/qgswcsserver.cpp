@@ -14,15 +14,15 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgswcsserver.h"
-#include "qgswcsprojectparser.h"
 #include "qgscrscache.h"
+#include "qgslogger.h"
+#include "qgsmapserviceexception.h"
+#include "qgsrasterfilewriter.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterpipe.h"
 #include "qgsrasterprojector.h"
-#include "qgsrasterfilewriter.h"
-#include "qgslogger.h"
-#include "qgsmapserviceexception.h"
+#include "qgswcsprojectparser.h"
+#include "qgswcsserver.h"
 
 #include <QTemporaryFile>
 #include <QUrl>

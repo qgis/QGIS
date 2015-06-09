@@ -15,9 +15,9 @@
 #ifndef QGSCATEGORIZEDSYMBOLRENDERERV2_H
 #define QGSCATEGORIZEDSYMBOLRENDERERV2_H
 
-#include "qgssymbolv2.h"
-#include "qgsrendererv2.h"
 #include "qgsexpression.h"
+#include "qgsrendererv2.h"
+#include "qgssymbolv2.h"
 
 #include <QHash>
 #include <QScopedPointer>

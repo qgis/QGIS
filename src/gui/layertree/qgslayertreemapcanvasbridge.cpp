@@ -17,9 +17,9 @@
 
 #include "qgslayertree.h"
 #include "qgslayertreeutils.h"
+#include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
-#include "qgsmapcanvas.h"
 
 QgsLayerTreeMapCanvasBridge::QgsLayerTreeMapCanvasBridge( QgsLayerTreeGroup *root, QgsMapCanvas *canvas, QObject* parent )
     : QObject( parent )

@@ -18,22 +18,22 @@
 #include "qgslabelinggui.h"
 
 #include <qgsmapcanvas.h>
-#include <qgsvectorlayer.h>
-#include <qgsvectordataprovider.h>
 #include <qgsmaplayerregistry.h>
+#include <qgsvectordataprovider.h>
+#include <qgsvectorlayer.h>
 
+#include "qgisapp.h"
+#include "qgscharacterselectdialog.h"
 #include "qgsdatadefinedbutton.h"
-#include "qgslabelengineconfigdialog.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpression.h"
 #include "qgsfontutils.h"
-#include "qgisapp.h"
+#include "qgslabelengineconfigdialog.h"
 #include "qgsmaprenderer.h"
 #include "qgsproject.h"
 #include "qgssvgcache.h"
-#include "qgssymbollayerv2utils.h"
-#include "qgscharacterselectdialog.h"
 #include "qgssvgselectorwidget.h"
+#include "qgssymbollayerv2utils.h"
 
 #include <QCheckBox>
 #include <QSettings>

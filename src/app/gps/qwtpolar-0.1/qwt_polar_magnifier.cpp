@@ -8,10 +8,10 @@
 
 #include <math.h>
 #include <qevent.h>
-#include "qwt_polar_plot.h"
 #include "qwt_polar_canvas.h"
-#include "qwt_scale_div.h"
 #include "qwt_polar_magnifier.h"
+#include "qwt_polar_plot.h"
+#include "qwt_scale_div.h"
 
 class QwtPolarMagnifier::PrivateData
 {

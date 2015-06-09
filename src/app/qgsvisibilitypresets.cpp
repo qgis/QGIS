@@ -15,6 +15,7 @@
 
 #include "qgsvisibilitypresets.h"
 
+#include "qgisapp.h"
 #include "qgslayertree.h"
 #include "qgslayertreemapcanvasbridge.h"
 #include "qgslayertreemodel.h"
@@ -25,7 +26,6 @@
 #include "qgsproject.h"
 #include "qgsrendererv2.h"
 #include "qgsvectorlayer.h"
-#include "qgisapp.h"
 
 #include <QInputDialog>
 

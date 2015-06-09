@@ -15,25 +15,25 @@
  ***************************************************************************/
 #include "qgsgraduatedsymbolrendererv2.h"
 
-#include "qgssymbolv2.h"
-#include "qgssymbollayerv2utils.h"
-#include "qgsvectorcolorrampv2.h"
-#include "qgspointdisplacementrenderer.h"
+#include "qgsdatadefined.h"
 #include "qgsinvertedpolygonrenderer.h"
 #include "qgspainteffect.h"
+#include "qgspointdisplacementrenderer.h"
 #include "qgsscaleexpression.h"
-#include "qgsdatadefined.h"
+#include "qgssymbollayerv2utils.h"
+#include "qgssymbolv2.h"
+#include "qgsvectorcolorrampv2.h"
 
-#include "qgsfeature.h"
-#include "qgsvectorlayer.h"
-#include "qgslogger.h"
-#include "qgsvectordataprovider.h"
-#include "qgsexpression.h"
+#include <ctime>
+#include <limits> // for jenks classification
 #include <QDomDocument>
 #include <QDomElement>
 #include <QSettings> // for legend
-#include <limits> // for jenks classification
-#include <ctime>
+#include "qgsexpression.h"
+#include "qgsfeature.h"
+#include "qgslogger.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
 QgsRendererRangeV2::QgsRendererRangeV2()
     : mLowerValue( 0 )

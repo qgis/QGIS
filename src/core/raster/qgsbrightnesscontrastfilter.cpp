@@ -15,12 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsrasterdataprovider.h"
 #include "qgsbrightnesscontrastfilter.h"
+#include "qgsrasterdataprovider.h"
 
-#include <qmath.h>
 #include <QDomDocument>
 #include <QDomElement>
+#include <qmath.h>
 
 QgsBrightnessContrastFilter::QgsBrightnessContrastFilter( QgsRasterInterface* input )
     : QgsRasterInterface( input )

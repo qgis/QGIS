@@ -16,23 +16,23 @@ email                : a.furieri@lqt.it
 
 #include "qgis.h"
 #include "qgsapplication.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
-#include "qgsmessageoutput.h"
-#include "qgsrectangle.h"
-#include "qgscoordinatereferencesystem.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
-#include "qgsvectorlayerimport.h"
+#include "qgsmessageoutput.h"
+#include "qgsrectangle.h"
 #include "qgsslconnect.h"
-#include "qgsspatialiteprovider.h"
 #include "qgsspatialiteconnpool.h"
 #include "qgsspatialitefeatureiterator.h"
+#include "qgsspatialiteprovider.h"
+#include "qgsvectorlayerimport.h"
 
-#include <QMessageBox>
-#include <QFileInfo>
 #include <QDir>
+#include <QFileInfo>
+#include <QMessageBox>
 
 #ifdef _MSC_VER
 #define strcasecmp(a,b) stricmp(a,b)

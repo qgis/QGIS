@@ -16,11 +16,11 @@
  ***************************************************************************/
 #include <algorithm>
 
-#include "qgsrasterdataprovider.h"
+#include "qgscoordinatetransform.h"
 #include "qgscrscache.h"
 #include "qgslogger.h"
+#include "qgsrasterdataprovider.h"
 #include "qgsrasterprojector.h"
-#include "qgscoordinatetransform.h"
 
 QgsRasterProjector::QgsRasterProjector(
   QgsCoordinateReferenceSystem theSrcCRS,

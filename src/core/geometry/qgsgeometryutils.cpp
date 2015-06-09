@@ -13,9 +13,9 @@ email                : marco.hugentobler at sourcepole dot com
  *                                                                         *
  ***************************************************************************/
 
+#include <QStringList>
 #include "qgsgeometryutils.h"
 #include "qgswkbptr.h"
-#include <QStringList>
 
 QgsPointV2 QgsGeometryUtils::closestVertex( const QgsAbstractGeometryV2& geom, const QgsPointV2& pt, QgsVertexId& id )
 {

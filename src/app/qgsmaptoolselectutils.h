@@ -16,9 +16,9 @@ email                : jpalmer at linz dot govt dot nz
 #ifndef QGSMAPTOOLSELECTUTILS_H
 #define QGSMAPTOOLSELECTUTILS_H
 
-#include <Qt>
-#include <QRect>
 #include <QPoint>
+#include <QRect>
+#include <Qt>
 
 class QMouseEvent;
 class QgsMapCanvas;

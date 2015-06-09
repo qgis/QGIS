@@ -17,10 +17,10 @@
 #ifndef QGSBROWSER_H
 #define QGSBROWSER_H
 
+#include "ui_qgsbrowserbase.h"
 #include <QMainWindow>
 #include <QMap>
 #include <QModelIndex>
-#include "ui_qgsbrowserbase.h"
 
 class QgsBrowserModel;
 class QgsLayerItem;

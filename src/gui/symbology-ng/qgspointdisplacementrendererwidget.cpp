@@ -15,15 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgspointdisplacementrendererwidget.h"
-#include "qgspointdisplacementrenderer.h"
-#include "qgsrendererv2registry.h"
-#include "qgsfield.h"
-#include "qgsstylev2.h"
-#include "qgssymbolv2selectordialog.h"
-#include "qgssymbollayerv2utils.h"
-#include "qgsvectorlayer.h"
 #include "qgisgui.h"
+#include "qgsfield.h"
+#include "qgspointdisplacementrenderer.h"
+#include "qgspointdisplacementrendererwidget.h"
+#include "qgsrendererv2registry.h"
+#include "qgsstylev2.h"
+#include "qgssymbollayerv2utils.h"
+#include "qgssymbolv2selectordialog.h"
+#include "qgsvectorlayer.h"
 
 QgsRendererV2Widget* QgsPointDisplacementRendererWidget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
 {

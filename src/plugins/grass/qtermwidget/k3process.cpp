@@ -36,33 +36,33 @@
 #define _ALL_SOURCE
 #endif
 
-#include <sys/socket.h>
 #include <sys/ioctl.h>
+#include <sys/socket.h>
 
-#include <sys/types.h>
-#include <sys/time.h>
 #include <sys/resource.h>
 #include <sys/stat.h>
+#include <sys/time.h>
+#include <sys/types.h>
 #include <sys/wait.h>
 
 #ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
 #endif
 
-#include <errno.h>
 #include <assert.h>
+#include <errno.h>
 #include <fcntl.h>
-#include <time.h>
-#include <stdlib.h>
+#include <grp.h>
+#include <pwd.h>
 #include <signal.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <unistd.h>
-#include <pwd.h>
-#include <grp.h>
 
-#include <QtCore/QMap>
 #include <QtCore/QFile>
+#include <QtCore/QMap>
 #include <QtCore/QSocketNotifier>
 
 //#include <kdebug.h>

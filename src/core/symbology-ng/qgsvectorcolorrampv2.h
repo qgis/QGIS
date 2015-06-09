@@ -19,8 +19,8 @@
 #include <QColor>
 #include <QGradient>
 
-#include "qgssymbollayerv2.h" // for QgsStringMap
 #include "qgslogger.h"
+#include "qgssymbollayerv2.h" // for QgsStringMap
 
 class CORE_EXPORT QgsVectorColorRampV2
 {

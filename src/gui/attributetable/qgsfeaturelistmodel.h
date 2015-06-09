@@ -4,11 +4,11 @@
 #include <qgsexpression.h>
 
 #include <QAbstractProxyModel>
-#include <QVariant>
 #include <QItemSelectionModel>
+#include <QVariant>
 
-#include "qgsfeaturemodel.h"
 #include "qgsfeature.h" // QgsFeatureId
+#include "qgsfeaturemodel.h"
 
 class QgsAttributeTableFilterModel;
 class QgsAttributeTableModel;

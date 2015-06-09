@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscomposertexttable.h"
 #include "qgscomposertablecolumn.h"
+#include "qgscomposertexttable.h"
 
 QgsComposerTextTable::QgsComposerTextTable( QgsComposition* c ): QgsComposerTable( c )
 {

@@ -18,8 +18,8 @@ email                : jef at norbit dot de
 #include "qgscolumntypethread.h"
 #include "qgslogger.h"
 
-#include <QMetaType>
 #include <climits>
+#include <QMetaType>
 
 QgsGeomColumnTypeThread::QgsGeomColumnTypeThread( QString name, bool useEstimatedMetaData, bool allowGeometrylessTables )
     : QThread()

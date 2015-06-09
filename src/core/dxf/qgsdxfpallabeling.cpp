@@ -15,13 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsdxfpallabeling.h"
 #include "qgsdxfexport.h"
-#include "qgspalgeometry.h"
+#include "qgsdxfpallabeling.h"
 #include "qgsmapsettings.h"
+#include "qgspalgeometry.h"
 
-#include "pal/pointset.h"
 #include "pal/labelposition.h"
+#include "pal/pointset.h"
 
 using namespace pal;
 

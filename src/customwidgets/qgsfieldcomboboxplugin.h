@@ -16,8 +16,8 @@
 #ifndef QGSFIELDCOMBOBOXPLUGIN_H
 #define QGSFIELDCOMBOBOXPLUGIN_H
 
-#include <QDesignerExportWidget>
 #include <QDesignerCustomWidgetInterface>
+#include <QDesignerExportWidget>
 
 
 class CUSTOMWIDGETS_EXPORT QgsFieldComboBoxPlugin : public QObject, public QDesignerCustomWidgetInterface

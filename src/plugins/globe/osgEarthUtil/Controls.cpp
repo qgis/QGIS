@@ -17,18 +17,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
 //#include <osgEarthUtil/Controls>
-#include "Controls"
-#include <osgEarth/FindNode>
-#include <osg/Geometry>
-#include <osg/NodeCallback>
 #include <osg/Depth>
-#include <osg/TextureRectangle>
-#include <osgGA/GUIEventHandler>
-#include <osgText/Text>
+#include <osgEarth/Common>
+#include <osgEarth/FindNode>
 #include <osgEarthSymbology/Geometry>
 #include <osgEarthSymbology/GeometryRasterizer>
+#include <osgGA/GUIEventHandler>
+#include <osg/Geometry>
+#include <osg/NodeCallback>
+#include <osgText/Text>
+#include <osg/TextureRectangle>
 #include <osg/Version>
-#include <osgEarth/Common>
+#include "Controls"
 
 using namespace osgEarth;
 using namespace osgEarth::Symbology;

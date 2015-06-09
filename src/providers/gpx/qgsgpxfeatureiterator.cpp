@@ -21,8 +21,8 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 
-#include <limits>
 #include <cstring>
+#include <limits>
 
 
 QgsGPXFeatureIterator::QgsGPXFeatureIterator( QgsGPXFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )

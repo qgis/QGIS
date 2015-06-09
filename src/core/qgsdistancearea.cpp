@@ -14,21 +14,21 @@
  ***************************************************************************/
 
 #include <cmath>
-#include <sqlite3.h>
 #include <QDir>
-#include <QString>
 #include <QLocale>
 #include <QObject>
+#include <QString>
+#include <sqlite3.h>
 
 #include "qgis.h"
-#include "qgspoint.h"
-#include "qgscoordinatetransform.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsgeometry.h"
-#include "qgsdistancearea.h"
 #include "qgsapplication.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
+#include "qgsdistancearea.h"
+#include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgspoint.h"
 #include "qgswkbptr.h"
 
 // MSVC compiler doesn't have defined M_PI in math.h

@@ -14,8 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapppluginmanagerinterface.h"
 #include <qgslogger.h>
+#include "qgsapppluginmanagerinterface.h"
 
 
 QgsAppPluginManagerInterface::QgsAppPluginManagerInterface( QgsPluginManager * pluginManager )
@@ -96,4 +96,3 @@ void QgsAppPluginManagerInterface::addToRepositoryList( QMap<QString, QString> r
 void QgsAppPluginManagerInterface::pushMessage( const QString &text, QgsMessageBar::MessageLevel level, int duration )
 {
   mPluginManager->pushMessage( text, level, duration );
-}

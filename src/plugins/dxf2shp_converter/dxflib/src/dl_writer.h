@@ -36,8 +36,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include <iostream>
 #include <algorithm>
+#include <iostream>
 
 #include "dl_attributes.h"
 #include "dl_codes.h"

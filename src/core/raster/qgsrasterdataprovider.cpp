@@ -15,15 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgslogger.h"
 #include "qgsproviderregistry.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasteridentifyresult.h"
 #include "qgsrasterprojector.h"
-#include "qgslogger.h"
 
-#include <QTime>
-#include <QMap>
 #include <QByteArray>
+#include <QMap>
+#include <QTime>
 #include <QVariant>
 
 #include <qmath.h>

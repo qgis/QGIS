@@ -15,10 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometry.h"
 #include "qgsinterpolator.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgsgeometry.h"
 #include "qgswkbptr.h"
 
 QgsInterpolator::QgsInterpolator( const QList<LayerData>& layerData )

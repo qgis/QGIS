@@ -13,18 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmaptoolmeasureangle.h"
+#include <cmath>
+#include <QMouseEvent>
+#include <QSettings>
 #include "qgsdisplayangle.h"
 #include "qgsdistancearea.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaptoolmeasureangle.h"
 #include "qgsmaptopixel.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"
 #include "qgssnappingutils.h"
-#include <QMouseEvent>
-#include <QSettings>
-#include <cmath>
 
 QgsMapToolMeasureAngle::QgsMapToolMeasureAngle( QgsMapCanvas* canvas )
     : QgsMapTool( canvas )

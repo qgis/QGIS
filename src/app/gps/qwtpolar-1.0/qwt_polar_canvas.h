@@ -9,9 +9,9 @@
 #ifndef QWT_POLAR_CANVAS_H
 #define QWT_POLAR_CANVAS_H 1
 
-#include "qwt_polar_global.h"
-#include <qwt_point_polar.h>
 #include <qframe.h>
+#include <qwt_point_polar.h>
+#include "qwt_polar_global.h"
 
 class QPainter;
 class QwtPolarPlot;

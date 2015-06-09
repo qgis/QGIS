@@ -7,9 +7,9 @@
 #ifndef _QEXTSERIALENUMERATOR_H_
 #define _QEXTSERIALENUMERATOR_H_
 
-#include <QString>
 #include <QList>
 #include <QObject>
+#include <QString>
 
 #ifdef Q_OS_WIN
     #ifdef __MINGW32__
@@ -22,9 +22,9 @@
         #define _WIN32_WINNT 0x0500
       #endif
     #endif
-    #include <windows.h>
-    #include <setupapi.h>
     #include <dbt.h>
+    #include <setupapi.h>
+    #include <windows.h>
 #endif /*Q_OS_WIN*/
 
 #ifdef Q_OS_MAC

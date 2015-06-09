@@ -28,8 +28,8 @@
 #include "qgsvertexmarker.h"
 
 #include <QCursor>
-#include <QPixmap>
 #include <QMouseEvent>
+#include <QPixmap>
 #include <QStatusBar>
 
 

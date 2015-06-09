@@ -14,9 +14,9 @@
  ***************************************************************************/
 
 
-#include "qgsmaptoolemitpoint.h"
-#include "qgsmapcanvas.h"
 #include <QMouseEvent>
+#include "qgsmapcanvas.h"
+#include "qgsmaptoolemitpoint.h"
 
 
 QgsMapToolEmitPoint::QgsMapToolEmitPoint( QgsMapCanvas* canvas )

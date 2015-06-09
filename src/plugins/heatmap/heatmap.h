@@ -40,8 +40,8 @@
 
 //QGIS includes
 #include "../qgisplugin.h"
-#include "qgsvectorlayer.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsvectorlayer.h"
 
 //forward declarations
 class QAction;

@@ -22,8 +22,8 @@
 #include <QFileInfo>
 #include <QFont>
 #include <QFontDatabase>
-#include <QPixmap>
 #include <QLocale>
+#include <QPixmap>
 #include <QSettings>
 #include <QSplashScreen>
 #include <QString>
@@ -32,27 +32,27 @@
 #if QT_VERSION < 0x050000
 #include <QPlastiqueStyle>
 #endif
-#include <QTranslator>
 #include <QImageReader>
 #include <QMessageBox>
+#include <QTranslator>
 
 #include "qgscustomization.h"
 #include "qgsfontutils.h"
-#include "qgspluginregistry.h"
 #include "qgsmessagelog.h"
+#include "qgspluginregistry.h"
 #include "qgspythonrunner.h"
 
 #include <cstdio>
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdarg.h>
 
 #ifdef WIN32
 // Open files in binary mode
-#include <fcntl.h> /*  _O_BINARY */
-#include <windows.h>
 #include <dbghelp.h>
+#include <fcntl.h> /*  _O_BINARY */
 #include <time.h>
+#include <windows.h>
 #ifdef MSVC
 #undef _fmode
 int _fmode = _O_BINARY;
@@ -72,27 +72,27 @@ int _fmode = _O_BINARY;
 typedef SInt32 SRefCon;
 #endif
 // For setting the maximum open files limit higher
-#include <sys/resource.h>
 #include <limits.h>
+#include <sys/resource.h>
 #endif
 
-#include "qgisapp.h"
-#include "qgsmapcanvas.h"
-#include "qgsapplication.h"
 #include <qgsconfig.h>
 #include <qgscustomization.h>
 #include <qgsversion.h>
+#include "qgisapp.h"
+#include "qgsapplication.h"
 #include "qgsexception.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgsrectangle.h"
-#include "qgslogger.h"
 
 #if ((defined(linux) || defined(__linux__)) && !defined(ANDROID)) || defined(__FreeBSD__)
-#include <unistd.h>
+#include <errno.h>
 #include <execinfo.h>
 #include <signal.h>
 #include <sys/wait.h>
-#include <errno.h>
+#include <unistd.h>
 #endif
 
 /** print usage text

@@ -12,12 +12,12 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsgetrequesthandler.h"
-#include "qgslogger.h"
-#include "qgsremotedatasourcebuilder.h"
 #include <QStringList>
 #include <QUrl>
 #include <stdlib.h>
+#include "qgsgetrequesthandler.h"
+#include "qgslogger.h"
+#include "qgsremotedatasourcebuilder.h"
 
 QgsGetRequestHandler::QgsGetRequestHandler()
     : QgsHttpRequestHandler()

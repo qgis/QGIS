@@ -17,13 +17,13 @@
 #ifndef qgsmessagebaritem_H
 #define qgsmessagebaritem_H
 
-#include <qgsmessagebaritem.h>
 #include <qgsmessagebar.h>
+#include <qgsmessagebaritem.h>
 
-#include <QWidget>
+#include <QHBoxLayout>
 #include <QIcon>
 #include <QTextEdit>
-#include <QHBoxLayout>
+#include <QWidget>
 
 
 class GUI_EXPORT QgsMessageBarItem : public QWidget

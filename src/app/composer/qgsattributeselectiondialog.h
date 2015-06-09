@@ -18,11 +18,11 @@
 #ifndef QGSATTRIBUTESELECTIONDIALOG_H
 #define QGSATTRIBUTESELECTIONDIALOG_H
 
+#include "ui_qgsattributeselectiondialogbase.h"
 #include <QDialog>
+#include <QItemDelegate>
 #include <QMap>
 #include <QSet>
-#include <QItemDelegate>
-#include "ui_qgsattributeselectiondialogbase.h"
 
 class QGridLayout;
 class QgsVectorLayer;

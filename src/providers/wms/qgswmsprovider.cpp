@@ -28,45 +28,45 @@
 
 #include <typeinfo>
 
-#include "qgslogger.h"
-#include "qgswmsprovider.h"
-#include "qgswmsconnection.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdatasourceuri.h"
 #include "qgsfeaturestore.h"
 #include "qgsgeometry.h"
+#include "qgsgml.h"
+#include "qgsgmlschema.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsmessageoutput.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsnetworkreplyparser.h"
 #include "qgsrasteridentifyresult.h"
 #include "qgsrasterlayer.h"
 #include "qgsrectangle.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsmessageoutput.h"
-#include "qgsmessagelog.h"
-#include "qgsnetworkaccessmanager.h"
-#include "qgsnetworkreplyparser.h"
-#include "qgsgml.h"
-#include "qgsgmlschema.h"
 #include "qgswmscapabilities.h"
+#include "qgswmsconnection.h"
+#include "qgswmsprovider.h"
 
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QNetworkProxy>
 #include <QNetworkDiskCache>
+#include <QNetworkProxy>
+#include <QNetworkReply>
+#include <QNetworkRequest>
 
 #include <QtXmlPatterns/QXmlSchema>
 #include <QtXmlPatterns/QXmlSchemaValidator>
 
-#include <QUrl>
+#include <QCoreApplication>
+#include <QEventLoop>
 #include <QIcon>
 #include <QImage>
 #include <QImageReader>
 #include <QPainter>
 #include <QSet>
 #include <QSettings>
-#include <QEventLoop>
-#include <QCoreApplication>
 #include <QTextCodec>
-#include <QTime>
 #include <QThread>
+#include <QTime>
+#include <QUrl>
 
 #include <QScriptEngine>
 #include <QScriptValue>
@@ -75,8 +75,8 @@
 #include <ogr_api.h>
 
 #ifdef QGISDEBUG
-#include <QFile>
 #include <QDir>
+#include <QFile>
 #endif
 
 #define ERR(message) QGS_ERROR_MESSAGE(message,"WMS provider")

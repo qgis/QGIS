@@ -15,14 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscomposershapewidget.h"
-#include "qgscomposershape.h"
+#include <QColorDialog>
 #include "qgscomposeritemwidget.h"
+#include "qgscomposershape.h"
+#include "qgscomposershapewidget.h"
 #include "qgscomposition.h"
 #include "qgsstylev2.h"
-#include "qgssymbolv2selectordialog.h"
 #include "qgssymbollayerv2utils.h"
-#include <QColorDialog>
+#include "qgssymbolv2selectordialog.h"
 
 QgsComposerShapeWidget::QgsComposerShapeWidget( QgsComposerShape* composerShape ): QgsComposerItemBaseWidget( 0, composerShape ), mComposerShape( composerShape )
 {

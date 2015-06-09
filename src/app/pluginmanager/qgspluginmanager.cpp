@@ -17,32 +17,32 @@
 
 #include <math.h>
 
+#include <QActionGroup>
 #include <QApplication>
+#include <QDesktopServices>
 #include <QFileDialog>
+#include <QLibrary>
 #include <QLineEdit>
 #include <QMessageBox>
-#include <QLibrary>
-#include <QSettings>
-#include <QStandardItem>
 #include <QPushButton>
 #include <QRegExp>
+#include <QSettings>
 #include <QSortFilterProxyModel>
-#include <QActionGroup>
+#include <QStandardItem>
 #include <QTextStream>
 #include <QTimer>
-#include <QDesktopServices>
 
-#include "qgis.h"
 #include "qgisapp.h"
+#include "qgis.h"
+#include "qgisplugin.h"
 #include "qgsapplication.h"
 #include "qgsconfig.h"
-#include "qgsproviderregistry.h"
-#include "qgspluginregistry.h"
-#include "qgspythonrunner.h"
-#include "qgspluginmanager.h"
-#include "qgisplugin.h"
 #include "qgslogger.h"
 #include "qgspluginitemdelegate.h"
+#include "qgspluginmanager.h"
+#include "qgspluginregistry.h"
+#include "qgsproviderregistry.h"
+#include "qgspythonrunner.h"
 
 // Do we need this?
 // #define TESTLIB

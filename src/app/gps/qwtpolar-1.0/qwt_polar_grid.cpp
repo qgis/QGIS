@@ -6,18 +6,18 @@
  * modify it under the terms of the Qwt License, Version 1.0
  *****************************************************************************/
 
-#include "qwt_polar_grid.h"
-#include <qwt_painter.h>
-#include <qwt_text.h>
-#include <qwt_clipper.h>
-#include <qwt_scale_map.h>
-#include <qwt_scale_engine.h>
-#include <qwt_scale_div.h>
-#include <qwt_scale_draw.h>
-#include <qwt_round_scale_draw.h>
+#include <float.h>
 #include <qpainter.h>
 #include <qpen.h>
-#include <float.h>
+#include <qwt_clipper.h>
+#include <qwt_painter.h>
+#include <qwt_round_scale_draw.h>
+#include <qwt_scale_div.h>
+#include <qwt_scale_draw.h>
+#include <qwt_scale_engine.h>
+#include <qwt_scale_map.h>
+#include <qwt_text.h>
+#include "qwt_polar_grid.h"
 
 static inline bool isClose( double value1, double value2 )
 {

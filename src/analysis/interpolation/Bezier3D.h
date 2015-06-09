@@ -17,10 +17,10 @@
 #ifndef BEZIER3D_H
 #define BEZIER3D_H
 
-#include "ParametricLine.h"
-#include "Vector3D.h"
 #include "MathUtils.h"
+#include "ParametricLine.h"
 #include "qgslogger.h"
+#include "Vector3D.h"
 
 /**Class Bezier3D represents a bezier curve, represented by control points. Parameter t is running from 0 to 1. The class is capable to calculate the curve point and the first two derivatives belonging to t.*/
 class ANALYSIS_EXPORT Bezier3D: public ParametricLine

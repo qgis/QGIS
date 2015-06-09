@@ -16,8 +16,8 @@
 #ifndef QGSTIPFACTORY
 #define QGSTIPFACTORY
 
-#include "qgstip.h"
 #include <QList>
+#include "qgstip.h"
 
 /** \ingroup app
 * \brief A factory class to serve up tips to the user.

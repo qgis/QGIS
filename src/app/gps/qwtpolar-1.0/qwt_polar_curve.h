@@ -9,10 +9,10 @@
 #ifndef QWT_POLAR_CURVE_H
 #define QWT_POLAR_CURVE_H
 
-#include "qwt_polar_global.h"
-#include "qwt_polar_item.h"
 #include <qwt_point_polar.h>
 #include <qwt_series_data.h>
+#include "qwt_polar_global.h"
+#include "qwt_polar_item.h"
 
 class QPainter;
 class QwtSymbol;

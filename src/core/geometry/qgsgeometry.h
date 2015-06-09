@@ -16,9 +16,9 @@ email                : morb at ozemail dot com dot au
 #ifndef QGSGEOMETRY_H
 #define QGSGEOMETRY_H
 
+#include <QDomDocument>
 #include <QString>
 #include <QVector>
-#include <QDomDocument>
 
 #include "qgis.h"
 
@@ -30,9 +30,9 @@ email                : morb at ozemail dot com dot au
 #endif
 
 #include "qgsabstractgeometryv2.h"
-#include "qgspoint.h"
 #include "qgscoordinatetransform.h"
 #include "qgsfeature.h"
+#include "qgspoint.h"
 
 #include <QSet>
 

@@ -15,12 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgridfilewriter.h"
-#include "qgsinterpolator.h"
-#include "qgsvectorlayer.h"
 #include <QFile>
 #include <QFileInfo>
 #include <QProgressDialog>
+#include "qgsgridfilewriter.h"
+#include "qgsinterpolator.h"
+#include "qgsvectorlayer.h"
 
 QgsGridFileWriter::QgsGridFileWriter( QgsInterpolator* i, QString outputPath, QgsRectangle extent, int nCols, int nRows, double cellSizeX, double cellSizeY )
     : mInterpolator( i )

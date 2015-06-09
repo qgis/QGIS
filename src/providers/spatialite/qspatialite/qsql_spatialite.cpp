@@ -42,14 +42,14 @@
 #include "qsql_spatialite.h"
 
 #include <qcoreapplication.h>
-#include <qvariant.h>
+#include <qdebug.h>
 #include <qsqlerror.h>
 #include <qsqlfield.h>
 #include <qsqlindex.h>
 #include <qsqlquery.h>
 #include <qstringlist.h>
+#include <qvariant.h>
 #include <qvector.h>
-#include <qdebug.h>
 
 #if defined Q_OS_WIN
 # include <qt_windows.h>
@@ -57,8 +57,8 @@
 # include <unistd.h>
 #endif
 
-#include <sqlite3.h>
 #include <qgsslconnect.h>
+#include <sqlite3.h>
 
 Q_DECLARE_METATYPE(sqlite3*)
 Q_DECLARE_METATYPE(sqlite3_stmt*)

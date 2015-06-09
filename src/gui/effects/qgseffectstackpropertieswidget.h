@@ -16,10 +16,10 @@
 #ifndef QGSEFFECTSTACKPROPERTIESWIDGET_H
 #define QGSEFFECTSTACKPROPERTIESWIDGET_H
 
-#include "qgsdialog.h"
-#include "effects/qgseffectstack.h"
-#include <QWidget>
 #include <QStandardItemModel>
+#include <QWidget>
+#include "effects/qgseffectstack.h"
+#include "qgsdialog.h"
 
 #include "ui_qgseffectstackpropertieswidgetbase.h"
 

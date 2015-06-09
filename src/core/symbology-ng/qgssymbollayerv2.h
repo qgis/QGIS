@@ -24,15 +24,15 @@
 #define DEFAULT_SCALE_METHOD              QgsSymbolV2::ScaleDiameter
 
 #include <QColor>
+#include <QDomDocument>
+#include <QDomElement>
 #include <QMap>
 #include <QPointF>
 #include <QSet>
-#include <QDomDocument>
-#include <QDomElement>
 
-#include "qgssymbolv2.h"
-#include "qgssymbollayerv2utils.h" // QgsStringMap
 #include "qgsfield.h"
+#include "qgssymbollayerv2utils.h" // QgsStringMap
+#include "qgssymbolv2.h"
 
 class QPainter;
 class QSize;

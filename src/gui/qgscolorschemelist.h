@@ -15,11 +15,11 @@
 #ifndef QGSCOLORSCHEMELIST_H
 #define QGSCOLORSCHEMELIST_H
 
-#include "qgscolorscheme.h"
-#include <QTreeView>
 #include <QAbstractItemModel>
-#include <QItemDelegate>
 #include <QFile>
+#include <QItemDelegate>
+#include <QTreeView>
+#include "qgscolorscheme.h"
 
 class QMimeData;
 

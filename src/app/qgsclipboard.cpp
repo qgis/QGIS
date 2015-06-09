@@ -18,18 +18,18 @@
 #include <fstream>
 
 #include <QApplication>
+#include <QClipboard>
+#include <QMimeData>
 #include <QObject>
+#include <QSettings>
 #include <QString>
 #include <QStringList>
-#include <QClipboard>
-#include <QSettings>
-#include <QMimeData>
 
 #include "qgsclipboard.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
-#include "qgscoordinatereferencesystem.h"
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
 

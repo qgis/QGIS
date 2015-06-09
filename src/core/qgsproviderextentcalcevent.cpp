@@ -16,8 +16,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsproviderextentcalcevent.h"
 #include "qgis.h"
+#include "qgsproviderextentcalcevent.h"
 
 QgsProviderExtentCalcEvent::QgsProviderExtentCalcEvent( QgsRectangle* layerExtent )
     : QEvent( static_cast<QEvent::Type>( QGis::ProviderExtentCalcEvent ) )

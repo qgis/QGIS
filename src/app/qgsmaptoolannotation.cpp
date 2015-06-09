@@ -15,19 +15,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmaptoolannotation.h"
-#include "qgsformannotationdialog.h"
-#include "qgsformannotationitem.h"
-#include "qgshtmlannotationitem.h"
-#include "qgshtmlannotationdialog.h"
-#include "qgslogger.h"
-#include "qgsmapcanvas.h"
-#include "qgstextannotationdialog.h"
-#include "qgstextannotationitem.h"
-#include "qgssvgannotationdialog.h"
-#include "qgssvgannotationitem.h"
 #include <QDialog>
 #include <QMouseEvent>
+#include "qgsformannotationdialog.h"
+#include "qgsformannotationitem.h"
+#include "qgshtmlannotationdialog.h"
+#include "qgshtmlannotationitem.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaptoolannotation.h"
+#include "qgssvgannotationdialog.h"
+#include "qgssvgannotationitem.h"
+#include "qgstextannotationdialog.h"
+#include "qgstextannotationitem.h"
 
 QgsMapToolAnnotation::QgsMapToolAnnotation( QgsMapCanvas* canvas )
     : QgsMapTool( canvas )

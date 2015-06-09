@@ -9,8 +9,8 @@
 #ifndef QWT_POLAR_RENDERER_H
 #define QWT_POLAR_RENDERER_H 1
 
-#include "qwt_polar_global.h"
 #include <qobject.h>
+#include "qwt_polar_global.h"
 
 class QwtPolarPlot;
 class QSizeF;

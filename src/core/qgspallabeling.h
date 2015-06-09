@@ -21,17 +21,17 @@
 #ifndef QGSPALLABELING_H
 #define QGSPALLABELING_H
 
-#include <QString>
+#include <QColor>
 #include <QFont>
 #include <QFontDatabase>
-#include <QColor>
 #include <QHash>
 #include <QList>
 #include <QRectF>
-#include "qgspoint.h"
-#include "qgsmaprenderer.h" // definition of QgsLabelingEngineInterface
+#include <QString>
 #include "qgsdiagramrendererv2.h"
+#include "qgsmaprenderer.h" // definition of QgsLabelingEngineInterface
 #include "qgsmapunitscale.h"
+#include "qgspoint.h"
 
 namespace pal
 {

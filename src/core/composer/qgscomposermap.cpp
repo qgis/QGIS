@@ -15,34 +15,34 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscomposermap.h"
 #include "qgscomposermapgrid.h"
+#include "qgscomposermap.h"
 #include "qgscomposermapoverview.h"
-#include "qgscomposition.h"
 #include "qgscomposerutils.h"
+#include "qgscomposition.h"
+#include "qgsexpression.h"
 #include "qgslogger.h"
-#include "qgsmaprenderer.h"
-#include "qgsmaprenderercustompainterjob.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgsmaprenderercustompainterjob.h"
+#include "qgsmaprenderer.h"
 #include "qgsmaptopixel.h"
+#include "qgspallabeling.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgsrendercontext.h"
 #include "qgsscalecalculator.h"
 #include "qgsvectorlayer.h"
-#include "qgspallabeling.h"
-#include "qgsexpression.h"
 
-#include "qgslabel.h"
 #include "qgslabelattributes.h"
+#include "qgslabel.h"
 #include "qgssymbollayerv2utils.h" //for pointOnLineWithDistance
 
+#include <cmath>
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QPainter>
 #include <QSettings>
-#include <cmath>
 
 QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int width, int height )
     : QgsComposerItem( x, y, width, height, composition )

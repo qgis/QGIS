@@ -13,14 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmaptooltouch.h"
-#include "qgsmapcanvas.h"
-#include "qgscursors.h"
-#include "qgsmaptopixel.h"
 #include <QBitmap>
 #include <QCursor>
-#include <QMouseEvent>
 #include <qgslogger.h>
+#include <QMouseEvent>
+#include "qgscursors.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaptooltouch.h"
+#include "qgsmaptopixel.h"
 
 
 QgsMapToolTouch::QgsMapToolTouch( QgsMapCanvas* canvas )

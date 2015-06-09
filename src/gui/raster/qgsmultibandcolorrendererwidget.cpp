@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmultibandcolorrendererwidget.h"
 #include "qgsmultibandcolorrenderer.h"
+#include "qgsmultibandcolorrendererwidget.h"
 #include "qgsrasterlayer.h"
 
 QgsMultiBandColorRendererWidget::QgsMultiBandColorRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent )

@@ -16,13 +16,13 @@
 #include "qgsvaluerelationwidgetwrapper.h"
 
 #include "qgsfield.h"
+#include "qgsfilterlineedit.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvaluerelationwidgetfactory.h"
 #include "qgsvectorlayer.h"
-#include "qgsfilterlineedit.h"
 
-#include <QStringListModel>
 #include <QCompleter>
+#include <QStringListModel>
 
 bool orderByKeyLessThan( const QgsValueRelationWidgetWrapper::ValueRelationItem& p1
                          , const QgsValueRelationWidgetWrapper::ValueRelationItem& p2 )

@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgseditorwidgetfactory.h"
 #include "qgsdefaultsearchwidgetwrapper.h"
+#include "qgseditorwidgetfactory.h"
 
 #include <QSettings>
 

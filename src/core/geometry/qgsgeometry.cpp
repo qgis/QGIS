@@ -13,28 +13,29 @@ email                : morb at ozemail dot com dot au
  *                                                                         *
  ***************************************************************************/
 
-#include <limits>
+#include <cmath>
 #include <cstdarg>
 #include <cstdio>
-#include <cmath>
+#include <limits>
 
 #include "qgis.h"
-#include "qgsgeometry.h"
+#include "qgsapplication.h"
 #include "qgsgeometryeditutils.h"
+#include "qgsgeometry.h"
 #include "qgsgeometryimport.h"
 #include "qgsgeometryutils.h"
 #include "qgsgeos.h"
-#include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgspoint.h"
 #include "qgsrectangle.h"
 
-#include "qgsmaplayerregistry.h"
-#include "qgsvectorlayer.h"
-#include "qgsproject.h"
 #include "qgsgeometryvalidator.h"
+#include "qgsmaplayerregistry.h"
+#include "qgsproject.h"
+#include "qgsvectorlayer.h"
 
+#include "qgslinestringv2.h"
 #include "qgsmulticurvev2.h"
 #include "qgsmultilinestringv2.h"
 #include "qgsmultipointv2.h"
@@ -42,7 +43,6 @@ email                : morb at ozemail dot com dot au
 #include "qgsmultisurfacev2.h"
 #include "qgspointv2.h"
 #include "qgspolygonv2.h"
-#include "qgslinestringv2.h"
 
 #ifndef Q_WS_WIN
 #include <netinet/in.h>

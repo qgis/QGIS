@@ -15,8 +15,8 @@
 
 #include "qgsslconnect.h"
 
-#include <sqlite3.h>
 #include <spatialite.h>
+#include <sqlite3.h>
 
 #if defined(SPATIALITE_HAS_INIT_EX)
 QHash<sqlite3 *, void *> QgsSLConnect::mSLconns;

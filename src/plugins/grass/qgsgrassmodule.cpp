@@ -13,15 +13,15 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsgrassmodule.h"
+#include "qgsconfig.h"
+#include "qgsgrass.h"
 #include "qgsgrassmapcalc.h"
+#include "qgsgrassmodule.h"
 #include "qgsgrassplugin.h"
+#include "qgsgrassprovider.h"
 #include "qgsgrassselect.h"
 #include "qgsgrasstools.h"
-#include "qgsgrassprovider.h"
 #include "qgsgrassutils.h"
-#include "qgsgrass.h"
-#include "qgsconfig.h"
 
 #include "qgisinterface.h"
 #include "qgsapplication.h"
@@ -37,13 +37,13 @@
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 
-#include <typeinfo>
 #include <QComboBox>
 #include <QDomDocument>
 #include <QFileDialog>
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QSvgRenderer>
+#include <typeinfo>
 
 extern "C"
 {

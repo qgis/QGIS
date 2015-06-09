@@ -16,16 +16,16 @@
 #include "qgspainteffectpropertieswidget.h"
 
 #include <QFile>
-#include <QStandardItem>
 #include <QKeyEvent>
 #include <QMessageBox>
+#include <QStandardItem>
 
-#include "qgspainteffectregistry.h"
-#include "qgspainteffect.h"
-#include "qgspainteffectwidget.h"
-#include "qgseffectstack.h"
 #include "qgsapplication.h"
+#include "qgseffectstack.h"
 #include "qgslogger.h"
+#include "qgspainteffect.h"
+#include "qgspainteffectregistry.h"
+#include "qgspainteffectwidget.h"
 
 static bool _initWidgetFunction( QString name, QgsPaintEffectWidgetFunc f )
 {

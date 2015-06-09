@@ -15,9 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscomposermapitem.h"
-#include "qgscomposermap.h"
 #include <QUuid>
+#include "qgscomposermap.h"
+#include "qgscomposermapitem.h"
 
 QgsComposerMapItem::QgsComposerMapItem( const QString &name, QgsComposerMap *map )
     : QgsComposerObject( map->composition() )

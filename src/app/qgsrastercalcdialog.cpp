@@ -15,12 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsrastercalcdialog.h"
-#include "qgsmaplayerregistry.h"
-#include "qgsrastercalcnode.h"
-#include "qgsrasterlayer.h"
 #include "cpl_string.h"
 #include "gdal.h"
+#include "qgsmaplayerregistry.h"
+#include "qgsrastercalcdialog.h"
+#include "qgsrastercalcnode.h"
+#include "qgsrasterlayer.h"
 
 #include <QFileDialog>
 #include <QSettings>

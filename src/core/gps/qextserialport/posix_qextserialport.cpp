@@ -1,10 +1,10 @@
 
 
 #include <fcntl.h>
+#include <QDebug>
+#include <QMutexLocker>
 #include <stdio.h>
 #include "qextserialport.h"
-#include <QMutexLocker>
-#include <QDebug>
 
 #ifdef __CYGWIN__
 #undef FIONREAD

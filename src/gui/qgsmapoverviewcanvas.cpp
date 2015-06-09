@@ -23,12 +23,12 @@
 #include "qgsmaprenderersequentialjob.h"
 #include "qgsmaptopixel.h"
 
+#include <limits.h>
+#include <QMouseEvent>
 #include <QPainter>
 #include <QPaintEvent>
 #include <QResizeEvent>
-#include <QMouseEvent>
 #include "qgslogger.h"
-#include <limits.h>
 
 //! widget that serves as rectangle showing current extent in overview
 class QgsPanningWidget : public QWidget

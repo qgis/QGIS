@@ -13,10 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgssimplifymethod.h"
-#include "qgslogger.h"
 #include "qgsgeometrysimplifier.h"
+#include "qgslogger.h"
 #include "qgsmaptopixelgeometrysimplifier.h"
+#include "qgssimplifymethod.h"
 
 QgsSimplifyMethod::QgsSimplifyMethod()
     : mMethodType( QgsSimplifyMethod::NoSimplification )

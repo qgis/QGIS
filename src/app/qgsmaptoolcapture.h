@@ -17,12 +17,12 @@
 #define QGSMAPTOOLCAPTURE_H
 
 
+#include "qgsgeometry.h"
 #include "qgsmaptooledit.h"
 #include "qgspoint.h"
-#include "qgsgeometry.h"
 
-#include <QPoint>
 #include <QList>
+#include <QPoint>
 
 class QgsRubberBand;
 class QgsVertexMarker;

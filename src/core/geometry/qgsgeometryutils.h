@@ -16,8 +16,8 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSGEOMETRYUTILS_H
 #define QGSGEOMETRYUTILS_H
 
-#include "qgspointv2.h"
 #include <limits>
+#include "qgspointv2.h"
 
 /**\ingroup core
  * \class QgsGeometryUtils

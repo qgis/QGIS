@@ -17,12 +17,12 @@
  ***************************************************************************/
 
 #include "qgisapp.h"
+#include "qgsaddtaborgroup.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
-#include "qgsaddtaborgroup.h"
 
-#include <QTreeWidgetItem>
 #include <QComboBox>
+#include <QTreeWidgetItem>
 
 QgsAddTabOrGroup::QgsAddTabOrGroup( QgsVectorLayer *lyr, QList < TabPair > tabList, QWidget * parent )
     : QDialog( parent )

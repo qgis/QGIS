@@ -19,13 +19,13 @@
 
 #include "qgsdecorationgrid.h"
 
-#include "qgslogger.h"
+#include "qgisapp.h"
+#include "qgisgui.h"
 #include "qgscontexthelp.h"
+#include "qgslogger.h"
 #include "qgsstylev2.h"
 #include "qgssymbolv2.h"
 #include "qgssymbolv2selectordialog.h"
-#include "qgisapp.h"
-#include "qgisgui.h"
 
 #include <QSettings>
 

@@ -18,9 +18,9 @@
 #ifndef QGSLEGENDMODEL_H
 #define QGSLEGENDMODEL_H
 
+#include <QSet>
 #include <QStandardItemModel>
 #include <QStringList>
-#include <QSet>
 
 class QDomDocument;
 class QDomElement;

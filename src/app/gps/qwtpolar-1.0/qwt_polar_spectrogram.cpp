@@ -6,18 +6,18 @@
  * modify it under the terms of the Qwt License, Version 1.0
  *****************************************************************************/
 
-#include "qwt_polar_spectrogram.h"
+#include <qpainter.h>
+#include <qwt_color_map.h>
+#include <qwt_math.h>
+#include <qwt_raster_data.h>
+#include <qwt_scale_map.h>
 #include "qwt_polar.h"
 #include "qwt_polar_plot.h"
-#include <qwt_color_map.h>
-#include <qwt_scale_map.h>
-#include <qwt_raster_data.h>
-#include <qwt_math.h>
-#include <qpainter.h>
+#include "qwt_polar_spectrogram.h"
 #if QT_VERSION >= 0x040400
-#include <qthread.h>
 #include <qfuture.h>
 #include <qtconcurrentrun.h>
+#include <qthread.h>
 #endif
 
 #if QWT_VERSION < 0x060100

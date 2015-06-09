@@ -18,8 +18,8 @@
 #ifndef QGSMAPTOOLSHOWHIDELABELS_H
 #define QGSMAPTOOLSHOWHIDELABELS_H
 
-#include "qgsmaptoollabel.h"
 #include "qgsfeature.h"
+#include "qgsmaptoollabel.h"
 
 
 /**A map tool for showing or hidding a feature's label*/

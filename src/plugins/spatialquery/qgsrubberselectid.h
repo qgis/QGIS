@@ -19,8 +19,8 @@
 #ifndef QGSRUBBERSELECTID_H
 #define QGSRUBBERSELECTID_H
 
-#include "qgsrubberband.h"
 #include "qgsmapcanvas.h"
+#include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 
 /**

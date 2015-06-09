@@ -16,10 +16,10 @@
 #ifndef QGSFIELD_H
 #define QGSFIELD_H
 
+#include <QSharedDataPointer>
 #include <QString>
 #include <QVariant>
 #include <QVector>
-#include <QSharedDataPointer>
 
 typedef QList<int> QgsAttributeList;
 

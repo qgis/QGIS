@@ -15,8 +15,8 @@
 
 #include "qgswebviewwidgetfactory.h"
 
-#include "qgswebviewwidgetwrapper.h"
 #include "qgswebviewconfigdlg.h"
+#include "qgswebviewwidgetwrapper.h"
 
 QgsWebViewWidgetFactory::QgsWebViewWidgetFactory( const QString& name )
     :  QgsEditorWidgetFactory( name )

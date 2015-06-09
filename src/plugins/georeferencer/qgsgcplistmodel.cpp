@@ -13,12 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QSettings>
+#include "qgis.h"
 #include "qgsgcplist.h"
 #include "qgsgcplistmodel.h"
-#include "qgis.h"
 #include "qgsgeorefdatapoint.h"
 #include "qgsgeoreftransform.h"
-#include <QSettings>
 
 #include <cmath>
 using namespace std;

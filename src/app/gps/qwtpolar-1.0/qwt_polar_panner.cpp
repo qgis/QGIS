@@ -6,11 +6,11 @@
  * modify it under the terms of the Qwt License, Version 1.0
  *****************************************************************************/
 
+#include <qwt_point_polar.h>
+#include <qwt_scale_div.h>
+#include "qwt_polar_canvas.h"
 #include "qwt_polar_panner.h"
 #include "qwt_polar_plot.h"
-#include "qwt_polar_canvas.h"
-#include <qwt_scale_div.h>
-#include <qwt_point_polar.h>
 
 //! Create a plot panner for a polar plot canvas
 QwtPolarPanner::QwtPolarPanner( QwtPolarCanvas *canvas ):

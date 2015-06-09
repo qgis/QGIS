@@ -13,9 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QComboBox>
 #include <QItemDelegate>
 #include <QLineEdit>
-#include <QComboBox>
 #include <QPainter>
 
 #include "qgsattributeeditor.h"

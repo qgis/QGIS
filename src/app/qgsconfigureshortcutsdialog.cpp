@@ -25,8 +25,8 @@
 
 #include <QDomDocument>
 #include <QFileDialog>
-#include <QTextStream>
 #include <QSettings>
+#include <QTextStream>
 
 QgsConfigureShortcutsDialog::QgsConfigureShortcutsDialog( QWidget* parent )
     : QDialog( parent ), mGettingShortcut( false )

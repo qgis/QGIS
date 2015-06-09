@@ -21,26 +21,27 @@
 
 #define WCS_THRESHOLD 200  // time to wait for an answer without emitting dataChanged()
 #include "qgslogger.h"
-#include "qgswcscapabilities.h"
 #include "qgsowsconnection.h"
+#include "qgswcscapabilities.h"
 
 #include <cmath>
 
+#include <qgsmessagelog.h>
+#include <qgsmessageoutput.h>
+#include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdatasourceuri.h"
+#include "qgsnetworkaccessmanager.h"
 #include "qgsrasterlayer.h"
 #include "qgsrectangle.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsnetworkaccessmanager.h"
-#include <qgsmessageoutput.h>
-#include <qgsmessagelog.h>
 
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QNetworkProxy>
 #include <QNetworkDiskCache>
+#include <QNetworkProxy>
+#include <QNetworkReply>
+#include <QNetworkRequest>
 
-#include <QUrl>
+#include <QCoreApplication>
+#include <QEventLoop>
 #include <QIcon>
 #include <QImage>
 #include <QImageReader>
@@ -48,9 +49,8 @@
 #include <QPixmap>
 #include <QSet>
 #include <QSettings>
-#include <QEventLoop>
-#include <QCoreApplication>
 #include <QTime>
+#include <QUrl>
 
 #ifdef _MSC_VER
 #include <float.h>
@@ -58,8 +58,8 @@
 #endif
 
 #ifdef QGISDEBUG
-#include <QFile>
 #include <QDir>
+#include <QFile>
 #endif
 
 QgsWcsCapabilities::QgsWcsCapabilities( QgsDataSourceURI const &theUri )

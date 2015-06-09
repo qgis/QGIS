@@ -15,18 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsrasterformatsaveoptionswidget.h"
-#include "qgslogger.h"
 #include "qgsdialog.h"
-#include "qgsrasterlayer.h"
+#include "qgslogger.h"
 #include "qgsproviderregistry.h"
+#include "qgsrasterformatsaveoptionswidget.h"
+#include "qgsrasterlayer.h"
 
-#include <QSettings>
 #include <QInputDialog>
-#include <QMessageBox>
-#include <QTextEdit>
-#include <QMouseEvent>
 #include <QMenu>
+#include <QMessageBox>
+#include <QMouseEvent>
+#include <QSettings>
+#include <QTextEdit>
 
 
 QMap< QString, QStringList > QgsRasterFormatSaveOptionsWidget::mBuiltinProfiles;

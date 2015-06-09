@@ -16,14 +16,14 @@
 #ifndef QGSWIDGETWRAPPER_H
 #define QGSWIDGETWRAPPER_H
 
-#include <QObject>
 #include <QMap>
+#include <QObject>
 #include <QVariant>
 
 class QgsVectorLayer;
 
-#include "qgseditorwidgetconfig.h"
 #include "qgsattributeeditorcontext.h"
+#include "qgseditorwidgetconfig.h"
 
 /**
  * Manages an editor widget

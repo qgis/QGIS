@@ -14,13 +14,13 @@
  ***************************************************************************/
 #include "qgsoracledataitems.h"
 
-#include "qgsoracletablemodel.h"
-#include "qgsoraclenewconnection.h"
-#include "qgsoraclecolumntypethread.h"
-#include "qgslogger.h"
-#include "qgsdatasourceuri.h"
 #include "qgsapplication.h"
+#include "qgsdatasourceuri.h"
+#include "qgslogger.h"
 #include "qgsmessageoutput.h"
+#include "qgsoraclecolumntypethread.h"
+#include "qgsoraclenewconnection.h"
+#include "qgsoracletablemodel.h"
 
 #include <QMessageBox>
 #include <QProgressDialog>

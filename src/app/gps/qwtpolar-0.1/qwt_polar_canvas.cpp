@@ -6,8 +6,8 @@
  * modify it under the terms of the Qwt License, Version 1.0
  *****************************************************************************/
 
-#include <qpainter.h>
 #include <qevent.h>
+#include <qpainter.h>
 #include <qpixmap.h>
 #if QT_VERSION >= 0x040000
 #ifdef Q_WS_X11

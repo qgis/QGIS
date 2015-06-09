@@ -15,9 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QCoreApplication>
 #include "qgscapabilitiescache.h"
 #include "qgslogger.h"
-#include <QCoreApplication>
 
 QgsCapabilitiesCache::QgsCapabilitiesCache()
 {

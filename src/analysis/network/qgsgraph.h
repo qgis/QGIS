@@ -28,8 +28,8 @@
 
 // QT4 includes
 #include <QList>
-#include <QVector>
 #include <QVariant>
+#include <QVector>
 
 // QGIS includes
 #include "qgspoint.h"

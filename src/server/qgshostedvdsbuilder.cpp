@@ -15,12 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgshostedvdsbuilder.h"
-#include "qgsmslayercache.h"
-#include "qgslogger.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsvectorlayer.h"
 #include <QDomElement>
+#include "qgscoordinatereferencesystem.h"
+#include "qgshostedvdsbuilder.h"
+#include "qgslogger.h"
+#include "qgsmslayercache.h"
+#include "qgsvectorlayer.h"
 
 QgsHostedVDSBuilder::QgsHostedVDSBuilder(): QgsMSLayerBuilder()
 {

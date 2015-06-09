@@ -26,8 +26,8 @@
 #define SESSION_H
 
 // Qt
-#include <QtCore/QStringList>
 #include <QtCore>
+#include <QtCore/QStringList>
 #include <QWidget>
 
 // Konsole

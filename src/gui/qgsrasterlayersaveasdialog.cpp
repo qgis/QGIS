@@ -13,13 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsapplication.h"
-#include "qgslogger.h"
 #include "qgscoordinatetransform.h"
-#include "qgsrasterlayer.h"
-#include "qgsrasterlayersaveasdialog.h"
+#include "qgsgenericprojectionselector.h"
+#include "qgslogger.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterformatsaveoptionswidget.h"
-#include "qgsgenericprojectionselector.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterlayersaveasdialog.h"
 
 #include <QFileDialog>
 #include <QMessageBox>

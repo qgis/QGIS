@@ -16,8 +16,8 @@
 #ifndef QGSSCALEWIDGET_H
 #define QGSSCALEWIDGET_H
 
-#include <QWidget>
 #include <QToolButton>
+#include <QWidget>
 
 
 #include "qgsscalecombobox.h"

@@ -16,8 +16,8 @@
 #ifndef QGSSCALERANGEWIDGETPLUGIN_H
 #define QGSSCALERANGEWIDGETPLUGIN_H
 
-#include <QDesignerExportWidget>
 #include <QDesignerCustomWidgetInterface>
+#include <QDesignerExportWidget>
 
 
 class CUSTOMWIDGETS_EXPORT QgsScaleRangeWidgetPlugin : public QObject, public QDesignerCustomWidgetInterface

@@ -13,18 +13,18 @@ email                : marco.hugentobler at sourcepole dot com
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgeometryeditutils.h"
-#include "qgscurvev2.h"
+#include <limits>
 #include "qgscurvepolygonv2.h"
-#include "qgspolygonv2.h"
-#include "qgsgeometryutils.h"
+#include "qgscurvev2.h"
+#include "qgsgeometryeditutils.h"
 #include "qgsgeometry.h"
+#include "qgsgeometryutils.h"
 #include "qgsgeos.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmultisurfacev2.h"
+#include "qgspolygonv2.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
-#include <limits>
 
 int QgsGeometryEditUtils::addRing( QgsAbstractGeometryV2* geom, QgsCurveV2* ring )
 {

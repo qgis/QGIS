@@ -13,14 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslogger.h"
-#include "qgsmaptool.h"
-#include "qgsmapcanvas.h"
-#include "qgsmaptopixel.h"
-#include "qgsmaprenderer.h"
-#include "qgsrendercontext.h"
-#include <QAction>
 #include <QAbstractButton>
+#include <QAction>
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaprenderer.h"
+#include "qgsmaptool.h"
+#include "qgsmaptopixel.h"
+#include "qgsrendercontext.h"
 
 QgsMapTool::QgsMapTool( QgsMapCanvas* canvas )
     : QObject( canvas )

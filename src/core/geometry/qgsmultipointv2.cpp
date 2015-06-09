@@ -13,9 +13,9 @@ email                : marco.hugentobler at sourcepole dot com
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmultipointv2.h"
 #include "qgsapplication.h"
 #include "qgsgeometryutils.h"
+#include "qgsmultipointv2.h"
 #include "qgspointv2.h"
 #include "qgswkbptr.h"
 

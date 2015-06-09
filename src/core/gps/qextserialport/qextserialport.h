@@ -121,19 +121,19 @@ struct PortSettings
 #include <QIODevice>
 #include <QMutex>
 #ifdef Q_OS_UNIX
-#include <stdio.h>
-#include <termios.h>
 #include <errno.h>
-#include <unistd.h>
-#include <sys/time.h>
+#include <QSocketNotifier>
+#include <stdio.h>
 #include <sys/ioctl.h>
 #include <sys/select.h>
-#include <QSocketNotifier>
+#include <sys/time.h>
+#include <termios.h>
+#include <unistd.h>
 typedef int HANDLE; // unused
 #elif defined (Q_OS_WIN)
-#include <windows.h>
-#include <QThread>
 #include <QReadWriteLock>
+#include <QThread>
+#include <windows.h>
 #endif
 
 /*!

@@ -30,8 +30,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "dl_writer_ascii.h"
 #include "dl_exception.h"
+#include "dl_writer_ascii.h"
 
 
 /**

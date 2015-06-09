@@ -17,10 +17,10 @@
 #ifndef NORMVECDECORATOR_H
 #define NORMVECDECORATOR_H
 
-#include "TriDecorator.h"
-#include <TriangleInterpolator.h>
 #include <MathUtils.h>
+#include <TriangleInterpolator.h>
 #include "qgslogger.h"
+#include "TriDecorator.h"
 class QProgressDialog;
 
 /**Decorator class which adds the functionality of estimating normals at the data points*/

@@ -13,12 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsfiledropedit.h"
 #include <QDropEvent>
 #include <QFileInfo>
+#include <QMimeData>
 #include <QPainter>
 #include <QUrl>
-#include <QMimeData>
+#include "qgsfiledropedit.h"
 
 /*!
   \class QgsFileDropEdit

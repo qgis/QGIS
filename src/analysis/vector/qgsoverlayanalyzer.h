@@ -18,12 +18,12 @@
 #ifndef QGSOVERLAYANALYZERH
 #define QGSOVERLAYANALYZERH
 
-#include "qgsvectorlayer.h"
-#include "qgsfield.h"
-#include "qgsspatialindex.h"
-#include "qgsfeature.h"
-#include "qgsgeometry.h"
 #include "qgsdistancearea.h"
+#include "qgsfeature.h"
+#include "qgsfield.h"
+#include "qgsgeometry.h"
+#include "qgsspatialindex.h"
+#include "qgsvectorlayer.h"
 
 class QgsVectorFileWriter;
 class QProgressDialog;

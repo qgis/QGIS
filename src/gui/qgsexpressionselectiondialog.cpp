@@ -13,9 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsexpressionselectiondialog.h"
 #include "qgsapplication.h"
 #include "qgsexpression.h"
+#include "qgsexpressionselectiondialog.h"
 
 #include <QSettings>
 

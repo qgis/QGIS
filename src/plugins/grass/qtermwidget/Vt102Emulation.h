@@ -29,9 +29,9 @@
 #include <stdio.h>
 
 // Qt
-#include <QtGui/QKeyEvent>
 #include <QtCore/QHash>
 #include <QtCore/QTimer>
+#include <QtGui/QKeyEvent>
 
 // Konsole
 #include "Emulation.h"

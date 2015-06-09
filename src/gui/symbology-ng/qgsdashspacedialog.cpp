@@ -13,9 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsdashspacedialog.h"
-#include "qgsapplication.h"
 #include <QFile>
+#include "qgsapplication.h"
+#include "qgsdashspacedialog.h"
 
 QString iconPath( QString iconFile )
 {

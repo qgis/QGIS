@@ -1,8 +1,8 @@
 #include "qgsosmdownload.h"
 
 #include <QNetworkAccessManager>
-#include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QNetworkRequest>
 
 #include "qgsnetworkaccessmanager.h"
 #include "qgsrectangle.h"

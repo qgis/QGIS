@@ -15,14 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmaptoolrotatelabel.h"
+#include <QMouseEvent>
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsmaptoolrotatelabel.h"
 #include "qgspallabeling.h"
 #include "qgspointrotationitem.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
-#include <QMouseEvent>
 
 #include "qgisapp.h"
 #include "qgsapplication.h"

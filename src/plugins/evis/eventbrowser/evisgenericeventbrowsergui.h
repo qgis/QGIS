@@ -30,13 +30,13 @@
 #include <QDialog>
 #include <QGraphicsPixmapItem>
 
-#include "qgsmaptool.h"
+#include "qgisinterface.h"
 #include "qgsfeature.h"
 #include "qgsmapcanvas.h"
-#include "qgisinterface.h"
 #include "qgsmaprenderer.h"
-#include "qgsvectorlayer.h"
+#include "qgsmaptool.h"
 #include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
 #include "evisconfiguration.h"
 

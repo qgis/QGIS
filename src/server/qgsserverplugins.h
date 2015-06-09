@@ -18,8 +18,8 @@
 #ifndef QGSSERVERPLUGINS_H
 #define QGSSERVERPLUGINS_H
 
-#include "qgsrequesthandler.h"
 #include "qgspythonutils.h"
+#include "qgsrequesthandler.h"
 #include "qgsserverinterface.h"
 
 class SERVER_EXPORT QgsServerPlugins

@@ -20,10 +20,10 @@
 
 #include <QDomElement>
 #include "qgis.h"
-#include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsvectordataprovider.h"
 #include "qgsmaplayer.h"
+#include "qgsrectangle.h"
+#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgswfsfeatureiterator.h"
 

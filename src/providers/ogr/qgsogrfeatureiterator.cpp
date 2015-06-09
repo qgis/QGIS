@@ -14,16 +14,16 @@
  ***************************************************************************/
 #include "qgsogrfeatureiterator.h"
 
-#include "qgsogrprovider.h"
 #include "qgsogrgeometrysimplifier.h"
+#include "qgsogrprovider.h"
 
 #include "qgsapplication.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 
-#include <QTextCodec>
 #include <QFile>
+#include <QTextCodec>
 
 // using from provider:
 // - setRelevantFields(), mRelevantFieldsForNextFeature

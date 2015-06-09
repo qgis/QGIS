@@ -33,21 +33,21 @@
 #include <unistd.h>
 
 // Qt
-#include <QtGui/QApplication>
-#include <QtGui/QClipboard>
 #include <QtCore/QHash>
-#include <QtGui/QKeyEvent>
 #include <QtCore/QRegExp>
 #include <QtCore/QTextStream>
 #include <QtCore/QThread>
+#include <QtGui/QApplication>
+#include <QtGui/QClipboard>
+#include <QtGui/QKeyEvent>
 
 #include <QtCore/QTime>
 
 // Konsole
 #include "KeyboardTranslator.h"
 #include "Screen.h"
-#include "TerminalCharacterDecoder.h"
 #include "ScreenWindow.h"
+#include "TerminalCharacterDecoder.h"
 
 using namespace Konsole;
 

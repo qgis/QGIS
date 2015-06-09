@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsrastercalcnode.h"
 #include <cfloat>
+#include "qgsrastercalcnode.h"
 
 QgsRasterCalcNode::QgsRasterCalcNode()
     : mType( tNumber )

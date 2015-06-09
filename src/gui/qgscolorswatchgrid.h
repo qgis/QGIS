@@ -15,9 +15,9 @@
 #ifndef QGSCOLORSWATCHGRID_H
 #define QGSCOLORSWATCHGRID_H
 
-#include "qgscolorscheme.h"
 #include <QWidget>
 #include <QWidgetAction>
+#include "qgscolorscheme.h"
 
 /** \ingroup gui
  * \class QgsColorSwatchGrid

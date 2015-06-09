@@ -18,15 +18,15 @@
 #ifndef QGSMSSQLPROVIDER_H
 #define QGSMSSQLPROVIDER_H
 
-#include "qgsvectordataprovider.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsvectordataprovider.h"
 #include "qgsvectorlayerimport.h"
 
-#include <QStringList>
 #include <QFile>
+#include <QStringList>
 #include <QtSql/QSqlDatabase>
-#include <QtSql/QSqlQuery>
 #include <QtSql/QSqlError>
+#include <QtSql/QSqlQuery>
 
 class QgsFeature;
 class QgsField;

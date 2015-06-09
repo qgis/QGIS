@@ -32,9 +32,9 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "dl_writer.h"
 #include <fstream>
 #include <string>
+#include "dl_writer.h"
 
 /**
  * Implements functions defined in DL_Writer for writing low

@@ -16,11 +16,11 @@
 #define QGSBROWSERMODEL_H
 
 #include <QAbstractItemModel>
+#include <QFuture>
+#include <QFutureWatcher>
 #include <QIcon>
 #include <QMimeData>
 #include <QMovie>
-#include <QFuture>
-#include <QFutureWatcher>
 
 #include "qgsdataitem.h"
 

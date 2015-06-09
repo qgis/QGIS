@@ -14,10 +14,10 @@
  *                                                                         *
  ***************************************************************************/
 //#include <signal.h>
-#include <stdio.h>
-#include <stdarg.h>
 #include <qmath.h>
 #include <QtGlobal>
+#include <stdarg.h>
+#include <stdio.h>
 
 // If qgsgrassgislibfunctions.h is included on Linux, symbols defined here
 // cannot be found (undefined symbol error) even if they are present in
@@ -33,22 +33,22 @@ extern "C"
 #include "qgsgrassgislib.h"
 
 #include "qgis.h"
-#include "qgslogger.h"
 #include "qgsapplication.h"
+#include "qgsconfig.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdatasourceuri.h"
 #include "qgsgeometry.h"
+#include "qgslogger.h"
 #include "qgsrectangle.h"
-#include "qgsconfig.h"
 
 #include <QByteArray>
 #include <QFileDialog>
+#include <QHash>
 #include <QMessageBox>
 #include <QProcess>
 #include <QSettings>
-#include <QTextStream>
 #include <QTemporaryFile>
-#include <QHash>
+#include <QTextStream>
 
 #include <QTextCodec>
 

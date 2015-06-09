@@ -15,8 +15,8 @@
 
 #include "qgsuniquevaluewidgetfactory.h"
 
-#include "qgsuniquevaluewidgetwrapper.h"
 #include "qgsuniquevaluesconfigdlg.h"
+#include "qgsuniquevaluewidgetwrapper.h"
 
 QgsUniqueValueWidgetFactory::QgsUniqueValueWidgetFactory( const QString& name )
     : QgsEditorWidgetFactory( name )

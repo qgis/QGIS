@@ -26,11 +26,11 @@
 #include "qgspoint.h"
 #include "qgsrectangle.h"
 
-#include <QPair>
 #include <QByteArray>
 #include <QDomElement>
-#include <QStringList>
+#include <QPair>
 #include <QStack>
+#include <QStringList>
 
 class QgsRectangle;
 

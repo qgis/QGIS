@@ -18,9 +18,9 @@
 #ifndef QGSFORMANNOTATIONITEM_H
 #define QGSFORMANNOTATIONITEM_H
 
+#include <QObject>
 #include "qgsannotationitem.h"
 #include "qgsfeature.h"
-#include <QObject>
 
 class QGraphicsProxyWidget;
 

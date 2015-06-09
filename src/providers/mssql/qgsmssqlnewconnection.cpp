@@ -15,16 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QSettings>
-#include <QMessageBox>
 #include <QInputDialog>
+#include <QMessageBox>
+#include <QSettings>
 
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlError>
 
+#include "qgscontexthelp.h"
 #include "qgsmssqlnewconnection.h"
 #include "qgsmssqlprovider.h"
-#include "qgscontexthelp.h"
 
 QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString& connName, Qt::WindowFlags fl )
     : QDialog( parent, fl ), mOriginalConnName( connName )

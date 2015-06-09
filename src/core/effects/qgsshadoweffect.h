@@ -17,10 +17,10 @@
 #ifndef QGSSHADOWEFFECT_H
 #define QGSSHADOWEFFECT_H
 
-#include "qgspainteffect.h"
-#include "qgis.h"
-#include "qgssymbolv2.h"
 #include <QPainter>
+#include "qgis.h"
+#include "qgspainteffect.h"
+#include "qgssymbolv2.h"
 
 /** \ingroup core
  * \class QgsShadowEffect

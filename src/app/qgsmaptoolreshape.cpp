@@ -13,11 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmaptoolreshape.h"
+#include <QMouseEvent>
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaptoolreshape.h"
 #include "qgsvectorlayer.h"
-#include <QMouseEvent>
 
 QgsMapToolReshape::QgsMapToolReshape( QgsMapCanvas* canvas ): QgsMapToolCapture( canvas, QgsMapToolCapture::CaptureLine )
 {

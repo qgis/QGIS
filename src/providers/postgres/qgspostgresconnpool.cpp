@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgspostgresconnpool.h"
 #include "qgspostgresconn.h"
+#include "qgspostgresconnpool.h"
 
 QgsPostgresConnPool QgsPostgresConnPool::sInstance;
 

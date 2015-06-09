@@ -26,15 +26,15 @@
 **/
 #include "evisdatabaseconnectiongui.h"
 
-#include "qgscontexthelp.h"
 #include "qgsapplication.h"
+#include "qgscontexthelp.h"
 
-#include <QMessageBox>
-#include <QTextStream>
 #include <QFileDialog>
+#include <QMessageBox>
 #include <QSettings>
-#include <QtSql/QSqlQuery>
+#include <QTextStream>
 #include <QtSql/QSqlError>
+#include <QtSql/QSqlQuery>
 #include <QtSql/QSqlRecord>
 #include <QtXml/QDomDocument>
 #include <QtXml/QDomElement>

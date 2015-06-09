@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsdelimitedtextfeatureiterator.h"
-#include "qgsdelimitedtextprovider.h"
 #include "qgsdelimitedtextfile.h"
+#include "qgsdelimitedtextprovider.h"
 
 #include "qgsexpression.h"
 #include "qgsgeometry.h"

@@ -15,17 +15,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsrasterpyramidsoptionswidget.h"
-#include "qgslogger.h"
 #include "qgsdialog.h"
+#include "qgslogger.h"
+#include "qgsrasterpyramidsoptionswidget.h"
 
-#include <QSettings>
-#include <QInputDialog>
-#include <QMessageBox>
-#include <QTextEdit>
-#include <QMouseEvent>
-#include <QMenu>
 #include <QCheckBox>
+#include <QInputDialog>
+#include <QMenu>
+#include <QMessageBox>
+#include <QMouseEvent>
+#include <QSettings>
+#include <QTextEdit>
 
 
 QgsRasterPyramidsOptionsWidget::QgsRasterPyramidsOptionsWidget( QWidget* parent, QString provider )

@@ -16,10 +16,10 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QSettings>
 #include <QFileDialog>
-#include <QMessageBox>
 #include <QInputDialog>
+#include <QMessageBox>
+#include <QSettings>
 #include <QTextCodec>
 
 #include "qgslogger.h"
@@ -27,10 +27,10 @@
 #include "qgsvectordataprovider.h"
 
 #include <ogr_api.h>
-#include "qgsproviderregistry.h"
+#include "qgscontexthelp.h"
 #include "qgsnewogrconnection.h"
 #include "qgsogrhelperfunctions.h"
-#include "qgscontexthelp.h"
+#include "qgsproviderregistry.h"
 
 QgsOpenVectorLayerDialog::QgsOpenVectorLayerDialog( QWidget* parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )

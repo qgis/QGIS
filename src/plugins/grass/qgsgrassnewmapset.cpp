@@ -14,9 +14,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgrass.h"
 #include "qgsgrassnewmapset.h"
 #include "qgsgrassplugin.h"
-#include "qgsgrass.h"
 
 #include "qgisinterface.h"
 #include "qgsapplication.h"

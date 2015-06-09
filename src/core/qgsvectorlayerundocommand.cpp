@@ -15,11 +15,11 @@
 
 #include "qgsvectorlayerundocommand.h"
 
-#include "qgsgeometry.h"
 #include "qgsfeature.h"
-#include "qgsvectorlayer.h"
 #include "qgsgeometrycache.h"
+#include "qgsgeometry.h"
 #include "qgsvectorlayereditbuffer.h"
+#include "qgsvectorlayer.h"
 
 #include "qgslogger.h"
 

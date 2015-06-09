@@ -37,18 +37,18 @@
 
 #define _CRT_SECURE_NO_DEPRECATE
 
-#include <cstdarg>
-#include <iostream>
-#include <fstream>
-#include <cstring>
 #include <cfloat>
+#include <cstdarg>
+#include <cstring>
+#include <fstream>
+#include <iostream>
 #include <list>
 //#include <geos/geom/Geometry.h>
 #include <geos_c.h>
 
-#include <pal/pal.h>
 #include <pal/layer.h>
 #include <pal/palexception.h>
+#include <pal/pal.h>
 #include <pal/palstat.h>
 
 #include "linkedlist.hpp"
@@ -58,8 +58,8 @@
 #include "feature.h"
 #include "geomfunction.h"
 #include "labelposition.h"
-#include "problem.h"
 #include "pointset.h"
+#include "problem.h"
 #include "simplemutex.h"
 #include "util.h"
 

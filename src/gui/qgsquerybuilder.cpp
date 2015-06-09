@@ -12,15 +12,15 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsquerybuilder.h"
-#include "qgslogger.h"
 #include <QListView>
 #include <QMessageBox>
-#include <QRegExp>
 #include <QPushButton>
+#include <QRegExp>
 #include <QSettings>
-#include "qgsvectorlayer.h"
+#include "qgslogger.h"
+#include "qgsquerybuilder.h"
 #include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
 // constructor used when the query builder must make its own
 // connection to the database

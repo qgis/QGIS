@@ -15,13 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsmaptopixel.h"
 #include "qgsrasterdataprovider.h"
+#include "qgsrasterprojector.h"
 #include "qgsrasterresamplefilter.h"
 #include "qgsrasterresampler.h"
-#include "qgsrasterprojector.h"
 #include "qgsrastertransparency.h"
 #include "qgsrasterviewport.h"
-#include "qgsmaptopixel.h"
 
 //resamplers
 #include "qgsbilinearrasterresampler.h"

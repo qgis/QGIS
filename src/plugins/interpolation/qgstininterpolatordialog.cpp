@@ -15,10 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstininterpolatordialog.h"
-#include "qgstininterpolator.h"
 #include <QFileDialog>
 #include <QSettings>
+#include "qgstininterpolatordialog.h"
+#include "qgstininterpolator.h"
 
 QgsTINInterpolatorDialog::QgsTINInterpolatorDialog( QWidget* parent, QgisInterface* iface ): QgsInterpolatorDialog( parent, iface )
 {

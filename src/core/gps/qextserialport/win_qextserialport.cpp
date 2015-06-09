@@ -1,7 +1,7 @@
 #include "qwineventnotifier.h"
 
-#include <QMutexLocker>
 #include <QDebug>
+#include <QMutexLocker>
 #include <QRegExp>
 #include "qextserialport.h"
 

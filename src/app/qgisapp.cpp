@@ -24,7 +24,6 @@
 #include <QApplication>
 #include <QBitmap>
 #include <QCheckBox>
-#include <QSpinBox>
 #include <QClipboard>
 #include <QColor>
 #include <QCursor>
@@ -55,27 +54,28 @@
 #include <QRegExp>
 #include <QRegExpValidator>
 #include <QSettings>
+#include <QSpinBox>
 #include <QSplashScreen>
 #include <QStatusBar>
 #include <QStringList>
 #include <QTcpSocket>
 #include <QTextStream>
 #include <QtGlobal>
+#include <QThread>
 #include <QTimer>
 #include <QToolButton>
 #include <QUuid>
 #include <QVBoxLayout>
 #include <QWhatsThis>
-#include <QThread>
 
-#include <qgsnetworkaccessmanager.h>
 #include <qgsapplication.h>
 #include <qgscomposition.h>
+#include <qgsnetworkaccessmanager.h>
 
-#include <QNetworkReply>
-#include <QNetworkProxy>
 #include <QAuthenticator>
 #include <QNetworkDiskCache>
+#include <QNetworkProxy>
+#include <QNetworkReply>
 
 //
 // Mac OS X Includes
@@ -100,13 +100,14 @@
 #include "qgis.h"
 #include "qgisplugin.h"
 #include "qgsabout.h"
+#include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsapplayertreeviewmenuprovider.h"
 #include "qgsapplication.h"
 #include "qgsattributeaction.h"
 #include "qgsattributetabledialog.h"
 #include "qgsbookmarks.h"
+#include "qgsbrightnesscontrastfilter.h"
 #include "qgsbrowserdockwidget.h"
-#include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsclipboard.h"
 #include "qgscomposer.h"
 #include "qgscomposermanager.h"
@@ -118,26 +119,28 @@
 #include "qgscustomization.h"
 #include "qgscustomlayerorderwidget.h"
 #include "qgscustomprojectiondialog.h"
+#include "qgsdataitem.h"
 #include "qgsdatasourceuri.h"
 #include "qgsdatumtransformdialog.h"
-#include "qgsdxfexport.h"
-#include "qgsdxfexportdialog.h"
 #include "qgsdecorationcopyright.h"
+#include "qgsdecorationgrid.h"
 #include "qgsdecorationnortharrow.h"
 #include "qgsdecorationscalebar.h"
-#include "qgsdecorationgrid.h"
+#include "qgsdxfexportdialog.h"
+#include "qgsdxfexport.h"
 #include "qgsencodingfiledialog.h"
-#include "qgserror.h"
 #include "qgserrordialog.h"
+#include "qgserror.h"
 #include "qgsexception.h"
 #include "qgsexpressionselectiondialog.h"
 #include "qgsfeature.h"
-#include "qgsformannotationitem.h"
 #include "qgsfieldcalculator.h"
-#include "qgshtmlannotationitem.h"
+#include "qgsformannotationitem.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgsgpsinformationwidget.h"
 #include "qgsguivectorlayertools.h"
+#include "qgshandlebadlayers.h"
+#include "qgshtmlannotationitem.h"
 #include "qgslabelinggui.h"
 #include "qgslayerdefinition.h"
 #include "qgslayertree.h"
@@ -145,11 +148,12 @@
 #include "qgslayertreemodel.h"
 #include "qgslayertreeregistrybridge.h"
 #include "qgslayertreeutils.h"
-#include "qgslayertreeview.h"
 #include "qgslayertreeviewdefaultactions.h"
+#include "qgslayertreeview.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvassnappingutils.h"
+#include "qgsmaplayeractionregistry.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaplayerstyleguiutils.h"
@@ -158,21 +162,21 @@
 #include "qgsmapsettings.h"
 #include "qgsmaptip.h"
 #include "qgsmergeattributesdialog.h"
-#include "qgsmessageviewer.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
-#include "qgsmimedatautils.h"
 #include "qgsmessagelog.h"
+#include "qgsmessagelogviewer.h"
+#include "qgsmessageviewer.h"
+#include "qgsmimedatautils.h"
 #include "qgsmultibandcolorrenderer.h"
-#include "qgsnewvectorlayerdialog.h"
 #include "qgsnewmemorylayerdialog.h"
+#include "qgsnewvectorlayerdialog.h"
 #include "qgsoptions.h"
 #include "qgspluginlayer.h"
 #include "qgspluginlayerregistry.h"
 #include "qgspluginmanager.h"
 #include "qgspluginregistry.h"
 #include "qgspoint.h"
-#include "qgshandlebadlayers.h"
 #include "qgsproject.h"
 #include "qgsprojectlayergroupdialog.h"
 #include "qgsprojectproperties.h"
@@ -184,10 +188,9 @@
 #include "qgsrasteriterator.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerproperties.h"
-#include "qgsrasternuller.h"
-#include "qgsbrightnesscontrastfilter.h"
-#include "qgsrasterrenderer.h"
 #include "qgsrasterlayersaveasdialog.h"
+#include "qgsrasternuller.h"
+#include "qgsrasterrenderer.h"
 #include "qgsrectangle.h"
 #include "qgsscalecombobox.h"
 #include "qgsscalevisibilitydialog.h"
@@ -206,17 +209,14 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerproperties.h"
 #include "qgsvisibilitypresets.h"
-#include "qgsmessagelogviewer.h"
-#include "qgsdataitem.h"
-#include "qgsmaplayeractionregistry.h"
 
-#include "qgssublayersdialog.h"
 #include "ogr/qgsopenvectorlayerdialog.h"
 #include "ogr/qgsvectorlayersaveasdialog.h"
+#include "qgssublayersdialog.h"
 
 #include "qgsosmdownloaddialog.h"
-#include "qgsosmimportdialog.h"
 #include "qgsosmexportdialog.h"
+#include "qgsosmimportdialog.h"
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
@@ -246,38 +246,38 @@
 #include "qgsmaptooladdfeature.h"
 #include "qgsmaptooladdpart.h"
 #include "qgsmaptooladdring.h"
-#include "qgsmaptoolfillring.h"
 #include "qgsmaptoolannotation.h"
-#include "qgsmaptooldeletering.h"
+#include "qgsmaptoolchangelabelproperties.h"
 #include "qgsmaptooldeletepart.h"
+#include "qgsmaptooldeletering.h"
 #include "qgsmaptoolfeatureaction.h"
+#include "qgsmaptoolfillring.h"
 #include "qgsmaptoolformannotation.h"
 #include "qgsmaptoolhtmlannotation.h"
 #include "qgsmaptoolidentifyaction.h"
 #include "qgsmaptoolmeasureangle.h"
 #include "qgsmaptoolmovefeature.h"
-#include "qgsmaptoolrotatefeature.h"
+#include "qgsmaptoolmovelabel.h"
 #include "qgsmaptooloffsetcurve.h"
 #include "qgsmaptoolpan.h"
-#include "qgsmaptoolselect.h"
-#include "qgsmaptoolselectrectangle.h"
+#include "qgsmaptoolpinlabels.h"
+#include "qgsmaptoolreshape.h"
+#include "qgsmaptoolrotatefeature.h"
+#include "qgsmaptoolrotatelabel.h"
+#include "qgsmaptoolrotatepointsymbols.h"
 #include "qgsmaptoolselectfreehand.h"
+#include "qgsmaptoolselect.h"
 #include "qgsmaptoolselectpolygon.h"
 #include "qgsmaptoolselectradius.h"
-#include "qgsmaptoolsvgannotation.h"
-#include "qgsmaptoolreshape.h"
-#include "qgsmaptoolrotatepointsymbols.h"
+#include "qgsmaptoolselectrectangle.h"
+#include "qgsmaptoolshowhidelabels.h"
+#include "qgsmaptoolsimplify.h"
 #include "qgsmaptoolsplitfeatures.h"
 #include "qgsmaptoolsplitparts.h"
+#include "qgsmaptoolsvgannotation.h"
 #include "qgsmaptooltextannotation.h"
 #include "qgsmaptoolzoom.h"
-#include "qgsmaptoolsimplify.h"
 #include "qgsmeasuretool.h"
-#include "qgsmaptoolpinlabels.h"
-#include "qgsmaptoolshowhidelabels.h"
-#include "qgsmaptoolmovelabel.h"
-#include "qgsmaptoolrotatelabel.h"
-#include "qgsmaptoolchangelabelproperties.h"
 
 #include "nodetool/qgsmaptoolnodetool.h"
 
@@ -311,8 +311,8 @@ extern "C"
 #ifndef Q_OS_WIN
 #include <dlfcn.h>
 #else
-#include <windows.h>
 #include <DbgHelp.h>
+#include <windows.h>
 #endif
 
 #ifdef HAVE_TOUCH

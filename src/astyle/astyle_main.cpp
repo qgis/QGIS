@@ -29,11 +29,11 @@
 #include "astyle.h"
 
 #include <algorithm>
-#include <iostream>
-#include <fstream>
-#include <sstream>
 #include <cstdlib>
 #include <ctime>
+#include <fstream>
+#include <iostream>
+#include <sstream>
 
 // includes for recursive getFileNames() function
 #ifdef _WIN32
@@ -43,12 +43,12 @@
 #include <errno.h>
 #include <sys/stat.h>
 #ifdef __VMS
-#include <unixlib.h>
+#include <lib$routines.h>
 #include <rms.h>
 #include <ssdef.h>
-#include <stsdef.h>
-#include <lib$routines.h>
 #include <starlet.h>
+#include <stsdef.h>
+#include <unixlib.h>
 #endif /* __VMS */
 #endif
 
@@ -66,11 +66,11 @@ jmethodID g_mid;
 
 #ifndef ASTYLE_LIB             // for console build only
 #if defined(_MSC_VER) || defined(__DMC__)
+#include <sys/stat.h>
 #include <sys/utime.h>
-#include <sys/stat.h>
 #else
-#include <utime.h>
 #include <sys/stat.h>
+#include <utime.h>
 #endif                         // end compiler checks
 #endif                         // end ASTYLE_LIB
 

@@ -14,32 +14,32 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QWidget>
 #include <QDomNode>
 #include <QFile>
+#include <QGraphicsEffect>
 #include <QGraphicsLineItem>
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsView>
 #include <QPainter>
 #include <QUuid>
-#include <QGraphicsEffect>
+#include <QWidget>
 
 #include "qgsproject.h"
 
-#include "qgscomposition.h"
-#include "qgscomposeritem.h"
 #include "qgscomposerframe.h"
-#include "qgsdatadefined.h"
-#include "qgscomposerutils.h"
+#include "qgscomposeritem.h"
 #include "qgscomposermodel.h"
+#include "qgscomposerutils.h"
+#include "qgscomposition.h"
+#include "qgsdatadefined.h"
 
 #include <limits>
 #include "qgsapplication.h"
-#include "qgsrectangle.h" //just for debugging
 #include "qgslogger.h"
-#include "qgssymbollayerv2utils.h" //for pointOnLineWithDistance
 #include "qgsmaprenderer.h" //for getCompositionMode
+#include "qgsrectangle.h" //just for debugging
+#include "qgssymbollayerv2utils.h" //for pointOnLineWithDistance
 
 #include <cmath>
 

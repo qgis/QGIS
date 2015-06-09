@@ -15,16 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscomposertablewidget.h"
+#include "qgisgui.h"
 #include "qgsattributeselectiondialog.h"
-#include "qgscomposeritemwidget.h"
 #include "qgscomposerattributetable.h"
-#include "qgscomposertablecolumn.h"
+#include "qgscomposeritemwidget.h"
 #include "qgscomposermap.h"
+#include "qgscomposertablecolumn.h"
+#include "qgscomposertablewidget.h"
+#include "qgsexpressionbuilderdialog.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgisgui.h"
 
 QgsComposerTableWidget::QgsComposerTableWidget( QgsComposerAttributeTable* table ): QgsComposerItemBaseWidget( 0, table ), mComposerTable( table )
 {

@@ -19,13 +19,13 @@
 #include "qgsmaprenderer.h"
 #include "qgsmaptopixel.h"
 #include "qgsrubberband.h"
-#include "qgsvectorlayer.h"
 #include "qgssnappingutils.h"
 #include "qgstolerance.h"
+#include "qgsvectorlayer.h"
 
+#include "qgscursors.h"
 #include "qgsmeasuredialog.h"
 #include "qgsmeasuretool.h"
-#include "qgscursors.h"
 
 #include <QMessageBox>
 #include <QMouseEvent>

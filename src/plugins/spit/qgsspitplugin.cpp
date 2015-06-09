@@ -26,8 +26,8 @@
 
 #include "qgisinterface.h"
 #include "qgsapplication.h"
-#include "qgsspitplugin.h"
 #include "qgsspit.h"
+#include "qgsspitplugin.h"
 
 
 static const QString name_ = QObject::tr( "SPIT" );

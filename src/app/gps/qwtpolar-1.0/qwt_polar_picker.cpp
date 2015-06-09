@@ -6,12 +6,12 @@
  * modify it under the terms of the Qwt License, Version 1.0
  *****************************************************************************/
 
-#include "qwt_polar_picker.h"
-#include "qwt_polar_plot.h"
-#include "qwt_polar_canvas.h"
-#include <qwt_scale_map.h>
 #include <qwt_picker_machine.h>
 #include <qwt_point_polar.h>
+#include <qwt_scale_map.h>
+#include "qwt_polar_canvas.h"
+#include "qwt_polar_picker.h"
+#include "qwt_polar_plot.h"
 
 class QwtPolarPicker::PrivateData
 {

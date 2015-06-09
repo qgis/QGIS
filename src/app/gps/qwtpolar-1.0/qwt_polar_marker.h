@@ -9,10 +9,10 @@
 #ifndef QWT_POLAR_MARKER_H
 #define QWT_POLAR_MARKER_H
 
+#include <qstring.h>
+#include <qwt_point_polar.h>
 #include "qwt_polar_global.h"
 #include "qwt_polar_item.h"
-#include <qwt_point_polar.h>
-#include <qstring.h>
 
 class QRect;
 class QwtText;

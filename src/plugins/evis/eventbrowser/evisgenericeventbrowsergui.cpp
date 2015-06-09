@@ -27,22 +27,22 @@
 #include "evisgenericeventbrowsergui.h"
 
 #include "qgsapplication.h"
-#include "qgsmaprenderer.h"
-#include "qgsmaptopixel.h"
-#include "qgsmapcanvas.h"
+#include "qgsfield.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaprenderer.h"
+#include "qgsmaptopixel.h"
 #include "qgspoint.h"
-#include "qgsfield.h"
 #include "qgsrectangle.h"
 
-#include <QMessageBox>
-#include <QTreeWidgetItem>
+#include <QFileDialog>
 #include <QGraphicsScene>
-#include <QSettings>
+#include <QMessageBox>
 #include <QPainter>
 #include <QProcess>
-#include <QFileDialog>
+#include <QSettings>
+#include <QTreeWidgetItem>
 
 /**
 * Constructor called when browser is launched from the application plugin tool bar

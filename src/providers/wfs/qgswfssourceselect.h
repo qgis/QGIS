@@ -22,8 +22,8 @@
 #include "qgscontexthelp.h"
 
 #include <QItemDelegate>
-#include <QStandardItemModel>
 #include <QSortFilterProxyModel>
+#include <QStandardItemModel>
 
 class QgsGenericProjectionSelector;
 class QgsWFSCapabilities;

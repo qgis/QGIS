@@ -15,9 +15,9 @@
 #ifndef QGSSTATISTICALSUMMARYDOCKWIDGET_H
 #define QGSSTATISTICALSUMMARYDOCKWIDGET_H
 
+#include "ui_qgsstatisticalsummarybase.h"
 #include <QDockWidget>
 #include <QMap>
-#include "ui_qgsstatisticalsummarybase.h"
 
 #include "qgsstatisticalsummary.h"
 

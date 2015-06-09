@@ -15,10 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscomposerattributetablev2.h"
 #include "qgscomposerattributetablemodelv2.h"
-#include "qgscomposertablev2.h"
+#include "qgscomposerattributetablev2.h"
 #include "qgscomposertablecolumn.h"
+#include "qgscomposertablev2.h"
 
 
 //QgsComposerAttributeTableColumnModelV2V2

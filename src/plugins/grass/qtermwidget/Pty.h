@@ -26,10 +26,10 @@
 #define PTY_H
 
 // Qt
+#include <QtCore>
+#include <QtCore/QList>
 #include <QtCore/QStringList>
 #include <QtCore/QVector>
-#include <QtCore/QList>
-#include <QtCore>
 
 #include "k3process.h"
 

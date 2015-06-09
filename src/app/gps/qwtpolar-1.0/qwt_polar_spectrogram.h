@@ -9,9 +9,9 @@
 #ifndef QWT_POLAR_SPECTROGRAM_H
 #define QWT_POLAR_SPECTROGRAM_H
 
+#include <qimage.h>
 #include "qwt_polar_global.h"
 #include "qwt_polar_item.h"
-#include <qimage.h>
 
 class QwtRasterData;
 class QwtColorMap;

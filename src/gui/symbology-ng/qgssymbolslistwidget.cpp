@@ -18,26 +18,26 @@
 
 #include "qgssizescalewidget.h"
 
-#include "qgsstylev2managerdialog.h"
 #include "qgsdatadefined.h"
+#include "qgsstylev2managerdialog.h"
 
-#include "qgssymbolv2.h"
+#include "qgsmarkersymbollayerv2.h"
 #include "qgsstylev2.h"
 #include "qgssymbollayerv2utils.h"
-#include "qgsmarkersymbollayerv2.h"
+#include "qgssymbolv2.h"
 
 #include "qgsapplication.h"
 
+#include <QColorDialog>
+#include <QIcon>
+#include <QInputDialog>
+#include <QMenu>
+#include <QMessageBox>
+#include <QPainter>
+#include <QScopedPointer>
+#include <QStandardItemModel>
 #include <QString>
 #include <QStringList>
-#include <QPainter>
-#include <QIcon>
-#include <QStandardItemModel>
-#include <QColorDialog>
-#include <QInputDialog>
-#include <QMessageBox>
-#include <QMenu>
-#include <QScopedPointer>
 
 
 QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* style, QMenu* menu, QWidget* parent, const QgsVectorLayer * layer )

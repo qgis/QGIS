@@ -14,23 +14,23 @@
  * \brief implementation of QgsLineVectorLayerDirector
  */
 
-#include "qgslinevectorlayerdirector.h"
 #include "qgsgraphbuilderintr.h"
+#include "qgslinevectorlayerdirector.h"
 
 // Qgis includes
-#include <qgsvectorlayer.h>
-#include <qgsvectordataprovider.h>
-#include <qgspoint.h>
-#include <qgsgeometry.h>
 #include <qgsdistancearea.h>
+#include <qgsgeometry.h>
+#include <qgspoint.h>
+#include <qgsvectordataprovider.h>
+#include <qgsvectorlayer.h>
 
 // QT includes
 #include <QString>
 #include <QtAlgorithms>
 
 //standard includes
-#include <limits>
 #include <algorithm>
+#include <limits>
 
 class QgsPointCompare
 {

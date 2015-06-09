@@ -16,8 +16,8 @@
 #ifndef QGSMAPTOOLEMITPOINT_H
 #define QGSMAPTOOLEMITPOINT_H
 
-#include "qgspoint.h"
 #include "qgsmaptool.h"
+#include "qgspoint.h"
 class QgsMapCanvas;
 
 

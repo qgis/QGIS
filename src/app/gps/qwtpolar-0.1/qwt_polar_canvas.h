@@ -10,8 +10,8 @@
 #define QWT_POLAR_CANVAS_H 1
 
 #include <qframe.h>
-#include "qwt_polar_global.h"
 #include "qwt_double_rect.h"
+#include "qwt_polar_global.h"
 
 class QPainter;
 class QwtPolarPlot;
