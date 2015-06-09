@@ -934,6 +934,7 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
         continue;
       }
       memcpy( destBits, srcBits, pixelSize );
+      outputBlock->setIsData( i, j );
     }
   }
 
