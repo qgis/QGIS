@@ -903,7 +903,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
       const QgsGeometry *geom = it->constGeometry();
       if ( mUseWkb )
       {
-        QByteArray bytea = QByteArray(( char* )geom->asWkb(), geom->wkbSize() );
+        QByteArray bytea = QByteArray(( char* )geom->asWkb(), ( int ) geom->wkbSize() );
         query.addBindValue( bytea, QSql::In | QSql::Binary );
       }
       else
@@ -1221,7 +1221,7 @@ bool QgsMssqlProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
     // add geometry param
     if ( mUseWkb )
     {
-      QByteArray bytea = QByteArray(( char* )it->asWkb(), it->wkbSize() );
+      QByteArray bytea = QByteArray(( char* )it->asWkb(), ( int ) it->wkbSize() );
       query.addBindValue( bytea, QSql::In | QSql::Binary );
     }
     else
