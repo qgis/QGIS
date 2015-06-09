@@ -29,6 +29,9 @@ QgsRasterCalcDialog::QgsRasterCalcDialog( QWidget * parent, Qt::WindowFlags f ):
 {
   setupUi( this );
 
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/RasterCalc/geometry" ).toByteArray() );
+
   //add supported output formats
   insertAvailableOutputFormats();
   insertAvailableRasterBands();
@@ -42,6 +45,8 @@ QgsRasterCalcDialog::QgsRasterCalcDialog( QWidget * parent, Qt::WindowFlags f ):
 
 QgsRasterCalcDialog::~QgsRasterCalcDialog()
 {
+  QSettings settings;
+  settings.setValue( "/Windows/RasterCalc/geometry", saveGeometry() );
 }
 
 QString QgsRasterCalcDialog::formulaString() const
