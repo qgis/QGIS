@@ -104,10 +104,10 @@ QgsEffectStackPropertiesWidget::QgsEffectStackPropertiesWidget( QgsEffectStack *
 
   setupUi( this );
 
-  mAddButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.png" ) ) );
-  mRemoveButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.png" ) ) );
-  mUpButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyUp.png" ) ) );
-  mDownButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyDown.png" ) ) );
+  mAddButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );
+  mRemoveButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.svg" ) ) );
+  mUpButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyUp.svg" ) ) );
+  mDownButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyDown.svg" ) ) );
 
   mModel = new QStandardItemModel();
   // Set the effect
