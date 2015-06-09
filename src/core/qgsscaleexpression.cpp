@@ -44,6 +44,8 @@ QgsScaleExpression::QgsScaleExpression( Type type, const QString& baseExpression
 void QgsScaleExpression::init()
 {
   bool ok;
+  mType = Unknown;
+
   if ( !rootNode() )
     return;
 
@@ -52,6 +54,16 @@ void QgsScaleExpression::init()
     return;
 
   QList<Node*> args = f->args()->list();
+
+  // the scale function may be enclosed in a coalesce(expr, 0) to avoid NULL value
+  // to be drawn with the default size
+  if ( "coalesce" == Functions()[f->fnIndex()]->name() )
+  {
+    f = dynamic_cast<const NodeFunction*>( args[0] );
+    if ( !f )
+      return;
+    args = f->args()->list();
+  }
 
   if ( "scale_linear" == Functions()[f->fnIndex()]->name() )
   {
@@ -68,13 +80,11 @@ void QgsScaleExpression::init()
       mType = Area;
     else
     {
-      mType = Unknown;
       return;
     }
   }
   else
   {
-    mType = Unknown;
     return;
   }
 
@@ -106,13 +116,13 @@ QString QgsScaleExpression::createExpression( Type type, const QString & baseExp
   switch ( type )
   {
     case Linear:
-      return QString( "scale_linear(%1,%2,%3,%4,%5)" ).arg( baseExpr, minValueString, maxValueString, minSizeString, maxSizeString );
+      return QString( "coalesce(scale_linear(%1, %2, %3, %4, %5), 0)" ).arg( baseExpr, minValueString, maxValueString, minSizeString, maxSizeString );
 
     case Area:
-      return QString( "scale_exp(%1,%2,%3,%4,%5, 0.5)" ).arg( baseExpr, minValueString, maxValueString, minSizeString, maxSizeString );
+      return QString( "coalesce(scale_exp(%1, %2, %3, %4, %5, 0.5), 0)" ).arg( baseExpr, minValueString, maxValueString, minSizeString, maxSizeString );
 
     case Flannery:
-      return QString( "scale_exp(%1,%2,%3,%4,%5, 0.57)" ).arg( baseExpr, minValueString, maxValueString, minSizeString, maxSizeString );
+      return QString( "coalesce(scale_exp(%1, %2, %3, %4, %5, 0.57), 0)" ).arg( baseExpr, minValueString, maxValueString, minSizeString, maxSizeString );
 
     case Unknown:
       break;
