@@ -50,13 +50,13 @@ email                : morb at ozemail dot com dot au
 #include <winsock.h>
 #endif
 
-struct QgsGeometryData
+struct QgsGeometryPrivate
 {
   QAtomicInt ref;
   QgsAbstractGeometryV2* geometry;
 };
 
-QgsGeometry::QgsGeometry(): d( new QgsGeometryData() ), mWkb( 0 ), mWkbSize( 0 ), mGeos( 0 )
+QgsGeometry::QgsGeometry(): d( new QgsGeometryPrivate() ), mWkb( 0 ), mWkbSize( 0 ), mGeos( 0 )
 {
   d->geometry = 0;
   d->ref = QAtomicInt( 1 );
@@ -75,7 +75,7 @@ QgsGeometry::~QgsGeometry()
   removeWkbGeos();
 }
 
-QgsGeometry::QgsGeometry( QgsAbstractGeometryV2* geom ): d( new QgsGeometryData() ), mWkb( 0 ), mWkbSize( 0 ), mGeos( 0 )
+QgsGeometry::QgsGeometry( QgsAbstractGeometryV2* geom ): d( new QgsGeometryPrivate() ), mWkb( 0 ), mWkbSize( 0 ), mGeos( 0 )
 {
   d->geometry = geom;
   d->ref = QAtomicInt( 1 );
@@ -119,7 +119,7 @@ void QgsGeometry::detach( bool cloneGeom )
     {
       cGeom = d->geometry->clone();
     }
-    d = new QgsGeometryData();
+    d = new QgsGeometryPrivate();
     d->geometry = cGeom;
     d->ref = QAtomicInt( 1 );
   }

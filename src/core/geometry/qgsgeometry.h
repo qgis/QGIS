@@ -59,23 +59,12 @@ typedef QVector<QgsPolygon> QgsMultiPolygon;
 
 class QgsRectangle;
 
-/** \ingroup core
- * A geometry is the spatial representation of a feature.
- * Represents a geometry with input and output in formats specified by
- * (at least) the Open Geospatial Consortium (WKB / Wkt), and containing
- * various functions for geoprocessing of the geometry.
- *
- * The geometry is represented internally by the OGC WKB format or
- * as GEOS geometry. Some functions use WKB for their work, others
- * use GEOS.
- *
- * TODO: migrate completely to GEOS and only support WKB/Wkt import/export.
- *
- * @author Brendan Morley
- */
 class QgsConstWkbPtr;
 
-struct QgsGeometryData;
+struct QgsGeometryPrivate;
+
+/** \ingroup core
+- * A geometry is the spatial representation of a feature. This class is deprecated. Please use QgsAbstractGeometryV2 directly for new code*/
 
 class CORE_EXPORT QgsGeometry
 {
@@ -715,7 +704,7 @@ class CORE_EXPORT QgsGeometry
 
   private:
 
-    QgsGeometryData* d; //implicitely shared data pointer
+    QgsGeometryPrivate* d; //implicitely shared data pointer
     mutable const unsigned char* mWkb; //store wkb pointer for backward compatibility
     mutable int mWkbSize;
     mutable GEOSGeometry* mGeos;
