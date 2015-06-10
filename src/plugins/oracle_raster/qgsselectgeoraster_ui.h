@@ -20,9 +20,9 @@
 #include "ui_qgsselectgeorasterbase.h"
 
 //Qt includes
-#include <QSettings>
-#include <QMessageBox>
 #include <QInputDialog>
+#include <QMessageBox>
+#include <QSettings>
 
 // QGIS Includes
 #include <qgisinterface.h>

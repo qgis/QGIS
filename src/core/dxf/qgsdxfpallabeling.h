@@ -18,8 +18,8 @@
 #ifndef QGSDXFPALLABELING_H
 #define QGSDXFPALLABELING_H
 
-#include "qgspallabeling.h"
 #include "qgsmaprenderer.h"
+#include "qgspallabeling.h"
 #include "qgsrendercontext.h"
 
 class QgsDxfExport;

@@ -16,9 +16,9 @@
 #ifndef QGSEXPRESSIONSELECTIONDIALOG_H
 #define QGSEXPRESSIONSELECTIONDIALOG_H
 
+#include "ui_qgsexpressionselectiondialogbase.h"
 #include <QDialog>
 #include "qgsdistancearea.h"
-#include "ui_qgsexpressionselectiondialogbase.h"
 
 /**
  * This class offers a dialog to change feature selections.

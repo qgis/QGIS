@@ -16,9 +16,9 @@
  ***************************************************************************/
 
 #include "qgsaddattrdialog.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
 #include "qgslogger.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
 #include <QMessageBox>
 

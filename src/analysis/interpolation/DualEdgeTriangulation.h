@@ -17,22 +17,22 @@
 #ifndef DUALEDGETRIANGULATION_H
 #define DUALEDGETRIANGULATION_H
 
-#include "Triangulation.h"
-#include "HalfEdge.h"
-#include <QVector>
-#include <QList>
-#include <QSet>
-#include "MathUtils.h"
-#include "TriangleInterpolator.h"
-#include <QColor>
-#include <QFile>
-#include <QTextStream>
-#include <QMessageBox>
 #include <cfloat>
 #include <QBuffer>
-#include <QStringList>
-#include <QProgressDialog>
+#include <QColor>
 #include <QCursor>
+#include <QFile>
+#include <QList>
+#include <QMessageBox>
+#include <QProgressDialog>
+#include <QSet>
+#include <QStringList>
+#include <QTextStream>
+#include <QVector>
+#include "HalfEdge.h"
+#include "MathUtils.h"
+#include "TriangleInterpolator.h"
+#include "Triangulation.h"
 
 /**DualEdgeTriangulation is an implementation of a triangulation class based on the dual edge data structure*/
 class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation

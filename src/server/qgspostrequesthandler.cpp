@@ -14,10 +14,10 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <stdlib.h>
-#include "qgspostrequesthandler.h"
-#include "qgslogger.h"
 #include <QDomDocument>
+#include <stdlib.h>
+#include "qgslogger.h"
+#include "qgspostrequesthandler.h"
 
 QgsPostRequestHandler::QgsPostRequestHandler()
 {

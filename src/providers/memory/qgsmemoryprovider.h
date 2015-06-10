@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsvectordataprovider.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsvectordataprovider.h"
 
 
 typedef QMap<QgsFeatureId, QgsFeature> QgsFeatureMap;

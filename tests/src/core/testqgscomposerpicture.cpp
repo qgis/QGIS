@@ -15,14 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
-#include "qgscomposition.h"
-#include "qgscompositionchecker.h"
-#include "qgscomposerpicture.h"
-#include <QObject>
-#include <QtTest/QtTest>
 #include <QColor>
+#include <QObject>
 #include <QPainter>
+#include <QtTest/QtTest>
+#include "qgsapplication.h"
+#include "qgscomposerpicture.h"
+#include "qgscompositionchecker.h"
+#include "qgscomposition.h"
 
 class TestQgsComposerPicture : public QObject
 {

@@ -15,14 +15,14 @@
 #ifndef QGSFEATURESTORE_H
 #define QGSFEATURESTORE_H
 
-#include "qgis.h"
-#include "qgsfeature.h"
-#include "qgsfield.h"
-#include "qgslogger.h"
-#include "qgscoordinatereferencesystem.h"
 #include <QList>
 #include <QMetaType>
 #include <QVariant>
+#include "qgis.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsfeature.h"
+#include "qgsfield.h"
+#include "qgslogger.h"
 
 /** \ingroup core
  * Container for features with the same fields and crs.

@@ -20,29 +20,29 @@
 #include <cmath>
 
 #include <QDir>
-#include <QTemporaryFile>
-#include <QDomNode>
 #include <QDomElement>
+#include <QDomNode>
+#include <QFile>
 #include <QFileInfo>
 #include <QRegExp>
-#include <QTextStream>
-#include <QFile>
 #include <QSettings>
+#include <QTemporaryFile>
+#include <QTextStream>
 
+#include "qgis.h" //const vals declared here
 #include "qgsapplication.h"
 #include "qgscrscache.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
-#include "qgis.h" //const vals declared here
 
 #include <sqlite3.h>
 #include <proj_api.h>
 
 //gdal and ogr includes (needed for == operator)
-#include <ogr_srs_api.h>
-#include <cpl_error.h>
 #include <cpl_conv.h>
 #include <cpl_csv.h>
+#include <cpl_error.h>
+#include <ogr_srs_api.h>
 
 CUSTOM_CRS_VALIDATION QgsCoordinateReferenceSystem::mCustomSrsValidation = NULL;
 

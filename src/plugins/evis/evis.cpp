@@ -50,28 +50,28 @@
 //
 // QGIS Specific includes
 //
-#include <qgsapplication.h>
-#include <qgsrasterlayer.h>
-#include <qgisinterface.h>
-#include <qgsmaplayer.h>
 #include <qgisgui.h>
+#include <qgisinterface.h>
+#include <qgsapplication.h>
+#include <qgsmaplayer.h>
+#include <qgsrasterlayer.h>
 
 //the gui subclass
 #include "evisdatabaseconnectiongui.h"
-#include "evisgenericeventbrowsergui.h"
 #include "eviseventidtool.h"
+#include "evisgenericeventbrowsergui.h"
 
 //
 // Qt4 Related Includes
 //
-#include <QMessageBox>
-#include <QToolBar>
-#include <QMenuBar>
-#include <QMenu>
-#include <QLineEdit>
 #include <QAction>
 #include <QApplication>
 #include <QCursor>
+#include <QLineEdit>
+#include <QMenu>
+#include <QMenuBar>
+#include <QMessageBox>
+#include <QToolBar>
 
 static const QString sName = QObject::tr( "eVis" );
 static const QString sDescription = QObject::tr( "An event visualization tool - view images associated with vector features" );

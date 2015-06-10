@@ -16,10 +16,10 @@
 #ifndef QGSVERTEXENTRY_H
 #define QGSVERTEXENTRY_H
 
-#include <qgspoint.h>
-#include <qgsvertexmarker.h>
 #include <qgsmapcanvas.h>
 #include <qgsmaplayer.h>
+#include <qgspoint.h>
+#include <qgsvertexmarker.h>
 
 class QgsVertexEntry
 {

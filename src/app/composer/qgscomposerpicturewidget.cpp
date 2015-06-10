@@ -15,13 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscomposerpicturewidget.h"
-#include "qgsapplication.h"
-#include "qgscomposermap.h"
-#include "qgscomposerpicture.h"
-#include "qgscomposeritemwidget.h"
-#include "qgscomposition.h"
-#include "qgsexpressionbuilderdialog.h"
 #include <QDoubleValidator>
 #include <QFileDialog>
 #include <QFileInfo>
@@ -31,6 +24,13 @@
 #include <QProgressDialog>
 #include <QSettings>
 #include <QSvgRenderer>
+#include "qgsapplication.h"
+#include "qgscomposeritemwidget.h"
+#include "qgscomposermap.h"
+#include "qgscomposerpicture.h"
+#include "qgscomposerpicturewidget.h"
+#include "qgscomposition.h"
+#include "qgsexpressionbuilderdialog.h"
 
 QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture ): QgsComposerItemBaseWidget( 0, picture ), mPicture( picture ), mPreviewsLoaded( false )
 {

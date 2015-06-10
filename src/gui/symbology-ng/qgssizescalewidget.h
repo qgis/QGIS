@@ -17,11 +17,11 @@
 #ifndef QGSSIZESCALEWIDGET_H
 #define QGSSIZESCALEWIDGET_H
 
-#include "qgslayertreegroup.h"
-#include "qgslayertreemodel.h"
-#include "qgsdatadefinedbutton.h"
 #include "ui_widget_size_scale.h"
 #include <QStandardItemModel>
+#include "qgsdatadefinedbutton.h"
+#include "qgslayertreegroup.h"
+#include "qgslayertreemodel.h"
 
 class QgsVectorLayer;
 class QgsMarkerSymbolV2;

@@ -12,37 +12,36 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include <QApplication>
+#include <QDesktopServices>
+#include <QDir>
+#include <QFileInfo>
 #include <QObject>
+#include <QPainter>
 #include <QString>
 #include <QStringList>
-#include <QObject>
-#include <QApplication>
-#include <QFileInfo>
-#include <QDir>
-#include <QDesktopServices>
-#include <QPainter>
+#include <QtTest/QtTest>
 
 #include <iostream>
 //qgis includes...
 // #include <qgisapp.h>
 #include <diagram/qgspiediagram.h>
-#include <qgsdiagramrendererv2.h>
-#include <qgscomposition.h>
-#include <qgscompositionchecker.h>
+#include <qgsapplication.h>
 #include <qgscomposermap.h>
-#include <qgsmaprenderer.h>
+#include <qgscompositionchecker.h>
+#include <qgscomposition.h>
+#include <qgsdiagramrendererv2.h>
 #include <qgsmaplayer.h>
+#include <qgsmaplayerregistry.h>
+#include <qgsmaprenderer.h>
+#include <qgsproviderregistry.h>
+#include <qgsrendererv2.h>
 #include <qgsvectordataprovider.h>
 #include <qgsvectorlayer.h>
-#include <qgsapplication.h>
-#include <qgsproviderregistry.h>
-#include <qgsmaplayerregistry.h>
-#include <qgsrendererv2.h>
 //qgis test includes
-#include "qgsrenderchecker.h"
 #include "qgspallabeling.h"
 #include "qgsproject.h"
+#include "qgsrenderchecker.h"
 
 /** \ingroup UnitTests
  * This is a unit test for the vector layer class.

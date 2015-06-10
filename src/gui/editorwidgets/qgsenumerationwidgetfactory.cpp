@@ -15,10 +15,10 @@
 
 #include "qgsenumerationwidgetfactory.h"
 
-#include "qgsenumerationwidgetwrapper.h"
 #include "qgsdummyconfigdlg.h"
-#include "qgsvectorlayer.h"
+#include "qgsenumerationwidgetwrapper.h"
 #include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
 QgsEnumerationWidgetFactory::QgsEnumerationWidgetFactory( const QString& name )
     :  QgsEditorWidgetFactory( name )

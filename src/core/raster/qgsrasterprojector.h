@@ -23,13 +23,13 @@
 #ifndef QGSRASTERPROJECTOR_H
 #define QGSRASTERPROJECTOR_H
 
-#include <QVector>
 #include <QList>
+#include <QVector>
 
-#include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgsrasterinterface.h"
+#include "qgsrectangle.h"
 
 #include <cmath>
 

@@ -15,15 +15,15 @@
 
 #include "qgsexpression.h"
 
-#include <QtDebug>
-#include <QDomDocument>
-#include <QDate>
-#include <QRegExp>
 #include <QColor>
+#include <QDate>
+#include <QDomDocument>
+#include <QRegExp>
+#include <QtDebug>
 #include <QUuid>
 
-#include <math.h>
 #include <limits>
+#include <math.h>
 
 #include "qgsdistancearea.h"
 #include "qgsfeature.h"
@@ -31,10 +31,10 @@
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsogcutils.h"
-#include "qgsvectorlayer.h"
+#include "qgsstylev2.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgsvectorcolorrampv2.h"
-#include "qgsstylev2.h"
+#include "qgsvectorlayer.h"
 
 // from parser
 extern QgsExpression::Node* parseExpression( const QString& str, QString& parserErrorMsg );

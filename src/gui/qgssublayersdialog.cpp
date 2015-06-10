@@ -17,9 +17,9 @@
 
 #include "qgslogger.h"
 
+#include <QPushButton>
 #include <QSettings>
 #include <QTableWidgetItem>
-#include <QPushButton>
 
 
 QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, QString name,

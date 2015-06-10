@@ -13,18 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslinesymbollayerv2.h"
 #include "qgsdxfexport.h"
-#include "qgssymbollayerv2utils.h"
 #include "qgsexpression.h"
-#include "qgsrendercontext.h"
-#include "qgslogger.h"
-#include "qgsvectorlayer.h"
 #include "qgsgeometrysimplifier.h"
+#include "qgslinesymbollayerv2.h"
+#include "qgslogger.h"
+#include "qgsrendercontext.h"
+#include "qgssymbollayerv2utils.h"
+#include "qgsvectorlayer.h"
 
-#include <QPainter>
 #include <QDomDocument>
 #include <QDomElement>
+#include <QPainter>
 
 #include <cmath>
 

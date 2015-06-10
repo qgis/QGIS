@@ -13,22 +13,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <osgEarth/TileSource>
-#include <osgEarth/Registry>
 #include <osgEarth/ImageUtils>
+#include <osgEarth/Registry>
+#include <osgEarth/TileSource>
 
-#include <osg/Notify>
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
-#include <osgDB/Registry>
 #include <osgDB/ReadFile>
+#include <osgDB/Registry>
 #include <osgDB/WriteFile>
+#include <osg/Notify>
 
 #include "qgsosgearthtilesource.h"
 
+#include <qgisinterface.h>
 #include <qgsapplication.h>
 #include <qgslogger.h>
-#include <qgisinterface.h>
 #include <qgsmapcanvas.h>
 
 #ifdef USE_RENDERER
@@ -37,9 +37,9 @@
 #include <qgsmaprendererjob.h>
 #endif
 
+#include <QDesktopWidget>
 #include <QFile>
 #include <QImage>
-#include <QDesktopWidget>
 
 using namespace osgEarth;
 using namespace osgEarth::Drivers;

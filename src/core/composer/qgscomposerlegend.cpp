@@ -16,21 +16,21 @@
  ***************************************************************************/
 #include <limits>
 
-#include "qgscomposerlegendstyle.h"
+#include <QDomDocument>
+#include <QDomElement>
+#include <QPainter>
 #include "qgscomposerlegend.h"
 #include "qgscomposerlegenditem.h"
+#include "qgscomposerlegendstyle.h"
 #include "qgscomposermap.h"
-#include "qgscomposition.h"
 #include "qgscomposermodel.h"
-#include "qgsmaplayerregistry.h"
+#include "qgscomposition.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslegendrenderer.h"
 #include "qgslogger.h"
+#include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
-#include <QDomDocument>
-#include <QDomElement>
-#include <QPainter>
 
 QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
     : QgsComposerItem( composition )

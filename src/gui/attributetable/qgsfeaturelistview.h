@@ -16,8 +16,8 @@
 #ifndef QGSATTRIBUTELISTVIEW_H
 #define QGSATTRIBUTELISTVIEW_H
 
-#include <QListView>
 #include <qdebug.h>
+#include <QListView>
 
 #include "qgsfeature.h" // For QgsFeatureIds
 

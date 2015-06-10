@@ -23,8 +23,8 @@
 #include "qgspoint.h"
 #include "qgsrectangle.h"
 
-#include <QVector>
 #include <QPolygonF>
+#include <QVector>
 
 /** \ingroup core
  * A class to trim lines and polygons to within a rectangular region.

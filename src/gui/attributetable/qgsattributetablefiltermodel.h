@@ -17,12 +17,12 @@
 #ifndef QGSATTRIBUTETABLEFILTERMODEL_H
 #define QGSATTRIBUTETABLEFILTERMODEL_H
 
-#include <QSortFilterProxyModel>
 #include <QModelIndex>
+#include <QSortFilterProxyModel>
 
-#include "qgsvectorlayer.h" //QgsFeatureIds
 #include "qgsattributetablemodel.h"
 #include "qgsfeaturemodel.h"
+#include "qgsvectorlayer.h" //QgsFeatureIds
 
 class QgsVectorLayerCache;
 class QgsMapCanvas;

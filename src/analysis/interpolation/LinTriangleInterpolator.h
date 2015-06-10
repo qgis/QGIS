@@ -17,8 +17,8 @@
 #ifndef LINTRIANGLEINTERPOLATOR_H
 #define LINTRIANGLEINTERPOLATOR_H
 
-#include "TriangleInterpolator.h"
 #include "DualEdgeTriangulation.h"
+#include "TriangleInterpolator.h"
 
 /**LinTriangleInterpolator is a class which interpolates linearly on a triangulation*/
 class ANALYSIS_EXPORT LinTriangleInterpolator : public TriangleInterpolator

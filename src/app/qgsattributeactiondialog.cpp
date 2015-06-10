@@ -20,18 +20,18 @@ back to QgsVectorLayer.
  *                                                                         *
  ***************************************************************************/
 
+#include "qgisapp.h"
 #include "qgsattributeactiondialog.h"
 #include "qgsattributeaction.h"
 #include "qgsexpressionbuilderdialog.h"
-#include "qgisapp.h"
-#include "qgsproject.h"
 #include "qgsmapcanvas.h"
+#include "qgsproject.h"
 
 #include <QFileDialog>
 #include <QHeaderView>
+#include <QImageWriter>
 #include <QMessageBox>
 #include <QSettings>
-#include <QImageWriter>
 
 QgsAttributeActionDialog::QgsAttributeActionDialog( QgsAttributeAction* actions,
     const QgsFields& fields,

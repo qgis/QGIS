@@ -23,19 +23,19 @@
 #define QGSWCSPROVIDER_H
 
 #include "qgserror.h"
-#include "qgswcscapabilities.h"
-#include "qgsrasterdataprovider.h"
 #include "qgsgdalproviderbase.h"
+#include "qgsrasterdataprovider.h"
 #include "qgsrectangle.h"
+#include "qgswcscapabilities.h"
 
-#include <QString>
-#include <QStringList>
 #include <QDomElement>
 #include <QHash>
 #include <QMap>
 #include <QNetworkRequest>
-#include <QVector>
+#include <QString>
+#include <QStringList>
 #include <QUrl>
+#include <QVector>
 
 class QgsCoordinateTransform;
 class QgsNetworkAccessManager;

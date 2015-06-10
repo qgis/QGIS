@@ -18,8 +18,8 @@
 #ifndef QGSBILINEARRASTERRESAMPLER_H
 #define QGSBILINEARRASTERRESAMPLER_H
 
-#include "qgsrasterresampler.h"
 #include <QColor>
+#include "qgsrasterresampler.h"
 
 /** \ingroup core
     Bilinear Raster Resampler

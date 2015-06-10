@@ -16,15 +16,15 @@
 #ifndef QGSEDITORWIDGETWRAPPER_H
 #define QGSEDITORWIDGETWRAPPER_H
 
-#include <QObject>
 #include <QMap>
+#include <QObject>
 #include <QVariant>
 
 class QgsVectorLayer;
 class QgsField;
 
-#include "qgseditorwidgetconfig.h"
 #include "qgsattributeeditorcontext.h"
+#include "qgseditorwidgetconfig.h"
 #include "qgswidgetwrapper.h"
 
 /**

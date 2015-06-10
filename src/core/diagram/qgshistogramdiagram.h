@@ -18,10 +18,10 @@
 
 #define DIAGRAM_NAME_HISTOGRAM "Histogram"
 
+#include <QBrush>
+#include <QPen>
 #include "qgsdiagram.h"
 #include "qgsfeature.h"
-#include <QPen>
-#include <QBrush>
 
 class QPainter;
 class QPointF;

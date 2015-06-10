@@ -15,20 +15,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgshandlebadlayers.h"
 #include "qgisapp.h"
 #include "qgisgui.h"
 #include "qgsdatasourceuri.h"
+#include "qgshandlebadlayers.h"
 #include "qgslogger.h"
-#include "qgsrasterlayer.h"
-#include "qgsproviderregistry.h"
 #include "qgsmessagebar.h"
+#include "qgsproviderregistry.h"
+#include "qgsrasterlayer.h"
 
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFileDialog>
-#include <QPushButton>
 #include <QMessageBox>
+#include <QPushButton>
 #include <QSettings>
 #include <QUrl>
 

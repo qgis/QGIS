@@ -15,14 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgspalettedrasterrenderer.h"
-#include "qgsrastertransparency.h"
-#include "qgsrasterviewport.h"
 #include <QColor>
 #include <QDomDocument>
 #include <QDomElement>
 #include <QImage>
 #include <QVector>
+#include "qgspalettedrasterrenderer.h"
+#include "qgsrastertransparency.h"
+#include "qgsrasterviewport.h"
 
 QgsPalettedRasterRenderer::QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber,
     QColor* colorArray, int nColors, const QVector<QString> labels ):

@@ -20,12 +20,12 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 
-#include <QToolButton>
 #include <QMouseEvent>
 #include <QPushButton>
-#include <QStyleOptionGroupBox>
-#include <QSettings>
 #include <QScrollArea>
+#include <QSettings>
+#include <QStyleOptionGroupBox>
+#include <QToolButton>
 
 QIcon QgsCollapsibleGroupBoxBasic::mCollapseIcon;
 QIcon QgsCollapsibleGroupBoxBasic::mExpandIcon;

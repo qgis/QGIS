@@ -18,13 +18,13 @@
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
 #include "qgsrubberband.h"
-#include "qgsvectorlayer.h"
 #include "qgstolerance.h"
+#include "qgsvectorlayer.h"
 
 #include <QMouseEvent>
 
-#include <cmath>
 #include <cfloat>
+#include <cmath>
 
 QgsSimplifyDialog::QgsSimplifyDialog( QgsMapToolSimplify* tool, QWidget* parent )
     : QDialog( parent )

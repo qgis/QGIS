@@ -15,17 +15,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsoracleconn.h"
-#include "qgslogger.h"
-#include "qgsdatasourceuri.h"
-#include "qgsmessagelog.h"
 #include "qgscredentials.h"
+#include "qgsdatasourceuri.h"
 #include "qgsfield.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsoracleconn.h"
 #include "qgsoracletablemodel.h"
 
+#include <QDateTime>
 #include <QSettings>
 #include <QSqlError>
-#include <QDateTime>
 
 QMap<QString, QgsOracleConn *> QgsOracleConn::sConnections;
 int QgsOracleConn::snConnections = 0;

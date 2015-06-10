@@ -12,12 +12,12 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsstatisticalsummarydockwidget.h"
-#include "qgsstatisticalsummary.h"
-#include "qgsmaplayerregistry.h"
-#include <QTableWidget>
 #include <QAction>
 #include <QSettings>
+#include <QTableWidget>
+#include "qgsmaplayerregistry.h"
+#include "qgsstatisticalsummarydockwidget.h"
+#include "qgsstatisticalsummary.h"
 
 QList< QgsStatisticalSummary::Statistic > QgsStatisticalSummaryDockWidget::mDisplayStats =
   QList< QgsStatisticalSummary::Statistic > () << QgsStatisticalSummary::Count

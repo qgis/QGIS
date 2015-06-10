@@ -22,16 +22,16 @@
 #include <QMessageBox>
 #include <QSettings>
 
-#include "qgis.h"
-#include "qgsapplication.h"
-#include "qgisinterface.h"
-#include "qgspluginregistry.h"
-#include "qgspluginmetadata.h"
-#include "qgisplugin.h"
-#include "qgspythonutils.h"
 #include "qgisapp.h"
+#include "qgis.h"
+#include "qgisinterface.h"
+#include "qgisplugin.h"
+#include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgspluginmetadata.h"
+#include "qgspluginregistry.h"
+#include "qgspythonutils.h"
 
 /* typedefs for plugins */
 typedef QgisPlugin *create_ui( QgisInterface * qI );

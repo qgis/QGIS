@@ -16,9 +16,9 @@
 #include <QFont>
 
 #include "qgsfieldmodel.h"
+#include "qgslogger.h"
 #include "qgsmaplayermodel.h"
 #include "qgsmaplayerproxymodel.h"
-#include "qgslogger.h"
 
 
 QgsFieldModel::QgsFieldModel( QObject *parent )

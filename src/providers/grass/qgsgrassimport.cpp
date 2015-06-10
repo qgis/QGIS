@@ -29,10 +29,10 @@
 
 extern "C"
 {
-#include <grass/version.h>
 #include <grass/gis.h>
-#include <grass/raster.h>
 #include <grass/imagery.h>
+#include <grass/raster.h>
+#include <grass/version.h>
 }
 
 QgsGrassImport::QgsGrassImport( QgsGrassObject grassObject )

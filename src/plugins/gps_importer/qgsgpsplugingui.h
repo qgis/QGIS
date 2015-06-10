@@ -17,11 +17,11 @@
 #ifndef QGSGPSPLUGINGUI_H
 #define QGSGPSPLUGINGUI_H
 
-#include "qgsvectorlayer.h"
 #include "ui_qgsgpspluginguibase.h"
 #include "qgsbabelformat.h"
-#include "qgsgpsdevice.h"
 #include "qgscontexthelp.h"
+#include "qgsgpsdevice.h"
+#include "qgsvectorlayer.h"
 
 #include <vector>
 

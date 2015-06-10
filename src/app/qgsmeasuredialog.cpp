@@ -17,18 +17,18 @@
 #include "qgsmeasuredialog.h"
 #include "qgsmeasuretool.h"
 
-#include "qgslogger.h"
 #include "qgscontexthelp.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsdistancearea.h"
+#include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaprenderer.h"
 #include "qgsproject.h"
-#include "qgscoordinatereferencesystem.h"
 
 #include <QCloseEvent>
 #include <QLocale>
-#include <QSettings>
 #include <QPushButton>
+#include <QSettings>
 
 
 QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WindowFlags f )

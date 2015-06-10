@@ -21,9 +21,9 @@
 #include <QMutex>
 #include <QSemaphore>
 #include <QStack>
+#include <QThread>
 #include <QTime>
 #include <QTimer>
-#include <QThread>
 
 #include "qgslogger.h"
 

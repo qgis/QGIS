@@ -15,16 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscurvepolygonv2.h"
+#include <QPainter>
+#include <QPainterPath>
 #include "qgsapplication.h"
 #include "qgscircularstringv2.h"
 #include "qgscompoundcurvev2.h"
+#include "qgscurvepolygonv2.h"
 #include "qgsgeometryutils.h"
 #include "qgslinestringv2.h"
 #include "qgspolygonv2.h"
 #include "qgswkbptr.h"
-#include <QPainter>
-#include <QPainterPath>
 
 QgsCurvePolygonV2::QgsCurvePolygonV2(): QgsSurfaceV2(), mExteriorRing( 0 )
 {

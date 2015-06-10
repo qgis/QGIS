@@ -23,12 +23,12 @@
 #include <QSettings>
 #include <QStandardItem>
 #include <QTextStream>
+#include "qgsexpression.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
-#include "qgssearchquerybuilder.h"
-#include "qgsexpression.h"
-#include "qgsvectorlayer.h"
 #include "qgslogger.h"
+#include "qgssearchquerybuilder.h"
+#include "qgsvectorlayer.h"
 
 QgsSearchQueryBuilder::QgsSearchQueryBuilder( QgsVectorLayer* layer,
     QWidget *parent, Qt::WindowFlags fl )

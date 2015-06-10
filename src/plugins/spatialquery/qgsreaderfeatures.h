@@ -18,8 +18,8 @@
 #ifndef READERFEATURES_H
 #define READERFEATURES_H
 
-#include <qgsvectorlayer.h>
 #include <qgsfeature.h>
+#include <qgsvectorlayer.h>
 
 /**
 * \class QgsReaderFeatures

@@ -18,8 +18,8 @@
 #ifndef QGSCIRCULARSTRING_H
 #define QGSCIRCULARSTRING_H
 
-#include "qgscurvev2.h"
 #include <QVector>
+#include "qgscurvev2.h"
 
 /**\ingroup core
  * \class QgsCircularStringV2

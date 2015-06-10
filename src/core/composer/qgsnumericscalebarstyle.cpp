@@ -14,12 +14,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsnumericscalebarstyle.h"
+#include <QList>
+#include <QPainter>
 #include "qgscomposermap.h"
 #include "qgscomposerscalebar.h"
 #include "qgscomposerutils.h"
-#include <QList>
-#include <QPainter>
+#include "qgsnumericscalebarstyle.h"
 
 QgsNumericScaleBarStyle::QgsNumericScaleBarStyle( QgsComposerScaleBar* bar ): QgsScaleBarStyle( bar ), mLastScaleBarWidth( 0 )
 {

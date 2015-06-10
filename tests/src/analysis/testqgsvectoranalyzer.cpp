@@ -15,8 +15,8 @@ Email                : sherman at mrcc dot com
 #include <QtTest/QtTest>
 
 //header for class being tested
-#include <qgsgeometryanalyzer.h>
 #include <qgsapplication.h>
+#include <qgsgeometryanalyzer.h>
 #include <qgsproviderregistry.h>
 
 class TestQgsVectorAnalyzer : public QObject

@@ -16,8 +16,8 @@
 #ifndef QGSFILTERLINEEDITPLUGIN_H
 #define QGSFILTERLINEEDITPLUGIN_H
 
-#include <QDesignerExportWidget>
 #include <QDesignerCustomWidgetInterface>
+#include <QDesignerExportWidget>
 
 
 class CUSTOMWIDGETS_EXPORT QgsFilterLineEditPlugin : public QObject, public QDesignerCustomWidgetInterface

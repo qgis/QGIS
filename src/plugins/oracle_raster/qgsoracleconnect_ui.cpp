@@ -16,8 +16,8 @@
 #include "qgsoracleconnect_ui.h"
 
 // Qt Includes
-#include <QSettings>
 #include <QMessageBox>
+#include <QSettings>
 
 QgsOracleConnect::QgsOracleConnect( QWidget* parent,
                                     const QString& connName,

@@ -15,11 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsserverlogger.h"
 #include <QCoreApplication>
 #include <QFile>
 #include <QTextStream>
 #include <QTime>
+#include "qgsserverlogger.h"
 
 #include <cstdlib>
 

@@ -13,9 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsvectordataprovider.h"
 #include "qgsvectorlayereditpassthrough.h"
 #include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
 
 bool QgsVectorLayerEditPassthrough::addFeature( QgsFeature& f )
 {

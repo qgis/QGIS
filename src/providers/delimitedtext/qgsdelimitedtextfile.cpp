@@ -18,14 +18,14 @@
 #include "qgsdelimitedtextfile.h"
 #include "qgslogger.h"
 
-#include <QtGlobal>
-#include <QFile>
 #include <QDataStream>
-#include <QTextStream>
+#include <QFile>
 #include <QFileSystemWatcher>
-#include <QTextCodec>
-#include <QStringList>
 #include <QRegExp>
+#include <QStringList>
+#include <QTextCodec>
+#include <QTextStream>
+#include <QtGlobal>
 #include <QUrl>
 
 

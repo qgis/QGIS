@@ -21,20 +21,20 @@
 #include <QFileInfo>
 #include <QMenu>
 #include <QMouseEvent>
+#include <QSettings>
+#include <QStyle>
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 #include <QVector>
-#include <QStyle>
-#include <QSettings>
 
-#include "qgscptcityarchive.h"
 #include "qgis.h"
+#include "qgscptcityarchive.h"
 
+#include "qgsapplication.h"
+#include "qgsconfig.h"
 #include "qgsdataprovider.h"
 #include "qgslogger.h"
-#include "qgsconfig.h"
 #include "qgsmimedatautils.h"
-#include "qgsapplication.h"
 
 
 QString QgsCptCityArchive::mDefaultArchiveName;

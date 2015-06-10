@@ -16,11 +16,11 @@ email                : ersts@amnh.org
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslogger.h"
-#include "qgscolorrampshader.h"
-#include "qgsrastershader.h"
 #include <QDomDocument>
 #include <QDomElement>
+#include "qgscolorrampshader.h"
+#include "qgslogger.h"
+#include "qgsrastershader.h"
 
 QgsRasterShader::QgsRasterShader( double theMinimumValue, double theMaximumValue )
 {

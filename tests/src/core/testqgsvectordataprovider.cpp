@@ -12,14 +12,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
-#include <QObject>
+#include <QtTest/QtTest>
 
 #include <qgsapplication.h>
-#include <qgsgeometry.h>
 #include <qgsfeaturerequest.h>
+#include <qgsgeometry.h>
 #include <qgsvectordataprovider.h>
 #include <qgsvectorlayer.h>
 

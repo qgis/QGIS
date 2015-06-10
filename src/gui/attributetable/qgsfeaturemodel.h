@@ -1,8 +1,8 @@
 #ifndef QGSFEATUREMODEL_H
 #define QGSFEATUREMODEL_H
 
-#include "qgsfeature.h" // QgsFeatureId
 #include <QModelIndex>
+#include "qgsfeature.h" // QgsFeatureId
 
 class QgsFeatureModel
 {

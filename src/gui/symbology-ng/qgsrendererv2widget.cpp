@@ -12,16 +12,16 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgscolordialog.h"
+#include "qgsexpressionbuilderdialog.h"
 #include "qgsrendererv2widget.h"
+#include "qgssymbollevelsv2dialog.h"
 #include "qgssymbolv2.h"
 #include "qgsvectorlayer.h"
-#include "qgscolordialog.h"
-#include "qgssymbollevelsv2dialog.h"
-#include "qgsexpressionbuilderdialog.h"
 
-#include <QMessageBox>
 #include <QInputDialog>
 #include <QMenu>
+#include <QMessageBox>
 
 QgsRendererV2Widget::QgsRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style )
     : QWidget(), mLayer( layer ), mStyle( style )

@@ -15,18 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscomposermapgrid.h"
-#include "qgscomposerutils.h"
 #include "qgsclipper.h"
-#include "qgsgeometry.h"
+#include "qgscomposermapgrid.h"
 #include "qgscomposermap.h"
+#include "qgscomposerutils.h"
 #include "qgscomposition.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsgeometry.h"
+#include "qgslogger.h"
 #include "qgsmaprenderer.h"
 #include "qgsrendercontext.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgssymbolv2.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgslogger.h"
 
 #include <QPainter>
 #include <QPen>

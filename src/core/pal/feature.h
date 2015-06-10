@@ -34,17 +34,17 @@
 #ifndef _FEATURE_H
 #define _FEATURE_H
 
-#include <iostream>
-#include <fstream>
 #include <cmath>
+#include <fstream>
+#include <iostream>
 
 #include <geos_c.h>
 
 #include <pal/palgeometry.h>
 
+#include "labelposition.h"
 #include "pointset.h"
 #include "util.h"
-#include "labelposition.h"
 
 namespace pal
 {

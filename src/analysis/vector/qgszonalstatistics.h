@@ -18,8 +18,8 @@
 #ifndef QGSZONALSTATISTICS_H
 #define QGSZONALSTATISTICS_H
 
-#include "qgsrectangle.h"
 #include <QString>
+#include "qgsrectangle.h"
 
 class QgsGeometry;
 class QgsVectorLayer;

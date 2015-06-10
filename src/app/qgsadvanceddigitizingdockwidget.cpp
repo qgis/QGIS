@@ -18,14 +18,14 @@
 #include "math.h"
 
 #include "qgisapp.h"
-#include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsadvanceddigitizingcanvasitem.h"
+#include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsapplication.h"
 #include "qgsexpression.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaptoolcapture.h"
 #include "qgsmaptooladvanceddigitizing.h"
+#include "qgsmaptoolcapture.h"
 #include "qgsmessagebaritem.h"
 #include "qgspoint.h"
 

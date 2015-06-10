@@ -19,16 +19,16 @@
 #include "qgsdxfexport.h"
 #include "qgsdxfpaintdevice.h"
 #include "qgsexpression.h"
-#include "qgsrendercontext.h"
 #include "qgslogger.h"
+#include "qgsrendercontext.h"
 #include "qgssvgcache.h"
 
-#include <QPainter>
-#include <QSvgRenderer>
-#include <QFileInfo>
 #include <QDir>
 #include <QDomDocument>
 #include <QDomElement>
+#include <QFileInfo>
+#include <QPainter>
+#include <QSvgRenderer>
 
 #include <cmath>
 

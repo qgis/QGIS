@@ -15,9 +15,9 @@
 #ifndef QGSDIAGRAM_H
 #define QGSDIAGRAM_H
 
-#include "qgsfeature.h"
-#include <QPen>
 #include <QBrush>
+#include <QPen>
+#include "qgsfeature.h"
 
 class QPainter;
 class QPointF;

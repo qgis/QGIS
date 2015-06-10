@@ -13,9 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgisapp.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmaptooladvanceddigitizing.h"
-#include "qgisapp.h"
 
 
 QgsMapToolAdvancedDigitizing::QgsMapToolAdvancedDigitizing( QgsMapCanvas* canvas )

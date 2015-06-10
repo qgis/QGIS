@@ -18,8 +18,8 @@
 #ifndef QGSDELIMITEDTEXTFILE_H
 #define QGSDELIMITEDTEXTFILE_H
 
-#include <QStringList>
 #include <QRegExp>
+#include <QStringList>
 #include <QUrl>
 
 class QgsFeature;

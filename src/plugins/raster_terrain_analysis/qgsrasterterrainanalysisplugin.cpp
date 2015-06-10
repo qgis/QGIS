@@ -15,24 +15,24 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsrasterterrainanalysisplugin.h"
-#include "qgis.h"
-#include "qgisinterface.h"
-#include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
-#include "qgsaspectfilter.h"
-#include "qgshillshadefilter.h"
-#include "qgsslopefilter.h"
-#include "qgsruggednessfilter.h"
-#include "qgstotalcurvaturefilter.h"
-#include "qgsrelief.h"
-#include "qgsrasterterrainanalysisdialog.h"
 #include <QAction>
 #include <QFileInfo>
 #include <QMainWindow>
 #include <QMenu>
 #include <QMenuBar>
 #include <QProgressDialog>
+#include "qgis.h"
+#include "qgisinterface.h"
+#include "qgsaspectfilter.h"
+#include "qgshillshadefilter.h"
+#include "qgsmaplayer.h"
+#include "qgsmaplayerregistry.h"
+#include "qgsrasterterrainanalysisdialog.h"
+#include "qgsrasterterrainanalysisplugin.h"
+#include "qgsrelief.h"
+#include "qgsruggednessfilter.h"
+#include "qgsslopefilter.h"
+#include "qgstotalcurvaturefilter.h"
 
 static const QString name_ = QObject::tr( "Raster Terrain Analysis plugin" );
 static const QString description_ = QObject::tr( "A plugin for raster based terrain analysis" );

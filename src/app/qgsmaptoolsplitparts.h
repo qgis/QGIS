@@ -16,8 +16,8 @@
 #ifndef QGSMAPTOOLSPLITPARTS_H
 #define QGSMAPTOOLSPLITPARTS_H
 
-#include "qgsmaptoolcapture.h"
 #include "qgsmapmouseevent.h"
+#include "qgsmaptoolcapture.h"
 
 /**A map tool that draws a line and splits the parts cut by the line*/
 class QgsMapToolSplitParts: public QgsMapToolCapture

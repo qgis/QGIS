@@ -19,8 +19,8 @@
 #include "qgslogger.h"
 
 #include <QApplication>
-#include <QtDebug>
 #include <QFile>
+#include <QtDebug>
 #include <QThread>
 
 #include "qgsconfig.h"

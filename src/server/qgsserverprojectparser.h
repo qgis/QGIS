@@ -18,11 +18,11 @@
 #ifndef QGSSERVERPROJECTPARSER_H
 #define QGSSERVERPROJECTPARSER_H
 
-#include "qgsvectorlayer.h"
 #include <QDomElement>
 #include <QHash>
 #include <QMap>
 #include <QString>
+#include "qgsvectorlayer.h"
 
 class QgsCoordinateReferenceSystem;
 class QgsMapLayer;

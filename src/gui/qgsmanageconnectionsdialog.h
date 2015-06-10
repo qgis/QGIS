@@ -18,9 +18,9 @@
 #ifndef QGSMANAGECONNECTIONSDIALOG_H
 #define QGSMANAGECONNECTIONSDIALOG_H
 
+#include "ui_qgsmanageconnectionsdialogbase.h"
 #include <QDialog>
 #include <QDomDocument>
-#include "ui_qgsmanageconnectionsdialogbase.h"
 
 class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsManageConnectionsDialogBase
 {

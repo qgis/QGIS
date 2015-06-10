@@ -16,10 +16,10 @@
 #ifndef QGSSTYLEV2MANAGERDIALOG_H
 #define QGSSTYLEV2MANAGERDIALOG_H
 
-#include <QDialog>
-#include <QStandardItem>
 #include <QAction>
+#include <QDialog>
 #include <QMenu>
+#include <QStandardItem>
 
 #include "ui_qgsstylev2managerdialogbase.h"
 #include "qgscontexthelp.h"

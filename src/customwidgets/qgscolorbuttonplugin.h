@@ -16,8 +16,8 @@
 #ifndef QGSCOLORBUTTONPLUGIN_H
 #define QGSCOLORBUTTONPLUGIN_H
 
-#include <QDesignerExportWidget>
 #include <QDesignerCustomWidgetInterface>
+#include <QDesignerExportWidget>
 
 
 class CUSTOMWIDGETS_EXPORT QgsColorButtonPlugin : public QObject, public QDesignerCustomWidgetInterface

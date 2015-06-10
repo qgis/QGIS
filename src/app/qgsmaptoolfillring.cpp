@@ -14,12 +14,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmaptoolfillring.h"
+#include <qgsapplication.h>
+#include "qgsattributedialog.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaptoolfillring.h"
 #include "qgsvectorlayer.h"
-#include "qgsattributedialog.h"
-#include <qgsapplication.h>
 
 #include <QMouseEvent>
 

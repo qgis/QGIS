@@ -17,18 +17,18 @@
 
 #include "topolTest.h"
 
-#include <qgsvectorlayer.h>
-#include <qgsmaplayer.h>
-#include <qgsmapcanvas.h>
-#include <qgsgeometry.h>
-#include <qgsfeature.h>
-#include <qgsspatialindex.h>
-#include <qgisinterface.h>
-#include <qgslogger.h>
-#include <qgsmessagelog.h>
 #include <cmath>
-#include <set>
 #include <map>
+#include <qgisinterface.h>
+#include <qgsfeature.h>
+#include <qgsgeometry.h>
+#include <qgslogger.h>
+#include <qgsmapcanvas.h>
+#include <qgsmaplayer.h>
+#include <qgsmessagelog.h>
+#include <qgsspatialindex.h>
+#include <qgsvectorlayer.h>
+#include <set>
 
 topolTest::topolTest( QgisInterface* qgsIface )
 {

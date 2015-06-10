@@ -15,12 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsfilterlineedit.h"
 #include "qgsapplication.h"
+#include "qgsfilterlineedit.h"
 
-#include <QToolButton>
-#include <QStyle>
 #include <QFocusEvent>
+#include <QStyle>
+#include <QToolButton>
 
 QgsFilterLineEdit::QgsFilterLineEdit( QWidget* parent, QString nullValue )
     : QLineEdit( parent )

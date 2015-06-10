@@ -16,14 +16,14 @@
 //qgis includes
 #include "qgis.h" //magic numbers here
 #include "qgsapplication.h"
-#include "qgslogger.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgslogger.h"
 
 //qt includes
 #include <QFileInfo>
 #include <QHeaderView>
-#include <QResizeEvent>
 #include <QMessageBox>
+#include <QResizeEvent>
 #include <QSettings>
 
 QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char *name, Qt::WindowFlags fl )

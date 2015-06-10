@@ -15,24 +15,24 @@
 
 #include "qgsrulebasedrendererv2widget.h"
 
-#include "qgsrulebasedrendererv2.h"
-#include "qgssymbollayerv2utils.h"
-#include "qgssymbolv2.h"
-#include "qgsvectorlayer.h"
 #include "qgsapplication.h"
 #include "qgsexpression.h"
-#include "qgssymbolv2selectordialog.h"
 #include "qgslogger.h"
-#include "qstring.h"
+#include "qgsrulebasedrendererv2.h"
 #include "qgssinglesymbolrendererv2.h"
+#include "qgssymbollayerv2utils.h"
+#include "qgssymbolv2.h"
+#include "qgssymbolv2selectordialog.h"
+#include "qgsvectorlayer.h"
+#include "qstring.h"
 
 #include <QKeyEvent>
 #include <QMenu>
+#include <QMessageBox>
 #include <QProgressDialog>
 #include <QSettings>
 #include <QTreeWidgetItem>
 #include <QVBoxLayout>
-#include <QMessageBox>
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
@@ -204,14 +204,14 @@ void QgsRuleBasedRendererV2Widget::currentRuleChanged( const QModelIndex& curren
 }
 
 
-#include "qgscategorizedsymbolrendererv2.h"
-#include "qgscategorizedsymbolrendererv2widget.h"
-#include "qgsgraduatedsymbolrendererv2.h"
-#include "qgsgraduatedsymbolrendererv2widget.h"
-#include "qgsexpressionbuilderdialog.h"
+#include <QClipboard>
 #include <QDialogButtonBox>
 #include <QInputDialog>
-#include <QClipboard>
+#include "qgscategorizedsymbolrendererv2.h"
+#include "qgscategorizedsymbolrendererv2widget.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsgraduatedsymbolrendererv2.h"
+#include "qgsgraduatedsymbolrendererv2widget.h"
 
 void QgsRuleBasedRendererV2Widget::refineRule( int type )
 {

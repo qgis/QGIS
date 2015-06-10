@@ -14,13 +14,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgrassedit.h"
 #include "qgsgrassattributes.h"
+#include "qgsgrassedit.h"
 #include "qgsgrassedittools.h"
-#include "qgsgrassplugin.h"
-#include "qgsgrassutils.h"
-#include "qgsgrassprovider.h"
 #include "qgsgrass.h"
+#include "qgsgrassplugin.h"
+#include "qgsgrassprovider.h"
+#include "qgsgrassutils.h"
 
 #include "qgisinterface.h"
 #include "qgsapplication.h"
@@ -37,13 +37,13 @@
 
 #include <QCloseEvent>
 #include <QColorDialog>
+#include <QDebug>
 #include <QDir>
 #include <QHeaderView>
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <QSettings>
 #include <QToolBar>
-#include <QDebug>
 
 extern "C"
 {

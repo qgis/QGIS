@@ -15,19 +15,19 @@
 
 extern "C"
 {
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <math.h>
 #include <assert.h>
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #ifdef WIN32
 #include <fcntl.h>
 #include <io.h>
 #endif
-#include <grass/version.h>
+#include <grass/display.h>
 #include <grass/gis.h>
 #include <grass/raster.h>
-#include <grass/display.h>
+#include <grass/version.h>
 
 #ifdef _MSC_VER
 #include <float.h>
@@ -40,9 +40,9 @@ extern "C"
 #include <QIODevice>
 #include <QTextStream>
 
-#include "qgsrectangle.h"
-#include "qgsrasterblock.h"
 #include "qgsgrass.h"
+#include "qgsrasterblock.h"
+#include "qgsrectangle.h"
 
 #if GRASS_VERSION_MAJOR >= 7
 #define G_allocate_raster_buf Rast_allocate_buf

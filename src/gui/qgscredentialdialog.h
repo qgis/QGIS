@@ -17,8 +17,8 @@
 #ifndef QGSCREDENTIALDIALOG_H
 #define QGSCREDENTIALDIALOG_H
 
-#include <ui_qgscredentialdialog.h>
 #include <qgisgui.h>
+#include <ui_qgscredentialdialog.h>
 #include "qgscredentials.h"
 
 #include <QString>

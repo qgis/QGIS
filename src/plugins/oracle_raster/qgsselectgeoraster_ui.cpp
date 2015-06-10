@@ -13,15 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsselectgeoraster_ui.h"
 #include "qgsoracleconnect_ui.h"
+#include "qgsselectgeoraster_ui.h"
 
 //GDAL includes
 
+#include <cpl_string.h>
 #include "gdal.h"
 #include "ogr_api.h"
 #include "ogrsf_frmts.h"
-#include <cpl_string.h>
 
 #include "qgsvectorlayer.h"
 

@@ -15,19 +15,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgssldconfigparser.h"
 #include "qgsapplication.h"
 #include "qgsconfigparserutils.h"
-#include "qgslabel.h"
 #include "qgslabelattributes.h"
+#include "qgslabel.h"
 #include "qgslogger.h"
 #include "qgsmapserviceexception.h"
 #include "qgsrasterlayer.h"
 #include "qgsrendererv2.h"
 #include "qgssinglesymbolrendererv2.h"
+#include "qgssldconfigparser.h"
 #include "qgssymbolv2.h"
-#include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 #include <sqlite3.h>
 
 //layer builders
@@ -39,13 +39,13 @@
 
 //for contours
 #include "gdal_alg.h"
-#include "ogr_srs_api.h"
 #include "ogr_api.h"
+#include "ogr_srs_api.h"
 
 //for raster interpolation
-#include "qgsinterpolationlayerbuilder.h"
 #include "qgsgridfilewriter.h"
 #include "qgsidwinterpolator.h"
+#include "qgsinterpolationlayerbuilder.h"
 #include "qgstininterpolator.h"
 
 #include <QTemporaryFile>

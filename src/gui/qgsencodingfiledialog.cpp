@@ -14,15 +14,15 @@
  ***************************************************************************/
 
 #include "qgsencodingfiledialog.h"
-#include "qgsproject.h"
 #include "qgslogger.h"
+#include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 
-#include <QSettings>
 #include <QComboBox>
-#include <QPushButton>
 #include <QLabel>
 #include <QLayout>
+#include <QPushButton>
+#include <QSettings>
 #include <QTextCodec>
 
 QgsEncodingFileDialog::QgsEncodingFileDialog( QWidget * parent,

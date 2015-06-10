@@ -21,9 +21,9 @@
 #include <limits>
 
 #include <expat.h>
+#include <QStack>
 #include <QString>
 #include <QTextStream>
-#include <QStack>
 
 #include "qgsfeature.h"
 #include "qgsrectangle.h"

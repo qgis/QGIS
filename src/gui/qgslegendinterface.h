@@ -17,10 +17,10 @@
 #ifndef QGSLEGENDINTERFACE_H
 #define QGSLEGENDINTERFACE_H
 
+#include <QModelIndex>
 #include <QObject>
 #include <QPair>
 #include <QStringList>
-#include <QModelIndex>
 
 class QgsMapLayer;
 class QTreeWidgetItem;

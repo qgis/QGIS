@@ -15,11 +15,11 @@
 #ifndef QGSGRADUATEDSYMBOLRENDERERV2_H
 #define QGSGRADUATEDSYMBOLRENDERERV2_H
 
-#include "qgssymbolv2.h"
-#include "qgsrendererv2.h"
-#include "qgsexpression.h"
-#include <QScopedPointer>
 #include <QRegExp>
+#include <QScopedPointer>
+#include "qgsexpression.h"
+#include "qgsrendererv2.h"
+#include "qgssymbolv2.h"
 
 class CORE_EXPORT QgsRendererRangeV2
 {

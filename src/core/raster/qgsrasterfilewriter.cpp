@@ -14,17 +14,17 @@
  ***************************************************************************/
 #include <typeinfo>
 
-#include "qgsrasterfilewriter.h"
 #include "qgsproviderregistry.h"
+#include "qgsrasterfilewriter.h"
 #include "qgsrasterinterface.h"
 #include "qgsrasteriterator.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterprojector.h"
 
 #include <QCoreApplication>
+#include <QMessageBox>
 #include <QProgressDialog>
 #include <QTextStream>
-#include <QMessageBox>
 
 QgsRasterFileWriter::QgsRasterFileWriter( const QString& outputUrl ):
     mMode( Raw ), mOutputUrl( outputUrl ), mOutputProviderKey( "gdal" ), mOutputFormat( "GTiff" ),

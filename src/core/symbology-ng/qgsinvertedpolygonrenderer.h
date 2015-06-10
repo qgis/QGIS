@@ -15,13 +15,13 @@
 #ifndef QGSINVERTEDPOLYGONRENDERER_H
 #define QGSINVERTEDPOLYGONRENDERER_H
 
+#include <QScopedPointer>
 #include "qgis.h"
-#include "qgsrendererv2.h"
-#include "qgssymbolv2.h"
 #include "qgsexpression.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
-#include <QScopedPointer>
+#include "qgsrendererv2.h"
+#include "qgssymbolv2.h"
 
 /**
  * QgsInvertedPolygonRenderer is a polygon-only feature renderer used to

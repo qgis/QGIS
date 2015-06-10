@@ -24,9 +24,9 @@ back to QgsVectorLayer.
 #define QGSATTRIBUTEACTIONDIALOG_H
 
 #include "ui_qgsattributeactiondialogbase.h"
+#include <QMap>
 #include "qgsattributeaction.h"
 #include "qgsfield.h"
-#include <QMap>
 
 class QgsAttributeAction;
 

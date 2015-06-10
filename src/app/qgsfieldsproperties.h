@@ -23,8 +23,8 @@
 #include <QWidget>
 
 
-#include "qgsvectorlayer.h"
 #include "ui_qgsfieldspropertiesbase.h"
+#include "qgsvectorlayer.h"
 
 class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPropertiesBase
 {

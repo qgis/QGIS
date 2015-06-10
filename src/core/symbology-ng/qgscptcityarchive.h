@@ -20,9 +20,9 @@
 #include "qgsvectorcolorrampv2.h"
 
 #include <QAbstractItemModel>
+#include <QAction>
 #include <QIcon>
 #include <QMimeData>
-#include <QAction>
 
 class QgsCptCityColorRampV2;
 class QgsCptCityDataItem;

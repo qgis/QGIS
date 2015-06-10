@@ -13,16 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
+#include <QtTest/QtTest>
 
 #include "qgsapplication.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
 #include "qgsgeometry.h"
 #include "qgsmaplayerregistry.h"
 #include "qgssnappingutils.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
 
 struct FilterExcludePoint : public QgsPointLocator::MatchFilter

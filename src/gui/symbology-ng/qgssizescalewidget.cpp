@@ -16,18 +16,18 @@
 
 #include "qgssizescalewidget.h"
 
-#include "qgsvectorlayer.h"
-#include "qgsmaplayerregistry.h"
-#include "qgssymbolv2.h"
+#include "qgsdatadefined.h"
 #include "qgslayertreelayer.h"
 #include "qgslayertreemodellegendnode.h"
-#include "qgssymbollayerv2utils.h"
+#include "qgsmaplayerregistry.h"
 #include "qgsscaleexpression.h"
-#include "qgsdatadefined.h"
+#include "qgssymbollayerv2utils.h"
+#include "qgssymbolv2.h"
+#include "qgsvectorlayer.h"
 
-#include <QMenu>
 #include <QAction>
 #include <QItemDelegate>
+#include <QMenu>
 
 #include <limits>
 

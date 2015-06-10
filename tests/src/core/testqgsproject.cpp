@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
 #include <QObject>
+#include <QtTest/QtTest>
 
 #include <qgsapplication.h>
 #include <qgsproject.h>

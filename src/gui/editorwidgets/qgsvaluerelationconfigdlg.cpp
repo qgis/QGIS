@@ -13,10 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsvaluerelationconfigdlg.h"
-#include "qgsmaplayerregistry.h"
-#include "qgsvectorlayer.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgsmaplayerregistry.h"
+#include "qgsvaluerelationconfigdlg.h"
+#include "qgsvectorlayer.h"
 
 QgsValueRelationConfigDlg::QgsValueRelationConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
     : QgsEditorConfigWidget( vl, fieldIdx, parent )

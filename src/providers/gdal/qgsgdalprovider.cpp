@@ -16,42 +16,42 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslogger.h"
+#include "qgsconfig.h"
 #include "qgsgdalproviderbase.h"
 #include "qgsgdalprovider.h"
-#include "qgsconfig.h"
+#include "qgslogger.h"
 
 #include "qgsapplication.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdataitem.h"
 #include "qgsdatasourceuri.h"
 #include "qgsmessagelog.h"
-#include "qgsrectangle.h"
-#include "qgscoordinatereferencesystem.h"
 #include "qgsrasterbandstats.h"
 #include "qgsrasteridentifyresult.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterpyramid.h"
+#include "qgsrectangle.h"
 
 #include "qgspoint.h"
 
-#include <QImage>
-#include <QSettings>
 #include <QColor>
-#include <QProcess>
-#include <QMessageBox>
-#include <QDir>
-#include <QFileInfo>
-#include <QFile>
-#include <QHash>
-#include <QTime>
-#include <QTextDocument>
 #include <QDebug>
+#include <QDir>
+#include <QFile>
+#include <QFileInfo>
+#include <QHash>
+#include <QImage>
+#include <QMessageBox>
+#include <QProcess>
+#include <QSettings>
+#include <QTextDocument>
+#include <QTime>
 
-#include "gdalwarper.h"
-#include "ogr_spatialref.h"
 #include "cpl_conv.h"
 #include "cpl_string.h"
+#include "gdalwarper.h"
+#include "ogr_spatialref.h"
 
 #define ERRMSG(message) QGS_ERROR_MESSAGE(message,"GDAL provider")
 #define ERR(message) QgsError(message,"GDAL provider")

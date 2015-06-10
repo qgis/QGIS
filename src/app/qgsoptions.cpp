@@ -15,52 +15,52 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsapplication.h"
-#include "qgsdistancearea.h"
-#include "qgsoptions.h"
-#include "qgis.h"
 #include "qgisapp.h"
 #include "qgisappstylesheet.h"
+#include "qgis.h"
+#include "qgsapplication.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsdistancearea.h"
+#include "qgsgenericprojectionselector.h"
 #include "qgshighlight.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaprenderer.h"
-#include "qgsgenericprojectionselector.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgstolerance.h"
-#include "qgsscaleutils.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsoptions.h"
 #include "qgsproject.h"
+#include "qgsscaleutils.h"
+#include "qgstolerance.h"
 
 #include "qgsattributetablefiltermodel.h"
+#include "qgscolordialog.h"
+#include "qgscolorschemeregistry.h"
+#include "qgscomposer.h"
+#include "qgsdialog.h"
 #include "qgsrasterformatsaveoptionswidget.h"
 #include "qgsrasterpyramidsoptionswidget.h"
-#include "qgsdialog.h"
-#include "qgscomposer.h"
-#include "qgscolorschemeregistry.h"
 #include "qgssymbollayerv2utils.h"
-#include "qgscolordialog.h"
 
-#include <QInputDialog>
-#include <QFileDialog>
-#include <QSettings>
 #include <QColorDialog>
+#include <QFileDialog>
+#include <QInputDialog>
 #include <QLocale>
-#include <QProcess>
-#include <QToolBar>
-#include <QScrollBar>
-#include <QSize>
-#include <QStyleFactory>
 #include <QMessageBox>
 #include <QNetworkDiskCache>
+#include <QProcess>
+#include <QScrollBar>
+#include <QSettings>
+#include <QSize>
+#include <QStyleFactory>
+#include <QToolBar>
 
 #include <limits>
 #include <sqlite3.h>
 #include "qgslogger.h"
 
 #define CPL_SUPRESS_CPLUSPLUS
+#include <cpl_conv.h> // for setting gdal options
 #include <gdal.h>
 #include <geos_c.h>
-#include <cpl_conv.h> // for setting gdal options
 
 #include "qgsconfig.h"
 

@@ -15,11 +15,11 @@
  ***************************************************************************/
 #ifndef QGSGRASSPLUGIN_H
 #define QGSGRASSPLUGIN_H
+#include <QObject>
+#include <QPen>
 #include "../qgisplugin.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
-#include <QObject>
-#include <QPen>
 
 
 class QgsGrassTools;

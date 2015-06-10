@@ -15,19 +15,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgpsdetector.h"
 #include "qextserialenumerator.h"
-#include "qgslogger.h"
 #include "qgsgpsconnection.h"
-#include "qgsnmeaconnection.h"
 #include "qgsgpsdconnection.h"
+#include "qgsgpsdetector.h"
+#include "qgslogger.h"
+#include "qgsnmeaconnection.h"
 
 #if defined(HAVE_QT_MOBILITY_LOCATION ) || defined(QT_POSITIONING_LIB)
 #include "qgsqtlocationconnection.h"
 #endif
 
-#include <QStringList>
 #include <QFileInfo>
+#include <QStringList>
 #include <QTimer>
 
 QList< QPair<QString, QString> > QgsGPSDetector::availablePorts()

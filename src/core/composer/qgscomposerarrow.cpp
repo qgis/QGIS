@@ -15,13 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscomposerarrow.h"
-#include "qgscomposition.h"
-#include "qgscomposerutils.h"
-#include "qgssymbollayerv2utils.h"
 #include <QPainter>
 #include <QSvgRenderer>
 #include <QVector2D>
+#include "qgscomposerarrow.h"
+#include "qgscomposerutils.h"
+#include "qgscomposition.h"
+#include "qgssymbollayerv2utils.h"
 
 #include <cmath>
 

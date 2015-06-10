@@ -16,8 +16,8 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSVECTORTOPOLOGY_H
 #define QGSVECTORTOPOLOGY_H
 
-#include "qgspointv2.h"
 #include "qgslinestringv2.h"
+#include "qgspointv2.h"
 
 #include <QList>
 

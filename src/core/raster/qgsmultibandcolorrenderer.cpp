@@ -15,14 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmultibandcolorrenderer.h"
-#include "qgscontrastenhancement.h"
-#include "qgsrastertransparency.h"
-#include "qgsrasterviewport.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QImage>
 #include <QSet>
+#include "qgscontrastenhancement.h"
+#include "qgsmultibandcolorrenderer.h"
+#include "qgsrastertransparency.h"
+#include "qgsrasterviewport.h"
 
 QgsMultiBandColorRenderer::QgsMultiBandColorRenderer( QgsRasterInterface* input, int redBand, int greenBand, int blueBand,
     QgsContrastEnhancement* redEnhancement,

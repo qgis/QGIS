@@ -15,15 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslinestringv2.h"
+#include <limits>
+#include <QDomDocument>
+#include <QPainter>
 #include "qgsapplication.h"
 #include "qgscoordinatetransform.h"
 #include "qgsgeometryutils.h"
+#include "qgslinestringv2.h"
 #include "qgsmaptopixel.h"
 #include "qgswkbptr.h"
-#include <QPainter>
-#include <limits>
-#include <QDomDocument>
 
 QgsLineStringV2::QgsLineStringV2(): QgsCurveV2()
 {

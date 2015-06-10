@@ -12,19 +12,18 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include <QApplication>
+#include <QDesktopServices>
+#include <QDir>
+#include <QFileInfo>
+#include <QImage>
 #include <QObject>
+#include <QPainter>
+#include <QPointF>
 #include <QString>
 #include <QStringList>
-#include <QObject>
-#include <QApplication>
-#include <QFileInfo>
-#include <QDir>
-#include <QDesktopServices>
+#include <QtTest/QtTest>
 #include <QVector>
-#include <QPointF>
-#include <QImage>
-#include <QPainter>
 
 #include <iostream>
 //qgis includes...

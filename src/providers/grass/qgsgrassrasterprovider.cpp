@@ -17,26 +17,26 @@
  ***************************************************************************/
 #include <limits>
 
-#include "qgslogger.h"
-#include "qgsgrass.h"
-#include "qgsrasteridentifyresult.h"
-#include "qgsgrassrasterprovider.h"
 #include "qgsconfig.h"
+#include "qgsgrass.h"
+#include "qgsgrassrasterprovider.h"
+#include "qgslogger.h"
+#include "qgsrasteridentifyresult.h"
 
 #include "qgsapplication.h"
-#include "qgscoordinatetransform.h"
-#include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
 #include "qgsrasterbandstats.h"
+#include "qgsrectangle.h"
 
-#include <QImage>
-#include <QSettings>
 #include <QColor>
-#include <QMessageBox>
 #include <QDir>
-#include <QFileInfo>
 #include <QFile>
+#include <QFileInfo>
 #include <QHash>
+#include <QImage>
+#include <QMessageBox>
+#include <QSettings>
 
 #define ERR(message) QGS_ERROR_MESSAGE(message,"GRASS provider")
 #define ERROR(message) QgsError(message,"GRASS provider")

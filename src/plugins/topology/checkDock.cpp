@@ -20,24 +20,24 @@
 
 #include "checkDock.h"
 
-#include <qgsvectordataprovider.h>
-#include <qgsvectorlayer.h>
+#include <qgisinterface.h>
+#include <qgsfeature.h>
+#include <qgsgeometry.h>
+#include <qgslogger.h>
+#include <qgsmapcanvas.h>
 #include <qgsmaplayer.h>
 #include <qgsmaplayerregistry.h>
-#include <qgsgeometry.h>
-#include <qgsvertexmarker.h>
-#include <qgsfeature.h>
-#include <qgsmapcanvas.h>
-#include <qgsrubberband.h>
-#include <qgsproviderregistry.h>
-#include <qgslogger.h>
-#include <qgsspatialindex.h>
-#include <qgisinterface.h>
 #include <qgsmessagelog.h>
+#include <qgsproviderregistry.h>
+#include <qgsrubberband.h>
+#include <qgsspatialindex.h>
+#include <qgsvectordataprovider.h>
+#include <qgsvectorlayer.h>
+#include <qgsvertexmarker.h>
 
-#include "topolTest.h"
-#include "rulesDialog.h"
 #include "dockModel.h"
+#include "rulesDialog.h"
+#include "topolTest.h"
 
 //class QgisInterface;
 

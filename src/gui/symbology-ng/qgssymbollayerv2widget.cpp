@@ -16,20 +16,20 @@
 
 #include "qgssymbollayerv2widget.h"
 
+#include "qgsfillsymbollayerv2.h"
 #include "qgslinesymbollayerv2.h"
 #include "qgsmarkersymbollayerv2.h"
-#include "qgsfillsymbollayerv2.h"
 
 #include "characterwidget.h"
 #include "qgsdashspacedialog.h"
+#include "qgsdatadefined.h"
 #include "qgsdatadefinedsymboldialog.h"
-#include "qgssymbolv2selectordialog.h"
+#include "qgsstylev2.h" //for symbol selector dialog
 #include "qgssvgcache.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgssymbolv2selectordialog.h"
 #include "qgsvectorcolorrampv2.h"
 #include "qgsvectorgradientcolorrampv2dialog.h"
-#include "qgsdatadefined.h"
-#include "qgsstylev2.h" //for symbol selector dialog
 
 #include "qgsapplication.h"
 
@@ -41,11 +41,11 @@
 #include <QCursor>
 #include <QDir>
 #include <QFileDialog>
+#include <QMessageBox>
 #include <QPainter>
 #include <QSettings>
 #include <QStandardItemModel>
 #include <QSvgRenderer>
-#include <QMessageBox>
 
 void QgsSymbolLayerV2Widget::registerDataDefinedButton( QgsDataDefinedButton * button, const QString & propertyName, QgsDataDefinedButton::DataType type, const QString & description )
 {
@@ -1546,10 +1546,10 @@ QgsSvgMarkerSymbolLayerV2Widget::~QgsSvgMarkerSymbolLayerV2Widget()
   delete mAssistantPreviewSymbol;
 }
 
-#include <QTime>
 #include <QAbstractListModel>
 #include <QPixmapCache>
 #include <QStyle>
+#include <QTime>
 
 class QgsSvgListModel : public QAbstractListModel
 {

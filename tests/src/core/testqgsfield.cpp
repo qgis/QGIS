@@ -12,12 +12,12 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
 #include <QObject>
-#include <QString>
-#include <QStringList>
 #include <QSettings>
 #include <QSharedPointer>
+#include <QString>
+#include <QStringList>
+#include <QtTest/QtTest>
 
 #include "qgsfield.h"
 

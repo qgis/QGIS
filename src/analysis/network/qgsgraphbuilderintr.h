@@ -16,13 +16,13 @@
 #define QGSGRAPHBUILDERINTERFACE
 
 //QT4 includes
-#include <QVector>
 #include <QVariant>
+#include <QVector>
 
 //QGIS includes
-#include <qgspoint.h>
 #include <qgscoordinatereferencesystem.h>
 #include <qgsdistancearea.h>
+#include <qgspoint.h>
 
 //forward declarations
 

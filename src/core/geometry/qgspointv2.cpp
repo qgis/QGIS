@@ -16,13 +16,13 @@
  ***************************************************************************/
 
 
-#include "qgspointv2.h"
+#include <QPainter>
 #include "qgsapplication.h"
 #include "qgscoordinatetransform.h"
 #include "qgsgeometryutils.h"
 #include "qgsmaptopixel.h"
+#include "qgspointv2.h"
 #include "qgswkbptr.h"
-#include <QPainter>
 
 QgsPointV2::QgsPointV2( double x, double y ): QgsAbstractGeometryV2(), mX( x ), mY( y ), mZ( 0.0 ), mM( 0.0 )
 {

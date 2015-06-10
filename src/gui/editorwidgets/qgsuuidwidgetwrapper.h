@@ -18,8 +18,8 @@
 
 #include "qgseditorwidgetwrapper.h"
 
-#include <QLineEdit>
 #include <QLabel>
+#include <QLineEdit>
 
 
 /**

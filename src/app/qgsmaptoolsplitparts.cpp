@@ -14,10 +14,10 @@
  ***************************************************************************/
 
 #include "qgisapp.h"
-#include "qgsmessagebar.h"
 #include "qgsmapcanvas.h"
-#include "qgsproject.h"
 #include "qgsmaptoolsplitparts.h"
+#include "qgsmessagebar.h"
+#include "qgsproject.h"
 #include "qgssnappingutils.h"
 #include "qgsvectorlayer.h"
 

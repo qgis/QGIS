@@ -15,16 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsserverprojectparser.h"
 #include "qgsapplication.h"
 #include "qgsconfigcache.h"
 #include "qgsconfigparserutils.h"
 #include "qgscrscache.h"
 #include "qgsdatasourceuri.h"
+#include "qgseditorwidgetregistry.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmslayercache.h"
 #include "qgsrasterlayer.h"
-#include "qgseditorwidgetregistry.h"
+#include "qgsserverprojectparser.h"
 
 #include <QDomDocument>
 #include <QFileInfo>

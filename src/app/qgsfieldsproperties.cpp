@@ -13,14 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgseditorwidgetfactory.h"
-#include "qgseditorwidgetregistry.h"
 #include "qgsaddattrdialog.h"
 #include "qgsaddtaborgroup.h"
 #include "qgsapplication.h"
 #include "qgsattributetypedialog.h"
-#include "qgsfieldcalculator.h"
+#include "qgseditorwidgetfactory.h"
+#include "qgseditorwidgetregistry.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgsfieldcalculator.h"
 #include "qgsfieldsproperties.h"
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
@@ -29,16 +29,16 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
-#include <QTreeWidgetItem>
-#include <QWidget>
-#include <QMimeData>
 #include <QDropEvent>
-#include <QPushButton>
-#include <QTableWidgetItem>
-#include <QMessageBox>
-#include <QSettings>
 #include <QFileDialog>
 #include <QHBoxLayout>
+#include <QMessageBox>
+#include <QMimeData>
+#include <QPushButton>
+#include <QSettings>
+#include <QTableWidgetItem>
+#include <QTreeWidgetItem>
+#include <QWidget>
 
 QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent )
     : QWidget( parent )

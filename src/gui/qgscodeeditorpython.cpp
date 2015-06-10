@@ -17,13 +17,13 @@
 #include "qgscodeeditorpython.h"
 #include "qgslogger.h"
 
-#include <QWidget>
-#include <QString>
-#include <QFont>
 #include <QFileInfo>
+#include <QFont>
 #include <QMessageBox>
-#include <QTextStream>
 #include <Qsci/qscilexerpython.h>
+#include <QString>
+#include <QTextStream>
+#include <QWidget>
 
 QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> &filenames )
     : QgsCodeEditor( parent )

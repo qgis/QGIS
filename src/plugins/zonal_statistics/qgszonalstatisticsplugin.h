@@ -18,8 +18,8 @@
 #ifndef QGSZONALSTATISTICSPLUGIN_H
 #define QGSZONALSTATISTICSPLUGIN_H
 
-#include "qgisplugin.h"
 #include <QObject>
+#include "qgisplugin.h"
 
 class QgsInterface;
 class QAction;

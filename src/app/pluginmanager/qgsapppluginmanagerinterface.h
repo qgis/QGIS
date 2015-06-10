@@ -17,8 +17,8 @@
 #ifndef QGSPLUGINMANAGERAPPIFACE_H
 #define QGSPLUGINMANAGERAPPIFACE_H
 
-#include "qgspluginmanagerinterface.h"
 #include "qgspluginmanager.h"
+#include "qgspluginmanagerinterface.h"
 
 /** \ingroup gui
  * QgsPluginManagerInterface

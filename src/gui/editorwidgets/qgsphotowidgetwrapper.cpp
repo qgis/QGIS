@@ -15,8 +15,8 @@
 
 #include "qgsphotowidgetwrapper.h"
 
-#include <QGridLayout>
 #include <QFileDialog>
+#include <QGridLayout>
 #include <QSettings>
 
 #include "qgsfilterlineedit.h"

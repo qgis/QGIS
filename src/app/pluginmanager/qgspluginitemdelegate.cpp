@@ -15,12 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgspluginitemdelegate.h"
-#include <QPainter>
-#include <QFont>
-#include <QStyleOptionViewItem>
-#include <QModelIndex>
 #include <QApplication>
+#include <QFont>
+#include <QModelIndex>
+#include <QPainter>
+#include <QStyleOptionViewItem>
+#include "qgspluginitemdelegate.h"
 #include "qgspluginsortfilterproxymodel.h"
 
 

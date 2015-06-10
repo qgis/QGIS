@@ -14,8 +14,8 @@
 ***************************************************************************/
 
 #include "qgiscustomwidgets.h"
-#include "qgsdoublespinboxplugin.h"
 #include "qgsdoublespinbox.h"
+#include "qgsdoublespinboxplugin.h"
 
 
 QgsDoubleSpinBoxPlugin::QgsDoubleSpinBoxPlugin( QObject *parent )

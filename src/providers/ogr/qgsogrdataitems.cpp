@@ -19,12 +19,12 @@
 #include "qgsmessagelog.h"
 
 #include <QFileInfo>
-#include <QTextStream>
 #include <QSettings>
+#include <QTextStream>
 
-#include <ogr_srs_api.h>
-#include <cpl_error.h>
 #include <cpl_conv.h>
+#include <cpl_error.h>
+#include <ogr_srs_api.h>
 
 // these are defined in qgsogrprovider.cpp
 QGISEXTERN QStringList fileExtensions();

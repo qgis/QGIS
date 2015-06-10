@@ -14,11 +14,11 @@ Email                : nyall dot dawson at gmail dot com
  ***************************************************************************/
 #include <QtTest/QtTest>
 
-#include "qgsrastercalculator.h"
+#include "qgsapplication.h"
 #include "qgsrastercalcnode.h"
+#include "qgsrastercalculator.h"
 #include "qgsrasterlayer.h"
 #include "qgsrastermatrix.h"
-#include "qgsapplication.h"
 
 
 Q_DECLARE_METATYPE( QgsRasterCalcNode::Operator );

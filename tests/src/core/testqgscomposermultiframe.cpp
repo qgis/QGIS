@@ -15,13 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscomposerhtml.h"
-#include "qgscomposerframe.h"
-#include "qgscomposerlabel.h"
-#include "qgscomposition.h"
-#include "qgscompositionchecker.h"
 #include <QObject>
 #include <QtTest/QtTest>
+#include "qgscomposerframe.h"
+#include "qgscomposerhtml.h"
+#include "qgscomposerlabel.h"
+#include "qgscompositionchecker.h"
+#include "qgscomposition.h"
 
 class TestQgsComposerMultiFrame : public QObject
 {

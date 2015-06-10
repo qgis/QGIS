@@ -13,23 +13,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsfillsymbollayerv2.h"
-#include "qgslinesymbollayerv2.h"
-#include "qgsmarkersymbollayerv2.h"
-#include "qgssymbollayerv2utils.h"
 #include "qgsdxfexport.h"
 #include "qgsexpression.h"
-#include "qgsrendercontext.h"
-#include "qgsproject.h"
-#include "qgssvgcache.h"
+#include "qgsfillsymbollayerv2.h"
+#include "qgslinesymbollayerv2.h"
 #include "qgslogger.h"
+#include "qgsmarkersymbollayerv2.h"
+#include "qgsproject.h"
+#include "qgsrendercontext.h"
+#include "qgssvgcache.h"
+#include "qgssymbollayerv2utils.h"
 #include "qgsvectorcolorrampv2.h"
 
-#include <QPainter>
-#include <QFile>
-#include <QSvgRenderer>
 #include <QDomDocument>
 #include <QDomElement>
+#include <QFile>
+#include <QPainter>
+#include <QSvgRenderer>
 
 QgsSimpleFillSymbolLayerV2::QgsSimpleFillSymbolLayerV2( QColor color, Qt::BrushStyle style, QColor borderColor, Qt::PenStyle borderStyle, double borderWidth,
     Qt::PenJoinStyle penJoinStyle )

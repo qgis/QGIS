@@ -12,9 +12,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
 #include <QDomDocument>
 #include <QFile>
+#include <QtTest/QtTest>
 //header for class being tested
 #include <qgsrulebasedrendererv2.h>
 

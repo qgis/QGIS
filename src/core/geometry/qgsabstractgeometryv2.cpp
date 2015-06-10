@@ -13,13 +13,13 @@ email                : marco.hugentobler at sourcepole dot com
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
-#include "qgsabstractgeometryv2.h"
-#include "qgswkbptr.h"
-#include "qgsgeos.h"
-#include "qgsmaptopixel.h"
 #include <limits>
 #include <QTransform>
+#include "qgsabstractgeometryv2.h"
+#include "qgsapplication.h"
+#include "qgsgeos.h"
+#include "qgsmaptopixel.h"
+#include "qgswkbptr.h"
 
 QgsAbstractGeometryV2::QgsAbstractGeometryV2(): mWkbType( QgsWKBTypes::Unknown )
 {

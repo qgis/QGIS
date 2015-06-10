@@ -22,11 +22,11 @@
 #define QGSPROJECT_H
 
 #include <memory>
-#include "qgsprojectversion.h"
 #include <QHash>
 #include <QList>
 #include <QObject>
 #include <QPair>
+#include "qgsprojectversion.h"
 
 //for the snap settings
 #include "qgssnapper.h"

@@ -15,8 +15,8 @@
 #ifndef QGSPROJECTLAYERGROUPDIALOG_H
 #define QGSPROJECTLAYERGROUPDIALOG_H
 
-#include "QDialog"
 #include "ui_qgsprojectlayergroupdialogbase.h"
+#include "QDialog"
 
 class QDomElement;
 

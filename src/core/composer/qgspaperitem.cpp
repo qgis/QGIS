@@ -15,13 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgspaperitem.h"
-#include "qgscomposition.h"
-#include "qgsstylev2.h"
-#include "qgslogger.h"
 #include <QGraphicsRectItem>
 #include <QGraphicsView>
 #include <QPainter>
+#include "qgscomposition.h"
+#include "qgslogger.h"
+#include "qgspaperitem.h"
+#include "qgsstylev2.h"
 
 //QgsPaperGrid
 

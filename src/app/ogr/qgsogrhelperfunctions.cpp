@@ -16,9 +16,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsogrhelperfunctions.h"
-#include "qgslogger.h"
 #include <QRegExp>
+#include "qgslogger.h"
+#include "qgsogrhelperfunctions.h"
 
 QString createDatabaseURI( QString connectionType, QString host, QString database, QString port, QString user, QString password )
 {

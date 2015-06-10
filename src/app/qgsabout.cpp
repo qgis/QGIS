@@ -15,16 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsabout.h"
-#include "qgsapplication.h"
-#include "qgsproviderregistry.h"
-#include "qgslogger.h"
 #include <QDesktopServices>
 #include <QFile>
-#include <QTextStream>
 #include <QImageReader>
 #include <QSqlDatabase>
 #include <QTcpSocket>
+#include <QTextStream>
+#include "qgsabout.h"
+#include "qgsapplication.h"
+#include "qgslogger.h"
+#include "qgsproviderregistry.h"
 
 /* Uncomment this block to use preloaded images
 #include <map>

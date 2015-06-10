@@ -16,6 +16,14 @@
 #define QGSGMLSCHEMA_H
 
 #include <expat.h>
+#include <list>
+#include <QByteArray>
+#include <QDomElement>
+#include <QPair>
+#include <QStack>
+#include <QStringList>
+#include <set>
+#include <stack>
 #include "qgis.h"
 #include "qgsapplication.h"
 #include "qgsdataprovider.h"
@@ -24,14 +32,6 @@
 #include "qgsfield.h"
 #include "qgslogger.h"
 #include "qgspoint.h"
-#include <list>
-#include <set>
-#include <stack>
-#include <QPair>
-#include <QByteArray>
-#include <QDomElement>
-#include <QStringList>
-#include <QStack>
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;
 

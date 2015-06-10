@@ -16,8 +16,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "globe_plugin.h"
 #include "globe_plugin_dialog.h"
+#include "globe_plugin.h"
 #include "qgsosgearthtilesource.h"
 #ifdef HAVE_OSGEARTHQT
 #include <osgEarthQt/ViewerWidget>
@@ -27,40 +27,40 @@
 
 #include <cmath>
 
-#include <qgisinterface.h>
 #include <qgisgui.h>
-#include <qgslogger.h>
+#include <qgisinterface.h>
 #include <qgsapplication.h>
-#include <qgsmapcanvas.h>
+#include <qgsdistancearea.h>
 #include <qgsfeature.h>
 #include <qgsgeometry.h>
+#include <qgslogger.h>
+#include <qgsmapcanvas.h>
 #include <qgspoint.h>
-#include <qgsdistancearea.h>
 
 #include <QAction>
 #include <QDir>
-#include <QToolBar>
 #include <QMessageBox>
+#include <QToolBar>
 
-#include <osgGA/TrackballManipulator>
 #include <osgDB/ReadFile>
 #include <osgDB/Registry>
+#include <osgGA/TrackballManipulator>
 
-#include <osgGA/StateSetManipulator>
 #include <osgGA/GUIEventHandler>
+#include <osgGA/StateSetManipulator>
 
+#include <osgEarthDrivers/gdal/GDALOptions>
+#include <osgEarthDrivers/tms/TMSOptions>
+#include <osgEarth/Map>
+#include <osgEarth/MapNode>
+#include <osgEarth/Notify>
+#include <osgEarth/TileSource>
+#include <osgEarthUtil/AutoClipPlaneHandler>
+#include <osgEarthUtil/SkyNode>
 #include <osg/MatrixTransform>
 #include <osg/ShapeDrawable>
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
-#include <osgEarth/Notify>
-#include <osgEarth/Map>
-#include <osgEarth/MapNode>
-#include <osgEarth/TileSource>
-#include <osgEarthUtil/SkyNode>
-#include <osgEarthUtil/AutoClipPlaneHandler>
-#include <osgEarthDrivers/gdal/GDALOptions>
-#include <osgEarthDrivers/tms/TMSOptions>
 
 #if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 2, 0 )
 #include <osgEarthDrivers/cache_filesystem/FileSystemCache>

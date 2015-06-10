@@ -16,8 +16,8 @@
 #ifndef QGSMAPTOOLSIMPLIFY_H
 #define QGSMAPTOOLSIMPLIFY_H
 
-#include "qgsmaptooledit.h"
 #include "ui_qgssimplifytolerancedialog.h"
+#include "qgsmaptooledit.h"
 
 #include <QVector>
 #include "qgsfeature.h"

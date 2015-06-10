@@ -20,24 +20,24 @@
 
 #include "qgsnewspatialitelayerdialog.h"
 
+#include "qgisapp.h" // <- for theme icons
 #include "qgis.h"
 #include "qgsapplication.h"
-#include "qgsproviderregistry.h"
-#include "qgisapp.h" // <- for theme icons
-#include "qgsvectorlayer.h"
-#include "qgsmaplayerregistry.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgenericprojectionselector.h"
+#include "qgsmaplayerregistry.h"
+#include "qgsproviderregistry.h"
 #include "qgsslconnect.h"
+#include "qgsvectorlayer.h"
 
 #include "qgslogger.h"
 
-#include <QPushButton>
-#include <QSettings>
-#include <QLineEdit>
-#include <QMessageBox>
 #include <QFileDialog>
 #include <QLibrary>
+#include <QLineEdit>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QSettings>
 
 #include <spatialite.h>
 

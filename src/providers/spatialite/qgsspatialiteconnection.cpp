@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsspatialiteconnection.h"
 #include "qgsslconnect.h"
+#include "qgsspatialiteconnection.h"
 
 #include <QFileInfo>
 #include <QSettings>
