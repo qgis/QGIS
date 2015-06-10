@@ -1547,6 +1547,56 @@ void QgsGraduatedSymbolRendererV2::sortByValue( Qt::SortOrder order )
   }
 }
 
+bool QgsGraduatedSymbolRendererV2::rangesOverlap() const
+{
+  QgsRangeList sortedRanges = mRanges;
+  qSort( sortedRanges.begin(), sortedRanges.end(), valueLessThan );
+
+  QgsRangeList::const_iterator it = sortedRanges.constBegin();
+  if ( it == sortedRanges.constEnd() )
+    return false;
+
+  if (( *it ).upperValue() < ( *it ).lowerValue() )
+    return true;
+
+  double prevMax = ( *it ).upperValue();
+  it++;
+
+  for ( ; it != sortedRanges.constEnd(); ++it )
+  {
+    if (( *it ).upperValue() < ( *it ).lowerValue() )
+      return true;
+
+    if (( *it ).lowerValue() < prevMax )
+      return true;
+
+    prevMax = ( *it ).upperValue();
+  }
+  return false;
+}
+
+bool QgsGraduatedSymbolRendererV2::rangesHaveGaps() const
+{
+  QgsRangeList sortedRanges = mRanges;
+  qSort( sortedRanges.begin(), sortedRanges.end(), valueLessThan );
+
+  QgsRangeList::const_iterator it = sortedRanges.constBegin();
+  if ( it == sortedRanges.constEnd() )
+    return false;
+
+  double prevMax = ( *it ).upperValue();
+  it++;
+
+  for ( ; it != sortedRanges.constEnd(); ++it )
+  {
+    if ( !qgsDoubleNear( ( *it ).lowerValue(), prevMax ) )
+      return true;
+
+    prevMax = ( *it ).upperValue();
+  }
+  return false;
+}
+
 bool labelLessThan( const QgsRendererRangeV2 &r1, const QgsRendererRangeV2 &r2 )
 {
   return QString::localeAwareCompare( r1.label(), r2.label() ) < 0;
