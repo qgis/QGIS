@@ -17,8 +17,8 @@
 
 #include "qgsvectorlayer.h"
 
-QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget *parent ) :
-    QgsEditorConfigWidget( vl, fieldIdx, parent )
+QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget *parent )
+    : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
 
@@ -28,8 +28,9 @@ QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget 
   {
     case QVariant::Int:
     case QVariant::LongLong:
+    case QVariant::Double:
     {
-      rangeStackedWidget->setCurrentIndex( 0 );
+      rangeStackedWidget->setCurrentIndex( vl->pendingFields()[fieldIdx].type() == QVariant::Double ? 1 : 0 );
 
       rangeWidget->clear();
       rangeWidget->addItem( tr( "Editable" ), "SpinBox" );
@@ -43,26 +44,9 @@ QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget 
       break;
     }
 
-    case QVariant::Double:
-    {
-      rangeStackedWidget->setCurrentIndex( 1 );
-
-      rangeWidget->clear();
-      rangeWidget->addItem( tr( "Editable" ), "SpinBox" );
-      rangeWidget->addItem( tr( "Slider" ), "Slider" );
-
-      QVariant min = vl->minimumValue( fieldIdx );
-      QVariant max = vl->maximumValue( fieldIdx );
-
-      text = tr( "Current minimum for this value is %1 and current maximum is %2." ).arg( min.toString() ).arg( max.toString() );
-      break;
-    }
-
     default:
-    {
       text = tr( "Attribute has no integer or real type, therefore range is not usable." );
       break;
-    }
   }
 
   valuesLabel->setText( text );
