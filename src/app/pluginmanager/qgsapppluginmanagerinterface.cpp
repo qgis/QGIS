@@ -14,8 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapppluginmanagerinterface.h"
 #include <qgslogger.h>
+#include "qgsapppluginmanagerinterface.h"
 
 
 QgsAppPluginManagerInterface::QgsAppPluginManagerInterface( QgsPluginManager * pluginManager )

@@ -16,8 +16,8 @@
 #ifndef QGSMAPRENDERERCACHE_H
 #define QGSMAPRENDERERCACHE_H
 
-#include <QMap>
 #include <QImage>
+#include <QMap>
 #include <QMutex>
 
 #include "qgsrectangle.h"

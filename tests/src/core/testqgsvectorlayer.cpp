@@ -12,27 +12,26 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include <QApplication>
+#include <QDesktopServices>
+#include <QDir>
+#include <QFileInfo>
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QObject>
-#include <QApplication>
-#include <QFileInfo>
-#include <QDir>
-#include <QDesktopServices>
+#include <QtTest/QtTest>
 
 #include <iostream>
 //qgis includes...
-#include <qgsmaprenderer.h>
+#include <qgsapplication.h>
 #include <qgsmaplayer.h>
+#include <qgsmaplayerregistry.h>
+#include <qgsmaprenderer.h>
+#include <qgsproviderregistry.h>
+#include <qgssinglesymbolrendererv2.h>
+#include <qgssymbolv2.h>
 #include <qgsvectordataprovider.h>
 #include <qgsvectorlayer.h>
-#include <qgsapplication.h>
-#include <qgsproviderregistry.h>
-#include <qgsmaplayerregistry.h>
-#include <qgssymbolv2.h>
-#include <qgssinglesymbolrendererv2.h>
 //qgis test includes
 #include "qgsrenderchecker.h"
 

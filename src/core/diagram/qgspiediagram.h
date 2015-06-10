@@ -17,10 +17,10 @@
 
 #define DIAGRAM_NAME_PIE "Pie"
 
+#include <QBrush>
+#include <QPen>
 #include "qgsdiagram.h"
 #include "qgsfeature.h"
-#include <QPen>
-#include <QBrush>
 
 class QPainter;
 class QPointF;

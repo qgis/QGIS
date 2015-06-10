@@ -16,24 +16,27 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <memory>
 #include <limits>
+#include <memory>
 
 #include "qgisapp.h"
-#include "qgsjoindialog.h"
 #include "qgsapplication.h"
-#include "qgsattributeactiondialog.h"
 #include "qgsapplydialog.h"
+#include "qgsattributeactiondialog.h"
+#include "qgsconfig.h"
 #include "qgscontexthelp.h"
 #include "qgscoordinatetransform.h"
+#include "qgsdatasourceuri.h"
 #include "qgsdiagramproperties.h"
 #include "qgsdiagramrendererv2.h"
 #include "qgsfieldcalculator.h"
 #include "qgsfieldsproperties.h"
-#include "qgslabeldialog.h"
-#include "qgslabelinggui.h"
-#include "qgslabel.h"
 #include "qgsgenericprojectionselector.h"
+#include "qgsjoindialog.h"
+#include "qgslabeldialog.h"
+#include "qgslabel.h"
+#include "qgslabelinggui.h"
+#include "qgsloadstylefromdbdialog.h"
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaplayerstyleguiutils.h"
@@ -41,26 +44,23 @@
 #include "qgspluginmetadata.h"
 #include "qgspluginregistry.h"
 #include "qgsproject.h"
+#include "qgsquerybuilder.h"
 #include "qgssavestyletodbdialog.h"
-#include "qgsloadstylefromdbdialog.h"
+#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerproperties.h"
-#include "qgsconfig.h"
-#include "qgsvectordataprovider.h"
-#include "qgsquerybuilder.h"
-#include "qgsdatasourceuri.h"
 
-#include <QMessageBox>
+#include <QCheckBox>
+#include <QColorDialog>
+#include <QComboBox>
 #include <QDir>
 #include <QFile>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QFontDialog>
-#include <QSettings>
-#include <QComboBox>
-#include <QCheckBox>
 #include <QHeaderView>
-#include <QColorDialog>
+#include <QMessageBox>
+#include <QSettings>
 
 #include "qgsrendererv2propertiesdialog.h"
 #include "qgsstylev2.h"

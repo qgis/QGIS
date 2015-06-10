@@ -26,6 +26,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgscubicrasterresampler.h"
 #include "qgsgenericprojectionselector.h"
+#include "qgshuesaturationfilter.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerregistry.h"
@@ -50,22 +51,21 @@
 #include "qgsrastertransparency.h"
 #include "qgssinglebandgrayrendererwidget.h"
 #include "qgssinglebandpseudocolorrendererwidget.h"
-#include "qgshuesaturationfilter.h"
 
-#include <QTableWidgetItem>
 #include <QHeaderView>
+#include <QTableWidgetItem>
 
-#include <QTextStream>
+#include <QColorDialog>
 #include <QFileDialog>
-#include <QMessageBox>
-#include <QPainter>
 #include <QLinearGradient>
+#include <QList>
+#include <QMessageBox>
+#include <QMouseEvent>
+#include <QPainter>
 #include <QPainterPath>
 #include <QPolygonF>
-#include <QColorDialog>
-#include <QList>
 #include <QSettings>
-#include <QMouseEvent>
+#include <QTextStream>
 #include <QVector>
 
 QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanvas* theCanvas, QWidget *parent, Qt::WindowFlags fl )

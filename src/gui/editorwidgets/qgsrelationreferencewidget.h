@@ -17,19 +17,19 @@
 #define QGSRELATIONREFERENCEWIDGET_H
 
 #include "qgsattributeeditorcontext.h"
+#include "qgsattributetablefiltermodel.h"
+#include "qgsattributetablemodel.h"
 #include "qgscollapsiblegroupbox.h"
 #include "qgsfeature.h"
+#include "qgsfeaturelistmodel.h"
 #include "qgshighlight.h"
 #include "qgsmaptoolidentifyfeature.h"
-#include "qgsattributetablemodel.h"
-#include "qgsattributetablefiltermodel.h"
-#include "qgsfeaturelistmodel.h"
 
 #include <QComboBox>
-#include <QToolButton>
-#include <QLineEdit>
 #include <QHBoxLayout>
+#include <QLineEdit>
 #include <QStandardItemModel>
+#include <QToolButton>
 
 class QgsAttributeForm;
 class QgsVectorLayerTools;

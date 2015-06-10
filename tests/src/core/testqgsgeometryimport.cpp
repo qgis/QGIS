@@ -13,15 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QPolygonF>
 #include "qgsapplication.h"
 #include "qgsgeometry.h"
 #include "qgspoint.h"
 #include "qgswkbptr.h"
-#include <QPolygonF>
 
 
-#include <QtTest/QtTest>
 #include <QObject>
+#include <QtTest/QtTest>
 
 class TestQgsGeometryImport: public QObject
 {

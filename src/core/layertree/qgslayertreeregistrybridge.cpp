@@ -19,8 +19,8 @@
 
 #include "qgslayertree.h"
 
-#include "qgsproject.h"
 #include "qgslogger.h"
+#include "qgsproject.h"
 
 QgsLayerTreeRegistryBridge::QgsLayerTreeRegistryBridge( QgsLayerTreeGroup *root, QObject *parent )
     : QObject( parent )

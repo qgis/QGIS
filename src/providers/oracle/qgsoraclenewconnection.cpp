@@ -15,13 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QSettings>
-#include <QMessageBox>
 #include <QInputDialog>
+#include <QMessageBox>
+#include <QSettings>
 
-#include "qgsoraclenewconnection.h"
 #include "qgscontexthelp.h"
 #include "qgsdatasourceuri.h"
+#include "qgsoraclenewconnection.h"
 #include "qgsoracletablemodel.h"
 
 QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString& connName, Qt::WindowFlags fl )

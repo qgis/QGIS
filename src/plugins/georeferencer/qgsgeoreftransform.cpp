@@ -16,8 +16,8 @@
 
 #include "qgsgeoreftransform.h"
 
-#include <gdal.h>
 #include <gdal_alg.h>
+#include <gdal.h>
 
 #include "qgsleastsquares.h"
 

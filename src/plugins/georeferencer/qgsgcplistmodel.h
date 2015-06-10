@@ -16,8 +16,8 @@
 #ifndef QGSGCP_LIST_TABLE_VIEW_H
 #define QGSGCP_LIST_TABLE_VIEW_H
 
-#include <QTreeView>
 #include <QStandardItemModel>
+#include <QTreeView>
 
 class QgsGeorefDataPoint;
 class QgsGeorefTransform;

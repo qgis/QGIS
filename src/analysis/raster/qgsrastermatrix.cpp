@@ -15,9 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsrastermatrix.h"
-#include <string.h>
 #include <qmath.h>
+#include <string.h>
+#include "qgsrastermatrix.h"
 
 QgsRasterMatrix::QgsRasterMatrix()
     : mColumns( 0 )

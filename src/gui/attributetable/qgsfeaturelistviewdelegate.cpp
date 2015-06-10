@@ -1,17 +1,17 @@
-#include "qgsfeaturelistviewdelegate.h"
-#include "qgsvectorlayer.h"
+#include "qgsapplication.h"
 #include "qgsattributetablemodel.h"
 #include "qgsfeaturelistmodel.h"
-#include "qgsapplication.h"
-#include "qgsvectorlayereditbuffer.h"
+#include "qgsfeaturelistviewdelegate.h"
 #include "qgsfeatureselectionmodel.h"
+#include "qgsvectorlayereditbuffer.h"
+#include "qgsvectorlayer.h"
 
-#include <QHBoxLayout>
-#include <QPushButton>
-#include <QLabel>
 #include <QApplication>
+#include <QHBoxLayout>
+#include <QLabel>
 #include <QMouseEvent>
 #include <QObject>
+#include <QPushButton>
 
 QgsFeatureListViewDelegate::QgsFeatureListViewDelegate( QgsFeatureListModel *listModel, QObject *parent )
     : QItemDelegate( parent )

@@ -16,8 +16,8 @@
 #ifndef QGSRELATIONREFERENCEWIDGETWRAPPER_H
 #define QGSRELATIONREFERENCEWIDGETWRAPPER_H
 
-#include "qgsrelationreferencewidget.h"
 #include "qgseditorwidgetwrapper.h"
+#include "qgsrelationreferencewidget.h"
 
 
 /**

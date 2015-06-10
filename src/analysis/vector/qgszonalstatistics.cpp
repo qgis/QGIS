@@ -15,15 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgszonalstatistics.h"
+#include <QFile>
+#include <QProgressDialog>
+#include "cpl_string.h"
+#include "gdal.h"
 #include "qgsgeometry.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgszonalstatistics.h"
 #include "qmath.h"
-#include "gdal.h"
-#include "cpl_string.h"
-#include <QProgressDialog>
-#include <QFile>
 
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
 #define TO8F(x) (x).toUtf8().constData()

@@ -13,13 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscompositionchecker.h"
-#include "qgscomposition.h"
 #include <QDebug>
 #include <QDir>
 #include <QFileInfo>
 #include <QImage>
 #include <QPainter>
+#include "qgscompositionchecker.h"
+#include "qgscomposition.h"
 
 QgsCompositionChecker::QgsCompositionChecker( const QString& testName, QgsComposition* composition )
     : QgsMultiRenderChecker()

@@ -16,9 +16,9 @@
 #define QGSGRAPHDIRECTORH
 
 //QT4 includes
+#include <QList>
 #include <QObject>
 #include <QVector>
-#include <QList>
 
 //QGIS includes
 #include <qgspoint.h>

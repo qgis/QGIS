@@ -16,14 +16,14 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "qgscomposition.h"
+#include "qgscomposerattributetable.h"
 #include "qgscomposermap.h"
 #include "qgscomposertexttable.h"
-#include "qgscomposerattributetable.h"
-#include "qgsmapsettings.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
+#include "qgscomposition.h"
 #include "qgsfeature.h"
+#include "qgsmapsettings.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
 #include <QObject>
 #include <QtTest/QtTest>

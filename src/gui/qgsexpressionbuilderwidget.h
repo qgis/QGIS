@@ -16,15 +16,15 @@
 #ifndef QGSEXPRESSIONBUILDER_H
 #define QGSEXPRESSIONBUILDER_H
 
-#include <QWidget>
 #include "ui_qgsexpressionbuilder.h"
-#include "qgsvectorlayer.h"
-#include "qgsexpressionhighlighter.h"
+#include <QWidget>
 #include "qgsdistancearea.h"
+#include "qgsexpressionhighlighter.h"
+#include "qgsvectorlayer.h"
 
-#include "QStandardItemModel"
-#include "QStandardItem"
 #include "QSortFilterProxyModel"
+#include "QStandardItem"
+#include "QStandardItemModel"
 
 /** Search proxy used to filter the QgsExpressionBuilderWidget tree.
   * The default search for a tree model only searches top level this will handle one

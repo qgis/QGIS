@@ -16,8 +16,8 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "qgsmessagebaritem.h"
 #include "qgsmessagebar.h"
+#include "qgsmessagebaritem.h"
 
 #include <QHBoxLayout>
 #include <QLabel>

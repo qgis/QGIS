@@ -14,13 +14,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsnewhttpconnection.h"
-#include "qgscontexthelp.h"
-#include <QSettings>
 #include <QMessageBox>
-#include <QUrl>
 #include <QPushButton>
 #include <QRegExpValidator>
+#include <QSettings>
+#include <QUrl>
+#include "qgscontexthelp.h"
+#include "qgsnewhttpconnection.h"
 
 QgsNewHttpConnection::QgsNewHttpConnection(
   QWidget *parent, const QString& baseKey, const QString& connName, Qt::WindowFlags fl ):

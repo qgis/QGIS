@@ -16,8 +16,8 @@
  ***************************************************************************/
 
 #include "qgsgloweffect.h"
-#include "qgssymbollayerv2utils.h"
 #include "qgsimageoperation.h"
+#include "qgssymbollayerv2utils.h"
 #include "qgsvectorcolorrampv2.h"
 
 QgsGlowEffect::QgsGlowEffect()

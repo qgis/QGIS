@@ -15,14 +15,14 @@
 #ifndef QGIS_GLOBE_PLUGIN_DIALOG_H
 #define QGIS_GLOBE_PLUGIN_DIALOG_H
 
-#include <ui_globe_plugin_dialog_guibase.h>
-#include <QDialog>
-#include <QSettings>
-#include <QCheckBox>
 #include <osgViewer/Viewer>
-#include "qgscontexthelp.h"
+#include <QCheckBox>
+#include <QDialog>
 #include <qgsproject.h>
 #include <qgsvectorlayer.h>
+#include <QSettings>
+#include <ui_globe_plugin_dialog_guibase.h>
+#include "qgscontexthelp.h"
 
 class GlobePlugin;
 

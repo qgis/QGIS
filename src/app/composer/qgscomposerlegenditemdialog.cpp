@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscomposerlegenditemdialog.h"
 #include <QStandardItem>
+#include "qgscomposerlegenditemdialog.h"
 
 QgsComposerLegendItemDialog::QgsComposerLegendItemDialog( const QStandardItem* item, QWidget* parent ): QDialog( parent )
 {

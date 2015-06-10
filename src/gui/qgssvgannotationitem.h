@@ -18,8 +18,8 @@
 #ifndef QGSSVGANNOTATIONITEM_H
 #define QGSSVGANNOTATIONITEM_H
 
-#include "qgsannotationitem.h"
 #include <QSvgRenderer>
+#include "qgsannotationitem.h"
 
 class GUI_EXPORT QgsSvgAnnotationItem: public QgsAnnotationItem
 {

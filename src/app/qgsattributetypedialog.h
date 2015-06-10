@@ -19,8 +19,8 @@
 
 #include "ui_qgsattributetypeedit.h"
 
-#include "qgsvectorlayer.h"
 #include "qgseditorconfigwidget.h"
+#include "qgsvectorlayer.h"
 
 class QDialog;
 class QLayout;

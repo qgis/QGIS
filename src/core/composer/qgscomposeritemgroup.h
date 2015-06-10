@@ -17,8 +17,8 @@
 #ifndef QGSCOMPOSERITEMGROUP_H
 #define QGSCOMPOSERITEMGROUP_H
 
-#include "qgscomposeritem.h"
 #include <QSet>
+#include "qgscomposeritem.h"
 
 /** \ingroup MapComposer
  * A container for grouping several QgsComposerItems

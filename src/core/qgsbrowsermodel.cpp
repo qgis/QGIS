@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QDir>
 #include <QApplication>
+#include <QDir>
 #include <QStyle>
 #include <QtConcurrentMap>
 
@@ -22,8 +22,8 @@
 #include "qgsdataitemprovider.h"
 #include "qgsdataitemproviderregistry.h"
 #include "qgsdataprovider.h"
-#include "qgsmimedatautils.h"
 #include "qgslogger.h"
+#include "qgsmimedatautils.h"
 #include "qgsproviderregistry.h"
 
 #include "qgsbrowsermodel.h"

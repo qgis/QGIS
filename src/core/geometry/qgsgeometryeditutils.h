@@ -21,8 +21,8 @@ class QgsCurveV2;
 class QgsGeometryEngine;
 class QgsVectorLayer;
 
-#include "qgsfeature.h"
 #include <QMap>
+#include "qgsfeature.h"
 
 /**\ingroup core
  * \class QgsGeometryEditUtils

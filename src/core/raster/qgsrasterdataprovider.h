@@ -26,8 +26,8 @@
 #include <cmath>
 
 #include <QDateTime>
-#include <QVariant>
 #include <QImage>
+#include <QVariant>
 
 #include "qgscolorrampshader.h"
 #include "qgscoordinatereferencesystem.h"

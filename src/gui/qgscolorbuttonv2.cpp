@@ -13,30 +13,30 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsapplication.h"
 #include "qgscolorbuttonv2.h"
 #include "qgscolordialog.h"
-#include "qgsapplication.h"
+#include "qgscolorschemeregistry.h"
+#include "qgscolorswatchgrid.h"
+#include "qgscolorwidgets.h"
+#include "qgscursors.h"
 #include "qgslogger.h"
 #include "qgssymbollayerv2utils.h"
-#include "qgscursors.h"
-#include "qgscolorswatchgrid.h"
-#include "qgscolorschemeregistry.h"
-#include "qgscolorwidgets.h"
 
-#include <QPainter>
-#include <QSettings>
-#include <QTemporaryFile>
-#include <QMouseEvent>
-#include <QMenu>
 #include <QClipboard>
-#include <QDrag>
 #include <QDesktopWidget>
+#include <QDrag>
+#include <QGridLayout>
+#include <QLabel>
+#include <QMenu>
+#include <QMouseEvent>
+#include <QPainter>
+#include <QPushButton>
+#include <QSettings>
 #include <QStyle>
 #include <QStyleOptionToolButton>
+#include <QTemporaryFile>
 #include <QWidgetAction>
-#include <QLabel>
-#include <QGridLayout>
-#include <QPushButton>
 
 QgsColorButtonV2::QgsColorButtonV2( QWidget *parent, QString cdt, QgsColorSchemeRegistry* registry )
     : QToolButton( parent )

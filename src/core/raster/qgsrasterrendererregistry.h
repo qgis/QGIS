@@ -18,9 +18,9 @@
 #ifndef QGSRASTERRENDERERREGISTRY_H
 #define QGSRASTERRENDERERREGISTRY_H
 
-#include "qgsrasterlayer.h" //for DrawingStyle enum
 #include <QHash>
 #include <QString>
+#include "qgsrasterlayer.h" //for DrawingStyle enum
 
 class QDomElement;
 class QgsRasterInterface;

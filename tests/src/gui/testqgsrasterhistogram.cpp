@@ -12,24 +12,23 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
-#include <QObject>
-#include <QString>
-#include <QObject>
 #include <QApplication>
 #include <QFileInfo>
+#include <QObject>
+#include <QString>
+#include <QtTest/QtTest>
 
 #include <qwt_global.h>
 
 //qgis includes...
 #include <qgsapplication.h>
+#include <qgsconfig.h>
 #include <qgsproviderregistry.h>
 #include <qgsrasterlayer.h>
-#include <qgsconfig.h>
-#include "qgssinglebandgrayrendererwidget.h"
 #include "qgsmultibandcolorrendererwidget.h"
-#include "qgssinglebandpseudocolorrendererwidget.h"
 #include "qgsrasterhistogramwidget.h"
+#include "qgssinglebandgrayrendererwidget.h"
+#include "qgssinglebandpseudocolorrendererwidget.h"
 
 //qgis unit test includes
 #include <qgsrenderchecker.h>

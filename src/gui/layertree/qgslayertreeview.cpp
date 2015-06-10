@@ -21,8 +21,8 @@
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgsmaplayer.h"
 
-#include <QMenu>
 #include <QContextMenuEvent>
+#include <QMenu>
 
 QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
     : QTreeView( parent )

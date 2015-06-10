@@ -13,12 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmaptooladdpart.h"
 #include "qgsgeometry.h"
+#include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaptooladdpart.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
-#include "qgslogger.h"
 
 #include <QMouseEvent>
 

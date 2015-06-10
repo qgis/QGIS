@@ -16,10 +16,10 @@
 #ifndef QGSCOMPOSERSCALEBAR_H
 #define QGSCOMPOSERSCALEBAR_H
 
-#include "qgscomposeritem.h"
+#include <QColor>
 #include <QFont>
 #include <QPen>
-#include <QColor>
+#include "qgscomposeritem.h"
 
 class QgsComposerMap;
 class QgsScaleBarStyle;

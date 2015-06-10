@@ -26,21 +26,21 @@ email                : tim@linfiniti.com
 
 #include "qgisapp.h"
 #include "qgscoordinatetransform.h"
-#include "qgsmaplayer.h"
-#include "qgsproject.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaplayer.h"
 #include "qgsmaprenderer.h"
+#include "qgsproject.h"
 
 // qt includes
-#include <QPainter>
-#include <QMenu>
 #include <QDir>
 #include <QFile>
+#include <QMenu>
+#include <QPainter>
 
 //non qt includes
-#include <cmath>
 #include <cassert>
+#include <cmath>
 
 
 const double QgsDecorationNorthArrow::PI = 3.14159265358979323846;

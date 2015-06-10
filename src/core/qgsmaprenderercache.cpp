@@ -15,8 +15,8 @@
 
 #include "qgsmaprenderercache.h"
 
-#include "qgsmaplayerregistry.h"
 #include "qgsmaplayer.h"
+#include "qgsmaplayerregistry.h"
 
 QgsMapRendererCache::QgsMapRendererCache()
 {

@@ -10,8 +10,8 @@
 
 #if defined( QWT_VERSION ) && QWT_VERSION<0x060000
 
-#include <qglobal.h>
 #include <qcolor.h>
+#include <qglobal.h>
 
 #include "qwt5_histogram_item.h"
 

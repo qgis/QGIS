@@ -15,9 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscomposerlabelwidget.h"
-#include "qgscomposerlabel.h"
 #include "qgscomposeritemwidget.h"
+#include "qgscomposerlabel.h"
+#include "qgscomposerlabelwidget.h"
 #include "qgscomposition.h"
 #include "qgsexpressionbuilderdialog.h"
 

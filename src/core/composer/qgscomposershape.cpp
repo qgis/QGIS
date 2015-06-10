@@ -15,12 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QPainter>
+#include "qgscomposermodel.h"
 #include "qgscomposershape.h"
 #include "qgscomposition.h"
-#include "qgssymbolv2.h"
 #include "qgssymbollayerv2utils.h"
-#include "qgscomposermodel.h"
-#include <QPainter>
+#include "qgssymbolv2.h"
 
 QgsComposerShape::QgsComposerShape( QgsComposition* composition ): QgsComposerItem( composition ),
     mShape( Ellipse ),

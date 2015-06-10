@@ -20,8 +20,8 @@
 #include <QLabel>
 
 #include "qgscollapsiblegroupbox.h"
-#include "qgsmaplayer.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaplayer.h"
 #include "qgsscalewidget.h"
 
 

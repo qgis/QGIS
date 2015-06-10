@@ -13,10 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
-#include <QObject>
+#include <QtTest/QtTest>
 
 #include <qgsapplication.h>
 #include <qgsgeometry.h>

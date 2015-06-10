@@ -15,15 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgszonalstatisticsdialog.h"
+#include "qgisinterface.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgisinterface.h"
+#include "qgszonalstatisticsdialog.h"
 
-#include <QSettings>
 #include <QListWidgetItem>
+#include <QSettings>
 
 QgsZonalStatisticsDialog::QgsZonalStatisticsDialog( QgisInterface* iface ): QDialog( iface->mainWindow() ), mIface( iface )
 {

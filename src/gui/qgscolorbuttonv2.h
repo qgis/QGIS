@@ -16,8 +16,8 @@
 #define QGSCOLORBUTTONV2_H
 
 #include <QColorDialog>
-#include <QToolButton>
 #include <QTemporaryFile>
+#include <QToolButton>
 #include "qgscolorscheme.h"
 
 class QMimeData;

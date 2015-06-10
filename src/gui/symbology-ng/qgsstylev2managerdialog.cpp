@@ -16,26 +16,26 @@
 #include "qgsstylev2managerdialog.h"
 
 #include "qgsstylev2.h"
-#include "qgssymbolv2.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgssymbolv2.h"
 #include "qgsvectorcolorrampv2.h"
 
+#include "qgscptcitycolorrampv2dialog.h"
+#include "qgssmartgroupeditordialog.h"
+#include "qgsstylev2exportimportdialog.h"
 #include "qgssymbolv2selectordialog.h"
+#include "qgsvectorcolorbrewercolorrampv2dialog.h"
 #include "qgsvectorgradientcolorrampv2dialog.h"
 #include "qgsvectorrandomcolorrampv2dialog.h"
-#include "qgsvectorcolorbrewercolorrampv2dialog.h"
-#include "qgscptcitycolorrampv2dialog.h"
-#include "qgsstylev2exportimportdialog.h"
-#include "qgssmartgroupeditordialog.h"
 
+#include <QAction>
 #include <QFile>
 #include <QFileDialog>
 #include <QInputDialog>
+#include <QMenu>
 #include <QMessageBox>
 #include <QSettings>
 #include <QStandardItemModel>
-#include <QAction>
-#include <QMenu>
 
 #include "qgsapplication.h"
 #include "qgslogger.h"

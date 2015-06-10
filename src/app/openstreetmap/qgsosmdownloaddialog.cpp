@@ -19,13 +19,13 @@
 #include <QMessageBox>
 #include <QPushButton>
 
-#include "qgis.h"
 #include "qgisapp.h"
+#include "qgis.h"
+#include "qgscoordinatetransform.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsrectangle.h"
-#include "qgscoordinatetransform.h"
 
 #include "qgsosmdownload.h"
 

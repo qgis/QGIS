@@ -20,8 +20,8 @@
 #include "qgslogger.h"
 #include "qgswkbtypes.h"
 
-#include <QStringList>
 #include <QRegExp>
+#include <QStringList>
 #include <QUrl>
 
 QgsDataSourceURI::QgsDataSourceURI()

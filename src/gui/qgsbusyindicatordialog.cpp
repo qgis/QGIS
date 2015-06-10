@@ -18,8 +18,8 @@
 #include "qgsbusyindicatordialog.h"
 
 #include <QDialog>
-#include <QLayout>
 #include <QLabel>
+#include <QLayout>
 #include <QProgressBar>
 
 QgsBusyIndicatorDialog::QgsBusyIndicatorDialog( const QString& message, QWidget* parent, Qt::WindowFlags fl )

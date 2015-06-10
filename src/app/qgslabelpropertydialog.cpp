@@ -15,18 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslabelpropertydialog.h"
 #include <qgsdatadefined.h>
 #include <qgsfontutils.h>
 #include <qgslogger.h>
+#include "qgslabelpropertydialog.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
 #include "qgsvectorlayer.h"
 
 #include <QColorDialog>
+#include <QDialogButtonBox>
 #include <QFontDatabase>
 #include <QSettings>
-#include <QDialogButtonBox>
 
 
 QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString& layerId, int featureId, const QFont& labelFont, const QString& labelText, QWidget * parent, Qt::WindowFlags f ):

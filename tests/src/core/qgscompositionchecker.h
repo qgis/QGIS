@@ -16,8 +16,8 @@
 #ifndef QGSCOMPOSITIONCHECKER_H
 #define QGSCOMPOSITIONCHECKER_H
 
-#include "qgsmultirenderchecker.h"
 #include <QString>
+#include "qgsmultirenderchecker.h"
 
 class QgsComposition;
 class QImage;

@@ -20,16 +20,16 @@
 #ifndef QGSWCSSOURCESELECT_H
 #define QGSWCSSOURCESELECT_H
 
-#include "qgsowssourceselect.h"
-#include "qgsdatasourceuri.h"
 #include "qgisgui.h"
 #include "qgscontexthelp.h"
+#include "qgsdatasourceuri.h"
+#include "qgsowssourceselect.h"
 #include "qgswcscapabilities.h"
 
 #include "qgsdataprovider.h"
 
-#include <QStringList>
 #include <QPushButton>
+#include <QStringList>
 
 class QgisApp;
 class QgsDataProvider;

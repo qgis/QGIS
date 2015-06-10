@@ -14,8 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtTest/QtTest>
 #include <QSharedPointer>
+#include <QtTest/QtTest>
 
 //qgis includes...
 #include <qgsgeometry.h>

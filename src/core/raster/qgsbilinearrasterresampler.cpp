@@ -15,9 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsbilinearrasterresampler.h"
-#include <QImage>
 #include <cmath>
+#include <QImage>
+#include "qgsbilinearrasterresampler.h"
 
 QgsBilinearRasterResampler::QgsBilinearRasterResampler()
 {

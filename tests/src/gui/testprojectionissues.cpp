@@ -15,14 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QObject>
+#include <QtTest/QtTest>
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsrasterlayer.h"
-#include <QObject>
-#include <QtTest/QtTest>
 
 class TestProjectionIssues : public QObject
 {

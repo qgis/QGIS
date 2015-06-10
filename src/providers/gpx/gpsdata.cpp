@@ -15,18 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <cstring>
 #include <limits>
 #include <stdexcept>
-#include <cstring>
 
 #include <QFile>
-#include <QTextCodec>
-#include <QTextStream>
 #include <QObject>
 #include <QSet>
+#include <QTextCodec>
+#include <QTextStream>
 
-#include "gpsdata.h"
 #include <qgslogger.h>
+#include "gpsdata.h"
 
 #define OUTPUT_PRECISION 12
 

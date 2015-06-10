@@ -19,10 +19,10 @@
 #include "qgsapplayertreeviewmenuprovider.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
+#include "qgslayertreeregistrybridge.h"
 #include "qgslayertreeview.h"
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
-#include "qgslayertreeregistrybridge.h"
 
 
 QgsAppLegendInterface::QgsAppLegendInterface( QgsLayerTreeView * layerTreeView )

@@ -15,15 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscomposerlegendstyle.h"
-#include "qgscomposition.h"
+#include <QDomDocument>
+#include <QDomElement>
+#include <QDomNode>
 #include <QFont>
 #include <QMap>
 #include <QSettings>
 #include <QString>
-#include <QDomElement>
-#include <QDomDocument>
-#include <QDomNode>
+#include "qgscomposerlegendstyle.h"
+#include "qgscomposition.h"
 
 QgsComposerLegendStyle::QgsComposerLegendStyle()
 {

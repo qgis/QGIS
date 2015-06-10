@@ -16,10 +16,10 @@
 
 #include "qgscodeeditor.h"
 
+#include <QDebug>
+#include <QFont>
 #include <QSettings>
 #include <QWidget>
-#include <QFont>
-#include <QDebug>
 
 QgsCodeEditor::QgsCodeEditor( QWidget *parent, QString title, bool folding, bool margin )
     : QsciScintilla( parent )

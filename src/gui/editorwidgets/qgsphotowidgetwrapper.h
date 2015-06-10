@@ -19,8 +19,8 @@
 #include "qgseditorwidgetwrapper.h"
 
 #include <QLabel>
-#include <QPushButton>
 #include <QLineEdit>
+#include <QPushButton>
 #include "qgswebview.h"
 
 /**

@@ -18,8 +18,8 @@
 
 
 #include "qgsmapsettings.h"
-#include "qgstolerance.h"
 #include "qgspointlocator.h"
+#include "qgstolerance.h"
 
 /**
  * This class has all the configuration of snapping and can return answers to snapping queries.

@@ -15,14 +15,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgslogger.h"
-#include "qgsvectorlayersaveasdialog.h"
-#include "qgsgenericprojectionselector.h"
-#include "qgsvectordataprovider.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsgenericprojectionselector.h"
+#include "qgslogger.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayersaveasdialog.h"
 
-#include <QSettings>
 #include <QFileDialog>
+#include <QSettings>
 #include <QTextCodec>
 
 QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, QWidget* parent, Qt::WindowFlags fl )

@@ -21,8 +21,8 @@
 #define QGSLONGLONGVALIDATOR_H
 
 #include <limits>
-#include <QValidator>
 #include <QLocale>
+#include <QValidator>
 
 class GUI_EXPORT QgsLongLongValidator : public QValidator
 {

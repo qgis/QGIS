@@ -33,21 +33,21 @@
 
 #define _CRT_SECURE_NO_DEPRECATE
 
-#include <stddef.h>
 #include <geos_c.h>
+#include <stddef.h>
 
-#include <iostream>
-#include <cstring>
 #include <cmath>
+#include <cstring>
+#include <iostream>
 #include <vector>
 
-#include <pal/pal.h>
+#include <pal/internalexception.h>
 #include <pal/layer.h>
 #include <pal/palexception.h>
-#include <pal/internalexception.h>
+#include <pal/pal.h>
 
-#include "linkedlist.hpp"
 #include "hashtable.hpp"
+#include "linkedlist.hpp"
 
 #include "feature.h"
 #include "geomfunction.h"

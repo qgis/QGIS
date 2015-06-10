@@ -15,8 +15,8 @@
 #ifndef QGSRASTERITERATOR_H
 #define QGSRASTERITERATOR_H
 
-#include "qgsrectangle.h"
 #include <QMap>
+#include "qgsrectangle.h"
 
 class QgsMapToPixel;
 class QgsRasterBlock;

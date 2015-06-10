@@ -17,9 +17,9 @@
 #include <QtTest/QtTest>
 
 #include "qgsapplication.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
 #include "qgshistogram.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
 /** \ingroup UnitTests
  * This is a unit test for QgsHistogram

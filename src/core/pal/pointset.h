@@ -37,11 +37,11 @@
 #include <cfloat>
 
 #include <cmath>
-#include <stddef.h>
 #include <geos_c.h>
+#include <stddef.h>
 
-#include "rtree.hpp"
 #include "linkedlist.hpp"
+#include "rtree.hpp"
 
 namespace pal
 {

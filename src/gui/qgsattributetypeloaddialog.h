@@ -19,9 +19,9 @@
 
 #include "ui_qgsattributeloadfrommap.h"
 
+#include <vector>
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
-#include <vector>
 
 class QDialog;
 class QLayout;

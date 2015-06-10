@@ -15,12 +15,12 @@
 #ifndef QGSRUBBERBAND_H
 #define QGSRUBBERBAND_H
 
-#include "qgsmapcanvasitem.h"
-#include "qgsgeometry.h"
 #include <QBrush>
 #include <QList>
 #include <QPen>
 #include <QPolygon>
+#include "qgsgeometry.h"
+#include "qgsmapcanvasitem.h"
 
 class QgsVectorLayer;
 class QPaintEvent;

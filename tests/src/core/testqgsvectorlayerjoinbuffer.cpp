@@ -14,15 +14,15 @@
  ***************************************************************************/
 
 
-#include <QtTest/QtTest>
 #include <QObject>
+#include <QtTest/QtTest>
 
 //qgis includes...
-#include <qgsvectorlayer.h>
-#include <qgsvectordataprovider.h>
 #include <qgsapplication.h>
-#include <qgsvectorlayerjoinbuffer.h>
 #include <qgsmaplayerregistry.h>
+#include <qgsvectordataprovider.h>
+#include <qgsvectorlayer.h>
+#include <qgsvectorlayerjoinbuffer.h>
 
 /** @ingroup UnitTests
  * This is a unit test for the vector layer join buffer

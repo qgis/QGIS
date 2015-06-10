@@ -29,8 +29,8 @@
 //
 // Required plugin includes
 //
-#include "qgsspatialqueryplugin.h"
 #include "qgsspatialquerydialog.h"
+#include "qgsspatialqueryplugin.h"
 
 //
 // Required Qt includes

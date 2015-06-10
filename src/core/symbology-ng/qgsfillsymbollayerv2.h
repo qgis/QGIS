@@ -27,8 +27,8 @@
 
 #define INF 1E20
 
-#include <QPen>
 #include <QBrush>
+#include <QPen>
 
 class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 {

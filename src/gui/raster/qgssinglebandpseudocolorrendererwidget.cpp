@@ -15,14 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgssinglebandpseudocolorrendererwidget.h"
-#include "qgssinglebandpseudocolorrenderer.h"
 #include "qgsrasterlayer.h"
+#include "qgssinglebandpseudocolorrenderer.h"
+#include "qgssinglebandpseudocolorrendererwidget.h"
 
 // for color ramps - todo add rasterStyle and refactor raster vs. vector ramps
+#include "qgscolordialog.h"
 #include "qgsstylev2.h"
 #include "qgsvectorcolorrampv2.h"
-#include "qgscolordialog.h"
 
 #include <QFileDialog>
 #include <QMessageBox>

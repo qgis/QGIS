@@ -15,13 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsfieldcombobox.h"
 #include "qgsjoindialog.h"
+#include "qgsmaplayercombobox.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgsmaplayercombobox.h"
-#include "qgsfieldcombobox.h"
 
 #include <QStandardItemModel>
 

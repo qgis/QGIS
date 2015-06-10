@@ -18,8 +18,8 @@
 #ifndef QGSREMOTEOWSBUILDER_H
 #define QGSREMOTEOWSBUILDER_H
 
-#include "qgsmslayerbuilder.h"
 #include <QMap>
+#include "qgsmslayerbuilder.h"
 
 class QgsRasterLayer;
 class QgsVectorLayer;

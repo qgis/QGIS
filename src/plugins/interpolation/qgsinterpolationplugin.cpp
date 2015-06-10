@@ -15,10 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
-#include "qgsinterpolationplugin.h"
 #include "qgisinterface.h"
+#include "qgsapplication.h"
 #include "qgsinterpolationdialog.h"
+#include "qgsinterpolationplugin.h"
 
 #include <QFile>
 

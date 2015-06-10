@@ -17,12 +17,12 @@
 
 #include "qgsattributetablefiltermodel.h"
 #include "qgsattributetablemodel.h"
-#include "qgsvectorlayer.h"
 #include "qgsfeature.h"
-#include "qgsmapcanvas.h"
 #include "qgslogger.h"
+#include "qgsmapcanvas.h"
 #include "qgsrendererv2.h"
 #include "qgsvectorlayereditbuffer.h"
+#include "qgsvectorlayer.h"
 //////////////////
 // Filter Model //
 //////////////////

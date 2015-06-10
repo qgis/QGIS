@@ -18,8 +18,8 @@
 #ifndef QGSCOMPOSERTABLECOLUMN_H
 #define QGSCOMPOSERTABLECOLUMN_H
 
-#include "qgscomposertable.h"
 #include <QObject>
+#include "qgscomposertable.h"
 
 /**Stores properties of a column in a QgsComposerTable. Some properties of a QgsComposerTableColumn
 are applicable only in certain contexts. For instance, the attribute and setAttribute methods only

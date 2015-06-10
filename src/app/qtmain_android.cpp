@@ -27,10 +27,10 @@
 
 #include <android/log.h>
 #include <pthread.h>
-#include <QSemaphore>
-#include <QDir>
 #include <QDebug>
+#include <QDir>
 #include <qglobal.h>
+#include <QSemaphore>
 
 #include <stdlib.h>
 

@@ -16,8 +16,8 @@
 #ifndef QGSCOMPOSERHTML_H
 #define QGSCOMPOSERHTML_H
 
-#include "qgscomposermultiframe.h"
 #include <QUrl>
+#include "qgscomposermultiframe.h"
 
 class QWebPage;
 class QImage;

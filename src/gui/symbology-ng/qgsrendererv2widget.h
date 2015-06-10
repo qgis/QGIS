@@ -15,10 +15,10 @@
 #ifndef QGSRENDERERV2WIDGET_H
 #define QGSRENDERERV2WIDGET_H
 
-#include <QWidget>
 #include <QMenu>
-#include "qgssymbolv2.h"
+#include <QWidget>
 #include "qgsdatadefined.h"
+#include "qgssymbolv2.h"
 
 class QgsVectorLayer;
 class QgsStyleV2;

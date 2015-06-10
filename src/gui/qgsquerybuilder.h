@@ -14,15 +14,15 @@
  ***************************************************************************/
 #ifndef QGSQUERYBUILDER_H
 #define QGSQUERYBUILDER_H
-#include <map>
-#include <vector>
-#include <QStandardItemModel>
-#include <QStandardItem>
-#include <QModelIndex>
 #include "ui_qgsquerybuilderbase.h"
+#include <map>
+#include <QModelIndex>
+#include <QStandardItem>
+#include <QStandardItemModel>
+#include <vector>
 #include "qgisgui.h"
-#include "qgsfield.h"
 #include "qgscontexthelp.h"
+#include "qgsfield.h"
 
 class QgsVectorLayer;
 

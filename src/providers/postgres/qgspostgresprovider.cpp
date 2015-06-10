@@ -16,27 +16,27 @@
  ***************************************************************************/
 
 #include <qgsapplication.h>
+#include <qgscoordinatereferencesystem.h>
 #include <qgsfeature.h>
 #include <qgsfield.h>
 #include <qgsgeometry.h>
-#include <qgsmessageoutput.h>
 #include <qgsmessagelog.h>
+#include <qgsmessageoutput.h>
 #include <qgsrectangle.h>
-#include <qgscoordinatereferencesystem.h>
 
 #include <QMessageBox>
 
-#include "qgsvectorlayerimport.h"
-#include "qgsprovidercountcalcevent.h"
-#include "qgsproviderextentcalcevent.h"
-#include "qgspostgresprovider.h"
+#include "qgslogger.h"
+#include "qgspgsourceselect.h"
 #include "qgspostgresconn.h"
 #include "qgspostgresconnpool.h"
-#include "qgspgsourceselect.h"
 #include "qgspostgresdataitems.h"
 #include "qgspostgresfeatureiterator.h"
+#include "qgspostgresprovider.h"
 #include "qgspostgrestransaction.h"
-#include "qgslogger.h"
+#include "qgsprovidercountcalcevent.h"
+#include "qgsproviderextentcalcevent.h"
+#include "qgsvectorlayerimport.h"
 
 const QString POSTGRES_KEY = "postgres";
 const QString POSTGRES_DESCRIPTION = "PostgreSQL/PostGIS data provider";

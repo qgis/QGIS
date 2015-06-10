@@ -12,17 +12,17 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgscomposerhtmlwidget.h"
-#include "qgscomposerframe.h"
-#include "qgscomposeritemwidget.h"
-#include "qgscomposermultiframecommand.h"
-#include "qgscomposerhtml.h"
-#include "qgscomposition.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgscodeeditorhtml.h"
-#include "qgscodeeditorcss.h"
 #include <QFileDialog>
 #include <QSettings>
+#include "qgscodeeditorcss.h"
+#include "qgscodeeditorhtml.h"
+#include "qgscomposerframe.h"
+#include "qgscomposerhtml.h"
+#include "qgscomposerhtmlwidget.h"
+#include "qgscomposeritemwidget.h"
+#include "qgscomposermultiframecommand.h"
+#include "qgscomposition.h"
+#include "qgsexpressionbuilderdialog.h"
 
 
 QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposerFrame* frame )

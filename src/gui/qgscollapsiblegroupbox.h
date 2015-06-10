@@ -21,10 +21,10 @@
 #include "qgisgui.h"
 
 #include <QGroupBox>
-#include <QSettings>
-#include <QPointer>
-#include <QToolButton>
 #include <QMouseEvent>
+#include <QPointer>
+#include <QSettings>
+#include <QToolButton>
 
 class QToolButton;
 class QScrollArea;

@@ -13,22 +13,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QKeyEvent>
-#include <QSettings>
 #include <QHeaderView>
+#include <QKeyEvent>
 #include <QMenu>
+#include <QSettings>
 
-#include "qgsattributetableview.h"
-#include "qgsattributetablemodel.h"
 #include "qgsattributetabledelegate.h"
 #include "qgsattributetablefiltermodel.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectorlayercache.h"
-#include "qgsvectorlayerselectionmanager.h"
-#include "qgsvectordataprovider.h"
+#include "qgsattributetablemodel.h"
+#include "qgsattributetableview.h"
+#include "qgsfeatureselectionmodel.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsfeatureselectionmodel.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayercache.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerselectionmanager.h"
 
 QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
     : QTableView( parent )

@@ -18,20 +18,20 @@
 #define QGSSPATIALITESOURCESELECT_H
 #include "ui_qgsdbsourceselectbase.h"
 #include "qgisgui.h"
+#include "qgscontexthelp.h"
 #include "qgsdbfilterproxymodel.h"
 #include "qgsspatialitetablemodel.h"
-#include "qgscontexthelp.h"
 
 #include <QThread>
 
-#include <vector>
 #include <list>
 #include <utility>
+#include <vector>
 
+#include <QFileDialog>
+#include <QIcon>
 #include <QMap>
 #include <QPair>
-#include <QIcon>
-#include <QFileDialog>
 
 class QStringList;
 class QTableWidgetItem;

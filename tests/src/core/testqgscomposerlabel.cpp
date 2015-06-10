@@ -16,12 +16,12 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "qgscomposition.h"
 #include "qgscomposerlabel.h"
+#include "qgscomposition.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
-#include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
 #include <QObject>
 #include <QtTest/QtTest>

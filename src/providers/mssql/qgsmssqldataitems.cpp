@@ -19,16 +19,16 @@
 
 #include "qgsmssqldataitems.h"
 
-#include "qgsmssqlsourceselect.h"
-#include "qgsmssqlnewconnection.h"
+#include "qgsdatasourceuri.h"
 #include "qgslogger.h"
 #include "qgsmimedatautils.h"
-#include "qgsvectorlayerimport.h"
-#include "qgsdatasourceuri.h"
+#include "qgsmssqlnewconnection.h"
 #include "qgsmssqlprovider.h"
+#include "qgsmssqlsourceselect.h"
+#include "qgsvectorlayerimport.h"
 
-#include <QSettings>
 #include <QMessageBox>
+#include <QSettings>
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlError>
 

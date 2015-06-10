@@ -15,9 +15,9 @@
 
 #include <QSettings>
 
+#include "qgsdoublespinbox.h"
 #include "qgsrangewidgetwrapper.h"
 #include "qgsspinbox.h"
-#include "qgsdoublespinbox.h"
 #include "qgsvectorlayer.h"
 
 QgsRangeWidgetWrapper::QgsRangeWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )

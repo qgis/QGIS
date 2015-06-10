@@ -16,8 +16,8 @@
 #ifndef QGSEDITORWIDGETREGISTRY_H
 #define QGSEDITORWIDGETREGISTRY_H
 
-#include <QObject>
 #include <QMap>
+#include <QObject>
 
 #include "qgseditorwidgetfactory.h"
 

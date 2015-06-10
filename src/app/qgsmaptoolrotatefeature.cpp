@@ -13,25 +13,25 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmaptoolrotatefeature.h"
+#include "qgisapp.h"
+#include "qgsdoublespinbox.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaptoolrotatefeature.h"
 #include "qgsrubberband.h"
+#include "qgsspinbox.h"
+#include "qgstolerance.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgstolerance.h"
 #include "qgsvertexmarker.h"
-#include "qgisapp.h"
-#include "qgsspinbox.h"
-#include "qgsdoublespinbox.h"
 
-#include <QMouseEvent>
-#include <QSettings>
 #include <QEvent>
 #include <QHBoxLayout>
 #include <QKeyEvent>
 #include <QLabel>
+#include <QMouseEvent>
+#include <QSettings>
 
 #include <limits>
 #include <math.h>

@@ -12,18 +12,18 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
-#include <QObject>
 #include <QApplication>
 #include <QDesktopServices>
+#include <QObject>
+#include <QtTest/QtTest>
 
 
 //qgis includes...
-#include <qgsrasterlayer.h>
 #include <qgscliptominmaxenhancement.h>
 #include <qgscontrastenhancement.h>
 #include <qgslinearminmaxenhancement.h>
 #include <qgslinearminmaxenhancementwithclip.h>
+#include <qgsrasterlayer.h>
 
 /** \ingroup UnitTests
  * This is a unit test for the ContrastEnhancements contrast enhancement classes.

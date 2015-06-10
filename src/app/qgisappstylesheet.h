@@ -18,9 +18,9 @@
 #ifndef QGISAPPSTYLESHEET_H
 #define QGISAPPSTYLESHEET_H
 
-#include <QObject>
 #include <QFont>
 #include <QMap>
+#include <QObject>
 
 /** @class QgisAppStyleSheet
  * @brief Adjustable stylesheet for the Qgis application

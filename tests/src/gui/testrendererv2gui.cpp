@@ -16,11 +16,11 @@
 
 #include <qgsapplication.h>
 #include <qgsmapcanvas.h>
-#include <qgsvectorlayer.h>
 #include <qgsmaplayerregistry.h>
 #include <qgsproject.h>
 #include <qgsrendererv2propertiesdialog.h>
 #include <qgsstylev2.h>
+#include <qgsvectorlayer.h>
 
 #include <QApplication>
 #include <QToolBar>

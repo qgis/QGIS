@@ -14,17 +14,17 @@
  ***************************************************************************/
 
 
-#include <QtTest/QtTest>
 #include <QObject>
 #include <QTemporaryFile>
+#include <QtTest/QtTest>
 
 //qgis includes...
-#include <qgsvectorlayercache.h>
-#include <qgsvectordataprovider.h>
-#include <qgsapplication.h>
-#include <qgsvectorlayereditbuffer.h>
-#include <qgscacheindexfeatureid.h>
 #include <QDebug>
+#include <qgsapplication.h>
+#include <qgscacheindexfeatureid.h>
+#include <qgsvectordataprovider.h>
+#include <qgsvectorlayercache.h>
+#include <qgsvectorlayereditbuffer.h>
 
 /** @ingroup UnitTests
  * This is a unit test for the vector layer cache

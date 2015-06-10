@@ -15,11 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscolorschemeregistry.h"
-#include "qgscolorscheme.h"
 #include <QObject>
 #include <QSharedPointer>
 #include <QtTest/QtTest>
+#include "qgscolorscheme.h"
+#include "qgscolorschemeregistry.h"
 
 //dummy color scheme for testing
 class DummyColorScheme : public QgsColorScheme

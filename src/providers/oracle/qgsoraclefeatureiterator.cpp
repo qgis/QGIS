@@ -16,9 +16,9 @@
 #include "qgsoraclefeatureiterator.h"
 #include "qgsoracleprovider.h"
 
+#include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
-#include "qgsgeometry.h"
 
 #include <QObject>
 

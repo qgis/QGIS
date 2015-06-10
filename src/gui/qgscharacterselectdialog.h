@@ -17,10 +17,10 @@
 #ifndef QGSCHARACTERSELECTDIALOG_H
 #define QGSCHARACTERSELECTDIALOG_H
 
-#include <QDialog>
-#include <QChar>
-#include "qgisgui.h"
 #include "ui_qgscharacterselectdialogbase.h"
+#include <QChar>
+#include <QDialog>
+#include "qgisgui.h"
 
 class CharacterWidget;
 

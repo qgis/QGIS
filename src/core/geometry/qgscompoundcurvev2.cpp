@@ -15,14 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscompoundcurvev2.h"
+#include <QPainter>
+#include <QPainterPath>
 #include "qgsapplication.h"
 #include "qgscircularstringv2.h"
+#include "qgscompoundcurvev2.h"
 #include "qgsgeometryutils.h"
 #include "qgslinestringv2.h"
 #include "qgswkbptr.h"
-#include <QPainter>
-#include <QPainterPath>
 
 
 QgsCompoundCurveV2::QgsCompoundCurveV2(): QgsCurveV2()

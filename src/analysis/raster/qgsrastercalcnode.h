@@ -19,9 +19,9 @@
 #ifndef QGSRASTERCALCNODE_H
 #define QGSRASTERCALCNODE_H
 
-#include "qgsrastermatrix.h"
 #include <QMap>
 #include <QString>
+#include "qgsrastermatrix.h"
 
 class QgsRasterBlock;
 

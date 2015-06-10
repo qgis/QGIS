@@ -1,16 +1,16 @@
-#include "qgstransectsample.h"
+#include <QFileInfo>
+#include <QProgressDialog>
 #include "qgsdistancearea.h"
 #include "qgsgeometry.h"
 #include "qgsspatialindex.h"
+#include "qgstransectsample.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
-#include <QProgressDialog>
-#include <QFileInfo>
 #ifndef _MSC_VER
 #include <stdint.h>
 #endif
-#include "mersenne-twister.h"
 #include <limits>
+#include "mersenne-twister.h"
 
 QgsTransectSample::QgsTransectSample( QgsVectorLayer* strataLayer, QString strataIdAttribute, QString minDistanceAttribute, QString nPointsAttribute, DistanceUnits minDistUnits,
                                       QgsVectorLayer* baselineLayer, bool shareBaseline, QString baselineStrataId, const QString& outputPointLayer,

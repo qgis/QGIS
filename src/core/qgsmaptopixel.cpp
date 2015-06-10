@@ -18,8 +18,8 @@
 
 #include <QPoint>
 #include <QTextStream>
-#include <QVector>
 #include <QTransform>
+#include <QVector>
 
 #include "qgslogger.h"
 

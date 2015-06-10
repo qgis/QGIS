@@ -16,9 +16,9 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSABSTRACTGEOMETRYV2
 #define QGSABSTRACTGEOMETRYV2
 
+#include <QString>
 #include "qgsrectangle.h"
 #include "qgswkbtypes.h"
-#include <QString>
 
 class QgsCoordinateTransform;
 class QgsMapToPixel;

@@ -13,20 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmaptooladdfeature.h"
 #include "qgsapplication.h"
 #include "qgsattributedialog.h"
 #include "qgscsexception.h"
+#include "qgsfeatureaction.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
+#include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmapmouseevent.h"
+#include "qgsmaptooladdfeature.h"
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgslogger.h"
-#include "qgsfeatureaction.h"
 
 #include <QMouseEvent>
 #include <QSettings>

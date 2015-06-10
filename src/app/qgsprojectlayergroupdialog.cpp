@@ -12,10 +12,10 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsprojectlayergroupdialog.h"
-#include "qgsproject.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
+#include "qgsproject.h"
+#include "qgsprojectlayergroupdialog.h"
 
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"

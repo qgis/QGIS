@@ -12,9 +12,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsrasterterrainanalysisdialog.h"
-#include "qgsmaplayerregistry.h"
-#include "qgsrasterlayer.h"
 #include <QColorDialog>
 #include <QDir>
 #include <QFileDialog>
@@ -25,6 +22,9 @@
 #include <QTextStream>
 #include "cpl_string.h"
 #include "gdal.h"
+#include "qgsmaplayerregistry.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterterrainanalysisdialog.h"
 
 QgsRasterTerrainAnalysisDialog::QgsRasterTerrainAnalysisDialog( DisplayMode mode, QWidget * parent, Qt::WindowFlags f ): QDialog( parent, f )
 {

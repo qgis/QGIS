@@ -15,14 +15,15 @@
 
 #include "qgsrelationreferencewidget.h"
 
-#include <QPushButton>
 #include <QDialog>
 #include <QHBoxLayout>
+#include <QPushButton>
 #include <QTimer>
 
-#include "qgsattributeform.h"
-#include "qgsattributedialog.h"
 #include "qgsapplication.h"
+#include "qgsattributedialog.h"
+#include "qgsattributeform.h"
+#include "qgsattributetablemodel.h"
 #include "qgscollapsiblegroupbox.h"
 #include "qgseditorwidgetfactory.h"
 #include "qgsexpression.h"
@@ -32,7 +33,6 @@
 #include "qgsmessagebar.h"
 #include "qgsrelationreferenceconfigdlg.h"
 #include "qgsvectorlayer.h"
-#include "qgsattributetablemodel.h"
 
 bool orderByLessThan( const QgsRelationReferenceWidget::ValueRelationItem& p1
                       , const QgsRelationReferenceWidget::ValueRelationItem& p2 )

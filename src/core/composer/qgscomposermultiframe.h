@@ -16,10 +16,10 @@
 #ifndef QGSCOMPOSERMULTIFRAME_H
 #define QGSCOMPOSERMULTIFRAME_H
 
-#include "qgscomposerobject.h"
 #include <QObject>
-#include <QSizeF>
 #include <QPointF>
+#include <QSizeF>
+#include "qgscomposerobject.h"
 
 class QgsComposerFrame;
 class QgsComposerItem;

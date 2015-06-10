@@ -14,16 +14,16 @@
  ***************************************************************************/
 
 #include "coordinatecapturemaptool.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgscursors.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptopixel.h"
 #include "qgsrubberband.h"
-#include "qgscoordinatereferencesystem.h"
 
 #include <QSettings>
 
-#include <QMouseEvent>
 #include <QCursor>
+#include <QMouseEvent>
 #include <QPixmap>
 
 CoordinateCaptureMapTool::CoordinateCaptureMapTool( QgsMapCanvas* thepCanvas )

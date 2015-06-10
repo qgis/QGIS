@@ -12,27 +12,26 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
-#include <QObject>
-#include <QString>
-#include <QStringList>
-#include <QObject>
 #include <iostream>
 #include <QApplication>
-#include <QFileInfo>
-#include <QDir>
-#include <QPainter>
-#include <QTime>
 #include <QDesktopServices>
+#include <QDir>
+#include <QFileInfo>
+#include <QObject>
+#include <QPainter>
+#include <QString>
+#include <QStringList>
+#include <QTime>
+#include <QtTest/QtTest>
 
 #include "cpl_conv.h"
 
 //qgis includes...
-#include <qgsrasterchecker.h>
-#include <qgsrasterlayer.h>
-#include <qgsrasterfilewriter.h>
-#include <qgsrasternuller.h>
 #include <qgsapplication.h>
+#include <qgsrasterchecker.h>
+#include <qgsrasterfilewriter.h>
+#include <qgsrasterlayer.h>
+#include <qgsrasternuller.h>
 
 /** \ingroup UnitTests
  * This is a unit test for the QgsRasterFileWriter class.

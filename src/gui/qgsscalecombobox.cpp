@@ -20,9 +20,9 @@
 #include "qgsscalecombobox.h"
 
 #include <QAbstractItemView>
+#include <QLineEdit>
 #include <QLocale>
 #include <QSettings>
-#include <QLineEdit>
 
 QgsScaleComboBox::QgsScaleComboBox( QWidget* parent ) : QComboBox( parent ), mScale( 1.0 )
 {

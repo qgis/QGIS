@@ -12,8 +12,8 @@ Email                : sherman at mrcc dot com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
 #include <iostream>
+#include <QtTest/QtTest>
 
 #include <QPixmap>
 
@@ -21,13 +21,13 @@ Email                : sherman at mrcc dot com
 #include "qgslogger.h"
 
 //header for class being tested
-#include <qgscoordinatereferencesystem.h>
 #include <qgis.h>
+#include <qgscoordinatereferencesystem.h>
 #include <qgsvectorlayer.h>
 
-#include <proj_api.h>
-#include <gdal.h>
 #include <cpl_conv.h>
+#include <gdal.h>
+#include <proj_api.h>
 
 class TestQgsCoordinateReferenceSystem: public QObject
 {

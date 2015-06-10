@@ -15,15 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsremotedatasourcebuilder.h"
+#include <QDomElement>
+#include <QFile>
+#include <QTemporaryFile>
 #include "qgsftptransaction.h"
 #include "qgshttptransaction.h"
 #include "qgslogger.h"
 #include "qgsrasterlayer.h"
+#include "qgsremotedatasourcebuilder.h"
 #include "qgsvectorlayer.h"
-#include <QDomElement>
-#include <QFile>
-#include <QTemporaryFile>
 
 QgsRemoteDataSourceBuilder::QgsRemoteDataSourceBuilder(): QgsMSLayerBuilder()
 {

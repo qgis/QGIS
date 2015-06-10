@@ -18,10 +18,10 @@
 #define TRIANGULATION_H
 
 #include <QList>
-#include "Line3D.h"
-#include "Vector3D.h"
 #include <qpainter.h>
 #include <TriangleInterpolator.h>
+#include "Line3D.h"
+#include "Vector3D.h"
 
 /**Interface for Triangulation classes*/
 class ANALYSIS_EXPORT Triangulation

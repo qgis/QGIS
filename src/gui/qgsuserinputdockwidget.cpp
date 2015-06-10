@@ -15,8 +15,8 @@
 
 #include "qgsuserinputdockwidget.h"
 
-#include <QFrame>
 #include <QBoxLayout>
+#include <QFrame>
 
 QgsUserInputDockWidget::QgsUserInputDockWidget( QWidget *parent )
     : QDockWidget( tr( "User input" ), parent )

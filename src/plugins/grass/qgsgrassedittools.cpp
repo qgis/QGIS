@@ -14,9 +14,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgrassedittools.h"
 #include "qgsgrassattributes.h"
 #include "qgsgrassedit.h"
+#include "qgsgrassedittools.h"
 #include "qgsgrassprovider.h"
 
 #include "qgisinterface.h"

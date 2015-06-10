@@ -18,8 +18,8 @@
 #ifndef SPATIALQUERY_H
 #define SPATIALQUERY_H
 
-#include <qgsvectorlayer.h>
 #include <qgsspatialindex.h>
+#include <qgsvectorlayer.h>
 
 #include "qgsmngprogressbar.h"
 #include "qgsreaderfeatures.h"

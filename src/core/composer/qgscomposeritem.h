@@ -17,12 +17,12 @@
 #ifndef QGSCOMPOSERITEM_H
 #define QGSCOMPOSERITEM_H
 
-#include "qgscomposeritemcommand.h"
-#include "qgscomposereffect.h"
-#include "qgscomposerobject.h"
-#include "qgsmaprenderer.h" // for blend mode functions & enums
 #include <QGraphicsRectItem>
 #include <QObject>
+#include "qgscomposereffect.h"
+#include "qgscomposeritemcommand.h"
+#include "qgscomposerobject.h"
+#include "qgsmaprenderer.h" // for blend mode functions & enums
 
 class QWidget;
 class QDomDocument;

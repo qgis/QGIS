@@ -18,8 +18,8 @@
 #ifndef QGSPAPERITEM_H
 #define QGSPAPERITEM_H
 
-#include "qgscomposeritem.h"
 #include <QGraphicsRectItem>
+#include "qgscomposeritem.h"
 
 /**Item representing a grid. This is drawn separately to the underlying paper item since the grid needs to be
  * drawn above all other composer items, while the paper item is drawn below all others.*/

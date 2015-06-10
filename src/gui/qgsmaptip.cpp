@@ -13,16 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 // QGIS includes
+#include "qgsexpression.h"
+#include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptool.h"
 #include "qgsvectorlayer.h"
-#include "qgsexpression.h"
-#include "qgslogger.h"
 
 // Qt includes
 #include <QPoint>
-#include <QToolTip>
 #include <QSettings>
+#include <QToolTip>
 
 #include "qgsmaptip.h"
 

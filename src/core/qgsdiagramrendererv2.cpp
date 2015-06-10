@@ -12,13 +12,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsdiagramrendererv2.h"
-#include "qgsvectorlayer.h"
-#include "diagram/qgstextdiagram.h"
-#include "diagram/qgspiediagram.h"
 #include "diagram/qgshistogramdiagram.h"
-#include "qgsrendercontext.h"
+#include "diagram/qgspiediagram.h"
+#include "diagram/qgstextdiagram.h"
+#include "qgsdiagramrendererv2.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgsrendercontext.h"
+#include "qgsvectorlayer.h"
 
 #include <QDomElement>
 #include <QPainter>

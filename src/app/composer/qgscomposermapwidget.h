@@ -19,9 +19,9 @@
 #define QGSCOMPOSERMAPWIDGET_H
 
 #include "ui_qgscomposermapwidgetbase.h"
-#include "qgscomposermap.h"
-#include "qgscomposermapgrid.h"
 #include "qgscomposeritemwidget.h"
+#include "qgscomposermapgrid.h"
+#include "qgscomposermap.h"
 
 class QgsMapLayer;
 

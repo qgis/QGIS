@@ -35,10 +35,10 @@
 #define _PAL_H
 
 
-#include <QList>
-#include <iostream>
 #include <ctime>
 #include <geos_c.h>
+#include <iostream>
+#include <QList>
 
 // TODO ${MAJOR} ${MINOR} etc instead of 0.2
 

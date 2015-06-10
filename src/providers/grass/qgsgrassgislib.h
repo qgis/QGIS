@@ -22,20 +22,20 @@ extern "C"
 #include <grass/gis.h>
 }
 
-#include <stdexcept>
 #include <qgscoordinatereferencesystem.h>
 #include <qgsdistancearea.h>
 #include <qgsexception.h>
 #include <qgsproviderregistry.h>
-#include <qgsrectangle.h>
 #include <qgsrasterdataprovider.h>
 #include <qgsrasterprojector.h>
+#include <qgsrectangle.h>
+#include <stdexcept>
 
+#include <QHash>
 #include <QLibrary>
+#include <QMap>
 #include <QProcess>
 #include <QString>
-#include <QMap>
-#include <QHash>
 #include <QTemporaryFile>
 class QgsCoordinateReferenceSystem;
 class QgsRectangle;

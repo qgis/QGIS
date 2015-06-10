@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgswidgetwrapper.h"
 #include "qgsvectorlayer.h"
+#include "qgswidgetwrapper.h"
 
 #include <QWidget>
 

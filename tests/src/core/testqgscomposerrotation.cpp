@@ -15,21 +15,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
-#include "qgscomposition.h"
-#include "qgscompositionchecker.h"
-#include "qgscomposershape.h"
-#include "qgscomposermap.h"
-#include "qgscomposerlabel.h"
-#include "qgsmultibandcolorrenderer.h"
-#include "qgsmaprenderer.h"
-#include "qgsrasterlayer.h"
-#include "qgsmaplayerregistry.h"
-#include "qgsfontutils.h"
-#include <QObject>
-#include <QtTest/QtTest>
 #include <QColor>
+#include <QObject>
 #include <QPainter>
+#include <QtTest/QtTest>
+#include "qgsapplication.h"
+#include "qgscomposerlabel.h"
+#include "qgscomposermap.h"
+#include "qgscomposershape.h"
+#include "qgscompositionchecker.h"
+#include "qgscomposition.h"
+#include "qgsfontutils.h"
+#include "qgsmaplayerregistry.h"
+#include "qgsmaprenderer.h"
+#include "qgsmultibandcolorrenderer.h"
+#include "qgsrasterlayer.h"
 
 class TestQgsComposerRotation : public QObject
 {

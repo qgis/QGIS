@@ -15,18 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QObject>
+#include <QtTest/QtTest>
 #include "qgsapplication.h"
-#include "qgscomposition.h"
-#include "qgscompositionchecker.h"
 #include "qgscomposermap.h"
 #include "qgscomposermapoverview.h"
+#include "qgscompositionchecker.h"
+#include "qgscomposition.h"
+#include "qgsfontutils.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsrasterlayer.h"
-#include "qgsfontutils.h"
-#include <QObject>
-#include <QtTest/QtTest>
 
 class TestQgsComposerMapOverview : public QObject
 {

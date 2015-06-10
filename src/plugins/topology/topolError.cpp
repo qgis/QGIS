@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "topolError.h"
 #include <qgsmessagelog.h>
+#include "topolError.h"
 
 //TODO: tell dock to parse errorlist when feature is deleted
 bool TopolError::fix( QString fixName )

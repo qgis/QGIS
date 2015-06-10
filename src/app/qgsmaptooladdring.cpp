@@ -15,9 +15,9 @@
 
 #include <QMouseEvent>
 
-#include "qgsmaptooladdring.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaptooladdring.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 

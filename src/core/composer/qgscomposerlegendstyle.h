@@ -18,11 +18,11 @@
 #ifndef QGSCOMPOSERLEGENDSTYLE_H
 #define QGSCOMPOSERLEGENDSTYLE_H
 
+#include <QDomDocument>
+#include <QDomElement>
 #include <QFont>
 #include <QMap>
 #include <QString>
-#include <QDomElement>
-#include <QDomDocument>
 
 /** \ingroup MapComposer
  * Composer legend components style

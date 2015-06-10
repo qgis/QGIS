@@ -16,9 +16,9 @@
 #ifndef QGSPAINTEFFECTREGISTRY_H
 #define QGSPAINTEFFECTREGISTRY_H
 
-#include "qgis.h"
-#include <QDomElement>
 #include <QDomDocument>
+#include <QDomElement>
+#include "qgis.h"
 
 class QgsPaintEffect;
 class QgsPaintEffectWidget;

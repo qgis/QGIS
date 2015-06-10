@@ -12,10 +12,10 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include <QApplication>
 #include <QObject>
 #include <QString>
-#include <QApplication>
+#include <QtTest/QtTest>
 
 //qgis includes...
 #include <qgis.h>

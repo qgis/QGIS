@@ -29,8 +29,8 @@
 #include <QVector>
 
 #include "qgsapplication.h"
-#include "qgsmaplayer.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsmaplayer.h"
 
 class QgsDataProvider;
 class QgsDataItem;

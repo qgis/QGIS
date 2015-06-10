@@ -19,11 +19,11 @@
 
 #include "ui_qgshistogramwidgetbase.h"
 
+#include <QBrush>
+#include <QPen>
+#include "qgsgraduatedsymbolrendererv2.h"
 #include "qgshistogram.h"
 #include "qgsstatisticalsummary.h"
-#include "qgsgraduatedsymbolrendererv2.h"
-#include <QPen>
-#include <QBrush>
 
 class QgsVectorLayer;
 class QgsGraduatedSymbolRendererV2;

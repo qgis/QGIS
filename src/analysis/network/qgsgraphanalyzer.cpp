@@ -19,12 +19,12 @@
 
 // QT includes
 #include <QMap>
-#include <QVector>
 #include <QPair>
+#include <QVector>
 
 //QGIS-uncludes
-#include "qgsgraph.h"
 #include "qgsgraphanalyzer.h"
+#include "qgsgraph.h"
 
 void QgsGraphAnalyzer::dijkstra( const QgsGraph* source, int startPointIdx, int criterionNum, QVector<int>* resultTree, QVector<double>* resultCost )
 {

@@ -20,8 +20,8 @@
 #define QGSMAPLAYERREGISTRY_H
 
 #include <QMap>
-#include <QSet>
 #include <QObject>
+#include <QSet>
 #include <QStringList>
 class QString;
 class QgsMapLayer;

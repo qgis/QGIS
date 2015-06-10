@@ -20,17 +20,17 @@
 #include "diagram/qgstextdiagram.h"
 
 #include "qgisapp.h"
-#include "qgsproject.h"
+#include "qgisgui.h"
 #include "qgsapplication.h"
+#include "qgscolordialog.h"
 #include "qgsdiagramproperties.h"
 #include "qgsdiagramrendererv2.h"
+#include "qgsfeatureiterator.h"
 #include "qgslabelengineconfigdialog.h"
 #include "qgsmessagebar.h"
-#include "qgsvectorlayerproperties.h"
+#include "qgsproject.h"
 #include "qgsvectordataprovider.h"
-#include "qgsfeatureiterator.h"
-#include "qgscolordialog.h"
-#include "qgisgui.h"
+#include "qgsvectorlayerproperties.h"
 
 #include <QList>
 #include <QMessageBox>

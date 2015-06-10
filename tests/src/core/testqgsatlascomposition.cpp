@@ -15,23 +15,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
-#include "qgscomposition.h"
-#include "qgscompositionchecker.h"
-#include "qgscomposermap.h"
-#include "qgscomposermapoverview.h"
-#include "qgsatlascomposition.h"
-#include "qgscomposerlabel.h"
-#include "qgsmaplayerregistry.h"
-#include "qgsmaprenderer.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
-#include "qgssymbolv2.h"
-#include "qgssinglesymbolrendererv2.h"
-#include "qgsfontutils.h"
 #include <QObject>
 #include <QtTest/QSignalSpy>
 #include <QtTest/QtTest>
+#include "qgsapplication.h"
+#include "qgsatlascomposition.h"
+#include "qgscomposerlabel.h"
+#include "qgscomposermap.h"
+#include "qgscomposermapoverview.h"
+#include "qgscompositionchecker.h"
+#include "qgscomposition.h"
+#include "qgsfontutils.h"
+#include "qgsmaplayerregistry.h"
+#include "qgsmaprenderer.h"
+#include "qgssinglesymbolrendererv2.h"
+#include "qgssymbolv2.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
 class TestQgsAtlasComposition : public QObject
 {

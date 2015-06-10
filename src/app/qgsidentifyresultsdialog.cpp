@@ -33,31 +33,31 @@
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
-#include "qgswebview.h"
 #include "qgswebframe.h"
+#include "qgswebview.h"
 
-#include <QCloseEvent>
-#include <QLabel>
 #include <QAction>
-#include <QTreeWidgetItem>
-#include <QPixmap>
-#include <QSettings>
-#include <QMenu>
 #include <QClipboard>
-#include <QDockWidget>
-#include <QMenuBar>
-#include <QPushButton>
-#include <QPrinter>
-#include <QPrintDialog>
-#include <QDesktopServices>
-#include <QMessageBox>
+#include <QCloseEvent>
 #include <QComboBox>
+#include <QDesktopServices>
+#include <QDockWidget>
+#include <QLabel>
+#include <QMenu>
+#include <QMenuBar>
+#include <QMessageBox>
+#include <QPixmap>
+#include <QPrintDialog>
+#include <QPrinter>
+#include <QPushButton>
+#include <QSettings>
+#include <QTreeWidgetItem>
 
 //graph
-#include <qwt_plot.h>
-#include <qwt_plot_curve.h>
-#include <qwt_symbol.h>
 #include <qwt_legend.h>
+#include <qwt_plot_curve.h>
+#include <qwt_plot.h>
+#include <qwt_symbol.h>
 #include "qgsvectorcolorrampv2.h" // for random colors
 
 

@@ -16,18 +16,18 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "qgscomposition.h"
+#include "qgscomposerattributetable.h"
 #include "qgscomposermap.h"
 #include "qgscomposertexttable.h"
-#include "qgscomposerattributetable.h"
+#include "qgscomposition.h"
+#include "qgsdatadefined.h"
+#include "qgsfeature.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmapsettings.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
-#include "qgsfeature.h"
-#include "qgssymbolv2.h"
 #include "qgssinglesymbolrendererv2.h"
-#include "qgsdatadefined.h"
+#include "qgssymbolv2.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
 #include <QObject>
 #include <QtTest/QtTest>

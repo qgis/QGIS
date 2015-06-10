@@ -16,11 +16,11 @@
  ***************************************************************************/
 
 
-#include "qgspoint.h"
-#include "qgis.h"
 #include <cmath>
-#include <QTextStream>
 #include <QObject> // for tr()
+#include <QTextStream>
+#include "qgis.h"
+#include "qgspoint.h"
 
 #include "qgsexception.h"
 

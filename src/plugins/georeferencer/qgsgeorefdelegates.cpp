@@ -17,8 +17,8 @@
 #include <QDoubleSpinBox>
 #include <QLineEdit>
 
-#include "qgsgeorefvalidators.h"
 #include "qgsgeorefdelegates.h"
+#include "qgsgeorefvalidators.h"
 
 // ------------------------ QgsNonEditableDelegate ------------------------- //
 QgsNonEditableDelegate::QgsNonEditableDelegate( QWidget *parent )

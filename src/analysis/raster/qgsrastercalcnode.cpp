@@ -12,9 +12,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsrastercalcnode.h"
-#include "qgsrasterblock.h"
 #include <cfloat>
+#include "qgsrasterblock.h"
+#include "qgsrastercalcnode.h"
 
 QgsRasterCalcNode::QgsRasterCalcNode()
     : mType( tNumber )

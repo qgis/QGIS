@@ -19,12 +19,12 @@
 #ifndef QGSVERSION
 #include "qgsversion.h"
 #endif
-#include <QCoreApplication>
 #include <QColor>
+#include <QCoreApplication>
 #include <QDate>
-#include <QTime>
-#include <QLocale>
 #include <QDateTime>
+#include <QLocale>
+#include <QTime>
 #include "qgsconfig.h"
 #include "qgslogger.h"
 

@@ -19,18 +19,18 @@
 #ifndef QGSGDALPROVIDER_H
 #define QGSGDALPROVIDER_H
 
+#include "qgscolorrampshader.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdataitem.h"
-#include "qgsrasterdataprovider.h"
 #include "qgsgdalproviderbase.h"
-#include "qgsrectangle.h"
-#include "qgscolorrampshader.h"
 #include "qgsrasterbandstats.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrectangle.h"
 
-#include <QString>
-#include <QStringList>
 #include <QDomElement>
 #include <QMap>
+#include <QString>
+#include <QStringList>
 #include <QVector>
 
 class QgsRasterPyramid;

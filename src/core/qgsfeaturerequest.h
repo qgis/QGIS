@@ -17,9 +17,9 @@
 
 #include <QFlags>
 
+#include "qgsexpression.h"
 #include "qgsfeature.h"
 #include "qgsrectangle.h"
-#include "qgsexpression.h"
 #include "qgssimplifymethod.h"
 
 #include <QList>

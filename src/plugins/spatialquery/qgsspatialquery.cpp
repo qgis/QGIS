@@ -18,10 +18,10 @@
 
 #include <QMessageBox>
 
-#include "qgsvectordataprovider.h"
 #include "qgsfeature.h"
 #include "qgsgeometrycoordinatetransform.h"
 #include "qgsspatialquery.h"
+#include "qgsvectordataprovider.h"
 
 QgsSpatialQuery::QgsSpatialQuery( MngProgressBar *pb )
     : mPb( pb )

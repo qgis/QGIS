@@ -13,9 +13,9 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "qgsscalerangewidget.h"
 #include "qgsapplication.h"
 #include "qgsproject.h"
+#include "qgsscalerangewidget.h"
 
 
 QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )

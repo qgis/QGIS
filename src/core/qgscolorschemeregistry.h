@@ -18,8 +18,8 @@
 #ifndef QGSCOLORSCHEMEREGISTRY_H
 #define QGSCOLORSCHEMEREGISTRY_H
 
-#include "qgscolorscheme.h"
 #include <QList>
+#include "qgscolorscheme.h"
 
 /** \ingroup core
  * \class QgsColorSchemeRegistry

@@ -17,12 +17,12 @@
 
 #include "qgsapplication.h"
 #include "qgsdistancearea.h"
-#include "qgsvectordataprovider.h"
 #include "qgsexpression.h"
 #include "qgsfeature.h"
 #include "qgsfeatureselectiondlg.h"
 #include "qgsgenericfeatureselectionmanager.h"
 #include "qgsrelation.h"
+#include "qgsvectordataprovider.h"
 #include "qgsvectorlayertools.h"
 
 #include <QHBoxLayout>

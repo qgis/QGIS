@@ -19,9 +19,9 @@
 
 #include "qgsdataitem.h"
 
-#include "qgspostgresconn.h"
-#include "qgspgsourceselect.h"
 #include "qgsmimedatautils.h"
+#include "qgspgsourceselect.h"
+#include "qgspostgresconn.h"
 #include "qgsvectorlayerimport.h"
 
 class QgsPGRootItem;

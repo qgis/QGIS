@@ -25,13 +25,13 @@ extern "C"
 #include <spatialite.h>
 }
 
-#include "qgsvectordataprovider.h"
-#include "qgsrectangle.h"
-#include "qgsvectorlayerimport.h"
+#include <fstream>
 #include <list>
 #include <queue>
-#include <fstream>
 #include <set>
+#include "qgsrectangle.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayerimport.h"
 
 class QgsFeature;
 class QgsField;

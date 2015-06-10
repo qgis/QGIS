@@ -18,8 +18,8 @@
 #ifndef QGSTININTERPOLATOR_H
 #define QGSTININTERPOLATOR_H
 
-#include "qgsinterpolator.h"
 #include <QString>
+#include "qgsinterpolator.h"
 
 class Triangulation;
 class TriangleInterpolator;

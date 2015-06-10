@@ -19,12 +19,12 @@
 #ifndef QGSLABELSEARCHTREE_H
 #define QGSLABELSEARCHTREE_H
 
-#include "qgspoint.h"
-#include "qgsmaprenderer.h"
+#include <labelposition.h>
+#include <pointset.h>
 #include <QList>
 #include <QVector>
-#include <pointset.h>
-#include <labelposition.h>
+#include "qgsmaprenderer.h"
+#include "qgspoint.h"
 #include "qgsrectangle.h"
 
 using namespace pal;

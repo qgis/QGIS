@@ -13,17 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QHeaderView>
 #include <QDoubleSpinBox>
+#include <QHeaderView>
 #include <QLineEdit>
 #include <QMenu>
 #include <QSortFilterProxyModel>
 
-#include "qgsgeorefdelegates.h"
-#include "qgsgeorefdatapoint.h"
 #include "qgsgcplist.h"
-#include "qgsgcplistwidget.h"
 #include "qgsgcplistmodel.h"
+#include "qgsgcplistwidget.h"
+#include "qgsgeorefdatapoint.h"
+#include "qgsgeorefdelegates.h"
 
 QgsGCPListWidget::QgsGCPListWidget( QWidget *parent )
     : QTableView( parent )

@@ -14,8 +14,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgrassselect.h"
 #include "qgsgrass.h"
+#include "qgsgrassselect.h"
 
 #include "qgslogger.h"
 

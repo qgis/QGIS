@@ -15,13 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscomposerobject.h"
-#include "qgscomposition.h"
-#include "qgscompositionchecker.h"
-#include "qgsdatadefined.h"
-#include "qgsexpression.h"
 #include <QObject>
 #include <QtTest/QtTest>
+#include "qgscomposerobject.h"
+#include "qgscompositionchecker.h"
+#include "qgscomposition.h"
+#include "qgsdatadefined.h"
+#include "qgsexpression.h"
 
 class TestQgsComposerObject : public QObject
 {

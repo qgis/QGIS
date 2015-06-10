@@ -16,15 +16,15 @@
 #include "nodetool/qgsselectedfeature.h"
 #include "nodetool/qgsvertexentry.h"
 
-#include <qgslogger.h>
-#include <qgsvertexmarker.h>
-#include <qgsgeometryvalidator.h>
-#include <qgsvectorlayer.h>
-#include <qgsrubberband.h>
 #include <qgisapp.h>
-#include <qgsmaprenderer.h>
+#include <qgsgeometryvalidator.h>
 #include <qgslayertreeview.h>
+#include <qgslogger.h>
+#include <qgsmaprenderer.h>
 #include <qgsproject.h>
+#include <qgsrubberband.h>
+#include <qgsvectorlayer.h>
+#include <qgsvertexmarker.h>
 
 QgsSelectedFeature::QgsSelectedFeature( QgsFeatureId featureId,
                                         QgsVectorLayer *vlayer,

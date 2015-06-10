@@ -15,13 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QPainter>
+#include <QPen>
 #include "qgsannotationitem.h"
 #include "qgsmapcanvas.h"
 #include "qgsrendercontext.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgssymbolv2.h"
-#include <QPainter>
-#include <QPen>
 
 QgsAnnotationItem::QgsAnnotationItem( QgsMapCanvas* mapCanvas )
     : QgsMapCanvasItem( mapCanvas )

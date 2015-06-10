@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtTest/QtTest>
 #include <QtTest/QSignalSpy>
+#include <QtTest/QtTest>
 
 #include <qgsapplication.h>
 //#include <qgsproviderregistry.h>
