@@ -48,6 +48,8 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QDockWidget, private U
 
     void layerChanged( QgsMapLayer* layer );
     void statActionTriggered( bool checked );
+    void layersRemoved( QStringList layers );
+    void layerSelectionChanged();
 
   private:
 
