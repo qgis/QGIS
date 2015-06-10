@@ -43,27 +43,29 @@ fi
 
 set -e
 
-export ARTISTIC_STYLE_OPTIONS="\
---preserve-date \
---indent-preprocessor \
---brackets=break \
---convert-tabs \
---indent=spaces=2 \
---indent-classes \
---indent-labels \
---indent-namespaces \
---indent-switches \
---one-line=keep-blocks \
---one-line=keep-statements \
---max-instatement-indent=40 \
---min-conditional-indent=-1 \
---suffix=none"
+astyleit()
+{
+	scripts/sort_includes.pl "$1"
 
-export ARTISTIC_STYLE_OPTIONS="\
-$ARTISTIC_STYLE_OPTIONS \
---pad=oper \
---pad=paren-in \
---unpad=paren"
+	$ASTYLE \
+		--preserve-date \
+		--indent-preprocessor \
+		--brackets=break \
+		--convert-tabs \
+		--indent=spaces=2 \
+		--indent-classes \
+		--indent-labels \
+		--indent-namespaces \
+		--indent-switches \
+		--one-line=keep-blocks \
+		--one-line=keep-statements \
+		--max-instatement-indent=40 \
+		--min-conditional-indent=-1 \
+		--suffix=none \
+		--pad=oper \
+		--pad=paren-in \
+		--unpad=paren "$1"
+}
 
 for f in "$@"; do
 	case "$f" in
@@ -73,7 +75,7 @@ for f in "$@"; do
                 ;;
 
         *.cpp|*.h|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H|*.hpp)
-                cmd="$ASTYLE $ARTISTIC_STYLE_OPTIONS"
+                cmd=astyleit
                 ;;
 
         *.ui|*.qgm|*.txt|*.t2t|resources/context_help/*)
