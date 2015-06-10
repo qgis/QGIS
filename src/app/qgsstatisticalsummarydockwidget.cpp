@@ -106,10 +106,14 @@ void QgsStatisticalSummaryDockWidget::refreshStatistics()
   }
 
   QList< QgsStatisticalSummary::Statistic > statsToDisplay;
+  QgsStatisticalSummary::Statistics statsToCalc = 0;
   foreach ( QgsStatisticalSummary::Statistic stat, mDisplayStats )
   {
     if ( mStatsActions.value( stat )->isChecked() )
+    {
       statsToDisplay << stat;
+      statsToCalc |= stat;
+    }
   }
 
   int extraRows = 0;
@@ -117,7 +121,7 @@ void QgsStatisticalSummaryDockWidget::refreshStatistics()
     extraRows++;
 
   QgsStatisticalSummary stats;
-  stats.setStatistics( QgsStatisticalSummary::All );
+  stats.setStatistics( statsToCalc );
   stats.calculate( values );
 
   mStatisticsTable->setRowCount( statsToDisplay.count() + extraRows );
