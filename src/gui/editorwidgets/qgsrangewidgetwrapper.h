@@ -18,8 +18,8 @@
 
 #include "qgseditorwidgetwrapper.h"
 
-#include <QDoubleSpinBox>
 #include <QSpinBox>
+#include <QDoubleSpinBox>
 
 #include "qgsdial.h"
 #include "qgsslider.h"

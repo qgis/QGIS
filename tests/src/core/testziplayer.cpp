@@ -12,18 +12,19 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QApplication>
-#include <QFileInfo>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
-#include <QtTest/QtTest>
+#include <QObject>
+#include <QApplication>
+#include <QFileInfo>
 
 //qgis includes...
 #include <qgsapplication.h>
-#include <qgsdataitem.h>
 #include <qgsproviderregistry.h>
-#include <qgsrasterlayer.h>
 #include <qgsvectorlayer.h>
+#include <qgsrasterlayer.h>
+#include <qgsdataitem.h>
 #include "qgsconfig.h"
 
 #include <gdal.h>

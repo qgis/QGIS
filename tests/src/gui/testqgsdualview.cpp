@@ -16,13 +16,13 @@
 
 #include <QtTest/QtTest>
 
+#include <editorwidgets/core/qgseditorwidgetregistry.h>
 #include <attributetable/qgsattributetableview.h>
 #include <attributetable/qgsdualview.h>
-#include <editorwidgets/core/qgseditorwidgetregistry.h>
 #include <qgsapplication.h>
-#include <qgsfeature.h>
-#include <qgsmapcanvas.h>
 #include <qgsvectorlayer.h>
+#include <qgsmapcanvas.h>
+#include <qgsfeature.h>
 
 class TestQgsDualView : public QObject
 {

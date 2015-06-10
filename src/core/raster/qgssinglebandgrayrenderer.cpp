@@ -15,12 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgssinglebandgrayrenderer.h"
+#include "qgscontrastenhancement.h"
+#include "qgsrastertransparency.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QImage>
-#include "qgscontrastenhancement.h"
-#include "qgsrastertransparency.h"
-#include "qgssinglebandgrayrenderer.h"
 
 QgsSingleBandGrayRenderer::QgsSingleBandGrayRenderer( QgsRasterInterface* input, int grayBand ):
     QgsRasterRenderer( input, "singlebandgray" ), mGrayBand( grayBand ), mGradient( BlackToWhite ), mContrastEnhancement( 0 )

@@ -14,9 +14,9 @@
  ***************************************************************************/
 
 #include "qgisapp.h"
+#include "qgsfieldcalculator.h"
 #include "qgsdistancearea.h"
 #include "qgsexpression.h"
-#include "qgsfieldcalculator.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"

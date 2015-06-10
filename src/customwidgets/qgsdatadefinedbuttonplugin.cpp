@@ -14,8 +14,8 @@
 ***************************************************************************/
 
 #include "qgiscustomwidgets.h"
-#include "qgsdatadefinedbutton.h"
 #include "qgsdatadefinedbuttonplugin.h"
+#include "qgsdatadefinedbutton.h"
 
 
 QgsDataDefinedButtonPlugin::QgsDataDefinedButtonPlugin( QObject *parent )

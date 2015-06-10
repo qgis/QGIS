@@ -15,14 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsapplication.h"
+#include "qgscomposerhtml.h"
+#include "qgscomposerframe.h"
+#include "qgscomposition.h"
+#include "qgscompositionchecker.h"
+#include "qgsfontutils.h"
 #include <QObject>
 #include <QtTest/QtTest>
-#include "qgsapplication.h"
-#include "qgscomposerframe.h"
-#include "qgscomposerhtml.h"
-#include "qgscompositionchecker.h"
-#include "qgscomposition.h"
-#include "qgsfontutils.h"
 
 class TestQgsComposerHtml : public QObject
 {

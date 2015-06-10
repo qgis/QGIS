@@ -14,8 +14,8 @@
 ***************************************************************************/
 
 #include "qgiscustomwidgets.h"
-#include "qgsfieldexpressionwidget.h"
 #include "qgsfieldexpressionwidgetplugin.h"
+#include "qgsfieldexpressionwidget.h"
 
 
 QgsFieldExpressionWidgetPlugin::QgsFieldExpressionWidgetPlugin( QObject *parent )

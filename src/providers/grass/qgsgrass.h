@@ -23,24 +23,24 @@
 // GRASS header files
 extern "C"
 {
-#include <grass/dbmi.h>
-#include <grass/form.h>
-#include <grass/gis.h>
 #include <grass/version.h>
+#include <grass/gis.h>
+#include <grass/form.h>
+#include <grass/dbmi.h>
 }
 
-#include <qgsrectangle.h>
-#include <QHash>
-#include <QMap>
-#include <QProcess>
-#include <QRegExp>
-#include <QString>
-#include <QTemporaryFile>
 #include <stdexcept>
 #include "qgsapplication.h"
 #include "qgsexception.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
+#include <qgsrectangle.h>
+#include <QProcess>
+#include <QString>
+#include <QMap>
+#include <QHash>
+#include <QRegExp>
+#include <QTemporaryFile>
 class QgsCoordinateReferenceSystem;
 class QgsRectangle;
 

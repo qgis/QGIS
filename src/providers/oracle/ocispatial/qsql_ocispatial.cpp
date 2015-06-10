@@ -49,8 +49,8 @@
 #include "wkbptr.h"
 
 #include <qcoreapplication.h>
+#include <qvariant.h>
 #include <qdatetime.h>
-#include <qdebug.h>
 #include <qmetatype.h>
 #include <qregexp.h>
 #include <qshareddata.h>
@@ -59,9 +59,9 @@
 #include <qsqlindex.h>
 #include <qsqlquery.h>
 #include <qstringlist.h>
-#include <qvariant.h>
 #include <qvarlengtharray.h>
 #include <qvector.h>
+#include <qdebug.h>
 
 #ifdef Q_OS_WIN
 #include <winsock.h>

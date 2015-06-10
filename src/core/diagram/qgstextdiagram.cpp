@@ -12,10 +12,10 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsdiagramrendererv2.h"
-#include "qgsexpression.h"
-#include "qgsrendercontext.h"
 #include "qgstextdiagram.h"
+#include "qgsdiagramrendererv2.h"
+#include "qgsrendercontext.h"
+#include "qgsexpression.h"
 
 #include <QPainter>
 

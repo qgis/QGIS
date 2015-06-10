@@ -16,9 +16,9 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSGEOS_H
 #define QGSGEOS_H
 
-#include <geos_c.h>
 #include "qgsgeometryengine.h"
 #include "qgspointv2.h"
+#include <geos_c.h>
 
 class QgsLineStringV2;
 class QgsPolygonV2;

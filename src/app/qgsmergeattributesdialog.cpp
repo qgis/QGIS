@@ -16,15 +16,15 @@
  ***************************************************************************/
 
 
+#include "qgsmergeattributesdialog.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
-#include "qgsattributeeditor.h"
 #include "qgsfield.h"
 #include "qgsmapcanvas.h"
-#include "qgsmergeattributesdialog.h"
 #include "qgsrubberband.h"
-#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
+#include "qgsattributeeditor.h"
 
 #include <limits>
 #include <QComboBox>

@@ -18,9 +18,9 @@
 #ifndef QGSMULTIBANDCOLORRENDERERWIDGET_H
 #define QGSMULTIBANDCOLORRENDERERWIDGET_H
 
-#include "ui_qgsmultibandcolorrendererwidgetbase.h"
 #include "qgsrasterminmaxwidget.h"
 #include "qgsrasterrendererwidget.h"
+#include "ui_qgsmultibandcolorrendererwidgetbase.h"
 
 class QgsContrastEnhancement;
 class QgsMultiBandColorRenderer;

@@ -16,8 +16,8 @@
 #ifndef QGSMAPTOOLROTATEPOINTSYMBOLS_H
 #define QGSMAPTOOLROTATEPOINTSYMBOLS_H
 
-#include "qgsfeature.h"
 #include "qgsmaptooledit.h"
+#include "qgsfeature.h"
 
 class QgsPointRotationItem;
 

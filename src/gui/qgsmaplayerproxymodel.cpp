@@ -13,9 +13,9 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "qgsmaplayer.h"
-#include "qgsmaplayermodel.h"
 #include "qgsmaplayerproxymodel.h"
+#include "qgsmaplayermodel.h"
+#include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
 
 QgsMapLayerProxyModel::QgsMapLayerProxyModel( QObject *parent )

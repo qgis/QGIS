@@ -16,10 +16,10 @@
 #include "qgsapplication.h"
 #include "qgscodeeditorsql.h"
 
+#include <QWidget>
+#include <QString>
 #include <QFont>
 #include <Qsci/qscilexersql.h>
-#include <QString>
-#include <QWidget>
 
 
 QgsCodeEditorSQL::QgsCodeEditorSQL( QWidget *parent )

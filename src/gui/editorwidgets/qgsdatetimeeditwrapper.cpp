@@ -14,15 +14,15 @@
  ***************************************************************************/
 
 
-#include <QDateEdit>
 #include <QDateTimeEdit>
+#include <QDateEdit>
 #include <QTimeEdit>
 
 
-#include "qgsdatetimeeditfactory.h"
 #include "qgsdatetimeeditwrapper.h"
-#include "qgslogger.h"
+#include "qgsdatetimeeditfactory.h"
 #include "qgsmessagelog.h"
+#include "qgslogger.h"
 
 
 QgsDateTimeEditWrapper::QgsDateTimeEditWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )

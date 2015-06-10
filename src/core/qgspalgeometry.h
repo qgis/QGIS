@@ -1,10 +1,10 @@
 #ifndef QGSPALGEOMETRY_H
 #define QGSPALGEOMETRY_H
 
-#include <pal/feature.h>
-#include <pal/palgeometry.h>
 #include "qgsgeometry.h"
 #include "qgspallabeling.h"
+#include <pal/feature.h>
+#include <pal/palgeometry.h>
 
 using namespace pal;
 

@@ -19,15 +19,15 @@
 
 #include "qgsfieldvalidator.h"
 
-#include <QDate>
-#include <QRegExpValidator>
-#include <QSettings>
 #include <QValidator>
+#include <QRegExpValidator>
+#include <QDate>
 #include <QVariant>
+#include <QSettings>
 
-#include "qgsfield.h"
 #include "qgslogger.h"
 #include "qgslonglongvalidator.h"
+#include "qgsfield.h"
 
 QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, QString defaultValue, QString dateFormat )
     : QValidator( parent )

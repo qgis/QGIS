@@ -19,15 +19,15 @@
 #ifndef QGS_GLOBE_PLUGIN_H
 #define QGS_GLOBE_PLUGIN_H
 
-#include <osgEarth/ImageLayer>
-#include <osgEarth/MapNode>
-#include <osgEarthUtil/EarthManipulator>
-#include <osgViewer/Viewer>
-#include <QObject>
-#include "globe_plugin_dialog.h"
-#include "qgisplugin.h"
 #include "qgsconfig.h"
+#include "qgisplugin.h"
 #include "qgsosgearthtilesource.h"
+#include "globe_plugin_dialog.h"
+#include <QObject>
+#include <osgViewer/Viewer>
+#include <osgEarth/MapNode>
+#include <osgEarth/ImageLayer>
+#include <osgEarthUtil/EarthManipulator>
 #ifndef HAVE_OSGEARTHQT //use backported controls if osgEarth <= 2.1
 #define USE_BACKPORTED_CONTROLS
 #endif

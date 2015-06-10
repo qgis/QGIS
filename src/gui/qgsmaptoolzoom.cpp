@@ -13,17 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscursors.h"
-#include "qgsmapcanvas.h"
 #include "qgsmaptoolzoom.h"
+#include "qgsmapcanvas.h"
 #include "qgsmaptopixel.h"
+#include "qgscursors.h"
 #include "qgsrubberband.h"
 
+#include <QMouseEvent>
+#include <QRect>
 #include <QColor>
 #include <QCursor>
-#include <QMouseEvent>
 #include <QPixmap>
-#include <QRect>
 #include "qgslogger.h"
 
 

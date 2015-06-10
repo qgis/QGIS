@@ -33,8 +33,8 @@
 #include "evisquerydefinition.h"
 #include "qgscontexthelp.h"
 
-#include <QDialog>
 #include <QTemporaryFile>
+#include <QDialog>
 
 /**
 * \class eVisDatabaseConnectionGui

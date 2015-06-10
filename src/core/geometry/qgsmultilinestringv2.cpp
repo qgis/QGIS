@@ -13,13 +13,13 @@ email                : marco.hugentobler at sourcepole dot com
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsmultilinestringv2.h"
 #include "qgsapplication.h"
+#include "qgscurvev2.h"
 #include "qgscircularstringv2.h"
 #include "qgscompoundcurvev2.h"
-#include "qgscurvev2.h"
 #include "qgsgeometryutils.h"
 #include "qgslinestringv2.h"
-#include "qgsmultilinestringv2.h"
 
 QgsAbstractGeometryV2* QgsMultiLineStringV2::clone() const
 {

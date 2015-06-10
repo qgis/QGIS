@@ -17,14 +17,14 @@
 #define OraclePlugin_H
 
 // Qt Includes
-#include <QAction>
 #include <QObject>
+#include <QAction>
 #include <QToolBar>
 
 // QGIS Includes
-#include <qgisgui.h>
-#include <qgisinterface.h>
 #include <qgisplugin.h>
+#include <qgisinterface.h>
+#include <qgisgui.h>
 
 class QgsOraclePlugin : public QObject, public QgisPlugin
 {

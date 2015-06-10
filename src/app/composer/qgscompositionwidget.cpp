@@ -14,17 +14,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QColorDialog>
 #include <qgis.h>
-#include <QPrinter> //for screen resolution
-#include <QWidget>
-#include "qgscomposeritem.h"
-#include "qgscomposermap.h"
-#include "qgscomposition.h"
 #include "qgscompositionwidget.h"
+#include "qgscomposition.h"
+#include "qgscomposermap.h"
+#include "qgscomposeritem.h"
 #include "qgsstylev2.h"
-#include "qgssymbollayerv2utils.h"
 #include "qgssymbolv2selectordialog.h"
+#include "qgssymbollayerv2utils.h"
+#include <QColorDialog>
+#include <QWidget>
+#include <QPrinter> //for screen resolution
 
 QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c ): QWidget( parent ), mComposition( c )
 {

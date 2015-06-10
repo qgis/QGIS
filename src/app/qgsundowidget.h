@@ -15,6 +15,7 @@
 #ifndef QGSUNDOWIDGET_H
 #define QGSUNDOWIDGET_H
 
+#include <QVariant>
 #include <QAction>
 #include <QApplication>
 #include <QButtonGroup>
@@ -22,10 +23,9 @@
 #include <QGridLayout>
 #include <QPushButton>
 #include <QSpacerItem>
-#include <QUndoStack>
-#include <QUndoView>
-#include <QVariant>
 #include <QWidget>
+#include <QUndoView>
+#include <QUndoStack>
 
 class QgsMapCanvas;
 class QgsMapLayer;

@@ -17,12 +17,12 @@
 
 #include "qgscolorscheme.h"
 
-#include "qgsapplication.h"
 #include "qgsproject.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgsapplication.h"
 
-#include <QDir>
 #include <QSettings>
+#include <QDir>
 
 QgsColorScheme::QgsColorScheme()
 {

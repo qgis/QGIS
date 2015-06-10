@@ -15,17 +15,17 @@
 
 #include "qgscptcitycolorrampv2dialog.h"
 
-#include "qgsapplication.h"
 #include "qgscptcityarchive.h"
-#include "qgsdialog.h"
-#include "qgslogger.h"
 #include "qgsvectorcolorrampv2.h"
+#include "qgslogger.h"
+#include "qgsapplication.h"
+#include "qgsdialog.h"
 
-#include <QMessageBox>
 #include <QPushButton>
-#include <QSortFilterProxyModel>
 #include <QTextEdit>
 #include <QTime>
+#include <QMessageBox>
+#include <QSortFilterProxyModel>
 
 /////////
 

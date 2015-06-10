@@ -15,12 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsserverplugins.h"
+#include "qgsmapserviceexception.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
-#include "qgsmapserviceexception.h"
-#include "qgsmsutils.h"
 #include "qgsserverlogger.h"
-#include "qgsserverplugins.h"
+#include "qgsmsutils.h"
 
 #include <QLibrary>
 

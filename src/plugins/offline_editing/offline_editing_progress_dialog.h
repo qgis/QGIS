@@ -19,8 +19,8 @@
 #ifndef QGS_OFFLINE_EDITING_PROGRESS_DIALOG_H
 #define QGS_OFFLINE_EDITING_PROGRESS_DIALOG_H
 
-#include "ui_offline_editing_progress_dialog_base.h"
 #include <QDialog>
+#include "ui_offline_editing_progress_dialog_base.h"
 
 class QgsOfflineEditingProgressDialog : public QDialog, private Ui::QgsOfflineEditingProgressDialogBase
 {

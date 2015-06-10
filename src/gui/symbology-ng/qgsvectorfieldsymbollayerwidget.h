@@ -15,8 +15,8 @@
 #ifndef QGSVECTORFIELDSYMBOLLAYERWIDGET_H
 #define QGSVECTORFIELDSYMBOLLAYERWIDGET_H
 
-#include "ui_widget_vectorfield.h"
 #include "qgssymbollayerv2widget.h"
+#include "ui_widget_vectorfield.h"
 
 class QgsVectorFieldSymbolLayer;
 

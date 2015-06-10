@@ -17,14 +17,14 @@
 #include <QImage>
 #include <QObject>
 #include <QPainter>
-#include <QScriptEngine>
-#include <QScriptValue>
-#include <QScriptValueIterator>
 #include <QSet>
 #include <QSettings>
 #include <QString>
 #include <QStringList>
 #include <QTextStream>
+#include <QScriptEngine>
+#include <QScriptValue>
+#include <QScriptValueIterator>
 
 #include <qgsapplication.h>
 #include <qgsdatasourceuri.h>

@@ -19,34 +19,34 @@
 // QGIS Specific includes
 //
 
-#include <qgisgui.h>
-#include <qgis.h>
 #include <qgisinterface.h>
+#include <qgisgui.h>
+#include "qgsapplication.h"
+#include <qgspoint.h>
+#include <qgsmapcanvas.h>
+#include <qgsmaprenderer.h>
+#include <qgis.h>
 #include <qgscoordinatereferencesystem.h>
 #include <qgscoordinatetransform.h>
 #include <qgsgenericprojectionselector.h>
-#include <qgsmapcanvas.h>
-#include <qgsmaprenderer.h>
-#include <qgspoint.h>
-#include "qgsapplication.h"
 
-#include "coordinatecapturegui.h"
 #include "coordinatecapture.h"
+#include "coordinatecapturegui.h"
 
 //
 // Qt4 Related Includes
 //
 
 #include <QAction>
-#include <QClipboard>
+#include <QToolBar>
 #include <QDockWidget>
-#include <QFile>
-#include <QLabel>
 #include <QLayout>
 #include <QLineEdit>
+#include <QClipboard>
 #include <QPushButton>
-#include <QToolBar>
 #include <QToolButton>
+#include <QFile>
+#include <QLabel>
 
 static const QString sName = QObject::tr( "Coordinate Capture" );
 static const QString sDescription = QObject::tr( "Capture mouse coordinates in different CRS" );

@@ -21,10 +21,10 @@
 
 
 #include <QMouseEvent>
-#include <QPixmap>
-#include <QStringList>
 #include <QWheelEvent>
 #include <QWidget>
+#include <QStringList>
+#include <QPixmap>
 
 class QgsMapCanvas;
 class QgsPanningWidget; // defined in .cpp

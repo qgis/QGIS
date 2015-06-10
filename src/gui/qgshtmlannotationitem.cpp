@@ -15,19 +15,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsattributeeditor.h"
-#include "qgsexpression.h"
-#include "qgsfeature.h"
 #include "qgshtmlannotationitem.h"
+#include "qgsattributeeditor.h"
+#include "qgsfeature.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaptool.h"
-#include "qgsnetworkaccessmanager.h"
 #include "qgsvectorlayer.h"
+#include "qgsexpression.h"
+#include "qgsnetworkaccessmanager.h"
 
-#include <QDir>
 #include <QDomElement>
+#include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QGraphicsProxyWidget>

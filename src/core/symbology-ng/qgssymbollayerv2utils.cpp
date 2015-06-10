@@ -15,29 +15,29 @@
 
 #include "qgssymbollayerv2utils.h"
 
-#include "qgsapplication.h"
-#include "qgsexpression.h"
-#include "qgslogger.h"
-#include "qgsogcutils.h"
-#include "qgspainteffect.h"
-#include "qgspainteffectregistry.h"
-#include "qgsproject.h"
-#include "qgsrendercontext.h"
 #include "qgssymbollayerv2.h"
 #include "qgssymbollayerv2registry.h"
 #include "qgssymbolv2.h"
 #include "qgsvectorcolorrampv2.h"
+#include "qgsexpression.h"
+#include "qgspainteffect.h"
+#include "qgspainteffectregistry.h"
+#include "qgsapplication.h"
+#include "qgsproject.h"
+#include "qgsogcutils.h"
+#include "qgslogger.h"
+#include "qgsrendercontext.h"
 
 #include <QColor>
-#include <QDomDocument>
-#include <QDomElement>
-#include <QDomNode>
 #include <QFont>
+#include <QDomDocument>
+#include <QDomNode>
+#include <QDomElement>
 #include <QIcon>
 #include <QPainter>
-#include <QPicture>
-#include <QRegExp>
 #include <QSettings>
+#include <QRegExp>
+#include <QPicture>
 
 QString QgsSymbolLayerV2Utils::encodeColor( QColor color )
 {
@@ -634,8 +634,8 @@ void QgsSymbolLayerV2Utils::drawStippledBackground( QPainter* painter, QRect rec
 
 #include <QPolygonF>
 
-#include <cfloat>
 #include <cmath>
+#include <cfloat>
 
 
 #if !defined(GEOS_VERSION_MAJOR) || !defined(GEOS_VERSION_MINOR) || \

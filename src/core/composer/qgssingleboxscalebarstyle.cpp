@@ -14,11 +14,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QList>
-#include <QPainter>
+#include "qgssingleboxscalebarstyle.h"
 #include "qgscomposerscalebar.h"
 #include "qgscomposerutils.h"
-#include "qgssingleboxscalebarstyle.h"
+#include <QList>
+#include <QPainter>
 
 QgsSingleBoxScaleBarStyle::QgsSingleBoxScaleBarStyle( const QgsComposerScaleBar* bar ): QgsScaleBarStyle( bar )
 {

@@ -16,24 +16,24 @@ email                : a.furieri@lqt.it
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsspatialiteconnection.h"
 #include "qgsspatialitesourceselect.h"
+#include "qgsspatialiteconnection.h"
 
+#include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgscontexthelp.h"
-#include "qgsdatasourceuri.h"
-#include "qgslogger.h"
 #include "qgsquerybuilder.h"
+#include "qgsdatasourceuri.h"
 #include "qgsvectorlayer.h"
 
-#include <QHeaderView>
 #include <QInputDialog>
 #include <QMessageBox>
-#include <QPushButton>
 #include <QSettings>
-#include <QStringList>
-#include <QTableWidgetItem>
 #include <QTextStream>
+#include <QTableWidgetItem>
+#include <QHeaderView>
+#include <QStringList>
+#include <QPushButton>
 
 #ifdef _MSC_VER
 #define strcasecmp(a,b) stricmp(a,b)

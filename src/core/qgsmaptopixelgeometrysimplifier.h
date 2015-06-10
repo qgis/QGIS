@@ -17,8 +17,8 @@
 #ifndef QGSMAPTOPIXELGEOMETRYSIMPLIFIER_H
 #define QGSMAPTOPIXELGEOMETRYSIMPLIFIER_H
 
-#include "qgscoordinatetransform.h"
 #include "qgsgeometry.h"
+#include "qgscoordinatetransform.h"
 #include "qgsmaptopixel.h"
 
 #include "qgsgeometrysimplifier.h"

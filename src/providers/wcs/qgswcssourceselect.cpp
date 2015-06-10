@@ -20,10 +20,10 @@
 #include "qgslogger.h"
 
 #include "qgsnetworkaccessmanager.h"
-#include "qgsnumericsortlistviewitem.h"
-#include "qgswcscapabilities.h"
 #include "qgswcsprovider.h"
 #include "qgswcssourceselect.h"
+#include "qgswcscapabilities.h"
+#include "qgsnumericsortlistviewitem.h"
 
 #include <QWidget>
 

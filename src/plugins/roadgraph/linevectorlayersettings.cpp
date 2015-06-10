@@ -21,8 +21,8 @@
 #include <qgsproject.h>
 
 // QT includes
-#include <QComboBox>
 #include <QLineEdit>
+#include <QComboBox>
 #include <QSpinBox>
 
 //standard includes

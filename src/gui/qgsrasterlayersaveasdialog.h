@@ -16,9 +16,9 @@
 #define QGSRASTERLAYERSAVEASDIALOG_H
 
 #include "ui_qgsrasterlayersaveasdialogbase.h"
+#include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrasterrange.h"
-#include "qgsrectangle.h"
 
 class QgsRasterLayer;
 class QgsRasterDataProvider;

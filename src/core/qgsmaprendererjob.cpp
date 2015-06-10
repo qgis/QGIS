@@ -16,22 +16,22 @@
 #include "qgsmaprendererjob.h"
 
 #include <QPainter>
-#include <QSettings>
-#include <QtConcurrentMap>
 #include <QTime>
 #include <QTimer>
+#include <QtConcurrentMap>
+#include <QSettings>
 
 #include "qgscrscache.h"
 #include "qgslogger.h"
+#include "qgsrendercontext.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaplayerrenderer.h"
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmaprenderercache.h"
 #include "qgspallabeling.h"
-#include "qgsrendercontext.h"
-#include "qgsvectorlayer.h"
 #include "qgsvectorlayerrenderer.h"
+#include "qgsvectorlayer.h"
 
 QgsMapRendererJob::QgsMapRendererJob( const QgsMapSettings& settings )
     : mSettings( settings )

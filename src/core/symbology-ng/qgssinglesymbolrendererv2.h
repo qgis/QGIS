@@ -15,11 +15,11 @@
 #ifndef QGSSINGLESYMBOLRENDERERV2_H
 #define QGSSINGLESYMBOLRENDERERV2_H
 
-#include <QScopedPointer>
 #include "qgis.h"
-#include "qgsexpression.h"
 #include "qgsrendererv2.h"
 #include "qgssymbolv2.h"
+#include "qgsexpression.h"
+#include <QScopedPointer>
 
 class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
 {

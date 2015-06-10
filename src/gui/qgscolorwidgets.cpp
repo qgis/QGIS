@@ -13,21 +13,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <cmath>
-#include <QDrag>
-#include <QFontMetrics>
-#include <QHBoxLayout>
-#include <QLineEdit>
-#include <QMenu>
-#include <QPainter>
-#include <QResizeEvent>
-#include <QSettings>
-#include <QSpinBox>
-#include <QStyleOptionFrameV3>
-#include <QToolButton>
-#include "qgsapplication.h"
 #include "qgscolorwidgets.h"
+#include "qgsapplication.h"
 #include "qgssymbollayerv2utils.h"
+#include <QResizeEvent>
+#include <QStyleOptionFrameV3>
+#include <QPainter>
+#include <QHBoxLayout>
+#include <QSpinBox>
+#include <QLineEdit>
+#include <QFontMetrics>
+#include <QToolButton>
+#include <QMenu>
+#include <QSettings>
+#include <QDrag>
+#include <cmath>
 
 
 //

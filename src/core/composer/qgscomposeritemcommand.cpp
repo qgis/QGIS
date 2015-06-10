@@ -15,12 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscomposerframe.h"
 #include "qgscomposeritemcommand.h"
 #include "qgscomposeritem.h"
+#include "qgscomposerframe.h"
 #include "qgscomposermultiframe.h"
-#include "qgslogger.h"
 #include "qgsproject.h"
+#include "qgslogger.h"
 
 QgsComposerItemCommand::QgsComposerItemCommand( QgsComposerItem* item, const QString& text, QUndoCommand* parent )
     : QUndoCommand( text, parent )

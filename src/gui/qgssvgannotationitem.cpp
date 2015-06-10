@@ -15,10 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgssvgannotationitem.h"
+#include "qgsproject.h"
 #include <QDomDocument>
 #include <QDomElement>
-#include "qgsproject.h"
-#include "qgssvgannotationitem.h"
 
 
 QgsSvgAnnotationItem::QgsSvgAnnotationItem( QgsMapCanvas* canvas ): QgsAnnotationItem( canvas )

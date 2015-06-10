@@ -18,9 +18,9 @@
 #ifndef QGSCOMPOSERARROW_H
 #define QGSCOMPOSERARROW_H
 
+#include "qgscomposeritem.h"
 #include <QBrush>
 #include <QPen>
-#include "qgscomposeritem.h"
 
 class QgsLineSymbolV2;
 

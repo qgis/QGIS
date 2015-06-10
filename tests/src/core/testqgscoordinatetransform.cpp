@@ -14,10 +14,10 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgscoordinatetransform.h"
+#include "qgsapplication.h"
 #include <QObject>
 #include <QtTest/QtTest>
-#include "qgsapplication.h"
-#include "qgscoordinatetransform.h"
 
 class TestQgsCoordinateTransform: public QObject
 {

@@ -13,9 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsmessageoutput.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
-#include "qgsmessageoutput.h"
 
 #include <QRegExp>
 

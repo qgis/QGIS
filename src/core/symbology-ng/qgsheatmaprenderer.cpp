@@ -15,17 +15,17 @@
 
 #include "qgsheatmaprenderer.h"
 
-#include "qgssymbollayerv2utils.h"
 #include "qgssymbolv2.h"
+#include "qgssymbollayerv2utils.h"
 
-#include "qgsfeature.h"
 #include "qgslogger.h"
-#include "qgsogcutils.h"
-#include "qgspainteffect.h"
-#include "qgsrendercontext.h"
-#include "qgssymbollayerv2.h"
-#include "qgsvectorcolorrampv2.h"
+#include "qgsfeature.h"
 #include "qgsvectorlayer.h"
+#include "qgssymbollayerv2.h"
+#include "qgsogcutils.h"
+#include "qgsvectorcolorrampv2.h"
+#include "qgsrendercontext.h"
+#include "qgspainteffect.h"
 
 #include <QDomDocument>
 #include <QDomElement>

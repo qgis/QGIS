@@ -16,8 +16,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgis.h"
 #include "qgsprovidercountcalcevent.h"
+#include "qgis.h"
 
 QgsProviderCountCalcEvent::QgsProviderCountCalcEvent( long featuresCounted )
     : QEvent( static_cast<QEvent::Type>( QGis::ProviderCountCalcEvent ) )

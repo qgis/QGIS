@@ -17,9 +17,9 @@
 #ifndef QGSBLUREFFECT_H
 #define QGSBLUREFFECT_H
 
-#include <QPainter>
-#include "qgis.h"
 #include "qgspainteffect.h"
+#include "qgis.h"
+#include <QPainter>
 
 /** \ingroup core
  * \class QgsBlurEffect

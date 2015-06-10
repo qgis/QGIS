@@ -9,13 +9,13 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  ***************************************************************************/
-#include "qgscontexthelp.h"
-#include "qgsdataprovider.h"
-#include "qgsgpsdetector.h"
-#include "qgsgpsdevicedialog.h"
 #include "qgsgpsplugingui.h"
-#include "qgslogger.h"
+#include "qgsgpsdevicedialog.h"
 #include "qgsmaplayer.h"
+#include "qgsdataprovider.h"
+#include "qgscontexthelp.h"
+#include "qgslogger.h"
+#include "qgsgpsdetector.h"
 
 //qt includes
 #include <QFileDialog>

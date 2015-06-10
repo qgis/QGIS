@@ -13,8 +13,8 @@
 #ifndef HISTOGRAM_ITEM_H
 #define HISTOGRAM_ITEM_H
 
-#include <qcolor.h>
 #include <qglobal.h>
+#include <qcolor.h>
 
 #include "qwt_plot_item.h"
 
@@ -75,13 +75,13 @@ class HistogramItem: public QwtPlotItem
     PrivateData *d_data;
 };
 
-#include <qpainter.h>
 #include <qstring.h>
-#include <qwt_interval_data.h>
-#include <qwt_legend_item.h>
-#include <qwt_painter.h>
+#include <qpainter.h>
 #include <qwt_plot.h>
+#include <qwt_interval_data.h>
+#include <qwt_painter.h>
 #include <qwt_scale_map.h>
+#include <qwt_legend_item.h>
 
 class HistogramItem::PrivateData
 {

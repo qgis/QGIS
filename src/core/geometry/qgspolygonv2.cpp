@@ -15,10 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgspolygonv2.h"
 #include "qgsapplication.h"
 #include "qgsgeometryutils.h"
 #include "qgslinestringv2.h"
-#include "qgspolygonv2.h"
 #include "qgswkbptr.h"
 
 QgsAbstractGeometryV2* QgsPolygonV2::clone() const

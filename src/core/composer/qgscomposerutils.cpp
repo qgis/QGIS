@@ -15,10 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QPainter>
 #include "qgscomposerutils.h"
 #include "qgscomposition.h"
 #include "qgsdatadefined.h"
+#include <QPainter>
 
 #define FONT_WORKAROUND_SCALE 10 //scale factor for upscaling fontsize and downscaling painter
 

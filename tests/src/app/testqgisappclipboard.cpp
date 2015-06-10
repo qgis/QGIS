@@ -16,6 +16,7 @@
 
 #include <QApplication>
 #include <QObject>
+#include <QObject>
 #include <QSplashScreen>
 #include <QString>
 #include <QStringList>
@@ -23,9 +24,9 @@
 
 #include <qgisapp.h>
 #include <qgsapplication.h>
-#include <qgsclipboard.h>
 #include <qgsfeature.h>
 #include <qgsfield.h>
+#include <qgsclipboard.h>
 #include <qgsmaplayerregistry.h>
 #include <qgsvectorlayer.h>
 

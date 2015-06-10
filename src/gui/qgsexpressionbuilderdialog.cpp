@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QSettings>
 #include "qgsexpressionbuilderdialog.h"
+#include <QSettings>
 
 QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer* layer, QString startText, QWidget* parent, QString key )
     : QDialog( parent ), mRecentKey( key )

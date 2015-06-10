@@ -15,9 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsmaptoolchangelabelproperties.h"
 #include "qgslabelpropertydialog.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaptoolchangelabelproperties.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 

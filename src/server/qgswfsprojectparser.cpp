@@ -15,11 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgswfsprojectparser.h"
 #include "qgsconfigcache.h"
 #include "qgsconfigparserutils.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvectordataprovider.h"
-#include "qgswfsprojectparser.h"
 
 QgsWFSProjectParser::QgsWFSProjectParser( const QString& filePath )
 {

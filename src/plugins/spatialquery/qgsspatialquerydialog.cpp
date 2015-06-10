@@ -16,8 +16,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDateTime>
 #include <QMessageBox>
+#include <QDateTime>
 #include <QPushButton>
 
 #include "qgis.h"
@@ -27,10 +27,10 @@
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 
-#include "qgsmngprogressbar.h"
-#include "qgsrubberselectid.h"
 #include "qgsspatialquerydialog.h"
 #include "qgsspatialquery.h"
+#include "qgsrubberselectid.h"
+#include "qgsmngprogressbar.h"
 
 QgsSpatialQueryDialog::QgsSpatialQueryDialog( QWidget* parent, QgisInterface* iface ): QDialog( parent )
 {

@@ -30,9 +30,9 @@
 #include <QMouseEvent>
 #include <QWidget>
 
-#include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsmaptool.h"
+#include "qgsmapcanvas.h"
 #include "qgspoint.h"
 
 #include "evisgenericeventbrowsergui.h"

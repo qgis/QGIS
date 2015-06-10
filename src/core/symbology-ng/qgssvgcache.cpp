@@ -15,11 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgssvgcache.h"
 #include "qgis.h"
 #include "qgslogger.h"
-#include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
-#include "qgssvgcache.h"
+#include "qgsmessagelog.h"
 #include "qgssymbollayerv2utils.h"
 
 #include <QApplication>
@@ -28,13 +28,13 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFile>
-#include <QFileInfo>
 #include <QImage>
-#include <QNetworkReply>
-#include <QNetworkRequest>
 #include <QPainter>
 #include <QPicture>
 #include <QSvgRenderer>
+#include <QFileInfo>
+#include <QNetworkReply>
+#include <QNetworkRequest>
 
 QgsSvgCacheEntry::QgsSvgCacheEntry(): file( QString() ), size( 0.0 ), outlineWidth( 0 ), widthScaleFactor( 1.0 ), rasterScaleFactor( 1.0 ), fill( Qt::black ),
     outline( Qt::black ), image( 0 ), picture( 0 ), nextEntry( 0 ), previousEntry( 0 )

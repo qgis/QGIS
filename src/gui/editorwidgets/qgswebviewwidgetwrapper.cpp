@@ -18,8 +18,8 @@
 #include "qgsfilterlineedit.h"
 #include "qgsnetworkaccessmanager.h"
 
-#include <QFileDialog>
 #include <QGridLayout>
+#include <QFileDialog>
 #include <QSettings>
 
 QgsWebViewWidgetWrapper::QgsWebViewWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )

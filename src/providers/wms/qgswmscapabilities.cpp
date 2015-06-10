@@ -2,8 +2,8 @@
 #include "qgswmscapabilities.h"
 #include "qgswmsprovider.h"
 
-#include <QDir>
 #include <QFile>
+#include <QDir>
 
 #include "qgscoordinatetransform.h"
 #include "qgsdatasourceuri.h"

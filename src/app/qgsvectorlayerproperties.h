@@ -19,17 +19,17 @@
 #ifndef QGSVECTORLAYERPROPERTIES
 #define QGSVECTORLAYERPROPERTIES
 
+#include "qgsoptionsdialogbase.h"
+#include "qgsscalerangewidget.h"
 #include "ui_qgsvectorlayerpropertiesbase.h"
 #include "qgisgui.h"
 #include "qgsaddattrdialog.h"
-#include "qgsattributetypedialog.h"
-#include "qgscontexthelp.h"
 #include "qgsdelattrdialog.h"
-#include "qgsexpressionbuilderdialog.h"
+#include "qgsattributetypedialog.h"
 #include "qgsfield.h"
 #include "qgsmapcanvas.h"
-#include "qgsoptionsdialogbase.h"
-#include "qgsscalerangewidget.h"
+#include "qgscontexthelp.h"
+#include "qgsexpressionbuilderdialog.h"
 
 class QgsMapLayer;
 

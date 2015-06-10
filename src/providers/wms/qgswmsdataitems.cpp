@@ -17,11 +17,11 @@
 #include "qgslogger.h"
 
 #include "qgsdatasourceuri.h"
-#include "qgsnewhttpconnection.h"
-#include "qgstilescalewidget.h"
 #include "qgswmscapabilities.h"
 #include "qgswmsconnection.h"
 #include "qgswmssourceselect.h"
+#include "qgsnewhttpconnection.h"
+#include "qgstilescalewidget.h"
 
 // ---------------------------------------------------------------------------
 QgsWMSConnectionItem::QgsWMSConnectionItem( QgsDataItem* parent, QString name, QString path, QString uri )

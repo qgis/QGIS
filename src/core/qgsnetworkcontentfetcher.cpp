@@ -16,12 +16,12 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsnetworkcontentfetcher.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsmessagelog.h"
+#include "qgsapplication.h"
 #include <QNetworkReply>
 #include <QTextCodec>
-#include "qgsapplication.h"
-#include "qgsmessagelog.h"
-#include "qgsnetworkaccessmanager.h"
-#include "qgsnetworkcontentfetcher.h"
 
 QgsNetworkContentFetcher::QgsNetworkContentFetcher()
     : mReply( 0 )

@@ -14,9 +14,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgscustomization.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
-#include "qgscustomization.h"
 #include "qgslogger.h"
 
 #include <QAction>
@@ -28,13 +28,13 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QFileInfo>
-#include <QKeySequence>
 #include <QMessageBox>
-#include <QMetaObject>
-#include <QPushButton>
 #include <QSettings>
-#include <QStatusBar>
+#include <QPushButton>
+#include <QKeySequence>
 #include <QToolButton>
+#include <QStatusBar>
+#include <QMetaObject>
 
 #ifdef Q_OS_MACX
 QgsCustomizationDialog::QgsCustomizationDialog( QWidget *parent, QSettings* settings )

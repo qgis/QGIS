@@ -13,13 +13,13 @@ email                : jpalmer at linz dot govt dot nz
 *                                                                         *
 ***************************************************************************/
 
-#include "qgis.h"
-#include "qgsgeometry.h"
-#include "qgslogger.h"
-#include "qgsmapcanvas.h"
 #include "qgsmaptoolselectradius.h"
 #include "qgsmaptoolselectutils.h"
+#include "qgsgeometry.h"
 #include "qgsrubberband.h"
+#include "qgsmapcanvas.h"
+#include "qgis.h"
+#include "qgslogger.h"
 
 #include <cmath>
 #include <QMouseEvent>

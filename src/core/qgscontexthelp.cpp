@@ -16,15 +16,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QProcess>
 #include <QString>
+#include <QProcess>
 #include <QTcpSocket>
 #include <QTextStream>
 
-#include "qgsapplication.h"
 #include "qgscontexthelp.h"
-#include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgsapplication.h"
+#include "qgslogger.h"
 
 
 QgsContextHelp *QgsContextHelp::gContextHelp = 0;  // Singleton instance

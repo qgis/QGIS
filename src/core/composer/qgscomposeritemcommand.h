@@ -18,8 +18,8 @@
 #ifndef QGSCOMPOSERITEMCOMMAND_H
 #define QGSCOMPOSERITEMCOMMAND_H
 
-#include <QDomDocument>
 #include <QUndoCommand>
+#include <QDomDocument>
 
 class QgsComposerItem;
 class QgsComposerMultiFrame;

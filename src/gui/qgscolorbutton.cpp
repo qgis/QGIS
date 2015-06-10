@@ -13,21 +13,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgscolorbutton.h"
 #include "qgscolordialog.h"
-#include "qgscursors.h"
+#include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgscursors.h"
 
-#include <QClipboard>
-#include <QDesktopWidget>
-#include <QDrag>
-#include <QMenu>
-#include <QMouseEvent>
 #include <QPainter>
 #include <QSettings>
 #include <QTemporaryFile>
+#include <QMouseEvent>
+#include <QMenu>
+#include <QClipboard>
+#include <QDrag>
+#include <QDesktopWidget>
 
 #ifdef Q_OS_WIN
 #include <windows.h>

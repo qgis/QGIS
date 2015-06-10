@@ -15,23 +15,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <cpl_conv.h>
-#include <ogr_api.h>
 #include <QApplication>
+#include <ogr_api.h>
+#include <cpl_conv.h>
 
 #include <QFile>
-#include <QFileInfo>
-#include <QLabel>
 #include <QProgressDialog>
-#include <QSettings>
 #include <QString>
+#include <QLabel>
 #include <QTextCodec>
+#include <QFileInfo>
+#include <QSettings>
 
-#include "cpl_error.h"
-#include "qgis.h"
 #include "qgsapplication.h"
-#include "qgslogger.h"
+#include "cpl_error.h"
 #include "qgsshapefile.h"
+#include "qgis.h"
+#include "qgslogger.h"
 
 #include "qgspgutil.h"
 

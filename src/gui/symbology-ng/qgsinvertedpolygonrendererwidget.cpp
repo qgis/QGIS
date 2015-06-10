@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsinvertedpolygonrenderer.h"
 #include "qgsinvertedpolygonrendererwidget.h"
+#include "qgsinvertedpolygonrenderer.h"
 #include "qgsrendererv2registry.h"
 
 #include "qgssymbolv2.h"

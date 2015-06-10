@@ -23,13 +23,13 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 
-#include <QByteArray>
 #include <QDomDocument>
 #include <QDomElement>
 #include <QDomNode>
 #include <QDomNodeList>
 #include <QFile>
 #include <QTextStream>
+#include <QByteArray>
 
 #include <sqlite3.h>
 

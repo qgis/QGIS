@@ -15,10 +15,10 @@
 
 #include "qgisinterface.h"
 #include "qgscontexthelp.h"
-#include "qgsdelimitedtextfile.h"
-#include "qgsdelimitedtextprovider.h"
 #include "qgslogger.h"
 #include "qgsvectordataprovider.h"
+#include "qgsdelimitedtextprovider.h"
+#include "qgsdelimitedtextfile.h"
 
 #include <QButtonGroup>
 #include <QFile>
@@ -27,8 +27,8 @@
 #include <QMessageBox>
 #include <QRegExp>
 #include <QSettings>
-#include <QTextCodec>
 #include <QTextStream>
+#include <QTextCodec>
 #include <QUrl>
 
 const int MAX_SAMPLE_LENGTH = 200;

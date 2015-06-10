@@ -13,10 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtCore>
-#include "qgscomposerframe.h"
 #include "qgscomposermultiframe.h"
+#include "qgscomposerframe.h"
 #include "qgscomposition.h"
+#include <QtCore>
 
 QgsComposerMultiFrame::QgsComposerMultiFrame( QgsComposition* c, bool createUndoCommands ):
     QgsComposerObject( c ),

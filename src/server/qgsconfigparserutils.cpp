@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgsconfigparserutils.h"
+#include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgscrscache.h"

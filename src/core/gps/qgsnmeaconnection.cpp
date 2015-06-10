@@ -15,19 +15,19 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsnmeaconnection.h"
 #include "qextserialport.h"
 #include "qgslogger.h"
-#include "qgsnmeaconnection.h"
 
-#include <QApplication>
 #include <QIODevice>
+#include <QApplication>
 #include <QStringList>
 
 
 //from libnmea
+#include "parse.h"
 #include "gmath.h"
 #include "info.h"
-#include "parse.h"
 
 #define KNOTS_TO_KMH 1.852
 

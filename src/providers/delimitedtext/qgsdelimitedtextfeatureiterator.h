@@ -16,8 +16,8 @@
 #define QGSDELIMITEDTEXTFEATUREITERATOR_H
 
 #include <QList>
-#include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
+#include "qgsfeature.h"
 
 #include "qgsdelimitedtextprovider.h"
 

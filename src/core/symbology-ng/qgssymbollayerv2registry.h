@@ -16,8 +16,8 @@
 #ifndef QGSSYMBOLLAYERV2REGISTRY_H
 #define QGSSYMBOLLAYERV2REGISTRY_H
 
-#include "qgssymbollayerv2.h"
 #include "qgssymbolv2.h"
+#include "qgssymbollayerv2.h"
 
 class QgsVectorLayer;
 

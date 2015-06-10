@@ -18,11 +18,11 @@
 #ifndef QGSPOSTGRESCONN_H
 #define QGSPOSTGRESCONN_H
 
-#include <QMap>
-#include <QMutex>
 #include <QString>
 #include <QStringList>
 #include <QVector>
+#include <QMap>
+#include <QMutex>
 
 #include "qgis.h"
 #include "qgsdatasourceuri.h"

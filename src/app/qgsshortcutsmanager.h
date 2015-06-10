@@ -16,9 +16,9 @@
 #ifndef QGSSHORTCUTSMANAGER_H
 #define QGSSHORTCUTSMANAGER_H
 
-#include <QAction>
 #include <QHash>
 #include <QList>
+#include <QAction>
 
 /**
   Shortcuts manager is a singleton class that contains a list of actions from main window

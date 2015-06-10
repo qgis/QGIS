@@ -18,10 +18,10 @@
 #ifndef QGSCOMPOSERTABLEV2_H
 #define QGSCOMPOSERTABLEV2_H
 
-#include <QColor>
-#include <QFont>
-#include <QPair>
 #include "qgscomposermultiframe.h"
+#include <QFont>
+#include <QColor>
+#include <QPair>
 
 class QgsComposerTableColumn;
 

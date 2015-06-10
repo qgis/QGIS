@@ -16,16 +16,16 @@
 #include <QMessageBox>
 #include <QToolButton>
 
+#include "qgsguivectorlayertools.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
+#include "qgsmessagebar.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
-#include "qgsfeatureaction.h"
-#include "qgsguivectorlayertools.h"
-#include "qgsmapcanvas.h"
-#include "qgsmessagebar.h"
-#include "qgsmessagebaritem.h"
 #include "qgsmessageviewer.h"
-#include "qgsvectordataprovider.h"
-#include "qgsvectorlayer.h"
+#include "qgsfeatureaction.h"
+#include "qgsmapcanvas.h"
+#include "qgsmessagebaritem.h"
 
 
 QgsGuiVectorLayerTools::QgsGuiVectorLayerTools()

@@ -15,8 +15,8 @@
  ***************************************************************************/
 #include "qgsrasterprojector.h"
 
-#include "ui_qgsgrassoptionsbase.h"
 #include "qgsgrassoptions.h"
+#include "ui_qgsgrassoptionsbase.h"
 
 QgsGrassOptions::QgsGrassOptions( QWidget *parent )
     : QDialog( parent )

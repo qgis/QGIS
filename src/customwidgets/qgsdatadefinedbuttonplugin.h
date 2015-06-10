@@ -16,8 +16,8 @@
 #ifndef QGSDATADEFINEDBUTTONPLUGIN_H
 #define QGSDATADEFINEDBUTTONPLUGIN_H
 
-#include <QDesignerCustomWidgetInterface>
 #include <QDesignerExportWidget>
+#include <QDesignerCustomWidgetInterface>
 
 
 class CUSTOMWIDGETS_EXPORT QgsDataDefinedButtonPlugin : public QObject, public QDesignerCustomWidgetInterface

@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QPushButton>
 #include <QValidator>
+#include <QPushButton>
 
 #include "qgsmapcanvas.h"
 #include "qgssnappingutils.h"

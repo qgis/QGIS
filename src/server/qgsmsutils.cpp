@@ -12,13 +12,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsmsutils.h"
+#include "qgslogger.h"
+#include <stdlib.h>
+#include <time.h>
 #include <QDir>
 #include <QFileInfo>
 #include <QTextStream>
-#include <stdlib.h>
-#include <time.h>
-#include "qgslogger.h"
-#include "qgsmsutils.h"
 
 QString QgsMSUtils::createTempFilePath()
 {

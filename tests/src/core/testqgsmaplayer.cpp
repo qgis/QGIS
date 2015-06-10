@@ -12,20 +12,21 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <iostream>
-#include <QApplication>
-#include <QDir>
-#include <QFileInfo>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QtTest/QtTest>
+#include <QObject>
+#include <iostream>
+#include <QApplication>
+#include <QFileInfo>
+#include <QDir>
 
 //qgis includes...
-#include <qgsapplication.h>
 #include <qgsmaplayer.h>
-#include <qgsproviderregistry.h>
 #include <qgsvectorlayer.h>
+#include <qgsapplication.h>
+#include <qgsproviderregistry.h>
 
 class TestSignalReceiver : public QObject
 {

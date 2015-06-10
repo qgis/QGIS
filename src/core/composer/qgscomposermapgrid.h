@@ -18,12 +18,12 @@
 #ifndef QGSCOMPOSERMAPGRID_H
 #define QGSCOMPOSERMAPGRID_H
 
-#include <QPainter>
-#include <QString>
 #include "qgscomposermapitem.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrectangle.h"
 #include "qgsrendercontext.h"
+#include <QString>
+#include <QPainter>
 
 class QgsCoordinateTransform;
 class QgsLineSymbolV2;

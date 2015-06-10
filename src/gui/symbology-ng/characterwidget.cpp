@@ -45,8 +45,8 @@
 
 #include <QFontDatabase>
 #include <QMouseEvent>
-#include <QPainter>
 #include <QPaintEvent>
+#include <QPainter>
 #include <QPen>
 #include <QPoint>
 #include <QToolTip>

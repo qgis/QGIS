@@ -15,8 +15,8 @@
 #ifndef QGSCOLORBREWERPALETTE_H
 #define QGSCOLORBREWERPALETTE_H
 
-#include <QColor>
 #include <QList>
+#include <QColor>
 
 #include "qgssymbollayerv2utils.h"
 

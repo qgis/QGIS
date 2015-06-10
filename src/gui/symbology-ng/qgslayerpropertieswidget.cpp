@@ -16,10 +16,10 @@
 #include "qgslayerpropertieswidget.h"
 
 #include <QFile>
+#include <QStandardItem>
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <QPicture>
-#include <QStandardItem>
 
 #include "qgssymbollayerv2.h"
 #include "qgssymbollayerv2registry.h"
@@ -27,10 +27,10 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 
-#include "qgsellipsesymbollayerv2widget.h"
 #include "qgssymbollayerv2widget.h"
-#include "qgssymbolv2.h" //for the unit
+#include "qgsellipsesymbollayerv2widget.h"
 #include "qgsvectorfieldsymbollayerwidget.h"
+#include "qgssymbolv2.h" //for the unit
 
 static bool _initWidgetFunction( QString name, QgsSymbolLayerV2WidgetFunc f )
 {

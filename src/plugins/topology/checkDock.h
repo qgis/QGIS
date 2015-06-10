@@ -20,17 +20,17 @@
 
 #include <QDockWidget>
 
-#include <qgsgeometry.h>
 #include <qgsvectorlayer.h>
+#include <qgsgeometry.h>
 //#include <qgsvertexmarker.h>
 #include "qgsspatialindex.h"
 //#include <spatialindex/qgsspatialindex.h>
 
 #include "ui_checkDock.h"
-#include "dockModel.h"
 #include "rulesDialog.h"
 #include "topolError.h"
 #include "topolTest.h"
+#include "dockModel.h"
 
 class QgsMapLayerRegistry;
 class QgsRubberBand;

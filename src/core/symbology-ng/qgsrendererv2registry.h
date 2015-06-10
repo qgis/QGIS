@@ -15,10 +15,10 @@
 #ifndef QGSRENDERERV2REGISTRY_H
 #define QGSRENDERERV2REGISTRY_H
 
-#include <QDomElement>
 #include <QIcon>
 #include <QMap>
 #include <QStringList>
+#include <QDomElement>
 
 #include "qgis.h"
 

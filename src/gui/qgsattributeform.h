@@ -16,13 +16,13 @@
 #ifndef QGSATTRIBUTEFORM_H
 #define QGSATTRIBUTEFORM_H
 
-#include "qgsattributeeditorcontext.h"
-#include "qgseditorwidgetwrapper.h"
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
+#include "qgseditorwidgetwrapper.h"
+#include "qgsattributeeditorcontext.h"
 
-#include <QDialogButtonBox>
 #include <QWidget>
+#include <QDialogButtonBox>
 
 class QgsAttributeFormInterface;
 

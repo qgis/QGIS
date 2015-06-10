@@ -15,8 +15,8 @@
 
 #include "qgstexteditwidgetfactory.h"
 
-#include "qgstexteditconfigdlg.h"
 #include "qgstexteditwrapper.h"
+#include "qgstexteditconfigdlg.h"
 
 QgsTextEditWidgetFactory::QgsTextEditWidgetFactory( const QString& name )
     : QgsEditorWidgetFactory( name )

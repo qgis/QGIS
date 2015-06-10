@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qgisgui.h>
 #include <QtTest/QtTest>
+#include <qgisgui.h>
 
 class TestQgsGui : public QObject
 {

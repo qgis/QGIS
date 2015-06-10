@@ -17,9 +17,9 @@
 #ifndef QGSCOLORDIALOG_H
 #define QGSCOLORDIALOG_H
 
-#include "ui_qgscolordialog.h"
 #include <QColorDialog>
 #include "qgisgui.h"
+#include "ui_qgscolordialog.h"
 
 class QColor;
 

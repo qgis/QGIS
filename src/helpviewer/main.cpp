@@ -16,15 +16,15 @@
  *                                                                         *
  ***************************************************************************/
 #include <iostream>
-#include <QLibraryInfo>
 #include <QLocale>
 #include <QSettings>
 #include <QTranslator>
+#include <QLibraryInfo>
 
-#include "qgsapplication.h"
-#include "qgsconfig.h"
 #include "qgshelpviewer.h"
+#include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgsconfig.h"
 
 int main( int argc, char ** argv )
 {

@@ -14,18 +14,19 @@
  ***************************************************************************/
 
 
-#include <QCoreApplication>
+#include <QtTest/QtTest>
+#include <QObject>
+#include <QString>
 #include <QObject>
 #include <QSharedPointer>
-#include <QString>
-#include <QtTest/QtTest>
+#include <QCoreApplication>
 #include <QWidget>
 
 #include <qgsapplication.h>
-#include <qgslogger.h>
 #include <qgsmapcanvas.h>
-#include <qgsrubberband.h>
 #include <qgsvectorlayer.h>
+#include <qgsrubberband.h>
+#include <qgslogger.h>
 
 class TestQgsRubberband : public QObject
 {

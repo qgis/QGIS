@@ -15,11 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QColorDialog>
-#include "qgscolordialog.h"
-#include "qgspalettedrasterrenderer.h"
 #include "qgspalettedrendererwidget.h"
+#include "qgspalettedrasterrenderer.h"
 #include "qgsrasterlayer.h"
+#include "qgscolordialog.h"
+#include <QColorDialog>
 
 QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent ): QgsRasterRendererWidget( layer, extent )
 {

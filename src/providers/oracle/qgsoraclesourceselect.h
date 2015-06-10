@@ -19,14 +19,14 @@
 
 #include "ui_qgsdbsourceselectbase.h"
 #include "qgisgui.h"
-#include "qgscontexthelp.h"
 #include "qgsdbfilterproxymodel.h"
 #include "qgsoracletablemodel.h"
+#include "qgscontexthelp.h"
 
-#include <QIcon>
-#include <QItemDelegate>
 #include <QMap>
 #include <QPair>
+#include <QIcon>
+#include <QItemDelegate>
 
 class QPushButton;
 class QStringList;

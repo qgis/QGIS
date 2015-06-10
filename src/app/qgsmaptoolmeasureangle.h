@@ -16,9 +16,9 @@
 #ifndef QGSMAPTOOLMEASUREANGLE_H
 #define QGSMAPTOOLMEASUREANGLE_H
 
-#include "qgsdistancearea.h"
 #include "qgsmaptool.h"
 #include "qgspoint.h"
+#include "qgsdistancearea.h"
 
 class QgsDisplayAngle;
 class QgsRubberBand;

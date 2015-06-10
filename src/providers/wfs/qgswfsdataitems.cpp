@@ -20,8 +20,8 @@
 #include "qgswfsprovider.h"
 #include "qgswfssourceselect.h"
 
-#include <QCoreApplication>
 #include <QSettings>
+#include <QCoreApplication>
 
 
 QgsWFSLayerItem::QgsWFSLayerItem( QgsDataItem* parent, QString name, QgsDataSourceURI uri, QString featureType, QString title, QString crsString )

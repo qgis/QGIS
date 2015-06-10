@@ -31,24 +31,24 @@
 #include <config.h>
 #endif
 
-#include <geos_c.h>
 #include <stddef.h>
+#include <geos_c.h>
 
 #include <sstream>
 
-#include <cfloat>
 #include <iostream>
+#include <cfloat>
 //#include <cfloat>
 #include <cstdarg>
 #include <ctime>
 
 #include <pal/layer.h>
 
+#include "internalexception.h"
+#include "util.h"
+#include "labelposition.h"
 #include "feature.h"
 #include "geomfunction.h"
-#include "internalexception.h"
-#include "labelposition.h"
-#include "util.h"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846

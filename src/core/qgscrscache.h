@@ -18,8 +18,8 @@
 #ifndef QGSCRSCACHE_H
 #define QGSCRSCACHE_H
 
-#include <QHash>
 #include "qgscoordinatereferencesystem.h"
+#include <QHash>
 
 class QgsCoordinateTransform;
 

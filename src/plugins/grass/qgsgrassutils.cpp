@@ -12,9 +12,9 @@
  (at your option) any later version.
 *******************************************************************/
 
-#include "qgsgrass.h"
-#include "qgsgrassselect.h"
 #include "qgsgrassutils.h"
+#include "qgsgrassselect.h"
+#include "qgsgrass.h"
 
 #include "qgisinterface.h"
 #include "qgsapplication.h"

@@ -13,10 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qmath.h>
-#include <QStringList>
-#include "qgis.h"
 #include "qgsscaleexpression.h"
+#include "qgis.h"
+#include <QStringList>
+#include <qmath.h>
 
 QgsScaleExpression::QgsScaleExpression( const QString& expression )
     : QgsExpression( expression )

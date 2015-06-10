@@ -24,8 +24,8 @@
 #ifndef QGSATTRIBUTEACTION_H
 #define QGSATTRIBUTEACTION_H
 
-#include <QIcon>
 #include <QString>
+#include <QIcon>
 
 #include <qgsfeature.h>
 

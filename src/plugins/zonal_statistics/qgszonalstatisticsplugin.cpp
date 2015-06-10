@@ -15,13 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgszonalstatisticsplugin.h"
+#include "qgisinterface.h"
+#include "qgszonalstatistics.h"
+#include "qgszonalstatisticsdialog.h"
+#include "qgsvectorlayer.h"
 #include <QAction>
 #include <QProgressDialog>
-#include "qgisinterface.h"
-#include "qgsvectorlayer.h"
-#include "qgszonalstatisticsdialog.h"
-#include "qgszonalstatistics.h"
-#include "qgszonalstatisticsplugin.h"
 
 static const QString name_ = QObject::tr( "Zonal statistics plugin" );
 static const QString description_ = QObject::tr( "A plugin to calculate count, sum, mean of rasters for each polygon of a vector layer" );

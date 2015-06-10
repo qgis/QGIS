@@ -13,16 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QGraphicsPixmapItem>
-#include <QMouseEvent>
+#include "qgsmaptoolrotatepointsymbols.h"
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaptoolrotatepointsymbols.h"
 #include "qgspointrotationitem.h"
 #include "qgsrendererv2.h"
 #include "qgssnappingutils.h"
 #include "qgssymbolv2.h"
 #include "qgsvectorlayer.h"
+#include <QGraphicsPixmapItem>
+#include <QMouseEvent>
 
 QgsMapToolRotatePointSymbols::QgsMapToolRotatePointSymbols( QgsMapCanvas* canvas ): QgsMapToolEdit( canvas ),
     mActiveLayer( 0 ), mFeatureNumber( 0 ), mCurrentMouseAzimut( 0.0 ), mCurrentRotationFeature( 0.0 ),

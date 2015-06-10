@@ -18,12 +18,12 @@
 #ifndef QGSOPTIONS_H
 #define QGSOPTIONS_H
 
+#include "qgsoptionsdialogbase.h"
 #include "ui_qgsoptionsbase.h"
+#include "qgisgui.h"
 #include "qgisapp.h"
 #include "qgisappstylesheet.h"
-#include "qgisgui.h"
 #include "qgscontexthelp.h"
-#include "qgsoptionsdialogbase.h"
 
 #include <qgscoordinatereferencesystem.h>
 

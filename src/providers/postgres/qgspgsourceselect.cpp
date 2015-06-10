@@ -18,24 +18,24 @@ email                : sherman at mrcc.com
 
 #include "qgspgsourceselect.h"
 
-#include "qgsapplication.h"
-#include "qgscolumntypethread.h"
-#include "qgscontexthelp.h"
-#include "qgsdatasourceuri.h"
 #include "qgslogger.h"
-#include "qgsmanageconnectionsdialog.h"
-#include "qgspgnewconnection.h"
+#include "qgsapplication.h"
+#include "qgscontexthelp.h"
 #include "qgspostgresprovider.h"
+#include "qgspgnewconnection.h"
+#include "qgsmanageconnectionsdialog.h"
 #include "qgsquerybuilder.h"
+#include "qgsdatasourceuri.h"
 #include "qgsvectorlayer.h"
+#include "qgscolumntypethread.h"
 
 #include <QFileDialog>
-#include <QHeaderView>
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QSettings>
-#include <QStringList>
 #include <QTextStream>
+#include <QHeaderView>
+#include <QStringList>
 
 /** Used to create an editor for when the user tries to change the contents of a cell */
 QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const

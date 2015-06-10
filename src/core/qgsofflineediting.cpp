@@ -26,10 +26,10 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsofflineediting.h"
 #include "qgsproject.h"
-#include "qgsslconnect.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayereditbuffer.h"
 #include "qgsvectorlayerjoinbuffer.h"
+#include "qgsslconnect.h"
 
 #include <QDir>
 #include <QDomDocument>

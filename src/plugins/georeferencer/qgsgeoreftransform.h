@@ -20,8 +20,8 @@
 #include <gdal_alg.h> // just needed for GDALTransformerFunc, forward?
 
 #include <qgspoint.h>
-#include <stdexcept>
 #include <vector>
+#include <stdexcept>
 
 #include "qgsrasterchangecoords.h"
 

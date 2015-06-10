@@ -16,11 +16,11 @@
 #include "qgsrelationreferenceconfigdlg.h"
 
 #include "qgseditorwidgetfactory.h"
-#include "qgsexpressionbuilderdialog.h"
 #include "qgsfield.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
 #include "qgsvectorlayer.h"
+#include "qgsexpressionbuilderdialog.h"
 
 
 QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )

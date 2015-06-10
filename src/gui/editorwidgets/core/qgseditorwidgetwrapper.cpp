@@ -14,9 +14,9 @@
  ***************************************************************************/
 
 #include "qgseditorwidgetwrapper.h"
-#include "qgsfield.h"
-#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
+#include "qgsfield.h"
 
 #include <QWidget>
 

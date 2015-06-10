@@ -16,24 +16,24 @@
 #include "globe_plugin_dialog.h"
 #include "globe_plugin.h"
 
-#include <QFileDialog>
 #include <qgsapplication.h>
-#include <qgscontexthelp.h>
-#include <qgslogger.h>
-#include <qgsmaplayer.h>
-#include <qgsmaplayerregistry.h>
 #include <qgsproject.h>
+#include <qgsmaplayerregistry.h>
+#include <qgsmaplayer.h>
+#include <qgslogger.h>
+#include <qgscontexthelp.h>
+#include <QtAlgorithms>
+#include <QtDebug>
+#include <QFileDialog>
 #include <QMessageBox>
 #include <QSettings>
 #include <QString>
 #include <QStringList>
-#include <QtAlgorithms>
-#include <QtDebug>
 
-#include <QNetworkAccessManager>
-#include <QNetworkReply>
-#include <QNetworkRequest>
 #include <QVariant>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
 
 #include <osg/DisplaySettings>
 

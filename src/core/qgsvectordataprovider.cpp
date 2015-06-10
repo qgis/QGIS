@@ -19,13 +19,13 @@
 #include <cfloat> // for DBL_MAX
 #include <climits>
 
+#include "qgsvectordataprovider.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturerequest.h"
 #include "qgsfield.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
-#include "qgsvectordataprovider.h"
 
 QgsVectorDataProvider::QgsVectorDataProvider( QString uri )
     : QgsDataProvider( uri )

@@ -21,13 +21,13 @@
 #include "qgsrendercontext.h"
 #include "qgssymbolv2.h"
 
-#include <QDomDocument>
-#include <QDomElement>
 #include <QList>
-#include <QPair>
-#include <QPixmap>
 #include <QString>
 #include <QVariant>
+#include <QPair>
+#include <QPixmap>
+#include <QDomDocument>
+#include <QDomElement>
 
 class QgsFeature;
 class QgsFields;

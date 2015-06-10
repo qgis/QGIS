@@ -14,8 +14,8 @@
 ***************************************************************************/
 
 #include "qgiscustomwidgets.h"
-#include "qgsdatetimeedit.h"
 #include "qgsdatetimeeditplugin.h"
+#include "qgsdatetimeedit.h"
 
 
 QgsDateTimeEditPlugin::QgsDateTimeEditPlugin( QObject *parent )

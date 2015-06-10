@@ -20,13 +20,13 @@
 
 #include "qgsconfig.h"
 
-#include <deque>
 #include <list>
 #include <memory>
+#include <deque>
 
-#include "qgis.h"
-#include "qgspoint.h"
 #include "qgsrectangle.h"
+#include "qgspoint.h"
+#include "qgis.h"
 
 #include <QDomDocument>
 #include <QGraphicsView>

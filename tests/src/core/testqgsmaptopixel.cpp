@@ -12,13 +12,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
-#include <QtTest/QtTest>
+#include <QObject>
 //header for class being tested
+#include <qgsrectangle.h>
 #include <qgsmaptopixel.h>
 #include <qgspoint.h>
-#include <qgsrectangle.h>
 #include "qgslogger.h"
 
 class TestQgsMapToPixel: public QObject

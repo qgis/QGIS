@@ -15,10 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgis.h"
+#include "qgsversion.h"
 #include "qgsconfig.h"
 #include "qgserror.h"
 #include "qgslogger.h"
-#include "qgsversion.h"
 
 #include <QRegExp>
 

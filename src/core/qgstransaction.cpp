@@ -17,10 +17,10 @@
 
 #include <QLibrary>
 
+#include "qgstransaction.h"
 #include "qgsdatasourceuri.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsproviderregistry.h"
-#include "qgstransaction.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 

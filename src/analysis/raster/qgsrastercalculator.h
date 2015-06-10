@@ -18,12 +18,12 @@
 #ifndef QGSRASTERCALCULATOR_H
 #define QGSRASTERCALCULATOR_H
 
+#include "qgsfield.h"
+#include "qgsrectangle.h"
+#include "qgscoordinatereferencesystem.h"
 #include <QString>
 #include <QVector>
 #include "gdal.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsfield.h"
-#include "qgsrectangle.h"
 
 class QgsRasterLayer;
 class QProgressDialog;

@@ -19,8 +19,8 @@
 #define QGSCOMPOSERMODEL_H
 
 #include <QAbstractItemModel>
-#include <QSet>
 #include <QStringList>
+#include <QSet>
 
 class QgsComposition;
 class QgsComposerItem;

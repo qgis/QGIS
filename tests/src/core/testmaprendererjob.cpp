@@ -1,6 +1,6 @@
 
-#include <QObject>
 #include <QtTest/QtTest>
+#include <QObject>
 
 #include "qgsapplication.h"
 #include "qgsmaplayerregistry.h"

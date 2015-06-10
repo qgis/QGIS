@@ -14,18 +14,18 @@
  ***************************************************************************/
 
 
-#include "qgis.h"
-#include "qgsgeometry.h"
-#include "qgsmapcanvas.h"
 #include "qgsmaptoolselect.h"
 #include "qgsmaptoolselectutils.h"
-#include "qgspoint.h"
 #include "qgsrubberband.h"
+#include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
+#include "qgsgeometry.h"
+#include "qgspoint.h"
+#include "qgis.h"
 
-#include <QColor>
 #include <QMouseEvent>
 #include <QRect>
+#include <QColor>
 
 
 QgsMapToolSelect::QgsMapToolSelect( QgsMapCanvas* canvas )

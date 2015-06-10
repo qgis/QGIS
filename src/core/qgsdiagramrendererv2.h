@@ -16,11 +16,11 @@
 #define QGSDIAGRAMRENDERERV2_H
 
 #include <QColor>
-#include <QDomDocument>
 #include <QFont>
 #include <QList>
 #include <QPointF>
 #include <QSizeF>
+#include <QDomDocument>
 
 #include "qgsfeature.h"
 

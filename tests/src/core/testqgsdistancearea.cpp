@@ -12,13 +12,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <QtTest/QtTest>
 #include <QFile>
-#include <qgsapplication.h>
+#include <QTextStream>
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QTextStream>
-#include <QtTest/QtTest>
+#include <qgsapplication.h>
 //header for class being tested
 #include <qgsdistancearea.h>
 #include <qgspoint.h>

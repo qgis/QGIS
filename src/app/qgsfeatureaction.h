@@ -20,9 +20,9 @@
 #include "qgsfeature.h"
 #include "qgsvectorlayertools.h"
 
-#include <QAction>
 #include <QList>
 #include <QPair>
+#include <QAction>
 
 class QgsIdentifyResultsDialog;
 class QgsVectorLayer;

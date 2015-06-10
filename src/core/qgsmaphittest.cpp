@@ -1,9 +1,9 @@
 #include "qgsmaphittest.h"
 
 #include "qgsmaplayerregistry.h"
-#include "qgspointdisplacementrenderer.h"
 #include "qgsrendercontext.h"
 #include "qgsrendererv2.h"
+#include "qgspointdisplacementrenderer.h"
 #include "qgsvectorlayer.h"
 
 

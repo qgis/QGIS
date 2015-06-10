@@ -22,10 +22,10 @@
 #include <QMap>
 #include <QObject>
 
-#include "qgscoordinatereferencesystem.h"
+#include "qgsfield.h"
 #include "qgsfeature.h"
 #include "qgsfeaturestore.h"
-#include "qgsfield.h"
+#include "qgscoordinatereferencesystem.h"
 
 /**
   \brief QGIS internal clipboard for features.

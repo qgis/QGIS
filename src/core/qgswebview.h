@@ -16,8 +16,8 @@
 #ifndef QGSWEBVIEW_H
 #define QGSWEBVIEW_H
 
-#include <QPrinter>
 #include <QWidget>
+#include <QPrinter>
 
 #ifdef WITH_QTWEBKIT
 #include <QtWebKit/QWebView>

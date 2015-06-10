@@ -18,16 +18,16 @@
 #include "qgsgpsconnection.h"
 
 #include <QCoreApplication>
-#include <QFileInfo>
+#include <QTime>
 #include <QIODevice>
 #include <QStringList>
-#include <QTime>
+#include <QFileInfo>
 
-#include "qextserialenumerator.h"
 #include "qextserialport.h"
+#include "qextserialenumerator.h"
 
-#include "qgslogger.h"
 #include "qgsnmeaconnection.h"
+#include "qgslogger.h"
 
 QgsGPSConnection::QgsGPSConnection( QIODevice* dev ): QObject( 0 ), mSource( dev ), mStatus( NotConnected )
 {

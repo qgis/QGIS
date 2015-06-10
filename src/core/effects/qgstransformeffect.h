@@ -17,11 +17,11 @@
 #ifndef QGSTRANSFORMEFFECT_H
 #define QGSTRANSFORMEFFECT_H
 
-#include <QPainter>
+#include "qgspainteffect.h"
 #include "qgis.h"
 #include "qgsmapunitscale.h"
-#include "qgspainteffect.h"
 #include "qgssymbolv2.h"
+#include <QPainter>
 
 /** \ingroup core
  * \class QgsTransformEffect

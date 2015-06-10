@@ -17,8 +17,8 @@
 
 #include "qgscomposerattributetable.h"
 #include "qgscomposerattributetablemodel.h"
-#include "qgscomposertablecolumn.h"
 #include "qgscomposertable.h"
+#include "qgscomposertablecolumn.h"
 
 
 //QgsComposerAttributeTableColumnModel

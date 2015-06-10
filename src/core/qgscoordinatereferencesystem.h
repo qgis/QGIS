@@ -22,9 +22,9 @@
 #include <ostream>
 
 //qt includes
-#include <QHash>
-#include <QMap>
 #include <QString>
+#include <QMap>
+#include <QHash>
 
 class QDomNode;
 class QDomDocument;

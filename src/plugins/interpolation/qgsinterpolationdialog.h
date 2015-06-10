@@ -19,9 +19,9 @@
 #define QGSINTERPOLATIONDIALOG_H
 
 #include "ui_qgsinterpolationdialogbase.h"
-#include <QFileInfo>
-#include "qgisinterface.h"
 #include "qgsrectangle.h"
+#include "qgisinterface.h"
+#include <QFileInfo>
 
 class QgsInterpolatorDialog;
 class QgsVectorLayer;

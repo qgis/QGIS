@@ -15,13 +15,13 @@
 #ifndef QGSHEATMAPRENDERER_H
 #define QGSHEATMAPRENDERER_H
 
-#include <QScopedPointer>
 #include "qgis.h"
+#include "qgsrendererv2.h"
+#include "qgssymbolv2.h"
 #include "qgsexpression.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
-#include "qgsrendererv2.h"
-#include "qgssymbolv2.h"
+#include <QScopedPointer>
 
 class QgsVectorColorRampV2;
 

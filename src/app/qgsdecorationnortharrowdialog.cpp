@@ -14,12 +14,12 @@
 
 #include "qgsdecorationnortharrow.h"
 
-#include "qgscontexthelp.h"
 #include "qgslogger.h"
+#include "qgscontexthelp.h"
 
-#include <cmath>
 #include <QPainter>
 #include <QSettings>
+#include <cmath>
 
 QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorthArrow& deco, QWidget* parent )
     : QDialog( parent ), mDeco( deco )

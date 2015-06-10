@@ -13,9 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
-#include <QtTest/QtTest>
+#include <QObject>
 
 #include <qgsscaleexpression.h>
 

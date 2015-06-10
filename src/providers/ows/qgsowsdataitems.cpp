@@ -12,13 +12,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsdatasourceuri.h"
-#include "qgslogger.h"
-#include "qgsnewhttpconnection.h"
-#include "qgsowsconnection.h"
+#include "qgsproviderregistry.h"
 #include "qgsowsdataitems.h"
 #include "qgsowsprovider.h"
-#include "qgsproviderregistry.h"
+#include "qgslogger.h"
+#include "qgsdatasourceuri.h"
+#include "qgsowsconnection.h"
+#include "qgsnewhttpconnection.h"
 
 #include "qgsapplication.h"
 

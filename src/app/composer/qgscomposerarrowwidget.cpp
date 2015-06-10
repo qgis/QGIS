@@ -15,15 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgscomposerarrowwidget.h"
+#include "qgscomposerarrow.h"
+#include "qgscomposeritemwidget.h"
+#include "qgssymbolv2selectordialog.h"
+#include "qgsstylev2.h"
+#include "qgssymbolv2.h"
 #include <QColorDialog>
 #include <QFileDialog>
 #include <QFileInfo>
-#include "qgscomposerarrow.h"
-#include "qgscomposerarrowwidget.h"
-#include "qgscomposeritemwidget.h"
-#include "qgsstylev2.h"
-#include "qgssymbolv2.h"
-#include "qgssymbolv2selectordialog.h"
 
 QgsComposerArrowWidget::QgsComposerArrowWidget( QgsComposerArrow* arrow ): QgsComposerItemBaseWidget( 0, arrow ), mArrow( arrow )
 {

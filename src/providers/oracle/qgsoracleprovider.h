@@ -18,16 +18,16 @@
 #ifndef QGSORACLEPROVIDER_H
 #define QGSORACLEPROVIDER_H
 
-#include "qgsdatasourceuri.h"
-#include "qgsoracletablemodel.h"
-#include "qgsrectangle.h"
 #include "qgsvectordataprovider.h"
+#include "qgsrectangle.h"
 #include "qgsvectorlayerimport.h"
+#include "qgsoracletablemodel.h"
+#include "qgsdatasourceuri.h"
 
-#include <QQueue>
-#include <QSqlError>
-#include <QSqlQuery>
 #include <QVector>
+#include <QQueue>
+#include <QSqlQuery>
+#include <QSqlError>
 
 class QgsFeature;
 class QgsField;

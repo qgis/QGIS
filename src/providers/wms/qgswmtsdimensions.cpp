@@ -18,8 +18,8 @@
 #include "qgswmsprovider.h"
 #include "qgswmtsdimensions.h"
 
-#include <QComboBox>
 #include <QSettings>
+#include <QComboBox>
 
 QgsWmtsDimensions::QgsWmtsDimensions( const QgsWmtsTileLayer &layer, QWidget *parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )

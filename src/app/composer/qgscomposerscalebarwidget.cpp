@@ -14,14 +14,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QColorDialog>
-#include <QFontDialog>
-#include <QWidget>
+#include "qgscomposerscalebarwidget.h"
 #include "qgscomposeritemwidget.h"
 #include "qgscomposermap.h"
 #include "qgscomposerscalebar.h"
-#include "qgscomposerscalebarwidget.h"
 #include "qgscomposition.h"
+#include <QColorDialog>
+#include <QFontDialog>
+#include <QWidget>
 
 QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar* scaleBar ): QgsComposerItemBaseWidget( 0, scaleBar ), mComposerScaleBar( scaleBar )
 {

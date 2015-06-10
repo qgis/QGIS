@@ -15,8 +15,8 @@
 #include <cmath>
 #include <stdexcept>
 
-#include <gsl/gsl_blas.h>
 #include <gsl/gsl_linalg.h>
+#include <gsl/gsl_blas.h>
 
 #include <QObject>
 

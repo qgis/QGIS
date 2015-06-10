@@ -15,11 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscomposerframe.h"
-#include "qgscomposertablecolumn.h"
 #include "qgscomposertablev2.h"
 #include "qgscomposerutils.h"
+#include "qgscomposertablecolumn.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgscomposerframe.h"
 
 QgsComposerTableV2::QgsComposerTableV2( QgsComposition *composition, bool createUndoCommands )
     : QgsComposerMultiFrame( composition, createUndoCommands )

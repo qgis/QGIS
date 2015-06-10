@@ -17,10 +17,10 @@
 #ifndef QGSPROJECTIONSELECTIONWIDGET_H
 #define QGSPROJECTIONSELECTIONWIDGET_H
 
-#include <QComboBox>
+#include <QWidget>
 #include <QLineEdit>
 #include <QToolButton>
-#include <QWidget>
+#include <QComboBox>
 
 #include "qgscoordinatereferencesystem.h"
 

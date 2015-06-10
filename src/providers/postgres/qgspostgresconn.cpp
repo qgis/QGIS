@@ -15,13 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscredentials.h"
-#include "qgsdatasourceuri.h"
-#include "qgsfield.h"
-#include "qgslogger.h"
-#include "qgsmessagelog.h"
-#include "qgspgtablemodel.h"
 #include "qgspostgresconn.h"
+#include "qgslogger.h"
+#include "qgsdatasourceuri.h"
+#include "qgsmessagelog.h"
+#include "qgscredentials.h"
+#include "qgsfield.h"
+#include "qgspgtablemodel.h"
 #include "qgsproviderregistry.h"
 #include "qgsvectordataprovider.h"
 #include "qgswkbtypes.h"

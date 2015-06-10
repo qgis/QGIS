@@ -14,12 +14,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <cfloat>
 #include <cstring>
 #include <vector>
+#include <cfloat>
 
-#include <QDateTime>
 #include <QString>
+#include <QDateTime>
 
 #include "qgis.h"
 #include "qgsdataprovider.h"
@@ -27,9 +27,9 @@
 #include "qgsfield.h"
 #include "qgsrectangle.h"
 
-#include "qgsgrassfeatureiterator.h"
 #include "qgsgrass.h"
 #include "qgsgrassprovider.h"
+#include "qgsgrassfeatureiterator.h"
 
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
@@ -49,10 +49,10 @@
 
 extern "C"
 {
-#include <grass/dbmi.h>
-#include <grass/gis.h>
-#include <grass/gprojects.h>
 #include <grass/version.h>
+#include <grass/gprojects.h>
+#include <grass/gis.h>
+#include <grass/dbmi.h>
 #if GRASS_VERSION_MAJOR < 7
 #include <grass/Vect.h>
 #else

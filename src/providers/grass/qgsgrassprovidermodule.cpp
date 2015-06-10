@@ -14,21 +14,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslogger.h"
 #include "qgsmessageoutput.h"
 #include "qgsmimedatautils.h"
 #include "qgsnewnamedialog.h"
 #include "qgsproviderregistry.h"
 #include "qgsrasterlayer.h"
+#include "qgslogger.h"
 
-#include "qgsgrass.h"
-#include "qgsgrassoptions.h"
-#include "qgsgrassprovider.h"
 #include "qgsgrassprovidermodule.h"
+#include "qgsgrassprovider.h"
+#include "qgsgrassoptions.h"
+#include "qgsgrass.h"
 
 #include <QAction>
-#include <QDir>
 #include <QFileInfo>
+#include <QDir>
 #include <QLabel>
 #include <QObject>
 

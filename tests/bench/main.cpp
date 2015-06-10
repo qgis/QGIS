@@ -50,15 +50,15 @@ typedef SInt32 SRefCon;
 #endif
 #endif
 
+#include "qgsbench.h"
+#include "qgsapplication.h"
 #include <qgsconfig.h>
 #include <qgsversion.h>
-#include "qgsapplication.h"
-#include "qgsbench.h"
 #include "qgsexception.h"
-#include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgsrectangle.h"
+#include "qgslogger.h"
 
 
 /** print usage text

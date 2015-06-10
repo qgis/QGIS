@@ -14,16 +14,16 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsapplication.h"
 #include "qgscoordinatetransform.h"
+#include "qgsapplication.h"
 #include "qgscrscache.h"
-#include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgslogger.h"
 
 //qt includes
-#include <QApplication>
-#include <QDomElement>
 #include <QDomNode>
+#include <QDomElement>
+#include <QApplication>
 #include <QPolygonF>
 #include <QStringList>
 #include <QVector>

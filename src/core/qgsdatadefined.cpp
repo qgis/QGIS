@@ -16,9 +16,9 @@
 #include "qgsdatadefined.h"
 #include "qgsdatadefined_p.h"
 
+#include "qgslogger.h"
 #include "qgsexpression.h"
 #include "qgsfield.h"
-#include "qgslogger.h"
 #include "qgsvectorlayer.h"
 
 QgsDataDefined::QgsDataDefined( bool active,

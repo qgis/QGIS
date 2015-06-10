@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgpsconnection.h"
 #include "qgsgpsconnectionregistry.h"
+#include "qgsgpsconnection.h"
 
 QgsGPSConnectionRegistry::QgsGPSConnectionRegistry()
 {

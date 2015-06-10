@@ -19,9 +19,9 @@
 #include <QStyle>
 #include <QToolButton>
 
-#include "qgsapplication.h"
 #include "qgsdoublespinbox.h"
 #include "qgsexpression.h"
+#include "qgsapplication.h"
 #include "qgslogger.h"
 
 QgsDoubleSpinBox::QgsDoubleSpinBox( QWidget *parent )

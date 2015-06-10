@@ -12,25 +12,26 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <iostream>
-#include <QApplication>
-#include <QDesktopServices>
-#include <QDir>
-#include <QFileInfo>
+#include <QtTest/QtTest>
 #include <QObject>
-#include <QPainter>
 #include <QString>
 #include <QStringList>
+#include <QObject>
+#include <iostream>
+#include <QApplication>
+#include <QFileInfo>
+#include <QDir>
+#include <QPainter>
 #include <QTime>
-#include <QtTest/QtTest>
+#include <QDesktopServices>
 
 //qgis includes...
-#include <qgsapplication.h>
-#include <qgsmaplayerregistry.h>
-#include <qgsmapsettings.h>
-#include <qgsproviderregistry.h>
-#include <qgsrasterbandstats.h>
 #include <qgsrasterlayer.h>
+#include <qgsrasterbandstats.h>
+#include <qgsmaplayerregistry.h>
+#include <qgsapplication.h>
+#include <qgsproviderregistry.h>
+#include <qgsmapsettings.h>
 
 //qgis unit test includes
 #include <qgsrenderchecker.h>

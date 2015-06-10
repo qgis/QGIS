@@ -15,23 +15,23 @@
 #include "qgsbrowserdockwidget.h"
 
 #include <QAbstractTextDocumentLayout>
-#include <QFileDialog>
 #include <QHeaderView>
-#include <QMenu>
-#include <QPlainTextDocumentLayout>
-#include <QSettings>
-#include <QSortFilterProxyModel>
-#include <QToolButton>
 #include <QTreeView>
+#include <QMenu>
+#include <QSettings>
+#include <QToolButton>
+#include <QFileDialog>
+#include <QPlainTextDocumentLayout>
+#include <QSortFilterProxyModel>
 
-#include "qgisapp.h"
 #include "qgsbrowsermodel.h"
 #include "qgsbrowsertreeview.h"
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
-#include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
+#include "qgisapp.h"
+#include "qgsproject.h"
 
 // browser layer properties dialog
 #include "qgsapplication.h"

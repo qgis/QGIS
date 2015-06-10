@@ -20,14 +20,14 @@
 
 #include <fstream>
 
-#include "qgsconfig.h"
 #include "qgshttptransaction.h"
 #include "qgslogger.h"
+#include "qgsconfig.h"
 
 #include <QApplication>
+#include <QUrl>
 #include <QSettings>
 #include <QTimer>
-#include <QUrl>
 
 static int HTTP_PORT_DEFAULT = 80;
 

@@ -12,28 +12,29 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <QtTest/QtTest>
 #include <QObject>
-#include <QPainter>
 #include <QString>
 #include <QStringList>
+#include <QObject>
+#include <QPainter>
 #include <QTime>
-#include <QtTest/QtTest>
 
 #include <QApplication>
 #include <QDesktopServices>
 
 //qgis includes...
-#include <qgis.h> //defines GEOWkt
-#include <qgsapplication.h> //search path for srs.db
-#include <qgscoordinatereferencesystem.h> //needed for creating a srs
-#include <qgsfeature.h> //we will need to pass a bunch of these for each rec
-#include <qgsfield.h>
-#include <qgsgeometry.h> //each feature needs a geometry
-#include <qgslogger.h>
-#include <qgspoint.h> //we will use point geometry
-#include <qgsproviderregistry.h>
-#include <qgsvectorfilewriter.h> //logic for writing shpfiles
 #include <qgsvectorlayer.h> //defines QgsFieldMap 
+#include <qgsvectorfilewriter.h> //logic for writing shpfiles
+#include <qgsfeature.h> //we will need to pass a bunch of these for each rec
+#include <qgsgeometry.h> //each feature needs a geometry
+#include <qgspoint.h> //we will use point geometry
+#include <qgscoordinatereferencesystem.h> //needed for creating a srs
+#include <qgsapplication.h> //search path for srs.db
+#include <qgsfield.h>
+#include <qgis.h> //defines GEOWkt
+#include <qgsproviderregistry.h>
+#include <qgslogger.h>
 
 #if defined(linux)
 #include <langinfo.h>

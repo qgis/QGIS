@@ -21,16 +21,16 @@
 
 #include <qgsnetworkaccessmanager.h>
 
-#include <qgis.h>
 #include <qgsapplication.h>
-#include <qgslogger.h>
 #include <qgsmessagelog.h>
+#include <qgslogger.h>
+#include <qgis.h>
 
-#include <QNetworkDiskCache>
-#include <QNetworkReply>
+#include <QUrl>
 #include <QSettings>
 #include <QTimer>
-#include <QUrl>
+#include <QNetworkReply>
+#include <QNetworkDiskCache>
 
 class QgsNetworkProxyFactory : public QNetworkProxyFactory
 {

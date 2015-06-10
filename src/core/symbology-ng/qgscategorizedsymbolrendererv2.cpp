@@ -16,18 +16,18 @@
 
 #include "qgscategorizedsymbolrendererv2.h"
 
-#include "qgsdatadefined.h"
+#include "qgssymbolv2.h"
+#include "qgssymbollayerv2utils.h"
+#include "qgsvectorcolorrampv2.h"
+#include "qgspointdisplacementrenderer.h"
 #include "qgsinvertedpolygonrenderer.h"
 #include "qgspainteffect.h"
-#include "qgspointdisplacementrenderer.h"
 #include "qgsscaleexpression.h"
-#include "qgssymbollayerv2utils.h"
-#include "qgssymbolv2.h"
-#include "qgsvectorcolorrampv2.h"
+#include "qgsdatadefined.h"
 
 #include "qgsfeature.h"
-#include "qgslogger.h"
 #include "qgsvectorlayer.h"
+#include "qgslogger.h"
 
 #include <QDomDocument>
 #include <QDomElement>

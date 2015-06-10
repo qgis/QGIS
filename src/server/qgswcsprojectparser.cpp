@@ -15,10 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgswcsprojectparser.h"
 #include "qgsconfigcache.h"
 #include "qgsconfigparserutils.h"
 #include "qgsrasterlayer.h"
-#include "qgswcsprojectparser.h"
 
 QgsWCSProjectParser::QgsWCSProjectParser( const QString& filePath )
 {

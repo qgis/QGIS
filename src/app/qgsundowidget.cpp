@@ -17,8 +17,8 @@
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgslayertreeview.h"
-#include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
+#include "qgsmapcanvas.h"
 
 
 QgsUndoWidget::QgsUndoWidget( QWidget * parent, QgsMapCanvas * mapCanvas )

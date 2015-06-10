@@ -17,13 +17,13 @@
 #ifndef QGSATTRIBUTEDIALOG_H
 #define QGSATTRIBUTEDIALOG_H
 
+#include "qgsfeature.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgsattributeform.h"
-#include "qgsfeature.h"
 
 #include <QDialog>
-#include <QGridLayout>
 #include <QMenuBar>
+#include <QGridLayout>
 
 class QgsDistanceArea;
 class QgsFeature;

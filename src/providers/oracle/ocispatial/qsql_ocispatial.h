@@ -42,8 +42,8 @@
 #ifndef QSQL_OCISPATIAL_H
 #define QSQL_OCISPATIAL_H
 
-#include <QtSql/qsqldriver.h>
 #include <QtSql/qsqlresult.h>
+#include <QtSql/qsqldriver.h>
 #include "qsqlcachedresult_p.h"
 
 #ifdef QT_PLUGIN

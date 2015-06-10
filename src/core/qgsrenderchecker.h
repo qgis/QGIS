@@ -16,14 +16,14 @@
 #ifndef QGSRENDERCHECKER_H
 #define QGSRENDERCHECKER_H
 
-#include <QDir>
 #include <qgis.h>
-#include <QList>
-#include <QRegExp>
+#include <QDir>
 #include <QString>
+#include <QRegExp>
+#include <QList>
 
-#include <qgslogger.h>
 #include <qgsmaprenderer.h>
+#include <qgslogger.h>
 #include <qgsmapsettings.h>
 #include "qgsdartmeasurement.h"
 

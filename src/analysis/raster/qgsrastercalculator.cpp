@@ -15,13 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsrastercalcnode.h"
 #include "qgsrastercalculator.h"
+#include "qgsrastercalcnode.h"
 #include "qgsrasterlayer.h"
 #include "qgsrastermatrix.h"
 
-#include <QFile>
 #include <QProgressDialog>
+#include <QFile>
 
 #include <cpl_string.h>
 #include <gdalwarper.h>

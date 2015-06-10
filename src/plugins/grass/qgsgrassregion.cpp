@@ -15,9 +15,9 @@
  ***************************************************************************/
 
 #include "qgis.h"
-#include "qgsgrass.h"
-#include "qgsgrassplugin.h"
 #include "qgsgrassregion.h"
+#include "qgsgrassplugin.h"
+#include "qgsgrass.h"
 
 #include "qgisinterface.h"
 #include "qgslogger.h"

@@ -18,11 +18,11 @@
 #define QGSSTYLEV2EXPORTIMPORTDIALOG_H
 
 #include <QDialog>
-#include <QNetworkAccessManager>
-#include <QNetworkReply>
+#include <QUrl>
 #include <QProgressDialog>
 #include <QTemporaryFile>
-#include <QUrl>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
 
 #include "ui_qgsstylev2exportimportdialogbase.h"
 

@@ -50,8 +50,8 @@ class QgsGeorefPluginGui;
 //
 //QT Includes
 //
-#include <QIcon>
 #include <QWidget>
+#include <QIcon>
 
 /**
 * \class Plugin

@@ -15,21 +15,21 @@ email                : jpalmer at linz dot govt dot nz
 
 #include <limits>
 
+#include "qgsmaptoolselectutils.h"
 #include "qgisapp.h"
-#include "qgis.h"
-#include "qgscsexception.h"
+#include "qgsmessagebar.h"
+#include "qgsmapcanvas.h"
+#include "qgsvectorlayer.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
-#include "qgslogger.h"
-#include "qgsmapcanvas.h"
-#include "qgsmaptoolselectutils.h"
-#include "qgsmessagebar.h"
 #include "qgsrendererv2.h"
 #include "qgsrubberband.h"
-#include "qgsvectorlayer.h"
+#include "qgscsexception.h"
+#include "qgslogger.h"
+#include "qgis.h"
 
-#include <QApplication>
 #include <QMouseEvent>
+#include <QApplication>
 
 QgsVectorLayer* QgsMapToolSelectUtils::getCurrentVectorLayer( QgsMapCanvas* canvas )
 {

@@ -18,6 +18,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgswmsprovider.h"
 #include "qgis.h" // GEO_EPSG_CRS_ID
 #include "qgscontexthelp.h"
 #include "qgscoordinatereferencesystem.h"
@@ -26,33 +27,32 @@
 #include "qgslogger.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgsmessageviewer.h"
-#include "qgsnetworkaccessmanager.h"
 #include "qgsnewhttpconnection.h"
 #include "qgsnumericsortlistviewitem.h"
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
-#include "qgswmscapabilities.h"
 #include "qgswmsconnection.h"
-#include "qgswmsprovider.h"
 #include "qgswmssourceselect.h"
 #include "qgswmtsdimensions.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgswmscapabilities.h"
 
 #include <QButtonGroup>
-#include <QDomDocument>
 #include <QFileDialog>
+#include <QRadioButton>
+#include <QDomDocument>
 #include <QHeaderView>
 #include <QImageReader>
 #include <QInputDialog>
 #include <QMap>
 #include <QMessageBox>
 #include <QPicture>
-#include <QRadioButton>
 #include <QSettings>
 #include <QUrl>
 #include <QValidator>
 
-#include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QNetworkReply>
 
 QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
     : QDialog( parent, fl )

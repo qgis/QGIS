@@ -14,8 +14,8 @@
  ***************************************************************************/
 #include "qgslabelpreview.h"
 
-#include <QFontMetrics>
 #include <QPainter>
+#include <QFontMetrics>
 
 #include "qgspallabeling.h"
 

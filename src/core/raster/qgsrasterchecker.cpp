@@ -18,15 +18,15 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 
-#include <QBuffer>
-#include <QByteArray>
-#include <QColor>
-#include <QCryptographicHash>
-#include <QDebug>
-#include <QImage>
 #include <qmath.h>
+#include <QColor>
 #include <QPainter>
+#include <QImage>
 #include <QTime>
+#include <QCryptographicHash>
+#include <QByteArray>
+#include <QDebug>
+#include <QBuffer>
 
 QgsRasterChecker::QgsRasterChecker()
     : mReport( "" )

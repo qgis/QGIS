@@ -16,11 +16,11 @@
 #include <QHBoxLayout>
 
 
-#include <QSettings>
+#include "qgsprojectionselectionwidget.h"
 #include "qgsapplication.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgsproject.h"
-#include "qgsprojectionselectionwidget.h"
+#include <QSettings>
 
 QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent ) :
     QWidget( parent )

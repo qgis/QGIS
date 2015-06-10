@@ -16,8 +16,8 @@
 #ifndef QGSRELATIONREFERENCEWIDGETPLUGIN_H
 #define QGSRELATIONREFERENCEWIDGETPLUGIN_H
 
-#include <QDesignerCustomWidgetInterface>
 #include <QDesignerExportWidget>
+#include <QDesignerCustomWidgetInterface>
 
 
 class CUSTOMWIDGETS_EXPORT QgsRelationReferenceWidgetPlugin : public QObject, public QDesignerCustomWidgetInterface

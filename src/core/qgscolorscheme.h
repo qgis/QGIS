@@ -18,9 +18,9 @@
 #ifndef QGSCOLORSCHEME_H
 #define QGSCOLORSCHEME_H
 
+#include <QString>
 #include <QColor>
 #include <QPair>
-#include <QString>
 
 /**List of colors paired with a friendly display name identifying the color
  * \note Added in version 2.5

@@ -18,8 +18,8 @@
 #define QGSATTRIBUTETABLEDIALOG_H_
 
 #include <QDialog>
-#include <QItemSelectionModel>
 #include <QModelIndex>
+#include <QItemSelectionModel>
 
 #include <time.h>
 
@@ -27,9 +27,9 @@
 #include "qgscontexthelp.h"
 
 #include "qgsattributedialog.h"
-#include "qgseditorwidgetwrapper.h"
-#include "qgsfieldmodel.h"
 #include "qgsvectorlayer.h" //QgsFeatureIds
+#include "qgsfieldmodel.h"
+#include "qgseditorwidgetwrapper.h"
 
 class QDialogButtonBox;
 class QPushButton;

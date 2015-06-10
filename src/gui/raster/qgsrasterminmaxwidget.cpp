@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QMessageBox>
 #include <QSettings>
+#include <QMessageBox>
 
 #include "qgsrasterlayer.h"
 #include "qgsrasterminmaxwidget.h"

@@ -1,10 +1,10 @@
-#include <QFile>
-#include "mersenne-twister.h"
-#include "qgsgeometry.h"
 #include "qgspointsample.h"
+#include "qgsgeometry.h"
 #include "qgsspatialindex.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
+#include <QFile>
+#include "mersenne-twister.h"
 
 
 QgsPointSample::QgsPointSample( QgsVectorLayer* inputLayer, const QString& outputLayer, QString nPointsAttribute, QString minDistAttribute ): mInputLayer( inputLayer ),

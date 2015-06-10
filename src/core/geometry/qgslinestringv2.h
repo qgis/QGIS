@@ -18,9 +18,9 @@
 #ifndef QGSLINESTRINGV2_H
 #define QGSLINESTRINGV2_H
 
-#include <QPolygonF>
 #include "qgscurvev2.h"
 #include "qgswkbptr.h"
+#include <QPolygonF>
 
 class CORE_EXPORT QgsLineStringV2: public QgsCurveV2
 {

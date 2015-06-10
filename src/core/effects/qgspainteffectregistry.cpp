@@ -13,13 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgspainteffectregistry.h"
 #include "qgsblureffect.h"
-#include "qgscoloreffect.h"
+#include "qgsshadoweffect.h"
 #include "qgseffectstack.h"
 #include "qgsgloweffect.h"
-#include "qgspainteffectregistry.h"
-#include "qgsshadoweffect.h"
 #include "qgstransformeffect.h"
+#include "qgscoloreffect.h"
 
 QgsPaintEffectAbstractMetadata::QgsPaintEffectAbstractMetadata( const QString& name, const QString& visibleName )
     : mName( name )

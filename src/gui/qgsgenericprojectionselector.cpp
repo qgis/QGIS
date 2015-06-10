@@ -17,8 +17,8 @@
  ***************************************************************************/
 #include "qgsapplication.h"
 
-#include <QApplication>
 #include <qgsgenericprojectionselector.h>
+#include <QApplication>
 #include <QSettings>
 
 /**

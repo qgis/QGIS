@@ -18,15 +18,15 @@
 #define QGSATTRIBUTETABLEMODEL_H
 
 #include <QAbstractTableModel>
-#include <QHash>
-#include <QMap>
 #include <QModelIndex>
 #include <QObject>
+#include <QHash>
 #include <QQueue>
+#include <QMap>
 
-#include "qgsattributeeditorcontext.h"
-#include "qgsvectorlayercache.h"
 #include "qgsvectorlayer.h" // QgsAttributeList
+#include "qgsvectorlayercache.h"
+#include "qgsattributeeditorcontext.h"
 
 class QgsMapCanvas;
 class QgsMapLayerAction;

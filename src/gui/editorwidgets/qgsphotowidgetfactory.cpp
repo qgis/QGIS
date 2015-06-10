@@ -15,8 +15,8 @@
 
 #include "qgsphotowidgetfactory.h"
 
-#include "qgsphotoconfigdlg.h"
 #include "qgsphotowidgetwrapper.h"
+#include "qgsphotoconfigdlg.h"
 
 QgsPhotoWidgetFactory::QgsPhotoWidgetFactory( const QString& name )
     :  QgsEditorWidgetFactory( name )

@@ -23,8 +23,8 @@ class QgsGrassFeatureIterator;
 
 #include <QDateTime>
 
-#include <vector>
 #include "qgsvectordataprovider.h"
+#include <vector>
 
 /* Update.
  * Vectors are updated (reloaded) if:

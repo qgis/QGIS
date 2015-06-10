@@ -17,27 +17,27 @@
 
 #include "qgscategorizedsymbolrendererv2.h"
 
-#include "qgsstylev2.h"
-#include "qgssymbollayerv2utils.h"
 #include "qgssymbolv2.h"
+#include "qgssymbollayerv2utils.h"
 #include "qgsvectorcolorrampv2.h"
+#include "qgsstylev2.h"
 
-#include "qgsexpressionbuilderdialog.h"
 #include "qgssymbolv2selectordialog.h"
+#include "qgsexpressionbuilderdialog.h"
 
 #include "qgsvectorlayer.h"
 
-#include "qgsexpression.h"
 #include "qgsproject.h"
+#include "qgsexpression.h"
 
-#include <QFileDialog>
 #include <QKeyEvent>
 #include <QMenu>
 #include <QMessageBox>
-#include <QPainter>
-#include <QPen>
-#include <QStandardItem>
 #include <QStandardItemModel>
+#include <QStandardItem>
+#include <QPen>
+#include <QPainter>
+#include <QFileDialog>
 
 QgsCategorizedSymbolRendererV2Model::QgsCategorizedSymbolRendererV2Model( QObject * parent ) : QAbstractItemModel( parent )
     , mRenderer( 0 )

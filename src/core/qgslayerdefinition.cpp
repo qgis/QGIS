@@ -1,14 +1,14 @@
-#include <QDir>
 #include <QDomNode>
-#include <QFile>
 #include <QFileInfo>
+#include <QFile>
+#include <QDir>
 #include <QTextStream>
 
-#include "qgslayerdefinition.h"
-#include "qgslayertree.h"
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
+#include "qgslayertree.h"
 #include "qgsmaplayerregistry.h"
+#include "qgslayerdefinition.h"
 
 bool QgsLayerDefinition::loadLayerDefinition( const QString &path, QgsLayerTreeGroup *rootGroup, QString &errorMessage )
 {

@@ -15,12 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgssvgannotationdialog.h"
+#include "qgsannotationwidget.h"
+#include "qgssvgannotationitem.h"
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QGraphicsScene>
-#include "qgsannotationwidget.h"
-#include "qgssvgannotationdialog.h"
-#include "qgssvgannotationitem.h"
 
 QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsSvgAnnotationItem* item, QWidget * parent, Qt::WindowFlags f ):
     QDialog( parent, f ), mItem( item ), mEmbeddedWidget( 0 )

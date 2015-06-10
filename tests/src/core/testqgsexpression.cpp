@@ -12,11 +12,12 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QObject>
-#include <QSharedPointer>
-#include <QString>
-#include <QtConcurrentMap>
 #include <QtTest/QtTest>
+#include <QObject>
+#include <QString>
+#include <QObject>
+#include <QtConcurrentMap>
+#include <QSharedPointer>
 
 #include <qgsapplication.h>
 //header for class being tested

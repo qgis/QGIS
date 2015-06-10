@@ -18,25 +18,25 @@ email                : jef at norbit dot de
 
 #include "qgsoraclesourceselect.h"
 
+#include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgscontexthelp.h"
-#include "qgsdatasourceuri.h"
-#include "qgslogger.h"
-#include "qgsmanageconnectionsdialog.h"
-#include "qgsoraclecolumntypethread.h"
-#include "qgsoraclenewconnection.h"
 #include "qgsoracleprovider.h"
+#include "qgsoraclenewconnection.h"
 #include "qgsoracletablecache.h"
+#include "qgsmanageconnectionsdialog.h"
 #include "qgsquerybuilder.h"
+#include "qgsdatasourceuri.h"
 #include "qgsvectorlayer.h"
+#include "qgsoraclecolumntypethread.h"
 
 #include <QFileDialog>
-#include <QHeaderView>
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QSettings>
-#include <QStringList>
 #include <QTextStream>
+#include <QHeaderView>
+#include <QStringList>
 
 /** Used to create an editor for when the user tries to change the contents of a cell */
 QWidget *QgsOracleSourceSelectDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const

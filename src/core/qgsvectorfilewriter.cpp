@@ -17,33 +17,33 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsfeature.h"
 #include "qgsfield.h"
+#include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsvectorfilewriter.h"
 #include "qgsrendererv2.h"
 #include "qgssymbollayerv2.h"
 #include "qgsvectordataprovider.h"
-#include "qgsvectorfilewriter.h"
 
-#include <QDir>
 #include <QFile>
-#include <QFileInfo>
-#include <QMetaType>
-#include <QSet>
 #include <QSettings>
+#include <QFileInfo>
+#include <QDir>
 #include <QTextCodec>
 #include <QTextStream>
+#include <QSet>
+#include <QMetaType>
 
 #include <cassert>
 #include <cstdlib> // size_t
 #include <limits> // std::numeric_limits
 
-#include <cpl_conv.h>
-#include <cpl_error.h>
 #include <ogr_srs_api.h>
+#include <cpl_error.h>
+#include <cpl_conv.h>
 
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
 #define TO8(x)   (x).toUtf8().constData()

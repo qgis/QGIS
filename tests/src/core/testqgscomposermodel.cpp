@@ -15,12 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QList>
+#include "qgscomposition.h"
+#include "qgscomposermodel.h"
+#include "qgscomposerlabel.h"
 #include <QObject>
 #include <QtTest/QtTest>
-#include "qgscomposerlabel.h"
-#include "qgscomposermodel.h"
-#include "qgscomposition.h"
+#include <QList>
 
 class TestQgsComposerModel : public QObject
 {

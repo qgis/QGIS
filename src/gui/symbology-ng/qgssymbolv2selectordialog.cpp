@@ -16,32 +16,32 @@
 #include "qgssymbolv2selectordialog.h"
 
 #include "qgsstylev2.h"
-#include "qgssymbollayerv2.h"
-#include "qgssymbollayerv2registry.h"
-#include "qgssymbollayerv2utils.h"
 #include "qgssymbolv2.h"
+#include "qgssymbollayerv2.h"
+#include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerv2registry.h"
 
 // the widgets
-#include "qgsellipsesymbollayerv2widget.h"
+#include "qgssymbolslistwidget.h"
 #include "qgslayerpropertieswidget.h"
 #include "qgssymbollayerv2widget.h"
-#include "qgssymbolslistwidget.h"
+#include "qgsellipsesymbollayerv2widget.h"
 #include "qgsvectorfieldsymbollayerwidget.h"
 
-#include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgsapplication.h"
 
 #include <QColorDialog>
-#include <QInputDialog>
-#include <QKeyEvent>
-#include <QMenu>
-#include <QMessageBox>
 #include <QPainter>
 #include <QStandardItemModel>
+#include <QInputDialog>
+#include <QMessageBox>
+#include <QKeyEvent>
+#include <QMenu>
 
+#include <QWidget>
 #include <QFile>
 #include <QStandardItem>
-#include <QWidget>
 
 static const int SymbolLayerItemType = QStandardItem::UserType + 1;
 

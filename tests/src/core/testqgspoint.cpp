@@ -12,13 +12,14 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QApplication>
-#include <QDesktopServices>
-#include <QDir>
-#include <QFileInfo>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
-#include <QtTest/QtTest>
+#include <QObject>
+#include <QApplication>
+#include <QFileInfo>
+#include <QDir>
+#include <QDesktopServices>
 
 #include <iostream>
 //qgis includes...

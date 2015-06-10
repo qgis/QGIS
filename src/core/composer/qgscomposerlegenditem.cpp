@@ -15,18 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDomDocument>
-#include <QDomElement>
-#include "qgsapplication.h"
-#include "qgscomposerlegend.h"
-#include "qgscomposerlegenditem.h"
 #include "qgscomposerlegendstyle.h"
+#include "qgscomposerlegenditem.h"
+#include "qgscomposerlegend.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsrasterlayer.h"
 #include "qgsrendererv2.h"
-#include "qgssymbollayerv2utils.h"
 #include "qgssymbolv2.h"
+#include "qgssymbollayerv2utils.h"
 #include "qgsvectorlayer.h"
+#include "qgsapplication.h"
+#include <QDomDocument>
+#include <QDomElement>
 
 QgsComposerLegendItem::QgsComposerLegendItem( QgsComposerLegendStyle::Style s ): QStandardItem()
     , mStyle( s )

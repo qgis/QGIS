@@ -45,24 +45,24 @@
 #include <qwt_data.h>
 #endif
 #include <qwt_legend.h>
-#include <qwt_plot_grid.h>
 #include <qwt_plot.h>
+#include <qwt_plot_grid.h>
 
 #if (WITH_QWTPOLAR)
 // QWT Polar plot add on
-#include <qwt_polar_curve.h>
-#include <qwt_polar_grid.h>
-#include <qwt_scale_engine.h>
 #include <qwt_symbol.h>
+#include <qwt_polar_grid.h>
+#include <qwt_polar_curve.h>
+#include <qwt_scale_engine.h>
 #endif
 
+#include <QMessageBox>
+#include <QSettings>
+#include <QFileInfo>
 #include <QColorDialog>
 #include <QFileDialog>
-#include <QFileInfo>
-#include <QMessageBox>
-#include <QPen>
 #include <QPixmap>
-#include <QSettings>
+#include <QPen>
 
 QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWidget * parent, Qt::WindowFlags f )
     : QWidget( parent, f )

@@ -14,26 +14,26 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QKeyEvent>
-#include <QMessageBox>
-#include <QMetaObject>
 #include <QSettings>
+#include <QMessageBox>
+#include <QKeyEvent>
+#include <QMetaObject>
 
 #include "qgsapplication.h"
-#include "qgsattributetablefiltermodel.h"
-#include "qgsattributetablemodel.h"
+#include "qgsdataitem.h"
 #include "qgsbrowser.h"
 #include "qgsbrowsermodel.h"
-#include "qgscredentialdialog.h"
-#include "qgsdataitem.h"
 #include "qgsencodingfiledialog.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
-#include "qgsnewvectorlayerdialog.h"
 #include "qgsproviderregistry.h"
-#include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
+#include "qgsrasterlayer.h"
+#include "qgsnewvectorlayerdialog.h"
+#include "qgsattributetablemodel.h"
+#include "qgsattributetablefiltermodel.h"
+#include "qgscredentialdialog.h"
 
 #ifdef ANDROID
 #define QGIS_ICON_SIZE 32

@@ -12,8 +12,8 @@ Email                : sherman at mrcc dot com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <iostream>
 #include <QtTest/QtTest>
+#include <iostream>
 
 #include <QPixmap>
 

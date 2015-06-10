@@ -18,27 +18,27 @@
 
 // includes
 
-#include "qgisgui.h"
 #include "qgisinterface.h"
+#include "qgisgui.h"
 #include "qgsapplication.h"
+#include "qgsmaplayerregistry.h"
+#include "qgsmaplayer.h"
+#include "qgsvectorlayer.h"
 #include "qgsdataprovider.h"
+#include "qgsvectordataprovider.h"
 #include "qgsgpsplugin.h"
 #include "qgslogger.h"
-#include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
-#include "qgsvectordataprovider.h"
-#include "qgsvectorlayer.h"
 
+#include <QFileDialog>
+#include <QMessageBox>
 #include <QAction>
 #include <QFile>
-#include <QFileDialog>
 #include <QMenu>
-#include <QMessageBox>
+#include <QToolBar>
 #include <QProcess>
 #include <QProgressDialog>
 #include <QSettings>
 #include <QStringList>
-#include <QToolBar>
 
 //non qt includes
 #include <cassert>

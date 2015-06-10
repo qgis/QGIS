@@ -1,8 +1,8 @@
 #ifndef QGSPOINTSAMPLE_H
 #define QGSPOINTSAMPLE_H
 
-#include <QString>
 #include "qgsfeature.h"
+#include <QString>
 
 class QgsFeature;
 class QgsPoint;

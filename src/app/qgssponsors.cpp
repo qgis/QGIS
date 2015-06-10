@@ -15,10 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgssponsors.h"
+#include "qgsapplication.h"
 #include <QFile>
 #include <QTextStream>
-#include "qgsapplication.h"
-#include "qgssponsors.h"
 
 #ifdef Q_OS_MACX
 QgsSponsors::QgsSponsors( QWidget *parent )

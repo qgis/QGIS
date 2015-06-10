@@ -15,28 +15,28 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgshistogramwidget.h"
-#include "qgsstatisticalsummary.h"
+#include "qgsapplication.h"
 #include "qgsvectorlayer.h"
+#include "qgsstatisticalsummary.h"
 
-#include <QMouseEvent>
-#include <QObject>
 #include <QSettings>
+#include <QObject>
+#include <QMouseEvent>
 
 // QWT Charting widget
 #include <qwt_global.h>
-#include <qwt_picker_machine.h>
 #include <qwt_plot_canvas.h>
+#include <qwt_plot.h>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_grid.h>
-#include <qwt_plot.h>
-#include <qwt_plot_layout.h>
 #include <qwt_plot_marker.h>
 #include <qwt_plot_picker.h>
+#include <qwt_picker_machine.h>
+#include <qwt_plot_layout.h>
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
-#include <qwt_plot_histogram.h>
 #include <qwt_plot_renderer.h>
+#include <qwt_plot_histogram.h>
 #else
 #include "../raster/qwt5_histogram_item.h"
 #endif

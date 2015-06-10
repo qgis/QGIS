@@ -28,14 +28,14 @@
 
 #include "qgsdxfexport.h"
 #include "qgsdxfpallabeling.h"
-#include "qgsfillsymbollayerv2.h"
-#include "qgslinesymbollayerv2.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsvectordataprovider.h"
 #include "qgspoint.h"
 #include "qgsrendererv2.h"
 #include "qgssymbollayerv2.h"
-#include "qgsvectordataprovider.h"
+#include "qgsfillsymbollayerv2.h"
+#include "qgslinesymbollayerv2.h"
 #include "qgsvectorlayer.h"
+#include "qgsmaplayerregistry.h"
 
 #include <QIODevice>
 

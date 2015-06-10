@@ -18,9 +18,9 @@
  ***************************************************************************/
 #ifndef QGSGPSPLUGIN_H
 #define QGSGPSPLUGIN_H
-#include "qgisplugin.h"
 #include "qgsbabelformat.h"
 #include "qgsgpsdevice.h"
+#include "qgisplugin.h"
 
 class QgisInterface;
 class QgsVectorLayer;

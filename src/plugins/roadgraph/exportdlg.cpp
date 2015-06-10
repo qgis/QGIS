@@ -7,24 +7,24 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  ***************************************************************************/
-#include <qgscontexthelp.h>
 #include "exportdlg.h"
+#include <qgscontexthelp.h>
 
 //qt includes
-#include <qcombobox.h>
-#include <qdialogbuttonbox.h>
-#include <QHBoxLayout>
 #include <qlabel.h>
-#include <qmessagebox.h>
-#include <QUuid>
+#include <qcombobox.h>
+#include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QUuid>
+#include <qdialogbuttonbox.h>
+#include <qmessagebox.h>
 
 
 // Qgis includes
+#include <qgsvectorlayer.h>
 #include <qgsmaplayerregistry.h>
 #include <qgsproviderregistry.h>
 #include <qgsvectordataprovider.h>
-#include <qgsvectorlayer.h>
 
 //standard includes
 

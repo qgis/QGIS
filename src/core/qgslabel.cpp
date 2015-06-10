@@ -17,22 +17,22 @@
 #include <cmath>
 #include <limits>
 
+#include <QString>
 #include <QFont>
 #include <QFontMetrics>
-#include <QString>
 
-#include <QDomElement>
-#include <QDomNode>
 #include <QPainter>
+#include <QDomNode>
+#include <QDomElement>
 
 #include "qgis.h"
-#include "qgscoordinatetransform.h"
 #include "qgsfeature.h"
-#include "qgsfield.h"
 #include "qgsgeometry.h"
+#include "qgsfield.h"
 #include "qgslogger.h"
-#include "qgsmaptopixel.h"
 #include "qgsrectangle.h"
+#include "qgsmaptopixel.h"
+#include "qgscoordinatetransform.h"
 #include "qgsrendercontext.h"
 
 #include "qgslabelattributes.h"

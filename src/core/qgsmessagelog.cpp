@@ -13,11 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <iostream>
-#include <QDateTime>
-#include <qgslogger.h>
-#include <QMetaType>
 #include "qgsmessagelog.h"
+#include <qgslogger.h>
+#include <QDateTime>
+#include <QMetaType>
+#include <iostream>
 
 class QgsMessageLogConsole;
 

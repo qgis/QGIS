@@ -18,18 +18,18 @@
 
 #include "qgsproviderregistry.h"
 
+#include <QString>
 #include <QDir>
 #include <QLibrary>
-#include <QString>
 
 #include "qgis.h"
 #include "qgsdataprovider.h"
 #include "qgslogger.h"
-#include "qgsmaplayerregistry.h"
-#include "qgsmessagelog.h"
 #include "qgsmessageoutput.h"
+#include "qgsmessagelog.h"
 #include "qgsprovidermetadata.h"
 #include "qgsvectorlayer.h"
+#include "qgsmaplayerregistry.h"
 
 
 // typedefs for provider plugin functions of interest

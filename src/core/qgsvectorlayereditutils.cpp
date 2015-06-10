@@ -14,10 +14,10 @@
  ***************************************************************************/
 #include "qgsvectorlayereditutils.h"
 
-#include "qgsgeometrycache.h"
-#include "qgslogger.h"
 #include "qgsvectordataprovider.h"
+#include "qgsgeometrycache.h"
 #include "qgsvectorlayereditbuffer.h"
+#include "qgslogger.h"
 
 #include <limits>
 

@@ -13,20 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgssymbollayerv2.h"
 #include "qgssymbolv2.h"
+#include "qgssymbollayerv2.h"
 
-#include "qgsfillsymbollayerv2.h"
 #include "qgslinesymbollayerv2.h"
 #include "qgsmarkersymbollayerv2.h"
+#include "qgsfillsymbollayerv2.h"
 
 #include "qgslogger.h"
 #include "qgsrendercontext.h" // for bigSymbolPreview
 
-#include "qgseffectstack.h"
-#include "qgspainteffect.h"
 #include "qgsproject.h"
 #include "qgsstylev2.h"
+#include "qgspainteffect.h"
+#include "qgseffectstack.h"
 
 #include "qgsdatadefined.h"
 

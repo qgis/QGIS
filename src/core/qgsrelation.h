@@ -16,12 +16,12 @@
 #ifndef QGSRELATION_H
 #define QGSRELATION_H
 
-#include <QDomNode>
 #include <QList>
+#include <QDomNode>
 #include <QPair>
 
-#include "qgsfeatureiterator.h"
 #include "qgsfield.h"
+#include "qgsfeatureiterator.h"
 
 class QgsVectorLayer;
 

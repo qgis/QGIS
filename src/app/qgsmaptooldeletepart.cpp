@@ -15,12 +15,12 @@
 
 #include "qgsmaptooldeletepart.h"
 
-#include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
+#include "qgsvertexmarker.h"
+#include "qgsvectorlayer.h"
+#include "qgsgeometry.h"
 #include "qgssnappingutils.h"
 #include "qgstolerance.h"
-#include "qgsvectorlayer.h"
-#include "qgsvertexmarker.h"
 
 #include <QMouseEvent>
 

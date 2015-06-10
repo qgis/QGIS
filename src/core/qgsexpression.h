@@ -16,11 +16,11 @@
 #ifndef QGSEXPRESSION_H
 #define QGSEXPRESSION_H
 
-#include <QDomDocument>
-#include <QList>
 #include <QMetaType>
 #include <QStringList>
 #include <QVariant>
+#include <QList>
+#include <QDomDocument>
 
 class QgsFeature;
 class QgsGeometry;

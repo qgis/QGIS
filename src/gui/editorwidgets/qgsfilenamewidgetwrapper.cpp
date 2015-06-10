@@ -18,8 +18,8 @@
 #include "qgsfilterlineedit.h"
 
 #include <QFileDialog>
-#include <QGridLayout>
 #include <QSettings>
+#include <QGridLayout>
 
 QgsFileNameWidgetWrapper::QgsFileNameWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )

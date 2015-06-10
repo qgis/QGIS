@@ -13,8 +13,8 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "qgsfieldmodel.h"
 #include "qgsfieldproxymodel.h"
+#include "qgsfieldmodel.h"
 #include "qgsvectorlayer.h"
 
 QgsFieldProxyModel::QgsFieldProxyModel( QObject *parent )

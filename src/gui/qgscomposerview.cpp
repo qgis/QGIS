@@ -16,36 +16,36 @@
  ***************************************************************************/
 
 #include <QApplication>
-#include <QClipboard>
-#include <QDesktopWidget>
-#include <QGridLayout>
-#include <QKeyEvent>
 #include <QMainWindow>
-#include <QMimeData>
 #include <QMouseEvent>
+#include <QKeyEvent>
+#include <QClipboard>
+#include <QMimeData>
+#include <QGridLayout>
 #include <QScrollBar>
+#include <QDesktopWidget>
 
-#include "qgsaddremovemultiframecommand.h"
 #include "qgsapplication.h"
+#include "qgscomposerview.h"
 #include "qgscomposerarrow.h"
-#include "qgscomposerattributetablev2.h"
 #include "qgscomposerframe.h"
 #include "qgscomposerhtml.h"
-#include "qgscomposeritemgroup.h"
 #include "qgscomposerlabel.h"
 #include "qgscomposerlegend.h"
 #include "qgscomposermap.h"
 #include "qgscomposermousehandles.h"
+#include "qgscomposeritemgroup.h"
 #include "qgscomposerpicture.h"
 #include "qgscomposerruler.h"
 #include "qgscomposerscalebar.h"
 #include "qgscomposershape.h"
-#include "qgscomposerutils.h"
-#include "qgscomposerview.h"
-#include "qgscursors.h"
+#include "qgscomposerattributetablev2.h"
 #include "qgslogger.h"
-#include "qgsmapcanvas.h" //for QgsMapCanvas::WheelAction
+#include "qgsaddremovemultiframecommand.h"
 #include "qgspaperitem.h"
+#include "qgsmapcanvas.h" //for QgsMapCanvas::WheelAction
+#include "qgscursors.h"
+#include "qgscomposerutils.h"
 
 QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WindowFlags f )
     : QGraphicsView( parent )

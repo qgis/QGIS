@@ -16,8 +16,8 @@
 #ifndef QGSMESSAGELOG_H
 #define QGSMESSAGELOG_H
 
-#include <QObject>
 #include <QString>
+#include <QObject>
 
 /** \ingroup core
  * Interface for logging messages from QGIS in GUI independent way.

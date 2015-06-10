@@ -15,33 +15,33 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgisgui.h"
 #include "qgsapplication.h"
-#include "qgsrasterhistogramwidget.h"
+#include "qgisgui.h"
 #include "qgsrasterrendererregistry.h"
 #include "qgsrasterrendererwidget.h"
+#include "qgsrasterhistogramwidget.h"
 
-#include <QDir>
-#include <QFileInfo>
 #include <QMenu>
+#include <QFileInfo>
+#include <QDir>
 #include <QPainter>
 #include <QSettings>
 
 // QWT Charting widget
 #include <qwt_global.h>
-#include <qwt_legend.h>
-#include <qwt_picker_machine.h>
 #include <qwt_plot_canvas.h>
+#include <qwt_legend.h>
+#include <qwt_plot.h>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_grid.h>
-#include <qwt_plot.h>
-#include <qwt_plot_layout.h>
 #include <qwt_plot_marker.h>
 #include <qwt_plot_picker.h>
+#include <qwt_picker_machine.h>
 #include <qwt_plot_zoomer.h>
+#include <qwt_plot_layout.h>
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
-#include <qwt_plot_histogram.h>
 #include <qwt_plot_renderer.h>
+#include <qwt_plot_histogram.h>
 #else
 #include "qwt5_histogram_item.h"
 #endif

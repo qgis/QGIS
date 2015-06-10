@@ -9,20 +9,20 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  ***************************************************************************/
-#include "linevectorlayersettings.h"
 #include "linevectorlayerwidget.h"
+#include "linevectorlayersettings.h"
 
 //qt includes
-#include <qcombobox.h>
-#include <qdialogbuttonbox.h>
 #include <qgscontexthelp.h>
-#include <QHBoxLayout>
 #include <qlabel.h>
-#include <qlineedit.h>
-#include <qmessagebox.h>
-#include <qspinbox.h>
-#include <qtabwidget.h>
+#include <qcombobox.h>
+#include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <qdialogbuttonbox.h>
+#include <qtabwidget.h>
+#include <qspinbox.h>
+#include <qmessagebox.h>
+#include <qlineedit.h>
 
 // Qgis includes
 #include "qgsfield.h"

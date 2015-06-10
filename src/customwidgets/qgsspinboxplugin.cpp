@@ -14,8 +14,8 @@
 ***************************************************************************/
 
 #include "qgiscustomwidgets.h"
-#include "qgsspinbox.h"
 #include "qgsspinboxplugin.h"
+#include "qgsspinbox.h"
 
 
 QgsSpinBoxPlugin::QgsSpinBoxPlugin( QObject *parent )

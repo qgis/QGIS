@@ -20,8 +20,8 @@
 
 #include "qgsannotationitem.h"
 #include "qgsfeature.h"
-#include "qgswebframe.h"
 #include "qgswebview.h"
+#include "qgswebframe.h"
 
 #include <QObject>
 

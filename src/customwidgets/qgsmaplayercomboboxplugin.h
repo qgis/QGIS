@@ -16,8 +16,8 @@
 #ifndef QGSMAPLAYERCOMBOBOXPLUGIN_H
 #define QGSMAPLAYERCOMBOBOXPLUGIN_H
 
-#include <QDesignerCustomWidgetInterface>
 #include <QDesignerExportWidget>
+#include <QDesignerCustomWidgetInterface>
 
 
 class CUSTOMWIDGETS_EXPORT QgsMapLayerComboBoxPlugin : public QObject, public QDesignerCustomWidgetInterface

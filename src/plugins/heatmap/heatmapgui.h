@@ -16,9 +16,9 @@
 #include <ui_heatmapguibase.h>
 
 #include "heatmap.h"
+#include "qgsvectorlayer.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgeometry.h"
-#include "qgsvectorlayer.h"
 /**
 @author Arunmozhi
 */

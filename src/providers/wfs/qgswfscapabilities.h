@@ -15,11 +15,11 @@
 #ifndef QGSWFSCAPABILITIES_H
 #define QGSWFSCAPABILITIES_H
 
-#include <QNetworkRequest>
 #include <QObject>
+#include <QNetworkRequest>
 
-#include "qgsdatasourceuri.h"
 #include "qgsrectangle.h"
+#include "qgsdatasourceuri.h"
 
 class QNetworkReply;
 

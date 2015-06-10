@@ -15,13 +15,13 @@
 #ifndef QGSRASTERFILEWRITER_H
 #define QGSRASTERFILEWRITER_H
 
-#include <QDomDocument>
-#include <QDomElement>
-#include <QString>
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterpipe.h"
 #include "qgsrectangle.h"
+#include <QDomDocument>
+#include <QDomElement>
+#include <QString>
 
 class QProgressDialog;
 class QgsRasterIterator;

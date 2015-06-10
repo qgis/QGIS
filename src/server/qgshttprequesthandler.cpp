@@ -17,20 +17,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <fcgi_stdio.h>
+#include "qgshttprequesthandler.h"
+#include "qgsftptransaction.h"
+#include "qgshttptransaction.h"
+#include "qgslogger.h"
+#include "qgsmapserviceexception.h"
 #include <QBuffer>
 #include <QByteArray>
 #include <QDomDocument>
 #include <QFile>
 #include <QImage>
-#include <QStringList>
 #include <QTextStream>
+#include <QStringList>
 #include <QUrl>
-#include "qgsftptransaction.h"
-#include "qgshttprequesthandler.h"
-#include "qgshttptransaction.h"
-#include "qgslogger.h"
-#include "qgsmapserviceexception.h"
+#include <fcgi_stdio.h>
 
 QgsHttpRequestHandler::QgsHttpRequestHandler()
     : QgsRequestHandler()

@@ -16,12 +16,12 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "qgscomposerarrow.h"
-#include "qgscomposerframe.h"
-#include "qgscomposerhtml.h"
+#include "qgscomposition.h"
 #include "qgscomposerlabel.h"
 #include "qgscomposershape.h"
-#include "qgscomposition.h"
+#include "qgscomposerarrow.h"
+#include "qgscomposerhtml.h"
+#include "qgscomposerframe.h"
 #include "qgsmapsettings.h"
 
 #include <QObject>

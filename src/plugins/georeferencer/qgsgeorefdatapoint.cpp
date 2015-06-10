@@ -14,8 +14,8 @@
  ***************************************************************************/
 #include <QPainter>
 
-#include "qgsgcpcanvasitem.h"
 #include "qgsmapcanvas.h"
+#include "qgsgcpcanvasitem.h"
 
 #include "qgsgeorefdatapoint.h"
 

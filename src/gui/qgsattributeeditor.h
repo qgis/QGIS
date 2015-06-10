@@ -17,9 +17,9 @@
 #ifndef QGSATTRIBUTEEDITOR_H
 #define QGSATTRIBUTEEDITOR_H
 
-#include <QGridLayout>
-#include <QMetaType>
 #include <QVariant>
+#include <QMetaType>
+#include <QGridLayout>
 
 #include "qgsfeature.h"
 #include "qgsrelationmanager.h"

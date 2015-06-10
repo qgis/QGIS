@@ -10,29 +10,29 @@
  *   (at your option) any later version.                                   *
  ***************************************************************************/
 // qgis includes
+#include "qgis.h"
 #include "heatmapgui.h"
 #include "heatmap.h"
-#include "qgis.h"
 #include "qgscontexthelp.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsdistancearea.h"
-#include "qgsgeometry.h"
-#include "qgslogger.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
-#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
+#include "qgslogger.h"
+#include "qgsgeometry.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsdistancearea.h"
 
 // GDAL includes
-#include "cpl_conv.h"
-#include "cpl_string.h"
 #include "gdal_priv.h"
+#include "cpl_string.h"
+#include "cpl_conv.h"
 
 //qt includes
 #include <QComboBox>
 #include <QFileDialog>
-#include <QMessageBox>
 #include <QSettings>
+#include <QMessageBox>
 
 //standard includes
 

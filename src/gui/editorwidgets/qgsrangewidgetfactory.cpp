@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsrangeconfigdlg.h"
 #include "qgsrangewidgetfactory.h"
+#include "qgsrangeconfigdlg.h"
 #include "qgsrangewidgetwrapper.h"
 #include "qgsvectorlayer.h"
 

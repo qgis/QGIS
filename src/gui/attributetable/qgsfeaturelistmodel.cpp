@@ -1,9 +1,9 @@
-#include "qgsattributetablefiltermodel.h"
-#include "qgsattributetablemodel.h"
 #include "qgsexception.h"
-#include "qgsfeaturelistmodel.h"
 #include "qgsvectordataprovider.h"
+#include "qgsfeaturelistmodel.h"
+#include "qgsattributetablemodel.h"
 #include "qgsvectorlayereditbuffer.h"
+#include "qgsattributetablefiltermodel.h"
 
 #include <QItemSelection>
 #include <QSettings>

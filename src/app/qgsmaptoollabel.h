@@ -18,8 +18,8 @@
 #ifndef QGSMAPTOOLLABEL_H
 #define QGSMAPTOOLLABEL_H
 
-#include "qgsmaprenderer.h"
 #include "qgsmaptool.h"
+#include "qgsmaprenderer.h"
 #include "qgspallabeling.h"
 #include "qgspoint.h"
 class QgsRubberBand;

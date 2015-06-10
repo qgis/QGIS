@@ -12,11 +12,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsgeometry.h"
-#include "qgsmessagelog.h"
-#include "qgsspatialindex.h"
 #include "qgswfsfeatureiterator.h"
+#include "qgsspatialindex.h"
 #include "qgswfsprovider.h"
+#include "qgsmessagelog.h"
+#include "qgsgeometry.h"
 
 QgsWFSFeatureIterator::QgsWFSFeatureIterator( QgsWFSFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
     : QgsAbstractFeatureIteratorFromSource<QgsWFSFeatureSource>( source, ownSource, request )

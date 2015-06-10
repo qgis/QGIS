@@ -22,19 +22,19 @@
 #include <QGraphicsScene>
 #include <QLinkedList>
 #include <QList>
-#include <QPainter>
 #include <QPair>
-#include <QPrinter>
 #include <QSet>
 #include <QUndoStack>
+#include <QPrinter>
+#include <QPainter>
 
 #include "qgsaddremoveitemcommand.h"
-#include "qgsatlascomposition.h"
 #include "qgscomposeritemcommand.h"
-#include "qgscomposeritem.h"
 #include "qgscomposermultiframecommand.h"
-#include "qgscomposerobject.h"
+#include "qgsatlascomposition.h"
 #include "qgspaperitem.h"
+#include "qgscomposerobject.h"
+#include "qgscomposeritem.h"
 
 class QgisApp;
 class QgsComposerFrame;

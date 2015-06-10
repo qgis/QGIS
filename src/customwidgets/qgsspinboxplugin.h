@@ -16,8 +16,8 @@
 #ifndef QGSSPINBOXPLUGIN_H
 #define QGSSPINBOXPLUGIN_H
 
-#include <QDesignerCustomWidgetInterface>
 #include <QDesignerExportWidget>
+#include <QDesignerCustomWidgetInterface>
 
 
 class CUSTOMWIDGETS_EXPORT QgsSpinBoxPlugin : public QObject, public QDesignerCustomWidgetInterface

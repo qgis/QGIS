@@ -16,8 +16,8 @@
 #ifndef QGSLAYERTREEUTILS_H
 #define QGSLAYERTREEUTILS_H
 
-#include <QList>
 #include <qnamespace.h>
+#include <QList>
 
 class QDomElement;
 class QDomDocument;

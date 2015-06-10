@@ -15,16 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QPainter>
-#include <QPainterPath>
-#include "qgsapplication.h"
 #include "qgscircularstringv2.h"
+#include "qgsapplication.h"
 #include "qgscoordinatetransform.h"
 #include "qgsgeometryutils.h"
 #include "qgslinestringv2.h"
 #include "qgsmaptopixel.h"
 #include "qgspointv2.h"
 #include "qgswkbptr.h"
+#include <QPainter>
+#include <QPainterPath>
 
 QgsCircularStringV2::QgsCircularStringV2(): QgsCurveV2()
 {

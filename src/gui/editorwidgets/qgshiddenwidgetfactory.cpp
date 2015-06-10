@@ -15,8 +15,8 @@
 
 #include "qgshiddenwidgetfactory.h"
 
-#include "qgsdummyconfigdlg.h"
 #include "qgshiddenwidgetwrapper.h"
+#include "qgsdummyconfigdlg.h"
 
 QgsHiddenWidgetFactory::QgsHiddenWidgetFactory( const QString& name )
     : QgsEditorWidgetFactory( name )

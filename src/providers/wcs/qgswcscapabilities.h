@@ -23,13 +23,13 @@
 #include "qgsdatasourceuri.h"
 #include "qgsrectangle.h"
 
+#include <QString>
+#include <QStringList>
 #include <QDomElement>
 #include <QMap>
 #include <QNetworkRequest>
-#include <QString>
-#include <QStringList>
-#include <QUrl>
 #include <QVector>
+#include <QUrl>
 
 class QNetworkAccessManager;
 class QNetworkReply;

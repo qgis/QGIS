@@ -24,8 +24,8 @@
 
 #include "qgsdatasourceuri.h"
 
-#include <QPushButton>
 #include <QStringList>
+#include <QPushButton>
 
 /*!
  * \brief   Connections management

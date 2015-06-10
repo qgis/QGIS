@@ -16,33 +16,33 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QAbstractButton>
-#include <QDialog>
 #include <QFileInfo>
-#include <QMenu>
-#include <QSignalMapper>
 #include <QString>
+#include <QMenu>
+#include <QDialog>
+#include <QAbstractButton>
+#include <QSignalMapper>
 #include <QTimer>
 #include <QUiLoader>
 
-#include "qgisapp.h"
 #include "qgisappinterface.h"
 #include "qgisappstylesheet.h"
-#include "qgsattributeaction.h"
-#include "qgsattributedialog.h"
-#include "qgsattributetabledialog.h"
+#include "qgisapp.h"
 #include "qgscomposer.h"
 #include "qgscomposerview.h"
-#include "qgsfeatureaction.h"
-#include "qgsfield.h"
-#include "qgslayertreeview.h"
-#include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaptooladvanceddigitizing.h"
+#include "qgsmapcanvas.h"
 #include "qgsproject.h"
+#include "qgslayertreeview.h"
 #include "qgsshortcutsmanager.h"
+#include "qgsattributedialog.h"
+#include "qgsfield.h"
 #include "qgsvectordataprovider.h"
+#include "qgsfeatureaction.h"
+#include "qgsattributeaction.h"
+#include "qgsattributetabledialog.h"
 
 
 QgisAppInterface::QgisAppInterface( QgisApp * _qgis )

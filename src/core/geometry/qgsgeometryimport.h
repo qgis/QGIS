@@ -18,9 +18,9 @@
 #ifndef QGSGEOMETRYIMPORT_H
 #define QGSGEOMETRYIMPORT_H
 
-#include <QString>
 #include "qgsrectangle.h"
 #include "qgswkbtypes.h"
+#include <QString>
 
 class QgsAbstractGeometryV2;
 class QgsLineStringV2;

@@ -9,11 +9,11 @@
 
 #include "qgssavestyletodbdialog.h"
 
-#include <QDateTime>
-#include <QDomDocument>
 #include <QFileDialog>
-#include <QMessageBox>
 #include <QSettings>
+#include <QDomDocument>
+#include <QMessageBox>
+#include <QDateTime>
 
 QgsSaveStyleToDbDialog::QgsSaveStyleToDbDialog( QWidget *parent )
     : QDialog( parent )

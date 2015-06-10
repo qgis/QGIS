@@ -15,13 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDomElement>
-#include <QTemporaryFile>
 #include "qgsinterpolationlayerbuilder.h"
 #include "qgslogger.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include <QDomElement>
+#include <QTemporaryFile>
 
 //for interpolation
 #include "qgsgridfilewriter.h"

@@ -14,11 +14,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsconfig.h"
-#include "qgsgrass.h"
+#include "qgsgrasstools.h"
 #include "qgsgrassmodule.h"
 #include "qgsgrassshell.h"
-#include "qgsgrasstools.h"
+#include "qgsgrass.h"
+#include "qgsconfig.h"
 
 #include "qgisinterface.h"
 #include "qgsapplication.h"
@@ -37,10 +37,10 @@
 // For experimental model view alternative ui by Tim
 //
 //
-#include <QSortFilterProxyModel>
-#include <QStandardItem>
 #include "qgsdetaileditemdata.h"
 #include "qgsdetaileditemdelegate.h"
+#include <QSortFilterProxyModel>
+#include <QStandardItem>
 
 #ifdef Q_OS_WIN
 #include "qgsgrassutils.h"

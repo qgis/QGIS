@@ -12,23 +12,24 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <iostream>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QtTest/QtTest>
+#include <QObject>
+#include <iostream>
 
 #include <QApplication>
 
-#include <qgis.h> //defines GEOWkt
-#include <qgsapplication.h> //search path for srs.db
-#include <qgscoordinatereferencesystem.h> //needed for creating a srs
+#include <qgsvectorlayer.h> //defines QgsFieldMap 
+#include <qgsvectorfilewriter.h> //logic for writing shpfiles
 #include <qgsfeature.h> //we will need to pass a bunch of these for each rec
-#include <qgsfield.h>
 #include <qgsgeometry.h> //each feature needs a geometry
 #include <qgspoint.h> //we will use point geometry
-#include <qgsvectorfilewriter.h> //logic for writing shpfiles
-#include <qgsvectorlayer.h> //defines QgsFieldMap 
+#include <qgscoordinatereferencesystem.h> //needed for creating a srs
+#include <qgsapplication.h> //search path for srs.db
+#include <qgsfield.h>
+#include <qgis.h> //defines GEOWkt
 
 /** \ingroup UnitTests
  * This is a unit test for the QgsVectorFileWriter class.

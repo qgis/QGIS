@@ -15,20 +15,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgis.h"
-#include "qgsapplication.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgslogger.h"
 #include "qgsnewvectorlayerdialog.h"
+#include "qgsapplication.h"
+#include "qgis.h"
+#include "qgslogger.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsproviderregistry.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorfilewriter.h"
 
-#include <QComboBox>
-#include <QFileDialog>
-#include <QLibrary>
 #include <QPushButton>
+#include <QComboBox>
+#include <QLibrary>
 #include <QSettings>
+#include <QFileDialog>
 
 
 QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFlags fl )

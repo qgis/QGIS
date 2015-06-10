@@ -15,18 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometryimport.h"
 #include "qgscircularstringv2.h"
 #include "qgscompoundcurvev2.h"
 #include "qgscurvepolygonv2.h"
-#include "qgsgeometryimport.h"
+#include "qgspointv2.h"
+#include "qgspolygonv2.h"
 #include "qgslinestringv2.h"
 #include "qgsmulticurvev2.h"
 #include "qgsmultilinestringv2.h"
 #include "qgsmultipointv2.h"
 #include "qgsmultipolygonv2.h"
 #include "qgsmultisurfacev2.h"
-#include "qgspointv2.h"
-#include "qgspolygonv2.h"
 #include "qgswkbtypes.h"
 
 QgsAbstractGeometryV2* QgsGeometryImport::geomFromWkb( const unsigned char* wkb )

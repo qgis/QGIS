@@ -15,13 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QColorDialog>
-#include "qgsannotationitem.h"
 #include "qgsannotationwidget.h"
+#include "qgsannotationitem.h"
 #include "qgsstylev2.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgssymbolv2.h"
 #include "qgssymbolv2selectordialog.h"
+#include <QColorDialog>
 
 
 QgsAnnotationWidget::QgsAnnotationWidget( QgsAnnotationItem* item, QWidget * parent, Qt::WindowFlags f ): QWidget( parent, f ), mItem( item ), mMarkerSymbol( 0 )

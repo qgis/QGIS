@@ -19,9 +19,9 @@
 #define QGSLABELPROPERTYDIALOG_H
 
 #include "ui_qgslabelpropertydialogbase.h"
-#include <QDialog>
 #include "qgsfeature.h"
 #include "qgspallabeling.h"
+#include <QDialog>
 
 
 /**A dialog to enter data defined label attributes*/

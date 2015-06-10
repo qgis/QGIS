@@ -27,11 +27,11 @@
 #ifndef EVISIMAGEDISPLAYWIDGET_H
 #define EVISIMAGEDISPLAYWIDGET_H
 
-#include <QBuffer>
 #include <QLabel>
-#include <QPushButton>
-#include <QScrollArea>
 #include <QWidget>
+#include <QScrollArea>
+#include <QPushButton>
+#include <QBuffer>
 // TODO: Update to QNetworkAccessManager
 #if QT_VERSION < 0x050000
 #include <QHttp>

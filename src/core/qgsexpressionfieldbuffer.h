@@ -18,9 +18,9 @@
 #ifndef QGSEXPRESSIONFIELDBUFFER_H
 #define QGSEXPRESSIONFIELDBUFFER_H
 
-#include <QDomNode>
-#include <QList>
 #include <QString>
+#include <QList>
+#include <QDomNode>
 
 #include "qgsfield.h"
 

@@ -15,9 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgspgtablemodel.h"
 #include "qgsdataitem.h"
 #include "qgslogger.h"
-#include "qgspgtablemodel.h"
 
 #include <climits>
 

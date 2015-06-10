@@ -17,9 +17,9 @@
 #ifndef QGSPLUGINMANAGERINTERFACE_H
 #define QGSPLUGINMANAGERINTERFACE_H
 
-#include <QMap>
 #include <QObject>
 #include <QString>
+#include <QMap>
 #include "qgsmessagebar.h"
 
 class GUI_EXPORT QgsPluginManagerInterface : public QObject

@@ -13,12 +13,12 @@ email                : marco.hugentobler at sourcepole dot com
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
-#include "qgscircularstringv2.h"
-#include "qgscompoundcurvev2.h"
 #include "qgsgeometrycollectionv2.h"
+#include "qgsapplication.h"
 #include "qgsgeometryimport.h"
 #include "qgsgeometryutils.h"
+#include "qgscircularstringv2.h"
+#include "qgscompoundcurvev2.h"
 #include "qgslinestringv2.h"
 #include "qgspointv2.h"
 #include "qgspolygonv2.h"

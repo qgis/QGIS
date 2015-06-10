@@ -18,8 +18,8 @@
 #ifndef QGSTININTERPOLATORDIALOG_H
 #define QGSTININTERPOLATORDIALOG_H
 
-#include "ui_qgstininterpolatordialogbase.h"
 #include "qgsinterpolatordialog.h"
+#include "ui_qgstininterpolatordialogbase.h"
 
 class QgsTINInterpolatorDialog: public QgsInterpolatorDialog, private Ui::QgsTINInterpolatorDialogBase
 {

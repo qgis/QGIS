@@ -16,10 +16,10 @@
 #ifndef QGSGRADUATEDSYMBOLRENDERERV2WIDGET_H
 #define QGSGRADUATEDSYMBOLRENDERERV2WIDGET_H
 
-#include <QProxyStyle>
-#include <QStandardItem>
 #include "qgsgraduatedsymbolrendererv2.h"
 #include "qgsrendererv2widget.h"
+#include <QStandardItem>
+#include <QProxyStyle>
 
 #include "ui_qgsgraduatedsymbolrendererv2widget.h"
 

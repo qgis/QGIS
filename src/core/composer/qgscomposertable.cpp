@@ -15,12 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgscomposertable.h"
+#include "qgscomposertablecolumn.h"
+#include "qgssymbollayerv2utils.h"
+#include "qgscomposerutils.h"
 #include <QPainter>
 #include <QSettings>
-#include "qgscomposertablecolumn.h"
-#include "qgscomposertable.h"
-#include "qgscomposerutils.h"
-#include "qgssymbollayerv2utils.h"
 
 
 QgsComposerTable::QgsComposerTable( QgsComposition* composition )

@@ -14,13 +14,13 @@ email                : marco.hugentobler at sourcepole dot com
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
-#include "qgscurvepolygonv2.h"
-#include "qgsgeometryutils.h"
-#include "qgslinestringv2.h"
 #include "qgsmultisurfacev2.h"
-#include "qgspolygonv2.h"
+#include "qgsapplication.h"
+#include "qgsgeometryutils.h"
 #include "qgssurfacev2.h"
+#include "qgslinestringv2.h"
+#include "qgspolygonv2.h"
+#include "qgscurvepolygonv2.h"
 
 QgsAbstractGeometryV2 *QgsMultiSurfaceV2::clone() const
 {

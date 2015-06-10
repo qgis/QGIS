@@ -15,9 +15,9 @@
 #ifndef QGISGUI_H
 #define QGISGUI_H
 
+#include <Qt>
 #include <QPair>
 #include <QStringList>
-#include <Qt>
 
 class QFont;
 

@@ -13,33 +13,33 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsattributetabledialog.h"
-#include "qgscoordinatereferencesystem.h"
 #include "qgscursors.h"
 #include "qgsdistancearea.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
-#include "qgsidentifymenu.h"
-#include "qgsidentifyresultsdialog.h"
 #include "qgslogger.h"
+#include "qgsidentifyresultsdialog.h"
+#include "qgsidentifymenu.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaplayerregistry.h"
-#include "qgsmaptoolidentifyaction.h"
 #include "qgsmaptopixel.h"
 #include "qgsmessageviewer.h"
-#include "qgsproject.h"
+#include "qgsmaptoolidentifyaction.h"
 #include "qgsrasterlayer.h"
-#include "qgsrendererv2.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsproject.h"
+#include "qgsmaplayerregistry.h"
+#include "qgisapp.h"
+#include "qgsrendererv2.h"
 
-#include <QCursor>
-#include <QMouseEvent>
-#include <QPixmap>
 #include <QSettings>
+#include <QMouseEvent>
+#include <QCursor>
+#include <QPixmap>
 #include <QStatusBar>
 #include <QVariant>
 

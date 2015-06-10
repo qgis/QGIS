@@ -16,11 +16,11 @@
 #ifndef QGSMAPRENDERERJOB_H
 #define QGSMAPRENDERERJOB_H
 
+#include <QtConcurrentRun>
 #include <QFutureWatcher>
 #include <QImage>
-#include <QObject>
 #include <QPainter>
-#include <QtConcurrentRun>
+#include <QObject>
 #include <QTime>
 
 #include "qgsrendercontext.h"

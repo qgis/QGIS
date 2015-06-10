@@ -18,23 +18,23 @@
 
 #include "qgsmssqlsourceselect.h"
 
+#include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgscontexthelp.h"
-#include "qgsdatasourceuri.h"
-#include "qgslogger.h"
-#include "qgsmanageconnectionsdialog.h"
-#include "qgsmssqlnewconnection.h"
 #include "qgsmssqlprovider.h"
+#include "qgsmssqlnewconnection.h"
+#include "qgsmanageconnectionsdialog.h"
 #include "qgsquerybuilder.h"
+#include "qgsdatasourceuri.h"
 #include "qgsvectorlayer.h"
 
 #include <QFileDialog>
-#include <QHeaderView>
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QSettings>
-#include <QStringList>
 #include <QTextStream>
+#include <QHeaderView>
+#include <QStringList>
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlError>
 

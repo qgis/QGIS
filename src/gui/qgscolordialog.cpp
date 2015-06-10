@@ -14,21 +14,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDesktopWidget>
-#include <QFileDialog>
-#include <QInputDialog>
-#include <QMenu>
-#include <QMessageBox>
-#include <QMouseEvent>
-#include <QPushButton>
-#include <QSettings>
-#include <QToolButton>
-#include "qgsapplication.h"
 #include "qgscolordialog.h"
 #include "qgscolorscheme.h"
 #include "qgscolorschemeregistry.h"
-#include "qgscursors.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgscursors.h"
+#include "qgsapplication.h"
+#include <QSettings>
+#include <QPushButton>
+#include <QMenu>
+#include <QToolButton>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QDesktopWidget>
+#include <QMouseEvent>
+#include <QInputDialog>
 
 QgsColorDialog::QgsColorDialog()
 {

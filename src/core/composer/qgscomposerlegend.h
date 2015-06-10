@@ -18,9 +18,9 @@
 #ifndef QGSCOMPOSERLEGEND_H
 #define QGSCOMPOSERLEGEND_H
 
+#include "qgscomposerlegendstyle.h"
 #include "qgscomposeritem.h"
 #include "qgscomposerlegenditem.h"
-#include "qgscomposerlegendstyle.h"
 #include "qgslayertreemodel.h"
 #include "qgslegendmodel.h"
 #include "qgslegendsettings.h"

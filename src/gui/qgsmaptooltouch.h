@@ -16,9 +16,9 @@
 #ifndef QGSMAPTOOLTOUCH_H
 #define QGSMAPTOOLTOUCH_H
 
+#include "qgsmaptool.h"
 #include <QGestureEvent>
 #include <QPinchGesture>
-#include "qgsmaptool.h"
 
 class QgsMapCanvas;
 

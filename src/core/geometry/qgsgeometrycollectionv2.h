@@ -16,8 +16,8 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSGEOMETRYCOLLECTIONV2_H
 #define QGSGEOMETRYCOLLECTIONV2_H
 
-#include <QVector>
 #include "qgsabstractgeometryv2.h"
+#include <QVector>
 
 /**\ingroup core
  * \class QgsGeometryCollectionV2

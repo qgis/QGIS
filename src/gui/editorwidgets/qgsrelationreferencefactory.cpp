@@ -15,8 +15,8 @@
 
 #include "qgsrelationreferencefactory.h"
 
-#include "qgsrelationreferenceconfigdlg.h"
 #include "qgsrelationreferencewidgetwrapper.h"
+#include "qgsrelationreferenceconfigdlg.h"
 
 QgsRelationReferenceFactory::QgsRelationReferenceFactory( QString name, QgsMapCanvas* canvas, QgsMessageBar* messageBar )
     : QgsEditorWidgetFactory( name )

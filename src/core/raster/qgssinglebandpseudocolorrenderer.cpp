@@ -15,13 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDomDocument>
-#include <QDomElement>
-#include <QImage>
+#include "qgssinglebandpseudocolorrenderer.h"
 #include "qgsrastershader.h"
 #include "qgsrastertransparency.h"
 #include "qgsrasterviewport.h"
-#include "qgssinglebandpseudocolorrenderer.h"
+#include <QDomDocument>
+#include <QDomElement>
+#include <QImage>
 
 QgsSingleBandPseudoColorRenderer::QgsSingleBandPseudoColorRenderer( QgsRasterInterface* input, int band, QgsRasterShader* shader ):
     QgsRasterRenderer( input, "singlebandpseudocolor" )

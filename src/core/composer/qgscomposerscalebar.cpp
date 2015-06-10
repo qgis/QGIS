@@ -14,26 +14,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <cmath>
+#include "qgscomposerscalebar.h"
+#include "qgscomposermap.h"
+#include "qgscomposition.h"
+#include "qgscomposerutils.h"
+#include "qgsdistancearea.h"
+#include "qgsscalebarstyle.h"
+#include "qgsdoubleboxscalebarstyle.h"
+#include "qgsmaprenderer.h"
+#include "qgsnumericscalebarstyle.h"
+#include "qgssingleboxscalebarstyle.h"
+#include "qgsticksscalebarstyle.h"
+#include "qgsrectangle.h"
+#include "qgsproject.h"
+#include "qgssymbollayerv2utils.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFontMetricsF>
 #include <QPainter>
 #include <QSettings>
-#include "qgscomposermap.h"
-#include "qgscomposerscalebar.h"
-#include "qgscomposerutils.h"
-#include "qgscomposition.h"
-#include "qgsdistancearea.h"
-#include "qgsdoubleboxscalebarstyle.h"
-#include "qgsmaprenderer.h"
-#include "qgsnumericscalebarstyle.h"
-#include "qgsproject.h"
-#include "qgsrectangle.h"
-#include "qgsscalebarstyle.h"
-#include "qgssingleboxscalebarstyle.h"
-#include "qgssymbollayerv2utils.h"
-#include "qgsticksscalebarstyle.h"
+#include <cmath>
 
 QgsComposerScaleBar::QgsComposerScaleBar( QgsComposition* composition )
     : QgsComposerItem( composition )

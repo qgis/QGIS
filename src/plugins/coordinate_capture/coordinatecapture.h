@@ -40,10 +40,10 @@
 #include <QPointer>
 
 //QGIS includes
+#include "../qgisplugin.h"
+#include "coordinatecapturemaptool.h"
 #include <qgscoordinatereferencesystem.h>
 #include <qgscoordinatetransform.h>
-#include "coordinatecapturemaptool.h"
-#include "../qgisplugin.h"
 
 //forward declarations
 class QAction;

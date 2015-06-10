@@ -18,10 +18,10 @@
 #ifndef QGSCOMPOSERMAPOVERVIEW_H
 #define QGSCOMPOSERMAPOVERVIEW_H
 
+#include "qgscomposermapitem.h"
+#include <QString>
 #include <QObject>
 #include <QPainter>
-#include <QString>
-#include "qgscomposermapitem.h"
 
 class QDomDocument;
 class QDomElement;

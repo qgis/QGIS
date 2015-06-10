@@ -23,8 +23,8 @@
 #ifndef Q_OS_WIN
 #include <sys/resource.h>
 #endif
-#include <math.h>
 #include <time.h>
+#include <math.h>
 
 #include <QFile>
 #include <QFileInfo>
@@ -49,8 +49,8 @@ const char *pre[] = { "user", "sys", "total", "wall" };
 #ifdef Q_OS_WIN
 // slightly adapted from http://anoncvs.postgresql.org/cvsweb.cgi/pgsql/src/port/getrusage.c?rev=1.18;content-type=text%2Fplain
 
-#include <errno.h>
 #include <winsock2.h>
+#include <errno.h>
 
 #define RUSAGE_SELF     0
 

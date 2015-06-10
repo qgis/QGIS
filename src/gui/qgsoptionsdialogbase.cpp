@@ -22,8 +22,8 @@
 #include <QListWidget>
 #include <QMessageBox>
 #include <QScrollBar>
-#include <QSplitter>
 #include <QStackedWidget>
+#include <QSplitter>
 #include <QTimer>
 
 

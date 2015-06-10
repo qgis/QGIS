@@ -23,8 +23,8 @@
 #include "qgsdatasourceuri.h"
 #include "qgsexception.h"
 #include "qgslayertree.h"
-#include "qgslayertreeregistrybridge.h"
 #include "qgslayertreeutils.h"
+#include "qgslayertreeregistrybridge.h"
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
 #include "qgspluginlayer.h"
@@ -38,8 +38,8 @@
 #include "qgsvectorlayer.h"
 
 #include <QApplication>
-#include <QDomNode>
 #include <QFileInfo>
+#include <QDomNode>
 #include <QObject>
 #include <QTextStream>
 

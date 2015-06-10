@@ -19,8 +19,8 @@
 #ifndef QGSPLUGINLAYERREGSITRY_H
 #define QGSPLUGINLAYERREGSITRY_H
 
-#include <QDomNode>
 #include <QMap>
+#include <QDomNode>
 
 class QgsPluginLayer;
 

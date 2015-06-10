@@ -16,19 +16,19 @@
  ***************************************************************************/
 
 // QGIS Specific includes
-#include <qgisgui.h>
-#include <qgisinterface.h>
-#include <qgsapplication.h>
 #include <qgsmaplayer.h>
+#include <qgsapplication.h>
+#include <qgisinterface.h>
+#include <qgisgui.h>
 
 // Qt4 Related Includes
 #include <QAction>
+#include <QToolBar>
 #include <QFile>
 #include <QMessageBox>
-#include <QToolBar>
 
-#include "checkDock.h"
 #include "topol.h"
+#include "checkDock.h"
 
 static const QString sName = QObject::tr( "Topology Checker" );
 static const QString sDescription = QObject::tr( "A Plugin for finding topological errors in vector layers" );

@@ -14,11 +14,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgscomposermanager.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsbusyindicatordialog.h"
 #include "qgscomposer.h"
-#include "qgscomposermanager.h"
 #include "qgscomposition.h"
 #include "qgslogger.h"
 
@@ -29,8 +29,8 @@
 #include <QInputDialog>
 #include <QListWidgetItem>
 #include <QMessageBox>
-#include <QSettings>
 #include <QUrl>
+#include <QSettings>
 
 QgsComposerManager::QgsComposerManager( QWidget * parent, Qt::WindowFlags f ): QDialog( parent, f )
 {

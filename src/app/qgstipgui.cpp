@@ -15,13 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QPushButton>
 #include <QSettings>
+#include <QPushButton>
 
-#include <qgstipfactory.h>
-#include <qgstip.h>
-#include "qgsapplication.h"
 #include "qgstipgui.h"
+#include "qgsapplication.h"
+#include <qgstip.h>
+#include <qgstipfactory.h>
 
 #ifdef Q_OS_MACX
 QgsTipGui::QgsTipGui()

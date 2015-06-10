@@ -15,15 +15,15 @@
 
 #include "qgsmapsettings.h"
 
-#include "qgslogger.h"
+#include "qgsscalecalculator.h"
 #include "qgsmaprendererjob.h"
 #include "qgsmaptopixel.h"
-#include "qgsscalecalculator.h"
+#include "qgslogger.h"
 
 #include "qgscrscache.h"
+#include "qgsmessagelog.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
-#include "qgsmessagelog.h"
 #include "qgsxmlutils.h"
 
 

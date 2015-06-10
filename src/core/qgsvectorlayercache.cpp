@@ -15,9 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscachedfeatureiterator.h"
-#include "qgscacheindex.h"
 #include "qgsvectorlayercache.h"
+#include "qgscacheindex.h"
+#include "qgscachedfeatureiterator.h"
 
 QgsVectorLayerCache::QgsVectorLayerCache( QgsVectorLayer* layer, int cacheSize, QObject* parent )
     : QObject( parent )

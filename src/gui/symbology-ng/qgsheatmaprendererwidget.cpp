@@ -12,20 +12,20 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsheatmaprenderer.h"
 #include "qgsheatmaprendererwidget.h"
+#include "qgsheatmaprenderer.h"
 #include "qgsrendererv2registry.h"
 
 #include "qgssymbolv2.h"
 
-#include <QGridLayout>
-#include <QLabel>
 #include "qgslogger.h"
-#include "qgsproject.h"
-#include "qgsstylev2.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectorcolorrampv2.h"
 #include "qgsvectorgradientcolorrampv2dialog.h"
-#include "qgsvectorlayer.h"
+#include "qgsstylev2.h"
+#include "qgsproject.h"
+#include <QGridLayout>
+#include <QLabel>
 
 QgsRendererV2Widget* QgsHeatmapRendererWidget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
 {

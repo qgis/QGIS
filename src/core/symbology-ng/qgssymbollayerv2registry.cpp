@@ -16,9 +16,9 @@
 #include "qgssymbollayerv2registry.h"
 
 #include "qgsellipsesymbollayerv2.h"
-#include "qgsfillsymbollayerv2.h"
-#include "qgslinesymbollayerv2.h"
 #include "qgsmarkersymbollayerv2.h"
+#include "qgslinesymbollayerv2.h"
+#include "qgsfillsymbollayerv2.h"
 #include "qgsvectorfieldsymbollayer.h"
 
 QgsSymbolLayerV2Registry::QgsSymbolLayerV2Registry()

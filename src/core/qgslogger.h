@@ -19,9 +19,9 @@
 #define QGSLOGGER_H
 
 #include <iostream>
+#include <sstream>
 #include <QString>
 #include <QTime>
-#include <sstream>
 class QFile;
 
 #ifdef QGISDEBUG

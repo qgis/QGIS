@@ -14,38 +14,37 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsaddremovemultiframecommand.h"
+#include "qgscomposition.h"
+#include "qgscomposerutils.h"
 #include "qgscomposerarrow.h"
-#include "qgscomposerattributetable.h"
-#include "qgscomposerattributetablev2.h"
 #include "qgscomposerframe.h"
 #include "qgscomposerhtml.h"
-#include "qgscomposeritemgroup.h"
 #include "qgscomposerlabel.h"
 #include "qgscomposerlegend.h"
 #include "qgscomposermap.h"
 #include "qgscomposermapoverview.h"
-#include "qgscomposermodel.h"
 #include "qgscomposermousehandles.h"
-#include "qgscomposermultiframecommand.h"
+#include "qgscomposeritemgroup.h"
 #include "qgscomposerpicture.h"
 #include "qgscomposerscalebar.h"
 #include "qgscomposershape.h"
-#include "qgscomposerutils.h"
-#include "qgscomposition.h"
-#include "qgsdatadefined.h"
-#include "qgsexpression.h"
-#include "qgsgeometry.h"
-#include "qgslogger.h"
+#include "qgscomposermodel.h"
+#include "qgscomposerattributetable.h"
+#include "qgscomposerattributetablev2.h"
+#include "qgsaddremovemultiframecommand.h"
+#include "qgscomposermultiframecommand.h"
 #include "qgspaintenginehack.h"
 #include "qgspaperitem.h"
 #include "qgsproject.h"
-#include "qgssymbollayerv2utils.h"
-#include "qgssymbolv2.h"
-#include "qgsvectordataprovider.h"
+#include "qgsgeometry.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
+#include "qgsexpression.h"
+#include "qgssymbolv2.h"
+#include "qgssymbollayerv2utils.h"
+#include "qgsdatadefined.h"
+#include "qgslogger.h"
 
-#include <QDir>
 #include <QDomDocument>
 #include <QDomElement>
 #include <QGraphicsRectItem>
@@ -53,6 +52,7 @@
 #include <QPainter>
 #include <QPrinter>
 #include <QSettings>
+#include <QDir>
 
 #include <limits>
 

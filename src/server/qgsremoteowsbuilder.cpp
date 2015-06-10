@@ -15,15 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDomElement>
-#include <QTemporaryFile>
 #include "qgsdatasourceuri.h"
+#include "qgsremoteowsbuilder.h"
 #include "qgshttptransaction.h"
 #include "qgslogger.h"
 #include "qgsmslayercache.h"
 #include "qgsrasterlayer.h"
-#include "qgsremoteowsbuilder.h"
 #include "qgsvectorlayer.h"
+#include <QDomElement>
+#include <QTemporaryFile>
 
 QgsRemoteOWSBuilder::QgsRemoteOWSBuilder( const QMap<QString, QString>& parameterMap )
     : QgsMSLayerBuilder()

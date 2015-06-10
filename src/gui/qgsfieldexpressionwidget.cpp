@@ -17,10 +17,10 @@
 #include <QHBoxLayout>
 
 #include "qgsapplication.h"
-#include "qgsdistancearea.h"
-#include "qgsexpressionbuilderdialog.h"
 #include "qgsfieldexpressionwidget.h"
+#include "qgsexpressionbuilderdialog.h"
 #include "qgsfieldproxymodel.h"
+#include "qgsdistancearea.h"
 
 QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
     : QWidget( parent )

@@ -12,12 +12,12 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QColorDialog>
+#include "qgsellipsesymbollayerv2widget.h"
 #include "qgsdatadefinedsymboldialog.h"
 #include "qgsellipsesymbollayerv2.h"
-#include "qgsellipsesymbollayerv2widget.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
+#include <QColorDialog>
 
 QgsEllipseSymbolLayerV2Widget::QgsEllipseSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
     : QgsSymbolLayerV2Widget( parent, vl )

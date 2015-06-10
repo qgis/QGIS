@@ -18,8 +18,8 @@
 #ifndef QGSRASTERTERRAINANALYSISPLUGIN_H
 #define QGSRASTERTERRAINANALYSISPLUGIN_H
 
-#include <QObject>
 #include "qgisplugin.h"
+#include <QObject>
 
 class QgsInterface;
 class QAction;

@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "qgscoordinatereferencesystem.h"
 #include "qgscursors.h"
 #include "qgsdistancearea.h"
 #include "qgsfeature.h"
@@ -24,25 +23,26 @@
 #include "qgsidentifymenu.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsmaptoolidentify.h"
 #include "qgsmaptopixel.h"
 #include "qgsmessageviewer.h"
-#include "qgsproject.h"
-#include "qgsrasteridentifyresult.h"
+#include "qgsmaplayer.h"
 #include "qgsrasterlayer.h"
-#include "qgsrendererv2.h"
+#include "qgsrasteridentifyresult.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsproject.h"
+#include "qgsmaplayerregistry.h"
+#include "qgsrendererv2.h"
 
-#include <QCursor>
-#include <QMenu>
-#include <QMouseEvent>
-#include <QPixmap>
 #include <QSettings>
+#include <QMouseEvent>
+#include <QCursor>
+#include <QPixmap>
 #include <QStatusBar>
 #include <QVariant>
+#include <QMenu>
 
 QgsMapToolIdentify::QgsMapToolIdentify( QgsMapCanvas* canvas )
     : QgsMapTool( canvas )

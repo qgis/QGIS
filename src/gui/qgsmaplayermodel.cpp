@@ -15,10 +15,10 @@
 
 #include <QIcon>
 
-#include "qgsapplication.h"
 #include "qgsdataitem.h"
 #include "qgsmaplayermodel.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 
 

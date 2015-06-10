@@ -16,10 +16,10 @@
 #ifndef QGSRELATIONEDITOR_H
 #define QGSRELATIONEDITOR_H
 
+#include <QWidget>
+#include <QToolButton>
 #include <QButtonGroup>
 #include <QGridLayout>
-#include <QToolButton>
-#include <QWidget>
 
 #include "qgsattributeeditorcontext.h"
 #include "qgscollapsiblegroupbox.h"

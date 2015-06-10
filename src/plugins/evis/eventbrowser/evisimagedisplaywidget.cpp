@@ -28,10 +28,10 @@
 
 #include "qgsapplication.h"
 
+#include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QScrollBar>
 #include <QUrl>
-#include <QVBoxLayout>
 /**
 * Constructor
 * @param parent - Pointer the to parent QWidget for modality

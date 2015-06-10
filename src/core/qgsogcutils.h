@@ -15,8 +15,8 @@ class QgsGeometry;
 class QgsPoint;
 class QgsRectangle;
 
-#include "qgsexpression.h"
 #include "qgsgeometry.h"
+#include "qgsexpression.h"
 
 /**
  * @brief The QgsOgcUtils class provides various utility functions for conversion between

@@ -17,8 +17,8 @@
 #define QGSFIELDMODEL_H
 
 #include <QAbstractItemModel>
-#include <QComboBox>
 #include <QItemSelectionModel>
+#include <QComboBox>
 
 #include "qgsvectorlayer.h"
 

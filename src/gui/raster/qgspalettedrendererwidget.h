@@ -18,8 +18,8 @@
 #ifndef QGSPALETTEDRENDERERWIDGET_H
 #define QGSPALETTEDRENDERERWIDGET_H
 
-#include "ui_qgspalettedrendererwidgetbase.h"
 #include "qgsrasterrendererwidget.h"
+#include "ui_qgspalettedrendererwidgetbase.h"
 
 class QgsRasterLayer;
 

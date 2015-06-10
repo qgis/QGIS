@@ -16,9 +16,9 @@
 #ifndef QGSEXPRESSIONBUILDERDIALOG_H
 #define QGSEXPRESSIONBUILDERDIALOG_H
 
-#include "ui_qgsexpressionbuilderdialogbase.h"
 #include <QDialog>
 #include "qgsdistancearea.h"
+#include "ui_qgsexpressionbuilderdialogbase.h"
 
 /** A generic dialog for building expression strings
   * @remarks This class also shows an example on how to use QgsExpressionBuilderWidget

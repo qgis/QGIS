@@ -19,11 +19,11 @@
 // QGIS Specific includes
 //
 
-#include <qgisgui.h>
 #include <qgisinterface.h>
+#include <qgisgui.h>
 
-#include "[pluginlcasename]gui.h"
 #include "[pluginlcasename].h"
+#include "[pluginlcasename]gui.h"
 
 //
 // Qt4 Related Includes

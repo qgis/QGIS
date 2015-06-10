@@ -16,14 +16,14 @@
 
 #include <QMessageBox>
 
-#include "qgsatlascomposition.h"
 #include "qgsatlascompositionwidget.h"
-#include "qgscomposermap.h"
+#include "qgsatlascomposition.h"
 #include "qgscomposition.h"
-#include "qgsexpressionbuilderdialog.h"
 #include "qgsfieldmodel.h"
-#include "qgsmaplayerproxymodel.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsmaplayerproxymodel.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgscomposermap.h"
 
 QgsAtlasCompositionWidget::QgsAtlasCompositionWidget( QWidget* parent, QgsComposition* c ):
     QWidget( parent ), mComposition( c )

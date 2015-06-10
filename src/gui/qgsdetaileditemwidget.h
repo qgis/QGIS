@@ -17,8 +17,8 @@
 #ifndef QGSDETAILEDITEMWIDGET_H
 #define QGSDETAILEDITEMWIDGET_H
 
-#include <qgsdetaileditemdata.h>
 #include <ui_qgsdetaileditemwidgetbase.h>
+#include <qgsdetaileditemdata.h>
 
 /** \ingroup gui
  * A widget renderer for detailed item views.

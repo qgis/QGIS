@@ -17,8 +17,8 @@
 #define QGSRASTERCHECKER_H
 
 #include <QDir>
-#include <qgsmaprenderer.h>
 #include <QString>
+#include <qgsmaprenderer.h>
 class QImage;
 
 /** \ingroup UnitTests

@@ -15,9 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QMouseEvent>
 #include "qgsmaptooltextannotation.h"
 #include "qgstextannotationitem.h"
+#include <QMouseEvent>
 
 QgsMapToolTextAnnotation::QgsMapToolTextAnnotation( QgsMapCanvas* canvas ): QgsMapToolAnnotation( canvas )
 {

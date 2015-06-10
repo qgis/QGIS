@@ -16,6 +16,7 @@ email                : sherman at mrcc.com
  ***************************************************************************/
 
 
+#include <QtGlobal>
 #include <QApplication>
 #include <QCursor>
 #include <QDir>
@@ -29,15 +30,13 @@ email                : sherman at mrcc.com
 #include <QPaintEvent>
 #include <QPixmap>
 #include <QRect>
-#include <QResizeEvent>
 #include <QSettings>
+#include <QTextStream>
+#include <QResizeEvent>
 #include <QString>
 #include <QStringList>
-#include <QTextStream>
-#include <QtGlobal>
 #include <QWheelEvent>
 
-#include <math.h>
 #include "qgis.h"
 #include "qgsapplication.h"
 #include "qgscrscache.h"
@@ -48,21 +47,22 @@ email                : sherman at mrcc.com
 #include "qgsmapcanvassnappingutils.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
-#include "qgsmapoverviewcanvas.h"
-#include "qgsmaprenderercache.h"
-#include "qgsmaprenderercustompainterjob.h"
-#include "qgsmaprenderer.h"
-#include "qgsmaprendererparalleljob.h"
-#include "qgsmaprenderersequentialjob.h"
 #include "qgsmaptoolpan.h"
 #include "qgsmaptoolzoom.h"
 #include "qgsmaptopixel.h"
+#include "qgsmapoverviewcanvas.h"
+#include "qgsmaprenderer.h"
+#include "qgsmaprenderercache.h"
+#include "qgsmaprenderercustompainterjob.h"
+#include "qgsmaprendererparalleljob.h"
+#include "qgsmaprenderersequentialjob.h"
 #include "qgsmessagelog.h"
 #include "qgsmessageviewer.h"
 #include "qgspallabeling.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
+#include <math.h>
 
 
 /**  @deprecated to be deleted, stuff from here should be moved elsewhere */

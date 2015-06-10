@@ -1,6 +1,6 @@
 
-#include <QObject>
 #include <QtTest/QtTest>
+#include <QObject>
 
 #include "qgsapplication.h"
 #include "qgscategorizedsymbolrendererv2.h"
@@ -10,9 +10,9 @@
 #include "qgslayertreemodel.h"
 #include "qgslayertreemodellegendnode.h"
 #include "qgslegendmodel.h"
-#include "qgslegendrenderer.h"
 #include "qgsmaplayerlegend.h"
 #include "qgsmaplayerregistry.h"
+#include "qgslegendrenderer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrenderchecker.h"
 #include "qgssinglesymbolrendererv2.h"

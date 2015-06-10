@@ -16,10 +16,10 @@
 #ifndef QGSMAPLAYERACTIONREGISTRY_H
 #define QGSMAPLAYERACTIONREGISTRY_H
 
-#include <QAction>
+#include <QObject>
 #include <QList>
 #include <QMap>
-#include <QObject>
+#include <QAction>
 
 #include "qgsmaplayer.h"
 

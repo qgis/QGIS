@@ -18,8 +18,8 @@
 #define QGSPLUGINSORTFILTERPROXYMODEL_H
 
 #include <QSortFilterProxyModel>
-#include <QString>
 #include <QStringList>
+#include <QString>
 
 const int PLUGIN_BASE_NAME_ROLE = Qt::UserRole + 1;
 const int PLUGIN_DESCRIPTION_ROLE = Qt::UserRole + 2;  // for filtering

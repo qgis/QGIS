@@ -15,11 +15,11 @@
  ***************************************************************************/
 
 #include <QApplication>
-#include <QBrush>
-#include <QColor>
-#include <QFont>
-#include <QPen>
 #include <QString>
+#include <QFont>
+#include <QColor>
+#include <QPen>
+#include <QBrush>
 
 #include "qgslabelattributes.h"
 #include "qgslogger.h"

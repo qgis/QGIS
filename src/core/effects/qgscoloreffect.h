@@ -17,10 +17,10 @@
 #ifndef QGSCOLOREFFECT_H
 #define QGSCOLOREFFECT_H
 
-#include <QPainter>
-#include "qgis.h"
-#include "qgsimageoperation.h"
 #include "qgspainteffect.h"
+#include "qgsimageoperation.h"
+#include "qgis.h"
+#include <QPainter>
 
 /** \ingroup core
  * \class QgsColorEffect

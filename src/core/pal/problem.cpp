@@ -37,26 +37,26 @@
 #include <cstdlib>
 #endif
 
-#include <cfloat>
-#include <cstring>
-#include <ctime>
-#include <fstream>
 #include <iostream>
-#include <limits.h> //for INT_MAX
+#include <fstream>
+#include <cstring>
+#include <cfloat>
+#include <ctime>
 #include <list>
+#include <limits.h> //for INT_MAX
 
-#include <pal/layer.h>
 #include <pal/pal.h>
 #include <pal/palstat.h>
+#include <pal/layer.h>
 
+#include "linkedlist.hpp"
+#include "rtree.hpp"
 #include "feature.h"
 #include "geomfunction.h"
 #include "labelposition.h"
-#include "linkedlist.hpp"
-#include "priorityqueue.h"
 #include "problem.h"
-#include "rtree.hpp"
 #include "util.h"
+#include "priorityqueue.h"
 
 #define UNUSED(x) (void)x;
 

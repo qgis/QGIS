@@ -12,32 +12,35 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <iostream>
-#include <QApplication>
-#include <QDesktopServices>
-#include <QDir>
-#include <QFileInfo>
+#include <QtTest/QtTest>
 #include <QObject>
-#include <QPainter>
 #include <QString>
 #include <QStringList>
+#include <QObject>
+#include <iostream>
+#include <QApplication>
+#include <QFileInfo>
+#include <QDir>
+#include <QPainter>
 #include <QTime>
-#include <QtTest/QtTest>
+#include <QDesktopServices>
 
 #include "cpl_conv.h"
 
 //qgis includes...
-#include <qgsapplication.h>
-#include <qgscptcityarchive.h>
-#include <qgsmaplayerregistry.h>
-#include <qgsmaprenderer.h>
-#include <qgsrasterbandstats.h>
-#include <qgsrasteridentifyresult.h>
 #include <qgsrasterlayer.h>
 #include <qgsrasterpyramid.h>
+#include <qgsrasterbandstats.h>
+#include <qgsrasterpyramid.h>
+#include <qgsrasteridentifyresult.h>
+#include <qgsmaplayerregistry.h>
+#include <qgsapplication.h>
+#include <qgsmaprenderer.h>
+#include <qgsmaplayerregistry.h>
 #include <qgssinglebandgrayrenderer.h>
 #include <qgssinglebandpseudocolorrenderer.h>
 #include <qgsvectorcolorrampv2.h>
+#include <qgscptcityarchive.h>
 
 //qgis unit test includes
 #include <qgsrenderchecker.h>

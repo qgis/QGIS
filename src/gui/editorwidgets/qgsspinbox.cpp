@@ -19,10 +19,10 @@
 #include <QStyle>
 #include <QToolButton>
 
-#include "qgsapplication.h"
-#include "qgsexpression.h"
-#include "qgslogger.h"
 #include "qgsspinbox.h"
+#include "qgsexpression.h"
+#include "qgsapplication.h"
+#include "qgslogger.h"
 
 QgsSpinBox::QgsSpinBox( QWidget *parent )
     : QSpinBox( parent )

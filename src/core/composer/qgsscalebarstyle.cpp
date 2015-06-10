@@ -14,11 +14,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QFontMetricsF>
-#include <QPainter>
+#include "qgsscalebarstyle.h"
 #include "qgscomposerscalebar.h"
 #include "qgscomposerutils.h"
-#include "qgsscalebarstyle.h"
+#include <QFontMetricsF>
+#include <QPainter>
 
 QgsScaleBarStyle::QgsScaleBarStyle( const QgsComposerScaleBar* bar ):  mScaleBar( bar )
 {

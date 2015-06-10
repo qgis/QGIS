@@ -17,15 +17,15 @@
 
 #include "qgsdxfexportdialog.h"
 
-#include "qgisapp.h"
+#include "qgsmaplayer.h"
+#include "qgslayertree.h"
+#include "qgslayertreegroup.h"
+#include "qgsvectorlayer.h"
+#include "qgsproject.h"
 #include "qgis.h"
 #include "qgsfieldcombobox.h"
-#include "qgslayertreegroup.h"
-#include "qgslayertree.h"
+#include "qgisapp.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaplayer.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
 #include "qgsvisibilitypresets.h"
 
 #include <QFileDialog>

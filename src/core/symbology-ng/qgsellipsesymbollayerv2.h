@@ -15,8 +15,8 @@
 #ifndef QGSELLIPSESYMBOLLAYERV2_H
 #define QGSELLIPSESYMBOLLAYERV2_H
 
-#include <QPainterPath>
 #include "qgsmarkersymbollayerv2.h"
+#include <QPainterPath>
 
 class QgsExpression;
 

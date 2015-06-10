@@ -1,9 +1,9 @@
 #ifndef QGSWKBPTR_H
 #define QGSWKBPTR_H
 
-#include "qgis.h"
-#include "qgsapplication.h"
 #include "qgswkbtypes.h"
+#include "qgsapplication.h"
+#include "qgis.h"
 
 class CORE_EXPORT QgsWkbPtr
 {

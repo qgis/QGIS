@@ -14,8 +14,8 @@
  ***************************************************************************/
 #include "qgisgui.h"
 
-#include <QImageWriter>
 #include <QSettings>
+#include <QImageWriter>
 #include "qgsencodingfiledialog.h"
 #include "qgslogger.h"
 

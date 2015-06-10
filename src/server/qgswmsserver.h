@@ -18,13 +18,13 @@
 #ifndef QGSWMSSERVER_H
 #define QGSWMSSERVER_H
 
-#include <map>
+#include "qgsowsserver.h"
+#include "qgswmsconfigparser.h"
 #include <QDomDocument>
 #include <QMap>
 #include <QPair>
 #include <QString>
-#include "qgsowsserver.h"
-#include "qgswmsconfigparser.h"
+#include <map>
 
 class QgsCapabilitiesCache;
 class QgsCoordinateReferenceSystem;

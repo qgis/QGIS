@@ -18,8 +18,8 @@
 #ifndef QGSGPSDETECTOR_H
 #define QGSGPSDETECTOR_H
 
-#include <QList>
 #include <QObject>
+#include <QList>
 #include <QPair>
 
 #include "qextserialport.h"

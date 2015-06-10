@@ -18,8 +18,8 @@
 #ifndef QGSINTERPOLATIONPLUGIN_H
 #define QGSINTERPOLATIONPLUGIN_H
 
-#include <QObject>
 #include "qgisplugin.h"
+#include <QObject>
 
 class QgisInterface;
 class QAction;

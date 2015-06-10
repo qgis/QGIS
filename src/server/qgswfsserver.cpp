@@ -14,45 +14,45 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgscomposerlegenditem.h"
-#include "qgscoordinatereferencesystem.h"
+#include "qgswfsserver.h"
 #include "qgscrscache.h"
-#include "qgsexpression.h"
 #include "qgsfield.h"
+#include "qgsexpression.h"
 #include "qgsgeometry.h"
-#include "qgslegendmodel.h"
-#include "qgslogger.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
-#include "qgsmapserviceexception.h"
 #include "qgsmaptopixel.h"
 #include "qgsmessagelog.h"
-#include "qgsogcutils.h"
 #include "qgspallabeling.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
-#include "qgsrequesthandler.h"
 #include "qgsscalecalculator.h"
-#include "qgssymbolv2.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgswfsserver.h"
+#include "qgslogger.h"
+#include "qgsmapserviceexception.h"
+#include "qgssymbolv2.h"
+#include "qgslegendmodel.h"
+#include "qgscomposerlegenditem.h"
+#include "qgsrequesthandler.h"
+#include "qgsogcutils.h"
 
-#include <QDir>
 #include <QImage>
 #include <QPainter>
-#include <QSharedPointer>
 #include <QStringList>
 #include <QTextStream>
+#include <QDir>
+#include <QSharedPointer>
 
 //for printing
+#include "qgscomposition.h"
 #include <QBuffer>
-#include <QPaintEngine>
 #include <QPrinter>
 #include <QSvgGenerator>
 #include <QUrl>
-#include "qgscomposition.h"
+#include <QPaintEngine>
 
 #ifndef Q_OS_WIN
 #include <netinet/in.h>

@@ -13,10 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgeometry.h"
-#include "qgslogger.h"
 #include "qgsosmdatabase.h"
 #include "qgsslconnect.h"
+#include "qgsgeometry.h"
+#include "qgslogger.h"
 
 
 QgsOSMDatabase::QgsOSMDatabase( const QString& dbFileName )

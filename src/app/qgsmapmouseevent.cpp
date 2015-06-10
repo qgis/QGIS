@@ -14,9 +14,9 @@
  ***************************************************************************/
 
 
-#include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmaptooladvanceddigitizing.h"
+#include "qgsmapcanvas.h"
 
 #include "qgisapp.h"
 #include "qgssnappingutils.h"

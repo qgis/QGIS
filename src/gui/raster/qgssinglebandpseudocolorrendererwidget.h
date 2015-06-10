@@ -18,10 +18,10 @@
 #ifndef QGSSINGLEBANDCOLORRENDERERWIDGET_H
 #define QGSSINGLEBANDCOLORRENDERERWIDGET_H
 
-#include "ui_qgssinglebandpseudocolorrendererwidgetbase.h"
-#include "qgscolorrampshader.h"
 #include "qgsrasterminmaxwidget.h"
 #include "qgsrasterrendererwidget.h"
+#include "qgscolorrampshader.h"
+#include "ui_qgssinglebandpseudocolorrendererwidgetbase.h"
 
 class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendererWidget,
       private Ui::QgsSingleBandPseudoColorRendererWidgetBase

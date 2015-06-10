@@ -21,16 +21,16 @@
 #include "ui_qgsidentifyresultsbase.h"
 #include "qgsattributeaction.h"
 #include "qgscontexthelp.h"
-#include "qgscoordinatereferencesystem.h"
 #include "qgsfeature.h"
 #include "qgsfeaturestore.h"
 #include "qgsfield.h"
-#include "qgsmaplayeractionregistry.h"
 #include "qgsmaptoolidentify.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsmaplayeractionregistry.h"
 #include "qgswebview.h"
 
-#include <QList>
 #include <QWidget>
+#include <QList>
 
 class QCloseEvent;
 class QTreeWidgetItem;

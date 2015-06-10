@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgswmsprojectparser.h"
 #include "qgsconfigcache.h"
 #include "qgsconfigparserutils.h"
 #include "qgslogger.h"
@@ -24,19 +25,18 @@
 #include "qgspallabeling.h"
 #include "qgsrendererv2.h"
 #include "qgsvectorlayer.h"
-#include "qgswmsprojectparser.h"
 
+#include "qgscomposition.h"
 #include "qgscomposerarrow.h"
 #include "qgscomposerattributetable.h"
-#include "qgscomposerframe.h"
-#include "qgscomposerhtml.h"
 #include "qgscomposerlabel.h"
 #include "qgscomposerlegend.h"
 #include "qgscomposermap.h"
+#include "qgscomposerframe.h"
+#include "qgscomposerhtml.h"
 #include "qgscomposerpicture.h"
 #include "qgscomposerscalebar.h"
 #include "qgscomposershape.h"
-#include "qgscomposition.h"
 #include "qgslayertreegroup.h"
 
 #include <QFileInfo>

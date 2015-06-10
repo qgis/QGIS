@@ -18,9 +18,9 @@
 #ifndef QGSSNAPPER_H
 #define QGSSNAPPER_H
 
-#include "qgsfeature.h"
 #include "qgspoint.h"
 #include "qgstolerance.h"
+#include "qgsfeature.h"
 
 #include <QList>
 #include <QMultiMap>

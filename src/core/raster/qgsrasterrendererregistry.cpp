@@ -15,13 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QSettings>
+#include "qgsrasterrendererregistry.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgspalettedrasterrenderer.h"
-#include "qgsrasterrendererregistry.h"
 #include "qgssinglebandcolordatarenderer.h"
 #include "qgssinglebandgrayrenderer.h"
 #include "qgssinglebandpseudocolorrenderer.h"
+#include <QSettings>
 
 QgsRasterRendererRegistryEntry::QgsRasterRendererRegistryEntry( const QString& theName, const QString& theVisibleName,
     QgsRasterRendererCreateFunc rendererFunction,

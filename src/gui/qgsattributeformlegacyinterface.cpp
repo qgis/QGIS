@@ -15,12 +15,12 @@
 
 #include "qgsattributeformlegacyinterface.h"
 
-#include "qgsattributeform.h"
 #include "qgspythonrunner.h"
+#include "qgsattributeform.h"
 
+#include <QString>
 #include <QDateTime>
 #include <QRegExp>
-#include <QString>
 
 QgsAttributeFormLegacyInterface::QgsAttributeFormLegacyInterface( const QString& function, const QString& pyFormName, QgsAttributeForm* form )
     : QgsAttributeFormInterface( form )

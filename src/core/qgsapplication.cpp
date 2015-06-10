@@ -26,12 +26,12 @@
 #include <QDir>
 #include <QFile>
 #include <QFileOpenEvent>
-#include <QIcon>
 #include <QMessageBox>
 #include <QPalette>
-#include <QPixmap>
 #include <QProcess>
 #include <QSettings>
+#include <QIcon>
+#include <QPixmap>
 #include <QThreadPool>
 
 #ifndef Q_OS_WIN
@@ -42,9 +42,9 @@
 
 #include "qgsconfig.h"
 
-#include <cpl_conv.h> // for setting gdal options
 #include <gdal.h>
 #include <ogr_api.h>
+#include <cpl_conv.h> // for setting gdal options
 #include <sqlite3.h>
 
 QObject * ABISYM( QgsApplication::mFileOpenEventReceiver );

@@ -15,18 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QColor>
-#include <QObject>
-#include <QPainter>
-#include <QtTest/QtTest>
 #include "qgsapplication.h"
-#include "qgscomposershape.h"
-#include "qgscompositionchecker.h"
 #include "qgscomposition.h"
-#include "qgsfillsymbollayerv2.h"
+#include "qgscompositionchecker.h"
+#include "qgscomposershape.h"
 #include "qgsmapsettings.h"
-#include "qgssinglesymbolrendererv2.h"
 #include "qgssymbolv2.h"
+#include "qgssinglesymbolrendererv2.h"
+#include "qgsfillsymbollayerv2.h"
+#include <QObject>
+#include <QtTest/QtTest>
+#include <QColor>
+#include <QPainter>
 
 class TestQgsComposerShapes : public QObject
 {

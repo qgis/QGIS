@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsdatetimeeditconfig.h"
 #include "qgsdatetimeeditfactory.h"
+#include "qgsdatetimeeditconfig.h"
 #include "qgsdatetimeeditwrapper.h"
 
 #include <QSettings>

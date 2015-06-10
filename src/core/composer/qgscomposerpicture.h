@@ -17,10 +17,10 @@
 #ifndef QGSCOMPOSERPICTURE_H
 #define QGSCOMPOSERPICTURE_H
 
+#include "qgscomposeritem.h"
 #include <QFile>
 #include <QImage>
 #include <QSvgRenderer>
-#include "qgscomposeritem.h"
 
 class QgsComposerMap;
 class QgsExpression;

@@ -16,9 +16,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgisapp.h"
 #include "qgisappstylesheet.h"
 #include "qgsapplication.h"
+#include "qgisapp.h"
 #include "qgslogger.h"
 
 #include <QFont>

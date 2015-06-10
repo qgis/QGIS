@@ -17,9 +17,9 @@
 #define QGSSEARCHQUERYBUILDER_H
 
 #include <map>
-#include <QModelIndex>
-#include <QStandardItemModel>
 #include <vector>
+#include <QStandardItemModel>
+#include <QModelIndex>
 
 #include "ui_qgsquerybuilderbase.h"
 #include "qgisgui.h"

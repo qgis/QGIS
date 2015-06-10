@@ -15,14 +15,14 @@
 #ifndef QGSORACLEDATAITEMS_H
 #define QGSORACLEDATAITEMS_H
 
-#include <QMainWindow>
 #include <QSqlDatabase>
+#include <QMainWindow>
 
 #include "qgsdataitem.h"
 
-#include "qgsmimedatautils.h"
-#include "qgsoraclesourceselect.h"
 #include "qgsoracletablemodel.h"
+#include "qgsoraclesourceselect.h"
+#include "qgsmimedatautils.h"
 #include "qgsvectorlayerimport.h"
 
 class QSqlDatabase;

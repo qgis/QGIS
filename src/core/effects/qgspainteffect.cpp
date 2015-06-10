@@ -15,10 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QPicture>
+#include "qgspainteffect.h"
 #include "qgsimageoperation.h"
 #include "qgslogger.h"
-#include "qgspainteffect.h"
+#include <QPicture>
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 Q_GUI_EXPORT extern int qt_defaultDpiY();

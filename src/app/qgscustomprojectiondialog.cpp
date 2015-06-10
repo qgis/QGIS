@@ -19,17 +19,17 @@
 #include "qgscustomprojectiondialog.h"
 
 //qgis includes
-#include "qgisapp.h" //<--theme icons
 #include "qgis.h" //<--magick numbers
+#include "qgisapp.h" //<--theme icons
 #include "qgsapplication.h"
-#include "qgscrscache.h"
-#include "qgsgenericprojectionselector.h"
 #include "qgslogger.h"
+#include "qgsgenericprojectionselector.h"
+#include "qgscrscache.h"
 
 //qt includes
 #include <QFileInfo>
-#include <QLocale>
 #include <QMessageBox>
+#include <QLocale>
 #include <QSettings>
 
 //stdc++ includes

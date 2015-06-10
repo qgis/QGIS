@@ -15,11 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QNetworkReply>
+#include "qgsnetworkcontentfetcher.h"
+#include "qgsapplication.h"
 #include <QObject>
 #include <QtTest/QtTest>
-#include "qgsapplication.h"
-#include "qgsnetworkcontentfetcher.h"
+#include <QNetworkReply>
 
 class TestQgsNetworkContentFetcher : public QObject
 {

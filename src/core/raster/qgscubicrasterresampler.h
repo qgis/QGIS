@@ -18,8 +18,8 @@
 #ifndef QGSCUBICRASTERRESAMPLER_H
 #define QGSCUBICRASTERRESAMPLER_H
 
-#include <QColor>
 #include "qgsrasterresampler.h"
+#include <QColor>
 
 /** \ingroup core
     Cubic Raster Resampler

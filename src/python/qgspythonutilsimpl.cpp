@@ -29,9 +29,9 @@
 #include "qgslogger.h"
 #include "qgsmessageoutput.h"
 
-#include <QDir>
 #include <QMessageBox>
 #include <QStringList>
+#include <QDir>
 
 PyThreadState* _mainState;
 

@@ -15,12 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsimageoperation.h"
+#include "qgsvectorcolorrampv2.h"
 #include <QObject>
 #include <QtTest/QtTest>
-#include "qgsimageoperation.h"
 #include "qgsrenderchecker.h"
 #include "qgssymbollayerv2utils.h"
-#include "qgsvectorcolorrampv2.h"
 
 class TestQgsImageOperation : public QObject
 {

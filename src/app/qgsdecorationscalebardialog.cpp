@@ -14,8 +14,8 @@
 
 #include "qgsdecorationscalebar.h"
 
-#include "qgscontexthelp.h"
 #include "qgslogger.h"
+#include "qgscontexthelp.h"
 
 #include <QColorDialog>
 #include <QSettings>

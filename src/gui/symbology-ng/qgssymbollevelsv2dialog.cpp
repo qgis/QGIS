@@ -15,13 +15,13 @@
 
 #include "qgssymbollevelsv2dialog.h"
 
-#include "qgssymbollayerv2.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgssymbollayerv2.h"
 #include "qgssymbolv2.h"
 
+#include <QTableWidgetItem>
 #include <QItemDelegate>
 #include <QSpinBox>
-#include <QTableWidgetItem>
 
 // delegate used from Qt Spin Box example
 class SpinBoxDelegate : public QItemDelegate

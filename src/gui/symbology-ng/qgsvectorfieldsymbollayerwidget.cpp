@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsvectorfieldsymbollayer.h"
 #include "qgsvectorfieldsymbollayerwidget.h"
+#include "qgsvectorfieldsymbollayer.h"
 #include "qgsvectorlayer.h"
 
 QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent ): QgsSymbolLayerV2Widget( parent, vl ), mLayer( 0 )

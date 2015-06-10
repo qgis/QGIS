@@ -14,19 +14,19 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtAlgorithms>
 #include <stdexcept>
+#include <QtAlgorithms>
 
 #include "qgsatlascomposition.h"
+#include "qgsvectorlayer.h"
 #include "qgscomposermap.h"
 #include "qgscomposition.h"
+#include "qgsvectordataprovider.h"
 #include "qgsexpression.h"
 #include "qgsgeometry.h"
 #include "qgsmaplayerregistry.h"
-#include "qgsmessagelog.h"
 #include "qgsproject.h"
-#include "qgsvectordataprovider.h"
-#include "qgsvectorlayer.h"
+#include "qgsmessagelog.h"
 
 QgsAtlasComposition::QgsAtlasComposition( QgsComposition* composition ) :
     mComposition( composition ),

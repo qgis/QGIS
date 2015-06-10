@@ -16,8 +16,8 @@
 #ifndef QGSDEFAULTSEARCHWIDGETWRAPPER_H
 #define QGSDEFAULTSEARCHWIDGETWRAPPER_H
 
-#include <qgsfilterlineedit.h>
 #include "qgseditorwidgetwrapper.h"
+#include <qgsfilterlineedit.h>
 
 
 /**

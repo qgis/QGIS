@@ -15,9 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsdxfpaintengine.h"
 #include "qgsdxfexport.h"
 #include "qgsdxfpaintdevice.h"
-#include "qgsdxfpaintengine.h"
 #include "qgslogger.h"
 
 QgsDxfPaintEngine::QgsDxfPaintEngine( const QgsDxfPaintDevice* dxfDevice, QgsDxfExport* dxf )

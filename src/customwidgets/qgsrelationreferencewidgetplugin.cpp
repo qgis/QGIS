@@ -14,8 +14,8 @@
 ***************************************************************************/
 
 #include "qgiscustomwidgets.h"
-#include "qgsrelationreferencewidget.h"
 #include "qgsrelationreferencewidgetplugin.h"
+#include "qgsrelationreferencewidget.h"
 
 
 QgsRelationReferenceWidgetPlugin::QgsRelationReferenceWidgetPlugin( QObject *parent )

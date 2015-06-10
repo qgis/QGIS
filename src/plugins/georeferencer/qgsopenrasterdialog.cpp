@@ -18,8 +18,8 @@
 #include <QPushButton>
 #include <QSettings>
 
-#include "qgsproject.h"
 #include "qgsrasterlayer.h"
+#include "qgsproject.h"
 
 #include "qgsopenrasterdialog.h"
 

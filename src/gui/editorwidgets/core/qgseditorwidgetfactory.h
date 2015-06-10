@@ -16,9 +16,9 @@
 #ifndef QGSEDITORWIDGETFACTORY_H
 #define QGSEDITORWIDGETFACTORY_H
 
+#include "qgseditorwidgetwrapper.h"
 #include "qgsapplication.h"
 #include "qgsdefaultsearchwidgetwrapper.h"
-#include "qgseditorwidgetwrapper.h"
 
 #include <QDomNode>
 #include <QMap>

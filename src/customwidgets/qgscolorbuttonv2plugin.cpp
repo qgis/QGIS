@@ -14,8 +14,8 @@
 ***************************************************************************/
 
 #include "qgiscustomwidgets.h"
-#include "qgscolorbuttonv2.h"
 #include "qgscolorbuttonv2plugin.h"
+#include "qgscolorbuttonv2.h"
 
 
 QgsColorButtonV2Plugin::QgsColorButtonV2Plugin( QObject *parent )

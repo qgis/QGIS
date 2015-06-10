@@ -17,8 +17,8 @@
  ***************************************************************************/
 
 
-#include "qgslogger.h"
 #include "qgsserverfilter.h"
+#include "qgslogger.h"
 
 /**
  * QgsServerFilter

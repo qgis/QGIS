@@ -13,29 +13,29 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsdatadefined.h"
 #include "qgsrendererv2.h"
-#include "qgsrulebasedrendererv2.h"
-#include "qgssymbollayerv2utils.h"
 #include "qgssymbolv2.h"
+#include "qgssymbollayerv2utils.h"
+#include "qgsrulebasedrendererv2.h"
+#include "qgsdatadefined.h"
 
 #include "qgssinglesymbolrendererv2.h" // for default renderer
 
 #include "qgsrendererv2registry.h"
 
-#include "qgsclipper.h"
-#include "qgseffectstack.h"
-#include "qgsfeature.h"
-#include "qgsgeometry.h"
-#include "qgslogger.h"
-#include "qgspainteffect.h"
-#include "qgspainteffectregistry.h"
 #include "qgsrendercontext.h"
+#include "qgsclipper.h"
+#include "qgsgeometry.h"
+#include "qgsfeature.h"
+#include "qgslogger.h"
 #include "qgsvectorlayer.h"
+#include "qgspainteffect.h"
+#include "qgseffectstack.h"
+#include "qgspainteffectregistry.h"
 #include "qgswkbptr.h"
 
-#include <QDomDocument>
 #include <QDomElement>
+#include <QDomDocument>
 #include <QPolygonF>
 
 

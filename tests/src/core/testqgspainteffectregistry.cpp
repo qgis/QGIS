@@ -15,10 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgspainteffectregistry.h"
+#include "qgspainteffect.h"
 #include <QObject>
 #include <QtTest/QtTest>
-#include "qgspainteffect.h"
-#include "qgspainteffectregistry.h"
 
 //dummy paint effect for testing
 class DummyPaintEffect : public QgsPaintEffect

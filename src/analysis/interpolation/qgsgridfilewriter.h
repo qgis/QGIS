@@ -18,9 +18,9 @@
 #ifndef QGSGRIDFILEWRITER_H
 #define QGSGRIDFILEWRITER_H
 
+#include "qgsrectangle.h"
 #include <QString>
 #include <QTextStream>
-#include "qgsrectangle.h"
 
 class QgsInterpolator;
 

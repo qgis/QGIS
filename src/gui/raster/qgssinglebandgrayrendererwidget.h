@@ -18,9 +18,9 @@
 #ifndef QGSSINGLEBANDGRAYRENDERERWIDGET_H
 #define QGSSINGLEBANDGRAYRENDERERWIDGET_H
 
-#include "ui_qgssinglebandgrayrendererwidgetbase.h"
 #include "qgsrasterminmaxwidget.h"
 #include "qgsrasterrendererwidget.h"
+#include "ui_qgssinglebandgrayrendererwidgetbase.h"
 
 class GUI_EXPORT QgsSingleBandGrayRendererWidget: public QgsRasterRendererWidget, private Ui::QgsSingleBandGrayRendererWidgetBase
 {

@@ -23,20 +23,20 @@
 
 #include "qgsgrass.h"
 
+#include "qgslogger.h"
 #include "qgsapplication.h"
-#include "qgsconfig.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsfield.h"
-#include "qgslogger.h"
 #include "qgsrectangle.h"
+#include "qgsconfig.h"
 
 #include <QFileDialog>
-#include <QHash>
 #include <QMessageBox>
 #include <QProcess>
 #include <QSettings>
-#include <QTemporaryFile>
 #include <QTextStream>
+#include <QTemporaryFile>
+#include <QHash>
 
 #include <QTextCodec>
 
@@ -45,14 +45,14 @@ extern "C"
 #ifndef _MSC_VER
 #include <unistd.h>
 #endif
-#include <grass/gprojects.h>
 #include <grass/version.h>
+#include <grass/gprojects.h>
 
 #if GRASS_VERSION_MAJOR < 7
 #include <grass/Vect.h>
 #else
-#include <grass/raster.h>
 #include <grass/vector.h>
+#include <grass/raster.h>
 #endif
 }
 

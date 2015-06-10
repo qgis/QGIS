@@ -19,12 +19,12 @@
 #ifndef QGSSERVERINTERFACEIMPL_H
 #define QGSSERVERINTERFACEIMPL_H
 
+#include "qgsserverinterface.h"
 #include "qgscapabilitiescache.h"
 #include "qgsgetrequesthandler.h"
-#include "qgsmaprenderer.h"
 #include "qgspostrequesthandler.h"
-#include "qgsserverinterface.h"
 #include "qgssoaprequesthandler.h"
+#include "qgsmaprenderer.h"
 
 /**
  * QgsServerInterface

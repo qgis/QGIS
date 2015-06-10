@@ -19,8 +19,8 @@
 #include "qgsdistancearea.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
-#include "qgsmaplayer.h"
 #include "qgsmaptool.h"
+#include "qgsmaplayer.h"
 #include "qgspoint.h"
 
 #include <QObject>

@@ -18,16 +18,16 @@
 #include <algorithm>
 #include <cmath>
 #include <limits>
-#include <qnumeric.h>
 #include <QRectF>
-#include <QRegExp>
 #include <QString>
 #include <QTextStream>
 #include <QTransform>
+#include <QRegExp>
+#include <qnumeric.h>
 
-#include "qgslogger.h"
 #include "qgspoint.h"
 #include "qgsrectangle.h"
+#include "qgslogger.h"
 
 QgsRectangle::QgsRectangle( double newxmin, double newymin, double newxmax, double newymax )
     : xmin( newxmin ), ymin( newymin ), xmax( newxmax ), ymax( newymax )

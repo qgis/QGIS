@@ -20,8 +20,8 @@
 #ifndef QGSGPXPROVIDER_H
 #define QGSGPXPROVIDER_H
 
-#include "gpsdata.h"
 #include "qgsvectordataprovider.h"
+#include "gpsdata.h"
 
 
 class QgsFeature;

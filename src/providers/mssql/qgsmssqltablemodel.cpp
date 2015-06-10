@@ -15,10 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsdataitem.h"
-#include "qgsdatasourceuri.h"
-#include "qgslogger.h"
 #include "qgsmssqltablemodel.h"
+#include "qgsdataitem.h"
+#include "qgslogger.h"
+#include "qgsdatasourceuri.h"
 
 QgsMssqlTableModel::QgsMssqlTableModel()
     : QStandardItemModel()

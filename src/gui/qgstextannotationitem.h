@@ -18,8 +18,8 @@
 #ifndef QGSTEXTANNOTATIONITEM_H
 #define QGSTEXTANNOTATIONITEM_H
 
-#include <QTextDocument>
 #include "qgsannotationitem.h"
+#include <QTextDocument>
 
 /**An annotation item that displays formated text*/
 class GUI_EXPORT QgsTextAnnotationItem: public QgsAnnotationItem

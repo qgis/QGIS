@@ -39,10 +39,10 @@ class QgsSnappingUtils;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
 
-#include <map>
-#include <QFont>
 #include <QObject>
+#include <QFont>
 #include <QPair>
+#include <map>
 
 #include "qgis.h"
 

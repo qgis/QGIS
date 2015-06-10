@@ -6,13 +6,13 @@
 #include "qgsclipboard.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
-#include "qgslayertreeregistrybridge.h"
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgsmaplayerstyleguiutils.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgslayertreeregistrybridge.h"
 
 
 QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView* view, QgsMapCanvas* canvas )

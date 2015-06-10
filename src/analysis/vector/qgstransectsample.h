@@ -1,9 +1,9 @@
 #ifndef QGSTRANSECTSAMPLE_H
 #define QGSTRANSECTSAMPLE_H
 
+#include "qgsfeature.h"
 #include <QMap>
 #include <QString>
-#include "qgsfeature.h"
 
 class QgsDistanceArea;
 class QgsGeometry;

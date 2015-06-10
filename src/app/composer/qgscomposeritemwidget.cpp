@@ -15,15 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgscomposeritemwidget.h"
+#include "qgscomposeritem.h"
+#include "qgscomposermap.h"
+#include "qgsatlascomposition.h"
+#include "qgscomposition.h"
+#include "qgspoint.h"
+#include "qgsdatadefinedbutton.h"
 #include <QColorDialog>
 #include <QPen>
-#include "qgsatlascomposition.h"
-#include "qgscomposeritem.h"
-#include "qgscomposeritemwidget.h"
-#include "qgscomposermap.h"
-#include "qgscomposition.h"
-#include "qgsdatadefinedbutton.h"
-#include "qgspoint.h"
 
 
 //QgsComposerItemBaseWidget

@@ -15,14 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <cmath>
+#include "qgssnapper.h"
+#include "qgsmapsettings.h"
+#include "qgsmaprenderer.h"
+#include "qgsmaptopixel.h"
+#include "qgsvectorlayer.h"
 #include <QMultiMap>
 #include <QPoint>
-#include "qgsmaprenderer.h"
-#include "qgsmapsettings.h"
-#include "qgsmaptopixel.h"
-#include "qgssnapper.h"
-#include "qgsvectorlayer.h"
+#include <cmath>
 
 
 QgsSnapper::QgsSnapper( QgsMapRenderer* mapRenderer )

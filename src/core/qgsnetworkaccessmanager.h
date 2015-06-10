@@ -19,10 +19,10 @@
 #define QGSNETWORKACCESSMANAGER_H
 
 #include <QList>
+#include <QStringList>
 #include <QNetworkAccessManager>
 #include <QNetworkProxy>
 #include <QNetworkRequest>
-#include <QStringList>
 
 /*
  * \class QgsNetworkAccessManager

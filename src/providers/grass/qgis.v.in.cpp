@@ -15,18 +15,18 @@
 
 extern "C"
 {
-#include <assert.h>
-#include <math.h>
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
+#include <math.h>
+#include <assert.h>
 #ifdef WIN32
 #include <fcntl.h>
 #include <io.h>
 #endif
-#include <grass/dbmi.h>
-#include <grass/gis.h>
 #include <grass/version.h>
+#include <grass/gis.h>
+#include <grass/dbmi.h>
 
 #if GRASS_VERSION_MAJOR < 7
 #include <grass/Vect.h>
@@ -42,10 +42,10 @@ extern "C"
 
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
-#include "qgsgrass.h"
-#include "qgsrasterblock.h"
 #include "qgsrectangle.h"
+#include "qgsrasterblock.h"
 #include "qgsspatialindex.h"
+#include "qgsgrass.h"
 
 static struct line_pnts *line = Vect_new_line_struct();
 

@@ -19,8 +19,8 @@
 
 #include "qgis.h"
 #include "qgslogger.h"
-#include "qgsrasterdataprovider.h"
 #include "qgsrasteridentifyresult.h"
+#include "qgsrasterdataprovider.h"
 
 QgsRasterIdentifyResult::QgsRasterIdentifyResult()
     : mValid( false )

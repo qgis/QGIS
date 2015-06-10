@@ -1,8 +1,8 @@
 #ifndef QGSCOMPOSERRULER_H
 #define QGSCOMPOSERRULER_H
 
-#include <QWidget>
 #include "qgscomposeritem.h"
+#include <QWidget>
 class QgsComposition;
 class QGraphicsLineItem;
 

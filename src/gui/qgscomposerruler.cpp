@@ -1,10 +1,10 @@
-#include <cmath>
+#include "qgscomposerruler.h"
+#include "qgscomposition.h"
+#include "qgis.h"
 #include <QDragEnterEvent>
 #include <QGraphicsLineItem>
 #include <QPainter>
-#include "qgis.h"
-#include "qgscomposerruler.h"
-#include "qgscomposition.h"
+#include <cmath>
 
 const int RULER_FONT_SIZE = 8;
 const unsigned int COUNT_VALID_MULTIPLES = 3;

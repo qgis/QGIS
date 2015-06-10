@@ -18,13 +18,13 @@
 
 #include "qgslayertreemodellegendnode.h"
 
-#include "qgsimageoperation.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslegendsettings.h"
 #include "qgsrasterlayer.h"
 #include "qgsrendererv2.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgsimageoperation.h"
 #include "qgsvectorlayer.h"
 
 

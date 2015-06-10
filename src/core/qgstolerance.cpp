@@ -13,10 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <cmath>
-#include <QPoint>
-#include <QSettings>
 #include "qgstolerance.h"
+#include <QSettings>
+#include <QPoint>
+#include <cmath>
 
 
 // return ratio [mu/lu] between map units and layer units

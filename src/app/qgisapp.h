@@ -88,21 +88,21 @@ class QgsScaleComboBox;
 class QgsDataItem;
 class QgsTileScaleWidget;
 
-#include <QAbstractSocket>
-#include <QDateTime>
 #include <QMainWindow>
+#include <QToolBar>
+#include <QAbstractSocket>
 #include <QPointer>
 #include <QSslError>
-#include <QToolBar>
+#include <QDateTime>
 
 #include "qgsconfig.h"
 #include "qgsfeature.h"
 #include "qgsfeaturestore.h"
-#include "qgsmessagebar.h"
-#include "qgspluginmanager.h"
 #include "qgspoint.h"
 #include "qgsrasterlayer.h"
 #include "qgssnappingdialog.h"
+#include "qgspluginmanager.h"
+#include "qgsmessagebar.h"
 
 #include "ui_qgisapp.h"
 

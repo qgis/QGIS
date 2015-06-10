@@ -15,8 +15,8 @@
 
 #include <QImage>
 
-#include "qgslinesymbollayerv2.h"
 #include "qgsmarkersymbollayerv2.h"
+#include "qgslinesymbollayerv2.h"
 
 #include "qgscoordinatetransform.h"
 #include "qgsfillsymbollayerv2.h"

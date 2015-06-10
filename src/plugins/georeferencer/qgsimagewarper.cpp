@@ -25,8 +25,8 @@
 #include <QFile>
 #include <QProgressDialog>
 
-#include "qgsgeoreftransform.h"
 #include "qgsimagewarper.h"
+#include "qgsgeoreftransform.h"
 #include "qgslogger.h"
 
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800

@@ -26,8 +26,8 @@
 #ifndef QGSPROJECTFILETRANSFORM_H
 #define QGSPROJECTFILETRANSFORM_H
 
-#include <QDomDocument>
 #include <QString>
+#include <QDomDocument>
 #include <vector>
 #include "qgsprojectversion.h"
 

@@ -16,8 +16,8 @@
 #ifndef QGSOGRCONNPOOL_H
 #define QGSOGRCONNPOOL_H
 
-#include <ogr_api.h>
 #include "qgsconnectionpool.h"
+#include <ogr_api.h>
 
 
 struct QgsOgrConn

@@ -29,8 +29,8 @@
 
 #include <QStringList>
 #include <QtSql/QSqlDatabase>
-#include <QtSql/QSqlError>
 #include <QtSql/QSqlQuery>
+#include <QtSql/QSqlError>
 
 /**
 * \class eVisDatabaseConnection

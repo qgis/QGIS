@@ -15,20 +15,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgisgui.h"
-#include "qgsattributeselectiondialog.h"
-#include "qgscomposerattributetablev2.h"
 #include "qgscomposerattributetablewidget.h"
 #include "qgscomposerframe.h"
+#include "qgsattributeselectiondialog.h"
 #include "qgscomposeritemwidget.h"
-#include "qgscomposermap.h"
+#include "qgscomposerattributetablev2.h"
 #include "qgscomposermultiframecommand.h"
 #include "qgscomposertablecolumn.h"
-#include "qgsexpressionbuilderdialog.h"
+#include "qgscomposermap.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsvectorlayer.h"
+#include "qgsexpressionbuilderdialog.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
-#include "qgsvectorlayer.h"
+#include "qgisgui.h"
 
 QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAttributeTableV2* table, QgsComposerFrame* frame )
     : QgsComposerItemBaseWidget( 0, table )

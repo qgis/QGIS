@@ -14,10 +14,10 @@
  ***************************************************************************/
 #include "qgscolorrampcombobox.h"
 
-#include "qgsstylev2.h"
-#include "qgsstylev2managerdialog.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgsvectorcolorrampv2.h"
+#include "qgsstylev2.h"
+#include "qgsstylev2managerdialog.h"
 
 QSize QgsColorRampComboBox::rampIconSize( 50, 16 );
 

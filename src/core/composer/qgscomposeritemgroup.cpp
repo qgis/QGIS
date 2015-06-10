@@ -16,13 +16,13 @@
  ***************************************************************************/
 
 #include "qgscomposeritemgroup.h"
-#include "qgscomposermodel.h"
-#include "qgscomposerutils.h"
 #include "qgscomposition.h"
+#include "qgscomposerutils.h"
 #include "qgslogger.h"
+#include "qgscomposermodel.h"
 
-#include <QPainter>
 #include <QPen>
+#include <QPainter>
 
 QgsComposerItemGroup::QgsComposerItemGroup( QgsComposition* c )
     : QgsComposerItem( c )

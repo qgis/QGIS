@@ -16,16 +16,16 @@
 
 #include <limits>
 
-#include "qgisgui.h"
-#include "qgsfield.h"
-#include "qgslabelattributes.h"
 #include "qgslabeldialog.h"
+#include "qgsfield.h"
 #include "qgslabel.h"
+#include "qgslabelattributes.h"
 #include "qgslogger.h"
+#include "qgisgui.h"
 
 #include <QColorDialog>
-#include <QDoubleValidator>
 #include <QTabWidget>
+#include <QDoubleValidator>
 
 
 QgsLabelDialog::QgsLabelDialog( QgsLabel *label, QWidget *parent )

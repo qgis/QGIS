@@ -15,9 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslogger.h"
-#include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsmaplayer.h"
+#include "qgslogger.h"
 
 //
 // Static calls to enforce singleton behaviour

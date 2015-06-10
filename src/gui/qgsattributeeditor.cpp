@@ -21,8 +21,8 @@
 #include "qgseditorwidgetwrapper.h"
 
 #include "qgsattributedialog.h"
-#include "qgsattributeeditorcontext.h"
 #include "qgsattributeeditor.h"
+#include "qgsattributeeditorcontext.h"
 #include "qgscategorizedsymbolrendererv2.h"
 #include "qgscolorbutton.h"
 #include "qgsexpression.h"
@@ -37,26 +37,26 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
-#include <QCalendarWidget>
-#include <QCheckBox>
-#include <QComboBox>
-#include <QCompleter>
-#include <QDial>
-#include <QDialogButtonBox>
-#include <QDir>
-#include <QFileDialog>
-#include <QGroupBox>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QLineEdit>
-#include <QListWidget>
-#include <QPlainTextEdit>
-#include <QPushButton>
 #include <QScrollArea>
-#include <QSettings>
-#include <QSpinBox>
+#include <QPushButton>
+#include <QLineEdit>
 #include <QTextEdit>
+#include <QFileDialog>
+#include <QComboBox>
+#include <QListWidget>
+#include <QCheckBox>
+#include <QSpinBox>
+#include <QCompleter>
+#include <QHBoxLayout>
+#include <QPlainTextEdit>
+#include <QDial>
+#include <QCalendarWidget>
+#include <QDialogButtonBox>
+#include <QSettings>
+#include <QDir>
 #include <QUuid>
+#include <QGroupBox>
+#include <QLabel>
 
 #include <QDesktopServices>
 

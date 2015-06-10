@@ -18,8 +18,8 @@
 #ifndef QGSIMAGEOPERATION_H
 #define QGSIMAGEOPERATION_H
 
-#include <QColor>
 #include <QImage>
+#include <QColor>
 #include <QtCore/qmath.h>
 
 class QgsVectorColorRampV2;

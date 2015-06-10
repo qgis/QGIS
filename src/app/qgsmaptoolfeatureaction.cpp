@@ -15,24 +15,24 @@
 
 #include "qgsmaptoolfeatureaction.h"
 
-#include "qgisapp.h"
-#include "qgsattributeaction.h"
-#include "qgscoordinatereferencesystem.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaplayeractionregistry.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsmaptopixel.h"
 #include "qgsmessageviewer.h"
-#include "qgsproject.h"
+#include "qgsattributeaction.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsproject.h"
+#include "qgsmaplayerregistry.h"
+#include "qgsmaplayeractionregistry.h"
+#include "qgisapp.h"
 
-#include <QMouseEvent>
 #include <QSettings>
+#include <QMouseEvent>
 #include <QStatusBar>
 
 QgsMapToolFeatureAction::QgsMapToolFeatureAction( QgsMapCanvas* canvas )

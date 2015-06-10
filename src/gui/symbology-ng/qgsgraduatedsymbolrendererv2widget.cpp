@@ -14,15 +14,15 @@
  ***************************************************************************/
 #include "qgsgraduatedsymbolrendererv2widget.h"
 
-#include "qgsstylev2.h"
-#include "qgssymbollayerv2utils.h"
 #include "qgssymbolv2.h"
+#include "qgssymbollayerv2utils.h"
 #include "qgsvectorcolorrampv2.h"
+#include "qgsstylev2.h"
 
 #include "qgsvectorlayer.h"
 
-#include "qgsexpressionbuilderdialog.h"
 #include "qgssymbolv2selectordialog.h"
+#include "qgsexpressionbuilderdialog.h"
 
 #include "qgsludialog.h"
 
@@ -31,10 +31,10 @@
 #include <QKeyEvent>
 #include <QMenu>
 #include <QMessageBox>
-#include <QPainter>
-#include <QPen>
-#include <QStandardItem>
 #include <QStandardItemModel>
+#include <QStandardItem>
+#include <QPen>
+#include <QPainter>
 
 // ------------------------------ Model ------------------------------------
 

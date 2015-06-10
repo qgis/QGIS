@@ -16,11 +16,11 @@
 #ifndef QGSFIELDEXPRESSIONWIDGET_H
 #define QGSFIELDEXPRESSIONWIDGET_H
 
-#include <QColor>
-#include <QComboBox>
 #include <QSharedPointer>
-#include <QToolButton>
 #include <QWidget>
+#include <QToolButton>
+#include <QComboBox>
+#include <QColor>
 
 #include "qgsdistancearea.h"
 #include "qgsfieldproxymodel.h"

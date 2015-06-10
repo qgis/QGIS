@@ -18,14 +18,14 @@
 #include "qgis.h"
 #include "qgsmaprenderersequentialjob.h"
 
-#include <QBuffer>
-#include <QByteArray>
 #include <QColor>
-#include <QCryptographicHash>
-#include <QDebug>
-#include <QImage>
 #include <QPainter>
+#include <QImage>
 #include <QTime>
+#include <QCryptographicHash>
+#include <QByteArray>
+#include <QDebug>
+#include <QBuffer>
 
 QgsRenderChecker::QgsRenderChecker()
     : mReport( "" )

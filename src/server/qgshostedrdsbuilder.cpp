@@ -16,12 +16,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDomElement>
-#include "qgscoordinatereferencesystem.h"
 #include "qgshostedrdsbuilder.h"
 #include "qgslogger.h"
 #include "qgsmslayercache.h"
 #include "qgsrasterlayer.h"
+#include "qgscoordinatereferencesystem.h"
+#include <QDomElement>
 
 QgsHostedRDSBuilder::QgsHostedRDSBuilder(): QgsMSLayerBuilder()
 {

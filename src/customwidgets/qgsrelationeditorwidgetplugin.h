@@ -16,8 +16,8 @@
 #ifndef QGSRELATIONEDITORWIDGETPLUGIN_H
 #define QGSRELATIONEDITORWIDGETPLUGIN_H
 
-#include <QDesignerCustomWidgetInterface>
 #include <QDesignerExportWidget>
+#include <QDesignerCustomWidgetInterface>
 
 
 class CUSTOMWIDGETS_EXPORT QgsRelationEditorWidgetPlugin : public QObject, public QDesignerCustomWidgetInterface

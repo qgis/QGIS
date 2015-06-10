@@ -16,10 +16,10 @@
 #include "qgsapplication.h"
 #include "qgscodeeditorcss.h"
 
+#include <QWidget>
+#include <QString>
 #include <QFont>
 #include <Qsci/qscilexercss.h>
-#include <QString>
-#include <QWidget>
 
 
 QgsCodeEditorCSS::QgsCodeEditorCSS( QWidget *parent )

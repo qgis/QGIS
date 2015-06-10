@@ -13,11 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsstatisticalsummary.h"
 #include <limits>
 #include <qmath.h>
-#include <QObject>
 #include <QString>
-#include "qgsstatisticalsummary.h"
+#include <QObject>
 
 QgsStatisticalSummary::QgsStatisticalSummary( Statistics stats )
     : mStatistics( stats )

@@ -19,15 +19,12 @@
 #include "qgsprojectproperties.h"
 
 //qgis includes
-#include "qgisapp.h"
 #include "qgsapplication.h"
-#include "qgscolordialog.h"
-#include "qgscolorschemeregistry.h"
+#include "qgsdistancearea.h"
+#include "qgisapp.h"
 #include "qgscomposer.h"
 #include "qgscontexthelp.h"
 #include "qgscoordinatetransform.h"
-#include "qgsdistancearea.h"
-#include "qgsgenericprojectionselector.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
@@ -35,24 +32,27 @@
 #include "qgsmaprenderer.h"
 #include "qgsproject.h"
 #include "qgsprojectlayergroupdialog.h"
+#include "qgssnappingdialog.h"
 #include "qgsrasterlayer.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
+#include "qgsscaleutils.h"
+#include "qgsgenericprojectionselector.h"
+#include "qgsstylev2.h"
+#include "qgssymbolv2.h"
+#include "qgsstylev2managerdialog.h"
+#include "qgsvectorcolorrampv2.h"
+#include "qgssymbolv2selectordialog.h"
 #include "qgsrelationmanagerdialog.h"
 #include "qgsrelationmanager.h"
-#include "qgsscaleutils.h"
-#include "qgssnappingdialog.h"
-#include "qgsstylev2.h"
-#include "qgsstylev2managerdialog.h"
+#include "qgscolorschemeregistry.h"
 #include "qgssymbollayerv2utils.h"
-#include "qgssymbolv2.h"
-#include "qgssymbolv2selectordialog.h"
-#include "qgsvectorcolorrampv2.h"
-#include "qgsvectordataprovider.h"
-#include "qgsvectorlayer.h"
+#include "qgscolordialog.h"
 
 //qt includes
+#include <QInputDialog>
 #include <QFileDialog>
 #include <QHeaderView>  // Qt 4.4
-#include <QInputDialog>
 #include <QMessageBox>
 
 const char * QgsProjectProperties::GEO_NONE_DESC = QT_TRANSLATE_NOOP( "QgsOptions", "None / Planimetric" );

@@ -12,34 +12,34 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QApplication>
-#include <QDir>
+#include <QtTest/QtTest>
 #include <QObject>
-#include <QPainter>
-#include <QPicture>
 #include <QString>
 #include <QStringList>
-#include <QtTest/QtTest>
+#include <QApplication>
+#include <QDir>
+#include <QPainter>
+#include <QPicture>
 
-#include "qgsapplication.h"
-#include "qgsblureffect.h"
-#include "qgscomposermap.h"
-#include "qgscomposition.h"
-#include "qgseffectstack.h"
-#include "qgsfillsymbollayerv2.h"
-#include "qgsgloweffect.h"
-#include "qgslinesymbollayerv2.h"
-#include "qgsmaplayerregistry.h"
-#include "qgsmapsettings.h"
-#include "qgsmarkersymbollayerv2.h"
 #include "qgspainteffect.h"
-#include "qgspainteffectregistry.h"
+#include "qgsblureffect.h"
 #include "qgsshadoweffect.h"
-#include "qgssinglesymbolrendererv2.h"
-#include "qgssymbollayerv2utils.h"
-#include "qgssymbolv2.h"
+#include "qgseffectstack.h"
+#include "qgsgloweffect.h"
+#include "qgspainteffectregistry.h"
 #include "qgsvectorcolorrampv2.h"
+#include "qgssymbollayerv2utils.h"
+#include "qgsmapsettings.h"
 #include "qgsvectorlayer.h"
+#include "qgsapplication.h"
+#include "qgsmaplayerregistry.h"
+#include "qgssymbolv2.h"
+#include "qgssinglesymbolrendererv2.h"
+#include "qgsfillsymbollayerv2.h"
+#include "qgslinesymbollayerv2.h"
+#include "qgsmarkersymbollayerv2.h"
+#include "qgscomposition.h"
+#include "qgscomposermap.h"
 
 //qgis test includes
 #include "qgsmultirenderchecker.h"

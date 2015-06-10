@@ -20,17 +20,17 @@
 #ifndef QGSWMSPROVIDER_H
 #define QGSWMSPROVIDER_H
 
-#include "qgsnetworkreplyparser.h"
 #include "qgsrasterdataprovider.h"
+#include "qgsnetworkreplyparser.h"
 #include "qgswmscapabilities.h"
 
+#include <QString>
+#include <QStringList>
 #include <QDomElement>
 #include <QHash>
 #include <QMap>
-#include <QString>
-#include <QStringList>
-#include <QUrl>
 #include <QVector>
+#include <QUrl>
 
 class QgsCoordinateTransform;
 class QgsNetworkAccessManager;

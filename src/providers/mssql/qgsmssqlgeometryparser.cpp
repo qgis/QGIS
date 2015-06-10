@@ -15,10 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
+#include "qgsmssqlgeometryparser.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
-#include "qgsmssqlgeometryparser.h"
+#include "qgsapplication.h"
 
 /*   SqlGeometry serialization format
 

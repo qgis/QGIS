@@ -15,10 +15,10 @@
 #ifndef QGSCATEGORIZEDSYMBOLRENDERERV2WIDGET_H
 #define QGSCATEGORIZEDSYMBOLRENDERERV2WIDGET_H
 
-#include <QProxyStyle>
-#include <QStandardItem>
 #include "qgscategorizedsymbolrendererv2.h"
 #include "qgsrendererv2widget.h"
+#include <QStandardItem>
+#include <QProxyStyle>
 
 class QgsCategorizedSymbolRendererV2;
 class QgsRendererCategoryV2;

@@ -20,8 +20,8 @@
 #include "qgsmessagebar.h"
 
 #include <QCursor>
-#include <QObject>
 #include <QString>
+#include <QObject>
 
 #ifdef HAVE_TOUCH
 #include <QGestureEvent>

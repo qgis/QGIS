@@ -15,13 +15,13 @@
 #include "qgsrendererv2registry.h"
 
 // default renderers
+#include "qgssinglesymbolrendererv2.h"
 #include "qgscategorizedsymbolrendererv2.h"
 #include "qgsgraduatedsymbolrendererv2.h"
-#include "qgsheatmaprenderer.h"
-#include "qgsinvertedpolygonrenderer.h"
-#include "qgspointdisplacementrenderer.h"
 #include "qgsrulebasedrendererv2.h"
-#include "qgssinglesymbolrendererv2.h"
+#include "qgspointdisplacementrenderer.h"
+#include "qgsinvertedpolygonrenderer.h"
+#include "qgsheatmaprenderer.h"
 
 QgsRendererV2Registry::QgsRendererV2Registry()
 {

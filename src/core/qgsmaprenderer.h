@@ -17,16 +17,16 @@
 #define QGSMAPRENDER_H
 
 #include <QMutex>
-#include <QPainter>
 #include <QSize>
 #include <QStringList>
 #include <QVector>
+#include <QPainter>
 
 #include "qgis.h"
-#include "qgsfeature.h"
-#include "qgsmapsettings.h"
 #include "qgsrectangle.h"
 #include "qgsrendercontext.h"
+#include "qgsfeature.h"
+#include "qgsmapsettings.h"
 
 class QDomDocument;
 class QDomNode;

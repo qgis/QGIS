@@ -14,11 +14,11 @@
  ***************************************************************************/
 
 #include "qgsdisplayangle.h"
-#include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgslogger.h"
 
-#include <cmath>
 #include <QSettings>
+#include <cmath>
 
 QgsDisplayAngle::QgsDisplayAngle( QgsMapToolMeasureAngle * tool, Qt::WindowFlags f )
     : QDialog( tool->canvas()->topLevelWidget(), f )

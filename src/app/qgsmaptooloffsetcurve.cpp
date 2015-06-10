@@ -14,9 +14,9 @@
  ***************************************************************************/
 
 #include "qgsdoublespinbox.h"
+#include "qgsmaptooloffsetcurve.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerregistry.h"
-#include "qgsmaptooloffsetcurve.h"
 #include "qgsrubberband.h"
 #include "qgssnappingutils.h"
 #include "qgsvectorlayer.h"

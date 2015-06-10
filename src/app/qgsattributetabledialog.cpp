@@ -18,32 +18,32 @@
 #include <QMessageBox>
 
 #include "qgsattributetabledialog.h"
-#include "qgsattributetablefiltermodel.h"
 #include "qgsattributetablemodel.h"
+#include "qgsattributetablefiltermodel.h"
 #include "qgsattributetableview.h"
 
 #include <qgsapplication.h>
-#include <qgsexpression.h>
 #include <qgsvectordataprovider.h>
 #include <qgsvectorlayer.h>
+#include <qgsexpression.h>
 
 #include "qgisapp.h"
 #include "qgsaddattrdialog.h"
-#include "qgsattributeaction.h"
 #include "qgsdelattrdialog.h"
-#include "qgseditorwidgetregistry.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgsexpressionselectiondialog.h"
-#include "qgsfeatureaction.h"
-#include "qgsfeaturelistmodel.h"
-#include "qgsfieldcalculator.h"
-#include "qgsfield.h"
+#include "qgssearchquerybuilder.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsmessagebar.h"
 #include "qgsproject.h"
+#include "qgsfieldcalculator.h"
+#include "qgsfeatureaction.h"
+#include "qgsattributeaction.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsmessagebar.h"
+#include "qgsexpressionselectiondialog.h"
+#include "qgsfeaturelistmodel.h"
 #include "qgsrubberband.h"
-#include "qgssearchquerybuilder.h"
+#include "qgsfield.h"
+#include "qgseditorwidgetregistry.h"
 
 class QgsAttributeTableDock : public QDockWidget
 {

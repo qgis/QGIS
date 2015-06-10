@@ -17,40 +17,40 @@
 
 //qt includes
 #include <qcombobox.h>
-#include <qgscontexthelp.h>
-#include <QHBoxLayout>
-#include <qlabel.h>
 #include <qlayout.h>
-#include <qlineedit.h>
-#include <QMessageBox>
 #include <qpushbutton.h>
-#include <QToolButton>
+#include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <qlabel.h>
+#include <qlineedit.h>
+#include <QToolButton>
+#include <QMessageBox>
+#include <qgscontexthelp.h>
 
 // Qgis includes
-#include <qgisinterface.h>
-#include <qgsapplication.h>
-#include <qgsfeature.h>
 #include <qgsmapcanvas.h>
-#include <qgsmaprenderer.h>
 #include <qgsmaptoolemitpoint.h>
-#include <qgsmaptopixel.h>
-#include <qgsmessagebar.h>
+#include <qgisinterface.h>
 #include <qgsrubberband.h>
-#include <qgsvectordataprovider.h>
+#include <qgsmaptopixel.h>
+#include <qgsmaprenderer.h>
+#include <qgsfeature.h>
+#include <qgsapplication.h>
 #include <qgsvectorlayer.h>
+#include <qgsvectordataprovider.h>
+#include <qgsmessagebar.h>
 
-#include <qgsgraphanalyzer.h>
-#include <qgsgraphbuilder.h>
 #include <qgsgraphdirector.h>
+#include <qgsgraphbuilder.h>
 #include <qgsgraph.h>
+#include <qgsgraphanalyzer.h>
 
 // roadgraph plugin includes
-#include "exportdlg.h"
 #include "roadgraphplugin.h"
-#include "settings.h"
 #include "shortestpathwidget.h"
+#include "exportdlg.h"
 #include "units.h"
+#include "settings.h"
 
 //standard includes
 

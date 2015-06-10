@@ -16,9 +16,9 @@
 #ifndef QGSLAYERTREE_H
 #define QGSLAYERTREE_H
 
+#include "qgslayertreenode.h"
 #include "qgslayertreegroup.h"
 #include "qgslayertreelayer.h"
-#include "qgslayertreenode.h"
 
 /**
  * Namespace with helper functions for layer tree operations.

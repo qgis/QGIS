@@ -17,9 +17,9 @@
 #ifndef QGSCOMPOSER_H
 #define QGSCOMPOSER_H
 #include "ui_qgscomposerbase.h"
-#include <QDockWidget>
 #include "qgscomposermap.h"
 #include "qgscontexthelp.h"
+#include <QDockWidget>
 
 class QgisApp;
 class QgsComposerArrow;

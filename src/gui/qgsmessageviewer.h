@@ -17,8 +17,8 @@
 #ifndef QGSMESSAGEVIEWER_H
 #define QGSMESSAGEVIEWER_H
 
-#include <qgisgui.h>
 #include <ui_qgsmessageviewer.h>
+#include <qgisgui.h>
 #include "qgsmessageoutput.h"
 
 #include <QString>

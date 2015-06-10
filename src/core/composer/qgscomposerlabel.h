@@ -17,8 +17,8 @@
 #ifndef QGSCOMPOSERLABEL_H
 #define QGSCOMPOSERLABEL_H
 
-#include <QFont>
 #include "qgscomposeritem.h"
+#include <QFont>
 
 class QgsVectorLayer;
 class QgsFeature;

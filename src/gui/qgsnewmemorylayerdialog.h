@@ -20,8 +20,8 @@
 #include "ui_qgsnewmemorylayerdialogbase.h"
 #include "qgisgui.h"
 #include "qgis.h"
-#include "qgscoordinatereferencesystem.h"
 #include "qgsvectorlayer.h"
+#include "qgscoordinatereferencesystem.h"
 
 class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemoryLayerDialogBase
 {

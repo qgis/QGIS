@@ -15,15 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgisgui.h"
-#include "qgscomposeritemwidget.h"
-#include "qgscomposerlegend.h"
-#include "qgscomposerlegenditemdialog.h"
-#include "qgscomposerlegenditem.h"
-#include "qgscomposerlegendlayersdialog.h"
 #include "qgscomposerlegendwidget.h"
+#include "qgscomposerlegend.h"
+#include "qgscomposerlegenditem.h"
+#include "qgscomposerlegenditemdialog.h"
+#include "qgscomposerlegendlayersdialog.h"
+#include "qgscomposeritemwidget.h"
 #include "qgscomposermap.h"
 #include "qgscomposition.h"
+#include "qgisgui.h"
 
 #include "qgisapp.h"
 #include "qgsapplication.h"
@@ -38,8 +38,8 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
-#include <QInputDialog>
 #include <QMessageBox>
+#include <QInputDialog>
 
 
 

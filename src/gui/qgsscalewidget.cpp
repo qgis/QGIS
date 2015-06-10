@@ -16,8 +16,8 @@
 #include <QHBoxLayout>
 
 #include "qgsapplication.h"
-#include "qgsmapcanvas.h"
 #include "qgsscalewidget.h"
+#include "qgsmapcanvas.h"
 
 QgsScaleWidget::QgsScaleWidget( QWidget *parent )
     : QWidget( parent )

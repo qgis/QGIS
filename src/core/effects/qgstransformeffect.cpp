@@ -15,10 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgstransformeffect.h"
+#include "qgssymbollayerv2utils.h"
 #include <QPicture>
 #include <QTransform>
-#include "qgssymbollayerv2utils.h"
-#include "qgstransformeffect.h"
 
 QgsPaintEffect* QgsTransformEffect::create( const QgsStringMap &map )
 {

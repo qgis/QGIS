@@ -15,13 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QInputDialog>
-#include <QMessageBox>
 #include <QSettings>
+#include <QMessageBox>
+#include <QInputDialog>
 
+#include "qgspgnewconnection.h"
 #include "qgscontexthelp.h"
 #include "qgsdatasourceuri.h"
-#include "qgspgnewconnection.h"
 #include "qgspostgresconn.h"
 
 QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString& connName, Qt::WindowFlags fl )

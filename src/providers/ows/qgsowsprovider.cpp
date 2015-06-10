@@ -15,9 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsconfig.h"
 #include "qgslogger.h"
 #include "qgsowsprovider.h"
+#include "qgsconfig.h"
 
 #include <QString>
 

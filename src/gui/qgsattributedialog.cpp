@@ -17,10 +17,10 @@
 
 #include "qgsattributedialog.h"
 
-#include "qgsactionmenu.h"
-#include "qgsapplication.h"
 #include "qgsattributeform.h"
 #include "qgshighlight.h"
+#include "qgsapplication.h"
+#include "qgsactionmenu.h"
 
 #include <QSettings>
 

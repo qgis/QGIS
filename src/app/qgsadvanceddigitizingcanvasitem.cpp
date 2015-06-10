@@ -15,8 +15,8 @@
 
 #include <QPainter>
 
-#include "qgsadvanceddigitizingcanvasitem.h"
 #include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsadvanceddigitizingcanvasitem.h"
 #include "qgsmapcanvas.h"
 
 

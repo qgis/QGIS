@@ -16,8 +16,8 @@
 #ifndef QGSMAPTOOLOFFSETCURVE_H
 #define QGSMAPTOOLOFFSETCURVE_H
 
-#include "qgsgeometry.h"
 #include "qgsmaptooledit.h"
+#include "qgsgeometry.h"
 #include "qgspointlocator.h"
 
 class QgsVertexMarker;

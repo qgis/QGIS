@@ -19,16 +19,16 @@
 
 // includes
 
-#include <qgisgui.h>
 #include <qgisinterface.h>
+#include <qgisgui.h>
 #include <qgsapplication.h>
 #include "qgscompassplugin.h"
 
+#include <QMenu>
 #include <QAction>
 #include <QFile>
-#include <QMenu>
-#include <QMessageBox>
 #include <QToolBar>
+#include <QMessageBox>
 #include "qgscompassplugingui.h"
 
 

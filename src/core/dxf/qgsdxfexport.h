@@ -18,11 +18,11 @@
 #ifndef QGSDXFEXPORT_H
 #define QGSDXFEXPORT_H
 
+#include "qgsgeometry.h"
+#include "qgssymbolv2.h"
 #include <QColor>
 #include <QList>
 #include <QTextStream>
-#include "qgsgeometry.h"
-#include "qgssymbolv2.h"
 
 class QgsMapLayer;
 class QgsPoint;

@@ -13,9 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmapcanvas.h"
 #include "qgsmaptooledit.h"
 #include "qgsproject.h"
+#include "qgsmapcanvas.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 

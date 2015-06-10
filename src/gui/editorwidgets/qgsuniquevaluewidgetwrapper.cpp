@@ -15,8 +15,8 @@
 
 #include "qgsuniquevaluewidgetwrapper.h"
 
-#include "qgsfilterlineedit.h"
 #include "qgsvectorlayer.h"
+#include "qgsfilterlineedit.h"
 
 #include <QCompleter>
 #include <QSettings>

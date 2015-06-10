@@ -15,16 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QSettings>
-#include "qgsgeometry.h"
-#include "qgslogger.h"
-#include "qgsmapcanvas.h"
 #include "qgsmapcanvassnapper.h"
+#include "qgsmapcanvas.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaptopixel.h"
 #include "qgsproject.h"
-#include "qgstolerance.h"
 #include "qgsvectorlayer.h"
+#include "qgstolerance.h"
+#include <QSettings>
+#include "qgslogger.h"
+#include "qgsgeometry.h"
 
 QgsMapCanvasSnapper::QgsMapCanvasSnapper( QgsMapCanvas* canvas )
     : mMapCanvas( canvas )

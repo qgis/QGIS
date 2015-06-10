@@ -1,8 +1,8 @@
 #ifndef QGSGEOMETRYCACHE_H
 #define QGSGEOMETRYCACHE_H
 
-#include "qgsfeature.h"
 #include "qgsgeometry.h"
+#include "qgsfeature.h"
 #include "qgsrectangle.h"
 
 #include <QMap>

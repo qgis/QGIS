@@ -15,28 +15,28 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QComboBox>
-#include <QFile>
-#include <QFileDialog>
-#include <QHeaderView>
-#include <QInputDialog>
-#include <QList>
 #include <QMessageBox>
-#include <QPixmap>
+#include <QComboBox>
+#include <QFileDialog>
 #include <QProgressDialog>
 #include <QRegExp>
+#include <QFile>
 #include <QSettings>
-#include <QTableWidgetItem>
+#include <QPixmap>
+#include <QHeaderView>
 #include <QTextCodec>
+#include <QList>
+#include <QTableWidgetItem>
+#include <QInputDialog>
 
 #include "qgsencodingfiledialog.h"
 
-#include "qgsdatasourceuri.h"
-#include "qgslogger.h"
-#include "qgsmessageviewer.h"
-#include "qgspgnewconnection.h"
 #include "qgspgutil.h"
 #include "qgsspit.h"
+#include "qgspgnewconnection.h"
+#include "qgsdatasourceuri.h"
+#include "qgsmessageviewer.h"
+#include "qgslogger.h"
 
 
 QgsSpit::QgsSpit( QWidget *parent, Qt::WindowFlags fl ) : QDialog( parent, fl )

@@ -15,15 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QMouseEvent>
+#include "qgsmaptoollabel.h"
 #include "qgsdatadefined.h"
-#include "qgsdiagramrendererv2.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerregistry.h"
-#include "qgsmaptoollabel.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
+#include "qgsdiagramrendererv2.h"
+#include <QMouseEvent>
 
 QgsMapToolLabel::QgsMapToolLabel( QgsMapCanvas* canvas )
     : QgsMapTool( canvas )

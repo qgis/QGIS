@@ -13,26 +13,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsaddremovemultiframecommand.h"
-#include "qgscomposerframe.h"
 #include "qgscomposerhtml.h"
+#include "qgscomposerframe.h"
 #include "qgscomposition.h"
-#include "qgsdistancearea.h"
+#include "qgsaddremovemultiframecommand.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsmessagelog.h"
 #include "qgsexpression.h"
 #include "qgslogger.h"
-#include "qgsmessagelog.h"
-#include "qgsnetworkaccessmanager.h"
 #include "qgsnetworkcontentfetcher.h"
-#include "qgsproject.h"
 #include "qgsvectorlayer.h"
+#include "qgsproject.h"
+#include "qgsdistancearea.h"
 
-#include "qgswebframe.h"
 #include "qgswebpage.h"
+#include "qgswebframe.h"
 
 #include <QCoreApplication>
+#include <QPainter>
 #include <QImage>
 #include <QNetworkReply>
-#include <QPainter>
 
 QgsComposerHtml::QgsComposerHtml( QgsComposition* c, bool createUndoCommands )
     : QgsComposerMultiFrame( c, createUndoCommands )

@@ -15,18 +15,18 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QApplication>
-#include <QDialog>
-#include <QLabel>
 #include <QLocale>
-#include <QMainWindow>
-#include <qmainwindow.h>
 #include <QSettings>
 #include <QTranslator>
-#include "qgsapplication.h"
+#include <QMainWindow>
+#include <QLabel>
+#include <QDialog>
+#include <QApplication>
 #include "qgsbrowser.h"
-#include "qgsconfig.h"
+#include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgsconfig.h"
+#include <qmainwindow.h>
 
 #include "qgseditorwidgetregistry.h"
 

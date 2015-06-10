@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QObject>
 #include <QtTest/QtTest>
+#include <QObject>
 #include "qgsgeometryutils.h"
 
 class TestQgsGeometryUtils: public QObject

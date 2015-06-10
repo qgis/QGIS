@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgsrasterinterface.h"
 #include "qgsrasteriterator.h"
+#include "qgsrasterinterface.h"
 #include "qgsrasterprojector.h"
 #include "qgsrasterviewport.h"
 

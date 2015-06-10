@@ -15,18 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgspalgeometry.h"
 #include "qgspallabeling.h"
+#include "qgspalgeometry.h"
 
 #include <list>
 
-#include <pal/feature.h>
-#include <pal/labelposition.h>
-#include <pal/layer.h>
-#include <pal/palexception.h>
-#include <pal/palgeometry.h>
 #include <pal/pal.h>
+#include <pal/feature.h>
+#include <pal/layer.h>
+#include <pal/palgeometry.h>
+#include <pal/palexception.h>
 #include <pal/problem.h>
+#include <pal/labelposition.h>
 
 #include <geos_c.h>
 
@@ -34,29 +34,29 @@
 
 #include <QApplication>
 #include <QByteArray>
-#include <QFontMetrics>
-#include <QPainter>
 #include <QString>
+#include <QFontMetrics>
 #include <QTime>
+#include <QPainter>
 
 #include "diagram/qgsdiagram.h"
-#include "qgsdatadefined.h"
 #include "qgsdiagramrendererv2.h"
-#include "qgsexpression.h"
 #include "qgsfontutils.h"
 #include "qgslabelsearchtree.h"
+#include "qgsexpression.h"
+#include "qgsdatadefined.h"
 
-#include <qgsgeometry.h>
 #include <qgslogger.h>
+#include <qgsvectorlayer.h>
 #include <qgsmaplayerregistry.h>
+#include <qgsvectordataprovider.h>
+#include <qgsgeometry.h>
 #include <qgsmaprenderer.h>
 #include <qgsmarkersymbollayerv2.h>
 #include <qgsproject.h>
-#include <qgsvectordataprovider.h>
-#include <qgsvectorlayer.h>
-#include <QMessageBox>
-#include "qgssymbollayerv2utils.h"
 #include "qgssymbolv2.h"
+#include "qgssymbollayerv2utils.h"
+#include <QMessageBox>
 
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();

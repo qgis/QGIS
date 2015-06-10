@@ -23,8 +23,8 @@
 #define QGSPROJECTPROPERTY_H
 
 #include <QHash>
-#include <QStringList>
 #include <QVariant>
+#include <QStringList>
 
 class QDomNode;
 class QDomElement;

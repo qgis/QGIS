@@ -13,19 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgsexpressionbuilderwidget.h"
-#include "qgsexpression.h"
 #include "qgslogger.h"
+#include "qgsexpression.h"
 #include "qgsmessageviewer.h"
+#include "qgsapplication.h"
 #include "qgspythonrunner.h"
 
-#include <QComboBox>
-#include <QDir>
-#include <QFile>
-#include <QMenu>
 #include <QSettings>
+#include <QMenu>
+#include <QFile>
 #include <QTextStream>
+#include <QDir>
+#include <QComboBox>
 
 QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
     : QWidget( parent )

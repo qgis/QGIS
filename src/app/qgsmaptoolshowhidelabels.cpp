@@ -21,9 +21,9 @@
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
 
-#include <qgslogger.h>
 #include "qgsmaptoolselectutils.h"
 #include "qgsrubberband.h"
+#include <qgslogger.h>
 
 #include <QMouseEvent>
 

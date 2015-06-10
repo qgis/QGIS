@@ -14,20 +14,20 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QGraphicsSceneHoverEvent>
 #include <QGraphicsView>
+#include <QGraphicsSceneHoverEvent>
 #include <QPainter>
 #include <QWidget>
 
 #include <limits>
 
-#include "qgis.h"
-#include "qgscomposeritem.h"
 #include "qgscomposermousehandles.h"
-#include "qgscomposerutils.h"
+#include "qgscomposeritem.h"
 #include "qgscomposition.h"
-#include "qgslogger.h"
+#include "qgscomposerutils.h"
 #include "qgspaperitem.h"
+#include "qgis.h"
+#include "qgslogger.h"
 #include "qgsproject.h"
 
 QgsComposerMouseHandles::QgsComposerMouseHandles( QgsComposition *composition )

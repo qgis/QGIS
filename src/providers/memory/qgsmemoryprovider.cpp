@@ -13,18 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmemoryfeatureiterator.h"
 #include "qgsmemoryprovider.h"
+#include "qgsmemoryfeatureiterator.h"
 
-#include "qgscoordinatereferencesystem.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsspatialindex.h"
+#include "qgscoordinatereferencesystem.h"
 
-#include <QRegExp>
 #include <QUrl>
+#include <QRegExp>
 
 
 static const QString TEXT_PROVIDER_KEY = "memory";

@@ -18,9 +18,9 @@
 #ifndef QGSOWSPROVIDER_H
 #define QGSOWSPROVIDER_H
 
+#include "qgsdataprovider.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdataitem.h"
-#include "qgsdataprovider.h"
 #include "qgsrectangle.h"
 
 #include <QString>

@@ -12,17 +12,17 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <QtTest/QtTest>
 #include <QObject>
-#include <QSettings>
 #include <QString>
 #include <QStringList>
-#include <QtTest/QtTest>
+#include <QSettings>
 
 //qgis includes...
-#include <qgsapplication.h>
 #include <qgsdataitem.h>
-#include <qgslogger.h>
 #include <qgsvectorlayer.h>
+#include <qgsapplication.h>
+#include <qgslogger.h>
 
 /** \ingroup UnitTests
  * This is a unit test for the QgsDataItem class.

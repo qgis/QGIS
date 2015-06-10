@@ -15,9 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsrasterlayer.h"
-#include "qgssinglebandgrayrenderer.h"
 #include "qgssinglebandgrayrendererwidget.h"
+#include "qgssinglebandgrayrenderer.h"
+#include "qgsrasterlayer.h"
 
 QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent )
     : QgsRasterRendererWidget( layer, extent )

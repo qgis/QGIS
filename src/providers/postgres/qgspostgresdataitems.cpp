@@ -14,18 +14,18 @@
  ***************************************************************************/
 #include "qgspostgresdataitems.h"
 
-#include "qgsapplication.h"
-#include "qgscolumntypethread.h"
-#include "qgsdatasourceuri.h"
-#include "qgslogger.h"
-#include "qgsmessageoutput.h"
-#include "qgspgnewconnection.h"
 #include "qgspostgresconn.h"
 #include "qgspostgresconnpool.h"
+#include "qgspgnewconnection.h"
+#include "qgscolumntypethread.h"
+#include "qgslogger.h"
+#include "qgsdatasourceuri.h"
+#include "qgsapplication.h"
+#include "qgsmessageoutput.h"
 
-#include <climits>
 #include <QMessageBox>
 #include <QProgressDialog>
+#include <climits>
 
 QGISEXTERN bool deleteLayer( const QString& uri, QString& errCause );
 

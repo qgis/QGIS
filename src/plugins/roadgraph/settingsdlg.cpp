@@ -8,17 +8,17 @@
  *   (at your option) any later version.                                   *
  ***************************************************************************/
 //road-graph plugin includes
-#include <qgscontexthelp.h>
 #include "settingsdlg.h"
+#include <qgscontexthelp.h>
 
 //qt includes
-#include <qcombobox.h>
-#include <qdialogbuttonbox.h>
-#include <QDoubleSpinBox>
-#include <QHBoxLayout>
 #include <qlabel.h>
-#include <qmessagebox.h>
+#include <qcombobox.h>
+#include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <qdialogbuttonbox.h>
+#include <qmessagebox.h>
+#include <QDoubleSpinBox>
 
 // Qgis includes
 #include "settings.h"

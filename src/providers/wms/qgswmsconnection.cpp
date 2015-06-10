@@ -21,11 +21,11 @@
 #include "../providers/wms/qgswmsprovider.h"
 #include "qgis.h" // GEO_EPSG_CRS_ID
 #include "qgsdatasourceuri.h"
-#include "qgsnetworkaccessmanager.h"
 #include "qgsnewhttpconnection.h"
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgswmsconnection.h"
+#include "qgsnetworkaccessmanager.h"
 
 #include <QInputDialog>
 #include <QMessageBox>
@@ -33,8 +33,8 @@
 #include <QSettings>
 #include <QUrl>
 
-#include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QNetworkReply>
 
 QgsWMSConnection::QgsWMSConnection( QString theConnName ) :
     mConnName( theConnName )

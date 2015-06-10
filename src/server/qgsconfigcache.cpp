@@ -18,10 +18,10 @@
 #include "qgsconfigcache.h"
 #include "qgsmessagelog.h"
 #include "qgsmslayercache.h"
-#include "qgssldconfigparser.h"
 #include "qgswcsprojectparser.h"
 #include "qgswfsprojectparser.h"
 #include "qgswmsprojectparser.h"
+#include "qgssldconfigparser.h"
 
 #include <QFile>
 

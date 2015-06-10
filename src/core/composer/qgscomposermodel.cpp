@@ -15,20 +15,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QApplication>
-#include <QDomDocument>
-#include <QDomElement>
-#include <QGraphicsItem>
-#include <QIcon>
-#include <QMessageBox>
-#include <QMimeData>
-#include <QSettings>
 #include "qgsapplication.h"
-#include "qgscomposeritem.h"
 #include "qgscomposermodel.h"
 #include "qgscomposition.h"
-#include "qgslogger.h"
+#include "qgscomposeritem.h"
 #include "qgspaperitem.h"
+#include "qgslogger.h"
+#include <QApplication>
+#include <QGraphicsItem>
+#include <QDomDocument>
+#include <QDomElement>
+#include <QMimeData>
+#include <QSettings>
+#include <QMessageBox>
+#include <QIcon>
 
 QgsComposerModel::QgsComposerModel( QgsComposition* composition, QObject *parent )
     : QAbstractItemModel( parent )

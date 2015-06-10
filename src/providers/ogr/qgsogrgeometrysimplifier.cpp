@@ -14,9 +14,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgsogrgeometrysimplifier.h"
 #include "qgsogrprovider.h"
+#include "qgsapplication.h"
 
 QgsOgrAbstractGeometrySimplifier::~QgsOgrAbstractGeometrySimplifier()
 {

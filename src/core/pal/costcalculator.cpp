@@ -13,11 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <cfloat>
+#include <iostream>
+#include <fstream>
 #include <cmath>
 #include <cstring>
-#include <fstream>
-#include <iostream>
+#include <cfloat>
 
 #include <pal/layer.h>
 #include <pal/pal.h>

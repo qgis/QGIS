@@ -16,11 +16,11 @@
 #include "qgsmaptooldeletering.h"
 
 #include "qgsmapcanvas.h"
-#include "qgsvectorlayer.h"
 #include "qgsvertexmarker.h"
+#include "qgsvectorlayer.h"
 
-#include <limits>
 #include <QMouseEvent>
+#include <limits>
 
 QgsMapToolDeleteRing::QgsMapToolDeleteRing( QgsMapCanvas* canvas )
     : QgsMapToolEdit( canvas )

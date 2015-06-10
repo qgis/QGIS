@@ -19,14 +19,14 @@
 
 #include "ui_qgsgpsinformationwidgetbase.h"
 
-#include <qgsgpsmarker.h>
 #include <qgsmapcanvas.h>
+#include <qgsgpsmarker.h>
 #include <qgsmaptoolcapture.h>
 #include <qwt_plot_curve.h>
 #if (WITH_QWTPOLAR)
+#include <qwt_polar_plot.h>
 #include <qwt_polar_grid.h>
 #include <qwt_polar_marker.h>
-#include <qwt_polar_plot.h>
 #endif
 
 class QextSerialPort;

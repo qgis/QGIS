@@ -18,10 +18,10 @@
 #ifndef QGSUNITSELECTIONWIDGET_H
 #define QGSUNITSELECTIONWIDGET_H
 
-#include "ui_qgsunitselectionwidget.h"
-#include "ui_qgsmapunitscaledialog.h"
 #include <QWidget>
 #include "qgssymbolv2.h"
+#include "ui_qgsunitselectionwidget.h"
+#include "ui_qgsmapunitscaledialog.h"
 
 /** Dialog allowing the user to choose the minimum and maximum scale of an object in map units */
 class GUI_EXPORT QgsMapUnitScaleDialog : public QDialog, private Ui::QgsMapUnitScaleDialog

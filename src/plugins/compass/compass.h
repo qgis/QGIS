@@ -20,8 +20,8 @@
 #ifndef _COMPASS_H__
 #define _COMPASS_H__
 
-#include <QObject>
 #include <QtSensors/QCompass>
+#include <QObject>
 
 QTM_USE_NAMESPACE
 

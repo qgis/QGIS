@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmapmouseevent.h"
 #include "qgsmaptoolcapture.h"
+#include "qgsmapmouseevent.h"
 
 /**A map tool that adds new parts to multipart features*/
 class APP_EXPORT QgsMapToolAddPart : public QgsMapToolCapture

@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDomDocument>
 #include <QFile>
+#include <QDomDocument>
 #include <QTextStream>
 
 #include "qgsscaleutils.h"

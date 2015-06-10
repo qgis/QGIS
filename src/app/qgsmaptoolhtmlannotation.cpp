@@ -15,11 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QMouseEvent>
+#include "qgsmaptoolhtmlannotation.h"
 #include "qgshtmlannotationitem.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaptoolhtmlannotation.h"
 #include "qgsvectorlayer.h"
+#include <QMouseEvent>
 
 QgsMapToolHtmlAnnotation::QgsMapToolHtmlAnnotation( QgsMapCanvas* canvas ): QgsMapToolAnnotation( canvas )
 {

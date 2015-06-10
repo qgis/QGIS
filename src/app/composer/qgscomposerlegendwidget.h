@@ -19,9 +19,9 @@
 #define QGSCOMPOSERLEGENDWIDGET_H
 
 #include "ui_qgscomposerlegendwidgetbase.h"
-#include <QItemDelegate>
-#include <QWidget>
 #include "qgscomposeritemwidget.h"
+#include <QWidget>
+#include <QItemDelegate>
 
 class QgsComposerLegend;
 

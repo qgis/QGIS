@@ -19,8 +19,8 @@
 
 
 #include <QMetaType>
-#include <QPixmap>
 #include <QString>
+#include <QPixmap>
 
 /** \ingroup gui
  * This class is the data only representation of a

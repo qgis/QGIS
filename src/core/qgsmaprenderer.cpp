@@ -13,31 +13,31 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <cfloat>
 #include <cmath>
+#include <cfloat>
 
 #include "qgscoordinatetransform.h"
 #include "qgscrscache.h"
-#include "qgsdistancearea.h"
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsmaprenderer.h"
+#include "qgsscalecalculator.h"
+#include "qgsmaptopixel.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
-#include "qgsmaprenderer.h"
 #include "qgsmapsettings.h"
-#include "qgsmaptopixel.h"
-#include "qgsmessagelog.h"
+#include "qgsdistancearea.h"
 #include "qgsproject.h"
-#include "qgsscalecalculator.h"
 #include "qgsvectorlayer.h"
 
-#include <QCoreApplication>
 #include <QDomDocument>
 #include <QDomNode>
-#include <QListIterator>
 #include <QMutexLocker>
 #include <QPainter>
+#include <QListIterator>
 #include <QSettings>
 #include <QTime>
+#include <QCoreApplication>
 
 QgsMapRenderer::QgsMapRenderer()
 {

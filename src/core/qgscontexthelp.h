@@ -19,8 +19,8 @@
 #ifndef QGSCONTEXTHELP_H
 #define QGSCONTEXTHELP_H
 
-#include <QHash>
 #include <QObject>
+#include <QHash>
 #include <QProcess>
 
 /** \ingroup core

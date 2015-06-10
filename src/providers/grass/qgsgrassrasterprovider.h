@@ -22,26 +22,26 @@
 
 extern "C"
 {
-#include <grass/gis.h>
 #include <grass/version.h>
+#include <grass/gis.h>
 #if GRASS_VERSION_MAJOR > 6
 #include <grass/raster.h>
 #endif
 }
 
-#include "qgscolorrampshader.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrectangle.h"
+#include "qgscolorrampshader.h"
 
-#include <QDomElement>
-#include <QHash>
-#include <QMap>
-#include <QProcess>
 #include <QString>
 #include <QStringList>
-#include <QTemporaryFile>
+#include <QDomElement>
+#include <QMap>
 #include <QVector>
+#include <QTemporaryFile>
+#include <QProcess>
+#include <QHash>
 
 class QgsCoordinateTransform;
 

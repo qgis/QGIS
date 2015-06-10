@@ -45,11 +45,11 @@
 ****************************************************************************/
 
 
-#include <QtGui/QtGui>
 #include <QtTest/QtTest>
+#include <QtGui/QtGui>
 
-#include "dynamictreemodel.h"
 #include "modeltest.h"
+#include "dynamictreemodel.h"
 
 
 class tst_ModelTest : public QObject

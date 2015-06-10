@@ -26,9 +26,9 @@
 // version without notice, or even be removed.
 //
 
+#include <QStringList>
 #include <QMap>
 #include <QSharedData>
-#include <QStringList>
 #include "qgsexpression.h"
 
 

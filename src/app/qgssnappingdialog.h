@@ -18,8 +18,8 @@
 #ifndef QGSSNAPPINGDIALOG_H
 #define QGSSNAPPINGDIALOG_H
 
-#include "ui_qgssnappingdialogbase.h"
 #include "qgsmaplayer.h"
+#include "ui_qgssnappingdialogbase.h"
 
 class QDockWidget;
 

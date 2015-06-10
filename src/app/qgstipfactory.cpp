@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QTime>
 #include "qgstipfactory.h"
+#include <QTime>
 //for rand & srand
 #include <cstdlib>
 

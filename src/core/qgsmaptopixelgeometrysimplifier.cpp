@@ -15,8 +15,8 @@
  ***************************************************************************/
 
 #include <limits>
-#include "qgsapplication.h"
 #include "qgsmaptopixelgeometrysimplifier.h"
+#include "qgsapplication.h"
 
 QgsMapToPixelSimplifier::QgsMapToPixelSimplifier( int simplifyFlags, double tolerance )
     : mSimplifyFlags( simplifyFlags )

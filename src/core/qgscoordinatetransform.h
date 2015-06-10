@@ -21,10 +21,10 @@
 #include <QObject>
 
 //qgis includes
-#include "qgscoordinatereferencesystem.h"
-#include "qgscsexception.h"
 #include "qgspoint.h"
 #include "qgsrectangle.h"
+#include "qgscsexception.h"
+#include "qgscoordinatereferencesystem.h"
 class QDomNode;
 class QDomDocument;
 class QPolygonF;

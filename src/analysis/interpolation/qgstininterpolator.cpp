@@ -15,17 +15,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QProgressDialog>
+#include "qgstininterpolator.h"
 #include "CloughTocherInterpolator.h"
 #include "DualEdgeTriangulation.h"
-#include "LinTriangleInterpolator.h"
 #include "NormVecDecorator.h"
+#include "LinTriangleInterpolator.h"
 #include "Point3D.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
-#include "qgstininterpolator.h"
 #include "qgsvectorlayer.h"
 #include "qgswkbptr.h"
+#include <QProgressDialog>
 
 QgsTINInterpolator::QgsTINInterpolator( const QList<LayerData>& inputData, TIN_INTERPOLATION interpolation, bool showProgressDialog )
     : QgsInterpolator( inputData )

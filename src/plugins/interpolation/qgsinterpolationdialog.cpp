@@ -16,20 +16,20 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsinterpolationdialog.h"
+#include "qgsinterpolatordialog.h"
+#include "qgsfield.h"
+#include "qgsgridfilewriter.h"
+#include "qgsidwinterpolatordialog.h"
+#include "qgstininterpolatordialog.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaplayerregistry.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 #include <QComboBox>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QSettings>
-#include "qgsfield.h"
-#include "qgsgridfilewriter.h"
-#include "qgsidwinterpolatordialog.h"
-#include "qgsinterpolationdialog.h"
-#include "qgsinterpolatordialog.h"
-#include "qgsmapcanvas.h"
-#include "qgsmaplayerregistry.h"
-#include "qgstininterpolatordialog.h"
-#include "qgsvectordataprovider.h"
-#include "qgsvectorlayer.h"
 
 
 QgsInterpolationDialog::QgsInterpolationDialog( QWidget* parent, QgisInterface* iface ): QDialog( parent ), mIface( iface ), mInterpolatorDialog( 0 )

@@ -16,31 +16,31 @@
  ***************************************************************************/
 
 // GDAL includes
-#include "cpl_conv.h"
-#include "cpl_string.h"
 #include "gdal_priv.h"
+#include "cpl_string.h"
+#include "cpl_conv.h"
 
 // QGIS Specific includes
-#include <qgisgui.h>
 #include <qgisinterface.h>
+#include <qgisgui.h>
 
-#include "heatmapgui.h"
 #include "heatmap.h"
+#include "heatmapgui.h"
 
-#include "qgscoordinatereferencesystem.h"
-#include "qgsdistancearea.h"
 #include "qgsgeometry.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
+#include "qgsdistancearea.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgslogger.h"
 #include "qgsmessagebar.h"
-#include "qgsvectordataprovider.h"
-#include "qgsvectorlayer.h"
 
 // Qt4 Related Includes
 #include <QAction>
-#include <QFileInfo>
-#include <QMessageBox>
-#include <QProgressDialog>
 #include <QToolBar>
+#include <QMessageBox>
+#include <QFileInfo>
+#include <QProgressDialog>
 
 #define NO_DATA -9999
 

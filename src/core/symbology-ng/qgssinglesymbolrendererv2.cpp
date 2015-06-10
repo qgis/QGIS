@@ -15,19 +15,19 @@
 
 #include "qgssinglesymbolrendererv2.h"
 
-#include "qgssymbollayerv2utils.h"
 #include "qgssymbolv2.h"
+#include "qgssymbollayerv2utils.h"
 
-#include "qgsdatadefined.h"
-#include "qgsfeature.h"
-#include "qgsinvertedpolygonrenderer.h"
 #include "qgslogger.h"
-#include "qgsogcutils.h"
-#include "qgspainteffect.h"
-#include "qgspointdisplacementrenderer.h"
-#include "qgsscaleexpression.h"
-#include "qgssymbollayerv2.h"
+#include "qgsfeature.h"
 #include "qgsvectorlayer.h"
+#include "qgssymbollayerv2.h"
+#include "qgsogcutils.h"
+#include "qgspointdisplacementrenderer.h"
+#include "qgsinvertedpolygonrenderer.h"
+#include "qgspainteffect.h"
+#include "qgsscaleexpression.h"
+#include "qgsdatadefined.h"
 
 #include <QDomDocument>
 #include <QDomElement>

@@ -27,13 +27,13 @@
 #include "eviseventidtool.h"
 
 #include "qgscursors.h"
-#include "qgsmaptool.h"
 #include "qgsmaptopixel.h"
-#include "qgsvectordataprovider.h"
+#include "qgsmaptool.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
 
-#include <QMessageBox>
 #include <QObject>
+#include <QMessageBox>
 
 /**
 * Constructor for the id style tool, this tool inherits the QgsMapTool and requires a pointer to

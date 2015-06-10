@@ -15,14 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QComboBox>
-#include <QLineEdit>
-#include <QObject>
-#include <QtTest/QSignalSpy>
-#include <QtTest/QtTest>
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsscalecombobox.h"
+#include <QObject>
+#include <QLineEdit>
+#include <QComboBox>
+#include <QtTest/QSignalSpy>
+#include <QtTest/QtTest>
 
 class TestQgsScaleComboBox : public QObject
 {

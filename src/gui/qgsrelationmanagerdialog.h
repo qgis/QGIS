@@ -16,8 +16,8 @@
 #ifndef QGSRELATIONMANAGERDIALOG_H
 #define QGSRELATIONMANAGERDIALOG_H
 
-#include "ui_qgsrelationmanagerdialogbase.h"
 #include <QWidget>
+#include "ui_qgsrelationmanagerdialogbase.h"
 
 class QgsRelation;
 class QgsRelationManager;

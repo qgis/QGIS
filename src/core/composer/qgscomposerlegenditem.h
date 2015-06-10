@@ -18,8 +18,8 @@
 #ifndef QGSCOMPOSERLEGENDITEM_H
 #define QGSCOMPOSERLEGENDITEM_H
 
-#include <QStandardItem>
 #include "qgscomposerlegendstyle.h"
+#include <QStandardItem>
 class QDomDocument;
 class QDomElement;
 

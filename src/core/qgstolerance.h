@@ -15,9 +15,9 @@
 
 #ifndef QGSTOLERANCE_H
 #define QGSTOLERANCE_H
-#include "qgsmaplayer.h"
-#include "qgsmaprenderer.h"
 #include "qgsmaptopixel.h"
+#include "qgsmaprenderer.h"
+#include "qgsmaplayer.h"
 #include "qgspoint.h"
 
 /** \ingroup core

@@ -16,18 +16,18 @@
  ***************************************************************************/
 
 
-#include <cstdlib>
-#include <QDomDocument>
-#include <QPrinter> //to find out screen resolution
-#include <QTextStream>
-#include "qgslogger.h"
 #include "qgsprojectfiletransform.h"
-#include "qgsproject.h"
-#include "qgsprojectproperty.h"
 #include "qgsprojectversion.h"
+#include "qgslogger.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include <QTextStream>
+#include <QDomDocument>
+#include <QPrinter> //to find out screen resolution
+#include <cstdlib>
+#include "qgsproject.h"
+#include "qgsprojectproperty.h"
 
 typedef QgsProjectVersion PFV;
 

@@ -16,8 +16,8 @@
 #ifndef QGSFIELDEXPRESSIONWIDGETPLUGIN_H
 #define QGSFIELDEXPRESSIONWIDGETPLUGIN_H
 
-#include <QDesignerCustomWidgetInterface>
 #include <QDesignerExportWidget>
+#include <QDesignerCustomWidgetInterface>
 
 
 class CUSTOMWIDGETS_EXPORT QgsFieldExpressionWidgetPlugin : public QObject, public QDesignerCustomWidgetInterface

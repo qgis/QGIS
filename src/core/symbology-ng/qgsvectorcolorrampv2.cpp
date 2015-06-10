@@ -13,16 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsvectorcolorrampv2.h"
 #include "qgscolorbrewerpalette.h"
 #include "qgscptcityarchive.h"
-#include "qgsvectorcolorrampv2.h"
 
+#include "qgssymbollayerv2utils.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
-#include "qgssymbollayerv2utils.h"
 
-#include <algorithm>
 #include <stdlib.h> // for random()
+#include <algorithm>
 
 #include <QTime>
 

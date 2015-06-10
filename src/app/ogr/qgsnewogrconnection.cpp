@@ -14,16 +14,16 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QMessageBox>
 #include <QSettings>
+#include <QMessageBox>
 
-#include <cpl_error.h>
-#include <ogr_api.h>
+#include "qgsnewogrconnection.h"
 #include "qgscontexthelp.h"
 #include "qgslogger.h"
-#include "qgsnewogrconnection.h"
-#include "qgsogrhelperfunctions.h"
 #include "qgsproviderregistry.h"
+#include "qgsogrhelperfunctions.h"
+#include <ogr_api.h>
+#include <cpl_error.h>
 
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
 #define TO8F(x) (x).toUtf8().constData()

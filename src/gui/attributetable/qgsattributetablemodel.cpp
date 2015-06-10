@@ -14,8 +14,8 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "qgsattributetablefiltermodel.h"
 #include "qgsattributetablemodel.h"
+#include "qgsattributetablefiltermodel.h"
 
 #include "qgsattributeaction.h"
 #include "qgseditorwidgetregistry.h"

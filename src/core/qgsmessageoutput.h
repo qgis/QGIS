@@ -17,8 +17,8 @@
 #ifndef QGSMESSAGEOUTPUT_H
 #define QGSMESSAGEOUTPUT_H
 
-#include <QObject>
 #include <QString>
+#include <QObject>
 
 class QgsMessageOutput;
 typedef QgsMessageOutput*( *MESSAGE_OUTPUT_CREATOR )();

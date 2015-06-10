@@ -12,21 +12,21 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsgml.h"
+#include "qgsrectangle.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsgeometry.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsnetworkaccessmanager.h"
 #include <QBuffer>
 #include <QList>
-#include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QNetworkReply>
 #include <QProgressDialog>
 #include <QSet>
 #include <QSettings>
 #include <QUrl>
-#include "qgscoordinatereferencesystem.h"
-#include "qgsgeometry.h"
-#include "qgsgml.h"
-#include "qgslogger.h"
-#include "qgsmessagelog.h"
-#include "qgsnetworkaccessmanager.h"
-#include "qgsrectangle.h"
 
 #include <limits>
 

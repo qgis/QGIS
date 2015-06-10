@@ -16,26 +16,26 @@
  ***************************************************************************/
 
 #include "qgscomposerlabel.h"
-#include "qgscomposermodel.h"
-#include "qgscomposerutils.h"
 #include "qgscomposition.h"
-#include "qgsdistancearea.h"
+#include "qgscomposerutils.h"
 #include "qgsexpression.h"
 #include "qgsnetworkaccessmanager.h"
-#include "qgsproject.h"
+#include "qgscomposermodel.h"
 #include "qgsvectorlayer.h"
+#include "qgsproject.h"
+#include "qgsdistancearea.h"
 
+#include "qgswebview.h"
 #include "qgswebframe.h"
 #include "qgswebpage.h"
-#include "qgswebview.h"
 
 #include <QCoreApplication>
 #include <QDate>
 #include <QDomElement>
-#include <QEventLoop>
 #include <QPainter>
 #include <QSettings>
 #include <QTimer>
+#include <QEventLoop>
 
 QgsComposerLabel::QgsComposerLabel( QgsComposition *composition )
     : QgsComposerItem( composition )

@@ -17,15 +17,15 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <algorithm>
 #include <vector>
+#include <algorithm>
 
-#include <QItemDelegate>
-#include <QString>
 #include <QStringList>
+#include <QString>
+#include <QItemDelegate>
 
-#include "ui_qgsspitbase.h"
 #include "qgsshapefile.h"
+#include "ui_qgsspitbase.h"
 
 class QTableWidgetItem;
 

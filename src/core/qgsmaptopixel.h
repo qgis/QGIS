@@ -17,9 +17,9 @@
 #ifndef QGSMAPTOPIXEL
 #define QGSMAPTOPIXEL
 
+#include "qgspoint.h"
 #include <QTransform>
 #include <vector>
-#include "qgspoint.h"
 
 #include <cassert>
 

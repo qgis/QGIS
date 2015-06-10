@@ -15,8 +15,8 @@
 #ifndef QGSSPATIALITECONNECTION_H
 #define QGSSPATIALITECONNECTION_H
 
-#include <QObject>
 #include <QStringList>
+#include <QObject>
 
 extern "C"
 {

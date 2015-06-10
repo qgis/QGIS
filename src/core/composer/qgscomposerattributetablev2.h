@@ -18,8 +18,8 @@
 #ifndef QGSCOMPOSERATTRIBUTETABLEV2_H
 #define QGSCOMPOSERATTRIBUTETABLEV2_H
 
-#include "qgscomposerattributetable.h"
 #include "qgscomposertablev2.h"
+#include "qgscomposerattributetable.h"
 
 class QgsComposerMap;
 class QgsVectorLayer;

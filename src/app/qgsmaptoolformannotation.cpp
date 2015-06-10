@@ -15,11 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QMouseEvent>
+#include "qgsmaptoolformannotation.h"
 #include "qgsformannotationitem.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaptoolformannotation.h"
 #include "qgsvectorlayer.h"
+#include <QMouseEvent>
 
 QgsMapToolFormAnnotation::QgsMapToolFormAnnotation( QgsMapCanvas* canvas ): QgsMapToolAnnotation( canvas )
 {

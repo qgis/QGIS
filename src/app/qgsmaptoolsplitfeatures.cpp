@@ -14,9 +14,9 @@
  ***************************************************************************/
 
 #include "qgisapp.h"
+#include "qgsmessagebar.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptoolsplitfeatures.h"
-#include "qgsmessagebar.h"
 #include "qgsproject.h"
 #include "qgssnappingutils.h"
 #include "qgsvectorlayer.h"

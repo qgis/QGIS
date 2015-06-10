@@ -20,8 +20,8 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgsmaptool.h"
-#include "qgspoint.h"
 #include "qgsrubberband.h"
+#include "qgspoint.h"
 
 class QgsGrassPlugin;
 class QgsGrassRegionEdit;

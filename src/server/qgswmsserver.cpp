@@ -15,52 +15,52 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgswmsserver.h"
 #include "qgscapabilitiescache.h"
-#include "qgscoordinatereferencesystem.h"
 #include "qgscrscache.h"
-#include "qgseditorwidgetregistry.h"
-#include "qgsfeature.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreemodellegendnode.h"
 #include "qgslegendrenderer.h"
-#include "qgslogger.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerlegend.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
-#include "qgsmapserviceexception.h"
 #include "qgsmaptopixel.h"
-#include "qgsmessagelog.h"
-#include "qgsogcutils.h"
-#include "qgspaintenginehack.h"
 #include "qgsproject.h"
 #include "qgsrasteridentifyresult.h"
 #include "qgsrasterlayer.h"
-#include "qgsrendererv2.h"
 #include "qgsscalecalculator.h"
-#include "qgssldconfigparser.h"
-#include "qgssymbolv2.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgswmsserver.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsmapserviceexception.h"
+#include "qgssldconfigparser.h"
+#include "qgssymbolv2.h"
+#include "qgsrendererv2.h"
+#include "qgspaintenginehack.h"
+#include "qgsogcutils.h"
+#include "qgsfeature.h"
+#include "qgseditorwidgetregistry.h"
 
-#include <QDir>
 #include <QImage>
 #include <QPainter>
 #include <QStringList>
 #include <QTemporaryFile>
 #include <QTextStream>
+#include <QDir>
 
 //for printing
+#include "qgscomposition.h"
 #include <QBuffer>
-#include <QPaintEngine>
 #include <QPrinter>
 #include <QSvgGenerator>
 #include <QUrl>
-#include "qgscomposition.h"
+#include <QPaintEngine>
 
 QgsWMSServer::QgsWMSServer( const QString& configFilePath, QMap<QString, QString> &parameters, QgsWMSConfigParser* cp,
                             QgsRequestHandler* rh, QgsMapRenderer* renderer, QgsCapabilitiesCache* capCache )

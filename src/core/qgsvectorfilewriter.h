@@ -19,10 +19,10 @@
 #ifndef _QGSVECTORFILEWRITER_H_
 #define _QGSVECTORFILEWRITER_H_
 
-#include <ogr_api.h>
+#include "qgsvectorlayer.h"
 #include "qgsfield.h"
 #include "qgssymbolv2.h"
-#include "qgsvectorlayer.h"
+#include <ogr_api.h>
 
 #include <QPair>
 

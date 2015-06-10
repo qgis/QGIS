@@ -20,9 +20,9 @@
 #include "qgsfeature.h"
 
 #include <memory>
-#include <QDomDocument>
-#include <QDomElement>
 #include <QString>
+#include <QDomElement>
+#include <QDomDocument>
 #include <QStringList>
 
 class QgsComposerMap;

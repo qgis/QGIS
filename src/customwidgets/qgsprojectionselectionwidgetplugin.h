@@ -16,8 +16,8 @@
 #ifndef QGSPROJECTIONSELECTIONWIDGETPLUGIN_H
 #define QGSPROJECTIONSELECTIONWIDGETPLUGIN_H
 
-#include <QDesignerCustomWidgetInterface>
 #include <QDesignerExportWidget>
+#include <QDesignerCustomWidgetInterface>
 
 
 class CUSTOMWIDGETS_EXPORT QgsProjectionSelectionWidgetPlugin : public QObject, public QDesignerCustomWidgetInterface

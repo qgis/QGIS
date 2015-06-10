@@ -20,18 +20,18 @@
 #include "qgsdiagramrendererv2.h"
 #include "qgsgeometrycache.h"
 #include "qgsmessagelog.h"
-#include "qgspainteffect.h"
 #include "qgspallabeling.h"
-#include "qgsrendercontext.h"
 #include "qgsrendererv2.h"
+#include "qgsrendercontext.h"
 #include "qgssinglesymbolrendererv2.h"
 #include "qgssymbollayerv2.h"
 #include "qgssymbolv2.h"
-#include "qgsvectorlayerfeatureiterator.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerfeatureiterator.h"
+#include "qgspainteffect.h"
 
-#include <QPicture>
 #include <QSettings>
+#include <QPicture>
 
 // TODO:
 // - passing of cache to QgsVectorLayer

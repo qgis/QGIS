@@ -17,15 +17,15 @@
 
 #include "qgsoverlayanalyzer.h"
 
-#include <QProgressDialog>
 #include "qgsapplication.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsdistancearea.h"
-#include "qgsfeature.h"
 #include "qgsfield.h"
+#include "qgsfeature.h"
 #include "qgslogger.h"
-#include "qgsvectordataprovider.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsvectorfilewriter.h"
+#include "qgsvectordataprovider.h"
+#include "qgsdistancearea.h"
+#include <QProgressDialog>
 
 bool QgsOverlayAnalyzer::intersection( QgsVectorLayer* layerA, QgsVectorLayer* layerB,
                                        const QString& shapefileName, bool onlySelectedFeatures,

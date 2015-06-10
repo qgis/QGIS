@@ -12,19 +12,19 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QKeySequence>
-#include <QShortcut>
 #include <QTabWidget>
 #include <QVBoxLayout>
+#include <QShortcut>
+#include <QKeySequence>
 
-#include "qgsapplication.h"
-#include "qgsconfig.h"
-#include "qgsgrass.h"
 #include "qgslogger.h"
+#include "qgsapplication.h"
 #include "qtermwidget/qtermwidget.h"
+#include "qgsgrass.h"
+#include "qgsconfig.h"
 
-#include "qgsgrassshell.h"
 #include "qgsgrassutils.h"
+#include "qgsgrassshell.h"
 
 extern "C"
 {

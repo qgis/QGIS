@@ -19,31 +19,31 @@
 
 #include "qgis.h"
 #include "qgsapplication.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsdatasourceuri.h"
+#include "qgsmaplayerregistry.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
 #include "qgsgml.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgswfsfeatureiterator.h"
+#include "qgswfsprovider.h"
+#include "qgsdatasourceuri.h"
+#include "qgsspatialindex.h"
 #include "qgslogger.h"
-#include "qgsmaplayerregistry.h"
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsogcutils.h"
-#include "qgsspatialindex.h"
-#include "qgswfsfeatureiterator.h"
-#include "qgswfsprovider.h"
 
 #include <QDomDocument>
-#include <QDomNodeList>
-#include <QFile>
 #include <QMessageBox>
-#include <QNetworkReply>
+#include <QDomNodeList>
 #include <QNetworkRequest>
-#include <QPair>
-#include <QTimer>
+#include <QNetworkReply>
+#include <QFile>
 #include <QUrl>
 #include <QWidget>
+#include <QPair>
+#include <QTimer>
 
 #include <cfloat>
 

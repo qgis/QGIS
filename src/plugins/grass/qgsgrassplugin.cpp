@@ -14,9 +14,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgrassplugin.h"
 #include "qgis.h"
 #include "qgsgrass.h"
-#include "qgsgrassplugin.h"
 
 //the gui subclass
 #include "qgsgrassedit.h"
@@ -31,10 +31,10 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaplayerregistry.h"
-#include "qgsproject.h"
 #include "qgsrubberband.h"
+#include "qgsproject.h"
 #include "qgsvectorlayer.h"
+#include "qgsmaplayerregistry.h"
 
 #include <QAction>
 #include <QFileInfo>

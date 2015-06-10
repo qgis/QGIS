@@ -15,13 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslogger.h"
 #include "qgsmssqlfeatureiterator.h"
 #include "qgsmssqlprovider.h"
+#include "qgslogger.h"
 
 #include <QObject>
-#include <QSqlRecord>
 #include <QTextStream>
+#include <QSqlRecord>
 
 
 QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )

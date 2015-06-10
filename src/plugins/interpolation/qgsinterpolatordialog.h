@@ -18,9 +18,9 @@
 #ifndef QGSINTERPOLATORDIALOG_H
 #define QGSINTERPOLATORDIALOG_H
 
+#include "qgsinterpolator.h"
 #include <QDialog>
 #include <QList>
-#include "qgsinterpolator.h"
 
 class QgsVectorLayer;
 class QgisInterface;

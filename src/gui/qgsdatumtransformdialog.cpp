@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscoordinatetransform.h"
 #include "qgsdatumtransformdialog.h"
+#include "qgscoordinatetransform.h"
 #include "qgslogger.h"
 
 #include <QDir>

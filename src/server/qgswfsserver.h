@@ -18,10 +18,10 @@
 #ifndef QGSWFSSERVER_H
 #define QGSWFSSERVER_H
 
-#include <map>
 #include <QDomDocument>
 #include <QMap>
 #include <QString>
+#include <map>
 #include "qgis.h"
 #include "qgsowsserver.h"
 #include "qgsvectorlayer.h"

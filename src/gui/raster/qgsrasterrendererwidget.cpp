@@ -15,9 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsrasterrendererwidget.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
-#include "qgsrasterrendererwidget.h"
 
 
 QString QgsRasterRendererWidget::displayBandName( int band ) const

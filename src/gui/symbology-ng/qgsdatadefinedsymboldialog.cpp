@@ -1,8 +1,8 @@
 #include "qgsdatadefinedsymboldialog.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsfieldexpressionwidget.h"
-#include "qgslogger.h"
 #include "qgsvectorlayer.h"
+#include "qgslogger.h"
 
 #include <QCheckBox>
 #include <QSettings>

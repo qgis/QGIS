@@ -19,9 +19,9 @@
 #ifndef QGS_OFFLINE_EDITING_PLUGIN_H
 #define QGS_OFFLINE_EDITING_PLUGIN_H
 
+#include "../qgisplugin.h"
 #include <qgsofflineediting.h>
 #include <QObject>
-#include "../qgisplugin.h"
 
 class QAction;
 class QgisInterface;

@@ -15,10 +15,10 @@
 
 #include "qgsvectorgradientcolorrampv2dialog.h"
 
+#include "qgsvectorcolorrampv2.h"
+#include "qgsdialog.h"
 #include "qgscolordialog.h"
 #include "qgscptcityarchive.h"
-#include "qgsdialog.h"
-#include "qgsvectorcolorrampv2.h"
 
 #include <QColorDialog>
 #include <QInputDialog>

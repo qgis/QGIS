@@ -15,15 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QMap>
-#include <QObject>
-#include <QtTest/QtTest>
 #include "qgsapplication.h" //for standard test font
 #include "qgscomposerutils.h"
-#include "qgscompositionchecker.h"
 #include "qgscomposition.h"
+#include "qgscompositionchecker.h"
 #include "qgsdatadefined.h"
 #include "qgsfontutils.h"
+#include <QObject>
+#include <QtTest/QtTest>
+#include <QMap>
 
 class TestQgsComposerUtils : public QObject
 {

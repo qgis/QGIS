@@ -19,8 +19,8 @@
 #include "ui_qgsgrassmodulebase.h"
 
 #include "qgis.h"
-#include "qgscoordinatereferencesystem.h"
 #include "qgsfield.h"
+#include "qgscoordinatereferencesystem.h"
 
 #include <QCheckBox>
 #include <QGroupBox>

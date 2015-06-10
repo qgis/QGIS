@@ -17,19 +17,19 @@
  ***************************************************************************/
 #ifndef QGSPLUGINMANAGER_H
 #define QGSPLUGINMANAGER_H
-#include "ui_qgspluginmanagerbase.h"
-#include <QHeaderView>
-#include <QMap>
-#include <QStandardItem>
-#include <QStandardItemModel>
-#include <QString>
 #include <vector>
+#include <QMap>
+#include <QString>
+#include <QStandardItemModel>
+#include <QStandardItem>
+#include <QHeaderView>
+#include "ui_qgspluginmanagerbase.h"
+#include "qgsoptionsdialogbase.h"
 #include "qgisgui.h"
 #include "qgscontexthelp.h"
-#include "qgsmessagebar.h"
-#include "qgsoptionsdialogbase.h"
-#include "qgspluginsortfilterproxymodel.h"
 #include "qgspythonutils.h"
+#include "qgspluginsortfilterproxymodel.h"
+#include "qgsmessagebar.h"
 
 const int PLUGMAN_TAB_ALL = 0;
 const int PLUGMAN_TAB_INSTALLED = 1;

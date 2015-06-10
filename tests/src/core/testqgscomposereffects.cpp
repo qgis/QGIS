@@ -15,15 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QColor>
-#include <QObject>
-#include <QPainter>
-#include <QtTest/QtTest>
 #include "qgsapplication.h"
-#include "qgscomposershape.h"
-#include "qgscompositionchecker.h"
 #include "qgscomposition.h"
+#include "qgscompositionchecker.h"
+#include "qgscomposershape.h"
 #include "qgsmaprenderer.h"
+#include <QObject>
+#include <QtTest/QtTest>
+#include <QColor>
+#include <QPainter>
 
 class TestQgsComposerEffects : public QObject
 {

@@ -15,27 +15,27 @@
 
 
 // QGIS Specific includes
-#include <qgisgui.h>
-#include <qgisinterface.h>
 #include <qgsapplication.h>
+#include <qgisinterface.h>
+#include <qgisgui.h>
 #include <qgsmapcanvas.h>
-#include <qgsmaprenderer.h>
-#include <qgsmaptoolemitpoint.h>
 #include <qgsproject.h>
+#include <qgsmaptoolemitpoint.h>
+#include <qgsmaprenderer.h>
 
 #include <qgsmaplayerregistry.h>
-#include <qgsvectordataprovider.h>
 #include <qgsvectorlayer.h>
+#include <qgsvectordataprovider.h>
 
-#include <qgsdistancearcproperter.h>
+#include <qgslinevectorlayerdirector.h>
 #include <qgsgraphbuilder.h>
 #include <qgsgraph.h>
-#include <qgslinevectorlayerdirector.h>
+#include <qgsdistancearcproperter.h>
 
 // Road grap plugin includes
 #include "roadgraphplugin.h"
-#include "settingsdlg.h"
 #include "shortestpathwidget.h"
+#include "settingsdlg.h"
 #include "speedproperter.h"
 #include "units.h"
 
@@ -46,13 +46,13 @@
 //
 
 #include <QAction>
-#include <QDebug>
-#include <QDockWidget>
 #include <QLabel>
 #include <QLocale>
-#include <QPushButton>
 #include <QToolBar>
+#include <QPushButton>
+#include <QDockWidget>
 #include <QVBoxLayout>
+#include <QDebug>
 
 // standard includes
 

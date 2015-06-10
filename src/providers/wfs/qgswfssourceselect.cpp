@@ -15,27 +15,27 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscontexthelp.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgscoordinatetransform.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgsgenericprojectionselector.h"
-#include "qgslogger.h"
-#include "qgsmanageconnectionsdialog.h"
-#include "qgsmapcanvas.h" //for current view extent
-#include "qgsnewhttpconnection.h"
+#include "qgswfssourceselect.h"
 #include "qgsowsconnection.h"
-#include "qgsproject.h"
 #include "qgswfscapabilities.h"
 #include "qgswfsprovider.h"
-#include "qgswfssourceselect.h"
+#include "qgsnewhttpconnection.h"
+#include "qgsgenericprojectionselector.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgscontexthelp.h"
+#include "qgsproject.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h" //for current view extent
+#include "qgsmanageconnectionsdialog.h"
 
 #include <QDomDocument>
-#include <QFileDialog>
 #include <QListWidgetItem>
 #include <QMessageBox>
-#include <QPainter>
 #include <QSettings>
+#include <QFileDialog>
+#include <QPainter>
 
 
 QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget* parent, Qt::WindowFlags fl, bool embeddedMode )

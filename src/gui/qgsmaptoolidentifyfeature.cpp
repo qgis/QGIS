@@ -16,8 +16,8 @@
 #include <QMouseEvent>
 
 #include "qgscursors.h"
-#include "qgsmapcanvas.h"
 #include "qgsmaptoolidentifyfeature.h"
+#include "qgsmapcanvas.h"
 
 QgsMapToolIdentifyFeature::QgsMapToolIdentifyFeature( QgsMapCanvas* canvas, QgsVectorLayer* vl )
     : QgsMapToolIdentify( canvas )

@@ -17,13 +17,13 @@
 
 #include <QSettings>
 
-#include "qgsdiagramrendererv2.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodellegendnode.h"
 #include "qgspluginlayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrendererv2.h"
 #include "qgsvectorlayer.h"
+#include "qgsdiagramrendererv2.h"
 
 
 QgsMapLayerLegend::QgsMapLayerLegend( QObject *parent ) :

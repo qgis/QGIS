@@ -15,17 +15,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsatlascomposition.h"
 #include "qgscomposerattributetablev2.h"
-#include "qgscomposerframe.h"
-#include "qgscomposermap.h"
 #include "qgscomposertablecolumn.h"
+#include "qgscomposermap.h"
 #include "qgscomposerutils.h"
-#include "qgsgeometry.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsvectorlayer.h"
+#include "qgscomposerframe.h"
+#include "qgsatlascomposition.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
-#include "qgsvectorlayer.h"
+#include "qgsgeometry.h"
 
 //QgsComposerAttributeTableCompareV2
 

@@ -17,13 +17,13 @@
 // QGIS Specific includes
 //
 
-#include <qgisgui.h>
 #include <qgisinterface.h>
+#include <qgisgui.h>
 #include <qgsapplication.h>
 #include <qgsvectorlayer.h>
 
-#include "dxf2shpconvertergui.h"
 #include "dxf2shpconverter.h"
+#include "dxf2shpconvertergui.h"
 
 //
 // Qt4 Related Includes

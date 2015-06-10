@@ -16,8 +16,8 @@
 #ifndef QGSDATETIMEEDITPLUGIN_H
 #define QGSDATETIMEEDITPLUGIN_H
 
-#include <QDesignerCustomWidgetInterface>
 #include <QDesignerExportWidget>
+#include <QDesignerCustomWidgetInterface>
 
 
 class CUSTOMWIDGETS_EXPORT QgsDateTimeEditPlugin : public QObject, public QDesignerCustomWidgetInterface

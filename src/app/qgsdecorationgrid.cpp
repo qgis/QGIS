@@ -16,36 +16,36 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsdecorationgriddialog.h"
 #include "qgsdecorationgrid.h"
+#include "qgsdecorationgriddialog.h"
 
 #include "qgisapp.h"
 #include "qgslogger.h"
-#include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
-#include "qgsmaprenderer.h"
+#include "qgsrasterlayer.h"
 #include "qgsmaptopixel.h"
-#include "qgsmarkersymbollayerv2.h"
 #include "qgspoint.h"
 #include "qgsproject.h"
-#include "qgsrasterlayer.h"
-#include "qgsrendercontext.h"
 #include "qgssymbollayerv2utils.h" //for pointOnLineWithDistance
 #include "qgssymbolv2.h" //for symbology
+#include "qgsmarkersymbollayerv2.h"
+#include "qgsrendercontext.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaprenderer.h"
 
-#include <QAction>
-#include <QColor>
-#include <QDomDocument>
-#include <QFile>
-#include <QFont>
-#include <QFontMetrics>
-#include <QLocale>
-#include <QMenu>
-#include <QMessageBox>
 #include <QPainter>
+#include <QAction>
 #include <QPen>
 #include <QPolygon>
 #include <QString>
+#include <QFontMetrics>
+#include <QFont>
+#include <QColor>
+#include <QMenu>
+#include <QFile>
+#include <QLocale>
+#include <QDomDocument>
+#include <QMessageBox>
 
 //non qt includes
 #include <cmath>

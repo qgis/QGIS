@@ -10,8 +10,8 @@
 #include "qgsloadstylefromdbdialog.h"
 #include "qgslogger.h"
 
-#include <QMessageBox>
 #include <QSettings>
+#include <QMessageBox>
 #include <QVector>
 
 QgsLoadStyleFromDBDialog::QgsLoadStyleFromDBDialog( QWidget *parent )

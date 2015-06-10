@@ -15,9 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsidwinterpolator.h"
 #include <cmath>
 #include <limits>
-#include "qgsidwinterpolator.h"
 
 QgsIDWInterpolator::QgsIDWInterpolator( const QList<LayerData>& layerData ): QgsInterpolator( layerData ), mDistanceCoefficient( 2.0 )
 {

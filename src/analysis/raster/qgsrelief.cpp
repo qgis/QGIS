@@ -15,14 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <cfloat>
-#include <QProgressDialog>
-#include "cpl_string.h"
-#include "qgis.h"
+#include "qgsrelief.h"
 #include "qgsaspectfilter.h"
 #include "qgshillshadefilter.h"
-#include "qgsrelief.h"
 #include "qgsslopefilter.h"
+#include "qgis.h"
+#include "cpl_string.h"
+#include <QProgressDialog>
+#include <cfloat>
 
 #include <QFile>
 #include <QTextStream>

@@ -16,13 +16,13 @@ email                : sherman at mrcc.com
 #ifndef QGSFEATURE_H
 #define QGSFEATURE_H
 
-#include <QHash>
-#include <QList>
 #include <QMap>
-#include <QSet>
 #include <QString>
 #include <QVariant>
+#include <QList>
+#include <QHash>
 #include <QVector>
+#include <QSet>
 
 class QgsGeometry;
 class QgsRectangle;

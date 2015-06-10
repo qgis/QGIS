@@ -13,17 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <limits>
-#include <QMouseEvent>
-#include <QSettings>
+#include "qgsmaptoolmovefeature.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaptoolmovefeature.h"
 #include "qgsrubberband.h"
-#include "qgstolerance.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgstolerance.h"
+#include <QMouseEvent>
+#include <QSettings>
+#include <limits>
 QgsMapToolMoveFeature::QgsMapToolMoveFeature( QgsMapCanvas* canvas )
     : QgsMapToolEdit( canvas )
     , mRubberBand( 0 )

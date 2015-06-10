@@ -13,12 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsresidualplotitem.h"
+#include "qgsgeorefdatapoint.h"
+#include "qgscomposerutils.h"
+#include <QPainter>
 #include <cfloat>
 #include <cmath>
-#include <QPainter>
-#include "qgscomposerutils.h"
-#include "qgsgeorefdatapoint.h"
-#include "qgsresidualplotitem.h"
 
 QgsResidualPlotItem::QgsResidualPlotItem( QgsComposition* c ): QgsComposerItem( c ), mConvertScaleToMapUnits( false )
 {

@@ -16,10 +16,10 @@
 #ifndef QGSRELATIONMANAGER_H
 #define QGSRELATIONMANAGER_H
 
-#include <QDomDocument>
-#include <QDomNode>
 #include <QObject>
 #include <QPair>
+#include <QDomNode>
+#include <QDomDocument>
 
 #include "qgsrelation.h"
 
