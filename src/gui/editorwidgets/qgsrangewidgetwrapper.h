@@ -54,11 +54,16 @@ class GUI_EXPORT QgsRangeWidgetWrapper : public QgsEditorWidgetWrapper
   public slots:
     virtual void setValue( const QVariant& value ) override;
 
+  public slots:
+    void valueChanged( QVariant );
+
   private:
     QSpinBox* mIntSpinBox;
     QDoubleSpinBox* mDoubleSpinBox;
     QSlider* mSlider;
     QDial* mDial;
+    QgsSlider* mQgsSlider;
+    QgsDial* mQgsDial;
 };
 
 #endif // QGSRANGEWIDGETWRAPPER_H

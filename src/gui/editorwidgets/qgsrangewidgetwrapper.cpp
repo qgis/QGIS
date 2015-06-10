@@ -21,11 +21,13 @@
 #include "qgsvectorlayer.h"
 
 QgsRangeWidgetWrapper::QgsRangeWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
     , mIntSpinBox( 0 )
     , mDoubleSpinBox( 0 )
     , mSlider( 0 )
     , mDial( 0 )
+    , mQgsSlider( 0 )
+    , mQgsDial( 0 )
 {
 }
 
@@ -68,6 +70,8 @@ void QgsRangeWidgetWrapper::initWidget( QWidget* editor )
   mIntSpinBox = qobject_cast<QSpinBox*>( editor );
   mDial = qobject_cast<QDial*>( editor );
   mSlider = qobject_cast<QSlider*>( editor );
+  mQgsDial = qobject_cast<QgsDial*>( editor );
+  mQgsSlider = qobject_cast<QgsSlider*>( editor );
 
   bool allowNull = config( "AllowNull" ).toBool();
 
@@ -131,21 +135,54 @@ void QgsRangeWidgetWrapper::initWidget( QWidget* editor )
     connect( mIntSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( valueChanged( int ) ) );
   }
 
-  if ( mDial )
+  if ( mQgsDial || mQgsSlider )
+  {
+    QVariant min( config( "Min" ) );
+    QVariant max( config( "Max" ) );
+    QVariant step( config( "Step" ) );
+
+    field().convertCompatible( min );
+    field().convertCompatible( max );
+    field().convertCompatible( step );
+
+    if ( mQgsSlider )
+    {
+      mQgsSlider->setMinimum( min );
+      mQgsSlider->setMaximum( max );
+      mQgsSlider->setSingleStep( step );
+    }
+
+    if ( mQgsDial )
+    {
+      mQgsDial->setMinimum( min );
+      mQgsDial->setMaximum( max );
+      mQgsDial->setSingleStep( step );
+    }
+
+    connect( editor, SIGNAL( valueChanged( QVariant ) ), this, SLOT( valueChanged( QVariant ) ) );
+  }
+  else if ( mDial )
   {
     mDial->setMinimum( config( "Min" ).toInt() );
     mDial->setMaximum( config( "Max" ).toInt() );
     mDial->setSingleStep( config( "Step" ).toInt() );
     connect( mDial, SIGNAL( valueChanged( int ) ), this, SLOT( valueChanged( int ) ) );
   }
-
-  if ( mSlider )
+  else if ( mSlider )
   {
     mSlider->setMinimum( config( "Min" ).toInt() );
     mSlider->setMaximum( config( "Max" ).toInt() );
     mSlider->setSingleStep( config( "Step" ).toInt() );
     connect( mSlider, SIGNAL( valueChanged( int ) ), this, SLOT( valueChanged( int ) ) );
   }
+}
+
+void QgsRangeWidgetWrapper::valueChanged( QVariant v )
+{
+  if ( v.type() == QVariant::Int )
+    valueChanged( v.toInt() );
+  if ( v.type() == QVariant::Double )
+    valueChanged( v.toDouble() );
 }
 
 QVariant QgsRangeWidgetWrapper::value()
@@ -167,6 +204,14 @@ QVariant QgsRangeWidgetWrapper::value()
     {
       value = QVariant( field().type() );
     }
+  }
+  else if ( mQgsDial )
+  {
+    value = mQgsDial->variantValue();
+  }
+  else if ( mQgsSlider )
+  {
+    value = mQgsSlider->variantValue();
   }
   else if ( mDial )
   {
@@ -205,13 +250,21 @@ void QgsRangeWidgetWrapper::setValue( const QVariant& value )
       mIntSpinBox->setValue( value.toInt() );
     }
   }
-  if ( mDial )
+
+  if ( mQgsDial )
+  {
+    mQgsDial->setValue( value );
+  }
+  else if ( mQgsSlider )
+  {
+    mQgsSlider->setValue( value );
+  }
+  else if ( mDial )
   {
     mDial->setValue( value.toInt() );
   }
-  if ( mSlider )
+  else if ( mSlider )
   {
     mSlider->setValue( value.toInt() );
   }
 }
-
