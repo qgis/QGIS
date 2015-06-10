@@ -17,7 +17,6 @@
 #include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
-#include <QObject>
 #include <QSharedPointer>
 #include <QCoreApplication>
 #include <QWidget>

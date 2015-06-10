@@ -16,7 +16,6 @@
 
 #include <QApplication>
 #include <QObject>
-#include <QObject>
 #include <QSplashScreen>
 #include <QString>
 #include <QStringList>

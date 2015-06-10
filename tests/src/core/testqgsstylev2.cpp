@@ -15,7 +15,6 @@
 #include <QtTest/QtTest>
 #include <QObject>
 #include <QStringList>
-#include <QObject>
 #include <QApplication>
 #include <QFileInfo>
 
