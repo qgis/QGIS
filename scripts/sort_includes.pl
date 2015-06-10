@@ -26,7 +26,13 @@ our %others;
 our $sorting;
 
 BEGIN { $sorting = 0; }
-END { die "header files not empty" if keys %uis || keys %sys || keys %others; }
+END {
+	if( $sorting ) {
+		print foreach sort keys %uis;
+		print foreach sort keys %sys;
+		print foreach sort keys %others;
+	}
+}
 
 if(/^\s*#include/ ) {
 	if(/"ui_/ ) {
