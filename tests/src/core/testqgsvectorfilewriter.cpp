@@ -400,4 +400,3 @@ void TestQgsVectorFileWriter::projectedPlygonGridTest()
 
 QTEST_MAIN( TestQgsVectorFileWriter )
 #include "testqgsvectorfilewriter.moc"
-

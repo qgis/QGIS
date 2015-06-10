@@ -626,4 +626,3 @@ void TestQgsComposerTableV2::removeDuplicates()
 
 QTEST_MAIN( TestQgsComposerTableV2 )
 #include "testqgscomposertablev2.moc"
-

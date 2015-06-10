@@ -71,4 +71,3 @@ void TestQgsApplication::checkGdalSkip()
 
 QTEST_MAIN( TestQgsApplication )
 #include "testqgsapplication.moc"
-

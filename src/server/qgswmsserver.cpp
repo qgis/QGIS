@@ -1560,7 +1560,7 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
           {
             continue;
           }
-          QgsPoint layerInfoPoint = mMapRenderer->mapToLayerCoordinates( currentLayer, *(infoPoint.data()) );
+          QgsPoint layerInfoPoint = mMapRenderer->mapToLayerCoordinates( currentLayer, *( infoPoint.data() ) );
           if ( featureInfoFromRasterLayer( rasterLayer, &layerInfoPoint, result, layerElement, version, infoFormat ) != 0 )
           {
             continue;

@@ -253,4 +253,3 @@ void TestQgsComposition::pageIsEmpty()
 
 QTEST_MAIN( TestQgsComposition )
 #include "testqgscomposition.moc"
-

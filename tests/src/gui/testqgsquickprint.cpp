@@ -177,4 +177,3 @@ bool TestQgsQuickPrint::imageCheck( QString theTestType )
 
 QTEST_MAIN( TestQgsQuickPrint )
 #include "testqgsquickprint.moc"
-

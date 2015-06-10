@@ -86,4 +86,3 @@ class TestQgsScaleExpression: public QObject
 QTEST_MAIN( TestQgsScaleExpression )
 
 #include "testqgsscaleexpression.moc"
-

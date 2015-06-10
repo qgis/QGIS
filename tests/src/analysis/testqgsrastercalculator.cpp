@@ -527,4 +527,3 @@ void TestQgsRasterCalculator::calcWithReprojectedLayers()
 
 QTEST_MAIN( TestQgsRasterCalculator )
 #include "testqgsrastercalculator.moc"
-

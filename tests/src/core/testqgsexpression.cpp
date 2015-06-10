@@ -1151,4 +1151,3 @@ class TestQgsExpression: public QObject
 QTEST_MAIN( TestQgsExpression )
 
 #include "testqgsexpression.moc"
-
