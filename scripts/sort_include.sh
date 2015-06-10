@@ -22,24 +22,25 @@
 # can exlcude directories (hard-copies of external libraries)
 
 SORTING=false
-FILE1=.sort_include_1.tmp
-FILE2=.sort_include_2.tmp
-FILE3=.sort_include_3.tmp
+FILE1="sort_include_1.tmp"
+FILE2="sort_include_2.tmp"
+FILE3="sort_include_3.tmp"
 
 # files not to be sorted (leads to compile errors otherwise)
 DoNotSort="(sqlite3.h)|(spatialite.h)"
 
 for file in $(find . \
- ! -path "src/app/gps/qwtpolar-*" \
- ! -path "src/core/gps/qextserialport/*" \
- ! -path "src/plugins/grass/qtermwidget/*" \
- ! -path "src/astyle/*" \
- ! -path "python/ext-libs/*" \
- ! -path "src/providers/spatialite/qspatialite/*" \
- ! -path "src/plugins/dxf2shp_converter/dxflib/src/*" \
- ! -path "src/plugins/globe/osgEarthQt/*" \
- ! -path "src/plugins/globe/osgEarthUtil/*" \
- -type f -regex "(src)|(tests)/(.+/)*.*\.\(h\|cpp\)")
+ ! -path "./src/app/gps/qwtpolar-*" \
+ ! -path "./src/core/gps/qextserialport/*" \
+ ! -path "./src/plugins/grass/qtermwidget/*" \
+ ! -path "./src/astyle/*" \
+ ! -path "./python/ext-libs/*" \
+ ! -path "./src/providers/spatialite/qspatialite/*" \
+ ! -path "./src/plugins/dxf2shp_converter/dxflib/src/*" \
+ ! -path "./src/plugins/globe/osgEarthQt/*" \
+ ! -path "./src/plugins/globe/osgEarthUtil/*" \
+ -regex "./src/\(.+/\)*.*\.\(h\|cpp\)" -type f \
+ -or -regex "./tests/\(.+/\)*.*\.\(h\|cpp\)" -type f )
 do
   echo "$file"
   touch $FILE1
@@ -54,9 +55,9 @@ do
       if [[ "$line" =~ ^"#"include[[:space:]]*\"ui_ ]]; then
         echo "$line" >> $FILE1  # keep ui_ on top of list
       elif [[ "$line" =~ ^"#"include[[:space:]]*\<[^[:space:]]+\> ]]; then
-	    echo "$line" >> $FILE2
+	    echo "$line" >> $FILE2  # include <...>
 	  else
-	    echo "$line" >> $FILE3
+	    echo "$line" >> $FILE3  # include "..."
 	  fi
     else
       if $SORTING; then
@@ -68,8 +69,12 @@ do
       echo "$line" >> $FILE1
     fi
   done < "$file"
-  rm -f $FILE2 $FILE3
+  if $SORTING; then
+	sort -u $FILE2 >> $FILE1
+	sort -u $FILE3 >> $FILE1
+	SORTING=false
+  fi
   mv $FILE1 $file
-  rm -f $FILE1
+  rm -f $FILE1 $FILE2 $FILE3
 done
 
