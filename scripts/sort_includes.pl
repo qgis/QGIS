@@ -26,13 +26,7 @@ our %others;
 our $sorting;
 
 BEGIN { $sorting = 0; }
-END {
-	if( $sorting ) {
-		print foreach sort keys %uis;
-		print foreach sort keys %sys;
-		print foreach sort keys %others;
-	}
-}
+END { die "header files not empty" if keys %uis || keys %sys || keys %others; }
 
 if(/^\s*#include/ ) {
 	if(/"ui_/ ) {
@@ -43,7 +37,8 @@ if(/^\s*#include/ ) {
 		$others{$_}=1;
 	}
 	$sorting=1;
-	next;
+
+	next unless eof;
 }
 
 if( $sorting ) {
@@ -54,8 +49,9 @@ if( $sorting ) {
 	undef %uis;
 	undef %sys;
 	undef %others;
-}
 
+	last if eof;
+}
 
 $sorting=0;
 
