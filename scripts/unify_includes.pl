@@ -1,6 +1,6 @@
 #!/usr/bin/perl -i.sortinc -n
 ###########################################################################
-#    sort_includes.pl
+#    unify_includes.pl
 #    ---------------------
 #    begin                : June 2015
 #    copyright            : (C) 2015 by Juergen E. Fischer
@@ -20,39 +20,22 @@
 use strict;
 use warnings;
 
-our %uis;
-our %sys;
-our %others;
-our $sorting;
+our %inc;
+our @inc;
 
-BEGIN { $sorting = 0; }
-END { die "header files not empty" if keys %uis || keys %sys || keys %others; }
+END { die "header files not empty" if @inc; }
 
-if(/^\s*#include/ ) {
-	if(/"ui_/ ) {
-		$uis{$_}=1;
-	} elsif(/</) {
-		$sys{$_}=1;
-	} else {
-		$others{$_}=1;
-	}
-	$sorting=1;
-
+if( /^\s*#include/ ) {
+	push @inc, $_ unless exists $inc{$_};
+	$inc{$_}=1;
 	next unless eof;
 }
 
-if( $sorting ) {
-	print foreach sort keys %uis;
-	print foreach sort keys %sys;
-	print foreach sort keys %others;
-
-	undef %uis;
-	undef %sys;
-	undef %others;
-
+if( %inc ) {
+	print foreach @inc;
+	undef %inc;
+	undef @inc;
 	last if eof;
 }
-
-$sorting=0;
 
 print;

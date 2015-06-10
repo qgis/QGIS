@@ -45,8 +45,6 @@ set -e
 
 astyleit()
 {
-	scripts/sort_includes.pl "$1"
-
 	$ASTYLE \
 		--preserve-date \
 		--indent-preprocessor \
@@ -65,6 +63,8 @@ astyleit()
 		--pad=oper \
 		--pad=paren-in \
 		--unpad=paren "$1"
+
+	scripts/unify_includes.pl "$1"
 }
 
 for f in "$@"; do
