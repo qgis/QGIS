@@ -80,7 +80,7 @@ void QgsTipGui::on_cbxDisableTips_toggled( bool theFlag )
   QSettings settings;
   //note the ! below as when the cbx is checked (true) we want to
   //change the setting to false
-  settings.setValue( "/qgis/showTips", !theFlag );
+  settings.setValue( QString( "/qgis/showTips%1" ).arg( QGis::QGIS_VERSION_INT / 100 ), !theFlag );
   hide();
 }
 
