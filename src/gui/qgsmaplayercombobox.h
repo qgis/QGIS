@@ -52,8 +52,17 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
     //! returns the list of excepted layers
     QList<QgsMapLayer*> exceptedLayerList() const {return mProxyModel->exceptedLayerList();}
 
-    //! currentLayer returns the current layer selected in the combo box
+    /** Returns the current layer selected in the combo box.
+     * @see layer
+     */
     QgsMapLayer* currentLayer() const;
+
+    /** Return the layer currently shown at the specified index within the combo box.
+     * @param layerIndex position of layer to return
+     * @note added in QGIS 2.10
+     * @see currentLayer
+     */
+    QgsMapLayer* layer( int layerIndex ) const;
 
   public slots:
     //! setLayer set the current layer selected in the combo
@@ -65,6 +74,7 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
 
   protected slots:
     void indexChanged( int i );
+    void rowsChanged();
 
   private:
     QgsMapLayerProxyModel* mProxyModel;
