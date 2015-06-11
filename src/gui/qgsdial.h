@@ -15,10 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QPainter>
-#include <QPaintEvent>
-#include <QSize>
 #include <QDial>
+#include <QVariant>
+
+class QPaintEvent;
 
 class GUI_EXPORT QgsDial : public QDial
 {
