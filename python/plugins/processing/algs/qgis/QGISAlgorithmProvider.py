@@ -130,6 +130,7 @@ from SplitLinesWithLines import SplitLinesWithLines
 from FieldsMapper import FieldsMapper
 from Datasources2Vrt import Datasources2Vrt
 from CheckValidity import CheckValidity
+from OrientedMinimumBoundingBox import OrientedMinimumBoundingBox
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -177,8 +178,8 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         SetVectorStyle(), SetRasterStyle(),
                         SelectByExpression(), HypsometricCurves(),
                         SplitLinesWithLines(), CreateConstantRaster(),
-                        FieldsMapper(), SelectByAttributeSum(), Datasources2Vrt(),
-                        CheckValidity()
+                        FieldsMapper(),SelectByAttributeSum(), Datasources2Vrt(),
+                        CheckValidity(), OrientedMinimumBoundingBox()
                         ]
 
         if hasMatplotlib:
