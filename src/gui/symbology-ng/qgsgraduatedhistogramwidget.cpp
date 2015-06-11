@@ -82,11 +82,21 @@ void QgsGraduatedHistogramWidget::drawHistogram()
   if ( !mRenderer )
     return;
 
-  setGraduatedRanges( mRenderer->ranges() );
+  bool pickerEnabled = false;
+  if ( !mRenderer->rangesOverlap() && !mRenderer->rangesHaveGaps() && !mRenderer->ranges().isEmpty() )
+  {
+    setGraduatedRanges( mRenderer->ranges() );
+    pickerEnabled = true;
+  }
+  else
+  {
+    setGraduatedRanges( QgsRangeList() );
+  }
   QgsHistogramWidget::drawHistogram();
 
   // histo picker
-  mHistoPicker->setEnabled( true );
+  mHistoPicker->setEnabled( pickerEnabled );
+  mFilter->blockSignals( !pickerEnabled );
 }
 
 void QgsGraduatedHistogramWidget::mousePress( double value )
