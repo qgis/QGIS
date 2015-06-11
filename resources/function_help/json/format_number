@@ -1,0 +1,8 @@
+{
+  "function": "format_number",
+  "description": "Returns a number formatted with the locale separator for thousands. Also truncates the number to the number of supplied places.",
+  "arguments": [ {"arg":"number","description":"number to be formatted"},
+                 {"arg":"places","description":"integer representing the number of decimal places to truncate the string to."}],
+  "examples": [ { "expression":"format_number(10000000.332,2)", "returns":"'10,000,000.33'"}
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "function": "substr",
+  "description": "Returns a part of a string.",
+  "arguments": [ {"arg":"input_string","description":"the full input string"},
+  {"arg":"startpos","description":"integer representing start position to extract from"},
+  {"arg":"length","description":"integer representing length of string to extract"}
+  ],
+  "examples": [ { "expression":"substr('HELLO WORLD',3,5)", "returns":"'LLO W'"}]
+}

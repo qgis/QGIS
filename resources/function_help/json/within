@@ -1,0 +1,9 @@
+{
+  "function": "intersects",
+  "description": "Tests whether a geometry is within another. Returns true if the geometry a is completely within geometry b.",
+  "arguments": [ {"arg":"geometry a","description":"a geometry"},
+                 {"arg":"geometry b","description":"a geometry"}],
+  "examples": [ { "expression":"within( geom_from_wkt( 'POINT( 0.5 0.5)' ), geom_from_wkt( 'POLYGON((0 0, 0 1, 1 1, 1 0, 0 0))' ) )", "returns":"true"},
+  { "expression":"within( geom_from_wkt( 'POINT( 5 5 )' ), geom_from_wkt( 'POLYGON((0 0, 0 1, 1 1, 1 0, 0 0 ))' ) )", "returns":"false"}
+  ]
+}

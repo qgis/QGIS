@@ -1,0 +1,6 @@
+{
+  "function": "tan",
+  "description": "Returns the tangent of an angle.",
+  "arguments": [ {"arg":"angle","description":"angle in radians"}],
+  "examples": [ { "expression":"tan(1.0)", "returns":"1.5574077246549"}]
+}

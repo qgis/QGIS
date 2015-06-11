@@ -1,0 +1,9 @@
+{
+  "function": "age",
+  "description": "Returns the difference between two dates or datetimes.\nThe difference is returned as a <code>Interval</code> and needs to be used with one of the following functions in order to extract useful information:<br /><ul><li><code>year</code><li><code>month</code><li><code>week</code><li><code>day</code><li><code>hour</code><li><code>minute</code><li><code>second</code></ul>",
+  "arguments": [ {"arg":"datetime1","description":"a string, date or datetime representing the later date"},
+                 {"arg":"datetime2","description":"a string, date or datetime representing the earlier date"}],
+  "examples": [ { "expression":"age('2012-05-12','2012-05-2')", "returns":"interval", "note":"use <code>day</code> to extract number of days"},
+                { "expression":"day(age('2012-05-12','2012-05-2'))", "returns":"10"} ]
+}
+

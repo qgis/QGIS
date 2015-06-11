@@ -1,0 +1,8 @@
+{
+  "function": "distance",
+  "description": "Returns the minimum distance (based on spatial ref) between two geometries in projected units.",
+  "arguments": [ {"arg":"geometry a","description":"a geometry"},
+  {"arg":"geometry b","description":"a geometry"}],
+  "examples": [ { "expression":"distance( geom_from_wkt( 'POINT(4 4)' ), geom_from_wkt( 'POINT(4 8)' ) )", "returns":"4"}
+  ]
+}

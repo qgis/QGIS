@@ -1,0 +1,8 @@
+{
+  "function": "round",
+  "description": "Rounds a number to number of decimal places.",
+  "arguments": [ {"arg":"decimal","description":"decimal number to be rounded"},
+  {"arg":"places","description":"Optional integer representing number of places to round decimals too. Can be negative."}],
+  "examples": [ { "expression":"round(1234.567, 2)", "returns":"1234.57"},
+                { "expression":"round(1234.567)", "returns":"1235"}]
+}

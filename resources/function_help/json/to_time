@@ -1,0 +1,7 @@
+{
+  "function": "to_time",
+  "description": "Convert a string into a time object.",
+  "arguments": [ {"arg":"string","description":"string representing a time value"}],
+  "examples": [ { "expression":"to_time('12:30:01')", "returns":"12:30:01"}
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "function": "color_cmyka",
+  "description": "Returns a string representation of a color based on its cyan, magenta, yellow, black and alpha (transparency) components",
+  "arguments": [ {"arg":"cyan","description":"cyan component of the color, as a percentage integer value from 0 to 100"},
+                 {"arg":"magenta","description":"magenta component of the color, as a percentage integer value from 0 to 100"},
+                 {"arg":"yellow","description":"yellow component of the color, as a percentage integer value from 0 to 100"},
+                 {"arg":"black","description":"black component of the color, as a percentage integer value from 0 to 100"},
+                 {"arg":"alpha","description":"alpha component as an integer value from 0 (completely transparent) to 255 (opaque)."}],
+  "examples": [ { "expression":"color_cmyk(100,50,0,10,200)", "returns":"0,115,230,200"}]
+}

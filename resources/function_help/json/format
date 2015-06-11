@@ -1,0 +1,11 @@
+{
+  "function": "format",
+  "description": "Format a string using supplied arguments.",
+  "variableLenArguments": true,
+  "arguments": [ {"arg":"string", "description":"A string with place holders for the arguments. Use %1, %2, etc for placeholders. Placeholders can be repeated."},
+                 {"arg":"arg1", "syntaxOnly": true},
+                 {"arg":"arg2", "syntaxOnly": true},
+                 {"arg":"arg", "descOnly": true, "description":"any type. Any number of arguments."}],
+  "examples": [ { "expression":"format('This %1 a %2','is', 'test')", "returns":"'This is a test''"}
+  ]
+}

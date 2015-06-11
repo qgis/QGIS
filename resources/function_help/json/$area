@@ -1,0 +1,5 @@
+{
+  "function": "$area",
+  "description": "Returns the area of the current feature.",
+  "examples": [ { "expression":"$area", "returns":"42"}]
+}

@@ -1,0 +1,7 @@
+{
+  "function": "to_date",
+  "description": "Convert a string into a date object.",
+  "arguments": [ {"arg":"string","description":"string representing a date value"}],
+  "examples": [ { "expression":"to_date('2012-05-04')", "returns":"2012-05-04"}
+  ]
+}

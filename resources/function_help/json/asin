@@ -1,0 +1,6 @@
+{
+  "function": "asin",
+  "description": "Returns the inverse sine of a value in radians.",
+  "arguments": [ {"arg":"value","description":"sine of an angle in radians"}],
+  "examples": [ { "expression":"asin(1.0)", "returns":"1.5707963267949"}]
+}
