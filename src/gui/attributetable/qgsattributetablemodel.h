@@ -117,8 +117,10 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     /**
      * Resets the model
+     *
+     * Alias to loadLayer()
      */
-    void resetModel();
+    inline void resetModel() { loadLayer(); }
 
     /**
      * Maps feature id to table row

@@ -336,6 +336,7 @@ void QgsAttributeTableModel::loadAttributes()
 void QgsAttributeTableModel::loadLayer()
 {
   QgsDebugMsg( "entered." );
+  beginResetModel();
 
   if ( rowCount() != 0 )
   {
@@ -372,6 +373,7 @@ void QgsAttributeTableModel::loadLayer()
   connect( mLayerCache, SIGNAL( invalidated() ), this, SLOT( loadLayer() ) );
 
   mFieldCount = mAttributes.size();
+  endResetModel();
 }
 
 void QgsAttributeTableModel::swapRows( QgsFeatureId a, QgsFeatureId b )
@@ -620,12 +622,7 @@ void QgsAttributeTableModel::reload( const QModelIndex &index1, const QModelInde
   emit dataChanged( index1, index2 );
 }
 
-void QgsAttributeTableModel::resetModel()
-{
-  beginResetModel();
-  loadLayer();
-  endResetModel();
-}
+
 
 void QgsAttributeTableModel::executeAction( int action, const QModelIndex &idx ) const
 {
