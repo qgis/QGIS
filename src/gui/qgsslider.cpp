@@ -18,7 +18,10 @@
 #include "qgsslider.h"
 #include "qgslogger.h"
 
+#include <QPaintEvent>
+#include <QPainter>
 #include <QRect>
+#include <qmath.h>
 
 QgsSlider::QgsSlider( QWidget * parent ) : QSlider( parent )
 {
@@ -92,14 +95,14 @@ void QgsSlider::update()
     if ( minimum() != 0 )
       QSlider::setMinimum( 0 );
 
-    int max = ( int ) ceil(( mMax.toDouble() - mMin.toDouble() ) / mStep.toDouble() );
+    int max = qCeil(( mMax.toDouble() - mMin.toDouble() ) / mStep.toDouble() );
     if ( maximum() != max )
       QSlider::setMaximum( max );
 
     if ( singleStep() != 1 )
       QSlider::setSingleStep( 1 );
 
-    QSlider::setValue(( int ) ceil(( mValue.toDouble() - mMin.toDouble() ) / mStep.toDouble() ) );
+    QSlider::setValue( qCeil(( mValue.toDouble() - mMin.toDouble() ) / mStep.toDouble() ) );
   }
 
   connect( this, SIGNAL( valueChanged( int ) ), this, SLOT( valueChanged( int ) ) );

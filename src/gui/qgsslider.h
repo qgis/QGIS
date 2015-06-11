@@ -15,10 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QPainter>
-#include <QPaintEvent>
-#include <QSize>
 #include <QSlider>
+#include <QVariant>
+
+class QPaintEvent;
 
 class GUI_EXPORT QgsSlider : public QSlider
 {
