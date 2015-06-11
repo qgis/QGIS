@@ -27,7 +27,7 @@ class PackageTests(unittest.TestCase):
 
     def testOtb(self):
         folder = OTBUtils.findOtbPath()
-        self.assertIsNotNone(folder)            
+        self.assertIsNotNone(folder)
 
 def runTests():
     t = unittest.TestLoader().loadTestsFromTestCase(PackageTests)

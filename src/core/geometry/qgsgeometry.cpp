@@ -904,8 +904,8 @@ bool QgsGeometry::convertToMultiType()
     return false;
   }
 
+  detach( true );
   multiGeom->addGeometry( d->geometry );
-  detach( false );
   d->geometry = multiGeom;
   removeWkbGeos();
   return true;
