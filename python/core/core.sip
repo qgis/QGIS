@@ -115,6 +115,8 @@
 %Include qgsvectorlayerundocommand.sip
 %Include qgsvectorsimplifymethod.sip
 %Include qgsfontutils.sip
+%Include qgsdartmeasurement.sip
+%Include qgsexpressionfieldbuffer.sip
 
 %Include qgscachedfeatureiterator.sip
 %Include qgscacheindex.sip
