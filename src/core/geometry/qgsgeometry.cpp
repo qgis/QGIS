@@ -52,14 +52,17 @@ email                : morb at ozemail dot com dot au
 
 struct QgsGeometryPrivate
 {
+  QgsGeometryPrivate(): ref( 1 ), geometry( 0 ), mWkb( 0 ), mWkbSize( 0 ), mGeos( 0 ) {}
+  ~QgsGeometryPrivate() { delete geometry; delete[] mWkb; GEOSGeom_destroy_r( QgsGeos::getGEOSHandler(), mGeos ); }
   QAtomicInt ref;
   QgsAbstractGeometryV2* geometry;
+  mutable const unsigned char* mWkb; //store wkb pointer for backward compatibility
+  mutable int mWkbSize;
+  mutable GEOSGeometry* mGeos;
 };
 
-QgsGeometry::QgsGeometry(): d( new QgsGeometryPrivate() ), mWkb( 0 ), mWkbSize( 0 ), mGeos( 0 )
+QgsGeometry::QgsGeometry(): d( new QgsGeometryPrivate() )
 {
-  d->geometry = 0;
-  d->ref = QAtomicInt( 1 );
 }
 
 QgsGeometry::~QgsGeometry()
@@ -68,20 +71,18 @@ QgsGeometry::~QgsGeometry()
   {
     if ( !d->ref.deref() )
     {
-      delete d->geometry;
       delete d;
     }
   }
-  removeWkbGeos();
 }
 
-QgsGeometry::QgsGeometry( QgsAbstractGeometryV2* geom ): d( new QgsGeometryPrivate() ), mWkb( 0 ), mWkbSize( 0 ), mGeos( 0 )
+QgsGeometry::QgsGeometry( QgsAbstractGeometryV2* geom ): d( new QgsGeometryPrivate() )
 {
   d->geometry = geom;
   d->ref = QAtomicInt( 1 );
 }
 
-QgsGeometry::QgsGeometry( const QgsGeometry& other ): mWkb( 0 ), mWkbSize( 0 ), mGeos( 0 )
+QgsGeometry::QgsGeometry( const QgsGeometry& other )
 {
   d = other.d;
   d->ref.ref();
@@ -91,11 +92,8 @@ QgsGeometry& QgsGeometry::operator=( QgsGeometry const & other )
 {
   if ( !d->ref.deref() )
   {
-    delete d->geometry;
     delete d;
   }
-
-  removeWkbGeos();
 
   d = other.d;
   d->ref.ref();
@@ -109,29 +107,31 @@ void QgsGeometry::detach( bool cloneGeom )
     return;
   }
 
-  removeWkbGeos();
-
   if ( d->ref > 1 )
   {
     d->ref.deref();
     QgsAbstractGeometryV2* cGeom = 0;
+
     if ( d->geometry && cloneGeom )
     {
       cGeom = d->geometry->clone();
     }
+
     d = new QgsGeometryPrivate();
     d->geometry = cGeom;
-    d->ref = QAtomicInt( 1 );
   }
 }
 
 void QgsGeometry::removeWkbGeos()
 {
-  delete[] mWkb;
-  mWkb = 0;
-  mWkbSize = 0;
-  GEOSGeom_destroy( mGeos );
-  mGeos = 0;
+  delete[] d->mWkb;
+  d->mWkb = 0;
+  d->mWkbSize = 0;
+  if ( d->mGeos )
+  {
+    GEOSGeom_destroy_r( QgsGeos::getGEOSHandler(), d->mGeos );
+    d->mGeos = 0;
+  }
 }
 
 const QgsAbstractGeometryV2* QgsGeometry::geometry() const
@@ -244,7 +244,8 @@ void QgsGeometry::fromWkb( unsigned char *wkb, size_t length )
     removeWkbGeos();
   }
   d->geometry = QgsGeometryImport::geomFromWkb( wkb );
-  delete[] wkb;
+  d->mWkb = wkb;
+  d->mWkbSize = length;
 }
 
 const unsigned char *QgsGeometry::asWkb() const
@@ -254,11 +255,11 @@ const unsigned char *QgsGeometry::asWkb() const
     return 0;
   }
 
-  if ( !mWkb )
+  if ( !d->mWkb )
   {
-    mWkb = d->geometry->asWkb( mWkbSize );
+    d->mWkb = d->geometry->asWkb( d->mWkbSize );
   }
-  return mWkb;
+  return d->mWkb;
 }
 
 size_t QgsGeometry::wkbSize() const
@@ -268,11 +269,11 @@ size_t QgsGeometry::wkbSize() const
     return 0;
   }
 
-  if ( !mWkb )
+  if ( !d->mWkb )
   {
-    mWkb = d->geometry->asWkb( mWkbSize );
+    d->mWkb = d->geometry->asWkb( d->mWkbSize );
   }
-  return mWkbSize;
+  return d->mWkbSize;
 }
 
 const GEOSGeometry* QgsGeometry::asGeos() const
@@ -282,11 +283,11 @@ const GEOSGeometry* QgsGeometry::asGeos() const
     return 0;
   }
 
-  if ( !mGeos )
+  if ( !d->mGeos )
   {
-    mGeos = QgsGeos::asGeos( d->geometry );
+    d->mGeos = QgsGeos::asGeos( d->geometry );
   }
-  return mGeos;
+  return d->mGeos;
 }
 
 
@@ -328,6 +329,7 @@ void QgsGeometry::fromGeos( GEOSGeometry *geos )
     detach( false );
     delete d->geometry;
     d->geometry = QgsGeos::fromGeos( geos );
+    d->mGeos = geos;
   }
 }
 
