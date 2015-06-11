@@ -1665,6 +1665,8 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
         OGR_F_SetFieldDouble( poFeature, ogrField, attrValue.toDouble() );
         break;
       case QVariant::LongLong:
+      case QVariant::UInt:
+      case QVariant::ULongLong:
       case QVariant::String:
         OGR_F_SetFieldString( poFeature, ogrField, mCodec->fromUnicode( attrValue.toString() ).data() );
         break;
@@ -1685,13 +1687,21 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
                                 attrValue.toDateTime().time().second(),
                                 0 );
         break;
+      case QVariant::Time:
+        OGR_F_SetFieldDateTime( poFeature, ogrField,
+                                0, 0, 0,
+                                attrValue.toDateTime().time().hour(),
+                                attrValue.toDateTime().time().minute(),
+                                attrValue.toDateTime().time().second(),
+                                0 );
+        break;
       case QVariant::Invalid:
         break;
       default:
         mErrorMessage = QObject::tr( "Invalid variant type for field %1[%2]: received %3 with type %4" )
                         .arg( mFields[fldIdx].name() )
                         .arg( ogrField )
-                        .arg( QMetaType::typeName( attrValue.type() ) )
+                        .arg( attrValue.typeName() )
                         .arg( attrValue.toString() );
         QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
         mError = ErrFeatureWriteFailed;
