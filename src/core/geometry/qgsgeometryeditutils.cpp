@@ -110,22 +110,52 @@ int QgsGeometryEditUtils::addPart( QgsAbstractGeometryV2* geom, QgsAbstractGeome
   if ( geom->geometryType() == "MultiSurface" || geom->geometryType() == "MultiPolygon" )
   {
     QgsCurveV2* curve = dynamic_cast<QgsCurveV2*>( part );
-    if ( !curve || !curve->isClosed() || curve->numPoints() < 4 )
+    if ( curve && curve->isClosed() && curve->numPoints() >= 4 )
     {
-      delete part; return 2;
+      QgsCurvePolygonV2 *poly = 0;
+      if ( curve->geometryType() == "LineString" )
+      {
+        poly = new QgsPolygonV2();
+      }
+      else
+      {
+        poly = new QgsCurvePolygonV2();
+      }
+      poly->setExteriorRing( curve );
+      added = geomCollection->addGeometry( poly );
     }
-
-    QgsCurvePolygonV2* poly = 0;
-    if ( curve->geometryType() == "LineString" )
+    else if ( part->geometryType() == "Polygon" )
     {
-      poly = new QgsPolygonV2();
+      added = geomCollection->addGeometry( part );
+    }
+    else if ( part->geometryType() == "MultiPolygon" )
+    {
+      QgsGeometryCollectionV2 *parts = dynamic_cast<QgsGeometryCollectionV2*>( part );
+
+      int i;
+      int n = geomCollection->numGeometries();
+      for ( i = 0; i < parts->numGeometries() && geomCollection->addGeometry( parts->geometryN( i ) ); i++ )
+        ;
+
+      added = i == parts->numGeometries();
+      if ( !added )
+      {
+        while ( geomCollection->numGeometries() > n )
+          geomCollection->removeGeometry( n );
+        delete part; return 2;
+      }
+
+      while ( parts->numGeometries() > 0 )
+      {
+        parts->removeGeometry( 0 );
+      }
+
+      delete part;
     }
     else
     {
-      poly = new QgsCurvePolygonV2();
+      delete part; return 2;
     }
-    poly->setExteriorRing( curve );
-    added = geomCollection->addGeometry( poly );
   }
   else
   {

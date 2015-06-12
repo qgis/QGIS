@@ -1150,6 +1150,19 @@ class TestQgsGeometry(TestCase):
         wkt = polygon.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
+        mp = QgsGeometry.fromMultiPolygon( points[:1] )
+        p = QgsGeometry.fromPolygon( points[1] )
+
+        assert mp.addPartGeometry( p ) == 0
+        wkt = mp.exportToWkt()
+        assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
+
+        mp = QgsGeometry.fromMultiPolygon( points[:1] )
+        mp2 = QgsGeometry.fromMultiPolygon( points[1:] )
+        assert mp.addPartGeometry( mp2 ) == 0
+        wkt = mp.exportToWkt()
+        assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
+
     def testConvertToType(self):
         # 5-+-4 0-+-9  13-+-+-12
         # |   | |   |  |       |
