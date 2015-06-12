@@ -50,6 +50,8 @@ QgsGraduatedHistogramWidget::QgsGraduatedHistogramWidget( QWidget *parent )
     , mHistoPicker( 0 )
     , mPressedValue( 0 )
 {
+  //clear x axis title to make more room for graph
+  setXAxisTitle( QString() );
 
   mFilter = new QgsGraduatedHistogramEventFilter( mPlot );
 

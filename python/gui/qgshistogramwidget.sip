@@ -79,6 +79,32 @@ class QgsHistogramWidget : QWidget
      */
     QgsRangeList graduatedRanges() const;
 
+    /** Returns the title for the histogram's x-axis.
+     * @see setXAxisTitle
+     * @see yAxisTitle
+     */
+    QString xAxisTitle() const;
+
+    /** Sets the title for the histogram's x-axis.
+     * @param title x-axis title, or empty string to remove title
+     * @see xAxisTitle
+     * @see setYAxisTitle
+     */
+    void setXAxisTitle( const QString& title );
+
+    /** Returns the title for the histogram's y-axis.
+     * @see setYAxisTitle
+     * @see xAxisTitle
+     */
+    QString yAxisTitle() const;
+
+    /** Sets the title for the histogram's y-axis.
+     * @param title y-axis title, or empty string to remove title
+     * @see yAxisTitle
+     * @see setXAxisTitle
+     */
+    void setYAxisTitle( const QString& title );
+
   public slots:
 
     /** Triggers a refresh of the histogram when the widget is next repainted.

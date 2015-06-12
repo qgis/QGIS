@@ -118,6 +118,32 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
      */
     QgsRangeList graduatedRanges() const { return mRanges; }
 
+    /** Returns the title for the histogram's x-axis.
+     * @see setXAxisTitle
+     * @see yAxisTitle
+     */
+    QString xAxisTitle() const { return mXAxisTitle; }
+
+    /** Sets the title for the histogram's x-axis.
+     * @param title x-axis title, or empty string to remove title
+     * @see xAxisTitle
+     * @see setYAxisTitle
+     */
+    void setXAxisTitle( const QString& title ) { mXAxisTitle = title; }
+
+    /** Returns the title for the histogram's y-axis.
+     * @see setYAxisTitle
+     * @see xAxisTitle
+     */
+    QString yAxisTitle() const { return mYAxisTitle; }
+
+    /** Sets the title for the histogram's y-axis.
+     * @param title y-axis title, or empty string to remove title
+     * @see yAxisTitle
+     * @see setXAxisTitle
+     */
+    void setYAxisTitle( const QString& title ) { mYAxisTitle = title; }
+
   public slots:
 
     /** Triggers a refresh of the histogram when the widget is next repainted.
@@ -166,6 +192,8 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
     QPen mMeanPen;
     QPen mStdevPen;
     QPen mGridPen;
+    QString mXAxisTitle;
+    QString mYAxisTitle;
 
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
     QwtPlotHistogram* createPlotHistogram( const QString& title, const QBrush &brush, const QPen &pen = Qt::NoPen ) const;

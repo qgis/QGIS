@@ -47,6 +47,8 @@ QgsHistogramWidget::QgsHistogramWidget( QWidget *parent, QgsVectorLayer* layer, 
     , mRedrawRequired( true )
     , mVectorLayer( layer )
     , mSourceFieldExp( fieldOrExp )
+    , mXAxisTitle( QObject::tr("Value"))
+    , mYAxisTitle( QObject::tr("Count"))
 {
   setupUi( this );
 
@@ -163,8 +165,20 @@ void QgsHistogramWidget::drawHistogram()
   //ensure all children get removed
   mpPlot->setAutoDelete( true );
   // Set axis titles
-  mpPlot->setAxisTitle( QwtPlot::xBottom, QObject::tr( "Value" ) );
-  mpPlot->setAxisTitle( QwtPlot::yLeft, QObject::tr( "Count" ) );
+  if ( !mXAxisTitle.isEmpty() )
+    mpPlot->setAxisTitle( QwtPlot::xBottom, mXAxisTitle );
+  if ( !mYAxisTitle.isEmpty() )
+    mpPlot->setAxisTitle( QwtPlot::yLeft, mYAxisTitle );
+  mpPlot->setAxisFont( QwtPlot::xBottom, this->font() );
+  mpPlot->setAxisFont( QwtPlot::yLeft, this->font() );
+  QFont titleFont = this->font();
+  titleFont.setBold( true );
+  QwtText xAxisText = mpPlot->axisTitle( QwtPlot::xBottom );
+  xAxisText.setFont( titleFont );
+  mpPlot->setAxisTitle( QwtPlot::xBottom, xAxisText );
+  QwtText yAxisText = mpPlot->axisTitle( QwtPlot::yLeft );
+  yAxisText.setFont( titleFont );
+  mpPlot->setAxisTitle( QwtPlot::yLeft, yAxisText );
   mpPlot->setAxisAutoScale( QwtPlot::yLeft );
   mpPlot->setAxisAutoScale( QwtPlot::xBottom );
 
