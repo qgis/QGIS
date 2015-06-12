@@ -123,6 +123,7 @@ void TestQGis::permissiveToInt()
 void TestQGis::doubleToString()
 {
   QCOMPARE( qgsDoubleToString( 5.6783212, 5 ), QString( "5.67832" ) );
+  QCOMPARE( qgsDoubleToString( 5.5555555, 5 ), QString( "5.55556" ) );
   QCOMPARE( qgsDoubleToString( 12.2, 1 ), QString( "12.2" ) );
   QCOMPARE( qgsDoubleToString( 12.2, 2 ), QString( "12.2" ) );
   QCOMPARE( qgsDoubleToString( 12.2, 10 ), QString( "12.2" ) );
