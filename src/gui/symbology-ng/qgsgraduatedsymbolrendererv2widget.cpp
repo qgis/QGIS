@@ -973,6 +973,7 @@ void QgsGraduatedSymbolRendererV2Widget::toggleBoundariesLink( bool linked )
       mRenderer->updateRangeLowerValue( i, mRenderer->ranges()[i-1].upperValue() );
     }
     refreshSymbolView();
+    mHistogramWidget->refreshHistogram();
   }
 }
 
