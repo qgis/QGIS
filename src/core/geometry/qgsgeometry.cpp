@@ -143,6 +143,12 @@ const QgsAbstractGeometryV2* QgsGeometry::geometry() const
   return d->geometry;
 }
 
+void QgsGeometry::setGeometry( QgsAbstractGeometryV2* geometry )
+{
+  detach( false );
+  d->geometry = geometry;
+}
+
 QgsGeometry* QgsGeometry::fromWkt( QString wkt )
 {
   QgsAbstractGeometryV2* geom = QgsGeometryImport::geomFromWkt( wkt );

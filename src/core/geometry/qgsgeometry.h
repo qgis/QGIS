@@ -80,7 +80,8 @@ class CORE_EXPORT QgsGeometry
       */
     QgsGeometry & operator=( QgsGeometry const & rhs );
 
-    /** Creates a geometry from an abstract geometry object.
+    /** Creates a geometry from an abstract geometry object. Ownership of
+     * geom is transferred.
      * @note added in QGIS 2.10
      */
     QgsGeometry( QgsAbstractGeometryV2* geom );
@@ -92,6 +93,11 @@ class CORE_EXPORT QgsGeometry
      * @note added in QGIS 2.10
      */
     const QgsAbstractGeometryV2* geometry() const;
+
+    /** Sets the underlying geometry store. Ownership of geometry is transferred.
+     * @note added in QGIS 2.10
+     */
+    void setGeometry( QgsAbstractGeometryV2* geometry );
 
     /** Creates a new geometry from a WKT string */
     static QgsGeometry* fromWkt( QString wkt );

@@ -30,6 +30,7 @@
 #include <qgsapplication.h>
 #include <qgsgeometry.h>
 #include <qgspoint.h>
+#include "qgspointv2.h"
 
 //qgs unit test utility class
 #include "qgsrenderchecker.h"
@@ -49,6 +50,9 @@ class TestQgsGeometry : public QObject
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
+
+    void copy();
+    void assignment();
 
     void fromQgsPoint();
     void fromQPoint();
@@ -205,6 +209,51 @@ void TestQgsGeometry::cleanup()
   delete mpPolygonGeometryB;
   delete mpPolygonGeometryC;
   delete mpPainter;
+}
+
+void TestQgsGeometry::copy()
+{
+  //create a point geometry
+  QgsGeometry original( new QgsPointV2( 1.0, 2.0 ) );
+  QCOMPARE( original.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
+  QCOMPARE( original.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
+
+  //implicitly shared copy
+  QgsGeometry copy( original );
+  QCOMPARE( copy.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
+  QCOMPARE( copy.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
+
+  //trigger a detach
+  copy.setGeometry( new QgsPointV2( 3.0, 4.0 ) );
+  QCOMPARE( copy.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 3.0 );
+  QCOMPARE( copy.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 4.0 );
+
+  //make sure original was untouched
+  QCOMPARE( original.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
+  QCOMPARE( original.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
+}
+
+void TestQgsGeometry::assignment()
+{
+  //create a point geometry
+  QgsGeometry original( new QgsPointV2( 1.0, 2.0 ) );
+  QCOMPARE( original.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
+  QCOMPARE( original.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
+
+  //assign to implicitly shared copy
+  QgsGeometry copy;
+  copy = original;
+  QCOMPARE( copy.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
+  QCOMPARE( copy.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
+
+  //trigger a detach
+  copy.setGeometry( new QgsPointV2( 3.0, 4.0 ) );
+  QCOMPARE( copy.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 3.0 );
+  QCOMPARE( copy.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 4.0 );
+
+  //make sure original was untouched
+  QCOMPARE( original.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
+  QCOMPARE( original.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
 }
 
 void TestQgsGeometry::fromQgsPoint()
