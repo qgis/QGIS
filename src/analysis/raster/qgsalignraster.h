@@ -85,7 +85,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
 
 
     //! Resampling algorithm to be used (equivalent to GDAL's enum GDALResampleAlg)
-    typedef enum
+    enum ResampleAlg
     {
       RA_NearestNeighbour = 0, //!< Nearest neighbour (select on one input pixel)
       RA_Bilinear = 1,       //!< Bilinear (2x2 kernel)
@@ -94,7 +94,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
       RA_Lanczos = 4,        //!< Lanczos windowed sinc interpolation (6x6 kernel)
       RA_Average = 5,        //!< Average (computes the average of all non-NODATA contributing pixels)
       RA_Mode = 6            //!< Mode (selects the value which appears most often of all the sampled points)
-    } ResampleAlg;
+    };
 
     //! Definition of one raster layer for alignment
     struct Item
