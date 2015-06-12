@@ -122,12 +122,18 @@ void TestQGis::permissiveToInt()
 
 void TestQGis::doubleToString()
 {
-  QString result = qgsDoubleToString( 5.6783212, 5 );
-  QVERIFY( result == "5.67832" );
-  result = qgsDoubleToString( 5.3456789, 5 );
-  QVERIFY( result == "5.34568" );
-  result = qgsDoubleToString( 12000, 0 );
-  QVERIFY( result == "12000" );
+  QCOMPARE( qgsDoubleToString( 5.6783212, 5 ), QString( "5.67832" ) );
+  QCOMPARE( qgsDoubleToString( 12.2, 1 ), QString( "12.2" ) );
+  QCOMPARE( qgsDoubleToString( 12.2, 2 ), QString( "12.2" ) );
+  QCOMPARE( qgsDoubleToString( 12.2, 10 ), QString( "12.2" ) );
+  QCOMPARE( qgsDoubleToString( 12.234333, 1 ), QString( "12.2" ) );
+  QCOMPARE( qgsDoubleToString( 12, 1 ), QString( "12" ) );
+  QCOMPARE( qgsDoubleToString( 12, 0 ), QString( "12" ) );
+  QCOMPARE( qgsDoubleToString( 12000, 0 ), QString( "12000" ) );
+  QCOMPARE( qgsDoubleToString( 12000, 1 ), QString( "12000" ) );
+  QCOMPARE( qgsDoubleToString( 12000, 10 ), QString( "12000" ) );
+  QCOMPARE( qgsDoubleToString( 12345, -1 ), QString( "12345" ) );
 }
+
 QTEST_MAIN( TestQGis )
 #include "testqgis.moc"
