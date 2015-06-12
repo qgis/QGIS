@@ -23,6 +23,8 @@ SET(QGIS_ANALYSIS_SRCS
   interpolation/Triangulation.cc
   interpolation/TriDecorator.cc
   interpolation/Vector3D.cc
+  
+  raster/qgsalignraster.cpp
   raster/qgsninecellfilter.cpp
   raster/qgsruggednessfilter.cpp
   raster/qgsderivativefilter.cpp
@@ -85,6 +87,7 @@ QT4_WRAP_CPP(QGIS_ANALYSIS_MOC_SRCS ${QGIS_ANALYSIS_MOC_HDRS})
 # install headers
 
 SET(QGIS_ANALYSIS_HDRS
+  raster/qgsalignraster.h
   raster/qgsaspectfilter.h
   raster/qgsderivativefilter.h
   raster/qgshillshadefilter.h
