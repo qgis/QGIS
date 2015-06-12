@@ -53,6 +53,7 @@ class TestQgsGeometry : public QObject
 
     void copy();
     void assignment();
+    void asVariant(); //test conversion to and from a QVariant
 
     void fromQgsPoint();
     void fromQPoint();
@@ -254,6 +255,35 @@ void TestQgsGeometry::assignment()
   //make sure original was untouched
   QCOMPARE( original.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
   QCOMPARE( original.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
+}
+
+void TestQgsGeometry::asVariant()
+{
+  //create a point geometry
+  QgsGeometry original( new QgsPointV2( 1.0, 2.0 ) );
+  QCOMPARE( original.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
+  QCOMPARE( original.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
+
+  //convert to and from a QVariant
+  QVariant var = QVariant::fromValue( original );
+  QVERIFY( var.isValid() );
+
+  QgsGeometry fromVar = qvariant_cast<QgsGeometry>( var );
+  QCOMPARE( fromVar.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
+  QCOMPARE( fromVar.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
+
+  //also check copying variant
+  QVariant var2 = var;
+  QVERIFY( var2.isValid() );
+  QgsGeometry fromVar2 = qvariant_cast<QgsGeometry>( var2 );
+  QCOMPARE( fromVar2.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
+  QCOMPARE( fromVar2.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
+
+  //modify original and check detachment
+  original.setGeometry( new QgsPointV2( 3.0, 4.0 ) );
+  QgsGeometry fromVar3 = qvariant_cast<QgsGeometry>( var );
+  QCOMPARE( fromVar3.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
+  QCOMPARE( fromVar3.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
 }
 
 void TestQgsGeometry::fromQgsPoint()
