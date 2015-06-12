@@ -85,14 +85,26 @@ void QgsGraduatedHistogramWidget::drawHistogram()
     return;
 
   bool pickerEnabled = false;
-  if ( !mRenderer->rangesOverlap() && !mRenderer->rangesHaveGaps() && !mRenderer->ranges().isEmpty() )
+  if ( mRenderer->rangesOverlap() )
   {
-    setGraduatedRanges( mRenderer->ranges() );
-    pickerEnabled = true;
+    setToolTip( tr( "Ranges are overlapping and can't be edited by the histogram" ) );
+    setGraduatedRanges( QgsRangeList() );
+  }
+  else if ( mRenderer->rangesHaveGaps() )
+  {
+    setToolTip( tr( "Ranges have gaps and can't be edited by the histogram" ) );
+    setGraduatedRanges( QgsRangeList() );
+  }
+  else if ( mRenderer->ranges().isEmpty() )
+  {
+    setToolTip( QString() );
+    setGraduatedRanges( QgsRangeList() );
   }
   else
   {
-    setGraduatedRanges( QgsRangeList() );
+    setToolTip( QString() );
+    setGraduatedRanges( mRenderer->ranges() );
+    pickerEnabled = true;
   }
   QgsHistogramWidget::drawHistogram();
 
