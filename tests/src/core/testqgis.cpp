@@ -35,6 +35,7 @@ class TestQGis : public QObject
 
     void permissiveToDouble();
     void permissiveToInt();
+    void doubleToString();
 
   private:
     QString mReport;
@@ -119,5 +120,14 @@ void TestQGis::permissiveToInt()
   QCOMPARE( result, 1000 );
 }
 
+void TestQGis::doubleToString()
+{
+  QString result = qgsDoubleToString( 5.6783212, 5 );
+  QVERIFY( result == "5.67832" );
+  result = qgsDoubleToString( 5.3456789, 5 );
+  QVERIFY( result == "5.34568" );
+  result = qgsDoubleToString( 12000, 0 );
+  QVERIFY( result == "12000" );
+}
 QTEST_MAIN( TestQGis )
 #include "testqgis.moc"
