@@ -36,6 +36,7 @@ scripts/astyle.exe
 *.out
 *.tex
 *.toc
+*.sortinc
 doc/CODING.tex
 doc/INSTALL.tex
 scripts/Debug
