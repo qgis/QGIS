@@ -1867,7 +1867,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
 
   QGis::WkbType wkbType = layer->wkbType();
 
-  if ( layer->providerType() == "ogr" )
+  if ( layer->providerType() == "ogr" && layer->dataProvider() )
   {
     QStringList theURIParts = layer->dataProvider()->dataSourceUri().split( "|" );
     QString srcFileName = theURIParts[0];
