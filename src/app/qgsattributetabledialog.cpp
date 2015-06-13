@@ -723,7 +723,7 @@ void QgsAttributeTableDialog::filterQueryChanged( const QString& query )
 
     QSettings settings;
     QString nullValue = settings.value( "qgis/nullValue", "NULL" ).toString();
-    QString value = mCurrentSearchWidgetWrapper->value().toString();
+    QString value = mCurrentSearchWidgetWrapper->expression();
 
     if ( value == nullValue )
     {
@@ -749,7 +749,7 @@ void QgsAttributeTableDialog::filterQueryAccepted()
 {
   if (( mFilterQuery->isVisible() && mFilterQuery->text().isEmpty() ) ||
       ( mCurrentSearchWidgetWrapper != 0 && mCurrentSearchWidgetWrapper->widget()->isVisible()
-        && mCurrentSearchWidgetWrapper->value().toString().isEmpty() ) )
+        && mCurrentSearchWidgetWrapper->expression().isEmpty() ) )
   {
     filterShowAll();
     return;
