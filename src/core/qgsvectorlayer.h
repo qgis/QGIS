@@ -647,7 +647,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Removes a vector layer join */
     void removeJoin( const QString& joinLayerId );
 
-    const QList< QgsVectorJoinInfo >& vectorJoins() const;
+    const QList<QgsVectorJoinInfo> vectorJoins() const;
 
     /**
      * Add a new field which is calculated by the expression specified

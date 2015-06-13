@@ -2840,7 +2840,7 @@ int QgsVectorLayer::fieldNameIndex( const QString& fieldName ) const
 
 bool QgsVectorLayer::addJoin( const QgsVectorJoinInfo& joinInfo )
 {
-  return mJoinBuffer->addJoin( joinInfo );
+  return mJoinBuffer && mJoinBuffer->addJoin( joinInfo );
 }
 
 void QgsVectorLayer::checkJoinLayerRemove( QString theLayerId )
@@ -2850,12 +2850,16 @@ void QgsVectorLayer::checkJoinLayerRemove( QString theLayerId )
 
 void QgsVectorLayer::removeJoin( const QString& joinLayerId )
 {
-  mJoinBuffer->removeJoin( joinLayerId );
+  if ( mJoinBuffer )
+    mJoinBuffer->removeJoin( joinLayerId );
 }
 
-const QList< QgsVectorJoinInfo >& QgsVectorLayer::vectorJoins() const
+const QList< QgsVectorJoinInfo > QgsVectorLayer::vectorJoins() const
 {
-  return mJoinBuffer->vectorJoins();
+  if ( mJoinBuffer )
+    return mJoinBuffer->vectorJoins();
+  else
+    return QList< QgsVectorJoinInfo >();
 }
 
 void QgsVectorLayer::addExpressionField( const QString& exp, const QgsField& fld )
