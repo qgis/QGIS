@@ -1,7 +1,5 @@
 # About QGIS
 
-[![Join the chat at https://gitter.im/qgis/QGIS](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/qgis/QGIS?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 [![Build Status](https://travis-ci.org/qgis/QGIS.svg?branch=master)](https://travis-ci.org/qgis/QGIS)
 
 QGIS is an Open Source Geographic Information System. The project was born in
@@ -66,9 +64,9 @@ You can get support in the following ways:
 
  -  Using the QGIS community site at http://qgis.org
  -  Joining the [qgis-users mailing list](http://lists.osgeo.org/mailman/listinfo/qgis-user)
- -  Using IRC by joining the #qgis channel on irc.freenode.net. Please wait
-    around for a response to your question as many folks on the channel are
-    doing other things and it may take a while for them to notice your question.
+ -  Using IRC by joining the [#qgis](http://webchat.freenode.net/?channels=#qgis) channel on irc.freenode.net.       Please wait around for a response to your question as many folks on the channel are doing other things and it may take a while for them to notice your question.
+ -  Join the [Gitter](https://gitter.im/qgis/QGIS?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) chat.
+
 
 QGIS is on GitHub at http://github.com/qgis/QGIS. If you wish to contribute
 patches you can fork the project, make your changes, commit to your
