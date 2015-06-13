@@ -31,7 +31,7 @@ class GUI_EXPORT QgsDefaultSearchWidgetWrapper : public QgsSearchWidgetWrapper
   public:
     explicit QgsDefaultSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = 0 );
 
-    // QgsEditorWidgetWrapper interface
+    // QgsSearchWidgetWrapper interface
   public:
     QString expression() override;
   protected slots:

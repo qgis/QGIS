@@ -29,17 +29,40 @@ QgsDefaultSearchWidgetWrapper::QgsDefaultSearchWidgetWrapper( QgsVectorLayer* vl
 
 void QgsDefaultSearchWidgetWrapper::setFeature( const QgsFeature& feature )
 {
+    //FIXME what is this?
 }
+
 
 QString QgsDefaultSearchWidgetWrapper::expression()
 {
-  //FIXME clearly not
-  return "foooo";//mLineEdit->text();
+  return mExpression;
 }
 
 void QgsDefaultSearchWidgetWrapper::setExpression(QString exp)
 {
-
+    QString sensString = "LIKE";// FIXME this shouldnt be hiar
+    QVariant::Type fldType = layer()->pendingFields()[mFieldIdx].type();
+    bool numeric = ( fldType == QVariant::Int || fldType == QVariant::Double || fldType == QVariant::LongLong );
+    
+    QSettings settings;
+    QString nullValue = settings.value( "qgis/nullValue", "NULL" ).toString();
+    QString fieldName = layer()->pendingFields()[mFieldIdx].name();
+    QString str;
+    if ( exp == nullValue )
+    {
+      str = QString( "%1 IS NULL" ).arg( QgsExpression::quotedColumnRef( fieldName ) );
+    }
+    else
+    {
+      str = QString( "%1 %2 '%3'" )
+            .arg( QgsExpression::quotedColumnRef( fieldName ) )
+            .arg( numeric ? "=" : sensString )
+            .arg( numeric
+                  ? exp.replace( "'", "''" )
+                  :
+                  "%" + exp.replace( "'", "''" ) + "%" ); // escape quotes
+    }
+    mExpression = str;
 }
 
 QWidget* QgsDefaultSearchWidgetWrapper::createWidget( QWidget* parent )
@@ -51,5 +74,5 @@ void QgsDefaultSearchWidgetWrapper::initWidget( QWidget* widget )
 {
   mLineEdit = qobject_cast<QgsFilterLineEdit*>( widget );
   //mLineEdit->setSizePolicy( QSizePolicy ::Expanding , QSizePolicy ::Fixed );
-  connect( widget, SIGNAL( textChanged( QString ) ), this, SLOT( expressionChanged( QString ) ) );
+  connect( widget, SIGNAL( textChanged( QString ) ), this, SLOT( setExpression( QString ) ) );
 }
