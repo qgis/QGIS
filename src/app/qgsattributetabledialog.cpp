@@ -419,7 +419,6 @@ void QgsAttributeTableDialog::filterColumnChanged( QObject* filterAction )
 {
   mFilterButton->setDefaultAction( qobject_cast<QAction *>( filterAction ) );
   mFilterButton->setPopupMode( QToolButton::InstantPopup );
-  mCbxCaseSensitive->setVisible( true );
   // replace the search line edit with a search widget that is suited to the selected field
   // delete previous widget
   if ( mCurrentSearchWidgetWrapper != 0 )
@@ -435,10 +434,18 @@ void QgsAttributeTableDialog::filterColumnChanged( QObject* filterAction )
   const QgsEditorWidgetConfig widgetConfig = mLayer->editorWidgetV2Config( fldIdx );
   mCurrentSearchWidgetWrapper = QgsEditorWidgetRegistry::instance()->
                                 createSearchWidget( widgetType, mLayer, fldIdx, widgetConfig, mFilterContainer );
+  if (mCurrentSearchWidgetWrapper->applyDirectly())
+  {
+      connect( mCurrentSearchWidgetWrapper, SIGNAL( expressionChanged(QString) ), SLOT( filterQueryChanged(QString) ) );
+      mApplyFilterButton->setVisible(false);
+  }
+  else
+  {
+      mApplyFilterButton->setVisible(true);
+  }
 
   replaceSearchWidget( mFilterQuery, mCurrentSearchWidgetWrapper->widget() );
 
-  mApplyFilterButton->setVisible( true );
 }
 
 void QgsAttributeTableDialog::filterExpressionBuilder()
@@ -463,7 +470,6 @@ void QgsAttributeTableDialog::filterShowAll()
 {
   mFilterButton->setDefaultAction( mActionShowAllFilter );
   mFilterButton->setPopupMode( QToolButton::InstantPopup );
-  mCbxCaseSensitive->setVisible( false );
   mFilterQuery->setVisible( false );
   mApplyFilterButton->setVisible( false );
   mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowAll );
@@ -474,7 +480,6 @@ void QgsAttributeTableDialog::filterSelected()
 {
   mFilterButton->setDefaultAction( mActionSelectedFilter );
   mFilterButton->setPopupMode( QToolButton::InstantPopup );
-  mCbxCaseSensitive->setVisible( false );
   mFilterQuery->setVisible( false );
   mApplyFilterButton->setVisible( false );
   mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowSelected );
@@ -490,7 +495,6 @@ void QgsAttributeTableDialog::filterVisible()
 
   mFilterButton->setDefaultAction( mActionVisibleFilter );
   mFilterButton->setPopupMode( QToolButton::InstantPopup );
-  mCbxCaseSensitive->setVisible( false );
   mFilterQuery->setVisible( false );
   mApplyFilterButton->setVisible( false );
   mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowVisible );
@@ -500,7 +504,6 @@ void QgsAttributeTableDialog::filterEdited()
 {
   mFilterButton->setDefaultAction( mActionEditedFilter );
   mFilterButton->setPopupMode( QToolButton::InstantPopup );
-  mCbxCaseSensitive->setVisible( false );
   mFilterQuery->setVisible( false );
   mApplyFilterButton->setVisible( false );
   mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowEdited );
@@ -706,39 +709,7 @@ void QgsAttributeTableDialog::filterQueryChanged( const QString& query )
   }
   else
   {
-    QString fieldName = mFilterButton->defaultAction()->text();
-    const QgsFields& flds = mLayer->pendingFields();
-    int fldIndex = mLayer->fieldNameIndex( fieldName );
-    if ( fldIndex < 0 )
-      return;
-
-    QVariant::Type fldType = flds[fldIndex].type();
-    bool numeric = ( fldType == QVariant::Int || fldType == QVariant::Double || fldType == QVariant::LongLong );
-
-    QString sensString = "ILIKE";
-    if ( mCbxCaseSensitive->isChecked() )
-    {
-      sensString = "LIKE";
-    }
-
-    QSettings settings;
-    QString nullValue = settings.value( "qgis/nullValue", "NULL" ).toString();
-    QString value = mCurrentSearchWidgetWrapper->value().toString();
-
-    if ( value == nullValue )
-    {
-      str = QString( "%1 IS NULL" ).arg( QgsExpression::quotedColumnRef( fieldName ) );
-    }
-    else
-    {
-      str = QString( "%1 %2 '%3'" )
-            .arg( QgsExpression::quotedColumnRef( fieldName ) )
-            .arg( numeric ? "=" : sensString )
-            .arg( numeric
-                  ? value.replace( "'", "''" )
-                  :
-                  "%" + value.replace( "'", "''" ) + "%" ); // escape quotes
-    }
+    str = mCurrentSearchWidgetWrapper->expression();
   }
 
   setFilterExpression( str );
@@ -749,7 +720,7 @@ void QgsAttributeTableDialog::filterQueryAccepted()
 {
   if (( mFilterQuery->isVisible() && mFilterQuery->text().isEmpty() ) ||
       ( mCurrentSearchWidgetWrapper != 0 && mCurrentSearchWidgetWrapper->widget()->isVisible()
-        && mCurrentSearchWidgetWrapper->value().toString().isEmpty() ) )
+        && mCurrentSearchWidgetWrapper->expression().isEmpty() ) )
   {
     filterShowAll();
     return;
@@ -762,8 +733,6 @@ void QgsAttributeTableDialog::setFilterExpression( QString filterString )
   mFilterQuery->setText( filterString );
   mFilterButton->setDefaultAction( mActionAdvancedFilter );
   mFilterButton->setPopupMode( QToolButton::MenuButtonPopup );
-  mCbxCaseSensitive->setVisible( false );
-
   mFilterQuery->setVisible( true );
   if ( mCurrentSearchWidgetWrapper != 0 )
   {

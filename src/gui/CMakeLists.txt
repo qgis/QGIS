@@ -58,11 +58,11 @@ SET(QGIS_GUI_SRCS
   attributetable/qgsgenericfeatureselectionmanager.cpp
   attributetable/qgsvectorlayerselectionmanager.cpp
 
-  editorwidgets/core/qgsdefaultsearchwidgetwrapper.cpp
   editorwidgets/core/qgseditorconfigwidget.cpp
   editorwidgets/core/qgseditorwidgetfactory.cpp
   editorwidgets/core/qgseditorwidgetregistry.cpp
   editorwidgets/core/qgseditorwidgetwrapper.cpp
+  editorwidgets/core/qgssearchwidgetwrapper.cpp
   editorwidgets/core/qgswidgetwrapper.cpp
 
   editorwidgets/qgscheckboxconfigdlg.cpp
@@ -76,6 +76,7 @@ SET(QGIS_GUI_SRCS
   editorwidgets/qgsdatetimeeditfactory.cpp
   editorwidgets/qgsdatetimeeditconfig.cpp
   editorwidgets/qgsdatetimeeditwrapper.cpp
+  editorwidgets/qgsdefaultsearchwidgetwrapper.cpp
   editorwidgets/qgsdoublespinbox.cpp
   editorwidgets/qgsdummyconfigdlg.cpp
   editorwidgets/qgsenumerationwidgetwrapper.cpp
@@ -107,8 +108,10 @@ SET(QGIS_GUI_SRCS
   editorwidgets/qgsvaluemapconfigdlg.cpp
   editorwidgets/qgsvaluemapwidgetwrapper.cpp
   editorwidgets/qgsvaluemapwidgetfactory.cpp
+  editorwidgets/qgsvaluemapsearchwidgetwrapper.cpp
   editorwidgets/qgsvaluerelationconfigdlg.cpp
   editorwidgets/qgsvaluerelationwidgetwrapper.cpp
+  editorwidgets/qgsvaluerelationsearchwidgetwrapper.cpp
   editorwidgets/qgsvaluerelationwidgetfactory.cpp
 
 
@@ -405,12 +408,12 @@ SET(QGIS_GUI_MOC_HDRS
   effects/qgspainteffectwidget.h
   effects/qgseffectstackpropertieswidget.h
 
-  editorwidgets/core/qgsdefaultsearchwidgetwrapper.h
   editorwidgets/core/qgseditorconfigwidget.h
   editorwidgets/core/qgseditorwidgetregistry.h
   editorwidgets/core/qgseditorconfigwidget.h
   editorwidgets/core/qgseditorwidgetregistry.h
   editorwidgets/core/qgseditorwidgetwrapper.h
+  editorwidgets/core/qgssearchwidgetwrapper.h
   editorwidgets/core/qgswidgetwrapper.h
 
   editorwidgets/qgscheckboxconfigdlg.h
@@ -420,6 +423,7 @@ SET(QGIS_GUI_MOC_HDRS
   editorwidgets/qgsdatetimeedit.h
   editorwidgets/qgsdatetimeeditconfig.h
   editorwidgets/qgsdatetimeeditwrapper.h
+  editorwidgets/qgsdefaultsearchwidgetwrapper.h
   editorwidgets/qgsdoublespinbox.h
   editorwidgets/qgsdummyconfigdlg.h
   editorwidgets/qgsenumerationwidgetwrapper.h
@@ -441,8 +445,10 @@ SET(QGIS_GUI_MOC_HDRS
   editorwidgets/qgsuuidwidgetwrapper.h
   editorwidgets/qgsvaluemapconfigdlg.h
   editorwidgets/qgsvaluemapwidgetwrapper.h
+  editorwidgets/qgsvaluemapsearchwidgetwrapper.h
   editorwidgets/qgsvaluerelationconfigdlg.h
   editorwidgets/qgsvaluerelationwidgetwrapper.h
+  editorwidgets/qgsvaluerelationsearchwidgetwrapper.h
 
   layertree/qgscustomlayerorderwidget.h
   layertree/qgslayertreemapcanvasbridge.h

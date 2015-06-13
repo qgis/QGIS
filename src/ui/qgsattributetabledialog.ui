@@ -587,16 +587,6 @@
       </widget>
      </item>
      <item>
-      <widget class="QCheckBox" name="mCbxCaseSensitive">
-       <property name="text">
-        <string>Case sensitive</string>
-       </property>
-       <property name="checked">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <property name="spacing">
         <number>0</number>

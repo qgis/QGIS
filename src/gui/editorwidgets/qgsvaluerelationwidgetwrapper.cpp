@@ -24,7 +24,7 @@
 #include <QStringListModel>
 #include <QCompleter>
 
-bool orderByKeyLessThan( const QgsValueRelationWidgetWrapper::ValueRelationItem& p1
+bool QgsValueRelationWidgetWrapper::orderByKeyLessThan( const QgsValueRelationWidgetWrapper::ValueRelationItem& p1
                          , const QgsValueRelationWidgetWrapper::ValueRelationItem& p2 )
 {
   switch ( p1.first.type() )
@@ -43,7 +43,7 @@ bool orderByKeyLessThan( const QgsValueRelationWidgetWrapper::ValueRelationItem&
   }
 }
 
-bool orderByValueLessThan( const QgsValueRelationWidgetWrapper::ValueRelationItem& p1
+bool QgsValueRelationWidgetWrapper::orderByValueLessThan( const QgsValueRelationWidgetWrapper::ValueRelationItem& p1
                            , const QgsValueRelationWidgetWrapper::ValueRelationItem& p2 )
 {
   return p1.second < p2.second;
