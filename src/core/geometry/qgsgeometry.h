@@ -91,13 +91,22 @@ class CORE_EXPORT QgsGeometry
 
     /** Returns the underlying geometry store.
      * @note added in QGIS 2.10
+     * @see setGeometry
      */
     const QgsAbstractGeometryV2* geometry() const;
 
     /** Sets the underlying geometry store. Ownership of geometry is transferred.
      * @note added in QGIS 2.10
+     * @see geometry
      */
     void setGeometry( QgsAbstractGeometryV2* geometry );
+
+    /** Returns true if the geometry is empty (ie, contains no underlying geometry
+     * accessible via @link geometry @endlink).
+     * @see geometry
+     * @note added in QGIS 2.10
+     */
+    bool isEmpty() const;
 
     /** Creates a new geometry from a WKT string */
     static QgsGeometry* fromWkt( QString wkt );

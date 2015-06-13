@@ -149,6 +149,11 @@ void QgsGeometry::setGeometry( QgsAbstractGeometryV2* geometry )
   d->geometry = geometry;
 }
 
+bool QgsGeometry::isEmpty() const
+{
+  return !d || !d->geometry;
+}
+
 QgsGeometry* QgsGeometry::fromWkt( QString wkt )
 {
   QgsAbstractGeometryV2* geom = QgsGeometryImport::geomFromWkt( wkt );

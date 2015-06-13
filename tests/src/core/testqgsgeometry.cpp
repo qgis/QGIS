@@ -54,6 +54,7 @@ class TestQgsGeometry : public QObject
     void copy();
     void assignment();
     void asVariant(); //test conversion to and from a QVariant
+    void isEmpty();
 
     void fromQgsPoint();
     void fromQPoint();
@@ -284,6 +285,18 @@ void TestQgsGeometry::asVariant()
   QgsGeometry fromVar3 = qvariant_cast<QgsGeometry>( var );
   QCOMPARE( fromVar3.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).x(), 1.0 );
   QCOMPARE( fromVar3.geometry()->vertexAt( QgsVertexId( 0, 0, 0 ) ).y(), 2.0 );
+}
+
+void TestQgsGeometry::isEmpty()
+{
+  QgsGeometry geom;
+  QVERIFY( geom.isEmpty() );
+
+  geom.setGeometry( new QgsPointV2( 1.0, 2.0 ) );
+  QVERIFY( !geom.isEmpty() );
+
+  geom.setGeometry( 0 );
+  QVERIFY( geom.isEmpty() );
 }
 
 void TestQgsGeometry::fromQgsPoint()
