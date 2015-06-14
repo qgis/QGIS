@@ -19,11 +19,6 @@
 
 #include <qgsscaleexpression.h>
 
-#if QT_VERSION < 0x40701
-// See http://hub.qgis.org/issues/4284
-Q_DECLARE_METATYPE( QVariant )
-#endif
-
 class TestQgsScaleExpression: public QObject
 {
     Q_OBJECT

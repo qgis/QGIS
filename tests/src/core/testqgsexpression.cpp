@@ -26,11 +26,6 @@
 #include <qgsgeometry.h>
 #include <qgsrenderchecker.h>
 
-#if QT_VERSION < 0x40701
-// See http://hub.qgis.org/issues/4284
-Q_DECLARE_METATYPE( QVariant )
-#endif
-
 static void _parseAndEvalExpr( int arg )
 {
   Q_UNUSED( arg );

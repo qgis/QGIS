@@ -746,11 +746,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   QStringList myI18nList = i18nList();
   foreach ( QString l, myI18nList )
   {
-#if QT_VERSION >= 0x040800
     cboLocale->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( l ) ), QLocale( l ).nativeLanguageName(), l );
-#else
-    cboLocale->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( l ) ), l, l );
-#endif
   }
   cboLocale->setCurrentIndex( cboLocale->findData( myUserLocale ) );
   bool myLocaleOverrideFlag = settings.value( "locale/overrideFlag", false ).toBool();

@@ -204,7 +204,7 @@ Required build dependencies:
 </P>
 
 <UL>
-<LI>Qt &gt;= 4.7.0
+<LI>Qt &gt;= 4.8.0
 <LI>Proj &gt;= 4.4.x
 <LI>GEOS &gt;= 3.0
 <LI>Sqlite3 &gt;= 3.0.0
@@ -836,7 +836,7 @@ it, just point the installer to c:\msys\mingw
 When Qt installation is complete:
 </P>
 <P>
-Edit C:\Qt\4.7.0\bin\qtvars.bat and add the following lines:
+Edit C:\Qt\4.8.0\bin\qtvars.bat and add the following lines:
 </P>
 
 <div class="code"><PRE>
@@ -845,22 +845,22 @@ set PATH=%PATH%;"C:\Program Files\Subversion\bin"
 </PRE></div>
 
 <P>
-I suggest you also add C:\Qt\4.7.0\bin\ to your Environment Variables Path in
+I suggest you also add C:\Qt\4.8.0\bin\ to your Environment Variables Path in
 the windows system preferences.
 </P>
 <P>
 If you plan to do some debugging, you'll need to compile debug version of Qt:
-C:\Qt\4.7.0\bin\qtvars.bat compile_debug
+C:\Qt\4.8.0\bin\qtvars.bat compile_debug
 </P>
 <P>
-Note: there is a problem when compiling debug version of Qt 4.7, the script ends with
+Note: there is a problem when compiling debug version of Qt 4.8, the script ends with
 this message  "mingw32-make: *** No rule to make target `debug'.  Stop.". To 
 compile the debug version you have to go out of src directory and execute the
 following command:
 </P>
 
 <div class="code"><PRE>
-c:\Qt\4.7.0 make 
+c:\Qt\4.8.0 make 
 </PRE></div>
 
 <H3>4.2.3. Flex and Bison</H3>
@@ -902,7 +902,7 @@ to get versions that match your current Qt installed version.
 <H4>4.2.4.3. Compile SIP</H4>
 
 <div class="code"><PRE>
-c:\Qt\4.7.0\bin\qtvars.bat 
+c:\Qt\4.8.0\bin\qtvars.bat 
 python configure.py -p win32-g++ 
 make 
 make install 
@@ -911,7 +911,7 @@ make install
 <H4>4.2.4.4. Compile PyQt</H4>
 
 <div class="code"><PRE>
-c:\Qt\4.7.0\bin\qtvars.bat 
+c:\Qt\4.8.0\bin\qtvars.bat 
 python configure.py 
 make 
 make install 
@@ -975,11 +975,11 @@ already.  Add paths to compiler and our MSYS environment:
 </P>
 
 <div class="code"><PRE>
-c:\Qt\4.7.0\bin\qtvars.bat 
+c:\Qt\4.8.0\bin\qtvars.bat 
 </PRE></div>
 
 <P>
-For ease of use add c:\Qt\4.7.0\bin\ to your system path in system
+For ease of use add c:\Qt\4.8.0\bin\ to your system path in system
 properties so you can just type qtvars.bat when you open the cmd console.
 Create build directory and set it as current directory:
 </P>
@@ -1443,7 +1443,7 @@ only.  This is available in the Libraries section of the Qt download page.
 decide between 32-bit support in the older Qt Carbon branch, or 64-bit
 support in the Qt Cocoa branch. Appropriate installers are available for both
 as of Qt-4.5.2, though they stopped making Carbon packages at Qt 4.7.4.
-Qt 4.6+ is recommended for Cocoa.
+
 Starting with Lion, Carbon may not work properly, if at all.
 Starting with Qt 4.8, only 64bit Cocoa installers are available.
 </P>

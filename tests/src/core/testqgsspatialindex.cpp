@@ -23,12 +23,6 @@
 #include <qgsvectordataprovider.h>
 #include <qgsvectorlayer.h>
 
-
-#if QT_VERSION < 0x40701
-// See http://hub.qgis.org/issues/4284
-Q_DECLARE_METATYPE( QVariant )
-#endif
-
 static QgsFeature _pointFeature( QgsFeatureId id, qreal x, qreal y )
 {
   QgsFeature f( id );
