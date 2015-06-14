@@ -1900,7 +1900,7 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds & id )
       dropOrphanedTopoGeoms();
     }
 
-    mShared->addFeaturesCounted( id.size() );
+    mShared->addFeaturesCounted( -id.size() );
   }
   catch ( PGException &e )
   {
