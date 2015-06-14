@@ -170,7 +170,10 @@ QgsGeometry* QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& f
       if ( !g )
         return geomPart;
       if ( !g->isMultipart() )
+      {
+        fid = f.id();
         return geomPart;
+      }
       QgsMultiPolygon mpolygon = g->asMultiPolygon();
       for ( int part = 0; part < mpolygon.count(); part++ ) // go through the polygons
       {
