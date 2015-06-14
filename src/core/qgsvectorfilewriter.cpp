@@ -1866,6 +1866,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
   }
 
   QGis::WkbType wkbType = layer->wkbType();
+  QgsFields fields = skipAttributeCreation ? QgsFields() : layer->pendingFields();
 
   if ( layer->providerType() == "ogr" && layer->dataProvider() )
   {
@@ -1898,9 +1899,24 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
       }
     }
   }
+  else if ( layer->providerType() == "spatialite" )
+  {
+    for ( int i = 0; i < fields.size(); i++ )
+    {
+      if ( fields[i].type() == QVariant::LongLong )
+      {
+        QVariant min = layer->minimumValue( i );
+        QVariant max = layer->maximumValue( i );
+        if ( qMax( qAbs( min.toLongLong() ), qAbs( max.toLongLong() ) ) < INT_MAX )
+        {
+          fields[i].setType( QVariant::Int );
+        }
+      }
+    }
+  }
 
   QgsVectorFileWriter* writer =
-    new QgsVectorFileWriter( fileName, fileEncoding, skipAttributeCreation ? QgsFields() : layer->pendingFields(), wkbType, outputCRS, driverName, datasourceOptions, layerOptions, newFilename, symbologyExport );
+    new QgsVectorFileWriter( fileName, fileEncoding, fields, wkbType, outputCRS, driverName, datasourceOptions, layerOptions, newFilename, symbologyExport );
   writer->setSymbologyScaleDenominator( symbologyScale );
 
   if ( newFilename )
