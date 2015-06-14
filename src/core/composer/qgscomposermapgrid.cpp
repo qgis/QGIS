@@ -21,6 +21,7 @@
 #include "qgsgeometry.h"
 #include "qgscomposermap.h"
 #include "qgscomposition.h"
+#include "qgsfontutils.h"
 #include "qgsmaprenderer.h"
 #include "qgsrendercontext.h"
 #include "qgssymbollayerv2utils.h"
@@ -308,11 +309,15 @@ bool QgsComposerMapGrid::writeXML( QDomElement& elem, QDomDocument& doc ) const
   mapGridElem.setAttribute( "topAnnotationDirection", mTopGridAnnotationDirection );
   mapGridElem.setAttribute( "bottomAnnotationDirection", mBottomGridAnnotationDirection );
   mapGridElem.setAttribute( "frameAnnotationDistance", QString::number( mAnnotationFrameDistance ) );
-  mapGridElem.setAttribute( "annotationFont", mGridAnnotationFont.toString() );
-  mapGridElem.setAttribute( "annotationFontColor", QgsSymbolLayerV2Utils::encodeColor( mGridAnnotationFontColor ) );
   mapGridElem.setAttribute( "annotationPrecision", mGridAnnotationPrecision );
   mapGridElem.setAttribute( "unit", mGridUnit );
   mapGridElem.setAttribute( "blendMode", mBlendMode );
+  
+  //font
+  QFontInfo fi = QFontInfo( mGridAnnotationFont );
+  mapGridElem.setAttribute( "annotationFont", mGridAnnotationFont.toString() );
+  mapGridElem.setAttribute( "annotationFontStyle", fi.styleName() );
+  mapGridElem.setAttribute( "annotationFontColor", QgsSymbolLayerV2Utils::encodeColor( mGridAnnotationFontColor ) );
 
   bool ok = QgsComposerMapItem::writeXML( mapGridElem, doc );
   elem.appendChild( mapGridElem );
@@ -428,8 +433,9 @@ bool QgsComposerMapGrid::readXML( const QDomElement& itemElem, const QDomDocumen
   mRightGridAnnotationDirection = QgsComposerMapGrid::AnnotationDirection( itemElem.attribute( "rightAnnotationDirection", "0" ).toInt() );
   mTopGridAnnotationDirection = QgsComposerMapGrid::AnnotationDirection( itemElem.attribute( "topAnnotationDirection", "0" ).toInt() );
   mBottomGridAnnotationDirection = QgsComposerMapGrid::AnnotationDirection( itemElem.attribute( "bottomAnnotationDirection", "0" ).toInt() );
-  mAnnotationFrameDistance = itemElem.attribute( "frameAnnotationDistance", "0" ).toDouble();
+  mAnnotationFrameDistance = itemElem.attribute( "frameAnnotationDistance", "0" ).toDouble(); 
   mGridAnnotationFont.fromString( itemElem.attribute( "annotationFont", "" ) );
+  QgsFontUtils::updateFontViaStyle( mGridAnnotationFont, itemElem.attribute( "annotationFontStyle" ) );
   mGridAnnotationFontColor = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "annotationFontColor", "0,0,0,255" ) );
   mGridAnnotationPrecision = itemElem.attribute( "annotationPrecision", "3" ).toInt();
   int gridUnitInt =  itemElem.attribute( "unit", QString::number( MapUnit ) ).toInt();
