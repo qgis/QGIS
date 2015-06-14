@@ -2070,9 +2070,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   geometries.append( lbl );
 
   // store the label's calculated font for later use during painting
-#if QT_VERSION >= 0x040800
   QgsDebugMsgLevel( QString( "PAL font stored definedFont: %1, Style: %2" ).arg( labelFont.toString() ).arg( labelFont.styleName() ), 4 );
-#endif
   lbl->setDefinedFont( labelFont );
 
   // set repeat distance
@@ -4185,11 +4183,8 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
 
     //font
     QFont dFont = palGeometry->definedFont();
-    // following debug is >= Qt 4.8 only ( because of QFont::styleName() )
-#if QT_VERSION >= 0x040800
     QgsDebugMsgLevel( QString( "PAL font tmpLyr: %1, Style: %2" ).arg( tmpLyr.textFont.toString() ).arg( QFontInfo( tmpLyr.textFont ).styleName() ), 4 );
     QgsDebugMsgLevel( QString( "PAL font definedFont: %1, Style: %2" ).arg( dFont.toString() ).arg( dFont.styleName() ), 4 );
-#endif
     tmpLyr.textFont = dFont;
 
     if ( tmpLyr.multilineAlign == QgsPalLayerSettings::MultiFollowPlacement )

@@ -245,7 +245,7 @@ IF (WITH_QTWEBKIT)
 ENDIF(WITH_QTWEBKIT)
 #############################################################
 # search for Qt4
-SET(QT_MIN_VERSION 4.7.0)
+SET(QT_MIN_VERSION 4.8.0)
 SET (ENABLE_QT5 FALSE CACHE BOOL "If enabled will try to find Qt5 before looking for Qt4")
 IF (ENABLE_QT5)
   FIND_PACKAGE(Qt5Core QUIET)
