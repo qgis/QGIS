@@ -77,13 +77,13 @@ label{  background-color: #FFFFCC;
 <DIV CLASS="header" ID="header">
 <H1>QGIS</H1>
 <H2>Building QGIS from source - step by step</H2>
-<H3>Thursday March 19, 2015</H3>
+<H3>Monday June 15, 2015</H3>
 </DIV>
 
 <DIV CLASS="body" ID="body">
 <P>
-Last Updated: Thursday March 19, 2015
-Last Change : Thursday March 19, 2015
+Last Updated: Monday June 15, 2015
+Last Change : Monday June 15, 2015
 </P>
 <DIV CLASS="toc">
 
@@ -219,7 +219,10 @@ Optional dependencies:
 </P>
 
 <UL>
-<LI>for GRASS plugin - GRASS &gt;= 6.0.0 (libraries compiled with exceptions support on Linux 32bit)
+<LI>for GRASS providers and plugin - GRASS &gt;= 6.0.0. QGIS may be compiled with GRASS 6 or GRASS 7.
+  It can also be compiled with both GRASS versions in a single build but only if QGIS
+  is not installed with rpath. The desired GRASS version is choosen on runtime by setting
+  LD_LIBRARY_PATH or PATH.
 <LI>for georeferencer - GSL &gt;= 1.8
 <LI>for postgis support and SPIT plugin - PostgreSQL &gt;= 8.0.x
 <LI>for gps plugin - gpsbabel
@@ -853,7 +856,7 @@ If you plan to do some debugging, you'll need to compile debug version of Qt:
 C:\Qt\4.8.0\bin\qtvars.bat compile_debug
 </P>
 <P>
-Note: there is a problem when compiling debug version of Qt 4.8, the script ends with
+Note: there is a problem when compiling debug version of Qt 4.7, the script ends with
 this message  "mingw32-make: *** No rule to make target `debug'.  Stop.". To 
 compile the debug version you have to go out of src directory and execute the
 following command:
@@ -1443,7 +1446,7 @@ only.  This is available in the Libraries section of the Qt download page.
 decide between 32-bit support in the older Qt Carbon branch, or 64-bit
 support in the Qt Cocoa branch. Appropriate installers are available for both
 as of Qt-4.5.2, though they stopped making Carbon packages at Qt 4.7.4.
-
+Qt 4.6+ is recommended for Cocoa.
 Starting with Lion, Carbon may not work properly, if at all.
 Starting with Qt 4.8, only 64bit Cocoa installers are available.
 </P>

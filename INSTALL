@@ -1,10 +1,10 @@
 QGIS
 Building QGIS from source - step by step
-Thursday March 19, 2015
+Monday June 15, 2015
 
 
-Last Updated: Thursday March 19, 2015
-Last Change : Thursday March 19, 2015
+Last Updated: Monday June 15, 2015
+Last Change : Monday June 15, 2015
 
 
   1. Introduction
@@ -109,9 +109,9 @@ Required build dependencies:
 Optional dependencies:
 
 - for GRASS providers and plugin - GRASS >= 6.0.0. QGIS may be compiled with GRASS 6 or GRASS 7.
-      It can also be compiled with both GRASS versions in a single build but only if QGIS
-      is not installed with rpath. The desired GRASS version is choosen on runtime by setting
-      LD_LIBRARY_PATH or PATH.
+  It can also be compiled with both GRASS versions in a single build but only if QGIS
+  is not installed with rpath. The desired GRASS version is choosen on runtime by setting
+  LD_LIBRARY_PATH or PATH.
 - for georeferencer - GSL >= 1.8
 - for postgis support and SPIT plugin - PostgreSQL >= 8.0.x
 - for gps plugin - gpsbabel
@@ -566,7 +566,7 @@ the windows system preferences.
 If you plan to do some debugging, you'll need to compile debug version of Qt:
 C:\Qt\4.8.0\bin\qtvars.bat compile_debug
 
-Note: there is a problem when compiling debug version of Qt 4.8, the script ends with
+Note: there is a problem when compiling debug version of Qt 4.7, the script ends with
 this message  "mingw32-make: *** No rule to make target `debug'.  Stop.". To 
 compile the debug version you have to go out of src directory and execute the
 following command:
@@ -1036,7 +1036,7 @@ Snow Leopard+ note: If you are building on Snow Leopard+, you will need to
 decide between 32-bit support in the older Qt Carbon branch, or 64-bit
 support in the Qt Cocoa branch. Appropriate installers are available for both
 as of Qt-4.5.2, though they stopped making Carbon packages at Qt 4.7.4.
-
+Qt 4.6+ is recommended for Cocoa.
 Starting with Lion, Carbon may not work properly, if at all.
 Starting with Qt 4.8, only 64bit Cocoa installers are available.
 
