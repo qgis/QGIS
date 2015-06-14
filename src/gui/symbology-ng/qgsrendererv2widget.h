@@ -174,7 +174,7 @@ class GUI_EXPORT QgsDataDefinedSizeDialog : public QgsDataDefinedValueDialog
     {
       init( tr( "Symbol size" ) );
       if ( symbolList.length() )
-        mDDBtn->setAssistant( new QgsSizeScaleWidget( mLayer, static_cast<const QgsMarkerSymbolV2*>( symbolList[0] ) ) );
+        mDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( mLayer, static_cast<const QgsMarkerSymbolV2*>( symbolList[0] ) ) );
     }
 
   protected:

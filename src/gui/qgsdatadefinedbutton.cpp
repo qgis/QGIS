@@ -85,6 +85,10 @@ QgsDataDefinedButton::QgsDataDefinedButton( QWidget* parent,
   mActionCopyExpr = new QAction( tr( "Copy" ), this );
   mActionClearExpr = new QAction( tr( "Clear" ), this );
   mActionAssistant = new QAction( tr( "Assistant..." ), this );
+  QFont assistantFont = mActionAssistant->font();
+  assistantFont.setBold( true );
+  mActionAssistant->setFont( assistantFont );
+  mDefineMenu->addAction( mActionAssistant );
 
   // set up sibling widget connections
   connect( this, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( disableEnabledWidgets( bool ) ) );
@@ -628,8 +632,9 @@ QList<QWidget*> QgsDataDefinedButton::registeredCheckedWidgets()
   return wdgtList;
 }
 
-void QgsDataDefinedButton::setAssistant( QgsDataDefinedAssistant *assistant )
+void QgsDataDefinedButton::setAssistant( const QString& title, QgsDataDefinedAssistant *assistant )
 {
+  mActionAssistant->setText( title.isEmpty() ? tr( "Assistant..." ) : title );
   mAssistant.reset( assistant );
   mAssistant.data()->setParent( this, Qt::Dialog );
 }
