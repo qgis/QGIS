@@ -27,11 +27,6 @@ QgsDefaultSearchWidgetWrapper::QgsDefaultSearchWidgetWrapper( QgsVectorLayer* vl
 {
 }
 
-void QgsDefaultSearchWidgetWrapper::setFeature( const QgsFeature& feature )
-{
-    //FIXME what is this?
-}
-
 
 QString QgsDefaultSearchWidgetWrapper::expression()
 {
@@ -63,11 +58,17 @@ void QgsDefaultSearchWidgetWrapper::setExpression(QString exp)
                   "%" + exp.replace( "'", "''" ) + "%" ); // escape quotes
     }
     mExpression = str;
+    emit expressionChanged(mExpression);
 }
 
 QWidget* QgsDefaultSearchWidgetWrapper::createWidget( QWidget* parent )
 {
   return new QgsFilterLineEdit( parent );
+}
+
+bool QgsDefaultSearchWidgetWrapper::applyDirectly() 
+{
+    return false;
 }
 
 void QgsDefaultSearchWidgetWrapper::initWidget( QWidget* widget )

@@ -61,12 +61,20 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
      * @return The current value the widget represents
      */
     virtual QString expression() = 0;
+    /**
+     * If this is true, then this search widget should take effect directly
+     * when its expression changes
+     */
+    virtual bool applyDirectly() = 0;
 
-    //QString defaultExpression();
+  signals:
+
+   void expressionChanged(QString exp);
 
   protected slots:
 
     virtual void setExpression(QString value) = 0;
+    void setFeature( const QgsFeature& feature ) override;
 
   protected:
     QString mExpression;

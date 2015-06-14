@@ -23,7 +23,12 @@
 QgsSearchWidgetWrapper::QgsSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
     : QgsWidgetWrapper( vl, 0, parent )
     , mFieldIdx( fieldIdx )
-    , mExpression( "" ) //FIXME(carolinux)
+    , mExpression( QString() ) 
+{
+}
+
+
+void QgsSearchWidgetWrapper::setFeature( const QgsFeature& feature )
 {
 }
 

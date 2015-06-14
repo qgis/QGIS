@@ -108,6 +108,7 @@ SET(QGIS_GUI_SRCS
   editorwidgets/qgsvaluemapconfigdlg.cpp
   editorwidgets/qgsvaluemapwidgetwrapper.cpp
   editorwidgets/qgsvaluemapwidgetfactory.cpp
+  editorwidgets/qgsvaluemapsearchwidgetwrapper.cpp
   editorwidgets/qgsvaluerelationconfigdlg.cpp
   editorwidgets/qgsvaluerelationwidgetwrapper.cpp
   editorwidgets/qgsvaluerelationwidgetfactory.cpp
@@ -443,6 +444,7 @@ SET(QGIS_GUI_MOC_HDRS
   editorwidgets/qgsuuidwidgetwrapper.h
   editorwidgets/qgsvaluemapconfigdlg.h
   editorwidgets/qgsvaluemapwidgetwrapper.h
+  editorwidgets/qgsvaluemapsearchwidgetwrapper.h
   editorwidgets/qgsvaluerelationconfigdlg.h
   editorwidgets/qgsvaluerelationwidgetwrapper.h
 

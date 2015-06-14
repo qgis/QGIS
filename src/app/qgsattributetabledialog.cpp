@@ -435,6 +435,10 @@ void QgsAttributeTableDialog::filterColumnChanged( QObject* filterAction )
   const QgsEditorWidgetConfig widgetConfig = mLayer->editorWidgetV2Config( fldIdx );
   mCurrentSearchWidgetWrapper = QgsEditorWidgetRegistry::instance()->
                                 createSearchWidget( widgetType, mLayer, fldIdx, widgetConfig, mFilterContainer );
+  if (mCurrentSearchWidgetWrapper->applyDirectly())
+  {
+      connect( mCurrentSearchWidgetWrapper, SIGNAL( expressionChanged(QString) ), SLOT( filterQueryChanged(QString) ) );
+  }
 
   replaceSearchWidget( mFilterQuery, mCurrentSearchWidgetWrapper->widget() );
 
@@ -707,7 +711,7 @@ void QgsAttributeTableDialog::filterQueryChanged( const QString& query )
   else
   {
 
-    QString sensString = "ILIKE"; // skatoules
+    QString sensString = "ILIKE"; // FIXME need to take this into account
     if ( mCbxCaseSensitive->isChecked() )
     {
       sensString = "LIKE";

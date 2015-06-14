@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsdefaultsearchwidgetwrapper.h
+    qgsvaluemapsearchwidgetwrapper.h
      --------------------------------------
     Date                 : 21.5.2015
     Copyright            : (C) 2015 Karolina Alexiou
@@ -13,36 +13,30 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSDEFAULTSEARCHWIDGETWRAPPER_H
-#define QGSDEFAULTSEARCHWIDGETWRAPPER_H
+#ifndef QGSVALUEMAPSEARCHWIDGETWRAPPER_H
+#define QGSVALUEMAPSEARCHWIDGETWRAPPER_H
 
-#include "qgssearchwidgetwrapper.h"
-#include <qgsfilterlineedit.h>
+#include "qgsdefaultsearchwidgetwrapper.h"
+#include <QComboBox>
 
-/**
- * Wraps a search widget. Default form is just a QgsLineFilterEdit
- *
- */
 
-class GUI_EXPORT QgsDefaultSearchWidgetWrapper : public QgsSearchWidgetWrapper
+
+class GUI_EXPORT QgsValueMapSearchWidgetWrapper : public QgsDefaultSearchWidgetWrapper
 {
     Q_OBJECT
   public:
-    explicit QgsDefaultSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = 0 );
-
-    // QgsSearchWidgetWrapper interface
-  public:
-    QString expression() override;
+    explicit QgsValueMapSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = 0 );
     bool applyDirectly() override;
-  protected slots:
-    void setExpression(QString exp) override;
     
   protected:
     QWidget* createWidget( QWidget* parent ) override;
     void initWidget( QWidget* editor ) override;
 
+  private slots:
+      void comboBoxIndexChanged(int);
+
   private:
-    QgsFilterLineEdit* mLineEdit;
+    QComboBox * mComboBox;
 };
 
-#endif // QGSDEFAULTSEARCHWIDGETWRAPPER_H
+#endif // QGSVALUEMAPSEARCHWIDGETWRAPPER_H
