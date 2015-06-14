@@ -665,8 +665,6 @@ int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeome
     return 0;
   }
 
-  convertToMultiType();
-
   QList<QgsAbstractGeometryV2*> newGeoms;
   QgsLineStringV2 splitLineString;
   QList<QgsPointV2> splitLinePointsV2;
