@@ -16,7 +16,6 @@
 #include "qgseditorwidgetregistry.h"
 
 #include "qgsattributeeditorcontext.h"
-//#include "qgseditorwidgetfactory.h"
 #include "qgslegacyhelpers.h"
 #include "qgsmessagelog.h"
 #include "qgsproject.h"
@@ -102,11 +101,11 @@ QgsEditorWidgetWrapper* QgsEditorWidgetRegistry::create( const QString& widgetId
   return 0;
 }
 
-QgsEditorWidgetWrapper* QgsEditorWidgetRegistry::createSearchWidget( const QString& widgetId, QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, QWidget* parent, const QgsAttributeEditorContext &context )
+QgsSearchWidgetWrapper* QgsEditorWidgetRegistry::createSearchWidget( const QString& widgetId, QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, QWidget* parent, const QgsAttributeEditorContext &context )
 {
   if ( mWidgetFactories.contains( widgetId ) )
   {
-    QgsEditorWidgetWrapper* ww = mWidgetFactories[widgetId]->createSearchWidget( vl, fieldIdx, parent );
+    QgsSearchWidgetWrapper* ww = mWidgetFactories[widgetId]->createSearchWidget( vl, fieldIdx, parent );
 
     if ( ww )
     {

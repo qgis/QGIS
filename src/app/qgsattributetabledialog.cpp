@@ -706,39 +706,15 @@ void QgsAttributeTableDialog::filterQueryChanged( const QString& query )
   }
   else
   {
-    QString fieldName = mFilterButton->defaultAction()->text();
-    const QgsFields& flds = mLayer->pendingFields();
-    int fldIndex = mLayer->fieldNameIndex( fieldName );
-    if ( fldIndex < 0 )
-      return;
 
-    QVariant::Type fldType = flds[fldIndex].type();
-    bool numeric = ( fldType == QVariant::Int || fldType == QVariant::Double || fldType == QVariant::LongLong );
-
-    QString sensString = "ILIKE";
+    QString sensString = "ILIKE"; // skatoules
     if ( mCbxCaseSensitive->isChecked() )
     {
       sensString = "LIKE";
     }
 
-    QSettings settings;
-    QString nullValue = settings.value( "qgis/nullValue", "NULL" ).toString();
-    QString value = mCurrentSearchWidgetWrapper->value().toString();
+    str = mCurrentSearchWidgetWrapper->expression();
 
-    if ( value == nullValue )
-    {
-      str = QString( "%1 IS NULL" ).arg( QgsExpression::quotedColumnRef( fieldName ) );
-    }
-    else
-    {
-      str = QString( "%1 %2 '%3'" )
-            .arg( QgsExpression::quotedColumnRef( fieldName ) )
-            .arg( numeric ? "=" : sensString )
-            .arg( numeric
-                  ? value.replace( "'", "''" )
-                  :
-                  "%" + value.replace( "'", "''" ) + "%" ); // escape quotes
-    }
   }
 
   setFilterExpression( str );
@@ -749,7 +725,7 @@ void QgsAttributeTableDialog::filterQueryAccepted()
 {
   if (( mFilterQuery->isVisible() && mFilterQuery->text().isEmpty() ) ||
       ( mCurrentSearchWidgetWrapper != 0 && mCurrentSearchWidgetWrapper->widget()->isVisible()
-        && mCurrentSearchWidgetWrapper->value().toString().isEmpty() ) )
+        && mCurrentSearchWidgetWrapper->expression().isEmpty() ) )
   {
     filterShowAll();
     return;

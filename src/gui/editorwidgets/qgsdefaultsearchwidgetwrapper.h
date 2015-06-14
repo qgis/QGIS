@@ -16,7 +16,7 @@
 #ifndef QGSDEFAULTSEARCHWIDGETWRAPPER_H
 #define QGSDEFAULTSEARCHWIDGETWRAPPER_H
 
-#include "qgseditorwidgetwrapper.h"
+#include "qgssearchwidgetwrapper.h"
 #include <qgsfilterlineedit.h>
 
 
@@ -25,23 +25,23 @@
  *
  */
 
-class GUI_EXPORT QgsDefaultSearchWidgetWrapper : public QgsEditorWidgetWrapper
+class GUI_EXPORT QgsDefaultSearchWidgetWrapper : public QgsSearchWidgetWrapper
 {
     Q_OBJECT
   public:
-    explicit QgsDefaultSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = 0, QWidget* parent = 0 );
+    explicit QgsDefaultSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = 0 );
 
-    // QgsEditorWidgetWrapper interface
+    // QgsSearchWidgetWrapper interface
   public:
-    QVariant value() override;
+    QString expression() override;
+  protected slots:
+    void setExpression(QString exp) override;
+    void setFeature(const QgsFeature& feature) override; 
+    
 
   protected:
     QWidget* createWidget( QWidget* parent ) override;
     void initWidget( QWidget* editor ) override;
-
-  public slots:
-    void setValue( const QVariant& value ) override;
-    void setEnabled( bool enabled ) override;
 
   private:
     QgsFilterLineEdit* mLineEdit;
