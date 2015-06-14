@@ -45,6 +45,7 @@ int main( int argc, char ** argv )
   }
   a.setThemeName( theme );
   a.initQgis();
+  a.setWindowIcon( QIcon( QgsApplication::iconsPath() + "qbrowser-icon-60x60.png" ) );
 
   // Set up the QSettings environment must be done after qapp is created
   QCoreApplication::setOrganizationName( "QGIS" );

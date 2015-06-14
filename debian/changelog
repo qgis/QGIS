@@ -6,8 +6,9 @@ qgis (2.9.0) UNRELEASED; urgency=medium
   * merge downstream addition of debug package
   * make build directory configurable
   * include links to qt4 documentation in api docs
+  * include browser icons
 
- -- Jürgen E. Fischer <jef@norbit.de>  Tue, 02 Jun 2015 22:54:19 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Sun, 14 Jun 2015 22:35:11 +0200
 
 qgis (2.8.0) unstable; urgency=medium
 

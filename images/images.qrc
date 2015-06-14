@@ -39,6 +39,7 @@
         <file>flags/zh_TW.png</file>
         <file>icons/qgis-icon-16x16.png</file>
         <file>icons/qgis-icon-60x60.png</file>
+        <file>icons/qbrowser-icon-60x60.png</file>
         <file>north_arrows/default.png</file>
         <file>north_arrows/gpsarrow.svg</file>
         <file>north_arrows/gpsarrow2.svg</file>
