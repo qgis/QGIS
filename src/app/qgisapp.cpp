@@ -603,6 +603,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mStatisticalSummaryDockWidget = new QgsStatisticalSummaryDockWidget( this );
   mStatisticalSummaryDockWidget->setObjectName( "StatistalSummaryDockWidget" );
 
+  // Bookmarks dock
+  mBookMarksDockWidget = new QgsBookmarks( this );
+  mBookMarksDockWidget->setObjectName( "BookmarksDockWidget" );
+
   mSnappingUtils = new QgsMapCanvasSnappingUtils( mMapCanvas, this );
   mMapCanvas->setSnappingUtils( mSnappingUtils );
   connect( QgsProject::instance(), SIGNAL( snapSettingsChanged() ), mSnappingUtils, SLOT( readConfigFromProject() ) );
@@ -649,6 +653,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
   addDockWidget( Qt::LeftDockWidgetArea, mStatisticalSummaryDockWidget );
   mStatisticalSummaryDockWidget->hide();
+
+  addDockWidget( Qt::LeftDockWidgetArea, mBookMarksDockWidget );
+  mBookMarksDockWidget->hide();
 
   QMainWindow::addDockWidget( Qt::BottomDockWidgetArea, mUserInputDockWidget );
   mUserInputDockWidget->setFloating( true );
@@ -925,6 +932,7 @@ QgisApp::QgisApp()
     , mBrowserWidget2( 0 )
     , mAdvancedDigitizingDockWidget( 0 )
     , mStatisticalSummaryDockWidget( 0 )
+    , mBookMarksDockWidget( 0 )
     , mSnappingDialog( 0 )
     , mPluginManager( 0 )
     , mComposerManager( 0 )
@@ -10044,12 +10052,14 @@ void QgisApp::customProjection()
 
 void QgisApp::newBookmark()
 {
-  QgsBookmarks::newBookmark();
+  showBookmarks();
+  mBookMarksDockWidget->addClicked();
 }
 
 void QgisApp::showBookmarks()
 {
-  QgsBookmarks::showBookmarks();
+  mBookMarksDockWidget->show();
+  mBookMarksDockWidget->raise();
 }
 
 // Slot that gets called when the project file was saved with an older
