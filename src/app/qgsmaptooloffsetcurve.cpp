@@ -278,8 +278,10 @@ QgsGeometry* QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, co
 
   if ( vl == currentVectorLayer() && !mForceCopy )
   {
+    Q_NOWARN_DEPRECATED_PUSH
     //don't consider selected geometries, only the snap result
     return convertToSingleLine( snappedFeature.geometryAndOwnership(), partVertexNr, mMultiPartGeometry );
+    Q_NOWARN_DEPRECATED_POP
   }
   else //snapped to a background layer
   {
@@ -294,14 +296,18 @@ QgsGeometry* QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, co
     const QgsFeatureIds& selection = vl->selectedFeaturesIds();
     if ( selection.size() < 1 || !selection.contains( match.featureId() ) )
     {
+      Q_NOWARN_DEPRECATED_PUSH
       return convertToSingleLine( snappedFeature.geometryAndOwnership(), partVertexNr, mMultiPartGeometry );
+      Q_NOWARN_DEPRECATED_POP
     }
     else
     {
       //merge together if several features
       QgsFeatureList selectedFeatures = vl->selectedFeatures();
       QgsFeatureList::iterator selIt = selectedFeatures.begin();
+      Q_NOWARN_DEPRECATED_PUSH
       QgsGeometry* geom = selIt->geometryAndOwnership();
+      Q_NOWARN_DEPRECATED_POP
       ++selIt;
       for ( ; selIt != selectedFeatures.end(); ++selIt )
       {
@@ -314,7 +320,9 @@ QgsGeometry* QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, co
       if ( geom->isMultipart() )
       {
         delete geom;
+        Q_NOWARN_DEPRECATED_PUSH
         return convertToSingleLine( snappedFeature.geometryAndOwnership(), match.vertexIndex(), mMultiPartGeometry );
+        Q_NOWARN_DEPRECATED_POP
       }
 
       return geom;

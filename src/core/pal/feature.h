@@ -84,7 +84,7 @@ namespace pal
       friend class FeaturePart;
 
     public:
-      Feature( Layer* l, const char* id, PalGeometry* userG, double lx, double ly );
+      Feature( Layer* l, const char* geom_id, PalGeometry* userG, double lx, double ly );
       ~Feature();
 
       void setLabelInfo( LabelInfo* info ) { labelInfo = info; }
