@@ -76,32 +76,40 @@ class CORE_EXPORT QgsDxfExport
     void writeGroup( int code, const QgsPoint &p, double z = 0.0, bool skipz = false );
     void writeGroup( QColor color, int exactMatch = 62, int rgbCode = 420, int transparencyCode = 440 );
 
+    //! Write handle
     int writeHandle( int code = 5, int handle = 0 );
 
     //! draw dxf primitives
     void writePolyline( const QgsPolyline &line, const QString &layer, const QString &lineStyleName, QColor color,
                         double width = -1, bool unusedPolygonFlag = false );
 
+    //! Draw dxf polygon (HATCH)
     void writePolygon( const QgsPolygon &polygon, const QString &layer, const QString &hatchPattern, QColor color );
 
+    //! Draw solid
     void writeSolid( const QString &layer, QColor color, const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, const QgsPoint &pt4 );
 
-    //! write line (as a polyline)
+    //! Write line (as a polyline)
     void writeLine( const QgsPoint &pt1, const QgsPoint &pt2, const QString &layer, const QString &lineStyleName, QColor color, double width = -1 );
 
+    //! Write point
     void writePoint( const QString &layer, QColor color, const QgsPoint &pt );
 
+    //! Write filled circle (as hatch)
     void writeFilledCircle( const QString &layer, QColor color, const QgsPoint &pt, double radius );
 
+    //! Write circle (as polyline)
     void writeCircle( const QString &layer, QColor color, const QgsPoint &pt, double radius, const QString &lineStyleName, double width );
 
+    //! Write text (TEXT)
     void writeText( const QString &layer, const QString &text, const QgsPoint &pt, double size, double angle, QColor color );
 
+    //! Write mtext (MTEXT)
     void writeMText( const QString &layer, const QString &text, const QgsPoint &pt, double width, double angle, QColor color );
 
     static double mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits );
 
-    //! return cleaned layer name for use in DXF
+    //! Return cleaned layer name for use in DXF
     static QString dxfLayerName( const QString &name );
 
     //! return DXF encoding for Qt encoding
@@ -174,7 +182,8 @@ class CORE_EXPORT QgsDxfExport
     static QString lineNameFromPenStyle( Qt::PenStyle style );
     bool layerIsScaleBasedVisible( const QgsMapLayer *layer ) const;
 
-    int mModelSpaceBR;
+    QHash<QString, int> mBlockHandles;
+    QString mBlockHandle;
 };
 
 #endif // QGSDXFEXPORT_H

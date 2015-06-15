@@ -36,13 +36,33 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 
-QgsSvgCacheEntry::QgsSvgCacheEntry(): file( QString() ), size( 0.0 ), outlineWidth( 0 ), widthScaleFactor( 1.0 ), rasterScaleFactor( 1.0 ), fill( Qt::black ),
-    outline( Qt::black ), image( 0 ), picture( 0 ), nextEntry( 0 ), previousEntry( 0 )
+QgsSvgCacheEntry::QgsSvgCacheEntry()
+    : file( QString() )
+    , size( 0.0 )
+    , outlineWidth( 0 )
+    , widthScaleFactor( 1.0 )
+    , rasterScaleFactor( 1.0 )
+    , fill( Qt::black )
+    , outline( Qt::black )
+    , image( 0 )
+    , picture( 0 )
+    , nextEntry( 0 )
+    , previousEntry( 0 )
 {
 }
 
-QgsSvgCacheEntry::QgsSvgCacheEntry( const QString& f, double s, double ow, double wsf, double rsf, const QColor& fi, const QColor& ou ): file( f ), size( s ), outlineWidth( ow ),
-    widthScaleFactor( wsf ), rasterScaleFactor( rsf ), fill( fi ), outline( ou ), image( 0 ), picture( 0 ), nextEntry( 0 ), previousEntry( 0 )
+QgsSvgCacheEntry::QgsSvgCacheEntry( const QString& f, double s, double ow, double wsf, double rsf, const QColor& fi, const QColor& ou )
+    : file( f )
+    , size( s )
+    , outlineWidth( ow )
+    , widthScaleFactor( wsf )
+    , rasterScaleFactor( rsf )
+    , fill( fi )
+    , outline( ou )
+    , image( 0 )
+    , picture( 0 )
+    , nextEntry( 0 )
+    , previousEntry( 0 )
 {
 }
 
@@ -55,8 +75,8 @@ QgsSvgCacheEntry::~QgsSvgCacheEntry()
 
 bool QgsSvgCacheEntry::operator==( const QgsSvgCacheEntry& other ) const
 {
-  return ( other.file == file && other.size == size && other.outlineWidth == outlineWidth && other.widthScaleFactor == widthScaleFactor
-           && other.rasterScaleFactor == rasterScaleFactor && other.fill == fill && other.outline == outline );
+  return other.file == file && other.size == size && other.outlineWidth == outlineWidth && other.widthScaleFactor == widthScaleFactor
+         && other.rasterScaleFactor == rasterScaleFactor && other.fill == fill && other.outline == outline;
 }
 
 int QgsSvgCacheEntry::dataSize() const
@@ -72,14 +92,6 @@ int QgsSvgCacheEntry::dataSize() const
   }
   return size;
 }
-
-QString file;
-double size;
-double outlineWidth;
-double widthScaleFactor;
-double rasterScaleFactor;
-QColor fill;
-QColor outline;
 
 QgsSvgCache* QgsSvgCache::instance()
 {
@@ -167,6 +179,16 @@ const QPicture& QgsSvgCache::svgAsPicture( const QString& file, double size, con
   }
 
   return *( currentEntry->picture );
+}
+
+const QByteArray& QgsSvgCache::svgContent( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+    double widthScaleFactor, double rasterScaleFactor )
+{
+  QMutexLocker locker( &mMutex );
+
+  QgsSvgCacheEntry *currentEntry = cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor, rasterScaleFactor );
+
+  return currentEntry->svgContent;
 }
 
 QgsSvgCacheEntry* QgsSvgCache::insertSVG( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
