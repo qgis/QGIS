@@ -25,7 +25,7 @@
 #include "qgis.h"
 #include "qgsfieldcombobox.h"
 #include "qgisapp.h"
-#include "qgsmapcanvas.h"
+#include "qgslayertreemapcanvasbridge.h"
 #include "qgsvisibilitypresets.h"
 
 #include <QFileDialog>
@@ -254,7 +254,7 @@ bool QgsVectorLayerAndAttributeModel::setData( const QModelIndex &index, const Q
 QList< QPair<QgsVectorLayer *, int> > QgsVectorLayerAndAttributeModel::layers() const
 {
   QList< QPair<QgsVectorLayer *, int> > layers;
-  QHash< QgsMapLayer *, int > layerIdx;
+  QHash< QString, int > layerIdx;
 
   foreach ( const QModelIndex &idx, mCheckedLeafs )
   {
@@ -265,9 +265,9 @@ QList< QPair<QgsVectorLayer *, int> > QgsVectorLayerAndAttributeModel::layers() 
       {
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( treeLayer->layer() );
         Q_ASSERT( vl );
-        if ( !layerIdx.contains( vl ) )
+        if ( !layerIdx.contains( vl->id() ) )
         {
-          layerIdx.insert( vl, layers.size() );
+          layerIdx.insert( vl->id(), layers.size() );
           layers << qMakePair<QgsVectorLayer *, int>( vl, mAttributeIdx.value( vl, -1 ) );
         }
       }
@@ -276,15 +276,16 @@ QList< QPair<QgsVectorLayer *, int> > QgsVectorLayerAndAttributeModel::layers() 
     {
       QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( QgsLayerTree::toLayer( node )->layer() );
       Q_ASSERT( vl );
-      if ( !layerIdx.contains( vl ) )
+      if ( !layerIdx.contains( vl->id() ) )
       {
-        layerIdx.insert( vl, layers.size() );
+        layerIdx.insert( vl->id(), layers.size() );
         layers << qMakePair<QgsVectorLayer *, int>( vl, mAttributeIdx.value( vl, -1 ) );
       }
     }
   }
 
-  QList<QgsMapLayer*> inDrawingOrder = QgisApp::instance()->mapCanvas()->layers();
+  QgsLayerTreeMapCanvasBridge* bridge = QgisApp::instance()->layerTreeCanvasBridge();
+  QStringList inDrawingOrder = bridge->hasCustomLayerOrder() ? bridge->customLayerOrder() : bridge->defaultLayerOrder();
   QList< QPair<QgsVectorLayer *, int> > layersInROrder;
 
   for ( int i = inDrawingOrder.size() - 1; i >= 0; i-- )
