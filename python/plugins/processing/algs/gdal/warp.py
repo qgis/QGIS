@@ -41,7 +41,7 @@ class warp(GdalAlgorithm):
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     SOURCE_SRS = 'SOURCE_SRS'
-    DEST_SRS = 'DEST_SRS '
+    DEST_SRS = 'DEST_SRS'
     METHOD = 'METHOD'
     METHOD_OPTIONS = ['near', 'bilinear', 'cubic', 'cubicspline', 'lanczos']
     TR = 'TR'
