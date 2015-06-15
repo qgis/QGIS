@@ -19,6 +19,7 @@ email                : sherman at mrcc.com
 #include "qgsogrfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
+#include "qgslocalec.h"
 
 #define CPL_SUPRESS_CPLUSPLUS
 #include <gdal.h>         // to collect version information
@@ -45,6 +46,7 @@ email                : sherman at mrcc.com
 #include "qgsgeometry.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectorlayerimport.h"
+#include "qgslocalec.h"
 
 static const QString TEXT_PROVIDER_KEY = "ogr";
 static const QString TEXT_PROVIDER_DESCRIPTION =
@@ -1001,11 +1003,7 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
 
   QgsAttributes attrs = f.attributes();
 
-  char *oldlocale = setlocale( LC_NUMERIC, NULL );
-  if ( oldlocale )
-    oldlocale = strdup( oldlocale );
-
-  setlocale( LC_NUMERIC, "C" );
+  QgsLocaleNumC l;
 
   //add possible attribute information
   for ( int targetAttributeId = 0; targetAttributeId < attrs.count(); ++targetAttributeId )
@@ -1083,10 +1081,6 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
       f.setFeatureId( id );
   }
   OGR_F_Destroy( feature );
-
-  setlocale( LC_NUMERIC, oldlocale );
-  if ( oldlocale )
-    free( oldlocale );
 
   return returnValue;
 }
@@ -1222,10 +1216,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
       continue;
     }
 
-    char *oldlocale = setlocale( LC_NUMERIC, NULL );
-    if ( oldlocale )
-      oldlocale = strdup( oldlocale );
-    setlocale( LC_NUMERIC, "C" );
+    QgsLocaleNumC l;
 
     for ( QgsAttributeMap::const_iterator it2 = attr.begin(); it2 != attr.end(); ++it2 )
     {
@@ -1287,10 +1278,6 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     {
       pushError( tr( "OGR error setting feature %1: %2" ).arg( fid ).arg( CPLGetLastErrorMsg() ) );
     }
-
-    setlocale( LC_NUMERIC, oldlocale );
-    if ( oldlocale )
-      free( oldlocale );
   }
 
   if ( OGR_L_SyncToDisk( ogrLayer ) != OGRERR_NONE )
