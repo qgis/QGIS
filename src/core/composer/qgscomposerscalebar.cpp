@@ -21,6 +21,7 @@
 #include "qgsdistancearea.h"
 #include "qgsscalebarstyle.h"
 #include "qgsdoubleboxscalebarstyle.h"
+#include "qgsfontutils.h"
 #include "qgsmaprenderer.h"
 #include "qgsnumericscalebarstyle.h"
 #include "qgssingleboxscalebarstyle.h"
@@ -668,13 +669,17 @@ bool QgsComposerScaleBar::writeXML( QDomElement& elem, QDomDocument & doc ) cons
   composerScaleBarElem.setAttribute( "maxBarWidth", mMaxBarWidth );
   composerScaleBarElem.setAttribute( "segmentMillimeters", QString::number( mSegmentMillimeters ) );
   composerScaleBarElem.setAttribute( "numMapUnitsPerScaleBarUnit", QString::number( mNumMapUnitsPerScaleBarUnit ) );
-  composerScaleBarElem.setAttribute( "font", mFont.toString() );
   composerScaleBarElem.setAttribute( "outlineWidth", QString::number( mPen.widthF() ) );
   composerScaleBarElem.setAttribute( "unitLabel", mUnitLabeling );
   composerScaleBarElem.setAttribute( "units", mUnits );
   composerScaleBarElem.setAttribute( "lineJoinStyle", QgsSymbolLayerV2Utils::encodePenJoinStyle( mLineJoinStyle ) );
   composerScaleBarElem.setAttribute( "lineCapStyle", QgsSymbolLayerV2Utils::encodePenCapStyle( mLineCapStyle ) );
 
+  //font
+  QFontInfo fi = QFontInfo( mFont );
+  composerScaleBarElem.setAttribute( "font", mFont.toString() );
+  composerScaleBarElem.setAttribute( "fontStyle", fi.styleName() );
+  
   //style
   if ( mStyle )
   {
@@ -759,8 +764,8 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
   if ( !fontString.isEmpty() )
   {
     mFont.fromString( fontString );
+    QgsFontUtils::updateFontViaStyle( mFont, itemElem.attribute( "fontStyle" ) );
   }
-
   //colors
   //fill color
   QDomNodeList fillColorList = itemElem.elementsByTagName( "fillColor" );

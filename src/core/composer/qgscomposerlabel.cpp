@@ -19,6 +19,7 @@
 #include "qgscomposition.h"
 #include "qgscomposerutils.h"
 #include "qgsexpression.h"
+#include "qgsfontutils.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgscomposermodel.h"
 #include "qgsvectorlayer.h"
@@ -379,8 +380,10 @@ bool QgsComposerLabel::writeXML( QDomElement& elem, QDomDocument & doc ) const
   composerLabelElem.setAttribute( "valign", mVAlignment );
 
   //font
+  QFontInfo fi = QFontInfo( mFont );
   QDomElement labelFontElem = doc.createElement( "LabelFont" );
   labelFontElem.setAttribute( "description", mFont.toString() );
+  labelFontElem.setAttribute( "style", fi.styleName() );
   composerLabelElem.appendChild( labelFontElem );
 
   //font color
@@ -436,6 +439,7 @@ bool QgsComposerLabel::readXML( const QDomElement& itemElem, const QDomDocument&
   {
     QDomElement labelFontElem = labelFontList.at( 0 ).toElement();
     mFont.fromString( labelFontElem.attribute( "description" ) );
+    QgsFontUtils::updateFontViaStyle( mFont, labelFontElem.attribute( "style" ) );
   }
 
   //font color
