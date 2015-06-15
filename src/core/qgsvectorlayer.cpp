@@ -2872,7 +2872,7 @@ void QgsVectorLayer::removeJoin( const QString& joinLayerId )
     mJoinBuffer->removeJoin( joinLayerId );
 }
 
-const QList< QgsVectorJoinInfo >& QgsVectorLayer::vectorJoins() const
+const QList< QgsVectorJoinInfo > QgsVectorLayer::vectorJoins() const
 {
   if ( mJoinBuffer )
     return mJoinBuffer->vectorJoins();
