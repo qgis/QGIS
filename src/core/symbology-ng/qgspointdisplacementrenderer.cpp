@@ -24,6 +24,7 @@
 #include "qgsvectorlayer.h"
 #include "qgssinglesymbolrendererv2.h"
 #include "qgspainteffect.h"
+#include "qgsfontutils.h"
 
 #include <QDomElement>
 #include <QPainter>
@@ -338,7 +339,10 @@ QgsFeatureRendererV2* QgsPointDisplacementRenderer::create( QDomElement& symbolo
   QgsPointDisplacementRenderer* r = new QgsPointDisplacementRenderer();
   r->setLabelAttributeName( symbologyElem.attribute( "labelAttributeName" ) );
   QFont labelFont;
-  labelFont.fromString( symbologyElem.attribute( "labelFont", "" ) );
+  if ( !QgsFontUtils::setFromXmlChildNode( labelFont, symbologyElem, "labelFontProperties" ) )
+  {
+    labelFont.fromString( symbologyElem.attribute( "labelFont", "" ) );
+  }
   r->setLabelFont( labelFont );
   r->setCircleWidth( symbologyElem.attribute( "circleWidth", "0.4" ).toDouble() );
   r->setCircleColor( QgsSymbolLayerV2Utils::decodeColor( symbologyElem.attribute( "circleColor", "" ) ) );
@@ -368,7 +372,7 @@ QDomElement QgsPointDisplacementRenderer::save( QDomDocument& doc )
   QDomElement rendererElement = doc.createElement( RENDERER_TAG_NAME );
   rendererElement.setAttribute( "type", "pointDisplacement" );
   rendererElement.setAttribute( "labelAttributeName", mLabelAttributeName );
-  rendererElement.setAttribute( "labelFont", mLabelFont.toString() );
+  rendererElement.appendChild( QgsFontUtils::toXmlElement( mLabelFont, doc, "labelFontProperties" ) );
   rendererElement.setAttribute( "circleWidth", QString::number( mCircleWidth ) );
   rendererElement.setAttribute( "circleColor", QgsSymbolLayerV2Utils::encodeColor( mCircleColor ) );
   rendererElement.setAttribute( "labelColor", QgsSymbolLayerV2Utils::encodeColor( mLabelColor ) );

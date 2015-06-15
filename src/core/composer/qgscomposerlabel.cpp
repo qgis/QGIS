@@ -24,6 +24,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgsdistancearea.h"
+#include "qgsfontutils.h"
 
 #include "qgswebview.h"
 #include "qgswebframe.h"
@@ -379,8 +380,7 @@ bool QgsComposerLabel::writeXML( QDomElement& elem, QDomDocument & doc ) const
   composerLabelElem.setAttribute( "valign", mVAlignment );
 
   //font
-  QDomElement labelFontElem = doc.createElement( "LabelFont" );
-  labelFontElem.setAttribute( "description", mFont.toString() );
+  QDomElement labelFontElem = QgsFontUtils::toXmlElement( mFont, doc, "LabelFont" );
   composerLabelElem.appendChild( labelFontElem );
 
   //font color
@@ -431,12 +431,7 @@ bool QgsComposerLabel::readXML( const QDomElement& itemElem, const QDomDocument&
   mVAlignment = ( Qt::AlignmentFlag )( itemElem.attribute( "valign" ).toInt() );
 
   //font
-  QDomNodeList labelFontList = itemElem.elementsByTagName( "LabelFont" );
-  if ( labelFontList.size() > 0 )
-  {
-    QDomElement labelFontElem = labelFontList.at( 0 ).toElement();
-    mFont.fromString( labelFontElem.attribute( "description" ) );
-  }
+  QgsFontUtils::setFromXmlChildNode( mFont, itemElem, "LabelFont" );
 
   //font color
   QDomNodeList fontColorList = itemElem.elementsByTagName( "FontColor" );

@@ -162,5 +162,7 @@ ADD_QGIS_TEST(statisticalsummarytest testqgsstatisticalsummary.cpp)
 ADD_QGIS_TEST(histogramtest testqgshistogram.cpp)
 ADD_QGIS_TEST(pallabelingtest testqgspallabeling.cpp)
 ADD_QGIS_TEST(graduatedsymbolrenderertest testqgsgraduatedsymbolrenderer.cpp)
+ADD_QGIS_TEST(fontutils testqgsfontutils.cpp)
+
 
 

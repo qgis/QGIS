@@ -19,6 +19,7 @@
 #include "diagram/qgshistogramdiagram.h"
 #include "qgsrendercontext.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgsfontutils.h"
 
 #include <QDomElement>
 #include <QPainter>
@@ -79,7 +80,10 @@ void QgsDiagramSettings::readXML( const QDomElement& elem, const QgsVectorLayer*
   Q_UNUSED( layer );
 
   enabled = ( elem.attribute( "enabled", "1" ) != "0" );
-  font.fromString( elem.attribute( "font" ) );
+  if ( !QgsFontUtils::setFromXmlChildNode( font, elem, "fontProperties" ) )
+  {
+    font.fromString( elem.attribute( "font" ) );
+  }
   backgroundColor.setNamedColor( elem.attribute( "backgroundColor" ) );
   backgroundColor.setAlpha( elem.attribute( "backgroundAlpha" ).toInt() );
   size.setWidth( elem.attribute( "width" ).toDouble() );
@@ -206,7 +210,7 @@ void QgsDiagramSettings::writeXML( QDomElement& rendererElem, QDomDocument& doc,
 
   QDomElement categoryElem = doc.createElement( "DiagramCategory" );
   categoryElem.setAttribute( "enabled", enabled );
-  categoryElem.setAttribute( "font", font.toString() );
+  categoryElem.appendChild( QgsFontUtils::toXmlElement( font, doc, "fontProperties" ) );
   categoryElem.setAttribute( "backgroundColor", backgroundColor.name() );
   categoryElem.setAttribute( "backgroundAlpha", backgroundColor.alpha() );
   categoryElem.setAttribute( "width", QString::number( size.width() ) );

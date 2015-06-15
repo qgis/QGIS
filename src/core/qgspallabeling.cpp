@@ -4183,7 +4183,7 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
 
     //font
     QFont dFont = palGeometry->definedFont();
-    QgsDebugMsgLevel( QString( "PAL font tmpLyr: %1, Style: %2" ).arg( tmpLyr.textFont.toString() ).arg( QFontInfo( tmpLyr.textFont ).styleName() ), 4 );
+    QgsDebugMsgLevel( QString( "PAL font tmpLyr: %1, Style: %2" ).arg( tmpLyr.textFont.toString() ).arg( tmpLyr.textFont.styleName() ), 4 );
     QgsDebugMsgLevel( QString( "PAL font definedFont: %1, Style: %2" ).arg( dFont.toString() ).arg( dFont.styleName() ), 4 );
     tmpLyr.textFont = dFont;
 
