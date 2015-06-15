@@ -288,7 +288,9 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
       outputPointWriter.addFeature( samplePointFeature );
 
       sIndex.insertFeature( sampleLineFeature );
+      Q_NOWARN_DEPRECATED_PUSH
       lineFeatureMap.insert( fid, sampleLineFeature.geometryAndOwnership() );
+      Q_NOWARN_DEPRECATED_POP
 
       delete lineFarAwayGeom;
       ++nTotalTransects;
@@ -336,7 +338,9 @@ QgsGeometry* QgsTransectSample::findBaselineGeometry( QVariant strataId )
   {
     if ( strataId == fet.attribute( mBaselineStrataId ) || mShareBaseline )
     {
+      Q_NOWARN_DEPRECATED_PUSH
       return fet.geometryAndOwnership();
+      Q_NOWARN_DEPRECATED_POP
     }
   }
   return 0;

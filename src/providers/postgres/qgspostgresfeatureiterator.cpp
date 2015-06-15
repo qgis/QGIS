@@ -165,7 +165,9 @@ bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature& feature )
   }
   else
   {
+    Q_NOWARN_DEPRECATED_PUSH
     feature.setGeometry( mFeatureQueue.front().geometryAndOwnership() );
+    Q_NOWARN_DEPRECATED_POP
   }
   feature.setFeatureId( mFeatureQueue.front().id() );
   feature.setAttributes( mFeatureQueue.front().attributes() );

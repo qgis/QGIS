@@ -202,7 +202,7 @@ QgsRenderContext * QgsSymbolV2LegendNode::createTemporaryRenderContext() const
   QScopedPointer<QgsRenderContext> context( new QgsRenderContext );
   context->setScaleFactor( dpi / 25.4 );
   context->setRendererScale( scale );
-  context->setMapToPixel( QgsMapToPixel( mupp ) ); // hope it's ok to leave out other params
+  context->setMapToPixel( QgsMapToPixel( mupp ) );
   return validData ? context.take() : 0;
 }
 
@@ -309,7 +309,7 @@ QSizeF QgsSymbolV2LegendNode::drawSymbol( const QgsLegendSettings& settings, Ite
   QgsRenderContext context;
   context.setScaleFactor( settings.dpi() / 25.4 );
   context.setRendererScale( settings.mapScale() );
-  context.setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * context.scaleFactor() ) ) ); // hope it's ok to leave out other params
+  context.setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * context.scaleFactor() ) ) );
   context.setForceVectorOutput( true );
   context.setPainter( ctx ? ctx->painter : 0 );
 

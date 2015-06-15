@@ -42,6 +42,20 @@ QgsMapToPixel::QgsMapToPixel( double mapUnitsPerPixel,
   updateMatrix();
 }
 
+QgsMapToPixel::QgsMapToPixel( double mapUnitsPerPixel )
+    : mMapUnitsPerPixel( mapUnitsPerPixel )
+    , mWidth( 0 )
+    , mHeight( 0 )
+    , mRotation( 0 )
+    , xCenter( 0 )
+    , yCenter( 0 )
+    , xMin( 0 )
+    , yMin( 0 )
+{
+  Q_ASSERT( mapUnitsPerPixel > 0 );
+  updateMatrix();
+}
+
 QgsMapToPixel::QgsMapToPixel()
     : mMapUnitsPerPixel( 1 )
     , mWidth( 1 )
