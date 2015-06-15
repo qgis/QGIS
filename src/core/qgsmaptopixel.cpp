@@ -52,7 +52,6 @@ QgsMapToPixel::QgsMapToPixel( double mapUnitsPerPixel )
     , xMin( 0 )
     , yMin( 0 )
 {
-  Q_ASSERT( mapUnitsPerPixel > 0 );
   updateMatrix();
 }
 
