@@ -124,7 +124,7 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
   }
 
   QgsRasterMatrix resultMatrix;
-  resultMatrix.setNodataValue( -FLT_MAX );
+  resultMatrix.setNodataValue( outputNodataValue );
 
   //read / write line by line
   for ( int i = 0; i < mNumOutputRows; ++i )
@@ -146,8 +146,7 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
 
       for ( int j = 0; j < mNumOutputColumns; ++j )
       {
-        double result = resultIsNumber ? resultMatrix.number() : resultMatrix.data()[j];
-        calcData[j] = ( calcData[j] == resultMatrix.nodataValue() ? outputNodataValue : ( float ) result );
+        calcData[j] = ( float )( resultIsNumber ? resultMatrix.number() : resultMatrix.data()[j] );
       }
 
       //write scanline to the dataset
