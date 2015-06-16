@@ -363,7 +363,7 @@ class TestQgsPalLabeling(TestCase):
         res = chk.runTest(self._Test, mismatch)
         if PALREPORT and not res:  # don't report ok checks
             testname = self._TestGroup + ' . ' + self._Test
-            PALREPORTS[testname] = str(chk.report().toLocal8Bit())
+            PALREPORTS[testname] = chk.report()
         msg = '\nRender check failed for "{0}"'.format(self._Test)
         return res, msg
 
