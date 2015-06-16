@@ -2613,7 +2613,7 @@ bool QgsExpression::NodeInOperator::prepare( QgsExpression* parent, const QgsFie
 
 QString QgsExpression::NodeInOperator::dump() const
 {
-  return QString( "%1 IN (%2)" ).arg( mNode->dump() ).arg( mList->dump() );
+  return QString( "%1 %2 IN (%3)" ).arg( mNode->dump() ).arg( mNotIn ? "NOT" : "" ).arg( mList->dump() );
 }
 
 //
@@ -2670,7 +2670,7 @@ QString QgsExpression::NodeFunction::dump() const
 {
   Function* fd = Functions()[mFnIndex];
   if ( fd->params() == 0 )
-    return fd->name(); // special column
+    return QString( "%1%2" ).arg( fd->name() ).arg( fd->name().startsWith( '$' ) ? "" : "()" ); // special column
   else
     return QString( "%1(%2)" ).arg( fd->name() ).arg( mArgs ? mArgs->dump() : QString() ); // function
 }

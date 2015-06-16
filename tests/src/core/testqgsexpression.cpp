@@ -437,13 +437,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "color cmyka" ) << "color_cmyka(50,25,90,60,200)" << false << QVariant( "51,76,10,200" );
     }
 
-    void evaluation()
+    void run_evaluation_test( QgsExpression& exp, bool evalError, QVariant& result )
     {
-      QFETCH( QString, string );
-      QFETCH( bool, evalError );
-      QFETCH( QVariant, result );
-
-      QgsExpression exp( string );
       QCOMPARE( exp.hasParserError(), false );
       if ( exp.hasParserError() )
         qDebug() << exp.parserErrorString();
@@ -499,6 +494,20 @@ class TestQgsExpression: public QObject
         default:
           Q_ASSERT( false ); // should never happen
       }
+    }
+
+    void evaluation()
+    {
+      QFETCH( QString, string );
+      QFETCH( bool, evalError );
+      QFETCH( QVariant, result );
+
+      QgsExpression exp( string );
+      run_evaluation_test( exp, evalError, result );
+      QgsExpression exp2( exp.dump() );
+      run_evaluation_test( exp2, evalError, result );
+      QgsExpression exp3( exp.expression() );
+      run_evaluation_test( exp3, evalError, result );
     }
 
     void eval_precedence()
