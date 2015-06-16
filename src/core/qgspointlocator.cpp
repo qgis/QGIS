@@ -19,7 +19,7 @@
 #include "qgsvectorlayer.h"
 #include "qgswkbptr.h"
 
-#include <spatialindex/SpatialIndex.h>
+#include "SpatialIndex.h"
 
 #include <QLinkedListIterator>
 
