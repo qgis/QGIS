@@ -72,10 +72,9 @@ bool QgsImageWarper::openSrcDSAndGetWarpOpt( const QString &input, const Resampl
   return true;
 }
 
-bool QgsImageWarper::createDestinationDataset(
-  const QString &outputName, GDALDatasetH hSrcDS, GDALDatasetH &hDstDS,
-  uint resX, uint resY, double *adfGeoTransform, bool useZeroAsTrans,
-  const QString& compression, const QString &projection )
+bool QgsImageWarper::createDestinationDataset( const QString &outputName, GDALDatasetH hSrcDS, GDALDatasetH &hDstDS,
+    uint resX, uint resY, double *adfGeoTransform, bool useZeroAsTrans,
+    const QString& compression, const QgsCoordinateReferenceSystem& crs )
 {
   // create the output file
   GDALDriverH driver = GDALGetDriverByName( "GTiff" );
@@ -100,18 +99,10 @@ bool QgsImageWarper::createDestinationDataset(
     return false;
   }
 
-  if ( !projection.isEmpty() )
+  if ( crs.isValid() )
   {
     OGRSpatialReference oTargetSRS;
-    if ( projection.startsWith( "EPSG", Qt::CaseInsensitive ) )
-    {
-      QString epsg = projection.mid( projection.indexOf( ":" ) + 1 );
-      oTargetSRS.importFromEPSG( epsg.toInt() );
-    }
-    else
-    {
-      oTargetSRS.importFromProj4( projection.toLatin1().data() );
-    }
+    oTargetSRS.importFromProj4( crs.toProj4().toLatin1().data() );
 
     char *wkt = NULL;
     OGRErr err = oTargetSRS.exportToWkt( &wkt );
@@ -155,7 +146,7 @@ int QgsImageWarper::warpFile( const QString& input,
                               ResamplingMethod resampling,
                               bool useZeroAsTrans,
                               const QString& compression,
-                              const QString &projection,
+                              const QgsCoordinateReferenceSystem& crs,
                               double destResX, double destResY )
 {
   if ( !georefTransform.parametersInitialized() )
@@ -221,7 +212,7 @@ int QgsImageWarper::warpFile( const QString& input,
 
   if ( !createDestinationDataset( output, hSrcDS, hDstDS, destPixels, destLines,
                                   adfGeoTransform, useZeroAsTrans, compression,
-                                  projection ) )
+                                  crs ) )
   {
     GDALClose( hSrcDS );
     GDALDestroyWarpOptions( psWarpOptions );

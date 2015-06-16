@@ -75,7 +75,7 @@ INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_SOURCE_DIR}
      ${CMAKE_CURRENT_BINARY_DIR}
      ../../core ../../core/geometry ../../core/raster ../../core/composer
-     ../../gui
+     ../../gui  ../../gui/editorwidgets
      ..
      ${GSL_INCLUDE_DIR}
      ${QGIS_INCLUDE_DIR}

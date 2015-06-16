@@ -19,6 +19,7 @@
 #include "qgsgcplist.h"
 #include "qgsmapcoordsdialog.h"
 #include "qgsimagewarper.h"
+#include "qgscoordinatereferencesystem.h"
 
 #include <QPointer>
 
@@ -216,7 +217,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     QString mWorldFileName;
     QString mTranslatedRasterFileName;
     QString mGCPpointsFileName;
-    QString mProjection;
+    QgsCoordinateReferenceSystem mProjection;
     QString mPdfOutputFile;
     QString mPdfOutputMapFile;
     double  mUserResX, mUserResY;  // User specified target scale

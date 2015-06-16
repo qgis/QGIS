@@ -179,7 +179,7 @@
   </widget>
   <action name="mActionOpenRaster">
    <property name="text">
-    <string>Open raster</string>
+    <string>Open Raster...</string>
    </property>
    <property name="statusTip">
     <string>Open raster</string>
@@ -231,7 +231,7 @@
   </action>
   <action name="mActionTransformSettings">
    <property name="text">
-    <string>Transformation settings</string>
+    <string>Transformation Settings...</string>
    </property>
    <property name="statusTip">
     <string>Transformation settings</string>
@@ -239,7 +239,7 @@
   </action>
   <action name="mActionAddPoint">
    <property name="text">
-    <string>Add point</string>
+    <string>Add Point</string>
    </property>
    <property name="statusTip">
     <string>Add point</string>
@@ -250,7 +250,7 @@
   </action>
   <action name="mActionDeletePoint">
    <property name="text">
-    <string>Delete point</string>
+    <string>Delete Point</string>
    </property>
    <property name="statusTip">
     <string>Delete point</string>
@@ -261,7 +261,10 @@
   </action>
   <action name="mActionQuit">
    <property name="text">
-    <string>Quit</string>
+    <string>Close Georeferencer</string>
+   </property>
+   <property name="toolTip">
+    <string>Close georeferencer</string>
    </property>
    <property name="statusTip">
     <string>Quit</string>
@@ -269,7 +272,7 @@
   </action>
   <action name="mActionStartGeoref">
    <property name="text">
-    <string>Start georeferencing</string>
+    <string>Start Georeferencing</string>
    </property>
    <property name="statusTip">
     <string>Start georeferencing</string>
@@ -280,7 +283,7 @@
   </action>
   <action name="mActionGDALScript">
    <property name="text">
-    <string>Generate GDAL script</string>
+    <string>Generate GDAL Script</string>
    </property>
    <property name="statusTip">
     <string>Generate GDAL script</string>
@@ -313,7 +316,7 @@
   </action>
   <action name="mActionSaveGCPpoints">
    <property name="text">
-    <string>Save GCP points as...</string>
+    <string>Save GCP Points as...</string>
    </property>
    <property name="statusTip">
     <string>Save GCP points as...</string>
@@ -324,7 +327,7 @@
   </action>
   <action name="mActionLoadGCPpoints">
    <property name="text">
-    <string>Load GCP points</string>
+    <string>Load GCP Points...</string>
    </property>
    <property name="statusTip">
     <string>Load GCP points</string>
@@ -335,7 +338,7 @@
   </action>
   <action name="mActionGeorefConfig">
    <property name="text">
-    <string>Configure Georeferencer</string>
+    <string>Configure Georeferencer...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+P</string>
@@ -343,12 +346,12 @@
   </action>
   <action name="mActionRasterProperties">
    <property name="text">
-    <string>Raster properties</string>
+    <string>Raster Properties...</string>
    </property>
   </action>
   <action name="mActionMoveGCPPoint">
    <property name="text">
-    <string>Move GCP point</string>
+    <string>Move GCP Point</string>
    </property>
    <property name="statusTip">
     <string>Move GCP point</string>
@@ -366,12 +369,12 @@
   </action>
   <action name="mActionLocalHistogramStretch">
    <property name="text">
-    <string>Local histogram stretch</string>
+    <string>Local Histogram Stretch</string>
    </property>
   </action>
   <action name="mActionFullHistogramStretch">
    <property name="text">
-    <string>Full histogram stretch</string>
+    <string>Full Histogram Stretch</string>
    </property>
   </action>
  </widget>

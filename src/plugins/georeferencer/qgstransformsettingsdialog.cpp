@@ -24,6 +24,7 @@
 #include "qgsrasterlayer.h"
 
 #include "qgstransformsettingsdialog.h"
+#include "qgscoordinatereferencesystem.h"
 
 QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, const QString &output,
     int countGCPpoints, QWidget *parent )
@@ -43,11 +44,8 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
 
   leOutputRaster->setText( output );
 
-  mRegExpValidator = new QRegExpValidator( QRegExp( "(^epsg:{1}\\s*\\d+)|(^\\+proj.*)", Qt::CaseInsensitive ), leTargetSRS );
-  leTargetSRS->setValidator( mRegExpValidator );
-
   // Populate CompressionComboBox
-  mListCompression.append( "NONE" );
+  mListCompression.append( "None" );
   mListCompression.append( "LZW" );
   mListCompression.append( "PACKBITS" );
   mListCompression.append( "DEFLATE" );
@@ -58,12 +56,16 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
   }
   cmbCompressionComboBox->addItems( listCompressionTr );
 
-
   QSettings s;
   cmbTransformType->setCurrentIndex( s.value( "/Plugin-GeoReferencer/lasttransformation", -1 ).toInt() );
   cmbResampling->setCurrentIndex( s.value( "/Plugin-GeoReferencer/lastresampling", 0 ).toInt() );
   cmbCompressionComboBox->setCurrentIndex( s.value( "/Plugin-GeoReferencer/lastcompression", 0 ).toInt() );
-  leTargetSRS->setText( s.value( "/Plugin-GeoReferencer/targetsrs" ).toString() );
+
+  QString targetCRSString = s.value( "/Plugin-GeoReferencer/targetsrs" ).toString();
+  QgsCoordinateReferenceSystem targetCRS;
+  targetCRS.createFromOgcWmsCrs( targetCRSString );
+  mCrsSelector->setCrs( targetCRS );
+
   mWorldFileCheckBox->setChecked( s.value( "/Plugin-Georeferencer/word_file_checkbox", false ).toBool() );
 
   cbxUserResolution->setChecked( s.value( "/Plugin-Georeferencer/user_specified_resolution", false ).toBool() );
@@ -75,26 +77,14 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
   if ( !ok )
     dsbHorizRes->setValue( -1.0 );
 
-  // Activate spin boxes for vertical/horizontal resolution, if the option is checked
-  dsbHorizRes->setEnabled( cbxUserResolution->isChecked() );
-  dsbVerticalRes->setEnabled( cbxUserResolution->isChecked() );
-  // Update activation of spinboxes, if the user specified resolution is checked/unchecked
-  connect( cbxUserResolution, SIGNAL( toggled( bool ) ), dsbHorizRes, SLOT( setEnabled( bool ) ) );
-  connect( cbxUserResolution, SIGNAL( toggled( bool ) ), dsbVerticalRes, SLOT( setEnabled( bool ) ) );
-
   cbxZeroAsTrans->setChecked( s.value( "/Plugin-GeoReferencer/zeroastrans", false ).toBool() );
   cbxLoadInQgisWhenDone->setChecked( s.value( "/Plugin-GeoReferencer/loadinqgis", false ).toBool() );
-
-  tbnOutputRaster->setIcon( getThemeIcon( "/mPushButtonFileOpen.png" ) );
-  tbnTargetSRS->setIcon( getThemeIcon( "/mPushButtonTargetSRSDisabled.png" ) );
-  tbnReportFile->setIcon( getThemeIcon( "/mActionSaveAsPDF.png" ) );
-  tbnMapFile->setIcon( getThemeIcon( "/mActionSaveAsPDF.png" ) );
 }
 
 void QgsTransformSettingsDialog::getTransformSettings( QgsGeorefTransform::TransformParametrisation &tp,
     QgsImageWarper::ResamplingMethod &rm,
     QString &comprMethod, QString &raster,
-    QString &proj, QString& pdfMapFile, QString& pdfReportFile, bool &zt, bool &loadInQgis,
+    QgsCoordinateReferenceSystem &proj, QString& pdfMapFile, QString& pdfReportFile, bool &zt, bool &loadInQgis,
     double& resX, double& resY )
 {
   if ( cmbTransformType->currentIndex() == -1 )
@@ -103,7 +93,7 @@ void QgsTransformSettingsDialog::getTransformSettings( QgsGeorefTransform::Trans
     tp = ( QgsGeorefTransform::TransformParametrisation )cmbTransformType->itemData( cmbTransformType->currentIndex() ).toInt();
 
   rm = ( QgsImageWarper::ResamplingMethod )cmbResampling->currentIndex();
-  comprMethod = mListCompression.at( cmbCompressionComboBox->currentIndex() );
+  comprMethod = mListCompression.at( cmbCompressionComboBox->currentIndex() ).toUpper();
   if ( mWorldFileCheckBox->isChecked() )
   {
     raster = "";
@@ -112,7 +102,7 @@ void QgsTransformSettingsDialog::getTransformSettings( QgsGeorefTransform::Trans
   {
     raster = leOutputRaster->text();
   }
-  proj = leTargetSRS->text();
+  proj = mCrsSelector->crs();
   pdfMapFile = mMapFileLineEdit->text();
   pdfReportFile = mReportFileLineEdit->text();
   zt = cbxZeroAsTrans->isChecked();
@@ -191,7 +181,7 @@ void QgsTransformSettingsDialog::accept()
   s.setValue( "/Plugin-GeoReferencer/lasttransformation", cmbTransformType->currentIndex() );
   s.setValue( "/Plugin-GeoReferencer/lastresampling", cmbResampling->currentIndex() );
   s.setValue( "/Plugin-GeoReferencer/lastcompression", cmbCompressionComboBox->currentIndex() );
-  s.setValue( "/Plugin-GeoReferencer/targetsrs", leTargetSRS->text() );
+  s.setValue( "/Plugin-GeoReferencer/targetsrs", mCrsSelector->crs().authid() );
   s.setValue( "/Plugin-GeoReferencer/zeroastrans", cbxZeroAsTrans->isChecked() );
   s.setValue( "/Plugin-GeoReferencer/loadinqgis", cbxLoadInQgisWhenDone->isChecked() );
   s.setValue( "/Plugin-GeoReferencer/user_specified_resolution", cbxUserResolution->isChecked() );
@@ -218,36 +208,6 @@ void QgsTransformSettingsDialog::on_tbnOutputRaster_clicked()
 
   leOutputRaster->setText( rasterFileName );
   leOutputRaster->setToolTip( rasterFileName );
-}
-
-void QgsTransformSettingsDialog::on_tbnTargetSRS_clicked()
-{
-  QDialog srsSelector;
-  QVBoxLayout *layout = new QVBoxLayout;
-  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Close );
-
-  QgsProjectionSelector *projSelector = new QgsProjectionSelector( 0 );
-  layout->addWidget( projSelector );
-  layout->addWidget( buttonBox );
-  srsSelector.setLayout( layout );
-
-  connect( buttonBox, SIGNAL( accepted() ), &srsSelector, SLOT( accept() ) );
-  connect( buttonBox, SIGNAL( rejected() ), &srsSelector, SLOT( reject() ) );
-
-  if ( srsSelector.exec() )
-  {
-    QString srs;
-    // If the selected target SRS has an EPSG ID, use this as identification
-    if ( projSelector->selectedAuthId().isEmpty() )
-    {
-      srs = projSelector->selectedProj4String();
-    }
-    else
-    {
-      srs = projSelector->selectedAuthId();
-    }
-    leTargetSRS->setText( srs );
-  }
 }
 
 void QgsTransformSettingsDialog::on_tbnMapFile_clicked()
@@ -277,20 +237,6 @@ void QgsTransformSettingsDialog::on_tbnReportFile_clicked()
       outputFileName.append( ".pdf" );
     }
     mReportFileLineEdit->setText( outputFileName );
-  }
-}
-
-void QgsTransformSettingsDialog::on_leTargetSRS_textChanged( const QString &text )
-{
-  QString t = text;
-  int s = t.size();
-  if ( text.isEmpty() )
-  {
-    tbnTargetSRS->setIcon( getThemeIcon( "/mPushButtonTargetSRSDisabled.png" ) );
-  }
-  else if ( mRegExpValidator->validate( t, s ) == QValidator::Acceptable )
-  {
-    tbnTargetSRS->setIcon( getThemeIcon( "/mPushButtonTargetSRSEnabled.png" ) );
   }
 }
 
