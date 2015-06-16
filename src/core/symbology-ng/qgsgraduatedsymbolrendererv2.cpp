@@ -1454,9 +1454,17 @@ void QgsGraduatedSymbolRendererV2::addBreak( double breakValue, bool updateSymbo
     }
   }
 
-  if ( updateSymbols && mGraduatedMethod == GraduatedColor )
+  if ( updateSymbols )
   {
-    updateColorRamp( mSourceColorRamp.data(), mInvertedColorRamp );
+    switch ( mGraduatedMethod )
+    {
+      case GraduatedColor:
+        updateColorRamp( mSourceColorRamp.data(), mInvertedColorRamp );
+        break;
+      case GraduatedSize:
+        setSymbolSizes( minSymbolSize(), maxSymbolSize() );
+        break;
+    }
   }
 }
 
@@ -1589,7 +1597,7 @@ bool QgsGraduatedSymbolRendererV2::rangesHaveGaps() const
 
   for ( ; it != sortedRanges.constEnd(); ++it )
   {
-    if ( !qgsDoubleNear( ( *it ).lowerValue(), prevMax ) )
+    if ( !qgsDoubleNear(( *it ).lowerValue(), prevMax ) )
       return true;
 
     prevMax = ( *it ).upperValue();
