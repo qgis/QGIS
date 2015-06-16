@@ -75,6 +75,7 @@ class TestPyQgsPostgresProvider(TestCase, ProviderTestCase):
         assert vl.deleteFeature(3)
         assert vl.commitChanges()
         assert vl.selectedFeatureCount() == 0 or vl.selectedFeatures()[0]['pk'] == 1
+        assert False, "Forced Test Fail!!"
 
 
 if __name__ == '__main__':
