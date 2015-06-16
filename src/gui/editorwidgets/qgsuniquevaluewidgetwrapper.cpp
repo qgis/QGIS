@@ -87,6 +87,7 @@ void QgsUniqueValuesWidgetWrapper::initWidget( QWidget* editor )
     }
 
     QCompleter* c = new QCompleter( sValues );
+    c->setCaseSensitivity( Qt::CaseInsensitive );
     c->setCompletionMode( QCompleter::PopupCompletion );
     mLineEdit->setCompleter( c );
 
