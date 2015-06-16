@@ -514,7 +514,6 @@ class CORE_EXPORT QgsExpression
 
         int precedence() const;
         bool leftAssociative() const;
-        bool rightAssociative() const;
 
       protected:
         bool compare( double diff );

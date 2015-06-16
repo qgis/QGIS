@@ -379,7 +379,6 @@ class QgsExpression
 
         int precedence() const;
         bool leftAssociative() const;
-        bool rightAssociative() const;
     };
 
     class NodeInOperator : QgsExpression::Node

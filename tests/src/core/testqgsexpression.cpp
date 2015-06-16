@@ -435,6 +435,12 @@ class TestQgsExpression: public QObject
       QTest::newRow( "color hsva" ) << "color_hsva(40,100,100,200)" << false << QVariant( "255,170,0,200" );
       QTest::newRow( "color cmyk" ) << "color_cmyk(100,50,33,10)" << false << QVariant( "0,115,154" );
       QTest::newRow( "color cmyka" ) << "color_cmyka(50,25,90,60,200)" << false << QVariant( "51,76,10,200" );
+
+      // Precedence and associativity
+      QTest::newRow( "multiplication first" ) << "1+2*3" << false << QVariant( 7 );
+      QTest::newRow( "brackets first" ) << "(1+2)*(3+4)" << false << QVariant( 21 );
+      QTest::newRow( "right associativity" ) << "(2^3)^2" << false << QVariant( 64. );
+      QTest::newRow( "left associativity" ) << "1-(2-1)" << false << QVariant( 0 );
     }
 
     void run_evaluation_test( QgsExpression& exp, bool evalError, QVariant& result )
@@ -515,17 +521,6 @@ class TestQgsExpression: public QObject
       QCOMPARE( QgsExpression::BinaryOperatorText[QgsExpression::boDiv], "/" );
       QCOMPARE( QgsExpression::BinaryOperatorText[QgsExpression::boConcat], "||" );
 
-      QgsExpression e0( "1+2*3" );
-      QCOMPARE( e0.evaluate().toInt(), 7 );
-
-      QgsExpression e1( "(1+2)*(3+4)" );
-      QCOMPARE( e1.evaluate().toInt(), 21 );
-
-      QgsExpression e2( e1.dump() );
-      QCOMPARE( e2.evaluate().toInt(), 21 );
-
-      QgsExpression e3( "(2^3)^2" );
-      QCOMPARE( QgsExpression( e3.dump() ).evaluate().toInt(), 64 );
     }
 
     void eval_columns()

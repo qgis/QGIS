@@ -2576,51 +2576,24 @@ bool QgsExpression::NodeBinaryOperator::leftAssociative() const
   return -1;
 }
 
-bool QgsExpression::NodeBinaryOperator::rightAssociative() const
-{
-  // see left/right in qgsexpressionparser.yy
-  switch ( mOp )
-  {
-    case boOr:
-    case boAnd:
-    case boEQ:
-    case boNE:
-    case boLE:
-    case boGE:
-    case boLT:
-    case boGT:
-    case boRegexp:
-    case boLike:
-    case boILike:
-    case boNotLike:
-    case boNotILike:
-    case boIs:
-    case boIsNot:
-    case boPlus:
-    case boMul:
-    case boMod:
-    case boConcat:
-    case boPow:
-      return true;
-
-    case boMinus:
-    case boDiv:
-    case boIntDiv:
-      return false;
-  }
-  Q_ASSERT( 0 && "unexpected binary operator" );
-  return -1;
-}
-
 QString QgsExpression::NodeBinaryOperator::dump() const
 {
   QgsExpression::NodeBinaryOperator *lOp = dynamic_cast<QgsExpression::NodeBinaryOperator *>( mOpLeft );
   QgsExpression::NodeBinaryOperator *rOp = dynamic_cast<QgsExpression::NodeBinaryOperator *>( mOpRight );
 
   QString fmt;
-  fmt += lOp && ( lOp->precedence() < precedence() || !lOp->leftAssociative() ) ? "(%1)" : "%1";
-  fmt += " %2 ";
-  fmt += rOp && ( rOp->precedence() < precedence() || !rOp->rightAssociative() ) ? "(%3)" : "%3";
+  if ( leftAssociative() )
+  {
+    fmt += lOp && ( lOp->precedence() < precedence() ) ? "(%1)" : "%1";
+    fmt += " %2 ";
+    fmt += rOp && ( rOp->precedence() <= precedence() ) ? "(%3)" : "%3";
+  }
+  else
+  {
+    fmt += lOp && ( lOp->precedence() <= precedence() ) ? "(%1)" : "%1";
+    fmt += " %2 ";
+    fmt += rOp && ( rOp->precedence() < precedence() ) ? "(%3)" : "%3";
+  }
 
   return fmt.arg( mOpLeft->dump() ).arg( BinaryOperatorText[mOp] ).arg( mOpRight->dump() );
 }
