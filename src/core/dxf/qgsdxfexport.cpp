@@ -359,12 +359,10 @@ QgsDxfExport::QgsDxfExport()
     , mSymbolLayerCounter( 0 )
     , mNextHandleId( DXF_HANDSEED )
     , mBlockCounter( 0 )
-    , mModelSpaceBR( 0 )
 {
 }
 
 QgsDxfExport::QgsDxfExport( const QgsDxfExport& dxfExport )
-    : mModelSpaceBR( 0 )
 {
   *this = dxfExport;
 }
@@ -588,23 +586,15 @@ void QgsDxfExport::writeTables()
 
   writeGroup( 100, "AcDbSymbolTable" );
   writeGroup( 70, 0 );
-  writeGroup( 0, "BLOCK_RECORD" );
-  mModelSpaceBR = writeHandle();
-  writeGroup( 100, "AcDbSymbolTableRecord" );
-  writeGroup( 100, "AcDbBlockTableRecord" );
-  writeGroup( 2, "*Model_Space" );
 
-  writeGroup( 0, "BLOCK_RECORD" );
-  writeHandle();
-  writeGroup( 100, "AcDbSymbolTableRecord" );
-  writeGroup( 100, "AcDbBlockTableRecord" );
-  writeGroup( 2, "*Paper_Space" );
-
-  writeGroup( 0, "BLOCK_RECORD" );
-  writeHandle();
-  writeGroup( 100, "AcDbSymbolTableRecord" );
-  writeGroup( 100, "AcDbBlockTableRecord" );
-  writeGroup( 2, "*Paper_Space0" );
+  foreach ( QString block, QStringList() << "*Model_Space" << "*Paper_Space" << "*Paper_Space0" )
+  {
+    writeGroup( 0, "BLOCK_RECORD" );
+    mBlockHandles.insert( block, writeHandle() );
+    writeGroup( 100, "AcDbSymbolTableRecord" );
+    writeGroup( 100, "AcDbBlockTableRecord" );
+    writeGroup( 2, block );
+  }
 
   int i = 0;
   slIt = slList.constBegin();
@@ -617,11 +607,12 @@ void QgsDxfExport::writeTables()
     if ( hasDataDefinedProperties( ml, slIt->second ) )
       continue;
 
+    QString name = QString( "symbolLayer%1" ).arg( i++ );
     writeGroup( 0, "BLOCK_RECORD" );
-    writeHandle();
+    mBlockHandles.insert( name, writeHandle() );
     writeGroup( 100, "AcDbSymbolTableRecord" );
     writeGroup( 100, "AcDbBlockTableRecord" );
-    writeGroup( 2, QString( "symbolLayer%1" ).arg( i++ ) );
+    writeGroup( 2, name );
   }
 
   writeGroup( 0, "ENDTAB" );
@@ -802,53 +793,25 @@ void QgsDxfExport::writeBlocks()
   startSection();
   writeGroup( 2, "BLOCKS" );
 
-  writeGroup( 0, "BLOCK" );
-  writeHandle();
-  writeGroup( 100, "AcDbEntity" );
-  writeGroup( 8, "0" );
-  writeGroup( 100, "AcDbBlockBegin" );
-  writeGroup( 2, "*Model_Space" );
-  writeGroup( 70, 0 );
-  writeGroup( 0, QgsPoint( 0.0, 0.0 ) );
-  writeGroup( 3, "*Model_Space" );
-  writeGroup( 1, "" );
-  writeGroup( 0, "ENDBLK" );
-  writeHandle();
-  writeGroup( 100, "AcDbEntity" );
-  writeGroup( 8, "0" );
-  writeGroup( 100, "AcDbBlockEnd" );
-
-  writeGroup( 0, "BLOCK" );
-  writeHandle();
-  writeGroup( 100, "AcDbEntity" );
-  writeGroup( 8, "0" );
-  writeGroup( 100, "AcDbBlockBegin" );
-  writeGroup( 2, "*Paper_Space" );
-  writeGroup( 70, 0 );
-  writeGroup( 0, QgsPoint( 0.0, 0.0 ) );
-  writeGroup( 3, "*Paper_Space" );
-  writeGroup( 1, "" );
-  writeGroup( 0, "ENDBLK" );
-  writeHandle();
-  writeGroup( 100, "AcDbEntity" );
-  writeGroup( 8, "0" );
-  writeGroup( 100, "AcDbBlockEnd" );
-
-  writeGroup( 0, "BLOCK" );
-  writeHandle();
-  writeGroup( 100, "AcDbEntity" );
-  writeGroup( 8, "0" );
-  writeGroup( 100, "AcDbBlockBegin" );
-  writeGroup( 2, "*Paper_Space0" );
-  writeGroup( 70, 0 );
-  writeGroup( 0, QgsPoint( 0.0, 0.0 ) );
-  writeGroup( 3, "*Paper_Space0" );
-  writeGroup( 1, "" );
-  writeGroup( 0, "ENDBLK" );
-  writeHandle();
-  writeGroup( 100, "AcDbEntity" );
-  writeGroup( 8, "0" );
-  writeGroup( 100, "AcDbBlockEnd" );
+  foreach ( QString block, QStringList() << "*Model_Space" << "*Paper_Space" << "*Paper_Space0" )
+  {
+    writeGroup( 0, "BLOCK" );
+    writeHandle();
+    writeGroup( 330, QString( "%1" ).arg( mBlockHandles[ block ], 0, 16 ) );
+    writeGroup( 100, "AcDbEntity" );
+    writeGroup( 8, "0" );
+    writeGroup( 100, "AcDbBlockBegin" );
+    writeGroup( 2, block );
+    writeGroup( 70, 0 );
+    writeGroup( 0, QgsPoint( 0.0, 0.0 ) );
+    writeGroup( 3, block );
+    writeGroup( 1, "" );
+    writeGroup( 0, "ENDBLK" );
+    writeHandle();
+    writeGroup( 100, "AcDbEntity" );
+    writeGroup( 8, "0" );
+    writeGroup( 100, "AcDbBlockEnd" );
+  }
 
   // Iterate through all layers and get symbol layer pointers
   QList< QPair< QgsSymbolLayerV2*, QgsSymbolV2* > > slList;
@@ -876,33 +839,35 @@ void QgsDxfExport::writeBlocks()
       // ml->stopRender( ctx );
     }
 
+    QString block( QString( "symbolLayer%1" ).arg( mBlockCounter++ ) );
+    mBlockHandle = QString( "%1" ).arg( mBlockHandles[ block ], 0, 16 );
+
     writeGroup( 0, "BLOCK" );
     writeHandle();
+    writeGroup( 330, mBlockHandle );
     writeGroup( 100, "AcDbEntity" );
     writeGroup( 8, "0" );
     writeGroup( 100, "AcDbBlockBegin" );
-
-    QString blockName = QString( "symbolLayer%1" ).arg( mBlockCounter++ );
-    writeGroup( 2, blockName );
+    writeGroup( 2, block );
     writeGroup( 70, 0 );
-    writeGroup( 1, "" );
 
     // x/y/z coordinates of reference point
     // todo: consider anchor point
     // double size = ml->size();
     // size *= mapUnitScaleFactor( mSymbologyScaleDenominator, ml->sizeUnit(), mMapUnits );
     writeGroup( 0, QgsPoint( 0.0, 0.0 ) );
-    writeGroup( 3, blockName );
+    writeGroup( 3, block );
+    writeGroup( 1, "" );
 
     ml->writeDxf( *this, mapUnitScaleFactor( mSymbologyScaleDenominator, ml->sizeUnit(), mMapUnits ), "0", &ctx, 0 ); // maplayer 0 -> block receives layer from INSERT statement
 
     writeGroup( 0, "ENDBLK" );
     writeHandle();
     writeGroup( 100, "AcDbEntity" );
-    writeGroup( 100, "AcDbBlockEnd" );
     writeGroup( 8, "0" );
+    writeGroup( 100, "AcDbBlockEnd" );
 
-    mPointSymbolBlocks.insert( ml, blockName );
+    mPointSymbolBlocks.insert( ml, block );
     ml->stopRender( ctx );
   }
   endSection();
@@ -912,6 +877,8 @@ void QgsDxfExport::writeEntities()
 {
   startSection();
   writeGroup( 2, "ENTITIES" );
+
+  mBlockHandle = QString( "%1" ).arg( mBlockHandles[ "*Model_Space" ], 0, 16 );
 
   // label engine
   QgsDxfPalLabeling labelEngine( this, mExtent.isEmpty() ? dxfExtent() : mExtent, mSymbologyScaleDenominator, mMapUnits );
@@ -3340,9 +3307,19 @@ void QgsDxfExport::writePoint( const QgsPoint& pt, const QString& layer, QColor 
 
 void QgsDxfExport::writePolyline( const QgsPolyline& line, const QString& layer, const QString& lineStyleName, QColor color, double width )
 {
-  if ( line.size() == 0 )
+  int n = line.size();
+  if ( n == 0 )
   {
     QgsDebugMsg( QString( "writePolyline: empty line layer=%1 lineStyleName=%2" ).arg( layer ).arg( lineStyleName ) );
+    return;
+  }
+
+  bool polygon = line[0] == line[ line.size() - 1 ];
+  if ( polygon )
+    --n;
+  if ( n < 2 )
+  {
+    QgsDebugMsg( QString( "writePolyline: line too short layer=%1 lineStyleName=%2" ).arg( layer ).arg( lineStyleName ) );
     return;
   }
 
@@ -3353,11 +3330,6 @@ void QgsDxfExport::writePolyline( const QgsPolyline& line, const QString& layer,
   writeGroup( 100, "AcDbPolyline" );
   writeGroup( 6, lineStyleName );
   writeGroup( color );
-
-  bool polygon = line[0] == line[ line.size() - 1 ];
-  int n = line.size();
-  if ( polygon )
-    --n;
 
   writeGroup( 90, n );
   writeGroup( 70, polygon ? 1 : 0 );
@@ -3371,7 +3343,7 @@ void QgsDxfExport::writePolygon( const QgsPolygon& polygon, const QString& layer
 {
   writeGroup( 0, "HATCH" );         // Entity type
   writeHandle();
-  writeGroup( 330, mModelSpaceBR );
+  writeGroup( 330, mBlockHandle );
   writeGroup( 100, "AcDbEntity" );
   writeGroup( 8, layer );           // Layer name
   writeGroup( color );              // Color
@@ -3429,19 +3401,19 @@ void QgsDxfExport::writeFilledCircle( const QString &layer, QColor color, const 
 {
   writeGroup( 0, "HATCH" );                     // Entity type
   writeHandle();
-  writeGroup( 330, mModelSpaceBR );
+  writeGroup( 330, mBlockHandle );
   writeGroup( 100, "AcDbEntity" );
+  writeGroup( 8, layer );   // Layer name
+  writeGroup( color );       // Color (0 by block, 256 by layer)
   writeGroup( 100, "AcDbHatch" );
 
-  writeGroup( 8, layer );   // Layer name
-  writeGroup( 0, QgsPoint( 0, 0 ), 0.0 );  // Elevation point (in OCS)
+  writeGroup( 0, QgsPoint( 0, 0 ) ); // Elevation point (in OCS)
   writeGroup( 200, QgsPoint( 0, 0 ), 1.0 );
 
   writeGroup( 2, "SOLID" );  // Hatch pattern name
   writeGroup( 70, 1 );       // Solid fill flag (solid fill = 1; pattern fill = 0)
   writeGroup( 71, 0 );       // Associativity flag (associative = 1; non-associative = 0)
 
-  writeGroup( color );       // Color (0 by block, 256 by layer)
 
   writeGroup( 91, 1 );       // Number of boundary paths (loops)
 
@@ -3469,7 +3441,7 @@ void QgsDxfExport::writeCircle( const QString& layer, QColor color, const QgsPoi
 {
   writeGroup( 0, "LWPOLYLINE" );
   writeHandle();
-  writeGroup( 330, mModelSpaceBR );
+  writeGroup( 330, mBlockHandle );
   writeGroup( 8, layer );
   writeGroup( 100, "AcDbEntity" );
   writeGroup( 100, "AcDbPolyline" );
