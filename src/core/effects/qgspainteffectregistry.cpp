@@ -119,3 +119,22 @@ QStringList QgsPaintEffectRegistry::effects() const
   }
   return lst;
 }
+
+QgsPaintEffect* QgsPaintEffectRegistry::defaultStack()
+{
+  QgsEffectStack* stack = new QgsEffectStack();
+  QgsDropShadowEffect* dropShadow = new QgsDropShadowEffect();
+  dropShadow->setEnabled( false );
+  stack->appendEffect( dropShadow );
+  QgsOuterGlowEffect* outerGlow = new QgsOuterGlowEffect();
+  outerGlow->setEnabled( false );
+  stack->appendEffect( outerGlow );
+  stack->appendEffect( new QgsDrawSourceEffect() );
+  QgsInnerShadowEffect* innerShadow = new QgsInnerShadowEffect();
+  innerShadow->setEnabled( false );
+  stack->appendEffect( innerShadow );
+  QgsInnerGlowEffect* innerGlow = new QgsInnerGlowEffect();
+  innerGlow->setEnabled( false );
+  stack->appendEffect( innerGlow );
+  return stack;
+}

@@ -210,9 +210,7 @@ QgsFeatureRendererV2::QgsFeatureRendererV2( QString type )
     , mCurrentVertexMarkerSize( 3 )
     , mPaintEffect( 0 )
 {
-  QgsEffectStack* stack = new QgsEffectStack();
-  stack->appendEffect( new QgsDrawSourceEffect() );
-  mPaintEffect = stack;
+  mPaintEffect = QgsPaintEffectRegistry::defaultStack();
   mPaintEffect->setEnabled( false );
 }
 

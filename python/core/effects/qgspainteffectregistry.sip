@@ -102,6 +102,13 @@ class QgsPaintEffectRegistry
      */
     QStringList effects() const;
 
+    /** Returns a new effect stack consisting of a sensible selection of default
+     * effects. All effects except the standard draw source effect are disabled,
+     * but are included so that they can be easily drawn just by enabling the effect.
+     * @returns default effects stack
+     */
+    static QgsPaintEffect* defaultStack() /Factory/;
+
   protected:
     QgsPaintEffectRegistry();
     ~QgsPaintEffectRegistry();

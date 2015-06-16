@@ -22,6 +22,7 @@
 #include "qgsgeometrysimplifier.h"
 #include "qgspainteffect.h"
 #include "qgseffectstack.h"
+#include "qgspainteffectregistry.h"
 #include "qgsdatadefined.h"
 
 #include <QSize>
@@ -291,9 +292,7 @@ QgsSymbolLayerV2::QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked )
     , mRenderingPass( 0 )
     , mPaintEffect( 0 )
 {
-  QgsEffectStack* stack = new QgsEffectStack();
-  stack->appendEffect( new QgsDrawSourceEffect() );
-  mPaintEffect = stack;
+  mPaintEffect = QgsPaintEffectRegistry::defaultStack();
   mPaintEffect->setEnabled( false );
 }
 
