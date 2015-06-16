@@ -23,10 +23,10 @@ def colorDiff( c1, c2 ):
   blueDiff = abs( qBlue( c1 ) - qBlue( c2 ) )
   alphaDiff = abs( qAlpha( c1 ) - qAlpha( c2 ) )
   return max( redDiff, greenDiff, blueDiff, alphaDiff )
-  
+
 def imageFromPath(path):
   if ( path[:7] == 'http://' ):
-    #fetch remote image   
+    #fetch remote image
     data = urllib2.urlopen(path).read()
     image = QImage()
     image.loadFromData(data)
@@ -89,7 +89,10 @@ def updateMask(control_image_path, rendered_image_path, mask_image_path):
 parser = argparse.ArgumentParser() # OptionParser("usage: %prog control_image rendered_image mask_image")
 parser.add_argument('control_image')
 parser.add_argument('rendered_image')
-parser.add_argument('mask_image')
+parser.add_argument('mask_image', nargs='?', default=None)
 args = parser.parse_args()
+
+if not args.mask_image:
+  args.mask_image = args.control_image[:-4] + '_mask.png'
 
 updateMask(args.control_image, args.rendered_image, args.mask_image)
