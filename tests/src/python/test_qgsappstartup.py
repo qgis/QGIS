@@ -47,7 +47,7 @@ class TestPyQgsAppStartup(unittest.TestCase):
     # TODO: refactor parameters to **kwargs to handle all startup combinations
     def doTestStartup(self, option='', testDir='', testFile='',
                       loadPlugins=False, customization=False,
-                      timeOut=30, env=None):
+                      timeOut=60, env=None):
         """Run QGIS with the given option. Wait for testFile to be created.
         If time runs out, fail.
         """
@@ -106,8 +106,8 @@ class TestPyQgsAppStartup(unittest.TestCase):
             assert self.doTestStartup(option="--configpath",
                                       testDir=os.path.join(self.TMP_DIR, p),
                                       testFile="qgis.db",
-                                      timeOut=30), "config path %s" % p
-    @unittest.expectedFailure
+                                      timeOut=60), "config path %s" % p
+
     def testPluginPath(self):
         for t in ['test_plugins', 'test plugins', u'test_pluginsé€']:
 
@@ -129,7 +129,7 @@ class TestPyQgsAppStartup(unittest.TestCase):
                 option="--optionspath",
                 testDir=testDir,
                 testFile="plugin_started.txt",
-                timeOut=30,
+                timeOut=60,
                 loadPlugins=True,
                 env={'QGIS_PLUGINPATH':
                          str(QtCore.QString(testDir).toLocal8Bit())})
@@ -151,7 +151,7 @@ class TestPyQgsAppStartup(unittest.TestCase):
         msg = 'Failed to create test file from executing PYQGIS_STARTUP file'
         assert self.doTestStartup(
             testFile=testfilepath,
-            timeOut=30,
+            timeOut=60,
             env={'PYQGIS_STARTUP': testmod}), msg
 
 
