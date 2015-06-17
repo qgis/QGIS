@@ -68,18 +68,20 @@ void TestQgsMapCanvas::testMapRendererInteraction()
 
   // Extent
 
+  int pd = 10; // precision digits
+
   QSignalSpy spy2( mCanvas, SIGNAL( extentsChanged() ) );
   QgsRectangle r1( 10, 10, 20, 20 );
   mr->setExtent( r1 );
   QgsRectangle r2 = mr->extent();
-  QCOMPARE( mCanvas->extent(), r2 );
+  QCOMPARE( mCanvas->extent().toString(pd), r2.toString(pd) );
   QCOMPARE( spy2.count(), 1 );
 
   QgsRectangle r3( 100, 100, 200, 200 );
   QSignalSpy spy3( mr, SIGNAL( extentsChanged() ) );
   mCanvas->setExtent( r3 );
   QgsRectangle r4 = mCanvas->extent();
-  QCOMPARE( mr->extent(), r4 );
+  QCOMPARE( mr->extent().toString(pd), r4.toString(pd) );
   QCOMPARE( spy3.count(), 1 );
 
   // Destination CRS
