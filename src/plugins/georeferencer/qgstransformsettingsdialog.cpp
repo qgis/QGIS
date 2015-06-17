@@ -222,7 +222,8 @@ void QgsTransformSettingsDialog::on_tbnMapFile_clicked()
 {
   QSettings s;
   QString myLastUsedDir = s.value( "/Plugin-GeoReferencer/lastPDFReportDir", "" ).toString();
-  QString outputFileName = QFileDialog::getSaveFileName( 0, tr( "Select save PDF file" ), myLastUsedDir, tr( "PDF Format" ) + " (*.pdf *PDF)" );
+  QString initialFile = !mMapFileLineEdit->text().isEmpty() ? mMapFileLineEdit->text() : myLastUsedDir;
+  QString outputFileName = QFileDialog::getSaveFileName( this, tr( "Save Map File as" ), initialFile, tr( "PDF Format" ) + " (*.pdf *PDF)" );
   if ( !outputFileName.isNull() )
   {
     if ( !outputFileName.endsWith( ".pdf", Qt::CaseInsensitive ) )
@@ -237,7 +238,8 @@ void QgsTransformSettingsDialog::on_tbnReportFile_clicked()
 {
   QSettings s;
   QString myLastUsedDir = s.value( "/Plugin-GeoReferencer/lastPDFReportDir", "" ).toString();
-  QString outputFileName = QFileDialog::getSaveFileName( 0, tr( "Select save PDF file" ), myLastUsedDir, tr( "PDF Format" ) + " (*.pdf *PDF)" );
+  QString initialFile = !mReportFileLineEdit->text().isEmpty() ? mReportFileLineEdit->text() : myLastUsedDir;
+  QString outputFileName = QFileDialog::getSaveFileName( this, tr( "Save Report File as" ), initialFile, tr( "PDF Format" ) + " (*.pdf *PDF)" );
   if ( !outputFileName.isNull() )
   {
     if ( !outputFileName.endsWith( ".pdf", Qt::CaseInsensitive ) )
