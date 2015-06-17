@@ -361,6 +361,11 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   layoutMenu->addAction( mActionAddNewScalebar );
   layoutMenu->addAction( mActionAddNewLegend );
   layoutMenu->addAction( mActionAddImage );
+  QMenu *shapeMenu = layoutMenu->addMenu( "Add Shape" );
+  shapeMenu->setIcon( QgsApplication::getThemeIcon( "/mActionAddBasicShape.png" ) );
+  shapeMenu->addAction( mActionAddRectangle );
+  shapeMenu->addAction( mActionAddTriangle );
+  shapeMenu->addAction( mActionAddEllipse );
   layoutMenu->addAction( mActionAddArrow );
   //layoutMenu->addAction( mActionAddTable );
   layoutMenu->addAction( mActionAddAttributeTable );
