@@ -56,13 +56,13 @@ static QgsRectangle transform_to_extent( const double* geotransform, double xSiz
 
 static int CPL_STDCALL _progress( double dfComplete, const char* pszMessage, void* pProgressArg )
 {
-  QgsAlignRaster* align = ( QgsAlignRaster* ) pProgressArg;
-  Q_UNUSED( align );
   Q_UNUSED( pszMessage );
 
-  // TODO: report the progress somehow
-  qDebug( "progress %f", dfComplete * 100 );
-  return 1; // 1 = all is well, 0 = user terminated
+  QgsAlignRaster::ProgressHandler* handler = (( QgsAlignRaster* ) pProgressArg )->progressHandler();
+  if ( handler )
+    return handler->progress( dfComplete );
+  else
+    return true;
 }
 
 
@@ -110,6 +110,7 @@ static CPLErr rescalePostWarpChunkProcessor( void* pKern, void* pArg )
 
 
 QgsAlignRaster::QgsAlignRaster()
+    : mProgressHandler( 0 )
 {
   mCellSizeX = mCellSizeY = 0;
   mGridOffsetX = mGridOffsetY = 0;
@@ -126,7 +127,7 @@ void QgsAlignRaster::setClipExtent( double xmin, double ymin, double xmax, doubl
   mClipExtent[3] = ymax;
 }
 
-void QgsAlignRaster::setClipExtent(const QgsRectangle& extent)
+void QgsAlignRaster::setClipExtent( const QgsRectangle& extent )
 {
   setClipExtent( extent.xMinimum(), extent.yMinimum(),
                  extent.xMaximum(), extent.yMaximum() );
@@ -332,7 +333,7 @@ bool QgsAlignRaster::createAndWarp( const Item& raster )
   psWarpOptions->eResampleAlg = ( GDALResampleAlg ) raster.resampleMethod;
 
   // our progress function
-  psWarpOptions->pfnProgress = _progress; //GDALTermProgress;
+  psWarpOptions->pfnProgress = _progress;
   psWarpOptions->pProgressArg = this;
 
   // Establish reprojection transformer.

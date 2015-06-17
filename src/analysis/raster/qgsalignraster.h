@@ -119,6 +119,22 @@ class ANALYSIS_EXPORT QgsAlignRaster
     };
     typedef QList<Item> List;
 
+    //! Helper struct to be sub-classed for progress reporting
+    struct ProgressHandler
+    {
+      //! Method to be overridden for progress reporting.
+      //! @param complete Overall progress of the alignment operation
+      //! @return false if the execution should be cancelled, true otherwise
+      virtual bool progress( double complete ) = 0;
+
+      virtual ~ProgressHandler() {}
+    };
+
+    //! Assign a progress handler instance. Does not take ownership. NULL can be passed.
+    void setProgressHandler( ProgressHandler* progressHandler ) { mProgressHandler = progressHandler; }
+    //! Get associated progress handler. May be NULL (default)
+    ProgressHandler* progressHandler() const { return mProgressHandler; }
+
     //! Set list of rasters that will be aligned
     void setRasters( const List& list ) { mRasters = list; }
     //! Get list of rasters that will be aligned
@@ -133,6 +149,11 @@ class ANALYSIS_EXPORT QgsAlignRaster
     void setCellSize( const QSizeF& size ) { mCellSizeX = size.width(); mCellSizeY = size.height(); }
     //! Get output cell size
     QSizeF cellSize() const { return QSizeF( mCellSizeX, mCellSizeY ); }
+
+    //! Set the output CRS in WKT format
+    void setDestinationCRS( const QString& crsWkt ) { mCrsWkt = crsWkt.toAscii(); }
+    //! Get the output CRS in WKT format
+    QString destinationCRS() const { return mCrsWkt; }
 
     // TODO: first need to run determineTransformAndSize() before this
     //QSize rasterSize() const { return QSize(mXSize, mYSize); }
@@ -171,6 +192,9 @@ class ANALYSIS_EXPORT QgsAlignRaster
   protected:
 
     // set by the client
+
+    //! Object that facilitates reporting of progress / cancellation
+    ProgressHandler* mProgressHandler;
 
     //! List of rasters to be aligned (with their output files and other options)
     List mRasters;
