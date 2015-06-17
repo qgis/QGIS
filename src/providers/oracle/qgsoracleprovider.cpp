@@ -1169,7 +1169,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
 
   try
   {
-    QSqlQuery qry( db );
+    QSqlQuery ins( db ), getfid( db );
 
     if ( !db.transaction() )
     {
@@ -1193,13 +1193,23 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
 
     if ( mPrimaryKeyType == pktInt || mPrimaryKeyType == pktFidMap )
     {
+      QString keys, kdelim = "";
+
       foreach ( int idx, mPrimaryKeyAttrs )
       {
-        insert += delim + quotedIdentifier( field( idx ).name() );
+        const QgsField &fld = field( idx );
+        insert += delim + quotedIdentifier( fld.name() );
+        keys += kdelim + quotedIdentifier( fld.name() );
         values += delim + "?";
         delim = ",";
+        kdelim = ",";
         fieldId << idx;
         defaultValues << defaultValue( idx ).toString();
+      }
+
+      if ( !getfid.prepare( QString( "SELECT %1 FROM %2 WHERE ROWID=?" ).arg( keys ).arg( mQuery ) ) )
+      {
+        throw OracleException( tr( "Could not prepare get feature id statement" ), getfid );
       }
     }
 
@@ -1276,9 +1286,9 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
     insert += values + ")";
 
     QgsDebugMsgLevel( QString( "SQL prepare: %1" ).arg( insert ), 4 );
-    if ( !qry.prepare( insert ) )
+    if ( !ins.prepare( insert ) )
     {
-      throw OracleException( tr( "Could not prepare insert statement" ), qry );
+      throw OracleException( tr( "Could not prepare insert statement" ), ins );
     }
 
     for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); ++features )
@@ -1289,7 +1299,7 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
 
       if ( !mGeometryColumn.isNull() )
       {
-        appendGeomParam( features->geometry(), qry );
+        appendGeomParam( features->geometry(), ins );
       }
 
       for ( int i = 0; i < fieldId.size(); i++ )
@@ -1315,20 +1325,37 @@ bool QgsOracleProvider::addFeatures( QgsFeatureList &flist )
         }
 
         QgsDebugMsgLevel( QString( "addBindValue: %1" ).arg( v ), 4 );
-        qry.addBindValue( v );
+        ins.addBindValue( v );
       }
 
-      if ( !qry.exec() )
-        throw OracleException( tr( "Could not insert feature %1" ).arg( features->id() ), qry );
+      if ( !ins.exec() )
+        throw OracleException( tr( "Could not insert feature %1" ).arg( features->id() ), ins );
 
       if ( mPrimaryKeyType == pktRowId )
       {
-        features->setFeatureId( mShared->lookupFid( QList<QVariant>() << QVariant( qry.lastInsertId() ) ) );
+        features->setFeatureId( mShared->lookupFid( QList<QVariant>() << QVariant( ins.lastInsertId() ) ) );
         QgsDebugMsgLevel( QString( "new fid=%1" ).arg( features->id() ), 4 );
+      }
+      else if ( mPrimaryKeyType == pktInt || mPrimaryKeyType == pktFidMap )
+      {
+        getfid.addBindValue( QVariant( ins.lastInsertId() ) );
+        if ( !getfid.exec() || !getfid.next() )
+          throw OracleException( tr( "Could not retrieve feature id %1" ).arg( features->id() ), getfid );
+
+        int col = 0;
+        foreach ( int idx, mPrimaryKeyAttrs )
+        {
+          const QgsField &fld = field( idx );
+
+          QVariant v = getfid.value( col++ );
+          if ( v.type() != fld.type() )
+            v = QgsVectorDataProvider::convertValue( fld.type(), v.toString() );
+          features->setAttribute( idx, v );
+        }
       }
     }
 
-    qry.finish();
+    ins.finish();
 
     if ( !db.commit() )
     {
