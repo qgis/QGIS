@@ -34,6 +34,9 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
 {
   setupUi( this );
 
+  QSettings s;
+  restoreGeometry( s.value( "/Plugin-GeoReferencer/TransformSettingsWindow/geometry" ).toByteArray() );
+
   cmbTransformType->addItem( tr( "Linear" ), ( int )QgsGeorefTransform::Linear );
   cmbTransformType->addItem( tr( "Helmert" ), ( int )QgsGeorefTransform::Helmert );
   cmbTransformType->addItem( tr( "Polynomial 1" ), ( int )QgsGeorefTransform::PolynomialOrder1 );
@@ -56,7 +59,6 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
   }
   cmbCompressionComboBox->addItems( listCompressionTr );
 
-  QSettings s;
   cmbTransformType->setCurrentIndex( s.value( "/Plugin-GeoReferencer/lasttransformation", -1 ).toInt() );
   cmbResampling->setCurrentIndex( s.value( "/Plugin-GeoReferencer/lastresampling", 0 ).toInt() );
   cmbCompressionComboBox->setCurrentIndex( s.value( "/Plugin-GeoReferencer/lastcompression", 0 ).toInt() );
@@ -79,6 +81,12 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
 
   cbxZeroAsTrans->setChecked( s.value( "/Plugin-GeoReferencer/zeroastrans", false ).toBool() );
   cbxLoadInQgisWhenDone->setChecked( s.value( "/Plugin-GeoReferencer/loadinqgis", false ).toBool() );
+}
+
+QgsTransformSettingsDialog::~QgsTransformSettingsDialog()
+{
+  QSettings settings;
+  settings.setValue( "/Plugin-GeoReferencer/TransformSettingsWindow/geometry", saveGeometry() );
 }
 
 void QgsTransformSettingsDialog::getTransformSettings( QgsGeorefTransform::TransformParametrisation &tp,

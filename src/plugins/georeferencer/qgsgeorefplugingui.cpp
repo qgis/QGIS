@@ -87,6 +87,9 @@ QgsGeorefPluginGui::QgsGeorefPluginGui( QgisInterface* theQgisInterface, QWidget
 {
   setupUi( this );
 
+  QSettings s;
+  restoreGeometry( s.value( "/Plugin-GeoReferencer/Window/geometry" ).toByteArray() );
+
   createActions();
   createActionGroups();
   createMenus();
@@ -105,7 +108,6 @@ QgsGeorefPluginGui::QgsGeorefPluginGui( QgisInterface* theQgisInterface, QWidget
 
   connect( mIface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( updateIconTheme( QString ) ) );
 
-  QSettings s;
   if ( s.value( "/Plugin-GeoReferencer/Config/ShowDocked" ).toBool() )
   {
     dockThisWindow( true );
@@ -135,6 +137,9 @@ void QgsGeorefPluginGui::dockThisWindow( bool dock )
 
 QgsGeorefPluginGui::~QgsGeorefPluginGui()
 {
+  QSettings settings;
+  settings.setValue( "/Plugin-GeoReferencer/Window/geometry", saveGeometry() );
+
   clearGCPData();
 
   removeOldLayer();
@@ -146,7 +151,6 @@ QgsGeorefPluginGui::~QgsGeorefPluginGui()
   delete mToolDeletePoint;
   delete mToolMovePoint;
   delete mToolMovePointQgis;
-
 }
 
 // ----------------------------- protected --------------------------------- //

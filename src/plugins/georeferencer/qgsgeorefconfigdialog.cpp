@@ -23,6 +23,9 @@ QgsGeorefConfigDialog::QgsGeorefConfigDialog( QWidget *parent ) :
 {
   setupUi( this );
 
+  QSettings s;
+  restoreGeometry( s.value( "/Plugin-GeoReferencer/ConfigWindow/geometry" ).toByteArray() );
+
   readSettings();
 
   mPaperSizeComboBox->addItem( tr( "A5 (148x210 mm)" ), QSizeF( 148, 210 ) );
@@ -53,6 +56,12 @@ QgsGeorefConfigDialog::QgsGeorefConfigDialog( QWidget *parent ) :
 
   mPaperSizeComboBox->setCurrentIndex( 2 ); //A3
 
+}
+
+QgsGeorefConfigDialog::~QgsGeorefConfigDialog()
+{
+  QSettings settings;
+  settings.setValue( "/Plugin-GeoReferencer/ConfigWindow/geometry", saveGeometry() );
 }
 
 void QgsGeorefConfigDialog::changeEvent( QEvent *e )

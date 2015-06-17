@@ -29,6 +29,8 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
   public:
     QgsTransformSettingsDialog( const QString &raster, const QString &output,
                                 int countGCPpoints, QWidget *parent = 0 );
+
+    ~QgsTransformSettingsDialog();
     void getTransformSettings( QgsGeorefTransform::TransformParametrisation &tp,
                                QgsImageWarper::ResamplingMethod &rm, QString &comprMethod,
                                QString &raster, QgsCoordinateReferenceSystem& proj, QString& pdfMapFile, QString& pdfReportFile, bool &zt, bool &loadInQgis,
