@@ -36,6 +36,7 @@ QgsNewNameDialog::QgsNewNameDialog( const QString& source, const QString& initia
   setWindowTitle( tr( "New name" ) );
   QDialog::layout()->setSizeConstraint( QLayout::SetMinimumSize );
   layout()->setSizeConstraint( QLayout::SetMinimumSize );
+  layout()->setSpacing( 6 );
   mOkString = buttonBox()->button( QDialogButtonBox::Ok )->text();
   QString hintString;
   QString nameDesc = mExtensions.isEmpty() ? tr( "name" ) : tr( "base name" );
