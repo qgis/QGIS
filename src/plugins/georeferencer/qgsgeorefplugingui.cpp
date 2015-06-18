@@ -2122,6 +2122,10 @@ bool QgsGeorefPluginGui::equalGCPlists( const QgsGCPList &list1, const QgsGCPLis
 
 void QgsGeorefPluginGui::clearGCPData()
 {
+  //force all list widget editors to close before removing data points
+  //otherwise the editors try to update deleted data points when they close
+  mGCPListWidget->closeEditors();
+
   qDeleteAll( mPoints );
   mPoints.clear();
   mGCPListWidget->updateGCPList();

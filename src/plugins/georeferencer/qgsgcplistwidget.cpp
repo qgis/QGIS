@@ -95,6 +95,14 @@ void QgsGCPListWidget::updateGCPList()
   adjustTableContent();
 }
 
+void QgsGCPListWidget::closeEditors()
+{
+  Q_FOREACH( QModelIndex index, selectedIndexes() )
+  {
+    closePersistentEditor( index );
+  }
+}
+
 void QgsGCPListWidget::itemDoubleClicked( QModelIndex index )
 {
   index = static_cast<const QSortFilterProxyModel*>( model() )->mapToSource( index );
