@@ -19,11 +19,14 @@
 #include "qgsfieldvalidator.h"
 
 #include <QSettings>
-#include <QSizePolicy>
+#include <QHBoxLayout>
 
 QgsDefaultSearchWidgetWrapper::QgsDefaultSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
     : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
     , mLineEdit( NULL )
+    , mCheckbox( NULL )
+    , mContainer( NULL )
+    , mCaseString(QString("LIKE"))
 {
 }
 
@@ -33,9 +36,23 @@ QString QgsDefaultSearchWidgetWrapper::expression()
   return mExpression;
 }
 
+void QgsDefaultSearchWidgetWrapper::setCaseString(int caseSensitiveCheckState)
+{
+    if ( caseSensitiveCheckState == Qt::Checked) 
+    {
+        mCaseString = "LIKE";
+    }
+    else
+    {
+        mCaseString = "ILIKE";
+    }
+    // need to update also the line edit 
+    setExpression(mLineEdit->text());
+}
+
 void QgsDefaultSearchWidgetWrapper::setExpression(QString exp)
 {
-    QString sensString = "LIKE";// FIXME this shouldnt be hiar
+    QString sensString = mCaseString;
     QVariant::Type fldType = layer()->pendingFields()[mFieldIdx].type();
     bool numeric = ( fldType == QVariant::Int || fldType == QVariant::Double || fldType == QVariant::LongLong );
     
@@ -63,7 +80,7 @@ void QgsDefaultSearchWidgetWrapper::setExpression(QString exp)
 
 QWidget* QgsDefaultSearchWidgetWrapper::createWidget( QWidget* parent )
 {
-  return new QgsFilterLineEdit( parent );
+  return new QWidget( parent );
 }
 
 bool QgsDefaultSearchWidgetWrapper::applyDirectly() 
@@ -73,7 +90,13 @@ bool QgsDefaultSearchWidgetWrapper::applyDirectly()
 
 void QgsDefaultSearchWidgetWrapper::initWidget( QWidget* widget )
 {
-  mLineEdit = qobject_cast<QgsFilterLineEdit*>( widget );
-  //mLineEdit->setSizePolicy( QSizePolicy ::Expanding , QSizePolicy ::Fixed );
-  connect( widget, SIGNAL( textChanged( QString ) ), this, SLOT( setExpression( QString ) ) );
+  mContainer = widget;
+  mContainer->setLayout(new QHBoxLayout() );
+  mLineEdit = new QgsFilterLineEdit();
+  mCheckbox = new QCheckBox("Case sensitive");
+  mCheckbox->setChecked(Qt::Checked);
+  mContainer->layout()->addWidget(mLineEdit);
+  mContainer->layout()->addWidget(mCheckbox);
+  connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( setExpression( QString ) ) );
+  connect( mCheckbox, SIGNAL( stateChanged( int ) ), this, SLOT( setCaseString(int) ) );
 }

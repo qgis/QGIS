@@ -19,6 +19,8 @@
 #include "qgssearchwidgetwrapper.h"
 #include <qgsfilterlineedit.h>
 
+#include <QCheckBox>
+
 /**
  * Wraps a search widget. Default form is just a QgsLineFilterEdit
  *
@@ -36,6 +38,9 @@ class GUI_EXPORT QgsDefaultSearchWidgetWrapper : public QgsSearchWidgetWrapper
     bool applyDirectly() override;
   protected slots:
     void setExpression(QString exp) override;
+
+  private slots:
+    void setCaseString(int);
     
   protected:
     QWidget* createWidget( QWidget* parent ) override;
@@ -43,6 +48,9 @@ class GUI_EXPORT QgsDefaultSearchWidgetWrapper : public QgsSearchWidgetWrapper
 
   private:
     QgsFilterLineEdit* mLineEdit;
+    QCheckBox* mCheckbox;
+    QWidget* mContainer;
+    QString mCaseString;
 };
 
 #endif // QGSDEFAULTSEARCHWIDGETWRAPPER_H

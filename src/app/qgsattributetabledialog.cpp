@@ -419,7 +419,6 @@ void QgsAttributeTableDialog::filterColumnChanged( QObject* filterAction )
 {
   mFilterButton->setDefaultAction( qobject_cast<QAction *>( filterAction ) );
   mFilterButton->setPopupMode( QToolButton::InstantPopup );
-  mCbxCaseSensitive->setVisible( true );
   // replace the search line edit with a search widget that is suited to the selected field
   // delete previous widget
   if ( mCurrentSearchWidgetWrapper != 0 )
@@ -467,7 +466,6 @@ void QgsAttributeTableDialog::filterShowAll()
 {
   mFilterButton->setDefaultAction( mActionShowAllFilter );
   mFilterButton->setPopupMode( QToolButton::InstantPopup );
-  mCbxCaseSensitive->setVisible( false );
   mFilterQuery->setVisible( false );
   mApplyFilterButton->setVisible( false );
   mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowAll );
@@ -478,7 +476,6 @@ void QgsAttributeTableDialog::filterSelected()
 {
   mFilterButton->setDefaultAction( mActionSelectedFilter );
   mFilterButton->setPopupMode( QToolButton::InstantPopup );
-  mCbxCaseSensitive->setVisible( false );
   mFilterQuery->setVisible( false );
   mApplyFilterButton->setVisible( false );
   mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowSelected );
@@ -494,7 +491,6 @@ void QgsAttributeTableDialog::filterVisible()
 
   mFilterButton->setDefaultAction( mActionVisibleFilter );
   mFilterButton->setPopupMode( QToolButton::InstantPopup );
-  mCbxCaseSensitive->setVisible( false );
   mFilterQuery->setVisible( false );
   mApplyFilterButton->setVisible( false );
   mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowVisible );
@@ -504,7 +500,6 @@ void QgsAttributeTableDialog::filterEdited()
 {
   mFilterButton->setDefaultAction( mActionEditedFilter );
   mFilterButton->setPopupMode( QToolButton::InstantPopup );
-  mCbxCaseSensitive->setVisible( false );
   mFilterQuery->setVisible( false );
   mApplyFilterButton->setVisible( false );
   mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowEdited );
@@ -710,15 +705,7 @@ void QgsAttributeTableDialog::filterQueryChanged( const QString& query )
   }
   else
   {
-
-    QString sensString = "ILIKE"; // FIXME need to take this into account
-    if ( mCbxCaseSensitive->isChecked() )
-    {
-      sensString = "LIKE";
-    }
-
     str = mCurrentSearchWidgetWrapper->expression();
-
   }
 
   setFilterExpression( str );
@@ -742,8 +729,6 @@ void QgsAttributeTableDialog::setFilterExpression( QString filterString )
   mFilterQuery->setText( filterString );
   mFilterButton->setDefaultAction( mActionAdvancedFilter );
   mFilterButton->setPopupMode( QToolButton::MenuButtonPopup );
-  mCbxCaseSensitive->setVisible( false );
-
   mFilterQuery->setVisible( true );
   if ( mCurrentSearchWidgetWrapper != 0 )
   {
