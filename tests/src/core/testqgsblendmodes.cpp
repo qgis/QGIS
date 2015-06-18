@@ -51,8 +51,8 @@ class TestQgsBlendModes : public QObject
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {};// will be called before each testfunction is executed.
-    void cleanup() {};// will be called after every testfunction.
+    void init() {} // will be called before each testfunction is executed.
+    void cleanup() {} // will be called after every testfunction.
 
     void vectorBlending();
     void featureBlending();
@@ -115,12 +115,12 @@ void TestQgsBlendModes::initTestCase()
     QList<QgsMapLayer *>() << mpLinesLayer );
 
   //create two raster layers
-  QFileInfo rasterFileInfo( mTestDataDir +  "landsat.tif" );
+  QFileInfo rasterFileInfo( mTestDataDir + "rgb256x256.png" );
   mRasterLayer1 = new QgsRasterLayer( rasterFileInfo.filePath(),
                                       rasterFileInfo.completeBaseName() );
   mRasterLayer2 = new QgsRasterLayer( rasterFileInfo.filePath(),
                                       rasterFileInfo.completeBaseName() );
-  QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer1->dataProvider(), 2, 3, 4 );
+  QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer1->dataProvider(), 1, 2, 3 );
   mRasterLayer1->setRenderer( rasterRenderer );
   mRasterLayer2->setRenderer(( QgsRasterRenderer* ) rasterRenderer->clone() );
   QgsMapLayerRegistry::instance()->addMapLayers(
@@ -214,7 +214,7 @@ void TestQgsBlendModes::rasterBlending()
   mMapSettings.setExtent( mRasterLayer1->extent() );
 
   // set blending mode for top layer
-  mRasterLayer1->setBlendMode( QPainter::CompositionMode_Plus );
+  mRasterLayer1->setBlendMode( QPainter::CompositionMode_Difference );
   QVERIFY( imageCheck( "raster_blendmodes" ) );
 }
 
