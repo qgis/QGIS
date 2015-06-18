@@ -631,40 +631,40 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent* e )
     double cosa = qCos( angleValue );
     double sina = qSin( angleValue );
     double v = ( point.x() - previousPt.x() ) * cosa + ( point.y() - previousPt.y() ) * sina ;
-    if ( mXConstraint->isLocked() || mYConstraint->isLocked() )
+    if ( mXConstraint->isLocked() && mYConstraint->isLocked() )
     {
-      // perform both to detect errors in constraints
-      if ( mXConstraint->isLocked() )
+      // do nothing if both X,Y are already locked
+    }
+    else if ( mXConstraint->isLocked() )
+    {
+      if ( cosa == 0 )
       {
-        if ( cosa == 0 )
-        {
-          res = false;
-        }
-        else
-        {
-          double x = mXConstraint->value();
-          if ( !mXConstraint->relative() )
-          {
-            x -= previousPt.x();
-          }
-          point.setY( previousPt.y() + x * sina / cosa );
-        }
+        res = false;
       }
-      else if ( mYConstraint->isLocked() )
+      else
       {
-        if ( sina == 0 )
+        double x = mXConstraint->value();
+        if ( !mXConstraint->relative() )
         {
-          res = false;
+          x -= previousPt.x();
         }
-        else
+        point.setY( previousPt.y() + x * sina / cosa );
+      }
+    }
+    else if ( mYConstraint->isLocked() )
+    {
+      if ( sina == 0 )
+      {
+        res = false;
+      }
+      else
+      {
+        double y = mYConstraint->value();
+        if ( !mYConstraint->relative() )
         {
-          double y = mYConstraint->value();
-          if ( !mYConstraint->relative() )
-          {
-            y -= previousPt.y();
-          }
-          point.setX( previousPt.x() + y * cosa / sina );
+          y -= previousPt.y();
         }
+        point.setX( previousPt.x() + y * cosa / sina );
       }
     }
     else
