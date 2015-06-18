@@ -108,7 +108,8 @@ int QgsMapCanvasSnapper::snapToCurrentLayer( const QPoint& p, QList<QgsSnappingR
   snapLayers.append( snapLayer );
   mSnapper->setSnapLayers( snapLayers );
 
-  if ( mSnapper->snapMapPoint( p, results, excludePoints ) != 0 )
+  QgsPoint mapPoint = mMapCanvas->mapSettings().mapToPixel().toMapCoordinates( p );
+  if ( mSnapper->snapMapPoint( mapPoint, results, excludePoints ) != 0 )
     return 4;
 
   return 0;
