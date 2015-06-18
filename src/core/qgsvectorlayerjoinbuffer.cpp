@@ -237,7 +237,8 @@ void QgsVectorLayerJoinBuffer::updateFields( QgsFields& fields )
         continue;
 
       //skip the join field to avoid double field names (fields often have the same name)
-      if ( joinFields[idx].name() != joinFieldName )
+      // when using subset of field, use all the selected fields
+      if ( hasSubset || joinFields[idx].name() != joinFieldName )
       {
         QgsField f = joinFields[idx];
         f.setName( prefix + f.name() );
