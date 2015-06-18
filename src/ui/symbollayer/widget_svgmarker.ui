@@ -29,6 +29,9 @@
          <property name="decimals">
           <number>6</number>
          </property>
+         <property name="maximum">
+          <double>99999999.989999994635582</double>
+         </property>
          <property name="singleStep">
           <double>0.200000000000000</double>
          </property>
@@ -179,10 +182,10 @@
           <number>6</number>
          </property>
          <property name="minimum">
-          <double>-100000.000000000000000</double>
+          <double>-99999999.989999994635582</double>
          </property>
          <property name="maximum">
-          <double>100000.000000000000000</double>
+          <double>99999999.989999994635582</double>
          </property>
          <property name="singleStep">
           <double>0.200000000000000</double>
@@ -201,10 +204,10 @@
           <number>6</number>
          </property>
          <property name="minimum">
-          <double>-100000.000000000000000</double>
+          <double>-99999999.989999994635582</double>
          </property>
          <property name="maximum">
-          <double>100000.000000000000000</double>
+          <double>99999999.989999994635582</double>
          </property>
          <property name="singleStep">
           <double>0.200000000000000</double>

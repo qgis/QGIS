@@ -14,11 +14,20 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <property name="leftMargin">
+    <number>1</number>
+   </property>
+   <property name="topMargin">
+    <number>1</number>
+   </property>
+   <property name="rightMargin">
+    <number>1</number>
+   </property>
+   <property name="bottomMargin">
+    <number>1</number>
+   </property>
    <property name="horizontalSpacing">
     <number>28</number>
-   </property>
-   <property name="margin">
-    <number>1</number>
    </property>
    <item row="4" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -199,10 +208,10 @@
         <number>6</number>
        </property>
        <property name="minimum">
-        <double>-999.000000000000000</double>
+        <double>-999999999.000000000000000</double>
        </property>
        <property name="maximum">
-        <double>999.000000000000000</double>
+        <double>999999999.000000000000000</double>
        </property>
        <property name="singleStep">
         <double>0.200000000000000</double>
@@ -221,10 +230,10 @@
         <number>6</number>
        </property>
        <property name="minimum">
-        <double>-999.000000000000000</double>
+        <double>-999999999.000000000000000</double>
        </property>
        <property name="maximum">
-        <double>999.000000000000000</double>
+        <double>999999999.000000000000000</double>
        </property>
        <property name="singleStep">
         <double>0.200000000000000</double>

@@ -22,7 +22,11 @@
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QgsDoubleSpinBox" name="mSpinBox"/>
+    <widget class="QgsDoubleSpinBox" name="mSpinBox">
+     <property name="maximum">
+      <double>99999999.989999994635582</double>
+     </property>
+    </widget>
    </item>
    <item row="0" column="2">
     <widget class="QgsDataDefinedButton" name="mDDBtn">

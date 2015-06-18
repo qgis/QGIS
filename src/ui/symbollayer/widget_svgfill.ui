@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>519</width>
+    <width>522</width>
     <height>353</height>
    </rect>
   </property>
@@ -14,7 +14,16 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>1</number>
+   </property>
+   <property name="topMargin">
+    <number>1</number>
+   </property>
+   <property name="rightMargin">
+    <number>1</number>
+   </property>
+   <property name="bottomMargin">
     <number>1</number>
    </property>
    <item row="1" column="0">
@@ -157,6 +166,9 @@
          </property>
          <property name="decimals">
           <number>6</number>
+         </property>
+         <property name="maximum">
+          <double>99999999.989999994635582</double>
          </property>
          <property name="singleStep">
           <double>0.200000000000000</double>

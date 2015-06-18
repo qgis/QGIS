@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>510</width>
+    <width>513</width>
     <height>398</height>
    </rect>
   </property>
@@ -217,7 +217,10 @@
         <number>6</number>
        </property>
        <property name="minimum">
-        <double>-100.000000000000000</double>
+        <double>-99999999.989999994635582</double>
+       </property>
+       <property name="maximum">
+        <double>99999999.989999994635582</double>
        </property>
        <property name="singleStep">
         <double>0.200000000000000</double>
@@ -236,7 +239,10 @@
         <number>6</number>
        </property>
        <property name="minimum">
-        <double>-100.000000000000000</double>
+        <double>-99999999.989999994635582</double>
+       </property>
+       <property name="maximum">
+        <double>99999999.989999994635582</double>
        </property>
        <property name="singleStep">
         <double>0.200000000000000</double>
