@@ -1460,8 +1460,8 @@ bool QgsGeorefPluginGui::writePDFMapFile( const QString& fileName, const QgsGeor
   printer.setOutputFileName( fileName );
 
   QSettings s;
-  double paperWidth = s.value( "/Plugin-GeoReferencer/Config/WidthPDFMap" ).toDouble();
-  double paperHeight = s.value( "/Plugin-GeoReferencer/Config/HeightPDFMap" ).toDouble();
+  double paperWidth = s.value( "/Plugin-GeoReferencer/Config/WidthPDFMap", "297" ).toDouble();
+  double paperHeight = s.value( "/Plugin-GeoReferencer/Config/HeightPDFMap", "420" ).toDouble();
 
   //create composition
   QgsComposition* composition = new QgsComposition( mCanvas->mapSettings() );
@@ -1480,7 +1480,6 @@ bool QgsGeorefPluginGui::writePDFMapFile( const QString& fileName, const QgsGeor
   double topMargin = 8;
   double contentWidth = composition->paperWidth() - 2 * leftMargin;
   double contentHeight = composition->paperHeight() - 2 * topMargin;
-  double contentRatio = contentWidth / contentHeight;
 
   //composer map
   QgsComposerMap* composerMap = new QgsComposerMap( composition, leftMargin, topMargin, contentWidth, contentHeight );
@@ -1488,21 +1487,7 @@ bool QgsGeorefPluginGui::writePDFMapFile( const QString& fileName, const QgsGeor
   QStringList list;
   list.append( mCanvas->mapSettings().layers()[0] );
   composerMap->setLayerSet( list );
-
-  double xcenter = rlayer->extent().center().x();
-  double ycenter = rlayer->extent().center().y();
-
-  QgsRectangle rect;
-  if ( mapRatio > contentRatio )
-  {
-    rect = QgsRectangle( 0, ycenter - ( rlayer->extent().width() / contentRatio ) / 2, rlayer->extent().width(), ycenter + ( rlayer->extent().width() / contentRatio ) / 2 );
-  }
-  if ( mapRatio <= contentRatio )
-  {
-    rect = QgsRectangle( xcenter - ( rlayer->extent().height() * contentRatio / 2 ), -1 * rlayer->extent().height(), xcenter + ( rlayer->extent().height() * contentRatio / 2 ), 0 );
-  }
-
-  composerMap->setNewExtent( rect );
+  composerMap->zoomToExtent( rlayer->extent() );
   composition->addItem( composerMap );
   printer.setFullPage( true );
   printer.setColorMode( QPrinter::Color );
@@ -1521,7 +1506,7 @@ bool QgsGeorefPluginGui::writePDFMapFile( const QString& fileName, const QgsGeor
   QgsResidualPlotItem* resPlotItem = new QgsResidualPlotItem( composition );
   composition->addItem( resPlotItem );
   resPlotItem->setSceneRect( QRectF( leftMargin, topMargin, contentWidth, contentHeight ) );
-  resPlotItem->setExtent( rect );
+  resPlotItem->setExtent( composerMap->extent() );
   resPlotItem->setGCPList( mPoints );
   resPlotItem->setConvertScaleToMapUnits( residualUnits == tr( "map units" ) );
 
@@ -1580,26 +1565,31 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
   titleLabel->setFrameEnabled( false );
 
   //composer map
-  QgsRectangle canvasExtent = mCanvas->extent();
+  QgsRasterLayer *rLayer = ( QgsRasterLayer* ) mCanvas->layer( 0 );
+  if ( !rLayer )
+  {
+    return false;
+  }
+  QgsRectangle layerExtent = rLayer->extent();
   //calculate width and height considering extent aspect ratio and max Width 206, maxHeight 70
-  double widthExtentRatio = contentWidth / canvasExtent.width();
-  double heightExtentRatio = 70 / canvasExtent.height();
+  double widthExtentRatio = contentWidth / layerExtent.width();
+  double heightExtentRatio = 70 / layerExtent.height();
   double mapWidthMM = 0;
   double mapHeightMM = 0;
   if ( widthExtentRatio < heightExtentRatio )
   {
     mapWidthMM = contentWidth;
-    mapHeightMM = contentWidth / canvasExtent.width() * canvasExtent.height();
+    mapHeightMM = contentWidth / layerExtent.width() * layerExtent.height();
   }
   else
   {
     mapHeightMM = 70;
-    mapWidthMM = 70 / canvasExtent.height() * canvasExtent.width();
+    mapWidthMM = 70 / layerExtent.height() * layerExtent.width();
   }
 
   QgsComposerMap* composerMap = new QgsComposerMap( composition, leftMargin, titleLabel->rect().bottom() + titleLabel->pos().y(), mapWidthMM, mapHeightMM );
   composerMap->setLayerSet( mCanvas->mapSettings().layers() );
-  composerMap->setNewExtent( mCanvas->extent() );
+  composerMap->zoomToExtent( layerExtent );
   composerMap->setMapCanvas( mCanvas );
   composition->addItem( composerMap );
   printer.setFullPage( true );
