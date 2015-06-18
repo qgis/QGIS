@@ -127,24 +127,6 @@ typedef QList < QPair< QString, QColor > > QgsLegendColorList;
  *    }
  * \endcode
  *
- * You can combine layer type detection with the setDrawingStyle method to override the default drawing style assigned
- * when a layer is loaded:
- *
-  * \code
- *    if (rasterLayer->rasterType()==QgsRasterLayer::Multiband)
- *    {
- *       myRasterLayer->setDrawingStyle(QgsRasterLayer::MultiBandSingleBandPseudoColor);
- *    }
- *    else if (rasterLayer->rasterType()==QgsRasterLayer::Palette)
- *    {
- *      myRasterLayer->setDrawingStyle(QgsRasterLayer::PalettedSingleBandPseudoColor);
- *    }
- *    else // QgsRasterLayer::GrayOrUndefined
- *    {
- *      myRasterLayer->setDrawingStyle(QgsRasterLayer::SingleBandPseudoColor);
- *    }
- * \endcode
- *
  *  Raster layers can also have an arbitrary level of transparency defined, and have their
  *  color palettes inverted using the setTransparency and setInvertHistogram methods.
  *
@@ -328,8 +310,10 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Set default contrast enhancement */
     void setDefaultContrastEnhancement();
 
-    /** \brief Overloaded version of the above function for convenience when restoring from xml */
-    void setDrawingStyle( const QString & theDrawingStyleQString );
+    /** \brief Overloaded version of the above function for convenience when restoring from xml
+     * @note Deprecated since QGIS 2.10. Use setRendererForDrawingStyle() or directly setRenderer()
+     */
+    Q_DECL_DEPRECATED void setDrawingStyle( const QString & theDrawingStyleQString );
 
     /**  \brief [ data provider interface ] A wrapper function to emit a progress update signal */
     void showProgress( int theValue );
@@ -407,8 +391,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /** Pointer to data provider */
     QgsRasterDataProvider* mDataProvider;
-
-    //DrawingStyle mDrawingStyle;
 
     /**  [ data provider interface ] Timestamp, the last modified time of the data source when the layer was created */
     QDateTime mLastModified;

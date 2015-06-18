@@ -170,7 +170,7 @@ class QgsRasterLayer : QgsMapLayer
     void setDefaultContrastEnhancement();
 
     /** \brief Overloaded version of the above function for convenience when restoring from xml */
-    void setDrawingStyle( const QString & theDrawingStyleQString );
+    void setDrawingStyle( const QString & theDrawingStyleQString ) /Deprecated/;
 
     /**  \brief [ data provider interface ] A wrapper function to emit a progress update signal */
     void showProgress( int theValue );
