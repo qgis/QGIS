@@ -69,7 +69,7 @@ int main( int argc, char ** argv )
     gdalShares << QCoreApplication::applicationDirPath().append( "/share/gdal" )
     << appResources.append( "/share/gdal" )
     << appResources.append( "/gdal" );
-    Q_FOREACH ( const QString& gdalShare, gdalShares )
+    Q_FOREACH( const QString& gdalShare, gdalShares )
     {
       if ( QFile::exists( gdalShare ) )
       {
@@ -79,6 +79,39 @@ int main( int argc, char ** argv )
     }
   }
 #endif
+
+  QString i18nPath = QgsApplication::i18nPath();
+  bool myLocaleOverrideFlag = settings.value( "locale/overrideFlag", false ).toBool();
+  QString myUserLocale = settings.value( "locale/userLocale", "" ).toString();
+  QString myTranslationCode = !myLocaleOverrideFlag || myUserLocale.isEmpty() ? QLocale::system().name() : myUserLocale;
+
+  QTranslator qgistor( 0 );
+  QTranslator qttor( 0 );
+  if ( myTranslationCode != "C" )
+  {
+    if ( qgistor.load( QString( "qgis_" ) + myTranslationCode, i18nPath ) )
+    {
+      a.installTranslator( &qgistor );
+    }
+    else
+    {
+      qWarning( "loading of qgis translation failed [%s]", QString( "%1/qgis_%2" ).arg( i18nPath ).arg( myTranslationCode ).toLocal8Bit().constData() );
+    }
+
+    /* Translation file for Qt.
+     * The strings from the QMenuBar context section are used by Qt/Mac to shift
+     * the About, Preferences and Quit items to the Mac Application menu.
+     * These items must be translated identically in both qt_ and qgis_ files.
+     */
+    if ( qttor.load( QString( "qt_" ) + myTranslationCode, QLibraryInfo::location( QLibraryInfo::TranslationsPath ) ) )
+    {
+      a.installTranslator( &qttor );
+    }
+    else
+    {
+      qWarning( "loading of qt translation failed [%s]", QString( "%1/qt_%2" ).arg( QLibraryInfo::location( QLibraryInfo::TranslationsPath ) ).arg( myTranslationCode ).toLocal8Bit().constData() );
+    }
+  }
 
   QgsBrowser w;
 
