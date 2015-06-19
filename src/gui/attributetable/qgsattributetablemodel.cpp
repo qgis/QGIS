@@ -336,6 +336,13 @@ void QgsAttributeTableModel::loadAttributes()
 void QgsAttributeTableModel::loadLayer()
 {
   QgsDebugMsg( "entered." );
+
+  // make sure attributes are properly updated before caching the data
+  // (emit of progress() signal may enter event loop and thus attribute
+  // table view may be updated with inconsistent model which may assume
+  // wrong number of attributes)
+  loadAttributes();
+
   beginResetModel();
 
   if ( rowCount() != 0 )
@@ -370,9 +377,8 @@ void QgsAttributeTableModel::loadLayer()
 
   emit finished();
 
-  connect( mLayerCache, SIGNAL( invalidated() ), this, SLOT( loadLayer() ) );
+  connect( mLayerCache, SIGNAL( invalidated() ), this, SLOT( loadLayer() ), Qt::UniqueConnection );
 
-  mFieldCount = mAttributes.size();
   endResetModel();
 }
 
