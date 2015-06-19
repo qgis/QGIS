@@ -1786,7 +1786,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
         {
           const QgsField &fld = field( attrIdx );
           v = paramValue( defaultValues[ attrIdx ], defaultValues[ attrIdx ] );
-          features->setAttribute( idx, convertValue( fld.type(), v ) );
+          features->setAttribute( attrIdx, convertValue( fld.type(), v ) );
         }
         else
         {
