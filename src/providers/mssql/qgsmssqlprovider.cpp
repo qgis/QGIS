@@ -1359,7 +1359,7 @@ QgsCoordinateReferenceSystem QgsMssqlProvider::crs()
     mCrs.createFromSrid( mSRId );
     if ( mCrs.isValid() )
       return mCrs;
- 
+
     // try to load crs from the database tables as a fallback
     QSqlQuery query = QSqlQuery( mDatabase );
     query.setForwardOnly( true );

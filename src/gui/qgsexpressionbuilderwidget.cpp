@@ -81,7 +81,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
     tab_2->setEnabled( false );
   }
 
-  // select the first item in the function list 
+  // select the first item in the function list
   // in order to avoid a blank help widget
   QModelIndex firstItem = mProxyModel->index( 0, 0, QModelIndex() );
   expressionTree->setCurrentIndex( firstItem );

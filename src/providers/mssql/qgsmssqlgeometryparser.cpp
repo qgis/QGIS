@@ -495,7 +495,7 @@ unsigned char* QgsMssqlGeometryParser::ParseSqlGeometry( unsigned char* pszInput
 
   if ( chProps & SP_HASZVALUES && chProps & SP_HASMVALUES )
     nPointSize = 32;
-  else if ( chProps & SP_HASZVALUES || chProps & SP_HASMVALUES)
+  else if ( chProps & SP_HASZVALUES || chProps & SP_HASMVALUES )
     nPointSize = 24;
   else
     nPointSize = 16;

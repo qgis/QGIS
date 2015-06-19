@@ -47,8 +47,8 @@ QgsHistogramWidget::QgsHistogramWidget( QWidget *parent, QgsVectorLayer* layer, 
     , mRedrawRequired( true )
     , mVectorLayer( layer )
     , mSourceFieldExp( fieldOrExp )
-    , mXAxisTitle( QObject::tr("Value"))
-    , mYAxisTitle( QObject::tr("Count"))
+    , mXAxisTitle( QObject::tr( "Value" ) )
+    , mYAxisTitle( QObject::tr( "Count" ) )
 {
   setupUi( this );
 

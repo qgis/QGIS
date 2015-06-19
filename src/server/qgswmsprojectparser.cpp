@@ -470,7 +470,7 @@ QgsComposition* QgsWMSProjectParser::initComposition( const QString& composerTem
           {
             continue;
           }
-          
+
           QgsLayerTreeLayer* nodeLayer = root->findLayer( layerId );
           if ( !nodeLayer )
           {
