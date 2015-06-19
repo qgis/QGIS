@@ -102,7 +102,15 @@ void QgsGCPListModel::updateModel()
     unitType = tr( "pixels" );
   }
 
-  itemLabels << "on/off" << "id" << "srcX" << "srcY" << "dstX" << "dstY" << QString( "dX[" ) + unitType + "]" << QString( "dY[" ) + unitType + "]" << "residual[" + unitType + "]";
+  itemLabels << tr( "Visible" )
+  << tr( "ID" )
+  << tr( "Source X" )
+  << tr( "Source Y" )
+  << tr( "Dest. X" )
+  << tr( "Dest. Y" )
+  << tr( "dX (%1)" ).arg( unitType )
+  << tr( "dY (%1)" ).arg( unitType )
+  << tr( "Residual (%1)" ).arg( unitType );
 
   setHorizontalHeaderLabels( itemLabels );
   setRowCount( mGCPList->size() );
