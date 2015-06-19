@@ -112,7 +112,10 @@ def getSagaInstalledVersion(runSaga=False):
         elif isMac():
             commands = [os.path.join(sagaPath(), "saga_cmd"), "-v"]
         else:
-            commands = ["saga_cmd", "-v"]
+            # for Linux use just one string instead of separated parameters as the list
+            # does not work well together with shell=True option
+            # (python docs advices to use subprocess32 instead of python2.7's subprocess)
+            commands = ["saga_cmd -v"]
         proc = subprocess.Popen(
             commands,
             shell=True,
