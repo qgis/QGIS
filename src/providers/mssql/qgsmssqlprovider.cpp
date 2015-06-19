@@ -132,7 +132,9 @@ QgsMssqlProvider::QgsMssqlProvider( QString uri )
       mGeometryColName = anUri.geometryColumn();
 
     if ( mSRId < 0 || mWkbType == QGis::WKBUnknown || mGeometryColName.isEmpty() )
+    {
       loadMetadata();
+    }
     loadFields();
     UpdateStatistics( mUseEstimatedMetadata );
 
@@ -1354,7 +1356,11 @@ QgsCoordinateReferenceSystem QgsMssqlProvider::crs()
 {
   if ( !mCrs.isValid() && mSRId > 0 )
   {
-    // try to load crs
+    mCrs.createFromSrid( mSRId );
+    if ( mCrs.isValid() )
+      return mCrs;
+ 
+    // try to load crs from the database tables as a fallback
     QSqlQuery query = QSqlQuery( mDatabase );
     query.setForwardOnly( true );
     bool execOk = query.exec( QString( "select srtext from spatial_ref_sys where srid = %1" ).arg( QString::number( mSRId ) ) );
@@ -1366,6 +1372,8 @@ QgsCoordinateReferenceSystem QgsMssqlProvider::crs()
       query.finish();
     }
     query.clear();
+
+    // Look in the system reference table for the data if we can't find it yet
     execOk = query.exec( QString( "select well_known_text from sys.spatial_reference_systems where spatial_reference_id = %1" ).arg( QString::number( mSRId ) ) );
     if ( execOk && query.isActive() && query.next() && mCrs.createFromWkt( query.value( 0 ).toString() ) )
       return mCrs;
