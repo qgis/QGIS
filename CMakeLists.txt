@@ -816,6 +816,10 @@ ADD_CUSTOM_TARGET(uninstall
 #############################################################
 # Enable packaging
 
+# Do not warn about runtime libs when building using VS Express
+IF(NOT DEFINED CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS)
+  SET(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS ON)
+ENDIF()
 INCLUDE(InstallRequiredSystemLibraries)
 
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "QGIS")
