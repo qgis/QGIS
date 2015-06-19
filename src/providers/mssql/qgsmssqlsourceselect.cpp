@@ -527,6 +527,7 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
   {
     QString testquery( "SELECT count(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'geometry_columns'" );
     q.exec( testquery );
+    q.first();
     int count = q.value( 0 ).toInt();
     bool geometryColumnsFound = count != 0;
     if ( !geometryColumnsFound )
