@@ -1641,7 +1641,7 @@ QgsFeatureIds QgsWFSServer::getFeatureIdsFromFilter( QDomElement filterElem, Qgs
       fid = fidElem.attribute( "fid" );
       if ( fid.contains( "." ) )
         fid = fid.section( ".", 1, 1 );
-      fids.insert( fid.toInt( &conversionSuccess ) );
+      fids.insert( fid.toLongLong( &conversionSuccess ) );
     }
   }
   else
