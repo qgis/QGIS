@@ -268,7 +268,7 @@ QString QgsSpatialQueryDialog::getSubsetFIDs( const QgsFeatureIds *fids, QString
   QString qReturn  = qFormat.arg( fieldFID ).arg( lstFID.join( "," ) );
   lstFID.clear();
   return qReturn;
-} // QString QgsSpatialQueryDialog::getSubsetFIDs( const QSet< int > *fids, QString fieldFID )
+} // QString QgsSpatialQueryDialog::getSubsetFIDs( const QgsFeatureIds *fids, QString fieldFID )
 
 QgsSpatialQueryDialog::TypeVerifyCreateSubset QgsSpatialQueryDialog::verifyCreateSubset( QString &msg, QString &fieldFID )
 {
@@ -656,7 +656,7 @@ void QgsSpatialQueryDialog::changeLwFeature( QgsVectorLayer* lyr, QgsFeatureId f
   }
   lwFeatures->setEnabled( true );
   lwFeatures->setFocus();
-} // void QgsSpatialQueryDialog::changeLwFeature( QListWidget *listWidget, QgsVectorLayer* lyr, int fid )
+} // void QgsSpatialQueryDialog::changeLwFeature( QgsVectorLayer* lyr, QgsFeatureId fid )
 
 void QgsSpatialQueryDialog::zoomFeature( QgsVectorLayer* lyr, QgsFeatureId fid )
 {
@@ -711,7 +711,7 @@ void QgsSpatialQueryDialog::zoomFeature( QgsVectorLayer* lyr, QgsFeatureId fid )
     mIface->mapCanvas()->setExtent( rectExtent );
   }
   mIface->mapCanvas()->refresh();
-} // void QgsSpatialQueryDialog::zoomFeatureTarget(QgsVectorLayer* lyr, int fid)
+} // void QgsSpatialQueryDialog::zoomFeature( QgsVectorLayer* lyr, QgsFeatureId fid )
 
 void QgsSpatialQueryDialog::showRubberFeature( QgsVectorLayer* lyr, QgsFeatureId id )
 {
