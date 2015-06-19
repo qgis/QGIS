@@ -35,13 +35,13 @@ before_install:
                          grass-dev libexpat1-dev libfcgi-dev libgdal1-dev
                          libgeos-dev libgsl0-dev libpq-dev libproj-dev
                          libqscintilla2-dev libqt4-dev libqt4-opengl-dev
-                         libqtwebkit-dev libqwt-dev libspatialindex-dev
-                         libspatialite-dev libsqlite3-dev lighttpd pkg-config
-                         poppler-utils pyqt4-dev-tools python python-dev
-                         python-qt4 python-qt4-dev python-sip python-sip-dev
-                         spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi
-                         xfonts-base xfonts-scalable xvfb
-                         postgresql-9.1-postgis-2.1
+                         libqt4-sql-sqlite libqtwebkit-dev libqwt-dev
+                         libspatialindex-dev libspatialite-dev libsqlite3-dev
+                         lighttpd pkg-config poppler-utils pyqt4-dev-tools
+                         python python-dev python-qt4 python-qt4-dev
+                         python-sip python-sip-dev spawn-fcgi txt2tags
+                         xauth xfonts-100dpi xfonts-75dpi xfonts-base
+                         xfonts-scalable xvfb postgresql-9.1-postgis-2.1
   - cmake --version
   - clang --version
 
