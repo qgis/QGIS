@@ -111,6 +111,7 @@ SET(QGIS_GUI_SRCS
   editorwidgets/qgsvaluemapsearchwidgetwrapper.cpp
   editorwidgets/qgsvaluerelationconfigdlg.cpp
   editorwidgets/qgsvaluerelationwidgetwrapper.cpp
+  editorwidgets/qgsvaluerelationsearchwidgetwrapper.cpp
   editorwidgets/qgsvaluerelationwidgetfactory.cpp
 
 
@@ -447,6 +448,7 @@ SET(QGIS_GUI_MOC_HDRS
   editorwidgets/qgsvaluemapsearchwidgetwrapper.h
   editorwidgets/qgsvaluerelationconfigdlg.h
   editorwidgets/qgsvaluerelationwidgetwrapper.h
+  editorwidgets/qgsvaluerelationsearchwidgetwrapper.h
 
   layertree/qgscustomlayerorderwidget.h
   layertree/qgslayertreemapcanvasbridge.h

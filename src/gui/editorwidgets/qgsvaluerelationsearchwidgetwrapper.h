@@ -1,9 +1,9 @@
 /***************************************************************************
     qgsvaluerelationwidgetwrapper.h
      --------------------------------------
-    Date                 : 5.1.2014
-    Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Date                 : 19.6.2015
+    Copyright            : (C) 2015 Karolina Alexiou
+    Email                : carolinegr at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -13,10 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSVALUERELATIONWIDGETWRAPPER_H
-#define QGSVALUERELATIONWIDGETWRAPPER_H
+#ifndef QGSVALUERELATIONSEARCHWIDGETWRAPPER_H
+#define QGSVALUERELATIONSEARCHWIDGETWRAPPER_H
 
-#include "qgseditorwidgetwrapper.h"
+#include "qgsdefaultsearchwidgetwrapper.h"
+#include "qgsvaluerelationwidgetwrapper.h"
 
 #include <QComboBox>
 #include <QListWidget>
@@ -44,7 +45,7 @@ class QgsValueRelationWidgetFactory;
  *
  */
 
-class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
+class GUI_EXPORT QgsValueRelationSearchWidgetWrapper : public QgsDefaultSearchWidgetWrapper
 {
     Q_OBJECT
 
@@ -53,26 +54,17 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
     typedef QVector < ValueRelationItem > ValueRelationCache;
 
   public:
-    explicit QgsValueRelationWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = 0, QWidget* parent = 0 );
-    static bool orderByKeyLessThan( const QgsValueRelationWidgetWrapper::ValueRelationItem& p1 ,
-            const QgsValueRelationWidgetWrapper::ValueRelationItem& p2 );
-    static bool orderByValueLessThan( const QgsValueRelationWidgetWrapper::ValueRelationItem& p1 ,
-            const QgsValueRelationWidgetWrapper::ValueRelationItem& p2 );
+    explicit QgsValueRelationSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = 0 );
+    bool applyDirectly() override;
+    QVariant value();
 
-
-
-    // QgsEditorWidgetWrapper interface
-  public:
-    QVariant value() override;
-    // TODO or have friend class :)
-    static ValueRelationCache createCache( const QgsEditorWidgetConfig& config );
 
   protected:
     QWidget* createWidget( QWidget* parent ) override;
     void initWidget( QWidget* editor ) override;
 
   public slots:
-    void setValue( const QVariant& value ) override;
+    void valueChanged();
 
   private:
     QComboBox* mComboBox;
@@ -85,6 +77,4 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
     friend class QgsValueRelationWidgetFactory;
 };
 
-Q_DECLARE_METATYPE( QgsValueRelationWidgetWrapper::ValueRelationCache )
-
-#endif // QGSVALUERELATIONWIDGETWRAPPER_H
+#endif // QGSVALUERELATIONSEARCHWIDGETWRAPPER_H

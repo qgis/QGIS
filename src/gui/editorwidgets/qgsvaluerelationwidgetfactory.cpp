@@ -19,7 +19,7 @@
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvaluerelationconfigdlg.h"
-#include "qgsdefaultsearchwidgetwrapper.h"
+#include "qgsvaluerelationsearchwidgetwrapper.h"
 #include "qgsvectorlayer.h"
 
 #include <QSettings>
@@ -36,7 +36,7 @@ QgsEditorWidgetWrapper* QgsValueRelationWidgetFactory::create( QgsVectorLayer* v
 
 QgsSearchWidgetWrapper *QgsValueRelationWidgetFactory::createSearchWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const
 {
-  return new QgsDefaultSearchWidgetWrapper(vl, fieldIdx, parent);
+  return new QgsValueRelationSearchWidgetWrapper(vl, fieldIdx, parent);
 }
 
 QgsEditorConfigWidget* QgsValueRelationWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
