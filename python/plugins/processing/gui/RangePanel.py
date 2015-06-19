@@ -51,11 +51,13 @@ class RangePanel(BASE, WIDGET):
         self.spnMin.setValue(minVal)
         self.spnMax.setValue(maxVal)
 
-        self.spnMin.setMaximum(maxVal)
-        self.spnMin.setMinimum(minVal)
+        # TODO: Set a better default range (0-1 as default can be problematic)
 
-        self.spnMax.setMaximum(maxVal)
-        self.spnMax.setMinimum(minVal)
+        # self.spnMin.setMaximum(maxVal)
+        # self.spnMin.setMinimum(minVal)
+
+        # self.spnMax.setMaximum(maxVal)
+        # self.spnMax.setMinimum(minVal)
 
     def getValue(self):
         return '{},{}'.format(self.spnMin.value(), self.spnMax.value())
