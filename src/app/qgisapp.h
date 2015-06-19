@@ -103,6 +103,7 @@ class QgsTileScaleWidget;
 #include "qgssnappingdialog.h"
 #include "qgspluginmanager.h"
 #include "qgsmessagebar.h"
+#include "qgsbookmarks.h"
 
 #include "ui_qgisapp.h"
 
@@ -1620,6 +1621,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsAdvancedDigitizingDockWidget *mAdvancedDigitizingDockWidget;
     QgsStatisticalSummaryDockWidget* mStatisticalSummaryDockWidget;
+    QgsBookmarks* mBookMarksDockWidget;
 
     QgsSnappingDialog *mSnappingDialog;
 

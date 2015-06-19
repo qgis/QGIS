@@ -16,37 +16,36 @@
  ***************************************************************************/
 #ifndef QGSBOOKMARKS_H
 #define QGSBOOKMARKS_H
+
+#include <QDockWidget>
+
 #include "ui_qgsbookmarksbase.h"
 #include "qgscontexthelp.h"
 
-#include <QDialog>
-
-class APP_EXPORT QgsBookmarks : public QDialog, private Ui::QgsBookmarksBase
+class APP_EXPORT QgsBookmarks : public QDockWidget, private Ui::QgsBookmarksBase
 {
     Q_OBJECT
 
   public:
-    static void showBookmarks();
-    static void newBookmark();
+    QgsBookmarks( QWidget *parent = 0 );
+    ~QgsBookmarks();
+
+  public slots:
+    void addClicked();
 
   private slots:
-    void addClicked();
     void deleteClicked();
     void zoomToBookmark();
     void exportToXML();
     void importFromXML();
 
     void on_lstBookmarks_doubleClicked( const QModelIndex & );
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_actionHelp_triggered() { QgsContextHelp::run( metaObject()->className() ); }
 
   private:
-    QgsBookmarks( QWidget *parent = 0, Qt::WindowFlags fl = 0 );
-    ~QgsBookmarks();
-
     void saveWindowLocation();
     void restorePosition();
 
-    static QgsBookmarks *sInstance;
 };
 
 
