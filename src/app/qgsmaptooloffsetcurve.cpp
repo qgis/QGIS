@@ -190,19 +190,7 @@ void QgsMapToolOffsetCurve::applyOffset()
 
 void QgsMapToolOffsetCurve::placeOffsetCurveToValue()
 {
-  if ( mOriginalGeometry && mRubberBand && mRubberBand->numberOfVertices() > 0 )
-  {
-    //is rubber band left or right of original geometry
-    double leftOf = 0;
-    const QgsPoint *firstPoint = mRubberBand->getPoint( 0 );
-    if ( firstPoint )
-    {
-      QgsPoint minDistPoint;
-      int beforeVertex;
-      mOriginalGeometry->closestSegmentWithContext( *firstPoint, minDistPoint, beforeVertex, &leftOf );
-    }
-    setOffsetForRubberBand( mDistanceWidget->value() );
-  }
+  setOffsetForRubberBand( mDistanceWidget->value() );
 }
 
 void QgsMapToolOffsetCurve::canvasMoveEvent( QMouseEvent * e )
@@ -255,6 +243,7 @@ void QgsMapToolOffsetCurve::canvasMoveEvent( QMouseEvent * e )
 
   if ( mDistanceWidget )
   {
+    // this will also set the rubber band
     mDistanceWidget->setValue( leftOf < 0 ? offset : -offset );
     mDistanceWidget->setFocus( Qt::TabFocusReason );
   }
