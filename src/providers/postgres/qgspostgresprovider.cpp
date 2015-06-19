@@ -905,8 +905,8 @@ bool QgsPostgresProvider::loadFields()
     fields << fieldName;
 
     mAttrPalIndexName.insert( i, fieldName );
+    mDefaultValues.insert( mAttributeFields.size(), defValMap[tableoid][attnum] );
     mAttributeFields.append( QgsField( fieldName, fieldType, fieldTypeName, fieldSize, fieldPrec, fieldComment ) );
-    mDefaultValues.insert( i, defValMap[tableoid][attnum] );
   }
 
   return true;
@@ -1778,23 +1778,24 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
 
       for ( int i = 0; i < fieldId.size(); i++ )
       {
-        QVariant value = attrs[ fieldId[i] ];
+        int attrIdx = fieldId[i];
+        QVariant value = attrs[ attrIdx ];
 
         QString v;
         if ( value.isNull() )
         {
-          const QgsField &fld = field( fieldId[i] );
-          v = paramValue( defaultValues[i], defaultValues[i] );
-          features->setAttribute( fieldId[i], convertValue( fld.type(), v ) );
+          const QgsField &fld = field( attrIdx );
+          v = paramValue( defaultValues[ attrIdx ], defaultValues[ attrIdx ] );
+          features->setAttribute( idx, convertValue( fld.type(), v ) );
         }
         else
         {
-          v = paramValue( value.toString(), defaultValues[i] );
+          v = paramValue( value.toString(), defaultValues[ attrIdx ] );
 
           if ( v != value.toString() )
           {
-            const QgsField &fld = field( fieldId[i] );
-            features->setAttribute( fieldId[i], convertValue( fld.type(), v ) );
+            const QgsField &fld = field( attrIdx );
+            features->setAttribute( attrIdx, convertValue( fld.type(), v ) );
           }
         }
 
