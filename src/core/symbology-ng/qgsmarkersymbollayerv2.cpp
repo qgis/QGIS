@@ -1549,15 +1549,6 @@ bool QgsSvgMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScale
   Q_UNUSED( layerName );
   Q_UNUSED( shift ); //todo...
 
-  QSvgRenderer r( mPath );
-  if ( !r.isValid() )
-  {
-    return false;
-  }
-
-  QgsDxfPaintDevice pd( &e );
-  pd.setDrawingSize( QSizeF( r.defaultSize() ) );
-
   //size
   double size = mSize;
 
@@ -1615,6 +1606,50 @@ bool QgsSvgMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScale
   //angle = -angle; //rotation in Qt is counterclockwise
   if ( angle )
     outputOffset = _rotatedOffset( outputOffset, angle );
+
+  QString path = mPath;
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_NAME ) )
+  {
+    path = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_NAME, f, mPath ).toString();
+  }
+
+  double outlineWidth = mOutlineWidth;
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_WIDTH ) )
+  {
+    outlineWidth = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_WIDTH, f, mOutlineWidth ).toDouble();
+  }
+
+  QColor fillColor = mFillColor;
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_FILL ) )
+  {
+    QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_FILL, f, QVariant(), &ok ).toString();
+    if ( ok )
+      fillColor = QgsSymbolLayerV2Utils::decodeColor( colorString );
+  }
+
+  QColor outlineColor = mOutlineColor;
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE ) )
+  {
+    QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE, f, QVariant(), &ok ).toString();
+    if ( ok )
+      outlineColor = QgsSymbolLayerV2Utils::decodeColor( colorString );
+  }
+
+  const QByteArray &svgContent = QgsSvgCache::instance()->svgContent( path, size, fillColor, outlineColor, outlineWidth,
+                                 context->renderContext().scaleFactor(),
+                                 context->renderContext().rasterScaleFactor() );
+
+  //if current entry image is 0: cache image for entry
+  // checks to see if image will fit into cache
+  //update stats for memory usage
+  QSvgRenderer r( svgContent );
+  if ( !r.isValid() )
+  {
+    return false;
+  }
+
+  QgsDxfPaintDevice pd( &e );
+  pd.setDrawingSize( QSizeF( r.defaultSize() ) );
 
   QPainter p;
   p.begin( &pd );

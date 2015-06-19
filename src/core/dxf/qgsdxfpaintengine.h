@@ -39,7 +39,6 @@ class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
     void drawPixmap( const QRectF& r, const QPixmap& pm, const QRectF& sr ) override;
 
     void drawPolygon( const QPointF * points, int pointCount, PolygonDrawMode mode ) override;
-    void drawRects( const QRectF * rects, int rectCount ) override;
     void drawPath( const QPainterPath& path ) override;
     void drawLines( const QLineF* lines, int lineCount ) override;
 

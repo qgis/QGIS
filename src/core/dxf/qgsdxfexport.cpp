@@ -859,7 +859,8 @@ void QgsDxfExport::writeBlocks()
     writeGroup( 3, block );
     writeGroup( 1, "" );
 
-    ml->writeDxf( *this, mapUnitScaleFactor( mSymbologyScaleDenominator, ml->sizeUnit(), mMapUnits ), "0", &ctx, 0 ); // maplayer 0 -> block receives layer from INSERT statement
+    // maplayer 0 -> block receives layer from INSERT statement
+    ml->writeDxf( *this, mapUnitScaleFactor( mSymbologyScaleDenominator, ml->sizeUnit(), mMapUnits ), "0", &ctx, 0 );
 
     writeGroup( 0, "ENDBLK" );
     writeHandle();

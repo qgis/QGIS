@@ -84,32 +84,13 @@ void QgsDxfPaintEngine::drawPolygon( const QPointF *points, int pointCount, Poly
 
   if ( mode == QPaintEngine::PolylineMode )
   {
-    if ( mPen.style() != Qt::NoPen )
+    if ( mPen.style() != Qt::NoPen && mPen.brush().style() != Qt::NoBrush )
       mDxf->writePolyline( polygon[0], mLayer, "CONTINUOUS", mPen.color(), currentWidth() );
   }
   else
   {
     if ( mBrush.style() != Qt::NoBrush )
       mDxf->writePolygon( polygon, mLayer, "SOLID", mBrush.color() );
-  }
-}
-
-void QgsDxfPaintEngine::drawRects( const QRectF* rects, int rectCount )
-{
-  if ( !mDxf || !mPaintDevice || !rects || mBrush.style() == Qt::NoBrush )
-    return;
-
-  for ( int i = 0; i < rectCount; ++i )
-  {
-    double left = rects[i].left();
-    double right = rects[i].right();
-    double top = rects[i].top();
-    double bottom = rects[i].bottom();
-    QgsPoint pt1 = toDxfCoordinates( QPointF( left, bottom ) );
-    QgsPoint pt2 = toDxfCoordinates( QPointF( right, bottom ) );
-    QgsPoint pt3 = toDxfCoordinates( QPointF( left, top ) );
-    QgsPoint pt4 = toDxfCoordinates( QPointF( right, top ) );
-    mDxf->writeSolid( mLayer, mBrush.color(), pt1, pt2, pt3, pt4 );
   }
 }
 
@@ -171,10 +152,8 @@ void QgsDxfPaintEngine::endPolygon()
 {
   if ( mCurrentPolygon.size() > 1 )
   {
-#if 0
     if ( mPen.style() != Qt::NoPen )
       drawPolygon( mCurrentPolygon.constData(), mCurrentPolygon.size(), QPaintEngine::PolylineMode );
-#endif
 
     mPolygon.resize( mPolygon.size() + 1 );
     setRing( mPolygon[ mPolygon.size() - 1 ], mCurrentPolygon.constData(), mCurrentPolygon.size() );
@@ -196,7 +175,7 @@ void QgsDxfPaintEngine::endCurve()
   if ( mCurrentCurve.size() >= 3 )
   {
     double t = 0.05;
-    for ( int i = 1; i < 20; ++i ) //approximate curve with 20 segments
+    for ( int i = 1; i <= 20; ++i ) //approximate curve with 20 segments
     {
       mCurrentPolygon.append( bezierPoint( mCurrentCurve, t ) );
       t += 0.05;
