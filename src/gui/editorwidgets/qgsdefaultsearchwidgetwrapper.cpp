@@ -94,7 +94,7 @@ void QgsDefaultSearchWidgetWrapper::initWidget( QWidget* widget )
   mContainer->setLayout(new QHBoxLayout() );
   mLineEdit = new QgsFilterLineEdit();
   mCheckbox = new QCheckBox("Case sensitive");
-  mCheckbox->setChecked(Qt::Checked);
+  mCheckbox->setChecked(Qt::Unchecked);
   mContainer->layout()->addWidget(mLineEdit);
   mContainer->layout()->addWidget(mCheckbox);
   connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( setExpression( QString ) ) );
