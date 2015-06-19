@@ -52,7 +52,7 @@ class QgsDmsAndDdDelegate : public QStyledItemDelegate
                                const QModelIndex &index ) const override;
 
   private:
-    QString dmsToDD( QString dms ) const;
+    double dmsToDD( QString dms ) const;
 };
 
 class QgsCoordDelegate : public QStyledItemDelegate
@@ -65,12 +65,12 @@ class QgsCoordDelegate : public QStyledItemDelegate
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option,
                            const QModelIndex &index ) const override;
 
-//  void setEditorData(QWidget *editor, const QModelIndex &index);
-//  void setModelData(QWidget *editor, QAbstractItemModel *model,
-//                    const QModelIndex &index);
-//
-//  void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option,
-//                            const QModelIndex &index);
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
+    void setModelData( QWidget *editor, QAbstractItemModel *model,
+                       const QModelIndex &index ) const override;
+
+    void updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option,
+                               const QModelIndex &index ) const override;
 };
 
 #endif // QGSDELEGATES_H

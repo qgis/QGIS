@@ -31,7 +31,7 @@ QgsGCPListWidget::QgsGCPListWidget( QWidget *parent )
     , mGCPListModel( new QgsGCPListModel( this ) )
     , mNonEditableDelegate( new QgsNonEditableDelegate( this ) )
     , mDmsAndDdDelegate( new QgsDmsAndDdDelegate( this ) )
-    , mCoordDelegate( new QgsCoordDelegate )
+    , mCoordDelegate( new QgsCoordDelegate( this ) )
     , mPrevRow( 0 )
     , mPrevColumn( 0 )
 {
@@ -97,7 +97,7 @@ void QgsGCPListWidget::updateGCPList()
 
 void QgsGCPListWidget::closeEditors()
 {
-  Q_FOREACH( QModelIndex index, selectedIndexes() )
+  Q_FOREACH ( QModelIndex index, selectedIndexes() )
   {
     closePersistentEditor( index );
   }
