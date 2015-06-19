@@ -345,6 +345,9 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     OGRFieldType ogrType = OFTString; //default to string
     int ogrWidth = attrField.length();
     int ogrPrecision = attrField.precision();
+    if ( ogrPrecision > 0 )
+      ++ogrWidth;
+
     switch ( attrField.type() )
     {
       case QVariant::LongLong:
