@@ -164,7 +164,7 @@
   </widget>
   <widget class="QToolBar" name="toolBarHistogramStretch">
    <property name="windowTitle">
-    <string>toolBar</string>
+    <string>Histogram</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
