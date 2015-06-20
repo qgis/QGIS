@@ -52,6 +52,7 @@ void QgsValueMapSearchWidgetWrapper::initWidget( QWidget* editor )
   {
     const QgsEditorWidgetConfig cfg = config();
     QgsEditorWidgetConfig::ConstIterator it = cfg.constBegin();
+    mComboBox->addItem( tr( "Please select" ), "");
 
     while ( it != cfg.constEnd() )
     {

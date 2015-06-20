@@ -113,6 +113,7 @@ void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget* editor )
 
   if ( mComboBox )
   {
+    mComboBox->addItem( tr( "Please select" ), QVariant(layer()->pendingFields()[mFieldIdx].type()) );
     if ( config( "AllowNull" ).toBool() )
     {
       mComboBox->addItem( tr( "(no selection)" ), QVariant(layer()->pendingFields()[mFieldIdx].type()) );

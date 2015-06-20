@@ -437,11 +437,15 @@ void QgsAttributeTableDialog::filterColumnChanged( QObject* filterAction )
   if (mCurrentSearchWidgetWrapper->applyDirectly())
   {
       connect( mCurrentSearchWidgetWrapper, SIGNAL( expressionChanged(QString) ), SLOT( filterQueryChanged(QString) ) );
+      mApplyFilterButton->setVisible(false);
+  }
+  else
+  {
+      mApplyFilterButton->setVisible(true);
   }
 
   replaceSearchWidget( mFilterQuery, mCurrentSearchWidgetWrapper->widget() );
 
-  mApplyFilterButton->setVisible( true );
 }
 
 void QgsAttributeTableDialog::filterExpressionBuilder()
