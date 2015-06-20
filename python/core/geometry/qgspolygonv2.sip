@@ -1,0 +1,22 @@
+class QgsPolygonV2: public QgsCurvePolygonV2
+{
+%TypeHeaderCode
+#include <qgspolygonv2.h>
+%End
+
+  public:
+    virtual QString geometryType() const;
+    virtual QgsAbstractGeometryV2* clone() const;
+
+    virtual bool fromWkb( const unsigned char* wkb );
+    // inherited: bool fromWkt( const QString &wkt );
+
+    int wkbSize() const;
+    unsigned char* asWkb( int& binarySize ) const;
+    // inherited: QString asWkt( int precision = 17 ) const;
+    // inherited: QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
+    // inherited: QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
+    // inherited: QString asJSON( int precision = 17 ) const;
+
+    QgsPolygonV2* surfaceToPolygon() const;
+};

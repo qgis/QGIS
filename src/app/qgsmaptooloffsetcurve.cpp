@@ -190,19 +190,7 @@ void QgsMapToolOffsetCurve::applyOffset()
 
 void QgsMapToolOffsetCurve::placeOffsetCurveToValue()
 {
-  if ( mOriginalGeometry && mRubberBand && mRubberBand->numberOfVertices() > 0 )
-  {
-    //is rubber band left or right of original geometry
-    double leftOf = 0;
-    const QgsPoint *firstPoint = mRubberBand->getPoint( 0 );
-    if ( firstPoint )
-    {
-      QgsPoint minDistPoint;
-      int beforeVertex;
-      mOriginalGeometry->closestSegmentWithContext( *firstPoint, minDistPoint, beforeVertex, &leftOf );
-    }
-    setOffsetForRubberBand( mDistanceWidget->value() );
-  }
+  setOffsetForRubberBand( mDistanceWidget->value() );
 }
 
 void QgsMapToolOffsetCurve::canvasMoveEvent( QMouseEvent * e )
@@ -255,6 +243,7 @@ void QgsMapToolOffsetCurve::canvasMoveEvent( QMouseEvent * e )
 
   if ( mDistanceWidget )
   {
+    // this will also set the rubber band
     mDistanceWidget->setValue( leftOf < 0 ? offset : -offset );
     mDistanceWidget->setFocus( Qt::TabFocusReason );
   }
@@ -278,8 +267,10 @@ QgsGeometry* QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, co
 
   if ( vl == currentVectorLayer() && !mForceCopy )
   {
+    Q_NOWARN_DEPRECATED_PUSH
     //don't consider selected geometries, only the snap result
     return convertToSingleLine( snappedFeature.geometryAndOwnership(), partVertexNr, mMultiPartGeometry );
+    Q_NOWARN_DEPRECATED_POP
   }
   else //snapped to a background layer
   {
@@ -294,14 +285,18 @@ QgsGeometry* QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, co
     const QgsFeatureIds& selection = vl->selectedFeaturesIds();
     if ( selection.size() < 1 || !selection.contains( match.featureId() ) )
     {
+      Q_NOWARN_DEPRECATED_PUSH
       return convertToSingleLine( snappedFeature.geometryAndOwnership(), partVertexNr, mMultiPartGeometry );
+      Q_NOWARN_DEPRECATED_POP
     }
     else
     {
       //merge together if several features
       QgsFeatureList selectedFeatures = vl->selectedFeatures();
       QgsFeatureList::iterator selIt = selectedFeatures.begin();
+      Q_NOWARN_DEPRECATED_PUSH
       QgsGeometry* geom = selIt->geometryAndOwnership();
+      Q_NOWARN_DEPRECATED_POP
       ++selIt;
       for ( ; selIt != selectedFeatures.end(); ++selIt )
       {
@@ -314,7 +309,9 @@ QgsGeometry* QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, co
       if ( geom->isMultipart() )
       {
         delete geom;
+        Q_NOWARN_DEPRECATED_PUSH
         return convertToSingleLine( snappedFeature.geometryAndOwnership(), match.vertexIndex(), mMultiPartGeometry );
+        Q_NOWARN_DEPRECATED_POP
       }
 
       return geom;
@@ -334,7 +331,7 @@ void QgsMapToolOffsetCurve::createDistanceWidget()
   mDistanceWidget = new QgsDoubleSpinBox();
   mDistanceWidget->setMinimum( -99999999 );
   mDistanceWidget->setMaximum( 99999999 );
-  mDistanceWidget->setDecimals( 2 );
+  mDistanceWidget->setDecimals( 6 );
   mDistanceWidget->setPrefix( tr( "Offset: " ) );
   QgisApp::instance()->addUserInputWidget( mDistanceWidget );
 

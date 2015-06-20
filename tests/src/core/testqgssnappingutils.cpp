@@ -110,6 +110,10 @@ class TestQgsSnappingUtils : public QObject
       QVERIFY( !m2.isValid() );
       QVERIFY( !m2.hasVertex() );
 
+      // do not consider edges in the following test - on 32-bit platforms
+      // result was an edge match very close to (1,0) instead of being exactly (1,0)
+      u.setDefaultSettings( QgsPointLocator::Vertex, 10, QgsTolerance::Pixels );
+
       // test with filtering
       FilterExcludePoint myFilter( QgsPoint( 1, 0 ) );
       QgsPointLocator::Match m3 = u.snapToMap( QPoint( 100, 100 ), &myFilter );

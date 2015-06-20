@@ -139,6 +139,9 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     //! @note not available in python bindings
     virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = QString() ) override;
 
+    //! @note added in 2.10
+    QgsLegendSymbolListV2 legendSymbolItemsV2() const override;
+
     QgsSymbolV2* sourceSymbol();
     void setSourceSymbol( QgsSymbolV2* sym );
 

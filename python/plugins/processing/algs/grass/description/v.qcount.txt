@@ -4,5 +4,4 @@ Vector (v.*)
 ParameterVector|input|Vector points layer|0|False
 ParameterNumber|n|Number of quadrants|0|None|4
 ParameterNumber|r|Quadrat radius|0.0|None|10
-OutputVector|output|Output quadrant layer
-
+OutputVector|output|Quadrant

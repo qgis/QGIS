@@ -58,18 +58,6 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString& co
       chkStorePassword->setChecked( true );
     }
 
-    // Old save setting
-    if ( settings.contains( key + "/save" ) )
-    {
-      txtUsername->setText( settings.value( key + "/username" ).toString() );
-      chkStoreUsername->setChecked( !txtUsername->text().isEmpty() );
-
-      if ( settings.value( key + "/save" ).toString() == "true" )
-        txtPassword->setText( settings.value( key + "/password" ).toString() );
-
-      chkStorePassword->setChecked( true );
-    }
-
     txtName->setText( connName );
   }
   on_cb_trustedConnection_clicked();
@@ -91,7 +79,7 @@ void QgsMssqlNewConnection::accept()
   }
 
   // warn if entry was renamed to an existing connection
-  if (( mOriginalConnName.isNull() || mOriginalConnName != txtName->text() ) &&
+  if (( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) &&
       ( settings.contains( baseKey + txtName->text() + "/service" ) ||
         settings.contains( baseKey + txtName->text() + "/host" ) ) &&
       QMessageBox::question( this,
@@ -105,8 +93,8 @@ void QgsMssqlNewConnection::accept()
   // on rename delete the original entry first
   if ( !mOriginalConnName.isNull() && mOriginalConnName != txtName->text() )
   {
-
     settings.remove( baseKey + mOriginalConnName );
+    settings.sync();
   }
 
   baseKey += txtName->text();

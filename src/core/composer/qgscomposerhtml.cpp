@@ -26,10 +26,11 @@
 #include "qgsproject.h"
 #include "qgsdistancearea.h"
 
+#include "qgswebpage.h"
+#include "qgswebframe.h"
+
 #include <QCoreApplication>
 #include <QPainter>
-#include <QWebFrame>
-#include <QWebPage>
 #include <QImage>
 #include <QNetworkReply>
 
@@ -84,27 +85,6 @@ QgsComposerHtml::QgsComposerHtml( QgsComposition* c, bool createUndoCommands )
   mFetcher = new QgsNetworkContentFetcher();
   connect( mFetcher, SIGNAL( finished() ), this, SLOT( frameLoaded() ) );
 
-}
-
-QgsComposerHtml::QgsComposerHtml()
-    : QgsComposerMultiFrame( 0, false )
-    , mContentMode( QgsComposerHtml::Url )
-    , mWebPage( 0 )
-    , mLoaded( false )
-    , mHtmlUnitsToMM( 1.0 )
-    , mRenderedPage( 0 )
-    , mEvaluateExpressions( true )
-    , mUseSmartBreaks( true )
-    , mMaxBreakDistance( 10 )
-    , mExpressionFeature( 0 )
-    , mExpressionLayer( 0 )
-    , mDistanceArea( 0 )
-    , mEnableUserStylesheet( false )
-    , mFetcher( 0 )
-{
-  mDistanceArea = new QgsDistanceArea();
-  mFetcher = new QgsNetworkContentFetcher();
-  connect( mFetcher, SIGNAL( finished() ), this, SLOT( frameLoaded() ) );
 }
 
 QgsComposerHtml::~QgsComposerHtml()

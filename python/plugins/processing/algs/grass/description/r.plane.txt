@@ -7,4 +7,4 @@ ParameterNumber|easting|Easting coordinate of a point on the plane|None|None|0.0
 ParameterNumber|northing|Northing coordinate of a point on the plane|None|None|0.0
 ParameterNumber|elevation|Elevation coordinate of a point on the plane|None|None|0.0
 ParameterSelection|type|Data type of resulting layer|int;float;double
-OutputRaster|name|Output raster layer
+OutputRaster|name|Plane

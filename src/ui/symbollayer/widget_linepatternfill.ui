@@ -23,7 +23,16 @@
    <property name="horizontalSpacing">
     <number>28</number>
    </property>
-   <property name="margin">
+   <property name="leftMargin">
+    <number>1</number>
+   </property>
+   <property name="topMargin">
+    <number>1</number>
+   </property>
+   <property name="rightMargin">
+    <number>1</number>
+   </property>
+   <property name="bottomMargin">
     <number>1</number>
    </property>
    <item row="1" column="0">
@@ -131,7 +140,7 @@
         <number>6</number>
        </property>
        <property name="minimum">
-        <double>-99.000000000000000</double>
+        <double>-999999999.000000000000000</double>
        </property>
        <property name="maximum">
         <double>999999999.000000000000000</double>

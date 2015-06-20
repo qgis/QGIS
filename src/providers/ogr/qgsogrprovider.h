@@ -243,9 +243,9 @@ class QgsOgrProvider : public QgsVectorDataProvider
     QString description() const override;
 
     /** Returns true if the provider is strict about the type of inserted features
-          (e.g. no multipolygon in a polygon layer)
-          */
-    virtual bool doesStrictFeatureTypeCheck() const override { return false;}
+        (e.g. no multipolygon in a polygon layer)
+      */
+    virtual bool doesStrictFeatureTypeCheck() const override;
 
     /** return OGR geometry type */
     static OGRwkbGeometryType getOgrGeomType( OGRLayerH ogrLayer );
@@ -322,13 +322,10 @@ class QgsOgrProvider : public QgsVectorDataProvider
     // Friendly name of the OGR Driver that was actually used to open the layer
     QString ogrDriverName;
 
-    bool valid;
+    bool mValid;
 
     OGRwkbGeometryType geomType;
-    long featuresCounted;
-
-    //! Data has been modified - REPACK before creating a spatialindex
-    bool mDataModified;
+    long mFeaturesCounted;
 
     mutable QStringList mSubLayerList;
 
@@ -346,6 +343,8 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     /** whether the file is opened in write mode*/
     bool mWriteAccess;
+
+    bool mShapefileMayBeCorrupted;
 };
 
 

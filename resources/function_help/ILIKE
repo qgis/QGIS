@@ -11,3 +11,7 @@ None
 <pre> 'A' ILIKE 'A'  &rarr; returns 1 </pre>
 <pre> 'A' ILIKE 'a'  &rarr; returns 1 </pre>
 <pre> 'A' ILIKE 'B'  &rarr; returns 0 </pre>
+<pre> 'ABC' ILIKE 'b'  &rarr; returns 0 </pre>
+<pre> 'ABC' ILIKE 'B'  &rarr; returns 0 </pre>
+<pre> 'ABC' ILIKE '%b%'  &rarr; returns 1 </pre>
+<pre> 'ABC' ILIKE '%B%'  &rarr; returns 1 </pre>

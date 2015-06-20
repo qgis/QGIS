@@ -261,4 +261,3 @@ class TestQgsPointLocator : public QObject
 QTEST_MAIN( TestQgsPointLocator )
 
 #include "testqgspointlocator.moc"
-

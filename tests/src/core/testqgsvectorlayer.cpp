@@ -16,7 +16,6 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QObject>
 #include <QApplication>
 #include <QFileInfo>
 #include <QDir>
@@ -208,6 +207,11 @@ class TestQgsVectorLayer : public QObject
       f4.setAttribute( "col1", QVariant() );
       layer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 << f4 );
 
+      //make a selection
+      QgsFeatureIds ids;
+      ids << f2.id() << f3.id();
+      layer->setSelectedFeatures( ids );
+
       bool ok;
       QList<QVariant> varList = layer->getValues( "col1", ok );
       QVERIFY( ok );
@@ -217,12 +221,29 @@ class TestQgsVectorLayer : public QObject
       QCOMPARE( varList.at( 2 ), QVariant( 3 ) );
       QCOMPARE( varList.at( 3 ), QVariant() );
 
-      QList<double> doubleList = layer->getDoubleValues( "col1", ok );
+      //check with selected features
+      varList = layer->getValues( "col1", ok, true );
+      QVERIFY( ok );
+      QCOMPARE( varList.length(), 2 );
+      QCOMPARE( varList.at( 0 ), QVariant( 2 ) );
+      QCOMPARE( varList.at( 1 ), QVariant( 3 ) );
+
+      int nulls = 0;
+      QList<double> doubleList = layer->getDoubleValues( "col1", ok, false, &nulls );
       QVERIFY( ok );
       QCOMPARE( doubleList.length(), 3 );
       QCOMPARE( doubleList.at( 0 ), 1.0 );
       QCOMPARE( doubleList.at( 1 ), 2.0 );
       QCOMPARE( doubleList.at( 2 ), 3.0 );
+      QCOMPARE( nulls, 1 );
+
+      //check with selected features
+      doubleList = layer->getDoubleValues( "col1", ok, true, &nulls );
+      QVERIFY( ok );
+      QCOMPARE( doubleList.length(), 2 );
+      QCOMPARE( doubleList.at( 0 ), 2.0 );
+      QCOMPARE( doubleList.at( 1 ), 3.0 );
+      QCOMPARE( nulls, 0 );
 
       QList<QVariant> expVarList = layer->getValues( "tostring(col1) || ' '", ok );
       QVERIFY( ok );
@@ -232,12 +253,13 @@ class TestQgsVectorLayer : public QObject
       QCOMPARE( expVarList.at( 2 ).toString(), QString( "3 " ) );
       QCOMPARE( expVarList.at( 3 ), QVariant() );
 
-      QList<double> expDoubleList = layer->getDoubleValues( "col1 * 2", ok );
+      QList<double> expDoubleList = layer->getDoubleValues( "col1 * 2", ok, false, &nulls );
       QVERIFY( ok );
       QCOMPARE( expDoubleList.length(), 3 );
       QCOMPARE( expDoubleList.at( 0 ), 2.0 );
       QCOMPARE( expDoubleList.at( 1 ), 4.0 );
       QCOMPARE( expDoubleList.at( 2 ), 6.0 );
+      QCOMPARE( nulls, 1 );
 
       delete layer;
     }

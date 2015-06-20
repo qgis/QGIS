@@ -25,9 +25,15 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
 from PyQt4.QtGui import QIcon
+
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.gui.ScriptEditorDialog import ScriptEditorDialog
+
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+
 
 class CreateNewScriptAction(ToolboxAction):
 
@@ -41,9 +47,9 @@ class CreateNewScriptAction(ToolboxAction):
 
     def getIcon(self):
         if self.scriptType == self.SCRIPT_PYTHON:
-            return QIcon(':/processing/images/script.png')
+            return QIcon(os.path.join(pluginPath, 'images', 'script.png'))
         elif self.scriptType == self.SCRIPT_R:
-            return QIcon(':/processing/images/r.png')
+            return QIcon(os.path.join(pluginPath, 'images', 'r.png'))
 
     def execute(self):
         dlg = None

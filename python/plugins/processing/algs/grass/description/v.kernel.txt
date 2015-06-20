@@ -3,5 +3,4 @@ v.kernel - Generates a raster density map from vector point data using a moving 
 Vector (v.*)
 ParameterVector|input|Input vector with training points|0|False
 ParameterNumber|stddeviation|Standard deviation in map units|None|None|0
-OutputRaster|output|Output raster map
-
+OutputRaster|output|Kernel

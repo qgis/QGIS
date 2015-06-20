@@ -49,7 +49,7 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsLayerTreeGrou
     // Strip the date part because we will replace it.
     QString layername = oldid.left( oldid.length() - 17 );
     QDateTime dt = QDateTime::currentDateTime();
-    QString newid = layername + dt.toString( "yyyyMMddhhmmsszzz" );
+    QString newid = layername + dt.toString( "yyyyMMddhhmmsszzz" ) + QString::number( qrand() );
     idElem.firstChild().setNodeValue( newid );
     QDomNodeList treeLayerNodes = doc.elementsByTagName( "layer-tree-layer" );
 

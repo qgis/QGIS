@@ -5,4 +5,4 @@ ParameterRaster|elevation|Elevation|False
 ParameterNumber|water_level|Water level|None|None|1000.0
 ParameterString|coordinates|Seed point coordinates|0,0
 ParameterBoolean|-n|Use negative depth values for lake raster layer|False
-OutputRaster|lake|Output raster map with lake
+OutputRaster|lake|Lake

@@ -51,8 +51,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     void removeLastPoint();
 
   public slots:
-    //! Reject
-    void on_buttonBox_rejected( void );
+    virtual void reject() override;
 
     //! Reset and start new
     void restart();

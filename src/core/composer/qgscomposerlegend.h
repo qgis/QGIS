@@ -186,6 +186,9 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
   private slots:
     void updateFilterByMap();
 
+    //! update legend in case style of associated map has changed
+    void mapLayerStyleOverridesChanged();
+
   private:
     QgsComposerLegend(); //forbidden
 

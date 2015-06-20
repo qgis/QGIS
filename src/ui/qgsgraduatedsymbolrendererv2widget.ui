@@ -7,53 +7,204 @@
     <x>0</x>
     <y>0</y>
     <width>759</width>
-    <height>638</height>
+    <height>409</height>
    </rect>
   </property>
-  <layout class="QGridLayout" name="gridLayout" rowstretch="0,1,0,0">
+  <layout class="QGridLayout" name="gridLayout" rowstretch="0,1,0">
    <property name="margin">
     <number>0</number>
    </property>
-   <item row="3" column="0" colspan="4">
+   <item row="1" column="0">
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>Classes</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <item>
+          <widget class="QLabel" name="label_8">
+           <property name="text">
+            <string>Mode</string>
+           </property>
+           <property name="buddy">
+            <cstring>cboGraduatedMode</cstring>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="cboGraduatedMode">
+           <item>
+            <property name="text">
+             <string>Equal Interval</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Quantile (Equal Count)</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Natural Breaks (Jenks)</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Standard Deviation</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Pretty Breaks</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string>Classes</string>
+           </property>
+           <property name="buddy">
+            <cstring>spinGraduatedClasses</cstring>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="spinGraduatedClasses">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimum">
+            <number>1</number>
+           </property>
+           <property name="maximum">
+            <number>999</number>
+           </property>
+           <property name="value">
+            <number>5</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnGraduatedClassify">
+           <property name="text">
+            <string>Classify</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_4">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QTreeView" name="viewGraduated">
+         <property name="contextMenuPolicy">
+          <enum>Qt::CustomContextMenu</enum>
+         </property>
+         <property name="showDropIndicator" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="dragDropMode">
+          <enum>QAbstractItemView::InternalMove</enum>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::ExtendedSelection</enum>
+         </property>
+         <property name="rootIsDecorated">
+          <bool>false</bool>
+         </property>
+         <property name="itemsExpandable">
+          <bool>false</bool>
+         </property>
+         <property name="sortingEnabled">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QPushButton" name="btnGraduatedAdd">
+           <property name="text">
+            <string>Add class</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnGraduatedDelete">
+           <property name="text">
+            <string>Delete</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btnDeleteAllClasses">
+           <property name="text">
+            <string>Delete all</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="cbxLinkBoundaries">
+           <property name="text">
+            <string>Link class boundaries</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_2">
+      <attribute name="title">
+       <string>Histogram</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0">
+       <item>
+        <widget class="QgsGraduatedHistogramWidget" name="mHistogramWidget" native="true"/>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="2">
     <layout class="QHBoxLayout" name="_2">
-     <item>
-      <widget class="QPushButton" name="btnGraduatedClassify">
-       <property name="text">
-        <string>Classify</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnGraduatedAdd">
-       <property name="text">
-        <string>Add class</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnGraduatedDelete">
-       <property name="text">
-        <string>Delete</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnDeleteAllClasses">
-       <property name="text">
-        <string>Delete all</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="cbxLinkBoundaries">
-       <property name="text">
-        <string>Link class boundaries</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
      <item>
       <spacer>
        <property name="orientation">
@@ -76,11 +227,22 @@
      </item>
     </layout>
    </item>
-   <item row="0" column="0" colspan="4">
-    <layout class="QGridLayout">
+   <item row="0" column="0" colspan="2">
+    <layout class="QGridLayout" columnstretch="0,3,0,0,1,0">
      <property name="rightMargin">
       <number>6</number>
      </property>
+     <item row="2" column="1" colspan="2">
+      <widget class="QLineEdit" name="txtLegendFormat">
+       <property name="toolTip">
+        <string>Template for the legend text associated with each classification.  
+Use &quot;%1&quot; for the lower bound of the classification, and &quot;%2&quot; for the upper bound.</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
      <item row="2" column="4">
       <layout class="QHBoxLayout" name="horizontalLayout_7">
        <item>
@@ -107,80 +269,71 @@ Negative rounds to powers of 10</string>
          </property>
         </widget>
        </item>
-       <item>
-        <widget class="QCheckBox" name="cbxTrimTrailingZeroes">
-         <property name="toolTip">
-          <string>Check to remove trailing zeroes after the decimal point from the upper and lower values in the legend.</string>
-         </property>
-         <property name="text">
-          <string>Trim</string>
-         </property>
-        </widget>
-       </item>
       </layout>
      </item>
-     <item row="0" column="4">
-      <widget class="QComboBox" name="cboGraduatedMode">
-       <item>
-        <property name="text">
-         <string>Equal Interval</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Quantile (Equal Count)</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Natural Breaks (Jenks)</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Standard Deviation</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Pretty Breaks</string>
-        </property>
-       </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Column</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1" colspan="2">
+      <widget class="QgsFieldExpressionWidget" name="mExpressionWidget" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>10</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>500</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1" colspan="2">
+      <widget class="QPushButton" name="btnChangeGraduatedSymbol">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Change...</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="3">
+      <widget class="QLabel" name="label_16">
+       <property name="text">
+        <string>Precision</string>
+       </property>
+       <property name="buddy">
+        <cstring>spinPrecision</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>Symbol</string>
+       </property>
+       <property name="buddy">
+        <cstring>btnChangeGraduatedSymbol</cstring>
+       </property>
       </widget>
      </item>
      <item row="3" column="0">
       <widget class="QLabel" name="label_3">
        <property name="text">
         <string>Method</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="3">
-      <widget class="QLabel" name="label_5">
-       <property name="text">
-        <string>Classes</string>
-       </property>
-       <property name="buddy">
-        <cstring>spinGraduatedClasses</cstring>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="4">
-      <widget class="QSpinBox" name="spinGraduatedClasses">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimum">
-        <number>1</number>
-       </property>
-       <property name="maximum">
-        <number>999</number>
-       </property>
-       <property name="value">
-        <number>5</number>
        </property>
       </widget>
      </item>
@@ -197,17 +350,24 @@ Negative rounds to powers of 10</string>
        </property>
       </widget>
      </item>
-     <item row="0" column="3">
-      <widget class="QLabel" name="label_8">
-       <property name="text">
-        <string>Mode</string>
-       </property>
-       <property name="buddy">
-        <cstring>cboGraduatedMode</cstring>
+     <item row="3" column="1" colspan="2">
+      <widget class="QComboBox" name="methodComboBox">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Choose between color and size graduation. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;If you want to combine both, use a data-defined size for the symbol and graduate by color.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
      </item>
-     <item row="4" column="1" colspan="4">
+     <item row="2" column="5">
+      <widget class="QCheckBox" name="cbxTrimTrailingZeroes">
+       <property name="toolTip">
+        <string>Check to remove trailing zeroes after the decimal point from the upper and lower values in the legend.</string>
+       </property>
+       <property name="text">
+        <string>Trim</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1" colspan="5">
       <widget class="QStackedWidget" name="mMethodStackedWidget">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -293,7 +453,7 @@ Negative rounds to powers of 10</string>
            <property name="value">
             <double>1.000000000000000</double>
            </property>
-           <property name="showClearButton">
+           <property name="showClearButton" stdset="0">
             <bool>false</bool>
            </property>
           </widget>
@@ -319,7 +479,7 @@ Negative rounds to powers of 10</string>
            <property name="value">
             <double>10.000000000000000</double>
            </property>
-           <property name="showClearButton">
+           <property name="showClearButton" stdset="0">
             <bool>false</bool>
            </property>
           </widget>
@@ -341,105 +501,7 @@ Negative rounds to powers of 10</string>
        </widget>
       </widget>
      </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_6">
-       <property name="text">
-        <string>Symbol</string>
-       </property>
-       <property name="buddy">
-        <cstring>btnChangeGraduatedSymbol</cstring>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="3">
-      <widget class="QLabel" name="label_16">
-       <property name="text">
-        <string>Precision</string>
-       </property>
-       <property name="buddy">
-        <cstring>spinPrecision</cstring>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>Column</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1" colspan="2">
-      <widget class="QgsFieldExpressionWidget" name="mExpressionWidget">
-       <property name="minimumSize">
-        <size>
-         <width>10</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>500</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="focusPolicy">
-        <enum>Qt::StrongFocus</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1" colspan="2">
-      <widget class="QLineEdit" name="txtLegendFormat">
-       <property name="toolTip">
-        <string>Template for the legend text associated with each classification.  
-Use &quot;%1&quot; for the lower bound of the classification, and &quot;%2&quot; for the upper bound.</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1" colspan="2">
-      <widget class="QPushButton" name="btnChangeGraduatedSymbol">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>1</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Change...</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1" colspan="2">
-      <widget class="QComboBox" name="methodComboBox"/>
-     </item>
     </layout>
-   </item>
-   <item row="1" column="0" rowspan="2" colspan="4">
-    <widget class="QTreeView" name="viewGraduated">
-     <property name="contextMenuPolicy">
-      <enum>Qt::CustomContextMenu</enum>
-     </property>
-     <property name="showDropIndicator" stdset="0">
-      <bool>true</bool>
-     </property>
-     <property name="dragDropMode">
-      <enum>QAbstractItemView::InternalMove</enum>
-     </property>
-     <property name="selectionMode">
-      <enum>QAbstractItemView::ExtendedSelection</enum>
-     </property>
-     <property name="rootIsDecorated">
-      <bool>false</bool>
-     </property>
-     <property name="itemsExpandable">
-      <bool>false</bool>
-     </property>
-     <property name="sortingEnabled">
-      <bool>true</bool>
-     </property>
-    </widget>
    </item>
   </layout>
  </widget>
@@ -448,6 +510,12 @@ Use &quot;%1&quot; for the lower bound of the classification, and &quot;%2&quot;
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsUnitSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsFieldExpressionWidget</class>
@@ -461,32 +529,23 @@ Use &quot;%1&quot; for the lower bound of the classification, and &quot;%2&quot;
    <header>qgscolorrampcombobox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsUnitSelectionWidget</class>
+   <class>QgsGraduatedHistogramWidget</class>
    <extends>QWidget</extends>
-   <header>qgsunitselectionwidget.h</header>
+   <header>qgsgraduatedhistogramwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mExpressionWidget</tabstop>
-  <tabstop>cboGraduatedMode</tabstop>
   <tabstop>btnChangeGraduatedSymbol</tabstop>
-  <tabstop>spinGraduatedClasses</tabstop>
   <tabstop>txtLegendFormat</tabstop>
   <tabstop>spinPrecision</tabstop>
-  <tabstop>cbxTrimTrailingZeroes</tabstop>
   <tabstop>methodComboBox</tabstop>
   <tabstop>cboGraduatedColorRamp</tabstop>
   <tabstop>cbxInvertedColorRamp</tabstop>
   <tabstop>minSizeSpinBox</tabstop>
   <tabstop>maxSizeSpinBox</tabstop>
   <tabstop>mSizeUnitWidget</tabstop>
-  <tabstop>viewGraduated</tabstop>
-  <tabstop>btnGraduatedClassify</tabstop>
-  <tabstop>btnGraduatedAdd</tabstop>
-  <tabstop>btnGraduatedDelete</tabstop>
-  <tabstop>btnDeleteAllClasses</tabstop>
-  <tabstop>cbxLinkBoundaries</tabstop>
   <tabstop>btnAdvanced</tabstop>
  </tabstops>
  <resources/>

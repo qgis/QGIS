@@ -51,7 +51,7 @@ class ExportGeometryInfo(GeoAlgorithm):
         self.addParameter(ParameterSelection(self.METHOD,
             self.tr('Calculate using'), self.CALC_METHODS, 0))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Added geom info')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(

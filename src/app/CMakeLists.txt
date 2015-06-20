@@ -103,6 +103,7 @@ SET(QGIS_APP_SRCS
   qgsprojectproperties.cpp
   qgsrastercalcdialog.cpp
   qgsrasterlayerproperties.cpp
+  qgsstatisticalsummarydockwidget.cpp
   qgstextannotationdialog.cpp
   qgsshortcutsmanager.cpp
   qgsguivectorlayertools.h
@@ -248,6 +249,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsrasterlayerproperties.h
   qgssnappingdialog.h
   qgssponsors.h
+  qgsstatisticalsummarydockwidget.h
   qgssvgannotationdialog.h
   qgstextannotationdialog.h
   qgstipgui.h
@@ -452,6 +454,7 @@ INCLUDE_DIRECTORIES(
   ../core/gps
   ../core/composer
   ../core/dxf
+  ../core/geometry
   ../core/layertree
   ../core/raster
   ../core/symbology-ng
@@ -493,17 +496,13 @@ ELSE (ANDROID)
   ADD_EXECUTABLE(${QGIS_APP_NAME} MACOSX_BUNDLE WIN32 main.cpp ${QGIS_APP_SRCS} ${QGIS_APP_MOC_SRCS} ${IMAGE_RCC_SRCS} ${TEST_RCC_SRCS})
 ENDIF (ANDROID)
 
-QT4_WRAP_CPP(tst_moc_srcs maprenderertest.h)
-ADD_EXECUTABLE(maprenderertest maprenderertest.cpp ${tst_moc_srcs})
-TARGET_LINK_LIBRARIES(maprenderertest qgis_core qgis_gui)
-
-IF (WIN32)
-  IF (MSVC)
-    ADD_DEFINITIONS("-DAPP_EXPORT=${DLLEXPORT}")
-  ELSE (MSVC)
-    ADD_DEFINITIONS("-UAPP_EXPORT \"-DAPP_EXPORT=${DLLEXPORT}\"")
-  ENDIF (MSVC)
-ENDIF (WIN32)
+IF (NOT MSVC)
+  ADD_DEFINITIONS("-UAPP_EXPORT")
+  IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden")
+  ENDIF()
+ENDIF (NOT MSVC)
+ADD_DEFINITIONS("\"-DAPP_EXPORT=${DLLEXPORT}\"")
 
 # shared library used by tests - TODO: use it also for qgis executable?
 ADD_LIBRARY(qgis_app SHARED ${QGIS_APP_SRCS} ${QGIS_APP_MOC_SRCS} ${QGIS_APP_HDRS} ${QGIS_APP_MOC_HDRS} ${IMAGE_RCC_SRCS})

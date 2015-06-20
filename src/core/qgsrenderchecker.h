@@ -25,7 +25,7 @@
 #include <qgsmaprenderer.h>
 #include <qgslogger.h>
 #include <qgsmapsettings.h>
-#include "qgsdartmeasurement.h"
+#include <qgsdartmeasurement.h>
 
 class QImage;
 

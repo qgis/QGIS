@@ -16,9 +16,6 @@ class QgsComposerHtml: QgsComposerMultiFrame
 
     QgsComposerHtml( QgsComposition* c /TransferThis/, bool createUndoCommands );
 
-    //should be private - fix for QGIS 3.0
-    QgsComposerHtml();
-
     ~QgsComposerHtml();
 
     /**Sets the source mode for item's HTML content.

@@ -26,6 +26,8 @@
 #include "qgspointdisplacementrenderer.h"
 #include "qgsinvertedpolygonrenderer.h"
 #include "qgspainteffect.h"
+#include "qgsscaleexpression.h"
+#include "qgsdatadefined.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -183,7 +185,7 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::clone() const
   r->setUsingSymbolLevels( usingSymbolLevels() );
   r->setRotationField( rotationField() );
   r->setSizeScaleField( sizeScaleField() );
-  r->setScaleMethod( scaleMethod() );
+  //r->setScaleMethod( scaleMethod() );
   copyPaintEffect( r );
   return r;
 }
@@ -214,6 +216,7 @@ QgsSymbolV2List QgsSingleSymbolRendererV2::symbols()
   return lst;
 }
 
+
 QgsFeatureRendererV2* QgsSingleSymbolRendererV2::create( QDomElement& element )
 {
   QDomElement symbolsElem = element.firstChildElement( "symbols" );
@@ -231,14 +234,17 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::create( QDomElement& element )
   QgsSymbolLayerV2Utils::clearSymbolMap( symbolMap );
 
   QDomElement rotationElem = element.firstChildElement( "rotation" );
-  if ( !rotationElem.isNull() )
-    r->setRotationField( rotationElem.attribute( "field" ) );
+  if ( !rotationElem.isNull() && !rotationElem.attribute( "field" ).isEmpty() )
+  {
+    convertSymbolRotation( r->mSymbol.data(), rotationElem.attribute( "field" ) );
+  }
 
   QDomElement sizeScaleElem = element.firstChildElement( "sizescale" );
-  if ( !sizeScaleElem.isNull() )
+  if ( !sizeScaleElem.isNull() && !sizeScaleElem.attribute( "field" ).isEmpty() )
   {
-    r->setSizeScaleField( sizeScaleElem.attribute( "field" ) );
-    r->setScaleMethod( QgsSymbolLayerV2Utils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ) );
+    convertSymbolSizeScale( r->mSymbol.data(),
+                            QgsSymbolLayerV2Utils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ),
+                            sizeScaleElem.attribute( "field" ) );
   }
 
   // TODO: symbol levels
@@ -384,6 +390,30 @@ QgsLegendSymbolList QgsSingleSymbolRendererV2::legendSymbolItems( double scaleDe
 QgsLegendSymbolListV2 QgsSingleSymbolRendererV2::legendSymbolItemsV2() const
 {
   QgsLegendSymbolListV2 lst;
+  if ( mSymbol->type() == QgsSymbolV2::Marker )
+  {
+    const QgsMarkerSymbolV2 * symbol = static_cast<const QgsMarkerSymbolV2 *>( mSymbol.data() );
+    QgsDataDefined sizeDD = symbol->dataDefinedSize();
+    if ( sizeDD.isActive() && sizeDD.useExpression() )
+    {
+      QgsScaleExpression scaleExp( sizeDD.expressionString() );
+      if ( scaleExp.type() != QgsScaleExpression::Unknown )
+      {
+        QgsLegendSymbolItemV2 title( NULL, scaleExp.baseExpression(), 0 );
+        lst << title;
+        foreach ( double v, QgsSymbolLayerV2Utils::prettyBreaks( scaleExp.minValue(), scaleExp.maxValue(), 4 ) )
+        {
+          QgsLegendSymbolItemV2 si( mSymbol.data(), QString::number( v ), 0 );
+          QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( si.symbol() );
+          s->setDataDefinedSize( 0 );
+          s->setSize( scaleExp.size( v ) );
+          lst << si;
+        }
+        return lst;
+      }
+    }
+  }
+
   lst << QgsLegendSymbolItemV2( mSymbol.data(), QString(), 0 );
   return lst;
 }

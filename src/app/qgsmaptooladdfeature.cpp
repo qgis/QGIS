@@ -137,6 +137,7 @@ void QgsMapToolAddFeature::canvasMapReleaseEvent( QgsMapMouseEvent* e )
       }
 
       f.setGeometry( g );
+      f.setValid( true );
 
       addFeature( vlayer, &f, false );
 

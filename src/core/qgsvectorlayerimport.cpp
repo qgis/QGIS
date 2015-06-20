@@ -133,7 +133,7 @@ QString QgsVectorLayerImport::errorMessage()
 
 bool QgsVectorLayerImport::addFeature( QgsFeature& feat )
 {
-  const QgsAttributes &attrs = feat.attributes();
+  QgsAttributes attrs = feat.attributes();
 
   QgsFeature newFeat;
   if ( feat.constGeometry() )

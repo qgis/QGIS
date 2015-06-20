@@ -55,7 +55,7 @@ class GeometryConvert(GeoAlgorithm):
         self.addParameter(ParameterSelection(self.TYPE,
             self.tr('New geometry type'), self.TYPES))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Converted')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(

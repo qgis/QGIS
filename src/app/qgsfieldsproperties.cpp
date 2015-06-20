@@ -751,7 +751,7 @@ QgsAttributeEditorElement* QgsFieldsProperties::createAttributeEditorWidget( QTr
 
     case DesignerTreeItemData::Container:
     {
-      QgsAttributeEditorContainer* container = new QgsAttributeEditorContainer( itemData.name(), parent );
+      QgsAttributeEditorContainer* container = new QgsAttributeEditorContainer( item->text( 0 ), parent );
 
       for ( int t = 0; t < item->childCount(); t++ )
       {

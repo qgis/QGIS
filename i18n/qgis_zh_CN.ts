@@ -20242,7 +20242,7 @@ Please try a lower resolution or a smaller papersize</source>
         <translation>列宽相等</translation>
     </message>
     <message>
-        <source>Allow to split layer items into multiple columns.</source>
+        <source>Allow splitting layer items into multiple columns.</source>
         <translation>允许将图层条目分割到多个列。</translation>
     </message>
     <message>

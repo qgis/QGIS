@@ -26,15 +26,20 @@ extern "C"
 #include <grass/version.h>
 #include <grass/gis.h>
 #include <grass/form.h>
+#include <grass/dbmi.h>
 }
 
 #include <stdexcept>
+#include "qgsapplication.h"
 #include "qgsexception.h"
+#include "qgsfeature.h"
+#include "qgsfield.h"
 #include <qgsrectangle.h>
 #include <QProcess>
 #include <QString>
 #include <QMap>
 #include <QHash>
+#include <QRegExp>
 #include <QTemporaryFile>
 class QgsCoordinateReferenceSystem;
 class QgsRectangle;
@@ -66,7 +71,7 @@ class GRASS_LIB_EXPORT QgsGrassObject
 {
   public:
     //! Element type
-    enum Type { None, Raster, Vector, Region };
+    enum Type { None, Raster, Group, Vector, Region };
 
     QgsGrassObject() : mType( None ) {}
     QgsGrassObject( const QString& gisdbase, const QString& location = QString::null,
@@ -76,18 +81,34 @@ class GRASS_LIB_EXPORT QgsGrassObject
     void setGisdbase( const QString& gisdbase ) { mGisdbase = gisdbase; }
     QString location() const { return mLocation; }
     void setLocation( const QString& location ) { mLocation = location; }
+    QString locationPath() const { return mGisdbase + "/" + mLocation; }
     QString mapset() const { return mMapset; }
     void setMapset( const QString& mapset ) { mMapset = mapset; }
+    QString mapsetPath() const { return mGisdbase + "/" + mLocation + "/" + mMapset; }
     QString name() const { return mName; }
     void setName( const QString& name ) { mName = name; }
     QString fullName() const { return mName + "@" + mMapset; }
     Type type() const { return mType; }
     void setType( Type type ) { mType = type; }
+    // set from QGIS layer uri, returns true if set correctly, verifies also if location is a GRASS location
+    bool setFromUri( const QString& uri );
     // element name used as modules param, e.g. g.remove element=name
     QString elementShort() const;
     // descriptive full name
     QString elementName() const;
     static QString elementName( Type type );
+    // name of directory in GRASS mapset to look for the object (cellhd,vector,window)
+    QString dirName() const;
+    static QString dirName( Type type );
+    QString toString() const;
+    // returns true if gisdbase and location are the same
+    bool locationIdentical( const QgsGrassObject &other ) const;
+    // returns true if gisdbase, location and mapset are the same
+    bool mapsetIdentical( const QgsGrassObject &other ) const;
+    // get regexp patter for new names, e.g. vectors should not start with number
+    static QRegExp newNameRegExp( Type type );
+
+    bool operator==( const QgsGrassObject& other ) const;
   private:
     QString mGisdbase;
     QString mLocation;
@@ -201,22 +222,39 @@ class QgsGrass
     static GRASS_LIB_EXPORT QStringList vectors( const QString& mapsetPath );
 
     static GRASS_LIB_EXPORT QStringList rasters( const QString& gisdbase, const QString& locationName,
-        const QString& mapsetNamee );
+        const QString& mapsetName );
     static GRASS_LIB_EXPORT QStringList rasters( const QString& mapsetPath );
 
-    //! Get list of vector layers
+    // imagery groups
+    static GRASS_LIB_EXPORT QStringList groups( const QString& gisdbase, const QString& locationName,
+        const QString& mapsetName );
+    static GRASS_LIB_EXPORT QStringList groups( const QString& mapsetPath );
+
+    //! Get list of vector layers, throws QgsGrass::Exception
     static GRASS_LIB_EXPORT QStringList vectorLayers( const QString& gisdbase, const QString& location,
         const QString& mapset, const QString& mapName );
 
     //! List of elements
+    // TODO rename elements to objects
     static GRASS_LIB_EXPORT QStringList elements( const QString& gisdbase, const QString& locationName,
         const QString& mapsetName, const QString& element );
     static GRASS_LIB_EXPORT QStringList elements( const QString&  mapsetPath, const QString&  element );
+
+    //! List of existing objects
+    static GRASS_LIB_EXPORT QStringList grassObjects( const QString& mapsetPath, QgsGrassObject::Type type );
+
+    // returns true if object (vector, raster, region) exists
+    static GRASS_LIB_EXPORT bool objectExists( const QgsGrassObject& grassObject );
 
     //! Initialize GRASS region
     static GRASS_LIB_EXPORT void initRegion( struct Cell_head *window );
     //! Set region extent
     static GRASS_LIB_EXPORT void setRegion( struct Cell_head *window, QgsRectangle rect );
+    /** Init region, set extent, rows and cols and adjust.
+     * Returns error if adjustment failed. */
+    static GRASS_LIB_EXPORT QString setRegion( struct Cell_head *window, QgsRectangle rect, int rows, int cols );
+    //! Get extent from region
+    static GRASS_LIB_EXPORT QgsRectangle extent( struct Cell_head *window );
 
     // ! Get map region
     static GRASS_LIB_EXPORT bool mapRegion( QgsGrassObject::Type type, QString gisdbase,
@@ -225,6 +263,10 @@ class QgsGrass
 
     // ! String representation of region
     static GRASS_LIB_EXPORT QString regionString( const struct Cell_head *window );
+
+    // ! Read location default region (DEFAULT_WIND)
+    static GRASS_LIB_EXPORT bool defaultRegion( const QString& gisdbase, const QString& location,
+        struct Cell_head *window );
 
     // ! Read current mapset region
     static GRASS_LIB_EXPORT bool region( const QString& gisdbase, const QString& location, const QString& mapset,
@@ -248,8 +290,11 @@ class QgsGrass
 
     static GRASS_LIB_EXPORT void init( void );
 
+    //! test if the directory is location
+    static GRASS_LIB_EXPORT bool isLocation( const QString& path );;
+
     // ! test if the directory is mapset
-    static GRASS_LIB_EXPORT bool isMapset( QString path );
+    static GRASS_LIB_EXPORT bool isMapset( const QString& path );
 
     // ! Get the lock file
     static GRASS_LIB_EXPORT QString lockFilePath();
@@ -325,6 +370,12 @@ class QgsGrass
     static GRASS_LIB_EXPORT QMap<QString, QString> query( QString gisdbase, QString location,
         QString mapset, QString map, QgsGrassObject::Type type, double x, double y );
 
+    // ! Rename GRASS object, throws QgsGrass::Exception
+    static GRASS_LIB_EXPORT void renameObject( const QgsGrassObject & object, const QString& newName );
+
+    // ! Copy GRASS object, throws QgsGrass::Exception
+    static GRASS_LIB_EXPORT void copyObject( const QgsGrassObject & srcObject, const QgsGrassObject & destObject );
+
     // ! Delete map
     static GRASS_LIB_EXPORT bool deleteObject( const QgsGrassObject & object );
 
@@ -333,18 +384,38 @@ class QgsGrass
      */
     static GRASS_LIB_EXPORT bool deleteObjectDialog( const QgsGrassObject & object );
 
+    /** Create new table. Throws  QgsGrass::Exception */
+    static GRASS_LIB_EXPORT void createTable( dbDriver *driver, const QString tableName, const QgsFields &fields );
+
+    /** Insert row to table. Throws  QgsGrass::Exception */
+    static GRASS_LIB_EXPORT void insertRow( dbDriver *driver, const QString tableName,
+                                            const QgsAttributes& attributes );
+
+    /** Returns true if object is link to external data (created by r.external) */
+    static GRASS_LIB_EXPORT bool isExternal( const QgsGrassObject & object );
+
     //! Library version
     static GRASS_LIB_EXPORT int versionMajor();
     static GRASS_LIB_EXPORT int versionMinor();
     static GRASS_LIB_EXPORT int versionRelease();
     static GRASS_LIB_EXPORT QString versionString();
 
+    // files case sensitivity (insensitive on windows)
+    static GRASS_LIB_EXPORT Qt::CaseSensitivity caseSensitivity();
     // set environment variable
     static GRASS_LIB_EXPORT void putEnv( QString name, QString value );
 
 #if defined(WIN32)
     static GRASS_LIB_EXPORT QString shortPath( const QString &path );
 #endif
+
+    // path to QGIS GRASS modules like qgis.g.info etc.
+    static GRASS_LIB_EXPORT QString qgisGrassModulePath() { return QgsApplication::libexecPath() + "grass/modules"; }
+
+    // Allocate struct Map_info
+    static GRASS_LIB_EXPORT struct Map_info * vectNewMapStruct();
+    // Free struct Map_info
+    static GRASS_LIB_EXPORT void vectDestroyMapStruct( struct Map_info *map );
 
   private:
     static int initialized; // Set to 1 after initialization

@@ -93,6 +93,9 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource
 
     //! Set to true, if geometry is in the requested columns
     bool mFetchGeometry;
+
+    bool mHasPrimaryKey;
+    QgsFeatureId mRowNumber;
 };
 
 #endif // QGSSPATIALITEFEATUREITERATOR_H

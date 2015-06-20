@@ -4,4 +4,4 @@ Raster (r.*)
 ParameterRaster|input|Input layer|False
 ParameterFile|rules|File containing recode rules|False
 *ParameterBoolean|-d|Force output to 'double' raster map type (DCELL)|False
-OutputRaster|output|Output raster layer
+OutputRaster|output|Recoded

@@ -40,12 +40,6 @@
 #include <QMessageBox>
 
 
-#ifdef WIN32
-#define QGISEXTERN extern "C" __declspec( dllexport )
-#else
-#define QGISEXTERN extern "C"
-#endif
-
 static const QString name_ = QObject::tr( "Spatial Query Plugin" );
 static const QString description_ = QObject::tr( "A plugin that makes spatial queries on vector layers" );
 static const QString category_ = QObject::tr( "Vector" );

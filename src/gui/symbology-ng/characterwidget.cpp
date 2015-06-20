@@ -114,6 +114,12 @@ void CharacterWidget::updateColumns( int cols )
   update();
 }
 
+void CharacterWidget::setCharacter( const QChar& character )
+{
+  lastKey = character.unicode();
+  update();
+}
+
 //! [3]
 QSize CharacterWidget::sizeHint() const
 {

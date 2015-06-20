@@ -11,6 +11,7 @@ import argparse
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import struct
+import urllib2
 
 def error ( msg ):
   print msg
@@ -23,12 +24,22 @@ def colorDiff( c1, c2 ):
   alphaDiff = abs( qAlpha( c1 ) - qAlpha( c2 ) )
   return max( redDiff, greenDiff, blueDiff, alphaDiff )
 
+def imageFromPath(path):
+  if ( path[:7] == 'http://' ):
+    #fetch remote image
+    data = urllib2.urlopen(path).read()
+    image = QImage()
+    image.loadFromData(data)
+  else:
+    image = QImage( path )
+  return image
+
 def updateMask(control_image_path, rendered_image_path, mask_image_path):
-  control_image = QImage( control_image_path )
+  control_image = imageFromPath( control_image_path )
   if not control_image:
     error('Could not read control image {}'.format(control_image_path))
 
-  rendered_image = QImage( rendered_image_path )
+  rendered_image = imageFromPath( rendered_image_path )
   if not rendered_image:
     error('Could not read rendered image {}'.format(rendered_image_path))
   if not rendered_image.width() == control_image.width() or not rendered_image.height() == control_image.height():
@@ -38,7 +49,7 @@ def updateMask(control_image_path, rendered_image_path, mask_image_path):
                                                                                    rendered_image.height()))
 
   #read current mask, if it exist
-  mask_image = QImage( mask_image_path )
+  mask_image = imageFromPath( mask_image_path )
   if mask_image.isNull():
     print 'Mask image does not exist, creating'
     mask_image = QImage( control_image.width(), control_image.height(), QImage.Format_ARGB32 )
@@ -78,7 +89,10 @@ def updateMask(control_image_path, rendered_image_path, mask_image_path):
 parser = argparse.ArgumentParser() # OptionParser("usage: %prog control_image rendered_image mask_image")
 parser.add_argument('control_image')
 parser.add_argument('rendered_image')
-parser.add_argument('mask_image')
+parser.add_argument('mask_image', nargs='?', default=None)
 args = parser.parse_args()
+
+if not args.mask_image:
+  args.mask_image = args.control_image[:-4] + '_mask.png'
 
 updateMask(args.control_image, args.rendered_image, args.mask_image)

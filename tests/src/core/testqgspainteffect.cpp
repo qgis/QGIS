@@ -86,6 +86,10 @@ class DummyPaintEffect : public QgsPaintEffect
 class TestQgsPaintEffect: public QObject
 {
     Q_OBJECT
+
+  public:
+    TestQgsPaintEffect();
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -120,6 +124,12 @@ class TestQgsPaintEffect: public QObject
     QPicture* mPicture;
 };
 
+
+TestQgsPaintEffect::TestQgsPaintEffect()
+    : mPicture( 0 )
+{
+
+}
 
 void TestQgsPaintEffect::initTestCase()
 {

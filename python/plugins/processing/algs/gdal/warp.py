@@ -41,7 +41,7 @@ class warp(GdalAlgorithm):
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     SOURCE_SRS = 'SOURCE_SRS'
-    DEST_SRS = 'DEST_SRS '
+    DEST_SRS = 'DEST_SRS'
     METHOD = 'METHOD'
     METHOD_OPTIONS = ['near', 'bilinear', 'cubic', 'cubicspline', 'lanczos']
     TR = 'TR'
@@ -96,7 +96,7 @@ class warp(GdalAlgorithm):
             self.tr('Force the generation of an associated ESRI world file (.tfw))'), False))
         self.addParameter(ParameterString(self.EXTRA,
             self.tr('Additional creation parameters'), '', optional=True))
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Warped')))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Reprojected')))
 
     def getConsoleCommands(self):
         noData = str(self.getParameterValue(self.NO_DATA))

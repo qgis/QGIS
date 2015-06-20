@@ -84,7 +84,7 @@ void QgsVectorLayerEditBuffer::updateFeatureGeometry( QgsFeature &f )
 
 void QgsVectorLayerEditBuffer::updateChangedAttributes( QgsFeature &f )
 {
-  QgsAttributes& attrs = f.attributes();
+  QgsAttributes attrs = f.attributes();
 
   // remove all attributes that will disappear - from higher indices to lower
   for ( int idx = mDeletedAttributeIds.count() - 1; idx >= 0; --idx )
@@ -102,6 +102,8 @@ void QgsVectorLayerEditBuffer::updateChangedAttributes( QgsFeature &f )
     for ( QgsAttributeMap::const_iterator it = map.begin(); it != map.end(); ++it )
       attrs[it.key()] = it.value();
   }
+
+  f.setAttributes( attrs );
 }
 
 
@@ -162,9 +164,6 @@ bool QgsVectorLayerEditBuffer::deleteFeature( QgsFeatureId fid )
 
 bool QgsVectorLayerEditBuffer::changeGeometry( QgsFeatureId fid, QgsGeometry* geom )
 {
-  if ( !( L->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries ) )
-    return false;
-
   if ( !L->hasGeometryType() )
   {
     return false;
@@ -175,6 +174,8 @@ bool QgsVectorLayerEditBuffer::changeGeometry( QgsFeatureId fid, QgsGeometry* ge
     if ( !mAddedFeatures.contains( fid ) )
       return false;
   }
+  else if ( !( L->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeGeometries ) )
+    return false;
 
   // TODO: check compatible geometry
 
@@ -185,13 +186,14 @@ bool QgsVectorLayerEditBuffer::changeGeometry( QgsFeatureId fid, QgsGeometry* ge
 
 bool QgsVectorLayerEditBuffer::changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue )
 {
-  if ( !( L->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) )
-    return false;
-
   if ( FID_IS_NEW( fid ) )
   {
     if ( !mAddedFeatures.contains( fid ) )
       return false;
+  }
+  else if ( !( L->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) )
+  {
+    return false;
   }
 
   if ( field < 0 || field >= L->pendingFields().count() ||
@@ -579,8 +581,9 @@ void QgsVectorLayerEditBuffer::handleAttributeAdded( int index )
   QgsFeatureMap::iterator featureIt = mAddedFeatures.begin();
   for ( ; featureIt != mAddedFeatures.end(); ++featureIt )
   {
-    QgsAttributes& attrs = featureIt->attributes();
+    QgsAttributes attrs = featureIt->attributes();
     attrs.insert( index, QVariant() );
+    featureIt->setAttributes( attrs );
   }
 }
 
@@ -602,8 +605,9 @@ void QgsVectorLayerEditBuffer::handleAttributeDeleted( int index )
   QgsFeatureMap::iterator featureIt = mAddedFeatures.begin();
   for ( ; featureIt != mAddedFeatures.end(); ++featureIt )
   {
-    QgsAttributes& attrs = featureIt->attributes();
+    QgsAttributes attrs = featureIt->attributes();
     attrs.remove( index );
+    featureIt->setAttributes( attrs );
   }
 }
 

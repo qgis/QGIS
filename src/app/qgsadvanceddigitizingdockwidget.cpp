@@ -92,6 +92,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* 
     , mCadPointList( QList<QgsPoint>() )
     , mSnappedToVertex( false )
     , mSnappedSegment( QList<QgsPoint>() )
+    , mErrorMessage( 0 )
 {
   setupUi( this );
 
@@ -136,11 +137,6 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* 
   connect( mXLineEdit, SIGNAL( returnPressed() ), this, SLOT( lockConstraint() ) );
   connect( mYLineEdit, SIGNAL( returnPressed() ), this, SLOT( lockConstraint() ) );
 
-  // errors messages
-  mErrorMessage = new QgsMessageBarItem( tr( "CAD tools" ),
-                                         tr( "Some constraints are incompatible. Resulting point might be incorrect." ),
-                                         QgsMessageBar::WARNING, 0 );
-  mErrorMessageDisplayed = false;
   mapToolChanged( NULL );
 
   // config menu
@@ -268,9 +264,10 @@ void QgsAdvancedDigitizingDockWidget::activateCad( bool enabled )
 {
   enabled &= mCurrentMapTool != 0;
 
-  if ( mErrorMessageDisplayed )
+  if ( mErrorMessage )
   {
     QgisApp::instance()->messageBar()->popWidget( mErrorMessage );
+    mErrorMessage = 0;
   }
   QSettings().setValue( "/Cad/SessionActive", enabled );
 
@@ -634,40 +631,40 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent* e )
     double cosa = qCos( angleValue );
     double sina = qSin( angleValue );
     double v = ( point.x() - previousPt.x() ) * cosa + ( point.y() - previousPt.y() ) * sina ;
-    if ( mXConstraint->isLocked() || mYConstraint->isLocked() )
+    if ( mXConstraint->isLocked() && mYConstraint->isLocked() )
     {
-      // perform both to detect errors in constraints
-      if ( mXConstraint->isLocked() )
+      // do nothing if both X,Y are already locked
+    }
+    else if ( mXConstraint->isLocked() )
+    {
+      if ( cosa == 0 )
       {
-        if ( cosa == 0 )
-        {
-          res = false;
-        }
-        else
-        {
-          double x = mXConstraint->value();
-          if ( !mXConstraint->relative() )
-          {
-            x -= previousPt.x();
-          }
-          point.setY( previousPt.y() + x * sina / cosa );
-        }
+        res = false;
       }
-      else if ( mYConstraint->isLocked() )
+      else
       {
-        if ( sina == 0 )
+        double x = mXConstraint->value();
+        if ( !mXConstraint->relative() )
         {
-          res = false;
+          x -= previousPt.x();
         }
-        else
+        point.setY( previousPt.y() + x * sina / cosa );
+      }
+    }
+    else if ( mYConstraint->isLocked() )
+    {
+      if ( sina == 0 )
+      {
+        res = false;
+      }
+      else
+      {
+        double y = mYConstraint->value();
+        if ( !mYConstraint->relative() )
         {
-          double y = mYConstraint->value();
-          if ( !mYConstraint->relative() )
-          {
-            y -= previousPt.y();
-          }
-          point.setX( previousPt.x() + y * cosa / sina );
+          y -= previousPt.y();
         }
+        point.setX( previousPt.x() + y * cosa / sina );
       }
     }
     else
@@ -866,10 +863,10 @@ bool QgsAdvancedDigitizingDockWidget::canvasReleaseEventFilter( QgsMapMouseEvent
   if ( !mCadEnabled )
     return false;
 
-  if ( mErrorMessageDisplayed )
+  if ( mErrorMessage )
   {
     QgisApp::instance()->messageBar()->popWidget( mErrorMessage );
-    mErrorMessageDisplayed = false;
+    mErrorMessage = 0;
   }
 
   if ( e->button() == Qt::RightButton )
@@ -915,16 +912,20 @@ bool QgsAdvancedDigitizingDockWidget::canvasMoveEventFilter( QgsMapMouseEvent* e
 
   if ( !applyConstraints( e ) )
   {
-    if ( !mErrorMessageDisplayed )
+    if ( !mErrorMessage )
     {
+      // errors messages
+      mErrorMessage = new QgsMessageBarItem( tr( "CAD tools" ),
+                                             tr( "Some constraints are incompatible. Resulting point might be incorrect." ),
+                                             QgsMessageBar::WARNING, 0 );
+
       QgisApp::instance()->messageBar()->pushItem( mErrorMessage );
-      mErrorMessageDisplayed = true;
     }
   }
-  else if ( mErrorMessageDisplayed )
+  else if ( mErrorMessage )
   {
     QgisApp::instance()->messageBar()->popWidget( mErrorMessage );
-    mErrorMessageDisplayed = false;
+    mErrorMessage = 0;
   }
 
   // perpendicular/parallel constraint

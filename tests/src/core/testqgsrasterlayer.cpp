@@ -16,7 +16,6 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QObject>
 #include <iostream>
 #include <QApplication>
 #include <QFileInfo>
@@ -31,12 +30,10 @@
 #include <qgsrasterlayer.h>
 #include <qgsrasterpyramid.h>
 #include <qgsrasterbandstats.h>
-#include <qgsrasterpyramid.h>
 #include <qgsrasteridentifyresult.h>
 #include <qgsmaplayerregistry.h>
 #include <qgsapplication.h>
 #include <qgsmaprenderer.h>
-#include <qgsmaplayerregistry.h>
 #include <qgssinglebandgrayrenderer.h>
 #include <qgssinglebandpseudocolorrenderer.h>
 #include <qgsvectorcolorrampv2.h>

@@ -53,7 +53,7 @@ class Ogr2OgrClipExtent(OgrAlgorithm):
         self.addParameter(ParameterString(self.OPTIONS,
             self.tr('Additional creation options'), '', optional=True))
 
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Clipped (extent)')))
 
     def getConsoleCommands(self):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
@@ -91,3 +91,6 @@ class Ogr2OgrClipExtent(OgrAlgorithm):
             commands = ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]
 
         return commands
+
+    def commandName(self):
+        return "ogr2ogr"

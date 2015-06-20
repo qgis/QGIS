@@ -156,6 +156,10 @@ class CORE_EXPORT QgsField
 
 Q_DECLARE_METATYPE( QgsField );
 
+/** Writes the field to stream out. QGIS version compatibility is not guaranteed. */
+CORE_EXPORT QDataStream& operator<<( QDataStream& out, const QgsField& field );
+/** Reads a field from stream in into field. QGIS version compatibility is not guaranteed. */
+CORE_EXPORT QDataStream& operator>>( QDataStream& in, QgsField& field );
 
 /** \class QgsFields
  * \ingroup core
@@ -273,5 +277,10 @@ class CORE_EXPORT QgsFields
 };
 
 Q_DECLARE_METATYPE( QgsFields );
+
+/** Writes the fields to stream out. QGIS version compatibility is not guaranteed. */
+CORE_EXPORT QDataStream& operator<<( QDataStream& out, const QgsFields& fields );
+/** Reads fields from stream in into fields. QGIS version compatibility is not guaranteed. */
+CORE_EXPORT QDataStream& operator>>( QDataStream& in, QgsFields& fields );
 
 #endif

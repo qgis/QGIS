@@ -20236,7 +20236,7 @@ Próbálj kisebb felbontást vagy kisebb papírméretet használni</translation>
         <translation>Egyforma oszlop szélességek</translation>
     </message>
     <message>
-        <source>Allow to split layer items into multiple columns.</source>
+        <source>Allow splitting layer items into multiple columns.</source>
         <translation>Lehetővé teszi a réteg elemek több oszlopba rendezését.</translation>
     </message>
     <message>

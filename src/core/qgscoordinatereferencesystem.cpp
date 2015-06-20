@@ -34,6 +34,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgis.h" //const vals declared here
+#include "qgslocalec.h"
 
 #include <sqlite3.h>
 #include <proj_api.h>
@@ -921,26 +922,18 @@ void QgsCoordinateReferenceSystem::setDescription( QString theDescription )
 void QgsCoordinateReferenceSystem::setProj4String( QString theProj4String )
 {
   mProj4 = theProj4String;
-  char *oldlocale = setlocale( LC_NUMERIC, NULL );
-  /* the next setlocale() invalides the return of previous setlocale() */
-  if ( oldlocale )
-    oldlocale = strdup( oldlocale );
 
-  setlocale( LC_NUMERIC, "C" );
+  QgsLocaleNumC l;
+
   OSRDestroySpatialReference( mCRS );
   mCRS = OSRNewSpatialReference( NULL );
-  mIsValidFlag =
-    OSRImportFromProj4( mCRS, theProj4String.trimmed().toLatin1().constData() )
-    == OGRERR_NONE;
+  mIsValidFlag = OSRImportFromProj4( mCRS, theProj4String.trimmed().toLatin1().constData() ) == OGRERR_NONE;
   mWkt.clear();
   setMapUnits();
 
 #if defined(QGISDEBUG) && QGISDEBUG>=3
   debugPrint();
 #endif
-
-  setlocale( LC_NUMERIC, oldlocale );
-  free( oldlocale );
 }
 void QgsCoordinateReferenceSystem::setGeographicFlag( bool theGeoFlag )
 {

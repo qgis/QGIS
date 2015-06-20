@@ -53,7 +53,7 @@ class StatisticsByCategories(GeoAlgorithm):
             self.tr('Field with categories'),
             self.INPUT_LAYER, ParameterTableField.DATA_TYPE_ANY))
 
-        self.addOutput(OutputTable(self.OUTPUT, self.tr('Statistics')))
+        self.addOutput(OutputTable(self.OUTPUT, self.tr('Statistics by category')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
@@ -81,11 +81,11 @@ class StatisticsByCategories(GeoAlgorithm):
             except:
                 pass
 
-        fields = ['category', 'min', 'max', 'mean', 'stddev', 'count']
+        fields = ['category', 'min', 'max', 'mean', 'stddev', 'sum', 'count']
         writer = output.getTableWriter(fields)
         for (cat, v) in values.items():
-            (min, max, mean, stddev) = calculateStats(v)
-            record = [cat, min, max, mean, stddev, len(v)]
+            (min, max, mean, stddev, sum) = calculateStats(v)
+            record = [cat, min, max, mean, stddev, sum, len(v)]
             writer.addRecord(record)
 
 
@@ -115,4 +115,4 @@ def calculateStats(values):
     else:
         variance = 0
     stddev = math.sqrt(variance)
-    return (minvalue, maxvalue, mean, stddev)
+    return (minvalue, maxvalue, mean, stddev, sum)

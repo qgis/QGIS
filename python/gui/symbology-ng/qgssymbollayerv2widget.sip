@@ -73,6 +73,7 @@ class QgsSimpleMarkerSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 
   public:
     QgsSimpleMarkerSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
+    ~QgsSimpleMarkerSymbolLayerV2Widget();
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
 
@@ -226,6 +227,7 @@ class QgsSvgMarkerSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 
   public:
     QgsSvgMarkerSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
+    ~QgsSvgMarkerSymbolLayerV2Widget();
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
 
@@ -346,6 +348,7 @@ class QgsFontMarkerSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 
   public:
     QgsFontMarkerSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
+    ~QgsFontMarkerSymbolLayerV2Widget();
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
 

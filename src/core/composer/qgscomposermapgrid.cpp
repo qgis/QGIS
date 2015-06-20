@@ -27,6 +27,7 @@
 #include "qgssymbolv2.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgslogger.h"
+#include "qgsfontutils.h"
 
 #include <QPainter>
 #include <QPen>
@@ -308,7 +309,7 @@ bool QgsComposerMapGrid::writeXML( QDomElement& elem, QDomDocument& doc ) const
   mapGridElem.setAttribute( "topAnnotationDirection", mTopGridAnnotationDirection );
   mapGridElem.setAttribute( "bottomAnnotationDirection", mBottomGridAnnotationDirection );
   mapGridElem.setAttribute( "frameAnnotationDistance", QString::number( mAnnotationFrameDistance ) );
-  mapGridElem.setAttribute( "annotationFont", mGridAnnotationFont.toString() );
+  mapGridElem.appendChild( QgsFontUtils::toXmlElement( mGridAnnotationFont, doc, "annotationFontProperties" ) );
   mapGridElem.setAttribute( "annotationFontColor", QgsSymbolLayerV2Utils::encodeColor( mGridAnnotationFontColor ) );
   mapGridElem.setAttribute( "annotationPrecision", mGridAnnotationPrecision );
   mapGridElem.setAttribute( "unit", mGridUnit );
@@ -429,7 +430,10 @@ bool QgsComposerMapGrid::readXML( const QDomElement& itemElem, const QDomDocumen
   mTopGridAnnotationDirection = QgsComposerMapGrid::AnnotationDirection( itemElem.attribute( "topAnnotationDirection", "0" ).toInt() );
   mBottomGridAnnotationDirection = QgsComposerMapGrid::AnnotationDirection( itemElem.attribute( "bottomAnnotationDirection", "0" ).toInt() );
   mAnnotationFrameDistance = itemElem.attribute( "frameAnnotationDistance", "0" ).toDouble();
-  mGridAnnotationFont.fromString( itemElem.attribute( "annotationFont", "" ) );
+  if ( !QgsFontUtils::setFromXmlChildNode( mGridAnnotationFont, itemElem, "annotationFontProperties" ) )
+  {
+    mGridAnnotationFont.fromString( itemElem.attribute( "annotationFont", "" ) );
+  }
   mGridAnnotationFontColor = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "annotationFontColor", "0,0,0,255" ) );
   mGridAnnotationPrecision = itemElem.attribute( "annotationPrecision", "3" ).toInt();
   int gridUnitInt =  itemElem.attribute( "unit", QString::number( MapUnit ) ).toInt();
@@ -589,6 +593,8 @@ void QgsComposerMapGrid::calculateCRSTransformLines()
       {
         //look for intersections between lines
         QgsGeometry* intersects = ( *yLineIt )->intersection(( *xLineIt ) );
+        if ( !intersects )
+          continue;
 
         //go through all intersections and draw grid markers/crosses
         int i = 0;
@@ -599,6 +605,7 @@ void QgsComposerMapGrid::calculateCRSTransformLines()
           i = i + 1;
           vertex = intersects->vertexAt( i );
         }
+        delete intersects;
       }
     }
     //clean up
@@ -664,7 +671,13 @@ void QgsComposerMapGrid::draw( QPainter* p )
   }
 
   p->restore();
+
   p->setClipping( false );
+#ifdef Q_OS_MAC
+  //QPainter::setClipping(false) seems to be broken on OSX (#12747). So we hack around it by
+  //setting a larger clip rect
+  p->setClipRect( mComposerMap->mapRectFromScene( mComposerMap->sceneBoundingRect() ).adjusted( -10, -10, 10, 10 ) );
+#endif
 
   if ( mGridFrameStyle != QgsComposerMapGrid::NoFrame )
   {

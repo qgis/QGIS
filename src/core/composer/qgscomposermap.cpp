@@ -1529,6 +1529,17 @@ void QgsComposerMap::storeCurrentLayerSet()
   }
 }
 
+
+void QgsComposerMap::setLayerStyleOverrides( const QMap<QString, QString>& overrides )
+{
+  if ( overrides == mLayerStyleOverrides )
+    return;
+
+  mLayerStyleOverrides = overrides;
+  emit layerStyleOverridesChanged();  // associated legends may listen to this
+}
+
+
 void QgsComposerMap::storeCurrentLayerStyles()
 {
   mLayerStyleOverrides.clear();

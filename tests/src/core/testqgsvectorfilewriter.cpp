@@ -16,7 +16,6 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QObject>
 #include <iostream>
 
 #include <QApplication>
@@ -401,4 +400,3 @@ void TestQgsVectorFileWriter::projectedPlygonGridTest()
 
 QTEST_MAIN( TestQgsVectorFileWriter )
 #include "testqgsvectorfilewriter.moc"
-

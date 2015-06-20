@@ -123,6 +123,11 @@ void QgsPGConnectionItem::editConnection()
 
 void QgsPGConnectionItem::deleteConnection()
 {
+  if ( QMessageBox::question( 0, QObject::tr( "Delete Connection" ),
+                              QObject::tr( "Are you sure you want to delete the connection to %1?" ).arg( mName ),
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+    return;
+
   QgsPostgresConn::deleteConnection( mName );
   // the parent should be updated
   if ( mParent )
@@ -227,7 +232,7 @@ QList<QAction*> QgsPGLayerItem::actions()
 {
   QList<QAction*> lst;
 
-  QAction* actionDeleteLayer = new QAction( tr( "Delete layer" ), this );
+  QAction* actionDeleteLayer = new QAction( tr( "Delete Layer" ), this );
   connect( actionDeleteLayer, SIGNAL( triggered() ), this, SLOT( deleteLayer() ) );
   lst.append( actionDeleteLayer );
 
@@ -236,15 +241,20 @@ QList<QAction*> QgsPGLayerItem::actions()
 
 void QgsPGLayerItem::deleteLayer()
 {
+  if ( QMessageBox::question( 0, QObject::tr( "Delete Object" ),
+                              QObject::tr( "Are you sure you want to delete %1.%2?" ).arg( mLayerProperty.schemaName ).arg( mLayerProperty.tableName ),
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+    return;
+
   QString errCause;
   bool res = ::deleteLayer( mUri, errCause );
   if ( !res )
   {
-    QMessageBox::warning( 0, tr( "Delete layer" ), errCause );
+    QMessageBox::warning( 0, tr( "Delete Layer" ), errCause );
   }
   else
   {
-    QMessageBox::information( 0, tr( "Delete layer" ), tr( "Layer deleted successfully." ) );
+    QMessageBox::information( 0, tr( "Delete Layer" ), tr( "Layer deleted successfully." ) );
     if ( mParent )
       mParent->refresh();
   }
@@ -359,24 +369,16 @@ QgsPGLayerItem *QgsPGSchemaItem::createLayer( QgsPostgresLayerProperty layerProp
   QString tip = tr( "%1 as %2 in %3" ).arg( layerProperty.geometryColName ).arg( QgsPostgresConn::displayStringForWkbType( wkbType ) ).arg( layerProperty.srids[0] );
 
   QgsLayerItem::LayerType layerType;
-  switch ( wkbType )
+  QgsWKBTypes::GeometryType geomType = QgsWKBTypes::geometryType(( QgsWKBTypes::Type )wkbType );
+  switch ( geomType )
   {
-    case QGis::WKBPoint:
-    case QGis::WKBPoint25D:
-    case QGis::WKBMultiPoint:
-    case QGis::WKBMultiPoint25D:
+    case QgsWKBTypes::PointGeometry:
       layerType = QgsLayerItem::Point;
       break;
-    case QGis::WKBLineString:
-    case QGis::WKBLineString25D:
-    case QGis::WKBMultiLineString:
-    case QGis::WKBMultiLineString25D:
+    case QgsWKBTypes::LineGeometry:
       layerType = QgsLayerItem::Line;
       break;
-    case QGis::WKBPolygon:
-    case QGis::WKBPolygon25D:
-    case QGis::WKBMultiPolygon:
-    case QGis::WKBMultiPolygon25D:
+    case QgsWKBTypes::PolygonGeometry:
       layerType = QgsLayerItem::Polygon;
       break;
     default:

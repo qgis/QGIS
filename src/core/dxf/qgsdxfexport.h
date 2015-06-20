@@ -173,7 +173,8 @@ class CORE_EXPORT QgsDxfExport
     static QString lineNameFromPenStyle( Qt::PenStyle style );
     bool layerIsScaleBasedVisible( const QgsMapLayer *layer ) const;
 
-    int mModelSpaceBR;
+    QHash<QString, int> mBlockHandles;
+    QString mBlockHandle;
 };
 
 #endif // QGSDXFEXPORT_H

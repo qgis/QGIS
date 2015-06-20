@@ -164,6 +164,13 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     //! @note added in 2.6
     void legendMapViewData( double *mapUnitsPerPixel, int *dpi, double *scale );
 
+    //! Get map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
+    //! @note added in 2.10
+    QMap<QString, QString> layerStyleOverrides() const;
+    //! Set map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
+    //! @note added in 2.10
+    void setLayerStyleOverrides( const QMap<QString, QString>& overrides );
+
     //! Return true if index represents a legend node (instead of layer node)
     //! @deprecated use index2legendNode()
     Q_DECL_DEPRECATED bool isIndexSymbologyNode( const QModelIndex& index ) const;
@@ -268,6 +275,10 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     };
 
     void tryBuildLegendTree( LayerLegendData& data );
+
+    //! Overrides of map layers' styles: key = layer ID, value = style XML.
+    //! This allows to show legend that is different from the current style of layers
+    QMap<QString, QString> mLayerStyleOverrides;
 
     //! Per layer data about layer's legend nodes
     QMap<QgsLayerTreeLayer*, LayerLegendData> mLegend;

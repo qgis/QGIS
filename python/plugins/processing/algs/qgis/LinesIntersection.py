@@ -50,12 +50,18 @@ class LinesIntersection(GeoAlgorithm):
             self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE]))
         self.addParameter(ParameterVector(self.INPUT_B,
             self.tr('Intersect layer'), [ParameterVector.VECTOR_TYPE_LINE]))
-        self.addParameter(ParameterTableField(self.FIELD_A,
-            self.tr('Input unique ID field'), self.INPUT_A))
-        self.addParameter(ParameterTableField(self.FIELD_B,
-            self.tr('Intersect unique ID field'), self.INPUT_B))
+        self.addParameter(ParameterTableField(
+            self.FIELD_A,
+            self.tr('Input unique ID field'),
+            self.INPUT_A,
+            optional=True))
+        self.addParameter(ParameterTableField(
+            self.FIELD_B,
+            self.tr('Intersect unique ID field'),
+            self.INPUT_B,
+            optional=True))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Intersections')))
 
     def processAlgorithm(self, progress):
         layerA = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_A))

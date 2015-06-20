@@ -85,6 +85,10 @@ QgsDataDefinedButton::QgsDataDefinedButton( QWidget* parent,
   mActionCopyExpr = new QAction( tr( "Copy" ), this );
   mActionClearExpr = new QAction( tr( "Clear" ), this );
   mActionAssistant = new QAction( tr( "Assistant..." ), this );
+  QFont assistantFont = mActionAssistant->font();
+  assistantFont.setBold( true );
+  mActionAssistant->setFont( assistantFont );
+  mDefineMenu->addAction( mActionAssistant );
 
   // set up sibling widget connections
   connect( this, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( disableEnabledWidgets( bool ) ) );
@@ -434,13 +438,13 @@ void QgsDataDefinedButton::showAssistant()
 
   if ( mAssistant->exec() == QDialog::Accepted )
   {
-    QScopedPointer<QgsDataDefined> dd( mAssistant->dataDefined() );
-    setUseExpression( dd->useExpression() );
-    setActive( dd->isActive() );
-    if ( dd->isActive() && dd->useExpression() )
-      setExpression( dd->expressionString() );
-    else if ( dd->isActive() )
-      setField( dd->field() );
+    QgsDataDefined dd = mAssistant->dataDefined();
+    setUseExpression( dd.useExpression() );
+    setActive( dd.isActive() );
+    if ( dd.isActive() && dd.useExpression() )
+      setExpression( dd.expressionString() );
+    else if ( dd.isActive() )
+      setField( dd.field() );
     updateGui();
   }
   activateWindow(); // reset focus to parent window
@@ -628,8 +632,9 @@ QList<QWidget*> QgsDataDefinedButton::registeredCheckedWidgets()
   return wdgtList;
 }
 
-void QgsDataDefinedButton::setAssistant( QgsDataDefinedAssistant *assistant )
+void QgsDataDefinedButton::setAssistant( const QString& title, QgsDataDefinedAssistant *assistant )
 {
+  mActionAssistant->setText( title.isEmpty() ? tr( "Assistant..." ) : title );
   mAssistant.reset( assistant );
   mAssistant.data()->setParent( this, Qt::Dialog );
 }
@@ -661,6 +666,11 @@ QString QgsDataDefinedButton::trString()
 {
   // just something to reduce translation redundancy
   return tr( "string " );
+}
+
+QString QgsDataDefinedButton::charDesc()
+{
+  return tr( "single character" );
 }
 
 QString QgsDataDefinedButton::boolDesc()

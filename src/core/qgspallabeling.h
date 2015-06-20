@@ -99,16 +99,16 @@ class CORE_EXPORT QgsPalLayerSettings
 
     enum UpsideDownLabels
     {
-      Upright, /*!< upside-down labels (90 <= angle < 270) are shown upright*/
-      ShowDefined, /*!< show upside down when rotation is layer- or data-defined*/
-      ShowAll /*!< show upside down for all labels, including dynamic ones*/
+      Upright, /*!< upside-down labels (90 <= angle < 270) are shown upright */
+      ShowDefined, /*!< show upside down when rotation is layer- or data-defined */
+      ShowAll /*!< show upside down for all labels, including dynamic ones */
     };
 
     enum DirectionSymbols
     {
-      SymbolLeftRight, /*!< place direction symbols on left/right of label*/
-      SymbolAbove, /*!< place direction symbols on above label*/
-      SymbolBelow /*!< place direction symbols on below label*/
+      SymbolLeftRight, /*!< place direction symbols on left/right of label */
+      SymbolAbove, /*!< place direction symbols on above label */
+      SymbolBelow /*!< place direction symbols on below label */
     };
 
     enum MultiLineAlign
@@ -527,6 +527,7 @@ class CORE_EXPORT QgsPalLayerSettings
     bool showingShadowRects; // whether to show debug rectangles for drop shadows
 
   private:
+
     void readDataDefinedPropertyMap( QgsVectorLayer* layer,
                                      QMap < QgsPalLayerSettings::DataDefinedProperties,
                                      QgsDataDefined* > & propertyMap );
@@ -557,7 +558,7 @@ class CORE_EXPORT QgsPalLayerSettings
 
     /**Checks if a feature is larger than a minimum size (in mm)
     @return true if above size, false if below*/
-    bool checkMinimumSizeMM( const QgsRenderContext& ct, QgsGeometry* geom, double minSize ) const;
+    bool checkMinimumSizeMM( const QgsRenderContext& ct, const QgsGeometry* geom, double minSize ) const;
 
 
     QMap<DataDefinedProperties, QVariant> dataDefinedValues;
@@ -816,12 +817,11 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
      * @param geometry geometry to prepare
      * @param context render context
      * @param ct coordinate transform
-     * @param minSize minimum allowable size for feature for registration with PAL
      * @param clipGeometry geometry to clip features to, if applicable
-     * @returns prepared geometry
+     * @returns prepared geometry, the caller takes ownership
      * @note added in QGIS 2.9
      */
-    static QgsGeometry* prepareGeometry( const QgsGeometry *geometry, const QgsRenderContext &context, const QgsCoordinateTransform *ct, double minSize = 0, QgsGeometry *clipGeometry = 0 );
+    static QgsGeometry* prepareGeometry( const QgsGeometry *geometry, const QgsRenderContext &context, const QgsCoordinateTransform *ct, QgsGeometry *clipGeometry = 0 );
 
     /** Checks whether a geometry requires preparation before registration with PAL
      * @param geometry geometry to prepare
@@ -832,6 +832,24 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
      * @note added in QGIS 2.9
      */
     static bool geometryRequiresPreparation( const QgsGeometry *geometry, const QgsRenderContext &context, const QgsCoordinateTransform *ct, QgsGeometry *clipGeometry = 0 );
+
+    /** Splits a text string to a list of separate lines, using a specified wrap character.
+     * The text string will be split on either newline characters or the wrap character.
+     * @param text text string to split
+     * @param wrapCharacter additional character to wrap on
+     * @returns list of text split to lines
+     * @note added in QGIS 2.9
+     */
+    static QStringList splitToLines( const QString& text, const QString& wrapCharacter );
+
+    /** Splits a text string to a list of graphemes, which are the smallest allowable character
+     * divisions in the string. This accounts for scripts were individual characters are not
+     * allowed to be split apart (eg Arabic and Indic based scripts)
+     * @param text string to split
+     * @returns list of graphemes
+     * @note added in QGIS 2.10
+     */
+    static QStringList splitToGraphemes( const QString& text );
 
   protected:
     // update temporary QgsPalLayerSettings with any data defined text style values
@@ -863,7 +881,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
      * @returns true if geometry exceeds minimum size
      * @note added in QGIS 2.9
      */
-    static bool checkMinimumSizeMM( const QgsRenderContext &context, QgsGeometry *geom, double minSize );
+    static bool checkMinimumSizeMM( const QgsRenderContext &context, const QgsGeometry *geom, double minSize );
 
     // hashtable of layer settings, being filled during labeling (key = layer ID)
     QHash<QString, QgsPalLayerSettings> mActiveLayers;
@@ -887,6 +905,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
 
     QgsLabelingResults* mResults;
 
+    friend class QgsPalLayerSettings;
 };
 Q_NOWARN_DEPRECATED_POP
 

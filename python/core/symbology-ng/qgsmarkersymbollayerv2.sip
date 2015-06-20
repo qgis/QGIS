@@ -159,6 +159,8 @@ class QgsFontMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
                                 QColor color = DEFAULT_FONTMARKER_COLOR,
                                 double angle = DEFAULT_FONTMARKER_ANGLE );
 
+    ~QgsFontMarkerSymbolLayerV2();
+
     // static stuff
 
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;

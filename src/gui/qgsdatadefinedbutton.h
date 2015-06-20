@@ -35,7 +35,7 @@ class QgsDataDefined;
 class GUI_EXPORT QgsDataDefinedAssistant: public QDialog
 {
   public:
-    virtual QgsDataDefined* dataDefined() const = 0;
+    virtual QgsDataDefined dataDefined() const = 0;
 };
 
 /** \ingroup gui
@@ -197,16 +197,18 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     /**
      * Sets an assistant used to define the data defined object properties.
      * Ownership of the assistant is transferred to the widget.
+     * @param title menu title for the assistant
      * @param assistant data defined assistant. Set to null to remove the assistant
      * option from the button.
      * @note added in 2.10
      */
-    void setAssistant( QgsDataDefinedAssistant * assistant );
+    void setAssistant( const QString& title, QgsDataDefinedAssistant * assistant );
 
     /**
      * Common descriptions for expected input values
      */
     static QString trString();
+    static QString charDesc();
     static QString boolDesc();
     static QString anyStringDesc();
     static QString intDesc();

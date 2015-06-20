@@ -233,6 +233,9 @@ void QgsMapToolSimplify::canvasReleaseEvent( QMouseEvent * e )
   if ( e->button() != Qt::LeftButton )
     return;
 
+  if ( !currentVectorLayer() )
+    return;
+
   delete mSelectionRubberBand;
   mSelectionRubberBand = 0;
 

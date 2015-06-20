@@ -15,7 +15,6 @@
 #include <QtTest/QtTest>
 #include <QObject>
 #include <QStringList>
-#include <QObject>
 #include <QApplication>
 #include <QFileInfo>
 #include <QDir>
@@ -178,4 +177,3 @@ bool TestQgsQuickPrint::imageCheck( QString theTestType )
 
 QTEST_MAIN( TestQgsQuickPrint )
 #include "testqgsquickprint.moc"
-

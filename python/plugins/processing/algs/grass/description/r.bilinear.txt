@@ -4,4 +4,4 @@ Raster (r.*)
 ParameterRaster|input|Input raster layer|False
 ParameterNumber|north|Specific input value to be assigned to the north and/or south poles for longitude-latitude grids|None|None|0
 ParameterNumber|east|Specific input value to be assigned to the north and/or south poles for longitude-latitude grids|None|None|0
-OutputRaster|output|Output raster layer
+OutputRaster|output|Interpolated bilinear

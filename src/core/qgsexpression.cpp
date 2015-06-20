@@ -1345,6 +1345,11 @@ static QVariant fcnFormatNumber( const QVariantList& values, const QgsFeature*, 
 {
   double value = getDoubleValue( values.at( 0 ), parent );
   int places = getIntValue( values.at( 1 ), parent );
+  if ( places < 0 )
+  {
+    parent->setEvalErrorString( QObject::tr( "Number of places must be positive" ) );
+    return QVariant();
+  }
   return QString( "%L1" ).arg( value, 0, 'f', places );
 }
 
@@ -1657,7 +1662,7 @@ bool QgsExpression::unregisterFunction( QString name )
 
 QStringList QgsExpression::gmBuiltinFunctions;
 
-const QStringList &QgsExpression::BuiltinFunctions()
+const QStringList& QgsExpression::BuiltinFunctions()
 {
   if ( gmBuiltinFunctions.isEmpty() )
   {
@@ -1700,7 +1705,7 @@ const QStringList &QgsExpression::BuiltinFunctions()
 
 QList<QgsExpression::Function*> QgsExpression::gmFunctions;
 
-const QList<QgsExpression::Function*> &QgsExpression::Functions()
+const QList<QgsExpression::Function*>& QgsExpression::Functions()
 {
   if ( gmFunctions.isEmpty() )
   {
@@ -2535,15 +2540,60 @@ int QgsExpression::NodeBinaryOperator::precedence() const
   return -1;
 }
 
+bool QgsExpression::NodeBinaryOperator::leftAssociative() const
+{
+  // see left/right in qgsexpressionparser.yy
+  switch ( mOp )
+  {
+    case boOr:
+    case boAnd:
+    case boEQ:
+    case boNE:
+    case boLE:
+    case boGE:
+    case boLT:
+    case boGT:
+    case boRegexp:
+    case boLike:
+    case boILike:
+    case boNotLike:
+    case boNotILike:
+    case boIs:
+    case boIsNot:
+    case boPlus:
+    case boMinus:
+    case boMul:
+    case boDiv:
+    case boIntDiv:
+    case boMod:
+    case boConcat:
+      return true;
+
+    case boPow:
+      return false;
+  }
+  Q_ASSERT( 0 && "unexpected binary operator" );
+  return -1;
+}
+
 QString QgsExpression::NodeBinaryOperator::dump() const
 {
   QgsExpression::NodeBinaryOperator *lOp = dynamic_cast<QgsExpression::NodeBinaryOperator *>( mOpLeft );
   QgsExpression::NodeBinaryOperator *rOp = dynamic_cast<QgsExpression::NodeBinaryOperator *>( mOpRight );
 
   QString fmt;
-  fmt += lOp && lOp->precedence() < precedence() ? "(%1)" : "%1";
-  fmt += " %2 ";
-  fmt += rOp && rOp->precedence() <= precedence() ? "(%3)" : "%3";
+  if ( leftAssociative() )
+  {
+    fmt += lOp && ( lOp->precedence() < precedence() ) ? "(%1)" : "%1";
+    fmt += " %2 ";
+    fmt += rOp && ( rOp->precedence() <= precedence() ) ? "(%3)" : "%3";
+  }
+  else
+  {
+    fmt += lOp && ( lOp->precedence() <= precedence() ) ? "(%1)" : "%1";
+    fmt += " %2 ";
+    fmt += rOp && ( rOp->precedence() < precedence() ) ? "(%3)" : "%3";
+  }
 
   return fmt.arg( mOpLeft->dump() ).arg( BinaryOperatorText[mOp] ).arg( mOpRight->dump() );
 }
@@ -2608,7 +2658,7 @@ bool QgsExpression::NodeInOperator::prepare( QgsExpression* parent, const QgsFie
 
 QString QgsExpression::NodeInOperator::dump() const
 {
-  return QString( "%1 IN (%2)" ).arg( mNode->dump() ).arg( mList->dump() );
+  return QString( "%1 %2 IN (%3)" ).arg( mNode->dump() ).arg( mNotIn ? "NOT" : "" ).arg( mList->dump() );
 }
 
 //
@@ -2665,7 +2715,7 @@ QString QgsExpression::NodeFunction::dump() const
 {
   Function* fd = Functions()[mFnIndex];
   if ( fd->params() == 0 )
-    return fd->name(); // special column
+    return QString( "%1%2" ).arg( fd->name() ).arg( fd->name().startsWith( '$' ) ? "" : "()" ); // special column
   else
     return QString( "%1(%2)" ).arg( fd->name() ).arg( mArgs ? mArgs->dump() : QString() ); // function
 }

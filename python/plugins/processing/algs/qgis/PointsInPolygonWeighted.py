@@ -61,7 +61,7 @@ class PointsInPolygonWeighted(GeoAlgorithm):
         self.addParameter(ParameterString(self.FIELD,
             self.tr('Count field name'), 'NUMPOINTS'))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Result')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Weighted count')))
 
     def processAlgorithm(self, progress):
         polyLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POLYGONS))

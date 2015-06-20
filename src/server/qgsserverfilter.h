@@ -34,7 +34,6 @@ class QgsServerInterface;
  *    after core services have returned to main loop
  *  * sendResponse() - called just before sending output to FGCI
  */
-
 class SERVER_EXPORT QgsServerFilter
 {
 

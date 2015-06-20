@@ -76,13 +76,13 @@ class TestQgsBlendModes(TestCase):
         self.mMapRegistry.addMapLayer(self.mLineLayer)
 
         # create two raster layers
-        myRasterFile = os.path.join(TEST_DATA_DIR, 'landsat.tif')
+        myRasterFile = os.path.join(TEST_DATA_DIR, 'rgb256x256.png')
         self.mRasterLayer1 = QgsRasterLayer(myRasterFile, "raster1")
         self.mRasterLayer2 = QgsRasterLayer(myRasterFile, "raster2")
-        myMultiBandRenderer1 = QgsMultiBandColorRenderer(self.mRasterLayer1.dataProvider(), 2, 3, 4)
+        myMultiBandRenderer1 = QgsMultiBandColorRenderer(self.mRasterLayer1.dataProvider(), 1, 2, 3)
         self.mRasterLayer1.setRenderer(myMultiBandRenderer1)
         self.mMapRegistry.addMapLayer(self.mRasterLayer1)
-        myMultiBandRenderer2 = QgsMultiBandColorRenderer(self.mRasterLayer2.dataProvider(), 2, 3, 4)
+        myMultiBandRenderer2 = QgsMultiBandColorRenderer(self.mRasterLayer2.dataProvider(), 1, 2, 3)
         self.mRasterLayer2.setRenderer(myMultiBandRenderer2)
         self.mMapRegistry.addMapLayer(self.mRasterLayer2)
 
@@ -178,7 +178,7 @@ class TestQgsBlendModes(TestCase):
         self.mapSettings.setExtent(self.mRasterLayer1.extent())
 
         #Set blending mode for top layer
-        self.mRasterLayer1.setBlendMode(QPainter.CompositionMode_Plus)
+        self.mRasterLayer1.setBlendMode(QPainter.CompositionMode_Difference)
         checker = QgsMultiRenderChecker()
         checker.setControlName("expected_raster_blendmodes")
         checker.setMapSettings(self.mapSettings)

@@ -50,7 +50,7 @@ class SetRasterStyle(GeoAlgorithm):
             self.tr('Raster layer')))
         self.addParameter(ParameterFile(self.STYLE,
             self.tr('Style file'), False, False, 'qml'))
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Styled layer'), True))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Styled'), True))
 
     def processAlgorithm(self, progress):
         filename = self.getParameterValue(self.INPUT)

@@ -44,7 +44,7 @@ class SaveSelectedFeatures(GeoAlgorithm):
             self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
 
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
-            self.tr('Output layer with selected features')))
+            self.tr('Selection')))
 
     def processAlgorithm(self, progress):
         inputFilename = self.getParameterValue(self.INPUT_LAYER)

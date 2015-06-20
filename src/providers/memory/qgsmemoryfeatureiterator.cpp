@@ -118,7 +118,7 @@ bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature& feature )
     close();
 
   if ( hasFeature )
-    feature.setFields( &mSource->mFields ); // allow name-based attribute lookups
+    feature.setFields( mSource->mFields ); // allow name-based attribute lookups
 
   return hasFeature;
 }
@@ -167,7 +167,7 @@ bool QgsMemoryFeatureIterator::nextFeatureTraverseAll( QgsFeature& feature )
     feature = mSelectIterator.value();
     ++mSelectIterator;
     feature.setValid( true );
-    feature.setFields( &mSource->mFields ); // allow name-based attribute lookups
+    feature.setFields( mSource->mFields ); // allow name-based attribute lookups
   }
   else
     close();

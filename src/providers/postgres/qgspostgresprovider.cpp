@@ -571,7 +571,7 @@ QString QgsPostgresProvider::filterWhereClause() const
 
   if ( mRequestedGeomType != QGis::WKBUnknown && mRequestedGeomType != mDetectedGeomType )
   {
-    where += delim + QgsPostgresConn::postgisTypeFilter( mGeometryColumn, mRequestedGeomType, mSpatialColType == sctGeography );
+    where += delim + QgsPostgresConn::postgisTypeFilter( mGeometryColumn, ( QgsWKBTypes::Type )mRequestedGeomType, mSpatialColType == sctGeography );
     delim = " AND ";
   }
 
@@ -905,8 +905,8 @@ bool QgsPostgresProvider::loadFields()
     fields << fieldName;
 
     mAttrPalIndexName.insert( i, fieldName );
+    mDefaultValues.insert( mAttributeFields.size(), defValMap[tableoid][attnum] );
     mAttributeFields.append( QgsField( fieldName, fieldType, fieldTypeName, fieldSize, fieldPrec, fieldComment ) );
-    mDefaultValues.insert( i, defValMap[tableoid][attnum] );
   }
 
   return true;
@@ -1664,7 +1664,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
       }
     }
 
-    const QgsAttributes &attributevec = flist[0].attributes();
+    QgsAttributes attributevec = flist[0].attributes();
 
     // look for unique attribute values to place in statement instead of passing as parameter
     // e.g. for defaults
@@ -1688,7 +1688,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
       int i;
       for ( i = 1; i < flist.size(); i++ )
       {
-        const QgsAttributes &attrs2 = flist[i].attributes();
+        QgsAttributes attrs2 = flist[i].attributes();
         QVariant v2 = attrs2[idx];
 
         if ( v2 != v )
@@ -1768,7 +1768,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
 
     for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); ++features )
     {
-      const QgsAttributes &attrs = features->attributes();
+      QgsAttributes attrs = features->attributes();
 
       QStringList params;
       if ( !mGeometryColumn.isNull() )
@@ -1778,23 +1778,24 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
 
       for ( int i = 0; i < fieldId.size(); i++ )
       {
-        QVariant value = attrs[ fieldId[i] ];
+        int attrIdx = fieldId[i];
+        QVariant value = attrs[ attrIdx ];
 
         QString v;
         if ( value.isNull() )
         {
-          const QgsField &fld = field( fieldId[i] );
-          v = paramValue( defaultValues[i], defaultValues[i] );
-          features->setAttribute( fieldId[i], convertValue( fld.type(), v ) );
+          const QgsField &fld = field( attrIdx );
+          v = paramValue( defaultValues[ attrIdx ], defaultValues[ attrIdx ] );
+          features->setAttribute( attrIdx, convertValue( fld.type(), v ) );
         }
         else
         {
-          v = paramValue( value.toString(), defaultValues[i] );
+          v = paramValue( value.toString(), defaultValues[ attrIdx ] );
 
           if ( v != value.toString() )
           {
-            const QgsField &fld = field( fieldId[i] );
-            features->setAttribute( fieldId[i], convertValue( fld.type(), v ) );
+            const QgsField &fld = field( attrIdx );
+            features->setAttribute( attrIdx, convertValue( fld.type(), v ) );
           }
         }
 
@@ -1817,7 +1818,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
     {
       for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); ++features )
       {
-        const QgsAttributes &attrs = features->attributes();
+        QgsAttributes attrs = features->attributes();
 
         if ( mPrimaryKeyType == pktInt )
         {
@@ -1900,7 +1901,7 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds & id )
       dropOrphanedTopoGeoms();
     }
 
-    mShared->addFeaturesCounted( id.size() );
+    mShared->addFeaturesCounted( -id.size() );
   }
   catch ( PGException &e )
   {
@@ -3581,6 +3582,12 @@ QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
     return "";
   }
 
+  QgsPostgresResult result = conn->PQexec( "SELECT COUNT(*) FROM information_schema.tables WHERE table_name='layer_styles'" );
+  if ( result.PQgetvalue( 0, 0 ).toInt() == 0 )
+  {
+    return "";
+  }
+
   QString selectQmlQuery = QString( "SELECT styleQML"
                                     " FROM layer_styles"
                                     " WHERE f_table_catalog=%1"
@@ -3594,10 +3601,11 @@ QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
                            .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
                            .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) );
 
-  QgsPostgresResult result = conn->PQexec( selectQmlQuery, false );
+  result = conn->PQexec( selectQmlQuery );
 
   QString style = result.PQntuples() == 1 ? result.PQgetvalue( 0, 0 ) : "";
   conn->unref();
+
   return style;
 }
 

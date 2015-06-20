@@ -252,7 +252,7 @@ class CORE_EXPORT QGis
     static double fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit );
 
     /** Converts a string to a double in a permissive way, eg allowing for incorrect
-     * numbers of digits between thousand seperators
+     * numbers of digits between thousand separators
      * @param string string to convert
      * @param ok will be set to true if conversion was successful
      * @returns string converted to double if possible
@@ -262,7 +262,7 @@ class CORE_EXPORT QGis
     static double permissiveToDouble( QString string, bool& ok );
 
     /** Converts a string to an integer in a permissive way, eg allowing for incorrect
-     * numbers of digits between thousand seperators
+     * numbers of digits between thousand separators
      * @param string string to convert
      * @param ok will be set to true if conversion was successful
      * @returns string converted to int if possible
@@ -338,7 +338,10 @@ inline void ( *cast_to_fptr( void *p ) )()
 //
 inline QString qgsDoubleToString( const double &a, const int &precision = 17 )
 {
-  return QString::number( a, 'f', precision ).remove( QRegExp( "\\.?0+$" ) );
+  if ( precision )
+    return QString::number( a, 'f', precision ).remove( QRegExp( "\\.?0+$" ) );
+  else
+    return QString::number( a, 'f', precision );
 }
 
 //
@@ -372,7 +375,7 @@ bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs );
 
 bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs );
 
-QString qgsVsiPrefix( QString path );
+CORE_EXPORT QString qgsVsiPrefix( QString path );
 
 /** Allocates size bytes and returns a pointer to the allocated  memory.
     Works like C malloc() but prints debug message by QgsLogger if allocation fails.
@@ -448,9 +451,9 @@ typedef unsigned long long qgssize;
 #if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) || defined(__clang__)
 #define Q_NOWARN_DEPRECATED_PUSH \
   _Pragma("GCC diagnostic push") \
-  _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
+  _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"");
 #define Q_NOWARN_DEPRECATED_POP \
-  _Pragma("GCC diagnostic pop")
+  _Pragma("GCC diagnostic pop");
 #elif defined(_MSC_VER)
 #define Q_NOWARN_DEPRECATED_PUSH \
   __pragma(warning(push)) \
@@ -462,7 +465,6 @@ typedef unsigned long long qgssize;
 #define Q_NOWARN_DEPRECATED_POP
 #endif
 
-// FIXME: also in qgisinterface.h
 #ifndef QGISEXTERN
 #ifdef WIN32
 #  define QGISEXTERN extern "C" __declspec( dllexport )
@@ -471,7 +473,11 @@ typedef unsigned long long qgssize;
 #    pragma warning(disable:4190)
 #  endif
 #else
-#  define QGISEXTERN extern "C"
+#  if defined(__GNUC__) || defined(__clang__)
+#    define QGISEXTERN extern "C" __attribute__ ((visibility ("default")))
+#  else
+#    define QGISEXTERN extern "C"
+#  endif
 #endif
 #endif
 #endif

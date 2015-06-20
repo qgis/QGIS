@@ -10,6 +10,10 @@ IF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
   ADD_DEFINITIONS(-DQGSMSDEBUG=1)
 ENDIF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
 
+IF (ENABLE_TESTS)
+   ADD_DEFINITIONS(-DENABLE_MS_TESTS=1)
+ENDIF (ENABLE_TESTS)
+
 ########################################################
 # Files
 
@@ -77,13 +81,13 @@ SET(qgis_mapserv_SRCS ${qgis_mapserv_SRCS}
     qgsserverinterfaceimpl.cpp
 )
 
-IF (WIN32)
-  IF (MSVC)
-    ADD_DEFINITIONS("-DSERVER_EXPORT=${DLLEXPORT}")
-  ELSE (MSVC)
-    ADD_DEFINITIONS("-USERVER_EXPORT \"-DSERVER_EXPORT=${DLLEXPORT}\"")
-  ENDIF (MSVC)
-ENDIF (WIN32)
+IF (NOT MSVC)
+  ADD_DEFINITIONS("-USERVER_EXPORT")
+  IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden")
+  ENDIF()
+ENDIF (NOT MSVC)
+ADD_DEFINITIONS("\"-DSERVER_EXPORT=${DLLEXPORT}\"")
 
 
 QT4_WRAP_CPP(qgis_mapserv_MOC_SRCS ${qgis_mapserv_MOC_HDRS})
@@ -156,6 +160,7 @@ INCLUDE_DIRECTORIES(
   ${QT_INCLUDE_DIR}
   ${QGIS_INCLUDE_DIR}
   ../core
+  ../core/geometry
   ../core/raster
   ../core/symbology-ng
   ../core/composer

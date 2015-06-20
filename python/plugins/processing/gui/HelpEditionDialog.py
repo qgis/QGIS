@@ -30,13 +30,17 @@ __revision__ = '$Format:%H$'
 import os
 import json
 
+from PyQt4 import uic
 from PyQt4.QtGui import QDialog, QMessageBox, QTreeWidgetItem
 
-from processing.ui.ui_DlgHelpEdition import Ui_DlgHelpEdition
 from processing.core.ProcessingLog import ProcessingLog
 
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'DlgHelpEdition.ui'))
 
-class HelpEditionDialog(QDialog, Ui_DlgHelpEdition):
+
+class HelpEditionDialog(BASE, WIDGET):
 
     ALG_DESC = 'ALG_DESC'
     ALG_CREATOR = 'ALG_CREATOR'
@@ -44,8 +48,9 @@ class HelpEditionDialog(QDialog, Ui_DlgHelpEdition):
     ALG_VERSION = 'ALG_VERSION'
 
     def __init__(self, alg):
-        QDialog.__init__(self)
+        super(HelpEditionDialog, self).__init__(None)
         self.setupUi(self)
+
         self.alg = alg
         self.descriptions = {}
         if isinstance(self.alg, ModelerAlgorithm):
@@ -75,21 +80,6 @@ class HelpEditionDialog(QDialog, Ui_DlgHelpEdition):
 
     def accept(self):
         self.descriptions[self.currentName] = unicode(self.text.toPlainText())
-        if isinstance(self.alg, ModelerAlgorithm):
-            self.alg.helpContent = self.descriptions
-        else:
-            if self.alg.descriptionFile is not None:
-                try:
-                    with open(self.alg.descriptionFile + '.help', 'w') as f:
-                        json.dump(self.descriptions, f)
-                except Exception, e:
-                    QMessageBox.warning(self, self.tr('Error saving help file'),
-                        self.tr('Help file could not be saved.\n'
-                                'Check that you have permission to modify the help\n'
-                                'file. You might not have permission if you are \n'
-                                'editing an example model or script, since they \n'
-                                'are stored on the installation folder'))
-
         QDialog.accept(self)
 
     def getHtml(self):

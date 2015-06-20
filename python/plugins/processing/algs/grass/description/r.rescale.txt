@@ -4,4 +4,4 @@ Raster (r.*)
 ParameterRaster|input|Input raster layer|False
 ParameterRange|from|The input data range to be rescaled|0,1
 ParameterRange|to|The output data range|0,1
-OutputRaster|output|Output raster layer
+OutputRaster|output|Rescaled

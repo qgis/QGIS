@@ -25,7 +25,6 @@ class APP_EXPORT QgsLabelPreview : public QLabel
 {
   public:
     QgsLabelPreview( QWidget* parent = NULL );
-    ~QgsLabelPreview();
 
     void setTextColor( QColor color );
 
@@ -37,12 +36,12 @@ class APP_EXPORT QgsLabelPreview : public QLabel
     void paintEvent( QPaintEvent* e ) override;
 
   private:
-    QgsPalLayerSettings* mTmpLyr;
+    QgsPalLayerSettings mTmpLyr;
     QColor mTextColor;
     QFont mFont;
 
     // device-based render context
-    QgsRenderContext* mContext;
+    QgsRenderContext mContext;
 };
 
 #endif // LABELPREVIEW_H

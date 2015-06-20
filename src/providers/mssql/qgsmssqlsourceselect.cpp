@@ -519,6 +519,31 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
 
   QString connectionName = db.connectionName();
 
+  // Test for geometry columns table first.  Don't use it if not found.
+  QSqlQuery q = QSqlQuery( db );
+  q.setForwardOnly( true );
+
+  if ( useGeometryColumns )
+  {
+    QString testquery( "SELECT count(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'geometry_columns'" );
+    q.exec( testquery );
+    q.first();
+    int count = q.value( 0 ).toInt();
+    bool geometryColumnsFound = count != 0;
+    if ( !geometryColumnsFound )
+    {
+      QMessageBox::StandardButtons reply;
+      reply = QMessageBox::question( this, "Scan full database?",
+                                     "No geometry_columns table found. \nWould you like to search full database (might be slower)? ",
+                                     QMessageBox::Yes | QMessageBox::No
+                                   );
+      if ( reply == QMessageBox::Yes )
+        useGeometryColumns = false;
+      else
+        return;
+    }
+  }
+
   // Read supported layers from database
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
@@ -539,7 +564,7 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
   }
 
   // issue the sql query
-  QSqlQuery q = QSqlQuery( db );
+  q = QSqlQuery( db );
   q.setForwardOnly( true );
   ( void )q.exec( query );
 

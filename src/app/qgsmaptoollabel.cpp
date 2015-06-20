@@ -483,7 +483,7 @@ bool QgsMapToolLabel::dataDefinedPosition( QgsVectorLayer* vlayer, const QgsFeat
     return false;
   }
 
-  const QgsAttributes& attributes = f.attributes();
+  QgsAttributes attributes = f.attributes();
   if ( !attributes[xCol].isNull() )
     x = attributes[xCol].toDouble( &xSuccess );
   if ( !attributes[yCol].isNull() )

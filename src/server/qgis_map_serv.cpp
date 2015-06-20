@@ -313,7 +313,7 @@ int main( int argc, char * argv[] )
   QScopedPointer< QgsMapRenderer > theMapRenderer( new QgsMapRenderer );
   theMapRenderer->setLabelingEngine( new QgsPalLabeling() );
 
-#ifdef QGSMSDEBUG
+#ifdef ENABLE_MS_TESTS
   QgsFontUtils::loadStandardTestFonts( QStringList() << "Roman" << "Bold" );
 #endif
 

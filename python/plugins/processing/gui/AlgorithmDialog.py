@@ -123,10 +123,12 @@ class AlgorithmDialog(AlgorithmDialogBase):
             if param.datatype == ParameterMultipleInput.TYPE_FILE:
                 return param.setValue(widget.selectedoptions)
             else:
-                if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
+                if param.datatype == ParameterMultipleInput.TYPE_RASTER:
+                    options = dataobjects.getRasterLayers(sorting=False)
+                elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
                     options = dataobjects.getVectorLayers(sorting=False)
                 else:
-                    options = dataobjects.getRasterLayers(sorting=False)
+                    options = dataobjects.getVectorLayers([param.datatype], sorting=False)
                 return param.setValue([options[i] for i in widget.selectedoptions])
         elif isinstance(param, (ParameterNumber, ParameterFile, ParameterCrs,
                         ParameterExtent)):
@@ -219,7 +221,9 @@ class AlgorithmDialog(AlgorithmDialogBase):
         keepOpen = ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
 
         if self.iterateParam is None:
-            handleAlgorithmResults(self.alg, self, not keepOpen)
+            if not handleAlgorithmResults(self.alg, self, not keepOpen):
+                self.resetGUI()
+                return
 
         self.executed = True
         self.setInfo('Algorithm %s finished' % self.alg.name)

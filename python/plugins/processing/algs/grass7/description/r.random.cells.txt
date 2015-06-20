@@ -3,4 +3,4 @@ r.random.cells - Generates random cell values with spatial dependence.
 Raster (r.*)
 ParameterNumber|distance|Maximum distance of spatial correlation (value(s) >= 0.0)|0.0|None|0.0
 *ParameterNumber|seed|Random seed (SEED_MIN >= value >= SEED_MAX) (default [random])|None|None|0.0
-OutputRaster|output|Output raster layer
+OutputRaster|output|Random

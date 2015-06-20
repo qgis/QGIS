@@ -17,13 +17,15 @@
 #include <QSizeF>
 
 #include "qgsgeorefconfigdialog.h"
+#include "qgis.h"
 
 QgsGeorefConfigDialog::QgsGeorefConfigDialog( QWidget *parent ) :
     QDialog( parent )
 {
   setupUi( this );
 
-  readSettings();
+  QSettings s;
+  restoreGeometry( s.value( "/Plugin-GeoReferencer/ConfigWindow/geometry" ).toByteArray() );
 
   mPaperSizeComboBox->addItem( tr( "A5 (148x210 mm)" ), QSizeF( 148, 210 ) );
   mPaperSizeComboBox->addItem( tr( "A4 (210x297 mm)" ), QSizeF( 210, 297 ) );
@@ -51,8 +53,13 @@ QgsGeorefConfigDialog::QgsGeorefConfigDialog( QWidget *parent ) :
   mPaperSizeComboBox->addItem( tr( "Arch E (36x48 inches)" ), QSizeF( 914.4, 1219.2 ) );
   mPaperSizeComboBox->addItem( tr( "Arch E1 (30x42 inches)" ), QSizeF( 762, 1066.8 ) );
 
-  mPaperSizeComboBox->setCurrentIndex( 2 ); //A3
+  readSettings();
+}
 
+QgsGeorefConfigDialog::~QgsGeorefConfigDialog()
+{
+  QSettings settings;
+  settings.setValue( "/Plugin-GeoReferencer/ConfigWindow/geometry", saveGeometry() );
 }
 
 void QgsGeorefConfigDialog::changeEvent( QEvent *e )
@@ -120,6 +127,22 @@ void QgsGeorefConfigDialog::readSettings()
 
   mLeftMarginSpinBox->setValue( s.value( "/Plugin-GeoReferencer/Config/LeftMarginPDF", "2.0" ).toDouble() );
   mRightMarginSpinBox->setValue( s.value( "/Plugin-GeoReferencer/Config/RightMarginPDF", "2.0" ).toDouble() );
+
+  double currentWidth = s.value( "/Plugin-GeoReferencer/Config/WidthPDFMap", "297" ).toDouble();
+  double currentHeight = s.value( "/Plugin-GeoReferencer/Config/HeightPDFMap", "420" ).toDouble();
+
+  int paperIndex = 2; //default to A3
+  for ( int i = 0; i < mPaperSizeComboBox->count(); ++i )
+  {
+    double itemWidth = mPaperSizeComboBox->itemData( i ).toSizeF().width();
+    double itemHeight = mPaperSizeComboBox->itemData( i ).toSizeF().height();
+    if ( qgsDoubleNear( itemWidth, currentWidth ) && qgsDoubleNear( itemHeight, currentHeight ) )
+    {
+      paperIndex = i;
+      break;
+    }
+  }
+  mPaperSizeComboBox->setCurrentIndex( paperIndex );
 }
 
 void QgsGeorefConfigDialog::writeSettings()

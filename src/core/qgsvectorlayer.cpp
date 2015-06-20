@@ -145,37 +145,14 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
     , mValidExtent( false )
     , mLazyExtent( true )
     , mSymbolFeatureCounted( false )
+    , mEditCommandActive( false )
 {
   mActions = new QgsAttributeAction( this );
 
   // if we're given a provider type, try to create and bind one to this layer
   if ( ! mProviderKey.isEmpty() )
   {
-    setDataProvider( mProviderKey );
-  }
-  if ( mValid )
-  {
-    // Always set crs
-    setCoordinateSystem();
-
-    // check if there is a default style / propertysheet defined
-    // for this layer and if so apply it
-    bool defaultLoadedFlag = false;
-    if ( loadDefaultStyleFlag )
-    {
-      loadDefaultStyle( defaultLoadedFlag );
-    }
-
-    // if the default style failed to load or was disabled use some very basic defaults
-    if ( !defaultLoadedFlag && hasGeometryType() )
-    {
-      // add single symbol renderer
-      setRendererV2( QgsFeatureRendererV2::defaultRenderer( geometryType() ) );
-    }
-
-    setLegend( QgsMapLayerLegend::defaultVectorLegend( this ) );
-
-    connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( checkJoinLayerRemove( QString ) ) );
+    setDataSource( vectorLayerPath, baseName, providerKey, loadDefaultStyleFlag );
   }
 
   connect( this, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ), this, SIGNAL( selectionChanged() ) );
@@ -595,36 +572,7 @@ QGis::GeometryType QgsVectorLayer::geometryType() const
   if ( mDataProvider )
   {
     QGis::WkbType type = mDataProvider->geometryType();
-    switch ( type )
-    {
-      case QGis::WKBPoint:
-      case QGis::WKBPoint25D:
-        return QGis::Point;
-
-      case QGis::WKBLineString:
-      case QGis::WKBLineString25D:
-        return QGis::Line;
-
-      case QGis::WKBPolygon:
-      case QGis::WKBPolygon25D:
-        return QGis::Polygon;
-
-      case QGis::WKBMultiPoint:
-      case QGis::WKBMultiPoint25D:
-        return QGis::Point;
-
-      case QGis::WKBMultiLineString:
-      case QGis::WKBMultiLineString25D:
-        return QGis::Line;
-
-      case QGis::WKBMultiPolygon:
-      case QGis::WKBMultiPolygon25D:
-        return QGis::Polygon;
-
-      case QGis::WKBNoGeometry:
-        return QGis::NoGeometry;
-    }
-    QgsDebugMsg( QString( "Data Provider Geometry type is not recognised, is %1" ).arg( type ) );
+    return ( QGis::GeometryType )( QgsWKBTypes::geometryType(( QgsWKBTypes::Type )type ) );
   }
   else
   {
@@ -1004,8 +952,8 @@ bool QgsVectorLayer::updateFeature( QgsFeature &f )
     }
   }
 
-  const QgsAttributes &fa = f.attributes();
-  const QgsAttributes &ca = current.attributes();
+  QgsAttributes fa = f.attributes();
+  QgsAttributes ca = current.attributes();
 
   for ( int attr = 0; attr < fa.count(); ++attr )
   {
@@ -1263,7 +1211,7 @@ bool QgsVectorLayer::startEditing()
   connect( mEditBuffer, SIGNAL( layerModified() ), this, SIGNAL( layerModified() ) ); // TODO[MD]: necessary?
   //connect( mEditBuffer, SIGNAL( layerModified() ), this, SLOT( triggerRepaint() ) ); // TODO[MD]: works well?
   connect( mEditBuffer, SIGNAL( featureAdded( QgsFeatureId ) ), this, SIGNAL( featureAdded( QgsFeatureId ) ) );
-  connect( mEditBuffer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SIGNAL( featureDeleted( QgsFeatureId ) ) );
+  connect( mEditBuffer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( onFeatureDeleted( QgsFeatureId ) ) );
   connect( mEditBuffer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry& ) ), this, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry& ) ) );
   connect( mEditBuffer, SIGNAL( attributeValueChanged( QgsFeatureId, int, QVariant ) ), this, SIGNAL( attributeValueChanged( QgsFeatureId, int, QVariant ) ) );
   connect( mEditBuffer, SIGNAL( attributeAdded( int ) ), this, SIGNAL( attributeAdded( int ) ) );
@@ -1380,10 +1328,45 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
 } // void QgsVectorLayer::readXml
 
 
+void QgsVectorLayer::setDataSource( QString dataSource, QString baseName, QString provider, bool loadDefaultStyleFlag )
+{
+  mDataSource = dataSource;
+  mLayerName = capitaliseLayerName( baseName );
+  setLayerName( mLayerName );
+  setDataProvider( provider );
+
+  if ( mValid )
+  {
+    // Always set crs
+    setCoordinateSystem();
+
+    // check if there is a default style / propertysheet defined
+    // for this layer and if so apply it
+    bool defaultLoadedFlag = false;
+    if ( loadDefaultStyleFlag )
+    {
+      loadDefaultStyle( defaultLoadedFlag );
+    }
+
+    // if the default style failed to load or was disabled use some very basic defaults
+    if ( !defaultLoadedFlag && hasGeometryType() )
+    {
+      // add single symbol renderer
+      setRendererV2( QgsFeatureRendererV2::defaultRenderer( geometryType() ) );
+    }
+
+    setLegend( QgsMapLayerLegend::defaultVectorLegend( this ) );
+
+    connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( checkJoinLayerRemove( QString ) ) );
+  }
+}
+
+
 bool QgsVectorLayer::setDataProvider( QString const & provider )
 {
   // XXX should I check for and possibly delete any pre-existing providers?
   // XXX How often will that scenario occur?
+  Q_ASSERT( !mDataProvider );
 
   mProviderKey = provider;     // XXX is this necessary?  Usually already set
   // XXX when execution gets here.
@@ -1475,6 +1458,8 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
     return false;
   }
 
+  connect( mDataProvider, SIGNAL( dataChanged() ), this, SIGNAL( dataChanged() ) );
+  connect( mDataProvider, SIGNAL( dataChanged() ), this, SLOT( removeSelection() ) );
   return true;
 
 } // QgsVectorLayer:: setDataProvider
@@ -2139,6 +2124,9 @@ const QString QgsVectorLayer::editorWidgetV2( const QString& fieldName ) const
 
 const QgsEditorWidgetConfig QgsVectorLayer::editorWidgetV2Config( int fieldIdx ) const
 {
+  if ( fieldIdx < 0 || fieldIdx >= mUpdatedFields.count() )
+    return QgsEditorWidgetConfig();
+
   return mEditorWidgetV2Configs.value( mUpdatedFields[fieldIdx].name() );
 }
 
@@ -2368,7 +2356,7 @@ QgsFeatureList QgsVectorLayer::selectedFeatures()
   {
     // for small amount of selected features, fetch them directly
     // because request with FilterFids would go iterate over the whole layer
-    foreach ( int fid, mSelectedFeatureIds )
+    foreach ( QgsFeatureId fid, mSelectedFeatureIds )
     {
       getFeatures( QgsFeatureRequest( fid ) ).nextFeature( f );
       features << f;
@@ -2637,6 +2625,9 @@ bool QgsVectorLayer::isModified() const
 
 QgsVectorLayer::EditType QgsVectorLayer::editType( int idx )
 {
+  if ( idx < 0 || idx >= mUpdatedFields.count() )
+    return Hidden;
+
   Q_NOWARN_DEPRECATED_PUSH
   return QgsLegacyHelpers::convertEditType( editorWidgetV2( idx ), editorWidgetV2Config( idx ), this, mUpdatedFields[ idx ].name() );
   Q_NOWARN_DEPRECATED_POP
@@ -2644,6 +2635,9 @@ QgsVectorLayer::EditType QgsVectorLayer::editType( int idx )
 
 void QgsVectorLayer::setEditType( int idx, EditType type )
 {
+  if ( idx < 0 || idx >= mUpdatedFields.count() )
+    return;
+
   QgsEditorWidgetConfig cfg;
 
   Q_NOWARN_DEPRECATED_PUSH
@@ -2666,11 +2660,17 @@ void QgsVectorLayer::setEditorLayout( EditorLayout editorLayout )
 
 void QgsVectorLayer::setEditorWidgetV2( int attrIdx, const QString& widgetType )
 {
+  if ( attrIdx < 0 || attrIdx >= mUpdatedFields.count() )
+    return;
+
   mEditorWidgetV2Types[ mUpdatedFields[ attrIdx ].name()] = widgetType;
 }
 
 void QgsVectorLayer::setEditorWidgetV2Config( int attrIdx, const QgsEditorWidgetConfig& config )
 {
+  if ( attrIdx < 0 || attrIdx >= mUpdatedFields.count() )
+    return;
+
   mEditorWidgetV2Configs[ mUpdatedFields[ attrIdx ].name()] = config;
 }
 
@@ -2802,6 +2802,7 @@ void QgsVectorLayer::beginEditCommand( QString text )
   if ( !mDataProvider->transaction() )
   {
     undoStack()->beginMacro( text );
+    mEditCommandActive = true;
     emit editCommandStarted( text );
   }
 }
@@ -2815,6 +2816,12 @@ void QgsVectorLayer::endEditCommand()
   if ( !mDataProvider->transaction() )
   {
     undoStack()->endMacro();
+    mEditCommandActive = false;
+    if ( mDeletedFids.count() )
+    {
+      emit featuresDeleted( mDeletedFids );
+      mDeletedFids.clear();
+    }
     emit editCommandEnded();
   }
 }
@@ -2829,6 +2836,8 @@ void QgsVectorLayer::destroyEditCommand()
   {
     undoStack()->endMacro();
     undoStack()->undo();
+    mEditCommandActive = false;
+    mDeletedFids.clear();
     emit editCommandDestroyed();
   }
 }
@@ -2849,7 +2858,7 @@ int QgsVectorLayer::fieldNameIndex( const QString& fieldName ) const
 
 bool QgsVectorLayer::addJoin( const QgsVectorJoinInfo& joinInfo )
 {
-  return mJoinBuffer->addJoin( joinInfo );
+  return mJoinBuffer && mJoinBuffer->addJoin( joinInfo );
 }
 
 void QgsVectorLayer::checkJoinLayerRemove( QString theLayerId )
@@ -2859,12 +2868,16 @@ void QgsVectorLayer::checkJoinLayerRemove( QString theLayerId )
 
 void QgsVectorLayer::removeJoin( const QString& joinLayerId )
 {
-  mJoinBuffer->removeJoin( joinLayerId );
+  if ( mJoinBuffer )
+    mJoinBuffer->removeJoin( joinLayerId );
 }
 
-const QList< QgsVectorJoinInfo >& QgsVectorLayer::vectorJoins() const
+const QList< QgsVectorJoinInfo > QgsVectorLayer::vectorJoins() const
 {
-  return mJoinBuffer->vectorJoins();
+  if ( mJoinBuffer )
+    return mJoinBuffer->vectorJoins();
+  else
+    return QList< QgsVectorJoinInfo >();
 }
 
 int QgsVectorLayer::addExpressionField( const QString& exp, const QgsField& fld )
@@ -3144,7 +3157,7 @@ QVariant QgsVectorLayer::maximumValue( int index )
   return QVariant();
 }
 
-QList<QVariant> QgsVectorLayer::getValues( const QString &fieldOrExpression, bool& ok )
+QList<QVariant> QgsVectorLayer::getValues( const QString &fieldOrExpression, bool& ok, bool selectedOnly )
 {
   QList<QVariant> values;
 
@@ -3169,11 +3182,21 @@ QList<QVariant> QgsVectorLayer::getValues( const QString &fieldOrExpression, boo
   else
     lst = expression->referencedColumns();
 
-  QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
-                                        .setFlags(( expression && expression->needsGeometry() ) ?
-                                                  QgsFeatureRequest::NoFlags :
-                                                  QgsFeatureRequest::NoGeometry )
-                                        .setSubsetOfAttributes( lst, pendingFields() ) );
+  QgsFeatureRequest request = QgsFeatureRequest()
+                              .setFlags(( expression && expression->needsGeometry() ) ?
+                                        QgsFeatureRequest::NoFlags :
+                                        QgsFeatureRequest::NoGeometry )
+                              .setSubsetOfAttributes( lst, pendingFields() );
+
+  QgsFeatureIterator fit;
+  if ( !selectedOnly )
+  {
+    fit = getFeatures( request );
+  }
+  else
+  {
+    fit = selectedFeaturesIterator( request );
+  }
 
   // create list of non-null attribute values
   while ( fit.nextFeature( f ) )
@@ -3185,11 +3208,14 @@ QList<QVariant> QgsVectorLayer::getValues( const QString &fieldOrExpression, boo
   return values;
 }
 
-QList<double> QgsVectorLayer::getDoubleValues( const QString &fieldOrExpression, bool& ok )
+QList<double> QgsVectorLayer::getDoubleValues( const QString &fieldOrExpression, bool& ok, bool selectedOnly, int* nullCount )
 {
   QList<double> values;
 
-  QList<QVariant> variantValues = getValues( fieldOrExpression, ok );
+  if ( nullCount )
+    *nullCount = 0;
+
+  QList<QVariant> variantValues = getValues( fieldOrExpression, ok, selectedOnly );
   if ( !ok )
     return values;
 
@@ -3199,6 +3225,11 @@ QList<double> QgsVectorLayer::getDoubleValues( const QString &fieldOrExpression,
     double val = value.toDouble( &convertOk );
     if ( convertOk )
       values << val;
+    else if ( value.isNull() )
+    {
+      if ( nullCount )
+        *nullCount += 1;
+    }
   }
   ok = true;
   return values;
@@ -3763,6 +3794,16 @@ void QgsVectorLayer::onJoinedFieldsChanged()
   updateFields();
 }
 
+void QgsVectorLayer::onFeatureDeleted( const QgsFeatureId& fid )
+{
+  if ( mEditCommandActive )
+    mDeletedFids << fid;
+  else
+    emit featuresDeleted( QgsFeatureIds() << fid );
+
+  emit featureDeleted( fid );
+}
+
 QgsVectorLayer::ValueRelationData QgsVectorLayer::valueRelation( int idx )
 {
   if ( editorWidgetV2( idx ) == "ValueRelation" )
@@ -3814,6 +3855,11 @@ QDomElement QgsAttributeEditorContainer::toDomElement( QDomDocument& doc ) const
 void QgsAttributeEditorContainer::addChildElement( QgsAttributeEditorElement *widget )
 {
   mChildren.append( widget );
+}
+
+void QgsAttributeEditorContainer::setName( const QString& name )
+{
+  mName = name;
 }
 
 QList<QgsAttributeEditorElement*> QgsAttributeEditorContainer::findElements( QgsAttributeEditorElement::AttributeEditorType type ) const

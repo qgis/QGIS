@@ -71,7 +71,7 @@ class ZonalStatistics(GeoAlgorithm):
             self.tr('Output column prefix'), '_'))
         self.addParameter(ParameterBoolean(self.GLOBAL_EXTENT,
             self.tr('Load whole raster in memory')))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Zonal statistics')))
 
     def processAlgorithm(self, progress):
         """ Based on code by Matthew Perry

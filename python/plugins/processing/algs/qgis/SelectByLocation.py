@@ -61,7 +61,7 @@ class SelectByLocation(GeoAlgorithm):
         self.addParameter(ParameterSelection(self.METHOD,
             self.tr('Modify current selection by'),
             self.METHODS, 0))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Selection'), True))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Selected (location)'), True))
 
     def processAlgorithm(self, progress):
         filename = self.getParameterValue(self.INPUT)

@@ -83,10 +83,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   mStyleSheetNewOpts = mStyleSheetBuilder->defaultOptions();
   mStyleSheetOldOpts = QMap<QString, QVariant>( mStyleSheetNewOpts );
 
-  connect( cmbTheme, SIGNAL( activated( const QString& ) ), this, SLOT( themeChanged( const QString& ) ) );
-  connect( cmbTheme, SIGNAL( highlighted( const QString& ) ), this, SLOT( themeChanged( const QString& ) ) );
-  connect( cmbTheme, SIGNAL( textChanged( const QString& ) ), this, SLOT( themeChanged( const QString& ) ) );
-
   connect( mFontFamilyRadioCustom, SIGNAL( toggled( bool ) ), mFontFamilyComboBox, SLOT( setEnabled( bool ) ) );
 
   connect( cmbIconSize, SIGNAL( activated( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
@@ -301,9 +297,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   //wms search server
   leWmsSearch->setText( settings.value( "/qgis/WMSSearchUrl", "http://geopole.org/wms/search?search=%1&type=rss" ).toString() );
 
-  // set the current theme
-  cmbTheme->setItemText( cmbTheme->currentIndex(), settings.value( "/Themes" ).toString() );
-
   // set the attribute table default filter
   cmbAttrTableBehaviour->clear();
   cmbAttrTableBehaviour->addItem( tr( "Show all features" ), QgsAttributeTableFilterModel::ShowAll );
@@ -488,22 +481,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
     mKeepBaseUnitCheckBox->setChecked( false );
   }
 
-
-  // add the themes to the combo box on the option dialog
-  QDir myThemeDir( ":/images/themes/" );
-  myThemeDir.setFilter( QDir::Dirs );
-  QStringList myDirList = myThemeDir.entryList( QStringList( "*" ) );
-  cmbTheme->clear();
-  for ( int i = 0; i < myDirList.count(); i++ )
-  {
-    if ( myDirList[i] != "." && myDirList[i] != ".." )
-    {
-      cmbTheme->addItem( myDirList[i] );
-    }
-  }
-
-  // set the theme combo
-  cmbTheme->setCurrentIndex( cmbTheme->findText( settings.value( "/Themes", "default" ).toString() ) );
   cmbIconSize->setCurrentIndex( cmbIconSize->findText( settings.value( "/IconSize", QGIS_ICON_SIZE ).toString() ) );
 
   // set font size and family
@@ -536,8 +513,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
 
   // custom group boxes
   mCustomGroupBoxChkBx->setChecked( mStyleSheetOldOpts.value( "groupBoxCustom" ).toBool() );
-  mCustomSideBarSide->setChecked( mStyleSheetOldOpts.value( "sidebarStyle" ).toBool() );
-  mBoldGroupBoxTitleChkBx->setChecked( mStyleSheetOldOpts.value( "groupBoxBoldTitle" ).toBool() );
 
   mMessageTimeoutSpnBx->setValue( settings.value( "/qgis/messageTimeout", 5 ).toInt() );
 
@@ -575,11 +550,12 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   mLegendLayersBoldChkBx->setChecked( settings.value( "/qgis/legendLayersBold", true ).toBool() );
   mLegendGroupsBoldChkBx->setChecked( settings.value( "/qgis/legendGroupsBold", false ).toBool() );
   cbxHideSplash->setChecked( settings.value( "/qgis/hideSplash", false ).toBool() );
-  cbxShowTips->setChecked( settings.value( "/qgis/showTips", true ).toBool() );
+  cbxShowTips->setChecked( settings.value( QString( "/qgis/showTips%1" ).arg( QGis::QGIS_VERSION_INT / 100 ), true ).toBool() );
   cbxAttributeTableDocked->setChecked( settings.value( "/qgis/dockAttributeTable", false ).toBool() );
   cbxSnappingOptionsDocked->setChecked( settings.value( "/qgis/dockSnapping", false ).toBool() );
   cbxAddPostgisDC->setChecked( settings.value( "/qgis/addPostgisDC", false ).toBool() );
   cbxAddOracleDC->setChecked( settings.value( "/qgis/addOracleDC", false ).toBool() );
+  cbxCompileExpressions->setChecked( settings.value( "/qgis/postgres/compileExpressions", false ).toBool() );
   cbxCreateRasterLegendIcons->setChecked( settings.value( "/qgis/createRasterLegendIcons", false ).toBool() );
   cbxCopyWKTGeomFromTable->setChecked( settings.value( "/qgis/copyGeometryAsWKT", true ).toBool() );
   leNullValue->setText( settings.value( "qgis/nullValue", "NULL" ).toString() );
@@ -770,11 +746,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   QStringList myI18nList = i18nList();
   foreach ( QString l, myI18nList )
   {
-#if QT_VERSION >= 0x040800
     cboLocale->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( l ) ), QLocale( l ).nativeLanguageName(), l );
-#else
-    cboLocale->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( l ) ), l, l );
-#endif
   }
   cboLocale->setCurrentIndex( cboLocale->findData( myUserLocale ) );
   bool myLocaleOverrideFlag = settings.value( "locale/overrideFlag", false ).toBool();
@@ -946,12 +918,6 @@ void QgsOptions::on_pbnTemplateFolderReset_pressed()
   leTemplateFolder->setText( QgsApplication::qgisSettingsDirPath() + QString( "project_templates" ) );
 }
 
-void QgsOptions::themeChanged( const QString &newThemeName )
-{
-  // Slot to change the theme as user scrolls through the choices
-  QgisApp::instance()->setTheme( newThemeName );
-}
-
 void QgsOptions::iconSizeChanged( const QString &iconSize )
 {
   QgisApp::instance()->setIconSizes( iconSize.toInt() );
@@ -977,12 +943,6 @@ void QgsOptions::on_mProjectOnLaunchPushBtn_pressed()
   {
     mProjectOnLaunchLineEdit->setText( projPath );
   }
-}
-
-QString QgsOptions::theme()
-{
-  // returns the current theme (as selected in the cmbTheme combo box)
-  return cmbTheme->currentText();
 }
 
 void QgsOptions::saveOptions()
@@ -1082,7 +1042,7 @@ void QgsOptions::saveOptions()
   bool legendGroupsBold = settings.value( "/qgis/legendGroupsBold", false ).toBool();
   settings.setValue( "/qgis/legendGroupsBold", mLegendGroupsBoldChkBx->isChecked() );
   settings.setValue( "/qgis/hideSplash", cbxHideSplash->isChecked() );
-  settings.setValue( "/qgis/showTips", cbxShowTips->isChecked() );
+  settings.setValue( QString( "/qgis/showTips%1" ).arg( QGis::QGIS_VERSION_INT / 100 ), cbxShowTips->isChecked() );
   settings.setValue( "/qgis/dockAttributeTable", cbxAttributeTableDocked->isChecked() );
   settings.setValue( "/qgis/attributeTableBehaviour", cmbAttrTableBehaviour->itemData( cmbAttrTableBehaviour->currentIndex() ) );
   settings.setValue( "/qgis/attributeTableRowCache", spinBoxAttrTableRowCache->value() );
@@ -1095,6 +1055,7 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/dockSnapping", cbxSnappingOptionsDocked->isChecked() );
   settings.setValue( "/qgis/addPostgisDC", cbxAddPostgisDC->isChecked() );
   settings.setValue( "/qgis/addOracleDC", cbxAddOracleDC->isChecked() );
+  settings.setValue( "/qgis/postgres/compileExpressions", cbxCompileExpressions->isChecked() );
   settings.setValue( "/qgis/defaultLegendGraphicResolution", mLegendGraphicResolutionSpinBox->value() );
   bool createRasterLegendIcons = settings.value( "/qgis/createRasterLegendIcons", false ).toBool();
   settings.setValue( "/qgis/createRasterLegendIcons", cbxCreateRasterLegendIcons->isChecked() );
@@ -1143,16 +1104,6 @@ void QgsOptions::saveOptions()
 
   settings.setValue( "/qgis/nullValue", leNullValue->text() );
   settings.setValue( "/qgis/style", cmbStyle->currentText() );
-
-  if ( cmbTheme->currentText().length() == 0 )
-  {
-    settings.setValue( "/Themes", "default" );
-  }
-  else
-  {
-    settings.setValue( "/Themes", cmbTheme->currentText() );
-  }
-
   settings.setValue( "/IconSize", cmbIconSize->currentText() );
 
   settings.setValue( "/qgis/messageTimeout", mMessageTimeoutSpnBx->value() );
@@ -1437,18 +1388,6 @@ void QgsOptions::on_mFontFamilyComboBox_currentFontChanged( const QFont& font )
 void QgsOptions::on_mCustomGroupBoxChkBx_clicked( bool chkd )
 {
   mStyleSheetNewOpts.insert( "groupBoxCustom", QVariant( chkd ) );
-  mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
-}
-
-void QgsOptions::on_mCustomSideBarSide_clicked( bool chkd )
-{
-  mStyleSheetNewOpts.insert( "sidebarStyle", chkd );
-  mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
-}
-
-void QgsOptions::on_mBoldGroupBoxTitleChkBx_clicked( bool chkd )
-{
-  mStyleSheetNewOpts.insert( "groupBoxBoldTitle", QVariant( chkd ) );
   mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
 }
 

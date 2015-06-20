@@ -109,7 +109,6 @@ class SLDatabase(Database):
 
         return SLSqlResultModel(self, sql, parent)
 
-
     def registerDatabaseActions(self, mainWindow):
         action = QAction(self.tr("Run &Vacuum"), self)
         mainWindow.registerAction(action, self.tr("&Database"), self.runVacuumActionSlot)
@@ -144,6 +143,14 @@ class SLDatabase(Database):
 
         return Database.runAction(self, action)
 
+    def uniqueIdFunction(self):
+        return None
+
+    def explicitSpatialIndex( self ):
+        return True
+
+    def spatialIndexClause( self, src_table, src_column, dest_table, dest_column ):
+        return """"%s".ROWID IN (\nSELECT ROWID FROM SpatialIndex WHERE f_table_name='%s' AND search_frame="%s"."%s") """ % (src_table,src_table,dest_table, dest_column)
 
 class SLTable(Table):
     def __init__(self, row, db, schema=None):

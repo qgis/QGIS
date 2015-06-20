@@ -25,17 +25,22 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtGui import QWidget
+import os
+
+from PyQt4 import uic
 
 from processing.gui.MultipleInputDialog import MultipleInputDialog
 from processing.gui.MultipleFileInputDialog import MultipleFileInputDialog
 
-from processing.ui.ui_widgetBaseSelector import Ui_Form
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'widgetBaseSelector.ui'))
 
-class MultipleInputPanel(QWidget, Ui_Form):
+
+class MultipleInputPanel(BASE, WIDGET):
 
     def __init__(self, options=None, datatype=None):
-        QWidget.__init__(self)
+        super(MultipleInputPanel, self).__init__(None)
         self.setupUi(self)
 
         self.leText.setEnabled(False)

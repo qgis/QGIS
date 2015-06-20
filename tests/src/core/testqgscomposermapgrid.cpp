@@ -77,23 +77,11 @@ void TestQgsComposerMapGrid::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
-  mMapSettings.setDestinationCrs( crs );
-  mMapSettings.setCrsTransformEnabled( false );
-  mComposition = new QgsComposition( mMapSettings );
-  mComposition->setPaperSize( 297, 210 ); //A4 landscape
-  mComposerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
-  mComposerMap->setFrameEnabled( true );
-  mComposerMap->setBackgroundColor( QColor( 150, 100, 100 ) );
-  mComposition->addComposerMap( mComposerMap );
-
   mReport = "<h1>Composer Map Grid Tests</h1>\n";
 }
 
 void TestQgsComposerMapGrid::cleanupTestCase()
 {
-  delete mComposition;
-
   QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
@@ -108,24 +96,35 @@ void TestQgsComposerMapGrid::cleanupTestCase()
 
 void TestQgsComposerMapGrid::init()
 {
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
+  mMapSettings.setDestinationCrs( crs );
+  mMapSettings.setCrsTransformEnabled( false );
+  mComposition = new QgsComposition( mMapSettings );
+  mComposition->setPaperSize( 297, 210 ); //A4 landscape
+  mComposerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
+  mComposerMap->setFrameEnabled( true );
+  mComposerMap->setBackgroundColor( QColor( 150, 100, 100 ) );
+  mComposerMap->grid()->setAnnotationFont( QgsFontUtils::getStandardTestFont() );
+  mComposerMap->grid()->setAnnotationPrecision( 0 );
+  mComposerMap->grid()->setIntervalX( 2000 );
+  mComposerMap->grid()->setIntervalY( 2000 );
+  mComposerMap->grid()->setGridLineWidth( 0.5 );
+  mComposerMap->grid()->setGridLineColor( QColor( 0, 0, 0 ) );
+  mComposition->addComposerMap( mComposerMap );
 }
 
 void TestQgsComposerMapGrid::cleanup()
 {
-
+  delete mComposition;
 }
 
 void TestQgsComposerMapGrid::grid()
 {
   mComposerMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
   mComposerMap->grid()->setEnabled( true );
-  mComposerMap->grid()->setIntervalX( 2000 );
-  mComposerMap->grid()->setIntervalY( 2000 );
+
   mComposerMap->grid()->setAnnotationEnabled( true );
   mComposerMap->grid()->setGridLineColor( QColor( 0, 255, 0 ) );
-  mComposerMap->grid()->setGridLineWidth( 0.5 );
-  mComposerMap->grid()->setAnnotationFont( QgsFontUtils::getStandardTestFont() );
-  mComposerMap->grid()->setAnnotationPrecision( 0 );
   mComposerMap->grid()->setAnnotationPosition( QgsComposerMapGrid::Disabled, QgsComposerMapGrid::Left );
   mComposerMap->grid()->setAnnotationPosition( QgsComposerMapGrid::OutsideMapFrame, QgsComposerMapGrid::Right );
   mComposerMap->grid()->setAnnotationPosition( QgsComposerMapGrid::Disabled, QgsComposerMapGrid::Top );
@@ -152,8 +151,6 @@ void TestQgsComposerMapGrid::reprojected()
   mComposerMap->grid()->setIntervalX( 1 );
   mComposerMap->grid()->setIntervalY( 1 );
   mComposerMap->grid()->setAnnotationEnabled( false );
-  mComposerMap->grid()->setGridLineColor( QColor( 0, 0, 0 ) );
-  mComposerMap->grid()->setGridLineWidth( 0.5 );
   mComposerMap->grid()->setBlendMode( QPainter::CompositionMode_SourceOver );
   mComposerMap->grid()->setFrameStyle( QgsComposerMapGrid::ExteriorTicks );
   mComposerMap->grid()->setFrameWidth( 10 );
@@ -174,11 +171,8 @@ void TestQgsComposerMapGrid::crossGrid()
   mComposerMap->grid()->setEnabled( true );
   mComposerMap->grid()->setStyle( QgsComposerMapGrid::Cross );
   mComposerMap->grid()->setCrossLength( 2.0 );
-  mComposerMap->grid()->setIntervalX( 2000 );
-  mComposerMap->grid()->setIntervalY( 2000 );
   mComposerMap->grid()->setAnnotationEnabled( false );
   mComposerMap->grid()->setGridLineColor( QColor( 0, 255, 0 ) );
-  mComposerMap->grid()->setGridLineWidth( 0.5 );
   mComposerMap->grid()->setBlendMode( QPainter::CompositionMode_SourceOver );
   QgsCompositionChecker checker( "composermap_crossgrid", mComposition );
 
@@ -194,8 +188,6 @@ void TestQgsComposerMapGrid::markerGrid()
   mComposerMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
   mComposerMap->grid()->setEnabled( true );
   mComposerMap->grid()->setStyle( QgsComposerMapGrid::Markers );
-  mComposerMap->grid()->setIntervalX( 2000 );
-  mComposerMap->grid()->setIntervalY( 2000 );
   mComposerMap->grid()->setAnnotationEnabled( false );
   mComposerMap->grid()->setBlendMode( QPainter::CompositionMode_SourceOver );
   QgsCompositionChecker checker( "composermap_markergrid", mComposition );
@@ -212,8 +204,6 @@ void TestQgsComposerMapGrid::frameOnly()
   mComposerMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
   mComposerMap->grid()->setEnabled( true );
   mComposerMap->grid()->setStyle( QgsComposerMapGrid::FrameAnnotationsOnly );
-  mComposerMap->grid()->setIntervalX( 2000 );
-  mComposerMap->grid()->setIntervalY( 2000 );
   mComposerMap->grid()->setAnnotationEnabled( false );
   //set a frame for testing
   mComposerMap->grid()->setFrameStyle( QgsComposerMapGrid::Zebra );
@@ -233,7 +223,6 @@ void TestQgsComposerMapGrid::frameOnly()
 void TestQgsComposerMapGrid::zebraStyle()
 {
   mComposerMap->setNewExtent( QgsRectangle( 785462.375, 3341423.125, 789262.375, 3343323.125 ) ); //zoom in
-  mComposerMap->grid()->setGridLineColor( QColor( 0, 0, 0 ) );
   mComposerMap->grid()->setAnnotationFontColor( QColor( 0, 0, 0, 0 ) );
   mComposerMap->grid()->setBlendMode( QPainter::CompositionMode_SourceOver );
 
@@ -254,7 +243,6 @@ void TestQgsComposerMapGrid::zebraStyle()
 void TestQgsComposerMapGrid::zebraStyleSides()
 {
   mComposerMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
-  mComposerMap->grid()->setGridLineColor( QColor( 0, 0, 0 ) );
   mComposerMap->grid()->setAnnotationFontColor( QColor( 0, 0, 0, 0 ) );
   mComposerMap->grid()->setBlendMode( QPainter::CompositionMode_SourceOver );
 
@@ -297,7 +285,6 @@ void TestQgsComposerMapGrid::frameDivisions()
   mComposerMap->setMapRotation( 45.0 );
 
   //setup defaults
-  mComposerMap->grid()->setGridLineColor( QColor( 0, 0, 0 ) );
   mComposerMap->grid()->setAnnotationFontColor( QColor( 0, 0, 0, 0 ) );
   mComposerMap->grid()->setBlendMode( QPainter::CompositionMode_SourceOver );
   mComposerMap->grid()->setFrameStyle( QgsComposerMapGrid::Zebra );
@@ -340,7 +327,6 @@ void TestQgsComposerMapGrid::annotationFilter()
   mComposerMap->setMapRotation( 45.0 );
 
   //setup defaults
-  mComposerMap->grid()->setGridLineColor( QColor( 0, 0, 0 ) );
   mComposerMap->grid()->setAnnotationFontColor( QColor( 0, 0, 0, 0 ) );
   mComposerMap->grid()->setBlendMode( QPainter::CompositionMode_SourceOver );
   mComposerMap->grid()->setFrameStyle( QgsComposerMapGrid::NoFrame );

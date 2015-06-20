@@ -633,6 +633,33 @@ bool QgsRasterBlock::setIsNoDataExcept( const QRect & theExceptRect )
   }
 }
 
+void QgsRasterBlock::setIsData( int row, int column )
+{
+  setIsData(( qgssize )row*mWidth + column );
+}
+
+void QgsRasterBlock::setIsData( qgssize index )
+{
+  if ( mHasNoDataValue )
+  {
+    //no data value set, so mNoDataBitmap is not being used
+    return;
+  }
+
+  if ( mNoDataBitmap == 0 )
+  {
+    return;
+  }
+
+  // TODO: optimize
+  int row = ( int ) index / mWidth;
+  int column = index % mWidth;
+  qgssize byte = ( qgssize )row * mNoDataBitmapWidth + column / 8;
+  int bit = column % 8;
+  int nodata = 0x80 >> bit;
+  mNoDataBitmap[byte] = mNoDataBitmap[byte] & ~nodata;
+}
+
 char * QgsRasterBlock::bits( qgssize index )
 {
   // Not testing type to avoid too much overhead because this method is called per pixel
@@ -879,6 +906,12 @@ bool QgsRasterBlock::createNoDataBitmap()
   }
   memset( mNoDataBitmap, 0, mNoDataBitmapSize );
   return true;
+}
+
+QString  QgsRasterBlock::toString() const
+{
+  return QString( "dataType = %1 width = %2 height = %3" )
+         .arg( mDataType ).arg( mWidth ).arg( mHeight );
 }
 
 QRect QgsRasterBlock::subRect( const QgsRectangle & theExtent, int theWidth, int theHeight, const QgsRectangle &  theSubExtent )

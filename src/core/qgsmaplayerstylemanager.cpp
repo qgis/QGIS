@@ -166,6 +166,7 @@ bool QgsMapLayerStyleManager::setOverrideStyle( const QString& styleDef )
   if ( mOverriddenOriginalStyle )
     return false; // cannot override the style more than once!
 
+  mLayer->blockSignals( true );
   if ( mStyles.contains( styleDef ) )
   {
     mOverriddenOriginalStyle = new QgsMapLayerStyle;
@@ -183,8 +184,9 @@ bool QgsMapLayerStyleManager::setOverrideStyle( const QString& styleDef )
     QgsMapLayerStyle overrideStyle( styleDef );
     overrideStyle.writeToLayer( mLayer );
   }
+  mLayer->blockSignals( false );
 
-  return false;
+  return true;
 }
 
 bool QgsMapLayerStyleManager::restoreOverrideStyle()
@@ -192,7 +194,10 @@ bool QgsMapLayerStyleManager::restoreOverrideStyle()
   if ( !mOverriddenOriginalStyle )
     return false;
 
+  mLayer->blockSignals( true );
   mOverriddenOriginalStyle->writeToLayer( mLayer );
+  mLayer->blockSignals( false );
+
   delete mOverriddenOriginalStyle;
   mOverriddenOriginalStyle = 0;
   return true;

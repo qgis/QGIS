@@ -27,6 +27,7 @@
 #include "qgsrendererv2.h"
 #include "qgssymbollayerv2.h"
 #include "qgsvectordataprovider.h"
+#include "qgslocalec.h"
 
 #include <QFile>
 #include <QSettings>
@@ -344,6 +345,9 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     OGRFieldType ogrType = OFTString; //default to string
     int ogrWidth = attrField.length();
     int ogrPrecision = attrField.precision();
+    if ( ogrPrecision > 0 )
+      ++ogrWidth;
+
     switch ( attrField.type() )
     {
       case QVariant::LongLong:
@@ -1625,6 +1629,8 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature, QgsFeatureRendererV2*
 
 OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
 {
+  QgsLocaleNumC l;
+
   OGRFeatureH poFeature = OGR_F_Create( OGR_L_GetLayerDefn( mLayer ) );
 
   qint64 fid = FID_TO_NUMBER( feature.id() );
@@ -1665,6 +1671,8 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
         OGR_F_SetFieldDouble( poFeature, ogrField, attrValue.toDouble() );
         break;
       case QVariant::LongLong:
+      case QVariant::UInt:
+      case QVariant::ULongLong:
       case QVariant::String:
         OGR_F_SetFieldString( poFeature, ogrField, mCodec->fromUnicode( attrValue.toString() ).data() );
         break;
@@ -1685,13 +1693,21 @@ OGRFeatureH QgsVectorFileWriter::createFeature( QgsFeature& feature )
                                 attrValue.toDateTime().time().second(),
                                 0 );
         break;
+      case QVariant::Time:
+        OGR_F_SetFieldDateTime( poFeature, ogrField,
+                                0, 0, 0,
+                                attrValue.toDateTime().time().hour(),
+                                attrValue.toDateTime().time().minute(),
+                                attrValue.toDateTime().time().second(),
+                                0 );
+        break;
       case QVariant::Invalid:
         break;
       default:
         mErrorMessage = QObject::tr( "Invalid variant type for field %1[%2]: received %3 with type %4" )
                         .arg( mFields[fldIdx].name() )
                         .arg( ogrField )
-                        .arg( QMetaType::typeName( attrValue.type() ) )
+                        .arg( attrValue.typeName() )
                         .arg( attrValue.toString() );
         QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
         mError = ErrFeatureWriteFailed;
@@ -1856,8 +1872,9 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
   }
 
   QGis::WkbType wkbType = layer->wkbType();
+  QgsFields fields = skipAttributeCreation ? QgsFields() : layer->pendingFields();
 
-  if ( layer->providerType() == "ogr" )
+  if ( layer->providerType() == "ogr" && layer->dataProvider() )
   {
     QStringList theURIParts = layer->dataProvider()->dataSourceUri().split( "|" );
     QString srcFileName = theURIParts[0];
@@ -1888,9 +1905,24 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
       }
     }
   }
+  else if ( layer->providerType() == "spatialite" )
+  {
+    for ( int i = 0; i < fields.size(); i++ )
+    {
+      if ( fields[i].type() == QVariant::LongLong )
+      {
+        QVariant min = layer->minimumValue( i );
+        QVariant max = layer->maximumValue( i );
+        if ( qMax( qAbs( min.toLongLong() ), qAbs( max.toLongLong() ) ) < INT_MAX )
+        {
+          fields[i].setType( QVariant::Int );
+        }
+      }
+    }
+  }
 
   QgsVectorFileWriter* writer =
-    new QgsVectorFileWriter( fileName, fileEncoding, skipAttributeCreation ? QgsFields() : layer->pendingFields(), wkbType, outputCRS, driverName, datasourceOptions, layerOptions, newFilename, symbologyExport );
+    new QgsVectorFileWriter( fileName, fileEncoding, fields, wkbType, outputCRS, driverName, datasourceOptions, layerOptions, newFilename, symbologyExport );
   writer->setSymbologyScaleDenominator( symbologyScale );
 
   if ( newFilename )
@@ -2269,6 +2301,13 @@ bool QgsVectorFileWriter::driverMetadata( QString driverName, QString &longName,
     trLongName = QObject::tr( "GeoJSON" );
     glob = "*.geojson";
     ext = "geojson";
+  }
+  else if ( driverName.startsWith( "GPKG" ) )
+  {
+    longName = "GeoPackage";
+    trLongName = QObject::tr( "GeoPackage" );
+    glob = "*.gpkg";
+    ext = "gpkg";
   }
   else if ( driverName.startsWith( "GeoRSS" ) )
   {

@@ -79,6 +79,7 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
     , mAllowMapIdentification( false )
     , mOrderByValue( false )
     , mOpenFormButtonVisible( true )
+    , mChainFilters( false )
 {
   mTopLayout = new QVBoxLayout( this );
   mTopLayout->setContentsMargins( 0, 0, 0, 0 );

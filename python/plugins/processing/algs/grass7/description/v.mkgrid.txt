@@ -8,4 +8,4 @@ ParameterString|box|Width and height of boxes in grid|
 ParameterString|angle|Angle of rotation (in degrees counter-clockwise)|0
 ParameterBoolean|-h|Create hexagons (default: rectangles)|False
 ParameterBoolean|-p|Create grid of points instead of areas and centroids|False
-OutputVector|map|Output grid
+OutputVector|map|Grid

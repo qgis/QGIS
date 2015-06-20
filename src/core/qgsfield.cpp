@@ -176,6 +176,31 @@ bool QgsField::convertCompatible( QVariant& v ) const
   return true;
 }
 
+QDataStream& operator<<( QDataStream& out, const QgsField& field )
+{
+  out << field.name();
+  out << ( quint32 )field.type();
+  out << field.typeName();
+  out << field.length();
+  out << field.precision();
+  out << field.comment();
+  return out;
+}
+
+QDataStream& operator>>( QDataStream& in, QgsField& field )
+{
+  quint32 type, length, precision;
+  QString name, typeName, comment;
+  in >> name >> type >> typeName >> length >> precision >> comment;
+  field.setName( name );
+  field.setType(( QVariant::Type )type );
+  field.setTypeName( typeName );
+  field.setLength(( int )length );
+  field.setPrecision(( int )precision );
+  field.setComment( comment );
+  return in;
+}
+
 ////////////////////////////////////////////////////////////////////////////
 
 QgsFields::QgsFields()
@@ -234,8 +259,12 @@ void QgsFields::remove( int fieldIdx )
   if ( !exists( fieldIdx ) )
     return;
 
-  d->nameToIndex.remove( d->fields[fieldIdx].field.name() );
   d->fields.remove( fieldIdx );
+  d->nameToIndex.clear();
+  for ( int idx = 0; idx < count(); ++idx )
+  {
+    d->nameToIndex.insert( d->fields[idx].field.name(), idx );
+  }
 }
 
 void QgsFields::extend( const QgsFields& other )
@@ -340,4 +369,28 @@ QgsAttributeList QgsFields::allAttributesList() const
   for ( int i = 0; i < d->fields.count(); ++i )
     lst.append( i );
   return lst;
+}
+
+QDataStream& operator<<( QDataStream& out, const QgsFields& fields )
+{
+  out << ( quint32 )fields.size();
+  for ( int i = 0; i < fields.size(); i++ )
+  {
+    out << fields.field( i );
+  }
+  return out;
+}
+
+QDataStream& operator>>( QDataStream& in, QgsFields& fields )
+{
+  fields.clear();
+  quint32 size;
+  in >> size;
+  for ( quint32 i = 0; i < size; i++ )
+  {
+    QgsField field;
+    in >> field;
+    fields.append( field );
+  }
+  return in;
 }

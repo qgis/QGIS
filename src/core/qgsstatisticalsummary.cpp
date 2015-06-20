@@ -16,7 +16,8 @@
 #include "qgsstatisticalsummary.h"
 #include <limits>
 #include <qmath.h>
-
+#include <QString>
+#include <QObject>
 
 QgsStatisticalSummary::QgsStatisticalSummary( Statistics stats )
     : mStatistics( stats )
@@ -173,5 +174,85 @@ void QgsStatisticalSummary::calculate( const QList<double> &values )
     }
   }
 
+}
+
+double QgsStatisticalSummary::statistic( QgsStatisticalSummary::Statistic stat ) const
+{
+  switch ( stat )
+  {
+    case Count:
+      return mCount;
+    case Sum:
+      return mSum;
+    case Mean:
+      return mMean;
+    case Median:
+      return mMedian;
+    case StDev:
+      return mStdev;
+    case StDevSample:
+      return mSampleStdev;
+    case Min:
+      return mMin;
+    case Max:
+      return mMax;
+    case Range:
+      return mMax - mMin;
+    case Minority:
+      return mMinority;
+    case Majority:
+      return mMajority;
+    case Variety:
+      return mValueCount.count();
+    case FirstQuartile:
+      return mFirstQuartile;
+    case ThirdQuartile:
+      return mThirdQuartile;
+    case InterQuartileRange:
+      return mThirdQuartile - mFirstQuartile;
+    case All:
+      return 0;
+  }
+  return 0;
+}
+
+QString QgsStatisticalSummary::displayName( QgsStatisticalSummary::Statistic statistic )
+{
+  switch ( statistic )
+  {
+    case Count:
+      return QObject::tr( "Count" );
+    case Sum:
+      return QObject::tr( "Sum" );
+    case Mean:
+      return QObject::tr( "Mean" );
+    case Median:
+      return QObject::tr( "Median" );
+    case StDev:
+      return QObject::tr( "St dev (pop)" );
+    case StDevSample:
+      return QObject::tr( "St dev (sample)" );
+    case Min:
+      return QObject::tr( "Minimum" );
+    case Max:
+      return QObject::tr( "Maximum" );
+    case Range:
+      return QObject::tr( "Range" );
+    case Minority:
+      return QObject::tr( "Minority" );
+    case Majority:
+      return QObject::tr( "Majority" );
+    case Variety:
+      return QObject::tr( "Variety" );
+    case FirstQuartile:
+      return QObject::tr( "Q1" );
+    case ThirdQuartile:
+      return QObject::tr( "Q3" );
+    case InterQuartileRange:
+      return QObject::tr( "IQR" );
+    case All:
+      return QString();
+  }
+  return QString();
 }
 

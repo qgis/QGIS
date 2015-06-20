@@ -56,8 +56,8 @@ class RasterLayerHistogram(GeoAlgorithm):
         self.addParameter(ParameterNumber(self.BINS,
            self.tr('Number of bins'), 2, None, 10))
 
-        self.addOutput(OutputHTML(self.PLOT, self.tr('Output plot')))
-        self.addOutput(OutputTable(self.TABLE, self.tr('Output table')))
+        self.addOutput(OutputHTML(self.PLOT, self.tr('Histogram')))
+        self.addOutput(OutputTable(self.TABLE, self.tr('Table')))
 
 
     def processAlgorithm(self, progress):

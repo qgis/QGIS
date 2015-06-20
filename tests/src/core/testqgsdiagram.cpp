@@ -16,7 +16,6 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QObject>
 #include <QApplication>
 #include <QFileInfo>
 #include <QDir>
@@ -28,9 +27,6 @@
 // #include <qgisapp.h>
 #include <diagram/qgspiediagram.h>
 #include <qgsdiagramrendererv2.h>
-#include <qgscomposition.h>
-#include <qgscompositionchecker.h>
-#include <qgscomposermap.h>
 #include <qgsmaprenderer.h>
 #include <qgsmaplayer.h>
 #include <qgsvectordataprovider.h>
@@ -40,12 +36,12 @@
 #include <qgsmaplayerregistry.h>
 #include <qgsrendererv2.h>
 //qgis test includes
-#include "qgsrenderchecker.h"
+#include "qgsmultirenderchecker.h"
 #include "qgspallabeling.h"
 #include "qgsproject.h"
 
 /** \ingroup UnitTests
- * This is a unit test for the vector layer class.
+ * Unit tests for the diagram renderer
  */
 class TestQgsDiagram : public QObject
 {
@@ -55,20 +51,16 @@ class TestQgsDiagram : public QObject
     TestQgsDiagram()
         : mTestHasError( false )
         , mPointsLayer( 0 )
-        , mComposition( 0 )
-        , mPieDiagram( 0 )
-        , mComposerMap( 0 )
     {}
 
   private:
     bool mTestHasError;
     QgsMapSettings mMapSettings;
     QgsVectorLayer * mPointsLayer;
-    QgsComposition * mComposition;
     QString mTestDataDir;
     QString mReport;
-    QgsPieDiagram * mPieDiagram;
-    QgsComposerMap * mComposerMap;
+
+    bool imageCheck( QString theTestType );
 
   private slots:
 
@@ -101,17 +93,8 @@ class TestQgsDiagram : public QObject
       QgsMapLayerRegistry::instance()->addMapLayers(
         QList<QgsMapLayer *>() << mPointsLayer );
 
-      // Create diagrams
-      mPieDiagram = new QgsPieDiagram();
-
       // Create map composition to draw on
       mMapSettings.setLayers( QStringList() << mPointsLayer->id() );
-      // TODO mMapSettings.setLabelingEngine( new QgsPalLabeling() );
-      mComposition = new QgsComposition( mMapSettings );
-      mComposition->setPaperSize( 297, 210 ); // A4 landscape
-      mComposerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
-      mComposerMap->setFrameEnabled( true );
-      mComposition->addComposerMap( mComposerMap );
 
       mReport += "<h1>Diagram Tests</h1>\n";
     }
@@ -119,7 +102,6 @@ class TestQgsDiagram : public QObject
     // will be called after the last testfunction was executed.
     void cleanupTestCase()
     {
-      delete mComposition;
       QgsApplication::exitQgis();
       QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
       QFile myFile( myReportFile );
@@ -131,8 +113,20 @@ class TestQgsDiagram : public QObject
         //QDesktopServices::openUrl( "file:///" + myReportFile );
       }
     }
-    void init() {};// will be called before each testfunction is executed.
-    void cleanup() {};// will be called after every testfunction.
+
+    // will be called before each testfunction is executed
+    void init()
+    {
+      mPointsLayer->setDiagramRenderer( 0 );
+      QgsDiagramLayerSettings dls;
+      mPointsLayer->setDiagramLayerSettings( dls );
+    }
+
+    // will be called after every testfunction.
+    void cleanup()
+    {
+
+    }
 
     void testPieDiagram()
     {
@@ -150,35 +144,87 @@ class TestQgsDiagram : public QObject
       ds.penWidth = .5;
       ds.scaleByArea = true;
       ds.sizeType = QgsDiagramSettings::MM;
-      ds.size = QSizeF( 15, 15 );
+      ds.size = QSizeF( 5, 5 );
       ds.angleOffset = 0;
-
 
       QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
       dr->setLowerValue( 0.0 );
       dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
       dr->setUpperValue( 10 );
-      dr->setUpperSize( QSizeF( 100, 100 ) );
+      dr->setUpperSize( QSizeF( 40, 40 ) );
       dr->setClassificationAttribute( 5 ); // Staff
-      dr->setDiagram( mPieDiagram );
+      dr->setDiagram( new QgsPieDiagram() );
       dr->setDiagramSettings( ds );
       mPointsLayer->setDiagramRenderer( dr );
 
       QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
       dls.placement = QgsDiagramLayerSettings::OverPoint;
-
-      QgsProject::instance()->writeEntry( "PAL", "/ShowingAllLabels", true );
-
+      dls.showAll = true;
       mPointsLayer->setDiagramLayerSettings( dls );
 
-      mComposerMap->setNewExtent( QgsRectangle( -122, -79, -70, 47 ) );
-      QgsCompositionChecker checker( "piediagram", mComposition );
+      QVERIFY( imageCheck( "piediagram" ) );
+    }
 
-      QVERIFY( checker.testComposition( mReport ) );
+    void testPieDiagramExpression()
+    {
+      QgsDiagramSettings ds;
+      QColor col1 = Qt::red;
+      QColor col2 = Qt::yellow;
+      col1.setAlphaF( 0.5 );
+      col2.setAlphaF( 0.5 );
+      ds.categoryColors = QList<QColor>() << col1 << col2;
+      ds.categoryAttributes = QList<QString>() << "ln(Pilots + 1)" << "ln(\"Cabin Crew\" + 1)";
+      ds.maxScaleDenominator = -1;
+      ds.minScaleDenominator = -1;
+      ds.minimumSize = 0;
+      ds.penColor = Qt::green;
+      ds.penWidth = .5;
+      ds.scaleByArea = true;
+      ds.sizeType = QgsDiagramSettings::MM;
+      ds.size = QSizeF( 5, 5 );
+      ds.angleOffset = 0;
+
+      QgsLinearlyInterpolatedDiagramRenderer *dr = new QgsLinearlyInterpolatedDiagramRenderer();
+      dr->setLowerValue( 0.0 );
+      dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
+      dr->setUpperValue( 10 );
+      dr->setUpperSize( QSizeF( 40, 40 ) );
+      dr->setClassificationAttributeIsExpression( true );
+      dr->setClassificationAttributeExpression( "ln(Staff + 1)" );
+      dr->setDiagram( new QgsPieDiagram() );
+      dr->setDiagramSettings( ds );
+
+      QgsDiagramLayerSettings dls = QgsDiagramLayerSettings();
+      dls.placement = QgsDiagramLayerSettings::OverPoint;
+      dls.showAll = true;
+      // dls.setRenderer( dr );
+
+      mPointsLayer->setDiagramRenderer( dr );
+      mPointsLayer->setDiagramLayerSettings( dls );
+
+      QVERIFY( imageCheck( "piediagram_expression" ) );
 
       mPointsLayer->setDiagramRenderer( 0 );
     }
+
 };
+
+bool TestQgsDiagram::imageCheck( QString theTestType )
+{
+  //use the QgsRenderChecker test utility class to
+  //ensure the rendered output matches our control image
+
+  QgsRectangle extent( -126, 23, -70, 47 );
+  mMapSettings.setExtent( extent );
+  mMapSettings.setFlag( QgsMapSettings::ForceVectorOutput );
+  QgsMultiRenderChecker myChecker;
+  myChecker.setControlName( "expected_" + theTestType );
+  myChecker.setMapSettings( mMapSettings );
+  myChecker.setColorTolerance( 15 );
+  bool myResultFlag = myChecker.runTest( theTestType, 200 );
+  mReport += myChecker.report();
+  return myResultFlag;
+}
 
 QTEST_MAIN( TestQgsDiagram )
 #include "testqgsdiagram.moc"

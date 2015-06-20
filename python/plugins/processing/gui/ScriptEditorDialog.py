@@ -31,8 +31,9 @@ import sys
 import json
 import os
 
+from PyQt4 import uic
 from PyQt4.QtCore import Qt
-from PyQt4.QtGui import QDialog, QIcon, QMenu, QAction, QCursor, QMessageBox, QFileDialog, QApplication
+from PyQt4.QtGui import QIcon, QMenu, QAction, QCursor, QMessageBox, QFileDialog, QApplication
 
 from qgis.core import QgsApplication
 from qgis.utils import iface
@@ -44,12 +45,13 @@ from processing.algs.r.RAlgorithm import RAlgorithm
 from processing.algs.r.RUtils import RUtils
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.script.ScriptUtils import ScriptUtils
-from processing.ui.ui_DlgScriptEditor import Ui_DlgScriptEditor
 
-import processing.resources_rc
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'DlgScriptEditor.ui'))
 
 
-class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
+class ScriptEditorDialog(BASE, WIDGET):
 
     SCRIPT_PYTHON = 0
     SCRIPT_R = 1
@@ -57,7 +59,7 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
     hasChanged = False
 
     def __init__(self, algType, alg):
-        QDialog.__init__(self)
+        super(ScriptEditorDialog, self).__init__(None)
         self.setupUi(self)
 
         self.setWindowFlags(Qt.WindowMinimizeButtonHint |
@@ -70,8 +72,10 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
             QgsApplication.getThemeIcon('/mActionFileSave.svg'))
         self.btnSaveAs.setIcon(
             QgsApplication.getThemeIcon('/mActionFileSaveAs.svg'))
-        self.btnEditHelp.setIcon(QIcon(':/processing/images/edithelp.png'))
-        self.btnRun.setIcon(QIcon(':/processing/images/runalgorithm.png'))
+        self.btnEditHelp.setIcon(
+            QIcon(os.path.join(pluginPath, 'images', 'edithelp.png')))
+        self.btnRun.setIcon(
+            QIcon(os.path.join(pluginPath, 'images', 'runalgorithm.png')))
         self.btnCut.setIcon(QgsApplication.getThemeIcon('/mActionEditCut.png'))
         self.btnCopy.setIcon(
             QgsApplication.getThemeIcon('/mActionEditCopy.png'))
@@ -164,11 +168,9 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
 
         dlg = HelpEditionDialog(alg)
         dlg.exec_()
-
-        # We store the description string in case there were not saved
-        # because there was no filename defined yet
-        if self.alg is None and dlg.descriptions:
+        if dlg.descriptions:
             self.help = dlg.descriptions
+            self.setHasChanged(True)
 
     def openScript(self):
         if self.hasChanged:

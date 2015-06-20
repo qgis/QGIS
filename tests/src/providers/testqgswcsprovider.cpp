@@ -18,7 +18,6 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QObject>
 #include <QApplication>
 
 #include <qgsdatasourceuri.h>

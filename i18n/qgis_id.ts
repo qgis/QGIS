@@ -20223,7 +20223,7 @@ Silahkan coba turunkan resolusi atau gunakan ukuran kertas yang lebih kecil</tra
         <translation>Kolom lebar sama</translation>
     </message>
     <message>
-        <source>Allow to split layer items into multiple columns.</source>
+        <source>Allow splitting layer items into multiple columns.</source>
         <translation>Izinkan pemisahan layer menjadi beberapa kolom.</translation>
     </message>
     <message>

@@ -124,8 +124,6 @@ class QgsSpatiaLiteConnection : public QObject
     QList<TableEntry> mTables;
 };
 
-
-
 class QgsSqliteHandle
 {
     //

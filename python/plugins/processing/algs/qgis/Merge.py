@@ -46,7 +46,7 @@ class Merge(GeoAlgorithm):
         self.addParameter(ParameterVector(self.LAYER2,
             self.tr('Input layer 2'), [ParameterVector.VECTOR_TYPE_ANY]))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Merged')))
 
     def processAlgorithm(self, progress):
         layer1 = dataobjects.getObjectFromUri(

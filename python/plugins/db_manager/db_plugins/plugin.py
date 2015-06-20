@@ -208,8 +208,29 @@ class Database(DbItemObject):
 
         return SqlResultModel(self, sql, parent)
 
+    def columnUniqueValuesModel( self, col, table, limit = 10 ):
+        l = ""
+        if limit is not None:
+            l = "LIMIT %d" % limit
+        return self.sqlResultModel( "SELECT DISTINCT %s FROM %s %s" % (col, table, l), self)
+
+    def uniqueIdFunction(self):
+        """Return a SQL function used to generate a unique id for rows of a query"""
+        # may be overloaded by derived classes
+        return "row_number() over ()"
+
     def toSqlLayer(self, sql, geomCol, uniqueCol, layerName="QueryLayer", layerType=None, avoidSelectById=False):
         from qgis.core import QgsMapLayer, QgsVectorLayer, QgsRasterLayer
+
+        if uniqueCol is None:
+            if hasattr(self, 'uniqueIdFunction'):
+                uniqueFct = self.uniqueIdFunction()
+                if uniqueFct is not None:
+                    q = 1
+                    while "_subq_%d_" % q in sql:
+                        q += 1
+                    sql = "SELECT %s AS _uid_,* FROM (%s) AS _subq_%d_" % (uniqueFct, sql, q)
+                    uniqueCol = "_uid_"
 
         uri = self.uri()
         uri.setDataSource("", u"(%s\n)" % sql, geomCol, "", uniqueCol)
@@ -441,8 +462,8 @@ class Database(DbItemObject):
     def rasterTablesFactory(self, row, db, schema=None):
         return None
 
-    def tables(self, schema=None):
-        tables = self.connector.getTables(schema.name if schema else None)
+    def tables(self, schema=None, sys_tables=False):
+        tables = self.connector.getTables(schema.name if schema else None, sys_tables)
         if tables is not None:
             tables = map(lambda x: self.tablesFactory(x, self, schema), tables)
         return tables
@@ -478,6 +499,12 @@ class Database(DbItemObject):
         finally:
             self.refresh()
         return True
+
+    def explicitSpatialIndex( self ):
+        return False
+
+    def spatialIndexClause( self, src_table, src_column, dest_table, dest_table_column ):
+        return None
 
 
 class Schema(DbItemObject):
@@ -538,6 +565,9 @@ class Table(DbItemObject):
 
     def __del__(self):
         pass  # print "Table.__del__", self
+
+    def canBeAddedToCanvas( self ):
+        return True
 
     def database(self):
         return self.parent()

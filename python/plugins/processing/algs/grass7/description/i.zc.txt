@@ -5,5 +5,5 @@ ParameterRaster|input|Name of input raster map|False
 ParameterNumber|width|x-y extent of the Gaussian filter|1|None|9
 ParameterNumber|threshold|Sensitivity of Gaussian filter|0|None|10.0
 ParameterNumber|orientations|Number of azimuth directions categorized|0|None|1
-OutputRaster|output|Zero crossing raster map
+OutputRaster|output|Zero crossing
 

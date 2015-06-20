@@ -69,6 +69,12 @@ class QgsStatisticalSummary
      */
     void calculate( const QList<double>& values );
 
+    /** Returns the value of a specified statistic
+     * @param stat statistic to return
+     * @returns calculated value of statistic
+     */
+    double statistic( Statistic stat ) const;
+
     /** Returns calculated count of values
      */
     int count() const;
@@ -150,6 +156,11 @@ class QgsStatisticalSummary
      * @see thirdQuartile
      */
     double interQuartileRange() const;
+
+    /** Returns the friendly display name for a statistic
+     * @param statistic statistic to return name for
+     */
+    static QString displayName( Statistic statistic );
 
 };
 

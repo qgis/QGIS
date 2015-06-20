@@ -22,8 +22,8 @@ QgsUserInputDockWidget::QgsUserInputDockWidget( QWidget *parent )
     : QDockWidget( tr( "User input" ), parent )
     , mLayoutHorizontal( true )
 {
-  QWidget* w = new QWidget( this );
-  mLayout = new QBoxLayout( QBoxLayout::LeftToRight, this );
+  QWidget* w = new QWidget( 0 );
+  mLayout = new QBoxLayout( QBoxLayout::LeftToRight );
   mLayout->setAlignment( Qt::AlignLeft | Qt::AlignTop );
   w->setLayout( mLayout );
   setWidget( w );

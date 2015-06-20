@@ -79,6 +79,7 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QPrintDialog>
+#include <QPrinter>
 #include <QSettings>
 #include <QSizeGrip>
 #include <QSvgGenerator>
@@ -105,6 +106,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
     : QMainWindow()
     , mTitle( title )
     , mQgis( qgis )
+    , mPrinter( 0 )
     , mUndoView( 0 )
     , mAtlasFeatureAction( 0 )
 {
@@ -359,6 +361,11 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   layoutMenu->addAction( mActionAddNewScalebar );
   layoutMenu->addAction( mActionAddNewLegend );
   layoutMenu->addAction( mActionAddImage );
+  QMenu *shapeMenu = layoutMenu->addMenu( "Add Shape" );
+  shapeMenu->setIcon( QgsApplication::getThemeIcon( "/mActionAddBasicShape.png" ) );
+  shapeMenu->addAction( mActionAddRectangle );
+  shapeMenu->addAction( mActionAddTriangle );
+  shapeMenu->addAction( mActionAddEllipse );
   layoutMenu->addAction( mActionAddArrow );
   //layoutMenu->addAction( mActionAddTable );
   layoutMenu->addAction( mActionAddAttributeTable );
@@ -645,6 +652,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
 QgsComposer::~QgsComposer()
 {
   deleteItemWidgets();
+  delete mPrinter;
 }
 
 void QgsComposer::setupTheme()
@@ -1716,7 +1724,7 @@ void QgsComposer::printComposition( QgsComposer::OutputMode mode )
   }
 
   //orientation and page size are already set to QPrinter in the page setup dialog
-  QPrintDialog printDialog( &mPrinter, 0 );
+  QPrintDialog printDialog( printer(), 0 );
   if ( printDialog.exec() != QDialog::Accepted )
   {
     return;
@@ -1728,15 +1736,15 @@ void QgsComposer::printComposition( QgsComposer::OutputMode mode )
   QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
   if ( mode == QgsComposer::Single )
   {
-    mComposition->print( mPrinter, true );
+    mComposition->print( *printer(), true );
   }
   else
   {
     //prepare for first feature, so that we know paper size to begin with
     atlasMap->prepareForFeature( 0 );
 
-    mComposition->beginPrint( mPrinter, true );
-    QPainter painter( &mPrinter );
+    mComposition->beginPrint( *printer(), true );
+    QPainter painter( printer() );
 
     loadAtlasPredefinedScalesFromProject();
     if ( ! atlasMap->beginRender() && !atlasMap->featureFilterErrorString().isEmpty() )
@@ -1775,7 +1783,7 @@ void QgsComposer::printComposition( QgsComposer::OutputMode mode )
       }
 
       //start print on a new page if we're not on the first feature
-      mComposition->doPrint( mPrinter, painter, i > 0 );
+      mComposition->doPrint( *printer(), painter, i > 0 );
     }
     atlasMap->endRender();
     painter.end();
@@ -3569,7 +3577,7 @@ void QgsComposer::on_mActionPageSetup_triggered()
     return;
   }
 
-  QPageSetupDialog pageSetupDialog( &mPrinter, this );
+  QPageSetupDialog pageSetupDialog( printer(), this );
   pageSetupDialog.exec();
 }
 
@@ -3742,11 +3750,11 @@ void QgsComposer::setPrinterPageOrientation( QString orientation )
 {
   if ( orientation == tr( "Landscape" ) )
   {
-    mPrinter.setOrientation( QPrinter::Landscape );
+    printer()->setOrientation( QPrinter::Landscape );
   }
   else
   {
-    mPrinter.setOrientation( QPrinter::Portrait );
+    printer()->setOrientation( QPrinter::Portrait );
   }
 }
 
@@ -3758,11 +3766,11 @@ void QgsComposer::setPrinterPageDefaults()
   //set printer page orientation
   if ( paperWidth > paperHeight )
   {
-    mPrinter.setOrientation( QPrinter::Landscape );
+    printer()->setOrientation( QPrinter::Landscape );
   }
   else
   {
-    mPrinter.setOrientation( QPrinter::Portrait );
+    printer()->setOrientation( QPrinter::Portrait );
   }
 }
 
@@ -3813,5 +3821,15 @@ void QgsComposer::loadAtlasPredefinedScalesFromProject()
     }
   }
   atlasMap.setPredefinedScales( pScales );
+}
+
+QPrinter *QgsComposer::printer()
+{
+  //only create the printer on demand - creating a printer object can be very slow
+  //due to QTBUG-3033
+  if ( !mPrinter )
+    mPrinter = new QPrinter();
+
+  return mPrinter;
 }
 

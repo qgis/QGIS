@@ -25,7 +25,7 @@ QgsComposerRuler::QgsComposerRuler( QgsComposerRuler::Direction d ) : QWidget( 0
   mRulerFont->setPointSize( RULER_FONT_SIZE );
   mRulerFontMetrics = new QFontMetrics( *mRulerFont );
 
-  //calculate ruler sizes and marker seperations
+  //calculate ruler sizes and marker separations
 
   //minimum gap required between major ticks is 3 digits * 250%, based on appearance
   mScaleMinPixelsWidth = mRulerFontMetrics->width( "000" ) * 2.5;
@@ -345,7 +345,7 @@ int QgsComposerRuler::optimumNumberDivisions( double rulerScale, int scaleMultip
   {
     //find pixel size for this small division
     double candidateSize = largeDivisionSize / ( *divisions_it );
-    //check if this seperation is more then allowed min seperation
+    //check if this separation is more then allowed min separation
     if ( candidateSize >= mMinPixelsPerDivision )
     {
       //found a good candidate, return it

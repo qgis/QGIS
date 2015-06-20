@@ -137,6 +137,7 @@ void QgsMapToolNodeTool::createMovingRubberBands()
         vertexMap[vertex]->setRubberBandValues( true, lastRubberBand, index );
         index++;
       }
+      rb->show();
       mRubberBands.append( rb );
       lastRubberBand++;
     }
@@ -475,7 +476,6 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
         mSelectedFeature->deselectAllVertexes();
       }
     }
-
   }
 }
 
@@ -534,61 +534,58 @@ void QgsMapToolNodeTool::canvasReleaseEvent( QMouseEvent * e )
       mSelectAnother = false;
     }
   }
-  else
+  else if ( mMoving )
   {
-    if ( mMoving )
+    mMoving = false;
+    QgsPoint releaseMapCoords, pressMapCoords;
+
+    QgsExcludePointFilter excludePointFilter( mClosestMapVertex );
+    QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToMap( e->pos(), &excludePointFilter );
+
+    if ( match.isValid() )
     {
-      mMoving = false;
-      QgsPoint releaseMapCoords, pressMapCoords;
-
-      QgsExcludePointFilter excludePointFilter( mClosestMapVertex );
-      QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToMap( e->pos(), &excludePointFilter );
-
-      if ( match.isValid() )
-      {
-        releaseMapCoords = match.point();
-        pressMapCoords = mClosestMapVertex;
-      }
-      else
-      {
-        releaseMapCoords = toMapCoordinates( e->pos() );
-        pressMapCoords = toMapCoordinates( mPressCoordinates );
-      }
-
-      QgsPoint releaseLayerCoords = toLayerCoordinates( vlayer, releaseMapCoords );
-      QgsPoint pressLayerCoords = toLayerCoordinates( vlayer, pressMapCoords );
-
-      if ( match.isValid() )
-      {
-        int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
-        if ( topologicalEditing )
-        {
-          addTopologicalPoints( QList<QgsPoint>() << releaseMapCoords );
-        }
-      }
-
-      mSelectedFeature->moveSelectedVertexes( releaseLayerCoords - pressLayerCoords );
-      mCanvas->refresh();
+      releaseMapCoords = match.point();
+      pressMapCoords = mClosestMapVertex;
     }
-    else // selecting vertexes by rubberband
+    else
     {
-      // coordinates has to be coordinates from layer not canvas
-      QgsRectangle r( toLayerCoordinates( vlayer, mPressCoordinates ),
-                      toLayerCoordinates( vlayer, e->pos() ) );
+      releaseMapCoords = toMapCoordinates( e->pos() );
+      pressMapCoords = toMapCoordinates( mPressCoordinates );
+    }
 
-      QList<QgsVertexEntry*> &vertexMap = mSelectedFeature->vertexMap();
-      if ( !mCtrl )
+    QgsPoint releaseLayerCoords = toLayerCoordinates( vlayer, releaseMapCoords );
+    QgsPoint pressLayerCoords = toLayerCoordinates( vlayer, pressMapCoords );
+
+    if ( match.isValid() )
+    {
+      int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
+      if ( topologicalEditing )
       {
-        mSelectedFeature->deselectAllVertexes();
+        addTopologicalPoints( QList<QgsPoint>() << releaseMapCoords );
       }
+    }
 
-      for ( int i = 0; i < vertexMap.size(); i++ )
+    mSelectedFeature->moveSelectedVertexes( releaseLayerCoords - pressLayerCoords );
+    mCanvas->refresh();
+  }
+  else // selecting vertexes by rubberband
+  {
+    // coordinates has to be coordinates from layer not canvas
+    QgsRectangle r( toLayerCoordinates( vlayer, mPressCoordinates ),
+                    toLayerCoordinates( vlayer, e->pos() ) );
+
+    QList<QgsVertexEntry*> &vertexMap = mSelectedFeature->vertexMap();
+    if ( !mCtrl )
+    {
+      mSelectedFeature->deselectAllVertexes();
+    }
+
+    for ( int i = 0; i < vertexMap.size(); i++ )
+    {
+      if ( r.contains( vertexMap[i]->point() ) )
       {
-        if ( r.contains( vertexMap[i]->point() ) )
-        {
-          // inverting selection is enough because all were deselected if ctrl is not pressed
-          mSelectedFeature->invertVertexSelection( i, false );
-        }
+        // inverting selection is enough because all were deselected if ctrl is not pressed
+        mSelectedFeature->invertVertexSelection( i, false );
       }
     }
   }

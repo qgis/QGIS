@@ -72,7 +72,7 @@ class HubDistance(GeoAlgorithm):
         self.addParameter(ParameterSelection(self.UNIT,
             self.tr('Measurement unit'), self.UNITS))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Hub distance')))
 
     def processAlgorithm(self, progress):
         layerPoints = dataobjects.getObjectFromUri(

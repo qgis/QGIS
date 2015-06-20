@@ -23,11 +23,13 @@
 
 QgsPhotoWidgetWrapper::QgsPhotoWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-    , mPhotoLabel( NULL )
-    , mWebView( NULL )
-    , mLineEdit( NULL )
-    , mButton( NULL )
+    , mPhotoLabel( 0 )
+    , mLineEdit( 0 )
+    , mButton( 0 )
 {
+#ifdef WITH_QTWEBKIT
+  mWebView = 0;
+#endif
 }
 
 void QgsPhotoWidgetWrapper::selectFileName()
@@ -42,10 +44,12 @@ void QgsPhotoWidgetWrapper::selectFileName()
 
 void QgsPhotoWidgetWrapper::loadPixmap( const QString &fileName )
 {
+#ifdef WITH_QTWEBKIT
   if ( mWebView )
   {
     mWebView->setUrl( fileName );
   }
+#endif
 
   QPixmap pm( fileName );
   if ( !pm.isNull() && mPhotoLabel )
@@ -106,17 +110,21 @@ void QgsPhotoWidgetWrapper::initWidget( QWidget* editor )
   QWidget* container;
 
   mLineEdit = qobject_cast<QLineEdit*>( editor );
+#ifdef WITH_QTWEBKIT
   mWebView = qobject_cast<QWebView*>( editor );
+#endif
 
   if ( mLineEdit )
   {
     container = mLineEdit->parentWidget();
   }
+#ifdef WITH_QTWEBKIT
   else if ( mWebView )
   {
     container = mWebView->parentWidget();
     mLineEdit = container->findChild<QLineEdit*>();
   }
+#endif
   else
   {
     container = editor;

@@ -177,6 +177,9 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 
     QgsMessageBar * messageBar() override;
 
+    /** Adds a widget to the user input tool bar.*/
+    void addUserInputWidget( QWidget* widget ) override;
+
     // ### QGIS 3: return QgsComposer*, not QgsComposerView*
     QList<QgsComposerView*> activeComposers() override;
 

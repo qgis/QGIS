@@ -125,7 +125,7 @@ bool QgsHeatmapRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& c
     }
     else
     {
-      const QgsAttributes& attrs = feature.attributes();
+      QgsAttributes attrs = feature.attributes();
       value = attrs.value( mWeightAttrNum );
     }
     bool ok = false;

@@ -87,6 +87,10 @@ class QgsSvgCache : QObject
     /**Get image data*/
     QByteArray getImageData( const QString &path ) const;
 
+    /**Get SVG content*/
+    const QByteArray& svgContent( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+                                  double widthScaleFactor, double rasterScaleFactor );
+
   signals:
     /** Emit a signal to be caught by qgisapp and display a msg on status bar */
     void statusChanged( const QString&  theStatusQString );

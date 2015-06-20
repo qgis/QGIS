@@ -354,6 +354,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     { Q_UNUSED( node ); errorMessage = QString( "Layer type %1 not supported" ).arg( type() ); return false; }
 
 
+
     /** Read the symbology for the current layer from the Dom node supplied.
      * @param node node that will contain the symbology definition for this layer.
      * @param errorMessage reference to string that will be updated with any error messages

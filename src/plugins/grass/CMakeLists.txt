@@ -20,11 +20,9 @@ ENDIF (WIN32)
 SET (GRASS_PLUGIN_SRCS
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassplugin.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassselect.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassbrowser.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassedit.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassedittools.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrasstools.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmodel.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmapcalc.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmodule.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassnewmapset.cpp
@@ -49,10 +47,8 @@ SET (GRASS_PLUGIN_UIS
 SET (GRASS_PLUGIN_MOC_HDRS
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassplugin.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassselect.h
-   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassbrowser.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassedit.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrasstools.h
-   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmodel.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmapcalc.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmodule.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassnewmapset.h
@@ -122,6 +118,7 @@ INCLUDE_DIRECTORIES(
   ..
   ${CMAKE_CURRENT_BINARY_DIR}
   ../../core
+  ../../core/geometry
   ../../core/raster
   ../../gui
   ../../providers/grass

@@ -277,3 +277,46 @@ QFont QgsFontUtils::getStandardTestFont( const QString& style, int pointsize )
 
   return f;
 }
+
+QDomElement QgsFontUtils::toXmlElement( const QFont& font, QDomDocument& document, const QString& elementName )
+{
+  QDomElement fontElem = document.createElement( elementName );
+  fontElem.setAttribute( "description", font.toString() );
+  fontElem.setAttribute( "style", font.styleName() );
+  return fontElem;
+}
+
+bool QgsFontUtils::setFromXmlElement( QFont& font, const QDomElement& element )
+{
+  if ( element.isNull() )
+  {
+    return false;
+  }
+
+  font.fromString( element.attribute( "description" ) );
+  if ( element.hasAttribute( "style" ) )
+  {
+    ( void )updateFontViaStyle( font, element.attribute( "style" ) );
+  }
+
+  return true;
+}
+
+bool QgsFontUtils::setFromXmlChildNode( QFont& font, const QDomElement& element, const QString& childNode )
+{
+  if ( element.isNull() )
+  {
+    return false;
+  }
+
+  QDomNodeList nodeList = element.elementsByTagName( childNode );
+  if ( nodeList.size() > 0 )
+  {
+    QDomElement fontElem = nodeList.at( 0 ).toElement();
+    return setFromXmlElement( font, fontElem );
+  }
+  else
+  {
+    return false;
+  }
+}

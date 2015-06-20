@@ -2,5 +2,5 @@ i.fft
 i.fft - Fast Fourier Transform (FFT) for image processing.
 Imagery (i.*)
 ParameterRaster|input|Name of input raster map|False
-OutputRaster|real|Name for output real part arrays stored as raster map
-OutputRaster|imaginary|Name for output imaginary part arrays stored as raster map
+OutputRaster|real|Real part arrays
+OutputRaster|imaginary|Imaginary part arrays

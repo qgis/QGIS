@@ -19,6 +19,6 @@ ParameterString|hmax|Threshold water depth [m] (diffusion increases after this w
 ParameterString|halpha|Diffusion increase constant|4.0
 ParameterString|hbeta|Weighting factor for water flow velocity vector|0.5
 ParameterBoolean|-t|Time-series output|True
-OutputRaster|depth|Output water depth raster map [m]
-OutputRaster|discharge|Output water discharge raster map [m3/s]
-OutputRaster|error|Output simulation error raster map [m]
+OutputRaster|depth|Water depth [m]
+OutputRaster|discharge|Water discharge [m3/s]
+OutputRaster|error|Simulation error [m]

@@ -85,6 +85,12 @@ class CORE_EXPORT QgsStatisticalSummary
      */
     void calculate( const QList<double>& values );
 
+    /** Returns the value of a specified statistic
+     * @param stat statistic to return
+     * @returns calculated value of statistic
+     */
+    double statistic( Statistic stat ) const;
+
     /** Returns calculated count of values
      */
     int count() const { return mCount; }
@@ -166,6 +172,11 @@ class CORE_EXPORT QgsStatisticalSummary
      * @see thirdQuartile
      */
     double interQuartileRange() const { return mThirdQuartile - mFirstQuartile; }
+
+    /** Returns the friendly display name for a statistic
+     * @param statistic statistic to return name for
+     */
+    static QString displayName( Statistic statistic );
 
   private:
 

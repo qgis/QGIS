@@ -50,7 +50,9 @@ QgsDxfPalLabeling::QgsDxfPalLabeling( QgsDxfExport* dxf, const QgsRectangle& bbo
   mRenderContext.setRendererScale( scale );
   mRenderContext.setExtent( bbox );
   mRenderContext.setScaleFactor( 96.0 / 25.4 );
+  Q_NOWARN_DEPRECATED_PUSH
   mRenderContext.setMapToPixel( QgsMapToPixel( 1.0 / factor, bbox.xMinimum(), bbox.yMinimum(), bbox.height() * factor ) );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 QgsDxfPalLabeling::~QgsDxfPalLabeling()
@@ -79,8 +81,7 @@ void QgsDxfPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& 
       return;
 
     //label text
-    QString text = g->text();
-    QString txt = label->getPartId() == -1 ? text : QString( text[ label->getPartId()] );
+    QString txt = g->text( label->getPartId() );
 
     //angle
     double angle = label->getAlpha() * 180 / M_PI;

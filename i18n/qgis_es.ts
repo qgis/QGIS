@@ -20278,7 +20278,7 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
         <translation>Anchura de columnas igual</translation>
     </message>
     <message>
-        <source>Allow to split layer items into multiple columns.</source>
+        <source>Allow splitting layer items into multiple columns.</source>
         <translation>Permitir dividir los elementos de las capas en múltiples columnas.</translation>
     </message>
     <message>

@@ -32,7 +32,7 @@ from PyQt4.QtCore import qDebug
 # DON'T LOWER THIS THRESHOLD UNLESS MEMBERS HAVE BEEN REMOVED FROM THE API
 # (changes which raise this threshold are welcomed though!)
 
-ACCEPTABLE_COVERAGE = 53.9967
+ACCEPTABLE_COVERAGE = 54.6134
 
 
 def elemIsDocumentableClass(elem):
@@ -86,13 +86,26 @@ def parseClassElem(e):
 def parseFile(f):
     documentable_members = 0
     documented_members = 0
-    for event, elem in ET.iterparse(f):
-        if event == 'end' and elem.tag == 'compounddef':
-            if elemIsDocumentableClass(elem):
-                members, documented = parseClassElem(elem)
-                documentable_members += members
-                documented_members += documented
-            elem.clear()
+    try:
+        for event, elem in ET.iterparse(f):
+            if event == 'end' and elem.tag == 'compounddef':
+                if elemIsDocumentableClass(elem):
+                    members, documented = parseClassElem(elem)
+                    documentable_members += members
+                    documented_members += documented
+                    if documented < members:
+                        print "Class {}, {}/{} members documented".format(elem.find('compoundname').text,documented,members)
+                elem.clear()
+    except ET.ParseError as e:
+        #sometimes Doxygen generates malformed xml (eg for < and > operators)
+        line_num, col = e.position
+        with open(f, 'r') as xml_file:
+            for i, l in enumerate(xml_file):
+                if i == line_num - 1:
+                   line = l
+                   break
+        caret = '{:=>{}}'.format('^', col )
+        print 'ParseError in {}\n{}\n{}\n{}'.format(f,e,line,caret)
     return documentable_members, documented_members
 
 
@@ -109,6 +122,7 @@ def parseDocs(path):
 class TestQgsDocCoverage(TestCase):
 
     def testCoverage(self):
+        print 'CTEST_FULL_OUTPUT'
         prefixPath = os.environ['QGIS_PREFIX_PATH']
         docPath = os.path.join(prefixPath, '..', 'doc', 'api', 'xml' )
 

@@ -30,7 +30,6 @@
 #include <QActionGroup>
 #include <QTextStream>
 #include <QTimer>
-#include <QWebPage>
 #include <QDesktopServices>
 
 #include "qgis.h"

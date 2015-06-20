@@ -25,19 +25,24 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from PyQt4 import uic
 from PyQt4.QtGui import QDialog, QTreeWidgetItem, QMessageBox
 from qgis.core import QgsRasterLayer
 
 from qgis.utils import iface
 from processing.tools import dataobjects
 
-from processing.ui.ui_DlgNumberInput import Ui_DlgNumberInput
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'DlgNumberInput.ui'))
 
 
-class NumberInputDialog(QDialog, Ui_DlgNumberInput):
+class NumberInputDialog(BASE, WIDGET):
 
     def __init__(self, isInteger):
-        QDialog.__init__(self)
+        super(NumberInputDialog, self).__init__(None)
         self.setupUi(self)
 
         if hasattr(self.leFormula, 'setPlaceholderText'):

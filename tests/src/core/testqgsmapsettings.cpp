@@ -15,7 +15,6 @@
 #include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
-#include <QObject>
 //header for class being tested
 #include <qgsrectangle.h>
 #include <qgsmapsettings.h>

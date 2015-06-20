@@ -783,7 +783,7 @@ int QgsGrassProvider::openMap( QString gisdbase, QString location, QString mapse
   map.nUsers = 1;
   map.version = 1;
   map.update = 0;
-  map.map = ( struct Map_info * ) malloc( sizeof( struct Map_info ) );
+  map.map = QgsGrass::vectNewMapStruct();
 
   // Set GRASS location
   QgsGrass::setLocation( gisdbase, location );
@@ -982,6 +982,8 @@ void QgsGrassProvider::closeMap( int mapId )
 
       if ( mapsetunset )
         G__setenv(( char * )"MAPSET", "" );
+
+      // TODO: verify if vectDestroyMapStruct(map->map) could/should be called
     }
     map->valid = false;
   }
@@ -1873,6 +1875,8 @@ QString QgsGrassProvider::executeSql( int field, const QString &sql )
 QString QgsGrassProvider::createTable( int field, const QString &key, const QString &columns )
 {
   QgsDebugMsg( QString( "field = %1" ).arg( field ) );
+
+  // TODO: use QgsGrass::createTable
 
   // Read attributes
   struct field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0

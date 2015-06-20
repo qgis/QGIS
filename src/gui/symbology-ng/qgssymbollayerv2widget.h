@@ -90,6 +90,7 @@ class GUI_EXPORT QgsSimpleLineSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
 
     //creates a new icon for the 'change pattern' button
     void updatePatternIcon();
+
 };
 
 ///////////
@@ -104,6 +105,7 @@ class GUI_EXPORT QgsSimpleMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Wid
 
   public:
     QgsSimpleMarkerSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = NULL );
+    ~QgsSimpleMarkerSymbolLayerV2Widget();
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) { return new QgsSimpleMarkerSymbolLayerV2Widget( vl ); }
 
@@ -128,6 +130,14 @@ class GUI_EXPORT QgsSimpleMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Wid
 
   protected:
     QgsSimpleMarkerSymbolLayerV2* mLayer;
+
+  private slots:
+
+    void updateAssistantSymbol();
+
+  private:
+
+    QgsMarkerSymbolV2* mAssistantPreviewSymbol;
 };
 
 ///////////
@@ -286,6 +296,7 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widget
 
   public:
     QgsSvgMarkerSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = NULL );
+    ~QgsSvgMarkerSymbolLayerV2Widget();
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) { return new QgsSvgMarkerSymbolLayerV2Widget( vl ); }
 
@@ -319,6 +330,15 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widget
     void setGuiForSvg( const QgsSvgMarkerSymbolLayerV2* layer );
 
     QgsSvgMarkerSymbolLayerV2* mLayer;
+
+  private slots:
+
+    void updateAssistantSymbol();
+
+  private:
+
+    QgsMarkerSymbolV2* mAssistantPreviewSymbol;
+
 };
 
 ///////////
@@ -476,6 +496,8 @@ class GUI_EXPORT QgsFontMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
   public:
     QgsFontMarkerSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = NULL );
 
+    ~QgsFontMarkerSymbolLayerV2Widget();
+
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) { return new QgsFontMarkerSymbolLayerV2Widget( vl ); }
 
     // from base class
@@ -497,6 +519,15 @@ class GUI_EXPORT QgsFontMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
   protected:
     QgsFontMarkerSymbolLayerV2* mLayer;
     CharacterWidget* widgetChar;
+
+  private slots:
+
+    void updateAssistantSymbol();
+
+  private:
+
+    QgsMarkerSymbolV2* mAssistantPreviewSymbol;
+
 };
 
 //////////

@@ -518,4 +518,3 @@ void TestQgsComposerTable::attributeTableVisibleOnly()
 
 QTEST_MAIN( TestQgsComposerTable )
 #include "testqgscomposertable.moc"
-

@@ -24,6 +24,13 @@
 class QFrame;
 class QBoxLayout;
 
+
+/**
+ * @brief The QgsUserInputDockWidget class is a dock widget that shall be used to display widgets for user inputs.
+ * It can be used by map tools, plugins, etc.
+ * Several widgets can be displayed at once, they will be separated by a separator. Widgets will be either layout horizontally or vertically.
+ * The dock is automatically hidden if it contains no widget.
+ */
 class GUI_EXPORT QgsUserInputDockWidget : public QDockWidget
 {
     Q_OBJECT
@@ -35,7 +42,8 @@ class GUI_EXPORT QgsUserInputDockWidget : public QDockWidget
     void addUserInputWidget( QWidget* widget );
 
   protected:
-    void paintEvent( QPaintEvent *event );
+    //! will not display the dock if it contains no widget
+    void paintEvent( QPaintEvent *event ) override;
 
   private slots:
     void widgetDestroyed( QObject* obj );
@@ -45,8 +53,7 @@ class GUI_EXPORT QgsUserInputDockWidget : public QDockWidget
     void floatingChanged( bool floating );
 
   private:
-    void createLayout();
-
+    //! change layout according to dock location
     void updateLayoutDirection();
 
     // list of widget with their corresponding line separator

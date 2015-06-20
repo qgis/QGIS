@@ -146,4 +146,3 @@ void TestQgsComposerDD::ddEvaluate()
 
 QTEST_MAIN( TestQgsComposerDD )
 #include "testqgscomposerdd.moc"
-

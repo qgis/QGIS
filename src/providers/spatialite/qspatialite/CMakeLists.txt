@@ -17,6 +17,7 @@ TARGET_LINK_LIBRARIES(qsqlspatialite
 	${QT_QTSQL_LIBRARY}
 	${SQLITE3_LIBRARY}
 	${SPATIALITE_LIBRARY}
+	qgis_core
 )
 
 INSTALL(TARGETS qsqlspatialite

@@ -14,11 +14,20 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_4">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <property name="verticalSpacing">
     <number>4</number>
-   </property>
-   <property name="margin">
-    <number>0</number>
    </property>
    <item row="0" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
@@ -104,25 +113,6 @@
        </property>
        <widget class="QWidget" name="pageMarker">
         <layout class="QGridLayout" name="gridLayout">
-         <item row="0" column="1">
-          <widget class="QgsDoubleSpinBox" name="spinSize">
-           <property name="decimals">
-            <number>5</number>
-           </property>
-           <property name="maximum">
-            <double>99999.000000000000000</double>
-           </property>
-           <property name="singleStep">
-            <double>0.200000000000000</double>
-           </property>
-           <property name="value">
-            <double>1.000000000000000</double>
-           </property>
-           <property name="showClearButton" stdset="0">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
          <item row="0" column="0">
           <widget class="QLabel" name="label_2">
            <property name="text">
@@ -130,14 +120,21 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_3">
+         <item row="0" column="3">
+          <widget class="QgsDataDefinedButton" name="mSizeDDBtn">
            <property name="text">
-            <string>Rotation</string>
+            <string>...</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="1">
+         <item row="1" column="3">
+          <widget class="QgsDataDefinedButton" name="mRotationDDBtn">
+           <property name="text">
+            <string>...</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
           <widget class="QgsDoubleSpinBox" name="spinAngle">
            <property name="suffix">
             <string> °</string>
@@ -150,6 +147,32 @@
            </property>
            <property name="singleStep">
             <double>0.500000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>Rotation</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QgsDoubleSpinBox" name="spinSize">
+           <property name="decimals">
+            <number>5</number>
+           </property>
+           <property name="maximum">
+            <double>99999999.989999994635582</double>
+           </property>
+           <property name="singleStep">
+            <double>0.200000000000000</double>
+           </property>
+           <property name="value">
+            <double>1.000000000000000</double>
+           </property>
+           <property name="showClearButton" stdset="0">
+            <bool>false</bool>
            </property>
           </widget>
          </item>
@@ -176,6 +199,13 @@
            </property>
           </widget>
          </item>
+         <item row="0" column="2">
+          <widget class="QgsDataDefinedButton" name="mWidthDDBtn">
+           <property name="text">
+            <string>...</string>
+           </property>
+          </widget>
+         </item>
          <item row="0" column="0">
           <widget class="QLabel" name="label_4">
            <property name="text">
@@ -187,7 +217,16 @@
        </widget>
        <widget class="QWidget" name="pageFill">
         <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <property name="margin">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
           <number>0</number>
          </property>
         </layout>
@@ -334,17 +373,25 @@
    <header>qgsunitselectionwidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsDataDefinedButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsdatadefinedbutton.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mTransparencySlider</tabstop>
   <tabstop>spinSize</tabstop>
+  <tabstop>mSizeDDBtn</tabstop>
+  <tabstop>spinWidth</tabstop>
+  <tabstop>mWidthDDBtn</tabstop>
   <tabstop>btnColor</tabstop>
   <tabstop>spinAngle</tabstop>
+  <tabstop>mRotationDDBtn</tabstop>
   <tabstop>groupsCombo</tabstop>
   <tabstop>openStyleManagerButton</tabstop>
   <tabstop>viewSymbols</tabstop>
   <tabstop>btnAdvanced</tabstop>
-  <tabstop>spinWidth</tabstop>
  </tabstops>
  <resources/>
  <connections/>

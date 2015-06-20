@@ -63,7 +63,7 @@ class AddTableField(GeoAlgorithm):
         self.addParameter(ParameterNumber(self.FIELD_PRECISION,
             self.tr('Field precision'), 0, 10, 0))
         self.addOutput(OutputVector(
-            self.OUTPUT_LAYER, self.tr('Output layer')))
+            self.OUTPUT_LAYER, self.tr('Added')))
 
     def processAlgorithm(self, progress):
         fieldType = self.getParameterValue(self.FIELD_TYPE)

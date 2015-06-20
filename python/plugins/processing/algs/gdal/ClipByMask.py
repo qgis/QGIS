@@ -64,7 +64,7 @@ class ClipByMask(GdalAlgorithm):
             self.tr('Keep resolution of output raster'), False))
         self.addParameter(ParameterString(self.EXTRA,
             self.tr('Additional creation parameters'), '', optional=True))
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output layer')))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Clipped (mask)')))
 
     def getConsoleCommands(self):
         out = self.getOutputValue(self.OUTPUT)

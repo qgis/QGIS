@@ -7,4 +7,4 @@ ParameterMultipleInput|start_points|Vector layer(s) containing starting point(s)
 ParameterBoolean|-c|Copy input cell values on output|False
 ParameterBoolean|-a|Accumulate input values along the path|False
 ParameterBoolean|-n|Count cell numbers along the path|False
-OutputRaster|output|Result
+OutputRaster|output|Least cost path

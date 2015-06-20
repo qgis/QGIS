@@ -53,9 +53,12 @@ from processing.core.outputs import OutputDirectory
 from processing.core.outputs import getOutputFromString
 from processing.script.WrongScriptException import WrongScriptException
 
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+
+
 class ScriptAlgorithm(GeoAlgorithm):
 
-    _icon = QtGui.QIcon(os.path.dirname(__file__) + '/../images/script.png')
+    _icon = QtGui.QIcon(os.path.join(pluginPath, 'images', 'script.png'))
 
     def __init__(self, descriptionFile, script=None):
         """The script parameter can be used to directly pass the code
@@ -166,6 +169,9 @@ class ScriptAlgorithm(GeoAlgorithm):
             param = ParameterMultipleInput(tokens[0], desc,
                     ParameterMultipleInput.TYPE_VECTOR_ANY)
             param.optional = False
+        elif tokens[1].lower().strip().startswith('selectionfromfile'):
+            options = tokens[1].strip()[len('selectionfromfile '):].split(';')
+            param = ParameterSelection(tokens[0], desc, options, isSource=True)
         elif tokens[1].lower().strip().startswith('selection'):
             options = tokens[1].strip()[len('selection '):].split(';')
             param = ParameterSelection(tokens[0], desc, options)

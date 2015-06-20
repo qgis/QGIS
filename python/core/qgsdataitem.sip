@@ -145,7 +145,6 @@ class QgsDataItem : QObject
     void emitDataChanged( );
     void emitStateChanged( QgsDataItem* item, QgsDataItem::State oldState );
     virtual void childrenCreated();
-    void setPopulatingIcon();
 
   signals:
     void beginInsertItems( QgsDataItem* parent, int first, int last );

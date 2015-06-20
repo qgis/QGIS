@@ -47,7 +47,10 @@ from processing.core.parameters import ParameterExtent
 from processing.tools.system import getTempFilename
 import xml.etree.ElementTree as ET
 import traceback
-#import inspect
+
+pluginPath = os.path.normpath(os.path.join(
+    os.path.split(os.path.dirname(__file__))[0], os.pardir))
+
 
 class OTBAlgorithm(GeoAlgorithm):
 
@@ -71,7 +74,7 @@ class OTBAlgorithm(GeoAlgorithm):
         return newone
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + "/../../images/otb.png")
+        return QIcon(os.path.join(pluginPath, 'images', 'otb.png'))
 
     def help(self):
         folder = os.path.join( OTBUtils.otbDescriptionPath(), 'doc' )

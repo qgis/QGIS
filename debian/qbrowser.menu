@@ -1,0 +1,3 @@
+?package(qgis):needs="X11" section="Applications/Science/Geoscience"\
+  icon="/usr/share/pixmaps/qbrowser.xpm" title="QGIS Browser"\
+  command="/usr/bin/qbrowser"

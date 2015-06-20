@@ -6,12 +6,12 @@ ParameterSelection|format|Format for reporting the slope|degrees;percent
 ParameterSelection|precision|Type of output aspect and slope layer|CELL;FCELL;DCELL
 ParameterNumber|zscale|Multiplicative factor to convert elevation units to meters|None|None|1.0
 ParameterNumber|min_slope|Minimum slope val. (in percent) for which aspect is computed|None|None|0.0
-OutputRaster|slope|Output slope layer
-OutputRaster|aspect|Output aspect layer
-OutputRaster|pcurvature|Output profile curvature layer
-OutputRaster|tcurvature|Output tangential curvature layer
-OutputRaster|dx|Output first order partial derivative dx (E-W slope) layer
-OutputRaster|dy|Output first order partial derivative dy (N-S slope) layer
-OutputRaster|dxx|Output second order partial derivative dxx layer
-OutputRaster|dyy|Output second order partial derivative dyy layer
-OutputRaster|dxy|Output second order partial derivative dxy layer
+OutputRaster|slope|Slope
+OutputRaster|aspect|Aspect
+OutputRaster|pcurvature|Profile curvature
+OutputRaster|tcurvature|Tangential curvature
+OutputRaster|dx|First order partial derivative dx (E-W slope)
+OutputRaster|dy|First order partial derivative dy (N-S slope)
+OutputRaster|dxx|Second order partial derivative dxx
+OutputRaster|dyy|Second order partial derivative dyy
+OutputRaster|dxy|Second order partial derivative dxy

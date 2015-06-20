@@ -9,7 +9,7 @@ ParameterRaster|visibility|Input visibility raster map in km (optional)|True
 ParameterFile|parameters|Name of input text file|False
 ParameterRange|range|Input imagery range [0,255]|0,255
 ParameterBoolean|-o|Try to increase computation speed when altitude and/or visibility map is used|True
-OutputRaster|output|Name for output raster map
+OutputRaster|output|Atmospheric correction
 ParameterBoolean|-f|Output raster is floating point|False
 ParameterRange|rescale|Rescale output raster map [0,255]|0,255
 

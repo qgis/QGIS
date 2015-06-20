@@ -61,7 +61,7 @@ class BasicStatisticsStrings(GeoAlgorithm):
             self.INPUT_LAYER, ParameterTableField.DATA_TYPE_STRING))
 
         self.addOutput(OutputHTML(self.OUTPUT_HTML_FILE,
-            self.tr('Statistics for text field')))
+            self.tr('Statistics for text')))
 
         self.addOutput(OutputNumber(self.MIN_LEN, self.tr('Minimum length')))
         self.addOutput(OutputNumber(self.MAX_LEN, self.tr('Maximum length')))

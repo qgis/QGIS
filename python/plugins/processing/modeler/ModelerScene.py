@@ -105,11 +105,17 @@ class ModelerScene(QtGui.QGraphicsScene):
                     sourceItems = self.getItemsFromParamValue(value)
                     for sourceItem, sourceIdx in sourceItems:
                         arrow = ModelerArrowItem(sourceItem, sourceIdx, self.algItems[alg.name], idx)
+                        sourceItem.addArrow(arrow)
+                        self.algItems[alg.name].addArrow(arrow)
+                        arrow.updatePath()
                         self.addItem(arrow)
                     idx += 1
             for depend in alg.dependencies:
                 arrow = ModelerArrowItem(self.algItems[depend], -1,
                         self.algItems[alg.name], -1)
+                self.algItems[depend].addArrow(arrow)
+                self.algItems[alg.name].addArrow(arrow)
+                arrow.updatePath()
                 self.addItem(arrow)
 
         # And finally the outputs
@@ -132,6 +138,9 @@ class ModelerScene(QtGui.QGraphicsScene):
                     outputItems[key] = item
                     arrow = ModelerArrowItem(self.algItems[alg.name], idx, item,
                             -1)
+                    self.algItems[alg.name].addArrow(arrow)
+                    item.addArrow(arrow)
+                    arrow.updatePath()
                     self.addItem(arrow)
                     idx += 1
                 else:

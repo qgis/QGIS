@@ -6,4 +6,4 @@ ParameterNumber|min|Minimum radius for ring/circle map (in meters)|None|None|10
 ParameterNumber|max|Maximum radius for ring/circle map (in meters)|None|None|20
 ParameterString|mult|Data value multiplier|1
 ParameterBoolean|-b|Generate binary raster map|False
-OutputRaster|output|Name for output raster map
+OutputRaster|output|Circles

@@ -31,7 +31,7 @@ class TestQgsExpressionCustomFunctions(TestCase):
     def expandargs(value1, value2, value3, feature, parent):
                 return value1, value2, value3
 
-    @qgsfunction(0, 'testing', register=False)
+    @qgsfunction(args=0, group='testing', register=False)
     def special(values, feature, parent):
         return "test"
 
@@ -82,9 +82,13 @@ class TestQgsExpressionCustomFunctions(TestCase):
         result = exp.evaluate()
         self.assertEqual('Testing_1', result)
 
-    def testZeroArgFunctionsAreSpecialColumns(self):
+    def testZeroArgFunctionsTakeNoArgs(self):
+        QgsExpression.registerFunction(self.special)
         special = self.special
-        self.assertEqual(special.name(), '$special')
+        self.assertEqual(special.name(), 'special')
+        exp = QgsExpression('special()')
+        result = exp.evaluate()
+        self.assertEqual('test', result)
 
     def testDecoratorPreservesAttributes(self):
         func = self.testfun

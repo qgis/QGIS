@@ -25,15 +25,21 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtGui import QWidget
+import os
+
+from PyQt4 import uic
+
 from processing.gui.NumberInputDialog import NumberInputDialog
 
-from processing.ui.ui_widgetNumberSelector import Ui_Form
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'widgetNumberSelector.ui'))
 
-class NumberInputPanel(QWidget, Ui_Form):
+
+class NumberInputPanel(BASE, WIDGET):
 
     def __init__(self, number, minimum, maximum, isInteger):
-        QWidget.__init__(self)
+        super(NumberInputPanel, self).__init__(None)
         self.setupUi(self)
 
         self.isInteger = isInteger

@@ -20241,7 +20241,7 @@ Please try a lower resolution or a smaller papersize</source>
         <translation>컬럼 폭이 동일</translation>
     </message>
     <message>
-        <source>Allow to split layer items into multiple columns.</source>
+        <source>Allow splitting layer items into multiple columns.</source>
         <translation>다중 컬럼안에 레이어 항목의 분리를 허용합니다.</translation>
     </message>
     <message>

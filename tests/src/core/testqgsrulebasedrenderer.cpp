@@ -22,11 +22,6 @@
 #include <qgssymbolv2.h>
 #include <qgsvectorlayer.h>
 
-#if QT_VERSION < 0x40701
-// See http://hub.qgis.org/issues/4284
-Q_DECLARE_METATYPE( QVariant )
-#endif
-
 typedef QgsRuleBasedRendererV2::Rule RRule;
 
 class TestQgsRuleBasedRenderer: public QObject
@@ -176,4 +171,3 @@ class TestQgsRuleBasedRenderer: public QObject
 QTEST_MAIN( TestQgsRuleBasedRenderer )
 
 #include "testqgsrulebasedrenderer.moc"
-

@@ -35,27 +35,26 @@
 
 QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
     : QgsAbstractFeatureIteratorFromSource<QgsOgrFeatureSource>( source, ownSource, request )
-    , ogrDataSource( 0 )
     , ogrLayer( 0 )
     , mSubsetStringSet( false )
     , mGeometrySimplifier( NULL )
 {
   mFeatureFetched = false;
 
-  ogrDataSource = OGROpen( TO8F( mSource->mFilePath ), false, NULL );
+  mConn = QgsOgrConnPool::instance()->acquireConnection( mSource->mFilePath );
 
   if ( mSource->mLayerName.isNull() )
   {
-    ogrLayer = OGR_DS_GetLayer( ogrDataSource, mSource->mLayerIndex );
+    ogrLayer = OGR_DS_GetLayer( mConn->ds, mSource->mLayerIndex );
   }
   else
   {
-    ogrLayer = OGR_DS_GetLayerByName( ogrDataSource, TO8( mSource->mLayerName ) );
+    ogrLayer = OGR_DS_GetLayerByName( mConn->ds, TO8( mSource->mLayerName ) );
   }
 
   if ( !mSource->mSubsetString.isEmpty() )
   {
-    ogrLayer = QgsOgrUtils::setSubsetString( ogrLayer, ogrDataSource, mSource->mEncoding, mSource->mSubsetString );
+    ogrLayer = QgsOgrUtils::setSubsetString( ogrLayer, mConn->ds, mSource->mEncoding, mSource->mSubsetString );
     mSubsetStringSet = true;
   }
 
@@ -74,15 +73,9 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource* source, bool 
   // spatial query to select features
   if ( mRequest.filterType() == QgsFeatureRequest::FilterRect )
   {
-    OGRGeometryH filter = 0;
-    QString wktExtent = QString( "POLYGON((%1))" ).arg( mRequest.filterRect().asPolygon() );
-    QByteArray ba = wktExtent.toAscii();
-    const char *wktText = ba;
+    const QgsRectangle& rect = mRequest.filterRect();
 
-    OGR_G_CreateFromWkt(( char ** )&wktText, NULL, &filter );
-    QgsDebugMsg( "Setting spatial filter using " + wktExtent );
-    OGR_L_SetSpatialFilter( ogrLayer, filter );
-    OGR_G_DestroyGeometry( filter );
+    OGR_L_SetSpatialFilterRect( ogrLayer, rect.xMinimum(), rect.yMinimum(), rect.xMaximum(), rect.yMaximum() );
   }
   else
   {
@@ -186,6 +179,9 @@ bool QgsOgrFeatureIterator::fetchFeature( QgsFeature& feature )
     if ( !readFeature( fet, feature ) )
       continue;
 
+    if ( mRequest.filterType() == QgsFeatureRequest::FilterRect && !feature.constGeometry() )
+      continue;
+
     // we have a feature, end this cycle
     feature.setValid( true );
     OGR_F_Destroy( fet );
@@ -218,13 +214,13 @@ bool QgsOgrFeatureIterator::close()
 
   if ( mSubsetStringSet )
   {
-    OGR_DS_ReleaseResultSet( ogrDataSource, ogrLayer );
+    OGR_DS_ReleaseResultSet( mConn->ds, ogrLayer );
   }
 
-  OGR_DS_Destroy( ogrDataSource );
+  QgsOgrConnPool::instance()->releaseConnection( mConn );
+  mConn = 0;
 
   mClosed = true;
-  ogrDataSource = 0;
   return true;
 }
 
@@ -277,7 +273,7 @@ bool QgsOgrFeatureIterator::readFeature( OGRFeatureH fet, QgsFeature& feature )
 {
   feature.setFeatureId( OGR_F_GetFID( fet ) );
   feature.initAttributes( mSource->mFields.count() );
-  feature.setFields( &mSource->mFields ); // allow name-based attribute lookups
+  feature.setFields( mSource->mFields ); // allow name-based attribute lookups
 
   bool useIntersect = mRequest.flags() & QgsFeatureRequest::ExactIntersect;
   bool geometryTypeFilter = mSource->mOgrGeometryTypeFilter != wkbUnknown;

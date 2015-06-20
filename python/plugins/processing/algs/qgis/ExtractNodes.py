@@ -45,7 +45,7 @@ class ExtractNodes(GeoAlgorithm):
             self.tr('Input layer'),
             [ParameterVector.VECTOR_TYPE_POLYGON, ParameterVector.VECTOR_TYPE_LINE]))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Nodes')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(

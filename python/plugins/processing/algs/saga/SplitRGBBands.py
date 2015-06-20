@@ -33,6 +33,9 @@ from processing.core.outputs import OutputRaster
 from processing.tools.system import getTempFilename, isWindows
 import SagaUtils
 
+pluginPath = os.path.normpath(os.path.join(
+    os.path.split(os.path.dirname(__file__))[0], os.pardir))
+
 
 class SplitRGBBands(GeoAlgorithm):
 
@@ -42,7 +45,7 @@ class SplitRGBBands(GeoAlgorithm):
     B = 'B'
 
     def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + '/../../images/saga.png')
+        return QtGui.QIcon(os.path.join(pluginPath, 'images', 'saga.png'))
 
     def defineCharacteristics(self):
         self.name = 'Split RGB bands'
@@ -71,10 +74,10 @@ class SplitRGBBands(GeoAlgorithm):
         b = self.getOutputValue(SplitRGBBands.B)
         commands = []
         version = SagaUtils.getSagaInstalledVersion(True)
-        trailing = "000" if version != "2.1.4" else ""
-        lib = "" if isWindows() else "lib"
+        trailing = ""
+        lib = ""
         commands.append('%sio_gdal 0 -GRIDS "%s" -FILES "%s"' % (lib, temp, input)
-                        + '"')
+                        )
         commands.append('%sio_gdal 1 -GRIDS "%s_%s1.sgrd" -FORMAT 1 -TYPE 0 -FILE "%s"' %(lib, temp, trailing, r)
                         )
         commands.append('%sio_gdal 1 -GRIDS "%s_%s2.sgrd" -FORMAT 1 -TYPE 0 -FILE "%s"' %(lib, temp, trailing, g)

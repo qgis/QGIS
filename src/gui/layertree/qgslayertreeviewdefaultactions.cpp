@@ -33,7 +33,7 @@ QgsLayerTreeViewDefaultActions::QgsLayerTreeViewDefaultActions( QgsLayerTreeView
 
 QAction* QgsLayerTreeViewDefaultActions::actionAddGroup( QObject* parent )
 {
-  QAction* a = new QAction( QgsApplication::getThemeIcon( "/mActionFolder.png" ), tr( "&Add Group" ), parent );
+  QAction* a = new QAction( QgsApplication::getThemeIcon( "/mActionAddGroup.svg" ), tr( "&Add Group" ), parent );
   connect( a, SIGNAL( triggered() ), this, SLOT( addGroup() ) );
   return a;
 }

@@ -41,6 +41,8 @@ from processing.modeler.DeleteModelAction import DeleteModelAction
 from processing.modeler.AddModelFromFileAction import AddModelFromFileAction
 from processing.gui.GetScriptsAndModels import GetModelsAction
 
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+
 
 class ModelerAlgorithmProvider(AlgorithmProvider):
 
@@ -68,7 +70,7 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
         return 'model'
 
     def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../images/model.png')
+        return QIcon(os.path.join(pluginPath, 'images', 'model.png'))
 
     def _loadAlgorithms(self):
         folder = ModelerUtils.modelsFolder()

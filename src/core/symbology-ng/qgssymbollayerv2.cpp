@@ -22,12 +22,72 @@
 #include "qgsgeometrysimplifier.h"
 #include "qgspainteffect.h"
 #include "qgseffectstack.h"
+#include "qgspainteffectregistry.h"
 #include "qgsdatadefined.h"
 
 #include <QSize>
 #include <QPainter>
 #include <QPointF>
 #include <QPolygonF>
+
+const QString QgsSymbolLayerV2::EXPR_SIZE( "size" );
+const QString QgsSymbolLayerV2::EXPR_ANGLE( "angle" );
+const QString QgsSymbolLayerV2::EXPR_NAME( "name" );
+const QString QgsSymbolLayerV2::EXPR_COLOR( "color" );
+const QString QgsSymbolLayerV2::EXPR_COLOR_BORDER( "color_border" );
+const QString QgsSymbolLayerV2::EXPR_OUTLINE_WIDTH( "outline_width" );
+const QString QgsSymbolLayerV2::EXPR_OUTLINE_STYLE( "outline_style" );
+const QString QgsSymbolLayerV2::EXPR_FILL( "fill" );
+const QString QgsSymbolLayerV2::EXPR_OUTLINE( "outline" );
+const QString QgsSymbolLayerV2::EXPR_OFFSET( "offset" );
+const QString QgsSymbolLayerV2::EXPR_CHAR( "char" );
+const QString QgsSymbolLayerV2::EXPR_FILL_COLOR( "fill_color" );
+const QString QgsSymbolLayerV2::EXPR_OUTLINE_COLOR( "outline_color" );
+const QString QgsSymbolLayerV2::EXPR_WIDTH( "width" );
+const QString QgsSymbolLayerV2::EXPR_HEIGHT( "height" );
+const QString QgsSymbolLayerV2::EXPR_SYMBOL_NAME( "symbol_name" );
+const QString QgsSymbolLayerV2::EXPR_ROTATION( "rotation" );
+const QString QgsSymbolLayerV2::EXPR_FILL_STYLE( "fill_style" );
+const QString QgsSymbolLayerV2::EXPR_WIDTH_BORDER( "width_border" );
+const QString QgsSymbolLayerV2::EXPR_BORDER_STYLE( "border_style" );
+const QString QgsSymbolLayerV2::EXPR_JOIN_STYLE( "join_style" );
+const QString QgsSymbolLayerV2::EXPR_BORDER_COLOR( "border_color" );
+const QString QgsSymbolLayerV2::EXPR_COLOR2( "color2" );
+const QString QgsSymbolLayerV2::EXPR_LINEANGLE( "lineangle" );
+const QString QgsSymbolLayerV2::EXPR_GRADIENT_TYPE( "gradient_type" );
+const QString QgsSymbolLayerV2::EXPR_COORDINATE_MODE( "coordinate_mode" );
+const QString QgsSymbolLayerV2::EXPR_SPREAD( "spread" );
+const QString QgsSymbolLayerV2::EXPR_REFERENCE1_X( "reference1_x" );
+const QString QgsSymbolLayerV2::EXPR_REFERENCE1_Y( "reference1_y" );
+const QString QgsSymbolLayerV2::EXPR_REFERENCE2_X( "reference2_x" );
+const QString QgsSymbolLayerV2::EXPR_REFERENCE2_Y( "reference2_y" );
+const QString QgsSymbolLayerV2::EXPR_REFERENCE1_ISCENTROID( "reference1_iscentroid" );
+const QString QgsSymbolLayerV2::EXPR_REFERENCE2_ISCENTROID( "reference2_iscentroid" );
+const QString QgsSymbolLayerV2::EXPR_BLUR_RADIUS( "blur_radius" );
+const QString QgsSymbolLayerV2::EXPR_DISTANCE( "distance" );
+const QString QgsSymbolLayerV2::EXPR_USE_WHOLE_SHAPE( "use_whole_shape" );
+const QString QgsSymbolLayerV2::EXPR_MAX_DISTANCE( "max_distance" );
+const QString QgsSymbolLayerV2::EXPR_IGNORE_RINGS( "ignore_rings" );
+const QString QgsSymbolLayerV2::EXPR_SVG_FILE( "svgFile" );
+const QString QgsSymbolLayerV2::EXPR_SVG_FILL_COLOR( "svgFillColor" );
+const QString QgsSymbolLayerV2::EXPR_SVG_OUTLINE_COLOR( "svgOutlineColor" );
+const QString QgsSymbolLayerV2::EXPR_SVG_OUTLINE_WIDTH( "svgOutlineWidth" );
+const QString QgsSymbolLayerV2::EXPR_LINEWIDTH( "linewidth" );
+const QString QgsSymbolLayerV2::EXPR_DISTANCE_X( "distance_x" );
+const QString QgsSymbolLayerV2::EXPR_DISTANCE_Y( "distance_y" );
+const QString QgsSymbolLayerV2::EXPR_DISPLACEMENT_X( "displacement_x" );
+const QString QgsSymbolLayerV2::EXPR_DISPLACEMENT_Y( "displacement_y" );
+const QString QgsSymbolLayerV2::EXPR_FILE( "file" );
+const QString QgsSymbolLayerV2::EXPR_ALPHA( "alpha" );
+const QString QgsSymbolLayerV2::EXPR_CUSTOMDASH( "customdash" );
+const QString QgsSymbolLayerV2::EXPR_LINE_STYLE( "line_style" );
+const QString QgsSymbolLayerV2::EXPR_JOINSTYLE( "joinstyle" );
+const QString QgsSymbolLayerV2::EXPR_CAPSTYLE( "capstyle" );
+const QString QgsSymbolLayerV2::EXPR_PLACEMENT( "placement" );
+const QString QgsSymbolLayerV2::EXPR_INTERVAL( "interval" );
+const QString QgsSymbolLayerV2::EXPR_OFFSET_ALONG_LINE( "offset_along_line" );
+const QString QgsSymbolLayerV2::EXPR_HORIZONTAL_ANCHOR_POINT( "horizontal_anchor_point" );
+const QString QgsSymbolLayerV2::EXPR_VERTICAL_ANCHOR_POINT( "vertical_anchor_point" );
 
 const QgsExpression* QgsSymbolLayerV2::dataDefinedProperty( const QString& property ) const
 {
@@ -38,6 +98,9 @@ const QgsExpression* QgsSymbolLayerV2::dataDefinedProperty( const QString& prope
 
 QgsDataDefined *QgsSymbolLayerV2::getDataDefinedProperty( const QString &property ) const
 {
+  if ( mDataDefinedProperties.isEmpty() )
+    return 0;
+
   QMap< QString, QgsDataDefined* >::const_iterator it = mDataDefinedProperties.find( property );
   if ( it != mDataDefinedProperties.constEnd() )
   {
@@ -106,6 +169,9 @@ bool QgsSymbolLayerV2::hasDataDefinedProperties() const
 
 bool QgsSymbolLayerV2::hasDataDefinedProperty( const QString& property ) const
 {
+  if ( mDataDefinedProperties.isEmpty() )
+    return false;
+
   QgsDataDefined* dd = getDataDefinedProperty( property );
   return dd && dd->isActive();
 }
@@ -226,9 +292,7 @@ QgsSymbolLayerV2::QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked )
     , mRenderingPass( 0 )
     , mPaintEffect( 0 )
 {
-  QgsEffectStack* stack = new QgsEffectStack();
-  stack->appendEffect( new QgsDrawSourceEffect() );
-  mPaintEffect = stack;
+  mPaintEffect = QgsPaintEffectRegistry::defaultStack();
   mPaintEffect->setEnabled( false );
 }
 
@@ -354,6 +418,7 @@ void QgsSymbolLayerV2::copyPaintEffect( QgsSymbolLayerV2 *destLayer ) const
 QgsMarkerSymbolLayerV2::QgsMarkerSymbolLayerV2( bool locked )
     : QgsSymbolLayerV2( QgsSymbolV2::Marker, locked )
     , mAngle( 0 )
+    , mLineAngle( 0 )
     , mSize( 2.0 )
     , mSizeUnit( QgsSymbolV2::MM )
     , mOffsetUnit( QgsSymbolV2::MM )
@@ -408,9 +473,9 @@ void QgsMarkerSymbolLayerV2::markerOffset( const QgsSymbolV2RenderContext& conte
   offsetX = mOffset.x();
   offsetY = mOffset.y();
 
-  if ( hasDataDefinedProperty( "offset" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OFFSET ) )
   {
-    QPointF offset = QgsSymbolLayerV2Utils::decodePoint( evaluateDataDefinedProperty( "offset", context.feature() ).toString() );
+    QPointF offset = QgsSymbolLayerV2Utils::decodePoint( evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_OFFSET, context.feature() ).toString() );
     offsetX = offset.x();
     offsetY = offset.y();
   }
@@ -420,13 +485,13 @@ void QgsMarkerSymbolLayerV2::markerOffset( const QgsSymbolV2RenderContext& conte
 
   HorizontalAnchorPoint horizontalAnchorPoint = mHorizontalAnchorPoint;
   VerticalAnchorPoint verticalAnchorPoint = mVerticalAnchorPoint;
-  if ( hasDataDefinedProperty( "horizontal_anchor_point" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_HORIZONTAL_ANCHOR_POINT ) )
   {
-    horizontalAnchorPoint = decodeHorizontalAnchorPoint( evaluateDataDefinedProperty( "horizontal_anchor_point", context.feature() ).toString() );
+    horizontalAnchorPoint = decodeHorizontalAnchorPoint( evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_HORIZONTAL_ANCHOR_POINT , context.feature() ).toString() );
   }
-  if ( hasDataDefinedProperty( "vertical_anchor_point" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_VERTICAL_ANCHOR_POINT ) )
   {
-    verticalAnchorPoint = decodeVerticalAnchorPoint( evaluateDataDefinedProperty( "vertical_anchor_point", context.feature() ).toString() );
+    verticalAnchorPoint = decodeVerticalAnchorPoint( evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_VERTICAL_ANCHOR_POINT, context.feature() ).toString() );
   }
 
   //correct horizontal position according to anchor point

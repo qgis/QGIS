@@ -277,9 +277,8 @@ void QgsAttributeForm::onAttributeAdded( int idx )
   if ( mFeature.isValid() )
   {
     QgsAttributes attrs = mFeature.attributes();
-    Q_ASSERT( attrs.size() == idx );
-    attrs.append( QVariant( layer()->pendingFields()[idx].type() ) );
-    mFeature.setFields( &layer()->pendingFields() );
+    attrs.insert( idx, QVariant( layer()->pendingFields()[idx].type() ) );
+    mFeature.setFields( layer()->pendingFields() );
     mFeature.setAttributes( attrs );
   }
   init();
@@ -292,9 +291,23 @@ void QgsAttributeForm::onAttributeDeleted( int idx )
   {
     QgsAttributes attrs = mFeature.attributes();
     attrs.remove( idx );
-    mFeature.setFields( &layer()->pendingFields() );
+    mFeature.setFields( layer()->pendingFields() );
     mFeature.setAttributes( attrs );
   }
+  init();
+  setFeature( mFeature );
+}
+
+void QgsAttributeForm::refreshFeature()
+{
+  if ( mLayer->isEditable() || !mFeature.isValid() )
+    return;
+
+  // reload feature if layer changed although not editable
+  // (datasource probably changed bypassing QgsVectorLayer)
+  if ( !mLayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeature.id() ) ).nextFeature( mFeature ) )
+    return;
+
   init();
   setFeature( mFeature );
 }
@@ -373,7 +386,7 @@ void QgsAttributeForm::init()
   // Tab layout
   if ( !formWidget && mLayer->editorLayout() == QgsVectorLayer::TabLayout )
   {
-    QTabWidget* tabWidget = new QTabWidget( this );
+    QTabWidget* tabWidget = new QTabWidget();
     layout()->addWidget( tabWidget );
 
     Q_FOREACH ( QgsAttributeEditorElement *widgDef, mLayer->attributeEditorElements() )
@@ -381,7 +394,8 @@ void QgsAttributeForm::init()
       QWidget* tabPage = new QWidget( tabWidget );
 
       tabWidget->addTab( tabPage, widgDef->name() );
-      QGridLayout *tabPageLayout = new QGridLayout( tabPage );
+      QGridLayout* tabPageLayout = new QGridLayout();
+      tabPage->setLayout( tabPageLayout );
 
       if ( widgDef->type() == QgsAttributeEditorElement::AeTypeContainer )
       {
@@ -530,7 +544,8 @@ void QgsAttributeForm::initPython()
     QString numArgs;
     QgsPythonRunner::eval( QString( "len(inspect.getargspec(%1)[0])" ).arg( module ), numArgs );
 
-    mPyFormVarName = QString( "_qgis_featureform_%1" ).arg( mFormNr );
+    static int sFormId = 0;
+    mPyFormVarName = QString( "_qgis_featureform_%1_%2" ).arg( mFormNr ).arg( sFormId++ );
 
     QString form = QString( "%1 = sip.wrapinstance( %2, qgis.gui.QgsAttributeForm )" )
                    .arg( mPyFormVarName )
@@ -630,7 +645,7 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
         newWidget = scrollArea;
       }
 
-      QGridLayout* gbLayout = new QGridLayout( myContainer );
+      QGridLayout* gbLayout = new QGridLayout();
       myContainer->setLayout( gbLayout );
 
       int index = 0;
@@ -665,7 +680,9 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
 
         ++index;
       }
-      gbLayout->addItem( new QSpacerItem( 0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding ), index, 0 );
+      QWidget* spacer = new QWidget();
+      spacer->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
+      gbLayout->addWidget( spacer, index, 0 );
 
       labelText = QString::null;
       labelOnTop = true;

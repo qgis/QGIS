@@ -27,7 +27,6 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsapplication.h"
 #include "qgsmaprenderer.h"
-#include "qgsmaplayerregistry.h"
 
 //qgis unit test includes
 #include <qgsrenderchecker.h>

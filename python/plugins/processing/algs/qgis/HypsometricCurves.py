@@ -67,7 +67,7 @@ class HypsometricCurves(GeoAlgorithm):
             self.tr('Use % of area instead of absolute value'), False))
 
         self.addOutput(OutputDirectory(self.OUTPUT_DIRECTORY,
-            self.tr('Output directory')))
+            self.tr('Hypsometric curves')))
 
     def processAlgorithm(self, progress):
         rasterPath = self.getParameterValue(self.INPUT_DEM)

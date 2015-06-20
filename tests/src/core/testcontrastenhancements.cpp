@@ -104,4 +104,3 @@ void TestContrastEnhancements::linearMinMaxEnhancementTest()
 }
 QTEST_MAIN( TestContrastEnhancements )
 #include "testcontrastenhancements.moc"
-

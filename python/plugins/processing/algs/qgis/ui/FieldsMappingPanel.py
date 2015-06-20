@@ -25,9 +25,11 @@ __copyright__ = '(C) 2014, Arnaud Morvan'
 
 __revision__ = '$Format:%H$'
 
+import os
 
 from collections import OrderedDict
 
+from PyQt4 import uic
 from PyQt4 import QtCore, QtGui
 
 from qgis.core import QgsExpression
@@ -35,7 +37,9 @@ from qgis.gui import QgsFieldExpressionWidget
 
 from processing.tools import dataobjects
 
-from .ui_widgetFieldsMapping import Ui_Form
+pluginPath = os.path.dirname(__file__)
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'widgetFieldsMapping.ui'))
 
 
 class FieldsMappingModel(QtCore.QAbstractTableModel):
@@ -45,7 +49,7 @@ class FieldsMappingModel(QtCore.QAbstractTableModel):
         (QtCore.QVariant.Double, "Double"),
         (QtCore.QVariant.String, "String"),
         (QtCore.QVariant.DateTime, "Date"),
-        (QtCore.QVariant.LongLong, "Double"),        
+        (QtCore.QVariant.LongLong, "Double"),
         (QtCore.QVariant.Date, "Date")])
 
     columns = [
@@ -297,10 +301,10 @@ class FieldDelegate(QtGui.QStyledItemDelegate):
         self.commitData.emit(self.sender())
 
 
-class FieldsMappingPanel(QtGui.QWidget, Ui_Form):
+class FieldsMappingPanel(BASE, WIDGET):
 
     def __init__(self, parent=None):
-        QtGui.QWidget.__init__(self, parent)
+        super(FieldsMappingPanel, self).__init__(parent)
         self.setupUi(self)
 
         self.addButton.setIcon(

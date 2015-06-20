@@ -36,6 +36,7 @@
 
 #include <fstream>
 
+#include "pointset.h"
 #include "rtree.hpp"
 
 

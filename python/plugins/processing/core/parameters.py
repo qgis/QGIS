@@ -17,6 +17,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from processing.tools.vector import resolveFieldIndex, features
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -536,10 +537,21 @@ class ParameterRaster(ParameterDataObject):
 
 class ParameterSelection(Parameter):
 
-    def __init__(self, name='', description='', options=[], default=0):
+    def __init__(self, name='', description='', options=[], default=0, isSource = False):
         Parameter.__init__(self, name, description)
         self.options = options
-        if isinstance(self.options, basestring):
+        if isSource:
+            self.options = []
+            layer = QgsVectorLayer(options[0], "layer", "ogr")
+            if layer.isValid():
+                try:
+                    index = resolveFieldIndex(layer, options[1])
+                    feats = features(layer)
+                    for feature in feats:
+                        self.options.append(unicode(feature.attributes()[index]))  
+                except ValueError:
+                    pass
+        elif isinstance(self.options, basestring):
             self.options = self.options.split(";")
         self.value = None
         self.default = int(default)
@@ -608,9 +620,10 @@ class ParameterTable(ParameterDataObject):
             self.value = source
             return True
         else:
-            layers = dataobjects.getVectorLayers()
+            self.value = unicode(obj)
+            layers = dataobjects.getTables()
             for layer in layers:
-                if layer.name() == self.value:
+                if layer.name() == self.value or layer.source() == self.value:
                     source = unicode(layer.source())
                     self.value = source
                     return True

@@ -41,14 +41,39 @@ class SERVER_EXPORT QgsServerInterface
     /** Destructor */
     virtual ~QgsServerInterface() = 0;
 
+    /**
+     * Set the request handler
+     * @param requestHandler request handler
+     */
     virtual void setRequestHandler( QgsRequestHandler* requestHandler ) = 0;
-    virtual QgsCapabilitiesCache* capabiblitiesCache() = 0;
-    virtual QgsRequestHandler* requestHandler( ) = 0;
-    virtual void registerFilter( QgsServerFilter* filter, int priority = 0 ) = 0;
-    virtual QgsServerFiltersMap filters( ) = 0;
-    /*Pass  environment variables to python*/
-    virtual QString getEnv( const QString& name ) const = 0;
 
+    /**
+     * Get pointer to the capabiblities cache
+     * @return QgsCapabilitiesCache
+     */
+    virtual QgsCapabilitiesCache* capabiblitiesCache() = 0;
+
+    /**
+     * Get pointer to the request handler
+     * @return QgsRequestHandler
+     */
+    virtual QgsRequestHandler* requestHandler( ) = 0;
+
+    /**
+     * Register a QgsServerFilter
+     * @param filter the QgsServerFilter to add
+     * @param priority an optional priority for the filter order
+     */
+    virtual void registerFilter( QgsServerFilter* filter, int priority = 0 ) = 0;
+
+    /**
+     * Return the list of current QgsServerFilter
+     * @return QgsServerFiltersMap list of QgsServerFilter
+     */
+    virtual QgsServerFiltersMap filters( ) = 0;
+
+    //! Return an enrironment variable, used to pass  environment variables to python
+    virtual QString getEnv( const QString& name ) const = 0;
 };
 
 #endif // QGSSERVERINTERFACE_H

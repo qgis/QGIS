@@ -82,43 +82,43 @@ void QgsSimpleFillSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
 
   bool ok;
 
-  if ( hasDataDefinedProperty( "color" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR ) )
   {
-    QString color = evaluateDataDefinedProperty( "color", context.feature(), QVariant(), &ok ).toString();
+    QString color = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR, context.feature(), QVariant(), &ok ).toString();
     if ( ok )
       brush.setColor( QgsSymbolLayerV2Utils::decodeColor( color ) );
   }
-  if ( hasDataDefinedProperty( "fill_style" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_FILL_STYLE ) )
   {
-    QString style = evaluateDataDefinedProperty( "fill_style", context.feature(), QVariant(), &ok ).toString();
+    QString style = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_FILL_STYLE, context.feature(), QVariant(), &ok ).toString();
     if ( ok )
       brush.setStyle( QgsSymbolLayerV2Utils::decodeBrushStyle( style ) );
   }
-  if ( hasDataDefinedProperty( "color_border" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR_BORDER ) )
   {
-    QString color = evaluateDataDefinedProperty( "color_border", context.feature(), QVariant(), &ok ).toString();
+    QString color = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR_BORDER, context.feature(), QVariant(), &ok ).toString();
     if ( ok )
       pen.setColor( QgsSymbolLayerV2Utils::decodeColor( color ) );
   }
-  if ( hasDataDefinedProperty( "width_border" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_WIDTH_BORDER ) )
   {
-    double width = evaluateDataDefinedProperty( "width_border", context.feature(), mBorderWidth ).toDouble();
+    double width = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_WIDTH_BORDER, context.feature(), mBorderWidth ).toDouble();
     width *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mBorderWidthUnit, mBorderWidthMapUnitScale );
     pen.setWidthF( width );
     selPen.setWidthF( width );
   }
-  if ( hasDataDefinedProperty( "border_style" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_BORDER_STYLE ) )
   {
-    QString style = evaluateDataDefinedProperty( "border_style", context.feature(), QVariant(), &ok ).toString();
+    QString style = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_BORDER_STYLE, context.feature(), QVariant(), &ok ).toString();
     if ( ok )
     {
       pen.setStyle( QgsSymbolLayerV2Utils::decodePenStyle( style ) );
       selPen.setStyle( QgsSymbolLayerV2Utils::decodePenStyle( style ) );
     }
   }
-  if ( hasDataDefinedProperty( "join_style" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_JOIN_STYLE ) )
   {
-    QString style = evaluateDataDefinedProperty( "join_style", context.feature(), QVariant(), &ok ).toString();
+    QString style = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_JOIN_STYLE, context.feature(), QVariant(), &ok ).toString();
     if ( ok )
     {
       pen.setJoinStyle( QgsSymbolLayerV2Utils::decodePenJoinStyle( style ) );
@@ -394,19 +394,19 @@ double QgsSimpleFillSymbolLayerV2::estimateMaxBleed() const
 double QgsSimpleFillSymbolLayerV2::dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const
 {
   double width = mBorderWidth;
-  if ( hasDataDefinedProperty( "width_border" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_WIDTH_BORDER ) )
   {
-    width = evaluateDataDefinedProperty( "width_border", context.feature(), mBorderWidth ).toDouble();
+    width = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_WIDTH_BORDER, context.feature(), mBorderWidth ).toDouble();
   }
   return width * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), mBorderWidthUnit, e.mapUnits() );
 }
 
 QColor QgsSimpleFillSymbolLayerV2::dxfColor( const QgsSymbolV2RenderContext& context ) const
 {
-  if ( hasDataDefinedProperty( "border_color" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_BORDER_COLOR ) )
   {
     bool ok;
-    QString color = evaluateDataDefinedProperty( "border_color", context.feature(), QVariant(), &ok ).toString();
+    QString color = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_BORDER_COLOR, context.feature(), QVariant(), &ok ).toString();
     if ( ok )
       return QgsSymbolLayerV2Utils::decodeColor( color );
   }
@@ -420,10 +420,10 @@ Qt::PenStyle QgsSimpleFillSymbolLayerV2::dxfPenStyle() const
 
 QColor QgsSimpleFillSymbolLayerV2::dxfBrushColor( const QgsSymbolV2RenderContext& context ) const
 {
-  if ( hasDataDefinedProperty( "color" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR ) )
   {
     bool ok;
-    QString color = evaluateDataDefinedProperty( "color", context.feature(), QVariant(), &ok ).toString();
+    QString color = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR, context.feature(), QVariant(), &ok ).toString();
     if ( ok )
       return QgsSymbolLayerV2Utils::decodeColor( color );
   }
@@ -561,35 +561,35 @@ void QgsGradientFillSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderC
 
   //first gradient color
   QColor color = mColor;
-  if ( hasDataDefinedProperty( "color" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR ) )
   {
 
-    QString colorString = evaluateDataDefinedProperty( "color", context.feature(), QVariant(), &ok ).toString();
+    QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR, context.feature(), QVariant(), &ok ).toString();
     if ( ok )
       color = QgsSymbolLayerV2Utils::decodeColor( colorString );
   }
 
   //second gradient color
   QColor color2 = mColor2;
-  if ( hasDataDefinedProperty( "color2" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR2 ) )
   {
-    QString colorString = evaluateDataDefinedProperty( "color2", context.feature(), QVariant(), &ok ).toString();
+    QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR2, context.feature(), QVariant(), &ok ).toString();
     if ( ok )
       color2 = QgsSymbolLayerV2Utils::decodeColor( colorString );
   }
 
   //gradient rotation angle
   double angle = mAngle;
-  if ( hasDataDefinedProperty( "angle" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_ANGLE ) )
   {
-    angle = evaluateDataDefinedProperty( "angle", context.feature(), mAngle ).toDouble();
+    angle = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_ANGLE, context.feature(), mAngle ).toDouble();
   }
 
   //gradient type
   QgsGradientFillSymbolLayerV2::GradientType gradientType = mGradientType;
-  if ( hasDataDefinedProperty( "gradient_type" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_GRADIENT_TYPE ) )
   {
-    QString currentType = evaluateDataDefinedProperty( "gradient_type", context.feature(), QVariant(), &ok ).toString();
+    QString currentType = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_GRADIENT_TYPE, context.feature(), QVariant(), &ok ).toString();
     if ( ok )
     {
       if ( currentType == QObject::tr( "linear" ) )
@@ -609,9 +609,9 @@ void QgsGradientFillSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderC
 
   //coordinate mode
   GradientCoordinateMode coordinateMode = mCoordinateMode;
-  if ( hasDataDefinedProperty( "coordinate_mode" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COORDINATE_MODE ) )
   {
-    QString currentCoordMode =  evaluateDataDefinedProperty( "coordinate_mode", context.feature(), QVariant(), &ok ).toString();
+    QString currentCoordMode =  evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_COORDINATE_MODE, context.feature(), QVariant(), &ok ).toString();
     if ( ok )
     {
       if ( currentCoordMode == QObject::tr( "feature" ) )
@@ -627,9 +627,9 @@ void QgsGradientFillSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderC
 
   //gradient spread
   GradientSpread spread = mGradientSpread;
-  if ( hasDataDefinedProperty( "spread" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_SPREAD ) )
   {
-    QString currentSpread = evaluateDataDefinedProperty( "spread", context.feature(), QVariant(), &ok ).toString();
+    QString currentSpread = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_SPREAD, context.feature(), QVariant(), &ok ).toString();
     if ( ok )
     {
       if ( currentSpread == QObject::tr( "pad" ) )
@@ -649,36 +649,36 @@ void QgsGradientFillSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderC
 
   //reference point 1 x & y
   double refPoint1X = mReferencePoint1.x();
-  if ( hasDataDefinedProperty( "reference1_x" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_REFERENCE1_X ) )
   {
-    refPoint1X = evaluateDataDefinedProperty( "reference1_x", context.feature(), refPoint1X ).toDouble();
+    refPoint1X = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_REFERENCE1_X, context.feature(), refPoint1X ).toDouble();
   }
   double refPoint1Y = mReferencePoint1.y();
-  if ( hasDataDefinedProperty( "reference1_y" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_REFERENCE1_Y ) )
   {
-    refPoint1Y = evaluateDataDefinedProperty( "reference1_y", context.feature(), refPoint1Y ).toDouble();
+    refPoint1Y = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_REFERENCE1_Y, context.feature(), refPoint1Y ).toDouble();
   }
   bool refPoint1IsCentroid = mReferencePoint1IsCentroid;
-  if ( hasDataDefinedProperty( "reference1_iscentroid" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_REFERENCE1_ISCENTROID ) )
   {
-    refPoint1IsCentroid = evaluateDataDefinedProperty( "reference1_iscentroid", context.feature(), refPoint1IsCentroid ).toBool();
+    refPoint1IsCentroid = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_REFERENCE1_ISCENTROID, context.feature(), refPoint1IsCentroid ).toBool();
   }
 
   //reference point 2 x & y
   double refPoint2X = mReferencePoint2.x();
-  if ( hasDataDefinedProperty( "reference2_x" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_REFERENCE2_X ) )
   {
-    refPoint2X = evaluateDataDefinedProperty( "reference2_x", context.feature(), refPoint2X ).toDouble();
+    refPoint2X = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_REFERENCE2_X, context.feature(), refPoint2X ).toDouble();
   }
   double refPoint2Y = mReferencePoint2.y();
-  if ( hasDataDefinedProperty( "reference2_y" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_REFERENCE2_Y ) )
   {
-    refPoint2Y = evaluateDataDefinedProperty( "reference2_y", context.feature(), refPoint2Y ).toDouble();
+    refPoint2Y = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_REFERENCE2_Y, context.feature(), refPoint2Y ).toDouble();
   }
   bool refPoint2IsCentroid = mReferencePoint2IsCentroid;
-  if ( hasDataDefinedProperty( "reference2_iscentroid" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_REFERENCE2_ISCENTROID ) )
   {
-    refPoint2IsCentroid = evaluateDataDefinedProperty( "reference2_iscentroid", context.feature(), refPoint2IsCentroid ).toBool();
+    refPoint2IsCentroid = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_REFERENCE2_ISCENTROID, context.feature(), refPoint2IsCentroid ).toBool();
   }
 
   if ( refPoint1IsCentroid || refPoint2IsCentroid )
@@ -1042,48 +1042,48 @@ void QgsShapeburstFillSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2Rende
 
   //first gradient color
   color = mColor;
-  if ( hasDataDefinedProperty( "color" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR ) )
   {
-    QString colorString = evaluateDataDefinedProperty( "color", context.feature(), QVariant(), &ok ).toString();
+    QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR, context.feature(), QVariant(), &ok ).toString();
     if ( ok )
       color = QgsSymbolLayerV2Utils::decodeColor( colorString );
   }
 
   //second gradient color
   color2 = mColor2;
-  if ( hasDataDefinedProperty( "color2" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR2 ) )
   {
-    QString colorString = evaluateDataDefinedProperty( "color2", context.feature(), QVariant(), &ok ).toString();
+    QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR2, context.feature(), QVariant(), &ok ).toString();
     if ( ok )
       color2 = QgsSymbolLayerV2Utils::decodeColor( colorString );
   }
 
   //blur radius
   blurRadius = mBlurRadius;
-  if ( hasDataDefinedProperty( "blur_radius" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_BLUR_RADIUS ) )
   {
-    blurRadius = evaluateDataDefinedProperty( "blur_radius", context.feature(), mBlurRadius ).toInt();
+    blurRadius = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_BLUR_RADIUS, context.feature(), mBlurRadius ).toInt();
   }
 
   //use whole shape
   useWholeShape = mUseWholeShape;
-  if ( hasDataDefinedProperty( "use_whole_shape" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_USE_WHOLE_SHAPE ) )
   {
-    useWholeShape = evaluateDataDefinedProperty( "use_whole_shape", context.feature(), mUseWholeShape ).toBool();
+    useWholeShape = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_USE_WHOLE_SHAPE, context.feature(), mUseWholeShape ).toBool();
   }
 
   //max distance
   maxDistance = mMaxDistance;
-  if ( hasDataDefinedProperty( "max_distance" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_MAX_DISTANCE ) )
   {
-    maxDistance = evaluateDataDefinedProperty( "max_distance", context.feature(), mMaxDistance ).toDouble();
+    maxDistance = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_MAX_DISTANCE, context.feature(), mMaxDistance ).toDouble();
   }
 
   //ignore rings
   ignoreRings = mIgnoreRings;
-  if ( hasDataDefinedProperty( "ignore_rings" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_IGNORE_RINGS ) )
   {
-    ignoreRings = evaluateDataDefinedProperty( "ignore_rings", context.feature(), mIgnoreRings ).toBool();
+    ignoreRings = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_IGNORE_RINGS, context.feature(), mIgnoreRings ).toBool();
   }
 
 }
@@ -1645,9 +1645,9 @@ double QgsImageFillSymbolLayer::estimateMaxBleed() const
 double QgsImageFillSymbolLayer::dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const
 {
   double width = mOutlineWidth;
-  if ( hasDataDefinedProperty( "width" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_WIDTH ) )
   {
-    width = evaluateDataDefinedProperty( "width", context.feature(), mOutlineWidth ).toDouble();
+    width = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_WIDTH, context.feature(), mOutlineWidth ).toDouble();
   }
   return width * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), mOutlineWidthUnit, e.mapUnits() );
 }
@@ -2126,50 +2126,50 @@ QgsSymbolLayerV2* QgsSVGFillSymbolLayer::createFromSld( QDomElement &element )
 
 void QgsSVGFillSymbolLayer::applyDataDefinedSettings( const QgsSymbolV2RenderContext& context )
 {
-  if ( !hasDataDefinedProperty( "width" ) && !hasDataDefinedProperty( "svgFile" )
-       && !hasDataDefinedProperty( "svgFillColor" ) && !hasDataDefinedProperty( "svgOutlineColor" )
-       && !hasDataDefinedProperty( "svgOutlineWidth" ) && !hasDataDefinedProperty( "angle" ) )
+  if ( !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_WIDTH ) && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_SVG_FILE )
+       && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_SVG_FILL_COLOR ) && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_SVG_OUTLINE_COLOR )
+       && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_SVG_OUTLINE_WIDTH ) && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_ANGLE ) )
   {
     return; //no data defined settings
   }
 
   bool ok;
 
-  if ( hasDataDefinedProperty( "angle" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_ANGLE ) )
   {
-    double nextAngle = evaluateDataDefinedProperty( "angle", context.feature(), QVariant(), &ok ).toDouble();
+    double nextAngle = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_ANGLE, context.feature(), QVariant(), &ok ).toDouble();
     if ( ok )
       mNextAngle = nextAngle;
   }
 
   double width = mPatternWidth;
-  if ( hasDataDefinedProperty( "width" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_WIDTH ) )
   {
-    width = evaluateDataDefinedProperty( "width", context.feature(), mPatternWidth ).toDouble();
+    width = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_WIDTH, context.feature(), mPatternWidth ).toDouble();
   }
   QString svgFile = mSvgFilePath;
-  if ( hasDataDefinedProperty( "svgFile" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_SVG_FILE ) )
   {
-    svgFile = evaluateDataDefinedProperty( "svgFile", context.feature(), mSvgFilePath ).toString();
+    svgFile = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_SVG_FILE, context.feature(), mSvgFilePath ).toString();
   }
   QColor svgFillColor = mSvgFillColor;
-  if ( hasDataDefinedProperty( "svgFillColor" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_SVG_FILL_COLOR ) )
   {
-    QString colorString = evaluateDataDefinedProperty( "svgFillColor", context.feature(), QVariant(), &ok ).toString();
+    QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_SVG_FILL_COLOR, context.feature(), QVariant(), &ok ).toString();
     if ( ok )
       svgFillColor = QgsSymbolLayerV2Utils::decodeColor( colorString );
   }
   QColor svgOutlineColor = mSvgOutlineColor;
-  if ( hasDataDefinedProperty( "svgOutlineColor" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_SVG_OUTLINE_COLOR ) )
   {
-    QString colorString = evaluateDataDefinedProperty( "svgOutlineColor", context.feature(), QVariant(), &ok ).toString();
+    QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_SVG_OUTLINE_COLOR, context.feature(), QVariant(), &ok ).toString();
     if ( ok )
       svgOutlineColor = QgsSymbolLayerV2Utils::decodeColor( colorString );
   }
   double outlineWidth = mSvgOutlineWidth;
-  if ( hasDataDefinedProperty( "svgOutlineWidth" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_SVG_OUTLINE_WIDTH ) )
   {
-    outlineWidth = evaluateDataDefinedProperty( "svgOutlineWidth", context.feature(), mSvgOutlineWidth ).toDouble();
+    outlineWidth = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_SVG_OUTLINE_WIDTH, context.feature(), mSvgOutlineWidth ).toDouble();
   }
   applyPattern( mBrush, svgFile, width, mPatternWidthUnit, svgFillColor, svgOutlineColor, outlineWidth,
                 mSvgOutlineWidthUnit, context, mPatternWidthMapUnitScale, mSvgOutlineWidthMapUnitScale );
@@ -2282,6 +2282,14 @@ bool QgsLinePatternFillSymbolLayer::setSubSymbol( QgsSymbolV2* symbol )
 QgsSymbolV2* QgsLinePatternFillSymbolLayer::subSymbol()
 {
   return mFillLineSymbol;
+}
+
+QSet<QString> QgsLinePatternFillSymbolLayer::usedAttributes() const
+{
+  QSet<QString> attr = QgsFillSymbolLayerV2::usedAttributes();
+  if ( mFillLineSymbol )
+    attr.unite( mFillLineSymbol->usedAttributes() );
+  return attr;
 }
 
 double QgsLinePatternFillSymbolLayer::estimateMaxBleed() const
@@ -2832,32 +2840,32 @@ QString QgsLinePatternFillSymbolLayer::ogrFeatureStyleWidth( double widthScaleFa
 
 void QgsLinePatternFillSymbolLayer::applyDataDefinedSettings( const QgsSymbolV2RenderContext& context )
 {
-  if ( !hasDataDefinedProperty( "lineangle" ) && !hasDataDefinedProperty( "distance" )
-       && !hasDataDefinedProperty( "linewidth" ) && !hasDataDefinedProperty( "color" ) )
+  if ( !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_LINEANGLE ) && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_DISTANCE )
+       && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_LINEWIDTH ) && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR ) )
   {
     return; //no data defined settings
   }
 
   bool ok;
   double lineAngle = mLineAngle;
-  if ( hasDataDefinedProperty( "lineangle" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_LINEANGLE ) )
   {
-    lineAngle = evaluateDataDefinedProperty( "lineangle", context.feature(), mLineAngle ).toDouble();
+    lineAngle = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_LINEANGLE, context.feature(), mLineAngle ).toDouble();
   }
   double distance = mDistance;
-  if ( hasDataDefinedProperty( "distance" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_DISTANCE ) )
   {
-    distance = evaluateDataDefinedProperty( "distance", context.feature(), mDistance ).toDouble();
+    distance = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_DISTANCE, context.feature(), mDistance ).toDouble();
   }
   double lineWidth = mLineWidth;
-  if ( hasDataDefinedProperty( "linewidth" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_LINEWIDTH ) )
   {
-    lineWidth = evaluateDataDefinedProperty( "linewidth", context.feature(), mLineWidth ).toDouble();
+    lineWidth = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_LINEWIDTH, context.feature(), mLineWidth ).toDouble();
   }
   QColor color = mColor;
-  if ( hasDataDefinedProperty( "color" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR ) )
   {
-    QString colorString = evaluateDataDefinedProperty( "color", context.feature(), QVariant(), &ok ).toString();
+    QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_COLOR, context.feature(), QVariant(), &ok ).toString();
     if ( ok )
       color = QgsSymbolLayerV2Utils::decodeColor( colorString );
   }
@@ -3243,32 +3251,32 @@ void QgsPointPatternFillSymbolLayer::applyDataDefinedSettings( const QgsSymbolV2
 {
 #if 0
   // TODO: enable but check also if mMarkerSymbol has data defined properties
-  if ( !hasDataDefinedProperty( "distance_x" ) && !hasDataDefinedProperty( "distance_y" )
-       && !hasDataDefinedProperty( "displacement_x" ) && !hasDataDefinedProperty( "displacement_y" ) )
+  if ( !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_DISTANCE_X ) && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_DISTANCE_Y )
+       && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_DISPLACEMENT_X ) && !hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_DISPLACEMENT_Y ) )
   {
     return;
   }
 #endif
 
   double distanceX = mDistanceX;
-  if ( hasDataDefinedProperty( "distance_x" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_DISTANCE_X ) )
   {
-    distanceX = evaluateDataDefinedProperty( "distance_x", context.feature(), mDistanceX ).toDouble();
+    distanceX = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_DISTANCE_X, context.feature(), mDistanceX ).toDouble();
   }
   double distanceY = mDistanceY;
-  if ( hasDataDefinedProperty( "distance_y" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_DISTANCE_Y ) )
   {
-    distanceY = evaluateDataDefinedProperty( "distance_y", context.feature(), mDistanceY ).toDouble();
+    distanceY = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_DISTANCE_Y, context.feature(), mDistanceY ).toDouble();
   }
   double displacementX = mDisplacementX;
-  if ( hasDataDefinedProperty( "displacement_x" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_DISPLACEMENT_X ) )
   {
-    displacementX = evaluateDataDefinedProperty( "displacement_x", context.feature(), mDisplacementX ).toDouble();
+    displacementX = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_DISPLACEMENT_X, context.feature(), mDisplacementX ).toDouble();
   }
   double displacementY = mDisplacementY;
-  if ( hasDataDefinedProperty( "displacement_y" ) )
+  if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_DISPLACEMENT_Y ) )
   {
-    displacementY = evaluateDataDefinedProperty( "displacement_y", context.feature(), mDisplacementY ).toDouble();
+    displacementY = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_DISPLACEMENT_Y, context.feature(), mDisplacementY ).toDouble();
   }
   applyPattern( context, mBrush, distanceX, distanceY, displacementX, displacementY );
 }
@@ -3642,10 +3650,10 @@ void QgsRasterFillSymbolLayer::applyDataDefinedSettings( const QgsSymbolV2Render
   if ( !hasDataDefinedProperties() )
     return; // shortcut
 
-  bool hasWidthExpression = hasDataDefinedProperty( "width" );
-  bool hasFileExpression = hasDataDefinedProperty( "file" );
-  bool hasAlphaExpression = hasDataDefinedProperty( "alpha" );
-  bool hasAngleExpression = hasDataDefinedProperty( "angle" );
+  bool hasWidthExpression = hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_WIDTH );
+  bool hasFileExpression = hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_FILE );
+  bool hasAlphaExpression = hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_ALPHA );
+  bool hasAngleExpression = hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_ANGLE );
 
   if ( !hasWidthExpression && !hasAngleExpression && !hasAlphaExpression && !hasFileExpression )
   {
@@ -3655,7 +3663,7 @@ void QgsRasterFillSymbolLayer::applyDataDefinedSettings( const QgsSymbolV2Render
   bool ok;
   if ( hasAngleExpression )
   {
-    double nextAngle = evaluateDataDefinedProperty( "angle", context.feature(), QVariant(), &ok ).toDouble();
+    double nextAngle = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_ANGLE, context.feature(), QVariant(), &ok ).toDouble();
     if ( ok )
       mNextAngle = nextAngle;
   }
@@ -3668,17 +3676,17 @@ void QgsRasterFillSymbolLayer::applyDataDefinedSettings( const QgsSymbolV2Render
   double width = mWidth;
   if ( hasWidthExpression )
   {
-    width = evaluateDataDefinedProperty( "width", context.feature(), mWidth ).toDouble();
+    width = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_WIDTH, context.feature(), mWidth ).toDouble();
   }
   double alpha = mAlpha;
   if ( hasAlphaExpression )
   {
-    alpha = evaluateDataDefinedProperty( "alpha", context.feature(), mAlpha ).toDouble();
+    alpha = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_ALPHA, context.feature(), mAlpha ).toDouble();
   }
   QString file = mImageFilePath;
   if ( hasFileExpression )
   {
-    file = evaluateDataDefinedProperty( "file", context.feature(), mImageFilePath ).toString();
+    file = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_FILE, context.feature(), mImageFilePath ).toString();
   }
   applyPattern( mBrush, file, width, alpha, context );
 }

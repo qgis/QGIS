@@ -45,6 +45,13 @@ QgsJoinDialog::QgsJoinDialog( QgsVectorLayer* layer, QList<QgsMapLayer*> already
   connect( mJoinLayerComboBox, SIGNAL( layerChanged( QgsMapLayer* ) ), this, SLOT( joinedLayerChanged( QgsMapLayer* ) ) );
 
   mCacheInMemoryCheckBox->setChecked( true );
+
+  QgsMapLayer *joinLayer = mJoinLayerComboBox->currentLayer();
+  if ( joinLayer->isValid() )
+  {
+    mJoinFieldComboBox->setLayer( joinLayer );
+    joinedLayerChanged( joinLayer );
+  }
 }
 
 QgsJoinDialog::~QgsJoinDialog()
@@ -126,7 +133,6 @@ bool QgsJoinDialog::createAttributeIndex() const
 
 void QgsJoinDialog::joinedLayerChanged( QgsMapLayer* layer )
 {
-
   mJoinFieldComboBox->clear();
 
   QgsVectorLayer* vLayer = dynamic_cast<QgsVectorLayer*>( layer );

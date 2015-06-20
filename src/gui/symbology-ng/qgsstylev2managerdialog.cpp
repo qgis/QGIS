@@ -57,12 +57,6 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   tabItemType->setDocumentMode( true );
   searchBox->setPlaceholderText( tr( "Type here to filter symbols..." ) );
 
-  // setup icons
-  btnAddItem->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.png" ) ) );
-  btnEditItem->setIcon( QIcon( QgsApplication::iconPath( "symbologyEdit.png" ) ) );
-  btnRemoveItem->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.png" ) ) );
-  btnShare->setIcon( QIcon( QgsApplication::iconPath( "user.png" ) ) );
-
   connect( this, SIGNAL( finished( int ) ), this, SLOT( onFinished() ) );
 
   connect( listItems, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( editItem() ) );
@@ -74,6 +68,8 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   QMenu *shareMenu = new QMenu( tr( "Share Menu" ), this );
   QAction *exportAction = shareMenu->addAction( tr( "Export" ) );
   QAction *importAction = shareMenu->addAction( tr( "Import" ) );
+  exportAction->setIcon( QIcon( QgsApplication::iconPath( "mActionSharingExport.svg" ) ) );
+  importAction->setIcon( QIcon( QgsApplication::iconPath( "mActionSharingImport.svg" ) ) );
   connect( exportAction, SIGNAL( triggered() ), this, SLOT( exportItems() ) );
   connect( importAction, SIGNAL( triggered() ), this, SLOT( importItems() ) );
   btnShare->setMenu( shareMenu );
@@ -1248,7 +1244,9 @@ void QgsStyleV2ManagerDialog::enableItemsForGroupingMode( bool enable )
   // NOTE: if you ever change the layout name in the .ui file edit here too
   for ( int i = 0; i < symbolBtnsLayout->count(); i++ )
   {
-    symbolBtnsLayout->itemAt( i )->widget()->setEnabled( enable );
+    QWidget *w = qobject_cast<QWidget*>( symbolBtnsLayout->itemAt( i )->widget() );
+    if ( w )
+      w->setEnabled( enable );
   }
 
 }

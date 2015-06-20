@@ -26,9 +26,12 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4 import QtGui
+from PyQt4.QtGui import QIcon
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.modeler.ModelerDialog import ModelerDialog
+
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+
 
 class CreateNewModelAction(ToolboxAction):
 
@@ -37,7 +40,7 @@ class CreateNewModelAction(ToolboxAction):
         self.group = self.tr('Tools', 'CreateNewModelAction')
 
     def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + '/../images/model.png')
+        return QIcon(os.path.join(pluginPath, 'images', 'model.png'))
 
     def execute(self):
         dlg = ModelerDialog()

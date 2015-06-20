@@ -119,7 +119,7 @@ class GeoAlgorithm:
 
         qgsVersion = QGis.QGIS_VERSION_INT
         major = qgsVersion / 10000
-        minor = minor = (qgsVersion - major * 10000) / 100
+        minor = (qgsVersion - major * 10000) / 100
         if minor % 2 == 1:
             qgsVersion = 'testing'
         else:
@@ -139,13 +139,6 @@ class GeoAlgorithm:
         helpUrl = 'http://docs.qgis.org/{}/en/docs/user_manual/processing_algs/{}/{}/{}.html'.format(qgsVersion, providerName, safeGroupName, safeAlgName)
         return False, helpUrl
 
-        # name = self.commandLineName().split(':')[1].lower()
-        # filename = os.path.join(os.path.dirname(inspect.getfile(self.__class__)), 'help', name + '.rst')
-        # try:
-        #   html = getHtmlFromRstFile(filename)
-        #   return True, html
-        # except:
-        #   return False, None
 
     def processAlgorithm(self):
         """Here goes the algorithm itself.
@@ -524,38 +517,6 @@ class GeoAlgorithm:
                 s += out.getValueAsCommandLineParameter() + ','
         s = s[:-1] + ')'
         return s
-
-    def getPostProcessingErrorMessage(self, wrongLayers):
-        """Returns the message to be shown to the user when, after
-        running this algorithm, there is a problem loading the
-        resulting layer.
-
-        This method should analyze if the problem is caused by wrong
-        entry data, a wrong or missing installation of a required 3rd
-        party app, or any other cause, and create an error response
-        accordingly.
-
-        Message is provided as an HTML code that will be displayed to
-        the user, and which might contains links to installation paths
-        for missing 3rd party apps.
-
-          - wrongLayers: a list of Output objects that could not be
-                         loaded.
-        """
-
-        html = self.tr('<p>Oooops! The following output layers could not be '
-                       'open</p><ul>\n')
-        for layer in wrongLayers:
-            html += self.tr('<li>%s: <font size=3 face="Courier New" '
-                            'color="#ff0000">%s</font></li>\n') % (
-                layer.description, layer.value
-            )
-        html += self.tr('</ul><p>The above files could not be opened, which '
-                        'probably indicates that they were not correctly '
-                        'produced by the executed algorithm</p>'
-                        '<p>Checking the log information might help you see '
-                        'why those layers were not created as expected</p>')
-        return html
 
     def tr(self, string, context=''):
         if context == '':

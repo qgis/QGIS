@@ -94,9 +94,28 @@ void TestQgsComposerTableV2::initTestCase()
                                      "ogr" );
   QgsMapLayerRegistry::instance()->addMapLayer( mVectorLayer );
 
-  //create composition with composer map
   mMapSettings.setLayers( QStringList() << mVectorLayer->id() );
   mMapSettings.setCrsTransformEnabled( false );
+
+  mReport = "<h1>Composer TableV2 Tests</h1>\n";
+}
+
+void TestQgsComposerTableV2::cleanupTestCase()
+{
+  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QFile myFile( myReportFile );
+  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
+  {
+    QTextStream myQTextStream( &myFile );
+    myQTextStream << mReport;
+    myFile.close();
+  }
+  QgsApplication::exitQgis();
+}
+
+void TestQgsComposerTableV2::init()
+{
+  //create composition with composer map
   mComposition = new QgsComposition( mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 portrait
 
@@ -118,31 +137,11 @@ void TestQgsComposerTableV2::initTestCase()
   mComposerAttributeTable->setContentFont( QgsFontUtils::getStandardTestFont() );
   mComposerAttributeTable->setHeaderFont( QgsFontUtils::getStandardTestFont() );
   mComposerAttributeTable->setBackgroundColor( Qt::yellow );
-
-  mReport = "<h1>Composer TableV2 Tests</h1>\n";
-}
-
-void TestQgsComposerTableV2::cleanupTestCase()
-{
-  delete mComposition;
-
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-  QgsApplication::exitQgis();
-}
-
-void TestQgsComposerTableV2::init()
-{
 }
 
 void TestQgsComposerTableV2::cleanup()
 {
+  delete mComposition;
 }
 
 void TestQgsComposerTableV2::attributeTableHeadings()
@@ -626,4 +625,3 @@ void TestQgsComposerTableV2::removeDuplicates()
 
 QTEST_MAIN( TestQgsComposerTableV2 )
 #include "testqgscomposertablev2.moc"
-

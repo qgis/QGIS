@@ -1,81 +1,114 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>QgsBookmarksBase</class>
- <widget class="QDialog" name="QgsBookmarksBase">
+ <widget class="QDockWidget" name="QgsBookmarksBase">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>440</width>
-    <height>370</height>
+    <width>424</width>
+    <height>334</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Geospatial Bookmarks</string>
+   <string>Spatial Bookmarks</string>
   </property>
-  <layout class="QGridLayout">
-   <property name="margin">
-    <number>0</number>
+  <widget class="QWidget" name="bookmarksDockContents">
+   <layout class="QGridLayout" name="gridLayout">
+    <property name="margin">
+     <number>0</number>
+    </property>
+    <item row="0" column="0">
+     <widget class="QToolBar" name="mBookmarkToolbar">
+      <property name="iconSize">
+       <size>
+        <width>16</width>
+        <height>16</height>
+       </size>
+      </property>
+      <property name="floatable">
+       <bool>false</bool>
+      </property>
+      <addaction name="actionAdd"/>
+      <addaction name="actionDelete"/>
+      <addaction name="actionZoomTo"/>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QTreeView" name="lstBookmarks">
+      <property name="alternatingRowColors">
+       <bool>true</bool>
+      </property>
+      <property name="selectionMode">
+       <enum>QAbstractItemView::ExtendedSelection</enum>
+      </property>
+      <property name="rootIsDecorated">
+       <bool>false</bool>
+      </property>
+      <property name="sortingEnabled">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <action name="actionAdd">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionNewBookmark.png</normaloff>:/images/themes/default/mActionNewBookmark.png</iconset>
    </property>
-   <item row="0" column="0">
-    <widget class="QTreeView" name="lstBookmarks">
-     <property name="selectionMode">
-      <enum>QAbstractItemView::ExtendedSelection</enum>
-     </property>
-     <property name="rootIsDecorated">
-      <bool>false</bool>
-     </property>
-     <property name="sortingEnabled">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <property name="leftMargin">
-      <number>3</number>
-     </property>
-     <property name="topMargin">
-      <number>0</number>
-     </property>
-     <property name="rightMargin">
-      <number>3</number>
-     </property>
-     <property name="bottomMargin">
-      <number>3</number>
-     </property>
-     <item>
-      <widget class="QDialogButtonBox" name="buttonBox">
-       <property name="standardButtons">
-        <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-  </layout>
+   <property name="text">
+    <string>Add</string>
+   </property>
+   <property name="toolTip">
+    <string>Add bookmark</string>
+   </property>
+  </action>
+  <action name="actionDelete">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDeleteSelected.svg</normaloff>:/images/themes/default/mActionDeleteSelected.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Delete</string>
+   </property>
+   <property name="toolTip">
+    <string>Delete bookmark</string>
+   </property>
+  </action>
+  <action name="actionZoomTo">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionScaleHighlightFeature.svg</normaloff>:/images/themes/default/mActionScaleHighlightFeature.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom to</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom to bookmark</string>
+   </property>
+  </action>
+  <action name="actionHelp">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionHelpContents.svg</normaloff>:/images/themes/default/mActionHelpContents.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Help</string>
+   </property>
+   <property name="toolTip">
+    <string>Help</string>
+   </property>
+   <property name="visible">
+    <bool>true</bool>
+   </property>
+  </action>
  </widget>
- <layoutdefault spacing="6" margin="11"/>
- <tabstops>
-  <tabstop>lstBookmarks</tabstop>
- </tabstops>
- <resources/>
- <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>QgsBookmarksBase</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>211</x>
-     <y>342</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>274</x>
-     <y>256</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
+ <connections/>
 </ui>

@@ -25,7 +25,10 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtGui import QWidget, QMenu, QAction, QCursor, QInputDialog
+import os
+
+from PyQt4 import uic
+from PyQt4.QtGui import QMenu, QAction, QCursor, QInputDialog
 
 from qgis.core import QgsRasterLayer, QgsVectorLayer
 from qgis.utils import iface
@@ -36,12 +39,15 @@ from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterMultipleInput
 from processing.tools import dataobjects
 
-from processing.ui.ui_widgetBaseSelector import Ui_Form
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'widgetBaseSelector.ui'))
 
-class ExtentSelectionPanel(QWidget, Ui_Form):
+
+class ExtentSelectionPanel(BASE, WIDGET):
 
     def __init__(self, dialog, alg, default):
-        QWidget.__init__(self)
+        super(ExtentSelectionPanel, self).__init__(None)
         self.setupUi(self)
 
         self.dialog = dialog

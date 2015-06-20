@@ -37,6 +37,22 @@ QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem* parent,
 {
   mToolTip = uri;
   setState( Populated ); // children are not expected
+
+  OGRRegisterAll();
+  OGRSFDriverH hDriver;
+  OGRDataSourceH hDataSource = OGROpen( TO8F( mPath ), true, &hDriver );
+
+  if ( hDataSource )
+  {
+    QString driverName = OGR_Dr_GetName( hDriver );
+    OGR_DS_Destroy( hDataSource );
+
+    if ( driverName == "ESRI Shapefile" )
+      mCapabilities |= SetCrs;
+
+    // It it is impossible to assign a crs to an existing layer
+    // No OGR_L_SetSpatialRef : http://trac.osgeo.org/gdal/ticket/4032
+  }
 }
 
 QgsOgrLayerItem::~QgsOgrLayerItem()
@@ -45,82 +61,52 @@ QgsOgrLayerItem::~QgsOgrLayerItem()
 
 QgsLayerItem::Capability QgsOgrLayerItem::capabilities()
 {
-  QgsDebugMsg( "mPath = " + mPath );
-  OGRRegisterAll();
-  OGRSFDriverH hDriver;
-  OGRDataSourceH hDataSource = OGROpen( TO8F( mPath ), true, &hDriver );
-
-  if ( !hDataSource )
-    return NoCapabilities;
-
-  QString  driverName = OGR_Dr_GetName( hDriver );
-  OGR_DS_Destroy( hDataSource );
-
-  if ( driverName == "ESRI Shapefile" )
-    return SetCrs;
-
-  return NoCapabilities;
+  return mCapabilities & SetCrs ? SetCrs : NoCapabilities;
 }
 
 bool QgsOgrLayerItem::setCrs( QgsCoordinateReferenceSystem crs )
 {
-  QgsDebugMsg( "mPath = " + mPath );
-  OGRRegisterAll();
-  OGRSFDriverH hDriver;
-  OGRDataSourceH hDataSource = OGROpen( TO8F( mPath ), true, &hDriver );
-
-  if ( !hDataSource )
+  if ( !( mCapabilities & SetCrs ) )
     return false;
 
-  QString  driverName = OGR_Dr_GetName( hDriver );
-  OGR_DS_Destroy( hDataSource );
+  QString layerName = mPath.left( mPath.indexOf( ".shp", Qt::CaseInsensitive ) );
+  QString wkt = crs.toWkt();
 
-  // we are able to assign CRS only to shapefiles :-(
-  if ( driverName == "ESRI Shapefile" )
+  // save ordinary .prj file
+  OGRSpatialReferenceH hSRS = OSRNewSpatialReference( wkt.toLocal8Bit().data() );
+  OSRMorphToESRI( hSRS ); // this is the important stuff for shapefile .prj
+  char* pszOutWkt = NULL;
+  OSRExportToWkt( hSRS, &pszOutWkt );
+  QFile prjFile( layerName + ".prj" );
+  if ( prjFile.open( QIODevice::WriteOnly ) )
   {
-    QString layerName = mPath.left( mPath.indexOf( ".shp", Qt::CaseInsensitive ) );
-    QString wkt = crs.toWkt();
+    QTextStream prjStream( &prjFile );
+    prjStream << pszOutWkt << endl;
+    prjFile.close();
+  }
+  else
+  {
+    QgsMessageLog::logMessage( tr( "Couldn't open file %1.prj" ).arg( layerName ), tr( "OGR" ) );
+    return false;
+  }
+  OSRDestroySpatialReference( hSRS );
+  CPLFree( pszOutWkt );
 
-    // save ordinary .prj file
-    OGRSpatialReferenceH hSRS = OSRNewSpatialReference( wkt.toLocal8Bit().data() );
-    OSRMorphToESRI( hSRS ); // this is the important stuff for shapefile .prj
-    char* pszOutWkt = NULL;
-    OSRExportToWkt( hSRS, &pszOutWkt );
-    QFile prjFile( layerName + ".prj" );
-    if ( prjFile.open( QIODevice::WriteOnly ) )
-    {
-      QTextStream prjStream( &prjFile );
-      prjStream << pszOutWkt << endl;
-      prjFile.close();
-    }
-    else
-    {
-      QgsMessageLog::logMessage( tr( "Couldn't open file %1.prj" ).arg( layerName ), tr( "OGR" ) );
-      return false;
-    }
-    OSRDestroySpatialReference( hSRS );
-    CPLFree( pszOutWkt );
-
-    // save qgis-specific .qpj file (maybe because of better wkt compatibility?)
-    QFile qpjFile( layerName + ".qpj" );
-    if ( qpjFile.open( QIODevice::WriteOnly ) )
-    {
-      QTextStream qpjStream( &qpjFile );
-      qpjStream << wkt.toLocal8Bit().data() << endl;
-      qpjFile.close();
-    }
-    else
-    {
-      QgsMessageLog::logMessage( tr( "Couldn't open file %1.qpj" ).arg( layerName ), tr( "OGR" ) );
-      return false;
-    }
-
-    return true;
+  // save qgis-specific .qpj file (maybe because of better wkt compatibility?)
+  QFile qpjFile( layerName + ".qpj" );
+  if ( qpjFile.open( QIODevice::WriteOnly ) )
+  {
+    QTextStream qpjStream( &qpjFile );
+    qpjStream << wkt.toLocal8Bit().data() << endl;
+    qpjFile.close();
+  }
+  else
+  {
+    QgsMessageLog::logMessage( tr( "Couldn't open file %1.qpj" ).arg( layerName ), tr( "OGR" ) );
+    return false;
   }
 
-  // It it is impossible to assign a crs to an existing layer
-  // No OGR_L_SetSpatialRef : http://trac.osgeo.org/gdal/ticket/4032
-  return false;
+  return true;
 }
 
 QString QgsOgrLayerItem::layerName() const

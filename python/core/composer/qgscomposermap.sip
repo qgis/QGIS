@@ -755,6 +755,12 @@ class QgsComposerMap : QgsComposerItem
     /**Is emitted when the map has been prepared for atlas rendering, just before actual rendering*/
     void preparedForAtlas();
 
+    /** Emitted when layer style overrides are changed... a means to let
+     * associated legend items know they should update
+     * @note added in 2.10
+     */
+    void layerStyleOverridesChanged();
+
   public slots:
 
     /**Forces an update of the cached map image*/

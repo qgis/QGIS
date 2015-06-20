@@ -1,11 +1,14 @@
+<!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
+  <title>Developers Map</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
   <style type="text/css">
   body {  padding: 0; margin: 0;  }
   html, body, #developers-map {  height: 100%;  }
   </style>
-  <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
+  <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
   <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
   <link rel="points" type="application/json" href="contributors.json">
 </head>
@@ -27,7 +30,9 @@
     var map = L.map('developers-map').fitBounds(geojson.getBounds());
     developersMapTiles.addTo(map);
     geojson.addTo(map);
-    map.setZoom(1);
+     setTimeout(function() {
+       map.setZoom(1);
+     }, 0);
   });
   </script>
 </body>

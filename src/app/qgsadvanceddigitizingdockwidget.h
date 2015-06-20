@@ -257,7 +257,6 @@ class APP_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
 
     // error message
     QgsMessageBarItem* mErrorMessage;
-    bool mErrorMessageDisplayed;
 
     // UI
     QAction* mEnableAction;

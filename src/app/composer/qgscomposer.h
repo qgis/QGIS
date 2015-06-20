@@ -19,7 +19,6 @@
 #include "ui_qgscomposerbase.h"
 #include "qgscomposermap.h"
 #include "qgscontexthelp.h"
-#include <QPrinter>
 #include <QDockWidget>
 
 class QgisApp;
@@ -52,6 +51,7 @@ class QUndoView;
 class QComboBox;
 class QLabel;
 class QTreeView;
+class QPrinter;
 
 /** \ingroup MapComposer
  * \brief A gui for composing a printable map.
@@ -508,6 +508,8 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Load predefined scales from the project's properties
     void loadAtlasPredefinedScalesFromProject();
 
+    QPrinter* printer();
+
     /**Composer title*/
     QString mTitle;
 
@@ -557,7 +559,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     QAction *mActionPaste;
 
     //! Page & Printer Setup
-    QPrinter mPrinter;
+    QPrinter* mPrinter;
 
     QUndoView* mUndoView;
 

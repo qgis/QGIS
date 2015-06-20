@@ -46,15 +46,16 @@
 #include "qgsrectangle.h"
 #include "qgsvectorlayer.h"
 
+
 QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
                           QString lyrname,
-                          QString source ) :
-    mValid( false ), // assume the layer is invalid
-    mDataSource( source ),
-    mLayerOrigName( lyrname ), // store the original name
-    mID( "" ),
-    mLayerType( type ),
-    mBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal blending
+                          QString source )
+    : mValid( false ) // assume the layer is invalid
+    , mDataSource( source )
+    , mLayerOrigName( lyrname ) // store the original name
+    , mID( "" )
+    , mLayerType( type )
+    , mBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal blending
     , mLegend( 0 )
     , mStyleManager( new QgsMapLayerStyleManager( this ) )
 {
@@ -293,7 +294,67 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
   }
   else
   {
-    mDataSource = QgsProject::instance()->readPath( mDataSource );
+    bool handled = false;
+
+    if ( provider == "gdal" )
+    {
+      if ( mDataSource.startsWith( "NETCDF:" ) )
+      {
+        // NETCDF:filename:variable
+        // filename can be quoted with " as it can contain colons
+        QRegExp r( "NETCDF:(.+):([^:]+)" );
+        if ( r.exactMatch( mDataSource ) )
+        {
+          QString filename = r.cap( 1 );
+          if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
+            filename = filename.mid( 1, filename.length() - 2 );
+          mDataSource = "NETCDF:\"" + QgsProject::instance()->readPath( filename ) + "\":" + r.cap( 2 );
+          handled = true;
+        }
+      }
+      else if ( mDataSource.startsWith( "HDF4_SDS:" ) )
+      {
+        // HDF4_SDS:subdataset_type:file_name:subdataset_index
+        // filename can be quoted with " as it can contain colons
+        QRegExp r( "HDF4_SDS:([^:]+):(.+):([^:]+)" );
+        if ( r.exactMatch( mDataSource ) )
+        {
+          QString filename = r.cap( 2 );
+          if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
+            filename = filename.mid( 1, filename.length() - 2 );
+          mDataSource = "HDF4_SDS:" + r.cap( 1 ) + ":\"" + QgsProject::instance()->readPath( filename ) + "\":" + r.cap( 3 );
+          handled = true;
+        }
+      }
+      else if ( mDataSource.startsWith( "HDF5:" ) )
+      {
+        // HDF5:file_name:subdataset
+        // filename can be quoted with " as it can contain colons
+        QRegExp r( "HDF5:(.+):([^:]+)" );
+        if ( r.exactMatch( mDataSource ) )
+        {
+          QString filename = r.cap( 1 );
+          if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
+            filename = filename.mid( 1, filename.length() - 2 );
+          mDataSource = "HDF5:\"" + QgsProject::instance()->readPath( filename ) + "\":" + r.cap( 2 );
+          handled = true;
+        }
+      }
+      else if ( mDataSource.contains( QRegExp( "^(NITF_IM|RADARSAT_2_CALIB):" ) ) )
+      {
+        // NITF_IM:0:filename
+        // RADARSAT_2_CALIB:?:filename
+        QRegExp r( "([^:]+):([^:]+):(.+)" );
+        if ( r.exactMatch( mDataSource ) )
+        {
+          mDataSource = r.cap( 1 ) + ":" + r.cap( 2 ) + ":" + QgsProject::instance()->readPath( r.cap( 3 ) );
+          handled = true;
+        }
+      }
+    }
+
+    if ( !handled )
+      mDataSource = QgsProject::instance()->readPath( mDataSource );
   }
 
   // Set the CRS from project file, asking the user if necessary.
@@ -490,7 +551,72 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
   }
   else
   {
-    src = QgsProject::instance()->writePath( src, relativeBasePath );
+    bool handled = false;
+
+    if ( !vlayer )
+    {
+      QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( this );
+      // Update path for subdataset
+      if ( rlayer && rlayer->providerType() == "gdal" )
+      {
+        if ( src.startsWith( "NETCDF:" ) )
+        {
+          // NETCDF:filename:variable
+          // filename can be quoted with " as it can contain colons
+          QRegExp r( "NETCDF:(.+):([^:]+)" );
+          if ( r.exactMatch( src ) )
+          {
+            QString filename = r.cap( 1 );
+            if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
+              filename = filename.mid( 1, filename.length() - 2 );
+            src = "NETCDF:\"" + QgsProject::instance()->writePath( filename, relativeBasePath ) + "\":" + r.cap( 2 );
+            handled = true;
+          }
+        }
+        else if ( src.startsWith( "HDF4_SDS:" ) )
+        {
+          // HDF4_SDS:subdataset_type:file_name:subdataset_index
+          // filename can be quoted with " as it can contain colons
+          QRegExp r( "HDF4_SDS:([^:]+):(.+):([^:]+)" );
+          if ( r.exactMatch( src ) )
+          {
+            QString filename = r.cap( 2 );
+            if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
+              filename = filename.mid( 1, filename.length() - 2 );
+            src = "HDF4_SDS:" + r.cap( 1 ) + ":\"" + QgsProject::instance()->writePath( filename, relativeBasePath ) + "\":" + r.cap( 3 );
+            handled = true;
+          }
+        }
+        else if ( src.startsWith( "HDF5:" ) )
+        {
+          // HDF5:file_name:subdataset
+          // filename can be quoted with " as it can contain colons
+          QRegExp r( "HDF5:(.+):([^:]+)" );
+          if ( r.exactMatch( src ) )
+          {
+            QString filename = r.cap( 1 );
+            if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
+              filename = filename.mid( 1, filename.length() - 2 );
+            src = "HDF5:\"" + QgsProject::instance()->writePath( filename, relativeBasePath ) + "\":" + r.cap( 2 );
+            handled = true;
+          }
+        }
+        else if ( src.contains( QRegExp( "^(NITF_IM|RADARSAT_2_CALIB):" ) ) )
+        {
+          // NITF_IM:0:filename
+          // RADARSAT_2_CALIB:?:filename
+          QRegExp r( "([^:]+):([^:]+):(.+)" );
+          if ( r.exactMatch( src ) )
+          {
+            src = r.cap( 1 ) + ":" + r.cap( 2 ) + ":" + QgsProject::instance()->writePath( r.cap( 3 ), relativeBasePath );
+            handled = true;
+          }
+        }
+      }
+    }
+
+    if ( !handled )
+      src = QgsProject::instance()->writePath( src, relativeBasePath );
   }
 
   QDomText dataSourceText = document.createTextNode( src );

@@ -194,7 +194,10 @@ class QgsExpression
     class Function
     {
       public:
-        Function( QString fnname, int params, QString group, QString helpText = QString(), bool usesGeometry = false, QStringList referencedColumns = QStringList() );
+        Function( const QString& fnname, int params, const QString& group, const QString& helpText = QString(), bool usesGeometry = false, QStringList referencedColumns = QStringList(), bool lazyEval = false );
+
+        virtual ~Function();
+
         /** The name of the function. */
         QString name();
         /** The number of parameters this function takes. */
@@ -219,17 +222,15 @@ class QgsExpression
         /** The group the function belongs to. */
         QString group();
         /** The help text for the function. */
-        QString helptext();
+        const QString helptext();
 
         virtual QVariant func( const QVariantList& values, const QgsFeature* f, QgsExpression* parent ) = 0;
     };
 
 
-    static const QList<QgsExpression::Function *> &Functions();
-    // static QList<Function*> gmFunctions;
+    static const QList<QgsExpression::Function *>& Functions();
 
-    // static QStringList gmBuiltinFunctions;
-    static const QStringList &BuiltinFunctions();
+    static const QStringList& BuiltinFunctions();
 
     static bool registerFunction( Function* function );
     static bool unregisterFunction( QString name );
@@ -270,6 +271,20 @@ class QgsExpression
 
     class Node
     {
+      %ConvertToSubClassCode
+        switch (sipCpp->nodeType())
+        {
+          case QgsExpression::ntUnaryOperator:   sipClass = sipClass_QgsExpression_NodeUnaryOperator; break;
+          case QgsExpression::ntBinaryOperator:  sipClass = sipClass_QgsExpression_NodeBinaryOperator; break;
+          case QgsExpression::ntInOperator:      sipClass = sipClass_QgsExpression_NodeInOperator; break;
+          case QgsExpression::ntFunction:        sipClass = sipClass_QgsExpression_NodeFunction; break;
+          case QgsExpression::ntLiteral:         sipClass = sipClass_QgsExpression_NodeLiteral; break;
+          case QgsExpression::ntColumnRef:       sipClass = sipClass_QgsExpression_NodeColumnRef; break;
+          case QgsExpression::ntCondition:       sipClass = sipClass_QgsExpression_NodeCondition; break;
+          default:                               sipClass = 0; break;
+        }
+      %End
+
       public:
         virtual ~Node();
         virtual QgsExpression::NodeType nodeType() const = 0;
@@ -297,7 +312,7 @@ class QgsExpression
         ~NodeList();
         void append( QgsExpression::Node* node /Transfer/ );
         int count();
-        QList<QgsExpression::Node*> list();
+        const QList<QgsExpression::Node*>& list();
 
         virtual QString dump() const;
 
@@ -363,6 +378,7 @@ class QgsExpression
         virtual void accept( QgsExpression::Visitor& v ) const;
 
         int precedence() const;
+        bool leftAssociative() const;
     };
 
     class NodeInOperator : QgsExpression::Node
@@ -408,9 +424,9 @@ class QgsExpression
     class NodeLiteral : QgsExpression::Node
     {
       public:
-        NodeLiteral( QVariant value );
+        NodeLiteral( const QVariant& value );
 
-        QVariant value() const;
+        const QVariant& value() const;
 
         virtual QgsExpression::NodeType nodeType() const;
         virtual bool prepare( QgsExpression* parent, const QgsFields &fields );
@@ -425,7 +441,7 @@ class QgsExpression
     class NodeColumnRef : QgsExpression::Node
     {
       public:
-        NodeColumnRef( QString name );
+        NodeColumnRef( const QString& name );
 
         QString name() const;
 

@@ -7,4 +7,4 @@ ParameterNumber|size|Neighborhood size|1|None|3
 ParameterBoolean|-c|Use circular neighborhood|False
 *ParameterBoolean|-a|Do not align output with the input|False
 *ParameterFile|weight|File containing weights|False
-OutputRaster|output|Output layer
+OutputRaster|output|Neighbors

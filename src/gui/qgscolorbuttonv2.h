@@ -34,6 +34,7 @@ class QgsColorSchemeRegistry;
 class GUI_EXPORT QgsColorButtonV2 : public QToolButton
 {
     Q_OBJECT
+    Q_ENUMS( Behaviour )
     Q_PROPERTY( QString colorDialogTitle READ colorDialogTitle WRITE setColorDialogTitle )
     Q_PROPERTY( bool acceptLiveUpdates READ acceptLiveUpdates WRITE setAcceptLiveUpdates )
     Q_PROPERTY( QColor color READ color WRITE setColor )

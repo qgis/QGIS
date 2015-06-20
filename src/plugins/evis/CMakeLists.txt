@@ -57,6 +57,7 @@ INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_SOURCE_DIR}/idtool
      ${CMAKE_CURRENT_SOURCE_DIR}/../../gui
      ${CMAKE_CURRENT_SOURCE_DIR}/../../core
+     ${CMAKE_CURRENT_SOURCE_DIR}/../../core/geometry
      ${CMAKE_CURRENT_SOURCE_DIR}/../../core/raster
      ${CMAKE_CURRENT_SOURCE_DIR}/..
 )

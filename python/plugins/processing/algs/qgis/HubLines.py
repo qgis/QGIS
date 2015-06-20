@@ -54,7 +54,7 @@ class HubLines(GeoAlgorithm):
         self.addParameter(ParameterTableField(self.SPOKE_FIELD,
             self.tr('Spoke ID field'), self.SPOKES))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Hub lines')))
 
     def processAlgorithm(self, progress):
         layerHub = dataobjects.getObjectFromUri(

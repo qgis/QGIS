@@ -7,5 +7,4 @@ ParameterRaster|raster|Raster map to be sampled|False
 ParameterNumber|z|Sampled raster values will be multiplied by this factor|None|None|1.0
 ParameterBoolean|-b|Bilinear interpolation (default is nearest neighbor)|False
 ParameterBoolean|-c|Cubic convolution interpolation (default is nearest neighbor)|False
-OutputVector|output|Output vector layer
-
+OutputVector|output|Sampled
