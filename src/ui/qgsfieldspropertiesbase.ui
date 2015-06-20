@@ -146,7 +146,7 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
              <item row="0" column="1">
               <widget class="QToolButton" name="mDeleteAttributeButton">
                <property name="toolTip">
-                <string>Delete column</string>
+                <string>Delete field</string>
                </property>
                <property name="text">
                 <string/>
@@ -201,7 +201,7 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
                 </sizepolicy>
                </property>
                <property name="toolTip">
-                <string>New column</string>
+                <string>New field</string>
                </property>
                <property name="text">
                 <string/>
