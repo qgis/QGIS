@@ -412,6 +412,11 @@ class QgsGrass
     // path to QGIS GRASS modules like qgis.g.info etc.
     static GRASS_LIB_EXPORT QString qgisGrassModulePath() { return QgsApplication::libexecPath() + "grass/modules"; }
 
+    // Allocate struct Map_info
+    static GRASS_LIB_EXPORT struct Map_info * vectNewMapStruct();
+    // Free struct Map_info
+    static GRASS_LIB_EXPORT void vectDestroyMapStruct( struct Map_info *map );
+
   private:
     static int initialized; // Set to 1 after initialization
     static bool active; // is active mode

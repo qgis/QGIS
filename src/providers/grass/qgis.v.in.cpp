@@ -119,15 +119,16 @@ int main( int argc, char **argv )
   bool isPolygon = QGis::singleType( wkbFlatType ) == QGis::WKBPolygon;
 
   QString finalName = QString( mapOption->answer );
-  struct Map_info finalMap, tmpMap;
-  Vect_open_new( &finalMap, mapOption->answer, 0 );
-  struct Map_info * map = &finalMap;
+  struct Map_info *finalMap = QgsGrass::vectNewMapStruct();
+  struct Map_info *tmpMap = QgsGrass::vectNewMapStruct();
+  Vect_open_new( finalMap, mapOption->answer, 0 );
+  struct Map_info * map = finalMap;
   QDateTime now = QDateTime::currentDateTime();
   QString tmpName = QString( "%1_tmp_%2" ).arg( mapOption->answer ).arg( now.toString( "yyyyMMddhhmmss" ) );
   if ( isPolygon )
   {
-    Vect_open_new( &tmpMap, tmpName.toUtf8().data(), 0 );
-    map = &tmpMap;
+    Vect_open_new( tmpMap, tmpName.toUtf8().data(), 0 );
+    map = tmpMap;
   }
 
   QgsFields srcFields;
@@ -149,8 +150,8 @@ int main( int argc, char **argv )
   fields.append( QgsField( key, QVariant::Int ) );
   fields.extend( srcFields );
 
-  struct field_info *fieldInfo = Vect_default_field_info( &finalMap, 1, NULL, GV_1TABLE );
-  if ( Vect_map_add_dblink( &finalMap, 1, NULL, fieldInfo->table, key.toLatin1().data(),
+  struct field_info *fieldInfo = Vect_default_field_info( finalMap, 1, NULL, GV_1TABLE );
+  if ( Vect_map_add_dblink( finalMap, 1, NULL, fieldInfo->table, key.toLatin1().data(),
                             fieldInfo->database, fieldInfo->driver ) != 0 )
   {
     G_fatal_error( "Cannot add link" );
@@ -176,7 +177,7 @@ int main( int argc, char **argv )
   qint32 featureCount = 0;
   while ( true )
   {
-    exitIfCanceled( stdinStream, isPolygon, tmpName, &tmpMap, finalName, &finalMap );
+    exitIfCanceled( stdinStream, isPolygon, tmpName, tmpMap, finalName, finalMap );
     stdinStream >> feature;
     stdoutStream << ( bool )true; // feature received
     stdoutFile.flush();
@@ -333,7 +334,7 @@ int main( int argc, char **argv )
     // read once more to assign centroids to polygons
     while ( true )
     {
-      exitIfCanceled( stdinStream, isPolygon, tmpName, &tmpMap, finalName, &finalMap );
+      exitIfCanceled( stdinStream, isPolygon, tmpName, tmpMap, finalName, finalMap );
       stdinStream >> feature;
       stdoutStream << ( bool )true; // feature received
       stdoutFile.flush();
@@ -359,8 +360,8 @@ int main( int argc, char **argv )
       }
     }
 
-    Vect_copy_map_lines( &tmpMap, &finalMap );
-    Vect_close( &tmpMap );
+    Vect_copy_map_lines( tmpMap, finalMap );
+    Vect_close( tmpMap );
     Vect_delete( tmpName.toUtf8().data() );
 
     foreach ( QgsFeature centroid, centroids.values() )
@@ -374,14 +375,14 @@ int main( int argc, char **argv )
         {
           Vect_cat_set( cats, 1, attribute.toInt() );
         }
-        writePoint( &finalMap, GV_CENTROID, point, cats );
+        writePoint( finalMap, GV_CENTROID, point, cats );
       }
     }
   }
 
   db_close_database_shutdown_driver( driver );
-  Vect_build( &finalMap );
-  Vect_close( &finalMap );
+  Vect_build( finalMap );
+  Vect_close( finalMap );
 
   stdoutStream << ( bool )true; // to keep caller waiting until finished
   stdoutFile.flush();
