@@ -290,6 +290,7 @@ void QgsGeorefPluginGui::doGeoreference()
 {
   if ( georeference() )
   {
+    mMessageBar->pushMessage( tr( "Georeference Successful" ), tr( "Raster was successfully georeferenced." ), QgsMessageBar::INFO, messageTimeout() );
     if ( mLoadInQgis )
     {
       if ( mModifiedRasterFileName.isEmpty() )
