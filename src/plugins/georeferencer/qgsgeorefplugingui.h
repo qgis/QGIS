@@ -38,6 +38,7 @@ class QgsMapCoordsDialog;
 class QgsPoint;
 class QgsRasterLayer;
 class QgsRectangle;
+class QgsMessageBar;
 
 class QgsGeorefDockWidget : public QDockWidget
 {
@@ -198,7 +199,9 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     /**Docks / undocks this window*/
     void dockThisWindow( bool dock );
 
+    QGridLayout* mCentralLayout;
 
+    QgsMessageBar* mMessageBar;
     QMenu *mPanelMenu;
     QMenu *mToolbarMenu;
 
@@ -253,6 +256,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     bool mLoadInQgis;
 
     QDockWidget* mDock;
+    int messageTimeout();
 };
 
 #endif

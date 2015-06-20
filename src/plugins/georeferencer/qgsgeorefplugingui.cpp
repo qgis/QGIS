@@ -64,6 +64,7 @@
 #include "qgstransformsettingsdialog.h"
 
 #include "qgsgeorefplugingui.h"
+#include "qgsmessagebar.h"
 
 QgsGeorefDockWidget::QgsGeorefDockWidget( const QString & title, QWidget * parent, Qt::WindowFlags flags )
     : QDockWidget( title, parent, flags )
@@ -90,12 +91,22 @@ QgsGeorefPluginGui::QgsGeorefPluginGui( QgisInterface* theQgisInterface, QWidget
   QSettings s;
   restoreGeometry( s.value( "/Plugin-GeoReferencer/Window/geometry" ).toByteArray() );
 
+  QWidget *centralWidget = this->centralWidget();
+  mCentralLayout = new QGridLayout( centralWidget );
+  centralWidget->setLayout( mCentralLayout );
+  mCentralLayout->setContentsMargins( 0, 0, 0, 0 );
+
   createActions();
   createActionGroups();
   createMenus();
   createMapCanvas();
   createDockWidgets();
   createStatusBar();
+
+  // a bar to warn the user with non-blocking messages
+  mMessageBar = new QgsMessageBar( centralWidget );
+  mMessageBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
+  mCentralLayout->addWidget( mMessageBar, 0, 0, 1, 1 );
 
   setAddPointTool();
   setupConnections();
@@ -368,8 +379,9 @@ void QgsGeorefPluginGui::generateGDALScript()
       }
     }
     default:
-      QMessageBox::information( this, tr( "Info" ), tr( "GDAL scripting is not supported for %1 transformation" )
-                                .arg( convertTransformEnumToString( mTransformParam ) ) );
+      mMessageBar->pushMessage( tr( "Invalid Transform" ), tr( "GDAL scripting is not supported for %1 transformation." )
+                                .arg( convertTransformEnumToString( mTransformParam ) )
+                                , QgsMessageBar::WARNING, messageTimeout() );
   }
 }
 
@@ -575,7 +587,7 @@ void QgsGeorefPluginGui::saveGCPsDialog()
 {
   if ( mPoints.isEmpty() )
   {
-    QMessageBox::information( this, tr( "Info" ), tr( "No GCP points to save" ) );
+    mMessageBar->pushMessage( tr( "No GCP Points" ), tr( "No GCP points are available to save." ), QgsMessageBar::WARNING, messageTimeout() );
     return;
   }
 
@@ -602,7 +614,7 @@ void QgsGeorefPluginGui::showRasterPropertiesDialog()
   }
   else
   {
-    QMessageBox::information( this, tr( "Info" ), tr( "Please load raster to be georeferenced" ) );
+    mMessageBar->pushMessage( tr( "Raster Properties" ), tr( "Please load raster to be georeferenced." ), QgsMessageBar::INFO, messageTimeout() );
   }
 }
 
@@ -903,11 +915,11 @@ void QgsGeorefPluginGui::createActionGroups()
 void QgsGeorefPluginGui::createMapCanvas()
 {
   // set up the canvas
-  mCanvas = new QgsMapCanvas( this, "georefCanvas" );
+  mCanvas = new QgsMapCanvas( this->centralWidget(), "georefCanvas" );
   mCanvas->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
   mCanvas->setCanvasColor( Qt::white );
   mCanvas->setMinimumWidth( 400 );
-  setCentralWidget( mCanvas );
+  mCentralLayout->addWidget( mCanvas, 0, 0, 2, 1 );
 
   // set up map tools
   mToolZoomIn = new QgsMapToolZoom( mCanvas, false /* zoomOut */ );
@@ -1240,7 +1252,7 @@ void QgsGeorefPluginGui::saveGCPs()
   }
   else
   {
-    QMessageBox::information( this, tr( "Info" ), tr( "Unable to open GCP points file %1" ).arg( mGCPpointsFileName ) );
+    mMessageBar->pushMessage( tr( "Write Error" ), tr( "Could not write to GCP points file %1." ).arg( mGCPpointsFileName ), QgsMessageBar::WARNING, messageTimeout() );
     return;
   }
 
@@ -1288,11 +1300,8 @@ bool QgsGeorefPluginGui::georeference()
     double pixelXSize, pixelYSize, rotation;
     if ( !mGeorefTransform.getOriginScaleRotation( origin, pixelXSize, pixelYSize, rotation ) )
     {
-      QMessageBox::information( this, tr( "Info" ),
-                                tr( "Failed to get linear transform parameters" ) );
-      {
-        return false;
-      }
+      mMessageBar->pushMessage( tr( "Transform Failed" ), tr( "Failed to calculate linear transform parameters." ), QgsMessageBar::WARNING, messageTimeout() );
+      return false;
     }
 
     if ( !mWorldFileName.isEmpty() )
@@ -1336,7 +1345,7 @@ bool QgsGeorefPluginGui::georeference()
     if ( res == 0 ) // fault to compute GCP transform
     {
       //TODO: be more specific in the error message
-      QMessageBox::information( this, tr( "Info" ), tr( "Failed to compute GCP transform: Transform is not solvable" ) );
+      mMessageBar->pushMessage( tr( "Transform Failed" ), tr( "Failed to compute GCP transform: Transform is not solvable." ), QgsMessageBar::WARNING, messageTimeout() );
       return false;
     }
     else if ( res == -1 ) // operation canceled
@@ -1368,8 +1377,7 @@ bool QgsGeorefPluginGui::writeWorldFile( QgsPoint origin, double pixelXSize, dou
   QFile file( mWorldFileName );
   if ( !file.open( QIODevice::WriteOnly ) )
   {
-    QMessageBox::critical( this, tr( "Error" ),
-                           tr( "Could not write to %1" ).arg( mWorldFileName ) );
+    mMessageBar->pushMessage( tr( "Error" ), tr( "Could not write to %1." ).arg( mWorldFileName ), QgsMessageBar::CRITICAL, messageTimeout() );
     return false;
   }
 
@@ -1848,49 +1856,37 @@ bool QgsGeorefPluginGui::checkReadyGeoref()
 {
   if ( mRasterFileName.isEmpty() )
   {
-    QMessageBox::information( this, tr( "Info" ), tr( "Please load raster to be georeferenced" ) );
+    mMessageBar->pushMessage( tr( "No Raster Loaded" ), tr( "Please load raster to be georeferenced" ), QgsMessageBar::WARNING, messageTimeout() );
     return false;
   }
 
-  bool ok = false;
-  while ( !ok )
+  if ( QgsGeorefTransform::InvalidTransform == mTransformParam )
   {
-    if ( QgsGeorefTransform::InvalidTransform == mTransformParam )
-    {
-      QMessageBox::information( this, tr( "Info" ), tr( "Please set transformation type" ) );
-      if ( !getTransformSettings() )
-        return false;
+    QMessageBox::information( this, tr( "Info" ), tr( "Please set transformation type" ) );
+    getTransformSettings();
+    return false;
+  }
 
-      continue;
-    }
+  //MH: helmert transformation without warping disabled until qgis is able to read rotated rasters efficiently
+  if ( mModifiedRasterFileName.isEmpty() && QgsGeorefTransform::Linear != mTransformParam /*&& QgsGeorefTransform::Helmert != mTransformParam*/ )
+  {
+    QMessageBox::information( this, tr( "Info" ), tr( "Please set output raster name" ) );
+    getTransformSettings();
+    return false;
+  }
 
-    //MH: helmert transformation without warping disabled until qgis is able to read rotated rasters efficiently
-    if ( mModifiedRasterFileName.isEmpty() && QgsGeorefTransform::Linear != mTransformParam /*&& QgsGeorefTransform::Helmert != mTransformParam*/ )
-    {
-      QMessageBox::information( this, tr( "Info" ), tr( "Please set output raster name" ) );
-      if ( !getTransformSettings() )
-        return false;
-
-      continue;
-    }
-
-    if ( mPoints.count() < ( int )mGeorefTransform.getMinimumGCPCount() )
-    {
-      QMessageBox::information( this, tr( "Info" ), tr( "%1 requires at least %2 GCPs. Please define more" )
-                                .arg( convertTransformEnumToString( mTransformParam ) ).arg( mGeorefTransform.getMinimumGCPCount() ) );
-      if ( !getTransformSettings() )
-        return false;
-
-      continue;
-    }
-
-    ok = true;
+  if ( mPoints.count() < ( int )mGeorefTransform.getMinimumGCPCount() )
+  {
+    mMessageBar->pushMessage( tr( "Not Enough GCPs" ), tr( "%1 transformation requires at least %2 GCPs. Please define more." )
+                              .arg( convertTransformEnumToString( mTransformParam ) ).arg( mGeorefTransform.getMinimumGCPCount() )
+                              , QgsMessageBar::WARNING, messageTimeout() );
+    return false;
   }
 
   // Update the transform if necessary
   if ( !updateGeorefTransform() )
   {
-    QMessageBox::information( this, tr( "Info" ), tr( "Failed to compute GCP transform: Transform is not solvable" ) );
+    mMessageBar->pushMessage( tr( "Transform Failed" ), tr( "Failed to compute GCP transform: Transform is not solvable." ), QgsMessageBar::WARNING, messageTimeout() );
     //    logRequaredGCPs();
     return false;
   }
@@ -2131,4 +2127,10 @@ void QgsGeorefPluginGui::clearGCPData()
   mGCPListWidget->updateGCPList();
 
   mIface->mapCanvas()->refresh();
+}
+
+int QgsGeorefPluginGui::messageTimeout()
+{
+  QSettings settings;
+  return settings.value( "/qgis/messageTimeout", 5 ).toInt();
 }

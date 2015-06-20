@@ -155,35 +155,21 @@ void QgsTransformSettingsDialog::changeEvent( QEvent *e )
 
 void QgsTransformSettingsDialog::accept()
 {
-  int minGCPpoints;
-  if ( checkGCPpoints( cmbTransformType->itemData( cmbTransformType->currentIndex() ).toInt(), minGCPpoints ) )
+  if ( !leOutputRaster->text().isEmpty() )
   {
-    if ( leOutputRaster->text().isEmpty() && !mWorldFileCheckBox->isChecked() )
+    //if the file path is relative, make it relative to the raster file directory
+    QString outputRasterName = leOutputRaster->text();
+    QFileInfo rasterFileInfo( mModifiedRaster );
+    QFileInfo outputFileInfo( rasterFileInfo.absoluteDir(), outputRasterName );
+
+    if ( outputFileInfo.fileName().isEmpty() || !outputFileInfo.dir().exists() )
     {
-      QMessageBox::information( this, tr( "Info" ), tr( "Please set output name" ) );
+      QMessageBox::warning( this, tr( "Info" ), tr( "Invalid output file name" ) );
+      leOutputRaster->setFocus();
       return;
     }
+    leOutputRaster->setText( outputFileInfo.absoluteFilePath() );
   }
-  else
-  {
-    QMessageBox::information( this, tr( "Info" ), tr( "%1 requires at least %2 GCPs. Please define more" )
-                              .arg( cmbTransformType->currentText() ).arg( minGCPpoints ) );
-    QSettings s;
-    cmbTransformType->setCurrentIndex( s.value( "/Plugin-GeoReferencer/lasttransformation", -1 ).toInt() );
-    return;
-  }
-
-  //if the file path is relative, make it relative to the raster file directory
-  QString outputRasterName = leOutputRaster->text();
-  QFileInfo rasterFileInfo( mModifiedRaster );
-  QFileInfo outputFileInfo( rasterFileInfo.absoluteDir(), outputRasterName );
-
-  if ( outputFileInfo.fileName().isEmpty() || !outputFileInfo.dir().exists() )
-  {
-    QMessageBox::information( this, tr( "Info" ), tr( "Invalid output file name" ) );
-    return;
-  }
-  leOutputRaster->setText( outputFileInfo.absoluteFilePath() );
 
   QSettings s;
   s.setValue( "/Plugin-GeoReferencer/lasttransformation", cmbTransformType->currentIndex() );

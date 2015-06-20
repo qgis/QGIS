@@ -13,9 +13,7 @@
   <property name="windowTitle">
    <string>Georeferencer</string>
   </property>
-  <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout"/>
-  </widget>
+  <widget class="QWidget" name="mCentralwidget"/>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
