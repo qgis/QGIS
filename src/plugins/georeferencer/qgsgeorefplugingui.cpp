@@ -200,6 +200,25 @@ void QgsGeorefPluginGui::closeEvent( QCloseEvent *e )
   }
 }
 
+void QgsGeorefPluginGui::reset()
+{
+  if ( QMessageBox::question( this,
+                              tr( "Reset Georeferencer" ),
+                              tr( "Reset georeferencer and clear all GCP points?" ),
+                              QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel ) != QMessageBox::Cancel )
+  {
+    mRasterFileName.clear();
+    mModifiedRasterFileName.clear();
+    setWindowTitle( tr( "Georeferencer" ) );
+
+    //delete old points
+    clearGCPData();
+
+    //delete any old rasterlayers
+    removeOldLayer();
+  }
+}
+
 // -------------------------- private slots -------------------------------- //
 // File slots
 void QgsGeorefPluginGui::openRaster()
@@ -823,6 +842,8 @@ void QgsGeorefPluginGui::layerWillBeRemoved( QString theLayerId )
 void QgsGeorefPluginGui::createActions()
 {
   // File actions
+  connect( mActionReset, SIGNAL( triggered() ), this, SLOT( reset() ) );
+
   mActionOpenRaster->setIcon( getThemeIcon( "/mActionAddRasterLayer.svg" ) );
   connect( mActionOpenRaster, SIGNAL( triggered() ), this, SLOT( openRaster() ) );
 
@@ -1021,8 +1042,6 @@ void QgsGeorefPluginGui::createMenus()
     menuSettings->addMenu( mPanelMenu );
     menuSettings->addMenu( mToolbarMenu );
   }
-
-  menuBar()->addAction( tr( "Help" ), this, SLOT( contextHelp() ) );
 }
 
 void QgsGeorefPluginGui::createDockWidgets()

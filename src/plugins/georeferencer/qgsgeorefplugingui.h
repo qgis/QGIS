@@ -60,6 +60,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
 
   private slots:
     // file
+    void reset();
     void openRaster();
     void doGeoreference();
     void generateGDALScript();

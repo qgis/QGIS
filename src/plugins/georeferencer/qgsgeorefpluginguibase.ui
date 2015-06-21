@@ -27,6 +27,7 @@
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="mActionReset"/>
     <addaction name="mActionOpenRaster"/>
     <addaction name="separator"/>
     <addaction name="mActionStartGeoref"/>
@@ -375,7 +376,18 @@
     <string>Full Histogram Stretch</string>
    </property>
   </action>
+  <action name="mActionReset">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mIconClear.png</normaloff>:/images/themes/default/mIconClear.png</iconset>
+   </property>
+   <property name="text">
+    <string>Reset Georeferencer</string>
+   </property>
+  </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../../images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>
