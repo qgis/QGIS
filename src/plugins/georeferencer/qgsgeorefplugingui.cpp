@@ -1788,8 +1788,8 @@ void QgsGeorefPluginGui::showGDALScript( const QStringList& commands )
 
   // create window to show gdal script
   QDialogButtonBox *bbxGdalScript = new QDialogButtonBox( QDialogButtonBox::Cancel, Qt::Horizontal, this );
-  QPushButton *pbnCopyInClipBoard = new QPushButton( getThemeIcon( "/mPushButtonEditPaste.png" ),
-      tr( "Copy in clipboard" ), bbxGdalScript );
+  QPushButton *pbnCopyInClipBoard = new QPushButton( getThemeIcon( "/mActionEditPaste.png" ),
+      tr( "Copy to Clipboard" ), bbxGdalScript );
   bbxGdalScript->addButton( pbnCopyInClipBoard, QDialogButtonBox::AcceptRole );
 
   QPlainTextEdit *pteScript = new QPlainTextEdit();
