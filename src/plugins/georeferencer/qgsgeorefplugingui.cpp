@@ -1333,17 +1333,20 @@ bool QgsGeorefPluginGui::georeference()
       return false;
     }
 
-    bool success = writeWorldFile( origin, pixelXSize, pixelYSize, rotation );
-    if ( success && !mPdfOutputFile.isEmpty() )
+    if ( !writeWorldFile( origin, pixelXSize, pixelYSize, rotation ) )
+    {
+      return false;
+    }
+
+    if ( !mPdfOutputFile.isEmpty() )
     {
       writePDFReportFile( mPdfOutputFile, mGeorefTransform );
     }
-    if ( success && !mPdfOutputMapFile.isEmpty() )
+    if ( !mPdfOutputMapFile.isEmpty() )
     {
       writePDFMapFile( mPdfOutputMapFile, mGeorefTransform );
     }
-
-
+    return true;
   }
   else // Helmert, Polinom 1, Polinom 2, Polinom 3
   {
