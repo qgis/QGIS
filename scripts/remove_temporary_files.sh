@@ -1,6 +1,6 @@
 #!/bin/bash
 ###########################################################################
-#    remove_temporary_files.sh
+#    remove_git_confict_files.sh
 #    ---------------------
 #    Date                 : April 2012
 #    Copyright            : (C) 2012 by Tim Sutton
@@ -21,3 +21,7 @@
 # Tim Sutton, May 2008
 find . -name "*.orig" -exec rm -rf {} \;
 find . -name "*.prepare" -exec rm -rf {} \;
+find . -name "astyle*.diff" -exec rm -rf {} \;
+find . -name "sha*.diff" -exec rm -rf {} \;
+
+
