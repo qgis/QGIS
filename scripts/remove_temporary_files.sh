@@ -1,6 +1,6 @@
 #!/bin/bash
 ###########################################################################
-#    remove_git_confict_files.sh
+#    remove_temporary_files.sh
 #    ---------------------
 #    Date                 : April 2012
 #    Copyright            : (C) 2012 by Tim Sutton
@@ -14,11 +14,10 @@
 #                                                                         #
 ###########################################################################
 
+#
+# A simple script to get rid of QGIS related temporary files left in 
+# your QGIS source folder by git and the prepare-commit script.
 
-#
-# A simple script to get rid of .orig and .rej files left in 
-# your repository by svn. It will request confirmation before 
-# deleting each file.
-#
 # Tim Sutton, May 2008
 find . -name "*.orig" -exec rm -rf {} \;
+find . -name "*.prepare" -exec rm -rf {} \;
