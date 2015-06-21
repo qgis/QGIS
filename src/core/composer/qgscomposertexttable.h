@@ -19,6 +19,7 @@
 #define QGSCOMPOSERTEXTTABLE_H
 
 #include "qgscomposertable.h"
+#include "qgscomposertablev2.h"
 
 /**A text table item that reads text from string lists*/
 class CORE_EXPORT QgsComposerTextTable: public QgsComposerTable
@@ -64,6 +65,42 @@ class CORE_EXPORT QgsComposerTextTable: public QgsComposerTable
      * @note not available in python bindings
      */
     bool getFeatureAttributes( QList<QgsAttributeMap>& attributeMaps ) override;
+
+  private:
+    /**One stringlist per row*/
+    QList< QStringList > mRowText;
+};
+
+/**A text table item that reads text from string lists
+ * @note added in QGIS 2.10
+*/
+class CORE_EXPORT QgsComposerTextTableV2 : public QgsComposerTableV2
+{
+
+    Q_OBJECT
+
+  public:
+    QgsComposerTextTableV2( QgsComposition* c, bool createUndoCommands );
+    ~QgsComposerTextTableV2();
+
+    /** Adds a row to the table
+     * @param row list of strings to use for each cell's value in the newly added row
+     * @note If row is shorter than the number of columns in the table than blank cells
+     * will be inserted at the end of the row. If row contains more strings then the number
+     * of columns in the table then these extra strings will be ignored.
+     * @note if adding many rows, @link setContents @endlink is much faster
+    */
+    void addRow( const QStringList& row );
+
+    /** Sets the contents of the text table.
+     * @param contents list of table rows
+     * @see addRow
+     */
+    void setContents( const QList< QStringList >& contents );
+
+    bool getTableContents( QgsComposerTableContents &contents ) override;
+
+    virtual void addFrame( QgsComposerFrame* frame, bool recalcFrameSizes = true ) override;
 
   private:
     /**One stringlist per row*/

@@ -38,6 +38,8 @@
 #include "qgscomposerlabel.h"
 #include "qgscomposermap.h"
 #include "qgscomposertexttable.h"
+#include "qgscomposertablecolumn.h"
+#include "qgscomposerframe.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcoordsdialog.h"
 #include "qgsmaplayerregistry.h"
@@ -1585,15 +1587,11 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
     return false;
   }
 
-  QPrinter printer;
-  printer.setOutputFormat( QPrinter::PdfFormat );
-  printer.setOutputFileName( fileName );
-
   //create composition A4 with 300 dpi
   QgsComposition* composition = new QgsComposition( mCanvas->mapSettings() );
   composition->setPaperSize( 210, 297 ); //A4
   composition->setPrintResolution( 300 );
-  printer.setPaperSize( QSizeF( composition->paperWidth(), composition->paperHeight() ), QPrinter::Millimeter );
+  composition->setNumPages( 2 );
 
   QFont titleFont;
   titleFont.setPointSize( 9 );
@@ -1646,10 +1644,8 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
   composerMap->zoomToExtent( layerExtent );
   composerMap->setMapCanvas( mCanvas );
   composition->addItem( composerMap );
-  printer.setFullPage( true );
-  printer.setColorMode( QPrinter::Color );
 
-  QgsComposerTextTable* parameterTable = 0;
+  QgsComposerTextTableV2* parameterTable = 0;
   double scaleX, scaleY, rotation;
   QgsPoint origin;
 
@@ -1667,6 +1663,7 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
     residualUnits = tr( "pixels" );
   }
 
+  QGraphicsRectItem* previousItem = composerMap;
   if ( wldTransform )
   {
     QString parameterTitle = tr( "Transformation parameters" ) + QString( " (" ) + convertTransformEnumToString( transform.transformParametrisation() ) + QString( ")" );
@@ -1682,25 +1679,30 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
     double meanError = 0;
     calculateMeanError( meanError );
 
-    parameterTable = new QgsComposerTextTable( composition );
+    parameterTable = new QgsComposerTextTableV2( composition, false );
     parameterTable->setHeaderFont( tableHeaderFont );
     parameterTable->setContentFont( tableContentFont );
-    QStringList headers;
-    headers << tr( "Translation x" ) << tr( "Translation y" ) << tr( "Scale x" ) << tr( "Scale y" ) << tr( "Rotation [degrees]" ) << tr( "Mean error [%1]" ).arg( residualUnits );
-    parameterTable->setHeaderLabels( headers );
+
+    QgsComposerTableColumns columns;
+    columns << new QgsComposerTableColumn( tr( "Translation x" ) )
+    << new QgsComposerTableColumn( tr( "Translation y" ) )
+    << new QgsComposerTableColumn( tr( "Scale x" ) )
+    << new QgsComposerTableColumn( tr( "Scale y" ) )
+    << new QgsComposerTableColumn( tr( "Rotation [degrees]" ) )
+    << new QgsComposerTableColumn( tr( "Mean error [%1]" ).arg( residualUnits ) );
+
+    parameterTable->setColumns( columns );
     QStringList row;
     row << QString::number( origin.x(), 'f', 3 ) << QString::number( origin.y(), 'f', 3 ) << QString::number( scaleX ) << QString::number( scaleY ) << QString::number( rotation * 180 / M_PI ) << QString::number( meanError );
     parameterTable->addRow( row );
-    composition->addItem( parameterTable );
-    parameterTable->setSceneRect( QRectF( leftMargin, parameterLabel->rect().bottom() + parameterLabel->pos().y() + 5, contentWidth, 20 ) );
-    parameterTable->setGridStrokeWidth( 0.1 );
-    parameterTable->adjustFrameToSize();
-  }
 
-  QGraphicsRectItem* previousItem = composerMap;
-  if ( parameterTable )
-  {
-    previousItem = parameterTable;
+    QgsComposerFrame* tableFrame = new QgsComposerFrame( composition, parameterTable, leftMargin, parameterLabel->rect().bottom() + parameterLabel->pos().y() + 5, contentWidth, 12 );
+    parameterTable->addFrame( tableFrame );
+
+    composition->addItem( tableFrame );
+    parameterTable->setGridStrokeWidth( 0.1 );
+
+    previousItem = tableFrame;
   }
 
   QgsComposerLabel* residualLabel = new QgsComposerLabel( composition );
@@ -1720,14 +1722,25 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
   //necessary for the correct scale bar unit label
   resPlotItem->setConvertScaleToMapUnits( residualUnits == tr( "map units" ) );
 
-  QgsComposerTextTable* gcpTable = new QgsComposerTextTable( composition );
+  QgsComposerTextTableV2* gcpTable = new QgsComposerTextTableV2( composition, false );
   gcpTable->setHeaderFont( tableHeaderFont );
   gcpTable->setContentFont( tableContentFont );
-  QStringList gcpHeader;
-  gcpHeader << "id" << "enabled" << "pixelX" << "pixelY" << "mapX" << "mapY" << "resX [" + residualUnits + "]" << "resY [" + residualUnits + "]" << "resTot [" + residualUnits + "]";
-  gcpTable->setHeaderLabels( gcpHeader );
+  gcpTable->setHeaderMode( QgsComposerTableV2::AllFrames );
+  QgsComposerTableColumns columns;
+  columns << new QgsComposerTableColumn( tr( "ID" ) )
+  << new QgsComposerTableColumn( tr( "Enabled" ) )
+  << new QgsComposerTableColumn( tr( "Pixel X" ) )
+  << new QgsComposerTableColumn( tr( "Pixel Y" ) )
+  << new QgsComposerTableColumn( tr( "Map X" ) )
+  << new QgsComposerTableColumn( tr( "Map Y" ) )
+  << new QgsComposerTableColumn( tr( "Res X (%1)" ).arg( residualUnits ) )
+  << new QgsComposerTableColumn( tr( "Res Y (%1)" ).arg( residualUnits ) )
+  << new QgsComposerTableColumn( tr( "Res Total (%1)" ).arg( residualUnits ) );
+
+  gcpTable->setColumns( columns );
 
   QgsGCPList::const_iterator gcpIt = mPoints.constBegin();
+  QList< QStringList > gcpTableContents;
   for ( ; gcpIt != mPoints.constEnd(); ++gcpIt )
   {
     QStringList currentGCPStrings;
@@ -1745,27 +1758,32 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
     }
     currentGCPStrings << QString::number(( *gcpIt )->pixelCoords().x(), 'f', 0 ) << QString::number(( *gcpIt )->pixelCoords().y(), 'f', 0 ) << QString::number(( *gcpIt )->mapCoords().x(), 'f', 3 )
     <<  QString::number(( *gcpIt )->mapCoords().y(), 'f', 3 ) <<  QString::number( residual.x() ) <<  QString::number( residual.y() ) << QString::number( residualTot );
-    gcpTable->addRow( currentGCPStrings );
+    gcpTableContents << currentGCPStrings ;
   }
 
-  composition->addItem( gcpTable );
+  gcpTable->setContents( gcpTableContents );
 
-  gcpTable->setSceneRect( QRectF( leftMargin,  resPlotItem->rect().bottom() + resPlotItem->pos().y() + 5, contentWidth, 100 ) );
+  double firstFrameY = resPlotItem->rect().bottom() + resPlotItem->pos().y() + 5;
+  double firstFrameHeight = 287 - firstFrameY;
+  QgsComposerFrame* gcpFirstFrame = new QgsComposerFrame( composition, gcpTable, leftMargin, firstFrameY, contentWidth, firstFrameHeight );
+  gcpTable->addFrame( gcpFirstFrame );
+  composition->addItem( gcpFirstFrame );
+
+  QgsComposerFrame* gcpSecondFrame = new QgsComposerFrame( composition, gcpTable, leftMargin, 10, contentWidth, 277.0 );
+  gcpSecondFrame->setItemPosition( leftMargin, 10, QgsComposerItem::UpperLeft, 2 );
+  gcpSecondFrame->setHidePageIfEmpty( true );
+  gcpTable->addFrame( gcpSecondFrame );
+  composition->addItem( gcpSecondFrame );
+
   gcpTable->setGridStrokeWidth( 0.1 );
+  gcpTable->setResizeMode( QgsComposerMultiFrame::RepeatUntilFinished );
 
-  printer.setResolution( composition->printResolution() );
-  QPainter p( &printer );
-  composition->setPlotStyle( QgsComposition::Print );
-  QRectF paperRectMM = printer.pageRect( QPrinter::Millimeter );
-  QRectF paperRectPixel = printer.pageRect( QPrinter::DevicePixel );
-  composition->render( &p, paperRectPixel, paperRectMM );
+  composition->exportAsPDF( fileName );
 
   delete titleLabel;
   delete parameterLabel;
   delete residualLabel;
   delete resPlotItem;
-  delete parameterTable;
-  delete gcpTable;
   delete composerMap;
   delete composition;
   return true;
