@@ -29,7 +29,7 @@
 QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, const QString &output,
     int countGCPpoints, QWidget *parent )
     : QDialog( parent )
-    , mModifiedRaster( raster )
+    , mSourceRasterFile( raster )
     , mCountGCPpoints( countGCPpoints )
 {
   setupUi( this );
@@ -159,12 +159,19 @@ void QgsTransformSettingsDialog::accept()
   {
     //if the file path is relative, make it relative to the raster file directory
     QString outputRasterName = leOutputRaster->text();
-    QFileInfo rasterFileInfo( mModifiedRaster );
+    QFileInfo rasterFileInfo( mSourceRasterFile );
     QFileInfo outputFileInfo( rasterFileInfo.absoluteDir(), outputRasterName );
 
     if ( outputFileInfo.fileName().isEmpty() || !outputFileInfo.dir().exists() )
     {
-      QMessageBox::warning( this, tr( "Info" ), tr( "Invalid output file name" ) );
+      QMessageBox::warning( this, tr( "Destination Raster" ), tr( "Invalid output file name." ) );
+      leOutputRaster->setFocus();
+      return;
+    }
+    if ( outputFileInfo.filePath() == mSourceRasterFile )
+    {
+      //can't overwrite input file
+      QMessageBox::warning( this, tr( "Destination Raster" ), tr( "Input raster can not be overwritten." ) );
       leOutputRaster->setFocus();
       return;
     }
@@ -193,10 +200,14 @@ void QgsTransformSettingsDialog::accept()
 
 void QgsTransformSettingsDialog::on_tbnOutputRaster_clicked()
 {
-  QString selectedFile = generateModifiedRasterFileName( mModifiedRaster );
-  QString rasterFileName = QFileDialog::getSaveFileName( this, tr( "Save raster" ),
-                           selectedFile, "GeoTIFF (*.tif *.tiff *.TIF *.TIFF)" );
+  QString selectedFile = leOutputRaster->text();
+  if ( selectedFile.isEmpty() )
+  {
+    selectedFile = generateModifiedRasterFileName( mSourceRasterFile );
+  }
 
+  QString rasterFileName = QFileDialog::getSaveFileName( this, tr( "Destination Raster" ),
+                           selectedFile, "GeoTIFF (*.tif *.tiff *.TIF *.TIFF)" );
   if ( rasterFileName.isEmpty() )
     return;
 
