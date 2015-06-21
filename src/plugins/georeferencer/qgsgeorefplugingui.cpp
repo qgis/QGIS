@@ -934,7 +934,7 @@ void QgsGeorefPluginGui::createMapCanvas()
 
   mToolAddPoint = new QgsGeorefToolAddPoint( mCanvas );
   mToolAddPoint->setAction( mActionAddPoint );
-  connect( mToolAddPoint, SIGNAL( showCoordDailog( const QgsPoint & ) ),
+  connect( mToolAddPoint, SIGNAL( showCoordDialog( const QgsPoint & ) ),
            this, SLOT( showCoordDialog( const QgsPoint & ) ) );
 
   mToolDeletePoint = new QgsGeorefToolDeletePoint( mCanvas );
@@ -1000,7 +1000,7 @@ void QgsGeorefPluginGui::createMenus()
   toolBarEdit->setIconSize( QSize( size, size ) );
   toolBarView->setIconSize( QSize( size, size ) );
   toolBarHistogramStretch->setIconSize( QSize( size, size ) );
-  
+
   // View menu
   if ( layout != QDialogButtonBox::KdeLayout )
   {
