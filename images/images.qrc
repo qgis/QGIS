@@ -273,6 +273,7 @@
         <file>themes/default/mActionSelectPolygon.svg</file>
         <file>themes/default/mActionSelectRadius.svg</file>
         <file>themes/default/mActionSelectRectangle.svg</file>
+        <file>themes/default/mActionSelectAllTree.svg</file>
         <file>themes/default/mActionSetProjection.svg</file>
         <file>themes/default/mActionSharing.svg</file>
         <file>themes/default/mActionSharingExport.svg</file>
