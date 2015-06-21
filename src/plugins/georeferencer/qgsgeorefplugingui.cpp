@@ -271,7 +271,7 @@ void QgsGeorefPluginGui::openRaster()
 
   // load previously added points
   mGCPpointsFileName = mRasterFileName + ".points";
-  loadGCPs();
+  ( void )loadGCPs();
 
   mCanvas->setExtent( mLayer->extent() );
   mCanvas->refresh();
@@ -581,7 +581,14 @@ void QgsGeorefPluginGui::loadGCPsDialog()
   if ( mGCPpointsFileName.isEmpty() )
     return;
 
-  loadGCPs();
+  if ( !loadGCPs() )
+  {
+    mMessageBar->pushMessage( tr( "Invalid GCP file" ), tr( "GCP file could not be read." ), QgsMessageBar::WARNING, messageTimeout() );
+  }
+  else
+  {
+    mMessageBar->pushMessage( tr( "GCPs loaded" ), tr( "GCP file successfully loaded." ), QgsMessageBar::INFO, messageTimeout() );
+  }
 }
 
 void QgsGeorefPluginGui::saveGCPsDialog()
@@ -1195,48 +1202,57 @@ void QgsGeorefPluginGui::writeSettings()
 }
 
 // GCP points
-void QgsGeorefPluginGui::loadGCPs( /*bool verbose*/ )
+bool QgsGeorefPluginGui::loadGCPs( /*bool verbose*/ )
 {
   QFile pointFile( mGCPpointsFileName );
-  if ( pointFile.open( QIODevice::ReadOnly ) )
+  if ( !pointFile.open( QIODevice::ReadOnly ) )
   {
-    clearGCPData();
+    return false;
+  }
 
-    QTextStream points( &pointFile );
-    QString line = points.readLine();
-    int i = 0;
-    while ( !points.atEnd() )
+  clearGCPData();
+
+  QTextStream points( &pointFile );
+  QString line = points.readLine();
+  int i = 0;
+  while ( !points.atEnd() )
+  {
+    line = points.readLine();
+    QStringList ls;
+    if ( line.contains( QRegExp( "," ) ) ) // in previous format "\t" is delimiter of points in new - ","
     {
-      line = points.readLine();
-      QStringList ls;
-      if ( line.contains( QRegExp( "," ) ) ) // in previous format "\t" is delimiter of points in new - ","
-      {
-        // points from new georeferencer
-        ls = line.split( "," );
-      }
-      else
-      {
-        // points from prev georeferencer
-        ls = line.split( "\t" );
-      }
-
-      QgsPoint mapCoords( ls.at( 0 ).toDouble(), ls.at( 1 ).toDouble() ); // map x,y
-      QgsPoint pixelCoords( ls.at( 2 ).toDouble(), ls.at( 3 ).toDouble() ); // pixel x,y
-      if ( ls.count() == 5 )
-      {
-        bool enable = ls.at( 4 ).toInt();
-        addPoint( pixelCoords, mapCoords, enable, false/*, verbose*/ ); // enabled
-      }
-      else
-        addPoint( pixelCoords, mapCoords, true, false );
-
-      ++i;
+      // points from new georeferencer
+      ls = line.split( "," );
+    }
+    else
+    {
+      // points from prev georeferencer
+      ls = line.split( "\t" );
     }
 
-    mInitialPoints = mPoints;
-    //    showMessageInLog(tr("GCP points loaded from"), mGCPpointsFileName);
-    mCanvas->refresh();
+    if ( ls.count() < 4 )
+    {
+      return false;
+    }
+
+    QgsPoint mapCoords( ls.at( 0 ).toDouble(), ls.at( 1 ).toDouble() ); // map x,y
+    QgsPoint pixelCoords( ls.at( 2 ).toDouble(), ls.at( 3 ).toDouble() ); // pixel x,y
+    if ( ls.count() == 5 )
+    {
+      bool enable = ls.at( 4 ).toInt();
+      addPoint( pixelCoords, mapCoords, enable, false/*, verbose*/ ); // enabled
+    }
+    else
+      addPoint( pixelCoords, mapCoords, true, false );
+
+    ++i;
   }
+
+  mInitialPoints = mPoints;
+  //    showMessageInLog(tr("GCP points loaded from"), mGCPpointsFileName);
+  mCanvas->refresh();
+
+  return true;
 }
 
 void QgsGeorefPluginGui::saveGCPs()
