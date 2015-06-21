@@ -131,11 +131,19 @@ bool QgsGrassObject::setFromUri( const QString& uri )
 QString QgsGrassObject::elementShort() const
 {
   if ( mType == Raster )
+#if GRASS_VERSION_MAJOR < 7
     return "rast";
+#else
+    return "raster";
+#endif
   else if ( mType == Group )
     return "group";
   else if ( mType == Vector )
+#if GRASS_VERSION_MAJOR < 7
     return "vect";
+#else
+    return "vector";
+#endif
   else if ( mType == Region )
     return "region";
   else
@@ -1606,6 +1614,7 @@ QProcess GRASS_LIB_EXPORT *QgsGrass::startModule( const QString& gisdbase, const
   process->setEnvironment( environment );
 
   QgsDebugMsg( module + " " + arguments.join( " " ) );
+  //process->start( module, arguments, QProcess::Unbuffered );
   process->start( module, arguments );
   if ( !process->waitForStarted() )
   {
@@ -1953,7 +1962,11 @@ bool GRASS_LIB_EXPORT QgsGrass::deleteObject( const QgsGrassObject & object )
   QString cmd = "g.remove";
   QStringList arguments;
 
+#if GRASS_VERSION_MAJOR < 7
   arguments << object.elementShort() + "=" + object.name();
+#else
+  arguments << "-f" << "type=" + object.elementShort() << "name=" + object.name();
+#endif
 
   try
   {

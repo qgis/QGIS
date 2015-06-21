@@ -264,6 +264,9 @@ bool QgsGrassRasterImport::import()
         outStream << false; // not canceled
         outStream << byteArray;
 
+		// Without waitForBytesWritten() it does not finish ok on Windows (process timeout)
+		process->waitForBytesWritten(-1);
+
 #ifndef Q_OS_WIN
         // wait until the row is written to allow quick cancel (don't send data to buffer)
         process->waitForReadyRead();
@@ -440,6 +443,7 @@ bool QgsGrassVectorImport::import()
   }
 
   QDataStream outStream( process );
+  process->setReadChannel( QProcess::StandardOutput );
 
   QGis::WkbType wkbType = mProvider->geometryType();
   bool isPolygon = QGis::singleType( QGis::flatType( wkbType ) ) == QGis::WKBPolygon;
@@ -475,29 +479,41 @@ bool QgsGrassVectorImport::import()
       outStream << false; // not canceled
       outStream << feature;
 
+	  // Without waitForBytesWritten() it does not finish ok on Windows (data lost)
+	  process->waitForBytesWritten(-1);
+
+#ifndef Q_OS_WIN
       // wait until the feature is written to allow quick cancel (don't send data to buffer)
       process->waitForReadyRead();
       bool result;
       outStream >> result;
+#endif
     }
     feature = QgsFeature(); // indicate end by invalid feature
     outStream << false; // not canceled
     outStream << feature;
 
+	process->waitForBytesWritten(-1);
+    QgsDebugMsg( "features sent" );
+#ifndef Q_OS_WIN
     process->waitForReadyRead();
     bool result;
     outStream >> result;
+#endif
   }
   iterator.close();
 
-  process->setReadChannel( QProcess::StandardOutput );
+  // Close write channel before waiting for response to avoid stdin buffer problem on Windows
+  process->closeWriteChannel();
+
+  QgsDebugMsg( "waitForReadyRead" );
   bool result;
   process->waitForReadyRead();
   outStream >> result;
   QgsDebugMsg( QString( "result = %1" ).arg( result ) );
 
-  process->closeWriteChannel();
-  process->waitForFinished( 5000 );
+  QgsDebugMsg( "waitForFinished" );
+  process->waitForFinished( 30000 );
 
   QString stdoutString = process->readAllStandardOutput().data();
   QString stderrString = process->readAllStandardError().data();
