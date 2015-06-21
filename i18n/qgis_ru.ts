@@ -21055,7 +21055,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Grids</source>
-        <translation>Растры</translation>
+        <translation>Сетки</translation>
     </message>
     <message>
         <source>Add a new grid</source>
