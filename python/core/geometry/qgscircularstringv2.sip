@@ -40,7 +40,7 @@ class QgsCircularStringV2: public QgsCurveV2
     void draw( QPainter& p ) const;
     void transform( const QgsCoordinateTransform& ct );
     void transform( const QTransform& t );
-    void clip( const QgsRectangle& rect );
+    //void clip( const QgsRectangle& rect );
     void addToPainterPath( QPainterPath& path ) const;
     void drawAsPolygon( QPainter& p ) const;
 

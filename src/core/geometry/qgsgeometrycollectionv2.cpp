@@ -148,6 +148,7 @@ void QgsGeometryCollectionV2::transform( const QTransform& t )
   }
 }
 
+#if 0
 void QgsGeometryCollectionV2::clip( const QgsRectangle& rect )
 {
   QVector< QgsAbstractGeometryV2* >::iterator it = mGeometries.begin();
@@ -156,6 +157,7 @@ void QgsGeometryCollectionV2::clip( const QgsRectangle& rect )
     ( *it )->clip( rect );
   }
 }
+#endif
 
 void QgsGeometryCollectionV2::draw( QPainter& p ) const
 {

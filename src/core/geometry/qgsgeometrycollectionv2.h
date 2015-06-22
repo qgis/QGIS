@@ -64,7 +64,9 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
 
     virtual void transform( const QgsCoordinateTransform& ct ) override;
     void transform( const QTransform& t ) override;
+#if 0
     virtual void clip( const QgsRectangle& rect ) override;
+#endif
     virtual void draw( QPainter& p ) const override;
 
     bool fromWkb( const unsigned char * wkb ) override;
