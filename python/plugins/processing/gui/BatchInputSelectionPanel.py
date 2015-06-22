@@ -53,6 +53,7 @@ class BatchInputSelectionPanel(QWidget):
         self.horizontalLayout.setSpacing(0)
         self.horizontalLayout.setMargin(0)
         self.text = QLineEdit()
+        self.text.setMinimumWidth(300)
         self.text.setText('')
         self.text.setSizePolicy(QSizePolicy.Expanding,
                                 QSizePolicy.Expanding)
