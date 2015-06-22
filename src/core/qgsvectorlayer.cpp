@@ -1364,15 +1364,12 @@ void QgsVectorLayer::setDataSource( QString dataSource, QString baseName, QStrin
 
 bool QgsVectorLayer::setDataProvider( QString const & provider )
 {
-  // XXX should I check for and possibly delete any pre-existing providers?
-  // XXX How often will that scenario occur?
-  Q_ASSERT( !mDataProvider );
-
   mProviderKey = provider;     // XXX is this necessary?  Usually already set
   // XXX when execution gets here.
 
   //XXX - This was a dynamic cast but that kills the Windows
   //      version big-time with an abnormal termination error
+  delete mDataProvider;
   mDataProvider =
     ( QgsVectorDataProvider* )( QgsProviderRegistry::instance()->provider( provider, mDataSource ) );
 
