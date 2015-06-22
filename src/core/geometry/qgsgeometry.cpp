@@ -1192,26 +1192,18 @@ QgsGeometry* QgsGeometry::buffer( double distance, int segments ) const
 
 QgsGeometry* QgsGeometry::buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit ) const
 {
-  return 0; //todo...
-
-#if 0
-#if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
- ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
-  if ( mDirtyGeos )
-    exportWkbToGeos();
-
-  if ( !mGeos )
-    return 0;
-
-  try
+  if ( !d || !d->geometry )
   {
-    return fromGeosGeom( GEOSBufferWithStyle( mGeos, distance, segments, endCapStyle, joinStyle, mitreLimit ) );
+    return 0;
   }
-  CATCH_GEOS( 0 )
-#else
-  return 0;
-#endif
-#endif //0
+
+  QgsGeos g( d->geometry );
+  QgsAbstractGeometryV2* geom = g.buffer( distance, segments, endCapStyle, joinStyle, mitreLimit );
+  if ( !geom )
+  {
+    return 0;
+  }
+  return new QgsGeometry( geom );
 }
 
 QgsGeometry* QgsGeometry::offsetCurve( double distance, int segments, int joinStyle, double mitreLimit ) const
@@ -1484,7 +1476,7 @@ int QgsGeometry::avoidIntersections( QMap<QgsVectorLayer*, QSet< QgsFeatureId > 
 
 void QgsGeometry::validateGeometry( QList<Error> &errors )
 {
-//todo // QgsGeometryValidator::validateGeometry( this, errors );
+  QgsGeometryValidator::validateGeometry( this, errors );
 }
 
 bool QgsGeometry::isGeosValid() const

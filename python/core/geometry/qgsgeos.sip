@@ -18,6 +18,7 @@ class QgsGeos: public QgsGeometryEngine
     QgsAbstractGeometryV2* combine( const QList< const QgsAbstractGeometryV2* > ) const;
     QgsAbstractGeometryV2* symDifference( const QgsAbstractGeometryV2& geom ) const;
     QgsAbstractGeometryV2* buffer( double distance, int segments ) const;
+    QgsAbstractGeometryV2* buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit ) const;
     QgsAbstractGeometryV2* simplify( double tolerance ) const;
     QgsAbstractGeometryV2* interpolate( double distance ) const;
     bool centroid( QgsPointV2& pt ) const;
