@@ -45,8 +45,8 @@ rulesDialog::rulesDialog( QMap<QString, TopologyRule> testMap, QgisInterface *th
   mRulesTable->setSelectionBehavior( QAbstractItemView::SelectRows );
   mRuleBox->addItems( mTestConfMap.keys() );
 
-  mAddTestButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.png" ) ) );
-  mDeleteTestButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.png" ) ) );
+  mAddTestButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );
+  mDeleteTestButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.svg" ) ) );
 
   connect( mAddTestButton, SIGNAL( clicked() ), this, SLOT( addRule() ) );
   connect( mAddTestButton, SIGNAL( clicked() ), mRulesTable, SLOT( resizeColumnsToContents() ) );

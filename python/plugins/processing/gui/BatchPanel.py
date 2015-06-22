@@ -65,8 +65,8 @@ class BatchPanel(BASE, WIDGET):
         self.btnAdvanced.hide()
 
         # Set icons
-        self.btnAdd.setIcon(QgsApplication.getThemeIcon('/mActionSignPlus.png'))
-        self.btnRemove.setIcon(QgsApplication.getThemeIcon('/symbologyRemove.png'))
+        self.btnAdd.setIcon(QgsApplication.getThemeIcon('/symbologyAdd.svg'))
+        self.btnRemove.setIcon(QgsApplication.getThemeIcon('/symbologyRemove.svg'))
         self.btnAdvanced.setIcon(QIcon(os.path.join(pluginPath, 'images', 'alg.png')))
 
         self.alg = alg
