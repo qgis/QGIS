@@ -240,17 +240,24 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
     */
     void updatePagePos( double newPageWidth, double newPageHeight );
 
-    /**Moves the item to a new position (in canvas coordinates)*/
+    /**Moves the item to a new position (in canvas coordinates)
+      @param x item position x (mm)
+      @param y item position y (mm)
+      @param itemPoint reference point which coincides with specified position
+      @param page if page > 0, y is interpreted as relative to the origin of the specified page, if page <= 0, y is in absolute canvas coordinates.
+       a page number of 1 corresponds to the first page.
+      */
     void setItemPosition( double x, double y, ItemPositionMode itemPoint = UpperLeft, int page = -1 );
 
     /**Sets item position and width / height in one go
-      @param x item position x
-      @param y item position y
-      @param width item width
-      @param height item height
-      @param itemPoint item position mode
+      @param x item position x (mm)
+      @param y item position y (mm)
+      @param width item width (mm)
+      @param height item height (mm)
+      @param itemPoint reference point which coincides with specified position
       @param posIncludesFrame set to true if the position and size arguments include the item's frame border
-      @param page if page > 0, y is interpreted as relative to the origin of the specified page, if page <= 0, y is in absolute canvas coordinates
+      @param page if page > 0, y is interpreted as relative to the origin of the specified page, if page <= 0, y is in absolute canvas coordinates.
+       a page number of 1 corresponds to the first page.
       */
     void setItemPosition( double x, double y, double width, double height, ItemPositionMode itemPoint = UpperLeft, bool posIncludesFrame = false, int page = -1 );
 
