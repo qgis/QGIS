@@ -122,7 +122,7 @@ class SagaAlgorithmProvider(AlgorithmProvider):
         return ['shp']
 
     def getSupportedOutputRasterLayerExtensions(self):
-        return ['tif']
+        return ['sdat']
 
     def getSupportedOutputTableLayerExtensions(self):
         return ['dbf']
