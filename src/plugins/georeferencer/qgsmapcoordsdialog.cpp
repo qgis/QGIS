@@ -115,6 +115,7 @@ void QgsMapCoordsDialog::maybeSetXY( const QgsPoint & xy, Qt::MouseButton button
     leYCoord->setText( qgsDoubleToString( mapCoordPoint.y() ) );
   }
 
+  parentWidget()->setWindowState(( parentWidget()->parentWidget()->windowState() & ~Qt::WindowMinimized ) | Qt::WindowActive );
   parentWidget()->showNormal();
   parentWidget()->activateWindow();
   parentWidget()->raise();
@@ -130,6 +131,9 @@ void QgsMapCoordsDialog::setToolEmitPoint( bool isEnable )
   if ( isEnable )
   {
     assert( parentWidget()->parentWidget() != 0 );
+
+    parentWidget()->parentWidget()->setWindowState(( parentWidget()->parentWidget()->windowState() & ~Qt::WindowMinimized ) | Qt::WindowActive );
+    parentWidget()->parentWidget()->showNormal();
     parentWidget()->parentWidget()->activateWindow();
     parentWidget()->parentWidget()->raise();
 
