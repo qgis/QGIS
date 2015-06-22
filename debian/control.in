@@ -50,7 +50,8 @@ Build-Depends:
  xvfb, xauth,
  xfonts-base, xfonts-100dpi, xfonts-75dpi, xfonts-scalable,
 #sid-oracle# oracle-instantclient11.2-devel,
- spawn-fcgi, lighttpd, poppler-utils, locales, qt4-doc-html
+ spawn-fcgi, lighttpd, poppler-utils, locales, qt4-doc-html,
+ libqt4-sql-sqlite
 Build-Conflicts: libqgis-dev, qgis-dev
 #sid stretch jessie sid-oracle vivid#Standards-Version: 3.9.6
 #wheezy#Standards-Version: 3.9.3
