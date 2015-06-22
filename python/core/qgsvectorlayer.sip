@@ -577,7 +577,17 @@ class QgsVectorLayer : QgsMapLayer
      */
     virtual long featureCount() const;
 
-    void setDataSource(QString dataSource, QString baseName, QString provider, bool loadDefaultStyleFlag = true);
+    /**
+     * Update the data source of the layer. The layer's renderer and legend will be preserved only
+     * if the geometry type of the new data source matches the current geometry type of the layer.
+     * @param dataSource new layer data source
+     * @param baseName base name of the layer
+     * @param provider provider string
+     * @param loadDefaultStyleFlag set to true to reset the layer's style to the default for the
+     * data source
+     * @note added in QGIS 2.10
+     */
+    void setDataSource( QString dataSource, QString baseName, QString provider, bool loadDefaultStyleFlag = false );
 
     /**
      * Number of features rendered with specified symbol. Features must be first
