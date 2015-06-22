@@ -166,9 +166,9 @@ def load(fileName, name=None, crs=None, style=None):
         if crs is not None and qgslayer.crs() is None:
             qgslayer.setCrs(crs, False)
         if style is None:
-            if qgslayer.geometryType == 0:
+            if qgslayer.geometryType() == QGis.Point:
                 style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POINT_STYLE)
-            elif qgslayer.geometryType == 1:
+            elif qgslayer.geometryType() == QGis.Line:
                 style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_LINE_STYLE)
             else:
                 style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POLYGON_STYLE)
