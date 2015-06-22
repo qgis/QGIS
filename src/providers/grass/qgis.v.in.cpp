@@ -178,6 +178,13 @@ int main( int argc, char **argv )
     G_fatal_error( "Cannot create table: %s", e.what() );
   }
 
+  if ( db_grant_on_table( driver, fieldInfo->table, DB_PRIV_SELECT, DB_GROUP | DB_PUBLIC ) != DB_OK )
+  {
+    // TODO: fatal?
+    //G_fatal_error(("Unable to grant privileges on table <%s>"), fieldInfo->table);
+  }
+  db_begin_transaction( driver );
+
   QgsFeature feature;
   struct line_cats *cats = Vect_new_cats_struct();
 
@@ -271,6 +278,8 @@ int main( int argc, char **argv )
     }
     featureCount++;
   }
+  db_commit_transaction( driver );
+  db_close_database_shutdown_driver( driver );
 
   if ( isPolygon )
   {
@@ -393,7 +402,6 @@ int main( int argc, char **argv )
     }
   }
 
-  db_close_database_shutdown_driver( driver );
   Vect_build( finalMap );
   Vect_close( finalMap );
 
