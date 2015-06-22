@@ -311,7 +311,7 @@ class GeoAlgorithm:
                         command = command.split(" ")
                     else:
                         command = [command]
-                    subprocess.Popen(
+                    proc = subprocess.Popen(
                         command,
                         shell=True,
                         stdout=subprocess.PIPE,
@@ -319,6 +319,7 @@ class GeoAlgorithm:
                         stderr=subprocess.STDOUT,
                         universal_newlines=False,
                         )
+                    proc.communicate()
 
 
             elif isinstance(out, OutputTable):
