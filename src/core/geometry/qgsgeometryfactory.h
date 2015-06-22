@@ -1,5 +1,5 @@
 /***************************************************************************
-                           qgsgeometryimport.h
+                           qgsgeometryfactory.h
                          -----------------------
     begin                : September 2014
     copyright            : (C) 2014 by Marco Hugentobler
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSGEOMETRYIMPORT_H
-#define QGSGEOMETRYIMPORT_H
+#ifndef QGSGEOMETRYFACTORY_H
+#define QGSGEOMETRYFACTORY_H
 
 #include "qgsrectangle.h"
 #include "qgswkbtypes.h"
@@ -34,11 +34,11 @@ typedef QVector<QgsPolyline> QgsMultiPolyline;
 typedef QVector<QgsPolygon> QgsMultiPolygon;
 
 /**\ingroup core
- * \class QgsGeometryImport
- * \brief Contains geometry importing routines.
+ * \class QgsGeometryFactory
+ * \brief Contains geometry creation routines.
  * \note added in QGIS 2.10
  */
-class CORE_EXPORT QgsGeometryImport
+class CORE_EXPORT QgsGeometryFactory
 {
   public:
     /** Construct geometry from a WKB string.
@@ -70,4 +70,4 @@ class CORE_EXPORT QgsGeometryImport
     static QgsLineStringV2* linestringFromPolyline( const QgsPolyline& polyline );
 };
 
-#endif // QGSGEOMETRYIMPORT_H
+#endif // QGSGEOMETRYFACTORY_H

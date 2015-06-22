@@ -1,5 +1,5 @@
 /***************************************************************************
-                           qgsgeometryimport.cpp
+                           qgsgeometryfactory.cpp
                          ------------------------
     begin                : September 2014
     copyright            : (C) 2014 by Marco Hugentobler
@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgeometryimport.h"
+#include "qgsgeometryfactory.h"
 #include "qgscircularstringv2.h"
 #include "qgscompoundcurvev2.h"
 #include "qgscurvepolygonv2.h"
@@ -29,7 +29,7 @@
 #include "qgsmultisurfacev2.h"
 #include "qgswkbtypes.h"
 
-QgsAbstractGeometryV2* QgsGeometryImport::geomFromWkb( const unsigned char* wkb )
+QgsAbstractGeometryV2* QgsGeometryFactory::geomFromWkb( const unsigned char* wkb )
 {
   if ( !wkb )
   {
@@ -50,7 +50,7 @@ QgsAbstractGeometryV2* QgsGeometryImport::geomFromWkb( const unsigned char* wkb 
   return geom;
 }
 
-QgsAbstractGeometryV2* QgsGeometryImport::geomFromWkt( const QString& text )
+QgsAbstractGeometryV2* QgsGeometryFactory::geomFromWkt( const QString& text )
 {
   QgsAbstractGeometryV2* geom = 0;
   if ( text.startsWith( "Point", Qt::CaseInsensitive ) )
@@ -112,12 +112,12 @@ QgsAbstractGeometryV2* QgsGeometryImport::geomFromWkt( const QString& text )
   return geom;
 }
 
-QgsAbstractGeometryV2* QgsGeometryImport::fromPoint( const QgsPoint& point )
+QgsAbstractGeometryV2* QgsGeometryFactory::fromPoint( const QgsPoint& point )
 {
   return new QgsPointV2( point.x(), point.y() );
 }
 
-QgsAbstractGeometryV2* QgsGeometryImport::fromMultiPoint( const QgsMultiPoint& multipoint )
+QgsAbstractGeometryV2* QgsGeometryFactory::fromMultiPoint( const QgsMultiPoint& multipoint )
 {
   QgsMultiPointV2* mp = new QgsMultiPointV2();
   QgsMultiPoint::const_iterator ptIt = multipoint.constBegin();
@@ -129,12 +129,12 @@ QgsAbstractGeometryV2* QgsGeometryImport::fromMultiPoint( const QgsMultiPoint& m
   return mp;
 }
 
-QgsAbstractGeometryV2* QgsGeometryImport::fromPolyline( const QgsPolyline& polyline )
+QgsAbstractGeometryV2* QgsGeometryFactory::fromPolyline( const QgsPolyline& polyline )
 {
   return linestringFromPolyline( polyline );
 }
 
-QgsAbstractGeometryV2* QgsGeometryImport::fromMultiPolyline( const QgsMultiPolyline& multiline )
+QgsAbstractGeometryV2* QgsGeometryFactory::fromMultiPolyline( const QgsMultiPolyline& multiline )
 {
   QgsMultiLineStringV2* mLine = new QgsMultiLineStringV2();
   for ( int i = 0; i < multiline.size(); ++i )
@@ -144,7 +144,7 @@ QgsAbstractGeometryV2* QgsGeometryImport::fromMultiPolyline( const QgsMultiPolyl
   return mLine;
 }
 
-QgsAbstractGeometryV2* QgsGeometryImport::fromPolygon( const QgsPolygon& polygon )
+QgsAbstractGeometryV2* QgsGeometryFactory::fromPolygon( const QgsPolygon& polygon )
 {
   QgsPolygonV2* poly = new QgsPolygonV2();
 
@@ -167,7 +167,7 @@ QgsAbstractGeometryV2* QgsGeometryImport::fromPolygon( const QgsPolygon& polygon
   return poly;
 }
 
-QgsAbstractGeometryV2* QgsGeometryImport::fromMultiPolygon( const QgsMultiPolygon& multipoly )
+QgsAbstractGeometryV2* QgsGeometryFactory::fromMultiPolygon( const QgsMultiPolygon& multipoly )
 {
   QgsMultiPolygonV2* mp = new QgsMultiPolygonV2();
   for ( int i = 0; i < multipoly.size(); ++i )
@@ -177,7 +177,7 @@ QgsAbstractGeometryV2* QgsGeometryImport::fromMultiPolygon( const QgsMultiPolygo
   return mp;
 }
 
-QgsAbstractGeometryV2* QgsGeometryImport::fromRect( const QgsRectangle& rect )
+QgsAbstractGeometryV2* QgsGeometryFactory::fromRect( const QgsRectangle& rect )
 {
   QgsPolyline ring;
   ring.append( QgsPoint( rect.xMinimum(), rect.yMinimum() ) );
@@ -192,7 +192,7 @@ QgsAbstractGeometryV2* QgsGeometryImport::fromRect( const QgsRectangle& rect )
   return fromPolygon( polygon );
 }
 
-QgsLineStringV2* QgsGeometryImport::linestringFromPolyline( const QgsPolyline& polyline )
+QgsLineStringV2* QgsGeometryFactory::linestringFromPolyline( const QgsPolyline& polyline )
 {
   QgsLineStringV2* line = new QgsLineStringV2();
 
@@ -206,7 +206,7 @@ QgsLineStringV2* QgsGeometryImport::linestringFromPolyline( const QgsPolyline& p
   return line;
 }
 
-QgsAbstractGeometryV2* QgsGeometryImport::geomFromWkbType( QgsWKBTypes::Type t )
+QgsAbstractGeometryV2* QgsGeometryFactory::geomFromWkbType( QgsWKBTypes::Type t )
 {
   QgsWKBTypes::Type type = QgsWKBTypes::flatType( t );
   switch ( type )
