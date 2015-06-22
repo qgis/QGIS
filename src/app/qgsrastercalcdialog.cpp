@@ -386,6 +386,21 @@ void QgsRasterCalcDialog::on_mATanButton_clicked()
   mExpressionTextEdit->insertPlainText( " atan ( " );
 }
 
+void QgsRasterCalcDialog::on_mLnButton_clicked()
+{
+  mExpressionTextEdit->insertPlainText( " ln ( " );
+}
+
+void QgsRasterCalcDialog::on_mLogButton_clicked()
+{
+  mExpressionTextEdit->insertPlainText( " log10 ( " );
+}
+
+void QgsRasterCalcDialog::on_mNotEqualButton_clicked()
+{
+  mExpressionTextEdit->insertPlainText( " != " );
+}
+
 void QgsRasterCalcDialog::on_mOpenBracketPushButton_clicked()
 {
   mExpressionTextEdit->insertPlainText( " ( " );
