@@ -15,6 +15,7 @@ gdalogr:griddatametrics,Interpolate (Data metrics)
 gdalogr:gridinvdist,Interpolate (Inverse distance weighting)
 gdalogr:gridaverage,Interpolate (Average)
 gdalogr:contour,Contour lines
+gdalogr:importvectorintopostgisdatabaseavailableconnections, Import into PostGIS database
 qgis:creategrid,Create graticule
 saga:changegridvalues,Reclassify (simple)
 saga:creategraticule,Create graticule from extent
