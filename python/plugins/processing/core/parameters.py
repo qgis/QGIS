@@ -17,7 +17,7 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.tools.vector import resolveFieldIndex, features
+
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -29,7 +29,9 @@ __revision__ = '$Format:%H$'
 
 import sys
 import os
+import re
 
+from processing.tools.vector import resolveFieldIndex, features
 from PyQt4.QtCore import QCoreApplication
 from qgis.core import QgsRasterLayer, QgsVectorLayer
 from processing.tools.system import isWindows
@@ -147,11 +149,16 @@ class ParameterDataObject(Parameter):
         if self.value is None:
             return unicode(None)
         else:
-            if not isWindows():
-                return '"' + unicode(self.value) + '"'
-            else:
-                return '"' + unicode(self.value).replace('\\', '\\\\') + '"'
+            s = unicode(self.value)
+            if isWindows():
+                s = s.replace('\\', '\\\\')
+            s = s.replace('"', "'")
+            s = '"%s"' % s
 
+        s = re.sub("'user.*?'", "", s)
+        s = re.sub("'password.*?'", "", s)
+
+        return s
 
 class ParameterExtent(Parameter):
 
@@ -548,7 +555,7 @@ class ParameterSelection(Parameter):
                     index = resolveFieldIndex(layer, options[1])
                     feats = features(layer)
                     for feature in feats:
-                        self.options.append(unicode(feature.attributes()[index]))  
+                        self.options.append(unicode(feature.attributes()[index]))
                 except ValueError:
                     pass
         elif isinstance(self.options, basestring):
@@ -743,6 +750,7 @@ class ParameterVector(ParameterDataObject):
                     self.value = unicode(layer.source())
                     return True
             return os.path.exists(self.value)
+
 
     def getSafeExportedLayer(self):
         """Returns not the value entered by the user, but a string with
