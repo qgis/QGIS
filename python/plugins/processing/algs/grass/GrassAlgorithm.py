@@ -345,7 +345,7 @@ class GrassAlgorithm(GeoAlgorithm):
 
         for out in self.outputs:
             if isinstance(out, OutputRaster):
-                filename = out.value
+                filename = out.getCompatibleFileName(self)
 
                 # Raster layer output: adjust region to layer before
                 # exporting
@@ -372,11 +372,11 @@ class GrassAlgorithm(GeoAlgorithm):
                     outputCommands.append(command)
 
             if isinstance(out, OutputVector):
-                filename = out.value
+                filename = out.getCompatibleFileName(self)
                 command = 'v.out.ogr -s -c -e -z input=' + out.name + uniqueSufix
-                command += ' dsn="' + os.path.dirname(out.value) + '"'
+                command += ' dsn="' + os.path.dirname(filename) + '"'
                 command += ' format=ESRI_Shapefile'
-                command += ' olayer=' + os.path.basename(out.value)[:-4]
+                command += ' olayer=' + os.path.splitext(os.path.basename(filename))[0]
                 typeidx = \
                     self.getParameterValue(self.GRASS_OUTPUT_TYPE_PARAMETER)
                 outtype = ('auto' if typeidx
