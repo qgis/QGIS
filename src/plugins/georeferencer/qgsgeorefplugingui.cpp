@@ -1165,7 +1165,7 @@ void QgsGeorefPluginGui::addRaster( QString file )
 
   // so layer is not added to legend
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mLayer, false );
+    QList<QgsMapLayer *>() << mLayer, false, false );
 
   // add layer to map canvas
   QList<QgsMapCanvasLayer> layers;
