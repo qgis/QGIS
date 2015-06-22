@@ -105,10 +105,10 @@ int main( int argc, char **argv )
     exit( EXIT_FAILURE );
 
 #ifdef Q_OS_WIN32
-  _setmode(_fileno(stdin), _O_BINARY);
-  _setmode(_fileno(stdout), _O_BINARY);
-  setvbuf (stdin, NULL, _IONBF, BUFSIZ);
-  setvbuf (stdout, NULL, _IONBF, BUFSIZ); 
+  _setmode( _fileno( stdin ), _O_BINARY );
+  _setmode( _fileno( stdout ), _O_BINARY );
+  setvbuf( stdin, NULL, _IONBF, BUFSIZ );
+  setvbuf( stdout, NULL, _IONBF, BUFSIZ );
 #endif
   QFile stdinFile;
   stdinFile.open( stdin, QIODevice::ReadOnly );
@@ -130,7 +130,8 @@ int main( int argc, char **argv )
   Vect_open_new( finalMap, mapOption->answer, 0 );
   struct Map_info * map = finalMap;
   QDateTime now = QDateTime::currentDateTime();
-  QString tmpName = QString( "%1_tmp_%2" ).arg( mapOption->answer ).arg( now.toString( "yyyyMMddhhmmss" ) );
+  // keep tmp name in sync with QgsGrassMapsetItem::createChildren
+  QString tmpName = QString( "qgis_import_tmp_%1_%2" ).arg( mapOption->answer ).arg( now.toString( "yyyyMMddhhmmss" ) );
   if ( isPolygon )
   {
     Vect_open_new( tmpMap, tmpName.toUtf8().data(), 0 );
@@ -186,7 +187,7 @@ int main( int argc, char **argv )
     exitIfCanceled( stdinStream, isPolygon, tmpName, tmpMap, finalName, finalMap );
     stdinStream >> feature;
 #ifndef Q_OS_WIN
-	// cannot be used on Windows, see notes in qgis.r.in
+    // cannot be used on Windows, see notes in qgis.r.in
     stdoutStream << ( bool )true; // feature received
     stdoutFile.flush();
 #endif
@@ -260,7 +261,7 @@ int main( int argc, char **argv )
       attributes.insert( 0, QVariant( feature.id() ) );
       try
       {
-		// TODO: inserting row is extremely slow on Windows (at least with SQLite), v.in.ogr is fast
+        // TODO: inserting row is extremely slow on Windows (at least with SQLite), v.in.ogr is fast
         QgsGrass::insertRow( driver, QString( fieldInfo->table ), attributes );
       }
       catch ( QgsGrass::Exception &e )

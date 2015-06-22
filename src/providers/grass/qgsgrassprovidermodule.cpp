@@ -113,7 +113,7 @@ QgsGrassMapsetItem::QgsGrassMapsetItem( QgsDataItem* parent, QString dirPath, QS
 
 QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
 {
-  QgsDebugMsg( "Entered" );
+  QgsDebugMsg( "Entered xxx" );
 
   QVector<QgsDataItem*> items;
 
@@ -121,6 +121,17 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
 
   foreach ( QString name, vectorNames )
   {
+    // Skip temporary import maps. If Vect_open_old during refresh fails due to missing topo, hist file remains open
+    // and Windows do no allow to delete temporary map to qgis.v.in. In any case we dont want to show temporary import maps.
+    // TODO: add some auto cleaning mechanism to remove temporary maps left after import fail
+    // keep excluded tmp name in sync with qgis.v.in
+    QgsDebugMsg( "name = " + name );
+    if ( name.startsWith( "qgis_import_tmp_" ) )
+    {
+      QgsDebugMsg( "skip tmp import vector " + name );
+      continue;
+    }
+
     QString mapPath = mPath + "/vector/" + name;
     QStringList layerNames;
     try
