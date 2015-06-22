@@ -64,7 +64,13 @@ class QgsConstWkbPtr;
 struct QgsGeometryPrivate;
 
 /** \ingroup core
-- * A geometry is the spatial representation of a feature. This class is deprecated. Please use QgsAbstractGeometryV2 directly for new code*/
+ * A geometry is the spatial representation of a feature. Since QGIS 2.10, QgsGeometry acts as a generic container
+ * for geometry objects. QgsGeometry is implicitly shared, so making copies of geometries is inexpensive. The geometry
+ * container class can also be stored inside a QVariant object.
+ *
+ * The actual geometry representation is stored as a @link QgsAbstractGeometryV2 @endlink within the container, and
+ * can be accessed via the @link geometry @endlink method or set using the @link setGeometry @endlink method.
+ */
 
 class CORE_EXPORT QgsGeometry
 {
