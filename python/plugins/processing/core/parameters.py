@@ -18,7 +18,6 @@
 ***************************************************************************
 """
 
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -149,16 +148,9 @@ class ParameterDataObject(Parameter):
         if self.value is None:
             return unicode(None)
         else:
-            s = unicode(self.value)
-            if isWindows():
-                s = s.replace('\\', '\\\\')
-            s = s.replace('"', "'")
+            s = dataobjects.normalizeLayerSource(unicode(self.value))
             s = '"%s"' % s
-
-        s = re.sub("'user.*?'", "", s)
-        s = re.sub("'password.*?'", "", s)
-
-        return s
+            return s
 
 class ParameterExtent(Parameter):
 
@@ -523,16 +515,7 @@ class ParameterRaster(ParameterDataObject):
             return True
         else:
             self.value = unicode(obj)
-            layers = dataobjects.getRasterLayers()
-            for layer in layers:
-                if layer.name() == self.value:
-                    self.value = unicode(layer.dataProvider().dataSourceUri())
-                    return True
-            if os.path.exists(self.value) or QgsRasterLayer(self.value).isValid():
-                return True
-            else:
-                # Layer could not be found
-                return False
+            return True
 
 
     def getFileFilter(self):
@@ -744,12 +727,7 @@ class ParameterVector(ParameterDataObject):
             return True
         else:
             self.value = unicode(obj)
-            layers = dataobjects.getVectorLayers(self.shapetype)
-            for layer in layers:
-                if layer.name() == self.value or layer.source() == self.value:
-                    self.value = unicode(layer.source())
-                    return True
-            return os.path.exists(self.value)
+            return True
 
 
     def getSafeExportedLayer(self):

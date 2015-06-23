@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -33,7 +34,7 @@ from PyQt4.QtCore import QSettings
 from qgis.utils import iface
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.tools.system import getTempFilenameInTempFolder, getTempFilename
+from processing.tools.system import getTempFilenameInTempFolder, getTempFilename, isWindows
 
 ALL_TYPES = [-1]
 
@@ -208,9 +209,16 @@ def getObject(uriorname):
         ret = getObjectFromUri(uriorname)
     return ret
 
+def normalizeLayerSource(source):
+    if isWindows():
+        s = source.replace('\\', '/')
+    s = s.replace('"', "'")
+    s = re.sub("user=.*?", "", s)
+    s = re.sub("password=.*?", "", s)
+    return s
 
 def getObjectFromUri(uri, forceLoad=True):
-    """Returns an object (layer/table) given a file location.
+    """Returns an object (layer/table) given a source definition.
 
     if forceLoad is true, it tries to load it if it is not currently open
     Otherwise, it will return the object only if it is loaded in QGIS.
@@ -222,15 +230,15 @@ def getObjectFromUri(uri, forceLoad=True):
         return _loadedLayers[uri]
     layers = getRasterLayers()
     for layer in layers:
-        if layer.source() == uri:
+        if normalizeLayerSource(layer.source()) == normalizeLayerSource(uri):
             return layer
     layers = getVectorLayers()
     for layer in layers:
-        if layer.source() == uri:
+        if normalizeLayerSource(layer.source()) == normalizeLayerSource(uri):
             return layer
     tables = getTables()
     for table in tables:
-        if table.source() == uri:
+        if normalizeLayerSource(table.source()) == normalizeLayerSource(uri):
             return table
     if forceLoad:
         settings = QSettings()
@@ -242,13 +250,19 @@ def getObjectFromUri(uri, forceLoad=True):
         if layer.isValid():
             if prjSetting:
                 settings.setValue('/Projections/defaultBehaviour', prjSetting)
-            _loadedLayers[layer.source()] = layer
+            _loadedLayers[normalizeLayerSource(layer.source())] = layer
+            return layer
+        layer = QgsVectorLayer(uri, uri, 'postgres')
+        if layer.isValid():
+            if prjSetting:
+                settings.setValue('/Projections/defaultBehaviour', prjSetting)
+            _loadedLayers[normalizeLayerSource(layer.source())] = layer
             return layer
         layer = QgsRasterLayer(uri, uri)
         if layer.isValid():
             if prjSetting:
                 settings.setValue('/Projections/defaultBehaviour', prjSetting)
-            _loadedLayers[layer.source()] = layer
+            _loadedLayers[normalizeLayerSource(layer.source())] = layer
             return layer
         if prjSetting:
             settings.setValue('/Projections/defaultBehaviour', prjSetting)
