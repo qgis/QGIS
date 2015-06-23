@@ -40,7 +40,7 @@ QgsSingleBandPseudoColorRenderer::~QgsSingleBandPseudoColorRenderer()
 
 void QgsSingleBandPseudoColorRenderer::setBand(int bandNo)
 {
-    if ( bandNo>=mInput->bandCount() || bandNo<0 )
+    if ( bandNo>mInput->bandCount() || bandNo<=0 )
     {
         return;
     }
