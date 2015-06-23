@@ -16,9 +16,9 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSMULTILINESTRINGV2_H
 #define QGSMULTILINESTRINGV2_H
 
-#include "qgsgeometrycollectionv2.h"
+#include "qgsmulticurvev2.h"
 
-class CORE_EXPORT QgsMultiLineStringV2: public QgsGeometryCollectionV2
+class CORE_EXPORT QgsMultiLineStringV2: public QgsMultiCurveV2
 {
   public:
     virtual QString geometryType() const override { return "MultiLineString"; }

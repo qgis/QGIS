@@ -1,4 +1,4 @@
-class QgsMultiPolygonV2: public QgsGeometryCollectionV2
+class QgsMultiPolygonV2: public QgsMultiSurfaceV2
 {
 %TypeHeaderCode
 #include <qgsmultipolygonv2.h>
