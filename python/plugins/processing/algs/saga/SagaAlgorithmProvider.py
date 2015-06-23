@@ -54,7 +54,6 @@ class SagaAlgorithmProvider(AlgorithmProvider):
         self.activate = True
 
     def initializeSettings(self):
-        AlgorithmProvider.initializeSettings(self)
         if isWindows() or isMac():
             ProcessingConfig.addSetting(Setting("SAGA",
                 SagaUtils.SAGA_FOLDER, self.tr('SAGA folder'), ''))
@@ -92,7 +91,7 @@ class SagaAlgorithmProvider(AlgorithmProvider):
             return
 
         folder = SagaUtils.sagaDescriptionPath()
-        folder = os.path.join(folder, self.supportedVersions[SagaUtils.getSagaInstalledVersion()][0])
+        folder = os.path.join(folder, self.supportedVersions[version][0])
         for descriptionFile in os.listdir(folder):
             if descriptionFile.endswith('txt'):
                 f = os.path.join(folder, descriptionFile)
