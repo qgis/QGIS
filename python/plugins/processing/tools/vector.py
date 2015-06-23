@@ -52,6 +52,11 @@ TYPE_MAP = {
     bool: QVariant.Bool
 }
 
+TYPE_MAP_MEMORY_LAYER = {
+    QVariant.String: "string",
+    QVariant.Double: "double",
+    QVariant.Int: "integer"
+}
 
 def features(layer):
     """This returns an iterator over features in a vector layer,
@@ -369,12 +374,6 @@ def checkMinDistance(point, index, distance, points):
     return True
 
 
-def _fieldName(f):
-    if isinstance(f, basestring):
-        return f
-    return f.name()
-
-
 def _toQgsField(f):
     if isinstance(f, QgsField):
         return f
@@ -402,10 +401,13 @@ class VectorWriter:
             uri = GEOM_TYPE_MAP[geometryType] + "?uuid=" + str(uuid.uuid4())
             if crs.isValid():
                 uri += '&crs=' + crs.authid()
-
-            fieldsdesc = ['field=' + _fieldName(f) for f in fields]
+            fieldsdesc = []
+            for f in fields:
+                qgsfield = _toQgsField(f)
+                fieldsdesc.append('field=%s:%s' %(qgsfield.name(),
+                                TYPE_MAP_MEMORY_LAYER.get(qgsfield.type(), "string")))
             if fieldsdesc:
-              uri += '&' + '&'.join(fieldsdesc)
+                uri += '&' + '&'.join(fieldsdesc)
 
             self.memLayer = QgsVectorLayer(uri, self.fileName, 'memory')
             self.writer = self.memLayer.dataProvider()
