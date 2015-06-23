@@ -20,6 +20,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgslinestringv2.h"
 #include "qgsmessagelog.h"
 #include "qgsmulticurvev2.h"
+#include "qgsmultilinestringv2.h"
 #include "qgsmultipointv2.h"
 #include "qgsmultipolygonv2.h"
 #include "qgslogger.h"
@@ -821,17 +822,17 @@ QgsAbstractGeometryV2* QgsGeos::fromGeos( const GEOSGeometry* geos )
     }
     case GEOS_MULTILINESTRING:
     {
-      QgsMultiCurveV2* multiCurve = new QgsMultiCurveV2();
+      QgsMultiLineStringV2* multiLineString = new QgsMultiLineStringV2();
       int nParts = GEOSGetNumGeometries_r( geosinit.ctxt, geos );
       for ( int i = 0; i < nParts; ++i )
       {
         QgsLineStringV2* line = sequenceToLinestring( GEOSGetGeometryN_r( geosinit.ctxt, geos, i ), hasZ, hasM );
         if ( line )
         {
-          multiCurve->addGeometry( line );
+          multiLineString->addGeometry( line );
         }
       }
-      return multiCurve;
+      return multiLineString;
     }
     case GEOS_MULTIPOLYGON:
     {
