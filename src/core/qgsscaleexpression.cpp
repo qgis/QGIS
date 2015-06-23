@@ -25,18 +25,20 @@ QgsScaleExpression::QgsScaleExpression( const QString& expression )
     , mMaxSize( 10 )
     , mMinValue( 0 )
     , mMaxValue( 100 )
+    , mNullSize( 0 )
 {
   init();
 }
 
-QgsScaleExpression::QgsScaleExpression( Type type, const QString& baseExpression, double minValue, double maxValue, double minSize, double maxSize )
-    : QgsExpression( createExpression( type, baseExpression, minValue, maxValue, minSize, maxSize ) )
+QgsScaleExpression::QgsScaleExpression( Type type, const QString& baseExpression, double minValue, double maxValue, double minSize, double maxSize, double nullSize )
+    : QgsExpression( createExpression( type, baseExpression, minValue, maxValue, minSize, maxSize, nullSize ) )
     , mExpression( baseExpression )
     , mType( type )
     , mMinSize( minSize )
     , mMaxSize( maxSize )
     , mMinValue( minValue )
     , mMaxValue( maxValue )
+    , mNullSize( nullSize )
 {
 
 }
@@ -61,6 +63,9 @@ void QgsScaleExpression::init()
   {
     f = dynamic_cast<const NodeFunction*>( args[0] );
     if ( !f )
+      return;
+    mNullSize = QgsExpression( args[1]->dump() ).evaluate().toDouble( &ok );
+    if ( ! ok )
       return;
     args = f->args()->list();
   }
@@ -106,23 +111,24 @@ void QgsScaleExpression::init()
   mExpression = args[0]->dump();
 }
 
-QString QgsScaleExpression::createExpression( Type type, const QString & baseExpr, double minValue, double maxValue, double minSize, double maxSize )
+QString QgsScaleExpression::createExpression( Type type, const QString & baseExpr, double minValue, double maxValue, double minSize, double maxSize, double nullSize )
 {
   QString minValueString = QString::number( minValue );
   QString maxValueString = QString::number( maxValue );
   QString minSizeString = QString::number( minSize );
   QString maxSizeString = QString::number( maxSize );
+  QString nullSizeString = QString::number( nullSize );
 
   switch ( type )
   {
     case Linear:
-      return QString( "coalesce(scale_linear(%1, %2, %3, %4, %5), 0)" ).arg( baseExpr, minValueString, maxValueString, minSizeString, maxSizeString );
+      return QString( "coalesce(scale_linear(%1, %2, %3, %4, %5), %6)" ).arg( baseExpr, minValueString, maxValueString, minSizeString, maxSizeString, nullSizeString );
 
     case Area:
-      return QString( "coalesce(scale_exp(%1, %2, %3, %4, %5, 0.5), 0)" ).arg( baseExpr, minValueString, maxValueString, minSizeString, maxSizeString );
+      return QString( "coalesce(scale_exp(%1, %2, %3, %4, %5, 0.5), %6)" ).arg( baseExpr, minValueString, maxValueString, minSizeString, maxSizeString, nullSizeString );
 
     case Flannery:
-      return QString( "coalesce(scale_exp(%1, %2, %3, %4, %5, 0.57), 0)" ).arg( baseExpr, minValueString, maxValueString, minSizeString, maxSizeString );
+      return QString( "coalesce(scale_exp(%1, %2, %3, %4, %5, 0.57), %6)" ).arg( baseExpr, minValueString, maxValueString, minSizeString, maxSizeString, nullSizeString );
 
     case Unknown:
       break;
