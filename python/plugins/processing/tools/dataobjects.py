@@ -213,8 +213,6 @@ def normalizeLayerSource(source):
     if isWindows():
         s = source.replace('\\', '/')
     s = s.replace('"', "'")
-    s = re.sub("user=.*?", "", s)
-    s = re.sub("password=.*?", "", s)
     return s
 
 def getObjectFromUri(uri, forceLoad=True):
