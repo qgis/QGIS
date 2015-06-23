@@ -193,6 +193,8 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
 
 void QgsLayerTreeMapCanvasBridge::readProject( const QDomDocument& doc )
 {
+  mFirstCRS = QgsCoordinateReferenceSystem(); // invalidate on project load
+
   QDomElement elem = doc.documentElement().firstChildElement( "layer-tree-canvas" );
   if ( elem.isNull() )
   {
