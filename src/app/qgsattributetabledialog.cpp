@@ -731,17 +731,22 @@ void QgsAttributeTableDialog::filterQueryAccepted()
 
 void QgsAttributeTableDialog::setFilterExpression( QString filterString )
 {
-  if ( mCurrentSearchWidgetWrapper != 0 )
+  if ( mCurrentSearchWidgetWrapper == 0 || !mCurrentSearchWidgetWrapper->applyDirectly() )
   {
-    replaceSearchWidget( mCurrentSearchWidgetWrapper->widget(), mFilterQuery );
-  }
-  mFilterQuery->setText( filterString );
-  mFilterButton->setDefaultAction( mActionAdvancedFilter );
-  mFilterButton->setPopupMode( QToolButton::MenuButtonPopup );
-  mFilterQuery->setVisible( true );
-  mApplyFilterButton->setVisible( true );
-  mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowFilteredList );
+    mFilterQuery->setText( filterString );
+    mFilterButton->setDefaultAction( mActionAdvancedFilter );
+    mFilterButton->setPopupMode( QToolButton::MenuButtonPopup );
+    mFilterQuery->setVisible( true );
+    mApplyFilterButton->setVisible( true );
+    if ( mCurrentSearchWidgetWrapper != 0 ) 
+    {
+      // replace search widget widget with the normal filter query line edit
+      replaceSearchWidget( mCurrentSearchWidgetWrapper->widget(), mFilterQuery );
+    }
 
+  }
+
+  mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowFilteredList );
   QgsFeatureIds filteredFeatures;
   QgsDistanceArea myDa;
 
