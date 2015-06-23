@@ -136,6 +136,7 @@ def getSagaInstalledVersion(runSaga=False):
                     _installedVersion = line[len("SAGA Version:"):].strip().split(" ")[0]
                     _installedVersionFound = True
                     return _installedVersion
+            return None
         except IOError:
             retries += 1
         except:
