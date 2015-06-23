@@ -423,6 +423,7 @@ void QgsAttributeTableDialog::filterColumnChanged( QObject* filterAction )
   // delete previous widget
   if ( mCurrentSearchWidgetWrapper != 0 )
   {
+    mCurrentSearchWidgetWrapper->widget()->setVisible(false);
     delete mCurrentSearchWidgetWrapper;
   }
   QString fieldName = mFilterButton->defaultAction()->text();
@@ -730,14 +731,14 @@ void QgsAttributeTableDialog::filterQueryAccepted()
 
 void QgsAttributeTableDialog::setFilterExpression( QString filterString )
 {
-  mFilterQuery->setText( filterString );
-  mFilterButton->setDefaultAction( mActionAdvancedFilter );
-  mFilterButton->setPopupMode( QToolButton::MenuButtonPopup );
-  mFilterQuery->setVisible( true );
   if ( mCurrentSearchWidgetWrapper != 0 )
   {
     replaceSearchWidget( mCurrentSearchWidgetWrapper->widget(), mFilterQuery );
   }
+  mFilterQuery->setText( filterString );
+  mFilterButton->setDefaultAction( mActionAdvancedFilter );
+  mFilterButton->setPopupMode( QToolButton::MenuButtonPopup );
+  mFilterQuery->setVisible( true );
   mApplyFilterButton->setVisible( true );
   mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowFilteredList );
 
