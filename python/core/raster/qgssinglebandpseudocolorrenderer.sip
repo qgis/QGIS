@@ -28,6 +28,7 @@ class QgsSingleBandPseudoColorRenderer: QgsRasterRenderer
      * @note added in QGIS 2.7
      */
     int band() const;
+    void setBand(int bandNo);
 
     double classificationMin() const;
     double classificationMax() const;
