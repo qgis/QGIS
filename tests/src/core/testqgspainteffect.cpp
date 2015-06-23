@@ -919,6 +919,7 @@ bool TestQgsPaintEffect::imageCheck( QString testName, QImage &image, int mismat
 bool TestQgsPaintEffect::mapRenderCheck( QString testName, QgsMapSettings& mapSettings, int mismatchCount )
 {
   QgsMultiRenderChecker checker;
+  mapSettings.setOutputDpi( 96 );
   checker.setControlName( "expected_" + testName );
   checker.setMapSettings( mapSettings );
   checker.setColorTolerance( 20 );
