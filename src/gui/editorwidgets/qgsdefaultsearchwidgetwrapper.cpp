@@ -52,7 +52,6 @@ void QgsDefaultSearchWidgetWrapper::setCaseString(int caseSensitiveCheckState)
 
 void QgsDefaultSearchWidgetWrapper::setExpression(QString exp)
 {
-    QString sensString = mCaseString;
     QVariant::Type fldType = layer()->pendingFields()[mFieldIdx].type();
     bool numeric = ( fldType == QVariant::Int || fldType == QVariant::Double || fldType == QVariant::LongLong );
     
@@ -68,7 +67,7 @@ void QgsDefaultSearchWidgetWrapper::setExpression(QString exp)
     {
       str = QString( "%1 %2 '%3'" )
             .arg( QgsExpression::quotedColumnRef( fieldName ) )
-            .arg( numeric ? "=" : sensString )
+            .arg( numeric ? "=" : mCaseString )
             .arg( numeric
                   ? exp.replace( "'", "''" )
                   :
@@ -94,9 +93,10 @@ void QgsDefaultSearchWidgetWrapper::initWidget( QWidget* widget )
   mContainer->setLayout(new QHBoxLayout() );
   mLineEdit = new QgsFilterLineEdit();
   mCheckbox = new QCheckBox("Case sensitive");
-  mCheckbox->setChecked(Qt::Unchecked);
   mContainer->layout()->addWidget(mLineEdit);
   mContainer->layout()->addWidget(mCheckbox);
   connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( setExpression( QString ) ) );
   connect( mCheckbox, SIGNAL( stateChanged( int ) ), this, SLOT( setCaseString(int) ) );
+  mCheckbox->setChecked(Qt::Unchecked);
+  mCaseString = "ILIKE";
 }
