@@ -73,6 +73,7 @@ void QgsSizeScaleWidget::setFromSymbol()
     maxValueSpinBox->setValue( expr.maxValue() );
     minSizeSpinBox->setValue( expr.minSize() );
     maxSizeSpinBox->setValue( expr.maxSize() );
+    nullSizeSpinBox->setValue( expr.nullSize() );
   }
   updatePreview();
 }
@@ -113,6 +114,7 @@ QgsSizeScaleWidget::QgsSizeScaleWidget( const QgsVectorLayer * layer, const QgsM
   maxSizeSpinBox->setShowClearButton( false );
   minValueSpinBox->setShowClearButton( false );
   maxValueSpinBox->setShowClearButton( false );
+  nullSizeSpinBox->setShowClearButton( false );
 
   // setup ui from expression if any
   setFromSymbol();
@@ -121,6 +123,7 @@ QgsSizeScaleWidget::QgsSizeScaleWidget( const QgsVectorLayer * layer, const QgsM
   connect( maxSizeSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( updatePreview() ) );
   connect( minValueSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( updatePreview() ) );
   connect( maxValueSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( updatePreview() ) );
+  connect( nullSizeSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( updatePreview() ) );
   //potentially very expensive for large layers:
   connect( mExpressionWidget, SIGNAL( fieldChanged( QString ) ), this, SLOT( computeFromLayerTriggered() ) );
   connect( scaleMethodComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updatePreview() ) );
@@ -144,7 +147,8 @@ QgsScaleExpression *QgsSizeScaleWidget::createExpression() const
                                  minValueSpinBox->value(),
                                  maxValueSpinBox->value(),
                                  minSizeSpinBox->value(),
-                                 maxSizeSpinBox->value() );
+                                 maxSizeSpinBox->value(),
+                                 nullSizeSpinBox->value() );
 }
 
 void QgsSizeScaleWidget::updatePreview()
