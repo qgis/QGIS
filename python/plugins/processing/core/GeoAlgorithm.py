@@ -246,6 +246,21 @@ class GeoAlgorithm:
             raise GeoAlgorithmExecutionException(
                 str(e) + self.tr('\nSee log for more details'))
 
+    def _checkParameterValuesBeforeExecuting(self):
+        for param in self.parameters:
+            if isinstance(param, (ParameterRaster, ParameterVector,
+                          ParameterMultipleInput)):
+                if param.value:
+                    if isinstance(param, ParameterMultipleInput):
+                        inputlayers = param.value.split(';')
+                    else:
+                        inputlayers = [param.value]
+                    for inputlayer in inputlayers:
+                        obj = dataobjects.getObjectFromUri(inputlayer)
+                        if obj is None:
+                            return "Wrong parameter value: " + param.value
+        return self.checkParameterValuesBeforeExecuting()
+
     def runPostExecutionScript(self, progress):
         scriptFile = ProcessingConfig.getSetting(
             ProcessingConfig.POST_EXECUTION_SCRIPT)
