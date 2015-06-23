@@ -84,8 +84,8 @@ class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIteratorFromSou
     bool setNextFeatureId( qint64 fid );
 
     bool nextFeatureInternal( QgsFeature& feature );
-    QgsGeometry* loadGeometryWkt( const QStringList& tokens );
-    QgsGeometry* loadGeometryXY( const QStringList& tokens );
+    QgsGeometry* loadGeometryWkt( const QStringList& tokens, bool &isNull );
+    QgsGeometry* loadGeometryXY( const QStringList& tokens, bool &isNull );
     void fetchAttribute( QgsFeature& feature, int fieldIdx, const QStringList& tokens );
 
     QList<QgsFeatureId> mFeatureIds;

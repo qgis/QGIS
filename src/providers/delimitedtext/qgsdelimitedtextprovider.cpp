@@ -436,7 +436,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
       if ( mWktFieldIndex >= parts.size() || parts[mWktFieldIndex].isEmpty() )
       {
         nEmptyGeometry++;
-        geomValid = false;
+        mNumberFeatures++;
       }
       else
       {
@@ -504,12 +504,12 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
       // Get the x and y values, first checking to make sure they
       // aren't null.
 
-      QString sX = mXFieldIndex < parts.size() ? parts[mXFieldIndex] : "";
-      QString sY = mYFieldIndex < parts.size() ? parts[mYFieldIndex] : "";
+      QString sX = mXFieldIndex < parts.size() ? parts[mXFieldIndex] : QString();
+      QString sY = mYFieldIndex < parts.size() ? parts[mYFieldIndex] : QString();
       if ( sX.isEmpty() && sY.isEmpty() )
       {
-        geomValid = false;
         nEmptyGeometry++;
+        mNumberFeatures++;
       }
       else
       {
@@ -682,7 +682,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
   if ( nBadFormatRecords > 0 )
     warnings.append( tr( "%1 records discarded due to invalid format" ).arg( nBadFormatRecords ) );
   if ( nEmptyGeometry > 0 )
-    warnings.append( tr( "%1 records discarded due to missing geometry definitions" ).arg( nEmptyGeometry ) );
+    warnings.append( tr( "%1 records have missing geometry definitions" ).arg( nEmptyGeometry ) );
   if ( nInvalidGeometry > 0 )
     warnings.append( tr( "%1 records discarded due to invalid geometry definitions" ).arg( nInvalidGeometry ) );
   if ( nIncompatibleGeometry > 0 )
