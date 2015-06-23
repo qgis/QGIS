@@ -5,4 +5,3 @@ ParameterRaster|input|Input raster layer|False
 ParameterNumber|quantiles|Number of quantiles|2|None|4
 *ParameterBoolean|-r|Generate recode rules based on quantile-defined intervals|False
 OutputHTML|html|Quantiles
-OutputFile|outputtext|Quantiles (text)

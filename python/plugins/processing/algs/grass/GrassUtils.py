@@ -319,7 +319,8 @@ class GrassUtils:
 
         if ProcessingConfig.getSetting(GrassUtils.GRASS_LOG_CONSOLE):
             ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
-        return loglines
+
+
 
     # GRASS session is used to hold the layers already exported or
     # produced in GRASS between multiple calls to GRASS algorithms.
