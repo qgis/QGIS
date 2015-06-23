@@ -53,6 +53,11 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
      * @note added in QGIS 2.7
      */
     int band() const { return mBand; }
+
+     /** Sets the band used by the renderer.
+     * @see band
+     * @note added in QGIS 2.10
+     */
     void setBand( int bandNo );
 
     double classificationMin() const { return mClassificationMin; }
