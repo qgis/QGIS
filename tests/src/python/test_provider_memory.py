@@ -1,40 +1,72 @@
 # -*- coding: utf-8 -*-
-"""QGIS Unit tests for QgsMemoryProvider.
+"""QGIS Unit tests for the memory layer provider.
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Alexander Bruy'
-__date__ = '20/08/2012'
-__copyright__ = 'Copyright 2012, The QGIS Project'
+__author__ = 'Matthias Kuhn'
+__date__ = '2015-04-23'
+__copyright__ = 'Copyright 2015, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis
+import os
+import tempfile
+import shutil
+import glob
 
-from PyQt4.QtCore import QVariant
-
-from qgis.core import (QGis,
-                       QgsVectorLayer,
-                       QgsFeature,
-                       QgsFeatureRequest,
-                       QgsField,
-                       QgsGeometry,
-                       QgsPoint
-                       )
-
-from utilities import (getQgisTestApp,
-                       TestCase,
+from qgis.core import QGis, QgsField, QgsPoint, QgsVectorLayer, QgsFeatureRequest, QgsFeature, QgsProviderRegistry, QgsGeometry, NULL
+from PyQt4.QtCore import QSettings
+from utilities import (unitTestDataPath,
+                       getQgisTestApp,
                        unittest,
+                       TestCase,
                        compareWkt
                        )
+from providertestbase import ProviderTestCase
+from PyQt4.QtCore import QVariant
+
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsMemoryProvider(TestCase):
+class TestPyQgsMemoryProvider(TestCase, ProviderTestCase):
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests"""
+        # Create test layer
+        cls.vl = QgsVectorLayer(u'Point?crs=epsg:4326&field=pk:integer&field=cnt:integer&field=name:string(0)&key=pk', u'test', u'memory')
+        assert (cls.vl.isValid())
+        cls.provider = cls.vl.dataProvider()
 
+        f1 = QgsFeature()       
+        f1.setAttributes( [5, -200, NULL] )
+        f1.setGeometry( QgsGeometry.fromWkt('Point (-71.123 78.23)'))
+
+        f2 = QgsFeature()      
+        f2.setAttributes( [3, 300, 'Pear'] )
+
+        f3 = QgsFeature()      
+        f3.setAttributes( [1, 100, 'Orange'] )
+        f3.setGeometry( QgsGeometry.fromWkt('Point (-70.332 66.33)'))
+
+        f4 = QgsFeature()       
+        f4.setAttributes( [2, 200, 'Apple'] )
+        f4.setGeometry( QgsGeometry.fromWkt('Point (-68.2 70.8)'))
+
+        f5 = QgsFeature()      
+        f5.setAttributes( [4, 400, 'Honey'] )
+        f5.setGeometry( QgsGeometry.fromWkt('Point (-65.32 78.3)'))
+       
+        cls.provider.addFeatures( [ f1, f2, f3, f4, f5] );
+        
+
+    @classmethod
+    def tearDownClass(cls):
+        """Run after all tests"""
+      
     def testPointCtor(self):
         layer = QgsVectorLayer("Point", "test", "memory")
         assert layer.isValid(), "Failed to create valid point memory layer"
@@ -135,7 +167,8 @@ class TestQgsMemoryProvider(TestCase):
 
         assert myMemoryLayer is not None, 'Provider not initialised'
         myProvider = myMemoryLayer.dataProvider()
-        assert myProvider is not None
-
+        assert myProvider is not None        
+        
+        
 if __name__ == '__main__':
     unittest.main()
