@@ -110,6 +110,7 @@ QWidget* QgsValueRelationWidgetWrapper::createWidget( QWidget* parent )
   {
     return new QgsFilterLineEdit( parent );
   }
+  else
   {
     return new QComboBox( parent );
   }
