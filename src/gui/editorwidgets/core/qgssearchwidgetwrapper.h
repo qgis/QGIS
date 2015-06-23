@@ -77,8 +77,8 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
     void setFeature( const QgsFeature& feature ) override;
 
   protected:
-    QString mExpression;
     int mFieldIdx;
+    QString mExpression;
 
 };
 // We'll use this class inside a QVariant in the widgets properties

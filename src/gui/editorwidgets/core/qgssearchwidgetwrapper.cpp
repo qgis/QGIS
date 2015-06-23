@@ -30,5 +30,6 @@ QgsSearchWidgetWrapper::QgsSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx
 
 void QgsSearchWidgetWrapper::setFeature( const QgsFeature& feature )
 {
+    Q_UNUSED(feature);
 }
 
