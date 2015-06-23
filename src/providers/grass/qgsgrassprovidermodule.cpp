@@ -132,27 +132,62 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
       continue;
     }
 
+    QgsGrassObject vectorObject( mGisdbase, mLocation, mName, name, QgsGrassObject::Vector );
     QString mapPath = mPath + "/vector/" + name;
     QStringList layerNames;
+    QgsGrassVectorItem *map = 0;
+
+    // test topo version before getting layers, because GRASS 7 Vect_open_old is calling G_fatal_error
+    // if topo version does not match GRASS lib version
+    int topoMajor = 0;
+    int topoMinor = 0;
+    bool gotTopoVersion = QgsGrass::topoVersion( mGisdbase, mLocation, mName, name, topoMajor, topoMinor );
+    QgsDebugMsg( QString( "name = %1 topoMajor = %2 topoMinor = %3" ).arg( name ).arg( topoMajor ).arg( topoMinor ) );
+    QString topoError;
+    if ( !gotTopoVersion )
+    {
+      topoError = tr( "topology missing" );
+    }
+    // GRASS 5-6: topoMajor = 5 topoMinor = 0
+    // GRASS   7: topoMajor = 5 topoMinor = 1
+    else if ( topoMajor != 5 )
+    {
+      topoError = tr( "topology version not supported" );
+    }
+    else if ( topoMinor == 0 &&  GRASS_VERSION_MAJOR == 7 )
+    {
+      topoError = tr( "topology version 6" );
+    }
+    else if ( topoMinor == 1 &&  GRASS_VERSION_MAJOR < 7 )
+    {
+      topoError = tr( "topology version 7" );
+    }
+
+    if ( !topoError.isEmpty() )
+    {
+      map = new QgsGrassVectorItem( this, vectorObject, mapPath, name + " : " + topoError, false );
+      items.append( map );
+      continue;
+    }
+
     try
     {
       layerNames = QgsGrass::vectorLayers( mGisdbase, mLocation, mName, name );
     }
     catch ( QgsGrass::Exception &e )
     {
-      QgsErrorItem * errorItem = new QgsErrorItem( this, name + " : " + e.what(), mapPath );
-      items.append( errorItem );
+      map = new QgsGrassVectorItem( this, vectorObject, mapPath, name + " : " + e.what(), false );
+      items.append( map );
       continue;
     }
 
-    QgsGrassObject vectorObject( mGisdbase, mLocation, mName, name, QgsGrassObject::Vector );
-    QgsGrassVectorItem *map = 0;
     if ( layerNames.size() == 0 )
     {
       // TODO: differentiate if it is layer with no layers or without topo (throw exception from QgsGrass::vectorLayers)
       // TODO: refresh (remove) error if topo was build
-      QgsErrorItem * errorItem = new QgsErrorItem( this, name, mapPath );
-      items.append( errorItem );
+      //QgsErrorItem * errorItem = new QgsErrorItem( this, name, mapPath );
+      map = new QgsGrassVectorItem( this, vectorObject, mapPath, name + " : " + tr( "empty" ), false );
+      items.append( map );
       continue;
     }
     else if ( layerNames.size() > 1 )
@@ -637,12 +672,18 @@ void QgsGrassObjectItem::deleteGrassObject()
 
 //----------------------- QgsGrassVectorItem ------------------------------
 
-QgsGrassVectorItem::QgsGrassVectorItem( QgsDataItem* parent, QgsGrassObject grassObject, QString path ) :
-    QgsDataCollectionItem( parent, grassObject.name(), path )
+QgsGrassVectorItem::QgsGrassVectorItem( QgsDataItem* parent, QgsGrassObject grassObject, QString path, QString labelName, bool valid ) :
+    QgsDataCollectionItem( parent, labelName.isEmpty() ? grassObject.name() : labelName, path )
     , QgsGrassObjectItemBase( grassObject )
+    , mValid( valid )
 {
   QgsDebugMsg( "name = " + grassObject.name() + " path = " + path );
   setCapabilities( QgsDataItem::NoCapabilities ); // disable fertility
+  if ( !mValid )
+  {
+    setState( Populated );
+    setIconName( "/mIconDelete.png" );
+  }
 }
 
 QList<QAction*> QgsGrassVectorItem::actions()

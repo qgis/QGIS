@@ -1002,6 +1002,30 @@ QStringList GRASS_LIB_EXPORT QgsGrass::vectors( const QString& mapsetPath )
   }
   return list;
 }
+
+bool GRASS_LIB_EXPORT QgsGrass::topoVersion( const QString& gisdbase, const QString& location,
+    const QString& mapset, const QString& mapName, int &major, int &minor )
+{
+  QString path = gisdbase + "/" + location + "/" + mapset + "/vector/" + mapName + "/topo";
+  QFile file( path );
+  if ( !file.exists( path ) || file.size() < 5 )
+  {
+    return false;
+  }
+  if ( !file.open( QIODevice::ReadOnly ) )
+  {
+    return false;
+  }
+  QDataStream stream( &file );
+  quint8 maj, min;
+  stream >> maj;
+  stream >> min;
+  file.close();
+  major = maj;
+  minor = min;
+  return true;
+}
+
 QStringList GRASS_LIB_EXPORT QgsGrass::vectorLayers( const QString& gisdbase, const QString& location,
     const QString& mapset, const QString& mapName )
 {

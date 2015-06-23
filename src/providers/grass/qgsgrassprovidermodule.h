@@ -113,7 +113,8 @@ class QgsGrassVectorItem : public QgsDataCollectionItem, public QgsGrassObjectIt
 {
     Q_OBJECT
   public:
-    QgsGrassVectorItem( QgsDataItem* parent, QgsGrassObject grassObject, QString path );
+    // labelName - name to be displayed in tree if it should be different from grassObject.name() (e.g. invalid vector)
+    QgsGrassVectorItem( QgsDataItem* parent, QgsGrassObject grassObject, QString path, QString labelName = QString::null, bool valid = true );
     ~QgsGrassVectorItem() {}
 
     virtual QList<QAction*> actions() override;
@@ -124,6 +125,7 @@ class QgsGrassVectorItem : public QgsDataCollectionItem, public QgsGrassObjectIt
 
   private:
     QgsGrassObject mVector;
+    bool mValid;
 };
 
 class QgsGrassVectorLayerItem : public QgsGrassObjectItem
