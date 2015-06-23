@@ -40,11 +40,11 @@ QgsSingleBandPseudoColorRenderer::~QgsSingleBandPseudoColorRenderer()
 
 void QgsSingleBandPseudoColorRenderer::setBand(int bandNo)
 {
-    if ( bandNo>mInput->bandCount() || bandNo<=0 )
-    {
-        return;
-    }
-    mBand = bandNo;
+  if ( bandNo > mInput->bandCount() || bandNo <= 0 )
+  {
+    return;
+  }
+  mBand = bandNo;
 }
 
 QgsRasterInterface * QgsSingleBandPseudoColorRenderer::clone() const
