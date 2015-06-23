@@ -35,12 +35,29 @@ extern "C"
 #include <grass/imagery.h>
 }
 
+//------------------------------ QgsGrassImport ------------------------------------
+QgsGrassImportIcon *QgsGrassImportIcon::instance()
+{
+  static QgsGrassImportIcon* sInstance = new QgsGrassImportIcon();
+  return sInstance;
+}
+
+QgsGrassImportIcon::QgsGrassImportIcon()
+    : QgsAnimatedIcon( QgsApplication::iconPath( "/mIconImport.gif" ) )
+{
+}
+
+//------------------------------ QgsGrassImport ------------------------------------
 QgsGrassImport::QgsGrassImport( QgsGrassObject grassObject )
     : QObject()
     , mGrassObject( grassObject )
     , mCanceled( false )
     , mFutureWatcher( 0 )
 {
+  // QMovie used by QgsAnimatedIcon is using QTimer which cannot be start from another thread
+  // (it works on Linux however) so we cannot start it connecting from QgsGrassImportItem and
+  // connect it also here (QgsGrassImport is constructed on the main thread) to a slot doing nothing.
+  QgsGrassImportIcon::instance()->connectFrameChanged( this, SLOT( frameChanged() ) );
 }
 
 QgsGrassImport::~QgsGrassImport()
@@ -50,6 +67,7 @@ QgsGrassImport::~QgsGrassImport()
     QgsDebugMsg( "mFutureWatcher not finished -> waitForFinished()" );
     mFutureWatcher->waitForFinished();
   }
+  QgsGrassImportIcon::instance()->disconnectFrameChanged( this, SLOT( frameChanged() ) );
 }
 
 void QgsGrassImport::setError( QString error )
@@ -264,8 +282,8 @@ bool QgsGrassRasterImport::import()
         outStream << false; // not canceled
         outStream << byteArray;
 
-		// Without waitForBytesWritten() it does not finish ok on Windows (process timeout)
-		process->waitForBytesWritten(-1);
+        // Without waitForBytesWritten() it does not finish ok on Windows (process timeout)
+        process->waitForBytesWritten( -1 );
 
 #ifndef Q_OS_WIN
         // wait until the row is written to allow quick cancel (don't send data to buffer)
@@ -479,8 +497,8 @@ bool QgsGrassVectorImport::import()
       outStream << false; // not canceled
       outStream << feature;
 
-	  // Without waitForBytesWritten() it does not finish ok on Windows (data lost)
-	  process->waitForBytesWritten(-1);
+      // Without waitForBytesWritten() it does not finish ok on Windows (data lost)
+      process->waitForBytesWritten( -1 );
 
 #ifndef Q_OS_WIN
       // wait until the feature is written to allow quick cancel (don't send data to buffer)
@@ -493,7 +511,7 @@ bool QgsGrassVectorImport::import()
     outStream << false; // not canceled
     outStream << feature;
 
-	process->waitForBytesWritten(-1);
+    process->waitForBytesWritten( -1 );
     QgsDebugMsg( "features sent" );
 #ifndef Q_OS_WIN
     process->waitForReadyRead();

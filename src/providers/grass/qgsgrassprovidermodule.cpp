@@ -254,9 +254,6 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
   if ( !QgsMimeDataUtils::isUriList( data ) )
     return false;
 
-  // Init animated icon on main thread
-  QgsGrassImportItem::initIcon();
-
   QSettings settings;
 
   QgsGrassObject mapsetObject( mGisdbase, mLocation, mName );
@@ -763,18 +760,12 @@ QgsGrassImportItem::QgsGrassImportItem( QgsDataItem* parent, const QString& name
   setCapabilities( QgsDataItem::NoCapabilities ); // disable fertility
   setState( Populating );
 
-  if ( mImportIcon )
-  {
-    mImportIcon->connectFrameChanged( this, SLOT( emitDataChanged() ) );
-  }
+  QgsGrassImportIcon::instance()->connectFrameChanged( this, SLOT( emitDataChanged() ) );
 }
 
 QgsGrassImportItem::~QgsGrassImportItem()
 {
-  if ( mImportIcon )
-  {
-    mImportIcon->disconnectFrameChanged( this, SLOT( emitDataChanged() ) );
-  }
+  QgsGrassImportIcon::instance()->disconnectFrameChanged( this, SLOT( emitDataChanged() ) );
 }
 
 QList<QAction*> QgsGrassImportItem::actions()
@@ -801,19 +792,7 @@ void QgsGrassImportItem::cancel()
 
 QIcon QgsGrassImportItem::icon()
 {
-  if ( mImportIcon )
-  {
-    return mImportIcon->icon();
-  }
-  return QIcon();
-}
-
-void QgsGrassImportItem::initIcon()
-{
-  if ( !mImportIcon )
-  {
-    mImportIcon = new QgsAnimatedIcon( QgsApplication::iconPath( "/mIconImport.gif" ) );
-  }
+  return QgsGrassImportIcon::instance()->icon();
 }
 
 //-------------------------------------------------------------------------

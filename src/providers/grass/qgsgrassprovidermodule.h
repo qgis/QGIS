@@ -180,8 +180,6 @@ class QgsGrassImportItem : public QgsDataItem, public QgsGrassObjectItemBase
     //} // do nothing to keep Populating
     virtual QList<QAction*> actions() override;
     virtual QIcon icon() override;
-    // Init animated icon, to be called from main UI thread
-    static void initIcon();
 
   public slots:
     virtual void refresh() override {}
