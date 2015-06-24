@@ -572,10 +572,10 @@ class PostGisDBConnector(DBConnector):
             return
 
         schema, tablename = self.getSchemaTableName(table)
-        schema_part = u"%s," % self.quoteString(schema) if schema is not None else ""
+        schema_part = u"%s," % self.quoteString( self.quoteId( schema) ) if schema is not None else ""
 
         subquery = u"SELECT st_estimated_extent(%s%s,%s) AS extent" % (
-            schema_part, self.quoteString(tablename), self.quoteString(geom))
+            schema_part, self.quoteString( self.quoteId( tablename) ), self.quoteString(geom))
         sql = u"""SELECT st_xmin(extent), st_ymin(extent), st_xmax(extent), st_ymax(extent) FROM (%s) AS subquery """ % subquery
 
         try:
