@@ -132,6 +132,10 @@ class QgsAlignRaster
     //! @return true on success
     bool run();
 
+    //! Return error from a previous run() call.
+    //! Error message is empty if run() succeeded (returned true)
+    QString errorMessage() const;
+
     //! write contents of the object to standard error stream - for debugging
     void dump() const;
 

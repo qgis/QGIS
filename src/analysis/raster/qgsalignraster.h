@@ -178,6 +178,10 @@ class ANALYSIS_EXPORT QgsAlignRaster
     //! @return true on success
     bool run();
 
+    //! Return error from a previous run() call.
+    //! Error message is empty if run() succeeded (returned true)
+    QString errorMessage() const { return mErrorMessage; }
+
     //! write contents of the object to standard error stream - for debugging
     void dump() const;
 
@@ -195,6 +199,9 @@ class ANALYSIS_EXPORT QgsAlignRaster
 
     //! Object that facilitates reporting of progress / cancellation
     ProgressHandler* mProgressHandler;
+
+    //! Last error message from run()
+    QString mErrorMessage;
 
     //! List of rasters to be aligned (with their output files and other options)
     List mRasters;

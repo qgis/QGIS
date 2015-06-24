@@ -157,6 +157,7 @@ void QgsAlignRasterDialog::editLayer()
   itemNew.resampleMethod = ( QgsAlignRaster::ResampleAlg ) d.resampleMethod();
   itemNew.rescaleValues = d.rescaleValues();
   list[current.row()] = itemNew;
+  mAlign->setRasters( list );
 
   populateLayersView();
 }
@@ -207,8 +208,7 @@ void QgsAlignRasterDialog::runAlign()
   }
   else
   {
-    // TODO: error message with reason
-    QMessageBox::critical( this, tr( "Align Rasters" ), tr( "Failed to align rasters." ) );
+    QMessageBox::critical( this, tr( "Align Rasters" ), tr( "Failed to align rasters:" ) + "\n\n" + mAlign->errorMessage() );
   }
 }
 

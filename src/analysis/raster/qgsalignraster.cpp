@@ -42,6 +42,11 @@ static double floor_with_tolerance( double value )
     return qFloor( value );
 }
 
+static double fmod_with_tolerance( double num, double denom )
+{
+  return num - floor_with_tolerance( num / denom ) * denom;
+}
+
 
 static QgsRectangle transform_to_extent( const double* geotransform, double xSize, double ySize )
 {
@@ -173,7 +178,13 @@ bool QgsAlignRaster::determineTransformAndSize()
     // handle (setting it to NULL).
     void* hTransformArg = GDALCreateGenImgProjTransformer( info.mDataset, info.mCrsWkt.constData(), NULL, mCrsWkt.constData(), FALSE, 0, 1 );
     if ( !hTransformArg )
+    {
+      mErrorMessage = QString( "GDALCreateGenImgProjTransformer failed.\n\n"
+                               "Source WKT:\n%1\n\nDestination WKT:\n%2" )
+                      .arg( QString::fromAscii( info.mCrsWkt ) )
+                      .arg( QString::fromAscii( mCrsWkt ) );
       return false;
+    }
 
     // Get approximate output georeferenced bounds and resolution for file.
     double adfDstGeoTransform[6];
@@ -187,7 +198,10 @@ bool QgsAlignRaster::determineTransformAndSize()
     r.srcCellSizeInDestCRS = fabs( adfDstGeoTransform[1] * adfDstGeoTransform[5] );
 
     if ( eErr != CE_None )
+    {
+      mErrorMessage = QString( "GDALSuggestedWarpOutput2 failed.\n\n" + r.inputFilename );
       return false;
+    }
 
     if ( finalExtent[0] == 0 && finalExtent[1] == 0 && finalExtent[2] == 0 && finalExtent[3] == 0 )
     {
@@ -234,7 +248,10 @@ bool QgsAlignRaster::determineTransformAndSize()
   mYSize = floor_with_tolerance(( finalExtent[3] - originY ) / mCellSizeY );
 
   if ( mXSize <= 0 || mYSize <= 0 )
+  {
+    mErrorMessage = QObject::tr( "Configured inputs have no common intersecting area." );
     return false;
+  }
 
   // build final geotransform...
   mGeoTransform[0] = originX;
@@ -250,6 +267,8 @@ bool QgsAlignRaster::determineTransformAndSize()
 
 bool QgsAlignRaster::run()
 {
+  mErrorMessage.clear();
+
   // consider extent of all layers and setup geotransform and output grid size
   if ( !determineTransformAndSize() )
     return false;
@@ -283,12 +302,18 @@ bool QgsAlignRaster::createAndWarp( const Item& raster )
 {
   GDALDriverH hDriver = GDALGetDriverByName( "GTiff" );
   if ( !hDriver )
+  {
+    mErrorMessage = QString( "GDALGetDriverByName(GTiff) failed." );
     return false;
+  }
 
   // Open the source file.
   GDALDatasetH hSrcDS = GDALOpen( raster.inputFilename.toLocal8Bit().constData(), GA_ReadOnly );
   if ( !hSrcDS )
+  {
+    mErrorMessage = QObject::tr( "Unable to open input file: " ) + raster.inputFilename;
     return false;
+  }
 
   // Create output with same datatype as first input band.
 
@@ -302,6 +327,7 @@ bool QgsAlignRaster::createAndWarp( const Item& raster )
   if ( !hDstDS )
   {
     GDALClose( hSrcDS );
+    mErrorMessage = QObject::tr( "Unable to create output file: " ) + raster.outputFilename;
     return false;
   }
 
@@ -401,8 +427,8 @@ QSizeF QgsAlignRaster::RasterInfo::cellSize() const
 
 QPointF QgsAlignRaster::RasterInfo::gridOffset() const
 {
-  return QPointF( fmod( mGeoTransform[0], cellSize().width() ),
-                  fmod( mGeoTransform[3], cellSize().height() ) );
+  return QPointF( fmod_with_tolerance( mGeoTransform[0], cellSize().width() ),
+                  fmod_with_tolerance( mGeoTransform[3], cellSize().height() ) );
 }
 
 QgsRectangle QgsAlignRaster::RasterInfo::extent() const

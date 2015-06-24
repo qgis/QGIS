@@ -16,6 +16,7 @@
 #include <QtTest/QtTest>
 
 #include "qgsalignraster.h"
+#include "qgsrectangle.h"
 
 #include <QDir>
 
@@ -41,6 +42,15 @@ class TestAlignRaster : public QObject
       GDALAllRegister();
 
       SRC_FILE = QString( TEST_DATA_DIR ) + QDir::separator() + "float1-16.tif";
+    }
+
+    void testRasterInfo()
+    {
+      QgsAlignRaster::RasterInfo out( SRC_FILE );
+      QVERIFY( out.isValid() );
+      QCOMPARE( out.cellSize(), QSizeF( 0.2, 0.2 ) );
+      QCOMPARE( out.gridOffset(), QPointF( 0.0, 0.0 ) );
+      QCOMPARE( out.extent(), QgsRectangle( 106.0, -7.0, 106.8, -6.2 ) );
     }
 
     void testClip()
@@ -159,9 +169,10 @@ class TestAlignRaster : public QObject
       align.setRasters( rasters );
       align.setParametersFromRaster( SRC_FILE );
       align.setCellSize( 0.4, 0.4 );
-      QPointF offset = align.gridOffset();
-      offset.rx() += 0.2;
-      align.setGridOffset( offset );
+      // a technicality: the raster's origin is at y=-7 so we need to shift the offset,
+      // because with zero Y offset the grid goes -6.8 ... -7.2 - with offset of 0.2
+      // the grid will start at -7  (with X axis no need for shift as 106 % 0.4 == 0)
+      align.setGridOffset( QPointF( 0.0, 0.2 ) );
       bool res = align.run();
       QVERIFY( res );
 
@@ -185,9 +196,10 @@ class TestAlignRaster : public QObject
       align.setRasters( rasters );
       align.setParametersFromRaster( SRC_FILE );
       align.setCellSize( 0.4, 0.4 );
-      QPointF offset = align.gridOffset();
-      offset.rx() += 0.2;
-      align.setGridOffset( offset );
+      // a technicality: the raster's origin is at y=-7 so we need to shift the offset,
+      // because with zero Y offset the grid goes -6.8 ... -7.2 - with offset of 0.2
+      // the grid will start at -7  (with X axis no need for shift as 106 % 0.4 == 0)
+      align.setGridOffset( QPointF( 0.0, 0.2 ) );
       bool res = align.run();
       QVERIFY( res );
 
