@@ -218,6 +218,8 @@ void QgsSymbolsListWidget::updateDataDefinedMarkerAngle()
   QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( mSymbol );
   QgsDataDefined dd = mRotationDDBtn->currentDataDefined();
 
+  spinAngle->setEnabled( !mRotationDDBtn->isActive() );
+
   bool isDefault = dd.hasDefaultValues();
 
   if ( // shall we remove datadefined expressions for layers ?
@@ -244,6 +246,8 @@ void QgsSymbolsListWidget::updateDataDefinedMarkerSize()
   QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( mSymbol );
   QgsDataDefined dd = mSizeDDBtn->currentDataDefined();
 
+  spinSize->setEnabled( !mSizeDDBtn->isActive() );
+
   bool isDefault = dd.hasDefaultValues();
 
   if ( // shall we remove datadefined expressions for layers ?
@@ -269,6 +273,8 @@ void QgsSymbolsListWidget::updateDataDefinedLineWidth()
 {
   QgsLineSymbolV2* lineSymbol = static_cast<QgsLineSymbolV2*>( mSymbol );
   QgsDataDefined dd = mWidthDDBtn->currentDataDefined();
+
+  spinWidth->setEnabled( !mWidthDDBtn->isActive() );
 
   bool isDefault = dd.hasDefaultValues();
 
