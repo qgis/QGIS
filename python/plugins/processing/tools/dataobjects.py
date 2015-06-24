@@ -211,9 +211,10 @@ def getObject(uriorname):
 
 def normalizeLayerSource(source):
     if isWindows():
-        s = source.replace('\\', '/')
-    s = s.replace('"', "'")
-    return s
+        source = source.replace('\\', '/')
+    source = source.replace('"', "'")
+    return source
+
 
 def getObjectFromUri(uri, forceLoad=True):
     """Returns an object (layer/table) given a source definition.
