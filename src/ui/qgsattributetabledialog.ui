@@ -14,7 +14,16 @@
    <string>Attribute Table</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <property name="spacing">
@@ -546,7 +555,16 @@
         <property name="sizeConstraint">
          <enum>QLayout::SetDefaultConstraint</enum>
         </property>
-        <property name="margin">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
          <number>0</number>
         </property>
         <item row="0" column="0">
@@ -574,7 +592,7 @@
         <string>Case sensitive</string>
        </property>
        <property name="checked">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
       </widget>
      </item>
@@ -665,7 +683,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QgsFieldExpressionWidget" name="mUpdateExpressionText">
+       <widget class="QgsFieldExpressionWidget" name="mUpdateExpressionText" native="true">
         <property name="sizePolicy">
          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -761,7 +779,8 @@
   <customwidget>
    <class>QgsFieldExpressionWidget</class>
    <extends>QWidget</extends>
-   <header>qgsfieldexpressionwidget.h</header>
+   <header location="global">qgsfieldexpressionwidget.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsFilterLineEdit</class>
