@@ -170,7 +170,19 @@ class TestPointBase(object):
         self._Pal.setShowingPartialsLabels(False)
         self._Pal.saveEngineSettings()
         self.checkTest()
+        
+    def test_buffer(self):
+        # Label with buffer
+        self.lyr.bufferDraw = True
+        self.lyr.bufferSize = 2
+        self.checkTest()        
 
+    def test_shadow(self):
+        # Label with shadow
+        self.lyr.shadowDraw = True
+        self.lyr.shadowOffsetDist = 2
+        self.lyr.shadowTransparency = 0
+        self.checkTest() 
 
 # noinspection PyPep8Naming
 def suiteTests():
