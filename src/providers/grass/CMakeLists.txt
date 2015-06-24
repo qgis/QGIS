@@ -30,6 +30,7 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
 
     SET (GRASS_LIBRARY_SRCS
       ../qgsgrass.cpp 
+      ../qgsgrassdatafile.cpp 
       ../qgsgrassfeatureiterator.cpp 
       ../qgsgrassprovider.cpp 
       ../qgsgrassimport.cpp

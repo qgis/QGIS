@@ -46,6 +46,7 @@ extern "C"
 #include "qgsrasterblock.h"
 #include "qgsspatialindex.h"
 #include "qgsgrass.h"
+#include "qgsgrassdatafile.h"
 
 static struct line_pnts *line = Vect_new_line_struct();
 
@@ -66,24 +67,46 @@ void writePolyline( struct Map_info* map, int type, QgsPolyline polyline, struct
   Vect_write_line( map, type, line, cats );
 }
 
-void exitIfCanceled( QDataStream& stdinStream, bool isPolygon,
-                     const QString & tmpName, struct Map_info * tmpMap,
-                     const QString & finalName, struct Map_info * finalMap )
+static struct Map_info *finalMap = 0;
+static struct Map_info *tmpMap = 0;
+static QString finalName;
+static QString tmpName;
+
+void closeMaps()
 {
-  bool isCanceled;
-  stdinStream >> isCanceled;
-  if ( !isCanceled )
-  {
-    return;
-  }
-  if ( isPolygon )
+  if ( tmpMap )
   {
     Vect_close( tmpMap );
     Vect_delete( tmpName.toUtf8().data() );
   }
-  Vect_close( finalMap );
-  Vect_delete( finalName.toUtf8().data() );
+  if ( finalMap )
+  {
+    Vect_close( finalMap );
+    Vect_delete( finalName.toUtf8().data() );
+  }
   G_warning( "import canceled -> maps deleted" );
+}
+
+// check stream status or exit
+void checkStream( QDataStream& stdinStream )
+{
+  if ( stdinStream.status() != QDataStream::Ok )
+  {
+    closeMaps();
+    G_fatal_error( "Cannot read data stream" );
+  }
+}
+
+void exitIfCanceled( QDataStream& stdinStream )
+{
+  bool isCanceled;
+  stdinStream >> isCanceled;
+  checkStream( stdinStream );
+  if ( !isCanceled )
+  {
+    return;
+  }
+  closeMaps();
   exit( EXIT_SUCCESS );
 }
 
@@ -107,39 +130,42 @@ int main( int argc, char **argv )
 #ifdef Q_OS_WIN32
   _setmode( _fileno( stdin ), _O_BINARY );
   _setmode( _fileno( stdout ), _O_BINARY );
-  setvbuf( stdin, NULL, _IONBF, BUFSIZ );
-  setvbuf( stdout, NULL, _IONBF, BUFSIZ );
 #endif
-  QFile stdinFile;
-  stdinFile.open( stdin, QIODevice::ReadOnly );
+  //QFile stdinFile;
+  QgsGrassDataFile stdinFile;
+  stdinFile.open( stdin, QIODevice::ReadOnly | QIODevice::Unbuffered );
   QDataStream stdinStream( &stdinFile );
 
   QFile stdoutFile;
-  stdoutFile.open( stdout, QIODevice::WriteOnly );
+  stdoutFile.open( stdout, QIODevice::WriteOnly | QIODevice::Unbuffered );
   QDataStream stdoutStream( &stdoutFile );
+
+  // global finalName, tmpName are used by checkStream()
+  finalName = QString( mapOption->answer );
+  QDateTime now = QDateTime::currentDateTime();
+  tmpName = QString( "qgis_import_tmp_%1_%2" ).arg( mapOption->answer ).arg( now.toString( "yyyyMMddhhmmss" ) );
 
   qint32 typeQint32;
   stdinStream >> typeQint32;
+  checkStream( stdinStream );
   QGis::WkbType wkbType = ( QGis::WkbType )typeQint32;
   QGis::WkbType wkbFlatType = QGis::flatType( wkbType );
   bool isPolygon = QGis::singleType( wkbFlatType ) == QGis::WKBPolygon;
 
-  QString finalName = QString( mapOption->answer );
-  struct Map_info *finalMap = QgsGrass::vectNewMapStruct();
-  struct Map_info *tmpMap = QgsGrass::vectNewMapStruct();
+  finalMap = QgsGrass::vectNewMapStruct();
   Vect_open_new( finalMap, mapOption->answer, 0 );
   struct Map_info * map = finalMap;
-  QDateTime now = QDateTime::currentDateTime();
   // keep tmp name in sync with QgsGrassMapsetItem::createChildren
-  QString tmpName = QString( "qgis_import_tmp_%1_%2" ).arg( mapOption->answer ).arg( now.toString( "yyyyMMddhhmmss" ) );
   if ( isPolygon )
   {
+    tmpMap = QgsGrass::vectNewMapStruct();
     Vect_open_new( tmpMap, tmpName.toUtf8().data(), 0 );
     map = tmpMap;
   }
 
   QgsFields srcFields;
   stdinStream >> srcFields;
+  checkStream( stdinStream );
   // TODO: find (in QgsGrassVectorImport) if there is unique 'id' or 'cat' field and use it as cat
   int keyNum = 1;
   QString key;
@@ -191,11 +217,12 @@ int main( int argc, char **argv )
   qint32 featureCount = 0;
   while ( true )
   {
-    exitIfCanceled( stdinStream, isPolygon, tmpName, tmpMap, finalName, finalMap );
+    exitIfCanceled( stdinStream );
     stdinStream >> feature;
+    checkStream( stdinStream );
 #ifndef Q_OS_WIN
     // cannot be used on Windows, see notes in qgis.r.in
-    stdoutStream << ( bool )true; // feature received
+    stdoutStream << true; // feature received
     stdoutFile.flush();
 #endif
     if ( !feature.isValid() )
@@ -354,10 +381,11 @@ int main( int argc, char **argv )
     // read once more to assign centroids to polygons
     while ( true )
     {
-      exitIfCanceled( stdinStream, isPolygon, tmpName, tmpMap, finalName, finalMap );
+      exitIfCanceled( stdinStream );
       stdinStream >> feature;
+      checkStream( stdinStream );
 #ifndef Q_OS_WIN
-      stdoutStream << ( bool )true; // feature received
+      stdoutStream << true; // feature received
       stdoutFile.flush();
 #endif
       if ( !feature.isValid() )
@@ -405,7 +433,7 @@ int main( int argc, char **argv )
   Vect_build( finalMap );
   Vect_close( finalMap );
 
-  stdoutStream << ( bool )true; // to keep caller waiting until finished
+  stdoutStream << true; // to keep caller waiting until finished
   stdoutFile.flush();
   // TODO history
 
