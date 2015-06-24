@@ -121,9 +121,6 @@
          <height>16777215</height>
         </size>
        </property>
-       <property name="text">
-        <string/>
-       </property>
       </widget>
      </item>
      <item row="0" column="1" colspan="3">
@@ -187,6 +184,12 @@
      </item>
      <item>
       <widget class="QgsDoubleSpinBox" name="nullSizeSpinBox">
+       <property name="decimals">
+        <number>6</number>
+       </property>
+       <property name="maximum">
+        <double>99999999.000000000000000</double>
+       </property>
        <property name="singleStep">
         <double>0.100000000000000</double>
        </property>
@@ -230,7 +233,7 @@
   <tabstop>minValueSpinBox</tabstop>
   <tabstop>maxValueSpinBox</tabstop>
   <tabstop>computeValuesButton</tabstop>
-  <tabstop>buttonBox</tabstop>
+  <tabstop>nullSizeSpinBox</tabstop>
   <tabstop>treeView</tabstop>
  </tabstops>
  <resources/>
