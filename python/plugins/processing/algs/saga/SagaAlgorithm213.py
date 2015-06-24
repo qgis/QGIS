@@ -61,9 +61,10 @@ class SagaAlgorithm213(SagaAlgorithm212):
             if isinstance(param, ParameterRaster):
                 if param.value is None:
                     continue
-                value = param.value
-                if not value.endswith('sgrd'):
-                    exportCommand = self.exportRasterLayer(value)
+                if param.value.endswith('sdat'):
+                    param.value = param.value[:-4] + "sgrd"
+                elif not param.value.endswith('sgrd'):
+                    exportCommand = self.exportRasterLayer(param.value)
                     if exportCommand is not None:
                         commands.append(exportCommand)
             if isinstance(param, ParameterVector):
@@ -93,11 +94,15 @@ class SagaAlgorithm213(SagaAlgorithm212):
                 if layers is None or len(layers) == 0:
                     continue
                 if param.datatype == ParameterMultipleInput.TYPE_RASTER:
-                    for layerfile in layers:
-                        if not layerfile.endswith('sgrd'):
+                    for i, layerfile in enumerate(layers):
+                        if layerfile.endswith('sdat'):
+                            layerfile = param.value[:-4] + "sgrd"
+                            layers[i] = layerfile
+                        elif not layerfile.endswith('sgrd'):
                             exportCommand = self.exportRasterLayer(layerfile)
                             if exportCommand is not None:
                                 commands.append(exportCommand)
+                        param.value = ";".join(layers)
                 elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
                     for layerfile in layers:
                         layer = dataobjects.getObjectFromUri(layerfile, False)
