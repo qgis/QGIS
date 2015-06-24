@@ -33,7 +33,10 @@
 class QgsExpressionItemSearchProxy : public QSortFilterProxyModel
 {
   public:
-    QgsExpressionItemSearchProxy() { }
+    QgsExpressionItemSearchProxy()
+    {
+      setFilterCaseSensitivity( Qt::CaseInsensitive );
+    }
 
     bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override
     {
