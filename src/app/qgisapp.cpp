@@ -2929,7 +2929,15 @@ bool QgisApp::addVectorLayers( const QStringList &theLayerQStringList, const QSt
         QStringList sublayers = layer->dataProvider()->subLayers();
         QStringList elements = sublayers.at( 0 ).split( ":" );
         if ( layer->storageType() != "GeoJSON" )
+        {
+          while ( elements.size() > 4 )
+          {
+            elements[1] += ":" + elements[2];
+            elements.removeAt( 2 );
+          }
+
           layer->setLayerName( elements.at( 1 ) );
+        }
         myList << layer;
       }
       else
@@ -3254,8 +3262,20 @@ void QgisApp::loadOGRSublayers( QString layertype, QString uri, QStringList list
   for ( int i = 0; i < list.size(); i++ )
   {
     QString composedURI;
-    QString layerName = list.at( i ).split( ':' ).value( 0 );
-    QString layerType = list.at( i ).split( ':' ).value( 1 );
+    QStringList elements = list.at( i ).split( ":" );
+    while ( elements.size() > 2 )
+    {
+      elements[0] += ":" + elements[1];
+      elements.removeAt( 1 );
+    }
+
+    QString layerName = elements.value( 0 );
+    QString layerType = elements.value( 1 );
+    if ( layerType == "any" )
+    {
+      layerType = "";
+      elements.removeAt( 1 );
+    }
 
     if ( layertype != "GRASS" )
     {
