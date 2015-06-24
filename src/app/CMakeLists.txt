@@ -3,6 +3,7 @@ SET(QGIS_APP_SRCS
   qgisappinterface.cpp
   qgisappstylesheet.cpp
   qgsabout.cpp
+  qgsalignrasterdialog.cpp
   qgsapplayertreeviewmenuprovider.cpp
   qgssponsors.cpp
   qgsaddattrdialog.cpp
@@ -164,6 +165,7 @@ SET (QGIS_APP_MOC_HDRS
   qgisappstylesheet.h
   qgsabout.h
   qgsaddattrdialog.h
+  qgsalignrasterdialog.h
   qgsjoindialog.h
   qgsaddtaborgroup.h
   qgsannotationwidget.h

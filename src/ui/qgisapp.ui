@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1050</width>
-     <height>25</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="mProjectMenu">
@@ -222,6 +222,7 @@
      <string>&amp;Raster</string>
     </property>
     <addaction name="mActionShowRasterCalculator"/>
+    <addaction name="mActionShowAlignRasterTool"/>
    </widget>
    <widget class="QMenu" name="mVectorMenu">
     <property name="title">
@@ -2298,6 +2299,11 @@ Acts on currently active editable layer</string>
    </property>
    <property name="toolTip">
     <string>Show statistical summary</string>
+   </property>
+  </action>
+  <action name="mActionShowAlignRasterTool">
+   <property name="text">
+    <string>Align Rasters...</string>
    </property>
   </action>
  </widget>

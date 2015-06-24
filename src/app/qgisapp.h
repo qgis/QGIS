@@ -904,6 +904,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void fileNewFromDefaultTemplate();
     //! Calculate new rasters from existing ones
     void showRasterCalculator();
+    //! Open dialog to align raster layers
+    void showAlignRasterTool();
     void embedLayers();
 
     //! Create a new empty vector layer

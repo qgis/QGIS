@@ -100,6 +100,7 @@
 #include "qgis.h"
 #include "qgisplugin.h"
 #include "qgsabout.h"
+#include "qgsalignrasterdialog.h"
 #include "qgsapplayertreeviewmenuprovider.h"
 #include "qgsapplication.h"
 #include "qgsattributeaction.h"
@@ -1232,6 +1233,7 @@ void QgisApp::createActions()
   connect( mActionNewSpatiaLiteLayer, SIGNAL( triggered() ), this, SLOT( newSpatialiteLayer() ) );
   connect( mActionNewMemoryLayer, SIGNAL( triggered() ), this, SLOT( newMemoryLayer() ) );
   connect( mActionShowRasterCalculator, SIGNAL( triggered() ), this, SLOT( showRasterCalculator() ) );
+  connect( mActionShowAlignRasterTool, SIGNAL( triggered() ), this, SLOT( showAlignRasterTool() ) );
   connect( mActionEmbedLayers, SIGNAL( triggered() ), this, SLOT( embedLayers() ) );
   connect( mActionAddLayerDefinition, SIGNAL( triggered() ), this, SLOT( addLayerDefinition() ) );
   connect( mActionAddOgrLayer, SIGNAL( triggered() ), this, SLOT( addVectorLayer() ) );
@@ -4000,6 +4002,14 @@ void QgisApp::showRasterCalculator()
     }
   }
 }
+
+
+void QgisApp::showAlignRasterTool()
+{
+  QgsAlignRasterDialog dlg( this );
+  dlg.exec();
+}
+
 
 void QgisApp::fileOpen()
 {
