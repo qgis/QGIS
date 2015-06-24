@@ -77,11 +77,11 @@ int main( int argc, char **argv )
   name = map->answer;
 
 #ifdef Q_OS_WIN32
-  _setmode(_fileno(stdin), _O_BINARY);
-  _setmode(_fileno(stdout), _O_BINARY);
-  setvbuf (stdin, NULL, _IONBF, BUFSIZ);
+  _setmode( _fileno( stdin ), _O_BINARY );
+  _setmode( _fileno( stdout ), _O_BINARY );
+  setvbuf( stdin, NULL, _IONBF, BUFSIZ );
   // setting _IONBF on stdout works on windows correctly, data written immediately even without fflush(stdout)
-  setvbuf (stdout, NULL, _IONBF, BUFSIZ); 
+  setvbuf( stdout, NULL, _IONBF, BUFSIZ );
 #endif
 
   QFile stdinFile;
@@ -145,7 +145,7 @@ int main( int argc, char **argv )
     {
       break;
     }
-	stdinStream >> byteArray;
+    stdinStream >> byteArray;
 
     if ( byteArray.size() != expectedSize )
     {
@@ -178,10 +178,10 @@ int main( int argc, char **argv )
     G_put_raster_row( cf, buf, grass_type );
 
 #ifndef Q_OS_WIN
-	// Because stdin is somewhere buffered on Windows (not clear if in QProcess or by Windows)
-	// we cannot in QgsGrassImport wait for this because it hangs. Setting _IONBF on stdin does not help
-	// and there is no flush() on QProcess.
-	// OTOH, smaller stdin buffer is probably blocking QgsGrassImport so that the import can be canceled immediately.
+    // Because stdin is somewhere buffered on Windows (not clear if in QProcess or by Windows)
+    // we cannot in QgsGrassImport wait for this because it hangs. Setting _IONBF on stdin does not help
+    // and there is no flush() on QProcess.
+    // OTOH, smaller stdin buffer is probably blocking QgsGrassImport so that the import can be canceled immediately.
     stdoutStream << ( bool )true; // row written
     stdoutFile.flush();
 #endif

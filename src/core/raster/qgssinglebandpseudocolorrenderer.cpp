@@ -38,7 +38,7 @@ QgsSingleBandPseudoColorRenderer::~QgsSingleBandPseudoColorRenderer()
   delete mShader;
 }
 
-void QgsSingleBandPseudoColorRenderer::setBand(int bandNo)
+void QgsSingleBandPseudoColorRenderer::setBand( int bandNo )
 {
   if ( bandNo > mInput->bandCount() || bandNo <= 0 )
   {

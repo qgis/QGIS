@@ -19,7 +19,7 @@
 # sorts includes in <...> before "..."
 # keep #include "ui_..." on top of list
 # can skip includes if an order should be kept
-# can exlcude directories (hard-copies of external libraries)
+# can exclude directories (hard-copies of external libraries)
 
 SORTING=false
 FILE1="sort_include_1.tmp"

@@ -325,7 +325,7 @@ class CORE_EXPORT QgsAbstractGeometryV2
     /** Reads a WKB header and tests its validity.
      * @param wkbPtr
      * @param wkbType destination for WKB type from header
-     * @param endianSwap will be set to true if endian from WKB must be swapped to match QGIS platform endianess
+     * @param endianSwap will be set to true if endian from WKB must be swapped to match QGIS platform endianness
      * @param expectedType expected WKB type
      * @returns true if header is valid and matches expected type
      */

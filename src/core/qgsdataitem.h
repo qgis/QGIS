@@ -60,7 +60,7 @@ class CORE_EXPORT QgsAnimatedIcon : public QObject
     void onFrameChanged();
 
   signals:
-    /** Emited when icon changed */
+    /** Emitted when icon changed */
     void frameChanged();
 
   private:

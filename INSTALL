@@ -1,10 +1,10 @@
 QGIS
 Building QGIS from source - step by step
-Monday June 22, 2015
+Wednesday June 24, 2015
 
 
-Last Updated: Monday June 22, 2015
-Last Change : Monday June 22, 2015
+Last Updated: Wednesday June 24, 2015
+Last Change : Wednesday June 24, 2015
 
 
   1. Introduction
@@ -110,7 +110,7 @@ Optional dependencies:
 
 - for GRASS providers and plugin - GRASS >= 6.0.0. QGIS may be compiled with GRASS 6 or GRASS 7.
   It can also be compiled with both GRASS versions in a single build but only if QGIS
-  is not installed with rpath. The desired GRASS version is choosen on runtime by setting
+  is not installed with rpath. The desired GRASS version is chosen on runtime by setting
   LD_LIBRARY_PATH or PATH.
 - for georeferencer - GSL >= 1.8
 - for postgis support and SPIT plugin - PostgreSQL >= 8.0.x
