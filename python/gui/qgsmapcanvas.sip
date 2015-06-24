@@ -84,6 +84,10 @@ class QgsMapCanvas : QGraphicsView
     //! @note added in 2.4
     void clearCache();
 
+    //! Reload all layers, clear the cache and refresh the canvas
+    //! @note added in 2.9
+    void refreshAllLayers();
+
     //! Set whether the layers are rendered in parallel or sequentially
     //! @note added in 2.4
     void setParallelRenderingEnabled( bool enabled );

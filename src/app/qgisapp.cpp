@@ -6635,12 +6635,7 @@ void QgisApp::refreshMapCanvas()
   //stop any current rendering
   mMapCanvas->stopRendering();
 
-  //reload cached provider data
-  QgsMapLayerRegistry::instance()->reloadAllLayers();
-
-  mMapCanvas->clearCache();
-  //then refresh
-  mMapCanvas->refresh();
+  mMapCanvas->refreshAllLayers();
 }
 
 void QgisApp::canvasRefreshStarted()
