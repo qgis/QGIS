@@ -23,7 +23,6 @@
 #include <QDataStream>
 #include <QTextStream>
 #include <QStringList>
-#include <QMessageBox>
 #include <QSettings>
 #include <QRegExp>
 #include <QUrl>
@@ -758,7 +757,7 @@ void QgsDelimitedTextProvider::rescanFile()
   }
   if ( messages.size() > 0 )
   {
-    reportErrors( messages, false );
+    reportErrors( messages );
     QgsDebugMsg( "Delimited text source invalid on rescan - missing geometry fields" );
     mValid = false;
     return;
@@ -1098,7 +1097,7 @@ void QgsDelimitedTextProvider::onFileUpdated()
   {
     QStringList messages;
     messages.append( tr( "The file has been updated by another application - reloading" ) );
-    reportErrors( messages, false );
+    reportErrors( messages );
     mRescanRequired = true;
   }
 }

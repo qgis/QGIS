@@ -226,7 +226,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     void resetIndexes();
     void clearInvalidLines();
     void recordInvalidLine( QString message );
-    void reportErrors( QStringList messages = QStringList(), bool showDialog = true );
+    void reportErrors( QStringList messages = QStringList(), bool showDialog = false );
     static bool recordIsEmpty( QStringList &record );
     void setUriParameter( QString parameter, QString value );
 
