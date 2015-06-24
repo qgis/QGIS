@@ -107,13 +107,14 @@ class QgsHistogramWidget : QWidget
 
   public slots:
 
-    /** Triggers a refresh of the histogram when the widget is next repainted.
+    /** Refreshes the values for the histogram by fetching them from the layer.
      */
-    void refreshHistogram();
+    void refreshValues();
 
-    /** Triggers a refresh and immediate redraw of the histogram.
+    /** Redraws the histogram. Calling this slot does not update the values
+     * for the histogram, use @link refreshValues @endlink to do this.
      */
-    void refreshAndRedraw();
+    void refresh();
 
     /** Sets the vector layer associated with the histogram.
      * @param layer source vector layer

@@ -146,13 +146,14 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
 
   public slots:
 
-    /** Triggers a refresh of the histogram when the widget is next repainted.
+    /** Refreshes the values for the histogram by fetching them from the layer.
      */
-    void refreshHistogram();
+    void refreshValues();
 
-    /** Triggers a refresh and immediate redraw of the histogram.
+    /** Redraws the histogram. Calling this slot does not update the values
+     * for the histogram, use @link refreshValues @endlink to do this.
      */
-    void refreshAndRedraw();
+    void refresh();
 
     /** Sets the vector layer associated with the histogram.
      * @param layer source vector layer
@@ -172,12 +173,9 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
      */
     virtual void drawHistogram();
 
-    virtual void paintEvent( QPaintEvent * event ) override;
-
     QwtPlot* mPlot;
     QgsRangeList mRanges;
     QList< QwtPlotMarker* > mRangeMarkers;
-    bool mRedrawRequired;
 
   private:
 
@@ -194,6 +192,8 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
     QPen mGridPen;
     QString mXAxisTitle;
     QString mYAxisTitle;
+
+    void clearHistogram();
 
 #if defined(QWT_VERSION) && QWT_VERSION>=0x060000
     QwtPlotHistogram* createPlotHistogram( const QString& title, const QBrush &brush, const QPen &pen = Qt::NoPen ) const;

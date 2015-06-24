@@ -76,7 +76,6 @@ QgsGraduatedHistogramWidget::~QgsGraduatedHistogramWidget()
 void QgsGraduatedHistogramWidget::setRenderer( QgsGraduatedSymbolRendererV2 *renderer )
 {
   mRenderer = renderer;
-  mRedrawRequired = true;
 }
 
 void QgsGraduatedHistogramWidget::drawHistogram()
@@ -125,7 +124,6 @@ void QgsGraduatedHistogramWidget::mousePress( double value )
   {
     //moving a break, so hide the break line
     mRangeMarkers.at( closestRangeIndex )->hide();
-    mRedrawRequired = true;
     mPlot->replot();
   }
 }
@@ -147,7 +145,7 @@ void QgsGraduatedHistogramWidget::mouseRelease( double value )
     if ( value <= mRenderer->ranges().at( closestRangeIndex ).lowerValue() ||
          value >= mRenderer->ranges().at( closestRangeIndex + 1 ).upperValue() )
     {
-      refreshAndRedraw();
+      refresh();
       return;
     }
 
@@ -162,7 +160,7 @@ void QgsGraduatedHistogramWidget::mouseRelease( double value )
     emit rangesModified( true );
   }
 
-  refreshAndRedraw();
+  refresh();
 }
 
 void QgsGraduatedHistogramWidget::findClosestRange( double value, int &closestRangeIndex, int& pixelDistance ) const
@@ -191,6 +189,9 @@ QgsGraduatedHistogramEventFilter::QgsGraduatedHistogramEventFilter( QwtPlot *plo
 
 bool QgsGraduatedHistogramEventFilter::eventFilter( QObject *object, QEvent *event )
 {
+  if ( !mPlot->isEnabled() )
+    return QObject::eventFilter( object, event );
+
   switch ( event->type() )
   {
     case QEvent::MouseButtonPress:
