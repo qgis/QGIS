@@ -16,35 +16,41 @@
 #ifndef QGSDEFAULTSEARCHWIDGETWRAPPER_H
 #define QGSDEFAULTSEARCHWIDGETWRAPPER_H
 
-#include "qgseditorwidgetwrapper.h"
+#include "qgssearchwidgetwrapper.h"
 #include <qgsfilterlineedit.h>
 
+#include <QCheckBox>
 
 /**
  * Wraps a search widget. Default form is just a QgsLineFilterEdit
  *
  */
 
-class GUI_EXPORT QgsDefaultSearchWidgetWrapper : public QgsEditorWidgetWrapper
+class GUI_EXPORT QgsDefaultSearchWidgetWrapper : public QgsSearchWidgetWrapper
 {
     Q_OBJECT
   public:
-    explicit QgsDefaultSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = 0, QWidget* parent = 0 );
+    explicit QgsDefaultSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = 0 );
 
-    // QgsEditorWidgetWrapper interface
+    // QgsSearchWidgetWrapper interface
   public:
-    QVariant value() override;
+    QString expression() override;
+    bool applyDirectly() override;
+  protected slots:
+    void setExpression(QString exp) override;
 
+  private slots:
+    void setCaseString(int);
+    
   protected:
     QWidget* createWidget( QWidget* parent ) override;
     void initWidget( QWidget* editor ) override;
 
-  public slots:
-    void setValue( const QVariant& value ) override;
-    void setEnabled( bool enabled ) override;
-
   private:
     QgsFilterLineEdit* mLineEdit;
+    QCheckBox* mCheckbox;
+    QWidget* mContainer;
+    QString mCaseString;
 };
 
 #endif // QGSDEFAULTSEARCHWIDGETWRAPPER_H
