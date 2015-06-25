@@ -149,34 +149,86 @@ QgsRectangle QgsAlignRaster::clipExtent() const
 }
 
 
-bool QgsAlignRaster::setParametersFromRaster( const QString& filename, const QString& destWkt )
+bool QgsAlignRaster::setParametersFromRaster( const QString& filename, const QString& destWkt, QSizeF customCellSize, QPointF customGridOffset )
 {
-  return setParametersFromRaster( RasterInfo( filename ), destWkt );
+  return setParametersFromRaster( RasterInfo( filename ), destWkt, customCellSize, customGridOffset );
 }
 
-bool QgsAlignRaster::setParametersFromRaster( const RasterInfo& rasterInfo, const QString& destWkt )
+bool QgsAlignRaster::setParametersFromRaster( const RasterInfo& rasterInfo, const QString& customCRSWkt, QSizeF customCellSize, QPointF customGridOffset )
 {
-  if ( destWkt.isEmpty() || destWkt.toAscii() == rasterInfo.crs() )
+  if ( customCRSWkt.isEmpty() || customCRSWkt.toAscii() == rasterInfo.crs() )
   {
     // use ref. layer to init input
     mCrsWkt = rasterInfo.crs();
-    mCellSizeX = rasterInfo.cellSize().width();
-    mCellSizeY = rasterInfo.cellSize().height();
-    mGridOffsetX = rasterInfo.gridOffset().x();
-    mGridOffsetY = rasterInfo.gridOffset().y();
+
+    if ( !customCellSize.isValid() )
+    {
+      mCellSizeX = rasterInfo.cellSize().width();
+      mCellSizeY = rasterInfo.cellSize().height();
+    }
+    else
+    {
+      mCellSizeX = customCellSize.width();
+      mCellSizeY = customCellSize.height();
+    }
+
+    if ( customGridOffset.x() < 0 || customGridOffset.y() < 0 )
+    {
+      if ( !customCellSize.isValid() )
+      {
+        // using original raster's grid offset to be aligned with origin
+        mGridOffsetX = rasterInfo.gridOffset().x();
+        mGridOffsetY = rasterInfo.gridOffset().y();
+      }
+      else
+      {
+        // if using custom cell size: offset so that we are aligned
+        // with the original raster's origin point
+        mGridOffsetX = fmod_with_tolerance( rasterInfo.origin().x(), customCellSize.width() );
+        mGridOffsetY = fmod_with_tolerance( rasterInfo.origin().y(), customCellSize.height() );
+      }
+    }
+    else
+    {
+      mGridOffsetX = customGridOffset.x();
+      mGridOffsetY = customGridOffset.x();
+    }
   }
   else
   {
     QSizeF cs;
     QPointF go;
-    if ( !suggestedWarpOutput( rasterInfo, destWkt.toAscii(), &cs, &go ) )
+    if ( !suggestedWarpOutput( rasterInfo, customCRSWkt.toAscii(), &cs, &go ) )
+    {
+      mCrsWkt = "_error_";
+      mCellSizeX = mCellSizeY = 0;
+      mGridOffsetX = mGridOffsetY = 0;
       return false;
+    }
 
-    mCrsWkt = destWkt.toAscii();
-    mCellSizeX = cs.width();
-    mCellSizeY = cs.height();
-    mGridOffsetX = go.x();
-    mGridOffsetY = go.y();
+    mCrsWkt = customCRSWkt.toAscii();
+
+    if ( !customCellSize.isValid() )
+    {
+      mCellSizeX = cs.width();
+      mCellSizeY = cs.height();
+    }
+    else
+    {
+      mCellSizeX = customCellSize.width();
+      mCellSizeY = customCellSize.height();
+    }
+
+    if ( customGridOffset.x() < 0 || customGridOffset.y() < 0 )
+    {
+      mGridOffsetX = go.x();
+      mGridOffsetY = go.y();
+    }
+    else
+    {
+      mGridOffsetX = customGridOffset.x();
+      mGridOffsetY = customGridOffset.x();
+    }
   }
   return true;
 }
@@ -185,6 +237,12 @@ bool QgsAlignRaster::setParametersFromRaster( const RasterInfo& rasterInfo, cons
 bool QgsAlignRaster::checkInputParameters()
 {
   mErrorMessage.clear();
+
+  if ( mCrsWkt == "_error_" )
+  {
+    mErrorMessage = QObject::tr( "Unable to reproject." );
+    return false;
+  }
 
   if ( mCellSizeX == 0 || mCellSizeY == 0 )
   {
@@ -500,6 +558,11 @@ QPointF QgsAlignRaster::RasterInfo::gridOffset() const
 QgsRectangle QgsAlignRaster::RasterInfo::extent() const
 {
   return transform_to_extent( mGeoTransform, mXSize, mYSize );
+}
+
+QPointF QgsAlignRaster::RasterInfo::origin() const
+{
+  return QPointF( mGeoTransform[0], mGeoTransform[3] );
 }
 
 void QgsAlignRaster::RasterInfo::dump() const

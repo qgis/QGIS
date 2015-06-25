@@ -171,12 +171,7 @@ class TestAlignRaster : public QObject
       rasters << QgsAlignRaster::Item( SRC_FILE, tmpFile );
       rasters[0].resampleMethod = QgsAlignRaster::RA_Bilinear;
       align.setRasters( rasters );
-      align.setParametersFromRaster( SRC_FILE );
-      align.setCellSize( 0.4, 0.4 );
-      // a technicality: the raster's origin is at y=-7 so we need to shift the offset,
-      // because with zero Y offset the grid goes -6.8 ... -7.2 - with offset of 0.2
-      // the grid will start at -7  (with X axis no need for shift as 106 % 0.4 == 0)
-      align.setGridOffset( QPointF( 0.0, 0.2 ) );
+      align.setParametersFromRaster( SRC_FILE, QString(), QSizeF( 0.4, 0.4 ) );
       bool res = align.run();
       QVERIFY( res );
 
@@ -198,12 +193,7 @@ class TestAlignRaster : public QObject
       rasters[0].resampleMethod = QgsAlignRaster::RA_Bilinear;
       rasters[0].rescaleValues = true;
       align.setRasters( rasters );
-      align.setParametersFromRaster( SRC_FILE );
-      align.setCellSize( 0.4, 0.4 );
-      // a technicality: the raster's origin is at y=-7 so we need to shift the offset,
-      // because with zero Y offset the grid goes -6.8 ... -7.2 - with offset of 0.2
-      // the grid will start at -7  (with X axis no need for shift as 106 % 0.4 == 0)
-      align.setGridOffset( QPointF( 0.0, 0.2 ) );
+      align.setParametersFromRaster( SRC_FILE, QString(), QSizeF( 0.4, 0.4 ) );
       bool res = align.run();
       QVERIFY( res );
 

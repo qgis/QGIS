@@ -22,13 +22,19 @@ class QgsAlignRasterDialog : public QDialog, private Ui::QgsAlignRasterDialog
     void removeLayer();
     void editLayer();
 
-    void updateConfigFromReferenceLayer();
+    void referenceLayerChanged();
 
     void runAlign();
 
     void destinationCrsChanged();
 
     void clipExtentChanged();
+
+    void updateCustomCRS();
+    void updateCustomCellSize();
+    void updateCustomGridOffset();
+
+    void updateParametersFromReferenceLayer();
 
   protected:
     void populateLayersView();

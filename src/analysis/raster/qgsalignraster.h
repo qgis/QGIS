@@ -63,6 +63,8 @@ class ANALYSIS_EXPORT QgsAlignRaster
       QPointF gridOffset() const;
       //! Return extent of the raster
       QgsRectangle extent() const;
+      //! Return origin of the raster
+      QPointF origin() const;
 
       //! write contents of the object to standard error stream - for debugging
       void dump() const;
@@ -167,10 +169,19 @@ class ANALYSIS_EXPORT QgsAlignRaster
     //! No extra clipping is done if the rectangle is null
     QgsRectangle clipExtent() const;
 
-    //! Set destination CRS, cell size and grid offset from a raster file
-    bool setParametersFromRaster( const RasterInfo& rasterInfo, const QString& destWkt = QString() );
-    //! Set destination CRS, cell size and grid offset from a raster file
-    bool setParametersFromRaster( const QString& filename, const QString& destWkt = QString() );
+    //! Set destination CRS, cell size and grid offset from a raster file.
+    //! The user may provide custom values for some of the parameters - in such case
+    //! only the remaining parameters are calculated.
+    //!
+    //! If default CRS is used, the parameters are set according to the raster file's geo-transform.
+    //! If a custom CRS is provided, suggested reprojection is calculated first (using GDAL) in order
+    //! to determine suitable defaults for cell size and grid offset.
+    //!
+    //! @return true on success (may fail if it is not possible to reproject raster to given CRS)
+    bool setParametersFromRaster( const RasterInfo& rasterInfo, const QString& customCRSWkt = QString(), QSizeF customCellSize = QSizeF(), QPointF customGridOffset = QPointF( -1, -1 ) );
+    //! Overridden variant for convenience, taking filename instead RasterInfo object.
+    //! See the other variant for details.
+    bool setParametersFromRaster( const QString& filename, const QString& customCRSWkt = QString(), QSizeF customCellSize = QSizeF(), QPointF customGridOffset = QPointF( -1, -1 ) );
 
     //! Determine destination extent from the input rasters and calculate derived values
     //! @return true on success, sets error on error (see errorMessage())

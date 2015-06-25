@@ -80,44 +80,27 @@
    </item>
    <item>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="5" column="0">
+     <item row="5" column="1">
       <widget class="QLabel" name="label_6">
        <property name="text">
         <string>Output Size</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label_5">
-       <property name="text">
-        <string>Grid Offset</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
+     <item row="0" column="1">
       <widget class="QLabel" name="label_3">
        <property name="text">
         <string>Reference Layer</string>
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
+     <item row="0" column="2">
       <widget class="QComboBox" name="mCboReferenceLayer"/>
      </item>
-     <item row="1" column="1">
+     <item row="1" column="2">
       <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true"/>
      </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Cell Size</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
+     <item row="2" column="2">
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
         <widget class="QDoubleSpinBox" name="mSpinCellSizeX">
@@ -141,14 +124,7 @@
        </item>
       </layout>
      </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>CRS</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
+     <item row="3" column="2">
       <layout class="QHBoxLayout" name="horizontalLayout_4">
        <item>
         <widget class="QDoubleSpinBox" name="mSpinGridOffsetX">
@@ -172,7 +148,7 @@
        </item>
       </layout>
      </item>
-     <item row="7" column="0" colspan="2">
+     <item row="7" column="1" colspan="2">
       <widget class="QCheckBox" name="mChkAddToCanvas">
        <property name="text">
         <string>Add aligned rasters to map canvas</string>
@@ -182,7 +158,7 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="0" colspan="2">
+     <item row="4" column="1" colspan="2">
       <widget class="QgsExtentGroupBox" name="mClipExtentGroupBox">
        <property name="checkable">
         <bool>true</bool>
@@ -190,10 +166,31 @@
        <layout class="QGridLayout" name="gridLayout_2"/>
       </widget>
      </item>
-     <item row="5" column="1">
+     <item row="5" column="2">
       <widget class="QLineEdit" name="mEditOutputSize">
        <property name="readOnly">
         <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QCheckBox" name="mChkCustomCRS">
+       <property name="text">
+        <string>CRS</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QCheckBox" name="mChkCustomCellSize">
+       <property name="text">
+        <string>Cell Size</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QCheckBox" name="mChkCustomGridOffset">
+       <property name="text">
+        <string>Grid Offset</string>
        </property>
       </widget>
      </item>
@@ -239,10 +236,15 @@
   <tabstop>mBtnRemove</tabstop>
   <tabstop>mViewLayers</tabstop>
   <tabstop>mCboReferenceLayer</tabstop>
+  <tabstop>mChkCustomCRS</tabstop>
+  <tabstop>mChkCustomCellSize</tabstop>
   <tabstop>mSpinCellSizeX</tabstop>
   <tabstop>mSpinCellSizeY</tabstop>
+  <tabstop>mChkCustomGridOffset</tabstop>
   <tabstop>mSpinGridOffsetX</tabstop>
   <tabstop>mSpinGridOffsetY</tabstop>
+  <tabstop>mClipExtentGroupBox</tabstop>
+  <tabstop>mEditOutputSize</tabstop>
   <tabstop>mChkAddToCanvas</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>

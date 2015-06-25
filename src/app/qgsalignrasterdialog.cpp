@@ -73,12 +73,22 @@ QgsAlignRasterDialog::QgsAlignRasterDialog( QWidget *parent )
   connect( mBtnRemove, SIGNAL( clicked( bool ) ), this, SLOT( removeLayer() ) );
   connect( mBtnEdit, SIGNAL( clicked( bool ) ), this, SLOT( editLayer() ) );
 
-  connect( mCboReferenceLayer, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updateConfigFromReferenceLayer() ) );
+  connect( mCboReferenceLayer, SIGNAL( currentIndexChanged( int ) ), this, SLOT( referenceLayerChanged() ) );
   connect( mCrsSelector, SIGNAL( crsChanged( QgsCoordinateReferenceSystem ) ), this, SLOT( destinationCrsChanged() ) );
+  connect( mSpinCellSizeX, SIGNAL( valueChanged( double ) ), this, SLOT( updateParametersFromReferenceLayer() ) );
+  connect( mSpinCellSizeY, SIGNAL( valueChanged( double ) ), this, SLOT( updateParametersFromReferenceLayer() ) );
+  connect( mSpinGridOffsetX, SIGNAL( valueChanged( double ) ), this, SLOT( updateParametersFromReferenceLayer() ) );
+  connect( mSpinGridOffsetY, SIGNAL( valueChanged( double ) ), this, SLOT( updateParametersFromReferenceLayer() ) );
+
+  connect( mChkCustomCRS, SIGNAL( clicked( bool ) ), this, SLOT( updateCustomCRS() ) );
+  connect( mChkCustomCellSize, SIGNAL( clicked( bool ) ), this, SLOT( updateCustomCellSize() ) );
+  connect( mChkCustomGridOffset, SIGNAL( clicked( bool ) ), this, SLOT( updateCustomGridOffset() ) );
 
   mClipExtentGroupBox->setChecked( false );
   mClipExtentGroupBox->setCollapsed( true );
   mClipExtentGroupBox->setTitleBase( tr( "Clip to Extent" ) );
+  QgsMapCanvas* mc = QgisApp::instance()->mapCanvas();
+  mClipExtentGroupBox->setCurrentExtent( mc->extent(), mc->mapSettings().destinationCrs() );
   connect( mClipExtentGroupBox, SIGNAL( extentChanged( QgsRectangle ) ), this, SLOT( clipExtentChanged() ) );
 
   // TODO: auto-detect reference layer
@@ -86,6 +96,10 @@ QgsAlignRasterDialog::QgsAlignRasterDialog( QWidget *parent )
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( runAlign() ) );
 
   populateLayersView();
+
+  updateCustomCRS();
+  updateCustomCellSize();
+  updateCustomGridOffset();
 }
 
 QgsAlignRasterDialog::~QgsAlignRasterDialog()
@@ -128,6 +142,67 @@ void QgsAlignRasterDialog::updateAlignedRasterInfo()
   QSize size = mAlign->alignedRasterSize();
   QString msg = QString( "%1 x %2" ).arg( size.width() ).arg( size.height() );
   mEditOutputSize->setText( msg );
+}
+
+void QgsAlignRasterDialog::updateParametersFromReferenceLayer()
+{
+  QString customCRSWkt;
+  QSizeF customCellSize;
+  QPointF customGridOffset( -1, -1 );
+
+  int index = mCboReferenceLayer->currentIndex();
+  if ( index < 0 )
+    return;
+
+  QgsAlignRaster::RasterInfo refInfo( mAlign->rasters().at( index ).inputFilename );
+  if ( !refInfo.isValid() )
+    return;
+
+  // get custom values from the GUI (if any)
+  if ( mChkCustomCRS->isChecked() )
+  {
+    QgsCoordinateReferenceSystem refCRS( QString::fromAscii( refInfo.crs() ) );
+    if ( refCRS != mCrsSelector->crs() )
+      customCRSWkt = mCrsSelector->crs().toWkt();
+  }
+
+  if ( mChkCustomCellSize->isChecked() )
+  {
+    customCellSize = QSizeF( mSpinCellSizeX->value(), mSpinCellSizeY->value() );
+  }
+
+  if ( mChkCustomGridOffset->isChecked() )
+  {
+    customGridOffset = QPointF( mSpinGridOffsetX->value(), mSpinGridOffsetY->value() );
+  }
+
+  // calculate the parameters which are not customized already
+  bool res = mAlign->setParametersFromRaster( refInfo, customCRSWkt, customCellSize, customGridOffset );
+
+  // refresh values that may have changed
+  if ( res )
+  {
+    QgsCoordinateReferenceSystem destCRS( mAlign->destinationCRS() );
+    mClipExtentGroupBox->setOutputCrs( destCRS );
+    if ( !mChkCustomCRS->isChecked() )
+    {
+      mCrsSelector->setCrs( destCRS );
+    }
+  }
+  if ( !mChkCustomCellSize->isChecked() )
+  {
+    QSizeF cellSize = mAlign->cellSize();
+    mSpinCellSizeX->setValue( cellSize.width() );
+    mSpinCellSizeY->setValue( cellSize.height() );
+  }
+  if ( !mChkCustomGridOffset->isChecked() )
+  {
+    QPointF gridOffset = mAlign->gridOffset();
+    mSpinGridOffsetX->setValue( gridOffset.x() );
+    mSpinGridOffsetY->setValue( gridOffset.y() );
+  }
+
+  updateAlignedRasterInfo();
 }
 
 
@@ -185,7 +260,7 @@ void QgsAlignRasterDialog::editLayer()
   populateLayersView();
 }
 
-void QgsAlignRasterDialog::updateConfigFromReferenceLayer()
+void QgsAlignRasterDialog::referenceLayerChanged()
 {
   int index = mCboReferenceLayer->currentIndex();
   if ( index < 0 )
@@ -195,25 +270,11 @@ void QgsAlignRasterDialog::updateConfigFromReferenceLayer()
   if ( !refInfo.isValid() )
     return;
 
-  mAlign->setParametersFromRaster( refInfo );
+  QgsCoordinateReferenceSystem layerCRS( QString::fromAscii( refInfo.crs() ) );
+  mCrsSelector->setLayerCrs( layerCRS );
+  mClipExtentGroupBox->setOriginalExtent( refInfo.extent(), layerCRS );
 
-  QgsCoordinateReferenceSystem destCRS( mAlign->destinationCRS() );
-  mCrsSelector->setCrs( destCRS );
-
-  QSizeF cellSize = mAlign->cellSize();
-  mSpinCellSizeX->setValue( cellSize.width() );
-  mSpinCellSizeY->setValue( cellSize.height() );
-
-  QPointF gridOffset = mAlign->gridOffset();
-  mSpinGridOffsetX->setValue( gridOffset.x() );
-  mSpinGridOffsetY->setValue( gridOffset.y() );
-
-  QgsMapCanvas* mc = QgisApp::instance()->mapCanvas();
-  mClipExtentGroupBox->setCurrentExtent( mc->extent(), mc->mapSettings().destinationCrs() );
-  mClipExtentGroupBox->setOriginalExtent( refInfo.extent(), QgsCoordinateReferenceSystem( QString::fromAscii( refInfo.crs() ) ) );
-  mClipExtentGroupBox->setOutputCrs( destCRS );
-
-  updateAlignedRasterInfo();
+  updateParametersFromReferenceLayer();
 }
 
 
@@ -230,23 +291,7 @@ void QgsAlignRasterDialog::destinationCrsChanged()
   if ( !refInfo.isValid() )
     return;
 
-  if ( !mAlign->setParametersFromRaster( refInfo, mCrsSelector->crs().toWkt() ) )
-  {
-    QMessageBox::warning( this, tr( "Align Rasters" ), tr( "Cannot reproject reference layer to the chosen destination CRS.\n\nPlease select a different CRS" ) );
-    return;
-  }
-
-  QSizeF cellSize = mAlign->cellSize();
-  mSpinCellSizeX->setValue( cellSize.width() );
-  mSpinCellSizeY->setValue( cellSize.height() );
-
-  QPointF gridOffset = mAlign->gridOffset();
-  mSpinGridOffsetX->setValue( gridOffset.x() );
-  mSpinGridOffsetY->setValue( gridOffset.y() );
-
-  mClipExtentGroupBox->setOutputCrs( mCrsSelector->crs() );
-
-  updateAlignedRasterInfo();
+  updateParametersFromReferenceLayer();
 }
 
 void QgsAlignRasterDialog::clipExtentChanged()
@@ -254,6 +299,26 @@ void QgsAlignRasterDialog::clipExtentChanged()
   mAlign->setClipExtent( mClipExtentGroupBox->outputExtent() );
 
   updateAlignedRasterInfo();
+}
+
+void QgsAlignRasterDialog::updateCustomCRS()
+{
+  mCrsSelector->setEnabled( mChkCustomCRS->isChecked() );
+  updateParametersFromReferenceLayer();
+}
+
+void QgsAlignRasterDialog::updateCustomCellSize()
+{
+  mSpinCellSizeX->setEnabled( mChkCustomCellSize->isChecked() );
+  mSpinCellSizeY->setEnabled( mChkCustomCellSize->isChecked() );
+  updateParametersFromReferenceLayer();
+}
+
+void QgsAlignRasterDialog::updateCustomGridOffset()
+{
+  mSpinGridOffsetX->setEnabled( mChkCustomGridOffset->isChecked() );
+  mSpinGridOffsetY->setEnabled( mChkCustomGridOffset->isChecked() );
+  updateParametersFromReferenceLayer();
 }
 
 
