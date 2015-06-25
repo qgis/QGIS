@@ -61,7 +61,7 @@ set CMAKE_OPT=^
 	-G "Visual Studio 10" ^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/apps/Python27/sip.exe ^
 	-D QWT_LIBRARY=%O4W_ROOT%/lib/qwt.lib ^
-	-D WITH_GRASS6=TRUE ^
+	-D WITH_GRASS=TRUE ^
 	-D WITH_GRASS7=TRUE ^
 	-D GRASS_PREFIX=%O4W_ROOT%/apps/grass/grass-6.4.4 ^
 	-D GRASS_PREFIX7=%O4W_ROOT%/apps/grass/grass-7.0.1RC1 ^
@@ -82,7 +82,7 @@ if not exist "%SETUPAPI_LIBRARY%" (echo SETUPAPI_LIBRARY not found & goto error)
 set CMAKE_OPT=^
 	-G "Visual Studio 10 Win64" ^
 	-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex-64.lib ^
-	-D WITH_GRASS6=TRUE ^
+	-D WITH_GRASS=TRUE ^
 	-D WITH_GRASS7=FALSE ^
 	-D GRASS_PREFIX=%O4W_ROOT%/apps/grass/grass-6.4.3 ^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/bin/sip.exe ^
@@ -306,7 +306,6 @@ echo sample: %0 2.1.0 38 qgis-dev x86_64
 exit
 
 :error
-echo BUILD ERROR %ERRORLEVEL%: %DATE% %TIME%
 echo BUILD ERROR %ERRORLEVEL%: %DATE% %TIME%
 if exist %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 del %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2
 
