@@ -100,6 +100,7 @@ QList<QgsGrassImport*> QgsGrassMapsetItem::mImports;
 
 QgsGrassMapsetItem::QgsGrassMapsetItem( QgsDataItem* parent, QString dirPath, QString path )
     : QgsDirectoryItem( parent, "", dirPath, path )
+    , mMapsetFileSystemWatcher( 0 )
 {
   QDir dir( mDirPath );
   mName = dir.dirName();
@@ -109,6 +110,31 @@ QgsGrassMapsetItem::QgsGrassMapsetItem( QgsDataItem* parent, QString dirPath, QS
   mGisdbase = dir.path();
 
   mIconName = "grass_mapset.png";
+}
+
+void QgsGrassMapsetItem::setState( State state )
+{
+  QgsDebugMsg( "Entered" );
+  QgsDirectoryItem::setState( state );
+
+  if ( state == Populated )
+  {
+    if ( !mMapsetFileSystemWatcher )
+    {
+      mMapsetFileSystemWatcher = new QFileSystemWatcher( this );
+      mMapsetFileSystemWatcher->addPath( mDirPath + "/vector" );
+      mMapsetFileSystemWatcher->addPath( mDirPath + "/cellhd" );
+      connect( mMapsetFileSystemWatcher, SIGNAL( directoryChanged( const QString & ) ), SLOT( directoryChanged() ) );
+    }
+  }
+  else if ( state == NotPopulated )
+  {
+    if ( mMapsetFileSystemWatcher )
+    {
+      delete mMapsetFileSystemWatcher;
+      mMapsetFileSystemWatcher = 0;
+    }
+  }
 }
 
 bool QgsGrassMapsetItem::objectInImports( QgsGrassObject grassObject )

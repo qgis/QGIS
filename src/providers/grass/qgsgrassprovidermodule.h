@@ -54,6 +54,8 @@ class QgsGrassMapsetItem : public QgsDirectoryItem
   public:
     QgsGrassMapsetItem( QgsDataItem* parent, QString dirPath, QString path );
 
+    virtual void setState( State state ) override;
+
     QIcon icon() override { return QgsDataItem::icon(); }
 
     QVector<QgsDataItem*> createChildren() override;
@@ -69,6 +71,7 @@ class QgsGrassMapsetItem : public QgsDirectoryItem
     //void showImportError(const QString& error);
     QString mLocation;
     QString mGisdbase;
+    QFileSystemWatcher *mMapsetFileSystemWatcher;
     // running imports
     static QList<QgsGrassImport*> mImports;
 };
