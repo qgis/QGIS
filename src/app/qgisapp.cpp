@@ -3340,7 +3340,7 @@ void QgisApp::loadOGRSublayers( QString layertype, QString uri, QStringList list
     if ( layerType == "any" )
     {
       layerType = "";
-      list.removeAt( 1 );
+      elements.removeAt( 1 );
     }
 
     if ( layertype != "GRASS" )
