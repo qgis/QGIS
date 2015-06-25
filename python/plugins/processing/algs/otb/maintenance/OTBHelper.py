@@ -27,16 +27,6 @@ __version__ = "3.8"
 import os
 import copy
 
-try:
-    import processing
-except ImportError, e:
-    raise Exception("Processing must be installed and available in PYTHONPATH")
-
-try:
-    import otbApplication
-except ImportError, e:
-    raise Exception("OTB python plugins must be installed and available in PYTHONPATH")
-
 import xml.etree.ElementTree as ET
 import traceback
 
@@ -153,19 +143,30 @@ def retrieve_module_name(param):
     returns the file parameter of the given processing parameter
     """
     if param:
-        try :
+        try:
+            import processing.core
+            dir_p = os.path.dirname(processing.core.__file__)
             if 'Parameter' in param:
-                return eval('processing.parameters.%s.__file__' % param).replace('pyc', 'py')
+                exec("from processing.core.parameters import %s" % param)
+                return os.path.join(dir_p, "parameters.py")
             if 'Output' in param:
-                return eval('processing.outputs.%s.__file__' % param).replace('pyc', 'py')
-        except TypeError:
+                exec("from processing.core.outputs import %s" % param)
+                return os.path.join(dir_p, "outputs.py")
+        except ImportError, e:
             print "Error parsing ", param
     return None
 
-def get_constructor_parameters_from_filename(py_file):
+def get_constructor_parameters_from_filename(py_file, param = ""):
+    """
+    Get all parameters from the constructor of the class param in the given py_file
+    """
     import ast
     asto = ast.parse(open(py_file).read())
-    e1 = [each for each in asto.body if type(each) is ast.ClassDef]
+    # get all class definitions corresponding to param given len(e1) should be 1
+    e1 = [each for each in asto.body if type(each) is ast.ClassDef and each.name == param]
+
+    # e1[0].body lists all functions from the class e1[0]
+    # e2 is a list of __init__ functions of class e1[0]
     e2 = [each for each in e1[0].body if hasattr(each, "name") and each.name == "__init__"]
     if len(e2) > 0:
         e4 = e2[0].args.args
@@ -173,6 +174,22 @@ def get_constructor_parameters_from_filename(py_file):
         e4 = []
     e5 = [each.id for each in e4]
     return e5
+
+
+def get_customize_app_functions():
+    """
+    Get all parameters from the constructor of the class param in the given py_file
+    """
+    import ast
+
+    py_file = os.path.join(os.path.dirname(__file__), "OTBSpecific_XMLcreation.py")
+    asto = ast.parse(open(py_file).read())
+    # get all class definitions corresponding to param given len(e1) should be 1
+    e1 = [each.name for each in asto.body if type(each) is ast.FunctionDef and each.name.startswith("get")]
+
+    return e1
+
+
 
 def get_xml_description_from_application_name(our_app, criteria=None):
     """
@@ -238,6 +255,16 @@ def get_param_descriptor(appkey, app_instance, our_descriptor, root):
     if not file_parameter:
         logger.info("Type %s is not handled yet. (%s, %s)" % (our_type, appkey, our_descriptor))
         return
+    the_params = get_constructor_parameters_from_filename(file_parameter, mapped_parameter)
+
+    # special for default values of OpticalCalibration
+    if appkey == "OpticalCalibration":
+        if "default" in the_params:
+            try:
+                app_instance.GetParameterAsString(our_descriptor)
+            except RuntimeError, e:
+                return
+
 
     param = ET.SubElement(root, 'parameter')
     attrs = {'source_parameter_type' : parameters[app_instance.GetParameterType(our_descriptor)]}
@@ -264,27 +291,45 @@ def get_param_descriptor(appkey, app_instance, our_descriptor, root):
         if parameters[app_instance.GetParameterType(our_descriptor)] == "ParameterType_OutputImage" :
             param_type.text = "OutputFile"
 
-    the_params = get_constructor_parameters_from_filename(file_parameter)
+    # {the_params = get_constructor_parameters_from_filename(file_parameter, mapped_parameter)
     if len(the_params) == 0:
-        if 'Output' in file_parameter:
-            file_path = os.path.join(os.path.dirname(file_parameter), 'Output.py')
-            the_params = get_constructor_parameters_from_filename(file_path)
-        if 'Parameter' in file_parameter:
-            file_path = os.path.join(os.path.dirname(file_parameter), 'Parameter.py')
+        # if 'Output' in file_parameter:
+        if 'output' in file_parameter:
+            file_path = os.path.join(os.path.dirname(file_parameter), 'outputs.py')
+            the_params = get_constructor_parameters_from_filename(file_path, "Output")
+        if 'parameter' in file_parameter:
+            file_path = os.path.join(os.path.dirname(file_parameter), 'parameters.py')
             the_params = (file_path)
+            the_params = get_constructor_parameters_from_filename(file_path, "Parameter")
 
     if "self" in the_params:
-        the_params = the_params[1:]
+        #remove self
+        the_params.remove("self")  # the_params[1:]
+        # to be identical as before !
+        if "isSource" in the_params:
+            the_params.remove("isSource")
+        if "showSublayersDialog" in the_params:
+            the_params.remove("showSublayersDialog")
+        if "ext" in the_params:
+            the_params.remove("ext")
     else:
         raise Exception("Unexpected constructor parameters")
 
     key = ET.SubElement(param, 'key')
     key.text = our_descriptor
     is_choice_type = False
+
     for each in the_params:
         if each == "name":
             name = ET.SubElement(param, 'name')
-            name.text = app_instance.GetParameterName(our_descriptor)
+
+            nametext = app_instance.GetParameterName(our_descriptor)
+            if "angle" in nametext:
+                name.text = nametext.replace("\xc2\xb0", "deg")
+            else:
+                name.text = app_instance.GetParameterName(our_descriptor)
+            if our_descriptor == "acqui.fluxnormcoeff":
+                pass
         elif each == "description":
             desc = ET.SubElement(param, 'description')
             desc.text = app_instance.GetParameterDescription(our_descriptor)
@@ -538,7 +583,8 @@ def list_reader(file_name, version):
 
 def get_otb_version():
     #TODO Find a way to retrieve installed otb version, force exception and parse otb-X.XX.X ?
-    return "3.18"
+    # return "3.18"
+    return "5.0"
 
 def get_white_list():
     nodes = list_reader("white_list.xml",get_otb_version())
@@ -559,37 +605,41 @@ def create_xml_descriptors():
 
     white_list = get_white_list()
     black_list = get_black_list()
+    custom_apps_available = get_customize_app_functions()
 
     for available_app in otbApplication.Registry.GetAvailableApplications():
-        try:
-            if 'get%s' % available_app in locals():
-                if available_app in white_list and available_app not in black_list:
-                    the_root = get_xml_description_from_application_name(available_app)
-                    the_list = locals()['get%s' % available_app](available_app, the_root)
-                    if the_list:
-                        for each_dom in the_list:
-                            try:
-                                ut_command = get_automatic_ut_from_xml_description(each_dom)
-                            except:
-                                logger.error("Unit test for command %s must be fixed: %s" % (available_app , traceback.format_exc()))
-                else:
-                    logger.warning("%s is not in white list." % available_app)
-
+        # try:
+        if 'get%s' % available_app in custom_apps_available:
+            if available_app in white_list and available_app not in black_list:
+                the_list = []
+                the_root = get_xml_description_from_application_name(available_app)
+                function_to_call = "the_list = OTBSpecific_XMLcreation.get%s(available_app,the_root)" % available_app
+                exec(function_to_call)
+                # the_list = locals()['get%s' % available_app](available_app, the_root)
+                if the_list:
+                    for each_dom in the_list:
+                        try:
+                            ut_command = get_automatic_ut_from_xml_description(each_dom)
+                        except:
+                            logger.error("Unit test for command %s must be fixed: %s" % (available_app , traceback.format_exc()))
             else:
-                if available_app in white_list and available_app not in black_list:
-                    logger.warning("There is no adaptor for %s, check white list and versions" % available_app)
-                    # TODO Remove this default code when all apps are tested...
-                    fh = open("description/%s.xml" % available_app, "w")
-                    the_root = get_xml_description_from_application_name(available_app)
-                    ET.ElementTree(the_root).write(fh)
-                    fh.close()
-                    try:
-                        ut_command = get_automatic_ut_from_xml_description(the_root)
-                    except:
-                        logger.error("Unit test for command %s must be fixed: %s" % (available_app , traceback.format_exc()))
+                logger.warning("%s is not in white list." % available_app)
 
-        except Exception, e:
-            logger.error(traceback.format_exc())
+        else:
+            if available_app in white_list and available_app not in black_list:
+                logger.warning("There is no adaptor for %s, check white list and versions" % available_app)
+                # TODO Remove this default code when all apps are tested...
+                fh = open("description/%s.xml" % available_app, "w")
+                the_root = get_xml_description_from_application_name(available_app)
+                ET.ElementTree(the_root).write(fh)
+                fh.close()
+                try:
+                    ut_command = get_automatic_ut_from_xml_description(the_root)
+                except:
+                    logger.error("Unit test for command %s must be fixed: %s" % (available_app , traceback.format_exc()))
+
+        # except Exception, e:
+        #    logger.error(traceback.format_exc())
 
     for available_app in otbApplication.Registry.GetAvailableApplications():
         try:
@@ -607,4 +657,32 @@ def create_xml_descriptors():
         shutil.copy("description/doc/%s" % key.split("-")[0] + ".html","description/doc/%s" % key.split(".")[0] + ".html")
 
 if __name__ == "__main__":
+    # Prepare the environment
+    import sys, os
+    from qgis.core import QgsApplication
+    from PyQt4.QtGui import QApplication
+    app = QApplication([])
+    QgsApplication.setPrefixPath("/usr", True)
+    QgsApplication.initQgis()
+    # Prepare processing framework
+    from processing.core.Processing import Processing
+    Processing.initialize()
+
+
+    import OTBSpecific_XMLcreation
+#     try:
+#         import processing
+#     except ImportError, e:
+#         raise Exception("Processing must be installed and available in PYTHONPATH")
+
+    try:
+        import otbApplication
+    except ImportError, e:
+        raise Exception("OTB python plugins must be installed and available in PYTHONPATH")
+
     create_xml_descriptors()
+
+    # Exit applications
+    QgsApplication.exitQgis()
+    QApplication.exit()
+
