@@ -165,6 +165,7 @@ int main( int argc, char **argv )
   if ( isPolygon )
   {
     tmpMap = QgsGrass::vectNewMapStruct();
+    // TODO: use Vect_open_tmp_new with GRASS 7
     Vect_open_new( tmpMap, tmpName.toUtf8().data(), 0 );
     map = tmpMap;
   }

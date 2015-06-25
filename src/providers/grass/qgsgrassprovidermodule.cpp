@@ -833,7 +833,7 @@ QgsGrassImportItem::QgsGrassImportItem( QgsDataItem* parent, const QString& name
     , mImport( import )
 {
   setCapabilities( QgsDataItem::NoCapabilities ); // disable fertility
-  setState( Populating );
+  setState( Populated );
 
   QgsGrassImportIcon::instance()->connectFrameChanged( this, SLOT( emitDataChanged() ) );
 }
@@ -862,12 +862,27 @@ void QgsGrassImportItem::cancel()
     QgsDebugMsg( "mImport is null" );
     return;
   }
+  if ( mImport->isCanceled() )
+  {
+    return;
+  }
   mImport->cancel();
+  QgsGrassImportIcon::instance()->disconnectFrameChanged( this, SLOT( emitDataChanged() ) );
+  setName( name() + " : " + tr( "cancelling" ) );
+  emitDataChanged();
 }
 
 QIcon QgsGrassImportItem::icon()
 {
-  return QgsGrassImportIcon::instance()->icon();
+  if ( mImport && mImport->isCanceled() )
+  {
+    setIconName( "/mIconDelete.png" );
+    return QgsDataItem::icon();
+  }
+  else
+  {
+    return QgsGrassImportIcon::instance()->icon();
+  }
 }
 
 //-------------------------------------------------------------------------

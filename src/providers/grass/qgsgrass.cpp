@@ -21,6 +21,13 @@
 
 #include <setjmp.h>
 
+// for Sleep / usleep for debugging
+#ifdef Q_OS_WIN
+#include <windows.h>
+#else
+#include <time.h>
+#endif
+
 #include "qgsgrass.h"
 
 #include "qgslogger.h"
@@ -2257,4 +2264,15 @@ void GRASS_LIB_EXPORT QgsGrass::vectDestroyMapStruct( struct Map_info *map )
   // call G_fatal_error, otherwise check and remove use of vectDestroyMapStruct from G_CATCH blocks
   qgsFree( map );
   map = 0;
+}
+
+void GRASS_LIB_EXPORT QgsGrass::sleep( int ms )
+{
+// Stolen from QTest::qSleep
+#ifdef Q_OS_WIN
+  Sleep( uint( ms ) );
+#else
+  struct timespec ts = { ms / 1000, ( ms % 1000 ) * 1000 * 1000 };
+  nanosleep( &ts, NULL );
+#endif
 }

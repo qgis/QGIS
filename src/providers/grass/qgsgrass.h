@@ -421,6 +421,9 @@ class QgsGrass
     // Free struct Map_info
     static GRASS_LIB_EXPORT void vectDestroyMapStruct( struct Map_info *map );
 
+    // Sleep miliseconds (for debugging)
+    static GRASS_LIB_EXPORT void sleep( int ms );
+
   private:
     static int initialized; // Set to 1 after initialization
     static bool active; // is active mode
