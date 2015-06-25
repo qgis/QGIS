@@ -205,6 +205,9 @@ class ANALYSIS_EXPORT QgsAlignRaster
     //! write contents of the object to standard error stream - for debugging
     void dump() const;
 
+    //! Return index of the layer which has smallest cell size (returns -1 on error)
+    int suggestedReferenceLayer() const;
+
   protected:
 
     //! Internal function for processing of one raster (1. create output, 2. do the alignment)

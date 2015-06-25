@@ -112,7 +112,10 @@ void QgsAlignRasterDialog::populateLayersView()
 {
   mCboReferenceLayer->clear();
 
+  int refLayerIndex = mAlign->suggestedReferenceLayer();
+
   QStandardItemModel* model = new QStandardItemModel();
+  int i = 0;
   foreach ( QgsAlignRaster::Item item, mAlign->rasters() )
   {
     QString layerName = _rasterLayerName( item.inputFilename );
@@ -120,12 +123,19 @@ void QgsAlignRasterDialog::populateLayersView()
     QStandardItem* si = new QStandardItem( QgsLayerItem::iconRaster(), layerName );
     model->appendRow( si );
 
+    if ( i == refLayerIndex )
+      layerName += tr( " [best reference]" );
+
     mCboReferenceLayer->addItem( layerName );
+    ++i;
   }
 
   mViewLayers->setModel( model );
 
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( model->rowCount() > 0 );
+
+  if ( refLayerIndex >= 0 )
+    mCboReferenceLayer->setCurrentIndex( refLayerIndex );
 
   updateAlignedRasterInfo();
 }

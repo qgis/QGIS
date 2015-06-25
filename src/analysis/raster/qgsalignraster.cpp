@@ -23,6 +23,7 @@
 #include <QPair>
 #include <QString>
 
+#include "qgscoordinatereferencesystem.h"
 #include "qgsrectangle.h"
 
 
@@ -384,6 +385,36 @@ void QgsAlignRaster::dump() const
 
   QgsRectangle e = transform_to_extent( mGeoTransform, mXSize, mYSize );
   qDebug( "extent %s", e.toString().toAscii().constData() );
+}
+
+int QgsAlignRaster::suggestedReferenceLayer() const
+{
+  int bestIndex = -1;
+  double bestCellArea = qInf();
+  QSizeF cs;
+  int i = 0;
+
+  // using WGS84 as a destination CRS... but maybe some projected CRS
+  // would be a better a choice to more accurately compute areas?
+  // (Why earth is not flat???)
+  QgsCoordinateReferenceSystem destCRS( "EPSG:4326" );
+  QString destWkt = destCRS.toWkt();
+
+  foreach ( const Item& raster, mRasters )
+  {
+    if ( !suggestedWarpOutput( RasterInfo( raster.inputFilename ), destWkt, &cs ) )
+      return false;
+
+    double cellArea = cs.width() * cs.height();
+    if ( cellArea < bestCellArea )
+    {
+      bestCellArea = cellArea;
+      bestIndex = i;
+    }
+    ++i;
+  }
+
+  return bestIndex;
 }
 
 

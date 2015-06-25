@@ -252,6 +252,20 @@ class TestAlignRaster : public QObject
       QVERIFY( !res );
     }
 
+    void testSuggestedReferenceLayer()
+    {
+      QgsAlignRaster align;
+
+      QCOMPARE( align.suggestedReferenceLayer(), -1 );
+
+      QgsAlignRaster::List rasters;
+      rasters << QgsAlignRaster::Item( SRC_FILE, QString() );
+      align.setRasters( rasters );
+
+      QCOMPARE( align.suggestedReferenceLayer(), 0 );
+
+    }
+
 };
 
 QTEST_MAIN( TestAlignRaster )
