@@ -18,6 +18,12 @@ email                : marco.hugentobler at sourcepole dot com
 
 #include "qgsmulticurvev2.h"
 
+/**\ingroup core
+ * \class QgsMultiLineStringV2
+ * \brief Multi line string geometry collection.
+ * \note added in QGIS 2.10
+ * \note this API is not considered stable and may change for 2.12
+ */
 class CORE_EXPORT QgsMultiLineStringV2: public QgsMultiCurveV2
 {
   public:

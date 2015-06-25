@@ -18,6 +18,12 @@ email                : marco.hugentobler at sourcepole dot com
 
 #include "qgsmultisurfacev2.h"
 
+/**\ingroup core
+ * \class QgsMultiPolygonV2
+ * \brief Multi polygon geometry collection.
+ * \note added in QGIS 2.10
+ * \note this API is not considered stable and may change for 2.12
+ */
 class CORE_EXPORT QgsMultiPolygonV2: public QgsMultiSurfaceV2
 {
   public:

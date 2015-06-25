@@ -20,6 +20,12 @@
 
 #include "qgsabstractgeometryv2.h"
 
+/**\ingroup core
+ * \class QgsPointV2
+ * \brief Point geometry type.
+ * \note added in QGIS 2.10
+ * \note this API is not considered stable and may change for 2.12
+ */
 class CORE_EXPORT QgsPointV2: public QgsAbstractGeometryV2
 {
   public:

@@ -20,6 +20,12 @@
 
 #include "qgscurvepolygonv2.h"
 
+/**\ingroup core
+ * \class QgsPolygonV2
+ * \brief Polygon geometry type.
+ * \note added in QGIS 2.10
+ * \note this API is not considered stable and may change for 2.12
+ */
 class CORE_EXPORT QgsPolygonV2: public QgsCurvePolygonV2
 {
   public:

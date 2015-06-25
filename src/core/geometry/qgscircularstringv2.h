@@ -25,6 +25,7 @@
  * \class QgsCircularStringV2
  * \brief Circular string geometry type
  * \note added in QGIS 2.10
+ * \note this API is not considered stable and may change for 2.12
  */
 class CORE_EXPORT QgsCircularStringV2: public QgsCurveV2
 {

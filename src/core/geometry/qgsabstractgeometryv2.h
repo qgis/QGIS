@@ -34,6 +34,7 @@ class QPainter;
  * \class QgsVertexId
  * \brief Utility class for identifying a unique vertex within a geometry.
  * \note added in QGIS 2.10
+ * \note this API is not considered stable and may change for 2.12
  */
 struct CORE_EXPORT QgsVertexId
 {

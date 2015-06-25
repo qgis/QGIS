@@ -18,6 +18,12 @@ email                : marco.hugentobler at sourcepole dot com
 
 #include "qgsgeometrycollectionv2.h"
 
+/**\ingroup core
+ * \class QgsMultiPointV2
+ * \brief Multi point geometry collection.
+ * \note added in QGIS 2.10
+ * \note this API is not considered stable and may change for 2.12
+ */
 class CORE_EXPORT QgsMultiPointV2: public QgsGeometryCollectionV2
 {
   public:

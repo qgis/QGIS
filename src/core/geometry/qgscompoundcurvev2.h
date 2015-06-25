@@ -24,6 +24,7 @@
  * \class QgsCompoundCurveV2
  * \brief Compound curve geometry type
  * \note added in QGIS 2.10
+ * \note this API is not considered stable and may change for 2.12
  */
 class CORE_EXPORT QgsCompoundCurveV2: public QgsCurveV2
 {
