@@ -194,7 +194,14 @@ class QgsExpression
     class Function
     {
       public:
-        Function( const QString& fnname, int params, const QString& group, const QString& helpText = QString(), bool usesGeometry = false, QStringList referencedColumns = QStringList(), bool lazyEval = false );
+        Function( const QString& fnname,
+                  int params,
+                  QString group,
+                  QString helpText = QString(),
+                  bool usesGeometry = false,
+                  QStringList referencedColumns = QStringList(),
+                  bool lazyEval = false,
+                  bool handlesNull = false );
 
         virtual ~Function();
 
@@ -225,11 +232,11 @@ class QgsExpression
         const QString helptext();
 
         virtual QVariant func( const QVariantList& values, const QgsFeature* f, QgsExpression* parent ) = 0;
+
+        virtual bool handlesNull() const;
     };
 
-
     static const QList<QgsExpression::Function *>& Functions();
-
     static const QStringList& BuiltinFunctions();
 
     static bool registerFunction( Function* function );
@@ -310,6 +317,7 @@ class QgsExpression
       public:
         NodeList();
         ~NodeList();
+        /** Takes ownership of the provided node */
         void append( QgsExpression::Node* node /Transfer/ );
         int count();
         const QList<QgsExpression::Node*>& list();
