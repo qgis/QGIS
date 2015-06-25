@@ -680,5 +680,9 @@ class QgsGeometry
     QgsPolygon smoothPolygon( const QgsPolygon &polygon, const unsigned int iterations = 1, const double offset = 0.25 ) const;
     /**Smooths a polyline using the Chaikin algorithm*/
     QgsPolyline smoothLine( const QgsPolyline &polyline, const unsigned int iterations = 1, const double offset = 0.25 ) const;
+
+    /** Creates and returns a new geometry engine*/
+    static QgsGeometryEngine* createGeometryEngine( const QgsAbstractGeometryV2* geometry );
+
 }; // class QgsGeometry
 

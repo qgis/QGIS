@@ -2230,6 +2230,11 @@ QgsGeometry* QgsGeometry::convertToPolygon( bool destMultipart ) const
   }
 }
 
+QgsGeometryEngine* QgsGeometry::createGeometryEngine( const QgsAbstractGeometryV2* geometry )
+{
+  return new QgsGeos( geometry );
+}
+
 QDataStream& operator<<( QDataStream& out, const QgsGeometry& geometry )
 {
   QByteArray byteArray = QByteArray::fromRawData(( char * )geometry.asWkb(), geometry.wkbSize() ); // does not copy data and does not take ownership
