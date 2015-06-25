@@ -312,6 +312,22 @@ def adaptGeoidSrtm(commands_list):
             commands_list.append(geoid)
 
 
+def adaptComputePolylineFeatureFromImage(commands_list):
+    """
+    Remove parameter and user value instead of giving None.
+    Check geoid file, srtm folder and given elevation and manage arguments.
+    """
+    commands_list2 = commands_list
+    adaptGeoidSrtm(commands_list2)
+    for item in commands_list:
+        if "None" in item:
+            index = commands_list2.index(item)
+            argumentToRemove = commands_list2[index - 1]
+            commands_list2.remove(item)
+            commands_list2.remove(argumentToRemove)
+        # commands_list2.append(item)
+    return commands_list2
+
 
 def ckeckGeoidSrtmSettings():
     folder = ProcessingConfig.getSetting(OTBUtils.OTB_SRTM_FOLDER)
