@@ -238,7 +238,7 @@ class FcgiServerProcess(ServerProcess):
 # noinspection PyPep8Naming,PyShadowingNames
 class QgisLocalServer(object):
 
-    def __init__(self, fcgi_bin):
+    def __init__(self, fcgi_bin, port='8448'):
         msg = 'FCGI binary not found at:\n{0}'.format(fcgi_bin)
         assert os.path.exists(fcgi_bin), msg
 
@@ -247,7 +247,7 @@ class QgisLocalServer(object):
 
         # hardcoded url, makes all this automated
         self._ip = '127.0.0.1'
-        self._port = '8448'
+        self._port = port
         self._web_url = 'http://{0}:{1}'.format(self._ip, self._port)
         self._fcgibin_path = '/cgi-bin/qgis_mapserv.fcgi'
         self._fcgi_url = '{0}{1}'.format(self._web_url, self._fcgibin_path)
@@ -614,12 +614,12 @@ class QgisLocalServer(object):
 
 
 # noinspection PyPep8Naming
-def getLocalServer():
+def getLocalServer(port='8448'):
     """ Start a local test server controller that independently manages Web and
     FCGI-spawn processes.
 
     Input
-        NIL
+        port  The port on which the server will be listening
 
     Output
         handle to QgsLocalServer, that's been tested to be valid, then shutdown
@@ -688,7 +688,7 @@ def getLocalServer():
         # configurations to start/stop/restart those processes (relative to
         # host platform) are loaded into controller, a temporary web
         # directory is created, and the FCGI binary copied to its cgi-bin.
-        srv = QgisLocalServer(FCGIBIN)
+        srv = QgisLocalServer(FCGIBIN, port)
         # noinspection PyStatementEffect
         """:type : QgisLocalServer"""
 

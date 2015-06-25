@@ -38,7 +38,7 @@ from test_qgspallabeling_tests import (
     suiteTests
 )
 
-MAPSERV = getLocalServer()
+MAPSERV = getLocalServer('8449')
 
 
 class TestServerBase(TestQgsPalLabeling):
