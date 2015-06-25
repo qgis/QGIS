@@ -13,6 +13,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include <QByteArray>
 #include <QtConcurrentRun>
 
@@ -309,10 +310,10 @@ bool QgsGrassRasterImport::import()
     QString stdoutString = process->readAllStandardOutput().data();
     QString stderrString = process->readAllStandardError().data();
 
-    QString processResult = QString( "exitStatus=%1, exitCode=%2, errorCode=%3, error=%4 stdout=%5, stderr=%6" )
+    QString processResult = QString( "exitStatus=%1, exitCode=%2, error=%3, errorString=%4 stdout=%5, stderr=%6" )
                             .arg( process->exitStatus() ).arg( process->exitCode() )
                             .arg( process->error() ).arg( process->errorString() )
-                            .arg( stdoutString ).arg( stderrString );
+                            .arg( stdoutString.replace( "\n", ", " ) ).arg( stderrString.replace( "\n", ", " ) );
     QgsDebugMsg( "processResult: " + processResult );
 
     if ( process->exitStatus() != QProcess::NormalExit )
@@ -536,10 +537,10 @@ bool QgsGrassVectorImport::import()
   QString stdoutString = process->readAllStandardOutput().data();
   QString stderrString = process->readAllStandardError().data();
 
-  QString processResult = QString( "exitStatus=%1, exitCode=%2, errorCode=%3, error=%4 stdout=%5, stderr=%6" )
+  QString processResult = QString( "exitStatus=%1, exitCode=%2, error=%3, errorString=%4 stdout=%5, stderr=%6" )
                           .arg( process->exitStatus() ).arg( process->exitCode() )
                           .arg( process->error() ).arg( process->errorString() )
-                          .arg( stdoutString ).arg( stderrString );
+                          .arg( stdoutString.replace( "\n", ", " ) ).arg( stderrString.replace( "\n", ", " ) );
   QgsDebugMsg( "processResult: " + processResult );
 
   if ( process->exitStatus() != QProcess::NormalExit )

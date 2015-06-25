@@ -113,7 +113,7 @@ void exitIfCanceled( QDataStream& stdinStream )
 // G_set_percent_routine only works in GRASS >= 7
 //int percent_routine (int)
 //{
-// TODO: use it to interrupt cleaning functions
+// TODO: use it to interrupt cleaning funct  //stdinFile.open( stdin, QIODevice::ReadOnly | QIODevice::Unbuffered );ions
 //}
 
 int main( int argc, char **argv )
@@ -131,9 +131,8 @@ int main( int argc, char **argv )
   _setmode( _fileno( stdin ), _O_BINARY );
   _setmode( _fileno( stdout ), _O_BINARY );
 #endif
-  //QFile stdinFile;
   QgsGrassDataFile stdinFile;
-  stdinFile.open( stdin, QIODevice::ReadOnly | QIODevice::Unbuffered );
+  stdinFile.open( stdin );
   QDataStream stdinStream( &stdinFile );
 
   QFile stdoutFile;

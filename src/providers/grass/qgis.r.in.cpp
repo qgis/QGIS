@@ -39,6 +39,7 @@ extern "C"
 #include "qgsrectangle.h"
 #include "qgsrasterblock.h"
 #include "qgsgrass.h"
+#include "qgsgrassdatafile.h"
 
 #if GRASS_VERSION_MAJOR >= 7
 #define G_allocate_raster_buf Rast_allocate_buf
@@ -58,12 +59,25 @@ extern "C"
 #define G_unopen_cell Rast_unopen
 #endif
 
+static int cf = -1;
+
+void checkStream( QDataStream& stream )
+{
+  if ( stream.status() != QDataStream::Ok )
+  {
+    if ( cf != -1 )
+    {
+      G_unopen_cell( cf );
+      G_fatal_error( "Cannot read data stream" );
+    }
+  }
+}
+
 int main( int argc, char **argv )
 {
   char *name;
   struct Option *map;
   struct Cell_head window;
-  int cf;
 
   G_gisinit( argv[0] );
 
@@ -79,22 +93,23 @@ int main( int argc, char **argv )
 #ifdef Q_OS_WIN32
   _setmode( _fileno( stdin ), _O_BINARY );
   _setmode( _fileno( stdout ), _O_BINARY );
-  setvbuf( stdin, NULL, _IONBF, BUFSIZ );
+  //setvbuf( stdin, NULL, _IONBF, BUFSIZ );
   // setting _IONBF on stdout works on windows correctly, data written immediately even without fflush(stdout)
-  setvbuf( stdout, NULL, _IONBF, BUFSIZ );
+  //setvbuf( stdout, NULL, _IONBF, BUFSIZ );
 #endif
 
-  QFile stdinFile;
-  stdinFile.open( stdin, QIODevice::ReadOnly );
+  QgsGrassDataFile stdinFile;
+  stdinFile.open( stdin );
   QDataStream stdinStream( &stdinFile );
 
   QFile stdoutFile;
-  stdoutFile.open( stdout, QIODevice::WriteOnly );
+  stdoutFile.open( stdout, QIODevice::WriteOnly | QIODevice::Unbuffered );
   QDataStream stdoutStream( &stdoutFile );
 
   QgsRectangle extent;
   qint32 rows, cols;
   stdinStream >> extent >> cols >> rows;
+  checkStream( stdinStream );
 
   QString err = QgsGrass::setRegion( &window, extent, rows, cols );
   if ( !err.isEmpty() )
@@ -107,6 +122,7 @@ int main( int argc, char **argv )
   QGis::DataType qgis_type;
   qint32 type;
   stdinStream >> type;
+  checkStream( stdinStream );
   qgis_type = ( QGis::DataType )type;
 
   RASTER_MAP_TYPE grass_type;
@@ -141,11 +157,13 @@ int main( int argc, char **argv )
   for ( int row = 0; row < rows; row++ )
   {
     stdinStream >> isCanceled;
+    checkStream( stdinStream );
     if ( isCanceled )
     {
       break;
     }
     stdinStream >> byteArray;
+    checkStream( stdinStream );
 
     if ( byteArray.size() != expectedSize )
     {
