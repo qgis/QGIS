@@ -51,6 +51,9 @@ extern "C"
 #define G_short_history Rast_short_history
 #define G_command_history Rast_command_history
 #define G_write_history Rast_write_history
+#define G_set_c_null_value Rast_set_c_null_value
+#define G_set_f_null_value Rast_set_f_null_value
+#define G_set_d_null_value Rast_set_d_null_value
 #define G_set_raster_value_c Rast_set_c_value
 #define G_set_raster_value_f Rast_set_f_value
 #define G_set_raster_value_d Rast_set_d_value
@@ -162,6 +165,8 @@ int main( int argc, char **argv )
     {
       break;
     }
+    double noDataValue;
+    stdinStream >> noDataValue;
     stdinStream >> byteArray;
     checkStream( stdinStream );
 
@@ -185,11 +190,38 @@ int main( int argc, char **argv )
     for ( int col = 0; col < cols; col++ )
     {
       if ( grass_type == CELL_TYPE )
-        G_set_raster_value_c( ptr, ( CELL )cell[col], grass_type );
+      {
+        if (( CELL )cell[col] == ( CELL )noDataValue )
+        {
+          G_set_c_null_value(( CELL* )ptr, 1 );
+        }
+        else
+        {
+          G_set_raster_value_c( ptr, ( CELL )( cell[col] ), grass_type );
+        }
+      }
       else if ( grass_type == FCELL_TYPE )
-        G_set_raster_value_f( ptr, ( FCELL )fcell[col], grass_type );
+      {
+        if (( FCELL )fcell[col] == ( FCELL )noDataValue )
+        {
+          G_set_f_null_value(( FCELL* )ptr, 1 );
+        }
+        else
+        {
+          G_set_raster_value_f( ptr, ( FCELL )( fcell[col] ), grass_type );
+        }
+      }
       else if ( grass_type == DCELL_TYPE )
-        G_set_raster_value_d( ptr, ( DCELL )dcell[col], grass_type );
+      {
+        if (( DCELL )dcell[col] == ( DCELL )noDataValue )
+        {
+          G_set_d_null_value(( DCELL* )ptr, 1 );
+        }
+        else
+        {
+          G_set_raster_value_d( ptr, ( DCELL )dcell[col], grass_type );
+        }
+      }
 
       ptr = G_incr_void_ptr( ptr, G_raster_size( grass_type ) );
     }

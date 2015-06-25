@@ -273,6 +273,37 @@ bool QgsGrassRasterImport::import()
           delete block;
           return false;
         }
+        // prepare null values
+        double noDataValue;
+        if ( block->hasNoDataValue() )
+        {
+          noDataValue = block->noDataValue();
+        }
+        else
+        {
+          switch ( qgis_out_type )
+          {
+            case QGis::Int32:
+              noDataValue = -2147483648.0;
+              break;
+            case QGis::Float32:
+              noDataValue = std::numeric_limits<float>::max() * -1.0;
+              break;
+            case QGis::Float64:
+              noDataValue = std::numeric_limits<double>::max() * -1.0;
+              break;
+            default: // should not happen
+              noDataValue = std::numeric_limits<double>::max() * -1.0;
+          }
+          for ( qgssize i = 0; i < ( qgssize )block->width()*block->height(); i++ )
+          {
+            if ( block->isNoData( i ) )
+            {
+              block->setValue( i, noDataValue );
+            }
+          }
+        }
+
         char * data = block->bits( row, 0 );
         int size = iterCols * block->dataTypeSize();
         QByteArray byteArray = QByteArray::fromRawData( data, size ); // does not copy data and does not take ownership
@@ -282,6 +313,8 @@ bool QgsGrassRasterImport::import()
           break;
         }
         outStream << false; // not canceled
+        outStream << noDataValue;
+
         outStream << byteArray;
 
         // Without waitForBytesWritten() it does not finish ok on Windows (process timeout)
