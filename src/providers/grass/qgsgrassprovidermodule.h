@@ -65,6 +65,7 @@ class QgsGrassMapsetItem : public QgsDirectoryItem
     void onImportFinished( QgsGrassImport* import );
 
   private:
+    bool objectInImports( QgsGrassObject grassObject );
     //void showImportError(const QString& error);
     QString mLocation;
     QString mGisdbase;

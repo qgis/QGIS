@@ -111,16 +111,39 @@ QgsGrassMapsetItem::QgsGrassMapsetItem( QgsDataItem* parent, QString dirPath, QS
   mIconName = "grass_mapset.png";
 }
 
+bool QgsGrassMapsetItem::objectInImports( QgsGrassObject grassObject )
+{
+  foreach ( QgsGrassImport* import, mImports )
+  {
+    if ( !import )
+    {
+      continue;
+    }
+    if ( !import->grassObject().mapsetIdentical( grassObject )
+         || import->grassObject().type() != grassObject.type() )
+    {
+      continue;
+    }
+    if ( import->names().contains( grassObject.name() ) )
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
 QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
 {
   QgsDebugMsg( "Entered" );
 
+  QgsGrassObject mapsetObject( mGisdbase, mLocation, mName );
   QVector<QgsDataItem*> items;
 
   QStringList vectorNames = QgsGrass::vectors( mDirPath );
-
   foreach ( QString name, vectorNames )
   {
+    QgsGrassObject vectorObject( mGisdbase, mLocation, mName, name, QgsGrassObject::Vector );
+
     // Skip temporary import maps. If Vect_open_old during refresh fails due to missing topo, hist file remains open
     // and Windows do no allow to delete temporary map to qgis.v.in. In any case we don't want to show temporary import maps.
     // TODO: add some auto cleaning mechanism to remove temporary maps left after import fail
@@ -132,7 +155,12 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
       continue;
     }
 
-    QgsGrassObject vectorObject( mGisdbase, mLocation, mName, name, QgsGrassObject::Vector );
+    if ( objectInImports( vectorObject ) )
+    {
+      QgsDebugMsg( "skip currently being imported vector " + name );
+      continue;
+    }
+
     QString mapPath = mPath + "/vector/" + name;
     QStringList layerNames;
     QgsGrassVectorItem *map = 0;
@@ -242,6 +270,12 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
     QgsDebugMsg( "uri = " + uri );
 
     QgsGrassObject rasterObject( mGisdbase, mLocation, mName, name, QgsGrassObject::Raster );
+    if ( objectInImports( rasterObject ) )
+    {
+      QgsDebugMsg( "skip currently being imported raster " + name );
+      continue;
+    }
+
     QgsGrassRasterItem *layer = new QgsGrassRasterItem( this, rasterObject, path, uri, QgsGrass::isExternal( rasterObject ) );
     items.append( layer );
   }
@@ -258,7 +292,6 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
     items.append( layer );
   }
 
-  QgsGrassObject mapsetObject( mGisdbase, mLocation, mName );
   foreach ( QgsGrassImport* import, mImports )
   {
     if ( !import )
