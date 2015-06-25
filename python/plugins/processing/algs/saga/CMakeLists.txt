@@ -1,6 +1,6 @@
 FILE(GLOB PY_FILES *.py)
 FILE(GLOB DESCR212_FILES description/2.1.2/*.txt)
-FILE(GLOB DESCR213_FILES description/2.1.2/*.txt)
+FILE(GLOB DESCR213_FILES description/2.1.3/*.txt)
 FILE(GLOB HELP_FILES help/*.rst)
 
 ADD_SUBDIRECTORY(ext)
