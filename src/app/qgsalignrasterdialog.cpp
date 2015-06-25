@@ -72,6 +72,7 @@ QgsAlignRasterDialog::QgsAlignRasterDialog( QWidget *parent )
   connect( mBtnEdit, SIGNAL( clicked( bool ) ), this, SLOT( editLayer() ) );
 
   connect( mCboReferenceLayer, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updateConfigFromReferenceLayer() ) );
+  connect( mCrsSelector, SIGNAL( crsChanged( QgsCoordinateReferenceSystem ) ), this, SLOT( destinationCrsChanged() ) );
 
   mClipExtentGroupBox->setChecked( false );
 
@@ -183,6 +184,31 @@ void QgsAlignRasterDialog::updateConfigFromReferenceLayer()
 
   mClipExtentGroupBox->setOriginalExtent( mAlign->clipExtent(), destCRS );
 }
+
+void QgsAlignRasterDialog::destinationCrsChanged()
+{
+  if ( mCrsSelector->crs().toWkt() == mAlign->destinationCRS() )
+    return;
+
+  int index = mCboReferenceLayer->currentIndex();
+  if ( index < 0 )
+    return;
+
+  if ( !mAlign->setParametersFromRaster( mAlign->rasters().at( index ).inputFilename, mCrsSelector->crs().toWkt() ) )
+  {
+    QMessageBox::warning( this, tr( "Align Rasters" ), tr( "Cannot reproject reference layer to the chosen destination CRS.\n\nPlease select a different CRS" ) );
+    return;
+  }
+
+  QSizeF cellSize = mAlign->cellSize();
+  mSpinCellSizeX->setValue( cellSize.width() );
+  mSpinCellSizeY->setValue( cellSize.height() );
+
+  QPointF gridOffset = mAlign->gridOffset();
+  mSpinGridOffsetX->setValue( gridOffset.x() );
+  mSpinGridOffsetY->setValue( gridOffset.y() );
+}
+
 
 void QgsAlignRasterDialog::runAlign()
 {

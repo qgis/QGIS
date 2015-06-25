@@ -145,19 +145,36 @@ QgsRectangle QgsAlignRaster::clipExtent() const
 }
 
 
-void QgsAlignRaster::setParametersFromRaster( const QString& filename )
+bool QgsAlignRaster::setParametersFromRaster( const QString& filename, const QString& destWkt )
 {
-  setParametersFromRaster( RasterInfo( filename ) );
+  return setParametersFromRaster( RasterInfo( filename ), destWkt );
 }
 
-void QgsAlignRaster::setParametersFromRaster( const RasterInfo& rasterInfo )
+bool QgsAlignRaster::setParametersFromRaster( const RasterInfo& rasterInfo, const QString& destWkt )
 {
-  // use ref. layer to init input
-  mCrsWkt = rasterInfo.crs();
-  mCellSizeX = rasterInfo.cellSize().width();
-  mCellSizeY = rasterInfo.cellSize().height();
-  mGridOffsetX = rasterInfo.gridOffset().x();
-  mGridOffsetY = rasterInfo.gridOffset().y();
+  if ( destWkt.isEmpty() || destWkt.toAscii() == rasterInfo.crs() )
+  {
+    // use ref. layer to init input
+    mCrsWkt = rasterInfo.crs();
+    mCellSizeX = rasterInfo.cellSize().width();
+    mCellSizeY = rasterInfo.cellSize().height();
+    mGridOffsetX = rasterInfo.gridOffset().x();
+    mGridOffsetY = rasterInfo.gridOffset().y();
+  }
+  else
+  {
+    QSizeF cs;
+    QPointF go;
+    if ( !suggestedWarpOutput( rasterInfo, destWkt.toAscii(), &cs, &go ) )
+      return false;
+
+    mCrsWkt = destWkt.toAscii();
+    mCellSizeX = cs.width();
+    mCellSizeY = cs.height();
+    mGridOffsetX = go.x();
+    mGridOffsetY = go.y();
+  }
+  return true;
 }
 
 
@@ -172,52 +189,36 @@ bool QgsAlignRaster::determineTransformAndSize()
 
     RasterInfo info( r.inputFilename );
 
-    // Create a transformer that maps from source pixel/line coordinates
-    // to destination georeferenced coordinates (not destination
-    // pixel line).  We do that by omitting the destination dataset
-    // handle (setting it to NULL).
-    void* hTransformArg = GDALCreateGenImgProjTransformer( info.mDataset, info.mCrsWkt.constData(), NULL, mCrsWkt.constData(), FALSE, 0, 1 );
-    if ( !hTransformArg )
+    QSizeF cs;
+    QgsRectangle extent;
+    if ( !suggestedWarpOutput( info, mCrsWkt, &cs, 0, &extent ) )
     {
-      mErrorMessage = QString( "GDALCreateGenImgProjTransformer failed.\n\n"
-                               "Source WKT:\n%1\n\nDestination WKT:\n%2" )
+      mErrorMessage = QString( "Failed to get suggested warp output.\n\n"
+                               "File:\n%1\n\n"
+                               "Source WKT:\n%2\n\nDestination WKT:\n%3" )
+                      .arg( r.inputFilename )
                       .arg( QString::fromAscii( info.mCrsWkt ) )
                       .arg( QString::fromAscii( mCrsWkt ) );
       return false;
     }
 
-    // Get approximate output georeferenced bounds and resolution for file.
-    double adfDstGeoTransform[6];
-    double extents[4];
-    int nPixels = 0, nLines = 0;
-    CPLErr eErr;
-    eErr = GDALSuggestedWarpOutput2( info.mDataset,
-                                     GDALGenImgProjTransform, hTransformArg,
-                                     adfDstGeoTransform, &nPixels, &nLines, extents, 0 );
-    GDALDestroyGenImgProjTransformer( hTransformArg );
-    r.srcCellSizeInDestCRS = fabs( adfDstGeoTransform[1] * adfDstGeoTransform[5] );
-
-    if ( eErr != CE_None )
-    {
-      mErrorMessage = QString( "GDALSuggestedWarpOutput2 failed.\n\n" + r.inputFilename );
-      return false;
-    }
+    r.srcCellSizeInDestCRS = cs.width() * cs.height();
 
     if ( finalExtent[0] == 0 && finalExtent[1] == 0 && finalExtent[2] == 0 && finalExtent[3] == 0 )
     {
       // initialize with the first layer
-      finalExtent[0] = extents[0];
-      finalExtent[1] = extents[1];
-      finalExtent[2] = extents[2];
-      finalExtent[3] = extents[3];
+      finalExtent[0] = extent.xMinimum();
+      finalExtent[1] = extent.yMinimum();
+      finalExtent[2] = extent.xMaximum();
+      finalExtent[3] = extent.yMaximum();
     }
     else
     {
       // use intersection of rects
-      if ( extents[0] > finalExtent[0] ) finalExtent[0] = extents[0];
-      if ( extents[1] > finalExtent[1] ) finalExtent[1] = extents[1];
-      if ( extents[2] < finalExtent[2] ) finalExtent[2] = extents[2];
-      if ( extents[3] < finalExtent[3] ) finalExtent[3] = extents[3];
+      if ( extent.xMinimum() > finalExtent[0] ) finalExtent[0] = extent.xMinimum();
+      if ( extent.yMinimum() > finalExtent[1] ) finalExtent[1] = extent.yMinimum();
+      if ( extent.xMaximum() < finalExtent[2] ) finalExtent[2] = extent.xMaximum();
+      if ( extent.yMaximum() < finalExtent[3] ) finalExtent[3] = extent.yMaximum();
     }
   }
 
@@ -390,6 +391,41 @@ bool QgsAlignRaster::createAndWarp( const Item& raster )
 
   GDALClose( hDstDS );
   GDALClose( hSrcDS );
+  return true;
+}
+
+bool QgsAlignRaster::suggestedWarpOutput( const QgsAlignRaster::RasterInfo& info, const QByteArray& destWkt, QSizeF* cellSize, QPointF* gridOffset, QgsRectangle* rect )
+{
+  // Create a transformer that maps from source pixel/line coordinates
+  // to destination georeferenced coordinates (not destination
+  // pixel line).  We do that by omitting the destination dataset
+  // handle (setting it to NULL).
+  void* hTransformArg = GDALCreateGenImgProjTransformer( info.mDataset, info.mCrsWkt.constData(), NULL, destWkt.constData(), FALSE, 0, 1 );
+  if ( !hTransformArg )
+    return false;
+
+  // Get approximate output georeferenced bounds and resolution for file.
+  double adfDstGeoTransform[6];
+  double extents[4];
+  int nPixels = 0, nLines = 0;
+  CPLErr eErr;
+  eErr = GDALSuggestedWarpOutput2( info.mDataset,
+                                   GDALGenImgProjTransform, hTransformArg,
+                                   adfDstGeoTransform, &nPixels, &nLines, extents, 0 );
+  GDALDestroyGenImgProjTransformer( hTransformArg );
+
+  if ( eErr != CE_None )
+    return false;
+
+  QSizeF cs( qAbs( adfDstGeoTransform[1] ), qAbs( adfDstGeoTransform[5] ) );
+
+  if ( rect )
+    *rect = QgsRectangle( extents[0], extents[1], extents[2], extents[3] );
+  if ( cellSize )
+    *cellSize = cs;
+  if ( gridOffset )
+    *gridOffset = QPointF( fmod_with_tolerance( adfDstGeoTransform[0], cs.width() ),
+                           fmod_with_tolerance( adfDstGeoTransform[3], cs.height() ) );
   return true;
 }
 

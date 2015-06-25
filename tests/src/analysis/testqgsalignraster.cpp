@@ -16,6 +16,8 @@
 #include <QtTest/QtTest>
 
 #include "qgsalignraster.h"
+#include "qgsapplication.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsrectangle.h"
 
 #include <QDir>
@@ -42,6 +44,8 @@ class TestAlignRaster : public QObject
       GDALAllRegister();
 
       SRC_FILE = QString( TEST_DATA_DIR ) + QDir::separator() + "float1-16.tif";
+
+      QgsApplication::init(); // needed for CRS database
     }
 
     void testRasterInfo()
@@ -208,6 +212,54 @@ class TestAlignRaster : public QObject
       QCOMPARE( out.rasterSize(), QSize( 2, 2 ) );
       QCOMPARE( out.cellSize(), QSizeF( 0.4, 0.4 ) );
       QCOMPARE( out.identify( 106.2, -6.4 ), 14. ); // = (1+2+5+6)
+    }
+
+    void testReprojectToOtherCRS()
+    {
+      QString tmpFile( _tempFile( "reproject-utm-47n" ) );
+
+      // reproject from WGS84 to UTM zone 47N
+      // (the true UTM zone for this raster is 48N, but here it is
+      // more obvious the different shape of the resulting raster)
+      QgsCoordinateReferenceSystem destCRS( "EPSG:32647" );
+      QVERIFY( destCRS.isValid() );
+
+      QgsAlignRaster align;
+      QgsAlignRaster::List rasters;
+      rasters << QgsAlignRaster::Item( SRC_FILE, tmpFile );
+      align.setRasters( rasters );
+      align.setParametersFromRaster( SRC_FILE, destCRS.toWkt() );
+      bool res = align.run();
+      QVERIFY( res );
+
+      QgsAlignRaster::RasterInfo out( tmpFile );
+      QVERIFY( out.isValid() );
+      QgsCoordinateReferenceSystem outCRS( QString::fromAscii( out.crs() ) );
+      QCOMPARE( outCRS, destCRS );
+      QCOMPARE( out.rasterSize(), QSize( 4, 4 ) );
+      // let's stick to integers to keep the test more robust
+      QCOMPARE( qRound( out.cellSize().width() ), 22293 ); // ~ 22293.256065
+      QCOMPARE( qRound( out.cellSize().height() ), 22293 ); // ~ 22293.256065
+      QCOMPARE( qRound( out.gridOffset().x() ), 4327 ); // ~ 4327.168434
+      QCOMPARE( qRound( out.gridOffset().y() ), 637 ); // ~ 637.007990
+      QCOMPARE( out.identify( 1308405, -746611 ), 10. );
+    }
+
+    void testInvalidReprojection()
+    {
+      QString tmpFile( _tempFile( "reproject-invalid" ) );
+
+      // reprojection to British National Grid with raster in Jakarta area clearly cannot work
+      QgsCoordinateReferenceSystem destCRS( "EPSG:27700" );
+      QVERIFY( destCRS.isValid() );
+
+      QgsAlignRaster align;
+      QgsAlignRaster::List rasters;
+      rasters << QgsAlignRaster::Item( SRC_FILE, tmpFile );
+      align.setRasters( rasters );
+      align.setParametersFromRaster( SRC_FILE, destCRS.toWkt() );
+      bool res = align.run();
+      QVERIFY( !res );
     }
 
 };

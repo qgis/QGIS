@@ -26,6 +26,8 @@ class QgsAlignRasterDialog : public QDialog, private Ui::QgsAlignRasterDialog
 
     void runAlign();
 
+    void destinationCrsChanged();
+
   protected:
     void populateLayersView();
 

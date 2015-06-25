@@ -32,6 +32,8 @@ typedef void* GDALDatasetH;
  * - coordinate reference system
  * - cell size and raster size
  * - offset of the raster grid
+ *
+ * @note added in QGIS 2.12
  */
 class ANALYSIS_EXPORT QgsAlignRaster
 {
@@ -170,9 +172,9 @@ class ANALYSIS_EXPORT QgsAlignRaster
     QgsRectangle clipExtent() const;
 
     //! Set destination CRS, cell size and grid offset from a raster file
-    void setParametersFromRaster( const RasterInfo& rasterInfo );
+    bool setParametersFromRaster( const RasterInfo& rasterInfo, const QString& destWkt = QString() );
     //! Set destination CRS, cell size and grid offset from a raster file
-    void setParametersFromRaster( const QString& filename );
+    bool setParametersFromRaster( const QString& filename, const QString& destWkt = QString() );
 
     //! Run the alignment process
     //! @return true on success
@@ -192,6 +194,9 @@ class ANALYSIS_EXPORT QgsAlignRaster
 
     //! Internal function for processing of one raster (1. create output, 2. do the alignment)
     bool createAndWarp( const Item& raster );
+
+    //! Determine suggested output of raster warp to a different CRS. Returns true on success
+    static bool suggestedWarpOutput( const RasterInfo& info, const QByteArray& destWkt, QSizeF* cellSize = 0, QPointF* gridOffset = 0, QgsRectangle* rect = 0 );
 
   protected:
 

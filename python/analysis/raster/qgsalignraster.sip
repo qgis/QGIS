@@ -124,9 +124,9 @@ class QgsAlignRaster
     QgsRectangle clipExtent() const;
 
     //! Set destination CRS, cell size and grid offset from a raster file
-    void setParametersFromRaster( const RasterInfo& rasterInfo );
+    bool setParametersFromRaster( const RasterInfo& rasterInfo, const QString& destWkt = QString() );
     //! Set destination CRS, cell size and grid offset from a raster file
-    void setParametersFromRaster( const QString& filename );
+    bool setParametersFromRaster( const QString& filename, const QString& destWkt = QString() );
 
     //! Run the alignment process
     //! @return true on success
