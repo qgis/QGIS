@@ -221,7 +221,8 @@ bool QgsGrassRasterImport::import()
     QString name = mGrassObject.name();
     if ( provider->bandCount() > 1 )
     {
-      name += QString( "_%1" ).arg( band );
+      // raster.<band> to keep in sync with r.in.gdal
+      name += QString( ".%1" ).arg( band );
     }
     arguments.append( "output=" + name );    // get list of all output names
     QTemporaryFile gisrcFile;
@@ -344,9 +345,9 @@ bool QgsGrassRasterImport::import()
       QgsGrass::setMapset( mGrassObject.gisdbase(), mGrassObject.location(), mGrassObject.mapset() );
       struct Ref ref;
       I_get_group_ref( name.toUtf8().data(), &ref );
-      QString redName = name + QString( "_%1" ).arg( redBand );
-      QString greenName = name + QString( "_%1" ).arg( greenBand );
-      QString blueName = name + QString( "_%1" ).arg( blueBand );
+      QString redName = name + QString( ".%1" ).arg( redBand );
+      QString greenName = name + QString( ".%1" ).arg( greenBand );
+      QString blueName = name + QString( ".%1" ).arg( blueBand );
       I_add_file_to_group_ref( redName.toUtf8().data(), mGrassObject.mapset().toUtf8().data(), &ref );
       I_add_file_to_group_ref( greenName.toUtf8().data(), mGrassObject.mapset().toUtf8().data(), &ref );
       I_add_file_to_group_ref( blueName.toUtf8().data(), mGrassObject.mapset().toUtf8().data(), &ref );
@@ -376,7 +377,7 @@ QStringList QgsGrassRasterImport::extensions( QgsRasterDataProvider* provider )
   {
     for ( int band = 1; band <= provider->bandCount(); band++ )
     {
-      list << QString( "_%1" ).arg( band );
+      list << QString( ".%1" ).arg( band );
     }
   }
   return list;
@@ -480,6 +481,7 @@ bool QgsGrassVectorImport::import()
       iterator = mProvider->getFeatures();
     }
     QgsDebugMsg( "send features" );
+    int count = 0;
     while ( iterator.nextFeature( feature ) )
     {
       if ( !feature.isValid() )
@@ -507,6 +509,12 @@ bool QgsGrassVectorImport::import()
       bool result;
       outStream >> result;
 #endif
+      count++;
+      // get some feedback for large datasets
+      if ( count % 10000 == 0 )
+      {
+        QgsDebugMsg( QString( "%1 features written" ).arg( count ) );
+      }
     }
     feature = QgsFeature(); // indicate end by invalid feature
     outStream << false; // not canceled

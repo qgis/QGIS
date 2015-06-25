@@ -32,6 +32,7 @@ QgsNewNameDialog::QgsNewNameDialog( const QString& source, const QString& initia
     , mExtensions( extensions )
     , mCaseSensitivity( cs )
     , mNamesLabel( 0 )
+    , mRegexp( regexp )
 {
   setWindowTitle( tr( "New name" ) );
   QDialog::layout()->setSizeConstraint( QLayout::SetMinimumSize );
@@ -97,7 +98,7 @@ void QgsNewNameDialog::nameChanged()
 
   QString newName = name();
 
-  if ( newName.length() == 0 )
+  if ( newName.length() == 0 || ( !mRegexp.isEmpty() && !mRegexp.exactMatch( newName ) ) )
   {
     //mErrorLabel->setText( highlightText( tr( "Enter new name" ) );
     okButton->setEnabled( false );

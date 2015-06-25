@@ -71,6 +71,7 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
     QLabel *mNamesLabel; // list of names with extensions
     QLabel *mErrorLabel;
     QString mOkString;
+    QRegExp mRegexp;
     QString highlightText( const QString& text );
     static QStringList fullNames( const QString& name, const QStringList& extensions );
     // get list of existing names

@@ -71,6 +71,7 @@ static struct Map_info *finalMap = 0;
 static struct Map_info *tmpMap = 0;
 static QString finalName;
 static QString tmpName;
+dbDriver *driver = 0;
 
 void closeMaps()
 {
@@ -83,6 +84,12 @@ void closeMaps()
   {
     Vect_close( finalMap );
     Vect_delete( finalName.toUtf8().data() );
+  }
+  if ( driver )
+  {
+    // we should rollback transaction but there is not db_rollback_transaction()
+    // With SQLite it takes very long time with large datasets to close db
+    db_close_database_shutdown_driver( driver );
   }
   G_warning( "import canceled -> maps deleted" );
 }
@@ -189,7 +196,7 @@ int main( int argc, char **argv )
     G_fatal_error( "Cannot add link" );
   }
 
-  dbDriver *driver = db_start_driver_open_database( fieldInfo->driver, fieldInfo->database );
+  driver = db_start_driver_open_database( fieldInfo->driver, fieldInfo->database );
   if ( !driver )
   {
     G_fatal_error( "Cannot open database %s by driver %s", fieldInfo->database, fieldInfo->driver );

@@ -113,7 +113,7 @@ QgsGrassMapsetItem::QgsGrassMapsetItem( QgsDataItem* parent, QString dirPath, QS
 
 QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
 {
-  QgsDebugMsg( "Entered xxx" );
+  QgsDebugMsg( "Entered" );
 
   QVector<QgsDataItem*> items;
 
@@ -390,7 +390,8 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData * data, Qt::DropAction )
 
     // TODO: add a method in QgsGrass to convert a name to GRASS valid name
     QString destName = srcName.replace( " ", "_" );
-    if ( QgsNewNameDialog::exists( destName, extensions, existingNames, caseSensitivity ) )
+    if ( QgsNewNameDialog::exists( destName, extensions, existingNames, caseSensitivity )
+         || !regExp.exactMatch( destName ) )
     {
       QgsNewNameDialog dialog( srcName, destName, extensions, existingNames, regExp, caseSensitivity );
       if ( dialog.exec() != QDialog::Accepted )
