@@ -156,7 +156,7 @@ bool QgsAlignRaster::setParametersFromRaster( const QString& filename, const QSt
 
 bool QgsAlignRaster::setParametersFromRaster( const RasterInfo& rasterInfo, const QString& customCRSWkt, QSizeF customCellSize, QPointF customGridOffset )
 {
-  if ( customCRSWkt.isEmpty() || customCRSWkt.toAscii() == rasterInfo.crs() )
+  if ( customCRSWkt.isEmpty() || customCRSWkt == rasterInfo.crs() )
   {
     // use ref. layer to init input
     mCrsWkt = rasterInfo.crs();
@@ -198,7 +198,7 @@ bool QgsAlignRaster::setParametersFromRaster( const RasterInfo& rasterInfo, cons
   {
     QSizeF cs;
     QPointF go;
-    if ( !suggestedWarpOutput( rasterInfo, customCRSWkt.toAscii(), &cs, &go ) )
+    if ( !suggestedWarpOutput( rasterInfo, customCRSWkt, &cs, &go ) )
     {
       mCrsWkt = "_error_";
       mCellSizeX = mCellSizeY = 0;
@@ -206,7 +206,7 @@ bool QgsAlignRaster::setParametersFromRaster( const RasterInfo& rasterInfo, cons
       return false;
     }
 
-    mCrsWkt = customCRSWkt.toAscii();
+    mCrsWkt = customCRSWkt;
 
     if ( !customCellSize.isValid() )
     {
@@ -271,8 +271,8 @@ bool QgsAlignRaster::checkInputParameters()
                                "File:\n%1\n\n"
                                "Source WKT:\n%2\n\nDestination WKT:\n%3" )
                       .arg( r.inputFilename )
-                      .arg( QString::fromAscii( info.mCrsWkt ) )
-                      .arg( QString::fromAscii( mCrsWkt ) );
+                      .arg( info.mCrsWkt )
+                      .arg( mCrsWkt );
       return false;
     }
 
@@ -376,7 +376,7 @@ bool QgsAlignRaster::run()
 void QgsAlignRaster::dump() const
 {
   qDebug( "---ALIGN------------------" );
-  qDebug( "wkt %s", mCrsWkt.constData() );
+  qDebug( "wkt %s", mCrsWkt.toAscii().constData() );
   qDebug( "w/h %d,%d", mXSize, mYSize );
   qDebug( "transform" );
   qDebug( "%6.2f %6.2f %6.2f", mGeoTransform[0], mGeoTransform[1], mGeoTransform[2] );
@@ -421,7 +421,7 @@ bool QgsAlignRaster::createAndWarp( const Item& raster )
   }
 
   // Write out the projection definition.
-  GDALSetProjection( hDstDS, mCrsWkt.constData() );
+  GDALSetProjection( hDstDS, mCrsWkt.toAscii().constData() );
   GDALSetGeoTransform( hDstDS, ( double* )mGeoTransform );
 
   // Copy the color table, if required.
@@ -482,13 +482,13 @@ bool QgsAlignRaster::createAndWarp( const Item& raster )
   return true;
 }
 
-bool QgsAlignRaster::suggestedWarpOutput( const QgsAlignRaster::RasterInfo& info, const QByteArray& destWkt, QSizeF* cellSize, QPointF* gridOffset, QgsRectangle* rect )
+bool QgsAlignRaster::suggestedWarpOutput( const QgsAlignRaster::RasterInfo& info, const QString& destWkt, QSizeF* cellSize, QPointF* gridOffset, QgsRectangle* rect )
 {
   // Create a transformer that maps from source pixel/line coordinates
   // to destination georeferenced coordinates (not destination
   // pixel line).  We do that by omitting the destination dataset
   // handle (setting it to NULL).
-  void* hTransformArg = GDALCreateGenImgProjTransformer( info.mDataset, info.mCrsWkt.constData(), NULL, destWkt.constData(), FALSE, 0, 1 );
+  void* hTransformArg = GDALCreateGenImgProjTransformer( info.mDataset, info.mCrsWkt.toAscii().constData(), NULL, destWkt.toAscii().constData(), FALSE, 0, 1 );
   if ( !hTransformArg )
     return false;
 
@@ -533,7 +533,7 @@ QgsAlignRaster::RasterInfo::RasterInfo( const QString& layerpath )
   GDALGetGeoTransform( mDataset, mGeoTransform );
 
   // TODO: may be null or empty string
-  mCrsWkt = QByteArray( GDALGetProjectionRef( mDataset ) );
+  mCrsWkt = QString::fromAscii( GDALGetProjectionRef( mDataset ) );
 
   mBandCnt = GDALGetBandNumber( mDataset );
 }
@@ -568,7 +568,7 @@ QPointF QgsAlignRaster::RasterInfo::origin() const
 void QgsAlignRaster::RasterInfo::dump() const
 {
   qDebug( "---RASTER INFO------------------" );
-  qDebug( "wkt %s", mCrsWkt.constData() );
+  qDebug( "wkt %s", mCrsWkt.toAscii().constData() );
   qDebug( "w/h %d,%d", mXSize, mYSize );
   qDebug( "cell x/y %f,%f", cellSize().width(), cellSize().width() );
 

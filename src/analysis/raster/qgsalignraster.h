@@ -52,7 +52,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
       bool isValid() const { return mDataset != 0; }
 
       //! Return CRS in WKT format
-      QByteArray crs() const { return mCrsWkt; }
+      QString crs() const { return mCrsWkt; }
       //! Return size of the raster grid in pixels
       QSize rasterSize() const { return QSize( mXSize, mYSize ); }
       //! Return number of raster bands in the file
@@ -76,7 +76,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
       //! handle to open GDAL dataset
       GDALDatasetH mDataset;
       //! CRS stored in WKT format
-      QByteArray mCrsWkt;
+      QString mCrsWkt;
       //! geotransform coefficients
       double mGeoTransform[6];
       //! raster grid size
@@ -155,7 +155,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
     QSizeF cellSize() const { return QSizeF( mCellSizeX, mCellSizeY ); }
 
     //! Set the output CRS in WKT format
-    void setDestinationCRS( const QString& crsWkt ) { mCrsWkt = crsWkt.toAscii(); }
+    void setDestinationCRS( const QString& crsWkt ) { mCrsWkt = crsWkt; }
     //! Get the output CRS in WKT format
     QString destinationCRS() const { return mCrsWkt; }
 
@@ -211,7 +211,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
     bool createAndWarp( const Item& raster );
 
     //! Determine suggested output of raster warp to a different CRS. Returns true on success
-    static bool suggestedWarpOutput( const RasterInfo& info, const QByteArray& destWkt, QSizeF* cellSize = 0, QPointF* gridOffset = 0, QgsRectangle* rect = 0 );
+    static bool suggestedWarpOutput( const RasterInfo& info, const QString& destWkt, QSizeF* cellSize = 0, QPointF* gridOffset = 0, QgsRectangle* rect = 0 );
 
   protected:
 
@@ -227,7 +227,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
     List mRasters;
 
     //! Destination CRS - stored in well-known text (WKT) format
-    QByteArray mCrsWkt;
+    QString mCrsWkt;
     //! Destination cell size
     double mCellSizeX, mCellSizeY;
     //! Destination grid offset - expected to be in interval <0,cellsize)

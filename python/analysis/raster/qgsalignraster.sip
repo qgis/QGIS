@@ -20,7 +20,7 @@ class QgsAlignRaster
       bool isValid() const;
 
       //! Return CRS in WKT format
-      QByteArray crs() const;
+      QString crs() const;
       //! Return size of the raster grid in pixels
       QSize rasterSize() const;
       //! Return number of raster bands in the file

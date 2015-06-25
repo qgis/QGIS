@@ -224,7 +224,7 @@ class TestAlignRaster : public QObject
 
       QgsAlignRaster::RasterInfo out( tmpFile );
       QVERIFY( out.isValid() );
-      QgsCoordinateReferenceSystem outCRS( QString::fromAscii( out.crs() ) );
+      QgsCoordinateReferenceSystem outCRS( out.crs() );
       QCOMPARE( outCRS, destCRS );
       QCOMPARE( out.rasterSize(), QSize( 4, 4 ) );
       // let's stick to integers to keep the test more robust

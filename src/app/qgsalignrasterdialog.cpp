@@ -161,7 +161,7 @@ void QgsAlignRasterDialog::updateParametersFromReferenceLayer()
   // get custom values from the GUI (if any)
   if ( mChkCustomCRS->isChecked() )
   {
-    QgsCoordinateReferenceSystem refCRS( QString::fromAscii( refInfo.crs() ) );
+    QgsCoordinateReferenceSystem refCRS( refInfo.crs() );
     if ( refCRS != mCrsSelector->crs() )
       customCRSWkt = mCrsSelector->crs().toWkt();
   }
@@ -270,7 +270,7 @@ void QgsAlignRasterDialog::referenceLayerChanged()
   if ( !refInfo.isValid() )
     return;
 
-  QgsCoordinateReferenceSystem layerCRS( QString::fromAscii( refInfo.crs() ) );
+  QgsCoordinateReferenceSystem layerCRS( refInfo.crs() );
   mCrsSelector->setLayerCrs( layerCRS );
   mClipExtentGroupBox->setOriginalExtent( refInfo.extent(), layerCRS );
 
