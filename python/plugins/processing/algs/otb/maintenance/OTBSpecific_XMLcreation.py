@@ -32,16 +32,6 @@ __version__ = "3.8"
 
 import copy
 
-try:
-    import processing
-except ImportError, e:
-    raise Exception("Processing must be installed and available in PYTHONPATH")
-
-try:
-    import otbApplication
-except ImportError, e:
-    raise Exception("OTB python plugins must be installed and available in PYTHONPATH")
-
 from processing.algs.otb.OTBUtils import (renameValueField,
                                     remove_dependant_choices,
                                     remove_other_choices,
@@ -65,7 +55,6 @@ def getBinaryMorphologicalOperation(available_app, original_dom_document):
     remove_other_choices(the_root, 'structype', 'ball')
     remove_dependant_choices(the_root, 'filter', 'dilate')
     remove_parameter_by_key(the_root, 'structype.ball.yradius')
-    #defaultWrite(available_app, the_root)
     the_list = defaultSplit(available_app, the_root, 'filter')
     return the_list
 
