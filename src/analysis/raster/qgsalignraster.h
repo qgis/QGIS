@@ -157,10 +157,6 @@ class ANALYSIS_EXPORT QgsAlignRaster
     //! Get the output CRS in WKT format
     QString destinationCRS() const { return mCrsWkt; }
 
-    // TODO: first need to run determineTransformAndSize() before this
-    //QSize rasterSize() const { return QSize(mXSize, mYSize); }
-    // TODO: add method for access to final extent
-
     //! Configure clipping extent (region of interest).
     //! No extra clipping is done if the rectangle is null
     void setClipExtent( double xmin, double ymin, double xmax, double ymax );
@@ -176,8 +172,19 @@ class ANALYSIS_EXPORT QgsAlignRaster
     //! Set destination CRS, cell size and grid offset from a raster file
     bool setParametersFromRaster( const QString& filename, const QString& destWkt = QString() );
 
+    //! Determine destination extent from the input rasters and calculate derived values
+    //! @return true on success, sets error on error (see errorMessage())
+    bool checkInputParameters();
+
+    //! Return expected size of the resulting aligned raster
+    //! @note first need to run checkInputParameters() which returns with success
+    QSize alignedRasterSize() const;
+    //! Return expected extent of the resulting aligned raster
+    //! @note first need to run checkInputParameters() which returns with success
+    QgsRectangle alignedRasterExtent() const;
+
     //! Run the alignment process
-    //! @return true on success
+    //! @return true on success, sets error on error (see errorMessage())
     bool run();
 
     //! Return error from a previous run() call.
@@ -188,9 +195,6 @@ class ANALYSIS_EXPORT QgsAlignRaster
     void dump() const;
 
   protected:
-
-    //! Determine destination extent from the input rasters and calculate derived values
-    bool determineTransformAndSize();
 
     //! Internal function for processing of one raster (1. create output, 2. do the alignment)
     bool createAndWarp( const Item& raster );

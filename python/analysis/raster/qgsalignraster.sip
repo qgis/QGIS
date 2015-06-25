@@ -128,8 +128,19 @@ class QgsAlignRaster
     //! Set destination CRS, cell size and grid offset from a raster file
     bool setParametersFromRaster( const QString& filename, const QString& destWkt = QString() );
 
+    //! Determine destination extent from the input rasters and calculate derived values
+    //! @return true on success, sets error on error (see errorMessage())
+    bool checkInputParameters();
+
+    //! Return expected size of the resulting aligned raster
+    //! @note first need to run checkInputParameters() which returns with success
+    QSize alignedRasterSize() const;
+    //! Return expected extent of the resulting aligned raster
+    //! @note first need to run checkInputParameters() which returns with success
+    QgsRectangle alignedRasterExtent() const;
+
     //! Run the alignment process
-    //! @return true on success
+    //! @return true on success, sets error on error (see errorMessage())
     bool run();
 
     //! Return error from a previous run() call.

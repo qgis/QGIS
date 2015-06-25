@@ -28,8 +28,11 @@ class QgsAlignRasterDialog : public QDialog, private Ui::QgsAlignRasterDialog
 
     void destinationCrsChanged();
 
+    void clipExtentChanged();
+
   protected:
     void populateLayersView();
+    void updateAlignedRasterInfo();
 
   protected:
     QgsAlignRaster* mAlign;

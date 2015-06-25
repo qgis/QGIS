@@ -80,22 +80,18 @@
    </item>
    <item>
     <layout class="QGridLayout" name="gridLayout">
+     <item row="5" column="0">
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>Output Size</string>
+       </property>
+      </widget>
+     </item>
      <item row="3" column="0">
       <widget class="QLabel" name="label_5">
        <property name="text">
         <string>Grid Offset</string>
        </property>
-      </widget>
-     </item>
-     <item row="4" column="0" colspan="2">
-      <widget class="QgsExtentGroupBox" name="mClipExtentGroupBox">
-       <property name="title">
-        <string>Clip to Extent</string>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
-       <layout class="QGridLayout" name="gridLayout_2"/>
       </widget>
      </item>
      <item row="0" column="0">
@@ -176,12 +172,27 @@
        </item>
       </layout>
      </item>
-     <item row="5" column="0" colspan="2">
+     <item row="7" column="0" colspan="2">
       <widget class="QCheckBox" name="mChkAddToCanvas">
        <property name="text">
         <string>Add aligned rasters to map canvas</string>
        </property>
        <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0" colspan="2">
+      <widget class="QgsExtentGroupBox" name="mClipExtentGroupBox">
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_2"/>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QLineEdit" name="mEditOutputSize">
+       <property name="readOnly">
         <bool>true</bool>
        </property>
       </widget>
@@ -232,7 +243,6 @@
   <tabstop>mSpinCellSizeY</tabstop>
   <tabstop>mSpinGridOffsetX</tabstop>
   <tabstop>mSpinGridOffsetY</tabstop>
-  <tabstop>mClipExtentGroupBox</tabstop>
   <tabstop>mChkAddToCanvas</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>

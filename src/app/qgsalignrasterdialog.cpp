@@ -1,8 +1,10 @@
 #include "qgsalignrasterdialog.h"
 
+#include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsalignraster.h"
 #include "qgsdataitem.h"
+#include "qgsmapcanvas.h"
 #include "qgsmaplayercombobox.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsrasterlayer.h"
@@ -75,6 +77,9 @@ QgsAlignRasterDialog::QgsAlignRasterDialog( QWidget *parent )
   connect( mCrsSelector, SIGNAL( crsChanged( QgsCoordinateReferenceSystem ) ), this, SLOT( destinationCrsChanged() ) );
 
   mClipExtentGroupBox->setChecked( false );
+  mClipExtentGroupBox->setCollapsed( true );
+  mClipExtentGroupBox->setTitleBase( tr( "Clip to Extent" ) );
+  connect( mClipExtentGroupBox, SIGNAL( extentChanged( QgsRectangle ) ), this, SLOT( clipExtentChanged() ) );
 
   // TODO: auto-detect reference layer
 
@@ -107,7 +112,24 @@ void QgsAlignRasterDialog::populateLayersView()
   mViewLayers->setModel( model );
 
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( model->rowCount() > 0 );
+
+  updateAlignedRasterInfo();
 }
+
+
+void QgsAlignRasterDialog::updateAlignedRasterInfo()
+{
+  if ( !mAlign->checkInputParameters() )
+  {
+    mEditOutputSize->setText( mAlign->errorMessage() );
+    return;
+  }
+
+  QSize size = mAlign->alignedRasterSize();
+  QString msg = QString( "%1 x %2" ).arg( size.width() ).arg( size.height() );
+  mEditOutputSize->setText( msg );
+}
+
 
 void QgsAlignRasterDialog::addLayer()
 {
@@ -169,7 +191,11 @@ void QgsAlignRasterDialog::updateConfigFromReferenceLayer()
   if ( index < 0 )
     return;
 
-  mAlign->setParametersFromRaster( mAlign->rasters().at( index ).inputFilename );
+  QgsAlignRaster::RasterInfo refInfo( mAlign->rasters().at( index ).inputFilename );
+  if ( !refInfo.isValid() )
+    return;
+
+  mAlign->setParametersFromRaster( refInfo );
 
   QgsCoordinateReferenceSystem destCRS( mAlign->destinationCRS() );
   mCrsSelector->setCrs( destCRS );
@@ -182,8 +208,14 @@ void QgsAlignRasterDialog::updateConfigFromReferenceLayer()
   mSpinGridOffsetX->setValue( gridOffset.x() );
   mSpinGridOffsetY->setValue( gridOffset.y() );
 
-  mClipExtentGroupBox->setOriginalExtent( mAlign->clipExtent(), destCRS );
+  QgsMapCanvas* mc = QgisApp::instance()->mapCanvas();
+  mClipExtentGroupBox->setCurrentExtent( mc->extent(), mc->mapSettings().destinationCrs() );
+  mClipExtentGroupBox->setOriginalExtent( refInfo.extent(), QgsCoordinateReferenceSystem( QString::fromAscii( refInfo.crs() ) ) );
+  mClipExtentGroupBox->setOutputCrs( destCRS );
+
+  updateAlignedRasterInfo();
 }
+
 
 void QgsAlignRasterDialog::destinationCrsChanged()
 {
@@ -194,7 +226,11 @@ void QgsAlignRasterDialog::destinationCrsChanged()
   if ( index < 0 )
     return;
 
-  if ( !mAlign->setParametersFromRaster( mAlign->rasters().at( index ).inputFilename, mCrsSelector->crs().toWkt() ) )
+  QgsAlignRaster::RasterInfo refInfo( mAlign->rasters().at( index ).inputFilename );
+  if ( !refInfo.isValid() )
+    return;
+
+  if ( !mAlign->setParametersFromRaster( refInfo, mCrsSelector->crs().toWkt() ) )
   {
     QMessageBox::warning( this, tr( "Align Rasters" ), tr( "Cannot reproject reference layer to the chosen destination CRS.\n\nPlease select a different CRS" ) );
     return;
@@ -207,6 +243,17 @@ void QgsAlignRasterDialog::destinationCrsChanged()
   QPointF gridOffset = mAlign->gridOffset();
   mSpinGridOffsetX->setValue( gridOffset.x() );
   mSpinGridOffsetY->setValue( gridOffset.y() );
+
+  mClipExtentGroupBox->setOutputCrs( mCrsSelector->crs() );
+
+  updateAlignedRasterInfo();
+}
+
+void QgsAlignRasterDialog::clipExtentChanged()
+{
+  mAlign->setClipExtent( mClipExtentGroupBox->outputExtent() );
+
+  updateAlignedRasterInfo();
 }
 
 

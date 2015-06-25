@@ -117,11 +117,15 @@ static CPLErr rescalePostWarpChunkProcessor( void* pKern, void* pArg )
 QgsAlignRaster::QgsAlignRaster()
     : mProgressHandler( 0 )
 {
+  // parameters
   mCellSizeX = mCellSizeY = 0;
   mGridOffsetX = mGridOffsetY = 0;
-  mXSize = mYSize = 0;
-
   mClipExtent[0] = mClipExtent[1] = mClipExtent[2] = mClipExtent[3] = 0;
+
+  // derived variables
+  mXSize = mYSize = 0;
+  for ( int i = 0; i < 6; ++i )
+    mGeoTransform[i] = 0;
 }
 
 void QgsAlignRaster::setClipExtent( double xmin, double ymin, double xmax, double ymax )
@@ -178,8 +182,20 @@ bool QgsAlignRaster::setParametersFromRaster( const RasterInfo& rasterInfo, cons
 }
 
 
-bool QgsAlignRaster::determineTransformAndSize()
+bool QgsAlignRaster::checkInputParameters()
 {
+  mErrorMessage.clear();
+
+  if ( mCellSizeX == 0 || mCellSizeY == 0 )
+  {
+    mErrorMessage = QObject::tr( "Cell size must not be zero." );
+    return false;
+  }
+
+  mXSize = mYSize = 0;
+  for ( int i = 0; i < 6; ++i )
+    mGeoTransform[i] = 0;
+
   double finalExtent[4] = { 0, 0, 0, 0 };
 
   // for each raster: determine their extent in projected cfg
@@ -245,14 +261,17 @@ bool QgsAlignRaster::determineTransformAndSize()
 
   double originX = ceil_with_tolerance(( finalExtent[0] - mGridOffsetX ) / mCellSizeX ) * mCellSizeX + mGridOffsetX;;
   double originY = ceil_with_tolerance(( finalExtent[1] - mGridOffsetY ) / mCellSizeY ) * mCellSizeY + mGridOffsetY;
-  mXSize = floor_with_tolerance(( finalExtent[2] - originX ) / mCellSizeX );
-  mYSize = floor_with_tolerance(( finalExtent[3] - originY ) / mCellSizeY );
+  int xSize = floor_with_tolerance(( finalExtent[2] - originX ) / mCellSizeX );
+  int ySize = floor_with_tolerance(( finalExtent[3] - originY ) / mCellSizeY );
 
-  if ( mXSize <= 0 || mYSize <= 0 )
+  if ( xSize <= 0 || ySize <= 0 )
   {
-    mErrorMessage = QObject::tr( "Configured inputs have no common intersecting area." );
+    mErrorMessage = QObject::tr( "No common intersecting area." );
     return false;
   }
+
+  mXSize = xSize;
+  mYSize = ySize;
 
   // build final geotransform...
   mGeoTransform[0] = originX;
@@ -266,12 +285,23 @@ bool QgsAlignRaster::determineTransformAndSize()
 }
 
 
+QSize QgsAlignRaster::alignedRasterSize() const
+{
+  return QSize( mXSize, mYSize );
+}
+
+QgsRectangle QgsAlignRaster::alignedRasterExtent() const
+{
+  return transform_to_extent( mGeoTransform, mXSize, mYSize );
+}
+
+
 bool QgsAlignRaster::run()
 {
   mErrorMessage.clear();
 
   // consider extent of all layers and setup geotransform and output grid size
-  if ( !determineTransformAndSize() )
+  if ( !checkInputParameters() )
     return false;
 
   //dump();
