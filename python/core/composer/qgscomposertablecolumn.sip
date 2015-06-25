@@ -8,7 +8,11 @@ class QgsComposerTableColumn: QObject
 %End
   public:
 
-    QgsComposerTableColumn();
+    /** Constructor for QgsComposerTableColumn.
+     * @param heading column heading
+     */
+    QgsComposerTableColumn( const QString& heading = QString() );
+
     virtual ~QgsComposerTableColumn();
 
     /**Writes the column's properties to xml for storage.

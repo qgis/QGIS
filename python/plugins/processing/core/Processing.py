@@ -327,7 +327,7 @@ class Processing:
                         return
                     i = i + 1
 
-        msg = alg.checkParameterValuesBeforeExecuting()
+        msg = alg._checkParameterValuesBeforeExecuting()
         if msg:
             print 'Unable to execute algorithm\n' + msg
             return
@@ -349,8 +349,12 @@ class Processing:
         if iface is not None :
             progress = MessageBarProgress(alg.name)
         ret = runalg(alg, progress)
-        if onFinish is not None and ret:
-            onFinish(alg, progress)
+        if ret:
+            if onFinish is not None:
+                onFinish(alg, progress)
+        else:
+            print ("There were errors executing the algorithm.\n"
+                    "Check the QGIS log to get more information")
 
         if iface is not None:
           QApplication.restoreOverrideCursor()

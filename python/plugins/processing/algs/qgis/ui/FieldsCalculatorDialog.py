@@ -142,8 +142,8 @@ class FieldsCalculatorDialog(BASE, WIDGET):
             filename = unicode(files[0])
             selectedFileFilter = unicode(fileDialog.selectedNameFilter())
             if not filename.lower().endswith(
-                    tuple(re.findall("\*(\.[a-z]{1,5})", fileFilter))):
-                ext = re.search("\*(\.[a-z]{1,5})", selectedFileFilter)
+                    tuple(re.findall("\*(\.[a-z]{1,10})", fileFilter))):
+                ext = re.search("\*(\.[a-z]{1,10})", selectedFileFilter)
                 if ext:
                     filename = filename + ext.group(1)
             self.leOutputFile.setText(filename)
@@ -184,8 +184,7 @@ class FieldsCalculatorDialog(BASE, WIDGET):
         self.alg.setParameterValue('NEW_FIELD',
                 self.mNewFieldGroupBox.isChecked())
         self.alg.setParameterValue('FORMULA', self.builder.expressionText())
-        self.alg.setOutputValue('OUTPUT_LAYER',
-                self.leOutputFile.text())
+        self.alg.setOutputValue('OUTPUT_LAYER', self.leOutputFile.text().strip() or None)
 
         msg = self.alg.checkParameterValuesBeforeExecuting()
         if msg:

@@ -299,7 +299,7 @@ SET(QGIS_CORE_SRCS
   geometry/qgsgeometry.cpp
   geometry/qgsgeometrycollectionv2.cpp
   geometry/qgsgeometryeditutils.cpp
-  geometry/qgsgeometryimport.cpp
+  geometry/qgsgeometryfactory.cpp
   geometry/qgsgeometryutils.cpp
   geometry/qgsgeos.cpp
   geometry/qgspointv2.cpp
@@ -433,6 +433,7 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgscomposertable.h
   composer/qgscomposertablev2.h
   composer/qgscomposertablecolumn.h
+  composer/qgscomposertexttable.h
   composer/qgscomposerhtml.h
   composer/qgscomposermultiframe.h
   composer/qgscomposereffect.h

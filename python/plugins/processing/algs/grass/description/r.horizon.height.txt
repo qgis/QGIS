@@ -9,4 +9,3 @@ ParameterNumber|maxdistance|The maximum distance to consider when finding the ho
 ParameterString|dist|Sampling distance step coefficient (0.5-1.5)|1.0
 ParameterBoolean|-d|Write output in degrees (default is radians)|False
 OutputHTML|html|Horizon
-OutputFile|outputtext|Horizon (text)

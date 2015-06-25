@@ -38,9 +38,9 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         self.restoreSettings()
         self.initialCheck()
 
-        self.addAPIpath.setIcon(QIcon(":/images/themes/default/symbologyAdd.png"))
+        self.addAPIpath.setIcon(QIcon(":/images/themes/default/symbologyAdd.svg"))
         self.addAPIpath.setToolTip(QCoreApplication.translate("PythonConsole", "Add API path"))
-        self.removeAPIpath.setIcon(QIcon(":/images/themes/default/symbologyRemove.png"))
+        self.removeAPIpath.setIcon(QIcon(":/images/themes/default/symbologyRemove.svg"))
         self.removeAPIpath.setToolTip(QCoreApplication.translate("PythonConsole", "Remove API path"))
 
         self.connect( self.preloadAPI,

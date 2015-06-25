@@ -226,7 +226,7 @@
       <item row="2" column="0" colspan="2">
        <widget class="QCheckBox" name="mWorldFileCheckBox">
         <property name="text">
-         <string>Create world file</string>
+         <string>Create world file only (linear transforms)</string>
         </property>
        </widget>
       </item>

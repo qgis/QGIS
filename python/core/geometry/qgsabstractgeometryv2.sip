@@ -92,7 +92,7 @@ class QgsAbstractGeometryV2
     //render pipeline
     virtual void transform( const QgsCoordinateTransform& ct ) = 0;
     virtual void transform( const QTransform& t ) = 0;
-    virtual void clip( const QgsRectangle& rect );
+    //virtual void clip( const QgsRectangle& rect );
     virtual void draw( QPainter& p ) const = 0;
 
     /**Returns next vertex id and coordinates

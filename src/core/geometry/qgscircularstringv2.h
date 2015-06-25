@@ -69,7 +69,9 @@ class CORE_EXPORT QgsCircularStringV2: public QgsCurveV2
     void draw( QPainter& p ) const override;
     void transform( const QgsCoordinateTransform& ct ) override;
     void transform( const QTransform& t ) override;
+#if 0
     void clip( const QgsRectangle& rect ) override;
+#endif
     void addToPainterPath( QPainterPath& path ) const override;
     void drawAsPolygon( QPainter& p ) const override;
 

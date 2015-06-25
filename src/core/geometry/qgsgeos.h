@@ -40,6 +40,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     QgsAbstractGeometryV2* combine( const QList< const QgsAbstractGeometryV2* > ) const override;
     QgsAbstractGeometryV2* symDifference( const QgsAbstractGeometryV2& geom ) const override;
     QgsAbstractGeometryV2* buffer( double distance, int segments ) const override;
+    QgsAbstractGeometryV2* buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit ) const override;
     QgsAbstractGeometryV2* simplify( double tolerance ) const override;
     QgsAbstractGeometryV2* interpolate( double distance ) const override;
     bool centroid( QgsPointV2& pt ) const override;

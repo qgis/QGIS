@@ -223,7 +223,9 @@ class CORE_EXPORT QgsAbstractGeometryV2
      */
     virtual void transform( const QTransform& t ) = 0;
 
+#if 0
     virtual void clip( const QgsRectangle& rect ); //todo
+#endif
 
     /** Draws the geometry using the specified QPainter.
      * @param p destination QPainter
@@ -323,7 +325,7 @@ class CORE_EXPORT QgsAbstractGeometryV2
     /** Reads a WKB header and tests its validity.
      * @param wkbPtr
      * @param wkbType destination for WKB type from header
-     * @param endianSwap will be set to true if endian from WKB must be swapped to match QGIS platform endianess
+     * @param endianSwap will be set to true if endian from WKB must be swapped to match QGIS platform endianness
      * @param expectedType expected WKB type
      * @returns true if header is valid and matches expected type
      */

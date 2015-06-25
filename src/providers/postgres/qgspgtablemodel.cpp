@@ -68,6 +68,10 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty& layerProper
     {
       tip = tr( "Enter a SRID" );
     }
+    else if ( layerProperty.pkCols.size() > 0 )
+    {
+      tip = tr( "Select a primary key" );
+    }
 
     QStandardItem *schemaNameItem = new QStandardItem( layerProperty.schemaName );
     QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ), wkbType == QGis::WKBUnknown ? tr( "Select..." ) : QgsPostgresConn::displayStringForWkbType( wkbType ) );
@@ -88,20 +92,17 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty& layerProper
       sridItem->setFlags( sridItem->flags() | Qt::ItemIsEditable );
     }
 
-    QString pkCol = "";
+    QStandardItem *pkItem = new QStandardItem( "" );
     if ( layerProperty.pkCols.size() > 0 )
     {
-      pkCol = layerProperty.pkCols[0];
-    }
-
-    QStandardItem *pkItem = new QStandardItem( pkCol );
-    if ( layerProperty.pkCols.size() > 1 )
+      pkItem->setText( tr( "Select..." ) );
       pkItem->setFlags( pkItem->flags() | Qt::ItemIsEditable );
+    }
     else
       pkItem->setFlags( pkItem->flags() & ~Qt::ItemIsEditable );
 
     pkItem->setData( layerProperty.pkCols, Qt::UserRole + 1 );
-    pkItem->setData( pkCol, Qt::UserRole + 2 );
+    pkItem->setData( "", Qt::UserRole + 2 );
 
     QStandardItem *selItem = new QStandardItem( "" );
     selItem->setFlags( selItem->flags() | Qt::ItemIsUserCheckable );

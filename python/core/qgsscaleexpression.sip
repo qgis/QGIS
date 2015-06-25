@@ -35,8 +35,9 @@ class QgsScaleExpression : QgsExpression
      * @param maxValue maximum value, corresponds to specified maximum size
      * @param minSize minimum size
      * @param maxSize maximum size
+     * @param nullSize size in case expression evaluates to NULL
      */
-    QgsScaleExpression( Type type, const QString& baseExpression, double minValue, double maxValue, double minSize, double maxSize );
+    QgsScaleExpression( Type type, const QString& baseExpression, double minValue, double maxValue, double minSize, double maxSize, double nullSize = 0 );
 
     operator bool() const;
 
@@ -67,6 +68,11 @@ class QgsScaleExpression : QgsExpression
      * @see minValue
      */
     double maxValue() const;
+
+    /** Returns the size value when expression evaluates to NULL.
+     * @see nullSize
+     */
+    double nullSize() const;
 
     /** Returns the base expression string (or field reference) used for
      * calculating the values to be mapped to a size.

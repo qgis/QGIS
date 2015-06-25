@@ -28,8 +28,8 @@ __revision__ = '$Format:%H$'
 
 import os
 import importlib
+import subprocess
 from PyQt4.QtGui import QIcon
-from processing.gui.Help2Html import getHtmlFromRstFile
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
@@ -111,9 +111,10 @@ class SagaAlgorithm212(GeoAlgorithm):
             if isinstance(param, ParameterRaster):
                 if param.value is None:
                     continue
-                value = param.value
-                if not value.endswith('sgrd'):
-                    exportCommand = self.exportRasterLayer(value)
+                if param.value.endswith('sdat'):
+                    param.value = param.value[:-4] + "sgrd"
+                elif not param.value.endswith('sgrd'):
+                    exportCommand = self.exportRasterLayer(param.value)
                     if exportCommand is not None:
                         commands.append(exportCommand)
             if isinstance(param, ParameterVector):
@@ -143,11 +144,15 @@ class SagaAlgorithm212(GeoAlgorithm):
                 if layers is None or len(layers) == 0:
                     continue
                 if param.datatype == ParameterMultipleInput.TYPE_RASTER:
-                    for layerfile in layers:
-                        if not layerfile.endswith('sgrd'):
+                    for i, layerfile in enumerate(layers):
+                        if layerfile.endswith('sdat'):
+                            layerfile = param.value[:-4] + "sgrd"
+                            layers[i] = layerfile
+                        elif not layerfile.endswith('sgrd'):
                             exportCommand = self.exportRasterLayer(layerfile)
                             if exportCommand is not None:
                                 commands.append(exportCommand)
+                        param.value = ";".join(layers)
                 elif param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
                     for layerfile in layers:
                         layer = dataobjects.getObjectFromUri(layerfile, False)
@@ -209,51 +214,23 @@ class SagaAlgorithm212(GeoAlgorithm):
                 command += ' -' + param.name + ' "' + str(param.value) + '"'
 
         for out in self.outputs:
-            if isinstance(out, OutputRaster):
-                filename = out.getCompatibleFileName(self)
-                filename += '.sgrd'
-                command += ' -' + out.name + ' "' + filename + '"'
-            if isinstance(out, OutputVector):
-                filename = out.getCompatibleFileName(self)
-                command += ' -' + out.name + ' "' + filename + '"'
-            if isinstance(out, OutputTable):
-                filename = out.getCompatibleFileName(self)
-                command += ' -' + out.name + ' "' + filename + '"'
+            command += ' -' + out.name + ' "' + out.getCompatibleFileName(self) + '"'
 
         commands.append(command)
 
-        # 3: Export resulting raster layers
-        # optim = ProcessingConfig.getSetting(SagaUtils.SAGA_IMPORT_EXPORT_OPTIMIZATION)
+
+        # special treatment for RGB algorithm
+        #TODO: improve this and put this code somewhere else
         for out in self.outputs:
             if isinstance(out, OutputRaster):
                 filename = out.getCompatibleFileName(self)
                 filename2 = filename + '.sgrd'
-                formatIndex = (4 if isWindows() else 1)
-                sessionExportedLayers[filename] = filename2
-
-                # Do not export is the output is not a final output
-                # of the model
-                #  dontExport = True
-                # if self.model is not None and optim:
-                #     for subalg in self.model.algOutputs:
-                #         if out.name in subalg:
-                #             if subalg[out.name] is not None:
-                #                 dontExport = False
-                #                 break
-                #     if dontExport:
-                #         continue
-
                 if self.cmdname == 'RGB Composite':
                     commands.append('io_grid_image 0 -IS_RGB -GRID:"' + filename2
                                     + '" -FILE:"' + filename
                                     + '"')
-                else:
-                    commands.append('io_gdal 1 -GRIDS "' + filename2
-                                    + '" -FORMAT ' + str(formatIndex)
-                                    + ' -TYPE 0 -FILE "' + filename + '"')
 
-
-        # 4: Run SAGA
+        # 3: Run SAGA
         commands = self.editCommands(commands)
         SagaUtils.createSagaBatchJobFileFromSagaCommands(commands)
         loglines = []
@@ -264,6 +241,7 @@ class SagaAlgorithm212(GeoAlgorithm):
         if ProcessingConfig.getSetting(SagaUtils.SAGA_LOG_COMMANDS):
             ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
         SagaUtils.executeSaga(progress)
+
 
     def preProcessInputs(self):
         name = self.commandLineName().replace('.', '_')[len('saga:'):]
@@ -352,4 +330,4 @@ class SagaAlgorithm212(GeoAlgorithm):
                         if extent != extent2:
                             return self.tr("Input layers do not have the same grid extent.")
 
-                        
+

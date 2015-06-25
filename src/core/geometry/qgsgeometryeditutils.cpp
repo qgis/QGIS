@@ -62,7 +62,7 @@ int QgsGeometryEditUtils::addRing( QgsAbstractGeometryV2* geom, QgsCurveV2* ring
     delete ring; return 3;
   }
 
-  QScopedPointer<QgsGeometryEngine> ringGeom( createGeometryEngine( ring ) );
+  QScopedPointer<QgsGeometryEngine> ringGeom( QgsGeometry::createGeometryEngine( ring ) );
   ringGeom->prepareGeometry();
 
   //for each polygon, test if inside outer ring and no intersection with other interior ring
@@ -215,7 +215,7 @@ bool QgsGeometryEditUtils::deletePart( QgsAbstractGeometryV2* geom, int partNum 
 
 QgsAbstractGeometryV2* QgsGeometryEditUtils::avoidIntersections( const QgsAbstractGeometryV2& geom, QMap<QgsVectorLayer*, QSet<QgsFeatureId> > ignoreFeatures )
 {
-  QScopedPointer<QgsGeometryEngine> geomEngine( createGeometryEngine( &geom ) );
+  QScopedPointer<QgsGeometryEngine> geomEngine( QgsGeometry::createGeometryEngine( &geom ) );
   if ( geomEngine.isNull() )
   {
     return 0;
@@ -284,9 +284,4 @@ QgsAbstractGeometryV2* QgsGeometryEditUtils::avoidIntersections( const QgsAbstra
 
   delete combinedGeometries;
   return diffGeom;
-}
-
-QgsGeometryEngine* QgsGeometryEditUtils::createGeometryEngine( const QgsAbstractGeometryV2* geometry )
-{
-  return new QgsGeos( geometry );
 }

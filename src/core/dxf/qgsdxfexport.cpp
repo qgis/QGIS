@@ -3514,16 +3514,19 @@ void QgsDxfExport::writeMText( const QString& layer, const QString& text, const 
 
 void QgsDxfExport::writeSolid( const QString& layer, QColor color, const QgsPoint& pt1, const QgsPoint& pt2, const QgsPoint& pt3, const QgsPoint& pt4 )
 {
-  writeGroup( 0, "SOLID" );
-  writeHandle();
-  writeGroup( 100, "AcDbEntity" );
-  writeGroup( 100, "AcDbTrace" );
-  writeGroup( 8, layer );
-  writeGroup( color );
-  writeGroup( 0, pt1 );
-  writeGroup( 1, pt2 );
-  writeGroup( 2, pt3 );
-  writeGroup( 3, pt4 );
+  // pt1 pt2
+  // pt3 pt4
+  int i = 0;
+  QgsPolygon p( 1 );
+  p[0].resize( pt3 != pt4 ? 5 : 4 );
+  p[0][i++] = pt1;
+  p[0][i++] = pt2;
+  p[0][i++] = pt4;
+  if ( p[0].size() == 5 )
+    p[0][i++] = pt3;
+  p[0][i] = pt1;
+
+  writePolygon( p, layer, "SOLID", color );
 }
 
 void QgsDxfExport::writeVertex( const QgsPoint& pt, const QString& layer )

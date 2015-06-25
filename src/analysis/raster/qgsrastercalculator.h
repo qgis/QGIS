@@ -57,7 +57,7 @@ class ANALYSIS_EXPORT QgsRasterCalculator
      * @param formulaString formula for raster calculation
      * @param outputFile output file path
      * @param outputFormat output file format
-     * @param outputExtent output extent, CRS is specifed by outputCrs parameter
+     * @param outputExtent output extent, CRS is specified by outputCrs parameter
      * @param outputCrs destination CRS for output raster
      * @param nOutputColumns number of columns in output raster
      * @param nOutputRows number of rows in output raster

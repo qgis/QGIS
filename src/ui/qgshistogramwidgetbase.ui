@@ -91,6 +91,13 @@
        </property>
       </spacer>
      </item>
+     <item>
+      <widget class="QPushButton" name="mLoadValuesButton">
+       <property name="text">
+        <string>Load values</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
   </layout>

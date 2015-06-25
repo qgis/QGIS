@@ -34,6 +34,7 @@ from qgis_local_server import getLocalServer
 from test_qgspallabeling_base import TestQgsPalLabeling, runSuite
 from test_qgspallabeling_tests import (
     TestPointBase,
+    TestLineBase,
     suiteTests
 )
 
@@ -212,6 +213,25 @@ class TestServerVsCanvasPoint(TestServerBasePoint, TestPointBase):
         super(TestServerVsCanvasPoint, self).setUp()
         self.configTest('pal_canvas', 'sp')
 
+class TestServerBaseLine(TestServerBase):
+
+    @classmethod
+    def setUpClass(cls):
+        TestServerBase.setUpClass()
+        cls.layer = TestQgsPalLabeling.loadFeatureLayer('line')
+
+class TestServerLine(TestServerBaseLine, TestLineBase):
+
+    def setUp(self):
+        """Run before each test."""
+        super(TestServerLine, self).setUp()
+        self.configTest('pal_server_line', 'sp')
+
+class TestServerVsCanvasLine(TestServerBaseLine, TestLineBase):
+
+    def setUp(self):
+        super(TestServerVsCanvasLine, self).setUp()
+        self.configTest('pal_canvas_line', 'sp')
 
 if __name__ == '__main__':
     # NOTE: unless PAL_SUITE env var is set all test class methods will be run

@@ -53,7 +53,7 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
     bool checkGCPpoints( int count, int &minGCPpoints );
     QString generateModifiedRasterFileName( const QString &raster );
 
-    QString mModifiedRaster;
+    QString mSourceRasterFile;
 
     int mCountGCPpoints;
 

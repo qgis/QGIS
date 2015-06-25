@@ -38,6 +38,8 @@
 #include "qgscomposerlabel.h"
 #include "qgscomposermap.h"
 #include "qgscomposertexttable.h"
+#include "qgscomposertablecolumn.h"
+#include "qgscomposerframe.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcoordsdialog.h"
 #include "qgsmaplayerregistry.h"
@@ -200,6 +202,25 @@ void QgsGeorefPluginGui::closeEvent( QCloseEvent *e )
   }
 }
 
+void QgsGeorefPluginGui::reset()
+{
+  if ( QMessageBox::question( this,
+                              tr( "Reset Georeferencer" ),
+                              tr( "Reset georeferencer and clear all GCP points?" ),
+                              QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel ) != QMessageBox::Cancel )
+  {
+    mRasterFileName.clear();
+    mModifiedRasterFileName.clear();
+    setWindowTitle( tr( "Georeferencer" ) );
+
+    //delete old points
+    clearGCPData();
+
+    //delete any old rasterlayers
+    removeOldLayer();
+  }
+}
+
 // -------------------------- private slots -------------------------------- //
 // File slots
 void QgsGeorefPluginGui::openRaster()
@@ -271,7 +292,7 @@ void QgsGeorefPluginGui::openRaster()
 
   // load previously added points
   mGCPpointsFileName = mRasterFileName + ".points";
-  loadGCPs();
+  ( void )loadGCPs();
 
   mCanvas->setExtent( mLayer->extent() );
   mCanvas->refresh();
@@ -581,7 +602,14 @@ void QgsGeorefPluginGui::loadGCPsDialog()
   if ( mGCPpointsFileName.isEmpty() )
     return;
 
-  loadGCPs();
+  if ( !loadGCPs() )
+  {
+    mMessageBar->pushMessage( tr( "Invalid GCP file" ), tr( "GCP file could not be read." ), QgsMessageBar::WARNING, messageTimeout() );
+  }
+  else
+  {
+    mMessageBar->pushMessage( tr( "GCPs loaded" ), tr( "GCP file successfully loaded." ), QgsMessageBar::INFO, messageTimeout() );
+  }
 }
 
 void QgsGeorefPluginGui::saveGCPsDialog()
@@ -816,6 +844,8 @@ void QgsGeorefPluginGui::layerWillBeRemoved( QString theLayerId )
 void QgsGeorefPluginGui::createActions()
 {
   // File actions
+  connect( mActionReset, SIGNAL( triggered() ), this, SLOT( reset() ) );
+
   mActionOpenRaster->setIcon( getThemeIcon( "/mActionAddRasterLayer.svg" ) );
   connect( mActionOpenRaster, SIGNAL( triggered() ), this, SLOT( openRaster() ) );
 
@@ -934,7 +964,7 @@ void QgsGeorefPluginGui::createMapCanvas()
 
   mToolAddPoint = new QgsGeorefToolAddPoint( mCanvas );
   mToolAddPoint->setAction( mActionAddPoint );
-  connect( mToolAddPoint, SIGNAL( showCoordDailog( const QgsPoint & ) ),
+  connect( mToolAddPoint, SIGNAL( showCoordDialog( const QgsPoint & ) ),
            this, SLOT( showCoordDialog( const QgsPoint & ) ) );
 
   mToolDeletePoint = new QgsGeorefToolDeletePoint( mCanvas );
@@ -1000,7 +1030,7 @@ void QgsGeorefPluginGui::createMenus()
   toolBarEdit->setIconSize( QSize( size, size ) );
   toolBarView->setIconSize( QSize( size, size ) );
   toolBarHistogramStretch->setIconSize( QSize( size, size ) );
-  
+
   // View menu
   if ( layout != QDialogButtonBox::KdeLayout )
   {
@@ -1014,8 +1044,6 @@ void QgsGeorefPluginGui::createMenus()
     menuSettings->addMenu( mPanelMenu );
     menuSettings->addMenu( mToolbarMenu );
   }
-
-  menuBar()->addAction( tr( "Help" ), this, SLOT( contextHelp() ) );
 }
 
 void QgsGeorefPluginGui::createDockWidgets()
@@ -1137,7 +1165,7 @@ void QgsGeorefPluginGui::addRaster( QString file )
 
   // so layer is not added to legend
   QgsMapLayerRegistry::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mLayer, false );
+    QList<QgsMapLayer *>() << mLayer, false, false );
 
   // add layer to map canvas
   QList<QgsMapCanvasLayer> layers;
@@ -1195,48 +1223,57 @@ void QgsGeorefPluginGui::writeSettings()
 }
 
 // GCP points
-void QgsGeorefPluginGui::loadGCPs( /*bool verbose*/ )
+bool QgsGeorefPluginGui::loadGCPs( /*bool verbose*/ )
 {
   QFile pointFile( mGCPpointsFileName );
-  if ( pointFile.open( QIODevice::ReadOnly ) )
+  if ( !pointFile.open( QIODevice::ReadOnly ) )
   {
-    clearGCPData();
+    return false;
+  }
 
-    QTextStream points( &pointFile );
-    QString line = points.readLine();
-    int i = 0;
-    while ( !points.atEnd() )
+  clearGCPData();
+
+  QTextStream points( &pointFile );
+  QString line = points.readLine();
+  int i = 0;
+  while ( !points.atEnd() )
+  {
+    line = points.readLine();
+    QStringList ls;
+    if ( line.contains( QRegExp( "," ) ) ) // in previous format "\t" is delimiter of points in new - ","
     {
-      line = points.readLine();
-      QStringList ls;
-      if ( line.contains( QRegExp( "," ) ) ) // in previous format "\t" is delimiter of points in new - ","
-      {
-        // points from new georeferencer
-        ls = line.split( "," );
-      }
-      else
-      {
-        // points from prev georeferencer
-        ls = line.split( "\t" );
-      }
-
-      QgsPoint mapCoords( ls.at( 0 ).toDouble(), ls.at( 1 ).toDouble() ); // map x,y
-      QgsPoint pixelCoords( ls.at( 2 ).toDouble(), ls.at( 3 ).toDouble() ); // pixel x,y
-      if ( ls.count() == 5 )
-      {
-        bool enable = ls.at( 4 ).toInt();
-        addPoint( pixelCoords, mapCoords, enable, false/*, verbose*/ ); // enabled
-      }
-      else
-        addPoint( pixelCoords, mapCoords, true, false );
-
-      ++i;
+      // points from new georeferencer
+      ls = line.split( "," );
+    }
+    else
+    {
+      // points from prev georeferencer
+      ls = line.split( "\t" );
     }
 
-    mInitialPoints = mPoints;
-    //    showMessageInLog(tr("GCP points loaded from"), mGCPpointsFileName);
-    mCanvas->refresh();
+    if ( ls.count() < 4 )
+    {
+      return false;
+    }
+
+    QgsPoint mapCoords( ls.at( 0 ).toDouble(), ls.at( 1 ).toDouble() ); // map x,y
+    QgsPoint pixelCoords( ls.at( 2 ).toDouble(), ls.at( 3 ).toDouble() ); // pixel x,y
+    if ( ls.count() == 5 )
+    {
+      bool enable = ls.at( 4 ).toInt();
+      addPoint( pixelCoords, mapCoords, enable, false/*, verbose*/ ); // enabled
+    }
+    else
+      addPoint( pixelCoords, mapCoords, true, false );
+
+    ++i;
   }
+
+  mInitialPoints = mPoints;
+  //    showMessageInLog(tr("GCP points loaded from"), mGCPpointsFileName);
+  mCanvas->refresh();
+
+  return true;
 }
 
 void QgsGeorefPluginGui::saveGCPs()
@@ -1333,17 +1370,20 @@ bool QgsGeorefPluginGui::georeference()
       return false;
     }
 
-    bool success = writeWorldFile( origin, pixelXSize, pixelYSize, rotation );
-    if ( success && !mPdfOutputFile.isEmpty() )
+    if ( !writeWorldFile( origin, pixelXSize, pixelYSize, rotation ) )
+    {
+      return false;
+    }
+
+    if ( !mPdfOutputFile.isEmpty() )
     {
       writePDFReportFile( mPdfOutputFile, mGeorefTransform );
     }
-    if ( success && !mPdfOutputMapFile.isEmpty() )
+    if ( !mPdfOutputMapFile.isEmpty() )
     {
       writePDFMapFile( mPdfOutputMapFile, mGeorefTransform );
     }
-
-
+    return true;
   }
   else // Helmert, Polinom 1, Polinom 2, Polinom 3
   {
@@ -1547,15 +1587,11 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
     return false;
   }
 
-  QPrinter printer;
-  printer.setOutputFormat( QPrinter::PdfFormat );
-  printer.setOutputFileName( fileName );
-
   //create composition A4 with 300 dpi
   QgsComposition* composition = new QgsComposition( mCanvas->mapSettings() );
   composition->setPaperSize( 210, 297 ); //A4
   composition->setPrintResolution( 300 );
-  printer.setPaperSize( QSizeF( composition->paperWidth(), composition->paperHeight() ), QPrinter::Millimeter );
+  composition->setNumPages( 2 );
 
   QFont titleFont;
   titleFont.setPointSize( 9 );
@@ -1608,10 +1644,8 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
   composerMap->zoomToExtent( layerExtent );
   composerMap->setMapCanvas( mCanvas );
   composition->addItem( composerMap );
-  printer.setFullPage( true );
-  printer.setColorMode( QPrinter::Color );
 
-  QgsComposerTextTable* parameterTable = 0;
+  QgsComposerTextTableV2* parameterTable = 0;
   double scaleX, scaleY, rotation;
   QgsPoint origin;
 
@@ -1629,6 +1663,7 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
     residualUnits = tr( "pixels" );
   }
 
+  QGraphicsRectItem* previousItem = composerMap;
   if ( wldTransform )
   {
     QString parameterTitle = tr( "Transformation parameters" ) + QString( " (" ) + convertTransformEnumToString( transform.transformParametrisation() ) + QString( ")" );
@@ -1644,25 +1679,30 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
     double meanError = 0;
     calculateMeanError( meanError );
 
-    parameterTable = new QgsComposerTextTable( composition );
+    parameterTable = new QgsComposerTextTableV2( composition, false );
     parameterTable->setHeaderFont( tableHeaderFont );
     parameterTable->setContentFont( tableContentFont );
-    QStringList headers;
-    headers << tr( "Translation x" ) << tr( "Translation y" ) << tr( "Scale x" ) << tr( "Scale y" ) << tr( "Rotation [degrees]" ) << tr( "Mean error [%1]" ).arg( residualUnits );
-    parameterTable->setHeaderLabels( headers );
+
+    QgsComposerTableColumns columns;
+    columns << new QgsComposerTableColumn( tr( "Translation x" ) )
+    << new QgsComposerTableColumn( tr( "Translation y" ) )
+    << new QgsComposerTableColumn( tr( "Scale x" ) )
+    << new QgsComposerTableColumn( tr( "Scale y" ) )
+    << new QgsComposerTableColumn( tr( "Rotation [degrees]" ) )
+    << new QgsComposerTableColumn( tr( "Mean error [%1]" ).arg( residualUnits ) );
+
+    parameterTable->setColumns( columns );
     QStringList row;
     row << QString::number( origin.x(), 'f', 3 ) << QString::number( origin.y(), 'f', 3 ) << QString::number( scaleX ) << QString::number( scaleY ) << QString::number( rotation * 180 / M_PI ) << QString::number( meanError );
     parameterTable->addRow( row );
-    composition->addItem( parameterTable );
-    parameterTable->setSceneRect( QRectF( leftMargin, parameterLabel->rect().bottom() + parameterLabel->pos().y() + 5, contentWidth, 20 ) );
-    parameterTable->setGridStrokeWidth( 0.1 );
-    parameterTable->adjustFrameToSize();
-  }
 
-  QGraphicsRectItem* previousItem = composerMap;
-  if ( parameterTable )
-  {
-    previousItem = parameterTable;
+    QgsComposerFrame* tableFrame = new QgsComposerFrame( composition, parameterTable, leftMargin, parameterLabel->rect().bottom() + parameterLabel->pos().y() + 5, contentWidth, 12 );
+    parameterTable->addFrame( tableFrame );
+
+    composition->addItem( tableFrame );
+    parameterTable->setGridStrokeWidth( 0.1 );
+
+    previousItem = tableFrame;
   }
 
   QgsComposerLabel* residualLabel = new QgsComposerLabel( composition );
@@ -1682,14 +1722,25 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
   //necessary for the correct scale bar unit label
   resPlotItem->setConvertScaleToMapUnits( residualUnits == tr( "map units" ) );
 
-  QgsComposerTextTable* gcpTable = new QgsComposerTextTable( composition );
+  QgsComposerTextTableV2* gcpTable = new QgsComposerTextTableV2( composition, false );
   gcpTable->setHeaderFont( tableHeaderFont );
   gcpTable->setContentFont( tableContentFont );
-  QStringList gcpHeader;
-  gcpHeader << "id" << "enabled" << "pixelX" << "pixelY" << "mapX" << "mapY" << "resX [" + residualUnits + "]" << "resY [" + residualUnits + "]" << "resTot [" + residualUnits + "]";
-  gcpTable->setHeaderLabels( gcpHeader );
+  gcpTable->setHeaderMode( QgsComposerTableV2::AllFrames );
+  QgsComposerTableColumns columns;
+  columns << new QgsComposerTableColumn( tr( "ID" ) )
+  << new QgsComposerTableColumn( tr( "Enabled" ) )
+  << new QgsComposerTableColumn( tr( "Pixel X" ) )
+  << new QgsComposerTableColumn( tr( "Pixel Y" ) )
+  << new QgsComposerTableColumn( tr( "Map X" ) )
+  << new QgsComposerTableColumn( tr( "Map Y" ) )
+  << new QgsComposerTableColumn( tr( "Res X (%1)" ).arg( residualUnits ) )
+  << new QgsComposerTableColumn( tr( "Res Y (%1)" ).arg( residualUnits ) )
+  << new QgsComposerTableColumn( tr( "Res Total (%1)" ).arg( residualUnits ) );
+
+  gcpTable->setColumns( columns );
 
   QgsGCPList::const_iterator gcpIt = mPoints.constBegin();
+  QList< QStringList > gcpTableContents;
   for ( ; gcpIt != mPoints.constEnd(); ++gcpIt )
   {
     QStringList currentGCPStrings;
@@ -1707,27 +1758,32 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
     }
     currentGCPStrings << QString::number(( *gcpIt )->pixelCoords().x(), 'f', 0 ) << QString::number(( *gcpIt )->pixelCoords().y(), 'f', 0 ) << QString::number(( *gcpIt )->mapCoords().x(), 'f', 3 )
     <<  QString::number(( *gcpIt )->mapCoords().y(), 'f', 3 ) <<  QString::number( residual.x() ) <<  QString::number( residual.y() ) << QString::number( residualTot );
-    gcpTable->addRow( currentGCPStrings );
+    gcpTableContents << currentGCPStrings ;
   }
 
-  composition->addItem( gcpTable );
+  gcpTable->setContents( gcpTableContents );
 
-  gcpTable->setSceneRect( QRectF( leftMargin,  resPlotItem->rect().bottom() + resPlotItem->pos().y() + 5, contentWidth, 100 ) );
+  double firstFrameY = resPlotItem->rect().bottom() + resPlotItem->pos().y() + 5;
+  double firstFrameHeight = 287 - firstFrameY;
+  QgsComposerFrame* gcpFirstFrame = new QgsComposerFrame( composition, gcpTable, leftMargin, firstFrameY, contentWidth, firstFrameHeight );
+  gcpTable->addFrame( gcpFirstFrame );
+  composition->addItem( gcpFirstFrame );
+
+  QgsComposerFrame* gcpSecondFrame = new QgsComposerFrame( composition, gcpTable, leftMargin, 10, contentWidth, 277.0 );
+  gcpSecondFrame->setItemPosition( leftMargin, 10, QgsComposerItem::UpperLeft, 2 );
+  gcpSecondFrame->setHidePageIfEmpty( true );
+  gcpTable->addFrame( gcpSecondFrame );
+  composition->addItem( gcpSecondFrame );
+
   gcpTable->setGridStrokeWidth( 0.1 );
+  gcpTable->setResizeMode( QgsComposerMultiFrame::RepeatUntilFinished );
 
-  printer.setResolution( composition->printResolution() );
-  QPainter p( &printer );
-  composition->setPlotStyle( QgsComposition::Print );
-  QRectF paperRectMM = printer.pageRect( QPrinter::Millimeter );
-  QRectF paperRectPixel = printer.pageRect( QPrinter::DevicePixel );
-  composition->render( &p, paperRectPixel, paperRectMM );
+  composition->exportAsPDF( fileName );
 
   delete titleLabel;
   delete parameterLabel;
   delete residualLabel;
   delete resPlotItem;
-  delete parameterTable;
-  delete gcpTable;
   delete composerMap;
   delete composition;
   return true;
@@ -1769,8 +1825,8 @@ void QgsGeorefPluginGui::showGDALScript( const QStringList& commands )
 
   // create window to show gdal script
   QDialogButtonBox *bbxGdalScript = new QDialogButtonBox( QDialogButtonBox::Cancel, Qt::Horizontal, this );
-  QPushButton *pbnCopyInClipBoard = new QPushButton( getThemeIcon( "/mPushButtonEditPaste.png" ),
-      tr( "Copy in clipboard" ), bbxGdalScript );
+  QPushButton *pbnCopyInClipBoard = new QPushButton( getThemeIcon( "/mActionEditPaste.png" ),
+      tr( "Copy to Clipboard" ), bbxGdalScript );
   bbxGdalScript->addButton( pbnCopyInClipBoard, QDialogButtonBox::AcceptRole );
 
   QPlainTextEdit *pteScript = new QPlainTextEdit();

@@ -226,6 +226,7 @@ bool TestQgsBlendModes::imageCheck( QString theTestType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
+  mMapSettings.setOutputDpi( 96 );
   QgsMultiRenderChecker myChecker;
   myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapSettings( mMapSettings );

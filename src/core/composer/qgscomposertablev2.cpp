@@ -265,9 +265,6 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &renderExtent, const 
     return;
   }
 
-  //calculate which rows to show in this frame
-  QPair< int, int > rowsToShow = rowRange( renderExtent, frameIndex );
-
   if ( mComposition->plotStyle() == QgsComposition::Print ||
        mComposition->plotStyle() == QgsComposition::Postscript )
   {
@@ -275,6 +272,9 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &renderExtent, const 
     //we do this in case vector layer has changed via an external source (eg, another database user)
     refreshAttributes();
   }
+
+  //calculate which rows to show in this frame
+  QPair< int, int > rowsToShow = rowRange( renderExtent, frameIndex );
 
   double gridSize = mShowGrid ? mGridStrokeWidth : 0;
   QList<QgsComposerTableColumn*>::const_iterator columnIt = mColumns.constBegin();

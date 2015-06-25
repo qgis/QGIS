@@ -21,6 +21,13 @@
 
 #include <setjmp.h>
 
+// for Sleep / usleep for debugging
+#ifdef Q_OS_WIN
+#include <windows.h>
+#else
+#include <time.h>
+#endif
+
 #include "qgsgrass.h"
 
 #include "qgslogger.h"
@@ -131,11 +138,19 @@ bool QgsGrassObject::setFromUri( const QString& uri )
 QString QgsGrassObject::elementShort() const
 {
   if ( mType == Raster )
+#if GRASS_VERSION_MAJOR < 7
     return "rast";
+#else
+    return "raster";
+#endif
   else if ( mType == Group )
     return "group";
   else if ( mType == Vector )
+#if GRASS_VERSION_MAJOR < 7
     return "vect";
+#else
+    return "vector";
+#endif
   else if ( mType == Region )
     return "region";
   else
@@ -994,6 +1009,30 @@ QStringList GRASS_LIB_EXPORT QgsGrass::vectors( const QString& mapsetPath )
   }
   return list;
 }
+
+bool GRASS_LIB_EXPORT QgsGrass::topoVersion( const QString& gisdbase, const QString& location,
+    const QString& mapset, const QString& mapName, int &major, int &minor )
+{
+  QString path = gisdbase + "/" + location + "/" + mapset + "/vector/" + mapName + "/topo";
+  QFile file( path );
+  if ( !file.exists( path ) || file.size() < 5 )
+  {
+    return false;
+  }
+  if ( !file.open( QIODevice::ReadOnly ) )
+  {
+    return false;
+  }
+  QDataStream stream( &file );
+  quint8 maj, min;
+  stream >> maj;
+  stream >> min;
+  file.close();
+  major = maj;
+  minor = min;
+  return true;
+}
+
 QStringList GRASS_LIB_EXPORT QgsGrass::vectorLayers( const QString& gisdbase, const QString& location,
     const QString& mapset, const QString& mapName )
 {
@@ -1606,6 +1645,7 @@ QProcess GRASS_LIB_EXPORT *QgsGrass::startModule( const QString& gisdbase, const
   process->setEnvironment( environment );
 
   QgsDebugMsg( module + " " + arguments.join( " " ) );
+  //process->start( module, arguments, QProcess::Unbuffered );
   process->start( module, arguments );
   if ( !process->waitForStarted() )
   {
@@ -1953,7 +1993,11 @@ bool GRASS_LIB_EXPORT QgsGrass::deleteObject( const QgsGrassObject & object )
   QString cmd = "g.remove";
   QStringList arguments;
 
+#if GRASS_VERSION_MAJOR < 7
   arguments << object.elementShort() + "=" + object.name();
+#else
+  arguments << "-f" << "type=" + object.elementShort() << "name=" + object.name();
+#endif
 
   try
   {
@@ -2220,4 +2264,15 @@ void GRASS_LIB_EXPORT QgsGrass::vectDestroyMapStruct( struct Map_info *map )
   // call G_fatal_error, otherwise check and remove use of vectDestroyMapStruct from G_CATCH blocks
   qgsFree( map );
   map = 0;
+}
+
+void GRASS_LIB_EXPORT QgsGrass::sleep( int ms )
+{
+// Stolen from QTest::qSleep
+#ifdef Q_OS_WIN
+  Sleep( uint( ms ) );
+#else
+  struct timespec ts = { ms / 1000, ( ms % 1000 ) * 1000 * 1000 };
+  nanosleep( &ts, NULL );
+#endif
 }

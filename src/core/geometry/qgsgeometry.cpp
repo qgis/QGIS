@@ -21,7 +21,7 @@ email                : morb at ozemail dot com dot au
 #include "qgis.h"
 #include "qgsgeometry.h"
 #include "qgsgeometryeditutils.h"
-#include "qgsgeometryimport.h"
+#include "qgsgeometryfactory.h"
 #include "qgsgeometryutils.h"
 #include "qgsgeos.h"
 #include "qgsapplication.h"
@@ -156,7 +156,7 @@ bool QgsGeometry::isEmpty() const
 
 QgsGeometry* QgsGeometry::fromWkt( QString wkt )
 {
-  QgsAbstractGeometryV2* geom = QgsGeometryImport::geomFromWkt( wkt );
+  QgsAbstractGeometryV2* geom = QgsGeometryFactory::geomFromWkt( wkt );
   if ( !geom )
   {
     return 0;
@@ -166,7 +166,7 @@ QgsGeometry* QgsGeometry::fromWkt( QString wkt )
 
 QgsGeometry* QgsGeometry::fromPoint( const QgsPoint& point )
 {
-  QgsAbstractGeometryV2* geom = QgsGeometryImport::fromPoint( point );
+  QgsAbstractGeometryV2* geom = QgsGeometryFactory::fromPoint( point );
   if ( geom )
   {
     return new QgsGeometry( geom );
@@ -176,7 +176,7 @@ QgsGeometry* QgsGeometry::fromPoint( const QgsPoint& point )
 
 QgsGeometry* QgsGeometry::fromPolyline( const QgsPolyline& polyline )
 {
-  QgsAbstractGeometryV2* geom = QgsGeometryImport::fromPolyline( polyline );
+  QgsAbstractGeometryV2* geom = QgsGeometryFactory::fromPolyline( polyline );
   if ( geom )
   {
     return new QgsGeometry( geom );
@@ -186,7 +186,7 @@ QgsGeometry* QgsGeometry::fromPolyline( const QgsPolyline& polyline )
 
 QgsGeometry* QgsGeometry::fromPolygon( const QgsPolygon& polygon )
 {
-  QgsAbstractGeometryV2* geom = QgsGeometryImport::fromPolygon( polygon );
+  QgsAbstractGeometryV2* geom = QgsGeometryFactory::fromPolygon( polygon );
   if ( geom )
   {
     return new QgsGeometry( geom );
@@ -196,7 +196,7 @@ QgsGeometry* QgsGeometry::fromPolygon( const QgsPolygon& polygon )
 
 QgsGeometry* QgsGeometry::fromMultiPoint( const QgsMultiPoint& multipoint )
 {
-  QgsAbstractGeometryV2* geom = QgsGeometryImport::fromMultiPoint( multipoint );
+  QgsAbstractGeometryV2* geom = QgsGeometryFactory::fromMultiPoint( multipoint );
   if ( geom )
   {
     return new QgsGeometry( geom );
@@ -206,7 +206,7 @@ QgsGeometry* QgsGeometry::fromMultiPoint( const QgsMultiPoint& multipoint )
 
 QgsGeometry* QgsGeometry::fromMultiPolyline( const QgsMultiPolyline& multiline )
 {
-  QgsAbstractGeometryV2* geom = QgsGeometryImport::fromMultiPolyline( multiline );
+  QgsAbstractGeometryV2* geom = QgsGeometryFactory::fromMultiPolyline( multiline );
   if ( geom )
   {
     return new QgsGeometry( geom );
@@ -216,7 +216,7 @@ QgsGeometry* QgsGeometry::fromMultiPolyline( const QgsMultiPolyline& multiline )
 
 QgsGeometry* QgsGeometry::fromMultiPolygon( const QgsMultiPolygon& multipoly )
 {
-  QgsAbstractGeometryV2* geom = QgsGeometryImport::fromMultiPolygon( multipoly );
+  QgsAbstractGeometryV2* geom = QgsGeometryFactory::fromMultiPolygon( multipoly );
   if ( geom )
   {
     return new QgsGeometry( geom );
@@ -254,7 +254,7 @@ void QgsGeometry::fromWkb( unsigned char *wkb, size_t length )
     delete d->geometry;
     removeWkbGeos();
   }
-  d->geometry = QgsGeometryImport::geomFromWkb( wkb );
+  d->geometry = QgsGeometryFactory::geomFromWkb( wkb );
   d->mWkb = wkb;
   d->mWkbSize = length;
 }
@@ -908,7 +908,7 @@ bool QgsGeometry::convertToMultiType()
   }
 
   QgsGeometryCollectionV2* multiGeom = dynamic_cast<QgsGeometryCollectionV2*>
-                                       ( QgsGeometryImport::geomFromWkbType( QgsWKBTypes::multiType( d->geometry->wkbType() ) ) );
+                                       ( QgsGeometryFactory::geomFromWkbType( QgsWKBTypes::multiType( d->geometry->wkbType() ) ) );
   if ( !multiGeom )
   {
     return false;
@@ -1192,26 +1192,18 @@ QgsGeometry* QgsGeometry::buffer( double distance, int segments ) const
 
 QgsGeometry* QgsGeometry::buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit ) const
 {
-  return 0; //todo...
-
-#if 0
-#if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
- ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
-  if ( mDirtyGeos )
-    exportWkbToGeos();
-
-  if ( !mGeos )
-    return 0;
-
-  try
+  if ( !d || !d->geometry )
   {
-    return fromGeosGeom( GEOSBufferWithStyle( mGeos, distance, segments, endCapStyle, joinStyle, mitreLimit ) );
+    return 0;
   }
-  CATCH_GEOS( 0 )
-#else
-  return 0;
-#endif
-#endif //0
+
+  QgsGeos g( d->geometry );
+  QgsAbstractGeometryV2* geom = g.buffer( distance, segments, endCapStyle, joinStyle, mitreLimit );
+  if ( !geom )
+  {
+    return 0;
+  }
+  return new QgsGeometry( geom );
 }
 
 QgsGeometry* QgsGeometry::offsetCurve( double distance, int segments, int joinStyle, double mitreLimit ) const
@@ -1484,7 +1476,7 @@ int QgsGeometry::avoidIntersections( QMap<QgsVectorLayer*, QSet< QgsFeatureId > 
 
 void QgsGeometry::validateGeometry( QList<Error> &errors )
 {
-//todo // QgsGeometryValidator::validateGeometry( this, errors );
+  QgsGeometryValidator::validateGeometry( this, errors );
 }
 
 bool QgsGeometry::isGeosValid() const
@@ -2236,6 +2228,11 @@ QgsGeometry* QgsGeometry::convertToPolygon( bool destMultipart ) const
     default:
       return 0;
   }
+}
+
+QgsGeometryEngine* QgsGeometry::createGeometryEngine( const QgsAbstractGeometryV2* geometry )
+{
+  return new QgsGeos( geometry );
 }
 
 QDataStream& operator<<( QDataStream& out, const QgsGeometry& geometry )

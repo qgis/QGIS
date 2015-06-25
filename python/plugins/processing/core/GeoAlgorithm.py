@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -27,10 +28,11 @@ __revision__ = '$Format:%H$'
 
 import os.path
 import traceback
+import subprocess
 import copy
 
 from PyQt4.QtGui import QIcon
-from PyQt4.QtCore import QCoreApplication
+from PyQt4.QtCore import QCoreApplication, QSettings
 from qgis.core import QGis, QgsRasterFileWriter
 
 from processing.core.ProcessingLog import ProcessingLog
@@ -244,6 +246,21 @@ class GeoAlgorithm:
             raise GeoAlgorithmExecutionException(
                 str(e) + self.tr('\nSee log for more details'))
 
+    def _checkParameterValuesBeforeExecuting(self):
+        for param in self.parameters:
+            if isinstance(param, (ParameterRaster, ParameterVector,
+                          ParameterMultipleInput)):
+                if param.value:
+                    if isinstance(param, ParameterMultipleInput):
+                        inputlayers = param.value.split(';')
+                    else:
+                        inputlayers = [param.value]
+                    for inputlayer in inputlayers:
+                        obj = dataobjects.getObjectFromUri(inputlayer)
+                        if obj is None:
+                            return "Wrong parameter value: " + param.value
+        return self.checkParameterValuesBeforeExecuting()
+
     def runPostExecutionScript(self, progress):
         scriptFile = ProcessingConfig.getSetting(
             ProcessingConfig.POST_EXECUTION_SCRIPT)
@@ -294,13 +311,32 @@ class GeoAlgorithm:
             elif isinstance(out, OutputRaster):
                 if out.compatible is not None:
                     layer = dataobjects.getObjectFromUri(out.compatible)
-                    provider = layer.dataProvider()
-                    writer = QgsRasterFileWriter(out.value)
                     format = self.getFormatShortNameFromFilename(out.value)
-                    writer.setOutputFormat(format)
-                    writer.writeRaster(layer.pipe(), layer.width(),
-                                       layer.height(), layer.extent(),
-                                       layer.crs())
+                    orgFile = out.compatible
+                    destFile = out.value
+                    crsid = layer.crs().authid()
+                    settings = QSettings()
+                    path = unicode(settings.value('/GdalTools/gdalPath', ''))
+                    envval = unicode(os.getenv('PATH'))
+                    if not path.lower() in envval.lower().split(os.pathsep):
+                        envval += '%s%s' % (os.pathsep, path)
+                        os.putenv('PATH', envval)
+                    command = 'gdal_translate -of %s -a_srs %s %s %s' % (format, crsid, orgFile, destFile)
+                    if os.name == 'nt':
+                        command = command.split(" ")
+                    else:
+                        command = [command]
+                    proc = subprocess.Popen(
+                        command,
+                        shell=True,
+                        stdout=subprocess.PIPE,
+                        stdin=subprocess.PIPE,
+                        stderr=subprocess.STDOUT,
+                        universal_newlines=False,
+                        )
+                    proc.communicate()
+
+
             elif isinstance(out, OutputTable):
                 if out.compatible is not None:
                     layer = dataobjects.getObjectFromUri(out.compatible)

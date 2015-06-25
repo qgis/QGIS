@@ -16,10 +16,11 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsgeos.h"
 #include "qgsabstractgeometryv2.h"
 #include "qgsgeometrycollectionv2.h"
-#include "qgsgeometryimport.h"
+#include "qgsgeometryfactory.h"
 #include "qgslinestringv2.h"
 #include "qgsmessagelog.h"
 #include "qgsmulticurvev2.h"
+#include "qgsmultilinestringv2.h"
 #include "qgsmultipointv2.h"
 #include "qgsmultipolygonv2.h"
 #include "qgslogger.h"
@@ -821,17 +822,17 @@ QgsAbstractGeometryV2* QgsGeos::fromGeos( const GEOSGeometry* geos )
     }
     case GEOS_MULTILINESTRING:
     {
-      QgsMultiCurveV2* multiCurve = new QgsMultiCurveV2();
+      QgsMultiLineStringV2* multiLineString = new QgsMultiLineStringV2();
       int nParts = GEOSGetNumGeometries_r( geosinit.ctxt, geos );
       for ( int i = 0; i < nParts; ++i )
       {
         QgsLineStringV2* line = sequenceToLinestring( GEOSGetGeometryN_r( geosinit.ctxt, geos, i ), hasZ, hasM );
         if ( line )
         {
-          multiCurve->addGeometry( line );
+          multiLineString->addGeometry( line );
         }
       }
-      return multiCurve;
+      return multiLineString;
     }
     case GEOS_MULTIPOLYGON:
     {
@@ -1182,6 +1183,28 @@ QgsAbstractGeometryV2* QgsGeos::buffer( double distance, int segments ) const
   }
   CATCH_GEOS( 0 );
   return fromGeos( geos );
+}
+
+QgsAbstractGeometryV2 *QgsGeos::buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit ) const
+{
+  if ( !mGeos )
+  {
+    return 0;
+  }
+
+#if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
+ ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
+
+  GEOSGeometry* geos = 0;
+  try
+  {
+    geos = GEOSBufferWithStyle_r( geosinit.ctxt, mGeos, distance, segments, endCapStyle, joinStyle, mitreLimit );
+  }
+  CATCH_GEOS( 0 );
+  return fromGeos( geos );
+#else
+  return 0;
+#endif //0
 }
 
 QgsAbstractGeometryV2* QgsGeos::simplify( double tolerance ) const

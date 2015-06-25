@@ -25,7 +25,7 @@ class QgsGeometryCollectionV2: public QgsAbstractGeometryV2
 
     virtual void transform( const QgsCoordinateTransform& ct );
     void transform( const QTransform& t );
-    virtual void clip( const QgsRectangle& rect );
+    //virtual void clip( const QgsRectangle& rect );
     virtual void draw( QPainter& p ) const;
 
     bool fromWkb( const unsigned char * wkb );

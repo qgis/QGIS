@@ -34,7 +34,7 @@ class QgsGeorefToolAddPoint : public QgsMapToolEmitPoint
     void canvasPressEvent( QMouseEvent * e ) override;
 
   signals:
-    void showCoordDailog( const QgsPoint & );
+    void showCoordDialog( const QgsPoint & );
 };
 
 #endif // QGSGEOREFTOOLADDPOINT_H

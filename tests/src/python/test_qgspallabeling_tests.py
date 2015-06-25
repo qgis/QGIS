@@ -171,6 +171,95 @@ class TestPointBase(object):
         self._Pal.saveEngineSettings()
         self.checkTest()
 
+    def test_buffer(self):
+        # Label with buffer
+        self.lyr.bufferDraw = True
+        self.lyr.bufferSize = 2
+        self.checkTest()
+
+    def test_shadow(self):
+        # Label with shadow
+        self.lyr.shadowDraw = True
+        self.lyr.shadowOffsetDist = 2
+        self.lyr.shadowTransparency = 0
+        self.checkTest()
+
+# noinspection PyPep8Naming
+class TestLineBase(object):
+
+    def __init__(self):
+        """Dummy assignments, intended to be overridden in subclasses"""
+        self.lyr = QgsPalLayerSettings()
+        """:type: QgsPalLayerSettings"""
+        # noinspection PyArgumentList
+        self._TestFont = QFont()  # will become a standard test font
+        self._Pal = None
+        """:type: QgsPalLabeling"""
+        self._Canvas = None
+        """:type: QgsMapCanvas"""
+        # custom mismatches per group/test (should not mask any needed anomaly)
+        # e.g. self._Mismatches['TestClassName'] = 300
+        # check base output class's checkTest() or sublcasses for any defaults
+        self._Mismatches = dict()
+        # custom color tolerances per group/test: 1 - 20 (0 default, 20 max)
+        # (should not mask any needed anomaly)
+        # e.g. self._ColorTols['TestClassName'] = 10
+        # check base output class's checkTest() or sublcasses for any defaults
+        self._ColorTols = dict()
+
+    # noinspection PyMethodMayBeStatic
+    def checkTest(self, **kwargs):
+        """Intended to be overridden in subclasses"""
+        pass
+
+    def test_line_placement_above_line_orientation(self):
+        # Line placement, above, follow line orientation
+        self.lyr.placement = QgsPalLayerSettings.Line
+        self.lyr.placementFlags = QgsPalLayerSettings.AboveLine
+        self.checkTest()
+
+    def test_line_placement_online(self):
+        # Line placement, on line
+        self.lyr.placement = QgsPalLayerSettings.Line
+        self.lyr.placementFlags = QgsPalLayerSettings.OnLine
+        self.checkTest()
+
+    def test_line_placement_below_line_orientation(self):
+        # Line placement, below, follow line orientation
+        self.lyr.placement = QgsPalLayerSettings.Line
+        self.lyr.placementFlags = QgsPalLayerSettings.BelowLine
+        self.checkTest()
+
+    def test_line_placement_above_map_orientation(self):
+        # Line placement, above, follow map orientation
+        self.lyr.placement = QgsPalLayerSettings.Line
+        self.lyr.placementFlags = QgsPalLayerSettings.AboveLine | QgsPalLayerSettings.MapOrientation
+        self.checkTest()
+
+    def test_line_placement_below_map_orientation(self):
+        # Line placement, below, follow map orientation
+        self.lyr.placement = QgsPalLayerSettings.Line
+        self.lyr.placementFlags = QgsPalLayerSettings.BelowLine | QgsPalLayerSettings.MapOrientation
+        self.checkTest()
+
+    def test_curved_placement_online(self):
+        # Curved placement, on line
+        self.lyr.placement = QgsPalLayerSettings.Curved
+        self.lyr.placementFlags = QgsPalLayerSettings.OnLine
+        self.checkTest()
+
+    def test_curved_placement_above(self):
+        # Curved placement, on line
+        self.lyr.placement = QgsPalLayerSettings.Curved
+        self.lyr.placementFlags = QgsPalLayerSettings.AboveLine | QgsPalLayerSettings.MapOrientation
+        self.checkTest()
+
+    def test_curved_placement_below(self):
+        # Curved placement, on line
+        self.lyr.placement = QgsPalLayerSettings.Curved
+        self.lyr.placementFlags = QgsPalLayerSettings.BelowLine | QgsPalLayerSettings.MapOrientation
+        self.checkTest()
+
 
 # noinspection PyPep8Naming
 def suiteTests():

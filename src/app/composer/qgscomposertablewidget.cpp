@@ -272,7 +272,7 @@ void QgsComposerTableWidget::on_mGridStrokeWidthSpinBox_valueChanged( double d )
   {
     return;
   }
-  mComposerTable->beginCommand( tr( "Table grid stroke" ), QgsComposerMergeCommand::TableGridStrokeWidth );
+  mComposerTable->beginCommand( tr( "Table grid line" ), QgsComposerMergeCommand::TableGridStrokeWidth );
   mComposerTable->setGridStrokeWidth( d );
   mComposerTable->update();
   mComposerTable->endCommand();

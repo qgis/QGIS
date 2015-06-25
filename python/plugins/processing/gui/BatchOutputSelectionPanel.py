@@ -56,6 +56,7 @@ class BatchOutputSelectionPanel(QWidget):
         self.horizontalLayout.setMargin(0)
         self.text = QLineEdit()
         self.text.setText('')
+        self.text.setMinimumWidth(300)
         self.text.setSizePolicy(QSizePolicy.Expanding,
                                 QSizePolicy.Expanding)
         self.horizontalLayout.addWidget(self.text)

@@ -1330,6 +1330,8 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
 
 void QgsVectorLayer::setDataSource( QString dataSource, QString baseName, QString provider, bool loadDefaultStyleFlag )
 {
+  QGis::GeometryType oldGeomType = geometryType();
+
   mDataSource = dataSource;
   mLayerName = capitaliseLayerName( baseName );
   setLayerName( mLayerName );
@@ -1340,39 +1342,41 @@ void QgsVectorLayer::setDataSource( QString dataSource, QString baseName, QStrin
     // Always set crs
     setCoordinateSystem();
 
-    // check if there is a default style / propertysheet defined
-    // for this layer and if so apply it
-    bool defaultLoadedFlag = false;
-    if ( loadDefaultStyleFlag )
+    // reset style if loading default style, style is missing, or geometry type has changed
+    if ( !rendererV2() || !legend() || oldGeomType != geometryType() || loadDefaultStyleFlag )
     {
-      loadDefaultStyle( defaultLoadedFlag );
-    }
+      // check if there is a default style / propertysheet defined
+      // for this layer and if so apply it
+      bool defaultLoadedFlag = false;
+      if ( loadDefaultStyleFlag )
+      {
+        loadDefaultStyle( defaultLoadedFlag );
+      }
 
-    // if the default style failed to load or was disabled use some very basic defaults
-    if ( !defaultLoadedFlag && hasGeometryType() )
-    {
-      // add single symbol renderer
-      setRendererV2( QgsFeatureRendererV2::defaultRenderer( geometryType() ) );
-    }
+      // if the default style failed to load or was disabled use some very basic defaults
+      if ( !defaultLoadedFlag && hasGeometryType() )
+      {
+        // add single symbol renderer
+        setRendererV2( QgsFeatureRendererV2::defaultRenderer( geometryType() ) );
+      }
 
-    setLegend( QgsMapLayerLegend::defaultVectorLegend( this ) );
+      setLegend( QgsMapLayerLegend::defaultVectorLegend( this ) );
+    }
 
     connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( checkJoinLayerRemove( QString ) ) );
+    emit repaintRequested();
   }
 }
 
 
 bool QgsVectorLayer::setDataProvider( QString const & provider )
 {
-  // XXX should I check for and possibly delete any pre-existing providers?
-  // XXX How often will that scenario occur?
-  Q_ASSERT( !mDataProvider );
-
   mProviderKey = provider;     // XXX is this necessary?  Usually already set
   // XXX when execution gets here.
 
   //XXX - This was a dynamic cast but that kills the Windows
   //      version big-time with an abnormal termination error
+  delete mDataProvider;
   mDataProvider =
     ( QgsVectorDataProvider* )( QgsProviderRegistry::instance()->provider( provider, mDataSource ) );
 

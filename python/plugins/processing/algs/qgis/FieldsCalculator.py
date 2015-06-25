@@ -151,9 +151,6 @@ class FieldsCalculator(GeoAlgorithm):
         if newField and len(fieldName) == 0:
             return self.tr('Field name is not set. Please enter a field name')
 
-        outputName = self.getOutputValue(self.OUTPUT_LAYER).strip()
-        if outputName == '':
-            return self.tr('Output is not set. Please specify valid filename')
 
     def getCustomParametersDialog(self):
         return FieldsCalculatorDialog(self)

@@ -7,8 +7,9 @@ qgis (2.9.0) UNRELEASED; urgency=medium
   * make build directory configurable
   * include links to qt4 documentation in api docs
   * include browser icons
+  * include libqt4-sql-sqlite and python-pyspatialite as build dependency
 
- -- Jürgen E. Fischer <jef@norbit.de>  Sun, 14 Jun 2015 22:35:11 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Mon, 22 Jun 2015 12:35:51 +0200
 
 qgis (2.8.0) unstable; urgency=medium
 

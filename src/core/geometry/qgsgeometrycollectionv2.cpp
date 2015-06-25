@@ -15,7 +15,7 @@ email                : marco.hugentobler at sourcepole dot com
 
 #include "qgsgeometrycollectionv2.h"
 #include "qgsapplication.h"
-#include "qgsgeometryimport.h"
+#include "qgsgeometryfactory.h"
 #include "qgsgeometryutils.h"
 #include "qgscircularstringv2.h"
 #include "qgscompoundcurvev2.h"
@@ -148,6 +148,7 @@ void QgsGeometryCollectionV2::transform( const QTransform& t )
   }
 }
 
+#if 0
 void QgsGeometryCollectionV2::clip( const QgsRectangle& rect )
 {
   QVector< QgsAbstractGeometryV2* >::iterator it = mGeometries.begin();
@@ -156,6 +157,7 @@ void QgsGeometryCollectionV2::clip( const QgsRectangle& rect )
     ( *it )->clip( rect );
   }
 }
+#endif
 
 void QgsGeometryCollectionV2::draw( QPainter& p ) const
 {
@@ -181,7 +183,7 @@ bool QgsGeometryCollectionV2::fromWkb( const unsigned char * wkb )
   QList<QgsAbstractGeometryV2*> geometryList;
   for ( int i = 0; i < nGeometries; ++i )
   {
-    QgsAbstractGeometryV2* geom = QgsGeometryImport::geomFromWkb( wkbPtr );
+    QgsAbstractGeometryV2* geom = QgsGeometryFactory::geomFromWkb( wkbPtr );
     if ( geom )
     {
       geometryList.append( geom );
@@ -479,7 +481,7 @@ bool QgsGeometryCollectionV2::hasCurvedSegments() const
 
 QgsAbstractGeometryV2* QgsGeometryCollectionV2::segmentize() const
 {
-  QgsAbstractGeometryV2* geom = QgsGeometryImport::geomFromWkbType( mWkbType );
+  QgsAbstractGeometryV2* geom = QgsGeometryFactory::geomFromWkbType( mWkbType );
   QgsGeometryCollectionV2* geomCollection = dynamic_cast<QgsGeometryCollectionV2*>( geom );
   if ( !geomCollection )
   {

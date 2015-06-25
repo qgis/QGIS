@@ -37,7 +37,7 @@ QgsSmartGroupCondition::QgsSmartGroupCondition( int id, QWidget* parent ) : QWid
   mCondCombo->addItem( tr( "is NOT a member of group" ), QVariant( "!group" ) );
   mCondCombo->addItem( tr( "has NO part of name matching" ), QVariant( "!name" ) );
 
-  mRemoveBtn->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.png" ) ) );
+  mRemoveBtn->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.svg" ) ) );
 
   connect( mRemoveBtn, SIGNAL( clicked() ), this, SLOT( destruct() ) );
 }

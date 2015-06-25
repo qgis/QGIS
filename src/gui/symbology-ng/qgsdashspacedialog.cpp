@@ -32,8 +32,8 @@ QgsDashSpaceDialog::QgsDashSpaceDialog( const QVector<qreal>& v, QWidget* parent
 {
   setupUi( this );
 
-  mAddButton->setIcon( QIcon( iconPath( "symbologyAdd.png" ) ) );
-  mRemoveButton->setIcon( QIcon( iconPath( "symbologyRemove.png" ) ) );
+  mAddButton->setIcon( QIcon( iconPath( "symbologyAdd.svg" ) ) );
+  mRemoveButton->setIcon( QIcon( iconPath( "symbologyRemove.svg" ) ) );
 
   double dash = 0;
   double space = 0;

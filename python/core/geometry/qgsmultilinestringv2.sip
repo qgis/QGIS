@@ -1,4 +1,4 @@
-class QgsMultiLineStringV2: public QgsGeometryCollectionV2
+class QgsMultiLineStringV2: public QgsMultiCurveV2
 {
 %TypeHeaderCode
 #include <qgsmultilinestringv2.h>

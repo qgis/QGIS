@@ -288,17 +288,21 @@ bool QgsDelimitedTextFeatureIterator::nextFeatureInternal( QgsFeature& feature )
 
     if ( mLoadGeometry )
     {
+      bool nullGeom = false;
       if ( mSource->mGeomRep == QgsDelimitedTextProvider::GeomAsWkt )
       {
-        geom = loadGeometryWkt( tokens );
+        geom = loadGeometryWkt( tokens, nullGeom );
       }
       else if ( mSource->mGeomRep == QgsDelimitedTextProvider::GeomAsXy )
       {
-        geom = loadGeometryXY( tokens );
+        geom = loadGeometryXY( tokens, nullGeom );
       }
 
-      if ( ! geom )
+      if (( !geom && !nullGeom ) || ( nullGeom && mTestGeometry ) )
       {
+        // if we didn't get a geom and not because it's null, or we got a null
+        // geom and we are testing for intersecting geometries then ignore this
+        // record
         continue;
       }
     }
@@ -355,11 +359,17 @@ bool QgsDelimitedTextFeatureIterator::setNextFeatureId( qint64 fid )
 
 
 
-QgsGeometry* QgsDelimitedTextFeatureIterator::loadGeometryWkt( const QStringList& tokens )
+QgsGeometry* QgsDelimitedTextFeatureIterator::loadGeometryWkt( const QStringList& tokens, bool &isNull )
 {
   QgsGeometry* geom = 0;
   QString sWkt = tokens[mSource->mWktFieldIndex];
+  if ( sWkt.isEmpty() )
+  {
+    isNull = true;
+    return 0;
+  }
 
+  isNull = false;
   geom = QgsDelimitedTextProvider::geomFromWkt( sWkt, mSource->mWktHasPrefix, mSource->mWktHasZM );
 
   if ( geom && geom->type() != mSource->mGeometryType )
@@ -375,10 +385,16 @@ QgsGeometry* QgsDelimitedTextFeatureIterator::loadGeometryWkt( const QStringList
   return geom;
 }
 
-QgsGeometry* QgsDelimitedTextFeatureIterator::loadGeometryXY( const QStringList& tokens )
+QgsGeometry* QgsDelimitedTextFeatureIterator::loadGeometryXY( const QStringList& tokens, bool &isNull )
 {
   QString sX = tokens[mSource->mXFieldIndex];
   QString sY = tokens[mSource->mYFieldIndex];
+  if ( sX.isEmpty() && sY.isEmpty() )
+  {
+    isNull = true;
+    return 0;
+  }
+  isNull = false;
   QgsPoint pt;
   bool ok = QgsDelimitedTextProvider::pointFromXY( sX, sY, pt, mSource->mDecimalPoint, mSource->mXyDms );
 

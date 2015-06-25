@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from PyQt4 import uic
-from PyQt4.QtGui import QWidget, QIcon, QTableWidgetItem, QComboBox, QLineEdit
+from PyQt4.QtGui import QWidget, QIcon, QTableWidgetItem, QComboBox, QLineEdit, QHeaderView
 
 from qgis.core import QgsApplication
 
@@ -65,8 +65,8 @@ class BatchPanel(BASE, WIDGET):
         self.btnAdvanced.hide()
 
         # Set icons
-        self.btnAdd.setIcon(QgsApplication.getThemeIcon('/mActionSignPlus.png'))
-        self.btnRemove.setIcon(QgsApplication.getThemeIcon('/symbologyRemove.png'))
+        self.btnAdd.setIcon(QgsApplication.getThemeIcon('/symbologyAdd.svg'))
+        self.btnRemove.setIcon(QgsApplication.getThemeIcon('/symbologyRemove.svg'))
         self.btnAdvanced.setIcon(QIcon(os.path.join(pluginPath, 'images', 'alg.png')))
 
         self.alg = alg
@@ -118,6 +118,15 @@ class BatchPanel(BASE, WIDGET):
         # Add three empty rows by default
         for i in xrange(3):
             self.addRow()
+
+        self.tblParameters.horizontalHeader().setResizeMode(QHeaderView.Interactive)
+        self.tblParameters.horizontalHeader().setDefaultSectionSize(250)
+        self.tblParameters.horizontalHeader().setMinimumSectionSize(150)
+        self.tblParameters.horizontalHeader().setResizeMode(QHeaderView.ResizeToContents)
+        self.tblParameters.verticalHeader().setResizeMode(QHeaderView.ResizeToContents)
+        self.tblParameters.horizontalHeader().setStretchLastSection(True)
+
+
 
     def getWidgetFromParameter(self, param, row, col):
         if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable,

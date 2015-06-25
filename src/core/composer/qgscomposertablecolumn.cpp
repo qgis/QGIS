@@ -17,15 +17,17 @@
 
 #include "qgscomposertablecolumn.h"
 
-QgsComposerTableColumn::QgsComposerTableColumn() :
+QgsComposerTableColumn::QgsComposerTableColumn( const QString& heading ) :
     mBackgroundColor( Qt::transparent ),
     mHAlignment( Qt::AlignLeft ),
+    mHeading( heading ),
     mSortByRank( 0 ),
     mSortOrder( Qt::AscendingOrder ),
     mWidth( 0.0 )
 {
 
 }
+
 
 QgsComposerTableColumn::~QgsComposerTableColumn()
 {

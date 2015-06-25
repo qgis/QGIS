@@ -50,7 +50,7 @@ class QgsBrowserPropertiesWidget : public QWidget
     virtual void setItem( QgsDataItem* item ) = 0;
 
     /** Sets whether the properties widget should display in condensed mode, ie, for display in a dock
-     * widget rather than it's own seperate dialog.
+     * widget rather than it's own separate dialog.
      * @param condensedMode set to true to enable condensed mode
      * @note added in QGIS 2.10
      */

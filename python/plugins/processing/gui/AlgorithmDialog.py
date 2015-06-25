@@ -156,7 +156,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                     QMessageBox.No)
                 if reply == QMessageBox.No:
                     return
-            msg = self.alg.checkParameterValuesBeforeExecuting()
+            msg = self.alg._checkParameterValuesBeforeExecuting()
             if msg:
                 QMessageBox.warning(
                     self, self.tr('Unable to execute algorithm'), msg)

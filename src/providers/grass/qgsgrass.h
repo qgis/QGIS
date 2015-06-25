@@ -230,6 +230,10 @@ class QgsGrass
         const QString& mapsetName );
     static GRASS_LIB_EXPORT QStringList groups( const QString& mapsetPath );
 
+    //! Get topo file version 6, 7 or 0 if topo file does not exist
+    static GRASS_LIB_EXPORT bool topoVersion( const QString& gisdbase, const QString& location,
+        const QString& mapset, const QString& mapName, int &major, int &minor );
+
     //! Get list of vector layers, throws QgsGrass::Exception
     static GRASS_LIB_EXPORT QStringList vectorLayers( const QString& gisdbase, const QString& location,
         const QString& mapset, const QString& mapName );
@@ -416,6 +420,9 @@ class QgsGrass
     static GRASS_LIB_EXPORT struct Map_info * vectNewMapStruct();
     // Free struct Map_info
     static GRASS_LIB_EXPORT void vectDestroyMapStruct( struct Map_info *map );
+
+    // Sleep miliseconds (for debugging)
+    static GRASS_LIB_EXPORT void sleep( int ms );
 
   private:
     static int initialized; // Set to 1 after initialization

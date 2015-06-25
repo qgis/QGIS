@@ -21,6 +21,15 @@ typedef unsigned long size_t;
 typedef unsigned int size_t;
 %End
 
+/** \ingroup core
+ * A geometry is the spatial representation of a feature. Since QGIS 2.10, QgsGeometry acts as a generic container
+ * for geometry objects. QgsGeometry is implicitly shared, so making copies of geometries is inexpensive. The geometry
+ * container class can also be stored inside a QVariant object.
+ *
+ * The actual geometry representation is stored as a @link QgsAbstractGeometryV2 @endlink within the container, and
+ * can be accessed via the @link geometry @endlink method or set using the @link setGeometry @endlink method.
+ */
+
 class QgsGeometry
 {
 %TypeHeaderCode
@@ -671,5 +680,9 @@ class QgsGeometry
     QgsPolygon smoothPolygon( const QgsPolygon &polygon, const unsigned int iterations = 1, const double offset = 0.25 ) const;
     /**Smooths a polyline using the Chaikin algorithm*/
     QgsPolyline smoothLine( const QgsPolyline &polyline, const unsigned int iterations = 1, const double offset = 0.25 ) const;
+
+    /** Creates and returns a new geometry engine*/
+    static QgsGeometryEngine* createGeometryEngine( const QgsAbstractGeometryV2* geometry ) /Factory/;
+
 }; // class QgsGeometry
 

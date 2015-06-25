@@ -28,6 +28,6 @@ void QgsGeorefToolAddPoint::canvasPressEvent( QMouseEvent * e )
   // Only add point on Qt:LeftButton
   if ( Qt::LeftButton == e->button() )
   {
-    emit showCoordDailog( toMapCoordinates( e->pos() ) );
+    emit showCoordDialog( toMapCoordinates( e->pos() ) );
   }
 }

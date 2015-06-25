@@ -1966,3 +1966,20 @@ void QgsMapCanvas::enableRotation( bool enable )
 {
   QSettings().setValue( "/qgis/canvasRotation", enable );
 }
+
+void QgsMapCanvas::refreshAllLayers()
+{
+  // reload all layers in canvas
+  for ( int i = 0; i < layerCount(); i++ )
+  {
+    QgsMapLayer *l = layer( i );
+    if ( l )
+      l->reload();
+  }
+
+  // clear the cache
+  clearCache();
+
+  // and then refresh
+  refresh();
+}

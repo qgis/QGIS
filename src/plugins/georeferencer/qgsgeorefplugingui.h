@@ -60,6 +60,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
 
   private slots:
     // file
+    void reset();
     void openRaster();
     void doGeoreference();
     void generateGDALScript();
@@ -151,7 +152,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     void writeSettings();
 
     // gcp points
-    void loadGCPs( /*bool verbose = true*/ );
+    bool loadGCPs( /*bool verbose = true*/ );
     void saveGCPs();
     QgsGeorefPluginGui::SaveGCPs checkNeedGCPSave();
 

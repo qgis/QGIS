@@ -13,6 +13,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include <QByteArray>
 #include <QtConcurrentRun>
 
@@ -35,12 +36,29 @@ extern "C"
 #include <grass/imagery.h>
 }
 
+//------------------------------ QgsGrassImport ------------------------------------
+QgsGrassImportIcon *QgsGrassImportIcon::instance()
+{
+  static QgsGrassImportIcon* sInstance = new QgsGrassImportIcon();
+  return sInstance;
+}
+
+QgsGrassImportIcon::QgsGrassImportIcon()
+    : QgsAnimatedIcon( QgsApplication::iconPath( "/mIconImport.gif" ) )
+{
+}
+
+//------------------------------ QgsGrassImport ------------------------------------
 QgsGrassImport::QgsGrassImport( QgsGrassObject grassObject )
     : QObject()
     , mGrassObject( grassObject )
     , mCanceled( false )
     , mFutureWatcher( 0 )
 {
+  // QMovie used by QgsAnimatedIcon is using QTimer which cannot be start from another thread
+  // (it works on Linux however) so we cannot start it connecting from QgsGrassImportItem and
+  // connect it also here (QgsGrassImport is constructed on the main thread) to a slot doing nothing.
+  QgsGrassImportIcon::instance()->connectFrameChanged( this, SLOT( frameChanged() ) );
 }
 
 QgsGrassImport::~QgsGrassImport()
@@ -50,6 +68,7 @@ QgsGrassImport::~QgsGrassImport()
     QgsDebugMsg( "mFutureWatcher not finished -> waitForFinished()" );
     mFutureWatcher->waitForFinished();
   }
+  QgsGrassImportIcon::instance()->disconnectFrameChanged( this, SLOT( frameChanged() ) );
 }
 
 void QgsGrassImport::setError( QString error )
@@ -202,7 +221,8 @@ bool QgsGrassRasterImport::import()
     QString name = mGrassObject.name();
     if ( provider->bandCount() > 1 )
     {
-      name += QString( "_%1" ).arg( band );
+      // raster.<band> to keep in sync with r.in.gdal
+      name += QString( ".%1" ).arg( band );
     }
     arguments.append( "output=" + name );    // get list of all output names
     QTemporaryFile gisrcFile;
@@ -253,6 +273,37 @@ bool QgsGrassRasterImport::import()
           delete block;
           return false;
         }
+        // prepare null values
+        double noDataValue;
+        if ( block->hasNoDataValue() )
+        {
+          noDataValue = block->noDataValue();
+        }
+        else
+        {
+          switch ( qgis_out_type )
+          {
+            case QGis::Int32:
+              noDataValue = -2147483648.0;
+              break;
+            case QGis::Float32:
+              noDataValue = std::numeric_limits<float>::max() * -1.0;
+              break;
+            case QGis::Float64:
+              noDataValue = std::numeric_limits<double>::max() * -1.0;
+              break;
+            default: // should not happen
+              noDataValue = std::numeric_limits<double>::max() * -1.0;
+          }
+          for ( qgssize i = 0; i < ( qgssize )block->width()*block->height(); i++ )
+          {
+            if ( block->isNoData( i ) )
+            {
+              block->setValue( i, noDataValue );
+            }
+          }
+        }
+
         char * data = block->bits( row, 0 );
         int size = iterCols * block->dataTypeSize();
         QByteArray byteArray = QByteArray::fromRawData( data, size ); // does not copy data and does not take ownership
@@ -262,7 +313,12 @@ bool QgsGrassRasterImport::import()
           break;
         }
         outStream << false; // not canceled
+        outStream << noDataValue;
+
         outStream << byteArray;
+
+        // Without waitForBytesWritten() it does not finish ok on Windows (process timeout)
+        process->waitForBytesWritten( -1 );
 
 #ifndef Q_OS_WIN
         // wait until the row is written to allow quick cancel (don't send data to buffer)
@@ -288,10 +344,10 @@ bool QgsGrassRasterImport::import()
     QString stdoutString = process->readAllStandardOutput().data();
     QString stderrString = process->readAllStandardError().data();
 
-    QString processResult = QString( "exitStatus=%1, exitCode=%2, errorCode=%3, error=%4 stdout=%5, stderr=%6" )
+    QString processResult = QString( "exitStatus=%1, exitCode=%2, error=%3, errorString=%4 stdout=%5, stderr=%6" )
                             .arg( process->exitStatus() ).arg( process->exitCode() )
                             .arg( process->error() ).arg( process->errorString() )
-                            .arg( stdoutString ).arg( stderrString );
+                            .arg( stdoutString.replace( "\n", ", " ) ).arg( stderrString.replace( "\n", ", " ) );
     QgsDebugMsg( "processResult: " + processResult );
 
     if ( process->exitStatus() != QProcess::NormalExit )
@@ -322,9 +378,9 @@ bool QgsGrassRasterImport::import()
       QgsGrass::setMapset( mGrassObject.gisdbase(), mGrassObject.location(), mGrassObject.mapset() );
       struct Ref ref;
       I_get_group_ref( name.toUtf8().data(), &ref );
-      QString redName = name + QString( "_%1" ).arg( redBand );
-      QString greenName = name + QString( "_%1" ).arg( greenBand );
-      QString blueName = name + QString( "_%1" ).arg( blueBand );
+      QString redName = name + QString( ".%1" ).arg( redBand );
+      QString greenName = name + QString( ".%1" ).arg( greenBand );
+      QString blueName = name + QString( ".%1" ).arg( blueBand );
       I_add_file_to_group_ref( redName.toUtf8().data(), mGrassObject.mapset().toUtf8().data(), &ref );
       I_add_file_to_group_ref( greenName.toUtf8().data(), mGrassObject.mapset().toUtf8().data(), &ref );
       I_add_file_to_group_ref( blueName.toUtf8().data(), mGrassObject.mapset().toUtf8().data(), &ref );
@@ -354,7 +410,7 @@ QStringList QgsGrassRasterImport::extensions( QgsRasterDataProvider* provider )
   {
     for ( int band = 1; band <= provider->bandCount(); band++ )
     {
-      list << QString( "_%1" ).arg( band );
+      list << QString( ".%1" ).arg( band );
     }
   }
   return list;
@@ -440,6 +496,7 @@ bool QgsGrassVectorImport::import()
   }
 
   QDataStream outStream( process );
+  process->setReadChannel( QProcess::StandardOutput );
 
   QGis::WkbType wkbType = mProvider->geometryType();
   bool isPolygon = QGis::singleType( QGis::flatType( wkbType ) ) == QGis::WKBPolygon;
@@ -457,6 +514,7 @@ bool QgsGrassVectorImport::import()
       iterator = mProvider->getFeatures();
     }
     QgsDebugMsg( "send features" );
+    int count = 0;
     while ( iterator.nextFeature( feature ) )
     {
       if ( !feature.isValid() )
@@ -475,37 +533,55 @@ bool QgsGrassVectorImport::import()
       outStream << false; // not canceled
       outStream << feature;
 
+      // Without waitForBytesWritten() it does not finish ok on Windows (data lost)
+      process->waitForBytesWritten( -1 );
+
+#ifndef Q_OS_WIN
       // wait until the feature is written to allow quick cancel (don't send data to buffer)
       process->waitForReadyRead();
       bool result;
       outStream >> result;
+#endif
+      count++;
+      // get some feedback for large datasets
+      if ( count % 10000 == 0 )
+      {
+        QgsDebugMsg( QString( "%1 features written" ).arg( count ) );
+      }
     }
     feature = QgsFeature(); // indicate end by invalid feature
     outStream << false; // not canceled
     outStream << feature;
 
+    process->waitForBytesWritten( -1 );
+    QgsDebugMsg( "features sent" );
+#ifndef Q_OS_WIN
     process->waitForReadyRead();
     bool result;
     outStream >> result;
+#endif
   }
   iterator.close();
 
-  process->setReadChannel( QProcess::StandardOutput );
+  // Close write channel before waiting for response to avoid stdin buffer problem on Windows
+  process->closeWriteChannel();
+
+  QgsDebugMsg( "waitForReadyRead" );
   bool result;
   process->waitForReadyRead();
   outStream >> result;
   QgsDebugMsg( QString( "result = %1" ).arg( result ) );
 
-  process->closeWriteChannel();
-  process->waitForFinished( 5000 );
+  QgsDebugMsg( "waitForFinished" );
+  process->waitForFinished( 30000 );
 
   QString stdoutString = process->readAllStandardOutput().data();
   QString stderrString = process->readAllStandardError().data();
 
-  QString processResult = QString( "exitStatus=%1, exitCode=%2, errorCode=%3, error=%4 stdout=%5, stderr=%6" )
+  QString processResult = QString( "exitStatus=%1, exitCode=%2, error=%3, errorString=%4 stdout=%5, stderr=%6" )
                           .arg( process->exitStatus() ).arg( process->exitCode() )
                           .arg( process->error() ).arg( process->errorString() )
-                          .arg( stdoutString ).arg( stderrString );
+                          .arg( stdoutString.replace( "\n", ", " ) ).arg( stderrString.replace( "\n", ", " ) );
   QgsDebugMsg( "processResult: " + processResult );
 
   if ( process->exitStatus() != QProcess::NormalExit )

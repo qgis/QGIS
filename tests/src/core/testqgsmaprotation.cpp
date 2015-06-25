@@ -205,6 +205,7 @@ void TestQgsMapRotation::linesLayer()
 bool TestQgsMapRotation::render( QString theTestType )
 {
   mReport += "<h2>" + theTestType + "</h2>\n";
+  mMapSettings.setOutputDpi( 96 );
   QgsRenderChecker checker;
   checker.setControlPathPrefix( "maprotation" );
   checker.setControlName( "expected_" + theTestType );

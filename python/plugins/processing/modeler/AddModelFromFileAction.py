@@ -55,7 +55,7 @@ class AddModelFromFileAction(ToolboxAction):
         if filename:
             try:
                 settings.setValue('Processing/lastModelsDir',
-                    QFileInfo(fileName).absoluteDir().absolutePath())
+                    QFileInfo(filename).absoluteDir().absolutePath())
 
                 ModelerAlgorithm.fromFile(filename)
             except WrongModelException:
@@ -68,6 +68,7 @@ class AddModelFromFileAction(ToolboxAction):
                 QMessageBox.warning(self.toolbox,
                     self.tr('Error reading model', 'AddModelFromFileAction'),
                     self.tr('Cannot read file', 'AddModelFromFileAction'))
+                return
             destFilename = os.path.join(ModelerUtils.modelsFolder(), os.path.basename(filename))
             shutil.copyfile(filename,destFilename)
             self.toolbox.updateProvider('model')

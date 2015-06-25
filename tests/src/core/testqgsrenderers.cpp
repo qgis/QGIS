@@ -221,6 +221,7 @@ bool TestQgsRenderers::imageCheck( QString theTestType )
   QgsRectangle extent( -118.8888888888887720, 22.8002070393376783, -83.3333333333331581, 46.8719806763287536 );
   mMapSettings.setExtent( extent );
   mMapSettings.setFlag( QgsMapSettings::ForceVectorOutput );
+  mMapSettings.setOutputDpi( 96 );
   QgsMultiRenderChecker myChecker;
   myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapSettings( mMapSettings );

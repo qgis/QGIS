@@ -93,6 +93,7 @@ class TestQgsBlendModes(TestCase):
         self.mMap.resize(QSize(400, 400))
         self.mapSettings = self.mCanvas.mapSettings()
         self.mapSettings.setOutputSize(QSize(400, 400))
+        self.mapSettings.setOutputDpi( 96 )
 
     def testVectorBlending(self):
         """Test that blend modes work for vector layers."""
