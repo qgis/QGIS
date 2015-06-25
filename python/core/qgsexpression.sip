@@ -17,7 +17,7 @@ class QgsExpression
     const QgsExpression::Node* rootNode() const;
 
     //! Get the expression ready for evaluation - find out column indexes.
-    bool prepare( const QgsFields &fields );
+    bool prepare( const QgsFields &fields ) const;
 
     /**Get list of columns referenced by the expression.
      * @note if the returned list contains the QgsFeatureRequest::AllAttributes constant then
@@ -33,21 +33,21 @@ class QgsExpression
 
     //! Evaluate the feature and return the result
     //! @note prepare() should be called before calling this method
-    QVariant evaluate( const QgsFeature* f = NULL );
+    QVariant evaluate( const QgsFeature* f = NULL ) const;
 
     //! Evaluate the feature and return the result
     //! @note prepare() should be called before calling this method
     //! @note available in python bindings as evaluatePrepared
-    QVariant evaluate( const QgsFeature& f ) /PyName=evaluatePrepared/;
+    QVariant evaluate( const QgsFeature& f ) const /PyName=evaluatePrepared/;
 
     //! Evaluate the feature and return the result
     //! @note this method does not expect that prepare() has been called on this instance
-    QVariant evaluate( const QgsFeature* f, const QgsFields& fields );
+    QVariant evaluate( const QgsFeature* f, const QgsFields& fields ) const;
 
     //! Evaluate the feature and return the result
     //! @note this method does not expect that prepare() has been called on this instance
     //! @note not available in python bindings
-    // inline QVariant evaluate( const QgsFeature& f, const QgsFields& fields ) { return evaluate( &f, fields ); }
+    // inline QVariant evaluate( const QgsFeature& f, const QgsFields& fields ) const { return evaluate( &f, fields ); }
 
     //! Returns true if an error occurred when evaluating last input
     bool hasEvalError() const;
@@ -183,7 +183,7 @@ class QgsExpression
         /** The help text for the function. */
         QString helptext();
 
-        virtual QVariant func( const QVariantList& values, const QgsFeature* f, QgsExpression* parent ) = 0;
+        virtual QVariant func( const QVariantList& values, const QgsFeature* f, const QgsExpression* parent ) = 0;
     };
 
 
@@ -237,11 +237,11 @@ class QgsExpression
         virtual QgsExpression::NodeType nodeType() const = 0;
         // abstract virtual eval function
         // errors are reported to the parent
-        virtual QVariant eval( QgsExpression* parent, const QgsFeature* f ) = 0;
+        virtual QVariant eval( const QgsExpression* parent, const QgsFeature* f ) const = 0;
 
         // abstract virtual preparation function
         // errors are reported to the parent
-        virtual bool prepare( QgsExpression* parent, const QgsFields &fields ) = 0;
+        virtual bool prepare( const QgsExpression* parent, const QgsFields &fields ) const = 0;
 
         virtual QString dump() const = 0;
 
@@ -296,8 +296,8 @@ class QgsExpression
         QgsExpression::Node* operand() const;
 
         virtual QgsExpression::NodeType nodeType() const;
-        virtual bool prepare( QgsExpression* parent, const QgsFields &fields );
-        virtual QVariant eval( QgsExpression* parent, const QgsFeature* f );
+        virtual bool prepare( const QgsExpression* parent, const QgsFields &fields ) const;
+        virtual QVariant eval( const QgsExpression* parent, const QgsFeature* f ) const;
         virtual QString dump() const;
 
         virtual QStringList referencedColumns() const;
@@ -316,8 +316,8 @@ class QgsExpression
         QgsExpression::Node* opRight() const;
 
         virtual QgsExpression::NodeType nodeType() const;
-        virtual bool prepare( QgsExpression* parent, const QgsFields &fields );
-        virtual QVariant eval( QgsExpression* parent, const QgsFeature* f );
+        virtual bool prepare( const QgsExpression* parent, const QgsFields &fields ) const;
+        virtual QVariant eval( const QgsExpression* parent, const QgsFeature* f ) const;
         virtual QString dump() const;
 
         virtual QStringList referencedColumns() const;
@@ -338,8 +338,8 @@ class QgsExpression
         QgsExpression::NodeList* list() const;
 
         virtual QgsExpression::NodeType nodeType() const;
-        virtual bool prepare( QgsExpression* parent, const QgsFields &fields );
-        virtual QVariant eval( QgsExpression* parent, const QgsFeature* f );
+        virtual bool prepare( const QgsExpression* parent, const QgsFields &fields ) const;
+        virtual QVariant eval( const QgsExpression* parent, const QgsFeature* f ) const;
         virtual QString dump() const;
 
         virtual QStringList referencedColumns() const;
@@ -358,8 +358,8 @@ class QgsExpression
         QgsExpression::NodeList* args() const;
 
         virtual QgsExpression::NodeType nodeType() const;
-        virtual bool prepare( QgsExpression* parent, const QgsFields &fields );
-        virtual QVariant eval( QgsExpression* parent, const QgsFeature* f );
+        virtual bool prepare( const QgsExpression* parent, const QgsFields &fields ) const;
+        virtual QVariant eval( const QgsExpression* parent, const QgsFeature* f ) const;
         virtual QString dump() const;
 
         virtual QStringList referencedColumns() const;
@@ -375,8 +375,8 @@ class QgsExpression
         QVariant value() const;
 
         virtual QgsExpression::NodeType nodeType() const;
-        virtual bool prepare( QgsExpression* parent, const QgsFields &fields );
-        virtual QVariant eval( QgsExpression* parent, const QgsFeature* f );
+        virtual bool prepare( const QgsExpression* parent, const QgsFields &fields ) const;
+        virtual QVariant eval( const QgsExpression* parent, const QgsFeature* f ) const;
         virtual QString dump() const;
 
         virtual QStringList referencedColumns() const;
@@ -392,8 +392,8 @@ class QgsExpression
         QString name() const;
 
         virtual QgsExpression::NodeType nodeType() const;
-        virtual bool prepare( QgsExpression* parent, const QgsFields &fields );
-        virtual QVariant eval( QgsExpression* parent, const QgsFeature* f );
+        virtual bool prepare( const QgsExpression* parent, const QgsFields &fields ) const;
+        virtual QVariant eval( const QgsExpression* parent, const QgsFeature* f ) const;
         virtual QString dump() const;
 
         virtual QStringList referencedColumns() const;
@@ -420,8 +420,8 @@ class QgsExpression
         ~NodeCondition();
 
         virtual QgsExpression::NodeType nodeType() const;
-        virtual QVariant eval( QgsExpression* parent, const QgsFeature* f );
-        virtual bool prepare( QgsExpression* parent, const QgsFields &fields );
+        virtual QVariant eval( const QgsExpression* parent, const QgsFeature* f ) const;
+        virtual bool prepare( const QgsExpression* parent, const QgsFields &fields ) const;
         virtual QString dump() const;
 
         virtual QStringList referencedColumns() const;
