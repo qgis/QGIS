@@ -162,7 +162,11 @@
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
+    </message>
+    <message>
+        <source>Added</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -223,7 +227,11 @@ Abra o diálogo de resultados para verificá-lo.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
+    </message>
+    <message>
+        <source>Incremented</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -242,7 +250,11 @@ Abra o diálogo de resultados para verificá-lo.</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation>Arquivo de Saída</translation>
+        <translation type="obsolete">Arquivo de Saída</translation>
+    </message>
+    <message>
+        <source>Bar plot</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -257,7 +269,7 @@ Abra o diálogo de resultados para verificá-lo.</translation>
     </message>
     <message>
         <source>Statistics for numeric field</source>
-        <translation>Estatísticas para campo numérico</translation>
+        <translation type="obsolete">Estatísticas para campo numérico</translation>
     </message>
     <message>
         <source>Coefficient of Variation</source>
@@ -299,6 +311,10 @@ Abra o diálogo de resultados para verificá-lo.</translation>
         <source>Standard deviation</source>
         <translation>Desvio padrão</translation>
     </message>
+    <message>
+        <source>Statistics</source>
+        <translation type="unfinished">Estatísticas</translation>
+    </message>
 </context>
 <context>
     <name>BasicStatisticsStrings</name>
@@ -312,7 +328,7 @@ Abra o diálogo de resultados para verificá-lo.</translation>
     </message>
     <message>
         <source>Statistics for text field</source>
-        <translation>Estatísticas para campos de texto</translation>
+        <translation type="obsolete">Estatísticas para campos de texto</translation>
     </message>
     <message>
         <source>Minimum length</source>
@@ -341,6 +357,10 @@ Abra o diálogo de resultados para verificá-lo.</translation>
     <message>
         <source>Number of unique values</source>
         <translation>Número de valores únicos</translation>
+    </message>
+    <message>
+        <source>Statistics for text</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -582,11 +602,15 @@ Abra o diálogo de resultados para verificá-lo.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
     </message>
     <message>
         <source>Error calculating centroid</source>
         <translation>Erro ao calcular o centróide</translation>
+    </message>
+    <message>
+        <source>Centroids</source>
+        <translation type="unfinished">Centroides</translation>
     </message>
 </context>
 <context>
@@ -594,6 +618,29 @@ Abra o diálogo de resultados para verificá-lo.</translation>
     <message>
         <source>&lt;p&gt;Character: &lt;span style=&quot;font-size: 24pt; font-family: %1&quot;&gt;%2&lt;/span&gt;&lt;p&gt;Value: 0x%3</source>
         <translation>&lt;p&gt;Caractere: &lt;span style=&quot;font-size: 24pt; font-family: %1&quot;&gt;%2&lt;/span&gt;&lt;p&gt;Valor: 0x%3</translation>
+    </message>
+</context>
+<context>
+    <name>CheckValidity</name>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished">Camada de entrada</translation>
+    </message>
+    <message>
+        <source>Method</source>
+        <translation type="unfinished">Método</translation>
+    </message>
+    <message>
+        <source>Valid output</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid output</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error output</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -635,11 +682,15 @@ Abra o diálogo de resultados para verificá-lo.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
     </message>
     <message>
         <source>Nodata value, leave blank to take the nodata value from input</source>
         <translation>Valor Nodata, deixe como vazio para obter o valor nodata proveninente da entrada</translation>
+    </message>
+    <message>
+        <source>Clipped (extent)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -666,11 +717,15 @@ Abra o diálogo de resultados para verificá-lo.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
     </message>
     <message>
         <source>Nodata value, leave blank to take the nodata value from input</source>
         <translation>Valor Nodata, deixe como vazio para obter o valor nodata proveniente da entrada</translation>
+    </message>
+    <message>
+        <source>Clipped (mask)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -743,7 +798,11 @@ Abra o diálogo de resultados para verificá-lo.</translation>
     </message>
     <message>
         <source>Output file</source>
-        <translation>Arquivo de saída</translation>
+        <translation type="obsolete">Arquivo de saída</translation>
+    </message>
+    <message>
+        <source>Color relief</source>
+        <translation type="unfinished">Cor do relevo</translation>
     </message>
 </context>
 <context>
@@ -946,7 +1005,11 @@ Abra o diálogo de resultados para verificá-lo.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
+    </message>
+    <message>
+        <source>Constant</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1543,6 +1606,10 @@ Consulta:
         <source>%1 is an invalid layer and cannot be loaded. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
         <translation>%1 é uma camada inválida e não pode ser carregada. Por favor, verifique a  &lt;a href=&quot;#messageLog&quot;&gt;mensagem de log&lt;/a&gt; para mais informações.</translation>
     </message>
+    <message>
+        <source>New Connection...</source>
+        <translation type="unfinished">Nova conexão...</translation>
+    </message>
 </context>
 <context>
     <name>DTM2TIF</name>
@@ -1553,6 +1620,25 @@ Consulta:
     <message>
         <source>Output file name</source>
         <translation>Nome do arquivo de saída</translation>
+    </message>
+</context>
+<context>
+    <name>Datasources2Vrt</name>
+    <message>
+        <source>Input datasources</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overwrite output vrt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Virtual vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Virtual string</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1892,6 +1978,10 @@ colunas</translation>
         <source>Avoid selecting by feature id</source>
         <translation>Evite selecionar pela id da feição</translation>
     </message>
+    <message>
+        <source>Create a view</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DbManagerDlgTableProperties</name>
@@ -1961,6 +2051,93 @@ colunas</translation>
     </message>
 </context>
 <context>
+    <name>DbManagerQueryBuilderDlg</name>
+    <message>
+        <source>SQL query builder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Columns</source>
+        <translation type="unfinished">Colunas</translation>
+    </message>
+    <message>
+        <source>Tables     </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Where    </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Group by</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Order by</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show system tables</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tables</source>
+        <translation type="unfinished">Tabelas</translation>
+    </message>
+    <message>
+        <source>Aggregates</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Functions</source>
+        <translation type="unfinished">Funções</translation>
+    </message>
+    <message>
+        <source>Math</source>
+        <translation type="unfinished">Matemática</translation>
+    </message>
+    <message>
+        <source>Strings functions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Operators</source>
+        <translation type="unfinished">Operadores</translation>
+    </message>
+    <message>
+        <source>Columns&apos; values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Only 10 first values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Spatial index</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Table (with spatial index)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Table (Target)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use spatial index</source>
+        <translation type="unfinished">Usar índice espacial</translation>
+    </message>
+    <message>
+        <source>&amp;Reset</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Delaunay</name>
     <message>
         <source>Input layer</source>
@@ -1987,7 +2164,11 @@ colunas</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation>Arquivo de saída</translation>
+        <translation type="obsolete">Arquivo de saída</translation>
+    </message>
+    <message>
+        <source>Deleted column</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1998,7 +2179,22 @@ colunas</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation>Arquivo de saída</translation>
+        <translation type="obsolete">Arquivo de saída</translation>
+    </message>
+    <message>
+        <source>Cleaned</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DeleteHoles</name>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished">Camada de entrada</translation>
+    </message>
+    <message>
+        <source>Cleaned</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2043,7 +2239,11 @@ colunas</translation>
     </message>
     <message>
         <source>Densified layer</source>
-        <translation>Densificar camada</translation>
+        <translation type="obsolete">Densificar camada</translation>
+    </message>
+    <message>
+        <source>Densified</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2058,7 +2258,11 @@ colunas</translation>
     </message>
     <message>
         <source>Densified layer</source>
-        <translation>Camada densificada</translation>
+        <translation type="obsolete">Camada densificada</translation>
+    </message>
+    <message>
+        <source>Densified</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3130,6 +3334,42 @@ Tem a certeza que quer prosseguir?</translation>
         <source>Include input features that intersect the selection features</source>
         <translation>Inclui elementos de entrada que intersectam com os elementos selecionados</translation>
     </message>
+    <message>
+        <source>Statistical method for attribute aggregation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input point vector layer attributes to aggregate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select columns</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>sum</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>stddev</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>mean</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>max</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>min</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotation angle in degrees</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Difference</name>
@@ -3194,6 +3434,45 @@ Tem a certeza que quer prosseguir?</translation>
     </message>
 </context>
 <context>
+    <name>DinfDistDownMulti</name>
+    <message>
+        <source>D-Infinity Flow Direction Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pit Filled Elevation Grid</source>
+        <translation type="unfinished">Gride de Elevação com Depressões Preenchida</translation>
+    </message>
+    <message>
+        <source>Stream Raster Grid</source>
+        <translation type="unfinished">Gride Raster de Corrente</translation>
+    </message>
+    <message>
+        <source>Weight Path Grid</source>
+        <translation type="unfinished">Gride de Pesos do Trajeto</translation>
+    </message>
+    <message>
+        <source>Statistical Method</source>
+        <translation type="unfinished">Método Estatístico</translation>
+    </message>
+    <message>
+        <source>Distance Method</source>
+        <translation type="unfinished">Método de Distância</translation>
+    </message>
+    <message>
+        <source>Check for edge contamination</source>
+        <translation type="unfinished">Verificar a contaminação das bordas</translation>
+    </message>
+    <message>
+        <source>D-Infinity Drop to Stream Grid</source>
+        <translation type="unfinished">Gride de D-Infinity de Queda da Corrente</translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished">Número errado de processos MPI usados. Por favor defina o número correto antes de executar os algoritmos TauDEM.</translation>
+    </message>
+</context>
+<context>
     <name>DinfDistUp</name>
     <message>
         <source>D-Infinity Flow Direction Grid</source>
@@ -3230,6 +3509,45 @@ Tem a certeza que quer prosseguir?</translation>
     <message>
         <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
         <translation>Número errado de processos MPI usados. Por favor defina o número correto antes de executar os algoritmos TauDEM.</translation>
+    </message>
+</context>
+<context>
+    <name>DinfDistUpMulti</name>
+    <message>
+        <source>D-Infinity Flow Direction Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pit Filled Elevation Grid</source>
+        <translation type="unfinished">Gride de Elevação com Depressões Preenchida</translation>
+    </message>
+    <message>
+        <source>Slope Grid</source>
+        <translation type="unfinished">Gride de Declives</translation>
+    </message>
+    <message>
+        <source>Statistical Method</source>
+        <translation type="unfinished">Método Estatístico</translation>
+    </message>
+    <message>
+        <source>Distance Method</source>
+        <translation type="unfinished">Método de Distância</translation>
+    </message>
+    <message>
+        <source>Proportion Threshold</source>
+        <translation type="unfinished">Proporção do Threshold</translation>
+    </message>
+    <message>
+        <source>Check for edge contamination</source>
+        <translation type="unfinished">Verificar a contaminação das bordas</translation>
+    </message>
+    <message>
+        <source>D-Infinity Distance Up</source>
+        <translation type="unfinished">D-Infinidade de Distância Acima</translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished">Número errado de processos MPI usados. Por favor defina o número correto antes de executar os algoritmos TauDEM.</translation>
     </message>
 </context>
 <context>
@@ -3308,6 +3626,84 @@ Tem a certeza que quer prosseguir?</translation>
     <message>
         <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
         <translation>Número errado de processos MPI usados. Por favor defina o número correto antes de executar os algoritmos TauDEM.</translation>
+    </message>
+</context>
+<context>
+    <name>DinfTransLimAccum2Multi</name>
+    <message>
+        <source>D-Infinity Flow Direction Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Supply Grid</source>
+        <translation type="unfinished">Gride de Abastecimento</translation>
+    </message>
+    <message>
+        <source>Transport Capacity Grid</source>
+        <translation type="unfinished">Gride de Capacidade de Transporte</translation>
+    </message>
+    <message>
+        <source>Input Concentration Grid</source>
+        <translation type="unfinished">Entrada de Gride da Concentração</translation>
+    </message>
+    <message>
+        <source>Outlets Shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check for edge contamination</source>
+        <translation type="unfinished">Verificar a contaminação das bordas</translation>
+    </message>
+    <message>
+        <source>Transport Limited Accumulation Grid</source>
+        <translation type="unfinished">Gride de Transporte de Acumulação Limitada</translation>
+    </message>
+    <message>
+        <source>Deposition Grid</source>
+        <translation type="unfinished">Gride de Depósitos</translation>
+    </message>
+    <message>
+        <source>Output Concentration Grid</source>
+        <translation type="unfinished">Saída de Gride da Concentração</translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished">Número errado de processos MPI usados. Por favor defina o número correto antes de executar os algoritmos TauDEM.</translation>
+    </message>
+</context>
+<context>
+    <name>DinfTransLimAccumMulti</name>
+    <message>
+        <source>D-Infinity Flow Direction Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Supply Grid</source>
+        <translation type="unfinished">Gride de Abastecimento</translation>
+    </message>
+    <message>
+        <source>Transport Capacity Grid</source>
+        <translation type="unfinished">Gride de Capacidade de Transporte</translation>
+    </message>
+    <message>
+        <source>Outlets Shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check for edge contamination</source>
+        <translation type="unfinished">Verificar a contaminação das bordas</translation>
+    </message>
+    <message>
+        <source>Transport Limited Accumulation Grid</source>
+        <translation type="unfinished">Gride de Transporte de Acumulação Limitada</translation>
+    </message>
+    <message>
+        <source>Deposition Grid</source>
+        <translation type="unfinished">Gride de Depósitos</translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished">Número errado de processos MPI usados. Por favor defina o número correto antes de executar os algoritmos TauDEM.</translation>
     </message>
 </context>
 <context>
@@ -3791,12 +4187,12 @@ Tem a certeza que quer prosseguir?</translation>
     </message>
     <message>
         <source>DB Manager</source>
-        <translation>Gerenciador BD</translation>
+        <translation type="obsolete">Gerenciador BD</translation>
     </message>
     <message>
         <source>You must fill the required fields: 
 geometry column - column with unique integer values</source>
-        <translation>Você deve preencher os campos requisitados: 
+        <translation type="obsolete">Você deve preencher os campos requisitados: 
 coluna de geometria - coluna com valores inteiros únicos</translation>
     </message>
 </context>
@@ -3946,6 +4342,53 @@ coluna de geometria - coluna com valores inteiros únicos</translation>
     </message>
 </context>
 <context>
+    <name>DropAnalysisMulti</name>
+    <message>
+        <source>D8 Contributing Area Grid</source>
+        <translation type="unfinished">Gride D8 da Área de Contribuição</translation>
+    </message>
+    <message>
+        <source>D8 Flow Direction Grid</source>
+        <translation type="unfinished">Gride D8 das Direções de Fluxo</translation>
+    </message>
+    <message>
+        <source>Pit Filled Elevation Grid</source>
+        <translation type="unfinished">Gride de Elevação com Depressões Preenchida</translation>
+    </message>
+    <message>
+        <source>Accumulated Stream Source Grid</source>
+        <translation type="unfinished">Gride de Acumulação da Corrente na Fonte</translation>
+    </message>
+    <message>
+        <source>Outlets Shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minimum Threshold</source>
+        <translation type="unfinished">Limite Mínimo</translation>
+    </message>
+    <message>
+        <source>Maximum Threshold</source>
+        <translation type="unfinished">Limite Máximo</translation>
+    </message>
+    <message>
+        <source>Number of Threshold Values</source>
+        <translation type="unfinished">Número de Valores Limite</translation>
+    </message>
+    <message>
+        <source>Spacing for Threshold Values</source>
+        <translation type="unfinished">Espaçamento para os Valores de Limite</translation>
+    </message>
+    <message>
+        <source>D-Infinity Drop to Stream Grid</source>
+        <translation type="unfinished">Gride de D-Infinity de Queda da Corrente</translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished">Número errado de processos MPI usados. Por favor defina o número correto antes de executar os algoritmos TauDEM.</translation>
+    </message>
+</context>
+<context>
     <name>EditModelAction</name>
     <message>
         <source>Edit model</source>
@@ -3957,6 +4400,21 @@ coluna de geometria - coluna com valores inteiros únicos</translation>
     <message>
         <source>Edit script</source>
         <translation>Editar script</translation>
+    </message>
+</context>
+<context>
+    <name>EffectPropertiesWidget</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Effect type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This effect doesn&apos;t have any editable properties</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3987,7 +4445,7 @@ coluna de geometria - coluna com valores inteiros únicos</translation>
     </message>
     <message>
         <source>Cleaned layer</source>
-        <translation>Camada limpa</translation>
+        <translation type="obsolete">Camada limpa</translation>
     </message>
     <message>
         <source>Cannot convert &quot;%s&quot; to integer</source>
@@ -4029,6 +4487,10 @@ coluna de geometria - coluna com valores inteiros únicos</translation>
         <source>Could not replace geometry of feature with id %s</source>
         <translation>Não é possível substituir a geometria do elemento com id %s</translation>
     </message>
+    <message>
+        <source>Cleaned</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>EquivalentNumField</name>
@@ -4042,7 +4504,11 @@ coluna de geometria - coluna com valores inteiros únicos</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
+    </message>
+    <message>
+        <source>Numeric field</source>
+        <translation type="unfinished">Campo numérico</translation>
     </message>
 </context>
 <context>
@@ -4064,7 +4530,11 @@ coluna de geometria - coluna com valores inteiros únicos</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
+    </message>
+    <message>
+        <source>Exploded</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4079,7 +4549,11 @@ coluna de geometria - coluna com valores inteiros únicos</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
+    </message>
+    <message>
+        <source>Added geom info</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4094,7 +4568,11 @@ coluna de geometria - coluna com valores inteiros únicos</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
+    </message>
+    <message>
+        <source>Extent</source>
+        <translation type="unfinished">Extensão</translation>
     </message>
 </context>
 <context>
@@ -4144,7 +4622,7 @@ coluna de geometria - coluna com valores inteiros únicos</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation>Arquivo de Saída</translation>
+        <translation type="obsolete">Arquivo de Saída</translation>
     </message>
     <message>
         <source>Operators %s can be used only with string fields.</source>
@@ -4166,6 +4644,10 @@ coluna de geometria - coluna com valores inteiros únicos</translation>
         <source>Unsupported field type &quot;%s&quot;</source>
         <translation>Tipo de campo não suportado &quot;%s&quot;</translation>
     </message>
+    <message>
+        <source>Extracted (attribute)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ExtractByLocation</name>
@@ -4179,11 +4661,15 @@ coluna de geometria - coluna com valores inteiros únicos</translation>
     </message>
     <message>
         <source>Selection</source>
-        <translation>Seleção</translation>
+        <translation type="obsolete">Seleção</translation>
     </message>
     <message>
         <source>Geometric predicate</source>
         <translation>Predicado geométrico</translation>
+    </message>
+    <message>
+        <source>Extracted (location)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4194,7 +4680,11 @@ coluna de geometria - coluna com valores inteiros únicos</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
+    </message>
+    <message>
+        <source>Nodes</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4280,7 +4770,7 @@ coluna de geometria - coluna com valores inteiros únicos</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
     </message>
     <message>
         <source>Evaluation error: %s</source>
@@ -4298,7 +4788,11 @@ coluna de geometria - coluna com valores inteiros únicos</translation>
     </message>
     <message>
         <source>Output is not set. Please specify valid filename</source>
-        <translation>O arquivo de saída não está definido. Por favor especifique um nome de arquivo válido</translation>
+        <translation type="obsolete">O arquivo de saída não está definido. Por favor especifique um nome de arquivo válido</translation>
+    </message>
+    <message>
+        <source>Calculated</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4317,7 +4811,7 @@ coluna de geometria - coluna com valores inteiros únicos</translation>
     </message>
     <message>
         <source>Wrong or missing parameter values</source>
-        <translation>Os valores do parâmetro estão errado ou faltando</translation>
+        <translation type="obsolete">Os valores do parâmetro estão errado ou faltando</translation>
     </message>
 </context>
 <context>
@@ -4332,7 +4826,7 @@ coluna de geometria - coluna com valores inteiros únicos</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
     </message>
     <message>
         <source>Parser error in expression &quot;{}&quot;: {}</source>
@@ -4347,6 +4841,10 @@ coluna de geometria - coluna com valores inteiros únicos</translation>
 </source>
         <translation>Ocorreu um erro ao avaliar a sequência de cálculo:
 </translation>
+    </message>
+    <message>
+        <source>Refactored</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4381,7 +4879,7 @@ coluna de geometria - coluna com valores inteiros únicos</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
     </message>
     <message>
         <source>FieldPyculator code execute error.Global code block can&apos;t be executed!
@@ -4404,6 +4902,10 @@ coluna de geometria - coluna com valores inteiros únicos</translation>
 Field code block does not return &apos;%s1&apos; variable! Please declare this variable in your code!</source>
         <translation>Erro de execução do código FieldPyculator 
 O bloco do código Campo não retorna a variável &apos;%1&apos;! Por favor declare esta variável no seu código!</translation>
+    </message>
+    <message>
+        <source>Calculated</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6114,18 +6616,18 @@ Ver log para mais detalhes</translation>
     <message>
         <source>&lt;p&gt;Oooops! The following output layers could not be open&lt;/p&gt;&lt;ul&gt;
 </source>
-        <translation>&lt;p&gt;Oooops! As seguintes camadas de saída não puderam ser abertas &lt;/p&gt;&lt;ul&gt;
+        <translation type="obsolete">&lt;p&gt;Oooops! As seguintes camadas de saída não puderam ser abertas &lt;/p&gt;&lt;ul&gt;
 </translation>
     </message>
     <message>
         <source>&lt;li&gt;%s: &lt;font size=3 face=&quot;Courier New&quot; color=&quot;#ff0000&quot;&gt;%s&lt;/font&gt;&lt;/li&gt;
 </source>
-        <translation>&lt;li&gt;%s: &lt;tamanho de fonte=3 tipo=&quot;Courier New&quot; cor=&quot;#ff0000&quot;&gt;%s&lt;/fonte&gt;&lt;/li&gt;
+        <translation type="obsolete">&lt;li&gt;%s: &lt;tamanho de fonte=3 tipo=&quot;Courier New&quot; cor=&quot;#ff0000&quot;&gt;%s&lt;/fonte&gt;&lt;/li&gt;
 </translation>
     </message>
     <message>
         <source>&lt;/ul&gt;&lt;p&gt;The above files could not be opened, which probably indicates that they were not correctly produced by the executed algorithm&lt;/p&gt;&lt;p&gt;Checking the log information might help you see why those layers were not created as expected&lt;/p&gt;</source>
-        <translation>&lt;/ul&gt;&lt;p&gt;Os arquivos acima não podem ser abertos, indicando assim que provavelmente não foram corretamente produzidos pelo algoritmo executado&lt;/p&gt;&lt;p&gt;Verificando a informação do registo ajudará a ver o porquê dessas camadas não serem criadas como o esperado&lt;/p&gt;</translation>
+        <translation type="obsolete">&lt;/ul&gt;&lt;p&gt;Os arquivos acima não podem ser abertos, indicando assim que provavelmente não foram corretamente produzidos pelo algoritmo executado&lt;/p&gt;&lt;p&gt;Verificando a informação do registo ajudará a ver o porquê dessas camadas não serem criadas como o esperado&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -6140,11 +6642,15 @@ Ver log para mais detalhes</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation>Arquivo de Saída</translation>
+        <translation type="obsolete">Arquivo de Saída</translation>
     </message>
     <message>
         <source>Cannot convert from %s to %s</source>
         <translation>Não é possível converter de %s para %s</translation>
+    </message>
+    <message>
+        <source>Converted</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6496,6 +7002,25 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
 </context>
 <context>
+    <name>GetRScriptsAction</name>
+    <message>
+        <source>Get R scripts from on-line scripts collection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tools</source>
+        <translation type="unfinished">Ferramentas</translation>
+    </message>
+    <message>
+        <source>Connection problem</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not connect to scripts/models repository</source>
+        <translation type="unfinished">Não foi possível conectar-se ao repositório de scripts / modelos</translation>
+    </message>
+</context>
+<context>
     <name>GetScriptsAction</name>
     <message>
         <source>Get scripts from on-line scripts collection</source>
@@ -6618,15 +7143,15 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>&lt;p&gt;This algorithm requires GRASS GIS 7 to be run. A test to check if GRASS GIS 7 is correctly installed and configured in your system has been performed, with the following result:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</source>
-        <translation>&lt;p&gt;Este algoritmo requer o GRASS GIS 7 para ser executado. Foi feito um teste para verificar se  GRASS GIS 7 está corretamente instalado e configurado no seu sistema, com o seguinte resultado:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</translation>
+        <translation type="obsolete">&lt;p&gt;Este algoritmo requer o GRASS GIS 7 para ser executado. Foi feito um teste para verificar se  GRASS GIS 7 está corretamente instalado e configurado no seu sistema, com o seguinte resultado:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</translation>
     </message>
     <message>
         <source>GRASS GIS 7 seems to be correctly installed and configured&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation>O GRASS GIS 7 parece estar corretamente instalado e configurado&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;</translation>
+        <translation type="obsolete">O GRASS GIS 7 parece estar corretamente instalado e configurado&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Click here&lt;/a&gt; to know more about how to install and configure GRASS GIS 7 to be used with QGIS&lt;/p&gt;</source>
-        <translation>&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Clique aqui&lt;/a&gt; para saber mais de como instalar e configurar o GRASS GIS 7 para ser usado com o QGIS&lt;/p&gt;</translation>
+        <translation type="obsolete">&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Clique aqui&lt;/a&gt; para saber mais de como instalar e configurar o GRASS GIS 7 para ser usado com o QGIS&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -6719,15 +7244,15 @@ Por favor configure-a antes de executar os algoritmos do GRASS .</translation>
     </message>
     <message>
         <source>&lt;p&gt;This algorithm requires GRASS to be run. A test to check if GRASS is correctly installed and configured in your system has been performed, with the following result:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</source>
-        <translation>&lt;p&gt;Este algoritmo requer o GRASS para ser executado. Foi feito um teste para verificar se  GRASS está corretamente instalado e configurado no seu sistema, com o seguinte resultado:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</translation>
+        <translation type="obsolete">&lt;p&gt;Este algoritmo requer o GRASS para ser executado. Foi feito um teste para verificar se  GRASS está corretamente instalado e configurado no seu sistema, com o seguinte resultado:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</translation>
     </message>
     <message>
         <source>GRASS seems to be correctly installed and configured&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation>O GRASS parece estar corretamente instalado e configurado&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;</translation>
+        <translation type="obsolete">O GRASS parece estar corretamente instalado e configurado&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Click here&lt;/a&gt; to know more about how to install and configure GRASS to be used with QGIS&lt;/p&gt;</source>
-        <translation>&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Clique aqui&lt;/a&gt; para saber mais de como instalar e configurar o GRASS para ser usado com o QGIS&lt;/p&gt;</translation>
+        <translation type="obsolete">&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Clique aqui&lt;/a&gt; para saber mais de como instalar e configurar o GRASS para ser usado com o QGIS&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -6802,7 +7327,7 @@ Por favor instale-o antes de executar os algoritmos do GRASS.</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation>Arquivo de Saída</translation>
+        <translation type="obsolete">Arquivo de Saída</translation>
     </message>
     <message>
         <source>Invalid grid spacing: %s/%s</source>
@@ -6815,6 +7340,10 @@ Por favor instale-o antes de executar os algoritmos do GRASS.</translation>
     <message>
         <source>Vertical spacing is too small for the covered area</source>
         <translation>O espaçamento vertical é demasiado pequeno para área coberta</translation>
+    </message>
+    <message>
+        <source>Grid</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6853,7 +7382,11 @@ Por favor instale-o antes de executar os algoritmos do GRASS.</translation>
     </message>
     <message>
         <source>Output file</source>
-        <translation>Arquivo de saída</translation>
+        <translation type="obsolete">Arquivo de saída</translation>
+    </message>
+    <message>
+        <source>Interpolated moving average</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6896,7 +7429,11 @@ Por favor instale-o antes de executar os algoritmos do GRASS.</translation>
     </message>
     <message>
         <source>Output file</source>
-        <translation>Arquivo de saída</translation>
+        <translation type="obsolete">Arquivo de saída</translation>
+    </message>
+    <message>
+        <source>Interpolated metrics</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6943,11 +7480,15 @@ Por favor instale-o antes de executar os algoritmos do GRASS.</translation>
     </message>
     <message>
         <source>Output file</source>
-        <translation>Arquivo de saída</translation>
+        <translation type="obsolete">Arquivo de saída</translation>
     </message>
     <message>
         <source>Smoothing</source>
         <translation>Suavizar</translation>
+    </message>
+    <message>
+        <source>Interpolated IDW</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7025,7 +7566,11 @@ Por favor instale-o antes de executar os algoritmos do GRASS.</translation>
     </message>
     <message>
         <source>Output file</source>
-        <translation>Arquivo de saída</translation>
+        <translation type="obsolete">Arquivo de saída</translation>
+    </message>
+    <message>
+        <source>Interpolated nearest neighbor</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7061,6 +7606,41 @@ Por favor instale-o antes de executar os algoritmos do GRASS.</translation>
     <message>
         <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
         <translation>Número errado de processos MPI usados. Por favor defina o número correto antes de executar os algoritmos TauDEM.</translation>
+    </message>
+</context>
+<context>
+    <name>GridNetMulti</name>
+    <message>
+        <source>D8 Flow Direction Grid</source>
+        <translation type="unfinished">Gride D8 das Direções de Fluxo</translation>
+    </message>
+    <message>
+        <source>Outlets Shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mask Grid</source>
+        <translation type="unfinished">Gride da Máscara</translation>
+    </message>
+    <message>
+        <source>Mask Threshold</source>
+        <translation type="unfinished">Limite da Máscara</translation>
+    </message>
+    <message>
+        <source>Longest Upslope Length Grid</source>
+        <translation type="unfinished">Gride do Aumento com o Comprimento Mais Longo</translation>
+    </message>
+    <message>
+        <source>Total Upslope Length Grid</source>
+        <translation type="unfinished">Gride do Aumento Total Mais Longo</translation>
+    </message>
+    <message>
+        <source>Strahler Network Order Grid</source>
+        <translation type="unfinished">Gride da Ordem da Rede Strahler</translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished">Número errado de processos MPI usados. Por favor defina o número correto antes de executar os algoritmos TauDEM.</translation>
     </message>
 </context>
 <context>
@@ -7130,7 +7710,7 @@ Por favor instale-o antes de executar os algoritmos do GRASS.</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation>Arquivo de Saída</translation>
+        <translation type="obsolete">Arquivo de Saída</translation>
     </message>
     <message>
         <source>Invalid grid spacing: %s/%s</source>
@@ -7139,6 +7719,10 @@ Por favor instale-o antes de executar os algoritmos do GRASS.</translation>
     <message>
         <source>Failed to gridify feature with FID %s</source>
         <translation>Falha na gridificação do elemento com o FID %s</translation>
+    </message>
+    <message>
+        <source>Snapped</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7196,7 +7780,7 @@ Por favor instale-o antes de executar os algoritmos do GRASS.</translation>
     </message>
     <message>
         <source>Creating heatmap</source>
-        <translation>Criar um mapa de calor</translation>
+        <translation type="obsolete">Criar um mapa de calor</translation>
     </message>
     <message>
         <source>Abort</source>
@@ -7209,6 +7793,14 @@ Por favor instale-o antes de executar os algoritmos do GRASS.</translation>
     <message>
         <source>QGIS will now load the partially-computed raster</source>
         <translation>QGIS vai carregar o raster parcialmente produzido</translation>
+    </message>
+    <message>
+        <source>Rendering heatmap...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS</source>
+        <translation type="unfinished">QGIS</translation>
     </message>
 </context>
 <context>
@@ -7357,7 +7949,7 @@ Por favor instale-o antes de executar os algoritmos do GRASS.</translation>
     </message>
     <message>
         <source>Error saving help file</source>
-        <translation>Erro ao salvar arquivo de ajuda</translation>
+        <translation type="obsolete">Erro ao salvar arquivo de ajuda</translation>
     </message>
     <message>
         <source>Help file could not be saved.
@@ -7365,7 +7957,7 @@ Check that you have permission to modify the help
 file. You might not have permission if you are 
 editing an example model or script, since they 
 are stored on the installation folder</source>
-        <translation>O arquivo de ajuda não pode ser salvo.
+        <translation type="obsolete">O arquivo de ajuda não pode ser salvo.
 Verifique se você tem permissões para modificar o ficheiro
 de ajuda. Você pode não ter permissão se você estiver
 editando um modelo de exemplo ou script, uma vez que
@@ -7422,7 +8014,7 @@ que estão armazenados na pasta de instalação</translation>
     </message>
     <message>
         <source>Clear history and log</source>
-        <translation>Limpar histórico e registro</translation>
+        <translation type="obsolete">Limpar histórico e registro</translation>
     </message>
     <message>
         <source>Save As...</source>
@@ -7430,7 +8022,7 @@ que estão armazenados na pasta de instalação</translation>
     </message>
     <message>
         <source>Save history and log</source>
-        <translation>Salvar histórico e log</translation>
+        <translation type="obsolete">Salvar histórico e log</translation>
     </message>
     <message>
         <source>Confirmation</source>
@@ -7438,7 +8030,7 @@ que estão armazenados na pasta de instalação</translation>
     </message>
     <message>
         <source>Are you sure you want to clear log?</source>
-        <translation>Você tem certeza que deseja apagar o log?</translation>
+        <translation type="obsolete">Você tem certeza que deseja apagar o log?</translation>
     </message>
     <message>
         <source>Save file</source>
@@ -7451,6 +8043,18 @@ que estão armazenados na pasta de instalação</translation>
     <message>
         <source>Create test</source>
         <translation>Criar teste</translation>
+    </message>
+    <message>
+        <source>Clear history</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save history</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to clear the history?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7492,11 +8096,15 @@ que estão armazenados na pasta de instalação</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation>Arquivo de Saída</translation>
+        <translation type="obsolete">Arquivo de Saída</translation>
     </message>
     <message>
         <source>Same layer given for both hubs and spokes</source>
         <translation>A mesma camada dada para os hubs e spokes</translation>
+    </message>
+    <message>
+        <source>Hub distance</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7519,11 +8127,15 @@ que estão armazenados na pasta de instalação</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation>Arquivo de Saída</translation>
+        <translation type="obsolete">Arquivo de Saída</translation>
     </message>
     <message>
         <source>Same layer given for both hubs and spokes</source>
         <translation>A mesma camada dada para os hubs e spokes</translation>
+    </message>
+    <message>
+        <source>Hub lines</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7546,7 +8158,7 @@ que estão armazenados na pasta de instalação</translation>
     </message>
     <message>
         <source>Output directory</source>
-        <translation>Caminho de saída</translation>
+        <translation type="obsolete">Caminho de saída</translation>
     </message>
     <message>
         <source>Feature %d does not intersect raster or entirely located in NODATA area</source>
@@ -7559,6 +8171,14 @@ que estão armazenados na pasta de instalação</translation>
     <message>
         <source>Elevation</source>
         <translation>Elevação</translation>
+    </message>
+    <message>
+        <source>Hypsometric curves</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature %d is smaller than raster cell size</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7692,7 +8312,11 @@ que estão armazenados na pasta de instalação</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
+    </message>
+    <message>
+        <source>Joined layer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7898,6 +8522,33 @@ Por favor configure-a antes de executar os algoritmos LAStools.</translation>
     </message>
 </context>
 <context>
+    <name>LengthAreaMulti</name>
+    <message>
+        <source>Length Grid</source>
+        <translation type="unfinished">Comprimento do Gride</translation>
+    </message>
+    <message>
+        <source>Contributing Area Grid</source>
+        <translation type="unfinished">Gride da Área de Contribuição</translation>
+    </message>
+    <message>
+        <source>Threshold</source>
+        <translation type="unfinished">Limite</translation>
+    </message>
+    <message>
+        <source>Exponent</source>
+        <translation type="unfinished">Expoente</translation>
+    </message>
+    <message>
+        <source>Stream Source Grid</source>
+        <translation type="unfinished">Gride da Fonte da Corrente</translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished">Número errado de processos MPI usados. Por favor defina o número correto antes de executar os algoritmos TauDEM.</translation>
+    </message>
+</context>
+<context>
     <name>LidarToolsAlgorithmProvider</name>
     <message>
         <source>LAStools folder</source>
@@ -7936,7 +8587,11 @@ Por favor configure-a antes de executar os algoritmos LAStools.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
+    </message>
+    <message>
+        <source>Intersections</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7947,7 +8602,11 @@ Por favor configure-a antes de executar os algoritmos LAStools.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
+    </message>
+    <message>
+        <source>Polygons from lines</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8594,7 +9253,7 @@ Por favor configure-a antes de executar os algoritmos LAStools.</translation>
     </message>
     <message>
         <source>Query...</source>
-        <translation>Pesquisa...</translation>
+        <translation type="obsolete">Pesquisa...</translation>
     </message>
     <message>
         <source>Add to Overview</source>
@@ -9017,6 +9676,18 @@ Agir na camada editável atual</translation>
         <source>New temporary scratch layer</source>
         <translation>Nova camada de rascunho temporária</translation>
     </message>
+    <message>
+        <source>Filter...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Statistical Summary</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show statistical summary</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ManageConnectionsDialog</name>
@@ -9093,7 +9764,11 @@ Agir na camada editável atual</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation>Arquivo de Saída</translation>
+        <translation type="obsolete">Arquivo de Saída</translation>
+    </message>
+    <message>
+        <source>Plot</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9112,7 +9787,11 @@ Agir na camada editável atual</translation>
     </message>
     <message>
         <source>Result</source>
-        <translation>Resultado</translation>
+        <translation type="obsolete">Resultado</translation>
+    </message>
+    <message>
+        <source>Mean coordinates</source>
+        <translation type="unfinished">Coordenadas médias</translation>
     </message>
 </context>
 <context>
@@ -9127,11 +9806,15 @@ Agir na camada editável atual</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation>Arquivo de Saída</translation>
+        <translation type="obsolete">Arquivo de Saída</translation>
     </message>
     <message>
         <source>Merged layers must have be same type of geometry</source>
         <translation>A junção de camadas devem ter o mesmo tipo de geometria</translation>
+    </message>
+    <message>
+        <source>Merged</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9149,11 +9832,15 @@ Agir na camada editável atual</translation>
     <name>MessageBarProgress</name>
     <message>
         <source>Executing algorithm</source>
-        <translation>Executando algorítmo</translation>
+        <translation type="obsolete">Executando algorítmo</translation>
     </message>
     <message>
         <source>Error</source>
         <translation>Erro</translation>
+    </message>
+    <message>
+        <source>Executing algorithm &lt;i&gt;{0}&lt;/i&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9448,6 +10135,30 @@ Agir na camada editável atual</translation>
         <source>seconds</source>
         <translation>segundos</translation>
     </message>
+    <message>
+        <source>Connection naming</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>When saving the connection of an OWS service</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use the OWS Service Title and ask before overwriting</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use the OWS Service Title and always overwrite if already available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use a temporary name, which you can change later</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Record parsing error</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ModelerAlgorithm</name>
@@ -9484,6 +10195,14 @@ Agir na camada editável atual</translation>
     <message>
         <source>Model processed ok. Executed %i algorithms total</source>
         <translation>Modelo processado ok. Executado %i algoritmos total</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Parameter %s in algorithm %s in the model is run with default value! Edit the model to make sure that this is correct.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9804,7 +10523,11 @@ Veja o registo para mais informação.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
+    </message>
+    <message>
+        <source>Single parts</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9864,7 +10587,7 @@ Veja o registo para mais informação.</translation>
     </message>
     <message>
         <source>Result</source>
-        <translation>Resultado</translation>
+        <translation type="obsolete">Resultado</translation>
     </message>
     <message>
         <source>Observed mean distance</source>
@@ -9885,6 +10608,10 @@ Veja o registo para mais informação.</translation>
     <message>
         <source>Z-Score</source>
         <translation>Z-Score</translation>
+    </message>
+    <message>
+        <source>Nearest neighbour</source>
+        <translation type="unfinished">Vizinho mais próximo</translation>
     </message>
 </context>
 <context>
@@ -9912,6 +10639,10 @@ Veja o registo para mais informação.</translation>
     <message>
         <source>Overwrite %s?</source>
         <translation>Substituir o %s?</translation>
+    </message>
+    <message>
+        <source>Name cannot contain &apos;/&apos;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10064,7 +10795,46 @@ Por favor configure-a antes de executar os algoritmos do OTB.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
+    </message>
+    <message>
+        <source>Converted</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Ogr2OgrBuffer</name>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished">Camada de entrada</translation>
+    </message>
+    <message>
+        <source>Geometry column name (&quot;geometry&quot; for Shapefiles, may be different for other formats)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Buffer distance</source>
+        <translation type="unfinished">Distância do buffer</translation>
+    </message>
+    <message>
+        <source>Dissolve all results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dissolve by attribute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output as singlepart geometries (only used when dissolving by attribute)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Additional creation options (see ogr2ogr manual)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Buffer</source>
+        <translation type="unfinished">Buffer</translation>
     </message>
 </context>
 <context>
@@ -10083,7 +10853,11 @@ Por favor configure-a antes de executar os algoritmos do OTB.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
+    </message>
+    <message>
+        <source>Clipped (polygon)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10102,7 +10876,187 @@ Por favor configure-a antes de executar os algoritmos do OTB.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
+    </message>
+    <message>
+        <source>Clipped (extent)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Ogr2OgrDissolve</name>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished">Camada de entrada</translation>
+    </message>
+    <message>
+        <source>Geometry column name (&quot;geometry&quot; for Shapefiles, may be different for other formats)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dissolve field</source>
+        <translation type="unfinished">Dissolver campo</translation>
+    </message>
+    <message>
+        <source>Output as multipart geometries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Keep input attributes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Count dissolved features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Compute area and perimeter of dissolved features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Compute min/max/sum/mean for the following numeric attribute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Numeric attribute to compute dissolved features stats</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Additional creation options (see ogr2ogr manual)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dissolved</source>
+        <translation type="unfinished">Dissolvido</translation>
+    </message>
+</context>
+<context>
+    <name>Ogr2OgrOneSideBuffer</name>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished">Camada de entrada</translation>
+    </message>
+    <message>
+        <source>Operation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Geometry column name (&quot;geometry&quot; for Shapefiles, may be different for other formats)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Buffer distance</source>
+        <translation type="unfinished">Distância do buffer</translation>
+    </message>
+    <message>
+        <source>Buffer side</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dissolve all results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dissolve by attribute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output as singlepart geometries (only used when dissolving by attribute)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Additional creation options (see ogr2ogr manual)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Single sided buffer</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Ogr2OgrPointsOnLines</name>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished">Camada de entrada</translation>
+    </message>
+    <message>
+        <source>Geometry column name (&quot;geometry&quot; for Shapefiles, may be different for other formats)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Distance from line start represented as fraction of line length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Additional creation options (see ogr2ogr manual)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Points along lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Ogr2OgrTableToPostGisList</name>
+    <message>
+        <source>Database (connection name)</source>
+        <translation type="unfinished">Base de dados (nome da ligação)</translation>
+    </message>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished">Camada de entrada</translation>
+    </message>
+    <message>
+        <source>Schema name</source>
+        <translation type="unfinished">Nome do esquema</translation>
+    </message>
+    <message>
+        <source>Table name, leave blank to use input name</source>
+        <translation type="unfinished">Nome da tabela, deixe vazio para usar o nome da camada</translation>
+    </message>
+    <message>
+        <source>Primary key</source>
+        <translation type="unfinished">Chave primária</translation>
+    </message>
+    <message>
+        <source>Primary key (existing field, used if the above option is left empty)</source>
+        <translation type="unfinished">Chave primária (campo existente, usado se a opção em baixo estiver vazia)</translation>
+    </message>
+    <message>
+        <source>Select features using a SQL &quot;WHERE&quot; statement (Ex: column=&apos;value&apos;)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Group N features per transaction (Default: 20000)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overwrite existing table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Append to existing table</source>
+        <translation type="unfinished">Anexar à tabela existente</translation>
+    </message>
+    <message>
+        <source>Append and add new fields to existing table</source>
+        <translation type="unfinished">Anexar e adicionar novos campos à tabela existente</translation>
+    </message>
+    <message>
+        <source>Do not launder columns/table names</source>
+        <translation type="unfinished">Não limpar os nomes das colunas/tabela</translation>
+    </message>
+    <message>
+        <source>Continue after a failure, skipping the failed record</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Keep width and precision of input attributes</source>
+        <translation type="unfinished">Deixar a largura e precisão dos atributos de entrada</translation>
+    </message>
+    <message>
+        <source>Additional creation options</source>
+        <translation type="unfinished">Opções adicionais de criação</translation>
     </message>
 </context>
 <context>
@@ -10169,7 +11123,7 @@ Por favor configure-a antes de executar os algoritmos do OTB.</translation>
     </message>
     <message>
         <source>Select features using a SQL &quot;WHERE&quot; statement (Ex: column=&quot;value&quot;)</source>
-        <translation>Selecionar elementos usando a instrução SQL &quot;WHERE&quot; (Ex: coluna=&quot;valor&quot;)</translation>
+        <translation type="obsolete">Selecionar elementos usando a instrução SQL &quot;WHERE&quot; (Ex: coluna=&quot;valor&quot;)</translation>
     </message>
     <message>
         <source>Group N features per transaction (Default: 20000)</source>
@@ -10231,6 +11185,10 @@ Por favor configure-a antes de executar os algoritmos do OTB.</translation>
         <source>Keep width and precision of input attributes</source>
         <translation>Deixar a largura e precisão dos atributos de entrada</translation>
     </message>
+    <message>
+        <source>Select features using a SQL &quot;WHERE&quot; statement (Ex: column=&apos;value&apos;)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Ogr2OgrToPostGisList</name>
@@ -10280,7 +11238,7 @@ Por favor configure-a antes de executar os algoritmos do OTB.</translation>
     </message>
     <message>
         <source>Select features using a SQL &quot;WHERE&quot; statement (Ex: column=&quot;value&quot;)</source>
-        <translation>Seleccionar elementos usando a instrução SQL &quot;WHERE&quot; (Ex: coluna=&quot;valor&quot;)</translation>
+        <translation type="obsolete">Seleccionar elementos usando a instrução SQL &quot;WHERE&quot; (Ex: coluna=&quot;valor&quot;)</translation>
     </message>
     <message>
         <source>Group N features per transaction (Default: 20000)</source>
@@ -10341,6 +11299,10 @@ Por favor configure-a antes de executar os algoritmos do OTB.</translation>
     <message>
         <source>Keep width and precision of input attributes</source>
         <translation>Deixar a largura e precisão dos atributos de entrada</translation>
+    </message>
+    <message>
+        <source>Select features using a SQL &quot;WHERE&quot; statement (Ex: column=&apos;value&apos;)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10585,6 +11547,33 @@ Por favor verifique a configuração na janela de configurações do Processamen
     </message>
 </context>
 <context>
+    <name>PeukerDouglasMulti</name>
+    <message>
+        <source>Elevation Grid</source>
+        <translation type="unfinished">Gride de Elevação</translation>
+    </message>
+    <message>
+        <source>Center Smoothing Weight</source>
+        <translation type="unfinished">Peso Central de Suavização</translation>
+    </message>
+    <message>
+        <source>Side Smoothing Weight</source>
+        <translation type="unfinished">Peso Lateral de Suavização</translation>
+    </message>
+    <message>
+        <source>Diagonal Smoothing Weight</source>
+        <translation type="unfinished">Peso Diagonal de Suavização</translation>
+    </message>
+    <message>
+        <source>Stream Source Grid</source>
+        <translation type="unfinished">Gride da Fonte da Corrente</translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished">Número errado de processos MPI usados. Por favor defina o número correto antes de executar os algoritmos TauDEM.</translation>
+    </message>
+</context>
+<context>
     <name>PointDistance</name>
     <message>
         <source>Input point layer</source>
@@ -10631,7 +11620,11 @@ Por favor verifique a configuração na janela de configurações do Processamen
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
+    </message>
+    <message>
+        <source>Displaced</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10646,7 +11639,11 @@ Por favor verifique a configuração na janela de configurações do Processamen
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
+    </message>
+    <message>
+        <source>Points along line</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10661,7 +11658,11 @@ Por favor verifique a configuração na janela de configurações do Processamen
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
+    </message>
+    <message>
+        <source>Points from polygons</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10680,7 +11681,11 @@ Por favor verifique a configuração na janela de configurações do Processamen
     </message>
     <message>
         <source>Result</source>
-        <translation>Resultado</translation>
+        <translation type="obsolete">Resultado</translation>
+    </message>
+    <message>
+        <source>Count</source>
+        <translation type="unfinished">Contagem</translation>
     </message>
 </context>
 <context>
@@ -10710,7 +11715,11 @@ Por favor verifique a configuração na janela de configurações do Processamen
     </message>
     <message>
         <source>Result</source>
-        <translation>Resultado</translation>
+        <translation type="obsolete">Resultado</translation>
+    </message>
+    <message>
+        <source>Unique count</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10733,7 +11742,11 @@ Por favor verifique a configuração na janela de configurações do Processamen
     </message>
     <message>
         <source>Result</source>
-        <translation>Resultado</translation>
+        <translation type="obsolete">Resultado</translation>
+    </message>
+    <message>
+        <source>Weighted count</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10756,7 +11769,11 @@ Por favor verifique a configuração na janela de configurações do Processamen
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
+    </message>
+    <message>
+        <source>Points from table</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10802,7 +11819,11 @@ Por favor verifique a configuração na janela de configurações do Processamen
     </message>
     <message>
         <source>Output</source>
-        <translation>Arquivo de Saída</translation>
+        <translation type="obsolete">Arquivo de Saída</translation>
+    </message>
+    <message>
+        <source>Polar plot</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10872,7 +11893,11 @@ Por favor verifique a configuração na janela de configurações do Processamen
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
+    </message>
+    <message>
+        <source>Polygons from lines</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10883,7 +11908,11 @@ Por favor verifique a configuração na janela de configurações do Processamen
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
+    </message>
+    <message>
+        <source>Lines from polygons</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -11042,7 +12071,7 @@ Por favor verifique a configuração na janela de configurações do Processamen
     </message>
     <message>
         <source>&amp;History and Log...</source>
-        <translation>&amp;Histórico e Log...</translation>
+        <translation type="obsolete">&amp;Histórico e Log...</translation>
     </message>
     <message>
         <source>&amp;Options...</source>
@@ -11059,6 +12088,10 @@ Por favor verifique a configuração na janela de configurações do Processamen
     <message>
         <source>Ctrl+Alt+M</source>
         <translation>Ctrl+Alt+M</translation>
+    </message>
+    <message>
+        <source>&amp;History...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -12014,7 +13047,7 @@ Erro(%2): %3</translation>
     </message>
     <message>
         <source>GEOS prior to 3.2 doesn&apos;t support GEOSInterpolate</source>
-        <translation>GEOS anterior a 3.2 não suporta Insterpolação GEOS</translation>
+        <translation type="obsolete">GEOS anterior a 3.2 não suporta Insterpolação GEOS</translation>
     </message>
     <message>
         <source>segment %1 of ring %2 of polygon %3 intersects segment %4 of ring %5 of polygon %6 at %7</source>
@@ -12972,219 +14005,219 @@ Apenas %1 de %2 feições escritas.</translation>
     </message>
     <message>
         <source>Location: %1</source>
-        <translation>Local: %1</translation>
+        <translation type="obsolete">Local: %1</translation>
     </message>
     <message>
         <source>Location: %1&lt;br&gt;Mapset: %2</source>
-        <translation>Local: %1&lt;br&gt;Coleção de mapa: %2</translation>
+        <translation type="obsolete">Local: %1&lt;br&gt;Coleção de mapa: %2</translation>
     </message>
     <message>
         <source>&lt;b&gt;Raster&lt;/b&gt;</source>
-        <translation>&lt;b&gt;Raster&lt;/b&gt;</translation>
+        <translation type="obsolete">&lt;b&gt;Raster&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Cannot open raster header</source>
-        <translation>Impossível abrir cabeçalho raster</translation>
+        <translation type="obsolete">Impossível abrir cabeçalho raster</translation>
     </message>
     <message>
         <source>Rows</source>
-        <translation>Linhas</translation>
+        <translation type="obsolete">Linhas</translation>
     </message>
     <message>
         <source>Columns</source>
-        <translation>Colunas</translation>
+        <translation type="obsolete">Colunas</translation>
     </message>
     <message>
         <source>N-S resolution</source>
-        <translation>Resolução N-S</translation>
+        <translation type="obsolete">Resolução N-S</translation>
     </message>
     <message>
         <source>E-W resolution</source>
-        <translation>Resolução E-W</translation>
+        <translation type="obsolete">Resolução E-W</translation>
     </message>
     <message>
         <source>North</source>
-        <translation>Norte</translation>
+        <translation type="obsolete">Norte</translation>
     </message>
     <message>
         <source>South</source>
-        <translation>Sul</translation>
+        <translation type="obsolete">Sul</translation>
     </message>
     <message>
         <source>East</source>
-        <translation>Leste</translation>
+        <translation type="obsolete">Leste</translation>
     </message>
     <message>
         <source>West</source>
-        <translation>Oeste</translation>
+        <translation type="obsolete">Oeste</translation>
     </message>
     <message>
         <source>Format</source>
-        <translation>Formato</translation>
+        <translation type="obsolete">Formato</translation>
     </message>
     <message>
         <source>Minimum value</source>
-        <translation>Valor mínimo</translation>
+        <translation type="obsolete">Valor mínimo</translation>
     </message>
     <message>
         <source>Maximum value</source>
-        <translation>Valor máximo</translation>
+        <translation type="obsolete">Valor máximo</translation>
     </message>
     <message>
         <source>Data source</source>
-        <translation>Fonte de dados</translation>
+        <translation type="obsolete">Fonte de dados</translation>
     </message>
     <message>
         <source>Data description</source>
-        <translation>Descrição de dados</translation>
+        <translation type="obsolete">Descrição de dados</translation>
     </message>
     <message>
         <source>Comments</source>
-        <translation>Comentários</translation>
+        <translation type="obsolete">Comentários</translation>
     </message>
     <message>
         <source>Categories</source>
-        <translation>Categorias</translation>
+        <translation type="obsolete">Categorias</translation>
     </message>
     <message>
         <source>&lt;b&gt;Vector&lt;/b&gt;</source>
-        <translation>&lt;b&gt;Vetor&lt;/b&gt;</translation>
+        <translation type="obsolete">&lt;b&gt;Vetor&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Points</source>
-        <translation>Pontos</translation>
+        <translation type="obsolete">Pontos</translation>
     </message>
     <message>
         <source>Lines</source>
-        <translation>Linhas</translation>
+        <translation type="obsolete">Linhas</translation>
     </message>
     <message>
         <source>Boundaries</source>
-        <translation>Limites</translation>
+        <translation type="obsolete">Limites</translation>
     </message>
     <message>
         <source>Centroids</source>
-        <translation>Centroides</translation>
+        <translation type="obsolete">Centroides</translation>
     </message>
     <message>
         <source>Faces</source>
-        <translation>Faces</translation>
+        <translation type="obsolete">Faces</translation>
     </message>
     <message>
         <source>Kernels</source>
-        <translation>Kernels</translation>
+        <translation type="obsolete">Kernels</translation>
     </message>
     <message>
         <source>Areas</source>
-        <translation>Áreas</translation>
+        <translation type="obsolete">Áreas</translation>
     </message>
     <message>
         <source>Islands</source>
-        <translation>Ilhas</translation>
+        <translation type="obsolete">Ilhas</translation>
     </message>
     <message>
         <source>Top</source>
-        <translation>Topo</translation>
+        <translation type="obsolete">Topo</translation>
     </message>
     <message>
         <source>Bottom</source>
-        <translation>Base</translation>
+        <translation type="obsolete">Base</translation>
     </message>
     <message>
         <source>yes</source>
-        <translation>sim</translation>
+        <translation type="obsolete">sim</translation>
     </message>
     <message>
         <source>no</source>
-        <translation>não</translation>
+        <translation type="obsolete">não</translation>
     </message>
     <message>
         <source>History&lt;br&gt;</source>
-        <translation>Histórico&lt;br&gt;</translation>
+        <translation type="obsolete">Histórico&lt;br&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Layer&lt;/b&gt;</source>
-        <translation>&lt;b&gt;Camada&lt;/b&gt;</translation>
+        <translation type="obsolete">&lt;b&gt;Camada&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Features</source>
-        <translation>Feições</translation>
+        <translation type="obsolete">Feições</translation>
     </message>
     <message>
         <source>Driver</source>
-        <translation>Driver</translation>
+        <translation type="obsolete">Driver</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation>Tabela</translation>
+        <translation type="obsolete">Tabela</translation>
     </message>
     <message>
         <source>Key column</source>
-        <translation>Coluna chave</translation>
+        <translation type="obsolete">Coluna chave</translation>
     </message>
     <message>
         <source>&lt;b&gt;Region&lt;/b&gt;</source>
-        <translation>&lt;b&gt;Região&lt;/b&gt;</translation>
+        <translation type="obsolete">&lt;b&gt;Região&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Cannot open region header</source>
-        <translation>Impossível abrir cabeçalho de região</translation>
+        <translation type="obsolete">Impossível abrir cabeçalho de região</translation>
     </message>
     <message>
         <source>XY</source>
-        <translation>XY</translation>
+        <translation type="obsolete">XY</translation>
     </message>
     <message>
         <source>UTM</source>
-        <translation>UTM</translation>
+        <translation type="obsolete">UTM</translation>
     </message>
     <message>
         <source>SP</source>
-        <translation>SP</translation>
+        <translation type="obsolete">SP</translation>
     </message>
     <message>
         <source>LL</source>
-        <translation>LL</translation>
+        <translation type="obsolete">LL</translation>
     </message>
     <message>
         <source>Other</source>
-        <translation>Outro</translation>
+        <translation type="obsolete">Outro</translation>
     </message>
     <message>
         <source>Projection Type</source>
-        <translation>Tipo de projeção</translation>
+        <translation type="obsolete">Tipo de projeção</translation>
     </message>
     <message>
         <source>Zone</source>
-        <translation>Zona</translation>
+        <translation type="obsolete">Zona</translation>
     </message>
     <message>
         <source>3D Cols</source>
-        <translation>Colunas 3D</translation>
+        <translation type="obsolete">Colunas 3D</translation>
     </message>
     <message>
         <source>3D Rows</source>
-        <translation>Linhas 3D</translation>
+        <translation type="obsolete">Linhas 3D</translation>
     </message>
     <message>
         <source>Depths</source>
-        <translation>Profundidade</translation>
+        <translation type="obsolete">Profundidade</translation>
     </message>
     <message>
         <source>E-W 3D resolution</source>
-        <translation>Resolução E-W 3D</translation>
+        <translation type="obsolete">Resolução E-W 3D</translation>
     </message>
     <message>
         <source>N-S 3D resolution</source>
-        <translation>Resolução N-S 3D</translation>
+        <translation type="obsolete">Resolução N-S 3D</translation>
     </message>
     <message>
         <source>GRASS</source>
-        <translation>GRASS</translation>
+        <translation type="obsolete">GRASS</translation>
     </message>
     <message>
         <source>GRASS layer</source>
-        <translation>camada do GRASS</translation>
+        <translation type="obsolete">camada do GRASS</translation>
     </message>
     <message>
         <source>Heatmap</source>
@@ -13395,7 +14428,7 @@ Você gostaria de especificar um caminhos (GISBASE) para sua instalação GRASS?
     </message>
     <message>
         <source>Cannot start %1/etc/lock</source>
-        <translation>Impossível começar %1/etc/lock</translation>
+        <translation type="obsolete">Impossível começar %1/etc/lock</translation>
     </message>
     <message>
         <source>Mapset is already in use.</source>
@@ -13419,11 +14452,11 @@ Você gostaria de especificar um caminhos (GISBASE) para sua instalação GRASS?
     </message>
     <message>
         <source>Cannot open vector %1 in mapset %2 on level 2 (topology not available, try to rebuild topology using v.build module).</source>
-        <translation>Impossível abrir vetor %1 no mapaset %2 no nível 2 (topologia não disponível, tente reconstruir a topologia usando o módulo v.build).</translation>
+        <translation type="obsolete">Impossível abrir vetor %1 no mapaset %2 no nível 2 (topologia não disponível, tente reconstruir a topologia usando o módulo v.build).</translation>
     </message>
     <message>
         <source>Cannot open vector %1 in mapset %2</source>
-        <translation>Impossível abrir vetor %1 no mapset %2</translation>
+        <translation type="obsolete">Impossível abrir vetor %1 no mapset %2</translation>
     </message>
     <message>
         <source>Cannot read raster map region</source>
@@ -13455,7 +14488,7 @@ Você gostaria de especificar um caminhos (GISBASE) para sua instalação GRASS?
     </message>
     <message>
         <source>command: %1 %2&lt;br&gt;%3&lt;br&gt;%4</source>
-        <translation>comando: %1 %2&lt;br&gt;%3&lt;br&gt;%4</translation>
+        <translation type="obsolete">comando: %1 %2&lt;br&gt;%3&lt;br&gt;%4</translation>
     </message>
     <message>
         <source>Cannot get projection </source>
@@ -14115,7 +15148,7 @@ Resposta foi:
     </message>
     <message>
         <source>Fatal error occurred in GRASS library. QGIS gets over the error but any next fatal error will cause QGIS exit without warning. This is a problem of GRASS 7.0.0beta1 but it is fixed in GRASS 7.1 and higher. Error message: %1</source>
-        <translation>Ocorreu um erro fatal na biblioteca do GRASS. O QGIS recebe sobre o erro, mas qualquer erro fatal seguinte fará o QGIS sair sem aviso. Este é um problema do GRASS 7.0.0beta1 mas isso foi corrigido na versão GRASS 7.1 e superiores. Mensagem de erro: %1</translation>
+        <translation type="obsolete">Ocorreu um erro fatal na biblioteca do GRASS. O QGIS recebe sobre o erro, mas qualquer erro fatal seguinte fará o QGIS sair sem aviso. Este é um problema do GRASS 7.0.0beta1 mas isso foi corrigido na versão GRASS 7.1 e superiores. Mensagem de erro: %1</translation>
     </message>
     <message>
         <source>Raster image fill</source>
@@ -14132,6 +15165,216 @@ Resposta foi:
     <message>
         <source>NOTICE: %1</source>
         <translation>AVISO: %1</translation>
+    </message>
+    <message>
+        <source>Blur</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Drop Shadow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Inner Shadow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stack</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Outer Glow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Inner Glow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Source</source>
+        <translation type="unfinished">Fonte</translation>
+    </message>
+    <message>
+        <source>Transform</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Colorise</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Recent colors</source>
+        <translation type="unfinished">Cores recentes</translation>
+    </message>
+    <message>
+        <source>Standard colors</source>
+        <translation type="unfinished">Cores Padrão</translation>
+    </message>
+    <message>
+        <source>Project colors</source>
+        <translation type="unfinished">Cores do Projecto</translation>
+    </message>
+    <message>
+        <source>Number of places must be positive</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Count</source>
+        <translation type="unfinished">Contagem</translation>
+    </message>
+    <message>
+        <source>Sum</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mean</source>
+        <translation type="unfinished">Média</translation>
+    </message>
+    <message>
+        <source>Median</source>
+        <translation type="unfinished">Mediana</translation>
+    </message>
+    <message>
+        <source>St dev (pop)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>St dev (sample)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minimum</source>
+        <translation type="unfinished">Mínimo</translation>
+    </message>
+    <message>
+        <source>Maximum</source>
+        <translation type="unfinished">Máximo</translation>
+    </message>
+    <message>
+        <source>Range</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minority</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Majority</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Variety</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Q1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Q3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>IQR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished">Valor</translation>
+    </message>
+    <message>
+        <source>GRASS %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GRASS %1 (Geographic Resources Analysis Support System)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Version 2.0</source>
+        <translation type="unfinished">Versão 2.0</translation>
+    </message>
+    <message>
+        <source>Cannot start %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mapset lock failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot open vector on level 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot open vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>command: %1 %2
+stdout: %3
+stderr: %4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attempt to copy from different location.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete confirmation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to delete %1 %2?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot create table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot insert, statement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rename GRASS %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot delete %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot rename %1 to %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete Connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to delete the connection to %1?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete Object</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to delete %1.%2?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to delete %1?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -15490,6 +16733,33 @@ Sempre ignorar estes erros?</translation>
         <source>A problem occured during deletion of %1 feature(s)</source>
         <translation>Ocorreu um problema durante a eliminação de %1 elemento(s)</translation>
     </message>
+    <message>
+        <source>Project file was changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The loaded project file on disk was meanwhile changed.  Do you want to overwrite the changes?
+
+Last modification date on load was: %1
+Current last modification date is: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saving raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export to raster file has been completed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot paste style to layer with a different geometry type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Your copied style does not match the layer you are pasting to</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgisAppInterface</name>
@@ -15566,7 +16836,7 @@ O site da da comunidade QGIS Brasil.</translation>
     </message>
     <message>
         <source>Essen (Germany), Developer meeting 2012</source>
-        <translation>Essen (Alemanha), Developer meeting 2012</translation>
+        <translation type="obsolete">Essen (Alemanha), Developer meeting 2012</translation>
     </message>
     <message>
         <source>Contributors</source>
@@ -15604,6 +16874,10 @@ O site da da comunidade QGIS Brasil.</translation>
     <message>
         <source>Developers Map</source>
         <translation>Mapa de Desenvolvedores</translation>
+    </message>
+    <message>
+        <source>Essen (Germany), Developer meeting 2014</source>
+        <translation type="unfinished">Essen (Alemanha), Developer meeting 2014</translation>
     </message>
 </context>
 <context>
@@ -15667,35 +16941,35 @@ O site da da comunidade QGIS Brasil.</translation>
     <name>QgsAddJoinDialogBase</name>
     <message>
         <source>Add vector join</source>
-        <translation>Adicionar união de vetor</translation>
+        <translation type="obsolete">Adicionar união de vetor</translation>
     </message>
     <message>
         <source>Join layer</source>
-        <translation>Unir camada</translation>
+        <translation type="obsolete">Unir camada</translation>
     </message>
     <message>
         <source>Join field</source>
-        <translation>Unir campo</translation>
+        <translation type="obsolete">Unir campo</translation>
     </message>
     <message>
         <source>Target field</source>
-        <translation>Campo alvo</translation>
+        <translation type="obsolete">Campo alvo</translation>
     </message>
     <message>
         <source>Create attribute index on join field</source>
-        <translation>Criar índice de atributo no campo de união</translation>
+        <translation type="obsolete">Criar índice de atributo no campo de união</translation>
     </message>
     <message>
         <source>Choose which fields are joined</source>
-        <translation>Escolha que campos estão unidos</translation>
+        <translation type="obsolete">Escolha que campos estão unidos</translation>
     </message>
     <message>
         <source>Cache join layer in virtual memory</source>
-        <translation>Armazenar a camada unida na memória virtual</translation>
+        <translation type="obsolete">Armazenar a camada unida na memória virtual</translation>
     </message>
     <message>
         <source>Custom field name prefix</source>
-        <translation>Prefixo do nome do campo personalizado</translation>
+        <translation type="obsolete">Prefixo do nome do campo personalizado</translation>
     </message>
 </context>
 <context>
@@ -15828,6 +17102,17 @@ O site da da comunidade QGIS Brasil.</translation>
     <message>
         <source>y</source>
         <translation>y</translation>
+    </message>
+</context>
+<context>
+    <name>QgsAngleMagnetWidget</name>
+    <message>
+        <source>Snap to </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No snapping</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -16631,7 +17916,7 @@ Erro do analisador:
     </message>
     <message>
         <source>Attribute table - %1 :: Features total: %2, filtered: %3, selected: %4</source>
-        <translation>Tabela de atributo - %1 :: Total de feições: %2, filtrada(S): %3, selecionada(s): %4</translation>
+        <translation type="obsolete">Tabela de atributo - %1 :: Total de feições: %2, filtrada(S): %3, selecionada(s): %4</translation>
     </message>
     <message>
         <source>Update Filtered</source>
@@ -16678,6 +17963,30 @@ Erro do analisador:
     <message>
         <source>Update Selected</source>
         <translation>Atualizar Selecionado</translation>
+    </message>
+    <message>
+        <source>Ctrl+R</source>
+        <translation type="unfinished">Ctrl+R</translation>
+    </message>
+    <message>
+        <source>Paste features from clipboard (Ctrl+V)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+V</source>
+        <translation type="unfinished">Ctrl+V</translation>
+    </message>
+    <message>
+        <source>Show All Features In Initial Canvas Extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attribute table - %1 :: Features total: %2, filtered: %3, selected: %4%5</source>
+        <translation type="unfinished">Tabela de atributo - %1 :: Total de feições: %2, filtrada(S): %3, selecionada(s): %4%5 {1 ?} {2,?} {3,?}</translation>
+    </message>
+    <message>
+        <source>, spatially limited</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -16769,18 +18078,29 @@ Erro do analisador:
     </message>
 </context>
 <context>
+    <name>QgsBlurWidget</name>
+    <message>
+        <source>Stack blur (fast)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Gaussian blur (quality)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsBookmarks</name>
     <message>
         <source>&amp;Add</source>
-        <translation>&amp;Adicionar</translation>
+        <translation type="obsolete">&amp;Adicionar</translation>
     </message>
     <message>
         <source>&amp;Delete</source>
-        <translation>&amp;Excluir</translation>
+        <translation type="obsolete">&amp;Excluir</translation>
     </message>
     <message>
         <source>&amp;Zoom to</source>
-        <translation>&amp;Aproximar para</translation>
+        <translation type="obsolete">&amp;Aproximar para</translation>
     </message>
     <message>
         <source>Error</source>
@@ -16862,7 +18182,7 @@ Base de dados:%2</translation>
     </message>
     <message>
         <source>&amp;Share</source>
-        <translation>&amp;Compartilhar</translation>
+        <translation type="obsolete">&amp;Compartilhar</translation>
     </message>
     <message>
         <source>&amp;Export</source>
@@ -16896,12 +18216,48 @@ Base de dados: %2</translation>
         <source>XML files( *.xml *.XML )</source>
         <translation>Arquivos XML (*.xml *.XML)</translation>
     </message>
+    <message>
+        <source>Import/Export Bookmarks</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsBookmarksBase</name>
     <message>
         <source>Geospatial Bookmarks</source>
-        <translation>Favoritos Geoespaciais</translation>
+        <translation type="obsolete">Favoritos Geoespaciais</translation>
+    </message>
+    <message>
+        <source>Spatial Bookmarks</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add bookmark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete bookmark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom to</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom to bookmark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation type="unfinished">Ajuda</translation>
     </message>
 </context>
 <context>
@@ -16990,7 +18346,7 @@ Base de dados: %2</translation>
     <name>QgsBrowserDirectoryPropertiesBase</name>
     <message>
         <source>Dialog</source>
-        <translation>Diálogo</translation>
+        <translation type="obsolete">Diálogo</translation>
     </message>
     <message>
         <source>Path</source>
@@ -17053,15 +18409,15 @@ Base de dados: %2</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation>Erro</translation>
+        <translation type="obsolete">Erro</translation>
     </message>
     <message>
         <source>Layer Properties</source>
-        <translation>Propriedades da camada</translation>
+        <translation type="obsolete">Propriedades da camada</translation>
     </message>
     <message>
         <source>Directory Properties</source>
-        <translation>Propriedades da pasta</translation>
+        <translation type="obsolete">Propriedades da pasta</translation>
     </message>
     <message>
         <source>Type here to filter current item...</source>
@@ -17084,11 +18440,11 @@ Base de dados: %2</translation>
     </message>
     <message>
         <source>Filter Files</source>
-        <translation>Filtrar arquivos</translation>
+        <translation type="obsolete">Filtrar arquivos</translation>
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>Collapse All</source>
@@ -17098,20 +18454,43 @@ Base de dados: %2</translation>
         <source>Options</source>
         <translation>Opções</translation>
     </message>
+    <message>
+        <source>Add Layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filter Browser</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable/disable properties widget</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsBrowserLayerProperties</name>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished">Erro</translation>
+    </message>
 </context>
 <context>
     <name>QgsBrowserLayerPropertiesBase</name>
     <message>
         <source>Dialog</source>
-        <translation>Diálogo</translation>
+        <translation type="obsolete">Diálogo</translation>
     </message>
     <message>
         <source>Display Name</source>
-        <translation>Nome de exibição</translation>
+        <translation type="obsolete">Nome de exibição</translation>
     </message>
     <message>
         <source>Layer Source</source>
-        <translation>Fonte da camada</translation>
+        <translation type="obsolete">Fonte da camada</translation>
     </message>
     <message>
         <source>Provider</source>
@@ -17120,6 +18499,26 @@ Base de dados: %2</translation>
     <message>
         <source>Metadata</source>
         <translation>Metadados</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">Nome</translation>
+    </message>
+    <message>
+        <source>name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>URI</source>
+        <translation type="unfinished">URI</translation>
+    </message>
+    <message>
+        <source>provider key</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>notice</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17135,6 +18534,24 @@ Base de dados: %2</translation>
     <message>
         <source>Favourites</source>
         <translation>Favoritos</translation>
+    </message>
+</context>
+<context>
+    <name>QgsBrowserPropertiesDialog</name>
+    <message>
+        <source>Layer Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Directory Properties</source>
+        <translation type="unfinished">Propriedades da pasta</translation>
+    </message>
+</context>
+<context>
+    <name>QgsBrowserPropertiesDialogBase</name>
+    <message>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17281,7 +18698,7 @@ Base de dados: %2</translation>
     </message>
     <message>
         <source>Join</source>
-        <translation>Unir</translation>
+        <translation type="obsolete">Unir</translation>
     </message>
     <message>
         <source>Advanced</source>
@@ -17324,6 +18741,51 @@ Base de dados: %2</translation>
 Should the existing classes be deleted before classification?</source>
         <translation>O campo de classificação foi mudado de &apos;%1&apos; para &apos;%2&apos;. 
 Existem classes que podem ser excluídas antes da classificação?</translation>
+    </message>
+    <message>
+        <source>Match to saved symbols</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Match to symbols from file...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Matched symbols</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Matched %1 categories to symbols.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No categories could be matched to symbols in library.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Match to symbols from file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>XML files (*.xml *XML)</source>
+        <translation type="unfinished">Arquivos XML (*.xml *XML)</translation>
+    </message>
+    <message>
+        <source>Matching error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>An error occured reading file:
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Matched %1 categories to symbols from file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No categories could be matched to symbols in file.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17681,6 +19143,25 @@ Existem classes que podem ser excluídas antes da classificação?</translation>
     <message>
         <source>Error writing palette file</source>
         <translation>Erro na criar o arquivo da paleta</translation>
+    </message>
+</context>
+<context>
+    <name>QgsColorEffectWidget</name>
+    <message>
+        <source>Off</source>
+        <translation type="unfinished">Desligar</translation>
+    </message>
+    <message>
+        <source>By lightness</source>
+        <translation type="unfinished">Pela claridade</translation>
+    </message>
+    <message>
+        <source>By luminosity</source>
+        <translation type="unfinished">Pela luminosidade</translation>
+    </message>
+    <message>
+        <source>By average</source>
+        <translation type="unfinished">Pela média</translation>
     </message>
 </context>
 <context>
@@ -18162,6 +19643,10 @@ Tente uma resolução ou um tamanho de papel menor</translation>
         <source>Landscape</source>
         <translation>Paisagem</translation>
     </message>
+    <message>
+        <source>Exporting atlas</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerArrowWidget</name>
@@ -18454,7 +19939,7 @@ Tente uma resolução ou um tamanho de papel menor</translation>
     </message>
     <message>
         <source>Table grid stroke</source>
-        <translation>Curso da grade da tabela</translation>
+        <translation type="obsolete">Curso da grade da tabela</translation>
     </message>
     <message>
         <source>Table grid color</source>
@@ -18544,6 +20029,10 @@ Tente uma resolução ou um tamanho de papel menor</translation>
         <source>Empty table message changed</source>
         <translation>Mensagem tabela vazia mudou</translation>
     </message>
+    <message>
+        <source>Table grid line</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerAttributeTableWidgetBase</name>
@@ -18609,7 +20098,7 @@ Tente uma resolução ou um tamanho de papel menor</translation>
     </message>
     <message>
         <source>Stroke width</source>
-        <translation>Largura do traço</translation>
+        <translation type="obsolete">Largura do traço</translation>
     </message>
     <message>
         <source>Color</source>
@@ -18726,6 +20215,10 @@ Tente uma resolução ou um tamanho de papel menor</translation>
     <message>
         <source>Add Frame</source>
         <translation>Adicionar Moldura</translation>
+    </message>
+    <message>
+        <source>Line width</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -21581,11 +23074,11 @@ Tente uma resolução ou um tamanho de papel menor</translation>
     </message>
     <message>
         <source>Select stroke color</source>
-        <translation>Selecionar cor do traço</translation>
+        <translation type="obsolete">Selecionar cor do traço</translation>
     </message>
     <message>
         <source>Transparent stroke</source>
-        <translation>Traço transparente</translation>
+        <translation type="obsolete">Traço transparente</translation>
     </message>
     <message>
         <source>Map %1</source>
@@ -21633,7 +23126,7 @@ Tente uma resolução ou um tamanho de papel menor</translation>
     </message>
     <message>
         <source>Scalebar stroke color changed</source>
-        <translation>Cor do traço da barra de escala modificada</translation>
+        <translation type="obsolete">Cor do traço da barra de escala modificada</translation>
     </message>
     <message>
         <source>Scalebar unit text</source>
@@ -21683,6 +23176,22 @@ Tente uma resolução ou um tamanho de papel menor</translation>
         <source>Scalebar line cap style</source>
         <translation>Estilo da cobertura da linha</translation>
     </message>
+    <message>
+        <source>Select line color</source>
+        <translation type="unfinished">Selecionar cor da linha</translation>
+    </message>
+    <message>
+        <source>Transparent line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scalebar line color changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scalebar segment size mode</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerScaleBarWidgetBase</name>
@@ -21700,11 +23209,11 @@ Tente uma resolução ou um tamanho de papel menor</translation>
     </message>
     <message>
         <source>Map</source>
-        <translation>Mapa</translation>
+        <translation type="obsolete">Mapa</translation>
     </message>
     <message>
         <source>Style</source>
-        <translation>Estilo</translation>
+        <translation type="obsolete">Estilo</translation>
     </message>
     <message>
         <source>Units</source>
@@ -21712,11 +23221,11 @@ Tente uma resolução ou um tamanho de papel menor</translation>
     </message>
     <message>
         <source>Label</source>
-        <translation>Rótulo</translation>
+        <translation type="obsolete">Rótulo</translation>
     </message>
     <message>
         <source>Map units per bar unit</source>
-        <translation>Unidades do mapa por unidade da barra</translation>
+        <translation type="obsolete">Unidades do mapa por unidade da barra</translation>
     </message>
     <message>
         <source>Segments</source>
@@ -21732,7 +23241,7 @@ Tente uma resolução ou um tamanho de papel menor</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation>Tamanho</translation>
+        <translation type="obsolete">Tamanho</translation>
     </message>
     <message>
         <source> units</source>
@@ -21792,11 +23301,47 @@ Tente uma resolução ou um tamanho de papel menor</translation>
     </message>
     <message>
         <source>Stroke color</source>
-        <translation>Cor do traço</translation>
+        <translation type="obsolete">Cor do traço</translation>
     </message>
     <message>
         <source>Font...</source>
         <translation>Fonte...</translation>
+    </message>
+    <message>
+        <source>&amp;Map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>St&amp;yle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map &amp;units per bar unit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>max </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>min </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fi&amp;xed width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fit segment width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line color</source>
+        <translation type="unfinished">Cor da linha</translation>
     </message>
 </context>
 <context>
@@ -21989,7 +23534,7 @@ Tente uma resolução ou um tamanho de papel menor</translation>
     </message>
     <message>
         <source>Table grid stroke</source>
-        <translation>Curso da grade da tabela</translation>
+        <translation type="obsolete">Curso da grade da tabela</translation>
     </message>
     <message>
         <source>Select grid color</source>
@@ -22006,6 +23551,10 @@ Tente uma resolução ou um tamanho de papel menor</translation>
     <message>
         <source>Table visible only toggled</source>
         <translation>Alternada apenas a tabela visível</translation>
+    </message>
+    <message>
+        <source>Table grid line</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -22100,7 +23649,7 @@ Tente uma resolução ou um tamanho de papel menor</translation>
     </message>
     <message>
         <source>Stroke width</source>
-        <translation>Espessura do traço</translation>
+        <translation type="obsolete">Espessura do traço</translation>
     </message>
     <message>
         <source>Follow column alignment</source>
@@ -22117,6 +23666,10 @@ Tente uma resolução ou um tamanho de papel menor</translation>
     <message>
         <source>Right</source>
         <translation>Direita</translation>
+    </message>
+    <message>
+        <source>Line width</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -22869,7 +24422,7 @@ e arquivo atual é [%3]</translation>
     <name>QgsCustomColorScheme</name>
     <message>
         <source>Standard colors</source>
-        <translation>Cores Padrão</translation>
+        <translation type="obsolete">Cores Padrão</translation>
     </message>
 </context>
 <context>
@@ -23260,6 +24813,14 @@ e arquivo atual é [%3]</translation>
         <source>[&lt;b&gt;&lt;dash&gt;;&lt;space&gt;&lt;/b&gt;] e.g. &apos;8;2;1;2&apos;</source>
         <translation>[&lt;b&gt;&lt;dash&gt;;&lt;space&gt;&lt;/b&gt;] ex.: &apos;8;2;1;2&apos;</translation>
     </message>
+    <message>
+        <source>Assistant...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>single character</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsDataDefinedButtonPlugin</name>
@@ -23270,6 +24831,32 @@ e arquivo atual é [%3]</translation>
     <message>
         <source>A widget to define the scale range.</source>
         <translation>Um widget para definir o intervalo da escala.</translation>
+    </message>
+</context>
+<context>
+    <name>QgsDataDefinedRotationDialog</name>
+    <message>
+        <source>Rotation</source>
+        <translation type="unfinished">Rotação</translation>
+    </message>
+    <message>
+        <source>Symbol rotation</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsDataDefinedSizeDialog</name>
+    <message>
+        <source>Size</source>
+        <translation type="unfinished">Tamanho</translation>
+    </message>
+    <message>
+        <source>Symbol size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Size Assistant...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -23317,6 +24904,32 @@ e arquivo atual é [%3]</translation>
     <message>
         <source>0 (false)|1 (true)</source>
         <translation>0 (falso)|1 (verdade)</translation>
+    </message>
+</context>
+<context>
+    <name>QgsDataDefinedValueDialog</name>
+    <message>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Label</source>
+        <translation type="unfinished">Rótulo</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+</context>
+<context>
+    <name>QgsDataDefinedWidthDialog</name>
+    <message>
+        <source>Width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Symbol width</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -24002,7 +25615,7 @@ não mostrados</translation>
     </message>
     <message>
         <source>%1 records discarded due to missing geometry definitions</source>
-        <translation>Registro %1 descartado devido a perda de definições de geometria</translation>
+        <translation type="obsolete">Registro %1 descartado devido a perda de definições de geometria</translation>
     </message>
     <message>
         <source>%1 records discarded due to invalid geometry definitions</source>
@@ -24035,6 +25648,26 @@ não mostrados</translation>
     <message>
         <source>The file has been updated by another application - reloading</source>
         <translation>O arquivo foi atualizado por outro aplicativo - recarregando</translation>
+    </message>
+    <message>
+        <source>Whole number (integer)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Whole number (integer - 64 bit)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Decimal number (double)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Text, unlimited length (text)</source>
+        <translation type="unfinished">Texto, de comprimento ilimitado (text)</translation>
+    </message>
+    <message>
+        <source>%1 records have missing geometry definitions</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -24506,31 +26139,31 @@ não mostrados</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation>Linha</translation>
+        <translation type="obsolete">Linha</translation>
     </message>
     <message>
         <source>Horizontal</source>
-        <translation>Horizontal</translation>
+        <translation type="obsolete">Horizontal</translation>
     </message>
     <message>
         <source>Free</source>
-        <translation>Livre</translation>
+        <translation type="obsolete">Livre</translation>
     </message>
     <message>
         <source>On line</source>
-        <translation>On line</translation>
+        <translation type="obsolete">On line</translation>
     </message>
     <message>
         <source>Above line</source>
-        <translation>Acima da linha</translation>
+        <translation type="obsolete">Acima da linha</translation>
     </message>
     <message>
         <source>Below Line</source>
-        <translation>Abaixo da linha</translation>
+        <translation type="obsolete">Abaixo da linha</translation>
     </message>
     <message>
         <source>Map orientation</source>
-        <translation>Orientação do mapa</translation>
+        <translation type="obsolete">Orientação do mapa</translation>
     </message>
     <message>
         <source>Pie chart</source>
@@ -24590,7 +26223,7 @@ não mostrados</translation>
     </message>
     <message>
         <source>Bar length: Scale linearly, such as the following value matches the specified size.</source>
-        <translation>Barra de comprimento: Escala linearmente, tal como o seguinte valor corresponde ao tamanho específico.</translation>
+        <translation type="obsolete">Barra de comprimento: Escala linearmente, tal como o seguinte valor corresponde ao tamanho específico.</translation>
     </message>
     <message>
         <source>Scale linearly between 0 and the following attribute value / diagram size:</source>
@@ -24598,7 +26231,7 @@ não mostrados</translation>
     </message>
     <message>
         <source>Transparency: %1%</source>
-        <translation>Transparência: %1%</translation>
+        <translation type="obsolete">Transparência: %1%</translation>
     </message>
     <message>
         <source>Diagrams: No attributes added.</source>
@@ -24620,12 +26253,48 @@ não mostrados</translation>
         <source>You did not add any attributes to this diagram layer. Please specify the attributes to visualize on the diagrams or disable diagrams.</source>
         <translation>Você não adicionaou qualquer atributo a este diagrama de camada. Por favor, especifique os atributos para visualizar nos diagramas ou desabilite-os.</translation>
     </message>
+    <message>
+        <source>Around Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Over Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Around Centroid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Over Centroid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Perimeter</source>
+        <translation type="unfinished">Perímetro</translation>
+    </message>
+    <message>
+        <source>Inside Polygon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bar length: Scale linearly, so that the following value matches the specified bar length:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bar length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Size</source>
+        <translation type="unfinished">Tamanho</translation>
+    </message>
 </context>
 <context>
     <name>QgsDiagramPropertiesBase</name>
     <message>
         <source>Display diagrams</source>
-        <translation>Mostrar diagramas</translation>
+        <translation type="obsolete">Mostrar diagramas</translation>
     </message>
     <message>
         <source>Diagram type</source>
@@ -24669,7 +26338,7 @@ não mostrados</translation>
     </message>
     <message>
         <source>Transparency 0%</source>
-        <translation>Transparência 0%</translation>
+        <translation type="obsolete">Transparência 0%</translation>
     </message>
     <message>
         <source>Start Angle</source>
@@ -24677,11 +26346,11 @@ não mostrados</translation>
     </message>
     <message>
         <source>Only show diagrams with a size inside the specified range.</source>
-        <translation>Apenas mostrar diagramas com o tamanho dentro do intervalo específico.</translation>
+        <translation type="obsolete">Apenas mostrar diagramas com o tamanho dentro do intervalo específico.</translation>
     </message>
     <message>
         <source>Hide diagrams with a size outside the specified range.</source>
-        <translation>Esconder diagramas com um tamanho fora do intervalo específico.</translation>
+        <translation type="obsolete">Esconder diagramas com um tamanho fora do intervalo específico.</translation>
     </message>
     <message>
         <source>Scale dependent visibility</source>
@@ -24689,11 +26358,11 @@ não mostrados</translation>
     </message>
     <message>
         <source>Minimum</source>
-        <translation>Mínimo</translation>
+        <translation type="obsolete">Mínimo</translation>
     </message>
     <message>
         <source>Maximum</source>
-        <translation>Máximo</translation>
+        <translation type="obsolete">Máximo</translation>
     </message>
     <message>
         <source>Size</source>
@@ -24717,16 +26386,16 @@ não mostrados</translation>
     </message>
     <message>
         <source>Edit expression</source>
-        <translation>Editar expressão</translation>
+        <translation type="obsolete">Editar expressão</translation>
     </message>
     <message>
         <source>Find maximum value</source>
-        <translation>Encontra valor máximo</translation>
+        <translation type="obsolete">Encontra valor máximo</translation>
     </message>
     <message>
         <source>The attribute value you enter here will correspond to the size entered in the field &quot;Size&quot; and the chosen &quot;Size unit&quot;.
 Leave empty to automatically apply the maximum value.</source>
-        <translation>O valor de atributo que você inseriu aqui corresponde ao tamanho inserido no campo &quot;Tamanho&quot; e o escolhido &quot;Unidade de tamanho&quot;.
+        <translation type="obsolete">O valor de atributo que você inseriu aqui corresponde ao tamanho inserido no campo &quot;Tamanho&quot; e o escolhido &quot;Unidade de tamanho&quot;.
 Deixar vazio para aplicar automaticamente o máximo valor.</translation>
     </message>
     <message>
@@ -24735,7 +26404,7 @@ Deixar vazio para aplicar automaticamente o máximo valor.</translation>
     </message>
     <message>
         <source>Will scale diagrams with a size smaller than the minimum size to the minimum size</source>
-        <translation>Irá escalonar diagramas com o tamanho menor do que o tamanho mínimo para o tamanho mínimo</translation>
+        <translation type="obsolete">Irá escalonar diagramas com o tamanho menor do que o tamanho mínimo para o tamanho mínimo</translation>
     </message>
     <message>
         <source>Increase size of small diagrams</source>
@@ -24747,7 +26416,7 @@ Deixar vazio para aplicar automaticamente o máximo valor.</translation>
     </message>
     <message>
         <source>Position</source>
-        <translation>Posição</translation>
+        <translation type="obsolete">Posição</translation>
     </message>
     <message>
         <source>Placement</source>
@@ -24755,7 +26424,7 @@ Deixar vazio para aplicar automaticamente o máximo valor.</translation>
     </message>
     <message>
         <source>Line Options</source>
-        <translation>Opções de linha</translation>
+        <translation type="obsolete">Opções de linha</translation>
     </message>
     <message>
         <source>Distance</source>
@@ -24775,7 +26444,7 @@ Deixar vazio para aplicar automaticamente o máximo valor.</translation>
     </message>
     <message>
         <source>Automated placement settings</source>
-        <translation>Configurações de posicionamento automatizado</translation>
+        <translation type="obsolete">Configurações de posicionamento automatizado</translation>
     </message>
     <message>
         <source>Options</source>
@@ -24829,6 +26498,70 @@ Deixar vazio para aplicar automaticamente o máximo valor.</translation>
         <source>Color</source>
         <translation>Cor</translation>
     </message>
+    <message>
+        <source>Show diagrams for this layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Automated placement settings (apply to all layers)</source>
+        <translation type="unfinished">Configurações de posicionamento automatizado (aplicar a todas camadas)</translation>
+    </message>
+    <message>
+        <source>Rendering</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Legend</source>
+        <translation type="unfinished">Legenda</translation>
+    </message>
+    <message>
+        <source>Format</source>
+        <translation type="unfinished">Formato</translation>
+    </message>
+    <message>
+        <source>Transparency</source>
+        <translation type="unfinished">Transparência</translation>
+    </message>
+    <message>
+        <source> %</source>
+        <translation type="unfinished"> %</translation>
+    </message>
+    <message>
+        <source>Visibility</source>
+        <translation type="unfinished">Visibilidade</translation>
+    </message>
+    <message>
+        <source>Show all diagrams</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maximum value</source>
+        <translation type="unfinished">Valor máximo</translation>
+    </message>
+    <message>
+        <source>Find</source>
+        <translation type="unfinished">Encontrar</translation>
+    </message>
+    <message>
+        <source>Scaled size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Above line</source>
+        <translation type="unfinished">Acima da linha</translation>
+    </message>
+    <message>
+        <source>Below line</source>
+        <translation type="unfinished">Abaixo da linha</translation>
+    </message>
+    <message>
+        <source>On line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line orientation dependent position</source>
+        <translation type="unfinished">Orientação da linha dependente da posição</translation>
+    </message>
 </context>
 <context>
     <name>QgsDirectoryParamWidget</name>
@@ -24870,7 +26603,7 @@ Deixar vazio para aplicar automaticamente o máximo valor.</translation>
     </message>
     <message>
         <source>link</source>
-        <translation>ligação</translation>
+        <translation type="obsolete">ligação</translation>
     </message>
 </context>
 <context>
@@ -25106,14 +26839,70 @@ Erro ao analisar:
     </message>
 </context>
 <context>
+    <name>QgsEffectDrawModeComboBox</name>
+    <message>
+        <source>Render only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Modifier only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Render and modify</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsEffectStackCompactWidget</name>
+    <message>
+        <source>Draw effects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Customise effects</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsEffectStackPropertiesDialog</name>
+    <message>
+        <source>Effect Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsEffectStackPropertiesWidgetBase</name>
+    <message>
+        <source>Effects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add symbol layer</source>
+        <translation type="unfinished">Adicionar uma camada de símbolo</translation>
+    </message>
+    <message>
+        <source>Remove symbol layer</source>
+        <translation type="unfinished">Remove uma camada de símbolo</translation>
+    </message>
+    <message>
+        <source>Move up</source>
+        <translation type="unfinished">Mover para cima</translation>
+    </message>
+    <message>
+        <source>Move down</source>
+        <translation type="unfinished">Mover para baixo</translation>
+    </message>
+</context>
+<context>
     <name>QgsEllipseSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation>Milímetro</translation>
+        <translation type="obsolete">Milímetro</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>Unidade do mapa</translation>
+        <translation type="obsolete">Unidade do mapa</translation>
     </message>
     <message>
         <source>Select fill color</source>
@@ -25364,6 +27153,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Load all unique values</source>
         <translation>Carregar todos valores únicos</translation>
+    </message>
+    <message>
+        <source>%1...</source>
+        <translation type="unfinished">%1...</translation>
     </message>
 </context>
 <context>
@@ -26050,15 +27843,19 @@ MyForms.py deve existir na PYTHONPATH, .qgis/python, ou na pasta do projeto.</tr
     <name>QgsFontMarkerSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation>Milímetro</translation>
+        <translation type="obsolete">Milímetro</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>Unidades do mapa</translation>
+        <translation type="obsolete">Unidades do mapa</translation>
     </message>
     <message>
         <source>Select symbol color</source>
         <translation>Selecionar cor do símbolo</translation>
+    </message>
+    <message>
+        <source>Size Assistant...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -26092,6 +27889,42 @@ MyForms.py deve existir na PYTHONPATH, .qgis/python, ou na pasta do projeto.</tr
     <message>
         <source>pixels</source>
         <translation>pixels</translation>
+    </message>
+    <message>
+        <source>Visible</source>
+        <translation type="unfinished">Visível</translation>
+    </message>
+    <message>
+        <source>ID</source>
+        <translation type="unfinished">ID</translation>
+    </message>
+    <message>
+        <source>Source X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Source Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dest. X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dest. Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>dX (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>dY (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Residual (%1)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -27185,7 +29018,7 @@ Please reselect a valid file.</source>
     </message>
     <message>
         <source>Show coords</source>
-        <translation>Mostrar coordenadas</translation>
+        <translation type="obsolete">Mostrar coordenadas</translation>
     </message>
     <message>
         <source>Residual units</source>
@@ -27226,6 +29059,17 @@ Please reselect a valid file.</source>
     <message>
         <source>Paper size</source>
         <translation>Tamanho do papel</translation>
+    </message>
+    <message>
+        <source>Show coordinates</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsGeorefDescriptionDialog</name>
+    <message>
+        <source>&lt;h2&gt;Description&lt;/h2&gt;&lt;p&gt;This plugin can georeference raster files and set projection. You select points on the raster and give their world coordinates, and the plugin will compute the world file parameters. The more coordinates you can provide the better the result will be.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -27298,7 +29142,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>GDAL scripting is not supported for %1 transformation</source>
-        <translation>Script GDAL não suportado para %1 a transformação</translation>
+        <translation type="obsolete">Script GDAL não suportado para %1 a transformação</translation>
     </message>
     <message>
         <source>Load GCP points</source>
@@ -27310,7 +29154,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>No GCP points to save</source>
-        <translation>Sem pontos GCP para salvar</translation>
+        <translation type="obsolete">Sem pontos GCP para salvar</translation>
     </message>
     <message>
         <source>Save GCP points</source>
@@ -27354,7 +29198,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Unable to open GCP points file %1</source>
-        <translation>Impossível abrir arquivos de pontos GCP %1</translation>
+        <translation type="obsolete">Impossível abrir arquivos de pontos GCP %1</translation>
     </message>
     <message>
         <source>Save GCPs</source>
@@ -27366,7 +29210,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Failed to get linear transform parameters</source>
-        <translation>Falha ao obter parâmetros de transformação linear</translation>
+        <translation type="obsolete">Falha ao obter parâmetros de transformação linear</translation>
     </message>
     <message>
         <source>World file exists</source>
@@ -27378,7 +29222,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Failed to compute GCP transform: Transform is not solvable</source>
-        <translation>Falha ao calcular transformação GCP: Transformação não é solúvel</translation>
+        <translation type="obsolete">Falha ao calcular transformação GCP: Transformação não é solúvel</translation>
     </message>
     <message>
         <source>Error</source>
@@ -27386,7 +29230,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not write to %1</source>
-        <translation>Não foi possível gravar para %1</translation>
+        <translation type="obsolete">Não foi possível gravar para %1</translation>
     </message>
     <message>
         <source>map units</source>
@@ -27454,7 +29298,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Copy in clipboard</source>
-        <translation>Copiar para a área de transferência</translation>
+        <translation type="obsolete">Copiar para a área de transferência</translation>
     </message>
     <message>
         <source>%1</source>
@@ -27474,7 +29318,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>%1 requires at least %2 GCPs. Please define more</source>
-        <translation>%1 necessita pelo menos %2 GCPs. Defina mais</translation>
+        <translation type="obsolete">%1 necessita pelo menos %2 GCPs. Defina mais</translation>
     </message>
     <message>
         <source>Linear</source>
@@ -27508,6 +29352,138 @@ p, li { white-space: pre-wrap; }
         <source>Not set</source>
         <translation>Não definido</translation>
     </message>
+    <message>
+        <source>Reset Georeferencer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reset georeferencer and clear all GCP points?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Georeference Successful</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Raster was successfully georeferenced.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid Transform</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GDAL scripting is not supported for %1 transformation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid GCP file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GCP file could not be read.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GCPs loaded</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GCP file successfully loaded.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No GCP Points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No GCP points are available to save.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Raster Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please load raster to be georeferenced.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Write Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not write to GCP points file %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transform Failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to calculate linear transform parameters.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to compute GCP transform: Transform is not solvable.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not write to %1.</source>
+        <translation type="unfinished">Não foi possível gravar para %1.</translation>
+    </message>
+    <message>
+        <source>ID</source>
+        <translation type="unfinished">ID</translation>
+    </message>
+    <message>
+        <source>Enabled</source>
+        <translation type="unfinished">Habilitado</translation>
+    </message>
+    <message>
+        <source>Pixel X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pixel Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Res X (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Res Y (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Res Total (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy to Clipboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No Raster Loaded</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not Enough GCPs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 transformation requires at least %2 GCPs. Please define more.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsGeorefPluginGuiBase</name>
@@ -27537,7 +29513,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>toolBar</source>
-        <translation>barra de ferramentas</translation>
+        <translation type="obsolete">barra de ferramentas</translation>
     </message>
     <message>
         <source>Open raster</source>
@@ -27641,7 +29617,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Configure Georeferencer</source>
-        <translation>Configurar o Georreferenciador</translation>
+        <translation type="obsolete">Configurar o Georreferenciador</translation>
     </message>
     <message>
         <source>Ctrl+P</source>
@@ -27649,7 +29625,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Raster properties</source>
-        <translation>Propriedades do raster</translation>
+        <translation type="obsolete">Propriedades do raster</translation>
     </message>
     <message>
         <source>Move GCP point</source>
@@ -27665,11 +29641,79 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Local histogram stretch</source>
-        <translation>Extensão do Histograma Local</translation>
+        <translation type="obsolete">Extensão do Histograma Local</translation>
     </message>
     <message>
         <source>Full histogram stretch</source>
-        <translation>Extensão total do histograma</translation>
+        <translation type="obsolete">Extensão total do histograma</translation>
+    </message>
+    <message>
+        <source>Histogram</source>
+        <translation type="unfinished">Histograma</translation>
+    </message>
+    <message>
+        <source>Open Raster...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transformation Settings...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete Point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close Georeferencer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close georeferencer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Start Georeferencing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Generate GDAL Script</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save GCP Points as...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load GCP Points...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Configure Georeferencer...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Raster Properties...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move GCP Point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Local Histogram Stretch</source>
+        <translation type="unfinished">Extensão do Histograma Local</translation>
+    </message>
+    <message>
+        <source>Full Histogram Stretch</source>
+        <translation type="unfinished">Completa Ampliação do Histograma</translation>
+    </message>
+    <message>
+        <source>Reset Georeferencer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -27879,6 +29923,13 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsGlowWidget</name>
+    <message>
+        <source>Select glow color</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsGml</name>
     <message>
         <source>Loading GML data
@@ -27918,11 +29969,11 @@ p, li { white-space: pre-wrap; }
     <name>QgsGradientFillSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation>Milímetros</translation>
+        <translation type="obsolete">Milímetros</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>Unidades do mapa</translation>
+        <translation type="obsolete">Unidades do mapa</translation>
     </message>
     <message>
         <source>Select gradient color</source>
@@ -27931,6 +29982,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Transparent</source>
         <translation>Transparência</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGraduatedHistogramWidget</name>
+    <message>
+        <source>Ranges are overlapping and can&apos;t be edited by the histogram</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ranges have gaps and can&apos;t be edited by the histogram</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -28086,6 +30148,26 @@ Pressione cancelar para abortar o calculo das quebras ou OK para continuar.</tra
         <source>Rows will be reordered before linking boundaries. Continue?</source>
         <translation>Linhas serão reajustados antes de ligar limites. Continuar?</translation>
     </message>
+    <message>
+        <source>Histogram</source>
+        <translation type="unfinished">Histograma</translation>
+    </message>
+    <message>
+        <source>Method</source>
+        <translation type="unfinished">Método</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Choose between color and size graduation. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;If you want to combine both, use a data-defined size for the symbol and graduate by color.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Size from </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>to</source>
+        <translation type="unfinished">para</translation>
+    </message>
 </context>
 <context>
     <name>QgsGrassAttributes</name>
@@ -28161,83 +30243,83 @@ Pressione cancelar para abortar o calculo das quebras ou OK para continuar.</tra
     <name>QgsGrassBrowser</name>
     <message>
         <source>Tools</source>
-        <translation>Ferramentas</translation>
+        <translation type="obsolete">Ferramentas</translation>
     </message>
     <message>
         <source>Add selected map to canvas</source>
-        <translation>Adicionar o mapa selecionado à tela</translation>
+        <translation type="obsolete">Adicionar o mapa selecionado à tela</translation>
     </message>
     <message>
         <source>Copy selected map</source>
-        <translation>Copiar o mapa selecionado</translation>
+        <translation type="obsolete">Copiar o mapa selecionado</translation>
     </message>
     <message>
         <source>Rename selected map</source>
-        <translation>Renomear o mapa selecionado</translation>
+        <translation type="obsolete">Renomear o mapa selecionado</translation>
     </message>
     <message>
         <source>Delete selected map</source>
-        <translation>Excluir o mapa selecionado</translation>
+        <translation type="obsolete">Excluir o mapa selecionado</translation>
     </message>
     <message>
         <source>Set current region to selected map</source>
-        <translation>Definir a região atual ao mapa selecionado</translation>
+        <translation type="obsolete">Definir a região atual ao mapa selecionado</translation>
     </message>
     <message>
         <source>Refresh</source>
-        <translation>Atualizar</translation>
+        <translation type="obsolete">Atualizar</translation>
     </message>
     <message>
         <source>New name</source>
-        <translation>Novo nome</translation>
+        <translation type="obsolete">Novo nome</translation>
     </message>
     <message>
         <source>New name for layer &quot;%1&quot;</source>
-        <translation>Novo nome para a camada &quot;%1&quot;</translation>
+        <translation type="obsolete">Novo nome para a camada &quot;%1&quot;</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation>Atenção</translation>
+        <translation type="obsolete">Atenção</translation>
     </message>
     <message>
         <source>Cannot copy map %1@%2</source>
-        <translation>Impossível copiar o mapa %1@%2</translation>
+        <translation type="obsolete">Impossível copiar o mapa %1@%2</translation>
     </message>
     <message>
         <source>&lt;br&gt;command: %1 %2&lt;br&gt;%3&lt;br&gt;%4</source>
-        <translation>&lt;br&gt;comando: %1 %2&lt;br&gt;%3&lt;br&gt;%4</translation>
+        <translation type="obsolete">&lt;br&gt;comando: %1 %2&lt;br&gt;%3&lt;br&gt;%4</translation>
     </message>
     <message>
         <source>Cannot rename map %1</source>
-        <translation>Impossível renomear o mapa %1</translation>
+        <translation type="obsolete">Impossível renomear o mapa %1</translation>
     </message>
     <message>
         <source>Information</source>
-        <translation>Informação</translation>
+        <translation type="obsolete">Informação</translation>
     </message>
     <message>
         <source>Remove the selected layer(s) from canvas before continue.</source>
-        <translation>Remover a(s) camada(s) selecionada(s) da tela antes de continuar.</translation>
+        <translation type="obsolete">Remover a(s) camada(s) selecionada(s) da tela antes de continuar.</translation>
     </message>
     <message>
         <source>Question</source>
-        <translation>Pergunta</translation>
+        <translation type="obsolete">Pergunta</translation>
     </message>
     <message numerus="yes">
         <source>Are you sure you want to delete %n selected layer(s)?</source>
         <comment>number of layers to delete</comment>
-        <translation>
+        <translation type="obsolete">
             <numerusform>Você tem certeza que deseja excluir %n a camada selecionada?</numerusform>
             <numerusform>Você tem certeza que deseja excluir %n as camadas selecionadas?</numerusform>
         </translation>
     </message>
     <message>
         <source>Cannot delete map %1</source>
-        <translation>Impossível excluir o mapa %1</translation>
+        <translation type="obsolete">Impossível excluir o mapa %1</translation>
     </message>
     <message>
         <source>Cannot write new region</source>
-        <translation>Impossível gravar nova região</translation>
+        <translation type="obsolete">Impossível gravar nova região</translation>
     </message>
 </context>
 <context>
@@ -28637,6 +30719,20 @@ Pressione cancelar para abortar o calculo das quebras ou OK para continuar.</tra
     </message>
 </context>
 <context>
+    <name>QgsGrassImportItem</name>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">Cancelar</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGrassItemActions</name>
+    <message>
+        <source>GRASS Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsGrassMapcalc</name>
     <message>
         <source>Mapcalc tools</source>
@@ -28955,6 +31051,67 @@ na linha %2 coluna %3</translation>
     <message>
         <source>Output</source>
         <translation>Saída</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGrassMapsetItem</name>
+    <message>
+        <source>topology missing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>topology version not supported</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>topology version 6</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>topology version 7</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>empty</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 layer type not supported</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot create provider %1 : %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Provider is not valid  %1 : %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot get default location region.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot delete %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import to GRASS mapset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to import some layers!
+
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import to GRASS mapset failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to import %1 to %2: %3</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -29492,7 +31649,7 @@ na linha %2 coluna %3</translation>
     </message>
     <message>
         <source>Cannot activate grass</source>
-        <translation>Não foi possível ativar o grass</translation>
+        <translation type="obsolete">Não foi possível ativar o grass</translation>
     </message>
 </context>
 <context>
@@ -29683,26 +31840,68 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsGrassObjectItem</name>
+    <message>
+        <source>Rename</source>
+        <translation type="unfinished">Renomear</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsGrassOptionsBase</name>
+    <message>
+        <source>GRASS Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Browser</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import</source>
+        <translation type="unfinished">Importar</translation>
+    </message>
+    <message>
+        <source>CRS transformation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Approximate CRS transformation is fast but it may be inaccurate.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create a link to the external data for GDAL data sources with the same CRS as target mapset by r.external, instead of making copy of data.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create link to external data if possible</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsGrassPlugin</name>
     <message>
         <source>GrassVector</source>
-        <translation>GrassVector</translation>
+        <translation type="obsolete">GrassVector</translation>
     </message>
     <message>
         <source>0.1</source>
-        <translation>0.1</translation>
+        <translation type="obsolete">0.1</translation>
     </message>
     <message>
         <source>GRASS layer</source>
-        <translation>Camada do GRASS</translation>
+        <translation type="obsolete">Camada do GRASS</translation>
     </message>
     <message>
         <source>Plugins</source>
-        <translation>Complementos</translation>
+        <translation type="obsolete">Complementos</translation>
     </message>
     <message>
         <source>Add GRASS raster layer</source>
-        <translation>Adicionar uma camada raster do GRASS</translation>
+        <translation type="obsolete">Adicionar uma camada raster do GRASS</translation>
     </message>
     <message>
         <source>Open GRASS tools</source>
@@ -29734,15 +31933,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Add GRASS Vector Layer</source>
-        <translation>Adicionar Camada Vetorial GRASS</translation>
+        <translation type="obsolete">Adicionar Camada Vetorial GRASS</translation>
     </message>
     <message>
         <source>Adds a GRASS vector layer to the map canvas</source>
-        <translation>Adiciona uma camada vetorial do GRASS ao mapa</translation>
+        <translation type="obsolete">Adiciona uma camada vetorial do GRASS ao mapa</translation>
     </message>
     <message>
         <source>Adds a GRASS raster layer to the map canvas</source>
-        <translation>Adiciona uma camada raster do GRASS ao mapa </translation>
+        <translation type="obsolete">Adiciona uma camada raster do GRASS ao mapa </translation>
     </message>
     <message>
         <source>Open GRASS Tools</source>
@@ -29778,16 +31977,16 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Cannot open vector %1 in mapset %2 on level 2 (topology not available, try to rebuild topology using v.build module).</source>
-        <translation>Impossível abrir vetor %1 no mapaset %2 no nível 2 (topologia não disponível, tente reconstruir a topologia usando o módulo v.build).</translation>
+        <translation type="obsolete">Impossível abrir vetor %1 no mapaset %2 no nível 2 (topologia não disponível, tente reconstruir a topologia usando o módulo v.build).</translation>
     </message>
     <message>
         <source>Cannot open vector %1 in mapset %2</source>
-        <translation>Impossível abrir vetor %1 no mapset %2</translation>
+        <translation type="obsolete">Impossível abrir vetor %1 no mapset %2</translation>
     </message>
     <message>
         <source>Cannot open GRASS vector:
  %1</source>
-        <translation>Impossível abrir um vetor do GRASS:
+        <translation type="obsolete">Impossível abrir um vetor do GRASS:
  %1</translation>
     </message>
     <message>
@@ -29844,6 +32043,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>GRASS vector map %1 does not have topology. Build topology?</source>
         <translation>Mapa %1 vetorial do GRASS não possui tipologia. Construir tipologia?</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGrassRasterImport</name>
+    <message>
+        <source>Data type %1 not supported</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot convert block (%1) to data type %2</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -30078,7 +32288,7 @@ ou modifique os seguintes valores</translation>
     </message>
     <message>
         <source>Browser</source>
-        <translation>Navegador</translation>
+        <translation type="obsolete">Navegador</translation>
     </message>
     <message>
         <source>Direct Modules Tree</source>
@@ -30150,6 +32360,17 @@ na liha %2 coluna %3</translation>
     <message>
         <source>Direct Modules List</source>
         <translation>LIsta Direta de Módulos</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGrassVectorItem</name>
+    <message>
+        <source>Rename</source>
+        <translation type="unfinished">Renomear</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -30279,15 +32500,15 @@ na liha %2 coluna %3</translation>
     </message>
     <message>
         <source>Pixels</source>
-        <translation>Pixels</translation>
+        <translation type="obsolete">Pixels</translation>
     </message>
     <message>
         <source>Millimeter</source>
-        <translation>Milímetro</translation>
+        <translation type="obsolete">Milímetro</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>Unidade do mapa</translation>
+        <translation type="obsolete">Unidade do mapa</translation>
     </message>
 </context>
 <context>
@@ -30350,6 +32571,29 @@ Ajuda do QGIS</translation>
     <message>
         <source>about:blank</source>
         <translation>sobre:branco</translation>
+    </message>
+</context>
+<context>
+    <name>QgsHistogramWidgetBase</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Histogram bins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show mean value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show standard deviation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load values</source>
+        <translation type="unfinished">Carregar valores</translation>
     </message>
 </context>
 <context>
@@ -30459,11 +32703,11 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
     </message>
     <message>
         <source>Expand tree</source>
-        <translation>Expandir árvore</translation>
+        <translation type="obsolete">Expandir árvore</translation>
     </message>
     <message>
         <source>Collapse tree</source>
-        <translation>Recolher árvore</translation>
+        <translation type="obsolete">Recolher árvore</translation>
     </message>
     <message>
         <source>Layer</source>
@@ -30483,7 +32727,7 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>Clear Results</source>
@@ -30524,6 +32768,30 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
     <message>
         <source>Print selected HTML response.</source>
         <translation>Imprimir resposta HTML selecionada.</translation>
+    </message>
+    <message>
+        <source>Expand Tree</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Collapse Tree</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Expand New Results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy Feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Print Response</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -30860,6 +33128,41 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
     </message>
 </context>
 <context>
+    <name>QgsJoinDialogBase</name>
+    <message>
+        <source>Add vector join</source>
+        <translation type="unfinished">Adicionar união de vetor</translation>
+    </message>
+    <message>
+        <source>Join layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Join field</source>
+        <translation type="unfinished">Unir campo</translation>
+    </message>
+    <message>
+        <source>Target field</source>
+        <translation type="unfinished">Campo alvo</translation>
+    </message>
+    <message>
+        <source>Choose which fields are joined</source>
+        <translation type="unfinished">Escolha que campos estão unidos</translation>
+    </message>
+    <message>
+        <source>Custom field name prefix</source>
+        <translation type="unfinished">Prefixo do nome do campo personalizado</translation>
+    </message>
+    <message>
+        <source>Cache join layer in virtual memory</source>
+        <translation type="unfinished">Armazenar a camada unida na memória virtual</translation>
+    </message>
+    <message>
+        <source>Create attribute index on join field</source>
+        <translation type="unfinished">Criar índice de atributo no campo de união</translation>
+    </message>
+</context>
+<context>
     <name>QgsLUDialogBase</name>
     <message>
         <source>Enter class bounds</source>
@@ -31118,6 +33421,10 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
         <source>Buffer color</source>
         <translation>Cor do buffer</translation>
     </message>
+    <message>
+        <source>Layer default (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsLabelPropertyDialogBase</name>
@@ -31250,15 +33557,15 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
     <name>QgsLabelingGui</name>
     <message>
         <source>points</source>
-        <translation>pontos</translation>
+        <translation type="obsolete">pontos</translation>
     </message>
     <message>
         <source>map units</source>
-        <translation>unidades do mapa</translation>
+        <translation type="obsolete">unidades do mapa</translation>
     </message>
     <message>
         <source>mm</source>
-        <translation>mm</translation>
+        <translation type="obsolete">mm</translation>
     </message>
     <message>
         <source>% of length</source>
@@ -31383,6 +33690,22 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
     <message>
         <source>File not found</source>
         <translation>Arquivo não encontrado</translation>
+    </message>
+    <message>
+        <source>Points</source>
+        <translation type="unfinished">Pontos</translation>
+    </message>
+    <message>
+        <source>Map unit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Millimeter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Follow label placement</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -32089,11 +34412,11 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
     <name>QgsLinePatternFillSymbolLayerWidget</name>
     <message>
         <source>Millimeter</source>
-        <translation>Milímetros</translation>
+        <translation type="obsolete">Milímetros</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>Unidades do mapa</translation>
+        <translation type="obsolete">Unidades do mapa</translation>
     </message>
 </context>
 <context>
@@ -32260,19 +34583,31 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
     </message>
     <message>
         <source>Enter X and Y coordinates (DMS (dd mm ss.ss), DD (dd.dd) or projected coordinates (mmmm.mm)) which correspond with the selected point on the image. Alternatively, click the button with icon of a pencil and then click a corresponding point on map canvas of QGIS to fill in coordinates of that point.</source>
-        <translation>Entre com as coordenadas X e Y GMS (GG mm ss.ss), GG (gg.gg) ou coordenadas projetadas (mmmm.mm) que correspondem com o ponto selecionado na imagem. Alternativamente, clique no ícone com o lápis e então clique no ponto correspondente no mapa da tela do QGIS para preencher as coordenadas daquele ponto.</translation>
+        <translation type="obsolete">Entre com as coordenadas X e Y GMS (GG mm ss.ss), GG (gg.gg) ou coordenadas projetadas (mmmm.mm) que correspondem com o ponto selecionado na imagem. Alternativamente, clique no ícone com o lápis e então clique no ponto correspondente no mapa da tela do QGIS para preencher as coordenadas daquele ponto.</translation>
     </message>
     <message>
         <source>X / East:</source>
-        <translation>X / Leste:</translation>
+        <translation type="obsolete">X / Leste:</translation>
     </message>
     <message>
         <source>Y / North:</source>
-        <translation>Y / Norte:</translation>
+        <translation type="obsolete">Y / Norte:</translation>
     </message>
     <message>
         <source>Snap to background layers</source>
         <translation>Ajustar pelas camadas que estão no fundo</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter X and Y coordinates (DMS (&lt;span style=&quot; font-style:italic;&quot;&gt;dd mm ss.ss&lt;/span&gt;), DD (&lt;span style=&quot; font-style:italic;&quot;&gt;dd.dd&lt;/span&gt;) or projected coordinates (&lt;span style=&quot; font-style:italic;&quot;&gt;mmmm.mm&lt;/span&gt;)) which correspond with the selected point on the image. Alternatively, click the button with icon of a pencil and then click a corresponding point on map canvas of QGIS to fill in coordinates of that point.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Y / North</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>X / East</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -33052,11 +35387,11 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
     <name>QgsMarkerLineSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation>Milímetros</translation>
+        <translation type="obsolete">Milímetros</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>Unidades do mapa</translation>
+        <translation type="obsolete">Unidades do mapa</translation>
     </message>
     <message>
         <source>string </source>
@@ -33138,19 +35473,19 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
     </message>
     <message>
         <source>Meters</source>
-        <translation>Metros</translation>
+        <translation type="obsolete">Metros</translation>
     </message>
     <message>
         <source>Feet</source>
-        <translation>Pés</translation>
+        <translation type="obsolete">Pés</translation>
     </message>
     <message>
         <source>Degrees</source>
-        <translation>Graus</translation>
+        <translation type="obsolete">Graus</translation>
     </message>
     <message>
         <source>Nautical Miles</source>
-        <translation>Milhas Náuticas</translation>
+        <translation type="obsolete">Milhas Náuticas</translation>
     </message>
 </context>
 <context>
@@ -33986,6 +36321,44 @@ Nota: fornecer a senha é opcional. Será solicitado interatiamente, quando nece
     </message>
 </context>
 <context>
+    <name>QgsNewNameDialog</name>
+    <message>
+        <source>New name</source>
+        <translation type="unfinished">Novo nome</translation>
+    </message>
+    <message>
+        <source>name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>base name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter new %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter new %1 for %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Full names</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <source>Name(s) %1 exists</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Overwrite</source>
+        <translation type="unfinished">Substituir</translation>
+    </message>
+</context>
+<context>
     <name>QgsNewOgrConnection</name>
     <message>
         <source>Test connection</source>
@@ -34531,6 +36904,18 @@ Informação de erro estendida:
 %1</source>
         <translation>Falha ao exportar dados OSM:
 %1</translation>
+    </message>
+    <message>
+        <source>Select All</source>
+        <translation type="unfinished">Selecionar tudo</translation>
+    </message>
+    <message>
+        <source>Unselect All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not null</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -35743,7 +38128,7 @@ Rede sempre: sempre carregar da rede e não verificar se o cache tem uma entrada
     </message>
     <message>
         <source>Icon theme</source>
-        <translation>Tema de ícones</translation>
+        <translation type="obsolete">Tema de ícones</translation>
     </message>
     <message>
         <source>Icon size</source>
@@ -35791,7 +38176,7 @@ Rede sempre: sempre carregar da rede e não verificar se o cache tem uma entrada
     </message>
     <message>
         <source>Bold group box titles</source>
-        <translation>Títulos de caixa de grupo em negrito</translation>
+        <translation type="obsolete">Títulos de caixa de grupo em negrito</translation>
     </message>
     <message>
         <source>QGIS-styled group boxes</source>
@@ -36191,7 +38576,7 @@ Rede sempre: sempre carregar da rede e não verificar se o cache tem uma entrada
     </message>
     <message>
         <source>Custom side bar style</source>
-        <translation>Estilo da barra lateral personalizado</translation>
+        <translation type="obsolete">Estilo da barra lateral personalizado</translation>
     </message>
     <message>
         <source>Add Oracle layers with double click and select in extended mode</source>
@@ -36709,6 +39094,10 @@ Rede sempre: sempre carregar da rede e não verificar se o cache tem uma entrada
         <source>Default uses system&apos;s proxy</source>
         <translation>Proxy do sistema usado como padrão</translation>
     </message>
+    <message>
+        <source>Execute expressions on postgres server-side if possible (Experimental)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOptionsDialogBase</name>
@@ -36909,9 +39298,15 @@ erro: %2</translation>
         <source>Connection failed - Check settings and try again.
 
 </source>
-        <translation>A conexão falhou - Verifique a sua configuração e tente novamente.
+        <translation type="obsolete">A conexão falhou - Verifique a sua configuração e tente novamente.
 
 </translation>
+    </message>
+    <message>
+        <source>Connection failed - consult message log for details.
+
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -37421,6 +39816,14 @@ Error: %2</source>
         <translation>Oracle erro: %1
 Erro: %2</translation>
     </message>
+    <message>
+        <source>Could not prepare get feature id statement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not retrieve feature id %1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOracleRootItem</name>
@@ -37679,11 +40082,15 @@ Erro: %2</translation>
     <name>QgsPGLayerItem</name>
     <message>
         <source>Delete layer</source>
-        <translation>Excluir camada</translation>
+        <translation type="obsolete">Excluir camada</translation>
     </message>
     <message>
         <source>Layer deleted successfully.</source>
         <translation>Camada excluída com sucesso.</translation>
+    </message>
+    <message>
+        <source>Delete Layer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -37862,9 +40269,15 @@ Erro: %2</translation>
         <source>Connection failed - Check settings and try again.
 
 </source>
-        <translation>Conexão falhou - Verifique configurações e tente novamente.
+        <translation type="obsolete">Conexão falhou - Verifique configurações e tente novamente.
 
 </translation>
+    </message>
+    <message>
+        <source>Connection failed - consult message log for details.
+
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -39071,11 +41484,11 @@ p, li { white-space: pre-wrap; }
     <name>QgsPointPatternFillSymbolLayerWidget</name>
     <message>
         <source>Millimeter</source>
-        <translation>Milímetros</translation>
+        <translation type="obsolete">Milímetros</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>Unidades do mapa</translation>
+        <translation type="obsolete">Unidades do mapa</translation>
     </message>
 </context>
 <context>
@@ -39193,35 +41606,35 @@ Resulta: %3 (%4)</translation>
     </message>
     <message>
         <source>Point</source>
-        <translation>Ponto</translation>
+        <translation type="obsolete">Ponto</translation>
     </message>
     <message>
         <source>Multipoint</source>
-        <translation>Multiponto</translation>
+        <translation type="obsolete">Multiponto</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation>Linha</translation>
+        <translation type="obsolete">Linha</translation>
     </message>
     <message>
         <source>Multiline</source>
-        <translation>Multilinha</translation>
+        <translation type="obsolete">Multilinha</translation>
     </message>
     <message>
         <source>Polygon</source>
-        <translation>Polígono</translation>
+        <translation type="obsolete">Polígono</translation>
     </message>
     <message>
         <source>Multipolygon</source>
-        <translation>Multipolígono</translation>
+        <translation type="obsolete">Multipolígono</translation>
     </message>
     <message>
         <source>No Geometry</source>
-        <translation>Sem geometria</translation>
+        <translation type="obsolete">Sem geometria</translation>
     </message>
     <message>
         <source>Unknown Geometry</source>
-        <translation>Geometria desconhecida</translation>
+        <translation type="obsolete">Geometria desconhecida</translation>
     </message>
     <message>
         <source>None</source>
@@ -39246,6 +41659,14 @@ Resulta: %3 (%4)</translation>
     <message>
         <source>PQgetCancel failed</source>
         <translation>PQgetCancel Falhou</translation>
+    </message>
+    <message>
+        <source>Unsupported spatial column type %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PcPatch</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -39470,6 +41891,10 @@ PostGIS %2</source>
 %1
 PostGIS %2</translation>
     </message>
+    <message>
+        <source>Primary key is ctid - changing of existing features disabled (%1; %2)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsProject</name>
@@ -39531,7 +41956,7 @@ Escolha ignorar para continuar carregando sem as camadas não encontradas. Escol
     <name>QgsProjectColorScheme</name>
     <message>
         <source>Project colors</source>
-        <translation>Cores do Projecto</translation>
+        <translation type="obsolete">Cores do Projecto</translation>
     </message>
 </context>
 <context>
@@ -40671,6 +43096,22 @@ p, li { white-space: pre-wrap; }
         <source>Raster calculator expression</source>
         <translation>Calculadora de expressão raster</translation>
     </message>
+    <message>
+        <source>Output CRS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>!=</source>
+        <translation type="unfinished">!=</translation>
+    </message>
+    <message>
+        <source>log10</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ln</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsRasterDataProvider</name>
@@ -40699,15 +43140,15 @@ p, li { white-space: pre-wrap; }
     <name>QgsRasterFillSymbolLayerWidget</name>
     <message>
         <source>Pixels</source>
-        <translation>Pixels</translation>
+        <translation type="obsolete">Pixels</translation>
     </message>
     <message>
         <source>Millimeter</source>
-        <translation>Milímetro</translation>
+        <translation type="obsolete">Milímetro</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>Unidade do mapa</translation>
+        <translation type="obsolete">Unidade do mapa</translation>
     </message>
     <message>
         <source>Select image file</source>
@@ -41836,7 +44277,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Create GDAL Virtual Format composed of multiple 
 datasets with maximum width and height specified below.</source>
-        <translation>Criar Raster Virtual composto por multiplos conjuntos de dados com largura e altura máximos definidos abaixo.</translation>
+        <translation type="obsolete">Criar Raster Virtual composto por multiplos conjuntos de dados com largura e altura máximos definidos abaixo.</translation>
     </message>
     <message>
         <source>Create VRT</source>
@@ -41954,6 +44395,15 @@ datasets with maximum width and height specified below.</source>
         <source>Clear all</source>
         <translation>Limpar tudo</translation>
     </message>
+    <message>
+        <source>Create GDAL Virtual Format composed of multiple
+datasets with maximum width and height specified below.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add saved file to map</source>
+        <translation type="unfinished">Adicionar arquivo salvo ao mapa</translation>
+    </message>
 </context>
 <context>
     <name>QgsRasterMinMaxWidget</name>
@@ -42027,6 +44477,17 @@ Desvio Padrão ×</translation>
     <message>
         <source>Load</source>
         <translation>Carregar</translation>
+    </message>
+</context>
+<context>
+    <name>QgsRasterProjector</name>
+    <message>
+        <source>Approximate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exact</source>
+        <translation type="unfinished">Exato</translation>
     </message>
 </context>
 <context>
@@ -42337,7 +44798,7 @@ Desvio Padrão ×</translation>
     <name>QgsRecentColorScheme</name>
     <message>
         <source>Recent colors</source>
-        <translation>Cores recentes</translation>
+        <translation type="obsolete">Cores recentes</translation>
     </message>
 </context>
 <context>
@@ -42373,6 +44834,22 @@ Desvio Padrão ×</translation>
     <message>
         <source>Order by value</source>
         <translation>Ordenar pelo valor</translation>
+    </message>
+    <message>
+        <source>Filters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>When activated, the filters will restrict the choices of fields to options that are </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Chain filters</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -42545,7 +45022,11 @@ Desvio Padrão ×</translation>
     </message>
     <message>
         <source>Identify a feature of %1 to be associated. Press &lt;ESC&gt; to cancel.</source>
-        <translation>Identifique um elemento de %1 para ser associado. Pressione &lt;ESC&gt; para cancelar.</translation>
+        <translation type="obsolete">Identifique um elemento de %1 para ser associado. Pressione &lt;ESC&gt; para cancelar.</translation>
+    </message>
+    <message>
+        <source>Identify a feature of %1 to be associated. Press &amp;lt;ESC&amp;gt; to cancel.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -42721,19 +45202,23 @@ Desvio Padrão ×</translation>
     </message>
     <message>
         <source>Width</source>
-        <translation>Espessura</translation>
+        <translation type="obsolete">Espessura</translation>
     </message>
     <message>
         <source>Change symbol width</source>
-        <translation>Mudar espessura do símbolo</translation>
+        <translation type="obsolete">Mudar espessura do símbolo</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation>Tamanho</translation>
+        <translation type="obsolete">Tamanho</translation>
     </message>
     <message>
         <source>Change symbol size</source>
-        <translation>Mudar tamanho do símbolo</translation>
+        <translation type="obsolete">Mudar tamanho do símbolo</translation>
+    </message>
+    <message>
+        <source>Change angle</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -42941,11 +45426,15 @@ Desvio Padrão ×</translation>
     <name>QgsSLLayerItem</name>
     <message>
         <source>Delete layer</source>
-        <translation>Excluir camada</translation>
+        <translation type="obsolete">Excluir camada</translation>
     </message>
     <message>
         <source>Layer deleted successfully.</source>
         <translation>Camada excluída com sucesso.</translation>
+    </message>
+    <message>
+        <source>Delete Layer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -42988,11 +45477,11 @@ Desvio Padrão ×</translation>
     </message>
     <message>
         <source>Millimeter</source>
-        <translation>Milímetros</translation>
+        <translation type="obsolete">Milímetros</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>Unidades do mapa</translation>
+        <translation type="obsolete">Unidades do mapa</translation>
     </message>
     <message>
         <source>Select fill color</source>
@@ -43108,6 +45597,13 @@ Desvio Padrão ×</translation>
     <message>
         <source>Scale visibility </source>
         <translation>Escala de visibilidade</translation>
+    </message>
+</context>
+<context>
+    <name>QgsScaleWidget</name>
+    <message>
+        <source>Set to current canvas scale</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -43268,6 +45764,13 @@ Desvio Padrão ×</translation>
     </message>
 </context>
 <context>
+    <name>QgsShadowEffectWidget</name>
+    <message>
+        <source>Select shadow color</source>
+        <translation type="unfinished">Selecionar cor da sombra</translation>
+    </message>
+</context>
+<context>
     <name>QgsShapeFile</name>
     <message>
         <source>Scanning </source>
@@ -43305,11 +45808,11 @@ O erro foi:
     <name>QgsShapeburstFillSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation>Milímetros</translation>
+        <translation type="obsolete">Milímetros</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>Unidades do mapa</translation>
+        <translation type="obsolete">Unidades do mapa</translation>
     </message>
     <message>
         <source>Select gradient color</source>
@@ -43328,11 +45831,11 @@ O erro foi:
     <name>QgsSimpleFillSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation>Milímetros</translation>
+        <translation type="obsolete">Milímetros</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>Unidades do mapa</translation>
+        <translation type="obsolete">Unidades do mapa</translation>
     </message>
     <message>
         <source>Select fill color</source>
@@ -43355,11 +45858,11 @@ O erro foi:
     <name>QgsSimpleLineSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation>Milímetros</translation>
+        <translation type="obsolete">Milímetros</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>Unidades do mapa</translation>
+        <translation type="obsolete">Unidades do mapa</translation>
     </message>
     <message>
         <source>Select line color</source>
@@ -43370,11 +45873,11 @@ O erro foi:
     <name>QgsSimpleMarkerSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation>Milímetros</translation>
+        <translation type="obsolete">Milímetros</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>Unidades do mapa</translation>
+        <translation type="obsolete">Unidades do mapa</translation>
     </message>
     <message>
         <source>Select fill color</source>
@@ -43395,6 +45898,10 @@ O erro foi:
     <message>
         <source>string </source>
         <translation>texto</translation>
+    </message>
+    <message>
+        <source>Size Assistant...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -43637,6 +46144,25 @@ contraste</translation>
     <message>
         <source>Symbol levels...</source>
         <translation>Níveis de símbolos...</translation>
+    </message>
+</context>
+<context>
+    <name>QgsSizeScaleWidget</name>
+    <message>
+        <source>Compute from layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Flannery</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Surface</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Radius</source>
+        <translation type="unfinished">Raio</translation>
     </message>
 </context>
 <context>
@@ -44855,6 +47381,40 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsStatisticalSummaryDockWidget</name>
+    <message>
+        <source>Missing (null) values</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsStatisticalSummaryWidgetBase</name>
+    <message>
+        <source>Statistics</source>
+        <translation type="unfinished">Estatísticas</translation>
+    </message>
+    <message>
+        <source>Statistic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished">Valor</translation>
+    </message>
+    <message>
+        <source>Selected features only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Recalculate Statistics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+</context>
+<context>
     <name>QgsStyleV2ExportImportDialog</name>
     <message>
         <source>Select all</source>
@@ -45303,7 +47863,7 @@ Houve um problema com o seu banco de dados de simbologias.</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation>Editar</translation>
+        <translation type="obsolete">Editar</translation>
     </message>
     <message>
         <source>Remove item</source>
@@ -45311,7 +47871,7 @@ Houve um problema com o seu banco de dados de simbologias.</translation>
     </message>
     <message>
         <source>Share</source>
-        <translation>Compartilhar</translation>
+        <translation type="obsolete">Compartilhar</translation>
     </message>
 </context>
 <context>
@@ -45421,11 +47981,11 @@ Houve um problema com o seu banco de dados de simbologias.</translation>
     <name>QgsSvgMarkerSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation>Milímetros</translation>
+        <translation type="obsolete">Milímetros</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>Unidades do mapa</translation>
+        <translation type="obsolete">Unidades do mapa</translation>
     </message>
     <message>
         <source>Select fill color</source>
@@ -45442,6 +48002,10 @@ Houve um problema com o seu banco de dados de simbologias.</translation>
     <message>
         <source>SVG files</source>
         <translation>Arquivos SVG</translation>
+    </message>
+    <message>
+        <source>Size Assistant...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -45569,11 +48133,11 @@ Houve um problema com o seu banco de dados de simbologias.</translation>
     <name>QgsSymbolsListWidget</name>
     <message>
         <source>Millimeter</source>
-        <translation>Milímetros</translation>
+        <translation type="obsolete">Milímetros</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>Unidades do mapa</translation>
+        <translation type="obsolete">Unidades do mapa</translation>
     </message>
     <message>
         <source>Select color</source>
@@ -45602,6 +48166,14 @@ Houve um problema com o seu banco de dados de simbologias.</translation>
     <message>
         <source>Transparency %1%</source>
         <translation>Transparência: %1%</translation>
+    </message>
+    <message>
+        <source>Clip features to canvas extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Size Assistant...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -45706,7 +48278,7 @@ Houve um problema com o seu banco de dados de simbologias.</translation>
     </message>
     <message>
         <source>Become an QGIS translator</source>
-        <translation>Torne-se um tradutor do QGIS</translation>
+        <translation type="obsolete">Torne-se um tradutor do QGIS</translation>
     </message>
     <message>
         <source>QGIS Mailing lists</source>
@@ -45856,6 +48428,10 @@ Houve um problema com o seu banco de dados de simbologias.</translation>
         <source>QGIS has Plugins!</source>
         <translation>O QGIS tem complementos!</translation>
     </message>
+    <message>
+        <source>Become a QGIS translator</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsTipGui</name>
@@ -45934,11 +48510,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Transformation type:</source>
-        <translation>Tipo de transformação:</translation>
+        <translation type="obsolete">Tipo de transformação:</translation>
     </message>
     <message>
         <source>Resampling method:</source>
-        <translation>Método de reamostragem:</translation>
+        <translation type="obsolete">Método de reamostragem:</translation>
     </message>
     <message>
         <source>Nearest neighbour</source>
@@ -45962,11 +48538,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Compression:</source>
-        <translation>Compressão:</translation>
+        <translation type="obsolete">Compressão:</translation>
     </message>
     <message>
         <source>Output raster:</source>
-        <translation>Raster de saída:</translation>
+        <translation type="obsolete">Raster de saída:</translation>
     </message>
     <message>
         <source>...</source>
@@ -45974,15 +48550,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Target SRS:</source>
-        <translation>SRC de destino:</translation>
+        <translation type="obsolete">SRC de destino:</translation>
     </message>
     <message>
         <source>Generate pdf report:</source>
-        <translation>Gerar um relatório PDF:</translation>
+        <translation type="obsolete">Gerar um relatório PDF:</translation>
     </message>
     <message>
         <source>Set Target Resolution</source>
-        <translation>Acertar a resolução de saída</translation>
+        <translation type="obsolete">Acertar a resolução de saída</translation>
     </message>
     <message>
         <source>Horizontal</source>
@@ -45994,11 +48570,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Create world file</source>
-        <translation>Criar arquivo &apos;wld&apos;</translation>
+        <translation type="obsolete">Criar arquivo &apos;wld&apos;</translation>
     </message>
     <message>
         <source>Generate pdf map:</source>
-        <translation>Gerar um mapa em pdf:</translation>
+        <translation type="obsolete">Gerar um mapa em pdf:</translation>
     </message>
     <message>
         <source>Use 0 for transparency when needed</source>
@@ -46034,27 +48610,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Info</source>
-        <translation>Info</translation>
+        <translation type="obsolete">Info</translation>
     </message>
     <message>
         <source>Please set output name</source>
-        <translation>Defina o nome de saída</translation>
+        <translation type="obsolete">Defina o nome de saída</translation>
     </message>
     <message>
         <source>%1 requires at least %2 GCPs. Please define more</source>
-        <translation>%1 necessita pelo menos %2 GCPs. Defina mais</translation>
+        <translation type="obsolete">%1 necessita pelo menos %2 GCPs. Defina mais</translation>
     </message>
     <message>
         <source>Invalid output file name</source>
-        <translation>Nome de saída inválido</translation>
+        <translation type="obsolete">Nome de saída inválido</translation>
     </message>
     <message>
         <source>Save raster</source>
-        <translation>Salvar raster</translation>
+        <translation type="obsolete">Salvar raster</translation>
     </message>
     <message>
         <source>Select save PDF file</source>
-        <translation>Selecione salvar arquivo PDF</translation>
+        <translation type="obsolete">Selecione salvar arquivo PDF</translation>
     </message>
     <message>
         <source>PDF Format</source>
@@ -46064,6 +48640,74 @@ p, li { white-space: pre-wrap; }
         <source>_modified</source>
         <comment>Georeferencer:QgsOpenRasterDialog.cpp - used to modify a user given file name</comment>
         <translation>_modificado</translation>
+    </message>
+    <message>
+        <source>Transformation parameters</source>
+        <translation type="unfinished">Parâmetros de transformação</translation>
+    </message>
+    <message>
+        <source>Transformation type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Resampling method</source>
+        <translation type="unfinished">Método de reamostragem</translation>
+    </message>
+    <message>
+        <source>Target SRS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output raster</source>
+        <translation type="unfinished">Raster de saída</translation>
+    </message>
+    <message>
+        <source>Set target resolution</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Compression</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create world file only (linear transforms)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reports</source>
+        <translation type="unfinished">Relatórios</translation>
+    </message>
+    <message>
+        <source>Generate PDF map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Generate PDF report</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Destination Raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid output file name.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input raster can not be overwritten.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save Map File as</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save Report File as</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -46090,6 +48734,25 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Adjust scaling range</source>
         <translation>Ajustar o intervalo de escala</translation>
+    </message>
+    <message>
+        <source>Millimeter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pixels</source>
+        <translation type="unfinished">Pixels</translation>
+    </message>
+    <message>
+        <source>Map unit</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsUserInputDockWidget</name>
+    <message>
+        <source>User input</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -46188,6 +48851,10 @@ Foi erro: %2</translation>
     <message>
         <source>...</source>
         <translation>...</translation>
+    </message>
+    <message>
+        <source>Use Completer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -46492,6 +49159,10 @@ Foi erro: %2</translation>
         <source>Comment</source>
         <translation>Comentário</translation>
     </message>
+    <message>
+        <source>QGIS</source>
+        <translation type="unfinished">QGIS</translation>
+    </message>
 </context>
 <context>
     <name>QgsVectorLayerEditBuffer</name>
@@ -46772,6 +49443,10 @@ Erros no provedor:</translation>
         <source>Restore Default</source>
         <translation>Restaurar Definições Padrão</translation>
     </message>
+    <message>
+        <source>all</source>
+        <translation type="unfinished">todos</translation>
+    </message>
 </context>
 <context>
     <name>QgsVectorLayerPropertiesBase</name>
@@ -46781,11 +49456,11 @@ Erros no provedor:</translation>
     </message>
     <message>
         <source>A widget to define the scale visibility</source>
-        <translation>Um widget para definir a visibilidade de escala</translation>
+        <translation type="obsolete">Um widget para definir a visibilidade de escala</translation>
     </message>
     <message>
         <source>A widget to define the scale visibility.</source>
-        <translation>Um widget para definir a visibilidade de escala.</translation>
+        <translation type="obsolete">Um widget para definir a visibilidade de escala.</translation>
     </message>
     <message>
         <source>Memory cache</source>
@@ -46909,7 +49584,7 @@ Erros no provedor:</translation>
     </message>
     <message>
         <source>Feature subset</source>
-        <translation>Subdivisão da feição</translation>
+        <translation type="obsolete">Subdivisão da feição</translation>
     </message>
     <message>
         <source>Simplify geometry</source>
@@ -47014,6 +49689,18 @@ Erros no provedor:</translation>
     <message>
         <source>Diagrams</source>
         <translation>Diagramas</translation>
+    </message>
+    <message>
+        <source>Provider feature filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Prefix</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Joined fields</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -47401,6 +50088,10 @@ Erros no provedor:</translation>
     <message>
         <source>Coordinate reference system</source>
         <translation>Sistema de Referência de Coordenadas</translation>
+    </message>
+    <message>
+        <source>Only request features overlapping the current view extent</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -48865,6 +51556,53 @@ Expressão de motivo: %2</translation>
     </message>
 </context>
 <context>
+    <name>QgsZonalStatisticsDialog</name>
+    <message>
+        <source>Count</source>
+        <translation type="unfinished">Contagem</translation>
+    </message>
+    <message>
+        <source>Sum</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mean</source>
+        <translation type="unfinished">Média</translation>
+    </message>
+    <message>
+        <source>Median</source>
+        <translation type="unfinished">Mediana</translation>
+    </message>
+    <message>
+        <source>Standard deviation</source>
+        <translation type="unfinished">Desvio padrão</translation>
+    </message>
+    <message>
+        <source>Minimum</source>
+        <translation type="unfinished">Mínimo</translation>
+    </message>
+    <message>
+        <source>Maximum</source>
+        <translation type="unfinished">Máximo</translation>
+    </message>
+    <message>
+        <source>Range</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minority</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Majority</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Variety</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsZonalStatisticsDialogBase</name>
     <message>
         <source>Raster layer:</source>
@@ -48881,6 +51619,14 @@ Expressão de motivo: %2</translation>
     <message>
         <source>Zonal Statistics</source>
         <translation>Estatísticas Zonal</translation>
+    </message>
+    <message>
+        <source>Band</source>
+        <translation type="unfinished">Banda</translation>
+    </message>
+    <message>
+        <source>Statistics to calculate:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -48926,19 +51672,19 @@ Por favor configure-a antes de executar os scripts R.</translation>
     </message>
     <message>
         <source>&lt;p&gt;This algorithm requires R to be run. A test to check if R is correctly installed and configured in your system has been performed, with the following result:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</source>
-        <translation>&lt;p&gt;Este algoritmo requer o R para ser executado. Foi feito um teste para verificar se  R está corretamente instalado e configurado no seu sistema, com o seguinte resultado:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</translation>
+        <translation type="obsolete">&lt;p&gt;Este algoritmo requer o R para ser executado. Foi feito um teste para verificar se  R está corretamente instalado e configurado no seu sistema, com o seguinte resultado:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</translation>
     </message>
     <message>
         <source>R seems to be correctly installed and configured&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;The script you have executed needs the following packages:&lt;/p&gt;&lt;ul&gt;</source>
-        <translation>O R parece estar corretamente instalado e configurado/i&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;O script que executou necessita dos seguintes pacotes:&lt;/p&gt;&lt;ul&gt;</translation>
+        <translation type="obsolete">O R parece estar corretamente instalado e configurado/i&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;O script que executou necessita dos seguintes pacotes:&lt;/p&gt;&lt;ul&gt;</translation>
     </message>
     <message>
         <source>&lt;/ul&gt;&lt;p&gt;Make sure they are installed in your R environment before trying to execute this script.&lt;/p&gt;</source>
-        <translation>&lt;/ul&gt;&lt;p&gt;Garanta que estão instalado no seu ambiente R antes de tentar executar o script.&lt;/p&gt;</translation>
+        <translation type="obsolete">&lt;/ul&gt;&lt;p&gt;Garanta que estão instalado no seu ambiente R antes de tentar executar o script.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;a href= &quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Click here&lt;/a&gt; to know more about how to install and configure R to be used with QGIS&lt;/p&gt;</source>
-        <translation>&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Clique aqui&lt;/a&gt; para saber mais de como instalar e configurar o R para ser usado com o QGIS&lt;/p&gt;</translation>
+        <translation type="obsolete">&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Clique aqui&lt;/a&gt; para saber mais de como instalar e configurar o R para ser usado com o QGIS&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -48964,6 +51710,10 @@ Por favor configure-a antes de executar os scripts R.</translation>
 %s</source>
         <translation>Não é possível carregar o script R: %s
 %s</translation>
+    </message>
+    <message>
+        <source>R user library folder</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -49005,7 +51755,7 @@ Por favor configure-a antes de executar os script R .</translation>
     </message>
     <message>
         <source>Selection</source>
-        <translation>Seleção</translation>
+        <translation type="obsolete">Seleção</translation>
     </message>
     <message>
         <source>Selected number is greater than feature count. Choose a lower value and try again.</source>
@@ -49014,6 +51764,10 @@ Por favor configure-a antes de executar os script R .</translation>
     <message>
         <source>Percentage can&apos;t be greater than 100. Set a different value and try again.</source>
         <translation>A percentagem não pode ser maior que 100. Defina um valor diferente e tente outra vez.</translation>
+    </message>
+    <message>
+        <source>Extracted (random)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -49036,7 +51790,7 @@ Por favor configure-a antes de executar os script R .</translation>
     </message>
     <message>
         <source>Selection</source>
-        <translation>Seleção</translation>
+        <translation type="obsolete">Seleção</translation>
     </message>
     <message>
         <source>Selected number is greater that feature count. Choose lesser value and try again.</source>
@@ -49045,6 +51799,10 @@ Por favor configure-a antes de executar os script R .</translation>
     <message>
         <source>Percentage can&apos;t be greater than 100. Set correct value and try again.</source>
         <translation>A percentagem não pode ser maior que 100. Defina um valor diferente e tente outra vez.</translation>
+    </message>
+    <message>
+        <source>Extracted (random stratified)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -49217,7 +51975,7 @@ Por favor configure-a antes de executar os script R .</translation>
     </message>
     <message>
         <source>Selection</source>
-        <translation>Seleção</translation>
+        <translation type="obsolete">Seleção</translation>
     </message>
     <message>
         <source>Selected number is greater that feature count. Choose lesser value and try again.</source>
@@ -49226,6 +51984,10 @@ Por favor configure-a antes de executar os script R .</translation>
     <message>
         <source>Percentage can&apos;t be greater than 100. Set a different value and try again.</source>
         <translation>A percentagem não pode ser maior que 100. Defina um valor diferente e tente outra vez.</translation>
+    </message>
+    <message>
+        <source>Selection stratified</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -49275,11 +52037,19 @@ Por favor configure-a antes de executar os script R .</translation>
     </message>
     <message>
         <source>Output plot</source>
-        <translation>Gráfico de saída</translation>
+        <translation type="obsolete">Gráfico de saída</translation>
     </message>
     <message>
         <source>Output table</source>
-        <translation>Tabela de saída</translation>
+        <translation type="obsolete">Tabela de saída</translation>
+    </message>
+    <message>
+        <source>Histogram</source>
+        <translation type="unfinished">Histograma</translation>
+    </message>
+    <message>
+        <source>Table</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -49378,7 +52148,11 @@ Por favor configure-a antes de executar os script R .</translation>
     </message>
     <message>
         <source>Reprojected layer</source>
-        <translation>camada reprojetada</translation>
+        <translation type="obsolete">camada reprojetada</translation>
+    </message>
+    <message>
+        <source>Reprojected</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -49691,6 +52465,10 @@ As camadas multi-bandas não são suportadas pelo SAGA</translation>
         <translation>Não foi possível abrir o algoritmo SAGA: %s
 %s</translation>
     </message>
+    <message>
+        <source>Activate</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SagaUtils</name>
@@ -49707,7 +52485,11 @@ As camadas multi-bandas não são suportadas pelo SAGA</translation>
     </message>
     <message>
         <source>Output layer with selected features</source>
-        <translation>Camada de saída com os elementos selecionados</translation>
+        <translation type="obsolete">Camada de saída com os elementos selecionados</translation>
+    </message>
+    <message>
+        <source>Selection</source>
+        <translation type="unfinished">Seleção</translation>
     </message>
 </context>
 <context>
@@ -49719,7 +52501,7 @@ As camadas multi-bandas não são suportadas pelo SAGA</translation>
     <message>
         <source>Could not load script: %s
 Problem with line: %d</source>
-        <translation>Não foi possível carregar script: %s
+        <translation type="obsolete">Não foi possível carregar script: %s
 Problema com a linha: %d</translation>
     </message>
     <message>
@@ -49735,6 +52517,16 @@ Problema com a linha: %d</translation>
 Problem with line %d</source>
         <translation>Não foi possível carregar script: %s
 Problema com a linha: %d</translation>
+    </message>
+    <message>
+        <source>Could not load script: %s
+Problem with line: %s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not load script: %s.
+Problem with line &quot;%s&quot;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -49805,7 +52597,7 @@ Problema com a linha: %d</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation>Arquivo de Saída</translation>
+        <translation type="obsolete">Arquivo de Saída</translation>
     </message>
     <message>
         <source>Operators %s can be used only with string fields.</source>
@@ -49827,6 +52619,37 @@ Problema com a linha: %d</translation>
         <source>Unsupported field type &quot;%s&quot;</source>
         <translation>Tipo de campo não suportado &quot;%s&quot;</translation>
     </message>
+    <message>
+        <source>Selected (attribute)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SelectByAttributeSum</name>
+    <message>
+        <source>Input Layer</source>
+        <translation type="unfinished">Camada de entrada</translation>
+    </message>
+    <message>
+        <source>Selection attribute</source>
+        <translation type="unfinished">Atributo de seleção</translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished">Valor</translation>
+    </message>
+    <message>
+        <source>Selected (attribute sum)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There is no selection in the input layer. Select one feature and try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No adjacent features found.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SelectByExpression</name>
@@ -49844,7 +52667,11 @@ Problema com a linha: %d</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation>Arquivo de Saída</translation>
+        <translation type="obsolete">Arquivo de Saída</translation>
+    </message>
+    <message>
+        <source>Selected (expression)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -49867,7 +52694,11 @@ Problema com a linha: %d</translation>
     </message>
     <message>
         <source>Selection</source>
-        <translation>Seleção</translation>
+        <translation type="obsolete">Seleção</translation>
+    </message>
+    <message>
+        <source>Selected (location)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -49925,7 +52756,11 @@ Problema com a linha: %d</translation>
     </message>
     <message>
         <source>Styled layer</source>
-        <translation>camada customizada</translation>
+        <translation type="obsolete">camada customizada</translation>
+    </message>
+    <message>
+        <source>Styled</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -49940,7 +52775,11 @@ Problema com a linha: %d</translation>
     </message>
     <message>
         <source>Styled layer</source>
-        <translation>camada customizada</translation>
+        <translation type="obsolete">camada customizada</translation>
+    </message>
+    <message>
+        <source>Styled</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -50125,11 +52964,15 @@ Problema com a linha: %d</translation>
     </message>
     <message>
         <source>Simplified layer</source>
-        <translation>camada simplificada</translation>
+        <translation type="obsolete">camada simplificada</translation>
     </message>
     <message>
         <source>Simplify: Input geometries have been simplified from %s to %s points</source>
         <translation>Simplificar: As geometrias foram simplificadas de %s para %s pontos</translation>
+    </message>
+    <message>
+        <source>Simplified</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -50171,11 +53014,46 @@ Problema com a linha: %d</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
     </message>
     <message>
         <source>Invalid unique ID field</source>
         <translation>Campo de ID único inválido</translation>
+    </message>
+    <message>
+        <source>Multipart</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SizeScaleBase</name>
+    <message>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field</source>
+        <translation type="unfinished">Campo</translation>
+    </message>
+    <message>
+        <source>Scale method</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Size from</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>to</source>
+        <translation type="unfinished">para</translation>
+    </message>
+    <message>
+        <source>Values from</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Size when field is NULL</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -50206,6 +53084,33 @@ Problema com a linha: %d</translation>
     </message>
 </context>
 <context>
+    <name>SlopeAreaMulti</name>
+    <message>
+        <source>Slope Grid</source>
+        <translation type="unfinished">Gride de Declives</translation>
+    </message>
+    <message>
+        <source>Contributing Area Grid</source>
+        <translation type="unfinished">Gride da Área de Contribuição</translation>
+    </message>
+    <message>
+        <source>Slope Exponent</source>
+        <translation type="unfinished">Expoente de Declive</translation>
+    </message>
+    <message>
+        <source>Area Exponent</source>
+        <translation type="unfinished">Expoente da Área</translation>
+    </message>
+    <message>
+        <source>Slope Area Grid</source>
+        <translation type="unfinished">Gride da Área de Declives</translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished">Número errado de processos MPI usados. Por favor defina o número correto antes de executar os algoritmos TauDEM.</translation>
+    </message>
+</context>
+<context>
     <name>SpatialJoin</name>
     <message>
         <source>Target vector layer</source>
@@ -50229,11 +53134,19 @@ Problema com a linha: %d</translation>
     </message>
     <message>
         <source>Output table</source>
-        <translation>Tabela de saída</translation>
+        <translation type="obsolete">Tabela de saída</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
+    </message>
+    <message>
+        <source>Joined table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Joined layer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -50248,11 +53161,15 @@ Problema com a linha: %d</translation>
     </message>
     <message>
         <source>Split lines</source>
-        <translation>linhas Split</translation>
+        <translation type="obsolete">linhas Split</translation>
     </message>
     <message>
         <source>Geometry exception while splitting</source>
         <translation>Exceção de geometria durante a divisão</translation>
+    </message>
+    <message>
+        <source>Splitted</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -50290,7 +53207,11 @@ Problema com a linha: %d</translation>
     </message>
     <message>
         <source>Statistics</source>
-        <translation>Estatísticas</translation>
+        <translation type="obsolete">Estatísticas</translation>
+    </message>
+    <message>
+        <source>Statistics by category</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -50313,7 +53234,11 @@ Problema com a linha: %d</translation>
     </message>
     <message>
         <source>Result</source>
-        <translation>Resultado</translation>
+        <translation type="obsolete">Resultado</translation>
+    </message>
+    <message>
+        <source>Line length</source>
+        <translation type="unfinished">Comprimento de linha</translation>
     </message>
 </context>
 <context>
@@ -50366,28 +53291,55 @@ Problema com a linha: %d</translation>
         <source> °</source>
         <translation> °</translation>
     </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
 </context>
 <context>
     <name>SymetricalDifference</name>
     <message>
         <source>Input layer</source>
-        <translation>Camada de entrada</translation>
+        <translation type="obsolete">Camada de entrada</translation>
     </message>
     <message>
         <source>Difference layer</source>
-        <translation>Camada de diferença</translation>
+        <translation type="obsolete">Camada de diferença</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation>Diferença simétrica</translation>
+        <translation type="obsolete">Diferença simétrica</translation>
     </message>
     <message>
         <source>Geometry exception while computing symetrical difference</source>
-        <translation>Exceção de geometria durante a computação da diferença simétrica</translation>
+        <translation type="obsolete">Exceção de geometria durante a computação da diferença simétrica</translation>
     </message>
     <message>
         <source>Feature exception while computing symetrical difference</source>
-        <translation>Exceção de elemento durante a computação da diferença simétrica</translation>
+        <translation type="obsolete">Exceção de elemento durante a computação da diferença simétrica</translation>
+    </message>
+</context>
+<context>
+    <name>SymmetricalDifference</name>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished">Camada de entrada</translation>
+    </message>
+    <message>
+        <source>Difference layer</source>
+        <translation type="unfinished">Camada de diferença</translation>
+    </message>
+    <message>
+        <source>Symetrical difference</source>
+        <translation type="unfinished">Diferença simétrica</translation>
+    </message>
+    <message>
+        <source>Geometry exception while computing symetrical difference</source>
+        <translation type="unfinished">Exceção de geometria durante a computação da diferença simétrica</translation>
+    </message>
+    <message>
+        <source>Feature exception while computing symetrical difference</source>
+        <translation type="unfinished">Exceção de elemento durante a computação da diferença simétrica</translation>
     </message>
 </context>
 <context>
@@ -50425,6 +53377,36 @@ Problema com a linha: %d</translation>
         <source>TauDEM (hydrologic analysis)</source>
         <translation>TauDEM (Análises hidrológicas)</translation>
     </message>
+    <message>
+        <source>TauDEM multifile command line tools folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable singlefile TauDEM tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable multifile TauDEM tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not open TauDEM algorithm %s:
+%s</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TauDEMMultifileAlgorithm</name>
+    <message>
+        <source>Could not load TauDEM algorithm: %s
+%s</source>
+        <translation type="unfinished">Não foi possível carregar o algoritmo TauDEM: %s
+%s</translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished">Número errado de processos MPI usados. Por favor defina o número correto antes de executar os algoritmos TauDEM.</translation>
+    </message>
 </context>
 <context>
     <name>TauDEMUtils</name>
@@ -50449,7 +53431,11 @@ Problema com a linha: %d</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation>Arquivo de Saída</translation>
+        <translation type="obsolete">Arquivo de Saída</translation>
+    </message>
+    <message>
+        <source>Float from text</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -50728,7 +53714,11 @@ Problema com a linha: %d</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation>Arquivo de Saída</translation>
+        <translation type="obsolete">Arquivo de Saída</translation>
+    </message>
+    <message>
+        <source>Histogram</source>
+        <translation type="unfinished">Histograma</translation>
     </message>
 </context>
 <context>
@@ -50747,7 +53737,11 @@ Problema com a linha: %d</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation>Arquivo de Saída</translation>
+        <translation type="obsolete">Arquivo de Saída</translation>
+    </message>
+    <message>
+        <source>Scatterplot</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -50840,6 +53834,37 @@ Problema com a linha: %d</translation>
     </message>
 </context>
 <context>
+    <name>WidgetBlur</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transparency</source>
+        <translation type="unfinished">Transparência</translation>
+    </message>
+    <message>
+        <source> %</source>
+        <translation type="unfinished"> %</translation>
+    </message>
+    <message>
+        <source>Blend mode</source>
+        <translation type="unfinished">Modo de mistura</translation>
+    </message>
+    <message>
+        <source>Blur type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blur strength</source>
+        <translation type="unfinished">Intensidade de desfocagem</translation>
+    </message>
+    <message>
+        <source>Draw mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>WidgetCentroidFill</name>
     <message>
         <source>Form</source>
@@ -50848,6 +53873,76 @@ Problema com a linha: %d</translation>
     <message>
         <source>Force point inside polygon</source>
         <translation>Forçar ponto no interior do polígono</translation>
+    </message>
+</context>
+<context>
+    <name>WidgetColorEffect</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Colorize</source>
+        <translation type="unfinished">Colorir</translation>
+    </message>
+    <message>
+        <source>Contrast</source>
+        <translation type="unfinished">Contraste</translation>
+    </message>
+    <message>
+        <source>Brightness</source>
+        <translation type="unfinished">Brilho</translation>
+    </message>
+    <message>
+        <source>Saturation</source>
+        <translation type="unfinished">Saturação</translation>
+    </message>
+    <message>
+        <source>%</source>
+        <translation type="unfinished">%</translation>
+    </message>
+    <message>
+        <source>Transparency</source>
+        <translation type="unfinished">Transparência</translation>
+    </message>
+    <message>
+        <source>Blend mode</source>
+        <translation type="unfinished">Modo de mistura</translation>
+    </message>
+    <message>
+        <source>Draw mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> %</source>
+        <translation type="unfinished"> %</translation>
+    </message>
+    <message>
+        <source>Grayscale</source>
+        <translation type="unfinished">Escalas de cinza</translation>
+    </message>
+</context>
+<context>
+    <name>WidgetDrawSource</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blend mode</source>
+        <translation type="unfinished">Modo de mistura</translation>
+    </message>
+    <message>
+        <source>Transparency</source>
+        <translation type="unfinished">Transparência</translation>
+    </message>
+    <message>
+        <source> %</source>
+        <translation type="unfinished"> %</translation>
+    </message>
+    <message>
+        <source>Draw mode</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -50986,6 +54081,57 @@ Problema com a linha: %d</translation>
     <message utf8="true">
         <source> °</source>
         <translation> °</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+</context>
+<context>
+    <name>WidgetGlow</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color ramp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Spread</source>
+        <translation type="unfinished">Distribuir</translation>
+    </message>
+    <message>
+        <source>Blur radius</source>
+        <translation type="unfinished">Ofuscar raio</translation>
+    </message>
+    <message>
+        <source>Transparency</source>
+        <translation type="unfinished">Transparência</translation>
+    </message>
+    <message>
+        <source>Single color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blend mode</source>
+        <translation type="unfinished">Modo de mistura</translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation type="unfinished">Editar</translation>
+    </message>
+    <message>
+        <source>Invert</source>
+        <translation type="unfinished">Inverter</translation>
+    </message>
+    <message>
+        <source> %</source>
+        <translation type="unfinished"> %</translation>
+    </message>
+    <message>
+        <source>Draw mode</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -51284,6 +54430,45 @@ Problema com a linha: %d</translation>
     <message utf8="true">
         <source> °</source>
         <translation> °</translation>
+    </message>
+</context>
+<context>
+    <name>WidgetShadowEffect</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color</source>
+        <translation type="unfinished">Cor</translation>
+    </message>
+    <message>
+        <source>Transparency</source>
+        <translation type="unfinished">Transparência</translation>
+    </message>
+    <message>
+        <source>Offset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blend mode</source>
+        <translation type="unfinished">Modo de mistura</translation>
+    </message>
+    <message>
+        <source>Blur radius</source>
+        <translation type="unfinished">Ofuscar raio</translation>
+    </message>
+    <message>
+        <source> %</source>
+        <translation type="unfinished"> %</translation>
+    </message>
+    <message utf8="true">
+        <source>˚</source>
+        <translation type="unfinished">˚</translation>
+    </message>
+    <message>
+        <source>Draw mode</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -51609,6 +54794,49 @@ Problema com a linha: %d</translation>
     </message>
 </context>
 <context>
+    <name>WidgetTransform</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shear X,Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotation</source>
+        <translation type="unfinished">Rotação</translation>
+    </message>
+    <message utf8="true">
+        <source> °</source>
+        <translation type="unfinished"> °</translation>
+    </message>
+    <message>
+        <source>Reflect horizontal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reflect vertical</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Translate X,Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%</source>
+        <translation type="unfinished">%</translation>
+    </message>
+    <message>
+        <source>Scale X,Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Draw mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>WidgetVectorFieldBase</name>
     <message>
         <source>Form</source>
@@ -51710,7 +54938,11 @@ Problema com a linha: %d</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
+    </message>
+    <message>
+        <source>Zonal statistics</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -51847,7 +55079,11 @@ Problema com a linha: %d</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
+    </message>
+    <message>
+        <source>Virtual</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -51954,7 +55190,7 @@ Execute verificação de topologia novamente.</translation>
     <message>
         <source>&lt;h3&gt;Database connection&lt;/h3&gt;
 </source>
-        <translation>&lt;h3&gt;Conexão à base de dados&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Conexão à base de dados&lt;/h3&gt;
 </translation>
     </message>
     <message>
@@ -51996,7 +55232,7 @@ On this tab you can search for WMS servers. It is possible to enter a search-str
 To visualize the results, select an table entry, press the &lt;label&gt;Add selected row to WMS list&lt;/label&gt; button and change back to the &lt;label&gt;Servers&lt;/label&gt; tab.&lt;p&gt;
 You only need to request the list of layers by clicking the &lt;label&gt;Connect&lt;/label&gt; button.
 </source>
-        <translation>&lt;h3&gt;Criar uma nova conexão WMS&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Criar uma nova conexão WMS&lt;/h3&gt;
 Camadas WMS podem ser adicionadas de forma simples, contanto que você saiba a URL para acessar o servidor WMS, você tenha uma conexão com esse servidor, e o servidor HTTP entenda o o mecanismo de transporte de dados.&lt;p&gt;
 O QGIS atualmente pode atuar como um cliente WMS que compreende servidores WMS 1.1, 1.1.1 e 1.3.
 &lt;p&gt;
@@ -52046,7 +55282,7 @@ You may also tick an &lt;label&gt;Open feature form, if a single feature is iden
 Identifiable layers can be set in the Project Properties dialog &lt;label&gt;Settings &gt; Project Properties &gt; Identifiable layers&lt;/label&gt; where all the layers names are listed, their type (vector, raster, etc.) and ability to be identified.
 &lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Identificar Feições&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Identificar Feições&lt;/h3&gt;
 &lt;p&gt;
 O diálogo de resultado mostra todas as feições identificadas dentro da tolerância de busca.
 Para ver os resultados, expanda a informação da feição clicando no sinal (+) à esquerda de cada feição.
@@ -52097,7 +55333,7 @@ geometry types and don&apos;t offer to add others.
 
 &lt;/ul&gt;
 </source>
-        <translation>&lt;h3&gt;Criar uma Nova Conexão do Oracle&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Criar uma Nova Conexão do Oracle&lt;/h3&gt;
 Esta caixa de diálogo permite que você defina as configurações para uma conexão com um banco de dados Oracle.
 &lt;p&gt;
 &lt;ul&gt;
@@ -52143,7 +55379,7 @@ Esta caixa de diálogo permite que você defina as configurações para uma cone
         <source>&lt;h3&gt;GPS Plugin&lt;/h3&gt;
 
 </source>
-        <translation>&lt;h3&gt;Complemento GPS&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Complemento GPS&lt;/h3&gt;
 </translation>
     </message>
     <message>
@@ -52184,7 +55420,7 @@ To filter a layer before adding it to the map, double click on its name or use &
 &lt;/a&gt;
 Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for searching in different column types and using 2 search modes: &lt;label&gt;Wildcard&lt;/label&gt; or &lt;label&gt;RegExp&lt;/label&gt;.
 </source>
-        <translation>&lt;h3&gt;Adicionar Tabelas PostGIS&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Adicionar Tabelas PostGIS&lt;/h3&gt;
 Este diálogo permite você adicionar camadas PostGIS (tabelas com uma coluna de geometria) ao mapa da tela do QGIS.
 &lt;p&gt;
 &lt;a href=&quot;#connect&quot;&gt;Conexões&lt;/a&gt;&lt;br/&gt;
@@ -52282,7 +55518,7 @@ The field calculator allows you to update fields with expressions.
 &lt;tr&gt;&lt;td&gt;-&lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;negative value of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
 &lt;/table&gt;
 </source>
-        <translation>&lt;h3&gt;AUXILIE A TRADUZIR ESTA AJUDA POR CONTEXTO... TORNE-SE UM COLABORADOR DO QGIS!&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;AUXILIE A TRADUZIR ESTA AJUDA POR CONTEXTO... TORNE-SE UM COLABORADOR DO QGIS!&lt;/h3&gt;
 &lt;h3&gt;Calculadora de Campo&lt;/h3&gt;
 A calculadora de campo permite que você atualize campos com expressões e operadores matemáticos.
 
@@ -52347,7 +55583,7 @@ A calculadora de campo permite que você atualize campos com expressões e opera
     <message>
         <source>&lt;h3&gt;New OGR Database Connection Dialog&lt;/h3&gt;
 </source>
-        <translation>&lt;h3&gt;Novo Diálogo de Conexão OGR com a Base de Dados&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Novo Diálogo de Conexão OGR com a Base de Dados&lt;/h3&gt;
 </translation>
     </message>
     <message>
@@ -52355,7 +55591,7 @@ A calculadora de campo permite que você atualize campos com expressões e opera
 Displays a north arrow overlayed onto the map.
 &lt;p&gt;
 At present there is only one style available. You can adjust the angle of the arrow or let QGIS set the direction automatically. If you choose to let QGIS determine the direction, it makes its best guess as to how the arrow should be oriented. For placement of the arrow you have four options, corresponding to the four corners of the map canvas.</source>
-        <translation>&lt;h3&gt;Complemento Rosa dos Ventos&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Complemento Rosa dos Ventos&lt;/h3&gt;
 Mostra uma rosa dos ventos sobreposta ao mapa.
 &lt;p&gt;
 Atualmente existe apenas um estilo disponível. Vocẽ pode ajustar o ângulo de direção automaticamente. Se você optar por deixar o QGIS determinar a direção, faça sua avaliação sobre a forma como a seta deve ser orientada. Para situar o Norte  você tem quatro opções, correspondente aos cantos da tela.
@@ -52381,7 +55617,7 @@ To add a scale bar:
 &lt;li&gt;Click &lt;label&gt;OK&lt;/label&gt;.&lt;/li&gt;
 &lt;/ol&gt;
 </source>
-        <translation>&lt;h3&gt;Complemento Barra de escala&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Complemento Barra de escala&lt;/h3&gt;
 Desenha uma barra de escala no mapa.
 &lt;p&gt;
 Você pode controlar o estilo e posição, bem como o rótulo da barra.
@@ -52454,7 +55690,7 @@ which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/
 &lt;p&gt;Contact the author through aruntheguy at gmail dot com&lt;/p&gt;
 
 </source>
-        <translation>&lt;h1&gt;Ajuda do Módulo Heatmap&lt;/h1&gt;
+        <translation type="obsolete">&lt;h1&gt;Ajuda do Módulo Heatmap&lt;/h1&gt;
 &lt;p&gt;o Módulo Heatmap usa um Estimador de Densidade Kernel para criar uma densidade(heatmap)
 raster de uma camada vectorial de entra. A densidade é calculada baseada no
 número de pontos de uma localização, com um largo número de pontos agregados resultando
@@ -52672,7 +55908,7 @@ that will be automatically deleted after running.&lt;/li&gt;
 from the close button. This allows you to save the geometry to be restored to the next start.
 &lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Consola Python do QGIS&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Consola Python do QGIS&lt;/h3&gt;
 &lt;a href=&quot;#console&quot;&gt;Consola&lt;/a&gt;&lt;br&gt;
 &lt;a href=&quot;#editor&quot;&gt;Editor&lt;/a&gt;&lt;br&gt;
 &lt;a href=&quot;#settings&quot;&gt;Configurações&lt;/a&gt;&lt;br&gt;&lt;br&gt;
@@ -52863,7 +56099,7 @@ The Coordinate Reference System (CRS) tab allows you to set the projection for t
 &lt;/a&gt;
 On this tab you can choose on which layers the identify tool will work.
 </source>
-        <translation>&lt;h3&gt;Propriedades do Projeto&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Propriedades do Projeto&lt;/h3&gt;
 Este diálogo permite você definir um número de propriedades relacionadas ao &lt;i&gt;Projeto&lt;/i&gt;. Um projeto é um conjunto salvo de camadas e configurações, bem como outras informações solicitadas para reconstruir o projeto do disco.&lt;p&gt;
 
 
@@ -52906,7 +56142,7 @@ Nesta aba você pode escolher em quais camadas a ferramenta de identificação i
 To define a new connection, click on &lt;label&gt;New&lt;/label&gt; button and use the file browser to point to your SpatiaLite database, which is a file with a &lt;i&gt;.sqlite&lt;/i&gt; extension.&lt;p&gt;
 The connections you define will be remembered for further use and available to choose from the drop down menu.
 </source>
-        <translation>&lt;h3&gt;Adicionar Tabelas SpatiaLite&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Adicionar Tabelas SpatiaLite&lt;/h3&gt;
 Para definir uma nova conexão clique no botão &lt;label&gt;Novo&lt;/label&gt; e use o buscardor de arquivos para localizar seu banco de dados SpatiaLite, cuja extensão de arquivo é &lt;i&gt;.sqlite&lt;/i&gt;.&lt;p&gt;
 As conexões que você definir serão lembradas para utilização posterior e estarão disponíveis para escolha no menu de lista de selação.
 </translation>
@@ -53051,7 +56287,7 @@ The Diagram tab allows you to add a graphic overlay to a vector layer. To activa
 The current implementation of diagrams provides support for pie- and bar charts and for linear scaling
 of the diagram size according to a classification attribute.
 </source>
-        <translation>&lt;h3&gt;Propriedades Camada Vetorial&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Propriedades Camada Vetorial&lt;/h3&gt;
 
 Este diálogo permite-lhe trabalhar com as propriedades e configurações de uma camada vetorial. Existem sete tabulações:
 
@@ -53233,7 +56469,7 @@ To delete a bookmark from the Bookmarks dialog, click on it then click the &lt;l
 To update the extent of a bookmark, click on it then click the &lt;label&gt;Update&lt;/label&gt; button. Confirm your choice by clicking &lt;label&gt;OK&lt;/label&gt; or cancel the update by clicking &lt;label&gt;Cancel&lt;/label&gt;.
 
 </source>
-        <translation>&lt;h3&gt;Favoritos Espacial&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Favoritos Espacial&lt;/h3&gt;
 Os Favoritos Geoespaciais permitem você armazenar locais geográficos favoritos para retornar aos mesmos em outra ocasião.
 &lt;p&gt;
 &lt;a href=&quot;#creating&quot;&gt;Criar Favorito&lt;/a&gt;&lt;br/&gt;
@@ -53300,7 +56536,7 @@ Para excluir um favorito do diálogo de Favoritos, clique nele e depois no botã
 &lt;h5&gt;Default settings&lt;/h5&gt;
 &lt;p&gt;If the attribute table of your linear layer does not contain the required fields or fields contain unexpected values, the plugin will use default values. You can set them in the default tab &lt;label&gt;Default settings&lt;/label&gt;.&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;AUXILIE A TRADUZIR ESTA AJUDA POR CONTEXTO... TORNE-SE UM COLABORADOR DO QGIS!&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;AUXILIE A TRADUZIR ESTA AJUDA POR CONTEXTO... TORNE-SE UM COLABORADOR DO QGIS!&lt;/h3&gt;
 &lt;h3&gt;Configurações do complemento Road graph&lt;/h3&gt;
 &lt;p&gt;Road graph é um complemento C++ para QGIS, que calcula o caminho mais curto entre dois pontos em uma polilinha e evidencia tal caminho na rede de polilinha analisada.&lt;/p&gt;
 &lt;p&gt;
@@ -53380,7 +56616,7 @@ are sometimes limited (e.g. for shape files) or behave diffently.
 &lt;/tr&gt;
 &lt;/table&gt;
 </source>
-        <translation>&lt;h3&gt;AUXILIE A TRADUZIR ESTA AJUDA POR CONTEXTO... TORNE-SE UM COLABORADOR DO QGIS!&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;AUXILIE A TRADUZIR ESTA AJUDA POR CONTEXTO... TORNE-SE UM COLABORADOR DO QGIS!&lt;/h3&gt;
 &lt;h3&gt;Construtor de Consultas&lt;/h3&gt;
 O construtor de consultas permite que você construa expressões específicas para filtrar seus dados.
 
@@ -53443,7 +56679,7 @@ system.
 &lt;p&gt;
 Defining a custom CRS in QGIS requires a good understanding of the Proj.4 projection library. To begin, refer to the &lt;a href=&quot;ftp://ftp.remotesensing.org/proj/OF90-284.pdf&quot;&gt;Cartographic Projection Procedures for the UNIX Environment&lt;/a&gt; - A User&apos;s Manual by Gerald I. Evenden, U.S. Geological Survey Open-File Report 90-284, 1990. This manual describes the use of the &lt;i&gt;proj.4&lt;/i&gt; and related command line utilities. The cartographic parameters used with &lt;i&gt;proj.4&lt;/i&gt; are described in the user manual, and are the same as those used by QGIS.
 </source>
-        <translation>&lt;h3&gt;Definição de Sistema de Referência de Coordenadas Personalizado&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Definição de Sistema de Referência de Coordenadas Personalizado&lt;/h3&gt;
 Se o QGIS não fornecer o sistema de referências de coordenadas que necessita, poderá definir o seu próprio sistema. &lt;p&gt;
 Para definir um SRC, seleccione &lt;label&gt;SRC Personalizado&lt;/label&gt; a partir do menu &lt;label&gt;Editar&lt;/label&gt; (Gnome, OSX) ou &lt;label&gt;Configurações&lt;/label&gt; (KDE, Windows). Os SRC personalizados são armazenados na base de dados do utilizador do QGIS. Além do seu SRC personalizado, esta base de dados também contém os seus marcadores espaciais e outros dados personalizados.
 
@@ -53494,7 +56730,7 @@ This plugin supports basic HTML markup tags for formatting text. For example:
 &lt;/li&gt;
 &lt;/ul&gt;
 </source>
-        <translation>&lt;h3&gt;Módulo da Etiqueta do Copyright&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Módulo da Etiqueta do Copyright&lt;/h3&gt;
 Desenha uma etiqueta do copyright com a informação.&lt;br/&gt;
 Você pode adicionar texto aleatório ao mapa além da etiqueta de copyright.
 &lt;p&gt;
@@ -53842,7 +57078,7 @@ The following options can be added
 
 
 </source>
-        <translation>&lt;h3&gt;Camada arquivo Texto Delimitado&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Camada arquivo Texto Delimitado&lt;/h3&gt;
 Carrega e visualiza arquivo de texto delimitado
 &lt;p&gt;
 &lt;a href=&quot;#re&quot;&gt;Visão Global&lt;/a&gt;&lt;br/&gt;
@@ -54175,7 +57411,7 @@ In this section you can see the list of attributes. To delete one of them, click
 Click on &lt;label&gt;OK&lt;/label&gt; to create the layer and close the dialog.
 &lt;label&gt;Cancel&lt;/label&gt; will close the layer without further changes.
 </source>
-        <translation>&lt;h3&gt;Criar Nova Camada SpatiaLite&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Criar Nova Camada SpatiaLite&lt;/h3&gt;
 Pode usar este diálogo para criar uma nova base de dados SpatialLite e/ou uma camada vazia SpatiaLite para edição. Veja em baixo para uma explicação do diálogo de inputs.
 &lt;h4&gt;Base de Dados&lt;/h4&gt;
 Escolha a base de dados da lista. Esta lista é criada a partir das suas ligações SpatiaLite guardadas. Se não tiver ligações guardadas ou quer criar uma nova base de dados, clique no botão (&lt;label&gt;...&lt;/label&gt;) no lado direito da lista.
@@ -54207,7 +57443,7 @@ QGIS supports vector data in a number of formats, including those supported by t
 QGIS supports PostGIS layers in a PostgreSQL database and SpatiaLite layers. Support for additional data types (eg. delimited text) is provided by additional data provider plugins. A list of OGR supported vector formats can be found in Appendix A.1 of the User Guide.&lt;/p&gt;
 Detailed description how to proceed with vector data is described in chapter 5 &apos;Working with Vector Data&apos;.
 </source>
-        <translation>&lt;h3&gt;Diálogo de Abertura de Camada Vetorial&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Diálogo de Abertura de Camada Vetorial&lt;/h3&gt;
 
 O diálogo de abertura de camada vetorial é usado para adicionar dados vetoriais a exibição do mapa. Dados vetoriais são dados espaciais descritos usando geometrias de pontos, linhas e polígonos (áreas fechadas).&lt;/p&gt;
 O QGIS suporta vários formatos vetoriais incluindo aqueles suportados por bibliotecas OGR, tais como arquivos shape da ESRI, MapInfo MIF (formato de intercâmbio) e MapInfo TAB (formato nativo). &lt;/p&gt;
@@ -54249,7 +57485,7 @@ This dialog allows you to define the settings for a connection to a PostgreSQL/P
 
 &lt;/ul&gt;
 </source>
-        <translation>&lt;h3&gt;Criar uma Nova Ligação PostGIS&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Criar uma Nova Ligação PostGIS&lt;/h3&gt;
 Este diálogo permite definir as configurações para uma ligação a uma base de dados PostgreSQL/PostGIS.
 &lt;p&gt;
 &lt;ul&gt;
@@ -54370,7 +57606,7 @@ Note: Experimental plugins are generally unsuitable for production use. These pl
 
 &lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Gerenciar e instalar Complementos&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Gerenciar e instalar Complementos&lt;/h3&gt;
 
 
 &lt;p&gt;
@@ -54467,7 +57703,7 @@ Nota: complementos experimentais são geralmente inadequados para uso em produç
     <message>
         <source>&lt;h3&gt;Style Manager&lt;/h3&gt;
 </source>
-        <translation>&lt;h3&gt;Gerenciador de estilo&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Gerenciador de estilo&lt;/h3&gt;
 </translation>
     </message>
     <message>
@@ -54486,7 +57722,7 @@ Pressing the &lt;label&gt;Calculate&lt;/label&gt; button will run the shortest p
 &lt;h5&gt;Note&lt;/h5&gt;
 &lt;p&gt;In order to bind the start and stop points of the route to the road network Road graph selects the nearest point or arc of the graph. In fact it can bind to any part of the road network. Nevertheless, their route and its characteristics do not take into account the distance from the starting point to the road network and of the road network to the stopping point.&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Encontrar o caminho mais curto&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Encontrar o caminho mais curto&lt;/h3&gt;
 &lt;p&gt;O caminho mais curto é um módulo C++ para o QGIS, que calcula o caminho mais curto entre dois pontos numa camada de linhas e exporta o seu caminho sobre a rede viária. Antes de usar o módulo tem de o configurar. Isto pode ser feito no menu &lt;label&gt;Vector &amp;rarr; Caminho mais curto &amp;rarr; Configurações&lt;/label&gt;&lt;/p&gt;
 &lt;p&gt;
 &lt;a href=&quot;#howto&quot;&gt;Como fazer&lt;/a&gt;&lt;br/&gt;
@@ -54577,7 +57813,7 @@ Informs you about active system locale. To change it tick &lt;label&gt;Override 
 &lt;/a&gt;
 Tick &lt;label&gt;Use proxy for web access&lt;/label&gt; to define host, port, user, and password.
 </source>
-        <translation>&lt;h3&gt;Opções&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Opções&lt;/h3&gt;
 Esta caixa de diálogo permite que você selecione algumas opções básicas para o QGIS. Existem oito guias:
 &lt;p&gt;
 
@@ -54665,7 +57901,7 @@ You can also define the width and precision of the new attribute column.
 &lt;h4&gt;Attributes list&lt;/h4&gt;
 In this section you can see the list of attributes. To delete one of them, click on it and choose &lt;label&gt;Remove selected attribute&lt;/label&gt; button.
 </source>
-        <translation>&lt;h3&gt;Cria uma Nova Camada Vetorial&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Cria uma Nova Camada Vetorial&lt;/h3&gt;
 Para criar uma camada para editar, escolha &lt;label&gt;Nova camada vetorial&lt;/label&gt; a partir do menu &lt;label&gt;Camada&lt;/label&gt;. &lt;br/&gt;
 Com este diálogo você pode criar uma camada do tipo Shape.
 &lt;h4&gt;Tipo&lt;/h4&gt;
@@ -54693,7 +57929,7 @@ Nesta seção você pode ver a lista e atributos. Para excluir um deles, clique 
 
 See &lt;a href=&quot;http://gdal.org/ogr/ogr_formats.html&quot;&gt;OGR Vector formats&lt;/a&gt; for a list of supported formats and the available options.
 </source>
-        <translation>&lt;h3&gt;AUXILIE A TRADUZIR ESTA AJUDA POR CONTEXTO... TORNE-SE UM COLABORADOR DO QGIS!&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;AUXILIE A TRADUZIR ESTA AJUDA POR CONTEXTO... TORNE-SE UM COLABORADOR DO QGIS!&lt;/h3&gt;
 &lt;h3&gt;Salvar camada vetorial como...&lt;/h3&gt;
 
 &lt;p&gt;Esta caixa de diálogo permite que as camadas vetoriais sejam salvas em diferentes formatos usando as bibliotecas GDAL/OGR.
@@ -54721,7 +57957,7 @@ Click on one of the icons along the top of the composer window to select what ty
 &lt;/p&gt;
 
 </source>
-        <translation>&lt;h3&gt;Compositor de Impressão&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Compositor de Impressão&lt;/h3&gt;
 
 &lt;p&gt;
 O compositor de impressão permite você arranjar itens em uma página que será impressa. Iten incluem o conteúdo do mapa atual na tela, escala gráfica, legenda e outras imagens.
@@ -54745,7 +57981,7 @@ A single right mouse click stops the measuring, while two right mouse clicks sta
 &lt;h4&gt;Measuring Angles&lt;/h4&gt;
 To measure angles, select the tool and click on three points to create an angle between these points. The second point selected is the vertex of the angle. The angle is dynamically displayed once you clicked the second point.
 </source>
-        <translation>&lt;h3&gt;Ferramentas de Medição&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Ferramentas de Medição&lt;/h3&gt;
 Existe três ferramentas de medição: comprimento e área. Com eles, pode medir áreas e comprimentos no enquadramento do mapa. Atualmente as ferramentas apenas fornecem resultados em unidades métricas. Um simples clique direito do rato para a medição, enquanto que dois cliques começa um novo.
 &lt;h4&gt;Medindo Comprimentos&lt;/h4&gt;
 Para medir comprimentos, selecione a ferramenta e clique ao longo do caminho que quer medir. O comprimento para cada segmento é exibido como o seu total de comprimento do caminho.
@@ -54816,7 +58052,7 @@ The vector layer needs to be in editing mode, before you can click on the &lt;la
 When you toggle to edition the layer, a new row of functions appears in the attribute table: the &lt;label&gt;Field Calculator Bar&lt;/label&gt;. This allows quick editing values of existing fields by performing calculations on basis of existing attribute values or defined functions button in the attribute table, e.g. to calculate length or area of geometry features.&lt;br&gt;
 To edit values, select the field to modify with the filter button on the left and fill the text box with the new value or an expression to calculate new value. Then, press &lt;label&gt;Update all&lt;/label&gt; button to update all the rows of the attribute table or &lt;label&gt;Update selected&lt;/label&gt; button if some features are selected or a filter is applied on the attribute table display. You can also use the &lt;label&gt;Expression builder&lt;/label&gt; button to calculate the new value in the column.&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;Tabela de atributos&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Tabela de atributos&lt;/h3&gt;
 A tabela de atributos exibe os elementos de uma camada selecionada. Cada linha na tabela representa um elemento do mapa com os seus atributos exibidos num conjunto de colunas. Os elementos na tabela podem ser pesquisados, selecionados, movidos ou mesmo editados.  Por padrão, a tabela de atributos está numa janela separada. Se abri-la e não a conseguir ver mais, é muito provável que esteja escondida por trás da janela principal do QGIS. Pode também fixar a janela, ativando &lt;label&gt;Abrir tabela de atributos numa janela&lt;/label&gt; em &lt;label&gt;Configurações &gt; Opções &gt; Geral&lt;/label&gt;.&lt;p&gt;
 
 
@@ -54911,7 +58147,11 @@ Para editar os valores, selecione o campo para modificar com o botão do filtro 
     </message>
     <message>
         <source>Output file for contour lines (vector)</source>
-        <translation>Arquivo de saída para as linhas de contorno (vetor)</translation>
+        <translation type="obsolete">Arquivo de saída para as linhas de contorno (vetor)</translation>
+    </message>
+    <message>
+        <source>Contours</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -55018,6 +58258,11 @@ Para suporte envie um email para scala@itc.cnr.it
     <message>
         <source>Shapefile</source>
         <translation>Arquivo shape ESRI</translation>
+    </message>
+    <message>
+        <source>Export inserts</source>
+        <extracomment>&apos;insert&apos; is the entity that inserts/references a symbol/block in DXF</extracomment>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -55781,6 +59026,22 @@ O complemento não será habilitado.</translation>
         <source>&amp;Data Management Tools</source>
         <translation>Ge&amp;renciar dados</translation>
     </message>
+    <message>
+        <source>Save output shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select input file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select input files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save output directory</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>fillnodata</name>
@@ -55810,7 +59071,11 @@ O complemento não será habilitado.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
+    </message>
+    <message>
+        <source>Filled</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -55897,7 +59162,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;week(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 104.285...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;Função week()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função week()&lt;/h3&gt;
 Extraia o número da semana de uma data, ou o número de semanas 
 a partir de um &lt;code&gt;Interval&lt;/code&gt;
 
@@ -55947,7 +59212,7 @@ return a result.
     END
 &lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;expressão CASE&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;expressão CASE&lt;/h3&gt;
 Expressão condicional que pode ser usado em múltiplas expressões que retorna um resultado.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -55993,7 +59258,7 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; rightmost characters 
 &lt;code&gt;right(&apos;Hello World&apos;,5) &amp;rarr; &apos;World&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;Função right()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função right()&lt;/h3&gt;
 Retorna uma subsequência de caracteres que contém o &lt;i&gt; n &lt;/i&gt; caracteres mais à direita da sequência.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -56013,7 +59278,7 @@ Retorna uma subsequência de caracteres que contém o &lt;i&gt; n &lt;/i&gt; car
 &lt;h3&gt;Color Group&lt;/h3&gt;
 This group contains functions for manipulating colors
 </source>
-        <translation>&lt;h3&gt; Cor Grupo &lt;/ h3&gt;
+        <translation type="obsolete">&lt;h3&gt; Cor Grupo &lt;/ h3&gt;
 Este grupo contém funções para manipular cores</translation>
     </message>
     <message>
@@ -56031,7 +59296,7 @@ Returns the length of a string.
 &lt;!-- Show example of function.--&gt;
      length(&apos;HELLO&apos;) &amp;rarr; 5&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;função length()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função length()&lt;/h3&gt;
 Retorna o comprimento de uma cadeia de texto.
 
 &lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -56061,7 +59326,7 @@ Converts a string to upper case letters.
 &lt;!-- Show example of function.--&gt;
      upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;HELLO WORLD&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Função upper()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função upper()&lt;/h3&gt;
 Converte uma sequência de caracteres em letras maiúsculas.
 
 &lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -56090,7 +59355,7 @@ b &amp;rarr; geometry
 &lt;pre&gt;bbox( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; )) &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt;bbox( geomFromWKT( &apos;POINT(6 5)&apos; ) , geomFromWKT( &apos;POLYGON((3 3 , 4 4 , 5 5, 3 3))&apos; )) &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;função bbox&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função bbox&lt;/h3&gt;
 Retorna 1 se as geometrias espacialmente cruzam a caixa delimitadora definida e 0 se não.
 
 
@@ -56125,7 +59390,7 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; leftmost characters o
 &lt;code&gt;left(&apos;Hello World&apos;,5) &amp;rarr; &apos;Hello&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;função left()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função left()&lt;/h3&gt;
 Retorna a sub cadeia de texto que contém &lt;i&gt;n&lt;/i&gt; caracteres à esquerda da cadeia de texto
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -56156,7 +59421,7 @@ Note: This function is only available in some contexts and will be 0 otherwise.
 
 
 </source>
-        <translation>&lt;h3&gt;Função $scale&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função $scale&lt;/h3&gt;
 Retorna a escala atual da tela do mapa.
 
 &lt;br&gt;
@@ -56184,7 +59449,7 @@ Rounds a number upwards.
 &lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;Função ceil()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função ceil()&lt;/h3&gt;
 Arredonda um número para cima.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -56214,7 +59479,7 @@ Converts a string to real number. Nothing changed if a value cannot be converted
 &lt;!-- Show example of function.--&gt;
      toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;função toreal()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função toreal()&lt;/h3&gt;
 Converte uma cadeia de texto para um número real. O valor não muda quando não for possível converter para real (ex. &apos;123.56asd&apos; é inválido). Os números são arredondados após guardar as alterações se a precisão dor mais pequena que o resultado da conversão.
 
 &lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -56242,7 +59507,7 @@ Retrieves a x coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;Função xat()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função xat()&lt;/h3&gt;
 Recupera uma coordenada x de uma seleção atual
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -56268,7 +59533,7 @@ None
 &lt;pre&gt;$numpages &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt; função $numpages&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt; função $numpages&lt;/h3&gt;
 Retorna o número total de páginas de uma composição.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -56299,7 +59564,7 @@ Returns -1 if the expression isn&apos;t found.
      strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
      strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;função strpos()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função strpos()&lt;/h3&gt;
 Retorna o índice de uma expressão numa cadeia de texto.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -56337,7 +59602,7 @@ This function takes two arguments.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;rand(1, 10) &amp;rarr; 8&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;função rand()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função rand()&lt;/h3&gt;
 Retorna um inteiro aleatório dentro de um intervalo especificado por um argumento
 mínimo e máximo (inclusivos).
 &lt;br&gt;
@@ -56372,7 +59637,7 @@ None
 &lt;pre&gt; intersects(  $atlasgeometry,  $geometry ) &lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;função $atlasgeometry&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função $atlasgeometry&lt;/h3&gt;
 Retorna a geometria da feição da iteração atual do atlas.
 Pode ser usada para regra de exibição com base na geometria usada no atlas.
 Por exemplo, para mostrar apenas as geometrias de outras camadas que sua geometria
@@ -56407,7 +59672,7 @@ None
 &lt;pre&gt;$atlasfeatureid = $id&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;Função $atlasfeatureid&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função $atlasfeatureid&lt;/h3&gt;
 Retorna o ID da feição da linha atual enquanto estiver usando o atlas.
 Isso permite que você use feições do atlas em regras
 e, por exemplo, mostrar ou ocultar feições com base em sua ID.
@@ -56436,7 +59701,7 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; bounds_width($geometry) &amp;rarr; returns width of bounding box of $geometry&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;função bounds_width&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função bounds_width&lt;/h3&gt;
 Retorna a largura da caixa delimitadora de uma geometria. Os cálculos estão no Sistema de Referência Espacial desta Geometria.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -56465,7 +59730,7 @@ Rounds a number downwards.
 &lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;Função floor()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função floor()&lt;/h3&gt;
 Arredonda um número para baixo.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -56494,7 +59759,7 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; bounds_height($geometry) &amp;rarr; returns height of bounding box of $geometry&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;função bounds_height&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função bounds_height&lt;/h3&gt;
 Retorna a altura da caixa delimitadora de uma geometria. Os cálculos estão no Sistema de Referência Espacial desta Geometria.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -56522,7 +59787,7 @@ Converts a string to integer number. Nothing changed if a value cannot be conver
 &lt;!-- Show example of function.--&gt;
      toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Função toint()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função toint()&lt;/h3&gt;
 Converte uma sequência de caracteres em um número inteiro. Nada mudou se um valor não pode ser convertido para inteiro (por exemplo, &apos;123asd &apos;é inválido).
 
 &lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -56549,7 +59814,7 @@ Retrieves a y coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;Função yat()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função yat()&lt;/h3&gt;
 Recupera a coordenada y da seleção atual
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -56576,7 +59841,7 @@ Converts a number to string.
 &lt;!-- Show example of function.--&gt;
      tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Função tostring()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função tostring()&lt;/h3&gt;
 Converte um número em uma sequência de caracteres.
 
 &lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -56604,7 +59869,7 @@ None
 &lt;pre&gt;$rownum &amp;rarr; 4711&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;função $rownum&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função $rownum&lt;/h3&gt;
 Retorna o número da linha atual.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -56635,7 +59900,7 @@ arguments to determine the quadrant of the result
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      atan2(1.0, 1.732) &amp;rarr; 0.523611477769969&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Função atan2()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função atan2()&lt;/h3&gt;
 Retorna o arco tangente de um par y/x usando sinais dos dois
  argumentos para determinaer o quadrante do resultado
 
@@ -56665,7 +59930,7 @@ Returns sinus of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      sin(1.571) &amp;rarr; 0.999999682931835&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Função sin()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função sin()&lt;/h3&gt;
 Retorna o seno de um ângulo.
 
 
@@ -56699,7 +59964,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;month(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 4.033...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;função month()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função month()&lt;/h3&gt;
 Extrair o mês a partir de uma data, ou o número de meses
 de um &lt;code&gt;Intervalo&lt;/code&gt;
 
@@ -56734,7 +59999,7 @@ None
 &lt;pre&gt;$area &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;Função $area&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função $area&lt;/h3&gt;
 Retorna o tamanho da área da corrente seleção.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -56768,7 +60033,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;day(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 730&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;função day()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função day()&lt;/h3&gt;
 Extraí o dia da data, ou número de dias
 de um &lt;code&gt;Intervalo&lt;/code&gt;
 
@@ -56803,7 +60068,7 @@ Convert a string into Qt data type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todate(&apos;2012-05-04&apos;) &amp;rarr; 2012-05-04&lt;/code&gt;&lt;br&gt;</source>
-        <translation>&lt;h3&gt;Função todate() &lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função todate() &lt;/h3&gt;
 Converte uma string em um tipo de dado QT.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -56836,7 +60101,7 @@ using the fill character.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;lpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;Helloxxxxx&apos;&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;função lpad()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função lpad()&lt;/h3&gt;
 Retorna uma string fornecendo largura confortável
 usa o caractere de preenchimento.
 
@@ -56872,7 +60137,7 @@ Returns arcuscosinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      acos(0.5) &amp;rarr; 1.0471975511966&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Função acos()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função acos()&lt;/h3&gt;
 Retorna o arcocosseno de um valor em radianos.
 
 
@@ -56896,7 +60161,7 @@ Loading field values from WFS layers isn&apos;t supported, before the layer is
 actually inserted, ie. when building queries.
 &lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Campos e Valores &lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Campos e Valores &lt;/h3&gt;
 Contém uma lista dos campos da camada. Valores da amostra também pode ser acessados pelo botão direito.
 &lt;br&gt;&lt;br&gt;
 Selecione o nome do campo da lista, em seguida, clique com o botão direito do mouse para acessar o menu de contexto com opções para carregar valores da amostra do campo selecionado.
@@ -56923,7 +60188,7 @@ This function takes two arguments.
 &lt;code&gt;log(2, 32) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;log(0.5, 32) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;Função log()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função log()&lt;/h3&gt;
 Retorna o valor do logaritmo do valor passado e sua base.
 &lt;br&gt;
 Esta função recebe dois argumentos.
@@ -56944,7 +60209,7 @@ Esta função recebe dois argumentos.
         <source>&lt;h3&gt;Geometry Group&lt;/h3&gt;
 This group contains functions that operate on geometry objects e.g length, area.
 </source>
-        <translation>&lt;h3&gt;Grupo de Geometria&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Grupo de Geometria&lt;/h3&gt;
 Este grupo contém funções que operam nos objetos de geometria como por exemplo comprimento, área.</translation>
     </message>
     <message>
@@ -56958,7 +60223,7 @@ Loading field values from WFS layers isn&apos;t supported, before the layer is
 actually inserted, ie. when building queries.
 &lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt; Campo &lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt; Campo &lt;/h3&gt;
 Dê um duplo clique para adicionar o nome de campo para seqüência de expressão.
 &lt;br&gt;&lt;br&gt;
 Clique com o botão direito do mouse sobre o nome de campo para abrir os exemplos do menu de contexto e opções de valores carregados.
@@ -56982,7 +60247,7 @@ None
 &lt;pre&gt;$page &amp;rarr; 2&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;Função $page&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função $page&lt;/h3&gt;
 Retorna o número de página atual dentro de uma composição.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -57008,7 +60273,7 @@ Returns exponential of an value.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Função exp()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função exp()&lt;/h3&gt;
 Retorna o exponencial de um valor.
 
 
@@ -57041,7 +60306,7 @@ using the fill character.
 &lt;code&gt;rpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;xxxxxHello&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;função rpad()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função rpad()&lt;/h3&gt;
 Retorna uma string fornecendo largura confortável
 usando o caractere de preenchimento.
 
@@ -57086,7 +60351,7 @@ use &lt;code&gt;round(decimal)&lt;/code&gt; to round to the nearest integer&lt;b
 
 
 </source>
-        <translation>&lt;h3&gt;função round()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função round()&lt;/h3&gt;
 Arredonda um número decimal para um número inteiro.
 &lt;br&gt;
 Esta função pode ter um ou mais argumentos dependendo do que é necessário.
@@ -57121,7 +60386,7 @@ None
 &lt;pre&gt;$now &amp;rarr; 2012-07-22T13:24:57&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;Função $now&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função $now&lt;/h3&gt;
 Retorna a data e a hora atual
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -57151,7 +60416,7 @@ Returns a string representation of a color based on its hue, saturation, and lig
 &lt;!-- Show example of function.--&gt;
      color_hsl(100,50,70) &amp;rarr; &apos;166,217,140&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;função color_hsl()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função color_hsl()&lt;/h3&gt;
 Retorna uma representação de seqüência de caracteres de cor com base em seus atributos de matiz, saturação e luminosidade
 
 &lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -57198,7 +60463,7 @@ accelerating as the input values approach the domain maximum. Smaller exponents 
      
      
 </source>
-        <translation>&lt;h3&gt;função scale_exp()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função scale_exp()&lt;/h3&gt;
 Transforma um dado valor de um domínio de entrada para um intervalo de saída usando uma curva exponencial. Esta função pode ser usada para valores para facilitar valores de entrada ou saída
 de um intervalo específico de saída.
 
@@ -57242,7 +60507,7 @@ a &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;  geomToWKT( convexHull( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 4 10)&apos; )) )   &amp;rarr; returns POLYGON((3 3,4 10,4 4,3 3)) &lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;função convexHull&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função convexHull&lt;/h3&gt;
 Retorna a fronteira convexo de uma geometria. Ela representa a geometria convexa mínima que envolve todas as geometrias dentro do conjunto.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -57270,7 +60535,7 @@ b &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( union( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))  )   &amp;rarr; returns MULTIPOINT(4 4, 5 5)&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;função union&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função union&lt;/h3&gt;
 Retorna uma geometria que representa a união do conjunto de pontos das geometrias.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -57298,7 +60563,7 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; xmax($geometry) &amp;rarr; returns maximum x coordinate of $geometry&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;função xmax&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função xmax&lt;/h3&gt;
 Retorna a coordenada de x máximo de uma geometria. Os cálculos são no Sistema de Referência Espacial desta Geometria. 
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -57325,7 +60590,7 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; bounds($geometry) &amp;rarr; returns bounding box of $geometry&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;função bounds function&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função bounds function&lt;/h3&gt;
 Retorna uma geometria que representa a caixa delimitadora de uma geometria de entrada. Os cálculos são no Sistema de Referência Espacial desta Geometria. 
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -57352,7 +60617,7 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; ymax($geometry) &amp;rarr; returns maximum y coordinate of $geometry&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;função ymax&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função ymax&lt;/h3&gt;
 Retorna a coordenada de y máxima de uma geometria. Os cálculos são no Sistema de Referência Espacial desta Geometria. 
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -57380,7 +60645,7 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;POINT( 0.5 0.5 )&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))          &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;função contains&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função contains&lt;/h3&gt;
 Retorna verdadeiro se e apenas se não houver pontos de b que encontram-se no exterior de a, e pelo menos um ponto do interior de b encontra-se no interior de a. 
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -57413,7 +60678,7 @@ Returns a string wrapped to a maximum/minimum number of characters.
      wordwrap(&apos;UNIVERSITY OF QGIS&apos;,13) &amp;rarr; &apos;UNIVERSITY OF&amp;#92;nQGIS&apos;&lt;br&gt;
      wordwrap(&apos;UNIVERSITY OF QGIS&apos;,-3) &amp;rarr; &apos;UNIVERSITY&amp;#92;nOF QGIS&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;função wordwrap()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função wordwrap()&lt;/h3&gt;
 Retorna uma string envolta a um número máximo / mínimo de caracteres.
 
 
@@ -57452,7 +60717,7 @@ Returns a string representation of a color based on its red, green, and blue com
 &lt;!-- Show example of function.--&gt;
      color_rgb(255,127,0) &amp;rarr; &apos;255,127,0&apos;&lt;/p&gt;
 </source>
-        <translation>
+        <translation type="obsolete">
 &lt;h3&gt;função color_rgb()&lt;/h3&gt;
 Retorna uma representação de seqüência de caracteres de cor com base em seus componentes vermelhos, verdes e azuis
 
@@ -57489,7 +60754,7 @@ Returns a string representation of a color based on its cyan, magenta, yellow an
 &lt;!-- Show example of function.--&gt;
      color_cmyk(100,50,0,10) &amp;rarr; &apos;0,115,230&apos;&lt;/p&gt;
 </source>
-        <translation>
+        <translation type="obsolete">
 &lt;h3&gt;função color_cmyk()&lt;/h3&gt;
 Retorna uma representação de seqüência de caracteres de cor com base em seus componentes de ciano, magenta, amarelos e pretos
 
@@ -57522,7 +60787,7 @@ geometry &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( intersection( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 )&apos; ))  )   &amp;rarr; returns LINESTRING(3 3, 4 4)&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;função intersecção&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função intersecção&lt;/h3&gt;
 Retorna a geometria que representa a porção de geometria que partilha detalhe entre a geometria a e a geometria b.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -57558,7 +60823,7 @@ The color ramps available vary between QGIS installations.  This function
 may not give the expected results if you move your Quantum project.
 &lt;/p&gt;
 </source>
-        <translation>
+        <translation type="obsolete">
 &lt;h3&gt;função ramp_color()&lt;/h3&gt;
 Retorna um string que representa uma cor de uma rampa de cores. 
 
@@ -57599,7 +60864,7 @@ None
 &lt;pre&gt; $geometry IS NULL  &amp;rarr; returns 0, if your geometry is not NULL&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;expressão IS&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;expressão IS&lt;/h3&gt;
 Retorna 1 se a é igual a b.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -57634,7 +60899,7 @@ Returns a string representation of a color based on its hue, saturation, and val
 &lt;!-- Show example of function.--&gt;
      color_hsv(40,100,100) &amp;rarr; &apos;255,170,0&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;função color_hsv()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função color_hsv()&lt;/h3&gt;
 Retorna uma representação de seqüência de caracteres de uma cor com base no seu matiz, saturação e valor de atributos
 
 &lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -57666,7 +60931,7 @@ None
 &lt;pre&gt; &apos;A&apos; ILIKE &apos;a&apos;  &amp;rarr; returns 1 &lt;/pre&gt;
 &lt;pre&gt; &apos;A&apos; ILIKE &apos;B&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;expressão ILIKE&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;expressão ILIKE&lt;/h3&gt;
 Retorna 1 se o primeiro parâmetro coincide em caso insensível a maiúsculas com o padrão fornecido. LIKE pode ser usado em vez do ILIKE para fazer uma coincidência sensível a maiúsculas. Também trabalha com números.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -57696,7 +60961,7 @@ None
 &lt;pre&gt; &apos;A&apos; LIKE &apos;a&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
 &lt;pre&gt; &apos;A&apos; LIKE &apos;B&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;expressão LIKE&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;expressão LIKE&lt;/h3&gt;
 Retorna 1 se o primeiro parâmetro coincide com o padrão fornecido. Trabalha também com os números.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -57725,7 +60990,7 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; ymin($geometry) &amp;rarr; returns minimum y coordinate of $geometry&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;ymin function&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;ymin function&lt;/h3&gt;
 Retorna a coordenada de y mínimo de uma geometria. Os cálculos estão no Sistema de Referência Espacial desta Geometria. 
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -57752,7 +61017,7 @@ text &amp;rarr; GML representation of a geometry
 &lt;pre&gt; geomFromGML( &apos;&lt;gml:LineString srsName=&quot;EPSG:4326&quot;&gt;&lt;gml:coordinates&gt;4,4 5,5 6,6&lt;/gml:coordinates&gt;&lt;/gml:LineString&gt;&apos;) &amp;rarr; returns a geometry&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;função geomFromGML&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função geomFromGML&lt;/h3&gt;
 Retorna a geometria de uma representação de geometria GML
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -57770,7 +61035,7 @@ text &amp;rarr; representação GML de uma geometria
         <source>&lt;h3&gt;Date and Time Group&lt;/h3&gt;
 This group contains functions for handling date and time data.
 </source>
-        <translation>&lt;h3&gt; Grupo Data e Hora&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt; Grupo Data e Hora&lt;/h3&gt;
 Este grupo contém funções para a manipulação de dados de data e hora.</translation>
     </message>
     <message>
@@ -57788,7 +61053,7 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; geomToWKT( combine( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5 )&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4,  2 1 )&apos; ))  )    &amp;rarr; returns MULTILINESTRING((4 4, 2 1), (3 3, 4 4), (4 4, 5 5)) &lt;/pre&gt;
 &lt;pre&gt; geomToWKT( combine( geomFromWKT( &apos;LINESTRING(3 3 , 4 4  )&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 6 6,  2 1 )&apos; ))  )  &amp;rarr; returns LINESTRING(3 3, 4 4, 6 6, 2 1) &lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;função combinar&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função combinar&lt;/h3&gt;
 Retorna a combinação da geometria A e a geometria B.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -57818,7 +61083,7 @@ b &amp;rarr; geometry
 &lt;pre&gt; intersects( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; intersects( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))             &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;função de intersecção&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função de intersecção&lt;/h3&gt;
 Retorna 1 se a geometria intersecta espacialmente (partilhe qualquer porção do espaço) e 0 se não.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -57854,7 +61119,7 @@ Restricts an input value to a specified range.
      
      
 </source>
-        <translation>&lt;h3&gt;função clamp()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função clamp()&lt;/h3&gt;
 Restringe um valor de entrada a um intervalo específico.
 
 &lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -57890,7 +61155,7 @@ b &amp;rarr; geometry
 &lt;pre&gt; disjoint( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; )) &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; disjoint( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;POINT(4 4)&apos; ))                              &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;função disjoint&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função disjoint&lt;/h3&gt;
 Returna 1 se as geometrias não se &quot;intersectam espacialmente&quot; - se não partilham um espaço conjunto.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -57919,7 +61184,7 @@ text &amp;rarr; Well-Known Text (WKT) representation of a geometry
 &lt;pre&gt; geomFromWKT( &apos;POINT(4 5)&apos; ) &amp;rarr; returns a geometry&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;função geomFromWKT&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função geomFromWKT&lt;/h3&gt;
 Retorna a geometria criada a partir da representação Well-Known Text (WKT).
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -57948,7 +61213,7 @@ b &amp;rarr; distance for the buffer
 &lt;pre&gt; buffer($geometry, 10.5 ) &amp;rarr; returns a polygon&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;função buffer&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função buffer&lt;/h3&gt;
 Retorna a geometria que representa todos os pontos cuja a distância da sua geometria é menor que ou igual à distância. Os cálculos são no Sistema Espacial de Referência desta Geometria.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -57978,7 +61243,7 @@ None
 &lt;pre&gt;attribute( $atlasfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current atlas feature&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;função $atlasfeature&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função $atlasfeature&lt;/h3&gt;
 No gerador de atlas, retorna o elemento atual que é iterado sobre a camada de cobertura. Isto pode ser usado com a função &apos;attribute&apos;
 para retornar os valores do atributo do elemento atual do atlas.
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -58007,7 +61272,7 @@ None
 &lt;pre&gt;attribute( $currentfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current feature&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;função $currentfeature&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função $currentfeature&lt;/h3&gt;
  Retorna o elemento atual que está sendo avaliado. Isto pode ser usado com a função &apos;attribute&apos;
  para avaliar os valores do atributo do elemento atual.
 
@@ -58036,7 +61301,7 @@ None
 &lt;pre&gt;$id &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;Função $id&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função $id&lt;/h3&gt;
 Retorna a ID da seleção da linha atual.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -58064,7 +61329,7 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$uuid &amp;rarr; {0bd2f60f-f157-4a6d-96af-d4ba4cb366a1}&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;dunção $uuid&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;dunção $uuid&lt;/h3&gt;
 Gera um identificador único (UUID) para cada linha usando o método Qt
 &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/quuid.html#createUuid&apos;&gt;QUuid::createUuid&lt;/a&gt;
 Cada UUID possui 38 caracteres.
@@ -58094,7 +61359,7 @@ None
 &lt;pre&gt; &apos;A&apos; IN (&apos;C&apos;,&apos;B&quot;) &amp;rarr; returns 0 &lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;Expressão IN&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Expressão IN&lt;/h3&gt;
 Retorna 1 se o valor é encontrado dentro de uma lista de valores
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -58124,7 +61389,7 @@ attribute_name &amp;rarr; name of attribute to be returned
 &lt;pre&gt;attribute( $currentfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current feature&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;função attribute&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função attribute&lt;/h3&gt;
  Retorna o valor do atributo específico de um elemento.
 
  &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -58154,7 +61419,7 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; crosses( geomFromWKT( &apos;LINESTRING(3 5 , 4 4 , 5 3)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; crosses( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))             &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;função crosses&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função crosses&lt;/h3&gt;
 Returna 1 se as geometrias fornecidas tiverem alguns, mas não todos, pontos interiores em comum.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -58182,7 +61447,7 @@ a &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( $geometry ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;função geomToWKT&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função geomToWKT&lt;/h3&gt;
 Retorna a representação Well-Known Text (WKT) de uma geometria sem os metadados SRID.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -58203,7 +61468,7 @@ Returns the first feature of a layer matching a given attribute value
 &lt;pre&gt;getFeature( layer, attributeField, value )&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;função getFeature&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função getFeature&lt;/h3&gt;
 Retorna o primeiro elemento da camada igual ao valor do atributo fornecido
 
 &lt;h4&gt;Síntaxe&lt;/h4&gt;
@@ -58225,7 +61490,7 @@ b &amp;rarr; geometry
 &lt;pre&gt; touches( geomFromWKT( &apos;LINESTRING(5 3 , 4 4)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; touches( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))                     &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;função touches&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função touches&lt;/h3&gt;
 Retorna 1 se as geometrias têm pelo menos um ponto em comum, mas o seu interior não se intersecta.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -58255,7 +61520,7 @@ b &amp;rarr; geometry
 &lt;pre&gt; overlaps( geomFromWKT( &apos;LINESTRING(3 5 , 4 4 , 5 5 , 5 3)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))   &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; overlaps( geomFromWKT( &apos;LINESTRING(0 0 , 1 1)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;função overlaps&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função overlaps&lt;/h3&gt;
 Returna 1 se as geometrias partilham o espaço, são da mesma dimensão, mas não estão completamente contidos um no outro.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -58285,7 +61550,7 @@ None
 &lt;pre&gt; 4 = 2+2 AND 1 = 2  &amp;rarr; returns 0 &lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;Operador lógico AND&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Operador lógico AND&lt;/h3&gt;
 Retorna 1 quando a condição a e b são verdadeiros.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -58313,7 +61578,7 @@ None
 &lt;pre&gt; geomToWKT( $geometry ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;função $geometry&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função $geometry&lt;/h3&gt;
 Retorna a geometria do elemento atual. Pode ser usado para o processamento com outras funções.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -58342,7 +61607,7 @@ None
 &lt;pre&gt; 4 = 2+2 OR 1 = 2  &amp;rarr; returns 1 &lt;/pre&gt;
 &lt;pre&gt; 4 = 2   OR 1 = 2  &amp;rarr; returns 0 &lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;Operador lógico OR&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Operador lógico OR&lt;/h3&gt;
 Retorna 1 quando a condição a ou b são verdadeiros.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -58371,7 +61636,7 @@ b &amp;rarr; geometry
 &lt;pre&gt; centroid($geometry) &amp;rarr; returns a point geometry&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;função centroid&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função centroid&lt;/h3&gt;
 Returna o centro geométrico da geometria.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -58401,7 +61666,7 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; within( geomFromWKT( &apos;POINT( 0.5 0.5 )&apos;) , geomFromWKT(&apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) )    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; within( geomFromWKT( &apos;POINT( 5 5 )&apos;) , geomFromWKT(&apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) )        &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;função within&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função within&lt;/h3&gt;
 Retorna 1 se a geometria está completamente dentro da geometria b
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -58434,7 +61699,7 @@ $map &amp;rarr; &quot;canvas&quot; (within the main QGIS main canvas)&lt;/pre&gt
 
 
 </source>
-        <translation>&lt;h3&gt;função $map&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função $map&lt;/h3&gt;
 Retorna o id do item do mapa atual se o mapa está a ser desenhado numa composição, ou &quot;enquadramento&quot; se o mapa está sendo
 desenhado dentro da janela principal do QGIS.
 
@@ -58466,7 +61731,7 @@ b &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; distance( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(4 8)&apos; ))    &amp;rarr; returns 4&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;função distancia&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função distancia&lt;/h3&gt;
 Returna a distância mínima (baseado na ref espacial) entre as unidades projetadas de duas geometrias.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -58494,7 +61759,7 @@ geometry &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( difference( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4)&apos; ))  )   &amp;rarr; returns LINESTRING(4 4, 5 5)&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;função diferença&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função diferença&lt;/h3&gt;
 Retorna a geometria que representa parte da geometria a, que não intersecta com a geometria b.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -58524,7 +61789,7 @@ None
 &lt;pre&gt; 4 IS NOT 2+2    &amp;rarr; returns 0 &lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;NÃO&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;NÃO&lt;/h3&gt;
 Retorna 1 se a não é mesmo que b.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -58554,7 +61819,7 @@ geometry &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( symDifference(  geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 8 8)&apos; ))   )   &amp;rarr; returns LINESTRING(5 5, 8 8)&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;função symDifference&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função symDifference&lt;/h3&gt;
 Returna a geometria que representa porções de a e b que não se intersectam.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -58582,7 +61847,7 @@ None
 &lt;pre&gt;$perimeter &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;Função $perimeter&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função $perimeter&lt;/h3&gt;
 Retorna o comprimento do perímetro da seleção atual.
 
 &lt;h4&gt; Sintaxe&lt;/h4&gt;
@@ -58608,7 +61873,7 @@ Converts a string to a interval type.  Can be used to take days, hours, month, e
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-05 12:00:00&apos;) - tointerval(&apos;1 day 2 hours&apos;) &amp;rarr; 2012-05-04T10:00:00&lt;/code&gt;&lt;br&gt;</source>
-        <translation>&lt;h3&gt;função tointerval()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função tointerval()&lt;/h3&gt;
 Converte uma cadeia de texto para um tipo de intervalo. Pode ser para tirar dias, horas, meses, etc de uma data.
 
  &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -58644,7 +61909,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;hour(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 17520&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;Função hour()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função hour()&lt;/h3&gt;
 Extrai a hora de um campo data/hora ou data, ou o número de horas de um
 &lt;code&gt;Intervalo&lt;/code&gt;
 
@@ -58682,7 +61947,7 @@ Returns a string representation of a color based on its hue, saturation, lightne
 &lt;!-- Show example of function.--&gt;
      color_hsla(100,50,70,200) &amp;rarr; &apos;166,217,140,200&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;função color_hsla()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função color_hsla()&lt;/h3&gt;
 Retorna uma cadeia de texto da representação dos atributos da co baseado na tonalidade, saturação, luminosidade e alfa (transparência)
 
 &lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -58713,7 +61978,7 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$pi &amp;rarr; 3.14159265358979&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;Constante $pi&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Constante $pi&lt;/h3&gt;
 Retorna o valor de pi para cálculos
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -58729,7 +61994,7 @@ Nenhum
         <source>&lt;h3&gt;Record Group&lt;/h3&gt;
 This group contains functions that operate on record identifiers.
 </source>
-        <translation>&lt;h3&gt;Grupo Registro&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Grupo Registro&lt;/h3&gt;
 Este grupo contém funções que operam em identificadores de registro.</translation>
     </message>
     <message>
@@ -58746,7 +62011,7 @@ Convert a string into Qt time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;totime(&apos;12:30:01&apos;) &amp;rarr; 12:30:01&lt;/code&gt;&lt;br&gt;</source>
-        <translation>&lt;h3&gt;Função totime()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função totime()&lt;/h3&gt;
 Converte uma sequência de caracteres em um tipo de data hora.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -58777,7 +62042,7 @@ Returns a string with the the supplied string replaced.
 &lt;!-- Show example of function.--&gt;
      replace(&apos;QGIS SHOULD ROCK&apos;,&apos;SHOULD&apos;,&apos;DOES&apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;função replace()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função replace()&lt;/h3&gt;
 Retorna a substituição de uma cadeia de texto com a cadeia de texto fornecida.
 
 &lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
@@ -58798,7 +62063,7 @@ replace(&apos;O QGIS DEVE SER FIXE&apos;,&apos;DEVE SER&apos;,&apos;É&apos;) &a
         <source>&lt;h3&gt;Conditionals Group&lt;/h3&gt;
 This group contains functions to handle conditional checks in expressions.
 </source>
-        <translation>&lt;h3&gt;Agrupamento condicional&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Agrupamento condicional&lt;/h3&gt;
 Este agrupamento contém funções para manusear verificação condicional em expressões.
 </translation>
     </message>
@@ -58816,7 +62081,7 @@ abs(&lt;i&gt;value&lt;/i&gt;)&lt;br&gt;
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;code&gt;abs(-2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;Função abs()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função abs()&lt;/h3&gt;
 Retorna o valor absoluto de um número.&lt;br&gt;
 
 
@@ -58844,7 +62109,7 @@ Returns the largest value in a set of values.
 &lt;!-- Show example of function.--&gt;
      max(2,10.2,5.5) &amp;rarr; 10.2
 </source>
-        <translation>&lt;h3&gt;Função max()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função max()&lt;/h3&gt;
 Retorna o maior valor em um conjunto de valores.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -58872,7 +62137,7 @@ Returns square root of a value
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      sqrt(9) &amp;rarr; 3&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Função sqrt()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função sqrt()&lt;/h3&gt;
 Devolve a raiz quadrada de um valor
 
 
@@ -58890,7 +62155,7 @@ Devolve a raiz quadrada de um valor
         <source>&lt;h3&gt;Conditions Group&lt;/h3&gt;
 This group contains functions that operate on condition.
 </source>
-        <translation>&lt;h3&gt;Grupo Condicionante&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Grupo Condicionante&lt;/h3&gt;
 
 Este grupo contém funções que operam na condição.
 </translation>
@@ -58915,7 +62180,7 @@ Returns a string representation of a color based on its cyan, magenta, yellow, b
 &lt;!-- Show example of function.--&gt;
      color_cmyka(100,50,0,10,200) &amp;rarr; &apos;0,115,230,200&apos;&lt;/p&gt;
 </source>
-        <translation>
+        <translation type="obsolete">
 &lt;h3&gt;função color_cmyka()&lt;/h3&gt;
 Retorna a representação em cadeia de texto das componentes da cor baseado no ciano, magenta, amarelo e preto e alfa (transparência)
 
@@ -58953,7 +62218,7 @@ to.
 &lt;code&gt;format_number(10000000.332,2) &amp;rarr; 10,000,000.33&lt;/code&gt;
 
 </source>
-        <translation>&lt;h3&gt;função format_number()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função format_number()&lt;/h3&gt;
 Retorna o número formatado com o separador local para os milhares.
 Também trunca o número nos sítios fornecidos.
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -58992,7 +62257,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;year(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1.9986..&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;função year()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função year()&lt;/h3&gt;
 Extraí o ano a partir de uma data, ou o número de anos
 de um &lt;code&gt;Intervalo&lt;/code&gt;
 
@@ -59042,7 +62307,7 @@ return a result.
     END
 &lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;expressão CASE&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;expressão CASE&lt;/h3&gt;
 Expressão condicional que pode ser usado em múltiplas expressões que
 retorna um resultado.
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -59089,7 +62354,7 @@ This function takes two arguments.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;randf(1, 10) &amp;rarr; 4.59258286403147&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;função randf()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função randf()&lt;/h3&gt;
 Retorna um valor float aleatório dentro de um intervalo especificado por um argumento
 mínimo e máximo (inclusivos).
 &lt;br&gt;
@@ -59121,7 +62386,7 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; xmin($geometry) &amp;rarr; returns minimum x coordinate of $geometry&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;função xmin&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função xmin&lt;/h3&gt;
 Retorna a coordenada de x mínimo de uma geometria. Os cálculos estão no Sistema de Referência Espacial desta Geometria. 
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -59155,7 +62420,7 @@ Transforms a given value from an input domain to an output range using linear in
      
      
 </source>
-        <translation>&lt;h3&gt;função scale_linear()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função scale_linear()&lt;/h3&gt;
 Transforma um determinado valor de um domínio de entrada para uma faixa de saída usando interpolação linear.
 
 
@@ -59192,7 +62457,7 @@ Removes all leading and trailing whitespace (spaces, tabs, etc) from a string.
 &lt;!-- Show example of function.--&gt;
      trim(&apos;   hello world    &apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;função trim()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função trim()&lt;/h3&gt;
 Remove todos os espaços em branco (espaços, avanços, etc) de uma cadeia de texto.
 
 &lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -59229,7 +62494,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;minute(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1051200&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;função minute()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função minute()&lt;/h3&gt;
 Extrai o minuto de uma data e hora ou hora, ou o número de minutos
 de um &lt;code&gt;Intervalo&lt;/code&gt;
 
@@ -59285,7 +62550,7 @@ use &lt;code&gt;day&lt;/code&gt; to extract number of days&lt;br&gt;
 &lt;code&gt;day(age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;)) &amp;rarr; 10&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;função age()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função age()&lt;/h3&gt;
 Retorna a diferença entre duas datas.
 &lt;br&gt;&lt;br&gt;
 A diferença é retornada como um &lt;code&gt;Intervalo&lt;/code&gt;
@@ -59336,7 +62601,7 @@ This function takes one argument.
 &lt;code&gt;log10(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;log10(100) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;Função log10()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função log10()&lt;/h3&gt;
 Retorna o valor do logaritmo de base 10 da expressão passada.
 &lt;br&gt;
 Esta função tem um argumento.
@@ -59356,7 +62621,7 @@ Esta função tem um argumento.
         <source>&lt;h3&gt;Conversions Group&lt;/h3&gt;
 This group contains functions to convert on data type to another e.g string to integer, integer to string.
 </source>
-        <translation>&lt;h3&gt;Grupo  Conversões&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Grupo  Conversões&lt;/h3&gt;
 Este grupo contém funções para converter o tipo de dados para outro, por exemplo sequência de caracteres  para inteiro, inteiror para sequência de caracteres.</translation>
     </message>
     <message>
@@ -59373,7 +62638,7 @@ Returns cosinus of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      cos(1.571) &amp;rarr; 0.000796326710733263&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Função cos()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função cos()&lt;/h3&gt;
 Retorna o cosseno de um ângulo.
 
 
@@ -59390,7 +62655,7 @@ Retorna o cosseno de um ângulo.
         <source>&lt;h3&gt;Operators Group&lt;/h3&gt;
 This group contains operators e.g + - * 
 </source>
-        <translation>&lt;h3&gt;Grupo Operadores&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Grupo Operadores&lt;/h3&gt;
 Este grupo contém operadores por exemplo + - *
 </translation>
     </message>
@@ -59416,7 +62681,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;second(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 63072000&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;função second()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função second()&lt;/h3&gt;
 Extraí os segundos provenientes de uma data e hora ou hora, ou o número de segundos
 de um &lt;code&gt;Intervalo&lt;/code&gt;
 
@@ -59452,7 +62717,7 @@ Returns arcustanget of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      atan(0.5) &amp;rarr; 0.463647609000806&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Função atan()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função atan()&lt;/h3&gt;
 Retorna o valor de um arcotangente em radianos.
 
 
@@ -59478,7 +62743,7 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$length &amp;rarr; 42.4711&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;Função $length&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função $length&lt;/h3&gt;
 Retorna o comprimento da seleção atual.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -59507,7 +62772,7 @@ capital letter).
 &lt;!-- Show example of function.--&gt;
      upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;Hello World&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Função title()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função title()&lt;/h3&gt;
 Converte todas as palavras de uma sequência de caracteres para  maiúsculas (todas as palavras em minúsculas com os principais
 letras em maiúscula).
 
@@ -59538,7 +62803,7 @@ Returns true if any part of a string matches the supplied regular expression.
 &lt;!-- Show example of function.--&gt;
      regexp_match(&apos;QGIS ROCKS&apos;,&apos;&amp;#92;&amp;#92;sROCKS&apos;) &amp;rarr; 1&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Função regexp_match() &lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função regexp_match() &lt;/h3&gt;
 Retorna verdadeiro se qualquer parte de uma sequencia de caracteres corresponde à expressão regular fornecida.
 
 &lt;p&gt;&lt;h4&gt; Sintaxe &lt;/h4&gt;
@@ -59570,7 +62835,7 @@ Return a part of a string
 &lt;!-- Show example of function.--&gt;
      substr(&apos;HELLO WORLD&apos;,3,5) &amp;rarr; &apos;LLO W&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;função substr()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função substr()&lt;/h3&gt;
 Retorna uma parte da cadeia de texto
 
 &lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -59602,7 +62867,7 @@ Format a string using supplied arguments.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;format(&apos;This %1 a %2&apos;,&apos;is&apos;, &apos;test&apos;) &amp;rarr; This is a test&lt;/code&gt;&lt;br&gt;</source>
-        <translation>&lt;h3&gt;função format()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função format()&lt;/h3&gt;
 Formata uma cadeia de texto usando argumentos fornecidos.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -59634,7 +62899,7 @@ Returns a string with the supplied regular expression replaced.
 &lt;!-- Show example of function.--&gt;
      regexp_replace(&apos;QGIS SHOULD ROCK&apos;,&apos;&amp;#92;&amp;#92;sSHOULD&amp;#92;&amp;#92;s&apos;,&apos; DOES &apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;função regexp_replace()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função regexp_replace()&lt;/h3&gt;
 Retorna uma string substituíndo a expressão regular fornecida.
 
 
@@ -59670,7 +62935,7 @@ Returns the portion of a string which matches a supplied regular expression.
 &lt;!-- Show example of function.--&gt;
      regexp_substr(&apos;abc123&apos;,&apos;(&amp;#92;&amp;#92;d+)&apos;) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;função regexp_substr()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função regexp_substr()&lt;/h3&gt;
 Retorna a parte da string que corresponde a uma expressão regular fornecida.
 
 
@@ -59702,7 +62967,7 @@ None
 &lt;pre&gt;$y &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;Função $y&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função $y&lt;/h3&gt;
 Retorna a coordenada y da seleção atual.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -59733,7 +62998,7 @@ Returns a string representation of a color based on its red, green, blue, and al
 &lt;!-- Show example of function.--&gt;
      color_rgba(255,127,0,200) &amp;rarr; &apos;255,127,0,200&apos;&lt;/p&gt;
 </source>
-        <translation>
+        <translation type="obsolete">
 &lt;h3&gt;Função color_rgba()&lt;/h3&gt;
 Retorna com a representação de string de uma cor baseada em seus componentes vermelho, verde, azul e alfa (transparência)
 
@@ -59766,7 +63031,7 @@ None
 &lt;pre&gt;$x &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;Função $x&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função $x&lt;/h3&gt;
 Retorna os coordenada x da feição atual.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -59783,7 +63048,7 @@ None
         <source>&lt;h3&gt;Math Group&lt;/h3&gt;
 This group contains math functions e.g square root, sin and cos
 </source>
-        <translation>&lt;h3&gt; Grupo Matemática&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt; Grupo Matemática&lt;/h3&gt;
 Este grupo contém funções matemáticas por exemplo, raiz quadrada, seno e cosseno</translation>
     </message>
     <message>
@@ -59801,7 +63066,7 @@ Returns the smallest value in a set of values.
 &lt;!-- Show example of function.--&gt;
      min(20.5,10,6.2) &amp;rarr; 6.2
 </source>
-        <translation>&lt;h3&gt;Função min()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função min()&lt;/h3&gt;
 Retorna o menor valor em um conjunto de valores.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -59829,7 +63094,7 @@ Converts a string to lower case letters.
 &lt;p&gt;&lt;h4&gt;  Example&lt;/h4&gt;
      lower(&apos;HELLO World&apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Função lower()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função lower()&lt;/h3&gt;
 Converte uma sequência de caracteres em letras minúsculas.
 
 &lt;p&gt;&lt;h4&gt;  Sintaxe&lt;/h4&gt;
@@ -59855,7 +63120,7 @@ None
 &lt;pre&gt;$numfeatures &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;Função $numfeatures&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função $numfeatures&lt;/h3&gt;
 Na geração atlas, retorna o número total de seleções dentro da camada de cobertura.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -59871,7 +63136,7 @@ Nenhum
         <source>&lt;h3&gt;String Group&lt;/h3&gt;
 This group contains functions that operate on strings e.g replace, convert to upper case.
 </source>
-        <translation>&lt;h3&gt; Grupo de sequências de caracteres&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt; Grupo de sequências de caracteres&lt;/h3&gt;
 Este grupo contém funções que operam em sequências de caracteres por exemplo, substituir, converter para maiúsculas.</translation>
     </message>
     <message>
@@ -59889,7 +63154,7 @@ Concatenates several strings to one.
 &lt;!-- Show example of function.--&gt;
      concat(&apos;a&apos;,&apos;b&apos;,&apos;c&apos;,&apos;d&apos;,&apos;e&apos;) &amp;rarr; &apos;abcde&apos;
 </source>
-        <translation>&lt;h3&gt;Função concat ()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função concat ()&lt;/h3&gt;
 Concatena várias sequencias de caracteres (strings) em uma.
 
 &lt;h4&gt; Sintaxe &lt;/h4&gt;
@@ -59925,7 +63190,7 @@ This function can take any number of arguments.
  else the value of &quot;fallbackField&quot; or the string &apos;ERROR&apos; if both are NULL&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;função coalesce()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função coalesce()&lt;/h3&gt;
 Retorna o primeiro valor não NULL de uma lista de expressões.
 &lt;br&gt;
 Esta função recebe qualquer número de argumentos.
@@ -59960,7 +63225,7 @@ Returns arcussinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      asin(1.0) &amp;rarr; 1.5707963267949&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Função asin()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função asin()&lt;/h3&gt;
 Retorna o arcoseno de um valor em radianos.
 
 
@@ -59987,7 +63252,7 @@ Convert a string into Qt data time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-04 12:50:00&apos;) &amp;rarr; 2012-05-04T12:50:00&lt;/code&gt;&lt;br&gt;</source>
-        <translation>&lt;h3&gt;função todatetime()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função todatetime()&lt;/h3&gt;
 Converte uma cadeia de texto para um tipo data hora Qt.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -60015,7 +63280,7 @@ Returns tangent of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      tan(1.0) &amp;rarr; 1.5574077246549&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Função tan() function&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função tan() function&lt;/h3&gt;
 Retorna a tangente de um ângulo.
 
 
@@ -60042,7 +63307,7 @@ None
 &lt;pre&gt;$feature &amp;rarr; 2&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;Função $feature&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função $feature&lt;/h3&gt;
 Na geração de atlas, retorna o número da seleção atual que é iterado sobre a camada de cobertura.
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -60071,7 +63336,7 @@ This function takes one argument.
 &lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;Função ln ()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Função ln ()&lt;/h3&gt;
 Retorna o valor do logaritmo natural da expressão passada.
 &lt;br&gt;
 Esta função tem um argumento.
@@ -60105,7 +63370,7 @@ Returns a string representation of a color based on its hue, saturation, value a
 &lt;!-- Show example of function.--&gt;
      color_hsva(40,100,100,200) &amp;rarr; &apos;255,170,0,200&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;função color_hsla()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função color_hsla()&lt;/h3&gt;
 Retorna uma cadeia de texto da representação dos atributos da cor baseado na tonalidade, saturação, valor e alfa (transparência)
 
 &lt;p&gt;&lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -60137,7 +63402,7 @@ f &amp;rarr; QgsFeature
 &lt;pre&gt; geomToWKT( geometry( getFeature( layer, attributeField, value ) ) ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
 &lt;pre&gt; intersects( $geometry, geometry( getFeature( layer, attributeField, value ) ) ) &amp;rarr; 1&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;função de geometria&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função de geometria&lt;/h3&gt;
 Retorna a geometria dos elementos
 
 &lt;h4&gt;Síntaxe&lt;/h4&gt;
@@ -60168,7 +63433,7 @@ dCrsId &amp;rarr; the Dest Auth CRS Id
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( transform( $geometry, &apos;EPSG:2154&apos;, &apos;EPSG:4326&apos; ) ) &amp;rarr; POINT(0 51)&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;função transforma &lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função transforma &lt;/h3&gt;
 Retorna a geometria transformada de um SRC de origem para outro SRC de destino.
 
 &lt;h4&gt;Síntaxe&lt;/h4&gt;
@@ -60361,7 +63626,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;format_date(&apos;2012-05-15&apos;,&apos;dd.MM.yyyy&apos;) &amp;rarr; 15.05.2012&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;função format_date()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;função format_date()&lt;/h3&gt;
 Formata um tipo de data ou cadeia de texto num formato de cadeia de texto personalizado. Usa o formato das cadeias de texto de data Qt.  Veja &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/qdatetime.html#toString&apos;&gt;QDateTime::toString&lt;/a&gt;
 
 &lt;h4&gt;Sintaxe&lt;/h4&gt;
@@ -60550,7 +63815,11 @@ Formata um tipo de data ou cadeia de texto num formato de cadeia de texto person
     </message>
     <message>
         <source>Output file</source>
-        <translation>Arquivo de saída</translation>
+        <translation type="obsolete">Arquivo de saída</translation>
+    </message>
+    <message>
+        <source>xyz</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -60577,7 +63846,101 @@ Formata um tipo de data ou cadeia de texto num formato de cadeia de texto person
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
+    </message>
+    <message>
+        <source>Pyramidized</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>gdalcalc</name>
+    <message>
+        <source>Input layer A</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of raster band for raster A</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input layer B</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of raster band for raster B</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input layer C</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of raster band for raster C</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input layer D</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of raster band for raster D</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input layer E</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of raster band for raster E</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input layer F</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of raster band for raster F</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculation in gdalnumeric syntax using +-/* or any numpy array functions (i.e. logical_and())</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set output nodata value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output raster type</source>
+        <translation type="unfinished">Tipo de arquivo raster de saída</translation>
+    </message>
+    <message>
+        <source>Additional creation parameters</source>
+        <translation type="unfinished">Parâmetros adicionais de criação</translation>
+    </message>
+    <message>
+        <source>Calculated</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>gdaltindex</name>
+    <message>
+        <source>Input layers</source>
+        <translation type="unfinished">Camadas de entrada</translation>
+    </message>
+    <message>
+        <source>Tile index field</source>
+        <translation type="unfinished">Campo de índice de blocos</translation>
+    </message>
+    <message>
+        <source>Skip files with different projection reference</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tile index</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -62402,7 +65765,11 @@ Formata um tipo de data ou cadeia de texto num formato de cadeia de texto person
     </message>
     <message>
         <source>Output file</source>
-        <translation>Arquivo de saída</translation>
+        <translation type="obsolete">Arquivo de saída</translation>
+    </message>
+    <message>
+        <source>Hillshade</source>
+        <translation type="unfinished">Sombreamento</translation>
     </message>
 </context>
 <context>
@@ -63390,7 +66757,11 @@ Formata um tipo de data ou cadeia de texto num formato de cadeia de texto person
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
+    </message>
+    <message>
+        <source>Merged</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -63409,7 +66780,11 @@ Formata um tipo de data ou cadeia de texto num formato de cadeia de texto person
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
+    </message>
+    <message>
+        <source>Nearblack</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -63508,7 +66883,11 @@ Formata um tipo de data ou cadeia de texto num formato de cadeia de texto person
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
+    </message>
+    <message>
+        <source>PCT to RGB</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -63523,7 +66902,11 @@ Formata um tipo de data ou cadeia de texto num formato de cadeia de texto person
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
+    </message>
+    <message>
+        <source>Vectorized</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -63558,7 +66941,11 @@ Formata um tipo de data ou cadeia de texto num formato de cadeia de texto person
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
+    </message>
+    <message>
+        <source>Distance</source>
+        <translation type="unfinished">Distância</translation>
     </message>
 </context>
 <context>
@@ -63573,7 +66960,7 @@ Formata um tipo de data ou cadeia de texto num formato de cadeia de texto person
     </message>
     <message>
         <source>Write values inside an existing raster layer(*)</source>
-        <translation>Escrever valor dentro de uma camada(*) raster existente</translation>
+        <translation type="obsolete">Escrever valor dentro de uma camada(*) raster existente</translation>
     </message>
     <message>
         <source>Set output raster size (ignored if above option is checked)</source>
@@ -63593,7 +66980,7 @@ Formata um tipo de data ou cadeia de texto num formato de cadeia de texto person
     </message>
     <message>
         <source>Output layer: mandatory to choose an existing raster layer if the (*) option is selected</source>
-        <translation>Camada de saída: prioritário escolher uma camada existente se a opção (*) estiver selecionada</translation>
+        <translation type="obsolete">Camada de saída: prioritário escolher uma camada existente se a opção (*) estiver selecionada</translation>
     </message>
     <message>
         <source>Nodata value</source>
@@ -63625,7 +67012,30 @@ Formata um tipo de data ou cadeia de texto num formato de cadeia de texto person
     </message>
     <message>
         <source>Force the generation of an associated ESRI world file (.tfw))</source>
-        <translation>Force a criação de um arquivo world file ESRI (.tfw))</translation>
+        <translation type="obsolete">Force a criação de um arquivo world file ESRI (.tfw))</translation>
+    </message>
+    <message>
+        <source>Force the generation of an associated ESRI world file (.tfw)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rasterized</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>rasterize_over</name>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished">Camada de entrada</translation>
+    </message>
+    <message>
+        <source>Attribute field</source>
+        <translation type="unfinished">Campo de atributo</translation>
+    </message>
+    <message>
+        <source>Existing raster layer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -63640,7 +67050,11 @@ Formata um tipo de data ou cadeia de texto num formato de cadeia de texto person
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
+    </message>
+    <message>
+        <source>RGB to PCT</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -63659,7 +67073,11 @@ Formata um tipo de data ou cadeia de texto num formato de cadeia de texto person
     </message>
     <message>
         <source>Output file</source>
-        <translation>Arquivo de saída</translation>
+        <translation type="obsolete">Arquivo de saída</translation>
+    </message>
+    <message>
+        <source>Roughness</source>
+        <translation type="unfinished">Rugosidade</translation>
     </message>
 </context>
 <context>
@@ -63748,7 +67166,11 @@ Formata um tipo de data ou cadeia de texto num formato de cadeia de texto person
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
+    </message>
+    <message>
+        <source>Sieved</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -63779,7 +67201,11 @@ Formata um tipo de data ou cadeia de texto num formato de cadeia de texto person
     </message>
     <message>
         <source>Output file</source>
-        <translation>Arquivo de saída</translation>
+        <translation type="obsolete">Arquivo de saída</translation>
+    </message>
+    <message>
+        <source>Slope</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -63937,7 +67363,11 @@ Formata um tipo de data ou cadeia de texto num formato de cadeia de texto person
     </message>
     <message>
         <source>Output file</source>
-        <translation>Arquivo de saída</translation>
+        <translation type="obsolete">Arquivo de saída</translation>
+    </message>
+    <message>
+        <source>Topographic Position Index</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -63980,7 +67410,7 @@ Formata um tipo de data ou cadeia de texto num formato de cadeia de texto person
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
     </message>
     <message>
         <source>Nodata value, leave blank to take the nodata value from input</source>
@@ -64014,6 +67444,10 @@ Formata um tipo de data ou cadeia de texto num formato de cadeia de texto person
         <source>Force the generation of an associated ESRI world file (.tfw))</source>
         <translation>Force a criação de um arquivo world file ESRI (.tfw))</translation>
     </message>
+    <message>
+        <source>Converted</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>tri</name>
@@ -64031,7 +67465,11 @@ Formata um tipo de data ou cadeia de texto num formato de cadeia de texto person
     </message>
     <message>
         <source>Output file</source>
-        <translation>Arquivo de saída</translation>
+        <translation type="obsolete">Arquivo de saída</translation>
+    </message>
+    <message>
+        <source>Terrain Ruggedness Index</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -64211,7 +67649,7 @@ Formata um tipo de data ou cadeia de texto num formato de cadeia de texto person
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Camada de saída</translation>
+        <translation type="obsolete">Camada de saída</translation>
     </message>
     <message>
         <source>Nodata value, leave blank to take the nodata value from input</source>
@@ -64244,6 +67682,10 @@ Formata um tipo de data ou cadeia de texto num formato de cadeia de texto person
     <message>
         <source>Force the generation of an associated ESRI world file (.tfw))</source>
         <translation>Force a criação de um arquivo world file ESRI (.tfw))</translation>
+    </message>
+    <message>
+        <source>Reprojected</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

@@ -162,7 +162,11 @@
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
+    </message>
+    <message>
+        <source>Added</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -223,7 +227,11 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
+    </message>
+    <message>
+        <source>Incremented</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -242,7 +250,11 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Output</source>
-        <translation>Output</translation>
+        <translation type="obsolete">Output</translation>
+    </message>
+    <message>
+        <source>Bar plot</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -257,7 +269,7 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Statistics for numeric field</source>
-        <translation>Statistik for numerisk felt</translation>
+        <translation type="obsolete">Statistik for numerisk felt</translation>
     </message>
     <message>
         <source>Coefficient of Variation</source>
@@ -299,6 +311,10 @@ Open the results dialog to check it.</source>
         <source>Standard deviation</source>
         <translation>Standardafvigelse</translation>
     </message>
+    <message>
+        <source>Statistics</source>
+        <translation type="unfinished">Statistik</translation>
+    </message>
 </context>
 <context>
     <name>BasicStatisticsStrings</name>
@@ -312,7 +328,7 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Statistics for text field</source>
-        <translation>Statistik for tekstfelt</translation>
+        <translation type="obsolete">Statistik for tekstfelt</translation>
     </message>
     <message>
         <source>Minimum length</source>
@@ -341,6 +357,10 @@ Open the results dialog to check it.</source>
     <message>
         <source>Number of unique values</source>
         <translation>Antal unikke værdier</translation>
+    </message>
+    <message>
+        <source>Statistics for text</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -582,11 +602,15 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
     </message>
     <message>
         <source>Error calculating centroid</source>
         <translation>Fejl under beregning af centroid</translation>
+    </message>
+    <message>
+        <source>Centroids</source>
+        <translation type="unfinished">Centroider</translation>
     </message>
 </context>
 <context>
@@ -594,6 +618,29 @@ Open the results dialog to check it.</source>
     <message>
         <source>&lt;p&gt;Character: &lt;span style=&quot;font-size: 24pt; font-family: %1&quot;&gt;%2&lt;/span&gt;&lt;p&gt;Value: 0x%3</source>
         <translation>&lt;p&gt;Tegn: &lt;span style=&quot;font-size: 24pt; font-family: %1&quot;&gt;%2&lt;/span&gt;&lt;p&gt;Værdi: 0x%3</translation>
+    </message>
+</context>
+<context>
+    <name>CheckValidity</name>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished">Inputlag</translation>
+    </message>
+    <message>
+        <source>Method</source>
+        <translation type="unfinished">Metode</translation>
+    </message>
+    <message>
+        <source>Valid output</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid output</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error output</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -635,10 +682,14 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
     </message>
     <message>
         <source>Nodata value, leave blank to take the nodata value from input</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clipped (extent)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -666,10 +717,14 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
     </message>
     <message>
         <source>Nodata value, leave blank to take the nodata value from input</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clipped (mask)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -743,7 +798,11 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Output file</source>
-        <translation>Output-fil</translation>
+        <translation type="obsolete">Output-fil</translation>
+    </message>
+    <message>
+        <source>Color relief</source>
+        <translation type="unfinished">Farverelief</translation>
     </message>
 </context>
 <context>
@@ -946,7 +1005,11 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
+    </message>
+    <message>
+        <source>Constant</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1543,6 +1606,10 @@ Forespørgsel:
         <source>%1 is an invalid layer and cannot be loaded. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
         <translation>%1 er et ugyldigt lag og kan ikke indlæses. Tjek &lt;a href=&quot;#messageLog&quot;&gt;beskedloggen&lt;/a&gt; for yderligere information.</translation>
     </message>
+    <message>
+        <source>New Connection...</source>
+        <translation type="unfinished">Ny forbindelse...</translation>
+    </message>
 </context>
 <context>
     <name>DTM2TIF</name>
@@ -1553,6 +1620,25 @@ Forespørgsel:
     <message>
         <source>Output file name</source>
         <translation>Output fil navn</translation>
+    </message>
+</context>
+<context>
+    <name>Datasources2Vrt</name>
+    <message>
+        <source>Input datasources</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overwrite output vrt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Virtual vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Virtual string</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1891,6 +1977,10 @@ columns</source>
         <source>Avoid selecting by feature id</source>
         <translation>Undgå at udvælge objekter via ID</translation>
     </message>
+    <message>
+        <source>Create a view</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DbManagerDlgTableProperties</name>
@@ -1960,6 +2050,93 @@ columns</source>
     </message>
 </context>
 <context>
+    <name>DbManagerQueryBuilderDlg</name>
+    <message>
+        <source>SQL query builder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Columns</source>
+        <translation type="unfinished">Kolonner</translation>
+    </message>
+    <message>
+        <source>Tables     </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Where    </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Group by</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Order by</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show system tables</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tables</source>
+        <translation type="unfinished">Tabeller</translation>
+    </message>
+    <message>
+        <source>Aggregates</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Functions</source>
+        <translation type="unfinished">Funktioner</translation>
+    </message>
+    <message>
+        <source>Math</source>
+        <translation type="unfinished">Matematik</translation>
+    </message>
+    <message>
+        <source>Strings functions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Operators</source>
+        <translation type="unfinished">Operatorer</translation>
+    </message>
+    <message>
+        <source>Columns&apos; values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Only 10 first values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Spatial index</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Table (with spatial index)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Table (Target)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use spatial index</source>
+        <translation type="unfinished">Brug spatielt indeks</translation>
+    </message>
+    <message>
+        <source>&amp;Reset</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Delaunay</name>
     <message>
         <source>Input layer</source>
@@ -1986,7 +2163,11 @@ columns</source>
     </message>
     <message>
         <source>Output</source>
-        <translation>Output</translation>
+        <translation type="obsolete">Output</translation>
+    </message>
+    <message>
+        <source>Deleted column</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1997,7 +2178,22 @@ columns</source>
     </message>
     <message>
         <source>Output</source>
-        <translation>Output</translation>
+        <translation type="obsolete">Output</translation>
+    </message>
+    <message>
+        <source>Cleaned</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DeleteHoles</name>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished">Inputlag</translation>
+    </message>
+    <message>
+        <source>Cleaned</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2041,7 +2237,7 @@ columns</source>
         <translation>Punkter at tilføje</translation>
     </message>
     <message>
-        <source>Densified layer</source>
+        <source>Densified</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2056,7 +2252,7 @@ columns</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Densified layer</source>
+        <source>Densified</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3131,6 +3327,42 @@ Er du sikker på, at du vil fortsætte?</translation>
         <source>Include input features that intersect the selection features</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Statistical method for attribute aggregation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input point vector layer attributes to aggregate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select columns</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>sum</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>stddev</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>mean</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>max</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>min</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotation angle in degrees</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Difference</name>
@@ -3195,6 +3427,45 @@ Er du sikker på, at du vil fortsætte?</translation>
     </message>
 </context>
 <context>
+    <name>DinfDistDownMulti</name>
+    <message>
+        <source>D-Infinity Flow Direction Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pit Filled Elevation Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stream Raster Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Weight Path Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Statistical Method</source>
+        <translation type="unfinished">Statistisk metode</translation>
+    </message>
+    <message>
+        <source>Distance Method</source>
+        <translation type="unfinished">Afstandsmetode</translation>
+    </message>
+    <message>
+        <source>Check for edge contamination</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>D-Infinity Drop to Stream Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>DinfDistUp</name>
     <message>
         <source>D-Infinity Flow Direction Grid</source>
@@ -3215,6 +3486,45 @@ Er du sikker på, at du vil fortsætte?</translation>
     <message>
         <source>Distance Method</source>
         <translation>Afstandsmetode</translation>
+    </message>
+    <message>
+        <source>Proportion Threshold</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check for edge contamination</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>D-Infinity Distance Up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DinfDistUpMulti</name>
+    <message>
+        <source>D-Infinity Flow Direction Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pit Filled Elevation Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Slope Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Statistical Method</source>
+        <translation type="unfinished">Statistisk metode</translation>
+    </message>
+    <message>
+        <source>Distance Method</source>
+        <translation type="unfinished">Afstandsmetode</translation>
     </message>
     <message>
         <source>Proportion Threshold</source>
@@ -3304,6 +3614,84 @@ Er du sikker på, at du vil fortsætte?</translation>
     </message>
     <message>
         <source>Output Concentration Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DinfTransLimAccum2Multi</name>
+    <message>
+        <source>D-Infinity Flow Direction Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Supply Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transport Capacity Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input Concentration Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Outlets Shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check for edge contamination</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transport Limited Accumulation Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deposition Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output Concentration Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DinfTransLimAccumMulti</name>
+    <message>
+        <source>D-Infinity Flow Direction Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Supply Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transport Capacity Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Outlets Shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check for edge contamination</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transport Limited Accumulation Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deposition Grid</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3792,12 +4180,12 @@ Er du sikker på, at du vil fortsætte?</translation>
     </message>
     <message>
         <source>DB Manager</source>
-        <translation>DB-styring</translation>
+        <translation type="obsolete">DB-styring</translation>
     </message>
     <message>
         <source>You must fill the required fields: 
 geometry column - column with unique integer values</source>
-        <translation>Du skal udfylde de påkrævede felter: geometrikolonne - kolonne med unikke talværdier</translation>
+        <translation type="obsolete">Du skal udfylde de påkrævede felter: geometrikolonne - kolonne med unikke talværdier</translation>
     </message>
 </context>
 <context>
@@ -3946,6 +4334,53 @@ geometry column - column with unique integer values</source>
     </message>
 </context>
 <context>
+    <name>DropAnalysisMulti</name>
+    <message>
+        <source>D8 Contributing Area Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>D8 Flow Direction Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pit Filled Elevation Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Accumulated Stream Source Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Outlets Shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minimum Threshold</source>
+        <translation type="unfinished">Minimum grænseværdi</translation>
+    </message>
+    <message>
+        <source>Maximum Threshold</source>
+        <translation type="unfinished">Maksimum grænseværdi</translation>
+    </message>
+    <message>
+        <source>Number of Threshold Values</source>
+        <translation type="unfinished">Antal grænseværdi værdier</translation>
+    </message>
+    <message>
+        <source>Spacing for Threshold Values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>D-Infinity Drop to Stream Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>EditModelAction</name>
     <message>
         <source>Edit model</source>
@@ -3957,6 +4392,21 @@ geometry column - column with unique integer values</source>
     <message>
         <source>Edit script</source>
         <translation>Redigér script</translation>
+    </message>
+</context>
+<context>
+    <name>EffectPropertiesWidget</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Effect type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This effect doesn&apos;t have any editable properties</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3983,10 +4433,6 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Merge selection with the neighbouring polygon with the</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cleaned layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4029,6 +4475,10 @@ geometry column - column with unique integer values</source>
         <source>Could not replace geometry of feature with id %s</source>
         <translation>Kunne ikke erstatte geometri i objekt med ID %s</translation>
     </message>
+    <message>
+        <source>Cleaned</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>EquivalentNumField</name>
@@ -4042,7 +4492,11 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
+    </message>
+    <message>
+        <source>Numeric field</source>
+        <translation type="unfinished">Numerisk felt</translation>
     </message>
 </context>
 <context>
@@ -4064,7 +4518,11 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
+    </message>
+    <message>
+        <source>Exploded</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4079,7 +4537,11 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
+    </message>
+    <message>
+        <source>Added geom info</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4094,7 +4556,11 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
+    </message>
+    <message>
+        <source>Extent</source>
+        <translation type="unfinished">Omrids</translation>
     </message>
 </context>
 <context>
@@ -4144,7 +4610,7 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Output</source>
-        <translation>Output</translation>
+        <translation type="obsolete">Output</translation>
     </message>
     <message>
         <source>Operators %s can be used only with string fields.</source>
@@ -4166,6 +4632,10 @@ geometry column - column with unique integer values</source>
         <source>Unsupported field type &quot;%s&quot;</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Extracted (attribute)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ExtractByLocation</name>
@@ -4179,10 +4649,14 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Selection</source>
-        <translation>Selektion</translation>
+        <translation type="obsolete">Selektion</translation>
     </message>
     <message>
         <source>Geometric predicate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Extracted (location)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4194,7 +4668,11 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
+    </message>
+    <message>
+        <source>Nodes</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4280,7 +4758,7 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
     </message>
     <message>
         <source>Evaluation error: %s</source>
@@ -4296,7 +4774,7 @@ geometry column - column with unique integer values</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Output is not set. Please specify valid filename</source>
+        <source>Calculated</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4316,7 +4794,7 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Wrong or missing parameter values</source>
-        <translation>Forkerte eller manglende parameterværdier</translation>
+        <translation type="obsolete">Forkerte eller manglende parameterværdier</translation>
     </message>
 </context>
 <context>
@@ -4331,7 +4809,7 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
     </message>
     <message>
         <source>Parser error in expression &quot;{}&quot;: {}</source>
@@ -4344,6 +4822,10 @@ geometry column - column with unique integer values</source>
     <message>
         <source>An error occurred while evaluating the calculation string:
 </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Refactored</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4379,7 +4861,7 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
     </message>
     <message>
         <source>FieldPyculator code execute error.Global code block can&apos;t be executed!
@@ -4396,6 +4878,10 @@ geometry column - column with unique integer values</source>
     <message>
         <source>FieldPyculator code execute error
 Field code block does not return &apos;%s1&apos; variable! Please declare this variable in your code!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculated</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6103,18 +6589,18 @@ Se log for yderligere detaljer</translation>
     <message>
         <source>&lt;p&gt;Oooops! The following output layers could not be open&lt;/p&gt;&lt;ul&gt;
 </source>
-        <translation>&lt;p&gt;Ups! De følgende output lag kunne ikke åbnes&lt;/p&gt;&lt;ul&gt;
+        <translation type="obsolete">&lt;p&gt;Ups! De følgende output lag kunne ikke åbnes&lt;/p&gt;&lt;ul&gt;
 </translation>
     </message>
     <message>
         <source>&lt;li&gt;%s: &lt;font size=3 face=&quot;Courier New&quot; color=&quot;#ff0000&quot;&gt;%s&lt;/font&gt;&lt;/li&gt;
 </source>
-        <translation>&lt;li&gt;%s: &lt;font size=3 face=&quot;Courier New&quot; color=&quot;#ff0000&quot;&gt;%s&lt;/font&gt;&lt;/li&gt;
+        <translation type="obsolete">&lt;li&gt;%s: &lt;font size=3 face=&quot;Courier New&quot; color=&quot;#ff0000&quot;&gt;%s&lt;/font&gt;&lt;/li&gt;
 </translation>
     </message>
     <message>
         <source>&lt;/ul&gt;&lt;p&gt;The above files could not be opened, which probably indicates that they were not correctly produced by the executed algorithm&lt;/p&gt;&lt;p&gt;Checking the log information might help you see why those layers were not created as expected&lt;/p&gt;</source>
-        <translation>&lt;/ul&gt;&lt;p&gt;Filerne ovenover kunne ikke åbnes, hvilket formodentlig skyldes, at de ikke blev dannet korrekt af den eksekverede algoritme&lt;/p&gt;&lt;p&gt;Hvis du kigger i log informationen, kan det måske hjælpe dig til at finde ud af hvorfor lagene ikke blev dannet som forventet&lt;/p&gt;</translation>
+        <translation type="obsolete">&lt;/ul&gt;&lt;p&gt;Filerne ovenover kunne ikke åbnes, hvilket formodentlig skyldes, at de ikke blev dannet korrekt af den eksekverede algoritme&lt;/p&gt;&lt;p&gt;Hvis du kigger i log informationen, kan det måske hjælpe dig til at finde ud af hvorfor lagene ikke blev dannet som forventet&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -6129,11 +6615,15 @@ Se log for yderligere detaljer</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation>Output</translation>
+        <translation type="obsolete">Output</translation>
     </message>
     <message>
         <source>Cannot convert from %s to %s</source>
         <translation>Kan ikke konvertere fra %s til %s</translation>
+    </message>
+    <message>
+        <source>Converted</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6484,6 +6974,25 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
 </context>
 <context>
+    <name>GetRScriptsAction</name>
+    <message>
+        <source>Get R scripts from on-line scripts collection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tools</source>
+        <translation type="unfinished">Værktøjer</translation>
+    </message>
+    <message>
+        <source>Connection problem</source>
+        <translation type="unfinished">Problemer med forbindelsen</translation>
+    </message>
+    <message>
+        <source>Could not connect to scripts/models repository</source>
+        <translation type="unfinished">Kunne ikke forbinde til scripts/model arkivet</translation>
+    </message>
+</context>
+<context>
     <name>GetScriptsAction</name>
     <message>
         <source>Get scripts from on-line scripts collection</source>
@@ -6607,15 +7116,11 @@ Konfigurer den venligst før du kører GRASS GIS 7 algoritmer.</translation>
     </message>
     <message>
         <source>&lt;p&gt;This algorithm requires GRASS GIS 7 to be run. A test to check if GRASS GIS 7 is correctly installed and configured in your system has been performed, with the following result:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</source>
-        <translation>&lt;p&gt;Denne algoritme kræver at GRASS GIS 7 kører. En test på om GRASS GIS 7 er korrekt installeret og konfigureret på dit system er blevet udført, med følgende resultat:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</translation>
+        <translation type="obsolete">&lt;p&gt;Denne algoritme kræver at GRASS GIS 7 kører. En test på om GRASS GIS 7 er korrekt installeret og konfigureret på dit system er blevet udført, med følgende resultat:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</translation>
     </message>
     <message>
         <source>GRASS GIS 7 seems to be correctly installed and configured&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation>GRASS GIS 7 lader til at være korrekt installeret og konfigureret&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Click here&lt;/a&gt; to know more about how to install and configure GRASS GIS 7 to be used with QGIS&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">GRASS GIS 7 lader til at være korrekt installeret og konfigureret&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
 </context>
 <context>
@@ -6705,15 +7210,7 @@ Konfigurer den venligst før du kører GRASS algoritmen.</translation>
     </message>
     <message>
         <source>&lt;p&gt;This algorithm requires GRASS to be run. A test to check if GRASS is correctly installed and configured in your system has been performed, with the following result:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</source>
-        <translation>&lt;p&gt;Denne algoritme kræver at GRASS kører. En test på om GRASS er korrekt installeret og konfigureret på dit system er blevet udført, med følgende resultat:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</translation>
-    </message>
-    <message>
-        <source>GRASS seems to be correctly installed and configured&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Click here&lt;/a&gt; to know more about how to install and configure GRASS to be used with QGIS&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">&lt;p&gt;Denne algoritme kræver at GRASS kører. En test på om GRASS er korrekt installeret og konfigureret på dit system er blevet udført, med følgende resultat:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</translation>
     </message>
 </context>
 <context>
@@ -6786,7 +7283,7 @@ Please install it before running GRASS algorithms.</source>
     </message>
     <message>
         <source>Output</source>
-        <translation>Output</translation>
+        <translation type="obsolete">Output</translation>
     </message>
     <message>
         <source>Invalid grid spacing: %s/%s</source>
@@ -6799,6 +7296,10 @@ Please install it before running GRASS algorithms.</source>
     <message>
         <source>Vertical spacing is too small for the covered area</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grid</source>
+        <translation type="unfinished">Gitter</translation>
     </message>
 </context>
 <context>
@@ -6837,7 +7338,11 @@ Please install it before running GRASS algorithms.</source>
     </message>
     <message>
         <source>Output file</source>
-        <translation>Output-fil</translation>
+        <translation type="obsolete">Output-fil</translation>
+    </message>
+    <message>
+        <source>Interpolated moving average</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6880,7 +7385,11 @@ Please install it before running GRASS algorithms.</source>
     </message>
     <message>
         <source>Output file</source>
-        <translation>Output-fil</translation>
+        <translation type="obsolete">Output-fil</translation>
+    </message>
+    <message>
+        <source>Interpolated metrics</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6927,11 +7436,15 @@ Please install it before running GRASS algorithms.</source>
     </message>
     <message>
         <source>Output file</source>
-        <translation>Output-fil</translation>
+        <translation type="obsolete">Output-fil</translation>
     </message>
     <message>
         <source>Smoothing</source>
         <translation>Udglatning</translation>
+    </message>
+    <message>
+        <source>Interpolated IDW</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7009,11 +7522,50 @@ Please install it before running GRASS algorithms.</source>
     </message>
     <message>
         <source>Output file</source>
-        <translation>Output-fil</translation>
+        <translation type="obsolete">Output-fil</translation>
+    </message>
+    <message>
+        <source>Interpolated nearest neighbor</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>GridNet</name>
+    <message>
+        <source>D8 Flow Direction Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Outlets Shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mask Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mask Threshold</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Longest Upslope Length Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Total Upslope Length Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Strahler Network Order Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>GridNetMulti</name>
     <message>
         <source>D8 Flow Direction Grid</source>
         <translation type="unfinished"></translation>
@@ -7114,7 +7666,7 @@ Please install it before running GRASS algorithms.</source>
     </message>
     <message>
         <source>Output</source>
-        <translation>Output</translation>
+        <translation type="obsolete">Output</translation>
     </message>
     <message>
         <source>Invalid grid spacing: %s/%s</source>
@@ -7122,6 +7674,10 @@ Please install it before running GRASS algorithms.</source>
     </message>
     <message>
         <source>Failed to gridify feature with FID %s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Snapped</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7180,7 +7736,7 @@ Please install it before running GRASS algorithms.</source>
     </message>
     <message>
         <source>Creating heatmap</source>
-        <translation>Opretter varmekort</translation>
+        <translation type="obsolete">Opretter varmekort</translation>
     </message>
     <message>
         <source>Abort</source>
@@ -7193,6 +7749,14 @@ Please install it before running GRASS algorithms.</source>
     <message>
         <source>QGIS will now load the partially-computed raster</source>
         <translation>QGIS vil nu loade det delvis beregnede rasterkort</translation>
+    </message>
+    <message>
+        <source>Rendering heatmap...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS</source>
+        <translation type="unfinished">QGIS</translation>
     </message>
 </context>
 <context>
@@ -7341,7 +7905,7 @@ Please install it before running GRASS algorithms.</source>
     </message>
     <message>
         <source>Error saving help file</source>
-        <translation>Fejl under gem af hjælp fil</translation>
+        <translation type="obsolete">Fejl under gem af hjælp fil</translation>
     </message>
     <message>
         <source>Help file could not be saved.
@@ -7349,7 +7913,7 @@ Check that you have permission to modify the help
 file. You might not have permission if you are 
 editing an example model or script, since they 
 are stored on the installation folder</source>
-        <translation>Hjælpefilen kunne ikke gemmes.
+        <translation type="obsolete">Hjælpefilen kunne ikke gemmes.
 Tjek at du har tilladelse til at ændre hjælpe
 filen. Du har måske ikke tilladelsen, hvis du 
 editerer en eksempel model eller script, da disse 
@@ -7406,7 +7970,7 @@ er gemt i installationsmappen</translation>
     </message>
     <message>
         <source>Clear history and log</source>
-        <translation>Ryd historik og log</translation>
+        <translation type="obsolete">Ryd historik og log</translation>
     </message>
     <message>
         <source>Save As...</source>
@@ -7414,7 +7978,7 @@ er gemt i installationsmappen</translation>
     </message>
     <message>
         <source>Save history and log</source>
-        <translation>Gem historik og log</translation>
+        <translation type="obsolete">Gem historik og log</translation>
     </message>
     <message>
         <source>Confirmation</source>
@@ -7422,7 +7986,7 @@ er gemt i installationsmappen</translation>
     </message>
     <message>
         <source>Are you sure you want to clear log?</source>
-        <translation>Er du sikker på at ville nulstille loggen?</translation>
+        <translation type="obsolete">Er du sikker på at ville nulstille loggen?</translation>
     </message>
     <message>
         <source>Save file</source>
@@ -7435,6 +7999,18 @@ er gemt i installationsmappen</translation>
     <message>
         <source>Create test</source>
         <translation>Opret test</translation>
+    </message>
+    <message>
+        <source>Clear history</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save history</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to clear the history?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7476,10 +8052,14 @@ er gemt i installationsmappen</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation>Output</translation>
+        <translation type="obsolete">Output</translation>
     </message>
     <message>
         <source>Same layer given for both hubs and spokes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hub distance</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7503,10 +8083,14 @@ er gemt i installationsmappen</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation>Output</translation>
+        <translation type="obsolete">Output</translation>
     </message>
     <message>
         <source>Same layer given for both hubs and spokes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hub lines</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7529,10 +8113,6 @@ er gemt i installationsmappen</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Output directory</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Feature %d does not intersect raster or entirely located in NODATA area</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7543,6 +8123,14 @@ er gemt i installationsmappen</translation>
     <message>
         <source>Elevation</source>
         <translation>Hævning</translation>
+    </message>
+    <message>
+        <source>Hypsometric curves</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature %d is smaller than raster cell size</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7676,7 +8264,11 @@ er gemt i installationsmappen</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
+    </message>
+    <message>
+        <source>Joined layer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7881,6 +8473,33 @@ Please configure it before running LAStools algorithms.</source>
     </message>
 </context>
 <context>
+    <name>LengthAreaMulti</name>
+    <message>
+        <source>Length Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Contributing Area Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Threshold</source>
+        <translation type="unfinished">Grænseværdi</translation>
+    </message>
+    <message>
+        <source>Exponent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stream Source Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>LidarToolsAlgorithmProvider</name>
     <message>
         <source>LAStools folder</source>
@@ -7919,7 +8538,11 @@ Please configure it before running LAStools algorithms.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
+    </message>
+    <message>
+        <source>Intersections</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7930,7 +8553,11 @@ Please configure it before running LAStools algorithms.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
+    </message>
+    <message>
+        <source>Polygons from lines</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8577,7 +9204,7 @@ Please configure it before running LAStools algorithms.</source>
     </message>
     <message>
         <source>Query...</source>
-        <translation>Forespørgsel...</translation>
+        <translation type="obsolete">Forespørgsel...</translation>
     </message>
     <message>
         <source>Add to Overview</source>
@@ -9001,6 +9628,18 @@ Virker på det aktuelle redigérbare lag</translation>
         <source>New temporary scratch layer</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Filter...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Statistical Summary</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show statistical summary</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ManageConnectionsDialog</name>
@@ -9077,7 +9716,11 @@ Virker på det aktuelle redigérbare lag</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation>Output</translation>
+        <translation type="obsolete">Output</translation>
+    </message>
+    <message>
+        <source>Plot</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9096,7 +9739,11 @@ Virker på det aktuelle redigérbare lag</translation>
     </message>
     <message>
         <source>Result</source>
-        <translation>Resultat</translation>
+        <translation type="obsolete">Resultat</translation>
+    </message>
+    <message>
+        <source>Mean coordinates</source>
+        <translation type="unfinished">Middelkoordinater</translation>
     </message>
 </context>
 <context>
@@ -9111,10 +9758,14 @@ Virker på det aktuelle redigérbare lag</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation>Output</translation>
+        <translation type="obsolete">Output</translation>
     </message>
     <message>
         <source>Merged layers must have be same type of geometry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Merged</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -9133,11 +9784,15 @@ Virker på det aktuelle redigérbare lag</translation>
     <name>MessageBarProgress</name>
     <message>
         <source>Executing algorithm</source>
-        <translation>Udfører algoritme</translation>
+        <translation type="obsolete">Udfører algoritme</translation>
     </message>
     <message>
         <source>Error</source>
         <translation>Fejl</translation>
+    </message>
+    <message>
+        <source>Executing algorithm &lt;i&gt;{0}&lt;/i&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9432,6 +10087,30 @@ Virker på det aktuelle redigérbare lag</translation>
         <source>seconds</source>
         <translation>seconds</translation>
     </message>
+    <message>
+        <source>Connection naming</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>When saving the connection of an OWS service</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use the OWS Service Title and ask before overwriting</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use the OWS Service Title and always overwrite if already available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use a temporary name, which you can change later</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Record parsing error</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ModelerAlgorithm</name>
@@ -9468,6 +10147,14 @@ Virker på det aktuelle redigérbare lag</translation>
     <message>
         <source>Model processed ok. Executed %i algorithms total</source>
         <translation>Model behandlet ok. Eksekveret total %i algoritmer</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation type="unfinished">Advarsel</translation>
+    </message>
+    <message>
+        <source>Parameter %s in algorithm %s in the model is run with default value! Edit the model to make sure that this is correct.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9788,7 +10475,11 @@ Se loggen for yderligere information.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
+    </message>
+    <message>
+        <source>Single parts</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9848,7 +10539,7 @@ Se loggen for yderligere information.</translation>
     </message>
     <message>
         <source>Result</source>
-        <translation>Resultat</translation>
+        <translation type="obsolete">Resultat</translation>
     </message>
     <message>
         <source>Observed mean distance</source>
@@ -9869,6 +10560,10 @@ Se loggen for yderligere information.</translation>
     <message>
         <source>Z-Score</source>
         <translation>Z-Score</translation>
+    </message>
+    <message>
+        <source>Nearest neighbour</source>
+        <translation type="unfinished">Nærmeste nabo</translation>
     </message>
 </context>
 <context>
@@ -9896,6 +10591,10 @@ Se loggen for yderligere information.</translation>
     <message>
         <source>Overwrite %s?</source>
         <translation>Overskriv %s?</translation>
+    </message>
+    <message>
+        <source>Name cannot contain &apos;/&apos;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10047,7 +10746,46 @@ Se loggen for yderligere information.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
+    </message>
+    <message>
+        <source>Converted</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Ogr2OgrBuffer</name>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished">Inputlag</translation>
+    </message>
+    <message>
+        <source>Geometry column name (&quot;geometry&quot; for Shapefiles, may be different for other formats)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Buffer distance</source>
+        <translation type="unfinished">Bufferafstand</translation>
+    </message>
+    <message>
+        <source>Dissolve all results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dissolve by attribute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output as singlepart geometries (only used when dissolving by attribute)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Additional creation options (see ogr2ogr manual)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Buffer</source>
+        <translation type="unfinished">Buffer</translation>
     </message>
 </context>
 <context>
@@ -10066,7 +10804,11 @@ Se loggen for yderligere information.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
+    </message>
+    <message>
+        <source>Clipped (polygon)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10085,7 +10827,187 @@ Se loggen for yderligere information.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
+    </message>
+    <message>
+        <source>Clipped (extent)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Ogr2OgrDissolve</name>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished">Inputlag</translation>
+    </message>
+    <message>
+        <source>Geometry column name (&quot;geometry&quot; for Shapefiles, may be different for other formats)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dissolve field</source>
+        <translation type="unfinished">Opløs felt</translation>
+    </message>
+    <message>
+        <source>Output as multipart geometries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Keep input attributes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Count dissolved features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Compute area and perimeter of dissolved features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Compute min/max/sum/mean for the following numeric attribute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Numeric attribute to compute dissolved features stats</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Additional creation options (see ogr2ogr manual)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dissolved</source>
+        <translation type="unfinished">Opløst</translation>
+    </message>
+</context>
+<context>
+    <name>Ogr2OgrOneSideBuffer</name>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished">Inputlag</translation>
+    </message>
+    <message>
+        <source>Operation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Geometry column name (&quot;geometry&quot; for Shapefiles, may be different for other formats)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Buffer distance</source>
+        <translation type="unfinished">Bufferafstand</translation>
+    </message>
+    <message>
+        <source>Buffer side</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dissolve all results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dissolve by attribute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output as singlepart geometries (only used when dissolving by attribute)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Additional creation options (see ogr2ogr manual)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Single sided buffer</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Ogr2OgrPointsOnLines</name>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished">Inputlag</translation>
+    </message>
+    <message>
+        <source>Geometry column name (&quot;geometry&quot; for Shapefiles, may be different for other formats)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Distance from line start represented as fraction of line length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Additional creation options (see ogr2ogr manual)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Points along lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Ogr2OgrTableToPostGisList</name>
+    <message>
+        <source>Database (connection name)</source>
+        <translation type="unfinished">Database (forbindelsesnavn)</translation>
+    </message>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished">Inputlag</translation>
+    </message>
+    <message>
+        <source>Schema name</source>
+        <translation type="unfinished">Skema navn</translation>
+    </message>
+    <message>
+        <source>Table name, leave blank to use input name</source>
+        <translation type="unfinished">Tabelnavn, lad den være blank for at bruge input navnet</translation>
+    </message>
+    <message>
+        <source>Primary key</source>
+        <translation type="unfinished">Primær nøgle</translation>
+    </message>
+    <message>
+        <source>Primary key (existing field, used if the above option is left empty)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select features using a SQL &quot;WHERE&quot; statement (Ex: column=&apos;value&apos;)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Group N features per transaction (Default: 20000)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overwrite existing table</source>
+        <translation type="unfinished">Overskriv eksisterende tabel</translation>
+    </message>
+    <message>
+        <source>Append to existing table</source>
+        <translation type="unfinished">Tilføj til eksisterende tabel</translation>
+    </message>
+    <message>
+        <source>Append and add new fields to existing table</source>
+        <translation type="unfinished">Tilføj nye felter til eksisterende tabel</translation>
+    </message>
+    <message>
+        <source>Do not launder columns/table names</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Continue after a failure, skipping the failed record</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Keep width and precision of input attributes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Additional creation options</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10152,7 +11074,7 @@ Se loggen for yderligere information.</translation>
     </message>
     <message>
         <source>Select features using a SQL &quot;WHERE&quot; statement (Ex: column=&quot;value&quot;)</source>
-        <translation>Vælg objekter vha. en SQL &quot;WHERE&quot; sætning (f.eks.: kolonne=&quot;værdi&quot;)</translation>
+        <translation type="obsolete">Vælg objekter vha. en SQL &quot;WHERE&quot; sætning (f.eks.: kolonne=&quot;værdi&quot;)</translation>
     </message>
     <message>
         <source>Group N features per transaction (Default: 20000)</source>
@@ -10212,6 +11134,10 @@ Se loggen for yderligere information.</translation>
     </message>
     <message>
         <source>Keep width and precision of input attributes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select features using a SQL &quot;WHERE&quot; statement (Ex: column=&apos;value&apos;)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -10263,7 +11189,7 @@ Se loggen for yderligere information.</translation>
     </message>
     <message>
         <source>Select features using a SQL &quot;WHERE&quot; statement (Ex: column=&quot;value&quot;)</source>
-        <translation>Vælg objekter vha. en SQL &quot;WHERE&quot; sætning (f.eks.: kolonne=&quot;værdi&quot;)</translation>
+        <translation type="obsolete">Vælg objekter vha. en SQL &quot;WHERE&quot; sætning (f.eks.: kolonne=&quot;værdi&quot;)</translation>
     </message>
     <message>
         <source>Group N features per transaction (Default: 20000)</source>
@@ -10323,6 +11249,10 @@ Se loggen for yderligere information.</translation>
     </message>
     <message>
         <source>Keep width and precision of input attributes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select features using a SQL &quot;WHERE&quot; statement (Ex: column=&apos;value&apos;)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -10567,6 +11497,33 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
 </context>
 <context>
+    <name>PeukerDouglasMulti</name>
+    <message>
+        <source>Elevation Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Center Smoothing Weight</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Side Smoothing Weight</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Diagonal Smoothing Weight</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stream Source Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>PointDistance</name>
     <message>
         <source>Input point layer</source>
@@ -10613,7 +11570,11 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
+    </message>
+    <message>
+        <source>Displaced</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10628,7 +11589,11 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
+    </message>
+    <message>
+        <source>Points along line</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10643,7 +11608,11 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
+    </message>
+    <message>
+        <source>Points from polygons</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10662,7 +11631,11 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>Result</source>
-        <translation>Resultat</translation>
+        <translation type="obsolete">Resultat</translation>
+    </message>
+    <message>
+        <source>Count</source>
+        <translation type="unfinished">Antal</translation>
     </message>
 </context>
 <context>
@@ -10692,7 +11665,11 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>Result</source>
-        <translation>Resultat</translation>
+        <translation type="obsolete">Resultat</translation>
+    </message>
+    <message>
+        <source>Unique count</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10715,7 +11692,11 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>Result</source>
-        <translation>Resultat</translation>
+        <translation type="obsolete">Resultat</translation>
+    </message>
+    <message>
+        <source>Weighted count</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10738,7 +11719,11 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
+    </message>
+    <message>
+        <source>Points from table</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10784,7 +11769,11 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>Output</source>
-        <translation>Output</translation>
+        <translation type="obsolete">Output</translation>
+    </message>
+    <message>
+        <source>Polar plot</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10854,7 +11843,11 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
+    </message>
+    <message>
+        <source>Polygons from lines</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10865,7 +11858,11 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
+    </message>
+    <message>
+        <source>Lines from polygons</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -11024,7 +12021,7 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>&amp;History and Log...</source>
-        <translation>&amp;Historik og log...</translation>
+        <translation type="obsolete">&amp;Historik og log...</translation>
     </message>
     <message>
         <source>&amp;Options...</source>
@@ -11040,6 +12037,10 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>Ctrl+Alt+M</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;History...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -12001,7 +13002,7 @@ Error(%2): %3</source>
     </message>
     <message>
         <source>GEOS prior to 3.2 doesn&apos;t support GEOSInterpolate</source>
-        <translation>GEOS fra før 3.2 understøtter ikke GEOSInterpolate</translation>
+        <translation type="obsolete">GEOS fra før 3.2 understøtter ikke GEOSInterpolate</translation>
     </message>
     <message>
         <source>segment %1 of ring %2 of polygon %3 intersects segment %4 of ring %5 of polygon %6 at %7</source>
@@ -12962,219 +13963,219 @@ Hvis til stede, vil dette URI indsættes som schema location. Bemærk, at schema
     </message>
     <message>
         <source>Location: %1</source>
-        <translation>Lokation: %1</translation>
+        <translation type="obsolete">Lokation: %1</translation>
     </message>
     <message>
         <source>Location: %1&lt;br&gt;Mapset: %2</source>
-        <translation>Lokation: %1&lt;br&gt;Kortsæt: %2</translation>
+        <translation type="obsolete">Lokation: %1&lt;br&gt;Kortsæt: %2</translation>
     </message>
     <message>
         <source>&lt;b&gt;Raster&lt;/b&gt;</source>
-        <translation>&lt;b&gt;Raster&lt;/b&gt;</translation>
+        <translation type="obsolete">&lt;b&gt;Raster&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Cannot open raster header</source>
-        <translation>Kan ikke åbne raster-hoved</translation>
+        <translation type="obsolete">Kan ikke åbne raster-hoved</translation>
     </message>
     <message>
         <source>Rows</source>
-        <translation>Rækker</translation>
+        <translation type="obsolete">Rækker</translation>
     </message>
     <message>
         <source>Columns</source>
-        <translation>Kolonner</translation>
+        <translation type="obsolete">Kolonner</translation>
     </message>
     <message>
         <source>N-S resolution</source>
-        <translation>N-S-opløsning</translation>
+        <translation type="obsolete">N-S-opløsning</translation>
     </message>
     <message>
         <source>E-W resolution</source>
-        <translation>E-W-opløsning</translation>
+        <translation type="obsolete">E-W-opløsning</translation>
     </message>
     <message>
         <source>North</source>
-        <translation>Nord</translation>
+        <translation type="obsolete">Nord</translation>
     </message>
     <message>
         <source>South</source>
-        <translation>Syd</translation>
+        <translation type="obsolete">Syd</translation>
     </message>
     <message>
         <source>East</source>
-        <translation>Øst</translation>
+        <translation type="obsolete">Øst</translation>
     </message>
     <message>
         <source>West</source>
-        <translation>Vest</translation>
+        <translation type="obsolete">Vest</translation>
     </message>
     <message>
         <source>Format</source>
-        <translation>Format</translation>
+        <translation type="obsolete">Format</translation>
     </message>
     <message>
         <source>Minimum value</source>
-        <translation>Minimumsværdi</translation>
+        <translation type="obsolete">Minimumsværdi</translation>
     </message>
     <message>
         <source>Maximum value</source>
-        <translation>Maksimumværdi</translation>
+        <translation type="obsolete">Maksimumværdi</translation>
     </message>
     <message>
         <source>Data source</source>
-        <translation>Datakilde</translation>
+        <translation type="obsolete">Datakilde</translation>
     </message>
     <message>
         <source>Data description</source>
-        <translation>Databeskrivelse</translation>
+        <translation type="obsolete">Databeskrivelse</translation>
     </message>
     <message>
         <source>Comments</source>
-        <translation>Kommentarer</translation>
+        <translation type="obsolete">Kommentarer</translation>
     </message>
     <message>
         <source>Categories</source>
-        <translation>Kategorier</translation>
+        <translation type="obsolete">Kategorier</translation>
     </message>
     <message>
         <source>&lt;b&gt;Vector&lt;/b&gt;</source>
-        <translation>&lt;b&gt;Vektor&lt;/b&gt;</translation>
+        <translation type="obsolete">&lt;b&gt;Vektor&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Points</source>
-        <translation>Punkter</translation>
+        <translation type="obsolete">Punkter</translation>
     </message>
     <message>
         <source>Lines</source>
-        <translation>Linier</translation>
+        <translation type="obsolete">Linier</translation>
     </message>
     <message>
         <source>Boundaries</source>
-        <translation>Skellinjer</translation>
+        <translation type="obsolete">Skellinjer</translation>
     </message>
     <message>
         <source>Centroids</source>
-        <translation>Centroider</translation>
+        <translation type="obsolete">Centroider</translation>
     </message>
     <message>
         <source>Faces</source>
-        <translation>Ansigter</translation>
+        <translation type="obsolete">Ansigter</translation>
     </message>
     <message>
         <source>Kernels</source>
-        <translation>Kernels</translation>
+        <translation type="obsolete">Kernels</translation>
     </message>
     <message>
         <source>Areas</source>
-        <translation>Arealer</translation>
+        <translation type="obsolete">Arealer</translation>
     </message>
     <message>
         <source>Islands</source>
-        <translation>Øer</translation>
+        <translation type="obsolete">Øer</translation>
     </message>
     <message>
         <source>Top</source>
-        <translation>Top</translation>
+        <translation type="obsolete">Top</translation>
     </message>
     <message>
         <source>Bottom</source>
-        <translation>Bund</translation>
+        <translation type="obsolete">Bund</translation>
     </message>
     <message>
         <source>yes</source>
-        <translation>ja</translation>
+        <translation type="obsolete">ja</translation>
     </message>
     <message>
         <source>no</source>
-        <translation>nej</translation>
+        <translation type="obsolete">nej</translation>
     </message>
     <message>
         <source>History&lt;br&gt;</source>
-        <translation>Historik&lt;br&gt;</translation>
+        <translation type="obsolete">Historik&lt;br&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Layer&lt;/b&gt;</source>
-        <translation>&lt;b&gt;Lag&lt;/b&gt;</translation>
+        <translation type="obsolete">&lt;b&gt;Lag&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Features</source>
-        <translation>objekter</translation>
+        <translation type="obsolete">objekter</translation>
     </message>
     <message>
         <source>Driver</source>
-        <translation>Driver</translation>
+        <translation type="obsolete">Driver</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation>Tabel</translation>
+        <translation type="obsolete">Tabel</translation>
     </message>
     <message>
         <source>Key column</source>
-        <translation>Nøglekolonne</translation>
+        <translation type="obsolete">Nøglekolonne</translation>
     </message>
     <message>
         <source>&lt;b&gt;Region&lt;/b&gt;</source>
-        <translation>&lt;b&gt;Region&lt;/b&gt;</translation>
+        <translation type="obsolete">&lt;b&gt;Region&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Cannot open region header</source>
-        <translation>Kan ikke åbne regionshoved</translation>
+        <translation type="obsolete">Kan ikke åbne regionshoved</translation>
     </message>
     <message>
         <source>XY</source>
-        <translation>XY</translation>
+        <translation type="obsolete">XY</translation>
     </message>
     <message>
         <source>UTM</source>
-        <translation>UTM</translation>
+        <translation type="obsolete">UTM</translation>
     </message>
     <message>
         <source>SP</source>
-        <translation>SP</translation>
+        <translation type="obsolete">SP</translation>
     </message>
     <message>
         <source>LL</source>
-        <translation>LL</translation>
+        <translation type="obsolete">LL</translation>
     </message>
     <message>
         <source>Other</source>
-        <translation>Anden</translation>
+        <translation type="obsolete">Anden</translation>
     </message>
     <message>
         <source>Projection Type</source>
-        <translation>Projektionstype</translation>
+        <translation type="obsolete">Projektionstype</translation>
     </message>
     <message>
         <source>Zone</source>
-        <translation>Zone</translation>
+        <translation type="obsolete">Zone</translation>
     </message>
     <message>
         <source>3D Cols</source>
-        <translation>3D-kolonner</translation>
+        <translation type="obsolete">3D-kolonner</translation>
     </message>
     <message>
         <source>3D Rows</source>
-        <translation>3D -rækker</translation>
+        <translation type="obsolete">3D -rækker</translation>
     </message>
     <message>
         <source>Depths</source>
-        <translation>Dybder</translation>
+        <translation type="obsolete">Dybder</translation>
     </message>
     <message>
         <source>E-W 3D resolution</source>
-        <translation>E-W 3D-opløsning</translation>
+        <translation type="obsolete">E-W 3D-opløsning</translation>
     </message>
     <message>
         <source>N-S 3D resolution</source>
-        <translation>N-S 3D-opløsning</translation>
+        <translation type="obsolete">N-S 3D-opløsning</translation>
     </message>
     <message>
         <source>GRASS</source>
-        <translation>GRASS</translation>
+        <translation type="obsolete">GRASS</translation>
     </message>
     <message>
         <source>GRASS layer</source>
-        <translation>GRASS-lag</translation>
+        <translation type="obsolete">GRASS-lag</translation>
     </message>
     <message>
         <source>Heatmap</source>
@@ -13384,7 +14385,7 @@ Vil du angive stien (GISBASE) til din GRASS-installation?</translation>
     </message>
     <message>
         <source>Cannot start %1/etc/lock</source>
-        <translation>Kan ikke starte %1/etc/lock</translation>
+        <translation type="obsolete">Kan ikke starte %1/etc/lock</translation>
     </message>
     <message>
         <source>Mapset is already in use.</source>
@@ -13408,11 +14409,11 @@ Vil du angive stien (GISBASE) til din GRASS-installation?</translation>
     </message>
     <message>
         <source>Cannot open vector %1 in mapset %2 on level 2 (topology not available, try to rebuild topology using v.build module).</source>
-        <translation>Kan ikke åbne vektor %1 i kortsæt %2 på niveau 2 (topologi utilgængelig, prøv at genopbygge topologi vha. v.build module).</translation>
+        <translation type="obsolete">Kan ikke åbne vektor %1 i kortsæt %2 på niveau 2 (topologi utilgængelig, prøv at genopbygge topologi vha. v.build module).</translation>
     </message>
     <message>
         <source>Cannot open vector %1 in mapset %2</source>
-        <translation>Kan ikke åbne vektor %1 i kortsæt %2</translation>
+        <translation type="obsolete">Kan ikke åbne vektor %1 i kortsæt %2</translation>
     </message>
     <message>
         <source>Cannot read raster map region</source>
@@ -13444,7 +14445,7 @@ Vil du angive stien (GISBASE) til din GRASS-installation?</translation>
     </message>
     <message>
         <source>command: %1 %2&lt;br&gt;%3&lt;br&gt;%4</source>
-        <translation>kommando: %1 %2&lt;br&gt;%3&lt;br&gt;%4</translation>
+        <translation type="obsolete">kommando: %1 %2&lt;br&gt;%3&lt;br&gt;%4</translation>
     </message>
     <message>
         <source>Cannot get projection </source>
@@ -14107,7 +15108,7 @@ Svar var:
     </message>
     <message>
         <source>Fatal error occurred in GRASS library. QGIS gets over the error but any next fatal error will cause QGIS exit without warning. This is a problem of GRASS 7.0.0beta1 but it is fixed in GRASS 7.1 and higher. Error message: %1</source>
-        <translation>Fatal fejl sket i GRASS bibliotek. QGIS kommer sig over fejlen, men enhver ny fatal fejl vil få QGIS til at lukke ned uden varsel. Dette er et problem i GRASS 7.0.0beta1 men er løst i GRASS 7.1 og nyere. Fejlbesked: %1</translation>
+        <translation type="obsolete">Fatal fejl sket i GRASS bibliotek. QGIS kommer sig over fejlen, men enhver ny fatal fejl vil få QGIS til at lukke ned uden varsel. Dette er et problem i GRASS 7.0.0beta1 men er løst i GRASS 7.1 og nyere. Fejlbesked: %1</translation>
     </message>
     <message>
         <source>Raster image fill</source>
@@ -14123,6 +15124,216 @@ Svar var:
     </message>
     <message>
         <source>NOTICE: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blur</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Drop Shadow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Inner Shadow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stack</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Outer Glow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Inner Glow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Source</source>
+        <translation type="unfinished">Kilde</translation>
+    </message>
+    <message>
+        <source>Transform</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Colorise</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Recent colors</source>
+        <translation type="unfinished">Seneste farver</translation>
+    </message>
+    <message>
+        <source>Standard colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Project colors</source>
+        <translation type="unfinished">Projektfarver</translation>
+    </message>
+    <message>
+        <source>Number of places must be positive</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Count</source>
+        <translation type="unfinished">Antal</translation>
+    </message>
+    <message>
+        <source>Sum</source>
+        <translation type="unfinished">Sum</translation>
+    </message>
+    <message>
+        <source>Mean</source>
+        <translation type="unfinished">Middel</translation>
+    </message>
+    <message>
+        <source>Median</source>
+        <translation type="unfinished">Median</translation>
+    </message>
+    <message>
+        <source>St dev (pop)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>St dev (sample)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minimum</source>
+        <translation type="unfinished">Minimum</translation>
+    </message>
+    <message>
+        <source>Maximum</source>
+        <translation type="unfinished">Maksimum</translation>
+    </message>
+    <message>
+        <source>Range</source>
+        <translation type="unfinished">Interval</translation>
+    </message>
+    <message>
+        <source>Minority</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Majority</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Variety</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Q1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Q3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>IQR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished">Værdi</translation>
+    </message>
+    <message>
+        <source>GRASS %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GRASS %1 (Geographic Resources Analysis Support System)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Version 2.0</source>
+        <translation type="unfinished">Version 2.0</translation>
+    </message>
+    <message>
+        <source>Cannot start %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mapset lock failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot open vector on level 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot open vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>command: %1 %2
+stdout: %3
+stderr: %4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attempt to copy from different location.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete confirmation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to delete %1 %2?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot create table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot insert, statement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rename GRASS %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot delete %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot rename %1 to %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete Connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to delete the connection to %1?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete Object</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to delete %1.%2?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to delete %1?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -15483,6 +16694,33 @@ Ignorér altid disse fejl?</translation>
         <source>A problem occured during deletion of %1 feature(s)</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Project file was changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The loaded project file on disk was meanwhile changed.  Do you want to overwrite the changes?
+
+Last modification date on load was: %1
+Current last modification date is: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saving raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export to raster file has been completed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot paste style to layer with a different geometry type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Your copied style does not match the layer you are pasting to</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgisAppInterface</name>
@@ -15556,7 +16794,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Essen (Germany), Developer meeting 2012</source>
-        <translation>Essen (Germany), Udviklermøde 2012</translation>
+        <translation type="obsolete">Essen (Germany), Udviklermøde 2012</translation>
     </message>
     <message>
         <source>Contributors</source>
@@ -15593,6 +16831,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Developers Map</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Essen (Germany), Developer meeting 2014</source>
+        <translation type="unfinished">Essen (Germany), Udviklermøde 2014</translation>
     </message>
 </context>
 <context>
@@ -15656,35 +16898,31 @@ p, li { white-space: pre-wrap; }
     <name>QgsAddJoinDialogBase</name>
     <message>
         <source>Add vector join</source>
-        <translation>Tilføj vektorjoin</translation>
+        <translation type="obsolete">Tilføj vektorjoin</translation>
     </message>
     <message>
         <source>Join layer</source>
-        <translation>Joinlag</translation>
+        <translation type="obsolete">Joinlag</translation>
     </message>
     <message>
         <source>Join field</source>
-        <translation>Joinfelt</translation>
+        <translation type="obsolete">Joinfelt</translation>
     </message>
     <message>
         <source>Target field</source>
-        <translation>Målfelt</translation>
+        <translation type="obsolete">Målfelt</translation>
     </message>
     <message>
         <source>Create attribute index on join field</source>
-        <translation>Opret attributindeks på joinfelt</translation>
+        <translation type="obsolete">Opret attributindeks på joinfelt</translation>
     </message>
     <message>
         <source>Choose which fields are joined</source>
-        <translation>Vælg hvilke felter som er joined</translation>
+        <translation type="obsolete">Vælg hvilke felter som er joined</translation>
     </message>
     <message>
         <source>Cache join layer in virtual memory</source>
-        <translation>Cache joinlag i virtuel hukommelse</translation>
-    </message>
-    <message>
-        <source>Custom field name prefix</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Cache joinlag i virtuel hukommelse</translation>
     </message>
 </context>
 <context>
@@ -15817,6 +17055,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>y</source>
         <translation>y</translation>
+    </message>
+</context>
+<context>
+    <name>QgsAngleMagnetWidget</name>
+    <message>
+        <source>Snap to </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No snapping</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -16620,7 +17869,7 @@ Parserfejl:
     </message>
     <message>
         <source>Attribute table - %1 :: Features total: %2, filtered: %3, selected: %4</source>
-        <translation>Attributtabel - %1 :: Objekter i alt: %2, filtreret: %3, valgt: %4</translation>
+        <translation type="obsolete">Attributtabel - %1 :: Objekter i alt: %2, filtreret: %3, valgt: %4</translation>
     </message>
     <message>
         <source>Update Filtered</source>
@@ -16667,6 +17916,30 @@ Parserfejl:
     <message>
         <source>Update Selected</source>
         <translation>Opdatér valgte</translation>
+    </message>
+    <message>
+        <source>Ctrl+R</source>
+        <translation type="unfinished">Ctrl+R</translation>
+    </message>
+    <message>
+        <source>Paste features from clipboard (Ctrl+V)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+V</source>
+        <translation type="unfinished">Ctrl+V</translation>
+    </message>
+    <message>
+        <source>Show All Features In Initial Canvas Extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attribute table - %1 :: Features total: %2, filtered: %3, selected: %4%5</source>
+        <translation type="unfinished">Attributtabel - %1 :: Objekter i alt: %2, filtreret: %3, valgt: %4%5 {1 ?} {2,?} {3,?}</translation>
+    </message>
+    <message>
+        <source>, spatially limited</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -16758,18 +18031,29 @@ Parserfejl:
     </message>
 </context>
 <context>
+    <name>QgsBlurWidget</name>
+    <message>
+        <source>Stack blur (fast)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Gaussian blur (quality)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsBookmarks</name>
     <message>
         <source>&amp;Add</source>
-        <translation>&amp;Tilføj</translation>
+        <translation type="obsolete">&amp;Tilføj</translation>
     </message>
     <message>
         <source>&amp;Delete</source>
-        <translation>&amp;Slet</translation>
+        <translation type="obsolete">&amp;Slet</translation>
     </message>
     <message>
         <source>&amp;Zoom to</source>
-        <translation>&amp;Zoom til</translation>
+        <translation type="obsolete">&amp;Zoom til</translation>
     </message>
     <message>
         <source>Error</source>
@@ -16850,10 +18134,6 @@ Database:%2</translation>
         <translation>Reprojiceret omrids er tomt.</translation>
     </message>
     <message>
-        <source>&amp;Share</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&amp;Export</source>
         <translation type="unfinished"></translation>
     </message>
@@ -16883,12 +18163,48 @@ Database: %2</source>
         <source>XML files( *.xml *.XML )</source>
         <translation>XML-filer (*.xml *.XML)</translation>
     </message>
+    <message>
+        <source>Import/Export Bookmarks</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsBookmarksBase</name>
     <message>
         <source>Geospatial Bookmarks</source>
-        <translation>Geospatielle bogmærker</translation>
+        <translation type="obsolete">Geospatielle bogmærker</translation>
+    </message>
+    <message>
+        <source>Spatial Bookmarks</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add</source>
+        <translation type="unfinished">Tilføj</translation>
+    </message>
+    <message>
+        <source>Add bookmark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation type="unfinished">Slet</translation>
+    </message>
+    <message>
+        <source>Delete bookmark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom to</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom to bookmark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation type="unfinished">Hjælp</translation>
     </message>
 </context>
 <context>
@@ -16977,7 +18293,7 @@ Database: %2</source>
     <name>QgsBrowserDirectoryPropertiesBase</name>
     <message>
         <source>Dialog</source>
-        <translation>Dialog</translation>
+        <translation type="obsolete">Dialog</translation>
     </message>
     <message>
         <source>Path</source>
@@ -17040,15 +18356,15 @@ Database: %2</source>
     </message>
     <message>
         <source>Error</source>
-        <translation>Fejl</translation>
+        <translation type="obsolete">Fejl</translation>
     </message>
     <message>
         <source>Layer Properties</source>
-        <translation>Lag-egenskaber</translation>
+        <translation type="obsolete">Lag-egenskaber</translation>
     </message>
     <message>
         <source>Directory Properties</source>
-        <translation>Mappeegenskaber</translation>
+        <translation type="obsolete">Mappeegenskaber</translation>
     </message>
     <message>
         <source>Type here to filter current item...</source>
@@ -17071,11 +18387,11 @@ Database: %2</source>
     </message>
     <message>
         <source>Filter Files</source>
-        <translation>Filtrér filer</translation>
+        <translation type="obsolete">Filtrér filer</translation>
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>Collapse All</source>
@@ -17085,20 +18401,43 @@ Database: %2</source>
         <source>Options</source>
         <translation>Indstillinger</translation>
     </message>
+    <message>
+        <source>Add Layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filter Browser</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable/disable properties widget</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsBrowserLayerProperties</name>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished">Fejl</translation>
+    </message>
 </context>
 <context>
     <name>QgsBrowserLayerPropertiesBase</name>
     <message>
         <source>Dialog</source>
-        <translation>Dialog</translation>
+        <translation type="obsolete">Dialog</translation>
     </message>
     <message>
         <source>Display Name</source>
-        <translation>Vist navn</translation>
+        <translation type="obsolete">Vist navn</translation>
     </message>
     <message>
         <source>Layer Source</source>
-        <translation>Lagkilde</translation>
+        <translation type="obsolete">Lagkilde</translation>
     </message>
     <message>
         <source>Provider</source>
@@ -17107,6 +18446,26 @@ Database: %2</source>
     <message>
         <source>Metadata</source>
         <translation>Metadata</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">Navn</translation>
+    </message>
+    <message>
+        <source>name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>URI</source>
+        <translation type="unfinished">URI</translation>
+    </message>
+    <message>
+        <source>provider key</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>notice</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17122,6 +18481,24 @@ Database: %2</source>
     <message>
         <source>Favourites</source>
         <translation>Favoritter</translation>
+    </message>
+</context>
+<context>
+    <name>QgsBrowserPropertiesDialog</name>
+    <message>
+        <source>Layer Properties</source>
+        <translation type="unfinished">Lag-egenskaber</translation>
+    </message>
+    <message>
+        <source>Directory Properties</source>
+        <translation type="unfinished">Mappeegenskaber</translation>
+    </message>
+</context>
+<context>
+    <name>QgsBrowserPropertiesDialogBase</name>
+    <message>
+        <source>Dialog</source>
+        <translation type="unfinished">Dialog</translation>
     </message>
 </context>
 <context>
@@ -17268,7 +18645,7 @@ Database: %2</source>
     </message>
     <message>
         <source>Join</source>
-        <translation>Join</translation>
+        <translation type="obsolete">Join</translation>
     </message>
     <message>
         <source>Advanced</source>
@@ -17311,6 +18688,51 @@ Database: %2</source>
 Should the existing classes be deleted before classification?</source>
         <translation>Klassificeringsfeltet blev ændret fra &apos;%1&apos; til &apos;%2&apos;.
 Skal de eksisterende klasser slettes før klassificering?</translation>
+    </message>
+    <message>
+        <source>Match to saved symbols</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Match to symbols from file...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Matched symbols</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Matched %1 categories to symbols.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No categories could be matched to symbols in library.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Match to symbols from file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>XML files (*.xml *XML)</source>
+        <translation type="unfinished">XML-filer (*.xml *XML)</translation>
+    </message>
+    <message>
+        <source>Matching error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>An error occured reading file:
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Matched %1 categories to symbols from file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No categories could be matched to symbols in file.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17668,6 +19090,25 @@ Skal de eksisterende klasser slettes før klassificering?</translation>
     <message>
         <source>Error writing palette file</source>
         <translation>Fejl under skrivning af palettefil</translation>
+    </message>
+</context>
+<context>
+    <name>QgsColorEffectWidget</name>
+    <message>
+        <source>Off</source>
+        <translation type="unfinished">Fra</translation>
+    </message>
+    <message>
+        <source>By lightness</source>
+        <translation type="unfinished">Via lethed</translation>
+    </message>
+    <message>
+        <source>By luminosity</source>
+        <translation type="unfinished">Via lysstyrke</translation>
+    </message>
+    <message>
+        <source>By average</source>
+        <translation type="unfinished">Via gennemsnit</translation>
     </message>
 </context>
 <context>
@@ -18149,6 +19590,10 @@ Prøv en lavere opløsning eller en mindre papirstørrelse</translation>
         <source>Landscape</source>
         <translation>Liggende</translation>
     </message>
+    <message>
+        <source>Exporting atlas</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerArrowWidget</name>
@@ -18441,7 +19886,7 @@ Prøv en lavere opløsning eller en mindre papirstørrelse</translation>
     </message>
     <message>
         <source>Table grid stroke</source>
-        <translation>Stregtype til tabelgitter</translation>
+        <translation type="obsolete">Stregtype til tabelgitter</translation>
     </message>
     <message>
         <source>Table grid color</source>
@@ -18531,6 +19976,10 @@ Prøv en lavere opløsning eller en mindre papirstørrelse</translation>
         <source>Empty table message changed</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Table grid line</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerAttributeTableWidgetBase</name>
@@ -18596,7 +20045,7 @@ Prøv en lavere opløsning eller en mindre papirstørrelse</translation>
     </message>
     <message>
         <source>Stroke width</source>
-        <translation>Stregbredde</translation>
+        <translation type="obsolete">Stregbredde</translation>
     </message>
     <message>
         <source>Color</source>
@@ -18713,6 +20162,10 @@ Prøv en lavere opløsning eller en mindre papirstørrelse</translation>
     <message>
         <source>Add Frame</source>
         <translation>Tilføj ramme</translation>
+    </message>
+    <message>
+        <source>Line width</source>
+        <translation type="unfinished">Linjebredde</translation>
     </message>
 </context>
 <context>
@@ -21565,14 +23018,6 @@ Prøv en lavere opløsning eller en mindre papirstørrelse</translation>
         <translation>Vælg fontfarve</translation>
     </message>
     <message>
-        <source>Select stroke color</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Transparent stroke</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Map %1</source>
         <translation>Kort %1</translation>
     </message>
@@ -21618,7 +23063,7 @@ Prøv en lavere opløsning eller en mindre papirstørrelse</translation>
     </message>
     <message>
         <source>Scalebar stroke color changed</source>
-        <translation>Målestokslinjes stregfarve ændret</translation>
+        <translation type="obsolete">Målestokslinjes stregfarve ændret</translation>
     </message>
     <message>
         <source>Scalebar unit text</source>
@@ -21668,6 +23113,22 @@ Prøv en lavere opløsning eller en mindre papirstørrelse</translation>
         <source>Scalebar line cap style</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Select line color</source>
+        <translation type="unfinished">Vælg linjefarve</translation>
+    </message>
+    <message>
+        <source>Transparent line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scalebar line color changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scalebar segment size mode</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerScaleBarWidgetBase</name>
@@ -21685,11 +23146,11 @@ Prøv en lavere opløsning eller en mindre papirstørrelse</translation>
     </message>
     <message>
         <source>Map</source>
-        <translation>Kort</translation>
+        <translation type="obsolete">Kort</translation>
     </message>
     <message>
         <source>Style</source>
-        <translation>Stil</translation>
+        <translation type="obsolete">Stil</translation>
     </message>
     <message>
         <source>Units</source>
@@ -21697,11 +23158,11 @@ Prøv en lavere opløsning eller en mindre papirstørrelse</translation>
     </message>
     <message>
         <source>Label</source>
-        <translation>Label</translation>
+        <translation type="obsolete">Label</translation>
     </message>
     <message>
         <source>Map units per bar unit</source>
-        <translation>Kortenheder pr. linjeenhed</translation>
+        <translation type="obsolete">Kortenheder pr. linjeenhed</translation>
     </message>
     <message>
         <source>Segments</source>
@@ -21717,7 +23178,7 @@ Prøv en lavere opløsning eller en mindre papirstørrelse</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation>Størrelse</translation>
+        <translation type="obsolete">Størrelse</translation>
     </message>
     <message>
         <source> units</source>
@@ -21776,12 +23237,44 @@ Prøv en lavere opløsning eller en mindre papirstørrelse</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Stroke color</source>
+        <source>Font...</source>
+        <translation>Font...</translation>
+    </message>
+    <message>
+        <source>&amp;Map</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Font...</source>
-        <translation>Font...</translation>
+        <source>St&amp;yle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map &amp;units per bar unit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>max </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>min </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fi&amp;xed width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fit segment width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line color</source>
+        <translation type="unfinished">Linjefarve</translation>
     </message>
 </context>
 <context>
@@ -21974,7 +23467,7 @@ Prøv en lavere opløsning eller en mindre papirstørrelse</translation>
     </message>
     <message>
         <source>Table grid stroke</source>
-        <translation>Stregtype til tabelgitter</translation>
+        <translation type="obsolete">Stregtype til tabelgitter</translation>
     </message>
     <message>
         <source>Select grid color</source>
@@ -21991,6 +23484,10 @@ Prøv en lavere opløsning eller en mindre papirstørrelse</translation>
     <message>
         <source>Table visible only toggled</source>
         <translation>Kun synlige slået til i tabel</translation>
+    </message>
+    <message>
+        <source>Table grid line</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -22085,7 +23582,7 @@ Prøv en lavere opløsning eller en mindre papirstørrelse</translation>
     </message>
     <message>
         <source>Stroke width</source>
-        <translation>Stregbredde</translation>
+        <translation type="obsolete">Stregbredde</translation>
     </message>
     <message>
         <source>Follow column alignment</source>
@@ -22102,6 +23599,10 @@ Prøv en lavere opløsning eller en mindre papirstørrelse</translation>
     <message>
         <source>Right</source>
         <translation>Højre</translation>
+    </message>
+    <message>
+        <source>Line width</source>
+        <translation type="unfinished">Linjebredde</translation>
     </message>
 </context>
 <context>
@@ -22856,7 +24357,7 @@ og den aktuelle fil er [%3]</translation>
     <name>QgsCustomColorScheme</name>
     <message>
         <source>Standard colors</source>
-        <translation>standard farver</translation>
+        <translation type="obsolete">standard farver</translation>
     </message>
 </context>
 <context>
@@ -23247,6 +24748,14 @@ og den aktuelle fil er [%3]</translation>
         <source>[&lt;b&gt;&lt;dash&gt;;&lt;space&gt;&lt;/b&gt;] e.g. &apos;8;2;1;2&apos;</source>
         <translation>[&lt;b&gt;&lt;dash&gt;;&lt;space&gt;&lt;/b&gt;] f.eks. &apos;8;2;1;2&apos;</translation>
     </message>
+    <message>
+        <source>Assistant...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>single character</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsDataDefinedButtonPlugin</name>
@@ -23256,6 +24765,32 @@ og den aktuelle fil er [%3]</translation>
     </message>
     <message>
         <source>A widget to define the scale range.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsDataDefinedRotationDialog</name>
+    <message>
+        <source>Rotation</source>
+        <translation type="unfinished">Rotation</translation>
+    </message>
+    <message>
+        <source>Symbol rotation</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsDataDefinedSizeDialog</name>
+    <message>
+        <source>Size</source>
+        <translation type="unfinished">Størrelse</translation>
+    </message>
+    <message>
+        <source>Symbol size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Size Assistant...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -23304,6 +24839,32 @@ og den aktuelle fil er [%3]</translation>
     <message>
         <source>0 (false)|1 (true)</source>
         <translation>0 (falsk)|1 (sandt)</translation>
+    </message>
+</context>
+<context>
+    <name>QgsDataDefinedValueDialog</name>
+    <message>
+        <source>Dialog</source>
+        <translation type="unfinished">Dialog</translation>
+    </message>
+    <message>
+        <source>Label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+</context>
+<context>
+    <name>QgsDataDefinedWidthDialog</name>
+    <message>
+        <source>Width</source>
+        <translation type="unfinished">Bredde</translation>
+    </message>
+    <message>
+        <source>Symbol width</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -23989,7 +25550,7 @@ vises ikke</translation>
     </message>
     <message>
         <source>%1 records discarded due to missing geometry definitions</source>
-        <translation>%1 poster afvist pga. manglende geometridefinitioner</translation>
+        <translation type="obsolete">%1 poster afvist pga. manglende geometridefinitioner</translation>
     </message>
     <message>
         <source>%1 records discarded due to invalid geometry definitions</source>
@@ -24022,6 +25583,26 @@ vises ikke</translation>
     <message>
         <source>The file has been updated by another application - reloading</source>
         <translation>Filen er blevet opdateret af et andet program - genindlæser</translation>
+    </message>
+    <message>
+        <source>Whole number (integer)</source>
+        <translation type="unfinished">Heltal (integer)</translation>
+    </message>
+    <message>
+        <source>Whole number (integer - 64 bit)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Decimal number (double)</source>
+        <translation type="unfinished">Decimaltal (double)</translation>
+    </message>
+    <message>
+        <source>Text, unlimited length (text)</source>
+        <translation type="unfinished">Tekst, ubegrænset længde (text)</translation>
+    </message>
+    <message>
+        <source>%1 records have missing geometry definitions</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -24493,31 +26074,31 @@ vises ikke</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation>Linje</translation>
+        <translation type="obsolete">Linje</translation>
     </message>
     <message>
         <source>Horizontal</source>
-        <translation>Horisontal</translation>
+        <translation type="obsolete">Horisontal</translation>
     </message>
     <message>
         <source>Free</source>
-        <translation>Fri</translation>
+        <translation type="obsolete">Fri</translation>
     </message>
     <message>
         <source>On line</source>
-        <translation>På linje</translation>
+        <translation type="obsolete">På linje</translation>
     </message>
     <message>
         <source>Above line</source>
-        <translation>Over linje</translation>
+        <translation type="obsolete">Over linje</translation>
     </message>
     <message>
         <source>Below Line</source>
-        <translation>Under linje</translation>
+        <translation type="obsolete">Under linje</translation>
     </message>
     <message>
         <source>Map orientation</source>
-        <translation>Kortorientering</translation>
+        <translation type="obsolete">Kortorientering</translation>
     </message>
     <message>
         <source>Pie chart</source>
@@ -24577,7 +26158,7 @@ vises ikke</translation>
     </message>
     <message>
         <source>Bar length: Scale linearly, such as the following value matches the specified size.</source>
-        <translation>Linjelængde: Skalér lineært, sådan at den flg. værdi matcher den angivne størrelse.</translation>
+        <translation type="obsolete">Linjelængde: Skalér lineært, sådan at den flg. værdi matcher den angivne størrelse.</translation>
     </message>
     <message>
         <source>Scale linearly between 0 and the following attribute value / diagram size:</source>
@@ -24585,7 +26166,7 @@ vises ikke</translation>
     </message>
     <message>
         <source>Transparency: %1%</source>
-        <translation>Transparens: %1%</translation>
+        <translation type="obsolete">Transparens: %1%</translation>
     </message>
     <message>
         <source>Diagrams: No attributes added.</source>
@@ -24607,12 +26188,48 @@ vises ikke</translation>
         <source>You did not add any attributes to this diagram layer. Please specify the attributes to visualize on the diagrams or disable diagrams.</source>
         <translation>Du angav ikke nogen attributter til diagramlaget. Angiv attributterne fir at visualisere på diagrammerne eller slå diagrammer fra.</translation>
     </message>
+    <message>
+        <source>Around Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Over Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Around Centroid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Over Centroid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Perimeter</source>
+        <translation type="unfinished">Perimeter</translation>
+    </message>
+    <message>
+        <source>Inside Polygon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bar length: Scale linearly, so that the following value matches the specified bar length:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bar length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Size</source>
+        <translation type="unfinished">Størrelse</translation>
+    </message>
 </context>
 <context>
     <name>QgsDiagramPropertiesBase</name>
     <message>
         <source>Display diagrams</source>
-        <translation>Vis diagrammer</translation>
+        <translation type="obsolete">Vis diagrammer</translation>
     </message>
     <message>
         <source>Diagram type</source>
@@ -24656,7 +26273,7 @@ vises ikke</translation>
     </message>
     <message>
         <source>Transparency 0%</source>
-        <translation>Transparens 0%</translation>
+        <translation type="obsolete">Transparens 0%</translation>
     </message>
     <message>
         <source>Start Angle</source>
@@ -24664,11 +26281,11 @@ vises ikke</translation>
     </message>
     <message>
         <source>Only show diagrams with a size inside the specified range.</source>
-        <translation>Vis kun diagrammer med en størrelse i det angivne interval.</translation>
+        <translation type="obsolete">Vis kun diagrammer med en størrelse i det angivne interval.</translation>
     </message>
     <message>
         <source>Hide diagrams with a size outside the specified range.</source>
-        <translation>Skjul diagrammer med en størrelse udenfor det angivne interval.</translation>
+        <translation type="obsolete">Skjul diagrammer med en størrelse udenfor det angivne interval.</translation>
     </message>
     <message>
         <source>Scale dependent visibility</source>
@@ -24676,11 +26293,11 @@ vises ikke</translation>
     </message>
     <message>
         <source>Minimum</source>
-        <translation>Minimum</translation>
+        <translation type="obsolete">Minimum</translation>
     </message>
     <message>
         <source>Maximum</source>
-        <translation>Maksimum</translation>
+        <translation type="obsolete">Maksimum</translation>
     </message>
     <message>
         <source>Size</source>
@@ -24704,16 +26321,16 @@ vises ikke</translation>
     </message>
     <message>
         <source>Edit expression</source>
-        <translation>Redigér udtryk</translation>
+        <translation type="obsolete">Redigér udtryk</translation>
     </message>
     <message>
         <source>Find maximum value</source>
-        <translation>Find maksimumværdi</translation>
+        <translation type="obsolete">Find maksimumværdi</translation>
     </message>
     <message>
         <source>The attribute value you enter here will correspond to the size entered in the field &quot;Size&quot; and the chosen &quot;Size unit&quot;.
 Leave empty to automatically apply the maximum value.</source>
-        <translation>Attributværdien, som du angiver her, vil svare til størrelsen angivet i feltet &quot;Størrelse&quot; og den valgte &quot;Størrelsesenhed&quot;.
+        <translation type="obsolete">Attributværdien, som du angiver her, vil svare til størrelsen angivet i feltet &quot;Størrelse&quot; og den valgte &quot;Størrelsesenhed&quot;.
 Efterlad tom for automatisk at anvende maksimumværdien.</translation>
     </message>
     <message>
@@ -24722,7 +26339,7 @@ Efterlad tom for automatisk at anvende maksimumværdien.</translation>
     </message>
     <message>
         <source>Will scale diagrams with a size smaller than the minimum size to the minimum size</source>
-        <translation>Vil skalere diagrammer med en størrelse mindre end minimumværdien til minimumværdien</translation>
+        <translation type="obsolete">Vil skalere diagrammer med en størrelse mindre end minimumværdien til minimumværdien</translation>
     </message>
     <message>
         <source>Increase size of small diagrams</source>
@@ -24734,7 +26351,7 @@ Efterlad tom for automatisk at anvende maksimumværdien.</translation>
     </message>
     <message>
         <source>Position</source>
-        <translation>Position</translation>
+        <translation type="obsolete">Position</translation>
     </message>
     <message>
         <source>Placement</source>
@@ -24742,7 +26359,7 @@ Efterlad tom for automatisk at anvende maksimumværdien.</translation>
     </message>
     <message>
         <source>Line Options</source>
-        <translation>Linjemuligheder</translation>
+        <translation type="obsolete">Linjemuligheder</translation>
     </message>
     <message>
         <source>Distance</source>
@@ -24762,7 +26379,7 @@ Efterlad tom for automatisk at anvende maksimumværdien.</translation>
     </message>
     <message>
         <source>Automated placement settings</source>
-        <translation>Indstillinger for automatisk placering</translation>
+        <translation type="obsolete">Indstillinger for automatisk placering</translation>
     </message>
     <message>
         <source>Options</source>
@@ -24816,6 +26433,70 @@ Efterlad tom for automatisk at anvende maksimumværdien.</translation>
         <source>Color</source>
         <translation>Farve</translation>
     </message>
+    <message>
+        <source>Show diagrams for this layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Automated placement settings (apply to all layers)</source>
+        <translation type="unfinished">Indstillinger for automatisk placeering (gælder for alle lag)</translation>
+    </message>
+    <message>
+        <source>Rendering</source>
+        <translation type="unfinished">Udtegning</translation>
+    </message>
+    <message>
+        <source>Legend</source>
+        <translation type="unfinished">Tegnforklaring</translation>
+    </message>
+    <message>
+        <source>Format</source>
+        <translation type="unfinished">Format</translation>
+    </message>
+    <message>
+        <source>Transparency</source>
+        <translation type="unfinished">Transparens</translation>
+    </message>
+    <message>
+        <source> %</source>
+        <translation type="unfinished"> %</translation>
+    </message>
+    <message>
+        <source>Visibility</source>
+        <translation type="unfinished">Synlighed</translation>
+    </message>
+    <message>
+        <source>Show all diagrams</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maximum value</source>
+        <translation type="unfinished">Maksimumværdi</translation>
+    </message>
+    <message>
+        <source>Find</source>
+        <translation type="unfinished">Find</translation>
+    </message>
+    <message>
+        <source>Scaled size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Above line</source>
+        <translation type="unfinished">Over linje</translation>
+    </message>
+    <message>
+        <source>Below line</source>
+        <translation type="unfinished">Under linje</translation>
+    </message>
+    <message>
+        <source>On line</source>
+        <translation type="unfinished">På linje</translation>
+    </message>
+    <message>
+        <source>Line orientation dependent position</source>
+        <translation type="unfinished">Position afhængig af linjeorientering</translation>
+    </message>
 </context>
 <context>
     <name>QgsDirectoryParamWidget</name>
@@ -24857,7 +26538,7 @@ Efterlad tom for automatisk at anvende maksimumværdien.</translation>
     </message>
     <message>
         <source>link</source>
-        <translation>link</translation>
+        <translation type="obsolete">link</translation>
     </message>
 </context>
 <context>
@@ -25093,14 +26774,70 @@ Parserfejl:
     </message>
 </context>
 <context>
+    <name>QgsEffectDrawModeComboBox</name>
+    <message>
+        <source>Render only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Modifier only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Render and modify</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsEffectStackCompactWidget</name>
+    <message>
+        <source>Draw effects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Customise effects</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsEffectStackPropertiesDialog</name>
+    <message>
+        <source>Effect Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsEffectStackPropertiesWidgetBase</name>
+    <message>
+        <source>Effects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add symbol layer</source>
+        <translation type="unfinished">Tilføj symbollag</translation>
+    </message>
+    <message>
+        <source>Remove symbol layer</source>
+        <translation type="unfinished">Fjern symbollag</translation>
+    </message>
+    <message>
+        <source>Move up</source>
+        <translation type="unfinished">Flyt op</translation>
+    </message>
+    <message>
+        <source>Move down</source>
+        <translation type="unfinished">Flyt ned</translation>
+    </message>
+</context>
+<context>
     <name>QgsEllipseSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation>Millimeter</translation>
+        <translation type="obsolete">Millimeter</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>Kortenhed</translation>
+        <translation type="obsolete">Kortenhed</translation>
     </message>
     <message>
         <source>Select fill color</source>
@@ -25343,6 +27080,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Load all unique values</source>
         <translation>Indlæs alle unikke værdier</translation>
+    </message>
+    <message>
+        <source>%1...</source>
+        <translation type="unfinished">%1...</translation>
     </message>
 </context>
 <context>
@@ -26021,15 +27762,19 @@ MyForms.py skal være i PYTHONPATH, .qgis/python, eller i projektmappen.</transl
     <name>QgsFontMarkerSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation>Millimeter</translation>
+        <translation type="obsolete">Millimeter</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>Kortenhed</translation>
+        <translation type="obsolete">Kortenhed</translation>
     </message>
     <message>
         <source>Select symbol color</source>
         <translation>Vælg symbolfarve</translation>
+    </message>
+    <message>
+        <source>Size Assistant...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -26063,6 +27808,42 @@ MyForms.py skal være i PYTHONPATH, .qgis/python, eller i projektmappen.</transl
     <message>
         <source>pixels</source>
         <translation>pixels</translation>
+    </message>
+    <message>
+        <source>Visible</source>
+        <translation type="unfinished">Synlig</translation>
+    </message>
+    <message>
+        <source>ID</source>
+        <translation type="unfinished">ID</translation>
+    </message>
+    <message>
+        <source>Source X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Source Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dest. X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dest. Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>dX (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>dY (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Residual (%1)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -27166,7 +28947,7 @@ Vælg en gyldig fil.</translation>
     </message>
     <message>
         <source>Show coords</source>
-        <translation>Vis koordinater</translation>
+        <translation type="obsolete">Vis koordinater</translation>
     </message>
     <message>
         <source>Residual units</source>
@@ -27207,6 +28988,17 @@ Vælg en gyldig fil.</translation>
     <message>
         <source>Paper size</source>
         <translation>Papirstørrelse</translation>
+    </message>
+    <message>
+        <source>Show coordinates</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsGeorefDescriptionDialog</name>
+    <message>
+        <source>&lt;h2&gt;Description&lt;/h2&gt;&lt;p&gt;This plugin can georeference raster files and set projection. You select points on the raster and give their world coordinates, and the plugin will compute the world file parameters. The more coordinates you can provide the better the result will be.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -27279,7 +29071,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>GDAL scripting is not supported for %1 transformation</source>
-        <translation>GDAL-scripts er ikke understøttet for %1-transformering</translation>
+        <translation type="obsolete">GDAL-scripts er ikke understøttet for %1-transformering</translation>
     </message>
     <message>
         <source>Load GCP points</source>
@@ -27291,7 +29083,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>No GCP points to save</source>
-        <translation>Ingen GCP-punkter, der skal gemmes</translation>
+        <translation type="obsolete">Ingen GCP-punkter, der skal gemmes</translation>
     </message>
     <message>
         <source>Save GCP points</source>
@@ -27335,7 +29127,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Unable to open GCP points file %1</source>
-        <translation>Kan ikke åbne fil med GCP-punkter %1</translation>
+        <translation type="obsolete">Kan ikke åbne fil med GCP-punkter %1</translation>
     </message>
     <message>
         <source>Save GCPs</source>
@@ -27347,7 +29139,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Failed to get linear transform parameters</source>
-        <translation>Det lykkedes ikke at hente lineære transformeringsparametre</translation>
+        <translation type="obsolete">Det lykkedes ikke at hente lineære transformeringsparametre</translation>
     </message>
     <message>
         <source>World file exists</source>
@@ -27359,7 +29151,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Failed to compute GCP transform: Transform is not solvable</source>
-        <translation>Det lykkedes ikke at beregne GCP-transformering: Transformering kan ikke løses</translation>
+        <translation type="obsolete">Det lykkedes ikke at beregne GCP-transformering: Transformering kan ikke løses</translation>
     </message>
     <message>
         <source>Error</source>
@@ -27367,7 +29159,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not write to %1</source>
-        <translation>Kunne ikke skrive til %1</translation>
+        <translation type="obsolete">Kunne ikke skrive til %1</translation>
     </message>
     <message>
         <source>map units</source>
@@ -27435,7 +29227,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Copy in clipboard</source>
-        <translation>Kopiér til udklipshodler</translation>
+        <translation type="obsolete">Kopiér til udklipshodler</translation>
     </message>
     <message>
         <source>%1</source>
@@ -27455,7 +29247,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>%1 requires at least %2 GCPs. Please define more</source>
-        <translation>%1 kræver mindst %2 GCP&apos;er. Definér nogle flere</translation>
+        <translation type="obsolete">%1 kræver mindst %2 GCP&apos;er. Definér nogle flere</translation>
     </message>
     <message>
         <source>Linear</source>
@@ -27489,6 +29281,138 @@ p, li { white-space: pre-wrap; }
         <source>Not set</source>
         <translation>Ikke sat</translation>
     </message>
+    <message>
+        <source>Reset Georeferencer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reset georeferencer and clear all GCP points?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Georeference Successful</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Raster was successfully georeferenced.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid Transform</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GDAL scripting is not supported for %1 transformation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid GCP file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GCP file could not be read.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GCPs loaded</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GCP file successfully loaded.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No GCP Points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No GCP points are available to save.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Raster Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please load raster to be georeferenced.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Write Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not write to GCP points file %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transform Failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to calculate linear transform parameters.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to compute GCP transform: Transform is not solvable.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not write to %1.</source>
+        <translation type="unfinished">Kunne ikke skrive til %1.</translation>
+    </message>
+    <message>
+        <source>ID</source>
+        <translation type="unfinished">ID</translation>
+    </message>
+    <message>
+        <source>Enabled</source>
+        <translation type="unfinished">Slået til</translation>
+    </message>
+    <message>
+        <source>Pixel X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pixel Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Res X (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Res Y (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Res Total (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy to Clipboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No Raster Loaded</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not Enough GCPs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 transformation requires at least %2 GCPs. Please define more.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsGeorefPluginGuiBase</name>
@@ -27518,7 +29442,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>toolBar</source>
-        <translation>værktøjslinje</translation>
+        <translation type="obsolete">værktøjslinje</translation>
     </message>
     <message>
         <source>Open raster</source>
@@ -27622,7 +29546,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Configure Georeferencer</source>
-        <translation>Konfigurér Georeferering</translation>
+        <translation type="obsolete">Konfigurér Georeferering</translation>
     </message>
     <message>
         <source>Ctrl+P</source>
@@ -27630,7 +29554,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Raster properties</source>
-        <translation>Rasteregenskaber</translation>
+        <translation type="obsolete">Rasteregenskaber</translation>
     </message>
     <message>
         <source>Move GCP point</source>
@@ -27646,11 +29570,79 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Local histogram stretch</source>
-        <translation>Lokalt histogramstræk</translation>
+        <translation type="obsolete">Lokalt histogramstræk</translation>
     </message>
     <message>
         <source>Full histogram stretch</source>
-        <translation>Fuldt histogramstræk</translation>
+        <translation type="obsolete">Fuldt histogramstræk</translation>
+    </message>
+    <message>
+        <source>Histogram</source>
+        <translation type="unfinished">Histogram</translation>
+    </message>
+    <message>
+        <source>Open Raster...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transformation Settings...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete Point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close Georeferencer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close georeferencer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Start Georeferencing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Generate GDAL Script</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save GCP Points as...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load GCP Points...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Configure Georeferencer...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Raster Properties...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move GCP Point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Local Histogram Stretch</source>
+        <translation type="unfinished">Lokal histogram-stræk</translation>
+    </message>
+    <message>
+        <source>Full Histogram Stretch</source>
+        <translation type="unfinished">Fuldt histogram-stræk</translation>
+    </message>
+    <message>
+        <source>Reset Georeferencer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -27860,6 +29852,13 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsGlowWidget</name>
+    <message>
+        <source>Select glow color</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsGml</name>
     <message>
         <source>Loading GML data
@@ -27899,11 +29898,11 @@ p, li { white-space: pre-wrap; }
     <name>QgsGradientFillSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation>Millimeter</translation>
+        <translation type="obsolete">Millimeter</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>Kortenhed</translation>
+        <translation type="obsolete">Kortenhed</translation>
     </message>
     <message>
         <source>Select gradient color</source>
@@ -27912,6 +29911,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Transparent</source>
         <translation>Gennemsigtig</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGraduatedHistogramWidget</name>
+    <message>
+        <source>Ranges are overlapping and can&apos;t be edited by the histogram</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ranges have gaps and can&apos;t be edited by the histogram</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -28066,6 +30076,26 @@ Tryk på Fortryd for at afbryde beregning eller OK for at fortsætte.</translati
         <source>Rows will be reordered before linking boundaries. Continue?</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Histogram</source>
+        <translation type="unfinished">Histogram</translation>
+    </message>
+    <message>
+        <source>Method</source>
+        <translation type="unfinished">Metode</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Choose between color and size graduation. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;If you want to combine both, use a data-defined size for the symbol and graduate by color.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Size from </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>to</source>
+        <translation type="unfinished">til</translation>
+    </message>
 </context>
 <context>
     <name>QgsGrassAttributes</name>
@@ -28141,83 +30171,83 @@ Tryk på Fortryd for at afbryde beregning eller OK for at fortsætte.</translati
     <name>QgsGrassBrowser</name>
     <message>
         <source>Tools</source>
-        <translation>Værktøjer</translation>
+        <translation type="obsolete">Værktøjer</translation>
     </message>
     <message>
         <source>Add selected map to canvas</source>
-        <translation>Føj valgt kort til kanvas</translation>
+        <translation type="obsolete">Føj valgt kort til kanvas</translation>
     </message>
     <message>
         <source>Copy selected map</source>
-        <translation>Kopiér valgt kort</translation>
+        <translation type="obsolete">Kopiér valgt kort</translation>
     </message>
     <message>
         <source>Rename selected map</source>
-        <translation>Omdøb valgt kort</translation>
+        <translation type="obsolete">Omdøb valgt kort</translation>
     </message>
     <message>
         <source>Delete selected map</source>
-        <translation>Slet valgt kort</translation>
+        <translation type="obsolete">Slet valgt kort</translation>
     </message>
     <message>
         <source>Set current region to selected map</source>
-        <translation>Sæt aktuel region til valgt kort</translation>
+        <translation type="obsolete">Sæt aktuel region til valgt kort</translation>
     </message>
     <message>
         <source>Refresh</source>
-        <translation>Gentegn</translation>
+        <translation type="obsolete">Gentegn</translation>
     </message>
     <message>
         <source>New name</source>
-        <translation>Nyt navn</translation>
+        <translation type="obsolete">Nyt navn</translation>
     </message>
     <message>
         <source>New name for layer &quot;%1&quot;</source>
-        <translation>Nyt navn til lag &quot;%1&quot;</translation>
+        <translation type="obsolete">Nyt navn til lag &quot;%1&quot;</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation>Advarsel</translation>
+        <translation type="obsolete">Advarsel</translation>
     </message>
     <message>
         <source>Cannot copy map %1@%2</source>
-        <translation>Kan ikke kopiere kort %1@%2</translation>
+        <translation type="obsolete">Kan ikke kopiere kort %1@%2</translation>
     </message>
     <message>
         <source>&lt;br&gt;command: %1 %2&lt;br&gt;%3&lt;br&gt;%4</source>
-        <translation>&lt;br&gt;kommando: %1 %2&lt;br&gt;%3&lt;br&gt;%4</translation>
+        <translation type="obsolete">&lt;br&gt;kommando: %1 %2&lt;br&gt;%3&lt;br&gt;%4</translation>
     </message>
     <message>
         <source>Cannot rename map %1</source>
-        <translation>Kan ikke omdøbe kort %1</translation>
+        <translation type="obsolete">Kan ikke omdøbe kort %1</translation>
     </message>
     <message>
         <source>Information</source>
-        <translation>Information</translation>
+        <translation type="obsolete">Information</translation>
     </message>
     <message>
         <source>Remove the selected layer(s) from canvas before continue.</source>
-        <translation>Fjern de valgte lag fra kanvasset, før du fortsætter.</translation>
+        <translation type="obsolete">Fjern de valgte lag fra kanvasset, før du fortsætter.</translation>
     </message>
     <message>
         <source>Question</source>
-        <translation>Spørgsmål</translation>
+        <translation type="obsolete">Spørgsmål</translation>
     </message>
     <message numerus="yes">
         <source>Are you sure you want to delete %n selected layer(s)?</source>
         <comment>number of layers to delete</comment>
-        <translation>
+        <translation type="obsolete">
             <numerusform>Er du sikker på, at du slette %n valgt lag?</numerusform>
             <numerusform>Er du sikker på, at du slette %n valgte lag?</numerusform>
         </translation>
     </message>
     <message>
         <source>Cannot delete map %1</source>
-        <translation>Kan ikke slette kort %1</translation>
+        <translation type="obsolete">Kan ikke slette kort %1</translation>
     </message>
     <message>
         <source>Cannot write new region</source>
-        <translation>Kan ikke skrive ny region</translation>
+        <translation type="obsolete">Kan ikke skrive ny region</translation>
     </message>
 </context>
 <context>
@@ -28617,6 +30647,20 @@ Tryk på Fortryd for at afbryde beregning eller OK for at fortsætte.</translati
     </message>
 </context>
 <context>
+    <name>QgsGrassImportItem</name>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">Afbryd</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGrassItemActions</name>
+    <message>
+        <source>GRASS Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsGrassMapcalc</name>
     <message>
         <source>Mapcalc tools</source>
@@ -28935,6 +30979,67 @@ på linje %2 kolonne %3</translation>
     <message>
         <source>Output</source>
         <translation>Output</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGrassMapsetItem</name>
+    <message>
+        <source>topology missing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>topology version not supported</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>topology version 6</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>topology version 7</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>empty</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 layer type not supported</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot create provider %1 : %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Provider is not valid  %1 : %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot get default location region.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot delete %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import to GRASS mapset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to import some layers!
+
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import to GRASS mapset failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to import %1 to %2: %3</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -29470,10 +31575,6 @@ på linje %2 kolonne %3</translation>
         <source>New mapset successfully created and set as current working mapset.</source>
         <translation>Nyt kortsæt blev oprettet og er sat som det aktuelle kortsæt.</translation>
     </message>
-    <message>
-        <source>Cannot activate grass</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsGrassNewMapsetBase</name>
@@ -29663,26 +31764,68 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsGrassObjectItem</name>
+    <message>
+        <source>Rename</source>
+        <translation type="unfinished">Omdøb</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation type="unfinished">Slet</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGrassOptionsBase</name>
+    <message>
+        <source>GRASS Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Browser</source>
+        <translation type="unfinished">Browser</translation>
+    </message>
+    <message>
+        <source>Import</source>
+        <translation type="unfinished">Importér</translation>
+    </message>
+    <message>
+        <source>CRS transformation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Approximate CRS transformation is fast but it may be inaccurate.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create a link to the external data for GDAL data sources with the same CRS as target mapset by r.external, instead of making copy of data.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create link to external data if possible</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsGrassPlugin</name>
     <message>
         <source>GrassVector</source>
-        <translation>GrassVektor</translation>
+        <translation type="obsolete">GrassVektor</translation>
     </message>
     <message>
         <source>0.1</source>
-        <translation>0.1</translation>
+        <translation type="obsolete">0.1</translation>
     </message>
     <message>
         <source>GRASS layer</source>
-        <translation>GRASS-lag</translation>
+        <translation type="obsolete">GRASS-lag</translation>
     </message>
     <message>
         <source>Plugins</source>
-        <translation>Plugins</translation>
+        <translation type="obsolete">Plugins</translation>
     </message>
     <message>
         <source>Add GRASS raster layer</source>
-        <translation>Tilføj GRASS-rasterlag</translation>
+        <translation type="obsolete">Tilføj GRASS-rasterlag</translation>
     </message>
     <message>
         <source>Open GRASS tools</source>
@@ -29714,15 +31857,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Add GRASS Vector Layer</source>
-        <translation>Tilføj GRASS-vektorlag</translation>
+        <translation type="obsolete">Tilføj GRASS-vektorlag</translation>
     </message>
     <message>
         <source>Adds a GRASS vector layer to the map canvas</source>
-        <translation>Tilføjer et GRASS-vektorlag til det aktuelle kortkanvas</translation>
+        <translation type="obsolete">Tilføjer et GRASS-vektorlag til det aktuelle kortkanvas</translation>
     </message>
     <message>
         <source>Adds a GRASS raster layer to the map canvas</source>
-        <translation>Tilføjer et GRASS-rasterlag til kortkanvasset</translation>
+        <translation type="obsolete">Tilføjer et GRASS-rasterlag til kortkanvasset</translation>
     </message>
     <message>
         <source>Open GRASS Tools</source>
@@ -29759,16 +31902,16 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Cannot open vector %1 in mapset %2 on level 2 (topology not available, try to rebuild topology using v.build module).</source>
-        <translation>Kan ikke åbne vektor %1 i kortsæt %2 på niveau 2 (topologi utilgængelig, prøv at genopbygge topologien vha. v.build-modulet).</translation>
+        <translation type="obsolete">Kan ikke åbne vektor %1 i kortsæt %2 på niveau 2 (topologi utilgængelig, prøv at genopbygge topologien vha. v.build-modulet).</translation>
     </message>
     <message>
         <source>Cannot open vector %1 in mapset %2</source>
-        <translation>Kan ikke åbne vektor %1 i kortsæt %2</translation>
+        <translation type="obsolete">Kan ikke åbne vektor %1 i kortsæt %2</translation>
     </message>
     <message>
         <source>Cannot open GRASS vector:
  %1</source>
-        <translation>Kan ikke åbne GRASS-vektor:
+        <translation type="obsolete">Kan ikke åbne GRASS-vektor:
  %1</translation>
     </message>
     <message>
@@ -29825,6 +31968,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>GRASS vector map %1 does not have topology. Build topology?</source>
         <translation>GRASS-vektorkort %1 har ikke topologi. Byg topologi?</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGrassRasterImport</name>
+    <message>
+        <source>Data type %1 not supported</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot convert block (%1) to data type %2</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -30059,7 +32213,7 @@ eller ret de følgende værdier</translation>
     </message>
     <message>
         <source>Browser</source>
-        <translation>Browser</translation>
+        <translation type="obsolete">Browser</translation>
     </message>
     <message>
         <source>Direct Modules Tree</source>
@@ -30131,6 +32285,17 @@ på linje %2 kolonne %3</translation>
     <message>
         <source>Direct Modules List</source>
         <translation>Liste over Direkte moduler</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGrassVectorItem</name>
+    <message>
+        <source>Rename</source>
+        <translation type="unfinished">Omdøb</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation type="unfinished">Slet</translation>
     </message>
 </context>
 <context>
@@ -30260,15 +32425,15 @@ på linje %2 kolonne %3</translation>
     </message>
     <message>
         <source>Pixels</source>
-        <translation>Pixels</translation>
+        <translation type="obsolete">Pixels</translation>
     </message>
     <message>
         <source>Millimeter</source>
-        <translation>Millimeter</translation>
+        <translation type="obsolete">Millimeter</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>Kortenhed</translation>
+        <translation type="obsolete">Kortenhed</translation>
     </message>
 </context>
 <context>
@@ -30330,6 +32495,29 @@ på linje %2 kolonne %3</translation>
     <message>
         <source>about:blank</source>
         <translation>about:blank</translation>
+    </message>
+</context>
+<context>
+    <name>QgsHistogramWidgetBase</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Histogram bins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show mean value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show standard deviation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load values</source>
+        <translation type="unfinished">Indlæs værdier</translation>
     </message>
 </context>
 <context>
@@ -30439,11 +32627,11 @@ Der er måske et problem med din netværksforbindelse, eller på WMS-serveren.</
     </message>
     <message>
         <source>Expand tree</source>
-        <translation>Udvid træ</translation>
+        <translation type="obsolete">Udvid træ</translation>
     </message>
     <message>
         <source>Collapse tree</source>
-        <translation>Luk træ</translation>
+        <translation type="obsolete">Luk træ</translation>
     </message>
     <message>
         <source>Layer</source>
@@ -30463,7 +32651,7 @@ Der er måske et problem med din netværksforbindelse, eller på WMS-serveren.</
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>Clear Results</source>
@@ -30504,6 +32692,30 @@ Der er måske et problem med din netværksforbindelse, eller på WMS-serveren.</
     <message>
         <source>Print selected HTML response.</source>
         <translation>Udskriv valgt HTML-svar.</translation>
+    </message>
+    <message>
+        <source>Expand Tree</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Collapse Tree</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Expand New Results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy Feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Print Response</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -30840,6 +33052,41 @@ Der er måske et problem med din netværksforbindelse, eller på WMS-serveren.</
     </message>
 </context>
 <context>
+    <name>QgsJoinDialogBase</name>
+    <message>
+        <source>Add vector join</source>
+        <translation type="unfinished">Tilføj vektorjoin</translation>
+    </message>
+    <message>
+        <source>Join layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Join field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Target field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose which fields are joined</source>
+        <translation type="unfinished">Vælg hvilke felter som er joined</translation>
+    </message>
+    <message>
+        <source>Custom field name prefix</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cache join layer in virtual memory</source>
+        <translation type="unfinished">Cache joinlag i virtuel hukommelse</translation>
+    </message>
+    <message>
+        <source>Create attribute index on join field</source>
+        <translation type="unfinished">Opret attributindeks på joinfelt</translation>
+    </message>
+</context>
+<context>
     <name>QgsLUDialogBase</name>
     <message>
         <source>Enter class bounds</source>
@@ -31098,6 +33345,10 @@ Der er måske et problem med din netværksforbindelse, eller på WMS-serveren.</
         <source>Buffer color</source>
         <translation>Bufferfarve</translation>
     </message>
+    <message>
+        <source>Layer default (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsLabelPropertyDialogBase</name>
@@ -31230,15 +33481,15 @@ Der er måske et problem med din netværksforbindelse, eller på WMS-serveren.</
     <name>QgsLabelingGui</name>
     <message>
         <source>points</source>
-        <translation>punkter</translation>
+        <translation type="obsolete">punkter</translation>
     </message>
     <message>
         <source>map units</source>
-        <translation>kortenheder</translation>
+        <translation type="obsolete">kortenheder</translation>
     </message>
     <message>
         <source>mm</source>
-        <translation>mm</translation>
+        <translation type="obsolete">mm</translation>
     </message>
     <message>
         <source>% of length</source>
@@ -31363,6 +33614,22 @@ Der er måske et problem med din netværksforbindelse, eller på WMS-serveren.</
     <message>
         <source>File not found</source>
         <translation>Fil ikke fundet</translation>
+    </message>
+    <message>
+        <source>Points</source>
+        <translation type="unfinished">Punkter</translation>
+    </message>
+    <message>
+        <source>Map unit</source>
+        <translation type="unfinished">Kortenhed</translation>
+    </message>
+    <message>
+        <source>Millimeter</source>
+        <translation type="unfinished">Millimeter</translation>
+    </message>
+    <message>
+        <source>Follow label placement</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -32069,11 +34336,11 @@ Der er måske et problem med din netværksforbindelse, eller på WMS-serveren.</
     <name>QgsLinePatternFillSymbolLayerWidget</name>
     <message>
         <source>Millimeter</source>
-        <translation>Millimeter</translation>
+        <translation type="obsolete">Millimeter</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>Kortenhed</translation>
+        <translation type="obsolete">Kortenhed</translation>
     </message>
 </context>
 <context>
@@ -32240,19 +34507,31 @@ Der er måske et problem med din netværksforbindelse, eller på WMS-serveren.</
     </message>
     <message>
         <source>Enter X and Y coordinates (DMS (dd mm ss.ss), DD (dd.dd) or projected coordinates (mmmm.mm)) which correspond with the selected point on the image. Alternatively, click the button with icon of a pencil and then click a corresponding point on map canvas of QGIS to fill in coordinates of that point.</source>
-        <translation>Angiv X- og Y-koordinater (DMS (dd mm ss.ss), DD (dd.dd) eller projekterede koordinater (mmmm.mm)), som passer med det valgte punkt på billedet. Desuden kan du klikke på knappen med blyantsikonet og så klikke på et tilsvarende punkt på kortkanvasset i QGIS for at udfylde koordinaterne for dette punkt.</translation>
+        <translation type="obsolete">Angiv X- og Y-koordinater (DMS (dd mm ss.ss), DD (dd.dd) eller projekterede koordinater (mmmm.mm)), som passer med det valgte punkt på billedet. Desuden kan du klikke på knappen med blyantsikonet og så klikke på et tilsvarende punkt på kortkanvasset i QGIS for at udfylde koordinaterne for dette punkt.</translation>
     </message>
     <message>
         <source>X / East:</source>
-        <translation>X / Øst:</translation>
+        <translation type="obsolete">X / Øst:</translation>
     </message>
     <message>
         <source>Y / North:</source>
-        <translation>Y / Nord:</translation>
+        <translation type="obsolete">Y / Nord:</translation>
     </message>
     <message>
         <source>Snap to background layers</source>
         <translation>Fastgør til baggrundslag</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter X and Y coordinates (DMS (&lt;span style=&quot; font-style:italic;&quot;&gt;dd mm ss.ss&lt;/span&gt;), DD (&lt;span style=&quot; font-style:italic;&quot;&gt;dd.dd&lt;/span&gt;) or projected coordinates (&lt;span style=&quot; font-style:italic;&quot;&gt;mmmm.mm&lt;/span&gt;)) which correspond with the selected point on the image. Alternatively, click the button with icon of a pencil and then click a corresponding point on map canvas of QGIS to fill in coordinates of that point.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Y / North</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>X / East</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -33032,11 +35311,11 @@ Der er måske et problem med din netværksforbindelse, eller på WMS-serveren.</
     <name>QgsMarkerLineSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation>Millimeter</translation>
+        <translation type="obsolete">Millimeter</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>Kortenhed</translation>
+        <translation type="obsolete">Kortenhed</translation>
     </message>
     <message>
         <source>string </source>
@@ -33118,19 +35397,19 @@ Der er måske et problem med din netværksforbindelse, eller på WMS-serveren.</
     </message>
     <message>
         <source>Meters</source>
-        <translation>Meter</translation>
+        <translation type="obsolete">Meter</translation>
     </message>
     <message>
         <source>Feet</source>
-        <translation>Fod</translation>
+        <translation type="obsolete">Fod</translation>
     </message>
     <message>
         <source>Degrees</source>
-        <translation>Grader</translation>
+        <translation type="obsolete">Grader</translation>
     </message>
     <message>
         <source>Nautical Miles</source>
-        <translation>Nautiske mil</translation>
+        <translation type="obsolete">Nautiske mil</translation>
     </message>
 </context>
 <context>
@@ -33971,6 +36250,44 @@ NB: Det er valgfrit at angive kodeordet. Det vil blive forespurgt, når det er n
     </message>
 </context>
 <context>
+    <name>QgsNewNameDialog</name>
+    <message>
+        <source>New name</source>
+        <translation type="unfinished">Nyt navn</translation>
+    </message>
+    <message>
+        <source>name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>base name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter new %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter new %1 for %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Full names</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <source>Name(s) %1 exists</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Overwrite</source>
+        <translation type="unfinished">Overskriv</translation>
+    </message>
+</context>
+<context>
     <name>QgsNewOgrConnection</name>
     <message>
         <source>Test connection</source>
@@ -34517,6 +36834,18 @@ Udvidet fejlinformation:
 %1</source>
         <translation>Kunne ikke eksportere OSM-data:
 %1</translation>
+    </message>
+    <message>
+        <source>Select All</source>
+        <translation type="unfinished">Vælg alle</translation>
+    </message>
+    <message>
+        <source>Unselect All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not null</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -35730,7 +38059,7 @@ Altid netværk: indlæs altid fra netværk og tjek ikke, om cachen har en gyldig
     </message>
     <message>
         <source>Icon theme</source>
-        <translation>Ikon-tema</translation>
+        <translation type="obsolete">Ikon-tema</translation>
     </message>
     <message>
         <source>Icon size</source>
@@ -35778,7 +38107,7 @@ Altid netværk: indlæs altid fra netværk og tjek ikke, om cachen har en gyldig
     </message>
     <message>
         <source>Bold group box titles</source>
-        <translation>Gruppeboks-titler vises med fed skrift</translation>
+        <translation type="obsolete">Gruppeboks-titler vises med fed skrift</translation>
     </message>
     <message>
         <source>QGIS-styled group boxes</source>
@@ -36178,7 +38507,7 @@ Altid netværk: indlæs altid fra netværk og tjek ikke, om cachen har en gyldig
     </message>
     <message>
         <source>Custom side bar style</source>
-        <translation>Brugerdefineret stil for side panel</translation>
+        <translation type="obsolete">Brugerdefineret stil for side panel</translation>
     </message>
     <message>
         <source>Add Oracle layers with double click and select in extended mode</source>
@@ -36696,6 +39025,10 @@ Altid netværk: indlæs altid fra netværk og tjek ikke, om cachen har en gyldig
         <source>Default uses system&apos;s proxy</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Execute expressions on postgres server-side if possible (Experimental)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOptionsDialogBase</name>
@@ -36900,9 +39233,15 @@ fejl:%2
         <source>Connection failed - Check settings and try again.
 
 </source>
-        <translation>Forbindelse mislykkedes - Tjek indstillinger og prøv igen.
+        <translation type="obsolete">Forbindelse mislykkedes - Tjek indstillinger og prøv igen.
 
 </translation>
+    </message>
+    <message>
+        <source>Connection failed - consult message log for details.
+
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -37412,6 +39751,14 @@ Error: %2</source>
         <translation>Oracle-fejl: %1
 Fejl: %2</translation>
     </message>
+    <message>
+        <source>Could not prepare get feature id statement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not retrieve feature id %1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOracleRootItem</name>
@@ -37671,11 +40018,15 @@ Fejl: %2</translation>
     <name>QgsPGLayerItem</name>
     <message>
         <source>Delete layer</source>
-        <translation>Slet lag</translation>
+        <translation type="obsolete">Slet lag</translation>
     </message>
     <message>
         <source>Layer deleted successfully.</source>
         <translation>Laget blev slettet.</translation>
+    </message>
+    <message>
+        <source>Delete Layer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -37855,9 +40206,15 @@ Fejl: %2</translation>
         <source>Connection failed - Check settings and try again.
 
 </source>
-        <translation>Forbindelse mislykkedes - Tjek indstillinger og prøv igen.
+        <translation type="obsolete">Forbindelse mislykkedes - Tjek indstillinger og prøv igen.
 
 </translation>
+    </message>
+    <message>
+        <source>Connection failed - consult message log for details.
+
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -39064,11 +41421,11 @@ p, li { white-space: pre-wrap; }
     <name>QgsPointPatternFillSymbolLayerWidget</name>
     <message>
         <source>Millimeter</source>
-        <translation>Millimeter</translation>
+        <translation type="obsolete">Millimeter</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>Kortenhed</translation>
+        <translation type="obsolete">Kortenhed</translation>
     </message>
 </context>
 <context>
@@ -39187,35 +41544,35 @@ Resultat: %3 (%4)</translation>
     </message>
     <message>
         <source>Point</source>
-        <translation>Punkt</translation>
+        <translation type="obsolete">Punkt</translation>
     </message>
     <message>
         <source>Multipoint</source>
-        <translation>Multipunkt</translation>
+        <translation type="obsolete">Multipunkt</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation>Linje</translation>
+        <translation type="obsolete">Linje</translation>
     </message>
     <message>
         <source>Multiline</source>
-        <translation>Multilinje</translation>
+        <translation type="obsolete">Multilinje</translation>
     </message>
     <message>
         <source>Polygon</source>
-        <translation>Polygon</translation>
+        <translation type="obsolete">Polygon</translation>
     </message>
     <message>
         <source>Multipolygon</source>
-        <translation>Multipolygon</translation>
+        <translation type="obsolete">Multipolygon</translation>
     </message>
     <message>
         <source>No Geometry</source>
-        <translation>Ingen geometri</translation>
+        <translation type="obsolete">Ingen geometri</translation>
     </message>
     <message>
         <source>Unknown Geometry</source>
-        <translation>Ukendt geometri</translation>
+        <translation type="obsolete">Ukendt geometri</translation>
     </message>
     <message>
         <source>None</source>
@@ -39240,6 +41597,14 @@ Resultat: %3 (%4)</translation>
     <message>
         <source>PQgetCancel failed</source>
         <translation>PQgetCancel mislykkedes</translation>
+    </message>
+    <message>
+        <source>Unsupported spatial column type %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PcPatch</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -39464,6 +41829,10 @@ PostGIS %2</source>
 %1
 PostGIS %2</translation>
     </message>
+    <message>
+        <source>Primary key is ctid - changing of existing features disabled (%1; %2)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsProject</name>
@@ -39525,7 +41894,7 @@ Vælg Ignorér for at fortsætte indlæsning uden de manglende lag. Vælg Afbryd
     <name>QgsProjectColorScheme</name>
     <message>
         <source>Project colors</source>
-        <translation>Projektfarver</translation>
+        <translation type="obsolete">Projektfarver</translation>
     </message>
 </context>
 <context>
@@ -40665,6 +43034,22 @@ p, li { white-space: pre-wrap; }
         <source>Raster calculator expression</source>
         <translation>Rasterberegner-udtryk</translation>
     </message>
+    <message>
+        <source>Output CRS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>!=</source>
+        <translation type="unfinished">!=</translation>
+    </message>
+    <message>
+        <source>log10</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ln</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsRasterDataProvider</name>
@@ -40693,15 +43078,15 @@ p, li { white-space: pre-wrap; }
     <name>QgsRasterFillSymbolLayerWidget</name>
     <message>
         <source>Pixels</source>
-        <translation>Pixels</translation>
+        <translation type="obsolete">Pixels</translation>
     </message>
     <message>
         <source>Millimeter</source>
-        <translation>Millimeter</translation>
+        <translation type="obsolete">Millimeter</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>Kortenhed</translation>
+        <translation type="obsolete">Kortenhed</translation>
     </message>
     <message>
         <source>Select image file</source>
@@ -41832,7 +44217,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Create GDAL Virtual Format composed of multiple 
 datasets with maximum width and height specified below.</source>
-        <translation>Opret virtuelt GDAL-format, sammensat af flere 
+        <translation type="obsolete">Opret virtuelt GDAL-format, sammensat af flere 
 datasæt med maksimumbredde og -højde angivet herunder.</translation>
     </message>
     <message>
@@ -41951,6 +44336,15 @@ datasæt med maksimumbredde og -højde angivet herunder.</translation>
         <source>Clear all</source>
         <translation>Ryd alt</translation>
     </message>
+    <message>
+        <source>Create GDAL Virtual Format composed of multiple
+datasets with maximum width and height specified below.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add saved file to map</source>
+        <translation type="unfinished">Føj gemt fil til kort</translation>
+    </message>
 </context>
 <context>
     <name>QgsRasterMinMaxWidget</name>
@@ -42024,6 +44418,17 @@ standardafvigelse ×</translation>
     <message>
         <source>Load</source>
         <translation>Indlæs</translation>
+    </message>
+</context>
+<context>
+    <name>QgsRasterProjector</name>
+    <message>
+        <source>Approximate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exact</source>
+        <translation type="unfinished">Præcis</translation>
     </message>
 </context>
 <context>
@@ -42334,7 +44739,7 @@ standardafvigelse ×</translation>
     <name>QgsRecentColorScheme</name>
     <message>
         <source>Recent colors</source>
-        <translation>Seneste farver</translation>
+        <translation type="obsolete">Seneste farver</translation>
     </message>
 </context>
 <context>
@@ -42370,6 +44775,22 @@ standardafvigelse ×</translation>
     <message>
         <source>Order by value</source>
         <translation>Sortér efter værdi</translation>
+    </message>
+    <message>
+        <source>Filters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>When activated, the filters will restrict the choices of fields to options that are </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Chain filters</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -42541,7 +44962,7 @@ standardafvigelse ×</translation>
         <translation>%1 (ingen selektion)</translation>
     </message>
     <message>
-        <source>Identify a feature of %1 to be associated. Press &lt;ESC&gt; to cancel.</source>
+        <source>Identify a feature of %1 to be associated. Press &amp;lt;ESC&amp;gt; to cancel.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -42719,19 +45140,23 @@ standardafvigelse ×</translation>
     </message>
     <message>
         <source>Width</source>
-        <translation>Bredde</translation>
+        <translation type="obsolete">Bredde</translation>
     </message>
     <message>
         <source>Change symbol width</source>
-        <translation>Ændre symbolbredde</translation>
+        <translation type="obsolete">Ændre symbolbredde</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation>Størrelse</translation>
+        <translation type="obsolete">Størrelse</translation>
     </message>
     <message>
         <source>Change symbol size</source>
-        <translation>Ændre symbolstørrelse</translation>
+        <translation type="obsolete">Ændre symbolstørrelse</translation>
+    </message>
+    <message>
+        <source>Change angle</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -42940,11 +45365,15 @@ standardafvigelse ×</translation>
     <name>QgsSLLayerItem</name>
     <message>
         <source>Delete layer</source>
-        <translation>Slet lag</translation>
+        <translation type="obsolete">Slet lag</translation>
     </message>
     <message>
         <source>Layer deleted successfully.</source>
         <translation>Laget blev slettet korrekt.</translation>
+    </message>
+    <message>
+        <source>Delete Layer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -42988,11 +45417,11 @@ standardafvigelse ×</translation>
     </message>
     <message>
         <source>Millimeter</source>
-        <translation>Millimeter</translation>
+        <translation type="obsolete">Millimeter</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>Kortenhed</translation>
+        <translation type="obsolete">Kortenhed</translation>
     </message>
     <message>
         <source>Select fill color</source>
@@ -43107,6 +45536,13 @@ standardafvigelse ×</translation>
     <name>QgsScaleVisibilityDialog</name>
     <message>
         <source>Scale visibility </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsScaleWidget</name>
+    <message>
+        <source>Set to current canvas scale</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -43268,6 +45704,13 @@ standardafvigelse ×</translation>
     </message>
 </context>
 <context>
+    <name>QgsShadowEffectWidget</name>
+    <message>
+        <source>Select shadow color</source>
+        <translation type="unfinished">Vælg skyggefarve</translation>
+    </message>
+</context>
+<context>
     <name>QgsShapeFile</name>
     <message>
         <source>Scanning </source>
@@ -43307,11 +45750,11 @@ Fejlen var:
     <name>QgsShapeburstFillSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation>Millimeter</translation>
+        <translation type="obsolete">Millimeter</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>Kortenhed</translation>
+        <translation type="obsolete">Kortenhed</translation>
     </message>
     <message>
         <source>Select gradient color</source>
@@ -43330,11 +45773,11 @@ Fejlen var:
     <name>QgsSimpleFillSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation>Millimeter</translation>
+        <translation type="obsolete">Millimeter</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>Kortenhed</translation>
+        <translation type="obsolete">Kortenhed</translation>
     </message>
     <message>
         <source>Select fill color</source>
@@ -43357,11 +45800,11 @@ Fejlen var:
     <name>QgsSimpleLineSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation>Millimeter</translation>
+        <translation type="obsolete">Millimeter</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>Kortenhed</translation>
+        <translation type="obsolete">Kortenhed</translation>
     </message>
     <message>
         <source>Select line color</source>
@@ -43372,11 +45815,11 @@ Fejlen var:
     <name>QgsSimpleMarkerSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation>Millimeter</translation>
+        <translation type="obsolete">Millimeter</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>Kortenhed</translation>
+        <translation type="obsolete">Kortenhed</translation>
     </message>
     <message>
         <source>Select fill color</source>
@@ -43397,6 +45840,10 @@ Fejlen var:
     <message>
         <source>string </source>
         <translation>streng </translation>
+    </message>
+    <message>
+        <source>Size Assistant...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -43642,6 +46089,25 @@ forbedring</translation>
     <message>
         <source>Symbol levels...</source>
         <translation>Symbolniveauer...</translation>
+    </message>
+</context>
+<context>
+    <name>QgsSizeScaleWidget</name>
+    <message>
+        <source>Compute from layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Flannery</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Surface</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Radius</source>
+        <translation type="unfinished">Radius</translation>
     </message>
 </context>
 <context>
@@ -44861,6 +47327,40 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsStatisticalSummaryDockWidget</name>
+    <message>
+        <source>Missing (null) values</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsStatisticalSummaryWidgetBase</name>
+    <message>
+        <source>Statistics</source>
+        <translation type="unfinished">Statistik</translation>
+    </message>
+    <message>
+        <source>Statistic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished">Værdi</translation>
+    </message>
+    <message>
+        <source>Selected features only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Recalculate Statistics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+</context>
+<context>
     <name>QgsStyleV2ExportImportDialog</name>
     <message>
         <source>Select all</source>
@@ -45309,7 +47809,7 @@ Der var et problem med til din symboldatabase.</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation>Redigér</translation>
+        <translation type="obsolete">Redigér</translation>
     </message>
     <message>
         <source>Remove item</source>
@@ -45317,7 +47817,7 @@ Der var et problem med til din symboldatabase.</translation>
     </message>
     <message>
         <source>Share</source>
-        <translation>Del</translation>
+        <translation type="obsolete">Del</translation>
     </message>
 </context>
 <context>
@@ -45427,11 +47927,11 @@ Der var et problem med til din symboldatabase.</translation>
     <name>QgsSvgMarkerSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation>Millimeter</translation>
+        <translation type="obsolete">Millimeter</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>Kortenhed</translation>
+        <translation type="obsolete">Kortenhed</translation>
     </message>
     <message>
         <source>Select fill color</source>
@@ -45448,6 +47948,10 @@ Der var et problem med til din symboldatabase.</translation>
     <message>
         <source>SVG files</source>
         <translation>SVG fil</translation>
+    </message>
+    <message>
+        <source>Size Assistant...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -45575,11 +48079,11 @@ Der var et problem med til din symboldatabase.</translation>
     <name>QgsSymbolsListWidget</name>
     <message>
         <source>Millimeter</source>
-        <translation>Millimeter</translation>
+        <translation type="obsolete">Millimeter</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>Kortenhed</translation>
+        <translation type="obsolete">Kortenhed</translation>
     </message>
     <message>
         <source>Select color</source>
@@ -45608,6 +48112,14 @@ Der var et problem med til din symboldatabase.</translation>
     <message>
         <source>Transparency %1%</source>
         <translation>Transparens: %1%</translation>
+    </message>
+    <message>
+        <source>Clip features to canvas extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Size Assistant...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -45712,7 +48224,7 @@ Der var et problem med til din symboldatabase.</translation>
     </message>
     <message>
         <source>Become an QGIS translator</source>
-        <translation>Bliv en QGIS-oversætter</translation>
+        <translation type="obsolete">Bliv en QGIS-oversætter</translation>
     </message>
     <message>
         <source>QGIS Mailing lists</source>
@@ -45862,6 +48374,10 @@ Der var et problem med til din symboldatabase.</translation>
         <source>QGIS has Plugins!</source>
         <translation>QGIS har Plugins!</translation>
     </message>
+    <message>
+        <source>Become a QGIS translator</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsTipGui</name>
@@ -45940,11 +48456,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Transformation type:</source>
-        <translation>Transformeringstype:</translation>
+        <translation type="obsolete">Transformeringstype:</translation>
     </message>
     <message>
         <source>Resampling method:</source>
-        <translation>Gensamplingsmetode:</translation>
+        <translation type="obsolete">Gensamplingsmetode:</translation>
     </message>
     <message>
         <source>Nearest neighbour</source>
@@ -45968,11 +48484,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Compression:</source>
-        <translation>Komprimering:</translation>
+        <translation type="obsolete">Komprimering:</translation>
     </message>
     <message>
         <source>Output raster:</source>
-        <translation>Output-raster:</translation>
+        <translation type="obsolete">Output-raster:</translation>
     </message>
     <message>
         <source>...</source>
@@ -45980,15 +48496,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Target SRS:</source>
-        <translation>Destinations-CRS:</translation>
+        <translation type="obsolete">Destinations-CRS:</translation>
     </message>
     <message>
         <source>Generate pdf report:</source>
-        <translation>Dan PDF-rapport:</translation>
+        <translation type="obsolete">Dan PDF-rapport:</translation>
     </message>
     <message>
         <source>Set Target Resolution</source>
-        <translation>Sæt målopløsning</translation>
+        <translation type="obsolete">Sæt målopløsning</translation>
     </message>
     <message>
         <source>Horizontal</source>
@@ -46000,11 +48516,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Create world file</source>
-        <translation>Opret verdensfil</translation>
+        <translation type="obsolete">Opret verdensfil</translation>
     </message>
     <message>
         <source>Generate pdf map:</source>
-        <translation>Dan PDF-kort:</translation>
+        <translation type="obsolete">Dan PDF-kort:</translation>
     </message>
     <message>
         <source>Use 0 for transparency when needed</source>
@@ -46040,27 +48556,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Info</source>
-        <translation>Info</translation>
+        <translation type="obsolete">Info</translation>
     </message>
     <message>
         <source>Please set output name</source>
-        <translation>Sæt outputnavn</translation>
+        <translation type="obsolete">Sæt outputnavn</translation>
     </message>
     <message>
         <source>%1 requires at least %2 GCPs. Please define more</source>
-        <translation>%1 kræver mindst %2 GCP&apos;er. Definér flere</translation>
+        <translation type="obsolete">%1 kræver mindst %2 GCP&apos;er. Definér flere</translation>
     </message>
     <message>
         <source>Invalid output file name</source>
-        <translation>Ugyldigt output-filnavn</translation>
+        <translation type="obsolete">Ugyldigt output-filnavn</translation>
     </message>
     <message>
         <source>Save raster</source>
-        <translation>Gem raster</translation>
+        <translation type="obsolete">Gem raster</translation>
     </message>
     <message>
         <source>Select save PDF file</source>
-        <translation>Vælg PDF-fil at gemme</translation>
+        <translation type="obsolete">Vælg PDF-fil at gemme</translation>
     </message>
     <message>
         <source>PDF Format</source>
@@ -46070,6 +48586,74 @@ p, li { white-space: pre-wrap; }
         <source>_modified</source>
         <comment>Georeferencer:QgsOpenRasterDialog.cpp - used to modify a user given file name</comment>
         <translation>_ændret</translation>
+    </message>
+    <message>
+        <source>Transformation parameters</source>
+        <translation type="unfinished">Transformeringsparametre</translation>
+    </message>
+    <message>
+        <source>Transformation type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Resampling method</source>
+        <translation type="unfinished">Gensamplingsmetode</translation>
+    </message>
+    <message>
+        <source>Target SRS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output raster</source>
+        <translation type="unfinished">Output-raster</translation>
+    </message>
+    <message>
+        <source>Set target resolution</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Compression</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create world file only (linear transforms)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reports</source>
+        <translation type="unfinished">Rapporter</translation>
+    </message>
+    <message>
+        <source>Generate PDF map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Generate PDF report</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Destination Raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid output file name.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input raster can not be overwritten.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save Map File as</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save Report File as</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -46096,6 +48680,25 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Adjust scaling range</source>
         <translation>Tilpas skala interval</translation>
+    </message>
+    <message>
+        <source>Millimeter</source>
+        <translation type="unfinished">Millimeter</translation>
+    </message>
+    <message>
+        <source>Pixels</source>
+        <translation type="unfinished">Pixels</translation>
+    </message>
+    <message>
+        <source>Map unit</source>
+        <translation type="unfinished">Kortenhed</translation>
+    </message>
+</context>
+<context>
+    <name>QgsUserInputDockWidget</name>
+    <message>
+        <source>User input</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -46194,6 +48797,10 @@ Fejlen var:%2</translation>
     <message>
         <source>...</source>
         <translation>...</translation>
+    </message>
+    <message>
+        <source>Use Completer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -46498,6 +49105,10 @@ Fejlen var:%2</translation>
         <source>Comment</source>
         <translation>Kommentar</translation>
     </message>
+    <message>
+        <source>QGIS</source>
+        <translation type="unfinished">QGIS</translation>
+    </message>
 </context>
 <context>
     <name>QgsVectorLayerEditBuffer</name>
@@ -46778,20 +49389,16 @@ Fejlen var:%2</translation>
         <source>Restore Default</source>
         <translation>Gendan standard</translation>
     </message>
+    <message>
+        <source>all</source>
+        <translation type="unfinished">alle</translation>
+    </message>
 </context>
 <context>
     <name>QgsVectorLayerPropertiesBase</name>
     <message>
         <source>Layer Properties</source>
         <translation>Lag-egenskaber</translation>
-    </message>
-    <message>
-        <source>A widget to define the scale visibility</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>A widget to define the scale visibility.</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Memory cache</source>
@@ -46915,7 +49522,7 @@ Fejlen var:%2</translation>
     </message>
     <message>
         <source>Feature subset</source>
-        <translation>Objekt-delmængde</translation>
+        <translation type="obsolete">Objekt-delmængde</translation>
     </message>
     <message>
         <source>Simplify geometry</source>
@@ -47020,6 +49627,18 @@ Fejlen var:%2</translation>
     <message>
         <source>Diagrams</source>
         <translation>Diagrammer</translation>
+    </message>
+    <message>
+        <source>Provider feature filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Prefix</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Joined fields</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -47407,6 +50026,10 @@ Fejlen var:%2</translation>
     <message>
         <source>Coordinate reference system</source>
         <translation>Koordinatsystem</translation>
+    </message>
+    <message>
+        <source>Only request features overlapping the current view extent</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -48863,6 +51486,53 @@ Reason phrase: %2</source>
     </message>
 </context>
 <context>
+    <name>QgsZonalStatisticsDialog</name>
+    <message>
+        <source>Count</source>
+        <translation type="unfinished">Antal</translation>
+    </message>
+    <message>
+        <source>Sum</source>
+        <translation type="unfinished">Sum</translation>
+    </message>
+    <message>
+        <source>Mean</source>
+        <translation type="unfinished">Middel</translation>
+    </message>
+    <message>
+        <source>Median</source>
+        <translation type="unfinished">Median</translation>
+    </message>
+    <message>
+        <source>Standard deviation</source>
+        <translation type="unfinished">Standardafvigelse</translation>
+    </message>
+    <message>
+        <source>Minimum</source>
+        <translation type="unfinished">Minimum</translation>
+    </message>
+    <message>
+        <source>Maximum</source>
+        <translation type="unfinished">Maksimum</translation>
+    </message>
+    <message>
+        <source>Range</source>
+        <translation type="unfinished">Interval</translation>
+    </message>
+    <message>
+        <source>Minority</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Majority</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Variety</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsZonalStatisticsDialogBase</name>
     <message>
         <source>Raster layer:</source>
@@ -48879,6 +51549,14 @@ Reason phrase: %2</source>
     <message>
         <source>Zonal Statistics</source>
         <translation>Zonestatistik</translation>
+    </message>
+    <message>
+        <source>Band</source>
+        <translation type="unfinished">Bånd</translation>
+    </message>
+    <message>
+        <source>Statistics to calculate:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -48924,19 +51602,19 @@ Konfigurer den venligst før du kører R scripts.</translation>
     </message>
     <message>
         <source>&lt;p&gt;This algorithm requires R to be run. A test to check if R is correctly installed and configured in your system has been performed, with the following result:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</source>
-        <translation>&lt;p&gt;Denne algoritme kræver at  R kører. En test på om R er korrekt installeret og konfigureret på dit system er blevet udført, med følgende resultat:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</translation>
+        <translation type="obsolete">&lt;p&gt;Denne algoritme kræver at  R kører. En test på om R er korrekt installeret og konfigureret på dit system er blevet udført, med følgende resultat:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</translation>
     </message>
     <message>
         <source>R seems to be correctly installed and configured&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;The script you have executed needs the following packages:&lt;/p&gt;&lt;ul&gt;</source>
-        <translation>R lader til at være korrekt installeret og konfigureret&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Det script som du har kørt, kræver følgende pakker:&lt;/p&gt;&lt;ul&gt;</translation>
+        <translation type="obsolete">R lader til at være korrekt installeret og konfigureret&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Det script som du har kørt, kræver følgende pakker:&lt;/p&gt;&lt;ul&gt;</translation>
     </message>
     <message>
         <source>&lt;/ul&gt;&lt;p&gt;Make sure they are installed in your R environment before trying to execute this script.&lt;/p&gt;</source>
-        <translation>&lt;/ul&gt;&lt;p&gt;Sikr dig at de er installeret i dit R miljø før du prver at køre dette script.&lt;/p&gt;</translation>
+        <translation type="obsolete">&lt;/ul&gt;&lt;p&gt;Sikr dig at de er installeret i dit R miljø før du prver at køre dette script.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;a href= &quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Click here&lt;/a&gt; to know more about how to install and configure R to be used with QGIS&lt;/p&gt;</source>
-        <translation>&lt;p&gt;&lt;a href= &quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Klik her&lt;/a&gt; for at få mere at vide omkring hvordan man installerer og konfigurerer R til at fungere med  QGIS&lt;/p&gt;</translation>
+        <translation type="obsolete">&lt;p&gt;&lt;a href= &quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Klik her&lt;/a&gt; for at få mere at vide omkring hvordan man installerer og konfigurerer R til at fungere med  QGIS&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -48962,6 +51640,10 @@ Konfigurer den venligst før du kører R scripts.</translation>
 %s</source>
         <translation>Kunne ikke indlæse R script: %s
 %s</translation>
+    </message>
+    <message>
+        <source>R user library folder</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -49003,7 +51685,7 @@ Konfigurer den venligst før du kører R scripts.</translation>
     </message>
     <message>
         <source>Selection</source>
-        <translation>Selektion</translation>
+        <translation type="obsolete">Selektion</translation>
     </message>
     <message>
         <source>Selected number is greater than feature count. Choose a lower value and try again.</source>
@@ -49012,6 +51694,10 @@ Konfigurer den venligst før du kører R scripts.</translation>
     <message>
         <source>Percentage can&apos;t be greater than 100. Set a different value and try again.</source>
         <translation>Procentdel kan ikke være større end 100. Angiv en anden værdi og prøv igen.</translation>
+    </message>
+    <message>
+        <source>Extracted (random)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -49034,7 +51720,7 @@ Konfigurer den venligst før du kører R scripts.</translation>
     </message>
     <message>
         <source>Selection</source>
-        <translation>Selektion</translation>
+        <translation type="obsolete">Selektion</translation>
     </message>
     <message>
         <source>Selected number is greater that feature count. Choose lesser value and try again.</source>
@@ -49043,6 +51729,10 @@ Konfigurer den venligst før du kører R scripts.</translation>
     <message>
         <source>Percentage can&apos;t be greater than 100. Set correct value and try again.</source>
         <translation>Procentdel kan ikke være større end 100. Angiv en korrekt værdi og prøv igen.</translation>
+    </message>
+    <message>
+        <source>Extracted (random stratified)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -49215,7 +51905,7 @@ Konfigurer den venligst før du kører R scripts.</translation>
     </message>
     <message>
         <source>Selection</source>
-        <translation>Selektion</translation>
+        <translation type="obsolete">Selektion</translation>
     </message>
     <message>
         <source>Selected number is greater that feature count. Choose lesser value and try again.</source>
@@ -49224,6 +51914,10 @@ Konfigurer den venligst før du kører R scripts.</translation>
     <message>
         <source>Percentage can&apos;t be greater than 100. Set a different value and try again.</source>
         <translation>Procentdel kan ikke være større end 100. Angiv en anden værdi og prøv igen.</translation>
+    </message>
+    <message>
+        <source>Selection stratified</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -49273,11 +51967,19 @@ Konfigurer den venligst før du kører R scripts.</translation>
     </message>
     <message>
         <source>Output plot</source>
-        <translation>Output plot</translation>
+        <translation type="obsolete">Output plot</translation>
     </message>
     <message>
         <source>Output table</source>
-        <translation>Output-tabel</translation>
+        <translation type="obsolete">Output-tabel</translation>
+    </message>
+    <message>
+        <source>Histogram</source>
+        <translation type="unfinished">Histogram</translation>
+    </message>
+    <message>
+        <source>Table</source>
+        <translation type="unfinished">Tabel</translation>
     </message>
 </context>
 <context>
@@ -49375,7 +52077,7 @@ Konfigurer den venligst før du kører R scripts.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Reprojected layer</source>
+        <source>Reprojected</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -49687,6 +52389,10 @@ Multiband layers are not supported by SAGA</source>
 %s</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Activate</source>
+        <translation type="unfinished">Aktivér</translation>
+    </message>
 </context>
 <context>
     <name>SagaUtils</name>
@@ -49702,8 +52408,8 @@ Multiband layers are not supported by SAGA</source>
         <translation>Inputlag</translation>
     </message>
     <message>
-        <source>Output layer with selected features</source>
-        <translation type="unfinished"></translation>
+        <source>Selection</source>
+        <translation type="unfinished">Selektion</translation>
     </message>
 </context>
 <context>
@@ -49715,7 +52421,7 @@ Multiband layers are not supported by SAGA</source>
     <message>
         <source>Could not load script: %s
 Problem with line: %d</source>
-        <translation>Kunne ikke indlæse script: %s.
+        <translation type="obsolete">Kunne ikke indlæse script: %s.
 Problem med linje %d</translation>
     </message>
     <message>
@@ -49731,6 +52437,16 @@ Problem med linje %d</translation>
 Problem with line %d</source>
         <translation>Kunne ikke indlæse script: %s.
 Problem med linje %d</translation>
+    </message>
+    <message>
+        <source>Could not load script: %s
+Problem with line: %s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not load script: %s.
+Problem with line &quot;%s&quot;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -49801,7 +52517,7 @@ Problem med linje %d</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation>Output</translation>
+        <translation type="obsolete">Output</translation>
     </message>
     <message>
         <source>Operators %s can be used only with string fields.</source>
@@ -49823,6 +52539,37 @@ Problem med linje %d</translation>
         <source>Unsupported field type &quot;%s&quot;</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Selected (attribute)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SelectByAttributeSum</name>
+    <message>
+        <source>Input Layer</source>
+        <translation type="unfinished">Input lag</translation>
+    </message>
+    <message>
+        <source>Selection attribute</source>
+        <translation type="unfinished">Vælg attribut</translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished">Værdi</translation>
+    </message>
+    <message>
+        <source>Selected (attribute sum)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There is no selection in the input layer. Select one feature and try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No adjacent features found.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SelectByExpression</name>
@@ -49840,7 +52587,11 @@ Problem med linje %d</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation>Output</translation>
+        <translation type="obsolete">Output</translation>
+    </message>
+    <message>
+        <source>Selected (expression)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -49863,7 +52614,11 @@ Problem med linje %d</translation>
     </message>
     <message>
         <source>Selection</source>
-        <translation>Selektion</translation>
+        <translation type="obsolete">Selektion</translation>
+    </message>
+    <message>
+        <source>Selected (location)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -49920,7 +52675,7 @@ Problem med linje %d</translation>
         <translation>Stil fil</translation>
     </message>
     <message>
-        <source>Styled layer</source>
+        <source>Styled</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -49935,7 +52690,7 @@ Problem med linje %d</translation>
         <translation>Stil fil</translation>
     </message>
     <message>
-        <source>Styled layer</source>
+        <source>Styled</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -50120,11 +52875,11 @@ Problem med linje %d</translation>
         <translation>Tolerance</translation>
     </message>
     <message>
-        <source>Simplified layer</source>
+        <source>Simplify: Input geometries have been simplified from %s to %s points</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Simplify: Input geometries have been simplified from %s to %s points</source>
+        <source>Simplified</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -50167,15 +52922,77 @@ Problem med linje %d</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
     </message>
     <message>
         <source>Invalid unique ID field</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Multipart</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SizeScaleBase</name>
+    <message>
+        <source>Dialog</source>
+        <translation type="unfinished">Dialog</translation>
+    </message>
+    <message>
+        <source>Field</source>
+        <translation type="unfinished">Felt</translation>
+    </message>
+    <message>
+        <source>Scale method</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Size from</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>to</source>
+        <translation type="unfinished">til</translation>
+    </message>
+    <message>
+        <source>Values from</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Size when field is NULL</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SlopeArea</name>
+    <message>
+        <source>Slope Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Contributing Area Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Slope Exponent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Area Exponent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Slope Area Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SlopeAreaMulti</name>
     <message>
         <source>Slope Grid</source>
         <translation type="unfinished"></translation>
@@ -50225,11 +53042,19 @@ Problem med linje %d</translation>
     </message>
     <message>
         <source>Output table</source>
-        <translation>Output-tabel</translation>
+        <translation type="obsolete">Output-tabel</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
+    </message>
+    <message>
+        <source>Joined table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Joined layer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -50244,10 +53069,14 @@ Problem med linje %d</translation>
     </message>
     <message>
         <source>Split lines</source>
-        <translation>Opdel linjer</translation>
+        <translation type="obsolete">Opdel linjer</translation>
     </message>
     <message>
         <source>Geometry exception while splitting</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Splitted</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -50286,7 +53115,11 @@ Problem med linje %d</translation>
     </message>
     <message>
         <source>Statistics</source>
-        <translation>Statistik</translation>
+        <translation type="obsolete">Statistik</translation>
+    </message>
+    <message>
+        <source>Statistics by category</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -50309,7 +53142,11 @@ Problem med linje %d</translation>
     </message>
     <message>
         <source>Result</source>
-        <translation>Resultat</translation>
+        <translation type="obsolete">Resultat</translation>
+    </message>
+    <message>
+        <source>Line length</source>
+        <translation type="unfinished">Linjelængde</translation>
     </message>
 </context>
 <context>
@@ -50362,20 +53199,39 @@ Problem med linje %d</translation>
         <source> °</source>
         <translation> °</translation>
     </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
 </context>
 <context>
     <name>SymetricalDifference</name>
     <message>
         <source>Input layer</source>
-        <translation>Inputlag</translation>
+        <translation type="obsolete">Inputlag</translation>
     </message>
     <message>
         <source>Difference layer</source>
-        <translation>Forskelslag</translation>
+        <translation type="obsolete">Forskelslag</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation>Symmetrisk forskel</translation>
+        <translation type="obsolete">Symmetrisk forskel</translation>
+    </message>
+</context>
+<context>
+    <name>SymmetricalDifference</name>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished">Inputlag</translation>
+    </message>
+    <message>
+        <source>Difference layer</source>
+        <translation type="unfinished">Forskelslag</translation>
+    </message>
+    <message>
+        <source>Symetrical difference</source>
+        <translation type="unfinished">Symmetrisk forskel</translation>
     </message>
     <message>
         <source>Geometry exception while computing symetrical difference</source>
@@ -50420,6 +53276,35 @@ Problem med linje %d</translation>
         <source>TauDEM (hydrologic analysis)</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>TauDEM multifile command line tools folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable singlefile TauDEM tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable multifile TauDEM tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not open TauDEM algorithm %s:
+%s</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TauDEMMultifileAlgorithm</name>
+    <message>
+        <source>Could not load TauDEM algorithm: %s
+%s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>TauDEMUtils</name>
@@ -50444,7 +53329,11 @@ Problem med linje %d</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation>Output</translation>
+        <translation type="obsolete">Output</translation>
+    </message>
+    <message>
+        <source>Float from text</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -50723,7 +53612,11 @@ Problem med linje %d</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation>Output</translation>
+        <translation type="obsolete">Output</translation>
+    </message>
+    <message>
+        <source>Histogram</source>
+        <translation type="unfinished">Histogram</translation>
     </message>
 </context>
 <context>
@@ -50742,7 +53635,11 @@ Problem med linje %d</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation>Output</translation>
+        <translation type="obsolete">Output</translation>
+    </message>
+    <message>
+        <source>Scatterplot</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -50835,6 +53732,37 @@ Problem med linje %d</translation>
     </message>
 </context>
 <context>
+    <name>WidgetBlur</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transparency</source>
+        <translation type="unfinished">Transparens</translation>
+    </message>
+    <message>
+        <source> %</source>
+        <translation type="unfinished"> %</translation>
+    </message>
+    <message>
+        <source>Blend mode</source>
+        <translation type="unfinished">Blandingstilstand</translation>
+    </message>
+    <message>
+        <source>Blur type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blur strength</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Draw mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>WidgetCentroidFill</name>
     <message>
         <source>Form</source>
@@ -50843,6 +53771,76 @@ Problem med linje %d</translation>
     <message>
         <source>Force point inside polygon</source>
         <translation>Tving punkt indenfor polygon</translation>
+    </message>
+</context>
+<context>
+    <name>WidgetColorEffect</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Colorize</source>
+        <translation type="unfinished">Farvelægge</translation>
+    </message>
+    <message>
+        <source>Contrast</source>
+        <translation type="unfinished">Kontrast</translation>
+    </message>
+    <message>
+        <source>Brightness</source>
+        <translation type="unfinished">Lysstyrke</translation>
+    </message>
+    <message>
+        <source>Saturation</source>
+        <translation type="unfinished">Mætning</translation>
+    </message>
+    <message>
+        <source>%</source>
+        <translation type="unfinished">%</translation>
+    </message>
+    <message>
+        <source>Transparency</source>
+        <translation type="unfinished">Transparens</translation>
+    </message>
+    <message>
+        <source>Blend mode</source>
+        <translation type="unfinished">Blandingstilstand</translation>
+    </message>
+    <message>
+        <source>Draw mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> %</source>
+        <translation type="unfinished"> %</translation>
+    </message>
+    <message>
+        <source>Grayscale</source>
+        <translation type="unfinished">Gråskala</translation>
+    </message>
+</context>
+<context>
+    <name>WidgetDrawSource</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blend mode</source>
+        <translation type="unfinished">Blandingstilstand</translation>
+    </message>
+    <message>
+        <source>Transparency</source>
+        <translation type="unfinished">Transparens</translation>
+    </message>
+    <message>
+        <source> %</source>
+        <translation type="unfinished"> %</translation>
+    </message>
+    <message>
+        <source>Draw mode</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -50981,6 +53979,57 @@ Problem med linje %d</translation>
     <message utf8="true">
         <source> °</source>
         <translation> °</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+</context>
+<context>
+    <name>WidgetGlow</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color ramp</source>
+        <translation type="unfinished">Farveskala</translation>
+    </message>
+    <message>
+        <source>Spread</source>
+        <translation type="unfinished">Farvespredning</translation>
+    </message>
+    <message>
+        <source>Blur radius</source>
+        <translation type="unfinished">Sløringsradius</translation>
+    </message>
+    <message>
+        <source>Transparency</source>
+        <translation type="unfinished">Transparens</translation>
+    </message>
+    <message>
+        <source>Single color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blend mode</source>
+        <translation type="unfinished">Blandingstilstand</translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation type="unfinished">Redigér</translation>
+    </message>
+    <message>
+        <source>Invert</source>
+        <translation type="unfinished">Inverteret</translation>
+    </message>
+    <message>
+        <source> %</source>
+        <translation type="unfinished"> %</translation>
+    </message>
+    <message>
+        <source>Draw mode</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -51279,6 +54328,45 @@ Problem med linje %d</translation>
     <message utf8="true">
         <source> °</source>
         <translation> °</translation>
+    </message>
+</context>
+<context>
+    <name>WidgetShadowEffect</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color</source>
+        <translation type="unfinished">Farve</translation>
+    </message>
+    <message>
+        <source>Transparency</source>
+        <translation type="unfinished">Transparens</translation>
+    </message>
+    <message>
+        <source>Offset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blend mode</source>
+        <translation type="unfinished">Blandingstilstand</translation>
+    </message>
+    <message>
+        <source>Blur radius</source>
+        <translation type="unfinished">Sløringsradius</translation>
+    </message>
+    <message>
+        <source> %</source>
+        <translation type="unfinished"> %</translation>
+    </message>
+    <message utf8="true">
+        <source>˚</source>
+        <translation type="unfinished">˚</translation>
+    </message>
+    <message>
+        <source>Draw mode</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -51604,6 +54692,49 @@ Problem med linje %d</translation>
     </message>
 </context>
 <context>
+    <name>WidgetTransform</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shear X,Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotation</source>
+        <translation type="unfinished">Rotation</translation>
+    </message>
+    <message utf8="true">
+        <source> °</source>
+        <translation type="unfinished"> °</translation>
+    </message>
+    <message>
+        <source>Reflect horizontal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reflect vertical</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Translate X,Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%</source>
+        <translation type="unfinished">%</translation>
+    </message>
+    <message>
+        <source>Scale X,Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Draw mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>WidgetVectorFieldBase</name>
     <message>
         <source>Form</source>
@@ -51705,7 +54836,11 @@ Problem med linje %d</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
+    </message>
+    <message>
+        <source>Zonal statistics</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -51842,7 +54977,11 @@ Problem med linje %d</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
+    </message>
+    <message>
+        <source>Virtual</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -51949,7 +55088,7 @@ Kør topologicheck igen.</translation>
     <message>
         <source>&lt;h3&gt;Database connection&lt;/h3&gt;
 </source>
-        <translation>&lt;h3&gt;Databaseforbindelse&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Databaseforbindelse&lt;/h3&gt;
 </translation>
     </message>
     <message>
@@ -51991,7 +55130,7 @@ On this tab you can search for WMS servers. It is possible to enter a search-str
 To visualize the results, select an table entry, press the &lt;label&gt;Add selected row to WMS list&lt;/label&gt; button and change back to the &lt;label&gt;Servers&lt;/label&gt; tab.&lt;p&gt;
 You only need to request the list of layers by clicking the &lt;label&gt;Connect&lt;/label&gt; button.
 </source>
-        <translation>&lt;h3&gt;Opret en ny WMS-forbindelse&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Opret en ny WMS-forbindelse&lt;/h3&gt;
 WMS-lag kan oprettes ret simpelt, så længe du kender URL&apos;en til at tilgå WMS-serveren, du har en fungerende forbindelse til serveren, og serveren forstår HTTP som datatransport-mekanismen.&lt;p&gt;
 QGIS kan aktuelt fungere som WMS-klient, som forstår WMS 1.1-, 1.1.1- og 1.3-servere.
 &lt;p&gt;
@@ -52041,7 +55180,7 @@ You may also tick an &lt;label&gt;Open feature form, if a single feature is iden
 Identifiable layers can be set in the Project Properties dialog &lt;label&gt;Settings &gt; Project Properties &gt; Identifiable layers&lt;/label&gt; where all the layers names are listed, their type (vector, raster, etc.) and ability to be identified.
 &lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Identificér objekter&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Identificér objekter&lt;/h3&gt;
 &lt;p&gt;
 Resultatdialogen viser alle objekter, som er identificeret inden for søgetolerancen. For at se søgeresultaterne, udvid objektinformation til venstre på hvert objekt.
 &lt;/p&gt;
@@ -52093,7 +55232,7 @@ geometry types and don&apos;t offer to add others.
 
 &lt;/ul&gt;
 </source>
-        <translation>&lt;h3&gt;Opret en ny Oracle-forbindelse&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Opret en ny Oracle-forbindelse&lt;/h3&gt;
 Denne dialog tillader dig at definere indstillingerne for en forbindelse til en Oracle-database.
 &lt;p&gt;
 &lt;ul&gt;
@@ -52138,7 +55277,7 @@ geometrityper og tilbyd ikke at tilføje andre.
         <source>&lt;h3&gt;GPS Plugin&lt;/h3&gt;
 
 </source>
-        <translation>&lt;h3&gt;GPS-plugin&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;GPS-plugin&lt;/h3&gt;
 
 </translation>
     </message>
@@ -52180,7 +55319,7 @@ To filter a layer before adding it to the map, double click on its name or use &
 &lt;/a&gt;
 Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for searching in different column types and using 2 search modes: &lt;label&gt;Wildcard&lt;/label&gt; or &lt;label&gt;RegExp&lt;/label&gt;.
 </source>
-        <translation>&lt;h3&gt;Tilføj PostGIS-tabeller&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Tilføj PostGIS-tabeller&lt;/h3&gt;
 Denne dialog tillader dig at tilføje PostGIS-lag (tabeller med en geometrikolonne) til kortkanvasset i QGIS.
 &lt;p&gt;
 &lt;a href=&quot;#connect&quot;&gt;Forbindelser&lt;/a&gt;&lt;br/&gt;
@@ -52279,7 +55418,7 @@ The field calculator allows you to update fields with expressions.
 &lt;tr&gt;&lt;td&gt;-&lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;negative value of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
 &lt;/table&gt;
 </source>
-        <translation>&lt;h3&gt;Field Calculator&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Field Calculator&lt;/h3&gt;
 Feltberegneren tillader dig at opdatere felter med udtryk.
 
 &lt;h4&gt;Understøttede handlinger&lt;/h4&gt;
@@ -52343,7 +55482,7 @@ Feltberegneren tillader dig at opdatere felter med udtryk.
     <message>
         <source>&lt;h3&gt;New OGR Database Connection Dialog&lt;/h3&gt;
 </source>
-        <translation>&lt;h3&gt;Ny OGR-databaseforbindelsesdialog&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Ny OGR-databaseforbindelsesdialog&lt;/h3&gt;
 </translation>
     </message>
     <message>
@@ -52351,7 +55490,7 @@ Feltberegneren tillader dig at opdatere felter med udtryk.
 Displays a north arrow overlayed onto the map.
 &lt;p&gt;
 At present there is only one style available. You can adjust the angle of the arrow or let QGIS set the direction automatically. If you choose to let QGIS determine the direction, it makes its best guess as to how the arrow should be oriented. For placement of the arrow you have four options, corresponding to the four corners of the map canvas.</source>
-        <translation>&lt;h3&gt; Nordpilsplugin&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt; Nordpilsplugin&lt;/h3&gt;
 Viser en nordpil lagt ovenpå kortet.
 &lt;p&gt;
 Der er pt. kun én stilart tilgængelig. Du kan justere vinklen på pilen eller lade QGIS sætte retningen automatisk. Hvis du vælger at lade QGIS afgøre retningen, gør den sit bedste for at gætte, hvordan pilen skal orienteres. Du har 4 muligheder for placering af pilen, svarende til de 4 hjørner på kortkanvasset.</translation>
@@ -52376,7 +55515,7 @@ To add a scale bar:
 &lt;li&gt;Click &lt;label&gt;OK&lt;/label&gt;.&lt;/li&gt;
 &lt;/ol&gt;
 </source>
-        <translation>&lt;h3&gt;Målestoksplugin&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Målestoksplugin&lt;/h3&gt;
 Tegner en målestok på kortet.
 &lt;p&gt;
 Du kan kontrollere stilart og placering, såvel som labeling af målestokken.
@@ -52451,7 +55590,7 @@ which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/
 &lt;p&gt;Contact the author through aruntheguy at gmail dot com&lt;/p&gt;
 
 </source>
-        <translation>&lt;h1&gt;Hjælp til pluginet Varmekort&lt;/h1&gt;
+        <translation type="obsolete">&lt;h1&gt;Hjælp til pluginet Varmekort&lt;/h1&gt;
 &lt;p&gt;Pluginet Varmekort bruger kernetæthedsestimering for at skabe en tæthedsraster (varmekort)
  af et input-punktvektorlag. Tætheden beregnes på grundlag af
 antal punkter i en placering, hvor et større antal af grupperede punkter resulterer
@@ -52677,7 +55816,7 @@ that will be automatically deleted after running.&lt;/li&gt;
 from the close button. This allows you to save the geometry to be restored to the next start.
 &lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Python-konsole til QGIS&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Python-konsole til QGIS&lt;/h3&gt;
 &lt;a href=&quot;#console&quot;&gt;Konsol&lt;/a&gt;&lt;br&gt;
 &lt;a href=&quot;#editor&quot;&gt;Editor&lt;/a&gt;&lt;br&gt;
 &lt;a href=&quot;#settings&quot;&gt;Indstillinger&lt;/a&gt;&lt;br&gt;&lt;br&gt;
@@ -52875,7 +56014,7 @@ The Coordinate Reference System (CRS) tab allows you to set the projection for t
 &lt;/a&gt;
 On this tab you can choose on which layers the identify tool will work.
 </source>
-        <translation>&lt;h3&gt;Projektegenskaber&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Projektegenskaber&lt;/h3&gt;
 Denne dialog lader dig indstille en række egenskaber relateret til &lt;label&gt; Project &lt;/label&gt;. Et projekt er en gemt sæt af lag og deres indstillinger, samt andre oplysninger, der kræves for at genoprette projektet fra disken. &lt;p&gt;
 
 &lt;a href=&quot;#general&quot;&gt;Fanen Generelt&lt;/a&gt;&lt;br/&gt;
@@ -52916,7 +56055,7 @@ På dette faneblad kan du vælge på, hvilke lag identificeringsværktøjet vil 
 To define a new connection, click on &lt;label&gt;New&lt;/label&gt; button and use the file browser to point to your SpatiaLite database, which is a file with a &lt;i&gt;.sqlite&lt;/i&gt; extension.&lt;p&gt;
 The connections you define will be remembered for further use and available to choose from the drop down menu.
 </source>
-        <translation>&lt;h3&gt;Tilføj SpatiaLite-tabeller&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Tilføj SpatiaLite-tabeller&lt;/h3&gt;
 For at definere en ny forbindelse, klik på knappen &lt;label&gt;Ny&lt;/label&gt; og brug browserpanelet til at udpege din SpatiaLite-database, som er en fil med endelsen &lt;i&gt;.sqlite&lt;/i&gt;.&lt;p&gt;
 Forbindelserne, du definerer, vil blive huske til fremtidig brug og tilgængelige fra dropdown-menuen.
 </translation>
@@ -53061,7 +56200,7 @@ The Diagram tab allows you to add a graphic overlay to a vector layer. To activa
 The current implementation of diagrams provides support for pie- and bar charts and for linear scaling
 of the diagram size according to a classification attribute.
 </source>
-        <translation>&lt;h3&gt;Egenskaber for vektorlag&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Egenskaber for vektorlag&lt;/h3&gt;
 Denne dialog lader dig at arbejde med indstillinger og egenskaber for vektorlag. Der er syv faner:
 &lt;p&gt;
 &lt;a href=&quot;#symbology&quot;&gt;Symbologi&lt;/a&gt;&lt;br/&gt;
@@ -53244,7 +56383,7 @@ To delete a bookmark from the Bookmarks dialog, click on it then click the &lt;l
 To update the extent of a bookmark, click on it then click the &lt;label&gt;Update&lt;/label&gt; button. Confirm your choice by clicking &lt;label&gt;OK&lt;/label&gt; or cancel the update by clicking &lt;label&gt;Cancel&lt;/label&gt;.
 
 </source>
-        <translation>&lt;h3&gt;Spatielle bogmærker&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Spatielle bogmærker&lt;/h3&gt;
 Spatielle Bogmærker lader dig &quot;bogmærke&quot; en geografisk placering og vende tilbage til det senere.
 &lt;p&gt;
 &lt;a href=&quot;#creating&quot;&gt; Oprettelse af et bogmærke&lt;/a&gt;&lt;br/&gt;
@@ -53317,7 +56456,7 @@ For at opdatere omridset af et bogmærke, skal du klikke på det og derefter kli
 &lt;h5&gt;Default settings&lt;/h5&gt;
 &lt;p&gt;If the attribute table of your linear layer does not contain the required fields or fields contain unexpected values, the plugin will use default values. You can set them in the default tab &lt;label&gt;Default settings&lt;/label&gt;.&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Indstillinger for Vejgraf-plugin&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Indstillinger for Vejgraf-plugin&lt;/h3&gt;
 &lt;p&gt;Vejgrafen er et C++-plugin til QGIS, der beregner den korteste vej mellem to punkter på et vilkårligt polylinjelag og plotter denne sti på vejnettet. &lt;/p&gt;
 &lt;p&gt;
 &lt;a href=&quot;#creating&quot;&gt;Plugin-enheder&lt;/a&gt;&lt;br/&gt;
@@ -53396,7 +56535,7 @@ are sometimes limited (e.g. for shape files) or behave diffently.
 &lt;/tr&gt;
 &lt;/table&gt;
 </source>
-        <translation>&lt;h3&gt;Forespørgselsgeneratoren&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Forespørgselsgeneratoren&lt;/h3&gt;
 Forespørgselsgeneratoren lader dig oprette udbyderspecifikke filterudtryk.
 
 Disse evalueres normalt meget hurtigere end de generiske QGIS-udtryk, men
@@ -53458,7 +56597,7 @@ system.
 &lt;p&gt;
 Defining a custom CRS in QGIS requires a good understanding of the Proj.4 projection library. To begin, refer to the &lt;a href=&quot;ftp://ftp.remotesensing.org/proj/OF90-284.pdf&quot;&gt;Cartographic Projection Procedures for the UNIX Environment&lt;/a&gt; - A User&apos;s Manual by Gerald I. Evenden, U.S. Geological Survey Open-File Report 90-284, 1990. This manual describes the use of the &lt;i&gt;proj.4&lt;/i&gt; and related command line utilities. The cartographic parameters used with &lt;i&gt;proj.4&lt;/i&gt; are described in the user manual, and are the same as those used by QGIS.
 </source>
-        <translation>&lt;h3&gt;Brugerdefineret CRS&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Brugerdefineret CRS&lt;/h3&gt;
 Hvis QGIS ikke har det CRS, du skal bruge, kan du definere et brugerdefineret CRS. &lt;p&gt;
 For at definere et CRS, vælg &lt;label&gt;Brugerdefineret CRS&lt;/label&gt; fra menuen &lt;label&gt;Redigér&lt;/label&gt; (Gnome, OSX) eller &lt;label&gt;Indstillinger&lt;/label&gt; (KDE, Windows). Et brugerdefineret CRS gemmes i din QGIS-brugerdatabase. Ud over dit brugerdefinerede CRS indeholder denne database også dine spatielle bogmærker og andre brugerdata.
 
@@ -53508,7 +56647,7 @@ This plugin supports basic HTML markup tags for formatting text. For example:
 &lt;/li&gt;
 &lt;/ul&gt;
 </source>
-        <translation>&lt;h3&gt;Plugin til copyright-label&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Plugin til copyright-label&lt;/h3&gt;
 Tegner en copyright-label med information.&lt;br/&gt;
 Du kan føje en tilfældig tekst til kortet, ikke kun en copyright-label.
 &lt;p&gt;
@@ -53542,323 +56681,6 @@ Dette plugin understøtter grundlæggende HTML markup tags til at formatere teks
 </translation>
     </message>
     <message>
-        <source>&lt;h3&gt;Delimited Text File Layer&lt;/h3&gt;
-Loads and displays delimited text files
-&lt;p&gt;
-&lt;a href=&quot;#re&quot;&gt;Overview&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#creating&quot;&gt;Creating a delimited text layer&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#csv&quot;&gt;How the delimiter, quote, and escape characters work&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#regexp&quot;&gt;How regular expression delimiters work&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#wkt&quot;&gt;How WKT text is interpreted&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#attributes&quot;&gt;Attributes in delimited text files&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#example&quot;&gt;Example of a text file with X,Y point coordinates&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#wkt_example&quot;&gt;Example of a text file with WKT geometries&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#python&quot;&gt;Using delimited text layers in Python&lt;/a&gt;&lt;br/&gt;
-&lt;/p&gt;
-
-&lt;h4&gt;&lt;a name=&quot;re&quot;&gt;Overview&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;A &amp;quot;delimited text file&amp;quot; contains data in which each record starts on a new line, and 
-is split into fields by a delimiter such as a comma.  
-This type of file is commonly exported from spreadsheets (for example CSV files) or databases.  
-Typically the first line of a delimited text file contains the names of the fields.  
-&lt;/p&gt;
-&lt;p&gt;
-Delimited text files can be loaded into QGIS as a layer. 
-The records can be displayed spatially either as a point
-defined by X and Y coordinates, or using a Well Known Text (WKT) definition of a geometry which may
-describe points, lines, and polygons of arbitrary complexity.  The file can also be loaded as an attribute
-only table, which can then be joined to other tables in QGIS.
-&lt;/p&gt;
-&lt;p&gt;
-In addition to the geometry definition the file can contain text, integer, and real number fields.  By default 
-QGIS will choose the type of field based on its the non blank values of the field.  If all can be interpreted
-as integer then the type will be integer, if all can be interpreted as real numbers then the type will
-be double, otherwise the type will be text.
-&lt;/p&gt;
-&lt;p&gt;
-QGIS can also read the types from an OGR CSV driver compatible &amp;quot;csvt&amp;quot; file.  
-This is a file alongside the data file, but with a &amp;quot;t&amp;quot; appended to the file name. 
-The file should just contain one line which lists the type of each field. 
-Valid types are &amp;quot;integer&amp;quot;, &amp;quot;real&amp;quot;, &amp;quot;string&amp;quot;, &amp;quot;date&amp;quot;, &amp;quot;time&amp;quot;, and &amp;quot;datetime&amp;quot;. The date, time, and datetime types are treated as strings in QGIS.
-Each type may be followed by a width and precision, for example &amp;quot;real(10.4)&amp;quot;.
-The list of types are separated by commas, regardless of the delimiter used in the data file.  An
-example of a valid format file would be:
-&lt;/p&gt;
-
-&lt;pre&gt;
-&amp;quot;integer&amp;quot;,&amp;quot;string&amp;quot;,&amp;quot;string(20)&amp;quot;,&amp;quot;real(20.4)&amp;quot;
-&lt;/pre&gt;
-
-&lt;h4&gt;&lt;a name=&quot;creating&quot;&gt;Creating a delimited text layer&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Creating a delimited text layer involves choosing the data file, defining the format (how each record is to
-be split into fields), and defining the geometry is represented.  
-This is managed with the delimited text dialog as detailed below.  
-The dialog box displays a sample from the beginning of the file which shows how the format
-options have been applied.
-&lt;/p&gt;
-&lt;h5&gt;Choosing the data file&lt;/h5&gt;
-&lt;p&gt;Use the &amp;quot;Browse...&amp;quot; button to select the data file.  Once the file is selected the
-layer name will automatically be populated based on the file name.  The layer name is used to represent
-the data in the QGIS legend.  
-&lt;/p&gt;
-&lt;p&gt;
-By default files are assumed to be encoded as UTF-8.  However other file
-encodings can be selected.  For example &amp;quot;System&amp;quot; uses the default encoding for the operating system.  
-It is safer to use an explicit coding if the QGIS project needs to be portable.
-&lt;/p&gt;
-&lt;h5&gt;Specifying the file format&lt;/h5&gt;
-&lt;p&gt;The file format can be one of
-&lt;ul&gt;
-    &lt;li&gt;CSV file format.  This is a format commonly used by spreadsheets, in which fields are delimited
-    by a comma character, and quoted using a &amp;quot;(quote) character.  Within quoted fields, a quote
-    mark is entered as &amp;quot;&amp;quot;.&lt;/li&gt;
-    &lt;li&gt;Selected delimiters.  Each record is split into fields using one or more  delimiter character.
-    Quote characters are used for fields which may contain delimiters.  Escape characters may be used 
-    to treat the following character as a normal character (ie to include delimiter, quote, and 
-    new line characters in text fields).  The use of delimiter, quote, and escape characters is detailed &lt;a href=&quot;#csv&quot;&gt;below&lt;/a&gt;.
-    &lt;li&gt;Regular expression.  Each line is split into fields using a &amp;quot;regular expression&amp;quot; delimiter.
-    The use of regular expressions is details &lt;a href=&quot;#regexp&quot;&gt;below&lt;/a&gt;.
-&lt;/ul&gt;
-&lt;h5&gt;Record and field options&lt;/h5&gt;
-&lt;p&gt;The following options affect the selection of records and fields from the data file&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;Number of header lines to discard: used to ignore header lines at the beginning of the text file&lt;/li&gt;
-    &lt;li&gt;First record has fields names: if selected then the first record in the file (after the discarded lines) is interpreted as names of fields, rather than as a data record.&lt;/li&gt;
-    &lt;li&gt;Trim fields: if selected then leading and trailing whitespace characters will be removed from each field (except quoted fields). &lt;/li&gt;
-    &lt;li&gt;Discard empty fields: if selected then empty fields (after trimming) will be discard.  This 
-    affects the alignment of data into fields and is equivalent to treating consecutive delimiters as a 
-    single delimiter.  Quoted fields are never discarded.&lt;/li&gt;
-    &lt;li&gt;Decimal separator is comma: if selected then commas instead of points are used as the decimal separator in real numbers.  For
-    example &lt;tt&gt;-51,354&lt;/tt&gt; is equivalent to -51.354.
-    &lt;/li&gt;
-&lt;/ul&gt;
-&lt;h5&gt;Geometry definition&lt;/h5&gt;
-&lt;p&gt;The geometry is can be define as one of&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;Point coordinates: each feature is represented as a point defined by X and Y coordinates.&lt;/li&gt;
-    &lt;li&gt;Well known text (WKT) geometry: each feature is represented as a well known text string, for example
-    &lt;tt&gt;POINT(1.525622 51.20836)&lt;/tt&gt;.  See details of the &lt;a href=&quot;#wkt&quot;&gt;well known text&lt;/a&gt; format.
-    &lt;li&gt;No geometry (attribute only table): records will not be displayed on the map, but can be viewed
-    in the attribute table and joined to other layers in QGIS&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;For point coordinates the following options apply:&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;X field: specifies the field containing the X coordinate&lt;/li&gt;
-    &lt;li&gt;Y field: specifies the field containing the Y coordinate&lt;/li&gt;
-    &lt;li&gt;DMS angles: if selected coordinates are represented as degrees/minutes/seconds
-    or degrees/minutes.  QGIS is quite permissive in its interpretation of degrees/minutes/seconds.
-    A valid DMS coordinate will contain three numeric fields with an optional hemisphere prefix or suffix
-    (N, E, or + are positive, S, W, or - are negative).  Additional non numeric characters are 
-    generally discarded.  For example &lt;tt&gt;N41d54&apos;01.54&amp;quot;&lt;/tt&gt; is a valid coordinate.
-    &lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;For well known text geometry the following options apply:&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;Geometry field: the field containing the well known text definition.&lt;/li&gt;
-    &lt;li&gt;Geometry type: one of &amp;quot;Detect&amp;quot; (detect), &amp;quot;Point&amp;quot;, &amp;quot;Line&amp;quot;, or &amp;quot;Polygon&amp;quot;.
-    QGIS layers can only display one type of geometry feature (point, line, or polygon). This option selects
-    which geometry type is displayed in text files containing multiple geometry types. Records containing
-   other geometry types are discarded.   
-    If &amp;quot;Detect&amp;quot; is selected then the type of the first geometry in the file will be used.
-    &amp;quot;Point&amp;quot; includes POINT and MULTIPOINT WKT types, &amp;quot;Line&amp;quot; includes LINESTRING and
-    MULTLINESTRING WKT types, and &amp;quot;Polygon&amp;quot; includes POLYGON and MULTIPOLYGON WKT types.
-&lt;/ul&gt;
-&lt;h5&gt;Layer settings&lt;/h5&gt;
-&lt;p&gt;Layer settings control the way the layer is managed in QGIS.  The options available are:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Use spatial index. Create a spatial index to improve the performance of displaying and selecting spatial objects.
-This option may be useful for files larger than a few megabytes in size.&lt;/li&gt;
-&lt;li&gt;Use subset index. Create an index if a subset of records is being used (either by explicitly setting a subset string 
-from the layer properties dialog, or an implicit subset of features for which the geometry is valid in files
-for which all not geometries are valid).  The index will only be created when a subset is defined.&lt;/li&gt;
-&lt;li&gt;Watch file.  If this options is selected QGIS will watch the file for changes by other applications, and 
-reload the file when it is changed.  The map will not be updated until refreshed by the user, but indexes and
-extents will be reloaded.  This option should be selected if indexes are used and it is likely that another
-application will change the file. &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4&gt;&lt;a name=&quot;csv&quot;&gt;How the delimiter, quote, and escape characters work&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Records are split into fields using three character sets: 
-delimiter characters, quote characters, and escape characters.  
-Other characters in the record are considered as data, split into
-fields by delimiter characters. 
-Quote characters occur in pairs and cause the text between them to be treated as a data.  Escape characters cause the character following them to be treated as data.   
-&lt;/p&gt;
-&lt;p&gt;
-Quote and escape characters cannot be the same as delimiter characters - they
-will be ignored if they are. Escape characters can be the same as quote characters, but behave differently
-if they are.&lt;/p&gt;
-&lt;p&gt;The delimiter characters are used to mark the end of each field.  If more than one delimiter character
-is defined then any one of the characters can mark the end of a field.  The quote and escape characters 
-can override the delimiter character, so that it is treated as a normal data character.&lt;/p&gt;
-&lt;p&gt;Quote characters may be used to mark the beginning and end of quoted fields. Quoted fields can 
-contain delimiters and may span multiple lines in the text file.  If a field is quoted then it must
-start and end with the same quote character.  Quote characters cannot occur within a field unless they
-are escaped.&lt;/p&gt;
-&lt;p&gt;Escape characters which are not quote characters force the following character to be treated as data.  
-(that is, to stop it being treated as a new line, delimiter, or quote character).  
-&lt;/p&gt;
-&lt;p&gt;Escape characters that are also quote characters have much more limited effect.  They only apply within quotes and only escape themselves.  For example, if 
-&lt;tt&gt;&apos;&lt;/tt&gt; is a quote and escape character, then the string
-&lt;tt&gt;&apos;Smith&apos;&apos;s&amp;nbsp;Creek&apos;&lt;/tt&gt; will represent the value Smith&apos;s&amp;nbsp;Creek.
-&lt;/p&gt;
-
-
-&lt;h4&gt;&lt;a name=&quot;regexp&quot;&gt;How regular expression delimiters work&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Regular expressions are mini-language used to represent character patterns.  There are many variations
-of regular expression syntax - QGIS uses the syntax provided by the &lt;a href=&quot;http://qt-project.org/doc/qt-4.8/qregexp.html&quot;&gt;QRegExp&lt;/a&gt; class of the &lt;a href=&quot;http://qt.digia.com&quot;&gt;Qt&lt;/a&gt; framework.&lt;/p&gt;
-&lt;p&gt;In a regular expression delimited file each line is treated as a record.  Each match of the regular expression in the line is treated as the end of a field.  
-If the regular expression contains capture groups (eg &lt;tt&gt;(cat|dog)&lt;/tt&gt;)
- then these are extracted as fields. 
- If this is not desired then use non-capturing groups (eg &lt;tt&gt;(?:cat|dog)&lt;/tt&gt;).
-&lt;/p&gt;
-&lt;p&gt;The regular expression is treated differently if it is anchored to the start of the line (that is, the pattern starts with &lt;tt&gt;^&lt;/tt&gt;).
-In this case the regular expression is matched against each line.  If the line does not match it is discarded
-as an invalid record.  Each capture group in the expression is treated as a field.  The regular expression
-is invalid if it does not have capture groups.  As an example this can be used as a (somewhat 
-unintuitive) means of loading data with fixed width fields.  For example the 
-expression
-&lt;pre&gt;
-^(.{5})(.{10})(.{20})(.{20})
-&lt;/pre&gt;
-&lt;p&gt;will extract four fields of widths 5, 10, 20, and 20 characters from each line.  
-Lines less than 55 characters long will be discarded.
-&lt;/p&gt;
-
-
-&lt;h4&gt;&lt;a name=&quot;wkt&quot;&gt;How WKT text is interpreted&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;
-The delimited text layer recognizes the following 
-&lt;a href=&quot;http://en.wikipedia.org/wiki/Well-known_text&quot;&gt;well known text&lt;/a&gt; types - 
-&lt;tt&gt;POINT&lt;/tt&gt;, &lt;tt&gt;MULTIPOINT&lt;/tt&gt;, &lt;tt&gt;LINESTRING&lt;/tt&gt;, &lt;tt&gt;MULTILINESTRING&lt;/tt&gt;, &lt;tt&gt;POLYGON&lt;/tt&gt;, and &lt;tt&gt;MULTIPOLYGON&lt;/tt&gt;.  
-It will accept geometries with
-a Z coordinate (eg &lt;tt&gt;POINT&amp;nbsp;Z&lt;/tt&gt;), a measure (&lt;tt&gt;POINT&amp;nbsp;M&lt;/tt&gt;), or both (&lt;tt&gt;POINT&amp;nbsp;ZM&lt;/tt&gt;).
-&lt;/p&gt;
-&lt;p&gt;
-It can also handle the PostGIS EWKT variation, in which the geometry is preceded by an spatial reference 
-system id (eg &lt;tt&gt;SRID=4326;POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;), and a variant used by Informix in which the WKT is 
-preceded by an integer spatial reference id (eg &lt;tt&gt;1 POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;).
-In both cases the SRID is ignored.
-&lt;/p&gt;
-
-
-
-&lt;h4&gt;&lt;a name=&quot;attributes&quot;&gt;Attributes in delimited text files&lt;/a&gt;&lt;/h4&gt; 
-&lt;p&gt;Each record in the delimited text file is split into fields representing
-attributes of the record.  Usually the attribute names are taken from the first
-data record in the file.  However if this does not contain attribute names, then they will be named &lt;tt&gt;field_1&lt;/tt&gt;, &lt;tt&gt;field_2&lt;/tt&gt;, and so on.  
-Also if records have more fields than are defined in the header record then these
-will be named &lt;tt&gt;field_#&lt;/tt&gt;, where # is the field number (note that empty fields at the end of a record are ignored).
-QGIS may override 
-the names in the text file if they are numbers, or have names like &lt;tt&gt;field_#&lt;/tt&gt;,
-or are duplicated.
-&lt;/p&gt;
-&lt;p&gt;
-In addition to the attributes explicitly in the data file QGIS assigns a unique 
-feature id to each record which is the line number in the source file on which
-the record starts.  
-&lt;/p&gt;
-&lt;p&gt;
-Each attribute also has a data type, one of string (text), integer, or real number.
-The data type is inferred from the content of the fields - if every non blank value
-is a valid integer then the type is integer, otherwise if it is a valid real
-number then the type is real, otherwise the type is string.  Note that this is
-based on the content of the fields - quoting fields does not change the way they
-are interpreted.
-&lt;/p&gt;
-
-
-&lt;h4&gt;&lt;a name=&quot;example&quot;&gt;Example of a text file with X,Y point coordinates&lt;/a&gt;&lt;/h4&gt; 
-&lt;pre&gt;
-X;Y;ELEV
--300120;7689960;13
--654360;7562040;52
-1640;7512840;3
-&lt;/pre&gt;
-&lt;p&gt;This file:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt; Uses &lt;b&gt;;&lt;/b&gt; as delimiter. Any character can be used to delimit the fields.&lt;/li&gt;
-&lt;li&gt;The first row is the header row. It contains the field names X, Y and ELEV.&lt;/li&gt;
-&lt;li&gt;The x coordinates are contained in the X field.&lt;/li&gt;
-&lt;li&gt;The y coordinates are contained in the Y field.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4&gt;&lt;a name=&quot;wkt_example&quot;&gt;Example of a text file with WKT geometries&lt;/a&gt;&lt;/h4&gt;
-&lt;pre&gt;
-id|wkt
-1|POINT(172.0702250 -43.6031036)
-2|POINT(172.0702250 -43.6031036)
-3|POINT(172.1543206 -43.5731302)
-4|POINT(171.9282585 -43.5493308)
-5|POINT(171.8827359 -43.5875983)
-&lt;/pre&gt;
-&lt;p&gt;This file:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;Has two fields defined in the header row: id and wkt.
-  &lt;li&gt;Uses &lt;b&gt;|&lt;/b&gt; as a delimiter.&lt;/li&gt;
-  &lt;li&gt;Specifies each point using the WKT notation
-&lt;/ul&gt;
-
-&lt;h4&gt;&lt;a name=&quot;python&quot;&gt;Using delimited text layers in Python&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Delimited text data sources can be creating from Python in a similar way to other vector layers.
-The pattern is:
-&lt;/p&gt;
-&lt;pre&gt;
-from PyQt4.QtCore import QUrl, QString
-from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
-
-# Define the data source
-filename=&quot;test.csv&quot;
-uri=QUrl.fromLocalFile(filename)
-uri.addQueryItem(&quot;type&quot;,&quot;csv&quot;)
-uri.addQueryItem(&quot;delimiter&quot;,&quot;|&quot;)
-uri.addQueryItem(&quot;wktField&quot;,&quot;wkt&quot;)
-# ... other delimited text parameters
-layer=QgsVectorLayer(QString(uri.toEncoded()),&quot;Test CSV layer&quot;,&quot;delimitedtext&quot;)
-# Add the layer to the map
-if layer.isValid():
-    QgsMapLayerRegistry.instance().addMapLayer( layer )
-&lt;/pre&gt;
-&lt;p&gt;This could be used to load the second example file above.&lt;/p&gt;
-&lt;p&gt;The configuration of the delimited text layer is defined by adding query items to the uri.
-The following options can be added
-&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;&lt;tt&gt;encoding=..&lt;/tt&gt; defines the file encoding.  The default is &amp;quot;UTF-8&amp;quot;&lt;/li&gt;
-    &lt;li&gt;&lt;tt&gt;type=(csv|regexp|whitespace)&lt;/tt&gt; defines the delimiter type.  Valid values are csv, 
-       regexp, and whitespace (which is just a special case of regexp).  The default is csv.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;delimiter=...&lt;/tt&gt; defines the delimiters that will be used for csv formatted files, 
-       or the regular expression for regexp formatted files.  The default is , for CSV files.  There is
-       no default for regexp files.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;quote=..&lt;/tt&gt; (for csv files) defines the characters used to quote fields. The default is &amp;quot;&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;escape=..&lt;/tt&gt; (for csv files) defines the characters used to escape the special meaning of the next character. The default is &amp;quot;&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;skipLines=#&lt;/tt&gt; defines the number of lines to discard from the beginning of the file. The default is 0.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;useHeader=(yes|no)&lt;/tt&gt; defines whether the first data record contains the names of the data fields. The default is yes.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;trimFields=(yes|no)&lt;/tt&gt; defines whether leading and trailing whitespace is to be removed from unquoted fields. The default is no.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;maxFields=#&lt;/tt&gt; defines the maximum number of fields that will be loaded from the file.  
-       Additional fields in each record will be discarded. The default is 0 - include all fields.
-       (This option is not available from the delimited text layer dialog box).&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;skipEmptyFields=(yes|no)&lt;/tt&gt; defines whether empty unquoted fields will be discarded (applied after trimFields). The default is no.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;decimalPoint=.&lt;/tt&gt; specifies an alternative character that may be used as a decimal point in numeric fields.  The default is a point (full stop) character.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;wktField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field containing a well known text geometry definition&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;xField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field the X coordinate (only applies if wktField is not defined)&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;yField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field the Y coordinate (only applies if wktField is not defined)&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;geomType=(auto|point|line|polygon|none)&lt;/tt&gt; specifies type of geometry for wkt fields, or none to load the file as an attribute-only table.  The default is auto.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;subset=expression&lt;/tt&gt; specifies an expression used to identify a subset of the records that will be 
-       used.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;crs=...&lt;/tt&gt; specifies the coordinate system to use for the vector layer, in a format accepted by QgsCoordinateReferenceSystem.createFromString (for example &amp;quot;EPSG:4167&amp;quot;).  If this is not 
-       specified then a dialog box may request this information from the user
-       when the layer is loaded (depending on QGIS CRS settings).&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;subsetIndex=(yes|no)&lt;/tt&gt; specifies whether the provider should build an index to define subset during the initial file scan.  The index will apply both for explicitly defined subsets, and for the implicit subset of features for which the geometry definition is valid.  By default the subset index is built if it is applicable.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;spatialIndex=(yes|no)&lt;/tt&gt; specifies whether the provider should build a spatial index during the initial file scan.  By default the spatial index is not built. &lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;watchFile=(yes|no)&lt;/tt&gt; specifies whether the provider should use a file system watcher to monitor for changes to the file.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;quiet=(yes|no)&lt;/tt&gt; specifies whether errors encountered loading the layer are presented in a dialog box (they will be written to the QGIS log in any case). The default is no.  This option is not available from the GUI&lt;/li&gt;
-&lt;/ul&gt;
-
-
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;h3&gt;Create a New SpatiaLite Layer&lt;/h3&gt;
 You can use this dialog to create a new SpatiaLite database and/or an empty SpatiaLite layer for editing. See below for an explanation of the dialog inputs.
 &lt;h4&gt;Database&lt;/h4&gt;
@@ -53883,7 +56705,7 @@ In this section you can see the list of attributes. To delete one of them, click
 Click on &lt;label&gt;OK&lt;/label&gt; to create the layer and close the dialog.
 &lt;label&gt;Cancel&lt;/label&gt; will close the layer without further changes.
 </source>
-        <translation>&lt;h3&gt;Opret et nyt SpatiaLite-lag&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Opret et nyt SpatiaLite-lag&lt;/h3&gt;
 Du kan bruge denne dialog til at oprette en ny SpatiaLite-database og/eller et tomt SpatiaLite-lag til redigering. Se herunder for en forklaring på felterne.
 &lt;h4&gt;Database&lt;/h4&gt;
 Vælg databasen fra dropdown-listen. Denne liste er oprettet ud fra dine eksisterende SpatiaLite-forbindelser. Hvis du ikke har en gemt forbindelse eller ønsker at oprette en ny database, så klik på knappen (&lt;label&gt;...&lt;/label&gt;) til højre for dropdownlisten.
@@ -53915,7 +56737,7 @@ QGIS supports vector data in a number of formats, including those supported by t
 QGIS supports PostGIS layers in a PostgreSQL database and SpatiaLite layers. Support for additional data types (eg. delimited text) is provided by additional data provider plugins. A list of OGR supported vector formats can be found in Appendix A.1 of the User Guide.&lt;/p&gt;
 Detailed description how to proceed with vector data is described in chapter 5 &apos;Working with Vector Data&apos;.
 </source>
-        <translation>&lt;h3&gt;Åbn vektorlag-dialog&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Åbn vektorlag-dialog&lt;/h3&gt;
 
 Åbn vektorlag-dialogen bruges til at tilføje vektordata til QGIS-kortvisningen. Vektordata er spatielle data beskrevet med geometrier af punkter, linjer og polygoner (lukkede flader).&lt;/p&gt;
 QGIS understøtter vektordata i et antal formater, inkl. dem understøttet af OGR-dataudbyder-pluginet, såsom ESRI shapefiler, MapInfo MIF (udvekslingsformat) og MapInfo TAB (medfødt format).&lt;/p&gt;
@@ -53956,7 +56778,7 @@ This dialog allows you to define the settings for a connection to a PostgreSQL/P
 
 &lt;/ul&gt;
 </source>
-        <translation>&lt;h3&gt;Opret en ny PostgreSQL-forbindelse&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Opret en ny PostgreSQL-forbindelse&lt;/h3&gt;
 Denne dialog tillader dig at definere indstillingerne for en forbindelse til en PostgreSQL/PostGIS database.
 &lt;p&gt;
 &lt;ul&gt;
@@ -54076,7 +56898,7 @@ Note: Experimental plugins are generally unsuitable for production use. These pl
 
 &lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Administrér og installér plugin&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Administrér og installér plugin&lt;/h3&gt;
 
 &lt;p&gt;
 Administrér og installér plugin.
@@ -54165,7 +56987,7 @@ NB: Eksperimentielle plugins er generelt uegnede til brug i produktion. Disse pl
     <message>
         <source>&lt;h3&gt;Style Manager&lt;/h3&gt;
 </source>
-        <translation>&lt;h3&gt;Stilartsstyring&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Stilartsstyring&lt;/h3&gt;
 </translation>
     </message>
     <message>
@@ -54184,7 +57006,7 @@ Pressing the &lt;label&gt;Calculate&lt;/label&gt; button will run the shortest p
 &lt;h5&gt;Note&lt;/h5&gt;
 &lt;p&gt;In order to bind the start and stop points of the route to the road network Road graph selects the nearest point or arc of the graph. In fact it can bind to any part of the road network. Nevertheless, their route and its characteristics do not take into account the distance from the starting point to the road network and of the road network to the stopping point.&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;At finde korteste sti&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;At finde korteste sti&lt;/h3&gt;
 &lt;p&gt;Vejgraf er et C++-plugin til QGIS, som beregner den korteste sti mellem 2 punkter på et vilkårligt linjelag og plotter stien over vejnetværket. Skal konfigureres før brug. Dette kan gøres i menuen &lt;label&gt;Plugins &amp;rarr; Vejgraf &amp;rarr; Indstillinger&lt;/label&gt;&lt;/p&gt;
 &lt;p&gt;
 &lt;a href=&quot;#howto&quot;&gt;Hvordan&lt;/a&gt;&lt;br/&gt;
@@ -54275,7 +57097,7 @@ Informs you about active system locale. To change it tick &lt;label&gt;Override 
 &lt;/a&gt;
 Tick &lt;label&gt;Use proxy for web access&lt;/label&gt; to define host, port, user, and password.
 </source>
-        <translation>&lt;h3&gt;Generelle indstillinger&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Generelle indstillinger&lt;/h3&gt;
 Denne dialog lader dig vælge nogle grundlæggende indstillinger for QGIS. Der er otte faner:
 &lt;p&gt;
 
@@ -54363,7 +57185,7 @@ You can also define the width and precision of the new attribute column.
 &lt;h4&gt;Attributes list&lt;/h4&gt;
 In this section you can see the list of attributes. To delete one of them, click on it and choose &lt;label&gt;Remove selected attribute&lt;/label&gt; button.
 </source>
-        <translation>&lt;h3&gt;Opret nyt vektorlag&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Opret nyt vektorlag&lt;/h3&gt;
 For at oprette et nyt lag til redigering, vælg &lt;label&gt;Nyt vektorlag&lt;/label&gt; fra &lt;label&gt;Lag&lt;/label&gt;-menuen.&lt;br/&gt;
 Med denne dialog kan du oprette et shapefil-lag.
 &lt;h4&gt;Type&lt;/h4&gt;
@@ -54391,7 +57213,7 @@ I denne sektion kan du attributlisten. Klik på en af dem og vælg knappen &lt;l
 
 See &lt;a href=&quot;http://gdal.org/ogr/ogr_formats.html&quot;&gt;OGR Vector formats&lt;/a&gt; for a list of supported formats and the available options.
 </source>
-        <translation>&lt;h3&gt;Gem vektorlag som...&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Gem vektorlag som...&lt;/h3&gt;
 
 &lt;p&gt;Denne dialog tillader dig gemme vektordata i diverse formater vha. GDAL/OGR.
 
@@ -54419,7 +57241,7 @@ Click on one of the icons along the top of the composer window to select what ty
 &lt;/p&gt;
 
 </source>
-        <translation>&lt;h3&gt;Printlayout&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Printlayout&lt;/h3&gt;
 
 &lt;p&gt;
 Printlayout lader dig arrangere elementer på en side, som derefter kan printes. Elementer omfatter indholdet af kortkanvasset, målestokslinjen, tegnforklaringen og vilkårlige billeder.
@@ -54431,83 +57253,6 @@ Klik på et af ikonerne langs med toppen af Printlayoutvinduet for at vælge, hv
 &lt;/p&gt;
 
 </translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;Measure Tools&lt;/h3&gt;
-There are three measure tools: length, area and angle. With them, you can measure distances, areas and angles on the map canvas. The tools provide results in the units set in &lt;label&gt;Settings &gt; Options &gt; Map tools&lt;/label&gt;.
-&lt;h4&gt;Measuring Lengths&lt;/h4&gt;
-To measure lengths, select the tool and click along the path you want to measure. The length of each segment is displayed as is the total length for the path.
-A single right mouse click stops the measuring.
-&lt;h4&gt;Measuring Areas&lt;/h4&gt;
-To measure areas, select the tool and click to create the area. The total area is dynamically displayed as you click.
-A single right mouse click stops the measuring, while two right mouse clicks starts measuring a new.
-&lt;h4&gt;Measuring Angles&lt;/h4&gt;
-To measure angles, select the tool and click on three points to create an angle between these points. The second point selected is the vertex of the angle. The angle is dynamically displayed once you clicked the second point.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;Attribute table&lt;/h3&gt;
-The attribute table displays features of a selected layer. Each row in the table represents one map feature with its attributes shown in several columns. The features in the table can be searched, selected, moved or even edited.  By default the attribute table is a separate window. If you opened it and cannot see it anymore, it is most likely hidden under the main QGIS window. You can make it also a docked window, by checking &lt;label&gt;Open attribute table in a dock window&lt;/label&gt; in &lt;label&gt;Settings &gt; Options &gt; Data Sources&lt;/label&gt;.&lt;p&gt;
-
-The number of total number of layer features, filtered features and selected features is printed on the window header.&lt;p&gt;
-At the bottom right of the dialog, you can choose whether to display features in a form or in a table.&lt;p&gt;
-&lt;p&gt;
-&lt;a href=&quot;#Selecting&quot;&gt;Selecting&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#Sorting&quot;&gt;Sorting&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#Filtering&quot;&gt;Filtering&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#Editing&quot;&gt;Editing&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#FieldCalc&quot;&gt;Field Calculator&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#FieldCalcBar&quot;&gt;Field Calculator bar&lt;/a&gt;&lt;br/&gt;
-
-&lt;a name=&quot;Selecting&quot;&gt;
-&lt;h4&gt;Selecting&lt;/h4&gt;
-&lt;/a&gt;
-Rows can be selected by clicking on the row number on the left side of the row. Subsequent rows can be selected by holding the mouse button down and moving the mouse to the other end of the selection. Multiple non-subsequent rows can be selected by holding the &lt;label&gt;Ctrl&lt;/label&gt; key.&lt;br&gt;
-A continuous selection can be made by holding the &lt;label&gt;Shift&lt;/label&gt; key and clicking on several row headers on the left side of the rows. All rows between the current cursor position and the clicked row are selected.
-
-&lt;a name=&quot;Sorting&quot;&gt;
-&lt;h4&gt;Sorting&lt;/h4&gt;
-&lt;/a&gt;
-Each column can be sorted by clicking on its column header. A small arrow indicates the sort order (downward pointing means descending values from the top row down, upward pointing means ascending values from the top row down).&lt;br&gt;
-
-&lt;a name=&quot;Filtering&quot;&gt;
-&lt;h4&gt;Filtering&lt;/h4&gt;
-&lt;/a&gt;
-To only navigate through parts of your data, you can use the filter button on the bottom left. The following options are available.
-&lt;h5&gt;Show All Features&lt;/h5&gt;
-Shows all features of the layer.
-&lt;h5&gt;Show Selected Features&lt;/h5&gt;
-Shows all features which are currently selected.
-&lt;h5&gt;Show Features Visible on Map&lt;/h5&gt;
-Shows all features which are currently visible on the map canvas, taking the currently visible extent and scale based visibility into account.
-&lt;h5&gt;Show Edited and New Features&lt;/h5&gt;
-Shows only edited and new features. In this mode, features with uncommitted changes are shown and this is therefore a good filter to review changes, before committing them. Please note, that deleted features are not shown in this mode.
-&lt;h5&gt;Column Filter&lt;/h5&gt;
-A simple filter, which lets you filter by an attribute. If the attribute contains text, it looks for sub-strings also. Searching for &lt;b&gt;man&lt;/b&gt; will therefore also show records containing &lt;b&gt;woman&lt;/b&gt;. After changing the filter text, press &lt;label&gt;Enter&lt;/label&gt; or click on &lt;label&gt;Apply&lt;/label&gt;. You can also toggle the check-box &lt;label&gt;Case sensitive&lt;/label&gt;, so your filter will also match &lt;b&gt;Night&lt;/b&gt; when your search text is &lt;b&gt;night&lt;/b&gt;.   
-&lt;h5&gt;Advanced Filter&lt;/h5&gt;
-For more complex searches, this mode offers a powerful expression builder, which is similar to a SQL WHERE clause. Please refer to the built-in help of the expression builder for details on the syntax.
-
-&lt;a name=&quot;Editing&quot;&gt;
-&lt;h4&gt;Editing&lt;/h4&gt;
-&lt;/a&gt;
-To edit values, you first have to switch the layer to editing mode. To switch to editing mode click on the &lt;label&gt;Toggle editing mode&lt;/label&gt; (pencil) button or press &lt;label&gt;Ctrl + E&lt;/label&gt;. Afterwards double-click on the value you want to edit or place the cursor on it and use the &lt;label&gt;Space&lt;/label&gt;-Key. You can customize the widgets used for field editing in &lt;label&gt;Vector Layer Properties &gt; Fields&lt;/label&gt;  &lt;br&gt;
-You can also edit a field&apos;s value for many rows at once. You need to select the rows you want to edit and then use the &lt;label&gt;Field Calculator&lt;/label&gt; or the &lt;label&gt;Field Calculator Bar&lt;/label&gt;. If no row is selected, the edition will apply on all the features.
-
-&lt;a name=&quot;FieldCalc&quot;&gt;
-&lt;h4&gt;Field Calculator&lt;/h4&gt;
-&lt;/a&gt;
-The &lt;label&gt;Field Calculator&lt;/label&gt; button in the attribute table allows performing calculations on basis of existing attribute values or defined functions, e.g. to calculate length or area of geometry features.&lt;br&gt;
-The results can be written to a new attribute column or it can be used to update values in an already existing column.&lt;br&gt;
-The vector layer needs to be in editing mode, before you can click on the &lt;label&gt;Field calculator&lt;/label&gt; icon to open the dialog.
-
-&lt;a name=&quot;FieldCalcBar&quot;&gt;
-&lt;h4&gt;Field Calculator Bar&lt;/h4&gt;
-&lt;/a&gt;
-When you toggle to edition the layer, a new row of functions appears in the attribute table: the &lt;label&gt;Field Calculator Bar&lt;/label&gt;. This allows quick editing values of existing fields by performing calculations on basis of existing attribute values or defined functions button in the attribute table, e.g. to calculate length or area of geometry features.&lt;br&gt;
-To edit values, select the field to modify with the filter button on the left and fill the text box with the new value or an expression to calculate new value. Then, press &lt;label&gt;Update all&lt;/label&gt; button to update all the rows of the attribute table or &lt;label&gt;Update selected&lt;/label&gt; button if some features are selected or a filter is applied on the attribute table display. You can also use the &lt;label&gt;Expression builder&lt;/label&gt; button to calculate the new value in the column.&lt;br&gt;
-</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -54529,7 +57274,7 @@ To edit values, select the field to modify with the filter button on the left an
         <translation>Yderligere dannelsesparametre</translation>
     </message>
     <message>
-        <source>Output file for contour lines (vector)</source>
+        <source>Contours</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -54627,6 +57372,11 @@ For support send a mail to scala@itc.cnr.it
     <message>
         <source>Shapefile</source>
         <translation>Shapefil</translation>
+    </message>
+    <message>
+        <source>Export inserts</source>
+        <extracomment>&apos;insert&apos; is the entity that inserts/references a symbol/block in DXF</extracomment>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -55390,6 +58140,22 @@ Plugin vil ikke blive slået til.</translation>
         <source>&amp;Data Management Tools</source>
         <translation>&amp;Datastyringsværktøjer</translation>
     </message>
+    <message>
+        <source>Save output shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select input file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select input files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save output directory</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>fillnodata</name>
@@ -55419,7 +58185,11 @@ Plugin vil ikke blive slået til.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
+    </message>
+    <message>
+        <source>Filled</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -55506,7 +58276,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;week(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 104.285...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;Funktionen week()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen week()&lt;/h3&gt;
 Udtrækker ugenummeret fra en dato, eller antallet af uger
 fra et &lt;code&gt;Interval&lt;/code&gt;
 
@@ -55557,7 +58327,7 @@ return a result.
     END
 &lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;Udtrykket CASE&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Udtrykket CASE&lt;/h3&gt;
 Et betinget udtryk, som kan bruges til at evaluere flere udtryk og
 returnere et resultat.
 
@@ -55604,7 +58374,7 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; rightmost characters 
 &lt;code&gt;right(&apos;Hello World&apos;,5) &amp;rarr; &apos;World&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;Funktionen right()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen right()&lt;/h3&gt;
 Returnerer en delstreng, som indeholder &lt;i&gt;n&lt;/i&gt; tegn af strengen startende fra højre.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -55626,7 +58396,7 @@ Returnerer en delstreng, som indeholder &lt;i&gt;n&lt;/i&gt; tegn af strengen st
 &lt;h3&gt;Color Group&lt;/h3&gt;
 This group contains functions for manipulating colors
 </source>
-        <translation>
+        <translation type="obsolete">
 &lt;h3&gt;Farvegruppe&lt;/h3&gt;
 Denne gruppe indeholder funktioner til at manipulere farver
 </translation>
@@ -55646,7 +58416,7 @@ Returns the length of a string.
 &lt;!-- Show example of function.--&gt;
      length(&apos;HELLO&apos;) &amp;rarr; 5&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen length()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen length()&lt;/h3&gt;
 Returnerer længden af en streng.
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -55676,7 +58446,7 @@ Converts a string to upper case letters.
 &lt;!-- Show example of function.--&gt;
      upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;HELLO WORLD&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen upper()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen upper()&lt;/h3&gt;
 Konverterer en streng til store bogstaver.
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -55706,7 +58476,7 @@ b &amp;rarr; geometry
 &lt;pre&gt;bbox( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; )) &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt;bbox( geomFromWKT( &apos;POINT(6 5)&apos; ) , geomFromWKT( &apos;POLYGON((3 3 , 4 4 , 5 5, 3 3))&apos; )) &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen bbox&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen bbox&lt;/h3&gt;
 Returnerer 1 hvis geometrierne spatielt overlapperif den definerede bbox (bounding box) og 0 hvis dette ikke er tilfældet.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -55738,7 +58508,7 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; leftmost characters o
 &lt;code&gt;left(&apos;Hello World&apos;,5) &amp;rarr; &apos;Hello&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;Funktionen left()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen left()&lt;/h3&gt;
 Returnerer en delstreng, som indeholder &lt;i&gt;n&lt;/i&gt; tegn startende fra venstre i strengen.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -55769,7 +58539,7 @@ Note: This function is only available in some contexts and will be 0 otherwise.
 
 
 </source>
-        <translation>&lt;h3&gt;Funktionen $scale&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen $scale&lt;/h3&gt;
 Returnerer kortkanvassets præcise skala.
 &lt;br&gt;
 NB: Denne funktion vil kun være tilgængelig i nogle sammenhænge og giver ellers 0. 
@@ -55799,7 +58569,7 @@ Rounds a number upwards.
 &lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen ceil()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen ceil()&lt;/h3&gt;
 Runder et tal opad.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -55830,7 +58600,7 @@ Converts a string to real number. Nothing changed if a value cannot be converted
 &lt;!-- Show example of function.--&gt;
      toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen toreal()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen toreal()&lt;/h3&gt;
 Konverterer en streng til et flydende tal. Intet ændres, hvis værdien ikke kan konverteres til et flydende tal (fx &apos;123.56asd&apos; er ugyldigt). Ved gemning afrundes tallet, hvis præcisionen er mindre end resultatet af konverteringen.
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -55858,7 +58628,7 @@ Retrieves a x coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen xat()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen xat()&lt;/h3&gt;
 Henter et x-koordinat fra det aktuelle objekt
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -55885,7 +58655,7 @@ None
 &lt;pre&gt;$numpages &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;Funktionen $numpages&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen $numpages&lt;/h3&gt;
 Returnerer det totale antal sider i layoutet.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -55918,7 +58688,7 @@ Returns -1 if the expression isn&apos;t found.
      strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
      strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;strpos() function&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;strpos() function&lt;/h3&gt;
 Returnerer indekset (positionen) af et regulært udtryk i en streng.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -55955,7 +58725,7 @@ This function takes two arguments.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;rand(1, 10) &amp;rarr; 8&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen rand()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen rand()&lt;/h3&gt;
 Returnerer et tilfældigt heltal indenfor intervallet angivet med minimum- og
 maksimum-argumentet (begge inkluderet).
 &lt;br&gt;
@@ -55974,59 +58744,6 @@ Denne funktion tager 2 argumenter.
 </translation>
     </message>
     <message>
-        <source>&lt;h3&gt;$atlasgeometry function&lt;/h3&gt;
-Returns the geometry of the current feature iterated in atlas.
-Can be used for rule based display of geometry when using atlas.
-For example to only show geometries of other layers when their geometry 
-intersects the iterated geometry of features using atlas.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;$atlasgeometry&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-None
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; intersects(  $atlasgeometry,  $geometry ) &lt;/pre&gt;
-
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;$atlasfeatureid function&lt;/h3&gt;
-Returns the feature id of the current row while using atlas.
-This enables you to use features of atlas in rules 
-and for example show or hide features based on their id.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;$atlasfeatureid&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-None
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt;$atlasfeatureid = $id&lt;/pre&gt;
-
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;bounds_width function&lt;/h3&gt;
-Returns the width of the bounding box of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;bounds_width(geom)&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-geom &amp;rarr; a geometry
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; bounds_width($geometry) &amp;rarr; returns width of bounding box of $geometry&lt;/pre&gt;
-
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;h3&gt;floor() function&lt;/h3&gt;
 Rounds a number downwards.
 
@@ -56042,7 +58759,7 @@ Rounds a number downwards.
 &lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen floor()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen floor()&lt;/h3&gt;
 Runder et tal nedad
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -56059,22 +58776,6 @@ Runder et tal nedad
 </translation>
     </message>
     <message>
-        <source>&lt;h3&gt;bounds_height function&lt;/h3&gt;
-Returns the height of the bounding box of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;bounds_height(geom)&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-geom &amp;rarr; a geometry
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; bounds_height($geometry) &amp;rarr; returns height of bounding box of $geometry&lt;/pre&gt;
-
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;h3&gt;toint() function&lt;/h3&gt;
 Converts a string to integer number. Nothing changed if a value cannot be converted to integer (e.g &apos;123asd&apos; is invalid).
 
@@ -56089,7 +58790,7 @@ Converts a string to integer number. Nothing changed if a value cannot be conver
 &lt;!-- Show example of function.--&gt;
      toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen toint()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen toint()&lt;/h3&gt;
 Konverterer en streng til et heltal. Intet ændres, hvis værdien ikke kan konverteres til heltal (fx &apos;123asd&apos; er ugyldigt).
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -56117,7 +58818,7 @@ Retrieves a y coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen yat()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen yat()&lt;/h3&gt;
 Henter y-koodinatet fra det aktuelle objekt
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -56145,7 +58846,7 @@ Converts a number to string.
 &lt;!-- Show example of function.--&gt;
      tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen tostring()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen tostring()&lt;/h3&gt;
 Konverterer et tal til en streng.
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -56174,7 +58875,7 @@ None
 &lt;pre&gt;$rownum &amp;rarr; 4711&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;Funktionen $rownum&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen $rownum&lt;/h3&gt;
 Returner nummeret på den aktuelle række.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -56205,7 +58906,7 @@ arguments to determine the quadrant of the result
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      atan2(1.0, 1.732) &amp;rarr; 0.523611477769969&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen atan2()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen atan2()&lt;/h3&gt;
 Returnerer arctangens af y/x vha. fortegnene på de 2 
 argumenter for at afgøre resultatets kvadrant
 
@@ -56236,7 +58937,7 @@ Returns sinus of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      sin(1.571) &amp;rarr; 0.999999682931835&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen sin()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen sin()&lt;/h3&gt;
 Returnerer sinus på en vinkel.
 
 
@@ -56271,7 +58972,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;month(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 4.033...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;Funktionen month()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen month()&lt;/h3&gt;
 Udtræk månedsdelen af en dato, eller antallet af måneder
 fra et &lt;code&gt;Interval&lt;/code&gt;
 
@@ -56306,7 +59007,7 @@ None
 &lt;pre&gt;$area &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;Funktionen $area&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen $area&lt;/h3&gt;
 Returnerer det aktuelle objekts areal.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -56341,7 +59042,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;day(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 730&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;Funktionen day()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen day()&lt;/h3&gt;
 Trækker dagen ud fra en dato, eller antallet af dage
 fra et &lt;code&gt;Interval&lt;/code&gt;
 
@@ -56376,7 +59077,7 @@ Convert a string into Qt data type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todate(&apos;2012-05-04&apos;) &amp;rarr; 2012-05-04&lt;/code&gt;&lt;br&gt;</source>
-        <translation>&lt;h3&gt;Funktionen todate()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen todate()&lt;/h3&gt;
 Konverterer en streng til en Qt-datotype.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -56409,7 +59110,7 @@ using the fill character.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;lpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;Helloxxxxx&apos;&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen lpad()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen lpad()&lt;/h3&gt;
 Returnerer en streng med den angivne længde udfyldt
 med fyldtegnet, hvor den originale strengværdi står først.
 
@@ -56442,7 +59143,7 @@ Returns arcuscosinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      acos(0.5) &amp;rarr; 1.0471975511966&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen acos()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen acos()&lt;/h3&gt;
 Returnerer arccos af en værdi i radianer.
 
 
@@ -56467,7 +59168,7 @@ Loading field values from WFS layers isn&apos;t supported, before the layer is
 actually inserted, ie. when building queries.
 &lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Felter og værdier&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Felter og værdier&lt;/h3&gt;
 Indeholder en liste af felter fra laget. Eksempelværdier kan også tilgås via højreklik.
 &lt;br&gt;&lt;br&gt;
 Vælg filnavnet fra listen, højreklik derefter for tilgå kontektmenuen med instillinger for indlæsning af eksempelværdier fra det valgte felt.
@@ -56496,7 +59197,7 @@ This function takes two arguments.
 &lt;code&gt;log(2, 32) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;log(0.5, 32) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen log()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen log()&lt;/h3&gt;
 Returner værdien af the logaritmen af den angivne værdi og base.
 &lt;br&gt;
 Denne funktion tager 2 argumenter.
@@ -56518,7 +59219,7 @@ Denne funktion tager 2 argumenter.
         <source>&lt;h3&gt;Geometry Group&lt;/h3&gt;
 This group contains functions that operate on geometry objects e.g length, area.
 </source>
-        <translation>&lt;h3&gt;Geometrigruppe&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Geometrigruppe&lt;/h3&gt;
 Denne gruppe indeholder funktioner, som arbejder på geometriobjekter, fx længde, areal.
 </translation>
     </message>
@@ -56533,7 +59234,7 @@ Loading field values from WFS layers isn&apos;t supported, before the layer is
 actually inserted, ie. when building queries.
 &lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Felt&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Felt&lt;/h3&gt;
 Dobbeltklik for at tilføje feltnavn til udtryksstreng.
 &lt;br&gt;&lt;br&gt;
 Højreklik på feltnavnet for åbne kontekstmenuen til indlæsning af eksempelværdier.
@@ -56558,7 +59259,7 @@ None
 &lt;pre&gt;$page &amp;rarr; 2&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;Funktionen $page&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen $page&lt;/h3&gt;
 Returnerer det aktuelle sidenummer i et layout.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -56586,7 +59287,7 @@ Returns exponential of an value.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen exp()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen exp()&lt;/h3&gt;
 Returnerer eksponentialfunktionen af en værdi.
 
 
@@ -56620,7 +59321,7 @@ using the fill character.
 &lt;code&gt;rpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;xxxxxHello&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;Funktionen rpad()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen rpad()&lt;/h3&gt;
 Returnerer en streng med den angivne længde udfyldt
 med fyldtegnet, hvor den originale strengværdi står sidst.
 
@@ -56662,7 +59363,7 @@ use &lt;code&gt;round(decimal)&lt;/code&gt; to round to the nearest integer&lt;b
 
 
 </source>
-        <translation>&lt;h3&gt;Funktionen round()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen round()&lt;/h3&gt;
 Afrunder et tal til et antal decimaler.
 &lt;br&gt;
 Denne funktion kan tage 1 eller 2 argumenter, afhængigt af behovet.
@@ -56698,7 +59399,7 @@ None
 &lt;pre&gt;$now &amp;rarr; 2012-07-22T13:24:57&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;Funktionen $now&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen $now&lt;/h3&gt;
 Returnerer den aktuelle dato og tid
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -56711,25 +59412,6 @@ Ingen
 &lt;pre&gt;$now &amp;rarr; 2012-07-22T13:24:57&lt;/pre&gt;
 
 </translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;color_hsl() function&lt;/h3&gt;
-Returns a string representation of a color based on its hue, saturation, and lightness attributes
-
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     color_hsl(&lt;i&gt;hue, saturation, lightness&lt;/i&gt;)&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;!-- List args for functions here--&gt;
-&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; the hue of the color, as an integer value from 0 to 360.&lt;br&gt;
-&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; the saturation percentage of the color as an integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  lightness&lt;/i&gt; &amp;rarr; the lightness percentage of the color as an integer value from 0 to 100.&lt;br&gt;
-
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-     color_hsl(100,50,70) &amp;rarr; &apos;166,217,140&apos;&lt;/p&gt;
-</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&lt;h3&gt;scale_exp() function&lt;/h3&gt;
@@ -56761,7 +59443,7 @@ accelerating as the input values approach the domain maximum. Smaller exponents 
      
      
 </source>
-        <translation>&lt;h3&gt;Funktionen scale_exp()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen scale_exp()&lt;/h3&gt;
 Transformerer en given værdi fra et inputdomæne til et outputinterval vha. en eksponentiel kurve. Denne funktion kan bruges til at lempe in- og out-værdier 
 i det angivne interval.   
 
@@ -56805,7 +59487,7 @@ a &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;  geomToWKT( convexHull( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 4 10)&apos; )) )   &amp;rarr; returns POLYGON((3 3,4 10,4 4,3 3)) &lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen convexHull&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen convexHull&lt;/h3&gt;
 Returnerer den konvekse skal af et par geometrier. Den er lig med den minimale konvekse skal, som inkluderer alle geometrier i parret.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -56833,7 +59515,7 @@ b &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( union( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))  )   &amp;rarr; returns MULTIPOINT(4 4, 5 5)&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen union&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen union&lt;/h3&gt;
 Returnerer en geometri som repræsenterer foreningsmængden af geometrierne.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -56846,54 +59528,6 @@ b &amp;rarr; geometry
 &lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( union( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))  )   &amp;rarr; returnerer MULTIPOINT(4 4, 5 5)&lt;/pre&gt;
 </translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;xmax function&lt;/h3&gt;
-Returns the maximum x coordinate of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;xmax(geom)&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-geom &amp;rarr; a geometry
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; xmax($geometry) &amp;rarr; returns maximum x coordinate of $geometry&lt;/pre&gt;
-
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;bounds function&lt;/h3&gt;
-Returns a geometry which represents the bounding box of an input geometry. Calculations are in the Spatial Reference System of this Geometry. 
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;bounds(geom)&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-geom &amp;rarr; a geometry
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; bounds($geometry) &amp;rarr; returns bounding box of $geometry&lt;/pre&gt;
-
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;ymax function&lt;/h3&gt;
-Returns the maximum y coordinate of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;ymax(geom)&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-geom &amp;rarr; a geometry
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; ymax($geometry) &amp;rarr; returns maximum y coordinate of $geometry&lt;/pre&gt;
-
-</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&lt;h3&gt;contains function&lt;/h3&gt;
@@ -56910,7 +59544,7 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;POINT( 0.5 0.5 )&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))          &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen contains&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen contains&lt;/h3&gt;
  Returnerer true hvis b helt er omsluttet af a. Dvs. b er en sand delmængde af a 
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -56926,67 +59560,6 @@ geometry &amp;rarr; geometry
 </translation>
     </message>
     <message>
-        <source>&lt;h3&gt;wordwrap() function&lt;/h3&gt;
-Returns a string wrapped to a maximum/minimum number of characters.
-
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     wordwrap(&lt;i&gt;string,wrap_length[,delimiter_string]&lt;/i&gt;)&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;!-- List args for functions here--&gt;
-&lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The string to be wrapped.&lt;br&gt;
-&lt;i&gt;  wrap_length&lt;/i&gt; &amp;rarr; is number.  If positive, the number represents the ideal maximum number of characters to wrap; if negative, the number represents the minimum number of characters to wrap.&lt;br&gt;
-&lt;i&gt;  delimiter_string&lt;/i&gt; &amp;rarr; is string.  The delimiter string to wrap to a new line (&lt;u&gt;optional&lt;/u&gt;).&lt;br&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-     wordwrap(&apos;UNIVERSITY OF QGIS&apos;,13) &amp;rarr; &apos;UNIVERSITY OF&amp;#92;nQGIS&apos;&lt;br&gt;
-     wordwrap(&apos;UNIVERSITY OF QGIS&apos;,-3) &amp;rarr; &apos;UNIVERSITY&amp;#92;nOF QGIS&apos;&lt;/p&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-&lt;h3&gt;color_rgb() function&lt;/h3&gt;
-Returns a string representation of a color based on its red, green, and blue components
-
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     color_rgb(&lt;i&gt;red, green, blue&lt;/i&gt;)&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;!-- List args for functions here--&gt;
-&lt;i&gt;  red&lt;/i&gt; &amp;rarr; the red component as an integer value from 0 to 255.&lt;br&gt;
-&lt;i&gt;  green&lt;/i&gt; &amp;rarr; the green component as an integer value from 0 to 255.&lt;br&gt;
-&lt;i&gt;  blue&lt;/i&gt; &amp;rarr; the blue component as an integer value from 0 to 255.&lt;br&gt;
-
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-     color_rgb(255,127,0) &amp;rarr; &apos;255,127,0&apos;&lt;/p&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-&lt;h3&gt;color_cmyk() function&lt;/h3&gt;
-Returns a string representation of a color based on its cyan, magenta, yellow and black components
-
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     color_cmyk(&lt;i&gt;cyan, magenta, yellow, black&lt;/i&gt;)&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;!-- List args for functions here--&gt;
-&lt;i&gt;  cyan&lt;/i&gt; &amp;rarr; the cyan component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  magenta&lt;/i&gt; &amp;rarr; the magenta component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  yellow&lt;/i&gt; &amp;rarr; the yellow component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  black&lt;/i&gt; &amp;rarr; the black component of the color, as a percentage integer value from 0 to 100.&lt;br&gt;
-
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-     color_cmyk(100,50,0,10) &amp;rarr; &apos;0,115,230&apos;&lt;/p&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;h3&gt;intersection function&lt;/h3&gt;
 Returns a geometry that represents the shared portion of geometry a and geometry b.
 
@@ -57000,7 +59573,7 @@ geometry &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( intersection( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 )&apos; ))  )   &amp;rarr; returns LINESTRING(3 3, 4 4)&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen intersection&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen intersection&lt;/h3&gt;
 Returner en geometri som repræsenterer fællesdelen (overlapsdelen) af geometri a og geometri b.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -57013,30 +59586,6 @@ geometry &amp;rarr; geometry
 &lt;h4&gt;Eksempel&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( intersection( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 )&apos; ))  )   &amp;rarr; returns LINESTRING(3 3, 4 4)&lt;/pre&gt;
 </translation>
-    </message>
-    <message>
-        <source>
-&lt;h3&gt;ramp_color() function&lt;/h3&gt;
-Returns a string representing a color from a color ramp. 
-
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     ramp_color(&lt;i&gt;ramp_name,value&lt;/i&gt;)&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;!-- List args for functions here--&gt;
-&lt;i&gt;  ramp_name&lt;/i&gt; &amp;rarr; the name of the color ramp as a string, for example &apos;Spectral&apos;.&lt;br&gt;
-&lt;i&gt;  value&lt;/i&gt; &amp;rarr; the position on the ramp to select the color from as a real number between 0 and 1.&lt;br&gt;
-
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-     ramp_color(&apos;Spectral&apos;,0.3) &amp;rarr; &apos;253,190,115,255&apos;&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Note:&lt;/h4&gt;
-The color ramps available vary between QGIS installations.  This function
-may not give the expected results if you move your Quantum project.
-&lt;/p&gt;
-</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&lt;h3&gt;IS expression&lt;/h3&gt;
@@ -57057,7 +59606,7 @@ None
 &lt;pre&gt; $geometry IS NULL  &amp;rarr; returns 0, if your geometry is not NULL&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;udtrykket IS&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;udtrykket IS&lt;/h3&gt;
 Returnerer 1 hvis a er det samme som b.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -57078,25 +59627,6 @@ None
 </translation>
     </message>
     <message>
-        <source>&lt;h3&gt;color_hsv() function&lt;/h3&gt;
-Returns a string representation of a color based on its hue, saturation, and value attributes
-
-&lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
-     color_hsv(&lt;i&gt;hue, saturation, value&lt;/i&gt;)&lt;/p&gt;
-
-&lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;!-- List args for functions here--&gt;
-&lt;i&gt;  hue&lt;/i&gt; &amp;rarr; the hue of the color, as an integer value from 0 to 360.&lt;br&gt;
-&lt;i&gt;  saturation&lt;/i&gt; &amp;rarr; the saturation percentage of the color as an integer value from 0 to 100.&lt;br&gt;
-&lt;i&gt;  value&lt;/i&gt; &amp;rarr; the value percentage of the color as an integer from 0 to 100.&lt;br&gt;
-
-&lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-     color_hsv(40,100,100) &amp;rarr; &apos;255,170,0&apos;&lt;/p&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;h3&gt;ILIKE expression&lt;/h3&gt;
 Returns 1 if the first parameter matches case-insensitive the supplied pattern. LIKE can be used instead of ILIKE to make the match case-sensitive. Works with numbers also.
 
@@ -57111,7 +59641,7 @@ None
 &lt;pre&gt; &apos;A&apos; ILIKE &apos;a&apos;  &amp;rarr; returns 1 &lt;/pre&gt;
 &lt;pre&gt; &apos;A&apos; ILIKE &apos;B&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;udtrykket ILIKE&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;udtrykket ILIKE&lt;/h3&gt;
 Returnerer 1 hvis den første parameter  matcher mønsteret fra anden parameter uden hensyntagen til store og små bogstaver. LIKE kan bruges ligesom ILIKE men under hensyntagen til store og små bogstaver. Kan også benyttes til tal.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -57141,7 +59671,7 @@ None
 &lt;pre&gt; &apos;A&apos; LIKE &apos;a&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
 &lt;pre&gt; &apos;A&apos; LIKE &apos;B&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;Udtrykket LIKE&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Udtrykket LIKE&lt;/h3&gt;
 Returnerer 1 hvis det første argument matcher mønsteret i andet argument under hensyntagen til store og små bogstaver. Kan også benyttes til tal.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -57157,22 +59687,6 @@ None
 </translation>
     </message>
     <message>
-        <source>&lt;h3&gt;ymin function&lt;/h3&gt;
-Returns the minimum y coordinate of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;ymin(geom)&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-geom &amp;rarr; a geometry
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; ymin($geometry) &amp;rarr; returns minimum y coordinate of $geometry&lt;/pre&gt;
-
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;h3&gt;geomFromGML function&lt;/h3&gt;
 Returns a geometry from a GML representation of geometry
 
@@ -57186,7 +59700,7 @@ text &amp;rarr; GML representation of a geometry
 &lt;pre&gt; geomFromGML( &apos;&lt;gml:LineString srsName=&quot;EPSG:4326&quot;&gt;&lt;gml:coordinates&gt;4,4 5,5 6,6&lt;/gml:coordinates&gt;&lt;/gml:LineString&gt;&apos;) &amp;rarr; returns a geometry&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;Funktionen geomFromGML&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen geomFromGML&lt;/h3&gt;
 Returnerer en geometri fra et GML udtryk
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -57204,7 +59718,7 @@ text &amp;rarr; GML udtryk for en geometri
         <source>&lt;h3&gt;Date and Time Group&lt;/h3&gt;
 This group contains functions for handling date and time data.
 </source>
-        <translation>&lt;h3&gt;Dato- og Tidsgruppe&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Dato- og Tidsgruppe&lt;/h3&gt;
 Denne gruppe indeholder funktioner til at håndtere dato- og tidsdata.
 </translation>
     </message>
@@ -57223,7 +59737,7 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; geomToWKT( combine( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5 )&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4,  2 1 )&apos; ))  )    &amp;rarr; returns MULTILINESTRING((4 4, 2 1), (3 3, 4 4), (4 4, 5 5)) &lt;/pre&gt;
 &lt;pre&gt; geomToWKT( combine( geomFromWKT( &apos;LINESTRING(3 3 , 4 4  )&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 6 6,  2 1 )&apos; ))  )  &amp;rarr; returns LINESTRING(3 3, 4 4, 6 6, 2 1) &lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen combine&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen combine&lt;/h3&gt;
 Returnerer kombinationen (additionen) af geometri a og geometri b.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -57253,7 +59767,7 @@ b &amp;rarr; geometry
 &lt;pre&gt; intersects( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; intersects( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))             &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;intersects funktion&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;intersects funktion&lt;/h3&gt;
 Returnerer 1 hvis geometrierne spatielt skærer hinanden (har en eller flere delflader tilfælles) og 0 hvis det ikke er tilfældet.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -57289,7 +59803,7 @@ Restricts an input value to a specified range.
      
      
 </source>
-        <translation>&lt;h3&gt;Funktionen clamp()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen clamp()&lt;/h3&gt;
 Begrænser en inputværdi til et angivet interval.
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -57325,7 +59839,7 @@ b &amp;rarr; geometry
 &lt;pre&gt; disjoint( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; )) &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; disjoint( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;POINT(4 4)&apos; ))                              &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen disjoint&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen disjoint&lt;/h3&gt;
 Returnerer 1 hvis geometrier er disjunkte (dvs de ovehovedet ikke overlapper). 
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -57354,7 +59868,7 @@ text &amp;rarr; Well-Known Text (WKT) representation of a geometry
 &lt;pre&gt; geomFromWKT( &apos;POINT(4 5)&apos; ) &amp;rarr; returns a geometry&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;Funktionen geomFromWKT&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen geomFromWKT&lt;/h3&gt;
 Returnerer en geometri genereret fra en Well-Known Text (WKT) udtryk.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -57383,7 +59897,7 @@ b &amp;rarr; distance for the buffer
 &lt;pre&gt; buffer($geometry, 10.5 ) &amp;rarr; returns a polygon&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;Funktionen buffer&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen buffer&lt;/h3&gt;
 Returnerer en geometri, som er mængden af alle de punkter hvor afstanden fra geometrien a er mindre end eller lig med afstanden b. Beregningerne foretages i det koordinatsystem, som a er defineret i.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -57399,40 +59913,6 @@ b &amp;rarr; buffer afstand
 </translation>
     </message>
     <message>
-        <source>&lt;h3&gt;$atlasfeature function&lt;/h3&gt;
-In atlas generation, returns the current feature that is iterated over on the coverage layer. This can be used with the &apos;attribute&apos; function
-to return attribute values from the current atlas feature.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;$atlasfeature&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-None
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt;attribute( $atlasfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current atlas feature&lt;/pre&gt;
-
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;$currentfeature function&lt;/h3&gt;
-Returns the current feature being evaluated. This can be used with the &apos;attribute&apos; function
-to evaluate attribute values from the current feature.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;$currentfeature&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-None
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt;attribute( $currentfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current feature&lt;/pre&gt;
-
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;h3&gt;$id function&lt;/h3&gt;
 Returns the feature id of the current row.
 
@@ -57446,7 +59926,7 @@ None
 &lt;pre&gt;$id &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;Funktionen $id&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen $id&lt;/h3&gt;
 Returerner et objekt-id for den aktuelle række.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -57475,7 +59955,7 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$uuid &amp;rarr; {0bd2f60f-f157-4a6d-96af-d4ba4cb366a1}&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;$uuid funktion&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;$uuid funktion&lt;/h3&gt;
 Genererer en Universally Unique Identifier (UUID) for hver række der bruger Qt
 &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/quuid.html#createUuid&apos;&gt;QUuid::createUuid&lt;/a&gt;
 metoden. Hver UUID er 38 karakterer lang.
@@ -57489,23 +59969,6 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$uuid &amp;rarr; {0bd2f60f-f157-4a6d-96af-d4ba4cb366a1}&lt;/pre&gt;
 </translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;IN expression&lt;/h3&gt;
-Returns 1 if value is found within a list of values
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;&apos;a&apos; IN (&apos;a&apos;, &apos;b&apos;)&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-None
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; &apos;A&apos; IN (&apos;A&apos;,&apos;B&quot;) &amp;rarr; returns 1 &lt;/pre&gt;
-&lt;pre&gt; &apos;A&apos; IN (&apos;C&apos;,&apos;B&quot;) &amp;rarr; returns 0 &lt;/pre&gt;
-
-</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&lt;h3&gt;attribute function&lt;/h3&gt;
@@ -57522,7 +59985,7 @@ attribute_name &amp;rarr; name of attribute to be returned
 &lt;pre&gt;attribute( $currentfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current feature&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;attribute funktion&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;attribute funktion&lt;/h3&gt;
 Returnerer værdien af en bestemt attribut fra et objekt.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -57552,7 +60015,7 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; crosses( geomFromWKT( &apos;LINESTRING(3 5 , 4 4 , 5 3)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; crosses( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))             &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen crosses&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen crosses&lt;/h3&gt;
 Returnerer 1 hvis de to geometrier har nogle dele tilfælles men ikke er identiske.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -57580,7 +60043,7 @@ a &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( $geometry ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;Funtionen geomToWKT&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funtionen geomToWKT&lt;/h3&gt;
 Returnerer Well-Known Text (WKT) udtrykket af geometrien uden SRID metadata.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -57601,7 +60064,7 @@ Returns the first feature of a layer matching a given attribute value
 &lt;pre&gt;getFeature( layer, attributeField, value )&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;getFeature funktion&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;getFeature funktion&lt;/h3&gt;
 Returnerer det første objekt i et lag der matcher en given attribut værdi
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -57624,7 +60087,7 @@ b &amp;rarr; geometry
 &lt;pre&gt; touches( geomFromWKT( &apos;LINESTRING(5 3 , 4 4)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; touches( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))                     &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;Funktion touches&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktion touches&lt;/h3&gt;
 Returnerer 1 hvis geometrierne har mindst eet punkt på omkredsen (kantpunkt)  til fælles, men hvor deres indersider ikke har dele til fælles.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -57654,7 +60117,7 @@ b &amp;rarr; geometry
 &lt;pre&gt; overlaps( geomFromWKT( &apos;LINESTRING(3 5 , 4 4 , 5 5 , 5 3)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))   &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; overlaps( geomFromWKT( &apos;LINESTRING(0 0 , 1 1)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen overlaps&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen overlaps&lt;/h3&gt;
 Returnerer 1 hvis geometrierne deler flade(r) og har den samme dimesionaltet, men hvor de ikke helt ens.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -57684,7 +60147,7 @@ None
 &lt;pre&gt; 4 = 2+2 AND 1 = 2  &amp;rarr; returns 0 &lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;logisk operator AND&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;logisk operator AND&lt;/h3&gt;
 Returnerer 1 når betingelsen a og b er sand.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -57713,7 +60176,7 @@ None
 &lt;pre&gt; geomToWKT( $geometry ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;Funktionen $geometry&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen $geometry&lt;/h3&gt;
 Returnerer geometrien for den &apos;nuværende&apos; objekt . Kan benyttes som input til andre funktioner.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -57742,7 +60205,7 @@ None
 &lt;pre&gt; 4 = 2+2 OR 1 = 2  &amp;rarr; returns 1 &lt;/pre&gt;
 &lt;pre&gt; 4 = 2   OR 1 = 2  &amp;rarr; returns 0 &lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;Logisk operator OR&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Logisk operator OR&lt;/h3&gt;
 Returnerer 1 hvis betingelsen a eller b er sand.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -57771,7 +60234,7 @@ b &amp;rarr; geometry
 &lt;pre&gt; centroid($geometry) &amp;rarr; returns a point geometry&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;Funktionen centroid&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen centroid&lt;/h3&gt;
 Returnerer det geometrisk center for en geometri.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -57800,7 +60263,7 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; within( geomFromWKT( &apos;POINT( 0.5 0.5 )&apos;) , geomFromWKT(&apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) )    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; within( geomFromWKT( &apos;POINT( 5 5 )&apos;) , geomFromWKT(&apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) )        &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen within&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen within&lt;/h3&gt;
 Returnerer 1 hvis geometri a er helt indesluttet i geometri b. Ellers 0
 &lt;h4&gt;Syntaks&lt;/h4&gt;
 &lt;pre&gt;within( geometry a , geometry b)&lt;/pre&gt;
@@ -57832,7 +60295,7 @@ $map &amp;rarr; &quot;canvas&quot; (within the main QGIS main canvas)&lt;/pre&gt
 
 
 </source>
-        <translation>&lt;h3&gt;Funktionen $map&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen $map&lt;/h3&gt;
 Returnerer id for det nuværende kort element hvis kortet er del af et layout,eller &quot;canvas&quot; hvis kortet er tegnet i QGIS hovedvindue
 
 
@@ -57864,7 +60327,7 @@ b &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; distance( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(4 8)&apos; ))    &amp;rarr; returns 4&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen distance&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen distance&lt;/h3&gt;
  Returnerer minimumsafstanden (baseret på kooordinatsystemet) mellem 2 geometrier i i distanceenheden for projektionen.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -57892,7 +60355,7 @@ geometry &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( difference( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4)&apos; ))  )   &amp;rarr; returns LINESTRING(4 4, 5 5)&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen difference&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen difference&lt;/h3&gt;
 Returnerer en geometri som repræsenterer de dele af geometri a, som ikke skærer (overlappes af) geometri b.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -57922,7 +60385,7 @@ None
 &lt;pre&gt; 4 IS NOT 2+2    &amp;rarr; returns 0 &lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;NOT&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;NOT&lt;/h3&gt;
 Returnerer 1 hvis a er forskellig fra b.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -57952,7 +60415,7 @@ geometry &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( symDifference(  geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 8 8)&apos; ))   )   &amp;rarr; returns LINESTRING(5 5, 8 8)&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen symDifference&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen symDifference&lt;/h3&gt;
 Returnerer en geometri som repræsenterer summen af de dele af a og b som ikke skærer hinanden.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -57980,7 +60443,7 @@ None
 &lt;pre&gt;$perimeter &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;Funktionen $perimeter&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen $perimeter&lt;/h3&gt;
 Returnerer det aktuelle objekts perimeterværdi (omkreds).
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -58008,7 +60471,7 @@ Converts a string to a interval type.  Can be used to take days, hours, month, e
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-05 12:00:00&apos;) - tointerval(&apos;1 day 2 hours&apos;) &amp;rarr; 2012-05-04T10:00:00&lt;/code&gt;&lt;br&gt;</source>
-        <translation>&lt;h3&gt;Funktionen tointerval()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen tointerval()&lt;/h3&gt;
 Konverterer en streng til en intervaltype. Kan bruges til at trække dage, timer, måneder osv. fra en dato.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -58044,7 +60507,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;hour(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 17520&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;Funktionen hour()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen hour()&lt;/h3&gt;
 Udtrækker timen fra en datetime eller time, eller antallet af timer
 fra et &lt;code&gt;Interval&lt;/code&gt;
 
@@ -58084,7 +60547,7 @@ Returns a string representation of a color based on its hue, saturation, lightne
 &lt;!-- Show example of function.--&gt;
      color_hsla(100,50,70,200) &amp;rarr; &apos;166,217,140,200&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen color_hsla()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen color_hsla()&lt;/h3&gt;
 Returnerer en strengrepræsentation af en farve baseret på dens farvetone-, mætning-, lysheds- og alfa(transparens)-attributter
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -58115,7 +60578,7 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$pi &amp;rarr; 3.14159265358979&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;Konstanten $pi&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Konstanten $pi&lt;/h3&gt;
 Returnerer pi som en værdi til beregninger
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -58132,7 +60595,7 @@ Ingen
         <source>&lt;h3&gt;Record Group&lt;/h3&gt;
 This group contains functions that operate on record identifiers.
 </source>
-        <translation>&lt;h3&gt;Postgruppe&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Postgruppe&lt;/h3&gt;
 Denne gruppe indeholder funktioner, som arbejder på postidentifikatorer.
 </translation>
     </message>
@@ -58150,7 +60613,7 @@ Convert a string into Qt time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;totime(&apos;12:30:01&apos;) &amp;rarr; 12:30:01&lt;/code&gt;&lt;br&gt;</source>
-        <translation>&lt;h3&gt;Funktionen totime()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen totime()&lt;/h3&gt;
 Konverterer en streng til en Qt-tidstype.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -58181,7 +60644,7 @@ Returns a string with the the supplied string replaced.
 &lt;!-- Show example of function.--&gt;
      replace(&apos;QGIS SHOULD ROCK&apos;,&apos;SHOULD&apos;,&apos;DOES&apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen replace()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen replace()&lt;/h3&gt;
 Returnerer en streng med angivne streng erstattet.
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -58202,7 +60665,7 @@ Returnerer en streng med angivne streng erstattet.
         <source>&lt;h3&gt;Conditionals Group&lt;/h3&gt;
 This group contains functions to handle conditional checks in expressions.
 </source>
-        <translation>&lt;h3&gt;Gruppe for betingede udtryk&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Gruppe for betingede udtryk&lt;/h3&gt;
 Denne gruppe indeholder funktioner til at håndtere betingede tjek i udtryk.
 </translation>
     </message>
@@ -58220,7 +60683,7 @@ abs(&lt;i&gt;value&lt;/i&gt;)&lt;br&gt;
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;code&gt;abs(-2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen abs()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen abs()&lt;/h3&gt;
 Returnerer den absolutte værdi af et tal.&lt;br&gt;
 
 
@@ -58249,7 +60712,7 @@ Returns the largest value in a set of values.
 &lt;!-- Show example of function.--&gt;
      max(2,10.2,5.5) &amp;rarr; 10.2
 </source>
-        <translation>&lt;h3&gt;Funktionen max()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen max()&lt;/h3&gt;
 Returnerer den højeste værdi i et sæt af værdier.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -58278,7 +60741,7 @@ Returns square root of a value
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      sqrt(9) &amp;rarr; 3&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen sqrt()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen sqrt()&lt;/h3&gt;
 Returnerer kvadratroden af en værdi
 
 
@@ -58296,7 +60759,7 @@ Returnerer kvadratroden af en værdi
         <source>&lt;h3&gt;Conditions Group&lt;/h3&gt;
 This group contains functions that operate on condition.
 </source>
-        <translation>&lt;h3&gt;Betingelsesgruppen&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Betingelsesgruppen&lt;/h3&gt;
 Denne gruppe indeholder funktioner, som arbejder på betingelser.
 </translation>
     </message>
@@ -58320,7 +60783,7 @@ Returns a string representation of a color based on its cyan, magenta, yellow, b
 &lt;!-- Show example of function.--&gt;
      color_cmyka(100,50,0,10,200) &amp;rarr; &apos;0,115,230,200&apos;&lt;/p&gt;
 </source>
-        <translation>
+        <translation type="obsolete">
 &lt;h3&gt;Funktionen color_cmyka()s&lt;/h3&gt;
 Returnerer en strengrepræsentation af en farve baseret på dens cyan-, magenta-, gul-, sort- og alfa(transparens)-komponenter
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -58357,7 +60820,7 @@ to.
 &lt;code&gt;format_number(10000000.332,2) &amp;rarr; 10,000,000.33&lt;/code&gt;
 
 </source>
-        <translation>&lt;h3&gt;Funktionen format_number()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen format_number()&lt;/h3&gt;
 Returnerer et tal formatteret med landekodeseparatoren for tusinde. 
 Trunkerer også tallet til det angivne antal pladser. 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -58396,7 +60859,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;year(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1.9986..&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;Funktionen year()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen year()&lt;/h3&gt;
 Udtrækker året fra en date, eller antallet af år
 fra et &lt;code&gt;Interval&lt;/code&gt;
 
@@ -58446,7 +60909,7 @@ return a result.
     END
 &lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;Udtrykket CASE&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Udtrykket CASE&lt;/h3&gt;
 Et betinget udtryk, som kan bruges til at evaluere flere udtryk og
 returnerer et resultat.
 
@@ -58493,7 +60956,7 @@ This function takes two arguments.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;randf(1, 10) &amp;rarr; 4.59258286403147&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen randf()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen randf()&lt;/h3&gt;
 Returnerer en tilfældigt flydende tal indefor intervallet angivet med minimum- og 
 maksimum-argumentet (begge inkluderet).
 &lt;br&gt;
@@ -58525,7 +60988,7 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; xmin($geometry) &amp;rarr; returns minimum x coordinate of $geometry&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;xmin funktion&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;xmin funktion&lt;/h3&gt;
 Returnerer den mindste x koordinat af en geometri. Beregninger er i det Spatiale Reference System som hører til denne geometri. 
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -58560,7 +61023,7 @@ Transforms a given value from an input domain to an output range using linear in
      
      
 </source>
-        <translation>&lt;h3&gt;Funktionen scale_linear()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen scale_linear()&lt;/h3&gt;
 Transformerer en given værdi fra et inputdomæne til et outputinterval vha. lineær interpolering. 
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -58596,7 +61059,7 @@ Removes all leading and trailing whitespace (spaces, tabs, etc) from a string.
 &lt;!-- Show example of function.--&gt;
      trim(&apos;   hello world    &apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen trim()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen trim()&lt;/h3&gt;
 Fjerner alle foranstillede og bagvedstillede mellemrum (mellumrumstegn, tabulator osv.) fra en streng.
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -58633,7 +61096,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;minute(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1051200&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;Funktionen minute()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen minute()&lt;/h3&gt;
 Udtrækker antal minutter fra en datetime eller date, eller antallet af minutter
 fra et &lt;code&gt;Interval&lt;/code&gt;
 
@@ -58689,7 +61152,7 @@ use &lt;code&gt;day&lt;/code&gt; to extract number of days&lt;br&gt;
 &lt;code&gt;day(age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;)) &amp;rarr; 10&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;Funktionen age()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen age()&lt;/h3&gt;
 Returnerer forskellen mellem 2 dage.
 &lt;br&gt;&lt;br&gt;
 Forskellen returneres som et &lt;code&gt;Interval&lt;/code&gt; 
@@ -58740,7 +61203,7 @@ This function takes one argument.
 &lt;code&gt;log10(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;log10(100) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen log10()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen log10()&lt;/h3&gt;
 Returnerer værdien af base10-logaritmen for det angivne udtryk
 &lt;br&gt;
 Denne funktion tager 1 argument.
@@ -58761,7 +61224,7 @@ Denne funktion tager 1 argument.
         <source>&lt;h3&gt;Conversions Group&lt;/h3&gt;
 This group contains functions to convert on data type to another e.g string to integer, integer to string.
 </source>
-        <translation>&lt;h3&gt;Konverteringsgruppe&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Konverteringsgruppe&lt;/h3&gt;
 Denne gruppe indeholder funktioner til at konvertere fra en datatype til en anden, fx streng til heltal, heltal til streng.
 </translation>
     </message>
@@ -58779,7 +61242,7 @@ Returns cosinus of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      cos(1.571) &amp;rarr; 0.000796326710733263&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen cos()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen cos()&lt;/h3&gt;
 Returnerer cosinus på en vinkel
 
 
@@ -58797,7 +61260,7 @@ Returnerer cosinus på en vinkel
         <source>&lt;h3&gt;Operators Group&lt;/h3&gt;
 This group contains operators e.g + - * 
 </source>
-        <translation>&lt;h3&gt;Gruppe med operatorer&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Gruppe med operatorer&lt;/h3&gt;
 Denne gruppe indeholder operatorer, fx + - * 
 </translation>
     </message>
@@ -58823,7 +61286,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;second(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 63072000&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;Funktionen second()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen second()&lt;/h3&gt;
 Udtrækker sekunderne fra en datetime eller date, eller antallet af sekunder
 fra et &lt;code&gt;Interval&lt;/code&gt;
 
@@ -58859,7 +61322,7 @@ Returns arcustanget of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      atan(0.5) &amp;rarr; 0.463647609000806&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen atan()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen atan()&lt;/h3&gt;
 Returnerer arctangens af en værdi i radianer.
 
 
@@ -58886,7 +61349,7 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$length &amp;rarr; 42.4711&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen $length&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen $length&lt;/h3&gt;
 Returnerer det aktuelle objekts længde.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -58915,7 +61378,7 @@ capital letter).
 &lt;!-- Show example of function.--&gt;
      upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;Hello World&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen title()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen title()&lt;/h3&gt;
 Konverterer alle ord i en streng til, at alle ord er med små bogstaver med
 stort startbogstav.
 
@@ -58947,7 +61410,7 @@ Returns true if any part of a string matches the supplied regular expression.
 &lt;!-- Show example of function.--&gt;
      regexp_match(&apos;QGIS ROCKS&apos;,&apos;&amp;#92;&amp;#92;sROCKS&apos;) &amp;rarr; 1&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen regexp_match()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen regexp_match()&lt;/h3&gt;
 Returnerer true hvis en vilkårlig del af en streng matcher det angivne regulære udtryk.
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -58979,7 +61442,7 @@ Return a part of a string
 &lt;!-- Show example of function.--&gt;
      substr(&apos;HELLO WORLD&apos;,3,5) &amp;rarr; &apos;LLO W&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen substr()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen substr()&lt;/h3&gt;
 Returnerer en del af en streng
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -59011,7 +61474,7 @@ Format a string using supplied arguments.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;format(&apos;This %1 a %2&apos;,&apos;is&apos;, &apos;test&apos;) &amp;rarr; This is a test&lt;/code&gt;&lt;br&gt;</source>
-        <translation>&lt;h3&gt;Funktionen format()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen format()&lt;/h3&gt;
 Formaterer en streng med angivne argumenter. 
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -59043,7 +61506,7 @@ Returns a string with the supplied regular expression replaced.
 &lt;!-- Show example of function.--&gt;
      regexp_replace(&apos;QGIS SHOULD ROCK&apos;,&apos;&amp;#92;&amp;#92;sSHOULD&amp;#92;&amp;#92;s&apos;,&apos; DOES &apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen regexp_replace()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen regexp_replace()&lt;/h3&gt;
 Returnerer en streng med det angivne regulære udtryk erstattet.
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -59075,7 +61538,7 @@ Returns the portion of a string which matches a supplied regular expression.
 &lt;!-- Show example of function.--&gt;
      regexp_substr(&apos;abc123&apos;,&apos;(&amp;#92;&amp;#92;d+)&apos;) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen regexp_substr()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen regexp_substr()&lt;/h3&gt;
 Returner den del af strengen, som matcher med et angivet regulært udtryk.
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -59104,7 +61567,7 @@ None
 &lt;pre&gt;$y &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;Funktionen $y&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen $y&lt;/h3&gt;
 Returnerer y-koordinatet fra det aktuelle objekt.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -59137,7 +61600,7 @@ Returns a string representation of a color based on its red, green, blue, and al
 &lt;!-- Show example of function.--&gt;
      color_rgba(255,127,0,200) &amp;rarr; &apos;255,127,0,200&apos;&lt;/p&gt;
 </source>
-        <translation>
+        <translation type="obsolete">
 &lt;h3&gt;Funktionen color_rgba()&lt;/h3&gt;
 Returnerer en strengrepræsentation af en farve baseret på dens rød-, grøn-, blå- og alfa(transparens)-attributter
 
@@ -59170,7 +61633,7 @@ None
 &lt;pre&gt;$x &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;Funktionen $x&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen $x&lt;/h3&gt;
 Returnerer x-koordinatet fra det aktuelle objekt.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -59188,7 +61651,7 @@ Ingen
         <source>&lt;h3&gt;Math Group&lt;/h3&gt;
 This group contains math functions e.g square root, sin and cos
 </source>
-        <translation>&lt;h3&gt;Matematik-gruppe&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Matematik-gruppe&lt;/h3&gt;
 Denne gruppe indeholder matematiske funktioner, fx kvadratrod, sinus og cosinus
 </translation>
     </message>
@@ -59207,7 +61670,7 @@ Returns the smallest value in a set of values.
 &lt;!-- Show example of function.--&gt;
      min(20.5,10,6.2) &amp;rarr; 6.2
 </source>
-        <translation>&lt;h3&gt;Funktionen min()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen min()&lt;/h3&gt;
 Returnerer den laveste værdi i et sæt af værdier.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -59235,7 +61698,7 @@ Converts a string to lower case letters.
 &lt;p&gt;&lt;h4&gt;  Example&lt;/h4&gt;
      lower(&apos;HELLO World&apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen lower()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen lower()&lt;/h3&gt;
 Konverterer en streng til små bogstaver.
 
 &lt;p&gt;&lt;h4&gt;  Syntaks&lt;/h4&gt;
@@ -59262,7 +61725,7 @@ None
 &lt;pre&gt;$numfeatures &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;Funktionen $numfeatures&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen $numfeatures&lt;/h3&gt;
 Returnerer det totale antal objekter i dækningslaget ved oprettelse af atlas.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -59280,7 +61743,7 @@ Ingen
         <source>&lt;h3&gt;String Group&lt;/h3&gt;
 This group contains functions that operate on strings e.g replace, convert to upper case.
 </source>
-        <translation>&lt;h3&gt;Strenggruppe&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Strenggruppe&lt;/h3&gt;
 Denne gruppe indeholder funktioner, som arbejder på strenge, fx erstat, konvertér til store bogstaver.
 </translation>
     </message>
@@ -59299,7 +61762,7 @@ Concatenates several strings to one.
 &lt;!-- Show example of function.--&gt;
      concat(&apos;a&apos;,&apos;b&apos;,&apos;c&apos;,&apos;d&apos;,&apos;e&apos;) &amp;rarr; &apos;abcde&apos;
 </source>
-        <translation>&lt;h3&gt;Funktionen concat()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen concat()&lt;/h3&gt;
 Sætter flere strenge sammen til én.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -59335,7 +61798,7 @@ This function can take any number of arguments.
  else the value of &quot;fallbackField&quot; or the string &apos;ERROR&apos; if both are NULL&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;Funktionen coalesce()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen coalesce()&lt;/h3&gt;
 Returnerer den første ikke-NULL-værdi fra udtrykslisten.
 &lt;br&gt;
 Funktionen kan tage et vilkårligt antal parametre.
@@ -59370,7 +61833,7 @@ Returns arcussinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      asin(1.0) &amp;rarr; 1.5707963267949&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen asin()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen asin()&lt;/h3&gt;
 Returner arcsin af en værdi i radianer.
 
 
@@ -59398,7 +61861,7 @@ Convert a string into Qt data time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-04 12:50:00&apos;) &amp;rarr; 2012-05-04T12:50:00&lt;/code&gt;&lt;br&gt;</source>
-        <translation>&lt;h3&gt;Funktionen todatetime()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen todatetime()&lt;/h3&gt;
 Konverterer en stregn til en Qt-datetime-type.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -59426,7 +61889,7 @@ Returns tangent of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      tan(1.0) &amp;rarr; 1.5574077246549&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen tan()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen tan()&lt;/h3&gt;
 Returnerer tangens af en vinkel.
 
 
@@ -59454,7 +61917,7 @@ None
 &lt;pre&gt;$feature &amp;rarr; 2&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;Funktionen $feature&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen $feature&lt;/h3&gt;
 Returnerer det aktuelle objektnummer, som der itereres over på dækningslaget, ved oprettelse af atlas.
 
 &lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -59485,7 +61948,7 @@ This function takes one argument.
 &lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen ln()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen ln()&lt;/h3&gt;
 Returnerer værdien af den naturlige logaritme af det angivne udtryk.
 &lt;br&gt;
 Denne funktion tager 1 argument.
@@ -59520,7 +61983,7 @@ Returns a string representation of a color based on its hue, saturation, value a
 &lt;!-- Show example of function.--&gt;
      color_hsva(40,100,100,200) &amp;rarr; &apos;255,170,0,200&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Funktionen color_hsva()&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Funktionen color_hsva()&lt;/h3&gt;
 Returnerer en strengrepræsentation af en farve baseret på dens farvetone-, mætning-, værdi- og alfa(transparens)-attributter
 
 &lt;p&gt;&lt;h4&gt;Syntaks&lt;/h4&gt;
@@ -59538,219 +62001,6 @@ Returnerer en strengrepræsentation af en farve baseret på dens farvetone-, mæ
      color_hsva(40,100,100,200) &amp;rarr; &apos;255,170,0,200&apos;&lt;/p&gt;
 </translation>
     </message>
-    <message>
-        <source>&lt;h3&gt;geometry function&lt;/h3&gt;
-Returns the feature&apos;s geometry
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;geometry( f )&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-f &amp;rarr; QgsFeature
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; geomToWKT( geometry( getFeature( layer, attributeField, value ) ) ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
-&lt;pre&gt; intersects( $geometry, geometry( getFeature( layer, attributeField, value ) ) ) &amp;rarr; 1&lt;/pre&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;transform function&lt;/h3&gt;
-Returns the geometry transformed from the source CRS to the dest CRS.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;transform( geom, sAuthId, dAuthId )&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-geom &amp;rarr; QgsGeometry
-
-sCrsId &amp;rarr; the Source Auth CRS Id
-
-dCrsId &amp;rarr; the Dest Auth CRS Id
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; geomToWKT( transform( $geometry, &apos;EPSG:2154&apos;, &apos;EPSG:4326&apos; ) ) &amp;rarr; POINT(0 51)&lt;/pre&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;format_date() function&lt;/h3&gt;
-Format a date type or string into a custom string format. Uses Qt data time format strings.  See &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/qdatetime.html#toString&apos;&gt;QDateTime::toString&lt;/a&gt;
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;format_date(&apos;string&apos;, &apos;format_string&apos;)&lt;/code&gt;&lt;br&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;string&lt;/code&gt; - is string. Date/Time/DateTime string.
-&lt;br&gt;
-&lt;code&gt;format_string&lt;/code&gt; - is string. String template used to format the string.
-
-  &lt;table&gt;
-    &lt;thead&gt;
-      &lt;tr&gt;
-        &lt;th&gt;Expression&lt;/th&gt;
-
-        &lt;th&gt;Output&lt;/th&gt;
-      &lt;/tr&gt;
-    &lt;/thead&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;d&lt;/td&gt;
-
-      &lt;td&gt;the day as number without a leading zero (1 to 31)&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;dd&lt;/td&gt;
-
-      &lt;td&gt;the day as number with a leading zero (01 to 31)&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;ddd&lt;/td&gt;
-
-      &lt;td&gt;the abbreviated localized day name (e.g. &apos;Mon&apos; to &apos;Sun&apos;). Uses &lt;a href=
-      &quot;qdate.html#shortDayName&quot;&gt;QDate::shortDayName&lt;/a&gt;().&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;dddd&lt;/td&gt;
-
-      &lt;td&gt;the long localized day name (e.g. &apos;Monday&apos; to &apos;Sunday&apos;). Uses &lt;a href=
-      &quot;qdate.html#longDayName&quot;&gt;QDate::longDayName&lt;/a&gt;().&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;M&lt;/td&gt;
-
-      &lt;td&gt;the month as number without a leading zero (1-12)&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;MM&lt;/td&gt;
-
-      &lt;td&gt;the month as number with a leading zero (01-12)&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;MMM&lt;/td&gt;
-
-      &lt;td&gt;the abbreviated localized month name (e.g. &apos;Jan&apos; to &apos;Dec&apos;). Uses &lt;a href=
-      &quot;qdate.html#shortMonthName&quot;&gt;QDate::shortMonthName&lt;/a&gt;().&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;MMMM&lt;/td&gt;
-
-      &lt;td&gt;the long localized month name (e.g. &apos;January&apos; to &apos;December&apos;). Uses &lt;a href=
-      &quot;qdate.html#longMonthName&quot;&gt;QDate::longMonthName&lt;/a&gt;().&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;yy&lt;/td&gt;
-
-      &lt;td&gt;the year as two digit number (00-99)&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;yyyy&lt;/td&gt;
-
-      &lt;td&gt;the year as four digit number&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/table&gt;
-
-  &lt;p&gt;These expressions may be used for the time part of the format string:&lt;/p&gt;
-
-  &lt;table&gt;
-    &lt;thead&gt;
-      &lt;tr&gt;
-        &lt;th&gt;Expression&lt;/th&gt;
-
-        &lt;th&gt;Output&lt;/th&gt;
-      &lt;/tr&gt;
-    &lt;/thead&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;h&lt;/td&gt;
-
-      &lt;td&gt;the hour without a leading zero (0 to 23 or 1 to 12 if AM/PM display)&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;hh&lt;/td&gt;
-
-      &lt;td&gt;the hour with a leading zero (00 to 23 or 01 to 12 if AM/PM display)&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;H&lt;/td&gt;
-
-      &lt;td&gt;the hour without a leading zero (0 to 23, even with AM/PM display)&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;HH&lt;/td&gt;
-
-      &lt;td&gt;the hour with a leading zero (00 to 23, even with AM/PM display)&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;m&lt;/td&gt;
-
-      &lt;td&gt;the minute without a leading zero (0 to 59)&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;mm&lt;/td&gt;
-
-      &lt;td&gt;the minute with a leading zero (00 to 59)&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;s&lt;/td&gt;
-
-      &lt;td&gt;the second without a leading zero (0 to 59)&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;ss&lt;/td&gt;
-
-      &lt;td&gt;the second with a leading zero (00 to 59)&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;z&lt;/td&gt;
-
-      &lt;td&gt;the milliseconds without leading zeroes (0 to 999)&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;zzz&lt;/td&gt;
-
-      &lt;td&gt;the milliseconds with leading zeroes (000 to 999)&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;AP or A&lt;/td&gt;
-
-      &lt;td&gt;interpret as an AM/PM time. &lt;i&gt;AP&lt;/i&gt; must be either &quot;AM&quot; or &quot;PM&quot;.&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;ap or a&lt;/td&gt;
-
-      &lt;td&gt;Interpret as an AM/PM time. &lt;i&gt;ap&lt;/i&gt; must be either &quot;am&quot; or &quot;pm&quot;.&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/table&gt;
-
-&lt;br&gt;
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-&lt;code&gt;format_date(&apos;2012-05-15&apos;,&apos;dd.MM.yyyy&apos;) &amp;rarr; 15.05.2012&lt;/code&gt;&lt;br&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>gdal2xyz</name>
@@ -59764,7 +62014,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output file</source>
-        <translation>Output-fil</translation>
+        <translation type="obsolete">Output-fil</translation>
+    </message>
+    <message>
+        <source>xyz</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -59791,7 +62045,101 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
+    </message>
+    <message>
+        <source>Pyramidized</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>gdalcalc</name>
+    <message>
+        <source>Input layer A</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of raster band for raster A</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input layer B</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of raster band for raster B</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input layer C</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of raster band for raster C</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input layer D</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of raster band for raster D</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input layer E</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of raster band for raster E</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input layer F</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of raster band for raster F</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculation in gdalnumeric syntax using +-/* or any numpy array functions (i.e. logical_and())</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set output nodata value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output raster type</source>
+        <translation type="unfinished">Output raster type</translation>
+    </message>
+    <message>
+        <source>Additional creation parameters</source>
+        <translation type="unfinished">Yderligere dannelsesparametre</translation>
+    </message>
+    <message>
+        <source>Calculated</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>gdaltindex</name>
+    <message>
+        <source>Input layers</source>
+        <translation type="unfinished">Inputlag</translation>
+    </message>
+    <message>
+        <source>Tile index field</source>
+        <translation type="unfinished">Felt til tile-indeks</translation>
+    </message>
+    <message>
+        <source>Skip files with different projection reference</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tile index</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -61616,7 +63964,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output file</source>
-        <translation>Output-fil</translation>
+        <translation type="obsolete">Output-fil</translation>
+    </message>
+    <message>
+        <source>Hillshade</source>
+        <translation type="unfinished">Lys/skygge</translation>
     </message>
 </context>
 <context>
@@ -62604,7 +64956,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
+    </message>
+    <message>
+        <source>Merged</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -62623,7 +64979,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
+    </message>
+    <message>
+        <source>Nearblack</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -62722,7 +65082,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
+    </message>
+    <message>
+        <source>PCT to RGB</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -62737,7 +65101,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
+    </message>
+    <message>
+        <source>Vectorized</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -62772,7 +65140,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
+    </message>
+    <message>
+        <source>Distance</source>
+        <translation type="unfinished">Afstand</translation>
     </message>
 </context>
 <context>
@@ -62784,10 +65156,6 @@ Format a date type or string into a custom string format. Uses Qt data time form
     <message>
         <source>Attribute field</source>
         <translation>Attributfelt</translation>
-    </message>
-    <message>
-        <source>Write values inside an existing raster layer(*)</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Set output raster size (ignored if above option is checked)</source>
@@ -62804,10 +65172,6 @@ Format a date type or string into a custom string format. Uses Qt data time form
     <message>
         <source>Raster type</source>
         <translation>Raster type</translation>
-    </message>
-    <message>
-        <source>Output layer: mandatory to choose an existing raster layer if the (*) option is selected</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Nodata value</source>
@@ -62838,7 +65202,26 @@ Format a date type or string into a custom string format. Uses Qt data time form
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Force the generation of an associated ESRI world file (.tfw))</source>
+        <source>Force the generation of an associated ESRI world file (.tfw)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rasterized</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>rasterize_over</name>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished">Inputlag</translation>
+    </message>
+    <message>
+        <source>Attribute field</source>
+        <translation type="unfinished">Attributfelt</translation>
+    </message>
+    <message>
+        <source>Existing raster layer</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -62854,7 +65237,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
+    </message>
+    <message>
+        <source>RGB to PCT</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -62873,7 +65260,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output file</source>
-        <translation>Output-fil</translation>
+        <translation type="obsolete">Output-fil</translation>
+    </message>
+    <message>
+        <source>Roughness</source>
+        <translation type="unfinished">Grovhed</translation>
     </message>
 </context>
 <context>
@@ -62962,7 +65353,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
+    </message>
+    <message>
+        <source>Sieved</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -62993,7 +65388,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output file</source>
-        <translation>Output-fil</translation>
+        <translation type="obsolete">Output-fil</translation>
+    </message>
+    <message>
+        <source>Slope</source>
+        <translation type="unfinished">Hældning</translation>
     </message>
 </context>
 <context>
@@ -63151,7 +65550,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output file</source>
-        <translation>Output-fil</translation>
+        <translation type="obsolete">Output-fil</translation>
+    </message>
+    <message>
+        <source>Topographic Position Index</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -63194,7 +65597,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
     </message>
     <message>
         <source>Nodata value, leave blank to take the nodata value from input</source>
@@ -63228,6 +65631,10 @@ Format a date type or string into a custom string format. Uses Qt data time form
         <source>Force the generation of an associated ESRI world file (.tfw))</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Converted</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>tri</name>
@@ -63245,7 +65652,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output file</source>
-        <translation>Output-fil</translation>
+        <translation type="obsolete">Output-fil</translation>
+    </message>
+    <message>
+        <source>Terrain Ruggedness Index</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -63425,7 +65836,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output-lag</translation>
+        <translation type="obsolete">Output-lag</translation>
     </message>
     <message>
         <source>Nodata value, leave blank to take the nodata value from input</source>
@@ -63457,6 +65868,10 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Force the generation of an associated ESRI world file (.tfw))</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reprojected</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

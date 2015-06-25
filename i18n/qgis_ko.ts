@@ -162,7 +162,11 @@
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
+    </message>
+    <message>
+        <source>Added</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -223,7 +227,11 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
+    </message>
+    <message>
+        <source>Incremented</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -242,7 +250,11 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Output</source>
-        <translation>출력</translation>
+        <translation type="obsolete">출력</translation>
+    </message>
+    <message>
+        <source>Bar plot</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -253,10 +265,6 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Field to calculate statistics on</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Statistics for numeric field</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -299,6 +307,10 @@ Open the results dialog to check it.</source>
         <source>Standard deviation</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Statistics</source>
+        <translation type="unfinished">통계</translation>
+    </message>
 </context>
 <context>
     <name>BasicStatisticsStrings</name>
@@ -308,10 +320,6 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Field to calculate statistics on</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Statistics for text field</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -341,6 +349,10 @@ Open the results dialog to check it.</source>
     <message>
         <source>Number of unique values</source>
         <translation>Number of unique values</translation>
+    </message>
+    <message>
+        <source>Statistics for text</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -582,11 +594,15 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
     </message>
     <message>
         <source>Error calculating centroid</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Centroids</source>
+        <translation type="unfinished">센트로이드</translation>
     </message>
 </context>
 <context>
@@ -594,6 +610,29 @@ Open the results dialog to check it.</source>
     <message>
         <source>&lt;p&gt;Character: &lt;span style=&quot;font-size: 24pt; font-family: %1&quot;&gt;%2&lt;/span&gt;&lt;p&gt;Value: 0x%3</source>
         <translation>&lt;p&gt;문자: &lt;span style=&quot;font-size: 24pt; font-family: %1&quot;&gt;%2&lt;/span&gt;&lt;p&gt;값: 0x%3</translation>
+    </message>
+</context>
+<context>
+    <name>CheckValidity</name>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished">입력 레이어</translation>
+    </message>
+    <message>
+        <source>Method</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Valid output</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid output</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error output</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -635,10 +674,14 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
     </message>
     <message>
         <source>Nodata value, leave blank to take the nodata value from input</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clipped (extent)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -666,10 +709,14 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
     </message>
     <message>
         <source>Nodata value, leave blank to take the nodata value from input</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clipped (mask)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -743,7 +790,11 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Output file</source>
-        <translation>출력 파일</translation>
+        <translation type="obsolete">출력 파일</translation>
+    </message>
+    <message>
+        <source>Color relief</source>
+        <translation type="unfinished">색상 기복</translation>
     </message>
 </context>
 <context>
@@ -946,7 +997,11 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
+    </message>
+    <message>
+        <source>Constant</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1543,6 +1598,10 @@ Query:
         <source>%1 is an invalid layer and cannot be loaded. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
         <translation>%1이 잘못된 레이어라 읽을 수 없습니다. 추가정보는 &lt;a href=&quot;#messageLog&quot;&gt;메시지 로그&lt;/a&gt;를 확인해 주십시요.</translation>
     </message>
+    <message>
+        <source>New Connection...</source>
+        <translation type="unfinished">새 연결...</translation>
+    </message>
 </context>
 <context>
     <name>DTM2TIF</name>
@@ -1552,6 +1611,25 @@ Query:
     </message>
     <message>
         <source>Output file name</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Datasources2Vrt</name>
+    <message>
+        <source>Input datasources</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overwrite output vrt</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Virtual vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Virtual string</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1893,6 +1971,10 @@ columns</source>
         <source>Avoid selecting by feature id</source>
         <translation>객체 ID로 선택 않기</translation>
     </message>
+    <message>
+        <source>Create a view</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DbManagerDlgTableProperties</name>
@@ -1962,6 +2044,93 @@ columns</source>
     </message>
 </context>
 <context>
+    <name>DbManagerQueryBuilderDlg</name>
+    <message>
+        <source>SQL query builder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Columns</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tables     </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Where    </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Group by</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Order by</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show system tables</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tables</source>
+        <translation type="unfinished">테이블</translation>
+    </message>
+    <message>
+        <source>Aggregates</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Functions</source>
+        <translation type="unfinished">기능</translation>
+    </message>
+    <message>
+        <source>Math</source>
+        <translation type="unfinished">수학</translation>
+    </message>
+    <message>
+        <source>Strings functions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Operators</source>
+        <translation type="unfinished">연산자</translation>
+    </message>
+    <message>
+        <source>Columns&apos; values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Only 10 first values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Spatial index</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Table (with spatial index)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Table (Target)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use spatial index</source>
+        <translation type="unfinished">공간 인덱스 사용</translation>
+    </message>
+    <message>
+        <source>&amp;Reset</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Delaunay</name>
     <message>
         <source>Input layer</source>
@@ -1988,7 +2157,11 @@ columns</source>
     </message>
     <message>
         <source>Output</source>
-        <translation>출력</translation>
+        <translation type="obsolete">출력</translation>
+    </message>
+    <message>
+        <source>Deleted column</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1999,7 +2172,22 @@ columns</source>
     </message>
     <message>
         <source>Output</source>
-        <translation>출력</translation>
+        <translation type="obsolete">출력</translation>
+    </message>
+    <message>
+        <source>Cleaned</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DeleteHoles</name>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished">입력 레이어</translation>
+    </message>
+    <message>
+        <source>Cleaned</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2043,7 +2231,7 @@ columns</source>
         <translation>추가할 버텍스</translation>
     </message>
     <message>
-        <source>Densified layer</source>
+        <source>Densified</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2058,7 +2246,7 @@ columns</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Densified layer</source>
+        <source>Densified</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3132,6 +3320,42 @@ Are you sure you want to proceed?</source>
         <source>Include input features that intersect the selection features</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Statistical method for attribute aggregation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input point vector layer attributes to aggregate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select columns</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>sum</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>stddev</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>mean</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>max</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>min</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotation angle in degrees</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Difference</name>
@@ -3196,7 +3420,85 @@ Are you sure you want to proceed?</source>
     </message>
 </context>
 <context>
+    <name>DinfDistDownMulti</name>
+    <message>
+        <source>D-Infinity Flow Direction Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pit Filled Elevation Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stream Raster Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Weight Path Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Statistical Method</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Distance Method</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check for edge contamination</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>D-Infinity Drop to Stream Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>DinfDistUp</name>
+    <message>
+        <source>D-Infinity Flow Direction Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pit Filled Elevation Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Slope Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Statistical Method</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Distance Method</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Proportion Threshold</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check for edge contamination</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>D-Infinity Distance Up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DinfDistUpMulti</name>
     <message>
         <source>D-Infinity Flow Direction Grid</source>
         <translation type="unfinished"></translation>
@@ -3305,6 +3607,84 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>Output Concentration Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DinfTransLimAccum2Multi</name>
+    <message>
+        <source>D-Infinity Flow Direction Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Supply Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transport Capacity Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input Concentration Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Outlets Shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check for edge contamination</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transport Limited Accumulation Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deposition Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output Concentration Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>DinfTransLimAccumMulti</name>
+    <message>
+        <source>D-Infinity Flow Direction Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Supply Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transport Capacity Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Outlets Shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check for edge contamination</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transport Limited Accumulation Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deposition Grid</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3793,12 +4173,12 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>DB Manager</source>
-        <translation>DB 관리자</translation>
+        <translation type="obsolete">DB 관리자</translation>
     </message>
     <message>
         <source>You must fill the required fields: 
 geometry column - column with unique integer values</source>
-        <translation>필수 필드들을 채워야 함:
+        <translation type="obsolete">필수 필드들을 채워야 함:
 지오메트리 컬럼 - 유니크한 정수값을 가진 컬럼</translation>
     </message>
 </context>
@@ -3948,6 +4328,53 @@ geometry column - column with unique integer values</source>
     </message>
 </context>
 <context>
+    <name>DropAnalysisMulti</name>
+    <message>
+        <source>D8 Contributing Area Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>D8 Flow Direction Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pit Filled Elevation Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Accumulated Stream Source Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Outlets Shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minimum Threshold</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maximum Threshold</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of Threshold Values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Spacing for Threshold Values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>D-Infinity Drop to Stream Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>EditModelAction</name>
     <message>
         <source>Edit model</source>
@@ -3959,6 +4386,21 @@ geometry column - column with unique integer values</source>
     <message>
         <source>Edit script</source>
         <translation>스크립트 수정</translation>
+    </message>
+</context>
+<context>
+    <name>EffectPropertiesWidget</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Effect type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This effect doesn&apos;t have any editable properties</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3985,10 +4427,6 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Merge selection with the neighbouring polygon with the</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cleaned layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4031,6 +4469,10 @@ geometry column - column with unique integer values</source>
         <source>Could not replace geometry of feature with id %s</source>
         <translation>ID %s로 객체의 지오메트리를 대체할 수 없음</translation>
     </message>
+    <message>
+        <source>Cleaned</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>EquivalentNumField</name>
@@ -4044,7 +4486,11 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
+    </message>
+    <message>
+        <source>Numeric field</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4066,7 +4512,11 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
+    </message>
+    <message>
+        <source>Exploded</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4081,7 +4531,11 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
+    </message>
+    <message>
+        <source>Added geom info</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4096,7 +4550,11 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
+    </message>
+    <message>
+        <source>Extent</source>
+        <translation type="unfinished">범위</translation>
     </message>
 </context>
 <context>
@@ -4146,7 +4604,7 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Output</source>
-        <translation>출력</translation>
+        <translation type="obsolete">출력</translation>
     </message>
     <message>
         <source>Operators %s can be used only with string fields.</source>
@@ -4168,6 +4626,10 @@ geometry column - column with unique integer values</source>
         <source>Unsupported field type &quot;%s&quot;</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Extracted (attribute)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ExtractByLocation</name>
@@ -4181,10 +4643,14 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Selection</source>
-        <translation>선택 집합</translation>
+        <translation type="obsolete">선택 집합</translation>
     </message>
     <message>
         <source>Geometric predicate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Extracted (location)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4196,7 +4662,11 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
+    </message>
+    <message>
+        <source>Nodes</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4282,7 +4752,7 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
     </message>
     <message>
         <source>Evaluation error: %s</source>
@@ -4298,7 +4768,7 @@ geometry column - column with unique integer values</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Output is not set. Please specify valid filename</source>
+        <source>Calculated</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4318,7 +4788,7 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Wrong or missing parameter values</source>
-        <translation>잘못되거나 없는 파라미터 값</translation>
+        <translation type="obsolete">잘못되거나 없는 파라미터 값</translation>
     </message>
 </context>
 <context>
@@ -4333,7 +4803,7 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
     </message>
     <message>
         <source>Parser error in expression &quot;{}&quot;: {}</source>
@@ -4346,6 +4816,10 @@ geometry column - column with unique integer values</source>
     <message>
         <source>An error occurred while evaluating the calculation string:
 </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Refactored</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4381,7 +4855,7 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
     </message>
     <message>
         <source>FieldPyculator code execute error.Global code block can&apos;t be executed!
@@ -4398,6 +4872,10 @@ geometry column - column with unique integer values</source>
     <message>
         <source>FieldPyculator code execute error
 Field code block does not return &apos;%s1&apos; variable! Please declare this variable in your code!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculated</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6107,18 +6585,18 @@ See log for more details</source>
     <message>
         <source>&lt;p&gt;Oooops! The following output layers could not be open&lt;/p&gt;&lt;ul&gt;
 </source>
-        <translation>&lt;p&gt;이런! 다음 결과 레이어를 열 수 없습니다.&lt;/p&gt;&lt;ul&gt;
+        <translation type="obsolete">&lt;p&gt;이런! 다음 결과 레이어를 열 수 없습니다.&lt;/p&gt;&lt;ul&gt;
 </translation>
     </message>
     <message>
         <source>&lt;li&gt;%s: &lt;font size=3 face=&quot;Courier New&quot; color=&quot;#ff0000&quot;&gt;%s&lt;/font&gt;&lt;/li&gt;
 </source>
-        <translation>&lt;li&gt;%s: &lt;font size=3 face=&quot;Courier New&quot; color=&quot;#ff0000&quot;&gt;%s&lt;/font&gt;&lt;/li&gt;
+        <translation type="obsolete">&lt;li&gt;%s: &lt;font size=3 face=&quot;Courier New&quot; color=&quot;#ff0000&quot;&gt;%s&lt;/font&gt;&lt;/li&gt;
 </translation>
     </message>
     <message>
         <source>&lt;/ul&gt;&lt;p&gt;The above files could not be opened, which probably indicates that they were not correctly produced by the executed algorithm&lt;/p&gt;&lt;p&gt;Checking the log information might help you see why those layers were not created as expected&lt;/p&gt;</source>
-        <translation>&lt;/ul&gt;&lt;p&gt;위 파일을 열 수 없었습니다, 이는 아마도 수행된 알고리즘에 의해 완벽히 생산되지 못한 때문인 듯 합니다.&lt;/p&gt;&lt;p&gt;로그 정보를 확인하시면 이 레이어가 왜 기대한대로 생성되지 못했는지에 대한 정보를 찾을 수도 있습니다.&lt;/p&gt;</translation>
+        <translation type="obsolete">&lt;/ul&gt;&lt;p&gt;위 파일을 열 수 없었습니다, 이는 아마도 수행된 알고리즘에 의해 완벽히 생산되지 못한 때문인 듯 합니다.&lt;/p&gt;&lt;p&gt;로그 정보를 확인하시면 이 레이어가 왜 기대한대로 생성되지 못했는지에 대한 정보를 찾을 수도 있습니다.&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -6133,10 +6611,14 @@ See log for more details</source>
     </message>
     <message>
         <source>Output</source>
-        <translation>출력</translation>
+        <translation type="obsolete">출력</translation>
     </message>
     <message>
         <source>Cannot convert from %s to %s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Converted</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6493,6 +6975,25 @@ GEOS 공간 연산 오류: 하나 이상의 객체의 지오메트리가 잘못�
     </message>
 </context>
 <context>
+    <name>GetRScriptsAction</name>
+    <message>
+        <source>Get R scripts from on-line scripts collection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tools</source>
+        <translation type="unfinished">도구</translation>
+    </message>
+    <message>
+        <source>Connection problem</source>
+        <translation type="unfinished">연결 오류</translation>
+    </message>
+    <message>
+        <source>Could not connect to scripts/models repository</source>
+        <translation type="unfinished">스크립트/모델 저장소에 연결할 수 없음</translation>
+    </message>
+</context>
+<context>
     <name>GetScriptsAction</name>
     <message>
         <source>Get scripts from on-line scripts collection</source>
@@ -6612,18 +7113,6 @@ GEOS 공간 연산 오류: 하나 이상의 객체의 지오메트리가 잘못�
         <source>&lt;p&gt;This algorithm requires GRASS GIS 7 to be run. Unfortunately, it seems that GRASS GIS 7 is not installed in your system, or it is not correctly configured to be used from QGIS&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Click here&lt;/a&gt; to know more about how to install and configure GRASS GIS 7 to be used with QGIS&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>&lt;p&gt;This algorithm requires GRASS GIS 7 to be run. A test to check if GRASS GIS 7 is correctly installed and configured in your system has been performed, with the following result:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>GRASS GIS 7 seems to be correctly installed and configured&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Click here&lt;/a&gt; to know more about how to install and configure GRASS GIS 7 to be used with QGIS&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>Grass7AlgorithmProvider</name>
@@ -6707,18 +7196,6 @@ Please configure it before running GRASS algorithms.</source>
         <source>&lt;p&gt;This algorithm requires GRASS to be run. Unfortunately, it seems that GRASS is not installed in your system, or it is not correctly configured to be used from QGIS&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Click here&lt;/a&gt; to know more about how to install and configure GRASS to be used with QGIS&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>&lt;p&gt;This algorithm requires GRASS to be run. A test to check if GRASS is correctly installed and configured in your system has been performed, with the following result:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>GRASS seems to be correctly installed and configured&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Click here&lt;/a&gt; to know more about how to install and configure GRASS to be used with QGIS&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>GrassAlgorithmProvider</name>
@@ -6789,7 +7266,7 @@ Please install it before running GRASS algorithms.</source>
     </message>
     <message>
         <source>Output</source>
-        <translation>출력</translation>
+        <translation type="obsolete">출력</translation>
     </message>
     <message>
         <source>Invalid grid spacing: %s/%s</source>
@@ -6802,6 +7279,10 @@ Please install it before running GRASS algorithms.</source>
     <message>
         <source>Vertical spacing is too small for the covered area</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grid</source>
+        <translation type="unfinished">격자</translation>
     </message>
 </context>
 <context>
@@ -6840,7 +7321,11 @@ Please install it before running GRASS algorithms.</source>
     </message>
     <message>
         <source>Output file</source>
-        <translation>출력 파일</translation>
+        <translation type="obsolete">출력 파일</translation>
+    </message>
+    <message>
+        <source>Interpolated moving average</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6883,7 +7368,11 @@ Please install it before running GRASS algorithms.</source>
     </message>
     <message>
         <source>Output file</source>
-        <translation>출력 파일</translation>
+        <translation type="obsolete">출력 파일</translation>
+    </message>
+    <message>
+        <source>Interpolated metrics</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6930,11 +7419,15 @@ Please install it before running GRASS algorithms.</source>
     </message>
     <message>
         <source>Output file</source>
-        <translation>출력 파일</translation>
+        <translation type="obsolete">출력 파일</translation>
     </message>
     <message>
         <source>Smoothing</source>
         <translation>평활화</translation>
+    </message>
+    <message>
+        <source>Interpolated IDW</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7012,11 +7505,50 @@ Please install it before running GRASS algorithms.</source>
     </message>
     <message>
         <source>Output file</source>
-        <translation>출력 파일</translation>
+        <translation type="obsolete">출력 파일</translation>
+    </message>
+    <message>
+        <source>Interpolated nearest neighbor</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>GridNet</name>
+    <message>
+        <source>D8 Flow Direction Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Outlets Shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mask Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mask Threshold</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Longest Upslope Length Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Total Upslope Length Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Strahler Network Order Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>GridNetMulti</name>
     <message>
         <source>D8 Flow Direction Grid</source>
         <translation type="unfinished"></translation>
@@ -7117,7 +7649,7 @@ Please install it before running GRASS algorithms.</source>
     </message>
     <message>
         <source>Output</source>
-        <translation>출력</translation>
+        <translation type="obsolete">출력</translation>
     </message>
     <message>
         <source>Invalid grid spacing: %s/%s</source>
@@ -7125,6 +7657,10 @@ Please install it before running GRASS algorithms.</source>
     </message>
     <message>
         <source>Failed to gridify feature with FID %s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Snapped</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7183,7 +7719,7 @@ Please install it before running GRASS algorithms.</source>
     </message>
     <message>
         <source>Creating heatmap</source>
-        <translation>온도지도 생성중</translation>
+        <translation type="obsolete">온도지도 생성중</translation>
     </message>
     <message>
         <source>Abort</source>
@@ -7196,6 +7732,14 @@ Please install it before running GRASS algorithms.</source>
     <message>
         <source>QGIS will now load the partially-computed raster</source>
         <translation>QGIS가 이제 부분적으로 계산된 래스터를 불러옴</translation>
+    </message>
+    <message>
+        <source>Rendering heatmap...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS</source>
+        <translation type="unfinished">QGIS</translation>
     </message>
 </context>
 <context>
@@ -7344,7 +7888,7 @@ Please install it before running GRASS algorithms.</source>
     </message>
     <message>
         <source>Error saving help file</source>
-        <translation>도움말 파일 저장 오류</translation>
+        <translation type="obsolete">도움말 파일 저장 오류</translation>
     </message>
     <message>
         <source>Help file could not be saved.
@@ -7352,7 +7896,7 @@ Check that you have permission to modify the help
 file. You might not have permission if you are 
 editing an example model or script, since they 
 are stored on the installation folder</source>
-        <translation>도움말 파일을 저장하지 못했습니다.
+        <translation type="obsolete">도움말 파일을 저장하지 못했습니다.
 도움말 수정 권한이 있는지 확인 부탁 드립니다.
 만약 사용자가 예제 모델이나 스크립트를
 처음 설치된 폴더에 저장된 채로 수정하려
@@ -7409,7 +7953,7 @@ are stored on the installation folder</source>
     </message>
     <message>
         <source>Clear history and log</source>
-        <translation>이력과 로그</translation>
+        <translation type="obsolete">이력과 로그</translation>
     </message>
     <message>
         <source>Save As...</source>
@@ -7417,7 +7961,7 @@ are stored on the installation folder</source>
     </message>
     <message>
         <source>Save history and log</source>
-        <translation>이력과 로그 저장</translation>
+        <translation type="obsolete">이력과 로그 저장</translation>
     </message>
     <message>
         <source>Confirmation</source>
@@ -7425,7 +7969,7 @@ are stored on the installation folder</source>
     </message>
     <message>
         <source>Are you sure you want to clear log?</source>
-        <translation>정말로 로그를 지우시겠습니까?</translation>
+        <translation type="obsolete">정말로 로그를 지우시겠습니까?</translation>
     </message>
     <message>
         <source>Save file</source>
@@ -7438,6 +7982,18 @@ are stored on the installation folder</source>
     <message>
         <source>Create test</source>
         <translation>테스트 만들기</translation>
+    </message>
+    <message>
+        <source>Clear history</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save history</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to clear the history?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7479,10 +8035,14 @@ are stored on the installation folder</source>
     </message>
     <message>
         <source>Output</source>
-        <translation>출력</translation>
+        <translation type="obsolete">출력</translation>
     </message>
     <message>
         <source>Same layer given for both hubs and spokes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hub distance</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7506,10 +8066,14 @@ are stored on the installation folder</source>
     </message>
     <message>
         <source>Output</source>
-        <translation>출력</translation>
+        <translation type="obsolete">출력</translation>
     </message>
     <message>
         <source>Same layer given for both hubs and spokes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hub lines</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7532,10 +8096,6 @@ are stored on the installation folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Output directory</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Feature %d does not intersect raster or entirely located in NODATA area</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7546,6 +8106,14 @@ are stored on the installation folder</source>
     <message>
         <source>Elevation</source>
         <translation>고도 </translation>
+    </message>
+    <message>
+        <source>Hypsometric curves</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature %d is smaller than raster cell size</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7677,7 +8245,11 @@ are stored on the installation folder</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
+    </message>
+    <message>
+        <source>Joined layer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7882,6 +8454,33 @@ Please configure it before running LAStools algorithms.</source>
     </message>
 </context>
 <context>
+    <name>LengthAreaMulti</name>
+    <message>
+        <source>Length Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Contributing Area Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Threshold</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exponent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stream Source Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>LidarToolsAlgorithmProvider</name>
     <message>
         <source>LAStools folder</source>
@@ -7920,7 +8519,11 @@ Please configure it before running LAStools algorithms.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
+    </message>
+    <message>
+        <source>Intersections</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7931,7 +8534,11 @@ Please configure it before running LAStools algorithms.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
+    </message>
+    <message>
+        <source>Polygons from lines</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8578,7 +9185,7 @@ Please configure it before running LAStools algorithms.</source>
     </message>
     <message>
         <source>Query...</source>
-        <translation>검색...</translation>
+        <translation type="obsolete">검색...</translation>
     </message>
     <message>
         <source>Add to Overview</source>
@@ -9001,6 +9608,18 @@ Acts on currently active editable layer</source>
         <source>New temporary scratch layer</source>
         <translation>새 임시 스크래치 레이어</translation>
     </message>
+    <message>
+        <source>Filter...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Statistical Summary</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show statistical summary</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ManageConnectionsDialog</name>
@@ -9077,7 +9696,11 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>Output</source>
-        <translation>출력</translation>
+        <translation type="obsolete">출력</translation>
+    </message>
+    <message>
+        <source>Plot</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9096,7 +9719,11 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>Result</source>
-        <translation>결과</translation>
+        <translation type="obsolete">결과</translation>
+    </message>
+    <message>
+        <source>Mean coordinates</source>
+        <translation type="unfinished">평균 좌표</translation>
     </message>
 </context>
 <context>
@@ -9111,10 +9738,14 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>Output</source>
-        <translation>출력</translation>
+        <translation type="obsolete">출력</translation>
     </message>
     <message>
         <source>Merged layers must have be same type of geometry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Merged</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -9133,11 +9764,15 @@ Acts on currently active editable layer</source>
     <name>MessageBarProgress</name>
     <message>
         <source>Executing algorithm</source>
-        <translation>알고리즘 실행 중</translation>
+        <translation type="obsolete">알고리즘 실행 중</translation>
     </message>
     <message>
         <source>Error</source>
         <translation>오류</translation>
+    </message>
+    <message>
+        <source>Executing algorithm &lt;i&gt;{0}&lt;/i&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9431,6 +10066,30 @@ Acts on currently active editable layer</source>
         <source>seconds</source>
         <translation>초</translation>
     </message>
+    <message>
+        <source>Connection naming</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>When saving the connection of an OWS service</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use the OWS Service Title and ask before overwriting</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use the OWS Service Title and always overwrite if already available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use a temporary name, which you can change later</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Record parsing error</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ModelerAlgorithm</name>
@@ -9467,6 +10126,14 @@ Acts on currently active editable layer</source>
     <message>
         <source>Model processed ok. Executed %i algorithms total</source>
         <translation>모델 처리 완료: 총 %i 개의 알고리즘이 실행됨</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation type="unfinished">경고</translation>
+    </message>
+    <message>
+        <source>Parameter %s in algorithm %s in the model is run with default value! Edit the model to make sure that this is correct.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9786,7 +10453,11 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
+    </message>
+    <message>
+        <source>Single parts</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9846,7 +10517,7 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Result</source>
-        <translation>결과</translation>
+        <translation type="obsolete">결과</translation>
     </message>
     <message>
         <source>Observed mean distance</source>
@@ -9867,6 +10538,10 @@ See the log for more information.</source>
     <message>
         <source>Z-Score</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nearest neighbour</source>
+        <translation type="unfinished">최근린</translation>
     </message>
 </context>
 <context>
@@ -9894,6 +10569,10 @@ See the log for more information.</source>
     <message>
         <source>Overwrite %s?</source>
         <translation>%s를 덮어쓸까요?</translation>
+    </message>
+    <message>
+        <source>Name cannot contain &apos;/&apos;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10044,7 +10723,46 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
+    </message>
+    <message>
+        <source>Converted</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Ogr2OgrBuffer</name>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished">입력 레이어</translation>
+    </message>
+    <message>
+        <source>Geometry column name (&quot;geometry&quot; for Shapefiles, may be different for other formats)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Buffer distance</source>
+        <translation type="unfinished">버퍼 거리</translation>
+    </message>
+    <message>
+        <source>Dissolve all results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dissolve by attribute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output as singlepart geometries (only used when dissolving by attribute)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Additional creation options (see ogr2ogr manual)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Buffer</source>
+        <translation type="unfinished">버퍼</translation>
     </message>
 </context>
 <context>
@@ -10063,7 +10781,11 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
+    </message>
+    <message>
+        <source>Clipped (polygon)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10082,7 +10804,187 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
+    </message>
+    <message>
+        <source>Clipped (extent)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Ogr2OgrDissolve</name>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished">입력 레이어</translation>
+    </message>
+    <message>
+        <source>Geometry column name (&quot;geometry&quot; for Shapefiles, may be different for other formats)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dissolve field</source>
+        <translation type="unfinished">필드 병합(Dissolve)</translation>
+    </message>
+    <message>
+        <source>Output as multipart geometries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Keep input attributes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Count dissolved features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Compute area and perimeter of dissolved features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Compute min/max/sum/mean for the following numeric attribute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Numeric attribute to compute dissolved features stats</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Additional creation options (see ogr2ogr manual)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dissolved</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Ogr2OgrOneSideBuffer</name>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished">입력 레이어</translation>
+    </message>
+    <message>
+        <source>Operation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Geometry column name (&quot;geometry&quot; for Shapefiles, may be different for other formats)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Buffer distance</source>
+        <translation type="unfinished">버퍼 거리</translation>
+    </message>
+    <message>
+        <source>Buffer side</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dissolve all results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dissolve by attribute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output as singlepart geometries (only used when dissolving by attribute)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Additional creation options (see ogr2ogr manual)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Single sided buffer</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Ogr2OgrPointsOnLines</name>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished">입력 레이어</translation>
+    </message>
+    <message>
+        <source>Geometry column name (&quot;geometry&quot; for Shapefiles, may be different for other formats)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Distance from line start represented as fraction of line length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Additional creation options (see ogr2ogr manual)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Points along lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Ogr2OgrTableToPostGisList</name>
+    <message>
+        <source>Database (connection name)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished">입력 레이어</translation>
+    </message>
+    <message>
+        <source>Schema name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Table name, leave blank to use input name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Primary key</source>
+        <translation type="unfinished">기본 키</translation>
+    </message>
+    <message>
+        <source>Primary key (existing field, used if the above option is left empty)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select features using a SQL &quot;WHERE&quot; statement (Ex: column=&apos;value&apos;)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Group N features per transaction (Default: 20000)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Overwrite existing table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Append to existing table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Append and add new fields to existing table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do not launder columns/table names</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Continue after a failure, skipping the failed record</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Keep width and precision of input attributes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Additional creation options</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10148,10 +11050,6 @@ See the log for more information.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Select features using a SQL &quot;WHERE&quot; statement (Ex: column=&quot;value&quot;)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Group N features per transaction (Default: 20000)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -10209,6 +11107,10 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Keep width and precision of input attributes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select features using a SQL &quot;WHERE&quot; statement (Ex: column=&apos;value&apos;)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -10259,10 +11161,6 @@ See the log for more information.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Select features using a SQL &quot;WHERE&quot; statement (Ex: column=&quot;value&quot;)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Group N features per transaction (Default: 20000)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -10320,6 +11218,10 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Keep width and precision of input attributes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select features using a SQL &quot;WHERE&quot; statement (Ex: column=&apos;value&apos;)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -10564,6 +11466,33 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
 </context>
 <context>
+    <name>PeukerDouglasMulti</name>
+    <message>
+        <source>Elevation Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Center Smoothing Weight</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Side Smoothing Weight</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Diagonal Smoothing Weight</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stream Source Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>PointDistance</name>
     <message>
         <source>Input point layer</source>
@@ -10610,7 +11539,11 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
+    </message>
+    <message>
+        <source>Displaced</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10625,7 +11558,11 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
+    </message>
+    <message>
+        <source>Points along line</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10640,7 +11577,11 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
+    </message>
+    <message>
+        <source>Points from polygons</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10659,7 +11600,11 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>Result</source>
-        <translation>결과</translation>
+        <translation type="obsolete">결과</translation>
+    </message>
+    <message>
+        <source>Count</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10689,7 +11634,11 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>Result</source>
-        <translation>결과</translation>
+        <translation type="obsolete">결과</translation>
+    </message>
+    <message>
+        <source>Unique count</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10712,7 +11661,11 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>Result</source>
-        <translation>결과</translation>
+        <translation type="obsolete">결과</translation>
+    </message>
+    <message>
+        <source>Weighted count</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10735,7 +11688,11 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
+    </message>
+    <message>
+        <source>Points from table</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10781,7 +11738,11 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>Output</source>
-        <translation>출력</translation>
+        <translation type="obsolete">출력</translation>
+    </message>
+    <message>
+        <source>Polar plot</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10851,7 +11812,11 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
+    </message>
+    <message>
+        <source>Polygons from lines</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10862,7 +11827,11 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
+    </message>
+    <message>
+        <source>Lines from polygons</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -11019,7 +11988,7 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>&amp;History and Log...</source>
-        <translation>이력 및 로그(&amp;H)...</translation>
+        <translation type="obsolete">이력 및 로그(&amp;H)...</translation>
     </message>
     <message>
         <source>&amp;Options...</source>
@@ -11035,6 +12004,10 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>Ctrl+Alt+M</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;History...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -11997,7 +12970,7 @@ Error(%2): %3</source>
     </message>
     <message>
         <source>GEOS prior to 3.2 doesn&apos;t support GEOSInterpolate</source>
-        <translation>GEOS는 3.2 이전 GEOSInterpolate을 지원하지 않습니다</translation>
+        <translation type="obsolete">GEOS는 3.2 이전 GEOSInterpolate을 지원하지 않습니다</translation>
     </message>
     <message>
         <source>segment %1 of ring %2 of polygon %3 intersects segment %4 of ring %5 of polygon %6 at %7</source>
@@ -12956,219 +13929,219 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <source>Location: %1</source>
-        <translation>위치: %1</translation>
+        <translation type="obsolete">위치: %1</translation>
     </message>
     <message>
         <source>Location: %1&lt;br&gt;Mapset: %2</source>
-        <translation>위치: %1&lt;br&gt;맵셋: %2</translation>
+        <translation type="obsolete">위치: %1&lt;br&gt;맵셋: %2</translation>
     </message>
     <message>
         <source>&lt;b&gt;Raster&lt;/b&gt;</source>
-        <translation>&lt;b&gt;래스터&lt;/b&gt;</translation>
+        <translation type="obsolete">&lt;b&gt;래스터&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Cannot open raster header</source>
-        <translation>클러스터 헤더를 열 수 없음</translation>
+        <translation type="obsolete">클러스터 헤더를 열 수 없음</translation>
     </message>
     <message>
         <source>Rows</source>
-        <translation>행</translation>
+        <translation type="obsolete">행</translation>
     </message>
     <message>
         <source>Columns</source>
-        <translation>컬럼</translation>
+        <translation type="obsolete">컬럼</translation>
     </message>
     <message>
         <source>N-S resolution</source>
-        <translation>남북 방향 해상도</translation>
+        <translation type="obsolete">남북 방향 해상도</translation>
     </message>
     <message>
         <source>E-W resolution</source>
-        <translation>동서 방향 해상도</translation>
+        <translation type="obsolete">동서 방향 해상도</translation>
     </message>
     <message>
         <source>North</source>
-        <translation>북쪽</translation>
+        <translation type="obsolete">북쪽</translation>
     </message>
     <message>
         <source>South</source>
-        <translation>남쪽</translation>
+        <translation type="obsolete">남쪽</translation>
     </message>
     <message>
         <source>East</source>
-        <translation>동쪽</translation>
+        <translation type="obsolete">동쪽</translation>
     </message>
     <message>
         <source>West</source>
-        <translation>서쪽</translation>
+        <translation type="obsolete">서쪽</translation>
     </message>
     <message>
         <source>Format</source>
-        <translation>형식</translation>
+        <translation type="obsolete">형식</translation>
     </message>
     <message>
         <source>Minimum value</source>
-        <translation>최소</translation>
+        <translation type="obsolete">최소</translation>
     </message>
     <message>
         <source>Maximum value</source>
-        <translation>최대</translation>
+        <translation type="obsolete">최대</translation>
     </message>
     <message>
         <source>Data source</source>
-        <translation>데이터 소스</translation>
+        <translation type="obsolete">데이터 소스</translation>
     </message>
     <message>
         <source>Data description</source>
-        <translation>데이터 설명</translation>
+        <translation type="obsolete">데이터 설명</translation>
     </message>
     <message>
         <source>Comments</source>
-        <translation>코멘트</translation>
+        <translation type="obsolete">코멘트</translation>
     </message>
     <message>
         <source>Categories</source>
-        <translation>카테고리</translation>
+        <translation type="obsolete">카테고리</translation>
     </message>
     <message>
         <source>&lt;b&gt;Vector&lt;/b&gt;</source>
-        <translation>&lt;b&gt;벡터&lt;/b&gt;</translation>
+        <translation type="obsolete">&lt;b&gt;벡터&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Points</source>
-        <translation>점</translation>
+        <translation type="obsolete">점</translation>
     </message>
     <message>
         <source>Lines</source>
-        <translation>선</translation>
+        <translation type="obsolete">선</translation>
     </message>
     <message>
         <source>Boundaries</source>
-        <translation>테두리</translation>
+        <translation type="obsolete">테두리</translation>
     </message>
     <message>
         <source>Centroids</source>
-        <translation>센트로이드</translation>
+        <translation type="obsolete">센트로이드</translation>
     </message>
     <message>
         <source>Faces</source>
-        <translation>면</translation>
+        <translation type="obsolete">면</translation>
     </message>
     <message>
         <source>Kernels</source>
-        <translation>커널</translation>
+        <translation type="obsolete">커널</translation>
     </message>
     <message>
         <source>Areas</source>
-        <translation>영역</translation>
+        <translation type="obsolete">영역</translation>
     </message>
     <message>
         <source>Islands</source>
-        <translation>섬</translation>
+        <translation type="obsolete">섬</translation>
     </message>
     <message>
         <source>Top</source>
-        <translation>상단</translation>
+        <translation type="obsolete">상단</translation>
     </message>
     <message>
         <source>Bottom</source>
-        <translation>하단</translation>
+        <translation type="obsolete">하단</translation>
     </message>
     <message>
         <source>yes</source>
-        <translation>예</translation>
+        <translation type="obsolete">예</translation>
     </message>
     <message>
         <source>no</source>
-        <translation>아니오</translation>
+        <translation type="obsolete">아니오</translation>
     </message>
     <message>
         <source>History&lt;br&gt;</source>
-        <translation>히스토리&lt;br&gt;</translation>
+        <translation type="obsolete">히스토리&lt;br&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Layer&lt;/b&gt;</source>
-        <translation>&lt;b&gt;레이어&lt;/b&gt;</translation>
+        <translation type="obsolete">&lt;b&gt;레이어&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Features</source>
-        <translation>객체</translation>
+        <translation type="obsolete">객체</translation>
     </message>
     <message>
         <source>Driver</source>
-        <translation>드라이버</translation>
+        <translation type="obsolete">드라이버</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation>테이블</translation>
+        <translation type="obsolete">테이블</translation>
     </message>
     <message>
         <source>Key column</source>
-        <translation>키 컬럼</translation>
+        <translation type="obsolete">키 컬럼</translation>
     </message>
     <message>
         <source>&lt;b&gt;Region&lt;/b&gt;</source>
-        <translation>&lt;b&gt;범위&lt;/b&gt;</translation>
+        <translation type="obsolete">&lt;b&gt;범위&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Cannot open region header</source>
-        <translation>리전 헤더를 열 수 없음</translation>
+        <translation type="obsolete">리전 헤더를 열 수 없음</translation>
     </message>
     <message>
         <source>XY</source>
-        <translation>XY</translation>
+        <translation type="obsolete">XY</translation>
     </message>
     <message>
         <source>UTM</source>
-        <translation>UTM</translation>
+        <translation type="obsolete">UTM</translation>
     </message>
     <message>
         <source>SP</source>
-        <translation>SP</translation>
+        <translation type="obsolete">SP</translation>
     </message>
     <message>
         <source>LL</source>
-        <translation>LL</translation>
+        <translation type="obsolete">LL</translation>
     </message>
     <message>
         <source>Other</source>
-        <translation>기타</translation>
+        <translation type="obsolete">기타</translation>
     </message>
     <message>
         <source>Projection Type</source>
-        <translation>프로젝션 타입</translation>
+        <translation type="obsolete">프로젝션 타입</translation>
     </message>
     <message>
         <source>Zone</source>
-        <translation>영역</translation>
+        <translation type="obsolete">영역</translation>
     </message>
     <message>
         <source>3D Cols</source>
-        <translation>3 차원 컬럼</translation>
+        <translation type="obsolete">3 차원 컬럼</translation>
     </message>
     <message>
         <source>3D Rows</source>
-        <translation>3 차원 행</translation>
+        <translation type="obsolete">3 차원 행</translation>
     </message>
     <message>
         <source>Depths</source>
-        <translation>깊이</translation>
+        <translation type="obsolete">깊이</translation>
     </message>
     <message>
         <source>E-W 3D resolution</source>
-        <translation>동서 방향 3 차원 해상도</translation>
+        <translation type="obsolete">동서 방향 3 차원 해상도</translation>
     </message>
     <message>
         <source>N-S 3D resolution</source>
-        <translation>남북 방향 3 차원 해상도</translation>
+        <translation type="obsolete">남북 방향 3 차원 해상도</translation>
     </message>
     <message>
         <source>GRASS</source>
-        <translation>GRASS</translation>
+        <translation type="obsolete">GRASS</translation>
     </message>
     <message>
         <source>GRASS layer</source>
-        <translation>GRASS 레이어</translation>
+        <translation type="obsolete">GRASS 레이어</translation>
     </message>
     <message>
         <source>Heatmap</source>
@@ -13378,7 +14351,7 @@ GRASS 설치 경로(GISBASE)를 지정하시겠습니까?</translation>
     </message>
     <message>
         <source>Cannot start %1/etc/lock</source>
-        <translation>다음을 시작할 수 없음: %1/etc/lock</translation>
+        <translation type="obsolete">다음을 시작할 수 없음: %1/etc/lock</translation>
     </message>
     <message>
         <source>Mapset is already in use.</source>
@@ -13402,11 +14375,11 @@ GRASS 설치 경로(GISBASE)를 지정하시겠습니까?</translation>
     </message>
     <message>
         <source>Cannot open vector %1 in mapset %2 on level 2 (topology not available, try to rebuild topology using v.build module).</source>
-        <translation>레벨 2의 지도 세트 %2의 벡터 %1을 열 수 없습니다. (토폴로지를 사용할 수 없습니다. 토폴로지를 이용하기 위해서는 v.build.module를 사용하여 다시 빌드를 시도하십시오).</translation>
+        <translation type="obsolete">레벨 2의 지도 세트 %2의 벡터 %1을 열 수 없습니다. (토폴로지를 사용할 수 없습니다. 토폴로지를 이용하기 위해서는 v.build.module를 사용하여 다시 빌드를 시도하십시오).</translation>
     </message>
     <message>
         <source>Cannot open vector %1 in mapset %2</source>
-        <translation>지도 세트 %2의 벡터 %1을 열 수 없음</translation>
+        <translation type="obsolete">지도 세트 %2의 벡터 %1을 열 수 없음</translation>
     </message>
     <message>
         <source>Cannot read raster map region</source>
@@ -13438,7 +14411,7 @@ GRASS 설치 경로(GISBASE)를 지정하시겠습니까?</translation>
     </message>
     <message>
         <source>command: %1 %2&lt;br&gt;%3&lt;br&gt;%4</source>
-        <translation>명령: %1 %2&lt;br&gt;%3&lt;br&gt;%4</translation>
+        <translation type="obsolete">명령: %1 %2&lt;br&gt;%3&lt;br&gt;%4</translation>
     </message>
     <message>
         <source>Cannot get projection </source>
@@ -14099,7 +15072,7 @@ Response was:
     </message>
     <message>
         <source>Fatal error occurred in GRASS library. QGIS gets over the error but any next fatal error will cause QGIS exit without warning. This is a problem of GRASS 7.0.0beta1 but it is fixed in GRASS 7.1 and higher. Error message: %1</source>
-        <translation>GRASS 라이브러리에서 심각한 오류가 발생했습니다. QGIS가 이 오류를 처리했지만, 다른 오류는 경고 없이  QGIS를 종료시킬 수도 있습니다. 이 오류는 GRASS 7.0.0beta1에서는 문제지만 GRASS 7.1 이상에서는 해결되었습니다. 오류 메시지: %1</translation>
+        <translation type="obsolete">GRASS 라이브러리에서 심각한 오류가 발생했습니다. QGIS가 이 오류를 처리했지만, 다른 오류는 경고 없이  QGIS를 종료시킬 수도 있습니다. 이 오류는 GRASS 7.0.0beta1에서는 문제지만 GRASS 7.1 이상에서는 해결되었습니다. 오류 메시지: %1</translation>
     </message>
     <message>
         <source>Raster image fill</source>
@@ -14115,6 +15088,216 @@ Response was:
     </message>
     <message>
         <source>NOTICE: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blur</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Drop Shadow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Inner Shadow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stack</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Outer Glow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Inner Glow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Source</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transform</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Colorise</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Recent colors</source>
+        <translation type="unfinished">최근 색상</translation>
+    </message>
+    <message>
+        <source>Standard colors</source>
+        <translation type="unfinished">표준 색상</translation>
+    </message>
+    <message>
+        <source>Project colors</source>
+        <translation type="unfinished">프로젝트 색상</translation>
+    </message>
+    <message>
+        <source>Number of places must be positive</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Count</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sum</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mean</source>
+        <translation type="unfinished">평균</translation>
+    </message>
+    <message>
+        <source>Median</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>St dev (pop)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>St dev (sample)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minimum</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maximum</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Range</source>
+        <translation type="unfinished">범위</translation>
+    </message>
+    <message>
+        <source>Minority</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Majority</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Variety</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Q1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Q3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>IQR</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished">값</translation>
+    </message>
+    <message>
+        <source>GRASS %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GRASS %1 (Geographic Resources Analysis Support System)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Version 2.0</source>
+        <translation type="unfinished">버전 2.0</translation>
+    </message>
+    <message>
+        <source>Cannot start %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mapset lock failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot open vector on level 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot open vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>command: %1 %2
+stdout: %3
+stderr: %4</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attempt to copy from different location.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete confirmation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to delete %1 %2?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot create table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot insert, statement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rename GRASS %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot delete %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot rename %1 to %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete Connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to delete the connection to %1?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete Object</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to delete %1.%2?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to delete %1?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -15469,6 +16652,33 @@ Always ignore these errors?</source>
         <source>A problem occured during deletion of %1 feature(s)</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Project file was changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The loaded project file on disk was meanwhile changed.  Do you want to overwrite the changes?
+
+Last modification date on load was: %1
+Current last modification date is: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saving raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export to raster file has been completed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot paste style to layer with a different geometry type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Your copied style does not match the layer you are pasting to</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgisAppInterface</name>
@@ -15542,7 +16752,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Essen (Germany), Developer meeting 2012</source>
-        <translation>에센 (독일) 개발자 회의 2012</translation>
+        <translation type="obsolete">에센 (독일) 개발자 회의 2012</translation>
     </message>
     <message>
         <source>Contributors</source>
@@ -15579,6 +16789,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Developers Map</source>
         <translation>개발자 지도</translation>
+    </message>
+    <message>
+        <source>Essen (Germany), Developer meeting 2014</source>
+        <translation type="unfinished">에센 (독일) 개발자 회의 2014</translation>
     </message>
 </context>
 <context>
@@ -15642,35 +16856,31 @@ p, li { white-space: pre-wrap; }
     <name>QgsAddJoinDialogBase</name>
     <message>
         <source>Add vector join</source>
-        <translation>벡터 조인 추가</translation>
+        <translation type="obsolete">벡터 조인 추가</translation>
     </message>
     <message>
         <source>Join layer</source>
-        <translation>조인 레이어</translation>
+        <translation type="obsolete">조인 레이어</translation>
     </message>
     <message>
         <source>Join field</source>
-        <translation>조인 필드</translation>
+        <translation type="obsolete">조인 필드</translation>
     </message>
     <message>
         <source>Target field</source>
-        <translation>대상 필드</translation>
+        <translation type="obsolete">대상 필드</translation>
     </message>
     <message>
         <source>Create attribute index on join field</source>
-        <translation>조인된 필드에 속성 인덱스 만들기</translation>
+        <translation type="obsolete">조인된 필드에 속성 인덱스 만들기</translation>
     </message>
     <message>
         <source>Choose which fields are joined</source>
-        <translation>어떤 필드가 조인되는지 선택</translation>
+        <translation type="obsolete">어떤 필드가 조인되는지 선택</translation>
     </message>
     <message>
         <source>Cache join layer in virtual memory</source>
-        <translation>조인 레이어를 가상 메모리에 캐시</translation>
-    </message>
-    <message>
-        <source>Custom field name prefix</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">조인 레이어를 가상 메모리에 캐시</translation>
     </message>
 </context>
 <context>
@@ -15803,6 +17013,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>y</source>
         <translation>y</translation>
+    </message>
+</context>
+<context>
+    <name>QgsAngleMagnetWidget</name>
+    <message>
+        <source>Snap to </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No snapping</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -16605,7 +17826,7 @@ Parser error:
     </message>
     <message>
         <source>Attribute table - %1 :: Features total: %2, filtered: %3, selected: %4</source>
-        <translation>속성 테이블 - %1 :: 객체 수: %2, 필터됨: %3, 선택됨: %4</translation>
+        <translation type="obsolete">속성 테이블 - %1 :: 객체 수: %2, 필터됨: %3, 선택됨: %4</translation>
     </message>
     <message>
         <source>Update Filtered</source>
@@ -16652,6 +17873,30 @@ Parser error:
     <message>
         <source>Update Selected</source>
         <translation>업데이트 선택됨</translation>
+    </message>
+    <message>
+        <source>Ctrl+R</source>
+        <translation type="unfinished">Ctrl+R</translation>
+    </message>
+    <message>
+        <source>Paste features from clipboard (Ctrl+V)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+V</source>
+        <translation type="unfinished">Ctrl+V</translation>
+    </message>
+    <message>
+        <source>Show All Features In Initial Canvas Extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attribute table - %1 :: Features total: %2, filtered: %3, selected: %4%5</source>
+        <translation type="unfinished">속성 테이블 - %1 :: 객체 수: %2, 필터됨: %3, 선택됨: %4%5 {1 ?} {2,?} {3,?}</translation>
+    </message>
+    <message>
+        <source>, spatially limited</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -16743,18 +17988,29 @@ Parser error:
     </message>
 </context>
 <context>
+    <name>QgsBlurWidget</name>
+    <message>
+        <source>Stack blur (fast)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Gaussian blur (quality)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsBookmarks</name>
     <message>
         <source>&amp;Add</source>
-        <translation>추가(&amp;A)</translation>
+        <translation type="obsolete">추가(&amp;A)</translation>
     </message>
     <message>
         <source>&amp;Delete</source>
-        <translation>삭제(&amp;D)</translation>
+        <translation type="obsolete">삭제(&amp;D)</translation>
     </message>
     <message>
         <source>&amp;Zoom to</source>
-        <translation>다음으로 확대(&amp;Z)</translation>
+        <translation type="obsolete">다음으로 확대(&amp;Z)</translation>
     </message>
     <message>
         <source>Error</source>
@@ -16835,7 +18091,7 @@ Database:%2</source>
     </message>
     <message>
         <source>&amp;Share</source>
-        <translation>공유(&amp;S)</translation>
+        <translation type="obsolete">공유(&amp;S)</translation>
     </message>
     <message>
         <source>&amp;Export</source>
@@ -16869,12 +18125,48 @@ Database: %2</source>
         <source>XML files( *.xml *.XML )</source>
         <translation>XML 파일( *.xml *.XML )</translation>
     </message>
+    <message>
+        <source>Import/Export Bookmarks</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsBookmarksBase</name>
     <message>
         <source>Geospatial Bookmarks</source>
-        <translation>지리적 북마크</translation>
+        <translation type="obsolete">지리적 북마크</translation>
+    </message>
+    <message>
+        <source>Spatial Bookmarks</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add</source>
+        <translation type="unfinished">추가</translation>
+    </message>
+    <message>
+        <source>Add bookmark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation type="unfinished">삭제</translation>
+    </message>
+    <message>
+        <source>Delete bookmark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom to</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zoom to bookmark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Help</source>
+        <translation type="unfinished">도움말</translation>
     </message>
 </context>
 <context>
@@ -16963,7 +18255,7 @@ Database: %2</source>
     <name>QgsBrowserDirectoryPropertiesBase</name>
     <message>
         <source>Dialog</source>
-        <translation>대화상자</translation>
+        <translation type="obsolete">대화상자</translation>
     </message>
     <message>
         <source>Path</source>
@@ -17026,15 +18318,15 @@ Database: %2</source>
     </message>
     <message>
         <source>Error</source>
-        <translation>오류</translation>
+        <translation type="obsolete">오류</translation>
     </message>
     <message>
         <source>Layer Properties</source>
-        <translation>레이어 속성</translation>
+        <translation type="obsolete">레이어 속성</translation>
     </message>
     <message>
         <source>Directory Properties</source>
-        <translation>디렉토리 속성</translation>
+        <translation type="obsolete">디렉토리 속성</translation>
     </message>
     <message>
         <source>Type here to filter current item...</source>
@@ -17057,11 +18349,11 @@ Database: %2</source>
     </message>
     <message>
         <source>Filter Files</source>
-        <translation>필터 파일</translation>
+        <translation type="obsolete">필터 파일</translation>
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>Collapse All</source>
@@ -17071,20 +18363,43 @@ Database: %2</source>
         <source>Options</source>
         <translation>옵션</translation>
     </message>
+    <message>
+        <source>Add Layers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filter Browser</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable/disable properties widget</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsBrowserLayerProperties</name>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished">오류</translation>
+    </message>
 </context>
 <context>
     <name>QgsBrowserLayerPropertiesBase</name>
     <message>
         <source>Dialog</source>
-        <translation>대화상자</translation>
+        <translation type="obsolete">대화상자</translation>
     </message>
     <message>
         <source>Display Name</source>
-        <translation>표시 이름</translation>
+        <translation type="obsolete">표시 이름</translation>
     </message>
     <message>
         <source>Layer Source</source>
-        <translation>레이어 소스</translation>
+        <translation type="obsolete">레이어 소스</translation>
     </message>
     <message>
         <source>Provider</source>
@@ -17093,6 +18408,26 @@ Database: %2</source>
     <message>
         <source>Metadata</source>
         <translation>메타데이터</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">이름</translation>
+    </message>
+    <message>
+        <source>name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>URI</source>
+        <translation type="unfinished">URI</translation>
+    </message>
+    <message>
+        <source>provider key</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>notice</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17108,6 +18443,24 @@ Database: %2</source>
     <message>
         <source>Favourites</source>
         <translation>즐겨찾기</translation>
+    </message>
+</context>
+<context>
+    <name>QgsBrowserPropertiesDialog</name>
+    <message>
+        <source>Layer Properties</source>
+        <translation type="unfinished">레이어 속성</translation>
+    </message>
+    <message>
+        <source>Directory Properties</source>
+        <translation type="unfinished">디렉토리 속성</translation>
+    </message>
+</context>
+<context>
+    <name>QgsBrowserPropertiesDialogBase</name>
+    <message>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17254,7 +18607,7 @@ Database: %2</source>
     </message>
     <message>
         <source>Join</source>
-        <translation>조인</translation>
+        <translation type="obsolete">조인</translation>
     </message>
     <message>
         <source>Advanced</source>
@@ -17297,6 +18650,51 @@ Database: %2</source>
 Should the existing classes be deleted before classification?</source>
         <translation>분류 필드가 &apos;%1&apos;에서 &apos;%2&apos;로 변경되었습니다.
 이전 클레스를 분류 작업 전에 삭제하시겠습니까?</translation>
+    </message>
+    <message>
+        <source>Match to saved symbols</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Match to symbols from file...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Matched symbols</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Matched %1 categories to symbols.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No categories could be matched to symbols in library.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Match to symbols from file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>XML files (*.xml *XML)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Matching error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>An error occured reading file:
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Matched %1 categories to symbols from file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No categories could be matched to symbols in file.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17654,6 +19052,25 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <source>Error writing palette file</source>
         <translation>팔레트 파일 쓰기중 오류</translation>
+    </message>
+</context>
+<context>
+    <name>QgsColorEffectWidget</name>
+    <message>
+        <source>Off</source>
+        <translation type="unfinished">꺼짐</translation>
+    </message>
+    <message>
+        <source>By lightness</source>
+        <translation type="unfinished">밝기에 따른</translation>
+    </message>
+    <message>
+        <source>By luminosity</source>
+        <translation type="unfinished">명도에 따른</translation>
+    </message>
+    <message>
+        <source>By average</source>
+        <translation type="unfinished">평균에 따른</translation>
     </message>
 </context>
 <context>
@@ -18135,6 +19552,10 @@ Please try a lower resolution or a smaller papersize</source>
         <source>Landscape</source>
         <translation>가로</translation>
     </message>
+    <message>
+        <source>Exporting atlas</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerArrowWidget</name>
@@ -18427,7 +19848,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Table grid stroke</source>
-        <translation>테이블 격자 선</translation>
+        <translation type="obsolete">테이블 격자 선</translation>
     </message>
     <message>
         <source>Table grid color</source>
@@ -18517,6 +19938,10 @@ Please try a lower resolution or a smaller papersize</source>
         <source>Empty table message changed</source>
         <translation>민 테이블 메세지 변경됨</translation>
     </message>
+    <message>
+        <source>Table grid line</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerAttributeTableWidgetBase</name>
@@ -18582,7 +20007,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Stroke width</source>
-        <translation>선 굵기</translation>
+        <translation type="obsolete">선 굵기</translation>
     </message>
     <message>
         <source>Color</source>
@@ -18699,6 +20124,10 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <source>Add Frame</source>
         <translation>프레임 추가</translation>
+    </message>
+    <message>
+        <source>Line width</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -21552,11 +22981,11 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Select stroke color</source>
-        <translation>스트로크 색상 선택</translation>
+        <translation type="obsolete">스트로크 색상 선택</translation>
     </message>
     <message>
         <source>Transparent stroke</source>
-        <translation>투명한 필치</translation>
+        <translation type="obsolete">투명한 필치</translation>
     </message>
     <message>
         <source>Map %1</source>
@@ -21604,7 +23033,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Scalebar stroke color changed</source>
-        <translation>스케일바 선 색상이 변경됨</translation>
+        <translation type="obsolete">스케일바 선 색상이 변경됨</translation>
     </message>
     <message>
         <source>Scalebar unit text</source>
@@ -21654,6 +23083,22 @@ Please try a lower resolution or a smaller papersize</source>
         <source>Scalebar line cap style</source>
         <translation>스케일바 선 끝 스타일</translation>
     </message>
+    <message>
+        <source>Select line color</source>
+        <translation type="unfinished">선 색상 선택</translation>
+    </message>
+    <message>
+        <source>Transparent line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scalebar line color changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scalebar segment size mode</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerScaleBarWidgetBase</name>
@@ -21671,11 +23116,11 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Map</source>
-        <translation>지도</translation>
+        <translation type="obsolete">지도</translation>
     </message>
     <message>
         <source>Style</source>
-        <translation>스타일</translation>
+        <translation type="obsolete">스타일</translation>
     </message>
     <message>
         <source>Units</source>
@@ -21683,11 +23128,11 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Label</source>
-        <translation>라벨</translation>
+        <translation type="obsolete">라벨</translation>
     </message>
     <message>
         <source>Map units per bar unit</source>
-        <translation>바 단위 당 지도 단위</translation>
+        <translation type="obsolete">바 단위 당 지도 단위</translation>
     </message>
     <message>
         <source>Segments</source>
@@ -21703,7 +23148,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Size</source>
-        <translation>크기</translation>
+        <translation type="obsolete">크기</translation>
     </message>
     <message>
         <source> units</source>
@@ -21763,11 +23208,47 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Stroke color</source>
-        <translation>선 색상...</translation>
+        <translation type="obsolete">선 색상...</translation>
     </message>
     <message>
         <source>Font...</source>
         <translation>글꼴...</translation>
+    </message>
+    <message>
+        <source>&amp;Map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>St&amp;yle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Label</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map &amp;units per bar unit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>max </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>min </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fi&amp;xed width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fit segment width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line color</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -21960,7 +23441,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Table grid stroke</source>
-        <translation>테이블 격자 선</translation>
+        <translation type="obsolete">테이블 격자 선</translation>
     </message>
     <message>
         <source>Select grid color</source>
@@ -21977,6 +23458,10 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <source>Table visible only toggled</source>
         <translation>테이블 표시속성만 전환됨</translation>
+    </message>
+    <message>
+        <source>Table grid line</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -22071,7 +23556,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Stroke width</source>
-        <translation>선 굵기</translation>
+        <translation type="obsolete">선 굵기</translation>
     </message>
     <message>
         <source>Follow column alignment</source>
@@ -22088,6 +23573,10 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <source>Right</source>
         <translation>우측</translation>
+    </message>
+    <message>
+        <source>Line width</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -22840,7 +24329,7 @@ and current file is [%3]</source>
     <name>QgsCustomColorScheme</name>
     <message>
         <source>Standard colors</source>
-        <translation>표준 색상</translation>
+        <translation type="obsolete">표준 색상</translation>
     </message>
 </context>
 <context>
@@ -23231,6 +24720,14 @@ and current file is [%3]</source>
         <source>[&lt;b&gt;&lt;dash&gt;;&lt;space&gt;&lt;/b&gt;] e.g. &apos;8;2;1;2&apos;</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Assistant...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>single character</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsDataDefinedButtonPlugin</name>
@@ -23241,6 +24738,32 @@ and current file is [%3]</source>
     <message>
         <source>A widget to define the scale range.</source>
         <translation>스케일 범위 정의 위한 위젯</translation>
+    </message>
+</context>
+<context>
+    <name>QgsDataDefinedRotationDialog</name>
+    <message>
+        <source>Rotation</source>
+        <translation type="unfinished">회전</translation>
+    </message>
+    <message>
+        <source>Symbol rotation</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsDataDefinedSizeDialog</name>
+    <message>
+        <source>Size</source>
+        <translation type="unfinished">크기</translation>
+    </message>
+    <message>
+        <source>Symbol size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Size Assistant...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -23288,6 +24811,32 @@ and current file is [%3]</source>
     <message>
         <source>0 (false)|1 (true)</source>
         <translation>0 (false)|1 (true)</translation>
+    </message>
+</context>
+<context>
+    <name>QgsDataDefinedValueDialog</name>
+    <message>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Label</source>
+        <translation type="unfinished">라벨</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+</context>
+<context>
+    <name>QgsDataDefinedWidthDialog</name>
+    <message>
+        <source>Width</source>
+        <translation type="unfinished">폭</translation>
+    </message>
+    <message>
+        <source>Symbol width</source>
+        <translation type="unfinished">심볼 폭</translation>
     </message>
 </context>
 <context>
@@ -23973,7 +25522,7 @@ not displayed</source>
     </message>
     <message>
         <source>%1 records discarded due to missing geometry definitions</source>
-        <translation>%1 레코드는 지오메트리 정의가 누락되어 무시함</translation>
+        <translation type="obsolete">%1 레코드는 지오메트리 정의가 누락되어 무시함</translation>
     </message>
     <message>
         <source>%1 records discarded due to invalid geometry definitions</source>
@@ -24006,6 +25555,26 @@ not displayed</source>
     <message>
         <source>The file has been updated by another application - reloading</source>
         <translation>이 파일은 다른 응용프로그램에 의해 갱신 되었음 - 다시부르기</translation>
+    </message>
+    <message>
+        <source>Whole number (integer)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Whole number (integer - 64 bit)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Decimal number (double)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Text, unlimited length (text)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 records have missing geometry definitions</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -24477,31 +26046,31 @@ not displayed</source>
     </message>
     <message>
         <source>Line</source>
-        <translation>라인</translation>
+        <translation type="obsolete">라인</translation>
     </message>
     <message>
         <source>Horizontal</source>
-        <translation>수평</translation>
+        <translation type="obsolete">수평</translation>
     </message>
     <message>
         <source>Free</source>
-        <translation>자유</translation>
+        <translation type="obsolete">자유</translation>
     </message>
     <message>
         <source>On line</source>
-        <translation>선상</translation>
+        <translation type="obsolete">선상</translation>
     </message>
     <message>
         <source>Above line</source>
-        <translation>라인 위</translation>
+        <translation type="obsolete">라인 위</translation>
     </message>
     <message>
         <source>Below Line</source>
-        <translation>라인 하단</translation>
+        <translation type="obsolete">라인 하단</translation>
     </message>
     <message>
         <source>Map orientation</source>
-        <translation>지도 방향</translation>
+        <translation type="obsolete">지도 방향</translation>
     </message>
     <message>
         <source>Pie chart</source>
@@ -24561,7 +26130,7 @@ not displayed</source>
     </message>
     <message>
         <source>Bar length: Scale linearly, such as the following value matches the specified size.</source>
-        <translation>바 길이 : 스케일 직선 등 다음의 값으로 지정된 크기와 일치한다.</translation>
+        <translation type="obsolete">바 길이 : 스케일 직선 등 다음의 값으로 지정된 크기와 일치한다.</translation>
     </message>
     <message>
         <source>Scale linearly between 0 and the following attribute value / diagram size:</source>
@@ -24569,7 +26138,7 @@ not displayed</source>
     </message>
     <message>
         <source>Transparency: %1%</source>
-        <translation>투명도 %1%</translation>
+        <translation type="obsolete">투명도 %1%</translation>
     </message>
     <message>
         <source>Diagrams: No attributes added.</source>
@@ -24591,12 +26160,48 @@ not displayed</source>
         <source>You did not add any attributes to this diagram layer. Please specify the attributes to visualize on the diagrams or disable diagrams.</source>
         <translation>이 도표 레이어에 추가된 속성이 없습니다. 도표로 시각화할 속성을 선택하거나 도표를 비활성화 하십시오.</translation>
     </message>
+    <message>
+        <source>Around Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Over Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Around Centroid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Over Centroid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Perimeter</source>
+        <translation type="unfinished">둘레</translation>
+    </message>
+    <message>
+        <source>Inside Polygon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bar length: Scale linearly, so that the following value matches the specified bar length:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bar length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Size</source>
+        <translation type="unfinished">크기</translation>
+    </message>
 </context>
 <context>
     <name>QgsDiagramPropertiesBase</name>
     <message>
         <source>Display diagrams</source>
-        <translation>도표 보기</translation>
+        <translation type="obsolete">도표 보기</translation>
     </message>
     <message>
         <source>Diagram type</source>
@@ -24640,7 +26245,7 @@ not displayed</source>
     </message>
     <message>
         <source>Transparency 0%</source>
-        <translation>투명도 0%</translation>
+        <translation type="obsolete">투명도 0%</translation>
     </message>
     <message>
         <source>Start Angle</source>
@@ -24648,11 +26253,11 @@ not displayed</source>
     </message>
     <message>
         <source>Only show diagrams with a size inside the specified range.</source>
-        <translation>특정 범위 내의 크기인 도표만 보입니다.</translation>
+        <translation type="obsolete">특정 범위 내의 크기인 도표만 보입니다.</translation>
     </message>
     <message>
         <source>Hide diagrams with a size outside the specified range.</source>
-        <translation>특정 범위 밖의 크기인 도표를 숨깁니다.</translation>
+        <translation type="obsolete">특정 범위 밖의 크기인 도표를 숨깁니다.</translation>
     </message>
     <message>
         <source>Scale dependent visibility</source>
@@ -24660,11 +26265,11 @@ not displayed</source>
     </message>
     <message>
         <source>Minimum</source>
-        <translation>최소</translation>
+        <translation type="obsolete">최소</translation>
     </message>
     <message>
         <source>Maximum</source>
-        <translation>최대</translation>
+        <translation type="obsolete">최대</translation>
     </message>
     <message>
         <source>Size</source>
@@ -24688,16 +26293,16 @@ not displayed</source>
     </message>
     <message>
         <source>Edit expression</source>
-        <translation>표현식 편집</translation>
+        <translation type="obsolete">표현식 편집</translation>
     </message>
     <message>
         <source>Find maximum value</source>
-        <translation>최대값 구하기</translation>
+        <translation type="obsolete">최대값 구하기</translation>
     </message>
     <message>
         <source>The attribute value you enter here will correspond to the size entered in the field &quot;Size&quot; and the chosen &quot;Size unit&quot;.
 Leave empty to automatically apply the maximum value.</source>
-        <translation>여기에 입력한 속성값은 &quot;크기&quot; 필드에 입력된 크기 및 선택한 &quot;크기 단위&quot;에 해당됩니다.
+        <translation type="obsolete">여기에 입력한 속성값은 &quot;크기&quot; 필드에 입력된 크기 및 선택한 &quot;크기 단위&quot;에 해당됩니다.
 자동으로 최대 값을 적용하려면 비워 둡니다.</translation>
     </message>
     <message>
@@ -24706,7 +26311,7 @@ Leave empty to automatically apply the maximum value.</source>
     </message>
     <message>
         <source>Will scale diagrams with a size smaller than the minimum size to the minimum size</source>
-        <translation>최소 크기보다 작은 크기 도표를 최소 크기로 조절</translation>
+        <translation type="obsolete">최소 크기보다 작은 크기 도표를 최소 크기로 조절</translation>
     </message>
     <message>
         <source>Increase size of small diagrams</source>
@@ -24718,7 +26323,7 @@ Leave empty to automatically apply the maximum value.</source>
     </message>
     <message>
         <source>Position</source>
-        <translation>위치</translation>
+        <translation type="obsolete">위치</translation>
     </message>
     <message>
         <source>Placement</source>
@@ -24726,7 +26331,7 @@ Leave empty to automatically apply the maximum value.</source>
     </message>
     <message>
         <source>Line Options</source>
-        <translation>라인 옵션</translation>
+        <translation type="obsolete">라인 옵션</translation>
     </message>
     <message>
         <source>Distance</source>
@@ -24746,7 +26351,7 @@ Leave empty to automatically apply the maximum value.</source>
     </message>
     <message>
         <source>Automated placement settings</source>
-        <translation>자동 배치 세팅</translation>
+        <translation type="obsolete">자동 배치 세팅</translation>
     </message>
     <message>
         <source>Options</source>
@@ -24800,6 +26405,70 @@ Leave empty to automatically apply the maximum value.</source>
         <source>Color</source>
         <translation>색상</translation>
     </message>
+    <message>
+        <source>Show diagrams for this layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Automated placement settings (apply to all layers)</source>
+        <translation type="unfinished">자동 배치 설정 (모든 레이어에 적용)</translation>
+    </message>
+    <message>
+        <source>Rendering</source>
+        <translation type="unfinished">렌더링</translation>
+    </message>
+    <message>
+        <source>Legend</source>
+        <translation type="unfinished">범례</translation>
+    </message>
+    <message>
+        <source>Format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transparency</source>
+        <translation type="unfinished">투명도</translation>
+    </message>
+    <message>
+        <source> %</source>
+        <translation type="unfinished"> %</translation>
+    </message>
+    <message>
+        <source>Visibility</source>
+        <translation type="unfinished">가시성</translation>
+    </message>
+    <message>
+        <source>Show all diagrams</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maximum value</source>
+        <translation type="unfinished">최대</translation>
+    </message>
+    <message>
+        <source>Find</source>
+        <translation type="unfinished">찾기</translation>
+    </message>
+    <message>
+        <source>Scaled size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Above line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Below line</source>
+        <translation type="unfinished">선 하단</translation>
+    </message>
+    <message>
+        <source>On line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line orientation dependent position</source>
+        <translation type="unfinished">선 방향에 따라 위치 변경</translation>
+    </message>
 </context>
 <context>
     <name>QgsDirectoryParamWidget</name>
@@ -24841,7 +26510,7 @@ Leave empty to automatically apply the maximum value.</source>
     </message>
     <message>
         <source>link</source>
-        <translation>링크</translation>
+        <translation type="obsolete">링크</translation>
     </message>
 </context>
 <context>
@@ -25077,14 +26746,70 @@ Parser error:
     </message>
 </context>
 <context>
+    <name>QgsEffectDrawModeComboBox</name>
+    <message>
+        <source>Render only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Modifier only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Render and modify</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsEffectStackCompactWidget</name>
+    <message>
+        <source>Draw effects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Customise effects</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsEffectStackPropertiesDialog</name>
+    <message>
+        <source>Effect Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsEffectStackPropertiesWidgetBase</name>
+    <message>
+        <source>Effects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add symbol layer</source>
+        <translation type="unfinished">심볼 레이어 추가</translation>
+    </message>
+    <message>
+        <source>Remove symbol layer</source>
+        <translation type="unfinished">심볼 레이어 제거</translation>
+    </message>
+    <message>
+        <source>Move up</source>
+        <translation type="unfinished">위로 이동</translation>
+    </message>
+    <message>
+        <source>Move down</source>
+        <translation type="unfinished">아래로 이동</translation>
+    </message>
+</context>
+<context>
     <name>QgsEllipseSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation>밀리미터</translation>
+        <translation type="obsolete">밀리미터</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>지도 단위</translation>
+        <translation type="obsolete">지도 단위</translation>
     </message>
     <message>
         <source>Select fill color</source>
@@ -25327,6 +27052,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Load all unique values</source>
         <translation>모든 고유값 부르기</translation>
+    </message>
+    <message>
+        <source>%1...</source>
+        <translation type="unfinished">%1...</translation>
     </message>
 </context>
 <context>
@@ -26005,15 +27734,19 @@ MyForms.py 은 PYTHONPATH 에 등록되어 있어야 한다, .qgis/python, 또�
     <name>QgsFontMarkerSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation>밀리미터</translation>
+        <translation type="obsolete">밀리미터</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>지도 단위</translation>
+        <translation type="obsolete">지도 단위</translation>
     </message>
     <message>
         <source>Select symbol color</source>
         <translation>심볼 색상 선택</translation>
+    </message>
+    <message>
+        <source>Size Assistant...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -26047,6 +27780,42 @@ MyForms.py 은 PYTHONPATH 에 등록되어 있어야 한다, .qgis/python, 또�
     <message>
         <source>pixels</source>
         <translation>픽셀</translation>
+    </message>
+    <message>
+        <source>Visible</source>
+        <translation type="unfinished">표시</translation>
+    </message>
+    <message>
+        <source>ID</source>
+        <translation type="unfinished">ID</translation>
+    </message>
+    <message>
+        <source>Source X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Source Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dest. X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dest. Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>dX (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>dY (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Residual (%1)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -27150,7 +28919,7 @@ Please reselect a valid file.</source>
     </message>
     <message>
         <source>Show coords</source>
-        <translation>좌표 보기</translation>
+        <translation type="obsolete">좌표 보기</translation>
     </message>
     <message>
         <source>Residual units</source>
@@ -27191,6 +28960,17 @@ Please reselect a valid file.</source>
     <message>
         <source>Paper size</source>
         <translation>용지 크기</translation>
+    </message>
+    <message>
+        <source>Show coordinates</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsGeorefDescriptionDialog</name>
+    <message>
+        <source>&lt;h2&gt;Description&lt;/h2&gt;&lt;p&gt;This plugin can georeference raster files and set projection. You select points on the raster and give their world coordinates, and the plugin will compute the world file parameters. The more coordinates you can provide the better the result will be.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -27263,7 +29043,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>GDAL scripting is not supported for %1 transformation</source>
-        <translation>GDAL 스크립팅은 %1 변환을 지원하지 않음</translation>
+        <translation type="obsolete">GDAL 스크립팅은 %1 변환을 지원하지 않음</translation>
     </message>
     <message>
         <source>Load GCP points</source>
@@ -27275,7 +29055,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>No GCP points to save</source>
-        <translation>GCP 포인트가 저장되지 않았음</translation>
+        <translation type="obsolete">GCP 포인트가 저장되지 않았음</translation>
     </message>
     <message>
         <source>Save GCP points</source>
@@ -27319,7 +29099,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Unable to open GCP points file %1</source>
-        <translation>GCP 포인트 파일 %1을 열 수 없음</translation>
+        <translation type="obsolete">GCP 포인트 파일 %1을 열 수 없음</translation>
     </message>
     <message>
         <source>Save GCPs</source>
@@ -27331,7 +29111,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Failed to get linear transform parameters</source>
-        <translation>선형 변환 매개 변수를 받지 못했음</translation>
+        <translation type="obsolete">선형 변환 매개 변수를 받지 못했음</translation>
     </message>
     <message>
         <source>World file exists</source>
@@ -27343,7 +29123,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Failed to compute GCP transform: Transform is not solvable</source>
-        <translation>GCP 변환 계산에 실패:. 변환하지 못했음</translation>
+        <translation type="obsolete">GCP 변환 계산에 실패:. 변환하지 못했음</translation>
     </message>
     <message>
         <source>Error</source>
@@ -27351,7 +29131,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not write to %1</source>
-        <translation>%1에 쓸 수 없음</translation>
+        <translation type="obsolete">%1에 쓸 수 없음</translation>
     </message>
     <message>
         <source>map units</source>
@@ -27419,7 +29199,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Copy in clipboard</source>
-        <translation>클립 보드에 복사</translation>
+        <translation type="obsolete">클립 보드에 복사</translation>
     </message>
     <message>
         <source>%1</source>
@@ -27439,7 +29219,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>%1 requires at least %2 GCPs. Please define more</source>
-        <translation>%1은 적어도 %2 GCP가 필요합니다. 좀더 정의하십시오</translation>
+        <translation type="obsolete">%1은 적어도 %2 GCP가 필요합니다. 좀더 정의하십시오</translation>
     </message>
     <message>
         <source>Linear</source>
@@ -27473,6 +29253,138 @@ p, li { white-space: pre-wrap; }
         <source>Not set</source>
         <translation>설정안됨</translation>
     </message>
+    <message>
+        <source>Reset Georeferencer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reset georeferencer and clear all GCP points?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Georeference Successful</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Raster was successfully georeferenced.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid Transform</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GDAL scripting is not supported for %1 transformation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid GCP file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GCP file could not be read.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GCPs loaded</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GCP file successfully loaded.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No GCP Points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No GCP points are available to save.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Raster Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please load raster to be georeferenced.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Write Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not write to GCP points file %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transform Failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to calculate linear transform parameters.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to compute GCP transform: Transform is not solvable.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not write to %1.</source>
+        <translation type="unfinished">%1.에 쓸 수 없음</translation>
+    </message>
+    <message>
+        <source>ID</source>
+        <translation type="unfinished">ID</translation>
+    </message>
+    <message>
+        <source>Enabled</source>
+        <translation type="unfinished">사용 가능</translation>
+    </message>
+    <message>
+        <source>Pixel X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pixel Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Res X (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Res Y (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Res Total (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy to Clipboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No Raster Loaded</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not Enough GCPs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 transformation requires at least %2 GCPs. Please define more.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsGeorefPluginGuiBase</name>
@@ -27502,7 +29414,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>toolBar</source>
-        <translation>툴바</translation>
+        <translation type="obsolete">툴바</translation>
     </message>
     <message>
         <source>Open raster</source>
@@ -27606,7 +29518,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Configure Georeferencer</source>
-        <translation>지오레퍼런서 설정</translation>
+        <translation type="obsolete">지오레퍼런서 설정</translation>
     </message>
     <message>
         <source>Ctrl+P</source>
@@ -27614,7 +29526,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Raster properties</source>
-        <translation>래스터 속성</translation>
+        <translation type="obsolete">래스터 속성</translation>
     </message>
     <message>
         <source>Move GCP point</source>
@@ -27630,11 +29542,79 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Local histogram stretch</source>
-        <translation>로컬 히스토그램 스트레치</translation>
+        <translation type="obsolete">로컬 히스토그램 스트레치</translation>
     </message>
     <message>
         <source>Full histogram stretch</source>
-        <translation>전체 히스토그램 스트레치</translation>
+        <translation type="obsolete">전체 히스토그램 스트레치</translation>
+    </message>
+    <message>
+        <source>Histogram</source>
+        <translation type="unfinished">히스토그램</translation>
+    </message>
+    <message>
+        <source>Open Raster...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transformation Settings...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete Point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close Georeferencer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Close georeferencer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Start Georeferencing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Generate GDAL Script</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save GCP Points as...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load GCP Points...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Configure Georeferencer...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Raster Properties...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move GCP Point</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Local Histogram Stretch</source>
+        <translation type="unfinished">로컬 히스토그램 스트레치</translation>
+    </message>
+    <message>
+        <source>Full Histogram Stretch</source>
+        <translation type="unfinished">전체 히스토그램으로 늘리기</translation>
+    </message>
+    <message>
+        <source>Reset Georeferencer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -27844,6 +29824,13 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsGlowWidget</name>
+    <message>
+        <source>Select glow color</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsGml</name>
     <message>
         <source>Loading GML data
@@ -27883,11 +29870,11 @@ p, li { white-space: pre-wrap; }
     <name>QgsGradientFillSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation>밀리미터</translation>
+        <translation type="obsolete">밀리미터</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>지도 단위</translation>
+        <translation type="obsolete">지도 단위</translation>
     </message>
     <message>
         <source>Select gradient color</source>
@@ -27896,6 +29883,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Transparent</source>
         <translation>투명</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGraduatedHistogramWidget</name>
+    <message>
+        <source>Ranges are overlapping and can&apos;t be edited by the histogram</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ranges have gaps and can&apos;t be edited by the histogram</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -28051,6 +30049,26 @@ Press cancel to abort breaks calculation or OK to continue.</source>
         <source>Rows will be reordered before linking boundaries. Continue?</source>
         <translation>열들이 경계들을 연결하기 전에 재정열됩니다. 계속하시겠습니까?</translation>
     </message>
+    <message>
+        <source>Histogram</source>
+        <translation type="unfinished">히스토그램</translation>
+    </message>
+    <message>
+        <source>Method</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Choose between color and size graduation. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;If you want to combine both, use a data-defined size for the symbol and graduate by color.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Size from </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>to</source>
+        <translation type="unfinished">종료</translation>
+    </message>
 </context>
 <context>
     <name>QgsGrassAttributes</name>
@@ -28126,82 +30144,82 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     <name>QgsGrassBrowser</name>
     <message>
         <source>Tools</source>
-        <translation>도구</translation>
+        <translation type="obsolete">도구</translation>
     </message>
     <message>
         <source>Add selected map to canvas</source>
-        <translation>선택한 지도를 캔버스에 추가</translation>
+        <translation type="obsolete">선택한 지도를 캔버스에 추가</translation>
     </message>
     <message>
         <source>Copy selected map</source>
-        <translation>선택한 지도 복사</translation>
+        <translation type="obsolete">선택한 지도 복사</translation>
     </message>
     <message>
         <source>Rename selected map</source>
-        <translation>선택한 지도 이름 바꾸기</translation>
+        <translation type="obsolete">선택한 지도 이름 바꾸기</translation>
     </message>
     <message>
         <source>Delete selected map</source>
-        <translation>선택한 지도 삭제</translation>
+        <translation type="obsolete">선택한 지도 삭제</translation>
     </message>
     <message>
         <source>Set current region to selected map</source>
-        <translation>현재 영역을 선택된 지도로 설정</translation>
+        <translation type="obsolete">현재 영역을 선택된 지도로 설정</translation>
     </message>
     <message>
         <source>Refresh</source>
-        <translation>새로고침</translation>
+        <translation type="obsolete">새로고침</translation>
     </message>
     <message>
         <source>New name</source>
-        <translation>새 이름</translation>
+        <translation type="obsolete">새 이름</translation>
     </message>
     <message>
         <source>New name for layer &quot;%1&quot;</source>
-        <translation>레이어 &quot;%1&quot;의 새 이름</translation>
+        <translation type="obsolete">레이어 &quot;%1&quot;의 새 이름</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation>경고</translation>
+        <translation type="obsolete">경고</translation>
     </message>
     <message>
         <source>Cannot copy map %1@%2</source>
-        <translation>지도 %1@%2에 복사할 수 없음</translation>
+        <translation type="obsolete">지도 %1@%2에 복사할 수 없음</translation>
     </message>
     <message>
         <source>&lt;br&gt;command: %1 %2&lt;br&gt;%3&lt;br&gt;%4</source>
-        <translation>&lt;br&gt;명령: %1 %2&lt;br&gt;%3&lt;br&gt;%4</translation>
+        <translation type="obsolete">&lt;br&gt;명령: %1 %2&lt;br&gt;%3&lt;br&gt;%4</translation>
     </message>
     <message>
         <source>Cannot rename map %1</source>
-        <translation>지도 %1 이름을 변경할 수 없음</translation>
+        <translation type="obsolete">지도 %1 이름을 변경할 수 없음</translation>
     </message>
     <message>
         <source>Information</source>
-        <translation>정보</translation>
+        <translation type="obsolete">정보</translation>
     </message>
     <message>
         <source>Remove the selected layer(s) from canvas before continue.</source>
-        <translation>계속하기 전에 켄버스에서 선택된 레이어를 제거합니다.</translation>
+        <translation type="obsolete">계속하기 전에 켄버스에서 선택된 레이어를 제거합니다.</translation>
     </message>
     <message>
         <source>Question</source>
-        <translation>질문</translation>
+        <translation type="obsolete">질문</translation>
     </message>
     <message numerus="yes">
         <source>Are you sure you want to delete %n selected layer(s)?</source>
         <comment>number of layers to delete</comment>
-        <translation>
+        <translation type="obsolete">
             <numerusform>정말 선택된 레이어 %n 개를 삭제하시겠습니까?</numerusform>
         </translation>
     </message>
     <message>
         <source>Cannot delete map %1</source>
-        <translation>지도 %1을 삭제할 수 없음</translation>
+        <translation type="obsolete">지도 %1을 삭제할 수 없음</translation>
     </message>
     <message>
         <source>Cannot write new region</source>
-        <translation>새로운 영역을 쓸 수 없음</translation>
+        <translation type="obsolete">새로운 영역을 쓸 수 없음</translation>
     </message>
 </context>
 <context>
@@ -28601,6 +30619,20 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     </message>
 </context>
 <context>
+    <name>QgsGrassImportItem</name>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">취소</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGrassItemActions</name>
+    <message>
+        <source>GRASS Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsGrassMapcalc</name>
     <message>
         <source>Mapcalc tools</source>
@@ -28919,6 +30951,67 @@ at line %2 column %3</source>
     <message>
         <source>Output</source>
         <translation>출력</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGrassMapsetItem</name>
+    <message>
+        <source>topology missing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>topology version not supported</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>topology version 6</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>topology version 7</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>empty</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 layer type not supported</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot create provider %1 : %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Provider is not valid  %1 : %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot get default location region.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot delete %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import to GRASS mapset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to import some layers!
+
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import to GRASS mapset failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to import %1 to %2: %3</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -29454,10 +31547,6 @@ at line %2 column %3</source>
         <source>New mapset successfully created and set as current working mapset.</source>
         <translation>새 지도 세트가 성공적으로 만들어져 현재 지도 세트로 설정되었습니다.</translation>
     </message>
-    <message>
-        <source>Cannot activate grass</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsGrassNewMapsetBase</name>
@@ -29647,26 +31736,68 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsGrassObjectItem</name>
+    <message>
+        <source>Rename</source>
+        <translation type="unfinished">이름 변경</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation type="unfinished">삭제</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGrassOptionsBase</name>
+    <message>
+        <source>GRASS Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Browser</source>
+        <translation type="unfinished">탐색기</translation>
+    </message>
+    <message>
+        <source>Import</source>
+        <translation type="unfinished">가져오기</translation>
+    </message>
+    <message>
+        <source>CRS transformation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Approximate CRS transformation is fast but it may be inaccurate.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create a link to the external data for GDAL data sources with the same CRS as target mapset by r.external, instead of making copy of data.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create link to external data if possible</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsGrassPlugin</name>
     <message>
         <source>GrassVector</source>
-        <translation>GRASS 벡터</translation>
+        <translation type="obsolete">GRASS 벡터</translation>
     </message>
     <message>
         <source>0.1</source>
-        <translation>0.1</translation>
+        <translation type="obsolete">0.1</translation>
     </message>
     <message>
         <source>GRASS layer</source>
-        <translation>GRASS 레이어</translation>
+        <translation type="obsolete">GRASS 레이어</translation>
     </message>
     <message>
         <source>Plugins</source>
-        <translation>플러그인</translation>
+        <translation type="obsolete">플러그인</translation>
     </message>
     <message>
         <source>Add GRASS raster layer</source>
-        <translation>GRASS 래스터 레이어 추가</translation>
+        <translation type="obsolete">GRASS 래스터 레이어 추가</translation>
     </message>
     <message>
         <source>Open GRASS tools</source>
@@ -29698,15 +31829,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Add GRASS Vector Layer</source>
-        <translation>GRASS 벡터 레이어 추가</translation>
+        <translation type="obsolete">GRASS 벡터 레이어 추가</translation>
     </message>
     <message>
         <source>Adds a GRASS vector layer to the map canvas</source>
-        <translation>지도 캔버스에 GRASS 벡터 레이어 추가</translation>
+        <translation type="obsolete">지도 캔버스에 GRASS 벡터 레이어 추가</translation>
     </message>
     <message>
         <source>Adds a GRASS raster layer to the map canvas</source>
-        <translation>지도 캔버스에 GRASS 래스터 레이어 추가</translation>
+        <translation type="obsolete">지도 캔버스에 GRASS 래스터 레이어 추가</translation>
     </message>
     <message>
         <source>Open GRASS Tools</source>
@@ -29742,16 +31873,16 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Cannot open vector %1 in mapset %2 on level 2 (topology not available, try to rebuild topology using v.build module).</source>
-        <translation>레벨 2의 지도 세트 %2의 벡터 %1을 열 수 없습니다. (토폴로지를 사용할 수 없습니다. 토폴로지를 이용하기 위해서는 v.build.module를 사용하여 다시 빌드를 시도하십시오).</translation>
+        <translation type="obsolete">레벨 2의 지도 세트 %2의 벡터 %1을 열 수 없습니다. (토폴로지를 사용할 수 없습니다. 토폴로지를 이용하기 위해서는 v.build.module를 사용하여 다시 빌드를 시도하십시오).</translation>
     </message>
     <message>
         <source>Cannot open vector %1 in mapset %2</source>
-        <translation>지도 세트 %2의 벡터 %1을 열 수 없습니다</translation>
+        <translation type="obsolete">지도 세트 %2의 벡터 %1을 열 수 없습니다</translation>
     </message>
     <message>
         <source>Cannot open GRASS vector:
  %1</source>
-        <translation>GRASS 벡터를 열 수 없음:
+        <translation type="obsolete">GRASS 벡터를 열 수 없음:
  %1</translation>
     </message>
     <message>
@@ -29808,6 +31939,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>GRASS vector map %1 does not have topology. Build topology?</source>
         <translation>GRASS 벡터 맵 %1은 토폴로지가 없습니다. 토폴로지를 만들겠습니까?</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGrassRasterImport</name>
+    <message>
+        <source>Data type %1 not supported</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot convert block (%1) to data type %2</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -30042,7 +32184,7 @@ or change the following values</source>
     </message>
     <message>
         <source>Browser</source>
-        <translation>탐색기</translation>
+        <translation type="obsolete">탐색기</translation>
     </message>
     <message>
         <source>Direct Modules Tree</source>
@@ -30114,6 +32256,17 @@ at line %2 column %3</source>
     <message>
         <source>Direct Modules List</source>
         <translation>직접 모듈 목록</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGrassVectorItem</name>
+    <message>
+        <source>Rename</source>
+        <translation type="unfinished">이름 변경</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation type="unfinished">삭제</translation>
     </message>
 </context>
 <context>
@@ -30243,15 +32396,15 @@ at line %2 column %3</source>
     </message>
     <message>
         <source>Pixels</source>
-        <translation>픽셀</translation>
+        <translation type="obsolete">픽셀</translation>
     </message>
     <message>
         <source>Millimeter</source>
-        <translation>밀리미터</translation>
+        <translation type="obsolete">밀리미터</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>지도 단위</translation>
+        <translation type="obsolete">지도 단위</translation>
     </message>
 </context>
 <context>
@@ -30313,6 +32466,29 @@ at line %2 column %3</source>
     <message>
         <source>about:blank</source>
         <translation>정보:공백</translation>
+    </message>
+</context>
+<context>
+    <name>QgsHistogramWidgetBase</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Histogram bins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show mean value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show standard deviation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load values</source>
+        <translation type="unfinished">값 읽기</translation>
     </message>
 </context>
 <context>
@@ -30420,11 +32596,11 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Expand tree</source>
-        <translation>트리 확장</translation>
+        <translation type="obsolete">트리 확장</translation>
     </message>
     <message>
         <source>Collapse tree</source>
-        <translation>트리 축소</translation>
+        <translation type="obsolete">트리 축소</translation>
     </message>
     <message>
         <source>Layer</source>
@@ -30444,7 +32620,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
         <source>Clear Results</source>
@@ -30485,6 +32661,30 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <source>Print selected HTML response.</source>
         <translation>선택한 HTML 응답을 출력합니다.</translation>
+    </message>
+    <message>
+        <source>Expand Tree</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Collapse Tree</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Expand New Results</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy Feature</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Print Response</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -30821,6 +33021,41 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
 </context>
 <context>
+    <name>QgsJoinDialogBase</name>
+    <message>
+        <source>Add vector join</source>
+        <translation type="unfinished">벡터 조인 추가</translation>
+    </message>
+    <message>
+        <source>Join layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Join field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Target field</source>
+        <translation type="unfinished">대상 필드</translation>
+    </message>
+    <message>
+        <source>Choose which fields are joined</source>
+        <translation type="unfinished">어떤 필드가 조인되는지 선택</translation>
+    </message>
+    <message>
+        <source>Custom field name prefix</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cache join layer in virtual memory</source>
+        <translation type="unfinished">조인 레이어를 가상 메모리에 캐시</translation>
+    </message>
+    <message>
+        <source>Create attribute index on join field</source>
+        <translation type="unfinished">조인된 필드에 속성 인덱스 만들기</translation>
+    </message>
+</context>
+<context>
     <name>QgsLUDialogBase</name>
     <message>
         <source>Enter class bounds</source>
@@ -31079,6 +33314,10 @@ This may be a problem in your network connection or at the WMS server.</source>
         <source>Buffer color</source>
         <translation>테두리 색상</translation>
     </message>
+    <message>
+        <source>Layer default (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsLabelPropertyDialogBase</name>
@@ -31211,15 +33450,15 @@ This may be a problem in your network connection or at the WMS server.</source>
     <name>QgsLabelingGui</name>
     <message>
         <source>points</source>
-        <translation>포인트</translation>
+        <translation type="obsolete">포인트</translation>
     </message>
     <message>
         <source>map units</source>
-        <translation>지도 단위</translation>
+        <translation type="obsolete">지도 단위</translation>
     </message>
     <message>
         <source>mm</source>
-        <translation>mm</translation>
+        <translation type="obsolete">mm</translation>
     </message>
     <message>
         <source>% of length</source>
@@ -31344,6 +33583,22 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <source>File not found</source>
         <translation>파일을 찾을 수 없습니다</translation>
+    </message>
+    <message>
+        <source>Points</source>
+        <translation type="unfinished">점</translation>
+    </message>
+    <message>
+        <source>Map unit</source>
+        <translation type="unfinished">지도 단위</translation>
+    </message>
+    <message>
+        <source>Millimeter</source>
+        <translation type="unfinished">밀리미터</translation>
+    </message>
+    <message>
+        <source>Follow label placement</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -32050,11 +34305,11 @@ This may be a problem in your network connection or at the WMS server.</source>
     <name>QgsLinePatternFillSymbolLayerWidget</name>
     <message>
         <source>Millimeter</source>
-        <translation>밀리미터</translation>
+        <translation type="obsolete">밀리미터</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>지도 단위</translation>
+        <translation type="obsolete">지도 단위</translation>
     </message>
 </context>
 <context>
@@ -32221,19 +34476,31 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Enter X and Y coordinates (DMS (dd mm ss.ss), DD (dd.dd) or projected coordinates (mmmm.mm)) which correspond with the selected point on the image. Alternatively, click the button with icon of a pencil and then click a corresponding point on map canvas of QGIS to fill in coordinates of that point.</source>
-        <translation>X와 Y 좌표 입력 (도분초 (dd mm ss.ss), DD (dd.dd) 또는 투영된 좌표 (mmmm.mm))는 이미지의 선택된 점에 대응합니다. 또는 연필 아이콘 버튼을 클릭하여 점 좌표에 해당하는 QGIS지도 캔버스의 해당 지점을 클릭하십시오.</translation>
+        <translation type="obsolete">X와 Y 좌표 입력 (도분초 (dd mm ss.ss), DD (dd.dd) 또는 투영된 좌표 (mmmm.mm))는 이미지의 선택된 점에 대응합니다. 또는 연필 아이콘 버튼을 클릭하여 점 좌표에 해당하는 QGIS지도 캔버스의 해당 지점을 클릭하십시오.</translation>
     </message>
     <message>
         <source>X / East:</source>
-        <translation>X / 동쪽:</translation>
+        <translation type="obsolete">X / 동쪽:</translation>
     </message>
     <message>
         <source>Y / North:</source>
-        <translation>Y / 북쪽:</translation>
+        <translation type="obsolete">Y / 북쪽:</translation>
     </message>
     <message>
         <source>Snap to background layers</source>
         <translation>백그라운드 레이어에 맞추기</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter X and Y coordinates (DMS (&lt;span style=&quot; font-style:italic;&quot;&gt;dd mm ss.ss&lt;/span&gt;), DD (&lt;span style=&quot; font-style:italic;&quot;&gt;dd.dd&lt;/span&gt;) or projected coordinates (&lt;span style=&quot; font-style:italic;&quot;&gt;mmmm.mm&lt;/span&gt;)) which correspond with the selected point on the image. Alternatively, click the button with icon of a pencil and then click a corresponding point on map canvas of QGIS to fill in coordinates of that point.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Y / North</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>X / East</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -33013,11 +35280,11 @@ This may be a problem in your network connection or at the WMS server.</source>
     <name>QgsMarkerLineSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation>밀리미터</translation>
+        <translation type="obsolete">밀리미터</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>지도 단위</translation>
+        <translation type="obsolete">지도 단위</translation>
     </message>
     <message>
         <source>string </source>
@@ -33099,19 +35366,19 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Meters</source>
-        <translation>미터</translation>
+        <translation type="obsolete">미터</translation>
     </message>
     <message>
         <source>Feet</source>
-        <translation>피트</translation>
+        <translation type="obsolete">피트</translation>
     </message>
     <message>
         <source>Degrees</source>
-        <translation>도</translation>
+        <translation type="obsolete">도</translation>
     </message>
     <message>
         <source>Nautical Miles</source>
-        <translation>해리</translation>
+        <translation type="obsolete">해리</translation>
     </message>
 </context>
 <context>
@@ -33945,6 +36212,43 @@ Note: giving the password is optional. It will be requested interactivly, when n
     </message>
 </context>
 <context>
+    <name>QgsNewNameDialog</name>
+    <message>
+        <source>New name</source>
+        <translation type="unfinished">새 이름</translation>
+    </message>
+    <message>
+        <source>name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>base name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter new %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter new %1 for %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Full names</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <source>Name(s) %1 exists</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>Overwrite</source>
+        <translation type="unfinished">덮어쓰기</translation>
+    </message>
+</context>
+<context>
     <name>QgsNewOgrConnection</name>
     <message>
         <source>Test connection</source>
@@ -34488,6 +36792,18 @@ Extended error information:
         <source>Failed to export OSM data:
 %1</source>
         <translation>OSM 데이터를 가져오는데 아래와 같은 이유로 실패하였습니다: \n%1</translation>
+    </message>
+    <message>
+        <source>Select All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unselect All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not null</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -35702,7 +38018,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Icon theme</source>
-        <translation>아이콘 테마</translation>
+        <translation type="obsolete">아이콘 테마</translation>
     </message>
     <message>
         <source>Icon size</source>
@@ -35750,7 +38066,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Bold group box titles</source>
-        <translation>그룹 상자 제목을 굵게하기</translation>
+        <translation type="obsolete">그룹 상자 제목을 굵게하기</translation>
     </message>
     <message>
         <source>QGIS-styled group boxes</source>
@@ -36150,7 +38466,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Custom side bar style</source>
-        <translation>사용자 사이드 바 스타일</translation>
+        <translation type="obsolete">사용자 사이드 바 스타일</translation>
     </message>
     <message>
         <source>Add Oracle layers with double click and select in extended mode</source>
@@ -36668,6 +38984,10 @@ Always network: always load from network and do not check if the cache has a val
         <source>Default uses system&apos;s proxy</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Execute expressions on postgres server-side if possible (Experimental)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOptionsDialogBase</name>
@@ -36872,9 +39192,15 @@ SQL:%1
         <source>Connection failed - Check settings and try again.
 
 </source>
-        <translation>연결 실패 - 설정을 확인하고 다시 시도하십시오.
+        <translation type="obsolete">연결 실패 - 설정을 확인하고 다시 시도하십시오.
 
 </translation>
+    </message>
+    <message>
+        <source>Connection failed - consult message log for details.
+
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -37384,6 +39710,14 @@ Error: %2</source>
         <translation>Oracle 오류: %1
 오류: %2</translation>
     </message>
+    <message>
+        <source>Could not prepare get feature id statement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not retrieve feature id %1</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOracleRootItem</name>
@@ -37643,11 +39977,15 @@ Error: %2</source>
     <name>QgsPGLayerItem</name>
     <message>
         <source>Delete layer</source>
-        <translation>레이어 제거</translation>
+        <translation type="obsolete">레이어 제거</translation>
     </message>
     <message>
         <source>Layer deleted successfully.</source>
         <translation>레이어 제거가 성공하였습니다.</translation>
+    </message>
+    <message>
+        <source>Delete Layer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -37827,9 +40165,15 @@ Error: %2</source>
         <source>Connection failed - Check settings and try again.
 
 </source>
-        <translation>연결 실패 - 설정을 확인하고 다시 시도하십시오.
+        <translation type="obsolete">연결 실패 - 설정을 확인하고 다시 시도하십시오.
 
 </translation>
+    </message>
+    <message>
+        <source>Connection failed - consult message log for details.
+
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -39037,11 +41381,11 @@ p, li { white-space: pre-wrap; }
     <name>QgsPointPatternFillSymbolLayerWidget</name>
     <message>
         <source>Millimeter</source>
-        <translation>밀리미터</translation>
+        <translation type="obsolete">밀리미터</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>지도 단위</translation>
+        <translation type="obsolete">지도 단위</translation>
     </message>
 </context>
 <context>
@@ -39161,35 +41505,35 @@ SQL: %2
     </message>
     <message>
         <source>Point</source>
-        <translation>점</translation>
+        <translation type="obsolete">점</translation>
     </message>
     <message>
         <source>Multipoint</source>
-        <translation>다중 점</translation>
+        <translation type="obsolete">다중 점</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation>선</translation>
+        <translation type="obsolete">선</translation>
     </message>
     <message>
         <source>Multiline</source>
-        <translation>다중 선</translation>
+        <translation type="obsolete">다중 선</translation>
     </message>
     <message>
         <source>Polygon</source>
-        <translation>폴리곤</translation>
+        <translation type="obsolete">폴리곤</translation>
     </message>
     <message>
         <source>Multipolygon</source>
-        <translation>다중 폴리곤</translation>
+        <translation type="obsolete">다중 폴리곤</translation>
     </message>
     <message>
         <source>No Geometry</source>
-        <translation>지오메트리가 없음</translation>
+        <translation type="obsolete">지오메트리가 없음</translation>
     </message>
     <message>
         <source>Unknown Geometry</source>
-        <translation>알 수 없는 지오메트리</translation>
+        <translation type="obsolete">알 수 없는 지오메트리</translation>
     </message>
     <message>
         <source>None</source>
@@ -39214,6 +41558,14 @@ SQL: %2
     <message>
         <source>PQgetCancel failed</source>
         <translation>PQGetCancel 실패</translation>
+    </message>
+    <message>
+        <source>Unsupported spatial column type %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PcPatch</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -39437,6 +41789,10 @@ PostGIS %2</source>
 %1
 PostGIS %2</translation>
     </message>
+    <message>
+        <source>Primary key is ctid - changing of existing features disabled (%1; %2)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsProject</name>
@@ -39498,7 +41854,7 @@ Choose ignore to continue loading without the missing layers. Choose cancel to r
     <name>QgsProjectColorScheme</name>
     <message>
         <source>Project colors</source>
-        <translation>프로젝트 색상</translation>
+        <translation type="obsolete">프로젝트 색상</translation>
     </message>
 </context>
 <context>
@@ -40635,6 +42991,22 @@ p, li { white-space: pre-wrap; }
         <source>Raster calculator expression</source>
         <translation>래스터 연산 표현식</translation>
     </message>
+    <message>
+        <source>Output CRS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>!=</source>
+        <translation type="unfinished">!=</translation>
+    </message>
+    <message>
+        <source>log10</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ln</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsRasterDataProvider</name>
@@ -40663,15 +43035,15 @@ p, li { white-space: pre-wrap; }
     <name>QgsRasterFillSymbolLayerWidget</name>
     <message>
         <source>Pixels</source>
-        <translation>픽셀</translation>
+        <translation type="obsolete">픽셀</translation>
     </message>
     <message>
         <source>Millimeter</source>
-        <translation>밀리미터</translation>
+        <translation type="obsolete">밀리미터</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>지도 단위</translation>
+        <translation type="obsolete">지도 단위</translation>
     </message>
     <message>
         <source>Select image file</source>
@@ -41803,7 +44175,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Create GDAL Virtual Format composed of multiple 
 datasets with maximum width and height specified below.</source>
-        <translation>여러 자료로 구성된 GDAL 가상 포맷을 
+        <translation type="obsolete">여러 자료로 구성된 GDAL 가상 포맷을 
 아래 지정된 최대 폭, 높이값을 이용하여 생성합니다. .</translation>
     </message>
     <message>
@@ -41922,6 +44294,15 @@ datasets with maximum width and height specified below.</source>
         <source>Clear all</source>
         <translation>모두 지우기 </translation>
     </message>
+    <message>
+        <source>Create GDAL Virtual Format composed of multiple
+datasets with maximum width and height specified below.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add saved file to map</source>
+        <translation type="unfinished">저장된 파일을 지도에 추가</translation>
+    </message>
 </context>
 <context>
     <name>QgsRasterMinMaxWidget</name>
@@ -41994,6 +44375,17 @@ standard deviation ×</source>
     <message>
         <source>Load</source>
         <translation>불러오기 </translation>
+    </message>
+</context>
+<context>
+    <name>QgsRasterProjector</name>
+    <message>
+        <source>Approximate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Exact</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -42304,7 +44696,7 @@ standard deviation ×</source>
     <name>QgsRecentColorScheme</name>
     <message>
         <source>Recent colors</source>
-        <translation>최근 색상</translation>
+        <translation type="obsolete">최근 색상</translation>
     </message>
 </context>
 <context>
@@ -42340,6 +44732,22 @@ standard deviation ×</source>
     <message>
         <source>Order by value</source>
         <translation>값으로 정렬</translation>
+    </message>
+    <message>
+        <source>Filters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <source>When activated, the filters will restrict the choices of fields to options that are </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Chain filters</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -42512,7 +44920,11 @@ standard deviation ×</source>
     </message>
     <message>
         <source>Identify a feature of %1 to be associated. Press &lt;ESC&gt; to cancel.</source>
-        <translation>관련되기 위해 %1의 객체를 확인하세요. 취소하시려면, &lt;ESC&gt;를 눌러주세요.</translation>
+        <translation type="obsolete">관련되기 위해 %1의 객체를 확인하세요. 취소하시려면, &lt;ESC&gt;를 눌러주세요.</translation>
+    </message>
+    <message>
+        <source>Identify a feature of %1 to be associated. Press &amp;lt;ESC&amp;gt; to cancel.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -42688,19 +45100,23 @@ standard deviation ×</source>
     </message>
     <message>
         <source>Width</source>
-        <translation>폭</translation>
+        <translation type="obsolete">폭</translation>
     </message>
     <message>
         <source>Change symbol width</source>
-        <translation>심볼 폭 변경</translation>
+        <translation type="obsolete">심볼 폭 변경</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation>크기</translation>
+        <translation type="obsolete">크기</translation>
     </message>
     <message>
         <source>Change symbol size</source>
-        <translation>심볼 크기 변경</translation>
+        <translation type="obsolete">심볼 크기 변경</translation>
+    </message>
+    <message>
+        <source>Change angle</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -42909,11 +45325,15 @@ standard deviation ×</source>
     <name>QgsSLLayerItem</name>
     <message>
         <source>Delete layer</source>
-        <translation>레이어 제거</translation>
+        <translation type="obsolete">레이어 제거</translation>
     </message>
     <message>
         <source>Layer deleted successfully.</source>
         <translation>레이어 제거가 성공하였습니다.</translation>
+    </message>
+    <message>
+        <source>Delete Layer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -42956,11 +45376,11 @@ standard deviation ×</source>
     </message>
     <message>
         <source>Millimeter</source>
-        <translation>밀리미터</translation>
+        <translation type="obsolete">밀리미터</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>지도 단위</translation>
+        <translation type="obsolete">지도 단위</translation>
     </message>
     <message>
         <source>Select fill color</source>
@@ -43076,6 +45496,13 @@ standard deviation ×</source>
     <message>
         <source>Scale visibility </source>
         <translation>가시 스케일</translation>
+    </message>
+</context>
+<context>
+    <name>QgsScaleWidget</name>
+    <message>
+        <source>Set to current canvas scale</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -43234,6 +45661,13 @@ standard deviation ×</source>
     </message>
 </context>
 <context>
+    <name>QgsShadowEffectWidget</name>
+    <message>
+        <source>Select shadow color</source>
+        <translation type="unfinished">그림자 색상 선택</translation>
+    </message>
+</context>
+<context>
     <name>QgsShapeFile</name>
     <message>
         <source>Scanning </source>
@@ -43273,11 +45707,11 @@ The error was:
     <name>QgsShapeburstFillSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation>밀리미터</translation>
+        <translation type="obsolete">밀리미터</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>지도 단위</translation>
+        <translation type="obsolete">지도 단위</translation>
     </message>
     <message>
         <source>Select gradient color</source>
@@ -43296,11 +45730,11 @@ The error was:
     <name>QgsSimpleFillSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation>밀리미터</translation>
+        <translation type="obsolete">밀리미터</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>지도 단위</translation>
+        <translation type="obsolete">지도 단위</translation>
     </message>
     <message>
         <source>Select fill color</source>
@@ -43323,11 +45757,11 @@ The error was:
     <name>QgsSimpleLineSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation>밀리미터</translation>
+        <translation type="obsolete">밀리미터</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>지도 단위</translation>
+        <translation type="obsolete">지도 단위</translation>
     </message>
     <message>
         <source>Select line color</source>
@@ -43338,11 +45772,11 @@ The error was:
     <name>QgsSimpleMarkerSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation>밀리미터</translation>
+        <translation type="obsolete">밀리미터</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>지도 단위</translation>
+        <translation type="obsolete">지도 단위</translation>
     </message>
     <message>
         <source>Select fill color</source>
@@ -43363,6 +45797,10 @@ The error was:
     <message>
         <source>string </source>
         <translation>문자</translation>
+    </message>
+    <message>
+        <source>Size Assistant...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -43607,6 +46045,25 @@ enhancement</source>
     <message>
         <source>Symbol levels...</source>
         <translation>심볼 레벨...</translation>
+    </message>
+</context>
+<context>
+    <name>QgsSizeScaleWidget</name>
+    <message>
+        <source>Compute from layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Flannery</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Surface</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Radius</source>
+        <translation type="unfinished">반지름</translation>
     </message>
 </context>
 <context>
@@ -44826,6 +47283,40 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsStatisticalSummaryDockWidget</name>
+    <message>
+        <source>Missing (null) values</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsStatisticalSummaryWidgetBase</name>
+    <message>
+        <source>Statistics</source>
+        <translation type="unfinished">통계</translation>
+    </message>
+    <message>
+        <source>Statistic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished">값</translation>
+    </message>
+    <message>
+        <source>Selected features only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Recalculate Statistics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+</context>
+<context>
     <name>QgsStyleV2ExportImportDialog</name>
     <message>
         <source>Select all</source>
@@ -45274,7 +47765,7 @@ There was a problem with your symbol database.</source>
     </message>
     <message>
         <source>Edit</source>
-        <translation>편집</translation>
+        <translation type="obsolete">편집</translation>
     </message>
     <message>
         <source>Remove item</source>
@@ -45282,7 +47773,7 @@ There was a problem with your symbol database.</source>
     </message>
     <message>
         <source>Share</source>
-        <translation>공유</translation>
+        <translation type="obsolete">공유</translation>
     </message>
 </context>
 <context>
@@ -45392,11 +47883,11 @@ There was a problem with your symbol database.</source>
     <name>QgsSvgMarkerSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation>밀리미터</translation>
+        <translation type="obsolete">밀리미터</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>지도 단위</translation>
+        <translation type="obsolete">지도 단위</translation>
     </message>
     <message>
         <source>Select fill color</source>
@@ -45413,6 +47904,10 @@ There was a problem with your symbol database.</source>
     <message>
         <source>SVG files</source>
         <translation>SVG 파일</translation>
+    </message>
+    <message>
+        <source>Size Assistant...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -45540,11 +48035,11 @@ There was a problem with your symbol database.</source>
     <name>QgsSymbolsListWidget</name>
     <message>
         <source>Millimeter</source>
-        <translation>밀리미터</translation>
+        <translation type="obsolete">밀리미터</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation>지도 단위</translation>
+        <translation type="obsolete">지도 단위</translation>
     </message>
     <message>
         <source>Select color</source>
@@ -45573,6 +48068,14 @@ There was a problem with your symbol database.</source>
     <message>
         <source>Transparency %1%</source>
         <translation>투명도 %1%</translation>
+    </message>
+    <message>
+        <source>Clip features to canvas extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Size Assistant...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -45677,7 +48180,7 @@ There was a problem with your symbol database.</source>
     </message>
     <message>
         <source>Become an QGIS translator</source>
-        <translation>QGIS 번역자 되기</translation>
+        <translation type="obsolete">QGIS 번역자 되기</translation>
     </message>
     <message>
         <source>QGIS Mailing lists</source>
@@ -45828,6 +48331,10 @@ There was a problem with your symbol database.</source>
         <source>QGIS has Plugins!</source>
         <translation>QGIS에는 플러그인이 있습니다!</translation>
     </message>
+    <message>
+        <source>Become a QGIS translator</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsTipGui</name>
@@ -45906,11 +48413,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Transformation type:</source>
-        <translation>변환 유형:</translation>
+        <translation type="obsolete">변환 유형:</translation>
     </message>
     <message>
         <source>Resampling method:</source>
-        <translation>재샘플링 방법:</translation>
+        <translation type="obsolete">재샘플링 방법:</translation>
     </message>
     <message>
         <source>Nearest neighbour</source>
@@ -45934,11 +48441,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Compression:</source>
-        <translation>압축 방법:</translation>
+        <translation type="obsolete">압축 방법:</translation>
     </message>
     <message>
         <source>Output raster:</source>
-        <translation>출력 래스터:</translation>
+        <translation type="obsolete">출력 래스터:</translation>
     </message>
     <message>
         <source>...</source>
@@ -45946,15 +48453,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Target SRS:</source>
-        <translation>대상 SRS:</translation>
+        <translation type="obsolete">대상 SRS:</translation>
     </message>
     <message>
         <source>Generate pdf report:</source>
-        <translation>pdf 보고서 만들기:</translation>
+        <translation type="obsolete">pdf 보고서 만들기:</translation>
     </message>
     <message>
         <source>Set Target Resolution</source>
-        <translation>대상 해상도 설정</translation>
+        <translation type="obsolete">대상 해상도 설정</translation>
     </message>
     <message>
         <source>Horizontal</source>
@@ -45966,11 +48473,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Create world file</source>
-        <translation>월드 파일 만들기</translation>
+        <translation type="obsolete">월드 파일 만들기</translation>
     </message>
     <message>
         <source>Generate pdf map:</source>
-        <translation>pdg지도 만들기:</translation>
+        <translation type="obsolete">pdg지도 만들기:</translation>
     </message>
     <message>
         <source>Use 0 for transparency when needed</source>
@@ -46006,27 +48513,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Info</source>
-        <translation>정보</translation>
+        <translation type="obsolete">정보</translation>
     </message>
     <message>
         <source>Please set output name</source>
-        <translation>출력 이름을 지정하십시오</translation>
+        <translation type="obsolete">출력 이름을 지정하십시오</translation>
     </message>
     <message>
         <source>%1 requires at least %2 GCPs. Please define more</source>
-        <translation>%1은 적어도 %2 GCP가 필요합니다. 추가적인 GCP를 정의하십시오</translation>
+        <translation type="obsolete">%1은 적어도 %2 GCP가 필요합니다. 추가적인 GCP를 정의하십시오</translation>
     </message>
     <message>
         <source>Invalid output file name</source>
-        <translation>출력 파일 이름이 잘못되었음</translation>
+        <translation type="obsolete">출력 파일 이름이 잘못되었음</translation>
     </message>
     <message>
         <source>Save raster</source>
-        <translation>래스터 저장</translation>
+        <translation type="obsolete">래스터 저장</translation>
     </message>
     <message>
         <source>Select save PDF file</source>
-        <translation>저장할 PDF 파일 선택</translation>
+        <translation type="obsolete">저장할 PDF 파일 선택</translation>
     </message>
     <message>
         <source>PDF Format</source>
@@ -46036,6 +48543,74 @@ p, li { white-space: pre-wrap; }
         <source>_modified</source>
         <comment>Georeferencer:QgsOpenRasterDialog.cpp - used to modify a user given file name</comment>
         <translation>_변경됨</translation>
+    </message>
+    <message>
+        <source>Transformation parameters</source>
+        <translation type="unfinished">변환 매개 변수</translation>
+    </message>
+    <message>
+        <source>Transformation type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Resampling method</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Target SRS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output raster</source>
+        <translation type="unfinished">출력 래스터</translation>
+    </message>
+    <message>
+        <source>Set target resolution</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Compression</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create world file only (linear transforms)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reports</source>
+        <translation type="unfinished">보고서</translation>
+    </message>
+    <message>
+        <source>Generate PDF map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Generate PDF report</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Destination Raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid output file name.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input raster can not be overwritten.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save Map File as</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save Report File as</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -46062,6 +48637,25 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Adjust scaling range</source>
         <translation>스케일링 범위 조정</translation>
+    </message>
+    <message>
+        <source>Millimeter</source>
+        <translation type="unfinished">밀리미터</translation>
+    </message>
+    <message>
+        <source>Pixels</source>
+        <translation type="unfinished">픽셀</translation>
+    </message>
+    <message>
+        <source>Map unit</source>
+        <translation type="unfinished">지도 단위</translation>
+    </message>
+</context>
+<context>
+    <name>QgsUserInputDockWidget</name>
+    <message>
+        <source>User input</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -46160,6 +48754,10 @@ Error was:%2</source>
     <message>
         <source>...</source>
         <translation>...</translation>
+    </message>
+    <message>
+        <source>Use Completer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -46464,6 +49062,10 @@ Error was:%2</source>
         <source>Comment</source>
         <translation>코멘트</translation>
     </message>
+    <message>
+        <source>QGIS</source>
+        <translation type="unfinished">QGIS</translation>
+    </message>
 </context>
 <context>
     <name>QgsVectorLayerEditBuffer</name>
@@ -46731,6 +49333,10 @@ Error was:%2</source>
         <source>Restore Default</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>all</source>
+        <translation type="unfinished">모두</translation>
+    </message>
 </context>
 <context>
     <name>QgsVectorLayerPropertiesBase</name>
@@ -46740,11 +49346,11 @@ Error was:%2</source>
     </message>
     <message>
         <source>A widget to define the scale visibility</source>
-        <translation>스케일 가시성을 정의하기 위한 위젯</translation>
+        <translation type="obsolete">스케일 가시성을 정의하기 위한 위젯</translation>
     </message>
     <message>
         <source>A widget to define the scale visibility.</source>
-        <translation>스케일 가시성을 정의하기 위한 위젯.</translation>
+        <translation type="obsolete">스케일 가시성을 정의하기 위한 위젯.</translation>
     </message>
     <message>
         <source>Memory cache</source>
@@ -46868,7 +49474,7 @@ Error was:%2</source>
     </message>
     <message>
         <source>Feature subset</source>
-        <translation>객체 서브셋</translation>
+        <translation type="obsolete">객체 서브셋</translation>
     </message>
     <message>
         <source>Simplify geometry</source>
@@ -46973,6 +49579,18 @@ Error was:%2</source>
     <message>
         <source>Diagrams</source>
         <translation>도표</translation>
+    </message>
+    <message>
+        <source>Provider feature filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Prefix</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Joined fields</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -47360,6 +49978,10 @@ Error was:%2</source>
     <message>
         <source>Coordinate reference system</source>
         <translation>좌표계</translation>
+    </message>
+    <message>
+        <source>Only request features overlapping the current view extent</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -48807,6 +51429,53 @@ Reason phrase: %2</source>
     </message>
 </context>
 <context>
+    <name>QgsZonalStatisticsDialog</name>
+    <message>
+        <source>Count</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sum</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mean</source>
+        <translation type="unfinished">평균</translation>
+    </message>
+    <message>
+        <source>Median</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Standard deviation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Minimum</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maximum</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Range</source>
+        <translation type="unfinished">범위</translation>
+    </message>
+    <message>
+        <source>Minority</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Majority</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Variety</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsZonalStatisticsDialogBase</name>
     <message>
         <source>Raster layer:</source>
@@ -48823,6 +51492,14 @@ Reason phrase: %2</source>
     <message>
         <source>Zonal Statistics</source>
         <translation>구역 통계</translation>
+    </message>
+    <message>
+        <source>Band</source>
+        <translation type="unfinished">밴드</translation>
+    </message>
+    <message>
+        <source>Statistics to calculate:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -48864,22 +51541,6 @@ Please configure it before running R scripts.</source>
         <source>&lt;p&gt;This algorithm requires R to be run. Unfortunately it seems that R is not installed in your system or it is not correctly configured to be used from QGIS&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Click here&lt;/a&gt; to know more about how to install and configure R to be used with QGIS&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>&lt;p&gt;This algorithm requires R to be run. A test to check if R is correctly installed and configured in your system has been performed, with the following result:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>R seems to be correctly installed and configured&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;The script you have executed needs the following packages:&lt;/p&gt;&lt;ul&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;/ul&gt;&lt;p&gt;Make sure they are installed in your R environment before trying to execute this script.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;&lt;a href= &quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Click here&lt;/a&gt; to know more about how to install and configure R to be used with QGIS&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>RAlgorithmProvider</name>
@@ -48902,6 +51563,10 @@ Please configure it before running R scripts.</source>
     <message>
         <source>Could not load R script: %s
 %s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>R user library folder</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -48942,7 +51607,7 @@ Please configure it before running R scripts.</source>
     </message>
     <message>
         <source>Selection</source>
-        <translation>선택 집합</translation>
+        <translation type="obsolete">선택 집합</translation>
     </message>
     <message>
         <source>Selected number is greater than feature count. Choose a lower value and try again.</source>
@@ -48950,6 +51615,10 @@ Please configure it before running R scripts.</source>
     </message>
     <message>
         <source>Percentage can&apos;t be greater than 100. Set a different value and try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Extracted (random)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -48973,7 +51642,7 @@ Please configure it before running R scripts.</source>
     </message>
     <message>
         <source>Selection</source>
-        <translation>선택 집합</translation>
+        <translation type="obsolete">선택 집합</translation>
     </message>
     <message>
         <source>Selected number is greater that feature count. Choose lesser value and try again.</source>
@@ -48981,6 +51650,10 @@ Please configure it before running R scripts.</source>
     </message>
     <message>
         <source>Percentage can&apos;t be greater than 100. Set correct value and try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Extracted (random stratified)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -49154,7 +51827,7 @@ Please configure it before running R scripts.</source>
     </message>
     <message>
         <source>Selection</source>
-        <translation>선택 집합</translation>
+        <translation type="obsolete">선택 집합</translation>
     </message>
     <message>
         <source>Selected number is greater that feature count. Choose lesser value and try again.</source>
@@ -49162,6 +51835,10 @@ Please configure it before running R scripts.</source>
     </message>
     <message>
         <source>Percentage can&apos;t be greater than 100. Set a different value and try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selection stratified</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -49211,12 +51888,16 @@ Please configure it before running R scripts.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Output plot</source>
-        <translation type="unfinished"></translation>
+        <source>Output table</source>
+        <translation type="obsolete">출력 테이블</translation>
     </message>
     <message>
-        <source>Output table</source>
-        <translation>출력 테이블</translation>
+        <source>Histogram</source>
+        <translation type="unfinished">히스토그램</translation>
+    </message>
+    <message>
+        <source>Table</source>
+        <translation type="unfinished">테이블</translation>
     </message>
 </context>
 <context>
@@ -49314,7 +51995,7 @@ Please configure it before running R scripts.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Reprojected layer</source>
+        <source>Reprojected</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -49626,6 +52307,10 @@ Multiband layers are not supported by SAGA</source>
 %s</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Activate</source>
+        <translation type="unfinished">활성화</translation>
+    </message>
 </context>
 <context>
     <name>SagaUtils</name>
@@ -49641,7 +52326,7 @@ Multiband layers are not supported by SAGA</source>
         <translation>입력 레이어</translation>
     </message>
     <message>
-        <source>Output layer with selected features</source>
+        <source>Selection</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -49654,7 +52339,7 @@ Multiband layers are not supported by SAGA</source>
     <message>
         <source>Could not load script: %s
 Problem with line: %d</source>
-        <translation>스크립트를 불러올 수 없습니다: %s
+        <translation type="obsolete">스크립트를 불러올 수 없습니다: %s
 다음 라인에서 문제 발생: %d</translation>
     </message>
     <message>
@@ -49670,6 +52355,16 @@ Problem with line: %d</source>
 Problem with line %d</source>
         <translation>스크립트를 불러올 수 없습니다: %s
 다음 라인에서 문제 발생: %d</translation>
+    </message>
+    <message>
+        <source>Could not load script: %s
+Problem with line: %s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not load script: %s.
+Problem with line &quot;%s&quot;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -49740,7 +52435,7 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Output</source>
-        <translation>출력</translation>
+        <translation type="obsolete">출력</translation>
     </message>
     <message>
         <source>Operators %s can be used only with string fields.</source>
@@ -49762,6 +52457,37 @@ Problem with line %d</source>
         <source>Unsupported field type &quot;%s&quot;</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Selected (attribute)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SelectByAttributeSum</name>
+    <message>
+        <source>Input Layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Selection attribute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished">값</translation>
+    </message>
+    <message>
+        <source>Selected (attribute sum)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There is no selection in the input layer. Select one feature and try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No adjacent features found.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SelectByExpression</name>
@@ -49779,7 +52505,11 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Output</source>
-        <translation>출력</translation>
+        <translation type="obsolete">출력</translation>
+    </message>
+    <message>
+        <source>Selected (expression)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -49802,7 +52532,11 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Selection</source>
-        <translation>선택 집합</translation>
+        <translation type="obsolete">선택 집합</translation>
+    </message>
+    <message>
+        <source>Selected (location)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -49859,7 +52593,7 @@ Problem with line %d</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Styled layer</source>
+        <source>Styled</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -49874,7 +52608,7 @@ Problem with line %d</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Styled layer</source>
+        <source>Styled</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -50059,11 +52793,11 @@ Problem with line %d</source>
         <translation>허용 범위</translation>
     </message>
     <message>
-        <source>Simplified layer</source>
+        <source>Simplify: Input geometries have been simplified from %s to %s points</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Simplify: Input geometries have been simplified from %s to %s points</source>
+        <source>Simplified</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -50106,15 +52840,77 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
     </message>
     <message>
         <source>Invalid unique ID field</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Multipart</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SizeScaleBase</name>
+    <message>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Field</source>
+        <translation type="unfinished">필드</translation>
+    </message>
+    <message>
+        <source>Scale method</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Size from</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>to</source>
+        <translation type="unfinished">종료</translation>
+    </message>
+    <message>
+        <source>Values from</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Size when field is NULL</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SlopeArea</name>
+    <message>
+        <source>Slope Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Contributing Area Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Slope Exponent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Area Exponent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Slope Area Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SlopeAreaMulti</name>
     <message>
         <source>Slope Grid</source>
         <translation type="unfinished"></translation>
@@ -50164,11 +52960,19 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Output table</source>
-        <translation>출력 테이블</translation>
+        <translation type="obsolete">출력 테이블</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
+    </message>
+    <message>
+        <source>Joined table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Joined layer</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -50182,11 +52986,11 @@ Problem with line %d</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Split lines</source>
+        <source>Geometry exception while splitting</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Geometry exception while splitting</source>
+        <source>Splitted</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -50225,7 +53029,11 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Statistics</source>
-        <translation>통계</translation>
+        <translation type="obsolete">통계</translation>
+    </message>
+    <message>
+        <source>Statistics by category</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -50248,7 +53056,11 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Result</source>
-        <translation>결과</translation>
+        <translation type="obsolete">결과</translation>
+    </message>
+    <message>
+        <source>Line length</source>
+        <translation type="unfinished">선 길이</translation>
     </message>
 </context>
 <context>
@@ -50301,20 +53113,39 @@ Problem with line %d</source>
         <source> °</source>
         <translation> °</translation>
     </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
 </context>
 <context>
     <name>SymetricalDifference</name>
     <message>
         <source>Input layer</source>
-        <translation>입력 레이어</translation>
+        <translation type="obsolete">입력 레이어</translation>
     </message>
     <message>
         <source>Difference layer</source>
-        <translation>레이어 차이 분석</translation>
+        <translation type="obsolete">레이어 차이 분석</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation>대칭 차이</translation>
+        <translation type="obsolete">대칭 차이</translation>
+    </message>
+</context>
+<context>
+    <name>SymmetricalDifference</name>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished">입력 레이어</translation>
+    </message>
+    <message>
+        <source>Difference layer</source>
+        <translation type="unfinished">레이어 차이 분석</translation>
+    </message>
+    <message>
+        <source>Symetrical difference</source>
+        <translation type="unfinished">대칭 차이</translation>
     </message>
     <message>
         <source>Geometry exception while computing symetrical difference</source>
@@ -50359,6 +53190,35 @@ Problem with line %d</source>
         <source>TauDEM (hydrologic analysis)</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>TauDEM multifile command line tools folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable singlefile TauDEM tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable multifile TauDEM tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not open TauDEM algorithm %s:
+%s</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TauDEMMultifileAlgorithm</name>
+    <message>
+        <source>Could not load TauDEM algorithm: %s
+%s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>TauDEMUtils</name>
@@ -50383,7 +53243,11 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Output</source>
-        <translation>출력</translation>
+        <translation type="obsolete">출력</translation>
+    </message>
+    <message>
+        <source>Float from text</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -50662,7 +53526,11 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Output</source>
-        <translation>출력</translation>
+        <translation type="obsolete">출력</translation>
+    </message>
+    <message>
+        <source>Histogram</source>
+        <translation type="unfinished">히스토그램</translation>
     </message>
 </context>
 <context>
@@ -50681,7 +53549,11 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Output</source>
-        <translation>출력</translation>
+        <translation type="obsolete">출력</translation>
+    </message>
+    <message>
+        <source>Scatterplot</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -50774,6 +53646,37 @@ Problem with line %d</source>
     </message>
 </context>
 <context>
+    <name>WidgetBlur</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Transparency</source>
+        <translation type="unfinished">투명도</translation>
+    </message>
+    <message>
+        <source> %</source>
+        <translation type="unfinished"> %</translation>
+    </message>
+    <message>
+        <source>Blend mode</source>
+        <translation type="unfinished">블렌드 모드</translation>
+    </message>
+    <message>
+        <source>Blur type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blur strength</source>
+        <translation type="unfinished">블러 강도</translation>
+    </message>
+    <message>
+        <source>Draw mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>WidgetCentroidFill</name>
     <message>
         <source>Form</source>
@@ -50782,6 +53685,76 @@ Problem with line %d</source>
     <message>
         <source>Force point inside polygon</source>
         <translation>점을 강제로 폴리곤 안으로</translation>
+    </message>
+</context>
+<context>
+    <name>WidgetColorEffect</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Colorize</source>
+        <translation type="unfinished">컬러화</translation>
+    </message>
+    <message>
+        <source>Contrast</source>
+        <translation type="unfinished">대비</translation>
+    </message>
+    <message>
+        <source>Brightness</source>
+        <translation type="unfinished">밝기</translation>
+    </message>
+    <message>
+        <source>Saturation</source>
+        <translation type="unfinished">채도</translation>
+    </message>
+    <message>
+        <source>%</source>
+        <translation type="unfinished">%</translation>
+    </message>
+    <message>
+        <source>Transparency</source>
+        <translation type="unfinished">투명도</translation>
+    </message>
+    <message>
+        <source>Blend mode</source>
+        <translation type="unfinished">블렌드 모드</translation>
+    </message>
+    <message>
+        <source>Draw mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> %</source>
+        <translation type="unfinished"> %</translation>
+    </message>
+    <message>
+        <source>Grayscale</source>
+        <translation type="unfinished">그레이스케일</translation>
+    </message>
+</context>
+<context>
+    <name>WidgetDrawSource</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blend mode</source>
+        <translation type="unfinished">블렌드 모드</translation>
+    </message>
+    <message>
+        <source>Transparency</source>
+        <translation type="unfinished">투명도</translation>
+    </message>
+    <message>
+        <source> %</source>
+        <translation type="unfinished"> %</translation>
+    </message>
+    <message>
+        <source>Draw mode</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -50920,6 +53893,57 @@ Problem with line %d</source>
     <message utf8="true">
         <source> °</source>
         <translation> °</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+</context>
+<context>
+    <name>WidgetGlow</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color ramp</source>
+        <translation type="unfinished">색상표</translation>
+    </message>
+    <message>
+        <source>Spread</source>
+        <translation type="unfinished">확산</translation>
+    </message>
+    <message>
+        <source>Blur radius</source>
+        <translation type="unfinished">블러 반경</translation>
+    </message>
+    <message>
+        <source>Transparency</source>
+        <translation type="unfinished">투명도</translation>
+    </message>
+    <message>
+        <source>Single color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blend mode</source>
+        <translation type="unfinished">블렌드 모드</translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation type="unfinished">편집</translation>
+    </message>
+    <message>
+        <source>Invert</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> %</source>
+        <translation type="unfinished"> %</translation>
+    </message>
+    <message>
+        <source>Draw mode</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -51218,6 +54242,45 @@ Problem with line %d</source>
     <message utf8="true">
         <source> °</source>
         <translation> °</translation>
+    </message>
+</context>
+<context>
+    <name>WidgetShadowEffect</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Color</source>
+        <translation type="unfinished">색상</translation>
+    </message>
+    <message>
+        <source>Transparency</source>
+        <translation type="unfinished">투명도</translation>
+    </message>
+    <message>
+        <source>Offset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blend mode</source>
+        <translation type="unfinished">블렌드 모드</translation>
+    </message>
+    <message>
+        <source>Blur radius</source>
+        <translation type="unfinished">블러 반경</translation>
+    </message>
+    <message>
+        <source> %</source>
+        <translation type="unfinished"> %</translation>
+    </message>
+    <message utf8="true">
+        <source>˚</source>
+        <translation type="unfinished">˚</translation>
+    </message>
+    <message>
+        <source>Draw mode</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -51543,6 +54606,49 @@ Problem with line %d</source>
     </message>
 </context>
 <context>
+    <name>WidgetTransform</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shear X,Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotation</source>
+        <translation type="unfinished">회전</translation>
+    </message>
+    <message utf8="true">
+        <source> °</source>
+        <translation type="unfinished"> °</translation>
+    </message>
+    <message>
+        <source>Reflect horizontal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reflect vertical</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Translate X,Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%</source>
+        <translation type="unfinished">%</translation>
+    </message>
+    <message>
+        <source>Scale X,Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Draw mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>WidgetVectorFieldBase</name>
     <message>
         <source>Form</source>
@@ -51644,7 +54750,11 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
+    </message>
+    <message>
+        <source>Zonal statistics</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -51781,7 +54891,11 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
+    </message>
+    <message>
+        <source>Virtual</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -51886,7 +55000,7 @@ Run topology check again.</source>
     <message>
         <source>&lt;h3&gt;Database connection&lt;/h3&gt;
 </source>
-        <translation>&lt;h3&gt;데이터베이스 연결&lt;/h3&gt;</translation>
+        <translation type="obsolete">&lt;h3&gt;데이터베이스 연결&lt;/h3&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Create a new WMS connection&lt;/h3&gt;
@@ -51927,7 +55041,7 @@ On this tab you can search for WMS servers. It is possible to enter a search-str
 To visualize the results, select an table entry, press the &lt;label&gt;Add selected row to WMS list&lt;/label&gt; button and change back to the &lt;label&gt;Servers&lt;/label&gt; tab.&lt;p&gt;
 You only need to request the list of layers by clicking the &lt;label&gt;Connect&lt;/label&gt; button.
 </source>
-        <translation>&lt;h3&gt;새로운 WMS 연결 만들기&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;새로운 WMS 연결 만들기&lt;/h3&gt;
 WMS에 접근할 수 있는 URL을 알고, 그 서버에 연결 가능하고, 그 서버가 HTTP를 이용한 데이터 전송 메커니즘에 지원한다면, WMS 레이어는 상당히 쉽게 추가될 수 있습니다.&lt;p&gt;
 현재 QGIS는 WMS 1.1, 1.1.1, 1.3 을 지원하는 서버의  WMS 클라이언트로 사용할 수 있습니다.
 &lt;p&gt;
@@ -51977,7 +55091,7 @@ You may also tick an &lt;label&gt;Open feature form, if a single feature is iden
 Identifiable layers can be set in the Project Properties dialog &lt;label&gt;Settings &gt; Project Properties &gt; Identifiable layers&lt;/label&gt; where all the layers names are listed, their type (vector, raster, etc.) and ability to be identified.
 &lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;객체 확인&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;객체 확인&lt;/h3&gt;
 &lt;p&gt;
 결과 대화상자는 검색 허용치안에서 확인된 모든 객체를 보여줍니다. 결과를 상세히 보기 위해서는 각 객체의 왼편에 있는 객체 정보를 펼쳐보면 됩니다. 
 &lt;/p&gt;
@@ -52028,7 +55142,7 @@ geometry types and don&apos;t offer to add others.
 
 &lt;/ul&gt;
 </source>
-        <translation>&lt;h3&gt;새 Oracle 연결 생성하기&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;새 Oracle 연결 생성하기&lt;/h3&gt;
 이 대화상자는 Oracle 데이터베이스 연결을 설정할 수 있게 해 줍니다.
 &lt;p&gt;
 &lt;ul&gt;
@@ -52072,7 +55186,7 @@ geometry types and don&apos;t offer to add others.
         <source>&lt;h3&gt;GPS Plugin&lt;/h3&gt;
 
 </source>
-        <translation>&lt;h3&gt;GPS 플러그인&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;GPS 플러그인&lt;/h3&gt;
 
 </translation>
     </message>
@@ -52114,7 +55228,7 @@ To filter a layer before adding it to the map, double click on its name or use &
 &lt;/a&gt;
 Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for searching in different column types and using 2 search modes: &lt;label&gt;Wildcard&lt;/label&gt; or &lt;label&gt;RegExp&lt;/label&gt;.
 </source>
-        <translation>&lt;h3&gt;PostGIS 테이블 추가하기&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;PostGIS 테이블 추가하기&lt;/h3&gt;
 이 대화상자는 사용자가  PostGIS 레이어(지오메트리 컬럼이 있는 테이블)를 .QGIS 지도 캔버스에 추가하게 해줍니다.
 &lt;p&gt;
 &lt;a href=&quot;#connect&quot;&gt;연결&lt;/a&gt;&lt;br/&gt;
@@ -52213,7 +55327,7 @@ The field calculator allows you to update fields with expressions.
 &lt;tr&gt;&lt;td&gt;-&lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;negative value of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
 &lt;/table&gt;
 </source>
-        <translation>&lt;h3&gt;필드 계산기&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;필드 계산기&lt;/h3&gt;
 필드 계산기는 식을 이용해 필드를 갱신 할 수 있게 해줍니다.
 
 &lt;h4&gt;지원되는 연산자&lt;/h4&gt;
@@ -52276,7 +55390,7 @@ The field calculator allows you to update fields with expressions.
     <message>
         <source>&lt;h3&gt;New OGR Database Connection Dialog&lt;/h3&gt;
 </source>
-        <translation>&lt;h3&gt;새로운 OGR 데이터베이스 연결 대화상자&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;새로운 OGR 데이터베이스 연결 대화상자&lt;/h3&gt;
 </translation>
     </message>
     <message>
@@ -52284,7 +55398,7 @@ The field calculator allows you to update fields with expressions.
 Displays a north arrow overlayed onto the map.
 &lt;p&gt;
 At present there is only one style available. You can adjust the angle of the arrow or let QGIS set the direction automatically. If you choose to let QGIS determine the direction, it makes its best guess as to how the arrow should be oriented. For placement of the arrow you have four options, corresponding to the four corners of the map canvas.</source>
-        <translation>&lt;h3&gt;방위표 플러그인&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;방위표 플러그인&lt;/h3&gt;
 지도위에 방위표를 보여줍니다.
 &lt;p&gt;
 현재로는 한가지 스타일만 가능합니다. 화살표의 각을 조절하거나 QGIS가 자동으로 방향을 조절하도록 조정할 수 있습니다. QGIS가 방향을 결정하도록 선택하면, 화살표가 올바른 방향을 가르치도록 최선을 다합니다. 화살표의 배치에 대해 맵 캔버스의 각 코너에 따라 4개 옵션이 있습니다.</translation>
@@ -52309,7 +55423,7 @@ To add a scale bar:
 &lt;li&gt;Click &lt;label&gt;OK&lt;/label&gt;.&lt;/li&gt;
 &lt;/ol&gt;
 </source>
-        <translation>&lt;h3&gt;스케일바 플러그인&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;스케일바 플러그인&lt;/h3&gt;
 지도상에 스케일바를 그립니다.
 &lt;p&gt;
 사용자가 스타일과 배치뿐만 아니라 막대의 라벨 표시를 조절할 수 있습니다.
@@ -52383,7 +55497,7 @@ which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/
 &lt;p&gt;Contact the author through aruntheguy at gmail dot com&lt;/p&gt;
 
 </source>
-        <translation>&lt;h3&gt;히트맵 플러그인 도움말&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;히트맵 플러그인 도움말&lt;/h3&gt;
 &lt;p&gt;히트맵 플러그인은 입력 점 벡터 레이어에서 밀도(온도) 레스터를 만들기 위해 Kernel Density 분석을 사용합니다. 밀도는 인접 위치에 있는 점 수를 기준으로 계산되며, 많은 점이 모여있으면 높은 값으로 해석됩니다. 히트맵은 &quot;핫스팟&quot;과 점들이 모이는 것을 쉽게 알아볼 수 있게 해줍니다..&lt;/p&gt;
 
 &lt;h2&gt;대화상자 파라미터&lt;/h2&gt;
@@ -52590,7 +55704,7 @@ that will be automatically deleted after running.&lt;/li&gt;
 from the close button. This allows you to save the geometry to be restored to the next start.
 &lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;QGIS용 파이썬 콘솔&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;QGIS용 파이썬 콘솔&lt;/h3&gt;
 &lt;a href=&quot;#console&quot;&gt; 콘솔 &lt;/a&gt;&lt;br&gt;
 &lt;a href=&quot;#editor&quot;&gt;편집기&lt;/a&gt;&lt;br&gt;
 &lt;a href=&quot;#settings&quot;&gt; 설정 &lt;/a&gt;&lt;br&gt;&lt;br&gt;
@@ -52769,7 +55883,7 @@ The Coordinate Reference System (CRS) tab allows you to set the projection for t
 &lt;/a&gt;
 On this tab you can choose on which layers the identify tool will work.
 </source>
-        <translation>&lt;h3&gt;프로젝트 속성&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;프로젝트 속성&lt;/h3&gt;
 이 대화 상자에서 &lt;label&gt;프로젝트&lt;/label&gt;와 관련된 몇 가지 속성을 설정할 수 있습니다. 프로젝트는 레이어와 해당 설정의 저장 세트이며, 디스크에서 프로젝트를 복원하는 데 필요한 정보입니다. &lt;p&gt;
 
 &lt;a href=&quot;#general&quot;&gt;일반 탭&lt;/a&gt;&lt;br/&gt;
@@ -52809,7 +55923,7 @@ On this tab you can choose on which layers the identify tool will work.
 To define a new connection, click on &lt;label&gt;New&lt;/label&gt; button and use the file browser to point to your SpatiaLite database, which is a file with a &lt;i&gt;.sqlite&lt;/i&gt; extension.&lt;p&gt;
 The connections you define will be remembered for further use and available to choose from the drop down menu.
 </source>
-        <translation>&lt;h3&gt; SpatiaLite 테이블 추가&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt; SpatiaLite 테이블 추가&lt;/h3&gt;
 새 연결을 정의하려면 &lt;label&gt;새 연결&lt;/label&gt;버튼을 클릭하고 사용자의 SpatiaLite 데이터베이스를 가르키도록 파일 브라우저를 사용합니다.(&lt;i&gt;.sqlite가 &lt;/i&gt; 확장자) &lt;p&gt;  
 사용자가 정의하는 연결은 이후 사용을 위해 기억되고 드롭 다운 메뉴에서 선택할 수 있게 됩니다.</translation>
     </message>
@@ -52953,7 +56067,7 @@ The Diagram tab allows you to add a graphic overlay to a vector layer. To activa
 The current implementation of diagrams provides support for pie- and bar charts and for linear scaling
 of the diagram size according to a classification attribute.
 </source>
-        <translation>&lt;h3&gt;벡터 레이어 속성&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;벡터 레이어 속성&lt;/h3&gt;
 이 대화상자는 사용자가 백터 레이어 설정과 속성을 이용해 작업할 수 있게 해줍니다. 여기에는 다음과 같은 탭이 있습니다:
 &lt;p&gt;
 &lt;a href=&quot;#symbology&quot;&gt;심볼&lt;/a&gt;&lt;br/&gt;
@@ -53131,7 +56245,7 @@ To delete a bookmark from the Bookmarks dialog, click on it then click the &lt;l
 To update the extent of a bookmark, click on it then click the &lt;label&gt;Update&lt;/label&gt; button. Confirm your choice by clicking &lt;label&gt;OK&lt;/label&gt; or cancel the update by clicking &lt;label&gt;Cancel&lt;/label&gt;.
 
 </source>
-        <translation>&lt;h3&gt;지리적 북마크&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;지리적 북마크&lt;/h3&gt;
 지리적 북마크는 지리적 위치를 &quot;북마크&quot;하고 나중에 사용할 수 있게 해줍니다.
 &lt;P&gt;
 &lt;a href=&quot;#creating&quot;&gt;북마크 만들기&lt;/a&gt;&lt;br/&gt;
@@ -53202,7 +56316,7 @@ To update the extent of a bookmark, click on it then click the &lt;label&gt;Upda
 &lt;h5&gt;Default settings&lt;/h5&gt;
 &lt;p&gt;If the attribute table of your linear layer does not contain the required fields or fields contain unexpected values, the plugin will use default values. You can set them in the default tab &lt;label&gt;Default settings&lt;/label&gt;.&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Road graph 플러그인 설정&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Road graph 플러그인 설정&lt;/h3&gt;
 &lt;p&gt;Road graph는 QGIS 용 C++ 플러그인입니다. 이를 통해 도로 네크워크 상에서 어떤 폴리라인 상에 있거나 그린 객체 위에 있는 두 점 사이의 가장 빠른 길을 찾을 수 있습니다.&lt;/p&gt;
 &lt;p&gt;
 &lt;a href=&quot;#creating&quot;&gt;플러그인 단위&lt;/a&gt;&lt;br/&gt;
@@ -53276,7 +56390,7 @@ are sometimes limited (e.g. for shape files) or behave diffently.
 &lt;/tr&gt;
 &lt;/table&gt;
 </source>
-        <translation>&lt;h3&gt;질의 생성기&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;질의 생성기&lt;/h3&gt;
 질의 생성기는 사용자가 프로바이더에 맞는 필터 표현식을 만들수 있게 해줍니다.
 
 이것은 보통 일반적인 QGIS 표현식보다 춸씬 빠르게 동작하지만, 
@@ -53338,7 +56452,7 @@ system.
 &lt;p&gt;
 Defining a custom CRS in QGIS requires a good understanding of the Proj.4 projection library. To begin, refer to the &lt;a href=&quot;ftp://ftp.remotesensing.org/proj/OF90-284.pdf&quot;&gt;Cartographic Projection Procedures for the UNIX Environment&lt;/a&gt; - A User&apos;s Manual by Gerald I. Evenden, U.S. Geological Survey Open-File Report 90-284, 1990. This manual describes the use of the &lt;i&gt;proj.4&lt;/i&gt; and related command line utilities. The cartographic parameters used with &lt;i&gt;proj.4&lt;/i&gt; are described in the user manual, and are the same as those used by QGIS.
 </source>
-        <translation>&lt;h3&gt;사용자 정의 좌표계 정의&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;사용자 정의 좌표계 정의&lt;/h3&gt;
 QGIS가 사용자가 원하는 좌표계를 제공하지 않는다면, 사용자 정의 좌표계를 만들 수 있습니다. &lt;p&gt; 좌표계를 정의하기 위해서는, &lt;label&gt;편집&lt;/label&gt;(Gnome, OSX) 또는 &lt;label&gt;설정&lt;/label&gt; (KDE, 윈도우의 경우) 메뉴로 부터 &lt;label&gt;사용자 정의 좌표계&lt;/label&gt;를 선택 합니다. 사용자 정의 좌표계는 QGIS의 사용자 데이터베이스에 저장됩니다. 또한 이 데이터베이스에는 사용자의 지리적 북마크 및 다른 사용자 정의 데이터가 들어갑니다. 
 
 &lt;h4&gt;정의하기&lt;/h4&gt;
@@ -53385,7 +56499,7 @@ This plugin supports basic HTML markup tags for formatting text. For example:
 &lt;/li&gt;
 &lt;/ul&gt;
 </source>
-        <translation>&lt;h3&gt;저작권 라벨 플러그인&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;저작권 라벨 플러그인&lt;/h3&gt;
 저작권 정보를 가진 저작권 라벨을 그립니다.&lt;br/&gt;
 저작권 라벨뿐만아니라 임의의 텍스트를 추가할 수도 있습니다.
 &lt;p&gt;
@@ -53418,323 +56532,6 @@ This plugin supports basic HTML markup tags for formatting text. For example:
 </translation>
     </message>
     <message>
-        <source>&lt;h3&gt;Delimited Text File Layer&lt;/h3&gt;
-Loads and displays delimited text files
-&lt;p&gt;
-&lt;a href=&quot;#re&quot;&gt;Overview&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#creating&quot;&gt;Creating a delimited text layer&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#csv&quot;&gt;How the delimiter, quote, and escape characters work&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#regexp&quot;&gt;How regular expression delimiters work&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#wkt&quot;&gt;How WKT text is interpreted&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#attributes&quot;&gt;Attributes in delimited text files&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#example&quot;&gt;Example of a text file with X,Y point coordinates&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#wkt_example&quot;&gt;Example of a text file with WKT geometries&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#python&quot;&gt;Using delimited text layers in Python&lt;/a&gt;&lt;br/&gt;
-&lt;/p&gt;
-
-&lt;h4&gt;&lt;a name=&quot;re&quot;&gt;Overview&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;A &amp;quot;delimited text file&amp;quot; contains data in which each record starts on a new line, and 
-is split into fields by a delimiter such as a comma.  
-This type of file is commonly exported from spreadsheets (for example CSV files) or databases.  
-Typically the first line of a delimited text file contains the names of the fields.  
-&lt;/p&gt;
-&lt;p&gt;
-Delimited text files can be loaded into QGIS as a layer. 
-The records can be displayed spatially either as a point
-defined by X and Y coordinates, or using a Well Known Text (WKT) definition of a geometry which may
-describe points, lines, and polygons of arbitrary complexity.  The file can also be loaded as an attribute
-only table, which can then be joined to other tables in QGIS.
-&lt;/p&gt;
-&lt;p&gt;
-In addition to the geometry definition the file can contain text, integer, and real number fields.  By default 
-QGIS will choose the type of field based on its the non blank values of the field.  If all can be interpreted
-as integer then the type will be integer, if all can be interpreted as real numbers then the type will
-be double, otherwise the type will be text.
-&lt;/p&gt;
-&lt;p&gt;
-QGIS can also read the types from an OGR CSV driver compatible &amp;quot;csvt&amp;quot; file.  
-This is a file alongside the data file, but with a &amp;quot;t&amp;quot; appended to the file name. 
-The file should just contain one line which lists the type of each field. 
-Valid types are &amp;quot;integer&amp;quot;, &amp;quot;real&amp;quot;, &amp;quot;string&amp;quot;, &amp;quot;date&amp;quot;, &amp;quot;time&amp;quot;, and &amp;quot;datetime&amp;quot;. The date, time, and datetime types are treated as strings in QGIS.
-Each type may be followed by a width and precision, for example &amp;quot;real(10.4)&amp;quot;.
-The list of types are separated by commas, regardless of the delimiter used in the data file.  An
-example of a valid format file would be:
-&lt;/p&gt;
-
-&lt;pre&gt;
-&amp;quot;integer&amp;quot;,&amp;quot;string&amp;quot;,&amp;quot;string(20)&amp;quot;,&amp;quot;real(20.4)&amp;quot;
-&lt;/pre&gt;
-
-&lt;h4&gt;&lt;a name=&quot;creating&quot;&gt;Creating a delimited text layer&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Creating a delimited text layer involves choosing the data file, defining the format (how each record is to
-be split into fields), and defining the geometry is represented.  
-This is managed with the delimited text dialog as detailed below.  
-The dialog box displays a sample from the beginning of the file which shows how the format
-options have been applied.
-&lt;/p&gt;
-&lt;h5&gt;Choosing the data file&lt;/h5&gt;
-&lt;p&gt;Use the &amp;quot;Browse...&amp;quot; button to select the data file.  Once the file is selected the
-layer name will automatically be populated based on the file name.  The layer name is used to represent
-the data in the QGIS legend.  
-&lt;/p&gt;
-&lt;p&gt;
-By default files are assumed to be encoded as UTF-8.  However other file
-encodings can be selected.  For example &amp;quot;System&amp;quot; uses the default encoding for the operating system.  
-It is safer to use an explicit coding if the QGIS project needs to be portable.
-&lt;/p&gt;
-&lt;h5&gt;Specifying the file format&lt;/h5&gt;
-&lt;p&gt;The file format can be one of
-&lt;ul&gt;
-    &lt;li&gt;CSV file format.  This is a format commonly used by spreadsheets, in which fields are delimited
-    by a comma character, and quoted using a &amp;quot;(quote) character.  Within quoted fields, a quote
-    mark is entered as &amp;quot;&amp;quot;.&lt;/li&gt;
-    &lt;li&gt;Selected delimiters.  Each record is split into fields using one or more  delimiter character.
-    Quote characters are used for fields which may contain delimiters.  Escape characters may be used 
-    to treat the following character as a normal character (ie to include delimiter, quote, and 
-    new line characters in text fields).  The use of delimiter, quote, and escape characters is detailed &lt;a href=&quot;#csv&quot;&gt;below&lt;/a&gt;.
-    &lt;li&gt;Regular expression.  Each line is split into fields using a &amp;quot;regular expression&amp;quot; delimiter.
-    The use of regular expressions is details &lt;a href=&quot;#regexp&quot;&gt;below&lt;/a&gt;.
-&lt;/ul&gt;
-&lt;h5&gt;Record and field options&lt;/h5&gt;
-&lt;p&gt;The following options affect the selection of records and fields from the data file&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;Number of header lines to discard: used to ignore header lines at the beginning of the text file&lt;/li&gt;
-    &lt;li&gt;First record has fields names: if selected then the first record in the file (after the discarded lines) is interpreted as names of fields, rather than as a data record.&lt;/li&gt;
-    &lt;li&gt;Trim fields: if selected then leading and trailing whitespace characters will be removed from each field (except quoted fields). &lt;/li&gt;
-    &lt;li&gt;Discard empty fields: if selected then empty fields (after trimming) will be discard.  This 
-    affects the alignment of data into fields and is equivalent to treating consecutive delimiters as a 
-    single delimiter.  Quoted fields are never discarded.&lt;/li&gt;
-    &lt;li&gt;Decimal separator is comma: if selected then commas instead of points are used as the decimal separator in real numbers.  For
-    example &lt;tt&gt;-51,354&lt;/tt&gt; is equivalent to -51.354.
-    &lt;/li&gt;
-&lt;/ul&gt;
-&lt;h5&gt;Geometry definition&lt;/h5&gt;
-&lt;p&gt;The geometry is can be define as one of&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;Point coordinates: each feature is represented as a point defined by X and Y coordinates.&lt;/li&gt;
-    &lt;li&gt;Well known text (WKT) geometry: each feature is represented as a well known text string, for example
-    &lt;tt&gt;POINT(1.525622 51.20836)&lt;/tt&gt;.  See details of the &lt;a href=&quot;#wkt&quot;&gt;well known text&lt;/a&gt; format.
-    &lt;li&gt;No geometry (attribute only table): records will not be displayed on the map, but can be viewed
-    in the attribute table and joined to other layers in QGIS&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;For point coordinates the following options apply:&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;X field: specifies the field containing the X coordinate&lt;/li&gt;
-    &lt;li&gt;Y field: specifies the field containing the Y coordinate&lt;/li&gt;
-    &lt;li&gt;DMS angles: if selected coordinates are represented as degrees/minutes/seconds
-    or degrees/minutes.  QGIS is quite permissive in its interpretation of degrees/minutes/seconds.
-    A valid DMS coordinate will contain three numeric fields with an optional hemisphere prefix or suffix
-    (N, E, or + are positive, S, W, or - are negative).  Additional non numeric characters are 
-    generally discarded.  For example &lt;tt&gt;N41d54&apos;01.54&amp;quot;&lt;/tt&gt; is a valid coordinate.
-    &lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;For well known text geometry the following options apply:&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;Geometry field: the field containing the well known text definition.&lt;/li&gt;
-    &lt;li&gt;Geometry type: one of &amp;quot;Detect&amp;quot; (detect), &amp;quot;Point&amp;quot;, &amp;quot;Line&amp;quot;, or &amp;quot;Polygon&amp;quot;.
-    QGIS layers can only display one type of geometry feature (point, line, or polygon). This option selects
-    which geometry type is displayed in text files containing multiple geometry types. Records containing
-   other geometry types are discarded.   
-    If &amp;quot;Detect&amp;quot; is selected then the type of the first geometry in the file will be used.
-    &amp;quot;Point&amp;quot; includes POINT and MULTIPOINT WKT types, &amp;quot;Line&amp;quot; includes LINESTRING and
-    MULTLINESTRING WKT types, and &amp;quot;Polygon&amp;quot; includes POLYGON and MULTIPOLYGON WKT types.
-&lt;/ul&gt;
-&lt;h5&gt;Layer settings&lt;/h5&gt;
-&lt;p&gt;Layer settings control the way the layer is managed in QGIS.  The options available are:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Use spatial index. Create a spatial index to improve the performance of displaying and selecting spatial objects.
-This option may be useful for files larger than a few megabytes in size.&lt;/li&gt;
-&lt;li&gt;Use subset index. Create an index if a subset of records is being used (either by explicitly setting a subset string 
-from the layer properties dialog, or an implicit subset of features for which the geometry is valid in files
-for which all not geometries are valid).  The index will only be created when a subset is defined.&lt;/li&gt;
-&lt;li&gt;Watch file.  If this options is selected QGIS will watch the file for changes by other applications, and 
-reload the file when it is changed.  The map will not be updated until refreshed by the user, but indexes and
-extents will be reloaded.  This option should be selected if indexes are used and it is likely that another
-application will change the file. &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4&gt;&lt;a name=&quot;csv&quot;&gt;How the delimiter, quote, and escape characters work&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Records are split into fields using three character sets: 
-delimiter characters, quote characters, and escape characters.  
-Other characters in the record are considered as data, split into
-fields by delimiter characters. 
-Quote characters occur in pairs and cause the text between them to be treated as a data.  Escape characters cause the character following them to be treated as data.   
-&lt;/p&gt;
-&lt;p&gt;
-Quote and escape characters cannot be the same as delimiter characters - they
-will be ignored if they are. Escape characters can be the same as quote characters, but behave differently
-if they are.&lt;/p&gt;
-&lt;p&gt;The delimiter characters are used to mark the end of each field.  If more than one delimiter character
-is defined then any one of the characters can mark the end of a field.  The quote and escape characters 
-can override the delimiter character, so that it is treated as a normal data character.&lt;/p&gt;
-&lt;p&gt;Quote characters may be used to mark the beginning and end of quoted fields. Quoted fields can 
-contain delimiters and may span multiple lines in the text file.  If a field is quoted then it must
-start and end with the same quote character.  Quote characters cannot occur within a field unless they
-are escaped.&lt;/p&gt;
-&lt;p&gt;Escape characters which are not quote characters force the following character to be treated as data.  
-(that is, to stop it being treated as a new line, delimiter, or quote character).  
-&lt;/p&gt;
-&lt;p&gt;Escape characters that are also quote characters have much more limited effect.  They only apply within quotes and only escape themselves.  For example, if 
-&lt;tt&gt;&apos;&lt;/tt&gt; is a quote and escape character, then the string
-&lt;tt&gt;&apos;Smith&apos;&apos;s&amp;nbsp;Creek&apos;&lt;/tt&gt; will represent the value Smith&apos;s&amp;nbsp;Creek.
-&lt;/p&gt;
-
-
-&lt;h4&gt;&lt;a name=&quot;regexp&quot;&gt;How regular expression delimiters work&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Regular expressions are mini-language used to represent character patterns.  There are many variations
-of regular expression syntax - QGIS uses the syntax provided by the &lt;a href=&quot;http://qt-project.org/doc/qt-4.8/qregexp.html&quot;&gt;QRegExp&lt;/a&gt; class of the &lt;a href=&quot;http://qt.digia.com&quot;&gt;Qt&lt;/a&gt; framework.&lt;/p&gt;
-&lt;p&gt;In a regular expression delimited file each line is treated as a record.  Each match of the regular expression in the line is treated as the end of a field.  
-If the regular expression contains capture groups (eg &lt;tt&gt;(cat|dog)&lt;/tt&gt;)
- then these are extracted as fields. 
- If this is not desired then use non-capturing groups (eg &lt;tt&gt;(?:cat|dog)&lt;/tt&gt;).
-&lt;/p&gt;
-&lt;p&gt;The regular expression is treated differently if it is anchored to the start of the line (that is, the pattern starts with &lt;tt&gt;^&lt;/tt&gt;).
-In this case the regular expression is matched against each line.  If the line does not match it is discarded
-as an invalid record.  Each capture group in the expression is treated as a field.  The regular expression
-is invalid if it does not have capture groups.  As an example this can be used as a (somewhat 
-unintuitive) means of loading data with fixed width fields.  For example the 
-expression
-&lt;pre&gt;
-^(.{5})(.{10})(.{20})(.{20})
-&lt;/pre&gt;
-&lt;p&gt;will extract four fields of widths 5, 10, 20, and 20 characters from each line.  
-Lines less than 55 characters long will be discarded.
-&lt;/p&gt;
-
-
-&lt;h4&gt;&lt;a name=&quot;wkt&quot;&gt;How WKT text is interpreted&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;
-The delimited text layer recognizes the following 
-&lt;a href=&quot;http://en.wikipedia.org/wiki/Well-known_text&quot;&gt;well known text&lt;/a&gt; types - 
-&lt;tt&gt;POINT&lt;/tt&gt;, &lt;tt&gt;MULTIPOINT&lt;/tt&gt;, &lt;tt&gt;LINESTRING&lt;/tt&gt;, &lt;tt&gt;MULTILINESTRING&lt;/tt&gt;, &lt;tt&gt;POLYGON&lt;/tt&gt;, and &lt;tt&gt;MULTIPOLYGON&lt;/tt&gt;.  
-It will accept geometries with
-a Z coordinate (eg &lt;tt&gt;POINT&amp;nbsp;Z&lt;/tt&gt;), a measure (&lt;tt&gt;POINT&amp;nbsp;M&lt;/tt&gt;), or both (&lt;tt&gt;POINT&amp;nbsp;ZM&lt;/tt&gt;).
-&lt;/p&gt;
-&lt;p&gt;
-It can also handle the PostGIS EWKT variation, in which the geometry is preceded by an spatial reference 
-system id (eg &lt;tt&gt;SRID=4326;POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;), and a variant used by Informix in which the WKT is 
-preceded by an integer spatial reference id (eg &lt;tt&gt;1 POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;).
-In both cases the SRID is ignored.
-&lt;/p&gt;
-
-
-
-&lt;h4&gt;&lt;a name=&quot;attributes&quot;&gt;Attributes in delimited text files&lt;/a&gt;&lt;/h4&gt; 
-&lt;p&gt;Each record in the delimited text file is split into fields representing
-attributes of the record.  Usually the attribute names are taken from the first
-data record in the file.  However if this does not contain attribute names, then they will be named &lt;tt&gt;field_1&lt;/tt&gt;, &lt;tt&gt;field_2&lt;/tt&gt;, and so on.  
-Also if records have more fields than are defined in the header record then these
-will be named &lt;tt&gt;field_#&lt;/tt&gt;, where # is the field number (note that empty fields at the end of a record are ignored).
-QGIS may override 
-the names in the text file if they are numbers, or have names like &lt;tt&gt;field_#&lt;/tt&gt;,
-or are duplicated.
-&lt;/p&gt;
-&lt;p&gt;
-In addition to the attributes explicitly in the data file QGIS assigns a unique 
-feature id to each record which is the line number in the source file on which
-the record starts.  
-&lt;/p&gt;
-&lt;p&gt;
-Each attribute also has a data type, one of string (text), integer, or real number.
-The data type is inferred from the content of the fields - if every non blank value
-is a valid integer then the type is integer, otherwise if it is a valid real
-number then the type is real, otherwise the type is string.  Note that this is
-based on the content of the fields - quoting fields does not change the way they
-are interpreted.
-&lt;/p&gt;
-
-
-&lt;h4&gt;&lt;a name=&quot;example&quot;&gt;Example of a text file with X,Y point coordinates&lt;/a&gt;&lt;/h4&gt; 
-&lt;pre&gt;
-X;Y;ELEV
--300120;7689960;13
--654360;7562040;52
-1640;7512840;3
-&lt;/pre&gt;
-&lt;p&gt;This file:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt; Uses &lt;b&gt;;&lt;/b&gt; as delimiter. Any character can be used to delimit the fields.&lt;/li&gt;
-&lt;li&gt;The first row is the header row. It contains the field names X, Y and ELEV.&lt;/li&gt;
-&lt;li&gt;The x coordinates are contained in the X field.&lt;/li&gt;
-&lt;li&gt;The y coordinates are contained in the Y field.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4&gt;&lt;a name=&quot;wkt_example&quot;&gt;Example of a text file with WKT geometries&lt;/a&gt;&lt;/h4&gt;
-&lt;pre&gt;
-id|wkt
-1|POINT(172.0702250 -43.6031036)
-2|POINT(172.0702250 -43.6031036)
-3|POINT(172.1543206 -43.5731302)
-4|POINT(171.9282585 -43.5493308)
-5|POINT(171.8827359 -43.5875983)
-&lt;/pre&gt;
-&lt;p&gt;This file:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;Has two fields defined in the header row: id and wkt.
-  &lt;li&gt;Uses &lt;b&gt;|&lt;/b&gt; as a delimiter.&lt;/li&gt;
-  &lt;li&gt;Specifies each point using the WKT notation
-&lt;/ul&gt;
-
-&lt;h4&gt;&lt;a name=&quot;python&quot;&gt;Using delimited text layers in Python&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Delimited text data sources can be creating from Python in a similar way to other vector layers.
-The pattern is:
-&lt;/p&gt;
-&lt;pre&gt;
-from PyQt4.QtCore import QUrl, QString
-from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
-
-# Define the data source
-filename=&quot;test.csv&quot;
-uri=QUrl.fromLocalFile(filename)
-uri.addQueryItem(&quot;type&quot;,&quot;csv&quot;)
-uri.addQueryItem(&quot;delimiter&quot;,&quot;|&quot;)
-uri.addQueryItem(&quot;wktField&quot;,&quot;wkt&quot;)
-# ... other delimited text parameters
-layer=QgsVectorLayer(QString(uri.toEncoded()),&quot;Test CSV layer&quot;,&quot;delimitedtext&quot;)
-# Add the layer to the map
-if layer.isValid():
-    QgsMapLayerRegistry.instance().addMapLayer( layer )
-&lt;/pre&gt;
-&lt;p&gt;This could be used to load the second example file above.&lt;/p&gt;
-&lt;p&gt;The configuration of the delimited text layer is defined by adding query items to the uri.
-The following options can be added
-&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;&lt;tt&gt;encoding=..&lt;/tt&gt; defines the file encoding.  The default is &amp;quot;UTF-8&amp;quot;&lt;/li&gt;
-    &lt;li&gt;&lt;tt&gt;type=(csv|regexp|whitespace)&lt;/tt&gt; defines the delimiter type.  Valid values are csv, 
-       regexp, and whitespace (which is just a special case of regexp).  The default is csv.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;delimiter=...&lt;/tt&gt; defines the delimiters that will be used for csv formatted files, 
-       or the regular expression for regexp formatted files.  The default is , for CSV files.  There is
-       no default for regexp files.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;quote=..&lt;/tt&gt; (for csv files) defines the characters used to quote fields. The default is &amp;quot;&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;escape=..&lt;/tt&gt; (for csv files) defines the characters used to escape the special meaning of the next character. The default is &amp;quot;&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;skipLines=#&lt;/tt&gt; defines the number of lines to discard from the beginning of the file. The default is 0.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;useHeader=(yes|no)&lt;/tt&gt; defines whether the first data record contains the names of the data fields. The default is yes.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;trimFields=(yes|no)&lt;/tt&gt; defines whether leading and trailing whitespace is to be removed from unquoted fields. The default is no.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;maxFields=#&lt;/tt&gt; defines the maximum number of fields that will be loaded from the file.  
-       Additional fields in each record will be discarded. The default is 0 - include all fields.
-       (This option is not available from the delimited text layer dialog box).&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;skipEmptyFields=(yes|no)&lt;/tt&gt; defines whether empty unquoted fields will be discarded (applied after trimFields). The default is no.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;decimalPoint=.&lt;/tt&gt; specifies an alternative character that may be used as a decimal point in numeric fields.  The default is a point (full stop) character.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;wktField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field containing a well known text geometry definition&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;xField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field the X coordinate (only applies if wktField is not defined)&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;yField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field the Y coordinate (only applies if wktField is not defined)&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;geomType=(auto|point|line|polygon|none)&lt;/tt&gt; specifies type of geometry for wkt fields, or none to load the file as an attribute-only table.  The default is auto.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;subset=expression&lt;/tt&gt; specifies an expression used to identify a subset of the records that will be 
-       used.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;crs=...&lt;/tt&gt; specifies the coordinate system to use for the vector layer, in a format accepted by QgsCoordinateReferenceSystem.createFromString (for example &amp;quot;EPSG:4167&amp;quot;).  If this is not 
-       specified then a dialog box may request this information from the user
-       when the layer is loaded (depending on QGIS CRS settings).&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;subsetIndex=(yes|no)&lt;/tt&gt; specifies whether the provider should build an index to define subset during the initial file scan.  The index will apply both for explicitly defined subsets, and for the implicit subset of features for which the geometry definition is valid.  By default the subset index is built if it is applicable.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;spatialIndex=(yes|no)&lt;/tt&gt; specifies whether the provider should build a spatial index during the initial file scan.  By default the spatial index is not built. &lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;watchFile=(yes|no)&lt;/tt&gt; specifies whether the provider should use a file system watcher to monitor for changes to the file.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;quiet=(yes|no)&lt;/tt&gt; specifies whether errors encountered loading the layer are presented in a dialog box (they will be written to the QGIS log in any case). The default is no.  This option is not available from the GUI&lt;/li&gt;
-&lt;/ul&gt;
-
-
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;h3&gt;Create a New SpatiaLite Layer&lt;/h3&gt;
 You can use this dialog to create a new SpatiaLite database and/or an empty SpatiaLite layer for editing. See below for an explanation of the dialog inputs.
 &lt;h4&gt;Database&lt;/h4&gt;
@@ -53759,7 +56556,7 @@ In this section you can see the list of attributes. To delete one of them, click
 Click on &lt;label&gt;OK&lt;/label&gt; to create the layer and close the dialog.
 &lt;label&gt;Cancel&lt;/label&gt; will close the layer without further changes.
 </source>
-        <translation>&lt;h3&gt;새로운 SpatiaLite 레이어 만들기&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;새로운 SpatiaLite 레이어 만들기&lt;/h3&gt;
 사용자는 편집을 위해 새로운 SpatiaLite 데이터베이스와 함께 혹은 빈 SpatiaLite 레이어 생성을 위해 대화 상자를 사용할 수 있습니다. 아래의 대화 상자 입력 설명을 참고하세요.
 &lt;h4&gt;데이터베이스&lt;/h4&gt;
 드랍다운 리스트에서 데이터베이스를 선택하세요. 해당 리스트는 사용자가 저장한 SpatiaLite 연결로부터 생성됩니다. 저장된 연결이 없거나 새로운 데이터베이스를 생성하고 싶으면, 드랍다운 리스트의 오른쪽에 있는 버튼(&lt;label&gt;...&lt;/label&gt;) 을 클릭하세요.
@@ -53788,7 +56585,7 @@ QGIS supports vector data in a number of formats, including those supported by t
 QGIS supports PostGIS layers in a PostgreSQL database and SpatiaLite layers. Support for additional data types (eg. delimited text) is provided by additional data provider plugins. A list of OGR supported vector formats can be found in Appendix A.1 of the User Guide.&lt;/p&gt;
 Detailed description how to proceed with vector data is described in chapter 5 &apos;Working with Vector Data&apos;.
 </source>
-        <translation>&lt;h3&gt;벡터 레이어 열기 대화 상자 &lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;벡터 레이어 열기 대화 상자 &lt;/h3&gt;
 
 벡터 레이어 열기 대화 상자가 QGIS 지도 화면으로 벡터 데이터를 추가하는 데 사용됩니다. 벡터 데이터는 점, 선 및 폴리곤(닫혀진 영역)의 지오메트리를 사용하여 표현되는 공간 데이터입니다. &lt;/p&gt;
 QGIS는 ESRI shape 파일과 MapInfo의 MIF(교환 포맷) 및 MapInfo의 TAB(고유 형식)등은 물론, OGR 라이브러리 데이터 공급자 플러그인에서 지원하는 포맷을 포함해서 다양한 형태의 포맷을 지원합니다.&lt;/p&gt;
@@ -53829,7 +56626,7 @@ This dialog allows you to define the settings for a connection to a PostgreSQL/P
 
 &lt;/ul&gt;
 </source>
-        <translation>&lt;h3&gt;새로운 PostgreSQL 연결 생성하기&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;새로운 PostgreSQL 연결 생성하기&lt;/h3&gt;
 이 대화상자는 PostgreSQL 데이터베이스 연결을 위한 설정을 정의합니다. 
 &lt;p&gt;
 &lt;ul&gt;
@@ -53950,7 +56747,7 @@ Note: Experimental plugins are generally unsuitable for production use. These pl
 
 &lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;플러그인 관리 및 설치하기&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;플러그인 관리 및 설치하기&lt;/h3&gt;
 
 &lt;p&gt;
 플러그인 관리 및 설치하기.
@@ -54033,7 +56830,7 @@ Note: Experimental plugins are generally unsuitable for production use. These pl
     <message>
         <source>&lt;h3&gt;Style Manager&lt;/h3&gt;
 </source>
-        <translation>&lt;h3&gt;스타일 관리자&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;스타일 관리자&lt;/h3&gt;
 </translation>
     </message>
     <message>
@@ -54052,7 +56849,7 @@ Pressing the &lt;label&gt;Calculate&lt;/label&gt; button will run the shortest p
 &lt;h5&gt;Note&lt;/h5&gt;
 &lt;p&gt;In order to bind the start and stop points of the route to the road network Road graph selects the nearest point or arc of the graph. In fact it can bind to any part of the road network. Nevertheless, their route and its characteristics do not take into account the distance from the starting point to the road network and of the road network to the stopping point.&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;최단 경로 찾기&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;최단 경로 찾기&lt;/h3&gt;
 &lt;p&gt;Road graph는 QGIS를 위한 C++ 플러그인으로서, 선 레이어의 두 점사이의 최던 경로를 계산해주고, 로드 네트워크 상에서 경로를 출력합니다. 이 플러그인은 사용하기 전에 설정이 필요합니다. 이 기능은 메뉴 &lt;label&gt;플러그인 &amp;rarr; Road graph &amp;rarr; 설정&lt;/label&gt;에 있습니다.&lt;/p&gt;
  &lt;p&gt;
 &lt;a href=&quot;#howto&quot;&gt;사용법&lt;/a&gt;&lt;br/&gt;
@@ -54143,7 +56940,7 @@ Informs you about active system locale. To change it tick &lt;label&gt;Override 
 &lt;/a&gt;
 Tick &lt;label&gt;Use proxy for web access&lt;/label&gt; to define host, port, user, and password.
 </source>
-        <translation>&lt;h3&gt;옵션&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;옵션&lt;/h3&gt;
 이 대화상자에서 몇 가지 QGIS 기본 옵션을 선택할 수 있습니다. 8 개의 탭이 있습니다:
 &lt;p&gt;
 
@@ -54229,7 +57026,7 @@ You can also define the width and precision of the new attribute column.
 &lt;h4&gt;Attributes list&lt;/h4&gt;
 In this section you can see the list of attributes. To delete one of them, click on it and choose &lt;label&gt;Remove selected attribute&lt;/label&gt; button.
 </source>
-        <translation>&lt;h3&gt;새 벡터 레이어 만들기&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;새 벡터 레이어 만들기&lt;/h3&gt;
 편집할 새 벡터 레이어를 만들기 위해서는, &lt;label&gt;레이어&lt;/label&gt; 메뉴의 &lt;label&gt;새 벡터 레이어&lt;/label&gt;를 선택합니다.
 이 대화상자로 Shape 파일 레이어를 만들 수 있습니다.
 &lt;h4&gt;형태&lt;/h4&gt;
@@ -54257,7 +57054,7 @@ In this section you can see the list of attributes. To delete one of them, click
 
 See &lt;a href=&quot;http://gdal.org/ogr/ogr_formats.html&quot;&gt;OGR Vector formats&lt;/a&gt; for a list of supported formats and the available options.
 </source>
-        <translation>&lt;h3&gt;새 이름으로 벡터 레이어 저장하기...&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;새 이름으로 벡터 레이어 저장하기...&lt;/h3&gt;
 
 &lt;p&gt;이 대화상자는 GDAL/OGR을 이용해 다양한 벡터 데이터 형식을 저장할 수 있게 해줍니다.
 
@@ -54284,7 +57081,7 @@ Click on one of the icons along the top of the composer window to select what ty
 &lt;/p&gt;
 
 </source>
-        <translation>&lt;h3&gt;인쇄 구성기&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;인쇄 구성기&lt;/h3&gt;
 
 &lt;p&gt;
 인쇄 구성기는 페이지에 아이템을 배치하고, 이것들을 인쇄할 수 있게 합니다. 아이템에는 지도 캔버스, 스케일바, 범례, 임의의 이미지 등이 포함됩니다.
@@ -54296,83 +57093,6 @@ Click on one of the icons along the top of the composer window to select what ty
 &lt;/p&gt;
 
 </translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;Measure Tools&lt;/h3&gt;
-There are three measure tools: length, area and angle. With them, you can measure distances, areas and angles on the map canvas. The tools provide results in the units set in &lt;label&gt;Settings &gt; Options &gt; Map tools&lt;/label&gt;.
-&lt;h4&gt;Measuring Lengths&lt;/h4&gt;
-To measure lengths, select the tool and click along the path you want to measure. The length of each segment is displayed as is the total length for the path.
-A single right mouse click stops the measuring.
-&lt;h4&gt;Measuring Areas&lt;/h4&gt;
-To measure areas, select the tool and click to create the area. The total area is dynamically displayed as you click.
-A single right mouse click stops the measuring, while two right mouse clicks starts measuring a new.
-&lt;h4&gt;Measuring Angles&lt;/h4&gt;
-To measure angles, select the tool and click on three points to create an angle between these points. The second point selected is the vertex of the angle. The angle is dynamically displayed once you clicked the second point.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;Attribute table&lt;/h3&gt;
-The attribute table displays features of a selected layer. Each row in the table represents one map feature with its attributes shown in several columns. The features in the table can be searched, selected, moved or even edited.  By default the attribute table is a separate window. If you opened it and cannot see it anymore, it is most likely hidden under the main QGIS window. You can make it also a docked window, by checking &lt;label&gt;Open attribute table in a dock window&lt;/label&gt; in &lt;label&gt;Settings &gt; Options &gt; Data Sources&lt;/label&gt;.&lt;p&gt;
-
-The number of total number of layer features, filtered features and selected features is printed on the window header.&lt;p&gt;
-At the bottom right of the dialog, you can choose whether to display features in a form or in a table.&lt;p&gt;
-&lt;p&gt;
-&lt;a href=&quot;#Selecting&quot;&gt;Selecting&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#Sorting&quot;&gt;Sorting&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#Filtering&quot;&gt;Filtering&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#Editing&quot;&gt;Editing&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#FieldCalc&quot;&gt;Field Calculator&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#FieldCalcBar&quot;&gt;Field Calculator bar&lt;/a&gt;&lt;br/&gt;
-
-&lt;a name=&quot;Selecting&quot;&gt;
-&lt;h4&gt;Selecting&lt;/h4&gt;
-&lt;/a&gt;
-Rows can be selected by clicking on the row number on the left side of the row. Subsequent rows can be selected by holding the mouse button down and moving the mouse to the other end of the selection. Multiple non-subsequent rows can be selected by holding the &lt;label&gt;Ctrl&lt;/label&gt; key.&lt;br&gt;
-A continuous selection can be made by holding the &lt;label&gt;Shift&lt;/label&gt; key and clicking on several row headers on the left side of the rows. All rows between the current cursor position and the clicked row are selected.
-
-&lt;a name=&quot;Sorting&quot;&gt;
-&lt;h4&gt;Sorting&lt;/h4&gt;
-&lt;/a&gt;
-Each column can be sorted by clicking on its column header. A small arrow indicates the sort order (downward pointing means descending values from the top row down, upward pointing means ascending values from the top row down).&lt;br&gt;
-
-&lt;a name=&quot;Filtering&quot;&gt;
-&lt;h4&gt;Filtering&lt;/h4&gt;
-&lt;/a&gt;
-To only navigate through parts of your data, you can use the filter button on the bottom left. The following options are available.
-&lt;h5&gt;Show All Features&lt;/h5&gt;
-Shows all features of the layer.
-&lt;h5&gt;Show Selected Features&lt;/h5&gt;
-Shows all features which are currently selected.
-&lt;h5&gt;Show Features Visible on Map&lt;/h5&gt;
-Shows all features which are currently visible on the map canvas, taking the currently visible extent and scale based visibility into account.
-&lt;h5&gt;Show Edited and New Features&lt;/h5&gt;
-Shows only edited and new features. In this mode, features with uncommitted changes are shown and this is therefore a good filter to review changes, before committing them. Please note, that deleted features are not shown in this mode.
-&lt;h5&gt;Column Filter&lt;/h5&gt;
-A simple filter, which lets you filter by an attribute. If the attribute contains text, it looks for sub-strings also. Searching for &lt;b&gt;man&lt;/b&gt; will therefore also show records containing &lt;b&gt;woman&lt;/b&gt;. After changing the filter text, press &lt;label&gt;Enter&lt;/label&gt; or click on &lt;label&gt;Apply&lt;/label&gt;. You can also toggle the check-box &lt;label&gt;Case sensitive&lt;/label&gt;, so your filter will also match &lt;b&gt;Night&lt;/b&gt; when your search text is &lt;b&gt;night&lt;/b&gt;.   
-&lt;h5&gt;Advanced Filter&lt;/h5&gt;
-For more complex searches, this mode offers a powerful expression builder, which is similar to a SQL WHERE clause. Please refer to the built-in help of the expression builder for details on the syntax.
-
-&lt;a name=&quot;Editing&quot;&gt;
-&lt;h4&gt;Editing&lt;/h4&gt;
-&lt;/a&gt;
-To edit values, you first have to switch the layer to editing mode. To switch to editing mode click on the &lt;label&gt;Toggle editing mode&lt;/label&gt; (pencil) button or press &lt;label&gt;Ctrl + E&lt;/label&gt;. Afterwards double-click on the value you want to edit or place the cursor on it and use the &lt;label&gt;Space&lt;/label&gt;-Key. You can customize the widgets used for field editing in &lt;label&gt;Vector Layer Properties &gt; Fields&lt;/label&gt;  &lt;br&gt;
-You can also edit a field&apos;s value for many rows at once. You need to select the rows you want to edit and then use the &lt;label&gt;Field Calculator&lt;/label&gt; or the &lt;label&gt;Field Calculator Bar&lt;/label&gt;. If no row is selected, the edition will apply on all the features.
-
-&lt;a name=&quot;FieldCalc&quot;&gt;
-&lt;h4&gt;Field Calculator&lt;/h4&gt;
-&lt;/a&gt;
-The &lt;label&gt;Field Calculator&lt;/label&gt; button in the attribute table allows performing calculations on basis of existing attribute values or defined functions, e.g. to calculate length or area of geometry features.&lt;br&gt;
-The results can be written to a new attribute column or it can be used to update values in an already existing column.&lt;br&gt;
-The vector layer needs to be in editing mode, before you can click on the &lt;label&gt;Field calculator&lt;/label&gt; icon to open the dialog.
-
-&lt;a name=&quot;FieldCalcBar&quot;&gt;
-&lt;h4&gt;Field Calculator Bar&lt;/h4&gt;
-&lt;/a&gt;
-When you toggle to edition the layer, a new row of functions appears in the attribute table: the &lt;label&gt;Field Calculator Bar&lt;/label&gt;. This allows quick editing values of existing fields by performing calculations on basis of existing attribute values or defined functions button in the attribute table, e.g. to calculate length or area of geometry features.&lt;br&gt;
-To edit values, select the field to modify with the filter button on the left and fill the text box with the new value or an expression to calculate new value. Then, press &lt;label&gt;Update all&lt;/label&gt; button to update all the rows of the attribute table or &lt;label&gt;Update selected&lt;/label&gt; button if some features are selected or a filter is applied on the attribute table display. You can also use the &lt;label&gt;Expression builder&lt;/label&gt; button to calculate the new value in the column.&lt;br&gt;
-</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -54394,7 +57114,7 @@ To edit values, select the field to modify with the filter button on the left an
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Output file for contour lines (vector)</source>
+        <source>Contours</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -54502,6 +57222,11 @@ CNR, Milan Unit (Information Technology), Construction Technologies Institute.
     <message>
         <source>Shapefile</source>
         <translation>Shape 파일</translation>
+    </message>
+    <message>
+        <source>Export inserts</source>
+        <extracomment>&apos;insert&apos; is the entity that inserts/references a symbol/block in DXF</extracomment>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -55265,6 +57990,22 @@ Plugin will not be enabled.</source>
         <source>&amp;Data Management Tools</source>
         <translation>데이터 관리 도구(&amp;D)</translation>
     </message>
+    <message>
+        <source>Save output shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select input file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select input files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save output directory</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>fillnodata</name>
@@ -55294,7 +58035,11 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
+    </message>
+    <message>
+        <source>Filled</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -55381,7 +58126,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;week(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 104.285...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;week() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;week() 함수&lt;/h3&gt;
 date에서 주 수를 추출 하거나,
 &lt;code&gt;Interval&lt;/code&gt;의 주 수
 
@@ -55432,7 +58177,7 @@ return a result.
     END
 &lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;CASE 연산자&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;CASE 연산자&lt;/h3&gt;
 여러 개의 식을 평가하고 결과를 반환하는 데 사용할 수있는 조건 식입니다.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -55478,7 +58223,7 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; rightmost characters 
 &lt;code&gt;right(&apos;Hello World&apos;,5) &amp;rarr; &apos;World&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;right() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;right() 함수&lt;/h3&gt;
 문자열의 오른쪽 &lt;i&gt;n&lt;/i&gt; 문자가 포함 된 문자열을 반환합니다.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -55500,7 +58245,7 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; rightmost characters 
 &lt;h3&gt;Color Group&lt;/h3&gt;
 This group contains functions for manipulating colors
 </source>
-        <translation>
+        <translation type="obsolete">
 &lt;h3&gt;색상 그룹&lt;/h3&gt;
 이 그룹은 색상을 조작하기 위한 함수를 포함함</translation>
     </message>
@@ -55519,7 +58264,7 @@ Returns the length of a string.
 &lt;!-- Show example of function.--&gt;
      length(&apos;HELLO&apos;) &amp;rarr; 5&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;length() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;length() 함수&lt;/h3&gt;
 문자열의 길이를 반환합니다.
 
 &lt;p&gt;&lt;h4&gt;문법&lt;/h4&gt;
@@ -55549,7 +58294,7 @@ Converts a string to upper case letters.
 &lt;!-- Show example of function.--&gt;
      upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;HELLO WORLD&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;upper() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;upper() 함수&lt;/h3&gt;
 문자열을 대문자로 바꿉니다.
 
 &lt;p&gt;&lt;h4&gt;문법&lt;/h4&gt;
@@ -55578,7 +58323,7 @@ b &amp;rarr; geometry
 &lt;pre&gt;bbox( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; )) &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt;bbox( geomFromWKT( &apos;POINT(6 5)&apos; ) , geomFromWKT( &apos;POLYGON((3 3 , 4 4 , 5 5, 3 3))&apos; )) &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;intersects 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;intersects 함수&lt;/h3&gt;
 지오메트리들이 공간적으로 교차(영역의 어떤 부분이던지 공유)하면 1을 반환하고 그렇지 않으면 0을 반환.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -55609,7 +58354,7 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; leftmost characters o
 &lt;code&gt;left(&apos;Hello World&apos;,5) &amp;rarr; &apos;Hello&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;left() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;left() 함수&lt;/h3&gt;
 문자열의 제일 왼쪽부터 &lt;i&gt;n&lt;/i&gt; 글자 잘라낸 문자열을 반환한다.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -55640,7 +58385,7 @@ Note: This function is only available in some contexts and will be 0 otherwise.
 
 
 </source>
-        <translation>&lt;h3&gt;$scale 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;$scale 함수&lt;/h3&gt;
 지도 캔버스의 현재 축척을 반환.
 &lt;br&gt;
 주의: 이 함수는 일부 맥락상에서만 유효함, 유효하지 않으면 0을 반환.
@@ -55670,7 +58415,7 @@ Rounds a number upwards.
 &lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;ceil() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;ceil() 함수&lt;/h3&gt;
 숫자를 올림하여 정수로 만들어 반환.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -55701,7 +58446,7 @@ Converts a string to real number. Nothing changed if a value cannot be converted
 &lt;!-- Show example of function.--&gt;
      toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;toreal 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;toreal 함수&lt;/h3&gt;
 문자열을 실수로 변환. 만약 실수로 해석할 수 없으면(예: &apos;123.56asd&apos;은 잘못된 값) 변경하지 않음. 만약 정밀도가 변환 결과보다 작을 경우 숫자는 반올림 됨
 
 &lt;p&gt;&lt;h4&gt;문법&lt;/h4&gt;
@@ -55729,7 +58474,7 @@ Retrieves a x coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;xat() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;xat() 함수&lt;/h3&gt;
 현재 객체의 X 좌표를 추출
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -55756,7 +58501,7 @@ None
 &lt;pre&gt;$numpages &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;$numpages 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;$numpages 함수&lt;/h3&gt;
 구성에 있는 페이지 수를 반환.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -55789,7 +58534,7 @@ Returns -1 if the expression isn&apos;t found.
      strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
      strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;strpos() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;strpos() 함수&lt;/h3&gt;
 문자열에서 정규 표현식의 인덱스를 반환
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -55826,7 +58571,7 @@ This function takes two arguments.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;rand(1, 10) &amp;rarr; 8&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;rand() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;rand() 함수&lt;/h3&gt;
 최소값과 최대값 (포함된) 범위의 임의의 정수를 반환.
 &lt;br&gt;
 이 함수는 2개의 인자를 가짐
@@ -55860,7 +58605,7 @@ None
 &lt;pre&gt; intersects(  $atlasgeometry,  $geometry ) &lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;$atlasgeometry 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;$atlasgeometry 함수&lt;/h3&gt;
 Returns the geometry of the current feature iterated in atlas.
 Can be used for rule based display of geometry when using atlas.
 For example to only show geometries of other layers when their geometry 
@@ -55893,7 +58638,7 @@ None
 &lt;pre&gt;$atlasfeatureid = $id&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;$atlasfeatureid 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;$atlasfeatureid 함수&lt;/h3&gt;
 Returns the feature id of the current row while using atlas.
 This enables you to use features of atlas in rules 
 and for example show or hide features based on their id.
@@ -55923,7 +58668,7 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; bounds_width($geometry) &amp;rarr; returns width of bounding box of $geometry&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;bounds_width 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;bounds_width 함수&lt;/h3&gt;
 Returns the width of the bounding box of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -55953,7 +58698,7 @@ Rounds a number downwards.
 &lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;floor() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;floor() 함수&lt;/h3&gt;
 소수점 이하를 절사한다.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -55983,7 +58728,7 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; bounds_height($geometry) &amp;rarr; returns height of bounding box of $geometry&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;bounds_height 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;bounds_height 함수&lt;/h3&gt;
 Returns the height of the bounding box of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -56012,7 +58757,7 @@ Converts a string to integer number. Nothing changed if a value cannot be conver
 &lt;!-- Show example of function.--&gt;
      toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;toint() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;toint() 함수&lt;/h3&gt;
 문자열을 정수로 변환. 정수로 변환될 수 없는 값(예: &apos;123asd&apos;)인 경우 아무것도 변경되지 않음.
 
 &lt;p&gt;&lt;h4&gt;문법&lt;/h4&gt;
@@ -56040,7 +58785,7 @@ Retrieves a y coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;yat() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;yat() 함수&lt;/h3&gt;
 현재 객체의 Y 좌표를 추출
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -56068,7 +58813,7 @@ Converts a number to string.
 &lt;!-- Show example of function.--&gt;
      tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;tostring() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;tostring() 함수&lt;/h3&gt;
 숫자를 문자열로 변환.
 
 &lt;p&gt;&lt;h4&gt;문법&lt;/h4&gt;
@@ -56097,7 +58842,7 @@ None
 &lt;pre&gt;$rownum &amp;rarr; 4711&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;$rownum 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;$rownum 함수&lt;/h3&gt;
 현재 열의 번호를 반환.
 &lt;h4&gt;문법&lt;/h4&gt;
 &lt;pre&gt;$rownum&lt;/pre&gt;
@@ -56127,7 +58872,7 @@ arguments to determine the quadrant of the result
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      atan2(1.0, 1.732) &amp;rarr; 0.523611477769969&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;atan2() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;atan2() 함수&lt;/h3&gt;
 결과의 사분면을 결정하기 위해 두 인자의 부호를 이용해 y/x의 아크탄젠트 값을 반환
 
 
@@ -56158,7 +58903,7 @@ Returns sinus of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      sin(1.571) &amp;rarr; 0.999999682931835&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;sin() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;sin() 함수&lt;/h3&gt;
 각의 싸인 값을 반환.
 
 
@@ -56193,7 +58938,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;month(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 4.033...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;month() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;month() 함수&lt;/h3&gt;
 date에서 달 부분을 추출 하거나, &lt;code&gt;Interval&lt;/code&gt;에서 몇 달인지를 계산
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -56227,7 +58972,7 @@ None
 &lt;pre&gt;$area &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;$area 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;$area 함수&lt;/h3&gt;
 현재 객체의 면적을 반환.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -56262,7 +59007,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;day(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 730&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;day() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;day() 함수&lt;/h3&gt;
 날짜에서 일을 추출 하거나, &lt;code&gt;Interval&lt;/code&gt;에서 몇 일인지 계산
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -56296,7 +59041,7 @@ Convert a string into Qt data type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todate(&apos;2012-05-04&apos;) &amp;rarr; 2012-05-04&lt;/code&gt;&lt;br&gt;</source>
-        <translation>&lt;h3&gt;todate() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;todate() 함수&lt;/h3&gt;
 문자열을 Qt date 타입으로 변환.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -56329,7 +59074,7 @@ using the fill character.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;lpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;Helloxxxxx&apos;&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;lpad() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;lpad() 함수&lt;/h3&gt;
 채움 문자를 이용해 주어진 폭만큼 채운 문자열을 반환.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -56360,7 +59105,7 @@ Returns arcuscosinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      acos(0.5) &amp;rarr; 1.0471975511966&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;acos() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;acos() 함수&lt;/h3&gt;
 라디안으로 아크코싸인 값을 반환
 
 &lt;p&gt;&lt;h4&gt;문법&lt;/h4&gt;
@@ -56384,7 +59129,7 @@ Loading field values from WFS layers isn&apos;t supported, before the layer is
 actually inserted, ie. when building queries.
 &lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;필드와 값&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;필드와 값&lt;/h3&gt;
 레이어의 필드 리스트를 포함하고 있습니다. 오른쪽 클릭으로 샘플 값에 접근할 수 있습니다.
 &lt;br&gt;&lt;br&gt;
 리스트에서 필드 이름을 선택하고 오른쪽 클릭하여 선택한 필드의 샘플 값을 가진 컨텍스트 메뉴를 호출할 수 있습니다.
@@ -56411,7 +59156,7 @@ This function takes two arguments.
 &lt;code&gt;log(2, 32) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;log(0.5, 32) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;log() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;log() 함수&lt;/h3&gt;
 주어진 값과 밑수로 계산한 로그값을 반환
 &lt;br&gt;
 이 함수는 두 개의 인자가 필요함..
@@ -56433,7 +59178,7 @@ This function takes two arguments.
         <source>&lt;h3&gt;Geometry Group&lt;/h3&gt;
 This group contains functions that operate on geometry objects e.g length, area.
 </source>
-        <translation>&lt;h3&gt;지오메트리 그룹&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;지오메트리 그룹&lt;/h3&gt;
 이 그룹에는 지오메트리에 적용될 수 있는 함수(예: length, area)를 포함하고 있습니다.</translation>
     </message>
     <message>
@@ -56447,7 +59192,7 @@ Loading field values from WFS layers isn&apos;t supported, before the layer is
 actually inserted, ie. when building queries.
 &lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;필드&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;필드&lt;/h3&gt;
 표현식 문자열에 필드 이름을 추가하기위해 더블클릭 합니다.
 &lt;br&gt;&lt;br&gt;
 필드 이름에서 오른쪽 클릭하면 샘플 값을 가진 컨텍스트 메뉴를 호출할 수 있습니다.
@@ -56471,7 +59216,7 @@ None
 &lt;pre&gt;$page &amp;rarr; 2&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;$page 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;$page 함수&lt;/h3&gt;
 구성의 현재 페이지 번호.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -56499,7 +59244,7 @@ Returns exponential of an value.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;exp() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;exp() 함수&lt;/h3&gt;
 값의 지수를 반환.
 
 
@@ -56533,7 +59278,7 @@ using the fill character.
 &lt;code&gt;rpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;xxxxxHello&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;rpad() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;rpad() 함수&lt;/h3&gt;
 채움 문자를 이용해 주어진 폭만큼을 채운 문자열을 반환.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -56574,7 +59319,7 @@ use &lt;code&gt;round(decimal)&lt;/code&gt; to round to the nearest integer&lt;b
 
 
 </source>
-        <translation>&lt;h3&gt;round() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;round() 함수&lt;/h3&gt;
 숫자의 소수점 자리에서 반올림.
 &lt;br&gt;
 이 함수는 필요에 따라 한개 혹은 두개의 인자를 가질 수 있음.
@@ -56610,7 +59355,7 @@ None
 &lt;pre&gt;$now &amp;rarr; 2012-07-22T13:24:57&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;$now 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;$now 함수&lt;/h3&gt;
 현재 날짜와 시간을 반환
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -56641,7 +59386,7 @@ Returns a string representation of a color based on its hue, saturation, and lig
 &lt;!-- Show example of function.--&gt;
      color_hsl(100,50,70) &amp;rarr; &apos;166,217,140&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;color_hsl() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;color_hsl() 함수&lt;/h3&gt;
 Returns a string representation of a color based on its hue, saturation, and lightness attributes
 
 &lt;p&gt;&lt;h4&gt;문법&lt;/h4&gt;
@@ -56688,7 +59433,7 @@ accelerating as the input values approach the domain maximum. Smaller exponents 
      
      
 </source>
-        <translation>&lt;h3&gt;scale_exp() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;scale_exp() 함수&lt;/h3&gt;
 지수 곡선을 사용하여 출력 범위에 입력 범위에서 지정된 값을 변환합니다. 이 함수는 지정된 출력 범위의 입력 혹은 출력값을 에이징 할 수 있습니다.
 
 &lt;p&gt;&lt;h4&gt;문법&lt;/h4&gt;
@@ -56731,7 +59476,7 @@ a &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;  geomToWKT( convexHull( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 4 10)&apos; )) )   &amp;rarr; returns POLYGON((3 3,4 10,4 4,3 3)) &lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;convexHull 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;convexHull 함수&lt;/h3&gt;
 지오메트리의 컨벡스 헐을 반환. 이것은 집합 내의 모든 지오메트리를 포함하는 가장 작은 볼록 다각형으로 표현된다.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -56759,7 +59504,7 @@ b &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( union( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))  )   &amp;rarr; returns MULTIPOINT(4 4, 5 5)&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;union 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;union 함수&lt;/h3&gt;
 지오메트리들이 융합된 점 집합으로 표현되는 지오메트리를 반환한다.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -56787,7 +59532,7 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; xmax($geometry) &amp;rarr; returns maximum x coordinate of $geometry&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;xmax 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;xmax 함수&lt;/h3&gt;
 Returns the maximum x coordinate of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -56815,7 +59560,7 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; bounds($geometry) &amp;rarr; returns bounding box of $geometry&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;bounds 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;bounds 함수&lt;/h3&gt;
 Returns a geometry which represents the bounding box of an input geometry. Calculations are in the Spatial Reference System of this Geometry. 
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -56843,7 +59588,7 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; ymax($geometry) &amp;rarr; returns maximum y coordinate of $geometry&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;ymax 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;ymax 함수&lt;/h3&gt;
 Returns the maximum y coordinate of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -56872,7 +59617,7 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;POINT( 0.5 0.5 )&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))          &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;contains 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;contains 함수&lt;/h3&gt;
 B에 있는 어떤 포인트도 A의 밖에 없고, B의 하나 이상의 포인트가 A 안에 있으면 true를 반환. 
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -56905,7 +59650,7 @@ Returns a string wrapped to a maximum/minimum number of characters.
      wordwrap(&apos;UNIVERSITY OF QGIS&apos;,13) &amp;rarr; &apos;UNIVERSITY OF&amp;#92;nQGIS&apos;&lt;br&gt;
      wordwrap(&apos;UNIVERSITY OF QGIS&apos;,-3) &amp;rarr; &apos;UNIVERSITY&amp;#92;nOF QGIS&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;wordwrap() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;wordwrap() 함수&lt;/h3&gt;
 최대/최소 글자수로 래핑된 문자열을 반환한다.
 
 &lt;p&gt;&lt;h4&gt;문법&lt;/h4&gt;
@@ -56941,7 +59686,7 @@ Returns a string representation of a color based on its red, green, and blue com
 &lt;!-- Show example of function.--&gt;
      color_rgb(255,127,0) &amp;rarr; &apos;255,127,0&apos;&lt;/p&gt;
 </source>
-        <translation>
+        <translation type="obsolete">
 &lt;h3&gt;color_rgb() 함수&lt;/h3&gt;
 Returns a string representation of a color based on its red, green, and blue components
 
@@ -56978,7 +59723,7 @@ Returns a string representation of a color based on its cyan, magenta, yellow an
 &lt;!-- Show example of function.--&gt;
      color_cmyk(100,50,0,10) &amp;rarr; &apos;0,115,230&apos;&lt;/p&gt;
 </source>
-        <translation>
+        <translation type="obsolete">
 &lt;h3&gt;color_cmyk() 함수&lt;/h3&gt;
 Returns a string representation of a color based on its cyan, magenta, yellow and black components
 
@@ -57011,7 +59756,7 @@ geometry &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( intersection( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 )&apos; ))  )   &amp;rarr; returns LINESTRING(3 3, 4 4)&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;intersection 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;intersection 함수&lt;/h3&gt;
 지오메트리 a와 지오메트리 b가 공유되는 부분을 표현하는 지오메트리를 반환한다.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -57047,7 +59792,7 @@ The color ramps available vary between QGIS installations.  This function
 may not give the expected results if you move your Quantum project.
 &lt;/p&gt;
 </source>
-        <translation>
+        <translation type="obsolete">
 &lt;h3&gt;ramp_color() 함수&lt;/h3&gt;
 Returns a string representing a color from a color ramp. 
 
@@ -57088,7 +59833,7 @@ None
 &lt;pre&gt; $geometry IS NULL  &amp;rarr; returns 0, if your geometry is not NULL&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;IS 연산자&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;IS 연산자&lt;/h3&gt;
 A가 B와 같으면 1을 반환.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -57124,7 +59869,7 @@ Returns a string representation of a color based on its hue, saturation, and val
 &lt;!-- Show example of function.--&gt;
      color_hsv(40,100,100) &amp;rarr; &apos;255,170,0&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;color_hsv() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;color_hsv() 함수&lt;/h3&gt;
 Returns a string representation of a color based on its hue, saturation, and value attributes
 
 &lt;p&gt;&lt;h4&gt;문법&lt;/h4&gt;
@@ -57156,7 +59901,7 @@ None
 &lt;pre&gt; &apos;A&apos; ILIKE &apos;a&apos;  &amp;rarr; returns 1 &lt;/pre&gt;
 &lt;pre&gt; &apos;A&apos; ILIKE &apos;B&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;ILIKE 표현식&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;ILIKE 표현식&lt;/h3&gt;
 첫 번째 파라미터가 대소문자 가리지 않고 두번째 패턴과 일치하면 1을 반환한다. ILKIE 대신 LIKE를 대소문자를 가리는 일치 확인을 위해 사용할 수 있다. 숫자에 대해서도 동작한다.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -57186,7 +59931,7 @@ None
 &lt;pre&gt; &apos;A&apos; LIKE &apos;a&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
 &lt;pre&gt; &apos;A&apos; LIKE &apos;B&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;LIKE 표현식&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;LIKE 표현식&lt;/h3&gt;
 첫 번째 파라미터가 주어진 패턴과 일치하면 1을 반환한다. 숫자에 대해서도 동작한다.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -57215,7 +59960,7 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; ymin($geometry) &amp;rarr; returns minimum y coordinate of $geometry&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;ymin 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;ymin 함수&lt;/h3&gt;
 Returns the minimum y coordinate of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -57243,7 +59988,7 @@ text &amp;rarr; GML representation of a geometry
 &lt;pre&gt; geomFromGML( &apos;&lt;gml:LineString srsName=&quot;EPSG:4326&quot;&gt;&lt;gml:coordinates&gt;4,4 5,5 6,6&lt;/gml:coordinates&gt;&lt;/gml:LineString&gt;&apos;) &amp;rarr; returns a geometry&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;geomFromGML 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;geomFromGML 함수&lt;/h3&gt;
 지오메트리의 GML 표현에서 지오메트리를 만들어 반환한다.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -57261,7 +60006,7 @@ text &amp;rarr; GML representation of a geometry
         <source>&lt;h3&gt;Date and Time Group&lt;/h3&gt;
 This group contains functions for handling date and time data.
 </source>
-        <translation>&lt;h3&gt;날짜와 시간 그룹&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;날짜와 시간 그룹&lt;/h3&gt;
 이 그룹에는 날짜와 시간을 다루는 함수가 포함됩니다.
 </translation>
     </message>
@@ -57280,7 +60025,7 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; geomToWKT( combine( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5 )&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4,  2 1 )&apos; ))  )    &amp;rarr; returns MULTILINESTRING((4 4, 2 1), (3 3, 4 4), (4 4, 5 5)) &lt;/pre&gt;
 &lt;pre&gt; geomToWKT( combine( geomFromWKT( &apos;LINESTRING(3 3 , 4 4  )&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 6 6,  2 1 )&apos; ))  )  &amp;rarr; returns LINESTRING(3 3, 4 4, 6 6, 2 1) &lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;combine 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;combine 함수&lt;/h3&gt;
 지오메트리 a와 지오메트리 b의 조합을 반환한다.
 
 
@@ -57311,7 +60056,7 @@ b &amp;rarr; geometry
 &lt;pre&gt; intersects( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; intersects( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))             &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;intersects 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;intersects 함수&lt;/h3&gt;
 지오메트리들이 공간적으로 교차(영역의 어떤 부분이던지 공유)하면 1을 반환하고 그렇지 않으면 0을 반환.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -57347,7 +60092,7 @@ Restricts an input value to a specified range.
      
      
 </source>
-        <translation>&lt;h3&gt;clamp() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;clamp() 함수&lt;/h3&gt;
 지정된 범위로 입력 값을 제한.
 
 &lt;p&gt;&lt;h4&gt;문법&lt;/h4&gt;
@@ -57384,7 +60129,7 @@ b &amp;rarr; geometry
 &lt;pre&gt; disjoint( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; )) &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; disjoint( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;POINT(4 4)&apos; ))                              &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;disjoint 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;disjoint 함수&lt;/h3&gt;
 지오메트리들이 &quot;공간적으로 교차&quot;하지 않으면 1을 반환 - 어떤 공간도 함께 공유하지 않는 경우.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -57413,7 +60158,7 @@ text &amp;rarr; Well-Known Text (WKT) representation of a geometry
 &lt;pre&gt; geomFromWKT( &apos;POINT(4 5)&apos; ) &amp;rarr; returns a geometry&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;geomFromWKT 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;geomFromWKT 함수&lt;/h3&gt;
 Well-Known Text (WKT) 표현으로 부터 만들어진 지오메트리를 반환한다.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -57441,7 +60186,7 @@ b &amp;rarr; distance for the buffer
 &lt;pre&gt; buffer($geometry, 10.5 ) &amp;rarr; returns a polygon&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;buffer 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;buffer 함수&lt;/h3&gt;
 원본 지오메트리로부터의 거리가 주어진 거리와 작거나 같은 점들로 구성되는 지오메트리를 반환한다.
 계산은 이 지오메트리의 좌표계에서 수행된다.
 
@@ -57472,7 +60217,7 @@ None
 &lt;pre&gt;attribute( $atlasfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current atlas feature&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;$atlasfeature 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;$atlasfeature 함수&lt;/h3&gt;
 아틀라스 생성 시에, 커버리지 레이어 위에 올려진 현재 객체를 반환함. 이 함수는 &apos;attribute&apos; 함수 와 함께 사용되어 현재 아틀라스 객체로부터 속성값을 반환합니다.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -57500,7 +60245,7 @@ None
 &lt;pre&gt;attribute( $currentfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current feature&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;$currentfeature 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;$currentfeature 함수&lt;/h3&gt;
 검토되고 있는 현재 객체를 반환함. 이 함수는 &apos;속성&apos; 함수와 함께 사용되어 현 객체의 속성값을 검토하는데 쓰입니다. 
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -57527,7 +60272,7 @@ None
 &lt;pre&gt;$id &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;$id 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;$id 함수&lt;/h3&gt;
 현재 선택된 객체의 아이디 반환.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -57556,7 +60301,7 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$uuid &amp;rarr; {0bd2f60f-f157-4a6d-96af-d4ba4cb366a1}&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;$uuid 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;$uuid 함수&lt;/h3&gt;
 Generates a Universally Unique Identifier (UUID) for each row using the Qt
 &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/quuid.html#createUuid&apos;&gt;QUuid::createUuid&lt;/a&gt;
 method.  Each UUID is 38 characters long.
@@ -57586,7 +60331,7 @@ None
 &lt;pre&gt; &apos;A&apos; IN (&apos;C&apos;,&apos;B&quot;) &amp;rarr; returns 0 &lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;IN 표현식&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;IN 표현식&lt;/h3&gt;
 리스트안에 값이 있으면 1을 반환함
 
 &lt;h4&gt;분법&lt;/h4&gt;
@@ -57615,7 +60360,7 @@ attribute_name &amp;rarr; name of attribute to be returned
 &lt;pre&gt;attribute( $currentfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current feature&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;attribute 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;attribute 함수&lt;/h3&gt;
 객체의 특정 속성값을 반환함
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -57644,7 +60389,7 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; crosses( geomFromWKT( &apos;LINESTRING(3 5 , 4 4 , 5 3)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; crosses( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))             &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;crosses 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;crosses 함수&lt;/h3&gt;
 제공된 지오메트리들이 공유하는 내부 점이 전부는 아니고 일부인 경우 1을 반환한다.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -57672,7 +60417,7 @@ a &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( $geometry ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;geomToWKT 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;geomToWKT 함수&lt;/h3&gt;
 지오메트리를 표현하는 Well-Known Text (WKT)를 SRID 메타데이터 없이 반환한다.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -57693,7 +60438,7 @@ Returns the first feature of a layer matching a given attribute value
 &lt;pre&gt;getFeature( layer, attributeField, value )&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;getFeature 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;getFeature 함수&lt;/h3&gt;
 주어진 특성 값에 맞는 레이어의 첫번째 특성을 반환함
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -57716,7 +60461,7 @@ b &amp;rarr; geometry
 &lt;pre&gt; touches( geomFromWKT( &apos;LINESTRING(5 3 , 4 4)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; touches( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))                     &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;touches 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;touches 함수&lt;/h3&gt;
 지오메트리들이 공유하는 점이 적어도 하나 있지만, 내부가 교차하지 않는다면 1을 반환한다.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -57746,7 +60491,7 @@ b &amp;rarr; geometry
 &lt;pre&gt; overlaps( geomFromWKT( &apos;LINESTRING(3 5 , 4 4 , 5 5 , 5 3)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))   &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; overlaps( geomFromWKT( &apos;LINESTRING(0 0 , 1 1)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;overlaps 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;overlaps 함수&lt;/h3&gt;
 지오메트리들이 같은 차원에서 공간을 공유하지만, 서로 완전히 포함되지 않는다면 1을 반환한다.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -57776,7 +60521,7 @@ None
 &lt;pre&gt; 4 = 2+2 AND 1 = 2  &amp;rarr; returns 0 &lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;AND 논리 연산자&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;AND 논리 연산자&lt;/h3&gt;
 조건 a와 b가 모두 참이면 1을 반환한다.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -57805,7 +60550,7 @@ None
 &lt;pre&gt; geomToWKT( $geometry ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;$geometry 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;$geometry 함수&lt;/h3&gt;
 현재 객체의 지오메트리를 반환하다. 다른 함수와 처리시 사용할 수 있다.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -57834,7 +60579,7 @@ None
 &lt;pre&gt; 4 = 2+2 OR 1 = 2  &amp;rarr; returns 1 &lt;/pre&gt;
 &lt;pre&gt; 4 = 2   OR 1 = 2  &amp;rarr; returns 0 &lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;OR 논리 연산자&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;OR 논리 연산자&lt;/h3&gt;
 조건 a나 b가 참이면 1을 반환한다.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -57863,7 +60608,7 @@ b &amp;rarr; geometry
 &lt;pre&gt; centroid($geometry) &amp;rarr; returns a point geometry&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;centroid 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;centroid 함수&lt;/h3&gt;
 지오메트리의 중심을 나타내는 지오메트리를 반환한다.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -57892,7 +60637,7 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; within( geomFromWKT( &apos;POINT( 0.5 0.5 )&apos;) , geomFromWKT(&apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) )    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; within( geomFromWKT( &apos;POINT( 5 5 )&apos;) , geomFromWKT(&apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) )        &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;within 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;within 함수&lt;/h3&gt;
 지오메트리 a가  완전히 지오메트리 b의 안에 들어가면 1을 반환한다.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -57925,7 +60670,7 @@ $map &amp;rarr; &quot;canvas&quot; (within the main QGIS main canvas)&lt;/pre&gt
 
 
 </source>
-        <translation>&lt;h3&gt;$map 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;$map 함수&lt;/h3&gt;
 Returns the id of the current map item if the map is being drawn in a composition, or &quot;canvas&quot; if the map is being
 drawn within the main QGIS window.
 
@@ -57957,7 +60702,7 @@ b &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; distance( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(4 8)&apos; ))    &amp;rarr; returns 4&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;distance 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;distance 함수&lt;/h3&gt;
 두 지오메트리 사이의 (좌표계 상의)최소 거리를 프로젝션된 단위로 반환한다.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -57985,7 +60730,7 @@ geometry &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( difference( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4)&apos; ))  )   &amp;rarr; returns LINESTRING(4 4, 5 5)&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;difference 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;difference 함수&lt;/h3&gt;
 지오메트리 adhk 지오메트리 b가 교차하지 않는 부분을 표현하는 지오메트리를 반환한다.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -58015,7 +60760,7 @@ None
 &lt;pre&gt; 4 IS NOT 2+2    &amp;rarr; returns 0 &lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;NOT&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;NOT&lt;/h3&gt;
 a가 b와 같지 않으면 1을 반환한다.
 
 &lt;h4&gt;Sy문법ntax&lt;/h4&gt;
@@ -58045,7 +60790,7 @@ geometry &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( symDifference(  geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 8 8)&apos; ))   )   &amp;rarr; returns LINESTRING(5 5, 8 8)&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;symDifference 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;symDifference 함수&lt;/h3&gt;
 a와 b가 교차하지 않는 부분을 표현하는 지오메트리를 반환한다.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -58073,7 +60818,7 @@ None
 &lt;pre&gt;$perimeter &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;$perimeter 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;$perimeter 함수&lt;/h3&gt;
 현재 객체의 둘레 길이.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -58101,7 +60846,7 @@ Converts a string to a interval type.  Can be used to take days, hours, month, e
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-05 12:00:00&apos;) - tointerval(&apos;1 day 2 hours&apos;) &amp;rarr; 2012-05-04T10:00:00&lt;/code&gt;&lt;br&gt;</source>
-        <translation>&lt;h3&gt;tointerval() function&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;tointerval() function&lt;/h3&gt;
 문자열을 기간 타입으로 변환. 날짜에서 추출한 일자, 시간, 달 등에 사용할 수 있음. 
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -58137,7 +60882,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;hour(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 17520&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;hour() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;hour() 함수&lt;/h3&gt;
 datetime 혹은 time에서 시간을 추출하거나, &lt;code&gt;Interval&lt;/code&gt;의 시간 수를 반환
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -58176,7 +60921,7 @@ Returns a string representation of a color based on its hue, saturation, lightne
 &lt;!-- Show example of function.--&gt;
      color_hsla(100,50,70,200) &amp;rarr; &apos;166,217,140,200&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;color_hsla() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;color_hsla() 함수&lt;/h3&gt;
 색상, 채도, 명도와 알파(투명도)를 기반으로 한 색을 문자열로 표현해 반환.
 
 &lt;p&gt;&lt;h4&gt;문법&lt;/h4&gt;
@@ -58207,7 +60952,7 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$pi &amp;rarr; 3.14159265358979&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;$pi 상수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;$pi 상수&lt;/h3&gt;
 원주율 값을 반환한다.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -58224,7 +60969,7 @@ None
         <source>&lt;h3&gt;Record Group&lt;/h3&gt;
 This group contains functions that operate on record identifiers.
 </source>
-        <translation>&lt;h3&gt;레코드 그룹&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;레코드 그룹&lt;/h3&gt;
 이 그룹은 레코드 식별에 사용하는 함수들이 포함되어 있습니다.
 </translation>
     </message>
@@ -58242,7 +60987,7 @@ Convert a string into Qt time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;totime(&apos;12:30:01&apos;) &amp;rarr; 12:30:01&lt;/code&gt;&lt;br&gt;</source>
-        <translation>&lt;h3&gt;totime() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;totime() 함수&lt;/h3&gt;
 문자열을 Qt 시간 형식으로 변환.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -58273,7 +61018,7 @@ Returns a string with the the supplied string replaced.
 &lt;!-- Show example of function.--&gt;
      replace(&apos;QGIS SHOULD ROCK&apos;,&apos;SHOULD&apos;,&apos;DOES&apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;replace() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;replace() 함수&lt;/h3&gt;
 제공되는 문자열로 대체된 문자열을 반환한다.
 
 &lt;p&gt;&lt;h4&gt;문법&lt;/h4&gt;
@@ -58294,7 +61039,7 @@ Returns a string with the the supplied string replaced.
         <source>&lt;h3&gt;Conditionals Group&lt;/h3&gt;
 This group contains functions to handle conditional checks in expressions.
 </source>
-        <translation>&lt;h3&gt;조건문 그룹&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;조건문 그룹&lt;/h3&gt;
 이 그룹에는 표현식 안에서 조건 검사를 처리하는 함수들이 있습니다.</translation>
     </message>
     <message>
@@ -58311,7 +61056,7 @@ abs(&lt;i&gt;value&lt;/i&gt;)&lt;br&gt;
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;code&gt;abs(-2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;abs() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;abs() 함수&lt;/h3&gt;
 숫자의 절대값을 반환합니다.&lt;br&gt;
 
 
@@ -58340,7 +61085,7 @@ Returns the largest value in a set of values.
 &lt;!-- Show example of function.--&gt;
      max(2,10.2,5.5) &amp;rarr; 10.2
 </source>
-        <translation>&lt;h3&gt;max() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;max() 함수&lt;/h3&gt;
 값들 중 가장 큰 값을 반환합니다.
 
 
@@ -58370,7 +61115,7 @@ Returns square root of a value
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      sqrt(9) &amp;rarr; 3&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;sqrt() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;sqrt() 함수&lt;/h3&gt;
 값의 제곱근을 반환합니다.
 
 &lt;p&gt;&lt;h4&gt;문법&lt;/h4&gt;
@@ -58387,7 +61132,7 @@ Returns square root of a value
         <source>&lt;h3&gt;Conditions Group&lt;/h3&gt;
 This group contains functions that operate on condition.
 </source>
-        <translation>&lt;h3&gt;조건 그룹&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;조건 그룹&lt;/h3&gt;
 이 그룹은 조건에 따라 작동하는 기능들을 포함하고 있습니다.</translation>
     </message>
     <message>
@@ -58410,7 +61155,7 @@ Returns a string representation of a color based on its cyan, magenta, yellow, b
 &lt;!-- Show example of function.--&gt;
      color_cmyka(100,50,0,10,200) &amp;rarr; &apos;0,115,230,200&apos;&lt;/p&gt;
 </source>
-        <translation>
+        <translation type="obsolete">
 &lt;h3&gt;color_cmyka() 함수&lt;/h3&gt;
 시안, 마젠타, 황색, 흑색과 알파(투명도)로 구성되는 색을 문자열로 반환합니다.
 
@@ -58448,7 +61193,7 @@ to.
 &lt;code&gt;format_number(10000000.332,2) &amp;rarr; 10,000,000.33&lt;/code&gt;
 
 </source>
-        <translation>&lt;h3&gt;format_number() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;format_number() 함수&lt;/h3&gt;
 언어설정에 따라 천단위로 구분되어 포매팅 된 숫자를 반환합니다.
 또한 주어진 자리에서 숫자를 자릅니다.
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -58486,7 +61231,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;year(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1.9986..&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;year() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;year() 함수&lt;/h3&gt;
 날짜에서 년도 부분을 추출, 혹은 &lt;code&gt;Interval&lt;/code&gt;에서 몇 년인지 계산
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -58535,7 +61280,7 @@ return a result.
     END
 &lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;CASE 식&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;CASE 식&lt;/h3&gt;
 여러 개의 표현식을 평가하고 결과를 반환하는 데 사용할 수있는 조건 식입니다.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -58581,7 +61326,7 @@ This function takes two arguments.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;randf(1, 10) &amp;rarr; 4.59258286403147&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;randf() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;randf() 함수&lt;/h3&gt;
 최소값과 최대값(포함됨) 사이의 무작위 float 값을 반환합니다.
 &lt;br&gt;
 이 함수는 두 개의 인자가 필요합니다.
@@ -58612,7 +61357,7 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; xmin($geometry) &amp;rarr; returns minimum x coordinate of $geometry&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;xmin 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;xmin 함수&lt;/h3&gt;
 Returns the minimum x coordinate of a geometry. Calculations are in the Spatial Reference System of this Geometry. 
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -58647,7 +61392,7 @@ Transforms a given value from an input domain to an output range using linear in
      
      
 </source>
-        <translation>&lt;h3&gt;scale_linear() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;scale_linear() 함수&lt;/h3&gt;
 주어진 값을 입력 영역에서 출력 범위로 선형 보간을 통해 변환합니다.
 
 &lt;p&gt;&lt;h4&gt;문법&lt;/h4&gt;
@@ -58683,7 +61428,7 @@ Removes all leading and trailing whitespace (spaces, tabs, etc) from a string.
 &lt;!-- Show example of function.--&gt;
      trim(&apos;   hello world    &apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;trim() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;trim() 함수&lt;/h3&gt;
 문자열 앞 뒤의 공백문자(공백, 탭 등)을 모두 제거합니다.
 
 &lt;p&gt;&lt;h4&gt;문법&lt;/h4&gt;
@@ -58720,7 +61465,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;minute(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1051200&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;minute() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;minute() 함수&lt;/h3&gt;
 datetime 혹은 time에서 분을 추출하거나, &lt;code&gt;Interval&lt;/code&gt; 내의 분 수를 반환
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -58775,7 +61520,7 @@ use &lt;code&gt;day&lt;/code&gt; to extract number of days&lt;br&gt;
 &lt;code&gt;day(age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;)) &amp;rarr; 10&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;age() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;age() 함수&lt;/h3&gt;
 두 날짜간의 차이를 반환합니다.
 &lt;br&gt;&lt;br&gt;
 차이는 &lt;code&gt;Interval&lt;/code&gt;로 반환되며 유용한 정보를 추출하기 위해서 다음 함수 중 하나를 사용해야 합니다:
@@ -58824,7 +61569,7 @@ This function takes one argument.
 &lt;code&gt;log10(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;log10(100) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;log10() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;log10() 함수&lt;/h3&gt;
 10을 밑으로 한 로그 값을 반환합니다.
 &lt;br&gt;
 이 함수는 한 개의 인자를 받습니다.
@@ -58845,7 +61590,7 @@ This function takes one argument.
         <source>&lt;h3&gt;Conversions Group&lt;/h3&gt;
 This group contains functions to convert on data type to another e.g string to integer, integer to string.
 </source>
-        <translation>&lt;h3&gt;변환 그룹&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;변환 그룹&lt;/h3&gt;
 이 그룹에는 데이터 타입에서 다른 데이터 타입으로 변환하는 함수들이 포함되어 있습니다. 예를 들어 문자열을 정수로 바꾸기, 정수를 문자열로 바꾸기.
 </translation>
     </message>
@@ -58863,7 +61608,7 @@ Returns cosinus of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      cos(1.571) &amp;rarr; 0.000796326710733263&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;cos() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;cos() 함수&lt;/h3&gt;
 각의 코싸인 값을 반환.
 
 
@@ -58881,7 +61626,7 @@ Returns cosinus of an angle.
         <source>&lt;h3&gt;Operators Group&lt;/h3&gt;
 This group contains operators e.g + - * 
 </source>
-        <translation>&lt;h3&gt;연산자 그룹&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;연산자 그룹&lt;/h3&gt;
 연산자 그룹은 +, -, * 같은 연산자를 포함하고 있음</translation>
     </message>
     <message>
@@ -58906,7 +61651,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;second(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 63072000&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;second() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;second() 함수&lt;/h3&gt;
 datetime 혹은 time에서 초를 추출하거나, &lt;code&gt;Interval&lt;/code&gt; 내의 초 수를 반환
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -58941,7 +61686,7 @@ Returns arcustanget of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      atan(0.5) &amp;rarr; 0.463647609000806&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;atan() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;atan() 함수&lt;/h3&gt;
 라디안으로 아크탄젠트 값을 반환
 
 &lt;p&gt;&lt;h4&gt;문법&lt;/h4&gt;
@@ -58967,7 +61712,7 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$length &amp;rarr; 42.4711&lt;/pre&gt;
 </source>
-        <translation>&lt;h3&gt;$length 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;$length 함수&lt;/h3&gt;
 현재 객체의 길이를 반환
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -58996,7 +61741,7 @@ capital letter).
 &lt;!-- Show example of function.--&gt;
      upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;Hello World&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;title() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;title() 함수&lt;/h3&gt;
 모든 단어를 타이틀 표시법으로 변환(모든 단어의 첫글자는 대문자로, 나머지는 소문자로)
 
 &lt;p&gt;&lt;h4&gt;문법&lt;/h4&gt;
@@ -59027,7 +61772,7 @@ Returns true if any part of a string matches the supplied regular expression.
 &lt;!-- Show example of function.--&gt;
      regexp_match(&apos;QGIS ROCKS&apos;,&apos;&amp;#92;&amp;#92;sROCKS&apos;) &amp;rarr; 1&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;regexp_match() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;regexp_match() 함수&lt;/h3&gt;
 만약 문자열의 일부가 주어진 정규식에 맞다면 true 반환.
 
 &lt;p&gt;&lt;h4&gt;문법&lt;/h4&gt;
@@ -59060,7 +61805,7 @@ Return a part of a string
 &lt;!-- Show example of function.--&gt;
      substr(&apos;HELLO WORLD&apos;,3,5) &amp;rarr; &apos;LLO W&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;substr() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;substr() 함수&lt;/h3&gt;
 문자열의 일부분을 반환
 
 &lt;p&gt;&lt;h4&gt;문법&lt;/h4&gt;
@@ -59092,7 +61837,7 @@ Format a string using supplied arguments.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;format(&apos;This %1 a %2&apos;,&apos;is&apos;, &apos;test&apos;) &amp;rarr; This is a test&lt;/code&gt;&lt;br&gt;</source>
-        <translation>&lt;h3&gt;format() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;format() 함수&lt;/h3&gt;
 주어진 인자를 이용하여 문자열을 조합한다.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -59124,7 +61869,7 @@ Returns a string with the supplied regular expression replaced.
 &lt;!-- Show example of function.--&gt;
      regexp_replace(&apos;QGIS SHOULD ROCK&apos;,&apos;&amp;#92;&amp;#92;sSHOULD&amp;#92;&amp;#92;s&apos;,&apos; DOES &apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;regexp_replace() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;regexp_replace() 함수&lt;/h3&gt;
 정규식을 적용해서 교체된 문자열을 반환.
 
 &lt;p&gt;&lt;h4&gt;문법&lt;/h4&gt;
@@ -59156,7 +61901,7 @@ Returns the portion of a string which matches a supplied regular expression.
 &lt;!-- Show example of function.--&gt;
      regexp_substr(&apos;abc123&apos;,&apos;(&amp;#92;&amp;#92;d+)&apos;) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;regexp_substr() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;regexp_substr() 함수&lt;/h3&gt;
 제공된 정규식에 맞는 문자열을 잘라 반환.
 
 &lt;p&gt;&lt;h4&gt;문법&lt;/h4&gt;
@@ -59186,7 +61931,7 @@ None
 &lt;pre&gt;$y &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;$y 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;$y 함수&lt;/h3&gt;
 현재 객채의 y 좌표를 반환
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -59219,7 +61964,7 @@ Returns a string representation of a color based on its red, green, blue, and al
 &lt;!-- Show example of function.--&gt;
      color_rgba(255,127,0,200) &amp;rarr; &apos;255,127,0,200&apos;&lt;/p&gt;
 </source>
-        <translation>
+        <translation type="obsolete">
 &lt;h3&gt;color_rgba() 함수&lt;/h3&gt;
 시안, 마젠타, 노랑, 검정의 요소를 기반으로 한 색을 문자로 표현하여 반환합니다.
 
@@ -59252,7 +61997,7 @@ None
 &lt;pre&gt;$x &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;$x 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;$x 함수&lt;/h3&gt;
 현재 객체의 y 좌표를 반환
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -59270,7 +62015,7 @@ None
         <source>&lt;h3&gt;Math Group&lt;/h3&gt;
 This group contains math functions e.g square root, sin and cos
 </source>
-        <translation>&lt;h3&gt;수학 그룹&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;수학 그룹&lt;/h3&gt;
 이 그룹에는 수학 함수들이 포함됨. 예: 제곱근, sin, cos</translation>
     </message>
     <message>
@@ -59288,7 +62033,7 @@ Returns the smallest value in a set of values.
 &lt;!-- Show example of function.--&gt;
      min(20.5,10,6.2) &amp;rarr; 6.2
 </source>
-        <translation>&lt;h3&gt;min() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;min() 함수&lt;/h3&gt;
 값들 중 가장 작은 값을 반환합니다.
 
 
@@ -59317,7 +62062,7 @@ Converts a string to lower case letters.
 &lt;p&gt;&lt;h4&gt;  Example&lt;/h4&gt;
      lower(&apos;HELLO World&apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;lower() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;lower() 함수&lt;/h3&gt;
 문자열을 소문자로 변환함
 
 &lt;p&gt;&lt;h4&gt;  문법&lt;/h4&gt;
@@ -59344,7 +62089,7 @@ None
 &lt;pre&gt;$numfeatures &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;$numfeatures 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;$numfeatures 함수&lt;/h3&gt;
 아틀라스 생성시에, 커버리지 레이어 안의 모든 객체수를 반환
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -59362,7 +62107,7 @@ None
         <source>&lt;h3&gt;String Group&lt;/h3&gt;
 This group contains functions that operate on strings e.g replace, convert to upper case.
 </source>
-        <translation>&lt;h3&gt;문자열 그룹&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;문자열 그룹&lt;/h3&gt;
 이 그룹에는 문자열을 처리하는 함수들이 포함되어 있음. 예: 문자열 대체, 대문자 변환.
 </translation>
     </message>
@@ -59381,7 +62126,7 @@ Concatenates several strings to one.
 &lt;!-- Show example of function.--&gt;
      concat(&apos;a&apos;,&apos;b&apos;,&apos;c&apos;,&apos;d&apos;,&apos;e&apos;) &amp;rarr; &apos;abcde&apos;
 </source>
-        <translation>&lt;h3&gt;concat() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;concat() 함수&lt;/h3&gt;
 여러 개의 문자열을 하나로 병합
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -59417,7 +62162,7 @@ This function can take any number of arguments.
  else the value of &quot;fallbackField&quot; or the string &apos;ERROR&apos; if both are NULL&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation>&lt;h3&gt;coalesce() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;coalesce() 함수&lt;/h3&gt;
 표현식 리스트에서 첫 번째 널이 아닌 값을 반환
 &lt;br&gt;
 이 함수는 인자를 몇개라도 받을 수 있음
@@ -59453,7 +62198,7 @@ Returns arcussinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      asin(1.0) &amp;rarr; 1.5707963267949&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;asin() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;asin() 함수&lt;/h3&gt;
 라디안으로 아크싸인 값을 반환
 
 &lt;p&gt;&lt;h4&gt;문법&lt;/h4&gt;
@@ -59480,7 +62225,7 @@ Convert a string into Qt data time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-04 12:50:00&apos;) &amp;rarr; 2012-05-04T12:50:00&lt;/code&gt;&lt;br&gt;</source>
-        <translation>&lt;h3&gt;todatetime() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;todatetime() 함수&lt;/h3&gt;
 문자열을 Qt  data time 형식으로 변환.
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -59508,7 +62253,7 @@ Returns tangent of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      tan(1.0) &amp;rarr; 1.5574077246549&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;tan() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;tan() 함수&lt;/h3&gt;
 각의 탄젠트 값을 반환.
 
 
@@ -59536,7 +62281,7 @@ None
 &lt;pre&gt;$feature &amp;rarr; 2&lt;/pre&gt;
 
 </source>
-        <translation>&lt;h3&gt;$feature 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;$feature 함수&lt;/h3&gt;
 아틀라스 생성시에, 커버리지 레이어 위에 올려진 현재 객체 갯수를 반환
 
 &lt;h4&gt;문법&lt;/h4&gt;
@@ -59567,7 +62312,7 @@ This function takes one argument.
 &lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation>&lt;h3&gt;ln() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;ln() 함수&lt;/h3&gt;
 입력된 식의 자연로그값을 반환.
 &lt;br&gt;
 이 함수는 한 개의 인자를 필요로 함.
@@ -59601,7 +62346,7 @@ Returns a string representation of a color based on its hue, saturation, value a
 &lt;!-- Show example of function.--&gt;
      color_hsva(40,100,100,200) &amp;rarr; &apos;255,170,0,200&apos;&lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;color_hsva() 함수&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;color_hsva() 함수&lt;/h3&gt;
 색상, 채도, value, 알파(투명도)를 기반으로 한 색을 문자로 표현해 반환
 
 &lt;p&gt;&lt;h4&gt;문법&lt;/h4&gt;
@@ -59619,219 +62364,6 @@ Returns a string representation of a color based on its hue, saturation, value a
      color_hsva(40,100,100,200) &amp;rarr; &apos;255,170,0,200&apos;&lt;/p&gt;
 </translation>
     </message>
-    <message>
-        <source>&lt;h3&gt;geometry function&lt;/h3&gt;
-Returns the feature&apos;s geometry
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;geometry( f )&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-f &amp;rarr; QgsFeature
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; geomToWKT( geometry( getFeature( layer, attributeField, value ) ) ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
-&lt;pre&gt; intersects( $geometry, geometry( getFeature( layer, attributeField, value ) ) ) &amp;rarr; 1&lt;/pre&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;transform function&lt;/h3&gt;
-Returns the geometry transformed from the source CRS to the dest CRS.
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;transform( geom, sAuthId, dAuthId )&lt;/pre&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-geom &amp;rarr; QgsGeometry
-
-sCrsId &amp;rarr; the Source Auth CRS Id
-
-dCrsId &amp;rarr; the Dest Auth CRS Id
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; geomToWKT( transform( $geometry, &apos;EPSG:2154&apos;, &apos;EPSG:4326&apos; ) ) &amp;rarr; POINT(0 51)&lt;/pre&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;format_date() function&lt;/h3&gt;
-Format a date type or string into a custom string format. Uses Qt data time format strings.  See &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/qdatetime.html#toString&apos;&gt;QDateTime::toString&lt;/a&gt;
-
-&lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;format_date(&apos;string&apos;, &apos;format_string&apos;)&lt;/code&gt;&lt;br&gt;
-
-&lt;h4&gt;Arguments&lt;/h4&gt;
-&lt;code&gt;string&lt;/code&gt; - is string. Date/Time/DateTime string.
-&lt;br&gt;
-&lt;code&gt;format_string&lt;/code&gt; - is string. String template used to format the string.
-
-  &lt;table&gt;
-    &lt;thead&gt;
-      &lt;tr&gt;
-        &lt;th&gt;Expression&lt;/th&gt;
-
-        &lt;th&gt;Output&lt;/th&gt;
-      &lt;/tr&gt;
-    &lt;/thead&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;d&lt;/td&gt;
-
-      &lt;td&gt;the day as number without a leading zero (1 to 31)&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;dd&lt;/td&gt;
-
-      &lt;td&gt;the day as number with a leading zero (01 to 31)&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;ddd&lt;/td&gt;
-
-      &lt;td&gt;the abbreviated localized day name (e.g. &apos;Mon&apos; to &apos;Sun&apos;). Uses &lt;a href=
-      &quot;qdate.html#shortDayName&quot;&gt;QDate::shortDayName&lt;/a&gt;().&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;dddd&lt;/td&gt;
-
-      &lt;td&gt;the long localized day name (e.g. &apos;Monday&apos; to &apos;Sunday&apos;). Uses &lt;a href=
-      &quot;qdate.html#longDayName&quot;&gt;QDate::longDayName&lt;/a&gt;().&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;M&lt;/td&gt;
-
-      &lt;td&gt;the month as number without a leading zero (1-12)&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;MM&lt;/td&gt;
-
-      &lt;td&gt;the month as number with a leading zero (01-12)&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;MMM&lt;/td&gt;
-
-      &lt;td&gt;the abbreviated localized month name (e.g. &apos;Jan&apos; to &apos;Dec&apos;). Uses &lt;a href=
-      &quot;qdate.html#shortMonthName&quot;&gt;QDate::shortMonthName&lt;/a&gt;().&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;MMMM&lt;/td&gt;
-
-      &lt;td&gt;the long localized month name (e.g. &apos;January&apos; to &apos;December&apos;). Uses &lt;a href=
-      &quot;qdate.html#longMonthName&quot;&gt;QDate::longMonthName&lt;/a&gt;().&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;yy&lt;/td&gt;
-
-      &lt;td&gt;the year as two digit number (00-99)&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;yyyy&lt;/td&gt;
-
-      &lt;td&gt;the year as four digit number&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/table&gt;
-
-  &lt;p&gt;These expressions may be used for the time part of the format string:&lt;/p&gt;
-
-  &lt;table&gt;
-    &lt;thead&gt;
-      &lt;tr&gt;
-        &lt;th&gt;Expression&lt;/th&gt;
-
-        &lt;th&gt;Output&lt;/th&gt;
-      &lt;/tr&gt;
-    &lt;/thead&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;h&lt;/td&gt;
-
-      &lt;td&gt;the hour without a leading zero (0 to 23 or 1 to 12 if AM/PM display)&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;hh&lt;/td&gt;
-
-      &lt;td&gt;the hour with a leading zero (00 to 23 or 01 to 12 if AM/PM display)&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;H&lt;/td&gt;
-
-      &lt;td&gt;the hour without a leading zero (0 to 23, even with AM/PM display)&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;HH&lt;/td&gt;
-
-      &lt;td&gt;the hour with a leading zero (00 to 23, even with AM/PM display)&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;m&lt;/td&gt;
-
-      &lt;td&gt;the minute without a leading zero (0 to 59)&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;mm&lt;/td&gt;
-
-      &lt;td&gt;the minute with a leading zero (00 to 59)&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;s&lt;/td&gt;
-
-      &lt;td&gt;the second without a leading zero (0 to 59)&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;ss&lt;/td&gt;
-
-      &lt;td&gt;the second with a leading zero (00 to 59)&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;z&lt;/td&gt;
-
-      &lt;td&gt;the milliseconds without leading zeroes (0 to 999)&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;zzz&lt;/td&gt;
-
-      &lt;td&gt;the milliseconds with leading zeroes (000 to 999)&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;AP or A&lt;/td&gt;
-
-      &lt;td&gt;interpret as an AM/PM time. &lt;i&gt;AP&lt;/i&gt; must be either &quot;AM&quot; or &quot;PM&quot;.&lt;/td&gt;
-    &lt;/tr&gt;
-
-    &lt;tr valign=&quot;top&quot;&gt;
-      &lt;td&gt;ap or a&lt;/td&gt;
-
-      &lt;td&gt;Interpret as an AM/PM time. &lt;i&gt;ap&lt;/i&gt; must be either &quot;am&quot; or &quot;pm&quot;.&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/table&gt;
-
-&lt;br&gt;
-
-&lt;h4&gt;Example&lt;/h4&gt;
-&lt;!-- Show example of function.--&gt;
-&lt;code&gt;format_date(&apos;2012-05-15&apos;,&apos;dd.MM.yyyy&apos;) &amp;rarr; 15.05.2012&lt;/code&gt;&lt;br&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>gdal2xyz</name>
@@ -59845,7 +62377,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output file</source>
-        <translation>출력 파일</translation>
+        <translation type="obsolete">출력 파일</translation>
+    </message>
+    <message>
+        <source>xyz</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -59872,7 +62408,101 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
+    </message>
+    <message>
+        <source>Pyramidized</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>gdalcalc</name>
+    <message>
+        <source>Input layer A</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of raster band for raster A</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input layer B</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of raster band for raster B</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input layer C</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of raster band for raster C</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input layer D</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of raster band for raster D</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input layer E</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of raster band for raster E</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input layer F</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of raster band for raster F</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculation in gdalnumeric syntax using +-/* or any numpy array functions (i.e. logical_and())</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set output nodata value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output raster type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Additional creation parameters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Calculated</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>gdaltindex</name>
+    <message>
+        <source>Input layers</source>
+        <translation type="unfinished">입력 레이어</translation>
+    </message>
+    <message>
+        <source>Tile index field</source>
+        <translation type="unfinished">타일 ​​인덱스 필드</translation>
+    </message>
+    <message>
+        <source>Skip files with different projection reference</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tile index</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -61697,7 +64327,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output file</source>
-        <translation>출력 파일</translation>
+        <translation type="obsolete">출력 파일</translation>
+    </message>
+    <message>
+        <source>Hillshade</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -62685,7 +65319,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
+    </message>
+    <message>
+        <source>Merged</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -62704,7 +65342,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
+    </message>
+    <message>
+        <source>Nearblack</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -62803,7 +65445,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
+    </message>
+    <message>
+        <source>PCT to RGB</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -62818,7 +65464,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
+    </message>
+    <message>
+        <source>Vectorized</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -62853,7 +65503,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
+    </message>
+    <message>
+        <source>Distance</source>
+        <translation type="unfinished">거리</translation>
     </message>
 </context>
 <context>
@@ -62865,10 +65519,6 @@ Format a date type or string into a custom string format. Uses Qt data time form
     <message>
         <source>Attribute field</source>
         <translation>속성 필드</translation>
-    </message>
-    <message>
-        <source>Write values inside an existing raster layer(*)</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Set output raster size (ignored if above option is checked)</source>
@@ -62884,10 +65534,6 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Raster type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Output layer: mandatory to choose an existing raster layer if the (*) option is selected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -62919,7 +65565,26 @@ Format a date type or string into a custom string format. Uses Qt data time form
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Force the generation of an associated ESRI world file (.tfw))</source>
+        <source>Force the generation of an associated ESRI world file (.tfw)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rasterized</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>rasterize_over</name>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished">입력 레이어</translation>
+    </message>
+    <message>
+        <source>Attribute field</source>
+        <translation type="unfinished">속성 필드</translation>
+    </message>
+    <message>
+        <source>Existing raster layer</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -62935,7 +65600,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
+    </message>
+    <message>
+        <source>RGB to PCT</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -62954,7 +65623,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output file</source>
-        <translation>출력 파일</translation>
+        <translation type="obsolete">출력 파일</translation>
+    </message>
+    <message>
+        <source>Roughness</source>
+        <translation type="unfinished">거칠기</translation>
     </message>
 </context>
 <context>
@@ -63043,7 +65716,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
+    </message>
+    <message>
+        <source>Sieved</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -63074,7 +65751,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output file</source>
-        <translation>출력 파일</translation>
+        <translation type="obsolete">출력 파일</translation>
+    </message>
+    <message>
+        <source>Slope</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -63232,7 +65913,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output file</source>
-        <translation>출력 파일</translation>
+        <translation type="obsolete">출력 파일</translation>
+    </message>
+    <message>
+        <source>Topographic Position Index</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -63275,7 +65960,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
     </message>
     <message>
         <source>Nodata value, leave blank to take the nodata value from input</source>
@@ -63309,6 +65994,10 @@ Format a date type or string into a custom string format. Uses Qt data time form
         <source>Force the generation of an associated ESRI world file (.tfw))</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Converted</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>tri</name>
@@ -63326,7 +66015,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output file</source>
-        <translation>출력 파일</translation>
+        <translation type="obsolete">출력 파일</translation>
+    </message>
+    <message>
+        <source>Terrain Ruggedness Index</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -63506,7 +66199,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output layer</source>
-        <translation>출력 레이어</translation>
+        <translation type="obsolete">출력 레이어</translation>
     </message>
     <message>
         <source>Nodata value, leave blank to take the nodata value from input</source>
@@ -63538,6 +66231,10 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Force the generation of an associated ESRI world file (.tfw))</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reprojected</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
