@@ -641,6 +641,12 @@ def create_xml_descriptors():
         # except Exception, e:
         #    logger.error(traceback.format_exc())
 
+def create_html_description():
+    logger = get_OTB_log()
+
+    if not os.path.exists("description/doc"):
+        os.mkdir("description/doc")
+
     for available_app in otbApplication.Registry.GetAvailableApplications():
         try:
             fh = open("description/doc/%s.html" % available_app, "w")
@@ -681,6 +687,7 @@ if __name__ == "__main__":
         raise Exception("OTB python plugins must be installed and available in PYTHONPATH")
 
     create_xml_descriptors()
+    create_html_description()
 
     # Exit applications
     QgsApplication.exitQgis()
