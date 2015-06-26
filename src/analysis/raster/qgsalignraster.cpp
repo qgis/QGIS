@@ -498,6 +498,8 @@ bool QgsAlignRaster::createAndWarp( const Item& raster )
     psWarpOptions->pfnPostWarpChunkProcessor = rescalePostWarpChunkProcessor;
     psWarpOptions->pPreWarpProcessorArg = rescaleArg;
     psWarpOptions->pPostWarpProcessorArg = rescaleArg;
+    // force use of float32 data type as that is what our pre/post-processor uses
+    psWarpOptions->eWorkingDataType = GDT_Float32;
   }
 
   // Initialize and execute the warp operation.
