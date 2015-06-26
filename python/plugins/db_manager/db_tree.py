@@ -20,8 +20,8 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import SIGNAL, SLOT
-from PyQt4.QtGui import QWidget, QTreeView, QMenu, QLabel
+from PyQt4.QtCore import SIGNAL, SLOT, QSettings, Qt
+from PyQt4.QtGui import QWidget, QTreeView, QMenu, QLabel, QFileDialog
 
 from qgis.core import QgsMapLayerRegistry, QgsMessageLog
 from qgis.gui import QgsMessageBar, QgsMessageBarItem
@@ -90,6 +90,12 @@ class DBTree(QTreeView):
             return item
         return None
 
+    def openConnection(self):
+        index = self.selectedIndexes()[0]
+        if index:
+            if index.data() != "PostGIS":
+                filename = QFileDialog.getOpenFileName(self, "Open File")
+                self.model().addConnection(filename, index)
 
     def itemChanged(self, index):
         self.setCurrentIndex(index)
@@ -123,6 +129,10 @@ class DBTree(QTreeView):
 
         elif isinstance(item, DBPlugin) and item.database() is not None:
             menu.addAction(self.tr("Re-connect"), self.reconnect)
+            menu.addAction(self.tr("Delete"), self.delActionSlot)
+
+        elif not index.parent().data():
+            menu.addAction(self.tr("New Connection..."), self.openConnection)
 
         if not menu.isEmpty():
             menu.exec_(ev.globalPos())
@@ -134,6 +144,23 @@ class DBTree(QTreeView):
         item = self.model().getItem(index)
         if isinstance(item, (Table, Schema)):
             self.edit(index)
+
+    def delActionSlot(self):
+        db = self.currentDatabase()
+        path = db.uri().database()
+        connkey = db.connection().connectionSettingsKey()
+        self.deletedb(path, connkey)
+
+        index = self.currentIndex().parent()
+        self.setCurrentIndex(index)
+        self.mainWindow.refreshActionSlot()
+
+    def deletedb(self, path, conn):
+        paths = path.split("/")
+        path = paths[-1]
+        s = QSettings()
+        s.beginGroup("/%s/%s" % (conn, path))
+        s.remove("")
 
     def delete(self):
         item = self.currentItem()

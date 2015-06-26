@@ -21,7 +21,7 @@ email                : brush.tyler@gmail.com
 """
 
 from PyQt4.QtCore import Qt, QObject, SIGNAL, qDebug, QByteArray, QMimeData, QDataStream, QIODevice, QFileInfo, \
-    QAbstractItemModel, QModelIndex
+    QAbstractItemModel, QModelIndex, QSettings
 from PyQt4.QtGui import QApplication, QIcon, QMessageBox
 
 from .db_plugins import supportedDbTypes, createDbPlugin
@@ -359,6 +359,10 @@ class DBModel(QAbstractItemModel):
 
         if index.column() == 0:
             item = index.internalPointer()
+
+            if not isinstance(item, SchemaItem) and not isinstance(item, TableItem):
+                flags |= Qt.ItemIsDropEnabled
+
             if isinstance(item, SchemaItem) or isinstance(item, TableItem):
                 flags |= Qt.ItemIsEditable
 
@@ -509,30 +513,49 @@ class DBModel(QAbstractItemModel):
         added = 0
 
         if data.hasUrls():
-            for u in data.urls():
-                filename = u.toLocalFile()
-                if filename == "":
-                    continue
+            if row == -1 and column == -1:
+                for u in data.urls():
+                    filename = u.toLocalFile()
+                    if self.addConnection(filename, parent):
+                        added += 1
+            else:
+                for u in data.urls():
+                    filename = u.toLocalFile()
+                    if filename == "":
+                        continue
 
-                if qgis.core.QgsRasterLayer.isValidRasterFileName(filename):
-                    layerType = 'raster'
-                    providerKey = 'gdal'
-                else:
-                    layerType = 'vector'
-                    providerKey = 'ogr'
+                    if qgis.core.QgsRasterLayer.isValidRasterFileName(filename):
+                        layerType = 'raster'
+                        providerKey = 'gdal'
+                    else:
+                        layerType = 'vector'
+                        providerKey = 'ogr'
 
-                layerName = QFileInfo(filename).completeBaseName()
+                    layerName = QFileInfo(filename).completeBaseName()
 
-                if self.importLayer(layerType, providerKey, layerName, filename, parent):
-                    added += 1
+                    if self.importLayer(layerType, providerKey, layerName, filename, parent):
+                        added += 1
 
-        if data.hasFormat(self.QGIS_URI_MIME):
-            for uri in qgis.core.QgsMimeDataUtils.decodeUriList(data):
-                if self.importLayer(uri.layerType, uri.providerKey, uri.name, uri.uri, parent):
-                    added += 1
+            if data.hasFormat(self.QGIS_URI_MIME):
+                for uri in qgis.core.QgsMimeDataUtils.decodeUriList(data):
+                    if self.importLayer(uri.layerType, uri.providerKey, uri.name, uri.uri, parent):
+                        added += 1
 
         return added > 0
 
+
+    def addConnection(self, filename, index):
+        file = filename.split("/")[-1]
+        if filename == "":
+            return False
+        s = QSettings()
+        connKey = index.internalPointer().getItemData().connectionSettingsKey()
+        conn = index.internalPointer().getItemData().connectionSettingsFileKey()
+        s.beginGroup("/%s/%s" % (connKey, file))
+        s.setValue(conn, filename)
+        self.treeView.setCurrentIndex(index)
+        self.treeView.mainWindow.refreshActionSlot()
+        return True
 
     def importLayer(self, layerType, providerKey, layerName, uriString, parent):
         if not self.isImportVectorAvail:

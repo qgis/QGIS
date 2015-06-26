@@ -125,6 +125,15 @@ class SpatiaLiteDBConnector(DBConnector):
     def hasCreateSpatialViewSupport(self):
         return True
 
+    def isgpkg(self):
+        info = float(self.getInfo()[0][:-2])
+        if info < 4.2:
+            result = self.uri().database()[-5:] == ".gpkg"
+        else:
+            sql = u"SELECT HasGeoPackage()"
+            result = self._execute(None, sql).fetchone()[0] == 1
+        return result
+
     def fieldTypes(self):
         return [
             "integer", "bigint", "smallint",  # integers

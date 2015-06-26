@@ -51,7 +51,7 @@ class SpatiaLiteDBPlugin(DBPlugin):
 
     @classmethod
     def typeNameString(self):
-        return 'SpatiaLite'
+        return 'SpatiaLite/Geopackage'
 
     @classmethod
     def providerName(self):
@@ -60,6 +60,10 @@ class SpatiaLiteDBPlugin(DBPlugin):
     @classmethod
     def connectionSettingsKey(self):
         return '/SpatiaLite/connections'
+
+    @classmethod
+    def connectionSettingsFileKey(self):
+        return "sqlitepath"
 
     def databasesFactory(self, connection, uri):
         return SLDatabase(connection, uri)
