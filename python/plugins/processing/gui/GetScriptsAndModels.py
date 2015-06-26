@@ -106,7 +106,7 @@ class GetModelsAction(ToolboxAction):
             dlg.exec_()
             if dlg.updateToolbox:
                 self.toolbox.updateProvider('model')
-        except HTTPError:
+        except (HTTPError, URLError):
             QMessageBox.critical(iface.mainWindow(),
                 self.tr('Connection problem', 'GetModelsAction'),
                 self.tr('Could not connect to scripts/models repository', 'GetModelsAction'))
@@ -156,8 +156,8 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
             self.icon = QIcon(os.path.join(pluginPath, 'images', 'r.png'))
 
         self.lastSelectedItem = None
-        self.populateTree()
         self.updateToolbox = False
+        self.populateTree()
         self.buttonBox.accepted.connect(self.okPressed)
         self.buttonBox.rejected.connect(self.cancelPressed)
         self.tree.currentItemChanged .connect(self.currentItemChanged)
