@@ -28,6 +28,7 @@
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgslayertree.h"
+#include "qgslayertreeutils.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreemodellegendnode.h"
 #include "qgslegendrenderer.h"
@@ -119,6 +120,10 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend )
     mItemTreeView->setMenuProvider( new QgsComposerLegendMenuProvider( mItemTreeView, this ) );
     connect( legend, SIGNAL( itemChanged() ), this, SLOT( setGuiElements() ) );
     mWrapCharLineEdit->setText( legend->wrapChar() );
+
+    // connect atlas state to the filter legend by atlas checkbox
+    connect( &legend->composition()->atlasComposition(), SIGNAL( toggled( bool ) ), this, SLOT( updateFilterLegendByAtlasButton() ) );
+    connect( &legend->composition()->atlasComposition(), SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ), this, SLOT( updateFilterLegendByAtlasButton() ) );
   }
 
   setGuiElements();
@@ -574,15 +579,22 @@ void QgsComposerLegendWidget::on_mCheckBoxAutoUpdate_stateChanged( int state )
 
   mLegend->setAutoUpdateModel( state == Qt::Checked );
 
-  mLegend->update();
+  mLegend->updateItem();
   mLegend->endCommand();
 
   // do not allow editing of model if auto update is on - we would modify project's layer tree
   QList<QWidget*> widgets;
   widgets << mMoveDownToolButton << mMoveUpToolButton << mRemoveToolButton << mAddToolButton
-  << mEditPushButton << mCountToolButton << mUpdateAllPushButton << mAddGroupToolButton;
+  << mEditPushButton << mCountToolButton << mUpdateAllPushButton << mAddGroupToolButton
+  << mExpressionFilterButton;
   Q_FOREACH ( QWidget* w, widgets )
     w->setEnabled( state != Qt::Checked );
+
+  if ( state == Qt::Unchecked )
+  {
+    // update widgets state based on current selection
+    selectedChanged( QModelIndex(), QModelIndex() );
+  }
 }
 
 void QgsComposerLegendWidget::on_mMapComboBox_currentIndexChanged( int index )
@@ -616,7 +628,7 @@ void QgsComposerLegendWidget::on_mMapComboBox_currentIndexChanged( int index )
     {
       mLegend->beginCommand( tr( "Legend map changed" ) );
       mLegend->setComposerMap( map );
-      mLegend->update();
+      mLegend->updateItem();
       mLegend->endCommand();
     }
   }
@@ -748,7 +760,7 @@ void QgsComposerLegendWidget::on_mRemoveToolButton_clicked()
   }
 
   mLegend->adjustBoxSize();
-  mLegend->update();
+  mLegend->updateItem();
   mLegend->endCommand();
 }
 
@@ -811,7 +823,7 @@ void QgsComposerLegendWidget::on_mEditPushButton_clicked()
   }
 
   mLegend->adjustBoxSize();
-  mLegend->update();
+  mLegend->updateItem();
   mLegend->endCommand();
 }
 
@@ -853,7 +865,7 @@ void QgsComposerLegendWidget::resetLayerNodeToDefaults()
 
   mItemTreeView->layerTreeModel()->refreshLayerLegend( nodeLayer );
 
-  mLegend->update();
+  mLegend->updateItem();
   mLegend->adjustBoxSize();
   mLegend->endCommand();
 }
@@ -879,16 +891,43 @@ void QgsComposerLegendWidget::on_mCountToolButton_clicked( bool checked )
 
   mLegend->beginCommand( tr( "Legend updated" ) );
   currentNode->setCustomProperty( "showFeatureCount", checked ? 1 : 0 );
-  mLegend->update();
+  mLegend->updateItem();
   mLegend->adjustBoxSize();
   mLegend->endCommand();
 }
 
-void QgsComposerLegendWidget::on_mFilterByMapToolButton_clicked( bool checked )
+void QgsComposerLegendWidget::on_mFilterByMapToolButton_toggled( bool checked )
 {
   mLegend->beginCommand( tr( "Legend updated" ) );
   mLegend->setLegendFilterByMapEnabled( checked );
-  mLegend->update();
+  mLegend->adjustBoxSize();
+  mLegend->endCommand();
+}
+
+void QgsComposerLegendWidget::on_mExpressionFilterButton_toggled( bool checked )
+{
+  if ( !mLegend )
+  {
+    return;
+  }
+
+  //get current item
+  QModelIndex currentIndex = mItemTreeView->currentIndex();
+  if ( !currentIndex.isValid() )
+  {
+    return;
+  }
+
+  QgsLayerTreeNode* currentNode = mItemTreeView->currentNode();
+  if ( !QgsLayerTree::isLayer( currentNode ) )
+    return;
+
+  QgsLayerTreeUtils::setLegendFilterByExpression( *qobject_cast<QgsLayerTreeLayer*>( currentNode ),
+      mExpressionFilterButton->expressionText(),
+      checked );
+
+  mLegend->beginCommand( tr( "Legend updated" ) );
+  mLegend->updateItem();
   mLegend->adjustBoxSize();
   mLegend->endCommand();
 }
@@ -904,8 +943,21 @@ void QgsComposerLegendWidget::on_mAddGroupToolButton_clicked()
   {
     mLegend->beginCommand( tr( "Legend group added" ) );
     mLegend->modelV2()->rootGroup()->addGroup( tr( "Group" ) );
-    mLegend->update();
+    mLegend->updateItem();
     mLegend->endCommand();
+  }
+}
+
+void QgsComposerLegendWidget::on_mFilterLegendByAtlasCheckBox_toggled( bool toggled )
+{
+  if ( mLegend )
+  {
+    mLegend->setLegendFilterOutAtlas( toggled );
+    // force update of legend when in preview mode
+    if ( mLegend->composition()->atlasMode() == QgsComposition::PreviewAtlas )
+    {
+      mLegend->composition()->atlasComposition().refreshFeature();
+    }
   }
 }
 
@@ -918,8 +970,7 @@ void QgsComposerLegendWidget::updateLegend()
     // this will reset the model completely, loosing any changes
     mLegend->setAutoUpdateModel( true );
     mLegend->setAutoUpdateModel( false );
-
-    mLegend->update();
+    mLegend->updateItem();
     mLegend->endCommand();
   }
 }
@@ -997,11 +1048,16 @@ void QgsComposerLegendWidget::selectedChanged( const QModelIndex & current, cons
   Q_UNUSED( previous );
   QgsDebugMsg( "Entered" );
 
+  if ( mLegend && mLegend->autoUpdateModel() )
+    return;
+
   mCountToolButton->setChecked( false );
   mCountToolButton->setEnabled( false );
 
-  if ( mLegend && mLegend->autoUpdateModel() )
-    return;
+  mExpressionFilterButton->blockSignals( true );
+  mExpressionFilterButton->setChecked( false );
+  mExpressionFilterButton->setEnabled( false );
+  mExpressionFilterButton->blockSignals( false );
 
   QgsLayerTreeNode* currentNode = mItemTreeView->currentNode();
   if ( !QgsLayerTree::isLayer( currentNode ) )
@@ -1014,6 +1070,15 @@ void QgsComposerLegendWidget::selectedChanged( const QModelIndex & current, cons
 
   mCountToolButton->setChecked( currentNode->customProperty( "showFeatureCount", 0 ).toInt() );
   mCountToolButton->setEnabled( true );
+
+  bool exprEnabled;
+  QString expr = QgsLayerTreeUtils::legendFilterByExpression( *qobject_cast<QgsLayerTreeLayer*>( currentNode ), &exprEnabled );
+  mExpressionFilterButton->blockSignals( true );
+  mExpressionFilterButton->setExpressionText( expr );
+  mExpressionFilterButton->setVectorLayer( vl );
+  mExpressionFilterButton->setEnabled( true );
+  mExpressionFilterButton->setChecked( exprEnabled );
+  mExpressionFilterButton->blockSignals( false );
 }
 
 void QgsComposerLegendWidget::setCurrentNodeStyleFromAction()
@@ -1023,5 +1088,11 @@ void QgsComposerLegendWidget::setCurrentNodeStyleFromAction()
     return;
 
   QgsLegendRenderer::setNodeLegendStyle( mItemTreeView->currentNode(), ( QgsComposerLegendStyle::Style ) a->data().toInt() );
-  mLegend->update();
+  mLegend->updateItem();
+}
+
+void QgsComposerLegendWidget::updateFilterLegendByAtlasButton()
+{
+  const QgsAtlasComposition& atlas = mLegend->composition()->atlasComposition();
+  mFilterLegendByAtlasCheckBox->setEnabled( atlas.enabled() && atlas.coverageLayer() && atlas.coverageLayer()->geometryType() == QGis::Polygon );
 }

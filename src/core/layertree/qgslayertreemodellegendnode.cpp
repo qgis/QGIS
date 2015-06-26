@@ -554,7 +554,7 @@ const QImage& QgsWMSLegendNode::getLegendGraphic() const
     QgsRasterLayer* layer = qobject_cast<QgsRasterLayer*>( mLayerNode->layer() );
     const QgsLayerTreeModel* mod = model();
     if ( ! mod ) return mImage;
-    const QgsMapSettings* ms = mod->legendFilterByMap();
+    const QgsMapSettings* ms = mod->legendFilterMapSettings();
 
     QgsRasterDataProvider* prov = layer->dataProvider();
 

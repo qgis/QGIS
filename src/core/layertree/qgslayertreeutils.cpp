@@ -363,3 +363,30 @@ void QgsLayerTreeUtils::updateEmbeddedGroupsProjectPath( QgsLayerTreeGroup* grou
     }
   }
 }
+
+void QgsLayerTreeUtils::setLegendFilterByExpression( QgsLayerTreeLayer& layer, const QString& expr, bool enabled )
+{
+  layer.setCustomProperty( "legend/expressionFilter", expr );
+  layer.setCustomProperty( "legend/expressionFilterEnabled", enabled );
+}
+
+QString QgsLayerTreeUtils::legendFilterByExpression( const QgsLayerTreeLayer& layer, bool* enabled )
+{
+  if ( enabled )
+    *enabled = layer.customProperty( "legend/expressionFilterEnabled", "" ).toBool();
+  return layer.customProperty( "legend/expressionFilter", "" ).toString();
+}
+
+bool QgsLayerTreeUtils::hasLegendFilterExpression( const QgsLayerTreeGroup& group )
+{
+  foreach ( QgsLayerTreeLayer* l, group.findLayers() )
+  {
+    bool exprEnabled;
+    QString expr = legendFilterByExpression( *l, &exprEnabled );
+    if ( exprEnabled && !expr.isEmpty() )
+    {
+      return true;
+    }
+  }
+  return false;
+}

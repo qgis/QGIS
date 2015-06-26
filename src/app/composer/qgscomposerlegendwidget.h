@@ -80,10 +80,13 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
     void on_mAddToolButton_clicked();
     void on_mEditPushButton_clicked();
     void on_mCountToolButton_clicked( bool checked );
-    void on_mFilterByMapToolButton_clicked( bool checked );
+    void on_mExpressionFilterButton_toggled( bool checked );
+    void on_mFilterByMapToolButton_toggled( bool checked );
     void resetLayerNodeToDefaults();
     void on_mUpdateAllPushButton_clicked();
     void on_mAddGroupToolButton_clicked();
+
+    void on_mFilterLegendByAtlasCheckBox_toggled( bool checked );
 
     void selectedChanged( const QModelIndex & current, const QModelIndex & previous );
 
@@ -95,6 +98,9 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
   private slots:
     /** Sets GUI according to state of mLegend*/
     void setGuiElements();
+
+    /** update the enabling state of the filter by atlas button */
+    void updateFilterLegendByAtlasButton();
 
   private:
     QgsComposerLegendWidget();

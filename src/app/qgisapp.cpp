@@ -224,6 +224,7 @@
 #include "qgswelcomepage.h"
 #include "qgsmaprendererparalleljob.h"
 #include "qgsversioninfo.h"
+#include "qgslegendfilterbutton.h"
 
 #include "qgssublayersdialog.h"
 #include "ogr/qgsopenvectorlayerdialog.h"
@@ -998,7 +999,7 @@ QgisApp::QgisApp()
     , mMacrosWarn( 0 )
     , mUserInputDockWidget( 0 )
     , mVectorLayerTools( 0 )
-    , mActionFilterLegend( 0 )
+    , mLegendExpressionFilterButton( 0 )
     , mSnappingUtils( 0 )
     , mProjectLastModified()
     , mWelcomePage( 0 )
@@ -2693,7 +2694,11 @@ void QgisApp::initLayerTreeView()
   mActionFilterLegend->setCheckable( true );
   mActionFilterLegend->setToolTip( tr( "Filter Legend By Map Content" ) );
   mActionFilterLegend->setIcon( QgsApplication::getThemeIcon( "/mActionFilter2.svg" ) );
-  connect( mActionFilterLegend, SIGNAL( triggered( bool ) ), this, SLOT( toggleFilterLegendByMap() ) );
+  connect( mActionFilterLegend, SIGNAL( toggled( bool ) ), this, SLOT( updateFilterLegend() ) );
+
+  mLegendExpressionFilterButton = new QgsLegendFilterButton( this );
+  mLegendExpressionFilterButton->setToolTip( tr( "Filter legend by expression" ) );
+  connect( mLegendExpressionFilterButton, SIGNAL( toggled( bool ) ), this, SLOT( toggleFilterLegendByExpression( bool ) ) );
 
   // expand / collapse tool buttons
   QAction* actionExpandAll = new QAction( tr( "Expand All" ), this );
@@ -2710,6 +2715,7 @@ void QgisApp::initLayerTreeView()
   toolbar->addAction( actionAddGroup );
   toolbar->addWidget( btnVisibilityPresets );
   toolbar->addAction( mActionFilterLegend );
+  toolbar->addWidget( mLegendExpressionFilterButton );
   toolbar->addAction( actionExpandAll );
   toolbar->addAction( actionCollapseAll );
   toolbar->addAction( mActionRemoveLayer );
@@ -2742,6 +2748,8 @@ void QgisApp::initLayerTreeView()
   mLayerOrderDock->setWidget( mMapLayerOrder );
   addDockWidget( Qt::LeftDockWidgetArea, mLayerOrderDock );
   mLayerOrderDock->hide();
+
+  connect( mMapCanvas, SIGNAL( mapCanvasRefreshed() ), this, SLOT( updateFilterLegend() ) );
 }
 
 void QgisApp::setupLayerTreeViewFromSettings()
@@ -4331,7 +4339,7 @@ bool QgisApp::addProject( const QString& projectFile )
   mMapCanvas->updateScale();
   QgsDebugMsg( "Scale restored..." );
 
-  setFilterLegendByMapEnabled( QgsProject::instance()->readBoolEntry( "Legend", "filterByMap" ) );
+  mActionFilterLegend->setChecked( QgsProject::instance()->readBoolEntry( "Legend", "filterByMap" ) );
 
   QSettings settings;
 
@@ -4756,36 +4764,35 @@ void QgisApp::activateDeuteranopePreview()
   mMapCanvas->setPreviewMode( QgsPreviewEffect::PreviewDeuteranope );
 }
 
-void QgisApp::toggleFilterLegendByMap()
+void QgisApp::toggleFilterLegendByExpression( bool checked )
 {
-  bool enabled = layerTreeView()->layerTreeModel()->legendFilterByMap();
-  setFilterLegendByMapEnabled( !enabled );
+  QgsLayerTreeNode* node = mLayerTreeView->currentNode();
+  if ( ! node )
+    return;
+
+  if ( QgsLayerTree::isLayer( node ) )
+  {
+    QString e = mLegendExpressionFilterButton->expressionText();
+    QgsLayerTreeUtils::setLegendFilterByExpression( *QgsLayerTree::toLayer( node ), e, checked );
+  }
+
+  updateFilterLegend();
 }
 
-void QgisApp::setFilterLegendByMapEnabled( bool enabled )
+void QgisApp::updateFilterLegend()
 {
-  QgsLayerTreeModel* model = layerTreeView()->layerTreeModel();
-  bool wasEnabled = model->legendFilterByMap();
-  if ( wasEnabled == enabled )
-    return; // no change
-
-  mActionFilterLegend->setChecked( enabled );
-
-  if ( enabled )
+  if ( mActionFilterLegend->isChecked() )
   {
-    connect( mMapCanvas, SIGNAL( mapCanvasRefreshed() ), this, SLOT( updateFilterLegendByMap() ) );
-    model->setLegendFilterByMap( &mMapCanvas->mapSettings() );
+    layerTreeView()->layerTreeModel()->setLegendFilterByMap( &mMapCanvas->mapSettings() );
+  }
+  else if ( QgsLayerTreeUtils::hasLegendFilterExpression( *mLayerTreeView->layerTreeModel()->rootGroup() ) )
+  {
+    layerTreeView()->layerTreeModel()->setLegendFilter( &mMapCanvas->mapSettings(), /* useExtent */ false );
   }
   else
   {
-    disconnect( mMapCanvas, SIGNAL( mapCanvasRefreshed() ), this, SLOT( updateFilterLegendByMap() ) );
-    model->setLegendFilterByMap( 0 );
+    layerTreeView()->layerTreeModel()->setLegendFilterByMap( 0 );
   }
-}
-
-void QgisApp::updateFilterLegendByMap()
-{
-  layerTreeView()->layerTreeModel()->setLegendFilterByMap( &mMapCanvas->mapSettings() );
 }
 
 void QgisApp::saveMapAsImage()
@@ -8542,7 +8549,9 @@ void QgisApp::closeProject()
 
   mTrustedMacros = false;
 
-  setFilterLegendByMapEnabled( false );
+  mLegendExpressionFilterButton->setExpressionText( "" );
+  mLegendExpressionFilterButton->setChecked( false );
+  mActionFilterLegend->setChecked( false );
 
   deletePrintComposers();
   removeAnnotationItems();
@@ -9493,6 +9502,22 @@ void QgisApp::legendLayerSelectionChanged( void )
   mActionSaveEdits->setEnabled( QgsLayerTreeUtils::layersModified( selectedLayers ) );
   mActionRollbackEdits->setEnabled( QgsLayerTreeUtils::layersModified( selectedLayers ) );
   mActionCancelEdits->setEnabled( QgsLayerTreeUtils::layersEditable( selectedLayers ) );
+
+  mLegendExpressionFilterButton->setEnabled( false );
+  mLegendExpressionFilterButton->setVectorLayer( 0 );
+  if ( selectedLayers.size() == 1 )
+  {
+    QgsLayerTreeLayer* l = selectedLayers.front();
+    if ( l->layer()->type() == QgsMapLayer::VectorLayer )
+    {
+      mLegendExpressionFilterButton->setEnabled( true );
+      bool exprEnabled;
+      QString expr = QgsLayerTreeUtils::legendFilterByExpression( *l, &exprEnabled );
+      mLegendExpressionFilterButton->setExpressionText( expr );
+      mLegendExpressionFilterButton->setVectorLayer( qobject_cast<QgsVectorLayer*>( l->layer() ) );
+      mLegendExpressionFilterButton->setChecked( exprEnabled );
+    }
+  }
 }
 
 void QgisApp::layerEditStateChanged()
@@ -10422,7 +10447,7 @@ void QgisApp::writeProject( QDomDocument &doc )
   delete clonedRoot;
   doc.firstChildElement( "qgis" ).appendChild( oldLegendElem );
 
-  QgsProject::instance()->writeEntry( "Legend", "filterByMap", ( bool ) layerTreeView()->layerTreeModel()->legendFilterByMap() );
+  QgsProject::instance()->writeEntry( "Legend", "filterByMap", ( bool ) layerTreeView()->layerTreeModel()->legendFilterMapSettings() );
 
   projectChanged( doc );
 }

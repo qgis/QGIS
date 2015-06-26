@@ -23,16 +23,7 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
@@ -396,6 +387,23 @@
              </widget>
             </item>
             <item>
+             <widget class="QgsLegendFilterButton" name="mExpressionFilterButton">
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="../../../images/images.qrc">
+                <normaloff>:/images/themes/default/mIconExpressionFilter.svg</normaloff>:/images/themes/default/mIconExpressionFilter.svg</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
              <spacer name="horizontalSpacer_4">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -409,6 +417,16 @@
              </spacer>
             </item>
            </layout>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="mFilterLegendByAtlasCheckBox">
+            <property name="toolTip">
+             <string>Filter out legend elements that lie outside the current atlas feature.</string>
+            </property>
+            <property name="text">
+             <string>Only show items inside current atlas feature</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -1024,6 +1042,11 @@
    <class>QgsLayerTreeView</class>
    <extends>QTreeView</extends>
    <header>qgslayertreeview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsLegendFilterButton</class>
+   <extends>QToolButton</extends>
+   <header location="global">qgslegendfilterbutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

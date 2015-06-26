@@ -121,6 +121,8 @@ class QgsTileScaleWidget;
 #include <windows.h>
 #endif
 
+class QgsLegendFilterButton;
+
 /** \class QgisApp
  * \brief Main window for the Qgis application
  */
@@ -1246,9 +1248,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * @note added in 2.3 */
     void activateDeuteranopePreview();
 
-    void toggleFilterLegendByMap();
-    void updateFilterLegendByMap();
-    void setFilterLegendByMapEnabled( bool enabled );
+    void toggleFilterLegendByExpression(bool);
+    void updateFilterLegend();
 
     /** Make the user feel dizzy */
     void dizzy();
@@ -1695,6 +1696,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsVectorLayerTools* mVectorLayerTools;
 
     QAction* mActionFilterLegend;
+
+    QgsLegendFilterButton* mLegendExpressionFilterButton;
 
     QgsSnappingUtils* mSnappingUtils;
 

@@ -70,6 +70,7 @@
 %Include qgshtmlannotationitem.sip
 %Include qgsidentifymenu.sip
 %Include qgslegendinterface.sip
+%Include qgslegendfilterbutton.sip
 %Include qgslonglongvalidator.sip
 %Include qgsludialog.sip
 %Include qgsmanageconnectionsdialog.sip
