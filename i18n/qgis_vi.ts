@@ -159,11 +159,7 @@
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
-    </message>
-    <message>
-        <source>Added</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp đầu ra</translation>
     </message>
 </context>
 <context>
@@ -224,11 +220,7 @@ Mở hộp thoại kết quả để kiểm tra nó.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
-    </message>
-    <message>
-        <source>Incremented</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp đầu ra</translation>
     </message>
 </context>
 <context>
@@ -247,11 +239,7 @@ Mở hộp thoại kết quả để kiểm tra nó.</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Đầu ra</translation>
-    </message>
-    <message>
-        <source>Bar plot</source>
-        <translation type="unfinished"></translation>
+        <translation>Đầu ra</translation>
     </message>
 </context>
 <context>
@@ -262,6 +250,10 @@ Mở hộp thoại kết quả để kiểm tra nó.</translation>
     </message>
     <message>
         <source>Field to calculate statistics on</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Statistics for numeric field</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -304,10 +296,6 @@ Mở hộp thoại kết quả để kiểm tra nó.</translation>
         <source>Standard deviation</source>
         <translation>Độ lệch chuẩn</translation>
     </message>
-    <message>
-        <source>Statistics</source>
-        <translation type="unfinished">Thống kê</translation>
-    </message>
 </context>
 <context>
     <name>BasicStatisticsStrings</name>
@@ -317,6 +305,10 @@ Mở hộp thoại kết quả để kiểm tra nó.</translation>
     </message>
     <message>
         <source>Field to calculate statistics on</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Statistics for text field</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -346,10 +338,6 @@ Mở hộp thoại kết quả để kiểm tra nó.</translation>
     <message>
         <source>Number of unique values</source>
         <translation>Số lượng giá trị không trùng</translation>
-    </message>
-    <message>
-        <source>Statistics for text</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -590,15 +578,11 @@ Mở hộp thoại kết quả để kiểm tra nó.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
+        <translation>Lớp đầu ra</translation>
     </message>
     <message>
         <source>Error calculating centroid</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Centroids</source>
-        <translation type="unfinished">Trọng tâm</translation>
     </message>
 </context>
 <context>
@@ -606,29 +590,6 @@ Mở hộp thoại kết quả để kiểm tra nó.</translation>
     <message>
         <source>&lt;p&gt;Character: &lt;span style=&quot;font-size: 24pt; font-family: %1&quot;&gt;%2&lt;/span&gt;&lt;p&gt;Value: 0x%3</source>
         <translation>&lt;p&gt;Ký tự: &lt;span style=&quot;font-size: 24pt; font-family: %1&quot;&gt;%2&lt;/span&gt;&lt;p&gt;Giá trị: 0x%3</translation>
-    </message>
-</context>
-<context>
-    <name>CheckValidity</name>
-    <message>
-        <source>Input layer</source>
-        <translation type="unfinished">Lớp đầu vào</translation>
-    </message>
-    <message>
-        <source>Method</source>
-        <translation type="unfinished">Phương pháp</translation>
-    </message>
-    <message>
-        <source>Valid output</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invalid output</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error output</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -670,14 +631,10 @@ Mở hộp thoại kết quả để kiểm tra nó.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
+        <translation>Lớp đầu ra</translation>
     </message>
     <message>
         <source>Nodata value, leave blank to take the nodata value from input</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Clipped (extent)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -705,14 +662,10 @@ Mở hộp thoại kết quả để kiểm tra nó.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
+        <translation>Lớp đầu ra</translation>
     </message>
     <message>
         <source>Nodata value, leave blank to take the nodata value from input</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Clipped (mask)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -786,11 +739,7 @@ Mở hộp thoại kết quả để kiểm tra nó.</translation>
     </message>
     <message>
         <source>Output file</source>
-        <translation type="obsolete">Tập tin đầu ra</translation>
-    </message>
-    <message>
-        <source>Color relief</source>
-        <translation type="unfinished">Chạm nổi màu</translation>
+        <translation>Tập tin đầu ra</translation>
     </message>
 </context>
 <context>
@@ -993,11 +942,7 @@ Mở hộp thoại kết quả để kiểm tra nó.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
-    </message>
-    <message>
-        <source>Constant</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp đầu ra</translation>
     </message>
 </context>
 <context>
@@ -1594,10 +1539,6 @@ Truy vấn:
         <source>%1 is an invalid layer and cannot be loaded. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
         <translation>%1 là một lớp không hợp lệ và không thể nạp được. Vui lòng kiểm tra &lt;a href=&quot;#messageLog&quot;&gt;báo cáo bản ghi vết&lt;/a&gt; để có thêm thông tin.</translation>
     </message>
-    <message>
-        <source>New Connection...</source>
-        <translation type="unfinished">Kết nối mới...</translation>
-    </message>
 </context>
 <context>
     <name>DTM2TIF</name>
@@ -1608,25 +1549,6 @@ Truy vấn:
     <message>
         <source>Output file name</source>
         <translation>Tên tập tin đầu ra</translation>
-    </message>
-</context>
-<context>
-    <name>Datasources2Vrt</name>
-    <message>
-        <source>Input datasources</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Overwrite output vrt</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Virtual vector</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Virtual string</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1967,10 +1889,6 @@ các cột</translation>
         <source>Avoid selecting by feature id</source>
         <translation>Tránh không nên chọn theo id của đối tượng</translation>
     </message>
-    <message>
-        <source>Create a view</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>DbManagerDlgTableProperties</name>
@@ -2040,93 +1958,6 @@ các cột</translation>
     </message>
 </context>
 <context>
-    <name>DbManagerQueryBuilderDlg</name>
-    <message>
-        <source>SQL query builder</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Columns</source>
-        <translation type="unfinished">Số cột</translation>
-    </message>
-    <message>
-        <source>Tables     </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Where    </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Group by</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Order by</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Data</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show system tables</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tables</source>
-        <translation type="unfinished">Bảng</translation>
-    </message>
-    <message>
-        <source>Aggregates</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Functions</source>
-        <translation type="unfinished">Các hàm</translation>
-    </message>
-    <message>
-        <source>Math</source>
-        <translation type="unfinished">Phép toán</translation>
-    </message>
-    <message>
-        <source>Strings functions</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Operators</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Columns&apos; values</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Only 10 first values</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Spatial index</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Table (with spatial index)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Table (Target)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Use spatial index</source>
-        <translation type="unfinished">Dùng chỉ mục không gian</translation>
-    </message>
-    <message>
-        <source>&amp;Reset</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>Delaunay</name>
     <message>
         <source>Input layer</source>
@@ -2153,11 +1984,7 @@ các cột</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Đầu ra</translation>
-    </message>
-    <message>
-        <source>Deleted column</source>
-        <translation type="unfinished"></translation>
+        <translation>Đầu ra</translation>
     </message>
 </context>
 <context>
@@ -2168,22 +1995,7 @@ các cột</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Đầu ra</translation>
-    </message>
-    <message>
-        <source>Cleaned</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>DeleteHoles</name>
-    <message>
-        <source>Input layer</source>
-        <translation type="unfinished">Lớp đầu vào</translation>
-    </message>
-    <message>
-        <source>Cleaned</source>
-        <translation type="unfinished"></translation>
+        <translation>Đầu ra</translation>
     </message>
 </context>
 <context>
@@ -2227,7 +2039,7 @@ các cột</translation>
         <translation>Các đỉnh thêm vào</translation>
     </message>
     <message>
-        <source>Densified</source>
+        <source>Densified layer</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2242,7 +2054,7 @@ các cột</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Densified</source>
+        <source>Densified layer</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3316,42 +3128,6 @@ Có chắc bạn muốn tiến hành?</translation>
         <source>Include input features that intersect the selection features</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Statistical method for attribute aggregation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Input point vector layer attributes to aggregate</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select columns</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>sum</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>stddev</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>mean</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>max</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>min</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rotation angle in degrees</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>Difference</name>
@@ -3416,45 +3192,6 @@ Có chắc bạn muốn tiến hành?</translation>
     </message>
 </context>
 <context>
-    <name>DinfDistDownMulti</name>
-    <message>
-        <source>D-Infinity Flow Direction Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Pit Filled Elevation Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Stream Raster Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Weight Path Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Statistical Method</source>
-        <translation type="unfinished">Phương pháp thống kê</translation>
-    </message>
-    <message>
-        <source>Distance Method</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Check for edge contamination</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>D-Infinity Drop to Stream Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>DinfDistUp</name>
     <message>
         <source>D-Infinity Flow Direction Grid</source>
@@ -3471,45 +3208,6 @@ Có chắc bạn muốn tiến hành?</translation>
     <message>
         <source>Statistical Method</source>
         <translation>Phương pháp thống kê</translation>
-    </message>
-    <message>
-        <source>Distance Method</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Proportion Threshold</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Check for edge contamination</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>D-Infinity Distance Up</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>DinfDistUpMulti</name>
-    <message>
-        <source>D-Infinity Flow Direction Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Pit Filled Elevation Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Slope Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Statistical Method</source>
-        <translation type="unfinished">Phương pháp thống kê</translation>
     </message>
     <message>
         <source>Distance Method</source>
@@ -3603,84 +3301,6 @@ Có chắc bạn muốn tiến hành?</translation>
     </message>
     <message>
         <source>Output Concentration Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>DinfTransLimAccum2Multi</name>
-    <message>
-        <source>D-Infinity Flow Direction Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Supply Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Transport Capacity Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Input Concentration Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Outlets Shapefile</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Check for edge contamination</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Transport Limited Accumulation Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Deposition Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Output Concentration Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>DinfTransLimAccumMulti</name>
-    <message>
-        <source>D-Infinity Flow Direction Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Supply Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Transport Capacity Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Outlets Shapefile</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Check for edge contamination</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Transport Limited Accumulation Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Deposition Grid</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4169,12 +3789,12 @@ Có chắc bạn muốn tiến hành?</translation>
     </message>
     <message>
         <source>DB Manager</source>
-        <translation type="obsolete">Trình quản lý CSDL</translation>
+        <translation>Trình quản lý CSDL</translation>
     </message>
     <message>
         <source>You must fill the required fields: 
 geometry column - column with unique integer values</source>
-        <translation type="obsolete">Bạn phải điền vào các trường bắt buộc: 
+        <translation>Bạn phải điền vào các trường bắt buộc: 
 cột hình học - cột với giá trị số nguyên không trùng</translation>
     </message>
 </context>
@@ -4324,53 +3944,6 @@ cột hình học - cột với giá trị số nguyên không trùng</translati
     </message>
 </context>
 <context>
-    <name>DropAnalysisMulti</name>
-    <message>
-        <source>D8 Contributing Area Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>D8 Flow Direction Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Pit Filled Elevation Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Accumulated Stream Source Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Outlets Shapefile</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Minimum Threshold</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Maximum Threshold</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Number of Threshold Values</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Spacing for Threshold Values</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>D-Infinity Drop to Stream Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>EditModelAction</name>
     <message>
         <source>Edit model</source>
@@ -4382,21 +3955,6 @@ cột hình học - cột với giá trị số nguyên không trùng</translati
     <message>
         <source>Edit script</source>
         <translation>Chỉnh sửa tập lệnh</translation>
-    </message>
-</context>
-<context>
-    <name>EffectPropertiesWidget</name>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished">Biểu mẫu</translation>
-    </message>
-    <message>
-        <source>Effect type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This effect doesn&apos;t have any editable properties</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4423,6 +3981,10 @@ cột hình học - cột với giá trị số nguyên không trùng</translati
     </message>
     <message>
         <source>Merge selection with the neighbouring polygon with the</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cleaned layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4465,10 +4027,6 @@ cột hình học - cột với giá trị số nguyên không trùng</translati
         <source>Could not replace geometry of feature with id %s</source>
         <translation>Không thể thay thế hình học của đối tượng có id %s</translation>
     </message>
-    <message>
-        <source>Cleaned</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>EquivalentNumField</name>
@@ -4482,11 +4040,7 @@ cột hình học - cột với giá trị số nguyên không trùng</translati
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
-    </message>
-    <message>
-        <source>Numeric field</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp đầu ra</translation>
     </message>
 </context>
 <context>
@@ -4508,11 +4062,7 @@ cột hình học - cột với giá trị số nguyên không trùng</translati
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
-    </message>
-    <message>
-        <source>Exploded</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp đầu ra</translation>
     </message>
 </context>
 <context>
@@ -4527,11 +4077,7 @@ cột hình học - cột với giá trị số nguyên không trùng</translati
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
-    </message>
-    <message>
-        <source>Added geom info</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp đầu ra</translation>
     </message>
 </context>
 <context>
@@ -4546,11 +4092,7 @@ cột hình học - cột với giá trị số nguyên không trùng</translati
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
-    </message>
-    <message>
-        <source>Extent</source>
-        <translation type="unfinished">Phạm vi</translation>
+        <translation>Lớp đầu ra</translation>
     </message>
 </context>
 <context>
@@ -4600,7 +4142,7 @@ cột hình học - cột với giá trị số nguyên không trùng</translati
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Đầu ra</translation>
+        <translation>Đầu ra</translation>
     </message>
     <message>
         <source>Operators %s can be used only with string fields.</source>
@@ -4622,10 +4164,6 @@ cột hình học - cột với giá trị số nguyên không trùng</translati
         <source>Unsupported field type &quot;%s&quot;</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Extracted (attribute)</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>ExtractByLocation</name>
@@ -4639,14 +4177,10 @@ cột hình học - cột với giá trị số nguyên không trùng</translati
     </message>
     <message>
         <source>Selection</source>
-        <translation type="obsolete">Chọn</translation>
+        <translation>Chọn</translation>
     </message>
     <message>
         <source>Geometric predicate</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Extracted (location)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4658,11 +4192,7 @@ cột hình học - cột với giá trị số nguyên không trùng</translati
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
-    </message>
-    <message>
-        <source>Nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp đầu ra</translation>
     </message>
 </context>
 <context>
@@ -4748,7 +4278,7 @@ cột hình học - cột với giá trị số nguyên không trùng</translati
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
+        <translation>Lớp đầu ra</translation>
     </message>
     <message>
         <source>Evaluation error: %s</source>
@@ -4764,7 +4294,7 @@ cột hình học - cột với giá trị số nguyên không trùng</translati
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Calculated</source>
+        <source>Output is not set. Please specify valid filename</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4784,7 +4314,7 @@ cột hình học - cột với giá trị số nguyên không trùng</translati
     </message>
     <message>
         <source>Wrong or missing parameter values</source>
-        <translation type="obsolete">Các giá trị tham số sai hoặc bị thiếu</translation>
+        <translation>Các giá trị tham số sai hoặc bị thiếu</translation>
     </message>
 </context>
 <context>
@@ -4799,7 +4329,7 @@ cột hình học - cột với giá trị số nguyên không trùng</translati
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
+        <translation>Lớp đầu ra</translation>
     </message>
     <message>
         <source>Parser error in expression &quot;{}&quot;: {}</source>
@@ -4812,10 +4342,6 @@ cột hình học - cột với giá trị số nguyên không trùng</translati
     <message>
         <source>An error occurred while evaluating the calculation string:
 </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Refactored</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4851,7 +4377,7 @@ cột hình học - cột với giá trị số nguyên không trùng</translati
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
+        <translation>Lớp đầu ra</translation>
     </message>
     <message>
         <source>FieldPyculator code execute error.Global code block can&apos;t be executed!
@@ -4868,10 +4394,6 @@ cột hình học - cột với giá trị số nguyên không trùng</translati
     <message>
         <source>FieldPyculator code execute error
 Field code block does not return &apos;%s1&apos; variable! Please declare this variable in your code!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Calculated</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6581,16 +6103,16 @@ Xem báo cáo để biết thêm chi tiết</translation>
     <message>
         <source>&lt;p&gt;Oooops! The following output layers could not be open&lt;/p&gt;&lt;ul&gt;
 </source>
-        <translation type="obsolete">&lt;p&gt;Ôi! Các lớp đầu ra sau không thể mở được&lt;/p&gt;&lt;ul&gt;</translation>
+        <translation>&lt;p&gt;Ôi! Các lớp đầu ra sau không thể mở được&lt;/p&gt;&lt;ul&gt;</translation>
     </message>
     <message>
         <source>&lt;li&gt;%s: &lt;font size=3 face=&quot;Courier New&quot; color=&quot;#ff0000&quot;&gt;%s&lt;/font&gt;&lt;/li&gt;
 </source>
-        <translation type="obsolete">&lt;li&gt;%s: &lt;font k.thước=3 mặt chữ=&quot;Courier New&quot; màu=&quot;#ff0000&quot;&gt;%s&lt;/font&gt;&lt;/li&gt;</translation>
+        <translation>&lt;li&gt;%s: &lt;font k.thước=3 mặt chữ=&quot;Courier New&quot; màu=&quot;#ff0000&quot;&gt;%s&lt;/font&gt;&lt;/li&gt;</translation>
     </message>
     <message>
         <source>&lt;/ul&gt;&lt;p&gt;The above files could not be opened, which probably indicates that they were not correctly produced by the executed algorithm&lt;/p&gt;&lt;p&gt;Checking the log information might help you see why those layers were not created as expected&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;/ul&gt;&lt;p&gt;Các tập tin trên không thể mở được, có lẽ là dấu hiệu cho biết chúng không được tạo ra một cách đúng đắn bởi thuật toán đã được thực thi&lt;/p&gt;&lt;p&gt;Kiểm tra thông tin trong báo cáo có thể giúp bạn biết tại sao những lớp đó không được tạo ra như mong đợi&lt;/p&gt;</translation>
+        <translation>&lt;/ul&gt;&lt;p&gt;Các tập tin trên không thể mở được, có lẽ là dấu hiệu cho biết chúng không được tạo ra một cách đúng đắn bởi thuật toán đã được thực thi&lt;/p&gt;&lt;p&gt;Kiểm tra thông tin trong báo cáo có thể giúp bạn biết tại sao những lớp đó không được tạo ra như mong đợi&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -6605,14 +6127,10 @@ Xem báo cáo để biết thêm chi tiết</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Đầu ra</translation>
+        <translation>Đầu ra</translation>
     </message>
     <message>
         <source>Cannot convert from %s to %s</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Converted</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6969,25 +6487,6 @@ Lỗi xử lý địa lý GEOS: Một hoặc nhiều đối tượng đầu vào
     </message>
 </context>
 <context>
-    <name>GetRScriptsAction</name>
-    <message>
-        <source>Get R scripts from on-line scripts collection</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tools</source>
-        <translation type="unfinished">Các công cụ</translation>
-    </message>
-    <message>
-        <source>Connection problem</source>
-        <translation type="unfinished">Trục trặc kết nối</translation>
-    </message>
-    <message>
-        <source>Could not connect to scripts/models repository</source>
-        <translation type="unfinished">Không thể kết nối đến kho chứa các tập lệnh/mô hình</translation>
-    </message>
-</context>
-<context>
     <name>GetScriptsAction</name>
     <message>
         <source>Get scripts from on-line scripts collection</source>
@@ -7107,6 +6606,18 @@ Lỗi xử lý địa lý GEOS: Một hoặc nhiều đối tượng đầu vào
         <source>&lt;p&gt;This algorithm requires GRASS GIS 7 to be run. Unfortunately, it seems that GRASS GIS 7 is not installed in your system, or it is not correctly configured to be used from QGIS&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Click here&lt;/a&gt; to know more about how to install and configure GRASS GIS 7 to be used with QGIS&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>&lt;p&gt;This algorithm requires GRASS GIS 7 to be run. A test to check if GRASS GIS 7 is correctly installed and configured in your system has been performed, with the following result:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GRASS GIS 7 seems to be correctly installed and configured&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Click here&lt;/a&gt; to know more about how to install and configure GRASS GIS 7 to be used with QGIS&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Grass7AlgorithmProvider</name>
@@ -7190,6 +6701,18 @@ Please configure it before running GRASS algorithms.</source>
         <source>&lt;p&gt;This algorithm requires GRASS to be run. Unfortunately, it seems that GRASS is not installed in your system, or it is not correctly configured to be used from QGIS&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Click here&lt;/a&gt; to know more about how to install and configure GRASS to be used with QGIS&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>&lt;p&gt;This algorithm requires GRASS to be run. A test to check if GRASS is correctly installed and configured in your system has been performed, with the following result:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GRASS seems to be correctly installed and configured&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Click here&lt;/a&gt; to know more about how to install and configure GRASS to be used with QGIS&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>GrassAlgorithmProvider</name>
@@ -7260,7 +6783,7 @@ Please install it before running GRASS algorithms.</source>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Đầu ra</translation>
+        <translation>Đầu ra</translation>
     </message>
     <message>
         <source>Invalid grid spacing: %s/%s</source>
@@ -7273,10 +6796,6 @@ Please install it before running GRASS algorithms.</source>
     <message>
         <source>Vertical spacing is too small for the covered area</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Grid</source>
-        <translation type="unfinished">Lưới</translation>
     </message>
 </context>
 <context>
@@ -7315,11 +6834,7 @@ Please install it before running GRASS algorithms.</source>
     </message>
     <message>
         <source>Output file</source>
-        <translation type="obsolete">Tập tin đầu ra</translation>
-    </message>
-    <message>
-        <source>Interpolated moving average</source>
-        <translation type="unfinished"></translation>
+        <translation>Tập tin đầu ra</translation>
     </message>
 </context>
 <context>
@@ -7362,11 +6877,7 @@ Please install it before running GRASS algorithms.</source>
     </message>
     <message>
         <source>Output file</source>
-        <translation type="obsolete">Tập tin đầu ra</translation>
-    </message>
-    <message>
-        <source>Interpolated metrics</source>
-        <translation type="unfinished"></translation>
+        <translation>Tập tin đầu ra</translation>
     </message>
 </context>
 <context>
@@ -7413,15 +6924,11 @@ Please install it before running GRASS algorithms.</source>
     </message>
     <message>
         <source>Output file</source>
-        <translation type="obsolete">Tập tin đầu ra</translation>
+        <translation>Tập tin đầu ra</translation>
     </message>
     <message>
         <source>Smoothing</source>
         <translation>Làm mịn</translation>
-    </message>
-    <message>
-        <source>Interpolated IDW</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7499,50 +7006,11 @@ Please install it before running GRASS algorithms.</source>
     </message>
     <message>
         <source>Output file</source>
-        <translation type="obsolete">Tập tin đầu ra</translation>
-    </message>
-    <message>
-        <source>Interpolated nearest neighbor</source>
-        <translation type="unfinished"></translation>
+        <translation>Tập tin đầu ra</translation>
     </message>
 </context>
 <context>
     <name>GridNet</name>
-    <message>
-        <source>D8 Flow Direction Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Outlets Shapefile</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Mask Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Mask Threshold</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Longest Upslope Length Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Total Upslope Length Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Strahler Network Order Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>GridNetMulti</name>
     <message>
         <source>D8 Flow Direction Grid</source>
         <translation type="unfinished"></translation>
@@ -7643,7 +7111,7 @@ Please install it before running GRASS algorithms.</source>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Đầu ra</translation>
+        <translation>Đầu ra</translation>
     </message>
     <message>
         <source>Invalid grid spacing: %s/%s</source>
@@ -7651,10 +7119,6 @@ Please install it before running GRASS algorithms.</source>
     </message>
     <message>
         <source>Failed to gridify feature with FID %s</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Snapped</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -7713,7 +7177,7 @@ Please install it before running GRASS algorithms.</source>
     </message>
     <message>
         <source>Creating heatmap</source>
-        <translation type="obsolete">Tạo bản đồ nhiệt</translation>
+        <translation>Tạo bản đồ nhiệt</translation>
     </message>
     <message>
         <source>Abort</source>
@@ -7726,14 +7190,6 @@ Please install it before running GRASS algorithms.</source>
     <message>
         <source>QGIS will now load the partially-computed raster</source>
         <translation>QGIS bây giờ sẽ nạp raster đã được tính toán một phần</translation>
-    </message>
-    <message>
-        <source>Rendering heatmap...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>QGIS</source>
-        <translation type="unfinished">QGIS</translation>
     </message>
 </context>
 <context>
@@ -7882,7 +7338,7 @@ Please install it before running GRASS algorithms.</source>
     </message>
     <message>
         <source>Error saving help file</source>
-        <translation type="obsolete">Lỗi lưu tập tin trợ giúp</translation>
+        <translation>Lỗi lưu tập tin trợ giúp</translation>
     </message>
     <message>
         <source>Help file could not be saved.
@@ -7890,7 +7346,7 @@ Check that you have permission to modify the help
 file. You might not have permission if you are 
 editing an example model or script, since they 
 are stored on the installation folder</source>
-        <translation type="obsolete">Không thể lưu được tập tin trợ giúp.
+        <translation>Không thể lưu được tập tin trợ giúp.
 Kiểm tra xem bạn có quyền thay đổi tập tin trợ giúp 
 này không. Có thể bạn không có quyền nếu bạn định 
 chỉnh sửa một mô hình hoặc tập lệnh ví dụ, vì chúng 
@@ -7945,7 +7401,7 @@ chỉnh sửa một mô hình hoặc tập lệnh ví dụ, vì chúng
     </message>
     <message>
         <source>Clear history and log</source>
-        <translation type="obsolete">Xóa lịch sử và báo cáo</translation>
+        <translation>Xóa lịch sử và báo cáo</translation>
     </message>
     <message>
         <source>Save As...</source>
@@ -7953,7 +7409,7 @@ chỉnh sửa một mô hình hoặc tập lệnh ví dụ, vì chúng
     </message>
     <message>
         <source>Save history and log</source>
-        <translation type="obsolete">Lưu lịch sử và báo cáo</translation>
+        <translation>Lưu lịch sử và báo cáo</translation>
     </message>
     <message>
         <source>Confirmation</source>
@@ -7961,7 +7417,7 @@ chỉnh sửa một mô hình hoặc tập lệnh ví dụ, vì chúng
     </message>
     <message>
         <source>Are you sure you want to clear log?</source>
-        <translation type="obsolete">Có chắc bạn muốn xóa báo cáo?</translation>
+        <translation>Có chắc bạn muốn xóa báo cáo?</translation>
     </message>
     <message>
         <source>Save file</source>
@@ -7974,18 +7430,6 @@ chỉnh sửa một mô hình hoặc tập lệnh ví dụ, vì chúng
     <message>
         <source>Create test</source>
         <translation>Tạo phép thử</translation>
-    </message>
-    <message>
-        <source>Clear history</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save history</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Are you sure you want to clear the history?</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8027,14 +7471,10 @@ chỉnh sửa một mô hình hoặc tập lệnh ví dụ, vì chúng
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Đầu ra</translation>
+        <translation>Đầu ra</translation>
     </message>
     <message>
         <source>Same layer given for both hubs and spokes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Hub distance</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -8058,14 +7498,10 @@ chỉnh sửa một mô hình hoặc tập lệnh ví dụ, vì chúng
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Đầu ra</translation>
+        <translation>Đầu ra</translation>
     </message>
     <message>
         <source>Same layer given for both hubs and spokes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Hub lines</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -8089,7 +7525,7 @@ chỉnh sửa một mô hình hoặc tập lệnh ví dụ, vì chúng
     </message>
     <message>
         <source>Output directory</source>
-        <translation type="obsolete">Thư mục đầu ra</translation>
+        <translation>Thư mục đầu ra</translation>
     </message>
     <message>
         <source>Feature %d does not intersect raster or entirely located in NODATA area</source>
@@ -8102,14 +7538,6 @@ chỉnh sửa một mô hình hoặc tập lệnh ví dụ, vì chúng
     <message>
         <source>Elevation</source>
         <translation>Độ cao</translation>
-    </message>
-    <message>
-        <source>Hypsometric curves</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Feature %d is smaller than raster cell size</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8241,11 +7669,7 @@ chỉnh sửa một mô hình hoặc tập lệnh ví dụ, vì chúng
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
-    </message>
-    <message>
-        <source>Joined layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp đầu ra</translation>
     </message>
 </context>
 <context>
@@ -8450,33 +7874,6 @@ Please configure it before running LAStools algorithms.</source>
     </message>
 </context>
 <context>
-    <name>LengthAreaMulti</name>
-    <message>
-        <source>Length Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Contributing Area Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Threshold</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Exponent</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Stream Source Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>LidarToolsAlgorithmProvider</name>
     <message>
         <source>LAStools folder</source>
@@ -8515,11 +7912,7 @@ Please configure it before running LAStools algorithms.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
-    </message>
-    <message>
-        <source>Intersections</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp đầu ra</translation>
     </message>
 </context>
 <context>
@@ -8530,11 +7923,7 @@ Please configure it before running LAStools algorithms.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
-    </message>
-    <message>
-        <source>Polygons from lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp đầu ra</translation>
     </message>
 </context>
 <context>
@@ -9181,7 +8570,7 @@ Please configure it before running LAStools algorithms.</source>
     </message>
     <message>
         <source>Query...</source>
-        <translation type="obsolete">Truy vấn...</translation>
+        <translation>Truy vấn...</translation>
     </message>
     <message>
         <source>Add to Overview</source>
@@ -9605,18 +8994,6 @@ Tác động lên lớp có thể chỉnh sửa đang được kích hoạt</tra
         <source>New temporary scratch layer</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Filter...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Statistical Summary</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show statistical summary</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>ManageConnectionsDialog</name>
@@ -9693,11 +9070,7 @@ Tác động lên lớp có thể chỉnh sửa đang được kích hoạt</tra
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Đầu ra</translation>
-    </message>
-    <message>
-        <source>Plot</source>
-        <translation type="unfinished"></translation>
+        <translation>Đầu ra</translation>
     </message>
 </context>
 <context>
@@ -9716,11 +9089,7 @@ Tác động lên lớp có thể chỉnh sửa đang được kích hoạt</tra
     </message>
     <message>
         <source>Result</source>
-        <translation type="obsolete">Kết quả</translation>
-    </message>
-    <message>
-        <source>Mean coordinates</source>
-        <translation type="unfinished">Toạ độ trung bình</translation>
+        <translation>Kết quả</translation>
     </message>
 </context>
 <context>
@@ -9735,14 +9104,10 @@ Tác động lên lớp có thể chỉnh sửa đang được kích hoạt</tra
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Đầu ra</translation>
+        <translation>Đầu ra</translation>
     </message>
     <message>
         <source>Merged layers must have be same type of geometry</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Merged</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -9761,15 +9126,11 @@ Tác động lên lớp có thể chỉnh sửa đang được kích hoạt</tra
     <name>MessageBarProgress</name>
     <message>
         <source>Executing algorithm</source>
-        <translation type="obsolete">Đang thực thi thuật toán</translation>
+        <translation>Đang thực thi thuật toán</translation>
     </message>
     <message>
         <source>Error</source>
         <translation>Lỗi</translation>
-    </message>
-    <message>
-        <source>Executing algorithm &lt;i&gt;{0}&lt;/i&gt;</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10063,30 +9424,6 @@ Tác động lên lớp có thể chỉnh sửa đang được kích hoạt</tra
         <source>seconds</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Connection naming</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>When saving the connection of an OWS service</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Use the OWS Service Title and ask before overwriting</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Use the OWS Service Title and always overwrite if already available</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Use a temporary name, which you can change later</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Record parsing error</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>ModelerAlgorithm</name>
@@ -10123,14 +9460,6 @@ Tác động lên lớp có thể chỉnh sửa đang được kích hoạt</tra
     <message>
         <source>Model processed ok. Executed %i algorithms total</source>
         <translation>Mô hình được xử lý ổn. Tổng cộng %i thuật toán được thực thi</translation>
-    </message>
-    <message>
-        <source>Warning</source>
-        <translation type="unfinished">Cảnh báo</translation>
-    </message>
-    <message>
-        <source>Parameter %s in algorithm %s in the model is run with default value! Edit the model to make sure that this is correct.</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10451,11 +9780,7 @@ Xem báo cáo để biết thêm thông tin.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
-    </message>
-    <message>
-        <source>Single parts</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp đầu ra</translation>
     </message>
 </context>
 <context>
@@ -10515,7 +9840,7 @@ Xem báo cáo để biết thêm thông tin.</translation>
     </message>
     <message>
         <source>Result</source>
-        <translation type="obsolete">Kết quả</translation>
+        <translation>Kết quả</translation>
     </message>
     <message>
         <source>Observed mean distance</source>
@@ -10536,10 +9861,6 @@ Xem báo cáo để biết thêm thông tin.</translation>
     <message>
         <source>Z-Score</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Nearest neighbour</source>
-        <translation type="unfinished">Lân cận gần nhất</translation>
     </message>
 </context>
 <context>
@@ -10567,10 +9888,6 @@ Xem báo cáo để biết thêm thông tin.</translation>
     <message>
         <source>Overwrite %s?</source>
         <translation>Ghi đè %s?</translation>
-    </message>
-    <message>
-        <source>Name cannot contain &apos;/&apos;</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10721,46 +10038,7 @@ Xem báo cáo để biết thêm thông tin.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
-    </message>
-    <message>
-        <source>Converted</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Ogr2OgrBuffer</name>
-    <message>
-        <source>Input layer</source>
-        <translation type="unfinished">Lớp đầu vào</translation>
-    </message>
-    <message>
-        <source>Geometry column name (&quot;geometry&quot; for Shapefiles, may be different for other formats)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Buffer distance</source>
-        <translation type="unfinished">Khoảng cách đệm</translation>
-    </message>
-    <message>
-        <source>Dissolve all results</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dissolve by attribute</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Output as singlepart geometries (only used when dissolving by attribute)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Additional creation options (see ogr2ogr manual)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Buffer</source>
-        <translation type="unfinished">Đệm</translation>
+        <translation>Lớp đầu ra</translation>
     </message>
 </context>
 <context>
@@ -10779,11 +10057,7 @@ Xem báo cáo để biết thêm thông tin.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
-    </message>
-    <message>
-        <source>Clipped (polygon)</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp đầu ra</translation>
     </message>
 </context>
 <context>
@@ -10802,187 +10076,7 @@ Xem báo cáo để biết thêm thông tin.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
-    </message>
-    <message>
-        <source>Clipped (extent)</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Ogr2OgrDissolve</name>
-    <message>
-        <source>Input layer</source>
-        <translation type="unfinished">Lớp đầu vào</translation>
-    </message>
-    <message>
-        <source>Geometry column name (&quot;geometry&quot; for Shapefiles, may be different for other formats)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dissolve field</source>
-        <translation type="unfinished">Trường &apos;hoà tan&apos;</translation>
-    </message>
-    <message>
-        <source>Output as multipart geometries</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Keep input attributes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Count dissolved features</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Compute area and perimeter of dissolved features</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Compute min/max/sum/mean for the following numeric attribute</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Numeric attribute to compute dissolved features stats</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Additional creation options (see ogr2ogr manual)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dissolved</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Ogr2OgrOneSideBuffer</name>
-    <message>
-        <source>Input layer</source>
-        <translation type="unfinished">Lớp đầu vào</translation>
-    </message>
-    <message>
-        <source>Operation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Geometry column name (&quot;geometry&quot; for Shapefiles, may be different for other formats)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Buffer distance</source>
-        <translation type="unfinished">Khoảng cách đệm</translation>
-    </message>
-    <message>
-        <source>Buffer side</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dissolve all results</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dissolve by attribute</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Output as singlepart geometries (only used when dissolving by attribute)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Additional creation options (see ogr2ogr manual)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Single sided buffer</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Ogr2OgrPointsOnLines</name>
-    <message>
-        <source>Input layer</source>
-        <translation type="unfinished">Lớp đầu vào</translation>
-    </message>
-    <message>
-        <source>Geometry column name (&quot;geometry&quot; for Shapefiles, may be different for other formats)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Distance from line start represented as fraction of line length</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Additional creation options (see ogr2ogr manual)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Points along lines</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Ogr2OgrTableToPostGisList</name>
-    <message>
-        <source>Database (connection name)</source>
-        <translation type="unfinished">CSDL (tên kết nối)</translation>
-    </message>
-    <message>
-        <source>Input layer</source>
-        <translation type="unfinished">Lớp đầu vào</translation>
-    </message>
-    <message>
-        <source>Schema name</source>
-        <translation type="unfinished">Tên lược đồ</translation>
-    </message>
-    <message>
-        <source>Table name, leave blank to use input name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Primary key</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Primary key (existing field, used if the above option is left empty)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select features using a SQL &quot;WHERE&quot; statement (Ex: column=&apos;value&apos;)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Group N features per transaction (Default: 20000)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Overwrite existing table</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Append to existing table</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Append and add new fields to existing table</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Do not launder columns/table names</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Continue after a failure, skipping the failed record</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Keep width and precision of input attributes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Additional creation options</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp đầu ra</translation>
     </message>
 </context>
 <context>
@@ -11048,6 +10142,10 @@ Xem báo cáo để biết thêm thông tin.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Select features using a SQL &quot;WHERE&quot; statement (Ex: column=&quot;value&quot;)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Group N features per transaction (Default: 20000)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11105,10 +10203,6 @@ Xem báo cáo để biết thêm thông tin.</translation>
     </message>
     <message>
         <source>Keep width and precision of input attributes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select features using a SQL &quot;WHERE&quot; statement (Ex: column=&apos;value&apos;)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -11159,6 +10253,10 @@ Xem báo cáo để biết thêm thông tin.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Select features using a SQL &quot;WHERE&quot; statement (Ex: column=&quot;value&quot;)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Group N features per transaction (Default: 20000)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11216,10 +10314,6 @@ Xem báo cáo để biết thêm thông tin.</translation>
     </message>
     <message>
         <source>Keep width and precision of input attributes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select features using a SQL &quot;WHERE&quot; statement (Ex: column=&apos;value&apos;)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -11464,33 +10558,6 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
 </context>
 <context>
-    <name>PeukerDouglasMulti</name>
-    <message>
-        <source>Elevation Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Center Smoothing Weight</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Side Smoothing Weight</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Diagonal Smoothing Weight</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Stream Source Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>PointDistance</name>
     <message>
         <source>Input point layer</source>
@@ -11537,11 +10604,7 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
-    </message>
-    <message>
-        <source>Displaced</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp đầu ra</translation>
     </message>
 </context>
 <context>
@@ -11556,11 +10619,7 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
-    </message>
-    <message>
-        <source>Points along line</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp đầu ra</translation>
     </message>
 </context>
 <context>
@@ -11575,11 +10634,7 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
-    </message>
-    <message>
-        <source>Points from polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp đầu ra</translation>
     </message>
 </context>
 <context>
@@ -11598,11 +10653,7 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>Result</source>
-        <translation type="obsolete">Kết quả</translation>
-    </message>
-    <message>
-        <source>Count</source>
-        <translation type="unfinished">Đếm</translation>
+        <translation>Kết quả</translation>
     </message>
 </context>
 <context>
@@ -11632,11 +10683,7 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>Result</source>
-        <translation type="obsolete">Kết quả</translation>
-    </message>
-    <message>
-        <source>Unique count</source>
-        <translation type="unfinished"></translation>
+        <translation>Kết quả</translation>
     </message>
 </context>
 <context>
@@ -11659,11 +10706,7 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>Result</source>
-        <translation type="obsolete">Kết quả</translation>
-    </message>
-    <message>
-        <source>Weighted count</source>
-        <translation type="unfinished"></translation>
+        <translation>Kết quả</translation>
     </message>
 </context>
 <context>
@@ -11686,11 +10729,7 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
-    </message>
-    <message>
-        <source>Points from table</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp đầu ra</translation>
     </message>
 </context>
 <context>
@@ -11736,11 +10775,7 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Đầu ra</translation>
-    </message>
-    <message>
-        <source>Polar plot</source>
-        <translation type="unfinished"></translation>
+        <translation>Đầu ra</translation>
     </message>
 </context>
 <context>
@@ -11810,11 +10845,7 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
-    </message>
-    <message>
-        <source>Polygons from lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp đầu ra</translation>
     </message>
 </context>
 <context>
@@ -11825,11 +10856,7 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
-    </message>
-    <message>
-        <source>Lines from polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp đầu ra</translation>
     </message>
 </context>
 <context>
@@ -11986,7 +11013,7 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>&amp;History and Log...</source>
-        <translation type="obsolete">&amp;Lịch sử và báo cáo...</translation>
+        <translation>&amp;Lịch sử và báo cáo...</translation>
     </message>
     <message>
         <source>&amp;Options...</source>
@@ -12002,10 +11029,6 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>Ctrl+Alt+M</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;History...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -12964,7 +11987,7 @@ Lỗi (%2): %3</translation>
     </message>
     <message>
         <source>GEOS prior to 3.2 doesn&apos;t support GEOSInterpolate</source>
-        <translation type="obsolete">GEOS trước phiên bản 3.2 không hỗ trợ nội suy GEOS (GEOSInterpolate)</translation>
+        <translation>GEOS trước phiên bản 3.2 không hỗ trợ nội suy GEOS (GEOSInterpolate)</translation>
     </message>
     <message>
         <source>segment %1 of ring %2 of polygon %3 intersects segment %4 of ring %5 of polygon %6 at %7</source>
@@ -13923,219 +12946,219 @@ Chỉ có %1 trong số %2 đối tượng được ghi.</translation>
     </message>
     <message>
         <source>Location: %1</source>
-        <translation type="obsolete">Vi trí: %1</translation>
+        <translation>Vi trí: %1</translation>
     </message>
     <message>
         <source>Location: %1&lt;br&gt;Mapset: %2</source>
-        <translation type="obsolete">Vị trí: %1 &lt;br&gt;Bộ bản đồ: %2</translation>
+        <translation>Vị trí: %1 &lt;br&gt;Bộ bản đồ: %2</translation>
     </message>
     <message>
         <source>&lt;b&gt;Raster&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;Raster&lt;/b&gt;</translation>
+        <translation>&lt;b&gt;Raster&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Cannot open raster header</source>
-        <translation type="obsolete">Không thể mở header của raster</translation>
+        <translation>Không thể mở header của raster</translation>
     </message>
     <message>
         <source>Rows</source>
-        <translation type="obsolete">Số hàng</translation>
+        <translation>Số hàng</translation>
     </message>
     <message>
         <source>Columns</source>
-        <translation type="obsolete">Số cột</translation>
+        <translation>Số cột</translation>
     </message>
     <message>
         <source>N-S resolution</source>
-        <translation type="obsolete">Độ phân giải B-N</translation>
+        <translation>Độ phân giải B-N</translation>
     </message>
     <message>
         <source>E-W resolution</source>
-        <translation type="obsolete">Độ phân giải Đ-T</translation>
+        <translation>Độ phân giải Đ-T</translation>
     </message>
     <message>
         <source>North</source>
-        <translation type="obsolete">Bắc</translation>
+        <translation>Bắc</translation>
     </message>
     <message>
         <source>South</source>
-        <translation type="obsolete">Nam</translation>
+        <translation>Nam</translation>
     </message>
     <message>
         <source>East</source>
-        <translation type="obsolete">Đông</translation>
+        <translation>Đông</translation>
     </message>
     <message>
         <source>West</source>
-        <translation type="obsolete">Tây</translation>
+        <translation>Tây</translation>
     </message>
     <message>
         <source>Format</source>
-        <translation type="obsolete">Định dạng</translation>
+        <translation>Định dạng</translation>
     </message>
     <message>
         <source>Minimum value</source>
-        <translation type="obsolete">Giá trị tối thiểu</translation>
+        <translation>Giá trị tối thiểu</translation>
     </message>
     <message>
         <source>Maximum value</source>
-        <translation type="obsolete">Giá trị tối đa</translation>
+        <translation>Giá trị tối đa</translation>
     </message>
     <message>
         <source>Data source</source>
-        <translation type="obsolete">Nguồn dữ liệu</translation>
+        <translation>Nguồn dữ liệu</translation>
     </message>
     <message>
         <source>Data description</source>
-        <translation type="obsolete">Mô tả dữ liệu</translation>
+        <translation>Mô tả dữ liệu</translation>
     </message>
     <message>
         <source>Comments</source>
-        <translation type="obsolete">Ghi chú</translation>
+        <translation>Ghi chú</translation>
     </message>
     <message>
         <source>Categories</source>
-        <translation type="obsolete">Các phạm trù</translation>
+        <translation>Các phạm trù</translation>
     </message>
     <message>
         <source>&lt;b&gt;Vector&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;Vector&lt;/b&gt;</translation>
+        <translation>&lt;b&gt;Vector&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Points</source>
-        <translation type="obsolete">Điểm</translation>
+        <translation>Điểm</translation>
     </message>
     <message>
         <source>Lines</source>
-        <translation type="obsolete">Đường</translation>
+        <translation>Đường</translation>
     </message>
     <message>
         <source>Boundaries</source>
-        <translation type="obsolete">Ranh giới</translation>
+        <translation>Ranh giới</translation>
     </message>
     <message>
         <source>Centroids</source>
-        <translation type="obsolete">Trọng tâm</translation>
+        <translation>Trọng tâm</translation>
     </message>
     <message>
         <source>Faces</source>
-        <translation type="obsolete">Mặt</translation>
+        <translation>Mặt</translation>
     </message>
     <message>
         <source>Kernels</source>
-        <translation type="obsolete">Kernels</translation>
+        <translation>Kernels</translation>
     </message>
     <message>
         <source>Areas</source>
-        <translation type="obsolete">Vùng</translation>
+        <translation>Vùng</translation>
     </message>
     <message>
         <source>Islands</source>
-        <translation type="obsolete">Đảo</translation>
+        <translation>Đảo</translation>
     </message>
     <message>
         <source>Top</source>
-        <translation type="obsolete">Trên cùng</translation>
+        <translation>Trên cùng</translation>
     </message>
     <message>
         <source>Bottom</source>
-        <translation type="obsolete">Dưới cùng</translation>
+        <translation>Dưới cùng</translation>
     </message>
     <message>
         <source>yes</source>
-        <translation type="obsolete">có</translation>
+        <translation>có</translation>
     </message>
     <message>
         <source>no</source>
-        <translation type="obsolete">không</translation>
+        <translation>không</translation>
     </message>
     <message>
         <source>History&lt;br&gt;</source>
-        <translation type="obsolete">Lịch sử&lt;br&gt;</translation>
+        <translation>Lịch sử&lt;br&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Layer&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;Lớp&lt;/b&gt;</translation>
+        <translation>&lt;b&gt;Lớp&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Features</source>
-        <translation type="obsolete">Các thuộc tính</translation>
+        <translation>Các thuộc tính</translation>
     </message>
     <message>
         <source>Driver</source>
-        <translation type="obsolete">Trình điều khiển</translation>
+        <translation>Trình điều khiển</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="obsolete">Bảng</translation>
+        <translation>Bảng</translation>
     </message>
     <message>
         <source>Key column</source>
-        <translation type="obsolete">Cột Key</translation>
+        <translation>Cột Key</translation>
     </message>
     <message>
         <source>&lt;b&gt;Region&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;Vùng&lt;/b&gt;</translation>
+        <translation>&lt;b&gt;Vùng&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Cannot open region header</source>
-        <translation type="obsolete">Không thể mở đầu trang của vùng</translation>
+        <translation>Không thể mở đầu trang của vùng</translation>
     </message>
     <message>
         <source>XY</source>
-        <translation type="obsolete">XY</translation>
+        <translation>XY</translation>
     </message>
     <message>
         <source>UTM</source>
-        <translation type="obsolete">UTM</translation>
+        <translation>UTM</translation>
     </message>
     <message>
         <source>SP</source>
-        <translation type="obsolete">SP</translation>
+        <translation>SP</translation>
     </message>
     <message>
         <source>LL</source>
-        <translation type="obsolete">KV</translation>
+        <translation>KV</translation>
     </message>
     <message>
         <source>Other</source>
-        <translation type="obsolete">Khác</translation>
+        <translation>Khác</translation>
     </message>
     <message>
         <source>Projection Type</source>
-        <translation type="obsolete">Kiểu phép chiếu</translation>
+        <translation>Kiểu phép chiếu</translation>
     </message>
     <message>
         <source>Zone</source>
-        <translation type="obsolete">Đới</translation>
+        <translation>Đới</translation>
     </message>
     <message>
         <source>3D Cols</source>
-        <translation type="obsolete">Cột 3D</translation>
+        <translation>Cột 3D</translation>
     </message>
     <message>
         <source>3D Rows</source>
-        <translation type="obsolete">Hàng 3D</translation>
+        <translation>Hàng 3D</translation>
     </message>
     <message>
         <source>Depths</source>
-        <translation type="obsolete">Độ sâu</translation>
+        <translation>Độ sâu</translation>
     </message>
     <message>
         <source>E-W 3D resolution</source>
-        <translation type="obsolete">Độ phân giải Đ-T 3D</translation>
+        <translation>Độ phân giải Đ-T 3D</translation>
     </message>
     <message>
         <source>N-S 3D resolution</source>
-        <translation type="obsolete">Độ phân giải B-N 3D</translation>
+        <translation>Độ phân giải B-N 3D</translation>
     </message>
     <message>
         <source>GRASS</source>
-        <translation type="obsolete">GRASS</translation>
+        <translation>GRASS</translation>
     </message>
     <message>
         <source>GRASS layer</source>
-        <translation type="obsolete">Lớp GRASS</translation>
+        <translation>Lớp GRASS</translation>
     </message>
     <message>
         <source>Heatmap</source>
@@ -14345,7 +13368,7 @@ Bạn có muốn chỉ định đường dẫn (GISBASE) đến nơi cài đặt
     </message>
     <message>
         <source>Cannot start %1/etc/lock</source>
-        <translation type="obsolete">Không thể khởi động %1/etc/lock</translation>
+        <translation>Không thể khởi động %1/etc/lock</translation>
     </message>
     <message>
         <source>Mapset is already in use.</source>
@@ -14369,11 +13392,11 @@ Bạn có muốn chỉ định đường dẫn (GISBASE) đến nơi cài đặt
     </message>
     <message>
         <source>Cannot open vector %1 in mapset %2 on level 2 (topology not available, try to rebuild topology using v.build module).</source>
-        <translation type="obsolete">Không thể mở vec-tơ %1 trong bộ bản đồ %2 ở mức 2 (không có tô-pô, hãy thử dựng lại tô-pô bằng mô-đun v/build).</translation>
+        <translation>Không thể mở vec-tơ %1 trong bộ bản đồ %2 ở mức 2 (không có tô-pô, hãy thử dựng lại tô-pô bằng mô-đun v/build).</translation>
     </message>
     <message>
         <source>Cannot open vector %1 in mapset %2</source>
-        <translation type="obsolete">Không thể mở vec-tơ %1 trong bộ bản đồ %2</translation>
+        <translation>Không thể mở vec-tơ %1 trong bộ bản đồ %2</translation>
     </message>
     <message>
         <source>Cannot read raster map region</source>
@@ -14405,7 +13428,7 @@ Bạn có muốn chỉ định đường dẫn (GISBASE) đến nơi cài đặt
     </message>
     <message>
         <source>command: %1 %2&lt;br&gt;%3&lt;br&gt;%4</source>
-        <translation type="obsolete">lệnh: %1 %2&lt;br&gt;%3&lt;br&gt;%4</translation>
+        <translation>lệnh: %1 %2&lt;br&gt;%3&lt;br&gt;%4</translation>
     </message>
     <message>
         <source>Cannot get projection </source>
@@ -15065,7 +14088,7 @@ Phản hồi là:
     </message>
     <message>
         <source>Fatal error occurred in GRASS library. QGIS gets over the error but any next fatal error will cause QGIS exit without warning. This is a problem of GRASS 7.0.0beta1 but it is fixed in GRASS 7.1 and higher. Error message: %1</source>
-        <translation type="obsolete">Lỗi nghiêm trọng xảy ra trong thư viện GRASS. QGIS vượt qua được lỗi này nhưng bất kỳ lỗi nghiêm trọng tiếp theo nào cũng sẽ khiến QGIS thoát mà không có cảnh báo. Đây là vấn đề của GRASS 7.0.0beta1 nhưng nó được sửa trong GRASS 7.1 hoặc bản cao hơn. Thông báo lỗi: %1</translation>
+        <translation>Lỗi nghiêm trọng xảy ra trong thư viện GRASS. QGIS vượt qua được lỗi này nhưng bất kỳ lỗi nghiêm trọng tiếp theo nào cũng sẽ khiến QGIS thoát mà không có cảnh báo. Đây là vấn đề của GRASS 7.0.0beta1 nhưng nó được sửa trong GRASS 7.1 hoặc bản cao hơn. Thông báo lỗi: %1</translation>
     </message>
     <message>
         <source>Raster image fill</source>
@@ -15081,216 +14104,6 @@ Phản hồi là:
     </message>
     <message>
         <source>NOTICE: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Blur</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Drop Shadow</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Inner Shadow</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Stack</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Outer Glow</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Inner Glow</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Source</source>
-        <translation type="unfinished">Nguồn</translation>
-    </message>
-    <message>
-        <source>Transform</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Colorise</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Recent colors</source>
-        <translation type="unfinished">Các màu dùng gần đây</translation>
-    </message>
-    <message>
-        <source>Standard colors</source>
-        <translation type="unfinished">Các màu tiêu chuẩn</translation>
-    </message>
-    <message>
-        <source>Project colors</source>
-        <translation type="unfinished">Các màu của dự án</translation>
-    </message>
-    <message>
-        <source>Number of places must be positive</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Count</source>
-        <translation type="unfinished">Đếm</translation>
-    </message>
-    <message>
-        <source>Sum</source>
-        <translation type="unfinished">Tổng</translation>
-    </message>
-    <message>
-        <source>Mean</source>
-        <translation type="unfinished">Trung bình</translation>
-    </message>
-    <message>
-        <source>Median</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>St dev (pop)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>St dev (sample)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Minimum</source>
-        <translation type="unfinished">Nhỏ nhất</translation>
-    </message>
-    <message>
-        <source>Maximum</source>
-        <translation type="unfinished">Lớn nhất</translation>
-    </message>
-    <message>
-        <source>Range</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Minority</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Majority</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Variety</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Q1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Q3</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>IQR</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="unfinished">Giá trị</translation>
-    </message>
-    <message>
-        <source>GRASS %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>GRASS %1 (Geographic Resources Analysis Support System)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Version 2.0</source>
-        <translation type="unfinished">Phiên bản 2.0</translation>
-    </message>
-    <message>
-        <source>Cannot start %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Mapset lock failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot open vector on level 2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot open vector</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>command: %1 %2
-stdout: %3
-stderr: %4</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Attempt to copy from different location.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot delete</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Delete confirmation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Are you sure you want to delete %1 %2?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot create table</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot insert, statement</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rename GRASS %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot delete %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot rename %1 to %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Delete Connection</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Are you sure you want to delete the connection to %1?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Delete Object</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Are you sure you want to delete %1.%2?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Are you sure you want to delete %1?</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -16643,33 +15456,6 @@ Luôn bỏ qua các lỗi này?</translation>
         <source>A problem occured during deletion of %1 feature(s)</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Project file was changed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The loaded project file on disk was meanwhile changed.  Do you want to overwrite the changes?
-
-Last modification date on load was: %1
-Current last modification date is: %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Saving raster</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Export to raster file has been completed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot paste style to layer with a different geometry type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Your copied style does not match the layer you are pasting to</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgisAppInterface</name>
@@ -16743,7 +15529,7 @@ p, li { khoảng-trắng: trước-khi-cuộn; }
     </message>
     <message>
         <source>Essen (Germany), Developer meeting 2012</source>
-        <translation type="obsolete">Essen (Đức), cuộc họp của nhà phát triển năm 2012</translation>
+        <translation>Essen (Đức), cuộc họp của nhà phát triển năm 2012</translation>
     </message>
     <message>
         <source>Contributors</source>
@@ -16780,10 +15566,6 @@ p, li { khoảng-trắng: trước-khi-cuộn; }
     <message>
         <source>Developers Map</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Essen (Germany), Developer meeting 2014</source>
-        <translation type="unfinished">Essen (Đức), cuộc họp của nhà phát triển năm 2014</translation>
     </message>
 </context>
 <context>
@@ -16847,31 +15629,35 @@ p, li { khoảng-trắng: trước-khi-cuộn; }
     <name>QgsAddJoinDialogBase</name>
     <message>
         <source>Add vector join</source>
-        <translation type="obsolete">Thêm kết nối véc-tơ</translation>
+        <translation>Thêm kết nối véc-tơ</translation>
     </message>
     <message>
         <source>Join layer</source>
-        <translation type="obsolete">Kết nối lớp</translation>
+        <translation>Kết nối lớp</translation>
     </message>
     <message>
         <source>Join field</source>
-        <translation type="obsolete">Kết nối trường</translation>
+        <translation>Kết nối trường</translation>
     </message>
     <message>
         <source>Target field</source>
-        <translation type="obsolete">Trường đích</translation>
+        <translation>Trường đích</translation>
     </message>
     <message>
         <source>Create attribute index on join field</source>
-        <translation type="obsolete">Tạo chỉ mục thuộc tính trên trường kết nối</translation>
+        <translation>Tạo chỉ mục thuộc tính trên trường kết nối</translation>
     </message>
     <message>
         <source>Choose which fields are joined</source>
-        <translation type="obsolete">Chọn các trường cần nối</translation>
+        <translation>Chọn các trường cần nối</translation>
     </message>
     <message>
         <source>Cache join layer in virtual memory</source>
-        <translation type="obsolete">Nhớ đệm lớp kết nối trong bộ nhớ ảo</translation>
+        <translation>Nhớ đệm lớp kết nối trong bộ nhớ ảo</translation>
+    </message>
+    <message>
+        <source>Custom field name prefix</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17004,17 +15790,6 @@ p, li { khoảng-trắng: trước-khi-cuộn; }
     <message>
         <source>y</source>
         <translation>y</translation>
-    </message>
-</context>
-<context>
-    <name>QgsAngleMagnetWidget</name>
-    <message>
-        <source>Snap to </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No snapping</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17818,7 +16593,7 @@ Lỗi phân tách:
     </message>
     <message>
         <source>Attribute table - %1 :: Features total: %2, filtered: %3, selected: %4</source>
-        <translation type="obsolete">Bảng thuộc tính - %1 :: Tổng số đối tượng: %2, được lọc: %3, được chọn: %4</translation>
+        <translation>Bảng thuộc tính - %1 :: Tổng số đối tượng: %2, được lọc: %3, được chọn: %4</translation>
     </message>
     <message>
         <source>Update Filtered</source>
@@ -17865,30 +16640,6 @@ Lỗi phân tách:
     <message>
         <source>Update Selected</source>
         <translation>Cập nhật phần được chọn</translation>
-    </message>
-    <message>
-        <source>Ctrl+R</source>
-        <translation type="unfinished">Ctrl+R</translation>
-    </message>
-    <message>
-        <source>Paste features from clipboard (Ctrl+V)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ctrl+V</source>
-        <translation type="unfinished">Ctrl+V</translation>
-    </message>
-    <message>
-        <source>Show All Features In Initial Canvas Extent</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Attribute table - %1 :: Features total: %2, filtered: %3, selected: %4%5</source>
-        <translation type="unfinished">Bảng thuộc tính - %1 :: Tổng số đối tượng: %2, được lọc: %3, được chọn: %4%5 {1 ?} {2,?} {3,?}</translation>
-    </message>
-    <message>
-        <source>, spatially limited</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17980,29 +16731,18 @@ Lỗi phân tách:
     </message>
 </context>
 <context>
-    <name>QgsBlurWidget</name>
-    <message>
-        <source>Stack blur (fast)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Gaussian blur (quality)</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>QgsBookmarks</name>
     <message>
         <source>&amp;Add</source>
-        <translation type="obsolete">&amp;Thêm</translation>
+        <translation>&amp;Thêm</translation>
     </message>
     <message>
         <source>&amp;Delete</source>
-        <translation type="obsolete">&amp;Xoá</translation>
+        <translation>&amp;Xoá</translation>
     </message>
     <message>
         <source>&amp;Zoom to</source>
-        <translation type="obsolete">&amp;Phóng đến</translation>
+        <translation>&amp;Phóng đến</translation>
     </message>
     <message>
         <source>Error</source>
@@ -18082,6 +16822,10 @@ CSDL: %2</translation>
         <translation>Phạm vi đã quy chiếu bị rỗng.</translation>
     </message>
     <message>
+        <source>&amp;Share</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>&amp;Export</source>
         <translation type="unfinished"></translation>
     </message>
@@ -18111,48 +16855,12 @@ Database: %2</source>
         <source>XML files( *.xml *.XML )</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Import/Export Bookmarks</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsBookmarksBase</name>
     <message>
         <source>Geospatial Bookmarks</source>
-        <translation type="obsolete">Đánh dấu không gian địa lý</translation>
-    </message>
-    <message>
-        <source>Spatial Bookmarks</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add</source>
-        <translation type="unfinished">Thêm</translation>
-    </message>
-    <message>
-        <source>Add bookmark</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation type="unfinished">Xóa</translation>
-    </message>
-    <message>
-        <source>Delete bookmark</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Zoom to</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Zoom to bookmark</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="unfinished">Trợ giúp</translation>
+        <translation>Đánh dấu không gian địa lý</translation>
     </message>
 </context>
 <context>
@@ -18241,7 +16949,7 @@ Database: %2</source>
     <name>QgsBrowserDirectoryPropertiesBase</name>
     <message>
         <source>Dialog</source>
-        <translation type="obsolete">Hộp thoại</translation>
+        <translation>Hộp thoại</translation>
     </message>
     <message>
         <source>Path</source>
@@ -18304,15 +17012,15 @@ Database: %2</source>
     </message>
     <message>
         <source>Error</source>
-        <translation type="obsolete">Lỗi</translation>
+        <translation>Lỗi</translation>
     </message>
     <message>
         <source>Layer Properties</source>
-        <translation type="obsolete">Tính chất của Lớp</translation>
+        <translation>Tính chất của Lớp</translation>
     </message>
     <message>
         <source>Directory Properties</source>
-        <translation type="obsolete">Tính chất của thư mục</translation>
+        <translation>Tính chất của thư mục</translation>
     </message>
     <message>
         <source>Type here to filter current item...</source>
@@ -18335,11 +17043,11 @@ Database: %2</source>
     </message>
     <message>
         <source>Filter Files</source>
-        <translation type="obsolete">Các tập tin lọc</translation>
+        <translation>Các tập tin lọc</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="obsolete">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Collapse All</source>
@@ -18349,43 +17057,20 @@ Database: %2</source>
         <source>Options</source>
         <translation>Tuỳ chọn</translation>
     </message>
-    <message>
-        <source>Add Layers</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Filter Browser</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show Properties</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Enable/disable properties widget</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QgsBrowserLayerProperties</name>
-    <message>
-        <source>Error</source>
-        <translation type="unfinished">Lỗi</translation>
-    </message>
 </context>
 <context>
     <name>QgsBrowserLayerPropertiesBase</name>
     <message>
         <source>Dialog</source>
-        <translation type="obsolete">Hộp thoại</translation>
+        <translation>Hộp thoại</translation>
     </message>
     <message>
         <source>Display Name</source>
-        <translation type="obsolete">Tên hiển thị</translation>
+        <translation>Tên hiển thị</translation>
     </message>
     <message>
         <source>Layer Source</source>
-        <translation type="obsolete">Nguồn của lớp</translation>
+        <translation>Nguồn của lớp</translation>
     </message>
     <message>
         <source>Provider</source>
@@ -18394,26 +17079,6 @@ Database: %2</source>
     <message>
         <source>Metadata</source>
         <translation>Đặc tả dữ liệu</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="unfinished">Tên</translation>
-    </message>
-    <message>
-        <source>name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>URI</source>
-        <translation type="unfinished">URL</translation>
-    </message>
-    <message>
-        <source>provider key</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>notice</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -18429,24 +17094,6 @@ Database: %2</source>
     <message>
         <source>Favourites</source>
         <translation>Ưa thích</translation>
-    </message>
-</context>
-<context>
-    <name>QgsBrowserPropertiesDialog</name>
-    <message>
-        <source>Layer Properties</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Directory Properties</source>
-        <translation type="unfinished">Tính chất của thư mục</translation>
-    </message>
-</context>
-<context>
-    <name>QgsBrowserPropertiesDialogBase</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="unfinished">Hộp thoại</translation>
     </message>
 </context>
 <context>
@@ -18593,7 +17240,7 @@ Database: %2</source>
     </message>
     <message>
         <source>Join</source>
-        <translation type="obsolete">Kết hợp</translation>
+        <translation>Kết hợp</translation>
     </message>
     <message>
         <source>Advanced</source>
@@ -18636,51 +17283,6 @@ Database: %2</source>
 Should the existing classes be deleted before classification?</source>
         <translation>Trường phân loại đã bị thay đổi từ &apos;%1&apos; thành &apos;%2&apos;.
 Có nên xoá các lớp hiện có trước khi phân loại?</translation>
-    </message>
-    <message>
-        <source>Match to saved symbols</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Match to symbols from file...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Matched symbols</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Matched %1 categories to symbols.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No categories could be matched to symbols in library.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Match to symbols from file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>XML files (*.xml *XML)</source>
-        <translation type="unfinished">Các tập tin XML (*.xml, *.XML)</translation>
-    </message>
-    <message>
-        <source>Matching error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>An error occured reading file:
-%1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Matched %1 categories to symbols from file.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No categories could be matched to symbols in file.</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -19038,25 +17640,6 @@ Có nên xoá các lớp hiện có trước khi phân loại?</translation>
     <message>
         <source>Error writing palette file</source>
         <translation>Lỗi ghi tập tin bảng màu</translation>
-    </message>
-</context>
-<context>
-    <name>QgsColorEffectWidget</name>
-    <message>
-        <source>Off</source>
-        <translation type="unfinished">Tắt</translation>
-    </message>
-    <message>
-        <source>By lightness</source>
-        <translation type="unfinished">Theo ánh sáng</translation>
-    </message>
-    <message>
-        <source>By luminosity</source>
-        <translation type="unfinished">Theo độ phát sáng</translation>
-    </message>
-    <message>
-        <source>By average</source>
-        <translation type="unfinished">Theo trung bình</translation>
     </message>
 </context>
 <context>
@@ -19538,10 +18121,6 @@ Vui lòng thử độ phân giải thấp hơn hoặc kích thước giấy nh�
         <source>Landscape</source>
         <translation>Kiểu ngang</translation>
     </message>
-    <message>
-        <source>Exporting atlas</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsComposerArrowWidget</name>
@@ -19834,7 +18413,7 @@ Vui lòng thử độ phân giải thấp hơn hoặc kích thước giấy nh�
     </message>
     <message>
         <source>Table grid stroke</source>
-        <translation type="obsolete">Nét lưới của bảng</translation>
+        <translation>Nét lưới của bảng</translation>
     </message>
     <message>
         <source>Table grid color</source>
@@ -19924,10 +18503,6 @@ Vui lòng thử độ phân giải thấp hơn hoặc kích thước giấy nh�
         <source>Empty table message changed</source>
         <translation>Thông báo bảng rỗng bị thay đổi</translation>
     </message>
-    <message>
-        <source>Table grid line</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsComposerAttributeTableWidgetBase</name>
@@ -19993,7 +18568,7 @@ Vui lòng thử độ phân giải thấp hơn hoặc kích thước giấy nh�
     </message>
     <message>
         <source>Stroke width</source>
-        <translation type="obsolete">Chiều rộng nét</translation>
+        <translation>Chiều rộng nét</translation>
     </message>
     <message>
         <source>Color</source>
@@ -20110,10 +18685,6 @@ Vui lòng thử độ phân giải thấp hơn hoặc kích thước giấy nh�
     <message>
         <source>Add Frame</source>
         <translation>Thêm Khung</translation>
-    </message>
-    <message>
-        <source>Line width</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -22967,11 +21538,11 @@ Vui lòng thử độ phân giải thấp hơn hoặc kích thước giấy nh�
     </message>
     <message>
         <source>Select stroke color</source>
-        <translation type="obsolete">Chọn màu nét</translation>
+        <translation>Chọn màu nét</translation>
     </message>
     <message>
         <source>Transparent stroke</source>
-        <translation type="obsolete">Nét trong suốt</translation>
+        <translation>Nét trong suốt</translation>
     </message>
     <message>
         <source>Map %1</source>
@@ -23019,7 +21590,7 @@ Vui lòng thử độ phân giải thấp hơn hoặc kích thước giấy nh�
     </message>
     <message>
         <source>Scalebar stroke color changed</source>
-        <translation type="obsolete">Màu nét của thước tỷ lệ bị thay đổi</translation>
+        <translation>Màu nét của thước tỷ lệ bị thay đổi</translation>
     </message>
     <message>
         <source>Scalebar unit text</source>
@@ -23069,22 +21640,6 @@ Vui lòng thử độ phân giải thấp hơn hoặc kích thước giấy nh�
         <source>Scalebar line cap style</source>
         <translation>Kiểu chóp đường của thước tỷ lệ</translation>
     </message>
-    <message>
-        <source>Select line color</source>
-        <translation type="unfinished">Chọn màu đường</translation>
-    </message>
-    <message>
-        <source>Transparent line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Scalebar line color changed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Scalebar segment size mode</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsComposerScaleBarWidgetBase</name>
@@ -23102,11 +21657,11 @@ Vui lòng thử độ phân giải thấp hơn hoặc kích thước giấy nh�
     </message>
     <message>
         <source>Map</source>
-        <translation type="obsolete">Bản đồ</translation>
+        <translation>Bản đồ</translation>
     </message>
     <message>
         <source>Style</source>
-        <translation type="obsolete">Kiểu</translation>
+        <translation>Kiểu</translation>
     </message>
     <message>
         <source>Units</source>
@@ -23114,11 +21669,11 @@ Vui lòng thử độ phân giải thấp hơn hoặc kích thước giấy nh�
     </message>
     <message>
         <source>Label</source>
-        <translation type="obsolete">Nhãn</translation>
+        <translation>Nhãn</translation>
     </message>
     <message>
         <source>Map units per bar unit</source>
-        <translation type="obsolete">Đơn vị bản đồ trên đơn vị cột</translation>
+        <translation>Đơn vị bản đồ trên đơn vị cột</translation>
     </message>
     <message>
         <source>Segments</source>
@@ -23134,7 +21689,7 @@ Vui lòng thử độ phân giải thấp hơn hoặc kích thước giấy nh�
     </message>
     <message>
         <source>Size</source>
-        <translation type="obsolete">Kích thước</translation>
+        <translation>Kích thước</translation>
     </message>
     <message>
         <source> units</source>
@@ -23194,47 +21749,11 @@ Vui lòng thử độ phân giải thấp hơn hoặc kích thước giấy nh�
     </message>
     <message>
         <source>Stroke color</source>
-        <translation type="obsolete">Màu nét</translation>
+        <translation>Màu nét</translation>
     </message>
     <message>
         <source>Font...</source>
         <translation>Phông chữ...</translation>
-    </message>
-    <message>
-        <source>&amp;Map</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>St&amp;yle</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Label</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Map &amp;units per bar unit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>max </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>min </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Fi&amp;xed width</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Fit segment width</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Line color</source>
-        <translation type="unfinished">Màu đường</translation>
     </message>
 </context>
 <context>
@@ -23427,7 +21946,7 @@ Vui lòng thử độ phân giải thấp hơn hoặc kích thước giấy nh�
     </message>
     <message>
         <source>Table grid stroke</source>
-        <translation type="obsolete">Nét lưới của bảng</translation>
+        <translation>Nét lưới của bảng</translation>
     </message>
     <message>
         <source>Select grid color</source>
@@ -23444,10 +21963,6 @@ Vui lòng thử độ phân giải thấp hơn hoặc kích thước giấy nh�
     <message>
         <source>Table visible only toggled</source>
         <translation>Bảng chỉ xem được bật</translation>
-    </message>
-    <message>
-        <source>Table grid line</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -23542,7 +22057,7 @@ Vui lòng thử độ phân giải thấp hơn hoặc kích thước giấy nh�
     </message>
     <message>
         <source>Stroke width</source>
-        <translation type="obsolete">Chiều rộng nét</translation>
+        <translation>Chiều rộng nét</translation>
     </message>
     <message>
         <source>Follow column alignment</source>
@@ -23559,10 +22074,6 @@ Vui lòng thử độ phân giải thấp hơn hoặc kích thước giấy nh�
     <message>
         <source>Right</source>
         <translation>Phải</translation>
-    </message>
-    <message>
-        <source>Line width</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -24315,7 +22826,7 @@ và tập tin hiện tại là [%3]</translation>
     <name>QgsCustomColorScheme</name>
     <message>
         <source>Standard colors</source>
-        <translation type="obsolete">Các màu tiêu chuẩn</translation>
+        <translation>Các màu tiêu chuẩn</translation>
     </message>
 </context>
 <context>
@@ -24706,14 +23217,6 @@ và tập tin hiện tại là [%3]</translation>
         <source>[&lt;b&gt;&lt;dash&gt;;&lt;space&gt;&lt;/b&gt;] e.g. &apos;8;2;1;2&apos;</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Assistant...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>single character</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsDataDefinedButtonPlugin</name>
@@ -24724,32 +23227,6 @@ và tập tin hiện tại là [%3]</translation>
     <message>
         <source>A widget to define the scale range.</source>
         <translation>Một công cụ để định nghĩa khoảng tỷ lệ.</translation>
-    </message>
-</context>
-<context>
-    <name>QgsDataDefinedRotationDialog</name>
-    <message>
-        <source>Rotation</source>
-        <translation type="unfinished">Xoay</translation>
-    </message>
-    <message>
-        <source>Symbol rotation</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QgsDataDefinedSizeDialog</name>
-    <message>
-        <source>Size</source>
-        <translation type="unfinished">Kích thước</translation>
-    </message>
-    <message>
-        <source>Symbol size</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Size Assistant...</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -24797,32 +23274,6 @@ và tập tin hiện tại là [%3]</translation>
     <message>
         <source>0 (false)|1 (true)</source>
         <translation>0 (sai)|1 (đúng)</translation>
-    </message>
-</context>
-<context>
-    <name>QgsDataDefinedValueDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="unfinished">Hộp thoại</translation>
-    </message>
-    <message>
-        <source>Label</source>
-        <translation type="unfinished">Nhãn</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="unfinished">...</translation>
-    </message>
-</context>
-<context>
-    <name>QgsDataDefinedWidthDialog</name>
-    <message>
-        <source>Width</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Symbol width</source>
-        <translation type="unfinished">Chiều rộng biểu tượng</translation>
     </message>
 </context>
 <context>
@@ -25508,7 +23959,7 @@ không được trình bày</translation>
     </message>
     <message>
         <source>%1 records discarded due to missing geometry definitions</source>
-        <translation type="obsolete">%1 bản ghi bị bỏ do thiếu định nghĩa hình học</translation>
+        <translation>%1 bản ghi bị bỏ do thiếu định nghĩa hình học</translation>
     </message>
     <message>
         <source>%1 records discarded due to invalid geometry definitions</source>
@@ -25541,26 +23992,6 @@ không được trình bày</translation>
     <message>
         <source>The file has been updated by another application - reloading</source>
         <translation>Tập tin đã được cập nhật bởi ứng dụng khác - đang nạp lại</translation>
-    </message>
-    <message>
-        <source>Whole number (integer)</source>
-        <translation type="unfinished">Toàn bộ con số (số nguyên)</translation>
-    </message>
-    <message>
-        <source>Whole number (integer - 64 bit)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Decimal number (double)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Text, unlimited length (text)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>%1 records have missing geometry definitions</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -26032,31 +24463,31 @@ không được trình bày</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="obsolete">Đường</translation>
+        <translation>Đường</translation>
     </message>
     <message>
         <source>Horizontal</source>
-        <translation type="obsolete">Ngang</translation>
+        <translation>Ngang</translation>
     </message>
     <message>
         <source>Free</source>
-        <translation type="obsolete">Tự do</translation>
+        <translation>Tự do</translation>
     </message>
     <message>
         <source>On line</source>
-        <translation type="obsolete">Ngay trên đường</translation>
+        <translation>Ngay trên đường</translation>
     </message>
     <message>
         <source>Above line</source>
-        <translation type="obsolete">Phía trên đường</translation>
+        <translation>Phía trên đường</translation>
     </message>
     <message>
         <source>Below Line</source>
-        <translation type="obsolete">Phía dưới đường</translation>
+        <translation>Phía dưới đường</translation>
     </message>
     <message>
         <source>Map orientation</source>
-        <translation type="obsolete">Hướng bản đồ</translation>
+        <translation>Hướng bản đồ</translation>
     </message>
     <message>
         <source>Pie chart</source>
@@ -26116,7 +24547,7 @@ không được trình bày</translation>
     </message>
     <message>
         <source>Bar length: Scale linearly, such as the following value matches the specified size.</source>
-        <translation type="obsolete">Chiều dài thanh: Tỷ lệ tuyến tính, ví dụ như giá trị sau khớp với kích thước đã chỉ định.</translation>
+        <translation>Chiều dài thanh: Tỷ lệ tuyến tính, ví dụ như giá trị sau khớp với kích thước đã chỉ định.</translation>
     </message>
     <message>
         <source>Scale linearly between 0 and the following attribute value / diagram size:</source>
@@ -26124,7 +24555,7 @@ không được trình bày</translation>
     </message>
     <message>
         <source>Transparency: %1%</source>
-        <translation type="obsolete">Độ trong suốt: %1%</translation>
+        <translation>Độ trong suốt: %1%</translation>
     </message>
     <message>
         <source>Diagrams: No attributes added.</source>
@@ -26146,48 +24577,12 @@ không được trình bày</translation>
         <source>You did not add any attributes to this diagram layer. Please specify the attributes to visualize on the diagrams or disable diagrams.</source>
         <translation>Bạn đã không thêm  bất kỳ thuộc tính nào vào lớp biểu đồ này. Vui lòng chỉ định thuộc tính để xem trên biểu đồ hoặc tắt chức năng biểu đồ.</translation>
     </message>
-    <message>
-        <source>Around Line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Over Line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Around Centroid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Over Centroid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Perimeter</source>
-        <translation type="unfinished">Chu vi</translation>
-    </message>
-    <message>
-        <source>Inside Polygon</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Bar length: Scale linearly, so that the following value matches the specified bar length:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Bar length</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Size</source>
-        <translation type="unfinished">Kích thước</translation>
-    </message>
 </context>
 <context>
     <name>QgsDiagramPropertiesBase</name>
     <message>
         <source>Display diagrams</source>
-        <translation type="obsolete">Trình bày các biểu đồ</translation>
+        <translation>Trình bày các biểu đồ</translation>
     </message>
     <message>
         <source>Diagram type</source>
@@ -26231,7 +24626,7 @@ không được trình bày</translation>
     </message>
     <message>
         <source>Transparency 0%</source>
-        <translation type="obsolete">Độ trong suốt 0%</translation>
+        <translation>Độ trong suốt 0%</translation>
     </message>
     <message>
         <source>Start Angle</source>
@@ -26239,11 +24634,11 @@ không được trình bày</translation>
     </message>
     <message>
         <source>Only show diagrams with a size inside the specified range.</source>
-        <translation type="obsolete">Chỉ hiển thị biểu đồ với kích thước trong khoảng chỉ định.</translation>
+        <translation>Chỉ hiển thị biểu đồ với kích thước trong khoảng chỉ định.</translation>
     </message>
     <message>
         <source>Hide diagrams with a size outside the specified range.</source>
-        <translation type="obsolete">Ẩn đi các biểu đồ nằm ngoài khoảng chỉ định.</translation>
+        <translation>Ẩn đi các biểu đồ nằm ngoài khoảng chỉ định.</translation>
     </message>
     <message>
         <source>Scale dependent visibility</source>
@@ -26251,11 +24646,11 @@ không được trình bày</translation>
     </message>
     <message>
         <source>Minimum</source>
-        <translation type="obsolete">Nhỏ nhất</translation>
+        <translation>Nhỏ nhất</translation>
     </message>
     <message>
         <source>Maximum</source>
-        <translation type="obsolete">Lớn nhất</translation>
+        <translation>Lớn nhất</translation>
     </message>
     <message>
         <source>Size</source>
@@ -26279,16 +24674,16 @@ không được trình bày</translation>
     </message>
     <message>
         <source>Edit expression</source>
-        <translation type="obsolete">Sửa biểu thức</translation>
+        <translation>Sửa biểu thức</translation>
     </message>
     <message>
         <source>Find maximum value</source>
-        <translation type="obsolete">Tìm giá trị lớn nhất</translation>
+        <translation>Tìm giá trị lớn nhất</translation>
     </message>
     <message>
         <source>The attribute value you enter here will correspond to the size entered in the field &quot;Size&quot; and the chosen &quot;Size unit&quot;.
 Leave empty to automatically apply the maximum value.</source>
-        <translation type="obsolete">Giá trị thuộc tính bạn nhập ở đây sẽ tương ứng với kích thước nhập vào trong trường &quot;Kích thước&quot; và &quot;Đơn vị kích thước&quot; đã chọn.
+        <translation>Giá trị thuộc tính bạn nhập ở đây sẽ tương ứng với kích thước nhập vào trong trường &quot;Kích thước&quot; và &quot;Đơn vị kích thước&quot; đã chọn.
 Bỏ trống để tự động dùng giá trị lớn nhất.</translation>
     </message>
     <message>
@@ -26297,7 +24692,7 @@ Bỏ trống để tự động dùng giá trị lớn nhất.</translation>
     </message>
     <message>
         <source>Will scale diagrams with a size smaller than the minimum size to the minimum size</source>
-        <translation type="obsolete">Sẽ lấy tỷ lệ biểu đồ với kích thước nhỏ hơn kích thước nhỏ nhất để làm kích thước nhỏ nhất</translation>
+        <translation>Sẽ lấy tỷ lệ biểu đồ với kích thước nhỏ hơn kích thước nhỏ nhất để làm kích thước nhỏ nhất</translation>
     </message>
     <message>
         <source>Increase size of small diagrams</source>
@@ -26309,7 +24704,7 @@ Bỏ trống để tự động dùng giá trị lớn nhất.</translation>
     </message>
     <message>
         <source>Position</source>
-        <translation type="obsolete">Vị trí</translation>
+        <translation>Vị trí</translation>
     </message>
     <message>
         <source>Placement</source>
@@ -26317,7 +24712,7 @@ Bỏ trống để tự động dùng giá trị lớn nhất.</translation>
     </message>
     <message>
         <source>Line Options</source>
-        <translation type="obsolete">Tùy chọn đường</translation>
+        <translation>Tùy chọn đường</translation>
     </message>
     <message>
         <source>Distance</source>
@@ -26337,7 +24732,7 @@ Bỏ trống để tự động dùng giá trị lớn nhất.</translation>
     </message>
     <message>
         <source>Automated placement settings</source>
-        <translation type="obsolete">Thiết lập vị trí đặt tự động</translation>
+        <translation>Thiết lập vị trí đặt tự động</translation>
     </message>
     <message>
         <source>Options</source>
@@ -26391,70 +24786,6 @@ Bỏ trống để tự động dùng giá trị lớn nhất.</translation>
         <source>Color</source>
         <translation>Màu</translation>
     </message>
-    <message>
-        <source>Show diagrams for this layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Automated placement settings (apply to all layers)</source>
-        <translation type="unfinished">Các thiết lập vị trí đặt tự động (áp dụng cho tất cả các lớp)</translation>
-    </message>
-    <message>
-        <source>Rendering</source>
-        <translation type="unfinished">Kết xuất</translation>
-    </message>
-    <message>
-        <source>Legend</source>
-        <translation type="unfinished">Chú giải</translation>
-    </message>
-    <message>
-        <source>Format</source>
-        <translation type="unfinished">Định dạng</translation>
-    </message>
-    <message>
-        <source>Transparency</source>
-        <translation type="unfinished">Độ trong suốt</translation>
-    </message>
-    <message>
-        <source> %</source>
-        <translation type="unfinished"> %</translation>
-    </message>
-    <message>
-        <source>Visibility</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show all diagrams</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Maximum value</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Find</source>
-        <translation type="unfinished">Tìm</translation>
-    </message>
-    <message>
-        <source>Scaled size</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Above line</source>
-        <translation type="unfinished">Phía trên đường</translation>
-    </message>
-    <message>
-        <source>Below line</source>
-        <translation type="unfinished">Phía dưới đường</translation>
-    </message>
-    <message>
-        <source>On line</source>
-        <translation type="unfinished">Ngay trên đường</translation>
-    </message>
-    <message>
-        <source>Line orientation dependent position</source>
-        <translation type="unfinished">Vị trí phụ thuộc vào hướng của đường</translation>
-    </message>
 </context>
 <context>
     <name>QgsDirectoryParamWidget</name>
@@ -26496,7 +24827,7 @@ Bỏ trống để tự động dùng giá trị lớn nhất.</translation>
     </message>
     <message>
         <source>link</source>
-        <translation type="obsolete">liên kết</translation>
+        <translation>liên kết</translation>
     </message>
 </context>
 <context>
@@ -26732,70 +25063,14 @@ Lỗi phân tách:
     </message>
 </context>
 <context>
-    <name>QgsEffectDrawModeComboBox</name>
-    <message>
-        <source>Render only</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Modifier only</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Render and modify</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QgsEffectStackCompactWidget</name>
-    <message>
-        <source>Draw effects</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Customise effects</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QgsEffectStackPropertiesDialog</name>
-    <message>
-        <source>Effect Properties</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QgsEffectStackPropertiesWidgetBase</name>
-    <message>
-        <source>Effects</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add symbol layer</source>
-        <translation type="unfinished">Thêm lớp biểu tượng</translation>
-    </message>
-    <message>
-        <source>Remove symbol layer</source>
-        <translation type="unfinished">Loại bỏ lớp biểu tượng</translation>
-    </message>
-    <message>
-        <source>Move up</source>
-        <translation type="unfinished">Di chuyển lên</translation>
-    </message>
-    <message>
-        <source>Move down</source>
-        <translation type="unfinished">Di chuyển xuống</translation>
-    </message>
-</context>
-<context>
     <name>QgsEllipseSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">mm</translation>
+        <translation>mm</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Đơn vị bản đồ</translation>
+        <translation>Đơn vị bản đồ</translation>
     </message>
     <message>
         <source>Select fill color</source>
@@ -27038,10 +25313,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Load all unique values</source>
         <translation>Nạp tất cả các giá trị không trùng</translation>
-    </message>
-    <message>
-        <source>%1...</source>
-        <translation type="unfinished">%1...</translation>
     </message>
 </context>
 <context>
@@ -27720,19 +25991,15 @@ MyForms.py phải có trong PYTHONPATH, .qgis/python, hoặc ở trong cùng th�
     <name>QgsFontMarkerSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Mi-li-mét</translation>
+        <translation>Mi-li-mét</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Đơn vị bản đồ</translation>
+        <translation>Đơn vị bản đồ</translation>
     </message>
     <message>
         <source>Select symbol color</source>
         <translation>Chọn màu biểu tượng</translation>
-    </message>
-    <message>
-        <source>Size Assistant...</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -27766,42 +26033,6 @@ MyForms.py phải có trong PYTHONPATH, .qgis/python, hoặc ở trong cùng th�
     <message>
         <source>pixels</source>
         <translation>điểm ảnh</translation>
-    </message>
-    <message>
-        <source>Visible</source>
-        <translation type="unfinished">Xem được</translation>
-    </message>
-    <message>
-        <source>ID</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Source X</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Source Y</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dest. X</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dest. Y</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>dX (%1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>dY (%1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Residual (%1)</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -28897,7 +27128,7 @@ Vui lòng chọn lại tập tin đúng.</translation>
     </message>
     <message>
         <source>Show coords</source>
-        <translation type="obsolete">HIển thị tọa độ</translation>
+        <translation>HIển thị tọa độ</translation>
     </message>
     <message>
         <source>Residual units</source>
@@ -28938,17 +27169,6 @@ Vui lòng chọn lại tập tin đúng.</translation>
     <message>
         <source>Paper size</source>
         <translation>Kích thước giấy</translation>
-    </message>
-    <message>
-        <source>Show coordinates</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QgsGeorefDescriptionDialog</name>
-    <message>
-        <source>&lt;h2&gt;Description&lt;/h2&gt;&lt;p&gt;This plugin can georeference raster files and set projection. You select points on the raster and give their world coordinates, and the plugin will compute the world file parameters. The more coordinates you can provide the better the result will be.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -29021,7 +27241,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>GDAL scripting is not supported for %1 transformation</source>
-        <translation type="obsolete">Tập lệnh GDAL không được hỗ trợ đối với phép chuyển đổi %1</translation>
+        <translation>Tập lệnh GDAL không được hỗ trợ đối với phép chuyển đổi %1</translation>
     </message>
     <message>
         <source>Load GCP points</source>
@@ -29033,7 +27253,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>No GCP points to save</source>
-        <translation type="obsolete">Không có điểm khống chế nào để lưu</translation>
+        <translation>Không có điểm khống chế nào để lưu</translation>
     </message>
     <message>
         <source>Save GCP points</source>
@@ -29077,7 +27297,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Unable to open GCP points file %1</source>
-        <translation type="obsolete">Không thể mở tập tin các điểm khống chế %1</translation>
+        <translation>Không thể mở tập tin các điểm khống chế %1</translation>
     </message>
     <message>
         <source>Save GCPs</source>
@@ -29089,7 +27309,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Failed to get linear transform parameters</source>
-        <translation type="obsolete">Thất bại khi lấy các tham số chuyển đổi tuyến tính</translation>
+        <translation>Thất bại khi lấy các tham số chuyển đổi tuyến tính</translation>
     </message>
     <message>
         <source>World file exists</source>
@@ -29101,7 +27321,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Failed to compute GCP transform: Transform is not solvable</source>
-        <translation type="obsolete">Thất bại khi tính toán chuyển đổi ĐKC: Phép chuyển đổi không giải được</translation>
+        <translation>Thất bại khi tính toán chuyển đổi ĐKC: Phép chuyển đổi không giải được</translation>
     </message>
     <message>
         <source>Error</source>
@@ -29109,7 +27329,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not write to %1</source>
-        <translation type="obsolete">Không thể ghi ra %1</translation>
+        <translation>Không thể ghi ra %1</translation>
     </message>
     <message>
         <source>map units</source>
@@ -29177,7 +27397,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Copy in clipboard</source>
-        <translation type="obsolete">Chép vào bộ nhớ tạm</translation>
+        <translation>Chép vào bộ nhớ tạm</translation>
     </message>
     <message>
         <source>%1</source>
@@ -29197,7 +27417,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>%1 requires at least %2 GCPs. Please define more</source>
-        <translation type="obsolete">%1 cần ít nhất %2 ĐKC. Vui lòng định nghĩa thêm</translation>
+        <translation>%1 cần ít nhất %2 ĐKC. Vui lòng định nghĩa thêm</translation>
     </message>
     <message>
         <source>Linear</source>
@@ -29231,138 +27451,6 @@ p, li { white-space: pre-wrap; }
         <source>Not set</source>
         <translation>Không thiết lập</translation>
     </message>
-    <message>
-        <source>Reset Georeferencer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Reset georeferencer and clear all GCP points?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Georeference Successful</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Raster was successfully georeferenced.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invalid Transform</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>GDAL scripting is not supported for %1 transformation.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invalid GCP file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>GCP file could not be read.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>GCPs loaded</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>GCP file successfully loaded.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No GCP Points</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No GCP points are available to save.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Raster Properties</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Please load raster to be georeferenced.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Write Error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not write to GCP points file %1.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Transform Failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Failed to calculate linear transform parameters.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Failed to compute GCP transform: Transform is not solvable.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not write to %1.</source>
-        <translation type="unfinished">Không thể ghi ra %1.</translation>
-    </message>
-    <message>
-        <source>ID</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Enabled</source>
-        <translation type="unfinished">Kích hoạt</translation>
-    </message>
-    <message>
-        <source>Pixel X</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Pixel Y</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Map X</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Map Y</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Res X (%1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Res Y (%1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Res Total (%1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Copy to Clipboard</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No Raster Loaded</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Not Enough GCPs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>%1 transformation requires at least %2 GCPs. Please define more.</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsGeorefPluginGuiBase</name>
@@ -29392,7 +27480,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>toolBar</source>
-        <translation type="obsolete">Thanh công cụ</translation>
+        <translation>Thanh công cụ</translation>
     </message>
     <message>
         <source>Open raster</source>
@@ -29496,7 +27584,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Configure Georeferencer</source>
-        <translation type="obsolete">Cấu hình Trình Tham chiếu Địa lý</translation>
+        <translation>Cấu hình Trình Tham chiếu Địa lý</translation>
     </message>
     <message>
         <source>Ctrl+P</source>
@@ -29504,7 +27592,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Raster properties</source>
-        <translation type="obsolete">Đặc điểm của ảnh raster</translation>
+        <translation>Đặc điểm của ảnh raster</translation>
     </message>
     <message>
         <source>Move GCP point</source>
@@ -29520,79 +27608,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Local histogram stretch</source>
-        <translation type="obsolete">Dãn biểu đồ tần suất cục bộ</translation>
+        <translation>Dãn biểu đồ tần suất cục bộ</translation>
     </message>
     <message>
         <source>Full histogram stretch</source>
-        <translation type="obsolete">Dãn biểu đồ tần suất toàn cục</translation>
-    </message>
-    <message>
-        <source>Histogram</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open Raster...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Transformation Settings...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add Point</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Delete Point</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Close Georeferencer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Close georeferencer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Start Georeferencing</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Generate GDAL Script</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save GCP Points as...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Load GCP Points...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Configure Georeferencer...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Raster Properties...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Move GCP Point</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Local Histogram Stretch</source>
-        <translation type="unfinished">Dãn biểu đồ tần suất cục bộ</translation>
-    </message>
-    <message>
-        <source>Full Histogram Stretch</source>
-        <translation type="unfinished">Dãn biểu đồ tần suất toàn bộ</translation>
-    </message>
-    <message>
-        <source>Reset Georeferencer</source>
-        <translation type="unfinished"></translation>
+        <translation>Dãn biểu đồ tần suất toàn cục</translation>
     </message>
 </context>
 <context>
@@ -29802,13 +27822,6 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>QgsGlowWidget</name>
-    <message>
-        <source>Select glow color</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>QgsGml</name>
     <message>
         <source>Loading GML data
@@ -29848,11 +27861,11 @@ p, li { white-space: pre-wrap; }
     <name>QgsGradientFillSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Mi-li-mét</translation>
+        <translation>Mi-li-mét</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Đơn vị bản đồ</translation>
+        <translation>Đơn vị bản đồ</translation>
     </message>
     <message>
         <source>Select gradient color</source>
@@ -29861,17 +27874,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Transparent</source>
         <translation>Trong suốt</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGraduatedHistogramWidget</name>
-    <message>
-        <source>Ranges are overlapping and can&apos;t be edited by the histogram</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ranges have gaps and can&apos;t be edited by the histogram</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -30027,26 +28029,6 @@ Bấm Hủy để bỏ các tính toán phân chia hoặc Đồng ý để tiế
         <source>Rows will be reordered before linking boundaries. Continue?</source>
         <translation>Các hàng sẽ được sắp thứ tự lại trước khi liên kết các biên. Có tiếp tục không?</translation>
     </message>
-    <message>
-        <source>Histogram</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Method</source>
-        <translation type="unfinished">Phương pháp</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Choose between color and size graduation. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;If you want to combine both, use a data-defined size for the symbol and graduate by color.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Size from </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>to</source>
-        <translation type="unfinished">đến</translation>
-    </message>
 </context>
 <context>
     <name>QgsGrassAttributes</name>
@@ -30122,82 +28104,82 @@ Bấm Hủy để bỏ các tính toán phân chia hoặc Đồng ý để tiế
     <name>QgsGrassBrowser</name>
     <message>
         <source>Tools</source>
-        <translation type="obsolete">Các công cụ</translation>
+        <translation>Các công cụ</translation>
     </message>
     <message>
         <source>Add selected map to canvas</source>
-        <translation type="obsolete">Thêm bản đồ đã chọn vào khung</translation>
+        <translation>Thêm bản đồ đã chọn vào khung</translation>
     </message>
     <message>
         <source>Copy selected map</source>
-        <translation type="obsolete">Chép bản đồ đã chọn</translation>
+        <translation>Chép bản đồ đã chọn</translation>
     </message>
     <message>
         <source>Rename selected map</source>
-        <translation type="obsolete">Đặt tên lại cho bản đồ đã chọn</translation>
+        <translation>Đặt tên lại cho bản đồ đã chọn</translation>
     </message>
     <message>
         <source>Delete selected map</source>
-        <translation type="obsolete">Xóa bản đồ đã chọn</translation>
+        <translation>Xóa bản đồ đã chọn</translation>
     </message>
     <message>
         <source>Set current region to selected map</source>
-        <translation type="obsolete">Thiết lập vùng hiện tại theo bản đồ đã chọn</translation>
+        <translation>Thiết lập vùng hiện tại theo bản đồ đã chọn</translation>
     </message>
     <message>
         <source>Refresh</source>
-        <translation type="obsolete">Làm tươi lại</translation>
+        <translation>Làm tươi lại</translation>
     </message>
     <message>
         <source>New name</source>
-        <translation type="obsolete">Tên mới</translation>
+        <translation>Tên mới</translation>
     </message>
     <message>
         <source>New name for layer &quot;%1&quot;</source>
-        <translation type="obsolete">Tên mới cho lớp &quot;%1&quot;</translation>
+        <translation>Tên mới cho lớp &quot;%1&quot;</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="obsolete">Cảnh báo</translation>
+        <translation>Cảnh báo</translation>
     </message>
     <message>
         <source>Cannot copy map %1@%2</source>
-        <translation type="obsolete">Không thể chép bản đồ %1@%2</translation>
+        <translation>Không thể chép bản đồ %1@%2</translation>
     </message>
     <message>
         <source>&lt;br&gt;command: %1 %2&lt;br&gt;%3&lt;br&gt;%4</source>
-        <translation type="obsolete">&lt;br&gt;lệnh: %1 %2&lt;br&gt;%3&lt;br&gt;%4</translation>
+        <translation>&lt;br&gt;lệnh: %1 %2&lt;br&gt;%3&lt;br&gt;%4</translation>
     </message>
     <message>
         <source>Cannot rename map %1</source>
-        <translation type="obsolete">Không thể đặt lại tên bản đồ %1</translation>
+        <translation>Không thể đặt lại tên bản đồ %1</translation>
     </message>
     <message>
         <source>Information</source>
-        <translation type="obsolete">Thông tin</translation>
+        <translation>Thông tin</translation>
     </message>
     <message>
         <source>Remove the selected layer(s) from canvas before continue.</source>
-        <translation type="obsolete">Loại bỏ (các) lớp được chọn khỏi khung bản đồ trước khi tiếp tục.</translation>
+        <translation>Loại bỏ (các) lớp được chọn khỏi khung bản đồ trước khi tiếp tục.</translation>
     </message>
     <message>
         <source>Question</source>
-        <translation type="obsolete">Câu hỏi</translation>
+        <translation>Câu hỏi</translation>
     </message>
     <message numerus="yes">
         <source>Are you sure you want to delete %n selected layer(s)?</source>
         <comment>number of layers to delete</comment>
-        <translation type="obsolete">
+        <translation>
             <numerusform>Bạn có chắc mình muốn xóa %n lớp được chọn không?</numerusform>
         </translation>
     </message>
     <message>
         <source>Cannot delete map %1</source>
-        <translation type="obsolete">Không thể xoá bản đồ %1</translation>
+        <translation>Không thể xoá bản đồ %1</translation>
     </message>
     <message>
         <source>Cannot write new region</source>
-        <translation type="obsolete">Không thể ghi vùng mới</translation>
+        <translation>Không thể ghi vùng mới</translation>
     </message>
 </context>
 <context>
@@ -30597,20 +28579,6 @@ Bấm Hủy để bỏ các tính toán phân chia hoặc Đồng ý để tiế
     </message>
 </context>
 <context>
-    <name>QgsGrassImportItem</name>
-    <message>
-        <source>Cancel</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QgsGrassItemActions</name>
-    <message>
-        <source>GRASS Options</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>QgsGrassMapcalc</name>
     <message>
         <source>Mapcalc tools</source>
@@ -30929,69 +28897,6 @@ tại dòng %2 cột %3</translation>
     <message>
         <source>Output</source>
         <translation>Đầu ra</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGrassMapsetItem</name>
-    <message>
-        <source>topology missing</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>topology version not supported</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>topology version 6</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>topology version 7</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>empty</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>%1 layer type not supported</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot create provider %1 : %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Provider is not valid  %1 : %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot get default location region.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot delete %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Import to GRASS mapset</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Failed to import some layers!
-
-</source>
-        <translation type="unfinished">Thất bại khi nhập một số lớp!
-
-</translation>
-    </message>
-    <message>
-        <source>Import to GRASS mapset failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Failed to import %1 to %2: %3</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -31527,6 +29432,10 @@ tại dòng %2 cột %3</translation>
         <source>New mapset successfully created and set as current working mapset.</source>
         <translation>Bộ bản đồ mới được tạo thành công và được thiết lập thành bộ bản đồ làm việc hiện tại.</translation>
     </message>
+    <message>
+        <source>Cannot activate grass</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsGrassNewMapsetBase</name>
@@ -31703,68 +29612,26 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>QgsGrassObjectItem</name>
-    <message>
-        <source>Rename</source>
-        <translation type="unfinished">Đổi tên</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation type="unfinished">Xóa</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGrassOptionsBase</name>
-    <message>
-        <source>GRASS Options</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Browser</source>
-        <translation type="unfinished">Trình duyệt</translation>
-    </message>
-    <message>
-        <source>Import</source>
-        <translation type="unfinished">Nhập</translation>
-    </message>
-    <message>
-        <source>CRS transformation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Approximate CRS transformation is fast but it may be inaccurate.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Create a link to the external data for GDAL data sources with the same CRS as target mapset by r.external, instead of making copy of data.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Create link to external data if possible</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>QgsGrassPlugin</name>
     <message>
         <source>GrassVector</source>
-        <translation type="obsolete">GrassVector</translation>
+        <translation>GrassVector</translation>
     </message>
     <message>
         <source>0.1</source>
-        <translation type="obsolete">0.1</translation>
+        <translation>0.1</translation>
     </message>
     <message>
         <source>GRASS layer</source>
-        <translation type="obsolete">Lớp  GRASS</translation>
+        <translation>Lớp  GRASS</translation>
     </message>
     <message>
         <source>Plugins</source>
-        <translation type="obsolete">Các phần mở rộng</translation>
+        <translation>Các phần mở rộng</translation>
     </message>
     <message>
         <source>Add GRASS raster layer</source>
-        <translation type="obsolete">Thêm lớp raster GRASS</translation>
+        <translation>Thêm lớp raster GRASS</translation>
     </message>
     <message>
         <source>Open GRASS tools</source>
@@ -31796,15 +29663,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Add GRASS Vector Layer</source>
-        <translation type="obsolete">Thêm lớp vector GRASS</translation>
+        <translation>Thêm lớp vector GRASS</translation>
     </message>
     <message>
         <source>Adds a GRASS vector layer to the map canvas</source>
-        <translation type="obsolete">Thêm một lớp vector GRASS vào khung bản đồ</translation>
+        <translation>Thêm một lớp vector GRASS vào khung bản đồ</translation>
     </message>
     <message>
         <source>Adds a GRASS raster layer to the map canvas</source>
-        <translation type="obsolete">Thêm một lớp raster GRASS vào khung bản đồ</translation>
+        <translation>Thêm một lớp raster GRASS vào khung bản đồ</translation>
     </message>
     <message>
         <source>Open GRASS Tools</source>
@@ -31840,16 +29707,16 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Cannot open vector %1 in mapset %2 on level 2 (topology not available, try to rebuild topology using v.build module).</source>
-        <translation type="obsolete">Không thể mở vec-tơ %1 trong bộ bản đồ %2 ở mức 2 (không có tô-pô, hãy thử dựng lại tô-pô bằng mô-đun v/build).</translation>
+        <translation>Không thể mở vec-tơ %1 trong bộ bản đồ %2 ở mức 2 (không có tô-pô, hãy thử dựng lại tô-pô bằng mô-đun v/build).</translation>
     </message>
     <message>
         <source>Cannot open vector %1 in mapset %2</source>
-        <translation type="obsolete">Không thể mở vec-tơ %1 trong bộ bản đồ %2</translation>
+        <translation>Không thể mở vec-tơ %1 trong bộ bản đồ %2</translation>
     </message>
     <message>
         <source>Cannot open GRASS vector:
  %1</source>
-        <translation type="obsolete">Không thể mở vector GRASS:
+        <translation>Không thể mở vector GRASS:
 %1</translation>
     </message>
     <message>
@@ -31906,17 +29773,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>GRASS vector map %1 does not have topology. Build topology?</source>
         <translation>Bản đồ vector GRASS %1 không có tô-pô. Có xây dựng tô-pô không?</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGrassRasterImport</name>
-    <message>
-        <source>Data type %1 not supported</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot convert block (%1) to data type %2</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -32151,7 +30007,7 @@ hoặc thay đổi các giá trị sau</translation>
     </message>
     <message>
         <source>Browser</source>
-        <translation type="obsolete">Trình duyệt</translation>
+        <translation>Trình duyệt</translation>
     </message>
     <message>
         <source>Direct Modules Tree</source>
@@ -32223,17 +30079,6 @@ tại dòng %2 cột %3</translation>
     <message>
         <source>Direct Modules List</source>
         <translation>Danh sách mô-đun trực tiếp</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGrassVectorItem</name>
-    <message>
-        <source>Rename</source>
-        <translation type="unfinished">Đổi tên</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation type="unfinished">Xóa</translation>
     </message>
 </context>
 <context>
@@ -32362,15 +30207,15 @@ tại dòng %2 cột %3</translation>
     </message>
     <message>
         <source>Pixels</source>
-        <translation type="obsolete">Điểm ảnh</translation>
+        <translation>Điểm ảnh</translation>
     </message>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">mm</translation>
+        <translation>mm</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Đơn vị bản đồ</translation>
+        <translation>Đơn vị bản đồ</translation>
     </message>
 </context>
 <context>
@@ -32432,29 +30277,6 @@ tại dòng %2 cột %3</translation>
     <message>
         <source>about:blank</source>
         <translation>nói về:rỗng</translation>
-    </message>
-</context>
-<context>
-    <name>QgsHistogramWidgetBase</name>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished">Biểu mẫu</translation>
-    </message>
-    <message>
-        <source>Histogram bins</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show mean value</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show standard deviation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Load values</source>
-        <translation type="unfinished">Các giá trị nạp</translation>
     </message>
 </context>
 <context>
@@ -32562,11 +30384,11 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Expand tree</source>
-        <translation type="obsolete">Mở rộng cây sơ đồ</translation>
+        <translation>Mở rộng cây sơ đồ</translation>
     </message>
     <message>
         <source>Collapse tree</source>
-        <translation type="obsolete">Thu gọn cây sơ đồ</translation>
+        <translation>Thu gọn cây sơ đồ</translation>
     </message>
     <message>
         <source>Layer</source>
@@ -32586,7 +30408,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>...</source>
-        <translation type="obsolete">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Clear Results</source>
@@ -32627,30 +30449,6 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <source>Print selected HTML response.</source>
         <translation>In phản hồi HTML được chọn.</translation>
-    </message>
-    <message>
-        <source>Expand Tree</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Collapse Tree</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Expand New Results</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Copy Feature</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Print Response</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -32987,41 +30785,6 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
 </context>
 <context>
-    <name>QgsJoinDialogBase</name>
-    <message>
-        <source>Add vector join</source>
-        <translation type="unfinished">Thêm kết nối véc-tơ</translation>
-    </message>
-    <message>
-        <source>Join layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Join field</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Target field</source>
-        <translation type="unfinished">Trường đích</translation>
-    </message>
-    <message>
-        <source>Choose which fields are joined</source>
-        <translation type="unfinished">Chọn các trường cần nối</translation>
-    </message>
-    <message>
-        <source>Custom field name prefix</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cache join layer in virtual memory</source>
-        <translation type="unfinished">Nhớ đệm lớp kết nối trong bộ nhớ ảo</translation>
-    </message>
-    <message>
-        <source>Create attribute index on join field</source>
-        <translation type="unfinished">Tạo chỉ mục thuộc tính trên trường kết nối</translation>
-    </message>
-</context>
-<context>
     <name>QgsLUDialogBase</name>
     <message>
         <source>Enter class bounds</source>
@@ -33280,10 +31043,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <source>Buffer color</source>
         <translation>Màu đệm</translation>
     </message>
-    <message>
-        <source>Layer default (%1)</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsLabelPropertyDialogBase</name>
@@ -33416,15 +31175,15 @@ This may be a problem in your network connection or at the WMS server.</source>
     <name>QgsLabelingGui</name>
     <message>
         <source>points</source>
-        <translation type="obsolete">điểm</translation>
+        <translation>điểm</translation>
     </message>
     <message>
         <source>map units</source>
-        <translation type="obsolete">đơn vị bản đồ</translation>
+        <translation>đơn vị bản đồ</translation>
     </message>
     <message>
         <source>mm</source>
-        <translation type="obsolete">mm</translation>
+        <translation>mm</translation>
     </message>
     <message>
         <source>% of length</source>
@@ -33549,22 +31308,6 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <source>File not found</source>
         <translation>Không thấy tập tin</translation>
-    </message>
-    <message>
-        <source>Points</source>
-        <translation type="unfinished">Điểm</translation>
-    </message>
-    <message>
-        <source>Map unit</source>
-        <translation type="unfinished">Đơn vị bản đồ</translation>
-    </message>
-    <message>
-        <source>Millimeter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Follow label placement</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -34271,11 +32014,11 @@ This may be a problem in your network connection or at the WMS server.</source>
     <name>QgsLinePatternFillSymbolLayerWidget</name>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Mi-li-mét</translation>
+        <translation>Mi-li-mét</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Đơn vị bản đồ</translation>
+        <translation>Đơn vị bản đồ</translation>
     </message>
 </context>
 <context>
@@ -34442,31 +32185,19 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Enter X and Y coordinates (DMS (dd mm ss.ss), DD (dd.dd) or projected coordinates (mmmm.mm)) which correspond with the selected point on the image. Alternatively, click the button with icon of a pencil and then click a corresponding point on map canvas of QGIS to fill in coordinates of that point.</source>
-        <translation type="obsolete">Nhập các tọa độ X và Y (ĐPG (đđ pp gg.gg), ĐĐ (đđ.đđ) hoặc tọa độ đã tham chiếu (mmmm.mm)) tương ứng với điểm đã chọn trên ảnh. Một cách khác là nhắp chuột chọn biểu tượng cây bút rồi nhắp chuột vào điểm tương ứng trên khung bản đồ của QGIS để điền tọa độ của điểm đó.</translation>
+        <translation>Nhập các tọa độ X và Y (ĐPG (đđ pp gg.gg), ĐĐ (đđ.đđ) hoặc tọa độ đã tham chiếu (mmmm.mm)) tương ứng với điểm đã chọn trên ảnh. Một cách khác là nhắp chuột chọn biểu tượng cây bút rồi nhắp chuột vào điểm tương ứng trên khung bản đồ của QGIS để điền tọa độ của điểm đó.</translation>
     </message>
     <message>
         <source>X / East:</source>
-        <translation type="obsolete">X / Đông:</translation>
+        <translation>X / Đông:</translation>
     </message>
     <message>
         <source>Y / North:</source>
-        <translation type="obsolete">Y / Bắc:</translation>
+        <translation>Y / Bắc:</translation>
     </message>
     <message>
         <source>Snap to background layers</source>
         <translation>Bắt vào các lớp nền</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter X and Y coordinates (DMS (&lt;span style=&quot; font-style:italic;&quot;&gt;dd mm ss.ss&lt;/span&gt;), DD (&lt;span style=&quot; font-style:italic;&quot;&gt;dd.dd&lt;/span&gt;) or projected coordinates (&lt;span style=&quot; font-style:italic;&quot;&gt;mmmm.mm&lt;/span&gt;)) which correspond with the selected point on the image. Alternatively, click the button with icon of a pencil and then click a corresponding point on map canvas of QGIS to fill in coordinates of that point.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Y / North</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>X / East</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -35246,11 +32977,11 @@ This may be a problem in your network connection or at the WMS server.</source>
     <name>QgsMarkerLineSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Mi-li-mét</translation>
+        <translation>Mi-li-mét</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Đơn vị bản đồ</translation>
+        <translation>Đơn vị bản đồ</translation>
     </message>
     <message>
         <source>string </source>
@@ -35332,19 +33063,19 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Meters</source>
-        <translation type="obsolete">Mét</translation>
+        <translation>Mét</translation>
     </message>
     <message>
         <source>Feet</source>
-        <translation type="obsolete">Bộ Anh</translation>
+        <translation>Bộ Anh</translation>
     </message>
     <message>
         <source>Degrees</source>
-        <translation type="obsolete">Độ</translation>
+        <translation>Độ</translation>
     </message>
     <message>
         <source>Nautical Miles</source>
-        <translation type="obsolete">Hải lý</translation>
+        <translation>Hải lý</translation>
     </message>
 </context>
 <context>
@@ -36183,43 +33914,6 @@ Ghi chú: cấp mật mã là tùy chọn. Nó sẽ được hỏi ở chế đ�
     </message>
 </context>
 <context>
-    <name>QgsNewNameDialog</name>
-    <message>
-        <source>New name</source>
-        <translation type="unfinished">Tên mới</translation>
-    </message>
-    <message>
-        <source>name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>base name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Enter new %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Enter new %1 for %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Full names</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message numerus="yes">
-        <source>Name(s) %1 exists</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-        </translation>
-    </message>
-    <message>
-        <source>Overwrite</source>
-        <translation type="unfinished">Ghi đè</translation>
-    </message>
-</context>
-<context>
     <name>QgsNewOgrConnection</name>
     <message>
         <source>Test connection</source>
@@ -36766,18 +34460,6 @@ Thông tin bổ sung về lỗi:
 %1</source>
         <translation>Thất bại khi xuất dữ liệu OSM:
 %1</translation>
-    </message>
-    <message>
-        <source>Select All</source>
-        <translation type="unfinished">Chọn tất cả</translation>
-    </message>
-    <message>
-        <source>Unselect All</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Not null</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -37989,7 +35671,7 @@ Luôn dùng mạng: luôn nạp từ mạng và không cần kiểm tra nếu b�
     </message>
     <message>
         <source>Icon theme</source>
-        <translation type="obsolete">Sắc thái của biểu tượng</translation>
+        <translation>Sắc thái của biểu tượng</translation>
     </message>
     <message>
         <source>Icon size</source>
@@ -38037,7 +35719,7 @@ Luôn dùng mạng: luôn nạp từ mạng và không cần kiểm tra nếu b�
     </message>
     <message>
         <source>Bold group box titles</source>
-        <translation type="obsolete">Tiêu đề ô nhóm dạng chữ đậm</translation>
+        <translation>Tiêu đề ô nhóm dạng chữ đậm</translation>
     </message>
     <message>
         <source>QGIS-styled group boxes</source>
@@ -38437,7 +36119,7 @@ Luôn dùng mạng: luôn nạp từ mạng và không cần kiểm tra nếu b�
     </message>
     <message>
         <source>Custom side bar style</source>
-        <translation type="obsolete">Kiểu thanh bên tùy biến</translation>
+        <translation>Kiểu thanh bên tùy biến</translation>
     </message>
     <message>
         <source>Add Oracle layers with double click and select in extended mode</source>
@@ -38955,10 +36637,6 @@ Luôn dùng mạng: luôn nạp từ mạng và không cần kiểm tra nếu b�
         <source>Default uses system&apos;s proxy</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Execute expressions on postgres server-side if possible (Experimental)</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsOptionsDialogBase</name>
@@ -39160,15 +36838,9 @@ lỗi:%2</translation>
         <source>Connection failed - Check settings and try again.
 
 </source>
-        <translation type="obsolete">Kết nối thất bại - Kiểm tra các thiết lập và thử lại.
+        <translation>Kết nối thất bại - Kiểm tra các thiết lập và thử lại.
 
 </translation>
-    </message>
-    <message>
-        <source>Connection failed - consult message log for details.
-
-</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -39678,14 +37350,6 @@ Error: %2</source>
         <translation>Lỗi Oracle: %1
 Lỗi: %2</translation>
     </message>
-    <message>
-        <source>Could not prepare get feature id statement</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not retrieve feature id %1</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsOracleRootItem</name>
@@ -39945,15 +37609,11 @@ Lỗi: %2</translation>
     <name>QgsPGLayerItem</name>
     <message>
         <source>Delete layer</source>
-        <translation type="obsolete">Xoá lớp</translation>
+        <translation>Xoá lớp</translation>
     </message>
     <message>
         <source>Layer deleted successfully.</source>
         <translation>Xóa lớp thành công.</translation>
-    </message>
-    <message>
-        <source>Delete Layer</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -40132,15 +37792,9 @@ Lỗi: %2</translation>
         <source>Connection failed - Check settings and try again.
 
 </source>
-        <translation type="obsolete">Kết nối thất bại - Kiểm tra các thiết lập và thử lại.
+        <translation>Kết nối thất bại - Kiểm tra các thiết lập và thử lại.
 
 </translation>
-    </message>
-    <message>
-        <source>Connection failed - consult message log for details.
-
-</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -41347,11 +39001,11 @@ p, li { white-space: pre-wrap; }
     <name>QgsPointPatternFillSymbolLayerWidget</name>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Mi-li-mét</translation>
+        <translation>Mi-li-mét</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Đơn vị bản đồ</translation>
+        <translation>Đơn vị bản đồ</translation>
     </message>
 </context>
 <context>
@@ -41469,35 +39123,35 @@ Kết quả: %3 (%4)</translation>
     </message>
     <message>
         <source>Point</source>
-        <translation type="obsolete">Điểm</translation>
+        <translation>Điểm</translation>
     </message>
     <message>
         <source>Multipoint</source>
-        <translation type="obsolete">Điểm đa phần</translation>
+        <translation>Điểm đa phần</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="obsolete">Đường</translation>
+        <translation>Đường</translation>
     </message>
     <message>
         <source>Multiline</source>
-        <translation type="obsolete">Đường đa phần</translation>
+        <translation>Đường đa phần</translation>
     </message>
     <message>
         <source>Polygon</source>
-        <translation type="obsolete">Vùng</translation>
+        <translation>Vùng</translation>
     </message>
     <message>
         <source>Multipolygon</source>
-        <translation type="obsolete">Vùng đa phần</translation>
+        <translation>Vùng đa phần</translation>
     </message>
     <message>
         <source>No Geometry</source>
-        <translation type="obsolete">Không có hình học</translation>
+        <translation>Không có hình học</translation>
     </message>
     <message>
         <source>Unknown Geometry</source>
-        <translation type="obsolete">Hình học không rõ</translation>
+        <translation>Hình học không rõ</translation>
     </message>
     <message>
         <source>None</source>
@@ -41522,14 +39176,6 @@ Kết quả: %3 (%4)</translation>
     <message>
         <source>PQgetCancel failed</source>
         <translation>PQgetCancel thất bại</translation>
-    </message>
-    <message>
-        <source>Unsupported spatial column type %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>PcPatch</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -41753,10 +39399,6 @@ PostGIS %2</source>
 %1
 PostGIS %2</translation>
     </message>
-    <message>
-        <source>Primary key is ctid - changing of existing features disabled (%1; %2)</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsProject</name>
@@ -41818,7 +39460,7 @@ Chọn bỏ qua để tiếp tục nạp mà không có các lớp bị thiếu.
     <name>QgsProjectColorScheme</name>
     <message>
         <source>Project colors</source>
-        <translation type="obsolete">Các màu của dự án</translation>
+        <translation>Các màu của dự án</translation>
     </message>
 </context>
 <context>
@@ -42955,22 +40597,6 @@ p, li { white-space: pre-wrap; }
         <source>Raster calculator expression</source>
         <translation>Biểu thức tính toán raster</translation>
     </message>
-    <message>
-        <source>Output CRS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>!=</source>
-        <translation type="unfinished">!=</translation>
-    </message>
-    <message>
-        <source>log10</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>ln</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsRasterDataProvider</name>
@@ -42999,15 +40625,15 @@ p, li { white-space: pre-wrap; }
     <name>QgsRasterFillSymbolLayerWidget</name>
     <message>
         <source>Pixels</source>
-        <translation type="obsolete">Điểm ảnh</translation>
+        <translation>Điểm ảnh</translation>
     </message>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">mm</translation>
+        <translation>mm</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Đơn vị bản đồ</translation>
+        <translation>Đơn vị bản đồ</translation>
     </message>
     <message>
         <source>Select image file</source>
@@ -44133,7 +41759,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Create GDAL Virtual Format composed of multiple 
 datasets with maximum width and height specified below.</source>
-        <translation type="obsolete">Tạo Định dạng Ảo GDAL được tổ hợp từ nhiều bộ dữ liệu 
+        <translation>Tạo Định dạng Ảo GDAL được tổ hợp từ nhiều bộ dữ liệu 
 với chiều rộng và cao lớn nhất được chỉ định dưới đây.</translation>
     </message>
     <message>
@@ -44252,15 +41878,6 @@ với chiều rộng và cao lớn nhất được chỉ định dưới đây.<
         <source>Clear all</source>
         <translation>Xoá tất cả</translation>
     </message>
-    <message>
-        <source>Create GDAL Virtual Format composed of multiple
-datasets with maximum width and height specified below.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add saved file to map</source>
-        <translation type="unfinished">Thêm tập tin được lưu vào bản đồ</translation>
-    </message>
 </context>
 <context>
     <name>QgsRasterMinMaxWidget</name>
@@ -44334,17 +41951,6 @@ standard deviation ×</source>
     <message>
         <source>Load</source>
         <translation>Nạp</translation>
-    </message>
-</context>
-<context>
-    <name>QgsRasterProjector</name>
-    <message>
-        <source>Approximate</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Exact</source>
-        <translation type="unfinished">Chính xác</translation>
     </message>
 </context>
 <context>
@@ -44655,7 +42261,7 @@ standard deviation ×</source>
     <name>QgsRecentColorScheme</name>
     <message>
         <source>Recent colors</source>
-        <translation type="obsolete">Các màu dùng gần đây</translation>
+        <translation>Các màu dùng gần đây</translation>
     </message>
 </context>
 <context>
@@ -44691,22 +42297,6 @@ standard deviation ×</source>
     <message>
         <source>Order by value</source>
         <translation>Sắp thứ tự theo giá trị</translation>
-    </message>
-    <message>
-        <source>Filters</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="unfinished">...</translation>
-    </message>
-    <message>
-        <source>When activated, the filters will restrict the choices of fields to options that are </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Chain filters</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -44879,11 +42469,7 @@ standard deviation ×</source>
     </message>
     <message>
         <source>Identify a feature of %1 to be associated. Press &lt;ESC&gt; to cancel.</source>
-        <translation type="obsolete">Nhận diện một đối tượng của %1 cần được gắn kết. Nhấn &lt;ESC&gt; để hủy.</translation>
-    </message>
-    <message>
-        <source>Identify a feature of %1 to be associated. Press &amp;lt;ESC&amp;gt; to cancel.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nhận diện một đối tượng của %1 cần được gắn kết. Nhấn &lt;ESC&gt; để hủy.</translation>
     </message>
 </context>
 <context>
@@ -45058,23 +42644,19 @@ standard deviation ×</source>
     </message>
     <message>
         <source>Width</source>
-        <translation type="obsolete">Chiều rộng</translation>
+        <translation>Chiều rộng</translation>
     </message>
     <message>
         <source>Change symbol width</source>
-        <translation type="obsolete">Thay đổi chiều rộng biểu tượng</translation>
+        <translation>Thay đổi chiều rộng biểu tượng</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation type="obsolete">Kích thước</translation>
+        <translation>Kích thước</translation>
     </message>
     <message>
         <source>Change symbol size</source>
-        <translation type="obsolete">Thay đổi kích thước biểu tượng</translation>
-    </message>
-    <message>
-        <source>Change angle</source>
-        <translation type="unfinished"></translation>
+        <translation>Thay đổi kích thước biểu tượng</translation>
     </message>
 </context>
 <context>
@@ -45283,15 +42865,11 @@ standard deviation ×</source>
     <name>QgsSLLayerItem</name>
     <message>
         <source>Delete layer</source>
-        <translation type="obsolete">Xoá lớp</translation>
+        <translation>Xoá lớp</translation>
     </message>
     <message>
         <source>Layer deleted successfully.</source>
         <translation>Xóa lớp thành công.</translation>
-    </message>
-    <message>
-        <source>Delete Layer</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -45334,11 +42912,11 @@ standard deviation ×</source>
     </message>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Mi-li-mét</translation>
+        <translation>Mi-li-mét</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Đơn vị bản đồ</translation>
+        <translation>Đơn vị bản đồ</translation>
     </message>
     <message>
         <source>Select fill color</source>
@@ -45454,13 +43032,6 @@ standard deviation ×</source>
     <message>
         <source>Scale visibility </source>
         <translation>Mức độ nhìn thấy theo tỷ lệ </translation>
-    </message>
-</context>
-<context>
-    <name>QgsScaleWidget</name>
-    <message>
-        <source>Set to current canvas scale</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -45619,13 +43190,6 @@ standard deviation ×</source>
     </message>
 </context>
 <context>
-    <name>QgsShadowEffectWidget</name>
-    <message>
-        <source>Select shadow color</source>
-        <translation type="unfinished">Chọn màu bóng đổ</translation>
-    </message>
-</context>
-<context>
     <name>QgsShapeFile</name>
     <message>
         <source>Scanning </source>
@@ -45664,11 +43228,11 @@ Lỗi là:
     <name>QgsShapeburstFillSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Mi-li-mét</translation>
+        <translation>Mi-li-mét</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Đơn vị bản đồ</translation>
+        <translation>Đơn vị bản đồ</translation>
     </message>
     <message>
         <source>Select gradient color</source>
@@ -45687,11 +43251,11 @@ Lỗi là:
     <name>QgsSimpleFillSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Mi-li-mét</translation>
+        <translation>Mi-li-mét</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Đơn vị bản đồ</translation>
+        <translation>Đơn vị bản đồ</translation>
     </message>
     <message>
         <source>Select fill color</source>
@@ -45714,11 +43278,11 @@ Lỗi là:
     <name>QgsSimpleLineSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Mi-li-mét</translation>
+        <translation>Mi-li-mét</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Đơn vị bản đồ</translation>
+        <translation>Đơn vị bản đồ</translation>
     </message>
     <message>
         <source>Select line color</source>
@@ -45729,11 +43293,11 @@ Lỗi là:
     <name>QgsSimpleMarkerSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Mi-li-mét</translation>
+        <translation>Mi-li-mét</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Đơn vị bản đồ</translation>
+        <translation>Đơn vị bản đồ</translation>
     </message>
     <message>
         <source>Select fill color</source>
@@ -45754,10 +43318,6 @@ Lỗi là:
     <message>
         <source>string </source>
         <translation>chuỗi </translation>
-    </message>
-    <message>
-        <source>Size Assistant...</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -46003,25 +43563,6 @@ tăng cường</translation>
     <message>
         <source>Symbol levels...</source>
         <translation>Các cấp biểu tượng...</translation>
-    </message>
-</context>
-<context>
-    <name>QgsSizeScaleWidget</name>
-    <message>
-        <source>Compute from layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Flannery</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Surface</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Radius</source>
-        <translation type="unfinished">Bán kính</translation>
     </message>
 </context>
 <context>
@@ -47237,40 +44778,6 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>QgsStatisticalSummaryDockWidget</name>
-    <message>
-        <source>Missing (null) values</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QgsStatisticalSummaryWidgetBase</name>
-    <message>
-        <source>Statistics</source>
-        <translation type="unfinished">Thống kê</translation>
-    </message>
-    <message>
-        <source>Statistic</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="unfinished">Giá trị</translation>
-    </message>
-    <message>
-        <source>Selected features only</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Recalculate Statistics</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="unfinished">...</translation>
-    </message>
-</context>
-<context>
     <name>QgsStyleV2ExportImportDialog</name>
     <message>
         <source>Select all</source>
@@ -47719,7 +45226,7 @@ Có trục trặc với CSDL biểu tượng của bạn.</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation type="obsolete">Chỉnh sửa</translation>
+        <translation>Chỉnh sửa</translation>
     </message>
     <message>
         <source>Remove item</source>
@@ -47727,7 +45234,7 @@ Có trục trặc với CSDL biểu tượng của bạn.</translation>
     </message>
     <message>
         <source>Share</source>
-        <translation type="obsolete">Chia xẻ</translation>
+        <translation>Chia xẻ</translation>
     </message>
 </context>
 <context>
@@ -47837,11 +45344,11 @@ Có trục trặc với CSDL biểu tượng của bạn.</translation>
     <name>QgsSvgMarkerSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Mi-li-mét</translation>
+        <translation>Mi-li-mét</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Đơn vị bản đồ</translation>
+        <translation>Đơn vị bản đồ</translation>
     </message>
     <message>
         <source>Select fill color</source>
@@ -47858,10 +45365,6 @@ Có trục trặc với CSDL biểu tượng của bạn.</translation>
     <message>
         <source>SVG files</source>
         <translation>Các tập tin SVG</translation>
-    </message>
-    <message>
-        <source>Size Assistant...</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -47989,11 +45492,11 @@ Có trục trặc với CSDL biểu tượng của bạn.</translation>
     <name>QgsSymbolsListWidget</name>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Mi-li-mét</translation>
+        <translation>Mi-li-mét</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Đơn vị bản đồ</translation>
+        <translation>Đơn vị bản đồ</translation>
     </message>
     <message>
         <source>Select color</source>
@@ -48022,14 +45525,6 @@ Có trục trặc với CSDL biểu tượng của bạn.</translation>
     <message>
         <source>Transparency %1%</source>
         <translation>Độ trong suốt %1%</translation>
-    </message>
-    <message>
-        <source>Clip features to canvas extent</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Size Assistant...</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -48134,7 +45629,7 @@ Có trục trặc với CSDL biểu tượng của bạn.</translation>
     </message>
     <message>
         <source>Become an QGIS translator</source>
-        <translation type="obsolete">Trở thành người dịch QGIS</translation>
+        <translation>Trở thành người dịch QGIS</translation>
     </message>
     <message>
         <source>QGIS Mailing lists</source>
@@ -48284,10 +45779,6 @@ Có trục trặc với CSDL biểu tượng của bạn.</translation>
         <source>QGIS has Plugins!</source>
         <translation>QGIS có các phần mở rộng!</translation>
     </message>
-    <message>
-        <source>Become a QGIS translator</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsTipGui</name>
@@ -48366,11 +45857,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Transformation type:</source>
-        <translation type="obsolete">Kiểu chuyển đổi:</translation>
+        <translation>Kiểu chuyển đổi:</translation>
     </message>
     <message>
         <source>Resampling method:</source>
-        <translation type="obsolete">Phương pháp lấy mẫu lại:</translation>
+        <translation>Phương pháp lấy mẫu lại:</translation>
     </message>
     <message>
         <source>Nearest neighbour</source>
@@ -48394,11 +45885,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Compression:</source>
-        <translation type="obsolete">Nén:</translation>
+        <translation>Nén:</translation>
     </message>
     <message>
         <source>Output raster:</source>
-        <translation type="obsolete">Ảnh raster đầu ra:</translation>
+        <translation>Ảnh raster đầu ra:</translation>
     </message>
     <message>
         <source>...</source>
@@ -48406,15 +45897,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Target SRS:</source>
-        <translation type="obsolete">HTĐ đích:</translation>
+        <translation>HTĐ đích:</translation>
     </message>
     <message>
         <source>Generate pdf report:</source>
-        <translation type="obsolete">Tạo báo cáo pdf:</translation>
+        <translation>Tạo báo cáo pdf:</translation>
     </message>
     <message>
         <source>Set Target Resolution</source>
-        <translation type="obsolete">Thiết lập độ phân giải đích</translation>
+        <translation>Thiết lập độ phân giải đích</translation>
     </message>
     <message>
         <source>Horizontal</source>
@@ -48426,11 +45917,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Create world file</source>
-        <translation type="obsolete">Tạo tập tin world</translation>
+        <translation>Tạo tập tin world</translation>
     </message>
     <message>
         <source>Generate pdf map:</source>
-        <translation type="obsolete">Tạo bản đồ pdf:</translation>
+        <translation>Tạo bản đồ pdf:</translation>
     </message>
     <message>
         <source>Use 0 for transparency when needed</source>
@@ -48466,27 +45957,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Info</source>
-        <translation type="obsolete">Thông tin</translation>
+        <translation>Thông tin</translation>
     </message>
     <message>
         <source>Please set output name</source>
-        <translation type="obsolete">Vui lòng thiết lập tên đầu ra</translation>
+        <translation>Vui lòng thiết lập tên đầu ra</translation>
     </message>
     <message>
         <source>%1 requires at least %2 GCPs. Please define more</source>
-        <translation type="obsolete">%1 đòi hỏi ít nhất %2 điểm khống chế. Vui lòng định nghĩa thêm</translation>
+        <translation>%1 đòi hỏi ít nhất %2 điểm khống chế. Vui lòng định nghĩa thêm</translation>
     </message>
     <message>
         <source>Invalid output file name</source>
-        <translation type="obsolete">Tên tập tin đầu ra không hợp lệ</translation>
+        <translation>Tên tập tin đầu ra không hợp lệ</translation>
     </message>
     <message>
         <source>Save raster</source>
-        <translation type="obsolete">Lưu ảnh raster</translation>
+        <translation>Lưu ảnh raster</translation>
     </message>
     <message>
         <source>Select save PDF file</source>
-        <translation type="obsolete">Chọn lưu tập tin PDF</translation>
+        <translation>Chọn lưu tập tin PDF</translation>
     </message>
     <message>
         <source>PDF Format</source>
@@ -48496,74 +45987,6 @@ p, li { white-space: pre-wrap; }
         <source>_modified</source>
         <comment>Georeferencer:QgsOpenRasterDialog.cpp - used to modify a user given file name</comment>
         <translation>_bị thay đổi</translation>
-    </message>
-    <message>
-        <source>Transformation parameters</source>
-        <translation type="unfinished">Các tham số chuyển đổi</translation>
-    </message>
-    <message>
-        <source>Transformation type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Resampling method</source>
-        <translation type="unfinished">Phương pháp lấy mẫu lại</translation>
-    </message>
-    <message>
-        <source>Target SRS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Output settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Output raster</source>
-        <translation type="unfinished">Lớp raster đầu ra</translation>
-    </message>
-    <message>
-        <source>Set target resolution</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Compression</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Create world file only (linear transforms)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Reports</source>
-        <translation type="unfinished">Các báo cáo</translation>
-    </message>
-    <message>
-        <source>Generate PDF map</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Generate PDF report</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Destination Raster</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invalid output file name.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Input raster can not be overwritten.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save Map File as</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save Report File as</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -48590,25 +46013,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Adjust scaling range</source>
         <translation>Điều chỉnh miền lấy tỷ lệ</translation>
-    </message>
-    <message>
-        <source>Millimeter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Pixels</source>
-        <translation type="unfinished">Điểm ảnh</translation>
-    </message>
-    <message>
-        <source>Map unit</source>
-        <translation type="unfinished">Đơn vị bản đồ</translation>
-    </message>
-</context>
-<context>
-    <name>QgsUserInputDockWidget</name>
-    <message>
-        <source>User input</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -48707,10 +46111,6 @@ Lỗi là: %2</translation>
     <message>
         <source>...</source>
         <translation>...</translation>
-    </message>
-    <message>
-        <source>Use Completer</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -49015,10 +46415,6 @@ Lỗi là: %2</translation>
         <source>Comment</source>
         <translation>Ghi chú</translation>
     </message>
-    <message>
-        <source>QGIS</source>
-        <translation type="unfinished">QGIS</translation>
-    </message>
 </context>
 <context>
     <name>QgsVectorLayerEditBuffer</name>
@@ -49286,10 +46682,6 @@ Lỗi là: %2</translation>
         <source>Restore Default</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>all</source>
-        <translation type="unfinished">tất cả</translation>
-    </message>
 </context>
 <context>
     <name>QgsVectorLayerPropertiesBase</name>
@@ -49299,11 +46691,11 @@ Lỗi là: %2</translation>
     </message>
     <message>
         <source>A widget to define the scale visibility</source>
-        <translation type="obsolete">Một công cụ để định nghĩa khả năng nhìn thấy theo tỷ lệ</translation>
+        <translation>Một công cụ để định nghĩa khả năng nhìn thấy theo tỷ lệ</translation>
     </message>
     <message>
         <source>A widget to define the scale visibility.</source>
-        <translation type="obsolete">Một công cụ để định nghĩa khả năng nhìn thấy theo tỷ lệ.</translation>
+        <translation>Một công cụ để định nghĩa khả năng nhìn thấy theo tỷ lệ.</translation>
     </message>
     <message>
         <source>Memory cache</source>
@@ -49427,7 +46819,7 @@ Lỗi là: %2</translation>
     </message>
     <message>
         <source>Feature subset</source>
-        <translation type="obsolete">Tập con đối tượng</translation>
+        <translation>Tập con đối tượng</translation>
     </message>
     <message>
         <source>Simplify geometry</source>
@@ -49532,18 +46924,6 @@ Lỗi là: %2</translation>
     <message>
         <source>Diagrams</source>
         <translation>Các biểu đồ</translation>
-    </message>
-    <message>
-        <source>Provider feature filter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Prefix</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Joined fields</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -49931,10 +47311,6 @@ Lỗi là: %2</translation>
     <message>
         <source>Coordinate reference system</source>
         <translation>Hệ tọa độ</translation>
-    </message>
-    <message>
-        <source>Only request features overlapping the current view extent</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -51383,53 +48759,6 @@ Mệnh đề nguyên nhân: %2</translation>
     </message>
 </context>
 <context>
-    <name>QgsZonalStatisticsDialog</name>
-    <message>
-        <source>Count</source>
-        <translation type="unfinished">Đếm</translation>
-    </message>
-    <message>
-        <source>Sum</source>
-        <translation type="unfinished">Tổng</translation>
-    </message>
-    <message>
-        <source>Mean</source>
-        <translation type="unfinished">Trung bình</translation>
-    </message>
-    <message>
-        <source>Median</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Standard deviation</source>
-        <translation type="unfinished">Độ lệch chuẩn</translation>
-    </message>
-    <message>
-        <source>Minimum</source>
-        <translation type="unfinished">Nhỏ nhất</translation>
-    </message>
-    <message>
-        <source>Maximum</source>
-        <translation type="unfinished">Lớn nhất</translation>
-    </message>
-    <message>
-        <source>Range</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Minority</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Majority</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Variety</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>QgsZonalStatisticsDialogBase</name>
     <message>
         <source>Raster layer:</source>
@@ -51445,14 +48774,6 @@ Mệnh đề nguyên nhân: %2</translation>
     </message>
     <message>
         <source>Zonal Statistics</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Band</source>
-        <translation type="unfinished">Băng</translation>
-    </message>
-    <message>
-        <source>Statistics to calculate:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -51495,6 +48816,22 @@ Please configure it before running R scripts.</source>
         <source>&lt;p&gt;This algorithm requires R to be run. Unfortunately it seems that R is not installed in your system or it is not correctly configured to be used from QGIS&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Click here&lt;/a&gt; to know more about how to install and configure R to be used with QGIS&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>&lt;p&gt;This algorithm requires R to be run. A test to check if R is correctly installed and configured in your system has been performed, with the following result:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>R seems to be correctly installed and configured&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;The script you have executed needs the following packages:&lt;/p&gt;&lt;ul&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;/ul&gt;&lt;p&gt;Make sure they are installed in your R environment before trying to execute this script.&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;&lt;a href= &quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Click here&lt;/a&gt; to know more about how to install and configure R to be used with QGIS&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>RAlgorithmProvider</name>
@@ -51517,10 +48854,6 @@ Please configure it before running R scripts.</source>
     <message>
         <source>Could not load R script: %s
 %s</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>R user library folder</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -51561,7 +48894,7 @@ Please configure it before running R scripts.</source>
     </message>
     <message>
         <source>Selection</source>
-        <translation type="obsolete">Chọn</translation>
+        <translation>Chọn</translation>
     </message>
     <message>
         <source>Selected number is greater than feature count. Choose a lower value and try again.</source>
@@ -51569,10 +48902,6 @@ Please configure it before running R scripts.</source>
     </message>
     <message>
         <source>Percentage can&apos;t be greater than 100. Set a different value and try again.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Extracted (random)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -51596,7 +48925,7 @@ Please configure it before running R scripts.</source>
     </message>
     <message>
         <source>Selection</source>
-        <translation type="obsolete">Chọn</translation>
+        <translation>Chọn</translation>
     </message>
     <message>
         <source>Selected number is greater that feature count. Choose lesser value and try again.</source>
@@ -51604,10 +48933,6 @@ Please configure it before running R scripts.</source>
     </message>
     <message>
         <source>Percentage can&apos;t be greater than 100. Set correct value and try again.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Extracted (random stratified)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -51781,7 +49106,7 @@ Please configure it before running R scripts.</source>
     </message>
     <message>
         <source>Selection</source>
-        <translation type="obsolete">Chọn</translation>
+        <translation>Chọn</translation>
     </message>
     <message>
         <source>Selected number is greater that feature count. Choose lesser value and try again.</source>
@@ -51789,10 +49114,6 @@ Please configure it before running R scripts.</source>
     </message>
     <message>
         <source>Percentage can&apos;t be greater than 100. Set a different value and try again.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Selection stratified</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -51842,16 +49163,12 @@ Please configure it before running R scripts.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Output table</source>
-        <translation type="obsolete">Bảng đầu ra</translation>
-    </message>
-    <message>
-        <source>Histogram</source>
+        <source>Output plot</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Table</source>
-        <translation type="unfinished">Bảng</translation>
+        <source>Output table</source>
+        <translation>Bảng đầu ra</translation>
     </message>
 </context>
 <context>
@@ -51949,7 +49266,7 @@ Please configure it before running R scripts.</source>
         <translation>HTĐ đích</translation>
     </message>
     <message>
-        <source>Reprojected</source>
+        <source>Reprojected layer</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -52261,10 +49578,6 @@ Multiband layers are not supported by SAGA</source>
 %s</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Activate</source>
-        <translation type="unfinished">Kích hoạt</translation>
-    </message>
 </context>
 <context>
     <name>SagaUtils</name>
@@ -52280,8 +49593,8 @@ Multiband layers are not supported by SAGA</source>
         <translation>Lớp đầu vào</translation>
     </message>
     <message>
-        <source>Selection</source>
-        <translation type="unfinished">Chọn</translation>
+        <source>Output layer with selected features</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -52293,7 +49606,7 @@ Multiband layers are not supported by SAGA</source>
     <message>
         <source>Could not load script: %s
 Problem with line: %d</source>
-        <translation type="obsolete">Không thể nạp tập lệnh: %s
+        <translation>Không thể nạp tập lệnh: %s
 Trục trặc tại dòng: %d</translation>
     </message>
     <message>
@@ -52309,16 +49622,6 @@ Trục trặc tại dòng: %d</translation>
 Problem with line %d</source>
         <translation>Không thể nạp tập lệnh: %s.
 Trục trặc tại dòng: %d</translation>
-    </message>
-    <message>
-        <source>Could not load script: %s
-Problem with line: %s</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not load script: %s.
-Problem with line &quot;%s&quot;</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -52389,7 +49692,7 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Đầu ra</translation>
+        <translation>Đầu ra</translation>
     </message>
     <message>
         <source>Operators %s can be used only with string fields.</source>
@@ -52411,37 +49714,6 @@ Problem with line &quot;%s&quot;</source>
         <source>Unsupported field type &quot;%s&quot;</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Selected (attribute)</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>SelectByAttributeSum</name>
-    <message>
-        <source>Input Layer</source>
-        <translation type="unfinished">Lớp đầu vào</translation>
-    </message>
-    <message>
-        <source>Selection attribute</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="unfinished">Giá trị</translation>
-    </message>
-    <message>
-        <source>Selected (attribute sum)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>There is no selection in the input layer. Select one feature and try again.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No adjacent features found.</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>SelectByExpression</name>
@@ -52459,11 +49731,7 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Đầu ra</translation>
-    </message>
-    <message>
-        <source>Selected (expression)</source>
-        <translation type="unfinished"></translation>
+        <translation>Đầu ra</translation>
     </message>
 </context>
 <context>
@@ -52486,11 +49754,7 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Selection</source>
-        <translation type="obsolete">Chọn</translation>
-    </message>
-    <message>
-        <source>Selected (location)</source>
-        <translation type="unfinished"></translation>
+        <translation>Chọn</translation>
     </message>
 </context>
 <context>
@@ -52547,7 +49811,7 @@ Problem with line &quot;%s&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Styled</source>
+        <source>Styled layer</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -52562,7 +49826,7 @@ Problem with line &quot;%s&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Styled</source>
+        <source>Styled layer</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -52747,11 +50011,11 @@ Problem with line &quot;%s&quot;</source>
         <translation>Độ cho phép</translation>
     </message>
     <message>
-        <source>Simplify: Input geometries have been simplified from %s to %s points</source>
+        <source>Simplified layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Simplified</source>
+        <source>Simplify: Input geometries have been simplified from %s to %s points</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -52794,77 +50058,15 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
+        <translation>Lớp đầu ra</translation>
     </message>
     <message>
         <source>Invalid unique ID field</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Multipart</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>SizeScaleBase</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="unfinished">Hộp thoại</translation>
-    </message>
-    <message>
-        <source>Field</source>
-        <translation type="unfinished">Trường</translation>
-    </message>
-    <message>
-        <source>Scale method</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Size from</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>to</source>
-        <translation type="unfinished">đến</translation>
-    </message>
-    <message>
-        <source>Values from</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Size when field is NULL</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>SlopeArea</name>
-    <message>
-        <source>Slope Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Contributing Area Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Slope Exponent</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Area Exponent</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Slope Area Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>SlopeAreaMulti</name>
     <message>
         <source>Slope Grid</source>
         <translation type="unfinished"></translation>
@@ -52914,19 +50116,11 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Output table</source>
-        <translation type="obsolete">Bảng đầu ra</translation>
+        <translation>Bảng đầu ra</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
-    </message>
-    <message>
-        <source>Joined table</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Joined layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp đầu ra</translation>
     </message>
 </context>
 <context>
@@ -52940,11 +50134,11 @@ Problem with line &quot;%s&quot;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Geometry exception while splitting</source>
+        <source>Split lines</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Splitted</source>
+        <source>Geometry exception while splitting</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -52983,11 +50177,7 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Statistics</source>
-        <translation type="obsolete">Thống kê</translation>
-    </message>
-    <message>
-        <source>Statistics by category</source>
-        <translation type="unfinished"></translation>
+        <translation>Thống kê</translation>
     </message>
 </context>
 <context>
@@ -53010,11 +50200,7 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Result</source>
-        <translation type="obsolete">Kết quả</translation>
-    </message>
-    <message>
-        <source>Line length</source>
-        <translation type="unfinished">Chiều dài đường</translation>
+        <translation>Kết quả</translation>
     </message>
 </context>
 <context>
@@ -53067,31 +50253,16 @@ Problem with line &quot;%s&quot;</source>
         <source> °</source>
         <translation> °</translation>
     </message>
-    <message>
-        <source>...</source>
-        <translation type="unfinished">...</translation>
-    </message>
 </context>
 <context>
     <name>SymetricalDifference</name>
     <message>
         <source>Input layer</source>
-        <translation type="obsolete">Lớp đầu vào</translation>
+        <translation>Lớp đầu vào</translation>
     </message>
     <message>
         <source>Difference layer</source>
-        <translation type="obsolete">Lớp sai biệt</translation>
-    </message>
-</context>
-<context>
-    <name>SymmetricalDifference</name>
-    <message>
-        <source>Input layer</source>
-        <translation type="unfinished">Lớp đầu vào</translation>
-    </message>
-    <message>
-        <source>Difference layer</source>
-        <translation type="unfinished">Lớp sai biệt</translation>
+        <translation>Lớp sai biệt</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
@@ -53140,35 +50311,6 @@ Problem with line &quot;%s&quot;</source>
         <source>TauDEM (hydrologic analysis)</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>TauDEM multifile command line tools folder</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Enable singlefile TauDEM tools</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Enable multifile TauDEM tools</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not open TauDEM algorithm %s:
-%s</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>TauDEMMultifileAlgorithm</name>
-    <message>
-        <source>Could not load TauDEM algorithm: %s
-%s</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>TauDEMUtils</name>
@@ -53193,11 +50335,7 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Đầu ra</translation>
-    </message>
-    <message>
-        <source>Float from text</source>
-        <translation type="unfinished"></translation>
+        <translation>Đầu ra</translation>
     </message>
 </context>
 <context>
@@ -53476,11 +50614,7 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Đầu ra</translation>
-    </message>
-    <message>
-        <source>Histogram</source>
-        <translation type="unfinished"></translation>
+        <translation>Đầu ra</translation>
     </message>
 </context>
 <context>
@@ -53499,11 +50633,7 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Đầu ra</translation>
-    </message>
-    <message>
-        <source>Scatterplot</source>
-        <translation type="unfinished"></translation>
+        <translation>Đầu ra</translation>
     </message>
 </context>
 <context>
@@ -53596,37 +50726,6 @@ Problem with line &quot;%s&quot;</source>
     </message>
 </context>
 <context>
-    <name>WidgetBlur</name>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished">Biểu mẫu</translation>
-    </message>
-    <message>
-        <source>Transparency</source>
-        <translation type="unfinished">Độ trong suốt</translation>
-    </message>
-    <message>
-        <source> %</source>
-        <translation type="unfinished"> %</translation>
-    </message>
-    <message>
-        <source>Blend mode</source>
-        <translation type="unfinished">Chế độ trộn</translation>
-    </message>
-    <message>
-        <source>Blur type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Blur strength</source>
-        <translation type="unfinished">Độ làm mờ</translation>
-    </message>
-    <message>
-        <source>Draw mode</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>WidgetCentroidFill</name>
     <message>
         <source>Form</source>
@@ -53635,76 +50734,6 @@ Problem with line &quot;%s&quot;</source>
     <message>
         <source>Force point inside polygon</source>
         <translation>Buộc điểm phải nằm trong vùng</translation>
-    </message>
-</context>
-<context>
-    <name>WidgetColorEffect</name>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished">Biểu mẫu</translation>
-    </message>
-    <message>
-        <source>Colorize</source>
-        <translation type="unfinished">Chỉnh màu</translation>
-    </message>
-    <message>
-        <source>Contrast</source>
-        <translation type="unfinished">Tương phản</translation>
-    </message>
-    <message>
-        <source>Brightness</source>
-        <translation type="unfinished">Độ sáng</translation>
-    </message>
-    <message>
-        <source>Saturation</source>
-        <translation type="unfinished">Độ bão hoà</translation>
-    </message>
-    <message>
-        <source>%</source>
-        <translation type="unfinished">%</translation>
-    </message>
-    <message>
-        <source>Transparency</source>
-        <translation type="unfinished">Độ trong suốt</translation>
-    </message>
-    <message>
-        <source>Blend mode</source>
-        <translation type="unfinished">Chế độ trộn</translation>
-    </message>
-    <message>
-        <source>Draw mode</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> %</source>
-        <translation type="unfinished"> %</translation>
-    </message>
-    <message>
-        <source>Grayscale</source>
-        <translation type="unfinished">Thang xám</translation>
-    </message>
-</context>
-<context>
-    <name>WidgetDrawSource</name>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished">Biểu mẫu</translation>
-    </message>
-    <message>
-        <source>Blend mode</source>
-        <translation type="unfinished">Chế độ trộn</translation>
-    </message>
-    <message>
-        <source>Transparency</source>
-        <translation type="unfinished">Độ trong suốt</translation>
-    </message>
-    <message>
-        <source> %</source>
-        <translation type="unfinished"> %</translation>
-    </message>
-    <message>
-        <source>Draw mode</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -53843,57 +50872,6 @@ Problem with line &quot;%s&quot;</source>
     <message utf8="true">
         <source> °</source>
         <translation> °</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="unfinished">...</translation>
-    </message>
-</context>
-<context>
-    <name>WidgetGlow</name>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished">Biểu mẫu</translation>
-    </message>
-    <message>
-        <source>Color ramp</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Spread</source>
-        <translation type="unfinished">Dãn ra</translation>
-    </message>
-    <message>
-        <source>Blur radius</source>
-        <translation type="unfinished">Bán kính làm mờ</translation>
-    </message>
-    <message>
-        <source>Transparency</source>
-        <translation type="unfinished">Độ trong suốt</translation>
-    </message>
-    <message>
-        <source>Single color</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Blend mode</source>
-        <translation type="unfinished">Chế độ trộn</translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation type="unfinished">Chỉnh sửa</translation>
-    </message>
-    <message>
-        <source>Invert</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> %</source>
-        <translation type="unfinished"> %</translation>
-    </message>
-    <message>
-        <source>Draw mode</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -54192,45 +51170,6 @@ Problem with line &quot;%s&quot;</source>
     <message utf8="true">
         <source> °</source>
         <translation> °</translation>
-    </message>
-</context>
-<context>
-    <name>WidgetShadowEffect</name>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished">Biểu mẫu</translation>
-    </message>
-    <message>
-        <source>Color</source>
-        <translation type="unfinished">Màu</translation>
-    </message>
-    <message>
-        <source>Transparency</source>
-        <translation type="unfinished">Độ trong suốt</translation>
-    </message>
-    <message>
-        <source>Offset</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Blend mode</source>
-        <translation type="unfinished">Chế độ trộn</translation>
-    </message>
-    <message>
-        <source>Blur radius</source>
-        <translation type="unfinished">Bán kính làm mờ</translation>
-    </message>
-    <message>
-        <source> %</source>
-        <translation type="unfinished"> %</translation>
-    </message>
-    <message utf8="true">
-        <source>˚</source>
-        <translation type="unfinished">˚</translation>
-    </message>
-    <message>
-        <source>Draw mode</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -54556,49 +51495,6 @@ Problem with line &quot;%s&quot;</source>
     </message>
 </context>
 <context>
-    <name>WidgetTransform</name>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished">Biểu mẫu</translation>
-    </message>
-    <message>
-        <source>Shear X,Y</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rotation</source>
-        <translation type="unfinished">Xoay</translation>
-    </message>
-    <message utf8="true">
-        <source> °</source>
-        <translation type="unfinished"> °</translation>
-    </message>
-    <message>
-        <source>Reflect horizontal</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Reflect vertical</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Translate X,Y</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>%</source>
-        <translation type="unfinished">%</translation>
-    </message>
-    <message>
-        <source>Scale X,Y</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Draw mode</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>WidgetVectorFieldBase</name>
     <message>
         <source>Form</source>
@@ -54700,11 +51596,7 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
-    </message>
-    <message>
-        <source>Zonal statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp đầu ra</translation>
     </message>
 </context>
 <context>
@@ -54841,11 +51733,7 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
-    </message>
-    <message>
-        <source>Virtual</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp đầu ra</translation>
     </message>
 </context>
 <context>
@@ -54952,7 +51840,7 @@ Chạy kiểm tra tô-pô lại.</translation>
     <message>
         <source>&lt;h3&gt;Database connection&lt;/h3&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Kết nối CSDL&lt;/h3&gt;</translation>
+        <translation>&lt;h3&gt;Kết nối CSDL&lt;/h3&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Create a new WMS connection&lt;/h3&gt;
@@ -54993,7 +51881,7 @@ On this tab you can search for WMS servers. It is possible to enter a search-str
 To visualize the results, select an table entry, press the &lt;label&gt;Add selected row to WMS list&lt;/label&gt; button and change back to the &lt;label&gt;Servers&lt;/label&gt; tab.&lt;p&gt;
 You only need to request the list of layers by clicking the &lt;label&gt;Connect&lt;/label&gt; button.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Tạo một kết nối WMS mới&lt;/h3&gt;
+        <translation>&lt;h3&gt;Tạo một kết nối WMS mới&lt;/h3&gt;
 Các lớp WMS có thể được thêm vào khá đơn giản, khi mà bạn biết URL để truy cập máy chủ WMS, bạn có một kết nối có thể phục vụ đến máy chủ đó, và máy chủ hiểu HTTP là cơ chế chuyển giao dữ liệu.&lt;p&gt;
 Hiện tại QGIS có thể chạy như một máy khách WMS và hiểu các máy chủ WMS 1.1, 1.1.1 và 1.3.
 &lt;p&gt;
@@ -55043,7 +51931,7 @@ You may also tick an &lt;label&gt;Open feature form, if a single feature is iden
 Identifiable layers can be set in the Project Properties dialog &lt;label&gt;Settings &gt; Project Properties &gt; Identifiable layers&lt;/label&gt; where all the layers names are listed, their type (vector, raster, etc.) and ability to be identified.
 &lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Nhận diện các đối tượng&lt;/h3&gt;
+        <translation>&lt;h3&gt;Nhận diện các đối tượng&lt;/h3&gt;
 &lt;p&gt;
 Hộp thoại kết quả hiển thị tất cả các đối tượng được nhận diện trong ngưỡng tìm kiếm. Để xem chi tiết các kết quả, mở rộng phần thông tin đối tượng ở phía bên trái của mỗi đối tượng.
 &lt;/p&gt;
@@ -55095,7 +51983,7 @@ geometry types and don&apos;t offer to add others.
 
 &lt;/ul&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Tạo một kết nối Oracle mới&lt;/h3&gt;
+        <translation>&lt;h3&gt;Tạo một kết nối Oracle mới&lt;/h3&gt;
 Hộp thoại này cho phép bạn định nghĩa các thiết lập cho một kết nối tới một CSDL Oracle.
 &lt;p&gt;
 &lt;ul&gt;
@@ -55140,7 +52028,7 @@ hiện có và không đề xuất thêm các kiểu khác.
         <source>&lt;h3&gt;GPS Plugin&lt;/h3&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Phần mở rộng GPS&lt;/h3&gt;
+        <translation>&lt;h3&gt;Phần mở rộng GPS&lt;/h3&gt;
 
 </translation>
     </message>
@@ -55182,7 +52070,7 @@ To filter a layer before adding it to the map, double click on its name or use &
 &lt;/a&gt;
 Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for searching in different column types and using 2 search modes: &lt;label&gt;Wildcard&lt;/label&gt; or &lt;label&gt;RegExp&lt;/label&gt;.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Thêm các bảng PostGIS&lt;/h3&gt;
+        <translation>&lt;h3&gt;Thêm các bảng PostGIS&lt;/h3&gt;
 Hộp thoại này cho phép bạn thêm các lớp PostGIS (các bảng có cột hình học) vào khung bản đồ của QGIS.
 &lt;p&gt;
 &lt;a href=&quot;#connect&quot;&gt;Các kết nối&lt;/a&gt;&lt;br/&gt;
@@ -55281,7 +52169,7 @@ The field calculator allows you to update fields with expressions.
 &lt;tr&gt;&lt;td&gt;-&lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;negative value of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
 &lt;/table&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Bộ tính toán trường&lt;/h3&gt;
+        <translation>&lt;h3&gt;Bộ tính toán trường&lt;/h3&gt;
 Bộ tính toán trường cho phép bạn cập nhật các trường bằng biểu thức.
 
 &lt;h4&gt;Các lệnh được hỗ trợ&lt;/h4&gt;
@@ -55345,14 +52233,14 @@ Bộ tính toán trường cho phép bạn cập nhật các trường bằng bi
     <message>
         <source>&lt;h3&gt;New OGR Database Connection Dialog&lt;/h3&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hộp thoại kết nối CSDL OGR mới&lt;/h3</translation>
+        <translation>&lt;h3&gt;Hộp thoại kết nối CSDL OGR mới&lt;/h3</translation>
     </message>
     <message>
         <source>&lt;h3&gt; North Arrow Plugin&lt;/h3&gt;
 Displays a north arrow overlayed onto the map.
 &lt;p&gt;
 At present there is only one style available. You can adjust the angle of the arrow or let QGIS set the direction automatically. If you choose to let QGIS determine the direction, it makes its best guess as to how the arrow should be oriented. For placement of the arrow you have four options, corresponding to the four corners of the map canvas.</source>
-        <translation type="obsolete">&lt;h3&gt; Phần mở rộng mũi tên chỉ hướng bắc&lt;/h3&gt;
+        <translation>&lt;h3&gt; Phần mở rộng mũi tên chỉ hướng bắc&lt;/h3&gt;
 Hiển thị một mũi tên chỉ hướng bắc chồng lên bản đồ.
 &lt;p&gt;
 Hiện tại mũi tên chỉ có một kiểu. Bạn có thể điều chỉnh góc của mũi tên hoặc để QGIS thiết lập hướng tự động. Nếu bạn để QGIS quyết định hướng, nó sẽ đoán định hướng mũi tên như thế nào. Về vị trí đặt bạn có bốn tùy chọn, tương ứng với bốn góc của khung bản đồ.</translation>
@@ -55377,7 +52265,7 @@ To add a scale bar:
 &lt;li&gt;Click &lt;label&gt;OK&lt;/label&gt;.&lt;/li&gt;
 &lt;/ol&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Phần mở rộng thước tỷ lệ&lt;/h3&gt;
+        <translation>&lt;h3&gt;Phần mở rộng thước tỷ lệ&lt;/h3&gt;
 Vẽ một thước tỷ lệ trên bản đồ.
 &lt;p&gt;
 Bạn có thể kiểm soát kiểu và vị trí, cũng như nhãn trên thước.
@@ -55449,7 +52337,7 @@ which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/
 &lt;p&gt;Contact the author through aruntheguy at gmail dot com&lt;/p&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Trợ giúp phần mở rộng bản đồ nhiệt&lt;/h3&gt;
+        <translation>&lt;h3&gt;Trợ giúp phần mở rộng bản đồ nhiệt&lt;/h3&gt;
 &lt;p&gt;Phần mở rộng Bản đồ nhiệt dùng Phép ước lượng mật độ nhân để tạo một 
 ảnh raster mật độ (bản đồ nhiệt) của một lớp véc-tơ kiểu điểm đầu vào. Mật độ 
 được tính toán dựa vào số lượng điểm tại một vị trí, với số lượng điểm tập trung 
@@ -55663,7 +52551,7 @@ that will be automatically deleted after running.&lt;/li&gt;
 from the close button. This allows you to save the geometry to be restored to the next start.
 &lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Bàn giao tiếp Python dùng cho QGIS&lt;/h3&gt;
+        <translation>&lt;h3&gt;Bàn giao tiếp Python dùng cho QGIS&lt;/h3&gt;
 &lt;a href=&quot;#console&quot;&gt;Bàn giao tiếp&lt;/a&gt;&lt;br&gt;
 &lt;a href=&quot;#editor&quot;&gt;Trình chỉnh sửa&lt;/a&gt;&lt;br&gt;
 &lt;a href=&quot;#settings&quot;&gt;Cài đặt&lt;/a&gt;&lt;br&gt;&lt;br&gt;
@@ -55860,7 +52748,7 @@ The Coordinate Reference System (CRS) tab allows you to set the projection for t
 &lt;/a&gt;
 On this tab you can choose on which layers the identify tool will work.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Tính chất của dự án&lt;/h3&gt;
+        <translation>&lt;h3&gt;Tính chất của dự án&lt;/h3&gt;
 Hộp thoại này cho phép bạn thiết lập một số tính chất liên quan đến &lt;label&gt;Dự án&lt;/label&gt;. Một dự án là một tập hợp được lưu lại của các lớp và các thiết lập của chúng, cũng như một số thông tin khác cần thiết để phục hồi lại dự án từ ổ đĩa.&lt;p&gt;
 
 &lt;a href=&quot;#general&quot;&gt;Thẻ tổng quát&lt;/a&gt;&lt;br/&gt;
@@ -55901,7 +52789,7 @@ Trên thẻ này bạn có thể chọn những lớp nào mà công cụ nhận
 To define a new connection, click on &lt;label&gt;New&lt;/label&gt; button and use the file browser to point to your SpatiaLite database, which is a file with a &lt;i&gt;.sqlite&lt;/i&gt; extension.&lt;p&gt;
 The connections you define will be remembered for further use and available to choose from the drop down menu.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Thêm các bảng SpatiaLite&lt;/h3&gt;
+        <translation>&lt;h3&gt;Thêm các bảng SpatiaLite&lt;/h3&gt;
 Để định nghĩa một kết nối mới, nhắp chuột vào nút &lt;label&gt;Mới&lt;/label&gt; và dùng trình duyệt tập tin để trỏ đến CSDL SpatiaLite của bạn, là một tập tin có đuôi mở rộng &lt;i&gt;.sqlite&lt;/i&gt;.&lt;p&gt;
 Các kết nối bạn định nghĩa sẽ được nhớ để sử dụng sau này và có trong trình đơn thả xuống để chọn.</translation>
     </message>
@@ -56045,7 +52933,7 @@ The Diagram tab allows you to add a graphic overlay to a vector layer. To activa
 The current implementation of diagrams provides support for pie- and bar charts and for linear scaling
 of the diagram size according to a classification attribute.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Tính chất của lớp véc-tơ&lt;/h3&gt;
+        <translation>&lt;h3&gt;Tính chất của lớp véc-tơ&lt;/h3&gt;
 Hộp thoại này cho phép bạn làm việc với các thiết lập và tính chất của lớp véc-tơ. Có bảy thẻ:
 &lt;p&gt;
 &lt;a href=&quot;#symbology&quot;&gt;Biểu tượng học&lt;/a&gt;&lt;br/&gt;
@@ -56224,7 +53112,7 @@ To delete a bookmark from the Bookmarks dialog, click on it then click the &lt;l
 To update the extent of a bookmark, click on it then click the &lt;label&gt;Update&lt;/label&gt; button. Confirm your choice by clicking &lt;label&gt;OK&lt;/label&gt; or cancel the update by clicking &lt;label&gt;Cancel&lt;/label&gt;.
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Đánh dấu không gian&lt;/h3&gt;
+        <translation>&lt;h3&gt;Đánh dấu không gian&lt;/h3&gt;
 Đánh dấu Không gian cho phép bạn &quot;đánh dấu&quot; một vị trí địa lý và quay lại sau này.
 &lt;p&gt;
 &lt;a href=&quot;#creating&quot;&gt;Tạo một Đánh dấu&lt;/a&gt;&lt;br/&gt;
@@ -56297,7 +53185,7 @@ Bạn cũng có thể phóng đến một đánh dấu bằng cách nhắp chu�
 &lt;h5&gt;Default settings&lt;/h5&gt;
 &lt;p&gt;If the attribute table of your linear layer does not contain the required fields or fields contain unexpected values, the plugin will use default values. You can set them in the default tab &lt;label&gt;Default settings&lt;/label&gt;.&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Cài đặt phần mở rộng Biểu đồ đường&lt;/h3&gt;
+        <translation>&lt;h3&gt;Cài đặt phần mở rộng Biểu đồ đường&lt;/h3&gt;
 &lt;p&gt;Biểu đồ đường là một phần mở rộng C++ của QGIS, nó tính toán đường ngắn nhất giữa hai điểm trên bất kỳ một lớp kiểu đường nào và vẽ đường này mạng lưới đường.&lt;/p&gt;
 &lt;p&gt;
 &lt;a href=&quot;#creating&quot;&gt;Các đơn vị của Phần mở rộng&lt;/a&gt;&lt;br/&gt;
@@ -56376,7 +53264,7 @@ are sometimes limited (e.g. for shape files) or behave diffently.
 &lt;/tr&gt;
 &lt;/table&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Trình xây dựng truy vấn&lt;/h3&gt;
+        <translation>&lt;h3&gt;Trình xây dựng truy vấn&lt;/h3&gt;
 Trình xây dựng truy vấn cho phép bạn tạo các biểu thức lọc dữ liệu đặc thù theo nhà cung cấp.
 
 Các biểu thức thường được coi là nhanh hơn nhiều so với biểu thức của QGIS, nhưng 
@@ -56439,7 +53327,7 @@ system.
 &lt;p&gt;
 Defining a custom CRS in QGIS requires a good understanding of the Proj.4 projection library. To begin, refer to the &lt;a href=&quot;ftp://ftp.remotesensing.org/proj/OF90-284.pdf&quot;&gt;Cartographic Projection Procedures for the UNIX Environment&lt;/a&gt; - A User&apos;s Manual by Gerald I. Evenden, U.S. Geological Survey Open-File Report 90-284, 1990. This manual describes the use of the &lt;i&gt;proj.4&lt;/i&gt; and related command line utilities. The cartographic parameters used with &lt;i&gt;proj.4&lt;/i&gt; are described in the user manual, and are the same as those used by QGIS.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Định nghĩa Hệ tọa độ tùy chỉnh&lt;/h3&gt;
+        <translation>&lt;h3&gt;Định nghĩa Hệ tọa độ tùy chỉnh&lt;/h3&gt;
 Nếu QGIS không cung cấp hệ tọa độ bạn cần, bạn có thể định nghĩa một hệ tọa độ tùy chỉnh. &lt;p&gt;
 Để định nghĩa một hệ tọa độ, chọn &lt;label&gt;Hệ tọa độ tùy chỉnh&lt;/label&gt; từ trình đơn &lt;label&gt;Chỉnh sửa&lt;/label&gt; (Gnome, OSX) hoặc  &lt;label&gt;Thiết lập&lt;/label&gt; (KDE, Windows). Hệ tọa độ tùy chỉnh được lưu trong CSDL người dùng QGIS của bạn. Ngoài hệ tọa độ tự tạo. CSDL này cũng còn chứa các đánh dấu không gian và các dữ liệu tùy biến khác.
 
@@ -56488,7 +53376,7 @@ This plugin supports basic HTML markup tags for formatting text. For example:
 &lt;/li&gt;
 &lt;/ul&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Phần mở rộng nhãn bản quyền&lt;/h3&gt;
+        <translation>&lt;h3&gt;Phần mở rộng nhãn bản quyền&lt;/h3&gt;
 Hiện một nhãn bản quyền cùng với thông tin.&lt;br/&gt;
 Bạn có thể thêm bất kỳ chữ nào vào bản đồ chứ không chỉ là nhãn bản quyền.
 &lt;p&gt;
@@ -56836,7 +53724,7 @@ The following options can be added
 
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Lớp tập tin văn bản phân tách&lt;/h3&gt;
+        <translation>&lt;h3&gt;Lớp tập tin văn bản phân tách&lt;/h3&gt;
 Nạp và trình bày các tập tin văn bản được phân tách
 &lt;p&gt;
 &lt;a href=&quot;#re&quot;&gt;Tổng quan&lt;/a&gt;&lt;br/&gt;
@@ -57130,7 +54018,7 @@ In this section you can see the list of attributes. To delete one of them, click
 Click on &lt;label&gt;OK&lt;/label&gt; to create the layer and close the dialog.
 &lt;label&gt;Cancel&lt;/label&gt; will close the layer without further changes.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Tạo lớp SpatiaLite mới&lt;/h3&gt;
+        <translation>&lt;h3&gt;Tạo lớp SpatiaLite mới&lt;/h3&gt;
 Bạn có thể dùng hộp thoại này để tạo một CSDL SpatiaLite mới và/hoặc một lớp SpatiaLite rỗng để biên tập. Xem bên dưới để biết ý nghĩa các đầu vào của hộp thoại.
 &lt;h4&gt;CSDL&lt;/h4&gt;
 Chọn CSDL từ danh sách thả xuống. Danh sách này được tạo ra từ các kết nối SpatiaLite mà bạn đã lưu. Nếu bạn không có một kết nối đã lưu nào hoặc bạn muốn tạo một CSDL mới, nhắp chuột vào nút (&lt;label&gt;...&lt;/label&gt;) ở phía bên phải của danh sách.
@@ -57162,7 +54050,7 @@ QGIS supports vector data in a number of formats, including those supported by t
 QGIS supports PostGIS layers in a PostgreSQL database and SpatiaLite layers. Support for additional data types (eg. delimited text) is provided by additional data provider plugins. A list of OGR supported vector formats can be found in Appendix A.1 of the User Guide.&lt;/p&gt;
 Detailed description how to proceed with vector data is described in chapter 5 &apos;Working with Vector Data&apos;.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hộp thoại mở lớp véc-tơ&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hộp thoại mở lớp véc-tơ&lt;/h3&gt;
 
 Hộp thoại mở lớp véc-tơ được dùng để thêm dữ liệu véc-tơ vào vùng xem bản đồ QGIS. Dữ liệu véc-tơ là dữ liệu không gian được minh họa bằng cách dùng hình học của các điểm, đường và vùng.&lt;/p&gt;
 QGIS hỗ trợ dữ liệu véc-tơ ở một số định dạng, bao gồm các định dạng được hỗ trợ bởi phần mở rộng nhà cung cấp dữ liệu thư viện OGR, ví dụ như tập tin shape của ESRI, MapInfo MIF (định dạng trao đổi) và MapInfo TAB (định dạng nguyên thủy).&lt;/p&gt;
@@ -57204,7 +54092,7 @@ This dialog allows you to define the settings for a connection to a PostgreSQL/P
 
 &lt;/ul&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Tạo một kết nối PostGIS mới&lt;/h3&gt;
+        <translation>&lt;h3&gt;Tạo một kết nối PostGIS mới&lt;/h3&gt;
 Hộp thoại này cho phép bạn định nghĩa các thiết lập cho một kết nối đến CSDL PostgreSQL/PostGIS.
 &lt;p&gt;
 &lt;ul&gt;
@@ -57325,7 +54213,7 @@ Note: Experimental plugins are generally unsuitable for production use. These pl
 
 &lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Quản lý và Cài đặt các Phần mở rộng&lt;/h3&gt;
+        <translation>&lt;h3&gt;Quản lý và Cài đặt các Phần mở rộng&lt;/h3&gt;
 
 &lt;p&gt;
 Quản lý và cài đặt các phần mở rộng.
@@ -57410,7 +54298,7 @@ Ghi chú: Các phần mở rộng thử nghiệm thường là không phù hợp
     <message>
         <source>&lt;h3&gt;Style Manager&lt;/h3&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Trình quản lý Kiểu&lt;/h3&gt;</translation>
+        <translation>&lt;h3&gt;Trình quản lý Kiểu&lt;/h3&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Finding shortest path&lt;/h3&gt;
@@ -57428,7 +54316,7 @@ Pressing the &lt;label&gt;Calculate&lt;/label&gt; button will run the shortest p
 &lt;h5&gt;Note&lt;/h5&gt;
 &lt;p&gt;In order to bind the start and stop points of the route to the road network Road graph selects the nearest point or arc of the graph. In fact it can bind to any part of the road network. Nevertheless, their route and its characteristics do not take into account the distance from the starting point to the road network and of the road network to the stopping point.&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Tìm đường ngắn nhất&lt;/h3&gt;
+        <translation>&lt;h3&gt;Tìm đường ngắn nhất&lt;/h3&gt;
 &lt;p&gt;Biểu đồ đường là một phần mở rộng C++ của QGIS, nó tính toán đường đi ngắn nhất giữa hai điểm trên bất kỳ lớp đường nào và vẽ lại đường đi này trên mạng lưới đường. Trước khi dùng phần mở rộng này bạn phải cấu hình nó. Điều này có thể thực hiện trong trình đơn &lt;label&gt;Các phần mở rộng &amp;rarr;Biểu đồ đường đi &amp;rarr; Cài đặt&lt;/label&gt;&lt;/p&gt;
 &lt;p&gt;
 &lt;a href=&quot;#howto&quot;&gt;Hướng dẫn&lt;/a&gt;&lt;br/&gt;
@@ -57519,7 +54407,7 @@ Informs you about active system locale. To change it tick &lt;label&gt;Override 
 &lt;/a&gt;
 Tick &lt;label&gt;Use proxy for web access&lt;/label&gt; to define host, port, user, and password.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Tùy chọn&lt;/h3&gt;
+        <translation>&lt;h3&gt;Tùy chọn&lt;/h3&gt;
 Hộp thoại này cho phép bạn thiết lập một số tùy chọn cho QGIS. Có tám thẻ:
 &lt;p&gt;
 
@@ -57607,7 +54495,7 @@ You can also define the width and precision of the new attribute column.
 &lt;h4&gt;Attributes list&lt;/h4&gt;
 In this section you can see the list of attributes. To delete one of them, click on it and choose &lt;label&gt;Remove selected attribute&lt;/label&gt; button.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Tạo lớp véc-tơ mới&lt;/h3&gt;
+        <translation>&lt;h3&gt;Tạo lớp véc-tơ mới&lt;/h3&gt;
 Để tạo một lớp mới và biên tập, chọn &lt;label&gt;Lớp véc-tơ mới&lt;/label&gt; từ trình đơn &lt;label&gt;Lớp&lt;/label&gt;.&lt;br/&gt;
 Với hộp thoại này bạn có thể tạo một lớp tập tin shape mới.
 &lt;h4&gt;Kiểu&lt;/h4&gt;
@@ -57634,7 +54522,7 @@ Trong phần này bạn có thể thấy danh sách các thuộc tính. Để x�
 
 See &lt;a href=&quot;http://gdal.org/ogr/ogr_formats.html&quot;&gt;OGR Vector formats&lt;/a&gt; for a list of supported formats and the available options.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Lưu lớp véc-tơ thành...&lt;/h3&gt;
+        <translation>&lt;h3&gt;Lưu lớp véc-tơ thành...&lt;/h3&gt;
 
 &lt;p&gt;Hộp thoại này cho phép bạn lưu dữ liệu véc-tơ thành các định dạng khác nhau thông qua GDAL/OGR.
 
@@ -57662,7 +54550,7 @@ Click on one of the icons along the top of the composer window to select what ty
 &lt;/p&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Trình Biên tập In ấn&lt;/h3&gt;
+        <translation>&lt;h3&gt;Trình Biên tập In ấn&lt;/h3&gt;
 
 &lt;p&gt;
 Trình biện tập in ấn cho phép bạn sắp xếp các hạng mục lên một trang, để sau đó có thể in ra. Các hạng mục bao gồm, nội dung của khung bản đồ, thước tỷ lệ, chú giải, và các ảnh tùy ý.
@@ -57687,7 +54575,7 @@ A single right mouse click stops the measuring, while two right mouse clicks sta
 &lt;h4&gt;Measuring Angles&lt;/h4&gt;
 To measure angles, select the tool and click on three points to create an angle between these points. The second point selected is the vertex of the angle. The angle is dynamically displayed once you clicked the second point.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Các công cụ đo đạc&lt;/h3&gt;
+        <translation>&lt;h3&gt;Các công cụ đo đạc&lt;/h3&gt;
 Có ba công cụ đo: chiều dài, diện tích và góc. Với chúng, bạn có thể đo khoảng cách, diện tích và góc trên khung bản đồ. Các công cụ này cho ra kết quả theo đơn vị được thiết lập trong &lt;label&gt;Thiết lập &gt; Tùy chọn &gt; Các công cụ Bản đồ&lt;/label&gt;.
 &lt;h4&gt;Đo chiều dài&lt;/h4&gt;
 Để đo chiều dài, chọn công cụ đó và nhắp chuột thành đường bạn muốn đo. Chiều dài của từng đoạn cũng như tổng chiều dài đường sẽ được trình bày.
@@ -57760,7 +54648,7 @@ The vector layer needs to be in editing mode, before you can click on the &lt;la
 When you toggle to edition the layer, a new row of functions appears in the attribute table: the &lt;label&gt;Field Calculator Bar&lt;/label&gt;. This allows quick editing values of existing fields by performing calculations on basis of existing attribute values or defined functions button in the attribute table, e.g. to calculate length or area of geometry features.&lt;br&gt;
 To edit values, select the field to modify with the filter button on the left and fill the text box with the new value or an expression to calculate new value. Then, press &lt;label&gt;Update all&lt;/label&gt; button to update all the rows of the attribute table or &lt;label&gt;Update selected&lt;/label&gt; button if some features are selected or a filter is applied on the attribute table display. You can also use the &lt;label&gt;Expression builder&lt;/label&gt; button to calculate the new value in the column.&lt;br&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Bảng thuộc tính&lt;/h3&gt;
+        <translation>&lt;h3&gt;Bảng thuộc tính&lt;/h3&gt;
 Bảng thuộc tính trình bày các đối tượng của một lớp được chọn. Mỗi hàng trong bảng biểu thị cho một đối tượng bản đồ với thuộc tính của nó được trình bày trong các cột. Các đối tượng trong bảng có thể được tìm kiếm, chọn, di chuyển hoặc thậm chí chỉnh sửa. Theo mặc định, bảng thuộc tính ở trong một cửa sổ riêng. Nếu bạn mở nó ra mà không còn thấy nó, rất có khả năng là nó nằm dưới cửa sổ chương trình chính QGIS. Bạn có thể biến nó thành cửa sổ gắn, bằng cách đánh dấu vào &lt;label&gt;Mở bảng thuộc tính trong một cửa sổ gắn&lt;/label&gt; trong phần &lt;label&gt;Thiết lập &gt; Tùy chọn &gt; Tổng quát&lt;/label&gt;.&lt;p&gt;
 
 Số lượng tổng của các đối tượng, các đối tượng được lọc và các đối tượng đang được chọn được in ra trên đầu của cửa sổ này.&lt;p&gt;
@@ -57840,7 +54728,7 @@ Khi bạn bật chỉnh sửa một lớp, một hàng mới chứa các hàm s�
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Contours</source>
+        <source>Output file for contour lines (vector)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -57947,11 +54835,6 @@ Cần hỗ trợ vui lòng gửi thư về scala@itc.cnr.it</translation>
     <message>
         <source>Shapefile</source>
         <translation>Tập tin shape</translation>
-    </message>
-    <message>
-        <source>Export inserts</source>
-        <extracomment>&apos;insert&apos; is the entity that inserts/references a symbol/block in DXF</extracomment>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -58712,22 +55595,6 @@ Phần mở rộng này sẽ không được kích hoạt.</translation>
         <source>&amp;Data Management Tools</source>
         <translation>Các công cụ &amp;Quản lý dữ liệu</translation>
     </message>
-    <message>
-        <source>Save output shapefile</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select input file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select input files</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save output directory</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>fillnodata</name>
@@ -58757,11 +55624,7 @@ Phần mở rộng này sẽ không được kích hoạt.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
-    </message>
-    <message>
-        <source>Filled</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp đầu ra</translation>
     </message>
 </context>
 <context>
@@ -58848,7 +55711,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;week(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 104.285...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;hàm week()&lt;/h3&gt;
+        <translation>&lt;h3&gt;hàm week()&lt;/h3&gt;
 Lấy số tuần từ một ngày, hoặc số lượng tuần từ 
 một &lt;code&gt;Khoảng chia&lt;/code&gt;
 
@@ -58899,7 +55762,7 @@ return a result.
     END
 &lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Biểu thức CASE&lt;/h3&gt;
+        <translation>&lt;h3&gt;Biểu thức CASE&lt;/h3&gt;
 Một biểu thức điều kiện có thể được dùng để đánh giá nhiều biểu thức và trả về một kết quả.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -58945,7 +55808,7 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; rightmost characters 
 &lt;code&gt;right(&apos;Hello World&apos;,5) &amp;rarr; &apos;World&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm right()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm right()&lt;/h3&gt;
 Trả về một chuỗi con chứa &lt;i&gt;n&lt;/i&gt; ký tự tính từ bên phải của chuỗi.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -58967,7 +55830,7 @@ Trả về một chuỗi con chứa &lt;i&gt;n&lt;/i&gt; ký tự tính từ bê
 &lt;h3&gt;Color Group&lt;/h3&gt;
 This group contains functions for manipulating colors
 </source>
-        <translation type="obsolete">&lt;h3&gt;Nhóm màu&lt;/h3&gt;
+        <translation>&lt;h3&gt;Nhóm màu&lt;/h3&gt;
 Nhóm này chứa các hàm để xử lý màu
 </translation>
     </message>
@@ -58986,7 +55849,7 @@ Returns the length of a string.
 &lt;!-- Show example of function.--&gt;
      length(&apos;HELLO&apos;) &amp;rarr; 5&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm length()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm length()&lt;/h3&gt;
 Trả về chiều dài của một chuỗi.
 
 &lt;p&gt;&lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -59016,7 +55879,7 @@ Converts a string to upper case letters.
 &lt;!-- Show example of function.--&gt;
      upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;HELLO WORLD&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm upper()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm upper()&lt;/h3&gt;
 Chuyển một chuỗi thành chữ viết hoa.
 
 &lt;p&gt;&lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -59046,7 +55909,7 @@ b &amp;rarr; geometry
 &lt;pre&gt;bbox( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; )) &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt;bbox( geomFromWKT( &apos;POINT(6 5)&apos; ) , geomFromWKT( &apos;POLYGON((3 3 , 4 4 , 5 5, 3 3))&apos; )) &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;hàm bbox&lt;/h3&gt;
+        <translation>&lt;h3&gt;hàm bbox&lt;/h3&gt;
 Trả về 1 nếu các hình học giao nhau về mặt không gian với ô bao đã định nghĩa và trả về 0 nếu không giao nhau.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -59078,7 +55941,7 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; leftmost characters o
 &lt;code&gt;left(&apos;Hello World&apos;,5) &amp;rarr; &apos;Hello&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm left()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm left()&lt;/h3&gt;
 Trả về một chuỗi con chứa &lt;i&gt;n&lt;/i&gt; ký tự tính từ bên trái của chuỗi.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -59107,7 +55970,7 @@ Note: This function is only available in some contexts and will be 0 otherwise.
 
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm $scale &lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm $scale &lt;/h3&gt;
 Trả về tỷ lệ hiện tại của khung bản đồ.
 &lt;br&gt;
 Ghi chú: Hàm này chỉ dùng được trong một số ngữ cảnh và sẽ trả về giá trị 0 trong các trường hợp khác. 
@@ -59137,7 +56000,7 @@ Rounds a number upwards.
 &lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm ceil()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm ceil()&lt;/h3&gt;
 Làm tròn một con số theo chiều tăng.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -59168,7 +56031,7 @@ Converts a string to real number. Nothing changed if a value cannot be converted
 &lt;!-- Show example of function.--&gt;
      toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm toreal()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm toreal()&lt;/h3&gt;
 Chuyển một chuỗi thành một số thực. Không có gì thay đổi nếu giá trị đó không thể đổi được thành số thực (ví dụ &apos;123.56asd&apos; là không hợp lệ). Các con số được làm tròn sau khi lưu các thay đổi nếu độ chính xác thấp hơn kết quả của phép chuyển đổi.
 
 &lt;p&gt;&lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -59196,7 +56059,7 @@ Retrieves a x coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm xat()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm xat()&lt;/h3&gt;
 Lấy tọa độ x của đối tượng hiện tại
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -59223,7 +56086,7 @@ None
 &lt;pre&gt;$numpages &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm $numpages&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm $numpages&lt;/h3&gt;
 Trả về tổng số trang trong trang biên tập bản đồ.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -59256,7 +56119,7 @@ Returns -1 if the expression isn&apos;t found.
      strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
      strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm strpos()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm strpos()&lt;/h3&gt;
 Trả về vị trí của một biểu thức chính tắc trong một chuỗi.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -59293,7 +56156,7 @@ This function takes two arguments.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;rand(1, 10) &amp;rarr; 8&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm rand()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm rand()&lt;/h3&gt;
 Trả về một số nguyên ngẫu nhiên trong một miền được chỉ định bởi đối số nhỏ nhất và lớn nhất (tính cả hai trị này).
 &lt;br&gt;
 Hàm này lấy hai đối số.
@@ -59327,7 +56190,7 @@ None
 &lt;pre&gt; intersects(  $atlasgeometry,  $geometry ) &lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm $atlasgeometry&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm $atlasgeometry&lt;/h3&gt;
 Trả về hình học của đối tượng hiện tại được lặp trong atlas.
 Có thể được dùng để trình bày các hình học theo quy tắc khi dùng atlas.
 Ví dụ chỉ hiển thị các hình học của các lớp khác khi hình học của chúng giao với
@@ -59360,7 +56223,7 @@ None
 &lt;pre&gt;$atlasfeatureid = $id&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm $atlasfeatureid&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm $atlasfeatureid&lt;/h3&gt;
 Trả về số hiệu nhận diện đối tượng của hàng hiện tại trong khi dùng atlas.
 Hàm này cho phép bạn dùng các đối tượng của atlas theo quy tắc 
 và, ví dụ để hiện hoặc ẩn các đối tượng dựa theo số hiệu nhận diện của chúng.
@@ -59390,7 +56253,7 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; bounds_width($geometry) &amp;rarr; returns width of bounding box of $geometry&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm bounds_width&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm bounds_width&lt;/h3&gt;
 Trả về chiều rộng ô bao của một hình học. Các tính toán dựa theo HTĐ của Hình học này. 
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -59420,7 +56283,7 @@ Rounds a number downwards.
 &lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm floor()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm floor()&lt;/h3&gt;
 Làm tròn một số theo chiều giảm.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -59450,7 +56313,7 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; bounds_height($geometry) &amp;rarr; returns height of bounding box of $geometry&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm bounds_height&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm bounds_height&lt;/h3&gt;
 Trả về chiều cao của ô bao của một hình học. Các tính toán dựa vào HTĐ của hình học đó. 
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -59479,7 +56342,7 @@ Converts a string to integer number. Nothing changed if a value cannot be conver
 &lt;!-- Show example of function.--&gt;
      toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm toint()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm toint()&lt;/h3&gt;
 Đổi một chuỗi thành một số nguyên. Không có gì thay đổi nếu giá trị không thể đổi được thành số nguyên (ví dụ &apos;123asd&apos; là không hợp lệ).
 
 &lt;p&gt;&lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -59507,7 +56370,7 @@ Retrieves a y coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm yat()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm yat()&lt;/h3&gt;
 Lấy tọa độ y của đối tượng hiện tại
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -59535,7 +56398,7 @@ Converts a number to string.
 &lt;!-- Show example of function.--&gt;
      tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm tostring()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm tostring()&lt;/h3&gt;
 Đổi một số thành chuỗi.
 
 &lt;p&gt;&lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -59564,7 +56427,7 @@ None
 &lt;pre&gt;$rownum &amp;rarr; 4711&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm $rownum&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm $rownum&lt;/h3&gt;
 Trả về số thứ tự của hàng hiện tại.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -59595,7 +56458,7 @@ arguments to determine the quadrant of the result
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      atan2(1.0, 1.732) &amp;rarr; 0.523611477769969&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm atan2()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm atan2()&lt;/h3&gt;
 Trả về arctang của y/x dùng các dấu của hai đối số để xác định cung phần tư của kết quả.
 
 
@@ -59625,7 +56488,7 @@ Returns sinus of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      sin(1.571) &amp;rarr; 0.999999682931835&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm sin()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm sin()&lt;/h3&gt;
 Trả về sin của một góc.
 
 
@@ -59660,7 +56523,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;month(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 4.033...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm month()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm month()&lt;/h3&gt;
 Trích phần tháng của một ngày, hoặc số tháng từ một &lt;code&gt;Khoảng_chia&lt;/code&gt;
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -59694,7 +56557,7 @@ None
 &lt;pre&gt;$area &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm $area&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm $area&lt;/h3&gt;
 Trả về diện tích của một đối tượng hiện tại.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -59729,7 +56592,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;day(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 730&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm day()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm day()&lt;/h3&gt;
 Trích phần ngày của một ngày, hoặc số ngày từ một &lt;code&gt;Khoảng_chia&lt;/code&gt;
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -59763,7 +56626,7 @@ Convert a string into Qt data type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todate(&apos;2012-05-04&apos;) &amp;rarr; 2012-05-04&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="obsolete">&lt;h3&gt;Hàm todate()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm todate()&lt;/h3&gt;
 Đổi một chuỗi thành kiểu dữ liệu Qt.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -59796,7 +56659,7 @@ using the fill character.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;lpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;Helloxxxxx&apos;&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm lpad()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm lpad()&lt;/h3&gt;
 Trả về một chuỗi với chiều rộng được cung cấp có đệm bằng ký tự lấp đầy.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -59828,7 +56691,7 @@ Returns arcuscosinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      acos(0.5) &amp;rarr; 1.0471975511966&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm acos()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm acos()&lt;/h3&gt;
 Trả về arccos của một giá trị tính theo radian.
 
 
@@ -59853,7 +56716,7 @@ Loading field values from WFS layers isn&apos;t supported, before the layer is
 actually inserted, ie. when building queries.
 &lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Các trường và các Giá trị&lt;/h3&gt;
+        <translation>&lt;h3&gt;Các trường và các Giá trị&lt;/h3&gt;
 Chứa một danh sách các trường từ một lớp. Các giá trị mẫu cũng có thể được truy cập thông qua chuột phải.
 &lt;br&gt;&lt;br&gt;
 Chọn tên trường từ danh sách sau đó nhắp chuột phải để truy cập trình đơn ngữ cảnh với các tùy chọn để nạp các giá trị mẫu từ trường được chọn.
@@ -59881,7 +56744,7 @@ This function takes two arguments.
 &lt;code&gt;log(2, 32) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;log(0.5, 32) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm log()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm log()&lt;/h3&gt;
 Trả về giá trị logarit của giá trị và cơ số được truyền đến.
 &lt;br&gt;
 Hàm này lấy hai đối số.
@@ -59903,7 +56766,7 @@ Hàm này lấy hai đối số.
         <source>&lt;h3&gt;Geometry Group&lt;/h3&gt;
 This group contains functions that operate on geometry objects e.g length, area.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Nhóm hình học&lt;/h3&gt;
+        <translation>&lt;h3&gt;Nhóm hình học&lt;/h3&gt;
 Nhóm này chứa các hàm chạy trên các đối tượng hình học như chiều dài, diện tích.
 </translation>
     </message>
@@ -59918,7 +56781,7 @@ Loading field values from WFS layers isn&apos;t supported, before the layer is
 actually inserted, ie. when building queries.
 &lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Trường&lt;/h3&gt;
+        <translation>&lt;h3&gt;Trường&lt;/h3&gt;
 Nhắp chuột đúp để thêm tên trường vào chuỗi biểu thức.
 &lt;br&gt;&lt;br&gt;
 Nhắp chuột phải trên tên trường để mở trình đơn ngữ cảnh với các tùy chọn nạp giá trị mẫu.
@@ -59942,7 +56805,7 @@ None
 &lt;pre&gt;$page &amp;rarr; 2&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm $page&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm $page&lt;/h3&gt;
 Trả về số trang hiện tại trong một trình bày in ấn.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -59970,7 +56833,7 @@ Returns exponential of an value.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm exp()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm exp()&lt;/h3&gt;
 Trả về lũy thừa của một giá trị.
 
 
@@ -60004,7 +56867,7 @@ using the fill character.
 &lt;code&gt;rpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;xxxxxHello&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm rpad()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm rpad()&lt;/h3&gt;
 Trả về một chuỗi với chiều rộng cung cấp được đệm bằng ký tự lấp đầy.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -60045,7 +56908,7 @@ use &lt;code&gt;round(decimal)&lt;/code&gt; to round to the nearest integer&lt;b
 
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm round()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm round()&lt;/h3&gt;
 Làm tròn một con số đến một số lượng số thập phân.
 &lt;br&gt;
 Hàm này có thể lấy một hoặc hai đối số tùy theo bạn cần gì.
@@ -60081,7 +56944,7 @@ None
 &lt;pre&gt;$now &amp;rarr; 2012-07-22T13:24:57&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm $now&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm $now&lt;/h3&gt;
 Trả về ngày và giờ hiện tại
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -60112,7 +56975,7 @@ Returns a string representation of a color based on its hue, saturation, and lig
 &lt;!-- Show example of function.--&gt;
      color_hsl(100,50,70) &amp;rarr; &apos;166,217,140&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm color_hsl()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm color_hsl()&lt;/h3&gt;
 Trả về một chuỗi biểu thị một màu dựa theo các tính chất về màu sắc, độ bão hòa và độ sáng
 
 &lt;p&gt;&lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -60159,7 +57022,7 @@ accelerating as the input values approach the domain maximum. Smaller exponents 
      
      
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm scale_exp()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm scale_exp()&lt;/h3&gt;
 Chuyển đổi một giá trị cho trước từ một miền đầu vào thành một miền đầu ra bằng cách dùng đường cong lũy thừa. Hàm này có thể được dùng để làm &apos;nhẹ&apos; các giá trị vào hoặc ra của miền đầu ra được chỉ định.   
 
 &lt;p&gt;&lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -60202,7 +57065,7 @@ a &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;  geomToWKT( convexHull( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 4 10)&apos; )) )   &amp;rarr; returns POLYGON((3 3,4 10,4 4,3 3)) &lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm convexHull&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm convexHull&lt;/h3&gt;
 Trả về bao lồi của một hình học. Nó biểu thị hình học lồi nhỏ nhất bao trùm tất cả các hình học trong tập hợp.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -60230,7 +57093,7 @@ b &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( union( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))  )   &amp;rarr; returns MULTIPOINT(4 4, 5 5)&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm union&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm union&lt;/h3&gt;
 Trả về một hình học biểu thị tập hợp hợp nhất điểm của các hình học.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -60258,7 +57121,7 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; xmax($geometry) &amp;rarr; returns maximum x coordinate of $geometry&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm xmax&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm xmax&lt;/h3&gt;
 Trả về tọa độ x lớn nhất của một hình học. Các tính toán dựa vào HTĐ của hình học đó. 
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -60286,7 +57149,7 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; bounds($geometry) &amp;rarr; returns bounding box of $geometry&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm bounds&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm bounds&lt;/h3&gt;
 Trả về một hình học biểu thị ô bao của một hình học đầu vào. Các tính toán dựa vào HTĐ của hình học đó. 
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -60314,7 +57177,7 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; ymax($geometry) &amp;rarr; returns maximum y coordinate of $geometry&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm ymax&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm ymax&lt;/h3&gt;
 Trả về tọa độ y lớn nhất của một hình học. Các tính toán dựa vào HTĐ hiện tại của hình học đó. 
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -60343,7 +57206,7 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;POINT( 0.5 0.5 )&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))          &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm contains&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm contains&lt;/h3&gt;
 Trả về đúng khi và chỉ khi không có điểm nào của b nằm ngoài a, và ít nhất một điểm thuộc b nằm trong a. 
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -60376,7 +57239,7 @@ Returns a string wrapped to a maximum/minimum number of characters.
      wordwrap(&apos;UNIVERSITY OF QGIS&apos;,13) &amp;rarr; &apos;UNIVERSITY OF&amp;#92;nQGIS&apos;&lt;br&gt;
      wordwrap(&apos;UNIVERSITY OF QGIS&apos;,-3) &amp;rarr; &apos;UNIVERSITY&amp;#92;nOF QGIS&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm wordwrap()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm wordwrap()&lt;/h3&gt;
 Trả về một chuỗi cuộn theo số ký tự lớn nhất/nhỏ nhất.
 
 &lt;p&gt;&lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -60412,7 +57275,7 @@ Returns a string representation of a color based on its red, green, and blue com
 &lt;!-- Show example of function.--&gt;
      color_rgb(255,127,0) &amp;rarr; &apos;255,127,0&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">
+        <translation>
 &lt;h3&gt;Hàm color_rgb()&lt;/h3&gt;
 Trả về một chuỗi biểu thị một màu dựa theo các thành phần đỏ, lục và xanh của nó
 
@@ -60448,7 +57311,7 @@ Returns a string representation of a color based on its cyan, magenta, yellow an
 &lt;!-- Show example of function.--&gt;
      color_cmyk(100,50,0,10) &amp;rarr; &apos;0,115,230&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">
+        <translation>
 &lt;h3&gt;Hàm color_cmyk()&lt;/h3&gt;
 Trả lại một chuỗi biểu thị một màu dựa theo các thành phần lam, đỏ tươi, vàng và đen
 
@@ -60481,7 +57344,7 @@ geometry &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( intersection( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 )&apos; ))  )   &amp;rarr; returns LINESTRING(3 3, 4 4)&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm intersection&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm intersection&lt;/h3&gt;
 Trả về một hình học biểu thị phần chung của hình học a và hình học b.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -60517,7 +57380,7 @@ The color ramps available vary between QGIS installations.  This function
 may not give the expected results if you move your Quantum project.
 &lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm ramp_color()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm ramp_color()&lt;/h3&gt;
 Trả về một chuỗi biểu thị một màu từ một thang biến đổi màu. 
 
 &lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
@@ -60556,7 +57419,7 @@ None
 &lt;pre&gt; $geometry IS NULL  &amp;rarr; returns 0, if your geometry is not NULL&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Biểu thức IS&lt;/h3&gt;
+        <translation>&lt;h3&gt;Biểu thức IS&lt;/h3&gt;
 Trả về 1 nếu a giống như b.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -60592,7 +57455,7 @@ Returns a string representation of a color based on its hue, saturation, and val
 &lt;!-- Show example of function.--&gt;
      color_hsv(40,100,100) &amp;rarr; &apos;255,170,0&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm color_hsv()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm color_hsv()&lt;/h3&gt;
 Trả về một chuỗi biểu thị một màu dựa trên độ màu sắc, độ bão hòa và giá trị
 
 &lt;p&gt;&lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -60624,7 +57487,7 @@ None
 &lt;pre&gt; &apos;A&apos; ILIKE &apos;a&apos;  &amp;rarr; returns 1 &lt;/pre&gt;
 &lt;pre&gt; &apos;A&apos; ILIKE &apos;B&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm ILIKE&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm ILIKE&lt;/h3&gt;
 Trả về 1 nếu tham số đầu tiên khớp với kiểu được cung cấp, không phân biệt chữ hoa. LIKE có thể được dùng thay thế ILIKE nếu phép làm khớp cần phân biệt chữ hoa. Chạy được trên cả con số.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -60653,7 +57516,7 @@ None
 &lt;pre&gt; &apos;A&apos; LIKE &apos;a&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
 &lt;pre&gt; &apos;A&apos; LIKE &apos;B&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Màu LIKE&lt;/h3&gt;
+        <translation>&lt;h3&gt;Màu LIKE&lt;/h3&gt;
 Trả về 1 nếu tham số đầu tiên khớp kiểu mẫu được cung cấp. Làm việc được với cả con số.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -60682,7 +57545,7 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; ymin($geometry) &amp;rarr; returns minimum y coordinate of $geometry&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm ymin&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm ymin&lt;/h3&gt;
 Trả về tọa độ y nhỏ nhất của một hình học. Các tính toán dựa theo HTĐ của hình học đó. 
 
 &lt;h4&gt;Cú pha1p&lt;/h4&gt;
@@ -60709,7 +57572,7 @@ text &amp;rarr; GML representation of a geometry
 &lt;pre&gt; geomFromGML( &apos;&lt;gml:LineString srsName=&quot;EPSG:4326&quot;&gt;&lt;gml:coordinates&gt;4,4 5,5 6,6&lt;/gml:coordinates&gt;&lt;/gml:LineString&gt;&apos;) &amp;rarr; returns a geometry&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm geomFromGML&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm geomFromGML&lt;/h3&gt;
 Trả về một hình học từ biểu thị dạng GML của hình học đó
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -60727,7 +57590,7 @@ chữ &amp;rarr; biểu thị dạng GML của một hình học
         <source>&lt;h3&gt;Date and Time Group&lt;/h3&gt;
 This group contains functions for handling date and time data.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Nhóm Ngày và Giờ&lt;/h3&gt;
+        <translation>&lt;h3&gt;Nhóm Ngày và Giờ&lt;/h3&gt;
 Nhóm này chứa các hàm để xử lý dữ liệu ngày và giờ.
 </translation>
     </message>
@@ -60746,7 +57609,7 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; geomToWKT( combine( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5 )&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4,  2 1 )&apos; ))  )    &amp;rarr; returns MULTILINESTRING((4 4, 2 1), (3 3, 4 4), (4 4, 5 5)) &lt;/pre&gt;
 &lt;pre&gt; geomToWKT( combine( geomFromWKT( &apos;LINESTRING(3 3 , 4 4  )&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 6 6,  2 1 )&apos; ))  )  &amp;rarr; returns LINESTRING(3 3, 4 4, 6 6, 2 1) &lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm combine&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm combine&lt;/h3&gt;
 Trả về sự tổ hợp của hình học a và.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -60776,7 +57639,7 @@ b &amp;rarr; geometry
 &lt;pre&gt; intersects( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; intersects( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))             &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm intersects&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm intersects&lt;/h3&gt;
 Trả về 1 nếu các hình học giao nhau về mặt không gian (chia xẻ bất kỳ phần nào trong không gian) và 0 nếu không giao nhau.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -60812,7 +57675,7 @@ Restricts an input value to a specified range.
      
      
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm clamp()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm clamp()&lt;/h3&gt;
 Giới hạn một giá trị đầu vào trong một khoảng chỉ định.
 
 &lt;p&gt;&lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -60848,7 +57711,7 @@ b &amp;rarr; geometry
 &lt;pre&gt; disjoint( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; )) &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; disjoint( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;POINT(4 4)&apos; ))                              &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm disjoint&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm disjoint&lt;/h3&gt;
 Trả về 1 nếu các hình học &quot;không giao nhau về mặt không gian&quot; - chúng không có phần chung nào. 
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -60877,7 +57740,7 @@ text &amp;rarr; Well-Known Text (WKT) representation of a geometry
 &lt;pre&gt; geomFromWKT( &apos;POINT(4 5)&apos; ) &amp;rarr; returns a geometry&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm geomFromWKT&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm geomFromWKT&lt;/h3&gt;
 Trả về một hình học được tạo ra từ một biểu thị dạng văn bản được hiểu rõ (WKT).
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -60906,7 +57769,7 @@ b &amp;rarr; distance for the buffer
 &lt;pre&gt; buffer($geometry, 10.5 ) &amp;rarr; returns a polygon&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm số buffer&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm số buffer&lt;/h3&gt;
 Trả về một hình học biểu thị tất cả các điểm nào có khoảng cách từ hình học đó nhỏ hơn hoặc bằng khoảng cách cho trước. Tính toán dựa thao HTĐ của hình học. 
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -60936,7 +57799,7 @@ None
 &lt;pre&gt;attribute( $atlasfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current atlas feature&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm $atlasfeature&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm $atlasfeature&lt;/h3&gt;
 Trong việc tạo atlas, trả về đối tượng hiện tại nào được chạy lặp trên lớp bìa. Hàm này có thể được dùng với hàm &apos;thuộc tính&apos; để trả về các giá trị thuộc tính từ đối tượng atlas hiện tại.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -60965,7 +57828,7 @@ None
 &lt;pre&gt;attribute( $currentfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current feature&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm $currentfeature&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm $currentfeature&lt;/h3&gt;
 Trả về đối tượng hiện tại đang được đánh giá. Hàm này có thể được dùng với hàm &apos;thuộc tính&apos; để đánh giá các giá trị thuộc tính từ đối tược hiện tại.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -60993,7 +57856,7 @@ None
 &lt;pre&gt;$id &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm $id&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm $id&lt;/h3&gt;
 Trả về số hiệu nhận diện đối tượng của hàng hiện tại.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -61022,7 +57885,7 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$uuid &amp;rarr; {0bd2f60f-f157-4a6d-96af-d4ba4cb366a1}&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm $uuid&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm $uuid&lt;/h3&gt;
 Tạo một Số hiệu Nhận diện Không trùng Toàn cục (Generates a Universally Unique Identifier  - UUID) cho mỗi hàn bằng cách dùng phương pháp Qt
 &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/quuid.html#createUuid&apos;&gt;QUuid::createUuid&lt;/a&gt;
 .  Mỗi UUID là một chuỗi ký tự dài 38.
@@ -61052,7 +57915,7 @@ None
 &lt;pre&gt; &apos;A&apos; IN (&apos;C&apos;,&apos;B&quot;) &amp;rarr; returns 0 &lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Biểu thức IN&lt;/h3&gt;
+        <translation>&lt;h3&gt;Biểu thức IN&lt;/h3&gt;
 Trả về 1 nếu giá trị được tìm thấy trong một danh sách các giá trị
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -61082,7 +57945,7 @@ attribute_name &amp;rarr; name of attribute to be returned
 &lt;pre&gt;attribute( $currentfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current feature&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm thuộc tính&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm thuộc tính&lt;/h3&gt;
 Trả về giá trị của một thuộc tính được chỉ định từ một đối tượng.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -61112,7 +57975,7 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; crosses( geomFromWKT( &apos;LINESTRING(3 5 , 4 4 , 5 3)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; crosses( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))             &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm crosses&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm crosses&lt;/h3&gt;
 Trả về 1 nếu các hình học được cung cấp có một số, nhưng không phải tất cả, điểm nội tại chung nhau.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -61140,7 +58003,7 @@ a &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( $geometry ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm geomToWKT&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm geomToWKT&lt;/h3&gt;
 Trả về biểu thị dưới dạng Văn bản được Hiểu Rõ (WKT) của hình học không có lý lịch dữ liệu về số hiệu nhận diện HTĐ.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -61161,7 +58024,7 @@ Returns the first feature of a layer matching a given attribute value
 &lt;pre&gt;getFeature( layer, attributeField, value )&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm getFeature&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm getFeature&lt;/h3&gt;
 Trả về đối tượng đầu tiên của một lớp khớp với một bảng thuộc tính đã cho
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -61184,7 +58047,7 @@ b &amp;rarr; geometry
 &lt;pre&gt; touches( geomFromWKT( &apos;LINESTRING(5 3 , 4 4)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; touches( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))                     &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm touches&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm touches&lt;/h3&gt;
 Trả về 1 nếu các hình học có ít nhất một điểm chung, nhưng các phần trong của chúng không giao nhau.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -61214,7 +58077,7 @@ b &amp;rarr; geometry
 &lt;pre&gt; overlaps( geomFromWKT( &apos;LINESTRING(3 5 , 4 4 , 5 5 , 5 3)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))   &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; overlaps( geomFromWKT( &apos;LINESTRING(0 0 , 1 1)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm overlaps&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm overlaps&lt;/h3&gt;
 Trả về 1 nếu các hình học chia xẻ không gian, có cùng kích thước, nhưng không hoàn toàn chứa trong nhau.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -61244,7 +58107,7 @@ None
 &lt;pre&gt; 4 = 2+2 AND 1 = 2  &amp;rarr; returns 0 &lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Toán tử luân lý AND&lt;/h3&gt;
+        <translation>&lt;h3&gt;Toán tử luân lý AND&lt;/h3&gt;
 Trả về 1 khi các điều kiện a và b đúng.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -61273,7 +58136,7 @@ None
 &lt;pre&gt; geomToWKT( $geometry ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm $geometry&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm $geometry&lt;/h3&gt;
 Trả về hình học của đối tượng hiện tại. Có thể được dùng để chạy với các hàm khác.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -61302,7 +58165,7 @@ None
 &lt;pre&gt; 4 = 2+2 OR 1 = 2  &amp;rarr; returns 1 &lt;/pre&gt;
 &lt;pre&gt; 4 = 2   OR 1 = 2  &amp;rarr; returns 0 &lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Toán tử luân lý OR&lt;/h3&gt;
+        <translation>&lt;h3&gt;Toán tử luân lý OR&lt;/h3&gt;
 Trả về 1 khi điều kiện a hoặc b đúng.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -61331,7 +58194,7 @@ b &amp;rarr; geometry
 &lt;pre&gt; centroid($geometry) &amp;rarr; returns a point geometry&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm centroid&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm centroid&lt;/h3&gt;
 Trả về tâm hình học của một đối tượng hình học.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -61360,7 +58223,7 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; within( geomFromWKT( &apos;POINT( 0.5 0.5 )&apos;) , geomFromWKT(&apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) )    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; within( geomFromWKT( &apos;POINT( 5 5 )&apos;) , geomFromWKT(&apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) )        &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm within&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm within&lt;/h3&gt;
 Trả về 1 nếu hình học a hoàn toàn nằm trong hình học b
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -61393,7 +58256,7 @@ $map &amp;rarr; &quot;canvas&quot; (within the main QGIS main canvas)&lt;/pre&gt
 
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm $map&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm $map&lt;/h3&gt;
 Trả về số hiệu nhận diện của một hạng mục bản đồ hiện tại nếu bản đồ đang được vẽ trong một trình bày, hoặc &quot;khung bản đồ&quot; nếu bản đồ đang được vẽ trong cửa sổ chính của QGIS.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -61424,7 +58287,7 @@ b &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; distance( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(4 8)&apos; ))    &amp;rarr; returns 4&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm distance&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm distance&lt;/h3&gt;
 Trả về khoảng cách nhỏ nhất (dựa trên tham chiếu không gian) giữa hai đối tượng hình học, khoảng cách tính theo đơn vị đã tham chiếu.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -61452,7 +58315,7 @@ geometry &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( difference( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4)&apos; ))  )   &amp;rarr; returns LINESTRING(4 4, 5 5)&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm difference&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm difference&lt;/h3&gt;
 Trả về một hình học biểu thị phần của hình học a không giao với phần của hình học b.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -61482,7 +58345,7 @@ None
 &lt;pre&gt; 4 IS NOT 2+2    &amp;rarr; returns 0 &lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;NOT&lt;/h3&gt;
+        <translation>&lt;h3&gt;NOT&lt;/h3&gt;
 Trả về 1 nếu a không giống b.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -61510,7 +58373,7 @@ geometry &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( symDifference(  geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 8 8)&apos; ))   )   &amp;rarr; returns LINESTRING(5 5, 8 8)&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm symDifference&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm symDifference&lt;/h3&gt;
 Trả về một hình học biểu thị các phần nào của a và b không giao nhau.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -61538,7 +58401,7 @@ None
 &lt;pre&gt;$perimeter &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm $perimeter&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm $perimeter&lt;/h3&gt;
 Trả về chiều dài chu vi của đối tượng hiện tại.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -61566,7 +58429,7 @@ Converts a string to a interval type.  Can be used to take days, hours, month, e
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-05 12:00:00&apos;) - tointerval(&apos;1 day 2 hours&apos;) &amp;rarr; 2012-05-04T10:00:00&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="obsolete">&lt;h3&gt;Hàm tointerval()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm tointerval()&lt;/h3&gt;
 Đổi một chuỗi thành kiểu số nguyên. Có thể được dùng để lấy ngày, giờ, tháng... của một ngày. 
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -61602,7 +58465,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;hour(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 17520&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm hour()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm hour()&lt;/h3&gt;
 Trích phần giờ ra từ một ngày_giờ hoặc giờ, hoặc số giờ từ một &lt;code&gt;Khoảng_chia&lt;/code&gt;
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -61641,7 +58504,7 @@ Returns a string representation of a color based on its hue, saturation, lightne
 &lt;!-- Show example of function.--&gt;
      color_hsla(100,50,70,200) &amp;rarr; &apos;166,217,140,200&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm color_hsla()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm color_hsla()&lt;/h3&gt;
 Trả về một chuỗi biểu thị một màu dựa trên các thuộc tính về độ màu sắc, độ bão hòa, độ sáng và kênh anpha (độ trong suốt)
 
 &lt;p&gt;&lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -61672,7 +58535,7 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$pi &amp;rarr; 3.14159265358979&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hằng số $pi&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hằng số $pi&lt;/h3&gt;
 Trả về giá trị pi để dùng trong tính toáns
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -61689,7 +58552,7 @@ Không có
         <source>&lt;h3&gt;Record Group&lt;/h3&gt;
 This group contains functions that operate on record identifiers.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Nhóm bản ghi&lt;/h3&gt;
+        <translation>&lt;h3&gt;Nhóm bản ghi&lt;/h3&gt;
 Nhóm này chứa các hàm hoạt động trên các trình nhận diện bản ghi.
 </translation>
     </message>
@@ -61707,7 +58570,7 @@ Convert a string into Qt time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;totime(&apos;12:30:01&apos;) &amp;rarr; 12:30:01&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="obsolete">&lt;h3&gt;Hàm totime()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm totime()&lt;/h3&gt;
 Chuyển một chuỗi thành kiểu thời gian Qt.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -61738,7 +58601,7 @@ Returns a string with the the supplied string replaced.
 &lt;!-- Show example of function.--&gt;
      replace(&apos;QGIS SHOULD ROCK&apos;,&apos;SHOULD&apos;,&apos;DOES&apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm replace()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm replace()&lt;/h3&gt;
 Trả về một chuỗi với thay thế bằng một chuỗi được cung cấp.
 
 &lt;p&gt;&lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -61759,7 +58622,7 @@ Trả về một chuỗi với thay thế bằng một chuỗi được cung c�
         <source>&lt;h3&gt;Conditionals Group&lt;/h3&gt;
 This group contains functions to handle conditional checks in expressions.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Nhóm điều kiện&lt;/h3&gt;
+        <translation>&lt;h3&gt;Nhóm điều kiện&lt;/h3&gt;
 Nhóm này chứa các hàm để quản lý các kiểm tra điều kiện trong biểu thức.
 </translation>
     </message>
@@ -61777,7 +58640,7 @@ abs(&lt;i&gt;value&lt;/i&gt;)&lt;br&gt;
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;code&gt;abs(-2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm abs()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm abs()&lt;/h3&gt;
 Trả về trị tuyệt đối của một số.&lt;br&gt;
 
 
@@ -61806,7 +58669,7 @@ Returns the largest value in a set of values.
 &lt;!-- Show example of function.--&gt;
      max(2,10.2,5.5) &amp;rarr; 10.2
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm max()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm max()&lt;/h3&gt;
 Trả về giá trị lớn nhất trong một tập hợp.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -61835,7 +58698,7 @@ Returns square root of a value
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      sqrt(9) &amp;rarr; 3&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm sqrt()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm sqrt()&lt;/h3&gt;
 Trả về căn bậc hai của một giá trị
 
 
@@ -61853,7 +58716,7 @@ Trả về căn bậc hai của một giá trị
         <source>&lt;h3&gt;Conditions Group&lt;/h3&gt;
 This group contains functions that operate on condition.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Nhóm các điều kiện&lt;/h3&gt;
+        <translation>&lt;h3&gt;Nhóm các điều kiện&lt;/h3&gt;
 Nhóm này chứa các hàm chạy trên các điều kiện.
 </translation>
     </message>
@@ -61877,7 +58740,7 @@ Returns a string representation of a color based on its cyan, magenta, yellow, b
 &lt;!-- Show example of function.--&gt;
      color_cmyka(100,50,0,10,200) &amp;rarr; &apos;0,115,230,200&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">
+        <translation>
 &lt;h3&gt;Hàm color_cmyka()&lt;/h3&gt;
 Trả về một chuỗi biểu thị một màu dựa trên các thành phần màu lam, đỏ tía, vàng, đen và anpha
 
@@ -61915,7 +58778,7 @@ to.
 &lt;code&gt;format_number(10000000.332,2) &amp;rarr; 10,000,000.33&lt;/code&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm format_number()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm format_number()&lt;/h3&gt;
 Trả về một số được định dạng với dấu phân cách hàng ngàn theo ngôn ngữ. 
 Ngoài ra có thể cắt bớt số chữ số lẻ sau dấu thập phận. 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -61953,7 +58816,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;year(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1.9986..&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm year()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm year()&lt;/h3&gt;
 Trích phần năm của một ngày, hoặc số năm từ một &lt;code&gt;Khoảng chia&lt;/code&gt;
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -62002,7 +58865,7 @@ return a result.
     END
 &lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Biểu thức CASE&lt;/h3&gt;
+        <translation>&lt;h3&gt;Biểu thức CASE&lt;/h3&gt;
 Một biểu thức điều kiện được dùng để đánh giá nhiều biểu thức và trả về một kết quả.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -62048,7 +58911,7 @@ This function takes two arguments.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;randf(1, 10) &amp;rarr; 4.59258286403147&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm randf()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm randf()&lt;/h3&gt;
 Trả về một số động (float) ngẫu nhiên với miền được chi định bằng đối số lớn_nhất và nhỏ_nhất (tính cả hai giá trị này).
 &lt;br&gt;
 Hàm này lấy hai đối số.
@@ -62079,7 +58942,7 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; xmin($geometry) &amp;rarr; returns minimum x coordinate of $geometry&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm xmin&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm xmin&lt;/h3&gt;
 Trả về tọa độ x nhỏ nhất của một hình h. Được tính toán dựa theo hệ tọa độ của hình học đó. 
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -62114,7 +58977,7 @@ Transforms a given value from an input domain to an output range using linear in
      
      
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm scale_linear()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm scale_linear()&lt;/h3&gt;
 Chuyển đổi một giá trị cho trước từ một miền đầu vào đến một khoảng đầu ra bằng cách dùng phép nội suy tuyến tính. 
 
 &lt;p&gt;&lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -62150,7 +59013,7 @@ Removes all leading and trailing whitespace (spaces, tabs, etc) from a string.
 &lt;!-- Show example of function.--&gt;
      trim(&apos;   hello world    &apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm trim()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm trim()&lt;/h3&gt;
 Loại bỏ tất cả các khoảng trắng thừa ở đầu và đuôi (khoảng trắng, dấu cữ dừng...) khỏi một chuỗi.
 
 &lt;p&gt;&lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -62187,7 +59050,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;minute(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1051200&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm minute()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm minute()&lt;/h3&gt;
 Trích phần phút của một ngày hoặc giờ, hoặc số phút từ một &lt;code&gt;Khoảng chia&lt;/code&gt;
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -62243,7 +59106,7 @@ use &lt;code&gt;day&lt;/code&gt; to extract number of days&lt;br&gt;
 &lt;code&gt;day(age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;)) &amp;rarr; 10&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm age()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm age()&lt;/h3&gt;
 Trả về sự sai biệt giữa hai ngày.
 &lt;br&gt;&lt;br&gt;
 Sự sai biệt được trả về dưới dạng &lt;code&gt;Khoảng_chia&lt;/code&gt; và cần phải được dùng với một trong các hàm sau để có thể thu được thông tin gì đó hữu ích:
@@ -62292,7 +59155,7 @@ This function takes one argument.
 &lt;code&gt;log10(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;log10(100) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm log10()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm log10()&lt;/h3&gt;
 Trả về giá trị của logarit cơ số 10 của biểu thức được truyền.
 &lt;br&gt;
 Hàm này lấy một đối số.
@@ -62313,7 +59176,7 @@ Hàm này lấy một đối số.
         <source>&lt;h3&gt;Conversions Group&lt;/h3&gt;
 This group contains functions to convert on data type to another e.g string to integer, integer to string.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Nhóm chuyển đổi&lt;/h3&gt;
+        <translation>&lt;h3&gt;Nhóm chuyển đổi&lt;/h3&gt;
 Nhóm này chứa các hàm dùng để chuyển đổi từ kiểu dữ liệu này sang kiểu khác, ví dụ như từ chuỗi thành số nguyên, số nguyên thành chuỗi.
 </translation>
     </message>
@@ -62331,7 +59194,7 @@ Returns cosinus of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      cos(1.571) &amp;rarr; 0.000796326710733263&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm cos()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm cos()&lt;/h3&gt;
 Trả về cos của một góc.
 
 
@@ -62349,7 +59212,7 @@ Trả về cos của một góc.
         <source>&lt;h3&gt;Operators Group&lt;/h3&gt;
 This group contains operators e.g + - * 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Nhóm toán tử&lt;/h3&gt;
+        <translation>&lt;h3&gt;Nhóm toán tử&lt;/h3&gt;
 Nhóm này chứa các toán tử như + - * 
 </translation>
     </message>
@@ -62375,7 +59238,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;second(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 63072000&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm second()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm second()&lt;/h3&gt;
 Trích phần giây của một ngày_giờ hoặc giờ, hoặc số giây từ một &lt;code&gt;Khoảng chia&lt;/code&gt;
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -62410,7 +59273,7 @@ Returns arcustanget of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      atan(0.5) &amp;rarr; 0.463647609000806&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm atan()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm atan()&lt;/h3&gt;
 Trả về arctang của một giá trị tính bằng radian.
 
 
@@ -62437,7 +59300,7 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$length &amp;rarr; 42.4711&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm $length&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm $length&lt;/h3&gt;
 Trả về chiều dài của đối tượng hiện tại.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -62465,7 +59328,7 @@ capital letter).
 &lt;!-- Show example of function.--&gt;
      upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;Hello World&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm title()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm title()&lt;/h3&gt;
 Chuyển tất cả các từ trong một chuỗi thành kiểu tiêu đề (tất cả các từ chữ thường, với chữ cái đầu tiên viết hoa).
 
 &lt;p&gt;&lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -62496,7 +59359,7 @@ Returns true if any part of a string matches the supplied regular expression.
 &lt;!-- Show example of function.--&gt;
      regexp_match(&apos;QGIS ROCKS&apos;,&apos;&amp;#92;&amp;#92;sROCKS&apos;) &amp;rarr; 1&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm regexp_match()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm regexp_match()&lt;/h3&gt;
 Trả về đúng nếu bất kỳ phần nào của chuỗi khớp với biểu thức chính tắc được so.
 
 &lt;p&gt;&lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -62529,7 +59392,7 @@ Return a part of a string
 &lt;!-- Show example of function.--&gt;
      substr(&apos;HELLO WORLD&apos;,3,5) &amp;rarr; &apos;LLO W&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm substr()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm substr()&lt;/h3&gt;
 Trả về một phần của một chuỗi
 
 &lt;p&gt;&lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -62561,7 +59424,7 @@ Format a string using supplied arguments.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;format(&apos;This %1 a %2&apos;,&apos;is&apos;, &apos;test&apos;) &amp;rarr; This is a test&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="obsolete">&lt;h3&gt;Hàm format()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm format()&lt;/h3&gt;
 Định dạng một chuỗi theo các đối số đã cho. 
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -62593,7 +59456,7 @@ Returns a string with the supplied regular expression replaced.
 &lt;!-- Show example of function.--&gt;
      regexp_replace(&apos;QGIS SHOULD ROCK&apos;,&apos;&amp;#92;&amp;#92;sSHOULD&amp;#92;&amp;#92;s&apos;,&apos; DOES &apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm regexp_replace()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm regexp_replace()&lt;/h3&gt;
 Trả về một chuỗi với biểu thức chính tắc đã cho được thay thế.
 
 &lt;p&gt;&lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -62626,7 +59489,7 @@ Returns the portion of a string which matches a supplied regular expression.
 &lt;!-- Show example of function.--&gt;
      regexp_substr(&apos;abc123&apos;,&apos;(&amp;#92;&amp;#92;d+)&apos;) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm regexp_substr()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm regexp_substr()&lt;/h3&gt;
 Trả vè phần của một chuỗi khớp với biểu thức chính tắc đã cho.
 
 &lt;p&gt;&lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -62656,7 +59519,7 @@ None
 &lt;pre&gt;$y &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm $y&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm $y&lt;/h3&gt;
 Trả về tọa độ y của đối tượng hiện tại.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -62689,7 +59552,7 @@ Returns a string representation of a color based on its red, green, blue, and al
 &lt;!-- Show example of function.--&gt;
      color_rgba(255,127,0,200) &amp;rarr; &apos;255,127,0,200&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm color_rgba()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm color_rgba()&lt;/h3&gt;
 Trả về một chuỗi biểu thị một màu dựa trên các thuộc tính về đỏ, lục, xanh và kênh anpha (độ trong suốt)
 
 &lt;p&gt;&lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -62721,7 +59584,7 @@ None
 &lt;pre&gt;$x &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm $x&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm $x&lt;/h3&gt;
 Trả về tọa độ x của đối tượng hiện tại.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -62739,7 +59602,7 @@ Không có
         <source>&lt;h3&gt;Math Group&lt;/h3&gt;
 This group contains math functions e.g square root, sin and cos
 </source>
-        <translation type="obsolete">&lt;h3&gt;Nhóm toán học&lt;/h3&gt;
+        <translation>&lt;h3&gt;Nhóm toán học&lt;/h3&gt;
 Nhóm này chứa các hàm toán học như căn bậc hai, sin, cos
 </translation>
     </message>
@@ -62758,7 +59621,7 @@ Returns the smallest value in a set of values.
 &lt;!-- Show example of function.--&gt;
      min(20.5,10,6.2) &amp;rarr; 6.2
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm min()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm min()&lt;/h3&gt;
 Trả về giá trị nhỏ nhất trong một tập hợp các giá trị.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -62786,7 +59649,7 @@ Converts a string to lower case letters.
 &lt;p&gt;&lt;h4&gt;  Example&lt;/h4&gt;
      lower(&apos;HELLO World&apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm lower()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm lower()&lt;/h3&gt;
 Chuyển đổi một chuỗi thanh các ký tự viết thường.
 
 &lt;p&gt;&lt;h4&gt;  Cú pháp&lt;/h4&gt;
@@ -62813,7 +59676,7 @@ None
 &lt;pre&gt;$numfeatures &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm $numfeatures&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm $numfeatures&lt;/h3&gt;
 Trong chức năng tạo atlas, trả về tổng số đối tượng ở trong lớp bìa.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -62831,7 +59694,7 @@ Không có
         <source>&lt;h3&gt;String Group&lt;/h3&gt;
 This group contains functions that operate on strings e.g replace, convert to upper case.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Nhóm chuỗi&lt;/h3&gt;
+        <translation>&lt;h3&gt;Nhóm chuỗi&lt;/h3&gt;
 Bao gồm các hàm xử lý các chuỗi như thay thế, chuyển đổi kiểu chữ, v.v.
 </translation>
     </message>
@@ -62850,7 +59713,7 @@ Concatenates several strings to one.
 &lt;!-- Show example of function.--&gt;
      concat(&apos;a&apos;,&apos;b&apos;,&apos;c&apos;,&apos;d&apos;,&apos;e&apos;) &amp;rarr; &apos;abcde&apos;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm concat()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm concat()&lt;/h3&gt;
 Nối vài chuỗi thành một chuỗi.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -62886,7 +59749,7 @@ This function can take any number of arguments.
  else the value of &quot;fallbackField&quot; or the string &apos;ERROR&apos; if both are NULL&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm coalesce()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm coalesce()&lt;/h3&gt;
 Trả về giá trị không RỖNG đầu tiên trong danh sách biểu thức.
 &lt;br&gt;
 Hàm này có thể lấy bất kể bao nhiêu số lượng đối số.
@@ -62921,7 +59784,7 @@ Returns arcussinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      asin(1.0) &amp;rarr; 1.5707963267949&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm asin()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm asin()&lt;/h3&gt;
 Trả về arcsin của một giá trị tính bằng radian.
 
 
@@ -62949,7 +59812,7 @@ Convert a string into Qt data time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-04 12:50:00&apos;) &amp;rarr; 2012-05-04T12:50:00&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="obsolete">&lt;h3&gt;Hàm todatetime()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm todatetime()&lt;/h3&gt;
 Chuyển một chuỗi thành một kiểu dữ liệu ngày_giờ Qt.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -62977,7 +59840,7 @@ Returns tangent of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      tan(1.0) &amp;rarr; 1.5574077246549&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm tan()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm tan()&lt;/h3&gt;
 Trả về tang của một góc.
 
 
@@ -63005,7 +59868,7 @@ None
 &lt;pre&gt;$feature &amp;rarr; 2&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm $feature&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm $feature&lt;/h3&gt;
 Trong việc tạo atlas, trả về số hiệu đối tượng hiện tại nào được lặp lại trên lớp bìa.
 
 &lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -63036,7 +59899,7 @@ This function takes one argument.
 &lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm ln()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm ln()&lt;/h3&gt;
 Trả về giá trị của logarit tự nhiện của biểu thức được truyền.
 &lt;br&gt;
 Hàm này lấy một đối số.
@@ -63071,7 +59934,7 @@ Returns a string representation of a color based on its hue, saturation, value a
 &lt;!-- Show example of function.--&gt;
      color_hsva(40,100,100,200) &amp;rarr; &apos;255,170,0,200&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hàm color_hsva()&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hàm color_hsva()&lt;/h3&gt;
 Trả về một chuỗi biểu thị của một màu dựa trên các tính chất màu sắc, độ bão hòa, giá trị và kênh anpha (độ trong suốt)
 
 &lt;p&gt;&lt;h4&gt;Cú pháp&lt;/h4&gt;
@@ -63089,6 +59952,219 @@ Trả về một chuỗi biểu thị của một màu dựa trên các tính ch
      color_hsva(40,100,100,200) &amp;rarr; &apos;255,170,0,200&apos;&lt;/p&gt;
 </translation>
     </message>
+    <message>
+        <source>&lt;h3&gt;geometry function&lt;/h3&gt;
+Returns the feature&apos;s geometry
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;geometry( f )&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+f &amp;rarr; QgsFeature
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( geometry( getFeature( layer, attributeField, value ) ) ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
+&lt;pre&gt; intersects( $geometry, geometry( getFeature( layer, attributeField, value ) ) ) &amp;rarr; 1&lt;/pre&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;transform function&lt;/h3&gt;
+Returns the geometry transformed from the source CRS to the dest CRS.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;transform( geom, sAuthId, dAuthId )&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+geom &amp;rarr; QgsGeometry
+
+sCrsId &amp;rarr; the Source Auth CRS Id
+
+dCrsId &amp;rarr; the Dest Auth CRS Id
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; geomToWKT( transform( $geometry, &apos;EPSG:2154&apos;, &apos;EPSG:4326&apos; ) ) &amp;rarr; POINT(0 51)&lt;/pre&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;format_date() function&lt;/h3&gt;
+Format a date type or string into a custom string format. Uses Qt data time format strings.  See &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/qdatetime.html#toString&apos;&gt;QDateTime::toString&lt;/a&gt;
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;format_date(&apos;string&apos;, &apos;format_string&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - is string. Date/Time/DateTime string.
+&lt;br&gt;
+&lt;code&gt;format_string&lt;/code&gt; - is string. String template used to format the string.
+
+  &lt;table&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th&gt;Expression&lt;/th&gt;
+
+        &lt;th&gt;Output&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;d&lt;/td&gt;
+
+      &lt;td&gt;the day as number without a leading zero (1 to 31)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;dd&lt;/td&gt;
+
+      &lt;td&gt;the day as number with a leading zero (01 to 31)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;ddd&lt;/td&gt;
+
+      &lt;td&gt;the abbreviated localized day name (e.g. &apos;Mon&apos; to &apos;Sun&apos;). Uses &lt;a href=
+      &quot;qdate.html#shortDayName&quot;&gt;QDate::shortDayName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;dddd&lt;/td&gt;
+
+      &lt;td&gt;the long localized day name (e.g. &apos;Monday&apos; to &apos;Sunday&apos;). Uses &lt;a href=
+      &quot;qdate.html#longDayName&quot;&gt;QDate::longDayName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;M&lt;/td&gt;
+
+      &lt;td&gt;the month as number without a leading zero (1-12)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;MM&lt;/td&gt;
+
+      &lt;td&gt;the month as number with a leading zero (01-12)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;MMM&lt;/td&gt;
+
+      &lt;td&gt;the abbreviated localized month name (e.g. &apos;Jan&apos; to &apos;Dec&apos;). Uses &lt;a href=
+      &quot;qdate.html#shortMonthName&quot;&gt;QDate::shortMonthName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;MMMM&lt;/td&gt;
+
+      &lt;td&gt;the long localized month name (e.g. &apos;January&apos; to &apos;December&apos;). Uses &lt;a href=
+      &quot;qdate.html#longMonthName&quot;&gt;QDate::longMonthName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;yy&lt;/td&gt;
+
+      &lt;td&gt;the year as two digit number (00-99)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;yyyy&lt;/td&gt;
+
+      &lt;td&gt;the year as four digit number&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+
+  &lt;p&gt;These expressions may be used for the time part of the format string:&lt;/p&gt;
+
+  &lt;table&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th&gt;Expression&lt;/th&gt;
+
+        &lt;th&gt;Output&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;h&lt;/td&gt;
+
+      &lt;td&gt;the hour without a leading zero (0 to 23 or 1 to 12 if AM/PM display)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;hh&lt;/td&gt;
+
+      &lt;td&gt;the hour with a leading zero (00 to 23 or 01 to 12 if AM/PM display)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;H&lt;/td&gt;
+
+      &lt;td&gt;the hour without a leading zero (0 to 23, even with AM/PM display)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;HH&lt;/td&gt;
+
+      &lt;td&gt;the hour with a leading zero (00 to 23, even with AM/PM display)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;m&lt;/td&gt;
+
+      &lt;td&gt;the minute without a leading zero (0 to 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;mm&lt;/td&gt;
+
+      &lt;td&gt;the minute with a leading zero (00 to 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;s&lt;/td&gt;
+
+      &lt;td&gt;the second without a leading zero (0 to 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;ss&lt;/td&gt;
+
+      &lt;td&gt;the second with a leading zero (00 to 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;z&lt;/td&gt;
+
+      &lt;td&gt;the milliseconds without leading zeroes (0 to 999)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;zzz&lt;/td&gt;
+
+      &lt;td&gt;the milliseconds with leading zeroes (000 to 999)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;AP or A&lt;/td&gt;
+
+      &lt;td&gt;interpret as an AM/PM time. &lt;i&gt;AP&lt;/i&gt; must be either &quot;AM&quot; or &quot;PM&quot;.&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;ap or a&lt;/td&gt;
+
+      &lt;td&gt;Interpret as an AM/PM time. &lt;i&gt;ap&lt;/i&gt; must be either &quot;am&quot; or &quot;pm&quot;.&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+
+&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;format_date(&apos;2012-05-15&apos;,&apos;dd.MM.yyyy&apos;) &amp;rarr; 15.05.2012&lt;/code&gt;&lt;br&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>gdal2xyz</name>
@@ -63102,11 +60178,7 @@ Trả về một chuỗi biểu thị của một màu dựa trên các tính ch
     </message>
     <message>
         <source>Output file</source>
-        <translation type="obsolete">Tập tin đầu ra</translation>
-    </message>
-    <message>
-        <source>xyz</source>
-        <translation type="unfinished"></translation>
+        <translation>Tập tin đầu ra</translation>
     </message>
 </context>
 <context>
@@ -63133,101 +60205,7 @@ Trả về một chuỗi biểu thị của một màu dựa trên các tính ch
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
-    </message>
-    <message>
-        <source>Pyramidized</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>gdalcalc</name>
-    <message>
-        <source>Input layer A</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Number of raster band for raster A</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Input layer B</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Number of raster band for raster B</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Input layer C</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Number of raster band for raster C</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Input layer D</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Number of raster band for raster D</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Input layer E</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Number of raster band for raster E</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Input layer F</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Number of raster band for raster F</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Calculation in gdalnumeric syntax using +-/* or any numpy array functions (i.e. logical_and())</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Set output nodata value</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Output raster type</source>
-        <translation type="unfinished">Loại lớp Raster đầu ra</translation>
-    </message>
-    <message>
-        <source>Additional creation parameters</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Calculated</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>gdaltindex</name>
-    <message>
-        <source>Input layers</source>
-        <translation type="unfinished">Các lớp đầu vào</translation>
-    </message>
-    <message>
-        <source>Tile index field</source>
-        <translation type="unfinished">Trường chỉ mục mảnh chia</translation>
-    </message>
-    <message>
-        <source>Skip files with different projection reference</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tile index</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp đầu ra</translation>
     </message>
 </context>
 <context>
@@ -65052,11 +62030,7 @@ Trả về một chuỗi biểu thị của một màu dựa trên các tính ch
     </message>
     <message>
         <source>Output file</source>
-        <translation type="obsolete">Tập tin đầu ra</translation>
-    </message>
-    <message>
-        <source>Hillshade</source>
-        <translation type="unfinished">Bóng đổ</translation>
+        <translation>Tập tin đầu ra</translation>
     </message>
 </context>
 <context>
@@ -66044,11 +63018,7 @@ Trả về một chuỗi biểu thị của một màu dựa trên các tính ch
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
-    </message>
-    <message>
-        <source>Merged</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp đầu ra</translation>
     </message>
 </context>
 <context>
@@ -66067,11 +63037,7 @@ Trả về một chuỗi biểu thị của một màu dựa trên các tính ch
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
-    </message>
-    <message>
-        <source>Nearblack</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp đầu ra</translation>
     </message>
 </context>
 <context>
@@ -66170,11 +63136,7 @@ Trả về một chuỗi biểu thị của một màu dựa trên các tính ch
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
-    </message>
-    <message>
-        <source>PCT to RGB</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp đầu ra</translation>
     </message>
 </context>
 <context>
@@ -66189,11 +63151,7 @@ Trả về một chuỗi biểu thị của một màu dựa trên các tính ch
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
-    </message>
-    <message>
-        <source>Vectorized</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp đầu ra</translation>
     </message>
 </context>
 <context>
@@ -66228,11 +63186,7 @@ Trả về một chuỗi biểu thị của một màu dựa trên các tính ch
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
-    </message>
-    <message>
-        <source>Distance</source>
-        <translation type="unfinished">Khoảng cách</translation>
+        <translation>Lớp đầu ra</translation>
     </message>
 </context>
 <context>
@@ -66244,6 +63198,10 @@ Trả về một chuỗi biểu thị của một màu dựa trên các tính ch
     <message>
         <source>Attribute field</source>
         <translation>Trường thuộc tính</translation>
+    </message>
+    <message>
+        <source>Write values inside an existing raster layer(*)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Set output raster size (ignored if above option is checked)</source>
@@ -66259,6 +63217,10 @@ Trả về một chuỗi biểu thị của một màu dựa trên các tính ch
     </message>
     <message>
         <source>Raster type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output layer: mandatory to choose an existing raster layer if the (*) option is selected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -66290,26 +63252,7 @@ Trả về một chuỗi biểu thị của một màu dựa trên các tính ch
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Force the generation of an associated ESRI world file (.tfw)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rasterized</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>rasterize_over</name>
-    <message>
-        <source>Input layer</source>
-        <translation type="unfinished">Lớp đầu vào</translation>
-    </message>
-    <message>
-        <source>Attribute field</source>
-        <translation type="unfinished">Trường thuộc tính</translation>
-    </message>
-    <message>
-        <source>Existing raster layer</source>
+        <source>Force the generation of an associated ESRI world file (.tfw))</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -66325,11 +63268,7 @@ Trả về một chuỗi biểu thị của một màu dựa trên các tính ch
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
-    </message>
-    <message>
-        <source>RGB to PCT</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp đầu ra</translation>
     </message>
 </context>
 <context>
@@ -66348,11 +63287,7 @@ Trả về một chuỗi biểu thị của một màu dựa trên các tính ch
     </message>
     <message>
         <source>Output file</source>
-        <translation type="obsolete">Tập tin đầu ra</translation>
-    </message>
-    <message>
-        <source>Roughness</source>
-        <translation type="unfinished">Độ ghồ ghề</translation>
+        <translation>Tập tin đầu ra</translation>
     </message>
 </context>
 <context>
@@ -66441,11 +63376,7 @@ Trả về một chuỗi biểu thị của một màu dựa trên các tính ch
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
-    </message>
-    <message>
-        <source>Sieved</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp đầu ra</translation>
     </message>
 </context>
 <context>
@@ -66476,11 +63407,7 @@ Trả về một chuỗi biểu thị của một màu dựa trên các tính ch
     </message>
     <message>
         <source>Output file</source>
-        <translation type="obsolete">Tập tin đầu ra</translation>
-    </message>
-    <message>
-        <source>Slope</source>
-        <translation type="unfinished">Độ dốc</translation>
+        <translation>Tập tin đầu ra</translation>
     </message>
 </context>
 <context>
@@ -66638,11 +63565,7 @@ Trả về một chuỗi biểu thị của một màu dựa trên các tính ch
     </message>
     <message>
         <source>Output file</source>
-        <translation type="obsolete">Tập tin đầu ra</translation>
-    </message>
-    <message>
-        <source>Topographic Position Index</source>
-        <translation type="unfinished"></translation>
+        <translation>Tập tin đầu ra</translation>
     </message>
 </context>
 <context>
@@ -66685,7 +63608,7 @@ Trả về một chuỗi biểu thị của một màu dựa trên các tính ch
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
+        <translation>Lớp đầu ra</translation>
     </message>
     <message>
         <source>Nodata value, leave blank to take the nodata value from input</source>
@@ -66719,10 +63642,6 @@ Trả về một chuỗi biểu thị của một màu dựa trên các tính ch
         <source>Force the generation of an associated ESRI world file (.tfw))</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Converted</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>tri</name>
@@ -66740,11 +63659,7 @@ Trả về một chuỗi biểu thị của một màu dựa trên các tính ch
     </message>
     <message>
         <source>Output file</source>
-        <translation type="obsolete">Tập tin đầu ra</translation>
-    </message>
-    <message>
-        <source>Terrain Ruggedness Index</source>
-        <translation type="unfinished"></translation>
+        <translation>Tập tin đầu ra</translation>
     </message>
 </context>
 <context>
@@ -66924,7 +63839,7 @@ Trả về một chuỗi biểu thị của một màu dựa trên các tính ch
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Lớp đầu ra</translation>
+        <translation>Lớp đầu ra</translation>
     </message>
     <message>
         <source>Nodata value, leave blank to take the nodata value from input</source>
@@ -66956,10 +63871,6 @@ Trả về một chuỗi biểu thị của một màu dựa trên các tính ch
     </message>
     <message>
         <source>Force the generation of an associated ESRI world file (.tfw))</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Reprojected</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

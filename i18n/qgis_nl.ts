@@ -162,11 +162,7 @@
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
-    </message>
-    <message>
-        <source>Added</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultaatlaag</translation>
     </message>
 </context>
 <context>
@@ -227,11 +223,7 @@ Bekijk het in het resultaatvenster.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
-    </message>
-    <message>
-        <source>Incremented</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultaatlaag</translation>
     </message>
 </context>
 <context>
@@ -250,11 +242,7 @@ Bekijk het in het resultaatvenster.</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Uitvoer</translation>
-    </message>
-    <message>
-        <source>Bar plot</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoer</translation>
     </message>
 </context>
 <context>
@@ -269,7 +257,7 @@ Bekijk het in het resultaatvenster.</translation>
     </message>
     <message>
         <source>Statistics for numeric field</source>
-        <translation type="obsolete">Statistieken voor numeriek veld</translation>
+        <translation>Statistieken voor numeriek veld</translation>
     </message>
     <message>
         <source>Coefficient of Variation</source>
@@ -311,10 +299,6 @@ Bekijk het in het resultaatvenster.</translation>
         <source>Standard deviation</source>
         <translation>Standaard afwijking</translation>
     </message>
-    <message>
-        <source>Statistics</source>
-        <translation type="unfinished">Statistieken</translation>
-    </message>
 </context>
 <context>
     <name>BasicStatisticsStrings</name>
@@ -330,7 +314,7 @@ Veld waarop statistieken moeten worden berekend
     </message>
     <message>
         <source>Statistics for text field</source>
-        <translation type="obsolete">Statistieken voor tekstveld</translation>
+        <translation>Statistieken voor tekstveld</translation>
     </message>
     <message>
         <source>Minimum length</source>
@@ -359,10 +343,6 @@ Veld waarop statistieken moeten worden berekend
     <message>
         <source>Number of unique values</source>
         <translation>Aantal unieke waarden:</translation>
-    </message>
-    <message>
-        <source>Statistics for text</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -604,15 +584,11 @@ Veld waarop statistieken moeten worden berekend
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
+        <translation>Resultaatlaag</translation>
     </message>
     <message>
         <source>Error calculating centroid</source>
         <translation>Fout bij berekenen centrum</translation>
-    </message>
-    <message>
-        <source>Centroids</source>
-        <translation type="unfinished">Zwaartepunten</translation>
     </message>
 </context>
 <context>
@@ -620,29 +596,6 @@ Veld waarop statistieken moeten worden berekend
     <message>
         <source>&lt;p&gt;Character: &lt;span style=&quot;font-size: 24pt; font-family: %1&quot;&gt;%2&lt;/span&gt;&lt;p&gt;Value: 0x%3</source>
         <translation>&lt;p&gt;Teken: &lt;span style=&quot;font-size: 24pt; font-family: %1&quot;&gt;%2&lt;/span&gt;&lt;p&gt;Waarde: 0x%3</translation>
-    </message>
-</context>
-<context>
-    <name>CheckValidity</name>
-    <message>
-        <source>Input layer</source>
-        <translation type="unfinished">Invoerlaag</translation>
-    </message>
-    <message>
-        <source>Method</source>
-        <translation type="unfinished">Methode</translation>
-    </message>
-    <message>
-        <source>Valid output</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invalid output</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error output</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -684,15 +637,11 @@ Veld waarop statistieken moeten worden berekend
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
+        <translation>Resultaatlaag</translation>
     </message>
     <message>
         <source>Nodata value, leave blank to take the nodata value from input</source>
         <translation>Waarde Geen gegevens, laat leeg om de waarde Geen gegevens uit invoer aan te nemen</translation>
-    </message>
-    <message>
-        <source>Clipped (extent)</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -719,15 +668,11 @@ Veld waarop statistieken moeten worden berekend
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
+        <translation>Resultaatlaag</translation>
     </message>
     <message>
         <source>Nodata value, leave blank to take the nodata value from input</source>
         <translation>Waarde Geen gegevens, laat leeg om de waarde Geen gegevens uit invoer aan te nemen</translation>
-    </message>
-    <message>
-        <source>Clipped (mask)</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -800,11 +745,7 @@ Veld waarop statistieken moeten worden berekend
     </message>
     <message>
         <source>Output file</source>
-        <translation type="obsolete">Uitvoerbestand</translation>
-    </message>
-    <message>
-        <source>Color relief</source>
-        <translation type="unfinished">Kleurreliëf</translation>
+        <translation>Uitvoerbestand</translation>
     </message>
 </context>
 <context>
@@ -1007,11 +948,7 @@ Veld waarop statistieken moeten worden berekend
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
-    </message>
-    <message>
-        <source>Constant</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultaatlaag</translation>
     </message>
 </context>
 <context>
@@ -1608,10 +1545,6 @@ Query:
         <source>%1 is an invalid layer and cannot be loaded. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
         <translation>%1 is een ongeldige laag en kan niet worden geladen. Controleer het &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; voor verdere informatie.</translation>
     </message>
-    <message>
-        <source>New Connection...</source>
-        <translation type="unfinished">Nieuwe verbinding...</translation>
-    </message>
 </context>
 <context>
     <name>DTM2TIF</name>
@@ -1622,25 +1555,6 @@ Query:
     <message>
         <source>Output file name</source>
         <translation>Naam uitvoerbestand </translation>
-    </message>
-</context>
-<context>
-    <name>Datasources2Vrt</name>
-    <message>
-        <source>Input datasources</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Overwrite output vrt</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Virtual vector</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Virtual string</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1981,10 +1895,6 @@ ophalen</translation>
         <source>Avoid selecting by feature id</source>
         <translation>Vermijd selectie op object-id</translation>
     </message>
-    <message>
-        <source>Create a view</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>DbManagerDlgTableProperties</name>
@@ -2054,93 +1964,6 @@ ophalen</translation>
     </message>
 </context>
 <context>
-    <name>DbManagerQueryBuilderDlg</name>
-    <message>
-        <source>SQL query builder</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Columns</source>
-        <translation type="unfinished">Kolommen</translation>
-    </message>
-    <message>
-        <source>Tables     </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Where    </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Group by</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Order by</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Data</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show system tables</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tables</source>
-        <translation type="unfinished">Tabellen</translation>
-    </message>
-    <message>
-        <source>Aggregates</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Functions</source>
-        <translation type="unfinished">Functies</translation>
-    </message>
-    <message>
-        <source>Math</source>
-        <translation type="unfinished">Berekening</translation>
-    </message>
-    <message>
-        <source>Strings functions</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Operators</source>
-        <translation type="unfinished">Operatoren</translation>
-    </message>
-    <message>
-        <source>Columns&apos; values</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Only 10 first values</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Spatial index</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Table (with spatial index)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Table (Target)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Use spatial index</source>
-        <translation type="unfinished">Ruimtelijke index gebruiken</translation>
-    </message>
-    <message>
-        <source>&amp;Reset</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>Delaunay</name>
     <message>
         <source>Input layer</source>
@@ -2167,11 +1990,7 @@ ophalen</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Uitvoer</translation>
-    </message>
-    <message>
-        <source>Deleted column</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoer</translation>
     </message>
 </context>
 <context>
@@ -2182,22 +2001,7 @@ ophalen</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Uitvoer</translation>
-    </message>
-    <message>
-        <source>Cleaned</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>DeleteHoles</name>
-    <message>
-        <source>Input layer</source>
-        <translation type="unfinished">Invoerlaag</translation>
-    </message>
-    <message>
-        <source>Cleaned</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoer</translation>
     </message>
 </context>
 <context>
@@ -2242,11 +2046,7 @@ ophalen</translation>
     </message>
     <message>
         <source>Densified layer</source>
-        <translation type="obsolete">Verdichte laag</translation>
-    </message>
-    <message>
-        <source>Densified</source>
-        <translation type="unfinished"></translation>
+        <translation>Verdichte laag</translation>
     </message>
 </context>
 <context>
@@ -2261,11 +2061,7 @@ ophalen</translation>
     </message>
     <message>
         <source>Densified layer</source>
-        <translation type="obsolete">Verdichte laag</translation>
-    </message>
-    <message>
-        <source>Densified</source>
-        <translation type="unfinished"></translation>
+        <translation>Verdichte laag</translation>
     </message>
 </context>
 <context>
@@ -3338,42 +3134,6 @@ Weet u zeker dat u door wilt gaan?</translation>
         <source>Include input features that intersect the selection features</source>
         <translation>Neem invoerobjecten op die de geselecteerde objecten kruisen</translation>
     </message>
-    <message>
-        <source>Statistical method for attribute aggregation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Input point vector layer attributes to aggregate</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select columns</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>sum</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>stddev</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>mean</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>max</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>min</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rotation angle in degrees</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>Difference</name>
@@ -3438,45 +3198,6 @@ Weet u zeker dat u door wilt gaan?</translation>
     </message>
 </context>
 <context>
-    <name>DinfDistDownMulti</name>
-    <message>
-        <source>D-Infinity Flow Direction Grid</source>
-        <translation type="unfinished">D-Infinity Flow Direction Grid</translation>
-    </message>
-    <message>
-        <source>Pit Filled Elevation Grid</source>
-        <translation type="unfinished">Pit Filled Elevation Grid</translation>
-    </message>
-    <message>
-        <source>Stream Raster Grid</source>
-        <translation type="unfinished">Stream Raster Grid</translation>
-    </message>
-    <message>
-        <source>Weight Path Grid</source>
-        <translation type="unfinished">Weight Path Grid</translation>
-    </message>
-    <message>
-        <source>Statistical Method</source>
-        <translation type="unfinished">Statistische methode</translation>
-    </message>
-    <message>
-        <source>Distance Method</source>
-        <translation type="unfinished">Methode afstand</translation>
-    </message>
-    <message>
-        <source>Check for edge contamination</source>
-        <translation type="unfinished">Controleren op besmetting rand</translation>
-    </message>
-    <message>
-        <source>D-Infinity Drop to Stream Grid</source>
-        <translation type="unfinished">D-Infinity Drop to Stream Grid</translation>
-    </message>
-    <message>
-        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>DinfDistUp</name>
     <message>
         <source>D-Infinity Flow Direction Grid</source>
@@ -3513,45 +3234,6 @@ Weet u zeker dat u door wilt gaan?</translation>
     <message>
         <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
         <translation>Verkeerd aantal processen van MPI gebruikt. Stel het juiste aantal in vóór het uitvoeren van algoritmen van TauDEM.</translation>
-    </message>
-</context>
-<context>
-    <name>DinfDistUpMulti</name>
-    <message>
-        <source>D-Infinity Flow Direction Grid</source>
-        <translation type="unfinished">D-Infinity Flow Direction Grid</translation>
-    </message>
-    <message>
-        <source>Pit Filled Elevation Grid</source>
-        <translation type="unfinished">Pit Filled Elevation Grid</translation>
-    </message>
-    <message>
-        <source>Slope Grid</source>
-        <translation type="unfinished">Hellingsraster</translation>
-    </message>
-    <message>
-        <source>Statistical Method</source>
-        <translation type="unfinished">Statistische methode</translation>
-    </message>
-    <message>
-        <source>Distance Method</source>
-        <translation type="unfinished">Methode afstand</translation>
-    </message>
-    <message>
-        <source>Proportion Threshold</source>
-        <translation type="unfinished">Drempel voor proportie</translation>
-    </message>
-    <message>
-        <source>Check for edge contamination</source>
-        <translation type="unfinished">Controleren op besmetting rand</translation>
-    </message>
-    <message>
-        <source>D-Infinity Distance Up</source>
-        <translation type="unfinished">D-Infinity Distance Up</translation>
-    </message>
-    <message>
-        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3630,84 +3312,6 @@ Weet u zeker dat u door wilt gaan?</translation>
     <message>
         <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
         <translation>Verkeerd aantal processen van MPI gebruikt. Stel het juiste aantal in vóór het uitvoeren van algoritmen van TauDEM.</translation>
-    </message>
-</context>
-<context>
-    <name>DinfTransLimAccum2Multi</name>
-    <message>
-        <source>D-Infinity Flow Direction Grid</source>
-        <translation type="unfinished">D-Infinity Flow Direction Grid</translation>
-    </message>
-    <message>
-        <source>Supply Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Transport Capacity Grid</source>
-        <translation type="unfinished">Grid transportcapaciteit</translation>
-    </message>
-    <message>
-        <source>Input Concentration Grid</source>
-        <translation type="unfinished">Grid Invoer concentratie</translation>
-    </message>
-    <message>
-        <source>Outlets Shapefile</source>
-        <translation type="unfinished">Shapefile met uitgangen</translation>
-    </message>
-    <message>
-        <source>Check for edge contamination</source>
-        <translation type="unfinished">Controleren op besmetting rand</translation>
-    </message>
-    <message>
-        <source>Transport Limited Accumulation Grid</source>
-        <translation type="unfinished">Transport Limited Accumulation Grid</translation>
-    </message>
-    <message>
-        <source>Deposition Grid</source>
-        <translation type="unfinished">Grid van afzetting</translation>
-    </message>
-    <message>
-        <source>Output Concentration Grid</source>
-        <translation type="unfinished">Grid Uitvoer concentratie</translation>
-    </message>
-    <message>
-        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>DinfTransLimAccumMulti</name>
-    <message>
-        <source>D-Infinity Flow Direction Grid</source>
-        <translation type="unfinished">D-Infinity Flow Direction Grid</translation>
-    </message>
-    <message>
-        <source>Supply Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Transport Capacity Grid</source>
-        <translation type="unfinished">Grid transportcapaciteit</translation>
-    </message>
-    <message>
-        <source>Outlets Shapefile</source>
-        <translation type="unfinished">Shapefile met uitgangen</translation>
-    </message>
-    <message>
-        <source>Check for edge contamination</source>
-        <translation type="unfinished">Controleren op besmetting rand</translation>
-    </message>
-    <message>
-        <source>Transport Limited Accumulation Grid</source>
-        <translation type="unfinished">Transport Limited Accumulation Grid</translation>
-    </message>
-    <message>
-        <source>Deposition Grid</source>
-        <translation type="unfinished">Grid van afzetting</translation>
-    </message>
-    <message>
-        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4191,12 +3795,12 @@ Weet u zeker dat u door wilt gaan?</translation>
     </message>
     <message>
         <source>DB Manager</source>
-        <translation type="obsolete">DB Manager</translation>
+        <translation>DB Manager</translation>
     </message>
     <message>
         <source>You must fill the required fields: 
 geometry column - column with unique integer values</source>
-        <translation type="obsolete">U moet de verplichte velden invullen: geometriekolom - kolom met unieke integer-waarden</translation>
+        <translation>U moet de verplichte velden invullen: geometriekolom - kolom met unieke integer-waarden</translation>
     </message>
 </context>
 <context>
@@ -4345,53 +3949,6 @@ geometry column - column with unique integer values</source>
     </message>
 </context>
 <context>
-    <name>DropAnalysisMulti</name>
-    <message>
-        <source>D8 Contributing Area Grid</source>
-        <translation type="unfinished">D8 Contributing Area Grid</translation>
-    </message>
-    <message>
-        <source>D8 Flow Direction Grid</source>
-        <translation type="unfinished">D8 Flow Direction Grid</translation>
-    </message>
-    <message>
-        <source>Pit Filled Elevation Grid</source>
-        <translation type="unfinished">Pit Filled Elevation Grid</translation>
-    </message>
-    <message>
-        <source>Accumulated Stream Source Grid</source>
-        <translation type="unfinished">Accumulated Stream Source Grid</translation>
-    </message>
-    <message>
-        <source>Outlets Shapefile</source>
-        <translation type="unfinished">Shapefile met uitgangen</translation>
-    </message>
-    <message>
-        <source>Minimum Threshold</source>
-        <translation type="unfinished">Minimum drempel</translation>
-    </message>
-    <message>
-        <source>Maximum Threshold</source>
-        <translation type="unfinished">Maximum drempel</translation>
-    </message>
-    <message>
-        <source>Number of Threshold Values</source>
-        <translation type="unfinished">Aantal drempelwaarden</translation>
-    </message>
-    <message>
-        <source>Spacing for Threshold Values</source>
-        <translation type="unfinished">Afstand voor drempelwaarden</translation>
-    </message>
-    <message>
-        <source>D-Infinity Drop to Stream Grid</source>
-        <translation type="unfinished">D-Infinity Drop to Stream Grid</translation>
-    </message>
-    <message>
-        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>EditModelAction</name>
     <message>
         <source>Edit model</source>
@@ -4403,21 +3960,6 @@ geometry column - column with unique integer values</source>
     <message>
         <source>Edit script</source>
         <translation>Script bewerken</translation>
-    </message>
-</context>
-<context>
-    <name>EffectPropertiesWidget</name>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished">Formulier</translation>
-    </message>
-    <message>
-        <source>Effect type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This effect doesn&apos;t have any editable properties</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4448,7 +3990,7 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Cleaned layer</source>
-        <translation type="obsolete">Opgeschoonde laag</translation>
+        <translation>Opgeschoonde laag</translation>
     </message>
     <message>
         <source>Cannot convert &quot;%s&quot; to integer</source>
@@ -4490,10 +4032,6 @@ geometry column - column with unique integer values</source>
         <source>Could not replace geometry of feature with id %s</source>
         <translation>De geometrie van object met id %s kon niet worden vervangen</translation>
     </message>
-    <message>
-        <source>Cleaned</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>EquivalentNumField</name>
@@ -4507,11 +4045,7 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
-    </message>
-    <message>
-        <source>Numeric field</source>
-        <translation type="unfinished">Numeriek veld</translation>
+        <translation>Resultaatlaag</translation>
     </message>
 </context>
 <context>
@@ -4533,11 +4067,7 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
-    </message>
-    <message>
-        <source>Exploded</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultaatlaag</translation>
     </message>
 </context>
 <context>
@@ -4552,11 +4082,7 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
-    </message>
-    <message>
-        <source>Added geom info</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultaatlaag</translation>
     </message>
 </context>
 <context>
@@ -4571,11 +4097,7 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
-    </message>
-    <message>
-        <source>Extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultaatlaag</translation>
     </message>
 </context>
 <context>
@@ -4625,7 +4147,7 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Uitvoer</translation>
+        <translation>Uitvoer</translation>
     </message>
     <message>
         <source>Operators %s can be used only with string fields.</source>
@@ -4647,10 +4169,6 @@ geometry column - column with unique integer values</source>
         <source>Unsupported field type &quot;%s&quot;</source>
         <translation>Niet ondersteund veldtype &quot;%s&quot;</translation>
     </message>
-    <message>
-        <source>Extracted (attribute)</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>ExtractByLocation</name>
@@ -4664,15 +4182,11 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Selection</source>
-        <translation type="obsolete">Selectie</translation>
+        <translation>Selectie</translation>
     </message>
     <message>
         <source>Geometric predicate</source>
         <translation>Geometrisch gezegde</translation>
-    </message>
-    <message>
-        <source>Extracted (location)</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4683,11 +4197,7 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
-    </message>
-    <message>
-        <source>Nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultaatlaag</translation>
     </message>
 </context>
 <context>
@@ -4773,7 +4283,7 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
+        <translation>Resultaatlaag</translation>
     </message>
     <message>
         <source>Evaluation error: %s</source>
@@ -4791,11 +4301,7 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Output is not set. Please specify valid filename</source>
-        <translation type="obsolete">Uitvoer is niet ingesteld. Specificeer een geldige bestandsnaam</translation>
-    </message>
-    <message>
-        <source>Calculated</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoer is niet ingesteld. Specificeer een geldige bestandsnaam</translation>
     </message>
 </context>
 <context>
@@ -4814,7 +4320,7 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Wrong or missing parameter values</source>
-        <translation type="obsolete">Foute of ontbrekende parameterwaarden</translation>
+        <translation>Foute of ontbrekende parameterwaarden</translation>
     </message>
 </context>
 <context>
@@ -4829,7 +4335,7 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
+        <translation>Resultaatlaag</translation>
     </message>
     <message>
         <source>Parser error in expression &quot;{}&quot;: {}</source>
@@ -4844,10 +4350,6 @@ geometry column - column with unique integer values</source>
 </source>
         <translation>Er is een fout opgetreden bij het evalueren van de berekenings-opdracht:
 </translation>
-    </message>
-    <message>
-        <source>Refactored</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4882,7 +4384,7 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
+        <translation>Resultaatlaag</translation>
     </message>
     <message>
         <source>FieldPyculator code execute error.Global code block can&apos;t be executed!
@@ -4905,10 +4407,6 @@ geometry column - column with unique integer values</source>
 Field code block does not return &apos;%s1&apos; variable! Please declare this variable in your code!</source>
         <translation>FieldPyculator-code uitvoeringsfout.
 Veld-codeblok geeft geen variabele &apos;%s1&apos; terug! Declareer deze variabele in uw code!</translation>
-    </message>
-    <message>
-        <source>Calculated</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6621,19 +6119,19 @@ Bekijk log voor details</translation>
     <message>
         <source>&lt;p&gt;Oooops! The following output layers could not be open&lt;/p&gt;&lt;ul&gt;
 </source>
-        <translation type="obsolete">&lt;p&gt;Oeps! De volgende uitvoerlagen kunnen niet worden geopend&lt;/p&gt;&lt;ul&gt;
+        <translation>&lt;p&gt;Oeps! De volgende uitvoerlagen kunnen niet worden geopend&lt;/p&gt;&lt;ul&gt;
 </translation>
     </message>
     <message>
         <source>&lt;li&gt;%s: &lt;font size=3 face=&quot;Courier New&quot; color=&quot;#ff0000&quot;&gt;%s&lt;/font&gt;&lt;/li&gt;
 </source>
-        <translation type="obsolete">&lt;li&gt;%s: &lt;font size=3 face=&quot;Courier New&quot; color=&quot;#ff0000&quot;&gt;%s&lt;/font&gt;&lt;/li&gt;
+        <translation>&lt;li&gt;%s: &lt;font size=3 face=&quot;Courier New&quot; color=&quot;#ff0000&quot;&gt;%s&lt;/font&gt;&lt;/li&gt;
 
 </translation>
     </message>
     <message>
         <source>&lt;/ul&gt;&lt;p&gt;The above files could not be opened, which probably indicates that they were not correctly produced by the executed algorithm&lt;/p&gt;&lt;p&gt;Checking the log information might help you see why those layers were not created as expected&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;/ul&gt;&lt;p&gt;Bovenstaande bestanden kunnen niet worden geopend, waarschijnlijk omdat ze niet correct zijn aangemaakt door het uitgevoerde algoritme&lt;/p&gt;&lt;p&gt;De log-informatie kan helpen bij het oplossen van het probleem&lt;/p&gt;</translation>
+        <translation>&lt;/ul&gt;&lt;p&gt;Bovenstaande bestanden kunnen niet worden geopend, waarschijnlijk omdat ze niet correct zijn aangemaakt door het uitgevoerde algoritme&lt;/p&gt;&lt;p&gt;De log-informatie kan helpen bij het oplossen van het probleem&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -6648,15 +6146,11 @@ Bekijk log voor details</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Uitvoer</translation>
+        <translation>Uitvoer</translation>
     </message>
     <message>
         <source>Cannot convert from %s to %s</source>
         <translation>Kan niet converteren van %s naar %s</translation>
-    </message>
-    <message>
-        <source>Converted</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7013,25 +6507,6 @@ GEOS fout: een of meer invoerobjecten hebben een ongeldige geometrie.</translati
     </message>
 </context>
 <context>
-    <name>GetRScriptsAction</name>
-    <message>
-        <source>Get R scripts from on-line scripts collection</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tools</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Connection problem</source>
-        <translation type="unfinished">Verbindingsprobleem</translation>
-    </message>
-    <message>
-        <source>Could not connect to scripts/models repository</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>GetScriptsAction</name>
     <message>
         <source>Get scripts from on-line scripts collection</source>
@@ -7154,15 +6629,15 @@ GEOS fout: een of meer invoerobjecten hebben een ongeldige geometrie.</translati
     </message>
     <message>
         <source>&lt;p&gt;This algorithm requires GRASS GIS 7 to be run. A test to check if GRASS GIS 7 is correctly installed and configured in your system has been performed, with the following result:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</source>
-        <translation type="obsolete">&lt;p&gt;Dit algoritme vereist GRASS GIS 7 om te kunnen worden uitgevoerd. Een test is uitgevoerd om te controleren of GRASS GIS 7 correct op uw systeem is geïnstalleerd en geconfigureerd, met het volgende resultaat:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</translation>
+        <translation>&lt;p&gt;Dit algoritme vereist GRASS GIS 7 om te kunnen worden uitgevoerd. Een test is uitgevoerd om te controleren of GRASS GIS 7 correct op uw systeem is geïnstalleerd en geconfigureerd, met het volgende resultaat:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</translation>
     </message>
     <message>
         <source>GRASS GIS 7 seems to be correctly installed and configured&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="obsolete">GRASS GIS 7 lijkt correct te zijn geïnstalleerd en geconfigureerd&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;</translation>
+        <translation>GRASS GIS 7 lijkt correct te zijn geïnstalleerd en geconfigureerd&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Click here&lt;/a&gt; to know more about how to install and configure GRASS GIS 7 to be used with QGIS&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Klik hier&lt;/a&gt; om te weten te komen hoe GRASS GIS 7 te installeren en te configureren om te worden gebruikt met QGIS&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Klik hier&lt;/a&gt; om te weten te komen hoe GRASS GIS 7 te installeren en te configureren om te worden gebruikt met QGIS&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -7255,15 +6730,15 @@ Please configure it before running GRASS algorithms.</source>
     </message>
     <message>
         <source>&lt;p&gt;This algorithm requires GRASS to be run. A test to check if GRASS is correctly installed and configured in your system has been performed, with the following result:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</source>
-        <translation type="obsolete">&lt;p&gt;Dit algoritme vereist GRASS om te kunnen worden uitgevoerd. Een test is uitgevoerd om te controleren of GRASS correct op uw systeem is geïnstalleerd en geconfigureerd, met het volgende resultaat:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</translation>
+        <translation>&lt;p&gt;Dit algoritme vereist GRASS om te kunnen worden uitgevoerd. Een test is uitgevoerd om te controleren of GRASS correct op uw systeem is geïnstalleerd en geconfigureerd, met het volgende resultaat:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</translation>
     </message>
     <message>
         <source>GRASS seems to be correctly installed and configured&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="obsolete">GRASS lijkt correct te zijn geïnstalleerd en geconfigureerd&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;</translation>
+        <translation>GRASS lijkt correct te zijn geïnstalleerd en geconfigureerd&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Click here&lt;/a&gt; to know more about how to install and configure GRASS to be used with QGIS&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Klik hier&lt;/a&gt; om te weten te komen hoe GRASS te installeren en te configureren om te worden gebruikt met QGIS&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Klik hier&lt;/a&gt; om te weten te komen hoe GRASS te installeren en te configureren om te worden gebruikt met QGIS&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -7338,7 +6813,7 @@ Installeer het vóór het uitvoeren van algoritmen van GRASS.</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Uitvoer</translation>
+        <translation>Uitvoer</translation>
     </message>
     <message>
         <source>Invalid grid spacing: %s/%s</source>
@@ -7351,10 +6826,6 @@ Installeer het vóór het uitvoeren van algoritmen van GRASS.</translation>
     <message>
         <source>Vertical spacing is too small for the covered area</source>
         <translation>Verticale afstand is te klein voor het bedekte gebied</translation>
-    </message>
-    <message>
-        <source>Grid</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7393,11 +6864,7 @@ Installeer het vóór het uitvoeren van algoritmen van GRASS.</translation>
     </message>
     <message>
         <source>Output file</source>
-        <translation type="obsolete">Uitvoerbestand</translation>
-    </message>
-    <message>
-        <source>Interpolated moving average</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoerbestand</translation>
     </message>
 </context>
 <context>
@@ -7440,11 +6907,7 @@ Installeer het vóór het uitvoeren van algoritmen van GRASS.</translation>
     </message>
     <message>
         <source>Output file</source>
-        <translation type="obsolete">Uitvoerbestand</translation>
-    </message>
-    <message>
-        <source>Interpolated metrics</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoerbestand</translation>
     </message>
 </context>
 <context>
@@ -7491,15 +6954,11 @@ Installeer het vóór het uitvoeren van algoritmen van GRASS.</translation>
     </message>
     <message>
         <source>Output file</source>
-        <translation type="obsolete">Uitvoerbestand</translation>
+        <translation>Uitvoerbestand</translation>
     </message>
     <message>
         <source>Smoothing</source>
         <translation>Afvlakken</translation>
-    </message>
-    <message>
-        <source>Interpolated IDW</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7577,11 +7036,7 @@ Installeer het vóór het uitvoeren van algoritmen van GRASS.</translation>
     </message>
     <message>
         <source>Output file</source>
-        <translation type="obsolete">Uitvoerbestand</translation>
-    </message>
-    <message>
-        <source>Interpolated nearest neighbor</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoerbestand</translation>
     </message>
 </context>
 <context>
@@ -7617,41 +7072,6 @@ Installeer het vóór het uitvoeren van algoritmen van GRASS.</translation>
     <message>
         <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
         <translation>Verkeerd aantal processen van MPI gebruikt. Stel het juiste aantal in vóór het uitvoeren van algoritmen van TauDEM.</translation>
-    </message>
-</context>
-<context>
-    <name>GridNetMulti</name>
-    <message>
-        <source>D8 Flow Direction Grid</source>
-        <translation type="unfinished">D8 Flow Direction Grid</translation>
-    </message>
-    <message>
-        <source>Outlets Shapefile</source>
-        <translation type="unfinished">Shapefile met uitgangen</translation>
-    </message>
-    <message>
-        <source>Mask Grid</source>
-        <translation type="unfinished">Masker-grid</translation>
-    </message>
-    <message>
-        <source>Mask Threshold</source>
-        <translation type="unfinished">Drempel masker</translation>
-    </message>
-    <message>
-        <source>Longest Upslope Length Grid</source>
-        <translation type="unfinished">Longest Upslope Length Grid</translation>
-    </message>
-    <message>
-        <source>Total Upslope Length Grid</source>
-        <translation type="unfinished">Total Upslope Length Grid</translation>
-    </message>
-    <message>
-        <source>Strahler Network Order Grid</source>
-        <translation type="unfinished">Strahler Network Order Grid</translation>
-    </message>
-    <message>
-        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7721,7 +7141,7 @@ Installeer het vóór het uitvoeren van algoritmen van GRASS.</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Uitvoer</translation>
+        <translation>Uitvoer</translation>
     </message>
     <message>
         <source>Invalid grid spacing: %s/%s</source>
@@ -7730,10 +7150,6 @@ Installeer het vóór het uitvoeren van algoritmen van GRASS.</translation>
     <message>
         <source>Failed to gridify feature with FID %s</source>
         <translation>Object met FID %s mislukt te plaatsen op grid</translation>
-    </message>
-    <message>
-        <source>Snapped</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7791,7 +7207,7 @@ Installeer het vóór het uitvoeren van algoritmen van GRASS.</translation>
     </message>
     <message>
         <source>Creating heatmap</source>
-        <translation type="obsolete">Heatmap wordt gebouwd</translation>
+        <translation>Heatmap wordt gebouwd</translation>
     </message>
     <message>
         <source>Abort</source>
@@ -7804,14 +7220,6 @@ Installeer het vóór het uitvoeren van algoritmen van GRASS.</translation>
     <message>
         <source>QGIS will now load the partially-computed raster</source>
         <translation>QGIS zal nu het gedeeltelijk berekende raster laden</translation>
-    </message>
-    <message>
-        <source>Rendering heatmap...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>QGIS</source>
-        <translation type="unfinished">QGIS</translation>
     </message>
 </context>
 <context>
@@ -7960,7 +7368,7 @@ Installeer het vóór het uitvoeren van algoritmen van GRASS.</translation>
     </message>
     <message>
         <source>Error saving help file</source>
-        <translation type="obsolete">Fout bij het opslaan van het hulpbestand</translation>
+        <translation>Fout bij het opslaan van het hulpbestand</translation>
     </message>
     <message>
         <source>Help file could not be saved.
@@ -7968,7 +7376,7 @@ Check that you have permission to modify the help
 file. You might not have permission if you are 
 editing an example model or script, since they 
 are stored on the installation folder</source>
-        <translation type="obsolete">Hulpbestand kan niet worden opgeslagen.
+        <translation>Hulpbestand kan niet worden opgeslagen.
 Controleer of je bevoegd bent om het hulpbestand te
 wijzigen. Je zou geen toestemming kunnen hebben
 wanneer je  een voorbeeldmodel of -script wijzigt, omdat deze zijn opgeslagen in de installatie-map</translation>
@@ -8024,7 +7432,7 @@ wanneer je  een voorbeeldmodel of -script wijzigt, omdat deze zijn opgeslagen in
     </message>
     <message>
         <source>Clear history and log</source>
-        <translation type="obsolete">Historie en log opschonen</translation>
+        <translation>Historie en log opschonen</translation>
     </message>
     <message>
         <source>Save As...</source>
@@ -8032,7 +7440,7 @@ wanneer je  een voorbeeldmodel of -script wijzigt, omdat deze zijn opgeslagen in
     </message>
     <message>
         <source>Save history and log</source>
-        <translation type="obsolete">Historie en log opslaan</translation>
+        <translation>Historie en log opslaan</translation>
     </message>
     <message>
         <source>Confirmation</source>
@@ -8040,7 +7448,7 @@ wanneer je  een voorbeeldmodel of -script wijzigt, omdat deze zijn opgeslagen in
     </message>
     <message>
         <source>Are you sure you want to clear log?</source>
-        <translation type="obsolete">Weet u zekere dat u de log wilt verwijderen?</translation>
+        <translation>Weet u zekere dat u de log wilt verwijderen?</translation>
     </message>
     <message>
         <source>Save file</source>
@@ -8053,18 +7461,6 @@ wanneer je  een voorbeeldmodel of -script wijzigt, omdat deze zijn opgeslagen in
     <message>
         <source>Create test</source>
         <translation>Aanmaken Test</translation>
-    </message>
-    <message>
-        <source>Clear history</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save history</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Are you sure you want to clear the history?</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8106,15 +7502,11 @@ wanneer je  een voorbeeldmodel of -script wijzigt, omdat deze zijn opgeslagen in
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Uitvoer</translation>
+        <translation>Uitvoer</translation>
     </message>
     <message>
         <source>Same layer given for both hubs and spokes</source>
         <translation>Dezelfde laag opgegeven voor zowel naven als spaken</translation>
-    </message>
-    <message>
-        <source>Hub distance</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8137,17 +7529,13 @@ wanneer je  een voorbeeldmodel of -script wijzigt, omdat deze zijn opgeslagen in
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Uitvoer</translation>
+        <translation>Uitvoer</translation>
     </message>
     <message>
         <source>Same layer given for both hubs and spokes</source>
         <translation>
 Dezelfde laag opgegeven voor zowel naven als spaken
 </translation>
-    </message>
-    <message>
-        <source>Hub lines</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8170,7 +7558,7 @@ Dezelfde laag opgegeven voor zowel naven als spaken
     </message>
     <message>
         <source>Output directory</source>
-        <translation type="obsolete">Map voor uitvoer</translation>
+        <translation>Map voor uitvoer</translation>
     </message>
     <message>
         <source>Feature %d does not intersect raster or entirely located in NODATA area</source>
@@ -8183,14 +7571,6 @@ Dezelfde laag opgegeven voor zowel naven als spaken
     <message>
         <source>Elevation</source>
         <translation>Hoogte</translation>
-    </message>
-    <message>
-        <source>Hypsometric curves</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Feature %d is smaller than raster cell size</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8324,11 +7704,7 @@ Dezelfde laag opgegeven voor zowel naven als spaken
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
-    </message>
-    <message>
-        <source>Joined layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultaatlaag</translation>
     </message>
 </context>
 <context>
@@ -8534,33 +7910,6 @@ Configureer die vóór het uitvoeren van algoritmen van LAStools.</translation>
     </message>
 </context>
 <context>
-    <name>LengthAreaMulti</name>
-    <message>
-        <source>Length Grid</source>
-        <translation type="unfinished">Lengte grid</translation>
-    </message>
-    <message>
-        <source>Contributing Area Grid</source>
-        <translation type="unfinished">Contributing Area Grid</translation>
-    </message>
-    <message>
-        <source>Threshold</source>
-        <translation type="unfinished">Drempel</translation>
-    </message>
-    <message>
-        <source>Exponent</source>
-        <translation type="unfinished">Exponent</translation>
-    </message>
-    <message>
-        <source>Stream Source Grid</source>
-        <translation type="unfinished">Stream Source Grid</translation>
-    </message>
-    <message>
-        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>LidarToolsAlgorithmProvider</name>
     <message>
         <source>LAStools folder</source>
@@ -8599,11 +7948,7 @@ Configureer die vóór het uitvoeren van algoritmen van LAStools.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
-    </message>
-    <message>
-        <source>Intersections</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultaatlaag</translation>
     </message>
 </context>
 <context>
@@ -8614,11 +7959,7 @@ Configureer die vóór het uitvoeren van algoritmen van LAStools.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
-    </message>
-    <message>
-        <source>Polygons from lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultaatlaag</translation>
     </message>
 </context>
 <context>
@@ -9265,7 +8606,7 @@ Configureer die vóór het uitvoeren van algoritmen van LAStools.</translation>
     </message>
     <message>
         <source>Query...</source>
-        <translation type="obsolete">Query...</translation>
+        <translation>Query...</translation>
     </message>
     <message>
         <source>Add to Overview</source>
@@ -9688,18 +9029,6 @@ Werkt voor huidige actieve bewerkbare laag</translation>
         <source>New temporary scratch layer</source>
         <translation>Nieuwe tijdelijke tekenlaag</translation>
     </message>
-    <message>
-        <source>Filter...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Statistical Summary</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show statistical summary</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>ManageConnectionsDialog</name>
@@ -9776,11 +9105,7 @@ Werkt voor huidige actieve bewerkbare laag</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Uitvoer</translation>
-    </message>
-    <message>
-        <source>Plot</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoer</translation>
     </message>
 </context>
 <context>
@@ -9799,11 +9124,7 @@ Werkt voor huidige actieve bewerkbare laag</translation>
     </message>
     <message>
         <source>Result</source>
-        <translation type="obsolete">Resultaat</translation>
-    </message>
-    <message>
-        <source>Mean coordinates</source>
-        <translation type="unfinished">Gemiddelde coördinaten</translation>
+        <translation>Resultaat</translation>
     </message>
 </context>
 <context>
@@ -9818,15 +9139,11 @@ Werkt voor huidige actieve bewerkbare laag</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Uitvoer</translation>
+        <translation>Uitvoer</translation>
     </message>
     <message>
         <source>Merged layers must have be same type of geometry</source>
         <translation>Samengevoegde lagen moeten hetzelfde type geometrie hebben</translation>
-    </message>
-    <message>
-        <source>Merged</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9844,15 +9161,11 @@ Werkt voor huidige actieve bewerkbare laag</translation>
     <name>MessageBarProgress</name>
     <message>
         <source>Executing algorithm</source>
-        <translation type="obsolete">Algoritme uitvoeren</translation>
+        <translation>Algoritme uitvoeren</translation>
     </message>
     <message>
         <source>Error</source>
         <translation>Fout</translation>
-    </message>
-    <message>
-        <source>Executing algorithm &lt;i&gt;{0}&lt;/i&gt;</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10147,30 +9460,6 @@ Werkt voor huidige actieve bewerkbare laag</translation>
         <source>seconds</source>
         <translation>seconden</translation>
     </message>
-    <message>
-        <source>Connection naming</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>When saving the connection of an OWS service</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Use the OWS Service Title and ask before overwriting</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Use the OWS Service Title and always overwrite if already available</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Use a temporary name, which you can change later</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Record parsing error</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>ModelerAlgorithm</name>
@@ -10207,14 +9496,6 @@ Werkt voor huidige actieve bewerkbare laag</translation>
     <message>
         <source>Model processed ok. Executed %i algorithms total</source>
         <translation>Model uitgevoerd. Totaal aantal algoritmen %i</translation>
-    </message>
-    <message>
-        <source>Warning</source>
-        <translation type="unfinished">Waarschuwing</translation>
-    </message>
-    <message>
-        <source>Parameter %s in algorithm %s in the model is run with default value! Edit the model to make sure that this is correct.</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10535,11 +9816,7 @@ Bekijk het log voor meer informatie.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
-    </message>
-    <message>
-        <source>Single parts</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultaatlaag</translation>
     </message>
 </context>
 <context>
@@ -10599,7 +9876,7 @@ Bekijk het log voor meer informatie.</translation>
     </message>
     <message>
         <source>Result</source>
-        <translation type="obsolete">Resultaat</translation>
+        <translation>Resultaat</translation>
     </message>
     <message>
         <source>Observed mean distance</source>
@@ -10620,10 +9897,6 @@ Bekijk het log voor meer informatie.</translation>
     <message>
         <source>Z-Score</source>
         <translation>Z-score</translation>
-    </message>
-    <message>
-        <source>Nearest neighbour</source>
-        <translation type="unfinished">Nearest neighbour</translation>
     </message>
 </context>
 <context>
@@ -10651,10 +9924,6 @@ Bekijk het log voor meer informatie.</translation>
     <message>
         <source>Overwrite %s?</source>
         <translation>Overschrijven %s?</translation>
-    </message>
-    <message>
-        <source>Name cannot contain &apos;/&apos;</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10806,46 +10075,7 @@ Bekijk het log voor meer informatie.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
-    </message>
-    <message>
-        <source>Converted</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Ogr2OgrBuffer</name>
-    <message>
-        <source>Input layer</source>
-        <translation type="unfinished">Invoerlaag</translation>
-    </message>
-    <message>
-        <source>Geometry column name (&quot;geometry&quot; for Shapefiles, may be different for other formats)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Buffer distance</source>
-        <translation type="unfinished">Bufferafstand</translation>
-    </message>
-    <message>
-        <source>Dissolve all results</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dissolve by attribute</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Output as singlepart geometries (only used when dissolving by attribute)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Additional creation options (see ogr2ogr manual)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Buffer</source>
-        <translation type="unfinished">Buffer</translation>
+        <translation>Resultaatlaag</translation>
     </message>
 </context>
 <context>
@@ -10864,11 +10094,7 @@ Bekijk het log voor meer informatie.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
-    </message>
-    <message>
-        <source>Clipped (polygon)</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultaatlaag</translation>
     </message>
 </context>
 <context>
@@ -10887,187 +10113,7 @@ Bekijk het log voor meer informatie.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
-    </message>
-    <message>
-        <source>Clipped (extent)</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Ogr2OgrDissolve</name>
-    <message>
-        <source>Input layer</source>
-        <translation type="unfinished">Invoerlaag</translation>
-    </message>
-    <message>
-        <source>Geometry column name (&quot;geometry&quot; for Shapefiles, may be different for other formats)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dissolve field</source>
-        <translation type="unfinished">Veld voor &apos;dissolve&apos;-actie</translation>
-    </message>
-    <message>
-        <source>Output as multipart geometries</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Keep input attributes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Count dissolved features</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Compute area and perimeter of dissolved features</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Compute min/max/sum/mean for the following numeric attribute</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Numeric attribute to compute dissolved features stats</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Additional creation options (see ogr2ogr manual)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dissolved</source>
-        <translation type="unfinished">Ontbonden</translation>
-    </message>
-</context>
-<context>
-    <name>Ogr2OgrOneSideBuffer</name>
-    <message>
-        <source>Input layer</source>
-        <translation type="unfinished">Invoerlaag</translation>
-    </message>
-    <message>
-        <source>Operation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Geometry column name (&quot;geometry&quot; for Shapefiles, may be different for other formats)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Buffer distance</source>
-        <translation type="unfinished">Bufferafstand</translation>
-    </message>
-    <message>
-        <source>Buffer side</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dissolve all results</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dissolve by attribute</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Output as singlepart geometries (only used when dissolving by attribute)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Additional creation options (see ogr2ogr manual)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Single sided buffer</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Ogr2OgrPointsOnLines</name>
-    <message>
-        <source>Input layer</source>
-        <translation type="unfinished">Invoerlaag</translation>
-    </message>
-    <message>
-        <source>Geometry column name (&quot;geometry&quot; for Shapefiles, may be different for other formats)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Distance from line start represented as fraction of line length</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Additional creation options (see ogr2ogr manual)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Points along lines</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Ogr2OgrTableToPostGisList</name>
-    <message>
-        <source>Database (connection name)</source>
-        <translation type="unfinished">Database (naam verbinding)</translation>
-    </message>
-    <message>
-        <source>Input layer</source>
-        <translation type="unfinished">Invoerlaag</translation>
-    </message>
-    <message>
-        <source>Schema name</source>
-        <translation type="unfinished">Naam schema</translation>
-    </message>
-    <message>
-        <source>Table name, leave blank to use input name</source>
-        <translation type="unfinished">Tabelnaam, laat leeg om naam invoer te gebruiken</translation>
-    </message>
-    <message>
-        <source>Primary key</source>
-        <translation type="unfinished">Primaire sleutel</translation>
-    </message>
-    <message>
-        <source>Primary key (existing field, used if the above option is left empty)</source>
-        <translation type="unfinished">Primaire sleutel (bestaand veld, gebruikt als bovenstaande optie leeg is)</translation>
-    </message>
-    <message>
-        <source>Select features using a SQL &quot;WHERE&quot; statement (Ex: column=&apos;value&apos;)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Group N features per transaction (Default: 20000)</source>
-        <translation type="unfinished">&quot;n&quot; objecten per transactie groeperen (Standaard: 20000)</translation>
-    </message>
-    <message>
-        <source>Overwrite existing table</source>
-        <translation type="unfinished">Bestaande tabel overschrijven</translation>
-    </message>
-    <message>
-        <source>Append to existing table</source>
-        <translation type="unfinished">Aan bestaande tabel toevoegen</translation>
-    </message>
-    <message>
-        <source>Append and add new fields to existing table</source>
-        <translation type="unfinished">Aan bestaande tabel en nieuwe velden aan bestaande tabel toevoegen</translation>
-    </message>
-    <message>
-        <source>Do not launder columns/table names</source>
-        <translation type="unfinished">Kolom-/tabelnamen niet wassen</translation>
-    </message>
-    <message>
-        <source>Continue after a failure, skipping the failed record</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Keep width and precision of input attributes</source>
-        <translation type="unfinished">Breedte en precisie van attributen voor invoer behouden</translation>
-    </message>
-    <message>
-        <source>Additional creation options</source>
-        <translation type="unfinished">Aanvullende opties voor maken</translation>
+        <translation>Resultaatlaag</translation>
     </message>
 </context>
 <context>
@@ -11134,7 +10180,7 @@ Bekijk het log voor meer informatie.</translation>
     </message>
     <message>
         <source>Select features using a SQL &quot;WHERE&quot; statement (Ex: column=&quot;value&quot;)</source>
-        <translation type="obsolete">Objecten selecteren met behulp van argument voor SQL &quot;WHERE&quot; (Bijv: column=&quot;waarde&quot;)</translation>
+        <translation>Objecten selecteren met behulp van argument voor SQL &quot;WHERE&quot; (Bijv: column=&quot;waarde&quot;)</translation>
     </message>
     <message>
         <source>Group N features per transaction (Default: 20000)</source>
@@ -11196,10 +10242,6 @@ Bekijk het log voor meer informatie.</translation>
         <source>Keep width and precision of input attributes</source>
         <translation>Breedte en precisie van attributen voor invoer behouden</translation>
     </message>
-    <message>
-        <source>Select features using a SQL &quot;WHERE&quot; statement (Ex: column=&apos;value&apos;)</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>Ogr2OgrToPostGisList</name>
@@ -11249,7 +10291,7 @@ Bekijk het log voor meer informatie.</translation>
     </message>
     <message>
         <source>Select features using a SQL &quot;WHERE&quot; statement (Ex: column=&quot;value&quot;)</source>
-        <translation type="obsolete">Objecten selecteren met behulp van argument voor SQL &quot;WHERE&quot; (Bijv: column=&quot;waarde&quot;)</translation>
+        <translation>Objecten selecteren met behulp van argument voor SQL &quot;WHERE&quot; (Bijv: column=&quot;waarde&quot;)</translation>
     </message>
     <message>
         <source>Group N features per transaction (Default: 20000)</source>
@@ -11310,10 +10352,6 @@ Bekijk het log voor meer informatie.</translation>
     <message>
         <source>Keep width and precision of input attributes</source>
         <translation>Breedte en precisie van attributen voor invoer behouden</translation>
-    </message>
-    <message>
-        <source>Select features using a SQL &quot;WHERE&quot; statement (Ex: column=&apos;value&apos;)</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -11558,33 +10596,6 @@ Controleer de configuratie in het dialoogvenster Instellingen van Processing.</t
     </message>
 </context>
 <context>
-    <name>PeukerDouglasMulti</name>
-    <message>
-        <source>Elevation Grid</source>
-        <translation type="unfinished">Hoogtegrid</translation>
-    </message>
-    <message>
-        <source>Center Smoothing Weight</source>
-        <translation type="unfinished">Center Smoothing Weight</translation>
-    </message>
-    <message>
-        <source>Side Smoothing Weight</source>
-        <translation type="unfinished">Side Smoothing Weight</translation>
-    </message>
-    <message>
-        <source>Diagonal Smoothing Weight</source>
-        <translation type="unfinished">Diagonal Smoothing Weight</translation>
-    </message>
-    <message>
-        <source>Stream Source Grid</source>
-        <translation type="unfinished">Stream Source Grid</translation>
-    </message>
-    <message>
-        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>PointDistance</name>
     <message>
         <source>Input point layer</source>
@@ -11631,11 +10642,7 @@ Controleer de configuratie in het dialoogvenster Instellingen van Processing.</t
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
-    </message>
-    <message>
-        <source>Displaced</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultaatlaag</translation>
     </message>
 </context>
 <context>
@@ -11650,11 +10657,7 @@ Controleer de configuratie in het dialoogvenster Instellingen van Processing.</t
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
-    </message>
-    <message>
-        <source>Points along line</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultaatlaag</translation>
     </message>
 </context>
 <context>
@@ -11669,11 +10672,7 @@ Controleer de configuratie in het dialoogvenster Instellingen van Processing.</t
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
-    </message>
-    <message>
-        <source>Points from polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultaatlaag</translation>
     </message>
 </context>
 <context>
@@ -11692,11 +10691,7 @@ Controleer de configuratie in het dialoogvenster Instellingen van Processing.</t
     </message>
     <message>
         <source>Result</source>
-        <translation type="obsolete">Resultaat</translation>
-    </message>
-    <message>
-        <source>Count</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultaat</translation>
     </message>
 </context>
 <context>
@@ -11726,11 +10721,7 @@ Controleer de configuratie in het dialoogvenster Instellingen van Processing.</t
     </message>
     <message>
         <source>Result</source>
-        <translation type="obsolete">Resultaat</translation>
-    </message>
-    <message>
-        <source>Unique count</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultaat</translation>
     </message>
 </context>
 <context>
@@ -11753,11 +10744,7 @@ Controleer de configuratie in het dialoogvenster Instellingen van Processing.</t
     </message>
     <message>
         <source>Result</source>
-        <translation type="obsolete">Resultaat</translation>
-    </message>
-    <message>
-        <source>Weighted count</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultaat</translation>
     </message>
 </context>
 <context>
@@ -11780,11 +10767,7 @@ Controleer de configuratie in het dialoogvenster Instellingen van Processing.</t
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
-    </message>
-    <message>
-        <source>Points from table</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultaatlaag</translation>
     </message>
 </context>
 <context>
@@ -11830,11 +10813,7 @@ Controleer de configuratie in het dialoogvenster Instellingen van Processing.</t
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Uitvoer</translation>
-    </message>
-    <message>
-        <source>Polar plot</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoer</translation>
     </message>
 </context>
 <context>
@@ -11904,11 +10883,7 @@ Controleer de configuratie in het dialoogvenster Instellingen van Processing.</t
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
-    </message>
-    <message>
-        <source>Polygons from lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultaatlaag</translation>
     </message>
 </context>
 <context>
@@ -11919,11 +10894,7 @@ Controleer de configuratie in het dialoogvenster Instellingen van Processing.</t
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
-    </message>
-    <message>
-        <source>Lines from polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultaatlaag</translation>
     </message>
 </context>
 <context>
@@ -12082,7 +11053,7 @@ Controleer de configuratie in het dialoogvenster Instellingen van Processing.</t
     </message>
     <message>
         <source>&amp;History and Log...</source>
-        <translation type="obsolete">&amp;Historie en log...</translation>
+        <translation>&amp;Historie en log...</translation>
     </message>
     <message>
         <source>&amp;Options...</source>
@@ -12099,10 +11070,6 @@ Controleer de configuratie in het dialoogvenster Instellingen van Processing.</t
     <message>
         <source>Ctrl+Alt+M</source>
         <translation>Ctrl+Alt+M</translation>
-    </message>
-    <message>
-        <source>&amp;History...</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -13062,7 +12029,7 @@ Fout(%2): %3</translation>
     </message>
     <message>
         <source>GEOS prior to 3.2 doesn&apos;t support GEOSInterpolate</source>
-        <translation type="obsolete">GEOS voor versie 3.2 ondersteunt geen GEOSInterpolate</translation>
+        <translation>GEOS voor versie 3.2 ondersteunt geen GEOSInterpolate</translation>
     </message>
     <message>
         <source>segment %1 of ring %2 of polygon %3 intersects segment %4 of ring %5 of polygon %6 at %7</source>
@@ -14021,219 +12988,219 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <source>Location: %1</source>
-        <translation type="obsolete">Locatie: %1</translation>
+        <translation>Locatie: %1</translation>
     </message>
     <message>
         <source>Location: %1&lt;br&gt;Mapset: %2</source>
-        <translation type="obsolete">Locatie: %1&lt;br&gt; Mapset: %2</translation>
+        <translation>Locatie: %1&lt;br&gt; Mapset: %2</translation>
     </message>
     <message>
         <source>&lt;b&gt;Raster&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;Raster&lt;/b&gt;</translation>
+        <translation>&lt;b&gt;Raster&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Cannot open raster header</source>
-        <translation type="obsolete">Kan raster header niet openen</translation>
+        <translation>Kan raster header niet openen</translation>
     </message>
     <message>
         <source>Rows</source>
-        <translation type="obsolete">Rijen</translation>
+        <translation>Rijen</translation>
     </message>
     <message>
         <source>Columns</source>
-        <translation type="obsolete">Kolommen</translation>
+        <translation>Kolommen</translation>
     </message>
     <message>
         <source>N-S resolution</source>
-        <translation type="obsolete">N-Z resolutie</translation>
+        <translation>N-Z resolutie</translation>
     </message>
     <message>
         <source>E-W resolution</source>
-        <translation type="obsolete">O-W resolutie</translation>
+        <translation>O-W resolutie</translation>
     </message>
     <message>
         <source>North</source>
-        <translation type="obsolete">Noord</translation>
+        <translation>Noord</translation>
     </message>
     <message>
         <source>South</source>
-        <translation type="obsolete">Zuid</translation>
+        <translation>Zuid</translation>
     </message>
     <message>
         <source>East</source>
-        <translation type="obsolete">Oost</translation>
+        <translation>Oost</translation>
     </message>
     <message>
         <source>West</source>
-        <translation type="obsolete">West</translation>
+        <translation>West</translation>
     </message>
     <message>
         <source>Format</source>
-        <translation type="obsolete">Formaat</translation>
+        <translation>Formaat</translation>
     </message>
     <message>
         <source>Minimum value</source>
-        <translation type="obsolete">Minimale waarde</translation>
+        <translation>Minimale waarde</translation>
     </message>
     <message>
         <source>Maximum value</source>
-        <translation type="obsolete">Maximale waarde</translation>
+        <translation>Maximale waarde</translation>
     </message>
     <message>
         <source>Data source</source>
-        <translation type="obsolete">Databron</translation>
+        <translation>Databron</translation>
     </message>
     <message>
         <source>Data description</source>
-        <translation type="obsolete">Data beschrijving</translation>
+        <translation>Data beschrijving</translation>
     </message>
     <message>
         <source>Comments</source>
-        <translation type="obsolete">Opmerkingen</translation>
+        <translation>Opmerkingen</translation>
     </message>
     <message>
         <source>Categories</source>
-        <translation type="obsolete">Categorieën</translation>
+        <translation>Categorieën</translation>
     </message>
     <message>
         <source>&lt;b&gt;Vector&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;Vector&lt;/b&gt;</translation>
+        <translation>&lt;b&gt;Vector&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Points</source>
-        <translation type="obsolete">Punten</translation>
+        <translation>Punten</translation>
     </message>
     <message>
         <source>Lines</source>
-        <translation type="obsolete">Lijnen</translation>
+        <translation>Lijnen</translation>
     </message>
     <message>
         <source>Boundaries</source>
-        <translation type="obsolete">Grenzen</translation>
+        <translation>Grenzen</translation>
     </message>
     <message>
         <source>Centroids</source>
-        <translation type="obsolete">Zwaartepunten</translation>
+        <translation>Zwaartepunten</translation>
     </message>
     <message>
         <source>Faces</source>
-        <translation type="obsolete">Aanzichten</translation>
+        <translation>Aanzichten</translation>
     </message>
     <message>
         <source>Kernels</source>
-        <translation type="obsolete">Kernels</translation>
+        <translation>Kernels</translation>
     </message>
     <message>
         <source>Areas</source>
-        <translation type="obsolete">Vlakken</translation>
+        <translation>Vlakken</translation>
     </message>
     <message>
         <source>Islands</source>
-        <translation type="obsolete">Eilanden</translation>
+        <translation>Eilanden</translation>
     </message>
     <message>
         <source>Top</source>
-        <translation type="obsolete">Boven</translation>
+        <translation>Boven</translation>
     </message>
     <message>
         <source>Bottom</source>
-        <translation type="obsolete">Onder</translation>
+        <translation>Onder</translation>
     </message>
     <message>
         <source>yes</source>
-        <translation type="obsolete">ja</translation>
+        <translation>ja</translation>
     </message>
     <message>
         <source>no</source>
-        <translation type="obsolete">nee</translation>
+        <translation>nee</translation>
     </message>
     <message>
         <source>History&lt;br&gt;</source>
-        <translation type="obsolete">Geschiedenis&lt;br&gt;</translation>
+        <translation>Geschiedenis&lt;br&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Layer&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;Laag&lt;/b&gt;</translation>
+        <translation>&lt;b&gt;Laag&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Features</source>
-        <translation type="obsolete">Objecten</translation>
+        <translation>Objecten</translation>
     </message>
     <message>
         <source>Driver</source>
-        <translation type="obsolete">Stuurbestand (driver)</translation>
+        <translation>Stuurbestand (driver)</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="obsolete">Tabel</translation>
+        <translation>Tabel</translation>
     </message>
     <message>
         <source>Key column</source>
-        <translation type="obsolete">Sleutelkolom</translation>
+        <translation>Sleutelkolom</translation>
     </message>
     <message>
         <source>&lt;b&gt;Region&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;Regio&lt;/b&gt;</translation>
+        <translation>&lt;b&gt;Regio&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Cannot open region header</source>
-        <translation type="obsolete">Kan regio header niet openen</translation>
+        <translation>Kan regio header niet openen</translation>
     </message>
     <message>
         <source>XY</source>
-        <translation type="obsolete">XY</translation>
+        <translation>XY</translation>
     </message>
     <message>
         <source>UTM</source>
-        <translation type="obsolete">UTM</translation>
+        <translation>UTM</translation>
     </message>
     <message>
         <source>SP</source>
-        <translation type="obsolete">SP</translation>
+        <translation>SP</translation>
     </message>
     <message>
         <source>LL</source>
-        <translation type="obsolete">LL</translation>
+        <translation>LL</translation>
     </message>
     <message>
         <source>Other</source>
-        <translation type="obsolete">Anders</translation>
+        <translation>Anders</translation>
     </message>
     <message>
         <source>Projection Type</source>
-        <translation type="obsolete">Type projectie</translation>
+        <translation>Type projectie</translation>
     </message>
     <message>
         <source>Zone</source>
-        <translation type="obsolete">Zone</translation>
+        <translation>Zone</translation>
     </message>
     <message>
         <source>3D Cols</source>
-        <translation type="obsolete">3D Kols</translation>
+        <translation>3D Kols</translation>
     </message>
     <message>
         <source>3D Rows</source>
-        <translation type="obsolete">3D Rijen</translation>
+        <translation>3D Rijen</translation>
     </message>
     <message>
         <source>Depths</source>
-        <translation type="obsolete">Diepten</translation>
+        <translation>Diepten</translation>
     </message>
     <message>
         <source>E-W 3D resolution</source>
-        <translation type="obsolete">O-W 3D resolutie</translation>
+        <translation>O-W 3D resolutie</translation>
     </message>
     <message>
         <source>N-S 3D resolution</source>
-        <translation type="obsolete">N-Z 3D resolutie</translation>
+        <translation>N-Z 3D resolutie</translation>
     </message>
     <message>
         <source>GRASS</source>
-        <translation type="obsolete">GRASS</translation>
+        <translation>GRASS</translation>
     </message>
     <message>
         <source>GRASS layer</source>
-        <translation type="obsolete">GRASS-laag</translation>
+        <translation>GRASS-laag</translation>
     </message>
     <message>
         <source>Heatmap</source>
@@ -14443,7 +13410,7 @@ Wilt u het pad (GISBASE) naar uw GRASS installatie wijzen?</translation>
     </message>
     <message>
         <source>Cannot start %1/etc/lock</source>
-        <translation type="obsolete">Starten mislukt van %1 /etc/lock</translation>
+        <translation>Starten mislukt van %1 /etc/lock</translation>
     </message>
     <message>
         <source>Mapset is already in use.</source>
@@ -14467,11 +13434,11 @@ Wilt u het pad (GISBASE) naar uw GRASS installatie wijzen?</translation>
     </message>
     <message>
         <source>Cannot open vector %1 in mapset %2 on level 2 (topology not available, try to rebuild topology using v.build module).</source>
-        <translation type="obsolete">Vector %1 in mapset %2 kan niet worden geopend in level 2 (topologie niet beschikaar, probeer de topologie opnieuw aan te maken met de v.build-module).</translation>
+        <translation>Vector %1 in mapset %2 kan niet worden geopend in level 2 (topologie niet beschikaar, probeer de topologie opnieuw aan te maken met de v.build-module).</translation>
     </message>
     <message>
         <source>Cannot open vector %1 in mapset %2</source>
-        <translation type="obsolete">Vector %1 in mapset %2 kan niet worden geopend</translation>
+        <translation>Vector %1 in mapset %2 kan niet worden geopend</translation>
     </message>
     <message>
         <source>Cannot read raster map region</source>
@@ -14503,7 +13470,7 @@ Wilt u het pad (GISBASE) naar uw GRASS installatie wijzen?</translation>
     </message>
     <message>
         <source>command: %1 %2&lt;br&gt;%3&lt;br&gt;%4</source>
-        <translation type="obsolete">opdracht:  %1 %2&lt;br&gt;%3&lt;br&gt;%4</translation>
+        <translation>opdracht:  %1 %2&lt;br&gt;%3&lt;br&gt;%4</translation>
     </message>
     <message>
         <source>Cannot get projection </source>
@@ -15167,7 +14134,7 @@ Antwoord was:
     </message>
     <message>
         <source>Fatal error occurred in GRASS library. QGIS gets over the error but any next fatal error will cause QGIS exit without warning. This is a problem of GRASS 7.0.0beta1 but it is fixed in GRASS 7.1 and higher. Error message: %1</source>
-        <translation type="obsolete">Er trad een fatale fout op in de bibliotheek van GRASS. QGIS kan deze fout nog verwerken maar een volgende fatale fout zal er voor zorgen dat QGIS zal afsluiten zonder waarschuwing. Dit is een probleem van GRASS 7.0.0beta1 maar is opgelost in GRASS 7.1 en hoger. Foutbericht: %1</translation>
+        <translation>Er trad een fatale fout op in de bibliotheek van GRASS. QGIS kan deze fout nog verwerken maar een volgende fatale fout zal er voor zorgen dat QGIS zal afsluiten zonder waarschuwing. Dit is een probleem van GRASS 7.0.0beta1 maar is opgelost in GRASS 7.1 en hoger. Foutbericht: %1</translation>
     </message>
     <message>
         <source>Raster image fill</source>
@@ -15184,216 +14151,6 @@ Antwoord was:
     <message>
         <source>NOTICE: %1</source>
         <translation>LET OP: %1</translation>
-    </message>
-    <message>
-        <source>Blur</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Drop Shadow</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Inner Shadow</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Stack</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Outer Glow</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Inner Glow</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Source</source>
-        <translation type="unfinished">Bron</translation>
-    </message>
-    <message>
-        <source>Transform</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Colorise</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Recent colors</source>
-        <translation type="unfinished">Recente kleuren</translation>
-    </message>
-    <message>
-        <source>Standard colors</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Project colors</source>
-        <translation type="unfinished">Projectkleuren</translation>
-    </message>
-    <message>
-        <source>Number of places must be positive</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Count</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sum</source>
-        <translation type="unfinished">Som</translation>
-    </message>
-    <message>
-        <source>Mean</source>
-        <translation type="unfinished">Gemiddelde</translation>
-    </message>
-    <message>
-        <source>Median</source>
-        <translation type="unfinished">Mediaan</translation>
-    </message>
-    <message>
-        <source>St dev (pop)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>St dev (sample)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Minimum</source>
-        <translation type="unfinished">Minimum</translation>
-    </message>
-    <message>
-        <source>Maximum</source>
-        <translation type="unfinished">Maximum</translation>
-    </message>
-    <message>
-        <source>Range</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Minority</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Majority</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Variety</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Q1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Q3</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>IQR</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="unfinished">Waarde</translation>
-    </message>
-    <message>
-        <source>GRASS %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>GRASS %1 (Geographic Resources Analysis Support System)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Version 2.0</source>
-        <translation type="unfinished">Versie 2.0</translation>
-    </message>
-    <message>
-        <source>Cannot start %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Mapset lock failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot open vector on level 2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot open vector</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>command: %1 %2
-stdout: %3
-stderr: %4</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Attempt to copy from different location.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot delete</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Delete confirmation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Are you sure you want to delete %1 %2?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot create table</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot insert, statement</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rename GRASS %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot delete %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot rename %1 to %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Delete Connection</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Are you sure you want to delete the connection to %1?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Delete Object</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Are you sure you want to delete %1.%2?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Are you sure you want to delete %1?</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -16753,33 +15510,6 @@ Always ignore these errors?</source>
         <source>A problem occured during deletion of %1 feature(s)</source>
         <translation>Er is een fout opgetreden tijdens het verwijderen van %1  object(en)</translation>
     </message>
-    <message>
-        <source>Project file was changed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The loaded project file on disk was meanwhile changed.  Do you want to overwrite the changes?
-
-Last modification date on load was: %1
-Current last modification date is: %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Saving raster</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Export to raster file has been completed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot paste style to layer with a different geometry type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Your copied style does not match the layer you are pasting to</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgisAppInterface</name>
@@ -16853,7 +15583,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Essen (Germany), Developer meeting 2012</source>
-        <translation type="obsolete">Essen (Germany), Developer meeting 2012</translation>
+        <translation>Essen (Germany), Developer meeting 2012</translation>
     </message>
     <message>
         <source>Contributors</source>
@@ -16890,10 +15620,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Developers Map</source>
         <translation>Kaart Ontwikkelaars</translation>
-    </message>
-    <message>
-        <source>Essen (Germany), Developer meeting 2014</source>
-        <translation type="unfinished">Essen (Germany), Developer meeting 2014</translation>
     </message>
 </context>
 <context>
@@ -16957,35 +15683,35 @@ p, li { white-space: pre-wrap; }
     <name>QgsAddJoinDialogBase</name>
     <message>
         <source>Add vector join</source>
-        <translation type="obsolete">Vectorkoppeling toevoegen</translation>
+        <translation>Vectorkoppeling toevoegen</translation>
     </message>
     <message>
         <source>Join layer</source>
-        <translation type="obsolete">Koppellaag</translation>
+        <translation>Koppellaag</translation>
     </message>
     <message>
         <source>Join field</source>
-        <translation type="obsolete">Koppelveld</translation>
+        <translation>Koppelveld</translation>
     </message>
     <message>
         <source>Target field</source>
-        <translation type="obsolete">Doelveld</translation>
+        <translation>Doelveld</translation>
     </message>
     <message>
         <source>Create attribute index on join field</source>
-        <translation type="obsolete">Attribuutindex aanmaken op het koppelveld</translation>
+        <translation>Attribuutindex aanmaken op het koppelveld</translation>
     </message>
     <message>
         <source>Choose which fields are joined</source>
-        <translation type="obsolete">Kies welke velden zijn samengevoegd</translation>
+        <translation>Kies welke velden zijn samengevoegd</translation>
     </message>
     <message>
         <source>Cache join layer in virtual memory</source>
-        <translation type="obsolete">Koppellaag in virtueel geheugen &apos;cachen&apos;</translation>
+        <translation>Koppellaag in virtueel geheugen &apos;cachen&apos;</translation>
     </message>
     <message>
         <source>Custom field name prefix</source>
-        <translation type="obsolete">Aangepast voorvoegsel veldnaam</translation>
+        <translation>Aangepast voorvoegsel veldnaam</translation>
     </message>
 </context>
 <context>
@@ -17118,17 +15844,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>y</source>
         <translation>y</translation>
-    </message>
-</context>
-<context>
-    <name>QgsAngleMagnetWidget</name>
-    <message>
-        <source>Snap to </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No snapping</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17932,7 +16647,7 @@ Parser fout:
     </message>
     <message>
         <source>Attribute table - %1 :: Features total: %2, filtered: %3, selected: %4</source>
-        <translation type="obsolete">Attributen tabel - %1 :: Objecten totaal: %2, gefilterd: %3, geselecteerd: %4</translation>
+        <translation>Attributen tabel - %1 :: Objecten totaal: %2, gefilterd: %3, geselecteerd: %4</translation>
     </message>
     <message>
         <source>Update Filtered</source>
@@ -17978,30 +16693,6 @@ Parser fout:
     <message>
         <source>Update Selected</source>
         <translation>Geselecteerde bijwerken</translation>
-    </message>
-    <message>
-        <source>Ctrl+R</source>
-        <translation type="unfinished">Ctrl+R</translation>
-    </message>
-    <message>
-        <source>Paste features from clipboard (Ctrl+V)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ctrl+V</source>
-        <translation type="unfinished">Ctrl+V</translation>
-    </message>
-    <message>
-        <source>Show All Features In Initial Canvas Extent</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Attribute table - %1 :: Features total: %2, filtered: %3, selected: %4%5</source>
-        <translation type="unfinished">Attributen tabel - %1 :: Objecten totaal: %2, gefilterd: %3, geselecteerd: %4%5 {1 ?} {2,?} {3,?}</translation>
-    </message>
-    <message>
-        <source>, spatially limited</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -18093,29 +16784,18 @@ Parser fout:
     </message>
 </context>
 <context>
-    <name>QgsBlurWidget</name>
-    <message>
-        <source>Stack blur (fast)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Gaussian blur (quality)</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>QgsBookmarks</name>
     <message>
         <source>&amp;Add</source>
-        <translation type="obsolete">&amp;Toevoegen</translation>
+        <translation>&amp;Toevoegen</translation>
     </message>
     <message>
         <source>&amp;Delete</source>
-        <translation type="obsolete">&amp;Verwijderen</translation>
+        <translation>&amp;Verwijderen</translation>
     </message>
     <message>
         <source>&amp;Zoom to</source>
-        <translation type="obsolete">&amp;Zoom naar</translation>
+        <translation>&amp;Zoom naar</translation>
     </message>
     <message>
         <source>Error</source>
@@ -18197,7 +16877,7 @@ Database: %2</translation>
     </message>
     <message>
         <source>&amp;Share</source>
-        <translation type="obsolete">&amp;Delen</translation>
+        <translation>&amp;Delen</translation>
     </message>
     <message>
         <source>&amp;Export</source>
@@ -18231,48 +16911,12 @@ Database: %2</translation>
         <source>XML files( *.xml *.XML )</source>
         <translation>XML-bestanden( *.xml *.XML )</translation>
     </message>
-    <message>
-        <source>Import/Export Bookmarks</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsBookmarksBase</name>
     <message>
         <source>Geospatial Bookmarks</source>
-        <translation type="obsolete">Favoriete plaatsen</translation>
-    </message>
-    <message>
-        <source>Spatial Bookmarks</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add</source>
-        <translation type="unfinished">Toevoegen</translation>
-    </message>
-    <message>
-        <source>Add bookmark</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation type="unfinished">Verwijderen</translation>
-    </message>
-    <message>
-        <source>Delete bookmark</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Zoom to</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Zoom to bookmark</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Favoriete plaatsen</translation>
     </message>
 </context>
 <context>
@@ -18361,7 +17005,7 @@ Database: %2</translation>
     <name>QgsBrowserDirectoryPropertiesBase</name>
     <message>
         <source>Dialog</source>
-        <translation type="obsolete">Dialoog</translation>
+        <translation>Dialoog</translation>
     </message>
     <message>
         <source>Path</source>
@@ -18424,15 +17068,15 @@ Database: %2</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="obsolete">Fout</translation>
+        <translation>Fout</translation>
     </message>
     <message>
         <source>Layer Properties</source>
-        <translation type="obsolete">Laageigenschappen</translation>
+        <translation>Laageigenschappen</translation>
     </message>
     <message>
         <source>Directory Properties</source>
-        <translation type="obsolete">Folder Eigenschappen</translation>
+        <translation>Folder Eigenschappen</translation>
     </message>
     <message>
         <source>Type here to filter current item...</source>
@@ -18455,11 +17099,11 @@ Database: %2</translation>
     </message>
     <message>
         <source>Filter Files</source>
-        <translation type="obsolete">Bestandsfilter</translation>
+        <translation>Bestandsfilter</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="obsolete">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Collapse All</source>
@@ -18469,43 +17113,20 @@ Database: %2</translation>
         <source>Options</source>
         <translation>Opties</translation>
     </message>
-    <message>
-        <source>Add Layers</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Filter Browser</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show Properties</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Enable/disable properties widget</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QgsBrowserLayerProperties</name>
-    <message>
-        <source>Error</source>
-        <translation type="unfinished">Fout</translation>
-    </message>
 </context>
 <context>
     <name>QgsBrowserLayerPropertiesBase</name>
     <message>
         <source>Dialog</source>
-        <translation type="obsolete">Dialoog</translation>
+        <translation>Dialoog</translation>
     </message>
     <message>
         <source>Display Name</source>
-        <translation type="obsolete">Naam</translation>
+        <translation>Naam</translation>
     </message>
     <message>
         <source>Layer Source</source>
-        <translation type="obsolete">Laagbron</translation>
+        <translation>Laagbron</translation>
     </message>
     <message>
         <source>Provider</source>
@@ -18514,26 +17135,6 @@ Database: %2</translation>
     <message>
         <source>Metadata</source>
         <translation>Metadata</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="unfinished">Naam</translation>
-    </message>
-    <message>
-        <source>name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>URI</source>
-        <translation type="unfinished">URI</translation>
-    </message>
-    <message>
-        <source>provider key</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>notice</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -18549,24 +17150,6 @@ Database: %2</translation>
     <message>
         <source>Favourites</source>
         <translation>Voorkeuren</translation>
-    </message>
-</context>
-<context>
-    <name>QgsBrowserPropertiesDialog</name>
-    <message>
-        <source>Layer Properties</source>
-        <translation type="unfinished">Laageigenschappen</translation>
-    </message>
-    <message>
-        <source>Directory Properties</source>
-        <translation type="unfinished">Folder Eigenschappen</translation>
-    </message>
-</context>
-<context>
-    <name>QgsBrowserPropertiesDialogBase</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -18713,7 +17296,7 @@ Database: %2</translation>
     </message>
     <message>
         <source>Join</source>
-        <translation type="obsolete">Samenvoegen</translation>
+        <translation>Samenvoegen</translation>
     </message>
     <message>
         <source>Advanced</source>
@@ -18756,51 +17339,6 @@ Database: %2</translation>
 Should the existing classes be deleted before classification?</source>
         <translation>Het veld voor klassificatie is veranderd van &apos;%1&apos; naar &apos;%2&apos;
 Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</translation>
-    </message>
-    <message>
-        <source>Match to saved symbols</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Match to symbols from file...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Matched symbols</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Matched %1 categories to symbols.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No categories could be matched to symbols in library.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Match to symbols from file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>XML files (*.xml *XML)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Matching error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>An error occured reading file:
-%1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Matched %1 categories to symbols from file.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No categories could be matched to symbols in file.</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -19158,25 +17696,6 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     <message>
         <source>Error writing palette file</source>
         <translation>Fout bij schrijven van paletbestand</translation>
-    </message>
-</context>
-<context>
-    <name>QgsColorEffectWidget</name>
-    <message>
-        <source>Off</source>
-        <translation type="unfinished">Uit</translation>
-    </message>
-    <message>
-        <source>By lightness</source>
-        <translation type="unfinished">Lichtsterkte van</translation>
-    </message>
-    <message>
-        <source>By luminosity</source>
-        <translation type="unfinished">Helderheid van</translation>
-    </message>
-    <message>
-        <source>By average</source>
-        <translation type="unfinished">Gemiddelde van</translation>
     </message>
 </context>
 <context>
@@ -19658,10 +18177,6 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
         <source>Landscape</source>
         <translation>Liggend</translation>
     </message>
-    <message>
-        <source>Exporting atlas</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsComposerArrowWidget</name>
@@ -19954,7 +18469,7 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Table grid stroke</source>
-        <translation type="obsolete">Tabel dikte rasterlijn</translation>
+        <translation>Tabel dikte rasterlijn</translation>
     </message>
     <message>
         <source>Table grid color</source>
@@ -20044,10 +18559,6 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
         <source>Empty table message changed</source>
         <translation>Bericht lege tabel gewijzigd</translation>
     </message>
-    <message>
-        <source>Table grid line</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsComposerAttributeTableWidgetBase</name>
@@ -20113,7 +18624,7 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Stroke width</source>
-        <translation type="obsolete">Dikte schaduw</translation>
+        <translation>Dikte schaduw</translation>
     </message>
     <message>
         <source>Color</source>
@@ -20230,10 +18741,6 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     <message>
         <source>Add Frame</source>
         <translation>Frame toevoegen</translation>
-    </message>
-    <message>
-        <source>Line width</source>
-        <translation type="unfinished">Lijndikte</translation>
     </message>
 </context>
 <context>
@@ -23087,11 +21594,11 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Select stroke color</source>
-        <translation type="obsolete">Schaduwkleur selecteren</translation>
+        <translation>Schaduwkleur selecteren</translation>
     </message>
     <message>
         <source>Transparent stroke</source>
-        <translation type="obsolete">Transparante schaduw</translation>
+        <translation>Transparante schaduw</translation>
     </message>
     <message>
         <source>Map %1</source>
@@ -23139,7 +21646,7 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Scalebar stroke color changed</source>
-        <translation type="obsolete">Schaduwkleur schaalbalk aangepast</translation>
+        <translation>Schaduwkleur schaalbalk aangepast</translation>
     </message>
     <message>
         <source>Scalebar unit text</source>
@@ -23189,22 +21696,6 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
         <source>Scalebar line cap style</source>
         <translation>Stijl schaalbalk eindkap lijn</translation>
     </message>
-    <message>
-        <source>Select line color</source>
-        <translation type="unfinished">Lijnkleur selecteren</translation>
-    </message>
-    <message>
-        <source>Transparent line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Scalebar line color changed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Scalebar segment size mode</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsComposerScaleBarWidgetBase</name>
@@ -23222,11 +21713,11 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Map</source>
-        <translation type="obsolete">Kaart</translation>
+        <translation>Kaart</translation>
     </message>
     <message>
         <source>Style</source>
-        <translation type="obsolete">Stijl</translation>
+        <translation>Stijl</translation>
     </message>
     <message>
         <source>Units</source>
@@ -23234,11 +21725,11 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Label</source>
-        <translation type="obsolete">Label</translation>
+        <translation>Label</translation>
     </message>
     <message>
         <source>Map units per bar unit</source>
-        <translation type="obsolete">Kaarteenheden per schaalbalkeenheid</translation>
+        <translation>Kaarteenheden per schaalbalkeenheid</translation>
     </message>
     <message>
         <source>Segments</source>
@@ -23254,7 +21745,7 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Size</source>
-        <translation type="obsolete">Grootte</translation>
+        <translation>Grootte</translation>
     </message>
     <message>
         <source> units</source>
@@ -23314,47 +21805,11 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Stroke color</source>
-        <translation type="obsolete">Schaduwkleur</translation>
+        <translation>Schaduwkleur</translation>
     </message>
     <message>
         <source>Font...</source>
         <translation>Lettertype...</translation>
-    </message>
-    <message>
-        <source>&amp;Map</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>St&amp;yle</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Label</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Map &amp;units per bar unit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>max </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>min </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Fi&amp;xed width</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Fit segment width</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Line color</source>
-        <translation type="unfinished">Lijnkleur</translation>
     </message>
 </context>
 <context>
@@ -23547,7 +22002,7 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Table grid stroke</source>
-        <translation type="obsolete">Tabel gridlijndikte</translation>
+        <translation>Tabel gridlijndikte</translation>
     </message>
     <message>
         <source>Select grid color</source>
@@ -23564,10 +22019,6 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     <message>
         <source>Table visible only toggled</source>
         <translation>Tabel &apos;alleen zichtbare objecten tonen&apos; omgezet</translation>
-    </message>
-    <message>
-        <source>Table grid line</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -23662,7 +22113,7 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Stroke width</source>
-        <translation type="obsolete">Schaduw breedte</translation>
+        <translation>Schaduw breedte</translation>
     </message>
     <message>
         <source>Follow column alignment</source>
@@ -23679,10 +22130,6 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     <message>
         <source>Right</source>
         <translation>Rechts</translation>
-    </message>
-    <message>
-        <source>Line width</source>
-        <translation type="unfinished">Lijndikte</translation>
     </message>
 </context>
 <context>
@@ -24435,7 +22882,7 @@ en het huidige bestand is [%3]</translation>
     <name>QgsCustomColorScheme</name>
     <message>
         <source>Standard colors</source>
-        <translation type="obsolete">Standaardkleuren</translation>
+        <translation>Standaardkleuren</translation>
     </message>
 </context>
 <context>
@@ -24826,14 +23273,6 @@ en het huidige bestand is [%3]</translation>
         <source>[&lt;b&gt;&lt;dash&gt;;&lt;space&gt;&lt;/b&gt;] e.g. &apos;8;2;1;2&apos;</source>
         <translation>[&lt;b&gt;&lt;dash&gt;;&lt;space&gt;&lt;/b&gt;] bijv. &apos;8;2;1;2&apos;</translation>
     </message>
-    <message>
-        <source>Assistant...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>single character</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsDataDefinedButtonPlugin</name>
@@ -24844,32 +23283,6 @@ en het huidige bestand is [%3]</translation>
     <message>
         <source>A widget to define the scale range.</source>
         <translation>Een widget om het bereik van de schaal te definiëren.</translation>
-    </message>
-</context>
-<context>
-    <name>QgsDataDefinedRotationDialog</name>
-    <message>
-        <source>Rotation</source>
-        <translation type="unfinished">Rotatie</translation>
-    </message>
-    <message>
-        <source>Symbol rotation</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QgsDataDefinedSizeDialog</name>
-    <message>
-        <source>Size</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Symbol size</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Size Assistant...</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -24917,32 +23330,6 @@ en het huidige bestand is [%3]</translation>
     <message>
         <source>0 (false)|1 (true)</source>
         <translation>0 (onwaar)|1 (waar)</translation>
-    </message>
-</context>
-<context>
-    <name>QgsDataDefinedValueDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Label</source>
-        <translation type="unfinished">Label</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="unfinished">...</translation>
-    </message>
-</context>
-<context>
-    <name>QgsDataDefinedWidthDialog</name>
-    <message>
-        <source>Width</source>
-        <translation type="unfinished">Breedte</translation>
-    </message>
-    <message>
-        <source>Symbol width</source>
-        <translation type="unfinished">Symboolbreedte</translation>
     </message>
 </context>
 <context>
@@ -25628,7 +24015,7 @@ niet weergegeven</translation>
     </message>
     <message>
         <source>%1 records discarded due to missing geometry definitions</source>
-        <translation type="obsolete">%1 records overgeslagen vanwege ontbrekende geometrie definities</translation>
+        <translation>%1 records overgeslagen vanwege ontbrekende geometrie definities</translation>
     </message>
     <message>
         <source>%1 records discarded due to invalid geometry definitions</source>
@@ -25661,26 +24048,6 @@ niet weergegeven</translation>
     <message>
         <source>The file has been updated by another application - reloading</source>
         <translation>Het bestand is aangepast door een andere applicatie - herladen</translation>
-    </message>
-    <message>
-        <source>Whole number (integer)</source>
-        <translation type="unfinished">Geheel getal (integer)</translation>
-    </message>
-    <message>
-        <source>Whole number (integer - 64 bit)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Decimal number (double)</source>
-        <translation type="unfinished">Decimaal getal (double)</translation>
-    </message>
-    <message>
-        <source>Text, unlimited length (text)</source>
-        <translation type="unfinished">Tekst, vaste lengte (text)</translation>
-    </message>
-    <message>
-        <source>%1 records have missing geometry definitions</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -26152,31 +24519,31 @@ niet weergegeven</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="obsolete">Lijn</translation>
+        <translation>Lijn</translation>
     </message>
     <message>
         <source>Horizontal</source>
-        <translation type="obsolete">Horizontaal</translation>
+        <translation>Horizontaal</translation>
     </message>
     <message>
         <source>Free</source>
-        <translation type="obsolete">Vrij</translation>
+        <translation>Vrij</translation>
     </message>
     <message>
         <source>On line</source>
-        <translation type="obsolete">Op lijn</translation>
+        <translation>Op lijn</translation>
     </message>
     <message>
         <source>Above line</source>
-        <translation type="obsolete">Boven lijn</translation>
+        <translation>Boven lijn</translation>
     </message>
     <message>
         <source>Below Line</source>
-        <translation type="obsolete">Onder Lijn</translation>
+        <translation>Onder Lijn</translation>
     </message>
     <message>
         <source>Map orientation</source>
-        <translation type="obsolete">Kaartoriëntatie</translation>
+        <translation>Kaartoriëntatie</translation>
     </message>
     <message>
         <source>Pie chart</source>
@@ -26236,7 +24603,7 @@ niet weergegeven</translation>
     </message>
     <message>
         <source>Bar length: Scale linearly, such as the following value matches the specified size.</source>
-        <translation type="obsolete">Staaflengte: Lineaire verschaling, zodat volgende waarde overeenkomt met de gespecificeerde grootte.</translation>
+        <translation>Staaflengte: Lineaire verschaling, zodat volgende waarde overeenkomt met de gespecificeerde grootte.</translation>
     </message>
     <message>
         <source>Scale linearly between 0 and the following attribute value / diagram size:</source>
@@ -26244,7 +24611,7 @@ niet weergegeven</translation>
     </message>
     <message>
         <source>Transparency: %1%</source>
-        <translation type="obsolete">Transparantie: %1%</translation>
+        <translation>Transparantie: %1%</translation>
     </message>
     <message>
         <source>Diagrams: No attributes added.</source>
@@ -26266,48 +24633,12 @@ niet weergegeven</translation>
         <source>You did not add any attributes to this diagram layer. Please specify the attributes to visualize on the diagrams or disable diagrams.</source>
         <translation>U heeft geen attributen toegevoegd aan deze diagramlaag. Selecteer de attribuutvelden waarmee de diagrammen worden getoond of schakel diagrammen uit.</translation>
     </message>
-    <message>
-        <source>Around Line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Over Line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Around Centroid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Over Centroid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Perimeter</source>
-        <translation type="unfinished">Omtrek</translation>
-    </message>
-    <message>
-        <source>Inside Polygon</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Bar length: Scale linearly, so that the following value matches the specified bar length:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Bar length</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Size</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsDiagramPropertiesBase</name>
     <message>
         <source>Display diagrams</source>
-        <translation type="obsolete">Diagrammen tonen</translation>
+        <translation>Diagrammen tonen</translation>
     </message>
     <message>
         <source>Diagram type</source>
@@ -26351,7 +24682,7 @@ niet weergegeven</translation>
     </message>
     <message>
         <source>Transparency 0%</source>
-        <translation type="obsolete">Transparantie 0%</translation>
+        <translation>Transparantie 0%</translation>
     </message>
     <message>
         <source>Start Angle</source>
@@ -26359,11 +24690,11 @@ niet weergegeven</translation>
     </message>
     <message>
         <source>Only show diagrams with a size inside the specified range.</source>
-        <translation type="obsolete">Toon alleen diagrammen met een grootte binnen gegeven grenswaarden.</translation>
+        <translation>Toon alleen diagrammen met een grootte binnen gegeven grenswaarden.</translation>
     </message>
     <message>
         <source>Hide diagrams with a size outside the specified range.</source>
-        <translation type="obsolete">Verberg diagrammen met een grootte buiten gegeven grenswaarden.</translation>
+        <translation>Verberg diagrammen met een grootte buiten gegeven grenswaarden.</translation>
     </message>
     <message>
         <source>Scale dependent visibility</source>
@@ -26371,11 +24702,11 @@ niet weergegeven</translation>
     </message>
     <message>
         <source>Minimum</source>
-        <translation type="obsolete">Minimum</translation>
+        <translation>Minimum</translation>
     </message>
     <message>
         <source>Maximum</source>
-        <translation type="obsolete">Maximum</translation>
+        <translation>Maximum</translation>
     </message>
     <message>
         <source>Size</source>
@@ -26399,16 +24730,16 @@ niet weergegeven</translation>
     </message>
     <message>
         <source>Edit expression</source>
-        <translation type="obsolete">Expressie bewerken</translation>
+        <translation>Expressie bewerken</translation>
     </message>
     <message>
         <source>Find maximum value</source>
-        <translation type="obsolete">Vind de maximum waarde</translation>
+        <translation>Vind de maximum waarde</translation>
     </message>
     <message>
         <source>The attribute value you enter here will correspond to the size entered in the field &quot;Size&quot; and the chosen &quot;Size unit&quot;.
 Leave empty to automatically apply the maximum value.</source>
-        <translation type="obsolete">De attribuutwaarde die hier gegeven wordt komt overeen met de grootte gegeven in het veld &quot;Grootte&quot; en de gekozen &quot;Eenheid grootte&quot;.
+        <translation>De attribuutwaarde die hier gegeven wordt komt overeen met de grootte gegeven in het veld &quot;Grootte&quot; en de gekozen &quot;Eenheid grootte&quot;.
 Laat leeg wanneer automatisch de maximum waarde moet worden toegepast.</translation>
     </message>
     <message>
@@ -26417,7 +24748,7 @@ Laat leeg wanneer automatisch de maximum waarde moet worden toegepast.</translat
     </message>
     <message>
         <source>Will scale diagrams with a size smaller than the minimum size to the minimum size</source>
-        <translation type="obsolete">Diagrammen die kleiner zouden zijn dan de minimale grootte automatisch verschalen naar minimale grootte</translation>
+        <translation>Diagrammen die kleiner zouden zijn dan de minimale grootte automatisch verschalen naar minimale grootte</translation>
     </message>
     <message>
         <source>Increase size of small diagrams</source>
@@ -26429,7 +24760,7 @@ Laat leeg wanneer automatisch de maximum waarde moet worden toegepast.</translat
     </message>
     <message>
         <source>Position</source>
-        <translation type="obsolete">Positie</translation>
+        <translation>Positie</translation>
     </message>
     <message>
         <source>Placement</source>
@@ -26437,7 +24768,7 @@ Laat leeg wanneer automatisch de maximum waarde moet worden toegepast.</translat
     </message>
     <message>
         <source>Line Options</source>
-        <translation type="obsolete">Lijn-opties</translation>
+        <translation>Lijn-opties</translation>
     </message>
     <message>
         <source>Distance</source>
@@ -26457,7 +24788,7 @@ Laat leeg wanneer automatisch de maximum waarde moet worden toegepast.</translat
     </message>
     <message>
         <source>Automated placement settings</source>
-        <translation type="obsolete">Instellingen automatische plaatsing</translation>
+        <translation>Instellingen automatische plaatsing</translation>
     </message>
     <message>
         <source>Options</source>
@@ -26511,70 +24842,6 @@ Laat leeg wanneer automatisch de maximum waarde moet worden toegepast.</translat
         <source>Color</source>
         <translation>Kleur</translation>
     </message>
-    <message>
-        <source>Show diagrams for this layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Automated placement settings (apply to all layers)</source>
-        <translation type="unfinished">Instellingen automatische plaatsing (toepassen op alle lagen)</translation>
-    </message>
-    <message>
-        <source>Rendering</source>
-        <translation type="unfinished">Rendering</translation>
-    </message>
-    <message>
-        <source>Legend</source>
-        <translation type="unfinished">Legenda</translation>
-    </message>
-    <message>
-        <source>Format</source>
-        <translation type="unfinished">Formaat</translation>
-    </message>
-    <message>
-        <source>Transparency</source>
-        <translation type="unfinished">Transparantie</translation>
-    </message>
-    <message>
-        <source> %</source>
-        <translation type="unfinished"> %</translation>
-    </message>
-    <message>
-        <source>Visibility</source>
-        <translation type="unfinished">Zichtbaarheid</translation>
-    </message>
-    <message>
-        <source>Show all diagrams</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Maximum value</source>
-        <translation type="unfinished">Maximale waarde</translation>
-    </message>
-    <message>
-        <source>Find</source>
-        <translation type="unfinished">Vind</translation>
-    </message>
-    <message>
-        <source>Scaled size</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Above line</source>
-        <translation type="unfinished">Boven lijn</translation>
-    </message>
-    <message>
-        <source>Below line</source>
-        <translation type="unfinished">Onder lijn</translation>
-    </message>
-    <message>
-        <source>On line</source>
-        <translation type="unfinished">Op lijn</translation>
-    </message>
-    <message>
-        <source>Line orientation dependent position</source>
-        <translation type="unfinished">Positieafhankelijke orientatie van lijn</translation>
-    </message>
 </context>
 <context>
     <name>QgsDirectoryParamWidget</name>
@@ -26616,7 +24883,7 @@ Laat leeg wanneer automatisch de maximum waarde moet worden toegepast.</translat
     </message>
     <message>
         <source>link</source>
-        <translation type="obsolete">link</translation>
+        <translation>link</translation>
     </message>
 </context>
 <context>
@@ -26852,70 +25119,14 @@ Parser fout:
     </message>
 </context>
 <context>
-    <name>QgsEffectDrawModeComboBox</name>
-    <message>
-        <source>Render only</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Modifier only</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Render and modify</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QgsEffectStackCompactWidget</name>
-    <message>
-        <source>Draw effects</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Customise effects</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QgsEffectStackPropertiesDialog</name>
-    <message>
-        <source>Effect Properties</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QgsEffectStackPropertiesWidgetBase</name>
-    <message>
-        <source>Effects</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add symbol layer</source>
-        <translation type="unfinished">Symboollaag toevoegen</translation>
-    </message>
-    <message>
-        <source>Remove symbol layer</source>
-        <translation type="unfinished">Symboollaag verwijderen</translation>
-    </message>
-    <message>
-        <source>Move up</source>
-        <translation type="unfinished">Naar boven</translation>
-    </message>
-    <message>
-        <source>Move down</source>
-        <translation type="unfinished">Naar beneden</translation>
-    </message>
-</context>
-<context>
     <name>QgsEllipseSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Millimeter</translation>
+        <translation>Millimeter</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Kaarteenheid</translation>
+        <translation>Kaarteenheid</translation>
     </message>
     <message>
         <source>Select fill color</source>
@@ -27158,10 +25369,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Load all unique values</source>
         <translation>Laad alle unieke waarden</translation>
-    </message>
-    <message>
-        <source>%1...</source>
-        <translation type="unfinished">%1...</translation>
     </message>
 </context>
 <context>
@@ -27846,19 +26053,15 @@ MyForms.py moet aanwezig zijn in PYTHONPATH, .qgis/python, of in de map van het 
     <name>QgsFontMarkerSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Millimeter</translation>
+        <translation>Millimeter</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Kaarteenheid</translation>
+        <translation>Kaarteenheid</translation>
     </message>
     <message>
         <source>Select symbol color</source>
         <translation>Selecteer kleur symbool</translation>
-    </message>
-    <message>
-        <source>Size Assistant...</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -27892,42 +26095,6 @@ MyForms.py moet aanwezig zijn in PYTHONPATH, .qgis/python, of in de map van het 
     <message>
         <source>pixels</source>
         <translation>pixels</translation>
-    </message>
-    <message>
-        <source>Visible</source>
-        <translation type="unfinished">Zichtbaar</translation>
-    </message>
-    <message>
-        <source>ID</source>
-        <translation type="unfinished">ID</translation>
-    </message>
-    <message>
-        <source>Source X</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Source Y</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dest. X</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dest. Y</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>dX (%1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>dY (%1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Residual (%1)</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -29031,7 +27198,7 @@ Selecteer alstublieft een geldig bestand.</translation>
     </message>
     <message>
         <source>Show coords</source>
-        <translation type="obsolete">Toon coördinaten</translation>
+        <translation>Toon coördinaten</translation>
     </message>
     <message>
         <source>Residual units</source>
@@ -29072,17 +27239,6 @@ Selecteer alstublieft een geldig bestand.</translation>
     <message>
         <source>Paper size</source>
         <translation>Paginagrootte</translation>
-    </message>
-    <message>
-        <source>Show coordinates</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QgsGeorefDescriptionDialog</name>
-    <message>
-        <source>&lt;h2&gt;Description&lt;/h2&gt;&lt;p&gt;This plugin can georeference raster files and set projection. You select points on the raster and give their world coordinates, and the plugin will compute the world file parameters. The more coordinates you can provide the better the result will be.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -29155,7 +27311,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>GDAL scripting is not supported for %1 transformation</source>
-        <translation type="obsolete">GDAL-script is niet beschikbaar voor %1 transformatie</translation>
+        <translation>GDAL-script is niet beschikbaar voor %1 transformatie</translation>
     </message>
     <message>
         <source>Load GCP points</source>
@@ -29167,7 +27323,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>No GCP points to save</source>
-        <translation type="obsolete">Geen GCP-punten om op te slaan</translation>
+        <translation>Geen GCP-punten om op te slaan</translation>
     </message>
     <message>
         <source>Save GCP points</source>
@@ -29211,7 +27367,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Unable to open GCP points file %1</source>
-        <translation type="obsolete">Fout bij het openen van GCP-puntenbestand %1</translation>
+        <translation>Fout bij het openen van GCP-puntenbestand %1</translation>
     </message>
     <message>
         <source>Save GCPs</source>
@@ -29223,7 +27379,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Failed to get linear transform parameters</source>
-        <translation type="obsolete">Fout bij het bepalen van de lineaire transformatie parameters</translation>
+        <translation>Fout bij het bepalen van de lineaire transformatie parameters</translation>
     </message>
     <message>
         <source>World file exists</source>
@@ -29235,7 +27391,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Failed to compute GCP transform: Transform is not solvable</source>
-        <translation type="obsolete">Fout bij de berekening van de GCP-transformatie: Transformatie is niet oplosbaar</translation>
+        <translation>Fout bij de berekening van de GCP-transformatie: Transformatie is niet oplosbaar</translation>
     </message>
     <message>
         <source>Error</source>
@@ -29243,7 +27399,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not write to %1</source>
-        <translation type="obsolete">Kan niet schrijven naar %1</translation>
+        <translation>Kan niet schrijven naar %1</translation>
     </message>
     <message>
         <source>map units</source>
@@ -29311,7 +27467,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Copy in clipboard</source>
-        <translation type="obsolete">Kopiëren naar klembord</translation>
+        <translation>Kopiëren naar klembord</translation>
     </message>
     <message>
         <source>%1</source>
@@ -29331,7 +27487,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>%1 requires at least %2 GCPs. Please define more</source>
-        <translation type="obsolete">%1 heeft minstens %2 GCP&apos;s nodig. Definieer er meer</translation>
+        <translation>%1 heeft minstens %2 GCP&apos;s nodig. Definieer er meer</translation>
     </message>
     <message>
         <source>Linear</source>
@@ -29365,138 +27521,6 @@ p, li { white-space: pre-wrap; }
         <source>Not set</source>
         <translation>Niet bepaald</translation>
     </message>
-    <message>
-        <source>Reset Georeferencer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Reset georeferencer and clear all GCP points?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Georeference Successful</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Raster was successfully georeferenced.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invalid Transform</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>GDAL scripting is not supported for %1 transformation.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invalid GCP file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>GCP file could not be read.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>GCPs loaded</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>GCP file successfully loaded.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No GCP Points</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No GCP points are available to save.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Raster Properties</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Please load raster to be georeferenced.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Write Error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not write to GCP points file %1.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Transform Failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Failed to calculate linear transform parameters.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Failed to compute GCP transform: Transform is not solvable.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not write to %1.</source>
-        <translation type="unfinished">Kan niet schrijven naar %1.</translation>
-    </message>
-    <message>
-        <source>ID</source>
-        <translation type="unfinished">ID</translation>
-    </message>
-    <message>
-        <source>Enabled</source>
-        <translation type="unfinished">Ingeschakeld</translation>
-    </message>
-    <message>
-        <source>Pixel X</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Pixel Y</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Map X</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Map Y</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Res X (%1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Res Y (%1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Res Total (%1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Copy to Clipboard</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No Raster Loaded</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Not Enough GCPs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>%1 transformation requires at least %2 GCPs. Please define more.</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsGeorefPluginGuiBase</name>
@@ -29526,7 +27550,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>toolBar</source>
-        <translation type="obsolete">Werkbalk</translation>
+        <translation>Werkbalk</translation>
     </message>
     <message>
         <source>Open raster</source>
@@ -29630,7 +27654,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Configure Georeferencer</source>
-        <translation type="obsolete">Georeferencer configureren</translation>
+        <translation>Georeferencer configureren</translation>
     </message>
     <message>
         <source>Ctrl+P</source>
@@ -29638,7 +27662,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Raster properties</source>
-        <translation type="obsolete">Raster eigenschappen</translation>
+        <translation>Raster eigenschappen</translation>
     </message>
     <message>
         <source>Move GCP point</source>
@@ -29654,79 +27678,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Local histogram stretch</source>
-        <translation type="obsolete">lokale histogram strekking</translation>
+        <translation>lokale histogram strekking</translation>
     </message>
     <message>
         <source>Full histogram stretch</source>
-        <translation type="obsolete">Volledige histogram strekking</translation>
-    </message>
-    <message>
-        <source>Histogram</source>
-        <translation type="unfinished">Histogram</translation>
-    </message>
-    <message>
-        <source>Open Raster...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Transformation Settings...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add Point</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Delete Point</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Close Georeferencer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Close georeferencer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Start Georeferencing</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Generate GDAL Script</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save GCP Points as...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Load GCP Points...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Configure Georeferencer...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Raster Properties...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Move GCP Point</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Local Histogram Stretch</source>
-        <translation type="unfinished">Lokaal Histogram &apos;Strech&apos;</translation>
-    </message>
-    <message>
-        <source>Full Histogram Stretch</source>
-        <translation type="unfinished">Volledige uitrekking histogram</translation>
-    </message>
-    <message>
-        <source>Reset Georeferencer</source>
-        <translation type="unfinished"></translation>
+        <translation>Volledige histogram strekking</translation>
     </message>
 </context>
 <context>
@@ -29936,13 +27892,6 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>QgsGlowWidget</name>
-    <message>
-        <source>Select glow color</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>QgsGml</name>
     <message>
         <source>Loading GML data
@@ -29982,11 +27931,11 @@ p, li { white-space: pre-wrap; }
     <name>QgsGradientFillSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Millimeter</translation>
+        <translation>Millimeter</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Kaarteenheid</translation>
+        <translation>Kaarteenheid</translation>
     </message>
     <message>
         <source>Select gradient color</source>
@@ -29995,17 +27944,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Transparent</source>
         <translation>Transparant</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGraduatedHistogramWidget</name>
-    <message>
-        <source>Ranges are overlapping and can&apos;t be edited by the histogram</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ranges have gaps and can&apos;t be edited by the histogram</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -30160,26 +28098,6 @@ Press cancel to abort breaks calculation or OK to continue.</source>
         <source>Rows will be reordered before linking boundaries. Continue?</source>
         <translation>Klassen worden opnieuw gesorteerd voordat ze worden gekoppeld. Doorgaan?</translation>
     </message>
-    <message>
-        <source>Histogram</source>
-        <translation type="unfinished">Histogram</translation>
-    </message>
-    <message>
-        <source>Method</source>
-        <translation type="unfinished">Methode</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Choose between color and size graduation. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;If you want to combine both, use a data-defined size for the symbol and graduate by color.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Size from </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>to</source>
-        <translation type="unfinished">tot</translation>
-    </message>
 </context>
 <context>
     <name>QgsGrassAttributes</name>
@@ -30255,83 +28173,83 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     <name>QgsGrassBrowser</name>
     <message>
         <source>Tools</source>
-        <translation type="obsolete">Hulpmiddelen</translation>
+        <translation>Hulpmiddelen</translation>
     </message>
     <message>
         <source>Add selected map to canvas</source>
-        <translation type="obsolete">Geselecteerde kaart aan kaartvenster toevoegen</translation>
+        <translation>Geselecteerde kaart aan kaartvenster toevoegen</translation>
     </message>
     <message>
         <source>Copy selected map</source>
-        <translation type="obsolete">Geselecteerde kaart kopiëren </translation>
+        <translation>Geselecteerde kaart kopiëren </translation>
     </message>
     <message>
         <source>Rename selected map</source>
-        <translation type="obsolete">Geselecteerde kaart hernoemen </translation>
+        <translation>Geselecteerde kaart hernoemen </translation>
     </message>
     <message>
         <source>Delete selected map</source>
-        <translation type="obsolete">Geselecteerde kaart verwijderen </translation>
+        <translation>Geselecteerde kaart verwijderen </translation>
     </message>
     <message>
         <source>Set current region to selected map</source>
-        <translation type="obsolete">Huidige gebied toepassen op geselecteerde kaart</translation>
+        <translation>Huidige gebied toepassen op geselecteerde kaart</translation>
     </message>
     <message>
         <source>Refresh</source>
-        <translation type="obsolete">Bijwerken</translation>
+        <translation>Bijwerken</translation>
     </message>
     <message>
         <source>New name</source>
-        <translation type="obsolete">Nieuwe naam</translation>
+        <translation>Nieuwe naam</translation>
     </message>
     <message>
         <source>New name for layer &quot;%1&quot;</source>
-        <translation type="obsolete">Nieuwe naam voor laag &quot;%1&quot;</translation>
+        <translation>Nieuwe naam voor laag &quot;%1&quot;</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="obsolete">Waarschuwing</translation>
+        <translation>Waarschuwing</translation>
     </message>
     <message>
         <source>Cannot copy map %1@%2</source>
-        <translation type="obsolete">Kan kaart niet kopiëren %1@%2</translation>
+        <translation>Kan kaart niet kopiëren %1@%2</translation>
     </message>
     <message>
         <source>&lt;br&gt;command: %1 %2&lt;br&gt;%3&lt;br&gt;%4</source>
-        <translation type="obsolete">&lt;br&gt;opdracht:  %1 %2&lt;br&gt;%3&lt;br&gt;%4</translation>
+        <translation>&lt;br&gt;opdracht:  %1 %2&lt;br&gt;%3&lt;br&gt;%4</translation>
     </message>
     <message>
         <source>Cannot rename map %1</source>
-        <translation type="obsolete">Kan kaart niet hernoemen %1</translation>
+        <translation>Kan kaart niet hernoemen %1</translation>
     </message>
     <message>
         <source>Information</source>
-        <translation type="obsolete">Informatie</translation>
+        <translation>Informatie</translation>
     </message>
     <message>
         <source>Remove the selected layer(s) from canvas before continue.</source>
-        <translation type="obsolete">Alvorens verder te gaan, verwijder de geselecteerde laag/lagen van het kaartvenster.</translation>
+        <translation>Alvorens verder te gaan, verwijder de geselecteerde laag/lagen van het kaartvenster.</translation>
     </message>
     <message>
         <source>Question</source>
-        <translation type="obsolete">Vraag</translation>
+        <translation>Vraag</translation>
     </message>
     <message numerus="yes">
         <source>Are you sure you want to delete %n selected layer(s)?</source>
         <comment>number of layers to delete</comment>
-        <translation type="obsolete">
+        <translation>
             <numerusform>Weet u zeker dat u %n geselecteerde laag wilt verwijderen?</numerusform>
             <numerusform>Weet u zeker dat u de %n geselecteerde lagen wilt verwijderen?</numerusform>
         </translation>
     </message>
     <message>
         <source>Cannot delete map %1</source>
-        <translation type="obsolete">Kan kaart %1 niet verwijderen </translation>
+        <translation>Kan kaart %1 niet verwijderen </translation>
     </message>
     <message>
         <source>Cannot write new region</source>
-        <translation type="obsolete">Kan nieuwe regio niet opslaan</translation>
+        <translation>Kan nieuwe regio niet opslaan</translation>
     </message>
 </context>
 <context>
@@ -30731,20 +28649,6 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     </message>
 </context>
 <context>
-    <name>QgsGrassImportItem</name>
-    <message>
-        <source>Cancel</source>
-        <translation type="unfinished">Annuleren</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGrassItemActions</name>
-    <message>
-        <source>GRASS Options</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>QgsGrassMapcalc</name>
     <message>
         <source>Mapcalc tools</source>
@@ -31063,67 +28967,6 @@ op regel %2 kolom %3</translation>
     <message>
         <source>Output</source>
         <translation>Output</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGrassMapsetItem</name>
-    <message>
-        <source>topology missing</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>topology version not supported</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>topology version 6</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>topology version 7</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>empty</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>%1 layer type not supported</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot create provider %1 : %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Provider is not valid  %1 : %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot get default location region.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot delete %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Import to GRASS mapset</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Failed to import some layers!
-
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Import to GRASS mapset failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Failed to import %1 to %2: %3</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -31661,7 +29504,7 @@ op regel %2 kolom %3</translation>
     </message>
     <message>
         <source>Cannot activate grass</source>
-        <translation type="obsolete">Kan GRASS niet activeren</translation>
+        <translation>Kan GRASS niet activeren</translation>
     </message>
 </context>
 <context>
@@ -31840,68 +29683,26 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>QgsGrassObjectItem</name>
-    <message>
-        <source>Rename</source>
-        <translation type="unfinished">Hernoem</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation type="unfinished">Verwijderen</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGrassOptionsBase</name>
-    <message>
-        <source>GRASS Options</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Browser</source>
-        <translation type="unfinished">Browser</translation>
-    </message>
-    <message>
-        <source>Import</source>
-        <translation type="unfinished">Importeren</translation>
-    </message>
-    <message>
-        <source>CRS transformation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Approximate CRS transformation is fast but it may be inaccurate.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Create a link to the external data for GDAL data sources with the same CRS as target mapset by r.external, instead of making copy of data.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Create link to external data if possible</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>QgsGrassPlugin</name>
     <message>
         <source>GrassVector</source>
-        <translation type="obsolete">GRASS-Vector</translation>
+        <translation>GRASS-Vector</translation>
     </message>
     <message>
         <source>0.1</source>
-        <translation type="obsolete">0.1</translation>
+        <translation>0.1</translation>
     </message>
     <message>
         <source>GRASS layer</source>
-        <translation type="obsolete">GRASS-laag</translation>
+        <translation>GRASS-laag</translation>
     </message>
     <message>
         <source>Plugins</source>
-        <translation type="obsolete">Plugins</translation>
+        <translation>Plugins</translation>
     </message>
     <message>
         <source>Add GRASS raster layer</source>
-        <translation type="obsolete">GRASS-rasterlaag toevoegen</translation>
+        <translation>GRASS-rasterlaag toevoegen</translation>
     </message>
     <message>
         <source>Open GRASS tools</source>
@@ -31933,15 +29734,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Add GRASS Vector Layer</source>
-        <translation type="obsolete">GRASS-Vectorlaag toevoegen</translation>
+        <translation>GRASS-Vectorlaag toevoegen</translation>
     </message>
     <message>
         <source>Adds a GRASS vector layer to the map canvas</source>
-        <translation type="obsolete">Voegt een GRASS-vectorlaag toe aan de kaart</translation>
+        <translation>Voegt een GRASS-vectorlaag toe aan de kaart</translation>
     </message>
     <message>
         <source>Adds a GRASS raster layer to the map canvas</source>
-        <translation type="obsolete">Voegt een GRASS-rasterlaag toe aan de kaart</translation>
+        <translation>Voegt een GRASS-rasterlaag toe aan de kaart</translation>
     </message>
     <message>
         <source>Open GRASS Tools</source>
@@ -31977,16 +29778,16 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Cannot open vector %1 in mapset %2 on level 2 (topology not available, try to rebuild topology using v.build module).</source>
-        <translation type="obsolete">Vector %1 in mapset %2 kan niet worden geopend in level 2 (topologie niet beschikaar, probeer de topologie opnieuw aan te maken met de v.build-module).</translation>
+        <translation>Vector %1 in mapset %2 kan niet worden geopend in level 2 (topologie niet beschikaar, probeer de topologie opnieuw aan te maken met de v.build-module).</translation>
     </message>
     <message>
         <source>Cannot open vector %1 in mapset %2</source>
-        <translation type="obsolete">Vector %1 in mapset %2 kan niet worden geopend</translation>
+        <translation>Vector %1 in mapset %2 kan niet worden geopend</translation>
     </message>
     <message>
         <source>Cannot open GRASS vector:
  %1</source>
-        <translation type="obsolete">Kan deze GRASS-vector niet openen:
+        <translation>Kan deze GRASS-vector niet openen:
 %1</translation>
     </message>
     <message>
@@ -32043,17 +29844,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>GRASS vector map %1 does not have topology. Build topology?</source>
         <translation>GRASS vector map %1 heeft geen topologie. Topologie aanmaken?</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGrassRasterImport</name>
-    <message>
-        <source>Data type %1 not supported</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot convert block (%1) to data type %2</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -32288,7 +30078,7 @@ of verander de hier getoonde waarden</translation>
     </message>
     <message>
         <source>Browser</source>
-        <translation type="obsolete">Browser</translation>
+        <translation>Browser</translation>
     </message>
     <message>
         <source>Direct Modules Tree</source>
@@ -32360,17 +30150,6 @@ in regel %2 kolom %3</translation>
     <message>
         <source>Direct Modules List</source>
         <translation>Direct Moduleslijst</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGrassVectorItem</name>
-    <message>
-        <source>Rename</source>
-        <translation type="unfinished">Hernoem</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation type="unfinished">Verwijderen</translation>
     </message>
 </context>
 <context>
@@ -32501,15 +30280,15 @@ in regel %2 kolom %3</translation>
     </message>
     <message>
         <source>Pixels</source>
-        <translation type="obsolete">Pixels</translation>
+        <translation>Pixels</translation>
     </message>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Millimeter</translation>
+        <translation>Millimeter</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Kaarteenheid</translation>
+        <translation>Kaarteenheid</translation>
     </message>
 </context>
 <context>
@@ -32571,29 +30350,6 @@ in regel %2 kolom %3</translation>
     <message>
         <source>about:blank</source>
         <translation>about:blank</translation>
-    </message>
-</context>
-<context>
-    <name>QgsHistogramWidgetBase</name>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished">Formulier</translation>
-    </message>
-    <message>
-        <source>Histogram bins</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show mean value</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show standard deviation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Load values</source>
-        <translation type="unfinished">Waarden laden</translation>
     </message>
 </context>
 <context>
@@ -32703,11 +30459,11 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
     </message>
     <message>
         <source>Expand tree</source>
-        <translation type="obsolete">Boom uitklappen.</translation>
+        <translation>Boom uitklappen.</translation>
     </message>
     <message>
         <source>Collapse tree</source>
-        <translation type="obsolete">Boom inklappen.</translation>
+        <translation>Boom inklappen.</translation>
     </message>
     <message>
         <source>Layer</source>
@@ -32727,7 +30483,7 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
     </message>
     <message>
         <source>...</source>
-        <translation type="obsolete">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Clear Results</source>
@@ -32768,30 +30524,6 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
     <message>
         <source>Print selected HTML response.</source>
         <translation>Geselecteerde HTML antwoord afdrukken.</translation>
-    </message>
-    <message>
-        <source>Expand Tree</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Collapse Tree</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Expand New Results</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Copy Feature</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Print Response</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -33128,41 +30860,6 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
     </message>
 </context>
 <context>
-    <name>QgsJoinDialogBase</name>
-    <message>
-        <source>Add vector join</source>
-        <translation type="unfinished">Vectorkoppeling toevoegen</translation>
-    </message>
-    <message>
-        <source>Join layer</source>
-        <translation type="unfinished">Koppellaag</translation>
-    </message>
-    <message>
-        <source>Join field</source>
-        <translation type="unfinished">Koppelveld</translation>
-    </message>
-    <message>
-        <source>Target field</source>
-        <translation type="unfinished">Doelveld</translation>
-    </message>
-    <message>
-        <source>Choose which fields are joined</source>
-        <translation type="unfinished">Kies welke velden zijn samengevoegd</translation>
-    </message>
-    <message>
-        <source>Custom field name prefix</source>
-        <translation type="unfinished">Aangepast voorvoegsel veldnaam</translation>
-    </message>
-    <message>
-        <source>Cache join layer in virtual memory</source>
-        <translation type="unfinished">Koppellaag in virtueel geheugen &apos;cachen&apos;</translation>
-    </message>
-    <message>
-        <source>Create attribute index on join field</source>
-        <translation type="unfinished">Attribuutindex aanmaken op het koppelveld</translation>
-    </message>
-</context>
-<context>
     <name>QgsLUDialogBase</name>
     <message>
         <source>Enter class bounds</source>
@@ -33421,10 +31118,6 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
         <source>Buffer color</source>
         <translation>Buffer kleur</translation>
     </message>
-    <message>
-        <source>Layer default (%1)</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsLabelPropertyDialogBase</name>
@@ -33557,15 +31250,15 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
     <name>QgsLabelingGui</name>
     <message>
         <source>points</source>
-        <translation type="obsolete">punten</translation>
+        <translation>punten</translation>
     </message>
     <message>
         <source>map units</source>
-        <translation type="obsolete">kaarteenheden</translation>
+        <translation>kaarteenheden</translation>
     </message>
     <message>
         <source>mm</source>
-        <translation type="obsolete">mm</translation>
+        <translation>mm</translation>
     </message>
     <message>
         <source>% of length</source>
@@ -33690,22 +31383,6 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
     <message>
         <source>File not found</source>
         <translation>Bestand niet gevonden</translation>
-    </message>
-    <message>
-        <source>Points</source>
-        <translation type="unfinished">Punten</translation>
-    </message>
-    <message>
-        <source>Map unit</source>
-        <translation type="unfinished">Kaarteenheid</translation>
-    </message>
-    <message>
-        <source>Millimeter</source>
-        <translation type="unfinished">Millimeter</translation>
-    </message>
-    <message>
-        <source>Follow label placement</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -34412,11 +32089,11 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
     <name>QgsLinePatternFillSymbolLayerWidget</name>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Millimeter</translation>
+        <translation>Millimeter</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Kaarteenheid</translation>
+        <translation>Kaarteenheid</translation>
     </message>
 </context>
 <context>
@@ -34583,31 +32260,19 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
     </message>
     <message>
         <source>Enter X and Y coordinates (DMS (dd mm ss.ss), DD (dd.dd) or projected coordinates (mmmm.mm)) which correspond with the selected point on the image. Alternatively, click the button with icon of a pencil and then click a corresponding point on map canvas of QGIS to fill in coordinates of that point.</source>
-        <translation type="obsolete">Voer de X en Y coördinaten in (DMS (dd mm ss.ss), DD (dd.dd) of geprojecteerde coördinaten (mmmm.mm)) die overeenkomen met het geselecteerde punt op de afbeelding. Als alternatief, klik de knop met het potloodje en klik dan op het corresponderende punt in het kaartvenstern van QGIS om dan de coördinaten van dat punt in te voeren.</translation>
+        <translation>Voer de X en Y coördinaten in (DMS (dd mm ss.ss), DD (dd.dd) of geprojecteerde coördinaten (mmmm.mm)) die overeenkomen met het geselecteerde punt op de afbeelding. Als alternatief, klik de knop met het potloodje en klik dan op het corresponderende punt in het kaartvenstern van QGIS om dan de coördinaten van dat punt in te voeren.</translation>
     </message>
     <message>
         <source>X / East:</source>
-        <translation type="obsolete">X / Oost:</translation>
+        <translation>X / Oost:</translation>
     </message>
     <message>
         <source>Y / North:</source>
-        <translation type="obsolete">Y / Noord:</translation>
+        <translation>Y / Noord:</translation>
     </message>
     <message>
         <source>Snap to background layers</source>
         <translation>Relateer (&apos;snap&apos;) naar achtergrondlagen</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter X and Y coordinates (DMS (&lt;span style=&quot; font-style:italic;&quot;&gt;dd mm ss.ss&lt;/span&gt;), DD (&lt;span style=&quot; font-style:italic;&quot;&gt;dd.dd&lt;/span&gt;) or projected coordinates (&lt;span style=&quot; font-style:italic;&quot;&gt;mmmm.mm&lt;/span&gt;)) which correspond with the selected point on the image. Alternatively, click the button with icon of a pencil and then click a corresponding point on map canvas of QGIS to fill in coordinates of that point.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Y / North</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>X / East</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -35387,11 +33052,11 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
     <name>QgsMarkerLineSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Millimeter</translation>
+        <translation>Millimeter</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Kaarteenheid</translation>
+        <translation>Kaarteenheid</translation>
     </message>
     <message>
         <source>string </source>
@@ -35473,19 +33138,19 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numeru
     </message>
     <message>
         <source>Meters</source>
-        <translation type="obsolete">Meters</translation>
+        <translation>Meters</translation>
     </message>
     <message>
         <source>Feet</source>
-        <translation type="obsolete">Voet</translation>
+        <translation>Voet</translation>
     </message>
     <message>
         <source>Degrees</source>
-        <translation type="obsolete">Graden</translation>
+        <translation>Graden</translation>
     </message>
     <message>
         <source>Nautical Miles</source>
-        <translation type="obsolete">Zeemijlen</translation>
+        <translation>Zeemijlen</translation>
     </message>
 </context>
 <context>
@@ -36330,44 +33995,6 @@ Opmerking: het wachtwoord invoeren is optioneel. Er wordt interactief naar gevra
     </message>
 </context>
 <context>
-    <name>QgsNewNameDialog</name>
-    <message>
-        <source>New name</source>
-        <translation type="unfinished">Nieuwe naam</translation>
-    </message>
-    <message>
-        <source>name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>base name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Enter new %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Enter new %1 for %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Full names</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message numerus="yes">
-        <source>Name(s) %1 exists</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
-    <message>
-        <source>Overwrite</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>QgsNewOgrConnection</name>
     <message>
         <source>Test connection</source>
@@ -36914,18 +34541,6 @@ Uitgebreide foutinformatie:
 %1</source>
         <translation>Exporteren OSM data mislukt:
 %1</translation>
-    </message>
-    <message>
-        <source>Select All</source>
-        <translation type="unfinished">Alles selecteren</translation>
-    </message>
-    <message>
-        <source>Unselect All</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Not null</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -38140,7 +35755,7 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     </message>
     <message>
         <source>Icon theme</source>
-        <translation type="obsolete">Icoon Thema</translation>
+        <translation>Icoon Thema</translation>
     </message>
     <message>
         <source>Icon size</source>
@@ -38188,7 +35803,7 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     </message>
     <message>
         <source>Bold group box titles</source>
-        <translation type="obsolete">Groepbox-titels vet weergeven</translation>
+        <translation>Groepbox-titels vet weergeven</translation>
     </message>
     <message>
         <source>QGIS-styled group boxes</source>
@@ -38588,7 +36203,7 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
     </message>
     <message>
         <source>Custom side bar style</source>
-        <translation type="obsolete">Aangepaste stijl zijbalk</translation>
+        <translation>Aangepaste stijl zijbalk</translation>
     </message>
     <message>
         <source>Add Oracle layers with double click and select in extended mode</source>
@@ -39106,10 +36721,6 @@ Altijd netwerk: altijd ophalen uit het netwerk, en niet checken of er misschien 
         <source>Default uses system&apos;s proxy</source>
         <translation>Standaard gebruikt proxy van systeem</translation>
     </message>
-    <message>
-        <source>Execute expressions on postgres server-side if possible (Experimental)</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsOptionsDialogBase</name>
@@ -39309,13 +36920,7 @@ fout:%2</translation>
         <source>Connection failed - Check settings and try again.
 
 </source>
-        <translation type="obsolete">Verbinding mislukt - Controleer uw instellingen en probeer het opnieuw.</translation>
-    </message>
-    <message>
-        <source>Connection failed - consult message log for details.
-
-</source>
-        <translation type="unfinished"></translation>
+        <translation>Verbinding mislukt - Controleer uw instellingen en probeer het opnieuw.</translation>
     </message>
 </context>
 <context>
@@ -39825,14 +37430,6 @@ Error: %2</source>
         <translation>Oracle-fout: %1
 Fout: %2</translation>
     </message>
-    <message>
-        <source>Could not prepare get feature id statement</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not retrieve feature id %1</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsOracleRootItem</name>
@@ -40090,15 +37687,11 @@ Fout: %2</translation>
     <name>QgsPGLayerItem</name>
     <message>
         <source>Delete layer</source>
-        <translation type="obsolete">Laag verwijderen</translation>
+        <translation>Laag verwijderen</translation>
     </message>
     <message>
         <source>Layer deleted successfully.</source>
         <translation>Laag succesvol verwijderd.</translation>
-    </message>
-    <message>
-        <source>Delete Layer</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -40277,13 +37870,7 @@ Fout: %2</translation>
         <source>Connection failed - Check settings and try again.
 
 </source>
-        <translation type="obsolete">Verbinding mislukt - Controleer uw instellingen en probeer het opnieuw.</translation>
-    </message>
-    <message>
-        <source>Connection failed - consult message log for details.
-
-</source>
-        <translation type="unfinished"></translation>
+        <translation>Verbinding mislukt - Controleer uw instellingen en probeer het opnieuw.</translation>
     </message>
 </context>
 <context>
@@ -41482,11 +39069,11 @@ p, li { white-space: pre-wrap; }
     <name>QgsPointPatternFillSymbolLayerWidget</name>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Millimeter</translation>
+        <translation>Millimeter</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Kaarteenheid</translation>
+        <translation>Kaarteenheid</translation>
     </message>
 </context>
 <context>
@@ -41607,35 +39194,35 @@ Resultaat: %3 (%4)</translation>
     </message>
     <message>
         <source>Point</source>
-        <translation type="obsolete">Punt</translation>
+        <translation>Punt</translation>
     </message>
     <message>
         <source>Multipoint</source>
-        <translation type="obsolete">Multipunt</translation>
+        <translation>Multipunt</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="obsolete">Lijn</translation>
+        <translation>Lijn</translation>
     </message>
     <message>
         <source>Multiline</source>
-        <translation type="obsolete">Multilijn</translation>
+        <translation>Multilijn</translation>
     </message>
     <message>
         <source>Polygon</source>
-        <translation type="obsolete">Polygoon</translation>
+        <translation>Polygoon</translation>
     </message>
     <message>
         <source>Multipolygon</source>
-        <translation type="obsolete">Multipolygoon</translation>
+        <translation>Multipolygoon</translation>
     </message>
     <message>
         <source>No Geometry</source>
-        <translation type="obsolete">Geen geometrie</translation>
+        <translation>Geen geometrie</translation>
     </message>
     <message>
         <source>Unknown Geometry</source>
-        <translation type="obsolete">Onbekende geometrie</translation>
+        <translation>Onbekende geometrie</translation>
     </message>
     <message>
         <source>None</source>
@@ -41660,14 +39247,6 @@ Resultaat: %3 (%4)</translation>
     <message>
         <source>PQgetCancel failed</source>
         <translation>PQgetCancel mislukt</translation>
-    </message>
-    <message>
-        <source>Unsupported spatial column type %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>PcPatch</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -41892,10 +39471,6 @@ PostGIS %2</source>
 %1
 PostGIS %2</translation>
     </message>
-    <message>
-        <source>Primary key is ctid - changing of existing features disabled (%1; %2)</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsProject</name>
@@ -41957,7 +39532,7 @@ Kies &apos;negeren&apos; om door te gaan zonder deze lagen. Kies &apos;annuleren
     <name>QgsProjectColorScheme</name>
     <message>
         <source>Project colors</source>
-        <translation type="obsolete">Projectkleuren</translation>
+        <translation>Projectkleuren</translation>
     </message>
 </context>
 <context>
@@ -43097,22 +40672,6 @@ p, li { white-space: pre-wrap; }
         <source>Raster calculator expression</source>
         <translation>Rasterberekening expressie</translation>
     </message>
-    <message>
-        <source>Output CRS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>!=</source>
-        <translation type="unfinished">!=</translation>
-    </message>
-    <message>
-        <source>log10</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>ln</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsRasterDataProvider</name>
@@ -43141,15 +40700,15 @@ p, li { white-space: pre-wrap; }
     <name>QgsRasterFillSymbolLayerWidget</name>
     <message>
         <source>Pixels</source>
-        <translation type="obsolete">Pixels</translation>
+        <translation>Pixels</translation>
     </message>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Millimeter</translation>
+        <translation>Millimeter</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Kaarteenheid</translation>
+        <translation>Kaarteenheid</translation>
     </message>
     <message>
         <source>Select image file</source>
@@ -44280,7 +41839,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Create GDAL Virtual Format composed of multiple 
 datasets with maximum width and height specified below.</source>
-        <translation type="obsolete">GDAL Virtueel Format aanmaken, opgemaakt uit meerdere 
+        <translation>GDAL Virtueel Format aanmaken, opgemaakt uit meerdere 
 datasets met een maximale hoogte en breedte, hieronder gegeven.</translation>
     </message>
     <message>
@@ -44399,15 +41958,6 @@ datasets met een maximale hoogte en breedte, hieronder gegeven.</translation>
         <source>Clear all</source>
         <translation>Alles deselecteren</translation>
     </message>
-    <message>
-        <source>Create GDAL Virtual Format composed of multiple
-datasets with maximum width and height specified below.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add saved file to map</source>
-        <translation type="unfinished">Voeg opgeslagen bestand toe aan kaart</translation>
-    </message>
 </context>
 <context>
     <name>QgsRasterMinMaxWidget</name>
@@ -44481,17 +42031,6 @@ standaarddeviatie x</translation>
     <message>
         <source>Load</source>
         <translation>Laden</translation>
-    </message>
-</context>
-<context>
-    <name>QgsRasterProjector</name>
-    <message>
-        <source>Approximate</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Exact</source>
-        <translation type="unfinished">Exact</translation>
     </message>
 </context>
 <context>
@@ -44802,7 +42341,7 @@ standaarddeviatie x</translation>
     <name>QgsRecentColorScheme</name>
     <message>
         <source>Recent colors</source>
-        <translation type="obsolete">Recente kleuren</translation>
+        <translation>Recente kleuren</translation>
     </message>
 </context>
 <context>
@@ -44838,22 +42377,6 @@ standaarddeviatie x</translation>
     <message>
         <source>Order by value</source>
         <translation>Sorteer op waarde</translation>
-    </message>
-    <message>
-        <source>Filters</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="unfinished">...</translation>
-    </message>
-    <message>
-        <source>When activated, the filters will restrict the choices of fields to options that are </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Chain filters</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -45026,11 +42549,7 @@ standaarddeviatie x</translation>
     </message>
     <message>
         <source>Identify a feature of %1 to be associated. Press &lt;ESC&gt; to cancel.</source>
-        <translation type="obsolete">Identificeer een object van %1 om te worden geassocieerd. Druk op &lt;ESC&gt; om te annuleren.</translation>
-    </message>
-    <message>
-        <source>Identify a feature of %1 to be associated. Press &amp;lt;ESC&amp;gt; to cancel.</source>
-        <translation type="unfinished"></translation>
+        <translation>Identificeer een object van %1 om te worden geassocieerd. Druk op &lt;ESC&gt; om te annuleren.</translation>
     </message>
 </context>
 <context>
@@ -45206,23 +42725,19 @@ standaarddeviatie x</translation>
     </message>
     <message>
         <source>Width</source>
-        <translation type="obsolete">Breedte</translation>
+        <translation>Breedte</translation>
     </message>
     <message>
         <source>Change symbol width</source>
-        <translation type="obsolete">Wijzig symboolbreedte</translation>
+        <translation>Wijzig symboolbreedte</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation type="obsolete">Formaat</translation>
+        <translation>Formaat</translation>
     </message>
     <message>
         <source>Change symbol size</source>
-        <translation type="obsolete">Wijzig symboolformaat</translation>
-    </message>
-    <message>
-        <source>Change angle</source>
-        <translation type="unfinished"></translation>
+        <translation>Wijzig symboolformaat</translation>
     </message>
 </context>
 <context>
@@ -45431,15 +42946,11 @@ standaarddeviatie x</translation>
     <name>QgsSLLayerItem</name>
     <message>
         <source>Delete layer</source>
-        <translation type="obsolete">Laag verwijderen</translation>
+        <translation>Laag verwijderen</translation>
     </message>
     <message>
         <source>Layer deleted successfully.</source>
         <translation>Laag succesvol verwijderd.</translation>
-    </message>
-    <message>
-        <source>Delete Layer</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -45483,11 +42994,11 @@ standaarddeviatie x</translation>
     </message>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Millimeter</translation>
+        <translation>Millimeter</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Kaarteenheid</translation>
+        <translation>Kaarteenheid</translation>
     </message>
     <message>
         <source>Select fill color</source>
@@ -45603,13 +43114,6 @@ standaarddeviatie x</translation>
     <message>
         <source>Scale visibility </source>
         <translation>Schaal zichtbaarheid</translation>
-    </message>
-</context>
-<context>
-    <name>QgsScaleWidget</name>
-    <message>
-        <source>Set to current canvas scale</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -45770,13 +43274,6 @@ standaarddeviatie x</translation>
     </message>
 </context>
 <context>
-    <name>QgsShadowEffectWidget</name>
-    <message>
-        <source>Select shadow color</source>
-        <translation type="unfinished">Schaduwkleur selecteren </translation>
-    </message>
-</context>
-<context>
     <name>QgsShapeFile</name>
     <message>
         <source>Scanning </source>
@@ -45816,11 +43313,11 @@ De foutmelding was:
     <name>QgsShapeburstFillSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Millimeter</translation>
+        <translation>Millimeter</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Kaarteenheid</translation>
+        <translation>Kaarteenheid</translation>
     </message>
     <message>
         <source>Select gradient color</source>
@@ -45839,11 +43336,11 @@ De foutmelding was:
     <name>QgsSimpleFillSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Millimeter</translation>
+        <translation>Millimeter</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Kaarteenheid</translation>
+        <translation>Kaarteenheid</translation>
     </message>
     <message>
         <source>Select fill color</source>
@@ -45866,11 +43363,11 @@ De foutmelding was:
     <name>QgsSimpleLineSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Millimeter</translation>
+        <translation>Millimeter</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Kaarteenheid</translation>
+        <translation>Kaarteenheid</translation>
     </message>
     <message>
         <source>Select line color</source>
@@ -45881,11 +43378,11 @@ De foutmelding was:
     <name>QgsSimpleMarkerSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Millimeter</translation>
+        <translation>Millimeter</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Kaarteenheid</translation>
+        <translation>Kaarteenheid</translation>
     </message>
     <message>
         <source>Select fill color</source>
@@ -45906,10 +43403,6 @@ De foutmelding was:
     <message>
         <source>string </source>
         <translation>string</translation>
-    </message>
-    <message>
-        <source>Size Assistant...</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -46155,25 +43648,6 @@ verbetering</translation>
     <message>
         <source>Symbol levels...</source>
         <translation>Symboollagen...</translation>
-    </message>
-</context>
-<context>
-    <name>QgsSizeScaleWidget</name>
-    <message>
-        <source>Compute from layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Flannery</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Surface</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Radius</source>
-        <translation type="unfinished">Straal</translation>
     </message>
 </context>
 <context>
@@ -47389,40 +44863,6 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>QgsStatisticalSummaryDockWidget</name>
-    <message>
-        <source>Missing (null) values</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QgsStatisticalSummaryWidgetBase</name>
-    <message>
-        <source>Statistics</source>
-        <translation type="unfinished">Statistieken</translation>
-    </message>
-    <message>
-        <source>Statistic</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="unfinished">Waarde</translation>
-    </message>
-    <message>
-        <source>Selected features only</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Recalculate Statistics</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="unfinished">...</translation>
-    </message>
-</context>
-<context>
     <name>QgsStyleV2ExportImportDialog</name>
     <message>
         <source>Select all</source>
@@ -47871,7 +45311,7 @@ Er was een probleem met uw database met symbolen .</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation type="obsolete">Bewerken</translation>
+        <translation>Bewerken</translation>
     </message>
     <message>
         <source>Remove item</source>
@@ -47879,7 +45319,7 @@ Er was een probleem met uw database met symbolen .</translation>
     </message>
     <message>
         <source>Share</source>
-        <translation type="obsolete">Deel</translation>
+        <translation>Deel</translation>
     </message>
 </context>
 <context>
@@ -47989,11 +45429,11 @@ Er was een probleem met uw database met symbolen .</translation>
     <name>QgsSvgMarkerSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Millimeter</translation>
+        <translation>Millimeter</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Kaarteenheid</translation>
+        <translation>Kaarteenheid</translation>
     </message>
     <message>
         <source>Select fill color</source>
@@ -48010,10 +45450,6 @@ Er was een probleem met uw database met symbolen .</translation>
     <message>
         <source>SVG files</source>
         <translation>SVG-bestanden</translation>
-    </message>
-    <message>
-        <source>Size Assistant...</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -48141,11 +45577,11 @@ Er was een probleem met uw database met symbolen .</translation>
     <name>QgsSymbolsListWidget</name>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Millimeter</translation>
+        <translation>Millimeter</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Kaarteenheid</translation>
+        <translation>Kaarteenheid</translation>
     </message>
     <message>
         <source>Select color</source>
@@ -48174,14 +45610,6 @@ Er was een probleem met uw database met symbolen .</translation>
     <message>
         <source>Transparency %1%</source>
         <translation>Transparantie %1%</translation>
-    </message>
-    <message>
-        <source>Clip features to canvas extent</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Size Assistant...</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -48286,7 +45714,7 @@ Er was een probleem met uw database met symbolen .</translation>
     </message>
     <message>
         <source>Become an QGIS translator</source>
-        <translation type="obsolete">Wordt een QGIS-vertaler</translation>
+        <translation>Wordt een QGIS-vertaler</translation>
     </message>
     <message>
         <source>QGIS Mailing lists</source>
@@ -48437,10 +45865,6 @@ m elementen te verplaatsen. De linker (pijl naar rechts icoon) selecteert en ver
         <source>QGIS has Plugins!</source>
         <translation>QGIS heeft Plugins!</translation>
     </message>
-    <message>
-        <source>Become a QGIS translator</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsTipGui</name>
@@ -48519,11 +45943,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Transformation type:</source>
-        <translation type="obsolete">Transformatie type:</translation>
+        <translation>Transformatie type:</translation>
     </message>
     <message>
         <source>Resampling method:</source>
-        <translation type="obsolete">&apos;Resample&apos;-methode:</translation>
+        <translation>&apos;Resample&apos;-methode:</translation>
     </message>
     <message>
         <source>Nearest neighbour</source>
@@ -48547,11 +45971,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Compression:</source>
-        <translation type="obsolete">Compressie:</translation>
+        <translation>Compressie:</translation>
     </message>
     <message>
         <source>Output raster:</source>
-        <translation type="obsolete">Uitvoer rasterbestand:</translation>
+        <translation>Uitvoer rasterbestand:</translation>
     </message>
     <message>
         <source>...</source>
@@ -48559,15 +45983,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Target SRS:</source>
-        <translation type="obsolete">Doel SRS:</translation>
+        <translation>Doel SRS:</translation>
     </message>
     <message>
         <source>Generate pdf report:</source>
-        <translation type="obsolete">Pdf-rapportage maken:</translation>
+        <translation>Pdf-rapportage maken:</translation>
     </message>
     <message>
         <source>Set Target Resolution</source>
-        <translation type="obsolete">Doelresolutie Instellen</translation>
+        <translation>Doelresolutie Instellen</translation>
     </message>
     <message>
         <source>Horizontal</source>
@@ -48579,11 +46003,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Create world file</source>
-        <translation type="obsolete">&apos;World file&apos; aanmaken</translation>
+        <translation>&apos;World file&apos; aanmaken</translation>
     </message>
     <message>
         <source>Generate pdf map:</source>
-        <translation type="obsolete">Pdf-kaart maken:</translation>
+        <translation>Pdf-kaart maken:</translation>
     </message>
     <message>
         <source>Use 0 for transparency when needed</source>
@@ -48619,27 +46043,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Info</source>
-        <translation type="obsolete">Informatie</translation>
+        <translation>Informatie</translation>
     </message>
     <message>
         <source>Please set output name</source>
-        <translation type="obsolete">Geef naam voor uitvoer</translation>
+        <translation>Geef naam voor uitvoer</translation>
     </message>
     <message>
         <source>%1 requires at least %2 GCPs. Please define more</source>
-        <translation type="obsolete">%1 heeft minstens %2 GCP&apos;s nodig. Definieer er meer</translation>
+        <translation>%1 heeft minstens %2 GCP&apos;s nodig. Definieer er meer</translation>
     </message>
     <message>
         <source>Invalid output file name</source>
-        <translation type="obsolete">Bestandsnaam voor uitvoer niet geldig</translation>
+        <translation>Bestandsnaam voor uitvoer niet geldig</translation>
     </message>
     <message>
         <source>Save raster</source>
-        <translation type="obsolete">Rasterbestand opslaan</translation>
+        <translation>Rasterbestand opslaan</translation>
     </message>
     <message>
         <source>Select save PDF file</source>
-        <translation type="obsolete">Selecteer PDF-bestand opslaan</translation>
+        <translation>Selecteer PDF-bestand opslaan</translation>
     </message>
     <message>
         <source>PDF Format</source>
@@ -48649,74 +46073,6 @@ p, li { white-space: pre-wrap; }
         <source>_modified</source>
         <comment>Georeferencer:QgsOpenRasterDialog.cpp - used to modify a user given file name</comment>
         <translation>_aangepast</translation>
-    </message>
-    <message>
-        <source>Transformation parameters</source>
-        <translation type="unfinished">Transformatie instellingen</translation>
-    </message>
-    <message>
-        <source>Transformation type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Resampling method</source>
-        <translation type="unfinished">Hersampling methode</translation>
-    </message>
-    <message>
-        <source>Target SRS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Output settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Output raster</source>
-        <translation type="unfinished">Uitvoer raster</translation>
-    </message>
-    <message>
-        <source>Set target resolution</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Compression</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Create world file only (linear transforms)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Reports</source>
-        <translation type="unfinished">Rapporten</translation>
-    </message>
-    <message>
-        <source>Generate PDF map</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Generate PDF report</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Destination Raster</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invalid output file name.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Input raster can not be overwritten.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save Map File as</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save Report File as</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -48743,25 +46099,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Adjust scaling range</source>
         <translation>Aanpassen schaalbereik</translation>
-    </message>
-    <message>
-        <source>Millimeter</source>
-        <translation type="unfinished">Millimeter</translation>
-    </message>
-    <message>
-        <source>Pixels</source>
-        <translation type="unfinished">Pixels</translation>
-    </message>
-    <message>
-        <source>Map unit</source>
-        <translation type="unfinished">Kaarteenheid</translation>
-    </message>
-</context>
-<context>
-    <name>QgsUserInputDockWidget</name>
-    <message>
-        <source>User input</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -48860,10 +46197,6 @@ Foutmelding: %2</translation>
     <message>
         <source>...</source>
         <translation>...</translation>
-    </message>
-    <message>
-        <source>Use Completer</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -49168,10 +46501,6 @@ Foutmelding: %2</translation>
         <source>Comment</source>
         <translation>Opmerking</translation>
     </message>
-    <message>
-        <source>QGIS</source>
-        <translation type="unfinished">QGIS</translation>
-    </message>
 </context>
 <context>
     <name>QgsVectorLayerEditBuffer</name>
@@ -49452,10 +46781,6 @@ Foutmelding: %2</translation>
         <source>Restore Default</source>
         <translation>Standaard herstellen</translation>
     </message>
-    <message>
-        <source>all</source>
-        <translation type="unfinished">alles</translation>
-    </message>
 </context>
 <context>
     <name>QgsVectorLayerPropertiesBase</name>
@@ -49465,11 +46790,11 @@ Foutmelding: %2</translation>
     </message>
     <message>
         <source>A widget to define the scale visibility</source>
-        <translation type="obsolete">Een hulpmiddel om de schaalzichtbaarheid te zetten</translation>
+        <translation>Een hulpmiddel om de schaalzichtbaarheid te zetten</translation>
     </message>
     <message>
         <source>A widget to define the scale visibility.</source>
-        <translation type="obsolete">Een hulpmiddel om de schaalzichtbaarheid in te stellen</translation>
+        <translation>Een hulpmiddel om de schaalzichtbaarheid in te stellen</translation>
     </message>
     <message>
         <source>Memory cache</source>
@@ -49593,7 +46918,7 @@ Foutmelding: %2</translation>
     </message>
     <message>
         <source>Feature subset</source>
-        <translation type="obsolete">Deelverzameling objecten</translation>
+        <translation>Deelverzameling objecten</translation>
     </message>
     <message>
         <source>Simplify geometry</source>
@@ -49698,18 +47023,6 @@ Foutmelding: %2</translation>
     <message>
         <source>Diagrams</source>
         <translation>Diagrammen</translation>
-    </message>
-    <message>
-        <source>Provider feature filter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Prefix</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Joined fields</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -50097,10 +47410,6 @@ Foutmelding: %2</translation>
     <message>
         <source>Coordinate reference system</source>
         <translation>Ruimtelijk referentie systeem</translation>
-    </message>
-    <message>
-        <source>Only request features overlapping the current view extent</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -51564,53 +48873,6 @@ Omschrijving: %2</translation>
     </message>
 </context>
 <context>
-    <name>QgsZonalStatisticsDialog</name>
-    <message>
-        <source>Count</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sum</source>
-        <translation type="unfinished">Som</translation>
-    </message>
-    <message>
-        <source>Mean</source>
-        <translation type="unfinished">Gemiddelde</translation>
-    </message>
-    <message>
-        <source>Median</source>
-        <translation type="unfinished">Mediaan</translation>
-    </message>
-    <message>
-        <source>Standard deviation</source>
-        <translation type="unfinished">Standaard afwijking</translation>
-    </message>
-    <message>
-        <source>Minimum</source>
-        <translation type="unfinished">Minimum</translation>
-    </message>
-    <message>
-        <source>Maximum</source>
-        <translation type="unfinished">Maximum</translation>
-    </message>
-    <message>
-        <source>Range</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Minority</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Majority</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Variety</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>QgsZonalStatisticsDialogBase</name>
     <message>
         <source>Raster layer:</source>
@@ -51627,14 +48889,6 @@ Omschrijving: %2</translation>
     <message>
         <source>Zonal Statistics</source>
         <translation>Gebiedsstatistieken</translation>
-    </message>
-    <message>
-        <source>Band</source>
-        <translation type="unfinished">Band</translation>
-    </message>
-    <message>
-        <source>Statistics to calculate:</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -51680,19 +48934,19 @@ Configureer die vóór het uitvoeren van scripts van R.</translation>
     </message>
     <message>
         <source>&lt;p&gt;This algorithm requires R to be run. A test to check if R is correctly installed and configured in your system has been performed, with the following result:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</source>
-        <translation type="obsolete">&lt;p&gt;Dit algoritme vereist R om te kunnen worden uitgevoerd. Een test is uitgevoerd om te controleren of R correct op uw systeem is geïnstalleerd en geconfigureerd, met het volgende resultaat:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</translation>
+        <translation>&lt;p&gt;Dit algoritme vereist R om te kunnen worden uitgevoerd. Een test is uitgevoerd om te controleren of R correct op uw systeem is geïnstalleerd en geconfigureerd, met het volgende resultaat:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</translation>
     </message>
     <message>
         <source>R seems to be correctly installed and configured&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;The script you have executed needs the following packages:&lt;/p&gt;&lt;ul&gt;</source>
-        <translation type="obsolete">R lijkt correct te zijn geïnstalleerd en te zijn geconfigureerd&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Het script dat u heeft uitgevoerd heeft de volgende pakketten nodig:&lt;/p&gt;&lt;ul&gt;</translation>
+        <translation>R lijkt correct te zijn geïnstalleerd en te zijn geconfigureerd&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Het script dat u heeft uitgevoerd heeft de volgende pakketten nodig:&lt;/p&gt;&lt;ul&gt;</translation>
     </message>
     <message>
         <source>&lt;/ul&gt;&lt;p&gt;Make sure they are installed in your R environment before trying to execute this script.&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;/ul&gt;&lt;p&gt;Zorg er voor dat zij zijn geïnstalleerd in uw omgeving voor R vóór u probeert dit script uit te voeren.&lt;/p&gt;</translation>
+        <translation>&lt;/ul&gt;&lt;p&gt;Zorg er voor dat zij zijn geïnstalleerd in uw omgeving voor R vóór u probeert dit script uit te voeren.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;a href= &quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Click here&lt;/a&gt; to know more about how to install and configure R to be used with QGIS&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Klik hier&lt;/a&gt; om te weten te komen hoe R te installeren en te configureren om te worden gebruikt met QGIS&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Klik hier&lt;/a&gt; om te weten te komen hoe R te installeren en te configureren om te worden gebruikt met QGIS&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -51718,10 +48972,6 @@ Configureer die vóór het uitvoeren van scripts van R.</translation>
 %s</source>
         <translation>Kon R-script: %s niet laden.
 %s</translation>
-    </message>
-    <message>
-        <source>R user library folder</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -51763,7 +49013,7 @@ Configureer die vóór het uitvoeren van scripts van R.</translation>
     </message>
     <message>
         <source>Selection</source>
-        <translation type="obsolete">Selectie</translation>
+        <translation>Selectie</translation>
     </message>
     <message>
         <source>Selected number is greater than feature count. Choose a lower value and try again.</source>
@@ -51772,10 +49022,6 @@ Configureer die vóór het uitvoeren van scripts van R.</translation>
     <message>
         <source>Percentage can&apos;t be greater than 100. Set a different value and try again.</source>
         <translation>Percentage mag niet groter zijn dan 100. Stel een andere waarde in en probeer opnieuw.</translation>
-    </message>
-    <message>
-        <source>Extracted (random)</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -51798,7 +49044,7 @@ Configureer die vóór het uitvoeren van scripts van R.</translation>
     </message>
     <message>
         <source>Selection</source>
-        <translation type="obsolete">Selectie</translation>
+        <translation>Selectie</translation>
     </message>
     <message>
         <source>Selected number is greater that feature count. Choose lesser value and try again.</source>
@@ -51807,10 +49053,6 @@ Configureer die vóór het uitvoeren van scripts van R.</translation>
     <message>
         <source>Percentage can&apos;t be greater than 100. Set correct value and try again.</source>
         <translation>Percentage mag niet groter zijn dan 100. Stel de juiste waarde in en probeer opnieuw.</translation>
-    </message>
-    <message>
-        <source>Extracted (random stratified)</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -51983,7 +49225,7 @@ Configureer die vóór het uitvoeren van scripts van R.</translation>
     </message>
     <message>
         <source>Selection</source>
-        <translation type="obsolete">Selectie</translation>
+        <translation>Selectie</translation>
     </message>
     <message>
         <source>Selected number is greater that feature count. Choose lesser value and try again.</source>
@@ -51992,10 +49234,6 @@ Configureer die vóór het uitvoeren van scripts van R.</translation>
     <message>
         <source>Percentage can&apos;t be greater than 100. Set a different value and try again.</source>
         <translation>Percentage mag niet groter zijn dan 100. Stel een andere waarde in en probeer opnieuw.</translation>
-    </message>
-    <message>
-        <source>Selection stratified</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -52045,19 +49283,11 @@ Configureer die vóór het uitvoeren van scripts van R.</translation>
     </message>
     <message>
         <source>Output plot</source>
-        <translation type="obsolete">Plot uitvoer</translation>
+        <translation>Plot uitvoer</translation>
     </message>
     <message>
         <source>Output table</source>
-        <translation type="obsolete">Uitvoer tabel</translation>
-    </message>
-    <message>
-        <source>Histogram</source>
-        <translation type="unfinished">Histogram</translation>
-    </message>
-    <message>
-        <source>Table</source>
-        <translation type="unfinished">Tabel</translation>
+        <translation>Uitvoer tabel</translation>
     </message>
 </context>
 <context>
@@ -52156,11 +49386,7 @@ Configureer die vóór het uitvoeren van scripts van R.</translation>
     </message>
     <message>
         <source>Reprojected layer</source>
-        <translation type="obsolete">Opnieuw geprojecteerde laag</translation>
-    </message>
-    <message>
-        <source>Reprojected</source>
-        <translation type="unfinished"></translation>
+        <translation>Opnieuw geprojecteerde laag</translation>
     </message>
 </context>
 <context>
@@ -52473,10 +49699,6 @@ Lagen met meerdere banden worden niet ondersteund door SAGA</translation>
         <translation>Kon niet openen SAGA-algoritme: %s.
 %s</translation>
     </message>
-    <message>
-        <source>Activate</source>
-        <translation type="unfinished">Activeren</translation>
-    </message>
 </context>
 <context>
     <name>SagaUtils</name>
@@ -52493,11 +49715,7 @@ Lagen met meerdere banden worden niet ondersteund door SAGA</translation>
     </message>
     <message>
         <source>Output layer with selected features</source>
-        <translation type="obsolete">Uitvoerlaag met geselecteerde objecten</translation>
-    </message>
-    <message>
-        <source>Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoerlaag met geselecteerde objecten</translation>
     </message>
 </context>
 <context>
@@ -52509,7 +49727,7 @@ Lagen met meerdere banden worden niet ondersteund door SAGA</translation>
     <message>
         <source>Could not load script: %s
 Problem with line: %d</source>
-        <translation type="obsolete">Script kan niet worden geladen %s
+        <translation>Script kan niet worden geladen %s
 Probleem op regel: %d</translation>
     </message>
     <message>
@@ -52525,16 +49743,6 @@ Probleem op regel: %d</translation>
 Problem with line %d</source>
         <translation>Script kan niet worden geladen %s
 Probleem op regel: %d</translation>
-    </message>
-    <message>
-        <source>Could not load script: %s
-Problem with line: %s</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not load script: %s.
-Problem with line &quot;%s&quot;</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -52605,7 +49813,7 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Uitvoer</translation>
+        <translation>Uitvoer</translation>
     </message>
     <message>
         <source>Operators %s can be used only with string fields.</source>
@@ -52627,37 +49835,6 @@ Problem with line &quot;%s&quot;</source>
         <source>Unsupported field type &quot;%s&quot;</source>
         <translation>Niet ondersteund veldtype &quot;%s&quot;</translation>
     </message>
-    <message>
-        <source>Selected (attribute)</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>SelectByAttributeSum</name>
-    <message>
-        <source>Input Layer</source>
-        <translation type="unfinished">Invoerlaag</translation>
-    </message>
-    <message>
-        <source>Selection attribute</source>
-        <translation type="unfinished">Attribuut selecteren</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="unfinished">Waarde</translation>
-    </message>
-    <message>
-        <source>Selected (attribute sum)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>There is no selection in the input layer. Select one feature and try again.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No adjacent features found.</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>SelectByExpression</name>
@@ -52675,11 +49852,7 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Uitvoer</translation>
-    </message>
-    <message>
-        <source>Selected (expression)</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoer</translation>
     </message>
 </context>
 <context>
@@ -52702,11 +49875,7 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Selection</source>
-        <translation type="obsolete">Selectie</translation>
-    </message>
-    <message>
-        <source>Selected (location)</source>
-        <translation type="unfinished"></translation>
+        <translation>Selectie</translation>
     </message>
 </context>
 <context>
@@ -52764,11 +49933,7 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Styled layer</source>
-        <translation type="obsolete">Opgemaakte laag</translation>
-    </message>
-    <message>
-        <source>Styled</source>
-        <translation type="unfinished"></translation>
+        <translation>Opgemaakte laag</translation>
     </message>
 </context>
 <context>
@@ -52783,11 +49948,7 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Styled layer</source>
-        <translation type="obsolete">Opgemaakte laag</translation>
-    </message>
-    <message>
-        <source>Styled</source>
-        <translation type="unfinished"></translation>
+        <translation>Opgemaakte laag</translation>
     </message>
 </context>
 <context>
@@ -52972,15 +50133,11 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Simplified layer</source>
-        <translation type="obsolete">Vereenvoudigde laag</translation>
+        <translation>Vereenvoudigde laag</translation>
     </message>
     <message>
         <source>Simplify: Input geometries have been simplified from %s to %s points</source>
         <translation>Vereenvoudigen: Geometrieën voor invoer zijn vereenvoudigt van %s naar %s punten</translation>
-    </message>
-    <message>
-        <source>Simplified</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -53022,46 +50179,11 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
+        <translation>Resultaatlaag</translation>
     </message>
     <message>
         <source>Invalid unique ID field</source>
         <translation>Ongeldig uniek ID-veld</translation>
-    </message>
-    <message>
-        <source>Multipart</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>SizeScaleBase</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Field</source>
-        <translation type="unfinished">Veld</translation>
-    </message>
-    <message>
-        <source>Scale method</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Size from</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>to</source>
-        <translation type="unfinished">tot</translation>
-    </message>
-    <message>
-        <source>Values from</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Size when field is NULL</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -53092,33 +50214,6 @@ Problem with line &quot;%s&quot;</source>
     </message>
 </context>
 <context>
-    <name>SlopeAreaMulti</name>
-    <message>
-        <source>Slope Grid</source>
-        <translation type="unfinished">Hellingsraster</translation>
-    </message>
-    <message>
-        <source>Contributing Area Grid</source>
-        <translation type="unfinished">Contributing Area Grid</translation>
-    </message>
-    <message>
-        <source>Slope Exponent</source>
-        <translation type="unfinished">Hellings-exponent</translation>
-    </message>
-    <message>
-        <source>Area Exponent</source>
-        <translation type="unfinished">Gebieds-exponent</translation>
-    </message>
-    <message>
-        <source>Slope Area Grid</source>
-        <translation type="unfinished">Slope Area Grid</translation>
-    </message>
-    <message>
-        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>SpatialJoin</name>
     <message>
         <source>Target vector layer</source>
@@ -53142,19 +50237,11 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Output table</source>
-        <translation type="obsolete">Uitvoer tabel</translation>
+        <translation>Uitvoer tabel</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
-    </message>
-    <message>
-        <source>Joined table</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Joined layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultaatlaag</translation>
     </message>
 </context>
 <context>
@@ -53169,15 +50256,11 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Split lines</source>
-        <translation type="obsolete">Lijnen splitsen </translation>
+        <translation>Lijnen splitsen </translation>
     </message>
     <message>
         <source>Geometry exception while splitting</source>
         <translation>Uitzondering voor geometrie bij splitsen</translation>
-    </message>
-    <message>
-        <source>Splitted</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -53217,11 +50300,7 @@ Veld waarop statistieken moeten worden berekend
     </message>
     <message>
         <source>Statistics</source>
-        <translation type="obsolete">Statistieken</translation>
-    </message>
-    <message>
-        <source>Statistics by category</source>
-        <translation type="unfinished"></translation>
+        <translation>Statistieken</translation>
     </message>
 </context>
 <context>
@@ -53244,11 +50323,7 @@ Veld waarop statistieken moeten worden berekend
     </message>
     <message>
         <source>Result</source>
-        <translation type="obsolete">Resultaat</translation>
-    </message>
-    <message>
-        <source>Line length</source>
-        <translation type="unfinished">Lijn lengte</translation>
+        <translation>Resultaat</translation>
     </message>
 </context>
 <context>
@@ -53301,55 +50376,28 @@ Veld waarop statistieken moeten worden berekend
         <source> °</source>
         <translation> °</translation>
     </message>
-    <message>
-        <source>...</source>
-        <translation type="unfinished">...</translation>
-    </message>
 </context>
 <context>
     <name>SymetricalDifference</name>
     <message>
         <source>Input layer</source>
-        <translation type="obsolete">Invoerlaag</translation>
+        <translation>Invoerlaag</translation>
     </message>
     <message>
         <source>Difference layer</source>
-        <translation type="obsolete">Difference laag</translation>
+        <translation>Difference laag</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="obsolete">Symmetrische difference</translation>
+        <translation>Symmetrische difference</translation>
     </message>
     <message>
         <source>Geometry exception while computing symetrical difference</source>
-        <translation type="obsolete">Uitzondering voor geometrie bij berekenen symmetrisch verschil</translation>
+        <translation>Uitzondering voor geometrie bij berekenen symmetrisch verschil</translation>
     </message>
     <message>
         <source>Feature exception while computing symetrical difference</source>
-        <translation type="obsolete">Uitzondering object bij berekenen symmetrisch verschil</translation>
-    </message>
-</context>
-<context>
-    <name>SymmetricalDifference</name>
-    <message>
-        <source>Input layer</source>
-        <translation type="unfinished">Invoerlaag</translation>
-    </message>
-    <message>
-        <source>Difference layer</source>
-        <translation type="unfinished">Difference laag</translation>
-    </message>
-    <message>
-        <source>Symetrical difference</source>
-        <translation type="unfinished">Symmetrische difference</translation>
-    </message>
-    <message>
-        <source>Geometry exception while computing symetrical difference</source>
-        <translation type="unfinished">Uitzondering voor geometrie bij berekenen symmetrisch verschil</translation>
-    </message>
-    <message>
-        <source>Feature exception while computing symetrical difference</source>
-        <translation type="unfinished">Uitzondering object bij berekenen symmetrisch verschil</translation>
+        <translation>Uitzondering object bij berekenen symmetrisch verschil</translation>
     </message>
 </context>
 <context>
@@ -53386,35 +50434,6 @@ Veld waarop statistieken moeten worden berekend
         <source>TauDEM (hydrologic analysis)</source>
         <translation>TauDEM (hydrologische analyse)</translation>
     </message>
-    <message>
-        <source>TauDEM multifile command line tools folder</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Enable singlefile TauDEM tools</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Enable multifile TauDEM tools</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not open TauDEM algorithm %s:
-%s</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>TauDEMMultifileAlgorithm</name>
-    <message>
-        <source>Could not load TauDEM algorithm: %s
-%s</source>
-        <translation type="unfinished">Kon niet openen TauDEM-algoritme: %s.</translation>
-    </message>
-    <message>
-        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>TauDEMUtils</name>
@@ -53439,11 +50458,7 @@ Veld waarop statistieken moeten worden berekend
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Uitvoer</translation>
-    </message>
-    <message>
-        <source>Float from text</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoer</translation>
     </message>
 </context>
 <context>
@@ -53722,11 +50737,7 @@ Veld waarop statistieken moeten worden berekend
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Uitvoer</translation>
-    </message>
-    <message>
-        <source>Histogram</source>
-        <translation type="unfinished">Histogram</translation>
+        <translation>Uitvoer</translation>
     </message>
 </context>
 <context>
@@ -53745,11 +50756,7 @@ Veld waarop statistieken moeten worden berekend
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Uitvoer</translation>
-    </message>
-    <message>
-        <source>Scatterplot</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoer</translation>
     </message>
 </context>
 <context>
@@ -53842,37 +50849,6 @@ Veld waarop statistieken moeten worden berekend
     </message>
 </context>
 <context>
-    <name>WidgetBlur</name>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished">Formulier</translation>
-    </message>
-    <message>
-        <source>Transparency</source>
-        <translation type="unfinished">Transparantie</translation>
-    </message>
-    <message>
-        <source> %</source>
-        <translation type="unfinished"> %</translation>
-    </message>
-    <message>
-        <source>Blend mode</source>
-        <translation type="unfinished">Meng-modus</translation>
-    </message>
-    <message>
-        <source>Blur type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Blur strength</source>
-        <translation type="unfinished">Sterkte vervaging</translation>
-    </message>
-    <message>
-        <source>Draw mode</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>WidgetCentroidFill</name>
     <message>
         <source>Form</source>
@@ -53881,76 +50857,6 @@ Veld waarop statistieken moeten worden berekend
     <message>
         <source>Force point inside polygon</source>
         <translation>Zet punt geforceerd in polygoon</translation>
-    </message>
-</context>
-<context>
-    <name>WidgetColorEffect</name>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished">Formulier</translation>
-    </message>
-    <message>
-        <source>Colorize</source>
-        <translation type="unfinished">Inkleuren</translation>
-    </message>
-    <message>
-        <source>Contrast</source>
-        <translation type="unfinished">Contrast</translation>
-    </message>
-    <message>
-        <source>Brightness</source>
-        <translation type="unfinished">Helderheid</translation>
-    </message>
-    <message>
-        <source>Saturation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>%</source>
-        <translation type="unfinished">%</translation>
-    </message>
-    <message>
-        <source>Transparency</source>
-        <translation type="unfinished">Transparantie</translation>
-    </message>
-    <message>
-        <source>Blend mode</source>
-        <translation type="unfinished">Meng-modus</translation>
-    </message>
-    <message>
-        <source>Draw mode</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> %</source>
-        <translation type="unfinished"> %</translation>
-    </message>
-    <message>
-        <source>Grayscale</source>
-        <translation type="unfinished">Grijstinten</translation>
-    </message>
-</context>
-<context>
-    <name>WidgetDrawSource</name>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished">Formulier</translation>
-    </message>
-    <message>
-        <source>Blend mode</source>
-        <translation type="unfinished">Meng-modus</translation>
-    </message>
-    <message>
-        <source>Transparency</source>
-        <translation type="unfinished">Transparantie</translation>
-    </message>
-    <message>
-        <source> %</source>
-        <translation type="unfinished"> %</translation>
-    </message>
-    <message>
-        <source>Draw mode</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -54089,57 +50995,6 @@ Veld waarop statistieken moeten worden berekend
     <message utf8="true">
         <source> °</source>
         <translation> °</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="unfinished">...</translation>
-    </message>
-</context>
-<context>
-    <name>WidgetGlow</name>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished">Formulier</translation>
-    </message>
-    <message>
-        <source>Color ramp</source>
-        <translation type="unfinished">Kleurverloop</translation>
-    </message>
-    <message>
-        <source>Spread</source>
-        <translation type="unfinished">Verdeling</translation>
-    </message>
-    <message>
-        <source>Blur radius</source>
-        <translation type="unfinished">Radius vervagen</translation>
-    </message>
-    <message>
-        <source>Transparency</source>
-        <translation type="unfinished">Transparantie</translation>
-    </message>
-    <message>
-        <source>Single color</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Blend mode</source>
-        <translation type="unfinished">Meng-modus</translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation type="unfinished">Bewerken</translation>
-    </message>
-    <message>
-        <source>Invert</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> %</source>
-        <translation type="unfinished"> %</translation>
-    </message>
-    <message>
-        <source>Draw mode</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -54438,45 +51293,6 @@ Veld waarop statistieken moeten worden berekend
     <message utf8="true">
         <source> °</source>
         <translation> °</translation>
-    </message>
-</context>
-<context>
-    <name>WidgetShadowEffect</name>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished">Formulier</translation>
-    </message>
-    <message>
-        <source>Color</source>
-        <translation type="unfinished">Kleur</translation>
-    </message>
-    <message>
-        <source>Transparency</source>
-        <translation type="unfinished">Transparantie</translation>
-    </message>
-    <message>
-        <source>Offset</source>
-        <translation type="unfinished">Verspringing</translation>
-    </message>
-    <message>
-        <source>Blend mode</source>
-        <translation type="unfinished">Meng-modus</translation>
-    </message>
-    <message>
-        <source>Blur radius</source>
-        <translation type="unfinished">Radius vervagen</translation>
-    </message>
-    <message>
-        <source> %</source>
-        <translation type="unfinished"> %</translation>
-    </message>
-    <message utf8="true">
-        <source>˚</source>
-        <translation type="unfinished">˚</translation>
-    </message>
-    <message>
-        <source>Draw mode</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -54802,49 +51618,6 @@ Veld waarop statistieken moeten worden berekend
     </message>
 </context>
 <context>
-    <name>WidgetTransform</name>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished">Formulier</translation>
-    </message>
-    <message>
-        <source>Shear X,Y</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rotation</source>
-        <translation type="unfinished">Rotatie</translation>
-    </message>
-    <message utf8="true">
-        <source> °</source>
-        <translation type="unfinished"> °</translation>
-    </message>
-    <message>
-        <source>Reflect horizontal</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Reflect vertical</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Translate X,Y</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>%</source>
-        <translation type="unfinished">%</translation>
-    </message>
-    <message>
-        <source>Scale X,Y</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Draw mode</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>WidgetVectorFieldBase</name>
     <message>
         <source>Form</source>
@@ -54946,11 +51719,7 @@ Veld waarop statistieken moeten worden berekend
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
-    </message>
-    <message>
-        <source>Zonal statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultaatlaag</translation>
     </message>
 </context>
 <context>
@@ -55087,11 +51856,7 @@ Veld waarop statistieken moeten worden berekend
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
-    </message>
-    <message>
-        <source>Virtual</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultaatlaag</translation>
     </message>
 </context>
 <context>
@@ -55198,7 +51963,7 @@ Doe nogmaals de topologie check.</translation>
     <message>
         <source>&lt;h3&gt;Database connection&lt;/h3&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Databaseverbinding&lt;/h3&gt;
+        <translation>&lt;h3&gt;Databaseverbinding&lt;/h3&gt;
 </translation>
     </message>
     <message>
@@ -55240,7 +52005,7 @@ On this tab you can search for WMS servers. It is possible to enter a search-str
 To visualize the results, select an table entry, press the &lt;label&gt;Add selected row to WMS list&lt;/label&gt; button and change back to the &lt;label&gt;Servers&lt;/label&gt; tab.&lt;p&gt;
 You only need to request the list of layers by clicking the &lt;label&gt;Connect&lt;/label&gt; button.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Aanmaken van een nieuwe WMS connectie&lt;/h3&gt;
+        <translation>&lt;h3&gt;Aanmaken van een nieuwe WMS connectie&lt;/h3&gt;
 WMS lagen kunnen eenvoudig worden toegevoegd, als je de URL weet waarmee je toegang krijgt tot een WMS server, een connectie met de services van die server kunt opbouwen en de server het HTTP protocol accepteert.&lt;p&gt;
 QGIS kan gebruikt worden als WMS client voor servers die WMS 1.1, 1.1.1 en 1.3 protocol gebruiken.
 &lt;p&gt;
@@ -55290,7 +52055,7 @@ You may also tick an &lt;label&gt;Open feature form, if a single feature is iden
 Identifiable layers can be set in the Project Properties dialog &lt;label&gt;Settings &gt; Project Properties &gt; Identifiable layers&lt;/label&gt; where all the layers names are listed, their type (vector, raster, etc.) and ability to be identified.
 &lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Objecten identificeren&lt;/h3&gt;
+        <translation>&lt;h3&gt;Objecten identificeren&lt;/h3&gt;
 &lt;p&gt;
 Het resultaatdialoog toont alle gevonden objecten binnen de zoektolerantie. Om details van het zoekresultaat te bekijken, kun je de objectinformatie aan de linkerzijde van elk object verder openen.
 &lt;/p&gt;
@@ -55342,7 +52107,7 @@ geometry types and don&apos;t offer to add others.
 
 &lt;/ul&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Maak een nieuwe Oracle Verbinding&lt;/h3&gt;
+        <translation>&lt;h3&gt;Maak een nieuwe Oracle Verbinding&lt;/h3&gt;
 Met dit dialoogscherm kunt u een verbinding naar een Oracle datbase instellen.
 &lt;p&gt;
 &lt;ul&gt;
@@ -55379,7 +52144,7 @@ Bij het initialiseren van de kaartlaag wordt de metadata van de Oracle tabel opg
         <source>&lt;h3&gt;GPS Plugin&lt;/h3&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;GPS Plugin&lt;/h3&gt;
+        <translation>&lt;h3&gt;GPS Plugin&lt;/h3&gt;
 
 </translation>
     </message>
@@ -55421,7 +52186,7 @@ To filter a layer before adding it to the map, double click on its name or use &
 &lt;/a&gt;
 Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for searching in different column types and using 2 search modes: &lt;label&gt;Wildcard&lt;/label&gt; or &lt;label&gt;RegExp&lt;/label&gt;.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Voeg PostGIS-lagen toe&lt;/h3&gt;
+        <translation>&lt;h3&gt;Voeg PostGIS-lagen toe&lt;/h3&gt;
 Met deze diagloog kunt u PostGIS lagen (tabellen met geometrie) aan het QGIS kaartscherm toevoegen.
 &lt;p&gt;
 &lt;a href=&quot;#connect&quot;&gt;Verbindingen&lt;/a&gt;&lt;br/&gt;
@@ -55518,7 +52283,7 @@ The field calculator allows you to update fields with expressions.
 &lt;tr&gt;&lt;td&gt;-&lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;negative value of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
 &lt;/table&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Veld Berekening Calculator&lt;/h3&gt;
+        <translation>&lt;h3&gt;Veld Berekening Calculator&lt;/h3&gt;
 
 Met veld Berekening kunt u attributen invullen met behulp van expressies.
 
@@ -55583,7 +52348,7 @@ Met veld Berekening kunt u attributen invullen met behulp van expressies.
     <message>
         <source>&lt;h3&gt;New OGR Database Connection Dialog&lt;/h3&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Dialoogvenster Nieuwe OGR-databaseverbinding&lt;/h3&gt;
+        <translation>&lt;h3&gt;Dialoogvenster Nieuwe OGR-databaseverbinding&lt;/h3&gt;
 </translation>
     </message>
     <message>
@@ -55591,7 +52356,7 @@ Met veld Berekening kunt u attributen invullen met behulp van expressies.
 Displays a north arrow overlayed onto the map.
 &lt;p&gt;
 At present there is only one style available. You can adjust the angle of the arrow or let QGIS set the direction automatically. If you choose to let QGIS determine the direction, it makes its best guess as to how the arrow should be oriented. For placement of the arrow you have four options, corresponding to the four corners of the map canvas.</source>
-        <translation type="obsolete">&lt;h3&gt; Noordpijl&lt;/h3&gt;
+        <translation>&lt;h3&gt; Noordpijl&lt;/h3&gt;
 Toont een noordpijl op de kaart.
 &lt;p&gt;
 Momenteel is er slechts één stijl beschikbaar. Men kan de richting van de pijl aanpassen of die automatisch door QGIS laten bepalen. Indien er voor gekozen wordt om QGIS de richting te laten bepalen, zal deze de beste inschatting doen hoe de noordpijl moet worden georiënteerd. Voor het plaatsen van de noordpijl heb je vier opties, overeenkomend met de vier hoeken van het kaartbeeld.</translation>
@@ -55616,7 +52381,7 @@ To add a scale bar:
 &lt;li&gt;Click &lt;label&gt;OK&lt;/label&gt;.&lt;/li&gt;
 &lt;/ol&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Plug-in Schaalbalk&lt;/h3&gt;
+        <translation>&lt;h3&gt;Plug-in Schaalbalk&lt;/h3&gt;
 Tekent een schaalbalk op de kaart.
 &lt;p&gt;
 De stijl en plaatsing kan worden aangepast inclusief de te gebruiken labels van de schaalbalk.
@@ -55688,7 +52453,7 @@ which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/
 &lt;p&gt;Contact the author through aruntheguy at gmail dot com&lt;/p&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Plug-in Heatmap Help&lt;/h3&gt;
+        <translation>&lt;h3&gt;Plug-in Heatmap Help&lt;/h3&gt;
 &lt;p&gt;De Heatmap plugin gebruikt de Kernel Density Estimation om een dichtheid (heatmap)
  raster te genereren vanuit een punten-vectorlaag. De dichtheid wordt berekend op basis van
 het aantal punten in een locatie, grotere aantallen punten zullen resulteren
@@ -55903,7 +52668,7 @@ that will be automatically deleted after running.&lt;/li&gt;
 from the close button. This allows you to save the geometry to be restored to the next start.
 &lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Python-console voor QGIS&lt;/h3&gt;
+        <translation>&lt;h3&gt;Python-console voor QGIS&lt;/h3&gt;
 &lt;a href=&quot;#console&quot;&gt;Console&lt;/a&gt;&lt;br&gt;
 &lt;a href=&quot;#editor&quot;&gt;Bestandsbewerker&lt;/a&gt;&lt;br&gt;
 &lt;a href=&quot;#settings&quot;&gt;Instellingen&lt;/a&gt;&lt;br&gt;&lt;br&gt;
@@ -56097,7 +52862,7 @@ The Coordinate Reference System (CRS) tab allows you to set the projection for t
 &lt;/a&gt;
 On this tab you can choose on which layers the identify tool will work.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Projectinstellingen&lt;/h3&gt;
+        <translation>&lt;h3&gt;Projectinstellingen&lt;/h3&gt;
 Dit dialoogvenster geeft de mogelijkheid om een aantal eigenschappen te wijzigen van het &lt;label&gt;Project&lt;/label&gt;. Een Project is een opgeslagen geheel van kaartlagen en hun instellingen en andere informatie die nodig is om het project weer te openen zoals deze was op het moment van opslaan.&lt;p&gt;
 
 &lt;a href=&quot;#general&quot;&gt;Tabblad Algemeen&lt;/a&gt;&lt;br/&gt;
@@ -56138,7 +52903,7 @@ Met dit tabblad kun je instellen voor welke kaartlagen het gereedschap &apos;Obj
 To define a new connection, click on &lt;label&gt;New&lt;/label&gt; button and use the file browser to point to your SpatiaLite database, which is a file with a &lt;i&gt;.sqlite&lt;/i&gt; extension.&lt;p&gt;
 The connections you define will be remembered for further use and available to choose from the drop down menu.
 </source>
-        <translation type="obsolete">&lt;h3&gt;SpatialLite tabellen toevoegen&lt;/h3&gt;
+        <translation>&lt;h3&gt;SpatialLite tabellen toevoegen&lt;/h3&gt;
 Om een nieuwe verbinding te definiëren, klik op &lt;label&gt;Nieuw&lt;/label&gt; en navigeer naar de SpatialLite database (bestand met een &lt;i&gt;.sqlite&lt;/i&gt; extensie.&lt;p&gt;
 De gedefinieerde verbindingen worden opgeslagen voor later gebruik en komen in de dropdown lijst bescikbaar. 
 </translation>
@@ -56283,7 +53048,7 @@ The Diagram tab allows you to add a graphic overlay to a vector layer. To activa
 The current implementation of diagrams provides support for pie- and bar charts and for linear scaling
 of the diagram size according to a classification attribute.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Laag-eigenschappen&lt;/h3&gt;
+        <translation>&lt;h3&gt;Laag-eigenschappen&lt;/h3&gt;
 Dit dialoogvenster stelt u in staat om te werken met de instellingen en eigenschappen van de vectorlaag. Er zijn zeven tabs:
 &lt;p&gt;
 &lt;a href=&quot;#symbology&quot;&gt;Stijl&lt;/a&gt;&lt;br/&gt;
@@ -56463,7 +53228,7 @@ To delete a bookmark from the Bookmarks dialog, click on it then click the &lt;l
 To update the extent of a bookmark, click on it then click the &lt;label&gt;Update&lt;/label&gt; button. Confirm your choice by clicking &lt;label&gt;OK&lt;/label&gt; or cancel the update by clicking &lt;label&gt;Cancel&lt;/label&gt;.
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Favoriete plaatsen&lt;/h3&gt;
+        <translation>&lt;h3&gt;Favoriete plaatsen&lt;/h3&gt;
 Je kunt met Favoriete Plaatsen aangeven waar je later (vaker) terug wilt keren.
 &lt;p&gt;
 &lt;a href=&quot;#creating&quot;&gt;Aanmaken van Favoriete Plaats&lt;/a&gt;&lt;br/&gt;
@@ -56536,7 +53301,7 @@ Om het gebied van een Favoriete Plaats bij te werken, druk op de knop &lt;label&
 &lt;h5&gt;Default settings&lt;/h5&gt;
 &lt;p&gt;If the attribute table of your linear layer does not contain the required fields or fields contain unexpected values, the plugin will use default values. You can set them in the default tab &lt;label&gt;Default settings&lt;/label&gt;.&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Instellingen plug-in Road graph &lt;/h3&gt;
+        <translation>&lt;h3&gt;Instellingen plug-in Road graph &lt;/h3&gt;
 &lt;p&gt;De plug-in Road graph is een C++ plug-in voor QGIS die de kortste route tussen twee punten berekent binnen een lijnen vectorlaag en vervolgens deze route over het netwerk heen tekent.&lt;/p&gt;
 &lt;p&gt;
 &lt;a href=&quot;#creating&quot;&gt;Eenheden plug-in&lt;/a&gt;&lt;br/&gt;
@@ -56615,7 +53380,7 @@ are sometimes limited (e.g. for shape files) or behave diffently.
 &lt;/tr&gt;
 &lt;/table&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Querybouwer&lt;/h3&gt;
+        <translation>&lt;h3&gt;Querybouwer&lt;/h3&gt;
 De querybouwer stelt u in staat om providerspecifieke  filteruitdrukkingen te maken.
 
 Deze worden over het algemeen veel sneller geëvalueerd dan de algemene uitdrukkingen van QGIS, maar zijn soms beperkt (bijv. voor shapefiles) of gedragen zich anders.
@@ -56677,7 +53442,7 @@ system.
 &lt;p&gt;
 Defining a custom CRS in QGIS requires a good understanding of the Proj.4 projection library. To begin, refer to the &lt;a href=&quot;ftp://ftp.remotesensing.org/proj/OF90-284.pdf&quot;&gt;Cartographic Projection Procedures for the UNIX Environment&lt;/a&gt; - A User&apos;s Manual by Gerald I. Evenden, U.S. Geological Survey Open-File Report 90-284, 1990. This manual describes the use of the &lt;i&gt;proj.4&lt;/i&gt; and related command line utilities. The cartographic parameters used with &lt;i&gt;proj.4&lt;/i&gt; are described in the user manual, and are the same as those used by QGIS.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Definitie aangepast Ruimtelijk Referentie Systeem (CRS) &lt;/h3&gt;
+        <translation>&lt;h3&gt;Definitie aangepast Ruimtelijk Referentie Systeem (CRS) &lt;/h3&gt;
 Als het gewenste coördinaatsysteem niet aanwezig is kunt u zelf een aangepast CRS definiëren. &lt;p&gt;
 Selecteer, om een CRS te definiëren, dan &lt;label&gt;Aangepast CRS&lt;/label&gt; via het &lt;label&gt;Edit&lt;/label&gt; (Gnome, OSX) of &lt;label&gt;Extra&lt;/label&gt; (KDE, Windows) menu. Aangepaste Ruimtelijke Referentie Systemen worden opgeslagen in uw gebruikersdatabase van QGIS. Naast uw aangepaste CRS bevat deze database ook uw ruimtelijke bladwijzers en andere gebruikersspecifieke gegevens.
 
@@ -56725,7 +53490,7 @@ This plugin supports basic HTML markup tags for formatting text. For example:
 &lt;/li&gt;
 &lt;/ul&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Copyrightlabel&lt;/h3&gt;
+        <translation>&lt;h3&gt;Copyrightlabel&lt;/h3&gt;
 Tekent een copyrightlabel met informatie.&lt;br/&gt;
 U kunt, naast het copyrightlabel, willekeurige tekst toevoegen op de kaart.
 &lt;p&gt;
@@ -57073,7 +53838,7 @@ The following options can be added
 
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Laag van tekengescheiden tekstbestand&lt;/h3&gt;
+        <translation>&lt;h3&gt;Laag van tekengescheiden tekstbestand&lt;/h3&gt;
 Laad tekengescheiden tekstbestanden en geeft die weer
 &lt;p&gt;
 &lt;a href=&quot;#re&quot;&gt;Overzicht&lt;/a&gt;&lt;br/&gt;
@@ -57394,7 +54159,7 @@ In this section you can see the list of attributes. To delete one of them, click
 Click on &lt;label&gt;OK&lt;/label&gt; to create the layer and close the dialog.
 &lt;label&gt;Cancel&lt;/label&gt; will close the layer without further changes.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Aanmaken van een nieuwe laag voor SpatiaLite&lt;/h3&gt;
+        <translation>&lt;h3&gt;Aanmaken van een nieuwe laag voor SpatiaLite&lt;/h3&gt;
 Hiermee kunt u een nieuwe database van SpatialLite maken en/of een nieuwe laag voor SpatialLite om te bewerken. Zie hieronder een uitleg over het invoerscherm.
 &lt;h4&gt;Database&lt;/h4&gt;
 Kies de database uit de keuzelijst. De lijst is opgebouwd uit uw opgeslagen verbindingen van SpatialLite. Als er geen opgeslagen verbindingen zijn of als u een nieuwe database wil aanmaken, klik dan op de knop (&lt;label&gt;...&lt;/label&gt;) rechts van de lijst.
@@ -57427,7 +54192,7 @@ QGIS supports vector data in a number of formats, including those supported by t
 QGIS supports PostGIS layers in a PostgreSQL database and SpatiaLite layers. Support for additional data types (eg. delimited text) is provided by additional data provider plugins. A list of OGR supported vector formats can be found in Appendix A.1 of the User Guide.&lt;/p&gt;
 Detailed description how to proceed with vector data is described in chapter 5 &apos;Working with Vector Data&apos;.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Vectorlaag toevoegen&lt;/h3&gt;
+        <translation>&lt;h3&gt;Vectorlaag toevoegen&lt;/h3&gt;
 &lt;p&gt;Het dialoogvenster voor Vectorlaag toevoegen wordt gebruikt om vector kaartlagen aan de kaart toe te voegen. Vectoren zijn ruimtelijke objecten die worden beschreven als punten, lijnen en vlakken (polygonen).&lt;/p&gt;
 &lt;p&gt;QGIS ondersteunt vectorgegevens in een groot aantal formaten, waaronder degenen die door de OGR bibliotheek plug-in worden ondersteund. Dit zijn onder andere ESRI shapefiles, Mapinfo MIF (uitwisselingsformaat) en MapInfo TAB (eigen formaat).&lt;/p&gt;
 &lt;p&gt;QGIS ondersteunt ook kaartlagen voor PostGIS in een PostgreSQL-database en SpatialLite lagen. Ondersteuning voor overige bestandstypen (bijvoorbeeld gescheiden tekst) wordt via extra plug-ins geregeld. Een lijst met OGR ondersteunde vectordata formaten is te vinden in Bijlage A.1 van de gebruikershandleiding.&lt;/p&gt;
@@ -57468,7 +54233,7 @@ This dialog allows you to define the settings for a connection to a PostgreSQL/P
 
 &lt;/ul&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Maak een nieuwe verbinding voor PostgreSQL&lt;/h3&gt;
+        <translation>&lt;h3&gt;Maak een nieuwe verbinding voor PostgreSQL&lt;/h3&gt;
 Dit dialoogvenster stelt u in staat de instellingen te definiëren voor een verbinding naar een database van PostgreSQL.
 &lt;p&gt;
 &lt;ul&gt;
@@ -57589,7 +54354,7 @@ Note: Experimental plugins are generally unsuitable for production use. These pl
 
 &lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Plug-ins beheren en installeren&lt;/h3&gt;
+        <translation>&lt;h3&gt;Plug-ins beheren en installeren&lt;/h3&gt;
 
 &lt;p&gt;
 Plug-ins beheren en installeren.
@@ -57675,7 +54440,7 @@ Opmerking: Experimentele plug-ins zijn over het algemene niet geschikt voor prod
     <message>
         <source>&lt;h3&gt;Style Manager&lt;/h3&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Stijl Manager&lt;/h3</translation>
+        <translation>&lt;h3&gt;Stijl Manager&lt;/h3</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Finding shortest path&lt;/h3&gt;
@@ -57693,7 +54458,7 @@ Pressing the &lt;label&gt;Calculate&lt;/label&gt; button will run the shortest p
 &lt;h5&gt;Note&lt;/h5&gt;
 &lt;p&gt;In order to bind the start and stop points of the route to the road network Road graph selects the nearest point or arc of the graph. In fact it can bind to any part of the road network. Nevertheless, their route and its characteristics do not take into account the distance from the starting point to the road network and of the road network to the stopping point.&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Kortste route berekenen&lt;/h3&gt;
+        <translation>&lt;h3&gt;Kortste route berekenen&lt;/h3&gt;
 &lt;p&gt;Road graph is een plug-in in C++ voor QGIS die de kortste route tussen twee punten berekent over een lijnen kaartlaag, en vervolgens de route over het wegennetwerk heen tekent. De plug-in moet eerst worden geconfigureerd, vóórdat deze gebruikt kan worden. Dit kan in het menu &lt;label&gt;Vector &amp;rarr; Road graph &amp;rarr; Extra&lt;/label&gt;&lt;/p&gt;
 &lt;p&gt;
 &lt;a href=&quot;#howto&quot;&gt;Werking&lt;/a&gt;&lt;br/&gt;
@@ -57784,7 +54549,7 @@ Informs you about active system locale. To change it tick &lt;label&gt;Override 
 &lt;/a&gt;
 Tick &lt;label&gt;Use proxy for web access&lt;/label&gt; to define host, port, user, and password.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Opties&lt;/h3&gt;
+        <translation>&lt;h3&gt;Opties&lt;/h3&gt;
 In dit dialoogvenster kunt u enkele basisopties voor QGIS selecteren. Er zijn acht tabs:
 &lt;p&gt;
 
@@ -57873,7 +54638,7 @@ You can also define the width and precision of the new attribute column.
 &lt;h4&gt;Attributes list&lt;/h4&gt;
 In this section you can see the list of attributes. To delete one of them, click on it and choose &lt;label&gt;Remove selected attribute&lt;/label&gt; button.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Nieuwe Vectorlaag aanmaken&lt;/h3&gt;
+        <translation>&lt;h3&gt;Nieuwe Vectorlaag aanmaken&lt;/h3&gt;
 Een nieuwe, lege vectorlaag aanmaken kan met &lt;label&gt;Nieuwe Vectorlaag&lt;/label&gt; via het &lt;label&gt;Kaartlagen&lt;/label&gt; menu.&lt;br/&gt;
 Met het dialoogscherm kun je een nieuwe Shapefile laag aanmaken.
 &lt;h4&gt;Type&lt;/h4&gt;
@@ -57900,7 +54665,7 @@ In de Attributenlijst kun je de toe te voegen attribuutvelden zien. Om een attri
 
 See &lt;a href=&quot;http://gdal.org/ogr/ogr_formats.html&quot;&gt;OGR Vector formats&lt;/a&gt; for a list of supported formats and the available options.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Vectorlaag opslaan als...&lt;/h3&gt;
+        <translation>&lt;h3&gt;Vectorlaag opslaan als...&lt;/h3&gt;
 
 &lt;p&gt;Dit dialoogvenster stelt u in staat om vectorgegevens in verschillende indelingen op te slaan met behulp van GDAL/OGR.
 
@@ -57928,7 +54693,7 @@ Click on one of the icons along the top of the composer window to select what ty
 &lt;/p&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Printvormgeving&lt;/h3&gt;
+        <translation>&lt;h3&gt;Printvormgeving&lt;/h3&gt;
 
 &lt;p&gt;
 Binnen de Printvormgeving kun je kaartelementen op een pagina plaatsen, en deze vervolgens afdrukken. Bij kaartelementen kun je denken aan de kaart zelf, de schaalbalk, legenda en foto&apos;s.
@@ -57951,7 +54716,7 @@ A single right mouse click stops the measuring, while two right mouse clicks sta
 &lt;h4&gt;Measuring Angles&lt;/h4&gt;
 To measure angles, select the tool and click on three points to create an angle between these points. The second point selected is the vertex of the angle. The angle is dynamically displayed once you clicked the second point.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Meetgereedschap&lt;/h3&gt;
+        <translation>&lt;h3&gt;Meetgereedschap&lt;/h3&gt;
 Er zijn drie meetgereedschappen: lengte, oppervlakte en hoek. Hiermee kun je op de kaart afstanden, oppervlakten en hoeken opmeten. Dit gereedschap geeft het resultaat terug in de ingestelde meeteenheid onder &lt;label&gt;Extra &gt; Opties &gt; Kaartgereedschap &lt;/label&gt;
 &lt;h4&gt;Afstanden opmeten&lt;/h4&gt;
 Om afstanden op te meten, selecteer het gereedschap en klik langs de route die je wil opmeten. De lengte van de totale route en de lengte van elk afzonderlijke lijnstuk worden weergegeven.
@@ -58025,7 +54790,7 @@ The vector layer needs to be in editing mode, before you can click on the &lt;la
 When you toggle to edition the layer, a new row of functions appears in the attribute table: the &lt;label&gt;Field Calculator Bar&lt;/label&gt;. This allows quick editing values of existing fields by performing calculations on basis of existing attribute values or defined functions button in the attribute table, e.g. to calculate length or area of geometry features.&lt;br&gt;
 To edit values, select the field to modify with the filter button on the left and fill the text box with the new value or an expression to calculate new value. Then, press &lt;label&gt;Update all&lt;/label&gt; button to update all the rows of the attribute table or &lt;label&gt;Update selected&lt;/label&gt; button if some features are selected or a filter is applied on the attribute table display. You can also use the &lt;label&gt;Expression builder&lt;/label&gt; button to calculate the new value in the column.&lt;br&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Attributentabel&lt;/h3&gt;
+        <translation>&lt;h3&gt;Attributentabel&lt;/h3&gt;
 De attributentabel toont de objecten van de geselecteerde laag. Elke rij in de tabel komt overeen met één kaartobject waarvan de waarden van de attribuut te zien zijn in verschillende kolommen. De objecten in de tabel kunnen worden gezocht, geselecteerd, verplaatst en zelfs bewerkt. Standaard is de attributentabel een apart venster. Wanneer dit geopend is en niet langer zichtbaar is, dan is het venster waarschijnlijk verborgen achter het hoofdvenster van QGIS. U kunt het venster echter ook vastzetten als onderdeel van het hoofdvenster van QGIS met het keuzevak &lt;label&gt;Open attributen tabel in een dock window&lt;/label&gt; in &lt;label&gt;Extra &gt; Opties &gt; Databronnen&lt;/label&gt;.&lt;p&gt;
 
 In de kop van het venster wordt informatie gegeven over het totaal aantal objecten, gefilterde objecten en geselecteerde objecten op de laag.&lt;p&gt;
@@ -58107,11 +54872,7 @@ Selecteer, om waarden te berekenen, het veld dat aangepast moet worden met de kn
     </message>
     <message>
         <source>Output file for contour lines (vector)</source>
-        <translation type="obsolete">Uitvoerbestand voor contourlijnen (vector)</translation>
-    </message>
-    <message>
-        <source>Contours</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoerbestand voor contourlijnen (vector)</translation>
     </message>
 </context>
 <context>
@@ -58218,11 +54979,6 @@ Voor ondersteuning stuur een e-mail naar scala@itc.cnr.it
     <message>
         <source>Shapefile</source>
         <translation>Shape-bestand</translation>
-    </message>
-    <message>
-        <source>Export inserts</source>
-        <extracomment>&apos;insert&apos; is the entity that inserts/references a symbol/block in DXF</extracomment>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -58983,22 +55739,6 @@ Plugin wordt niet geladen.</translation>
         <source>&amp;Data Management Tools</source>
         <translation>&amp;Datamanagement-gereedschap</translation>
     </message>
-    <message>
-        <source>Save output shapefile</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select input file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select input files</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save output directory</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>fillnodata</name>
@@ -59028,11 +55768,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
-    </message>
-    <message>
-        <source>Filled</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultaatlaag</translation>
     </message>
 </context>
 <context>
@@ -59119,7 +55855,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;week(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 104.285...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;functie week()&lt;/h3&gt;
+        <translation>&lt;h3&gt;functie week()&lt;/h3&gt;
 Extraheer het weeknummer uit een datum, of het aantal weken
 uit een &lt;code&gt;Interval&lt;/code&gt;
 
@@ -59170,7 +55906,7 @@ return a result.
     END
 &lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;CASE expression&lt;/h3&gt;
+        <translation>&lt;h3&gt;CASE expression&lt;/h3&gt;
 Een conditionele expressie die gebruikt kan worden om meerdere expressies te evalueren en
 die een resultaat geeft.
 
@@ -59217,7 +55953,7 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; rightmost characters 
 &lt;code&gt;right(&apos;Hello World&apos;,5) &amp;rarr; &apos;World&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;right() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;right() functie&lt;/h3&gt;
 Geeft een substring die het &lt;i&gt;n&lt;/i&gt; meest rechtse teken van de tekenreeks geeft.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -59239,7 +55975,7 @@ Geeft een substring die het &lt;i&gt;n&lt;/i&gt; meest rechtse teken van de teke
 &lt;h3&gt;Color Group&lt;/h3&gt;
 This group contains functions for manipulating colors
 </source>
-        <translation type="obsolete">
+        <translation>
 &lt;h3&gt;Kleur Groep&lt;/h3&gt;
 Deze groep bevat functies om kleuren te manipuleren
 </translation>
@@ -59259,7 +55995,7 @@ Returns the length of a string.
 &lt;!-- Show example of function.--&gt;
      length(&apos;HELLO&apos;) &amp;rarr; 5&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;length() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;length() functie&lt;/h3&gt;
 Geeft de lengte van een string.
 
 &lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
@@ -59289,7 +56025,7 @@ Converts a string to upper case letters.
 &lt;!-- Show example of function.--&gt;
      upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;HELLO WORLD&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;upper() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;upper() functie&lt;/h3&gt;
 Converteert een tekenreeks naar hoofdletters.
 
 &lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
@@ -59319,7 +56055,7 @@ b &amp;rarr; geometry
 &lt;pre&gt;bbox( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; )) &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt;bbox( geomFromWKT( &apos;POINT(6 5)&apos; ) , geomFromWKT( &apos;POLYGON((3 3 , 4 4 , 5 5, 3 3))&apos; )) &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie bbox&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie bbox&lt;/h3&gt;
 Retourneert 1 wanneer de bounding box, de minimale rechthoek waarbinnen een geometrie past, deels over elkaar heenliggen en 0 wanneer niet. 
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -59351,7 +56087,7 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; leftmost characters o
 &lt;code&gt;left(&apos;Hello World&apos;,5) &amp;rarr; &apos;Hello&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;left() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;left() functie&lt;/h3&gt;
 Geeft een subtekenreeks die de &lt;i&gt;n&lt;/i&gt; meest linkse tekens van de tekenreeks bevat.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -59382,7 +56118,7 @@ Note: This function is only available in some contexts and will be 0 otherwise.
 
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;$scale functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;$scale functie&lt;/h3&gt;
 Geeft de huidige schaal van de map canvas.
 &lt;br&gt;
 NB: Deze functie is alleen beschikbaar in sommige contexten en zal anders 0 zijn. 
@@ -59412,7 +56148,7 @@ Rounds a number upwards.
 &lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie ceil&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie ceil&lt;/h3&gt;
 Rond een getal naar boven af.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -59443,7 +56179,7 @@ Converts a string to real number. Nothing changed if a value cannot be converted
 &lt;!-- Show example of function.--&gt;
      toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;functie toreal()&lt;/h3&gt;
+        <translation>&lt;h3&gt;functie toreal()&lt;/h3&gt;
 Zet een tekststring om naar een reëel getal. Er verandert niets wanneer een waarde niet omgezet kan worden naar een reëel getal (bijv. &apos;123.56asd&apos; is ongeldig). Getallen worden afgerond na het opslaan van de wijzigingen wanneer de precisie kleiner is dan het resultaat van de conversie.
 
 &lt;p&gt;&lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -59471,7 +56207,7 @@ Retrieves a x coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie at()&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie at()&lt;/h3&gt;
 Geeft de x-coördinaat van een punt van de huidige geometrie terug
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -59498,7 +56234,7 @@ None
 &lt;pre&gt;$numpages &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;$numpages functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;$numpages functie&lt;/h3&gt;
 Geeft het totaal aantal pagina&apos;s in de compositie.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -59531,7 +56267,7 @@ Returns -1 if the expression isn&apos;t found.
      strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
      strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie strpos()&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie strpos()&lt;/h3&gt;
 Geeft de index van een reguliere expressie van een tekst terug.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -59568,7 +56304,7 @@ This function takes two arguments.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;rand(1, 10) &amp;rarr; 8&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="obsolete">rand() functie&lt;/h3&gt;
+        <translation>rand() functie&lt;/h3&gt;
 Geeft een random integer binnen de range weergegeven door het minimum en 
 maximum argument (inclusive).
 &lt;br&gt;
@@ -59603,7 +56339,7 @@ None
 &lt;pre&gt; intersects(  $atlasgeometry,  $geometry ) &lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie $atlasgeometry&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie $atlasgeometry&lt;/h3&gt;
 Geeft de geometrie terug van het huidige object zoals dat herhaald wordt in de atlas.
 Kan worden gebruikt voor op regels gebaseerde weergave van geometrie bij het gebruiken van een atlas.
 Bijvoorbeeld om alleen geometrieën van andere lagen weer te geven wanneer hun geometrie de herhaalde geometrie van objecten met behulp van atlas overlapt.
@@ -59635,7 +56371,7 @@ None
 &lt;pre&gt;$atlasfeatureid = $id&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie $atlasfeatureid&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie $atlasfeatureid&lt;/h3&gt;
 Geeft het object-ID terug van de huidige rij tijdens het gebruiken van atlas.
 Dit maakt het voor u mogelijk om objecten van de atlas in regels te gebruiken
 en bijvoorbeeld voor het weergeven of verbergen van objecten, gebaseerd op hun ID.
@@ -59665,7 +56401,7 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; bounds_width($geometry) &amp;rarr; returns width of bounding box of $geometry&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie bounds_width&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie bounds_width&lt;/h3&gt;
 Geeft de breedte terug van de begrenzing van een geometrie. Berekeningen zijn in het Ruimtelijk Referentie Systeem van deze geometrie. 
 
 &lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -59695,7 +56431,7 @@ Rounds a number downwards.
 &lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;floor() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;floor() functie&lt;/h3&gt;
 Rondt een getal naar beneden af.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -59725,7 +56461,7 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; bounds_height($geometry) &amp;rarr; returns height of bounding box of $geometry&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;bounds_height function&lt;/h3&gt;
+        <translation>&lt;h3&gt;bounds_height function&lt;/h3&gt;
 Geeft de hoogte terug van de begrenzing van een geometrie. Berekeningen zijn in het Ruimtelijk Referentie Systeem van deze geometrie. 
 
 &lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -59754,7 +56490,7 @@ Converts a string to integer number. Nothing changed if a value cannot be conver
 &lt;!-- Show example of function.--&gt;
      toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie toint()&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie toint()&lt;/h3&gt;
 Converteert tekst naar een integer (geheel getal). Zet deze tekst niet om wanneer de waarde niet kan worden omgezet naar een integer (&apos;123asd&apos; is bijv. ongeldig).
 
 &lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
@@ -59782,7 +56518,7 @@ Retrieves a y coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie yat()&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie yat()&lt;/h3&gt;
 Geeft de y-coördinaat van een punt van de huidige geometrie terug
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -59810,7 +56546,7 @@ Converts a number to string.
 &lt;!-- Show example of function.--&gt;
      tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie tostring()&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie tostring()&lt;/h3&gt;
 Converteert een getal naar tekst.
 
 &lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
@@ -59839,7 +56575,7 @@ None
 &lt;pre&gt;$rownum &amp;rarr; 4711&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;$rownum functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;$rownum functie&lt;/h3&gt;
 Geeft het nummer van de huidige rij.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -59870,7 +56606,7 @@ arguments to determine the quadrant of the result
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      atan2(1.0, 1.732) &amp;rarr; 0.523611477769969&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;atan2() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;atan2() functie&lt;/h3&gt;
 Geeft de arcustangens van y/x waarbij de tekens van de twee 
 argumenten worden gebruikt om het quadrant van het resultaat te bepalen
 
@@ -59901,7 +56637,7 @@ Returns sinus of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      sin(1.571) &amp;rarr; 0.999999682931835&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;sin() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;sin() functie&lt;/h3&gt;
 Geeft de sinus van een hoek.
 
 
@@ -59936,7 +56672,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;month(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 4.033...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;functie month()&lt;/h3&gt;
+        <translation>&lt;h3&gt;functie month()&lt;/h3&gt;
 Extraheert het maand-deel uit een datum, of het aantal maanden
 uit een &lt;code&gt;Interval&lt;/code&gt;
 
@@ -59971,7 +56707,7 @@ None
 &lt;pre&gt;$area &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;$area functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;$area functie&lt;/h3&gt;
 Geeft het oppervlak van het huidige object.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -60006,7 +56742,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;day(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 730&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;functie day()&lt;/h3&gt;
+        <translation>&lt;h3&gt;functie day()&lt;/h3&gt;
 Extraheert de dag uit een datum,of het aantal dagen
 uit een &lt;code&gt;Interval&lt;/code&gt;
 
@@ -60041,7 +56777,7 @@ Convert a string into Qt data type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todate(&apos;2012-05-04&apos;) &amp;rarr; 2012-05-04&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="obsolete">&lt;h3&gt;todate() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;todate() functie&lt;/h3&gt;
 Converteert een tekenreeks naar een Qt datatype.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -60074,7 +56810,7 @@ using the fill character.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;lpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;Helloxxxxx&apos;&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;lpad() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;lpad() functie&lt;/h3&gt;
 Zet een string om naar een nieuwe string van de gevraagde lengte, opgevuld met een meegegeven teken.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -60106,7 +56842,7 @@ Returns arcuscosinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      acos(0.5) &amp;rarr; 1.0471975511966&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;acos() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;acos() functie&lt;/h3&gt;
 Geeft de arcuscosinus van een waarde in radialen.
 
 
@@ -60131,7 +56867,7 @@ Loading field values from WFS layers isn&apos;t supported, before the layer is
 actually inserted, ie. when building queries.
 &lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Velden en Waarden&lt;/h3&gt;
+        <translation>&lt;h3&gt;Velden en Waarden&lt;/h3&gt;
 Bevat een lijst met attribuutvelden van de laag. Veldwaarden kunnen door rechtsklikken worden opgevraagd.
 &lt;br&gt;&lt;br&gt;
 Klik rechts op de veldnaam voor opties om veldwaarden te laden. 
@@ -60159,7 +56895,7 @@ This function takes two arguments.
 &lt;code&gt;log(2, 32) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;log(0.5, 32) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;functie log()&lt;/h3&gt;
+        <translation>&lt;h3&gt;functie log()&lt;/h3&gt;
 Geeft de waarde terug van de logaritme van de opgeven waarde en basis.
 &lt;br&gt;
 Deze functie heeft twee argumenten.
@@ -60181,7 +56917,7 @@ Deze functie heeft twee argumenten.
         <source>&lt;h3&gt;Geometry Group&lt;/h3&gt;
 This group contains functions that operate on geometry objects e.g length, area.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Geometrie Groep&lt;/h3&gt;
+        <translation>&lt;h3&gt;Geometrie Groep&lt;/h3&gt;
 Deze groep bevat functies voor geometrie-objecten zoals lengten, oppervlakken.
 </translation>
     </message>
@@ -60196,7 +56932,7 @@ Loading field values from WFS layers isn&apos;t supported, before the layer is
 actually inserted, ie. when building queries.
 &lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Veld&lt;/h3&gt;
+        <translation>&lt;h3&gt;Veld&lt;/h3&gt;
 Dubbelklik om de veldnaam aan de expressie toe te voegen.
 &lt;br&gt;&lt;br&gt;
 Klik rechts op de veldnaam voor opties om veldwaarden te laden. 
@@ -60220,7 +56956,7 @@ None
 &lt;pre&gt;$page &amp;rarr; 2&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;$page functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;$page functie&lt;/h3&gt;
 Geeft het huidige paginanummer binnen een compositie.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -60248,7 +56984,7 @@ Returns exponential of an value.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;exp() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;exp() functie&lt;/h3&gt;
 Geeft de exponent van een waarde
 
 &lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
@@ -60281,7 +57017,7 @@ using the fill character.
 &lt;code&gt;rpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;xxxxxHello&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;rpad() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;rpad() functie&lt;/h3&gt;
 Zet een string om naar een nieuwe string van de gevraagde lengte, opgevuld met een meegegeven teken.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -60320,7 +57056,7 @@ use &lt;code&gt;round(decimal)&lt;/code&gt; to round to the nearest integer&lt;b
 
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;round() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;round() functie&lt;/h3&gt;
 Rond een decimaal nummer af op een x aantal plaatsen.
 &lt;br&gt;
 Deze functie kent twee argumenten, afhankelijk van wat is benodigd.
@@ -60356,7 +57092,7 @@ None
 &lt;pre&gt;$now &amp;rarr; 2012-07-22T13:24:57&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;$now functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;$now functie&lt;/h3&gt;
 Geeft de actuele datum en tijd
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -60387,7 +57123,7 @@ Returns a string representation of a color based on its hue, saturation, and lig
 &lt;!-- Show example of function.--&gt;
      color_hsl(100,50,70) &amp;rarr; &apos;166,217,140&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie color_hsl()&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie color_hsl()&lt;/h3&gt;
 Geeft een tekstwaarde van een kleur terug gebaseerd op de attributen tint, saturatie en helderheid
 
 &lt;p&gt;&lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -60434,7 +57170,7 @@ accelerating as the input values approach the domain maximum. Smaller exponents 
      
      
 </source>
-        <translation type="obsolete">&lt;h3&gt;functie scale_exp()&lt;/h3&gt;
+        <translation>&lt;h3&gt;functie scale_exp()&lt;/h3&gt;
 Transformeert een opgegeven waarde uit een invoerdomein naar een uitvoerbereik met behulp van een exponentiële boog. Deze functie kan worden gebruikt om waarden in of uit het gespecificeerde uitvoerbereik te verzachten.   
 
 &lt;p&gt;&lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -60477,7 +57213,7 @@ a &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;  geomToWKT( convexHull( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 4 10)&apos; )) )   &amp;rarr; returns POLYGON((3 3,4 10,4 4,3 3)) &lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie convexHull&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie convexHull&lt;/h3&gt;
 Geeft de convexe omhulling terug van een geometrie. Het vertegenwoordigt de minimale convex geometrie die alle geometrieën binnen de verzameling omhult.
 
 &lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -60505,7 +57241,7 @@ b &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( union( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))  )   &amp;rarr; returns MULTIPOINT(4 4, 5 5)&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie union&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie union&lt;/h3&gt;
 Geeft een geometrie terug die de samengevoegde puntenverzameling van de geometrieën vertegenwoordigt.
 
 &lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -60533,7 +57269,7 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; xmax($geometry) &amp;rarr; returns maximum x coordinate of $geometry&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie xmax&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie xmax&lt;/h3&gt;
 Geeft de maximale X-coördinaat van een geometrie terug. Berekeningen zijn in het Ruimtelijk Referentie Systeem van deze geometrie.
 
 &lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -60561,7 +57297,7 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; bounds($geometry) &amp;rarr; returns bounding box of $geometry&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;bounds function&lt;/h3&gt;
+        <translation>&lt;h3&gt;bounds function&lt;/h3&gt;
 Geeft een geometrie terug die de begrenzing van een invoer-geometrie vertegenwoordigt. Berekeningen zijn in het Ruimtelijk Referentie Systeem van deze geometrie.
 
 &lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -60589,7 +57325,7 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; ymax($geometry) &amp;rarr; returns maximum y coordinate of $geometry&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;ymax function&lt;/h3&gt;
+        <translation>&lt;h3&gt;ymax function&lt;/h3&gt;
 Geeft de maximale Y-coördinaat van een geometrie terug. Berekeningen zijn in het Ruimtelijk Referentie Systeem van deze geometrie.
 
 &lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -60619,7 +57355,7 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;POINT( 0.5 0.5 )&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))          &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie contains&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie contains&lt;/h3&gt;
 Geeft true terug als en alleen als er geen punten van b buiten a liggen en ten minste één punt binnen b ook binnen a ligt. 
 
 &lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -60652,7 +57388,7 @@ Returns a string wrapped to a maximum/minimum number of characters.
      wordwrap(&apos;UNIVERSITY OF QGIS&apos;,13) &amp;rarr; &apos;UNIVERSITY OF&amp;#92;nQGIS&apos;&lt;br&gt;
      wordwrap(&apos;UNIVERSITY OF QGIS&apos;,-3) &amp;rarr; &apos;UNIVERSITY&amp;#92;nOF QGIS&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie wordwrap()&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie wordwrap()&lt;/h3&gt;
 Geeft een tekenreeks terug die is afgebroken tot een maximum/minimum aantal tekens.
 
 &lt;p&gt;&lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -60688,7 +57424,7 @@ Returns a string representation of a color based on its red, green, and blue com
 &lt;!-- Show example of function.--&gt;
      color_rgb(255,127,0) &amp;rarr; &apos;255,127,0&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">
+        <translation>
 &lt;h3&gt;functie color_rgb()&lt;/h3&gt;
 Geeft een tekenreeks terug die een kleur weergeeft, gebaseerd op zijn componenten rood, groen en blauw 
 
@@ -60725,7 +57461,7 @@ Returns a string representation of a color based on its cyan, magenta, yellow an
 &lt;!-- Show example of function.--&gt;
      color_cmyk(100,50,0,10) &amp;rarr; &apos;0,115,230&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">
+        <translation>
 &lt;h3&gt;color_cmyk() functie&lt;/h3&gt;
 Geeft een tekstwaarde terug die een kleur weergeeft, gebaseerd op de componenten cyaan, magenta, geel en zwart 
 
@@ -60757,7 +57493,7 @@ geometry &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( intersection( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 )&apos; ))  )   &amp;rarr; returns LINESTRING(3 3, 4 4)&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie intersection&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie intersection&lt;/h3&gt;
 Geeft een geometrie terug die het gedeelde deel van geometrie a en geometrie b vertegenwoordigt.
 
 &lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -60793,7 +57529,7 @@ The color ramps available vary between QGIS installations.  This function
 may not give the expected results if you move your Quantum project.
 &lt;/p&gt;
 </source>
-        <translation type="obsolete">
+        <translation>
 &lt;h3&gt;de functie ramp_color()&lt;/h3&gt;
 Geeft een tekenreeks terug die een kleur uit een kleurverloop weergeeft. 
 
@@ -60833,7 +57569,7 @@ None
 &lt;pre&gt; $geometry IS NULL  &amp;rarr; returns 0, if your geometry is not NULL&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;expressie IS&lt;/h3&gt;
+        <translation>&lt;h3&gt;expressie IS&lt;/h3&gt;
 Geeft 1 terug als a hetzelfde is als b.
 
 &lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -60869,7 +57605,7 @@ Returns a string representation of a color based on its hue, saturation, and val
 &lt;!-- Show example of function.--&gt;
      color_hsv(40,100,100) &amp;rarr; &apos;255,170,0&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie color_hsv()&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie color_hsv()&lt;/h3&gt;
 Geeft een tekstwaarde terug die een kleur weergeeft, gebaseerd op de attributen tint, saturatie en waarde
 
 &lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
@@ -60900,7 +57636,7 @@ None
 &lt;pre&gt; &apos;A&apos; ILIKE &apos;a&apos;  &amp;rarr; returns 1 &lt;/pre&gt;
 &lt;pre&gt; &apos;A&apos; ILIKE &apos;B&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;expressie ILIKE&lt;/h3&gt;
+        <translation>&lt;h3&gt;expressie ILIKE&lt;/h3&gt;
 Geeft 1 terug als de eerste parameter overeenkomt, niet hoofdlettergevoelig, met het opgegeven patroon. LIKE mag in plaats van ILIKE worden gebruikt om de overeenkomst hoofdlettergevoelig te maken. Werkt ook met getallen.
 
 &lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -60930,7 +57666,7 @@ None
 &lt;pre&gt; &apos;A&apos; LIKE &apos;a&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
 &lt;pre&gt; &apos;A&apos; LIKE &apos;B&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;expressie LIKE&lt;/h3&gt;
+        <translation>&lt;h3&gt;expressie LIKE&lt;/h3&gt;
 Geeft 1 terug als de eerste parameter overeenkomst met het opgegeven patroon. Werkt ook met getallen.
 
 &lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -60959,7 +57695,7 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; ymin($geometry) &amp;rarr; returns minimum y coordinate of $geometry&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie ymin&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie ymin&lt;/h3&gt;
 Geeft de minimale Y-coördinaat van een geometrie terug. Berekeningen zijn in het Ruimtelijk Referentie Systeem van deze geometrie.
 
 &lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -60988,7 +57724,7 @@ text &amp;rarr; GML representation of a geometry
 &lt;pre&gt; geomFromGML( &apos;&lt;gml:LineString srsName=&quot;EPSG:4326&quot;&gt;&lt;gml:coordinates&gt;4,4 5,5 6,6&lt;/gml:coordinates&gt;&lt;/gml:LineString&gt;&apos;) &amp;rarr; returns a geometry&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie geomFromGML&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie geomFromGML&lt;/h3&gt;
 Geeft een geometrie terug uit een GML-weergave van geometrie
 
 &lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -61006,7 +57742,7 @@ tekst &amp;rarr; GML-weergave van een geometrie
         <source>&lt;h3&gt;Date and Time Group&lt;/h3&gt;
 This group contains functions for handling date and time data.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Datum en tijdgroup&lt;/h3&gt;
+        <translation>&lt;h3&gt;Datum en tijdgroup&lt;/h3&gt;
 Deze groep bevat functies voor gebruik van datum en tijddata.
 </translation>
     </message>
@@ -61025,7 +57761,7 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; geomToWKT( combine( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5 )&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4,  2 1 )&apos; ))  )    &amp;rarr; returns MULTILINESTRING((4 4, 2 1), (3 3, 4 4), (4 4, 5 5)) &lt;/pre&gt;
 &lt;pre&gt; geomToWKT( combine( geomFromWKT( &apos;LINESTRING(3 3 , 4 4  )&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 6 6,  2 1 )&apos; ))  )  &amp;rarr; returns LINESTRING(3 3, 4 4, 6 6, 2 1) &lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie combine&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie combine&lt;/h3&gt;
 geeft de combinatie terug van geometrie a en geometrie b.
 
 &lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -61055,7 +57791,7 @@ b &amp;rarr; geometry
 &lt;pre&gt; intersects( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; intersects( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))             &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie intersects&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie intersects&lt;/h3&gt;
 Geeft 1 terug als de geometrieën elkaar ruimtelijk overlappen (enig deel van een ruimte delen) en 0 als dat niet zo is.
 
 &lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -61091,7 +57827,7 @@ Restricts an input value to a specified range.
      
      
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie clamp()&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie clamp()&lt;/h3&gt;
 Beperkt een inputwaarde tot een specifiek bereik.
 
 &lt;p&gt;&lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -61127,7 +57863,7 @@ b &amp;rarr; geometry
 &lt;pre&gt; disjoint( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; )) &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; disjoint( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;POINT(4 4)&apos; ))                              &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie disjoint&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie disjoint&lt;/h3&gt;
 Retourneert 1 wanneer geometrieën geen &quot;spatiale relatie&quot; met elkaar hebben - ze delen nergens een ruimte met elkaar, ze staan los van elkaar.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -61156,7 +57892,7 @@ text &amp;rarr; Well-Known Text (WKT) representation of a geometry
 &lt;pre&gt; geomFromWKT( &apos;POINT(4 5)&apos; ) &amp;rarr; returns a geometry&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie geomFromWKT&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie geomFromWKT&lt;/h3&gt;
 Retourneert een geometrie gemaakt vanuit het formaat Well-Known Text (WKT).
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -61185,7 +57921,7 @@ b &amp;rarr; distance for the buffer
 &lt;pre&gt; buffer($geometry, 10.5 ) &amp;rarr; returns a polygon&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie buffer&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie buffer&lt;/h3&gt;
 Retourneert een geometrie waarvan alle punten gelegen zijn op een gegeven afstand van de punten van een gegeven geometrie.  Berekeningen worden uitgevoerd in het Spatiale Referentie Systeem van deze geometry. 
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -61215,7 +57951,7 @@ None
 &lt;pre&gt;attribute( $atlasfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current atlas feature&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;functie $atlasfeature&lt;/h3&gt;
+        <translation>&lt;h3&gt;functie $atlasfeature&lt;/h3&gt;
 Geeft, bij het genereren van een atlas, het nummer voor het huidige object terug dat is herhaald op de gebruikte laag. Dit kan worden gebruikt met de functie &apos;attribute&apos; om waarden van attributen terug te geven voor het huidige object in de atlas..
 
 &lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -61244,7 +57980,7 @@ None
 &lt;pre&gt;attribute( $currentfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current feature&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;functie $currentfeature&lt;/h3&gt;
+        <translation>&lt;h3&gt;functie $currentfeature&lt;/h3&gt;
 Geeft het huidige object terug dat wordt geëvalueerd. Dit kan worden gebruikt met de functie &apos;attribute&apos; om waarden van attributen terug te geven voor het huidige object.
 
 &lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -61272,7 +58008,7 @@ None
 &lt;pre&gt;$id &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;$id functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;$id functie&lt;/h3&gt;
 Geeft het object-id van de actuele rij.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -61301,7 +58037,7 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$uuid &amp;rarr; {0bd2f60f-f157-4a6d-96af-d4ba4cb366a1}&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;functie $uuid&lt;/h3&gt;
+        <translation>&lt;h3&gt;functie $uuid&lt;/h3&gt;
 Genereert een Universally Unique Identifier (UUID) voor elke rij met behulp van de Qt
 &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/quuid.html#createUuid&apos;&gt;QUuid::createUuid&lt;/a&gt;-methode.  Elke UUID is 38 tekens lang.
 
@@ -61330,7 +58066,7 @@ None
 &lt;pre&gt; &apos;A&apos; IN (&apos;C&apos;,&apos;B&quot;) &amp;rarr; returns 0 &lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;IN-expressie&lt;/h3&gt;
+        <translation>&lt;h3&gt;IN-expressie&lt;/h3&gt;
 Geeft 1 wanneer een waarde wordt gevonden in een lijst met waarden
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -61359,7 +58095,7 @@ attribute_name &amp;rarr; name of attribute to be returned
 &lt;pre&gt;attribute( $currentfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current feature&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;functie attribute&lt;/h3&gt;
+        <translation>&lt;h3&gt;functie attribute&lt;/h3&gt;
 Geeft de waarde terug van een gespecificeerd attribuut uit een object.
 
 &lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -61388,7 +58124,7 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; crosses( geomFromWKT( &apos;LINESTRING(3 5 , 4 4 , 5 3)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; crosses( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))             &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie crosses&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie crosses&lt;/h3&gt;
 Retourneert 1 wanneer de gegeven geometrieën enkele, maar niet alle, overeenkomstige interne punten hebben.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -61416,7 +58152,7 @@ a &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( $geometry ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie geomToWKT&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie geomToWKT&lt;/h3&gt;
 Geeft de geometrie terug in het formaat Well-Known Text (WKT) zonder  SRID metadata.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -61437,7 +58173,7 @@ Returns the first feature of a layer matching a given attribute value
 &lt;pre&gt;getFeature( layer, attributeField, value )&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;functie getFeature &lt;/h3&gt;
+        <translation>&lt;h3&gt;functie getFeature &lt;/h3&gt;
 Geeft het eerste object terug van een laag die overeenkomt met de opgegeven waarde voor het attribuut
 
 &lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -61460,7 +58196,7 @@ b &amp;rarr; geometry
 &lt;pre&gt; touches( geomFromWKT( &apos;LINESTRING(5 3 , 4 4)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; touches( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))                     &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie touches&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie touches&lt;/h3&gt;
 Retourneert 1 wanneer de geometrieën minstens één gemeenschappelijk punt hebben maar waarbij hun binnenkant elkaar niet overlapt.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -61490,7 +58226,7 @@ b &amp;rarr; geometry
 &lt;pre&gt; overlaps( geomFromWKT( &apos;LINESTRING(3 5 , 4 4 , 5 5 , 5 3)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))   &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; overlaps( geomFromWKT( &apos;LINESTRING(0 0 , 1 1)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie overlaps&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie overlaps&lt;/h3&gt;
 Retourneert 1 wanneer twee geometrieën van hetzelfde type zijn, voor een deel elkaar overlappen, maar niet geheel binnen de ander valt.
 &lt;h4&gt;Syntax&lt;/h4&gt;
 &lt;pre&gt;overlaps( a, b )&lt;/pre&gt;
@@ -61519,7 +58255,7 @@ None
 &lt;pre&gt; 4 = 2+2 AND 1 = 2  &amp;rarr; returns 0 &lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;de logische operator AND&lt;/h3&gt;
+        <translation>&lt;h3&gt;de logische operator AND&lt;/h3&gt;
 Retourneert 1 wanneer conditie a en conditie b allebei waar zijn.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -61548,7 +58284,7 @@ None
 &lt;pre&gt; geomToWKT( $geometry ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie $geometry&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie $geometry&lt;/h3&gt;
 Retourneert de geometrie van het huidige object. Deze kan worden gebruikt binnen andere functies.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -61577,7 +58313,7 @@ None
 &lt;pre&gt; 4 = 2+2 OR 1 = 2  &amp;rarr; returns 1 &lt;/pre&gt;
 &lt;pre&gt; 4 = 2   OR 1 = 2  &amp;rarr; returns 0 &lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;de logische operator OR&lt;/h3&gt;
+        <translation>&lt;h3&gt;de logische operator OR&lt;/h3&gt;
 Retourneert 1 wanneer conditie a of b waar is.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -61606,7 +58342,7 @@ b &amp;rarr; geometry
 &lt;pre&gt; centroid($geometry) &amp;rarr; returns a point geometry&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie centroid&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie centroid&lt;/h3&gt;
 Retourneert het geometrische centrum van een geometrie.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -61635,7 +58371,7 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; within( geomFromWKT( &apos;POINT( 0.5 0.5 )&apos;) , geomFromWKT(&apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) )    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; within( geomFromWKT( &apos;POINT( 5 5 )&apos;) , geomFromWKT(&apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) )        &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie within&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie within&lt;/h3&gt;
 Geeft 1 terug wanneer geometrie a volledig binnen geometrie b ligt
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -61668,7 +58404,7 @@ $map &amp;rarr; &quot;canvas&quot; (within the main QGIS main canvas)&lt;/pre&gt
 
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie $map&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie $map&lt;/h3&gt;
 Geeft het ID van het huidige kaartitem terug als de kaart is getekend in een printvormgeving, of &quot;canvas&quot; als de kaart is getekend binnen het hoofdvenster van QGIS.
 
 &lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -61699,7 +58435,7 @@ b &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; distance( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(4 8)&apos; ))    &amp;rarr; returns 4&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie distance&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie distance&lt;/h3&gt;
 Geeft de minimale afstand terug (gebaseerd op ruimtelijke verwijzing) tussen twee geometrieën in geprojecteerde eenheden.
 
 &lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -61727,7 +58463,7 @@ geometry &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( difference( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4)&apos; ))  )   &amp;rarr; returns LINESTRING(4 4, 5 5)&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie difference&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie difference&lt;/h3&gt;
 Geeft een geometrie terug die dat gedeelte van geometrie a vertegenwoordigt dat niet kruist met geometrie b.
 
 &lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -61757,7 +58493,7 @@ None
 &lt;pre&gt; 4 IS NOT 2+2    &amp;rarr; returns 0 &lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;NOT&lt;/h3&gt;
+        <translation>&lt;h3&gt;NOT&lt;/h3&gt;
 Geeft 1 terug als a niet hetzelfde is als b.
 
 &lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -61787,7 +58523,7 @@ geometry &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( symDifference(  geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 8 8)&apos; ))   )   &amp;rarr; returns LINESTRING(5 5, 8 8)&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie symDifference&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie symDifference&lt;/h3&gt;
 geeft een geometrie terug die de gedeelten van a en b vertegenwoordigen die elkaar niet overlappen.
 
 &lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -61815,7 +58551,7 @@ None
 &lt;pre&gt;$perimeter &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;$perimeter function&lt;/h3&gt;
+        <translation>&lt;h3&gt;$perimeter function&lt;/h3&gt;
 Geeft de omtrek van het huidige object.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -61843,7 +58579,7 @@ Converts a string to a interval type.  Can be used to take days, hours, month, e
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-05 12:00:00&apos;) - tointerval(&apos;1 day 2 hours&apos;) &amp;rarr; 2012-05-04T10:00:00&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="obsolete">&lt;h3&gt;de functie tointerval()&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie tointerval()&lt;/h3&gt;
 Converteert en tekenreeks naar een type interval.  Kan worden gebruikt om dagen, uren, maand, etc uit een datum te halen. 
 
 &lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -61879,7 +58615,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;hour(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 17520&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;hour() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;hour() functie&lt;/h3&gt;
 Geeft het uur uit een datumtijd of tijd terug, of het aantal uren uit een &lt;code&gt;Interval&lt;/code&gt;
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -61918,7 +58654,7 @@ Returns a string representation of a color based on its hue, saturation, lightne
 &lt;!-- Show example of function.--&gt;
      color_hsla(100,50,70,200) &amp;rarr; &apos;166,217,140,200&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie color_hsla()&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie color_hsla()&lt;/h3&gt;
 Geeft een weergave in een tekenreeks terug van een kleur, gebaseerd op zijn attributen tint, saturatie, helderheid en alfa (transparantie)
 
 &lt;p&gt;&lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -61949,7 +58685,7 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$pi &amp;rarr; 3.14159265358979&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;$pi constante&lt;/h3&gt;
+        <translation>&lt;h3&gt;$pi constante&lt;/h3&gt;
 Geeft pi terug als waarde voor berekeningen
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -61965,7 +58701,7 @@ Geen
         <source>&lt;h3&gt;Record Group&lt;/h3&gt;
 This group contains functions that operate on record identifiers.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Record Groep&lt;/h3&gt;
+        <translation>&lt;h3&gt;Record Groep&lt;/h3&gt;
 Deze groep bevat functies met betrekking tot rijnummers.</translation>
     </message>
     <message>
@@ -61982,7 +58718,7 @@ Convert a string into Qt time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;totime(&apos;12:30:01&apos;) &amp;rarr; 12:30:01&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="obsolete">&lt;h3&gt;de functie totime()&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie totime()&lt;/h3&gt;
 Converteert een tekenreeks naar Qt time-indeling.
 
 &lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -62013,7 +58749,7 @@ Returns a string with the the supplied string replaced.
 &lt;!-- Show example of function.--&gt;
      replace(&apos;QGIS SHOULD ROCK&apos;,&apos;SHOULD&apos;,&apos;DOES&apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;replace() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;replace() functie&lt;/h3&gt;
 Geeft een tekst terug waarvan een deel is vervangen.
 
 &lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
@@ -62034,7 +58770,7 @@ Geeft een tekst terug waarvan een deel is vervangen.
         <source>&lt;h3&gt;Conditionals Group&lt;/h3&gt;
 This group contains functions to handle conditional checks in expressions.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Voorwaarden Groep&lt;/h3&gt;
+        <translation>&lt;h3&gt;Voorwaarden Groep&lt;/h3&gt;
 Deze groep bevat functies om conditionele voorwaarden in expressies in te bouwen.</translation>
     </message>
     <message>
@@ -62051,7 +58787,7 @@ abs(&lt;i&gt;value&lt;/i&gt;)&lt;br&gt;
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;code&gt;abs(-2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;abs() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;abs() functie&lt;/h3&gt;
 Geeft de absolute waarde van een getal.&lt;br&gt;
 
 
@@ -62079,7 +58815,7 @@ Returns the largest value in a set of values.
 &lt;!-- Show example of function.--&gt;
      max(2,10.2,5.5) &amp;rarr; 10.2
 </source>
-        <translation type="obsolete">&lt;h3&gt;max() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;max() functie&lt;/h3&gt;
 Geeft de maximum waarde van een set.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -62108,7 +58844,7 @@ Returns square root of a value
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      sqrt(9) &amp;rarr; 3&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;sqrt() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;sqrt() functie&lt;/h3&gt;
 Geeft de vierkantswortel van een waarde
 
 
@@ -62125,7 +58861,7 @@ Geeft de vierkantswortel van een waarde
         <source>&lt;h3&gt;Conditions Group&lt;/h3&gt;
 This group contains functions that operate on condition.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Voorwaarden Groep&lt;/h3&gt;
+        <translation>&lt;h3&gt;Voorwaarden Groep&lt;/h3&gt;
 Deze groep bevat functies die werken met voorwaardelijke condities.
 </translation>
     </message>
@@ -62149,7 +58885,7 @@ Returns a string representation of a color based on its cyan, magenta, yellow, b
 &lt;!-- Show example of function.--&gt;
      color_cmyka(100,50,0,10,200) &amp;rarr; &apos;0,115,230,200&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">
+        <translation>
 &lt;h3&gt;color_cmyka() functie&lt;/h3&gt;
 Geeft een tekstwaarde van een kleur, gebaseerd op de cyaan, magenta, geel, zwart en alpha (transparantie) componenten
 
@@ -62187,7 +58923,7 @@ to.
 &lt;code&gt;format_number(10000000.332,2) &amp;rarr; 10,000,000.33&lt;/code&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;format_number() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;format_number() functie&lt;/h3&gt;
 Geeft een getal terug dat is geformatteerd met het &apos;locale&apos; scheidingsteken voor duizendtallen. 
 De functie rondt het getal ook af op het opgegeven aantal decimalen. 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -62225,7 +58961,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;year(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1.9986..&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;year() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;year() functie&lt;/h3&gt;
 Geeft het jaar uit een datum terug, of het aantal jaren uit een &lt;code&gt;Interval&lt;/code&gt;
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -62272,7 +59008,7 @@ return a result.
     END
 &lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;CASE expressie&lt;/h3&gt;
+        <translation>&lt;h3&gt;CASE expressie&lt;/h3&gt;
 Een voorwaarde expressie die kan worden gebruikt voor het evalueren van meerdere expressies en aan de hand daarvan een resultaat terug te geven.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -62318,7 +59054,7 @@ This function takes two arguments.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;randf(1, 10) &amp;rarr; 4.59258286403147&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;randf() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;randf() functie&lt;/h3&gt;
 Geeft een willekeurig getal (met decimalen) terug tussen een opgegeven minimum en maximum waarde.
 &lt;br&gt;
 De functie heeft twee argumenten.
@@ -62348,7 +59084,7 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; xmin($geometry) &amp;rarr; returns minimum x coordinate of $geometry&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie xmin&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie xmin&lt;/h3&gt;
 Geeft de minimaleX-coördinaat van een geometrie terug. Berekeningen zijn in het Ruimtelijk Referentie Systeem van deze geometrie.
 
 &lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -62383,7 +59119,7 @@ Transforms a given value from an input domain to an output range using linear in
      
      
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie scale_linear()&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie scale_linear()&lt;/h3&gt;
 Transformeert een opgegeven waarde uit een invoerdomein naar een uitvoerbereik met behulp van lineaire interpolatie. 
 
 &lt;p&gt;&lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -62419,7 +59155,7 @@ Removes all leading and trailing whitespace (spaces, tabs, etc) from a string.
 &lt;!-- Show example of function.--&gt;
      trim(&apos;   hello world    &apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;trim() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;trim() functie&lt;/h3&gt;
 Verwijdert alle spaties en tabs aan het begin en aan het eind van een tekst
 
 &lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
@@ -62455,7 +59191,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;minute(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1051200&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;minute() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;minute() functie&lt;/h3&gt;
 Geeft de minuut uit een datumtijd of tijd terug, of het aantal minuten uit een &lt;code&gt;Interval&lt;/code&gt;
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -62508,7 +59244,7 @@ use &lt;code&gt;day&lt;/code&gt; to extract number of days&lt;br&gt;
 &lt;code&gt;day(age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;)) &amp;rarr; 10&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;age() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;age() functie&lt;/h3&gt;
 Geeft het verschil tussen twee datums.
 &lt;br&gt;&lt;br&gt;
 Het verschil wordt teruggegeven als een &lt;code&gt;Interval&lt;/code&gt; 
@@ -62556,7 +59292,7 @@ This function takes one argument.
 &lt;code&gt;log10(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;log10(100) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie log10()&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie log10()&lt;/h3&gt;
 Geeft de waarde terug van de logaritme basis 10 van de opgegeven expressie.
 &lt;br&gt;
 Deze functie heeft één argument.
@@ -62578,7 +59314,7 @@ Deze functie heeft één argument.
         <source>&lt;h3&gt;Conversions Group&lt;/h3&gt;
 This group contains functions to convert on data type to another e.g string to integer, integer to string.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Conversie Groep&lt;/h3&gt;
+        <translation>&lt;h3&gt;Conversie Groep&lt;/h3&gt;
 Deze groep bevat functies om gegevens te converteren naar een ander type, bijvoorbeeld tekst naar getallen, of getallen naar tekst.</translation>
     </message>
     <message>
@@ -62595,7 +59331,7 @@ Returns cosinus of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      cos(1.571) &amp;rarr; 0.000796326710733263&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;cos() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;cos() functie&lt;/h3&gt;
 Geeft de cosinus van een hoek terug.
 
 
@@ -62613,7 +59349,7 @@ Geeft de cosinus van een hoek terug.
         <source>&lt;h3&gt;Operators Group&lt;/h3&gt;
 This group contains operators e.g + - * 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Operatoren Groep&lt;/h3&gt;
+        <translation>&lt;h3&gt;Operatoren Groep&lt;/h3&gt;
 Deze groep bevat operatoren, bijvoorbeeld +, - en * 
 </translation>
     </message>
@@ -62639,7 +59375,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;second(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 63072000&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;second() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;second() functie&lt;/h3&gt;
 Geeft de seconde uit een datumtijd of tijd terug, of het aantal seconden uit een &lt;code&gt;Interval&lt;/code&gt;
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -62673,7 +59409,7 @@ Returns arcustanget of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      atan(0.5) &amp;rarr; 0.463647609000806&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;atan() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;atan() functie&lt;/h3&gt;
 Geeft de arctangens van een waarde in radialen.
 
 
@@ -62700,7 +59436,7 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$length &amp;rarr; 42.4711&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;$length functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;$length functie&lt;/h3&gt;
 Geeft de lengte van het huidige object.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -62729,7 +59465,7 @@ capital letter).
 &lt;!-- Show example of function.--&gt;
      upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;Hello World&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;title() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;title() functie&lt;/h3&gt;
 Zet een tekst om naar titelformaat (alle woorden in kleine letters, met hoofdletter als eerste letter).
 
 &lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
@@ -62760,7 +59496,7 @@ Returns true if any part of a string matches the supplied regular expression.
 &lt;!-- Show example of function.--&gt;
      regexp_match(&apos;QGIS ROCKS&apos;,&apos;&amp;#92;&amp;#92;sROCKS&apos;) &amp;rarr; 1&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie regexp_match()&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie regexp_match()&lt;/h3&gt;
 Geeft true terug als enig deel van een tekenreeks overeenkomt met de opgegeven reguliere expressie.
 
 &lt;p&gt;&lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -62793,7 +59529,7 @@ Return a part of a string
 &lt;!-- Show example of function.--&gt;
      substr(&apos;HELLO WORLD&apos;,3,5) &amp;rarr; &apos;LLO W&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;substr() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;substr() functie&lt;/h3&gt;
 Geeft een deel van een tekst terug
 
 &lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
@@ -62825,7 +59561,7 @@ Format a string using supplied arguments.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;format(&apos;This %1 a %2&apos;,&apos;is&apos;, &apos;test&apos;) &amp;rarr; This is a test&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="obsolete">&lt;h3&gt;format() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;format() functie&lt;/h3&gt;
 Formatteert een tekst met opgegeven argumenten.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -62857,7 +59593,7 @@ Returns a string with the supplied regular expression replaced.
 &lt;!-- Show example of function.--&gt;
      regexp_replace(&apos;QGIS SHOULD ROCK&apos;,&apos;&amp;#92;&amp;#92;sSHOULD&amp;#92;&amp;#92;s&apos;,&apos; DOES &apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie regexp_replace()&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie regexp_replace()&lt;/h3&gt;
 Geeft een tekenreeks terug waarin de opgegeven reguliere expressie is vervangen.
 
 &lt;p&gt;&lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -62890,7 +59626,7 @@ Returns the portion of a string which matches a supplied regular expression.
 &lt;!-- Show example of function.--&gt;
      regexp_substr(&apos;abc123&apos;,&apos;(&amp;#92;&amp;#92;d+)&apos;) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie regexp_substr()&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie regexp_substr()&lt;/h3&gt;
 geeft het gedeelte van een tekenreeks terug dat overeenkomt met de opgegeven reguliere expressie.
 
 &lt;p&gt;&lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -62920,7 +59656,7 @@ None
 &lt;pre&gt;$y &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;$y functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;$y functie&lt;/h3&gt;
 Geeft de y-coördinaat van het huidige object.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -62953,7 +59689,7 @@ Returns a string representation of a color based on its red, green, blue, and al
 &lt;!-- Show example of function.--&gt;
      color_rgba(255,127,0,200) &amp;rarr; &apos;255,127,0,200&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;color_rgba() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;color_rgba() functie&lt;/h3&gt;
 Geeft een tekstwaarde van een kleur, gebaseerd op de rood, groen, blauw en alpha (transparantie) componenten
 
 &lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
@@ -62985,7 +59721,7 @@ None
 &lt;pre&gt;$x &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;$x functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;$x functie&lt;/h3&gt;
 Geeft de x-coördinaat van het huidige object.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -63003,7 +59739,7 @@ Geen
         <source>&lt;h3&gt;Math Group&lt;/h3&gt;
 This group contains math functions e.g square root, sin and cos
 </source>
-        <translation type="obsolete">&lt;h3&gt;Math-groep&lt;/h3&gt;
+        <translation>&lt;h3&gt;Math-groep&lt;/h3&gt;
 Deze groep bevat wiskundige functies zoals wortel, sinus en cosinus</translation>
     </message>
     <message>
@@ -63021,7 +59757,7 @@ Returns the smallest value in a set of values.
 &lt;!-- Show example of function.--&gt;
      min(20.5,10,6.2) &amp;rarr; 6.2
 </source>
-        <translation type="obsolete">&lt;h3&gt;min() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;min() functie&lt;/h3&gt;
 Geeft de minimum waarde van een set.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -63049,7 +59785,7 @@ Converts a string to lower case letters.
 &lt;p&gt;&lt;h4&gt;  Example&lt;/h4&gt;
      lower(&apos;HELLO World&apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;lower() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;lower() functie&lt;/h3&gt;
 Converteert een tekst naar kleine letters.
 
 &lt;p&gt;&lt;h4&gt;  Syntax&lt;/h4&gt;
@@ -63075,7 +59811,7 @@ None
 &lt;pre&gt;$numfeatures &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;functie $numfeatures&lt;/h3&gt;
+        <translation>&lt;h3&gt;functie $numfeatures&lt;/h3&gt;
 Geeft, bij het genereren van een atlas, het totale aantal objecten terug op de gebruikte laag.
 
 &lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -63093,7 +59829,7 @@ Geen
         <source>&lt;h3&gt;String Group&lt;/h3&gt;
 This group contains functions that operate on strings e.g replace, convert to upper case.
 </source>
-        <translation type="obsolete">&lt;h3&gt;String Groep&lt;/h3&gt;
+        <translation>&lt;h3&gt;String Groep&lt;/h3&gt;
 Deze groep bevat functies voor het bewerken van tekst, bijvoorbeeld &apos;zoek en vervang&apos; en omzetten naar hoofdletters.</translation>
     </message>
     <message>
@@ -63111,7 +59847,7 @@ Concatenates several strings to one.
 &lt;!-- Show example of function.--&gt;
      concat(&apos;a&apos;,&apos;b&apos;,&apos;c&apos;,&apos;d&apos;,&apos;e&apos;) &amp;rarr; &apos;abcde&apos;
 </source>
-        <translation type="obsolete">&lt;h3&gt;concat() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;concat() functie&lt;/h3&gt;
 Voegt meerdere tekst-strings samen.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -63147,7 +59883,7 @@ This function can take any number of arguments.
  else the value of &quot;fallbackField&quot; or the string &apos;ERROR&apos; if both are NULL&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;coalesce() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;coalesce() functie&lt;/h3&gt;
 Geeft de eerste niet-NULL waarde uit een lijst met expressies.
 &lt;br&gt;
 Deze functie kan meerdere argumenten meekrijgen.
@@ -63181,7 +59917,7 @@ Returns arcussinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      asin(1.0) &amp;rarr; 1.5707963267949&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;asin() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;asin() functie&lt;/h3&gt;
 Geeft de arcsinus van een waarde in radialen.
 
 
@@ -63209,7 +59945,7 @@ Convert a string into Qt data time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-04 12:50:00&apos;) &amp;rarr; 2012-05-04T12:50:00&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="obsolete">&lt;h3&gt;todatetime() functie&lt;/h3&gt;
+        <translation>&lt;h3&gt;todatetime() functie&lt;/h3&gt;
 Converteert een tekst naar Qt data time type.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -63237,7 +59973,7 @@ Returns tangent of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      tan(1.0) &amp;rarr; 1.5574077246549&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie tan()&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie tan()&lt;/h3&gt;
 Geeft de tangens van een hoek terug.
 
 
@@ -63265,7 +60001,7 @@ None
 &lt;pre&gt;$feature &amp;rarr; 2&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;functie $feature&lt;/h3&gt;
+        <translation>&lt;h3&gt;functie $feature&lt;/h3&gt;
 Geeft, bij het genereren van een atlas, het nummer voor het huidige object terug dat is herhaald op de gebruikte laag.
 
 &lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -63296,7 +60032,7 @@ This function takes one argument.
 &lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie ln()&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie ln()&lt;/h3&gt;
 Geeft de waarde terug van de natuurlijke logaritme van de opgegeven expressie.
 &lt;br&gt;
 Deze functie heeft één argument. 
@@ -63332,7 +60068,7 @@ Returns a string representation of a color based on its hue, saturation, value a
 &lt;!-- Show example of function.--&gt;
      color_hsva(40,100,100,200) &amp;rarr; &apos;255,170,0,200&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;de functie color_hsva()&lt;/h3&gt;
+        <translation>&lt;h3&gt;de functie color_hsva()&lt;/h3&gt;
 Geeft een weergave in een tekenreeks terug van een kleur, gebaseerd op zijn attributen tint, saturatie, waarde en alfa (transparantie)
 
 &lt;p&gt;&lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -63364,7 +60100,7 @@ f &amp;rarr; QgsFeature
 &lt;pre&gt; geomToWKT( geometry( getFeature( layer, attributeField, value ) ) ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
 &lt;pre&gt; intersects( $geometry, geometry( getFeature( layer, attributeField, value ) ) ) &amp;rarr; 1&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;functie geometry&lt;/h3&gt;
+        <translation>&lt;h3&gt;functie geometry&lt;/h3&gt;
 Geeft de geometrie van het object terug
 
 &lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -63395,7 +60131,7 @@ dCrsId &amp;rarr; the Dest Auth CRS Id
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( transform( $geometry, &apos;EPSG:2154&apos;, &apos;EPSG:4326&apos; ) ) &amp;rarr; POINT(0 51)&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;functie transform&lt;/h3&gt;
+        <translation>&lt;h3&gt;functie transform&lt;/h3&gt;
 Geeft de getransformeerde geometrie, vanuit bron-CRS naar doel-CRS terug.
 
 &lt;h4&gt;Syntaxis&lt;/h4&gt;
@@ -63588,7 +60324,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;format_date(&apos;2012-05-15&apos;,&apos;dd.MM.yyyy&apos;) &amp;rarr; 15.05.2012&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;functie format_date()&lt;/h3&gt;
+        <translation>&lt;h3&gt;functie format_date()&lt;/h3&gt;
 
 Formatteert een datum gegevenstype of string naar een bepaald formaat. Gebruikt Qt data time format strings.  Zie ook &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/qdatetime.html#toString&apos;&gt;QDateTime::toString&lt;/a&gt;
 
@@ -63774,11 +60510,7 @@ Formatteert een datum gegevenstype of string naar een bepaald formaat. Gebruikt 
     </message>
     <message>
         <source>Output file</source>
-        <translation type="obsolete">Uitvoerbestand</translation>
-    </message>
-    <message>
-        <source>xyz</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoerbestand</translation>
     </message>
 </context>
 <context>
@@ -63805,101 +60537,7 @@ Formatteert een datum gegevenstype of string naar een bepaald formaat. Gebruikt 
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
-    </message>
-    <message>
-        <source>Pyramidized</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>gdalcalc</name>
-    <message>
-        <source>Input layer A</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Number of raster band for raster A</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Input layer B</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Number of raster band for raster B</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Input layer C</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Number of raster band for raster C</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Input layer D</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Number of raster band for raster D</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Input layer E</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Number of raster band for raster E</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Input layer F</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Number of raster band for raster F</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Calculation in gdalnumeric syntax using +-/* or any numpy array functions (i.e. logical_and())</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Set output nodata value</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Output raster type</source>
-        <translation type="unfinished">Type raster uitvoer</translation>
-    </message>
-    <message>
-        <source>Additional creation parameters</source>
-        <translation type="unfinished">Aanvullende parameters voor maken</translation>
-    </message>
-    <message>
-        <source>Calculated</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>gdaltindex</name>
-    <message>
-        <source>Input layers</source>
-        <translation type="unfinished">Invoerlagen</translation>
-    </message>
-    <message>
-        <source>Tile index field</source>
-        <translation type="unfinished">Tile indexveld</translation>
-    </message>
-    <message>
-        <source>Skip files with different projection reference</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tile index</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultaatlaag</translation>
     </message>
 </context>
 <context>
@@ -65724,11 +62362,7 @@ Formatteert een datum gegevenstype of string naar een bepaald formaat. Gebruikt 
     </message>
     <message>
         <source>Output file</source>
-        <translation type="obsolete">Uitvoerbestand</translation>
-    </message>
-    <message>
-        <source>Hillshade</source>
-        <translation type="unfinished">&apos;Hillshade&apos;</translation>
+        <translation>Uitvoerbestand</translation>
     </message>
 </context>
 <context>
@@ -66716,11 +63350,7 @@ Formatteert een datum gegevenstype of string naar een bepaald formaat. Gebruikt 
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
-    </message>
-    <message>
-        <source>Merged</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultaatlaag</translation>
     </message>
 </context>
 <context>
@@ -66739,11 +63369,7 @@ Formatteert een datum gegevenstype of string naar een bepaald formaat. Gebruikt 
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
-    </message>
-    <message>
-        <source>Nearblack</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultaatlaag</translation>
     </message>
 </context>
 <context>
@@ -66842,11 +63468,7 @@ Formatteert een datum gegevenstype of string naar een bepaald formaat. Gebruikt 
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
-    </message>
-    <message>
-        <source>PCT to RGB</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultaatlaag</translation>
     </message>
 </context>
 <context>
@@ -66861,11 +63483,7 @@ Formatteert een datum gegevenstype of string naar een bepaald formaat. Gebruikt 
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
-    </message>
-    <message>
-        <source>Vectorized</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultaatlaag</translation>
     </message>
 </context>
 <context>
@@ -66900,11 +63518,7 @@ Formatteert een datum gegevenstype of string naar een bepaald formaat. Gebruikt 
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
-    </message>
-    <message>
-        <source>Distance</source>
-        <translation type="unfinished">Afstand</translation>
+        <translation>Resultaatlaag</translation>
     </message>
 </context>
 <context>
@@ -66919,7 +63533,7 @@ Formatteert een datum gegevenstype of string naar een bepaald formaat. Gebruikt 
     </message>
     <message>
         <source>Write values inside an existing raster layer(*)</source>
-        <translation type="obsolete">Waarden binnen een bestaande rasterlaag schrijven(*)</translation>
+        <translation>Waarden binnen een bestaande rasterlaag schrijven(*)</translation>
     </message>
     <message>
         <source>Set output raster size (ignored if above option is checked)</source>
@@ -66939,7 +63553,7 @@ Formatteert een datum gegevenstype of string naar een bepaald formaat. Gebruikt 
     </message>
     <message>
         <source>Output layer: mandatory to choose an existing raster layer if the (*) option is selected</source>
-        <translation type="obsolete">Uitvoerlaag: verplicht een bestaande rasterlaag te kiezen als de optie (*) is geselecteerd</translation>
+        <translation>Uitvoerlaag: verplicht een bestaande rasterlaag te kiezen als de optie (*) is geselecteerd</translation>
     </message>
     <message>
         <source>Nodata value</source>
@@ -66971,30 +63585,7 @@ Formatteert een datum gegevenstype of string naar een bepaald formaat. Gebruikt 
     </message>
     <message>
         <source>Force the generation of an associated ESRI world file (.tfw))</source>
-        <translation type="obsolete">Het genereren van een geassocieerd ESRI-wereldbestand (.tfw) forceren</translation>
-    </message>
-    <message>
-        <source>Force the generation of an associated ESRI world file (.tfw)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rasterized</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>rasterize_over</name>
-    <message>
-        <source>Input layer</source>
-        <translation type="unfinished">Invoerlaag</translation>
-    </message>
-    <message>
-        <source>Attribute field</source>
-        <translation type="unfinished">Attribuutveld</translation>
-    </message>
-    <message>
-        <source>Existing raster layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Het genereren van een geassocieerd ESRI-wereldbestand (.tfw) forceren</translation>
     </message>
 </context>
 <context>
@@ -67009,11 +63600,7 @@ Formatteert een datum gegevenstype of string naar een bepaald formaat. Gebruikt 
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
-    </message>
-    <message>
-        <source>RGB to PCT</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultaatlaag</translation>
     </message>
 </context>
 <context>
@@ -67032,11 +63619,7 @@ Formatteert een datum gegevenstype of string naar een bepaald formaat. Gebruikt 
     </message>
     <message>
         <source>Output file</source>
-        <translation type="obsolete">Uitvoerbestand</translation>
-    </message>
-    <message>
-        <source>Roughness</source>
-        <translation type="unfinished">&apos;Roughness&apos;</translation>
+        <translation>Uitvoerbestand</translation>
     </message>
 </context>
 <context>
@@ -67125,11 +63708,7 @@ Formatteert een datum gegevenstype of string naar een bepaald formaat. Gebruikt 
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
-    </message>
-    <message>
-        <source>Sieved</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultaatlaag</translation>
     </message>
 </context>
 <context>
@@ -67160,11 +63739,7 @@ Formatteert een datum gegevenstype of string naar een bepaald formaat. Gebruikt 
     </message>
     <message>
         <source>Output file</source>
-        <translation type="obsolete">Uitvoerbestand</translation>
-    </message>
-    <message>
-        <source>Slope</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoerbestand</translation>
     </message>
 </context>
 <context>
@@ -67322,11 +63897,7 @@ Formatteert een datum gegevenstype of string naar een bepaald formaat. Gebruikt 
     </message>
     <message>
         <source>Output file</source>
-        <translation type="obsolete">Uitvoerbestand</translation>
-    </message>
-    <message>
-        <source>Topographic Position Index</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoerbestand</translation>
     </message>
 </context>
 <context>
@@ -67369,7 +63940,7 @@ Formatteert een datum gegevenstype of string naar een bepaald formaat. Gebruikt 
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
+        <translation>Resultaatlaag</translation>
     </message>
     <message>
         <source>Nodata value, leave blank to take the nodata value from input</source>
@@ -67403,10 +63974,6 @@ Formatteert een datum gegevenstype of string naar een bepaald formaat. Gebruikt 
         <source>Force the generation of an associated ESRI world file (.tfw))</source>
         <translation>Het genereren van een geassocieerd ESRI-wereldbestand (.tfw) forceren</translation>
     </message>
-    <message>
-        <source>Converted</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>tri</name>
@@ -67424,11 +63991,7 @@ Formatteert een datum gegevenstype of string naar een bepaald formaat. Gebruikt 
     </message>
     <message>
         <source>Output file</source>
-        <translation type="obsolete">Uitvoerbestand</translation>
-    </message>
-    <message>
-        <source>Terrain Ruggedness Index</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitvoerbestand</translation>
     </message>
 </context>
 <context>
@@ -67608,7 +64171,7 @@ Formatteert een datum gegevenstype of string naar een bepaald formaat. Gebruikt 
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Resultaatlaag</translation>
+        <translation>Resultaatlaag</translation>
     </message>
     <message>
         <source>Nodata value, leave blank to take the nodata value from input</source>
@@ -67641,10 +64204,6 @@ Formatteert een datum gegevenstype of string naar een bepaald formaat. Gebruikt 
     <message>
         <source>Force the generation of an associated ESRI world file (.tfw))</source>
         <translation>Het genereren van een geassocieerd ESRI-wereldbestand (.tfw) forceren</translation>
-    </message>
-    <message>
-        <source>Reprojected</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

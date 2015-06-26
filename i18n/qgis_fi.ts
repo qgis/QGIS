@@ -163,11 +163,7 @@
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
-    </message>
-    <message>
-        <source>Added</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulotaso</translation>
     </message>
 </context>
 <context>
@@ -228,11 +224,7 @@ Avaa tulosteikkuna tarkastellaksesi sitä.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
-    </message>
-    <message>
-        <source>Incremented</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulotaso</translation>
     </message>
 </context>
 <context>
@@ -251,11 +243,7 @@ Avaa tulosteikkuna tarkastellaksesi sitä.</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Ulostulo</translation>
-    </message>
-    <message>
-        <source>Bar plot</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulo</translation>
     </message>
 </context>
 <context>
@@ -270,7 +258,7 @@ Avaa tulosteikkuna tarkastellaksesi sitä.</translation>
     </message>
     <message>
         <source>Statistics for numeric field</source>
-        <translation type="obsolete">Tilastot numeeriselle tiedolle</translation>
+        <translation>Tilastot numeeriselle tiedolle</translation>
     </message>
     <message>
         <source>Coefficient of Variation</source>
@@ -312,10 +300,6 @@ Avaa tulosteikkuna tarkastellaksesi sitä.</translation>
         <source>Standard deviation</source>
         <translation>Keskihajonta</translation>
     </message>
-    <message>
-        <source>Statistics</source>
-        <translation type="unfinished">Tilastot</translation>
-    </message>
 </context>
 <context>
     <name>BasicStatisticsStrings</name>
@@ -329,7 +313,7 @@ Avaa tulosteikkuna tarkastellaksesi sitä.</translation>
     </message>
     <message>
         <source>Statistics for text field</source>
-        <translation type="obsolete">Tilastot tekstitiedolle</translation>
+        <translation>Tilastot tekstitiedolle</translation>
     </message>
     <message>
         <source>Minimum length</source>
@@ -358,10 +342,6 @@ Avaa tulosteikkuna tarkastellaksesi sitä.</translation>
     <message>
         <source>Number of unique values</source>
         <translation>Yksilöllisten arvojen lukumäärä</translation>
-    </message>
-    <message>
-        <source>Statistics for text</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -603,15 +583,11 @@ Avaa tulosteikkuna tarkastellaksesi sitä.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
+        <translation>Ulostulotaso</translation>
     </message>
     <message>
         <source>Error calculating centroid</source>
         <translation>Virhe laskettaessa keskipistettä</translation>
-    </message>
-    <message>
-        <source>Centroids</source>
-        <translation type="unfinished">Keskiöt</translation>
     </message>
 </context>
 <context>
@@ -619,29 +595,6 @@ Avaa tulosteikkuna tarkastellaksesi sitä.</translation>
     <message>
         <source>&lt;p&gt;Character: &lt;span style=&quot;font-size: 24pt; font-family: %1&quot;&gt;%2&lt;/span&gt;&lt;p&gt;Value: 0x%3</source>
         <translation>&lt;p&gt;Merkki: &lt;span style=&quot;font-size: 24pt; font-family: %1&quot;&gt;%2&lt;/span&gt;&lt;p&gt;Arvo: 0x%3</translation>
-    </message>
-</context>
-<context>
-    <name>CheckValidity</name>
-    <message>
-        <source>Input layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Method</source>
-        <translation type="unfinished">Menetelmä</translation>
-    </message>
-    <message>
-        <source>Valid output</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invalid output</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error output</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -683,15 +636,11 @@ Avaa tulosteikkuna tarkastellaksesi sitä.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
+        <translation>Ulostulotaso</translation>
     </message>
     <message>
         <source>Nodata value, leave blank to take the nodata value from input</source>
         <translation>Nodata arvo, jätä tyhjäksi ottaaksesi nodata arvon syötteestä</translation>
-    </message>
-    <message>
-        <source>Clipped (extent)</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -718,15 +667,11 @@ Avaa tulosteikkuna tarkastellaksesi sitä.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
+        <translation>Ulostulotaso</translation>
     </message>
     <message>
         <source>Nodata value, leave blank to take the nodata value from input</source>
         <translation>Nodata arvo, jätä tyhjäksi ottaaksesi nodata arvon syötteestä</translation>
-    </message>
-    <message>
-        <source>Clipped (mask)</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -799,11 +744,7 @@ Avaa tulosteikkuna tarkastellaksesi sitä.</translation>
     </message>
     <message>
         <source>Output file</source>
-        <translation type="obsolete">Ulostulo tiedosto</translation>
-    </message>
-    <message>
-        <source>Color relief</source>
-        <translation type="unfinished">Värillinen kohokuva</translation>
+        <translation>Ulostulo tiedosto</translation>
     </message>
 </context>
 <context>
@@ -1006,11 +947,7 @@ Avaa tulosteikkuna tarkastellaksesi sitä.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
-    </message>
-    <message>
-        <source>Constant</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulotaso</translation>
     </message>
 </context>
 <context>
@@ -1607,10 +1544,6 @@ Kysely:
         <source>%1 is an invalid layer and cannot be loaded. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
         <translation>%1 tasossa on virheitä eikä sitä ladata. Ole ystävällinen ja tarkista &lt;a href=&quot;#messageLog&quot;&gt;viestiloki&lt;/a&gt; lisäinformaation saamiseksi.</translation>
     </message>
-    <message>
-        <source>New Connection...</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>DTM2TIF</name>
@@ -1621,25 +1554,6 @@ Kysely:
     <message>
         <source>Output file name</source>
         <translation>Tulostiedoston nimi</translation>
-    </message>
-</context>
-<context>
-    <name>Datasources2Vrt</name>
-    <message>
-        <source>Input datasources</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Overwrite output vrt</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Virtual vector</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Virtual string</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1980,10 +1894,6 @@ sarakkeet</translation>
         <source>Avoid selecting by feature id</source>
         <translation>Vältä valitsemista ominaisuuden id:llä</translation>
     </message>
-    <message>
-        <source>Create a view</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>DbManagerDlgTableProperties</name>
@@ -2053,93 +1963,6 @@ sarakkeet</translation>
     </message>
 </context>
 <context>
-    <name>DbManagerQueryBuilderDlg</name>
-    <message>
-        <source>SQL query builder</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Columns</source>
-        <translation type="unfinished">Sarakkeet</translation>
-    </message>
-    <message>
-        <source>Tables     </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Where    </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Group by</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Order by</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Data</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show system tables</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tables</source>
-        <translation type="unfinished">Taulukot</translation>
-    </message>
-    <message>
-        <source>Aggregates</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Functions</source>
-        <translation type="unfinished">Funktiot</translation>
-    </message>
-    <message>
-        <source>Math</source>
-        <translation type="unfinished">Math</translation>
-    </message>
-    <message>
-        <source>Strings functions</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Operators</source>
-        <translation type="unfinished">Operaattorit</translation>
-    </message>
-    <message>
-        <source>Columns&apos; values</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Only 10 first values</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Spatial index</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Table (with spatial index)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Table (Target)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Use spatial index</source>
-        <translation type="unfinished">Käytä paikkatietoindeksiä</translation>
-    </message>
-    <message>
-        <source>&amp;Reset</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>Delaunay</name>
     <message>
         <source>Input layer</source>
@@ -2166,11 +1989,7 @@ sarakkeet</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Ulostulo</translation>
-    </message>
-    <message>
-        <source>Deleted column</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulo</translation>
     </message>
 </context>
 <context>
@@ -2181,22 +2000,7 @@ sarakkeet</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Ulostulo</translation>
-    </message>
-    <message>
-        <source>Cleaned</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>DeleteHoles</name>
-    <message>
-        <source>Input layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cleaned</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulo</translation>
     </message>
 </context>
 <context>
@@ -2241,11 +2045,7 @@ sarakkeet</translation>
     </message>
     <message>
         <source>Densified layer</source>
-        <translation type="obsolete">Tiivistetty taso</translation>
-    </message>
-    <message>
-        <source>Densified</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiivistetty taso</translation>
     </message>
 </context>
 <context>
@@ -2260,11 +2060,7 @@ sarakkeet</translation>
     </message>
     <message>
         <source>Densified layer</source>
-        <translation type="obsolete">Tiivistetty taso</translation>
-    </message>
-    <message>
-        <source>Densified</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiivistetty taso</translation>
     </message>
 </context>
 <context>
@@ -3337,42 +3133,6 @@ Haluatko varmasti jatkaa?</translation>
         <source>Include input features that intersect the selection features</source>
         <translation>Ota  mukaan syötettävät ominaisuudet jotka leikkaavat valinnan ominaisuuksia</translation>
     </message>
-    <message>
-        <source>Statistical method for attribute aggregation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Input point vector layer attributes to aggregate</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select columns</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>sum</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>stddev</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>mean</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>max</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>min</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rotation angle in degrees</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>Difference</name>
@@ -3437,45 +3197,6 @@ Haluatko varmasti jatkaa?</translation>
     </message>
 </context>
 <context>
-    <name>DinfDistDownMulti</name>
-    <message>
-        <source>D-Infinity Flow Direction Grid</source>
-        <translation type="unfinished">D-Ääretön Virtauksen Suunta Ruudukko</translation>
-    </message>
-    <message>
-        <source>Pit Filled Elevation Grid</source>
-        <translation type="unfinished">Kuopilla täydennetty korkeus ruudukko</translation>
-    </message>
-    <message>
-        <source>Stream Raster Grid</source>
-        <translation type="unfinished">Virran rasteriruudukko</translation>
-    </message>
-    <message>
-        <source>Weight Path Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Statistical Method</source>
-        <translation type="unfinished">Tilastollnen menetelmä</translation>
-    </message>
-    <message>
-        <source>Distance Method</source>
-        <translation type="unfinished">Etäisyysmenetelmä</translation>
-    </message>
-    <message>
-        <source>Check for edge contamination</source>
-        <translation type="unfinished">Tarkista reunan sekaantuminen</translation>
-    </message>
-    <message>
-        <source>D-Infinity Drop to Stream Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
-        <translation type="unfinished">Virheellinen  MPI prosessien lukumäärää käytetty. Ole ystävällinen ja korjaa lukumäärä ennenkuin käytät TauDEM algoritmeja.</translation>
-    </message>
-</context>
-<context>
     <name>DinfDistUp</name>
     <message>
         <source>D-Infinity Flow Direction Grid</source>
@@ -3512,45 +3233,6 @@ Haluatko varmasti jatkaa?</translation>
     <message>
         <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
         <translation>Virheellinen  MPI prosessien lukumäärää käytetty. Ole ystävällinen ja korjaa lukumäärä ennenkuin käytät TauDEM algoritmeja.</translation>
-    </message>
-</context>
-<context>
-    <name>DinfDistUpMulti</name>
-    <message>
-        <source>D-Infinity Flow Direction Grid</source>
-        <translation type="unfinished">D-Ääretön Virtauksen Suunta Ruudukko</translation>
-    </message>
-    <message>
-        <source>Pit Filled Elevation Grid</source>
-        <translation type="unfinished">Kuopilla täydennetty korkeus ruudukko</translation>
-    </message>
-    <message>
-        <source>Slope Grid</source>
-        <translation type="unfinished">Kallistumaruudukko</translation>
-    </message>
-    <message>
-        <source>Statistical Method</source>
-        <translation type="unfinished">Tilastollnen menetelmä</translation>
-    </message>
-    <message>
-        <source>Distance Method</source>
-        <translation type="unfinished">Etäisyysmenetelmä</translation>
-    </message>
-    <message>
-        <source>Proportion Threshold</source>
-        <translation type="unfinished">Osuus kynnysarvosta</translation>
-    </message>
-    <message>
-        <source>Check for edge contamination</source>
-        <translation type="unfinished">Tarkista reunan sekaantuminen</translation>
-    </message>
-    <message>
-        <source>D-Infinity Distance Up</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
-        <translation type="unfinished">Virheellinen  MPI prosessien lukumäärää käytetty. Ole ystävällinen ja korjaa lukumäärä ennenkuin käytät TauDEM algoritmeja.</translation>
     </message>
 </context>
 <context>
@@ -3629,84 +3311,6 @@ Haluatko varmasti jatkaa?</translation>
     <message>
         <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
         <translation>Virheellinen  MPI prosessien lukumäärää käytetty. Ole ystävällinen ja korjaa lukumäärä ennenkuin käytät TauDEM algoritmeja.</translation>
-    </message>
-</context>
-<context>
-    <name>DinfTransLimAccum2Multi</name>
-    <message>
-        <source>D-Infinity Flow Direction Grid</source>
-        <translation type="unfinished">D-Ääretön Virtauksen Suunta Ruudukko</translation>
-    </message>
-    <message>
-        <source>Supply Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Transport Capacity Grid</source>
-        <translation type="unfinished">Kuljetuskapasiteetin ruudukko</translation>
-    </message>
-    <message>
-        <source>Input Concentration Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Outlets Shapefile</source>
-        <translation type="unfinished">Purkautumisteiden shapefile</translation>
-    </message>
-    <message>
-        <source>Check for edge contamination</source>
-        <translation type="unfinished">Tarkista reunan sekaantuminen</translation>
-    </message>
-    <message>
-        <source>Transport Limited Accumulation Grid</source>
-        <translation type="unfinished">Kuljetusrajoitteinen kerääntymä ruudukko</translation>
-    </message>
-    <message>
-        <source>Deposition Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Output Concentration Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
-        <translation type="unfinished">Virheellinen  MPI prosessien lukumäärää käytetty. Ole ystävällinen ja korjaa lukumäärä ennenkuin käytät TauDEM algoritmeja.</translation>
-    </message>
-</context>
-<context>
-    <name>DinfTransLimAccumMulti</name>
-    <message>
-        <source>D-Infinity Flow Direction Grid</source>
-        <translation type="unfinished">D-Ääretön Virtauksen Suunta Ruudukko</translation>
-    </message>
-    <message>
-        <source>Supply Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Transport Capacity Grid</source>
-        <translation type="unfinished">Kuljetuskapasiteetin ruudukko</translation>
-    </message>
-    <message>
-        <source>Outlets Shapefile</source>
-        <translation type="unfinished">Purkautumisteiden shapefile</translation>
-    </message>
-    <message>
-        <source>Check for edge contamination</source>
-        <translation type="unfinished">Tarkista reunan sekaantuminen</translation>
-    </message>
-    <message>
-        <source>Transport Limited Accumulation Grid</source>
-        <translation type="unfinished">Kuljetusrajoitteinen kerääntymä ruudukko</translation>
-    </message>
-    <message>
-        <source>Deposition Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
-        <translation type="unfinished">Virheellinen  MPI prosessien lukumäärää käytetty. Ole ystävällinen ja korjaa lukumäärä ennenkuin käytät TauDEM algoritmeja.</translation>
     </message>
 </context>
 <context>
@@ -4190,12 +3794,12 @@ Haluatko varmasti jatkaa?</translation>
     </message>
     <message>
         <source>DB Manager</source>
-        <translation type="obsolete">DB hallinta</translation>
+        <translation>DB hallinta</translation>
     </message>
     <message>
         <source>You must fill the required fields: 
 geometry column - column with unique integer values</source>
-        <translation type="obsolete">Sinun tulee täyttää pakolliset tiedot: 
+        <translation>Sinun tulee täyttää pakolliset tiedot: 
 geometriasarake - sarake jossa yksilölliset kokonaislukuarvot</translation>
     </message>
 </context>
@@ -4345,53 +3949,6 @@ geometriasarake - sarake jossa yksilölliset kokonaislukuarvot</translation>
     </message>
 </context>
 <context>
-    <name>DropAnalysisMulti</name>
-    <message>
-        <source>D8 Contributing Area Grid</source>
-        <translation type="unfinished">D8 avustavien alueiden ruudukko</translation>
-    </message>
-    <message>
-        <source>D8 Flow Direction Grid</source>
-        <translation type="unfinished">D8 Virtaussuunnan ruudukko</translation>
-    </message>
-    <message>
-        <source>Pit Filled Elevation Grid</source>
-        <translation type="unfinished">Kuopilla täydennetty korkeus ruudukko</translation>
-    </message>
-    <message>
-        <source>Accumulated Stream Source Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Outlets Shapefile</source>
-        <translation type="unfinished">Purkautumisteiden shapefile</translation>
-    </message>
-    <message>
-        <source>Minimum Threshold</source>
-        <translation type="unfinished">Minimi raja-arvo</translation>
-    </message>
-    <message>
-        <source>Maximum Threshold</source>
-        <translation type="unfinished">Maksimi raja-arvo</translation>
-    </message>
-    <message>
-        <source>Number of Threshold Values</source>
-        <translation type="unfinished">Raja-arvojen lukumäärä</translation>
-    </message>
-    <message>
-        <source>Spacing for Threshold Values</source>
-        <translation type="unfinished">Raja-arvojen välit</translation>
-    </message>
-    <message>
-        <source>D-Infinity Drop to Stream Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
-        <translation type="unfinished">Virheellinen  MPI prosessien lukumäärää käytetty. Ole ystävällinen ja korjaa lukumäärä ennenkuin käytät TauDEM algoritmeja.</translation>
-    </message>
-</context>
-<context>
     <name>EditModelAction</name>
     <message>
         <source>Edit model</source>
@@ -4403,21 +3960,6 @@ geometriasarake - sarake jossa yksilölliset kokonaislukuarvot</translation>
     <message>
         <source>Edit script</source>
         <translation>Muokkaa skriptiä</translation>
-    </message>
-</context>
-<context>
-    <name>EffectPropertiesWidget</name>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished">Lomake</translation>
-    </message>
-    <message>
-        <source>Effect type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This effect doesn&apos;t have any editable properties</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4448,7 +3990,7 @@ geometriasarake - sarake jossa yksilölliset kokonaislukuarvot</translation>
     </message>
     <message>
         <source>Cleaned layer</source>
-        <translation type="obsolete">Puhdistettu taso</translation>
+        <translation>Puhdistettu taso</translation>
     </message>
     <message>
         <source>Cannot convert &quot;%s&quot; to integer</source>
@@ -4490,10 +4032,6 @@ geometriasarake - sarake jossa yksilölliset kokonaislukuarvot</translation>
         <source>Could not replace geometry of feature with id %s</source>
         <translation>Ei voitu korvata ominaisuuden geometriaa käyttäen id %s</translation>
     </message>
-    <message>
-        <source>Cleaned</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>EquivalentNumField</name>
@@ -4507,11 +4045,7 @@ geometriasarake - sarake jossa yksilölliset kokonaislukuarvot</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
-    </message>
-    <message>
-        <source>Numeric field</source>
-        <translation type="unfinished">Numeerinen tieto</translation>
+        <translation>Ulostulotaso</translation>
     </message>
 </context>
 <context>
@@ -4533,11 +4067,7 @@ geometriasarake - sarake jossa yksilölliset kokonaislukuarvot</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
-    </message>
-    <message>
-        <source>Exploded</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulotaso</translation>
     </message>
 </context>
 <context>
@@ -4552,11 +4082,7 @@ geometriasarake - sarake jossa yksilölliset kokonaislukuarvot</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
-    </message>
-    <message>
-        <source>Added geom info</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulotaso</translation>
     </message>
 </context>
 <context>
@@ -4571,11 +4097,7 @@ geometriasarake - sarake jossa yksilölliset kokonaislukuarvot</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
-    </message>
-    <message>
-        <source>Extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulotaso</translation>
     </message>
 </context>
 <context>
@@ -4625,7 +4147,7 @@ geometriasarake - sarake jossa yksilölliset kokonaislukuarvot</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Ulostulo</translation>
+        <translation>Ulostulo</translation>
     </message>
     <message>
         <source>Operators %s can be used only with string fields.</source>
@@ -4647,10 +4169,6 @@ geometriasarake - sarake jossa yksilölliset kokonaislukuarvot</translation>
         <source>Unsupported field type &quot;%s&quot;</source>
         <translation>Tukematon tietotyyppi  &quot;%s&quot;</translation>
     </message>
-    <message>
-        <source>Extracted (attribute)</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>ExtractByLocation</name>
@@ -4664,15 +4182,11 @@ geometriasarake - sarake jossa yksilölliset kokonaislukuarvot</translation>
     </message>
     <message>
         <source>Selection</source>
-        <translation type="obsolete">Valinta</translation>
+        <translation>Valinta</translation>
     </message>
     <message>
         <source>Geometric predicate</source>
         <translation>Geometrinen predikaatti</translation>
-    </message>
-    <message>
-        <source>Extracted (location)</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4683,11 +4197,7 @@ geometriasarake - sarake jossa yksilölliset kokonaislukuarvot</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
-    </message>
-    <message>
-        <source>Nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulotaso</translation>
     </message>
 </context>
 <context>
@@ -4773,7 +4283,7 @@ geometriasarake - sarake jossa yksilölliset kokonaislukuarvot</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
+        <translation>Ulostulotaso</translation>
     </message>
     <message>
         <source>Evaluation error: %s</source>
@@ -4791,11 +4301,7 @@ geometriasarake - sarake jossa yksilölliset kokonaislukuarvot</translation>
     </message>
     <message>
         <source>Output is not set. Please specify valid filename</source>
-        <translation type="obsolete">Tulostetta ei ole annettu. Ole hyvä ja anna oikea tiedostonimi</translation>
-    </message>
-    <message>
-        <source>Calculated</source>
-        <translation type="unfinished"></translation>
+        <translation>Tulostetta ei ole annettu. Ole hyvä ja anna oikea tiedostonimi</translation>
     </message>
 </context>
 <context>
@@ -4814,7 +4320,7 @@ geometriasarake - sarake jossa yksilölliset kokonaislukuarvot</translation>
     </message>
     <message>
         <source>Wrong or missing parameter values</source>
-        <translation type="obsolete">Virheelliset tai puuttuvat parametrien arvot</translation>
+        <translation>Virheelliset tai puuttuvat parametrien arvot</translation>
     </message>
 </context>
 <context>
@@ -4829,7 +4335,7 @@ geometriasarake - sarake jossa yksilölliset kokonaislukuarvot</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Tulostaso</translation>
+        <translation>Tulostaso</translation>
     </message>
     <message>
         <source>Parser error in expression &quot;{}&quot;: {}</source>
@@ -4844,10 +4350,6 @@ geometriasarake - sarake jossa yksilölliset kokonaislukuarvot</translation>
 </source>
         <translation>Tapahtui virhe suoritettaessa laskennan merkkijono:
 </translation>
-    </message>
-    <message>
-        <source>Refactored</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4882,7 +4384,7 @@ geometriasarake - sarake jossa yksilölliset kokonaislukuarvot</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
+        <translation>Ulostulotaso</translation>
     </message>
     <message>
         <source>FieldPyculator code execute error.Global code block can&apos;t be executed!
@@ -4905,10 +4407,6 @@ geometriasarake - sarake jossa yksilölliset kokonaislukuarvot</translation>
 Field code block does not return &apos;%s1&apos; variable! Please declare this variable in your code!</source>
         <translation>FieldPyculator koodin suoritusvirhe
 Tiedon koodiblokki ei palauta &apos;%s1&apos; muuttujaa! Ole ystävällinen ja ilmoita tämä muuttuja omassa koodissasi!</translation>
-    </message>
-    <message>
-        <source>Calculated</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6619,18 +6117,18 @@ Katso lokia lisäinfomaatioksi</translation>
     <message>
         <source>&lt;p&gt;Oooops! The following output layers could not be open&lt;/p&gt;&lt;ul&gt;
 </source>
-        <translation type="obsolete">&lt;p&gt;Auts! Seuraavia tulostasoja ei voitu avata&lt;/p&gt;&lt;ul&gt;
+        <translation>&lt;p&gt;Auts! Seuraavia tulostasoja ei voitu avata&lt;/p&gt;&lt;ul&gt;
 </translation>
     </message>
     <message>
         <source>&lt;li&gt;%s: &lt;font size=3 face=&quot;Courier New&quot; color=&quot;#ff0000&quot;&gt;%s&lt;/font&gt;&lt;/li&gt;
 </source>
-        <translation type="obsolete">&lt;li&gt;%s: &lt;font size=3 face=&quot;Courier New&quot; color=&quot;#ff0000&quot;&gt;%s&lt;/font&gt;&lt;/li&gt;
+        <translation>&lt;li&gt;%s: &lt;font size=3 face=&quot;Courier New&quot; color=&quot;#ff0000&quot;&gt;%s&lt;/font&gt;&lt;/li&gt;
 </translation>
     </message>
     <message>
         <source>&lt;/ul&gt;&lt;p&gt;The above files could not be opened, which probably indicates that they were not correctly produced by the executed algorithm&lt;/p&gt;&lt;p&gt;Checking the log information might help you see why those layers were not created as expected&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;/ul&gt;&lt;p&gt;Yllämainittuja tiedostoja ei voitu avata,  joka oletettavasti johtuu ettei niitä tuotettu oikein suoritetulla algoritmilla.&lt;/p&gt;&lt;p&gt;Lokitietojen tarkastelu voi ehkä auttaa Sinua selvittämään miksi tasoja ei luotu siten kuin odotettiin&lt;/p&gt;</translation>
+        <translation>&lt;/ul&gt;&lt;p&gt;Yllämainittuja tiedostoja ei voitu avata,  joka oletettavasti johtuu ettei niitä tuotettu oikein suoritetulla algoritmilla.&lt;/p&gt;&lt;p&gt;Lokitietojen tarkastelu voi ehkä auttaa Sinua selvittämään miksi tasoja ei luotu siten kuin odotettiin&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -6645,15 +6143,11 @@ Katso lokia lisäinfomaatioksi</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Ulostulo</translation>
+        <translation>Ulostulo</translation>
     </message>
     <message>
         <source>Cannot convert from %s to %s</source>
         <translation>%s ei voida muuntaa %s </translation>
-    </message>
-    <message>
-        <source>Converted</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7006,25 +6500,6 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
 </context>
 <context>
-    <name>GetRScriptsAction</name>
-    <message>
-        <source>Get R scripts from on-line scripts collection</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tools</source>
-        <translation type="unfinished">Työkalut</translation>
-    </message>
-    <message>
-        <source>Connection problem</source>
-        <translation type="unfinished">Yhteysongelma</translation>
-    </message>
-    <message>
-        <source>Could not connect to scripts/models repository</source>
-        <translation type="unfinished">Ei voitu yhdistää skriptien/mallien etäkirjastoon</translation>
-    </message>
-</context>
-<context>
     <name>GetScriptsAction</name>
     <message>
         <source>Get scripts from on-line scripts collection</source>
@@ -7147,15 +6622,15 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>&lt;p&gt;This algorithm requires GRASS GIS 7 to be run. A test to check if GRASS GIS 7 is correctly installed and configured in your system has been performed, with the following result:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</source>
-        <translation type="obsolete">&lt;p&gt;Tämä algoritmi tarvitsee GRASS GIS 7 suoritukseensa. Testi tarkistusta varten onko GRASS GIS 7 oikein asennettu ja konfiguroitu järjestelmääsi on suoritettu seuraavin tuloksin:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</translation>
+        <translation>&lt;p&gt;Tämä algoritmi tarvitsee GRASS GIS 7 suoritukseensa. Testi tarkistusta varten onko GRASS GIS 7 oikein asennettu ja konfiguroitu järjestelmääsi on suoritettu seuraavin tuloksin:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</translation>
     </message>
     <message>
         <source>GRASS GIS 7 seems to be correctly installed and configured&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="obsolete">GRASS GIS 7 näyttää olevan oikein asennettu ja konfiguroitu&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;</translation>
+        <translation>GRASS GIS 7 näyttää olevan oikein asennettu ja konfiguroitu&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Click here&lt;/a&gt; to know more about how to install and configure GRASS GIS 7 to be used with QGIS&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Klikkaa tästä&lt;/a&gt; saadaksesi lisätietoja kuinka asentaa ja konfiguroida GRASS GIS 7 käytettäväksi QGIS kanssa&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Klikkaa tästä&lt;/a&gt; saadaksesi lisätietoja kuinka asentaa ja konfiguroida GRASS GIS 7 käytettäväksi QGIS kanssa&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -7248,15 +6723,15 @@ Ole ystävällinen ja aseta ennenkuin suoritat GRASS algoritmeja.</translation>
     </message>
     <message>
         <source>&lt;p&gt;This algorithm requires GRASS to be run. A test to check if GRASS is correctly installed and configured in your system has been performed, with the following result:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</source>
-        <translation type="obsolete">&lt;p&gt;Tämä algoritmi tarvitsee GRASSin suoritukseensa. Testi tarkistusta varten onko GRASS oikein asennettu ja konfiguroitu järjestelmääsi on suoritettu seuraavin tuloksin:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</translation>
+        <translation>&lt;p&gt;Tämä algoritmi tarvitsee GRASSin suoritukseensa. Testi tarkistusta varten onko GRASS oikein asennettu ja konfiguroitu järjestelmääsi on suoritettu seuraavin tuloksin:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</translation>
     </message>
     <message>
         <source>GRASS seems to be correctly installed and configured&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="obsolete">GRASS näyttää olevan oikein asennettu ja konfiguroitu&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;</translation>
+        <translation>GRASS näyttää olevan oikein asennettu ja konfiguroitu&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Click here&lt;/a&gt; to know more about how to install and configure GRASS to be used with QGIS&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Klikkaa tästä&lt;/a&gt; saadaksesi lisätietoja kuinka asentaa ja konfiguroida GRASS käytettäväksi QGIS kanssa&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Klikkaa tästä&lt;/a&gt; saadaksesi lisätietoja kuinka asentaa ja konfiguroida GRASS käytettäväksi QGIS kanssa&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -7331,7 +6806,7 @@ Ole ystävällinen ja aseta se ennenkuin suoritat GRASS algoritmeja.</translatio
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Ulostulo</translation>
+        <translation>Ulostulo</translation>
     </message>
     <message>
         <source>Invalid grid spacing: %s/%s</source>
@@ -7344,10 +6819,6 @@ Ole ystävällinen ja aseta se ennenkuin suoritat GRASS algoritmeja.</translatio
     <message>
         <source>Vertical spacing is too small for the covered area</source>
         <translation>Pystytason jaottelu on liian pieni katetulle alueelle</translation>
-    </message>
-    <message>
-        <source>Grid</source>
-        <translation type="unfinished">Ruudukko</translation>
     </message>
 </context>
 <context>
@@ -7386,11 +6857,7 @@ Ole ystävällinen ja aseta se ennenkuin suoritat GRASS algoritmeja.</translatio
     </message>
     <message>
         <source>Output file</source>
-        <translation type="obsolete">Ulostulo tiedosto</translation>
-    </message>
-    <message>
-        <source>Interpolated moving average</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulo tiedosto</translation>
     </message>
 </context>
 <context>
@@ -7433,11 +6900,7 @@ Ole ystävällinen ja aseta se ennenkuin suoritat GRASS algoritmeja.</translatio
     </message>
     <message>
         <source>Output file</source>
-        <translation type="obsolete">Ulostulo tiedosto</translation>
-    </message>
-    <message>
-        <source>Interpolated metrics</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulo tiedosto</translation>
     </message>
 </context>
 <context>
@@ -7484,15 +6947,11 @@ Ole ystävällinen ja aseta se ennenkuin suoritat GRASS algoritmeja.</translatio
     </message>
     <message>
         <source>Output file</source>
-        <translation type="obsolete">Ulostulo tiedosto</translation>
+        <translation>Ulostulo tiedosto</translation>
     </message>
     <message>
         <source>Smoothing</source>
         <translation>Tasoitus</translation>
-    </message>
-    <message>
-        <source>Interpolated IDW</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7570,11 +7029,7 @@ Ole ystävällinen ja aseta se ennenkuin suoritat GRASS algoritmeja.</translatio
     </message>
     <message>
         <source>Output file</source>
-        <translation type="obsolete">Ulostulo tiedosto</translation>
-    </message>
-    <message>
-        <source>Interpolated nearest neighbor</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulo tiedosto</translation>
     </message>
 </context>
 <context>
@@ -7610,41 +7065,6 @@ Ole ystävällinen ja aseta se ennenkuin suoritat GRASS algoritmeja.</translatio
     <message>
         <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
         <translation>Virheellinen  MPI prosessien lukumäärää käytetty. Ole ystävällinen ja korjaa lukumäärä ennenkuin käytät TauDEM algoritmeja.</translation>
-    </message>
-</context>
-<context>
-    <name>GridNetMulti</name>
-    <message>
-        <source>D8 Flow Direction Grid</source>
-        <translation type="unfinished">D8 Virtaussuunnan ruudukko</translation>
-    </message>
-    <message>
-        <source>Outlets Shapefile</source>
-        <translation type="unfinished">Purkautumisteiden shapefile</translation>
-    </message>
-    <message>
-        <source>Mask Grid</source>
-        <translation type="unfinished">Maskin ruudukko</translation>
-    </message>
-    <message>
-        <source>Mask Threshold</source>
-        <translation type="unfinished">Maskin kynnysarvot</translation>
-    </message>
-    <message>
-        <source>Longest Upslope Length Grid</source>
-        <translation type="unfinished">Pisimmän ylävirran pituuden ruudukko</translation>
-    </message>
-    <message>
-        <source>Total Upslope Length Grid</source>
-        <translation type="unfinished">Yhteenlasketun ylävirran pituuden ruudukko</translation>
-    </message>
-    <message>
-        <source>Strahler Network Order Grid</source>
-        <translation type="unfinished">Strahler verkkojärjestyksen ruudukko</translation>
-    </message>
-    <message>
-        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
-        <translation type="unfinished">Virheellinen  MPI prosessien lukumäärää käytetty. Ole ystävällinen ja korjaa lukumäärä ennenkuin käytät TauDEM algoritmeja.</translation>
     </message>
 </context>
 <context>
@@ -7714,7 +7134,7 @@ Ole ystävällinen ja aseta se ennenkuin suoritat GRASS algoritmeja.</translatio
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Ulostulo</translation>
+        <translation>Ulostulo</translation>
     </message>
     <message>
         <source>Invalid grid spacing: %s/%s</source>
@@ -7723,10 +7143,6 @@ Ole ystävällinen ja aseta se ennenkuin suoritat GRASS algoritmeja.</translatio
     <message>
         <source>Failed to gridify feature with FID %s</source>
         <translation>Ruudutus ei onnistunut käytettäessä ominaisuutta arvolla FIS %s</translation>
-    </message>
-    <message>
-        <source>Snapped</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7784,7 +7200,7 @@ Ole ystävällinen ja aseta se ennenkuin suoritat GRASS algoritmeja.</translatio
     </message>
     <message>
         <source>Creating heatmap</source>
-        <translation type="obsolete">Luodaan heatmap</translation>
+        <translation>Luodaan heatmap</translation>
     </message>
     <message>
         <source>Abort</source>
@@ -7797,14 +7213,6 @@ Ole ystävällinen ja aseta se ennenkuin suoritat GRASS algoritmeja.</translatio
     <message>
         <source>QGIS will now load the partially-computed raster</source>
         <translation>QGIS lataa nyt osittain lasketun rasterin</translation>
-    </message>
-    <message>
-        <source>Rendering heatmap...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>QGIS</source>
-        <translation type="unfinished">QGIS</translation>
     </message>
 </context>
 <context>
@@ -7953,7 +7361,7 @@ Ole ystävällinen ja aseta se ennenkuin suoritat GRASS algoritmeja.</translatio
     </message>
     <message>
         <source>Error saving help file</source>
-        <translation type="obsolete">Virhe tallennettaessa tukitiedostoa</translation>
+        <translation>Virhe tallennettaessa tukitiedostoa</translation>
     </message>
     <message>
         <source>Help file could not be saved.
@@ -7961,7 +7369,7 @@ Check that you have permission to modify the help
 file. You might not have permission if you are 
 editing an example model or script, since they 
 are stored on the installation folder</source>
-        <translation type="obsolete">Tukitiedostoa ei voitu tallentaa.
+        <translation>Tukitiedostoa ei voitu tallentaa.
 Tarkista onko Sinulla oikeudet muokata
 tukitiedostoa. Voi olla ettei Sinulla ole oikeuksia
 jos muokkaat esimerkki mallia tai skriptiä, koska
@@ -8021,7 +7429,7 @@ ne on tallennettu asennushakemistoon</translation>
     </message>
     <message>
         <source>Clear history and log</source>
-        <translation type="obsolete">Tyhjennä historia ja lokitiedot</translation>
+        <translation>Tyhjennä historia ja lokitiedot</translation>
     </message>
     <message>
         <source>Save As...</source>
@@ -8029,7 +7437,7 @@ ne on tallennettu asennushakemistoon</translation>
     </message>
     <message>
         <source>Save history and log</source>
-        <translation type="obsolete">Tallenna historia ja loki</translation>
+        <translation>Tallenna historia ja loki</translation>
     </message>
     <message>
         <source>Confirmation</source>
@@ -8037,7 +7445,7 @@ ne on tallennettu asennushakemistoon</translation>
     </message>
     <message>
         <source>Are you sure you want to clear log?</source>
-        <translation type="obsolete">Oletko varma että haluat tyhjentää lokin?</translation>
+        <translation>Oletko varma että haluat tyhjentää lokin?</translation>
     </message>
     <message>
         <source>Save file</source>
@@ -8050,18 +7458,6 @@ ne on tallennettu asennushakemistoon</translation>
     <message>
         <source>Create test</source>
         <translation>Luo testi</translation>
-    </message>
-    <message>
-        <source>Clear history</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save history</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Are you sure you want to clear the history?</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8103,14 +7499,10 @@ ne on tallennettu asennushakemistoon</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Ulostulo</translation>
+        <translation>Ulostulo</translation>
     </message>
     <message>
         <source>Same layer given for both hubs and spokes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Hub distance</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -8134,14 +7526,10 @@ ne on tallennettu asennushakemistoon</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Ulostulo</translation>
+        <translation>Ulostulo</translation>
     </message>
     <message>
         <source>Same layer given for both hubs and spokes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Hub lines</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -8165,7 +7553,7 @@ ne on tallennettu asennushakemistoon</translation>
     </message>
     <message>
         <source>Output directory</source>
-        <translation type="obsolete">Tuloshakemisto</translation>
+        <translation>Tuloshakemisto</translation>
     </message>
     <message>
         <source>Feature %d does not intersect raster or entirely located in NODATA area</source>
@@ -8178,14 +7566,6 @@ ne on tallennettu asennushakemistoon</translation>
     <message>
         <source>Elevation</source>
         <translation>Korkeus</translation>
-    </message>
-    <message>
-        <source>Hypsometric curves</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Feature %d is smaller than raster cell size</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8319,11 +7699,7 @@ ne on tallennettu asennushakemistoon</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
-    </message>
-    <message>
-        <source>Joined layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulotaso</translation>
     </message>
 </context>
 <context>
@@ -8529,33 +7905,6 @@ Aseta se ennenkuin suoritat LAStools algoritmit.</translation>
     </message>
 </context>
 <context>
-    <name>LengthAreaMulti</name>
-    <message>
-        <source>Length Grid</source>
-        <translation type="unfinished">Pituus ruudukko</translation>
-    </message>
-    <message>
-        <source>Contributing Area Grid</source>
-        <translation type="unfinished">Osallistuvan alueen ruudukko</translation>
-    </message>
-    <message>
-        <source>Threshold</source>
-        <translation type="unfinished">Kynnysarvo</translation>
-    </message>
-    <message>
-        <source>Exponent</source>
-        <translation type="unfinished">Eksponentti</translation>
-    </message>
-    <message>
-        <source>Stream Source Grid</source>
-        <translation type="unfinished">Virran lähtöruudukko</translation>
-    </message>
-    <message>
-        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
-        <translation type="unfinished">Virheellinen  MPI prosessien lukumäärää käytetty. Ole ystävällinen ja korjaa lukumäärä ennenkuin käytät TauDEM algoritmeja.</translation>
-    </message>
-</context>
-<context>
     <name>LidarToolsAlgorithmProvider</name>
     <message>
         <source>LAStools folder</source>
@@ -8594,11 +7943,7 @@ Aseta se ennenkuin suoritat LAStools algoritmit.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
-    </message>
-    <message>
-        <source>Intersections</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulotaso</translation>
     </message>
 </context>
 <context>
@@ -8609,11 +7954,7 @@ Aseta se ennenkuin suoritat LAStools algoritmit.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
-    </message>
-    <message>
-        <source>Polygons from lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulotaso</translation>
     </message>
 </context>
 <context>
@@ -9260,7 +8601,7 @@ Aseta se ennenkuin suoritat LAStools algoritmit.</translation>
     </message>
     <message>
         <source>Query...</source>
-        <translation type="obsolete">Kysely...</translation>
+        <translation>Kysely...</translation>
     </message>
     <message>
         <source>Add to Overview</source>
@@ -9684,18 +9025,6 @@ Toimii nyt aktiivisesti muokattavalle tasolle</translation>
         <source>New temporary scratch layer</source>
         <translation>Uusi väliaikainen muistio taso</translation>
     </message>
-    <message>
-        <source>Filter...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Statistical Summary</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show statistical summary</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>ManageConnectionsDialog</name>
@@ -9772,11 +9101,7 @@ Toimii nyt aktiivisesti muokattavalle tasolle</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Ulostulo</translation>
-    </message>
-    <message>
-        <source>Plot</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulo</translation>
     </message>
 </context>
 <context>
@@ -9795,11 +9120,7 @@ Toimii nyt aktiivisesti muokattavalle tasolle</translation>
     </message>
     <message>
         <source>Result</source>
-        <translation type="obsolete">Tulokset</translation>
-    </message>
-    <message>
-        <source>Mean coordinates</source>
-        <translation type="unfinished">Keskikoordinaatit</translation>
+        <translation>Tulokset</translation>
     </message>
 </context>
 <context>
@@ -9814,15 +9135,11 @@ Toimii nyt aktiivisesti muokattavalle tasolle</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Ulostulo</translation>
+        <translation>Ulostulo</translation>
     </message>
     <message>
         <source>Merged layers must have be same type of geometry</source>
         <translation>Yhdistettävien tasojen tulee olla samaa geometriatyyppiä</translation>
-    </message>
-    <message>
-        <source>Merged</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -9840,15 +9157,11 @@ Toimii nyt aktiivisesti muokattavalle tasolle</translation>
     <name>MessageBarProgress</name>
     <message>
         <source>Executing algorithm</source>
-        <translation type="obsolete">Suoritetaan algoritmia</translation>
+        <translation>Suoritetaan algoritmia</translation>
     </message>
     <message>
         <source>Error</source>
         <translation>Virhe</translation>
-    </message>
-    <message>
-        <source>Executing algorithm &lt;i&gt;{0}&lt;/i&gt;</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10143,30 +9456,6 @@ Toimii nyt aktiivisesti muokattavalle tasolle</translation>
         <source>seconds</source>
         <translation>sekuntia</translation>
     </message>
-    <message>
-        <source>Connection naming</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>When saving the connection of an OWS service</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Use the OWS Service Title and ask before overwriting</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Use the OWS Service Title and always overwrite if already available</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Use a temporary name, which you can change later</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Record parsing error</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>ModelerAlgorithm</name>
@@ -10203,14 +9492,6 @@ Toimii nyt aktiivisesti muokattavalle tasolle</translation>
     <message>
         <source>Model processed ok. Executed %i algorithms total</source>
         <translation>Malli prosessoitu oikein. Suoritettu %i algoritmia yhteensä</translation>
-    </message>
-    <message>
-        <source>Warning</source>
-        <translation type="unfinished">Varoitus</translation>
-    </message>
-    <message>
-        <source>Parameter %s in algorithm %s in the model is run with default value! Edit the model to make sure that this is correct.</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10530,11 +9811,7 @@ Katso lokia lisäinformaation saamiseksi.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
-    </message>
-    <message>
-        <source>Single parts</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulotaso</translation>
     </message>
 </context>
 <context>
@@ -10594,7 +9871,7 @@ Katso lokia lisäinformaation saamiseksi.</translation>
     </message>
     <message>
         <source>Result</source>
-        <translation type="obsolete">Tulokset</translation>
+        <translation>Tulokset</translation>
     </message>
     <message>
         <source>Observed mean distance</source>
@@ -10615,10 +9892,6 @@ Katso lokia lisäinformaation saamiseksi.</translation>
     <message>
         <source>Z-Score</source>
         <translation>Z-piste</translation>
-    </message>
-    <message>
-        <source>Nearest neighbour</source>
-        <translation type="unfinished">Läheisin naapuri</translation>
     </message>
 </context>
 <context>
@@ -10646,10 +9919,6 @@ Katso lokia lisäinformaation saamiseksi.</translation>
     <message>
         <source>Overwrite %s?</source>
         <translation>Kirjoita päälle %s ?</translation>
-    </message>
-    <message>
-        <source>Name cannot contain &apos;/&apos;</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10801,46 +10070,7 @@ Katso lokia lisäinformaation saamiseksi.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
-    </message>
-    <message>
-        <source>Converted</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Ogr2OgrBuffer</name>
-    <message>
-        <source>Input layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Geometry column name (&quot;geometry&quot; for Shapefiles, may be different for other formats)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Buffer distance</source>
-        <translation type="unfinished">Puskuri etäisyys</translation>
-    </message>
-    <message>
-        <source>Dissolve all results</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dissolve by attribute</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Output as singlepart geometries (only used when dissolving by attribute)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Additional creation options (see ogr2ogr manual)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Buffer</source>
-        <translation type="unfinished">Puskuri</translation>
+        <translation>Ulostulotaso</translation>
     </message>
 </context>
 <context>
@@ -10859,11 +10089,7 @@ Katso lokia lisäinformaation saamiseksi.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
-    </message>
-    <message>
-        <source>Clipped (polygon)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulotaso</translation>
     </message>
 </context>
 <context>
@@ -10882,187 +10108,7 @@ Katso lokia lisäinformaation saamiseksi.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
-    </message>
-    <message>
-        <source>Clipped (extent)</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Ogr2OgrDissolve</name>
-    <message>
-        <source>Input layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Geometry column name (&quot;geometry&quot; for Shapefiles, may be different for other formats)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dissolve field</source>
-        <translation type="unfinished">Sulautettava tieto</translation>
-    </message>
-    <message>
-        <source>Output as multipart geometries</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Keep input attributes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Count dissolved features</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Compute area and perimeter of dissolved features</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Compute min/max/sum/mean for the following numeric attribute</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Numeric attribute to compute dissolved features stats</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Additional creation options (see ogr2ogr manual)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dissolved</source>
-        <translation type="unfinished">Purettu</translation>
-    </message>
-</context>
-<context>
-    <name>Ogr2OgrOneSideBuffer</name>
-    <message>
-        <source>Input layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Operation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Geometry column name (&quot;geometry&quot; for Shapefiles, may be different for other formats)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Buffer distance</source>
-        <translation type="unfinished">Puskuri etäisyys</translation>
-    </message>
-    <message>
-        <source>Buffer side</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dissolve all results</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dissolve by attribute</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Output as singlepart geometries (only used when dissolving by attribute)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Additional creation options (see ogr2ogr manual)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Single sided buffer</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Ogr2OgrPointsOnLines</name>
-    <message>
-        <source>Input layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Geometry column name (&quot;geometry&quot; for Shapefiles, may be different for other formats)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Distance from line start represented as fraction of line length</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Additional creation options (see ogr2ogr manual)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Points along lines</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Ogr2OgrTableToPostGisList</name>
-    <message>
-        <source>Database (connection name)</source>
-        <translation type="unfinished">Tietokanta (yhteyden nimi)</translation>
-    </message>
-    <message>
-        <source>Input layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Schema name</source>
-        <translation type="unfinished">Skeeman nimi</translation>
-    </message>
-    <message>
-        <source>Table name, leave blank to use input name</source>
-        <translation type="unfinished">Taulun nimi, jätä tyhjäksi käyttääksesi syötteen nimeä</translation>
-    </message>
-    <message>
-        <source>Primary key</source>
-        <translation type="unfinished">Primääriavain</translation>
-    </message>
-    <message>
-        <source>Primary key (existing field, used if the above option is left empty)</source>
-        <translation type="unfinished">Primääriavain (olemassa oleva tieto, käytetään jos ylläoleva valinta on jätetty tyhjäksi)</translation>
-    </message>
-    <message>
-        <source>Select features using a SQL &quot;WHERE&quot; statement (Ex: column=&apos;value&apos;)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Group N features per transaction (Default: 20000)</source>
-        <translation type="unfinished">Ryhmä N ominaisuudet transaktiota kohden (Oletus: 20000)</translation>
-    </message>
-    <message>
-        <source>Overwrite existing table</source>
-        <translation type="unfinished">Kirjoita yli olemassa oleva taulu</translation>
-    </message>
-    <message>
-        <source>Append to existing table</source>
-        <translation type="unfinished">Lisää olemassa olevaan tauluun</translation>
-    </message>
-    <message>
-        <source>Append and add new fields to existing table</source>
-        <translation type="unfinished">Lisää ja lisää uudet tiedot olemassa olevaan tauluun</translation>
-    </message>
-    <message>
-        <source>Do not launder columns/table names</source>
-        <translation type="unfinished">Älä puhdista sarakkeiden/taulujen nimiä</translation>
-    </message>
-    <message>
-        <source>Continue after a failure, skipping the failed record</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Keep width and precision of input attributes</source>
-        <translation type="unfinished">Säilytä syötettävien attribuuttien leveys ja tarkkuus</translation>
-    </message>
-    <message>
-        <source>Additional creation options</source>
-        <translation type="unfinished">Muut luontiparametrit</translation>
+        <translation>Ulostulotaso</translation>
     </message>
 </context>
 <context>
@@ -11129,7 +10175,7 @@ Katso lokia lisäinformaation saamiseksi.</translation>
     </message>
     <message>
         <source>Select features using a SQL &quot;WHERE&quot; statement (Ex: column=&quot;value&quot;)</source>
-        <translation type="obsolete">Valitse ominaisuudet käyttäen SQL &quot;WHERE&quot; lauseketta (esim: column=&quot;value&quot;)</translation>
+        <translation>Valitse ominaisuudet käyttäen SQL &quot;WHERE&quot; lauseketta (esim: column=&quot;value&quot;)</translation>
     </message>
     <message>
         <source>Group N features per transaction (Default: 20000)</source>
@@ -11190,10 +10236,6 @@ Katso lokia lisäinformaation saamiseksi.</translation>
     <message>
         <source>Keep width and precision of input attributes</source>
         <translation>Säilytä syötettävien attribuuttien leveys ja tarkkuus</translation>
-    </message>
-    <message>
-        <source>Select features using a SQL &quot;WHERE&quot; statement (Ex: column=&apos;value&apos;)</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -11244,7 +10286,7 @@ Katso lokia lisäinformaation saamiseksi.</translation>
     </message>
     <message>
         <source>Select features using a SQL &quot;WHERE&quot; statement (Ex: column=&quot;value&quot;)</source>
-        <translation type="obsolete">Valitse ominaisuudet käyttäen SQL &quot;WHERE&quot; lauseketta (esim: column=&quot;value&quot;)</translation>
+        <translation>Valitse ominaisuudet käyttäen SQL &quot;WHERE&quot; lauseketta (esim: column=&quot;value&quot;)</translation>
     </message>
     <message>
         <source>Group N features per transaction (Default: 20000)</source>
@@ -11305,10 +10347,6 @@ Katso lokia lisäinformaation saamiseksi.</translation>
     <message>
         <source>Keep width and precision of input attributes</source>
         <translation>Säilytä syötettävien attribuuttien leveys ja tarkkuus</translation>
-    </message>
-    <message>
-        <source>Select features using a SQL &quot;WHERE&quot; statement (Ex: column=&apos;value&apos;)</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -11553,33 +10591,6 @@ Ole hyvä ja tarkasta konfiguraatio Prosessointi asetusikkunasta.</translation>
     </message>
 </context>
 <context>
-    <name>PeukerDouglasMulti</name>
-    <message>
-        <source>Elevation Grid</source>
-        <translation type="unfinished">Korkeusruudukko</translation>
-    </message>
-    <message>
-        <source>Center Smoothing Weight</source>
-        <translation type="unfinished">Keskitä tasoituksen paino</translation>
-    </message>
-    <message>
-        <source>Side Smoothing Weight</source>
-        <translation type="unfinished">Aseta tasoitus paino sivuun</translation>
-    </message>
-    <message>
-        <source>Diagonal Smoothing Weight</source>
-        <translation type="unfinished">Lävistäjän tasoituspaino</translation>
-    </message>
-    <message>
-        <source>Stream Source Grid</source>
-        <translation type="unfinished">Virran lähtöruudukko</translation>
-    </message>
-    <message>
-        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
-        <translation type="unfinished">Virheellinen  MPI prosessien lukumäärää käytetty. Ole ystävällinen ja korjaa lukumäärä ennenkuin käytät TauDEM algoritmeja.</translation>
-    </message>
-</context>
-<context>
     <name>PointDistance</name>
     <message>
         <source>Input point layer</source>
@@ -11626,11 +10637,7 @@ Ole hyvä ja tarkasta konfiguraatio Prosessointi asetusikkunasta.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
-    </message>
-    <message>
-        <source>Displaced</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulotaso</translation>
     </message>
 </context>
 <context>
@@ -11645,11 +10652,7 @@ Ole hyvä ja tarkasta konfiguraatio Prosessointi asetusikkunasta.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
-    </message>
-    <message>
-        <source>Points along line</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulotaso</translation>
     </message>
 </context>
 <context>
@@ -11664,11 +10667,7 @@ Ole hyvä ja tarkasta konfiguraatio Prosessointi asetusikkunasta.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
-    </message>
-    <message>
-        <source>Points from polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulotaso</translation>
     </message>
 </context>
 <context>
@@ -11687,11 +10686,7 @@ Ole hyvä ja tarkasta konfiguraatio Prosessointi asetusikkunasta.</translation>
     </message>
     <message>
         <source>Result</source>
-        <translation type="obsolete">Tulokset</translation>
-    </message>
-    <message>
-        <source>Count</source>
-        <translation type="unfinished"></translation>
+        <translation>Tulokset</translation>
     </message>
 </context>
 <context>
@@ -11721,11 +10716,7 @@ Ole hyvä ja tarkasta konfiguraatio Prosessointi asetusikkunasta.</translation>
     </message>
     <message>
         <source>Result</source>
-        <translation type="obsolete">Tulokset</translation>
-    </message>
-    <message>
-        <source>Unique count</source>
-        <translation type="unfinished"></translation>
+        <translation>Tulokset</translation>
     </message>
 </context>
 <context>
@@ -11748,11 +10739,7 @@ Ole hyvä ja tarkasta konfiguraatio Prosessointi asetusikkunasta.</translation>
     </message>
     <message>
         <source>Result</source>
-        <translation type="obsolete">Tulokset</translation>
-    </message>
-    <message>
-        <source>Weighted count</source>
-        <translation type="unfinished"></translation>
+        <translation>Tulokset</translation>
     </message>
 </context>
 <context>
@@ -11775,11 +10762,7 @@ Ole hyvä ja tarkasta konfiguraatio Prosessointi asetusikkunasta.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
-    </message>
-    <message>
-        <source>Points from table</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulotaso</translation>
     </message>
 </context>
 <context>
@@ -11825,11 +10808,7 @@ Ole hyvä ja tarkasta konfiguraatio Prosessointi asetusikkunasta.</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Ulostulo</translation>
-    </message>
-    <message>
-        <source>Polar plot</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulo</translation>
     </message>
 </context>
 <context>
@@ -11899,11 +10878,7 @@ Ole hyvä ja tarkasta konfiguraatio Prosessointi asetusikkunasta.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
-    </message>
-    <message>
-        <source>Polygons from lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulotaso</translation>
     </message>
 </context>
 <context>
@@ -11914,11 +10889,7 @@ Ole hyvä ja tarkasta konfiguraatio Prosessointi asetusikkunasta.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
-    </message>
-    <message>
-        <source>Lines from polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulotaso</translation>
     </message>
 </context>
 <context>
@@ -12077,7 +11048,7 @@ Ole hyvä ja tarkasta konfiguraatio Prosessointi asetusikkunasta.</translation>
     </message>
     <message>
         <source>&amp;History and Log...</source>
-        <translation type="obsolete">&amp;Historia ja loki...</translation>
+        <translation>&amp;Historia ja loki...</translation>
     </message>
     <message>
         <source>&amp;Options...</source>
@@ -12094,10 +11065,6 @@ Ole hyvä ja tarkasta konfiguraatio Prosessointi asetusikkunasta.</translation>
     <message>
         <source>Ctrl+Alt+M</source>
         <translation>Ctrl+Alt+M</translation>
-    </message>
-    <message>
-        <source>&amp;History...</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -13058,7 +12025,7 @@ Virhe(%2): %3</translation>
     </message>
     <message>
         <source>GEOS prior to 3.2 doesn&apos;t support GEOSInterpolate</source>
-        <translation type="obsolete">GEOS ennen 3.2 versiota ei tue GEOSInterpolate</translation>
+        <translation>GEOS ennen 3.2 versiota ei tue GEOSInterpolate</translation>
     </message>
     <message>
         <source>segment %1 of ring %2 of polygon %3 intersects segment %4 of ring %5 of polygon %6 at %7</source>
@@ -14016,219 +12983,219 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <source>Location: %1</source>
-        <translation type="obsolete">Sijainti: %1</translation>
+        <translation>Sijainti: %1</translation>
     </message>
     <message>
         <source>Location: %1&lt;br&gt;Mapset: %2</source>
-        <translation type="obsolete">Sijainti: %1&lt;br&gt;Mapset: %2</translation>
+        <translation>Sijainti: %1&lt;br&gt;Mapset: %2</translation>
     </message>
     <message>
         <source>&lt;b&gt;Raster&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;Rasteri&lt;/b&gt;</translation>
+        <translation>&lt;b&gt;Rasteri&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Cannot open raster header</source>
-        <translation type="obsolete">Rasterin ylätunnistetta ei voida avata</translation>
+        <translation>Rasterin ylätunnistetta ei voida avata</translation>
     </message>
     <message>
         <source>Rows</source>
-        <translation type="obsolete">Rivit</translation>
+        <translation>Rivit</translation>
     </message>
     <message>
         <source>Columns</source>
-        <translation type="obsolete">Sarakkeet</translation>
+        <translation>Sarakkeet</translation>
     </message>
     <message>
         <source>N-S resolution</source>
-        <translation type="obsolete">P-E erotuskyky</translation>
+        <translation>P-E erotuskyky</translation>
     </message>
     <message>
         <source>E-W resolution</source>
-        <translation type="obsolete">I-L erotuskyky</translation>
+        <translation>I-L erotuskyky</translation>
     </message>
     <message>
         <source>North</source>
-        <translation type="obsolete">Pohjoinen</translation>
+        <translation>Pohjoinen</translation>
     </message>
     <message>
         <source>South</source>
-        <translation type="obsolete">Etelä</translation>
+        <translation>Etelä</translation>
     </message>
     <message>
         <source>East</source>
-        <translation type="obsolete">Itä</translation>
+        <translation>Itä</translation>
     </message>
     <message>
         <source>West</source>
-        <translation type="obsolete">Länsi</translation>
+        <translation>Länsi</translation>
     </message>
     <message>
         <source>Format</source>
-        <translation type="obsolete">Tiedostomuoto</translation>
+        <translation>Tiedostomuoto</translation>
     </message>
     <message>
         <source>Minimum value</source>
-        <translation type="obsolete">Minimiarvo</translation>
+        <translation>Minimiarvo</translation>
     </message>
     <message>
         <source>Maximum value</source>
-        <translation type="obsolete">Maksimiarvo</translation>
+        <translation>Maksimiarvo</translation>
     </message>
     <message>
         <source>Data source</source>
-        <translation type="obsolete">Tiedon lähde</translation>
+        <translation>Tiedon lähde</translation>
     </message>
     <message>
         <source>Data description</source>
-        <translation type="obsolete">Tiedon kuvaus</translation>
+        <translation>Tiedon kuvaus</translation>
     </message>
     <message>
         <source>Comments</source>
-        <translation type="obsolete">Kommentit</translation>
+        <translation>Kommentit</translation>
     </message>
     <message>
         <source>Categories</source>
-        <translation type="obsolete">Luokat</translation>
+        <translation>Luokat</translation>
     </message>
     <message>
         <source>&lt;b&gt;Vector&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;Vektori&lt;/b&gt;</translation>
+        <translation>&lt;b&gt;Vektori&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Points</source>
-        <translation type="obsolete">Pisteet</translation>
+        <translation>Pisteet</translation>
     </message>
     <message>
         <source>Lines</source>
-        <translation type="obsolete">Viivat</translation>
+        <translation>Viivat</translation>
     </message>
     <message>
         <source>Boundaries</source>
-        <translation type="obsolete">Rajat</translation>
+        <translation>Rajat</translation>
     </message>
     <message>
         <source>Centroids</source>
-        <translation type="obsolete">Keskiöt</translation>
+        <translation>Keskiöt</translation>
     </message>
     <message>
         <source>Faces</source>
-        <translation type="obsolete">Pinnat</translation>
+        <translation>Pinnat</translation>
     </message>
     <message>
         <source>Kernels</source>
-        <translation type="obsolete">Ytimet</translation>
+        <translation>Ytimet</translation>
     </message>
     <message>
         <source>Areas</source>
-        <translation type="obsolete">Alueet</translation>
+        <translation>Alueet</translation>
     </message>
     <message>
         <source>Islands</source>
-        <translation type="obsolete">Saaret</translation>
+        <translation>Saaret</translation>
     </message>
     <message>
         <source>Top</source>
-        <translation type="obsolete">Ylös</translation>
+        <translation>Ylös</translation>
     </message>
     <message>
         <source>Bottom</source>
-        <translation type="obsolete">Alas</translation>
+        <translation>Alas</translation>
     </message>
     <message>
         <source>yes</source>
-        <translation type="obsolete">kyllä</translation>
+        <translation>kyllä</translation>
     </message>
     <message>
         <source>no</source>
-        <translation type="obsolete">ei</translation>
+        <translation>ei</translation>
     </message>
     <message>
         <source>History&lt;br&gt;</source>
-        <translation type="obsolete">Historia&lt;br&gt;</translation>
+        <translation>Historia&lt;br&gt;</translation>
     </message>
     <message>
         <source>&lt;b&gt;Layer&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;Taso&lt;/b&gt;</translation>
+        <translation>&lt;b&gt;Taso&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Features</source>
-        <translation type="obsolete">Kohteet</translation>
+        <translation>Kohteet</translation>
     </message>
     <message>
         <source>Driver</source>
-        <translation type="obsolete">Ajuri</translation>
+        <translation>Ajuri</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="obsolete">Taulukko</translation>
+        <translation>Taulukko</translation>
     </message>
     <message>
         <source>Key column</source>
-        <translation type="obsolete">Avainsarake</translation>
+        <translation>Avainsarake</translation>
     </message>
     <message>
         <source>&lt;b&gt;Region&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;Alue&lt;/b&gt;</translation>
+        <translation>&lt;b&gt;Alue&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Cannot open region header</source>
-        <translation type="obsolete">Ei voida avata alueen alkutunnistetta</translation>
+        <translation>Ei voida avata alueen alkutunnistetta</translation>
     </message>
     <message>
         <source>XY</source>
-        <translation type="obsolete">XY</translation>
+        <translation>XY</translation>
     </message>
     <message>
         <source>UTM</source>
-        <translation type="obsolete">UTM</translation>
+        <translation>UTM</translation>
     </message>
     <message>
         <source>SP</source>
-        <translation type="obsolete">SP</translation>
+        <translation>SP</translation>
     </message>
     <message>
         <source>LL</source>
-        <translation type="obsolete">LL</translation>
+        <translation>LL</translation>
     </message>
     <message>
         <source>Other</source>
-        <translation type="obsolete">Muu</translation>
+        <translation>Muu</translation>
     </message>
     <message>
         <source>Projection Type</source>
-        <translation type="obsolete">Projektion tyyppi</translation>
+        <translation>Projektion tyyppi</translation>
     </message>
     <message>
         <source>Zone</source>
-        <translation type="obsolete">Kaista</translation>
+        <translation>Kaista</translation>
     </message>
     <message>
         <source>3D Cols</source>
-        <translation type="obsolete">3D sarakkeet</translation>
+        <translation>3D sarakkeet</translation>
     </message>
     <message>
         <source>3D Rows</source>
-        <translation type="obsolete">3D rivit</translation>
+        <translation>3D rivit</translation>
     </message>
     <message>
         <source>Depths</source>
-        <translation type="obsolete">Syvyys</translation>
+        <translation>Syvyys</translation>
     </message>
     <message>
         <source>E-W 3D resolution</source>
-        <translation type="obsolete">I-L 3D erotuskyky</translation>
+        <translation>I-L 3D erotuskyky</translation>
     </message>
     <message>
         <source>N-S 3D resolution</source>
-        <translation type="obsolete">P-E 3D erotuskyky</translation>
+        <translation>P-E 3D erotuskyky</translation>
     </message>
     <message>
         <source>GRASS</source>
-        <translation type="obsolete">GRASS</translation>
+        <translation>GRASS</translation>
     </message>
     <message>
         <source>GRASS layer</source>
-        <translation type="obsolete">GRASS taso</translation>
+        <translation>GRASS taso</translation>
     </message>
     <message>
         <source>Heatmap</source>
@@ -14438,7 +13405,7 @@ Haluatko määritellä polun (GISBASE) GRASS asennukseesi?</translation>
     </message>
     <message>
         <source>Cannot start %1/etc/lock</source>
-        <translation type="obsolete">Ei voida käynnistää %1/etc/lock</translation>
+        <translation>Ei voida käynnistää %1/etc/lock</translation>
     </message>
     <message>
         <source>Mapset is already in use.</source>
@@ -14462,11 +13429,11 @@ Haluatko määritellä polun (GISBASE) GRASS asennukseesi?</translation>
     </message>
     <message>
         <source>Cannot open vector %1 in mapset %2 on level 2 (topology not available, try to rebuild topology using v.build module).</source>
-        <translation type="obsolete">Vektorin %1 avaaminen karttakokoelmassa %2 tasolla 2 ei onnistu (Topologia ei ole vapaana, luo topologia uusiksi käyttämällä v.luontimoduulia).</translation>
+        <translation>Vektorin %1 avaaminen karttakokoelmassa %2 tasolla 2 ei onnistu (Topologia ei ole vapaana, luo topologia uusiksi käyttämällä v.luontimoduulia).</translation>
     </message>
     <message>
         <source>Cannot open vector %1 in mapset %2</source>
-        <translation type="obsolete">Vektorin %1 avaaminen karttakokoelmassa %2 ei onnistu</translation>
+        <translation>Vektorin %1 avaaminen karttakokoelmassa %2 ei onnistu</translation>
     </message>
     <message>
         <source>Cannot read raster map region</source>
@@ -14498,7 +13465,7 @@ Haluatko määritellä polun (GISBASE) GRASS asennukseesi?</translation>
     </message>
     <message>
         <source>command: %1 %2&lt;br&gt;%3&lt;br&gt;%4</source>
-        <translation type="obsolete">komento: %1 %2&lt;br&gt;%3&lt;br&gt;%4</translation>
+        <translation>komento: %1 %2&lt;br&gt;%3&lt;br&gt;%4</translation>
     </message>
     <message>
         <source>Cannot get projection </source>
@@ -15160,7 +14127,7 @@ Vastaus oli:
     </message>
     <message>
         <source>Fatal error occurred in GRASS library. QGIS gets over the error but any next fatal error will cause QGIS exit without warning. This is a problem of GRASS 7.0.0beta1 but it is fixed in GRASS 7.1 and higher. Error message: %1</source>
-        <translation type="obsolete">Kohtalokas virhe tapahtui GRASS kirjastossa. QGIS selvisi tästä virheestä mutta mika tahansa seuraava kohtalokas virhe aiheuttaa QGIS sovelluksen sulkemisen ilman varoitusta. Tämä on ongelma GRASS 7.0.0beta1 versiossa mutta on korjattu GRASS 7.1 ja uudemmissa versiossa. Virheviesti: %1</translation>
+        <translation>Kohtalokas virhe tapahtui GRASS kirjastossa. QGIS selvisi tästä virheestä mutta mika tahansa seuraava kohtalokas virhe aiheuttaa QGIS sovelluksen sulkemisen ilman varoitusta. Tämä on ongelma GRASS 7.0.0beta1 versiossa mutta on korjattu GRASS 7.1 ja uudemmissa versiossa. Virheviesti: %1</translation>
     </message>
     <message>
         <source>Raster image fill</source>
@@ -15177,216 +14144,6 @@ Vastaus oli:
     <message>
         <source>NOTICE: %1</source>
         <translation>HUOMAA: %1</translation>
-    </message>
-    <message>
-        <source>Blur</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Drop Shadow</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Inner Shadow</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Stack</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Outer Glow</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Inner Glow</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Source</source>
-        <translation type="unfinished">Lähde</translation>
-    </message>
-    <message>
-        <source>Transform</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Colorise</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Recent colors</source>
-        <translation type="unfinished">Aiemmat värit</translation>
-    </message>
-    <message>
-        <source>Standard colors</source>
-        <translation type="unfinished">Vakiovärit</translation>
-    </message>
-    <message>
-        <source>Project colors</source>
-        <translation type="unfinished">Projektin värit</translation>
-    </message>
-    <message>
-        <source>Number of places must be positive</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Count</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sum</source>
-        <translation type="unfinished">Summa</translation>
-    </message>
-    <message>
-        <source>Mean</source>
-        <translation type="unfinished">Keskiarvo</translation>
-    </message>
-    <message>
-        <source>Median</source>
-        <translation type="unfinished">Mediaani</translation>
-    </message>
-    <message>
-        <source>St dev (pop)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>St dev (sample)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Minimum</source>
-        <translation type="unfinished">Minimi</translation>
-    </message>
-    <message>
-        <source>Maximum</source>
-        <translation type="unfinished">Maksimi</translation>
-    </message>
-    <message>
-        <source>Range</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Minority</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Majority</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Variety</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Q1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Q3</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>IQR</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="unfinished">Arvo</translation>
-    </message>
-    <message>
-        <source>GRASS %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>GRASS %1 (Geographic Resources Analysis Support System)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Version 2.0</source>
-        <translation type="unfinished">Versio 2.0</translation>
-    </message>
-    <message>
-        <source>Cannot start %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Mapset lock failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot open vector on level 2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot open vector</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>command: %1 %2
-stdout: %3
-stderr: %4</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Attempt to copy from different location.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot delete</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Delete confirmation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Are you sure you want to delete %1 %2?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot create table</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot insert, statement</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rename GRASS %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot delete %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot rename %1 to %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Delete Connection</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Are you sure you want to delete the connection to %1?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Delete Object</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Are you sure you want to delete %1.%2?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Are you sure you want to delete %1?</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -16745,33 +15502,6 @@ Ohita nämä virheet aina?</translation>
         <source>A problem occured during deletion of %1 feature(s)</source>
         <translation>Ongelma tapahtui poistettaessa %1 ominaisuutta</translation>
     </message>
-    <message>
-        <source>Project file was changed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The loaded project file on disk was meanwhile changed.  Do you want to overwrite the changes?
-
-Last modification date on load was: %1
-Current last modification date is: %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Saving raster</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Export to raster file has been completed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot paste style to layer with a different geometry type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Your copied style does not match the layer you are pasting to</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgisAppInterface</name>
@@ -16845,7 +15575,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Essen (Germany), Developer meeting 2012</source>
-        <translation type="obsolete">Essen (Germany), Developer meeting 2012</translation>
+        <translation>Essen (Germany), Developer meeting 2012</translation>
     </message>
     <message>
         <source>Contributors</source>
@@ -16882,10 +15612,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Developers Map</source>
         <translation>Sovelluskehittäjien kartta</translation>
-    </message>
-    <message>
-        <source>Essen (Germany), Developer meeting 2014</source>
-        <translation type="unfinished">Essen (Germany), Developer meeting 2014</translation>
     </message>
 </context>
 <context>
@@ -16949,35 +15675,35 @@ p, li { white-space: pre-wrap; }
     <name>QgsAddJoinDialogBase</name>
     <message>
         <source>Add vector join</source>
-        <translation type="obsolete">Lisää vektorien yhdistäminen</translation>
+        <translation>Lisää vektorien yhdistäminen</translation>
     </message>
     <message>
         <source>Join layer</source>
-        <translation type="obsolete">Yhdistä taso</translation>
+        <translation>Yhdistä taso</translation>
     </message>
     <message>
         <source>Join field</source>
-        <translation type="obsolete">Liittämiskenttä</translation>
+        <translation>Liittämiskenttä</translation>
     </message>
     <message>
         <source>Target field</source>
-        <translation type="obsolete">Kohdekenttä</translation>
+        <translation>Kohdekenttä</translation>
     </message>
     <message>
         <source>Create attribute index on join field</source>
-        <translation type="obsolete">Luo ominaisuustiedon indeksi yhdistettävästä tiedosta</translation>
+        <translation>Luo ominaisuustiedon indeksi yhdistettävästä tiedosta</translation>
     </message>
     <message>
         <source>Choose which fields are joined</source>
-        <translation type="obsolete">Valitse yhdistettävät tiedot</translation>
+        <translation>Valitse yhdistettävät tiedot</translation>
     </message>
     <message>
         <source>Cache join layer in virtual memory</source>
-        <translation type="obsolete">Vie yhdistystaso välimuistiin virtuaalimuistissa</translation>
+        <translation>Vie yhdistystaso välimuistiin virtuaalimuistissa</translation>
     </message>
     <message>
         <source>Custom field name prefix</source>
-        <translation type="obsolete">Räätälöity tietonimen etuliite</translation>
+        <translation>Räätälöity tietonimen etuliite</translation>
     </message>
 </context>
 <context>
@@ -17110,17 +15836,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>y</source>
         <translation>y</translation>
-    </message>
-</context>
-<context>
-    <name>QgsAngleMagnetWidget</name>
-    <message>
-        <source>Snap to </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No snapping</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17924,7 +16639,7 @@ Jäsentelyvirhe:
     </message>
     <message>
         <source>Attribute table - %1 :: Features total: %2, filtered: %3, selected: %4</source>
-        <translation type="obsolete">Ominaisuustietotaulu - %1 :: Ominaisuuksia yhteensä: %2, suodatettu: %3, valittu: %4</translation>
+        <translation>Ominaisuustietotaulu - %1 :: Ominaisuuksia yhteensä: %2, suodatettu: %3, valittu: %4</translation>
     </message>
     <message>
         <source>Update Filtered</source>
@@ -17971,30 +16686,6 @@ Jäsentelyvirhe:
     <message>
         <source>Update Selected</source>
         <translation>Päivitä valitut</translation>
-    </message>
-    <message>
-        <source>Ctrl+R</source>
-        <translation type="unfinished">Ctrl+R</translation>
-    </message>
-    <message>
-        <source>Paste features from clipboard (Ctrl+V)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ctrl+V</source>
-        <translation type="unfinished">Ctrl+V</translation>
-    </message>
-    <message>
-        <source>Show All Features In Initial Canvas Extent</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Attribute table - %1 :: Features total: %2, filtered: %3, selected: %4%5</source>
-        <translation type="unfinished">Ominaisuustietotaulu - %1 :: Ominaisuuksia yhteensä: %2, suodatettu: %3, valittu: %4%5 {1 ?} {2,?} {3,?}</translation>
-    </message>
-    <message>
-        <source>, spatially limited</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -18086,29 +16777,18 @@ Jäsentelyvirhe:
     </message>
 </context>
 <context>
-    <name>QgsBlurWidget</name>
-    <message>
-        <source>Stack blur (fast)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Gaussian blur (quality)</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>QgsBookmarks</name>
     <message>
         <source>&amp;Add</source>
-        <translation type="obsolete">&amp;Lisää</translation>
+        <translation>&amp;Lisää</translation>
     </message>
     <message>
         <source>&amp;Delete</source>
-        <translation type="obsolete">&amp;Poista</translation>
+        <translation>&amp;Poista</translation>
     </message>
     <message>
         <source>&amp;Zoom to</source>
-        <translation type="obsolete">&amp;Kohdenna</translation>
+        <translation>&amp;Kohdenna</translation>
     </message>
     <message>
         <source>Error</source>
@@ -18190,7 +16870,7 @@ Tietokanta: %2</translation>
     </message>
     <message>
         <source>&amp;Share</source>
-        <translation type="obsolete">Jaa</translation>
+        <translation>Jaa</translation>
     </message>
     <message>
         <source>&amp;Export</source>
@@ -18224,48 +16904,12 @@ Tietokanta: %2</translation>
         <source>XML files( *.xml *.XML )</source>
         <translation>XML tiedostot (*.xml *.XML)</translation>
     </message>
-    <message>
-        <source>Import/Export Bookmarks</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsBookmarksBase</name>
     <message>
         <source>Geospatial Bookmarks</source>
-        <translation type="obsolete">Paikkatiedon kirjanmerkit</translation>
-    </message>
-    <message>
-        <source>Spatial Bookmarks</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add</source>
-        <translation type="unfinished">Lisää</translation>
-    </message>
-    <message>
-        <source>Add bookmark</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation type="unfinished">Poista</translation>
-    </message>
-    <message>
-        <source>Delete bookmark</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Zoom to</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Zoom to bookmark</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="unfinished">Ohje</translation>
+        <translation>Paikkatiedon kirjanmerkit</translation>
     </message>
 </context>
 <context>
@@ -18354,7 +16998,7 @@ Tietokanta: %2</translation>
     <name>QgsBrowserDirectoryPropertiesBase</name>
     <message>
         <source>Dialog</source>
-        <translation type="obsolete">Dialogi</translation>
+        <translation>Dialogi</translation>
     </message>
     <message>
         <source>Path</source>
@@ -18417,15 +17061,15 @@ Tietokanta: %2</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="obsolete">Virhe</translation>
+        <translation>Virhe</translation>
     </message>
     <message>
         <source>Layer Properties</source>
-        <translation type="obsolete">Tason ominaisuudet</translation>
+        <translation>Tason ominaisuudet</translation>
     </message>
     <message>
         <source>Directory Properties</source>
-        <translation type="obsolete">Hakemiston ominaisuudet</translation>
+        <translation>Hakemiston ominaisuudet</translation>
     </message>
     <message>
         <source>Type here to filter current item...</source>
@@ -18448,11 +17092,11 @@ Tietokanta: %2</translation>
     </message>
     <message>
         <source>Filter Files</source>
-        <translation type="obsolete">Suodatin tiedostot</translation>
+        <translation>Suodatin tiedostot</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="obsolete">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Collapse All</source>
@@ -18462,43 +17106,20 @@ Tietokanta: %2</translation>
         <source>Options</source>
         <translation>Vaihtoehdot</translation>
     </message>
-    <message>
-        <source>Add Layers</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Filter Browser</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show Properties</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Enable/disable properties widget</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QgsBrowserLayerProperties</name>
-    <message>
-        <source>Error</source>
-        <translation type="unfinished">Virhe</translation>
-    </message>
 </context>
 <context>
     <name>QgsBrowserLayerPropertiesBase</name>
     <message>
         <source>Dialog</source>
-        <translation type="obsolete">Valintaikkuna</translation>
+        <translation>Valintaikkuna</translation>
     </message>
     <message>
         <source>Display Name</source>
-        <translation type="obsolete">Näytön nimi</translation>
+        <translation>Näytön nimi</translation>
     </message>
     <message>
         <source>Layer Source</source>
-        <translation type="obsolete">Tason syöte</translation>
+        <translation>Tason syöte</translation>
     </message>
     <message>
         <source>Provider</source>
@@ -18507,26 +17128,6 @@ Tietokanta: %2</translation>
     <message>
         <source>Metadata</source>
         <translation>Metadata</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="unfinished">Nimi</translation>
-    </message>
-    <message>
-        <source>name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>URI</source>
-        <translation type="unfinished">URI</translation>
-    </message>
-    <message>
-        <source>provider key</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>notice</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -18542,24 +17143,6 @@ Tietokanta: %2</translation>
     <message>
         <source>Favourites</source>
         <translation>Suosikit</translation>
-    </message>
-</context>
-<context>
-    <name>QgsBrowserPropertiesDialog</name>
-    <message>
-        <source>Layer Properties</source>
-        <translation type="unfinished">Tason ominaisuudet</translation>
-    </message>
-    <message>
-        <source>Directory Properties</source>
-        <translation type="unfinished">Hakemiston ominaisuudet</translation>
-    </message>
-</context>
-<context>
-    <name>QgsBrowserPropertiesDialogBase</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -18706,7 +17289,7 @@ Tietokanta: %2</translation>
     </message>
     <message>
         <source>Join</source>
-        <translation type="obsolete">Yhdistä</translation>
+        <translation>Yhdistä</translation>
     </message>
     <message>
         <source>Advanced</source>
@@ -18749,51 +17332,6 @@ Tietokanta: %2</translation>
 Should the existing classes be deleted before classification?</source>
         <translation>Luokitus kenttä muuttui, ennen: %1, uusi: %2
 Pitäisikö olemassa olevat luokat poistaa ennen luokitusta?</translation>
-    </message>
-    <message>
-        <source>Match to saved symbols</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Match to symbols from file...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Matched symbols</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Matched %1 categories to symbols.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No categories could be matched to symbols in library.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Match to symbols from file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>XML files (*.xml *XML)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Matching error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>An error occured reading file:
-%1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Matched %1 categories to symbols from file.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No categories could be matched to symbols in file.</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -19151,25 +17689,6 @@ Pitäisikö olemassa olevat luokat poistaa ennen luokitusta?</translation>
     <message>
         <source>Error writing palette file</source>
         <translation>Virhe kirjoitettaessa palettitiedostoa</translation>
-    </message>
-</context>
-<context>
-    <name>QgsColorEffectWidget</name>
-    <message>
-        <source>Off</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>By lightness</source>
-        <translation type="unfinished">Valoisuus</translation>
-    </message>
-    <message>
-        <source>By luminosity</source>
-        <translation type="unfinished">Selkeys</translation>
-    </message>
-    <message>
-        <source>By average</source>
-        <translation type="unfinished">Keskimäärin</translation>
     </message>
 </context>
 <context>
@@ -19651,10 +18170,6 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
         <source>Landscape</source>
         <translation>Vaakasuora</translation>
     </message>
-    <message>
-        <source>Exporting atlas</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsComposerArrowWidget</name>
@@ -19947,7 +18462,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     </message>
     <message>
         <source>Table grid stroke</source>
-        <translation type="obsolete">Tauluruudukon piirto</translation>
+        <translation>Tauluruudukon piirto</translation>
     </message>
     <message>
         <source>Table grid color</source>
@@ -20037,10 +18552,6 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
         <source>Empty table message changed</source>
         <translation>Tyhjän taulun viestiä muutettu</translation>
     </message>
-    <message>
-        <source>Table grid line</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsComposerAttributeTableWidgetBase</name>
@@ -20106,7 +18617,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     </message>
     <message>
         <source>Stroke width</source>
-        <translation type="obsolete">Piirron leveys</translation>
+        <translation>Piirron leveys</translation>
     </message>
     <message>
         <source>Color</source>
@@ -20223,10 +18734,6 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <source>Add Frame</source>
         <translation>Lisää raami</translation>
-    </message>
-    <message>
-        <source>Line width</source>
-        <translation type="unfinished">Viivan leveys</translation>
     </message>
 </context>
 <context>
@@ -23080,11 +21587,11 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     </message>
     <message>
         <source>Select stroke color</source>
-        <translation type="obsolete">Valitse korostuksen väri</translation>
+        <translation>Valitse korostuksen väri</translation>
     </message>
     <message>
         <source>Transparent stroke</source>
-        <translation type="obsolete">Läpinäkyvä painotus</translation>
+        <translation>Läpinäkyvä painotus</translation>
     </message>
     <message>
         <source>Map %1</source>
@@ -23132,7 +21639,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     </message>
     <message>
         <source>Scalebar stroke color changed</source>
-        <translation type="obsolete">Mittakaavajanan viivan väri muutettu</translation>
+        <translation>Mittakaavajanan viivan väri muutettu</translation>
     </message>
     <message>
         <source>Scalebar unit text</source>
@@ -23182,22 +21689,6 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
         <source>Scalebar line cap style</source>
         <translation>Mittakaavajanan päätyjen tyyli</translation>
     </message>
-    <message>
-        <source>Select line color</source>
-        <translation type="unfinished">Valitse viivan väri</translation>
-    </message>
-    <message>
-        <source>Transparent line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Scalebar line color changed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Scalebar segment size mode</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsComposerScaleBarWidgetBase</name>
@@ -23215,11 +21706,11 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     </message>
     <message>
         <source>Map</source>
-        <translation type="obsolete">Kartta</translation>
+        <translation>Kartta</translation>
     </message>
     <message>
         <source>Style</source>
-        <translation type="obsolete">Tyyli</translation>
+        <translation>Tyyli</translation>
     </message>
     <message>
         <source>Units</source>
@@ -23227,11 +21718,11 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     </message>
     <message>
         <source>Label</source>
-        <translation type="obsolete">Nimiö</translation>
+        <translation>Nimiö</translation>
     </message>
     <message>
         <source>Map units per bar unit</source>
-        <translation type="obsolete">Kartta yksikköä / mittakaavan yksikkö</translation>
+        <translation>Kartta yksikköä / mittakaavan yksikkö</translation>
     </message>
     <message>
         <source>Segments</source>
@@ -23247,7 +21738,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     </message>
     <message>
         <source>Size</source>
-        <translation type="obsolete">Koko</translation>
+        <translation>Koko</translation>
     </message>
     <message>
         <source> units</source>
@@ -23307,47 +21798,11 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     </message>
     <message>
         <source>Stroke color</source>
-        <translation type="obsolete">Painotusväri</translation>
+        <translation>Painotusväri</translation>
     </message>
     <message>
         <source>Font...</source>
         <translation>Kirjain...</translation>
-    </message>
-    <message>
-        <source>&amp;Map</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>St&amp;yle</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Label</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Map &amp;units per bar unit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>max </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>min </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Fi&amp;xed width</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Fit segment width</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Line color</source>
-        <translation type="unfinished">Viivan väri</translation>
     </message>
 </context>
 <context>
@@ -23540,7 +21995,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     </message>
     <message>
         <source>Table grid stroke</source>
-        <translation type="obsolete">Taulun ruudukon tiheys</translation>
+        <translation>Taulun ruudukon tiheys</translation>
     </message>
     <message>
         <source>Select grid color</source>
@@ -23557,10 +22012,6 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <source>Table visible only toggled</source>
         <translation>Taulun ainoastaan-näkyvissä vaihdettu</translation>
-    </message>
-    <message>
-        <source>Table grid line</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -23655,7 +22106,7 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     </message>
     <message>
         <source>Stroke width</source>
-        <translation type="obsolete">Viivan leveys</translation>
+        <translation>Viivan leveys</translation>
     </message>
     <message>
         <source>Follow column alignment</source>
@@ -23672,10 +22123,6 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     <message>
         <source>Right</source>
         <translation>Oikea</translation>
-    </message>
-    <message>
-        <source>Line width</source>
-        <translation type="unfinished">Viivan leveys</translation>
     </message>
 </context>
 <context>
@@ -24430,7 +22877,7 @@ ja nykyinen tiedosto on [%3]</translation>
     <name>QgsCustomColorScheme</name>
     <message>
         <source>Standard colors</source>
-        <translation type="obsolete">Vakiovärit</translation>
+        <translation>Vakiovärit</translation>
     </message>
 </context>
 <context>
@@ -24821,14 +23268,6 @@ ja nykyinen tiedosto on [%3]</translation>
         <source>[&lt;b&gt;&lt;dash&gt;;&lt;space&gt;&lt;/b&gt;] e.g. &apos;8;2;1;2&apos;</source>
         <translation>[&lt;b&gt;&lt;dash&gt;;&lt;space&gt;&lt;/b&gt;] e.g. &apos;8;2;1;2&apos;</translation>
     </message>
-    <message>
-        <source>Assistant...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>single character</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsDataDefinedButtonPlugin</name>
@@ -24839,32 +23278,6 @@ ja nykyinen tiedosto on [%3]</translation>
     <message>
         <source>A widget to define the scale range.</source>
         <translation>Väline määritettäessä mittakaavarajat.</translation>
-    </message>
-</context>
-<context>
-    <name>QgsDataDefinedRotationDialog</name>
-    <message>
-        <source>Rotation</source>
-        <translation type="unfinished">Rotaatio</translation>
-    </message>
-    <message>
-        <source>Symbol rotation</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QgsDataDefinedSizeDialog</name>
-    <message>
-        <source>Size</source>
-        <translation type="unfinished">Koko</translation>
-    </message>
-    <message>
-        <source>Symbol size</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Size Assistant...</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -24912,32 +23325,6 @@ ja nykyinen tiedosto on [%3]</translation>
     <message>
         <source>0 (false)|1 (true)</source>
         <translation>0 (epätosi)|1 (tosi)</translation>
-    </message>
-</context>
-<context>
-    <name>QgsDataDefinedValueDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Label</source>
-        <translation type="unfinished">Nimiö</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="unfinished">...</translation>
-    </message>
-</context>
-<context>
-    <name>QgsDataDefinedWidthDialog</name>
-    <message>
-        <source>Width</source>
-        <translation type="unfinished">Leveys</translation>
-    </message>
-    <message>
-        <source>Symbol width</source>
-        <translation type="unfinished">Symbolin leveys</translation>
     </message>
 </context>
 <context>
@@ -25623,7 +24010,7 @@ ei näytetä</translation>
     </message>
     <message>
         <source>%1 records discarded due to missing geometry definitions</source>
-        <translation type="obsolete">%1 tietuetta hylätty puuttuvan geometria määrityksen vuoksi</translation>
+        <translation>%1 tietuetta hylätty puuttuvan geometria määrityksen vuoksi</translation>
     </message>
     <message>
         <source>%1 records discarded due to invalid geometry definitions</source>
@@ -25656,26 +24043,6 @@ ei näytetä</translation>
     <message>
         <source>The file has been updated by another application - reloading</source>
         <translation>Tiedostoa on päivitetty toisesta ohjelmistosta - ladataan uudelleen</translation>
-    </message>
-    <message>
-        <source>Whole number (integer)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Whole number (integer - 64 bit)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Decimal number (double)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Text, unlimited length (text)</source>
-        <translation type="unfinished">Teksti, rajoittamaton pituus (text)</translation>
-    </message>
-    <message>
-        <source>%1 records have missing geometry definitions</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -26147,31 +24514,31 @@ ei näytetä</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="obsolete">Viiva</translation>
+        <translation>Viiva</translation>
     </message>
     <message>
         <source>Horizontal</source>
-        <translation type="obsolete">Vaakataso</translation>
+        <translation>Vaakataso</translation>
     </message>
     <message>
         <source>Free</source>
-        <translation type="obsolete">Vapaa</translation>
+        <translation>Vapaa</translation>
     </message>
     <message>
         <source>On line</source>
-        <translation type="obsolete">viivalla</translation>
+        <translation>viivalla</translation>
     </message>
     <message>
         <source>Above line</source>
-        <translation type="obsolete">Viivan päällä</translation>
+        <translation>Viivan päällä</translation>
     </message>
     <message>
         <source>Below Line</source>
-        <translation type="obsolete">Viivan alla</translation>
+        <translation>Viivan alla</translation>
     </message>
     <message>
         <source>Map orientation</source>
-        <translation type="obsolete">Kartan suunta</translation>
+        <translation>Kartan suunta</translation>
     </message>
     <message>
         <source>Pie chart</source>
@@ -26231,7 +24598,7 @@ ei näytetä</translation>
     </message>
     <message>
         <source>Bar length: Scale linearly, such as the following value matches the specified size.</source>
-        <translation type="obsolete">Palkin pituus: Mittakaava lineaarinen, kuten seuraava arvo vastaa määritettyä kokoa.</translation>
+        <translation>Palkin pituus: Mittakaava lineaarinen, kuten seuraava arvo vastaa määritettyä kokoa.</translation>
     </message>
     <message>
         <source>Scale linearly between 0 and the following attribute value / diagram size:</source>
@@ -26239,7 +24606,7 @@ ei näytetä</translation>
     </message>
     <message>
         <source>Transparency: %1%</source>
-        <translation type="obsolete">Läpinäkyvyys: %1%</translation>
+        <translation>Läpinäkyvyys: %1%</translation>
     </message>
     <message>
         <source>Diagrams: No attributes added.</source>
@@ -26261,48 +24628,12 @@ ei näytetä</translation>
         <source>You did not add any attributes to this diagram layer. Please specify the attributes to visualize on the diagrams or disable diagrams.</source>
         <translation>Et ole lisännyt yhtään ominaisuustietoa tälle kaaviotasolle. Määrittele ominaisuustietoja visualisoidaksesi kaavioita tai poista kaaviot.</translation>
     </message>
-    <message>
-        <source>Around Line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Over Line</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Around Centroid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Over Centroid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Perimeter</source>
-        <translation type="unfinished">Ympärysmitta</translation>
-    </message>
-    <message>
-        <source>Inside Polygon</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Bar length: Scale linearly, so that the following value matches the specified bar length:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Bar length</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Size</source>
-        <translation type="unfinished">Koko</translation>
-    </message>
 </context>
 <context>
     <name>QgsDiagramPropertiesBase</name>
     <message>
         <source>Display diagrams</source>
-        <translation type="obsolete">Näytä kaaviot</translation>
+        <translation>Näytä kaaviot</translation>
     </message>
     <message>
         <source>Diagram type</source>
@@ -26346,7 +24677,7 @@ ei näytetä</translation>
     </message>
     <message>
         <source>Transparency 0%</source>
-        <translation type="obsolete">Läpinäkyvyys 0%</translation>
+        <translation>Läpinäkyvyys 0%</translation>
     </message>
     <message>
         <source>Start Angle</source>
@@ -26354,11 +24685,11 @@ ei näytetä</translation>
     </message>
     <message>
         <source>Only show diagrams with a size inside the specified range.</source>
-        <translation type="obsolete">Näytä vain kaaviot joiden koko on määriteltyjen rajojen sisässä.</translation>
+        <translation>Näytä vain kaaviot joiden koko on määriteltyjen rajojen sisässä.</translation>
     </message>
     <message>
         <source>Hide diagrams with a size outside the specified range.</source>
-        <translation type="obsolete">Kätke kaaviot joiden koko on määriteltyjen rajojen ulkouolella.</translation>
+        <translation>Kätke kaaviot joiden koko on määriteltyjen rajojen ulkouolella.</translation>
     </message>
     <message>
         <source>Scale dependent visibility</source>
@@ -26366,11 +24697,11 @@ ei näytetä</translation>
     </message>
     <message>
         <source>Minimum</source>
-        <translation type="obsolete">Minimi</translation>
+        <translation>Minimi</translation>
     </message>
     <message>
         <source>Maximum</source>
-        <translation type="obsolete">Maksimi</translation>
+        <translation>Maksimi</translation>
     </message>
     <message>
         <source>Size</source>
@@ -26394,16 +24725,16 @@ ei näytetä</translation>
     </message>
     <message>
         <source>Edit expression</source>
-        <translation type="obsolete">Muokkaa lauseketta</translation>
+        <translation>Muokkaa lauseketta</translation>
     </message>
     <message>
         <source>Find maximum value</source>
-        <translation type="obsolete">Etsi maksimiarvo</translation>
+        <translation>Etsi maksimiarvo</translation>
     </message>
     <message>
         <source>The attribute value you enter here will correspond to the size entered in the field &quot;Size&quot; and the chosen &quot;Size unit&quot;.
 Leave empty to automatically apply the maximum value.</source>
-        <translation type="obsolete">Ominaisuustiedon arvo jonka annat tähän vastaa kokoa joka annetaan tietoon &quot;Koko&quot; ja valittuun &quot;Koon yksikkö&quot;.
+        <translation>Ominaisuustiedon arvo jonka annat tähän vastaa kokoa joka annetaan tietoon &quot;Koko&quot; ja valittuun &quot;Koon yksikkö&quot;.
 Jätä tyhjäksi salliaksesi automaattisen maksimi arvon.</translation>
     </message>
     <message>
@@ -26412,7 +24743,7 @@ Jätä tyhjäksi salliaksesi automaattisen maksimi arvon.</translation>
     </message>
     <message>
         <source>Will scale diagrams with a size smaller than the minimum size to the minimum size</source>
-        <translation type="obsolete">Skaalaa kaaviot, jotka pienempiä kuin minimi koko, minimi kokoisiksi</translation>
+        <translation>Skaalaa kaaviot, jotka pienempiä kuin minimi koko, minimi kokoisiksi</translation>
     </message>
     <message>
         <source>Increase size of small diagrams</source>
@@ -26424,7 +24755,7 @@ Jätä tyhjäksi salliaksesi automaattisen maksimi arvon.</translation>
     </message>
     <message>
         <source>Position</source>
-        <translation type="obsolete">Sijainti</translation>
+        <translation>Sijainti</translation>
     </message>
     <message>
         <source>Placement</source>
@@ -26432,7 +24763,7 @@ Jätä tyhjäksi salliaksesi automaattisen maksimi arvon.</translation>
     </message>
     <message>
         <source>Line Options</source>
-        <translation type="obsolete">Viivan asetukset</translation>
+        <translation>Viivan asetukset</translation>
     </message>
     <message>
         <source>Distance</source>
@@ -26452,7 +24783,7 @@ Jätä tyhjäksi salliaksesi automaattisen maksimi arvon.</translation>
     </message>
     <message>
         <source>Automated placement settings</source>
-        <translation type="obsolete">Automatisoidut sijoitteluasetukset</translation>
+        <translation>Automatisoidut sijoitteluasetukset</translation>
     </message>
     <message>
         <source>Options</source>
@@ -26506,70 +24837,6 @@ Jätä tyhjäksi salliaksesi automaattisen maksimi arvon.</translation>
         <source>Color</source>
         <translation>Väri</translation>
     </message>
-    <message>
-        <source>Show diagrams for this layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Automated placement settings (apply to all layers)</source>
-        <translation type="unfinished">Automatisoidut sijoitteluasetukset (käytä kaikilla tasoilla)</translation>
-    </message>
-    <message>
-        <source>Rendering</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Legend</source>
-        <translation type="unfinished">Selite</translation>
-    </message>
-    <message>
-        <source>Format</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Transparency</source>
-        <translation type="unfinished">Läpinäkyvyys</translation>
-    </message>
-    <message>
-        <source> %</source>
-        <translation type="unfinished"> %</translation>
-    </message>
-    <message>
-        <source>Visibility</source>
-        <translation type="unfinished">Näkyvyys</translation>
-    </message>
-    <message>
-        <source>Show all diagrams</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Maximum value</source>
-        <translation type="unfinished">Maksimiarvo</translation>
-    </message>
-    <message>
-        <source>Find</source>
-        <translation type="unfinished">Hae</translation>
-    </message>
-    <message>
-        <source>Scaled size</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Above line</source>
-        <translation type="unfinished">Viivan päällä</translation>
-    </message>
-    <message>
-        <source>Below line</source>
-        <translation type="unfinished">Viivan alle</translation>
-    </message>
-    <message>
-        <source>On line</source>
-        <translation type="unfinished">viivalla</translation>
-    </message>
-    <message>
-        <source>Line orientation dependent position</source>
-        <translation type="unfinished">Viivasuunnasta riippuvainen sijoittelu</translation>
-    </message>
 </context>
 <context>
     <name>QgsDirectoryParamWidget</name>
@@ -26611,7 +24878,7 @@ Jätä tyhjäksi salliaksesi automaattisen maksimi arvon.</translation>
     </message>
     <message>
         <source>link</source>
-        <translation type="obsolete">linkki</translation>
+        <translation>linkki</translation>
     </message>
 </context>
 <context>
@@ -26847,70 +25114,14 @@ Jäsentelyvirhe:
     </message>
 </context>
 <context>
-    <name>QgsEffectDrawModeComboBox</name>
-    <message>
-        <source>Render only</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Modifier only</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Render and modify</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QgsEffectStackCompactWidget</name>
-    <message>
-        <source>Draw effects</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Customise effects</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QgsEffectStackPropertiesDialog</name>
-    <message>
-        <source>Effect Properties</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QgsEffectStackPropertiesWidgetBase</name>
-    <message>
-        <source>Effects</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add symbol layer</source>
-        <translation type="unfinished">Lisää symbolitaso</translation>
-    </message>
-    <message>
-        <source>Remove symbol layer</source>
-        <translation type="unfinished">Poista symbolitaso</translation>
-    </message>
-    <message>
-        <source>Move up</source>
-        <translation type="unfinished">Siirrä ylös</translation>
-    </message>
-    <message>
-        <source>Move down</source>
-        <translation type="unfinished">Siirrä alas</translation>
-    </message>
-</context>
-<context>
     <name>QgsEllipseSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Millimetri</translation>
+        <translation>Millimetri</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Karttayksikkö</translation>
+        <translation>Karttayksikkö</translation>
     </message>
     <message>
         <source>Select fill color</source>
@@ -27161,10 +25372,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Load all unique values</source>
         <translation>Lataa kaikki yksilölliset arvot</translation>
-    </message>
-    <message>
-        <source>%1...</source>
-        <translation type="unfinished">%1...</translation>
     </message>
 </context>
 <context>
@@ -27851,19 +26058,15 @@ MyForms.py tulee olla sijoitettu PYTHONPATH, .qgis/python, tai projektihakemisto
     <name>QgsFontMarkerSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Millimetri</translation>
+        <translation>Millimetri</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Karttayksikkö</translation>
+        <translation>Karttayksikkö</translation>
     </message>
     <message>
         <source>Select symbol color</source>
         <translation>Valitse symbolin väri</translation>
-    </message>
-    <message>
-        <source>Size Assistant...</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -27897,42 +26100,6 @@ MyForms.py tulee olla sijoitettu PYTHONPATH, .qgis/python, tai projektihakemisto
     <message>
         <source>pixels</source>
         <translation>pikseleihin</translation>
-    </message>
-    <message>
-        <source>Visible</source>
-        <translation type="unfinished">Näkyvä</translation>
-    </message>
-    <message>
-        <source>ID</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Source X</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Source Y</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dest. X</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Dest. Y</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>dX (%1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>dY (%1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Residual (%1)</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -29035,7 +27202,7 @@ Ole ystävällinen ja valise uudelleen hyväksyttävä tiedosto.</translation>
     </message>
     <message>
         <source>Show coords</source>
-        <translation type="obsolete">Koordinaatit</translation>
+        <translation>Koordinaatit</translation>
     </message>
     <message>
         <source>Residual units</source>
@@ -29076,17 +27243,6 @@ Ole ystävällinen ja valise uudelleen hyväksyttävä tiedosto.</translation>
     <message>
         <source>Paper size</source>
         <translation>Paperin koko</translation>
-    </message>
-    <message>
-        <source>Show coordinates</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QgsGeorefDescriptionDialog</name>
-    <message>
-        <source>&lt;h2&gt;Description&lt;/h2&gt;&lt;p&gt;This plugin can georeference raster files and set projection. You select points on the raster and give their world coordinates, and the plugin will compute the world file parameters. The more coordinates you can provide the better the result will be.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -29159,7 +27315,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>GDAL scripting is not supported for %1 transformation</source>
-        <translation type="obsolete">GDAL scriptausta ei tueta %1 muunnokselle</translation>
+        <translation>GDAL scriptausta ei tueta %1 muunnokselle</translation>
     </message>
     <message>
         <source>Load GCP points</source>
@@ -29171,7 +27327,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>No GCP points to save</source>
-        <translation type="obsolete">Ei HCP pisteitä tallenettavaksi</translation>
+        <translation>Ei HCP pisteitä tallenettavaksi</translation>
     </message>
     <message>
         <source>Save GCP points</source>
@@ -29215,7 +27371,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Unable to open GCP points file %1</source>
-        <translation type="obsolete">Ei voida avata GCP pistetiedostoa %1</translation>
+        <translation>Ei voida avata GCP pistetiedostoa %1</translation>
     </message>
     <message>
         <source>Save GCPs</source>
@@ -29227,7 +27383,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Failed to get linear transform parameters</source>
-        <translation type="obsolete">Epäonnistuminen lineaaristen muunnosparametrien saamisessa</translation>
+        <translation>Epäonnistuminen lineaaristen muunnosparametrien saamisessa</translation>
     </message>
     <message>
         <source>World file exists</source>
@@ -29239,7 +27395,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Failed to compute GCP transform: Transform is not solvable</source>
-        <translation type="obsolete">GCP muunnoksen laskeminen epäonnistui. Muunnos ei ole ratkaistavissa</translation>
+        <translation>GCP muunnoksen laskeminen epäonnistui. Muunnos ei ole ratkaistavissa</translation>
     </message>
     <message>
         <source>Error</source>
@@ -29247,7 +27403,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Could not write to %1</source>
-        <translation type="obsolete">Ei voitu kirjoittaa tiedostoon %1</translation>
+        <translation>Ei voitu kirjoittaa tiedostoon %1</translation>
     </message>
     <message>
         <source>map units</source>
@@ -29315,7 +27471,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Copy in clipboard</source>
-        <translation type="obsolete">Kopioi leikepöydälle</translation>
+        <translation>Kopioi leikepöydälle</translation>
     </message>
     <message>
         <source>%1</source>
@@ -29335,7 +27491,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>%1 requires at least %2 GCPs. Please define more</source>
-        <translation type="obsolete">%1 tarvitsee vähintään %2 GCP pistettä. Ole hyvä ja määittele lisää</translation>
+        <translation>%1 tarvitsee vähintään %2 GCP pistettä. Ole hyvä ja määittele lisää</translation>
     </message>
     <message>
         <source>Linear</source>
@@ -29369,138 +27525,6 @@ p, li { white-space: pre-wrap; }
         <source>Not set</source>
         <translation>Ei asetettu</translation>
     </message>
-    <message>
-        <source>Reset Georeferencer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Reset georeferencer and clear all GCP points?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Georeference Successful</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Raster was successfully georeferenced.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invalid Transform</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>GDAL scripting is not supported for %1 transformation.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invalid GCP file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>GCP file could not be read.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>GCPs loaded</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>GCP file successfully loaded.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No GCP Points</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No GCP points are available to save.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Raster Properties</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Please load raster to be georeferenced.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Write Error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not write to GCP points file %1.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Transform Failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Failed to calculate linear transform parameters.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Failed to compute GCP transform: Transform is not solvable.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not write to %1.</source>
-        <translation type="unfinished">Ei voitu kirjoittaa tiedostoon %1.</translation>
-    </message>
-    <message>
-        <source>ID</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Enabled</source>
-        <translation type="unfinished">Sallittu</translation>
-    </message>
-    <message>
-        <source>Pixel X</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Pixel Y</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Map X</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Map Y</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Res X (%1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Res Y (%1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Res Total (%1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Copy to Clipboard</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No Raster Loaded</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Not Enough GCPs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>%1 transformation requires at least %2 GCPs. Please define more.</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsGeorefPluginGuiBase</name>
@@ -29530,7 +27554,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>toolBar</source>
-        <translation type="obsolete">työkalurivi</translation>
+        <translation>työkalurivi</translation>
     </message>
     <message>
         <source>Open raster</source>
@@ -29634,7 +27658,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Configure Georeferencer</source>
-        <translation type="obsolete">Konfiguroi Georeferoija</translation>
+        <translation>Konfiguroi Georeferoija</translation>
     </message>
     <message>
         <source>Ctrl+P</source>
@@ -29642,7 +27666,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Raster properties</source>
-        <translation type="obsolete">Rasterin ominaisuudet</translation>
+        <translation>Rasterin ominaisuudet</translation>
     </message>
     <message>
         <source>Move GCP point</source>
@@ -29658,79 +27682,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Local histogram stretch</source>
-        <translation type="obsolete">Paikallinen histogrammin jousto</translation>
+        <translation>Paikallinen histogrammin jousto</translation>
     </message>
     <message>
         <source>Full histogram stretch</source>
-        <translation type="obsolete">Täysi histogrammin jousto</translation>
-    </message>
-    <message>
-        <source>Histogram</source>
-        <translation type="unfinished">Histogrammi</translation>
-    </message>
-    <message>
-        <source>Open Raster...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Transformation Settings...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add Point</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Delete Point</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Close Georeferencer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Close georeferencer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Start Georeferencing</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Generate GDAL Script</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save GCP Points as...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Load GCP Points...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Configure Georeferencer...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Raster Properties...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Move GCP Point</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Local Histogram Stretch</source>
-        <translation type="unfinished">Paikallinen histogrammin asetus</translation>
-    </message>
-    <message>
-        <source>Full Histogram Stretch</source>
-        <translation type="unfinished">Täyden histogrammin venytys</translation>
-    </message>
-    <message>
-        <source>Reset Georeferencer</source>
-        <translation type="unfinished"></translation>
+        <translation>Täysi histogrammin jousto</translation>
     </message>
 </context>
 <context>
@@ -29940,13 +27896,6 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>QgsGlowWidget</name>
-    <message>
-        <source>Select glow color</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>QgsGml</name>
     <message>
         <source>Loading GML data
@@ -29986,11 +27935,11 @@ p, li { white-space: pre-wrap; }
     <name>QgsGradientFillSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Millimetri</translation>
+        <translation>Millimetri</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Karttayksikkö</translation>
+        <translation>Karttayksikkö</translation>
     </message>
     <message>
         <source>Select gradient color</source>
@@ -29999,17 +27948,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Transparent</source>
         <translation>Läpinäkyvä</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGraduatedHistogramWidget</name>
-    <message>
-        <source>Ranges are overlapping and can&apos;t be edited by the histogram</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ranges have gaps and can&apos;t be edited by the histogram</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -30165,26 +28103,6 @@ Näppäile Cancel keskeyttääksesi katkojen luokittelun laskennan tai OK jatkaa
         <source>Rows will be reordered before linking boundaries. Continue?</source>
         <translation>Rivit järjestetään uudellen ennen linkkausta rajoihin. Jatkatko?</translation>
     </message>
-    <message>
-        <source>Histogram</source>
-        <translation type="unfinished">Histogrammi</translation>
-    </message>
-    <message>
-        <source>Method</source>
-        <translation type="unfinished">Menetelmä</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Choose between color and size graduation. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;If you want to combine both, use a data-defined size for the symbol and graduate by color.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Size from </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>to</source>
-        <translation type="unfinished">mihin</translation>
-    </message>
 </context>
 <context>
     <name>QgsGrassAttributes</name>
@@ -30260,83 +28178,83 @@ Näppäile Cancel keskeyttääksesi katkojen luokittelun laskennan tai OK jatkaa
     <name>QgsGrassBrowser</name>
     <message>
         <source>Tools</source>
-        <translation type="obsolete">Työkalut</translation>
+        <translation>Työkalut</translation>
     </message>
     <message>
         <source>Add selected map to canvas</source>
-        <translation type="obsolete">Lisää valittu kartta pohjaan</translation>
+        <translation>Lisää valittu kartta pohjaan</translation>
     </message>
     <message>
         <source>Copy selected map</source>
-        <translation type="obsolete">Kopioi valittu kartta</translation>
+        <translation>Kopioi valittu kartta</translation>
     </message>
     <message>
         <source>Rename selected map</source>
-        <translation type="obsolete">Uudelleennimeä valittu kartta</translation>
+        <translation>Uudelleennimeä valittu kartta</translation>
     </message>
     <message>
         <source>Delete selected map</source>
-        <translation type="obsolete">Poista valittu kartta</translation>
+        <translation>Poista valittu kartta</translation>
     </message>
     <message>
         <source>Set current region to selected map</source>
-        <translation type="obsolete">Aseta nykyinen alue valitulle kartalle</translation>
+        <translation>Aseta nykyinen alue valitulle kartalle</translation>
     </message>
     <message>
         <source>Refresh</source>
-        <translation type="obsolete">Päivitä</translation>
+        <translation>Päivitä</translation>
     </message>
     <message>
         <source>New name</source>
-        <translation type="obsolete">Uusi nimi</translation>
+        <translation>Uusi nimi</translation>
     </message>
     <message>
         <source>New name for layer &quot;%1&quot;</source>
-        <translation type="obsolete">Uusi nimi tasolle &quot;%1&quot;</translation>
+        <translation>Uusi nimi tasolle &quot;%1&quot;</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="obsolete">Varoitus</translation>
+        <translation>Varoitus</translation>
     </message>
     <message>
         <source>Cannot copy map %1@%2</source>
-        <translation type="obsolete">Kartan %1@%2 kopioiminen epäonnistui</translation>
+        <translation>Kartan %1@%2 kopioiminen epäonnistui</translation>
     </message>
     <message>
         <source>&lt;br&gt;command: %1 %2&lt;br&gt;%3&lt;br&gt;%4</source>
-        <translation type="obsolete">&lt;br&gt;komento: %1 %2&lt;br&gt;%3&lt;br&gt;%4</translation>
+        <translation>&lt;br&gt;komento: %1 %2&lt;br&gt;%3&lt;br&gt;%4</translation>
     </message>
     <message>
         <source>Cannot rename map %1</source>
-        <translation type="obsolete">Kartan %1 uudelleennimeäminen epäonnistui</translation>
+        <translation>Kartan %1 uudelleennimeäminen epäonnistui</translation>
     </message>
     <message>
         <source>Information</source>
-        <translation type="obsolete">Informatio</translation>
+        <translation>Informatio</translation>
     </message>
     <message>
         <source>Remove the selected layer(s) from canvas before continue.</source>
-        <translation type="obsolete">Poista valitut tasot karttapohjalte ennenkuin jatkat.</translation>
+        <translation>Poista valitut tasot karttapohjalte ennenkuin jatkat.</translation>
     </message>
     <message>
         <source>Question</source>
-        <translation type="obsolete">Kysymys</translation>
+        <translation>Kysymys</translation>
     </message>
     <message numerus="yes">
         <source>Are you sure you want to delete %n selected layer(s)?</source>
         <comment>number of layers to delete</comment>
-        <translation type="obsolete">
+        <translation>
             <numerusform>Oletko varma että haluat poistaa valitun tason?</numerusform>
             <numerusform>Oletko varma että haluat poistaa %n valittua tasoa?</numerusform>
         </translation>
     </message>
     <message>
         <source>Cannot delete map %1</source>
-        <translation type="obsolete">Kartan %1 poisto epäonnistui</translation>
+        <translation>Kartan %1 poisto epäonnistui</translation>
     </message>
     <message>
         <source>Cannot write new region</source>
-        <translation type="obsolete">Uuden alueen kirjoitus epäonnistui</translation>
+        <translation>Uuden alueen kirjoitus epäonnistui</translation>
     </message>
 </context>
 <context>
@@ -30736,20 +28654,6 @@ Näppäile Cancel keskeyttääksesi katkojen luokittelun laskennan tai OK jatkaa
     </message>
 </context>
 <context>
-    <name>QgsGrassImportItem</name>
-    <message>
-        <source>Cancel</source>
-        <translation type="unfinished">Peruuta</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGrassItemActions</name>
-    <message>
-        <source>GRASS Options</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>QgsGrassMapcalc</name>
     <message>
         <source>Mapcalc tools</source>
@@ -31068,67 +28972,6 @@ rivillä %2 sarakkeessa %3</translation>
     <message>
         <source>Output</source>
         <translation>Ulostulo</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGrassMapsetItem</name>
-    <message>
-        <source>topology missing</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>topology version not supported</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>topology version 6</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>topology version 7</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>empty</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>%1 layer type not supported</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot create provider %1 : %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Provider is not valid  %1 : %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot get default location region.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot delete %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Import to GRASS mapset</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Failed to import some layers!
-
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Import to GRASS mapset failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Failed to import %1 to %2: %3</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -31666,7 +29509,7 @@ rivillä %2 sarakkeessa %3</translation>
     </message>
     <message>
         <source>Cannot activate grass</source>
-        <translation type="obsolete">Ei voida aktivoida grassia</translation>
+        <translation>Ei voida aktivoida grassia</translation>
     </message>
 </context>
 <context>
@@ -31857,68 +29700,26 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>QgsGrassObjectItem</name>
-    <message>
-        <source>Rename</source>
-        <translation type="unfinished">Nimeä uudelleen</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation type="unfinished">Poista</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGrassOptionsBase</name>
-    <message>
-        <source>GRASS Options</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Browser</source>
-        <translation type="unfinished">Selain</translation>
-    </message>
-    <message>
-        <source>Import</source>
-        <translation type="unfinished">Tuo</translation>
-    </message>
-    <message>
-        <source>CRS transformation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Approximate CRS transformation is fast but it may be inaccurate.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Create a link to the external data for GDAL data sources with the same CRS as target mapset by r.external, instead of making copy of data.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Create link to external data if possible</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>QgsGrassPlugin</name>
     <message>
         <source>GrassVector</source>
-        <translation type="obsolete">GrassVectorit</translation>
+        <translation>GrassVectorit</translation>
     </message>
     <message>
         <source>0.1</source>
-        <translation type="obsolete">0.1</translation>
+        <translation>0.1</translation>
     </message>
     <message>
         <source>GRASS layer</source>
-        <translation type="obsolete">GRASS taso</translation>
+        <translation>GRASS taso</translation>
     </message>
     <message>
         <source>Plugins</source>
-        <translation type="obsolete">Liitännäiset</translation>
+        <translation>Liitännäiset</translation>
     </message>
     <message>
         <source>Add GRASS raster layer</source>
-        <translation type="obsolete">Lisää GRASS rasteritaso</translation>
+        <translation>Lisää GRASS rasteritaso</translation>
     </message>
     <message>
         <source>Open GRASS tools</source>
@@ -31950,15 +29751,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Add GRASS Vector Layer</source>
-        <translation type="obsolete">Lisää GRASS vektoritaso</translation>
+        <translation>Lisää GRASS vektoritaso</translation>
     </message>
     <message>
         <source>Adds a GRASS vector layer to the map canvas</source>
-        <translation type="obsolete">Lisää CRASS vektoritason näyttöalalle</translation>
+        <translation>Lisää CRASS vektoritason näyttöalalle</translation>
     </message>
     <message>
         <source>Adds a GRASS raster layer to the map canvas</source>
-        <translation type="obsolete">Lisää CRASS rasteritason näyttöalalle</translation>
+        <translation>Lisää CRASS rasteritason näyttöalalle</translation>
     </message>
     <message>
         <source>Open GRASS Tools</source>
@@ -31994,16 +29795,16 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Cannot open vector %1 in mapset %2 on level 2 (topology not available, try to rebuild topology using v.build module).</source>
-        <translation type="obsolete">Vektorin %1 avaaminen karttakokoelmassa %2 tasolla 2 ei onnistu (Topologia ei ole käytettävissä, luo topologia uusiksi käyttämällä v.luontimoduulia).</translation>
+        <translation>Vektorin %1 avaaminen karttakokoelmassa %2 tasolla 2 ei onnistu (Topologia ei ole käytettävissä, luo topologia uusiksi käyttämällä v.luontimoduulia).</translation>
     </message>
     <message>
         <source>Cannot open vector %1 in mapset %2</source>
-        <translation type="obsolete">Vektorin %1 avaaminen karttakokoelmassa %2 ei onnistu</translation>
+        <translation>Vektorin %1 avaaminen karttakokoelmassa %2 ei onnistu</translation>
     </message>
     <message>
         <source>Cannot open GRASS vector:
  %1</source>
-        <translation type="obsolete">Ei voida avata GRASS vektoria:
+        <translation>Ei voida avata GRASS vektoria:
  %1</translation>
     </message>
     <message>
@@ -32060,17 +29861,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>GRASS vector map %1 does not have topology. Build topology?</source>
         <translation>GRASS vektori kartalta %1 puuttuu topologia. Luo uusi topologia?</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGrassRasterImport</name>
-    <message>
-        <source>Data type %1 not supported</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot convert block (%1) to data type %2</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -32305,7 +30095,7 @@ tai muuttamalla alla olevia arvoja</translation>
     </message>
     <message>
         <source>Browser</source>
-        <translation type="obsolete">Selain</translation>
+        <translation>Selain</translation>
     </message>
     <message>
         <source>Direct Modules Tree</source>
@@ -32377,17 +30167,6 @@ rivillä %2 sarakkeessa %3</translation>
     <message>
         <source>Direct Modules List</source>
         <translation>Suorat Modulit luettelo</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGrassVectorItem</name>
-    <message>
-        <source>Rename</source>
-        <translation type="unfinished">Nimeä uudelleen</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation type="unfinished">Poista</translation>
     </message>
 </context>
 <context>
@@ -32518,15 +30297,15 @@ rivillä %2 sarakkeessa %3</translation>
     </message>
     <message>
         <source>Pixels</source>
-        <translation type="obsolete">Pikselit</translation>
+        <translation>Pikselit</translation>
     </message>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Millimetri</translation>
+        <translation>Millimetri</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Karttayksikkö</translation>
+        <translation>Karttayksikkö</translation>
     </message>
 </context>
 <context>
@@ -32588,29 +30367,6 @@ rivillä %2 sarakkeessa %3</translation>
     <message>
         <source>about:blank</source>
         <translation>about:blank</translation>
-    </message>
-</context>
-<context>
-    <name>QgsHistogramWidgetBase</name>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished">Lomake</translation>
-    </message>
-    <message>
-        <source>Histogram bins</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show mean value</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show standard deviation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Load values</source>
-        <translation type="unfinished">Lataa arvot</translation>
     </message>
 </context>
 <context>
@@ -32720,11 +30476,11 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
     </message>
     <message>
         <source>Expand tree</source>
-        <translation type="obsolete">Laajenna rakenne</translation>
+        <translation>Laajenna rakenne</translation>
     </message>
     <message>
         <source>Collapse tree</source>
-        <translation type="obsolete">Supista rakenne</translation>
+        <translation>Supista rakenne</translation>
     </message>
     <message>
         <source>Layer</source>
@@ -32744,7 +30500,7 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
     </message>
     <message>
         <source>...</source>
-        <translation type="obsolete">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Clear Results</source>
@@ -32785,30 +30541,6 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
     <message>
         <source>Print selected HTML response.</source>
         <translation>Tulosta valittu HTML vastaus.</translation>
-    </message>
-    <message>
-        <source>Expand Tree</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Collapse Tree</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Expand New Results</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Copy Feature</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Print Response</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -33145,41 +30877,6 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
     </message>
 </context>
 <context>
-    <name>QgsJoinDialogBase</name>
-    <message>
-        <source>Add vector join</source>
-        <translation type="unfinished">Lisää vektorien yhdistäminen</translation>
-    </message>
-    <message>
-        <source>Join layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Join field</source>
-        <translation type="unfinished">Liittämiskenttä</translation>
-    </message>
-    <message>
-        <source>Target field</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Choose which fields are joined</source>
-        <translation type="unfinished">Valitse yhdistettävät tiedot</translation>
-    </message>
-    <message>
-        <source>Custom field name prefix</source>
-        <translation type="unfinished">Räätälöity tietonimen etuliite</translation>
-    </message>
-    <message>
-        <source>Cache join layer in virtual memory</source>
-        <translation type="unfinished">Vie yhdistystaso välimuistiin virtuaalimuistissa</translation>
-    </message>
-    <message>
-        <source>Create attribute index on join field</source>
-        <translation type="unfinished">Luo ominaisuustiedon indeksi yhdistettävästä tiedosta</translation>
-    </message>
-</context>
-<context>
     <name>QgsLUDialogBase</name>
     <message>
         <source>Enter class bounds</source>
@@ -33438,10 +31135,6 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
         <source>Buffer color</source>
         <translation>Puskurin väri</translation>
     </message>
-    <message>
-        <source>Layer default (%1)</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsLabelPropertyDialogBase</name>
@@ -33574,15 +31267,15 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
     <name>QgsLabelingGui</name>
     <message>
         <source>points</source>
-        <translation type="obsolete">pisteet</translation>
+        <translation>pisteet</translation>
     </message>
     <message>
         <source>map units</source>
-        <translation type="obsolete">karttayksiköt</translation>
+        <translation>karttayksiköt</translation>
     </message>
     <message>
         <source>mm</source>
-        <translation type="obsolete">mm</translation>
+        <translation>mm</translation>
     </message>
     <message>
         <source>% of length</source>
@@ -33707,22 +31400,6 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
     <message>
         <source>File not found</source>
         <translation>Tiedostoa ei löydy</translation>
-    </message>
-    <message>
-        <source>Points</source>
-        <translation type="unfinished">Pisteet</translation>
-    </message>
-    <message>
-        <source>Map unit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Millimeter</source>
-        <translation type="unfinished">Millimetri</translation>
-    </message>
-    <message>
-        <source>Follow label placement</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -34429,11 +32106,11 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
     <name>QgsLinePatternFillSymbolLayerWidget</name>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Millimetri</translation>
+        <translation>Millimetri</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Karttayksikkö</translation>
+        <translation>Karttayksikkö</translation>
     </message>
 </context>
 <context>
@@ -34600,31 +32277,19 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
     </message>
     <message>
         <source>Enter X and Y coordinates (DMS (dd mm ss.ss), DD (dd.dd) or projected coordinates (mmmm.mm)) which correspond with the selected point on the image. Alternatively, click the button with icon of a pencil and then click a corresponding point on map canvas of QGIS to fill in coordinates of that point.</source>
-        <translation type="obsolete">Syötä X ja Y koordinaatit (asteet,minuutit,sekunnit),(asteina ja asteen desimaaleina), tai projektoituna koordinaatteina (metreinä) , jotka vastaavat valittua pistettä kuvassa. Voit myös klikkata kuvaketta jossa on kynän kuva ja sitten valitse piste kartalla, niin QGIS syöttää arvoksi pisteen koordinaatit.</translation>
+        <translation>Syötä X ja Y koordinaatit (asteet,minuutit,sekunnit),(asteina ja asteen desimaaleina), tai projektoituna koordinaatteina (metreinä) , jotka vastaavat valittua pistettä kuvassa. Voit myös klikkata kuvaketta jossa on kynän kuva ja sitten valitse piste kartalla, niin QGIS syöttää arvoksi pisteen koordinaatit.</translation>
     </message>
     <message>
         <source>X / East:</source>
-        <translation type="obsolete">X / Itä:</translation>
+        <translation>X / Itä:</translation>
     </message>
     <message>
         <source>Y / North:</source>
-        <translation type="obsolete">Y / Pohjoinen:</translation>
+        <translation>Y / Pohjoinen:</translation>
     </message>
     <message>
         <source>Snap to background layers</source>
         <translation>Kiinnitä taustan tasoihin</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter X and Y coordinates (DMS (&lt;span style=&quot; font-style:italic;&quot;&gt;dd mm ss.ss&lt;/span&gt;), DD (&lt;span style=&quot; font-style:italic;&quot;&gt;dd.dd&lt;/span&gt;) or projected coordinates (&lt;span style=&quot; font-style:italic;&quot;&gt;mmmm.mm&lt;/span&gt;)) which correspond with the selected point on the image. Alternatively, click the button with icon of a pencil and then click a corresponding point on map canvas of QGIS to fill in coordinates of that point.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Y / North</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>X / East</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -35404,11 +33069,11 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
     <name>QgsMarkerLineSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Millimetri</translation>
+        <translation>Millimetri</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Karttayksikkö</translation>
+        <translation>Karttayksikkö</translation>
     </message>
     <message>
         <source>string </source>
@@ -35490,19 +33155,19 @@ Tämä voi johtua ongelmasta verkkoyhteydessä, tai WMS palvelimesta. </numerusf
     </message>
     <message>
         <source>Meters</source>
-        <translation type="obsolete">Metrit</translation>
+        <translation>Metrit</translation>
     </message>
     <message>
         <source>Feet</source>
-        <translation type="obsolete">Jalat</translation>
+        <translation>Jalat</translation>
     </message>
     <message>
         <source>Degrees</source>
-        <translation type="obsolete">Asteet</translation>
+        <translation>Asteet</translation>
     </message>
     <message>
         <source>Nautical Miles</source>
-        <translation type="obsolete">Meripenikulmat</translation>
+        <translation>Meripenikulmat</translation>
     </message>
 </context>
 <context>
@@ -36343,44 +34008,6 @@ Huomautus: salasanan antaminen on valinnaista. Sitä pyydetään interaktiivises
     </message>
 </context>
 <context>
-    <name>QgsNewNameDialog</name>
-    <message>
-        <source>New name</source>
-        <translation type="unfinished">Uusi nimi</translation>
-    </message>
-    <message>
-        <source>name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>base name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Enter new %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Enter new %1 for %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Full names</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message numerus="yes">
-        <source>Name(s) %1 exists</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
-    </message>
-    <message>
-        <source>Overwrite</source>
-        <translation type="unfinished">Korvaa</translation>
-    </message>
-</context>
-<context>
     <name>QgsNewOgrConnection</name>
     <message>
         <source>Test connection</source>
@@ -36927,18 +34554,6 @@ Virheilmoitus:
 %1</source>
         <translation>Epäinnistuminen vietäessä OSM tietoja::
 %1</translation>
-    </message>
-    <message>
-        <source>Select All</source>
-        <translation type="unfinished">Valitse kaikki</translation>
-    </message>
-    <message>
-        <source>Unselect All</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Not null</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -38154,7 +35769,7 @@ Aina verkosta: lataa aina verkosta äläkä tarkista onko välimuistin merkintä
     </message>
     <message>
         <source>Icon theme</source>
-        <translation type="obsolete">Ikonien teema</translation>
+        <translation>Ikonien teema</translation>
     </message>
     <message>
         <source>Icon size</source>
@@ -38202,7 +35817,7 @@ Aina verkosta: lataa aina verkosta äläkä tarkista onko välimuistin merkintä
     </message>
     <message>
         <source>Bold group box titles</source>
-        <translation type="obsolete">Vahvennetut ryhmälaatikoiden otsikot</translation>
+        <translation>Vahvennetut ryhmälaatikoiden otsikot</translation>
     </message>
     <message>
         <source>QGIS-styled group boxes</source>
@@ -38602,7 +36217,7 @@ Aina verkosta: lataa aina verkosta äläkä tarkista onko välimuistin merkintä
     </message>
     <message>
         <source>Custom side bar style</source>
-        <translation type="obsolete">Räätälöity sivupalkin tyyli</translation>
+        <translation>Räätälöity sivupalkin tyyli</translation>
     </message>
     <message>
         <source>Add Oracle layers with double click and select in extended mode</source>
@@ -39120,10 +36735,6 @@ Aina verkosta: lataa aina verkosta äläkä tarkista onko välimuistin merkintä
         <source>Default uses system&apos;s proxy</source>
         <translation>Oletus käyttää järjestelmän proxyä</translation>
     </message>
-    <message>
-        <source>Execute expressions on postgres server-side if possible (Experimental)</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsOptionsDialogBase</name>
@@ -39326,15 +36937,9 @@ virhe:%2</translation>
         <source>Connection failed - Check settings and try again.
 
 </source>
-        <translation type="obsolete">Yhdistäminen epäonnistui - Tarkista asetukset ja yritä uudestaan.
+        <translation>Yhdistäminen epäonnistui - Tarkista asetukset ja yritä uudestaan.
 
 </translation>
-    </message>
-    <message>
-        <source>Connection failed - consult message log for details.
-
-</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -39844,14 +37449,6 @@ Error: %2</source>
         <translation>Oracle virhe: %1
 Virhe: %2</translation>
     </message>
-    <message>
-        <source>Could not prepare get feature id statement</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not retrieve feature id %1</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsOracleRootItem</name>
@@ -40109,15 +37706,11 @@ Virhe: %2</translation>
     <name>QgsPGLayerItem</name>
     <message>
         <source>Delete layer</source>
-        <translation type="obsolete">Poista taso</translation>
+        <translation>Poista taso</translation>
     </message>
     <message>
         <source>Layer deleted successfully.</source>
         <translation>Taso poistettiin onnistuneesti.</translation>
-    </message>
-    <message>
-        <source>Delete Layer</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -40297,15 +37890,9 @@ Virhe: %2</translation>
         <source>Connection failed - Check settings and try again.
 
 </source>
-        <translation type="obsolete">Yhdistäminen epäonnistui - Tarkista asetukset ja yritä uudestaan.
+        <translation>Yhdistäminen epäonnistui - Tarkista asetukset ja yritä uudestaan.
 
 </translation>
-    </message>
-    <message>
-        <source>Connection failed - consult message log for details.
-
-</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -41512,11 +39099,11 @@ p, li { white-space: pre-wrap; }
     <name>QgsPointPatternFillSymbolLayerWidget</name>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Millimetri</translation>
+        <translation>Millimetri</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Karttayksikkö</translation>
+        <translation>Karttayksikkö</translation>
     </message>
 </context>
 <context>
@@ -41634,35 +39221,35 @@ Tulos: %3 (%4)</translation>
     </message>
     <message>
         <source>Point</source>
-        <translation type="obsolete">Piste</translation>
+        <translation>Piste</translation>
     </message>
     <message>
         <source>Multipoint</source>
-        <translation type="obsolete">Monipiste</translation>
+        <translation>Monipiste</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="obsolete">Viiva</translation>
+        <translation>Viiva</translation>
     </message>
     <message>
         <source>Multiline</source>
-        <translation type="obsolete">Moniviiva</translation>
+        <translation>Moniviiva</translation>
     </message>
     <message>
         <source>Polygon</source>
-        <translation type="obsolete">Monikulmio</translation>
+        <translation>Monikulmio</translation>
     </message>
     <message>
         <source>Multipolygon</source>
-        <translation type="obsolete">Multipolygoni (Monimonikulmio)</translation>
+        <translation>Multipolygoni (Monimonikulmio)</translation>
     </message>
     <message>
         <source>No Geometry</source>
-        <translation type="obsolete">Ei geometriaa</translation>
+        <translation>Ei geometriaa</translation>
     </message>
     <message>
         <source>Unknown Geometry</source>
-        <translation type="obsolete">Tuntematon geometria</translation>
+        <translation>Tuntematon geometria</translation>
     </message>
     <message>
         <source>None</source>
@@ -41687,14 +39274,6 @@ Tulos: %3 (%4)</translation>
     <message>
         <source>PQgetCancel failed</source>
         <translation>PQgetCancel epäonnistui</translation>
-    </message>
-    <message>
-        <source>Unsupported spatial column type %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>PcPatch</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -41919,10 +39498,6 @@ PostGIS %2</source>
 %1
 PostGIS %2</translation>
     </message>
-    <message>
-        <source>Primary key is ctid - changing of existing features disabled (%1; %2)</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsProject</name>
@@ -41984,7 +39559,7 @@ Valitse Ohita jatkaaksesi lataamista ilman puuttuvia tasoja. Valitse Peruuta pal
     <name>QgsProjectColorScheme</name>
     <message>
         <source>Project colors</source>
-        <translation type="obsolete">Projektin värit</translation>
+        <translation>Projektin värit</translation>
     </message>
 </context>
 <context>
@@ -43121,22 +40696,6 @@ p, li { white-space: pre-wrap; }
         <source>Raster calculator expression</source>
         <translation>Rasterilaskimen lauseke</translation>
     </message>
-    <message>
-        <source>Output CRS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>!=</source>
-        <translation type="unfinished">!=</translation>
-    </message>
-    <message>
-        <source>log10</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>ln</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsRasterDataProvider</name>
@@ -43165,15 +40724,15 @@ p, li { white-space: pre-wrap; }
     <name>QgsRasterFillSymbolLayerWidget</name>
     <message>
         <source>Pixels</source>
-        <translation type="obsolete">Pikselit</translation>
+        <translation>Pikselit</translation>
     </message>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Millimetri</translation>
+        <translation>Millimetri</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Karttayksikkö</translation>
+        <translation>Karttayksikkö</translation>
     </message>
     <message>
         <source>Select image file</source>
@@ -44304,7 +41863,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Create GDAL Virtual Format composed of multiple 
 datasets with maximum width and height specified below.</source>
-        <translation type="obsolete">Luo GDAL Virtuaali Muoto joka on yhdistelmä 
+        <translation>Luo GDAL Virtuaali Muoto joka on yhdistelmä 
 useista tietojoukoista käyttäen allamääriteltyä maksimi leveyttä ja korkeutta.</translation>
     </message>
     <message>
@@ -44423,15 +41982,6 @@ useista tietojoukoista käyttäen allamääriteltyä maksimi leveyttä ja korkeu
         <source>Clear all</source>
         <translation>Tyhjennä kaikki</translation>
     </message>
-    <message>
-        <source>Create GDAL Virtual Format composed of multiple
-datasets with maximum width and height specified below.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add saved file to map</source>
-        <translation type="unfinished">Lisää talletettu tiedosto kartalle</translation>
-    </message>
 </context>
 <context>
     <name>QgsRasterMinMaxWidget</name>
@@ -44505,17 +42055,6 @@ keskihajonta ×</translation>
     <message>
         <source>Load</source>
         <translation>Lataa</translation>
-    </message>
-</context>
-<context>
-    <name>QgsRasterProjector</name>
-    <message>
-        <source>Approximate</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Exact</source>
-        <translation type="unfinished">Tarkka</translation>
     </message>
 </context>
 <context>
@@ -44826,7 +42365,7 @@ keskihajonta ×</translation>
     <name>QgsRecentColorScheme</name>
     <message>
         <source>Recent colors</source>
-        <translation type="obsolete">Aiemmat värit</translation>
+        <translation>Aiemmat värit</translation>
     </message>
 </context>
 <context>
@@ -44862,22 +42401,6 @@ keskihajonta ×</translation>
     <message>
         <source>Order by value</source>
         <translation>Arvojärjestys</translation>
-    </message>
-    <message>
-        <source>Filters</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="unfinished">...</translation>
-    </message>
-    <message>
-        <source>When activated, the filters will restrict the choices of fields to options that are </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Chain filters</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -45050,11 +42573,7 @@ keskihajonta ×</translation>
     </message>
     <message>
         <source>Identify a feature of %1 to be associated. Press &lt;ESC&gt; to cancel.</source>
-        <translation type="obsolete">Identifioi liitettävä %1:n ominaisuus. Paina &lt;ESC&gt; peruuttaaksesi.</translation>
-    </message>
-    <message>
-        <source>Identify a feature of %1 to be associated. Press &amp;lt;ESC&amp;gt; to cancel.</source>
-        <translation type="unfinished"></translation>
+        <translation>Identifioi liitettävä %1:n ominaisuus. Paina &lt;ESC&gt; peruuttaaksesi.</translation>
     </message>
 </context>
 <context>
@@ -45230,23 +42749,19 @@ keskihajonta ×</translation>
     </message>
     <message>
         <source>Width</source>
-        <translation type="obsolete">Leveys</translation>
+        <translation>Leveys</translation>
     </message>
     <message>
         <source>Change symbol width</source>
-        <translation type="obsolete">Muuta symbolin leveyttä</translation>
+        <translation>Muuta symbolin leveyttä</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation type="obsolete">Koko</translation>
+        <translation>Koko</translation>
     </message>
     <message>
         <source>Change symbol size</source>
-        <translation type="obsolete">Muuta symbolin kokoa</translation>
-    </message>
-    <message>
-        <source>Change angle</source>
-        <translation type="unfinished"></translation>
+        <translation>Muuta symbolin kokoa</translation>
     </message>
 </context>
 <context>
@@ -45456,15 +42971,11 @@ keskihajonta ×</translation>
     <name>QgsSLLayerItem</name>
     <message>
         <source>Delete layer</source>
-        <translation type="obsolete">Poista taso</translation>
+        <translation>Poista taso</translation>
     </message>
     <message>
         <source>Layer deleted successfully.</source>
         <translation>Taso poistettiin onnistuneesti.</translation>
-    </message>
-    <message>
-        <source>Delete Layer</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -45507,11 +43018,11 @@ keskihajonta ×</translation>
     </message>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Millimetri</translation>
+        <translation>Millimetri</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Kartta yksikkö</translation>
+        <translation>Kartta yksikkö</translation>
     </message>
     <message>
         <source>Select fill color</source>
@@ -45627,13 +43138,6 @@ keskihajonta ×</translation>
     <message>
         <source>Scale visibility </source>
         <translation>Mittakaavan näkyvyys</translation>
-    </message>
-</context>
-<context>
-    <name>QgsScaleWidget</name>
-    <message>
-        <source>Set to current canvas scale</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -45794,13 +43298,6 @@ keskihajonta ×</translation>
     </message>
 </context>
 <context>
-    <name>QgsShadowEffectWidget</name>
-    <message>
-        <source>Select shadow color</source>
-        <translation type="unfinished">Valitse varjon väri</translation>
-    </message>
-</context>
-<context>
     <name>QgsShapeFile</name>
     <message>
         <source>Scanning </source>
@@ -45839,11 +43336,11 @@ Virhesanoma:
     <name>QgsShapeburstFillSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Millimetri</translation>
+        <translation>Millimetri</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Karttayksikkö</translation>
+        <translation>Karttayksikkö</translation>
     </message>
     <message>
         <source>Select gradient color</source>
@@ -45862,11 +43359,11 @@ Virhesanoma:
     <name>QgsSimpleFillSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Millimetri</translation>
+        <translation>Millimetri</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Karttayksikkö</translation>
+        <translation>Karttayksikkö</translation>
     </message>
     <message>
         <source>Select fill color</source>
@@ -45889,11 +43386,11 @@ Virhesanoma:
     <name>QgsSimpleLineSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Millimetri</translation>
+        <translation>Millimetri</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Karttayksikkö</translation>
+        <translation>Karttayksikkö</translation>
     </message>
     <message>
         <source>Select line color</source>
@@ -45904,11 +43401,11 @@ Virhesanoma:
     <name>QgsSimpleMarkerSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Millimetri</translation>
+        <translation>Millimetri</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Karttayksikkö</translation>
+        <translation>Karttayksikkö</translation>
     </message>
     <message>
         <source>Select fill color</source>
@@ -45929,10 +43426,6 @@ Virhesanoma:
     <message>
         <source>string </source>
         <translation>merkkijono</translation>
-    </message>
-    <message>
-        <source>Size Assistant...</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -46178,25 +43671,6 @@ lisäys</translation>
     <message>
         <source>Symbol levels...</source>
         <translation>Symbolin tasot...</translation>
-    </message>
-</context>
-<context>
-    <name>QgsSizeScaleWidget</name>
-    <message>
-        <source>Compute from layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Flannery</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Surface</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Radius</source>
-        <translation type="unfinished">Säde</translation>
     </message>
 </context>
 <context>
@@ -47415,40 +44889,6 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>QgsStatisticalSummaryDockWidget</name>
-    <message>
-        <source>Missing (null) values</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QgsStatisticalSummaryWidgetBase</name>
-    <message>
-        <source>Statistics</source>
-        <translation type="unfinished">Tilastot</translation>
-    </message>
-    <message>
-        <source>Statistic</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="unfinished">Arvo</translation>
-    </message>
-    <message>
-        <source>Selected features only</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Recalculate Statistics</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="unfinished">...</translation>
-    </message>
-</context>
-<context>
     <name>QgsStyleV2ExportImportDialog</name>
     <message>
         <source>Select all</source>
@@ -47897,7 +45337,7 @@ Symbolien tietokannassa oli ongelma.</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation type="obsolete">Muokkaa</translation>
+        <translation>Muokkaa</translation>
     </message>
     <message>
         <source>Remove item</source>
@@ -47905,7 +45345,7 @@ Symbolien tietokannassa oli ongelma.</translation>
     </message>
     <message>
         <source>Share</source>
-        <translation type="obsolete">Jaa</translation>
+        <translation>Jaa</translation>
     </message>
 </context>
 <context>
@@ -48015,11 +45455,11 @@ Symbolien tietokannassa oli ongelma.</translation>
     <name>QgsSvgMarkerSymbolLayerV2Widget</name>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Millimetri</translation>
+        <translation>Millimetri</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Karttayksikkö</translation>
+        <translation>Karttayksikkö</translation>
     </message>
     <message>
         <source>Select fill color</source>
@@ -48036,10 +45476,6 @@ Symbolien tietokannassa oli ongelma.</translation>
     <message>
         <source>SVG files</source>
         <translation>SVG tiedostot</translation>
-    </message>
-    <message>
-        <source>Size Assistant...</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -48167,11 +45603,11 @@ Symbolien tietokannassa oli ongelma.</translation>
     <name>QgsSymbolsListWidget</name>
     <message>
         <source>Millimeter</source>
-        <translation type="obsolete">Millimetri</translation>
+        <translation>Millimetri</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="obsolete">Karttayksikkö</translation>
+        <translation>Karttayksikkö</translation>
     </message>
     <message>
         <source>Select color</source>
@@ -48200,14 +45636,6 @@ Symbolien tietokannassa oli ongelma.</translation>
     <message>
         <source>Transparency %1%</source>
         <translation>Läpinäkyvyys: %1%</translation>
-    </message>
-    <message>
-        <source>Clip features to canvas extent</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Size Assistant...</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -48312,7 +45740,7 @@ Symbolien tietokannassa oli ongelma.</translation>
     </message>
     <message>
         <source>Become an QGIS translator</source>
-        <translation type="obsolete">Tule QGIS kääntäjäksi</translation>
+        <translation>Tule QGIS kääntäjäksi</translation>
     </message>
     <message>
         <source>QGIS Mailing lists</source>
@@ -48462,10 +45890,6 @@ Symbolien tietokannassa oli ongelma.</translation>
         <source>QGIS has Plugins!</source>
         <translation>QGISissä on liitännäisiä!</translation>
     </message>
-    <message>
-        <source>Become a QGIS translator</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QgsTipGui</name>
@@ -48544,11 +45968,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Transformation type:</source>
-        <translation type="obsolete">Muunnoksen tyyppi:</translation>
+        <translation>Muunnoksen tyyppi:</translation>
     </message>
     <message>
         <source>Resampling method:</source>
-        <translation type="obsolete">Uudelleenmuotoilun menetelmä:</translation>
+        <translation>Uudelleenmuotoilun menetelmä:</translation>
     </message>
     <message>
         <source>Nearest neighbour</source>
@@ -48572,11 +45996,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Compression:</source>
-        <translation type="obsolete">Pakkaus:</translation>
+        <translation>Pakkaus:</translation>
     </message>
     <message>
         <source>Output raster:</source>
-        <translation type="obsolete">Tulosrasteri:</translation>
+        <translation>Tulosrasteri:</translation>
     </message>
     <message>
         <source>...</source>
@@ -48584,15 +46008,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Target SRS:</source>
-        <translation type="obsolete">Kohteen SRS:</translation>
+        <translation>Kohteen SRS:</translation>
     </message>
     <message>
         <source>Generate pdf report:</source>
-        <translation type="obsolete">Muodosta pdf raportti:</translation>
+        <translation>Muodosta pdf raportti:</translation>
     </message>
     <message>
         <source>Set Target Resolution</source>
-        <translation type="obsolete">Valitse kohteen resoluutio</translation>
+        <translation>Valitse kohteen resoluutio</translation>
     </message>
     <message>
         <source>Horizontal</source>
@@ -48604,11 +46028,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Create world file</source>
-        <translation type="obsolete">Luo world tiedosto</translation>
+        <translation>Luo world tiedosto</translation>
     </message>
     <message>
         <source>Generate pdf map:</source>
-        <translation type="obsolete">Muodosta pdf kartta:</translation>
+        <translation>Muodosta pdf kartta:</translation>
     </message>
     <message>
         <source>Use 0 for transparency when needed</source>
@@ -48644,27 +46068,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Info</source>
-        <translation type="obsolete">Info</translation>
+        <translation>Info</translation>
     </message>
     <message>
         <source>Please set output name</source>
-        <translation type="obsolete">Ole hyvä ja aseta tulostustiedoston nimi</translation>
+        <translation>Ole hyvä ja aseta tulostustiedoston nimi</translation>
     </message>
     <message>
         <source>%1 requires at least %2 GCPs. Please define more</source>
-        <translation type="obsolete">%1 tarvitsee ainakin %2 CGP:tä. Ole hyvä ja määrittele lisää</translation>
+        <translation>%1 tarvitsee ainakin %2 CGP:tä. Ole hyvä ja määrittele lisää</translation>
     </message>
     <message>
         <source>Invalid output file name</source>
-        <translation type="obsolete">Virheellinen tulosteen tiedostonimi</translation>
+        <translation>Virheellinen tulosteen tiedostonimi</translation>
     </message>
     <message>
         <source>Save raster</source>
-        <translation type="obsolete">Tallenna rasteri</translation>
+        <translation>Tallenna rasteri</translation>
     </message>
     <message>
         <source>Select save PDF file</source>
-        <translation type="obsolete">Valitse tallentaa PDF tiedosto</translation>
+        <translation>Valitse tallentaa PDF tiedosto</translation>
     </message>
     <message>
         <source>PDF Format</source>
@@ -48674,74 +46098,6 @@ p, li { white-space: pre-wrap; }
         <source>_modified</source>
         <comment>Georeferencer:QgsOpenRasterDialog.cpp - used to modify a user given file name</comment>
         <translation>_muokattu</translation>
-    </message>
-    <message>
-        <source>Transformation parameters</source>
-        <translation type="unfinished">Muunnosparametrit</translation>
-    </message>
-    <message>
-        <source>Transformation type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Resampling method</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Target SRS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Output settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Output raster</source>
-        <translation type="unfinished">Tulostettava rasteri</translation>
-    </message>
-    <message>
-        <source>Set target resolution</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Compression</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Create world file only (linear transforms)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Reports</source>
-        <translation type="unfinished">Raportit</translation>
-    </message>
-    <message>
-        <source>Generate PDF map</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Generate PDF report</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Destination Raster</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invalid output file name.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Input raster can not be overwritten.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save Map File as</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save Report File as</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -48768,25 +46124,6 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Adjust scaling range</source>
         <translation>Sovita skaalauksen rajoihin</translation>
-    </message>
-    <message>
-        <source>Millimeter</source>
-        <translation type="unfinished">Millimetri</translation>
-    </message>
-    <message>
-        <source>Pixels</source>
-        <translation type="unfinished">Pikselit</translation>
-    </message>
-    <message>
-        <source>Map unit</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QgsUserInputDockWidget</name>
-    <message>
-        <source>User input</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -48885,10 +46222,6 @@ Virhe oli:%2</translation>
     <message>
         <source>...</source>
         <translation>...</translation>
-    </message>
-    <message>
-        <source>Use Completer</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -49193,10 +46526,6 @@ Virhe oli:%2</translation>
         <source>Comment</source>
         <translation>Kommentti</translation>
     </message>
-    <message>
-        <source>QGIS</source>
-        <translation type="unfinished">QGIS</translation>
-    </message>
 </context>
 <context>
     <name>QgsVectorLayerEditBuffer</name>
@@ -49477,10 +46806,6 @@ Virhe oli:%2</translation>
         <source>Restore Default</source>
         <translation>Palauta oletus</translation>
     </message>
-    <message>
-        <source>all</source>
-        <translation type="unfinished">kaikki</translation>
-    </message>
 </context>
 <context>
     <name>QgsVectorLayerPropertiesBase</name>
@@ -49490,11 +46815,11 @@ Virhe oli:%2</translation>
     </message>
     <message>
         <source>A widget to define the scale visibility</source>
-        <translation type="obsolete">Väline määritettäessä mittakaavan näkyvyys</translation>
+        <translation>Väline määritettäessä mittakaavan näkyvyys</translation>
     </message>
     <message>
         <source>A widget to define the scale visibility.</source>
-        <translation type="obsolete">Väline määritettäessä mittakaavan näkyvyys.</translation>
+        <translation>Väline määritettäessä mittakaavan näkyvyys.</translation>
     </message>
     <message>
         <source>Memory cache</source>
@@ -49618,7 +46943,7 @@ Virhe oli:%2</translation>
     </message>
     <message>
         <source>Feature subset</source>
-        <translation type="obsolete">Ominaisuudet alajoukko</translation>
+        <translation>Ominaisuudet alajoukko</translation>
     </message>
     <message>
         <source>Simplify geometry</source>
@@ -49723,18 +47048,6 @@ Virhe oli:%2</translation>
     <message>
         <source>Diagrams</source>
         <translation>Kaaviot</translation>
-    </message>
-    <message>
-        <source>Provider feature filter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Prefix</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Joined fields</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -50122,10 +47435,6 @@ Virhe oli:%2</translation>
     <message>
         <source>Coordinate reference system</source>
         <translation>Koordinaattijärjestelmä</translation>
-    </message>
-    <message>
-        <source>Only request features overlapping the current view extent</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -51589,53 +48898,6 @@ Syy: %2</translation>
     </message>
 </context>
 <context>
-    <name>QgsZonalStatisticsDialog</name>
-    <message>
-        <source>Count</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sum</source>
-        <translation type="unfinished">Summa</translation>
-    </message>
-    <message>
-        <source>Mean</source>
-        <translation type="unfinished">Keskiarvo</translation>
-    </message>
-    <message>
-        <source>Median</source>
-        <translation type="unfinished">Mediaani</translation>
-    </message>
-    <message>
-        <source>Standard deviation</source>
-        <translation type="unfinished">Keskihajonta</translation>
-    </message>
-    <message>
-        <source>Minimum</source>
-        <translation type="unfinished">Minimi</translation>
-    </message>
-    <message>
-        <source>Maximum</source>
-        <translation type="unfinished">Maksimi</translation>
-    </message>
-    <message>
-        <source>Range</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Minority</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Majority</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Variety</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>QgsZonalStatisticsDialogBase</name>
     <message>
         <source>Raster layer:</source>
@@ -51652,14 +48914,6 @@ Syy: %2</translation>
     <message>
         <source>Zonal Statistics</source>
         <translation>Vyöhykekohtaiset tilastot</translation>
-    </message>
-    <message>
-        <source>Band</source>
-        <translation type="unfinished">Kaista</translation>
-    </message>
-    <message>
-        <source>Statistics to calculate:</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -51705,19 +48959,19 @@ Ole hyvä ja konfiguroi ennenkuin suoritat R skriptejä.</translation>
     </message>
     <message>
         <source>&lt;p&gt;This algorithm requires R to be run. A test to check if R is correctly installed and configured in your system has been performed, with the following result:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</source>
-        <translation type="obsolete">&lt;p&gt;Tämä algoritmi tarvitsee Rn suoritukseensa. Testi tarkistusta varten onko R oikein asennettu ja konfiguroitu järjestelmääsi on suoritettu seuraavin tuloksin:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</translation>
+        <translation>&lt;p&gt;Tämä algoritmi tarvitsee Rn suoritukseensa. Testi tarkistusta varten onko R oikein asennettu ja konfiguroitu järjestelmääsi on suoritettu seuraavin tuloksin:&lt;/p&gt;&lt;ul&gt;&lt;i&gt;</translation>
     </message>
     <message>
         <source>R seems to be correctly installed and configured&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;The script you have executed needs the following packages:&lt;/p&gt;&lt;ul&gt;</source>
-        <translation type="obsolete">R näyttää olevan oikein asennettu ja konfiguroitu&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Skripti jonka olet suorittanut tarvitsee seuraavia paketteja:&lt;/p&gt;&lt;ul&gt;</translation>
+        <translation>R näyttää olevan oikein asennettu ja konfiguroitu&lt;/i&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Skripti jonka olet suorittanut tarvitsee seuraavia paketteja:&lt;/p&gt;&lt;ul&gt;</translation>
     </message>
     <message>
         <source>&lt;/ul&gt;&lt;p&gt;Make sure they are installed in your R environment before trying to execute this script.&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;/ul&gt;&lt;p&gt;Varmista että olet asentanut R ympäristösi ennenkuin yrität suorittaa tätä skriptiä.&lt;/p&gt;</translation>
+        <translation>&lt;/ul&gt;&lt;p&gt;Varmista että olet asentanut R ympäristösi ennenkuin yrität suorittaa tätä skriptiä.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;a href= &quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Click here&lt;/a&gt; to know more about how to install and configure R to be used with QGIS&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Klikkaa tästä&lt;/a&gt; saadaksesi lisätietoja kuinka asentaa ja konfiguroida R käytettäväksi QGIS kanssa&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;&lt;a href=&quot;http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html&quot;&gt;Klikkaa tästä&lt;/a&gt; saadaksesi lisätietoja kuinka asentaa ja konfiguroida R käytettäväksi QGIS kanssa&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -51743,10 +48997,6 @@ Ole hyvä ja konfiguroi ennenkuin suoritat R skriptejä.</translation>
 %s</source>
         <translation>Ei voitu ladata R skriptiä: %s
 %s</translation>
-    </message>
-    <message>
-        <source>R user library folder</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -51788,7 +49038,7 @@ Ole ystävällinen ja aseta ennenkuin suoritat R skriptejä.</translation>
     </message>
     <message>
         <source>Selection</source>
-        <translation type="obsolete">Valinta</translation>
+        <translation>Valinta</translation>
     </message>
     <message>
         <source>Selected number is greater than feature count. Choose a lower value and try again.</source>
@@ -51797,10 +49047,6 @@ Ole ystävällinen ja aseta ennenkuin suoritat R skriptejä.</translation>
     <message>
         <source>Percentage can&apos;t be greater than 100. Set a different value and try again.</source>
         <translation>Prosentit eivät voi olla suurempia kuin 100. Aseta toinen arvo ja yritä uudelleen.</translation>
-    </message>
-    <message>
-        <source>Extracted (random)</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -51823,7 +49069,7 @@ Ole ystävällinen ja aseta ennenkuin suoritat R skriptejä.</translation>
     </message>
     <message>
         <source>Selection</source>
-        <translation type="obsolete">Valinta</translation>
+        <translation>Valinta</translation>
     </message>
     <message>
         <source>Selected number is greater that feature count. Choose lesser value and try again.</source>
@@ -51832,10 +49078,6 @@ Ole ystävällinen ja aseta ennenkuin suoritat R skriptejä.</translation>
     <message>
         <source>Percentage can&apos;t be greater than 100. Set correct value and try again.</source>
         <translation>Prosentit eivät voi olla suurempia kuin 100. Aseta toinen arvo ja yritä uudelleen.</translation>
-    </message>
-    <message>
-        <source>Extracted (random stratified)</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -52008,7 +49250,7 @@ Ole ystävällinen ja aseta ennenkuin suoritat R skriptejä.</translation>
     </message>
     <message>
         <source>Selection</source>
-        <translation type="obsolete">Valinta</translation>
+        <translation>Valinta</translation>
     </message>
     <message>
         <source>Selected number is greater that feature count. Choose lesser value and try again.</source>
@@ -52017,10 +49259,6 @@ Ole ystävällinen ja aseta ennenkuin suoritat R skriptejä.</translation>
     <message>
         <source>Percentage can&apos;t be greater than 100. Set a different value and try again.</source>
         <translation>Prosentit eivät voi olla suurempia kuin 100. Aseta toinen arvo ja yritä uudelleen.</translation>
-    </message>
-    <message>
-        <source>Selection stratified</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -52070,19 +49308,11 @@ Ole ystävällinen ja aseta ennenkuin suoritat R skriptejä.</translation>
     </message>
     <message>
         <source>Output plot</source>
-        <translation type="obsolete">Tulosta piirros</translation>
+        <translation>Tulosta piirros</translation>
     </message>
     <message>
         <source>Output table</source>
-        <translation type="obsolete">Ulostulo talulukko</translation>
-    </message>
-    <message>
-        <source>Histogram</source>
-        <translation type="unfinished">Histogrammi</translation>
-    </message>
-    <message>
-        <source>Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulo talulukko</translation>
     </message>
 </context>
 <context>
@@ -52181,11 +49411,7 @@ Ole ystävällinen ja aseta ennenkuin suoritat R skriptejä.</translation>
     </message>
     <message>
         <source>Reprojected layer</source>
-        <translation type="obsolete">Uudellen projisoitu taso</translation>
-    </message>
-    <message>
-        <source>Reprojected</source>
-        <translation type="unfinished"></translation>
+        <translation>Uudellen projisoitu taso</translation>
     </message>
 </context>
 <context>
@@ -52498,10 +49724,6 @@ Monikaistaiset tasot eivät ole tuettuja SAGAssa.</translation>
         <translation>Ei voitu avata SAGA algoritmia: %s
 %s</translation>
     </message>
-    <message>
-        <source>Activate</source>
-        <translation type="unfinished">Aktivoi</translation>
-    </message>
 </context>
 <context>
     <name>SagaUtils</name>
@@ -52518,11 +49740,7 @@ Monikaistaiset tasot eivät ole tuettuja SAGAssa.</translation>
     </message>
     <message>
         <source>Output layer with selected features</source>
-        <translation type="obsolete">Tulostettava taso valituin ominaisuuksin</translation>
-    </message>
-    <message>
-        <source>Selection</source>
-        <translation type="unfinished">Valinta</translation>
+        <translation>Tulostettava taso valituin ominaisuuksin</translation>
     </message>
 </context>
 <context>
@@ -52534,7 +49752,7 @@ Monikaistaiset tasot eivät ole tuettuja SAGAssa.</translation>
     <message>
         <source>Could not load script: %s
 Problem with line: %d</source>
-        <translation type="obsolete">Ei voitu ladata skriptiä: %s
+        <translation>Ei voitu ladata skriptiä: %s
 Ongelma rivillä: %d</translation>
     </message>
     <message>
@@ -52550,16 +49768,6 @@ Ongelma rivillä: %d</translation>
 Problem with line %d</source>
         <translation>Ei voitu ladata skriptiä: %s
 Ongelma rivillä: %d</translation>
-    </message>
-    <message>
-        <source>Could not load script: %s
-Problem with line: %s</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not load script: %s.
-Problem with line &quot;%s&quot;</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -52630,7 +49838,7 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Ulostulo</translation>
+        <translation>Ulostulo</translation>
     </message>
     <message>
         <source>Operators %s can be used only with string fields.</source>
@@ -52652,37 +49860,6 @@ Problem with line &quot;%s&quot;</source>
         <source>Unsupported field type &quot;%s&quot;</source>
         <translation>Tukematon tietotyyppi  &quot;%s&quot;</translation>
     </message>
-    <message>
-        <source>Selected (attribute)</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>SelectByAttributeSum</name>
-    <message>
-        <source>Input Layer</source>
-        <translation type="unfinished">Syötettävä taso</translation>
-    </message>
-    <message>
-        <source>Selection attribute</source>
-        <translation type="unfinished">Valinta-attribuutti</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="unfinished">Arvo</translation>
-    </message>
-    <message>
-        <source>Selected (attribute sum)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>There is no selection in the input layer. Select one feature and try again.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No adjacent features found.</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>SelectByExpression</name>
@@ -52700,11 +49877,7 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Ulostulo</translation>
-    </message>
-    <message>
-        <source>Selected (expression)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulo</translation>
     </message>
 </context>
 <context>
@@ -52727,11 +49900,7 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Selection</source>
-        <translation type="obsolete">Valinta</translation>
-    </message>
-    <message>
-        <source>Selected (location)</source>
-        <translation type="unfinished"></translation>
+        <translation>Valinta</translation>
     </message>
 </context>
 <context>
@@ -52789,11 +49958,7 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Styled layer</source>
-        <translation type="obsolete">Tyylitelty taso</translation>
-    </message>
-    <message>
-        <source>Styled</source>
-        <translation type="unfinished"></translation>
+        <translation>Tyylitelty taso</translation>
     </message>
 </context>
 <context>
@@ -52808,11 +49973,7 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Styled layer</source>
-        <translation type="obsolete">Tyylitelty taso</translation>
-    </message>
-    <message>
-        <source>Styled</source>
-        <translation type="unfinished"></translation>
+        <translation>Tyylitelty taso</translation>
     </message>
 </context>
 <context>
@@ -52997,15 +50158,11 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Simplified layer</source>
-        <translation type="obsolete">Yksinkertaistettu taso</translation>
+        <translation>Yksinkertaistettu taso</translation>
     </message>
     <message>
         <source>Simplify: Input geometries have been simplified from %s to %s points</source>
         <translation>Yksinkertaista: Syötettävät geometriat on yksinkertaistettu %s pisteestä %s pisteeseen</translation>
-    </message>
-    <message>
-        <source>Simplified</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -53047,46 +50204,11 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
+        <translation>Ulostulotaso</translation>
     </message>
     <message>
         <source>Invalid unique ID field</source>
         <translation>Virheellinen uniikki ID tieto</translation>
-    </message>
-    <message>
-        <source>Multipart</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>SizeScaleBase</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Field</source>
-        <translation type="unfinished">Kenttä</translation>
-    </message>
-    <message>
-        <source>Scale method</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Size from</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>to</source>
-        <translation type="unfinished">mihin</translation>
-    </message>
-    <message>
-        <source>Values from</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Size when field is NULL</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -53117,33 +50239,6 @@ Problem with line &quot;%s&quot;</source>
     </message>
 </context>
 <context>
-    <name>SlopeAreaMulti</name>
-    <message>
-        <source>Slope Grid</source>
-        <translation type="unfinished">Kallistumaruudukko</translation>
-    </message>
-    <message>
-        <source>Contributing Area Grid</source>
-        <translation type="unfinished">Osallistuvan alueen ruudukko</translation>
-    </message>
-    <message>
-        <source>Slope Exponent</source>
-        <translation type="unfinished">Kallistuman eksponentti</translation>
-    </message>
-    <message>
-        <source>Area Exponent</source>
-        <translation type="unfinished">Alueen eksponentti</translation>
-    </message>
-    <message>
-        <source>Slope Area Grid</source>
-        <translation type="unfinished">Kallistuma-alueen ruudukko</translation>
-    </message>
-    <message>
-        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
-        <translation type="unfinished">Virheellinen  MPI prosessien lukumäärää käytetty. Ole ystävällinen ja korjaa lukumäärä ennenkuin käytät TauDEM algoritmeja.</translation>
-    </message>
-</context>
-<context>
     <name>SpatialJoin</name>
     <message>
         <source>Target vector layer</source>
@@ -53167,19 +50262,11 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Output table</source>
-        <translation type="obsolete">Ulostulo talulukko</translation>
+        <translation>Ulostulo talulukko</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Tulostaso</translation>
-    </message>
-    <message>
-        <source>Joined table</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Joined layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Tulostaso</translation>
     </message>
 </context>
 <context>
@@ -53194,15 +50281,11 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Split lines</source>
-        <translation type="obsolete">Jaa viivat</translation>
+        <translation>Jaa viivat</translation>
     </message>
     <message>
         <source>Geometry exception while splitting</source>
         <translation>Geometria poikkeus jaettaessa</translation>
-    </message>
-    <message>
-        <source>Splitted</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -53240,11 +50323,7 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Statistics</source>
-        <translation type="obsolete">Tilastot</translation>
-    </message>
-    <message>
-        <source>Statistics by category</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilastot</translation>
     </message>
 </context>
 <context>
@@ -53267,11 +50346,7 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Result</source>
-        <translation type="obsolete">Tulokset</translation>
-    </message>
-    <message>
-        <source>Line length</source>
-        <translation type="unfinished">Viivan pituus</translation>
+        <translation>Tulokset</translation>
     </message>
 </context>
 <context>
@@ -53324,55 +50399,28 @@ Problem with line &quot;%s&quot;</source>
         <source> °</source>
         <translation> °</translation>
     </message>
-    <message>
-        <source>...</source>
-        <translation type="unfinished">...</translation>
-    </message>
 </context>
 <context>
     <name>SymetricalDifference</name>
     <message>
         <source>Input layer</source>
-        <translation type="obsolete">Syötettävä taso</translation>
+        <translation>Syötettävä taso</translation>
     </message>
     <message>
         <source>Difference layer</source>
-        <translation type="obsolete">Eroavuustaso</translation>
+        <translation>Eroavuustaso</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="obsolete">Symmetrinen erotus</translation>
+        <translation>Symmetrinen erotus</translation>
     </message>
     <message>
         <source>Geometry exception while computing symetrical difference</source>
-        <translation type="obsolete">Geometriapoikkeus laskettaessa symmetristä eroavuutta</translation>
+        <translation>Geometriapoikkeus laskettaessa symmetristä eroavuutta</translation>
     </message>
     <message>
         <source>Feature exception while computing symetrical difference</source>
-        <translation type="obsolete">Ominaisuuspoikkeus laskettaessa symmetristä eroavuutta</translation>
-    </message>
-</context>
-<context>
-    <name>SymmetricalDifference</name>
-    <message>
-        <source>Input layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Difference layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Symetrical difference</source>
-        <translation type="unfinished">Symmetrinen erotus</translation>
-    </message>
-    <message>
-        <source>Geometry exception while computing symetrical difference</source>
-        <translation type="unfinished">Geometriapoikkeus laskettaessa symmetristä eroavuutta</translation>
-    </message>
-    <message>
-        <source>Feature exception while computing symetrical difference</source>
-        <translation type="unfinished">Ominaisuuspoikkeus laskettaessa symmetristä eroavuutta</translation>
+        <translation>Ominaisuuspoikkeus laskettaessa symmetristä eroavuutta</translation>
     </message>
 </context>
 <context>
@@ -53410,36 +50458,6 @@ Problem with line &quot;%s&quot;</source>
         <source>TauDEM (hydrologic analysis)</source>
         <translation>TauDEM (hydrologinen analyysi)</translation>
     </message>
-    <message>
-        <source>TauDEM multifile command line tools folder</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Enable singlefile TauDEM tools</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Enable multifile TauDEM tools</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not open TauDEM algorithm %s:
-%s</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>TauDEMMultifileAlgorithm</name>
-    <message>
-        <source>Could not load TauDEM algorithm: %s
-%s</source>
-        <translation type="unfinished">Ei voitu ladata TauDEM algoritmia: %s
-%s</translation>
-    </message>
-    <message>
-        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
-        <translation type="unfinished">Virheellinen  MPI prosessien lukumäärää käytetty. Ole ystävällinen ja korjaa lukumäärä ennenkuin käytät TauDEM algoritmeja.</translation>
-    </message>
 </context>
 <context>
     <name>TauDEMUtils</name>
@@ -53464,11 +50482,7 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Ulostulo</translation>
-    </message>
-    <message>
-        <source>Float from text</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulo</translation>
     </message>
 </context>
 <context>
@@ -53747,11 +50761,7 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Ulostulo</translation>
-    </message>
-    <message>
-        <source>Histogram</source>
-        <translation type="unfinished">Histogrammi</translation>
+        <translation>Ulostulo</translation>
     </message>
 </context>
 <context>
@@ -53770,11 +50780,7 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Output</source>
-        <translation type="obsolete">Ulostulo</translation>
-    </message>
-    <message>
-        <source>Scatterplot</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulo</translation>
     </message>
 </context>
 <context>
@@ -53867,37 +50873,6 @@ Problem with line &quot;%s&quot;</source>
     </message>
 </context>
 <context>
-    <name>WidgetBlur</name>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished">Lomake</translation>
-    </message>
-    <message>
-        <source>Transparency</source>
-        <translation type="unfinished">Läpinäkyvyys</translation>
-    </message>
-    <message>
-        <source> %</source>
-        <translation type="unfinished"> %</translation>
-    </message>
-    <message>
-        <source>Blend mode</source>
-        <translation type="unfinished">Sekoitustila</translation>
-    </message>
-    <message>
-        <source>Blur type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Blur strength</source>
-        <translation type="unfinished">Sumennuksen voimakkuus</translation>
-    </message>
-    <message>
-        <source>Draw mode</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>WidgetCentroidFill</name>
     <message>
         <source>Form</source>
@@ -53906,76 +50881,6 @@ Problem with line &quot;%s&quot;</source>
     <message>
         <source>Force point inside polygon</source>
         <translation>Pakota piste monikulmion sisään</translation>
-    </message>
-</context>
-<context>
-    <name>WidgetColorEffect</name>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished">Lomake</translation>
-    </message>
-    <message>
-        <source>Colorize</source>
-        <translation type="unfinished">Väritys</translation>
-    </message>
-    <message>
-        <source>Contrast</source>
-        <translation type="unfinished">Kontrasti</translation>
-    </message>
-    <message>
-        <source>Brightness</source>
-        <translation type="unfinished">Kirkkaus</translation>
-    </message>
-    <message>
-        <source>Saturation</source>
-        <translation type="unfinished">Kylläisyys</translation>
-    </message>
-    <message>
-        <source>%</source>
-        <translation type="unfinished">%</translation>
-    </message>
-    <message>
-        <source>Transparency</source>
-        <translation type="unfinished">Läpinäkyvyys</translation>
-    </message>
-    <message>
-        <source>Blend mode</source>
-        <translation type="unfinished">Sekoitustila</translation>
-    </message>
-    <message>
-        <source>Draw mode</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> %</source>
-        <translation type="unfinished"> %</translation>
-    </message>
-    <message>
-        <source>Grayscale</source>
-        <translation type="unfinished">Harmaasävy</translation>
-    </message>
-</context>
-<context>
-    <name>WidgetDrawSource</name>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished">Lomake</translation>
-    </message>
-    <message>
-        <source>Blend mode</source>
-        <translation type="unfinished">Sekoitustila</translation>
-    </message>
-    <message>
-        <source>Transparency</source>
-        <translation type="unfinished">Läpinäkyvyys</translation>
-    </message>
-    <message>
-        <source> %</source>
-        <translation type="unfinished"> %</translation>
-    </message>
-    <message>
-        <source>Draw mode</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -54114,57 +51019,6 @@ Problem with line &quot;%s&quot;</source>
     <message utf8="true">
         <source> °</source>
         <translation> °</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="unfinished">...</translation>
-    </message>
-</context>
-<context>
-    <name>WidgetGlow</name>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished">Lomake</translation>
-    </message>
-    <message>
-        <source>Color ramp</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Spread</source>
-        <translation type="unfinished">Laajuus</translation>
-    </message>
-    <message>
-        <source>Blur radius</source>
-        <translation type="unfinished">Sumennussäde</translation>
-    </message>
-    <message>
-        <source>Transparency</source>
-        <translation type="unfinished">Läpinäkyvyys</translation>
-    </message>
-    <message>
-        <source>Single color</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Blend mode</source>
-        <translation type="unfinished">Sekoitustila</translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation type="unfinished">Muokkaa</translation>
-    </message>
-    <message>
-        <source>Invert</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> %</source>
-        <translation type="unfinished"> %</translation>
-    </message>
-    <message>
-        <source>Draw mode</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -54463,45 +51317,6 @@ Problem with line &quot;%s&quot;</source>
     <message utf8="true">
         <source> °</source>
         <translation> °</translation>
-    </message>
-</context>
-<context>
-    <name>WidgetShadowEffect</name>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished">Lomake</translation>
-    </message>
-    <message>
-        <source>Color</source>
-        <translation type="unfinished">Väri</translation>
-    </message>
-    <message>
-        <source>Transparency</source>
-        <translation type="unfinished">Läpinäkyvyys</translation>
-    </message>
-    <message>
-        <source>Offset</source>
-        <translation type="unfinished">Siirtymä</translation>
-    </message>
-    <message>
-        <source>Blend mode</source>
-        <translation type="unfinished">Sekoitustila</translation>
-    </message>
-    <message>
-        <source>Blur radius</source>
-        <translation type="unfinished">Sumennussäde</translation>
-    </message>
-    <message>
-        <source> %</source>
-        <translation type="unfinished"> %</translation>
-    </message>
-    <message utf8="true">
-        <source>˚</source>
-        <translation type="unfinished">˚</translation>
-    </message>
-    <message>
-        <source>Draw mode</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -54827,49 +51642,6 @@ Problem with line &quot;%s&quot;</source>
     </message>
 </context>
 <context>
-    <name>WidgetTransform</name>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished">Lomake</translation>
-    </message>
-    <message>
-        <source>Shear X,Y</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rotation</source>
-        <translation type="unfinished">Rotaatio</translation>
-    </message>
-    <message utf8="true">
-        <source> °</source>
-        <translation type="unfinished"> °</translation>
-    </message>
-    <message>
-        <source>Reflect horizontal</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Reflect vertical</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Translate X,Y</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>%</source>
-        <translation type="unfinished">%</translation>
-    </message>
-    <message>
-        <source>Scale X,Y</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Draw mode</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>WidgetVectorFieldBase</name>
     <message>
         <source>Form</source>
@@ -54971,11 +51743,7 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
-    </message>
-    <message>
-        <source>Zonal statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulotaso</translation>
     </message>
 </context>
 <context>
@@ -55112,11 +51880,7 @@ Problem with line &quot;%s&quot;</source>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
-    </message>
-    <message>
-        <source>Virtual</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulotaso</translation>
     </message>
 </context>
 <context>
@@ -55223,7 +51987,7 @@ Suorita topologian tarkistus uudelleen.</translation>
     <message>
         <source>&lt;h3&gt;Database connection&lt;/h3&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Tietokantayhteys&lt;/h3&gt;
+        <translation>&lt;h3&gt;Tietokantayhteys&lt;/h3&gt;
 </translation>
     </message>
     <message>
@@ -55265,7 +52029,7 @@ On this tab you can search for WMS servers. It is possible to enter a search-str
 To visualize the results, select an table entry, press the &lt;label&gt;Add selected row to WMS list&lt;/label&gt; button and change back to the &lt;label&gt;Servers&lt;/label&gt; tab.&lt;p&gt;
 You only need to request the list of layers by clicking the &lt;label&gt;Connect&lt;/label&gt; button.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Luo uusi WMS yhteys&lt;/h3&gt;
+        <translation>&lt;h3&gt;Luo uusi WMS yhteys&lt;/h3&gt;
 WMS tasoja voidaan lisätä varsin yksinkertaisella tavalla, kunhan tiedät WMS palvelimen URL osoitteen johon yhdistetään, sinulla on palveluun kykenevä yhteys tuohon palvelimeen, ja palvelin joka ymmärtää HTTP:n tiedonkuljetus mekanismina.&lt;p&gt;
 QGIS voi nykyisin toimia WMS asiakkaan joka ymmärtää WMS 1.1, 1.1.1 ja 1.3 palvelimia.
 &lt;p&gt;
@@ -55314,7 +52078,7 @@ You may also tick an &lt;label&gt;Open feature form, if a single feature is iden
 Identifiable layers can be set in the Project Properties dialog &lt;label&gt;Settings &gt; Project Properties &gt; Identifiable layers&lt;/label&gt; where all the layers names are listed, their type (vector, raster, etc.) and ability to be identified.
 &lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Tunnista ominaisuudet&lt;/h3&gt;
+        <translation>&lt;h3&gt;Tunnista ominaisuudet&lt;/h3&gt;
 &lt;p&gt;
 Tulosikkuna näyttää kaikki ominaisuudet jotka ovat hakutoleranssin rajoissa. Nähdäksesi tulosten yksityiskohtia, laajenna ominaisuuden tietoja jokaisen vasemmalta puolen.
 &lt;/p&gt;
@@ -55366,7 +52130,7 @@ geometry types and don&apos;t offer to add others.
 
 &lt;/ul&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Luo uusi Oracle yhteys&lt;/h3&gt;
+        <translation>&lt;h3&gt;Luo uusi Oracle yhteys&lt;/h3&gt;
 Tällä valintaikkunalla on mahdollisuus määritellä asetukset Oracle tietokantaan.
 &lt;p&gt;
 &lt;ul&gt;
@@ -55411,7 +52175,7 @@ olevat geometria tyypit äläkä edes tarjoa lisätä muita.
         <source>&lt;h3&gt;GPS Plugin&lt;/h3&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;GPS liitännäinen&lt;/h3&gt;
+        <translation>&lt;h3&gt;GPS liitännäinen&lt;/h3&gt;
 
 </translation>
     </message>
@@ -55453,7 +52217,7 @@ To filter a layer before adding it to the map, double click on its name or use &
 &lt;/a&gt;
 Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for searching in different column types and using 2 search modes: &lt;label&gt;Wildcard&lt;/label&gt; or &lt;label&gt;RegExp&lt;/label&gt;.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Lisää PostGIS tauluja&lt;/h3&gt;
+        <translation>&lt;h3&gt;Lisää PostGIS tauluja&lt;/h3&gt;
 Tällä valintaikkunalla voit lisätä PostGIS tasoja (tauluja joissa geometria sarake) QGIS karttapohjalle.
 &lt;p&gt;
 &lt;a href=&quot;#connect&quot;&gt;Yhteydet&lt;/a&gt;&lt;br/&gt;
@@ -55551,7 +52315,7 @@ The field calculator allows you to update fields with expressions.
 &lt;tr&gt;&lt;td&gt;-&lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;negative value of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
 &lt;/table&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Tietolaskin&lt;/h3&gt;
+        <translation>&lt;h3&gt;Tietolaskin&lt;/h3&gt;
 Tietolaskin sallii Sinun päivittää kenttiä lausekkein.
 
 &lt;h4&gt;Tuetut toimenpiteet&lt;/h4&gt;
@@ -55615,7 +52379,7 @@ Tietolaskin sallii Sinun päivittää kenttiä lausekkein.
     <message>
         <source>&lt;h3&gt;New OGR Database Connection Dialog&lt;/h3&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Uusi OGR tietokantayhteyden ikkuna&lt;/h3&gt;
+        <translation>&lt;h3&gt;Uusi OGR tietokantayhteyden ikkuna&lt;/h3&gt;
 </translation>
     </message>
     <message>
@@ -55623,7 +52387,7 @@ Tietolaskin sallii Sinun päivittää kenttiä lausekkein.
 Displays a north arrow overlayed onto the map.
 &lt;p&gt;
 At present there is only one style available. You can adjust the angle of the arrow or let QGIS set the direction automatically. If you choose to let QGIS determine the direction, it makes its best guess as to how the arrow should be oriented. For placement of the arrow you have four options, corresponding to the four corners of the map canvas.</source>
-        <translation type="obsolete">&lt;h3&gt; Pohjoisnuoli liitännäinen&lt;/h3&gt;
+        <translation>&lt;h3&gt; Pohjoisnuoli liitännäinen&lt;/h3&gt;
 Näyttää pohjoisnuolen kartalla.
 &lt;p&gt;
 Nykyisellään on käytettävissä vain yksi tyyli. Voit itse asettaa nuolen kulman tai antaa QGISin tehdä sen automaattisesti. Jos valitset QGIS päättelyn suunnasta, se tekee parhaan arvauksen kuinka nuoli tulisi suunnata. Nuolen sijoittelulle on neljä vaihtoehtoa, vastaten karttanäytön neljää kulmaa.</translation>
@@ -55648,7 +52412,7 @@ To add a scale bar:
 &lt;li&gt;Click &lt;label&gt;OK&lt;/label&gt;.&lt;/li&gt;
 &lt;/ol&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Mittakaavajanan liitännäinen&lt;/h3&gt;
+        <translation>&lt;h3&gt;Mittakaavajanan liitännäinen&lt;/h3&gt;
 Piirtää mittakaavajanan kartalle.
 &lt;p&gt;
 Voit kontrolloida tyyliä ja sijaintia, kuin myös janan nimiöintiä.
@@ -55722,7 +52486,7 @@ which are described and illustrated on &lt;a href=&quot;http://en.wikipedia.org/
 &lt;p&gt;Contact the author through aruntheguy at gmail dot com&lt;/p&gt;
 
 </source>
-        <translation type="obsolete">&lt;h1&gt;Heatmap liitännäisen ohje&lt;/h1&gt; 
+        <translation>&lt;h1&gt;Heatmap liitännäisen ohje&lt;/h1&gt; 
 &lt;p&gt;Heatmap liitännäinen käytää Kernel Density Estimation menetelmää luodakseen tiheys- (heatmap) 
 rasterin syötettävästä pistevektoritasosta. Tiheys lasketaan sijaintiin kuuluvien pisteiden lukumäärän perusteella, 
 klusteroitujen pisteiden suurempi määrä johtaa suurempiin arvoihin. Heatmap kartat mahdollistavat &quot;hotspottien&quot; helpon tunnistamisen sekä näyttävät pisteiden klusterit.&lt;/p&gt; 
@@ -55914,7 +52678,7 @@ that will be automatically deleted after running.&lt;/li&gt;
 from the close button. This allows you to save the geometry to be restored to the next start.
 &lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;style&gt;
+        <translation>&lt;style&gt;
 	#toolbarConsole td{
 		background: #f6f6f6;
 	}
@@ -56118,7 +52882,7 @@ The Coordinate Reference System (CRS) tab allows you to set the projection for t
 &lt;/a&gt;
 On this tab you can choose on which layers the identify tool will work.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Projektin asetukset&lt;/h3&gt;
+        <translation>&lt;h3&gt;Projektin asetukset&lt;/h3&gt;
 Tässä valintaikkunassa voit asettaa useita &lt;label&gt;Projektiin&lt;/label&gt; ominaisuuksia. Projekti on tallennettu joukko tasoja ja niiden asetuksia, mutta myös muita tietoja tarvitaan haettaessa projekti tallennusvälineeltä.&lt;p&gt;
 
 &lt;a href=&quot;#general&quot;&gt;Yleiset välilehti&lt;/a&gt;&lt;br/&gt;
@@ -56158,7 +52922,7 @@ Tällä välilehdellä voit valita millä tasoilla identifiointityökalu toimii.
 To define a new connection, click on &lt;label&gt;New&lt;/label&gt; button and use the file browser to point to your SpatiaLite database, which is a file with a &lt;i&gt;.sqlite&lt;/i&gt; extension.&lt;p&gt;
 The connections you define will be remembered for further use and available to choose from the drop down menu.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Lisää SpatiaLite taulut&lt;/h3&gt;
+        <translation>&lt;h3&gt;Lisää SpatiaLite taulut&lt;/h3&gt;
 Määritelläksesi uuden yhteyden, klikkaa &lt;label&gt;Uusi&lt;/label&gt; näppäintä ja käytä tiedostoselainta osoittaaksesi SpatiaLite tietokantasi, joka on &lt;i&gt;.sqlite&lt;/i&gt; päätteellinen tiedosto.&lt;p&gt;
 Määrittelemäsi yhteydet muistetaan seuraavia käyttökertoja varten ja ovat valittavissa alasvetovalikosta.</translation>
     </message>
@@ -56302,7 +53066,7 @@ The Diagram tab allows you to add a graphic overlay to a vector layer. To activa
 The current implementation of diagrams provides support for pie- and bar charts and for linear scaling
 of the diagram size according to a classification attribute.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Vektoritason ominaisuudet&lt;/h3&gt;
+        <translation>&lt;h3&gt;Vektoritason ominaisuudet&lt;/h3&gt;
 Tällä valintaikkunalla voit työskennellä vektoritason asetusten ja ominaisuuksien kanssa.
 
 Uusi teksti kehitteillä.</translation>
@@ -56348,7 +53112,7 @@ To delete a bookmark from the Bookmarks dialog, click on it then click the &lt;l
 To update the extent of a bookmark, click on it then click the &lt;label&gt;Update&lt;/label&gt; button. Confirm your choice by clicking &lt;label&gt;OK&lt;/label&gt; or cancel the update by clicking &lt;label&gt;Cancel&lt;/label&gt;.
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Paikkatiedon kirjanmerkit&lt;/h3&gt;
+        <translation>&lt;h3&gt;Paikkatiedon kirjanmerkit&lt;/h3&gt;
 Paikkatiedon kirjanmerkit antavat Sinulle mahdollisuuden &quot;merkitä kirjanmerkillä&quot; maantieteellisen sijainnin ja palata siihen myöhemmin.
 &lt;p&gt;
 &lt;a href=&quot;#creating&quot;&gt;Luo kirjanmerkki&lt;/a&gt;&lt;br/&gt;
@@ -56421,7 +53185,7 @@ Päivittäksesi kirjanmerkin alueen laajuutta, klikkaa sitä ja sitten klikkaa &
 &lt;h5&gt;Default settings&lt;/h5&gt;
 &lt;p&gt;If the attribute table of your linear layer does not contain the required fields or fields contain unexpected values, the plugin will use default values. You can set them in the default tab &lt;label&gt;Default settings&lt;/label&gt;.&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Tien Kuvaaja liitännäisen asetukset&lt;/h3&gt;
+        <translation>&lt;h3&gt;Tien Kuvaaja liitännäisen asetukset&lt;/h3&gt;
 &lt;p&gt;Tien Kuvaaja on QGIS C++ liitännäinen, joka laskee lyhyimmän polun kahden pisteen välillä millä tahansa moniviiva tasolla ja piirtää tämän polun tieverkostolle.&lt;/p&gt;
 &lt;p&gt;
 &lt;a href=&quot;#creating&quot;&gt;Liitännäisen mittayksiköt&lt;/a&gt;&lt;br/&gt;
@@ -56501,7 +53265,7 @@ are sometimes limited (e.g. for shape files) or behave diffently.
 &lt;/tr&gt;
 &lt;/table&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Kyselyn muodostaja&lt;/h3&gt;
+        <translation>&lt;h3&gt;Kyselyn muodostaja&lt;/h3&gt;
 Kyselyn muodostaja mahdollistaa sinun luovan palveluntarjoaja riippuvaisen suodatinlausekkeen.
 
 Nämä käsitellään yleisesti paljon nopeammin kuin QGIS:n yleiset lausekkeet, mutta ovat joissain tapaksissa rajoitettuja (esim. shapefile tiedostot) tai toimivat poikkeuksellisesti.
@@ -56563,7 +53327,7 @@ system.
 &lt;p&gt;
 Defining a custom CRS in QGIS requires a good understanding of the Proj.4 projection library. To begin, refer to the &lt;a href=&quot;ftp://ftp.remotesensing.org/proj/OF90-284.pdf&quot;&gt;Cartographic Projection Procedures for the UNIX Environment&lt;/a&gt; - A User&apos;s Manual by Gerald I. Evenden, U.S. Geological Survey Open-File Report 90-284, 1990. This manual describes the use of the &lt;i&gt;proj.4&lt;/i&gt; and related command line utilities. The cartographic parameters used with &lt;i&gt;proj.4&lt;/i&gt; are described in the user manual, and are the same as those used by QGIS.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Käyttäjän määrittelemän koordinaattijärjestelmän (CRS) määritelmän kuvaus&lt;/h3&gt; 
+        <translation>&lt;h3&gt;Käyttäjän määrittelemän koordinaattijärjestelmän (CRS) määritelmän kuvaus&lt;/h3&gt; 
 Jos QGIS ei tue tarvitsemaasi kordinaattijärjestelmää voit määritellä räätälöidyn CRS:n. &lt;p&gt; Määritelläksesi CRS, valitse &lt;label&gt;Käyttäjän määrittelemä CRS...&lt;/label&gt; &lt;label&gt;Muokkaa&lt;/label&gt; (Gnome, OSX) tai &lt;label&gt;Asetukset&lt;/label&gt; (KDE, Windows) valikosta. Käyttäjän määrittelemä CRS tallennetaan QGIS käyttäjän tietokantaan. Määrittelemäsi CCRS::n lisäksi, tämä tietokanta sisältää myös paikkatiedon kirjanmerkkisi ja muuta räätälöityä tietoa. &lt;h4&gt;Määrittele&lt;/h4&gt; Luodaksesi uuden CRSn, klikkaa &lt;label&gt;Lisää uusi CRS&lt;/label&gt; näppäintä ja syötä: &lt;ul&gt; &lt;li&gt;Nimi &lt;li&gt;CRS parametrit &lt;/ul&gt; Tämän jälkeen tallennetaan uusi CRS määrityksesi kun poistut valintaikkunasta klikkaamalla &lt;label&gt;OK&lt;/label&gt; näppäintä. &lt;p&gt; Huomaa että Parametrit tulee alkaa a +proj=-blokilla, joka esittää uutta koordinaattijärjestelmää. &lt;p&gt; Käyttäjän määrittelemän CRS QGIS ohjelmassa edellyttää hyvää ymmärtämistä Proj.4 projektiokirjastosta. Aloitukseksi viittaamme dokumenttiin &lt;a href=&quot;ftp://ftp.remotesensing.org/proj/OF90-284.pdf&quot;&gt;Cartographic Projection Procedures for the UNIX Environment&lt;/a&gt; - A User&apos;s Manual by Gerald I. Evenden, U.S. Geological Survey Open-File Report 90-284, 1990. Tämä käsikirja kuvailee &lt;i&gt;proj.4&lt;/i&gt; käyttöä ja sen komentorivi työkaluja. Kartografiset parametrit joita käytetään &lt;i&gt;proj.4&lt;/i&gt; kanssa on kuvailtu käyttäjän oppaassa ja ovat samoja kuin käytetään QGIS ohjelmassa. </translation>
     </message>
     <message>
@@ -56599,7 +53363,7 @@ This plugin supports basic HTML markup tags for formatting text. For example:
 &lt;/li&gt;
 &lt;/ul&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Tekijänoikeusnimiön liitännäinen&lt;/h3&gt; 
+        <translation>&lt;h3&gt;Tekijänoikeusnimiön liitännäinen&lt;/h3&gt; 
 Piirtää tekijänoikeusnimiön informaation kera.&lt;br/&gt; Voit lisätä mitä tahansa tekstiä kartalle ei pelkästään tekijänoikeusnimiötä. &lt;p&gt; &lt;a href=&quot;#howto&quot;&gt;Kuinka&lt;/a&gt;&lt;br/&gt; &lt;a href=&quot;#text&quot;&gt;Tekstin muotoilu&lt;/a&gt;&lt;br/&gt; &lt;a name=&quot;howto&quot;&gt; 
 &lt;h4&gt;Kuinka&lt;/h4&gt; &lt;/a&gt; &lt;ol&gt; &lt;li&gt;Varmista että liitännäinen on ladattu. &lt;li&gt;Klikkaa &lt;label&gt;Näytä &gt; Koristelut &gt; Tekijänoikeusnimiö&lt;/label&gt;. 
 &lt;li&gt;Anna teksti jonka haluat sijoittaa kartalle. Voit käyttää HTML määritteitä  
@@ -56929,7 +53693,7 @@ The following options can be added
 
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Erotellun tekstitiedoston taso&lt;/h3&gt;
+        <translation>&lt;h3&gt;Erotellun tekstitiedoston taso&lt;/h3&gt;
 Lataa ja näyttää eroteltuja tekstitiedostoja
 &lt;p&gt;
 &lt;a href=&quot;#re&quot;&gt;Yleistä&lt;/a&gt;&lt;br/&gt;
@@ -57265,7 +54029,7 @@ In this section you can see the list of attributes. To delete one of them, click
 Click on &lt;label&gt;OK&lt;/label&gt; to create the layer and close the dialog.
 &lt;label&gt;Cancel&lt;/label&gt; will close the layer without further changes.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Luo uusi SpatiaLite taso&lt;/h3&gt; 
+        <translation>&lt;h3&gt;Luo uusi SpatiaLite taso&lt;/h3&gt; 
 Voit käyttää tätä valintaikkunaa luodaksesi uuden SpatiaLite tietokannan ja/tai tyhjän SpatiaLite tason muokkausta varten. Katso alla olevia selityksiä valintaikkunassa syötettävistä tiedoista. 
 &lt;h4&gt;Tietokanta&lt;/h4&gt; 
 Valitse tietokanta alasveto-listasta. Tämä lista on luotu tallentamistasi SpatiaLite yhteyksistä. Jos et ole tallentanut yhteyksiä tai haluat luoda uuden tietokannan, klikkaa näppäintä (&lt;label&gt;...&lt;/label&gt;) alasveto-listan oikealla puolella. 
@@ -57293,7 +54057,7 @@ QGIS supports vector data in a number of formats, including those supported by t
 QGIS supports PostGIS layers in a PostgreSQL database and SpatiaLite layers. Support for additional data types (eg. delimited text) is provided by additional data provider plugins. A list of OGR supported vector formats can be found in Appendix A.1 of the User Guide.&lt;/p&gt;
 Detailed description how to proceed with vector data is described in chapter 5 &apos;Working with Vector Data&apos;.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Lisää vektoritaso valintaikkuna&lt;/h3&gt;
+        <translation>&lt;h3&gt;Lisää vektoritaso valintaikkuna&lt;/h3&gt;
 
 Lisää vektoritaso valintaikkunaa käytetään lisättäessä vektoridataa QGIS karttanäytölle. Vektoridata on paikkatietoja joiden geometriat ovat pisteitä, viivovaja ja monikulmiota (suljettuja alueita).&lt;/p&gt;
 QGIS tukee vektoridataa lukuisissa eri formaateissa, mukaanlukien ne joita OGR kirjaston tiedontarjoajan liitännäinen tarjoaa, kuten ESRI shapetiedostot, MapInfo MIF (interchange formaatti) ja MapInfo TAB (natiivi formaatti).&lt;/p&gt;
@@ -57335,7 +54099,7 @@ This dialog allows you to define the settings for a connection to a PostgreSQL/P
 
 &lt;/ul&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Luo uusi PostGIS yhteys&lt;/h3&gt;
+        <translation>&lt;h3&gt;Luo uusi PostGIS yhteys&lt;/h3&gt;
 Tämä valintaikkuna sallii määritellä asetukset yhteydelle PostgreSQL/PostGIS tietokantaan.
 &lt;p&gt;
 &lt;ul&gt;
@@ -57456,7 +54220,7 @@ Note: Experimental plugins are generally unsuitable for production use. These pl
 
 &lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hallitse ja asenna liitännäisiä&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hallitse ja asenna liitännäisiä&lt;/h3&gt;
 
 &lt;p&gt;
 Hallitse ja asenna liitännäisiä.
@@ -57545,7 +54309,7 @@ Huomautus: Kokeelliset liitännäiset ovat yleensä käyttökelvottomia tuotanno
     <message>
         <source>&lt;h3&gt;Style Manager&lt;/h3&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Tyylien hallinta&lt;/h3&gt;
+        <translation>&lt;h3&gt;Tyylien hallinta&lt;/h3&gt;
 </translation>
     </message>
     <message>
@@ -57564,7 +54328,7 @@ Pressing the &lt;label&gt;Calculate&lt;/label&gt; button will run the shortest p
 &lt;h5&gt;Note&lt;/h5&gt;
 &lt;p&gt;In order to bind the start and stop points of the route to the road network Road graph selects the nearest point or arc of the graph. In fact it can bind to any part of the road network. Nevertheless, their route and its characteristics do not take into account the distance from the starting point to the road network and of the road network to the stopping point.&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Hae lyhin polku&lt;/h3&gt;
+        <translation>&lt;h3&gt;Hae lyhin polku&lt;/h3&gt;
 &lt;p&gt;Tien kuvaaja on QGIS C++ liitännäinen, joka laskee lyhyimmän polun kahden pisteen välille millä tahansa viivatasolla ja piirtää tämän polun tieverkostolle. Ennen liitännäisen käyttämistä on se konfiguroitava. Tämä voidaan tehdä valikosta &lt;label&gt;Liitännäiset &amp;rarr; Tien Kuvaaja &amp;rarr; Asetukset&lt;/label&gt;&lt;/p&gt;
 &lt;p&gt;
 &lt;a href=&quot;#howto&quot;&gt;Kuinka teen&lt;/a&gt;&lt;br/&gt;
@@ -57655,7 +54419,7 @@ Informs you about active system locale. To change it tick &lt;label&gt;Override 
 &lt;/a&gt;
 Tick &lt;label&gt;Use proxy for web access&lt;/label&gt; to define host, port, user, and password.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Asetukset&lt;/h3&gt;
+        <translation>&lt;h3&gt;Asetukset&lt;/h3&gt;
 Tässä valintaikkunassa voit valita eräitä perusasetuksia QGIS:lle.
 
 Uusi teksti kehitteillä.
@@ -57674,7 +54438,7 @@ You can also define the width and precision of the new attribute column.
 &lt;h4&gt;Attributes list&lt;/h4&gt;
 In this section you can see the list of attributes. To delete one of them, click on it and choose &lt;label&gt;Remove selected attribute&lt;/label&gt; button.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Luo uusi (shapefile) vektoritaso&lt;/h3&gt;
+        <translation>&lt;h3&gt;Luo uusi (shapefile) vektoritaso&lt;/h3&gt;
 Luodaksesi uuden tason muokattavaksi, valitse &lt;label&gt;Uusi Shapefile taso&lt;/label&gt; &lt;label&gt;Tasot&lt;/label&gt; valikosta.&lt;br/&gt; Valinnassa voi olla vaihtoehtoja esim. Spatialite.
 
 Tätä valintaikkunaa hyväksi käyttäen voit luoda uuden shapefile tason.
@@ -57702,7 +54466,7 @@ Tässä osassa näet luettelon attribuuteista. Poistaaksesi yhden, klikkaa sitä
 
 See &lt;a href=&quot;http://gdal.org/ogr/ogr_formats.html&quot;&gt;OGR Vector formats&lt;/a&gt; for a list of supported formats and the available options.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Tallenna vektoritaso nimellä ...&lt;/h3&gt;
+        <translation>&lt;h3&gt;Tallenna vektoritaso nimellä ...&lt;/h3&gt;
 
 &lt;p&gt;Tämä valintaikkuna sallii Sinun tallentavan vektoritiedot usealla formaatilla käyttäen GDAL/OGR ohjelmaa.
 
@@ -57731,7 +54495,7 @@ Click on one of the icons along the top of the composer window to select what ty
 &lt;/p&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Tulosteen muodostaja&lt;/h3&gt;
+        <translation>&lt;h3&gt;Tulosteen muodostaja&lt;/h3&gt;
 
 &lt;p&gt;
 Tulosteen muodostaja mahdollistaa tietojäsenten siirtelyn sivulla, jonka jälkeen voit tulostaa sen. Tietojäseniä voivat olla karttapohja, mittakaavajana, selite ja mahdolliset kuvat.
@@ -57756,7 +54520,7 @@ A single right mouse click stops the measuring, while two right mouse clicks sta
 &lt;h4&gt;Measuring Angles&lt;/h4&gt;
 To measure angles, select the tool and click on three points to create an angle between these points. The second point selected is the vertex of the angle. The angle is dynamically displayed once you clicked the second point.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Mittaustyökalut&lt;/h3&gt;
+        <translation>&lt;h3&gt;Mittaustyökalut&lt;/h3&gt;
 On kolme mittaustyökalua: pituudelle, pinta-alalle ja kulma. Niitä käyttäen voit mitata sekä etäisyyksiä, pinta-aloja ja kulmia karttapohjalta.. Työkalut palauttavat vain tuloksia yksiköinä jotka on asetettu &lt;label&gt;Asetukset &gt; Asetukset &gt; Karttatyökalut&lt;/label&gt; valikossa.
 &lt;h4&gt;Pituuksien mittaus&lt;/h4&gt;
 Mitataksesi pituuksia valitse työkalu ja klikkaa sen reitin varrella jonka haluat mitata. Jokaisen segmentin pituus näytetään siihen astisena pituutena reitillä.
@@ -57829,7 +54593,7 @@ The vector layer needs to be in editing mode, before you can click on the &lt;la
 When you toggle to edition the layer, a new row of functions appears in the attribute table: the &lt;label&gt;Field Calculator Bar&lt;/label&gt;. This allows quick editing values of existing fields by performing calculations on basis of existing attribute values or defined functions button in the attribute table, e.g. to calculate length or area of geometry features.&lt;br&gt;
 To edit values, select the field to modify with the filter button on the left and fill the text box with the new value or an expression to calculate new value. Then, press &lt;label&gt;Update all&lt;/label&gt; button to update all the rows of the attribute table or &lt;label&gt;Update selected&lt;/label&gt; button if some features are selected or a filter is applied on the attribute table display. You can also use the &lt;label&gt;Expression builder&lt;/label&gt; button to calculate the new value in the column.&lt;br&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Attribuuttitaulu&lt;/h3&gt;
+        <translation>&lt;h3&gt;Attribuuttitaulu&lt;/h3&gt;
 Attribuuttitaululla näytetään valitun tason ominaisuudet. Jokainen taulun rivi esittää yhtä kartan ominaisuutta näyttäen attribuutit useissa sarakkeissa. Taulun ominaisuuksia voidaan etsiä, valita, siirrellä tai jopa muokata. Oletuksena attribuuttitaululla on erillinen ikkuna. Jos avasit sen etkä voi nähdä sitä, on se luultavasti piilossa QGIS pääikkunan takana. Saat sen myös telakoituna ikkunana, merkkaamalla &lt;label&gt;Avaa attribuuttitaulu telakkaikkunassa&lt;/label&gt; asetusten muokkauksessa &lt;label&gt;Asetukset &gt; Asetukset &gt; Tiedonlähteet&lt;/label&gt;.&lt;p&gt;
 Tasojen ominaisuuksien kokonaismäärä, suodatettujen ominaisuuksien ja valittujen ominaisuuksien määrät on tulostettu ikkunan otsikkoon.&lt;p&gt;
 &lt;p&gt;
@@ -57911,11 +54675,7 @@ Muokataksesi arvoja valitse haluamasi tieto suodatin näppäimellä vasemmalta j
     </message>
     <message>
         <source>Output file for contour lines (vector)</source>
-        <translation type="obsolete">Tulostiedosto korkeuskäyrille (vektori)</translation>
-    </message>
-    <message>
-        <source>Contours</source>
-        <translation type="unfinished"></translation>
+        <translation>Tulostiedosto korkeuskäyrille (vektori)</translation>
     </message>
 </context>
 <context>
@@ -58022,11 +54782,6 @@ Lisätiedot sähköpostitse scala@itc.cnr.it
     <message>
         <source>Shapefile</source>
         <translation>Shapefilet</translation>
-    </message>
-    <message>
-        <source>Export inserts</source>
-        <extracomment>&apos;insert&apos; is the entity that inserts/references a symbol/block in DXF</extracomment>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -58790,22 +55545,6 @@ Liitännäistä ei voi käyttää.</translation>
         <source>&amp;Data Management Tools</source>
         <translation>&amp;Datanhallinta työkalut</translation>
     </message>
-    <message>
-        <source>Save output shapefile</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select input file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select input files</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save output directory</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>fillnodata</name>
@@ -58835,11 +55574,7 @@ Liitännäistä ei voi käyttää.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
-    </message>
-    <message>
-        <source>Filled</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulotaso</translation>
     </message>
 </context>
 <context>
@@ -58926,7 +55661,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;week(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 104.285...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;week() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;week() funktio&lt;/h3&gt;
 Erottelee viikon numeron päiväyksestä, viikkojen määrän
  &lt;code&gt;Interval&lt;/code&gt; tiedosta
 
@@ -58977,7 +55712,7 @@ return a result.
     END
 &lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;CASE lauseke&lt;/h3&gt;
+        <translation>&lt;h3&gt;CASE lauseke&lt;/h3&gt;
 Ehdollinen lauseke jota voidaan käyttää useiden lausekkeiden ratkaisemiseksi ja tuloksen palauttamiseksi.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -59023,7 +55758,7 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; rightmost characters 
 &lt;code&gt;right(&apos;Hello World&apos;,5) &amp;rarr; &apos;World&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;right() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;right() funktio&lt;/h3&gt;
 Palauttaa osamerkkijoukon joka sisältää &lt;i&gt;n&lt;/i&gt; oikean puolimmaista merkkiä merkkijonosta.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -59045,7 +55780,7 @@ Palauttaa osamerkkijoukon joka sisältää &lt;i&gt;n&lt;/i&gt; oikean puolimmai
 &lt;h3&gt;Color Group&lt;/h3&gt;
 This group contains functions for manipulating colors
 </source>
-        <translation type="obsolete">&lt;h3&gt;Väri ryhmä&lt;/h3&gt;
+        <translation>&lt;h3&gt;Väri ryhmä&lt;/h3&gt;
 Tämä ryhmä sisältää funktiot värien käsittelyyn
 </translation>
     </message>
@@ -59064,7 +55799,7 @@ Returns the length of a string.
 &lt;!-- Show example of function.--&gt;
      length(&apos;HELLO&apos;) &amp;rarr; 5&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;length() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;length() funktio&lt;/h3&gt;
 Palauttaa merkkijonon pituuden.
 
 &lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -59094,7 +55829,7 @@ Converts a string to upper case letters.
 &lt;!-- Show example of function.--&gt;
      upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;HELLO WORLD&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;upper() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;upper() funktio&lt;/h3&gt;
 Muuntaa merkkijonon isoiksi kirjaimiksi.
 
 &lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -59124,7 +55859,7 @@ b &amp;rarr; geometry
 &lt;pre&gt;bbox( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; )) &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt;bbox( geomFromWKT( &apos;POINT(6 5)&apos; ) , geomFromWKT( &apos;POLYGON((3 3 , 4 4 , 5 5, 3 3))&apos; )) &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;bbox funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;bbox funktio&lt;/h3&gt;
 Palauttaa 1 jos geometriat alueellisesti leikkaavat määritellyn rajauslaatikon ja 0 jos ne eivät leikkaa.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -59156,7 +55891,7 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; leftmost characters o
 &lt;code&gt;left(&apos;Hello World&apos;,5) &amp;rarr; &apos;Hello&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;left() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;left() funktio&lt;/h3&gt;
 Palauttaa osamerkkijoukon joka sisältää &lt;i&gt;n&lt;/i&gt; vasemmanpuoleisinta merkkiä merkkijonosta..
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -59187,7 +55922,7 @@ Note: This function is only available in some contexts and will be 0 otherwise.
 
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;$scale funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;$scale funktio&lt;/h3&gt;
 Palauttaa karttapohjan nykyisen mittakaavan.
 &lt;br&gt;
 Huomautus: Tämä funktio on käytettävissä ainoastaan joissakin yhteyksissä, muuten sen arvo on 0. 
@@ -59217,7 +55952,7 @@ Rounds a number upwards.
 &lt;code&gt;ceil(4.9) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ceil(-4.9) &amp;rarr; -4&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;ceil() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;ceil() funktio&lt;/h3&gt;
 Pyöristää numeron ylöspäin.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -59248,7 +55983,7 @@ Converts a string to real number. Nothing changed if a value cannot be converted
 &lt;!-- Show example of function.--&gt;
      toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;toreal() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;toreal() funktio&lt;/h3&gt;
 Muuntaa merkkijonon liukuluvuksi (real). Mikään ei muutu jos arvoa ei voida muuntaa (esim &apos;123.56asd&apos; on virheellinen). Numerot pyöristetään muutosten tallennuksen jälkeen jos tarkkuus on pienempi kuin muunnoksen tulos.
 
 &lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -59276,7 +56011,7 @@ Retrieves a x coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;xat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;xat() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;xat() funktio&lt;/h3&gt;
 Palauttaa nykyisen ominaisuuden x koordinaatine
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -59303,7 +56038,7 @@ None
 &lt;pre&gt;$numpages &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;$numpages funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;$numpages funktio&lt;/h3&gt;
 Palauttaa sivujen lukumäärän rakenteessa.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -59336,7 +56071,7 @@ Returns -1 if the expression isn&apos;t found.
      strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
      strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;strpos() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;strpos() funktio&lt;/h3&gt;
 Palauttaa säännöllisen lausekkeen indeksin merkkijonosta..
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -59373,7 +56108,7 @@ This function takes two arguments.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;rand(1, 10) &amp;rarr; 8&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;rand() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;rand() funktio&lt;/h3&gt;
 Palauttaa satunnaisen kokonaisluvun annetujen minimi ja maksimi arvojen rajaukselta (mukaan lukien rajat).
 &lt;br&gt;
 Tämä funktio tarvitsee kaksi argumettia.
@@ -59408,7 +56143,7 @@ None
 &lt;pre&gt; intersects(  $atlasgeometry,  $geometry ) &lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;$atlasgeometry funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;$atlasgeometry funktio&lt;/h3&gt;
 Palauttaa nykyisen ominaisuuden geometrian joka on mukana atlaksessa.
 Voidaan käyttää geometrian sääntöpohjaiseen näyttöön käytettäessä atlasta.
 Esimerkiksi näytetään ainoastaan muiden tasojen geometriat kun niiden geometriat
@@ -59442,7 +56177,7 @@ None
 &lt;pre&gt;$atlasfeatureid = $id&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;$atlasfeatureid funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;$atlasfeatureid funktio&lt;/h3&gt;
 Palauttaa ominaisuuden id:n nykyiseltä riviltä käytettäessä atlasta.
 Tämä mahdollistaa atlaksen ominaisuuksien käyttöä säännöissä 
 ja esimerkiksi näyttää tai kätkeä ominaisuuksia perustuen niiden id tietoon.
@@ -59472,7 +56207,7 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; bounds_width($geometry) &amp;rarr; returns width of bounding box of $geometry&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;bounds_width funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;bounds_width funktio&lt;/h3&gt;
 Palauttaa geometrian rajaavan laatikon (bounding box) leveyden. Laskenta perustuu geometrian koordinaattijärjestelmään. 
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -59502,7 +56237,7 @@ Rounds a number downwards.
 &lt;code&gt;floor(4.9) &amp;rarr; 4&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;floor(-4.9) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;floor() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;floor() funktio&lt;/h3&gt;
 Pyöristää numeron alaspäin.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -59531,7 +56266,7 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; bounds_height($geometry) &amp;rarr; returns height of bounding box of $geometry&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;bounds_height funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;bounds_height funktio&lt;/h3&gt;
 Palauttaa geometrian rajaavan laatikon (bounding box) korkeuden. Laskenta perustuu geometrian koordinaattijärjestelmään. 
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -59560,7 +56295,7 @@ Converts a string to integer number. Nothing changed if a value cannot be conver
 &lt;!-- Show example of function.--&gt;
      toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;toint() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;toint() funktio&lt;/h3&gt;
 Muuntaa merkkijonon kokonaisluvuksi. Mitään ei muuteta jos arvoa ei voida muuntaa kokonaisluvuksi. (esim. &apos;123asd&apos; on virheellinen).
 
 &lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -59588,7 +56323,7 @@ Retrieves a y coordinate of the current feature
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;yat(1) &amp;rarr; 5&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;yat() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;yat() funktio&lt;/h3&gt;
 Hakee nykyisen ominaisuuden y koordinaatin
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -59616,7 +56351,7 @@ Converts a number to string.
 &lt;!-- Show example of function.--&gt;
      tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;tostring() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;tostring() funktio&lt;/h3&gt;
 Muuntaa numeron merkkijonoksi.
 
 &lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -59645,7 +56380,7 @@ None
 &lt;pre&gt;$rownum &amp;rarr; 4711&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;$rownum funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;$rownum funktio&lt;/h3&gt;
 Palauttaa nykyisen rivin numeron.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -59676,7 +56411,7 @@ arguments to determine the quadrant of the result
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      atan2(1.0, 1.732) &amp;rarr; 0.523611477769969&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;atan2() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;atan2() funktio&lt;/h3&gt;
 Palauttaa x/y:n arcustangentin käyttäen kahden argumentin 
 etumerkkejä tuloksen neljänneksen päättelyyn.
 
@@ -59705,7 +56440,7 @@ Returns sinus of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      sin(1.571) &amp;rarr; 0.999999682931835&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;sin() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;sin() funktio&lt;/h3&gt;
 Palauttaa kulman sinin.
 
 
@@ -59740,7 +56475,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;month(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 4.033...&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;month() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;month() funktio&lt;/h3&gt;
 Erottelee kuukaisiosan päiväyksestä, tai kuukausien lukumäärän
  &lt;code&gt;Interval&lt;/code&gt; tiedosta.
 
@@ -59775,7 +56510,7 @@ None
 &lt;pre&gt;$area &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;$area funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;$area funktio&lt;/h3&gt;
 Palauttaa nykyisen ominaisuuden alueen koon.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -59810,7 +56545,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;day(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 730&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;day() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;day() funktio&lt;/h3&gt;
 Poimii päivän päiväyksestä, tai päivien lukumäärän
  &lt;code&gt;Interval&lt;/code&gt; päivämäärärajauksesta
 
@@ -59845,7 +56580,7 @@ Convert a string into Qt data type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todate(&apos;2012-05-04&apos;) &amp;rarr; 2012-05-04&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="obsolete">&lt;h3&gt;todate() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;todate() funktio&lt;/h3&gt;
 Muuntaa merkkijonon Qt päivämäärä tyyppiin.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -59878,7 +56613,7 @@ using the fill character.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;lpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;Helloxxxxx&apos;&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;lpad() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;lpad() funktio&lt;/h3&gt;
 Palauttaa merkkijonon annetulle pituudella 
 joka on täytetty käyttäen täyttömerkkiä.
 
@@ -59910,7 +56645,7 @@ Returns arcuscosinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      acos(0.5) &amp;rarr; 1.0471975511966&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;acos() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;acos() funktio&lt;/h3&gt;
 Palauttaa arvosta arcus kosinin radiaaneissa.
 
 
@@ -59935,7 +56670,7 @@ Loading field values from WFS layers isn&apos;t supported, before the layer is
 actually inserted, ie. when building queries.
 &lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Kentät ja arvot&lt;/h3&gt;
+        <translation>&lt;h3&gt;Kentät ja arvot&lt;/h3&gt;
 Sisältää luettelon tason kentistä.  Näytearvoja voi käyttää myös hiiren oikealla klikkauksella.
 &lt;br&gt;&lt;br&gt;
 Valitse tiedon nimi luettelosta ja sitten klikkaa oikealla saadaksesi sisällön valikos jotta voit ladata näytearvot valitusta tiedosta.
@@ -59963,7 +56698,7 @@ This function takes two arguments.
 &lt;code&gt;log(2, 32) &amp;rarr; 5&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;log(0.5, 32) &amp;rarr; -5&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;log() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;log() funktio&lt;/h3&gt;
 Palauttaa logaritmin arvon annetusta arvosta ja kannasta.
 &lt;br&gt;
 Tämä funktio tarvitsee kaksi argumenttia.
@@ -59985,7 +56720,7 @@ Tämä funktio tarvitsee kaksi argumenttia.
         <source>&lt;h3&gt;Geometry Group&lt;/h3&gt;
 This group contains functions that operate on geometry objects e.g length, area.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Geometria ryhmä&lt;/h3&gt;
+        <translation>&lt;h3&gt;Geometria ryhmä&lt;/h3&gt;
 Tämä ryhmä sisältää funktiot joilla operoidaan geometria objekteja kuten pituus, alue jne.
 </translation>
     </message>
@@ -60000,7 +56735,7 @@ Loading field values from WFS layers isn&apos;t supported, before the layer is
 actually inserted, ie. when building queries.
 &lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;Kenttä&lt;/h3&gt;
+        <translation>&lt;h3&gt;Kenttä&lt;/h3&gt;
 Kaksoisklikkaa lisätäksesi kentän nimi lausekkaaen merkkijonoon..
 &lt;br&gt;&lt;br&gt;
 Klikkaa oikealla kentän nimeä avataksesi sisältövalikon näytearvojen lataamisen vaihtohdoiksi..
@@ -60023,7 +56758,7 @@ None
 &lt;pre&gt;$page &amp;rarr; 2&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;$page funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;$page funktio&lt;/h3&gt;
 Palauttaa sivunumeron nykyisessä rakenteessa..
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -60051,7 +56786,7 @@ Returns exponential of an value.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      exp(1.0) &amp;rarr; 2.71828182845905&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;exp() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;exp() funktio&lt;/h3&gt;
 Palauttaa arvon eksopentin.
 
 
@@ -60085,7 +56820,7 @@ using the fill character.
 &lt;code&gt;rpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;xxxxxHello&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;rpad() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;rpad() funktio&lt;/h3&gt;
 Palauttaa merkkijonon annetulle pituudella 
 joka on täytetty käyttäen täyttömerkkiä.
 
@@ -60125,7 +56860,7 @@ use &lt;code&gt;round(decimal)&lt;/code&gt; to round to the nearest integer&lt;b
 
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;round() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;round() funktio&lt;/h3&gt;
 Pyöristää numeron annettuihin desimaalinumeroihin.
 &lt;br&gt;
 Tämä funktio voi ottaa yhden tai kaksi argumenttia tarpeen mukaan..
@@ -60162,7 +56897,7 @@ None
 &lt;pre&gt;$now &amp;rarr; 2012-07-22T13:24:57&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;$now funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;$now funktio&lt;/h3&gt;
 Palauttaa tämän hetkisen päiväyksen ja ajan.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -60193,7 +56928,7 @@ Returns a string representation of a color based on its hue, saturation, and lig
 &lt;!-- Show example of function.--&gt;
      color_hsl(100,50,70) &amp;rarr; &apos;166,217,140&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;color_hsl() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;color_hsl() funktio&lt;/h3&gt;
 Palauttaa väriä esittävän merkkijono, perustuen värin sävyn, kylläisyyden ja valosuuden attribuutteihin
 
 &lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -60240,7 +56975,7 @@ accelerating as the input values approach the domain maximum. Smaller exponents 
      
      
 </source>
-        <translation type="obsolete">&lt;h3&gt;scale_exp() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;scale_exp() funktio&lt;/h3&gt;
 Muuntaa annetun arvon syötettävältä alueelta tulosaluelle käyttäen eksponenttikäyrää. Tätä funktiota voidaan käyttää helpottamaan arvoja sisään ja ulos määritellyltä arvoalueelta.
 
 &lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -60281,7 +57016,7 @@ a &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;  geomToWKT( convexHull( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 4 10)&apos; )) )   &amp;rarr; returns POLYGON((3 3,4 10,4 4,3 3)) &lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;convexHull funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;convexHull funktio&lt;/h3&gt;
 Palauttaa geometrian konveksin peitteen. Tulos edustaa geometrian pienintä peitettä joka sisältää kaikki joukkoon kuuluvat siihen kuuluvat geometriat.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -60309,7 +57044,7 @@ b &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( union( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))  )   &amp;rarr; returns MULTIPOINT(4 4, 5 5)&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;union funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;union funktio&lt;/h3&gt;
 Palauttaa geometrian joka esittää pistejoukon geometrioiden unionia..
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -60337,7 +57072,7 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; xmax($geometry) &amp;rarr; returns maximum x coordinate of $geometry&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">h3&gt;xmax funktio&lt;/h3&gt;
+        <translation>h3&gt;xmax funktio&lt;/h3&gt;
 Palauttaa geometrian maksimi x koordinaatin. Laskenta perustuu tämän geometrian koordinaattijärjestelmään. 
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -60365,7 +57100,7 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; bounds($geometry) &amp;rarr; returns bounding box of $geometry&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;bounds funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;bounds funktio&lt;/h3&gt;
 Palauttaa geometrian joka esittää syötettävien geometrioiden rajaavaa laatikkoa (bounding box). Laskenta tehdään näiden geometrioiden koordinaattijärjestelmän pohjalta. 
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -60393,7 +57128,7 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; ymax($geometry) &amp;rarr; returns maximum y coordinate of $geometry&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">h3&gt;ymax funktio&lt;/h3&gt;
+        <translation>h3&gt;ymax funktio&lt;/h3&gt;
 Palauttaa geometrian maksimi y koordinaatin. Laskenta perustuu tämän geometrian koordinaattijärjestelmään. 
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -60422,7 +57157,7 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;POINT( 0.5 0.5 )&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))          &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;contains funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;contains funktio&lt;/h3&gt;
 Palauttaa true jos ja ainoastaan jos yhtään b:n pistettä ei ole a:n ulkopuolella, ja vähintään yksi b:sisällä oleva piste on a:n sisällä.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -60455,7 +57190,7 @@ Returns a string wrapped to a maximum/minimum number of characters.
      wordwrap(&apos;UNIVERSITY OF QGIS&apos;,13) &amp;rarr; &apos;UNIVERSITY OF&amp;#92;nQGIS&apos;&lt;br&gt;
      wordwrap(&apos;UNIVERSITY OF QGIS&apos;,-3) &amp;rarr; &apos;UNIVERSITY&amp;#92;nOF QGIS&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;wordwrap() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;wordwrap() funktio&lt;/h3&gt;
 Palauttaa merkkijonon rivitettynä maksimi/minimi merkkien määrään.
 
 &lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -60491,7 +57226,7 @@ Returns a string representation of a color based on its red, green, and blue com
 &lt;!-- Show example of function.--&gt;
      color_rgb(255,127,0) &amp;rarr; &apos;255,127,0&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">
+        <translation>
 &lt;h3&gt;color_rgb() funktio&lt;/h3&gt;
 Palauttaa merkkijono joka edustaa väriä perustuen sen punainen, vihreä ja sininen komponenteihin
 
@@ -60527,7 +57262,7 @@ Returns a string representation of a color based on its cyan, magenta, yellow an
 &lt;!-- Show example of function.--&gt;
      color_cmyk(100,50,0,10) &amp;rarr; &apos;0,115,230&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">
+        <translation>
 &lt;h3&gt;color_cmyk() funktio&lt;/h3&gt;
 Palauttaa merkkijono joka edustaa väri perustuen sen syaani, purppura, keltainen ja musta komponentteihin
 
@@ -60559,7 +57294,7 @@ geometry &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( intersection( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 )&apos; ))  )   &amp;rarr; returns LINESTRING(3 3, 4 4)&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;intersection funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;intersection funktio&lt;/h3&gt;
 Palauttaa geometrian, joka edustaa yhteistä geometria a:n ja geometria b:n osaa.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -60595,7 +57330,7 @@ The color ramps available vary between QGIS installations.  This function
 may not give the expected results if you move your Quantum project.
 &lt;/p&gt;
 </source>
-        <translation type="obsolete">
+        <translation>
 &lt;h3&gt;ramp_color() funktio&lt;/h3&gt;
 Palauttaa merkkijonon joka edustaa väriä väriluiskalta. 
 
@@ -60636,7 +57371,7 @@ None
 &lt;pre&gt; $geometry IS NULL  &amp;rarr; returns 0, if your geometry is not NULL&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;IS lauseke&lt;/h3&gt;
+        <translation>&lt;h3&gt;IS lauseke&lt;/h3&gt;
 Palauttaa 1 jos a on sama kuin b.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -60671,7 +57406,7 @@ Returns a string representation of a color based on its hue, saturation, and val
 &lt;!-- Show example of function.--&gt;
      color_hsv(40,100,100) &amp;rarr; &apos;255,170,0&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;color_hsv() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;color_hsv() funktio&lt;/h3&gt;
 Palauttaa merkkijono joka edustaa väriä perustuen sen sävy, kylläisyys ja arvo attribuutteihin
 
 &lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -60703,7 +57438,7 @@ None
 &lt;pre&gt; &apos;A&apos; ILIKE &apos;a&apos;  &amp;rarr; returns 1 &lt;/pre&gt;
 &lt;pre&gt; &apos;A&apos; ILIKE &apos;B&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;ILIKE lauseke&lt;/h3&gt;
+        <translation>&lt;h3&gt;ILIKE lauseke&lt;/h3&gt;
 Palauttaa 1 jos ensimmäinen parametri kohdistuu merkkien koosta riippumatta annettuun rakenteeseen. LIKE voidaan käyttää ILIKE sijasta vertailun tekemiseksi merkkiriippivaiseksi.. Toimii myös numeroilla.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -60733,7 +57468,7 @@ None
 &lt;pre&gt; &apos;A&apos; LIKE &apos;a&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
 &lt;pre&gt; &apos;A&apos; LIKE &apos;B&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;LIKE lauseke&lt;/h3&gt;
+        <translation>&lt;h3&gt;LIKE lauseke&lt;/h3&gt;
 Palauttaa 1 jos ensimmäinen parametri kohdistuu annettuun rakenteeseen. Toimii myös numeroilla.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -60762,7 +57497,7 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; ymin($geometry) &amp;rarr; returns minimum y coordinate of $geometry&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;ymin funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;ymin funktio&lt;/h3&gt;
 Palauttaa geometrian pienimmän y koordinaatin. Laskenta perustuu tämän geometrian koordinaattijärjestelmään. 
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -60789,7 +57524,7 @@ text &amp;rarr; GML representation of a geometry
 &lt;pre&gt; geomFromGML( &apos;&lt;gml:LineString srsName=&quot;EPSG:4326&quot;&gt;&lt;gml:coordinates&gt;4,4 5,5 6,6&lt;/gml:coordinates&gt;&lt;/gml:LineString&gt;&apos;) &amp;rarr; returns a geometry&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;geomFromGML funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;geomFromGML funktio&lt;/h3&gt;
 Palauttaa geometrian GML esityksen mukaisesta geometriasta
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -60807,7 +57542,7 @@ text &amp;rarr; GML esityksen mukainen geometria
         <source>&lt;h3&gt;Date and Time Group&lt;/h3&gt;
 This group contains functions for handling date and time data.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Päiväys ja Aika ryhmä&lt;/h3&gt;
+        <translation>&lt;h3&gt;Päiväys ja Aika ryhmä&lt;/h3&gt;
 Tämä ryhmä sisältää funktiot joilla käsitellään päiväystä ja aika dataa.
 </translation>
     </message>
@@ -60826,7 +57561,7 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; geomToWKT( combine( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5 )&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4,  2 1 )&apos; ))  )    &amp;rarr; returns MULTILINESTRING((4 4, 2 1), (3 3, 4 4), (4 4, 5 5)) &lt;/pre&gt;
 &lt;pre&gt; geomToWKT( combine( geomFromWKT( &apos;LINESTRING(3 3 , 4 4  )&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 6 6,  2 1 )&apos; ))  )  &amp;rarr; returns LINESTRING(3 3, 4 4, 6 6, 2 1) &lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;combine funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;combine funktio&lt;/h3&gt;
 Palauttaa geometria a:n ja geometria b:n yhdistelmän.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -60856,7 +57591,7 @@ b &amp;rarr; geometry
 &lt;pre&gt; intersects( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; intersects( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))             &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;intersects funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;intersects funktio&lt;/h3&gt;
 Palauttaa 1 jos geometriat leikkaavat tilassa (jakavat tilassa minkä tahansa pisteen) ja 0 jos ne eivät leikkaa lainkaan.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -60892,7 +57627,7 @@ Restricts an input value to a specified range.
      
      
 </source>
-        <translation type="obsolete">&lt;h3&gt;clamp() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;clamp() funktio&lt;/h3&gt;
 Rajoittaa syötettävän arvon määritellylle välille..
 
 &lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -60927,7 +57662,7 @@ b &amp;rarr; geometry
 &lt;pre&gt; disjoint( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; )) &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; disjoint( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;POINT(4 4)&apos; ))                              &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;disjoint funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;disjoint funktio&lt;/h3&gt;
 Palauttaa 1 jos geometriat eivät &quot;alueellisesti leikkaa&quot; - jos niillä ei ole lainkaan yhteistä aluetta.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -60956,7 +57691,7 @@ text &amp;rarr; Well-Known Text (WKT) representation of a geometry
 &lt;pre&gt; geomFromWKT( &apos;POINT(4 5)&apos; ) &amp;rarr; returns a geometry&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;geomFromWKT funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;geomFromWKT funktio&lt;/h3&gt;
 Palauttaa geometrian joka on luotu Well-Known Text (WKT) esitysmuodosta.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -60985,7 +57720,7 @@ b &amp;rarr; distance for the buffer
 &lt;pre&gt; buffer($geometry, 10.5 ) &amp;rarr; returns a polygon&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;buffer funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;buffer funktio&lt;/h3&gt;
 Palauttaa geometrian joka esittää kaikkia pisteitä joiden etäisyys tästä geometriasta on vähemmän tai yhtä paljon kuin etäisyys. Laskennat suoritetaan tämän geometrian koordinaatistojärjestelmässä.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -61015,7 +57750,7 @@ None
 &lt;pre&gt;attribute( $atlasfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current atlas feature&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;$atlasfeature funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;$atlasfeature funktio&lt;/h3&gt;
 Atlas generoinissa, palauttaa nykyisen ominaisuuden joka on iteroitu yli  kattavan tason. Tätä voidaan käyttää yhdessä &apos;attribute&apos; funktion
 kanssa palauttamaan attribuutti arvot nykyisesta atlas ominaisuudesta.
 
@@ -61044,7 +57779,7 @@ None
 &lt;pre&gt;attribute( $currentfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current feature&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;$currentfeature funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;$currentfeature funktio&lt;/h3&gt;
 Palauttaa nykyisen evaluoidun ominaisuuden. Tätä voidaan käyttää &apos;attribute&apos; funktiossa evaluoimaan attribuuttien arvot nykyisesta ominaisuudesta.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -61072,7 +57807,7 @@ None
 &lt;pre&gt;$id &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;$id funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;$id funktio&lt;/h3&gt;
 Palauttaa nykyisen rivin ominaisuuden id:n.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -61101,7 +57836,7 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$uuid &amp;rarr; {0bd2f60f-f157-4a6d-96af-d4ba4cb366a1}&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;$uuid funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;$uuid funktio&lt;/h3&gt;
 Generoi Universally Unique Identifier (UUID) jokaiselle riville käyttäen Qt
 &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/quuid.html#createUuid&apos;&gt;QUuid::createUuid&lt;/a&gt;
 metoodia. Jokainen UUID on 38 merkkiä pitkä.
@@ -61131,7 +57866,7 @@ None
 &lt;pre&gt; &apos;A&apos; IN (&apos;C&apos;,&apos;B&quot;) &amp;rarr; returns 0 &lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;IN lauseke&lt;/h3&gt;
+        <translation>&lt;h3&gt;IN lauseke&lt;/h3&gt;
 Palauttaa 1 jos arvo löytyy arvojen luettelosta
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -61160,7 +57895,7 @@ attribute_name &amp;rarr; name of attribute to be returned
 &lt;pre&gt;attribute( $currentfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current feature&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;attribute funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;attribute funktio&lt;/h3&gt;
 Palauttaa ominaisuuden määritettyyn attribuuttiin talletetun arvo.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -61190,7 +57925,7 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; crosses( geomFromWKT( &apos;LINESTRING(3 5 , 4 4 , 5 3)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; crosses( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))             &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;crosses funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;crosses funktio&lt;/h3&gt;
 Palauttaa 1 jos annetuilla geometrioilla on joitakin muttei kaikkia yhteisiä pisteitä.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -61218,7 +57953,7 @@ a &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( $geometry ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;geomToWKT funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;geomToWKT funktio&lt;/h3&gt;
 Palauttaa Well-Known Text (WKT) esityksen geometriasta ilman SRID metadataa.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -61239,7 +57974,7 @@ Returns the first feature of a layer matching a given attribute value
 &lt;pre&gt;getFeature( layer, attributeField, value )&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;getFeature funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;getFeature funktio&lt;/h3&gt;
 Palauttaa tason ensimmäisen ominaisuuden joka vastaa annettun attribuutin arvoa
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -61262,7 +57997,7 @@ b &amp;rarr; geometry
 &lt;pre&gt; touches( geomFromWKT( &apos;LINESTRING(5 3 , 4 4)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; touches( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))                     &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;touches funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;touches funktio&lt;/h3&gt;
 Palauttaa 1 jos geometrioilla on vähintäin yksi yhteinen piste mutta niiden alueet eivät leikkaa toisiaan.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -61292,7 +58027,7 @@ b &amp;rarr; geometry
 &lt;pre&gt; overlaps( geomFromWKT( &apos;LINESTRING(3 5 , 4 4 , 5 5 , 5 3)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))   &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; overlaps( geomFromWKT( &apos;LINESTRING(0 0 , 1 1)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;overlaps funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;overlaps funktio&lt;/h3&gt;
 Palauttaa 1 jos geometriat jakavat tilan, ovat samaa muotoa ja kokoa mutteivät sisällytä toisiaan kokonaan.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -61322,7 +58057,7 @@ None
 &lt;pre&gt; 4 = 2+2 AND 1 = 2  &amp;rarr; returns 0 &lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;AND looginen operaattori&lt;/h3&gt;
+        <translation>&lt;h3&gt;AND looginen operaattori&lt;/h3&gt;
 Palauttaa 1 kun ehto a ja b ovat tosia.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -61351,7 +58086,7 @@ None
 &lt;pre&gt; geomToWKT( $geometry ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;$geometry funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;$geometry funktio&lt;/h3&gt;
 Palauttaa nykyisen ominaisuuden geometrian. Voidaan käyttää työskennellessä muiden funktioiden kanssa.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -61379,7 +58114,7 @@ None
 &lt;pre&gt; 4 = 2+2 OR 1 = 2  &amp;rarr; returns 1 &lt;/pre&gt;
 &lt;pre&gt; 4 = 2   OR 1 = 2  &amp;rarr; returns 0 &lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;OR looginen operaattori&lt;/h3&gt;
+        <translation>&lt;h3&gt;OR looginen operaattori&lt;/h3&gt;
 Palauttaa 1 kun ehto a tai b on tosi.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -61408,7 +58143,7 @@ b &amp;rarr; geometry
 &lt;pre&gt; centroid($geometry) &amp;rarr; returns a point geometry&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;centroid funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;centroid funktio&lt;/h3&gt;
 Palauttaa geometrian geometrisen keskipisteen.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -61437,7 +58172,7 @@ geometry &amp;rarr; geometry
 &lt;pre&gt; within( geomFromWKT( &apos;POINT( 0.5 0.5 )&apos;) , geomFromWKT(&apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) )    &amp;rarr; returns 1&lt;/pre&gt;
 &lt;pre&gt; within( geomFromWKT( &apos;POINT( 5 5 )&apos;) , geomFromWKT(&apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) )        &amp;rarr; returns 0&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;within funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;within funktio&lt;/h3&gt;
 Palauttaa 1 jos geometria a on kokonaan geometria b:n sisällä
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -61470,7 +58205,7 @@ $map &amp;rarr; &quot;canvas&quot; (within the main QGIS main canvas)&lt;/pre&gt
 
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;$map funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;$map funktio&lt;/h3&gt;
 Palauttaa nykyisen kartan id:n jos kartta on piirretty kokoonpanossa tai &quot;karttapohjalla&quot; jos kartta on piirretty QGIS pääikkunassa..
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -61501,7 +58236,7 @@ b &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; distance( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(4 8)&apos; ))    &amp;rarr; returns 4&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;distance funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;distance funktio&lt;/h3&gt;
 Palauttaa minimietäisyyden (perustuen alueelliseen referenssiin) kahden geometrian välillä perustuen projektoituihin yksiköihin.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -61529,7 +58264,7 @@ geometry &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( difference( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4)&apos; ))  )   &amp;rarr; returns LINESTRING(4 4, 5 5)&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;difference funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;difference funktio&lt;/h3&gt;
 Palauttaa geometrian joka esittää sitä osaa geometriasta a joka ei leikkaa geometrian b kanssa.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -61559,7 +58294,7 @@ None
 &lt;pre&gt; 4 IS NOT 2+2    &amp;rarr; returns 0 &lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;NOT&lt;/h3&gt;
+        <translation>&lt;h3&gt;NOT&lt;/h3&gt;
 Palauttaa 1 jos a ei ole sama kuin b.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -61589,7 +58324,7 @@ geometry &amp;rarr; geometry
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( symDifference(  geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 8 8)&apos; ))   )   &amp;rarr; returns LINESTRING(5 5, 8 8)&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;symDifference funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;symDifference funktio&lt;/h3&gt;
 Palauttaa geometrian joka edustaa tulosta osien a ja b leikkausta..
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -61617,7 +58352,7 @@ None
 &lt;pre&gt;$perimeter &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;$perimeter funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;$perimeter funktio&lt;/h3&gt;
 Palauttaa nykyisen ominaisuuden ympärysmitan.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -61645,7 +58380,7 @@ Converts a string to a interval type.  Can be used to take days, hours, month, e
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-05 12:00:00&apos;) - tointerval(&apos;1 day 2 hours&apos;) &amp;rarr; 2012-05-04T10:00:00&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="obsolete">&lt;h3&gt;tointerval() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;tointerval() funktio&lt;/h3&gt;
 Muuntaa merkkijonon interval tyyypiksi.  Voidaan käyttää ottamaan päiviä, tunteja, kuukausia, jne. päiväyksestä. 
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -61681,7 +58416,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;hour(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 17520&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;hour() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;hour() funktio&lt;/h3&gt;
 Hakee tunnin joko datetime tai time muodosta, tai tuntien lukumäärän &lt;code&gt;Interval&lt;/code&gt; tyypistä.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -61720,7 +58455,7 @@ Returns a string representation of a color based on its hue, saturation, lightne
 &lt;!-- Show example of function.--&gt;
      color_hsla(100,50,70,200) &amp;rarr; &apos;166,217,140,200&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;color_hsla() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;color_hsla() funktio&lt;/h3&gt;
 Palauttaa merkkijonon värin esityksestä perustuen sen sävyn, kylläisyyden, vaaleuden ja alfa (läpinäkyvyyden) määritteisiin.
 
 &lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -61751,7 +58486,7 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$pi &amp;rarr; 3.14159265358979&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;$pi vakio&lt;/h3&gt;
+        <translation>&lt;h3&gt;$pi vakio&lt;/h3&gt;
 Palauttaa piin arvon laskutoimituksia varten
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -61768,7 +58503,7 @@ Ei mitään
         <source>&lt;h3&gt;Record Group&lt;/h3&gt;
 This group contains functions that operate on record identifiers.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Tietue ryhmä&lt;/h3&gt;
+        <translation>&lt;h3&gt;Tietue ryhmä&lt;/h3&gt;
 Tämä ryhmä sisältää toiminnot, jotka toimivat tietuetunnuksilla.</translation>
     </message>
     <message>
@@ -61785,7 +58520,7 @@ Convert a string into Qt time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;totime(&apos;12:30:01&apos;) &amp;rarr; 12:30:01&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="obsolete">&lt;h3&gt;totime() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;totime() funktio&lt;/h3&gt;
 Muuntaa merkkijonon Qt aika tyyppiiin.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -61816,7 +58551,7 @@ Returns a string with the the supplied string replaced.
 &lt;!-- Show example of function.--&gt;
      replace(&apos;QGIS SHOULD ROCK&apos;,&apos;SHOULD&apos;,&apos;DOES&apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;replace() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;replace() funktio&lt;/h3&gt;
 Palauttaa merkkijonon annetulla merkkijonolla korvattuna..
 
 &lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -61837,7 +58572,7 @@ Palauttaa merkkijonon annetulla merkkijonolla korvattuna..
         <source>&lt;h3&gt;Conditionals Group&lt;/h3&gt;
 This group contains functions to handle conditional checks in expressions.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Ehdollisuuksien ryhmä&lt;/h3&gt;
+        <translation>&lt;h3&gt;Ehdollisuuksien ryhmä&lt;/h3&gt;
 Tämä ryhmä sisältää toiminnot käsitellä ehdollisia tarkastuksia lausekkeissa.
 </translation>
     </message>
@@ -61855,7 +58590,7 @@ abs(&lt;i&gt;value&lt;/i&gt;)&lt;br&gt;
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;code&gt;abs(-2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;abs() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;abs() funktio&lt;/h3&gt;
 Palauttaa numeron absoluuttisen arvon.&lt;br&gt;
 
 
@@ -61883,7 +58618,7 @@ Returns the largest value in a set of values.
 &lt;!-- Show example of function.--&gt;
      max(2,10.2,5.5) &amp;rarr; 10.2
 </source>
-        <translation type="obsolete">&lt;h3&gt;max() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;max() funktio&lt;/h3&gt;
 Palauttaa suurimman arvon arvojoukosta.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -61912,7 +58647,7 @@ Returns square root of a value
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      sqrt(9) &amp;rarr; 3&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;sqrt() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;sqrt() funktio&lt;/h3&gt;
 Palauttaa arvon neliöjuuren
 
 
@@ -61930,7 +58665,7 @@ Palauttaa arvon neliöjuuren
         <source>&lt;h3&gt;Conditions Group&lt;/h3&gt;
 This group contains functions that operate on condition.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Ehto ryhmä&lt;/h3&gt;
+        <translation>&lt;h3&gt;Ehto ryhmä&lt;/h3&gt;
 Tämä ryhmä sisältää funktiot joilla operoidaan ehdoilla.
 </translation>
     </message>
@@ -61954,7 +58689,7 @@ Returns a string representation of a color based on its cyan, magenta, yellow, b
 &lt;!-- Show example of function.--&gt;
      color_cmyka(100,50,0,10,200) &amp;rarr; &apos;0,115,230,200&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">
+        <translation>
 &lt;h3&gt;color_cmyka() funktio&lt;/h3&gt;
 Palauttaa merkkijonon joka edustaa väriä perustuen sen syaani, purppura, keltainen, musta ja alpha (läpinäkyvyys) komponentteihin
 
@@ -61992,7 +58727,7 @@ to.
 &lt;code&gt;format_number(10000000.332,2) &amp;rarr; 10,000,000.33&lt;/code&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;format_number() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;format_number() funktio&lt;/h3&gt;
 Palautta luvun joka on muotoilu paikallisin tuhansien erotusmerkillä. 
 Lyhentää myös luvun annettuun numeroiden lukumäärään. 
 
@@ -62031,7 +58766,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;year(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1.9986..&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;year() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;year() funktio&lt;/h3&gt;
 Erottelee vuosiosan päiväyksestä, tai vuosien lukumäärän &lt;code&gt;Interval&lt;/code&gt; tyyppisestä tiedosta
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -62080,7 +58815,7 @@ return a result.
     END
 &lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;CASE lauseke&lt;/h3&gt;
+        <translation>&lt;h3&gt;CASE lauseke&lt;/h3&gt;
 Ehdollinen lauseke jota voidaan käyttää useiden lausekkeiden evaluintiin ja
 tuloksen palauttamiseen.
 
@@ -62127,7 +58862,7 @@ This function takes two arguments.
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;randf(1, 10) &amp;rarr; 4.59258286403147&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;randf() function&lt;/h3&gt;
+        <translation>&lt;h3&gt;randf() function&lt;/h3&gt;
 Palauttaa satunnaisen liukuluvun annettujen minimi ja maksimi raja-arvojen väliltä (mukaan lukien rajat).
 &lt;br&gt;
 Tämä funktio tarvitsee kaksi argumenttia.
@@ -62159,7 +58894,7 @@ geom &amp;rarr; a geometry
 &lt;pre&gt; xmin($geometry) &amp;rarr; returns minimum x coordinate of $geometry&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;xmin funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;xmin funktio&lt;/h3&gt;
 Palauttaa geometrian pienimmän x koordinaatin. Laskenta perustuu tämän geometrian koordinaattijärjestelmään. 
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -62194,7 +58929,7 @@ Transforms a given value from an input domain to an output range using linear in
      
      
 </source>
-        <translation type="obsolete">&lt;h3&gt;scale_linear() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;scale_linear() funktio&lt;/h3&gt;
 Muuntaa annetun arvon syötettävästä aineistosta tulosalueelle käyttäen lineaarista interpolointia.
 
 &lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -62230,7 +58965,7 @@ Removes all leading and trailing whitespace (spaces, tabs, etc) from a string.
 &lt;!-- Show example of function.--&gt;
      trim(&apos;   hello world    &apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;trim() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;trim() funktio&lt;/h3&gt;
 Poistaa merkkijonosta kaikki tyhjätilamerkit (välilyönti, tab, jne) alusta ja lopusta.
 
 &lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -62267,7 +59002,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;minute(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1051200&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;minute() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;minute() funktio&lt;/h3&gt;
 Erottelee minuutit datetime tai time tiedosta, tai minuuttien lukumäärän
  &lt;code&gt;Interval&lt;/code&gt; tiedosta
 
@@ -62323,7 +59058,7 @@ use &lt;code&gt;day&lt;/code&gt; to extract number of days&lt;br&gt;
 &lt;code&gt;day(age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;)) &amp;rarr; 10&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;age() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;age() funktio&lt;/h3&gt;
 Palauttaaa kahden päiväyksen erotuksen.
 &lt;br&gt;&lt;br&gt;
 Erotus palautetaan &lt;code&gt;Interval&lt;/code&gt; erona 
@@ -62373,7 +59108,7 @@ This function takes one argument.
 &lt;code&gt;log10(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;log10(100) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;log10() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;log10() funktio&lt;/h3&gt;
 Palauttaa kymmenkantaisen logaritmin annetulle lausekkeelle.
 &lt;br&gt;
 Tämä funktio tarvitsee yhden argumentin.
@@ -62395,7 +59130,7 @@ Tämä funktio tarvitsee yhden argumentin.
         <source>&lt;h3&gt;Conversions Group&lt;/h3&gt;
 This group contains functions to convert on data type to another e.g string to integer, integer to string.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Muunnosten ryhmä&lt;/h3&gt;
+        <translation>&lt;h3&gt;Muunnosten ryhmä&lt;/h3&gt;
 Tämä ryhmä sisältää funktot joilla muunnetaan eri datatyyppejä toisiin, esim. merkkijono numeroksi, numero merkkijonoksi.</translation>
     </message>
     <message>
@@ -62412,7 +59147,7 @@ Returns cosinus of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      cos(1.571) &amp;rarr; 0.000796326710733263&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;cos() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;cos() funktio&lt;/h3&gt;
 Palauttaa kulman kosinin.
 
 
@@ -62430,7 +59165,7 @@ Palauttaa kulman kosinin.
         <source>&lt;h3&gt;Operators Group&lt;/h3&gt;
 This group contains operators e.g + - * 
 </source>
-        <translation type="obsolete">&lt;h3&gt;Operaattorien Ryhmä&lt;/h3&gt;
+        <translation>&lt;h3&gt;Operaattorien Ryhmä&lt;/h3&gt;
 Tämä ryhmä sisältää operaattorit esim. + - *</translation>
     </message>
     <message>
@@ -62455,7 +59190,7 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 &lt;code&gt;second(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 63072000&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;second() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;second() funktio&lt;/h3&gt;
 Erottelee sekuntit datetime tai time tiedosta, tai sekuntien lukumäärän
  &lt;code&gt;Interval&lt;/code&gt; tiedosta
 
@@ -62491,7 +59226,7 @@ Returns arcustanget of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      atan(0.5) &amp;rarr; 0.463647609000806&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;atan() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;atan() funktio&lt;/h3&gt;
 Palauttaa arcustangentin arvon radiaaneina.
 
 
@@ -62518,7 +59253,7 @@ None
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt;$length &amp;rarr; 42.4711&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;$length funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;$length funktio&lt;/h3&gt;
 Palauttaa nykyisen ominaisuuden pituuden.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -62547,7 +59282,7 @@ capital letter).
 &lt;!-- Show example of function.--&gt;
      upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;Hello World&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;title() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;title() funktio&lt;/h3&gt;
 Muuntaa merkkijonon kaikki sanat otsikkomuotoon (kaikki sanat pienistä isoon etukirjaimeen).
 
 &lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -62578,7 +59313,7 @@ Returns true if any part of a string matches the supplied regular expression.
 &lt;!-- Show example of function.--&gt;
      regexp_match(&apos;QGIS ROCKS&apos;,&apos;&amp;#92;&amp;#92;sROCKS&apos;) &amp;rarr; 1&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;regexp_match() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;regexp_match() funktio&lt;/h3&gt;
 Palauttaa toden jos mikä tahansa merkkijonon osa vastaa annettua säännöllistä lauseketta.
 
 &lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -62611,7 +59346,7 @@ Return a part of a string
 &lt;!-- Show example of function.--&gt;
      substr(&apos;HELLO WORLD&apos;,3,5) &amp;rarr; &apos;LLO W&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;substr() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;substr() funktio&lt;/h3&gt;
 Palauttaa merkkijonon osan
 
 &lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -62643,7 +59378,7 @@ Format a string using supplied arguments.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;format(&apos;This %1 a %2&apos;,&apos;is&apos;, &apos;test&apos;) &amp;rarr; This is a test&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="obsolete">&lt;h3&gt;format() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;format() funktio&lt;/h3&gt;
 Muotilee merkkijonon käyttäen annattuja argumentteja. 
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -62675,7 +59410,7 @@ Returns a string with the supplied regular expression replaced.
 &lt;!-- Show example of function.--&gt;
      regexp_replace(&apos;QGIS SHOULD ROCK&apos;,&apos;&amp;#92;&amp;#92;sSHOULD&amp;#92;&amp;#92;s&apos;,&apos; DOES &apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;regexp_replace() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;regexp_replace() funktio&lt;/h3&gt;
 Palauttaa merkkijonon annetulla säännöllisellä lausekkeella korvattuna.
 
 &lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -62708,7 +59443,7 @@ Returns the portion of a string which matches a supplied regular expression.
 &lt;!-- Show example of function.--&gt;
      regexp_substr(&apos;abc123&apos;,&apos;(&amp;#92;&amp;#92;d+)&apos;) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;regexp_substr() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;regexp_substr() funktio&lt;/h3&gt;
 Palauttaa merkkijonon sen osan joka vastaa annettua säännöllistä lauseketta.
 
 &lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -62738,7 +59473,7 @@ None
 &lt;pre&gt;$y &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;$y funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;$y funktio&lt;/h3&gt;
 Palauttaa nykyisen ominaisuuden y koordinaatin.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -62771,7 +59506,7 @@ Returns a string representation of a color based on its red, green, blue, and al
 &lt;!-- Show example of function.--&gt;
      color_rgba(255,127,0,200) &amp;rarr; &apos;255,127,0,200&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;color_rgba() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;color_rgba() funktio&lt;/h3&gt;
 Palauttaa merkkijonon värin esityksestä perustuen sen punaisen, vihreän, sinisen ja alfa (läpinäkyvyyden) määritteisiin
 
 &lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -62803,7 +59538,7 @@ None
 &lt;pre&gt;$x &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;$x funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;$x funktio&lt;/h3&gt;
 Palautetaan nykyisen ominaisuuden x koordinaatti.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -62821,7 +59556,7 @@ Ei mitään
         <source>&lt;h3&gt;Math Group&lt;/h3&gt;
 This group contains math functions e.g square root, sin and cos
 </source>
-        <translation type="obsolete">&lt;h3&gt;Matematiikka Ryhmä&lt;/h3&gt;
+        <translation>&lt;h3&gt;Matematiikka Ryhmä&lt;/h3&gt;
 Tämä ryhmä sisältää matemaattiset funktiot kuten. neliöjuuren, sinin ja kosinin
 </translation>
     </message>
@@ -62840,7 +59575,7 @@ Returns the smallest value in a set of values.
 &lt;!-- Show example of function.--&gt;
      min(20.5,10,6.2) &amp;rarr; 6.2
 </source>
-        <translation type="obsolete">&lt;h3&gt;min() funkio&lt;/h3&gt;
+        <translation>&lt;h3&gt;min() funkio&lt;/h3&gt;
 Palauttaa pienimmän arvon arvojoukosta.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -62868,7 +59603,7 @@ Converts a string to lower case letters.
 &lt;p&gt;&lt;h4&gt;  Example&lt;/h4&gt;
      lower(&apos;HELLO World&apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;lower() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;lower() funktio&lt;/h3&gt;
 Muuntaa merkkijonon pieniiin merkkeihin..
 
 &lt;p&gt;&lt;h4&gt;  Syntaksi&lt;/h4&gt;
@@ -62895,7 +59630,7 @@ None
 &lt;pre&gt;$numfeatures &amp;rarr; 42&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;$numfeatures funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;$numfeatures funktio&lt;/h3&gt;
 Atlas generoinnissa, palauttaa ominaisuuksien kokonaislukumäärän kattavuustasolla.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -62913,7 +59648,7 @@ Ei mitään
         <source>&lt;h3&gt;String Group&lt;/h3&gt;
 This group contains functions that operate on strings e.g replace, convert to upper case.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Merkkijono ryhmä&lt;/h3&gt;
+        <translation>&lt;h3&gt;Merkkijono ryhmä&lt;/h3&gt;
 Tämä ryhmä sisältää funktiot joilla operoidaan merkkijonoja esim. korvausta, merkkikoon muuntamista jne.
 </translation>
     </message>
@@ -62932,7 +59667,7 @@ Concatenates several strings to one.
 &lt;!-- Show example of function.--&gt;
      concat(&apos;a&apos;,&apos;b&apos;,&apos;c&apos;,&apos;d&apos;,&apos;e&apos;) &amp;rarr; &apos;abcde&apos;
 </source>
-        <translation type="obsolete">&lt;h3&gt;concat() function&lt;/h3&gt;
+        <translation>&lt;h3&gt;concat() function&lt;/h3&gt;
 Kokoaa useita merkkijonoja yhdeksi merkkijonoksi.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -62968,7 +59703,7 @@ This function can take any number of arguments.
  else the value of &quot;fallbackField&quot; or the string &apos;ERROR&apos; if both are NULL&lt;/code&gt;&lt;br&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;coalesce() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;coalesce() funktio&lt;/h3&gt;
 Palauttaa ensimmäisen non-NULL arvon lausekkeiden listalta.
 &lt;br&gt;
 Tämä funktio voi käyttää minkä tahansa määrän argumentteja.
@@ -63004,7 +59739,7 @@ Returns arcussinus of a value in radians.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      asin(1.0) &amp;rarr; 1.5707963267949&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;asin() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;asin() funktio&lt;/h3&gt;
 Palauttaa arcussinin arvon radiaaneina.
 
 
@@ -63032,7 +59767,7 @@ Convert a string into Qt data time type.
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
 &lt;code&gt;todatetime(&apos;2012-05-04 12:50:00&apos;) &amp;rarr; 2012-05-04T12:50:00&lt;/code&gt;&lt;br&gt;</source>
-        <translation type="obsolete">&lt;h3&gt;todatetime() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;todatetime() funktio&lt;/h3&gt;
 Muuntaa merkkijonon Qt data time tyypiksi.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -63061,7 +59796,7 @@ Returns tangent of an angle.
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
      tan(1.0) &amp;rarr; 1.5574077246549&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;tan() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;tan() funktio&lt;/h3&gt;
 Palauttaa kulman tangentin.
 
 
@@ -63089,7 +59824,7 @@ None
 &lt;pre&gt;$feature &amp;rarr; 2&lt;/pre&gt;
 
 </source>
-        <translation type="obsolete">&lt;h3&gt;$feature funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;$feature funktio&lt;/h3&gt;
 Atlas generoinnissa, palauttaa nykyisen ominaisuuden numeron joka on iteroitu kattavuus tasosta.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -63120,7 +59855,7 @@ This function takes one argument.
 &lt;code&gt;ln(1) &amp;rarr; 0&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;ln(2.7182818284590452354) &amp;rarr; 1&lt;/code&gt;&lt;br&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;ln() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;ln() funktio&lt;/h3&gt;
 Palauttaa luonnollisen logaritmin arvon annetulle lausekkeelle.
 &lt;br&gt;
 Tämä funktio tarvitsee yhden argumentin.
@@ -63155,7 +59890,7 @@ Returns a string representation of a color based on its hue, saturation, value a
 &lt;!-- Show example of function.--&gt;
      color_hsva(40,100,100,200) &amp;rarr; &apos;255,170,0,200&apos;&lt;/p&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;color_hsva() funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;color_hsva() funktio&lt;/h3&gt;
 Palauttaa merkkijonon värin esityksestä perustuen sen sävyn, kylläisyyden, arvon ja alfa (läpinäkyvyyden) määritteisiin
 
 &lt;p&gt;&lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -63187,7 +59922,7 @@ f &amp;rarr; QgsFeature
 &lt;pre&gt; geomToWKT( geometry( getFeature( layer, attributeField, value ) ) ) &amp;rarr; POINT(6 50)&lt;/pre&gt;
 &lt;pre&gt; intersects( $geometry, geometry( getFeature( layer, attributeField, value ) ) ) &amp;rarr; 1&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;geometry funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;geometry funktio&lt;/h3&gt;
 Palauttaa ominaisuuden geometrian
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -63218,7 +59953,7 @@ dCrsId &amp;rarr; the Dest Auth CRS Id
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;pre&gt; geomToWKT( transform( $geometry, &apos;EPSG:2154&apos;, &apos;EPSG:4326&apos; ) ) &amp;rarr; POINT(0 51)&lt;/pre&gt;
 </source>
-        <translation type="obsolete">&lt;h3&gt;transform funktio&lt;/h3&gt;
+        <translation>&lt;h3&gt;transform funktio&lt;/h3&gt;
 Palauttaa lähtökordinaatistin muunnetun tuloskoordinaatin.
 
 &lt;h4&gt;Syntaksi&lt;/h4&gt;
@@ -63235,6 +59970,184 @@ dCrsId &amp;rarr; the Dest Auth CRS Id
 &lt;pre&gt; geomToWKT( transform( $geometry, &apos;EPSG:2154&apos;, &apos;EPSG:4326&apos; ) ) &amp;rarr; POINT(0 51)&lt;/pre&gt;
 </translation>
     </message>
+    <message>
+        <source>&lt;h3&gt;format_date() function&lt;/h3&gt;
+Format a date type or string into a custom string format. Uses Qt data time format strings.  See &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/qdatetime.html#toString&apos;&gt;QDateTime::toString&lt;/a&gt;
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;code&gt;format_date(&apos;string&apos;, &apos;format_string&apos;)&lt;/code&gt;&lt;br&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+&lt;code&gt;string&lt;/code&gt; - is string. Date/Time/DateTime string.
+&lt;br&gt;
+&lt;code&gt;format_string&lt;/code&gt; - is string. String template used to format the string.
+
+  &lt;table&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th&gt;Expression&lt;/th&gt;
+
+        &lt;th&gt;Output&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;d&lt;/td&gt;
+
+      &lt;td&gt;the day as number without a leading zero (1 to 31)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;dd&lt;/td&gt;
+
+      &lt;td&gt;the day as number with a leading zero (01 to 31)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;ddd&lt;/td&gt;
+
+      &lt;td&gt;the abbreviated localized day name (e.g. &apos;Mon&apos; to &apos;Sun&apos;). Uses &lt;a href=
+      &quot;qdate.html#shortDayName&quot;&gt;QDate::shortDayName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;dddd&lt;/td&gt;
+
+      &lt;td&gt;the long localized day name (e.g. &apos;Monday&apos; to &apos;Sunday&apos;). Uses &lt;a href=
+      &quot;qdate.html#longDayName&quot;&gt;QDate::longDayName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;M&lt;/td&gt;
+
+      &lt;td&gt;the month as number without a leading zero (1-12)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;MM&lt;/td&gt;
+
+      &lt;td&gt;the month as number with a leading zero (01-12)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;MMM&lt;/td&gt;
+
+      &lt;td&gt;the abbreviated localized month name (e.g. &apos;Jan&apos; to &apos;Dec&apos;). Uses &lt;a href=
+      &quot;qdate.html#shortMonthName&quot;&gt;QDate::shortMonthName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;MMMM&lt;/td&gt;
+
+      &lt;td&gt;the long localized month name (e.g. &apos;January&apos; to &apos;December&apos;). Uses &lt;a href=
+      &quot;qdate.html#longMonthName&quot;&gt;QDate::longMonthName&lt;/a&gt;().&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;yy&lt;/td&gt;
+
+      &lt;td&gt;the year as two digit number (00-99)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;yyyy&lt;/td&gt;
+
+      &lt;td&gt;the year as four digit number&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+
+  &lt;p&gt;These expressions may be used for the time part of the format string:&lt;/p&gt;
+
+  &lt;table&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th&gt;Expression&lt;/th&gt;
+
+        &lt;th&gt;Output&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;h&lt;/td&gt;
+
+      &lt;td&gt;the hour without a leading zero (0 to 23 or 1 to 12 if AM/PM display)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;hh&lt;/td&gt;
+
+      &lt;td&gt;the hour with a leading zero (00 to 23 or 01 to 12 if AM/PM display)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;H&lt;/td&gt;
+
+      &lt;td&gt;the hour without a leading zero (0 to 23, even with AM/PM display)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;HH&lt;/td&gt;
+
+      &lt;td&gt;the hour with a leading zero (00 to 23, even with AM/PM display)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;m&lt;/td&gt;
+
+      &lt;td&gt;the minute without a leading zero (0 to 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;mm&lt;/td&gt;
+
+      &lt;td&gt;the minute with a leading zero (00 to 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;s&lt;/td&gt;
+
+      &lt;td&gt;the second without a leading zero (0 to 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;ss&lt;/td&gt;
+
+      &lt;td&gt;the second with a leading zero (00 to 59)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;z&lt;/td&gt;
+
+      &lt;td&gt;the milliseconds without leading zeroes (0 to 999)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;zzz&lt;/td&gt;
+
+      &lt;td&gt;the milliseconds with leading zeroes (000 to 999)&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;AP or A&lt;/td&gt;
+
+      &lt;td&gt;interpret as an AM/PM time. &lt;i&gt;AP&lt;/i&gt; must be either &quot;AM&quot; or &quot;PM&quot;.&lt;/td&gt;
+    &lt;/tr&gt;
+
+    &lt;tr valign=&quot;top&quot;&gt;
+      &lt;td&gt;ap or a&lt;/td&gt;
+
+      &lt;td&gt;Interpret as an AM/PM time. &lt;i&gt;ap&lt;/i&gt; must be either &quot;am&quot; or &quot;pm&quot;.&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+
+&lt;br&gt;
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;!-- Show example of function.--&gt;
+&lt;code&gt;format_date(&apos;2012-05-15&apos;,&apos;dd.MM.yyyy&apos;) &amp;rarr; 15.05.2012&lt;/code&gt;&lt;br&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>gdal2xyz</name>
@@ -63248,11 +60161,7 @@ dCrsId &amp;rarr; the Dest Auth CRS Id
     </message>
     <message>
         <source>Output file</source>
-        <translation type="obsolete">Ulostulo tiedosto</translation>
-    </message>
-    <message>
-        <source>xyz</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulo tiedosto</translation>
     </message>
 </context>
 <context>
@@ -63279,101 +60188,7 @@ dCrsId &amp;rarr; the Dest Auth CRS Id
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
-    </message>
-    <message>
-        <source>Pyramidized</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>gdalcalc</name>
-    <message>
-        <source>Input layer A</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Number of raster band for raster A</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Input layer B</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Number of raster band for raster B</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Input layer C</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Number of raster band for raster C</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Input layer D</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Number of raster band for raster D</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Input layer E</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Number of raster band for raster E</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Input layer F</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Number of raster band for raster F</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Calculation in gdalnumeric syntax using +-/* or any numpy array functions (i.e. logical_and())</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Set output nodata value</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Output raster type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Additional creation parameters</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Calculated</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>gdaltindex</name>
-    <message>
-        <source>Input layers</source>
-        <translation type="unfinished">Syötettävät tasot</translation>
-    </message>
-    <message>
-        <source>Tile index field</source>
-        <translation type="unfinished">Kuvake indeksin tieto</translation>
-    </message>
-    <message>
-        <source>Skip files with different projection reference</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tile index</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulotaso</translation>
     </message>
 </context>
 <context>
@@ -65198,11 +62013,7 @@ dCrsId &amp;rarr; the Dest Auth CRS Id
     </message>
     <message>
         <source>Output file</source>
-        <translation type="obsolete">Ulostulo tiedosto</translation>
-    </message>
-    <message>
-        <source>Hillshade</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulo tiedosto</translation>
     </message>
 </context>
 <context>
@@ -66190,11 +63001,7 @@ dCrsId &amp;rarr; the Dest Auth CRS Id
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
-    </message>
-    <message>
-        <source>Merged</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulotaso</translation>
     </message>
 </context>
 <context>
@@ -66213,11 +63020,7 @@ dCrsId &amp;rarr; the Dest Auth CRS Id
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
-    </message>
-    <message>
-        <source>Nearblack</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulotaso</translation>
     </message>
 </context>
 <context>
@@ -66316,11 +63119,7 @@ dCrsId &amp;rarr; the Dest Auth CRS Id
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
-    </message>
-    <message>
-        <source>PCT to RGB</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulotaso</translation>
     </message>
 </context>
 <context>
@@ -66335,11 +63134,7 @@ dCrsId &amp;rarr; the Dest Auth CRS Id
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
-    </message>
-    <message>
-        <source>Vectorized</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulotaso</translation>
     </message>
 </context>
 <context>
@@ -66374,11 +63169,7 @@ dCrsId &amp;rarr; the Dest Auth CRS Id
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
-    </message>
-    <message>
-        <source>Distance</source>
-        <translation type="unfinished">Etäisyys</translation>
+        <translation>Ulostulotaso</translation>
     </message>
 </context>
 <context>
@@ -66393,7 +63184,7 @@ dCrsId &amp;rarr; the Dest Auth CRS Id
     </message>
     <message>
         <source>Write values inside an existing raster layer(*)</source>
-        <translation type="obsolete">Kirjoita arvot olemassa olevan rasteritason(*) sisään</translation>
+        <translation>Kirjoita arvot olemassa olevan rasteritason(*) sisään</translation>
     </message>
     <message>
         <source>Set output raster size (ignored if above option is checked)</source>
@@ -66413,7 +63204,7 @@ dCrsId &amp;rarr; the Dest Auth CRS Id
     </message>
     <message>
         <source>Output layer: mandatory to choose an existing raster layer if the (*) option is selected</source>
-        <translation type="obsolete">Tulostaso: pakollista valita olemassas oleva rasteritaso jos (*) vaihtoehto on valittu</translation>
+        <translation>Tulostaso: pakollista valita olemassas oleva rasteritaso jos (*) vaihtoehto on valittu</translation>
     </message>
     <message>
         <source>Nodata value</source>
@@ -66445,30 +63236,7 @@ dCrsId &amp;rarr; the Dest Auth CRS Id
     </message>
     <message>
         <source>Force the generation of an associated ESRI world file (.tfw))</source>
-        <translation type="obsolete">Pakota liitteenä ESRI world-tiedoston (.tfw)) luominen</translation>
-    </message>
-    <message>
-        <source>Force the generation of an associated ESRI world file (.tfw)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rasterized</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>rasterize_over</name>
-    <message>
-        <source>Input layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Attribute field</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Existing raster layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Pakota liitteenä ESRI world-tiedoston (.tfw)) luominen</translation>
     </message>
 </context>
 <context>
@@ -66483,11 +63251,7 @@ dCrsId &amp;rarr; the Dest Auth CRS Id
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
-    </message>
-    <message>
-        <source>RGB to PCT</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulotaso</translation>
     </message>
 </context>
 <context>
@@ -66506,11 +63270,7 @@ dCrsId &amp;rarr; the Dest Auth CRS Id
     </message>
     <message>
         <source>Output file</source>
-        <translation type="obsolete">Ulostulo tiedosto</translation>
-    </message>
-    <message>
-        <source>Roughness</source>
-        <translation type="unfinished">Rosoisuus</translation>
+        <translation>Ulostulo tiedosto</translation>
     </message>
 </context>
 <context>
@@ -66599,11 +63359,7 @@ dCrsId &amp;rarr; the Dest Auth CRS Id
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Ulostulotaso</translation>
-    </message>
-    <message>
-        <source>Sieved</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulotaso</translation>
     </message>
 </context>
 <context>
@@ -66634,11 +63390,7 @@ dCrsId &amp;rarr; the Dest Auth CRS Id
     </message>
     <message>
         <source>Output file</source>
-        <translation type="obsolete">Ulostulo tiedosto</translation>
-    </message>
-    <message>
-        <source>Slope</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulo tiedosto</translation>
     </message>
 </context>
 <context>
@@ -66796,11 +63548,7 @@ dCrsId &amp;rarr; the Dest Auth CRS Id
     </message>
     <message>
         <source>Output file</source>
-        <translation type="obsolete">Ulostulo tiedosto</translation>
-    </message>
-    <message>
-        <source>Topographic Position Index</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulostulo tiedosto</translation>
     </message>
 </context>
 <context>
@@ -66843,7 +63591,7 @@ dCrsId &amp;rarr; the Dest Auth CRS Id
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Tulostaso</translation>
+        <translation>Tulostaso</translation>
     </message>
     <message>
         <source>Nodata value, leave blank to take the nodata value from input</source>
@@ -66877,10 +63625,6 @@ dCrsId &amp;rarr; the Dest Auth CRS Id
         <source>Force the generation of an associated ESRI world file (.tfw))</source>
         <translation>Pakota liitteenä ESRI world-tiedoston (.tfw)) luominen</translation>
     </message>
-    <message>
-        <source>Converted</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>tri</name>
@@ -66898,11 +63642,7 @@ dCrsId &amp;rarr; the Dest Auth CRS Id
     </message>
     <message>
         <source>Output file</source>
-        <translation type="obsolete">Tulostiedosto</translation>
-    </message>
-    <message>
-        <source>Terrain Ruggedness Index</source>
-        <translation type="unfinished"></translation>
+        <translation>Tulostiedosto</translation>
     </message>
 </context>
 <context>
@@ -67082,7 +63822,7 @@ dCrsId &amp;rarr; the Dest Auth CRS Id
     </message>
     <message>
         <source>Output layer</source>
-        <translation type="obsolete">Tulostaso
+        <translation>Tulostaso
 </translation>
     </message>
     <message>
@@ -67116,10 +63856,6 @@ dCrsId &amp;rarr; the Dest Auth CRS Id
     <message>
         <source>Force the generation of an associated ESRI world file (.tfw))</source>
         <translation>Pakota liitteenä ESRI world-tiedoston (.tfw)) luominen</translation>
-    </message>
-    <message>
-        <source>Reprojected</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
