@@ -90,7 +90,7 @@ def getVectorLayers(shapetype=[-1], sorting=True):
     vector = []
     for layer in layers:
         mapLayer = layer.layer()
-        if mapLayer.type() == QgsMapLayer.VectorLayer:
+        if mapLayer.type() == QgsMapLayer.VectorLayer and mapLayer.dataProvider().name() != "grass":
             if (mapLayer.hasGeometryType() and
                     (shapetype == ALL_TYPES or mapLayer.geometryType() in shapetype)):
                 vector.append(mapLayer)
