@@ -41,9 +41,9 @@ class QgsLineSymbolLayerV2;
 
 class DataDefinedRestorer: public QObject
 {
-  Q_OBJECT
+    Q_OBJECT
   public:
-    DataDefinedRestorer( QgsSymbolV2* symbol, const QgsSymbolLayerV2* symbolLayer);
+    DataDefinedRestorer( QgsSymbolV2* symbol, const QgsSymbolLayerV2* symbolLayer );
 
   public slots:
     void restore();
@@ -59,7 +59,7 @@ class DataDefinedRestorer: public QObject
 
     QgsLineSymbolV2* mLine;
     const QgsLineSymbolLayerV2* mLineSymbolLayer;
-    double mWidth; 
+    double mWidth;
     double mLineOffset;
     QgsDataDefined mDDWidth;
 

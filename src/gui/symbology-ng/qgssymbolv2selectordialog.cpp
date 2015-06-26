@@ -47,10 +47,10 @@
 static const int SymbolLayerItemType = QStandardItem::UserType + 1;
 
 DataDefinedRestorer::DataDefinedRestorer( QgsSymbolV2* symbol, const QgsSymbolLayerV2* symbolLayer )
-  : mMarker( NULL )
-  , mMarkerSymbolLayer( NULL )
-  , mLine( NULL )
-  , mLineSymbolLayer( NULL )
+    : mMarker( NULL )
+    , mMarkerSymbolLayer( NULL )
+    , mLine( NULL )
+    , mLineSymbolLayer( NULL )
 {
   if ( symbolLayer->type() == QgsSymbolV2::Marker && symbol->type() == QgsSymbolV2::Marker )
   {
@@ -61,16 +61,16 @@ DataDefinedRestorer::DataDefinedRestorer( QgsSymbolV2* symbol, const QgsSymbolLa
     mDDAngle = mMarker->dataDefinedAngle();
     // check if restore is actually needed
     if ( mDDSize == QgsDataDefined() && mDDAngle == QgsDataDefined() )
-        mMarker = NULL;
+      mMarker = NULL;
   }
-  else if( symbolLayer->type() == QgsSymbolV2::Line && symbol->type() == QgsSymbolV2::Line )
+  else if ( symbolLayer->type() == QgsSymbolV2::Line && symbol->type() == QgsSymbolV2::Line )
   {
     mLine = static_cast<QgsLineSymbolV2*>( symbol );
     mLineSymbolLayer = static_cast<const QgsLineSymbolLayerV2*>( symbolLayer );
     mDDWidth = mLine->dataDefinedWidth();
     // check if restore is actually needed
     if ( mDDWidth == QgsDataDefined() )
-        mLine = NULL;
+      mLine = NULL;
   }
   save();
 }
@@ -95,16 +95,16 @@ void DataDefinedRestorer::restore()
   if ( mMarker )
   {
     if ( mDDSize != QgsDataDefined() &&
-        (mSize != mMarkerSymbolLayer->size() || mMarkerOffset != mMarkerSymbolLayer->offset()) )
+         ( mSize != mMarkerSymbolLayer->size() || mMarkerOffset != mMarkerSymbolLayer->offset() ) )
       mMarker->setDataDefinedSize( mDDSize );
     if ( mDDAngle != QgsDataDefined() &&
-        mAngle != mMarkerSymbolLayer->angle() )
+         mAngle != mMarkerSymbolLayer->angle() )
       mMarker->setDataDefinedAngle( mDDAngle );
   }
   else if ( mLine )
   {
     if ( mDDWidth != QgsDataDefined() &&
-        (mWidth != mLineSymbolLayer->width() || mLineOffset != mLineSymbolLayer->offset()) )
+         ( mWidth != mLineSymbolLayer->width() || mLineOffset != mLineSymbolLayer->offset() ) )
       mLine->setDataDefinedWidth( mDDWidth );
   }
   save();
