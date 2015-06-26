@@ -68,11 +68,11 @@ fi
 
 # Get the version string
 major=$(grep -e 'SET(CPACK_PACKAGE_VERSION_MAJOR' ../CMakeLists.txt |
-    sed 's/.*\([0-9]\).*/\1/')
+        sed -r 's/.*\"([0-9]+)\".*/\1/g')
 minor=$(grep -e 'SET(CPACK_PACKAGE_VERSION_MINOR' ../CMakeLists.txt |
-    sed 's/.*\([0-9]\).*/\1/')
+        sed -r 's/.*\"([0-9]+)\".*/\1/g')
 patch=$(grep -e 'SET(CPACK_PACKAGE_VERSION_PATCH' ../CMakeLists.txt |
-    sed 's/.*\([0-9]\).*/\1/')
+        sed -r 's/.*\"([0-9]+)\".*/\1/g')
 
 version=$(echo $major.$minor.$patch)
 
