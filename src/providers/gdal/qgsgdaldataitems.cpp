@@ -43,7 +43,10 @@ QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem* parent,
   GDALDatasetH hDS = GDALOpen( TO8F( mPath ), GA_Update );
 
   if ( hDS )
+  {
     mCapabilities |= SetCrs;
+    GDALClose( hDS );
+  }
 }
 
 QgsGdalLayerItem::~QgsGdalLayerItem()
