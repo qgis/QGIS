@@ -79,11 +79,11 @@ class TauDEMAlgorithmProvider(AlgorithmProvider):
         ProcessingConfig.addSetting(Setting(self.getDescription(),
             TauDEMUtils.TAUDEM_FOLDER,
             self.tr('TauDEM command line tools folder'),
-            TauDEMUtils.taudemPath()))
+            TauDEMUtils.taudemPath(), valuetype=Setting.FOLDER))
         ProcessingConfig.addSetting(Setting(self.getDescription(),
             TauDEMUtils.TAUDEM_MULTIFILE_FOLDER,
             self.tr('TauDEM multifile command line tools folder'),
-            TauDEMUtils.taudemMultifilePath()))
+            TauDEMUtils.taudemMultifilePath(), valuetype=Setting.FOLDER))
         ProcessingConfig.addSetting(Setting(self.getDescription(),
             TauDEMUtils.TAUDEM_USE_SINGLEFILE,
             self.tr('Enable singlefile TauDEM tools'), True))
@@ -93,7 +93,7 @@ class TauDEMAlgorithmProvider(AlgorithmProvider):
         ProcessingConfig.addSetting(Setting(self.getDescription(),
             TauDEMUtils.MPIEXEC_FOLDER,
             self.tr('MPICH2/OpenMPI bin directory'),
-            TauDEMUtils.mpiexecPath()))
+            TauDEMUtils.mpiexecPath(), valuetype=Setting.FOLDER))
         ProcessingConfig.addSetting(Setting(self.getDescription(),
             TauDEMUtils.MPI_PROCESSES,
             self.tr('Number of MPI parallel processes to use'), 2))

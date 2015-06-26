@@ -61,15 +61,18 @@ class RAlgorithmProvider(AlgorithmProvider):
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
         ProcessingConfig.addSetting(Setting(
-            self.getDescription(),
-            RUtils.RSCRIPTS_FOLDER, self.tr('R Scripts folder'), RUtils.RScriptsFolder()))
+            self.getDescription(), RUtils.RSCRIPTS_FOLDER,
+            self.tr('R Scripts folder'), RUtils.RScriptsFolder(),
+            valuetype=Setting.FOLDER))
         if isWindows():
             ProcessingConfig.addSetting(Setting(
                 self.getDescription(),
-                RUtils.R_FOLDER, self.tr('R folder'), RUtils.RFolder()))
+                RUtils.R_FOLDER, self.tr('R folder'), RUtils.RFolder(),
+                valuetype=Setting.FOLDER))
             ProcessingConfig.addSetting(Setting(
                 self.getDescription(),
-                RUtils.R_LIBS_USER, self.tr('R user library folder'), RUtils.RLibs()))
+                RUtils.R_LIBS_USER, self.tr('R user library folder'),
+                RUtils.RLibs(), valuetype=Setting.FOLDER))
             ProcessingConfig.addSetting(Setting(
                 self.getDescription(),
                 RUtils.R_USE64, self.tr('Use 64 bit version'), False))

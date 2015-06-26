@@ -55,7 +55,7 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
         AlgorithmProvider.initializeSettings(self)
         ProcessingConfig.addSetting(Setting(self.getDescription(),
             ModelerUtils.MODELS_FOLDER, self.tr('Models folder', 'ModelerAlgorithmProvider'),
-            ModelerUtils.modelsFolder()))
+            ModelerUtils.modelsFolder(), valuetype=Setting.FOLDER))
 
     def setAlgsList(self, algs):
         ModelerUtils.allAlgs = algs

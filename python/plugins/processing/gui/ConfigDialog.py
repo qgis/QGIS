@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -33,7 +34,7 @@ from PyQt4.QtGui import (QFileDialog, QDialog, QIcon, QStyle,
     QStandardItemModel, QStandardItem, QMessageBox, QStyledItemDelegate,
     QLineEdit, QSpinBox, QDoubleSpinBox, QWidget, QToolButton, QHBoxLayout)
 
-from processing.core.ProcessingConfig import ProcessingConfig
+from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.Processing import Processing
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
@@ -165,7 +166,7 @@ class SettingItem(QStandardItem):
     def __init__(self, setting):
         QStandardItem.__init__(self)
         self.setting = setting
-
+        self.setData(setting.valuetype, Qt.UserRole)
         if isinstance(setting.value, bool):
             self.setCheckable(True)
             self.setEditable(False)
@@ -199,10 +200,9 @@ class SettingDelegate(QStyledItemDelegate):
             spnBox.setDecimals(6)
             return spnBox
         elif isinstance(value, (str, unicode)):
-            if os.path.isdir(value):
+            valuetype = self.convertValue(index.model().data(index, Qt.UserRole))
+            if valuetype == Setting.FOLDER:
                 return FileDirectorySelector(parent)
-            elif os.path.isfile(value):
-                return FileDirectorySelector(parent, True)
             else:
                 return FileDirectorySelector(parent, True)
 

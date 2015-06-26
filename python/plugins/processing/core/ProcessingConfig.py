@@ -80,7 +80,8 @@ class ProcessingConfig:
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.OUTPUT_FOLDER,
-            ProcessingConfig.tr('Output folder'), tempFolder()))
+            ProcessingConfig.tr('Output folder'), tempFolder(),
+            valuetype=Setting.FOLDER))
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.SHOW_CRS_DEF,

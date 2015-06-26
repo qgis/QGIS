@@ -108,7 +108,7 @@ def getSagaInstalledVersion(runSaga=False):
 
     maxRetries = 5
     retries = 0
-    if _installedVersionFound or not runSaga:
+    if _installedVersionFound and not runSaga:
         return _installedVersion
 
     if isWindows():

@@ -56,7 +56,8 @@ class SagaAlgorithmProvider(AlgorithmProvider):
     def initializeSettings(self):
         if isWindows() or isMac():
             ProcessingConfig.addSetting(Setting("SAGA",
-                SagaUtils.SAGA_FOLDER, self.tr('SAGA folder'), ''))
+                SagaUtils.SAGA_FOLDER, self.tr('SAGA folder'), '',
+                valuetype=Setting.FOLDER))
         ProcessingConfig.addSetting(Setting("SAGA",
             SagaUtils.SAGA_IMPORT_EXPORT_OPTIMIZATION,
             self.tr('Enable SAGA Import/Export optimizations'), False))
