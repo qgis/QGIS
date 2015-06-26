@@ -116,7 +116,7 @@ void QgsGrassMapsetItem::setState( State state )
 {
   QgsDebugMsg( "Entered" );
   QgsDirectoryItem::setState( state );
-  // TODO: verify and reenable, it seems to be causing strange icon switching during import, sometimes
+  // TODO: verify and re-enable, it seems to be causing strange icon switching during import, sometimes
 #if 0
   if ( state == Populated )
   {

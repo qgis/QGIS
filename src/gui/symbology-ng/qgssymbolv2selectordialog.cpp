@@ -411,15 +411,15 @@ void QgsSymbolV2SelectorDialog::addLayer()
   QgsSymbolV2* parentSymbol = item->symbol();
 
   // save data-defined values at marker level
-  QgsDataDefined ddSize = parentSymbol->type() == QgsSymbolV2::Marker 
-    ? static_cast<QgsMarkerSymbolV2 *>(parentSymbol)->dataDefinedSize()
-    : QgsDataDefined();
+  QgsDataDefined ddSize = parentSymbol->type() == QgsSymbolV2::Marker
+                          ? static_cast<QgsMarkerSymbolV2 *>( parentSymbol )->dataDefinedSize()
+                          : QgsDataDefined();
   QgsDataDefined ddAngle = parentSymbol->type() == QgsSymbolV2::Marker
-    ? static_cast<QgsMarkerSymbolV2 *>(parentSymbol)->dataDefinedAngle()
-    : QgsDataDefined();
+                           ? static_cast<QgsMarkerSymbolV2 *>( parentSymbol )->dataDefinedAngle()
+                           : QgsDataDefined();
   QgsDataDefined ddWidth = parentSymbol->type() == QgsSymbolV2::Line
-    ? static_cast<QgsLineSymbolV2 *>(parentSymbol)->dataDefinedWidth()
-    : QgsDataDefined() ;
+                           ? static_cast<QgsLineSymbolV2 *>( parentSymbol )->dataDefinedWidth()
+                           : QgsDataDefined() ;
 
   QgsSymbolLayerV2* newLayer = QgsSymbolLayerV2Registry::instance()->defaultSymbolLayer( parentSymbol->type() );
   if ( insertIdx == -1 )
@@ -429,11 +429,11 @@ void QgsSymbolV2SelectorDialog::addLayer()
 
   // restore data-defined values at marker level
   if ( ddSize != QgsDataDefined() )
-    static_cast<QgsMarkerSymbolV2 *>(parentSymbol)->setDataDefinedSize(ddSize);
+    static_cast<QgsMarkerSymbolV2 *>( parentSymbol )->setDataDefinedSize( ddSize );
   if ( ddAngle != QgsDataDefined() )
-    static_cast<QgsMarkerSymbolV2 *>(parentSymbol)->setDataDefinedAngle(ddAngle);
+    static_cast<QgsMarkerSymbolV2 *>( parentSymbol )->setDataDefinedAngle( ddAngle );
   if ( ddWidth != QgsDataDefined() )
-    static_cast<QgsLineSymbolV2 *>(parentSymbol)->setDataDefinedWidth(ddWidth);
+    static_cast<QgsLineSymbolV2 *>( parentSymbol )->setDataDefinedWidth( ddWidth );
 
   SymbolLayerItem *newLayerItem = new SymbolLayerItem( newLayer );
   item->insertRow( insertIdx == -1 ? 0 : insertIdx, newLayerItem );
