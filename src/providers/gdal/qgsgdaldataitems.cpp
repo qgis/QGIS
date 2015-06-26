@@ -129,6 +129,7 @@ QString QgsGdalLayerItem::layerName() const
 static QString filterString;
 static QStringList extensions = QStringList();
 static QStringList wildcards = QStringList();
+static QMutex gBuildingFilters;
 
 QGISEXTERN int dataCapabilities()
 {
@@ -186,9 +187,15 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   // get supported extensions
   if ( extensions.isEmpty() )
   {
-    buildSupportedRasterFileFilterAndExtensions( filterString, extensions, wildcards );
-    QgsDebugMsgLevel( "extensions: " + extensions.join( " " ), 2 );
-    QgsDebugMsgLevel( "wildcards: " + wildcards.join( " " ), 2 );
+    // this code may be executed by more threads at once!
+    // use a mutex to make sure this does not happen (so there's no crash on start)
+    QMutexLocker locker( &gBuildingFilters );
+    if ( extensions.isEmpty() )
+    {
+      buildSupportedRasterFileFilterAndExtensions( filterString, extensions, wildcards );
+      QgsDebugMsgLevel( "extensions: " + extensions.join( " " ), 2 );
+      QgsDebugMsgLevel( "wildcards: " + wildcards.join( " " ), 2 );
+    }
   }
 
   // skip *.aux.xml files (GDAL auxilary metadata files),
