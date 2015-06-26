@@ -62,6 +62,10 @@ class PostGisDBPlugin(DBPlugin):
     def connectionSettingsKey(self):
         return '/PostgreSQL/connections'
 
+    @classmethod
+    def connectionSettingsFileKey(self):
+        return "database"
+
     def databasesFactory(self, connection, uri):
         return PGDatabase(connection, uri)
 
