@@ -369,7 +369,8 @@ class ParametersPanel(BASE, WIDGET):
         if datatype == ParameterTableField.DATA_TYPE_STRING:
             fieldTypes = [QVariant.String]
         elif datatype == ParameterTableField.DATA_TYPE_NUMBER:
-            fieldTypes = [QVariant.Int, QVariant.Double]
+            fieldTypes = [QVariant.Int, QVariant.Double, QVariant.ULongLong,
+                          QVariant.UInt]
 
         fieldNames = set()
         for field in layer.pendingFields():
