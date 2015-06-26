@@ -336,9 +336,9 @@ bool QgsAlignRaster::checkInputParameters()
   mGeoTransform[0] = originX;
   mGeoTransform[1] = mCellSizeX;
   mGeoTransform[2] = 0;
-  mGeoTransform[3] = originY;
+  mGeoTransform[3] = originY + ( mCellSizeY * ySize );
   mGeoTransform[4] = 0;
-  mGeoTransform[5] = mCellSizeY;
+  mGeoTransform[5] = -mCellSizeY;
 
   return true;
 }
