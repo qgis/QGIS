@@ -1,6 +1,11 @@
 SET (ENABLE_PGTEST FALSE CACHE BOOL "Enable PostgreSQL provider tests")
 
 INCLUDE(UsePythonTest)
+# Run one of the two server tests at the beginning so they don't run in
+# parallel
+IF (WITH_SERVER)
+  ADD_PYTHON_TEST(PyQgsLocalServer test_qgis_local_server.py)
+ENDIF (WITH_SERVER)
 ADD_PYTHON_TEST(PyQgsApplication test_qgsapplication.py)
 ADD_PYTHON_TEST(PyQgsFontUtils test_qgsfontutils.py)
 ADD_PYTHON_TEST(PyQgsFeature test_qgsfeature.py)
@@ -49,7 +54,6 @@ ADD_PYTHON_TEST(PyQgsMemoryProvider test_provider_memory.py)
 # Add optional tests which depend on certain cmake options
 IF (WITH_SERVER)
   ADD_PYTHON_TEST(PyQgsPalLabelingServer test_qgspallabeling_server.py)
-  ADD_PYTHON_TEST(PyQgsLocalServer test_qgis_local_server.py)
 ENDIF (WITH_SERVER)
 
 IF (WITH_DESKTOP)
