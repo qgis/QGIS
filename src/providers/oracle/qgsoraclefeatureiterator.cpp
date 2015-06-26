@@ -145,10 +145,9 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
 
       feature.setGeometryAndOwnership( copy, ba->size() );
 
-      if ( !mConnection->hasSpatial() &&
-           mRequest.filterType() == QgsFeatureRequest::FilterRect &&
-           ( mRequest.flags() & QgsFeatureRequest::ExactIntersect ) != 0 &&
-           ( !feature.geometry() || !feature.geometry()->intersects( mRequest.filterRect() ) ) )
+      if (( mRequest.flags() & QgsFeatureRequest::ExactIntersect ) != 0 && ( !mConnection->hasSpatial() || !mSource->mHasSpatialIndex ) &&
+          mRequest.filterType() == QgsFeatureRequest::FilterRect &&
+          ( !feature.geometry() || !feature.geometry()->intersects( mRequest.filterRect() ) ) )
       {
         // skip feature that don't intersect with our rectangle
         QgsDebugMsg( "no intersect" );
