@@ -40,7 +40,7 @@ from utilities import (
 )
 
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
-MAPSERV = getLocalServer()
+MAPSERV = getLocalServer('8450')
 
 QGIS_TEST_REPORT = 'QGIS_TEST_REPORT' in os.environ
 TESTREPORTS = {}
