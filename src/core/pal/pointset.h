@@ -97,30 +97,6 @@ namespace pal
       friend class PolygonCostCalculator;
       friend class Layer;
 
-    protected:
-      int nbPoints;
-      double *x;
-      double *y;   // points order is counterclockwise
-
-      int *cHull;
-      int cHullSize;
-
-      int type;
-
-      PointSet* holeOf;
-      PointSet* parent;
-
-      PointSet( double x, double y );
-
-      PointSet( PointSet &ps );
-
-      void deleteCoords();
-
-      double xmin;
-      double xmax;
-      double ymin;
-      double ymax;
-
     public:
       PointSet();
       PointSet( int nbPoints, double *x, double *y );
@@ -143,7 +119,7 @@ namespace pal
 
 
 
-      /**
+      /** 
        * \brief return the minimum distance bw this and the point (px,py)
        *
        * compute the minimum distance bw the point (px,py) and this.
@@ -171,7 +147,7 @@ namespace pal
         max[0] = xmax; max[1] = ymax;
       }
 
-      /** returns NULL if this isn't a hole. Otherwise returns pointer to parent pointset. */
+      /** Returns NULL if this isn't a hole. Otherwise returns pointer to parent pointset. */
       PointSet* getHoleOf() { return holeOf; }
 
       int getNumPoints() const { return nbPoints; }
@@ -226,6 +202,30 @@ namespace pal
           *py = y[i];
         }
       }
+
+    protected:
+      int nbPoints;
+      double *x;
+      double *y;   // points order is counterclockwise
+
+      int *cHull;
+      int cHullSize;
+
+      int type;
+
+      PointSet* holeOf;
+      PointSet* parent;
+
+      PointSet( double x, double y );
+
+      PointSet( PointSet &ps );
+
+      void deleteCoords();
+
+      double xmin;
+      double xmax;
+      double ymin;
+      double ymax;
   };
 
 } // namespace pal

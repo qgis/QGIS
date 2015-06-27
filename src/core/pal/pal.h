@@ -42,7 +42,7 @@
 
 // TODO ${MAJOR} ${MINOR} etc instead of 0.2
 
-/**
+/** 
  *
  * \section intro_sec Introduction
  *
@@ -103,10 +103,10 @@ namespace pal
     P_FREE /**< Only for polygon, arranges candidates with respect of polygon orientation */
   };
 
-  /** typedef for _arrangement enumeration */
+  /** Typedef for _arrangement enumeration */
   typedef enum _arrangement Arrangement;
 
-  /** enumeration line arrangement flags. Flags can be combined. */
+  /** Enumeration line arrangement flags. Flags can be combined. */
   enum LineArrangementFlags
   {
     FLAG_ON_LINE     = 1,
@@ -115,7 +115,7 @@ namespace pal
     FLAG_MAP_ORIENTATION = 8
   };
 
-  /**
+  /** 
    *  \brief Pal main class.
    *
    *  A pal object will contains layers and global information such as which search method
@@ -128,141 +128,20 @@ namespace pal
       friend class Problem;
       friend class FeaturePart;
       friend class Layer;
-    private:
-      QList<Layer*> *layers;
-
-      SimpleMutex *lyrsMutex;
-
-      Units map_unit;
-
-      /**
-       * \brief maximum # candidates for a point
-       */
-      int point_p;
-
-      /**
-       * \brief maximum # candidates for a line
-       */
-      int line_p;
-
-      /**
-       * \brief maximum # candidates for a polygon
-       */
-      int poly_p;
-
-      SearchMethod searchMethod;
-
-      /*
-       * POPMUSIC Tuning
-       */
-      int popmusic_r;
-
-      int tabuMaxIt;
-      int tabuMinIt;
-
-      int dpi;
-
-      int ejChainDeg;
-      int tenure;
-      double candListSize;
-
-      /**
-       * \brief show partial labels (cut-off by the map canvas) or not
-       */
-      bool showPartial;
-
-
-      typedef bool ( *FnIsCancelled )( void* ctx );
-      /** Callback that may be called from PAL to check whether the job has not been cancelled in meanwhile */
-      FnIsCancelled fnIsCancelled;
-      /** Application-specific context for the cancellation check function */
-      void* fnIsCancelledContext;
-
-      /**
-       * \brief Problem factory
-       * Extract features to label and generates candidates for them,
-       * respects to a bounding box and a map scale
-       *
-       * @param nbLayers  number of layers to extract
-       * @param layersName layers name to be extracted
-       * @param layersFactor layer's factor (priority between layers, 0 is the best, 1 the worst)
-       * @param lambda_min xMin bounding-box
-       * @param phi_min yMin bounding-box
-       * @param lambda_max xMax bounding-box
-       * @param phi_max yMax bounding-box
-       * @param scale the scale (1:scale)
-       * @param svgmap stream to wrtie the svg map (need _EXPORT_MAP_ defined to work)
-       */
-      Problem* extract( int nbLayers, char **layersName, double *layersFactor,
-                        double lambda_min, double phi_min,
-                        double lambda_max, double phi_max,
-                        double scale, std::ofstream *svgmap );
-
-
-      /**
-       * \brief Choose the size of popmusic subpart's
-       * @param r subpart size
-       */
-      void setPopmusicR( int r );
-
-
-
-      /**
-       * \brief minimum # of iteration for search method POPMUSIC_TABU, POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN
-       * @param min_it Sub part optimization min # of iteration
-       */
-      void setMinIt( int min_it );
-
-      /**
-       * \brief maximum \# of iteration for search method POPMUSIC_TABU, POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN
-       * @param max_it Sub part optimization max # of iteration
-       */
-      void setMaxIt( int max_it );
-
-      /**
-       * \brief For tabu search : how many iteration a feature will be tabu
-       * @param tenure consiser a feature as tabu for tenure iteration after updating feature in solution
-       */
-      void setTenure( int tenure );
-
-      /**
-       * \brief For *CHAIN, select the max size of a transformation chain
-       * @param degree maximum soze of a transformation chain
-       */
-      void setEjChainDeg( int degree );
-
-      /**
-       * \brief How many candidates will be tested by a tabu iteration
-       * @param fact the ration (0..1) of candidates to test
-       */
-      void setCandListSize( double fact );
-
-
-      /**
-       * \brief Get the minimum # of iteration doing in POPMUSIC_TABU, POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN
-       * @return minimum # of iteration
-       */
-      int getMinIt();
-      /**
-       * \brief Get the maximum # of iteration doing in POPMUSIC_TABU, POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN
-       * @return maximum # of iteration
-       */
-      int getMaxIt();
-
 
     public:
 
-      /**
+      /** 
        * \brief Create an new pal instance
        */
       Pal();
 
-      /**
+      /** 
        * \brief delete an instance
        */
       ~Pal();
 
-      /**
+      /** 
        * \brief add a new layer
        *
        * @param lyrName layer's name
@@ -282,7 +161,7 @@ namespace pal
        */
       Layer * addLayer( const char *lyrName, double min_scale, double max_scale, Arrangement arrangement, Units label_unit, double defaultPriority, bool obstacle, bool active, bool toLabel, bool displayAll = false );
 
-      /**
+      /** 
        * \brief Look for a layer
        *
        * @param lyrName name of layer to search
@@ -293,21 +172,21 @@ namespace pal
        */
       Layer *getLayer( const char *lyrName );
 
-      /**
+      /** 
        * \brief get all layers
        *
        * @return a list of all layers
        */
       QList<Layer*> *getLayers();
 
-      /**
+      /** 
        * \brief remove a layer
        *
        * @param layer layer to remove
        */
       void removeLayer( Layer *layer );
 
-      /**
+      /** 
        * \brief the labeling machine
        * Will extract all active layers
        *
@@ -320,8 +199,7 @@ namespace pal
        */
       std::list<LabelPosition*> *labeller( double scale, double bbox[4], PalStat **stats, bool displayAll );
 
-
-      /**
+      /** 
        * \brief the labeling machine
        * Active layers are specifiend through layersName array
        * @todo add obstacles and tolabel arrays
@@ -345,6 +223,8 @@ namespace pal
                                            PalStat **stat,
                                            bool displayAll );
 
+      typedef bool ( *FnIsCancelled )( void* ctx );
+
       /** Register a function that returns whether this job has been cancelled - PAL calls it during the computation */
       void registerCancellationCallback( FnIsCancelled fnCancelled, void* context );
 
@@ -355,35 +235,35 @@ namespace pal
 
       std::list<LabelPosition*>* solveProblem( Problem* prob, bool displayAll );
 
-      /**
+      /** 
        * \brief Set map resolution
        *
        * @param dpi map resolution (dot per inch)
        */
       void setDpi( int dpi );
 
-      /**
+      /** 
        * \brief get map resolution
        *
        * @return map resolution (dot per inch)
        */
       int getDpi();
 
-      /**
+      /** 
        *\brief Set flag show partial label
        *
        * @param show flag value
        */
       void setShowPartial( bool show );
 
-      /**
+      /** 
        * \brief Get flag show partial label
        *
        * @return value of flag
        */
       bool getShowPartial();
 
-      /**
+      /** 
        * \brief set # candidates to generate for points features
        * Higher the value is, longer Pal::labeller will spend time
        *
@@ -391,7 +271,7 @@ namespace pal
        */
       void setPointP( int point_p );
 
-      /**
+      /** 
        * \brief set maximum # candidates to generate for lines features
        * Higher the value is, longer Pal::labeller will spend time
        *
@@ -399,7 +279,7 @@ namespace pal
        */
       void setLineP( int line_p );
 
-      /**
+      /** 
        * \brief set maximum # candidates to generate for polygon features
        * Higher the value is, longer Pal::labeller will spend time
        *
@@ -407,32 +287,32 @@ namespace pal
        */
       void setPolyP( int poly_p );
 
-      /**
+      /** 
        *  \brief get # candidates to generate for point features
        */
       int getPointP();
 
-      /**
+      /** 
        *  \brief get maximum  # candidates to generate for line features
        */
       int getLineP();
 
-      /**
+      /** 
        *  \brief get maximum # candidates to generate for polygon features
        */
       int getPolyP();
 
-      /**
+      /** 
        * \brief get current map unit
        */
       Units getMapUnit();
 
-      /**
+      /** 
        * \brief set map unit
        */
       void setMapUnit( Units map_unit );
 
-      /**
+      /** 
        * \brief Select the search method to use.
        *
        * For interactive mapping using CHAIN is a good
@@ -442,12 +322,131 @@ namespace pal
        */
       void setSearch( SearchMethod method );
 
-      /**
+      /** 
        * \brief get the search method in use
        *
        * @return the search method
        */
       SearchMethod getSearch();
+
+    private:
+      QList<Layer*> *layers;
+
+      SimpleMutex *lyrsMutex;
+
+      Units map_unit;
+
+      /** 
+       * \brief maximum # candidates for a point
+       */
+      int point_p;
+
+      /** 
+       * \brief maximum # candidates for a line
+       */
+      int line_p;
+
+      /** 
+       * \brief maximum # candidates for a polygon
+       */
+      int poly_p;
+
+      SearchMethod searchMethod;
+
+      /*
+       * POPMUSIC Tuning
+       */
+      int popmusic_r;
+
+      int tabuMaxIt;
+      int tabuMinIt;
+
+      int dpi;
+
+      int ejChainDeg;
+      int tenure;
+      double candListSize;
+
+      /** 
+       * \brief show partial labels (cut-off by the map canvas) or not
+       */
+      bool showPartial;
+
+      /** Callback that may be called from PAL to check whether the job has not been cancelled in meanwhile */
+      FnIsCancelled fnIsCancelled;
+      /** Application-specific context for the cancellation check function */
+      void* fnIsCancelledContext;
+
+      /** 
+       * \brief Problem factory
+       * Extract features to label and generates candidates for them,
+       * respects to a bounding box and a map scale
+       *
+       * @param nbLayers  number of layers to extract
+       * @param layersName layers name to be extracted
+       * @param layersFactor layer's factor (priority between layers, 0 is the best, 1 the worst)
+       * @param lambda_min xMin bounding-box
+       * @param phi_min yMin bounding-box
+       * @param lambda_max xMax bounding-box
+       * @param phi_max yMax bounding-box
+       * @param scale the scale (1:scale)
+       * @param svgmap stream to wrtie the svg map (need _EXPORT_MAP_ defined to work)
+       */
+      Problem* extract( int nbLayers, char **layersName, double *layersFactor,
+                        double lambda_min, double phi_min,
+                        double lambda_max, double phi_max,
+                        double scale, std::ofstream *svgmap );
+
+
+      /** 
+       * \brief Choose the size of popmusic subpart's
+       * @param r subpart size
+       */
+      void setPopmusicR( int r );
+
+
+
+      /** 
+       * \brief minimum # of iteration for search method POPMUSIC_TABU, POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN
+       * @param min_it Sub part optimization min # of iteration
+       */
+      void setMinIt( int min_it );
+
+      /** 
+       * \brief maximum \# of iteration for search method POPMUSIC_TABU, POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN
+       * @param max_it Sub part optimization max # of iteration
+       */
+      void setMaxIt( int max_it );
+
+      /** 
+       * \brief For tabu search : how many iteration a feature will be tabu
+       * @param tenure consiser a feature as tabu for tenure iteration after updating feature in solution
+       */
+      void setTenure( int tenure );
+
+      /** 
+       * \brief For *CHAIN, select the max size of a transformation chain
+       * @param degree maximum soze of a transformation chain
+       */
+      void setEjChainDeg( int degree );
+
+      /** 
+       * \brief How many candidates will be tested by a tabu iteration
+       * @param fact the ration (0..1) of candidates to test
+       */
+      void setCandListSize( double fact );
+
+
+      /** 
+       * \brief Get the minimum # of iteration doing in POPMUSIC_TABU, POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN
+       * @return minimum # of iteration
+       */
+      int getMinIt();
+      /** 
+       * \brief Get the maximum # of iteration doing in POPMUSIC_TABU, POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN
+       * @return maximum # of iteration
+       */
+      int getMaxIt();
   };
 } // end namespace pal
 #endif
