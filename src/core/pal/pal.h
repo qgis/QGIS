@@ -34,6 +34,7 @@
 #include <iostream>
 #include <ctime>
 #include <geos_c.h>
+#include <QMutex>
 
 // TODO ${MAJOR} ${MINOR} etc instead of 0.2
 
@@ -57,7 +58,6 @@ namespace pal
   class PalStat;
   class Problem;
   class PointSet;
-  class SimpleMutex;
 
   /** Units for label sizes and distlabel */
   enum _Units
@@ -327,7 +327,7 @@ namespace pal
     private:
       QList<Layer*> *layers;
 
-      SimpleMutex *lyrsMutex;
+      QMutex mMutex;
 
       Units map_unit;
 

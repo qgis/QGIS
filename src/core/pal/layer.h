@@ -34,6 +34,7 @@
 
 #include <pal/pal.h>
 #include <pal/palgeometry.h>
+#include <QMutex>
 
 namespace pal
 {
@@ -47,7 +48,6 @@ namespace pal
   class Feature;
   class FeaturePart;
   class Pal;
-  class SimpleMutex;
   class LabelInfo;
 
   /** 
@@ -297,7 +297,7 @@ namespace pal
       HashTable< LinkedList<FeaturePart*>* > * connectedHashtable;
       LinkedList< char* >* connectedTexts;
 
-      SimpleMutex *modMutex;
+      QMutex mMutex;
 
       /** 
        * \brief Create a new layer
