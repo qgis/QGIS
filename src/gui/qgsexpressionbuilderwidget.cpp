@@ -114,16 +114,13 @@ void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const
     const QStringList& values = mFieldValues[item->text()];
     mValueListWidget->setUpdatesEnabled( false );
     mValueListWidget->blockSignals( true );
-    foreach ( const QString& value, values )
-      mValueListWidget->addItem( value );
-
+    mValueListWidget->addItems( values );
     mValueListWidget->setUpdatesEnabled( true );
     mValueListWidget->blockSignals( false );
   }
 
-
   mLoadGroupBox->setVisible( item->getItemType() == QgsExpressionItem::Field && mLayer );
-  mValueGroupBox->setVisible( item->getItemType() == QgsExpressionItem::Field && mLayer || mValueListWidget->count() > 0 );
+  mValueGroupBox->setVisible(( item->getItemType() == QgsExpressionItem::Field && mLayer ) || mValueListWidget->count() > 0 );
 
   // Show the help for the current item.
   QString help = loadFunctionHelp( item );
