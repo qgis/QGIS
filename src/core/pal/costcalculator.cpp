@@ -19,14 +19,12 @@
 #include <cstring>
 #include <cfloat>
 
-#include <pal/layer.h>
-#include <pal/pal.h>
-
+#include "layer.h"
+#include "pal.h"
 #include "feature.h"
 #include "geomfunction.h"
 #include "labelposition.h"
 #include "util.h"
-
 #include "costcalculator.h"
 
 namespace pal

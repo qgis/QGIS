@@ -28,9 +28,6 @@
  */
 
 #include "geomfunction.h"
-
-//#include <pal/Layer.h>
-
 #include "feature.h"
 #include "util.h"
 

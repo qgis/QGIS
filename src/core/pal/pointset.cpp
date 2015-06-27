@@ -38,10 +38,7 @@
 
 #include "pointset.h"
 #include "util.h"
-
-#include <pal/pal.h>
-
-
+#include "pal.h"
 #include "geomfunction.h"
 
 namespace pal

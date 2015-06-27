@@ -36,8 +36,7 @@
 
 #include <geos_c.h>
 
-#include <pal/palgeometry.h>
-
+#include "palgeometry.h"
 #include "pointset.h"
 #include "util.h"
 #include "labelposition.h"

@@ -31,7 +31,7 @@
 #define _PROBLEM_H
 
 #include <list>
-#include <pal/pal.h>
+#include "pal.h"
 #include "rtree.hpp"
 
 namespace pal

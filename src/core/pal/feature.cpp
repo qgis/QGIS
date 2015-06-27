@@ -40,9 +40,8 @@
 #include <cstring>
 #include <cfloat>
 
-#include <pal/pal.h>
-#include <pal/layer.h>
-
+#include "pal.h"
+#include "layer.h"
 #include "linkedlist.hpp"
 #include "feature.h"
 #include "geomfunction.h"

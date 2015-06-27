@@ -42,14 +42,12 @@
 //#include <geos/geom/Geometry.h>
 #include <geos_c.h>
 
-#include <pal/pal.h>
-#include <pal/layer.h>
-#include <pal/palexception.h>
-#include <pal/palstat.h>
-
+#include "pal.h"
+#include "layer.h"
+#include "palexception.h"
+#include "palstat.h"
 #include "linkedlist.hpp"
 #include "rtree.hpp"
-
 #include "costcalculator.h"
 #include "feature.h"
 #include "geomfunction.h"

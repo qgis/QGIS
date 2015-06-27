@@ -28,7 +28,7 @@
  */
 
 #include <iostream>
-#include <pal/palstat.h>
+#include "palstat.h"
 
 namespace pal
 {
