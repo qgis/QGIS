@@ -38,8 +38,7 @@
 #include <cstdarg>
 #include <ctime>
 
-#include <pal/layer.h>
-
+#include "layer.h"
 #include "internalexception.h"
 #include "util.h"
 #include "labelposition.h"

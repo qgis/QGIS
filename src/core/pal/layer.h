@@ -32,8 +32,8 @@
 
 #include <fstream>
 
-#include <pal/pal.h>
-#include <pal/palgeometry.h>
+#include "pal.h"
+#include "palgeometry.h"
 #include <QMutex>
 
 namespace pal

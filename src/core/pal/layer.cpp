@@ -37,14 +37,12 @@
 #include <cmath>
 #include <vector>
 
-#include <pal/pal.h>
-#include <pal/layer.h>
-#include <pal/palexception.h>
-#include <pal/internalexception.h>
-
+#include "pal.h"
+#include "layer.h"
+#include "palexception.h"
+#include "internalexception.h"
 #include "linkedlist.hpp"
 #include "hashtable.hpp"
-
 #include "feature.h"
 #include "geomfunction.h"
 #include "util.h"

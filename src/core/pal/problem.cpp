@@ -41,10 +41,9 @@
 #include <list>
 #include <limits.h> //for INT_MAX
 
-#include <pal/pal.h>
-#include <pal/palstat.h>
-#include <pal/layer.h>
-
+#include "pal.h"
+#include "palstat.h"
+#include "layer.h"
 #include "linkedlist.hpp"
 #include "rtree.hpp"
 #include "feature.h"
