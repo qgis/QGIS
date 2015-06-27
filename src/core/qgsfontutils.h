@@ -113,6 +113,18 @@ class CORE_EXPORT QgsFontUtils
      * @see toXmlElement
      */
     static bool setFromXmlChildNode( QFont& font, const QDomElement& element, const QString& childNode );
+
+    /**Returns the localized named style of a font, if such a translation is available.
+     * @param namedStyle a named style, i.e. "Bold", "Italic", etc
+     * @returns The localized named style
+     */
+    static QString translateNamedStyle( const QString& namedStyle );
+
+    /**Returns the english named style of a font, if possible.
+     * @param namedStyle a localized named style, i.e. "Fett", "Kursiv", etc
+     * @returns The english named style
+     */
+    static QString untranslateNamedStyle( const QString& namedStyle );
 };
 
 #endif // QGSFONTUTILS_H
