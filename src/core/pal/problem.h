@@ -27,10 +27,6 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #ifndef _PROBLEM_H
 #define _PROBLEM_H
 

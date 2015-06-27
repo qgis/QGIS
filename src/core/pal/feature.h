@@ -27,10 +27,6 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #ifndef _FEATURE_H
 #define _FEATURE_H
 
