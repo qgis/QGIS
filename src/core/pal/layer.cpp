@@ -49,8 +49,6 @@
 #include "geomfunction.h"
 #include "util.h"
 
-#include "simplemutex.h"
-
 namespace pal
 {
 
@@ -74,8 +72,6 @@ namespace pal
     this->name = new char[strlen( lyrName ) +1];
     strcpy( this->name, lyrName );
 
-    modMutex = new SimpleMutex();
-
     rtree = new RTree<FeaturePart*, double, 2, double>();
     hashtable = new HashTable<Feature*> ( 5281 );
 
@@ -95,7 +91,7 @@ namespace pal
 
   Layer::~Layer()
   {
-    modMutex->lock();
+    mMutex.lock();
 
     if ( featureParts )
     {
@@ -126,7 +122,7 @@ namespace pal
     delete rtree;
 
     delete hashtable;
-    delete modMutex;
+    mMutex.unlock();
     delete connectedTexts;
   }
 
@@ -240,11 +236,11 @@ namespace pal
     if ( !geom_id || label_x < 0 || label_y < 0 )
       return false;
 
-    modMutex->lock();
+    mMutex.lock();
 
     if ( hashtable->find( geom_id ) )
     {
-      modMutex->unlock();
+      mMutex.unlock();
       //A feature with this id already exists. Don't throw an exception as sometimes,
       //the same feature is added twice (dateline split with otf-reprojection)
       return false;
@@ -288,7 +284,7 @@ namespace pal
     LinkedList <const GEOSGeometry*> *simpleGeometries = unmulti( the_geom );
     if ( simpleGeometries == NULL ) // unmulti() failed?
     {
-      modMutex->unlock();
+      mMutex.unlock();
       throw InternalException::UnknownGeometry();
     }
 
@@ -309,7 +305,7 @@ namespace pal
 
       if ( type != GEOS_POINT && type != GEOS_LINESTRING && type != GEOS_POLYGON )
       {
-        modMutex->unlock();
+        mMutex.unlock();
         throw InternalException::UnknownGeometry();
       }
 
@@ -356,7 +352,7 @@ namespace pal
 
     userGeom->releaseGeosGeometry( the_geom );
 
-    modMutex->unlock();
+    mMutex.unlock();
 
     // if using only biggest parts...
     if (( mode == LabelPerFeature || f->fixedPosition() ) && biggest_part != NULL )

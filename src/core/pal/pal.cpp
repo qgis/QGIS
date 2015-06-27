@@ -56,7 +56,6 @@
 #include "labelposition.h"
 #include "problem.h"
 #include "pointset.h"
-#include "simplemutex.h"
 #include "util.h"
 
 #include <qgsgeometry.h> // for GEOS context
@@ -95,8 +94,6 @@ namespace pal
 
     layers = new QList<Layer*>();
 
-    lyrsMutex = new SimpleMutex();
-
     ejChainDeg = 50;
     tenure = 10;
     candListSize = 0.2;
@@ -132,35 +129,35 @@ namespace pal
 
   Layer *Pal::getLayer( const char *lyrName )
   {
-    lyrsMutex->lock();
+    mMutex.lock();
     for ( QList<Layer*>::iterator it = layers->begin(); it != layers->end(); ++it )
       if ( strcmp(( *it )->name, lyrName ) == 0 )
       {
-        lyrsMutex->unlock();
+        mMutex.unlock();
         return *it;
       }
 
-    lyrsMutex->unlock();
+    mMutex.unlock();
     throw new PalException::UnknownLayer();
   }
 
 
   void Pal::removeLayer( Layer *layer )
   {
-    lyrsMutex->lock();
+    mMutex.lock();
     if ( layer )
     {
       layers->removeOne( layer );
       delete layer;
     }
-    lyrsMutex->unlock();
+    mMutex.unlock();
   }
 
 
   Pal::~Pal()
   {
 
-    lyrsMutex->lock();
+    mMutex.lock();
     while ( layers->size() > 0 )
     {
       delete layers->front();
@@ -168,7 +165,7 @@ namespace pal
     }
 
     delete layers;
-    delete lyrsMutex;
+    mMutex.unlock();
 
     // do not init and exit GEOS - we do it inside QGIS
     //finishGEOS();
@@ -178,7 +175,7 @@ namespace pal
   Layer * Pal::addLayer( const char *lyrName, double min_scale, double max_scale, Arrangement arrangement, Units label_unit, double defaultPriority, bool obstacle, bool active, bool toLabel, bool displayAll )
   {
     Layer *lyr;
-    lyrsMutex->lock();
+    mMutex.lock();
 
 #ifdef _DEBUG_
     std::cout << "Pal::addLayer" << std::endl;
@@ -190,7 +187,7 @@ namespace pal
     {
       if ( strcmp(( *it )->name, lyrName ) == 0 )   // if layer already known
       {
-        lyrsMutex->unlock();
+        mMutex.unlock();
         //There is already a layer with this name, so we just return the existing one.
         //Sometimes the same layer is added twice (e.g. datetime split with otf-reprojection)
         return *it;
@@ -200,7 +197,7 @@ namespace pal
     lyr = new Layer( lyrName, min_scale, max_scale, arrangement, label_unit, defaultPriority, obstacle, active, toLabel, this, displayAll );
     layers->push_back( lyr );
 
-    lyrsMutex->unlock();
+    mMutex.unlock();
 
     return lyr;
   }
@@ -416,7 +413,7 @@ namespace pal
 
     QList<char*> *labLayers = new QList<char*>();
 
-    lyrsMutex->lock();
+    mMutex.lock();
     for ( i = 0; i < nbLayers; i++ )
     {
       for ( QList<Layer*>::iterator it = layers->begin(); it != layers->end(); ++it ) // iterate on pal->layers
@@ -447,9 +444,9 @@ namespace pal
             <<  "    id=\"" << layer->name << "\">" << std::endl << std::endl;
 #endif
 
-            context->layer->modMutex->lock();
+            context->layer->mMutex.lock();
             context->layer->rtree->Search( amin, amax, extractFeatCallback, ( void* ) context );
-            context->layer->modMutex->unlock();
+            context->layer->mMutex.unlock();
 
 #ifdef _EXPORT_MAP_
             *svgmap  << "</g>" << std::endl << std::endl;
@@ -479,7 +476,7 @@ namespace pal
       }
     }
     delete context;
-    lyrsMutex->unlock();
+    mMutex.unlock();
 
     prob->nbLabelledLayers = labLayers->size();
     prob->labelledLayersName = new char*[prob->nbLabelledLayers];
@@ -665,7 +662,7 @@ namespace pal
 #endif
     int i;
 
-    lyrsMutex->lock();
+    mMutex.lock();
     int nbLayers = layers->size();
 
     char **layersName = new char*[nbLayers];
@@ -679,7 +676,7 @@ namespace pal
       priorities[i] = layer->defaultPriority;
       i++;
     }
-    lyrsMutex->unlock();
+    mMutex.unlock();
 
     std::list<LabelPosition*> * solution = labeller( nbLayers, layersName, priorities, scale, bbox, stats, displayAll );
 
@@ -836,7 +833,7 @@ namespace pal
   Problem* Pal::extractProblem( double scale, double bbox[4] )
   {
     // find out: nbLayers, layersName, layersFactor
-    lyrsMutex->lock();
+    mMutex.lock();
     int nbLayers = layers->size();
 
     char **layersName = new char*[nbLayers];
@@ -850,7 +847,7 @@ namespace pal
       priorities[i] = layer->defaultPriority;
       i++;
     }
-    lyrsMutex->unlock();
+    mMutex.unlock();
 
     Problem* prob = extract( nbLayers, layersName, priorities, bbox[0], bbox[1], bbox[2], bbox[3], scale, NULL );
 
