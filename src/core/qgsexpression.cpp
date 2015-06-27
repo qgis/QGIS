@@ -35,6 +35,7 @@
 #include "qgssymbollayerv2utils.h"
 #include "qgsvectorcolorrampv2.h"
 #include "qgsstylev2.h"
+#include "qgsstringutils.h"
 
 // from parser
 extern QgsExpression::Node* parseExpression( const QString& str, QString& parserErrorMsg );
@@ -655,6 +656,34 @@ static QVariant fcnTrim( const QVariantList& values, const QgsFeature*, QgsExpre
 {
   QString str = getStringValue( values.at( 0 ), parent );
   return QVariant( str.trimmed() );
+}
+
+static QVariant fcnLevenshtein( const QVariantList& values, const QgsFeature*, QgsExpression* parent )
+{
+  QString string1 = getStringValue( values.at( 0 ), parent );
+  QString string2 = getStringValue( values.at( 1 ), parent );
+  return QVariant( QgsStringUtils::levenshteinDistance( string1, string2, true) );
+}
+
+static QVariant fcnLCS( const QVariantList& values, const QgsFeature*, QgsExpression* parent )
+{
+  QString string1 = getStringValue( values.at( 0 ), parent );
+  QString string2 = getStringValue( values.at( 1 ), parent );
+  return QVariant( QgsStringUtils::longestCommonSubstring( string1, string2, true ) );
+}
+
+static QVariant fcnHamming( const QVariantList& values, const QgsFeature*, QgsExpression* parent )
+{
+  QString string1 = getStringValue( values.at( 0 ), parent );
+  QString string2 = getStringValue( values.at( 1 ), parent );
+  int dist = QgsStringUtils::hammingDistance( string1, string2 );
+  return ( dist < 0 ? QVariant() : QVariant( QgsStringUtils::hammingDistance( string1, string2, true ) ) );
+}
+
+static QVariant fcnSoundex( const QVariantList& values, const QgsFeature*, QgsExpression* parent )
+{
+  QString string = getStringValue( values.at( 0 ), parent );
+  return QVariant( QgsStringUtils::soundex( string ) );
 }
 
 static QVariant fcnWordwrap( const QVariantList& values, const QgsFeature*, QgsExpression* parent )
@@ -1697,7 +1726,8 @@ const QStringList& QgsExpression::BuiltinFunctions()
     << "distance" << "intersection" << "sym_difference" << "combine"
     << "union" << "geom_to_wkt" << "geomToWKT" << "geometry"
     << "transform" << "get_feature" << "getFeature"
-    << "attribute"
+    << "attribute" << "levenshtein" << "longest_common_substring" << "hamming_distance"
+    << "soundex"
     << "$rownum" << "$id" << "$scale" << "_specialcol_";
   }
   return gmBuiltinFunctions;
@@ -1757,6 +1787,10 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
     << new StaticFunction( "upper", 1, fcnUpper, "String" )
     << new StaticFunction( "title", 1, fcnTitle, "String" )
     << new StaticFunction( "trim", 1, fcnTrim, "String" )
+    << new StaticFunction( "levenshtein", 2, fcnLevenshtein, "Fuzzy Matching" )
+    << new StaticFunction( "longest_common_substring", 2, fcnLCS, "Fuzzy Matching" )
+    << new StaticFunction( "hamming_distance", 2, fcnHamming, "Fuzzy Matching" )
+    << new StaticFunction( "soundex", 1, fcnSoundex, "Fuzzy Matching" )
     << new StaticFunction( "wordwrap", -1, fcnWordwrap, "String" )
     << new StaticFunction( "length", 1, fcnLength, "String" )
     << new StaticFunction( "replace", 3, fcnReplace, "String" )

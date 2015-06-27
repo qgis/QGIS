@@ -169,6 +169,7 @@ SET(QGIS_CORE_SRCS
   qgssnappingutils.cpp
   qgsspatialindex.cpp
   qgsstatisticalsummary.cpp
+  qgsstringutils.cpp
   qgstransaction.cpp
   qgstolerance.cpp
   qgsvectordataprovider.cpp
@@ -590,6 +591,7 @@ SET(QGIS_CORE_HDRS
   qgssnappingutils.h
   qgsspatialindex.h
   qgsstatisticalsummary.h
+  qgsstringutils.h
   qgstolerance.h
   qgstransaction.h
   qgsvectordataprovider.h
