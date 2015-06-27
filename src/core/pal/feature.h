@@ -197,25 +197,6 @@ namespace pal
        */
       int setPositionForPolygon( double scale, LabelPosition ***lPos, PointSet *mapShape, double delta_width );
 
-#if 0
-      /** 
-       * \brief Feature against problem bbox
-       * \param bbox[0] problem x min
-       * \param bbox[1] problem x max
-       * \param bbox[2] problem y min
-       * \param bbox[3] problem y max
-       * return A set of feature which are in the bbox or null if the feature is in the bbox
-       */
-      LinkedList<Feature*> *splitFeature( double bbox[4] );
-
-
-      /** 
-       * \brief return the feature id
-       * \return the feature id
-       */
-      int getId();
-#endif
-
       /** 
        * \brief return the feature
        * \return the feature
@@ -233,15 +214,6 @@ namespace pal
        * \return the layer of the feature
        */
       Layer * getLayer();
-
-#if 0
-      /** 
-       * \brief save the feature into file
-       * Called by Pal::save()
-       * \param file the file to write
-       */
-      void save( std::ofstream *file );
-#endif
 
       /** 
        * \brief generic method to generate candidates
