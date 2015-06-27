@@ -48,7 +48,7 @@ namespace pal
   class Label;
 
 
-  /**
+  /** 
    * \brief LabelPosition is a candidate feature label position
    */
   class CORE_EXPORT LabelPosition
@@ -58,7 +58,7 @@ namespace pal
 
     public:
 
-      /**
+      /** 
        * \brief Position of label candidate relative to feature.
        */
       enum Quadrant
@@ -74,40 +74,7 @@ namespace pal
         QuadrantBelowRight
       };
 
-    protected:
-
-      int id;
-      double cost;
-      FeaturePart *feature;
-
-      // bug # 1 (maxence 10/23/2008)
-      int probFeat;
-
-      int nbOverlap;
-
-      double x[4], y[4];
-      double alpha;
-      double w;
-      double h;
-
-      LabelPosition* nextPart;
-      int partId;
-
-      //True if label direction is the same as line / polygon ring direction.
-      //Could be used by the application to draw a directional arrow ('<' or '>')
-      //if the layer arrangement is P_LINE
-      bool reversed;
-
-      bool upsideDown;
-
-      LabelPosition::Quadrant quadrant;
-
-      bool isInConflictSinglePart( LabelPosition* lp );
-      bool isInConflictMultiPart( LabelPosition* lp );
-
-    public:
-
-      /**
+      /** 
        * \brief create a new LabelPosition
        *
        * \param id id of this labelposition
@@ -126,34 +93,34 @@ namespace pal
                      double alpha, double cost,
                      FeaturePart *feature, bool isReversed = false, Quadrant quadrant = QuadrantOver );
 
-      /** copy constructor */
+      /** Copy constructor */
       LabelPosition( const LabelPosition& other );
 
       ~LabelPosition() { delete nextPart; }
 
 
-      /**
+      /** 
        * \brief Is the labelposition in the bounding-box ? (intersect or inside????)
        *
        *\param bbox the bounding-box double[4] = {xmin, ymin, xmax, ymax}
        */
       bool isIn( double *bbox );
 
-      /**
+      /** 
        * \brief Is the labelposition intersect the bounding-box ?
        *
        *\param bbox the bounding-box double[4] = {xmin, ymin, xmax, ymax}
        */
       bool isIntersect( double *bbox );
 
-      /**
+      /** 
        * \brief Is the labelposition inside the bounding-box ?
        *
        *\param bbox the bounding-box double[4] = {xmin, ymin, xmax, ymax}
        */
       bool isInside( double *bbox );
 
-      /**
+      /** 
        * \brief Check whether or not this overlap with another labelPosition
        *
        * \param ls other labelposition
@@ -161,21 +128,20 @@ namespace pal
        */
       bool isInConflict( LabelPosition *ls );
 
-      /** return bounding box - amin: xmin,ymin - amax: xmax,ymax */
+      /** Return bounding box - amin: xmin,ymin - amax: xmax,ymax */
       void getBoundingBox( double amin[2], double amax[2] ) const;
 
-      /** get distance from this label to a point. If point lies inside, returns negative number. */
+      /** Get distance from this label to a point. If point lies inside, returns negative number. */
       double getDistanceToPoint( double xp, double yp );
 
-      /** returns true if this label crosses the specified line */
+      /** Returns true if this label crosses the specified line */
       bool isBorderCrossingLine( PointSet* feat );
 
-      /** returns number of intersections with polygon (testing border and center) */
+      /** Returns number of intersections with polygon (testing border and center) */
       int getNumPointsInPolygon( int npol, double *xp, double *yp );
 
-      /** shift the label by specified offset */
+      /** Shift the label by specified offset */
       void offsetPosition( double xOffset, double yOffset );
-
 
       /** \brief return id
        * \return id
@@ -192,7 +158,7 @@ namespace pal
       void resetNumOverlaps() { nbOverlap = 0; } // called from problem.cpp, pal.cpp
 
       int getProblemFeatureId() const { return probFeat; }
-      /** set problem feature ID and assigned label candidate ID.
+      /** Set problem feature ID and assigned label candidate ID.
        *  called from pal.cpp during extraction */
       void setProblemIds( int probFid, int lpId )
       {
@@ -200,10 +166,10 @@ namespace pal
         if ( nextPart ) nextPart->setProblemIds( probFid, lpId );
       }
 
-      /** return pointer to layer's name. used for stats */
+      /** Return pointer to layer's name. used for stats */
       char* getLayerName() const;
 
-      /**
+      /** 
        * \brief get the position geographical cost
        * \return geographical cost
        */
@@ -215,13 +181,12 @@ namespace pal
       /** Make sure the cost is less than 1 */
       void validateCost();
 
-
-      /**
+      /** 
        * \brief get the down-left x coordinate
        * \return x coordinate
        */
       double getX( int i = 0 ) const;
-      /**
+      /** 
        * \brief get the down-left y coordinate
        * \return y coordinate
        */
@@ -230,7 +195,7 @@ namespace pal
       double getWidth() const { return w; }
       double getHeight() const { return h; }
 
-      /**
+      /** 
        * \brief get alpha
        * \return alpha to rotate text (in rad)
        */
@@ -289,8 +254,39 @@ namespace pal
       // for polygon cost calculation
       static bool polygonObstacleCallback( PointSet *feat, void *ctx );
 
+    protected:
+
+      int id;
+      double cost;
+      FeaturePart *feature;
+
+      // bug # 1 (maxence 10/23/2008)
+      int probFeat;
+
+      int nbOverlap;
+
+      double x[4], y[4];
+      double alpha;
+      double w;
+      double h;
+
+      LabelPosition* nextPart;
+      int partId;
+
+      //True if label direction is the same as line / polygon ring direction.
+      //Could be used by the application to draw a directional arrow ('<' or '>')
+      //if the layer arrangement is P_LINE
+      bool reversed;
+
+      bool upsideDown;
+
+      LabelPosition::Quadrant quadrant;
+
+      bool isInConflictSinglePart( LabelPosition* lp );
+      bool isInConflictMultiPart( LabelPosition* lp );
+
   };
 
-} // end namespac
+} // end namespace
 
 #endif

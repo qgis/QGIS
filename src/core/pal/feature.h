@@ -48,7 +48,7 @@
 
 namespace pal
 {
-  /** optional additional info about label (for curved labels) */
+  /** Optional additional info about label (for curved labels) */
   class CORE_EXPORT LabelInfo
   {
     public:
@@ -132,32 +132,15 @@ namespace pal
       //FeaturePart** parts;
   };
 
-  /**
+  /** 
    * \brief Main class to handle feature
    */
   class CORE_EXPORT FeaturePart : public PointSet
   {
 
-    protected:
-      Feature* f;
-
-      int nbHoles;
-      PointSet **holes;
-
-      GEOSGeometry *the_geom;
-      bool ownsGeom;
-
-      /** \brief read coordinates from a GEOS geom */
-      void extractCoords( const GEOSGeometry* geom );
-
-      /** find duplicate (or nearly duplicate points) and remove them.
-       * Probably to avoid numerical errors in geometry algorithms.
-       */
-      void removeDuplicatePoints();
-
     public:
 
-      /**
+      /** 
         * \brief create a new generic feature
         *
         * \param feat a pointer for a Feat which contains the spatial entites
@@ -165,12 +148,12 @@ namespace pal
         */
       FeaturePart( Feature *feat, const GEOSGeometry* geom );
 
-      /**
+      /** 
        * \brief Delete the feature
        */
       virtual ~FeaturePart();
 
-      /**
+      /** 
        * \brief generate candidates for point feature
        * Generate candidates for point features
        * \param x x coordinates of the point
@@ -183,12 +166,12 @@ namespace pal
        */
       int setPositionForPoint( double x, double y, double scale, LabelPosition ***lPos, double delta_width, double angle );
 
-      /**
+      /** 
        * generate one candidate over specified point
        */
       int setPositionOverPoint( double x, double y, double scale, LabelPosition ***lPos, double delta_width, double angle );
 
-      /**
+      /** 
        * \brief generate candidates for line feature
        * Generate candidates for line features
        * \param scale map scale is 1:scale
@@ -202,12 +185,12 @@ namespace pal
       LabelPosition* curvedPlacementAtOffset( PointSet* path_positions, double* path_distances,
                                               int orientation, int index, double distance );
 
-      /**
+      /** 
        * Generate curved candidates for line features
        */
       int setPositionForLineCurved( LabelPosition ***lPos, PointSet* mapShape );
 
-      /**
+      /** 
        * \brief generate candidates for point feature
        * Generate candidates for point features
        * \param scale map scale is 1:scale
@@ -219,7 +202,7 @@ namespace pal
       int setPositionForPolygon( double scale, LabelPosition ***lPos, PointSet *mapShape, double delta_width );
 
 #if 0
-      /**
+      /** 
        * \brief Feature against problem bbox
        * \param bbox[0] problem x min
        * \param bbox[1] problem x max
@@ -230,33 +213,33 @@ namespace pal
       LinkedList<Feature*> *splitFeature( double bbox[4] );
 
 
-      /**
+      /** 
        * \brief return the feature id
        * \return the feature id
        */
       int getId();
 #endif
 
-      /**
+      /** 
        * \brief return the feature
        * \return the feature
        */
       Feature* getFeature() { return f; }
 
-      /**
+      /** 
        * \brief return the geometry
        * \return the geometry
        */
       const GEOSGeometry* getGeometry() const { return the_geom; }
 
-      /**
+      /** 
        * \brief return the layer that feature belongs to
        * \return the layer of the feature
        */
       Layer * getLayer();
 
 #if 0
-      /**
+      /** 
        * \brief save the feature into file
        * Called by Pal::save()
        * \param file the file to write
@@ -264,7 +247,7 @@ namespace pal
       void save( std::ofstream *file );
 #endif
 
-      /**
+      /** 
        * \brief generic method to generate candidates
        * This method will call either setPositionFromPoint(), setPositionFromLine or setPositionFromPolygon
        * \param scale the map scale is 1:scale
@@ -281,14 +264,14 @@ namespace pal
 #endif
                      );
 
-      /**
+      /** 
        * \brief get the unique id of the feature
        * \return the feature unique identifier
        */
       const char *getUID();
 
 
-      /**
+      /** 
        * \brief Print feature information
        * Print feature unique id, geometry type, points, and holes on screen
        */
@@ -312,14 +295,31 @@ namespace pal
       int getNumSelfObstacles() const { return nbHoles; }
       PointSet* getSelfObstacle( int i ) { return holes[i]; }
 
-      /** check whether this part is connected with some other part */
+      /** Check whether this part is connected with some other part */
       bool isConnected( FeaturePart* p2 );
 
-      /** merge other (connected) part with this one and save the result in this part (other is unchanged).
+      /** Merge other (connected) part with this one and save the result in this part (other is unchanged).
        * Return true on success, false if the feature wasn't modified */
       bool mergeWithFeaturePart( FeaturePart* other );
 
       void addSizePenalty( int nbp, LabelPosition** lPos, double bbx[4], double bby[4] );
+
+    protected:
+      Feature* f;
+
+      int nbHoles;
+      PointSet **holes;
+
+      GEOSGeometry *the_geom;
+      bool ownsGeom;
+
+      /** \brief read coordinates from a GEOS geom */
+      void extractCoords( const GEOSGeometry* geom );
+
+      /** Find duplicate (or nearly duplicate points) and remove them.
+       * Probably to avoid numerical errors in geometry algorithms.
+       */
+      void removeDuplicatePoints();
 
     private:
 

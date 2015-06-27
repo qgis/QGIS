@@ -55,7 +55,7 @@ namespace pal
   class SimpleMutex;
   class LabelInfo;
 
-  /**
+  /** 
    * \brief A layer of spacial entites
    *
    * a layer is a bog of feature with some data which influence the labelling process
@@ -84,97 +84,23 @@ namespace pal
 
       bool getDisplayAll() const { return displayAll; }
 
-    protected:
-      char *name; /* unique */
-
-      /** list of feature parts */
-      LinkedList<FeaturePart*> *featureParts;
-
-      /** list of features - for deletion */
-      LinkedList<Feature*> *features;
-
-      Pal *pal;
-
-      double defaultPriority;
-
-      bool obstacle;
-      bool active;
-      bool toLabel;
-      bool displayAll;
-      bool centroidInside;
-
-      Units label_unit;
-
-      double min_scale;
-      double max_scale;
-
-      /** optional flags used for some placement methods */
-      Arrangement arrangement;
-      unsigned long arrangementFlags;
-      LabelMode mode;
-      bool mergeLines;
-
-      UpsideDownLabels upsidedownLabels;
-
-      // indexes (spatial and id)
-      RTree<FeaturePart*, double, 2, double, 8, 4> *rtree;
-      HashTable<Feature*> *hashtable;
-
-      HashTable< LinkedList<FeaturePart*>* > * connectedHashtable;
-      LinkedList< char* >* connectedTexts;
-
-      SimpleMutex *modMutex;
-
-      /**
-       * \brief Create a new layer
-       *
-       * @param lyrName layer's name
-       * @param min_scale bellow this scale: no labeling
-       * @param max_scale above this scale: no labeling
-       * @param arrangement Arrangement mode : how to place candidates
-       * @param label_unit Unit for labels sizes
-       * @param defaultPriority layer's prioriry (0 is the best, 1 the worst)
-       * @param obstacle 'true' will discourage other label to be placed above features of this layer
-       * @param active is the layer is active (currently displayed)
-       * @param toLabel the layer will be labeled whether toLablel is true
-       * @param pal pointer to the pal object
-       * @param displayAll if true, all features will be labelled even though overlaps occur
-       *
-       */
-      Layer( const char *lyrName, double min_scale, double max_scale, Arrangement arrangement, Units label_unit, double defaultPriority, bool obstacle, bool active, bool toLabel, Pal *pal, bool displayAll = false );
-
-      /**
-       * \brief Delete the layer
-       */
-      virtual ~Layer();
-
-      /**
-       * \brief check if the scal is in the scale range min_scale -> max_scale
-       * @param scale the scale to check
-       */
-      bool isScaleValid( double scale );
-
-      /** add newly creted feature part into r tree and to the list */
-      void addFeaturePart( FeaturePart* fpart, const char* labelText = NULL );
-
-    public:
-      /**
+      /** 
        * \brief get the number of features into layer
        */
       int getNbFeatures();
 
-      /**
+      /** 
        * \brief get layer's name
        */
       const char * getName();
 
 
-      /**
+      /** 
        *  \brief get arrangement policy
        */
       Arrangement getArrangement();
 
-      /**
+      /** 
        * \brief set arrangement policy
        *
        * @param arrangement arrangement policy
@@ -184,18 +110,18 @@ namespace pal
       unsigned long getArrangementFlags() const { return arrangementFlags; }
       void setArrangementFlags( unsigned long flags ) { arrangementFlags = flags; }
 
-      /**
+      /** 
        * \brief get units for label size
        */
       Units getLabelUnit();
 
-      /**
+      /** 
        * \brief set unit for label size
        *
        */
       void setLabelUnit( Units label_unit );
 
-      /**
+      /** 
        * \brief activate or desactivate the layer
        *
        * active means "is currently display". When active is false
@@ -206,13 +132,13 @@ namespace pal
        */
       void setActive( bool active );
 
-      /**
+      /** 
        * \brief return the layer's activity status
        */
       bool isActive();
 
 
-      /**
+      /** 
        * \brief tell pal whether the layer has to be labelled.
        *
        * The layer will be labelled if and only if toLabel and isActive were set to true
@@ -222,13 +148,13 @@ namespace pal
       void setToLabel( bool toLabel );
 
 
-      /**
+      /** 
        * \brief return if the layer will be labelled or not
        */
       bool isToLabel();
 
 
-      /**
+      /** 
        * \brief mark layer's features as obstacles
        *
        * Avoid putting labels over obstalces.
@@ -237,25 +163,25 @@ namespace pal
        */
       void setObstacle( bool obstacle );
 
-      /**
+      /** 
        * \brief return the obstacle status
        */
       bool isObstacle();
 
-      /**
+      /** 
        * \brief set the minimum valid scale, below this scale the layer will not be labelled
        *
        * Use -1 to disable
        */
       void setMinScale( double min_scale );
 
-      /**
+      /** 
        * \brief return the minimum valid scale
        */
       double getMinScale();
 
 
-      /**
+      /** 
        * \brief set the maximum valid scale, upon this scale the layer will not be labelled
        *
        * use -1 to disable
@@ -263,13 +189,13 @@ namespace pal
       void setMaxScale( double max_scale );
 
 
-      /**
+      /** 
        * \brief return the maximum valid scale
        */
       double getMaxScale();
 
 
-      /**
+      /** 
        * \ brief set the layer priority
        *
        * The best priority is 0, the worst is 1
@@ -278,7 +204,7 @@ namespace pal
       void setPriority( double priority );
 
 
-      /**
+      /** 
        * return the layer's priority
        */
       double getPriority();
@@ -298,7 +224,7 @@ namespace pal
       void setCentroidInside( bool forceInside ) { centroidInside = forceInside; }
       bool getCentroidInside() const { return centroidInside; }
 
-      /**
+      /** 
        * \brief register a feature in the layer
        *
        * @param geom_id unique identifier
@@ -328,15 +254,87 @@ namespace pal
                             int xQuadOffset = 0, int yQuadOffset = 0, double xOffset = 0.0, double yOffset = 0.0,
                             bool alwaysShow = false, double repeatDistance = 0 );
 
-      /** return pointer to feature or NULL if doesn't exist */
+      /** Return pointer to feature or NULL if doesn't exist */
       Feature* getFeature( const char* geom_id );
 
-      /** join connected features with the same label text */
+      /** Join connected features with the same label text */
       void joinConnectedFeatures();
 
-      /** chop layer features at the repeat distance **/
+      /** Chop layer features at the repeat distance **/
       void chopFeaturesAtRepeatDistance();
 
+    protected:
+      char *name; /* unique */
+
+      /** List of feature parts */
+      LinkedList<FeaturePart*> *featureParts;
+
+      /** List of features - for deletion */
+      LinkedList<Feature*> *features;
+
+      Pal *pal;
+
+      double defaultPriority;
+
+      bool obstacle;
+      bool active;
+      bool toLabel;
+      bool displayAll;
+      bool centroidInside;
+
+      Units label_unit;
+
+      double min_scale;
+      double max_scale;
+
+      /** Optional flags used for some placement methods */
+      Arrangement arrangement;
+      unsigned long arrangementFlags;
+      LabelMode mode;
+      bool mergeLines;
+
+      UpsideDownLabels upsidedownLabels;
+
+      // indexes (spatial and id)
+      RTree<FeaturePart*, double, 2, double, 8, 4> *rtree;
+      HashTable<Feature*> *hashtable;
+
+      HashTable< LinkedList<FeaturePart*>* > * connectedHashtable;
+      LinkedList< char* >* connectedTexts;
+
+      SimpleMutex *modMutex;
+
+      /** 
+       * \brief Create a new layer
+       *
+       * @param lyrName layer's name
+       * @param min_scale bellow this scale: no labeling
+       * @param max_scale above this scale: no labeling
+       * @param arrangement Arrangement mode : how to place candidates
+       * @param label_unit Unit for labels sizes
+       * @param defaultPriority layer's prioriry (0 is the best, 1 the worst)
+       * @param obstacle 'true' will discourage other label to be placed above features of this layer
+       * @param active is the layer is active (currently displayed)
+       * @param toLabel the layer will be labeled whether toLablel is true
+       * @param pal pointer to the pal object
+       * @param displayAll if true, all features will be labelled even though overlaps occur
+       *
+       */
+      Layer( const char *lyrName, double min_scale, double max_scale, Arrangement arrangement, Units label_unit, double defaultPriority, bool obstacle, bool active, bool toLabel, Pal *pal, bool displayAll = false );
+
+      /** 
+       * \brief Delete the layer
+       */
+      virtual ~Layer();
+
+      /** 
+       * \brief check if the scal is in the scale range min_scale -> max_scale
+       * @param scale the scale to check
+       */
+      bool isScaleValid( double scale );
+
+      /** Add newly creted feature part into r tree and to the list */
+      void addFeaturePart( FeaturePart* fpart, const char* labelText = NULL );
   };
 
 } // end namespace pal
