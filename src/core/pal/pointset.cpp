@@ -34,10 +34,6 @@
 #include <iostream>
 #endif
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include <qglobal.h>
 
 #include "pointset.h"

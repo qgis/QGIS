@@ -27,10 +27,6 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #ifndef _GEOM_FUNCTION_
 #define _GEOM_FUNCTION_
 

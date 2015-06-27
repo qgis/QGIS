@@ -27,13 +27,8 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #ifndef _PAL_H
 #define _PAL_H
-
 
 #include <QList>
 #include <iostream>

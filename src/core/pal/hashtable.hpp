@@ -27,10 +27,6 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #ifndef _HASHTABLE_HPP_
 #define _HASHTABLE_HPP_
 
