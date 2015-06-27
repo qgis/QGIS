@@ -415,10 +415,10 @@ for %%g IN (%GRASS_VERSIONS%) do (
 		"apps/%PACKAGENAME%/grass/modules/qgis.v.in!v!.exe" ^
 		"apps/%PACKAGENAME%/plugins/grassrasterprovider!v!.dll" ^
 		"apps/%PACKAGENAME%/plugins/grassprovider!v!.dll" ^
-		"etc/preremove/%PACKAGENAME%-grass-plugin!v!.bat" ^
 		"bin/%PACKAGENAME%-grass!v!.bat.tmpl" ^
 		"bin/%PACKAGENAME%-browser-grass!v!.bat.tmpl" ^
-		"etc/postinstall/%PACKAGENAME%-grass-plugin!v!.bat"
+		"etc/postinstall/%PACKAGENAME%-grass-plugin!w!.bat" ^
+		"etc/preremove/%PACKAGENAME%-grass-plugin!w!.bat"
 
 	if !v!==6 set files=!files! ^
 		"apps/%PACKAGENAME%/plugins/grassplugin!v!.dll" ^
