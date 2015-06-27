@@ -35,7 +35,6 @@
 #include <pal/pal.h>
 #include <pal/palgeometry.h>
 
-
 namespace pal
 {
 

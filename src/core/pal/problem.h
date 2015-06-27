@@ -113,10 +113,6 @@ namespace pal
 
       void reduce();
 
-
-      void post_optimization();
-
-
       /** 
        * \brief popmusic framework
        */

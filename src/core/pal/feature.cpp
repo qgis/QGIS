@@ -48,7 +48,6 @@
 #include "geomfunction.h"
 #include "labelposition.h"
 #include "pointset.h"
-#include "simplemutex.h"
 #include "util.h"
 
 #ifndef M_PI
@@ -414,17 +413,6 @@ namespace pal
     double alpha;
     double beta = 2 * M_PI / nbp; /* angle bw 2 pos */
 
-    // uncomment for Wolff 2 position model test on RailwayStation
-    //if (nbp==2)
-    //   beta = M_PI/2;
-
-#if 0
-    double distlabel =  unit_convert( this->distlabel,
-                                      pal::PIXEL,
-                                      layer->pal->map_unit,
-                                      dpi, scale, delta_width );
-#endif
-
     double lx, ly; /* label pos */
 
     /* various alpha */
@@ -576,15 +564,6 @@ namespace pal
                         f->layer->label_unit,
                         f->layer->pal->map_unit,
                         dpi, scale, delta_width );
-
-
-#if 0
-    double distlabel = unit_convert( this->distlabel,
-                                     pal::PIXEL,
-                                     layer->pal->map_unit,
-                                     dpi, scale, delta_width );
-#endif
-
 
     double *d; // segments lengths distance bw pt[i] && pt[i+1]
     double *ad;  // absolute distance bw pt[0] and pt[i] along the line
