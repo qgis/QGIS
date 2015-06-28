@@ -423,6 +423,7 @@ void QgsAttributeTableDialog::filterColumnChanged( QObject* filterAction )
   // delete previous widget
   if ( mCurrentSearchWidgetWrapper != 0 )
   {
+    mCurrentSearchWidgetWrapper->widget()->setVisible( false );
     delete mCurrentSearchWidgetWrapper;
   }
   QString fieldName = mFilterButton->defaultAction()->text();
@@ -730,15 +731,20 @@ void QgsAttributeTableDialog::filterQueryAccepted()
 
 void QgsAttributeTableDialog::setFilterExpression( QString filterString )
 {
-  mFilterQuery->setText( filterString );
-  mFilterButton->setDefaultAction( mActionAdvancedFilter );
-  mFilterButton->setPopupMode( QToolButton::MenuButtonPopup );
-  mFilterQuery->setVisible( true );
-  if ( mCurrentSearchWidgetWrapper != 0 )
+  if ( mCurrentSearchWidgetWrapper == 0 || !mCurrentSearchWidgetWrapper->applyDirectly() )
   {
-    replaceSearchWidget( mCurrentSearchWidgetWrapper->widget(), mFilterQuery );
+    mFilterQuery->setText( filterString );
+    mFilterButton->setDefaultAction( mActionAdvancedFilter );
+    mFilterButton->setPopupMode( QToolButton::MenuButtonPopup );
+    mFilterQuery->setVisible( true );
+    mApplyFilterButton->setVisible( true );
+    if ( mCurrentSearchWidgetWrapper != 0 ) 
+    {
+      // replace search widget widget with the normal filter query line edit
+      replaceSearchWidget( mCurrentSearchWidgetWrapper->widget(), mFilterQuery );
+    }
   }
-  mApplyFilterButton->setVisible( true );
+
   mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowFilteredList );
 
   QgsFeatureIds filteredFeatures;
