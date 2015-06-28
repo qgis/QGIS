@@ -12,6 +12,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import struct
 import urllib2
+import glob
 
 def error ( msg ):
   print msg
@@ -25,7 +26,7 @@ def colorDiff( c1, c2 ):
   return max( redDiff, greenDiff, blueDiff, alphaDiff )
 
 def imageFromPath(path):
-  if ( path[:7] == 'http://' ):
+  if ( path[:7] == 'http://' or path[:7] == 'file://' ):
     #fetch remote image
     data = urllib2.urlopen(path).read()
     image = QImage()
@@ -33,6 +34,34 @@ def imageFromPath(path):
   else:
     image = QImage( path )
   return image
+
+def getControlImagePath(path):
+  if os.path.isfile(path):
+    return path
+
+  #else try and find matching test image
+  script_folder = os.path.dirname(os.path.realpath(sys.argv[0]))
+  control_images_folder = os.path.join( script_folder, '../tests/testdata/control_images')
+
+  matching_control_images = [x[0] for x in os.walk(control_images_folder) if path in x[0]]
+  if len(matching_control_images) > 1:
+    error('Found multiple matching control images for {}'.format(path))
+  elif len(matching_control_images) == 0:
+    error('No matching control images found for {}'.format(path))
+
+  found_control_image_path = matching_control_images[0]
+
+  #check for a single matching expected image
+  images = glob.glob( os.path.join(found_control_image_path, '*.png') )
+  filtered_images = [i for i in images if not i[-9:] == '_mask.png']
+  if len(filtered_images) > 1:
+    error('Found multiple matching control images for {}'.format(path))
+  elif len(filtered_images) == 0:
+    error('No matching control images found for {}'.format(path))
+
+  found_image = filtered_images[0]
+  print 'Found matching control image: {}'.format(found_image)
+  return found_image
 
 def updateMask(control_image_path, rendered_image_path, mask_image_path):
   control_image = imageFromPath( control_image_path )
@@ -91,6 +120,8 @@ parser.add_argument('control_image')
 parser.add_argument('rendered_image')
 parser.add_argument('mask_image', nargs='?', default=None)
 args = parser.parse_args()
+
+args.control_image = getControlImagePath( args.control_image)
 
 if not args.mask_image:
   args.mask_image = args.control_image[:-4] + '_mask.png'
