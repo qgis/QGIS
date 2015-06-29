@@ -25,6 +25,9 @@ our @inc;
 
 END { die "header files not empty" if @inc; }
 
+# Also fix doxygen comments
+s#^(\s*)/\*[*!]\s*([^\s*].*)\s*$#$1/** \u$2\n#;
+
 if( /^\s*#include/ ) {
 	push @inc, $_ unless exists $inc{$_};
 	$inc{$_}=1;
