@@ -93,6 +93,7 @@ SET(QGIS_CORE_SRCS
   qgsdistancearea.cpp
   qgserror.cpp
   qgsexpression.cpp
+  qgsexpressioncontext.cpp
   qgsexpression_texts.cpp
   qgsexpressionfieldbuffer.cpp
   qgsfeature.cpp
@@ -533,6 +534,7 @@ SET(QGIS_CORE_HDRS
   qgserror.h
   qgsexception.h
   qgsexpression.h
+  qgsexpressioncontext.h
   qgsexpressionfieldbuffer.h
   qgsfeature.h
   qgsfeature_p.h
