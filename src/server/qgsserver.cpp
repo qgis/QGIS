@@ -373,7 +373,7 @@ bool QgsServer::init( int & argc, char ** argv )
   mMapRenderer =  new QgsMapRenderer;
   mMapRenderer->setLabelingEngine( new QgsPalLabeling() );
 
-#ifdef QGSMSDEBUG
+#ifdef ENABLE_MS_TESTS
   QgsFontUtils::loadStandardTestFonts( QStringList() << "Roman" << "Bold" );
 #endif
 
