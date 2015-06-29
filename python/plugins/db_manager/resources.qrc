@@ -27,5 +27,6 @@
     <file alias="create_table">icons/toolbar/action_new_table.png</file>
     <file alias="refresh">icons/toolbar/action_refresh.png</file>
     <file alias="sql_window">icons/toolbar/action_sql_window.png</file>
+    <file alias="delete">icons/toolbar/action_delete.png</file>
   </qresource>
 </RCC>
