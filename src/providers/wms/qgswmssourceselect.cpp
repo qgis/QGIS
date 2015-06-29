@@ -474,6 +474,8 @@ void QgsWMSSourceSelect::on_btnConnect_clicked()
     return;
   }
 
+  mFeatureCount->setEnabled( caps.identifyCapabilities() != QgsRasterInterface::NoCapabilities );
+
   populateLayerList( caps );
 }
 
