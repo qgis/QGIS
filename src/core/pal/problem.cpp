@@ -29,10 +29,6 @@
 
 #define _CRT_SECURE_NO_DEPRECATE
 
-#ifdef _EXPORT_MAP_
-#include <cstdlib>
-#endif
-
 #include <iostream>
 #include <fstream>
 #include <cstring>
@@ -2789,28 +2785,5 @@ namespace pal
     std::cout << "solution cost:" << sol->cost << std::endl;
 #endif
   }
-
-
-#ifdef _EXPORT_MAP_
-  void Problem::drawLabels( std::ofstream &svgmap )
-  {
-    int i;
-
-    svgmap << "<g inkscape:label=\"labels\"" << std::endl
-    <<     "inkscape:groupmode=\"layer\"" << std::endl
-    <<     "id=\"label_layer\">" << std::endl << std::endl;
-
-    for ( i = 0; i < nbft; i++ )
-    {
-      if ( sol->s[i] >= 0 )
-      {
-        LabelPosition *lp = labelpositions[sol->s[i]];
-        toSVGPath( 4, 3, lp->x, lp->y, pal->getDpi(), scale, convert2pt( bbox[0], scale, pal->getDpi() ), convert2pt( bbox[3], scale, pal->getDpi() ), "label", lp->feature->uid, svgmap );
-      }
-    }
-
-    svgmap << "</g>" << std::endl;
-  }
-#endif
 
 } // namespace

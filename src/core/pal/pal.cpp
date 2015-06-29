@@ -28,7 +28,6 @@
  */
 
 //#define _VERBOSE_
-//#define _EXPORT_MAP_
 #include <QTime>
 
 #define _CRT_SECURE_NO_DEPRECATE
@@ -211,9 +210,6 @@ namespace pal
     double priority;
     double bbox_min[2];
     double bbox_max[2];
-#ifdef _EXPORT_MAP_
-    std::ofstream *svgmap;
-#endif
   } FeatCallBackCtx;
 
 
@@ -228,12 +224,6 @@ namespace pal
     double amin[2], amax[2];
 
     FeatCallBackCtx *context = ( FeatCallBackCtx* ) ctx;
-
-#ifdef _EXPORT_MAP_
-    bool svged = false; // is the feature has been written into the svg map?
-    int dpi = context->layer->pal->getDpi();
-#endif
-
 
 #ifdef _DEBUG_FULL_
     std::cout << "extract feat : " << ft_ptr->getLayer()->getName() << "/" << ft_ptr->getUID() << std::endl;
@@ -276,11 +266,7 @@ namespace pal
 
     // generate candidates for the feature part
     LabelPosition** lPos = NULL;
-    int nblp = ft_ptr->setPosition( context->scale, &lPos, context->bbox_min, context->bbox_max, ft_ptr, context->candidates
-#ifdef _EXPORT_MAP_
-                                    , *context->svgmap
-#endif
-                                  );
+    int nblp = ft_ptr->setPosition( context->scale, &lPos, context->bbox_min, context->bbox_max, ft_ptr, context->candidates );
 
     if ( nblp > 0 )
     {
@@ -335,23 +321,8 @@ namespace pal
     return true;
   }
 
-
-  /**
-  * \brief Problem Factory
-  * Select features from user's choice layers within
-  * a specific bounding box
-  * @param nbLayers # wanted layers
-  * @param layersFactor layers importance
-  * @param layersName layers in problem
-  * @param lambda_min west bbox
-  * @param phi_min south bbox
-  * @param lambda_max east bbox
-  * @param phi_max north bbox
-  * @param scale the scale
-  */
-  Problem* Pal::extract( int nbLayers, char **layersName, double *layersFactor, double lambda_min, double phi_min, double lambda_max, double phi_max, double scale, std::ofstream *svgmap )
+  Problem* Pal::extract( int nbLayers, char **layersName, double *layersFactor, double lambda_min, double phi_min, double lambda_max, double phi_max, double scale )
   {
-    Q_UNUSED( svgmap );
     // to store obstacles
     RTree<PointSet*, double, 2, double> *obstacles = new RTree<PointSet*, double, 2, double>();
 
@@ -391,10 +362,6 @@ namespace pal
 
     context->bbox_max[0] = amax[0];
     context->bbox_max[1] = amax[1];
-
-#ifdef _EXPORT_MAP_
-    context->svgmap = svgmap;
-#endif
 
 #ifdef _VERBOSE_
     std::cout <<  nbLayers << "/" << layers->size() << " layers to extract " << std::endl;
@@ -436,19 +403,9 @@ namespace pal
             context->priority = layersFactor[i];
             // lookup for feature (and generates candidates list)
 
-#ifdef _EXPORT_MAP_
-            *svgmap << "<g inkscape:label=\"" << layer->name << "\"" << std::endl
-            <<  "    inkscape:groupmode=\"layer\"" << std::endl
-            <<  "    id=\"" << layer->name << "\">" << std::endl << std::endl;
-#endif
-
             context->layer->mMutex.lock();
             context->layer->rtree->Search( amin, amax, extractFeatCallback, ( void* ) context );
             context->layer->mMutex.unlock();
-
-#ifdef _EXPORT_MAP_
-            *svgmap  << "</g>" << std::endl << std::endl;
-#endif
 
 #ifdef _VERBOSE_
             std::cout << "Layer's name: " << layer->getName() << std::endl;
@@ -708,35 +665,12 @@ namespace pal
     std::cout << std::endl << "bbox: " << bbox[0] << " " << bbox[1] << " " << bbox[2] << " " << bbox[3] << std::endl;
 #endif
 
-#ifdef _EXPORT_MAP_
-    // TODO this is not secure
-    std::ofstream svgmap( "pal-map.svg" );
-
-    svgmap << "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>" << std::endl
-    << "<svg" << std::endl
-    << "xmlns:dc=\"http://purl.org/dc/elements/1.1/\"" << std::endl
-    << "xmlns:cc=\"http://creativecommons.org/ns#\"" << std::endl
-    << "xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"" << std::endl
-    << "xmlns:svg=\"http://www.w3.org/2000/svg\"" << std::endl
-    << "xmlns=\"http://www.w3.org/2000/svg\"" << std::endl
-    << "xmlns:sodipodi=\"http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd\"" << std::endl
-    << "xmlns:inkscape=\"http://www.inkscape.org/namespaces/inkscape\"" << std::endl
-    << "width=\"" << convert2pt( bbox[2] - bbox[0], scale, dpi )  << "\"" << std::endl
-    << "height=\"" << convert2pt( bbox[3] - bbox[1], scale, dpi )  << "\">" << std::endl; // TODO xmax ymax
-#endif
-
     QTime t;
     t.start();
 
     // First, extract the problem
     // TODO which is the minimum scale? (> 0, >= 0, >= 1, >1 )
-    if ( scale < 1 || ( prob = extract( nbLayers, layersName, layersFactor, bbox[0], bbox[1], bbox[2], bbox[3], scale,
-#ifdef _EXPORT_MAP_
-                                        & svgmap
-#else
-                                        NULL
-#endif
-                                      ) ) == NULL )
+    if ( scale < 1 || ( prob = extract( nbLayers, layersName, layersFactor, bbox[0], bbox[1], bbox[2], bbox[3], scale ) ) == NULL )
     {
 
 #ifdef _VERBOSE_
@@ -744,11 +678,6 @@ namespace pal
         std::cout << "Scale is 1:" << scale << std::endl;
       else
         std::cout << "empty problem... finishing" << std::endl;
-#endif
-
-#ifdef _EXPORT_MAP_
-      svgmap << "</svg>" << std::endl;
-      svgmap.close();
 #endif
 
       // nothing to be done => return an empty result set
@@ -799,12 +728,6 @@ namespace pal
     if ( stats )
       *stats = prob->getStats();
 
-#ifdef _EXPORT_MAP_
-    prob->drawLabels( svgmap );
-    svgmap << "</svg>" << std::endl;
-    svgmap.close();
-#endif
-
 #ifdef _VERBOSE_
     clock_t total_time =  clock() - start;
     std::cout << "    Total time: " << double( total_time ) / double( CLOCKS_PER_SEC ) << std::endl;
@@ -847,7 +770,7 @@ namespace pal
     }
     mMutex.unlock();
 
-    Problem* prob = extract( nbLayers, layersName, priorities, bbox[0], bbox[1], bbox[2], bbox[3], scale, NULL );
+    Problem* prob = extract( nbLayers, layersName, priorities, bbox[0], bbox[1], bbox[2], bbox[3], scale );
 
     delete[] layersName;
     delete[] priorities;

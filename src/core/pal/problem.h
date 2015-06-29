@@ -49,30 +49,30 @@ namespace pal
 
   typedef struct _subpart
   {
-    /** 
+    /**
      * # of features in problem
      */
     int probSize;
 
-    /** 
+    /**
      * # of features bounding the problem
      */
     int borderSize;
 
-    /** 
+    /**
      *  total # features (prob + border)
      */
     int subSize;
 
-    /** 
+    /**
      * wrap bw sub feat and main feat
      */
     int *sub;
-    /** 
+    /**
      * sub solution
      */
     int *sol;
-    /** 
+    /**
      * first feat in sub part
      */
     int seed;
@@ -86,7 +86,7 @@ namespace pal
     int *label;
   } Chain;
 
-  /** 
+  /**
    * \brief Represent a problem
    */
   class CORE_EXPORT Problem
@@ -113,12 +113,12 @@ namespace pal
 
       void reduce();
 
-      /** 
+      /**
        * \brief popmusic framework
        */
       void popmusic();
 
-      /** 
+      /**
        * \brief Test with very-large scale neighborhood
        */
       void chain_search();
@@ -147,48 +147,44 @@ namespace pal
 
       static bool compareLabelArea( pal::LabelPosition* l1, pal::LabelPosition* l2 );
 
-#ifdef _EXPORT_MAP_
-      void drawLabels( std::ofstream &svgmap );
-#endif
-
     private:
 
-      /** 
+      /**
        * How many layers are labelled ?
        */
       int nbLabelledLayers;
 
-      /** 
+      /**
        * Names of the labelled layers
        */
       char **labelledLayersName;
 
-      /** 
+      /**
        * # active candidates (remaining after reduce())
        */
       int nblp;
-      /** 
+      /**
        * # candidates (all, including)
        */
       int all_nblp;
 
-      /** 
+      /**
        * # feature to label
        */
       int nbft;
 
 
-      /** 
+      /**
        * if true, special value -1 is prohibited
        */
       bool displayAll;
 
-      /** 
+      /**
        * Map extent (xmin, ymin, xmax, ymax)
        */
       double bbox[4];
 
-      /** 
+      /**
        * map scale is 1:scale
        */
       double scale;

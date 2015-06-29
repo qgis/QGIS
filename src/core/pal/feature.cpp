@@ -1322,19 +1322,11 @@ namespace pal
 
   int FeaturePart::setPosition( double scale, LabelPosition ***lPos,
                                 double bbox_min[2], double bbox_max[2],
-                                PointSet *mapShape, RTree<LabelPosition*, double, 2, double> *candidates
-#ifdef _EXPORT_MAP_
-                                , std::ofstream &svgmap
-#endif
-                              )
+                                PointSet *mapShape, RTree<LabelPosition*, double, 2, double> *candidates )
   {
     int nbp = 0;
     int i;
     double bbox[4];
-
-#ifdef _EXPORT_MAP_
-    int dpi = layer->pal->getDpi();
-#endif
 
     bbox[0] = bbox_min[0];
     bbox[1] = bbox_min[1];

@@ -127,7 +127,7 @@ namespace pal
       //FeaturePart** parts;
   };
 
-  /** 
+  /**
    * \brief Main class to handle feature
    */
   class CORE_EXPORT FeaturePart : public PointSet
@@ -135,7 +135,7 @@ namespace pal
 
     public:
 
-      /** 
+      /**
         * \brief create a new generic feature
         *
         * \param feat a pointer for a Feat which contains the spatial entites
@@ -143,12 +143,12 @@ namespace pal
         */
       FeaturePart( Feature *feat, const GEOSGeometry* geom );
 
-      /** 
+      /**
        * \brief Delete the feature
        */
       virtual ~FeaturePart();
 
-      /** 
+      /**
        * \brief generate candidates for point feature
        * Generate candidates for point features
        * \param x x coordinates of the point
@@ -161,12 +161,12 @@ namespace pal
        */
       int setPositionForPoint( double x, double y, double scale, LabelPosition ***lPos, double delta_width, double angle );
 
-      /** 
+      /**
        * generate one candidate over specified point
        */
       int setPositionOverPoint( double x, double y, double scale, LabelPosition ***lPos, double delta_width, double angle );
 
-      /** 
+      /**
        * \brief generate candidates for line feature
        * Generate candidates for line features
        * \param scale map scale is 1:scale
@@ -180,12 +180,12 @@ namespace pal
       LabelPosition* curvedPlacementAtOffset( PointSet* path_positions, double* path_distances,
                                               int orientation, int index, double distance );
 
-      /** 
+      /**
        * Generate curved candidates for line features
        */
       int setPositionForLineCurved( LabelPosition ***lPos, PointSet* mapShape );
 
-      /** 
+      /**
        * \brief generate candidates for point feature
        * Generate candidates for point features
        * \param scale map scale is 1:scale
@@ -196,25 +196,25 @@ namespace pal
        */
       int setPositionForPolygon( double scale, LabelPosition ***lPos, PointSet *mapShape, double delta_width );
 
-      /** 
+      /**
        * \brief return the feature
        * \return the feature
        */
       Feature* getFeature() { return f; }
 
-      /** 
+      /**
        * \brief return the geometry
        * \return the geometry
        */
       const GEOSGeometry* getGeometry() const { return the_geom; }
 
-      /** 
+      /**
        * \brief return the layer that feature belongs to
        * \return the layer of the feature
        */
       Layer * getLayer();
 
-      /** 
+      /**
        * \brief generic method to generate candidates
        * This method will call either setPositionFromPoint(), setPositionFromLine or setPositionFromPolygon
        * \param scale the map scale is 1:scale
@@ -225,20 +225,16 @@ namespace pal
        * \param candidates index for candidates
        * \return the number of candidates in *lPos
        */
-      int setPosition( double scale, LabelPosition ***lPos, double bbox_min[2], double bbox_max[2], PointSet *mapShape, RTree<LabelPosition*, double, 2, double>*candidates
-#ifdef _EXPORT_MAP_
-                       , std::ofstream &svgmap
-#endif
-                     );
+      int setPosition( double scale, LabelPosition ***lPos, double bbox_min[2], double bbox_max[2], PointSet *mapShape, RTree<LabelPosition*, double, 2, double>*candidates );
 
-      /** 
+      /**
        * \brief get the unique id of the feature
        * \return the feature unique identifier
        */
       const char *getUID();
 
 
-      /** 
+      /**
        * \brief Print feature information
        * Print feature unique id, geometry type, points, and holes on screen
        */
