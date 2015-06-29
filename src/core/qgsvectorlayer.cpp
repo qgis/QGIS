@@ -2115,6 +2115,9 @@ const QString QgsVectorLayer::editorWidgetV2( const QString& fieldName ) const
 
 const QgsEditorWidgetConfig QgsVectorLayer::editorWidgetV2Config( int fieldIdx ) const
 {
+  if ( fieldIdx < 0 || fieldIdx >= mUpdatedFields.count() )
+    return QgsEditorWidgetConfig();
+
   return mEditorWidgetV2Configs.value( mUpdatedFields[fieldIdx].name() );
 }
 
@@ -2344,7 +2347,7 @@ QgsFeatureList QgsVectorLayer::selectedFeatures()
   {
     // for small amount of selected features, fetch them directly
     // because request with FilterFids would go iterate over the whole layer
-    foreach ( int fid, mSelectedFeatureIds )
+    foreach ( QgsFeatureId fid, mSelectedFeatureIds )
     {
       getFeatures( QgsFeatureRequest( fid ) ).nextFeature( f );
       features << f;
@@ -2613,6 +2616,9 @@ bool QgsVectorLayer::isModified() const
 
 QgsVectorLayer::EditType QgsVectorLayer::editType( int idx )
 {
+  if ( idx < 0 || idx >= mUpdatedFields.count() )
+    return Hidden;
+
   Q_NOWARN_DEPRECATED_PUSH
   return QgsLegacyHelpers::convertEditType( editorWidgetV2( idx ), editorWidgetV2Config( idx ), this, mUpdatedFields[ idx ].name() );
   Q_NOWARN_DEPRECATED_POP
@@ -2620,6 +2626,9 @@ QgsVectorLayer::EditType QgsVectorLayer::editType( int idx )
 
 void QgsVectorLayer::setEditType( int idx, EditType type )
 {
+  if ( idx < 0 || idx >= mUpdatedFields.count() )
+    return;
+
   QgsEditorWidgetConfig cfg;
 
   Q_NOWARN_DEPRECATED_PUSH
@@ -2642,11 +2651,17 @@ void QgsVectorLayer::setEditorLayout( EditorLayout editorLayout )
 
 void QgsVectorLayer::setEditorWidgetV2( int attrIdx, const QString& widgetType )
 {
+  if ( attrIdx < 0 || attrIdx >= mUpdatedFields.count() )
+    return;
+
   mEditorWidgetV2Types[ mUpdatedFields[ attrIdx ].name()] = widgetType;
 }
 
 void QgsVectorLayer::setEditorWidgetV2Config( int attrIdx, const QgsEditorWidgetConfig& config )
 {
+  if ( attrIdx < 0 || attrIdx >= mUpdatedFields.count() )
+    return;
+
   mEditorWidgetV2Configs[ mUpdatedFields[ attrIdx ].name()] = config;
 }
 
@@ -2825,7 +2840,7 @@ int QgsVectorLayer::fieldNameIndex( const QString& fieldName ) const
 
 bool QgsVectorLayer::addJoin( const QgsVectorJoinInfo& joinInfo )
 {
-  return mJoinBuffer->addJoin( joinInfo );
+  return mJoinBuffer && mJoinBuffer->addJoin( joinInfo );
 }
 
 void QgsVectorLayer::checkJoinLayerRemove( QString theLayerId )
@@ -2835,12 +2850,16 @@ void QgsVectorLayer::checkJoinLayerRemove( QString theLayerId )
 
 void QgsVectorLayer::removeJoin( const QString& joinLayerId )
 {
-  mJoinBuffer->removeJoin( joinLayerId );
+  if ( mJoinBuffer )
+    mJoinBuffer->removeJoin( joinLayerId );
 }
 
-const QList< QgsVectorJoinInfo >& QgsVectorLayer::vectorJoins() const
+const QList< QgsVectorJoinInfo > QgsVectorLayer::vectorJoins() const
 {
-  return mJoinBuffer->vectorJoins();
+  if ( mJoinBuffer )
+    return mJoinBuffer->vectorJoins();
+  else
+    return QList< QgsVectorJoinInfo >();
 }
 
 void QgsVectorLayer::addExpressionField( const QString& exp, const QgsField& fld )

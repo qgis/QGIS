@@ -23,6 +23,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrectangle.h"
 #include "qgsconfig.h"
+#include "qgslocalec.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -1409,31 +1410,29 @@ QgsCoordinateReferenceSystem GRASS_LIB_EXPORT QgsGrass::crsDirect( QString gisdb
   QgsGrass::resetError();
   QgsGrass::setLocation( gisdbase, location );
 
-  const char *oldlocale = setlocale( LC_NUMERIC, NULL );
-  setlocale( LC_NUMERIC, "C" );
-
-  G_TRY
   {
-    G_get_default_window( &cellhd );
-  }
-  G_CATCH( QgsGrass::Exception &e )
-  {
-    Q_UNUSED( e );
-    setlocale( LC_NUMERIC, oldlocale );
-    QgsDebugMsg( QString( "Cannot get default window: %1" ).arg( e.what() ) );
-    return QgsCoordinateReferenceSystem();
-  }
+    QgsLocaleNumC l;
 
-  if ( cellhd.proj != PROJECTION_XY )
-  {
-    struct Key_Value *projinfo = G_get_projinfo();
-    struct Key_Value *projunits = G_get_projunits();
-    char *wkt = GPJ_grass_to_wkt( projinfo, projunits, 0, 0 );
-    Wkt = QString( wkt );
-    G_free( wkt );
-  }
+    G_TRY
+    {
+      G_get_default_window( &cellhd );
+    }
+    G_CATCH( QgsGrass::Exception &e )
+    {
+      Q_UNUSED( e );
+      QgsDebugMsg( QString( "Cannot get default window: %1" ).arg( e.what() ) );
+      return QgsCoordinateReferenceSystem();
+    }
 
-  setlocale( LC_NUMERIC, oldlocale );
+    if ( cellhd.proj != PROJECTION_XY )
+    {
+      struct Key_Value *projinfo = G_get_projinfo();
+      struct Key_Value *projunits = G_get_projunits();
+      char *wkt = GPJ_grass_to_wkt( projinfo, projunits, 0, 0 );
+      Wkt = QString( wkt );
+      G_free( wkt );
+    }
+  }
 
   QgsCoordinateReferenceSystem srs;
   srs.createFromWkt( Wkt );

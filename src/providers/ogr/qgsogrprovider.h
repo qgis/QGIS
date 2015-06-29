@@ -243,9 +243,9 @@ class QgsOgrProvider : public QgsVectorDataProvider
     QString description() const override;
 
     /** Returns true if the provider is strict about the type of inserted features
-          (e.g. no multipolygon in a polygon layer)
-          */
-    virtual bool doesStrictFeatureTypeCheck() const override { return false;}
+        (e.g. no multipolygon in a polygon layer)
+      */
+    virtual bool doesStrictFeatureTypeCheck() const override;
 
     /** return OGR geometry type */
     static OGRwkbGeometryType getOgrGeomType( OGRLayerH ogrLayer );

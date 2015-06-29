@@ -48,11 +48,11 @@ bool QgsAttributeTableFilterModel::lessThan( const QModelIndex &left, const QMod
 
     if ( leftSelected && !rightSelected )
     {
-      return true;
+      return sortOrder() == Qt::AscendingOrder;
     }
     else if ( rightSelected && !leftSelected )
     {
-      return false;
+      return sortOrder() == Qt::DescendingOrder;
     }
   }
 

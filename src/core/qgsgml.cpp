@@ -369,6 +369,7 @@ void QgsGml::endElement( const XML_Char* el )
     if ( mCurrentWKBSize > 0 )
     {
       mCurrentFeature->setGeometryAndOwnership( mCurrentWKB, mCurrentWKBSize );
+      mCurrentWKB = 0;
     }
     else if ( !mCurrentExtent.isEmpty() )
     {

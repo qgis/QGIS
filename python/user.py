@@ -1,8 +1,10 @@
 import os
 import sys
 import glob
+import traceback
 
-from qgis.core import QgsApplication
+from PyQt4.QtCore import QCoreApplication
+from qgis.core import QgsApplication, QgsMessageLog
 
 def load_user_expressions(path):
     """
@@ -14,9 +16,16 @@ def load_user_expressions(path):
     for name in names:
         if name == "__init__":
             continue
-        # As user expression functions should be registed with qgsfunction
+        # As user expression functions should be registered with qgsfunction
         # just importing the file is enough to get it to load the functions into QGIS
-        __import__("expressions.{0}".format(name), locals(), globals())
+        try:
+            __import__("expressions.{0}".format(name), locals(), globals())
+        except:
+            error = traceback.format_exc()
+            msgtitle = QCoreApplication.translate("UserExpressions", "User expressions")
+            msg = QCoreApplication.translate("UserExpressions",
+                                             "The user expression {0} is not valid".format(name))
+            QgsMessageLog.logMessage(msg +"\n"+ error, msgtitle, QgsMessageLog.WARNING)
 
 
 userpythonhome = os.path.join(QgsApplication.qgisSettingsDirPath(), "python")

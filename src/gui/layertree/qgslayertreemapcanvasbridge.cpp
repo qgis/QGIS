@@ -86,6 +86,17 @@ void QgsLayerTreeMapCanvasBridge::setCustomLayerOrder( const QStringList& order 
   QStringList sortedNewOrder = order;
   qSort( defOrder );
   qSort( sortedNewOrder );
+
+  if ( defOrder.size() < sortedNewOrder.size() )
+  {
+    // some bad layers in the list?
+    for ( int i = 0; i < sortedNewOrder.size(); i++ )
+    {
+      if ( i >= defOrder.size() || defOrder[i] != sortedNewOrder[i] )
+        sortedNewOrder.removeAt( i-- );
+    }
+  }
+
   if ( defOrder != sortedNewOrder )
     return; // must be permutation of the default order
 
@@ -182,6 +193,8 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
 
 void QgsLayerTreeMapCanvasBridge::readProject( const QDomDocument& doc )
 {
+  mFirstCRS = QgsCoordinateReferenceSystem(); // invalidate on project load
+
   QDomElement elem = doc.documentElement().firstChildElement( "layer-tree-canvas" );
   if ( elem.isNull() )
   {

@@ -299,6 +299,20 @@ void QgsAttributeForm::onAttributeDeleted( int idx )
   setFeature( mFeature );
 }
 
+void QgsAttributeForm::refreshFeature()
+{
+  if ( mLayer->isEditable() || !mFeature.isValid() )
+    return;
+
+  // reload feature if layer changed although not editable
+  // (datasource probably changed bypassing QgsVectorLayer)
+  if ( !mLayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeature.id() ) ).nextFeature( mFeature ) )
+    return;
+
+  init();
+  setFeature( mFeature );
+}
+
 void QgsAttributeForm::synchronizeEnabledState()
 {
   bool isEditable = ( mFeature.isValid() || mIsAddDialog ) && mLayer->isEditable();

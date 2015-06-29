@@ -2929,7 +2929,15 @@ bool QgisApp::addVectorLayers( const QStringList &theLayerQStringList, const QSt
         QStringList sublayers = layer->dataProvider()->subLayers();
         QStringList elements = sublayers.at( 0 ).split( ":" );
         if ( layer->storageType() != "GeoJSON" )
+        {
+          while ( elements.size() > 4 )
+          {
+            elements[1] += ":" + elements[2];
+            elements.removeAt( 2 );
+          }
+
           layer->setLayerName( elements.at( 1 ) );
+        }
         myList << layer;
       }
       else
@@ -3254,8 +3262,20 @@ void QgisApp::loadOGRSublayers( QString layertype, QString uri, QStringList list
   for ( int i = 0; i < list.size(); i++ )
   {
     QString composedURI;
-    QString layerName = list.at( i ).split( ':' ).value( 0 );
-    QString layerType = list.at( i ).split( ':' ).value( 1 );
+    QStringList elements = list.at( i ).split( ":" );
+    while ( elements.size() > 2 )
+    {
+      elements[0] += ":" + elements[1];
+      elements.removeAt( 1 );
+    }
+
+    QString layerName = elements.value( 0 );
+    QString layerType = elements.value( 1 );
+    if ( layerType == "any" )
+    {
+      layerType = "";
+      elements.removeAt( 1 );
+    }
 
     if ( layertype != "GRASS" )
     {
@@ -6208,12 +6228,13 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
       // convert geometry to match destination layer
       QGis::GeometryType destType = pasteVectorLayer->geometryType();
       bool destIsMulti = QGis::isMultiType( pasteVectorLayer->wkbType() );
-      if ( pasteVectorLayer->storageType() == "ESRI Shapefile" && destType != QGis::Point )
+      if ( pasteVectorLayer->dataProvider() &&
+           !pasteVectorLayer->dataProvider()->doesStrictFeatureTypeCheck() )
       {
-        // force destination to multi if shapefile if it's not a point file
-        // Should we really force anything here?  Isn't it better to just transform?
+        // force destination to multi if provider doesn't do a feature strict check
         destIsMulti = true;
       }
+
       if ( destType != QGis::UnknownGeometry )
       {
         QgsGeometry* newGeometry = featureIt->geometry()->convertToType( destType, destIsMulti );
@@ -6929,6 +6950,9 @@ void QgisApp::showMouseCoordinate( const QgsPoint & p )
   {
     if ( mMapCanvas->mapUnits() == QGis::Degrees )
     {
+      if ( !mMapCanvas->mapSettings().destinationCrs().isValid() )
+        return;
+
       QgsPoint geo = p;
       if ( !mMapCanvas->mapSettings().destinationCrs().geographicFlag() )
       {
@@ -7146,7 +7170,12 @@ void QgisApp::duplicateLayers( QList<QgsMapLayer *> lyrList )
       }
       else if ( vlayer )
       {
-        dupLayer = new QgsVectorLayer( vlayer->source(), layerDupName, vlayer->providerType() );
+        QgsVectorLayer *dupVLayer = new QgsVectorLayer( vlayer->source(), layerDupName, vlayer->providerType() );
+        if ( vlayer->dataProvider() )
+        {
+          dupVLayer->setProviderEncoding( vlayer->dataProvider()->encoding() );
+        }
+        dupLayer = dupVLayer;
       }
     }
 

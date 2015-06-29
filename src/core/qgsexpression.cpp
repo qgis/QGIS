@@ -1345,6 +1345,11 @@ static QVariant fcnFormatNumber( const QVariantList& values, const QgsFeature*, 
 {
   double value = getDoubleValue( values.at( 0 ), parent );
   int places = getIntValue( values.at( 1 ), parent );
+  if ( places < 0 )
+  {
+    parent->setEvalErrorString( QObject::tr( "Number of places must be positive" ) );
+    return QVariant();
+  }
   return QString( "%L1" ).arg( value, 0, 'f', places );
 }
 

@@ -1,9 +1,9 @@
 /***************************************************************************
-                             qgsdial.h
+                          qgslocalec.h - temporary C numeric locale
                              -------------------
-    begin                : July 2013
-    copyright            : (C) 2013 by Daniel Vaz
-    email                : danielvaz at gmail dot com
+    begin                : Jun 15th 2015
+    copyright            : (C) 2015 by Juergen E. Fischer
+    email                : jef at norbit dot de
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,34 +15,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QPainter>
-#include <QPaintEvent>
-#include <QSize>
-#include <QDial>
+#ifndef QGSLOCALENUMC_H
+#define QGSLOCALENUMC_H
 
-class GUI_EXPORT QgsDial : public QDial
+#include <QMutex>
+
+class CORE_EXPORT QgsLocaleNumC
 {
-    Q_OBJECT
+    char *mOldlocale;
+    static QMutex sLocaleLock;
+
   public:
-    QgsDial( QWidget *parent = 0 );
+    QgsLocaleNumC();
+    ~QgsLocaleNumC();
 
-    void setMinimum( const QVariant &min );
-    void setMaximum( const QVariant &max );
-    void setSingleStep( const QVariant &step );
-    void setValue( const QVariant &value );
-    QVariant variantValue() const;
-
-  signals:
-    void valueChanged( QVariant );
-
-  protected slots:
-    void valueChanged( int );
-
-  protected:
-    virtual void paintEvent( QPaintEvent * event ) override;
-
-  private:
-    void update();
-
-    QVariant mMin, mMax, mStep, mValue;
 };
+
+#endif // QGSLOCALENUMC_H

@@ -18,7 +18,6 @@ class APP_EXPORT QgsLoadStyleFromDBDialog : public QDialog, private Ui::QgsLoadS
 {
     QString mSelectedStyleId;
     int mSectionLimit;
-    QStringList mIds, mNames, mDescriptions;
     QString qmlStyle;
     Q_OBJECT
   public:
