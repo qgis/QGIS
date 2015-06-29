@@ -128,7 +128,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QgsRasterInterface * clone() const override;
 
 
-    /*! Get the QgsCoordinateReferenceSystem for this layer
+    /** Get the QgsCoordinateReferenceSystem for this layer
      * @note Must be reimplemented by each provider.
      * If the provider isn't capable of returning
      * its projection an empty srs will be return, ti will return 0
@@ -176,26 +176,26 @@ class QgsWmsProvider : public QgsRasterDataProvider
     */
     virtual QgsRectangle extent() override;
 
-    /**Returns true if layer is valid
+    /** Returns true if layer is valid
      */
     bool isValid() override;
 
 #if 0
-    /**Returns true if layer has tile set profiles
+    /** Returns true if layer has tile set profiles
      */
     virtual bool hasTiles() const;
 #endif
 
-    /**Returns the GetMap url */
+    /** Returns the GetMap url */
     virtual QString getMapUrl() const;
 
-    /**Returns the GetFeatureInfo url */
+    /** Returns the GetFeatureInfo url */
     virtual QString getFeatureInfoUrl() const;
 
-    /**Return the GetTile url */
+    /** Return the GetTile url */
     virtual QString getTileUrl() const;
 
-    /**Return the GetLegendGraphic url
+    /** Return the GetLegendGraphic url
      * @added in 2.1
      */
     virtual QString getLegendGraphicUrl() const;
@@ -265,9 +265,6 @@ class QgsWmsProvider : public QgsRasterDataProvider
       */
     int capabilities() const override;
 
-    /** Server identify capabilities, used by source select. */
-    int identifyCapabilities() const;
-
     QGis::DataType dataType( int bandNo ) const override;
     QGis::DataType srcDataType( int bandNo ) const override;
     int bandCount() const override;
@@ -305,7 +302,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     QString lastErrorFormat() override;
 
-    /** return a provider name
+    /** Return a provider name
 
     Essentially just returns the provider key.  Should be used to build file
     dialogs so that providers can be shown with their supported types. Thus
@@ -322,7 +319,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QString name() const override;
 
 
-    /** return description
+    /** Return description
 
     Return a terse string describing what the provider is.
 
@@ -335,7 +332,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     */
     QString description() const override;
 
-    /**Reloads the data from the source. Needs to be implemented by providers with data caches to
+    /** Reloads the data from the source. Needs to be implemented by providers with data caches to
       synchronize with changes in the data source*/
     virtual void reloadData() override;
 
@@ -433,7 +430,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
   private:
 
-    /**Return the full url to request legend graphic
+    /** Return the full url to request legend graphic
      * The visibleExtent isi only used if provider supports contextual
      * legends according to the QgsWmsSettings
      * @added in 2.8

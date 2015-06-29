@@ -1323,24 +1323,11 @@ int QgsWmsProvider::capabilities() const
 
   if ( canIdentify )
   {
-    capability = identifyCapabilities();
+    capability = mCaps.identifyCapabilities();
     if ( capability )
     {
       capability |= Identify;
     }
-  }
-
-  QgsDebugMsg( QString( "capability = %1" ).arg( capability ) );
-  return capability;
-}
-
-int QgsWmsProvider::identifyCapabilities() const
-{
-  int capability = NoCapabilities;
-
-  foreach ( QgsRaster::IdentifyFormat f, mCaps.mIdentifyFormats.keys() )
-  {
-    capability |= identifyFormatToCapability( f );
   }
 
   QgsDebugMsg( QString( "capability = %1" ).arg( capability ) );
