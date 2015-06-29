@@ -1,9 +1,9 @@
 /***************************************************************************
-                              qgswcsprojectparser.h
-                              ---------------------
-  begin                : March 25, 2014
-  copyright            : (C) 2014 by Marco Hugentobler
-  email                : marco dot hugentobler at sourcepole dot ch
+                              qgswcsprojectparser.sip
+                              ------------------------
+  begin                : May 2, 2015
+  copyright            : (C) 2015 by Alessandro Pasotti
+  email                : a dot pasotti at itopen dot it
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,13 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSWCSPROJECTPARSER_H
-#define QGSWCSPROJECTPARSER_H
 
-#include "qgsserverprojectparser.h"
-
-class SERVER_EXPORT QgsWCSProjectParser
+class QgsWCSProjectParser
 {
+%TypeHeaderCode
+#include "qgswcsprojectparser.h"
+
+%End
   public:
     QgsWCSProjectParser( const QString& filePath );
     ~QgsWCSProjectParser();
@@ -34,8 +34,5 @@ class SERVER_EXPORT QgsWCSProjectParser
     void describeCoverage( const QString& aCoveName, QDomElement& parentElement, QDomDocument& doc ) const;
     QList<QgsMapLayer*> mapLayerFromCoverage( const QString& cName, bool useCache = true ) const;
 
-  private:
-    QgsServerProjectParser* mProjectParser;
 };
 
-#endif // QGSWCSPROJECTPARSER_H

@@ -1,10 +1,9 @@
 /***************************************************************************
-                              qgsgetrequesthandler.h
-                 class for reading from/ writing to HTTP GET
+                              qgsconfigcache.sip
                               -------------------
-  begin                : May 16, 2006
-  copyright            : (C) 2006 by Marco Hugentobler & Ionut Iosifescu
-  email                : marco dot hugentobler at karto dot baug dot ethz dot ch
+  begin                : 2015-05-19
+  copyright            : (C) 2015 by Alessandro Pasotti
+  email                : a dot pasotti at itopen dot it
  ***************************************************************************/
 
 /***************************************************************************
@@ -16,17 +15,29 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgshttprequesthandler.h"
+/**
+* \class QgsConfigCache
+* \brief A cache for xml documents (by configuration file path)
+*/
 
-#ifndef QGSGETPREQUESTHANDLER_H
-#define QGSGETPREQUESTHANDLER_H
 
-
-class QgsGetRequestHandler: public QgsHttpRequestHandler
+class QgsConfigCache: QObject
 {
+%TypeHeaderCode
+#include "qgsconfigcache.h"
+%End
   public:
-    QgsGetRequestHandler( const bool captureOutput = FALSE );
-    void parseInput() override;
+    static QgsConfigCache* instance();
+    ~QgsConfigCache();
+
+    QgsServerProjectParser* serverConfiguration( const QString& filePath );
+    QgsWCSProjectParser* wcsConfiguration( const QString& filePath );
+    QgsWFSProjectParser* wfsConfiguration( const QString& filePath );
+    QgsWMSConfigParser* wmsConfiguration( const QString& filePath, const QMap<QString, QString>& parameterMap = QMap< QString, QString >() );
+
+  private:
+    QgsConfigCache();
+
 };
 
-#endif
+

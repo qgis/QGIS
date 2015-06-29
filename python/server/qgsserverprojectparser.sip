@@ -1,9 +1,9 @@
 /***************************************************************************
-                              qgsserverprojectparser.h
+                              qgsserverprojectparser.sip
                               ------------------------
-  begin                : March 25, 2014
-  copyright            : (C) 2014 by Marco Hugentobler
-  email                : marco dot hugentobler at sourcepole dot ch
+  begin                : March 2, 2015
+  copyright            : (C) 2015 by Alessandro Pasotti
+  email                : a dot pasotti at itopen dot it
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,30 +15,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSSERVERPROJECTPARSER_H
-#define QGSSERVERPROJECTPARSER_H
 
-#include "qgsvectorlayer.h"
-#include <QDomElement>
-#include <QHash>
-#include <QMap>
-#include <QString>
-
-class QgsCoordinateReferenceSystem;
-class QgsMapLayer;
-class QgsRectangle;
-class QDomDocument;
-
-class SERVER_EXPORT QgsServerProjectParser
+class QgsServerProjectParser
 {
+%TypeHeaderCode
+#include "qgsserverprojectparser.h"
+
+%End
   public:
-
+    /**Takes ownership of the document*/
     QgsServerProjectParser( QDomDocument* xmlDoc, const QString& filePath );
-    ~QgsServerProjectParser();
 
-    QString projectPath() const { return mProjectPath; }
+    QString projectPath();
 
-    const QDomDocument* xmlDocument() const { return mXMLDoc; }
+    const QDomDocument* xmlDocument();
 
     /**Returns project layers by id*/
     void projectLayerMap( QMap<QString, QgsMapLayer*>& layerMap ) const;
@@ -70,9 +60,9 @@ class SERVER_EXPORT QgsServerProjectParser
 
     QStringList supportedOutputCrsList() const;
 
-    const QList<QDomElement>& projectLayerElements() const { return mProjectLayerElements; }
+    const QList<QDomElement>& projectLayerElements() const;
 
-    const QList<QDomElement>& legendGroupElements() const { return mLegendGroupElements; }
+    const QList<QDomElement>& legendGroupElements() const;
 
     QString projectTitle() const;
 
@@ -80,13 +70,14 @@ class SERVER_EXPORT QgsServerProjectParser
 
     QDomElement propertiesElem() const;
 
-    const QSet<QString>& restrictedLayers() const { return mRestrictedLayers; }
-    bool useLayerIDs() const { return mUseLayerIDs; }
+    const QSet<QString>& restrictedLayers() const;
+    bool useLayerIDs() const;
 
-    const QHash< QString, QDomElement >& projectLayerElementsByName() const { return mProjectLayerElementsByName; }
-    const QHash< QString, QDomElement >& projectLayerElementsById() const { return mProjectLayerElementsById; }
+    const QHash< QString, QDomElement >& projectLayerElementsByName() const;
+    const QHash< QString, QDomElement >& projectLayerElementsById() const;
 
-    void layerFromLegendLayer( const QDomElement& legendLayerElem, QMap< int, QgsMapLayer*>& layers, bool useCache = true ) const;
+    // SIP doesn't like QMap:
+    // void layerFromLegendLayer( const QDomElement& legendLayerElem, QMap< int, QgsMapLayer*>& layers, bool useCache = true ) const;
 
     QStringList wfsLayerNames() const;
     QStringList wcsLayerNames() const;
@@ -95,7 +86,7 @@ class SERVER_EXPORT QgsServerProjectParser
 
     QList<QDomElement> publishedComposerElements() const;
 
-    QList< QPair< QString, QgsLayerCoordinateTransform > > layerCoordinateTransforms() const;
+    //QList< QPair< QString, QgsLayerCoordinateTransform > > layerCoordinateTransforms() const;
 
     /**Returns the text of the <layername> element for a layer element
     @return id or a null string in case of error*/
@@ -126,44 +117,5 @@ class SERVER_EXPORT QgsServerProjectParser
 
     void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& service, bool sia2045 = false ) const;
 
-    QStringList customLayerOrder() const { return mCustomLayerOrder; }
-
-  private:
-
-    /**Content of project file*/
-    QDomDocument* mXMLDoc;
-
-    /**Absolute project file path (including file name)*/
-    QString mProjectPath;
-
-    /**List of project layer (ordered same as in the project file)*/
-    QList<QDomElement> mProjectLayerElements;
-
-    /**Project layer elements, accessible by layer id*/
-    QHash< QString, QDomElement > mProjectLayerElementsById;
-
-    /**Project layer elements, accessible by layer name*/
-    QHash< QString, QDomElement > mProjectLayerElementsByName;
-
-    /**List of all legend group elements*/
-    QList<QDomElement> mLegendGroupElements;
-
-    /**Names of layers and groups which should not be published*/
-    QSet<QString> mRestrictedLayers;
-
-    bool mUseLayerIDs;
-
-    QgsServerProjectParser(); //forbidden
-
-    /**Returns a complete string set with all the restricted layer names (layers/groups that are not to be published)*/
-    QSet<QString> findRestrictedLayers() const;
-
-    QStringList mCustomLayerOrder;
-
-    bool findUseLayerIDs() const;
-
-    /**Adds sublayers of an embedded group to layer set*/
-    static void sublayersOfEmbeddedGroup( const QString& projectFilePath, const QString& groupName, QSet<QString>& layerSet );
 };
 
-#endif // QGSSERVERPROJECTPARSER_H

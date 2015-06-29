@@ -44,11 +44,11 @@ class QgsRequestHandler
 
   public:
 
-    QgsRequestHandler()
+    QgsRequestHandler( )
         : mHeadersSent( false )
         , mException( 0 )
     {}
-    virtual ~QgsRequestHandler() {}
+    virtual ~QgsRequestHandler( ) {}
     /**Parses the input and creates a request neutral Parameter/Value map*/
     virtual void parseInput() = 0;
     /**Sends the map image back to the client*/
@@ -105,9 +105,15 @@ class QgsRequestHandler
     /**Allow core services to call plugin hooks through sendResponse() */
     virtual void setPluginFilters( QgsServerFiltersMap pluginFilters ) = 0;
 #endif
+    // TODO: if HAVE_SERVER_PYTHON
+    virtual QByteArray getResponseHeader( ) = 0;
+    virtual QByteArray getResponseBody( ) = 0;
+    virtual QByteArray getResponse( const bool returnHeaders = TRUE,
+                                    const bool returnBody = TRUE ) = 0;
+
   protected:
     virtual void sendHeaders( ) = 0;
-    virtual void sendBody( ) const = 0;
+    virtual void sendBody( ) = 0;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsServerFiltersMap mPluginFilters;
 #endif
@@ -123,7 +129,11 @@ class QgsRequestHandler
     /** Response headers. They can be empty, in this case headers are
         automatically generated from the content mFormat */
     QMap<QString, QString> mHeaders;
-
+    // TODO: if HAVE_SERVER_PYTHON
+    /** Response output buffers, used by Python bindings to return
+     * output instead of printing with fcgi printf */
+    QByteArray mResponseHeader;
+    QByteArray mResponseBody;
 };
 
 #endif

@@ -27,14 +27,13 @@
 #include <time.h>
 #include <fcgi_stdio.h>
 
-QgsSOAPRequestHandler::QgsSOAPRequestHandler()
+QgsSOAPRequestHandler::QgsSOAPRequestHandler( const bool captureOutput /*= FALSE*/ )
+    : QgsHttpRequestHandler( captureOutput )
 {
-
 }
 
 QgsSOAPRequestHandler::~QgsSOAPRequestHandler()
 {
-
 }
 
 void QgsSOAPRequestHandler::parseInput()

@@ -1,6 +1,6 @@
 /***************************************************************************
                           qgsseerversinterface.h
- Interface class for exposing functions in Qgis Server for use by plugins
+ Interface class for exposing functions in QGIS Server for use by plugins
                              -------------------
   begin                : 2014-09-10
   copyright            : (C) 2014 by Alessandro Pasotti
@@ -16,6 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 
+
 #ifndef QGSSERVERINTERFACE_H
 #define QGSSERVERINTERFACE_H
 
@@ -25,11 +26,10 @@
 
 /**
  * QgsServerInterface
- * Class defining interfaces exposed by Qgis Mapserver and
+ * Class defining interfaces exposed by QGIS Server and
  * made available to plugins.
  *
  */
-
 class SERVER_EXPORT QgsServerInterface
 {
 
@@ -74,6 +74,21 @@ class SERVER_EXPORT QgsServerInterface
 
     //! Return an enrironment variable, used to pass  environment variables to python
     virtual QString getEnv( const QString& name ) const = 0;
+
+    /**
+     * Return the configuration file path
+     * @return QString containing the configuration file path
+     */
+    virtual QString configFilePath( ) = 0;
+
+    /**
+     * Set the configuration file path
+     * @param configFilePath QString with the configuration file path
+     */
+    virtual void setConfigFilePath( QString configFilePath ) = 0;
+
+  private:
+    QString mConfigFilePath;
 };
 
 #endif // QGSSERVERINTERFACE_H

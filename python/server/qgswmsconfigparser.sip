@@ -1,9 +1,9 @@
 /***************************************************************************
-                              qgswmsconfigparser.h
-                              --------------------
-  begin                : March 25, 2014
-  copyright            : (C) 2014 by Marco Hugentobler
-  email                : marco dot hugentobler at sourcepole dot ch
+                              qgswmsconfigparser.sip
+                              ------------------------
+  begin                : May 2, 2015
+  copyright            : (C) 2015 by Alessandro Pasotti
+  email                : a dot pasotti at itopen dot it
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,25 +15,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSWMSCONFIGPARSER_H
-#define QGSWMSCONFIGPARSER_H
 
-#include "qgsmaprenderer.h"
-
-class QgsComposerHtml;
-class QgsComposerLabel;
-class QgsComposerLegend;
-class QgsComposerMap;
-class QgsComposition;
-class QgsMapLayer;
-
-
-class SERVER_EXPORT QgsWMSConfigParser
+class QgsWMSConfigParser
 {
-  public:
+%TypeHeaderCode
+#include "qgswmsconfigparser.h"
 
-    QgsWMSConfigParser();
-    virtual ~QgsWMSConfigParser();
+%End
+
+  public:
 
     /**Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.
         @param fullProjectInformation If true: add extended project information (does not validate against WMS schema)*/
@@ -107,11 +97,11 @@ class SERVER_EXPORT QgsWMSConfigParser
 
     //printing
 
-    /**Creates a print composition, usually for a GetPrint request. Replaces map and label parameters*/
+   /**Creates a print composition, usually for a GetPrint request. Replaces map and label parameters*/
     QgsComposition* createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap ) const;
 
     /**Creates a composition from the project file (probably delegated to the fallback parser)*/
-    virtual QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const = 0;
+    //virtual QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList /Out/, QList< QgsComposerLegend* >& legendList /Out/, QList< QgsComposerLabel* >& labelList /Out/, QList<const QgsComposerHtml *>& htmlFrameList /Out/ ) const = 0;
 
     /**Adds print capabilities to xml document. ParentElem usually is the <Capabilities> element*/
     virtual void printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const = 0;
@@ -127,10 +117,9 @@ class SERVER_EXPORT QgsWMSConfigParser
 
     virtual bool useLayerIDs() const = 0;
 
-#if 0
-    /**List of GML datasets passed outside SLD (e.g. in a SOAP request). Key of the map is the layer name*/
-    QMap<QString, QDomDocument*> mExternalGMLDatasets;
-#endif //0
-};
+  private:
 
-#endif // QGSWMSCONFIGPARSER_H
+    QgsWMSConfigParser();
+    virtual ~QgsWMSConfigParser();
+
+};

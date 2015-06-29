@@ -182,7 +182,7 @@ IF (WITH_SERVER AND WITH_SERVER_PLUGINS)
   SET(PY_MODULES ${PY_MODULES} server)
 
   FILE(GLOB sip_files_server
-    server/*.sip
+    server/server.sip
   )
   SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_server})
   SET(SIP_EXTRA_OPTIONS ${PYQT4_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.server.api)

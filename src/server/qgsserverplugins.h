@@ -19,8 +19,10 @@
 #define QGSSERVERPLUGINS_H
 
 #include "qgsrequesthandler.h"
-#include "qgspythonutils.h"
 #include "qgsserverinterface.h"
+
+// This is needed by SIP otherwise it doesn't find QgsPythonUtils header
+class QgsPythonUtils;
 
 class SERVER_EXPORT QgsServerPlugins
 {
