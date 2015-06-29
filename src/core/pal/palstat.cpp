@@ -38,21 +38,12 @@ namespace pal
     nbLayers = 0;
     nbObjects = 0;
     nbLabelledObjects = 0;
-    layersName = NULL;
     layersNbObjects = NULL;
     layersNbLabelledObjects = NULL;
   }
 
   PalStat::~PalStat()
   {
-    int i;
-
-    for ( i = 0; i < nbLayers; i++ )
-    {
-      delete[] layersName[i];
-    }
-
-    delete[] layersName;
     delete[] layersNbObjects;
     delete[] layersNbLabelledObjects;
   }
@@ -72,12 +63,12 @@ namespace pal
     return nbLayers;
   }
 
-  const char * PalStat::getLayerName( int layerId )
+  QString PalStat::getLayerName( int layerId )
   {
     if ( layerId >= 0 && layerId < nbLayers )
-      return layersName[layerId];
+      return layersName.at( layerId );
     else
-      return NULL;
+      return QString();
   }
 
 

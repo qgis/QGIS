@@ -2109,7 +2109,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   //  feature to the layer
   try
   {
-    if ( !palLayer->registerFeature( lbl->strId(), lbl, labelX, labelY, labelText.toUtf8().constData(),
+    if ( !palLayer->registerFeature( lbl->strId(), lbl, labelX, labelY, labelText,
                                      xPos, yPos, dataDefinedPosition, angle, dataDefinedRotation,
                                      quadOffsetX, quadOffsetY, offsetX, offsetY, alwaysShow, repeatDist ) )
       return;
@@ -4128,7 +4128,7 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
     }
 
     //layer names
-    QString layerName = QString::fromUtf8(( *it )->getLayerName() );
+    QString layerName = ( *it )->getLayerName();
     if ( palGeometry->isDiagram() )
     {
       QgsFeature feature;

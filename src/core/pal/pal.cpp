@@ -45,7 +45,6 @@
 #include "layer.h"
 #include "palexception.h"
 #include "palstat.h"
-#include "linkedlist.hpp"
 #include "rtree.hpp"
 #include "costcalculator.h"
 #include "feature.h"
@@ -124,11 +123,11 @@ namespace pal
     return layers;
   }
 
-  Layer *Pal::getLayer( const char *lyrName )
+  Layer *Pal::getLayer( const QString& lyrName )
   {
     mMutex.lock();
     for ( QList<Layer*>::iterator it = layers->begin(); it != layers->end(); ++it )
-      if ( strcmp(( *it )->name, lyrName ) == 0 )
+      if (( *it )->name == lyrName )
       {
         mMutex.unlock();
         return *it;
@@ -169,7 +168,7 @@ namespace pal
   }
 
 
-  Layer * Pal::addLayer( const char *lyrName, double min_scale, double max_scale, Arrangement arrangement, Units label_unit, double defaultPriority, bool obstacle, bool active, bool toLabel, bool displayAll )
+  Layer * Pal::addLayer( const QString &lyrName, double min_scale, double max_scale, Arrangement arrangement, Units label_unit, double defaultPriority, bool obstacle, bool active, bool toLabel, bool displayAll )
   {
     Layer *lyr;
     mMutex.lock();
@@ -182,7 +181,7 @@ namespace pal
 
     for ( QList<Layer*>::iterator it = layers->begin(); it != layers->end(); ++it )
     {
-      if ( strcmp(( *it )->name, lyrName ) == 0 )   // if layer already known
+      if (( *it )->name == lyrName )    // if layer already known
       {
         mMutex.unlock();
         //There is already a layer with this name, so we just return the existing one.
@@ -204,7 +203,7 @@ namespace pal
   {
     Layer *layer;
     double scale;
-    LinkedList<Feats*> *fFeats;
+    QLinkedList<Feats*>* fFeats;
     RTree<PointSet*, double, 2, double> *obstacles;
     RTree<LabelPosition*, double, 2, double> *candidates;
     double priority;
@@ -277,7 +276,7 @@ namespace pal
       ft->nblp = nblp;
       ft->lPos = lPos;
       ft->priority = context->priority;
-      context->fFeats->push_back( ft );
+      context->fFeats->append( ft );
     }
     else
     {
@@ -321,7 +320,7 @@ namespace pal
     return true;
   }
 
-  Problem* Pal::extract( int nbLayers, char **layersName, double *layersFactor, double lambda_min, double phi_min, double lambda_max, double phi_max, double scale )
+  Problem* Pal::extract( int nbLayers, const QStringList& layersName, double *layersFactor, double lambda_min, double phi_min, double lambda_max, double phi_max, double scale )
   {
     // to store obstacles
     RTree<PointSet*, double, 2, double> *obstacles = new RTree<PointSet*, double, 2, double>();
@@ -349,7 +348,7 @@ namespace pal
     prob->scale = scale;
     prob->pal = this;
 
-    LinkedList<Feats*> *fFeats = new LinkedList<Feats*> ( ptrFeatsCompare );
+    QLinkedList<Feats*> *fFeats = new QLinkedList<Feats*>;
 
     FeatCallBackCtx *context = new FeatCallBackCtx();
     context->fFeats = fFeats;
@@ -376,7 +375,7 @@ namespace pal
     int oldNbft = 0;
     Layer *layer;
 
-    QList<char*> *labLayers = new QList<char*>();
+    QStringList labLayers;
 
     mMutex.lock();
     for ( i = 0; i < nbLayers; i++ )
@@ -390,7 +389,7 @@ namespace pal
         {
 
           // check if this selected layers has been selected by user
-          if ( strcmp( layersName[i], layer->name ) == 0 )
+          if ( layersName.at( i ) == layer->name )
           {
             // check for connected features with the same label text and join them
             if ( layer->getMergeConnectedLines() )
@@ -418,9 +417,7 @@ namespace pal
 #endif
             if ( context->fFeats->size() - oldNbft > 0 )
             {
-              char *name = new char[strlen( layer->getName() ) +1];
-              strcpy( name, layer->getName() );
-              labLayers->push_back( name );
+              labLayers << layer->getName();
             }
             oldNbft = context->fFeats->size();
 
@@ -433,15 +430,11 @@ namespace pal
     delete context;
     mMutex.unlock();
 
-    prob->nbLabelledLayers = labLayers->size();
-    prob->labelledLayersName = new char*[prob->nbLabelledLayers];
+    prob->nbLabelledLayers = labLayers.size();
     for ( i = 0; i < prob->nbLabelledLayers; i++ )
     {
-      prob->labelledLayersName[i] = labLayers->front();
-      labLayers->pop_front();
+      prob->labelledLayersName << labLayers.takeFirst();
     }
-
-    delete labLayers;
 
     if ( fFeats->size() == 0 )
     {
@@ -486,7 +479,7 @@ namespace pal
     int idlp = 0;
     for ( i = 0; i < prob->nbft; i++ ) /* foreach feature into prob */
     {
-      feat = fFeats->pop_front();
+      feat = fFeats->takeFirst();
 #ifdef _DEBUG_FULL_
       std::cout << "Feature:" << feat->feature->getLayer()->getName() << "/" << feat->feature->getUID() << " candidates " << feat->nblp << std::endl;
 #endif
@@ -532,7 +525,7 @@ namespace pal
         //lp->insertIntoIndex(prob->candidates);
         lp->setProblemIds( i, idlp ); // bugfix #1 (maxence 10/23/2008)
       }
-      fFeats->push_back( feat );
+      fFeats->append( feat );
     }
 
 #ifdef _DEBUG_FULL_
@@ -561,7 +554,7 @@ namespace pal
         return 0;
       }
 
-      feat = fFeats->pop_front();
+      feat = fFeats->takeFirst();
       for ( i = 0; i < feat->nblp; i++, idlp++ )  // foreach label candidate
       {
         lp = feat->lPos[i];
@@ -620,14 +613,14 @@ namespace pal
     mMutex.lock();
     int nbLayers = layers->size();
 
-    char **layersName = new char*[nbLayers];
+    QStringList layersName;
     double *priorities = new double[nbLayers];
     Layer *layer;
     i = 0;
     for ( QList<Layer*>::iterator it = layers->begin(); it != layers->end(); ++it )
     {
       layer = *it;
-      layersName[i] = layer->name;
+      layersName << layer->name;
       priorities[i] = layer->defaultPriority;
       i++;
     }
@@ -635,7 +628,6 @@ namespace pal
 
     std::list<LabelPosition*> * solution = labeller( nbLayers, layersName, priorities, scale, bbox, stats, displayAll );
 
-    delete[] layersName;
     delete[] priorities;
     return solution;
   }
@@ -644,7 +636,7 @@ namespace pal
   /*
    * BIG MACHINE
    */
-  std::list<LabelPosition*>* Pal::labeller( int nbLayers, char **layersName, double *layersFactor, double scale, double bbox[4], PalStat **stats, bool displayAll )
+  std::list<LabelPosition*>* Pal::labeller( int nbLayers, const QStringList& layersName, double *layersFactor, double scale, double bbox[4], PalStat **stats, bool displayAll )
   {
 #ifdef _DEBUG_
     std::cout << "LABELLER (selection)" << std::endl;
@@ -757,14 +749,14 @@ namespace pal
     mMutex.lock();
     int nbLayers = layers->size();
 
-    char **layersName = new char*[nbLayers];
+    QStringList layersName;
     double *priorities = new double[nbLayers];
     Layer *layer;
     int i = 0;
     for ( QList<Layer*>::iterator it = layers->begin(); it != layers->end(); ++it )
     {
       layer = *it;
-      layersName[i] = layer->name;
+      layersName << layer->name;
       priorities[i] = layer->defaultPriority;
       i++;
     }
@@ -772,7 +764,6 @@ namespace pal
 
     Problem* prob = extract( nbLayers, layersName, priorities, bbox[0], bbox[1], bbox[2], bbox[3], scale );
 
-    delete[] layersName;
     delete[] priorities;
 
     return prob;

@@ -183,20 +183,20 @@ namespace pal
     return l == r;
   }
 
-  LinkedList<const GEOSGeometry*> * unmulti( const GEOSGeometry *the_geom )
+  QLinkedList<const GEOSGeometry *> *unmulti( const GEOSGeometry *the_geom )
   {
-    LinkedList<const GEOSGeometry*> *queue = new  LinkedList<const GEOSGeometry*> ( ptrGeomEq );
-    LinkedList<const GEOSGeometry*> *final_queue = new  LinkedList<const GEOSGeometry*> ( ptrGeomEq );
+    QLinkedList<const GEOSGeometry*> *queue = new QLinkedList<const GEOSGeometry*>;
+    QLinkedList<const GEOSGeometry*> *final_queue = new QLinkedList<const GEOSGeometry*>;
 
     const GEOSGeometry *geom;
 
-    queue->push_back( the_geom );
+    queue->append( the_geom );
     int nGeom;
     int i;
 
     while ( queue->size() > 0 )
     {
-      geom = queue->pop_front();
+      geom = queue->takeFirst();
       GEOSContextHandle_t geosctxt = geosContext();
       switch ( GEOSGeomTypeId_r( geosctxt, geom ) )
       {
@@ -206,13 +206,13 @@ namespace pal
           nGeom = GEOSGetNumGeometries_r( geosctxt, geom );
           for ( i = 0; i < nGeom; i++ )
           {
-            queue->push_back( GEOSGetGeometryN_r( geosctxt, geom, i ) );
+            queue->append( GEOSGetGeometryN_r( geosctxt, geom, i ) );
           }
           break;
         case GEOS_POINT:
         case GEOS_LINESTRING:
         case GEOS_POLYGON:
-          final_queue->push_back( geom );
+          final_queue->append( geom );
           break;
         default:
           delete final_queue;
