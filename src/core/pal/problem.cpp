@@ -53,8 +53,6 @@
 #include "util.h"
 #include "priorityqueue.h"
 
-#define UNUSED(x) (void)x;
-
 namespace pal
 {
 
@@ -225,7 +223,7 @@ namespace pal
     delete[] ok;
   }
 
-  /** 
+  /**
    * \brief Basic initial solution : every feature to -1
    */
   void Problem::init_sol_empty()
@@ -1608,7 +1606,7 @@ namespace pal
 #ifdef _DEBUG_FULL_
           std::cout << "catch int " << i << std::endl;
 #else
-          UNUSED( i );
+          Q_UNUSED( i );
 #endif
           while ( conflicts->size() > 0 )
             conflicts->pop_front();
@@ -1898,7 +1896,7 @@ namespace pal
 #ifdef _DEBUG_FULL_
           std::cout << "catch Cycle in chain" << std::endl;
 #else
-          UNUSED( i );
+          Q_UNUSED( i );
 #endif
           while ( conflicts->size() > 0 )
             conflicts->pop_front();
@@ -1966,7 +1964,7 @@ namespace pal
   }
 
 
-  /** 
+  /**
    *  POPMUSIC, chain
    */
   double Problem::popmusic_chain( SubPart *part )
@@ -2123,7 +2121,7 @@ namespace pal
 
 
 
-  /** 
+  /**
    *
    * POPMUSIC, Tabu search with  chain'
    *
