@@ -1,10 +1,11 @@
-#!/bin/bash
+#!/usr/bin/perl -i.formatdoc -n
 ###########################################################################
-#    remove_git_confict_files.sh
+#    format_doxygen.pl
 #    ---------------------
-#    Date                 : April 2012
-#    Copyright            : (C) 2012 by Tim Sutton
-#    Email                : tim at kartoza dot com
+#    begin                : June 2015
+#    copyright            : (C) 2015 by Nyall Dawson
+#    email                : nyall dot dawson at gmail dot com
+#
 ###########################################################################
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
@@ -14,15 +15,15 @@
 #                                                                         #
 ###########################################################################
 
-#
-# A simple script to get rid of QGIS related temporary files left in 
-# your QGIS source folder by git and the prepare-commit script.
+# adapted from scripts/unify_includes.pl
 
-# Tim Sutton, May 2008
-find . -name "*.orig" -exec rm -rf {} \;
-find . -name "*.prepare" -exec rm -rf {} \;
-find . -name "astyle*.diff" -exec rm -rf {} \;
-find . -name "sha*.diff" -exec rm -rf {} \;
-find . -name "*.formatdoc" -exec rm -rf {} \;
+use strict;
+use warnings;
 
+if( $_ =~ m/^(\s*)\/\*[\*!]\s*([^\*])(.*)$/s )
+{
+	print $1, "/** ", uc($2), $3;
+	next unless eof;
+}
 
+print;

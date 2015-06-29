@@ -65,6 +65,8 @@ astyleit()
 		--unpad=paren "$1"
 
 	scripts/unify_includes.pl "$1"
+
+        scripts/format_doxygen.pl "$1"
 }
 
 for f in "$@"; do
