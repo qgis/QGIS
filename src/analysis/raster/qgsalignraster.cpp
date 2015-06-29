@@ -624,7 +624,7 @@ double QgsAlignRaster::RasterInfo::identify( double mx, double my )
   float* pafScanline = ( float * ) CPLMalloc( sizeof( float ) );
   CPLErr err = GDALRasterIO( hBand, GF_Read, px, py, 1, 1,
                              pafScanline, 1, 1, GDT_Float32, 0, 0 );
-  double value = err == CE_None ? pafScanline[0] : NAN;
+  double value = err == CE_None ? pafScanline[0] : std::numeric_limits<double>::quiet_NaN();
   CPLFree( pafScanline );
 
   return value;
