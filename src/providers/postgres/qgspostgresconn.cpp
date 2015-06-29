@@ -496,6 +496,8 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.types = QList<QGis::WkbType>() << ( QgsPostgresConn::wkbTypeFromPostgis( type ) );
       layerProperty.srids = QList<int>() << srid;
       layerProperty.sql = "";
+      layerProperty.relKind = relkind;
+      layerProperty.isView = isView;
       /*
        * force2d may get a false negative value
        * (dim == 2 but is not really constrained)
@@ -599,6 +601,8 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.schemaName = schemaName;
       layerProperty.tableName = tableName;
       layerProperty.geometryColName = column;
+      layerProperty.relKind = relkind;
+      layerProperty.isView = isView;
       if ( coltype == "geometry" )
       {
         layerProperty.geometryColType = sctGeometry;
@@ -682,6 +686,8 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.tableName = table;
       layerProperty.geometryColName = QString::null;
       layerProperty.geometryColType = sctNone;
+      layerProperty.relKind = relkind;
+      layerProperty.isView = isView;
 
       //check if we've already added this layer in some form
       bool alreadyFound = false;

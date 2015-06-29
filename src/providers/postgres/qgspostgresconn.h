@@ -77,6 +77,8 @@ struct QgsPostgresLayerProperty
   unsigned int                  nSpCols;
   QString                       sql;
   bool                          force2d;
+  QString                       relKind;
+  bool                          isView;
 
 
   // TODO: rename this !
@@ -105,6 +107,8 @@ struct QgsPostgresLayerProperty
     property.nSpCols         = nSpCols;
     property.sql             = sql;
     property.force2d         = force2d;
+    property.relKind         = relKind;
+    property.isView          = isView;
 
     return property;
   }

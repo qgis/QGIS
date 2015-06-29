@@ -70,6 +70,7 @@ class QgsPGConnectionItem : public QgsDataCollectionItem
     void editConnection();
     void deleteConnection();
     void refreshConnection();
+    void createSchema();
 
 };
 
@@ -108,6 +109,7 @@ class QgsPGLayerItem : public QgsLayerItem
   public slots:
     void deleteLayer();
     void renameLayer();
+    void truncateTable();
 
   private:
     QgsPostgresLayerProperty mLayerProperty;
