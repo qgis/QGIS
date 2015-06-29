@@ -20,6 +20,9 @@
      <height>25</height>
     </rect>
    </property>
+   <property name="toolTip">
+    <string>Menu Toolbar</string>
+   </property>
    <widget class="QMenu" name="mProjectMenu">
     <property name="title">
      <string>Pro&amp;ject</string>
@@ -287,10 +290,17 @@
    <addaction name="mRasterMenu"/>
    <addaction name="mHelpMenu"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QStatusBar" name="statusbar">
+   <property name="toolTip">
+    <string>Statusbar</string>
+   </property>
+  </widget>
   <widget class="QToolBar" name="mFileToolBar">
    <property name="windowTitle">
-    <string>File</string>
+    <string>File Toolbar</string>
+   </property>
+   <property name="toolTip">
+    <string>File Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -307,7 +317,10 @@
   </widget>
   <widget class="QToolBar" name="mLayerToolBar">
    <property name="windowTitle">
-    <string>Manage Layers</string>
+    <string>Manage Layers Toolbar</string>
+   </property>
+   <property name="toolTip">
+    <string>Manage Layers Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -328,7 +341,10 @@
   </widget>
   <widget class="QToolBar" name="mDigitizeToolBar">
    <property name="windowTitle">
-    <string>Digitizing</string>
+    <string>Digitizing Toolbar</string>
+   </property>
+   <property name="toolTip">
+    <string>Digitizing Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -349,7 +365,10 @@
   </widget>
   <widget class="QToolBar" name="mAdvancedDigitizeToolBar">
    <property name="windowTitle">
-    <string>Advanced Digitizing</string>
+    <string>Advanced Digitizing Toolbar</string>
+   </property>
+   <property name="toolTip">
+    <string>Advanced Digitizing Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -376,7 +395,10 @@
   </widget>
   <widget class="QToolBar" name="mMapNavToolBar">
    <property name="windowTitle">
-    <string>Map Navigation</string>
+    <string>Map Navigation Toolbar</string>
+   </property>
+   <property name="toolTip">
+    <string>Map Navigation Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -399,7 +421,10 @@
   </widget>
   <widget class="QToolBar" name="mAttributesToolBar">
    <property name="windowTitle">
-    <string>Attributes</string>
+    <string>Attributes Toolbar</string>
+   </property>
+   <property name="toolTip">
+    <string>Attributes Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -419,7 +444,10 @@
   </widget>
   <widget class="QToolBar" name="mPluginToolBar">
    <property name="windowTitle">
-    <string>Plugins</string>
+    <string>Plugins Toolbar</string>
+   </property>
+   <property name="toolTip">
+    <string>Plugin Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -431,7 +459,10 @@
   </widget>
   <widget class="QToolBar" name="mHelpToolBar">
    <property name="windowTitle">
-    <string>Help</string>
+    <string>Help Toolbar</string>
+   </property>
+   <property name="toolTip">
+    <string>Help Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -443,7 +474,10 @@
   </widget>
   <widget class="QToolBar" name="mRasterToolBar">
    <property name="windowTitle">
-    <string>Raster</string>
+    <string>Raster Toolbar</string>
+   </property>
+   <property name="toolTip">
+    <string>Raster Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -462,7 +496,10 @@
   </widget>
   <widget class="QToolBar" name="mLabelToolBar">
    <property name="windowTitle">
-    <string>Label</string>
+    <string>Label Toolbar</string>
+   </property>
+   <property name="toolTip">
+    <string>Label Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -480,7 +517,10 @@
   </widget>
   <widget class="QToolBar" name="mVectorToolBar">
    <property name="windowTitle">
-    <string>Vector</string>
+    <string>Vector Toolbar</string>
+   </property>
+   <property name="toolTip">
+    <string>Vector Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -491,7 +531,10 @@
   </widget>
   <widget class="QToolBar" name="mDatabaseToolBar">
    <property name="windowTitle">
-    <string>Database</string>
+    <string>Database Toolbar</string>
+   </property>
+   <property name="toolTip">
+    <string>Database Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -502,7 +545,10 @@
   </widget>
   <widget class="QToolBar" name="mWebToolBar">
    <property name="windowTitle">
-    <string>Web</string>
+    <string>Web Toolbar</string>
+   </property>
+   <property name="toolTip">
+    <string>Web Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
