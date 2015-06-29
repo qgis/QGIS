@@ -943,18 +943,11 @@ namespace pal
     }
   }
 
-
-  /**
-   * \brief get current map unit
-   */
   Units Pal::getMapUnit()
   {
     return map_unit;
   }
 
-  /**
-   * \brief set map unit
-   */
   void Pal::setMapUnit( Units map_unit )
   {
     if ( map_unit == pal::PIXEL || map_unit == pal::METER

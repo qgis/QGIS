@@ -125,10 +125,6 @@ namespace pal
     }
   }
 
-
-  /*
-   * \brief read coordinates from a GEOS geom
-   */
   void FeaturePart::extractCoords( const GEOSGeometry* geom )
   {
     int i, j;

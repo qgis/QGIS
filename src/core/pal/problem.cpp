@@ -219,9 +219,6 @@ namespace pal
     delete[] ok;
   }
 
-  /**
-   * \brief Basic initial solution : every feature to -1
-   */
   void Problem::init_sol_empty()
   {
     int i;
@@ -743,9 +740,6 @@ namespace pal
     subPart->seed = featseed;
     return subPart;
   }
-
-
-  /** From SubPart.cpp ***/
 
   double Problem::compute_feature_cost( SubPart *part, int feat_id, int label_id, int *nbOverlap )
   {
@@ -1959,10 +1953,6 @@ namespace pal
     return retainedChain;
   }
 
-
-  /**
-   *  POPMUSIC, chain
-   */
   double Problem::popmusic_chain( SubPart *part )
   {
     int i;
@@ -2114,14 +2104,6 @@ namespace pal
     return initial_cost - best_cost;
   }
 
-
-
-
-  /**
-   *
-   * POPMUSIC, Tabu search with  chain'
-   *
-   */
   double Problem::popmusic_tabu_chain( SubPart *part )
   {
     int i;

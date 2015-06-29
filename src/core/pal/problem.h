@@ -137,11 +137,23 @@ namespace pal
       double compute_feature_cost( SubPart *part, int feat_id, int label_id, int *nbOverlap );
       double compute_subsolution_cost( SubPart *part, int *s, int * nbOverlap );
 
+      /**
+       *  POPMUSIC, chain
+       */
       double popmusic_chain( SubPart *part );
 
       double popmusic_tabu( SubPart *part );
+
+      /**
+       *
+       * POPMUSIC, Tabu search with  chain'
+       *
+       */
       double popmusic_tabu_chain( SubPart *part );
 
+      /**
+       * \brief Basic initial solution : every feature to -1
+       */
       void init_sol_empty();
       void init_sol_falp();
 
