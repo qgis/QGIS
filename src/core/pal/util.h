@@ -46,7 +46,7 @@ namespace pal
   class Layer;
   class FeaturePart;
 
-  LinkedList<const GEOSGeometry*> * unmulti( const GEOSGeometry* the_geom );
+  QLinkedList<const GEOSGeometry*> * unmulti( const GEOSGeometry* the_geom );
 
   /**
    * \brief For usage in problem solving algorithm

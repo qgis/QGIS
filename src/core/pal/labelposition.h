@@ -44,7 +44,7 @@ namespace pal
   class Label;
 
 
-  /** 
+  /**
    * \brief LabelPosition is a candidate feature label position
    */
   class CORE_EXPORT LabelPosition
@@ -54,7 +54,7 @@ namespace pal
 
     public:
 
-      /** 
+      /**
        * \brief Position of label candidate relative to feature.
        */
       enum Quadrant
@@ -70,7 +70,7 @@ namespace pal
         QuadrantBelowRight
       };
 
-      /** 
+      /**
        * \brief create a new LabelPosition
        *
        * \param id id of this labelposition
@@ -95,28 +95,28 @@ namespace pal
       ~LabelPosition() { delete nextPart; }
 
 
-      /** 
+      /**
        * \brief Is the labelposition in the bounding-box ? (intersect or inside????)
        *
        *\param bbox the bounding-box double[4] = {xmin, ymin, xmax, ymax}
        */
       bool isIn( double *bbox );
 
-      /** 
+      /**
        * \brief Is the labelposition intersect the bounding-box ?
        *
        *\param bbox the bounding-box double[4] = {xmin, ymin, xmax, ymax}
        */
       bool isIntersect( double *bbox );
 
-      /** 
+      /**
        * \brief Is the labelposition inside the bounding-box ?
        *
        *\param bbox the bounding-box double[4] = {xmin, ymin, xmax, ymax}
        */
       bool isInside( double *bbox );
 
-      /** 
+      /**
        * \brief Check whether or not this overlap with another labelPosition
        *
        * \param ls other labelposition
@@ -163,9 +163,9 @@ namespace pal
       }
 
       /** Return pointer to layer's name. used for stats */
-      char* getLayerName() const;
+      QString getLayerName() const;
 
-      /** 
+      /**
        * \brief get the position geographical cost
        * \return geographical cost
        */
@@ -177,12 +177,12 @@ namespace pal
       /** Make sure the cost is less than 1 */
       void validateCost();
 
-      /** 
+      /**
        * \brief get the down-left x coordinate
        * \return x coordinate
        */
       double getX( int i = 0 ) const;
-      /** 
+      /**
        * \brief get the down-left y coordinate
        * \return y coordinate
        */
@@ -191,7 +191,7 @@ namespace pal
       double getWidth() const { return w; }
       double getHeight() const { return h; }
 
-      /** 
+      /**
        * \brief get alpha
        * \return alpha to rotate text (in rad)
        */

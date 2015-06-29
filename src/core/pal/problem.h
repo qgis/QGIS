@@ -169,7 +169,7 @@ namespace pal
       /**
        * Names of the labelled layers
        */
-      char **labelledLayersName;
+      QStringList labelledLayersName;
 
       /**
        * # active candidates (remaining after reduce())

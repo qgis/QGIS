@@ -249,8 +249,6 @@ SET(QGIS_CORE_SRCS
   pal/priorityqueue.cpp
   pal/problem.cpp
   pal/util.cpp
-  pal/linkedlist.hpp
-  pal/hashtable.hpp
   pal/rtree.hpp
 
   raster/qgscliptominmaxenhancement.cpp

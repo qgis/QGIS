@@ -33,6 +33,7 @@
 #include <iostream>
 #include <fstream>
 #include <cmath>
+#include <QString>
 
 #include <geos_c.h>
 
@@ -79,7 +80,7 @@ namespace pal
       friend class FeaturePart;
 
     public:
-      Feature( Layer* l, const char* geom_id, PalGeometry* userG, double lx, double ly );
+      Feature( Layer* l, const QString& geom_id, PalGeometry* userG, double lx, double ly );
       ~Feature();
 
       void setLabelInfo( LabelInfo* info ) { labelInfo = info; }
@@ -103,7 +104,7 @@ namespace pal
       double distlabel;
       LabelInfo* labelInfo; // optional
 
-      char *uid;
+      QString uid;
 
       bool fixedPos; //true in case of fixed position (only 1 candidate position with cost 0)
       double fixedPosX;
@@ -231,15 +232,16 @@ namespace pal
        * \brief get the unique id of the feature
        * \return the feature unique identifier
        */
-      const char *getUID();
+      QString getUID() const;
 
 
+#if 0
       /**
        * \brief Print feature information
        * Print feature unique id, geometry type, points, and holes on screen
        */
       void print();
-
+#endif
 
       PalGeometry* getUserGeometry() { return f->userGeom; }
 

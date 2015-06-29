@@ -206,9 +206,9 @@ namespace pal
   }
 
 
-  void PointSet::splitPolygons( LinkedList<PointSet*> *shapes_toProcess,
-                                LinkedList<PointSet*> *shapes_final,
-                                double xrm, double yrm, char *uid )
+  void PointSet::splitPolygons( QLinkedList<PointSet*> &shapes_toProcess,
+                                QLinkedList<PointSet*> &shapes_final,
+                                double xrm, double yrm, const QString& uid )
   {
 #ifdef _DEBUG_
     std::cout << "splitPolygons: " << uid << std::endl;
@@ -252,12 +252,12 @@ namespace pal
 
     PointSet *shape;
 
-    while ( shapes_toProcess->size() > 0 )
+    while ( shapes_toProcess.size() > 0 )
     {
 #ifdef _DEBUG_FULL_
       std::cout << "Shape popping()" << std::endl;
 #endif
-      shape = shapes_toProcess->pop_front();
+      shape = shapes_toProcess.takeFirst();
 
       x = shape->x;
       y = shape->y;
@@ -511,7 +511,7 @@ namespace pal
         // check for useless spliting
         else if ( imax == imin || nbPtSh1 <= 2 || nbPtSh2 <= 2 || nbPtSh1 == nbp  || nbPtSh2 == nbp )
         {
-          shapes_final->push_back( shape );
+          shapes_final.append( shape );
         }
         else
         {
@@ -532,7 +532,7 @@ namespace pal
           }
 #endif
 
-          shapes_toProcess->push_back( newShape );
+          shapes_toProcess.append( newShape );
 
           if ( imax == fps )
             imax = fpe;
@@ -553,7 +553,7 @@ namespace pal
             std::cout << newShape->x[i] << ";" << newShape->y[i] << std::endl;
           }
 #endif
-          shapes_toProcess->push_back( newShape );
+          shapes_toProcess.append( newShape );
 
           if ( shape->parent )
             delete shape;
@@ -564,7 +564,7 @@ namespace pal
 #ifdef _DEBUG_FULL_
         std::cout << "Put shape into shapes_final" << std::endl;
 #endif
-        shapes_final->push_back( shape );
+        shapes_final.append( shape );
       }
       delete[] pts;
     }

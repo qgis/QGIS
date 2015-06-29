@@ -35,13 +35,11 @@
 #include "pal.h"
 #include "palgeometry.h"
 #include <QMutex>
+#include <QLinkedList>
+#include <QHash>
 
 namespace pal
 {
-
-  template <class Type> class LinkedList;
-  template <class Type> class Cell;
-  template <typename Data> class HashTable;
 
   template<class DATATYPE, class ELEMTYPE, int NUMDIMS, class ELEMTYPEREAL, int TMAXNODES, int TMINNODES> class RTree;
 
@@ -50,7 +48,7 @@ namespace pal
   class Pal;
   class LabelInfo;
 
-  /** 
+  /**
    * \brief A layer of spacial entites
    *
    * a layer is a bog of feature with some data which influence the labelling process
@@ -79,23 +77,23 @@ namespace pal
 
       bool getDisplayAll() const { return displayAll; }
 
-      /** 
+      /**
        * \brief get the number of features into layer
        */
       int getNbFeatures();
 
-      /** 
+      /**
        * \brief get layer's name
        */
-      const char * getName();
+      QString getName();
 
 
-      /** 
+      /**
        *  \brief get arrangement policy
        */
       Arrangement getArrangement();
 
-      /** 
+      /**
        * \brief set arrangement policy
        *
        * @param arrangement arrangement policy
@@ -105,18 +103,18 @@ namespace pal
       unsigned long getArrangementFlags() const { return arrangementFlags; }
       void setArrangementFlags( unsigned long flags ) { arrangementFlags = flags; }
 
-      /** 
+      /**
        * \brief get units for label size
        */
       Units getLabelUnit();
 
-      /** 
+      /**
        * \brief set unit for label size
        *
        */
       void setLabelUnit( Units label_unit );
 
-      /** 
+      /**
        * \brief activate or desactivate the layer
        *
        * active means "is currently display". When active is false
@@ -127,13 +125,13 @@ namespace pal
        */
       void setActive( bool active );
 
-      /** 
+      /**
        * \brief return the layer's activity status
        */
       bool isActive();
 
 
-      /** 
+      /**
        * \brief tell pal whether the layer has to be labelled.
        *
        * The layer will be labelled if and only if toLabel and isActive were set to true
@@ -143,13 +141,13 @@ namespace pal
       void setToLabel( bool toLabel );
 
 
-      /** 
+      /**
        * \brief return if the layer will be labelled or not
        */
       bool isToLabel();
 
 
-      /** 
+      /**
        * \brief mark layer's features as obstacles
        *
        * Avoid putting labels over obstalces.
@@ -158,25 +156,25 @@ namespace pal
        */
       void setObstacle( bool obstacle );
 
-      /** 
+      /**
        * \brief return the obstacle status
        */
       bool isObstacle();
 
-      /** 
+      /**
        * \brief set the minimum valid scale, below this scale the layer will not be labelled
        *
        * Use -1 to disable
        */
       void setMinScale( double min_scale );
 
-      /** 
+      /**
        * \brief return the minimum valid scale
        */
       double getMinScale();
 
 
-      /** 
+      /**
        * \brief set the maximum valid scale, upon this scale the layer will not be labelled
        *
        * use -1 to disable
@@ -184,13 +182,13 @@ namespace pal
       void setMaxScale( double max_scale );
 
 
-      /** 
+      /**
        * \brief return the maximum valid scale
        */
       double getMaxScale();
 
 
-      /** 
+      /**
        * \ brief set the layer priority
        *
        * The best priority is 0, the worst is 1
@@ -199,7 +197,7 @@ namespace pal
       void setPriority( double priority );
 
 
-      /** 
+      /**
        * return the layer's priority
        */
       double getPriority();
@@ -219,7 +217,7 @@ namespace pal
       void setCentroidInside( bool forceInside ) { centroidInside = forceInside; }
       bool getCentroidInside() const { return centroidInside; }
 
-      /** 
+      /**
        * \brief register a feature in the layer
        *
        * @param geom_id unique identifier
@@ -243,14 +241,14 @@ namespace pal
        *
        * @return true on success (i.e. valid geometry)
        */
-      bool registerFeature( const char *geom_id, PalGeometry *userGeom, double label_x = -1, double label_y = -1,
-                            const char* labelText = NULL, double labelPosX = 0.0, double labelPosY = 0.0,
+      bool registerFeature( const QString &geom_id, PalGeometry *userGeom, double label_x = -1, double label_y = -1,
+                            const QString& labelText = QString(), double labelPosX = 0.0, double labelPosY = 0.0,
                             bool fixedPos = false, double angle = 0.0, bool fixedAngle = false,
                             int xQuadOffset = 0, int yQuadOffset = 0, double xOffset = 0.0, double yOffset = 0.0,
                             bool alwaysShow = false, double repeatDistance = 0 );
 
       /** Return pointer to feature or NULL if doesn't exist */
-      Feature* getFeature( const char* geom_id );
+      Feature* getFeature( const QString &geom_id );
 
       /** Join connected features with the same label text */
       void joinConnectedFeatures();
@@ -259,13 +257,13 @@ namespace pal
       void chopFeaturesAtRepeatDistance();
 
     protected:
-      char *name; /* unique */
+      QString name; /* unique */
 
       /** List of feature parts */
-      LinkedList<FeaturePart*> *featureParts;
+      QLinkedList<FeaturePart*> *featureParts;
 
       /** List of features - for deletion */
-      LinkedList<Feature*> *features;
+      QLinkedList<Feature*> *features;
 
       Pal *pal;
 
@@ -292,14 +290,14 @@ namespace pal
 
       // indexes (spatial and id)
       RTree<FeaturePart*, double, 2, double, 8, 4> *rtree;
-      HashTable<Feature*> *hashtable;
+      QHash< QString, Feature*> *hashtable;
 
-      HashTable< LinkedList<FeaturePart*>* > * connectedHashtable;
-      LinkedList< char* >* connectedTexts;
+      QHash< QString, QLinkedList<FeaturePart*>* >* connectedHashtable;
+      QLinkedList< QString >* connectedTexts;
 
       QMutex mMutex;
 
-      /** 
+      /**
        * \brief Create a new layer
        *
        * @param lyrName layer's name
@@ -315,21 +313,21 @@ namespace pal
        * @param displayAll if true, all features will be labelled even though overlaps occur
        *
        */
-      Layer( const char *lyrName, double min_scale, double max_scale, Arrangement arrangement, Units label_unit, double defaultPriority, bool obstacle, bool active, bool toLabel, Pal *pal, bool displayAll = false );
+      Layer( const QString& lyrName, double min_scale, double max_scale, Arrangement arrangement, Units label_unit, double defaultPriority, bool obstacle, bool active, bool toLabel, Pal *pal, bool displayAll = false );
 
-      /** 
+      /**
        * \brief Delete the layer
        */
       virtual ~Layer();
 
-      /** 
+      /**
        * \brief check if the scal is in the scale range min_scale -> max_scale
        * @param scale the scale to check
        */
       bool isScaleValid( double scale );
 
-      /** Add newly creted feature part into r tree and to the list */
-      void addFeaturePart( FeaturePart* fpart, const char* labelText = NULL );
+      /** Add newly created feature part into r tree and to the list */
+      void addFeaturePart( FeaturePart* fpart, const QString &labelText = QString() );
   };
 
 } // end namespace pal
