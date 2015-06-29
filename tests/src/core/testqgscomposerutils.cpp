@@ -588,7 +588,7 @@ void TestQgsComposerUtils::fontAscentMM()
 void TestQgsComposerUtils::fontDescentMM()
 {
   mTestFont.setPointSize( 12 );
-  QCOMPARE( QgsComposerUtils::fontDescentMM( mTestFont ), 0.9 );
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::fontDescentMM( mTestFont ), 0.9, 0.05 ) );
 }
 
 void TestQgsComposerUtils::fontHeightMM()
