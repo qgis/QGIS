@@ -530,7 +530,7 @@ class QgsWmsSettings
 };
 
 
-/** keeps information about capabilities of particular URI */
+/** Keeps information about capabilities of particular URI */
 class QgsWmsCapabilities
 {
   public:
@@ -576,6 +576,9 @@ class QgsWmsCapabilities
 
     /** Find out whether to invert axis orientation when parsing/writing coordinates */
     bool shouldInvertAxisOrientation( const QString& ogcCrs );
+
+    /** Find out identify capabilities */
+    int identifyCapabilities() const;
 
   protected:
     bool parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapabilitiesProperty& capabilitiesProperty );
@@ -674,7 +677,7 @@ class QgsWmsCapabilities
 
 
 
-/** class that handles download of capabilities */
+/** Class that handles download of capabilities */
 class QgsWmsCapabilitiesDownload : public QObject
 {
     Q_OBJECT

@@ -1838,6 +1838,18 @@ bool QgsWmsCapabilities::shouldInvertAxisOrientation( const QString& ogcCrs )
   return changeXY;
 }
 
+int QgsWmsCapabilities::identifyCapabilities() const
+{
+  int capability = QgsRasterInterface::NoCapabilities;
+
+  foreach ( QgsRaster::IdentifyFormat f, mIdentifyFormats.keys() )
+  {
+    capability |= QgsRasterDataProvider::identifyFormatToCapability( f );
+  }
+
+  return capability;
+}
+
 
 
 // -----------------
