@@ -158,7 +158,7 @@ void QgsPGConnectionItem::refreshConnection()
 
 void QgsPGConnectionItem::createSchema()
 {
-  QString schemaName = QInputDialog::getText( 0, tr( "Create Schema" ), tr( "Shema name:" ) );
+  QString schemaName = QInputDialog::getText( 0, tr( "Create Schema" ), tr( "Schema name:" ) );
   if ( schemaName.isEmpty() )
     return;
 
