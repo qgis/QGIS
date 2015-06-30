@@ -84,6 +84,8 @@ class QgsWMSServer: public QgsOWSServer
     of the image object). If an instance to existing hit test structure is passed, instead of rendering
     it will fill the structure with symbols that would be used for rendering */
     QImage* getMap( HitTest* hitTest = 0 );
+    /**GetMap request with vector format output. This output is usually symbolized (difference to WFS GetFeature)*/
+    void getMapAsDxf();
     /**Returns an SLD file with the style of the requested layer. Exception is raised in case of troubles :-)*/
     QDomDocument getStyle();
     /**Returns an SLD file with the styles of the requested layers. Exception is raised in case of troubles :-)*/
@@ -254,6 +256,10 @@ class QgsWMSServer: public QgsOWSServer
 
     /**Gets layer search rectangle (depending on request parameter, layer type, map and layer crs)*/
     QgsRectangle featureInfoSearchRect( QgsVectorLayer* ml, QgsMapRenderer* mr, const QgsRenderContext& rct, const QgsPoint& infoPoint ) const;
+
+    /**Reads and extracts the different options in the FORMAT_OPTIONS parameter*/
+    void readFormatOptions( QMap<QString, QString>& formatOptions ) const;
+    void readDxfLayerSettings( QList< QPair<QgsVectorLayer *, int > >& layers, const QMap<QString, QString>& formatOptionsMap ) const;
 };
 
 #endif
