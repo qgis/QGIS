@@ -130,7 +130,7 @@ class QgsAlignRaster
     //! to determine suitable defaults for cell size and grid offset.
     //!
     //! @return true on success (may fail if it is not possible to reproject raster to given CRS)
-    bool setParametersFromRaster( const RasterInfo& rasterInfo, const QString& customCRSWkt = QString(), QSizeF customCellSize = QSizeF(), QPointF customGridOffset = QPointF( -1, -1 ) );
+    bool setParametersFromRaster( const QgsAlignRaster::RasterInfo& rasterInfo, const QString& customCRSWkt = QString(), QSizeF customCellSize = QSizeF(), QPointF customGridOffset = QPointF( -1, -1 ) );
     //! Overridden variant for convenience, taking filename instead RasterInfo object.
     //! See the other variant for details.
     bool setParametersFromRaster( const QString& filename, const QString& customCRSWkt = QString(), QSizeF customCellSize = QSizeF(), QPointF customGridOffset = QPointF( -1, -1 ) );

@@ -453,7 +453,7 @@ QByteArray QgsServer::handleRequest( const QString queryString ,
    */
   if ( ! queryString.isEmpty() )
   {
-    setenv( "QUERY_STRING", queryString.toUtf8( ), 1 );
+    putenv( QString( "QUERY_STRING=%1" ).arg( queryString ).toUtf8( ) );
   }
 
   int logLevel = QgsServerLogger::instance()->logLevel();

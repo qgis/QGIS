@@ -41,7 +41,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
     QgsAlignRaster();
 
     //! Utility class for gathering information about rasters
-    struct RasterInfo
+    struct ANALYSIS_EXPORT RasterInfo
     {
     public:
       //! Construct raster info with a path to a raster file
