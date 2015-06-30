@@ -328,7 +328,10 @@ void TestQgsPaintEffect::drawSource()
 
   //test render
   QImage image( 100, 100, QImage::Format_ARGB32 );
+  image.setDotsPerMeterX( 96 / 25.4 * 1000 );
+  image.setDotsPerMeterY( 96 / 25.4 * 1000 );
   image.fill( Qt::transparent );
+
   QPainter painter;
   painter.begin( &image );
   QgsRenderContext context = QgsSymbolLayerV2Utils::createRenderContext( &painter );
@@ -400,6 +403,8 @@ void TestQgsPaintEffect::blur()
   delete effect;
 
   QImage image( 100, 100, QImage::Format_ARGB32 );
+  image.setDotsPerMeterX( 96 / 25.4 * 1000 );
+  image.setDotsPerMeterY( 96 / 25.4 * 1000 );
   image.fill( Qt::transparent );
   QPainter painter;
   painter.begin( &image );
@@ -496,6 +501,8 @@ void TestQgsPaintEffect::dropShadow()
   delete effect;
 
   QImage image( 100, 100, QImage::Format_ARGB32 );
+  image.setDotsPerMeterX( 96 / 25.4 * 1000 );
+  image.setDotsPerMeterY( 96 / 25.4 * 1000 );
   image.fill( Qt::transparent );
   QPainter painter;
   painter.begin( &image );
@@ -597,6 +604,8 @@ void TestQgsPaintEffect::glow()
   delete effect;
 
   QImage image( 100, 100, QImage::Format_ARGB32 );
+  image.setDotsPerMeterX( 96 / 25.4 * 1000 );
+  image.setDotsPerMeterY( 96 / 25.4 * 1000 );
   image.fill( Qt::transparent );
   QPainter painter;
   painter.begin( &image );
@@ -657,6 +666,8 @@ void TestQgsPaintEffect::stack()
   //rendering
 
   QImage image( 100, 100, QImage::Format_ARGB32 );
+  image.setDotsPerMeterX( 96 / 25.4 * 1000 );
+  image.setDotsPerMeterY( 96 / 25.4 * 1000 );
   image.fill( Qt::transparent );
   QPainter painter;
   painter.begin( &image );
