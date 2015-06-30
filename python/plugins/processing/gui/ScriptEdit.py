@@ -59,7 +59,7 @@ class ScriptEdit(QsciScintilla):
         font = QFont()
         font.setFamily('Courier')
         font.setFixedPitch(True)
-        font.setPointSize(10)
+        font.setPointSize(20)
         self.setFont(font)
         self.setMarginsFont(font)
 
@@ -105,10 +105,14 @@ class ScriptEdit(QsciScintilla):
         self.setAutoCompletionThreshold(2)
         self.setAutoCompletionSource(QsciScintilla.AcsAPIs)
 
+        self.setFonts(10)
+
+    def setFonts(self, size):
+
         # Load font from Python console settings
         settings = QSettings()
         fontName = settings.value('pythonConsole/fontfamilytext', 'Monospace')
-        fontSize = int(settings.value('pythonConsole/fontsize', 10))
+        fontSize = int(settings.value('pythonConsole/fontsize', size))
 
         self.defaultFont = QFont(fontName)
         self.defaultFont.setFixedPitch(True)

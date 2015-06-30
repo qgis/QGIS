@@ -97,6 +97,8 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.btnPaste.clicked.connect(self.editor.paste)
         self.btnUndo.clicked.connect(self.editor.undo)
         self.btnRedo.clicked.connect(self.editor.redo)
+        self.btnIncreaseFont.clicked.connect(self.increaseFontSize)
+        self.btnDecreaseFont.clicked.connect(self.decreaseFontSize)
         self.editor.textChanged.connect(lambda: self.setHasChanged(True))
 
         self.alg = alg
@@ -135,6 +137,16 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.setHasChanged(False)
 
         self.editor.setLexerType(self.algType)
+
+    def increaseFontSize(self):
+        font = self.editor.defaultFont
+        self.editor.setFonts(font.pointSize() + 1)
+        self.editor.initLexer()
+
+    def decreaseFontSize(self):
+        font = self.editor.defaultFont
+        self.editor.setFonts(font.pointSize() - 1)
+        self.editor.initLexer()
 
     def showSnippets(self, evt):
         popupmenu = QMenu()
