@@ -17,6 +17,8 @@
 #include "qgsrenderchecker.h"
 #include "qgssinglesymbolrendererv2.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
+#include "qgsgeometry.h"
 
 
 
@@ -91,6 +93,7 @@ class TestQgsLegendRenderer : public QObject
     void testBigMarker();
     void testLongSymbolText();
     void testThreeColumns();
+    void testFilterByMap();
 
   private:
     QgsLayerTreeGroup* mRoot;
@@ -129,6 +132,29 @@ void TestQgsLegendRenderer::init()
   mVL2->setRendererV2( new QgsSingleSymbolRendererV2( sym2 ) );
 
   mVL3 = new QgsVectorLayer( "Point", "Point Layer", "memory" );
+  {
+    QgsVectorDataProvider* pr = mVL3->dataProvider();
+    QList<QgsField> attrs;
+    attrs << QgsField("test_attr", QVariant::Int);
+    pr->addAttributes( attrs );
+
+    QgsFields fields;
+    fields.append( attrs.back() );
+
+    QList<QgsFeature> features;
+    QgsFeature f1(fields, 1);
+    f1.setAttribute(0, 1);
+    f1.setGeometry( QgsGeometry::fromPoint(QgsPoint(1.0, 1.0)) );
+    QgsFeature f2(fields, 2);
+    f2.setAttribute(0, 2);
+    f2.setGeometry( QgsGeometry::fromPoint(QgsPoint(9.0, 1.0)) );
+    QgsFeature f3(fields, 3);
+    f3.setAttribute(0, 3);
+    f3.setGeometry( QgsGeometry::fromPoint(QgsPoint(5.0, 5.0)) );
+    features << f1 << f2 << f3;
+    pr->addFeatures( features );
+    mVL3->updateFields();
+  }
   QgsMapLayerRegistry::instance()->addMapLayer( mVL3 );
 
   static char raster_array[] = { 1, 2, 2, 1 };
@@ -259,6 +285,31 @@ void TestQgsLegendRenderer::testThreeColumns()
   _verifyImage( testName );
 }
 
+void TestQgsLegendRenderer::testFilterByMap()
+{
+  QString testName = "legend_filter_by_map";
+
+  QgsLayerTreeModel legendModel( mRoot );
+
+  QgsMapSettings mapSettings;
+  // extent and size to include only the red and green points
+  mapSettings.setExtent( QgsRectangle( 0, 0, 10.0, 4.0 ) );
+  mapSettings.setOutputSize( QSize(400,100) );
+  mapSettings.setOutputDpi( 96 );
+  QStringList ll;
+  foreach( auto l, QgsMapLayerRegistry::instance()->mapLayers() )
+  {
+    ll << l->id();
+  }
+  mapSettings.setLayers( ll );
+
+  legendModel.setLegendFilterByMap( &mapSettings );
+
+  QgsLegendSettings settings;
+  _setStandardTestFont( settings );
+  _renderLegend( testName, &legendModel, settings );
+  _verifyImage( testName );
+}
 
 QTEST_MAIN( TestQgsLegendRenderer )
 #include "testqgslegendrenderer.moc"
