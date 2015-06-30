@@ -36,7 +36,6 @@ from processing.core.parameters import ParameterString
 from processing.core.outputs import OutputRaster
 from processing.algs.gdal.OgrAlgorithm import OgrAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.tools.system import isWindows
 
 
 class rasterize(OgrAlgorithm):
@@ -76,28 +75,35 @@ class rasterize(OgrAlgorithm):
             self.tr('Horizontal'), 0.0, 99999999.999999, 100.0))
         self.addParameter(ParameterNumber(self.HEIGHT,
             self.tr('Vertical'), 0.0, 99999999.999999, 100.0))
-        self.addParameter(ParameterSelection(self.RTYPE, self.tr('Raster type'),
-            self.TYPE, 1))
-        self.addParameter(ParameterString(self.NO_DATA,
+
+        params = []
+        params.append(ParameterSelection(self.RTYPE, self.tr('Raster type'),
+            self.TYPE, 5))
+        params.append(ParameterString(self.NO_DATA,
             self.tr("Nodata value"),
             '-9999'))
-        self.addParameter(ParameterSelection(self.COMPRESS,
+        params.append(ParameterSelection(self.COMPRESS,
             self.tr('GeoTIFF options. Compression type:'), self.COMPRESSTYPE, 4))
-        self.addParameter(ParameterNumber(self.JPEGCOMPRESSION,
+        params.append(ParameterNumber(self.JPEGCOMPRESSION,
             self.tr('Set the JPEG compression level'),
             1, 100, 75))
-        self.addParameter(ParameterNumber(self.ZLEVEL,
+        params.append(ParameterNumber(self.ZLEVEL,
             self.tr('Set the DEFLATE compression level'),
             1, 9, 6))
-        self.addParameter(ParameterNumber(self.PREDICTOR,
+        params.append(ParameterNumber(self.PREDICTOR,
             self.tr('Set the predictor for LZW or DEFLATE compression'),
             1, 3, 1))
-        self.addParameter(ParameterBoolean(self.TILED,
+        params.append(ParameterBoolean(self.TILED,
             self.tr('Create tiled output (only used for the GTiff format)'), False))
-        self.addParameter(ParameterSelection(self.BIGTIFF,
+        params.append(ParameterSelection(self.BIGTIFF,
             self.tr('Control whether the created file is a BigTIFF or a classic TIFF'), self.BIGTIFFTYPE, 0))
         self.addParameter(ParameterBoolean(self.TFW,
             self.tr('Force the generation of an associated ESRI world file (.tfw)'), False))
+
+        for param in params:
+            param.isAdvanced = True
+            self.addParameter(param)
+
         self.addOutput(OutputRaster(self.OUTPUT,
             self.tr('Rasterized')))
 
