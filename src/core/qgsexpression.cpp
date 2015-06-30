@@ -662,7 +662,7 @@ static QVariant fcnLevenshtein( const QVariantList& values, const QgsFeature*, Q
 {
   QString string1 = getStringValue( values.at( 0 ), parent );
   QString string2 = getStringValue( values.at( 1 ), parent );
-  return QVariant( QgsStringUtils::levenshteinDistance( string1, string2, true) );
+  return QVariant( QgsStringUtils::levenshteinDistance( string1, string2, true ) );
 }
 
 static QVariant fcnLCS( const QVariantList& values, const QgsFeature*, QgsExpression* parent )
@@ -2607,7 +2607,7 @@ bool QgsExpression::NodeBinaryOperator::leftAssociative() const
       return false;
   }
   Q_ASSERT( 0 && "unexpected binary operator" );
-  return -1;
+  return false;
 }
 
 QString QgsExpression::NodeBinaryOperator::dump() const
