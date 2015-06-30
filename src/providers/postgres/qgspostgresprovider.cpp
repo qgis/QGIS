@@ -1785,12 +1785,12 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
         if ( value.isNull() )
         {
           const QgsField &fld = field( attrIdx );
-          v = paramValue( defaultValues[ attrIdx ], defaultValues[ attrIdx ] );
+          v = paramValue( defaultValues[ i ], defaultValues[ i ] );
           features->setAttribute( attrIdx, convertValue( fld.type(), v ) );
         }
         else
         {
-          v = paramValue( value.toString(), defaultValues[ attrIdx ] );
+          v = paramValue( value.toString(), defaultValues[ i ] );
 
           if ( v != value.toString() )
           {
