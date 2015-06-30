@@ -87,7 +87,7 @@ for f in "$@"; do
 		;;
 
         *.sip)
-                cmd="perl -i.prepare -pe 's/[\r\t ]+$//;'"
+                cmd="perl -i.prepare -pe 's/[\r\t ]+$//; s#^(\s*)/\*[*!]\s*([^\s*].*)\s*\$#\$1/** \u\$2\n#;'"
                 ;;
 
         *)
