@@ -74,6 +74,7 @@ class TestQgsComposerMap(TestCase):
         self.mComposerMap.grid().setAnnotationDirection( QgsComposerMapGrid.Horizontal, QgsComposerMapGrid.Bottom )
         self.mComposerMap.grid().setAnnotationFontColor( QColor( 255, 0, 0, 150 ) )
         self.mComposerMap.grid().setBlendMode( QPainter.CompositionMode_Overlay )
+        self.mComposerMap.updateBoundingRect()
 
         checker = QgsCompositionChecker('composermap_grid', self.mComposition)
         myTestResult, myMessage = checker.testComposition()
@@ -94,6 +95,7 @@ class TestQgsComposerMap(TestCase):
         self.mComposerMap.grid().setGridLineColor( QColor( 0, 255, 0 ) )
         self.mComposerMap.grid().setGridLineWidth( 0.5 )
         self.mComposerMap.grid().setBlendMode( QPainter.CompositionMode_SourceOver )
+        self.mComposerMap.updateBoundingRect()
 
         checker = QgsCompositionChecker('composermap_crossgrid', self.mComposition)
         myTestResult, myMessage = checker.testComposition()
@@ -114,6 +116,7 @@ class TestQgsComposerMap(TestCase):
         self.mComposerMap.grid().setIntervalY( 2000 )
         self.mComposerMap.grid().setAnnotationEnabled( False )
         self.mComposerMap.grid().setBlendMode( QPainter.CompositionMode_SourceOver )
+        self.mComposerMap.updateBoundingRect()
 
         checker = QgsCompositionChecker('composermap_markergrid', self.mComposition)
         myTestResult, myMessage = checker.testComposition()
@@ -135,6 +138,7 @@ class TestQgsComposerMap(TestCase):
         self.mComposerMap.grid().setFrameStyle( QgsComposerMapGrid.Zebra )
         self.mComposerMap.grid().setFramePenSize( 0.5 )
         self.mComposerMap.grid().setBlendMode( QPainter.CompositionMode_SourceOver )
+        self.mComposerMap.updateBoundingRect()
 
         checker = QgsCompositionChecker('composermap_gridframeonly', self.mComposition)
         myTestResult, myMessage = checker.testComposition()
@@ -164,6 +168,7 @@ class TestQgsComposerMap(TestCase):
         self.mComposerMap.grid().setFrameFillColor1( QColor( 50, 90, 50, 100 ) )
         self.mComposerMap.grid().setFrameFillColor2( QColor( 200, 220, 100, 60 ) )
         self.mComposerMap.grid().setEnabled( True )
+        self.mComposerMap.updateBoundingRect()
 
         checker = QgsCompositionChecker('composermap_zebrastyle', self.mComposition)
         myTestResult, myMessage = checker.testComposition( 0, 100 )
@@ -191,17 +196,20 @@ class TestQgsComposerMap(TestCase):
         self.mComposerMap.grid().setFrameSideFlag( QgsComposerMapGrid.FrameRight, False )
         self.mComposerMap.grid().setFrameSideFlag( QgsComposerMapGrid.FrameTop, False )
         self.mComposerMap.grid().setFrameSideFlag( QgsComposerMapGrid.FrameBottom, False )
+        self.mComposerMap.updateBoundingRect()
 
         checker = QgsCompositionChecker('composermap_zebrastyle_left', self.mComposition)
         myTestResult, myMessage = checker.testComposition( 0, 100 )
         assert myTestResult, myMessage
 
         self.mComposerMap.grid().setFrameSideFlag( QgsComposerMapGrid.FrameTop, True )
+        self.mComposerMap.updateBoundingRect()
         checker = QgsCompositionChecker('composermap_zebrastyle_lefttop', self.mComposition)
         myTestResult, myMessage = checker.testComposition( 0, 100 )
         assert myTestResult, myMessage
 
         self.mComposerMap.grid().setFrameSideFlag( QgsComposerMapGrid.FrameRight, True )
+        self.mComposerMap.updateBoundingRect()
         checker = QgsCompositionChecker('composermap_zebrastyle_lefttopright', self.mComposition)
         myTestResult, myMessage = checker.testComposition( 0, 100 )
         assert myTestResult, myMessage
@@ -223,6 +231,7 @@ class TestQgsComposerMap(TestCase):
         self.mComposerMap.grid().setFramePenColor( QColor( 0, 0, 0 ) )
         self.mComposerMap.grid().setEnabled( True )
         self.mComposerMap.grid().setStyle( QgsComposerMapGrid.FrameAnnotationsOnly )
+        self.mComposerMap.updateBoundingRect()
 
         checker = QgsCompositionChecker('composermap_interiorticks', self.mComposition)
         myTestResult, myMessage = checker.testComposition( 0, 100 )
