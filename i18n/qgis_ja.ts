@@ -229,7 +229,7 @@ Open the results dialog to check it.</source>
     <name>BarPlot</name>
     <message>
         <source>Input table</source>
-        <translation>テーブルを入力する</translation>
+        <translation>入力テーブル</translation>
     </message>
     <message>
         <source>Category name field</source>
@@ -280,7 +280,7 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Count</source>
-        <translation>カウント</translation>
+        <translation>個数</translation>
     </message>
     <message>
         <source>Range</source>
@@ -327,7 +327,7 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Count</source>
-        <translation>カウント</translation>
+        <translation>個数</translation>
     </message>
     <message>
         <source>Number of empty values</source>
@@ -404,7 +404,7 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Select directory</source>
-        <translation type="unfinished"></translation>
+        <translation>ディレクトリ選択</translation>
     </message>
 </context>
 <context>
@@ -531,7 +531,7 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Smooth</source>
-        <translation type="unfinished"></translation>
+        <translation>スムース</translation>
     </message>
     <message>
         <source>Slope</source>
@@ -633,12 +633,12 @@ Open the results dialog to check it.</source>
         <translation>追加の作成パラメータ</translation>
     </message>
     <message>
-        <source>Output layer</source>
-        <translation>出力レイヤ</translation>
-    </message>
-    <message>
         <source>Nodata value, leave blank to take the nodata value from input</source>
         <translation>データなしの値, 空白の場合は入力から取得</translation>
+    </message>
+    <message>
+        <source>Clipped</source>
+        <translation>クリップされた</translation>
     </message>
 </context>
 <context>
@@ -741,8 +741,8 @@ Open the results dialog to check it.</source>
         <translation>マッチングモード</translation>
     </message>
     <message>
-        <source>Output file</source>
-        <translation>出力ファイル</translation>
+        <source>Color relief</source>
+        <translation>カラーレリーフ</translation>
     </message>
 </context>
 <context>
@@ -985,7 +985,7 @@ Open the results dialog to check it.</source>
     <name>DBManager</name>
     <message>
         <source>No database selected or you are not connected to it.</source>
-        <translation>データベースが無いまたはデータベースに接続していません.</translation>
+        <translation>データベースがないかデータベースに接続していません.</translation>
     </message>
     <message>
         <source>Select the table you want export to file.</source>
@@ -1064,7 +1064,7 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Select a table/view for deletion.</source>
-        <translation>削除するテーブル/ビューの選択</translation>
+        <translation>削除するテーブル/ビューの選択.</translation>
     </message>
     <message>
         <source>Select a table to empty it.</source>
@@ -1266,7 +1266,7 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Rows (estimation):</source>
-        <translation>行数（推定値）</translation>
+        <translation>行数 (推定値):</translation>
     </message>
     <message>
         <source>Privileges:</source>
@@ -1278,7 +1278,7 @@ This table is essential for many GIS applications for enumeration of tables.</so
     </message>
     <message>
         <source>Rows (counted):</source>
-        <translation>行数（カウント値）</translation>
+        <translation>行数 (カウント値):</translation>
     </message>
     <message>
         <source>&lt;warning&gt; This user has read-only privileges.</source>
@@ -1466,7 +1466,7 @@ Query:
     </message>
     <message>
         <source>Do you want to %s spatial index for field %s?</source>
-        <translation>%sをフィールド%sの空間インデックスにしますか?</translation>
+        <translation>次のフィールドの空間インデックスを%sしますか? フィールド: %s</translation>
     </message>
     <message>
         <source>Spatial Index</source>
@@ -2013,7 +2013,7 @@ columns</source>
     </message>
     <message>
         <source>Are you sure you want to delete this model?</source>
-        <translation>このモデルを削除してよろしいですか？</translation>
+        <translation>このモデルを削除してよろしいですか?</translation>
     </message>
 </context>
 <context>
@@ -2028,7 +2028,7 @@ columns</source>
     </message>
     <message>
         <source>Are you sure you want to delete this script?</source>
-        <translation>このスクリプトを削除してよろしいですか？</translation>
+        <translation>このスクリプトを削除してよろしいですか?</translation>
     </message>
 </context>
 <context>
@@ -2289,7 +2289,7 @@ columns</source>
     </message>
     <message>
         <source>Output count field name</source>
-        <translation>出力カウントフィールド名称</translation>
+        <translation>出力フィールド名</translation>
     </message>
     <message>
         <source>PNTCNT</source>
@@ -3182,7 +3182,46 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>Check for edge contamination</source>
+        <translation>エッジ汚染のチェック</translation>
+    </message>
+    <message>
+        <source>D-Infinity Drop to Stream Grid</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation>誤ったMPIプロセス数が使われました。TauDEMアルゴリズムを実行する前に、正しい数を設定して下さい</translation>
+    </message>
+</context>
+<context>
+    <name>DinfDistDownMulti</name>
+    <message>
+        <source>D-Infinity Flow Direction Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pit Filled Elevation Grid</source>
+        <translation>穴埋め標高グリッド</translation>
+    </message>
+    <message>
+        <source>Stream Raster Grid</source>
+        <translation>流量グリッド</translation>
+    </message>
+    <message>
+        <source>Weight Path Grid</source>
+        <translation>重み付けパスグリッド</translation>
+    </message>
+    <message>
+        <source>Statistical Method</source>
+        <translation>統計的手法</translation>
+    </message>
+    <message>
+        <source>Distance Method</source>
+        <translation>距離計算法</translation>
+    </message>
+    <message>
+        <source>Check for edge contamination</source>
+        <translation>エッジ汚染のチェック</translation>
     </message>
     <message>
         <source>D-Infinity Drop to Stream Grid</source>
@@ -3213,7 +3252,7 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>Distance Method</source>
-        <translation>距離グリッド</translation>
+        <translation>距離計算法</translation>
     </message>
     <message>
         <source>Proportion Threshold</source>
@@ -3221,7 +3260,46 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>Check for edge contamination</source>
+        <translation>エッジ汚染のチェック</translation>
+    </message>
+    <message>
+        <source>D-Infinity Distance Up</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation>誤ったMPIプロセス数が使われました。TauDEMアルゴリズムを実行する前に、正しい数を設定して下さい</translation>
+    </message>
+</context>
+<context>
+    <name>DinfDistUpMulti</name>
+    <message>
+        <source>D-Infinity Flow Direction Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pit Filled Elevation Grid</source>
+        <translation>穴埋め標高グリッド</translation>
+    </message>
+    <message>
+        <source>Slope Grid</source>
+        <translation>スロープグリッド</translation>
+    </message>
+    <message>
+        <source>Statistical Method</source>
+        <translation>統計的手法</translation>
+    </message>
+    <message>
+        <source>Distance Method</source>
+        <translation>距離計算法</translation>
+    </message>
+    <message>
+        <source>Proportion Threshold</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check for edge contamination</source>
+        <translation>エッジ汚染のチェック</translation>
     </message>
     <message>
         <source>D-Infinity Distance Up</source>
@@ -3248,11 +3326,11 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>Outlets Shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>アウトレット Shapefile</translation>
     </message>
     <message>
         <source>Check for edge contamination</source>
-        <translation type="unfinished"></translation>
+        <translation>エッジ汚染のチェック</translation>
     </message>
     <message>
         <source>Transport Limited Accumulation Grid</source>
@@ -3260,7 +3338,7 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>Deposition Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>蓄積グリッド</translation>
     </message>
     <message>
         <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
@@ -3283,15 +3361,15 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>Input Concentration Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>入力濃度グリッド</translation>
     </message>
     <message>
         <source>Outlets Shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>アウトレット Shapefile</translation>
     </message>
     <message>
         <source>Check for edge contamination</source>
-        <translation type="unfinished"></translation>
+        <translation>エッジ汚染のチェック</translation>
     </message>
     <message>
         <source>Transport Limited Accumulation Grid</source>
@@ -3299,11 +3377,89 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>Deposition Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>蓄積グリッド</translation>
     </message>
     <message>
         <source>Output Concentration Grid</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation>誤ったMPIプロセス数が使われました。TauDEMアルゴリズムを実行する前に、正しい数を設定して下さい</translation>
+    </message>
+</context>
+<context>
+    <name>DinfTransLimAccum2Multi</name>
+    <message>
+        <source>D-Infinity Flow Direction Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Supply Grid</source>
+        <translation>流入グリッド</translation>
+    </message>
+    <message>
+        <source>Transport Capacity Grid</source>
+        <translation>輸送許容量グリッド</translation>
+    </message>
+    <message>
+        <source>Input Concentration Grid</source>
+        <translation>入力濃度グリッド</translation>
+    </message>
+    <message>
+        <source>Outlets Shapefile</source>
+        <translation>アウトレット Shapefile</translation>
+    </message>
+    <message>
+        <source>Check for edge contamination</source>
+        <translation>エッジ汚染のチェック</translation>
+    </message>
+    <message>
+        <source>Transport Limited Accumulation Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deposition Grid</source>
+        <translation>蓄積グリッド</translation>
+    </message>
+    <message>
+        <source>Output Concentration Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation>誤ったMPIプロセス数が使われました。TauDEMアルゴリズムを実行する前に、正しい数を設定して下さい</translation>
+    </message>
+</context>
+<context>
+    <name>DinfTransLimAccumMulti</name>
+    <message>
+        <source>D-Infinity Flow Direction Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Supply Grid</source>
+        <translation>流入グリッド</translation>
+    </message>
+    <message>
+        <source>Transport Capacity Grid</source>
+        <translation>輸送許容量グリッド</translation>
+    </message>
+    <message>
+        <source>Outlets Shapefile</source>
+        <translation>アウトレット Shapefile</translation>
+    </message>
+    <message>
+        <source>Check for edge contamination</source>
+        <translation>エッジ汚染のチェック</translation>
+    </message>
+    <message>
+        <source>Transport Limited Accumulation Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deposition Grid</source>
+        <translation>蓄積グリッド</translation>
     </message>
     <message>
         <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
@@ -3918,7 +4074,54 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Outlets Shapefile</source>
+        <translation>アウトレット Shapefile</translation>
+    </message>
+    <message>
+        <source>Minimum Threshold</source>
+        <translation>最小スレッショルド</translation>
+    </message>
+    <message>
+        <source>Maximum Threshold</source>
+        <translation>最大スレッショルド</translation>
+    </message>
+    <message>
+        <source>Number of Threshold Values</source>
+        <translation>スレッショルド値の数</translation>
+    </message>
+    <message>
+        <source>Spacing for Threshold Values</source>
+        <translation>スレッショルド値の間隔</translation>
+    </message>
+    <message>
+        <source>D-Infinity Drop to Stream Grid</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation>誤ったMPIプロセス数が使われました。TauDEMアルゴリズムを実行する前に、正しい数を設定して下さい</translation>
+    </message>
+</context>
+<context>
+    <name>DropAnalysisMulti</name>
+    <message>
+        <source>D8 Contributing Area Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>D8 Flow Direction Grid</source>
+        <translation type="unfinished">D8流向グリッド</translation>
+    </message>
+    <message>
+        <source>Pit Filled Elevation Grid</source>
+        <translation>穴埋め標高グリッド</translation>
+    </message>
+    <message>
+        <source>Accumulated Stream Source Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Outlets Shapefile</source>
+        <translation>アウトレット Shapefile</translation>
     </message>
     <message>
         <source>Minimum Threshold</source>
@@ -4910,7 +5113,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Various settings for Gdal Tools</source>
-        <translation>Gdal Toolsに関する多彩な設定</translation>
+        <translation>Gdal Toolsに関する様々な設定</translation>
     </message>
 </context>
 <context>
@@ -5561,15 +5764,15 @@ when pressing on the tool dialog&apos;s Help button.</source>
     </message>
     <message>
         <source>TRI (Terrain Ruggedness Index)</source>
-        <translation>TRI(領域起伏指標）</translation>
+        <translation>TRI (Terrain Ruggedness Index)</translation>
     </message>
     <message>
         <source>TPI (Topographic Position Index)</source>
-        <translation>TPI(トポロジカル位置インデックス）</translation>
+        <translation>TPI (Topographic Position Index)</translation>
     </message>
     <message>
         <source>Roughness</source>
-        <translation>祖度</translation>
+        <translation>粗度</translation>
     </message>
     <message>
         <source>Mode Options</source>
@@ -6049,7 +6252,7 @@ JPEG,JPEG2000,MrSID,ECW,のようなカラー索引をサポートしないデ�
     </message>
     <message>
         <source>&amp;Resampling method</source>
-        <translation>リサンプリングメソッド(&amp;R)</translation>
+        <translation>リサンプリング方法(&amp;R)</translation>
     </message>
     <message>
         <source>Near</source>
@@ -6449,7 +6652,7 @@ Some output geometries may be missing or invalid.
 
 Would you like to add the new layer anyway?</source>
         <translation>
-いくつかの出力ジオメトリが欠落しているか不正です
+いくつかの出力ジオメトリが欠落しているか不正です.
 
 そのまま新レイヤを追加しますか?</translation>
     </message>
@@ -6801,10 +7004,6 @@ GRASSアルゴリズムを実行する前にインストールして下さい.</
         <translation>垂直方向間隔</translation>
     </message>
     <message>
-        <source>Output</source>
-        <translation>出力</translation>
-    </message>
-    <message>
         <source>Invalid grid spacing: %s/%s</source>
         <translation>グリッドの間隔が不正です: %s/%s</translation>
     </message>
@@ -6815,6 +7014,10 @@ GRASSアルゴリズムを実行する前にインストールして下さい.</
     <message>
         <source>Vertical spacing is too small for the covered area</source>
         <translation>垂直方向の間隔が範囲面積に対して狭すぎます</translation>
+    </message>
+    <message>
+        <source>Grid</source>
+        <translation>グリッド</translation>
     </message>
 </context>
 <context>
@@ -6852,8 +7055,8 @@ GRASSアルゴリズムを実行する前にインストールして下さい.</
         <translation>出力ラスタタイプ</translation>
     </message>
     <message>
-        <source>Output file</source>
-        <translation>出力ファイル</translation>
+        <source>Average</source>
+        <translation>平均</translation>
     </message>
 </context>
 <context>
@@ -6895,8 +7098,8 @@ GRASSアルゴリズムを実行する前にインストールして下さい.</
         <translation>出力ラスタタイプ</translation>
     </message>
     <message>
-        <source>Output file</source>
-        <translation>出力ファイル</translation>
+        <source>Interpolated metrics</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6942,12 +7145,12 @@ GRASSアルゴリズムを実行する前にインストールして下さい.</
         <translation>出力ラスタタイプ</translation>
     </message>
     <message>
-        <source>Output file</source>
-        <translation>出力ファイル</translation>
-    </message>
-    <message>
         <source>Smoothing</source>
         <translation>補正</translation>
+    </message>
+    <message>
+        <source>Interpolated IDW</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7024,8 +7227,8 @@ GRASSアルゴリズムを実行する前にインストールして下さい.</
         <translation>出力ラスタタイプ</translation>
     </message>
     <message>
-        <source>Output file</source>
-        <translation>出力ファイル</translation>
+        <source>Interpolated nearest neighbor</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7036,7 +7239,42 @@ GRASSアルゴリズムを実行する前にインストールして下さい.</
     </message>
     <message>
         <source>Outlets Shapefile</source>
+        <translation>アウトレット Shapefile</translation>
+    </message>
+    <message>
+        <source>Mask Grid</source>
+        <translation>マスクグリッド</translation>
+    </message>
+    <message>
+        <source>Mask Threshold</source>
+        <translation>マスクのしきい値</translation>
+    </message>
+    <message>
+        <source>Longest Upslope Length Grid</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Total Upslope Length Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Strahler Network Order Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation>誤ったMPIプロセス数が使われました。TauDEMアルゴリズムを実行する前に、正しい数を設定して下さい</translation>
+    </message>
+</context>
+<context>
+    <name>GridNetMulti</name>
+    <message>
+        <source>D8 Flow Direction Grid</source>
+        <translation type="unfinished">D8流向グリッド</translation>
+    </message>
+    <message>
+        <source>Outlets Shapefile</source>
+        <translation>アウトレット Shapefile</translation>
     </message>
     <message>
         <source>Mask Grid</source>
@@ -7095,7 +7333,7 @@ GRASSアルゴリズムを実行する前にインストールして下さい.</
     </message>
     <message>
         <source>Smooth</source>
-        <translation type="unfinished"></translation>
+        <translation>スムース</translation>
     </message>
     <message>
         <source>Slope</source>
@@ -7478,7 +7716,7 @@ are stored on the installation folder</source>
     </message>
     <message>
         <source>Hub layer name attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>ハブレイヤ名属性</translation>
     </message>
     <message>
         <source>Output shape type</source>
@@ -7494,26 +7732,26 @@ are stored on the installation folder</source>
     </message>
     <message>
         <source>Same layer given for both hubs and spokes</source>
-        <translation type="unfinished"></translation>
+        <translation>ハブとスポーク両方に同じレイヤが指定されています</translation>
     </message>
 </context>
 <context>
     <name>HubLines</name>
     <message>
         <source>Hub point layer</source>
-        <translation type="unfinished"></translation>
+        <translation>ハブポイントレイヤ</translation>
     </message>
     <message>
         <source>Hub ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>ハブIDフィールド</translation>
     </message>
     <message>
         <source>Spoke point layer</source>
-        <translation type="unfinished"></translation>
+        <translation>スポークポイントレイヤ</translation>
     </message>
     <message>
         <source>Spoke ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>スポークIDフィールド</translation>
     </message>
     <message>
         <source>Output</source>
@@ -7521,7 +7759,7 @@ are stored on the installation folder</source>
     </message>
     <message>
         <source>Same layer given for both hubs and spokes</source>
-        <translation type="unfinished"></translation>
+        <translation>ハブとスポーク両方に同じレイヤが指定されています</translation>
     </message>
 </context>
 <context>
@@ -7557,6 +7795,10 @@ are stored on the installation folder</source>
     <message>
         <source>Elevation</source>
         <translation>高さ</translation>
+    </message>
+    <message>
+        <source>Feature %d is smaller than raster cell size</source>
+        <translation>地物 %d はラスタセルサイズより小さいです</translation>
     </message>
 </context>
 <context>
@@ -7870,6 +8112,33 @@ LAStoolsアルゴリズムを実行する前に設定をして下さい.</transl
 </context>
 <context>
     <name>LengthArea</name>
+    <message>
+        <source>Length Grid</source>
+        <translation>距離グリッド</translation>
+    </message>
+    <message>
+        <source>Contributing Area Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Threshold</source>
+        <translation>しきい値</translation>
+    </message>
+    <message>
+        <source>Exponent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stream Source Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation>誤ったMPIプロセス数が使われました。TauDEMアルゴリズムを実行する前に、正しい数を設定して下さい</translation>
+    </message>
+</context>
+<context>
+    <name>LengthAreaMulti</name>
     <message>
         <source>Length Grid</source>
         <translation>距離グリッド</translation>
@@ -8902,7 +9171,7 @@ Shift+クリックで非表示
     </message>
     <message>
         <source>Html Annotation</source>
-        <translation>Htmlアノテーション</translation>
+        <translation>HTMLアノテーション</translation>
     </message>
     <message>
         <source>Duplicate Layer(s)</source>
@@ -9076,7 +9345,7 @@ Shift+クリックで非表示
     <name>MeanAndStdDevPlot</name>
     <message>
         <source>Input table</source>
-        <translation>テーブルを入力する</translation>
+        <translation>入力テーブル</translation>
     </message>
     <message>
         <source>Category name field</source>
@@ -9294,7 +9563,7 @@ Shift+クリックで非表示
     </message>
     <message>
         <source>GetCapabilities response</source>
-        <translation>GetCapabilities の反応</translation>
+        <translation>GetCapabilitiesレスポンス</translation>
     </message>
     <message>
         <source>New</source>
@@ -9445,6 +9714,10 @@ Shift+クリックで非表示
     <message>
         <source>seconds</source>
         <translation>秒</translation>
+    </message>
+    <message>
+        <source>Record parsing error</source>
+        <translation>レコード解析エラー</translation>
     </message>
 </context>
 <context>
@@ -9911,6 +10184,10 @@ See the log for more information.</source>
         <source>Overwrite %s?</source>
         <translation>%s を上書きしますか?</translation>
     </message>
+    <message>
+        <source>Name cannot contain &apos;/&apos;</source>
+        <translation>名前には&quot;/&quot;を含められません</translation>
+    </message>
 </context>
 <context>
     <name>NotSupportedDbType</name>
@@ -9987,7 +10264,7 @@ See the log for more information.</source>
     </message>
     <message>
         <source>The expression entered is not correct</source>
-        <translation>式が指定されたけど正しくないです</translation>
+        <translation>入力された式が正しくありません</translation>
     </message>
 </context>
 <context>
@@ -10551,11 +10828,38 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source> (xmin, xmax, ymin, ymax)</source>
-        <translation type="unfinished"></translation>
+        <translation>(xmin, xmax, ymin, ymax)</translation>
     </message>
 </context>
 <context>
     <name>PeukerDouglas</name>
+    <message>
+        <source>Elevation Grid</source>
+        <translation>標高グリッド</translation>
+    </message>
+    <message>
+        <source>Center Smoothing Weight</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Side Smoothing Weight</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Diagonal Smoothing Weight</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Stream Source Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation>誤ったMPIプロセス数が使われました。TauDEMアルゴリズムを実行する前に、正しい数を設定して下さい</translation>
+    </message>
+</context>
+<context>
+    <name>PeukerDouglasMulti</name>
     <message>
         <source>Elevation Grid</source>
         <translation>標高グリッド</translation>
@@ -10589,7 +10893,7 @@ Please check the configuration in the Processing settings dialog.</source>
     </message>
     <message>
         <source>Input unique ID field</source>
-        <translation>ユニークIdフィールドの入力</translation>
+        <translation>ユニークIDフィールドの入力</translation>
     </message>
     <message>
         <source>Target point layer</source>
@@ -10684,7 +10988,7 @@ Please check the configuration in the Processing settings dialog.</source>
     <name>PointsInPolygonThread</name>
     <message>
         <source>point count field</source>
-        <translation>ポイントカウントフィールド</translation>
+        <translation>ポイント数フィールド</translation>
     </message>
 </context>
 <context>
@@ -10787,7 +11091,7 @@ Please check the configuration in the Processing settings dialog.</source>
     <name>PolarPlot</name>
     <message>
         <source>Input table</source>
-        <translation>テーブルを入力する</translation>
+        <translation>入力テーブル</translation>
     </message>
     <message>
         <source>Category name field</source>
@@ -10833,11 +11137,11 @@ Please check the configuration in the Processing settings dialog.</source>
     <name>Polygonize</name>
     <message>
         <source>Polygonize algorithm requires shapely module!</source>
-        <translation type="unfinished"></translation>
+        <translation>ポリゴン化アルゴリズムを実行するにはshapelyモジュールが必要です!</translation>
     </message>
     <message>
         <source>Processing lines...</source>
-        <translation type="unfinished"></translation>
+        <translation>ラインを処理しています...</translation>
     </message>
     <message>
         <source>Noding lines...</source>
@@ -11608,11 +11912,11 @@ QGIS API interfaceにアクセスするにはifaceを使います。詳細は、
     <name>QObject</name>
     <message>
         <source>Interpolating...</source>
-        <translation>変換中...</translation>
+        <translation>補間中...</translation>
     </message>
     <message>
         <source>Abort</source>
-        <translation>取り消し</translation>
+        <translation>中断</translation>
     </message>
     <message>
         <source>Building triangulation...</source>
@@ -11624,11 +11928,11 @@ QGIS API interfaceにアクセスするにはifaceを使います。詳細は、
     </message>
     <message>
         <source>minidump written to %1</source>
-        <translation>%1へのミニダンプ完了</translation>
+        <translation>%1にミニダンプが書き込まれました</translation>
     </message>
     <message>
         <source>writing of minidump to %1 failed (%2)</source>
-        <translation>%1へのミニダンプに失敗しました（%2）</translation>
+        <translation>%1へのミニダンプ書き込みに失敗しました（%2）</translation>
     </message>
     <message>
         <source>creation of minidump to %1 failed (%2)</source>
@@ -12412,7 +12716,7 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <source>If GPX_USE_EXTENSIONS=YES is specified, extra fields will be written inside the &lt;extensions&gt; tag.</source>
-        <translation> GPX_USE_EXTENSIONS=YESが指定されていると&lt;,extensions&gt;タグの内部に別フィールドが書き込まれます.</translation>
+        <translation> GPX_USE_EXTENSIONS=YESが指定されていると&lt;extensions&gt;タグの内部に別フィールドが書き込まれます.</translation>
     </message>
     <message>
         <source>Only used if GPX_USE_EXTENSIONS=YES and GPX_EXTENSIONS_NS_URL is set. The namespace value used for extension tags. By default, &apos;ogr&apos;.</source>
@@ -14051,7 +14355,7 @@ SQL: %1</translation>
     </message>
     <message>
         <source>empty capabilities document</source>
-        <translation>capabilitiesドキュメントの中身がありません</translation>
+        <translation>Capabilitiesドキュメントの中身がありません</translation>
     </message>
     <message>
         <source>Dom Exception</source>
@@ -14086,7 +14390,7 @@ Response was:
     </message>
     <message>
         <source>Style was missing in capabilities</source>
-        <translation>capabilitiesでスタイルが欠落しています</translation>
+        <translation>Capabilitiesにスタイルが欠落しています</translation>
     </message>
     <message>
         <source>Displays a combo box containing values of attributes used for classification.</source>
@@ -14098,7 +14402,7 @@ Response was:
     </message>
     <message>
         <source>Combo box with values that can be used within the column&apos;s type. Must be supported by the provider.</source>
-        <translation>カラムの型の値で利用できるコンボボックス.プロバイダのサポートが必要です.</translation>
+        <translation>カラムの型で利用できる値を持つコンボボックス. プロバイダのサポートが必要です.</translation>
     </message>
     <message>
         <source>Simplifies file selection by adding a file chooser dialog.</source>
@@ -14106,7 +14410,7 @@ Response was:
     </message>
     <message>
         <source>A hidden attribute will be invisible - the user is not able to see it&apos;s contents.</source>
-        <translation>表示されないであろう隠された属性-ユーザーはこのコンテンツを見ることは無い.</translation>
+        <translation>表示されない属性 - ユーザは内容を見ることはできません.</translation>
     </message>
     <message>
         <source>Read-only field that generates a UUID if empty.</source>
@@ -14115,10 +14419,6 @@ Response was:
     <message>
         <source>Legend</source>
         <translation>凡例</translation>
-    </message>
-    <message>
-        <source>Fatal error occurred in GRASS library. QGIS gets over the error but any next fatal error will cause QGIS exit without warning. This is a problem of GRASS 7.0.0beta1 but it is fixed in GRASS 7.1 and higher. Error message: %1</source>
-        <translation>致命的なエラーがGRASSライブラリで発生しました. QGISはエラーから回復しますが次回の致命的なエラーは警告なしにQGISを終了させるかもしれません. これはGRASS 7.0.0beta1の問題で, GRASS 7.1以降では修正されています. エラーメッセージ: %1</translation>
     </message>
     <message>
         <source>Raster image fill</source>
@@ -14135,6 +14435,42 @@ Response was:
     <message>
         <source>NOTICE: %1</source>
         <translation>通知: %1</translation>
+    </message>
+    <message>
+        <source>Recent colors</source>
+        <translation>最近の色</translation>
+    </message>
+    <message>
+        <source>Standard colors</source>
+        <translation>標準カラー</translation>
+    </message>
+    <message>
+        <source>Project colors</source>
+        <translation>プロジェクトカラー</translation>
+    </message>
+    <message>
+        <source>Number of places must be positive</source>
+        <translation>桁数は正の数でなければいけません</translation>
+    </message>
+    <message>
+        <source>Delete Connection</source>
+        <translation>接続の削除</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to delete the connection to %1?</source>
+        <translation>%1への接続を削除します. よろしいですか?</translation>
+    </message>
+    <message>
+        <source>Delete Object</source>
+        <translation>オブジェクトの削除</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to delete %1.%2?</source>
+        <translation>%1.%2を削除します. よろしいですか?</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to delete %1?</source>
+        <translation>%1を削除します. よろしいですか?</translation>
     </message>
 </context>
 <context>
@@ -14367,7 +14703,7 @@ Response was:
     </message>
     <message>
         <source>Failed to open Python console:</source>
-        <translation>Pythomコンソールのオープンに失敗しました:</translation>
+        <translation>Pythonコンソールのオープンに失敗しました:</translation>
     </message>
     <message>
         <source>QGIS </source>
@@ -14578,7 +14914,7 @@ Please contact the developers.
     </message>
     <message>
         <source>%1 is an invalid layer - not loaded</source>
-        <translation>%1は無効なレイヤです-ロードできませんでした</translation>
+        <translation>%1は無効なレイヤです - ロードできませんでした</translation>
     </message>
     <message>
         <source>%1 is an invalid layer and cannot be loaded. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
@@ -15411,7 +15747,7 @@ Errors: %3
     </message>
     <message>
         <source>A network request timed out, any data received is likely incomplete.</source>
-        <translation>ネットワークリクエストがタイムアウトしました,受信した任意のデータは不完全かもしれません.</translation>
+        <translation>ネットワークリクエストがタイムアウトしました,受信したデータは不完全かもしれません.</translation>
     </message>
     <message>
         <source>Warning</source>
@@ -16622,10 +16958,6 @@ Parser error:
         <translation>評価エラー</translation>
     </message>
     <message>
-        <source>Attribute table - %1 :: Features total: %2, filtered: %3, selected: %4</source>
-        <translation>属性テーブル - %1 :: 総地物数: %2, フィルター数: %3, 選択数: %4</translation>
-    </message>
-    <message>
         <source>Update Filtered</source>
         <translation>フィルタされたものを更新</translation>
     </message>
@@ -16671,6 +17003,22 @@ Parser error:
         <source>Update Selected</source>
         <translation>選択の更新</translation>
     </message>
+    <message>
+        <source>Ctrl+R</source>
+        <translation>Ctrl+R</translation>
+    </message>
+    <message>
+        <source>Show All Features In Initial Canvas Extent</source>
+        <translation>初期キャンバス領域のすべての地物を表示する</translation>
+    </message>
+    <message>
+        <source>Attribute table - %1 :: Features total: %2, filtered: %3, selected: %4%5</source>
+        <translation>属性テーブル - %1 :: 総地物数: %2, フィルター数: %3, 選択数: %4%5</translation>
+    </message>
+    <message>
+        <source>, spatially limited</source>
+        <translation>, 空間的な制限あり</translation>
+    </message>
 </context>
 <context>
     <name>QgsAttributeTableModel</name>
@@ -16683,7 +17031,7 @@ Parser error:
     <name>QgsAttributeTableView</name>
     <message>
         <source>Select All</source>
-        <translation>全部を選択する</translation>
+        <translation>全てを選択する</translation>
     </message>
 </context>
 <context>
@@ -17071,7 +17419,7 @@ Database: %2</source>
     </message>
     <message>
         <source>Add Selected Layers</source>
-        <translation>選択したレイヤを追加する</translation>
+        <translation>選択したレイヤの追加</translation>
     </message>
     <message>
         <source>Filter Files</source>
@@ -17269,10 +17617,6 @@ Database: %2</source>
     <message>
         <source>Delete all</source>
         <translation>全削除</translation>
-    </message>
-    <message>
-        <source>Join</source>
-        <translation>結合</translation>
     </message>
     <message>
         <source>Advanced</source>
@@ -18323,7 +18667,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Automatic</source>
-        <translation>オートマチック</translation>
+        <translation>自動</translation>
     </message>
     <message>
         <source>%1 mm</source>
@@ -18616,7 +18960,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Follow column alignment</source>
-        <translation>カラム位置あわせに従う</translation>
+        <translation>カラムの配置に従う</translation>
     </message>
     <message>
         <source>Left</source>
@@ -19508,7 +19852,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Automatic</source>
-        <translation>オートマチック</translation>
+        <translation>自動</translation>
     </message>
 </context>
 <context>
@@ -20081,7 +20425,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Legend column count</source>
-        <translation>凡例カラムカウント</translation>
+        <translation>凡例カラム数</translation>
     </message>
     <message>
         <source>Legend split layers</source>
@@ -20252,7 +20596,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Count</source>
-        <translation>カウント</translation>
+        <translation>列数</translation>
     </message>
     <message>
         <source>Equal column widths</source>
@@ -20276,7 +20620,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Title alignment:</source>
-        <translation>タイトル配置</translation>
+        <translation>タイトル配置:</translation>
     </message>
     <message>
         <source>Left</source>
@@ -22857,13 +23201,6 @@ and current file is [%3]</source>
     </message>
 </context>
 <context>
-    <name>QgsCustomColorScheme</name>
-    <message>
-        <source>Standard colors</source>
-        <translation>標準カラー</translation>
-    </message>
-</context>
-<context>
     <name>QgsCustomLayerOrderWidget</name>
     <message>
         <source>Control rendering order</source>
@@ -23039,7 +23376,7 @@ and current file is [%3]</source>
     </message>
     <message>
         <source>Select All</source>
-        <translation>全部を選択する</translation>
+        <translation>全てを選択する</translation>
     </message>
 </context>
 <context>
@@ -23362,7 +23699,7 @@ and current file is [%3]</source>
     </message>
     <message>
         <source>allow NULL values</source>
-        <translation>NULL値を許可する</translation>
+        <translation>NULL値を許容する</translation>
     </message>
     <message>
         <source>preview</source>
@@ -24027,6 +24364,18 @@ not displayed</source>
         <source>The file has been updated by another application - reloading</source>
         <translation>ファイルが他のアプリケーションによって更新されました - リロードします</translation>
     </message>
+    <message>
+        <source>Whole number (integer)</source>
+        <translation>整数値(integer)</translation>
+    </message>
+    <message>
+        <source>Decimal number (double)</source>
+        <translation>小数点付き数値(double)</translation>
+    </message>
+    <message>
+        <source>Text, unlimited length (text)</source>
+        <translation>上限無し可変長テキスト(text)</translation>
+    </message>
 </context>
 <context>
     <name>QgsDelimitedTextSourceSelect</name>
@@ -24359,19 +24708,19 @@ not displayed</source>
     </message>
     <message>
         <source>Tab character is one of the delimiters</source>
-        <translation>デリミタとしタブを使用</translation>
+        <translation>デリミタとしてタブを使用</translation>
     </message>
     <message>
         <source>Space character is one of the delimiters</source>
-        <translation>デリミタとしスペースを使用</translation>
+        <translation>デリミタとしてスペースを使用</translation>
     </message>
     <message>
         <source>Colon character is one of the delimiters</source>
-        <translation>デリミタとしコロンを使用</translation>
+        <translation>デリミタとしてコロンを使用</translation>
     </message>
     <message>
         <source>Semicolon character is one of the delimiters</source>
-        <translation>デリミタとしセミコロンを使用</translation>
+        <translation>デリミタとしてセミコロンを使用</translation>
     </message>
     <message>
         <source>Semicolon</source>
@@ -25355,6 +25704,10 @@ p, li { white-space: pre-wrap; }
         <source>Load all unique values</source>
         <translation>全てのユニーク値をロードする</translation>
     </message>
+    <message>
+        <source>%1...</source>
+        <translation>%1...</translation>
+    </message>
 </context>
 <context>
     <name>QgsExpressionBuilderWidgetBase</name>
@@ -26114,11 +26467,11 @@ MyForms.pyはPYTHONPATH環境変数, qgis/pythonディレクトリ, もしくは
     </message>
     <message>
         <source>Are you sure?</source>
-        <translation>よろしいですか？</translation>
+        <translation>よろしいですか?</translation>
     </message>
     <message>
         <source>Are you sure that you want to delete this device?</source>
-        <translation>このデバイスを削除してよろしいですか？</translation>
+        <translation>このデバイスを削除してよろしいですか?</translation>
     </message>
 </context>
 <context>
@@ -27191,7 +27544,7 @@ Please reselect a valid file.</source>
     </message>
     <message>
         <source>Use map units if possible</source>
-        <translation>可能な場合地図上の単位を利用</translation>
+        <translation>可能な場合には地図上の単位を利用</translation>
     </message>
     <message>
         <source>PDF report</source>
@@ -27211,7 +27564,7 @@ Please reselect a valid file.</source>
     </message>
     <message>
         <source>Show Georeferencer window docked</source>
-        <translation>ジオレファレンサウィンドウを結合して表示する</translation>
+        <translation>ジオリファレンサーウィンドウを結合して表示する</translation>
     </message>
     <message>
         <source>PDF map</source>
@@ -27226,7 +27579,7 @@ Please reselect a valid file.</source>
     <name>QgsGeorefDescriptionDialogBase</name>
     <message>
         <source>Description georeferencer</source>
-        <translation>Georeferencerについて</translation>
+        <translation>ジオリファレンサーについて</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -27249,14 +27602,14 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&amp;Georeferencer</source>
-        <translation>Georeferencer(&amp;G)</translation>
+        <translation>ジオリファレンサー(&amp;G)</translation>
     </message>
 </context>
 <context>
     <name>QgsGeorefPluginGui</name>
     <message>
         <source>Georeferencer</source>
-        <translation>ジオレファレンサー</translation>
+        <translation>ジオリファレンサー</translation>
     </message>
     <message>
         <source>All other files (*)</source>
@@ -27264,7 +27617,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Open raster</source>
-        <translation>ラスタのオープン</translation>
+        <translation>ラスタを開く</translation>
     </message>
     <message>
         <source>%1 is not a supported raster data source</source>
@@ -27280,7 +27633,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Georeferencer - %1</source>
-        <translation>ジオレファレンサー-%1</translation>
+        <translation>ジオリファレンサー-%1</translation>
     </message>
     <message>
         <source>Transform: </source>
@@ -27507,7 +27860,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsGeorefPluginGuiBase</name>
     <message>
         <source>Georeferencer</source>
-        <translation>ジオレファレンサー</translation>
+        <translation>ジオリファレンサー</translation>
     </message>
     <message>
         <source>File</source>
@@ -27595,7 +27948,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Start georeferencing</source>
-        <translation>ジオリファレンシングの開始</translation>
+        <translation>ジオリファレンスの開始</translation>
     </message>
     <message>
         <source>Ctrl+G</source>
@@ -27619,7 +27972,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Save GCP points as...</source>
-        <translation>名前をつけてGCPポイントを保存...</translation>
+        <translation>名前を付けてGCPポイントを保存...</translation>
     </message>
     <message>
         <source>Ctrl+S</source>
@@ -27967,7 +28320,9 @@ p, li { white-space: pre-wrap; }
         <source>Precision of upper and lower values in label text.
 Positive is number of decimal places
 Negative rounds to powers of 10</source>
-        <translation>ラベルテキストの上下限値の精度.</translation>
+        <translation>ラベルテキストの上下限値の精度.
+正の値は小数点以下桁数
+負の値は10の累乗に丸められます</translation>
     </message>
     <message>
         <source>Check to remove trailing zeroes after the decimal point from the upper and lower values in the legend.</source>
@@ -28037,7 +28392,7 @@ Use &quot;%1&quot; for the lower bound of the classification, and &quot;%2&quot;
     </message>
     <message>
         <source>Link class boundaries</source>
-        <translation>リンククラス境界</translation>
+        <translation>クラス境界の連結</translation>
     </message>
     <message>
         <source>Advanced</source>
@@ -28071,11 +28426,11 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     </message>
     <message>
         <source>Linked range warning</source>
-        <translation>リンクされた範囲警告</translation>
+        <translation>範囲結合の注意</translation>
     </message>
     <message>
         <source>Rows will be reordered before linking boundaries. Continue?</source>
-        <translation>行は境界線のリンクの前に並べ替えられます.継続しますか?</translation>
+        <translation>境界を連結する前に行が並べ替えられます. 続けますか?</translation>
     </message>
 </context>
 <context>
@@ -28611,7 +28966,7 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     </message>
     <message>
         <source>&lt;font color=&apos;red&apos;&gt;Enter a name!&lt;/font&gt;</source>
-        <translation>&lt;font color=&apos;red&apos;&gt;名前入力!&lt;/font&gt;</translation>
+        <translation>&lt;font color=&apos;red&apos;&gt;名前を入力して下さい!&lt;/font&gt;</translation>
     </message>
     <message>
         <source>&lt;font color=&apos;red&apos;&gt;This is name of the source!&lt;/font&gt;</source>
@@ -29478,10 +29833,6 @@ at line %2 column %3</source>
         <source>New mapset successfully created and set as current working mapset.</source>
         <translation>新しいマップセットを作成し、利用するマップセットに設定しました。</translation>
     </message>
-    <message>
-        <source>Cannot activate grass</source>
-        <translation>GRASSを有効化できません</translation>
-    </message>
 </context>
 <context>
     <name>QgsGrassNewMapsetBase</name>
@@ -30286,7 +30637,7 @@ at line %2 column %3</source>
     </message>
     <message>
         <source>Automatic</source>
-        <translation>オートマチック</translation>
+        <translation>自動</translation>
     </message>
     <message>
         <source>Radius</source>
@@ -30343,7 +30694,7 @@ at line %2 column %3</source>
     <name>QgsHtmlAnnotationDialog</name>
     <message>
         <source>HTML annotation</source>
-        <translation>Htmlアノテーション</translation>
+        <translation>HTMLアノテーション</translation>
     </message>
     <message>
         <source>Delete</source>
@@ -30500,7 +30851,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>New results will be expanded by default.</source>
-        <translation>新しい結果はデフォルトで開かれます.</translation>
+        <translation>新しい結果はデフォルトで展開されます.</translation>
     </message>
     <message>
         <source>Copy selected feature to clipboard.</source>
@@ -30691,11 +31042,11 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Output file name invalid</source>
-        <translation>出力ファイル名称が不正です</translation>
+        <translation>出力ファイル名が不正です</translation>
     </message>
     <message>
         <source>Please enter a valid output file name</source>
-        <translation>正しい出力ファイル名称を入力してください</translation>
+        <translation>正しい出力ファイル名を入力してください</translation>
     </message>
     <message>
         <source>Break lines</source>
@@ -33122,22 +33473,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <source>Segments [%1]</source>
         <translation>セグメント [%1]</translation>
     </message>
-    <message>
-        <source>Meters</source>
-        <translation>メーター</translation>
-    </message>
-    <message>
-        <source>Feet</source>
-        <translation>フィート</translation>
-    </message>
-    <message>
-        <source>Degrees</source>
-        <translation>度</translation>
-    </message>
-    <message>
-        <source>Nautical Miles</source>
-        <translation>海里</translation>
-    </message>
 </context>
 <context>
     <name>QgsMeasureTool</name>
@@ -33590,7 +33925,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation>%1の接続と全ての設定を削除してもいいですか？</translation>
+        <translation>%1の接続と全ての設定を削除してもよろしいですか?</translation>
     </message>
     <message>
         <source>Confirm Delete</source>
@@ -33794,7 +34129,7 @@ enhancement</source>
     <name>QgsNetworkContentFetcher</name>
     <message>
         <source>HTTP fetch %1 failed with error %2</source>
-        <translation>HTTP が %1 を取得するのにエラー %2 にが発生しました</translation>
+        <translation>HTTP取得 %1 がエラー %2 で失敗しました</translation>
     </message>
 </context>
 <context>
@@ -34496,7 +34831,7 @@ Extended error information:
     </message>
     <message>
         <source>Count</source>
-        <translation>カウント</translation>
+        <translation>個数</translation>
     </message>
     <message>
         <source>SQLite databases (*.db)</source>
@@ -34626,7 +34961,7 @@ Extended error information:
     </message>
     <message>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation>%1の接続と全ての設定を削除してもいいですか?</translation>
+        <translation>%1の接続と全ての設定を削除してもよろしいですか?</translation>
     </message>
     <message>
         <source>Confirm Delete</source>
@@ -35116,11 +35451,11 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>OGR error creating field %1: %2</source>
-        <translation>OGR エラー フィールド作成 %1: %2</translation>
+        <translation>OGRエラー フィールド%1の作成: %2</translation>
     </message>
     <message>
         <source>OGR error deleting field %1: %2</source>
-        <translation>OGR エラー フィールド削除 %1: %2</translation>
+        <translation>OGRエラー フィールド%1の削除: %2</translation>
     </message>
     <message>
         <source>Deleting fields is not supported prior to GDAL 1.9.0</source>
@@ -35148,7 +35483,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>OGR error syncing to disk: %1</source>
-        <translation>QGR ディスクとの同期エラー: %1</translation>
+        <translation>OGRエラー ディスク同期: %1</translation>
     </message>
     <message>
         <source>OGR error changing geometry: feature %1 not found</source>
@@ -35160,7 +35495,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>OGR error in feature %1: geometry is null</source>
-        <translation>OGRエラー 地物%1 のジオメトリがnullです</translation>
+        <translation>OGRエラー 地物%1 のジオメトリがNULLです</translation>
     </message>
     <message>
         <source>OGR error setting geometry of feature %1: %2</source>
@@ -35180,7 +35515,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>OGR error deleting feature %1: %2</source>
-        <translation>OGRエラー 地物削除 %1 %2</translation>
+        <translation>OGRエラー 地物%1の削除: %2</translation>
     </message>
     <message>
         <source>Shapefiles without attribute are considered read-only.</source>
@@ -35191,7 +35526,7 @@ Always network: always load from network and do not check if the cache has a val
     <name>QgsOpenRasterDialog</name>
     <message>
         <source>Open raster</source>
-        <translation>ラスタのオープン</translation>
+        <translation>ラスタを開く</translation>
     </message>
     <message>
         <source>Raster file:</source>
@@ -35239,7 +35574,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation>%1の接続と全ての設定を削除してもいいですか？</translation>
+        <translation>%1の接続と全ての設定を削除してもよろしいですか?</translation>
     </message>
     <message>
         <source>Confirm Delete</source>
@@ -36864,7 +37199,7 @@ SQL:%1
     <name>QgsOracleLayerItem</name>
     <message>
         <source>Delete layer</source>
-        <translation>レイヤ削除</translation>
+        <translation>レイヤの削除</translation>
     </message>
     <message>
         <source>Layer deleted successfully.</source>
@@ -36899,12 +37234,10 @@ SQL:%1
         <translation>%1 への接続に成功しました</translation>
     </message>
     <message>
-        <source>Connection failed - Check settings and try again.
+        <source>Connection failed - consult message log for details.
 
 </source>
-        <translation>接続失敗 - 設定を確認して再度実行してください.
-
-</translation>
+        <translation>接続に失敗しました - 詳細についてはメッセージログを参照して下さい.</translation>
     </message>
 </context>
 <context>
@@ -37003,7 +37336,7 @@ SQL:%1
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;When the layer is setup various metadata is required for the Oracle table. This includes information such as the table row count, geometry type and spatial extents of the data in the geometry column. If the table contains a large number of rows determining this metadata is time consuming.&lt;/p&gt;&lt;p&gt;By activating this option the following fast table metadata operations are done:&lt;/p&gt;&lt;p&gt;1) Row count is determined from all_tables.num_rows.&lt;/p&gt;&lt;p&gt;2) Table extents are always determined with the SDO_TUNE.EXTENTS_OF function even if a layer filter is applied.&lt;/p&gt;&lt;p&gt;3) The table geometry is determined from the first 100 non-null geometry rows in the table.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;レイヤが設定される時に多くのメタデータがOracleテーブルのために必要です.そこにはテーブルの行数やジオメトリタイプやジオメトリカラムの空間の領域が含まれます.もしテーブルがとても多くの行を持つような場合このメタデータを算出するのに多くの時間を使います.&lt;/p&gt;&lt;p&gt;テーブルメタデータの高速処理オプションをアクティベートすることによって以下のことができます:&lt;/p&gt;&lt;p&gt;1) 行のカウントを all_tables.num_rowsから取得する.&lt;/p&gt;&lt;p&gt;2) テーブルの領域は常に SDO_TUNE.EXTENTS_OF関数で取得され,レイヤフィルタが適用されている場合も同様の処理を行う.&lt;/p&gt;&lt;p&gt;3) テーブルジオメトリは最初の100個のnullでないジオメトリによって決定されます.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;レイヤが設定される時に多くのメタデータがOracleテーブルのために必要です.そこにはテーブルの行数やジオメトリタイプやジオメトリカラムの空間の領域が含まれます.もしテーブルがとても多くの行を持つような場合このメタデータを算出するのに多くの時間を使います.&lt;/p&gt;&lt;p&gt;テーブルメタデータの高速処理オプションをアクティベートすることによって以下のことができます:&lt;/p&gt;&lt;p&gt;1) 行数を all_tables.num_rowsから取得する.&lt;/p&gt;&lt;p&gt;2) テーブルの領域は常に SDO_TUNE.EXTENTS_OF関数で取得され,レイヤフィルタが適用されている場合も同様の処理を行う.&lt;/p&gt;&lt;p&gt;3) テーブルジオメトリは最初の100個のnullでないジオメトリによって決定されます.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Use estimated table metadata</source>
@@ -37310,7 +37643,7 @@ SQL: %3</translation>
     </message>
     <message>
         <source>Editing and adding disabled for 2D+ layer (%1; %2)</source>
-        <translation>2D+layer (%1; %2)では編集と追加は禁止されています</translation>
+        <translation>2D+layer (%1; %2)では編集と追加はできません</translation>
     </message>
     <message>
         <source>Could not update metadata for %1.%2.
@@ -37414,6 +37747,14 @@ Error: %2</source>
         <translation>Oracleエラー: %1
 エラー: %2</translation>
     </message>
+    <message>
+        <source>Could not prepare get feature id statement</source>
+        <translation>地物ID取得ステートメントの準備ができませんでした</translation>
+    </message>
+    <message>
+        <source>Could not retrieve feature id %1</source>
+        <translation>地物ID %1を取得できませんでした</translation>
+    </message>
 </context>
 <context>
     <name>QgsOracleRootItem</name>
@@ -37426,7 +37767,7 @@ Error: %2</source>
     <name>QgsOracleSelectGeoraster</name>
     <message>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation>%1の接続と全ての設定を削除してもいいですか？</translation>
+        <translation>%1の接続と全ての設定を削除してもよろしいですか?</translation>
     </message>
     <message>
         <source>Confirm Delete</source>
@@ -37509,7 +37850,7 @@ Error: %2</source>
     </message>
     <message>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation>%1の接続と全ての設定を削除してもいいですか？</translation>
+        <translation>%1の接続と全ての設定を削除してもよろしいですか?</translation>
     </message>
     <message>
         <source>Confirm Delete</source>
@@ -37638,7 +37979,7 @@ Error: %2</source>
     </message>
     <message>
         <source>%1: Not a vector layer!</source>
-        <translation>%1はベクタレイヤじゃありません!</translation>
+        <translation>%1はベクタレイヤではありません!</translation>
     </message>
     <message>
         <source>%1: OK!</source>
@@ -37672,12 +38013,12 @@ Error: %2</source>
 <context>
     <name>QgsPGLayerItem</name>
     <message>
-        <source>Delete layer</source>
-        <translation>レイヤを削除する</translation>
-    </message>
-    <message>
         <source>Layer deleted successfully.</source>
         <translation>レイヤ検出に成功しました.</translation>
+    </message>
+    <message>
+        <source>Delete Layer</source>
+        <translation>レイヤの削除</translation>
     </message>
 </context>
 <context>
@@ -37854,12 +38195,10 @@ Error: %2</source>
         <translation>%1 への接続に成功しました</translation>
     </message>
     <message>
-        <source>Connection failed - Check settings and try again.
+        <source>Connection failed - consult message log for details.
 
 </source>
-        <translation>接続失敗 - 設定を確認して再度実行してください.
-
-</translation>
+        <translation>接続に失敗しました - 詳細についてはメッセージログを参照して下さい.</translation>
     </message>
 </context>
 <context>
@@ -38045,7 +38384,7 @@ Error: %2</source>
     </message>
     <message>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation>%1の接続と全ての設定を削除してもいいですか？</translation>
+        <translation>%1の接続と全ての設定を削除してもよろしいですか?</translation>
     </message>
     <message>
         <source>Confirm Delete</source>
@@ -38482,11 +38821,11 @@ You need to restart QGIS in order to reload it.</source>
     </message>
     <message>
         <source>The plugin seems to be invalid or have unfulfilled dependencies. It has been installed, but can&apos;t be loaded. If you really need this plugin, you can contact its author or &lt;a href=&quot;http://lists.osgeo.org/mailman/listinfo/qgis-user&quot;&gt;QGIS users group&lt;/a&gt; and try to solve the problem. If not, you can just uninstall it. Here is the error message below:</source>
-        <translation>指定プラグインは不正であるか不完全な依存があります.これはインストールされていますがロードされていません.もしあなたが本当にこのプラグインが必要な場合このプラグインの作者か&lt;a href=&quot;http://lists.osgeo.org/mailman/listinfo/qgis-user&quot;&gt;QGISユーザーグループ&lt;/a&gt;に連絡して問題解決を試みてください.このプラグインが必要でない場合はアンインストールしてください.エラーメッセージは以下のとおりです:</translation>
+        <translation>このプラグインは壊れているか依存関係が満たされていません. インストールはされましたがロードできませんでした. もしこのプラグインを本当に必要とする場合はプラグインの作者か&amp;lt;a href=&amp;quot;http://lists.osgeo.org/mailman/listinfo/qgis-user&amp;quot;&amp;gt;QGISユーザーグループ&amp;lt;/a&amp;gt;に連絡して問題の解決を試みてください. このプラグインが必要でない場合はアンインストールしてください. エラーメッセージは以下の通りです:</translation>
     </message>
     <message>
         <source>Do you want to uninstall this plugin now? If you&apos;re unsure, probably you would like to do this.</source>
-        <translation>このプラグインをアンインストールしたいですか？もしそうならば実行してください。</translation>
+        <translation>このプラグインを今アンインストールしますか? よくわからない場合はアンインストールするのが好ましいです.</translation>
     </message>
 </context>
 <context>
@@ -39089,7 +39428,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>undefined return value from encoding setting</source>
-        <translation>エンコーディング設定の帰り値が定義されていません</translation>
+        <translation>エンコーディング設定の返り値が定義されていません</translation>
     </message>
     <message>
         <source>Your database has no working PostGIS support.</source>
@@ -39116,7 +39455,7 @@ error:%3
         <source>Database connection was successful, but the accessible tables could not be determined. The error message from the database was:
 %1
 </source>
-        <translation>データベース接続は成功しましたがアクセスできるテーブルを決められません.データベースからのエラーメッセージjは以下のとおりです
+        <translation>データベース接続は成功しましたがアクセスできるテーブルを決められません.データベースからのエラーメッセージは以下のとおりです
 %1
 </translation>
     </message>
@@ -39124,8 +39463,8 @@ error:%3
         <source>Database connection was successful, but the accessible tables could not be determined.
 The error message from the database was:
 %1</source>
-        <translation>データベース接続は成功しましたがアクセスできるテーブルを決められません
-データベースからのエラーメッセージjは以下のとおりです
+        <translation>データベース接続は成功しましたがアクセスできるテーブルを決められません.
+データベースからのエラーメッセージは以下のとおりです
 %1</translation>
     </message>
     <message>
@@ -39519,13 +39858,6 @@ PostGIS %2</translation>
 Choose ignore to continue loading without the missing layers. Choose cancel to return to your pre-project load state. Choose OK to try to find the missing layers.</source>
         <translation>これ以上のプロジェクトレイヤを開くことができません.
 失われたレイヤ以外のローディングを継続する場合は無視を選択して下さい.キャンセルを選択するとプロジェクトをロードする前の状態に戻ります.OKを選択すると失われたレイヤを探します.</translation>
-    </message>
-</context>
-<context>
-    <name>QgsProjectColorScheme</name>
-    <message>
-        <source>Project colors</source>
-        <translation>プロジェクトカラー</translation>
     </message>
 </context>
 <context>
@@ -41523,11 +41855,11 @@ Click on help button to get valid creation options for this format.</source>
     </message>
     <message>
         <source>Grayscale</source>
-        <translation>原色グレースケール</translation>
+        <translation>グレースケール</translation>
     </message>
     <message>
         <source>Colorize</source>
-        <translation>色を強調</translation>
+        <translation>着色</translation>
     </message>
     <message>
         <source>Strength</source>
@@ -41805,7 +42137,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Write out raw raster layer data. Optionally user defined no data values may be applied.</source>
-        <translation>ラスタレイヤの生データを出力します。オプションでユーザー定義のno dataの値も適用します。</translation>
+        <translation>ラスタレイヤの生データを出力します。オプションでユーザ定義のno dataの値も適用します。</translation>
     </message>
     <message>
         <source>Raw data</source>
@@ -41984,11 +42316,11 @@ datasets with maximum width and height specified below.</source>
     </message>
     <message>
         <source>Full</source>
-        <translation>全部</translation>
+        <translation>全体</translation>
     </message>
     <message>
         <source>Current</source>
-        <translation>現在の設定</translation>
+        <translation>現在の範囲</translation>
     </message>
     <message>
         <source>Accuracy</source>
@@ -42005,7 +42337,7 @@ datasets with maximum width and height specified below.</source>
     <message>
         <source>Cumulative
 count cut</source>
-        <translation>累積カウント数でのカット範囲</translation>
+        <translation>累積個数によるカット</translation>
     </message>
     <message utf8="true">
         <source>Mean +/-
@@ -42077,7 +42409,7 @@ standard deviation ×</source>
     </message>
     <message>
         <source>User defined</source>
-        <translation>ユーザー定義</translation>
+        <translation>ユーザ定義</translation>
     </message>
     <message>
         <source>Estimated</source>
@@ -42323,13 +42655,6 @@ standard deviation ×</source>
     </message>
 </context>
 <context>
-    <name>QgsRecentColorScheme</name>
-    <message>
-        <source>Recent colors</source>
-        <translation>最近の色</translation>
-    </message>
-</context>
-<context>
     <name>QgsRelReferenceConfigDlgBase</name>
     <message>
         <source>Dialog</source>
@@ -42349,7 +42674,7 @@ standard deviation ×</source>
     </message>
     <message>
         <source>Allow NULL value</source>
-        <translation>null値を許可する</translation>
+        <translation>NULL値を許容する</translation>
     </message>
     <message>
         <source>Show embedded form</source>
@@ -42361,7 +42686,7 @@ standard deviation ×</source>
     </message>
     <message>
         <source>Order by value</source>
-        <translation>値で整列する</translation>
+        <translation>値で並べ替える</translation>
     </message>
 </context>
 <context>
@@ -42749,11 +43074,11 @@ standard deviation ×</source>
     </message>
     <message>
         <source>Count</source>
-        <translation>カウント</translation>
+        <translation>個数</translation>
     </message>
     <message>
         <source>Duplicate count</source>
-        <translation>2重カウント</translation>
+        <translation>重複数</translation>
     </message>
     <message>
         <source>Max. scale</source>
@@ -42930,12 +43255,12 @@ standard deviation ×</source>
 <context>
     <name>QgsSLLayerItem</name>
     <message>
-        <source>Delete layer</source>
-        <translation>レイヤ削除</translation>
-    </message>
-    <message>
         <source>Layer deleted successfully.</source>
         <translation>レイヤ削除が成功しました.</translation>
+    </message>
+    <message>
+        <source>Delete Layer</source>
+        <translation>レイヤの削除</translation>
     </message>
 </context>
 <context>
@@ -43808,7 +44133,7 @@ enhancement</source>
     </message>
     <message>
         <source>Snap to</source>
-        <translation>スナップ</translation>
+        <translation>スナップ先</translation>
     </message>
     <message>
         <source>map units</source>
@@ -44025,7 +44350,7 @@ but implies better performance thereafter.</source>
     </message>
     <message>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation>%1の接続と全ての設定を削除してもいいですか？</translation>
+        <translation>%1の接続と全ての設定を削除してもよろしいですか?</translation>
     </message>
     <message>
         <source>Confirm Delete</source>
@@ -44462,7 +44787,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Are you sure you want to remove the [%1] connection and all associated settings?</source>
-        <translation>[%1]の接続と全ての設定を削除してもいいですか？</translation>
+        <translation>[%1]の接続と全ての設定を削除してもよろしいですか?</translation>
     </message>
     <message>
         <source>Confirm Delete</source>
@@ -45816,7 +46141,7 @@ There was a problem with your symbol database.</source>
     </message>
     <message>
         <source>Both used to be correct, but we recently decided to just use &apos;QGIS&apos;. For articles we suggest you write &apos;QGIS is ....&apos;</source>
-        <translation>両方の使い方が正しいです,しかし私たちは最近 &apos;QGIS&apos; を利用することに決めました&apos;. あなたが記事を書く場合 &apos;QGIS は....&apos; と書くことをお勧めします</translation>
+        <translation>両方の使い方が正しいですが私たちは最近 &apos;QGIS&apos; を利用することに決めました. あなたが記事を書く場合 &apos;QGIS は....&apos; と書くことをお勧めします</translation>
     </message>
     <message>
         <source>In the Print Composer you can rotate a map by setting its rotation value in the tab &lt;strong&gt;Item Properties -&gt; Map -&gt; Main properties&lt;/strong&gt; section. To place a north arrow in your layout you can use the &lt;strong&gt;Add Image&lt;/strong&gt; tool. After the selection and placement of the north arrow in the layout you can link it with a specific map frame by activating the &lt;strong&gt;Sync with map&lt;/strong&gt; checkbox and selecting a map frame. Whenever you change the rotation value of a linked map, the north arrow will now automatically adjust its rotation.</source>
@@ -45996,7 +46321,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Load in QGIS when done</source>
-        <translation>実行された時にQGISにロードします</translation>
+        <translation>完了時にQGISにロードする</translation>
     </message>
     <message>
         <source>Helmert</source>
@@ -46161,15 +46486,15 @@ Error was:%2</source>
     </message>
     <message>
         <source>Allow null value</source>
-        <translation>null値を許可する</translation>
+        <translation>NULL値を許容する</translation>
     </message>
     <message>
         <source>Order by value</source>
-        <translation>値で整列する</translation>
+        <translation>値で並べ替える</translation>
     </message>
     <message>
         <source>Allow multiple selections</source>
-        <translation>複数選択を許可する</translation>
+        <translation>複数選択を許容する</translation>
     </message>
     <message>
         <source>Filter expression</source>
@@ -46274,6 +46599,14 @@ Error was:%2</source>
     <message>
         <source>Height attribute</source>
         <translation>高さ属性値</translation>
+    </message>
+    <message>
+        <source>Millimeter</source>
+        <translation>ミリメートル</translation>
+    </message>
+    <message>
+        <source>Map unit</source>
+        <translation>地図上の単位</translation>
     </message>
 </context>
 <context>
@@ -47422,7 +47755,7 @@ Error was:%2</source>
     </message>
     <message>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation>%1の接続と全ての設定を削除してもいいですか?</translation>
+        <translation>%1の接続と全ての設定を削除してもよろしいですか?</translation>
     </message>
     <message>
         <source>Confirm Delete</source>
@@ -50166,6 +50499,33 @@ Problem with line %d</source>
     </message>
 </context>
 <context>
+    <name>SlopeAreaMulti</name>
+    <message>
+        <source>Slope Grid</source>
+        <translation>スロープグリッド</translation>
+    </message>
+    <message>
+        <source>Contributing Area Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Slope Exponent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Area Exponent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Slope Area Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation>誤ったMPIプロセス数が使われました。TauDEMアルゴリズムを実行する前に、正しい数を設定して下さい</translation>
+    </message>
+</context>
+<context>
     <name>SpatialJoin</name>
     <message>
         <source>Target vector layer</source>
@@ -50328,14 +50688,14 @@ Problem with line %d</source>
     </message>
 </context>
 <context>
-    <name>SymetricalDifference</name>
+    <name>SymmetricalDifference</name>
     <message>
         <source>Input layer</source>
         <translation>入力レイヤ</translation>
     </message>
     <message>
         <source>Difference layer</source>
-        <translation>レイヤの差分</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Symetrical difference</source>
@@ -50384,6 +50744,36 @@ Problem with line %d</source>
     <message>
         <source>TauDEM (hydrologic analysis)</source>
         <translation>TauDEM (水文解析)</translation>
+    </message>
+    <message>
+        <source>TauDEM multifile command line tools folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable singlefile TauDEM tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable multifile TauDEM tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not open TauDEM algorithm %s:
+%s</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TauDEMMultifileAlgorithm</name>
+    <message>
+        <source>Could not load TauDEM algorithm: %s
+%s</source>
+        <translation type="unfinished">TauDEMアルゴリズムを開けません: %s
+%s</translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation>誤ったMPIプロセス数が使われました。TauDEMアルゴリズムを実行する前に、正しい数を設定して下さい</translation>
     </message>
 </context>
 <context>
@@ -51806,8 +52196,8 @@ Problem with line %d</source>
         <translation>投影法の異なりを許す</translation>
     </message>
     <message>
-        <source>Output layer</source>
-        <translation>出力レイヤ</translation>
+        <source>Virtual</source>
+        <translation>仮想</translation>
     </message>
 </context>
 <context>
@@ -51914,7 +52304,7 @@ Run topology check again.</source>
     <message>
         <source>&lt;h3&gt;Database connection&lt;/h3&gt;
 </source>
-        <translation>&lt;h3&gt;データベースコネクション&lt;/h3&gt;
+        <translation>&lt;h3&gt;データベース接続&lt;/h3&gt;
 </translation>
     </message>
     <message>
@@ -52090,7 +52480,7 @@ geometry types and don&apos;t offer to add others.
  このオプションを有効にすると次のようにして迅速にテーブルメタデータが処理されます:
  行数はall_tables.num_rowsから決定されます.
  レイヤフィルタが適用されていたとしてもテーブルの領域はSDO_TUNE.EXTENTS_OF関数を用いて決定されます.
- テーブルのジオメトリはテーブルの始めのnullではない100行のジオメトリから決定されます.
+ テーブルのジオメトリはテーブルのはじめのnullではない100行のジオメトリから決定されます.
 
 &lt;li&gt; &lt;label&gt;存在するジオメトリタイプのみ&lt;/label&gt; 存在するジオメトリタイプのみリストします. 他のものはリストしません.
 &lt;/ul&gt;
@@ -54962,7 +55352,7 @@ CNR, Milan Unit (Information Technology), Construction Technologies Institute.
     <name>eVis</name>
     <message>
         <source>eVis Database Connection</source>
-        <translation>eVis データベースコネクション</translation>
+        <translation>eVis データベース接続</translation>
     </message>
     <message>
         <source>eVis Event Id Tool</source>
@@ -55747,8 +56137,8 @@ Plugin will not be enabled.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Output layer</source>
-        <translation>出力レイヤ</translation>
+        <source>Filled</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -60494,8 +60884,8 @@ Format a date type or string into a custom string format. Uses Qt data time form
         <translation>バンド番号</translation>
     </message>
     <message>
-        <source>Output file</source>
-        <translation>出力ファイル</translation>
+        <source>xyz</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -60510,7 +60900,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Remove all existing overviews</source>
-        <translation type="unfinished"></translation>
+        <translation>すべてのオーバービューを削除します.</translation>
     </message>
     <message>
         <source>Resampling method</source>
@@ -60521,8 +60911,8 @@ Format a date type or string into a custom string format. Uses Qt data time form
         <translation>オーバービュー形式</translation>
     </message>
     <message>
-        <source>Output layer</source>
-        <translation>出力レイヤ</translation>
+        <source>Pyramidized</source>
+        <translation>ピラミッドになった</translation>
     </message>
 </context>
 <context>
@@ -60564,7 +60954,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>3D-Viewer (NVIZ)</source>
-        <translation>3D-ビューワー（NVIZ)</translation>
+        <translation>3Dビューワー（NVIZ)</translation>
     </message>
     <message>
         <source>3d Visualization</source>
@@ -60692,7 +61082,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Calculate optimal index factor table for LANDSAT-TM raster</source>
-        <translation>LANDSAT-TMラスタの最適インデックファクタを計算する</translation>
+        <translation>LANDSAT-TMラスタの最適インデックスファクタを計算する</translation>
     </message>
     <message>
         <source>Calculate raster surface area</source>
@@ -60720,7 +61110,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Calculate univariate statistics from the non-null cells of raster</source>
-        <translation>ラスタ中のnullでないセルの単変量統計を計算する</translation>
+        <translation>ラスタ中のNULLでないセルの単変量統計を計算する</translation>
     </message>
     <message>
         <source>Calculate univariate statistics of vector map features</source>
@@ -61612,7 +62002,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Input table</source>
-        <translation>テーブルを入力する</translation>
+        <translation>入力テーブル</translation>
     </message>
     <message>
         <source>Interpolate surface</source>
@@ -62346,8 +62736,8 @@ Format a date type or string into a custom string format. Uses Qt data time form
         <translation>ライトの高さ</translation>
     </message>
     <message>
-        <source>Output file</source>
-        <translation>出力ファイル</translation>
+        <source>Hillshade</source>
+        <translation>陰影図</translation>
     </message>
 </context>
 <context>
@@ -62427,11 +62817,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Suppress GCP info</source>
-        <translation type="unfinished"></translation>
+        <translation>GCP情報を出力しない</translation>
     </message>
     <message>
         <source>Suppress metadata info</source>
-        <translation type="unfinished"></translation>
+        <translation>メタデータ情報を出力しない</translation>
     </message>
     <message>
         <source>Layer information</source>
@@ -62457,7 +62847,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
     <name>las2demPro</name>
     <message>
         <source>attribute (what to interpolate)</source>
-        <translation type="unfinished"></translation>
+        <translation>属性(何を補間するか)</translation>
     </message>
     <message>
         <source>product (how to output per pixel)</source>
@@ -62526,7 +62916,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>argument for operation</source>
-        <translation type="unfinished"></translation>
+        <translation>オペレーション用引数</translation>
     </message>
 </context>
 <context>
@@ -62564,7 +62954,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>argument for operation</source>
-        <translation type="unfinished"></translation>
+        <translation>オペレーション用引数</translation>
     </message>
 </context>
 <context>
@@ -62586,7 +62976,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
     <name>las2txt</name>
     <message>
         <source>parse string</source>
-        <translation type="unfinished"></translation>
+        <translation>文字列解析</translation>
     </message>
     <message>
         <source>Output ASCII file</source>
@@ -62597,7 +62987,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
     <name>las2txtPro</name>
     <message>
         <source>parse string</source>
-        <translation type="unfinished"></translation>
+        <translation>文字列解析</translation>
     </message>
 </context>
 <context>
@@ -62642,7 +63032,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
     <name>lascanopy</name>
     <message>
         <source>square plot size</source>
-        <translation type="unfinished"></translation>
+        <translation>四角形プロットサイズ</translation>
     </message>
     <message>
         <source>height cutoff / breast height</source>
@@ -62666,14 +63056,14 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>input file is single plot</source>
-        <translation type="unfinished"></translation>
+        <translation>入力ファイルはシングルプロットです</translation>
     </message>
 </context>
 <context>
     <name>lascanopyPro</name>
     <message>
         <source>square plot size</source>
-        <translation type="unfinished"></translation>
+        <translation>四角形プロットサイズ</translation>
     </message>
     <message>
         <source>height cutoff / breast height</source>
@@ -62697,7 +63087,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>input file is single plot</source>
-        <translation type="unfinished"></translation>
+        <translation>入力ファイルはシングルプロットです</translation>
     </message>
 </context>
 <context>
@@ -62708,7 +63098,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>interior</source>
-        <translation type="unfinished"></translation>
+        <translation>内部</translation>
     </message>
     <message>
         <source>what to do with points</source>
@@ -62734,7 +63124,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>interior</source>
-        <translation type="unfinished"></translation>
+        <translation>内部</translation>
     </message>
     <message>
         <source>what to do with isolated points</source>
@@ -62855,7 +63245,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>drop above height</source>
-        <translation type="unfinished"></translation>
+        <translation>指定高さ値以上を除外する</translation>
     </message>
     <message>
         <source>drop below</source>
@@ -62863,7 +63253,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>drop below height</source>
-        <translation type="unfinished"></translation>
+        <translation>指定高さ値以下を除外する</translation>
     </message>
 </context>
 <context>
@@ -62878,7 +63268,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>drop above height</source>
-        <translation type="unfinished"></translation>
+        <translation>指定高さ値以上を除外する</translation>
     </message>
     <message>
         <source>drop below</source>
@@ -62886,7 +63276,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>drop below height</source>
-        <translation type="unfinished"></translation>
+        <translation>指定高さ値以下を除外する</translation>
     </message>
 </context>
 <context>
@@ -63068,7 +63458,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>operation on attribute per cell</source>
-        <translation type="unfinished"></translation>
+        <translation>セルごとの属性操作</translation>
     </message>
     <message>
         <source>create overlap raster</source>
@@ -63091,7 +63481,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>operation on attribute per cell</source>
-        <translation type="unfinished"></translation>
+        <translation>セルごとの属性操作</translation>
     </message>
     <message>
         <source>create overlap raster</source>
@@ -63161,7 +63551,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>keep particular point per cell</source>
-        <translation type="unfinished"></translation>
+        <translation>特徴点をセル単位で保持する</translation>
     </message>
     <message>
         <source>mark thinned-away points as withheld</source>
@@ -63169,7 +63559,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>classify surviving points as class</source>
-        <translation type="unfinished"></translation>
+        <translation>計測ポイントをクラス分類する</translation>
     </message>
     <message>
         <source>class</source>
@@ -63184,7 +63574,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>keep particular point per cell</source>
-        <translation type="unfinished"></translation>
+        <translation>特徴点をセル単位で保持する</translation>
     </message>
     <message>
         <source>mark thinned-away points as withheld</source>
@@ -63192,7 +63582,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>classify surviving points as class</source>
-        <translation type="unfinished"></translation>
+        <translation>計測ポイントをクラス分類する</translation>
     </message>
     <message>
         <source>class</source>
@@ -63334,8 +63724,8 @@ Format a date type or string into a custom string format. Uses Qt data time form
         <translation>出力ラスタタイプ</translation>
     </message>
     <message>
-        <source>Output layer</source>
-        <translation>出力レイヤ</translation>
+        <source>Merged</source>
+        <translation>結合された</translation>
     </message>
 </context>
 <context>
@@ -63353,8 +63743,8 @@ Format a date type or string into a custom string format. Uses Qt data time form
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Output layer</source>
-        <translation>出力レイヤ</translation>
+        <source>Nearblack</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -63452,8 +63842,8 @@ Format a date type or string into a custom string format. Uses Qt data time form
         <translation>変換するバンド</translation>
     </message>
     <message>
-        <source>Output layer</source>
-        <translation>出力レイヤ</translation>
+        <source>PCT to RGB</source>
+        <translation>PCTをRGBに変換する</translation>
     </message>
 </context>
 <context>
@@ -63467,8 +63857,8 @@ Format a date type or string into a custom string format. Uses Qt data time form
         <translation>出力フィールド名</translation>
     </message>
     <message>
-        <source>Output layer</source>
-        <translation>出力レイヤ</translation>
+        <source>Vectorized</source>
+        <translation>ベクタ化</translation>
     </message>
 </context>
 <context>
@@ -63502,8 +63892,8 @@ Format a date type or string into a custom string format. Uses Qt data time form
         <translation>出力ラスタタイプ</translation>
     </message>
     <message>
-        <source>Output layer</source>
-        <translation>出力レイヤ</translation>
+        <source>Distance</source>
+        <translation>距離</translation>
     </message>
 </context>
 <context>
@@ -63515,10 +63905,6 @@ Format a date type or string into a custom string format. Uses Qt data time form
     <message>
         <source>Attribute field</source>
         <translation>属性フィールド</translation>
-    </message>
-    <message>
-        <source>Write values inside an existing raster layer(*)</source>
-        <translation>既存のラスタレイヤの中に値を書き込む (*)</translation>
     </message>
     <message>
         <source>Set output raster size (ignored if above option is checked)</source>
@@ -63535,10 +63921,6 @@ Format a date type or string into a custom string format. Uses Qt data time form
     <message>
         <source>Raster type</source>
         <translation>ラスタタイプ</translation>
-    </message>
-    <message>
-        <source>Output layer: mandatory to choose an existing raster layer if the (*) option is selected</source>
-        <translation>出力レイヤ: (*)のオプションが選択されている場合は既存のラスタレイヤの選択が必須です</translation>
     </message>
     <message>
         <source>Nodata value</source>
@@ -63569,8 +63951,12 @@ Format a date type or string into a custom string format. Uses Qt data time form
         <translation>BigTIFFか標準的なTIFFのどちらを作成するか制御する</translation>
     </message>
     <message>
-        <source>Force the generation of an associated ESRI world file (.tfw))</source>
+        <source>Force the generation of an associated ESRI world file (.tfw)</source>
         <translation>関連するESRIワールドファイル(.tfw)を作成する</translation>
+    </message>
+    <message>
+        <source>Rasterized</source>
+        <translation>ラスタ化</translation>
     </message>
 </context>
 <context>
@@ -63584,8 +63970,8 @@ Format a date type or string into a custom string format. Uses Qt data time form
         <translation>色数</translation>
     </message>
     <message>
-        <source>Output layer</source>
-        <translation>出力レイヤ</translation>
+        <source>RGB to PCT</source>
+        <translation>RGBをPCTに変換する</translation>
     </message>
 </context>
 <context>
@@ -63603,8 +63989,8 @@ Format a date type or string into a custom string format. Uses Qt data time form
         <translation>境界を計算する</translation>
     </message>
     <message>
-        <source>Output file</source>
-        <translation>出力ファイル</translation>
+        <source>Roughness</source>
+        <translation>粗度</translation>
     </message>
 </context>
 <context>
@@ -63692,8 +64078,8 @@ Format a date type or string into a custom string format. Uses Qt data time form
         <translation>ピクセルの連結</translation>
     </message>
     <message>
-        <source>Output layer</source>
-        <translation>出力レイヤ</translation>
+        <source>Sieved</source>
+        <translation>ふるいをかけた</translation>
     </message>
 </context>
 <context>
@@ -63723,8 +64109,8 @@ Format a date type or string into a custom string format. Uses Qt data time form
         <translation>比率（垂直単位の水平単位に対する比率)</translation>
     </message>
     <message>
-        <source>Output file</source>
-        <translation>出力ファイル</translation>
+        <source>Slope</source>
+        <translation>傾斜</translation>
     </message>
 </context>
 <context>
@@ -63881,8 +64267,8 @@ Format a date type or string into a custom string format. Uses Qt data time form
         <translation>境界を計算する</translation>
     </message>
     <message>
-        <source>Output file</source>
-        <translation>出力ファイル</translation>
+        <source>Topographic Position Index</source>
+        <translation>トポロジカル位置インデックス</translation>
     </message>
 </context>
 <context>
@@ -63924,10 +64310,6 @@ Format a date type or string into a custom string format. Uses Qt data time form
         <translation>出力ラスタタイプ</translation>
     </message>
     <message>
-        <source>Output layer</source>
-        <translation>出力レイヤ</translation>
-    </message>
-    <message>
         <source>Nodata value, leave blank to take the nodata value from input</source>
         <translation>データなしの値, 空白の場合は入力から取得</translation>
     </message>
@@ -63958,6 +64340,10 @@ Format a date type or string into a custom string format. Uses Qt data time form
     <message>
         <source>Force the generation of an associated ESRI world file (.tfw))</source>
         <translation>関連するESRIワールドファイル(.tfw)を作成する</translation>
+    </message>
+    <message>
+        <source>Translated</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -64155,10 +64541,6 @@ Format a date type or string into a custom string format. Uses Qt data time form
         <translation>出力ラスタタイプ</translation>
     </message>
     <message>
-        <source>Output layer</source>
-        <translation>出力レイヤ</translation>
-    </message>
-    <message>
         <source>Nodata value, leave blank to take the nodata value from input</source>
         <translation>データなしの値, 空白の場合は入力から取得</translation>
     </message>
@@ -64189,6 +64571,10 @@ Format a date type or string into a custom string format. Uses Qt data time form
     <message>
         <source>Force the generation of an associated ESRI world file (.tfw))</source>
         <translation>関連するESRIワールドファイル(.tfw)を作成する</translation>
+    </message>
+    <message>
+        <source>Warped</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
