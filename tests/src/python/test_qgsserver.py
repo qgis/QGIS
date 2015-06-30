@@ -20,7 +20,7 @@ from qgis.core import QgsMessageLog
 from utilities import unitTestDataPath
 
 # Strip path and content lenght because path may vary
-RE_STRIP_PATH=r'MAP=[^&]+|Content-Length: \d+'
+RE_STRIP_PATH=r'MAP=[^&]+(&amp;)*|Content-Length: \d+'
 
 
 class TestQgsServer(unittest.TestCase):
@@ -75,7 +75,7 @@ class TestQgsServer(unittest.TestCase):
         except ImportError:
             print "QGIS Server plugins are not compiled. Skipping test"
             return
-        
+
         class SimpleHelloFilter(QgsServerFilter):
             def requestReady(self):
                 QgsMessageLog.logMessage("SimpleHelloFilter.requestReady")
