@@ -47,6 +47,7 @@
 #include <QScopedPointer>
 // TODO: remove, it's only needed by a single debug message
 #include <fcgi_stdio.h>
+#include <stdlib.h>
 
 
 // Static initialisers, default values for fcgi server
@@ -453,7 +454,7 @@ QByteArray QgsServer::handleRequest( const QString queryString ,
    */
   if ( ! queryString.isEmpty() )
   {
-    putenv( QString( "QUERY_STRING=%1" ).arg( queryString ).toUtf8( ) );
+    putenv( QString( "QUERY_STRING=%1" ).arg( queryString ).toUtf8().data() );
   }
 
   int logLevel = QgsServerLogger::instance()->logLevel();
