@@ -35,6 +35,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsMultiRenderChecker,
                        QgsRasterLayer,
                        QgsMultiBandColorRenderer,
+                       QgsRectangle
                        )
 
 from utilities import (unitTestDataPath,
@@ -95,6 +96,8 @@ class TestQgsBlendModes(TestCase):
         self.mapSettings.setOutputSize(QSize(400, 400))
         self.mapSettings.setOutputDpi( 96 )
 
+        self.extent = QgsRectangle( -118.8888888888887720, 22.8002070393376783, -83.3333333333331581, 46.8719806763287536 )
+
     def testVectorBlending(self):
         """Test that blend modes work for vector layers."""
 
@@ -103,7 +106,7 @@ class TestQgsBlendModes(TestCase):
         myLayers.append(self.mLineLayer.id())
         myLayers.append(self.mPolygonLayer.id())
         self.mapSettings.setLayers(myLayers)
-        self.mapSettings.setExtent(self.mPointLayer.extent())
+        self.mapSettings.setExtent(self.extent)
 
         #Set blending modes for both layers
         self.mLineLayer.setBlendMode(QPainter.CompositionMode_Difference)
@@ -130,7 +133,7 @@ class TestQgsBlendModes(TestCase):
         myLayers.append(self.mLineLayer.id())
         myLayers.append(self.mPolygonLayer.id())
         self.mapSettings.setLayers(myLayers)
-        self.mapSettings.setExtent(self.mPointLayer.extent())
+        self.mapSettings.setExtent(self.extent)
 
         #Set feature blending for line layer
         self.mLineLayer.setFeatureBlendMode(QPainter.CompositionMode_Plus)
@@ -155,7 +158,7 @@ class TestQgsBlendModes(TestCase):
         myLayers.append(self.mLineLayer.id())
         myLayers.append(self.mPolygonLayer.id())
         self.mapSettings.setLayers(myLayers)
-        self.mapSettings.setExtent(self.mPointLayer.extent())
+        self.mapSettings.setExtent(self.extent)
 
         #Set feature blending for line layer
         self.mLineLayer.setLayerTransparency( 50 )
