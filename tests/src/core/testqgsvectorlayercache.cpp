@@ -71,15 +71,17 @@ void TestVectorLayerCache::initTestCase()
 
   // Backup test shape file and attributes
   QStringList backupFiles;
-  backupFiles << "points.shp" << "points.shx" << "points.dbf";
+  backupFiles << "points.shp" << "points.shx" << "points.dbf" << "points.prj";
 
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   QString myTestDataDir = myDataDir + QDir::separator();
 
   foreach ( QString f, backupFiles )
   {
-    QString tmpFileName = QDir::tempPath() + QDir::separator() + f + "_" + QString::number( qApp->applicationPid() );
     QString origFileName = myTestDataDir + f;
+    QFileInfo origFileInfo( origFileName );
+
+    QString tmpFileName = QDir::tempPath() + QDir::separator() + origFileInfo.baseName() + "_" + QString::number( qApp->applicationPid() ) + "." + origFileInfo.completeSuffix();
 
     qDebug() << "Copy " << origFileName << " " << tmpFileName;
 
@@ -90,7 +92,7 @@ void TestVectorLayerCache::initTestCase()
   //
   // load a vector layer
   //
-  QString myPointsFileName = myTestDataDir + "points.shp";
+  QString myPointsFileName = mTmpFiles.value( myTestDataDir + "points.shp" );
   QFileInfo myPointFileInfo( myPointsFileName );
   mPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
                                      myPointFileInfo.completeBaseName(), "ogr" );
@@ -111,19 +113,6 @@ void TestVectorLayerCache::cleanup()
 //runs after all tests
 void TestVectorLayerCache::cleanupTestCase()
 {
-  // Clean added features
-  if ( mAddedFeatures.length() > 0 )
-  {
-    mPointsLayer->startEditing();
-    foreach ( QgsFeature f, mAddedFeatures )
-    {
-      mPointsLayer->deleteFeature( f.id() );
-    }
-    mPointsLayer->commitChanges();
-    mAddedFeatures.clear();
-  }
-
-
   delete mPointsLayer;
 
   // Clean tmp files
@@ -132,8 +121,6 @@ void TestVectorLayerCache::cleanupTestCase()
   for ( it = mTmpFiles.constBegin(); it != mTmpFiles.constEnd(); ++it )
   {
     QString tmpFileName = it.value();
-    QString origFileName = it.key();
-
     qDebug() << "Remove " << tmpFileName;
     QFile::remove( tmpFileName );
   }
