@@ -359,8 +359,7 @@ void TestQgsComposerPicture::pictureExpression()
   //test picture source via expression
   mComposition->addComposerPicture( mComposerPicture );
 
-  QString expr = QString( "'" ) + QString( TEST_DATA_DIR ) + QDir::separator()
-                 + QString( "' || 'sample_svg.svg'" );
+  QString expr = QString( "'%1' || '/sample_svg.svg'" ).arg( TEST_DATA_DIR );
   mComposerPicture->setPictureExpression( expr );
   mComposerPicture->setUsePictureExpression( true );
 
