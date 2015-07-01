@@ -30,6 +30,7 @@ class TestQgsComposerUtils : public QObject
     Q_OBJECT
   public:
     TestQgsComposerUtils();
+    ~TestQgsComposerUtils();
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -63,7 +64,7 @@ class TestQgsComposerUtils : public QObject
   private:
     bool renderCheck( QString testName, QImage &image, int mismatchCount = 0 );
     QgsComposition* mComposition;
-    QgsMapSettings mMapSettings;
+    QgsMapSettings *mMapSettings;
     QString mReport;
     QFont mTestFont;
 
@@ -72,15 +73,20 @@ class TestQgsComposerUtils : public QObject
 TestQgsComposerUtils::TestQgsComposerUtils()
     : mComposition( NULL )
 {
+  QgsApplication::init();
+  QgsApplication::initQgis(); //for access to test font
 
+  mMapSettings = new QgsMapSettings();
+}
+
+TestQgsComposerUtils::~TestQgsComposerUtils()
+{
+  delete mMapSettings;
 }
 
 void TestQgsComposerUtils::initTestCase()
 {
-  QgsApplication::init();
-  QgsApplication::initQgis(); //for access to test font
-
-  mComposition = new QgsComposition( mMapSettings );
+  mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   mReport = "<h1>Composer Utils Tests</h1>\n";

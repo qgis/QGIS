@@ -49,6 +49,8 @@ class TestQgsAtlasComposition : public QObject
         , mAtlas( 0 )
     {}
 
+    ~TestQgsAtlasComposition();
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -87,7 +89,7 @@ class TestQgsAtlasComposition : public QObject
     QgsComposerMap* mAtlasMap;
     QgsComposerMap* mOverview;
     //QgsMapRenderer* mMapRenderer;
-    QgsMapSettings mMapSettings;
+    QgsMapSettings *mMapSettings;
     QgsVectorLayer* mVectorLayer;
     QgsVectorLayer* mVectorLayer2;
     QgsAtlasComposition* mAtlas;
@@ -98,6 +100,8 @@ void TestQgsAtlasComposition::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
+
+  mMapSettings = new QgsMapSettings();
 
   //create maplayers from testdata and add to layer registry
   QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "france_parts.shp" );
@@ -117,6 +121,12 @@ void TestQgsAtlasComposition::initTestCase()
   mReport = "<h1>Composer Atlas Tests</h1>\n";
 }
 
+TestQgsAtlasComposition::~TestQgsAtlasComposition()
+{
+  delete mMapSettings;
+}
+
+
 void TestQgsAtlasComposition::cleanupTestCase()
 {
   delete mComposition;
@@ -135,15 +145,15 @@ void TestQgsAtlasComposition::cleanupTestCase()
 void TestQgsAtlasComposition::init()
 {
   //create composition with composer map
-  mMapSettings.setLayers( QStringList() << mVectorLayer->id() );
-  mMapSettings.setCrsTransformEnabled( true );
-  mMapSettings.setMapUnits( QGis::Meters );
+  mMapSettings->setLayers( QStringList() << mVectorLayer->id() );
+  mMapSettings->setCrsTransformEnabled( true );
+  mMapSettings->setMapUnits( QGis::Meters );
 
   // select epsg:2154
   QgsCoordinateReferenceSystem crs;
   crs.createFromSrid( 2154 );
-  mMapSettings.setDestinationCrs( crs );
-  mComposition = new QgsComposition( mMapSettings );
+  mMapSettings->setDestinationCrs( crs );
+  mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   // fix the renderer, fill with green

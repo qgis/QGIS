@@ -30,6 +30,7 @@ class TestQgsComposerPicture : public QObject
 
   public:
     TestQgsComposerPicture();
+    ~TestQgsComposerPicture();
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -64,7 +65,7 @@ class TestQgsComposerPicture : public QObject
   private:
     QgsComposition* mComposition;
     QgsComposerPicture* mComposerPicture;
-    QgsMapSettings mMapSettings;
+    QgsMapSettings *mMapSettings;
     QString mReport;
     QString mPngImage;
     QString mSvgImage;
@@ -77,15 +78,22 @@ TestQgsComposerPicture::TestQgsComposerPicture()
 
 }
 
+TestQgsComposerPicture::~TestQgsComposerPicture()
+{
+  delete mMapSettings;
+}
+
 void TestQgsComposerPicture::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
 
+  mMapSettings = new QgsMapSettings();
+
   mPngImage = QString( TEST_DATA_DIR ) + QDir::separator() +  "sample_image.png";
   mSvgImage = QString( TEST_DATA_DIR ) + QDir::separator() +  "sample_svg.svg";
 
-  mComposition = new QgsComposition( mMapSettings );
+  mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   mComposerPicture = new QgsComposerPicture( mComposition );

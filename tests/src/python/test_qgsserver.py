@@ -15,11 +15,12 @@ __revision__ = '$Format:%H$'
 import os
 import re
 import unittest
+import tempfile
 from qgis.server import QgsServer
 from qgis.core import QgsMessageLog
 from utilities import unitTestDataPath
 
-# Strip path and content lenght because path may vary
+# Strip path and content length because path may vary
 RE_STRIP_PATH=r'MAP=[^&]+(&amp;)*|Content-Length: \d+'
 
 
@@ -108,7 +109,9 @@ class TestQgsServer(unittest.TestCase):
         f = open(self.testdata_path + request.lower() + '.txt')
         expected = f.read()
         f.close()
-        self.assertEqual(re.sub(RE_STRIP_PATH, '', response), re.sub(RE_STRIP_PATH, '', expected))
+        response = re.sub(RE_STRIP_PATH, '', response)
+        expected = re.sub(RE_STRIP_PATH, '', expected)
+        self.assertEqual(response, expected, msg="request %s failed" % request)
 
 
     def test_project_wms(self):

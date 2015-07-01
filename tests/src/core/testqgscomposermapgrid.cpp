@@ -32,6 +32,7 @@ class TestQgsComposerMapGrid : public QObject
 
   public:
     TestQgsComposerMapGrid();
+    ~TestQgsComposerMapGrid();
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -61,7 +62,7 @@ class TestQgsComposerMapGrid : public QObject
   private:
     QgsComposition* mComposition;
     QgsComposerMap* mComposerMap;
-    QgsMapSettings mMapSettings;
+    QgsMapSettings *mMapSettings;
     QString mReport;
 };
 
@@ -69,14 +70,19 @@ TestQgsComposerMapGrid::TestQgsComposerMapGrid()
     : mComposition( NULL )
     , mComposerMap( NULL )
 {
+  QgsApplication::init();
+  QgsApplication::initQgis();
 
+  mMapSettings = new QgsMapSettings();
+}
+
+TestQgsComposerMapGrid::~TestQgsComposerMapGrid()
+{
+  delete mMapSettings;
 }
 
 void TestQgsComposerMapGrid::initTestCase()
 {
-  QgsApplication::init();
-  QgsApplication::initQgis();
-
   mReport = "<h1>Composer Map Grid Tests</h1>\n";
 }
 
@@ -97,9 +103,9 @@ void TestQgsComposerMapGrid::cleanupTestCase()
 void TestQgsComposerMapGrid::init()
 {
   QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( 32633 );
-  mMapSettings.setDestinationCrs( crs );
-  mMapSettings.setCrsTransformEnabled( false );
-  mComposition = new QgsComposition( mMapSettings );
+  mMapSettings->setDestinationCrs( crs );
+  mMapSettings->setCrsTransformEnabled( false );
+  mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
   mComposerMap->setFrameEnabled( true );
@@ -162,7 +168,7 @@ void TestQgsComposerMapGrid::reprojected()
 
   bool testResult = checker.testComposition( mReport, 0, 0 );
   mComposerMap->grid()->setEnabled( false );
-  mComposerMap->grid()->setCrs( mMapSettings.destinationCrs() );
+  mComposerMap->grid()->setCrs( mMapSettings->destinationCrs() );
   mComposerMap->grid()->setFrameStyle( QgsComposerMapGrid::NoFrame );
   mComposerMap->setFrameEnabled( true );
   QVERIFY( testResult );

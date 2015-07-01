@@ -71,7 +71,7 @@ class TestQgsComposerTableV2 : public QObject
 
   private:
     QgsComposition* mComposition;
-    QgsMapSettings mMapSettings;
+    QgsMapSettings *mMapSettings;
     QgsVectorLayer* mVectorLayer;
     QgsComposerAttributeTableV2* mComposerAttributeTable;
     QgsComposerFrame* mFrame1;
@@ -87,6 +87,8 @@ void TestQgsComposerTableV2::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
+  mMapSettings = new QgsMapSettings();
+
   //create maplayers from testdata and add to layer registry
   QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "points.shp" );
   mVectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
@@ -94,8 +96,8 @@ void TestQgsComposerTableV2::initTestCase()
                                      "ogr" );
   QgsMapLayerRegistry::instance()->addMapLayer( mVectorLayer );
 
-  mMapSettings.setLayers( QStringList() << mVectorLayer->id() );
-  mMapSettings.setCrsTransformEnabled( false );
+  mMapSettings->setLayers( QStringList() << mVectorLayer->id() );
+  mMapSettings->setCrsTransformEnabled( false );
 
   mReport = "<h1>Composer TableV2 Tests</h1>\n";
 }
@@ -116,7 +118,7 @@ void TestQgsComposerTableV2::cleanupTestCase()
 void TestQgsComposerTableV2::init()
 {
   //create composition with composer map
-  mComposition = new QgsComposition( mMapSettings );
+  mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 portrait
 
   mComposerAttributeTable = new QgsComposerAttributeTableV2( mComposition, false );

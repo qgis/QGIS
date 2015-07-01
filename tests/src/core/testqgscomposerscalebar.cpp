@@ -38,7 +38,13 @@ class TestQgsComposerScaleBar : public QObject
         , mComposerMap( 0 )
         , mComposerScaleBar( 0 )
         , mRasterLayer( 0 )
+        , mMapSettings( 0 )
     {}
+
+    ~TestQgsComposerScaleBar()
+    {
+      delete mMapSettings;
+    }
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -56,7 +62,7 @@ class TestQgsComposerScaleBar : public QObject
     QgsComposerMap* mComposerMap;
     QgsComposerScaleBar* mComposerScaleBar;
     QgsRasterLayer* mRasterLayer;
-    QgsMapSettings mMapSettings;
+    QgsMapSettings *mMapSettings;
     QString mReport;
 };
 
@@ -64,6 +70,8 @@ void TestQgsComposerScaleBar::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
+
+  mMapSettings = new QgsMapSettings();
 
   //create maplayers from testdata and add to layer registry
   QFileInfo rasterFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "landsat.tif" );
@@ -75,15 +83,15 @@ void TestQgsComposerScaleBar::initTestCase()
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mRasterLayer );
 
   //create composition with composer map
-  mMapSettings.setLayers( QStringList() << mRasterLayer->id() );
+  mMapSettings->setLayers( QStringList() << mRasterLayer->id() );
 
   //reproject to WGS84
   QgsCoordinateReferenceSystem destCRS;
   destCRS.createFromId( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
-  mMapSettings.setDestinationCrs( destCRS );
-  mMapSettings.setCrsTransformEnabled( true );
+  mMapSettings->setDestinationCrs( destCRS );
+  mMapSettings->setCrsTransformEnabled( true );
 
-  mComposition = new QgsComposition( mMapSettings );
+  mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerMap = new QgsComposerMap( mComposition, 20, 20, 150, 150 );
   mComposerMap->setFrameEnabled( true );

@@ -112,7 +112,7 @@ void QgsHttpRequestHandler::addToResponseHeader( const char * response )
   }
   else
   {
-    printf( response );
+    fputs( response, FCGI_stdout );
   }
 }
 
@@ -124,7 +124,7 @@ void QgsHttpRequestHandler::addToResponseBody( const char * response )
   }
   else
   {
-    printf( response );
+    fputs( response, FCGI_stdout );
   }
 }
 
@@ -219,7 +219,7 @@ QByteArray QgsHttpRequestHandler::getResponse( const bool returnHeaders,
 {
   if ( ! returnHeaders )
   {
-    return  mResponseBody;
+    return mResponseBody;
   }
   else if ( ! returnBody )
   {

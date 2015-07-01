@@ -41,7 +41,10 @@ class TestQgsComposerRotation : public QObject
         , mComposerRect( 0 )
         , mComposerLabel( 0 )
         , mRasterLayer( 0 )
+        , mMapSettings( 0 )
     {}
+
+    ~TestQgsComposerRotation();
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -63,15 +66,22 @@ class TestQgsComposerRotation : public QObject
     QgsComposition* mComposition;
     QgsComposerShape* mComposerRect;
     QgsComposerLabel* mComposerLabel;
-    QgsMapSettings mMapSettings;
+    QgsMapSettings *mMapSettings;
     QgsRasterLayer* mRasterLayer;
     QString mReport;
 };
+
+TestQgsComposerRotation::~TestQgsComposerRotation()
+{
+  delete mMapSettings;
+}
 
 void TestQgsComposerRotation::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
+
+  mMapSettings = new QgsMapSettings();
 
   //create maplayers from testdata and add to layer registry
   QFileInfo rasterFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "rgb256x256.png" );
@@ -82,10 +92,10 @@ void TestQgsComposerRotation::initTestCase()
 
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mRasterLayer );
 
-  mMapSettings.setLayers( QStringList() << mRasterLayer->id() );
-  mMapSettings.setCrsTransformEnabled( false );
+  mMapSettings->setLayers( QStringList() << mRasterLayer->id() );
+  mMapSettings->setCrsTransformEnabled( false );
 
-  mComposition = new QgsComposition( mMapSettings );
+  mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   mComposerRect = new QgsComposerShape( 70, 70, 150, 100, mComposition );
