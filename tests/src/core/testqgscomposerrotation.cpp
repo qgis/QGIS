@@ -40,6 +40,7 @@ class TestQgsComposerRotation : public QObject
         : mComposition( 0 )
         , mComposerRect( 0 )
         , mComposerLabel( 0 )
+        , mComposerMap( 0 )
         , mRasterLayer( 0 )
         , mMapSettings( 0 )
     {}
@@ -66,6 +67,7 @@ class TestQgsComposerRotation : public QObject
     QgsComposition* mComposition;
     QgsComposerShape* mComposerRect;
     QgsComposerLabel* mComposerLabel;
+    QgsComposerMap* mComposerMap;
     QgsMapSettings *mMapSettings;
     QgsRasterLayer* mRasterLayer;
     QString mReport;
@@ -115,6 +117,11 @@ void TestQgsComposerRotation::initTestCase()
 
 void TestQgsComposerRotation::cleanupTestCase()
 {
+  if ( mComposerMap )
+  {
+    mComposition->removeItem( mComposerMap );
+    delete mComposerMap;
+  }
   delete mComposition;
 
   QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
@@ -174,11 +181,6 @@ void TestQgsComposerRotation::labelRotation()
 
   QgsCompositionChecker checker( "composerrotation_label", mComposition );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
-
-  // removeItem() for label does not work, the label is rendered in the next test
-  // cannot find why, other items are removed correctly
-  mComposition->removeItem( mComposerLabel );
-  mComposerLabel->setItemRotation( 0, true );
 }
 
 #if 0
@@ -198,34 +200,36 @@ void TestQgsComposerRotation::oldLabelRotationApi()
 
 void TestQgsComposerRotation::mapRotation()
 {
+  // cleanup after labelRotation()
+  mComposition->removeItem( mComposerLabel );
+  mComposerLabel->setItemRotation( 0, true );
+
   //test map rotation
-  QgsComposerMap* composerMap = new QgsComposerMap( mComposition, 20, 20, 100, 50 );
-  composerMap->setFrameEnabled( true );
-  mComposition->addItem( composerMap );
-  composerMap->setNewExtent( QgsRectangle( 0, -192, 256, -64 ) );
-  composerMap->setMapRotation( 90 );
+  mComposerMap = new QgsComposerMap( mComposition, 20, 20, 100, 50 );
+  mComposerMap->setFrameEnabled( true );
+  mComposition->addItem( mComposerMap );
+  mComposerMap->setNewExtent( QgsRectangle( 0, -192, 256, -64 ) );
+  mComposerMap->setMapRotation( 90 );
 
   QgsCompositionChecker checker( "composerrotation_maprotation", mComposition );
   QVERIFY( checker.testComposition( mReport, 0, 200 ) );
-
-  mComposition->removeItem( composerMap );
-  delete composerMap;
 }
 
 void TestQgsComposerRotation::mapItemRotation()
 {
+  // cleanup after mapRotation()
+  mComposition->removeItem( mComposerMap );
+  delete mComposerMap;
+
   //test map item rotation
-  QgsComposerMap* composerMap = new QgsComposerMap( mComposition, 20, 50, 100, 50 );
-  composerMap->setFrameEnabled( true );
-  mComposition->addItem( composerMap );
-  composerMap->setNewExtent( QgsRectangle( 0, -192, 256, -64 ) );
-  composerMap->setItemRotation( 90, true );
+  mComposerMap = new QgsComposerMap( mComposition, 20, 50, 100, 50 );
+  mComposerMap->setFrameEnabled( true );
+  mComposition->addItem( mComposerMap );
+  mComposerMap->setNewExtent( QgsRectangle( 0, -192, 256, -64 ) );
+  mComposerMap->setItemRotation( 90, true );
 
   QgsCompositionChecker checker( "composerrotation_mapitemrotation", mComposition );
   QVERIFY( checker.testComposition( mReport ) );
-
-  mComposition->removeItem( composerMap );
-  delete composerMap;
 }
 
 QTEST_MAIN( TestQgsComposerRotation )
