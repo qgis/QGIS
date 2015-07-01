@@ -134,9 +134,7 @@ void TestVectorLayerCache::cleanupTestCase()
     QString tmpFileName = it.value();
     QString origFileName = it.key();
 
-    qDebug() << "Copy " << tmpFileName << " " << origFileName;
-    QFile( origFileName ).remove();
-    qDebug() << QFile::copy( tmpFileName, origFileName );
+    qDebug() << "Remove " << tmpFileName;
     QFile::remove( tmpFileName );
   }
 
