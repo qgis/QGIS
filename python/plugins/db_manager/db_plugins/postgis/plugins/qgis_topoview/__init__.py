@@ -267,6 +267,16 @@ def run(item, action, mainwindow):
         legend.setLayerExpanded(layer, False)
 
     finally:
+
+        # Set canvas extent to topology extent, if not yet initialized
+        canvas = iface.mapCanvas()
+        if ( canvas.fullExtent().isNull() ):
+          ext = node_extent
+          ext.combineExtentWith(edge_extent)
+          # Grow by 1/20 of largest side
+          ext = ext.buffer(max(ext.width(),ext.height())/20)
+          canvas.setExtent(ext)
+
         # restore canvas render flag
         iface.mapCanvas().setRenderFlag(prevRenderFlagState)
 
