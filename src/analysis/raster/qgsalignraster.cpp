@@ -23,7 +23,6 @@
 #include <qmath.h>
 #include <QPair>
 #include <QString>
-#include <limits>
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrectangle.h"
