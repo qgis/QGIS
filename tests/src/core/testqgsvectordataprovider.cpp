@@ -63,8 +63,8 @@ void TestQgsVectorDataProvider::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  QString layerPointsUrl = QString( TEST_DATA_DIR ) + QDir::separator() + QString( "points.shp" );
-  QString layerLinesUrl = QString( TEST_DATA_DIR ) + QDir::separator() + QString( "lines.shp" );
+  QString layerPointsUrl = QString( TEST_DATA_DIR ) + "/points.shp";
+  QString layerLinesUrl = QString( TEST_DATA_DIR ) + "/lines.shp";
 
   // load layers
 

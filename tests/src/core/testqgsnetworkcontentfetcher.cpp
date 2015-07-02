@@ -98,7 +98,7 @@ void TestQgsNetworkContentFetcher::fetchEncodedContent()
   QgsNetworkContentFetcher fetcher;
   //test fetching encoded content as string
   mLoaded = false;
-  fetcher.fetchContent( QUrl::fromLocalFile( QString( TEST_DATA_DIR ) + QDir::separator() +  "encoded_html.html" ) );
+  fetcher.fetchContent( QUrl::fromLocalFile( QString( TEST_DATA_DIR ) + "/" +  "encoded_html.html" ) );
   connect( &fetcher, SIGNAL( finished() ), this, SLOT( contentLoaded() ) );
   while ( !mLoaded )
   {

@@ -79,7 +79,7 @@ class TestQgsDiagram : public QObject
       //create a non spatial layer that will be used in all tests...
       //
       QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-      mTestDataDir = myDataDir + QDir::separator();
+      mTestDataDir = myDataDir + "/";
 
       //
       //create a point layer that will be used in all tests...
@@ -103,7 +103,7 @@ class TestQgsDiagram : public QObject
     void cleanupTestCase()
     {
       QgsApplication::exitQgis();
-      QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+      QString myReportFile = QDir::tempPath() + "/qgistest.html";
       QFile myFile( myReportFile );
       if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
       {

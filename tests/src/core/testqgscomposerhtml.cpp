@@ -74,7 +74,7 @@ void TestQgsComposerHtml::cleanupTestCase()
 {
   delete mComposition;
 
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -176,7 +176,7 @@ void TestQgsComposerHtml::table()
   QgsComposerFrame* htmlFrame = new QgsComposerFrame( mComposition, htmlItem, 0, 0, 100, 200 );
   htmlFrame->setFrameEnabled( true );
   htmlItem->addFrame( htmlFrame );
-  htmlItem->setUrl( QUrl( QString( "file:///%1" ).arg( QString( TEST_DATA_DIR ) + QDir::separator() +  "test_html.html" ) ) );
+  htmlItem->setUrl( QUrl( QString( "file:///%1/test_html.html" ).arg( TEST_DATA_DIR ) ) );
 
   QgsCompositionChecker checker( "composerhtml_table", mComposition );
   bool result = checker.testComposition( mReport );
@@ -194,7 +194,7 @@ void TestQgsComposerHtml::tableMultiFrame()
   htmlItem->setUseSmartBreaks( false );
 
   //page1
-  htmlItem->setUrl( QUrl( QString( "file:///%1" ).arg( QString( TEST_DATA_DIR ) + QDir::separator() +  "test_html.html" ) ) );
+  htmlItem->setUrl( QUrl( QString( "file:///%1/test_html.html" ).arg( TEST_DATA_DIR ) ) );
   htmlItem->frame( 0 )->setFrameEnabled( true );
   QgsCompositionChecker checker1( "composerhtml_multiframe1", mComposition );
   bool result = checker1.testComposition( mReport );
@@ -217,7 +217,7 @@ void TestQgsComposerHtml::htmlMultiFrameSmartBreak()
   htmlItem->setUseSmartBreaks( true );
 
   //page1
-  htmlItem->setUrl( QUrl( QString( "file:///%1" ).arg( QString( TEST_DATA_DIR ) + QDir::separator() +  "test_html.html" ) ) );
+  htmlItem->setUrl( QUrl( QString( "file:///%1/test_html.html" ).arg( TEST_DATA_DIR ) ) );
   htmlItem->frame( 0 )->setFrameEnabled( true );
   QgsCompositionChecker checker1( "composerhtml_smartbreaks1", mComposition );
   bool result = checker1.testComposition( mReport, 0, 200 );

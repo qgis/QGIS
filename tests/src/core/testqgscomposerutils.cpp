@@ -103,7 +103,7 @@ void TestQgsComposerUtils::cleanupTestCase()
 
   QgsApplication::exitQgis();
 
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -687,7 +687,7 @@ void TestQgsComposerUtils::drawTextRect()
 bool TestQgsComposerUtils::renderCheck( QString testName, QImage &image, int mismatchCount )
 {
   mReport += "<h2>" + testName + "</h2>\n";
-  QString myTmpDir = QDir::tempPath() + QDir::separator();
+  QString myTmpDir = QDir::tempPath() + "/";
   QString myFileName = myTmpDir + testName + ".png";
   image.save( myFileName, "PNG" );
   QgsRenderChecker myChecker;

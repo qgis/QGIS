@@ -458,7 +458,7 @@ void TestQgsGeometry::cleanupTestCase()
   //
   // Runs once after all tests are run
   //
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -711,7 +711,7 @@ bool TestQgsGeometry::renderCheck( QString theTestName, QString theComment, int 
 {
   mReport += "<h2>" + theTestName + "</h2>\n";
   mReport += "<h3>" + theComment + "</h3>\n";
-  QString myTmpDir = QDir::tempPath() + QDir::separator();
+  QString myTmpDir = QDir::tempPath() + "/";
   QString myFileName = myTmpDir + theTestName + ".png";
   mImage.save( myFileName, "PNG" );
   QgsRenderChecker myChecker;

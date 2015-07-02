@@ -43,7 +43,7 @@ class TestQgsMapRotation : public QObject
         , mPointsLayer( 0 )
         , mLinesLayer( 0 )
     {
-      mTestDataDir = QString( TEST_DATA_DIR ) + QDir::separator();
+      mTestDataDir = QString( TEST_DATA_DIR ) + "/";
     }
 
     ~TestQgsMapRotation();
@@ -126,7 +126,7 @@ void TestQgsMapRotation::cleanupTestCase()
 
   // TODO: delete layers (or is it done by exitQgis ?)
 
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {

@@ -21,6 +21,7 @@
 #include <QtTest/QtTest>
 #include "qgsrenderchecker.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgsapplication.h"
 
 class TestQgsImageOperation : public QObject
 {
@@ -91,14 +92,17 @@ class TestQgsImageOperation : public QObject
 
 void TestQgsImageOperation::initTestCase()
 {
+  QgsApplication::init();
+  QgsApplication::initQgis();
+
   mReport += "<h1>Image Operation Tests</h1>\n";
-  mSampleImage = QString( TEST_DATA_DIR ) + QDir::separator() +  "sample_image.png";
-  mTransparentSampleImage = QString( TEST_DATA_DIR ) + QDir::separator() +  "sample_alpha_image.png";
+  mSampleImage = QString( TEST_DATA_DIR ) + "/sample_image.png";
+  mTransparentSampleImage = QString( TEST_DATA_DIR ) + "/sample_alpha_image.png";
 }
 
 void TestQgsImageOperation::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -110,7 +114,6 @@ void TestQgsImageOperation::cleanupTestCase()
 
 void TestQgsImageOperation::init()
 {
-
 }
 
 void TestQgsImageOperation::cleanup()
@@ -120,7 +123,7 @@ void TestQgsImageOperation::cleanup()
 
 void TestQgsImageOperation::smallImageOp()
 {
-  QImage image( QString( TEST_DATA_DIR ) + QDir::separator() +  "small_sample_image.png" );
+  QImage image( QString( TEST_DATA_DIR ) + "/small_sample_image.png" );
   QgsImageOperation::convertToGrayscale( image, QgsImageOperation::GrayscaleLightness );
 
   bool result = imageCheck( QString( "imageop_smallimage" ), image, 0 );
@@ -374,14 +377,14 @@ void TestQgsImageOperation::stackBlurPremultiplied()
 
 void TestQgsImageOperation::alphaOnlyBlur()
 {
-  QImage image( QString( TEST_DATA_DIR ) + QDir::separator() +  "small_sample_image.png" );
+  QImage image( QString( TEST_DATA_DIR ) + "/small_sample_image.png" );
   QgsImageOperation::stackBlur( image, 10, true );
 
   bool result = imageCheck( QString( "imageop_stackblur_alphaonly" ), image, 0 );
   QVERIFY( result );
   QCOMPARE( image.format(), QImage::Format_ARGB32 );
 
-  QImage premultImage( QString( TEST_DATA_DIR ) + QDir::separator() +  "small_sample_image.png" );
+  QImage premultImage( QString( TEST_DATA_DIR ) + "/small_sample_image.png" );
   premultImage = premultImage.convertToFormat( QImage::Format_ARGB32_Premultiplied );
   QgsImageOperation::stackBlur( premultImage, 10, true );
 
@@ -404,7 +407,7 @@ void TestQgsImageOperation::gaussianBlur()
 //todo small, zero radius
 void TestQgsImageOperation::gaussianBlurSmall()
 {
-  QImage image( QString( TEST_DATA_DIR ) + QDir::separator() +  "small_sample_image.png" );
+  QImage image( QString( TEST_DATA_DIR ) + "/small_sample_image.png" );
   image = image.convertToFormat( QImage::Format_ARGB32_Premultiplied );
 
   QImage* blurredImage = QgsImageOperation::gaussianBlur( image, 10 );
@@ -457,7 +460,7 @@ bool TestQgsImageOperation::imageCheck( QString testName, QImage &image, int mis
   painter.end();
 
   mReport += "<h2>" + testName + "</h2>\n";
-  QString tempDir = QDir::tempPath() + QDir::separator();
+  QString tempDir = QDir::tempPath() + "/";
   QString fileName = tempDir + testName + ".png";
   imageWithBackground.save( fileName, "PNG" );
   QgsRenderChecker checker;

@@ -85,7 +85,7 @@ void TestQgsRasterSubLayer::initTestCase()
   CPLSetConfigOption( "GDAL_PAM_ENABLED", "NO" );
   QString mySettings = QgsApplication::showSettings();
   mySettings = mySettings.replace( "\n", "<br />" );
-  mTestDataDir = QString( TEST_DATA_DIR ) + QDir::separator(); //defined in CmakeLists.txt
+  mTestDataDir = QString( TEST_DATA_DIR ) + "/"; //defined in CmakeLists.txt
 
   GDALAllRegister();
   QString format = "netCDF";
@@ -116,7 +116,7 @@ void TestQgsRasterSubLayer::initTestCase()
 void TestQgsRasterSubLayer::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {

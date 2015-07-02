@@ -74,14 +74,14 @@ void TestVectorLayerCache::initTestCase()
   backupFiles << "points.shp" << "points.shx" << "points.dbf" << "points.prj";
 
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  QString myTestDataDir = myDataDir + QDir::separator();
+  QString myTestDataDir = myDataDir + "/";
 
   foreach ( QString f, backupFiles )
   {
     QString origFileName = myTestDataDir + f;
     QFileInfo origFileInfo( origFileName );
 
-    QString tmpFileName = QDir::tempPath() + QDir::separator() + origFileInfo.baseName() + "_" + QString::number( qApp->applicationPid() ) + "." + origFileInfo.completeSuffix();
+    QString tmpFileName = QDir::tempPath() + "/" + origFileInfo.baseName() + "_" + QString::number( qApp->applicationPid() ) + "." + origFileInfo.completeSuffix();
 
     qDebug() << "Copy " << origFileName << " " << tmpFileName;
 
@@ -126,7 +126,7 @@ void TestVectorLayerCache::cleanupTestCase()
   }
 
   // also clean up newly created .qix file
-  QFile::remove( QString( TEST_DATA_DIR ) + QDir::separator() + "points.qix" );
+  QFile::remove( QString( TEST_DATA_DIR ) + "/points.qix" );
 
   QgsApplication::exitQgis();
 }

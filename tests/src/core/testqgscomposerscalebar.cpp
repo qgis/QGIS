@@ -64,6 +64,7 @@ class TestQgsComposerScaleBar : public QObject
     QgsRasterLayer* mRasterLayer;
     QgsMapSettings *mMapSettings;
     QString mReport;
+    QPen mPrevPen;
 };
 
 void TestQgsComposerScaleBar::initTestCase()
@@ -74,7 +75,7 @@ void TestQgsComposerScaleBar::initTestCase()
   mMapSettings = new QgsMapSettings();
 
   //create maplayers from testdata and add to layer registry
-  QFileInfo rasterFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "landsat.tif" );
+  QFileInfo rasterFileInfo( QString( TEST_DATA_DIR ) + "/landsat.tif" );
   mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
                                      rasterFileInfo.completeBaseName() );
   QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 2, 3, 4 );
@@ -119,7 +120,7 @@ void TestQgsComposerScaleBar::cleanupTestCase()
 {
   delete mComposition;
 
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -129,49 +130,51 @@ void TestQgsComposerScaleBar::cleanupTestCase()
   }
 
   QgsApplication::exitQgis();
-};
+}
 
 void TestQgsComposerScaleBar::init()
 {
 
-};
+}
 
 void TestQgsComposerScaleBar::cleanup()
 {
 
-};
+}
 
 void TestQgsComposerScaleBar::singleBox()
 {
   mComposerScaleBar->setStyle( "Single Box" );
   QgsCompositionChecker checker( "composerscalebar_singlebox", mComposition );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
-};
+}
 
 void TestQgsComposerScaleBar::singleBoxAlpha()
 {
   mComposerScaleBar->setStyle( "Single Box" );
   mComposerScaleBar->setBrush( QBrush( QColor( 255, 0, 0, 100 ) ) );
   mComposerScaleBar->setBrush2( QBrush( QColor( 0, 255, 0, 50 ) ) );
-  QPen prevPen = mComposerScaleBar->pen();
-  QPen newPen = prevPen;
+  mPrevPen = mComposerScaleBar->pen();
+  QPen newPen = mPrevPen;
   newPen.setColor( QColor( 0, 0, 255, 150 ) );
   mComposerScaleBar->setPen( newPen );
   mComposerScaleBar->setFontColor( QColor( 255, 0, 255, 100 ) );
   QgsCompositionChecker checker( "composerscalebar_singlebox_alpha", mComposition );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
-  mComposerScaleBar->setBrush( QBrush( Qt::black ) );
-  mComposerScaleBar->setBrush2( QBrush( Qt::white ) );
-  mComposerScaleBar->setPen( prevPen );
-  mComposerScaleBar->setFontColor( Qt::black );
-};
+}
 
 void TestQgsComposerScaleBar::doubleBox()
 {
+  // cleanup singleBoxAlpha
+  mComposerScaleBar->setBrush( QBrush( Qt::black ) );
+  mComposerScaleBar->setBrush2( QBrush( Qt::white ) );
+  mComposerScaleBar->setPen( mPrevPen );
+  mComposerScaleBar->setFontColor( Qt::black );
   mComposerScaleBar->setStyle( "Double Box" );
+
   QgsCompositionChecker checker( "composerscalebar_doublebox", mComposition );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
-};
+}
 
 void TestQgsComposerScaleBar::numeric()
 {
@@ -179,14 +182,14 @@ void TestQgsComposerScaleBar::numeric()
   mComposerScaleBar->setSceneRect( QRectF( 20, 180, 50, 20 ) );
   QgsCompositionChecker checker( "composerscalebar_numeric", mComposition );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
-};
+}
 
 void TestQgsComposerScaleBar::tick()
 {
   mComposerScaleBar->setStyle( "Line Ticks Up" );
   QgsCompositionChecker checker( "composerscalebar_tick", mComposition );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
-};
+}
 
 QTEST_MAIN( TestQgsComposerScaleBar )
 #include "testqgscomposerscalebar.moc"

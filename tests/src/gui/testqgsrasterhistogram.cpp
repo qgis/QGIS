@@ -102,7 +102,7 @@ void TestRasterHistogram::initTestCase()
 #endif
 
   // save data dir
-  mDataDir = QString( TEST_DATA_DIR ) + QDir::separator();
+  mDataDir = QString( TEST_DATA_DIR ) + "/";
   mWidth = mHeight = 400;
   mImageQuality = -1;
   // Set up the QSettings environment
@@ -121,7 +121,7 @@ void TestRasterHistogram::initTestCase()
   mReport += "<p>" + mySettings + "</p>";
 
   // remove .aux.xml file to make sure histogram computation is fresh
-  QFile::remove( mDataDir + QDir::separator() + "landsat.tif.aux.xml" );
+  QFile::remove( mDataDir + "/landsat.tif.aux.xml" );
   QVERIFY( openLayer( "landsat.tif" ) );
 }
 
@@ -129,8 +129,8 @@ void TestRasterHistogram::cleanupTestCase()
 {
   closeLayer();
   // remove .aux.xml file to make sure histogram computation is fresh
-  QFile::remove( mDataDir + QDir::separator() + "landsat.tif.aux.xml" );
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgishistotest.html";
+  QFile::remove( mDataDir + "/landsat.tif.aux.xml" );
+  QString myReportFile = QDir::tempPath() + "/qgishistotest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -195,7 +195,7 @@ void TestRasterHistogram::testPseudo1()
 
 bool TestRasterHistogram::openLayer( const QString& fileName )
 {
-  mRasterLayer = new QgsRasterLayer( mDataDir + QDir::separator() + fileName, fileName );
+  mRasterLayer = new QgsRasterLayer( mDataDir + "/" + fileName, fileName );
   if ( ! mRasterLayer )
     return false;
   mGrayRendererWidget = new QgsSingleBandGrayRendererWidget( mRasterLayer );
@@ -267,7 +267,7 @@ int TestRasterHistogram::testFile( QString theTestType,
   {
     mHistogramWidget->setSelectedBand( selectedBand );
   }
-  QString fileName = QDir::tempPath() + QDir::separator() +
+  QString fileName = QDir::tempPath() + "/" +
                      theTestType + "_result.png";
   if ( ! saveImage( fileName ) )
   {

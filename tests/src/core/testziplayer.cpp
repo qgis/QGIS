@@ -283,8 +283,8 @@ void TestZipLayer::initTestCase()
 
   // save data dir
   QFile::remove( QDir::tempPath() + "/testzip.zip" );
-  QVERIFY( QFile::copy( QString( TEST_DATA_DIR ) + QDir::separator() + "zip" + QDir::separator() + "testzip.zip", QDir::tempPath() + "/testzip.zip" ) );
-  mDataDir = QString( TEST_DATA_DIR ) + QDir::separator() + "zip" + QDir::separator();
+  QVERIFY( QFile::copy( QString( TEST_DATA_DIR ) + "/zip/" + "testzip.zip", QDir::tempPath() + "/testzip.zip" ) );
+  mDataDir = QString( TEST_DATA_DIR ) + "/zip/";
   // Set up the QSettings environment
   QCoreApplication::setOrganizationName( "QGIS" );
   QCoreApplication::setOrganizationDomain( "qgis.org" );

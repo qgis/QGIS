@@ -99,8 +99,8 @@ void TestQgsMapRenderer::initTestCase()
   // Create the test dataset if it doesnt exist
   //
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  QString myTestDataDir = myDataDir + QDir::separator();
-  QString myTmpDir = QDir::tempPath() + QDir::separator();
+  QString myTestDataDir = myDataDir + "/";
+  QString myTmpDir = QDir::tempPath() + "/";
   QString myFileName = myTmpDir +  "maprender_testdata.shp";
   //copy over the default qml for our generated layer
   QString myQmlFileName = myTestDataDir +  "maprender_testdata.qml";
@@ -183,7 +183,7 @@ void TestQgsMapRenderer::cleanupTestCase()
 {
   QgsApplication::exitQgis();
 
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {

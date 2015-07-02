@@ -33,9 +33,8 @@ class TestQgsZonalStatistics(TestCase):
 
     def testStatistics(self):
         """Test zonal stats"""
-        sep = os.sep
-        TEST_DATA_DIR = unitTestDataPath() + sep + "zonalstatistics" + sep
-        myTempPath = QDir.tempPath() + sep
+        TEST_DATA_DIR = unitTestDataPath() + "/zonalstatistics/"
+        myTempPath = QDir.tempPath() + "/"
         testDir = QDir(TEST_DATA_DIR)
         for f in testDir.entryList(QDir.Files):
             QFile.remove(myTempPath + f)

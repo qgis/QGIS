@@ -90,8 +90,8 @@ void TestQgsComposerPicture::initTestCase()
 
   mMapSettings = new QgsMapSettings();
 
-  mPngImage = QString( TEST_DATA_DIR ) + QDir::separator() +  "sample_image.png";
-  mSvgImage = QString( TEST_DATA_DIR ) + QDir::separator() +  "sample_svg.svg";
+  mPngImage = QString( TEST_DATA_DIR ) + "/sample_image.png";
+  mSvgImage = QString( TEST_DATA_DIR ) + "/sample_svg.svg";
 
   mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
@@ -108,7 +108,7 @@ void TestQgsComposerPicture::cleanupTestCase()
 {
   delete mComposition;
 
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {

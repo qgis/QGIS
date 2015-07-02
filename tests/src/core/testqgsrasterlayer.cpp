@@ -121,7 +121,7 @@ void TestQgsRasterLayer::initTestCase()
   mySettings = mySettings.replace( "\n", "<br />" );
   //create some objects that will be used in all tests...
   //create a raster layer that will be used in all tests...
-  mTestDataDir = QString( TEST_DATA_DIR ) + QDir::separator(); //defined in CmakeLists.txt
+  mTestDataDir = QString( TEST_DATA_DIR ) + "/"; //defined in CmakeLists.txt
   QString myFileName = mTestDataDir + "tenbytenraster.asc";
   QString myLandsatFileName = mTestDataDir + "landsat.tif";
   QString myFloat32FileName = mTestDataDir + "/raster/band1_float32_noct_epsg4326.tif";
@@ -159,7 +159,7 @@ void TestQgsRasterLayer::cleanupTestCase()
 {
   QgsApplication::exitQgis();
 
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -445,7 +445,7 @@ void TestQgsRasterLayer::buildExternalOverviews()
 {
   //before we begin delete any old ovr file (if it exists)
   //and make a copy of the landsat raster into the temp dir
-  QString myTempPath = QDir::tempPath() + QDir::separator();
+  QString myTempPath = QDir::tempPath() + "/";
   QFile::remove( myTempPath + "landsat.tif.ovr" );
   QFile::remove( myTempPath + "landsat.tif" );
   QVERIFY( QFile::copy( mTestDataDir + "landsat.tif", myTempPath + "landsat.tif" ) );
@@ -493,7 +493,7 @@ void TestQgsRasterLayer::buildExternalOverviews()
 
 void TestQgsRasterLayer::registry()
 {
-  QString myTempPath = QDir::tempPath() + QDir::separator();
+  QString myTempPath = QDir::tempPath() + "/";
   QFile::remove( myTempPath + "landsat.tif.ovr" );
   QFile::remove( myTempPath + "landsat.tif" );
   QVERIFY( QFile::copy( mTestDataDir + "landsat.tif", myTempPath + "landsat.tif" ) );

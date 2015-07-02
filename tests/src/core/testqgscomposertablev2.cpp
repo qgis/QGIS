@@ -90,7 +90,7 @@ void TestQgsComposerTableV2::initTestCase()
   mMapSettings = new QgsMapSettings();
 
   //create maplayers from testdata and add to layer registry
-  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "points.shp" );
+  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + "/points.shp" );
   mVectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
                                      vectorFileInfo.completeBaseName(),
                                      "ogr" );
@@ -104,7 +104,7 @@ void TestQgsComposerTableV2::initTestCase()
 
 void TestQgsComposerTableV2::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -416,7 +416,7 @@ void TestQgsComposerTableV2::attributeTableAtlasSource()
 
   //setup atlas
   QgsVectorLayer* vectorLayer;
-  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "points.shp" );
+  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + "/points.shp" );
   vectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
                                     vectorFileInfo.completeBaseName(),
                                     "ogr" );
@@ -472,7 +472,7 @@ void TestQgsComposerTableV2::attributeTableAtlasSource()
 
 void TestQgsComposerTableV2::attributeTableRelationSource()
 {
-  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "points_relations.shp" );
+  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + "/points_relations.shp" );
   QgsVectorLayer* atlasLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
       vectorFileInfo.completeBaseName(),
       "ogr" );

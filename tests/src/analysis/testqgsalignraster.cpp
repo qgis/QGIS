@@ -43,7 +43,7 @@ class TestAlignRaster : public QObject
     {
       GDALAllRegister();
 
-      SRC_FILE = QString( TEST_DATA_DIR ) + QDir::separator() + "float1-16.tif";
+      SRC_FILE = QString( TEST_DATA_DIR ) + "/float1-16.tif";
 
       QgsApplication::init(); // needed for CRS database
     }
