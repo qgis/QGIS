@@ -18,6 +18,7 @@
 #include <gdalwarper.h>
 #include <ogr_spatialref.h>
 #include <cpl_conv.h>
+#include <limits>
 
 #include <qmath.h>
 #include <QPair>
