@@ -30,6 +30,9 @@
 QGISEXTERN QStringList fileExtensions();
 QGISEXTERN QStringList wildcards();
 
+#ifndef SPATIALITE_VERSION_G_4_1_1
+QMutex QgsOgrLayerItem::sMutex;
+#endif
 
 QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem* parent,
                                   QString name, QString path, QString uri, LayerType layerType )
@@ -40,6 +43,13 @@ QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem* parent,
 
   OGRRegisterAll();
   OGRSFDriverH hDriver;
+
+  // If GDAL is compiled with SpatiaLite <= 4.1.1, GDALOpen results in call to spatialite_init()
+  // which is nopt thread safe, see http://lists.osgeo.org/pipermail/qgis-developer/2015-June/038392.html
+#ifndef SPATIALITE_VERSION_G_4_1_1
+  QgsDebugMsg( "lock" );
+  QMutexLocker locker( &sMutex );
+#endif
   OGRDataSourceH hDataSource = OGROpen( TO8F( mPath ), true, &hDriver );
 
   if ( hDataSource )

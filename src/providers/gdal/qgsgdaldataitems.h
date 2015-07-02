@@ -22,6 +22,9 @@ class QgsGdalLayerItem : public QgsLayerItem
   private:
 
     QStringList sublayers;
+#ifndef SPATIALITE_VERSION_G_4_1_1
+    static QMutex sMutex;
+#endif
 
   public:
     QgsGdalLayerItem( QgsDataItem* parent,
