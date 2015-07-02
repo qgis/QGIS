@@ -31,7 +31,7 @@ QgsServerStreamingDevice::~QgsServerStreamingDevice()
 
 bool QgsServerStreamingDevice::open( OpenMode mode )
 {
-  if( !mRequestHandler || mode != QIODevice::WriteOnly )
+  if ( !mRequestHandler || mode != QIODevice::WriteOnly )
   {
     return false;
   }
@@ -43,7 +43,7 @@ bool QgsServerStreamingDevice::open( OpenMode mode )
 
 void QgsServerStreamingDevice::close()
 {
-    QIODevice::close();
+  QIODevice::close();
 }
 
 qint64 QgsServerStreamingDevice::writeData( const char * data, qint64 maxSize )
@@ -55,5 +55,7 @@ qint64 QgsServerStreamingDevice::writeData( const char * data, qint64 maxSize )
 
 qint64 QgsServerStreamingDevice::readData( char * data, qint64 maxSize )
 {
+  Q_UNUSED( data );
+  Q_UNUSED( maxSize );
   return -1; //reading not supported
 }
