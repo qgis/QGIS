@@ -22,6 +22,9 @@
 // defined in qgsgdalprovider.cpp
 void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString, QStringList & theExtensions, QStringList & theWildcards );
 
+#ifndef SPATIALITE_VERSION_G_4_1_1
+QMutex QgsGdalLayerItem::sMutex;
+#endif
 
 QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem* parent,
                                     QString name, QString path, QString uri,
@@ -39,6 +42,12 @@ QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem* parent,
   else
     setState( Populated );
 
+// If GDAL is compiled with SpatiaLite <= 4.1.1, GDALOpen results in call to spatialite_init()
+// which is nopt thread safe, see http://lists.osgeo.org/pipermail/qgis-developer/2015-June/038392.html
+#ifndef SPATIALITE_VERSION_G_4_1_1
+  QgsDebugMsg( "lock" );
+  QMutexLocker locker( &sMutex );
+#endif
   GDALAllRegister();
   GDALDatasetH hDS = GDALOpen( TO8F( mPath ), GA_Update );
 
