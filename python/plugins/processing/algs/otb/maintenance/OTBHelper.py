@@ -278,6 +278,10 @@ def get_param_descriptor(appkey, app_instance, our_descriptor, root):
         if parameters[app_instance.GetParameterType(our_descriptor)] == "ParameterType_OutputImage" :
             attrs = {'source_parameter_type' : 'ParameterType_OutputFilename'}
 
+    if parameters[app_instance.GetParameterType(our_descriptor)] == "ParameterType_ListView" :
+        if not appkey == "RadiometricIndices" :
+            attrs = {'source_parameter_type' : 'ParameterType_StringList'}
+
     param_type = ET.SubElement(param, 'parameter_type', attrib=attrs)
 
     param_type.text = inverted_parameters[parameters[app_instance.GetParameterType(our_descriptor)]]
@@ -290,6 +294,9 @@ def get_param_descriptor(appkey, app_instance, our_descriptor, root):
     if appkey == "SplitImage" :
         if parameters[app_instance.GetParameterType(our_descriptor)] == "ParameterType_OutputImage" :
             param_type.text = "OutputFile"
+    if parameters[app_instance.GetParameterType(our_descriptor)] == "ParameterType_ListView" :
+        if not appkey == "RadiometricIndices" :
+            param_type.text = "ParameterString"
 
     # {the_params = get_constructor_parameters_from_filename(file_parameter, mapped_parameter)
     if len(the_params) == 0:
