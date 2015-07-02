@@ -396,6 +396,7 @@ bool QgsServer::init( int & argc, char ** argv )
 
   QgsEditorWidgetRegistry::initEditors();
   mInitialised = TRUE;
+  QgsMessageLog::logMessage( "Server intialised", "Server", QgsMessageLog::INFO );
   return TRUE;
 }
 
