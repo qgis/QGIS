@@ -58,5 +58,5 @@ before_script:
   - psql -c 'CREATE EXTENSION postgis;' -U postgres -d qgis_test
   - psql -f $TRAVIS_BUILD_DIR/tests/testdata/provider/testdata.sql -U postgres -d qgis_test
 
-script: xvfb-run ctest -V -E 'qgis_openstreetmaptest|qgis_wcsprovidertest' -S ../qgis-test-travis.ctest --output-on-failure
+script: xvfb-run ctest -V -E 'qgis_openstreetmaptest|qgis_wcsprovidertest|PyQgsServer' -S ../qgis-test-travis.ctest --output-on-failure
 
