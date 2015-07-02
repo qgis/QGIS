@@ -60,8 +60,6 @@ class TestQgsComposerPicture : public QObject
     void pictureExpression();
     void pictureInvalidExpression();
 
-    void pictureRemoteUrl(); //test fetching picture from a url
-
   private:
     QgsComposition* mComposition;
     QgsComposerPicture* mComposerPicture;
@@ -380,20 +378,6 @@ void TestQgsComposerPicture::pictureInvalidExpression()
   mComposerPicture->setUsePictureExpression( true );
 
   QgsCompositionChecker checker( "composerpicture_badexpression", mComposition );
-  QVERIFY( checker.testComposition( mReport, 0, 0 ) );
-
-  mComposition->removeItem( mComposerPicture );
-  mComposerPicture->setUsePictureExpression( false );
-}
-
-void TestQgsComposerPicture::pictureRemoteUrl()
-{
-  //test picture source via bad expression
-  mComposition->addComposerPicture( mComposerPicture );
-
-  mComposerPicture->setPicturePath( "http://www.qgis.org/en/_static/logo.png" );
-
-  QgsCompositionChecker checker( "composerpicture_remote", mComposition );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 
   mComposition->removeItem( mComposerPicture );
