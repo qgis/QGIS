@@ -20,10 +20,14 @@ set VERSION=%1
 set PACKAGE=%2
 set PACKAGENAME=%3
 set ARCH=%4
+set SHA=%5
+set SITE=%6
 if "%VERSION%"=="" goto usage
 if "%PACKAGE%"=="" goto usage
 if "%PACKAGENAME%"=="" goto usage
 if "%ARCH%"=="" goto usage
+if not "%SHA%"=="" set SHA=-%SHA%
+if "%SITE%"=="" set SITE=qgis.org
 
 set BUILDDIR=%CD%\build-%ARCH%
 
@@ -137,7 +141,9 @@ set >buildenv.log
 
 if exist qgsversion.h del qgsversion.h
 
-if exist CMakeCache.txt goto skipcmake
+if exist CMakeCache.txt if exist skipcmake goto skipcmake
+
+touch %SRCDIR%\CMakeLists.txt
 
 echo CMAKE: %DATE% %TIME%
 if errorlevel 1 goto error
@@ -146,6 +152,8 @@ set LIB=%LIB%;%OSGEO4W_ROOT%\lib
 set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\include
 
 cmake %CMAKE_OPT% ^
+	-D BUILDNAME="%PACKAGENAME%-%VERSION%%SHA%-Release-VC10-%ARCH%" ^
+	-D SITE="%SITE%" ^
 	-D PEDANTIC=TRUE ^
 	-D WITH_QSPATIALITE=TRUE ^
 	-D WITH_SERVER=TRUE ^
@@ -452,8 +460,8 @@ if errorlevel 1 (echo tar devel failed & goto error)
 goto end
 
 :usage
-echo usage: %0 version package packagename arch
-echo sample: %0 2.0.1 3 qgis x86
+echo usage: %0 version package packagename arch [sha [site]]
+echo sample: %0 2.0.1 3 qgis x86 f802808
 exit
 
 :error
