@@ -156,7 +156,6 @@ void QgsHttpRequestHandler::sendHeaders()
       addToResponseHeader( it.value().toUtf8() );
       addToResponseHeader( "\n" );
     }
-    addToResponseHeader( "\n" );
   }
   addToResponseHeader( "\n" );
   mHeaders.clear();

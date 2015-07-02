@@ -45,6 +45,7 @@ SET ( qgis_mapserv_SRCS
   qgswmsconfigparser.cpp
   qgswmsprojectparser.cpp
   qgsserverprojectparser.cpp
+  qgsserverstreamingdevice.cpp
   qgssldconfigparser.cpp
   qgsconfigparserutils.cpp
   qgsserver.cpp
@@ -169,6 +170,7 @@ INCLUDE_DIRECTORIES(
   ${QT_INCLUDE_DIR}
   ${QGIS_INCLUDE_DIR}
   ../core
+  ../core/dxf
   ../core/geometry
   ../core/raster
   ../core/symbology-ng
