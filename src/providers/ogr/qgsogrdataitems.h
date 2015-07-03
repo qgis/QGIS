@@ -29,10 +29,6 @@ class QgsOgrLayerItem : public QgsLayerItem
     bool setCrs( QgsCoordinateReferenceSystem crs ) override;
     Capability capabilities() override;
     QString layerName() const override;
-  private:
-#ifndef SPATIALITE_VERSION_G_4_1_1
-    static QMutex sMutex;
-#endif
 };
 
 class QgsOgrDataCollectionItem : public QgsDataCollectionItem
