@@ -38,7 +38,7 @@ from qgis.core import QGis, QgsRasterFileWriter
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterRaster, ParameterVector, ParameterMultipleInput, Parameter
+from processing.core.parameters import ParameterRaster, ParameterVector, ParameterMultipleInput, ParameterTable, Parameter
 from processing.core.outputs import OutputVector, OutputRaster, OutputTable, OutputHTML, Output
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.tools import dataobjects, vector
@@ -222,6 +222,7 @@ class GeoAlgorithm:
         try:
             self.setOutputCRS()
             self.resolveTemporaryOutputs()
+            self.resolveDataObjects()
             self.checkOutputFileExtensions()
             self.runPreExecutionScript(progress)
             self.processAlgorithm(progress)
@@ -256,7 +257,7 @@ class GeoAlgorithm:
                     else:
                         inputlayers = [param.value]
                     for inputlayer in inputlayers:
-                        obj = dataobjects.getObjectFromUri(inputlayer)
+                        obj = dataobjects.getObject(inputlayer)
                         if obj is None:
                             return "Wrong parameter value: " + param.value
         return self.checkParameterValuesBeforeExecuting()
@@ -420,6 +421,23 @@ class GeoAlgorithm:
             self.crs = iface.mapCanvas().mapRenderer().destinationCrs()
         except:
             pass
+
+    def resolveDataObjects(self):
+        layers = dataobjects.getAllLayers()
+        for param in self.parameters:
+            if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable,
+                          ParameterMultipleInput)):
+                if param.value:
+                    if isinstance(param, ParameterMultipleInput):
+                        inputlayers = param.value.split(';')
+                    else:
+                        inputlayers = [param.value]
+                    for i, inputlayer in enumerate(inputlayers):
+                        for layer in layers:
+                            if layer.name() == inputlayer:
+                                inputlayers[i] = layer.source()
+                                break
+                    param.setValue(",".join(inputlayers))
 
 
     def checkInputCRS(self):
