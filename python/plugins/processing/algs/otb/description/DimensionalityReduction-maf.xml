@@ -49,8 +49,7 @@
   <parameter>
     <parameter_type source_parameter_type="ParameterType_OutputFilename">OutputFile</parameter_type>
     <key>outmatrix</key>
-    <name>Transformation matrix output</name>
+    <name>Transformation matrix output (text format)</name>
     <description>Filename to store the transformation matrix (csv format)</description>
-    <hidden />
   </parameter>
 </root>

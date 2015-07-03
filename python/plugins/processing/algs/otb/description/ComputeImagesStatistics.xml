@@ -26,6 +26,5 @@
     <key>out</key>
     <name>Output XML file</name>
     <description>XML filename where the statistics are saved for future reuse.</description>
-    <hidden />
   </parameter>
 </root>

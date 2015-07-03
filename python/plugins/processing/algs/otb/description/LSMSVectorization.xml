@@ -23,7 +23,6 @@
     <key>out</key>
     <name>Output GIS vector file</name>
     <description>The output GIS vector file, representing the vectorized version of the segmented image where the features of the polygons are the radiometric means and variances.</description>
-    <hidden />
   </parameter>
   <parameter>
     <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>

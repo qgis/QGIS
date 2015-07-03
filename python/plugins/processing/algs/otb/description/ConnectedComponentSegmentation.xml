@@ -58,7 +58,7 @@
     <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
     <key>elev.default</key>
     <name>Default elevation</name>
-    <description>This parameter allows setting the default height above ellipsoid when there is no DEM available, no coverage for some points or pixels with no_data in the DEM tiles, and no geoid file has been set. This is also used by some application as an average elevation value.</description>
+    <description>This parameter allows to set the default height above ellipsoid when there is no DEM available, no coverage for some points or pixels with no_data in the DEM tiles, and no geoid file has been set. This is also used by some application as an average elevation value.</description>
     <minValue />
     <maxValue />
     <default>0</default>

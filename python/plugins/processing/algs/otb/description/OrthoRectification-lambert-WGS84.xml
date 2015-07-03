@@ -3,7 +3,7 @@
   <exec>otbcli_OrthoRectification</exec>
   <longname>OrthoRectification (lambert-WGS84)</longname>
   <group>Geometry</group>
-  <description>This application allows ortho-rectifying optical images from supported sensors.
+  <description>This application allows to ortho-rectify optical images from supported sensors.
 </description>
   <parameter>
     <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
@@ -59,7 +59,7 @@
     <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
     <key>elev.default</key>
     <name>Default elevation</name>
-    <description>This parameter allows setting the default height above ellipsoid when there is no DEM available, no coverage for some points or pixels with no_data in the DEM tiles, and no geoid file has been set. This is also used by some application as an average elevation value.</description>
+    <description>This parameter allows to set the default height above ellipsoid when there is no DEM available, no coverage for some points or pixels with no_data in the DEM tiles, and no geoid file has been set. This is also used by some application as an average elevation value.</description>
     <minValue />
     <maxValue />
     <default>0</default>
@@ -68,7 +68,7 @@
     <parameter_type source_parameter_type="ParameterType_Choice">ParameterSelection</parameter_type>
     <key>interpolator</key>
     <name>Interpolation</name>
-    <description>This group of parameters allows defining how the input image will be interpolated during resampling.</description>
+    <description>This group of parameters allows to define how the input image will be interpolated during resampling.</description>
     <options>
       <choices>
         <choice>bco</choice>
@@ -82,7 +82,7 @@
     <parameter_type source_parameter_type="ParameterType_Radius">ParameterNumber</parameter_type>
     <key>interpolator.bco.radius</key>
     <name>Radius for bicubic interpolation</name>
-    <description>This parameter allows controlling the size of the bicubic interpolation filter. If the target pixel size is higher than the input pixel size, increasing this parameter will reduce aliasing artefacts.</description>
+    <description>This parameter allows to control the size of the bicubic interpolation filter. If the target pixel size is higher than the input pixel size, increasing this parameter will reduce aliasing artefacts.</description>
     <minValue />
     <maxValue />
     <default>2</default>
@@ -91,7 +91,7 @@
     <parameter_type source_parameter_type="ParameterType_RAM">ParameterNumber</parameter_type>
     <key>opt.ram</key>
     <name>Available RAM (Mb)</name>
-    <description>This allows setting the maximum amount of RAM available for processing. As the writing task is time consuming, it is better to write large pieces of data, which can be achieved by increasing this parameter (pay attention to your system capabilities)</description>
+    <description>This allows to set the maximum amount of RAM available for processing. As the writing task is time consuming, it is better to write large pieces of data, which can be achieved by increasing this parameter (pay attention to your system capabilities)</description>
     <minValue />
     <maxValue />
     <default>128</default>
