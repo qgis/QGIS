@@ -310,7 +310,7 @@ void TestQgsLegendRenderer::testFilterByMap()
   mapSettings.setOutputSize( QSize( 400, 100 ) );
   mapSettings.setOutputDpi( 96 );
   QStringList ll;
-  foreach ( QString l, QgsMapLayerRegistry::instance()->mapLayers() )
+  foreach ( QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
   {
     ll << l->id();
   }
