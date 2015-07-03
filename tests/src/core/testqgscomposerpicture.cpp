@@ -70,8 +70,9 @@ class TestQgsComposerPicture : public QObject
 };
 
 TestQgsComposerPicture::TestQgsComposerPicture()
-    : mComposition( NULL )
-    , mComposerPicture( NULL )
+    : mComposition( 0 )
+    , mComposerPicture( 0 )
+    , mMapSettings( 0 )
 {
 
 }

@@ -526,11 +526,7 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
   if ( useGeometryColumns )
   {
     QString testquery( "SELECT count(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'geometry_columns'" );
-    q.exec( testquery );
-    q.first();
-    int count = q.value( 0 ).toInt();
-    bool geometryColumnsFound = count != 0;
-    if ( !geometryColumnsFound )
+    if ( !q.exec( testquery ) || !q.first() || q.value( 0 ).toInt() == 0 )
     {
       QMessageBox::StandardButtons reply;
       reply = QMessageBox::question( this, "Scan full database?",

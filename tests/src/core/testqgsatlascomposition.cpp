@@ -44,6 +44,7 @@ class TestQgsAtlasComposition : public QObject
         , mLabel2( 0 )
         , mAtlasMap( 0 )
         , mOverview( 0 )
+        , mMapSettings( 0 )
         , mVectorLayer( 0 )
         , mVectorLayer2( 0 )
         , mAtlas( 0 )
@@ -88,7 +89,6 @@ class TestQgsAtlasComposition : public QObject
     QgsComposerLabel* mLabel2;
     QgsComposerMap* mAtlasMap;
     QgsComposerMap* mOverview;
-    //QgsMapRenderer* mMapRenderer;
     QgsMapSettings *mMapSettings;
     QgsVectorLayer* mVectorLayer;
     QgsVectorLayer* mVectorLayer2;

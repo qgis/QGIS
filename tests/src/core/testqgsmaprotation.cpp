@@ -42,6 +42,7 @@ class TestQgsMapRotation : public QObject
         : mRasterLayer( 0 )
         , mPointsLayer( 0 )
         , mLinesLayer( 0 )
+        , mMapSettings( 0 )
     {
       mTestDataDir = QString( TEST_DATA_DIR ) + "/";
     }

@@ -19,18 +19,18 @@
 
 #include "Triangulation.h"
 
-/**Decorator class for Triangulations (s. Decorator pattern in Gamma et al.)*/
+/** Decorator class for Triangulations (s. Decorator pattern in Gamma et al.)*/
 class TriDecorator : public Triangulation
 {
   public:
     TriDecorator();
-    TriDecorator( Triangulation* t );
+    explicit TriDecorator( Triangulation* t );
     virtual ~TriDecorator();
     virtual void addLine( Line3D* line, bool breakline ) override;
     virtual int addPoint( Point3D* p ) override;
-    /**Adds an association to a triangulation*/
+    /** Adds an association to a triangulation*/
     virtual void addTriangulation( Triangulation* t );
-    /**Performs a consistency check, remove this later*/
+    /** Performs a consistency check, remove this later*/
     virtual void performConsistencyTest() override;
     virtual bool calcNormal( double x, double y, Vector3D* result ) override;
     virtual bool calcPoint( double x, double y, Point3D* result ) override;
@@ -56,7 +56,7 @@ class TriDecorator : public Triangulation
     virtual bool swapEdge( double x, double y ) override;
     virtual QList<int>* getPointsAroundEdge( double x, double y ) override;
   protected:
-    /**Association with a Triangulation object*/
+    /** Association with a Triangulation object*/
     Triangulation* mTIN;
 };
 

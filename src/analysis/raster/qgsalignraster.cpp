@@ -556,6 +556,7 @@ bool QgsAlignRaster::suggestedWarpOutput( const QgsAlignRaster::RasterInfo& info
 
 
 QgsAlignRaster::RasterInfo::RasterInfo( const QString& layerpath )
+    : mBandCnt( 0 )
 {
   mDataset = GDALOpen( layerpath.toLocal8Bit().constData(), GA_ReadOnly );
   if ( !mDataset )
@@ -564,7 +565,7 @@ QgsAlignRaster::RasterInfo::RasterInfo( const QString& layerpath )
   mXSize = GDALGetRasterXSize( mDataset );
   mYSize = GDALGetRasterYSize( mDataset );
 
-  GDALGetGeoTransform( mDataset, mGeoTransform );
+  ( void ) GDALGetGeoTransform( mDataset, mGeoTransform );
 
   // TODO: may be null or empty string
   mCrsWkt = QString::fromAscii( GDALGetProjectionRef( mDataset ) );
