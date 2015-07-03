@@ -21,8 +21,7 @@ from qgis.core import QgsMessageLog
 from utilities import unitTestDataPath
 
 # Strip path and content length because path may vary
-RE_STRIP_PATH=r'MAP=[^&]+(&amp;)*|Content-Length: \d+'
-
+RE_STRIP_PATH=r'MAP=[^&]+|Content-Length: \d+'
 
 class TestQgsServer(unittest.TestCase):
 
@@ -98,7 +97,7 @@ class TestQgsServer(unittest.TestCase):
         serverIface = self.server.serverInterface()
         serverIface.registerFilter(SimpleHelloFilter(serverIface), 100 )
         response = str(self.server.handleRequest('service=simple'))
-        expected = 'Content-type: text/plain\n\n\nHello from SimpleServer!'
+        expected = 'Content-type: text/plain\n\nHello from SimpleServer!'
         self.assertEqual(response, expected)
 
 
@@ -109,9 +108,18 @@ class TestQgsServer(unittest.TestCase):
         f = open(self.testdata_path + request.lower() + '.txt')
         expected = f.read()
         f.close()
+        # Store for debug or to regenerate the reference documents:
+        """
+        f = open(os.path.dirname(__file__) + '/expected.txt', 'w+')
+        f.write(expected)
+        f.close()
+        f = open(os.path.dirname(__file__) + '/response.txt', 'w+')
+        f.write(response)
+        f.close()
+        """
         response = re.sub(RE_STRIP_PATH, '', response)
         expected = re.sub(RE_STRIP_PATH, '', expected)
-        self.assertEqual(response, expected, msg="request %s failed" % request)
+        self.assertEqual(response, expected, msg="request %s failed. Expected:\n%s\n\nResponse:\n%s" % (request, expected, response))
 
 
     def test_project_wms(self):
