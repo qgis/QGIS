@@ -15,7 +15,7 @@
     <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
     <key>mask</key>
     <name>Input Mask</name>
-    <description>The mask allows restricting classification of the input image to the area where mask pixel values are greater than 0.</description>
+    <description>The mask allows to restrict classification of the input image to the area where mask pixel values are greater than 0.</description>
     <optional>True</optional>
   </parameter>
   <parameter>

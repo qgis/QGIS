@@ -1,7 +1,7 @@
 <root>
   <key>MeanShiftSmoothing</key>
   <exec>otbcli_MeanShiftSmoothing</exec>
-  <longname>Mean Shift filtering (can be used as Exact Large-Scale Mean-Shift segmentation, step 1)</longname>
+  <longname>Exact Large-Scale Mean-Shift segmentation, step 1 (smoothing)</longname>
   <group>Image Filtering</group>
   <description>Perform mean shift filtering</description>
   <parameter>
@@ -24,6 +24,15 @@
     <name>Spatial image</name>
     <description> The spatial image output. Spatial image output is a displacement map (pixel position after convergence).</description>
     <hidden />
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_RAM">ParameterNumber</parameter_type>
+    <key>ram</key>
+    <name>Available RAM (Mb)</name>
+    <description>Available memory for processing (in MB)</description>
+    <minValue />
+    <maxValue />
+    <default>128</default>
   </parameter>
   <parameter>
     <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>

@@ -33,20 +33,18 @@
     <key>io.confmatout</key>
     <name>Output confusion matrix</name>
     <description>Output file containing the confusion matrix (.csv format).</description>
-    <hidden />
   </parameter>
   <parameter>
     <parameter_type source_parameter_type="ParameterType_OutputFilename">OutputFile</parameter_type>
     <key>io.out</key>
     <name>Output model</name>
     <description>Output file containing the model estimated (.txt format).</description>
-    <hidden />
   </parameter>
   <parameter>
     <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
     <key>elev.default</key>
     <name>Default elevation</name>
-    <description>This parameter allows setting the default height above ellipsoid when there is no DEM available, no coverage for some points or pixels with no_data in the DEM tiles, and no geoid file has been set. This is also used by some application as an average elevation value.</description>
+    <description>This parameter allows to set the default height above ellipsoid when there is no DEM available, no coverage for some points or pixels with no_data in the DEM tiles, and no geoid file has been set. This is also used by some application as an average elevation value.</description>
     <minValue />
     <maxValue />
     <default>0</default>
@@ -68,6 +66,15 @@
     <minValue />
     <maxValue />
     <default>1000</default>
+  </parameter>
+  <parameter>
+    <parameter_type source_parameter_type="ParameterType_Int">ParameterNumber</parameter_type>
+    <key>sample.bm</key>
+    <name>Bound sample number by minimum</name>
+    <description>Bound the number of samples for each class by the number of available samples by the smaller class. Proportions between training and validation are respected. Default is true (=1).</description>
+    <minValue />
+    <maxValue />
+    <default>1</default>
   </parameter>
   <parameter>
     <parameter_type source_parameter_type="ParameterType_Empty">ParameterBoolean</parameter_type>

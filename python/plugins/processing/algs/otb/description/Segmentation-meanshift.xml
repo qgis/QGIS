@@ -85,13 +85,12 @@
     <key>mode.vector.out</key>
     <name>Output vector file</name>
     <description>The output vector file or database (name can be anything understood by OGR)</description>
-    <hidden />
   </parameter>
   <parameter>
     <parameter_type source_parameter_type="ParameterType_Choice">ParameterSelection</parameter_type>
     <key>mode.vector.outmode</key>
     <name>Writing mode for the output vector file</name>
-    <description>This allows setting the writing behaviour for the output vector file. Please note that the actual behaviour depends on the file format.</description>
+    <description>This allows to set the writing behaviour for the output vector file. Please note that the actual behaviour depends on the file format.</description>
     <options>
       <choices>
         <choice>ulco</choice>
@@ -136,7 +135,7 @@
     <parameter_type source_parameter_type="ParameterType_Float">ParameterNumber</parameter_type>
     <key>mode.vector.simplify</key>
     <name>Simplify polygons</name>
-    <description>Simplify polygons according to a given tolerance (in pixel). This option allows reducing the size of the output file or database.</description>
+    <description>Simplify polygons according to a given tolerance (in pixel). This option allows to reduce the size of the output file or database.</description>
     <minValue />
     <maxValue />
     <default>0.1</default>

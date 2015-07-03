@@ -16,7 +16,6 @@
     <key>out</key>
     <name>Matrix output</name>
     <description>Filename to store the output matrix (csv format)</description>
-    <hidden />
   </parameter>
   <parameter>
     <parameter_type source_parameter_type="ParameterType_Choice">ParameterSelection</parameter_type>
