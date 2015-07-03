@@ -893,6 +893,10 @@ class geoprocessingThread( QThread ):
             try:
               if diff_geom.intersects( tmpGeom ):
                 diff_geom = QgsGeometry( diff_geom.difference( tmpGeom ) )
+              if diff_geom.isGeosEmpty():
+                GEOS_EXCEPT = False
+                add = False
+                break
             except:
               GEOS_EXCEPT = False
               add = False
