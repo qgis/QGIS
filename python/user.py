@@ -44,23 +44,26 @@ initfile = os.path.join(expressionspath, "__init__.py")
 if not os.path.exists(initfile):
     open(initfile, "w").close()
 
+template = """\"\"\"
+Define new functions using @qgsfunction. feature and parent must always be the
+last args. Use args=-1 to pass a list of values as arguments
+\"\"\"
+
+from qgis.core import *
+from qgis.gui import *
+
+@qgsfunction(args='auto', group='Custom')
+def func(value1, feature, parent):
+    return value1
+"""
+
+    
 try:
     import expressions
 
     expressions.load = load_user_expressions
     expressions.load(expressionspath)
-    expressions.template = """\"\"\"
-    Define new functions using @qgsfunction. feature and parent must always be the
-    last args. Use args=-1 to pass a list of values as arguments
-    \"\"\"
-
-    from qgis.core import *
-    from qgis.gui import *
-
-    @qgsfunction(args='auto', group='Custom')
-    def func(value1, feature, parent):
-        return value1
-    """
+    expressions.template = template
 except ImportError:
     # We get a import error and crash for some reason even if we make the expressions package
     # TODO Fix the crash on first load with no expressions folder
