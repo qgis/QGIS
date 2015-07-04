@@ -130,7 +130,7 @@ void QgsRendererV2Widget::changeSymbolWidth()
 
   QgsDataDefinedWidthDialog dlg( symbolList, mLayer );
 
-  if ( QMessageBox::Ok == dlg.exec() )
+  if ( QDialog::Accepted == dlg.exec() )
   {
     if ( !dlg.mDDBtn->isActive() )
     {
@@ -155,7 +155,7 @@ void QgsRendererV2Widget::changeSymbolSize()
 
   QgsDataDefinedSizeDialog dlg( symbolList, mLayer );
 
-  if ( QMessageBox::Ok == dlg.exec() )
+  if ( QDialog::Accepted == dlg.exec() )
   {
     if ( !dlg.mDDBtn->isActive() )
     {
@@ -180,7 +180,7 @@ void QgsRendererV2Widget::changeSymbolAngle()
 
   QgsDataDefinedRotationDialog dlg( symbolList, mLayer );
 
-  if ( QMessageBox::Ok == dlg.exec() )
+  if ( QDialog::Accepted == dlg.exec() )
   {
     if ( !dlg.mDDBtn->isActive() )
     {
