@@ -18,6 +18,9 @@ class CORE_EXPORT QgsWkbPtr
     inline const QgsWkbPtr &operator>>( char &v ) const { memcpy( &v, mP, sizeof( v ) ); mP += sizeof( v ); return *this; }
     inline const QgsWkbPtr &operator>>( QgsWKBTypes::Type &v ) const { memcpy( &v, mP, sizeof( v ) ); mP += sizeof( v ); return *this; }
     inline const QgsWkbPtr &operator>>( QGis::WkbType &v ) const { memcpy( &v, mP, sizeof( v ) ); mP += sizeof( v ); return *this; }
+#ifdef QT_ARCH_ARM
+    inline const QgsWkbPtr &operator>>( qreal &r ) const { double v; memcpy( &v, mP, sizeof( v ) ); mP += sizeof( v ); r = v; return *this; }
+#endif
 
     inline QgsWkbPtr &operator<<( const double &v ) { memcpy( mP, &v, sizeof( v ) ); mP += sizeof( v ); return *this; }
     inline QgsWkbPtr &operator<<( const int &v ) { memcpy( mP, &v, sizeof( v ) ); mP += sizeof( v ); return *this; }
@@ -25,6 +28,10 @@ class CORE_EXPORT QgsWkbPtr
     inline QgsWkbPtr &operator<<( const char &v ) { memcpy( mP, &v, sizeof( v ) ); mP += sizeof( v ); return *this; }
     inline QgsWkbPtr &operator<<( const QgsWKBTypes::Type &v ) { memcpy( mP, &v, sizeof( v ) ); mP += sizeof( v ); return *this; }
     inline QgsWkbPtr &operator<<( const QGis::WkbType &v ) { memcpy( mP, &v, sizeof( v ) ); mP += sizeof( v ); return *this; }
+#ifdef QT_ARCH_ARM
+    inline QgsWkbPtr &operator<<( const qreal &r ) { double v = r; memcpy( mP, &v, sizeof( v ) ); mP += sizeof( v ); return *this; }
+#endif
+
     inline void operator+=( int n ) { mP += n; }
 
     inline operator unsigned char *() const { return mP; }
@@ -45,6 +52,9 @@ class CORE_EXPORT QgsConstWkbPtr
     inline const QgsConstWkbPtr &operator>>( char &v ) const { read( v ); return *this; }
     inline const QgsConstWkbPtr &operator>>( QGis::WkbType &v ) const { read( v ); return *this; }
     inline const QgsConstWkbPtr &operator>>( QgsWKBTypes::Type &v ) const { read( v ); return *this; }
+#ifdef QT_ARCH_ARM
+    inline const QgsConstWkbPtr &operator>>( qreal &r ) const { double v; read( v ); r = v; return *this; }
+#endif
 
     inline void operator+=( int n ) { mP += n; }
     inline void operator-=( int n ) { mP -= n; }

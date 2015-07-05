@@ -603,7 +603,13 @@ void QgsCircularStringV2::transform( const QTransform& t )
   int nPoints = numPoints();
   for ( int i = 0; i < nPoints; ++i )
   {
+#ifdef QT_ARCH_ARM
+    qreal x, y;
+    t.map( mX[i], mY[i], &x, &y );
+    mX[i] = x; mY[i] = y;
+#else
     t.map( mX[i], mY[i], &mX[i], &mY[i] );
+#endif
   }
 }
 
