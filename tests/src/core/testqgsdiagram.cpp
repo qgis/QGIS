@@ -22,7 +22,6 @@
 #include <QDesktopServices>
 #include <QPainter>
 
-#include <iostream>
 //qgis includes...
 // #include <qgisapp.h>
 #include <diagram/qgspiediagram.h>

@@ -21,7 +21,6 @@
 #include <QDir>
 #include <QDesktopServices>
 
-#include <iostream>
 //qgis includes...
 #include <qgsmapsettings.h>
 #include <qgsmaplayer.h>

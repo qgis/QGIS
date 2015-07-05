@@ -16,8 +16,6 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <iostream>
-
 #include <QApplication>
 
 #include <qgsvectorlayer.h> //defines QgsFieldMap 

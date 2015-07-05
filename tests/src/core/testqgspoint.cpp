@@ -20,7 +20,6 @@
 #include <QDir>
 #include <QDesktopServices>
 
-#include <iostream>
 //qgis includes...
 #include <qgsapplication.h>
 #include <qgsgeometry.h>

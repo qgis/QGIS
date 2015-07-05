@@ -21,7 +21,6 @@
 #include <QDir>
 #include <QDesktopServices>
 
-#include <iostream>
 //qgis includes...
 #include <qgsmaprenderer.h>
 #include <qgsmaplayer.h>
@@ -40,10 +39,11 @@ class TestSignalReceiver : public QObject
     Q_OBJECT
 
   public:
-    TestSignalReceiver() : QObject( 0 ),
-        rendererChanged( false ),
-        featureBlendMode( QPainter::CompositionMode( 0 ) ),
-        transparency( 0 )
+    TestSignalReceiver()
+        : QObject( 0 )
+        , rendererChanged( false )
+        , featureBlendMode( QPainter::CompositionMode( 0 ) )
+        , transparency( 0 )
     {}
     bool rendererChanged;
     QPainter::CompositionMode featureBlendMode;

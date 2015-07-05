@@ -18,8 +18,6 @@
 #include <QStringList>
 #include <QPainter>
 #include <QTime>
-#include <iostream>
-
 #include <QApplication>
 #include <QDesktopServices>
 
