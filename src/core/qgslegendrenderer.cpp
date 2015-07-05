@@ -24,6 +24,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgssymbolv2.h"
 #include "qgsvectorlayer.h"
+#include "qgslogger.h"
 
 #include <QPainter>
 
@@ -111,9 +112,14 @@ QSizeF QgsLegendRenderer::paintAndDetermineSize( QPainter* painter )
 
   size.rheight() = columnTop + columnMaxHeight + mSettings.boxSpace();
   size.rwidth() = point.x();
+
+  qDebug() << QString( "columnTop:%1 columnMaxHeight:%2 boxSpace:%3 => %4x%5" )
+  .arg( columnTop ).arg( columnMaxHeight ).arg( mSettings.boxSpace() ).arg( size.rheight() ).arg( size.rwidth() );
+
   if ( !mSettings.title().isEmpty() )
   {
     size.rwidth() = qMax( titleSize.width(), size.width() );
+    qDebug() << QString( "titleSize.width():%1 => width %2" ).arg( titleSize.width() ).arg( size.rwidth() );
   }
 
   // override the size if it was set by the user
@@ -122,6 +128,7 @@ QSizeF QgsLegendRenderer::paintAndDetermineSize( QPainter* painter )
     qreal w = qMax( size.width(), mLegendSize.width() );
     qreal h = qMax( size.height(), mLegendSize.height() );
     size = QSizeF( w, h );
+    qDebug() << QString( "mLegendSize %1x%2 => %3x%4" ).arg( mLegendSize.width() ).arg( mLegendSize.height() ).arg( w ).arg( h );
   }
 
   // Now we have set the correct total item width and can draw the title centered
