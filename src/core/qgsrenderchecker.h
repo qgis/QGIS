@@ -66,9 +66,9 @@ class CORE_EXPORT QgsRenderChecker
     /** Prefix where the control images are kept.
      * This will be appended to controlImagePath
       */
-    void setControlPathPrefix( const QString &theName ) { mControlPathPrefix = theName + QDir::separator(); }
+    void setControlPathPrefix( const QString &theName ) { mControlPathPrefix = theName + "/"; }
 
-    void setControlPathSuffix( const QString& theName ) { mControlPathSuffix = theName + QDir::separator(); }
+    void setControlPathSuffix( const QString& theName ) { mControlPathSuffix = theName + "/"; }
 
     /** Get an md5 hash that uniquely identifies an image */
     QString imageToHash( QString theImageFile );
@@ -129,7 +129,7 @@ class CORE_EXPORT QgsRenderChecker
     */
     bool isKnownAnomaly( QString theDiffImageFile );
 
-    /**Draws a checkboard pattern for image backgrounds, so that transparency is visible
+    /** Draws a checkboard pattern for image backgrounds, so that transparency is visible
      * without requiring a transparent background for the image
      */
     static void drawBackground( QImage* image );

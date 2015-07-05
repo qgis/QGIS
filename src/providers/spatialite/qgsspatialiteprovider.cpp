@@ -4060,6 +4060,7 @@ void QgsSpatiaLiteProvider::closeDb()
   if ( handle )
   {
     QgsSqliteHandle::closeDb( handle );
+    handle = 0;
   }
 }
 

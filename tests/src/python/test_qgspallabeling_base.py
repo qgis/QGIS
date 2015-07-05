@@ -145,8 +145,8 @@ class TestQgsPalLabeling(TestCase):
 
     @classmethod
     def removeAllLayers(cls):
-        cls._MapRegistry.removeAllMapLayers()
         cls._MapSettings.setLayers([])
+        cls._MapRegistry.removeAllMapLayers()
 
     @classmethod
     def removeMapLayer(cls, layer):
@@ -379,13 +379,17 @@ class TestPALConfig(TestQgsPalLabeling):
         TestQgsPalLabeling.setUpClass()
         cls.layer = TestQgsPalLabeling.loadFeatureLayer('point')
 
+    @classmethod
+    def tearDownClass(cls):
+        cls.removeMapLayer(cls.layer)
+
     def setUp(self):
         """Run before each test."""
         self.configTest('pal_base', 'base')
 
     def tearDown(self):
         """Run after each test."""
-        pass
+	pass
 
     def test_default_pal_disabled(self):
         # Verify PAL labeling is disabled for layer by default

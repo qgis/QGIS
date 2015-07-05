@@ -23,7 +23,7 @@ MACRO (ADD_QGIS_GRASS_TEST grass_build_version testname testsrc)
     qgis_core
     qgisgrass${grass_build_version}
   )
-  ADD_TEST(qgis_${testname}${grass_build_version} ${CMAKE_BINARY_DIR}/output/bin/qgis_${testname}${grass_build_version})
+  ADD_TEST(qgis_${testname}${grass_build_version} ${CMAKE_BINARY_DIR}/output/bin/qgis_${testname}${grass_build_version} -maxwarnings 10000)
   IF (WIN32)
     SET_PROPERTY(TEST qgis_${testname}${grass_build_version} PROPERTY
       ENVIRONMENT "PATH=${GRASS_PREFIX${grass_build_version}}/lib;$ENV{PATH}"

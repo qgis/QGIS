@@ -42,7 +42,25 @@ bool QgsFontUtils::fontFamilyOnSystem( const QString& family )
 bool QgsFontUtils::fontFamilyHasStyle( const QString& family, const QString& style )
 {
   QFontDatabase fontDB;
-  return ( fontFamilyOnSystem( family ) && fontDB.styles( family ).contains( style ) );
+  if ( !fontFamilyOnSystem( family ) )
+    return false;
+
+  if ( fontDB.styles( family ).contains( style ) )
+    return true;
+
+#ifdef Q_OS_WIN
+  QString modified( style );
+  if ( style == "Roman" )
+    modified = "Normal";
+  if ( style == "Oblique" )
+    modified = "Italic";
+  if ( style == "Bold Oblique" )
+    modified = "Bold Italic";
+  if ( fontDB.styles( family ).contains( modified ) )
+    return true;
+#endif
+
+  return false;
 }
 
 bool QgsFontUtils::fontFamilyMatchOnSystem( const QString& family, QString* chosen, bool* match )

@@ -255,9 +255,14 @@ bool QgsRenderChecker::compareImages( QString theTestName,
   }
   if ( ! theRenderedImageFile.isEmpty() )
   {
+#ifndef Q_OS_WIN
     mRenderedImageFile = theRenderedImageFile;
+#else
+    mRenderedImageFile = theRenderedImageFile.replace( "\\", "/" );
+#endif
   }
-  else if ( mRenderedImageFile.isEmpty() )
+
+  if ( mRenderedImageFile.isEmpty() )
   {
     qDebug( "QgsRenderChecker::runTest failed - Rendered Image File not set." );
     mReport = "<table>"
@@ -266,6 +271,7 @@ bool QgsRenderChecker::compareImages( QString theTestName,
               "Image File not set.</td></tr></table>\n";
     return false;
   }
+
   //
   // Load /create the images
   //
@@ -308,16 +314,16 @@ bool QgsRenderChecker::compareImages( QString theTestName,
   mReport = QString( "<script src=\"file://%1/../renderchecker.js\"></script>\n" ).arg( TEST_DATA_DIR );
   mReport += "<table>";
   mReport += "<tr><td colspan=2>";
-  mReport += QString( "Test image and result image for %1<br>"
+  mReport += QString( "<tr><td colspan=2>"
+                      "Test image and result image for %1<br>"
                       "Expected size: %2 w x %3 h (%4 pixels)<br>"
-                      "Actual   size: %5 w x %6 h (%7 pixels)" )
+                      "Actual   size: %5 w x %6 h (%7 pixels)"
+                      "</td></tr>" )
              .arg( theTestName )
              .arg( myExpectedImage.width() ).arg( myExpectedImage.height() ).arg( mMatchTarget )
              .arg( myResultImage.width() ).arg( myResultImage.height() ).arg( myPixelCount );
-
-  mReport += "</td></tr>";
-  mReport += "<tr><td colspan=2>\n";
-  mReport += QString( "Expected Duration : <= %1 (0 indicates not specified)<br>"
+  mReport += QString( "<tr><td colspan=2>\n"
+                      "Expected Duration : <= %1 (0 indicates not specified)<br>"
                       "Actual Duration : %2 ms<br></td></tr>" )
              .arg( mElapsedTimeTarget )
              .arg( mElapsedTime );
@@ -368,7 +374,7 @@ bool QgsRenderChecker::compareImages( QString theTestName,
 
   if ( mMatchTarget != myPixelCount )
   {
-    qDebug( "Test image and result image for %s are different - FAILING!", theTestName.toLocal8Bit().constData() );
+    qDebug( "Test image and result image for %s are different dimensions - FAILING!", theTestName.toLocal8Bit().constData() );
     mReport += "<tr><td colspan=3>";
     mReport += "<font color=red>Expected image and result image for " + theTestName + " are different dimensions - FAILING!</font>";
     mReport += "</td></tr>";
@@ -439,39 +445,13 @@ bool QgsRenderChecker::compareImages( QString theTestName,
   //
   // Send match result to report
   //
-  mReport += "<tr><td colspan=3>" +
-             QString::number( mMismatchCount ) + "/" +
-             QString::number( mMatchTarget ) +
-             " pixels mismatched (allowed threshold: " +
-             QString::number( theMismatchCount ) +
-             ", allowed color component tolerance: " +
-             QString::number( mColorTolerance ) + ")";
-  mReport += "</td></tr>";
+  mReport += QString( "<tr><td colspan=3>%1/%2 pixels mismatched (allowed threshold: %3, allowed color component tolerance: %4)</td></tr>" )
+             .arg( mMismatchCount ).arg( mMatchTarget ).arg( theMismatchCount ).arg( mColorTolerance );
 
   //
   // And send it to CDash
   //
   emitDashMessage( "Mismatch Count", QgsDartMeasurement::Integer, QString( "%1/%2" ).arg( mMismatchCount ).arg( mMatchTarget ) );
-
-  bool myAnomalyMatchFlag = isKnownAnomaly( myDiffImageFile );
-
-  if ( myAnomalyMatchFlag )
-  {
-    mReport += "<tr><td colspan=3>"
-               "Difference image matched a known anomaly - passing test! "
-               "</td></tr>";
-    return true;
-  }
-  else
-  {
-    mReport += "<tr><td colspan=3>"
-               "</td></tr>";
-    emitDashMessage( "No Anomalies Match", QgsDartMeasurement::Text, "Difference image did not match any known anomaly."
-                     " If you feel the difference image should be considered an anomaly "
-                     "you can do something like this\n"
-                     "cp " + myDiffImageFile  + " ../tests/testdata/control_images/" + theTestName +
-                     "/<imagename>.{wld,png}" );
-  }
 
   if ( mMismatchCount <= theMismatchCount )
   {
@@ -494,12 +474,27 @@ bool QgsRenderChecker::compareImages( QString theTestName,
       return true;
     }
   }
-  else
+
+  bool myAnomalyMatchFlag = isKnownAnomaly( myDiffImageFile );
+  if ( myAnomalyMatchFlag )
   {
-    mReport += "<tr><td colspan = 3>\n";
-    mReport += "<font color=red>Test image and result image for " + theTestName + " are mismatched</font><br>";
-    mReport += "</td></tr>";
-    mReport += myImagesString;
-    return false;
+    mReport += "<tr><td colspan=3>"
+               "Difference image matched a known anomaly - passing test! "
+               "</td></tr>";
+    return true;
   }
+
+  mReport += "<tr><td colspan=3></td></tr>";
+  emitDashMessage( "Image mismatch", QgsDartMeasurement::Text, "Difference image did not match any known anomaly or mask."
+                   " If you feel the difference image should be considered an anomaly "
+                   "you can do something like this\n"
+                   "cp '" + myDiffImageFile + "' " + controlImagePath() + mControlName +
+                   "/\nIf it should be included in the mask run\n"
+                   "scripts/generate_test_mask_image.py '" + mExpectedImageFile + "' '" + mRenderedImageFile + "'\n" );
+
+  mReport += "<tr><td colspan = 3>\n";
+  mReport += "<font color=red>Test image and result image for " + theTestName + " are mismatched</font><br>";
+  mReport += "</td></tr>";
+  mReport += myImagesString;
+  return false;
 }

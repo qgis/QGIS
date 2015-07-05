@@ -68,7 +68,7 @@ MACRO (ADD_QGIS_TEST testname testsrc)
     ${GEOS_LIBRARY}
     ${GDAL_LIBRARY}
     qgis_core)
-  ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname})
+  ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname} -maxwarnings 10000)
   #SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES
   #  INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${QGIS_LIB_DIR}
   #  INSTALL_RPATH_USE_LINK_PATH true )

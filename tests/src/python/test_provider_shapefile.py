@@ -51,8 +51,8 @@ class TestPyQgsPostgresProvider(TestCase, ProviderTestCase):
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
-        shutil.rmtree(cls.basetestpath)
-        shutil.rmtree(cls.repackfilepath)
+        shutil.rmtree(cls.basetestpath, True)
+        shutil.rmtree(cls.repackfilepath, True)
 
     def testUnique(self):
         """

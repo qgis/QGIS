@@ -20,6 +20,8 @@
 #include "qgscompositionchecker.h"
 #include "qgsdatadefined.h"
 #include "qgsexpression.h"
+#include "qgsapplication.h"
+
 #include <QObject>
 #include <QtTest/QtTest>
 
@@ -28,7 +30,10 @@ class TestQgsComposerObject : public QObject
     Q_OBJECT
 
   public:
-    TestQgsComposerObject();
+    TestQgsComposerObject()
+        : mComposition( 0 )
+    {
+    }
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -44,21 +49,18 @@ class TestQgsComposerObject : public QObject
 
   private:
     bool renderCheck( QString testName, QImage &image, int mismatchCount = 0 );
-    QgsComposition* mComposition;
-    QgsMapSettings mMapSettings;
+    QgsComposition *mComposition;
     QString mReport;
 
 };
 
-TestQgsComposerObject::TestQgsComposerObject()
-    : mComposition( NULL )
-{
-
-}
-
 void TestQgsComposerObject::initTestCase()
 {
-  mComposition = new QgsComposition( mMapSettings );
+  QgsApplication::init();
+  QgsApplication::initQgis();
+
+  QgsMapSettings mapSettings;
+  mComposition = new QgsComposition( mapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   mReport = "<h1>Composer Object Tests</h1>\n";
@@ -80,12 +82,10 @@ void TestQgsComposerObject::cleanupTestCase()
 
 void TestQgsComposerObject::init()
 {
-
 }
 
 void TestQgsComposerObject::cleanup()
 {
-
 }
 
 void TestQgsComposerObject::creation()

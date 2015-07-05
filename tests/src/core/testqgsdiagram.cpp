@@ -50,21 +50,20 @@ class TestQgsDiagram : public QObject
   public:
     TestQgsDiagram()
         : mTestHasError( false )
+        , mMapSettings( 0 )
         , mPointsLayer( 0 )
     {}
 
   private:
     bool mTestHasError;
-    QgsMapSettings mMapSettings;
-    QgsVectorLayer * mPointsLayer;
+    QgsMapSettings *mMapSettings;
+    QgsVectorLayer *mPointsLayer;
     QString mTestDataDir;
     QString mReport;
 
     bool imageCheck( QString theTestType );
 
   private slots:
-
-
     // will be called before the first testfunction is executed.
     void initTestCase()
     {
@@ -72,6 +71,8 @@ class TestQgsDiagram : public QObject
       QgsApplication::init();
       QgsApplication::initQgis();
       QgsApplication::showSettings();
+
+      mMapSettings = new QgsMapSettings();
 
       //create some objects that will be used in all tests...
 
@@ -94,7 +95,7 @@ class TestQgsDiagram : public QObject
         QList<QgsMapLayer *>() << mPointsLayer );
 
       // Create map composition to draw on
-      mMapSettings.setLayers( QStringList() << mPointsLayer->id() );
+      mMapSettings->setLayers( QStringList() << mPointsLayer->id() );
 
       mReport += "<h1>Diagram Tests</h1>\n";
     }
@@ -103,6 +104,9 @@ class TestQgsDiagram : public QObject
     void cleanupTestCase()
     {
       QgsApplication::exitQgis();
+
+      delete mMapSettings;
+
       QString myReportFile = QDir::tempPath() + "/qgistest.html";
       QFile myFile( myReportFile );
       if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
@@ -215,12 +219,12 @@ bool TestQgsDiagram::imageCheck( QString theTestType )
   //ensure the rendered output matches our control image
 
   QgsRectangle extent( -126, 23, -70, 47 );
-  mMapSettings.setExtent( extent );
-  mMapSettings.setFlag( QgsMapSettings::ForceVectorOutput );
-  mMapSettings.setOutputDpi( 96 );
+  mMapSettings->setExtent( extent );
+  mMapSettings->setFlag( QgsMapSettings::ForceVectorOutput );
+  mMapSettings->setOutputDpi( 96 );
   QgsMultiRenderChecker myChecker;
   myChecker.setControlName( "expected_" + theTestType );
-  myChecker.setMapSettings( mMapSettings );
+  myChecker.setMapSettings( *mMapSettings );
   myChecker.setColorTolerance( 15 );
   bool myResultFlag = myChecker.runTest( theTestType, 200 );
   mReport += myChecker.report();

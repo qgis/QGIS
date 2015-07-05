@@ -18,6 +18,8 @@
 #include "qgscomposition.h"
 #include "qgscomposermodel.h"
 #include "qgscomposerlabel.h"
+#include "qgsapplication.h"
+
 #include <QObject>
 #include <QtTest/QtTest>
 #include <QList>
@@ -61,7 +63,6 @@ class TestQgsComposerModel : public QObject
 
   private:
     QgsComposition* mComposition;
-    QgsMapSettings mMapSettings;
     QgsComposerLabel* mItem1;
     QgsComposerLabel* mItem2;
     QgsComposerLabel* mItem3;
@@ -69,7 +70,12 @@ class TestQgsComposerModel : public QObject
 
 void TestQgsComposerModel::initTestCase()
 {
-  mComposition = new QgsComposition( mMapSettings );
+  QgsApplication::init();
+  QgsApplication::initQgis();
+
+  QgsMapSettings mapSettings;
+  mComposition = new QgsComposition( mapSettings );
+
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 }
 

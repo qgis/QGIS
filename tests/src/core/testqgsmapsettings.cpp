@@ -15,23 +15,33 @@
 #include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
-//header for class being tested
-#include <qgsrectangle.h>
-#include <qgsmapsettings.h>
-#include <qgspoint.h>
 #include <math.h>
+
+//header for class being tested
+#include "qgsrectangle.h"
+#include "qgsmapsettings.h"
+#include "qgspoint.h"
 #include "qgslogger.h"
+#include "qgsapplication.h"
 
 class TestQgsMapSettings: public QObject
 {
     Q_OBJECT
   private slots:
+    void initTestCase();
     void visibleExtent();
     void mapUnitsPerPixel();
     void visiblePolygon();
   private:
     QString toString( const QPolygonF& p, int decimalPlaces = 2 ) const;
 };
+
+void TestQgsMapSettings::initTestCase()
+{
+  QgsApplication::init();
+  QgsApplication::initQgis();
+  QgsApplication::showSettings();
+}
 
 QString TestQgsMapSettings::toString( const QPolygonF& p, int dec ) const
 {

@@ -53,7 +53,17 @@ class TestQgsMapRenderer : public QObject
     Q_OBJECT
 
   public:
-    TestQgsMapRenderer();
+    TestQgsMapRenderer()
+        : mError( QgsVectorFileWriter::NoError )
+        , mMapSettings( 0 )
+        , mpPolysLayer( 0 )
+    {
+    }
+
+    ~TestQgsMapRenderer()
+    {
+      delete mMapSettings;
+    }
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -69,17 +79,11 @@ class TestQgsMapRenderer : public QObject
     QgsVectorFileWriter::WriterError mError;
     QgsCoordinateReferenceSystem mCRS;
     QgsFields mFields;
-    QgsMapSettings mMapSettings;
+    QgsMapSettings *mMapSettings;
     QgsMapLayer * mpPolysLayer;
     QString mReport;
 };
 
-TestQgsMapRenderer::TestQgsMapRenderer()
-    : mError( QgsVectorFileWriter::NoError )
-    , mpPolysLayer( NULL )
-{
-
-}
 
 void TestQgsMapRenderer::initTestCase()
 {
@@ -89,6 +93,8 @@ void TestQgsMapRenderer::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsApplication::showSettings();
+
+  mMapSettings = new QgsMapSettings();
 
   //create some objects that will be used in all tests...
   mEncoding = "UTF-8";
@@ -175,7 +181,7 @@ void TestQgsMapRenderer::initTestCase()
   // Register the layer with the registry
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << mpPolysLayer );
   // add the test layer to the maprender
-  mMapSettings.setLayers( QStringList() << mpPolysLayer->id() );
+  mMapSettings->setLayers( QStringList() << mpPolysLayer->id() );
   mReport += "<h1>Map Render Tests</h1>\n";
 }
 
@@ -196,11 +202,11 @@ void TestQgsMapRenderer::cleanupTestCase()
 
 void TestQgsMapRenderer::performanceTest()
 {
-  mMapSettings.setExtent( mpPolysLayer->extent() );
+  mMapSettings->setExtent( mpPolysLayer->extent() );
   QgsRenderChecker myChecker;
   myChecker.setControlName( "expected_maprender" );
-  mMapSettings.setFlag( QgsMapSettings::Antialiasing );
-  myChecker.setMapSettings( mMapSettings );
+  mMapSettings->setFlag( QgsMapSettings::Antialiasing );
+  myChecker.setMapSettings( *mMapSettings );
   myChecker.setColorTolerance( 5 );
   bool myResultFlag = myChecker.runTest( "maprender" );
   mReport += myChecker.report();

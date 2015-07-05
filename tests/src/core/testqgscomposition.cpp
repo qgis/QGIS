@@ -45,15 +45,13 @@ class TestQgsComposition : public QObject
     void pageIsEmpty(); //test the pageIsEmpty method
 
   private:
-    QgsComposition* mComposition;
-    QgsMapSettings mMapSettings;
+    QgsComposition *mComposition;
     QString mReport;
 };
 
 TestQgsComposition::TestQgsComposition()
-    : mComposition( NULL )
+    : mComposition( 0 )
 {
-
 }
 
 void TestQgsComposition::initTestCase()
@@ -61,10 +59,12 @@ void TestQgsComposition::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
+  QgsMapSettings mapSettings;
+
   //create composition
-  mMapSettings.setCrsTransformEnabled( true );
-  mMapSettings.setMapUnits( QGis::Meters );
-  mComposition = new QgsComposition( mMapSettings );
+  mapSettings.setCrsTransformEnabled( true );
+  mapSettings.setMapUnits( QGis::Meters );
+  mComposition = new QgsComposition( mapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposition->setNumPages( 3 );
 

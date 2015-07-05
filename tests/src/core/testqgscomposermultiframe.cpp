@@ -20,6 +20,8 @@
 #include "qgscomposerlabel.h"
 #include "qgscomposition.h"
 #include "qgscompositionchecker.h"
+#include "qgsapplication.h"
+
 #include <QObject>
 #include <QtTest/QtTest>
 
@@ -43,7 +45,6 @@ class TestQgsComposerMultiFrame : public QObject
 
   private:
     QgsComposition* mComposition;
-    QgsMapSettings mMapSettings;
     QString mReport;
 };
 
@@ -55,7 +56,11 @@ TestQgsComposerMultiFrame::TestQgsComposerMultiFrame()
 
 void TestQgsComposerMultiFrame::initTestCase()
 {
-  mComposition = new QgsComposition( mMapSettings );
+  QgsApplication::init();
+  QgsApplication::initQgis();
+
+  QgsMapSettings mapSettings;
+  mComposition = new QgsComposition( mapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   mReport = "<h1>Composer MultiFrame Tests</h1>\n";

@@ -311,8 +311,17 @@ class TestQgsDelimitedTextProviderXY(TestCase, ProviderTestCase):
         srcpath = os.path.join(TEST_DATA_DIR, 'provider')
         cls.basetestfile = os.path.join(srcpath, 'delimited_xy.csv')
 
-        cls.vl = QgsVectorLayer(u'{}?crs=epsg:4326&type=csv&xField=X&yField=Y&spatialIndex=no&subsetIndex=no&watchFile=no'.format(cls.basetestfile), u'test', u'delimitedtext')
-        assert (cls.vl.isValid())
+        url = QUrl.fromLocalFile(cls.basetestfile)
+        url.addQueryItem( "crs", "epsg:4326" )
+        url.addQueryItem( "type", "csv" )
+        url.addQueryItem( "xField", "X" )
+        url.addQueryItem( "yField", "Y" )
+        url.addQueryItem( "spatialIndex", "no" )
+        url.addQueryItem( "subsetIndex", "no" )
+        url.addQueryItem( "watchFile", "no" )
+
+        cls.vl = QgsVectorLayer( url.toString(), u'test', u'delimitedtext')
+        assert cls.vl.isValid(), "{} is invalid".format(cls.basetestfile)
         cls.provider = cls.vl.dataProvider()
 
     @classmethod
@@ -328,8 +337,16 @@ class TestQgsDelimitedTextProviderWKT(TestCase, ProviderTestCase):
         srcpath = os.path.join(TEST_DATA_DIR, 'provider')
         cls.basetestfile = os.path.join(srcpath, 'delimited_wkt.csv')
 
-        cls.vl = QgsVectorLayer(u'{}?crs=epsg:4326&type=csv&wktField=wkt&spatialIndex=no&subsetIndex=no&watchFile=no'.format(cls.basetestfile), u'test', u'delimitedtext')
-        assert (cls.vl.isValid())
+        url = QUrl.fromLocalFile(cls.basetestfile)
+        url.addQueryItem( "crs", "epsg:4326" )
+        url.addQueryItem( "type", "csv" )
+        url.addQueryItem( "wktField", "wkt" )
+        url.addQueryItem( "spatialIndex", "no" )
+        url.addQueryItem( "subsetIndex", "no" )
+        url.addQueryItem( "watchFile", "no" )
+
+        cls.vl = QgsVectorLayer( url.toString(), u'test', u'delimitedtext')
+        assert cls.vl.isValid(), "{} is invalid".format(cls.basetestfile)
         cls.provider = cls.vl.dataProvider()
 
     @classmethod
@@ -552,6 +569,8 @@ class TestQgsDelimitedTextProviderOther(TestCase):
     def test_029_file_watcher(self):
         # Testing file watcher
         (filehandle,filename) = tempfile.mkstemp()
+        if os.name == "nt":
+            filename = filename.replace("\\", "/")
         with os.fdopen(filehandle,"w") as f:
             f.write("id,name\n1,rabbit\n2,pooh\n")
 
@@ -570,7 +589,11 @@ class TestQgsDelimitedTextProviderOther(TestCase):
             QCoreApplication.instance().processEvents()
 
         def deletefile( layer ):
-            os.remove(filename)
+            try:
+                os.remove(filename)
+            except:
+                file(filename,"w").close()
+                assert os.path.getsize(filename)==0, "removal and truncation of {} failed".format( filename )
             # print "Deleted file - sleeping"
             time.sleep(1)
             QCoreApplication.instance().processEvents()
