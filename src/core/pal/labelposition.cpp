@@ -229,7 +229,7 @@ namespace pal
 
   void LabelPosition::print()
   {
-    std::cout << feature->getLayer()->getName() << "/" << feature->getUID() << "/" << id;
+    //  std::cout << feature->getLayer()->getName() << "/" << feature->getUID() << "/" << id;
     std::cout << " cost: " << cost;
     std::cout << " alpha" << alpha << std::endl;
     std::cout << x[0] << ", " << y[0] << std::endl;
@@ -349,7 +349,7 @@ namespace pal
   {
     if ( cost >= 1 )
     {
-      std::cout << " Warning: lp->cost == " << cost << " (from feat: " << feature->getUID() << "/" << getLayerName() << ")" << std::endl;
+      //   std::cout << " Warning: lp->cost == " << cost << " (from feat: " << feature->getUID() << "/" << getLayerName() << ")" << std::endl;
       cost -= int ( cost ); // label cost up to 1
     }
   }
@@ -386,7 +386,7 @@ namespace pal
     }
   }
 
-  char* LabelPosition::getLayerName() const
+  QString LabelPosition::getLayerName() const
   {
     return feature->getLayer()->name;
   }

@@ -40,7 +40,6 @@
 #include "pal.h"
 #include "palstat.h"
 #include "layer.h"
-#include "linkedlist.hpp"
 #include "rtree.hpp"
 #include "feature.h"
 #include "geomfunction.h"
@@ -62,7 +61,7 @@ namespace pal
     }
   }
 
-  Problem::Problem() : nbLabelledLayers( 0 ), labelledLayersName( NULL ), nblp( 0 ), all_nblp( 0 ), nbft( 0 ), displayAll( false ),
+  Problem::Problem() : nbLabelledLayers( 0 ), nblp( 0 ), all_nblp( 0 ), nbft( 0 ), displayAll( false ),
       scale( 0 ), labelPositionCost( NULL ), nbOlap( NULL ),
       labelpositions( NULL ), featStartId( NULL ), featNbLp( NULL ), inactiveCost( NULL ), sol( NULL ), nbActive( 0 ), nbOverlap( 0.0 ),
       pal( NULL )
@@ -95,11 +94,6 @@ namespace pal
       delete[] featStartId;
     if ( featNbLp )
       delete[] featNbLp;
-
-    for ( i = 0; i < nbLabelledLayers; i++ )
-      delete[] labelledLayersName[i];
-
-    delete[] labelledLayersName;
 
     for ( i = 0; i < all_nblp; i++ )
       delete labelpositions[i];
@@ -638,7 +632,7 @@ namespace pal
 
   typedef struct
   {
-    LinkedList<int> *queue;
+    QLinkedList<int> *queue;
     int *isIn;
     LabelPosition *lp;
   } SubPartContext;
@@ -646,13 +640,13 @@ namespace pal
   bool subPartCallback( LabelPosition *lp, void *ctx )
   {
     int *isIn = (( SubPartContext* ) ctx )->isIn;
-    LinkedList<int> *queue = (( SubPartContext* ) ctx )->queue;
+    QLinkedList<int> *queue = (( SubPartContext* ) ctx )->queue;
 
 
     int id = lp->getProblemFeatureId();
     if ( !isIn[id] && lp->isInConflict((( SubPartContext* ) ctx )->lp ) )
     {
-      queue->push_back( id );
+      queue->append( id );
       isIn[id] = 1;
     }
 
@@ -662,8 +656,8 @@ namespace pal
   /* Select a sub part, expected size of r, from seed */
   SubPart * Problem::subPart( int r, int featseed, int *isIn )
   {
-    LinkedList<int> *queue = new LinkedList<int> ( intCompare );
-    LinkedList<int> *ri = new LinkedList<int> ( intCompare );
+    QLinkedList<int> *queue = new QLinkedList<int>;
+    QLinkedList<int> *ri = new QLinkedList<int>;
 
     int *sub;
 
@@ -682,15 +676,15 @@ namespace pal
     context.queue = queue;
     context.isIn = isIn;
 
-    queue->push_back( featseed );
+    queue->append( featseed );
     isIn[featseed] = 1;
 
     LabelPosition *lp;
 
     while ( ri->size() < r && queue->size() > 0 )
     {
-      id = queue->pop_front();
-      ri->push_back( id );
+      id = queue->takeFirst();
+      ri->append( id );
 
       featS = featStartId[id];
       p = featNbLp[id];
@@ -715,14 +709,14 @@ namespace pal
 
     while ( queue->size() > 0 )
     {
-      sub[i] = queue->pop_front();
+      sub[i] = queue->takeFirst();
       isIn[sub[i]] = 0;
       i++;
     }
 
     while ( ri->size() > 0 )
     {
-      sub[i] = ri->pop_front();
+      sub[i] = ri->takeFirst();
       isIn[sub[i]] = 0;
       i++;
     }
@@ -1273,8 +1267,8 @@ namespace pal
     int *featWrap;
     int *feat;
     int borderSize;
-    LinkedList<ElemTrans*> *currentChain;
-    LinkedList<int> *conflicts;
+    QLinkedList<ElemTrans*> *currentChain;
+    QLinkedList<int> *conflicts;
     double *delta_tmp;
     double *inactiveCost;
 
@@ -1337,23 +1331,21 @@ namespace pal
       }
 
       // is there any cycles ?
-      Cell<ElemTrans*> *cur = ctx->currentChain->getFirst();
-
-      while ( cur )
+      QLinkedList< ElemTrans* >::iterator cur;
+      for ( cur = ctx->currentChain->begin(); cur != ctx->currentChain->end(); ++cur )
       {
-        if ( cur->item->feat == feat )
+        if (( *cur )->feat == feat )
         {
 #ifdef _DEBUG_FULL_
           std::cout << "Cycle into chain (throw) !" << std::endl;
 #endif
           throw - 1;
         }
-        cur = cur->next;
       }
 
-      if ( !ctx->conflicts->isIn( feat ) )
+      if ( !ctx->conflicts->contains( feat ) )
       {
-        ctx->conflicts->push_back( feat );
+        ctx->conflicts->append( feat );
         *ctx->delta_tmp += lp->getCost() + ctx->inactiveCost[rfeat];
       }
     }
@@ -1388,8 +1380,8 @@ namespace pal
 
     int seedNbLp;
 
-    LinkedList<ElemTrans*> *currentChain = new LinkedList<ElemTrans*> ( ptrETCompare );
-    LinkedList<int> *conflicts = new LinkedList<int> ( intCompare );
+    QLinkedList<ElemTrans*> *currentChain = new QLinkedList<ElemTrans*>;
+    QLinkedList<int> *conflicts = new QLinkedList<int>;
 
     int *tmpsol = new int[subSize];
     memcpy( tmpsol, sol, sizeof( int ) *subSize );
@@ -1476,15 +1468,15 @@ namespace pal
                   retainedChain->degree = currentChain->size() + 1;
                   retainedChain->feat  = new int[retainedChain->degree]; // HERE
                   retainedChain->label = new int[retainedChain->degree]; // HERE
-                  Cell<ElemTrans*> *current = currentChain->getFirst();
+                  QLinkedList< ElemTrans* >::iterator current = currentChain->begin();
                   ElemTrans* move;
                   j = 0;
-                  while ( current )
+                  while ( current != currentChain->end() )
                   {
-                    move = current->item;
+                    move = *current;
                     retainedChain->feat[j]  = move->feat;
                     retainedChain->label[j] = move->new_label;
-                    current = current->next;
+                    current++;
                     j++;
                   }
                   retainedChain->feat[j] = seed;
@@ -1500,11 +1492,11 @@ namespace pal
                 {
                   delta_min = delta_tmp;
                   retainedLabel = lid;
-                  next_seed =  conflicts->pop_front();
+                  next_seed =  conflicts->takeFirst();
                 }
                 else
                 {
-                  conflicts->pop_front();
+                  conflicts->takeFirst();
                 }
               }
               else
@@ -1515,15 +1507,15 @@ namespace pal
                 newChain->degree = currentChain->size() + 1 + conflicts->size();
                 newChain->feat  = new int[newChain->degree]; // HERE
                 newChain->label = new int[newChain->degree]; // HERE
-                Cell<ElemTrans*> *current = currentChain->getFirst();
+                QLinkedList<ElemTrans*>::iterator current = currentChain->begin();
                 ElemTrans* move;
                 j = 0;
-                while ( current )
+                while ( current != currentChain->end() )
                 {
-                  move = current->item;
+                  move = *current;
                   newChain->feat[j]  = move->feat;
                   newChain->label[j] = move->new_label;
-                  current = current->next;
+                  current++;
                   j++;
                 }
 
@@ -1535,7 +1527,7 @@ namespace pal
 
                 while ( conflicts->size() > 0 )
                 {
-                  int ftid = conflicts->pop_front();
+                  int ftid = conflicts->takeFirst();
                   newChain->feat[j] = ftid;
                   newChain->label[j] = -1;
                   newChain->delta += inactiveCost[sub[ftid]];
@@ -1573,15 +1565,15 @@ namespace pal
                 retainedChain->degree = currentChain->size() + 1;
                 retainedChain->feat  = new int[retainedChain->degree]; // HERE
                 retainedChain->label = new int[retainedChain->degree]; // HERE
-                Cell<ElemTrans*> *current = currentChain->getFirst();
+                QLinkedList<ElemTrans*>::iterator current = currentChain->begin();
                 ElemTrans* move;
                 j = 0;
-                while ( current )
+                while ( current != currentChain->end() )
                 {
-                  move = current->item;
+                  move = *current;
                   retainedChain->feat[j]  = move->feat;
                   retainedChain->label[j] = move->new_label;
-                  current = current->next;
+                  current++;
                   j++;
                 }
                 retainedChain->feat[j] = seed;
@@ -1598,8 +1590,7 @@ namespace pal
 #else
           Q_UNUSED( i );
 #endif
-          while ( conflicts->size() > 0 )
-            conflicts->pop_front();
+          conflicts->clear();
         }
       } // end foreach labelposition
 
@@ -1620,7 +1611,7 @@ namespace pal
         et->feat  = seed;
         et->old_label = tmpsol[seed];
         et->new_label = retainedLabel;
-        currentChain->push_back( et );
+        currentChain->append( et );
 
         if ( et->old_label != -1 )
         {
@@ -1640,7 +1631,7 @@ namespace pal
 
     while ( currentChain->size() > 0 )
     {
-      ElemTrans* et =  currentChain->pop_front();
+      ElemTrans* et =  currentChain->takeFirst();
 
       if ( et->new_label != -1 )
       {
@@ -1685,8 +1676,8 @@ namespace pal
 
     int seedNbLp;
 
-    LinkedList<ElemTrans*> *currentChain = new LinkedList<ElemTrans*> ( ptrETCompare );
-    LinkedList<int> *conflicts = new LinkedList<int> ( intCompare );
+    QLinkedList<ElemTrans*> *currentChain = new QLinkedList<ElemTrans*>;
+    QLinkedList<int> *conflicts = new QLinkedList<int>;
 
     int *tmpsol = new int[nbft];
     memcpy( tmpsol, sol->s, sizeof( int ) *nbft );
@@ -1763,15 +1754,15 @@ namespace pal
                   retainedChain->degree = currentChain->size() + 1;
                   retainedChain->feat  = new int[retainedChain->degree];
                   retainedChain->label = new int[retainedChain->degree];
-                  Cell<ElemTrans*> *current = currentChain->getFirst();
+                  QLinkedList<ElemTrans*>::iterator current = currentChain->begin();
                   ElemTrans* move;
                   j = 0;
-                  while ( current )
+                  while ( current != currentChain->end() )
                   {
-                    move = current->item;
+                    move = *current;
                     retainedChain->feat[j]  = move->feat;
                     retainedChain->label[j] = move->new_label;
-                    current = current->next;
+                    current++;
                     j++;
                   }
                   retainedChain->feat[j] = seed;
@@ -1787,11 +1778,11 @@ namespace pal
                 {
                   delta_min = delta_tmp;
                   retainedLabel = lid;
-                  next_seed =  conflicts->pop_front();
+                  next_seed =  conflicts->takeFirst();
                 }
                 else
                 {
-                  conflicts->pop_front();
+                  conflicts->takeFirst();
                 }
               }
               else
@@ -1802,16 +1793,16 @@ namespace pal
                 newChain->degree = currentChain->size() + 1 + conflicts->size();
                 newChain->feat  = new int[newChain->degree];
                 newChain->label = new int[newChain->degree];
-                Cell<ElemTrans*> *current = currentChain->getFirst();
+                QLinkedList<ElemTrans*>::iterator current = currentChain->begin();
                 ElemTrans* move;
                 j = 0;
 
-                while ( current )
+                while ( current != currentChain->end() )
                 {
-                  move = current->item;
+                  move = *current;
                   newChain->feat[j]  = move->feat;
                   newChain->label[j] = move->new_label;
-                  current = current->next;
+                  current++;
                   j++;
                 }
 
@@ -1824,7 +1815,7 @@ namespace pal
                 // hide all conflictual candidates
                 while ( conflicts->size() > 0 )
                 {
-                  int ftid = conflicts->pop_front();
+                  int ftid = conflicts->takeFirst();
                   newChain->feat[j] = ftid;
                   newChain->label[j] = -1;
                   newChain->delta += inactiveCost[ftid];
@@ -1863,15 +1854,15 @@ namespace pal
                 retainedChain->degree = currentChain->size() + 1;
                 retainedChain->feat  = new int[retainedChain->degree];
                 retainedChain->label = new int[retainedChain->degree];
-                Cell<ElemTrans*> *current = currentChain->getFirst();
+                QLinkedList<ElemTrans*>::iterator current = currentChain->begin();
                 ElemTrans* move;
                 j = 0;
-                while ( current )
+                while ( current != currentChain->end() )
                 {
-                  move = current->item;
+                  move = *current;
                   retainedChain->feat[j]  = move->feat;
                   retainedChain->label[j] = move->new_label;
-                  current = current->next;
+                  current++;
                   j++;
                 }
                 retainedChain->feat[j] = seed;
@@ -1888,8 +1879,7 @@ namespace pal
 #else
           Q_UNUSED( i );
 #endif
-          while ( conflicts->size() > 0 )
-            conflicts->pop_front();
+          conflicts->clear();
         }
       } // end foreach labelposition
 
@@ -1908,7 +1898,7 @@ namespace pal
         et->feat  = seed;
         et->old_label = tmpsol[seed];
         et->new_label = retainedLabel;
-        currentChain->push_back( et );
+        currentChain->append( et );
 
         if ( et->old_label != -1 )
         {
@@ -1930,7 +1920,7 @@ namespace pal
 
     while ( currentChain->size() > 0 )
     {
-      ElemTrans* et =  currentChain->pop_front();
+      ElemTrans* et =  currentChain->takeFirst();
 
       if ( et->new_label != -1 )
       {
@@ -2153,8 +2143,6 @@ namespace pal
     Triple **candidates = new Triple*[probSize];
     Triple **candidatesUnsorted = new Triple*[probSize];
 
-    LinkedList<int> *conflicts = new LinkedList<int> ( intCompare );
-
     for ( i = 0; i < subSize; i++ )
     {
       cur_cost += compute_feature_cost( part, i, sol[i], &featOv );
@@ -2345,8 +2333,6 @@ namespace pal
 
     memcpy( sol, best_sol, sizeof( int ) *subSize );
 
-    delete conflicts;
-
     for ( i = 0; i < probSize; i++ )
       delete candidates[i];
 
@@ -2365,8 +2351,8 @@ namespace pal
 
   bool checkCallback( LabelPosition *lp, void *ctx )
   {
-    LinkedList<LabelPosition*> *list = ( LinkedList<LabelPosition*>* ) ctx;
-    list->push_back( lp );
+    QLinkedList<LabelPosition*> *list = ( QLinkedList<LabelPosition*>* ) ctx;
+    list->append( lp );
 
     return true;
   }
@@ -2384,7 +2370,7 @@ namespace pal
     amax[0] = bbox[2];
     amax[1] = bbox[3];
 
-    LinkedList<LabelPosition*> *list = new LinkedList<LabelPosition*> ( ptrLPosCompare );
+    QLinkedList<LabelPosition*> *list = new QLinkedList<LabelPosition*>;
 
     candidates_sol->Search( amin, amax, checkCallback, ( void* ) list );
 
@@ -2406,7 +2392,7 @@ namespace pal
 
     while ( list->size() > 0 )
     {
-      LabelPosition *lp = list->pop_front();
+      LabelPosition *lp = list->takeFirst();
       int probFeatId = lp->getProblemFeatureId();
       if ( solution[probFeatId] >= 0 )
       {
@@ -2666,19 +2652,17 @@ namespace pal
     stats->nbLabelledObjects = 0;
 
     stats->nbLayers = nbLabelledLayers;
-    stats->layersName = new char*[stats->nbLayers];
     stats->layersNbObjects = new int[stats->nbLayers];
     stats->layersNbLabelledObjects = new int[stats->nbLayers];
 
     for ( i = 0; i < stats->nbLayers; i++ )
     {
-      stats->layersName[i] = new char[strlen( labelledLayersName[i] ) + 1];
-      strcpy( stats->layersName[i], labelledLayersName[i] );
+      stats->layersName << labelledLayersName[i];
       stats->layersNbObjects[i] = 0;
       stats->layersNbLabelledObjects[i] = 0;
     }
 
-    char *lyrName;
+    QString lyrName;
     int k;
     for ( i = 0; i < nbft; i++ )
     {
@@ -2686,7 +2670,7 @@ namespace pal
       k = -1;
       for ( j = 0; j < stats->nbLayers; j++ )
       {
-        if ( strcmp( lyrName, stats->layersName[j] ) == 0 )
+        if ( lyrName == stats->layersName[j] )
         {
           k = j;
           break;
@@ -2703,7 +2687,7 @@ namespace pal
       }
       else
       {
-        std::cerr << "Error unknown layers while computing stats: " << lyrName << std::endl;
+        //std::cerr << "Error unknown layers while computing stats: " << lyrName << std::endl;
       }
     }
 

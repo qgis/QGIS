@@ -35,9 +35,9 @@
 #include <cmath>
 #include <stddef.h>
 #include <geos_c.h>
+#include <QLinkedList>
 
 #include "rtree.hpp"
-#include "linkedlist.hpp"
 
 namespace pal
 {
@@ -109,13 +109,13 @@ namespace pal
        * split a concave shape into several convex shapes
        *
        */
-      static void splitPolygons( LinkedList<PointSet*> *shapes_toProcess,
-                                 LinkedList<PointSet*> *shapes_final,
-                                 double xrm, double yrm, char *uid );
+      static void splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
+                                 QLinkedList<PointSet *> &shapes_final,
+                                 double xrm, double yrm, const QString &uid );
 
 
 
-      /** 
+      /**
        * \brief return the minimum distance bw this and the point (px,py)
        *
        * compute the minimum distance bw the point (px,py) and this.

@@ -34,7 +34,7 @@
 #include <iostream>
 #endif
 
-#include <qglobal.h>
+#include <QLinkedList>
 
 #include <cmath>
 #include <cstring>
@@ -42,7 +42,6 @@
 
 #include "pal.h"
 #include "layer.h"
-#include "linkedlist.hpp"
 #include "feature.h"
 #include "geomfunction.h"
 #include "labelposition.h"
@@ -55,13 +54,14 @@
 
 namespace pal
 {
-  Feature::Feature( Layer* l, const char* geom_id, PalGeometry* userG, double lx, double ly )
+  Feature::Feature( Layer* l, const QString &geom_id, PalGeometry* userG, double lx, double ly )
       : layer( l )
       , userGeom( userG )
       , label_x( lx )
       , label_y( ly )
       , distlabel( 0 )
       , labelInfo( NULL )
+      , uid( geom_id )
       , fixedPos( false )
       , fixedPosX( 0.0 )
       , fixedPosY( 0.0 )
@@ -77,14 +77,11 @@ namespace pal
       , alwaysShow( false )
   {
     assert( finite( lx ) && finite( ly ) );
-
-    uid = new char[strlen( geom_id ) +1];
-    strcpy( uid, geom_id );
   }
 
   Feature::~Feature()
   {
-    delete[] uid;
+
   }
 
   ////////////
@@ -260,7 +257,7 @@ namespace pal
   }
 
 
-  const char * FeaturePart::getUID()
+  QString FeaturePart::getUID() const
   {
     return f->uid;
   }
@@ -573,11 +570,7 @@ namespace pal
     if ( flags == 0 )
       flags = FLAG_ON_LINE; // default flag
 
-    //LinkedList<PointSet*> *shapes_final;
-
-    //shapes_final     = new LinkedList<PointSet*>(ptrPSetCompare);
-
-    LinkedList<LabelPosition*> *positions = new LinkedList<LabelPosition*> ( ptrLPosCompare );
+    QLinkedList<LabelPosition*> positions;
 
     int nbPoints;
     double *x;
@@ -691,16 +684,15 @@ namespace pal
         bool belowLine = ( !reversed && ( flags & FLAG_BELOW_LINE ) ) || ( reversed && ( flags & FLAG_ABOVE_LINE ) );
 
         if ( aboveLine )
-          positions->push_back( new LabelPosition( i, bx + cos( beta ) *distlabel, by + sin( beta ) *distlabel, xrm, yrm, alpha, cost, this, isRightToLeft ) ); // Line
+          positions.append( new LabelPosition( i, bx + cos( beta ) *distlabel, by + sin( beta ) *distlabel, xrm, yrm, alpha, cost, this, isRightToLeft ) ); // Line
         if ( belowLine )
-          positions->push_back( new LabelPosition( i, bx - cos( beta ) *( distlabel + yrm ), by - sin( beta ) *( distlabel + yrm ), xrm, yrm, alpha, cost, this, isRightToLeft ) );   // Line
+          positions.append( new LabelPosition( i, bx - cos( beta ) *( distlabel + yrm ), by - sin( beta ) *( distlabel + yrm ), xrm, yrm, alpha, cost, this, isRightToLeft ) );   // Line
         if ( flags & FLAG_ON_LINE )
-          positions->push_back( new LabelPosition( i, bx - yrm*cos( beta ) / 2, by - yrm*sin( beta ) / 2, xrm, yrm, alpha, cost, this, isRightToLeft ) ); // Line
+          positions.append( new LabelPosition( i, bx - yrm*cos( beta ) / 2, by - yrm*sin( beta ) / 2, xrm, yrm, alpha, cost, this, isRightToLeft ) ); // Line
       }
       else if ( f->layer->arrangement == P_HORIZ )
       {
-        positions->push_back( new LabelPosition( i, bx - xrm / 2, by - yrm / 2, xrm, yrm, 0, cost, this ) ); // Line
-        //positions->push_back( new LabelPosition(i, bx -yrm/2, by - yrm*sin(beta)/2, xrm, yrm, alpha, cost, this, line)); // Line
+        positions.append( new LabelPosition( i, bx - xrm / 2, by - yrm / 2, xrm, yrm, 0, cost, this ) ); // Line
       }
       else
       {
@@ -720,16 +712,14 @@ namespace pal
     delete[] d;
     delete[] ad;
 
-    int nbp = positions->size();
+    int nbp = positions.size();
     *lPos = new LabelPosition *[nbp];
     i = 0;
-    while ( positions->size() > 0 )
+    while ( positions.size() > 0 )
     {
-      ( *lPos )[i] = positions->pop_front();
+      ( *lPos )[i] = positions.takeFirst();
       i++;
     }
-
-    delete positions;
 
     return nbp;
   }
@@ -967,7 +957,7 @@ namespace pal
       return 0;
     }
 
-    LinkedList<LabelPosition*> *positions = new LinkedList<LabelPosition*> ( ptrLPosCompare );
+    QLinkedList<LabelPosition*> positions;
     double delta = max( f->labelInfo->label_height, total_distance / 10.0 );
 
     unsigned long flags = f->layer->getArrangementFlags();
@@ -1017,11 +1007,11 @@ namespace pal
         double angle_avg = atan2( sin_avg / f->labelInfo->char_num, cos_avg / f->labelInfo->char_num );
         // displacement
         if ( flags & FLAG_ABOVE_LINE )
-          positions->push_back( _createCurvedCandidate( slp, angle_avg, f->distlabel ) );
+          positions.append( _createCurvedCandidate( slp, angle_avg, f->distlabel ) );
         if ( flags & FLAG_ON_LINE )
-          positions->push_back( _createCurvedCandidate( slp, angle_avg, -f->labelInfo->label_height / 2 ) );
+          positions.append( _createCurvedCandidate( slp, angle_avg, -f->labelInfo->label_height / 2 ) );
         if ( flags & FLAG_BELOW_LINE )
-          positions->push_back( _createCurvedCandidate( slp, angle_avg, -f->labelInfo->label_height - f->distlabel ) );
+          positions.append( _createCurvedCandidate( slp, angle_avg, -f->labelInfo->label_height - f->distlabel ) );
 
         // delete original candidate
         delete slp;
@@ -1029,13 +1019,12 @@ namespace pal
     }
 
 
-    int nbp = positions->size();
+    int nbp = positions.size();
     ( *lPos ) = new LabelPosition*[nbp];
     for ( int i = 0; i < nbp; i++ )
     {
-      ( *lPos )[i] = positions->pop_front();
+      ( *lPos )[i] = positions.takeFirst();
     }
-    delete positions;
     delete[] path_distances;
 
     return nbp;
@@ -1081,28 +1070,20 @@ namespace pal
 
     //print();
 
-    //LinkedList<PointSet*> *shapes_toCut;
-    LinkedList<PointSet*> *shapes_toProcess;
-    LinkedList<PointSet*> *shapes_final;
-
-    //shapes_toCut     = new LinkedList<PointSet*>(ptrPSetCompare);
-    shapes_toProcess = new LinkedList<PointSet*> ( ptrPSetCompare );
-    shapes_final     = new LinkedList<PointSet*> ( ptrPSetCompare );
+    QLinkedList<PointSet*> shapes_toProcess;
+    QLinkedList<PointSet*> shapes_final;
 
     mapShape->parent = NULL;
 
-    shapes_toProcess->push_back( mapShape );
+    shapes_toProcess.append( mapShape );
 
     splitPolygons( shapes_toProcess, shapes_final, xrm, yrm, f->uid );
 
-
-    delete shapes_toProcess;
-
     int nbp;
 
-    if ( shapes_final->size() > 0 )
+    if ( shapes_final.size() > 0 )
     {
-      LinkedList<LabelPosition*> *positions = new LinkedList<LabelPosition*> ( ptrLPosCompare );
+      QLinkedList<LabelPosition*> positions;
 
       int id = 0; // ids for candidates
       double dlx, dly; // delta from label center and bottom-left corner
@@ -1114,13 +1095,13 @@ namespace pal
       double beta;
       double diago = sqrt( xrm * xrm / 4.0 + yrm * yrm / 4 );
       double rx, ry;
-      CHullBox **boxes = new CHullBox*[shapes_final->size()];
+      CHullBox **boxes = new CHullBox*[shapes_final.size()];
       j = 0;
 
       // Compute bounding box foreach finalShape
-      while ( shapes_final->size() > 0 )
+      while ( shapes_final.size() > 0 )
       {
-        PointSet *shape = shapes_final->pop_front();
+        PointSet *shape = shapes_final.takeFirst();
         boxes[j] = shape->compute_chull_bbox();
 
         if ( shape->parent )
@@ -1248,13 +1229,13 @@ namespace pal
               if ( isPointInPolygon( mapShape->nbPoints, mapShape->x, mapShape->y, rx, ry ) )
               {
                 // cost is set to minimal value, evaluated later
-                positions->push_back( new LabelPosition( id++, rx - dlx, ry - dly, xrm, yrm, alpha, 0.0001, this ) ); // Polygon
+                positions.append( new LabelPosition( id++, rx - dlx, ry - dly, xrm, yrm, alpha, 0.0001, this ) ); // Polygon
               }
             }
           }
         } // forall box
 
-        nbp = positions->size();
+        nbp = positions.size();
         if ( nbp == 0 )
         {
           dx /= 2;
@@ -1264,12 +1245,12 @@ namespace pal
       }
       while ( nbp == 0 && num_try < max_try );
 
-      nbp = positions->size();
+      nbp = positions.size();
 
       ( *lPos ) = new LabelPosition*[nbp];
       for ( i = 0; i < nbp; i++ )
       {
-        ( *lPos )[i] = positions->pop_front();
+        ( *lPos )[i] = positions.takeFirst();
       }
 
       for ( bbid = 0; bbid < j; bbid++ )
@@ -1278,14 +1259,11 @@ namespace pal
       }
 
       delete[] boxes;
-      delete positions;
     }
     else
     {
       nbp = 0;
     }
-
-    delete shapes_final;
 
 #ifdef _DEBUG_FULL_
     std::cout << "NbLabelPosition: " << nbp << std::endl;
@@ -1293,6 +1271,7 @@ namespace pal
     return nbp;
   }
 
+#if 0
   void FeaturePart::print()
   {
     int i, j;
@@ -1315,6 +1294,7 @@ namespace pal
 
     std::cout << std::endl;
   }
+#endif
 
   int FeaturePart::setPosition( double scale, LabelPosition ***lPos,
                                 double bbox_min[2], double bbox_max[2],

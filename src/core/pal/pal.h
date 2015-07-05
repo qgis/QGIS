@@ -35,6 +35,7 @@
 #include <ctime>
 #include <geos_c.h>
 #include <QMutex>
+#include <QStringList>
 
 // TODO ${MAJOR} ${MINOR} etc instead of 0.2
 
@@ -154,7 +155,7 @@ namespace pal
        *
        * @todo add symbolUnit
        */
-      Layer * addLayer( const char *lyrName, double min_scale, double max_scale, Arrangement arrangement, Units label_unit, double defaultPriority, bool obstacle, bool active, bool toLabel, bool displayAll = false );
+      Layer * addLayer( const QString& lyrName, double min_scale, double max_scale, Arrangement arrangement, Units label_unit, double defaultPriority, bool obstacle, bool active, bool toLabel, bool displayAll = false );
 
       /**
        * \brief Look for a layer
@@ -165,7 +166,7 @@ namespace pal
        *
        * @return a pointer on layer or NULL if layer not exist
        */
-      Layer *getLayer( const char *lyrName );
+      Layer *getLayer( const QString &lyrName );
 
       /**
        * \brief get all layers
@@ -212,7 +213,7 @@ namespace pal
        * @return A list of label to display on map
        */
       std::list<LabelPosition*> *labeller( int nbLayers,
-                                           char **layersName,
+                                           const QStringList &layersName,
                                            double *layersFactor,
                                            double scale, double bbox[4],
                                            PalStat **stat,
@@ -386,7 +387,7 @@ namespace pal
        * @param phi_max yMax bounding-box
        * @param scale the scale (1:scale)
        */
-      Problem* extract( int nbLayers, char **layersName, double *layersFactor,
+      Problem* extract( int nbLayers, const QStringList& layersName, double *layersFactor,
                         double lambda_min, double phi_min,
                         double lambda_max, double phi_max,
                         double scale );
