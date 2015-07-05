@@ -46,7 +46,7 @@ SET(QGIS_CORE_SRCS
   diagram/qgspiediagram.cpp
   diagram/qgstextdiagram.cpp
   diagram/qgshistogramdiagram.cpp
-  
+
   effects/qgsimageoperation.cpp
   effects/qgspainteffect.cpp
   effects/qgseffectstack.cpp
@@ -291,7 +291,7 @@ SET(QGIS_CORE_SRCS
   raster/qgssinglebandpseudocolorrenderer.cpp
   raster/qgsbrightnesscontrastfilter.cpp
   raster/qgshuesaturationfilter.cpp
-  
+
   geometry/qgsabstractgeometryv2.cpp
   geometry/qgscircularstringv2.cpp
   geometry/qgscompoundcurvev2.cpp
@@ -336,10 +336,10 @@ IF (NOT QT5_BUILD)
   )
 ENDIF (NOT QT5_BUILD)
 
-IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+IF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   # spatialindex headers produce warnings
   SET_SOURCE_FILES_PROPERTIES(qgsspatialindex.cpp PROPERTIES COMPILE_FLAGS -Wno-overloaded-virtual)
-ENDIF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+ENDIF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 
 IF (WITH_INTERNAL_QEXTSERIALPORT)
   SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
@@ -704,7 +704,7 @@ SET(QGIS_CORE_HDRS
 
   layertree/qgslayertree.h
   layertree/qgslayertreeutils.h
-  
+
   geometry/qgsgeometry.h
   geometry/qgsabstractgeometryv2.h
   geometry/qgswkbtypes.h
