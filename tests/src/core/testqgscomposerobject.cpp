@@ -32,6 +32,7 @@ class TestQgsComposerObject : public QObject
   public:
     TestQgsComposerObject()
         : mComposition( 0 )
+        , mMapSettings( 0 )
     {
     }
 
@@ -50,6 +51,7 @@ class TestQgsComposerObject : public QObject
   private:
     bool renderCheck( QString testName, QImage &image, int mismatchCount = 0 );
     QgsComposition *mComposition;
+    QgsMapSettings *mMapSettings;
     QString mReport;
 
 };
@@ -59,8 +61,8 @@ void TestQgsComposerObject::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  QgsMapSettings mapSettings;
-  mComposition = new QgsComposition( mapSettings );
+  mMapSettings = new QgsMapSettings();
+  mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   mReport = "<h1>Composer Object Tests</h1>\n";
@@ -69,6 +71,7 @@ void TestQgsComposerObject::initTestCase()
 void TestQgsComposerObject::cleanupTestCase()
 {
   delete mComposition;
+  delete mMapSettings;
 
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );

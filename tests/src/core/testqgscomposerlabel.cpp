@@ -34,6 +34,7 @@ class TestQgsComposerLabel : public QObject
     TestQgsComposerLabel()
         : mComposition( 0 )
         , mComposerLabel( 0 )
+        , mMapSettings( 0 )
         , mVectorLayer( 0 )
     {}
 
@@ -55,7 +56,7 @@ class TestQgsComposerLabel : public QObject
   private:
     QgsComposition* mComposition;
     QgsComposerLabel* mComposerLabel;
-    QgsMapSettings mMapSettings;
+    QgsMapSettings *mMapSettings;
     QgsVectorLayer* mVectorLayer;
 };
 
@@ -63,6 +64,8 @@ void TestQgsComposerLabel::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
+
+  mMapSettings = new QgsMapSettings();
 
   //create maplayers from testdata and add to layer registry
   QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + "/" +  "france_parts.shp" );
@@ -72,9 +75,9 @@ void TestQgsComposerLabel::initTestCase()
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mVectorLayer );
 
   //create composition with composer map
-  mMapSettings.setLayers( QStringList() << mVectorLayer->id() );
-  mMapSettings.setCrsTransformEnabled( false );
-  mComposition = new QgsComposition( mMapSettings );
+  mMapSettings->setLayers( QStringList() << mVectorLayer->id() );
+  mMapSettings->setCrsTransformEnabled( false );
+  mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   mComposerLabel = new QgsComposerLabel( mComposition );
@@ -86,6 +89,7 @@ void TestQgsComposerLabel::initTestCase()
 void TestQgsComposerLabel::cleanupTestCase()
 {
   delete mComposition;
+  delete mMapSettings;
 
   QgsApplication::exitQgis();
 }

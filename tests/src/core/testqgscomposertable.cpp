@@ -41,10 +41,6 @@ class TestQgsComposerTable : public QObject
         , mVectorLayer( 0 )
         , mComposerAttributeTable( 0 )
     {}
-    ~TestQgsComposerTable()
-    {
-      delete mMapSettings;
-    }
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -109,6 +105,7 @@ void TestQgsComposerTable::initTestCase()
 void TestQgsComposerTable::cleanupTestCase()
 {
   delete mComposition;
+  delete mMapSettings;
 
   QgsApplication::exitQgis();
 }

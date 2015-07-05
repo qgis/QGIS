@@ -54,7 +54,7 @@ class TestQgsComposerShapes : public QObject
   private:
     QgsComposition* mComposition;
     QgsComposerShape* mComposerShape;
-    QgsMapSettings mMapSettings;
+    QgsMapSettings *mMapSettings;
     QgsSimpleFillSymbolLayerV2* mSimpleFill;
     QgsFillSymbolV2* mFillSymbol;
     QString mReport;
@@ -65,8 +65,10 @@ void TestQgsComposerShapes::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
+  mMapSettings = new QgsMapSettings();
+
   //create composition with two rectangles
-  mComposition = new QgsComposition( mMapSettings );
+  mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerShape = new QgsComposerShape( 20, 20, 150, 100, mComposition );
   mComposerShape->setBackgroundColor( QColor::fromRgb( 255, 150, 0 ) );
@@ -83,6 +85,7 @@ void TestQgsComposerShapes::initTestCase()
 void TestQgsComposerShapes::cleanupTestCase()
 {
   delete mComposition;
+  delete mMapSettings;
 
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );

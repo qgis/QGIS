@@ -62,10 +62,11 @@ class TestQgsComposerModel : public QObject
     void reorderToBottomWithRemoved(); //test reordering to bottom with removed items
 
   private:
-    QgsComposition* mComposition;
-    QgsComposerLabel* mItem1;
-    QgsComposerLabel* mItem2;
-    QgsComposerLabel* mItem3;
+    QgsComposition *mComposition;
+    QgsMapSettings *mMapSettings;
+    QgsComposerLabel *mItem1;
+    QgsComposerLabel *mItem2;
+    QgsComposerLabel *mItem3;
 };
 
 void TestQgsComposerModel::initTestCase()
@@ -73,8 +74,8 @@ void TestQgsComposerModel::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  QgsMapSettings mapSettings;
-  mComposition = new QgsComposition( mapSettings );
+  mMapSettings = new QgsMapSettings();
+  mComposition = new QgsComposition( *mMapSettings );
 
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 }
@@ -82,6 +83,7 @@ void TestQgsComposerModel::initTestCase()
 void TestQgsComposerModel::cleanupTestCase()
 {
   delete mComposition;
+  delete mMapSettings;
 }
 
 void TestQgsComposerModel::init()

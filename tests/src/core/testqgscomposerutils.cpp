@@ -30,7 +30,6 @@ class TestQgsComposerUtils : public QObject
     Q_OBJECT
   public:
     TestQgsComposerUtils();
-    ~TestQgsComposerUtils();
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -71,21 +70,18 @@ class TestQgsComposerUtils : public QObject
 };
 
 TestQgsComposerUtils::TestQgsComposerUtils()
-    : mComposition( NULL )
+    : mComposition( 0 )
+    , mMapSettings( 0 )
+{
+}
+
+
+void TestQgsComposerUtils::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis(); //for access to test font
 
   mMapSettings = new QgsMapSettings();
-}
-
-TestQgsComposerUtils::~TestQgsComposerUtils()
-{
-  delete mMapSettings;
-}
-
-void TestQgsComposerUtils::initTestCase()
-{
   mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
@@ -100,6 +96,7 @@ void TestQgsComposerUtils::initTestCase()
 void TestQgsComposerUtils::cleanupTestCase()
 {
   delete mComposition;
+  delete mMapSettings;
 
   QgsApplication::exitQgis();
 

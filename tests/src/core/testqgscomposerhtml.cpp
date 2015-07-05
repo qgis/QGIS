@@ -44,14 +44,15 @@ class TestQgsComposerHtml : public QObject
     void tableMultiFrame(); //tests multiframe capabilities of composer html
     void htmlMultiFrameSmartBreak(); //tests smart page breaks in html multi frame
   private:
-    QgsComposition* mComposition;
-    QgsMapSettings mMapSettings;
+    QgsComposition *mComposition;
+    QgsMapSettings *mMapSettings;
     QString mReport;
     QFont mTestFont;
 };
 
 TestQgsComposerHtml::TestQgsComposerHtml()
-    : mComposition( NULL )
+    : mComposition( 0 )
+    , mMapSettings( 0 )
 {
 
 }
@@ -61,7 +62,8 @@ void TestQgsComposerHtml::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  mComposition = new QgsComposition( mMapSettings );
+  mMapSettings = new QgsMapSettings();
+  mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   mReport = "<h1>Composer HTML Tests</h1>\n";
@@ -73,6 +75,7 @@ void TestQgsComposerHtml::initTestCase()
 void TestQgsComposerHtml::cleanupTestCase()
 {
   delete mComposition;
+  delete mMapSettings;
 
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );

@@ -46,11 +46,13 @@ class TestQgsComposition : public QObject
 
   private:
     QgsComposition *mComposition;
+    QgsMapSettings *mMapSettings;
     QString mReport;
 };
 
 TestQgsComposition::TestQgsComposition()
     : mComposition( 0 )
+    , mMapSettings( 0 )
 {
 }
 
@@ -59,12 +61,12 @@ void TestQgsComposition::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  QgsMapSettings mapSettings;
+  mMapSettings = new QgsMapSettings();
 
   //create composition
-  mapSettings.setCrsTransformEnabled( true );
-  mapSettings.setMapUnits( QGis::Meters );
-  mComposition = new QgsComposition( mapSettings );
+  mMapSettings->setCrsTransformEnabled( true );
+  mMapSettings->setMapUnits( QGis::Meters );
+  mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposition->setNumPages( 3 );
 
@@ -75,6 +77,7 @@ void TestQgsComposition::initTestCase()
 void TestQgsComposition::cleanupTestCase()
 {
   delete mComposition;
+  delete mMapSettings;
 
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );

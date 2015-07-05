@@ -32,7 +32,6 @@ class TestQgsComposerMapGrid : public QObject
 
   public:
     TestQgsComposerMapGrid();
-    ~TestQgsComposerMapGrid();
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -76,11 +75,6 @@ TestQgsComposerMapGrid::TestQgsComposerMapGrid()
   mMapSettings = new QgsMapSettings();
 }
 
-TestQgsComposerMapGrid::~TestQgsComposerMapGrid()
-{
-  delete mMapSettings;
-}
-
 void TestQgsComposerMapGrid::initTestCase()
 {
   mReport = "<h1>Composer Map Grid Tests</h1>\n";
@@ -88,6 +82,8 @@ void TestQgsComposerMapGrid::initTestCase()
 
 void TestQgsComposerMapGrid::cleanupTestCase()
 {
+  delete mMapSettings;
+
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )

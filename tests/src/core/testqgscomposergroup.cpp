@@ -19,6 +19,8 @@
 #include "qgscomposerlabel.h"
 #include "qgscomposition.h"
 #include "qgscompositionchecker.h"
+#include "qgsapplication.h"
+
 #include <QObject>
 #include <QtTest/QtTest>
 
@@ -45,8 +47,8 @@ class TestQgsComposerGroup : public QObject
     void undoRedo(); //test that group/ungroup undo/redo commands don't crash
 
   private:
-    QgsComposition* mComposition;
-    QgsMapSettings mMapSettings;
+    QgsComposition *mComposition;
+    QgsMapSettings *mMapSettings;
     QgsComposerLabel* mItem1;
     QgsComposerLabel* mItem2;
     QgsComposerItemGroup* mGroup;
@@ -55,7 +57,11 @@ class TestQgsComposerGroup : public QObject
 
 void TestQgsComposerGroup::initTestCase()
 {
-  mComposition = new QgsComposition( mMapSettings );
+  QgsApplication::init();
+  QgsApplication::initQgis();
+
+  mMapSettings = new QgsMapSettings();
+  mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   //create some items
@@ -72,6 +78,7 @@ void TestQgsComposerGroup::initTestCase()
 void TestQgsComposerGroup::cleanupTestCase()
 {
   delete mComposition;
+  delete mMapSettings;
 
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );

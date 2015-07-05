@@ -41,11 +41,6 @@ class TestQgsComposerScaleBar : public QObject
         , mMapSettings( 0 )
     {}
 
-    ~TestQgsComposerScaleBar()
-    {
-      delete mMapSettings;
-    }
-
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -119,6 +114,7 @@ void TestQgsComposerScaleBar::initTestCase()
 void TestQgsComposerScaleBar::cleanupTestCase()
 {
   delete mComposition;
+  delete mMapSettings;
 
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );

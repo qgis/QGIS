@@ -105,6 +105,8 @@ void TestQgsComposerTableV2::initTestCase()
 
 void TestQgsComposerTableV2::cleanupTestCase()
 {
+  delete mMapSettings;
+
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )

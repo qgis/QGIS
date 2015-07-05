@@ -30,7 +30,6 @@ class TestQgsComposerPicture : public QObject
 
   public:
     TestQgsComposerPicture();
-    ~TestQgsComposerPicture();
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -77,11 +76,6 @@ TestQgsComposerPicture::TestQgsComposerPicture()
 
 }
 
-TestQgsComposerPicture::~TestQgsComposerPicture()
-{
-  delete mMapSettings;
-}
-
 void TestQgsComposerPicture::initTestCase()
 {
   QgsApplication::init();
@@ -106,6 +100,7 @@ void TestQgsComposerPicture::initTestCase()
 void TestQgsComposerPicture::cleanupTestCase()
 {
   delete mComposition;
+  delete mMapSettings;
 
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
