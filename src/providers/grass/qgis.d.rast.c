@@ -29,6 +29,7 @@
 #include <string.h>
 #include <math.h>
 #include <assert.h>
+#include <limits.h>
 #ifdef WIN32
 #include <fcntl.h>
 #include <io.h>
