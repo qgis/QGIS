@@ -338,7 +338,8 @@ QgsSimpleMarkerSymbolLayerV2Widget::QgsSimpleMarkerSymbolLayerV2Widget( const Qg
   //make a temporary symbol for the size assistant preview
   mAssistantPreviewSymbol = new QgsMarkerSymbolV2();
 
-  mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( mVectorLayer, mAssistantPreviewSymbol ) );
+  if ( mVectorLayer )
+    mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( mVectorLayer, mAssistantPreviewSymbol ) );
 
   QSize size = lstNames->iconSize();
   QStringList names;
@@ -1538,7 +1539,8 @@ QgsSvgMarkerSymbolLayerV2Widget::QgsSvgMarkerSymbolLayerV2Widget( const QgsVecto
 
   //make a temporary symbol for the size assistant preview
   mAssistantPreviewSymbol = new QgsMarkerSymbolV2();
-  mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( mVectorLayer, mAssistantPreviewSymbol ) );
+  if ( mVectorLayer )
+    mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( mVectorLayer, mAssistantPreviewSymbol ) );
 }
 
 QgsSvgMarkerSymbolLayerV2Widget::~QgsSvgMarkerSymbolLayerV2Widget()
@@ -2504,7 +2506,8 @@ QgsFontMarkerSymbolLayerV2Widget::QgsFontMarkerSymbolLayerV2Widget( const QgsVec
   //make a temporary symbol for the size assistant preview
   mAssistantPreviewSymbol = new QgsMarkerSymbolV2();
 
-  mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( mVectorLayer, mAssistantPreviewSymbol ) );
+  if ( mVectorLayer )
+    mSizeDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( mVectorLayer, mAssistantPreviewSymbol ) );
 
   connect( cboFont, SIGNAL( currentFontChanged( const QFont & ) ), this, SLOT( setFontFamily( const QFont& ) ) );
   connect( spinSize, SIGNAL( valueChanged( double ) ), this, SLOT( setSize( double ) ) );

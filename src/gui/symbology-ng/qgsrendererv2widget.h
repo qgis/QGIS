@@ -57,24 +57,24 @@ class GUI_EXPORT QgsRendererV2Widget : public QWidget
     QAction* mCopyAction;
     QAction* mPasteAction;
 
-    /**Subclasses may provide the capability of changing multiple symbols at once by implementing the following two methods
+    /** Subclasses may provide the capability of changing multiple symbols at once by implementing the following two methods
       and by connecting the slot contextMenuViewCategories(const QPoint&)*/
     virtual QList<QgsSymbolV2*> selectedSymbols() { return QList<QgsSymbolV2*>(); }
     virtual void refreshSymbolView() {}
 
   protected slots:
     void  contextMenuViewCategories( const QPoint& p );
-    /**Change color of selected symbols*/
+    /** Change color of selected symbols*/
     void changeSymbolColor();
-    /**Change opacity of selected symbols*/
+    /** Change opacity of selected symbols*/
     void changeSymbolTransparency();
-    /**Change units mm/map units of selected symbols*/
+    /** Change units mm/map units of selected symbols*/
     void changeSymbolUnit();
-    /**Change line widths of selected symbols*/
+    /** Change line widths of selected symbols*/
     void changeSymbolWidth();
-    /**Change marker sizes of selected symbols*/
+    /** Change marker sizes of selected symbols*/
     void changeSymbolSize();
-    /**Change marker angles of selected symbols*/
+    /** Change marker angles of selected symbols*/
     void changeSymbolAngle();
 
     virtual void copy() {}
@@ -173,7 +173,7 @@ class GUI_EXPORT QgsDataDefinedSizeDialog : public QgsDataDefinedValueDialog
         : QgsDataDefinedValueDialog( symbolList, layer, tr( "Size" ) )
     {
       init( tr( "Symbol size" ) );
-      if ( symbolList.length() )
+      if ( symbolList.length() && mLayer )
         mDDBtn->setAssistant( tr( "Size Assistant..." ), new QgsSizeScaleWidget( mLayer, static_cast<const QgsMarkerSymbolV2*>( symbolList[0] ) ) );
     }
 
