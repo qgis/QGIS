@@ -30,6 +30,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QByteArray>
+#include <QSvgGenerator>
 
 #include <sqlite3.h>
 
@@ -133,6 +134,31 @@ bool QgsStyleV2::saveSymbol( QString name, QgsSymbolV2* symbol, int groupid, QSt
   emit symbolSaved( name, symbol );
 
   return true;
+}
+
+void QgsStyleV2::exportSymbol( QString folder, QString name, QString format, QSize size )
+{
+  QString fullname = folder + "/" + name + "." + format;
+  QgsSymbolV2 *sym = symbol( name );
+  if ( format.toLower() == "svg" )
+  {
+    QSvgGenerator generator;
+    generator.setFileName( fullname );
+    generator.setSize( size );
+    generator.setViewBox( QRect( 0, 0, size.height(), size.height() ) );
+    generator.setTitle( name );
+    generator.setDescription( tr( "Exported symbol from QGIS" ) );
+
+
+    QPainter painter( &generator );
+    sym->drawPreviewIcon( &painter, size );
+    painter.end();
+  }
+  else
+  {
+    QImage image = sym->asImage( size );
+    image.save( fullname );
+  }
 }
 
 bool QgsStyleV2::removeSymbol( QString name )
