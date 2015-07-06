@@ -105,7 +105,7 @@ class CORE_EXPORT QgsExpression
     Q_DECL_DEPRECATED bool prepare( const QgsFields &fields );
 
     //! Get the expression ready for evaluation - find out column indexes.
-    bool prepare( const QgsExpressionContext &context );
+    bool prepare( const QgsExpressionContext *context );
 
     /**
      * Get list of columns referenced by the expression.
@@ -139,7 +139,7 @@ class CORE_EXPORT QgsExpression
     Q_DECL_DEPRECATED inline QVariant evaluate( const QgsFeature& f, const QgsFields& fields );
 
     QVariant evaluate();
-    QVariant evaluate( const QgsExpressionContext& context );
+    QVariant evaluate( const QgsExpressionContext* context );
 
     //! Returns true if an error occurred when evaluating last input
     bool hasEvalError() const { return !mEvalErrorString.isNull(); }
@@ -169,7 +169,7 @@ class CORE_EXPORT QgsExpression
     bool isField() const { return rootNode() && dynamic_cast<const NodeColumnRef*>( rootNode() ) ;}
 
     Q_DECL_DEPRECATED static bool isValid( const QString& text, const QgsFields& fields, QString &errorMessage );
-    static bool isValid( const QString& text, const QgsExpressionContext& context, QString &errorMessage );
+    static bool isValid( const QString& text, const QgsExpressionContext* context, QString &errorMessage );
 
     void setScale( double scale ) { mScale = scale; }
 
@@ -214,7 +214,7 @@ class CORE_EXPORT QgsExpression
         const QgsDistanceArea* distanceArea = 0
                                                           );
 
-    static QString replaceExpressionText( const QString &action, const QgsExpressionContext& context,
+    static QString replaceExpressionText( const QString &action, const QgsExpressionContext* context,
                                           const QMap<QString, QVariant> *substitutionMap = 0,
                                           const QgsDistanceArea* distanceArea = 0
                                         );
@@ -482,7 +482,7 @@ class CORE_EXPORT QgsExpression
         // abstract virtual preparation function
         // errors are reported to the parent
         Q_DECL_DEPRECATED virtual bool prepare( QgsExpression* parent, const QgsFields &fields );
-        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext& context );
+        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context );
 
         virtual QString dump() const = 0;
 
@@ -549,7 +549,7 @@ class CORE_EXPORT QgsExpression
         Node* operand() const { return mOperand; }
 
         virtual NodeType nodeType() const override { return ntUnaryOperator; }
-        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext& context ) override;
+        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context ) override;
         virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) override;
         virtual QString dump() const override;
 
@@ -573,7 +573,7 @@ class CORE_EXPORT QgsExpression
         Node* opRight() const { return mOpRight; }
 
         virtual NodeType nodeType() const override { return ntBinaryOperator; }
-        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext& context ) override;
+        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context ) override;
         virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) override;
         virtual QString dump() const override;
 
@@ -606,7 +606,7 @@ class CORE_EXPORT QgsExpression
         NodeList* list() const { return mList; }
 
         virtual NodeType nodeType() const override { return ntInOperator; }
-        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext& context ) override;
+        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context ) override;
         virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) override;
         virtual QString dump() const override;
 
@@ -631,7 +631,7 @@ class CORE_EXPORT QgsExpression
         NodeList* args() const { return mArgs; }
 
         virtual NodeType nodeType() const override { return ntFunction; }
-        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext& context ) override;
+        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context ) override;
         virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) override;
         virtual QString dump() const override;
 
@@ -657,7 +657,7 @@ class CORE_EXPORT QgsExpression
         inline QVariant value() const { return mValue; }
 
         virtual NodeType nodeType() const override { return ntLiteral; }
-        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext& context ) override;
+        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context ) override;
         virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) override;
         virtual QString dump() const override;
 
@@ -677,7 +677,7 @@ class CORE_EXPORT QgsExpression
         QString name() const { return mName; }
 
         virtual NodeType nodeType() const override { return ntColumnRef; }
-        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext& context ) override;
+        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context ) override;
         virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) override;
         virtual QString dump() const override;
 
@@ -711,7 +711,7 @@ class CORE_EXPORT QgsExpression
 
         virtual NodeType nodeType() const override { return ntCondition; }
         virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) override;
-        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext& context ) override;
+        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context ) override;
         virtual QString dump() const override;
 
         virtual QStringList referencedColumns() const override;

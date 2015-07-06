@@ -20,7 +20,7 @@ class QgsExpression
     bool prepare( const QgsFields &fields ) /Deprecated/;
 
     //! Get the expression ready for evaluation - find out column indexes.
-    bool prepare( const QgsExpressionContext &context );
+    bool prepare( const QgsExpressionContext *context );
 
     /**
      * Get list of columns referenced by the expression.
@@ -54,7 +54,7 @@ class QgsExpression
     // inline QVariant evaluate( const QgsFeature& f, const QgsFields& fields ) { return evaluate( &f, fields ); }
 
     QVariant evaluate();
-    QVariant evaluate( const QgsExpressionContext& context );
+    QVariant evaluate( const QgsExpressionContext* context );
 
 
     //! Returns true if an error occurred when evaluating last input
@@ -85,7 +85,7 @@ class QgsExpression
     bool isField() const;
 
     static bool isValid( const QString& text, const QgsFields& fields, QString &errorMessage ) /Deprecated/;
-    static bool isValid( const QString& text, const QgsExpressionContext& context, QString &errorMessage );
+    static bool isValid( const QString& text, const QgsExpressionContext* context, QString &errorMessage );
 
     void setScale( double scale );
 
@@ -312,7 +312,7 @@ class QgsExpression
         // abstract virtual preparation function
         // errors are reported to the parent
         virtual bool prepare( QgsExpression* parent, const QgsFields &fields ) /Deprecated/;
-        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext& context );
+        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context );
 
         virtual QString dump() const = 0;
 
@@ -368,8 +368,8 @@ class QgsExpression
         QgsExpression::Node* operand() const;
 
         virtual QgsExpression::NodeType nodeType() const;
-        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext& context );
-	virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context );
+        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context );
+	    virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context );
         virtual QString dump() const;
 
         virtual QStringList referencedColumns() const;
@@ -388,8 +388,8 @@ class QgsExpression
         QgsExpression::Node* opRight() const;
 
         virtual QgsExpression::NodeType nodeType() const;
-        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext& context );
-	virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context );
+        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context );
+	    virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context );
         virtual QString dump() const;
 
         virtual QStringList referencedColumns() const;
@@ -411,8 +411,8 @@ class QgsExpression
         QgsExpression::NodeList* list() const;
 
         virtual QgsExpression::NodeType nodeType() const;
-        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext& context );
-	virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context );
+        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context );
+	    virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context );
         virtual QString dump() const;
 
         virtual QStringList referencedColumns() const;
@@ -431,8 +431,8 @@ class QgsExpression
         QgsExpression::NodeList* args() const;
 
         virtual QgsExpression::NodeType nodeType() const;
-        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext& context );
-	virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context );
+        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context );
+	    virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context );
         virtual QString dump() const;
 
         virtual QStringList referencedColumns() const;
@@ -448,8 +448,8 @@ class QgsExpression
         const QVariant& value() const;
 
         virtual QgsExpression::NodeType nodeType() const;
-        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext& context );
-	virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context );
+        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context );
+	    virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context );
         virtual QString dump() const;
 
         virtual QStringList referencedColumns() const;
@@ -465,8 +465,8 @@ class QgsExpression
         QString name() const;
 
         virtual QgsExpression::NodeType nodeType() const;
-        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext& context );
-	virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context );
+        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context );
+	    virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context );
         virtual QString dump() const;
 
         virtual QStringList referencedColumns() const;
@@ -494,7 +494,7 @@ class QgsExpression
 
         virtual QgsExpression::NodeType nodeType() const;
         virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context );
-        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext& context );
+        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context );
         virtual QString dump() const;
 
         virtual QStringList referencedColumns() const;

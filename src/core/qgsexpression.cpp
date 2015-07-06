@@ -1964,10 +1964,10 @@ bool QgsExpression::hasSpecialColumn( const QString& name )
 bool QgsExpression::isValid( const QString &text, const QgsFields &fields, QString &errorMessage )
 {
   QgsFeatureBasedExpressionContext context( 0, fields );
-  return isValid( text, context, errorMessage );
+  return isValid( text, &context, errorMessage );
 }
 
-bool QgsExpression::isValid( const QString &text, const QgsExpressionContext &context, QString &errorMessage )
+bool QgsExpression::isValid( const QString &text, const QgsExpressionContext *context, QString &errorMessage )
 {
   QgsExpression exp( text );
   exp.prepare( context );
@@ -2096,10 +2096,10 @@ void QgsExpression::setGeomCalculator( const QgsDistanceArea &calc )
 bool QgsExpression::prepare( const QgsFields& fields )
 {
   QgsFeatureBasedExpressionContext fc( 0, fields );
-  return prepare( fc );
+  return prepare( &fc );
 }
 
-bool QgsExpression::prepare( const QgsExpressionContext &context )
+bool QgsExpression::prepare( const QgsExpressionContext *context )
 {
   mEvalErrorString = QString();
   if ( !mRootNode )
@@ -2136,12 +2136,12 @@ QVariant QgsExpression::evaluate( const QgsFeature* f, const QgsFields& fields )
 {
   // first prepare
   QgsFeatureBasedExpressionContext context( f ? *f : QgsFeature() , fields );
-  bool res = prepare( context );
+  bool res = prepare( &context );
   if ( !res )
     return QVariant();
 
   // then evaluate
-  return evaluate( context );
+  return evaluate( &context );
 }
 
 inline QVariant QgsExpression::evaluate( const QgsFeature& f, const QgsFields& fields )
@@ -2163,7 +2163,7 @@ QVariant QgsExpression::evaluate()
   return mRootNode->eval( this, ( QgsExpressionContext* )0 );
 }
 
-QVariant QgsExpression::evaluate( const QgsExpressionContext &context )
+QVariant QgsExpression::evaluate( const QgsExpressionContext *context )
 {
   mEvalErrorString = QString();
   if ( !mRootNode )
@@ -2172,7 +2172,7 @@ QVariant QgsExpression::evaluate( const QgsExpressionContext &context )
     return QVariant();
   }
 
-  return mRootNode->eval( this, &context );
+  return mRootNode->eval( this, context );
 }
 
 QString QgsExpression::dump() const
@@ -2194,10 +2194,10 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsFe
     const QMap<QString, QVariant> *substitutionMap, const QgsDistanceArea *distanceArea )
 {
   QgsFeatureBasedExpressionContext context( feat ? *feat : QgsFeature(), layer ? layer->pendingFields() : QgsFields() );
-  return replaceExpressionText( action, context, substitutionMap, distanceArea );
+  return replaceExpressionText( action, &context, substitutionMap, distanceArea );
 }
 
-QString QgsExpression::replaceExpressionText( const QString &action, const QgsExpressionContext &context, const QMap<QString, QVariant> *substitutionMap, const QgsDistanceArea *distanceArea )
+QString QgsExpression::replaceExpressionText( const QString &action, const QgsExpressionContext *context, const QMap<QString, QVariant> *substitutionMap, const QgsDistanceArea *distanceArea )
 {
   QString expr_action;
 
@@ -2281,7 +2281,7 @@ double QgsExpression::evaluateToDouble( const QString &text, const double fallba
   //otherwise try to evalute as expression
   QgsExpression expr( text );
   //evaluate using project context
-  QVariant result = expr.evaluate( *QgsProject::instance()->expressionContextStack() );
+  QVariant result = expr.evaluate( QgsProject::instance()->expressionContextStack() );
   convertedValue = result.toDouble( &ok );
   if ( expr.hasEvalError() || !ok )
   {
@@ -2336,7 +2336,7 @@ QVariant QgsExpression::NodeUnaryOperator::eval( QgsExpression *parent, const Qg
   return QVariant();
 }
 
-bool QgsExpression::NodeUnaryOperator::prepare( QgsExpression *parent, const QgsExpressionContext &context )
+bool QgsExpression::NodeUnaryOperator::prepare( QgsExpression *parent, const QgsExpressionContext *context )
 {
   return mOperand->prepare( parent, context );
 }
@@ -2590,7 +2590,7 @@ double QgsExpression::NodeBinaryOperator::computeDouble( double x, double y )
   }
 }
 
-bool QgsExpression::NodeBinaryOperator::prepare( QgsExpression *parent, const QgsExpressionContext &context )
+bool QgsExpression::NodeBinaryOperator::prepare( QgsExpression *parent, const QgsExpressionContext *context )
 {
   bool resL = mOpLeft->prepare( parent, context );
   bool resR = mOpRight->prepare( parent, context );
@@ -2749,7 +2749,7 @@ QVariant QgsExpression::NodeInOperator::eval( QgsExpression *parent, const QgsEx
     return mNotIn ? TVL_True : TVL_False;
 }
 
-bool QgsExpression::NodeInOperator::prepare( QgsExpression *parent, const QgsExpressionContext &context )
+bool QgsExpression::NodeInOperator::prepare( QgsExpression *parent, const QgsExpressionContext *context )
 {
   bool res = mNode->prepare( parent, context );
   foreach ( Node* n, mList->list() )
@@ -2802,7 +2802,7 @@ QVariant QgsExpression::NodeFunction::eval( QgsExpression *parent, const QgsExpr
   return res;
 }
 
-bool QgsExpression::NodeFunction::prepare( QgsExpression *parent, const QgsExpressionContext &context )
+bool QgsExpression::NodeFunction::prepare( QgsExpression *parent, const QgsExpressionContext *context )
 {
   bool res = true;
   if ( mArgs )
@@ -2853,7 +2853,7 @@ QVariant QgsExpression::NodeLiteral::eval( QgsExpression *parent, const QgsExpre
   return mValue;
 }
 
-bool QgsExpression::NodeLiteral::prepare( QgsExpression *parent, const QgsExpressionContext &context )
+bool QgsExpression::NodeLiteral::prepare( QgsExpression *parent, const QgsExpressionContext *context )
 {
   Q_UNUSED( parent );
   Q_UNUSED( context );
@@ -2891,12 +2891,12 @@ QVariant QgsExpression::NodeColumnRef::eval( QgsExpression *parent, const QgsExp
   return QVariant( "[" + mName + "]" );
 }
 
-bool QgsExpression::NodeColumnRef::prepare( QgsExpression *parent, const QgsExpressionContext &context )
+bool QgsExpression::NodeColumnRef::prepare( QgsExpression *parent, const QgsExpressionContext *context )
 {
-  if ( !context.hasVariable( "fields" ) )
+  if ( !context || !context->hasVariable( "fields" ) )
     return false;
 
-  QgsFields fields = qvariant_cast<QgsFields>( context.variable( "fields" ) );
+  QgsFields fields = qvariant_cast<QgsFields>( context->variable( "fields" ) );
 
   for ( int i = 0; i < fields.count(); ++i )
   {
@@ -2944,7 +2944,7 @@ QVariant QgsExpression::NodeCondition::eval( QgsExpression *parent, const QgsExp
   return QVariant();
 }
 
-bool QgsExpression::NodeCondition::prepare( QgsExpression *parent, const QgsExpressionContext &context )
+bool QgsExpression::NodeCondition::prepare( QgsExpression *parent, const QgsExpressionContext *context )
 {
   bool res;
   foreach ( WhenThen* cond, mConditions )
@@ -3074,15 +3074,15 @@ QVariant QgsExpression::Node::eval( QgsExpression *parent, const QgsExpressionCo
 bool QgsExpression::Node::prepare( QgsExpression* parent, const QgsFields &fields )
 {
   QgsFeatureBasedExpressionContext c( 0, fields );
-  return prepare( parent, c );
+  return prepare( parent, &c );
 }
 
-bool QgsExpression::Node::prepare( QgsExpression* parent, const QgsExpressionContext& context )
+bool QgsExpression::Node::prepare( QgsExpression* parent, const QgsExpressionContext *context )
 {
   //base implementation calls deprecated prepare to avoid API breakage
   QgsFields f;
-  if ( context.hasVariable( "fields" ) )
-    f = qvariant_cast<QgsFields>( context.variable( "fields" ) );
+  if ( context && context->hasVariable( "fields" ) )
+    f = qvariant_cast<QgsFields>( context->variable( "fields" ) );
 
   Q_NOWARN_DEPRECATED_PUSH
   return prepare( parent, f );

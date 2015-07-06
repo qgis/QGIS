@@ -175,34 +175,34 @@ void TestQgsExpressionContext::evaluate()
 
   QgsStaticValueExpressionContext context;
   context.setVariable( "test", 5 );
-  QCOMPARE( exp.evaluate( context ).toInt(), 3 );
+  QCOMPARE( exp.evaluate( &context ).toInt(), 3 );
   QgsExpression expWithVariable( "var('test')" );
-  QCOMPARE( expWithVariable.evaluate( context ).toInt(), 5 );
+  QCOMPARE( expWithVariable.evaluate( &context ).toInt(), 5 );
   context.setVariable( "test", 7 );
-  QCOMPARE( expWithVariable.evaluate( context ).toInt(), 7 );
+  QCOMPARE( expWithVariable.evaluate( &context ).toInt(), 7 );
   QgsExpression expWithVariable2( "var('test') + var('test2')" );
   context.setVariable( "test2", 9 );
-  QCOMPARE( expWithVariable2.evaluate( context ).toInt(), 16 );
+  QCOMPARE( expWithVariable2.evaluate( &context ).toInt(), 16 );
 
   QgsExpression expWithVariableBad( "var('bad')" );
-  QVERIFY( !expWithVariableBad.evaluate( context ).isValid() );
+  QVERIFY( !expWithVariableBad.evaluate( &context ).isValid() );
 
   //test with a function provided by a context
   QgsExpression testExpWContextFunction( "get_test_value(1)" );
   QVERIFY( !testExpWContextFunction.evaluate( ).isValid() );
 
   TestContext testContext( 0 );
-  testExpWContextFunction.prepare( testContext );
-  QCOMPARE( testExpWContextFunction.evaluate( testContext ).toInt(), 1 );
-  QCOMPARE( testExpWContextFunction.evaluate( testContext ).toInt(), 2 );
+  testExpWContextFunction.prepare( &testContext );
+  QCOMPARE( testExpWContextFunction.evaluate( &testContext ).toInt(), 1 );
+  QCOMPARE( testExpWContextFunction.evaluate( &testContext ).toInt(), 2 );
 
   //test with another context to ensure that expressions are evaulated against correct context
   TestContext testContext2( 5 );
   QgsExpression testExpWContextFunction2( "get_test_value(1)" );
-  testExpWContextFunction2.prepare( testContext2 );
-  QCOMPARE( testExpWContextFunction2.evaluate( testContext2 ).toInt(), 6 );
-  QCOMPARE( testExpWContextFunction2.evaluate( testContext2 ).toInt(), 7 );
-  QCOMPARE( testExpWContextFunction2.evaluate( testContext ).toInt(), 3 );
+  testExpWContextFunction2.prepare( &testContext2 );
+  QCOMPARE( testExpWContextFunction2.evaluate( &testContext2 ).toInt(), 6 );
+  QCOMPARE( testExpWContextFunction2.evaluate( &testContext2 ).toInt(), 7 );
+  QCOMPARE( testExpWContextFunction2.evaluate( &testContext ).toInt(), 3 );
 }
 
 void TestQgsExpressionContext::globalVariables()
@@ -215,7 +215,7 @@ void TestQgsExpressionContext::globalVariables()
   QCOMPARE( globalContext2->variable( "test" ).toString(), QString( "testval" ) );
 
   QgsExpression expGlobal( "var('test')" );
-  QCOMPARE( expGlobal.evaluate( *globalContext2 ).toString(), QString( "testval" ) );
+  QCOMPARE( expGlobal.evaluate( globalContext2 ).toString(), QString( "testval" ) );
   delete globalContext2;
 }
 
@@ -231,7 +231,7 @@ void TestQgsExpressionContext::projectVariables()
   QCOMPARE( projectContext2->variable( "testdouble" ).toDouble(), 5.2 );
 
   QgsExpression expProject( "var('test')" );
-  QCOMPARE( expProject.evaluate( *projectContext2 ).toString(), QString( "testval" ) );
+  QCOMPARE( expProject.evaluate( projectContext2 ).toString(), QString( "testval" ) );
 
   //check that project expression context stack consists of both project and global variables
   QgsGlobalExpressionContext* globalContext = QgsGlobalExpressionContext::instance();
