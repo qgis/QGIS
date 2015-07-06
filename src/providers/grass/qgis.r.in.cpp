@@ -155,7 +155,7 @@ int main( int argc, char **argv )
   void *buf = G_allocate_raster_buf( grass_type );
 
   int expectedSize = cols * QgsRasterBlock::typeSize( qgis_type );
-  bool isCanceled;
+  bool isCanceled = false;
   QByteArray byteArray;
   for ( int row = 0; row < rows; row++ )
   {

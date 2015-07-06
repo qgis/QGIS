@@ -256,7 +256,7 @@ static int cell_draw( char *name,
           if ( data_type == CELL_TYPE )
           {
             //int nul = -2000000000;
-            int nul = -2147483648;
+            int nul = INT_MIN;
             fwrite( &nul, 4, 1, fo );
           }
           else if ( data_type == DCELL_TYPE )

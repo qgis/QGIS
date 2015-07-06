@@ -1897,7 +1897,6 @@ int QgsWMSServer::configureMapRender( const QPaintDevice* paintDevice ) const
     {
       QgsDebugMsg( "Error, could not create output CRS from EPSG" );
       throw QgsMapServiceException( "InvalidCRS", "Could not create output CRS" );
-      return 5;
     }
     mMapRenderer->setDestinationCrs( outputCRS );
     mMapRenderer->setProjectionsEnabled( true );
