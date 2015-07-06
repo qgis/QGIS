@@ -228,6 +228,17 @@ class QgsConnectionPool
 
     typedef QMap<QString, T_Group*> T_Groups;
 
+    virtual ~QgsConnectionPool()
+    {
+      mMutex.lock();
+      foreach ( T_Group* group, mGroups )
+      {
+        delete group;
+      }
+      mGroups.clear();
+      mMutex.unlock();
+    }
+
     //! Try to acquire a connection: if no connections are available, the thread will get blocked.
     //! @return initialized connection or null on error
     T acquireConnection( const QString& connInfo )
