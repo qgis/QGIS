@@ -261,6 +261,8 @@ bool QgsFontUtils::loadStandardTestFonts( QStringList loadstyles )
         fontsLoaded = ( fontsLoaded || loaded );
         QgsDebugMsg( QString( "Test font '%1' %2 from filesystem [%3]" )
                      .arg( familyStyle ).arg( loaded ? "loaded" : "FAILED to load" ).arg( fontPath ) );
+        QFontDatabase db;
+        QgsDebugMsg( QString( "font families in %1: %2" ).arg( fontID ).arg( db.applicationFontFamilies( fontID ).join( "," ) ) );
       }
       else
       {
@@ -282,16 +284,37 @@ bool QgsFontUtils::loadStandardTestFonts( QStringList loadstyles )
 
 QFont QgsFontUtils::getStandardTestFont( const QString& style, int pointsize )
 {
-  QFontDatabase fontDB;
   if ( ! fontFamilyHasStyle( standardTestFontFamily(), style ) )
   {
     loadStandardTestFonts( QStringList() << style );
   }
 
+  QFontDatabase fontDB;
   QFont f = fontDB.font( standardTestFontFamily(), style, pointsize );
+#ifdef Q_OS_WIN
+  if ( !f.exactMatch() )
+  {
+    QString modified;
+    if ( style == "Roman" )
+      modified = "Normal";
+    else if ( style == "Oblique" )
+      modified = "Italic";
+    else if ( style == "Bold Oblique" )
+      modified = "Bold Italic";
+    if ( !modified.isEmpty() )
+      f = fontDB.font( standardTestFontFamily(), modified, pointsize );
+  }
+  if ( !f.exactMatch() )
+  {
+    QgsDebugMsg( QString( "Inexact font match - consider installing the %1 font." ).arg( standardTestFontFamily() ) );
+    QgsDebugMsg( QString( "Requested: %1" ).arg( f.toString() ) );
+    QFontInfo fi( f );
+    QgsDebugMsg( QString( "Replaced:  %1,%2,%3,%4,%5,%6,%7,%8,%9,%10" ).arg( fi.family() ).arg( fi.pointSizeF() ).arg( fi.pixelSize() ).arg( fi.styleHint() ).arg( fi.weight() ).arg( fi.style() ).arg( fi.underline() ).arg( fi.strikeOut() ).arg( fi.fixedPitch() ).arg( fi.rawMode() ) );
+  }
+#endif
   // in case above statement fails to set style
   f.setBold( style.contains( "Bold" ) );
-  f.setItalic( style.contains( "Oblique" ) );
+  f.setItalic( style.contains( "Oblique" ) || style.contains( "Italic" ) );
 
   return f;
 }
