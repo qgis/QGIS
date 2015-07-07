@@ -763,7 +763,9 @@ void QgsStyleV2ManagerDialog::exportSelectedItemsImages( QString dir, QString fo
   foreach ( QModelIndex index, indexes )
   {
     QString name = index.data().toString();
-    mStyle->exportSymbol( dir, name, format, size );
+    QString path = dir + "/" + name + "." + format;
+    QgsSymbolV2 *sym = mStyle->symbol( name );
+    sym->exportImage( path, format, size );
   }
 }
 

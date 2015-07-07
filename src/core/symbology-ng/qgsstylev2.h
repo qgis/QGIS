@@ -167,9 +167,6 @@ class CORE_EXPORT QgsStyleV2 : public QObject
      */
     bool detagSymbol( StyleEntity type, QString symbol, QStringList tags );
 
-    //! export symbol as image
-    void exportSymbol( QString path, QString name, QString format, QSize size );
-
     //! remove symbol from style (and delete it)
     bool removeSymbol( QString name );
 

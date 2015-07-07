@@ -106,6 +106,10 @@ class QgsSymbolV2
     //! @note customContext parameter added in 2.6
     void drawPreviewIcon( QPainter* painter, QSize size, QgsRenderContext* customContext = 0 );
 
+    //! export symbol as image format. PNG and SVG supported
+    void exportImage( QString path, QString format, QSize size );
+
+    //! Generate symbol as image
     QImage asImage( QSize size, QgsRenderContext* customContext = 0 );
 
     QImage bigSymbolPreviewImage();
