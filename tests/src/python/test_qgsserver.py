@@ -56,11 +56,11 @@ class TestQgsServer(unittest.TestCase):
         we are going to test if headers and body are returned correctly"""
         # Test as a whole
         response = str(self.server.handleRequest())
-        expected = 'Content-Type: text/xml; charset=utf-8\nContent-Length: 206\n\n<ServiceExceptionReport version="1.3.0" xmlns="http://www.opengis.net/ogc">\n <ServiceException code="Service configuration error">Service unknown or unsupported</ServiceException>\n</ServiceExceptionReport>\n'
+        expected = 'Content-Length: 206\nContent-Type: text/xml; charset=utf-8\n\n<ServiceExceptionReport version="1.3.0" xmlns="http://www.opengis.net/ogc">\n <ServiceException code="Service configuration error">Service unknown or unsupported</ServiceException>\n</ServiceExceptionReport>\n'
         self.assertEqual(response, expected)
         # Test header
         response = str(self.server.handleRequestGetHeaders())
-        expected = 'Content-Type: text/xml; charset=utf-8\nContent-Length: 206\n\n'
+        expected = 'Content-Length: 206\nContent-Type: text/xml; charset=utf-8\n\n'
         self.assertEqual(response, expected)
         # Test body
         response = str(self.server.handleRequestGetBody())
