@@ -364,7 +364,7 @@ QList<QgsPointV2> QgsGeometryUtils::pointsFromWKT( const QString &wktCoordinateL
   foreach ( const QString& pointCoordinates, wktCoordinateList.split( ",", QString::SkipEmptyParts ) )
   {
     QStringList coordinates = pointCoordinates.split( " ", QString::SkipEmptyParts );
-    if ( coordinates.size() != dim )
+    if ( coordinates.size() < dim )
       continue;
 
     int idx = 0;
