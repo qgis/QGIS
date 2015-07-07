@@ -234,6 +234,14 @@ class QgsMapCanvas : QGraphicsView
 
     QGis::UnitType mapUnits() const;
 
+    //! Getter for stored overrides of styles for layers.
+    //! @note added in 2.12
+    QMap<QString, QString> layerStyleOverrides() const;
+
+    //! Setter for stored overrides of styles for layers.
+    //! @note added in 2.12
+    void setLayerStyleOverrides( const QMap<QString, QString>& overrides );
+
     //! Get the current coordinate transform
     const QgsMapToPixel* getCoordinateTransform();
 
@@ -464,6 +472,10 @@ class QgsMapCanvas : QGraphicsView
     //! Emitted when the current layer is changed
     //! @note added in 2.8
     void currentLayerChanged( QgsMapLayer* layer );
+
+    //! Emitted when the configuration of overridden layer styles changes
+    //! @note added in 2.12
+    void layerStyleOverridesChanged();
 
   protected:
     //! Overridden standard event to be gestures aware

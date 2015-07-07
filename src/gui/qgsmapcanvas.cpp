@@ -1642,6 +1642,20 @@ QGis::UnitType QgsMapCanvas::mapUnits() const
   return mapSettings().mapUnits();
 }
 
+QMap<QString, QString> QgsMapCanvas::layerStyleOverrides() const
+{
+  return mSettings.layerStyleOverrides();
+}
+
+void QgsMapCanvas::setLayerStyleOverrides( const QMap<QString, QString>& overrides )
+{
+  if ( overrides == mSettings.layerStyleOverrides() )
+    return;
+
+  mSettings.setLayerStyleOverrides( overrides );
+  emit layerStyleOverridesChanged();
+}
+
 
 void QgsMapCanvas::setRenderFlag( bool theFlag )
 {
