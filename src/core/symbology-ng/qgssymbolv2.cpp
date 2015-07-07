@@ -34,6 +34,7 @@
 #include <QImage>
 #include <QPainter>
 #include <QSize>
+#include <QSvgGenerator>
 
 #include <cmath>
 
@@ -349,6 +350,26 @@ void QgsSymbolV2::drawPreviewIcon( QPainter* painter, QSize size, QgsRenderConte
     }
     else
       ( *it )->drawPreviewIcon( symbolContext, size );
+  }
+}
+
+void QgsSymbolV2::exportImage( QString path, QString format, QSize size )
+{
+  if ( format.toLower() == "svg" )
+  {
+    QSvgGenerator generator;
+    generator.setFileName( path );
+    generator.setSize( size );
+    generator.setViewBox( QRect( 0, 0, size.height(), size.height() ) );
+
+    QPainter painter( &generator );
+    drawPreviewIcon( &painter, size );
+    painter.end();
+  }
+  else
+  {
+    QImage image = asImage( size );
+    image.save( path );
   }
 }
 
