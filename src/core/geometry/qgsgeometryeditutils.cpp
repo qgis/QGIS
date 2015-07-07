@@ -130,7 +130,7 @@ int QgsGeometryEditUtils::addPart( QgsAbstractGeometryV2* geom, QgsAbstractGeome
     }
     else if ( part->geometryType() == "MultiPolygon" )
     {
-      QgsGeometryCollectionV2 *parts = dynamic_cast<QgsGeometryCollectionV2*>( part );
+      QgsGeometryCollectionV2 *parts = static_cast<QgsGeometryCollectionV2*>( part );
 
       int i;
       int n = geomCollection->numGeometries();

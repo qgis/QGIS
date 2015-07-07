@@ -46,7 +46,7 @@ const unsigned char* QgsFeatureRendererV2::_getPoint( QPointF& pt, QgsRenderCont
   unsigned int wkbType;
   wkbPtr >> wkbType >> pt.rx() >> pt.ry();
 
-  if ( wkbType == QGis::WKBPoint25D || wkbType == QgsWKBTypes::PointZ )
+  if (( QgsWKBTypes::Type )wkbType == QgsWKBTypes::Point25D || ( QgsWKBTypes::Type )wkbType == QgsWKBTypes::PointZ )
     wkbPtr += sizeof( double );
 
   if ( context.coordinateTransform() )
@@ -66,7 +66,7 @@ const unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRe
   unsigned int wkbType, nPoints;
   wkbPtr >> wkbType >> nPoints;
 
-  bool hasZValue = wkbType == QGis::WKBLineString25D || wkbType == QgsWKBTypes::LineStringZ;
+  bool hasZValue = (( QgsWKBTypes::Type )wkbType == QgsWKBTypes::LineString25D ) || (( QgsWKBTypes::Type )wkbType == QgsWKBTypes::LineStringZ );
 
   double x = 0.0;
   double y = 0.0;
@@ -121,7 +121,7 @@ const unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QP
   if ( numRings == 0 )  // sanity check for zero rings in polygon
     return wkbPtr;
 
-  bool hasZValue = wkbType == QGis::WKBPolygon25D || wkbType == QgsWKBTypes::PolygonZ;
+  bool hasZValue = (( QgsWKBTypes::Type )wkbType == QgsWKBTypes::Polygon25D ) || (( QgsWKBTypes::Type )wkbType == QgsWKBTypes::PolygonZ );
 
   double x, y;
   holes.clear();
