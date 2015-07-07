@@ -48,6 +48,7 @@ class QgsHttpRequestHandler: public QgsRequestHandler
     virtual void setGetCoverageResponse( QByteArray* ba ) override;
     /** Send out HTTP headers and flush output buffer*/
     virtual void sendResponse() override;
+    virtual void setDefaultHeaders() override;
     virtual void setHeader( const QString &name, const QString &value ) override;
     virtual int removeHeader( const QString &name ) override;
     virtual void clearHeaders( ) override;
