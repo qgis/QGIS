@@ -30,6 +30,7 @@ class QgsRequestHandler
 
     /**Allow plugins to return a QgsMapServiceException*/
     virtual void setServiceException( QgsMapServiceException ex /Transfer/ ) = 0;
+    virtual void setDefaultHeaders();
     /**Set an HTTP header*/
     virtual void setHeader( const QString &name, const QString &value ) = 0;
     /**Remove an HTTP header*/
