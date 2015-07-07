@@ -93,9 +93,9 @@ class Difference(GeoAlgorithm):
                     if diff_geom.intersects(tmpGeom):
                         diff_geom = QgsGeometry(diff_geom.difference(tmpGeom))
                     if diff_geom.isGeosEmpty():
-                        GEOS_EXCEPT = False
-                        add = False
-                        break
+                        # In 2.10, QgsGeometry doesn't raise an exception if
+                        # the geometry is empty.
+                        raise Exception
                 except:
                     GEOS_EXCEPT = False
                     add = False
