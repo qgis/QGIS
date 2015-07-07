@@ -19,7 +19,6 @@ extern "C"
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-#include <assert.h>
 #ifdef WIN32
 #include <fcntl.h>
 #include <io.h>
@@ -93,7 +92,7 @@ int main( int argc, char **argv )
 
   name = map->answer;
 
-#ifdef Q_OS_WIN32
+#ifdef Q_OS_WIN
   _setmode( _fileno( stdin ), _O_BINARY );
   _setmode( _fileno( stdout ), _O_BINARY );
   //setvbuf( stdin, NULL, _IONBF, BUFSIZ );
@@ -176,9 +175,9 @@ int main( int argc, char **argv )
       return 1;
     }
 
-    qint32 *cell;
-    float *fcell;
-    double *dcell;
+    qint32 *cell = 0;
+    float *fcell = 0;
+    double *dcell = 0;
     if ( grass_type == CELL_TYPE )
       cell = ( qint32* ) byteArray.data();
     else if ( grass_type == FCELL_TYPE )

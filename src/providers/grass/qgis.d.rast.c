@@ -201,7 +201,7 @@ static int cell_draw( char *name,
   set = G_malloc( ncols );
 
   /* some buggy C libraries require BOTH setmode() and fdopen(bin) */
-#ifdef WIN32
+#ifdef Q_OS_WIN
   if ( _setmode( _fileno( stdout ), _O_BINARY ) == -1 )
     G_fatal_error( "Cannot set stdout mode" );
 #endif

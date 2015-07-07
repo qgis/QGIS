@@ -38,7 +38,7 @@
 #include <qgswcscapabilities.h>
 #include <testqgswcspublicservers.h>
 
-#ifdef WIN32
+#ifdef Q_OS_WIN
 // Open files in binary mode
 #include <fcntl.h> /*  _O_BINARY */
 #ifdef MSVC
@@ -875,13 +875,13 @@ void usage( std::string const & appName )
 
 int main( int argc, char *argv[] )
 {
-#ifdef WIN32  // Windows
+#ifdef Q_OS_WIN // Windows
 #ifdef _MSC_VER
   _set_fmode( _O_BINARY );
 #else //MinGW
   _fmode = _O_BINARY;
 #endif  // _MSC_VER
-#endif  // WIN32
+#endif  // Q_OS_WIN
 
   QString myServer;
   QString myCoverage;
@@ -889,7 +889,7 @@ int main( int argc, char *argv[] )
   int myMaxCoverages = 2;
   bool myForce = false;
 
-#ifndef WIN32
+#ifndef Q_OS_WIN
   int optionChar;
   static struct option long_options[] =
   {

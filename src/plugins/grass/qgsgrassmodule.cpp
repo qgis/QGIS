@@ -72,7 +72,7 @@ QString QgsGrassModule::findExec( QString file )
     QString path = getenv( "PATH" );
     QgsDebugMsg( "path = " + path );
 
-#ifdef WIN32
+#ifdef Q_OS_WIN
     mExecPath = path.split( ";" );
     mExecPath.prepend( QgsGrass::shortPath( QgsApplication::applicationDirPath() ) );
 #else
@@ -85,7 +85,7 @@ QString QgsGrassModule::findExec( QString file )
   if ( QFile::exists( file ) )
     return file;  // full path
 
-#ifdef WIN32
+#ifdef Q_OS_WIN
   // On windows try .bat first
   for ( QStringList::iterator it = mExecPath.begin();
         it != mExecPath.end(); ++it )
@@ -141,7 +141,7 @@ QStringList QgsGrassModule::execArguments( QString module )
     return arguments;
   }
 
-#if defined(WIN32)
+#ifdef Q_OS_WIN
   if ( exe.endsWith( ".py" ) )
   {
     arguments.append( "python" );
@@ -213,7 +213,7 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
   // but not all modules have to be binary (can be scripts)
   // => test if the module is in path and if it is not
   // add .exe and test again
-#ifdef WIN32
+#ifdef Q_OS_WIN
   if ( inExecPath( xName ) )
   {
     mXName = xName;
@@ -749,7 +749,7 @@ void QgsGrassModuleStandardOptions::freezeOutput()
 {
   QgsDebugMsg( "called." );
 
-#ifdef WIN32
+#ifdef Q_OS_WIN
   for ( unsigned int i = 0; i < mItems.size(); i++ )
   {
     QgsGrassModuleOption *opt = dynamic_cast<QgsGrassModuleOption *>( mItems[i] );
@@ -824,7 +824,7 @@ void QgsGrassModuleStandardOptions::thawOutput()
 {
   QgsDebugMsg( "called." );
 
-#ifdef WIN32
+#ifdef Q_OS_WIN
   for ( unsigned int i = 0; i < mItems.size(); i++ )
   {
     QgsGrassModuleOption *opt = dynamic_cast<QgsGrassModuleOption *>( mItems[i] );
@@ -1695,7 +1695,7 @@ void QgsGrassModule::run()
       return;
     }
 
-#if defined(WIN32)
+#ifdef Q_OS_WIN
     // we already know it exists from execArguments()
     QString exe = QgsGrassModule::findExec( mXName );
     QFileInfo fi( exe );

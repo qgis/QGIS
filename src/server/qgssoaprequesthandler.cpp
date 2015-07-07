@@ -724,13 +724,13 @@ int QgsSOAPRequestHandler::setUrlToFile( QImage* img )
     return 1;
   }
 
-#ifdef WIN32
+#ifdef Q_OS_WIN
   if ( !QFile::exists( QDir::currentPath() + "/tmp" ) )
   {
     QDir::current().mkdir( "tmp" );
   }
   tmpDir = QDir( QDir::currentPath() + "/tmp" );
-#else //WIN32
+#else // Q_OS_WIN
   tmpDir = QDir( "/tmp" );
 #endif
 

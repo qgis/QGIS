@@ -783,7 +783,7 @@ bool QgsCoordinateTransform::writeXML( QDomNode & theNode, QDomDocument & theDoc
 const char *finder( const char *name )
 {
   QString proj;
-#ifdef WIN32
+#ifdef Q_OS_WIN
   proj = QApplication::applicationDirPath()
          + "/share/proj/" + QString( name );
 #else

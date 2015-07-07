@@ -72,7 +72,7 @@ QgsProviderRegistry::QgsProviderRegistry( QString pluginPath )
   mLibraryDirectory.setSorting( QDir::Name | QDir::IgnoreCase );
   mLibraryDirectory.setFilter( QDir::Files | QDir::NoSymLinks );
 
-#if defined(WIN32) || defined(__CYGWIN__)
+#if defined(Q_OS_WIN) || defined(__CYGWIN__)
   mLibraryDirectory.setNameFilters( QStringList( "*.dll" ) );
 #elif ANDROID
   mLibraryDirectory.setNameFilters( QStringList( "*provider.so" ) );
@@ -242,7 +242,7 @@ QgsProviderRegistry::~QgsProviderRegistry()
 }
 
 
-/** convenience function for finding any existing data providers that match "providerKey"
+/** Convenience function for finding any existing data providers that match "providerKey"
 
   Necessary because [] map operator will create a QgsProviderMetadata
   instance.  Also you cannot use the map [] operator in const members for that

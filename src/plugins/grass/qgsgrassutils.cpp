@@ -173,7 +173,7 @@ void QgsGrassElementDialog::textChanged()
     return;
   }
 
-#ifdef WIN32
+#ifdef Q_OS_WIN
   if ( !mSource.isNull() && text.toLower() == mSource.toLower() )
 #else
   if ( !mSource.isNull() && text == mSource )

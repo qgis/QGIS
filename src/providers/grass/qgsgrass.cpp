@@ -333,7 +333,11 @@ void GRASS_LIB_EXPORT QgsGrass::init( void )
 
 #ifdef Q_OS_WIN
     // Use the applicationDirPath()/grass
-    gisBase = shortPath( QCoreApplication::applicationDirPath() + "/grass" );
+#ifdef _MSC_VER
+    gisBase = shortPath( QCoreApplication::applicationDirPath() + ( QgsApplication::isRunningFromBuildDir() ?  + "/../.." : "" ) + "/grass" );
+#else
+    gisBase = shortPath( QCoreApplication::applicationDirPath() + ( QgsApplication::isRunningFromBuildDir() ?  + "/.." : "" ) + "/grass" );
+#endif
     QgsDebugMsg( QString( "GRASS gisBase = %1" ).arg( gisBase ) );
 #elif defined(Q_OS_MACX)
     // check for bundled GRASS, fall back to configured path
@@ -380,7 +384,7 @@ void GRASS_LIB_EXPORT QgsGrass::init( void )
       userGisbase = false;
       break;
     }
-#ifdef Q_OS_WIN32
+#ifdef Q_OS_WIN
     gisBase = shortPath( gisBase );
 #endif
   }
@@ -1692,7 +1696,7 @@ QString GRASS_LIB_EXPORT QgsGrass::getInfo( const QString&  info, const QString&
 
   QStringList arguments;
 
-  QString cmd = QgsApplication::libexecPath() + "grass/modules/qgis.g.info";
+  QString cmd = qgisGrassModulePath() + "/qgis.g.info";
 
   arguments.append( "info=" + info );
   if ( !map.isEmpty() )
@@ -2200,7 +2204,7 @@ QString GRASS_LIB_EXPORT QgsGrass::versionString()
 
 Qt::CaseSensitivity GRASS_LIB_EXPORT QgsGrass::caseSensitivity()
 {
-#ifdef WIN32
+#ifdef Q_OS_WIN
   return Qt::CaseInsensitive;
 #else
   return Qt::CaseSensitive;
@@ -2250,7 +2254,7 @@ struct Map_info GRASS_LIB_EXPORT *QgsGrass::vectNewMapStruct()
   // may have different sizes of types, see issue #13002. Because there is no Vect_new_map_struct (GRASS 7.0.0, July 2015)
   // the structure is allocated here using doubled (should be enough) space.
   // TODO: replace by Vect_new_map_struct once it appears in GRASS
-#if defined(WIN32)
+#ifdef Q_OS_WIN
   return ( struct Map_info* ) qgsMalloc( 2*sizeof( struct Map_info ) );
 #else
   return ( struct Map_info* ) qgsMalloc( sizeof( struct Map_info ) );
