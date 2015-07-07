@@ -66,17 +66,18 @@ class TestQgsComposerMapGrid : public QObject
 };
 
 TestQgsComposerMapGrid::TestQgsComposerMapGrid()
-    : mComposition( NULL )
-    , mComposerMap( NULL )
+    : mComposition( 0 )
+    , mComposerMap( 0 )
+    , mMapSettings( 0 )
 {
-  QgsApplication::init();
-  QgsApplication::initQgis();
-
-  mMapSettings = new QgsMapSettings();
 }
 
 void TestQgsComposerMapGrid::initTestCase()
 {
+  QgsApplication::init();
+  QgsApplication::initQgis();
+  mMapSettings = new QgsMapSettings();
+
   mReport = "<h1>Composer Map Grid Tests</h1>\n";
 }
 

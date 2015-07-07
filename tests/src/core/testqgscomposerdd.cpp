@@ -39,6 +39,7 @@ class TestQgsComposerDD : public QObject
   public:
     TestQgsComposerDD()
         : mComposition( 0 )
+        , mMapSettings( 0 )
         , mVectorLayer( 0 )
         , mAtlasMap( 0 )
         , mAtlas( 0 )

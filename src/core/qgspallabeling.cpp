@@ -4052,7 +4052,7 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
   double bbox[] = { extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum() };
 
   std::list<LabelPosition*>* labels;
-  pal::Problem* problem;
+  pal::Problem *problem;
   try
   {
     problem = mPal->extractProblem( scale, bbox );
@@ -4066,7 +4066,10 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
   }
 
   if ( context.renderingStopped() )
+  {
+    delete problem;
     return; // it has been cancelled
+  }
 
 #if 1 // XXX strk
   // features are pre-rotated but not scaled/translated,

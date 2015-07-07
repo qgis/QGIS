@@ -36,6 +36,7 @@ class TestQgsComposerShapes : public QObject
     TestQgsComposerShapes()
         : mComposition( 0 )
         , mComposerShape( 0 )
+        , mMapSettings( 0 )
         , mSimpleFill( 0 )
         , mFillSymbol( 0 )
     {}

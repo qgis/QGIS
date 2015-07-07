@@ -31,6 +31,7 @@ class TestQgsComposerGroup : public QObject
   public:
     TestQgsComposerGroup()
         : mComposition( 0 )
+        , mMapSettings( 0 )
         , mItem1( 0 )
         , mItem2( 0 )
         , mGroup( 0 )

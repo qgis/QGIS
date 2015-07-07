@@ -40,6 +40,7 @@ class TestQgsComposerPaper : public QObject
         , mMarkerLine( 0 )
         , mFillSymbol( 0 )
         , mMarkerLineSymbol( 0 )
+        , mMapSettings( 0 )
     {}
 
   private slots:
