@@ -379,7 +379,7 @@ namespace pal
     double lx = x + xdiff;
     double ly = y + ydiff;
 
-    ( *lPos )[0] = new LabelPosition( id, lx, ly, labelW, labelH, angle, cost, this );
+    ( *lPos )[0] = new LabelPosition( id, lx, ly, labelW, labelH, angle, cost, this, false, quadrantFromOffset() );
     return nbp;
   }
 
