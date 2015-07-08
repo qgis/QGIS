@@ -292,6 +292,8 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   mDataDefinedNames.insert( CurvedCharAngleInOut, QPair<QString, int>( "CurvedCharAngleInOut", -1 ) );
   mDataDefinedNames.insert( RepeatDistance, QPair<QString, int>( "RepeatDistance", -1 ) );
   mDataDefinedNames.insert( RepeatDistanceUnit, QPair<QString, int>( "RepeatDistanceUnit", -1 ) );
+  mDataDefinedNames.insert( Priority, QPair<QString, int>( "Priority", -1 ) );
+
   // (data defined only)
   mDataDefinedNames.insert( PositionX, QPair<QString, int>( "PositionX", 9 ) );
   mDataDefinedNames.insert( PositionY, QPair<QString, int>( "PositionY", 10 ) );
@@ -2171,6 +2173,19 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   if ( ddFixedQuad )
   {
     feat->setFixedQuadrant( true );
+  }
+
+  // data defined priority?
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::Priority, exprVal ) )
+  {
+    bool ok;
+    double priorityD = exprVal.toDouble( &ok );
+    if ( ok )
+    {
+      priorityD = qBound( 0.0, priorityD, 10.0 );
+      priorityD = 1 - priorityD / 10.0; // convert 0..10 --> 1..0
+      feat->setPriority( priorityD );
+    }
   }
 
   //add parameters for data defined labeling to QgsPalGeometry

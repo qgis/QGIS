@@ -202,7 +202,6 @@ namespace pal
        *
        * @param nbLayers # layers
        * @param layersName names of layers to label
-       * @param layersFactor layers priorities array
        * @param scale map scale is  '1:scale'
        * @param bbox map extent
        * @param stat will be filled with labelling process statistics, can be NULL
@@ -214,7 +213,6 @@ namespace pal
        */
       std::list<LabelPosition*> *labeller( int nbLayers,
                                            const QStringList &layersName,
-                                           double *layersFactor,
                                            double scale, double bbox[4],
                                            PalStat **stat,
                                            bool displayAll );
@@ -380,14 +378,13 @@ namespace pal
        *
        * @param nbLayers  number of layers to extract
        * @param layersName layers name to be extracted
-       * @param layersFactor layer's factor (priority between layers, 0 is the best, 1 the worst)
        * @param lambda_min xMin bounding-box
        * @param phi_min yMin bounding-box
        * @param lambda_max xMax bounding-box
        * @param phi_max yMax bounding-box
        * @param scale the scale (1:scale)
        */
-      Problem* extract( int nbLayers, const QStringList& layersName, double *layersFactor,
+      Problem* extract( int nbLayers, const QStringList& layersName,
                         double lambda_min, double phi_min,
                         double lambda_max, double phi_max,
                         double scale );

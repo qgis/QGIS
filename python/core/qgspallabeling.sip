@@ -278,6 +278,7 @@ class QgsPalLayerSettings
       Rotation, //data defined rotation
       RepeatDistance,
       RepeatDistanceUnit,
+      Priority,
 
       // rendering
       ScaleVisibility,

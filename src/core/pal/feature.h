@@ -85,23 +85,54 @@ namespace pal
 
       void setLabelInfo( LabelInfo* info ) { labelInfo = info; }
       void setDistLabel( double dist ) { distlabel = dist; }
-      //Set label position of the feature to fixed x/y values
+      /** Set label position of the feature to fixed x/y values */
       void setFixedPosition( double x, double y ) { fixedPos = true; fixedPosX = x; fixedPosY = y;}
       void setQuadOffset( double x, double y ) { quadOffset = true; quadOffsetX = x; quadOffsetY = y;}
 
       /** Sets whether the quadrant for the label must be respected. This can be used
        * to fix the quadrant for specific features when using an "around point" placement.
+       * @see fixedQuadrant
        */
       void setFixedQuadrant( bool fixed ) { mFixedQuadrant = fixed; }
+
+      /** Returns whether the quadrant for the label is fixed.
+       * @see setFixedQuadrant
+       */
       bool fixedQuadrant() const { return mFixedQuadrant; }
 
       void setPosOffset( double x, double y ) { offsetPos = true; offsetPosX = x; offsetPosY = y;}
       bool fixedPosition() const { return fixedPos; }
-      //Set label rotation to fixed value
+
+      /** Set label rotation to fixed value
+      */
       void setFixedAngle( double a ) { fixedRotation = true; fixedAngle = a; }
       void setRepeatDistance( double dist ) { repeatDist = dist; }
       double repeatDistance() const { return repeatDist; }
       void setAlwaysShow( bool bl ) { alwaysShow = bl; }
+
+      /** Sets the priority for labeling the feature.
+       * @param priority feature's priority, as a value between 0 (highest priority)
+       * and 1 (lowest priority). Set to -1.0 to use the layer's default priority
+       * for this feature.
+       * @see priority
+       * @see calculatePriority
+       */
+      void setPriority( double priority ) { mPriority = priority; }
+
+      /** Returns the feature's labeling priority.
+       * @returns feature's priority, as a value between 0 (highest priority)
+       * and 1 (lowest priority). Returns -1.0 if feature will use the layer's default priority.
+       * @see setPriority
+       * @see calculatePriority
+       */
+      double priority() const { return mPriority; }
+
+      /** Calculates the priority for the feature. This will be the feature's priority if set,
+       * otherwise the layer's default priority.
+       * @see setPriority
+       * @see priority
+       */
+      double calculatePriority() const;
 
     protected:
       Layer *layer;
@@ -136,6 +167,9 @@ namespace pal
     private:
 
       bool mFixedQuadrant;
+
+      //-1 if layer priority should be used
+      double mPriority;
   };
 
   /**

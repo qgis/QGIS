@@ -206,7 +206,6 @@ namespace pal
     QLinkedList<Feats*>* fFeats;
     RTree<PointSet*, double, 2, double> *obstacles;
     RTree<LabelPosition*, double, 2, double> *candidates;
-    double priority;
     double bbox_min[2];
     double bbox_max[2];
   } FeatCallBackCtx;
@@ -275,7 +274,7 @@ namespace pal
       ft->shape = NULL;
       ft->nblp = nblp;
       ft->lPos = lPos;
-      ft->priority = context->priority;
+      ft->priority = ft_ptr->getFeature()->calculatePriority();
       context->fFeats->append( ft );
     }
     else
@@ -320,7 +319,7 @@ namespace pal
     return true;
   }
 
-  Problem* Pal::extract( int nbLayers, const QStringList& layersName, double *layersFactor, double lambda_min, double phi_min, double lambda_max, double phi_max, double scale )
+  Problem* Pal::extract( int nbLayers, const QStringList& layersName, double lambda_min, double phi_min, double lambda_max, double phi_max, double scale )
   {
     // to store obstacles
     RTree<PointSet*, double, 2, double> *obstacles = new RTree<PointSet*, double, 2, double>();
@@ -399,7 +398,6 @@ namespace pal
 
 
             context->layer = layer;
-            context->priority = layersFactor[i];
             // lookup for feature (and generates candidates list)
 
             context->layer->mMutex.lock();
@@ -614,21 +612,18 @@ namespace pal
     int nbLayers = layers->size();
 
     QStringList layersName;
-    double *priorities = new double[nbLayers];
     Layer *layer;
     i = 0;
     for ( QList<Layer*>::iterator it = layers->begin(); it != layers->end(); ++it )
     {
       layer = *it;
       layersName << layer->name;
-      priorities[i] = layer->defaultPriority;
       i++;
     }
     mMutex.unlock();
 
-    std::list<LabelPosition*> * solution = labeller( nbLayers, layersName, priorities, scale, bbox, stats, displayAll );
+    std::list<LabelPosition*> * solution = labeller( nbLayers, layersName, scale, bbox, stats, displayAll );
 
-    delete[] priorities;
     return solution;
   }
 
@@ -636,7 +631,7 @@ namespace pal
   /*
    * BIG MACHINE
    */
-  std::list<LabelPosition*>* Pal::labeller( int nbLayers, const QStringList& layersName, double *layersFactor, double scale, double bbox[4], PalStat **stats, bool displayAll )
+  std::list<LabelPosition*>* Pal::labeller( int nbLayers, const QStringList& layersName, double scale, double bbox[4], PalStat **stats, bool displayAll )
   {
 #ifdef _DEBUG_
     std::cout << "LABELLER (selection)" << std::endl;
@@ -662,7 +657,7 @@ namespace pal
 
     // First, extract the problem
     // TODO which is the minimum scale? (> 0, >= 0, >= 1, >1 )
-    if ( scale < 1 || ( prob = extract( nbLayers, layersName, layersFactor, bbox[0], bbox[1], bbox[2], bbox[3], scale ) ) == NULL )
+    if ( scale < 1 || ( prob = extract( nbLayers, layersName, bbox[0], bbox[1], bbox[2], bbox[3], scale ) ) == NULL )
     {
 
 #ifdef _VERBOSE_
@@ -750,21 +745,17 @@ namespace pal
     int nbLayers = layers->size();
 
     QStringList layersName;
-    double *priorities = new double[nbLayers];
     Layer *layer;
     int i = 0;
     for ( QList<Layer*>::iterator it = layers->begin(); it != layers->end(); ++it )
     {
       layer = *it;
       layersName << layer->name;
-      priorities[i] = layer->defaultPriority;
       i++;
     }
     mMutex.unlock();
 
-    Problem* prob = extract( nbLayers, layersName, priorities, bbox[0], bbox[1], bbox[2], bbox[3], scale );
-
-    delete[] priorities;
+    Problem* prob = extract( nbLayers, layersName, bbox[0], bbox[1], bbox[2], bbox[3], scale );
 
     return prob;
   }

@@ -77,6 +77,7 @@ namespace pal
       , repeatDist( 0.0 )
       , alwaysShow( false )
       , mFixedQuadrant( false )
+      , mPriority( -1.0 )
   {
     assert( finite( lx ) && finite( ly ) );
   }
@@ -84,6 +85,11 @@ namespace pal
   Feature::~Feature()
   {
 
+  }
+
+  double Feature::calculatePriority() const
+  {
+    return mPriority >= 0 ? mPriority : layer->getPriority();
   }
 
   ////////////

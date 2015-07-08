@@ -192,7 +192,6 @@ namespace pal
        * \ brief set the layer priority
        *
        * The best priority is 0, the worst is 1
-       * Should be links with a slider in a nice gui
        */
       void setPriority( double priority );
 

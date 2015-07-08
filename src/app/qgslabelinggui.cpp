@@ -831,6 +831,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   setDataDefinedProperty( mMaxCharAngleDDBtn, QgsPalLayerSettings::CurvedCharAngleInOut, lyr );
   setDataDefinedProperty( mRepeatDistanceDDBtn, QgsPalLayerSettings::RepeatDistance, lyr );
   setDataDefinedProperty( mRepeatDistanceUnitDDBtn, QgsPalLayerSettings::RepeatDistanceUnit, lyr );
+  setDataDefinedProperty( mPriorityDDBtn, QgsPalLayerSettings::Priority, lyr );
 
   // data defined-only
   setDataDefinedProperty( mCoordXDDBtn, QgsPalLayerSettings::PositionX, lyr );
@@ -1051,6 +1052,9 @@ void QgsLabelingGui::populateDataDefinedButtons( QgsPalLayerSettings& s )
                             QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doublePosDesc() );
   mLineDistanceUnitDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::DistanceUnits ),
                                 QgsDataDefinedButton::String, QgsDataDefinedButton::unitsMmMuDesc() );
+  mPriorityDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::Priority ),
+                        QgsDataDefinedButton::AnyType, tr( "double [0.0-10.0]" ) );
+
   // TODO: is this necessary? maybe just use the data defined-only rotation?
   //mPointAngleDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::OffsetRotation ),
   //                        QgsDataDefinedButton::AnyType, QgsDataDefinedButton::double180RotDesc() );

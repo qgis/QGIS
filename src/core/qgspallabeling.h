@@ -253,6 +253,7 @@ class CORE_EXPORT QgsPalLayerSettings
       Rotation = 14, //data defined rotation
       RepeatDistance = 84,
       RepeatDistanceUnit = 86,
+      Priority = 87,
 
       // rendering
       ScaleVisibility = 23,
@@ -556,7 +557,7 @@ class CORE_EXPORT QgsPalLayerSettings
 
     void parseDropShadow();
 
-    /**Checks if a feature is larger than a minimum size (in mm)
+    /** Checks if a feature is larger than a minimum size (in mm)
     @return true if above size, false if below*/
     bool checkMinimumSizeMM( const QgsRenderContext& ct, const QgsGeometry* geom, double minSize ) const;
 
