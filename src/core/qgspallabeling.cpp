@@ -1205,7 +1205,7 @@ bool QgsPalLayerSettings::dataDefinedEvaluate( DataDefinedProperties p, QVariant
 
   QVariant result = dataDefinedValue( p, *mCurFeat, *mCurFields );
 
-  if ( result.isValid() ) // filter NULL values? i.e. && !result.isNull()
+  if ( result.isValid() && !result.isNull() )
   {
     //QgsDebugMsgLevel( QString( "result type:" ) + QString( result.typeName() ), 4 );
     //QgsDebugMsgLevel( QString( "result string:" ) + result.toString(), 4 );

@@ -219,7 +219,7 @@ void QgsLabelPropertyDialog::setDataDefinedValues( const QgsPalLayerSettings &la
     }
 
     QVariant result = layerSettings.dataDefinedValue( propIt.key(), mCurLabelFeat, vlayer->pendingFields() );
-    if ( !result.isValid() )
+    if ( !result.isValid() || result.isNull() )
     {
       //could not evaluate data defined value
       continue;
