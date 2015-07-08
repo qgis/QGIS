@@ -196,11 +196,6 @@ namespace pal
        */
       double bbox[4];
 
-      /**
-       * map scale is 1:scale
-       */
-      double scale;
-
       double *labelPositionCost;
       int *nbOlap;
 

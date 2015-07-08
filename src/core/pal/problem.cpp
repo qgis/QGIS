@@ -62,7 +62,7 @@ namespace pal
   }
 
   Problem::Problem() : nbLabelledLayers( 0 ), nblp( 0 ), all_nblp( 0 ), nbft( 0 ), displayAll( false ),
-      scale( 0 ), labelPositionCost( NULL ), nbOlap( NULL ),
+      labelPositionCost( NULL ), nbOlap( NULL ),
       labelpositions( NULL ), featStartId( NULL ), featNbLp( NULL ), inactiveCost( NULL ), sol( NULL ), nbActive( 0 ), nbOverlap( 0.0 ),
       pal( NULL )
   {

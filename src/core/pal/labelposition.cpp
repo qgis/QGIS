@@ -522,37 +522,37 @@ namespace pal
       my[i] = ( y[i] + y[j] ) / 2.0;
     }
 
-    if ( vabs( cross_product( mx[0], my[0], mx[2], my[2], xp, yp ) / h ) < w / 2 )
+    if ( qAbs( cross_product( mx[0], my[0], mx[2], my[2], xp, yp ) / h ) < w / 2 )
     {
       dist = cross_product( x[1], y[1], x[0], y[0], xp, yp ) / w;
-      if ( vabs( dist ) < vabs( dist_min ) )
+      if ( qAbs( dist ) < qAbs( dist_min ) )
         dist_min = dist;
 
       dist = cross_product( x[3], y[3], x[2], y[2], xp, yp ) / w;
-      if ( vabs( dist ) < vabs( dist_min ) )
+      if ( qAbs( dist ) < qAbs( dist_min ) )
         dist_min = dist;
     }
 
-    if ( vabs( cross_product( mx[1], my[1], mx[3], my[3], xp, yp ) / w ) < h / 2 )
+    if ( qAbs( cross_product( mx[1], my[1], mx[3], my[3], xp, yp ) / w ) < h / 2 )
     {
       dist = cross_product( x[2], y[2], x[1], y[1], xp, yp ) / h;
-      if ( vabs( dist ) < vabs( dist_min ) )
+      if ( qAbs( dist ) < qAbs( dist_min ) )
         dist_min = dist;
 
       dist = cross_product( x[0], y[0], x[3], y[3], xp, yp ) / h;
-      if ( vabs( dist ) < vabs( dist_min ) )
+      if ( qAbs( dist ) < qAbs( dist_min ) )
         dist_min = dist;
     }
 
     for ( i = 0; i < 4; i++ )
     {
       dist = dist_euc2d( x[i], y[i], xp, yp );
-      if ( vabs( dist ) < vabs( dist_min ) )
+      if ( qAbs( dist ) < qAbs( dist_min ) )
         dist_min = dist;
     }
 
     if ( nextPart && dist_min > 0 )
-      return min( dist_min, nextPart->getDistanceToPoint( xp, yp ) );
+      return qMin( dist_min, nextPart->getDistanceToPoint( xp, yp ) );
 
     return dist_min;
   }
