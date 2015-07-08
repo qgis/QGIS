@@ -430,6 +430,8 @@ void QgsExpressionBuilderWidget::updateFunctionTree()
   registerItem( "Conditionals", "CASE", casestring );
   registerItem( "Conditionals", "CASE ELSE", caseelsestring );
 
+  registerItem( "Fields and Values", "NULL", "NULL" );
+
   // Load the functions from the QgsExpression class
   int count = QgsExpression::functionCount();
   for ( int i = 0; i < count; i++ )
