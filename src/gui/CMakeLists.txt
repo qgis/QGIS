@@ -175,6 +175,7 @@ SET(QGIS_GUI_SRCS
   qgsfilterlineedit.cpp
   qgsformannotationitem.cpp
   qgsgenericprojectionselector.cpp
+  qgsgeometryrubberband.cpp
   qgshighlight.cpp
   qgshistogramwidget.cpp
   qgsidentifymenu.cpp

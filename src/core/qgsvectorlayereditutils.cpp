@@ -52,6 +52,12 @@ bool QgsVectorLayerEditUtils::insertVertex( double x, double y, QgsFeatureId atF
 
 bool QgsVectorLayerEditUtils::moveVertex( double x, double y, QgsFeatureId atFeatureId, int atVertex )
 {
+  QgsPointV2 p( x, y );
+  return moveVertex( p, atFeatureId, atVertex );
+}
+
+bool QgsVectorLayerEditUtils::moveVertex( const QgsPointV2& p, QgsFeatureId atFeatureId, int atVertex )
+{
   if ( !L->hasGeometryType() )
     return false;
 
@@ -60,13 +66,13 @@ bool QgsVectorLayerEditUtils::moveVertex( double x, double y, QgsFeatureId atFea
   {
     // it's not in cache: let's fetch it from layer
     QgsFeature f;
-    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( atFeatureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.constGeometry() )
+    if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( atFeatureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.geometry() )
       return false; // geometry not found
 
-    geometry = *f.constGeometry();
+    geometry = *f.geometry();
   }
 
-  geometry.moveVertex( x, y, atVertex );
+  geometry.moveVertex( p, atVertex );
 
   L->editBuffer()->changeGeometry( atFeatureId, &geometry );
   return true;
