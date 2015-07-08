@@ -88,6 +88,13 @@ namespace pal
       //Set label position of the feature to fixed x/y values
       void setFixedPosition( double x, double y ) { fixedPos = true; fixedPosX = x; fixedPosY = y;}
       void setQuadOffset( double x, double y ) { quadOffset = true; quadOffsetX = x; quadOffsetY = y;}
+
+      /** Sets whether the quadrant for the label must be respected. This can be used
+       * to fix the quadrant for specific features when using an "around point" placement.
+       */
+      void setFixedQuadrant( bool fixed ) { mFixedQuadrant = fixed; }
+      bool fixedQuadrant() const { return mFixedQuadrant; }
+
       void setPosOffset( double x, double y ) { offsetPos = true; offsetPosX = x; offsetPosY = y;}
       bool fixedPosition() const { return fixedPos; }
       //Set label rotation to fixed value
@@ -126,6 +133,9 @@ namespace pal
       // array of parts - possibly not necessary
       //int nPart;
       //FeaturePart** parts;
+    private:
+
+      bool mFixedQuadrant;
   };
 
   /**

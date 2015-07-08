@@ -47,6 +47,7 @@
 #include "labelposition.h"
 #include "pointset.h"
 #include "util.h"
+#include "qgis.h"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -75,6 +76,7 @@ namespace pal
       , fixedAngle( 0.0 )
       , repeatDist( 0.0 )
       , alwaysShow( false )
+      , mFixedQuadrant( false )
   {
     assert( finite( lx ) && finite( ly ) );
   }
@@ -351,7 +353,25 @@ namespace pal
       }
     }
 
-    if ( f->offsetPos )
+    if ( f->layer->getArrangement() == P_POINT )
+    {
+      //if in "around point" placement mode, then we use the label distance to determine
+      //the label's offset
+      if ( qgsDoubleNear( f->quadOffsetX , 0.0 ) )
+      {
+        ydiff += f->quadOffsetY * f->distlabel;
+      }
+      else if ( qgsDoubleNear( f->quadOffsetY, 0.0 ) )
+      {
+        xdiff += f->quadOffsetX * f->distlabel;
+      }
+      else
+      {
+        xdiff += f->quadOffsetX * M_SQRT1_2 * f->distlabel;
+        ydiff += f->quadOffsetY * M_SQRT1_2 * f->distlabel;
+      }
+    }
+    else if ( f->offsetPos )
     {
       if ( f->offsetPosX != 0 )
       {
@@ -394,25 +414,19 @@ namespace pal
                         f->layer->pal->map_unit,
                         dpi, scale, delta_width );
 
-    int nbp = f->layer->pal->point_p;
+    int numberCandidates = f->layer->pal->point_p;
 
     //std::cout << "Nbp : " << nbp << std::endl;
-
-    int i;
     int icost = 0;
     int inc = 2;
 
-    double alpha;
-    double beta = 2 * M_PI / nbp; /* angle bw 2 pos */
+    double candidateAngleIncrement = 2 * M_PI / numberCandidates; /* angle bw 2 pos */
 
-    double lx, ly; /* label pos */
-
-    /* various alpha */
+    /* various angles */
     double a90  = M_PI / 2;
     double a180 = M_PI;
     double a270 = a180 + a90;
     double a360 = 2 * M_PI;
-
 
     double gamma1, gamma2;
 
@@ -426,7 +440,6 @@ namespace pal
       gamma1 = gamma2 = a90 / 3.0;
     }
 
-
     if ( gamma1 > a90 / 3.0 )
       gamma1 = a90 / 3.0;
 
@@ -439,101 +452,103 @@ namespace pal
       std::cout << "Oups... label size error..." << std::endl;
     }
 
-    *lPos = new LabelPosition *[nbp];
+    *lPos = new LabelPosition *[numberCandidates];
 
-    for ( i = 0, alpha = M_PI / 4; i < nbp; i++, alpha += beta )
+    int i;
+    double angleToCandidate;
+    for ( i = 0, angleToCandidate = M_PI / 4; i < numberCandidates; i++, angleToCandidate += candidateAngleIncrement )
     {
-      lx = x;
-      ly = y;
+      double labelX = x;
+      double labelY = y;
 
-      if ( alpha > a360 )
-        alpha -= a360;
+      if ( angleToCandidate > a360 )
+        angleToCandidate -= a360;
 
       LabelPosition::Quadrant quadrant = LabelPosition::QuadrantOver;
 
-      if ( alpha < gamma1 || alpha > a360 - gamma1 )  // on the right
+      if ( angleToCandidate < gamma1 || angleToCandidate > a360 - gamma1 )  // on the right
       {
-        lx += distlabel;
-        double iota = ( alpha + gamma1 );
+        labelX += distlabel;
+        double iota = ( angleToCandidate + gamma1 );
         if ( iota > a360 - gamma1 )
           iota -= a360;
 
         //ly += -yrm/2.0 + tan(alpha)*(distlabel + xrm/2);
-        ly += -yrm + yrm * iota / ( 2 * gamma1 );
+        labelY += -yrm + yrm * iota / ( 2 * gamma1 );
 
         quadrant = LabelPosition::QuadrantRight;
       }
-      else if ( alpha < a90 - gamma2 )  // top-right
+      else if ( angleToCandidate < a90 - gamma2 )  // top-right
       {
-        lx += distlabel * cos( alpha );
-        ly += distlabel * sin( alpha );
+        labelX += distlabel * cos( angleToCandidate );
+        labelY += distlabel * sin( angleToCandidate );
         quadrant = LabelPosition::QuadrantAboveRight;
       }
-      else if ( alpha < a90 + gamma2 ) // top
+      else if ( angleToCandidate < a90 + gamma2 ) // top
       {
         //lx += -xrm/2.0 - tan(alpha+a90)*(distlabel + yrm/2);
-        lx += -xrm * ( alpha - a90 + gamma2 ) / ( 2 * gamma2 );
-        ly += distlabel;
+        labelX += -xrm * ( angleToCandidate - a90 + gamma2 ) / ( 2 * gamma2 );
+        labelY += distlabel;
         quadrant = LabelPosition::QuadrantAbove;
       }
-      else if ( alpha < a180 - gamma1 )  // top left
+      else if ( angleToCandidate < a180 - gamma1 )  // top left
       {
-        lx += distlabel * cos( alpha ) - xrm;
-        ly += distlabel * sin( alpha );
+        labelX += distlabel * cos( angleToCandidate ) - xrm;
+        labelY += distlabel * sin( angleToCandidate );
         quadrant = LabelPosition::QuadrantAboveLeft;
       }
-      else if ( alpha < a180 + gamma1 ) // left
+      else if ( angleToCandidate < a180 + gamma1 ) // left
       {
-        lx += -distlabel - xrm;
+        labelX += -distlabel - xrm;
         //ly += -yrm/2.0 - tan(alpha)*(distlabel + xrm/2);
-        ly += - ( alpha - a180 + gamma1 ) * yrm / ( 2 * gamma1 );
+        labelY += - ( angleToCandidate - a180 + gamma1 ) * yrm / ( 2 * gamma1 );
         quadrant = LabelPosition::QuadrantLeft;
       }
-      else if ( alpha < a270 - gamma2 ) // down - left
+      else if ( angleToCandidate < a270 - gamma2 ) // down - left
       {
-        lx += distlabel * cos( alpha ) - xrm;
-        ly += distlabel * sin( alpha ) - yrm;
+        labelX += distlabel * cos( angleToCandidate ) - xrm;
+        labelY += distlabel * sin( angleToCandidate ) - yrm;
         quadrant = LabelPosition::QuadrantBelowLeft;
       }
-      else if ( alpha < a270 + gamma2 ) // down
+      else if ( angleToCandidate < a270 + gamma2 ) // down
       {
-        ly += -distlabel - yrm;
+        labelY += -distlabel - yrm;
         //lx += -xrm/2.0 + tan(alpha+a90)*(distlabel + yrm/2);
-        lx += -xrm + ( alpha - a270 + gamma2 ) * xrm / ( 2 * gamma2 );
+        labelX += -xrm + ( angleToCandidate - a270 + gamma2 ) * xrm / ( 2 * gamma2 );
         quadrant = LabelPosition::QuadrantBelow;
       }
-      else if ( alpha < a360 ) // down - right
+      else if ( angleToCandidate < a360 ) // down - right
       {
-        lx += distlabel * cos( alpha );
-        ly += distlabel * sin( alpha ) - yrm;
+        labelX += distlabel * cos( angleToCandidate );
+        labelY += distlabel * sin( angleToCandidate ) - yrm;
         quadrant = LabelPosition::QuadrantBelowRight;
       }
 
       double cost;
 
-      if ( nbp == 1 )
+      if ( numberCandidates == 1 )
         cost = 0.0001;
       else
-        cost = 0.0001 + 0.0020 * double( icost ) / double( nbp - 1 );
+        cost = 0.0001 + 0.0020 * double( icost ) / double( numberCandidates - 1 );
 
-      ( *lPos )[i] = new LabelPosition( i, lx, ly, xrm, yrm, angle, cost, this, false, quadrant );
+      ( *lPos )[i] = new LabelPosition( i, labelX, labelY, xrm, yrm, angle, cost, this, false, quadrant );
 
       icost += inc;
 
-      if ( icost == nbp )
+      if ( icost == numberCandidates )
       {
-        icost = nbp - 1;
+        icost = numberCandidates - 1;
         inc = -2;
       }
-      else if ( icost > nbp )
+      else if ( icost > numberCandidates )
       {
-        icost = nbp - 2;
+        icost = numberCandidates - 2;
         inc = -2;
       }
 
     }
 
-    return nbp;
+    return numberCandidates;
   }
 
 // TODO work with squared distance by remonving call to sqrt or dist_euc2d
@@ -1323,7 +1338,7 @@ namespace pal
       switch ( type )
       {
         case GEOS_POINT:
-          if ( f->layer->getArrangement() == P_POINT_OVER )
+          if ( f->layer->getArrangement() == P_POINT_OVER || f->fixedQuadrant() )
             nbp = setPositionOverPoint( x[0], y[0], scale, lPos, delta, angle );
           else
             nbp = setPositionForPoint( x[0], y[0], scale, lPos, delta, angle );

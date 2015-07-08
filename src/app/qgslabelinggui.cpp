@@ -1289,6 +1289,7 @@ void QgsLabelingGui::updatePlacementWidgets()
   bool showLineFrame = false;
   bool showCentroidFrame = false;
   bool showQuadrantFrame = false;
+  bool showFixedQuadrantFrame = false;
   bool showOffsetFrame = false;
   bool showDistanceFrame = false;
   bool showRotationFrame = false;
@@ -1302,12 +1303,17 @@ void QgsLabelingGui::updatePlacementWidgets()
     showCentroidFrame = ( curWdgt == pagePolygon && radAroundCentroid->isChecked() );
     showDistanceFrame = true;
     //showRotationFrame = true; // TODO: uncomment when supported
+    if ( curWdgt == pagePoint )
+    {
+      showQuadrantFrame = true;
+    }
   }
   else if (( curWdgt == pagePoint && radOverPoint->isChecked() )
            || ( curWdgt == pagePolygon && radOverCentroid->isChecked() ) )
   {
     showCentroidFrame = ( curWdgt == pagePolygon && radOverCentroid->isChecked() );
     showQuadrantFrame = true;
+    showFixedQuadrantFrame = true;
     showOffsetFrame = true;
     showRotationFrame = true;
   }
@@ -1331,6 +1337,7 @@ void QgsLabelingGui::updatePlacementWidgets()
   mPlacementLineFrame->setVisible( showLineFrame );
   mPlacementCentroidFrame->setVisible( showCentroidFrame );
   mPlacementQuadrantFrame->setVisible( showQuadrantFrame );
+  mPlacementFixedQuadrantFrame->setVisible( showFixedQuadrantFrame );
   mPlacementOffsetFrame->setVisible( showOffsetFrame );
   mPlacementDistanceFrame->setVisible( showDistanceFrame );
   mPlacementRotationFrame->setVisible( showRotationFrame );

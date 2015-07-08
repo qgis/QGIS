@@ -1799,6 +1799,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   double offsetX = 0.0, offsetY = 0.0;
 
   //data defined quadrant offset?
+  bool ddFixedQuad = false;
   QuadrantPosition quadOff = quadOffset;
   if ( dataDefinedEvaluate( QgsPalLayerSettings::OffsetQuad, exprVal ) )
   {
@@ -1808,6 +1809,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     if ( ok && 0 <= quadInt && quadInt <= 8 )
     {
       quadOff = ( QuadrantPosition )quadInt;
+      ddFixedQuad = true;
     }
   }
 
@@ -2166,6 +2168,10 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     feat->setDistLabel( qAbs( ptOne.x() - ptZero.x() )* distance );
   }
 
+  if ( ddFixedQuad )
+  {
+    feat->setFixedQuadrant( true );
+  }
 
   //add parameters for data defined labeling to QgsPalGeometry
   QMap< DataDefinedProperties, QVariant >::const_iterator dIt = dataDefinedValues.constBegin();
