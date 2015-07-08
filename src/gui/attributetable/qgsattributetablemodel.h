@@ -292,6 +292,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     QHash<QgsFeatureId, int> mIdRowMap;
     QHash<int, QgsFeatureId> mRowIdMap;
+    QHash<int, QPixmap> mRowImageMap;
 
     /**
       * Gets mFieldCount, mAttributes and mValueMaps
