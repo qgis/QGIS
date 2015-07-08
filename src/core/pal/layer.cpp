@@ -48,7 +48,7 @@
 namespace pal
 {
 
-  Layer::Layer( const QString &lyrName, double min_scale, double max_scale, Arrangement arrangement, Units label_unit, double defaultPriority, bool obstacle, bool active, bool toLabel, Pal *pal, bool displayAll )
+  Layer::Layer( const QString &lyrName, Arrangement arrangement, double defaultPriority, bool obstacle, bool active, bool toLabel, Pal *pal, bool displayAll )
       : name( lyrName )
       , pal( pal )
       , obstacle( obstacle )
@@ -56,9 +56,6 @@ namespace pal
       , toLabel( toLabel )
       , displayAll( displayAll )
       , centroidInside( false )
-      , label_unit( label_unit )
-      , min_scale( min_scale )
-      , max_scale( max_scale )
       , arrangement( arrangement )
       , arrangementFlags( 0 )
       , mode( LabelPerFeature )
@@ -118,14 +115,6 @@ namespace pal
       return 0;
   }
 
-
-  bool Layer::isScaleValid( double scale )
-  {
-    return ( scale >= min_scale || min_scale == -1 )
-           && ( scale <= max_scale || max_scale == -1 );
-  }
-
-
   int Layer::getNbFeatures()
   {
     return features->size();
@@ -162,17 +151,6 @@ namespace pal
     return active;
   }
 
-
-  double Layer::getMinScale()
-  {
-    return min_scale;
-  }
-
-  double Layer::getMaxScale()
-  {
-    return max_scale;
-  }
-
   double Layer::getPriority()
   {
     return defaultPriority;
@@ -193,16 +171,6 @@ namespace pal
     this->toLabel = toLabel;
   }
 
-  void Layer::setMinScale( double min_scale )
-  {
-    this->min_scale = min_scale;
-  }
-
-  void Layer::setMaxScale( double max_scale )
-  {
-    this->max_scale = max_scale;
-  }
-
   void Layer::setPriority( double priority )
   {
     if ( priority >= 1.0 ) // low priority
@@ -212,8 +180,6 @@ namespace pal
     else
       defaultPriority = priority;
   }
-
-
 
   bool Layer::registerFeature( const QString& geom_id, PalGeometry *userGeom, double label_x, double label_y, const QString &labelText,
                                double labelPosX, double labelPosY, bool fixedPos, double angle, bool fixedAngle,
@@ -392,19 +358,6 @@ namespace pal
       lst->append( fpart ); // add to the list
     }
   }
-
-
-  void Layer::setLabelUnit( Units label_unit )
-  {
-    if ( label_unit == PIXEL || label_unit == METER )
-      this->label_unit = label_unit;
-  }
-
-  Units Layer::getLabelUnit()
-  {
-    return label_unit;
-  }
-
 
   static FeaturePart* _findConnectedPart( FeaturePart* partCheck, QLinkedList<FeaturePart*>* otherParts )
   {

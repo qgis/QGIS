@@ -216,7 +216,6 @@ namespace pal
 
       typedef struct
       {
-        double scale;
         Pal* pal;
         PointSet *obstacle;
       } PruneCtx;

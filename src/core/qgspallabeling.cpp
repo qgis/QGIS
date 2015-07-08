@@ -3230,18 +3230,10 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames,
 
   // create the pal layer
   double priority = 1 - lyr.priority / 10.0; // convert 0..10 --> 1..0
-  double min_scale = -1, max_scale = -1;
-
-  // handled in QgsPalLayerSettings::registerFeature now
-  //if ( lyr.scaleVisibility && !lyr.dataDefinedIsActive( QgsPalLayerSettings::ScaleVisibility ) )
-  //{
-  //  min_scale = lyr.scaleMin;
-  //  max_scale = lyr.scaleMax;
-  //}
 
   Layer* l = mPal->addLayer( layer->id().toUtf8().data(),
-                             min_scale, max_scale, arrangement,
-                             METER, priority, lyr.obstacle, true, true,
+                             arrangement,
+                             priority, lyr.obstacle, true, true,
                              lyr.displayAll );
 
   if ( lyr.placementFlags )
@@ -3331,7 +3323,7 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames,
 int QgsPalLabeling::addDiagramLayer( QgsVectorLayer* layer, const QgsDiagramLayerSettings *s )
 {
   double priority = 1 - s->priority / 10.0; // convert 0..10 --> 1..0
-  Layer* l = mPal->addLayer( layer->id().append( "d" ).toUtf8().data(), -1, -1, pal::Arrangement( s->placement ), METER, priority, s->obstacle, true, true );
+  Layer* l = mPal->addLayer( layer->id().append( "d" ).toUtf8().data(), pal::Arrangement( s->placement ), priority, s->obstacle, true, true );
   l->setArrangementFlags( s->placementFlags );
 
   mActiveDiagramLayers.insert( layer->id(), *s );
@@ -4069,14 +4061,13 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
   t.start();
 
   // do the labeling itself
-  double scale = mMapSettings->scale(); // scale denominator
   double bbox[] = { extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum() };
 
   std::list<LabelPosition*>* labels;
   pal::Problem *problem;
   try
   {
-    problem = mPal->extractProblem( scale, bbox );
+    problem = mPal->extractProblem( bbox );
   }
   catch ( std::exception& e )
   {

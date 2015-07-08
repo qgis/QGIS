@@ -103,14 +103,11 @@ namespace pal
 
     setSearch( CHAIN );
 
-    dpi = 72;
     point_p = 8;
     line_p = 8;
     poly_p = 8;
 
     showPartial = true;
-
-    this->map_unit = pal::METER;
 
     std::cout.precision( 12 );
     std::cerr.precision( 12 );
@@ -168,7 +165,7 @@ namespace pal
   }
 
 
-  Layer * Pal::addLayer( const QString &lyrName, double min_scale, double max_scale, Arrangement arrangement, Units label_unit, double defaultPriority, bool obstacle, bool active, bool toLabel, bool displayAll )
+  Layer * Pal::addLayer( const QString &lyrName, Arrangement arrangement, double defaultPriority, bool obstacle, bool active, bool toLabel, bool displayAll )
   {
     Layer *lyr;
     mMutex.lock();
@@ -190,7 +187,7 @@ namespace pal
       }
     }
 
-    lyr = new Layer( lyrName, min_scale, max_scale, arrangement, label_unit, defaultPriority, obstacle, active, toLabel, this, displayAll );
+    lyr = new Layer( lyrName, arrangement, defaultPriority, obstacle, active, toLabel, this, displayAll );
     layers->push_back( lyr );
 
     mMutex.unlock();
@@ -202,7 +199,6 @@ namespace pal
   typedef struct _featCbackCtx
   {
     Layer *layer;
-    double scale;
     QLinkedList<Feats*>* fFeats;
     RTree<PointSet*, double, 2, double> *obstacles;
     RTree<LabelPosition*, double, 2, double> *candidates;
@@ -240,10 +236,6 @@ namespace pal
     if ( !context->layer->toLabel )
       return true;
 
-    // are we in a valid scale range for the layer?
-    if ( !context->layer->isScaleValid( context->scale ) )
-      return true;
-
     // is the feature well defined?  TODO Check epsilon
     if ( ft_ptr->getLabelWidth() < 0.0000001 || ft_ptr->getLabelHeight() < 0.0000001 )
       return true;
@@ -264,7 +256,7 @@ namespace pal
 
     // generate candidates for the feature part
     LabelPosition** lPos = NULL;
-    int nblp = ft_ptr->setPosition( context->scale, &lPos, context->bbox_min, context->bbox_max, ft_ptr, context->candidates );
+    int nblp = ft_ptr->setPosition( &lPos, context->bbox_min, context->bbox_max, ft_ptr, context->candidates );
 
     if ( nblp > 0 )
     {
@@ -292,7 +284,6 @@ namespace pal
   typedef struct _filterContext
   {
     RTree<LabelPosition*, double, 2, double> *cdtsIndex;
-    double scale;
     Pal* pal;
   } FilterContext;
 
@@ -300,7 +291,6 @@ namespace pal
   {
 
     RTree<LabelPosition*, double, 2, double> *cdtsIndex = (( FilterContext* ) ctx )->cdtsIndex;
-    double scale = (( FilterContext* ) ctx )->scale;
     Pal* pal = (( FilterContext* )ctx )->pal;
 
     if ( pal->isCancelled() )
@@ -310,8 +300,6 @@ namespace pal
     pset->getBoundingBox( amin, amax );
 
     LabelPosition::PruneCtx pruneContext;
-
-    pruneContext.scale = scale;
     pruneContext.obstacle = pset;
     pruneContext.pal = pal;
     cdtsIndex->Search( amin, amax, LabelPosition::pruneCallback, ( void* ) &pruneContext );
@@ -319,7 +307,7 @@ namespace pal
     return true;
   }
 
-  Problem* Pal::extract( int nbLayers, const QStringList& layersName, double lambda_min, double phi_min, double lambda_max, double phi_max, double scale )
+  Problem* Pal::extract( int nbLayers, const QStringList& layersName, double lambda_min, double phi_min, double lambda_max, double phi_max )
   {
     // to store obstacles
     RTree<PointSet*, double, 2, double> *obstacles = new RTree<PointSet*, double, 2, double>();
@@ -343,15 +331,12 @@ namespace pal
     bbx[1] = bbx[2] = amax[0] = prob->bbox[2] = lambda_max;
     bby[2] = bby[3] = amax[1] = prob->bbox[3] = phi_max;
 
-
-    prob->scale = scale;
     prob->pal = this;
 
     QLinkedList<Feats*> *fFeats = new QLinkedList<Feats*>;
 
     FeatCallBackCtx *context = new FeatCallBackCtx();
     context->fFeats = fFeats;
-    context->scale = scale;
     context->obstacles = obstacles;
     context->candidates = prob->candidates;
 
@@ -363,8 +348,6 @@ namespace pal
 
 #ifdef _VERBOSE_
     std::cout <<  nbLayers << "/" << layers->size() << " layers to extract " << std::endl;
-    std::cout << "scale is 1:" << scale << std::endl << std::endl;
-
 #endif
 
 
@@ -382,9 +365,9 @@ namespace pal
       for ( QList<Layer*>::iterator it = layers->begin(); it != layers->end(); ++it ) // iterate on pal->layers
       {
         layer = *it;
-        // Only select those who are active and labellable (with scale constraint) or those who are active and which must be treated as obstaclewhich must be treated as obstacle
+        // Only select those who are active and labellable or those who are active and which must be treated as obstaclewhich must be treated as obstacle
         if ( layer->active
-             && ( layer->obstacle || ( layer->toLabel && layer->isScaleValid( scale ) ) ) )
+             && ( layer->obstacle || layer->toLabel ) )
         {
 
           // check if this selected layers has been selected by user
@@ -406,7 +389,6 @@ namespace pal
 
 #ifdef _VERBOSE_
             std::cout << "Layer's name: " << layer->getName() << std::endl;
-            std::cout << "     scale range: " << layer->getMinScale() << "->" << layer->getMaxScale() << std::endl;
             std::cout << "     active:" << layer->isToLabel() << std::endl;
             std::cout << "     obstacle:" << layer->isObstacle() << std::endl;
             std::cout << "     toLabel:" << layer->isToLabel() << std::endl;
@@ -462,7 +444,6 @@ namespace pal
     amax[0] = amax[1] = DBL_MAX;
     FilterContext filterCtx;
     filterCtx.cdtsIndex = prob->candidates;
-    filterCtx.scale = prob->scale;
     filterCtx.pal = this;
     obstacles->Search( amin, amax, filteringCallback, ( void* ) &filterCtx );
 
@@ -591,8 +572,7 @@ namespace pal
 
 #ifdef _VERBOSE_
     std::cout << "nbOverlap: " << prob->nbOverlap << std::endl;
-    std::cerr << scale << "\t"
-              << prob->nbft << "\t"
+    std::cerr << prob->nbft << "\t"
               << prob->nblp << "\t"
               << prob->nbOverlap << "\t";
 #endif
@@ -600,7 +580,7 @@ namespace pal
     return prob;
   }
 
-  std::list<LabelPosition*>* Pal::labeller( double scale, double bbox[4], PalStat **stats, bool displayAll )
+  std::list<LabelPosition*>* Pal::labeller( double bbox[4], PalStat **stats, bool displayAll )
   {
 
 #ifdef _DEBUG_FULL_
@@ -622,7 +602,7 @@ namespace pal
     }
     mMutex.unlock();
 
-    std::list<LabelPosition*> * solution = labeller( nbLayers, layersName, scale, bbox, stats, displayAll );
+    std::list<LabelPosition*> * solution = labeller( nbLayers, layersName, bbox, stats, displayAll );
 
     return solution;
   }
@@ -631,7 +611,7 @@ namespace pal
   /*
    * BIG MACHINE
    */
-  std::list<LabelPosition*>* Pal::labeller( int nbLayers, const QStringList& layersName, double scale, double bbox[4], PalStat **stats, bool displayAll )
+  std::list<LabelPosition*>* Pal::labeller( int nbLayers, const QStringList& layersName, double bbox[4], PalStat **stats, bool displayAll )
   {
 #ifdef _DEBUG_
     std::cout << "LABELLER (selection)" << std::endl;
@@ -656,17 +636,8 @@ namespace pal
     t.start();
 
     // First, extract the problem
-    // TODO which is the minimum scale? (> 0, >= 0, >= 1, >1 )
-    if ( scale < 1 || ( prob = extract( nbLayers, layersName, bbox[0], bbox[1], bbox[2], bbox[3], scale ) ) == NULL )
+    if (( prob = extract( nbLayers, layersName, bbox[0], bbox[1], bbox[2], bbox[3] ) ) == NULL )
     {
-
-#ifdef _VERBOSE_
-      if ( scale < 1 )
-        std::cout << "Scale is 1:" << scale << std::endl;
-      else
-        std::cout << "empty problem... finishing" << std::endl;
-#endif
-
       // nothing to be done => return an empty result set
       if ( stats )
         ( *stats ) = new PalStat();
@@ -738,7 +709,7 @@ namespace pal
     fnIsCancelledContext = context;
   }
 
-  Problem* Pal::extractProblem( double scale, double bbox[4] )
+  Problem* Pal::extractProblem( double bbox[4] )
   {
     // find out: nbLayers, layersName, layersFactor
     mMutex.lock();
@@ -755,7 +726,7 @@ namespace pal
     }
     mMutex.unlock();
 
-    Problem* prob = extract( nbLayers, layersName, bbox[0], bbox[1], bbox[2], bbox[3], scale );
+    Problem* prob = extract( nbLayers, layersName, bbox[0], bbox[1], bbox[2], bbox[3] );
 
     return prob;
   }
@@ -830,13 +801,6 @@ namespace pal
     this->candListSize = fact;
   }
 
-
-  void Pal::setDpi( int dpi )
-  {
-    if ( dpi > 0 )
-      this->dpi = dpi;
-  }
-
   void Pal::setShowPartial( bool show )
   {
     this->showPartial = show;
@@ -865,11 +829,6 @@ namespace pal
   int Pal::getMaxIt()
   {
     return tabuMinIt;
-  }
-
-  int Pal::getDpi()
-  {
-    return dpi;
   }
 
   bool Pal::getShowPartial()
@@ -924,22 +883,6 @@ namespace pal
         std::cerr << "Unknown search method..." << std::endl;
     }
   }
-
-  Units Pal::getMapUnit()
-  {
-    return map_unit;
-  }
-
-  void Pal::setMapUnit( Units map_unit )
-  {
-    if ( map_unit == pal::PIXEL || map_unit == pal::METER
-         || map_unit == pal::FOOT || map_unit == pal::DEGREE )
-    {
-      this->map_unit = map_unit;
-    }
-  }
-
-
 
 } // namespace pal
 

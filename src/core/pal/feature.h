@@ -198,29 +198,25 @@ namespace pal
        * Generate candidates for point features
        * \param x x coordinates of the point
        * \param y y coordinates of the point
-       * \param scale map scale is 1:scale
        * \param lPos pointer to an array of candidates, will be filled by generated candidates
-       * \param delta_width delta width
        * \param angle orientation of the label
        * \return the number of generated cadidates
        */
-      int setPositionForPoint( double x, double y, double scale, LabelPosition ***lPos, double delta_width, double angle );
+      int setPositionForPoint( double x, double y, LabelPosition ***lPos, double angle );
 
       /**
        * generate one candidate over specified point
        */
-      int setPositionOverPoint( double x, double y, double scale, LabelPosition ***lPos, double delta_width, double angle );
+      int setPositionOverPoint( double x, double y, LabelPosition ***lPos, double angle );
 
       /**
        * \brief generate candidates for line feature
        * Generate candidates for line features
-       * \param scale map scale is 1:scale
        * \param lPos pointer to an array of candidates, will be filled by generated candidates
        * \param mapShape a pointer to the line
-       * \param delta_width delta width
        * \return the number of generated cadidates
        */
-      int setPositionForLine( double scale, LabelPosition ***lPos, PointSet *mapShape, double delta_width );
+      int setPositionForLine( LabelPosition ***lPos, PointSet *mapShape );
 
       LabelPosition* curvedPlacementAtOffset( PointSet* path_positions, double* path_distances,
                                               int orientation, int index, double distance );
@@ -233,13 +229,11 @@ namespace pal
       /**
        * \brief generate candidates for point feature
        * Generate candidates for point features
-       * \param scale map scale is 1:scale
        * \param lPos pointer to an array of candidates, will be filled by generated candidates
        * \param mapShape a pointer to the polygon
-       * \param delta_width delta width
        * \return the number of generated cadidates
        */
-      int setPositionForPolygon( double scale, LabelPosition ***lPos, PointSet *mapShape, double delta_width );
+      int setPositionForPolygon( LabelPosition ***lPos, PointSet *mapShape );
 
       /**
        * \brief return the feature
@@ -262,7 +256,6 @@ namespace pal
       /**
        * \brief generic method to generate candidates
        * This method will call either setPositionFromPoint(), setPositionFromLine or setPositionFromPolygon
-       * \param scale the map scale is 1:scale
        * \param lPos pointer to candidates array in which candidates will be put
        * \param bbox_min min values of the map extent
        * \param bbox_max max values of the map extent
@@ -270,7 +263,7 @@ namespace pal
        * \param candidates index for candidates
        * \return the number of candidates in *lPos
        */
-      int setPosition( double scale, LabelPosition ***lPos, double bbox_min[2], double bbox_max[2], PointSet *mapShape, RTree<LabelPosition*, double, 2, double>*candidates );
+      int setPosition( LabelPosition ***lPos, double bbox_min[2], double bbox_max[2], PointSet *mapShape, RTree<LabelPosition*, double, 2, double>*candidates );
 
       /**
        * \brief get the unique id of the feature

@@ -225,7 +225,7 @@ namespace pal
       j = ( i + 1 ) % nbPoints;
       if ( i == j )
         break;
-      if ( vabs( x[i] - x[j] ) < 0.0000001 && vabs( y[i] - y[j] ) < 0.0000001 )
+      if ( qAbs( x[i] - x[j] ) < 0.0000001 && qAbs( y[i] - y[j] ) < 0.0000001 )
       {
         new_nbPoints--;
         ok[i] = false;
@@ -319,10 +319,8 @@ namespace pal
     }
   }
 
-  int FeaturePart::setPositionOverPoint( double x, double y, double scale, LabelPosition ***lPos, double delta_width, double angle )
+  int FeaturePart::setPositionOverPoint( double x, double y, LabelPosition ***lPos, double angle )
   {
-    Q_UNUSED( scale );
-    Q_UNUSED( delta_width );
     int nbp = 1;
     *lPos = new LabelPosition *[nbp];
 
@@ -396,29 +394,16 @@ namespace pal
     return nbp;
   }
 
-  int FeaturePart::setPositionForPoint( double x, double y, double scale, LabelPosition ***lPos, double delta_width, double angle )
+  int FeaturePart::setPositionForPoint( double x, double y, LabelPosition ***lPos, double angle )
   {
 
 #ifdef _DEBUG_
     std::cout << "SetPosition (point) : " << layer->name << "/" << uid << std::endl;
 #endif
 
-    int dpi = f->layer->pal->dpi;
-
-
-    double xrm;
-    double yrm;
+    double xrm = f->label_x;
+    double yrm = f->label_y;
     double distlabel = f->distlabel;
-
-    xrm = unit_convert( f->label_x,
-                        f->layer->label_unit,
-                        f->layer->pal->map_unit,
-                        dpi, scale, delta_width );
-
-    yrm = unit_convert( f->label_y,
-                        f->layer->label_unit,
-                        f->layer->pal->map_unit,
-                        dpi, scale, delta_width );
 
     int numberCandidates = f->layer->pal->point_p;
 
@@ -558,25 +543,16 @@ namespace pal
   }
 
 // TODO work with squared distance by remonving call to sqrt or dist_euc2d
-  int FeaturePart::setPositionForLine( double scale, LabelPosition ***lPos, PointSet *mapShape, double delta_width )
+  int FeaturePart::setPositionForLine( LabelPosition ***lPos, PointSet *mapShape )
   {
 #ifdef _DEBUG_
     std::cout << "SetPosition (line) : " << layer->name << "/" << uid << std::endl;
 #endif
     int i;
-    int dpi = f->layer->pal->dpi;
-    double xrm, yrm;
     double distlabel = f->distlabel;
 
-    xrm = unit_convert( f->label_x,
-                        f->layer->label_unit,
-                        f->layer->pal->map_unit,
-                        dpi, scale, delta_width );
-
-    yrm = unit_convert( f->label_y,
-                        f->layer->label_unit,
-                        f->layer->pal->map_unit,
-                        dpi, scale, delta_width );
+    double xrm = f->label_x;
+    double yrm = f->label_y;
 
     double *d; // segments lengths distance bw pt[i] && pt[i+1]
     double *ad;  // absolute distance bw pt[0] and pt[i] along the line
@@ -639,7 +615,7 @@ namespace pal
     {
       //dist /= nbls;
       l = 0;
-      dist = min( yrm, xrm );
+      dist = qMin( yrm, xrm );
     }
     else   // line length < label with => centering label position
     {
@@ -676,12 +652,11 @@ namespace pal
         cost = ( 1 - cost ) / 100; // < 0.0001, 0.01 > (but 0.005 is already pretty much)
 
       // penalize positions which are further from the line's midpoint
-      double costCenter = vabs( ll / 2 - ( l + xrm / 2 ) ) / ll; // <0, 0.5>
+      double costCenter = qAbs( ll / 2 - ( l + xrm / 2 ) ) / ll; // <0, 0.5>
       cost += costCenter / 1000;  // < 0, 0.0005 >
 
-      if (( vabs( ey - by ) < EPSILON ) && ( vabs( ex - bx ) < EPSILON ) )
+      if ( qgsDoubleNear( ey, by ) && qgsDoubleNear( ex, bx ) )
       {
-        std::cout << "EPSILON " << EPSILON << std::endl;
         std::cout << "b: " << bx << ";" << by << std::endl;
         std::cout << "e: " << ex << ";" << ey << std::endl;
         alpha = 0.0;
@@ -979,7 +954,7 @@ namespace pal
     }
 
     QLinkedList<LabelPosition*> positions;
-    double delta = max( f->labelInfo->label_height, total_distance / 10.0 );
+    double delta = qMax( f->labelInfo->label_height, total_distance / 10.0 );
 
     unsigned long flags = f->layer->getArrangementFlags();
     if ( flags == 0 )
@@ -1002,7 +977,7 @@ namespace pal
           {
             diff = fabs( tmp->getAlpha() - angle_last );
             if ( diff > 2*M_PI ) diff -= 2 * M_PI;
-            diff = min( diff, 2 * M_PI - diff ); // difference 350 deg is actually just 10 deg...
+            diff = qMin( diff, 2 * M_PI - diff ); // difference 350 deg is actually just 10 deg...
             angle_diff += diff;
           }
 
@@ -1018,7 +993,7 @@ namespace pal
 
         // penalize positions which are further from the line's midpoint
         double labelCenter = ( i * delta ) + f->label_x / 2;
-        double costCenter = vabs( total_distance / 2 - labelCenter ) / total_distance; // <0, 0.5>
+        double costCenter = qAbs( total_distance / 2 - labelCenter ) / total_distance; // <0, 0.5>
         cost += costCenter / 1000;  // < 0, 0.0005 >
         //std::cerr << "cost " << angle_diff << " vs " << costCenter << std::endl;
         slp->setCost( cost );
@@ -1066,7 +1041,7 @@ namespace pal
    *
    */
 
-  int FeaturePart::setPositionForPolygon( double scale, LabelPosition ***lPos, PointSet *mapShape, double delta_width )
+  int FeaturePart::setPositionForPolygon( LabelPosition ***lPos, PointSet *mapShape )
   {
 
 #ifdef _DEBUG_
@@ -1076,18 +1051,8 @@ namespace pal
     int i;
     int j;
 
-    double xrm;
-    double yrm;
-
-    xrm = unit_convert( f->label_x,
-                        f->layer->label_unit,
-                        f->layer->pal->map_unit,
-                        f->layer->pal->dpi, scale, delta_width );
-
-    yrm = unit_convert( f->label_y,
-                        f->layer->label_unit,
-                        f->layer->pal->map_unit,
-                        f->layer->pal->dpi, scale, delta_width );
+    double xrm = f->label_x;
+    double yrm = f->label_y;
 
     //print();
 
@@ -1317,7 +1282,7 @@ namespace pal
   }
 #endif
 
-  int FeaturePart::setPosition( double scale, LabelPosition ***lPos,
+  int FeaturePart::setPosition( LabelPosition ***lPos,
                                 double bbox_min[2], double bbox_max[2],
                                 PointSet *mapShape, RTree<LabelPosition*, double, 2, double> *candidates )
   {
@@ -1330,7 +1295,6 @@ namespace pal
     bbox[2] = bbox_max[0];
     bbox[3] = bbox_max[1];
 
-    double delta = bbox_max[0] - bbox_min[0];
     double angle = f->fixedRotation ? f->fixedAngle : 0.0;
 
     if ( f->fixedPosition() )
@@ -1345,15 +1309,15 @@ namespace pal
       {
         case GEOS_POINT:
           if ( f->layer->getArrangement() == P_POINT_OVER || f->fixedQuadrant() )
-            nbp = setPositionOverPoint( x[0], y[0], scale, lPos, delta, angle );
+            nbp = setPositionOverPoint( x[0], y[0], lPos, angle );
           else
-            nbp = setPositionForPoint( x[0], y[0], scale, lPos, delta, angle );
+            nbp = setPositionForPoint( x[0], y[0], lPos, angle );
           break;
         case GEOS_LINESTRING:
           if ( f->layer->getArrangement() == P_CURVED )
             nbp = setPositionForLineCurved( lPos, mapShape );
           else
-            nbp = setPositionForLine( scale, lPos, mapShape, delta );
+            nbp = setPositionForLine( lPos, mapShape );
           break;
 
         case GEOS_POLYGON:
@@ -1364,15 +1328,15 @@ namespace pal
               double cx, cy;
               mapShape->getCentroid( cx, cy, f->layer->getCentroidInside() );
               if ( f->layer->getArrangement() == P_POINT_OVER )
-                nbp = setPositionOverPoint( cx, cy, scale, lPos, delta, angle );
+                nbp = setPositionOverPoint( cx, cy, lPos, angle );
               else
-                nbp = setPositionForPoint( cx, cy, scale, lPos, delta, angle );
+                nbp = setPositionForPoint( cx, cy, lPos, angle );
               break;
             case P_LINE:
-              nbp = setPositionForLine( scale, lPos, mapShape, delta );
+              nbp = setPositionForLine( lPos, mapShape );
               break;
             default:
-              nbp = setPositionForPolygon( scale, lPos, mapShape, delta );
+              nbp = setPositionForPolygon( lPos, mapShape );
               break;
           }
       }
@@ -1420,7 +1384,7 @@ namespace pal
       double length;
       if ( GEOSLength_r( ctxt, the_geom, &length ) != 1 )
         return; // failed to calculate length
-      double bbox_length = max( bbx[2] - bbx[0], bby[2] - bby[0] );
+      double bbox_length = qMax( bbx[2] - bbx[0], bby[2] - bby[0] );
       if ( length >= bbox_length / 4 )
         return; // the line is longer than quarter of height or width - don't penalize it
 

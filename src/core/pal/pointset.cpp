@@ -315,7 +315,7 @@ namespace pal
           // lookup for the deepest point in the hole
           for ( i = ips; i != cHull[ihn]; i = ( i + 1 ) % nbp )
           {
-            cp = vabs( cross_product( x[cHull[ihs]], y[cHull[ihs]],
+            cp = qAbs( cross_product( x[cHull[ihs]], y[cHull[ihs]],
                                       x[cHull[ihn]], y[cHull[ihn]],
                                       x[i], y[i] ) );
             if ( cp - bestcp > EPSILON )
@@ -400,7 +400,7 @@ namespace pal
           std::cout << "D: " << dx << " " << dy << std::endl;
           std::cout << "seg_length: " << seg_length << std::endl;
 #endif
-          if ( seg_length < EPSILON || vabs(( b = cross_product( ex, ey, fx, fy, x[retainedPt], y[retainedPt] ) / ( seg_length ) ) ) > ( seg_length / 2 ) )    // retainedPt is not fronting i->j
+          if ( seg_length < EPSILON || qAbs(( b = cross_product( ex, ey, fx, fy, x[retainedPt], y[retainedPt] ) / ( seg_length ) ) ) > ( seg_length / 2 ) )    // retainedPt is not fronting i->j
           {
             if (( ex = dist_euc2d_sq( x[i], y[i], x[retainedPt], y[retainedPt] ) ) < ( ey = dist_euc2d_sq( x[j], y[j], x[retainedPt], y[retainedPt] ) ) )
             {
@@ -483,7 +483,7 @@ namespace pal
 
         // we will cut the shapeu in two new shapes, one from [retainedPoint] to [newPoint] and one form [newPoint] to [retainedPoint]
         int imin = retainedPt;
-        int imax = ((( fps < retainedPt && fpe < retainedPt ) || ( fps > retainedPt && fpe > retainedPt ) ) ? min( fps, fpe ) : max( fps, fpe ) );
+        int imax = ((( fps < retainedPt && fpe < retainedPt ) || ( fps > retainedPt && fpe > retainedPt ) ) ? qMin( fps, fpe ) : qMax( fps, fpe ) );
 
         int nbPtSh1, nbPtSh2; // how many points in new shapes ?
         if ( imax > imin )

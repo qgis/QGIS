@@ -64,7 +64,6 @@ namespace pal
 
       friend class LabelPosition;
       friend bool extractFeatCallback( FeaturePart *ft_ptr, void *ctx );
-      friend void toSVGPath( int nbPoints, double *x, double *y, int dpi, Layer *layer, int type, char *uid, std::ostream &out, double scale, int xmin, int ymax, bool exportInfo, char *color );
 
     public:
       enum LabelMode { LabelPerFeature, LabelPerFeaturePart };
@@ -102,17 +101,6 @@ namespace pal
 
       unsigned long getArrangementFlags() const { return arrangementFlags; }
       void setArrangementFlags( unsigned long flags ) { arrangementFlags = flags; }
-
-      /**
-       * \brief get units for label size
-       */
-      Units getLabelUnit();
-
-      /**
-       * \brief set unit for label size
-       *
-       */
-      void setLabelUnit( Units label_unit );
 
       /**
        * \brief activate or desactivate the layer
@@ -162,39 +150,11 @@ namespace pal
       bool isObstacle();
 
       /**
-       * \brief set the minimum valid scale, below this scale the layer will not be labelled
-       *
-       * Use -1 to disable
-       */
-      void setMinScale( double min_scale );
-
-      /**
-       * \brief return the minimum valid scale
-       */
-      double getMinScale();
-
-
-      /**
-       * \brief set the maximum valid scale, upon this scale the layer will not be labelled
-       *
-       * use -1 to disable
-       */
-      void setMaxScale( double max_scale );
-
-
-      /**
-       * \brief return the maximum valid scale
-       */
-      double getMaxScale();
-
-
-      /**
        * \ brief set the layer priority
        *
        * The best priority is 0, the worst is 1
        */
       void setPriority( double priority );
-
 
       /**
        * return the layer's priority
@@ -274,11 +234,6 @@ namespace pal
       bool displayAll;
       bool centroidInside;
 
-      Units label_unit;
-
-      double min_scale;
-      double max_scale;
-
       /** Optional flags used for some placement methods */
       Arrangement arrangement;
       unsigned long arrangementFlags;
@@ -300,10 +255,7 @@ namespace pal
        * \brief Create a new layer
        *
        * @param lyrName layer's name
-       * @param min_scale bellow this scale: no labeling
-       * @param max_scale above this scale: no labeling
        * @param arrangement Arrangement mode : how to place candidates
-       * @param label_unit Unit for labels sizes
        * @param defaultPriority layer's prioriry (0 is the best, 1 the worst)
        * @param obstacle 'true' will discourage other label to be placed above features of this layer
        * @param active is the layer is active (currently displayed)
@@ -312,18 +264,12 @@ namespace pal
        * @param displayAll if true, all features will be labelled even though overlaps occur
        *
        */
-      Layer( const QString& lyrName, double min_scale, double max_scale, Arrangement arrangement, Units label_unit, double defaultPriority, bool obstacle, bool active, bool toLabel, Pal *pal, bool displayAll = false );
+      Layer( const QString& lyrName, Arrangement arrangement, double defaultPriority, bool obstacle, bool active, bool toLabel, Pal *pal, bool displayAll = false );
 
       /**
        * \brief Delete the layer
        */
       virtual ~Layer();
-
-      /**
-       * \brief check if the scal is in the scale range min_scale -> max_scale
-       * @param scale the scale to check
-       */
-      bool isScaleValid( double scale );
 
       /** Add newly created feature part into r tree and to the list */
       void addFeaturePart( FeaturePart* fpart, const QString &labelText = QString() );
