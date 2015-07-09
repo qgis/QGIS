@@ -486,9 +486,8 @@ bool QgsComposerMap::shouldDrawPart( PartType part ) const
   return true; // for Layer
 }
 
-void QgsComposerMap::updateCachedImage( void )
+void QgsComposerMap::updateCachedImage()
 {
-  syncLayerSet(); //layer list may have changed
   mCacheUpdated = false;
   cache();
   QGraphicsRectItem::update();
@@ -500,6 +499,12 @@ void QgsComposerMap::renderModeUpdateCachedImage()
   {
     updateCachedImage();
   }
+}
+
+void QgsComposerMap::layersChanged()
+{
+  syncLayerSet();
+  renderModeUpdateCachedImage();
 }
 
 void QgsComposerMap::setCacheUpdated( bool u )
@@ -1169,8 +1174,8 @@ void QgsComposerMap::connectUpdateSlot()
   QgsMapLayerRegistry* layerRegistry = QgsMapLayerRegistry::instance();
   if ( layerRegistry )
   {
-    connect( layerRegistry, SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( updateCachedImage() ) );
-    connect( layerRegistry, SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( updateCachedImage() ) );
+    connect( layerRegistry, SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( layersChanged() ) );
+    connect( layerRegistry, SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( layersChanged() ) );
   }
 }
 
