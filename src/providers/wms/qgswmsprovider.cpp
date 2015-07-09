@@ -3122,6 +3122,7 @@ void QgsWmsProvider::getLegendGraphicReplyFinished( const QImage& img )
 
 void QgsWmsProvider::getLegendGraphicReplyErrored( const QString& message )
 {
+  Q_UNUSED( message );
   QgsDebugMsg( QString( "get legend failed: %1" ).arg( message ) );
 
   QObject* reply = sender();
