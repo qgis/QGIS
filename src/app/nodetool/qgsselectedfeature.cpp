@@ -77,8 +77,10 @@ void QgsSelectedFeature::updateGeometry( QgsGeometry *geom )
   if ( !geom )
   {
     QgsFeature f;
-    mVlayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeatureId ) ).nextFeature( f );
-    mGeometry = new QgsGeometry( *f.geometry() );
+    if ( mVlayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeatureId ) ).nextFeature( f ) )
+    {
+      mGeometry = new QgsGeometry( *f.geometry() );
+    }
   }
   else
   {
@@ -301,9 +303,6 @@ void QgsSelectedFeature::deleteSelectedVertexes()
 
 void QgsSelectedFeature::moveSelectedVertexes( const QgsVector &v )
 {
-  //todo...
-
-#if 0
   int nUpdates = 0;
   foreach ( QgsVertexEntry *entry, mVertexMap )
   {
@@ -360,7 +359,6 @@ void QgsSelectedFeature::moveSelectedVertexes( const QgsVector &v )
     endGeometryChange();
 
   mVlayer->endEditCommand();
-#endif //0
 }
 
 void QgsSelectedFeature::replaceVertexMap()
