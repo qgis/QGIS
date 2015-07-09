@@ -3041,6 +3041,7 @@ QImage QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh, const 
   mLegendGraphicFetcher.reset( new QgsWmsLegendDownloadHandler( *QgsNetworkAccessManager::instance(), mSettings, url ) );
   if ( ! mLegendGraphicFetcher ) return QImage();
   connect( mLegendGraphicFetcher.data(), SIGNAL( finish( const QImage& ) ), this, SLOT( getLegendGraphicReplyFinished( const QImage& ) ) );
+  connect( mLegendGraphicFetcher.data(), SIGNAL( error( const QString& ) ), this, SLOT( getLegendGraphicReplyErrored( const QString& ) ) );
   connect( mLegendGraphicFetcher.data(), SIGNAL( progress( qint64, qint64 ) ), this, SLOT( getLegendGraphicReplyProgress( qint64, qint64 ) ) );
   mLegendGraphicFetcher->start( );
 
@@ -3109,6 +3110,22 @@ void QgsWmsProvider::getLegendGraphicReplyFinished( const QImage& img )
     QgsDebugMsg( "saved GetLegendGraphic result in debug file: " + filename );
 #endif
   }
+
+  if ( reply == mLegendGraphicFetcher.data() )
+  {
+    QEventLoop *loop = qobject_cast< QEventLoop *>( reply->property( "eventLoop" ).value< QObject *>() );
+    if ( loop )
+      QMetaObject::invokeMethod( loop, "quit", Qt::QueuedConnection );
+    mLegendGraphicFetcher.reset();
+  }
+}
+
+void QgsWmsProvider::getLegendGraphicReplyErrored( const QString& message )
+{
+  Q_UNUSED( message );
+  QgsDebugMsg( QString( "get legend failed: %1" ).arg( message ) );
+
+  QObject* reply = sender();
 
   if ( reply == mLegendGraphicFetcher.data() )
   {
