@@ -1733,15 +1733,15 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
 
   const GEOSGeometry* geos_geom = 0;
   const QgsGeometry* preparedGeom = geom;
-  QScopedPointer<QgsGeometry> scpoedPreparedGeom;
+  QScopedPointer<QgsGeometry> scopedPreparedGeom;
 
   if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, doClip ? extentGeom : 0 ) )
   {
-    scpoedPreparedGeom.reset( QgsPalLabeling::prepareGeometry( geom, context, ct, doClip ? extentGeom : 0 ) );
-    if ( !scpoedPreparedGeom.data() )
+    scopedPreparedGeom.reset( QgsPalLabeling::prepareGeometry( geom, context, ct, doClip ? extentGeom : 0 ) );
+    if ( !scopedPreparedGeom.data() )
       return;
-    preparedGeom = scpoedPreparedGeom.data();
-    geos_geom = scpoedPreparedGeom.data()->asGeos();
+    preparedGeom = scopedPreparedGeom.data();
+    geos_geom = scopedPreparedGeom.data()->asGeos();
   }
   else
   {
