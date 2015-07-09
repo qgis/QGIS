@@ -38,6 +38,7 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayerCache *layerCache,
     , mLayerCache( layerCache )
     , mFieldCount( 0 )
     , mCachedField( -1 )
+    , mIconSize( 16, 16 )
 {
   QgsDebugMsg( "entered." );
 
@@ -144,7 +145,6 @@ bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &
     mFieldCache.remove( mRowIdMap[i] );
     mIdRowMap.remove( mRowIdMap[ i ] );
     mRowIdMap.remove( i );
-    mRowImageMap.remove( i );
   }
 
   // update maps
@@ -152,12 +152,9 @@ bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &
   for ( int i = row + count; i < n; i++ )
   {
     QgsFeatureId id = mRowIdMap[i];
-    QPixmap pix = mRowImageMap[i];
     mIdRowMap[ id ] -= count;
     mRowIdMap[ i-count ] = id;
-    mRowImageMap[ i-count ] = pix;
     mRowIdMap.remove( i );
-    mRowImageMap.remove( i );
   }
 
 #ifdef QGISDEBUG
@@ -177,7 +174,6 @@ bool QgsAttributeTableModel::removeRows( int row, int count, const QModelIndex &
 #endif
 
   Q_ASSERT( mRowIdMap.size() == mIdRowMap.size() );
-  Q_ASSERT( mRowIdMap.size() == mRowImageMap.size() );
 
   endRemoveRows();
 
@@ -201,11 +197,6 @@ void QgsAttributeTableModel::featureAdded( QgsFeatureId fid )
 
     mIdRowMap.insert( fid, n );
     mRowIdMap.insert( n, fid );
-    QSize iconSize(16,16);
-    QgsSymbolV2List symbols = layer()->rendererV2()->symbolsForFeature(mFeat);
-    QgsSymbolV2* symbol = symbols.first();
-    QPixmap pix = QgsSymbolLayerV2Utils::symbolPreviewPixmap( symbol, iconSize );
-    mRowImageMap.insert( n, pix );
 
     endInsertRows();
 
@@ -245,7 +236,6 @@ void QgsAttributeTableModel::layerDeleted()
   mAttributeWidgetCaches.clear();
   mAttributes.clear();
   mWidgetFactories.clear();
-  mWidgetConfigs.clear();
 }
 
 void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
@@ -368,9 +358,6 @@ void QgsAttributeTableModel::loadLayer()
   QTime t;
   t.start();
 
-  QgsRenderContext ctx;
-  layer()->rendererV2()->startRender( ctx, layer()->pendingFields() );
-
   QgsFeature feat;
   while ( features.nextFeature( feat ) )
   {
@@ -390,8 +377,6 @@ void QgsAttributeTableModel::loadLayer()
   }
 
   emit finished();
-
-  layer()->rendererV2()->stopRender( ctx );
 
   connect( mLayerCache, SIGNAL( invalidated() ), this, SLOT( loadLayer() ), Qt::UniqueConnection );
 
@@ -511,9 +496,18 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
     }
   }
   else if ( role == Qt::DecorationRole && orientation == Qt::Vertical )
-    {
-      return mRowImageMap[section];
-    }
+  {
+    QgsRenderContext ctx;
+    layer()->rendererV2()->startRender( ctx, layer()->pendingFields() );
+    QgsFeatureId id = mRowIdMap[section];
+    QgsFeature feature;
+    mLayerCache->featureAtId( id, feature );
+    QgsSymbolV2List symbols = layer()->rendererV2()->symbolsForFeature( feature );
+    QgsSymbolV2* symbol = symbols.first();
+    QPixmap pix = QgsSymbolLayerV2Utils::symbolPreviewPixmap( symbol, mIconSize );
+    layer()->rendererV2()->stopRender( ctx );
+    return pix;
+  }
   else
   {
     return QVariant();

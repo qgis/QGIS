@@ -292,7 +292,6 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     QHash<QgsFeatureId, int> mIdRowMap;
     QHash<int, QgsFeatureId> mRowIdMap;
-    QHash<int, QPixmap> mRowImageMap;
 
     /**
       * Gets mFieldCount, mAttributes and mValueMaps
@@ -315,6 +314,8 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     int mCachedField;
     /** Allows caching of one specific column (used for sorting) */
     QHash<QgsFeatureId, QVariant> mFieldCache;
+
+    QSize mIconSize;
 
     /**
      * Holds the bounds of changed cells while an update operation is running
