@@ -49,6 +49,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsquerybuilder.h"
 #include "qgsdatasourceuri.h"
+#include "qgsrendererv2.h"
 
 #include <QMessageBox>
 #include <QDir>
@@ -435,14 +436,16 @@ void QgsVectorLayerProperties::syncToLayer( void )
   // disable simplification for point layers, now it is not implemented
   if ( layer->geometryType() == QGis::Point )
   {
-    mOptionsStackedWidget->removeWidget( mOptsPage_Rendering );
     mSimplifyDrawingGroupBox->setChecked( false );
+    mSimplifyDrawingGroupBox->setEnabled( false );
   }
 
   QStringList myScalesList = PROJECT_SCALES.split( "," );
   myScalesList.append( "1:1" );
   mSimplifyMaximumScaleComboBox->updateScales( myScalesList );
   mSimplifyMaximumScaleComboBox->setScale( 1.0 / simplifyMethod.maximumScale() );
+
+  mForceRasterCheckBox->setChecked( layer->rendererV2() && layer->rendererV2()->forceRasterRender() );
 
   // load appropriate symbology page (V1 or V2)
   updateSymbologyPage();
@@ -601,6 +604,9 @@ void QgsVectorLayerProperties::apply()
   simplifyMethod.setForceLocalOptimization( !mSimplifyDrawingAtProvider->isChecked() );
   simplifyMethod.setMaximumScale( 1.0 / mSimplifyMaximumScaleComboBox->scale() );
   layer->setSimplifyMethod( simplifyMethod );
+
+  if ( layer->rendererV2() )
+    layer->rendererV2()->setForceRasterRender( mForceRasterCheckBox->isChecked() );
 
   mOldJoins = layer->vectorJoins();
 

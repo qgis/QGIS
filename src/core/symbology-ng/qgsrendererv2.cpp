@@ -209,6 +209,7 @@ QgsFeatureRendererV2::QgsFeatureRendererV2( QString type )
     , mCurrentVertexMarkerType( QgsVectorLayer::Cross )
     , mCurrentVertexMarkerSize( 3 )
     , mPaintEffect( 0 )
+    , mForceRaster( false )
 {
   mPaintEffect = QgsPaintEffectRegistry::defaultStack();
   mPaintEffect->setEnabled( false );
@@ -423,6 +424,7 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::load( QDomElement& element )
   if ( r )
   {
     r->setUsingSymbolLevels( element.attribute( "symbollevels", "0" ).toInt() );
+    r->setForceRasterRender( element.attribute( "forceraster", "0" ).toInt() );
 
     //restore layer effect
     QDomElement effectElem = element.firstChildElement( "effect" );
@@ -438,6 +440,7 @@ QDomElement QgsFeatureRendererV2::save( QDomDocument& doc )
 {
   // create empty renderer element
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
+  rendererElem.setAttribute( "forceraster", ( mForceRaster ? "1" : "0" ) );
 
   if ( mPaintEffect )
     mPaintEffect->saveProperties( doc, rendererElem );

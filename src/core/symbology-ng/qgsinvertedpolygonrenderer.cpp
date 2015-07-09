@@ -360,6 +360,7 @@ QDomElement QgsInvertedPolygonRenderer::save( QDomDocument& doc )
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( "type", "invertedPolygonRenderer" );
   rendererElem.setAttribute( "preprocessing", preprocessingEnabled() ? "1" : "0" );
+  rendererElem.setAttribute( "forceraster", ( mForceRaster ? "1" : "0" ) );
 
   if ( mSubRenderer )
   {

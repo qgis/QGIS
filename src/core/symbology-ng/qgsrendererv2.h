@@ -81,7 +81,7 @@ class CORE_EXPORT QgsFeatureRendererV2
 
     QString type() const { return mType; }
 
-    /** to be overridden
+    /** To be overridden
      * @param feature feature
      * @return returns pointer to symbol or 0 if symbol was not found
      */
@@ -144,7 +144,7 @@ class CORE_EXPORT QgsFeatureRendererV2
     //! @note added in 2.8
     virtual QDomElement writeSld( QDomDocument& doc, const QString& styleName ) const;
 
-    /** create a new renderer according to the information contained in
+    /** Create a new renderer according to the information contained in
      * the UserStyle element of a SLD style document
      * @param node the node in the SLD document whose the UserStyle element
      * is a child
@@ -211,7 +211,7 @@ class CORE_EXPORT QgsFeatureRendererV2
     //! @note added in 2.6
     virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat );
 
-    /**Allows for a renderer to modify the extent of a feature request prior to rendering
+    /** Allows for a renderer to modify the extent of a feature request prior to rendering
      * @param extent reference to request's filter extent. Modify extent to change the
      * extent of feature request
      * @param context render context
@@ -232,6 +232,21 @@ class CORE_EXPORT QgsFeatureRendererV2
      * @see paintEffect
      */
     void setPaintEffect( QgsPaintEffect* effect );
+
+    /** Returns whether the renderer must render as a raster.
+     * @note added in QGIS 2.12
+     * @see setForceRasterRender
+     */
+    bool forceRasterRender() const { return mForceRaster; }
+
+    /** Sets whether the renderer should be rendered to a raster destination.
+     * @param forceRaster set to true if renderer must be drawn on a raster surface.
+     * This may be desirable for highly detailed layers where rendering as a vector
+     * would result in a large, complex vector output.
+     * @see forceRasterRender
+     * @note added in QGIS 2.12
+     */
+    void setForceRasterRender( bool forceRaster ) { mForceRaster = forceRaster; }
 
   protected:
     QgsFeatureRendererV2( QString type );
@@ -272,11 +287,13 @@ class CORE_EXPORT QgsFeatureRendererV2
 
     QgsPaintEffect* mPaintEffect;
 
-    /**@note this function is used to convert old sizeScale expresssions to symbol
+    bool mForceRaster;
+
+    /** @note this function is used to convert old sizeScale expresssions to symbol
      * level DataDefined size
      */
     static void convertSymbolSizeScale( QgsSymbolV2 * symbol, QgsSymbolV2::ScaleMethod method, const QString & field );
-    /**@note this function is used to convert old rotations expresssions to symbol
+    /** @note this function is used to convert old rotations expresssions to symbol
      * level DataDefined angle
      */
     static void convertSymbolRotation( QgsSymbolV2 * symbol, const QString & field );

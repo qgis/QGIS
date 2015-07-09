@@ -20,6 +20,7 @@
 #include "qgsmaplayerrenderer.h"
 #include "qgspallabeling.h"
 #include "qgsvectorlayer.h"
+#include "qgsrendererv2.h"
 
 QgsMapRendererCustomPainterJob::QgsMapRendererCustomPainterJob( const QgsMapSettings& settings, QPainter* painter )
     : QgsMapRendererJob( settings )
@@ -338,13 +339,22 @@ void QgsMapRendererJob::updateLayerGeometryCaches()
 
 bool QgsMapRendererJob::needTemporaryImage( QgsMapLayer* ml )
 {
-  if ( mSettings.testFlag( QgsMapSettings::UseAdvancedEffects ) && ml->type() == QgsMapLayer::VectorLayer )
+  if ( ml->type() == QgsMapLayer::VectorLayer )
   {
     QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
-    if ((( vl->blendMode() != QPainter::CompositionMode_SourceOver )
-         || ( vl->featureBlendMode() != QPainter::CompositionMode_SourceOver )
-         || ( vl->layerTransparency() != 0 ) ) )
+    if ( vl->rendererV2()->forceRasterRender() )
+    {
+      //raster rendering is forced for this layer
       return true;
+    }
+    if ( mSettings.testFlag( QgsMapSettings::UseAdvancedEffects ) &&
+         (( vl->blendMode() != QPainter::CompositionMode_SourceOver )
+          || ( vl->featureBlendMode() != QPainter::CompositionMode_SourceOver )
+          || ( vl->layerTransparency() != 0 ) ) )
+    {
+      //layer properties require rasterisation
+      return true;
+    }
   }
 
   return false;

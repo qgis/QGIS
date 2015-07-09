@@ -692,8 +692,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>123</width>
-                <height>38</height>
+                <width>730</width>
+                <height>537</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -774,8 +774,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>100</width>
-                <height>30</height>
+                <width>730</width>
+                <height>537</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -834,8 +834,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>721</width>
-                <height>171</height>
+                <width>730</width>
+                <height>537</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -938,6 +938,13 @@
                    </widget>
                   </item>
                  </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QCheckBox" name="mForceRasterCheckBox">
+                 <property name="text">
+                  <string>Force layer to render as a raster (may result in smaller export file sizes)</string>
+                 </property>
                 </widget>
                </item>
                <item>
@@ -1400,7 +1407,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>393</width>
+                <width>714</width>
                 <height>608</height>
                </rect>
               </property>
@@ -1801,7 +1808,6 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>buttonBox</tabstop>
   <tabstop>mOptionsListWidget</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>mLayerOrigNameLineEdit</tabstop>
@@ -1823,7 +1829,7 @@
   <tabstop>mSimplifyDrawingSpinBox</tabstop>
   <tabstop>mSimplifyDrawingAtProvider</tabstop>
   <tabstop>mSimplifyMaximumScaleComboBox</tabstop>
-  <tabstop>scrollArea_10</tabstop>
+  <tabstop>mForceRasterCheckBox</tabstop>
   <tabstop>fieldComboRadio</tabstop>
   <tabstop>displayFieldComboBox</tabstop>
   <tabstop>htmlRadio</tabstop>
@@ -1836,7 +1842,6 @@
   <tabstop>scrollArea_7</tabstop>
   <tabstop>mButtonAddJoin</tabstop>
   <tabstop>mButtonRemoveJoin</tabstop>
-  <tabstop>mDiagramFrame</tabstop>
   <tabstop>scrollArea_2</tabstop>
   <tabstop>mLayerTitleLineEdit</tabstop>
   <tabstop>mLayerAbstractTextEdit</tabstop>
@@ -1851,6 +1856,8 @@
   <tabstop>mLayerLegendUrlLineEdit</tabstop>
   <tabstop>mLayerLegendUrlFormatComboBox</tabstop>
   <tabstop>teMetadata</tabstop>
+  <tabstop>mButtonEditJoin</tabstop>
+  <tabstop>scrollArea_10</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

@@ -211,6 +211,21 @@ class QgsFeatureRendererV2
      */
     void setPaintEffect( QgsPaintEffect* effect /Transfer/);
 
+    /** Returns whether the renderer must render as a raster.
+     * @note added in QGIS 2.12
+     * @see setForceRasterRender
+     */
+    bool forceRasterRender() const;
+
+    /** Sets whether the renderer should be rendered to a raster destination.
+     * @param forceRaster set to true if renderer must be drawn on a raster surface.
+     * This may be desirable for highly detailed layers where rendering as a vector
+     * would result in a large, complex vector output.
+     * @see forceRasterRender
+     * @note added in QGIS 2.12
+     */
+    void setForceRasterRender( bool forceRaster );
+
   protected:
     QgsFeatureRendererV2( QString type );
 
