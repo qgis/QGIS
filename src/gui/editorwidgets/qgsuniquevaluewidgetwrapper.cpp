@@ -22,7 +22,9 @@
 #include <QSettings>
 
 QgsUniqueValuesWidgetWrapper::QgsUniqueValuesWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+    , mComboBox( NULL )
+    , mLineEdit( NULL )
 {
 }
 
@@ -85,6 +87,7 @@ void QgsUniqueValuesWidgetWrapper::initWidget( QWidget* editor )
     }
 
     QCompleter* c = new QCompleter( sValues );
+    c->setCaseSensitivity( Qt::CaseInsensitive );
     c->setCompletionMode( QCompleter::PopupCompletion );
     mLineEdit->setCompleter( c );
 

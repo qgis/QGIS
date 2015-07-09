@@ -1,8 +1,12 @@
 #!/usr/bin/env python
 
-# Generates random shapefile which may be used for benchmarks 
+# Generates random shapefile which may be used for benchmarks
 
-import os, sys, random, string, math
+import os
+import sys
+import random
+import string
+import math
 from osgeo import ogr
 from optparse import OptionParser
 
@@ -30,7 +34,7 @@ if drv is None:
 
 # delete if exists
 try:
-  if  os.path.exists( args[0] ):
+  if os.path.exists( args[0] ):
     drv.DeleteDataSource( args[0] )
 except:
   pass
@@ -48,7 +52,7 @@ if lyr is None:
 attrTypes = ( ogr.OFTString, ogr.OFTInteger, ogr.OFTReal )
 stringWidth = 100
 for a in range(0,options.attributes):
-  attrName = "attr%s" % a 
+  attrName = "attr%s" % a
   field_defn = ogr.FieldDefn( attrName, random.choice( attrTypes ) )
   if field_defn.type == ogr.OFTString:
     field_defn.SetWidth( stringWidth )
@@ -61,13 +65,13 @@ for f in range(options.features):
   feat = ogr.Feature( feat_defn )
 
   buffer = (maxx-minx)/100
-  if options.type == "point":    
+  if options.type == "point":
     geo = ogr.Geometry( ogr.wkbPoint )
     x = random.uniform( minx, maxx )
     y = random.uniform( miny, maxy )
     geo.SetPoint_2D(0, x, y)
-  
-  elif options.type == "line":    
+
+  elif options.type == "line":
     geo = ogr.Geometry(ogr.wkbLineString)
     xc = random.uniform( minx+buffer, maxx-buffer )
     yc = random.uniform( miny+buffer, maxy-buffer )
@@ -77,8 +81,8 @@ for f in range(options.features):
       x = xc + r * math.sin(a)
       y = yc + r * math.cos(a)
       geo.SetPoint_2D(c, x, y)
-  
-  elif options.type == "polygon":    
+
+  elif options.type == "polygon":
     ring = ogr.Geometry(ogr.wkbLinearRing)
     xc = random.uniform( minx+buffer, maxx-buffer )
     yc = random.uniform( miny+buffer, maxy-buffer )
@@ -108,4 +112,3 @@ for f in range(options.features):
 
   if lyr.CreateFeature(feat) != 0:
       error ( "Failed to create feature in shapefile.\n" )
-

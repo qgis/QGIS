@@ -15,15 +15,28 @@
 #ifndef QGSDATADEFINEDBUTTON_H
 #define QGSDATADEFINEDBUTTON_H
 
-#include <qgsfield.h>
-#include <qgsdatadefined.h>
-
+#include <QDialog>
 #include <QFlags>
 #include <QMap>
 #include <QPointer>
 #include <QToolButton>
+#include <QScopedPointer>
 
 class QgsVectorLayer;
+class QgsDataDefined;
+
+/** \ingroup gui
+ * \class QgsDataDefinedAssistant
+ * An assistant (wizard) dialog, accessible from a QgsDataDefinedButton.
+ * Can be used to guide users through creation of an expression for the
+ * data defined button.
+ * @note added in 2.10
+ */
+class GUI_EXPORT QgsDataDefinedAssistant: public QDialog
+{
+  public:
+    virtual QgsDataDefined dataDefined() const = 0;
+};
 
 /** \ingroup gui
  * \class QgsDataDefinedButton
@@ -58,7 +71,7 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
                           const QgsVectorLayer* vl = 0,
                           const QgsDataDefined* datadefined = 0,
                           DataTypes datatypes = AnyType,
-                          QString description = QString( "" ) );
+                          QString description = "" );
     ~QgsDataDefinedButton();
 
     /**
@@ -76,15 +89,29 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
 
     QMap< QString, QString > definedProperty() const { return mProperty; }
 
+    /** Updates a QgsDataDefined with the current settings from the button
+     * @param dd QgsDataDefined to update
+     * @note added in QGIS 2.9
+     * @see currentDataDefined
+     */
+    void updateDataDefined( QgsDataDefined* dd ) const;
+
+    /** Returns a QgsDataDefined which reflects the current settings from the
+     * button.
+     * @note added in QGIS 2.9
+     * @see updateDataDefined
+     */
+    QgsDataDefined currentDataDefined() const;
+
     /**
      * Whether the current data definition or expression is to be used
      */
-    bool isActive() { return mProperty.value( "active" ).toInt(); }
+    bool isActive() const { return mProperty.value( "active" ).toInt(); }
 
     /**
      * Whether the current expression is to be used instead of field mapping
      */
-    bool useExpression() { return mProperty.value( "useexpr" ).toInt(); }
+    bool useExpression() const { return mProperty.value( "useexpr" ).toInt(); }
 
     /**
      * The current defined expression
@@ -168,9 +195,20 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     void clearCheckedWidgets() { mCheckedWidgets.clear(); }
 
     /**
+     * Sets an assistant used to define the data defined object properties.
+     * Ownership of the assistant is transferred to the widget.
+     * @param title menu title for the assistant
+     * @param assistant data defined assistant. Set to null to remove the assistant
+     * option from the button.
+     * @note added in 2.10
+     */
+    void setAssistant( const QString& title, QgsDataDefinedAssistant * assistant );
+
+    /**
      * Common descriptions for expected input values
      */
     static QString trString();
+    static QString charDesc();
     static QString boolDesc();
     static QString anyStringDesc();
     static QString intDesc();
@@ -178,6 +216,7 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     static QString intPosOneDesc();
     static QString doubleDesc();
     static QString doublePosDesc();
+    static QString double0to1Desc();
     static QString doubleXYDesc();
     static QString double180RotDesc();
     static QString intTranspDesc();
@@ -190,8 +229,19 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     static QString penJoinStyleDesc();
     static QString blendModesDesc();
     static QString svgPathDesc();
+    static QString filePathDesc();
     static QString paperSizeDesc();
     static QString paperOrientationDesc();
+    static QString horizontalAnchorDesc();
+    static QString verticalAnchorDesc();
+    static QString gradientTypeDesc();
+    static QString gradientCoordModeDesc();
+    static QString gradientSpreadDesc();
+    static QString lineStyleDesc();
+    static QString capStyleDesc();
+    static QString fillStyleDesc();
+    static QString markerStyleDesc();
+    static QString customDashDesc();
 
   public slots:
     /**
@@ -223,7 +273,7 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     void dataDefinedActivated( bool active );
 
   protected:
-    void mouseReleaseEvent( QMouseEvent *event );
+    void mouseReleaseEvent( QMouseEvent *event ) override;
 
     /**
      * Set whether the current expression is to be used instead of field mapping
@@ -243,10 +293,10 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
   private:
     void showDescriptionDialog();
     void showExpressionDialog();
+    void showAssistant();
     void updateGui();
 
     const QgsVectorLayer* mVectorLayer;
-    QgsFields mFields;
     QStringList mFieldNameList;
     QStringList mFieldTypeList;
     QMap< QString, QString > mProperty;
@@ -264,6 +314,7 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     QAction* mActionPasteExpr;
     QAction* mActionCopyExpr;
     QAction* mActionClearExpr;
+    QAction* mActionAssistant;
 
     DataTypes mDataTypes;
     QString mDataTypesString;
@@ -271,6 +322,8 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     QString mFullDescription;
     QString mUsageInfo;
     QString mCurrentDefinition;
+
+    QScopedPointer<QgsDataDefinedAssistant> mAssistant;
 
     static QIcon mIconDataDefine;
     static QIcon mIconDataDefineOn;

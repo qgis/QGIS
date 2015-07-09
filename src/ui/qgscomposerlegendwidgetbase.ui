@@ -279,7 +279,13 @@
               </property>
               <property name="icon">
                <iconset resource="../../images/images.qrc">
-                <normaloff>:/images/themes/default/mActionAddGroup.png</normaloff>:/images/themes/default/mActionAddGroup.png</iconset>
+                <normaloff>:/images/themes/default/mActionAddGroup.svg</normaloff>:/images/themes/default/mActionAddGroup.svg</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
               </property>
              </widget>
             </item>
@@ -290,7 +296,7 @@
               </property>
               <property name="icon">
                <iconset resource="../../images/images.qrc">
-                <normaloff>:/images/themes/default/mActionSignPlus.png</normaloff>:/images/themes/default/mActionSignPlus.png</iconset>
+                <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
               </property>
               <property name="iconSize">
                <size>
@@ -307,7 +313,7 @@
               </property>
               <property name="icon">
                <iconset resource="../../images/images.qrc">
-                <normaloff>:/images/themes/default/mActionSignMinus.png</normaloff>:/images/themes/default/mActionSignMinus.png</iconset>
+                <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
               </property>
               <property name="iconSize">
                <size>
@@ -367,7 +373,7 @@
               </property>
               <property name="icon">
                <iconset resource="../../images/images.qrc">
-                <normaloff>:/images/themes/default/mActionFilter.png</normaloff>:/images/themes/default/mActionFilter.png</iconset>
+                <normaloff>:/images/themes/default/mActionFilter2.svg</normaloff>:/images/themes/default/mActionFilter2.svg</iconset>
               </property>
               <property name="iconSize">
                <size>
@@ -544,7 +550,7 @@
           <item row="4" column="0" colspan="2">
            <widget class="QCheckBox" name="mSplitLayerCheckBox">
             <property name="toolTip">
-             <string>Allow to split layer items into multiple columns.</string>
+             <string>Allow splitting layer items into multiple columns.</string>
             </property>
             <property name="text">
              <string>Split layers</string>

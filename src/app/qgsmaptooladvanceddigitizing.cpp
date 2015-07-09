@@ -28,9 +28,6 @@ QgsMapToolAdvancedDigitizing::QgsMapToolAdvancedDigitizing( QgsMapCanvas* canvas
     , mSnapOnDoubleClick( false )
 {
   mCadDockWidget = QgisApp::instance()->cadDockWidget();
-
-  // CADTODO: remove
-  mSnapper.setMapCanvas( canvas );
 }
 
 QgsMapToolAdvancedDigitizing::~QgsMapToolAdvancedDigitizing()
@@ -39,7 +36,8 @@ QgsMapToolAdvancedDigitizing::~QgsMapToolAdvancedDigitizing()
 
 void QgsMapToolAdvancedDigitizing::canvasPressEvent( QMouseEvent* e )
 {
-  QgsMapMouseEvent* event = new QgsMapMouseEvent( this, e, mSnapOnPress );
+  QgsMapMouseEvent::SnappingMode mode = mSnapOnPress ? QgsMapMouseEvent::SnapProjectConfig : QgsMapMouseEvent::NoSnapping;
+  QgsMapMouseEvent* event = new QgsMapMouseEvent( this, e, mode );
   if ( !mCadDockWidget->canvasPressEventFilter( event ) )
   {
     canvasMapPressEvent( event );
@@ -49,10 +47,10 @@ void QgsMapToolAdvancedDigitizing::canvasPressEvent( QMouseEvent* e )
 
 void QgsMapToolAdvancedDigitizing::canvasReleaseEvent( QMouseEvent* e )
 {
-  bool doSnap = mSnapOnRelease;
+  QgsMapMouseEvent::SnappingMode mode = mSnapOnRelease ? QgsMapMouseEvent::SnapProjectConfig : QgsMapMouseEvent::NoSnapping;
   if ( mCadDockWidget->cadEnabled() )
-    doSnap = mCadDockWidget->snappingEnabled();
-  QgsMapMouseEvent* event = new QgsMapMouseEvent( this, e, doSnap );
+    mode = mCadDockWidget->snappingMode();
+  QgsMapMouseEvent* event = new QgsMapMouseEvent( this, e, mode );
   if ( !mCadDockWidget->canvasReleaseEventFilter( event ) )
   {
     canvasMapReleaseEvent( event );
@@ -62,10 +60,10 @@ void QgsMapToolAdvancedDigitizing::canvasReleaseEvent( QMouseEvent* e )
 
 void QgsMapToolAdvancedDigitizing::canvasMoveEvent( QMouseEvent* e )
 {
-  bool doSnap = mSnapOnMove;
+  QgsMapMouseEvent::SnappingMode mode = mSnapOnMove ? QgsMapMouseEvent::SnapProjectConfig : QgsMapMouseEvent::NoSnapping;
   if ( mCadDockWidget->cadEnabled() )
-    doSnap = mCadDockWidget->snappingEnabled();
-  QgsMapMouseEvent* event = new QgsMapMouseEvent( this, e, doSnap );
+    mode = mCadDockWidget->snappingMode();
+  QgsMapMouseEvent* event = new QgsMapMouseEvent( this, e, mode );
   if ( !mCadDockWidget->canvasMoveEventFilter( event ) )
   {
     canvasMapMoveEvent( event );
@@ -75,7 +73,8 @@ void QgsMapToolAdvancedDigitizing::canvasMoveEvent( QMouseEvent* e )
 
 void QgsMapToolAdvancedDigitizing::canvasDoubleClickEvent( QMouseEvent* e )
 {
-  QgsMapMouseEvent* event = new QgsMapMouseEvent( this, e, mSnapOnDoubleClick );
+  QgsMapMouseEvent::SnappingMode mode = mSnapOnDoubleClick ? QgsMapMouseEvent::SnapProjectConfig : QgsMapMouseEvent::NoSnapping;
+  QgsMapMouseEvent* event = new QgsMapMouseEvent( this, e, mode );
   canvasMapDoubleClickEvent( event );
   delete event;
 }

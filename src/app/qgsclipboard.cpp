@@ -99,13 +99,13 @@ void QgsClipboard::setSystemClipboard()
   // then the field contents
   for ( QgsFeatureList::iterator it = mFeatureClipboard.begin(); it != mFeatureClipboard.end(); ++it )
   {
-    const QgsAttributes& attributes = it->attributes();
+    QgsAttributes attributes = it->attributes();
 
     // TODO: Set up Paste Transformations to specify the order in which fields are added.
     if ( copyWKT )
     {
-      if ( it->geometry() )
-        textFields += it->geometry()->exportToWkt();
+      if ( it->constGeometry() )
+        textFields += it->constGeometry()->exportToWkt();
       else
       {
         textFields += settings.value( "qgis/nullValue", "NULL" ).toString();
@@ -169,12 +169,12 @@ QgsFeatureList QgsClipboard::copyOf( const QgsFields &fields )
     if ( !geometry )
       continue;
 
-    QgsFeature* feature = new QgsFeature();
+    QgsFeature feature;
     if ( !fields.isEmpty() )
-      feature->setFields( &fields, true );
+      feature.setFields( fields, true );
 
-    feature->setGeometry( geometry );
-    features.append( QgsFeature( *feature ) );
+    feature.setGeometry( geometry );
+    features.append( feature );
   }
 
   if ( features.isEmpty() )
@@ -198,7 +198,7 @@ void QgsClipboard::insert( QgsFeature& feature )
 {
   mFeatureClipboard.push_back( feature );
 
-  QgsDebugMsg( "inserted " + feature.geometry()->exportToWkt() );
+  QgsDebugMsg( "inserted " + feature.constGeometry()->exportToWkt() );
   mUseSystemClipboard = false;
   emit changed();
 }

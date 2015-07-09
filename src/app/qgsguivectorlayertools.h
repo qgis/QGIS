@@ -37,7 +37,7 @@ class QgsGuiVectorLayerTools : public QgsVectorLayerTools, public QObject
      *
      * @return                True in case of success, False if the operation failed/was aborted
      */
-    bool addFeature( QgsVectorLayer *layer, QgsAttributeMap defaultValues, const QgsGeometry &defaultGeometry ) const;
+    bool addFeature( QgsVectorLayer *layer, QgsAttributeMap defaultValues, const QgsGeometry &defaultGeometry ) const override;
 
     /**
      * This should be called, whenever a vector layer should be switched to edit mode. If successful
@@ -47,7 +47,7 @@ class QgsGuiVectorLayerTools : public QgsVectorLayerTools, public QObject
      *
      * @return       True, if the editing session was started
      */
-    bool startEditing( QgsVectorLayer* layer ) const;
+    bool startEditing( QgsVectorLayer* layer ) const override;
 
     /**
      * Should be called, when an editing session is ended and the features should be commited.
@@ -59,7 +59,7 @@ class QgsGuiVectorLayerTools : public QgsVectorLayerTools, public QObject
      *
      * @return            True if successful
      */
-    bool stopEditing( QgsVectorLayer* layer, bool allowCancel = true ) const;
+    bool stopEditing( QgsVectorLayer* layer, bool allowCancel = true ) const override;
 
     /**
      * Should be called, when the features should be commited but the editing session is not ended.
@@ -67,7 +67,7 @@ class QgsGuiVectorLayerTools : public QgsVectorLayerTools, public QObject
      * @param layer       The layer to commit
      * @return            True if successful
      */
-    bool saveEdits( QgsVectorLayer* layer ) const;
+    bool saveEdits( QgsVectorLayer* layer ) const override;
 
   private:
     void commitError( QgsVectorLayer* vlayer ) const;

@@ -103,48 +103,23 @@ void QgsMapToolZoom::canvasReleaseEvent( QMouseEvent * e )
     mZoomRect.setRight( e->pos().x() );
     mZoomRect.setBottom( e->pos().y() );
 
-    const QgsMapToPixel* coordinateTransform = mCanvas->getCoordinateTransform();
+    //account for bottom right -> top left dragging
+    mZoomRect = mZoomRect.normalized();
 
-    // set the extent to the zoomBox
-    QgsPoint ll = coordinateTransform->toMapCoordinates( mZoomRect.left(), mZoomRect.bottom() );
-    QgsPoint ur = coordinateTransform->toMapCoordinates( mZoomRect.right(), mZoomRect.top() );
+    // set center and zoom
+    const QSize& zoomRectSize = mZoomRect.size();
+    const QgsMapSettings& mapSettings = mCanvas->mapSettings();
+    const QSize& canvasSize = mapSettings.outputSize();
+    double sfx = ( double )zoomRectSize.width() / canvasSize.width();
+    double sfy = ( double )zoomRectSize.height() / canvasSize.height();
+    double sf = qMax( sfx, sfy );
 
-    QgsRectangle r;
-    r.setXMinimum( ll.x() );
-    r.setYMinimum( ll.y() );
-    r.setXMaximum( ur.x() );
-    r.setYMaximum( ur.y() );
-    r.normalize();
+    const QgsMapToPixel* m2p = mCanvas->getCoordinateTransform();
+    QgsPoint c = m2p->toMapCoordinates( mZoomRect.center() );
 
-    // prevent zooming to an empty extent
-    if ( r.width() == 0 || r.height() == 0 )
-    {
-      return;
-    }
+    mCanvas->setCenter( c );
+    mCanvas->zoomByFactor( mZoomOut ? 1.0 / sf : sf );
 
-    if ( mZoomOut )
-    {
-      QgsPoint cer = r.center();
-      QgsRectangle extent = mCanvas->extent();
-
-      double sf;
-      if ( mZoomRect.width() > mZoomRect.height() )
-      {
-        sf = extent.width() / r.width();
-      }
-      else
-      {
-        sf = extent.height() / r.height();
-      }
-      sf = sf * 2.0;
-      r.scale( sf );
-
-      QgsDebugMsg( QString( "Extent scaled by %1 to %2" ).arg( sf ).arg( r.toString().toLocal8Bit().constData() ) );
-      QgsDebugMsg( QString( "Center of currentExtent after scaling is %1" ).arg( r.center().toString().toLocal8Bit().constData() ) );
-
-    }
-
-    mCanvas->setExtent( r );
     mCanvas->refresh();
   }
   else // not dragging
@@ -158,4 +133,6 @@ void QgsMapToolZoom::deactivate()
 {
   delete mRubberBand;
   mRubberBand = 0;
+
+  QgsMapTool::deactivate();
 }

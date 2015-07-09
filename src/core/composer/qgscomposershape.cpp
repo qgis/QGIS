@@ -315,7 +315,7 @@ bool QgsComposerShape::readXML( const QDomElement& itemElem, const QDomDocument&
   if ( !shapeStyleSymbolElem.isNull() )
   {
     delete mShapeStyleSymbol;
-    mShapeStyleSymbol = dynamic_cast<QgsFillSymbolV2*>( QgsSymbolLayerV2Utils::loadSymbol( shapeStyleSymbolElem ) );
+    mShapeStyleSymbol = QgsSymbolLayerV2Utils::loadSymbol<QgsFillSymbolV2>( shapeStyleSymbolElem );
   }
   else
   {

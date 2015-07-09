@@ -66,7 +66,7 @@ class eVisGenericEventBrowserGui : public QDialog, private Ui::eVisGenericEventB
     ~eVisGenericEventBrowserGui();
 
   protected:
-    void closeEvent( QCloseEvent *event );
+    void closeEvent( QCloseEvent *event ) override;
 
   private:
     //Variables
@@ -126,7 +126,7 @@ class eVisGenericEventBrowserGui : public QDialog, private Ui::eVisGenericEventB
 
     //Methods
     /** \brief Applies parameters on the Options tabs and saves the configuration */
-    void accept();
+    void accept() override;
 
     /** \brief Modifies the Event Image Path according to the local and global settings */
     void buildEventImagePath();

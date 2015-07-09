@@ -25,10 +25,11 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-from random import *
+from random import seed, uniform
+from math import sqrt
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from PyQt4.QtCore import QVariant
+from qgis.core import QGis, QgsRectangle, QgsFields, QgsField, QgsFeature, QgsGeometry, QgsPoint
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -36,7 +37,6 @@ from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
 from processing.core.outputs import OutputVector
-from processing.tools import vector
 
 
 class RegularPoints(GeoAlgorithm):
@@ -52,16 +52,17 @@ class RegularPoints(GeoAlgorithm):
         self.name = 'Regular points'
         self.group = 'Vector creation tools'
 
-        self.addParameter(ParameterExtent(self.EXTENT, 'Input extent'))
+        self.addParameter(ParameterExtent(self.EXTENT,
+            self.tr('Input extent')))
         self.addParameter(ParameterNumber(self.SPACING,
-            'Point spacing/count', 0.0001, 999999999.999999999, 0.0001))
+            self.tr('Point spacing/count'), 0.0001, 999999999.999999999, 0.0001))
         self.addParameter(ParameterNumber(self.INSET,
-            'Initial inset from corner (LH side)', 0.0, 9999.9999, 0.0))
+            self.tr('Initial inset from corner (LH side)'), 0.0, 9999.9999, 0.0))
         self.addParameter(ParameterBoolean(self.RANDOMIZE,
-            'Apply random offset to point spacing', False))
+            self.tr('Apply random offset to point spacing'), False))
         self.addParameter(ParameterBoolean(self.IS_SPACING,
-            'Use point spacing', True))
-        self.addOutput(OutputVector(self.OUTPUT, 'Regular points'))
+            self.tr('Use point spacing'), True))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Regular points')))
 
     def processAlgorithm(self, progress):
         extent = str(self.getParameterValue(self.EXTENT)).split(',')
@@ -88,7 +89,7 @@ class RegularPoints(GeoAlgorithm):
         if isSpacing:
             pSpacing = spacing
         else:
-            pSpacing = sqrt(area / value)
+            pSpacing = sqrt(area / spacing)
 
         f = QgsFeature()
         f.initAttributes(1)

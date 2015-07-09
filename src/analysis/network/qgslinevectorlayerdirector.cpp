@@ -35,8 +35,8 @@
 class QgsPointCompare
 {
   public:
-    QgsPointCompare( double tolerance ) :
-        mTolerance( tolerance )
+    explicit QgsPointCompare( double tolerance )
+        : mTolerance( tolerance )
     {  }
 
     bool operator()( const QgsPoint& p1, const QgsPoint& p2 ) const
@@ -166,10 +166,10 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
   while ( fit.nextFeature( feature ) )
   {
     QgsMultiPolyline mpl;
-    if ( feature.geometry()->wkbType() == QGis::WKBMultiLineString )
-      mpl = feature.geometry()->asMultiPolyline();
-    else if ( feature.geometry()->wkbType() == QGis::WKBLineString )
-      mpl.push_back( feature.geometry()->asPolyline() );
+    if ( feature.constGeometry()->wkbType() == QGis::WKBMultiLineString )
+      mpl = feature.constGeometry()->asMultiPolyline();
+    else if ( feature.constGeometry()->wkbType() == QGis::WKBLineString )
+      mpl.push_back( feature.constGeometry()->asPolyline() );
 
     QgsMultiPolyline::iterator mplIt;
     for ( mplIt = mpl.begin(); mplIt != mpl.end(); ++mplIt )
@@ -300,10 +300,10 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
 
     // begin features segments and add arc to the Graph;
     QgsMultiPolyline mpl;
-    if ( feature.geometry()->wkbType() == QGis::WKBMultiLineString )
-      mpl = feature.geometry()->asMultiPolyline();
-    else if ( feature.geometry()->wkbType() == QGis::WKBLineString )
-      mpl.push_back( feature.geometry()->asPolyline() );
+    if ( feature.constGeometry()->wkbType() == QGis::WKBMultiLineString )
+      mpl = feature.constGeometry()->asMultiPolyline();
+    else if ( feature.constGeometry()->wkbType() == QGis::WKBLineString )
+      mpl.push_back( feature.constGeometry()->asPolyline() );
 
     QgsMultiPolyline::iterator mplIt;
     for ( mplIt = mpl.begin(); mplIt != mpl.end(); ++mplIt )
@@ -325,6 +325,7 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
           TiePointInfo t;
           t.mFirstPoint = pt1;
           t.mLastPoint  = pt2;
+          t.mLength = 0.0;
           pointLengthIt = my_binary_search( pointLengthMap.begin(), pointLengthMap.end(), t, TiePointInfoCompare );
 
           if ( pointLengthIt != pointLengthMap.end() )

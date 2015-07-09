@@ -28,11 +28,11 @@
 #
 #---------------------------------------------------------------------
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import QObject, SIGNAL, QVariant, QFile
+from PyQt4.QtGui import QDialog, QDialogButtonBox, QMessageBox
 import ftools_utils
-from qgis.core import *
-from math import *
+from qgis.core import QGis, QgsFeature, QgsVectorFileWriter, QgsFields, QgsField, QgsGeometry, QgsPoint, QgsDistanceArea
+from math import sqrt
 from ui_frmMeanCoords import Ui_Dialog
 
 class Dialog(QDialog, Ui_Dialog):
@@ -85,9 +85,8 @@ class Dialog(QDialog, Ui_Dialog):
         else:
             inName = self.inShape.currentText()
             outPath = self.outShape.text()
-            outName = ftools_utils.getShapefileName(outPath)
 
-            self.compute(inName, outPath, self.weightField.currentText(), self.sizeValue.value(), self.uniqueField.currentText())
+            self.compute(inName, self.weightField.currentText(), self.sizeValue.value(), self.uniqueField.currentText())
             self.progressBar.setValue(100)
             self.outShape.clear()
             if self.addToCanvasCheck.isChecked():
@@ -107,7 +106,7 @@ class Dialog(QDialog, Ui_Dialog):
             return
         self.outShape.setText( self.shapefileName )
 
-    def compute(self, inName, outName, weightField="", times=1, uniqueField=""):
+    def compute(self, inName, weightField="", times=1, uniqueField=""):
         vlayer = ftools_utils.getVectorLayerByName(inName)
         provider = vlayer.dataProvider()
         weightIndex = provider.fieldNameIndex(weightField)
@@ -118,7 +117,7 @@ class Dialog(QDialog, Ui_Dialog):
         if check.exists():
             if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
                 return
-        if uniqueIndex <> -1:
+        if uniqueIndex != -1:
             uniqueValues = ftools_utils.getUniqueValues(provider, int( uniqueIndex ) )
             single = False
         else:

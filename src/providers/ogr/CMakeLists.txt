@@ -1,7 +1,7 @@
 
-SET (OGR_SRCS qgsogrprovider.cpp qgsogrdataitems.cpp qgsogrfeatureiterator.cpp qgsogrgeometrysimplifier.cpp)
+SET (OGR_SRCS qgsogrprovider.cpp qgsogrdataitems.cpp qgsogrfeatureiterator.cpp qgsogrgeometrysimplifier.cpp qgsogrconnpool.cpp)
 
-SET(OGR_MOC_HDRS qgsogrprovider.h qgsogrdataitems.h)
+SET(OGR_MOC_HDRS qgsogrprovider.h qgsogrdataitems.h qgsogrconnpool.h)
 
 ########################################################
 # Build
@@ -11,6 +11,7 @@ QT4_WRAP_CPP(OGR_MOC_SRCS ${OGR_MOC_HDRS})
 INCLUDE_DIRECTORIES(
   .
   ../../core
+  ../../core/geometry
   ${CMAKE_CURRENT_SOURCE_DIR}/../../core/symbology-ng
   ${GDAL_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}

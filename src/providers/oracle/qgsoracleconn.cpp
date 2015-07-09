@@ -361,10 +361,21 @@ QString QgsOracleConn::fieldExpression( const QgsField &fld )
 
 void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, bool useEstimatedMetadata, bool onlyExistingTypes )
 {
+  QgsDebugMsg( "entering: " + layerProperty.toString() );
+
+  if ( layerProperty.isView )
+  {
+    layerProperty.pkCols = pkCandidates( layerProperty.ownerName, layerProperty.tableName );
+    if ( layerProperty.pkCols.isEmpty() )
+    {
+      QgsMessageLog::logMessage( tr( "View %1.%2 doesn't have integer columns for use as keys." )
+                                 .arg( layerProperty.ownerName ).arg( layerProperty.tableName ),
+                                 tr( "Oracle" ) );
+    }
+  }
+
   if ( layerProperty.geometryColName.isEmpty() )
     return;
-
-  QgsDebugMsg( "entering: " + layerProperty.toString() );
 
   QString table;
   QString where;
@@ -453,7 +464,7 @@ void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, b
       layerProperty.types << detectedType;
     }
 
-    int srid = detectedSrid != -1 ? detectedSrid : ( qry.value( idx ).isNull() ? -1 : qry.value( idx ).toInt() );
+    int srid = detectedSrid > 0 ? detectedSrid : ( qry.value( idx ).isNull() ? -1 : qry.value( idx ).toInt() );
     layerProperty.srids << srid;
     srids << srid;
   }
@@ -464,17 +475,6 @@ void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, b
   {
     layerProperty.types << QGis::WKBUnknown;
     layerProperty.srids << ( srids.size() == 1 ? *srids.constBegin() : 0 );
-  }
-
-  if ( layerProperty.isView )
-  {
-    layerProperty.pkCols = pkCandidates( layerProperty.ownerName, layerProperty.tableName );
-    if ( layerProperty.pkCols.isEmpty() )
-    {
-      QgsMessageLog::logMessage( tr( "View %1.%2 doesn't have integer columns for use as keys." )
-                                 .arg( layerProperty.ownerName ).arg( layerProperty.tableName ),
-                                 tr( "Oracle" ) );
-    }
   }
 
   QgsDebugMsg( "leaving." );

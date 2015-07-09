@@ -6,41 +6,40 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>397</width>
-    <height>348</height>
+    <width>417</width>
+    <height>337</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="7" column="0">
-    <widget class="QLabel" name="mDashPatternUnitLabel">
-     <property name="text">
-      <string>Dash pattern unit</string>
-     </property>
-    </widget>
+   <item row="3" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QgsPenStyleComboBox" name="cboPenStyle"/>
+     </item>
+     <item>
+      <widget class="QgsDataDefinedButton" name="mPenStyleDDBtn">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="label_6">
-     <property name="text">
-      <string>Cap style</string>
+   <item row="8" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
      </property>
-    </widget>
-   </item>
-   <item row="6" column="0">
-    <widget class="QCheckBox" name="mCustomCheckBox">
-     <property name="text">
-      <string>Use custom dash pattern</string>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
      </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Pen width</string>
-     </property>
-    </widget>
+    </spacer>
    </item>
    <item row="0" column="0">
     <widget class="QLabel" name="label">
@@ -50,65 +49,62 @@
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QgsColorButtonV2" name="btnChangeColor">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>120</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>120</width>
-       <height>16777215</height>
-      </size>
-     </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_9">
+     <item>
+      <widget class="QgsColorButtonV2" name="btnChangeColor">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>120</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>120</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsDataDefinedButton" name="mColorDDBtn">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_2">
      <property name="text">
-      <string/>
+      <string>Pen width</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="label_4">
-     <property name="text">
-      <string>Offset</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>Pen style</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="label_5">
-     <property name="text">
-      <string>Join style</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2">
-    <spacer name="horizontalSpacer">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>40</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="1" column="1" colspan="2">
+   <item row="1" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QgsDoubleSpinBox" name="spinWidth">
@@ -130,17 +126,38 @@
        <property name="value">
         <double>1.000000000000000</double>
        </property>
-       <property name="showClearButton">
+       <property name="showClearButton" stdset="0">
         <bool>false</bool>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QgsUnitSelectionWidget" name="mPenWidthUnitWidget" native="true"/>
+      <widget class="QgsDataDefinedButton" name="mPenWidthDDBtn">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsUnitSelectionWidget" name="mPenWidthUnitWidget" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
-   <item row="2" column="1" colspan="2">
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Offset</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
       <widget class="QgsDoubleSpinBox" name="spinOffset">
@@ -168,61 +185,120 @@
       </widget>
      </item>
      <item>
-      <widget class="QgsUnitSelectionWidget" name="mOffsetUnitWidget" native="true"/>
+      <widget class="QgsDataDefinedButton" name="mOffsetDDBtn">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsUnitSelectionWidget" name="mOffsetUnitWidget" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
-   <item row="3" column="1" colspan="2">
-    <widget class="QgsPenStyleComboBox" name="cboPenStyle"/>
-   </item>
-   <item row="4" column="1" colspan="2">
-    <widget class="QgsPenJoinStyleComboBox" name="cboJoinStyle"/>
-   </item>
-   <item row="5" column="1" colspan="2">
-    <widget class="QgsPenCapStyleComboBox" name="cboCapStyle"/>
-   </item>
-   <item row="6" column="1" colspan="2">
-    <widget class="QPushButton" name="mChangePatternButton">
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>Change</string>
+      <string>Pen style</string>
      </property>
     </widget>
    </item>
-   <item row="7" column="1" colspan="2">
-    <widget class="QgsUnitSelectionWidget" name="mDashPatternUnitWidget" native="true"/>
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>Join style</string>
+     </property>
+    </widget>
    </item>
-   <item row="8" column="0" colspan="3">
+   <item row="4" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_10">
+     <item>
+      <widget class="QgsPenJoinStyleComboBox" name="cboJoinStyle"/>
+     </item>
+     <item>
+      <widget class="QgsDataDefinedButton" name="mJoinStyleDDBtn">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="label_6">
+     <property name="text">
+      <string>Cap style</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_11">
+     <item>
+      <widget class="QgsPenCapStyleComboBox" name="cboCapStyle"/>
+     </item>
+     <item>
+      <widget class="QgsDataDefinedButton" name="mCapStyleDDBtn">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="6" column="0">
+    <widget class="QCheckBox" name="mCustomCheckBox">
+     <property name="text">
+      <string>Use custom dash pattern</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_12">
+     <item>
+      <widget class="QPushButton" name="mChangePatternButton">
+       <property name="text">
+        <string>Change</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsDataDefinedButton" name="mDashPatternDDBtn">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsUnitSelectionWidget" name="mDashPatternUnitWidget" native="true"/>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item row="7" column="0" colspan="2">
     <widget class="QCheckBox" name="mDrawInsideCheckBox">
      <property name="text">
       <string>Draw line only inside polygon</string>
      </property>
     </widget>
-   </item>
-   <item row="9" column="0" colspan="3">
-    <widget class="QPushButton" name="mDataDefinedPropertiesButton">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Data defined properties...</string>
-     </property>
-    </widget>
-   </item>
-   <item row="10" column="0" colspan="3">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
    </item>
   </layout>
  </widget>
@@ -250,6 +326,11 @@
    <header>qgspenstylecombobox.h</header>
   </customwidget>
   <customwidget>
+   <class>QgsDataDefinedButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsdatadefinedbutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsPenJoinStyleComboBox</class>
    <extends>QComboBox</extends>
    <header>qgspenstylecombobox.h</header>
@@ -262,18 +343,21 @@
  </customwidgets>
  <tabstops>
   <tabstop>btnChangeColor</tabstop>
+  <tabstop>mColorDDBtn</tabstop>
   <tabstop>spinWidth</tabstop>
-  <tabstop>mPenWidthUnitWidget</tabstop>
+  <tabstop>mPenWidthDDBtn</tabstop>
   <tabstop>spinOffset</tabstop>
-  <tabstop>mOffsetUnitWidget</tabstop>
+  <tabstop>mOffsetDDBtn</tabstop>
   <tabstop>cboPenStyle</tabstop>
+  <tabstop>mPenStyleDDBtn</tabstop>
   <tabstop>cboJoinStyle</tabstop>
+  <tabstop>mJoinStyleDDBtn</tabstop>
   <tabstop>cboCapStyle</tabstop>
+  <tabstop>mCapStyleDDBtn</tabstop>
   <tabstop>mCustomCheckBox</tabstop>
   <tabstop>mChangePatternButton</tabstop>
-  <tabstop>mDashPatternUnitWidget</tabstop>
+  <tabstop>mDashPatternDDBtn</tabstop>
   <tabstop>mDrawInsideCheckBox</tabstop>
-  <tabstop>mDataDefinedPropertiesButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

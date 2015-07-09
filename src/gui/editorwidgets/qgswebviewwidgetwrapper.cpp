@@ -23,7 +23,10 @@
 #include <QSettings>
 
 QgsWebViewWidgetWrapper::QgsWebViewWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+    , mWebView( NULL )
+    , mLineEdit( NULL )
+    , mButton( NULL )
 {
 }
 

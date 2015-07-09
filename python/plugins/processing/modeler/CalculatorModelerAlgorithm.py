@@ -25,10 +25,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4 import QtCore, QtGui
+from PyQt4.QtCore import Qt, QObject, QMetaObject, SIGNAL
+from PyQt4.QtGui import QDialogButtonBox, QTextEdit, QLineEdit, QVBoxLayout
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import \
-        GeoAlgorithmExecutionException
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputNumber
@@ -79,11 +80,11 @@ class CalculatorModelerParametersDialog(ModelerParametersDialog):
         self.valueItems = {}
         self.dependentItems = {}
         self.resize(650, 450)
-        self.buttonBox = QtGui.QDialogButtonBox()
-        self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel
-                | QtGui.QDialogButtonBox.Ok)
-        self.infoText = QtGui.QTextEdit()
+        self.buttonBox = QDialogButtonBox()
+        self.buttonBox.setOrientation(Qt.Horizontal)
+        self.buttonBox.setStandardButtons(QDialogButtonBox.Cancel
+                | QDialogButtonBox.Ok)
+        self.infoText = QTextEdit()
         numbers = self.getAvailableValuesOfType(ParameterNumber, OutputNumber)
         text = self.tr('You can refer to model values in your formula, using '
             'single-letter variables, as follows:\n', 'CalculatorModelerParametersDialog')
@@ -96,22 +97,20 @@ class CalculatorModelerParametersDialog(ModelerParametersDialog):
             text += self.tr('\n - No numerical variables are available.', 'CalculatorModelerParametersDialog')
         self.infoText.setText(text)
         self.infoText.setEnabled(False)
-        self.formulaText = QtGui.QLineEdit()
+        self.formulaText = QLineEdit()
         if hasattr(self.formulaText, 'setPlaceholderText'):
             self.formulaText.setPlaceholderText(self.tr('[Enter your formula here]', 'CalculatorModelerParametersDialog'))
         self.setWindowTitle(self.tr('Calculator', 'CalculatorModelerParametersDialog'))
-        self.verticalLayout = QtGui.QVBoxLayout()
+        self.verticalLayout = QVBoxLayout()
         self.verticalLayout.setSpacing(2)
         self.verticalLayout.setMargin(0)
         self.verticalLayout.addWidget(self.infoText)
         self.verticalLayout.addWidget(self.formulaText)
         self.verticalLayout.addWidget(self.buttonBox)
         self.setLayout(self.verticalLayout)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL('accepted()'),
-                               self.okPressed)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL('rejected()'),
-                               self.cancelPressed)
-        QtCore.QMetaObject.connectSlotsByName(self)
+        QObject.connect(self.buttonBox, SIGNAL('accepted()'), self.okPressed)
+        QObject.connect(self.buttonBox, SIGNAL('rejected()'), self.cancelPressed)
+        QMetaObject.connectSlotsByName(self)
 
     def createAlgorithm(self):
         alg = Algorithm('modelertools:calculator')
@@ -135,5 +134,5 @@ class CalculatorModelerParametersDialog(ModelerParametersDialog):
             paramname = NUMBER + str(i)
             alg.params[paramname] = variable
 
-        #TODO check formula is correct
+        # TODO check formula is correct
         return alg

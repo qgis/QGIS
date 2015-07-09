@@ -34,12 +34,12 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
   public:
     enum FieldRoles
     {
-      FieldNameRole = Qt::UserRole + 1,  /* return field name if index corresponds to a field */
-      FieldIndexRole = Qt::UserRole + 2, /* return field index if index corresponds to a field */
-      ExpressionRole = Qt::UserRole + 3, /* return field name or expression */
-      IsExpressionRole = Qt::UserRole + 4, /* return if index corresponds to an expression */
-      ExpressionValidityRole = Qt::UserRole + 5, /* return if expression is valid or not */
-      FieldTypeRole = Qt::UserRole + 6 /* return the field type (if a field, return QVariant if expression) */
+      FieldNameRole = Qt::UserRole + 1,  /*!< return field name if index corresponds to a field */
+      FieldIndexRole = Qt::UserRole + 2, /*!< return field index if index corresponds to a field */
+      ExpressionRole = Qt::UserRole + 3, /*!< return field name or expression */
+      IsExpressionRole = Qt::UserRole + 4, /*!< return if index corresponds to an expression */
+      ExpressionValidityRole = Qt::UserRole + 5, /*!< return if expression is valid or not */
+      FieldTypeRole = Qt::UserRole + 6 /*!< return the field type (if a field, return QVariant if expression) */
     };
 
     /**
@@ -89,11 +89,11 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
 
     // QAbstractItemModel interface
   public:
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
-    QModelIndex parent( const QModelIndex &child ) const;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const;
-    int columnCount( const QModelIndex &parent ) const;
-    QVariant data( const QModelIndex &index, int role ) const;
+    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    QModelIndex parent( const QModelIndex &child ) const override;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    int columnCount( const QModelIndex &parent ) const override;
+    QVariant data( const QModelIndex &index, int role ) const override;
 };
 
 #endif // QGSFIELDMODEL_H

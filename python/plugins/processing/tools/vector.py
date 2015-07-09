@@ -30,10 +30,33 @@ import uuid
 import codecs
 import cStringIO
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from PyQt4.QtCore import QVariant, QSettings
+from qgis.core import QGis, QgsFields, QgsField, QgsSpatialIndex, QgsMapLayerRegistry, QgsMapLayer, QgsVectorLayer, QgsVectorFileWriter, QgsDistanceArea
 from processing.core.ProcessingConfig import ProcessingConfig
 
+
+GEOM_TYPE_MAP = {
+    QGis.WKBPoint: 'Point',
+    QGis.WKBLineString: 'LineString',
+    QGis.WKBPolygon: 'Polygon',
+    QGis.WKBMultiPoint: 'MultiPoint',
+    QGis.WKBMultiLineString: 'MultiLineString',
+    QGis.WKBMultiPolygon: 'MultiPolygon',
+}
+
+
+TYPE_MAP = {
+    str : QVariant.String,
+    float: QVariant.Double,
+    int: QVariant.Int,
+    bool: QVariant.Bool
+}
+
+TYPE_MAP_MEMORY_LAYER = {
+    QVariant.String: "string",
+    QVariant.Double: "double",
+    QVariant.Int: "integer"
+}
 
 def features(layer):
     """This returns an iterator over features in a vector layer,
@@ -128,6 +151,7 @@ def values(layer, *attributes):
         ret[attr] = values
     return ret
 
+
 def testForUniqueness( fieldList1, fieldList2 ):
     '''Returns a modified version of fieldList2, removing naming
     collisions with fieldList1.'''
@@ -142,6 +166,7 @@ def testForUniqueness( fieldList1, fieldList2 ):
                     fieldList2[j] = QgsField(name, field.type(), len=field.length(), prec=field.precision(), comment=field.comment())
                     changed = True
     return fieldList2
+
 
 def spatialindex(layer):
     """Creates a spatial index for the passed vector layer.
@@ -175,6 +200,7 @@ def createUniqueFieldName(fieldName, fieldList):
     for newname in nextname(shortName):
         if not found(newname):
             return newname
+
 
 def findOrCreateField(layer, fieldList, fieldName, fieldLen=24, fieldPrec=15):
     idx = layer.fieldNameIndex(fieldName)
@@ -226,7 +252,7 @@ def simpleMeasure(geom, method=0, ellips=None, crs=None):
         attr1 = pt.x()
         attr2 = pt.y()
     elif geom.wkbType() in [QGis.WKBMultiPoint, QGis.WKBMultiPoint25D]:
-        pt = inGeom.asMultiPoint()
+        pt = geom.asMultiPoint()
         attr1 = pt[0].x()
         attr2 = pt[0].y()
     else:
@@ -328,6 +354,7 @@ def duplicateInMemory(layer, newName='', addToRegistry=False):
 
     return memLayer
 
+
 def checkMinDistance(point, index, distance, points):
     """Check if distance from given point to all other points is greater
     than given value.
@@ -346,36 +373,16 @@ def checkMinDistance(point, index, distance, points):
 
     return True
 
-GEOM_TYPE_MAP = {
-    QGis.WKBPoint: 'Point',
-    QGis.WKBLineString: 'LineString',
-    QGis.WKBPolygon: 'Polygon',
-    QGis.WKBMultiPoint: 'MultiPoint',
-    QGis.WKBMultiLineString: 'MultiLineString',
-    QGis.WKBMultiPolygon: 'MultiPolygon',
-    }
-
-TYPE_MAP = {
-    str : QVariant.String,
-    float: QVariant.Double,
-    int: QVariant.Int,
-    bool: QVariant.Bool
-    }
-
-def _fieldName(f):
-    if isinstance(f, basestring):
-        return f
-    return f.name()
 
 def _toQgsField(f):
     if isinstance(f, QgsField):
         return f
     return QgsField(f[0], TYPE_MAP.get(f[1], QVariant.String))
 
+
 class VectorWriter:
 
     MEMORY_LAYER_PREFIX = 'memory:'
-
 
     def __init__(self, fileName, encoding, fields, geometryType,
                  crs, options=None):
@@ -391,13 +398,17 @@ class VectorWriter:
         if self.fileName.startswith(self.MEMORY_LAYER_PREFIX):
             self.isMemory = True
 
-            uri = self.GEOM_TYPE_MAP[geometryType]
+            uri = GEOM_TYPE_MAP[geometryType] + "?uuid=" + str(uuid.uuid4())
             if crs.isValid():
-                uri += '?crs=' + crs.authid() + '&'
-            fieldsdesc = ['field=' + _fieldName(f) for f in fields]
+                uri += '&crs=' + crs.authid()
+            fieldsdesc = []
+            for f in fields:
+                qgsfield = _toQgsField(f)
+                fieldsdesc.append('field=%s:%s' %(qgsfield.name(),
+                                TYPE_MAP_MEMORY_LAYER.get(qgsfield.type(), "string")))
+            if fieldsdesc:
+                uri += '&' + '&'.join(fieldsdesc)
 
-            fieldsstring = '&'.join(fieldsdesc)
-            uri += fieldsstring
             self.memLayer = QgsVectorLayer(uri, self.fileName, 'memory')
             self.writer = self.memLayer.dataProvider()
         else:
@@ -418,7 +429,8 @@ class VectorWriter:
             for field in fields:
                 qgsfields.append(_toQgsField(field))
 
-            self.writer = QgsVectorFileWriter(self.fileName, encoding,
+            self.writer = QgsVectorFileWriter(
+                self.fileName, encoding,
                 qgsfields, geometryType, crs, OGRCodes[extension])
 
     def addFeature(self, feature):

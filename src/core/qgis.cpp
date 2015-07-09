@@ -23,6 +23,7 @@
 #include <QColor>
 #include <QDate>
 #include <QTime>
+#include <QLocale>
 #include <QDateTime>
 #include "qgsconfig.h"
 #include "qgslogger.h"
@@ -46,12 +47,12 @@ const int QGis::QGIS_VERSION_INT = VERSION_INT;
 const char* QGis::QGIS_RELEASE_NAME = RELEASE_NAME;
 
 #if GDAL_VERSION_NUM >= 1800
-const CORE_EXPORT QString GEOPROJ4 = "+proj=longlat +datum=WGS84 +no_defs";
+const QString GEOPROJ4 = "+proj=longlat +datum=WGS84 +no_defs";
 #else
-const CORE_EXPORT QString GEOPROJ4 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
+const QString GEOPROJ4 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs";
 #endif
 
-const CORE_EXPORT QString GEOWKT =
+const QString GEOWKT =
   "GEOGCS[\"WGS 84\", "
   "  DATUM[\"WGS_1984\", "
   "    SPHEROID[\"WGS 84\",6378137,298.257223563, "
@@ -64,13 +65,13 @@ const CORE_EXPORT QString GEOWKT =
   "  AXIS[\"Long\",EAST], "
   "  AUTHORITY[\"EPSG\",4326]]";
 
-const CORE_EXPORT QString PROJECT_SCALES =
+const QString PROJECT_SCALES =
   "1:1000000,1:500000,1:250000,1:100000,1:50000,1:25000,"
   "1:10000,1:5000,1:2500,1:1000,1:500";
 
-const CORE_EXPORT QString GEO_EPSG_CRS_AUTHID = "EPSG:4326";
+const QString GEO_EPSG_CRS_AUTHID = "EPSG:4326";
 
-const CORE_EXPORT QString GEO_NONE = "NONE";
+const QString GEO_NONE = "NONE";
 
 const double QGis::DEFAULT_IDENTIFY_RADIUS = 0.5;
 const double QGis::DEFAULT_SEARCH_RADIUS_MM = 2.;
@@ -118,6 +119,18 @@ QString QGis::toLiteral( QGis::UnitType unit )
 QString QGis::tr( QGis::UnitType unit )
 {
   return QCoreApplication::translate( "QGis::UnitType", qPrintable( toLiteral( unit ) ) );
+}
+
+QGis::UnitType QGis::fromTr( QString literal, QGis::UnitType defaultType )
+{
+  for ( unsigned int i = 0; i < ( sizeof( qgisUnitTypes ) / sizeof( qgisUnitTypes[0] ) ); i++ )
+  {
+    if ( literal == QGis::tr( static_cast<UnitType>( i ) ) )
+    {
+      return static_cast<UnitType>( i );
+    }
+  }
+  return defaultType;
 }
 
 double QGis::fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit )
@@ -170,6 +183,20 @@ double QGis::fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUni
     }
   }
   return 1.0;
+}
+
+double QGis::permissiveToDouble( QString string, bool &ok )
+{
+  //remove any thousands separators
+  string.remove( QLocale::system().groupSeparator() );
+  return QLocale::system().toDouble( string, &ok );
+}
+
+int QGis::permissiveToInt( QString string, bool &ok )
+{
+  //remove any thousands separators
+  string.remove( QLocale::system().groupSeparator() );
+  return QLocale::system().toInt( string, &ok );
 }
 
 void *qgsMalloc( size_t size )

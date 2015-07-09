@@ -34,7 +34,7 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
     ~QgsNewHttpConnection();
   public slots:
     //! Saves the connection to ~/.qt/qgisrc
-    void accept();
+    void accept() override;
 
     void on_txtName_textChanged( const QString & );
 

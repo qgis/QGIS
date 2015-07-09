@@ -41,10 +41,10 @@ class GUI_EXPORT QgsDetailedItemDelegate :
     /** reimplement for parent class */
     void paint( QPainter * thePainter,
                 const QStyleOptionViewItem & theOption,
-                const QModelIndex & theIndex ) const;
+                const QModelIndex & theIndex ) const override;
     /** reimplement for parent class */
     QSize sizeHint( const QStyleOptionViewItem & theOption,
-                    const QModelIndex & theIndex ) const;
+                    const QModelIndex & theIndex ) const override;
 
     void setVerticalSpacing( int theValue );
 

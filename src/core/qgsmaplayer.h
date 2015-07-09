@@ -19,23 +19,24 @@
 #define QGSMAPLAYER_H
 
 #include <QDateTime>
+#include <QDomNode>
+#include <QImage>
 #include <QObject>
+#include <QPainter>
 #include <QUndoStack>
 #include <QVariant>
-#include <QImage>
-#include <QDomNode>
-#include <QPainter>
 
 #include "qgis.h"
 #include "qgserror.h"
-#include "qgsrectangle.h"
 #include "qgsmaprenderer.h"
 #include "qgsobjectcustomproperties.h"
+#include "qgsrectangle.h"
 
 class QgsRenderContext;
 class QgsCoordinateReferenceSystem;
 class QgsMapLayerLegend;
 class QgsMapLayerRenderer;
+class QgsMapLayerStyleManager;
 
 class QDomDocument;
 class QKeyEvent;
@@ -118,9 +119,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void setMetadataUrlFormat( const QString& metaUrlFormat ) { mMetadataUrlFormat = metaUrlFormat; }
     const QString& metadataUrlFormat() const { return mMetadataUrlFormat; }
 
-    /* Set the blending mode used for rendering a layer */
+    /** Set the blending mode used for rendering a layer */
     void setBlendMode( const QPainter::CompositionMode &blendMode );
-    /* Returns the current blending mode for a layer */
+    /** Returns the current blending mode for a layer */
     QPainter::CompositionMode blendMode() const;
 
     /**Synchronises with changes in the datasource
@@ -294,7 +295,16 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     virtual bool loadNamedStyleFromDb( const QString &db, const QString &theURI, QString &qml );
 
-    //TODO edit infos
+    /**
+     * Import the properties of this layer from a QDomDocument
+     * @param doc source QDomDocument
+     * @param errorMsg this QString will be initialized on error
+     * during the execution of readSymbology
+     * @return true on success
+     * @note added in 2.8
+     */
+    virtual bool importNamedStyle( QDomDocument& doc, QString &errorMsg );
+
     /**
      * Export the properties of this layer as named style in a QDomDocument
      * @param doc the target QDomDocument
@@ -344,6 +354,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     { Q_UNUSED( node ); errorMessage = QString( "Layer type %1 not supported" ).arg( type() ); return false; }
 
 
+
     /** Read the symbology for the current layer from the Dom node supplied.
      * @param node node that will contain the symbology definition for this layer.
      * @param errorMessage reference to string that will be updated with any error messages
@@ -386,6 +397,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @note added in 2.6
      */
     QgsMapLayerLegend* legend() const;
+
+    /**
+     * Get access to the layer's style manager. Style manager allows switching between multiple styles.
+     * @note added in 2.8
+     */
+    QgsMapLayerStyleManager* styleManager() const;
 
     /**Returns the minimum scale denominator at which the layer is visible.
      * Scale based visibility is only used if hasScaleBasedVisibility is true.
@@ -533,8 +550,15 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Write custom properties to project file. */
     void writeCustomProperties( QDomNode & layerNode, QDomDocument & doc ) const;
 
+    /** Read style manager's configuration (if any). To be called by subclasses. */
+    void readStyleManager( const QDomNode& layerNode );
+    /** Write style manager's configuration (if exists). To be called by subclasses. */
+    void writeStyleManager( QDomNode& layerNode, QDomDocument& doc ) const;
+
+#if 0
     /** debugging member - invoked when a connect() is made to this object */
-    void connectNotify( const char * signal );
+    void connectNotify( const char * signal ) override;
+#endif
 
     /** Add error message */
     void appendError( const QgsErrorMessage & theMessage ) { mError.append( theMessage );}
@@ -621,6 +645,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! Controller of legend items of this layer
     QgsMapLayerLegend* mLegend;
+
+    //! Manager of multiple styles available for a layer (may be null)
+    QgsMapLayerStyleManager* mStyleManager;
 };
 
 #endif

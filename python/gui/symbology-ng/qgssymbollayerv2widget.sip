@@ -5,14 +5,28 @@ class QgsSymbolLayerV2Widget : QWidget
 %End
 
   public:
-    QgsSymbolLayerV2Widget( QWidget* parent, const QgsVectorLayer* vl = 0 );
+    QgsSymbolLayerV2Widget( QWidget* parent /TransferThis/, const QgsVectorLayer* vl = 0 );
     virtual ~QgsSymbolLayerV2Widget();
 
     virtual void setSymbolLayer( QgsSymbolLayerV2* layer ) = 0;
     virtual QgsSymbolLayerV2* symbolLayer() = 0;
 
+  protected:
+
+    void registerDataDefinedButton( QgsDataDefinedButton * button, const QString & propertyName, QgsDataDefinedButton::DataType type, const QString & description );
+
+    /** Get label for data defined entry.
+     * Implemented only for 'size' of marker symbols
+     * @note added in 2.1
+     * @deprecated no longer used
+     */
+    virtual QString dataDefinedPropertyLabel( const QString &entryName ) /Deprecated/;
+
   signals:
     void changed();
+
+  protected slots:
+    void updateDataDefinedProperty();
 };
 
 ///////////
@@ -24,7 +38,7 @@ class QgsSimpleLineSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 %End
 
   public:
-    QgsSimpleLineSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = NULL );
+    QgsSimpleLineSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
 
@@ -42,7 +56,6 @@ class QgsSimpleLineSymbolLayerV2Widget : QgsSymbolLayerV2Widget
     void on_mPenWidthUnitWidget_changed();
     void on_mOffsetUnitWidget_changed();
     void on_mDashPatternUnitWidget_changed();
-    void on_mDataDefinedPropertiesButton_clicked();
     void on_mDrawInsideCheckBox_stateChanged( int state );
 
   protected:
@@ -59,7 +72,8 @@ class QgsSimpleMarkerSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 %End
 
   public:
-    QgsSimpleMarkerSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = NULL );
+    QgsSimpleMarkerSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
+    ~QgsSimpleMarkerSymbolLayerV2Widget();
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
 
@@ -77,7 +91,6 @@ class QgsSimpleMarkerSymbolLayerV2Widget : QgsSymbolLayerV2Widget
     void on_mSizeUnitWidget_changed();
     void on_mOffsetUnitWidget_changed();
     void on_mOutlineWidthUnitWidget_changed();
-    void on_mDataDefinedPropertiesButton_clicked();
     void on_mOutlineStyleComboBox_currentIndexChanged( int index );
     void on_mOutlineWidthSpinBox_valueChanged( double d );
     void on_mHorizontalAnchorComboBox_currentIndexChanged( int index );
@@ -93,7 +106,7 @@ class QgsSimpleFillSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 %End
 
   public:
-    QgsSimpleFillSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = NULL );
+    QgsSimpleFillSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
 
@@ -110,7 +123,6 @@ class QgsSimpleFillSymbolLayerV2Widget : QgsSymbolLayerV2Widget
     void offsetChanged();
     void on_mBorderWidthUnitWidget_changed();
     void on_mOffsetUnitWidget_changed();
-    void on_mDataDefinedPropertiesButton_clicked();
 };
 
 
@@ -122,7 +134,7 @@ class QgsGradientFillSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 #include <qgssymbollayerv2widget.h>
 %End
   public:
-    QgsGradientFillSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = NULL );
+    QgsGradientFillSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
 
@@ -141,7 +153,6 @@ class QgsGradientFillSymbolLayerV2Widget : QgsSymbolLayerV2Widget
     void offsetChanged();
     void referencePointChanged();
     void on_mOffsetUnitWidget_changed();
-    void on_mDataDefinedPropertiesButton_clicked();
     void colorModeChanged();
     void on_mSpinAngle_valueChanged( double value );
 };
@@ -154,7 +165,7 @@ class QgsShapeburstFillSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 #include <qgssymbollayerv2widget.h>
 %End
   public:
-    QgsShapeburstFillSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = NULL );
+    QgsShapeburstFillSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
 
@@ -174,7 +185,6 @@ class QgsShapeburstFillSymbolLayerV2Widget : QgsSymbolLayerV2Widget
     void on_mButtonEditRamp_clicked();
     void offsetChanged();
     void on_mOffsetUnitWidget_changed();
-    void on_mDataDefinedPropertiesButton_clicked();
     void on_mIgnoreRingsCheckBox_stateChanged( int state );
 };
 
@@ -186,7 +196,7 @@ class QgsMarkerLineSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 #include <qgssymbollayerv2widget.h>
 %End
   public:
-    QgsMarkerLineSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = NULL );
+    QgsMarkerLineSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
 
@@ -204,8 +214,6 @@ class QgsMarkerLineSymbolLayerV2Widget : QgsSymbolLayerV2Widget
     void on_mIntervalUnitWidget_changed();
     void on_mOffsetUnitWidget_changed();
     void on_mOffsetAlongLineUnitWidget_changed();
-    void on_mDataDefinedPropertiesButton_clicked();
-
 };
 
 
@@ -218,7 +226,8 @@ class QgsSvgMarkerSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 %End
 
   public:
-    QgsSvgMarkerSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = NULL );
+    QgsSvgMarkerSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
+    ~QgsSvgMarkerSymbolLayerV2Widget();
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
 
@@ -241,10 +250,8 @@ class QgsSvgMarkerSymbolLayerV2Widget : QgsSymbolLayerV2Widget
     void on_mSizeUnitWidget_changed();
     void on_mBorderWidthUnitWidget_changed();
     void on_mOffsetUnitWidget_changed();
-    void on_mDataDefinedPropertiesButton_clicked();
     void on_mHorizontalAnchorComboBox_currentIndexChanged( int index );
     void on_mVerticalAnchorComboBox_currentIndexChanged( int index );
-
 
   protected:
 
@@ -262,7 +269,7 @@ class QgsRasterFillSymbolLayerWidget : QgsSymbolLayerV2Widget
 %End
 
   public:
-    QgsRasterFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = NULL );
+    QgsRasterFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
 
@@ -281,7 +288,7 @@ class QgsSVGFillSymbolLayerWidget : QgsSymbolLayerV2Widget
 %End
 
   public:
-    QgsSVGFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = NULL );
+    QgsSVGFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
 
@@ -308,7 +315,7 @@ class QgsLinePatternFillSymbolLayerWidget : QgsSymbolLayerV2Widget
 %End
   public:
 
-    QgsLinePatternFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = NULL );
+    QgsLinePatternFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
 
     virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
@@ -324,7 +331,7 @@ class QgsPointPatternFillSymbolLayerWidget: QgsSymbolLayerV2Widget
 %End
 
   public:
-    QgsPointPatternFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = NULL );
+    QgsPointPatternFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
 
     virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
@@ -340,7 +347,8 @@ class QgsFontMarkerSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 %End
 
   public:
-    QgsFontMarkerSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = NULL );
+    QgsFontMarkerSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
+    ~QgsFontMarkerSymbolLayerV2Widget();
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
 
@@ -370,7 +378,7 @@ class QgsCentroidFillSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 %End
 
   public:
-    QgsCentroidFillSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = NULL );
+    QgsCentroidFillSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
 

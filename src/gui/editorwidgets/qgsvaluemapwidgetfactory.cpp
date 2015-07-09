@@ -16,6 +16,8 @@
 #include "qgsvaluemapwidgetfactory.h"
 
 #include "qgsvaluemapwidgetwrapper.h"
+#include "qgsvaluemapsearchwidgetwrapper.h"
+#include "qgsdefaultsearchwidgetwrapper.h"
 #include "qgsvaluemapconfigdlg.h"
 
 QgsValueMapWidgetFactory::QgsValueMapWidgetFactory( const QString& name )
@@ -27,6 +29,12 @@ QgsValueMapWidgetFactory::QgsValueMapWidgetFactory( const QString& name )
 QgsEditorWidgetWrapper* QgsValueMapWidgetFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
 {
   return new QgsValueMapWidgetWrapper( vl, fieldIdx, editor, parent );
+}
+
+
+QgsSearchWidgetWrapper* QgsValueMapWidgetFactory::createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
+{
+  return new QgsValueMapSearchWidgetWrapper( vl, fieldIdx, parent );
 }
 
 QgsEditorConfigWidget* QgsValueMapWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const

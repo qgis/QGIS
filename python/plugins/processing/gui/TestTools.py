@@ -29,16 +29,15 @@ import os
 from osgeo import gdal
 from osgeo.gdalconst import GA_ReadOnly
 
-from PyQt4 import QtCore, QtGui
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import QCoreApplication, QMetaObject
+from PyQt4.QtGui import QMessageBox, QDialog, QVBoxLayout, QTextEdit
 
 from processing.core.Processing import Processing
 from processing.core.outputs import OutputNumber
 from processing.core.outputs import OutputString
 from processing.core.outputs import OutputRaster
 from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.tools import vector, dataobjects
 
 
 def createTest(text):
@@ -64,7 +63,7 @@ def createTest(text):
     for out in alg.outputs:
         filename = (tokens[i])[1:-1]
         if tokens[i] == str(None):
-            QtGui.QMessageBox.critical(None, tr('Error'),
+            QMessageBox.critical(None, tr('Error'),
                 tr('Cannot create unit test for that algorithm execution. The '
                    'output cannot be a temporary file'))
             return
@@ -79,7 +78,7 @@ def createTest(text):
             s += '\tstrhash=hash(str(dataset.ReadAsArray(0).tolist()))\n'
             s += '\tself.assertEqual(strhash,' + str(strhash) + ')\n'
         if isinstance(out, OutputVector):
-            layer = processing.getObject(filename)
+            layer = dataobjects.getObject(filename)
             fields = layer.pendingFields()
             s += '\tlayer=dataobjects.getObjectFromUri(output, True)\n'
             s += '\tfields=layer.pendingFields()\n'
@@ -115,17 +114,17 @@ def tr(string):
     return QCoreApplication.translate('TestTools', string)
 
 
-class ShowTestDialog(QtGui.QDialog):
+class ShowTestDialog(QDialog):
 
     def __init__(self, s):
-        QtGui.QDialog.__init__(self)
+        QDialog.__init__(self)
         self.setModal(True)
         self.resize(600, 400)
         self.setWindowTitle(self.tr('Unit test'))
         layout = QVBoxLayout()
-        self.text = QtGui.QTextEdit()
+        self.text = QTextEdit()
         self.text.setEnabled(True)
         self.text.setText(s)
         layout.addWidget(self.text)
         self.setLayout(layout)
-        QtCore.QMetaObject.connectSlotsByName(self)
+        QMetaObject.connectSlotsByName(self)

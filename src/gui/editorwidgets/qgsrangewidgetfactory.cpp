@@ -41,9 +41,9 @@ QgsEditorWidgetConfig QgsRangeWidgetFactory::readConfig( const QDomElement& conf
   QMap<QString, QVariant> cfg;
 
   cfg.insert( "Style", configElement.attribute( "Style" ) );
-  cfg.insert( "Min", configElement.attribute( "Min" ).toInt() );
-  cfg.insert( "Max", configElement.attribute( "Max" ).toInt() );
-  cfg.insert( "Step", configElement.attribute( "Step" ).toInt() );
+  cfg.insert( "Min", configElement.attribute( "Min" ) );
+  cfg.insert( "Max", configElement.attribute( "Max" ) );
+  cfg.insert( "Step", configElement.attribute( "Step" ) );
   cfg.insert( "AllowNull", configElement.attribute( "AllowNull" ) == "1" );
 
   if ( configElement.hasAttribute( "Suffix" ) )
@@ -61,9 +61,9 @@ void QgsRangeWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config, QD
   Q_UNUSED( fieldIdx );
 
   configElement.setAttribute( "Style", config["Style"].toString() );
-  configElement.setAttribute( "Min", config["Min"].toInt() );
-  configElement.setAttribute( "Max", config["Max"].toInt() );
-  configElement.setAttribute( "Step", config["Step"].toInt() );
+  configElement.setAttribute( "Min", config["Min"].toString() );
+  configElement.setAttribute( "Max", config["Max"].toString() );
+  configElement.setAttribute( "Step", config["Step"].toString() );
   configElement.setAttribute( "AllowNull", config["AllowNull"].toBool() );
   if ( config.contains( "Suffix" ) )
   {

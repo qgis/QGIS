@@ -9,4 +9,3 @@ ParameterNumber|thres_o|Threshold for the outliers|None|None|50
 ParameterBoolean|-e|Estimate point density and distance|False
 OutputVector|output|Layer without outliers
 OutputVector|outlier|Outliers
-

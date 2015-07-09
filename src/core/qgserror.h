@@ -36,7 +36,7 @@ class CORE_EXPORT QgsErrorMessage
       Html
     };
 
-    QgsErrorMessage() {}
+    QgsErrorMessage() : mLine( 0 ), mFormat( Text ) {}
 
     /** Constructor.
      *  @param theMessage error message string
@@ -65,7 +65,7 @@ class CORE_EXPORT QgsErrorMessage
     QString mFunction;
     int mLine;
 
-    /* Message format */
+    /** Message format */
     Format mFormat;
 };
 

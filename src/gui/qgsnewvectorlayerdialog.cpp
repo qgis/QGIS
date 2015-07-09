@@ -20,7 +20,6 @@
 #include "qgis.h"
 #include "qgslogger.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsgenericprojectionselector.h"
 #include "qgsproviderregistry.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorfilewriter.h"
@@ -85,13 +84,10 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
 
   mAttributeView->addTopLevelItem( new QTreeWidgetItem( QStringList() << "id" << "Integer" << "10" << "" ) );
 
-  QgsCoordinateReferenceSystem srs;
-
-  srs.createFromOgcWmsCrs( settings.value( "/Projections/layerDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString() );
-  srs.validate();
-
-  mCrsId = srs.srsid();
-  leSpatialRefSys->setText( srs.authid() + " - " + srs.description() );
+  QgsCoordinateReferenceSystem defaultCrs;
+  defaultCrs.createFromOgcWmsCrs( settings.value( "/Projections/layerDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString() );
+  defaultCrs.validate();
+  mCrsSelector->setCrs( defaultCrs );
 
   connect( mNameEdit, SIGNAL( textChanged( QString ) ), this, SLOT( nameChanged( QString ) ) );
   connect( mAttributeView, SIGNAL( itemSelectionChanged() ), this, SLOT( selectionChanged() ) );
@@ -166,7 +162,7 @@ QGis::WkbType QgsNewVectorLayerDialog::selectedType() const
 
 int QgsNewVectorLayerDialog::selectedCrsId() const
 {
-  return mCrsId;
+  return mCrsSelector->crs().srsid();
 }
 
 void QgsNewVectorLayerDialog::on_mAddAttributeButton_clicked()
@@ -191,25 +187,6 @@ void QgsNewVectorLayerDialog::on_mRemoveAttributeButton_clicked()
   {
     mOkButton->setEnabled( false );
   }
-}
-
-void QgsNewVectorLayerDialog::on_pbnChangeSpatialRefSys_clicked()
-{
-  QgsGenericProjectionSelector *mySelector = new QgsGenericProjectionSelector( this );
-  mySelector->setMessage();
-  mySelector->setSelectedCrsId( mCrsId );
-  if ( mySelector->exec() )
-  {
-    QgsCoordinateReferenceSystem srs;
-    srs.createFromOgcWmsCrs( mySelector->selectedAuthId() );
-    mCrsId = srs.srsid();
-    leSpatialRefSys->setText( srs.authid() + " - " + srs.description() );
-  }
-  else
-  {
-    QApplication::restoreOverrideCursor();
-  }
-  delete mySelector;
 }
 
 void QgsNewVectorLayerDialog::attributes( QList< QPair<QString, QString> >& at ) const

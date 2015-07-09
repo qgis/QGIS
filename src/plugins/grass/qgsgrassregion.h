@@ -55,10 +55,10 @@ class QgsGrassRegion: public QDialog, private Ui::QgsGrassRegionBase
 
   public slots:
     //! OK
-    void accept( void );
+    void accept( void ) override;
 
     //! Cancel
-    void reject( void );
+    void reject( void ) override;
 
     //! Mouse event receiver
     //void mouseEventReceiverMove ( QgsPoint & );
@@ -137,17 +137,17 @@ class QgsGrassRegionEdit : public QgsMapTool
     ~QgsGrassRegionEdit();
 
     //! mouse pressed in map canvas
-    void canvasPressEvent( QMouseEvent * );
+    void canvasPressEvent( QMouseEvent * ) override;
 
     //! mouse movement in map canvas
-    void canvasMoveEvent( QMouseEvent * );
+    void canvasMoveEvent( QMouseEvent * ) override;
 
     //! mouse released
-    void canvasReleaseEvent( QMouseEvent * );
+    void canvasReleaseEvent( QMouseEvent * ) override;
 
 
     //! called when map tool is about to get inactive
-    void deactivate();
+    void deactivate() override;
 
     //! get the rectangle
     QgsRectangle getRegion();

@@ -19,7 +19,8 @@ class QgsExpression
     //! Get the expression ready for evaluation - find out column indexes.
     bool prepare( const QgsFields &fields );
 
-    /**Get list of columns referenced by the expression.
+    /**
+     * Get list of columns referenced by the expression.
      * @note if the returned list contains the QgsFeatureRequest::AllAttributes constant then
      * all attributes from the layer are required for evaluation of the expression.
      * QgsFeatureRequest::setSubsetOfAttributes automatically handles this case.
@@ -71,13 +72,18 @@ class QgsExpression
     //! @note added in 2.2
     static bool hasSpecialColumn( const QString& name );
 
+    /** Checks whether an expression consists only of a single field reference
+     * @note added in 2.9
+     */
+    bool isField() const;
+
     static bool isValid( const QString& text, const QgsFields& fields, QString &errorMessage );
 
     void setScale( double scale );
 
     double scale();
 
-    //! Return the expression string that was given when created.
+    //! Alias for dump()
     const QString expression() const;
 
     //! Return the expression string that represents this QgsExpression.
@@ -119,11 +125,20 @@ class QgsExpression
     */
     static double evaluateToDouble( const QString& text, const double fallbackValue );
 
+    /**
+     * @brief list of unary operators
+     * @note if any change is made here, the definition of QgsExpression::UnaryOperatorText[] must be adapted.
+     */
     enum UnaryOperator
     {
       uoNot,
       uoMinus,
     };
+
+    /**
+     * @brief list of binary operators
+     * @note if any change is made here, the definition of QgsExpression::BinaryOperatorText[] must be adapted.
+     */
     enum BinaryOperator
     {
       // logical
@@ -179,7 +194,17 @@ class QgsExpression
     class Function
     {
       public:
-        Function( QString fnname, int params, QString group, QString helpText = QString(), bool usesGeometry = false, QStringList referencedColumns = QStringList() );
+        Function( const QString& fnname,
+                  int params,
+                  QString group,
+                  QString helpText = QString(),
+                  bool usesGeometry = false,
+                  QStringList referencedColumns = QStringList(),
+                  bool lazyEval = false,
+                  bool handlesNull = false );
+
+        virtual ~Function();
+
         /** The name of the function. */
         QString name();
         /** The number of parameters this function takes. */
@@ -187,21 +212,32 @@ class QgsExpression
         /** Does this function use a geometry object. */
         bool usesgeometry();
 
-	virtual QStringList referencedColumns() const;
+        /** Returns a list of possible aliases for the function. These include
+         * other permissible names for the function, eg deprecated names.
+         * @return list of known aliases
+         * @note added in QGIS 2.9
+         */
+        virtual QStringList aliases() const;
+
+        /** True if this function should use lazy evaluation.  Lazy evaluation functions take QgsExpression::Node objects
+         * rather than the node results when called.  You can use node->eval(parent, feature) to evaluate the node and return the result
+         * Functions are non lazy default and will be given the node return value when called **/
+        bool lazyEval();
+
+        virtual QStringList referencedColumns() const;
+
         /** The group the function belongs to. */
         QString group();
         /** The help text for the function. */
-        QString helptext();
+        const QString helptext();
 
         virtual QVariant func( const QVariantList& values, const QgsFeature* f, QgsExpression* parent ) = 0;
+
+        virtual bool handlesNull() const;
     };
 
-
-    static const QList<QgsExpression::Function *> &Functions();
-    // static QList<Function*> gmFunctions;
-
-    // static QStringList gmBuiltinFunctions;
-    static const QStringList &BuiltinFunctions();
+    static const QList<QgsExpression::Function *>& Functions();
+    static const QStringList& BuiltinFunctions();
 
     static bool registerFunction( Function* function );
     static bool unregisterFunction( QString name );
@@ -210,7 +246,7 @@ class QgsExpression
     static bool isFunctionName( QString name );
 
     // return index of the function in Functions array
-    static int functionIndex( QString name );
+    static int functionIndex( const QString& name );
 
     /**  Returns the number of functions defined in the parser
       *  @return The number of function defined in the parser.
@@ -242,6 +278,20 @@ class QgsExpression
 
     class Node
     {
+      %ConvertToSubClassCode
+        switch (sipCpp->nodeType())
+        {
+          case QgsExpression::ntUnaryOperator:   sipClass = sipClass_QgsExpression_NodeUnaryOperator; break;
+          case QgsExpression::ntBinaryOperator:  sipClass = sipClass_QgsExpression_NodeBinaryOperator; break;
+          case QgsExpression::ntInOperator:      sipClass = sipClass_QgsExpression_NodeInOperator; break;
+          case QgsExpression::ntFunction:        sipClass = sipClass_QgsExpression_NodeFunction; break;
+          case QgsExpression::ntLiteral:         sipClass = sipClass_QgsExpression_NodeLiteral; break;
+          case QgsExpression::ntColumnRef:       sipClass = sipClass_QgsExpression_NodeColumnRef; break;
+          case QgsExpression::ntCondition:       sipClass = sipClass_QgsExpression_NodeCondition; break;
+          default:                               sipClass = 0; break;
+        }
+      %End
+
       public:
         virtual ~Node();
         virtual QgsExpression::NodeType nodeType() const = 0;
@@ -267,9 +317,10 @@ class QgsExpression
       public:
         NodeList();
         ~NodeList();
+        /** Takes ownership of the provided node */
         void append( QgsExpression::Node* node /Transfer/ );
         int count();
-        QList<QgsExpression::Node*> list();
+        const QList<QgsExpression::Node*>& list();
 
         virtual QString dump() const;
 
@@ -335,6 +386,7 @@ class QgsExpression
         virtual void accept( QgsExpression::Visitor& v ) const;
 
         int precedence() const;
+        bool leftAssociative() const;
     };
 
     class NodeInOperator : QgsExpression::Node
@@ -380,9 +432,9 @@ class QgsExpression
     class NodeLiteral : QgsExpression::Node
     {
       public:
-        NodeLiteral( QVariant value );
+        NodeLiteral( const QVariant& value );
 
-        QVariant value() const;
+        const QVariant& value() const;
 
         virtual QgsExpression::NodeType nodeType() const;
         virtual bool prepare( QgsExpression* parent, const QgsFields &fields );
@@ -397,7 +449,7 @@ class QgsExpression
     class NodeColumnRef : QgsExpression::Node
     {
       public:
-        NodeColumnRef( QString name );
+        NodeColumnRef( const QString& name );
 
         QString name() const;
 

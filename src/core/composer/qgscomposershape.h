@@ -42,22 +42,22 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
     ~QgsComposerShape();
 
     /** return correct graphics item type. */
-    virtual int type() const { return ComposerShape; }
+    virtual int type() const override { return ComposerShape; }
 
     /** \brief Reimplementation of QCanvasItem::paint - draw on canvas */
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
+    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
 
     /** stores state in Dom element
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param doc write template file
      */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
 
     /** sets state from Dom document
      * @param itemElem is Dom node corresponding to item tag
      * @param doc is Dom document
      */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
     //setters and getters
     QgsComposerShape::Shape shapeType() const { return mShape; }
@@ -82,24 +82,24 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
 
     /**Depending on the symbol style, the bounding rectangle can be larger than the shape
     @note this function was added in version 2.3*/
-    QRectF boundingRect() const;
+    QRectF boundingRect() const override;
 
     /**Sets new scene rectangle bounds and recalculates hight and extent. Reimplemented from
      * QgsComposerItem as it needs to call updateBoundingRect after the shape's size changes
     */
-    void setSceneRect( const QRectF& rectangle );
+    void setSceneRect( const QRectF& rectangle ) override;
 
     //Overriden to return shape type
-    virtual QString displayName() const;
+    virtual QString displayName() const override;
 
   protected:
     /* reimplement drawFrame, since it's not a rect, but a custom shape */
-    virtual void drawFrame( QPainter* p );
+    virtual void drawFrame( QPainter* p ) override;
     /* reimplement drawBackground, since it's not a rect, but a custom shape */
-    virtual void drawBackground( QPainter* p );
+    virtual void drawBackground( QPainter* p ) override;
     /**reimplement estimatedFrameBleed, since frames on shapes are drawn using symbology
      * rather than the item's pen */
-    virtual double estimatedFrameBleed() const;
+    virtual double estimatedFrameBleed() const override;
 
   public slots:
     /**Should be called after the shape's symbol is changed. Redraws the shape and recalculates

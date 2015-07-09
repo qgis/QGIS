@@ -29,6 +29,7 @@
 #include "qgsattributedialog.h"
 #include "qgsvectorlayer.h" //QgsFeatureIds
 #include "qgsfieldmodel.h"
+#include "qgssearchwidgetwrapper.h"
 
 class QDialogButtonBox;
 class QPushButton;
@@ -40,6 +41,7 @@ class QSignalMapper;
 
 class QgsAttributeTableModel;
 class QgsAttributeTableFilterModel;
+class QgsRubberBand;
 
 class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDialog
 {
@@ -72,6 +74,10 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      * Copies selected rows to the clipboard
      */
     void on_mCopySelectedRowsButton_clicked();
+    /**
+     * Paste features from the clipboard
+     */
+    void on_mPasteFeatures_clicked();
     /**
      * Toggles editing mode
      */
@@ -153,6 +159,10 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     void updateTitle();
 
     void updateButtonStatus( QString fieldName, bool isValid );
+
+    /* replace the search widget with a new one */
+    void replaceSearchWidget( QWidget* oldw, QWidget* neww );
+
   signals:
     /**
      * Informs that editing mode has been toggled
@@ -171,13 +181,13 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      * Handle closing of the window
      * @param event unused
      */
-    void closeEvent( QCloseEvent* event );
+    void closeEvent( QCloseEvent* event ) override;
 
     /*
      * Handle KeyPress event of the window
      * @param event
      */
-    void keyPressEvent( QKeyEvent* event );
+    void keyPressEvent( QKeyEvent* event ) override;
 
   private slots:
     /**
@@ -201,6 +211,9 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
 
     QgsVectorLayer* mLayer;
     QgsFieldModel* mFieldModel;
+
+    QgsRubberBand* mRubberBand;
+    QgsSearchWidgetWrapper* mCurrentSearchWidgetWrapper;
 };
 
 #endif

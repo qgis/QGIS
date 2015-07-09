@@ -20,6 +20,7 @@
 #include "qgssymbollayerv2.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgssymbollayerv2registry.h"
+#include "qgsdatadefined.h"
 
 // the widgets
 #include "qgssymbolslistwidget.h"
@@ -44,6 +45,70 @@
 #include <QStandardItem>
 
 static const int SymbolLayerItemType = QStandardItem::UserType + 1;
+
+DataDefinedRestorer::DataDefinedRestorer( QgsSymbolV2* symbol, const QgsSymbolLayerV2* symbolLayer )
+    : mMarker( NULL )
+    , mMarkerSymbolLayer( NULL )
+    , mLine( NULL )
+    , mLineSymbolLayer( NULL )
+{
+  if ( symbolLayer->type() == QgsSymbolV2::Marker && symbol->type() == QgsSymbolV2::Marker )
+  {
+    Q_ASSERT( symbol->type() == QgsSymbolV2::Marker );
+    mMarker = static_cast<QgsMarkerSymbolV2*>( symbol );
+    mMarkerSymbolLayer = static_cast<const QgsMarkerSymbolLayerV2*>( symbolLayer );
+    mDDSize = mMarker->dataDefinedSize();
+    mDDAngle = mMarker->dataDefinedAngle();
+    // check if restore is actually needed
+    if ( mDDSize == QgsDataDefined() && mDDAngle == QgsDataDefined() )
+      mMarker = NULL;
+  }
+  else if ( symbolLayer->type() == QgsSymbolV2::Line && symbol->type() == QgsSymbolV2::Line )
+  {
+    mLine = static_cast<QgsLineSymbolV2*>( symbol );
+    mLineSymbolLayer = static_cast<const QgsLineSymbolLayerV2*>( symbolLayer );
+    mDDWidth = mLine->dataDefinedWidth();
+    // check if restore is actually needed
+    if ( mDDWidth == QgsDataDefined() )
+      mLine = NULL;
+  }
+  save();
+}
+
+void DataDefinedRestorer::save()
+{
+  if ( mMarker )
+  {
+    mSize = mMarkerSymbolLayer->size();
+    mAngle = mMarkerSymbolLayer->angle();
+    mMarkerOffset = mMarkerSymbolLayer->offset();
+  }
+  else if ( mLine )
+  {
+    mWidth = mLineSymbolLayer->width();
+    mLineOffset = mLineSymbolLayer->offset();
+  }
+}
+
+void DataDefinedRestorer::restore()
+{
+  if ( mMarker )
+  {
+    if ( mDDSize != QgsDataDefined() &&
+         ( mSize != mMarkerSymbolLayer->size() || mMarkerOffset != mMarkerSymbolLayer->offset() ) )
+      mMarker->setDataDefinedSize( mDDSize );
+    if ( mDDAngle != QgsDataDefined() &&
+         mAngle != mMarkerSymbolLayer->angle() )
+      mMarker->setDataDefinedAngle( mDDAngle );
+  }
+  else if ( mLine )
+  {
+    if ( mDDWidth != QgsDataDefined() &&
+         ( mWidth != mLineSymbolLayer->width() || mLineOffset != mLineSymbolLayer->offset() ) )
+      mLine->setDataDefinedWidth( mDDWidth );
+  }
+  save();
+}
 
 // Hybrid item which may represent a symbol or a layer
 // Check using item->isLayer()
@@ -89,7 +154,7 @@ class SymbolLayerItem : public QStandardItem
         static_cast<SymbolLayerItem*>( parent() )->updatePreview();
     }
 
-    int type() const { return SymbolLayerItemType; }
+    int type() const override { return SymbolLayerItemType; }
     bool isLayer() { return mIsLayer; }
 
     // returns the symbol pointer; helpful in determining a layer's parent symbol
@@ -107,7 +172,7 @@ class SymbolLayerItem : public QStandardItem
       return NULL;
     }
 
-    QVariant data( int role ) const
+    QVariant data( int role ) const override
     {
       if ( role == Qt::DisplayRole || role == Qt::EditRole )
       {
@@ -142,7 +207,7 @@ class SymbolLayerItem : public QStandardItem
 QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsStyleV2* style, const QgsVectorLayer* vl, QWidget* parent, bool embedded )
     : QDialog( parent ), mAdvancedMenu( NULL ), mVectorLayer( vl )
 {
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   setWindowModality( Qt::WindowModal );
 #endif
   mStyle = style;
@@ -157,14 +222,14 @@ QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsSt
     layout()->setContentsMargins( 0, 0, 0, 0 );
   }
   // setup icons
-  btnAddLayer->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.png" ) ) );
-  btnRemoveLayer->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.png" ) ) );
+  btnAddLayer->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );
+  btnRemoveLayer->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.svg" ) ) );
   QIcon iconLock;
   iconLock.addFile( QgsApplication::iconPath( "locked.svg" ), QSize(), QIcon::Normal, QIcon::On );
   iconLock.addFile( QgsApplication::iconPath( "unlocked.svg" ), QSize(), QIcon::Normal, QIcon::Off );
   btnLock->setIcon( iconLock );
-  btnUp->setIcon( QIcon( QgsApplication::iconPath( "symbologyUp.png" ) ) );
-  btnDown->setIcon( QIcon( QgsApplication::iconPath( "symbologyDown.png" ) ) );
+  btnUp->setIcon( QIcon( QgsApplication::iconPath( "symbologyUp.svg" ) ) );
+  btnDown->setIcon( QIcon( QgsApplication::iconPath( "symbologyDown.svg" ) ) );
 
   model = new QStandardItemModel();
   // Set the symbol
@@ -324,17 +389,22 @@ void QgsSymbolV2SelectorDialog::layerChanged()
   if ( currentItem->isLayer() )
   {
     SymbolLayerItem *parent = static_cast<SymbolLayerItem*>( currentItem->parent() );
+    mDataDefineRestorer.reset( new DataDefinedRestorer( parent->symbol(), currentItem->layer() ) );
     QWidget *layerProp = new QgsLayerPropertiesWidget( currentItem->layer(), parent->symbol(), mVectorLayer );
     setWidget( layerProp );
+    connect( layerProp, SIGNAL( changed() ), mDataDefineRestorer.data(), SLOT( restore() ) );
     connect( layerProp, SIGNAL( changed() ), this, SLOT( updateLayerPreview() ) );
     // This connection when layer type is changed
     connect( layerProp, SIGNAL( changeLayer( QgsSymbolLayerV2* ) ), this, SLOT( changeLayer( QgsSymbolLayerV2* ) ) );
   }
   else
   {
+    mDataDefineRestorer.reset();
     // then it must be a symbol
+    currentItem->symbol()->setLayer( mVectorLayer );
     // Now populate symbols of that type using the symbols list widget:
-    QWidget *symbolsList = new QgsSymbolsListWidget( currentItem->symbol(), mStyle, mAdvancedMenu, this );
+    QWidget *symbolsList = new QgsSymbolsListWidget( currentItem->symbol(), mStyle, mAdvancedMenu, this, mVectorLayer );
+
     setWidget( symbolsList );
     connect( symbolsList, SIGNAL( changed() ), this, SLOT( symbolChanged() ) );
   }
@@ -406,11 +476,32 @@ void QgsSymbolV2SelectorDialog::addLayer()
   }
 
   QgsSymbolV2* parentSymbol = item->symbol();
+
+  // save data-defined values at marker level
+  QgsDataDefined ddSize = parentSymbol->type() == QgsSymbolV2::Marker
+                          ? static_cast<QgsMarkerSymbolV2 *>( parentSymbol )->dataDefinedSize()
+                          : QgsDataDefined();
+  QgsDataDefined ddAngle = parentSymbol->type() == QgsSymbolV2::Marker
+                           ? static_cast<QgsMarkerSymbolV2 *>( parentSymbol )->dataDefinedAngle()
+                           : QgsDataDefined();
+  QgsDataDefined ddWidth = parentSymbol->type() == QgsSymbolV2::Line
+                           ? static_cast<QgsLineSymbolV2 *>( parentSymbol )->dataDefinedWidth()
+                           : QgsDataDefined() ;
+
   QgsSymbolLayerV2* newLayer = QgsSymbolLayerV2Registry::instance()->defaultSymbolLayer( parentSymbol->type() );
   if ( insertIdx == -1 )
     parentSymbol->appendSymbolLayer( newLayer );
   else
     parentSymbol->insertSymbolLayer( item->rowCount() - insertIdx, newLayer );
+
+  // restore data-defined values at marker level
+  if ( ddSize != QgsDataDefined() )
+    static_cast<QgsMarkerSymbolV2 *>( parentSymbol )->setDataDefinedSize( ddSize );
+  if ( ddAngle != QgsDataDefined() )
+    static_cast<QgsMarkerSymbolV2 *>( parentSymbol )->setDataDefinedAngle( ddAngle );
+  if ( ddWidth != QgsDataDefined() )
+    static_cast<QgsLineSymbolV2 *>( parentSymbol )->setDataDefinedWidth( ddWidth );
+
   SymbolLayerItem *newLayerItem = new SymbolLayerItem( newLayer );
   item->insertRow( insertIdx == -1 ? 0 : insertIdx, newLayerItem );
   item->updatePreview();

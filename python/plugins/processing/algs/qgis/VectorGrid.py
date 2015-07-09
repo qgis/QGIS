@@ -27,8 +27,8 @@ __revision__ = '$Format:%H$'
 
 import math
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from PyQt4.QtCore import QVariant
+from qgis.core import QGis, QgsRectangle, QgsFields, QgsField, QgsFeature, QgsGeometry, QgsPoint
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -36,7 +36,6 @@ from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
-from processing.tools import vector
 
 
 class VectorGrid(GeoAlgorithm):
@@ -49,20 +48,21 @@ class VectorGrid(GeoAlgorithm):
 
     TYPES = ['Output grid as polygons',
              'Output grid as lines'
-            ]
+             ]
 
     def defineCharacteristics(self):
         self.name = 'Vector grid'
         self.group = 'Vector creation tools'
-        self.addParameter(ParameterExtent(self.EXTENT, 'Grid extent'))
+        self.addParameter(ParameterExtent(self.EXTENT,
+            self.tr('Grid extent')))
         self.addParameter(ParameterNumber(self.STEP_X,
-            'X spacing', 0.0, 1000000000.0, 0.0001))
+            self.tr('X spacing'), 0.0, 1000000000.0, 0.0001))
         self.addParameter(ParameterNumber(self.STEP_Y,
-            'Y spacing', 0.0, 1000000000.0, 0.0001))
+            self.tr('Y spacing'), 0.0, 1000000000.0, 0.0001))
         self.addParameter(ParameterSelection(self.TYPE,
-            'Grid type', self.TYPES))
+            self.tr('Grid type'), self.TYPES))
 
-        self.addOutput(OutputVector(self.OUTPUT, 'Grid'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid')))
 
     def processAlgorithm(self, progress):
         extent = self.getParameterValue(self.EXTENT).split(',')
@@ -115,9 +115,9 @@ class VectorGrid(GeoAlgorithm):
                 idVar += 1
                 count += 1
                 if int(math.fmod(count, count_update)) == 0:
-                    progress.setPersentage(int(count / count_max * 50))
+                    progress.setPercentage(int(count / count_max * 50))
 
-            progress.setPersentage( 50 )
+            progress.setPercentage( 50 )
             # counters for progressbar - update every 5%
             count = 0
             count_max = (bbox.xMaximum() - bbox.xMinimum()) / xSpace
@@ -131,7 +131,7 @@ class VectorGrid(GeoAlgorithm):
                 feat.setAttribute(0, idVar)
                 feat.setAttribute(1, x)
                 writer.addFeature(feat)
-                x = x + xOffset
+                x = x + xSpace
                 idVar += 1
                 count += 1
                 if int(math.fmod(count, count_update)) == 0:

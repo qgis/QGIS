@@ -13,6 +13,9 @@
 #    GEOS_LIBRARY
 #
 
+IF (POLICY CMP0053) # in CMake 3.1.0+
+  CMAKE_POLICY (SET CMP0053 OLD) # keep old-style @VAR@ expansion
+ENDIF (POLICY CMP0053)
 INCLUDE (@CMAKE_SOURCE_DIR@/cmake/MacPlistMacros.cmake)
 
 IF(WIN32)

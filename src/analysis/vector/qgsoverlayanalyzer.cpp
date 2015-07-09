@@ -31,14 +31,14 @@ bool QgsOverlayAnalyzer::intersection( QgsVectorLayer* layerA, QgsVectorLayer* l
                                        const QString& shapefileName, bool onlySelectedFeatures,
                                        QProgressDialog* p )
 {
-  if ( !layerA && !layerB )
+  if ( !layerA || !layerB )
   {
     return false;
   }
 
-  QgsVectorDataProvider* dpA = layerA->dataProvider();
-  QgsVectorDataProvider* dpB = layerB->dataProvider();
-  if ( !dpA && !dpB )
+  QgsVectorDataProvider *dpA = layerA->dataProvider();
+  QgsVectorDataProvider *dpB = layerB->dataProvider();
+  if ( !dpA || !dpB )
   {
     return false;
   }
@@ -142,14 +142,14 @@ bool QgsOverlayAnalyzer::intersection( QgsVectorLayer* layerA, QgsVectorLayer* l
 void QgsOverlayAnalyzer::intersectFeature( QgsFeature& f, QgsVectorFileWriter* vfw,
     QgsVectorLayer* vl, QgsSpatialIndex* index )
 {
-  QgsGeometry* featureGeometry = f.geometry();
-  QgsGeometry* intersectGeometry = 0;
-  QgsFeature overlayFeature;
-
-  if ( !featureGeometry )
+  if ( !f.constGeometry() )
   {
     return;
   }
+
+  const QgsGeometry* featureGeometry = f.constGeometry();
+  QgsGeometry* intersectGeometry = 0;
+  QgsFeature overlayFeature;
 
   QList<QgsFeatureId> intersects;
   intersects = index->intersects( featureGeometry->boundingBox() );
@@ -162,9 +162,9 @@ void QgsOverlayAnalyzer::intersectFeature( QgsFeature& f, QgsVectorFileWriter* v
       continue;
     }
 
-    if ( featureGeometry->intersects( overlayFeature.geometry() ) )
+    if ( featureGeometry->intersects( overlayFeature.constGeometry() ) )
     {
-      intersectGeometry = featureGeometry->intersection( overlayFeature.geometry() );
+      intersectGeometry = featureGeometry->intersection( overlayFeature.constGeometry() );
 
       outFeature.setGeometry( intersectGeometry );
       QgsAttributes attributesA = f.attributes();

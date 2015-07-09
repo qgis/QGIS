@@ -27,10 +27,6 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #ifndef _PRIORITYQUEUE_H
 #define _PRIORITYQUEUE_H
 
@@ -46,15 +42,6 @@ namespace pal
 
   class PriorityQueue
   {
-    private:
-      int size;
-      int maxsize;
-      int maxId;
-      int *heap;
-      double *p;
-      int *pos;
-
-      bool ( *greater )( double l, double r );
 
     public:
       /** \brief Create a priority queue of max size n
@@ -90,6 +77,15 @@ namespace pal
     private:
       PriorityQueue( const PriorityQueue & );
       PriorityQueue &operator=( const PriorityQueue & );
+
+      int size;
+      int maxsize;
+      int maxId;
+      int *heap;
+      double *p;
+      int *pos;
+
+      bool ( *greater )( double l, double r );
   };
 
 } // namespace

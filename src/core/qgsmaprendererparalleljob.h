@@ -32,15 +32,15 @@ class CORE_EXPORT QgsMapRendererParallelJob : public QgsMapRendererQImageJob
     QgsMapRendererParallelJob( const QgsMapSettings& settings );
     ~QgsMapRendererParallelJob();
 
-    virtual void start();
-    virtual void cancel();
-    virtual void waitForFinished();
-    virtual bool isActive() const;
+    virtual void start() override;
+    virtual void cancel() override;
+    virtual void waitForFinished() override;
+    virtual bool isActive() const override;
 
-    virtual QgsLabelingResults* takeLabelingResults();
+    virtual QgsLabelingResults* takeLabelingResults() override;
 
     // from QgsMapRendererJobWithPreview
-    virtual QImage renderedImage();
+    virtual QImage renderedImage() override;
 
   protected slots:
     //! layers are rendered, labeling is still pending

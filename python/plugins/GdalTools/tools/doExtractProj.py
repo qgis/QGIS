@@ -23,23 +23,22 @@ __copyright__ = '(C) 2011, Alexander Bruy'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from qgis.gui import *
+from PyQt4.QtCore import Qt, SIGNAL, QCoreApplication, QObject, QThread, QMutex
+from PyQt4.QtGui import QDialog, QDialogButtonBox, QApplication, QCursor, QMessageBox
 
 from ui_dialogExtractProjection import Ui_GdalToolsDialog as Ui_Dialog
 import GdalTools_utils as Utils
 
 import os.path
 
+req_mods = { "osgeo": "osgeo [python-gdal]" }
 try:
   from osgeo import gdal
   from osgeo import osr
 except ImportError, e:
   error_str = e.args[ 0 ]
   error_mod = error_str.replace( "No module named ", "" )
-  if req_mods.has_key( error_mod ):
+  if error_mod in req_mods:
     error_str = error_str.replace( error_mod, req_mods[error_mod] )
   raise ImportError( error_str )
 
@@ -126,7 +125,7 @@ class GdalToolsDialog( QDialog, Ui_Dialog ):
     self.restoreGui()
 
   def stopProcessing( self ):
-    if self.extractor != None:
+    if self.extractor is not None:
       self.extractor.stop()
       self.extractor = None
 

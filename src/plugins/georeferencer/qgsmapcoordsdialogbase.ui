@@ -16,58 +16,63 @@
   <property name="sizeGripEnabled">
    <bool>true</bool>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0" colspan="2">
+  <layout class="QGridLayout" name="gridLayout" columnstretch="0,1,0,1">
+   <item row="0" column="0" colspan="4">
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Enter X and Y coordinates (DMS (dd mm ss.ss), DD (dd.dd) or projected coordinates (mmmm.mm)) which correspond with the selected point on the image. Alternatively, click the button with icon of a pencil and then click a corresponding point on map canvas of QGIS to fill in coordinates of that point.</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter X and Y coordinates (DMS (&lt;span style=&quot; font-style:italic;&quot;&gt;dd mm ss.ss&lt;/span&gt;), DD (&lt;span style=&quot; font-style:italic;&quot;&gt;dd.dd&lt;/span&gt;) or projected coordinates (&lt;span style=&quot; font-style:italic;&quot;&gt;mmmm.mm&lt;/span&gt;)) which correspond with the selected point on the image. Alternatively, click the button with icon of a pencil and then click a corresponding point on map canvas of QGIS to fill in coordinates of that point.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
      </property>
     </widget>
    </item>
+   <item row="1" column="3">
+    <widget class="QLineEdit" name="leYCoord"/>
+   </item>
+   <item row="1" column="2">
+    <widget class="QLabel" name="textLabel2">
+     <property name="text">
+      <string>Y / North</string>
+     </property>
+    </widget>
+   </item>
    <item row="1" column="0">
-    <layout class="QFormLayout" name="formLayout_2">
-     <item row="0" column="0">
-      <widget class="QLabel" name="textLabel1">
-       <property name="text">
-        <string>X / East:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="leXCoord"/>
-     </item>
-    </layout>
+    <widget class="QLabel" name="textLabel1">
+     <property name="text">
+      <string>X / East</string>
+     </property>
+    </widget>
    </item>
    <item row="1" column="1">
-    <layout class="QFormLayout" name="formLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="textLabel2">
-       <property name="text">
-        <string>Y / North:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="leYCoord"/>
-     </item>
-    </layout>
+    <widget class="QLineEdit" name="leXCoord"/>
    </item>
-   <item row="2" column="0">
+   <item row="3" column="0" colspan="3">
     <widget class="QCheckBox" name="mSnapToBackgroundLayerBox">
      <property name="text">
       <string>Snap to background layers</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item row="5" column="0" colspan="4">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
+   </item>
+   <item row="4" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>
@@ -75,6 +80,7 @@
  <tabstops>
   <tabstop>leXCoord</tabstop>
   <tabstop>leYCoord</tabstop>
+  <tabstop>mSnapToBackgroundLayerBox</tabstop>
  </tabstops>
  <resources/>
  <connections>

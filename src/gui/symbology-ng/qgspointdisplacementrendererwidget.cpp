@@ -23,8 +23,7 @@
 #include "qgssymbolv2selectordialog.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgsvectorlayer.h"
-#include <QColorDialog>
-#include <QFontDialog>
+#include "qgisgui.h"
 
 QgsRendererV2Widget* QgsPointDisplacementRendererWidget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
 {
@@ -32,7 +31,9 @@ QgsRendererV2Widget* QgsPointDisplacementRendererWidget::create( QgsVectorLayer*
 }
 
 QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
-    : QgsRendererV2Widget( layer, style ), mEmbeddedRendererWidget( 0 )
+    : QgsRendererV2Widget( layer, style )
+    , mRenderer( NULL )
+    , mEmbeddedRendererWidget( 0 )
 {
   if ( !layer )
   {
@@ -122,7 +123,7 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   blockAllSignals( false );
 
   //set the appropriate renderer dialog
-  if ( mRenderer && mRenderer->embeddedRenderer() )
+  if ( mRenderer->embeddedRenderer() )
   {
     QString rendererName = mRenderer->embeddedRenderer()->type();
     int rendererIndex = mRendererComboBox->findData( rendererName );
@@ -186,7 +187,7 @@ void QgsPointDisplacementRendererWidget::on_mRendererSettingsButton_clicked()
   if ( mEmbeddedRendererWidget )
   {
     //create a dialog with the embedded widget
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     QDialog* d = new QDialog( this->window() );
     d->setWindowModality( Qt::WindowModal );
 #else
@@ -213,12 +214,7 @@ void QgsPointDisplacementRendererWidget::on_mLabelFontButton_clicked()
   }
 
   bool ok;
-#if defined(Q_WS_MAC) && defined(QT_MAC_USE_COCOA)
-  // Native Mac dialog works only for QT Carbon
-  QFont newFont = QFontDialog::getFont( &ok, mRenderer->labelFont(), 0, tr( "Label Font" ), QFontDialog::DontUseNativeDialog );
-#else
-  QFont newFont = QFontDialog::getFont( &ok, mRenderer->labelFont(), 0, tr( "Label Font" ) );
-#endif
+  QFont newFont = QgisGui::getFont( ok, mRenderer->labelFont(), tr( "Label Font" ) );
   if ( ok )
   {
     mRenderer->setLabelFont( newFont );

@@ -84,6 +84,10 @@ class QgsMapCanvas : QGraphicsView
     //! @note added in 2.4
     void clearCache();
 
+    //! Reload all layers, clear the cache and refresh the canvas
+    //! @note added in 2.9
+    void refreshAllLayers();
+
     //! Set whether the layers are rendered in parallel or sequentially
     //! @note added in 2.4
     void setParallelRenderingEnabled( bool enabled );
@@ -161,7 +165,7 @@ class QgsMapCanvas : QGraphicsView
     void clearExtentHistory();
 
     /** Zoom to the extent of the selected features of current (vector) layer.
-      Added in version 1.2: optionally specify different than current layer */
+      @param layer optionally specify different than current layer */
     void zoomToSelected( QgsVectorLayer* layer = NULL );
 
     /** Pan to the selected features of current (vector) layer keeping same extent. */
@@ -203,7 +207,7 @@ class QgsMapCanvas : QGraphicsView
     //! return number of layers on the map
     int layerCount() const;
 
-    //! return list of layers within map canvas. Added in v1.5
+    //! return list of layers within map canvas.
     QList<QgsMapLayer*> layers() const;
 
     /*! Freeze/thaw the map canvas. This is used to prevent the canvas from
@@ -229,6 +233,14 @@ class QgsMapCanvas : QGraphicsView
     //! Get the current canvas map units
 
     QGis::UnitType mapUnits() const;
+
+    //! Getter for stored overrides of styles for layers.
+    //! @note added in 2.12
+    QMap<QString, QString> layerStyleOverrides() const;
+
+    //! Setter for stored overrides of styles for layers.
+    //! @note added in 2.12
+    void setLayerStyleOverrides( const QMap<QString, QString>& overrides );
 
     //! Get the current coordinate transform
     const QgsMapToPixel* getCoordinateTransform();
@@ -309,6 +321,23 @@ class QgsMapCanvas : QGraphicsView
      * @note added in 2.3 */
     QgsPreviewEffect::PreviewMode previewMode() const;
 
+    /** Return snapping utility class that is associated with map canvas.
+     *  If no snapping utils instance has been associated previously, an internal will be created for convenience
+     *  (so map tools do not need to test for existence of the instance).
+     *
+     * Main canvas in QGIS returns an instance which is always up-to-date with the project's snapping configuration.
+     *  @note added in 2.8
+     */
+    QgsSnappingUtils* snappingUtils() const;
+    /** Assign an instance of snapping utils to the map canvas.
+     * The instance is not owned by the canvas, so it is possible to use one instance in multiple canvases.
+     *
+     * For main canvas in QGIS, do not associate a different instance from the existing one (it is updated from
+     * the project's snapping configuration).
+     * @note added in 2.8
+     */
+    void setSnappingUtils( QgsSnappingUtils* utils );
+
   public slots:
 
     /**Repaints the canvas map*/
@@ -322,6 +351,9 @@ class QgsMapCanvas : QGraphicsView
 
     //! This slot is connected to the visibility change of one or more layers
     void layerStateChange();
+
+    //! This slot is connected to the layer's CRS change
+    void layerCrsChange();
 
     //! Whether to suppress rendering or not
     void setRenderFlag( bool theFlag );
@@ -350,6 +382,14 @@ class QgsMapCanvas : QGraphicsView
     //! ask user about datum transformation
     void getDatumTransformInfo( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId );
 
+    //! return if canvas rotation is enabled
+    //! @note added in 2.8
+    static bool rotationEnabled();
+
+    //! change canvas rotation support
+    //! @note added in 2.8
+    static void enableRotation( bool enabled );
+
   signals:
     /** Let the owner know how far we are with render operations */
     //! @deprecated since 2.4 - already unused in 2.0 anyway
@@ -364,6 +404,10 @@ class QgsMapCanvas : QGraphicsView
 
     //! Emitted when the extents of the map change
     void extentsChanged();
+
+    //! Emitted when the rotation of the map changes
+    //! @note added in 2.8
+    void rotationChanged( double );
 
     /** Emitted when the canvas has rendered.
 
@@ -383,8 +427,7 @@ class QgsMapCanvas : QGraphicsView
     void mapCanvasRefreshed();
 
     // ### QGIS 3: rename to mapRefreshStarted()
-    /** Emitted when the canvas is about to be rendered.
-      \note Added in 1.5 */
+    /** Emitted when the canvas is about to be rendered. */
     void renderStarting();
 
     //! Emitted when a new set of layers has been received
@@ -425,6 +468,14 @@ class QgsMapCanvas : QGraphicsView
     //! Emmitted when map units are changed
     //! @note added in 2.4
     void mapUnitsChanged();
+
+    //! Emitted when the current layer is changed
+    //! @note added in 2.8
+    void currentLayerChanged( QgsMapLayer* layer );
+
+    //! Emitted when the configuration of overridden layer styles changes
+    //! @note added in 2.12
+    void layerStyleOverridesChanged();
 
   protected:
     //! Overridden standard event to be gestures aware

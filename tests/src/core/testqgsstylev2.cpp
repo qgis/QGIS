@@ -15,49 +15,76 @@
 #include <QtTest/QtTest>
 #include <QObject>
 #include <QStringList>
-#include <QObject>
 #include <QApplication>
 #include <QFileInfo>
 
 //qgis includes...
+#include "qgsmultirenderchecker.h"
 #include <qgsapplication.h>
 #include "qgsconfig.h"
 #include "qgslogger.h"
 #include "qgsvectorcolorrampv2.h"
 #include "qgscptcityarchive.h"
+#include "qgsvectorlayer.h"
+#include "qgsmaplayerregistry.h"
+#include "qgslinesymbollayerv2.h"
+#include "qgsfillsymbollayerv2.h"
+#include "qgssinglesymbolrendererv2.h"
 
 #include "qgsstylev2.h"
 
 /** \ingroup UnitTests
  * This is a unit test to verify that styles are working correctly
  */
-class TestStyleV2: public QObject
+class TestStyleV2 : public QObject
 {
     Q_OBJECT
 
+  public:
+    TestStyleV2();
+
   private:
+
+    QString mReport;
 
     QgsStyleV2 *mStyle;
     QString mTestDataDir;
 
+    QgsMapSettings mMapSettings;
+    QgsVectorLayer * mpPointsLayer;
+    QgsVectorLayer * mpLinesLayer;
+    QgsVectorLayer * mpPolysLayer;
+
     bool testValidColor( QgsVectorColorRampV2 *ramp, double value, QColor expected );
+    bool imageCheck( QgsMapSettings &ms, const QString &testName );
 
   private slots:
 
     // init / cleanup
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {};// will be called before each testfunction is executed.
-    void cleanup() {};// will be called after every testfunction.
+    void init() {}// will be called before each testfunction is executed.
+    void cleanup() {}// will be called after every testfunction.
     // void initStyles();
 
+    void testCanvasClip();
     void testCreateColorRamps();
     void testLoadColorRamps();
     void testSaveLoad();
     void testParseColor();
     void testParseColorList();
+
+
 };
 
+TestStyleV2::TestStyleV2()
+    : mStyle( NULL )
+    , mpPointsLayer( 0 )
+    , mpLinesLayer( 0 )
+    , mpPolysLayer( 0 )
+{
+
+}
 
 // slots
 void TestStyleV2::initTestCase()
@@ -66,7 +93,7 @@ void TestStyleV2::initTestCase()
   QgsApplication::init( QDir::tempPath() + "/dot-qgis" );
   QgsApplication::initQgis();
   QgsApplication::createDB();
-  mTestDataDir = QString( TEST_DATA_DIR ) + QDir::separator(); //defined in CmakeLists.txt
+  mTestDataDir = QString( TEST_DATA_DIR ) + "/"; //defined in CmakeLists.txt
 
   // output test environment
   QgsApplication::showSettings();
@@ -88,6 +115,44 @@ void TestStyleV2::initTestCase()
 
   // cpt-city ramp, small selection available in <testdir>/cpt-city
   QgsCptCityArchive::initArchives();
+
+  //
+  //create a point layer that will be used in all tests...
+  //
+  QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  mTestDataDir = myDataDir + "/";
+  QString myPointsFileName = mTestDataDir + "points.shp";
+  QFileInfo myPointFileInfo( myPointsFileName );
+  mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
+                                      myPointFileInfo.completeBaseName(), "ogr" );
+  // Register the layer with the registry
+  QgsMapLayerRegistry::instance()->addMapLayers(
+    QList<QgsMapLayer *>() << mpPointsLayer );
+
+  //
+  //create a poly layer that will be used in all tests...
+  //
+  QString myPolysFileName = mTestDataDir + "polys.shp";
+  QFileInfo myPolyFileInfo( myPolysFileName );
+  mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
+                                     myPolyFileInfo.completeBaseName(), "ogr" );
+  // Register the layer with the registry
+  QgsMapLayerRegistry::instance()->addMapLayers(
+    QList<QgsMapLayer *>() << mpPolysLayer );
+
+
+  //
+  // Create a line layer that will be used in all tests...
+  //
+  QString myLinesFileName = mTestDataDir + "lines.shp";
+  QFileInfo myLineFileInfo( myLinesFileName );
+  mpLinesLayer = new QgsVectorLayer( myLineFileInfo.filePath(),
+                                     myLineFileInfo.completeBaseName(), "ogr" );
+  // Register the layer with the registry
+  QgsMapLayerRegistry::instance()->addMapLayers(
+    QList<QgsMapLayer *>() << mpLinesLayer );
+
+  mReport += "<h1>StyleV2 Tests</h1>\n";
 }
 
 void TestStyleV2::cleanupTestCase()
@@ -96,6 +161,77 @@ void TestStyleV2::cleanupTestCase()
   // mStyle->save();
   delete mStyle;
   QgsApplication::exitQgis();
+
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  QFile myFile( myReportFile );
+  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
+  {
+    QTextStream myQTextStream( &myFile );
+    myQTextStream << mReport;
+    myFile.close();
+    //QDesktopServices::openUrl( "file:///" + myReportFile );
+  }
+}
+
+bool TestStyleV2::imageCheck( QgsMapSettings& ms, const QString& testName )
+{
+  QgsMultiRenderChecker checker;
+  ms.setOutputDpi( 96 );
+  checker.setControlName( "expected_" + testName );
+  checker.setMapSettings( ms );
+  bool result = checker.runTest( testName, 0 );
+  mReport += checker.report();
+  return result;
+}
+
+void TestStyleV2::testCanvasClip()
+{
+  //test rendering with and without clip to canvas enabled
+  QgsMapSettings ms;
+  QgsRectangle extent( -110.0, 25.0, -90, 40.0 );
+  ms.setExtent( extent );
+  ms.setFlag( QgsMapSettings::ForceVectorOutput );
+
+  //line
+  mReport += "<h2>Line canvas clip</h2>\n";
+  ms.setLayers( QStringList() << mpLinesLayer->id() );
+
+  QgsMarkerLineSymbolLayerV2* markerLine = new QgsMarkerLineSymbolLayerV2();
+  markerLine->setPlacement( QgsMarkerLineSymbolLayerV2:: CentralPoint );
+  QgsLineSymbolV2* lineSymbol = new QgsLineSymbolV2();
+  lineSymbol->changeSymbolLayer( 0, markerLine );
+  QgsSingleSymbolRendererV2* renderer = new QgsSingleSymbolRendererV2( lineSymbol );
+  mpLinesLayer->setRendererV2( renderer );
+  bool result;
+
+  lineSymbol->setClipFeaturesToExtent( true );
+  result = imageCheck( ms, "stylev2_linecanvasclip" );
+  QVERIFY( result );
+
+  lineSymbol->setClipFeaturesToExtent( false );
+  result = imageCheck( ms, "stylev2_linecanvasclip_off" );
+  QVERIFY( result );
+
+  //poly
+  mReport += "<h2>Polygon canvas clip</h2>\n";
+  ms.setLayers( QStringList() << mpPolysLayer->id() );
+
+  QgsCentroidFillSymbolLayerV2* centroidFill = new QgsCentroidFillSymbolLayerV2();
+  QgsFillSymbolV2* fillSymbol = new QgsFillSymbolV2();
+  fillSymbol->changeSymbolLayer( 0, centroidFill );
+  renderer = new QgsSingleSymbolRendererV2( fillSymbol );
+  mpPolysLayer->setRendererV2( renderer );
+
+  extent = QgsRectangle( -106.0, 29.0, -94, 36.0 );
+  ms.setExtent( extent );
+
+  fillSymbol->setClipFeaturesToExtent( true );
+  result = imageCheck( ms, "stylev2_polycanvasclip" );
+  QVERIFY( result );
+
+  fillSymbol->setClipFeaturesToExtent( false );
+  result = imageCheck( ms, "stylev2_polycanvasclip_off" );
+  QVERIFY( result );
 }
 
 bool TestStyleV2::testValidColor( QgsVectorColorRampV2 *ramp, double value, QColor expected )

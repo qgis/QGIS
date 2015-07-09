@@ -49,9 +49,9 @@ class GUI_EXPORT QgsAnnotationItem: public QgsMapCanvasItem
     QgsAnnotationItem( QgsMapCanvas* mapCanvas );
     virtual ~QgsAnnotationItem();
 
-    void updatePosition();
+    void updatePosition() override;
 
-    QRectF boundingRect() const;
+    QRectF boundingRect() const override;
 
     virtual QSizeF minimumFrameSize() const;
 

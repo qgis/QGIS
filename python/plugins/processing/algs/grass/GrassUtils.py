@@ -29,11 +29,13 @@ import stat
 import shutil
 import codecs
 import subprocess
+import os
+
 from qgis.core import QgsApplication
-from PyQt4.QtCore import *
+from PyQt4.QtCore import QCoreApplication
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
-from processing.tools.system import *
+from processing.tools.system import userFolder, isMac, isWindows, mkdir, tempFolder
 from processing.tests.TestData import points
 
 
@@ -163,7 +165,7 @@ class GrassUtils:
         output.write('g.gisenv.exe set="GISDBASE=' + gisdbase + '"\n')
         output.write('g.gisenv.exe set="GRASS_GUI=text"\n')
         for command in commands:
-            output.write(command + '\n')
+            output.write(command.encode('utf8') + '\n')
         output.write('\n')
         output.write('exit\n')
         output.close()
@@ -172,7 +174,7 @@ class GrassUtils:
     def createGrassBatchJobFileFromGrassCommands(commands):
         fout = codecs.open(GrassUtils.grassBatchJobFilename(), 'w', encoding='utf-8')
         for command in commands:
-            fout.write(command + '\n')
+            fout.write(command.encode('utf8') + '\n')
         fout.write('exit')
         fout.close()
 
@@ -273,7 +275,7 @@ class GrassUtils:
             stdin=open(os.devnull),
             stderr=subprocess.STDOUT,
             universal_newlines=True,
-            ).stdout
+        ).stdout
         progress.setInfo('GRASS commands output:')
         for line in iter(proc.readline, ''):
             if 'GRASS_INFO_PERCENT' in line:
@@ -303,7 +305,7 @@ class GrassUtils:
                 stdin=open(os.devnull),
                 stderr=subprocess.STDOUT,
                 universal_newlines=True,
-                ).stdout
+            ).stdout
             for line in iter(proc.readline, ''):
                 if 'GRASS_INFO_PERCENT' in line:
                     try:
@@ -317,7 +319,8 @@ class GrassUtils:
 
         if ProcessingConfig.getSetting(GrassUtils.GRASS_LOG_CONSOLE):
             ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
-        return loglines
+
+
 
     # GRASS session is used to hold the layers already exported or
     # produced in GRASS between multiple calls to GRASS algorithms.
@@ -354,15 +357,16 @@ class GrassUtils:
         if isWindows():
             path = GrassUtils.grassPath()
             if path == '':
-                return 'GRASS folder is not configured.\nPlease configure \
-                        it before running GRASS algorithms.'
+                return GrassUtils.tr(
+                    'GRASS folder is not configured.\nPlease configure '
+                    'it before running GRASS algorithms.')
             cmdpath = os.path.join(path, 'bin', 'r.out.gdal.exe')
             if not os.path.exists(cmdpath):
-                return 'The specified GRASS folder does not contain a valid \
-                        set of GRASS modules.\n' \
-                        + 'Please, go to the Processing settings dialog, and \
-                        check that the GRASS\n' \
-                        + 'folder is correctly configured'
+                return GrassUtils.tr(
+                    'The specified GRASS folder does not contain a valid '
+                    'set of GRASS modules. Please, go to the Processing '
+                    'settings dialog, and check that the GRASS folder is '
+                    'correctly configured')
 
         if not ignorePreviousState:
             if GrassUtils.isGrassInstalled:
@@ -379,13 +383,21 @@ class GrassUtils:
                 0.0001,
                 0,
                 None,
-                )
+            )
             if not os.path.exists(result['output']):
-                return 'It seems that GRASS is not correctly installed and \
-                    configured in your system.\nPlease install it before \
-                    running GRASS algorithms.'
+                return GrassUtils.tr(
+                    'It seems that GRASS is not correctly installed and '
+                    'configured in your system.\nPlease install it before '
+                    'running GRASS algorithms.')
         except:
-            return 'Error while checking GRASS installation. GRASS might not \
-                be correctly configured.\n'
+            return GrassUtils.tr(
+                'Error while checking GRASS installation. GRASS might not '
+                'be correctly configured.\n')
 
         GrassUtils.isGrassInstalled = True
+
+    @staticmethod
+    def tr(string, context=''):
+        if context == '':
+            context = 'GrassUtils'
+        return QCoreApplication.translate(context, string)

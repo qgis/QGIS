@@ -106,7 +106,7 @@ void QgsAtlasComposition::setCoverageLayer( QgsVectorLayer* layer )
     QgsFeature fet;
     layer->getFeatures().nextFeature( fet );
     QgsExpression::setSpecialColumn( "$atlasfeatureid", fet.id() );
-    QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( *fet.geometry() ) );
+    QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( *fet.constGeometry() ) );
     QgsExpression::setSpecialColumn( "$atlasfeature", QVariant::fromValue( fet ) );
   }
 
@@ -213,10 +213,10 @@ int QgsAtlasComposition::updateFeatures()
   // select all features with all attributes
   QgsFeatureIterator fit = mCoverageLayer->getFeatures();
 
-  std::auto_ptr<QgsExpression> filterExpression;
+  QScopedPointer<QgsExpression> filterExpression;
   if ( mFilterFeatures && !mFeatureFilter.isEmpty() )
   {
-    filterExpression = std::auto_ptr<QgsExpression>( new QgsExpression( mFeatureFilter ) );
+    filterExpression.reset( new QgsExpression( mFeatureFilter ) );
     if ( filterExpression->hasParserError() )
     {
       mFilterParserError = filterExpression->parserErrorString();
@@ -233,7 +233,7 @@ int QgsAtlasComposition::updateFeatures()
   int sortIdx = mCoverageLayer->fieldNameIndex( mSortKeyAttributeName );
   while ( fit.nextFeature( feat ) )
   {
-    if ( mFilterFeatures && !mFeatureFilter.isEmpty() )
+    if ( !filterExpression.isNull() )
     {
       QVariant result = filterExpression->evaluate( &feat, mCoverageLayer->pendingFields() );
       if ( filterExpression->hasEvalError() )
@@ -402,7 +402,7 @@ bool QgsAtlasComposition::prepareForFeature( const int featureI, const bool upda
   mCoverageLayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeatureIds[ featureI ] ) ).nextFeature( mCurrentFeature );
 
   QgsExpression::setSpecialColumn( "$atlasfeatureid", mCurrentFeature.id() );
-  QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( *mCurrentFeature.geometry() ) );
+  QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( *mCurrentFeature.constGeometry() ) );
   QgsExpression::setSpecialColumn( "$atlasfeature", QVariant::fromValue( mCurrentFeature ) );
   QgsExpression::setSpecialColumn( "$feature", QVariant(( int )featureI + 1 ) );
 
@@ -490,7 +490,7 @@ void QgsAtlasComposition::computeExtent( QgsComposerMap* map )
   // QgsGeometry::boundingBox is expressed in the geometry"s native CRS
   // We have to transform the grometry to the destination CRS and ask for the bounding box
   // Note: we cannot directly take the transformation of the bounding box, since transformations are not linear
-  QgsGeometry tgeom( *mCurrentFeature.geometry() );
+  QgsGeometry tgeom( *mCurrentFeature.constGeometry() );
   tgeom.transform( mTransform );
   mTransformedFeatureBounds = tgeom.boundingBox();
 }
@@ -784,7 +784,7 @@ bool QgsAtlasComposition::updateFilenameExpression()
 
   if ( mFilenamePattern.size() > 0 )
   {
-    mFilenameExpr = std::auto_ptr<QgsExpression>( new QgsExpression( mFilenamePattern ) );
+    mFilenameExpr.reset( new QgsExpression( mFilenamePattern ) );
     // expression used to evaluate each filename
     // test for evaluation errors
     if ( mFilenameExpr->hasParserError() )
@@ -808,7 +808,7 @@ bool QgsAtlasComposition::updateFilenameExpression()
 bool QgsAtlasComposition::evalFeatureFilename()
 {
   //generate filename for current atlas feature
-  if ( mFilenamePattern.size() > 0 )
+  if ( mFilenamePattern.size() > 0 && !mFilenameExpr.isNull() )
   {
     QVariant filenameRes = mFilenameExpr->evaluate( &mCurrentFeature, mCoverageLayer->pendingFields() );
     if ( mFilenameExpr->hasEvalError() )

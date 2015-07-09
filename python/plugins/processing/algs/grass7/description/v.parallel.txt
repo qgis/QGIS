@@ -9,5 +9,4 @@ ParameterSelection|side|Side|left;right;both
 ParameterNumber|tolerance|Tolerance of arc polylines in map units|None|None|1
 ParameterBoolean|-r|Make outside corners round|False
 ParameterBoolean|-b|Create buffer-like parallel lines|False
-OutputVector|output|Layer with parallel lines
-
+OutputVector|output|Parallel lines

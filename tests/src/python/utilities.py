@@ -11,12 +11,15 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import qgis
 import os
 import sys
 import platform
 import tempfile
-import qgis
-from PyQt4 import QtGui, QtCore
+
+from PyQt4.QtCore import QSize, QDir
+from PyQt4.QtGui import QWidget
+
 from qgis.core import (
     QgsApplication,
     QgsCoordinateReferenceSystem,
@@ -119,12 +122,12 @@ def getQgisTestApp():
 
     global PARENT  # pylint: disable=W0603
     if PARENT is None:
-        PARENT = QtGui.QWidget()
+        PARENT = QWidget()
 
     global CANVAS  # pylint: disable=W0603
     if CANVAS is None:
         CANVAS = QgsMapCanvas(PARENT)
-        CANVAS.resize(QtCore.QSize(400, 400))
+        CANVAS.resize(QSize(400, 400))
 
     global IFACE  # pylint: disable=W0603
     if IFACE is None:
@@ -135,15 +138,10 @@ def getQgisTestApp():
 
 
 def unitTestDataPath(theSubdir=None):
-    """Return the absolute path to the InaSAFE unit test data dir.
-
-    .. note:: This is not the same thing as the SVN inasafe_data dir. Rather
-       this is a new dataset where the test datasets are all tiny for fast
-       testing and the datasets live in the same repo as the code.
+    """Return the absolute path to the QGIS unit test data dir.
 
     Args:
-       * theSubdir: (Optional) Additional subdir to add to the path - typically
-         'hazard' or 'exposure'.
+       * theSubdir: (Optional) Additional subdir to add to the path
     """
     myPath = __file__
     tmpPath = os.path.split(os.path.dirname(myPath))
@@ -183,7 +181,7 @@ def setCanvasCrs(theEpsgId, theOtfpFlag=False):
 
 
 def writeShape(theMemoryLayer, theFileName):
-    myFileName = os.path.join(str(QtCore.QDir.tempPath()), theFileName)
+    myFileName = os.path.join(str(QDir.tempPath()), theFileName)
     print myFileName
     # Explicitly giving all options, not really needed but nice for clarity
     myErrorMessage = ''

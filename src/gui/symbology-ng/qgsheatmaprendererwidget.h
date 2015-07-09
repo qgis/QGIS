@@ -41,7 +41,7 @@ class GUI_EXPORT QgsHeatmapRendererWidget : public QgsRendererV2Widget, private 
     QgsHeatmapRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
 
     /** @returns the current feature renderer */
-    virtual QgsFeatureRendererV2* renderer();
+    virtual QgsFeatureRendererV2* renderer() override;
 
   protected:
     QgsHeatmapRenderer* mRenderer;

@@ -11,6 +11,7 @@ struct LayerRenderJob
 
 typedef QList<LayerRenderJob> LayerRenderJobs;
 
+
 /**
  * Abstract base class for map rendering implementations.
  *

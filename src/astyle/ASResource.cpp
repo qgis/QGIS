@@ -57,6 +57,7 @@ const string ASResource::AS_CATCH = string("catch");
 const string ASResource::AS_FINALLY = string("finally");
 const string ASResource::AS_THROWS = string("throws");
 const string ASResource::AS_CONST = string("const");
+const string ASResource::AS_OVERRIDE = string("override");
 
 const string ASResource::AS_ASM = string("asm");
 
@@ -211,6 +212,7 @@ void ASResource::buildHeaders(vector<const string*> &headers, int fileType, bool
 		headers.push_back(&AS_STATIC);
 		headers.push_back(&AS_EXTERN);
 		headers.push_back(&AS_TEMPLATE);
+		headers.push_back(&AS_OVERRIDE);
 	}
 
 	if (fileType == JAVA_TYPE)
@@ -282,6 +284,7 @@ void ASResource::buildNonParenHeaders(vector<const string*> &nonParenHeaders, in
 		nonParenHeaders.push_back(&AS_STATIC);
 		nonParenHeaders.push_back(&AS_EXTERN);
 		nonParenHeaders.push_back(&AS_TEMPLATE);
+		nonParenHeaders.push_back(&AS_OVERRIDE);
 	}
 
 	if (fileType == JAVA_TYPE)

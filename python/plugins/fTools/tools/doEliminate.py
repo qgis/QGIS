@@ -27,22 +27,23 @@
 #
 #---------------------------------------------------------------------
 
-from PyQt4 import QtCore, QtGui
-from qgis.core import *
+from PyQt4.QtCore import QObject, SIGNAL, QFile, QFileInfo
+from PyQt4.QtGui import QDialog, QDialogButtonBox, QMessageBox
+from qgis.core import QGis, QgsVectorFileWriter, QgsVectorLayer, QgsFeature, QgsFeatureRequest, QgsGeometry
 
 import ftools_utils
 from ui_frmEliminate import Ui_Dialog
 
-class Dialog(QtGui.QDialog, Ui_Dialog):
+class Dialog(QDialog, Ui_Dialog):
     def __init__(self, iface):
-        QtGui.QDialog.__init__(self)
+        QDialog.__init__(self)
         self.iface = iface
         # Set up the user interface from Designer.
         self.setupUi(self)
-        QtCore.QObject.connect(self.toolOut, QtCore.SIGNAL("clicked()"), self.outFile)
-        QtCore.QObject.connect(self.inShape, QtCore.SIGNAL("currentIndexChanged(QString)"), self.update)
+        QObject.connect(self.toolOut, SIGNAL("clicked()"), self.outFile)
+        QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.update)
         self.setWindowTitle(self.tr("Eliminate sliver polygons"))
-        self.buttonOk = self.buttonBox_2.button(QtGui.QDialogButtonBox.Ok)
+        self.buttonOk = self.buttonBox_2.button(QDialogButtonBox.Ok)
         # populate layer list
         self.progressBar.setValue(0)
         self.area.setChecked(True)
@@ -61,20 +62,22 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
         self.buttonOk.setEnabled(False)
 
         if self.inShape.currentText() == "":
-            QtGui.QMessageBox.information(self, self.tr("Eliminate"), self.tr("No input shapefile specified"))
+            QMessageBox.information(self, self.tr("Eliminate"), self.tr("No input shapefile specified"))
         else:
             outFileName = self.outShape.text()
 
             if outFileName == "":
-                QtGui.QMessageBox.information(self, self.tr("Eliminate"), self.tr("Please specify output shapefile"))
+                QMessageBox.information(self, self.tr("Eliminate"), self.tr("Please specify output shapefile"))
                 self.buttonOk.setEnabled(True)
                 return None
             else:
-                outFile = QtCore.QFile(outFileName)
+                outFile = QFile(outFileName)
 
                 if outFile.exists():
                     if not QgsVectorFileWriter.deleteShapeFile(outFileName):
-                        QtGui.QMessageBox.warning(self, self.tr("Delete error"),
+                        QMessageBox.warning(
+                            self,
+                            self.tr("Delete error"),
                             self.tr("Can't delete file %s") % (outFileName))
                         self.buttonOk.setEnabled(True)
                         return None
@@ -84,7 +87,7 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
             inLayer = ftools_utils.getVectorLayerByName(unicode(self.inShape.currentText()))
 
             if inLayer.selectedFeatureCount() == 0:
-                QtGui.QMessageBox.information(self, self.tr("Eliminate"), self.tr("No selection in input layer"))
+                QMessageBox.information(self, self.tr("Eliminate"), self.tr("No selection in input layer"))
             else:
                 self.progressBar.setValue(5)
                 boundary = self.boundary.isChecked()
@@ -109,7 +112,7 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
             msg = ""
             for aStrm in outLayer.commitErrors():
                 msg = msg + "\n" + aStrm
-            QtGui.QMessageBox.warning(self, self.tr("Eliminate"), self.tr("Commit error:\n%s") % (msg))
+            QMessageBox.warning(self, self.tr("Eliminate"), self.tr("Commit error:\n%s") % (msg))
             outLayer.rollBack()
             return False
 
@@ -122,13 +125,13 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
             error = QgsVectorFileWriter.writeAsVectorFormat(inLayer, outFileName, provider.encoding(), inLayer.crs(), "ESRI Shapefile")
 
             if error != QgsVectorFileWriter.NoError:
-                QtGui.QMessageBox.warning(self, self.tr("Eliminate"), self.tr("Error creating output file"))
+                QMessageBox.warning(self, self.tr("Eliminate"), self.tr("Error creating output file"))
                 return None
 
-            outLayer = QgsVectorLayer(outFileName, QtCore.QFileInfo(outFileName).completeBaseName(), "ogr")
+            outLayer = QgsVectorLayer(outFileName, QFileInfo(outFileName).completeBaseName(), "ogr")
 
         else:
-            QtGui.QMessageBox.information(self, self.tr("Eliminate"), self.tr("Please specify output shapefile"))
+            QMessageBox.information(self, self.tr("Eliminate"), self.tr("Please specify output shapefile"))
             return None
 
         # delete features to be eliminated in outLayer
@@ -139,7 +142,7 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
             if self.saveChanges(outLayer):
                 outLayer.startEditing()
         else:
-            QtGui.QMessageBox.warning(self, self.tr("Eliminate"), self.tr("Could not delete features"))
+            QMessageBox.warning(self, self.tr("Eliminate"), self.tr("Could not delete features"))
             return None
 
         # ANALYZE
@@ -148,11 +151,10 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
         add = 80.00 / len(fidsToEliminate)
 
         lastLen = 0
-        geomsToMerge = dict()
 
         # we go through the list and see if we find any polygons we can merge the selected with
         # if we have no success with some we merge and then restart the whole story
-        while (lastLen != inLayer.selectedFeatureCount()): #check if we made any progress
+        while (lastLen != inLayer.selectedFeatureCount()):  # check if we made any progress
             lastLen = inLayer.selectedFeatureCount()
             fidsToDeselect = []
 
@@ -189,7 +191,7 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
                                     mergeWithFid = selFeat.id()
                                     mergeWithGeom = QgsGeometry(selGeom) # deep copy of the geometry
 
-                    if mergeWithFid != None: # a successful candidate
+                    if mergeWithFid is not None:  # a successful candidate
                         newGeom = mergeWithGeom.combine(geom2Eliminate)
 
                         if outLayer.changeGeometry(mergeWithFid, newGeom):
@@ -202,7 +204,9 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
                             # mark feature as eliminated in inLayer
                             fidsToDeselect.append(fid2Eliminate)
                         else:
-                            QtGui.QMessageBox.warning(self, self.tr("Eliminate"),
+                            QMessageBox.warning(
+                                self,
+                                self.tr("Eliminate"),
                                 self.tr("Could not replace geometry of feature with id %s") % (mergeWithFid))
                             return None
 
@@ -227,10 +231,12 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
 
                     fidList += str(fid)
 
-                QtGui.QMessageBox.information(self, self.tr("Eliminate"),
-                        self.tr("Could not eliminate features with these ids:\n%s") % (fidList))
+                QMessageBox.information(
+                    self,
+                    self.tr("Eliminate"),
+                    self.tr("Could not eliminate features with these ids:\n%s") % (fidList))
             else:
-                QtGui.QMessageBox.warning(self, self.tr("Eliminate"), self.tr("Could not add features"))
+                QMessageBox.warning(self, self.tr("Eliminate"), self.tr("Could not add features"))
 
         # stop editing outLayer and commit any pending changes
         if not self.saveChanges(outLayer):
@@ -240,7 +246,9 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
             if self.addToCanvasCheck.isChecked():
                 ftools_utils.addShapeToCanvas(outFileName)
             else:
-                QtGui.QMessageBox.information(self, self.tr("Eliminate"),
+                QMessageBox.information(
+                    self,
+                    self.tr("Eliminate"),
                     self.tr("Created output shapefile:\n%s") % (outFileName))
 
         self.iface.mapCanvas().refresh()

@@ -17,9 +17,8 @@ def qgisapp(args=None, guienabled=True, configpath=None, sysexit=True):
         def main(app):
             # Run your main code block
 
-	    with qgisapp(sys.argv) as app:
-		    main(app)
-
+            with qgisapp(sys.argv) as app:
+                main(app)
 
     args - args passed to the underlying QApplication.
     guienabled - True by default will create a QApplication with a GUI. Pass

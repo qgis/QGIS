@@ -628,6 +628,7 @@ QgsCustomization *QgsCustomization::instance()
 QgsCustomization::QgsCustomization()
     : pDialog( 0 )
     , mEnabled( false )
+    , mSettings( NULL )
     , mStatusPath( "/Customization/status" )
 {
   QgsDebugMsg( "Entered" );

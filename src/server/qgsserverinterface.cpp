@@ -18,7 +18,8 @@
 
 #include "qgsserverinterface.h"
 
-QgsServerInterface::QgsServerInterface()
+QgsServerInterface::QgsServerInterface():
+    mConfigFilePath( QString() )
 {
 
 

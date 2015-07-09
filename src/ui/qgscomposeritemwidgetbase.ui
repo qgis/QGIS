@@ -14,7 +14,16 @@
    <string>Global Options</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -102,7 +111,7 @@
           <property name="minimum">
            <number>1</number>
           </property>
-          <property name="showClearButton">
+          <property name="showClearButton" stdset="0">
            <bool>false</bool>
           </property>
          </widget>
@@ -118,7 +127,7 @@
           <property name="maximum">
            <double>9999999.000000000000000</double>
           </property>
-          <property name="showClearButton">
+          <property name="showClearButton" stdset="0">
            <bool>false</bool>
           </property>
          </widget>
@@ -134,7 +143,7 @@
           <property name="maximum">
            <double>9999999.000000000000000</double>
           </property>
-          <property name="showClearButton">
+          <property name="showClearButton" stdset="0">
            <bool>false</bool>
           </property>
          </widget>
@@ -153,7 +162,7 @@
           <property name="maximum">
            <double>9999999.000000000000000</double>
           </property>
-          <property name="showClearButton">
+          <property name="showClearButton" stdset="0">
            <bool>false</bool>
           </property>
          </widget>
@@ -172,7 +181,7 @@
           <property name="maximum">
            <double>9999999.000000000000000</double>
           </property>
-          <property name="showClearButton">
+          <property name="showClearButton" stdset="0">
            <bool>false</bool>
           </property>
          </widget>
@@ -470,7 +479,10 @@
         <property name="suffix">
          <string> mm</string>
         </property>
-        <property name="showClearButton">
+        <property name="singleStep">
+         <double>0.100000000000000</double>
+        </property>
+        <property name="showClearButton" stdset="0">
          <bool>false</bool>
         </property>
        </widget>

@@ -31,7 +31,7 @@ fi
 
 if [ "$1" = "-c" ]; then
 	echo "Cleaning..."
-	find . \( -name "*.prepare" -o -name "*.astyle" -o -name "*.nocopyright" -o -name "astyle.*.diff" -o -name "sha-*.diff" \) -print -delete
+	find . \( -name "*.prepare" -o -name "*.astyle" -o -name "*.nocopyright" -o -name "astyle.*.diff" -o -name "sha-*.diff" -o -name "*.sortinc" \) -print -delete
 fi
 
 set -e
@@ -66,7 +66,7 @@ ASTYLEDIFF=astyle.$REV.diff
 # reformat
 for f in $MODIFIED; do
 	case "$f" in
-	src/core/spatialite/*|src/core/gps/qextserialport/*|src/plugins/dxf2shp_converter/dxflib/src/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*)
+	src/core/gps/qextserialport/*|src/plugins/dxf2shp_converter/dxflib/src/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*)
 		echo $f skipped
 		continue
 		;;

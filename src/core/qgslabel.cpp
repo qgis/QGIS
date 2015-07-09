@@ -39,15 +39,15 @@
 #include "qgslabel.h"
 
 // use M_PI define PI 3.141592654
-#ifdef WIN32
+#ifdef Q_OS_WIN
 #undef M_PI
 #define M_PI 4*atan(1.0)
 #endif
 
 QgsLabel::QgsLabel( const QgsFields & fields )
-    : mMinScale( 0 ),
-    mMaxScale( 100000000 ),
-    mScaleBasedVisibility( false )
+    : mMinScale( 0 )
+    , mMaxScale( 100000000 )
+    , mScaleBasedVisibility( false )
 {
   mFields = fields;
   mLabelFieldIdx.resize( LabelFieldCount );
@@ -514,7 +514,7 @@ QgsLabelAttributes *QgsLabel::labelAttributes( void )
 
 void QgsLabel::labelPoint( std::vector<labelpoint>& points, QgsFeature & feature )
 {
-  QgsGeometry *geometry = feature.geometry();
+  const QgsGeometry *geometry = feature.constGeometry();
   const unsigned char *geom = geometry->asWkb();
   size_t geomlen = geometry->wkbSize();
   QGis::WkbType wkbType = geometry->wkbType();
@@ -602,6 +602,7 @@ const unsigned char* QgsLabel::labelPoint( labelpoint& point, const unsigned cha
 
     case QGis::WKBLineString25D:
       dims = 3;
+      //intentional fall-through
     case QGis::WKBLineString: // Line center
     {
       Q_ASSERT( geom + sizeof( int ) <= geomend );
@@ -648,6 +649,7 @@ const unsigned char* QgsLabel::labelPoint( labelpoint& point, const unsigned cha
 
     case QGis::WKBPolygon25D:
       dims = 3;
+      //intentional fall-through
     case QGis::WKBPolygon: // centroid of outer ring
     {
       Q_ASSERT( geom + sizeof( int ) <= geomend );

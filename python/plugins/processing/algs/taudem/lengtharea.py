@@ -27,10 +27,9 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtGui import *
+from PyQt4.QtGui import QIcon
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import \
     GeoAlgorithmExecutionException
@@ -38,8 +37,6 @@ from processing.core.GeoAlgorithmExecutionException import \
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputRaster
-
-from processing.tools.system import *
 
 from TauDEMUtils import TauDEMUtils
 
@@ -61,17 +58,17 @@ class LengthArea(GeoAlgorithm):
         self.cmdName = 'lengtharea'
         self.group = 'Stream Network Analysis tools'
 
-        self.addParameter(ParameterRaster(self.LENGTH_GRID, 'Length Grid',
-                          False))
+        self.addParameter(ParameterRaster(self.LENGTH_GRID,
+            self.tr('Length Grid'), False))
         self.addParameter(ParameterRaster(self.CONTRIB_AREA_GRID,
-                          'Contributing Area Grid', False))
-        self.addParameter(ParameterNumber(self.THRESHOLD, 'Threshold', 0,
-                          None, 0.03))
-        self.addParameter(ParameterNumber(self.EXPONENT, 'Exponent', 0, None,
-                          1.3))
+            self.tr('Contributing Area Grid'), False))
+        self.addParameter(ParameterNumber(self.THRESHOLD,
+            self.tr('Threshold'), 0, None, 0.03))
+        self.addParameter(ParameterNumber(self.EXPONENT,
+            self.tr('Exponent'), 0, None, 1.3))
 
         self.addOutput(OutputRaster(self.STREAM_SOURCE_GRID,
-                       'Stream Source Grid'))
+            self.tr('Stream Source Grid')))
 
     def processAlgorithm(self, progress):
         commands = []
@@ -79,9 +76,9 @@ class LengthArea(GeoAlgorithm):
 
         processNum = ProcessingConfig.getSetting(TauDEMUtils.MPI_PROCESSES)
         if processNum <= 0:
-            raise GeoAlgorithmExecutionException('Wrong number of MPI \
-                processes used.\nPlease set correct number before running \
-                TauDEM algorithms.')
+            raise GeoAlgorithmExecutionException(
+                self.tr('Wrong number of MPI processes used. Please set '
+                        'correct number before running TauDEM algorithms.'))
 
         commands.append('-n')
         commands.append(str(processNum))
@@ -95,11 +92,5 @@ class LengthArea(GeoAlgorithm):
         commands.append(str(self.getParameterValue(self.EXPONENT)))
         commands.append('-ss')
         commands.append(self.getOutputValue(self.STREAM_SOURCE_GRID))
-
-        loglines = []
-        loglines.append('TauDEM execution command')
-        for line in commands:
-            loglines.append(line)
-        ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
 
         TauDEMUtils.executeTauDEM(commands, progress)

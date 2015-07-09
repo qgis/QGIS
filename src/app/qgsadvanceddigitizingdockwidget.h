@@ -18,13 +18,15 @@
 
 #include <QDockWidget>
 
+#include "qgsmapmouseevent.h"
+
 #include <ui_qgsadvanceddigitizingdockwidgetbase.h>
+
 
 class QgsAdvancedDigitizingCanvasItem;
 class QgsMapCanvas;
 class QgsMapTool;
 class QgsMapToolAdvancedDigitizing;
-class QgsMapMouseEvent;
 class QgsMessageBarItem;
 class QgsPoint;
 
@@ -36,8 +38,8 @@ static const double SoftConstraintToleranceDegrees = 10;
 /**
  * @brief The QgsAdvancedDigitizingDock class is a dockable widget
  * used to handle the CAD tools on top of a selection of map tools.
- * This class is used for the GUI by inhereting QDockWidget and
- * for constraining the map tool events by inheriting QgsMapToolMapEventFilter.
+ * It handles both the UI and the constraints. Constraints are applied
+ * by implemeting filters called from QgsMapToolAdvancedDigitizing.
  */
 class APP_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private Ui::QgsAdvancedDigitizingDockWidgetBase
 {
@@ -120,17 +122,17 @@ class APP_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
 
     ~QgsAdvancedDigitizingDockWidget();
 
-    void hideEvent( QHideEvent* );
+    void hideEvent( QHideEvent* ) override;
 
     virtual bool canvasPressEventFilter( QgsMapMouseEvent* e );
     virtual bool canvasReleaseEventFilter( QgsMapMouseEvent* e );
     virtual bool canvasMoveEventFilter( QgsMapMouseEvent* e );
     virtual bool canvasKeyPressEventFilter( QKeyEvent *e );
 
-    bool snappingEnabled() {return mSnappingEnabled;}
+    QgsMapMouseEvent::SnappingMode snappingMode() {return mSnappingMode;}
 
     //! key press event on the dock
-    void keyPressEvent( QKeyEvent* e );
+    void keyPressEvent( QKeyEvent* e ) override;
 
     //! determines if CAD tools are enabled or if map tools behaves "nomally"
     bool cadEnabled() const { return mCadEnabled; }
@@ -153,7 +155,7 @@ class APP_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
     QgsPoint previousPoint( bool *exist = 0 ) const;
     QgsPoint penultimatePoint( bool *exist = 0 ) const;
     int pointsCount() const {return mCadPointList.count();}
-    bool pointSnapped() const {return mPointSnapped;}
+    bool snappedToVertex() const {return mSnappedToVertex;}
     const QList<QgsPoint>& snappedSegment() const {return mSnappedSegment;}
 
     //! return the action used to enable/disable the tools
@@ -221,7 +223,7 @@ class APP_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
     bool filterKeyPress( QKeyEvent* e );
 
     //! event filter for line edits in the dock UI (angle/distance/x/y line edits)
-    bool eventFilter( QObject *obj, QEvent *event );
+    bool eventFilter( QObject *obj, QEvent *event ) override;
 
     //! trigger fake mouse move event to update map tool rubber band and/or show new constraints
     void triggerMouseMoveEvent();
@@ -238,7 +240,7 @@ class APP_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
     //! is CAD currently enabled for current map tool
     bool mCadEnabled;
     bool mConstructionMode;
-    bool mSnappingEnabled;
+    QgsMapMouseEvent::SnappingMode mSnappingMode;
 
     // constraints
     CadConstraint* mAngleConstraint;
@@ -250,17 +252,16 @@ class APP_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
 
     // point list and current snap point / segment
     QList<QgsPoint> mCadPointList;
-    bool mPointSnapped;
+    bool mSnappedToVertex;
     QList<QgsPoint> mSnappedSegment;
 
     // error message
     QgsMessageBarItem* mErrorMessage;
-    bool mErrorMessageDisplayed;
 
     // UI
     QAction* mEnableAction;
     QMap< QAction*, int > mCommonAngleActions; // map the common angle actions with their angle values
-    QAction* mSnappingEnabledAction;
+    QMap< QAction*, QgsMapMouseEvent::SnappingMode > mSnappingActions; // map the snapping mode actions with their values
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAdvancedDigitizingDockWidget::CadCapacities )

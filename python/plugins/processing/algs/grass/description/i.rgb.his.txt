@@ -4,6 +4,6 @@ Imagery (i.*)
 ParameterRaster|red_output|Name for input raster map (red)|True
 ParameterRaster|green_output|Name for input raster map (green)|True
 ParameterRaster|blue_output|Name for input raster map (blue)|True
-OutputRaster|hue_input|Name of output raster map (hue)|False
-OutputRaster|intensity_input|Name of output raster map (intensity)|False
-OutputRaster|saturation_input|Name of output raster map (saturation)|False
+OutputRaster|hue_input|Hue|False
+OutputRaster|intensity_input|Intensity|False
+OutputRaster|saturation_input|Saturation|False

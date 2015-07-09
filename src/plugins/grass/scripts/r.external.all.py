@@ -31,7 +31,7 @@ __revision__ = '$Format:%H$'
 # AUTHOR(S):    Lorenzo Masini
 #
 # PURPOSE:      Link all GDAL supported raster files into a directory
-#		to binary raster map layers.
+#               to binary raster map layers.
 # COPYRIGHT:    (C) 2009 by Lorenzo Masini
 #
 #               This program is free software under the GNU General Public
@@ -76,7 +76,6 @@ __revision__ = '$Format:%H$'
 #% key: r
 #% description: Recursively scan subdirectories
 
-import sys
 import os
 try:
     from grass.script import core as grass
@@ -88,13 +87,13 @@ except:
 
 def import_directory_of_rasters(directory, recursive):
     for dir, dirnames, filenames in os.walk(directory):
-	for filename in filenames:
-		if grass.run_command('r.external', flags=flags_string, input=os.path.join(dir, filename), band=options['band'], output=filename[:-4], title=filename[:-4]) != 0:
-			grass.warning('Cannot import file' + filename)
-	if not recursive:
-		break
-	for dirname in dirnames:
-		import_directory_of_rasters(dirname, recursive)
+        for filename in filenames:
+                if grass.run_command('r.external', flags=flags_string, input=os.path.join(dir, filename), band=options['band'], output=filename[:-4], title=filename[:-4]) != 0:
+                        grass.warning('Cannot import file' + filename)
+        if not recursive:
+                break
+        for dirname in dirnames:
+                import_directory_of_rasters(dirname, recursive)
 
 def main():
     input = options['input']
@@ -106,4 +105,3 @@ if __name__ == "__main__":
     options, flags = grass.parser()
     flags_string = "".join([k for k in flags.keys() if flags[k] and k != 'r'])
     main()
-

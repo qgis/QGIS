@@ -150,6 +150,10 @@ class CORE_EXPORT QgsRectangle
 
 };
 
+/** Writes the list rectangle to stream out. QGIS version compatibility is not guaranteed. */
+CORE_EXPORT QDataStream& operator<<( QDataStream& out, const QgsRectangle& rectangle );
+/** Reads a rectangle from stream in into rectangle. QGIS version compatibility is not guaranteed. */
+CORE_EXPORT QDataStream& operator>>( QDataStream& in, QgsRectangle& rectangle );
 
 inline QgsRectangle::~QgsRectangle()
 {

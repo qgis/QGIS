@@ -26,9 +26,18 @@
 #include <QObject>
 #include <QtTest/QtTest>
 
-class TestQgsComposerLabel: public QObject
+class TestQgsComposerLabel : public QObject
 {
     Q_OBJECT
+
+  public:
+    TestQgsComposerLabel()
+        : mComposition( 0 )
+        , mComposerLabel( 0 )
+        , mMapSettings( 0 )
+        , mVectorLayer( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -47,7 +56,7 @@ class TestQgsComposerLabel: public QObject
   private:
     QgsComposition* mComposition;
     QgsComposerLabel* mComposerLabel;
-    QgsMapSettings mMapSettings;
+    QgsMapSettings *mMapSettings;
     QgsVectorLayer* mVectorLayer;
 };
 
@@ -56,17 +65,19 @@ void TestQgsComposerLabel::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
+  mMapSettings = new QgsMapSettings();
+
   //create maplayers from testdata and add to layer registry
-  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "france_parts.shp" );
+  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + "/" +  "france_parts.shp" );
   mVectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
                                      vectorFileInfo.completeBaseName(),
                                      "ogr" );
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mVectorLayer );
 
   //create composition with composer map
-  mMapSettings.setLayers( QStringList() << mVectorLayer->id() );
-  mMapSettings.setCrsTransformEnabled( false );
-  mComposition = new QgsComposition( mMapSettings );
+  mMapSettings->setLayers( QStringList() << mVectorLayer->id() );
+  mMapSettings->setCrsTransformEnabled( false );
+  mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   mComposerLabel = new QgsComposerLabel( mComposition );
@@ -78,6 +89,7 @@ void TestQgsComposerLabel::initTestCase()
 void TestQgsComposerLabel::cleanupTestCase()
 {
   delete mComposition;
+  delete mMapSettings;
 
   QgsApplication::exitQgis();
 }

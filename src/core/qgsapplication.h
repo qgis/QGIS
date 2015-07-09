@@ -49,10 +49,10 @@ class CORE_EXPORT QgsApplication : public QApplication
     static void init( QString customConfigPath = QString() );
 
     //! Watch for QFileOpenEvent.
-    virtual bool event( QEvent * event );
+    virtual bool event( QEvent * event ) override;
 
     //! Catch exceptions when sending event to receiver.
-    virtual bool notify( QObject * receiver, QEvent * event );
+    virtual bool notify( QObject * receiver, QEvent * event ) override;
 
     //! Set the FileOpen event receiver
     static void setFileOpenEventReceiver( QObject * receiver );
@@ -84,7 +84,13 @@ class CORE_EXPORT QgsApplication : public QApplication
      * but don't have commit access. */
     static const QString contributorsFilePath();
 
-    /**Returns the path to the sponsors file.*/
+    /** Returns the path to the developers map file.
+     * The developers map was created by using leaflet framework,
+     * it shows the doc/contributors.json file.
+     * @note this function was added in version 2.7 */
+    static const QString developersMapFilePath();
+
+    /** Returns the path to the sponsors file. */
     static const QString sponsorsFilePath();
 
     /** Returns the path to the donors file. */
@@ -200,6 +206,18 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     //! Returns whether this machine uses big or little endian
     static endian_t endian();
+
+    //! Swap the endianness of the specified value
+    template<typename T>
+    static void endian_swap( T& value )
+    {
+      char* data = reinterpret_cast<char*>( &value );
+      std::size_t n = sizeof( value );
+      for ( std::size_t i = 0, m = n / 2; i < m; ++i )
+      {
+        std::swap( data[i], data[n - 1 - i] );
+      }
+    }
 
     /** \brief get a standard css style sheet for reports.
      * Typically you will use this method by doing:

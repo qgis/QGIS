@@ -23,10 +23,9 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from qgis.gui import *
+from PyQt4.QtCore import QObject, QCoreApplication, SIGNAL, QDir
+from PyQt4.QtGui import QWidget
+from qgis.core import QGis
 
 from ui_widgetWarp import Ui_GdalToolsWidget as Ui_Widget
 from widgetBatchBase import GdalToolsBaseBatchWidget as BaseBatchWidget
@@ -54,8 +53,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
 
       self.outputFormat = Utils.fillRasterOutputFormat()
 
-      self.setParamsStatus(
-        [
+      self.setParamsStatus([
           (self.inSelector, SIGNAL("filenameChanged()")),
           (self.outSelector, SIGNAL("filenameChanged()")),
           (self.sourceSRSEdit, SIGNAL("textChanged(const QString &)"), self.sourceSRSCheck),
@@ -68,8 +66,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
           (self.multithreadCheck, SIGNAL("stateChanged(int)")),
           (self.noDataEdit, SIGNAL( "textChanged( const QString & )" ), self.noDataCheck),
           (self.maskSelector, SIGNAL("filenameChanged()"), self.maskCheck, 1600),
-        ]
-      )
+      ])
 
       self.connect(self.inSelector, SIGNAL("layerChanged()"), self.fillSourceSRSEditDefault)
       self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFile)
@@ -170,7 +167,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
         self.sourceSRSEdit.setText(dialog.getProjection())
 
   def fillSourceSRSEditDefault(self):
-      if self.inSelector.layer() == None:
+      if self.inSelector.layer() is None:
         return
       self.refreshSourceSRS()
 
@@ -252,4 +249,3 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
         self.progressBar.setValue( index + 1 )
       else:
         self.progressBar.setValue( 0 )
-

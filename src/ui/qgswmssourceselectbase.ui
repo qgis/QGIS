@@ -15,7 +15,8 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff></normaloff></iconset>
+    <normaloff/>
+   </iconset>
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>
@@ -260,6 +261,13 @@
             </property>
            </widget>
           </item>
+          <item row="4" column="0">
+           <widget class="QCheckBox" name="mContextualLegendCheckbox">
+            <property name="text">
+             <string>Use contextual WMS Legend</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
@@ -306,7 +314,7 @@
        <item row="1" column="0" colspan="3">
         <widget class="QTreeWidget" name="mLayerOrderTreeWidget">
          <property name="columnCount">
-          <number>2</number>
+          <number>3</number>
          </property>
          <column>
           <property name="text">
@@ -474,11 +482,11 @@
   <tabstop>btnSave</tabstop>
   <tabstop>btnAddDefault</tabstop>
   <tabstop>lstLayers</tabstop>
-  <tabstop>leLayerName</tabstop>
   <tabstop>mTileWidth</tabstop>
   <tabstop>mTileHeight</tabstop>
   <tabstop>mFeatureCount</tabstop>
   <tabstop>btnChangeSpatialRefSys</tabstop>
+  <tabstop>mContextualLegendCheckbox</tabstop>
   <tabstop>mLayerUpButton</tabstop>
   <tabstop>mLayerDownButton</tabstop>
   <tabstop>mLayerOrderTreeWidget</tabstop>
@@ -487,6 +495,7 @@
   <tabstop>btnSearch</tabstop>
   <tabstop>tableWidgetWMSList</tabstop>
   <tabstop>btnAddWMS</tabstop>
+  <tabstop>leLayerName</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>

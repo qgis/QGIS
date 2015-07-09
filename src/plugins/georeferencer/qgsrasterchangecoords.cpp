@@ -27,8 +27,12 @@
 #endif
 
 QgsRasterChangeCoords::QgsRasterChangeCoords()
+    : mHasCrs( false )
+    , mUL_X( 0. )
+    , mUL_Y( 0. )
+    , mResX( 1. )
+    , mResY( 1. )
 {
-  mHasCrs = false;
 }
 
 void QgsRasterChangeCoords::setRaster( const QString &fileRaster )

@@ -26,22 +26,22 @@ __copyright__ = '(C) 2012, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
+from PyQt4.QtGui import QIcon
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import \
     GeoAlgorithmExecutionException
-from processing.core.parameters import getParameterFromString
+
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterNumber
+from processing.core.parameters import getParameterFromString
 from processing.core.outputs import getOutputFromString
-from processing.tools.system import *
+
 from TauDEMUtils import TauDEMUtils
 
 
@@ -81,8 +81,7 @@ class TauDEMAlgorithm(GeoAlgorithm):
                 line = lines.readline().strip('\n').strip()
             except Exception, e:
                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                       'Could not load TauDEM algorithm: '
-                                       + self.descriptionFile + '\n' + line)
+                    self.tr('Could not load TauDEM algorithm: %s\n%s' % (self.descriptionFile, line)))
                 raise e
         lines.close()
 
@@ -92,10 +91,9 @@ class TauDEMAlgorithm(GeoAlgorithm):
 
         processNum = int(ProcessingConfig.getSetting(TauDEMUtils.MPI_PROCESSES))
         if processNum <= 0:
-            raise GeoAlgorithmExecutionException('Wrong number of MPI \
-                processes used.\nPlease set correct number before running \
-                TauDEM algorithms.'
-                )
+            raise GeoAlgorithmExecutionException(
+                self.tr('Wrong number of MPI processes used. Please set '
+                        'correct number before running TauDEM algorithms.'))
 
         commands.append('-n')
         commands.append(str(processNum))
@@ -111,7 +109,7 @@ class TauDEMAlgorithm(GeoAlgorithm):
                 commands.append(param.name)
                 commands.append(param.value)
             elif isinstance(param, ParameterBoolean):
-                if param.value and str(param.value).lower() == 'false':
+                if not param.value:
                     commands.append(param.name)
             elif isinstance(param, ParameterString):
                 commands.append(param.name)
@@ -121,9 +119,4 @@ class TauDEMAlgorithm(GeoAlgorithm):
             commands.append(out.name)
             commands.append(out.value)
 
-        loglines = []
-        loglines.append('TauDEM execution command')
-        for line in commands:
-            loglines.append(line)
-        ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
         TauDEMUtils.executeTauDEM(commands, progress)

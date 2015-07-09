@@ -20,7 +20,8 @@ class QgsLayerTreeModelLegendNode : QObject
     enum LegendNodeRoles
     {
       RuleKeyRole,                    //!< rule key of the node (QString)
-      SymbolV2LegacyRuleKeyRole       //!< for QgsSymbolV2LegendNode only - legacy rule key (void ptr, to be cast to QgsSymbolV2 ptr)
+      SymbolV2LegacyRuleKeyRole,      //!< for QgsSymbolV2LegendNode only - legacy rule key (void ptr, to be cast to QgsSymbolV2 ptr)
+      ParentRuleKeyRole               //!< rule key of the parent legend node - for legends with tree hierarchy (QString). Added in 2.8
     };
 
     /** Return pointer to the parent layer node */
@@ -133,6 +134,16 @@ class QgsSymbolV2LegendNode : QgsLayerTreeModelLegendNode
     virtual bool isScaleOK( double scale ) const;
 
     virtual void invalidateMapBasedData();
+
+    //! Set the icon size
+    //! @note added in 2.10
+    void setIconSize( const QSize& sz );
+    //! @note added in 2.10
+    QSize iconSize() const;
+
+    //! Get the minimum icon size to prevent cropping
+    //! @note added in 2.10
+    QSize minimumIconSize() const;
 };
 
 
@@ -147,7 +158,7 @@ class QgsSimpleLegendNode : QgsLayerTreeModelLegendNode
 #include <qgslayertreemodellegendnode.h>
 %End
   public:
-    QgsSimpleLegendNode( QgsLayerTreeLayer* nodeLayer, const QString& label, const QIcon& icon = QIcon(), QObject* parent /TransferThis/ = 0 );
+    QgsSimpleLegendNode( QgsLayerTreeLayer* nodeLayer, const QString& label, const QIcon& icon = QIcon(), QObject* parent /TransferThis/ = 0, const QString& key = QString() );
 
     virtual QVariant data( int role ) const;
 };
@@ -188,6 +199,4 @@ class QgsRasterSymbolLegendNode : QgsLayerTreeModelLegendNode
     virtual QVariant data( int role ) const;
 
     QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const;
-
 };
-

@@ -13,8 +13,6 @@ Email                : sherman at mrcc dot com
  *                                                                         *
  ***************************************************************************/
 #include <QtTest/QtTest>
-#include <iostream>
-
 #include <QPixmap>
 
 #define CPL_SUPRESS_CPLUSPLUS
@@ -71,4 +69,3 @@ void TestQgsApplication::checkGdalSkip()
 
 QTEST_MAIN( TestQgsApplication )
 #include "testqgsapplication.moc"
-

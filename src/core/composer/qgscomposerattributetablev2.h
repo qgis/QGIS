@@ -66,7 +66,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
     QgsComposerAttributeTableV2( QgsComposition* composition, bool createUndoCommands );
     ~QgsComposerAttributeTableV2();
 
-    virtual QString displayName() const;
+    virtual QString displayName() const override;
 
     /**Writes properties specific to attribute tables
      * @param elem an existing QDomElement in which to store the attribute table's properties.
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * @param ignoreFrames ignore frames
      * @see readXML
      */
-    virtual bool writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const;
+    virtual bool writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const override;
 
     /**Reads the properties specific to an attribute table from xml.
      * @param itemElem a QDomElement holding the attribute table's desired properties.
@@ -82,9 +82,9 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * @param ignoreFrames ignore frames
      * @see writeXML
      */
-    virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false );
+    virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false ) override;
 
-    virtual void addFrame( QgsComposerFrame* frame, bool recalcFrameSizes = true );
+    virtual void addFrame( QgsComposerFrame* frame, bool recalcFrameSizes = true ) override;
 
     /**Sets the source for attributes to show in table body.
      * @param source content source
@@ -275,7 +275,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * @returns true if attributes were successfully fetched
      * @note not available in python bindings
      */
-    bool getTableContents( QgsComposerTableContents &contents );
+    bool getTableContents( QgsComposerTableContents &contents ) override;
 
   private:
 

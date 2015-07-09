@@ -32,7 +32,6 @@ from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputRaster
 from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.tools.system import *
 
 
 class tpi(GdalAlgorithm):
@@ -45,14 +44,15 @@ class tpi(GdalAlgorithm):
     def defineCharacteristics(self):
         self.name = 'TPI (Topographic Position Index)'
         self.group = '[GDAL] Analysis'
-        self.addParameter(ParameterRaster(self.INPUT, 'Input layer'))
-        self.addParameter(ParameterNumber(self.BAND, 'Band number', 1, 99, 1))
-        self.addParameter(ParameterBoolean(self.COMPUTE_EDGES, 'Compute edges',
-                          False))
+        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
+        self.addParameter(ParameterNumber(self.BAND,
+            self.tr('Band number'), 1, 99, 1))
+        self.addParameter(ParameterBoolean(self.COMPUTE_EDGES,
+            self.tr('Compute edges'), False))
 
-        self.addOutput(OutputRaster(self.OUTPUT, 'Output file'))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Topographic Position Index')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         arguments = ['TPI']
         arguments.append(unicode(self.getParameterValue(self.INPUT)))
         arguments.append(unicode(self.getOutputValue(self.OUTPUT)))
@@ -63,5 +63,4 @@ class tpi(GdalAlgorithm):
         if self.getParameterValue(self.COMPUTE_EDGES):
             arguments.append('-compute_edges')
 
-        GdalUtils.runGdal(['gdaldem',
-                          GdalUtils.escapeAndJoin(arguments)], progress)
+        return ['gdaldem', GdalUtils.escapeAndJoin(arguments)]

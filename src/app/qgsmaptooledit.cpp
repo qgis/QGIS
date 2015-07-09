@@ -32,38 +32,6 @@ QgsMapToolEdit::~QgsMapToolEdit()
 {
 }
 
-int QgsMapToolEdit::insertSegmentVerticesForSnap( const QList<QgsSnappingResult>& snapResults, QgsVectorLayer* editedLayer )
-{
-  QgsPoint layerPoint;
-
-  if ( !editedLayer || !editedLayer->isEditable() )
-  {
-    return 1;
-  }
-
-  //transform snaping coordinates to layer crs first
-  QList<QgsSnappingResult> transformedSnapResults = snapResults;
-  QList<QgsSnappingResult>::iterator it = transformedSnapResults.begin();
-  for ( ; it != transformedSnapResults.constEnd(); ++it )
-  {
-    QgsPoint layerPoint = toLayerCoordinates( editedLayer, it->snappedVertex );
-    it->snappedVertex = layerPoint;
-  }
-
-  return editedLayer->insertSegmentVerticesForSnap( transformedSnapResults );
-}
-
-QgsPoint QgsMapToolEdit::snapPointFromResults( const QList<QgsSnappingResult>& snapResults, const QPoint& screenCoords )
-{
-  if ( snapResults.size() < 1 )
-  {
-    return toMapCoordinates( screenCoords );
-  }
-  else
-  {
-    return snapResults.constBegin()->snappedVertex;
-  }
-}
 
 QgsRubberBand* QgsMapToolEdit::createRubberBand( QGis::GeometryType geometryType, bool alternativeBand )
 {

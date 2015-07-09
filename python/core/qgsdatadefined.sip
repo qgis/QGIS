@@ -1,6 +1,7 @@
 /** \ingroup core
  * \class QgsDataDefined
  * A container class for data source field mapping or expression.
+ * \note QgsDataDefined objects are implicitly shared.
  */
 
 class QgsDataDefined
@@ -22,7 +23,37 @@ class QgsDataDefined
                     const QString& expr = QString(),
                     const QString& field = QString() );
 
-    ~QgsDataDefined();
+    /**
+     * Construct a new data defined object, analysing the expression to determine
+     * if it's a simple field reference or an expression.
+     * @param expression can be null
+     */
+    explicit QgsDataDefined( const QgsExpression * expression );
+
+    /**
+     * Construct a new data defined object, analysing the string to determine
+     * if it's a simple field reference or an expression
+     * @param string field reference or an expression, can be empty
+     * @note added in QGIS 2.9
+     */
+    explicit QgsDataDefined( const QString& string );
+
+    /**
+     * Copy constructor. Note that copies of data defined objects with expressions
+     * will not be prepared.
+     */
+    QgsDataDefined( const QgsDataDefined& other );
+
+    /** Creates a QgsDataDefined from a decoded QgsStringMap.
+     * @param map string map encoding of QgsDataDefined
+     * @param baseName base name for values in the string map
+     * @returns new QgsDataDefined if string map was successfully interpreted
+     * @see toMap
+     * @note added in QGIS 2.9
+     */
+    static QgsDataDefined* fromMap( const QgsStringMap& map, const QString& baseName = QString() );
+
+    virtual ~QgsDataDefined();
 
     /**Returns whether the data defined container is set to all the default
      * values, ie, disabled, with empty expression and no assigned field
@@ -46,20 +77,49 @@ class QgsDataDefined
     //void setExpressionParams( QMap<QString, QVariant> params );
     void insertExpressionParam( QString key, QVariant param );
 
+    /** Prepares the expression using a vector layer
+     * @param layer vector layer
+     * @returns true if expression was successfully prepared
+     */
     bool prepareExpression( QgsVectorLayer* layer );
+
+    /** Prepares the expression using a fields collection
+     * @param fields
+     * @returns true if expression was successfully prepared
+     * @note added in QGIS 2.9
+     */
+    bool prepareExpression( const QgsFields &fields = QgsFields() );
+
+    /** Returns whether the data defined object's expression is prepared
+     * @returns true if expression is prepared
+     */
     bool expressionIsPrepared() const;
 
     QgsExpression* expression();
+
+    /** Returns the columns referenced by the QgsDataDefined
+     * @param layer vector layer, used for preparing the expression if required
+     */
     QStringList referencedColumns( QgsVectorLayer* layer );
+
+    /** Returns the columns referenced by the QgsDataDefined
+     * @param fields vector layer, used for preparing the expression if required
+     * @note added in QGIS 2.9
+     */
+    QStringList referencedColumns( const QgsFields& fields = QgsFields() );
 
     QString field() const;
     void setField( const QString& field );
 
-    // @note not available in python bindings
-    //QMap< QString, QString > toMap();
-    
+    /** Encodes the QgsDataDefined into a string map.
+     * @param baseName optional base name for values in the string map. Can be used
+     * to differentiate multiple QgsDataDefineds encoded in the same string map.
+     * @see fromMap
+     */
+    QMap< QString, QString > toMap( const QString& baseName = QString() ) const;
+
     /**Returns a DOM element containing the properties of the data defined container.
-     * @param DOM document
+     * @param document DOM document
      * @param elementName name for DOM element
      * @returns DOM element corresponding to data defined container
      * @note added in QGIS 2.7
@@ -75,7 +135,7 @@ class QgsDataDefined
      * @see toXmlElement
      */
     bool setFromXmlElement( const QDomElement& element );
-    
+
     bool operator==( const QgsDataDefined &other ) const;
     bool operator!=( const QgsDataDefined &other ) const;
 

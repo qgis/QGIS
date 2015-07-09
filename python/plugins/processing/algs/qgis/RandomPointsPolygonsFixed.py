@@ -25,12 +25,10 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-import math
 import random
 
-from PyQt4.QtCore import *
-
-from qgis.core import *
+from PyQt4.QtCore import QVariant
+from qgis.core import QGis, QgsFields, QgsField, QgsDistanceArea, QgsGeometry, QgsSpatialIndex, QgsPoint, QgsFeature
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
@@ -51,21 +49,21 @@ class RandomPointsPolygonsFixed(GeoAlgorithm):
 
     STRATEGIES = ['Points count',
                   'Points density'
-                 ]
+                  ]
 
     def defineCharacteristics(self):
         self.name = 'Random points inside polygons (fixed)'
         self.group = 'Vector creation tools'
         self.addParameter(ParameterVector(self.VECTOR,
-            'Input layer',[ParameterVector.VECTOR_TYPE_POLYGON]))
-        self.addParameter(ParameterSelection(
-            self.STRATEGY, 'Sampling strategy', self.STRATEGIES, 0))
-        self.addParameter(
-            ParameterNumber(self.VALUE, 'Number or density of points',
-                0.0001, 9999999.0, 1.0))
-        self.addParameter(ParameterNumber(
-            self.MIN_DISTANCE, 'Minimum distance', 0.0, 9999999, 0.0))
-        self.addOutput(OutputVector(self.OUTPUT, 'Random points'))
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POLYGON]))
+        self.addParameter(ParameterSelection(self.STRATEGY,
+            self.tr('Sampling strategy'), self.STRATEGIES, 0))
+        self.addParameter(ParameterNumber(self.VALUE,
+            self.tr('Number or density of points'), 0.0001, 9999999.0, 1.0))
+        self.addParameter(ParameterNumber(self.MIN_DISTANCE,
+            self.tr('Minimum distance'), 0.0, 9999999, 0.0))
+
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
@@ -79,7 +77,6 @@ class RandomPointsPolygonsFixed(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             fields, QGis.WKBPoint, layer.dataProvider().crs())
 
-        request = QgsFeatureRequest()
         da = QgsDistanceArea()
 
         features = vector.features(layer)
@@ -122,10 +119,9 @@ class RandomPointsPolygonsFixed(GeoAlgorithm):
                 nIterations += 1
 
             if nPoints < pointCount:
-                 ProcessingLog.addToLog(
-                     ProcessingLog.LOG_INFO,
-                     'Can not generate requested number of random points. Maximum '
-                     'number of attempts exceeded.')
+                 ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
+                     self.tr('Can not generate requested number of random '
+                             'points. Maximum number of attempts exceeded.'))
 
             progress.setPercentage(0)
 

@@ -15,6 +15,7 @@
 
 #include "qgsapplication.h"
 #include "qgscrscache.h"
+#include "qgsdataitemproviderregistry.h"
 #include "qgsexception.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
@@ -33,7 +34,7 @@
 #include <QPixmap>
 #include <QThreadPool>
 
-#ifndef Q_WS_WIN
+#ifndef Q_OS_WIN
 #include <netinet/in.h>
 #else
 #include <winsock.h>
@@ -153,7 +154,7 @@ void QgsApplication::init( QString customConfigPath )
     char *prefixPath = getenv( "QGIS_PREFIX_PATH" );
     if ( !prefixPath )
     {
-#if defined(Q_WS_MACX) || defined(Q_WS_WIN32) || defined(WIN32)
+#if defined(Q_OS_MACX) || defined(Q_OS_WIN)
       setPrefixPath( applicationDirPath(), true );
 #elif defined(ANDROID)
       // this is  "/data/data/org.qgis.qgis" in android
@@ -331,7 +332,10 @@ const QString QgsApplication::prefixPath()
 {
   if ( ABISYM( mRunningFromBuildDir ) )
   {
-    qWarning( "!!! prefix path was requested, but it is not valid - we do not run from installed path !!!" );
+    static bool once = true;
+    if ( once )
+      qWarning( "!!! prefix path was requested, but it is not valid - we do not run from installed path !!!" );
+    once = false;
   }
 
   return ABISYM( mPrefixPath );
@@ -438,6 +442,10 @@ const QString QgsApplication::authorsFilePath()
 const QString QgsApplication::contributorsFilePath()
 {
   return ABISYM( mPkgDataPath ) + QString( "/doc/CONTRIBUTORS" );
+}
+const QString QgsApplication::developersMapFilePath()
+{
+  return ABISYM( mPkgDataPath ) + QString( "/doc/developersmap.html" );
 }
 /*!
   Returns the path to the sponsors file.
@@ -615,12 +623,6 @@ void QgsApplication::initQgis()
 
 void QgsApplication::exitQgis()
 {
-  // Cleanup known singletons
-  QgsMapLayerRegistry::cleanup();
-  QgsNetworkAccessManager::cleanup();
-  QgsCoordinateTransformCache::cleanup();
-
-  // Cleanup providers
   delete QgsProviderRegistry::instance();
 }
 
@@ -922,7 +924,7 @@ bool QgsApplication::createDB( QString *errorMessage )
     myDir.mkpath( myPamPath ); //fail silently
   }
 
-#if defined(Q_WS_WIN32) || defined(WIN32)
+#if defined(Q_OS_WIN)
   CPLSetConfigOption( "GDAL_PAM_PROXY_DIR", myPamPath.toUtf8() );
 #else
   //under other OS's we use an environment var so the user can

@@ -42,6 +42,12 @@ class QgsFeatureRendererV2
     sipClass = sipClass_QgsGraduatedSymbolRendererV2;
   else if (sipCpp->type() == "RuleRenderer")
     sipClass = sipClass_QgsRuleBasedRendererV2;
+  else if (sipCpp->type() == "heatmapRenderer")
+    sipClass = sipClass_QgsHeatmapRenderer;
+  else if (sipCpp->type() == "invertedPolygonRenderer")
+    sipClass = sipClass_QgsInvertedPolygonRenderer;
+  else if (sipCpp->type() == "pointDisplacement")
+    sipClass = sipClass_QgsPointDisplacementRenderer;
   else
     sipClass = 0;
 %End
@@ -111,7 +117,11 @@ class QgsFeatureRendererV2
     virtual QDomElement save( QDomDocument& doc );
 
     //! create the SLD UserStyle element following the SLD v1.1 specs
-    virtual QDomElement writeSld( QDomDocument& doc, const QgsVectorLayer &layer ) const;
+    //! @deprecated since 2.8 - use the other override with styleName
+    virtual QDomElement writeSld( QDomDocument& doc, const QgsVectorLayer &layer ) const /Deprecated/;
+    //! create the SLD UserStyle element following the SLD v1.1 specs with the given name
+    //! @note added in 2.8
+    virtual QDomElement writeSld( QDomDocument& doc, const QString& styleName ) const;
 
     /** create a new renderer according to the information contained in
      * the UserStyle element of a SLD style document
@@ -187,6 +197,35 @@ class QgsFeatureRendererV2
      */
     virtual void modifyRequestExtent( QgsRectangle& extent, QgsRenderContext& context );
 
+    /** Returns the current paint effect for the renderer.
+     * @returns paint effect
+     * @note added in QGIS 2.9
+     * @see setPaintEffect
+     */
+    QgsPaintEffect* paintEffect() const;
+
+    /** Sets the current paint effect for the renderer.
+     * @param effect paint effect. Ownership is transferred to the renderer.
+     * @note added in QGIS 2.9
+     * @see paintEffect
+     */
+    void setPaintEffect( QgsPaintEffect* effect /Transfer/);
+
+    /** Returns whether the renderer must render as a raster.
+     * @note added in QGIS 2.12
+     * @see setForceRasterRender
+     */
+    bool forceRasterRender() const;
+
+    /** Sets whether the renderer should be rendered to a raster destination.
+     * @param forceRaster set to true if renderer must be drawn on a raster surface.
+     * This may be desirable for highly detailed layers where rendering as a vector
+     * would result in a large, complex vector output.
+     * @see forceRasterRender
+     * @note added in QGIS 2.12
+     */
+    void setForceRasterRender( bool forceRaster );
+
   protected:
     QgsFeatureRendererV2( QString type );
 
@@ -205,10 +244,16 @@ class QgsFeatureRendererV2
     void renderVertexMarkerPolygon( QPolygonF& pts, QList<QPolygonF>* rings, QgsRenderContext& context );
 
     static const unsigned char* _getPoint( QPointF& pt, QgsRenderContext& context, const unsigned char* wkb );
-    static const unsigned char* _getLineString( QPolygonF& pts, QgsRenderContext& context, const unsigned char* wkb );
-    static const unsigned char* _getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, const unsigned char* wkb );
+    static const unsigned char* _getLineString( QPolygonF& pts, QgsRenderContext& context, const unsigned char* wkb, bool clipToExtent = true );
+    static const unsigned char* _getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, const unsigned char* wkb, bool clipToExtent = true );
 
     void setScaleMethodToSymbol( QgsSymbolV2* symbol, int scaleMethod );
+
+    /** Copies paint effect of this renderer to another renderer
+     * @param destRenderer destination renderer for copied effect
+     */
+    void copyPaintEffect( QgsFeatureRendererV2 *destRenderer ) const;
+
   private:
     QgsFeatureRendererV2( const QgsFeatureRendererV2 & );
     QgsFeatureRendererV2 & operator=( const QgsFeatureRendererV2 & );

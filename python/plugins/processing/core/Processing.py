@@ -17,7 +17,6 @@
 ***************************************************************************
 """
 
-
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -28,31 +27,27 @@ __revision__ = '$Format:%H$'
 
 import sys
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import Qt, QCoreApplication
+from PyQt4.QtGui import QApplication, QCursor
 
-from qgis.core import *
 from qgis.utils import iface
 
 import processing
+from processing.gui import AlgorithmClassification
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
-from processing.gui.AlgorithmClassification import AlgorithmDecorator
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.RenderingStyles import RenderingStyles
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.gui.AlgorithmExecutor import runalg
-from processing.modeler.ModelerAlgorithmProvider import \
-        ModelerAlgorithmProvider
-from processing.modeler.ModelerOnlyAlgorithmProvider import \
-        ModelerOnlyAlgorithmProvider
+from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider
+from processing.modeler.ModelerOnlyAlgorithmProvider import ModelerOnlyAlgorithmProvider
 from processing.algs.qgis.QGISAlgorithmProvider import QGISAlgorithmProvider
 from processing.algs.grass.GrassAlgorithmProvider import GrassAlgorithmProvider
 from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider
-from processing.algs.lidar.LidarToolsAlgorithmProvider import \
-        LidarToolsAlgorithmProvider
+from processing.algs.lidar.LidarToolsAlgorithmProvider import LidarToolsAlgorithmProvider
 from processing.algs.gdal.GdalOgrAlgorithmProvider import GdalOgrAlgorithmProvider
 from processing.algs.otb.OTBAlgorithmProvider import OTBAlgorithmProvider
 from processing.algs.r.RAlgorithmProvider import RAlgorithmProvider
@@ -80,7 +75,7 @@ class Processing:
     modeler = ModelerAlgorithmProvider()
 
     @staticmethod
-    def addProvider(provider, updateList=False):
+    def addProvider(provider, updateList=True):
         """Use this method to add algorithms from external providers.
         """
 
@@ -94,7 +89,8 @@ class Processing:
             if updateList:
                 Processing.updateAlgsList()
         except:
-            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+            ProcessingLog.addToLog(
+                ProcessingLog.LOG_ERROR,
                 Processing.tr('Could not load provider: %s\n%s')
                 % (provider.getDescription(), unicode(sys.exc_info()[1])))
             Processing.removeProvider(provider)
@@ -130,22 +126,23 @@ class Processing:
     @staticmethod
     def initialize():
         # Add the basic providers
-        Processing.addProvider(QGISAlgorithmProvider())
-        Processing.addProvider(ModelerOnlyAlgorithmProvider())
-        Processing.addProvider(GdalOgrAlgorithmProvider())
-        Processing.addProvider(LidarToolsAlgorithmProvider())
-        Processing.addProvider(OTBAlgorithmProvider())
-        Processing.addProvider(RAlgorithmProvider())
-        Processing.addProvider(SagaAlgorithmProvider())
-        Processing.addProvider(GrassAlgorithmProvider())
-        Processing.addProvider(Grass7AlgorithmProvider())
-        Processing.addProvider(ScriptAlgorithmProvider())
-        Processing.addProvider(TauDEMAlgorithmProvider())
-        Processing.addProvider(Processing.modeler)
+        Processing.addProvider(QGISAlgorithmProvider(), updateList=False)
+        Processing.addProvider(ModelerOnlyAlgorithmProvider(), updateList=False)
+        Processing.addProvider(GdalOgrAlgorithmProvider(), updateList=False)
+        Processing.addProvider(LidarToolsAlgorithmProvider(), updateList=False)
+        Processing.addProvider(OTBAlgorithmProvider(), updateList=False)
+        Processing.addProvider(RAlgorithmProvider(), updateList=False)
+        Processing.addProvider(SagaAlgorithmProvider(), updateList=False)
+        Processing.addProvider(GrassAlgorithmProvider(), updateList=False)
+        Processing.addProvider(Grass7AlgorithmProvider(), updateList=False)
+        Processing.addProvider(ScriptAlgorithmProvider(), updateList=False)
+        Processing.addProvider(TauDEMAlgorithmProvider(), updateList=False)
+        Processing.addProvider(Processing.modeler, updateList=False)
         Processing.modeler.initializeSettings()
 
         # And initialize
-        AlgorithmDecorator.loadClassification()
+        AlgorithmClassification.loadClassification()
+        AlgorithmClassification.loadDisplayNames()
         ProcessingLog.startLogging()
         ProcessingConfig.initialize()
         ProcessingConfig.readSettings()
@@ -291,24 +288,26 @@ class Processing:
                 output = alg.getOutputFromName(name)
                 if output and output.setValue(value):
                     continue
-                print 'Error: Wrong parameter value %s for parameter %s.' \
-                    % (value, name)
-                ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                    Processing.tr('Error in %s. Wrong parameter value %s for parameter %s.') \
-                    % (alg.name, value, name))
+                print 'Error: Wrong parameter value %s for parameter %s.' % (value, name)
+                ProcessingLog.addToLog(
+                    ProcessingLog.LOG_ERROR,
+                    Processing.tr('Error in %s. Wrong parameter value %s for parameter %s.') % (
+                        alg.name, value, name )
+                )
                 return
             # fill any missing parameters with default values if allowed
             for param in alg.parameters:
                 if param.name not in setParams:
                     if not param.setValue(None):
                         print ('Error: Missing parameter value for parameter %s.' % (param.name))
-                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                            Processing.tr('Error in %s. Missing parameter value for parameter %s.') \
-                            % (alg.name, param.name))
+                        ProcessingLog.addToLog(
+                            ProcessingLog.LOG_ERROR,
+                            Processing.tr('Error in %s. Missing parameter value for parameter %s.') % (
+                                alg.name, param.name )
+                        )
                         return
         else:
-            if len(args) != alg.getVisibleParametersCount() \
-                    + alg.getVisibleOutputsCount():
+            if len(args) != alg.getVisibleParametersCount() + alg.getVisibleOutputsCount():
                 print 'Error: Wrong number of parameters'
                 processing.alghelp(algOrName)
                 return
@@ -328,7 +327,7 @@ class Processing:
                         return
                     i = i + 1
 
-        msg = alg.checkParameterValuesBeforeExecuting()
+        msg = alg._checkParameterValuesBeforeExecuting()
         if msg:
             print 'Unable to execute algorithm\n' + msg
             return
@@ -348,10 +347,14 @@ class Processing:
 
         progress = None
         if iface is not None :
-            progress = MessageBarProgress()
+            progress = MessageBarProgress(alg.name)
         ret = runalg(alg, progress)
-        if onFinish is not None and ret:
-            onFinish(alg, progress)
+        if ret:
+            if onFinish is not None:
+                onFinish(alg, progress)
+        else:
+            print ("There were errors executing the algorithm.\n"
+                    "Check the QGIS log to get more information")
 
         if iface is not None:
           QApplication.restoreOverrideCursor()
@@ -363,4 +366,3 @@ class Processing:
         if context == '':
             context = 'Processing'
         return QCoreApplication.translate(context, string)
-

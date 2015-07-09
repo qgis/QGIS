@@ -33,9 +33,12 @@
 class QgsExpressionItemSearchProxy : public QSortFilterProxyModel
 {
   public:
-    QgsExpressionItemSearchProxy() { }
+    QgsExpressionItemSearchProxy()
+    {
+      setFilterCaseSensitivity( Qt::CaseInsensitive );
+    }
 
-    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
+    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override
     {
       if ( source_parent == qobject_cast<QStandardItemModel*>( sourceModel() )->invisibleRootItem()->index() )
         return true;
@@ -123,6 +126,12 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
     void loadFieldNames( const QgsFields& fields );
 
+    /** Loads field names and values from the specified map.
+     *  @note The field values must be quoted appropriately if they are strings.
+     *  @note added in QGIS 2.12
+     */
+    void loadFieldsAndValues( const QMap<QString, QStringList>& fieldValues );
+
     /** Sets geometry calculator used in distance/area calculations. */
     void setGeomCalculator( const QgsDistanceArea & da );
 
@@ -150,8 +159,32 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
     void loadRecent( QString key );
 
+    /** Create a new file in the function editor
+     */
+    void newFunctionFile( QString fileName = "scratch" );
+
+    /** Save the current function editor text to the given file.
+     */
+    void saveFunctionFile( QString fileName );
+
+    /** Load code from the given file into the function editor
+     */
+    void loadCodeFromFile( QString path );
+
+    /** Load code into the function editor
+     */
+    void loadFunctionCode( QString code );
+
+    /** Update the list of function files found at the given path
+     */
+    void updateFunctionFileList( QString path );
+
   public slots:
     void currentChanged( const QModelIndex &index, const QModelIndex & );
+    void on_btnRun_pressed();
+    void on_btnNewFile_pressed();
+    void on_cmbFileNames_currentIndexChanged( int index );
+    void on_btnSaveFile_pressed();
     void on_expressionTree_doubleClicked( const QModelIndex &index );
     void on_txtExpressionString_textChanged();
     void on_txtSearchEdit_textChanged();
@@ -174,9 +207,18 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void expressionParsed( bool isValid );
 
   private:
-    void fillFieldValues( int fieldIndex, int countLimit );
+    void runPythonCode( QString code );
+    void updateFunctionTree();
+    void fillFieldValues( const QString &fieldName, int countLimit );
     QString loadFunctionHelp( QgsExpressionItem* functionName );
 
+    /** Formats an expression preview result for display in the widget
+     * by truncating the string
+     * @param previewString expression preview result to format
+     */
+    QString formatPreviewString( const QString &previewString ) const;
+
+    QString mFunctionsPath;
     QgsVectorLayer *mLayer;
     QStandardItemModel *mModel;
     QgsExpressionItemSearchProxy *mProxyModel;
@@ -185,6 +227,9 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QgsExpressionHighlighter* highlighter;
     bool mExpressionValid;
     QgsDistanceArea mDa;
+    QString mRecentKey;
+    QMap<QString, QStringList> mFieldValues;
+
 };
 
 #endif // QGSEXPRESSIONBUILDER_H

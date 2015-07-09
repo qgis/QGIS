@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Alexander Bruy'
 __date__ = 'December 2012'
 __copyright__ = '(C) 2012, Alexander Bruy'
@@ -30,11 +31,11 @@ import sys
 import json
 import os
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from PyQt4.Qsci import *
+from PyQt4 import uic
+from PyQt4.QtCore import Qt
+from PyQt4.QtGui import QIcon, QMenu, QAction, QCursor, QMessageBox, QFileDialog, QApplication
 
-from qgis.core import *
+from qgis.core import QgsApplication
 from qgis.utils import iface
 
 from processing.modeler.ModelerUtils import ModelerUtils
@@ -43,13 +44,14 @@ from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.algs.r.RAlgorithm import RAlgorithm
 from processing.algs.r.RUtils import RUtils
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
-from processing.script import ScriptUtils
-from processing.ui.ui_DlgScriptEditor import Ui_DlgScriptEditor
+from processing.script.ScriptUtils import ScriptUtils
 
-import processing.resources_rc
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'DlgScriptEditor.ui'))
 
 
-class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
+class ScriptEditorDialog(BASE, WIDGET):
 
     SCRIPT_PYTHON = 0
     SCRIPT_R = 1
@@ -57,7 +59,7 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
     hasChanged = False
 
     def __init__(self, algType, alg):
-        QDialog.__init__(self)
+        super(ScriptEditorDialog, self).__init__(None)
         self.setupUi(self)
 
         self.setWindowFlags(Qt.WindowMinimizeButtonHint |
@@ -65,18 +67,20 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
                             Qt.WindowCloseButtonHint)
         # Set icons
         self.btnOpen.setIcon(
-                QgsApplication.getThemeIcon('/mActionFileOpen.svg'))
+            QgsApplication.getThemeIcon('/mActionFileOpen.svg'))
         self.btnSave.setIcon(
-                QgsApplication.getThemeIcon('/mActionFileSave.svg'))
+            QgsApplication.getThemeIcon('/mActionFileSave.svg'))
         self.btnSaveAs.setIcon(
-                QgsApplication.getThemeIcon('/mActionFileSaveAs.svg'))
-        self.btnEditHelp.setIcon(QIcon(':/processing/images/edithelp.png'))
-        self.btnRun.setIcon(QIcon(':/processing/images/runalgorithm.png'))
+            QgsApplication.getThemeIcon('/mActionFileSaveAs.svg'))
+        self.btnEditHelp.setIcon(
+            QIcon(os.path.join(pluginPath, 'images', 'edithelp.png')))
+        self.btnRun.setIcon(
+            QIcon(os.path.join(pluginPath, 'images', 'runalgorithm.png')))
         self.btnCut.setIcon(QgsApplication.getThemeIcon('/mActionEditCut.png'))
         self.btnCopy.setIcon(
-                QgsApplication.getThemeIcon('/mActionEditCopy.png'))
+            QgsApplication.getThemeIcon('/mActionEditCopy.png'))
         self.btnPaste.setIcon(
-                QgsApplication.getThemeIcon('/mActionEditPaste.png'))
+            QgsApplication.getThemeIcon('/mActionEditPaste.png'))
         self.btnUndo.setIcon(QgsApplication.getThemeIcon('/mActionUndo.png'))
         self.btnRedo.setIcon(QgsApplication.getThemeIcon('/mActionRedo.png'))
         self.btnSnippets.setIcon(QgsApplication.getThemeIcon('/mActionHelpAPI.png'))
@@ -93,6 +97,8 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
         self.btnPaste.clicked.connect(self.editor.paste)
         self.btnUndo.clicked.connect(self.editor.undo)
         self.btnRedo.clicked.connect(self.editor.redo)
+        self.btnIncreaseFont.clicked.connect(self.increaseFontSize)
+        self.btnDecreaseFont.clicked.connect(self.decreaseFontSize)
         self.editor.textChanged.connect(lambda: self.setHasChanged(True))
 
         self.alg = alg
@@ -100,7 +106,7 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
 
         self.snippets = {}
         if self.algType == self.SCRIPT_PYTHON:
-            path = os.path.join(os.path.dirname(ScriptUtils.__file__), "snippets.py")
+            path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "script", "snippets.py")
             with open(path) as f:
                 lines = f.readlines()
             snippetlines = []
@@ -132,6 +138,16 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
 
         self.editor.setLexerType(self.algType)
 
+    def increaseFontSize(self):
+        font = self.editor.defaultFont
+        self.editor.setFonts(font.pointSize() + 1)
+        self.editor.initLexer()
+
+    def decreaseFontSize(self):
+        font = self.editor.defaultFont
+        self.editor.setFonts(font.pointSize() - 1)
+        self.editor.initLexer()
+
     def showSnippets(self, evt):
         popupmenu = QMenu()
         for name, snippet in self.snippets.iteritems():
@@ -143,8 +159,9 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
     def closeEvent(self, evt):
         if self.hasChanged:
             ret = QMessageBox.question(self, self.tr('Unsaved changes'),
-                    self.tr('There are unsaved changes in script. Continue?'),
-                    QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+                self.tr('There are unsaved changes in script. Continue?'),
+                QMessageBox.Yes | QMessageBox.No, QMessageBox.No
+            )
             if ret == QMessageBox.Yes:
                 evt.accept()
             else:
@@ -163,11 +180,9 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
 
         dlg = HelpEditionDialog(alg)
         dlg.exec_()
-
-        # We store the description string in case there were not saved
-        # because there was no filename defined yet
-        if self.alg is None and dlg.descriptions:
+        if dlg.descriptions:
             self.help = dlg.descriptions
+            self.setHasChanged(True)
 
     def openScript(self):
         if self.hasChanged:
@@ -217,11 +232,11 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
                                     filterName))
 
         if self.filename:
-            if self.algType == self.SCRIPT_PYTHON \
-                        and not self.filename.lower().endswith('.py'):
+            if self.algType == self.SCRIPT_PYTHON and \
+                    not self.filename.lower().endswith('.py'):
                 self.filename += '.py'
-            if self.algType == self.SCRIPT_R \
-                        and not self.filename.lower().endswith('.rsx'):
+            if self.algType == self.SCRIPT_R and \
+                    not self.filename.lower().endswith('.rsx'):
                 self.filename += '.rsx'
 
             text = unicode(self.editor.text())
@@ -232,8 +247,9 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
                     fout.write(text)
             except IOError:
                 QMessageBox.warning(self, self.tr('I/O error'),
-                        self.tr('Unable to save edits. Reason:\n %s')
-                        % unicode(sys.exc_info()[1]))
+                    self.tr('Unable to save edits. Reason:\n %s')
+                    % unicode(sys.exc_info()[1])
+                )
                 return
             self.update = True
 

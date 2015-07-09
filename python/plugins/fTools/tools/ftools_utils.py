@@ -55,10 +55,10 @@
 #
 # -------------------------------------------------
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from qgis.gui import *
+from PyQt4.QtCore import QTextCodec, QFileInfo, QSettings, QCoreApplication
+from PyQt4.QtGui import QDialog, QFileDialog
+from qgis.core import QgsVectorFileWriter, QGis, QgsDistanceArea, QgsGeometry, QgsMapLayer, QgsVectorLayer, QgsMapLayerRegistry, QgsFeature, QgsSpatialIndex
+from qgis.gui import QgsEncodingFileDialog
 
 import locale
 
@@ -134,20 +134,20 @@ def extractPoints( geom ):
             temp_geom.append(geom.asPoint())
     elif geom.type() == 1: # it's a line
         if geom.isMultipart():
-            multi_geom = geom.asMultiPolyline() #multi_geog is a multiline
-            for i in multi_geom: #i is a line
+            multi_geom = geom.asMultiPolyline()  # multi_geog is a multiline
+            for i in multi_geom:  # i is a line
                 temp_geom.extend( i )
         else:
             temp_geom = geom.asPolyline()
     elif geom.type() == 2: # it's a polygon
         if geom.isMultipart():
-            multi_geom = geom.asMultiPolygon() #multi_geom is a multipolygon
-            for i in multi_geom: #i is a polygon
-                for j in i: #j is a line
+            multi_geom = geom.asMultiPolygon()  # multi_geom is a multipolygon
+            for i in multi_geom:  # i is a polygon
+                for j in i:  # j is a line
                     temp_geom.extend( j )
         else:
-            multi_geom = geom.asPolygon() #multi_geom is a polygon
-            for i in multi_geom: #i is a line
+            multi_geom = geom.asPolygon()  # multi_geom is a polygon
+            for i in multi_geom:  # i is a line
                 temp_geom.extend( i )
     # FIXME - if there is none of know geoms (point, line, polygon) show an warning message
     return temp_geom
@@ -282,7 +282,7 @@ def saveDialog( parent, filtering="Shapefiles (*.shp *.SHP)"):
     settings = QSettings()
     dirName = settings.value( "/UI/lastShapefileDir" )
     encode = settings.value( "/UI/encoding" )
-    fileDialog = QgsEncodingFileDialog( parent, "Save output shapefile", dirName, filtering, encode )
+    fileDialog = QgsEncodingFileDialog( parent, QCoreApplication.translate("fTools", "Save output shapefile" ), dirName, filtering, encode )
     fileDialog.setDefaultSuffix( "shp" )
     fileDialog.setFileMode( QFileDialog.AnyFile )
     fileDialog.setAcceptMode( QFileDialog.AcceptSave )
@@ -299,7 +299,12 @@ def openDialog( parent, filtering="Shapefiles (*.shp *.SHP)", dialogMode="Single
     settings = QSettings()
     dirName = settings.value( "/UI/lastShapefileDir" )
     encode = settings.value( "/UI/encoding" )
-    fileDialog = QgsEncodingFileDialog( parent, "Save output shapefile", dirName, filtering, encode )
+    fileDialog = QgsEncodingFileDialog(
+        parent,
+        QCoreApplication.translate("fTools", "Select input file" )
+        if dialogMode == "SingleFile" else
+        QCoreApplication.translate("fTools", "Select input files" ),
+        dirName, filtering, encode )
     fileDialog.setFileMode( QFileDialog.ExistingFiles )
     fileDialog.setAcceptMode( QFileDialog.AcceptOpen )
     if not fileDialog.exec_() == QDialog.Accepted:
@@ -316,7 +321,7 @@ def dirDialog( parent ):
     settings = QSettings()
     dirName = settings.value( "/UI/lastShapefileDir" )
     encode = settings.value( "/UI/encoding" )
-    fileDialog = QgsEncodingFileDialog( parent, "Save output shapefile", dirName, encode )
+    fileDialog = QgsEncodingFileDialog( parent, QCoreApplication.translate("fTools", "Save output directory" ), dirName, encode )
     fileDialog.setFileMode( QFileDialog.DirectoryOnly )
     fileDialog.setAcceptMode( QFileDialog.AcceptSave )
     fileDialog.setConfirmOverwrite( False )
@@ -390,4 +395,3 @@ def getShapefileName( outPath, extension='.shp' ):
     if outName.endswith(extension):
         outName=outName[:-len(extension)]
     return outName
-

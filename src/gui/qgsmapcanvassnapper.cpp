@@ -92,7 +92,7 @@ int QgsMapCanvasSnapper::snapToCurrentLayer( const QPoint& p, QList<QgsSnappingR
   QgsSnapper::SnapLayer snapLayer;
   snapLayer.mLayer = vlayer;
   snapLayer.mSnapTo = snap_to;
-  snapLayer.mUnitType = QgsTolerance::MapUnits;
+  snapLayer.mUnitType = QgsTolerance::LayerUnits;
 
   if ( snappingTol < 0 )
   {
@@ -108,7 +108,8 @@ int QgsMapCanvasSnapper::snapToCurrentLayer( const QPoint& p, QList<QgsSnappingR
   snapLayers.append( snapLayer );
   mSnapper->setSnapLayers( snapLayers );
 
-  if ( mSnapper->snapPoint( p, results, excludePoints ) != 0 )
+  QgsPoint mapPoint = mMapCanvas->mapSettings().mapToPixel().toMapCoordinates( p );
+  if ( mSnapper->snapMapPoint( mapPoint, results, excludePoints ) != 0 )
     return 4;
 
   return 0;
@@ -117,7 +118,7 @@ int QgsMapCanvasSnapper::snapToCurrentLayer( const QPoint& p, QList<QgsSnappingR
 int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnappingResult>& results, const QList<QgsPoint>& excludePoints )
 {
   const QgsPoint mapCoordPoint = mMapCanvas->mapSettings().mapToPixel().toMapCoordinates( p.x(), p.y() );
-  return snapToBackgroundLayers(mapCoordPoint,results,excludePoints);
+  return snapToBackgroundLayers( mapCoordPoint, results, excludePoints );
 }
 
 int QgsMapCanvasSnapper::snapToBackgroundLayers( const QgsPoint& point, QList<QgsSnappingResult>& results, const QList<QgsPoint>& excludePoints )
@@ -250,14 +251,14 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QgsPoint& point, QList<Qg
 
     //default snapping tolerance (returned in map units)
     snapLayer.mTolerance = QgsTolerance::defaultTolerance( currentVectorLayer, mMapCanvas->mapSettings() );
-    snapLayer.mUnitType = QgsTolerance::MapUnits;
+    snapLayer.mUnitType = QgsTolerance::LayerUnits;
 
     snapLayers.append( snapLayer );
   }
 
   mSnapper->setSnapLayers( snapLayers );
 
-  if ( mSnapper->snapPoint( point, results, excludePoints ) != 0 )
+  if ( mSnapper->snapMapPoint( point, results, excludePoints ) != 0 )
     return 4;
 
   if ( intersectionSnapping != 1 )
@@ -305,13 +306,16 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QgsPoint& point, QList<Qg
       QVector<QgsPoint> vertexPoints;
       vertexPoints.append( iSegIt->beforeVertex );
       vertexPoints.append( iSegIt->afterVertex );
-      QgsGeometry* lineB = QgsGeometry::fromPolyline( vertexPoints );
 
+      QgsGeometry* lineB = QgsGeometry::fromPolyline( vertexPoints );
       QgsGeometry* intersectionPoint = lineA->intersection( lineB );
-      if ( intersectionPoint->type()  == QGis::Point )
+      delete lineB;
+
+      if ( intersectionPoint && intersectionPoint->type() == QGis::Point )
       {
         //We have to check the intersection point is inside the tolerance distance for both layers
-        double toleranceA, toleranceB;
+        double toleranceA = 0;
+        double toleranceB = 0;
         for ( int i = 0 ;i < snapLayers.size();++i )
         {
           if ( snapLayers[i].mLayer == oSegIt->layer )
@@ -330,8 +334,13 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QgsPoint& point, QList<Qg
           iSegIt->snappedVertex = intersectionPoint->asPoint();
           myResults.append( *iSegIt );
         }
+        delete cursorPoint;
       }
+      delete intersectionPoint;
+
     }
+
+    delete lineA;
   }
 
   if ( myResults.length() > 0 )

@@ -23,6 +23,7 @@
 #include "qgsgrass.h"
 #include "qgsconfig.h"
 
+#include "qgsgrassutils.h"
 #include "qgsgrassshell.h"
 
 extern "C"
@@ -31,7 +32,10 @@ extern "C"
 }
 
 QgsGrassShell::QgsGrassShell( QgsGrassTools *tools, QTabWidget *parent, const char *name )
-    : QFrame( parent ), mTools( tools ), mTabWidget( parent )
+    : QFrame( parent )
+    , mTerminal( 0 )
+    , mTools( tools )
+    , mTabWidget( parent )
 {
   Q_UNUSED( name );
   QVBoxLayout *mainLayout = new QVBoxLayout( this );
@@ -97,7 +101,7 @@ void QgsGrassShell::initTerminal( QTermWidget *terminal )
   env << "TERM=vt100";
   env << "GISRC_MODE_MEMORY";
   // TODO: we should check if these environment variable were set by user before QGIS was started
-  env << "GRASS_HTML_BROWSER=" + QgsApplication::libexecPath() + "grass/bin/qgis.g.browser";
+  env << "GRASS_HTML_BROWSER=" + QgsGrassUtils::htmlBrowserPath() ;
   env << "GRASS_WISH=wish";
   env << "GRASS_TCLSH=tclsh";
   env << "GRASS_PYTHON=python";

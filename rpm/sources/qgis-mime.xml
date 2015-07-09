@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
+
+  <mime-type type="application/x-qgis-project">
+    <comment>QGIS Project</comment>
+    <comment xml:lang="de">QGIS-Projekt</comment>
+    <sub-class-of type="application/xml"/>
+    <alias type="application/x-qgis"/>
+    <magic priority="50">
+      <match type="string" offset="0" value="&lt;!DOCTYPE qgis">
+        <match type="string" offset="0:256" value="&lt;qgis projectname"/>
+      </match>
+    </magic>
+    <glob pattern="*.qgs"/>
+  </mime-type>
+
+  <mime-type type="application/x-qgis-layer-settings">
+    <comment>QGIS layer settings</comment>
+    <comment xml:lang="de">QGIS Layer Einstellungen</comment>
+    <sub-class-of type="application/xml"/>
+    <magic priority="50">
+      <match type="string" offset="0" value="&lt;!DOCTYPE qgis">
+        <match type="string" offset="0:256" value="&lt;qgis version"/>
+      </match>
+    </magic>
+    <glob pattern="*.qml"/>
+  </mime-type>
+</mime-info>

@@ -85,11 +85,18 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     /** emit a signal that processing of all layers has finished */
     void progressStopped();
 
+    /**
+     * Emitted when a warning needs to be displayed.
+     * @param title title string for message
+     * @param message A descriptive message for the warning
+     */
+    void warning( const QString& title, const QString& message );
+
   private:
     void initializeSpatialMetadata( sqlite3 *sqlite_handle );
     bool createSpatialiteDB( const QString& offlineDbPath );
     void createLoggingTables( sqlite3* db );
-    void copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, const QString& offlineDbPath );
+    QgsVectorLayer* copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, const QString& offlineDbPath );
 
     void applyAttributesAdded( QgsVectorLayer* remoteLayer, sqlite3* db, int layerId, int commitNo );
     void applyFeaturesAdded( QgsVectorLayer* offlineLayer, QgsVectorLayer* remoteLayer, sqlite3* db, int layerId );
@@ -97,7 +104,7 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     void applyAttributeValueChanges( QgsVectorLayer* offlineLayer, QgsVectorLayer* remoteLayer, sqlite3* db, int layerId, int commitNo );
     void applyGeometryChanges( QgsVectorLayer* remoteLayer, sqlite3* db, int layerId, int commitNo );
     void updateFidLookup( QgsVectorLayer* remoteLayer, sqlite3* db, int layerId );
-    void copySymbology( const QgsVectorLayer* sourceLayer, QgsVectorLayer* targetLayer );
+    void copySymbology( QgsVectorLayer* sourceLayer, QgsVectorLayer* targetLayer );
     QMap<int, int> attributeLookup( QgsVectorLayer* offlineLayer, QgsVectorLayer* remoteLayer );
 
     void showWarning( const QString& message );

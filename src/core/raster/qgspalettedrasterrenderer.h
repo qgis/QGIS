@@ -35,10 +35,10 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QColor* colorArray, int nColors, const QVector<QString> labels = QVector<QString>() );
     QgsPalettedRasterRenderer( QgsRasterInterface* input, int bandNumber, QRgb* colorArray, int nColors, const QVector<QString> labels = QVector<QString>() );
     ~QgsPalettedRasterRenderer();
-    QgsRasterInterface * clone() const;
+    QgsRasterInterface * clone() const override;
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height );
+    QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height ) override;
 
     /**Returns number of colors*/
     int nColors() const { return mNColors; }
@@ -58,11 +58,11 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
      *  @note added in 2.1 */
     void setLabel( int idx, QString label );
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const override;
 
-    void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
+    void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const override;
 
-    QList<int> usesBands() const;
+    QList<int> usesBands() const override;
 
   private:
     int mBand;

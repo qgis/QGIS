@@ -34,17 +34,19 @@ class GUI_EXPORT QgsMapToolZoom : public QgsMapTool
     ~QgsMapToolZoom();
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QMouseEvent * e );
+    virtual void canvasMoveEvent( QMouseEvent * e ) override;
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QMouseEvent * e );
+    virtual void canvasPressEvent( QMouseEvent * e ) override;
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QMouseEvent * e );
+    virtual void canvasReleaseEvent( QMouseEvent * e ) override;
 
-    virtual bool isTransient() { return true; }
+    //! indicates whether we're zooming in or out
+    virtual bool isTransient() override { return true; }
 
-    virtual void deactivate();
+    //! Flag to indicate a map canvas drag operation is taking place
+    virtual void deactivate() override;
 
   protected:
     //! stores actual zoom rect

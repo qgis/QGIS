@@ -230,6 +230,9 @@ void QgsDatumTransformDialog::on_mHideDeprecatedCheckBox_stateChanged( int )
 
 void QgsDatumTransformDialog::on_mDatumTransformTreeWidget_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem * )
 {
+  if ( !current )
+    return;
+
   mLabelSrcDescription->setText( current->toolTip( 0 ) );
   mLabelDstDescription->setText( current->toolTip( 1 ) );
 }

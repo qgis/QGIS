@@ -28,18 +28,18 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Model : public QAbstractItemModel
     Q_OBJECT
   public:
     QgsGraduatedSymbolRendererV2Model( QObject * parent = 0 );
-    Qt::ItemFlags flags( const QModelIndex & index ) const;
-    Qt::DropActions supportedDropActions() const;
-    QVariant data( const QModelIndex &index, int role ) const;
-    bool setData( const QModelIndex & index, const QVariant & value, int role );
-    QVariant headerData( int section, Qt::Orientation orientation, int role ) const;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const;
-    int columnCount( const QModelIndex & = QModelIndex() ) const;
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
-    QModelIndex parent( const QModelIndex &index ) const;
-    QStringList mimeTypes() const;
-    QMimeData *mimeData( const QModelIndexList &indexes ) const;
-    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent );
+    Qt::ItemFlags flags( const QModelIndex & index ) const override;
+    Qt::DropActions supportedDropActions() const override;
+    QVariant data( const QModelIndex &index, int role ) const override;
+    bool setData( const QModelIndex & index, const QVariant & value, int role ) override;
+    QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    int columnCount( const QModelIndex & = QModelIndex() ) const override;
+    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    QModelIndex parent( const QModelIndex &index ) const override;
+    QStringList mimeTypes() const override;
+    QMimeData *mimeData( const QModelIndexList &indexes ) const override;
+    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
 
     void setRenderer( QgsGraduatedSymbolRendererV2* renderer );
 
@@ -48,8 +48,8 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Model : public QAbstractItemModel
     void addClass( QgsRendererRangeV2 range );
     void deleteRows( QList<int> rows );
     void removeAllRows();
-    void sort( int column, Qt::SortOrder order = Qt::AscendingOrder );
-    void updateSymbology();
+    void sort( int column, Qt::SortOrder order = Qt::AscendingOrder ) override;
+    void updateSymbology( bool resetModel = false );
     void updateLabels();
 
   signals:
@@ -66,7 +66,7 @@ class QgsGraduatedSymbolRendererV2ViewStyle: public QProxyStyle
   public:
     QgsGraduatedSymbolRendererV2ViewStyle( QStyle* style = 0 );
 
-    void drawPrimitive( PrimitiveElement element, const QStyleOption * option, QPainter * painter, const QWidget * widget = 0 ) const;
+    void drawPrimitive( PrimitiveElement element, const QStyleOption * option, QPainter * painter, const QWidget * widget = 0 ) const override;
 };
 
 class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget, private Ui::QgsGraduatedSymbolRendererV2Widget
@@ -79,13 +79,14 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
     QgsGraduatedSymbolRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
     ~QgsGraduatedSymbolRendererV2Widget();
 
-    virtual QgsFeatureRendererV2* renderer();
+    virtual QgsFeatureRendererV2* renderer() override;
 
   public slots:
     void changeGraduatedSymbol();
     void graduatedColumnChanged( QString field );
     void classifyGraduated();
     void reapplyColorRamp();
+    void reapplySizes();
     void rangesDoubleClicked( const QModelIndex & idx );
     void rangesClicked( const QModelIndex & idx );
     void changeCurrentValue( QStandardItem * item );
@@ -108,6 +109,9 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
 
     void rowsMoved();
     void modelDataChanged();
+    void on_mSizeUnitWidget_changed();
+    void on_methodComboBox_currentIndexChanged( int );
+    void refreshRanges( bool reset = false );
 
   protected:
     void updateUiFromRenderer( bool updateCount = true );
@@ -126,11 +130,11 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
 
     void changeSelectedSymbols();
 
-    QList<QgsSymbolV2*> selectedSymbols();
+    QList<QgsSymbolV2*> selectedSymbols() override;
     QgsSymbolV2* findSymbolForRange( double lowerBound, double upperBound, const QgsRangeList& ranges ) const;
-    void refreshSymbolView();
+    void refreshSymbolView() override;
 
-    void keyPressEvent( QKeyEvent* event );
+    void keyPressEvent( QKeyEvent* event ) override;
 
   protected:
     QgsGraduatedSymbolRendererV2* mRenderer;

@@ -30,7 +30,6 @@
 #include <QActionGroup>
 #include <QTextStream>
 #include <QTimer>
-#include <QWebPage>
 #include <QDesktopServices>
 
 #include "qgis.h"
@@ -48,10 +47,10 @@
 // Do we need this?
 // #define TESTLIB
 #ifdef TESTLIB
-// This doesn't work on WIN32 and causes problems with plugins
+// This doesn't work on windows and causes problems with plugins
 // on OS X (the code doesn't cause a problem but including dlfcn.h
 // renders plugins unloadable)
-#if !defined(WIN32) && !defined(Q_OS_MACX)
+#if !defined(Q_OS_WIN) && !defined(Q_OS_MACX)
 #include <dlfcn.h>
 #endif
 #endif
@@ -292,7 +291,7 @@ void QgsPluginManager::savePluginState( QString id, bool state )
 void QgsPluginManager::getCppPluginsMetadata()
 {
   QString sharedLibExtension;
-#if defined(WIN32) || defined(__CYGWIN__)
+#if defined(Q_OS_WIN) || defined(__CYGWIN__)
   sharedLibExtension = "*.dll";
 #else
   sharedLibExtension = "*.so*";
@@ -326,12 +325,12 @@ void QgsPluginManager::getCppPluginsMetadata()
       QString lib = QString( "%1/%2" ).arg( myPluginDir ).arg( pluginDir[i] );
 
 #ifdef TESTLIB
-      // This doesn't work on WIN32 and causes problems with plugins
+      // This doesn't work on windows and causes problems with plugins
       // on OS X (the code doesn't cause a problem but including dlfcn.h
       // renders plugins unloadable)
-#if !defined(WIN32) && !defined(Q_OS_MACX)
+#if !defined(Q_OS_WIN) && !defined(Q_OS_MACX)
       // test code to help debug loading problems
-      // This doesn't work on WIN32 and causes problems with plugins
+      // This doesn't work on windows and causes problems with plugins
       // on OS X (the code doesn't cause a problem but including dlfcn.h
       // renders plugins unloadable)
 
@@ -347,7 +346,7 @@ void QgsPluginManager::getCppPluginsMetadata()
         QgsDebugMsg( "dlopen suceeded for " + lib );
         dlclose( handle );
       }
-#endif //#ifndef WIN32 && Q_OS_MACX
+#endif //#ifndef Q_OS_WIN && Q_OS_MACX
 #endif //#ifdef TESTLIB
 
       QgsDebugMsg( "Examining: " + lib );
@@ -700,19 +699,19 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
     html += QString( "<table bgcolor=\"#FFFFAA\" cellspacing=\"2\" cellpadding=\"6\" width=\"100%\">"
                      "  <tr><td width=\"100%\" style=\"color:#880000\"><b>%1</b></td></tr>"
                      "</table>" ).arg( tr( "There is a new version available" ) );
-  };
+  }
   if ( metadata->value( "status" ) == "new" )
   {
     html += QString( "<table bgcolor=\"#CCFFCC\" cellspacing=\"2\" cellpadding=\"6\" width=\"100%\">"
                      "  <tr><td width=\"100%\" style=\"color:#008800\"><b>%1</b></td></tr>"
                      "</table>" ).arg( tr( "This is a new plugin" ) );
-  };
+  }
   if ( metadata->value( "status" ) == "newer" )
   {
     html += QString( "<table bgcolor=\"#FFFFCC\" cellspacing=\"2\" cellpadding=\"6\" width=\"100%\">"
                      "  <tr><td width=\"100%\" style=\"color:#550000\"><b>%1</b></td></tr>"
                      "</table>" ).arg( tr( "Installed version of this plugin is higher than any version found in repository" ) );
-  };
+  }
   if ( metadata->value( "experimental" ) == "true" )
   {
     html += QString( "<table bgcolor=\"#EEEEBB\" cellspacing=\"2\" cellpadding=\"2\" width=\"100%\">"
@@ -720,7 +719,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
                      "    <img src=\"qrc:/images/themes/default/pluginExperimental.png\" width=\"32\"><b>%1</b>"
                      "  </td></tr>"
                      "</table>" ).arg( tr( "This plugin is experimental" ) );
-  };
+  }
   if ( metadata->value( "deprecated" ) == "true" )
   {
     html += QString( "<table bgcolor=\"#EEBBCC\" cellspacing=\"2\" cellpadding=\"2\" width=\"100%\">"
@@ -728,7 +727,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
                      "    <img src=\"qrc:/images/themes/default/pluginDeprecated.png\" width=\"32\"><b>%1</b>"
                      "  </td></tr>"
                      "</table>" ).arg( tr( "This plugin is deprecated" ) );
-  };
+  }
 
   // Now the metadata
 
@@ -1226,8 +1225,8 @@ void QgsPluginManager::on_buttonUninstall_clicked()
 
 void QgsPluginManager::on_treeRepositories_itemSelectionChanged()
 {
-  buttonEditRep->setEnabled( ! treeRepositories -> selectedItems().isEmpty() );
-  buttonDeleteRep->setEnabled( ! treeRepositories -> selectedItems().isEmpty() );
+  buttonEditRep->setEnabled( ! treeRepositories->selectedItems().isEmpty() );
+  buttonDeleteRep->setEnabled( ! treeRepositories->selectedItems().isEmpty() );
 }
 
 

@@ -25,21 +25,22 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from PyQt4.QtWebKit import *
+import os
+
+from PyQt4 import uic
+from PyQt4.QtCore import QCoreApplication, QUrl
+from PyQt4.QtGui import QApplication, QDialogButtonBox
 
 from qgis.utils import iface
 
 from processing.core.ProcessingConfig import ProcessingConfig
 
-from processing.gui.Postprocessing import handleAlgorithmResults
-from processing.gui.AlgorithmExecutor import runalg, runalgIterating
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'DlgAlgorithmBase.ui'))
 
-from processing.ui.ui_DlgAlgorithmBase import Ui_Dialog
 
-
-class AlgorithmDialogBase(QDialog, Ui_Dialog):
+class AlgorithmDialogBase(BASE, WIDGET):
 
     class InvalidParameterValue(Exception):
 
@@ -48,7 +49,7 @@ class AlgorithmDialogBase(QDialog, Ui_Dialog):
 
 
     def __init__(self, alg):
-        QDialog.__init__(self, iface.mainWindow())
+        super(AlgorithmDialogBase, self).__init__(iface.mainWindow())
         self.setupUi(self)
 
         self.executed = False
@@ -80,7 +81,7 @@ class AlgorithmDialogBase(QDialog, Ui_Dialog):
                 self.tr('<h2>Could not open help file :-( </h2>'))
 
         self.showDebug = ProcessingConfig.getSetting(
-                ProcessingConfig.SHOW_DEBUG_IN_DIALOG)
+            ProcessingConfig.SHOW_DEBUG_IN_DIALOG)
 
     def setMainWidget(self):
         self.tabWidget.widget(0).layout().addWidget(self.mainWidget)

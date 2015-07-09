@@ -42,6 +42,10 @@ QgsMapSettings::QgsMapSettings()
     , mSelectionColor( Qt::yellow )
     , mFlags( Antialiasing | UseAdvancedEffects | DrawLabeling | DrawSelection )
     , mImageFormat( QImage::Format_ARGB32_Premultiplied )
+    , mValid( false )
+    , mVisibleExtent()
+    , mMapUnitsPerPixel( 1 )
+    , mScale( 1 )
 {
   updateDerived();
 
@@ -162,7 +166,7 @@ void QgsMapSettings::updateDerived()
                              visibleExtent().center().y(),
                              outputSize().width(),
                              outputSize().height(),
-                             mRotation);
+                             mRotation );
 
 #if 1 // set visible extent taking rotation in consideration
   if ( mRotation )
@@ -225,6 +229,16 @@ QStringList QgsMapSettings::layers() const
 void QgsMapSettings::setLayers( const QStringList& layers )
 {
   mLayers = layers;
+}
+
+QMap<QString, QString> QgsMapSettings::layerStyleOverrides() const
+{
+  return mLayerStyleOverrides;
+}
+
+void QgsMapSettings::setLayerStyleOverrides( const QMap<QString, QString>& overrides )
+{
+  mLayerStyleOverrides = overrides;
 }
 
 void QgsMapSettings::setCrsTransformEnabled( bool enabled )
@@ -297,6 +311,21 @@ QgsRectangle QgsMapSettings::visibleExtent() const
   return mVisibleExtent;
 }
 
+QPolygonF QgsMapSettings::visiblePolygon() const
+{
+  QPolygonF poly;
+
+  const QSize& sz = outputSize();
+  const QgsMapToPixel& m2p = mapToPixel();
+
+  poly << m2p.toMapCoordinatesF( 0,          0 ).toQPointF();
+  poly << m2p.toMapCoordinatesF( sz.width(), 0 ).toQPointF();
+  poly << m2p.toMapCoordinatesF( sz.width(), sz.height() ).toQPointF();
+  poly << m2p.toMapCoordinatesF( 0,          sz.height() ).toQPointF();
+
+  return poly;
+}
+
 double QgsMapSettings::mapUnitsPerPixel() const
 {
   return mMapUnitsPerPixel;
@@ -308,14 +337,10 @@ double QgsMapSettings::scale() const
 }
 
 
-
-
-
 const QgsCoordinateTransform* QgsMapSettings::layerTransform( QgsMapLayer *layer ) const
 {
   return mDatumTransformStore.transformation( layer );
 }
-
 
 
 QgsRectangle QgsMapSettings::layerExtentToOutputExtent( QgsMapLayer* theLayer, QgsRectangle extent ) const

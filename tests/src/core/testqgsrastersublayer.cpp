@@ -16,8 +16,6 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QObject>
-#include <iostream>
 #include <QApplication>
 #include <QFileInfo>
 #include <QDir>
@@ -32,11 +30,9 @@
 #include <qgsrasterlayer.h>
 #include <qgsrasterpyramid.h>
 #include <qgsrasterbandstats.h>
-#include <qgsrasterpyramid.h>
 #include <qgsmaplayerregistry.h>
 #include <qgsapplication.h>
 #include <qgsmaprenderer.h>
-#include <qgsmaplayerregistry.h>
 #include <qgssinglebandgrayrenderer.h>
 #include <qgssinglebandpseudocolorrenderer.h>
 #include <qgsvectorcolorrampv2.h>
@@ -48,14 +44,18 @@
 /** \ingroup UnitTests
  * This is a unit test for raster sublayers
  */
-class TestQgsRasterSubLayer: public QObject
+class TestQgsRasterSubLayer : public QObject
 {
     Q_OBJECT
+
+  public:
+    TestQgsRasterSubLayer();
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {};// will be called before each testfunction is executed.
-    void cleanup() {};// will be called after every testfunction.
+    void init() {}// will be called before each testfunction is executed.
+    void cleanup() {}// will be called after every testfunction.
 
     void subLayersList();
     void checkStats();
@@ -67,6 +67,13 @@ class TestQgsRasterSubLayer: public QObject
     bool mHasNetCDF;
 };
 
+TestQgsRasterSubLayer::TestQgsRasterSubLayer()
+    : mpRasterLayer( NULL )
+    , mHasNetCDF( false )
+{
+
+}
+
 //runs before all tests
 void TestQgsRasterSubLayer::initTestCase()
 {
@@ -77,7 +84,7 @@ void TestQgsRasterSubLayer::initTestCase()
   CPLSetConfigOption( "GDAL_PAM_ENABLED", "NO" );
   QString mySettings = QgsApplication::showSettings();
   mySettings = mySettings.replace( "\n", "<br />" );
-  mTestDataDir = QString( TEST_DATA_DIR ) + QDir::separator(); //defined in CmakeLists.txt
+  mTestDataDir = QString( TEST_DATA_DIR ) + "/"; //defined in CmakeLists.txt
 
   GDALAllRegister();
   QString format = "netCDF";
@@ -108,7 +115,7 @@ void TestQgsRasterSubLayer::initTestCase()
 void TestQgsRasterSubLayer::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {

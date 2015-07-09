@@ -4,7 +4,7 @@ class QgsRasterHistogramWidget : QWidget
 #include <qgsrasterhistogramwidget.h>
 %End
   public:
-    QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget *parent = 0 );
+    QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget *parent /TransferThis/ = 0 );
     ~QgsRasterHistogramWidget();
 
     /** Save the histogram as an image to disk */

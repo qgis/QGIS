@@ -159,8 +159,8 @@ void QgsSpatialQueryDialog::evaluateCheckBoxLayer( bool isTarget )
     lyr = mLayerReference;
     checkbox = ckbUsingSelectedReference;
   }
-  int selectedCount = lyr->selectedFeatureCount();
-  bool isCheckBoxValid = ( lyr != NULL &&  selectedCount > 0 );
+  int selectedCount = lyr ? lyr->selectedFeatureCount() : 0;
+  bool isCheckBoxValid = selectedCount > 0;
   checkbox->setChecked( isCheckBoxValid );
   checkbox->setEnabled( isCheckBoxValid );
   QString textCheckBox  = isCheckBoxValid
@@ -268,7 +268,7 @@ QString QgsSpatialQueryDialog::getSubsetFIDs( const QgsFeatureIds *fids, QString
   QString qReturn  = qFormat.arg( fieldFID ).arg( lstFID.join( "," ) );
   lstFID.clear();
   return qReturn;
-} // QString QgsSpatialQueryDialog::getSubsetFIDs( const QSet< int > *fids, QString fieldFID )
+} // QString QgsSpatialQueryDialog::getSubsetFIDs( const QgsFeatureIds *fids, QString fieldFID )
 
 QgsSpatialQueryDialog::TypeVerifyCreateSubset QgsSpatialQueryDialog::verifyCreateSubset( QString &msg, QString &fieldFID )
 {
@@ -656,7 +656,7 @@ void QgsSpatialQueryDialog::changeLwFeature( QgsVectorLayer* lyr, QgsFeatureId f
   }
   lwFeatures->setEnabled( true );
   lwFeatures->setFocus();
-} // void QgsSpatialQueryDialog::changeLwFeature( QListWidget *listWidget, QgsVectorLayer* lyr, int fid )
+} // void QgsSpatialQueryDialog::changeLwFeature( QgsVectorLayer* lyr, QgsFeatureId fid )
 
 void QgsSpatialQueryDialog::zoomFeature( QgsVectorLayer* lyr, QgsFeatureId fid )
 {
@@ -677,7 +677,7 @@ void QgsSpatialQueryDialog::zoomFeature( QgsVectorLayer* lyr, QgsFeatureId fid )
   {
     return;
   }
-  if ( !feat.geometry() )
+  if ( !feat.constGeometry() )
   {
     return;
   }
@@ -697,21 +697,21 @@ void QgsSpatialQueryDialog::zoomFeature( QgsVectorLayer* lyr, QgsFeatureId fid )
 
       QMessageBox::warning( this, tr( "Zoom to feature" ), msg, QMessageBox::Ok );
     }
-    mIface->mapCanvas()->setExtent( feat.geometry()->boundingBox() );
+    mIface->mapCanvas()->setExtent( feat.constGeometry()->boundingBox() );
   }
   else if ( srsSource == srcMapcanvas )
   {
-    mIface->mapCanvas()->setExtent( feat.geometry()->boundingBox() );
+    mIface->mapCanvas()->setExtent( feat.constGeometry()->boundingBox() );
   }
   else
   {
     QgsCoordinateTransform * coordTransform =  new QgsCoordinateTransform( srsSource, srcMapcanvas );
-    QgsRectangle rectExtent = coordTransform->transform( feat.geometry()->boundingBox() );
+    QgsRectangle rectExtent = coordTransform->transform( feat.constGeometry()->boundingBox() );
     delete coordTransform;
     mIface->mapCanvas()->setExtent( rectExtent );
   }
   mIface->mapCanvas()->refresh();
-} // void QgsSpatialQueryDialog::zoomFeatureTarget(QgsVectorLayer* lyr, int fid)
+} // void QgsSpatialQueryDialog::zoomFeature( QgsVectorLayer* lyr, QgsFeatureId fid )
 
 void QgsSpatialQueryDialog::showRubberFeature( QgsVectorLayer* lyr, QgsFeatureId id )
 {
@@ -1059,7 +1059,7 @@ void QgsSpatialQueryDialog::signal_qgis_layerWillBeRemoved( QString idLayer )
       mLayerTarget = NULL;
     }
   }
-  else
+  else if ( mLayerTarget )
   {
     populateCbOperation();
   }

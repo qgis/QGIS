@@ -87,13 +87,17 @@ class QgsSvgCache : QObject
     /**Get image data*/
     QByteArray getImageData( const QString &path ) const;
 
+    /**Get SVG content*/
+    const QByteArray& svgContent( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+                                  double widthScaleFactor, double rasterScaleFactor );
+
   signals:
     /** Emit a signal to be caught by qgisapp and display a msg on status bar */
     void statusChanged( const QString&  theStatusQString );
 
   protected:
     //! protected constructor
-    QgsSvgCache( QObject * parent = 0 );
+    QgsSvgCache( QObject * parent /TransferThis/ = 0 );
 
     /**Creates new cache entry and returns pointer to it
      * @param file Absolute or relative path to SVG file. If the path is relative the file is searched by QgsSymbolLayerV2Utils::symbolNameToPath() in SVG paths.

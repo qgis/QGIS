@@ -33,7 +33,7 @@ class QgsGeometryCoordinateTransform
     * \brief Constructor for a Geometry Coordinate Transform.
     *
     */
-    QgsGeometryCoordinateTransform() {}
+    QgsGeometryCoordinateTransform();
 
     /**
     * \brief Destructor

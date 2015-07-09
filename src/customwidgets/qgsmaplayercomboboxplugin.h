@@ -33,17 +33,17 @@ class CUSTOMWIDGETS_EXPORT QgsMapLayerComboBoxPlugin : public QObject, public QD
 
     // QDesignerCustomWidgetInterface interface
   public:
-    QString name() const;
-    QString group() const;
-    QString includeFile() const;
-    QIcon icon() const;
-    bool isContainer() const;
-    QWidget *createWidget( QWidget *parent );
-    bool isInitialized() const;
-    void initialize( QDesignerFormEditorInterface *core );
-    QString toolTip() const;
-    QString whatsThis() const;
-    QString domXml() const;
+    QString name() const override;
+    QString group() const override;
+    QString includeFile() const override;
+    QIcon icon() const override;
+    bool isContainer() const override;
+    QWidget *createWidget( QWidget *parent ) override;
+    bool isInitialized() const override;
+    void initialize( QDesignerFormEditorInterface *core ) override;
+    QString toolTip() const override;
+    QString whatsThis() const override;
+    QString domXml() const override;
 };
 
 #endif // QGSMAPLAYERCOMBOBOXPLUGIN_H

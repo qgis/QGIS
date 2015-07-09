@@ -2,10 +2,7 @@
 ##input=vector
 ##class_field=field input
 ##value_field=field input
-##output=output vector
-
-from qgis.core import *
-from PyQt4.QtCore import *
+##N unique values=output vector
 
 layer = processing.getObject(input)
 provider = layer.dataProvider()

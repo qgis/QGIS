@@ -25,16 +25,16 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from qgis.gui import *
+from PyQt4.QtCore import pyqtSignal
+from PyQt4.QtGui import QColor
+from qgis.core import QGis, QgsPoint, QgsRectangle
+from qgis.gui import QgsMapTool, QgsMapToolEmitPoint, QgsRubberBand
 
 
 class RectangleMapTool(QgsMapToolEmitPoint):
 
     rectangleCreated = pyqtSignal()
-    deactovated = pyqtSignal()
+    deactivated = pyqtSignal()
 
     def __init__(self, canvas):
         self.canvas = canvas

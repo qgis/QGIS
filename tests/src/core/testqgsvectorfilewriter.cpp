@@ -16,9 +16,6 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QObject>
-#include <iostream>
-
 #include <QApplication>
 
 #include <qgsvectorlayer.h> //defines QgsFieldMap 
@@ -55,10 +52,14 @@
 class TestQgsVectorFileWriter: public QObject
 {
     Q_OBJECT
+
+  public:
+    TestQgsVectorFileWriter();
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
-    void init() {};// will be called before each testfunction is executed.
-    void cleanup() {};// will be called after every testfunction.
+    void init() {} // will be called before each testfunction is executed.
+    void cleanup() {} // will be called after every testfunction.
 
     /** This method tests writing a point to a shapefile */
     void createPoint();
@@ -82,6 +83,12 @@ class TestQgsVectorFileWriter: public QObject
     QgsPoint mPoint2;
     QgsPoint mPoint3;
 };
+
+TestQgsVectorFileWriter::TestQgsVectorFileWriter()
+    : mError( QgsVectorFileWriter::NoError )
+{
+
+}
 
 void TestQgsVectorFileWriter::initTestCase()
 {
@@ -391,4 +398,3 @@ void TestQgsVectorFileWriter::projectedPlygonGridTest()
 
 QTEST_MAIN( TestQgsVectorFileWriter )
 #include "testqgsvectorfilewriter.moc"
-

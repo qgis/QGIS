@@ -30,16 +30,11 @@
 
 // Qt
 #include <QtCore/QBuffer>
-//#include <KDebug>
 #include <QtCore/QFile>
 #include <QtCore/QFileInfo>
 #include <QtCore>
 #include <QtGui>
 
-// KDE
-//#include <KDebug>
-//#include <KLocale>
-//#include <KStandardDirs>
 
 using namespace Konsole;
 

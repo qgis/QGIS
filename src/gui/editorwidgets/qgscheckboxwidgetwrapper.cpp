@@ -16,7 +16,9 @@
 #include "qgscheckboxwidgetwrapper.h"
 
 QgsCheckboxWidgetWrapper::QgsCheckboxWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+    , mCheckBox( NULL )
+    , mGroupBox( NULL )
 {
 }
 

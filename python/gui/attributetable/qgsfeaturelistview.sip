@@ -9,7 +9,7 @@ class QgsFeatureListView : QListView
      *
      * @param parent   owner
      */
-    explicit QgsFeatureListView( QWidget* parent = 0 );
+    explicit QgsFeatureListView( QWidget* parent /TransferThis/ = 0 );
 
     /**
      * Destructor
@@ -80,6 +80,7 @@ class QgsFeatureListView : QListView
     virtual void mousePressEvent( QMouseEvent *event );
     virtual void mouseReleaseEvent( QMouseEvent *event );
     virtual void keyPressEvent( QKeyEvent *event );
+    virtual void contextMenuEvent( QContextMenuEvent *event );
 
   signals:
     /**
@@ -94,6 +95,8 @@ class QgsFeatureListView : QListView
      * @param expression The expression that was applied
      */
     void displayExpressionChanged( const QString expression );
+
+    //void aboutToChangeEditSelection( bool& ok );
 
   public slots:
     /**

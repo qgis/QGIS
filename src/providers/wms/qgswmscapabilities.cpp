@@ -93,6 +93,9 @@ bool QgsWmsSettings::parseUri( QString uriString )
 
   mCrsId = uri.param( "crs" );
 
+  mEnableContextualLegend = uri.param( "contextualWMSLegend" ).toInt();
+  QgsDebugMsg( QString( "Contextual legend: %1" ).arg( mEnableContextualLegend ) );
+
   mFeatureCount = uri.param( "featureCount" ).toInt(); // default to 0
 
   return true;
@@ -105,6 +108,7 @@ bool QgsWmsSettings::parseUri( QString uriString )
 QgsWmsCapabilities::QgsWmsCapabilities()
     : mValid( false )
     , mLayerCount( -1 )
+    , mCapabilities()
 {
 }
 
@@ -1377,6 +1381,8 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
         bb.crs = DEFAULT_LATLON_CRS;
         bb.box = QgsRectangle( QgsPoint( ll[0].toDouble(), ll[1].toDouble() ),
                                QgsPoint( ur[0].toDouble(), ur[1].toDouble() ) );
+
+        l.boundingBoxes << bb;
       }
     }
 
@@ -1832,6 +1838,18 @@ bool QgsWmsCapabilities::shouldInvertAxisOrientation( const QString& ogcCrs )
   return changeXY;
 }
 
+int QgsWmsCapabilities::identifyCapabilities() const
+{
+  int capability = QgsRasterInterface::NoCapabilities;
+
+  foreach ( QgsRaster::IdentifyFormat f, mIdentifyFormats.keys() )
+  {
+    capability |= QgsRasterDataProvider::identifyFormatToCapability( f );
+  }
+
+  return capability;
+}
+
 
 
 // -----------------
@@ -1841,6 +1859,7 @@ QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( const QString& baseUrl, 
     : QObject( parent )
     , mBaseUrl( baseUrl )
     , mAuth( auth )
+    , mCapabilitiesReply( NULL )
 {
 }
 

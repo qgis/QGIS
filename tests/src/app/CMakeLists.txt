@@ -5,6 +5,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/composer
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
   ${CMAKE_BINARY_DIR}/src/ui
@@ -67,11 +68,13 @@ MACRO (ADD_QGIS_TEST testname testsrc)
     ${GEOS_LIBRARY}
     ${GDAL_LIBRARY}
     ${QWT_LIBRARY}
-    ${QWTPOLAR_LIBRARY}
     qgis_core
     qgis_gui
     qgis_analysis
     qgis_app)
+  IF(WITH_QWTPOLAR AND NOT WITH_INTERNAL_QWTPOLAR)
+    TARGET_LINK_LIBRARIES(qgis_${testname} ${QWTPOLAR_LIBRARY})
+  ENDIF(WITH_QWTPOLAR AND NOT WITH_INTERNAL_QWTPOLAR)
   IF(WIN32)
     ADD_DEFINITIONS(-DQWT_DLL)
     TARGET_LINK_LIBRARIES(qgis_${testname} DbgHelp)
@@ -79,7 +82,7 @@ MACRO (ADD_QGIS_TEST testname testsrc)
   IF (APPLE)
     TARGET_LINK_LIBRARIES(qgis_${testname} ${APP_SERVICES_LIBRARY} )
   ENDIF(APPLE)
-  ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname})
+  ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname} -maxwarnings 10000)
   #SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES
   #  INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${QGIS_LIB_DIR}
   #  INSTALL_RPATH_USE_LINK_PATH true )

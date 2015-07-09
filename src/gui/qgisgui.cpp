@@ -15,11 +15,11 @@
 #include "qgisgui.h"
 
 #include <QSettings>
-#include <QObject> //for tr
 #include <QImageWriter>
 #include "qgsencodingfiledialog.h"
 #include "qgslogger.h"
-#include <memory> //for auto_ptr
+
+#include <QFontDialog>
 
 
 namespace QgisGui
@@ -93,7 +93,7 @@ namespace QgisGui
       if ( format ==  "svg" )
         continue;
 
-      filterMap.insert( createFileFilter_( format.toUpper() + " format", "*." + format ), format );
+      filterMap.insert( createFileFilter_( format ), format );
     }
 
 #ifdef QGISDEBUG
@@ -104,14 +104,13 @@ namespace QgisGui
     }
 #endif
 
-    //find out the last used filter
     QSettings settings;  // where we keep last used filter in persistent state
-    QString lastUsedFilter = settings.value( "/UI/lastSaveAsImageFilter" ).toString();
     QString lastUsedDir = settings.value( "/UI/lastSaveAsImageDir", "." ).toString();
 
-    QString outputFileName;
-    QString selectedFilter = lastUsedFilter;
-    QString ext;
+    // Prefer "png" format unless the user previously chose a different format
+    QString pngExtension = "png";
+    QString pngFilter = createFileFilter_( pngExtension );
+    QString selectedFilter = settings.value( "/UI/lastSaveAsImageFilter", pngFilter ).toString();
 
     QString initialPath;
     if ( defaultFilename.isNull() )
@@ -125,6 +124,8 @@ namespace QgisGui
       initialPath = QDir( lastUsedDir ).filePath( defaultFilename );
     }
 
+    QString outputFileName;
+    QString ext;
 #if defined(Q_OS_WIN) || defined(Q_OS_MAC) || defined(Q_OS_LINUX)
     outputFileName = QFileDialog::getSaveFileName( theParent, theMessage, initialPath, QStringList( filterMap.keys() ).join( ";;" ), &selectedFilter );
 
@@ -136,17 +137,18 @@ namespace QgisGui
       settings.setValue( "/UI/lastSaveAsImageDir", QFileInfo( outputFileName ).absolutePath() );
     }
 #else
+
     //create a file dialog using the filter list generated above
-    std::auto_ptr<QFileDialog> fileDialog( new QFileDialog( theParent, theMessage, initialPath, QStringList( filterMap.keys() ).join( ";;" ) ) );
+    QScopedPointer<QFileDialog> fileDialog( new QFileDialog( theParent, theMessage, initialPath, QStringList( filterMap.keys() ).join( ";;" ) ) );
 
     // allow for selection of more than one file
     fileDialog->setFileMode( QFileDialog::AnyFile );
     fileDialog->setAcceptMode( QFileDialog::AcceptSave );
     fileDialog->setConfirmOverwrite( true );
 
-    if ( !lastUsedFilter.isEmpty() )     // set the filter to the last one used
+    if ( !selectedFilter.isEmpty() )     // set the filter to the last one used
     {
-      fileDialog->selectNameFilter( lastUsedFilter );
+      fileDialog->selectNameFilter( selectedFilter );
     }
 
     //prompt the user for a fileName
@@ -176,7 +178,27 @@ namespace QgisGui
 
   QString createFileFilter_( QString const &longName, QString const &glob )
   {
-    return longName + " (" + glob.toLower() + " " + glob.toUpper() + ")";
+    return QString( "%1 (%2 %3)" ).arg( longName ).arg( glob.toLower() ).arg( glob.toUpper() );
+  }
+
+  QString createFileFilter_( QString const &format )
+  {
+    QString longName = format.toUpper() + " format";
+    QString glob = "*." + format;
+    return createFileFilter_( longName, glob );
+  }
+
+  QFont getFont( bool &ok, const QFont &initial, const QString &title )
+  {
+    // parent is intentionally not set to 'this' as
+    // that would make it follow the style sheet font
+    // see also #12233 and #4937
+#if defined(Q_OS_MAC) && defined(QT_MAC_USE_COCOA)
+    // Native Mac dialog works only for Qt Carbon
+    return QFontDialog::getFont( &ok, initial, 0, title, QFontDialog::DontUseNativeDialog );
+#else
+    return QFontDialog::getFont( &ok, initial, 0, title );
+#endif
   }
 
 } // end of QgisGui namespace

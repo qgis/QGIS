@@ -132,36 +132,6 @@ class QgsProject : QObject
     bool write();
     //@}
 
-
-    /// syntactic sugar for property lists
-    // DEPRECATED typedef QPair< QString, QVariant >  PropertyValue;
-    // DEPRECATED typedef QValueList< PropertyValue > Properties;
-
-    /** extra properties, typically added by plug-ins
-
-       This allows for extra properties to be associated with projects.  Think
-       of it as a registry bound to a project.
-
-       Properties are arbitrary values keyed by a name and associated with a
-       scope.  The scope would presumably refer to your plug-in.
-       E.g., "openmodeller".
-
-       @note
-
-       E.g., open modeller might use:
-
-       <code>"QgsProject::instance()->properties("openmodeller")["foo"]</code>.
-
-       @todo "properties" is, overall, a good name; but that might imply that
-       the qgis specific state properites are different since they aren't
-       accessible here.  Actually, what if we make "qgis" yet another
-       scope that stores its state in the properties list?  E.g.,
-       QgsProject::instance()->properties()["qgis"]?
-
-
-     */
-    // DEPRECATED Properties & properties( QString const & scope );
-
     /**
        removes all project properties
 
@@ -252,10 +222,11 @@ class QgsProject : QObject
     bool createEmbeddedLayer( const QString& layerId, const QString& projectFilePath, QList<QDomNode>& brokenNodes,
                               QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList, bool saveFlag = true );
     */
+
     /** Create layer group instance defined in an arbitrary project file.
      * @note: added in version 2.4
      */
-    QgsLayerTreeGroup* createEmbeddedGroup( const QString& groupName, const QString& projectFilePath );
+    QgsLayerTreeGroup* createEmbeddedGroup( const QString& groupName, const QString& projectFilePath, const QStringList &invisibleLayers );
 
     /** Convenience function to set snap settings per layer */
     void setSnapSettingsForLayer( const QString& layerId, bool enabled, QgsSnapper::SnappingType type, QgsTolerance::UnitType unit, double tolerance,
@@ -304,9 +275,6 @@ class QgsProject : QObject
 
     //! @note not available in python bindings
     // void loadEmbeddedNodes( QgsLayerTreeGroup* group );
-
-    //! @note not available in python bindings
-    // void updateEmbeddedGroupsProjectPath( QgsLayerTreeGroup* group );
 
   signals:
     //! emitted when project is being read

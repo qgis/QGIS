@@ -12,6 +12,7 @@
 
 %Include qgis.sip
 
+%Include qgstransaction.sip
 %Include qgsapplication.sip
 %Include qgsattributeaction.sip
 %Include qgsbrowsermodel.sip
@@ -25,6 +26,8 @@
 %Include qgscrscache.sip
 %Include qgsdatadefined.sip
 %Include qgsdataitem.sip
+%Include qgsdataitemprovider.sip
+%Include qgsdataitemproviderregistry.sip
 %Include qgsdataprovider.sip
 %Include qgsdatasourceuri.sip
 %Include qgsdatumtransformstore.sip
@@ -37,9 +40,9 @@
 %Include qgsfeatureiterator.sip
 %Include qgsfeaturerequest.sip
 %Include qgsfield.sip
-%Include qgsgeometry.sip
 %Include qgsgeometryvalidator.sip
 %Include qgsgeometrysimplifier.sip
+%Include qgshistogram.sip
 %Include qgsmaptopixelgeometrysimplifier.sip
 %Include qgsgml.sip
 %Include qgsgmlschema.sip
@@ -54,6 +57,7 @@
 %Include qgsmaplayerlegend.sip
 %Include qgsmaplayerregistry.sip
 %Include qgsmaplayerrenderer.sip
+%Include qgsmaplayerstylemanager.sip
 %Include qgsmaprenderer.sip
 %Include qgsmaprenderercache.sip
 %Include qgsmaprenderercustompainterjob.sip
@@ -77,6 +81,7 @@
 %Include qgspluginlayer.sip
 %Include qgspluginlayerregistry.sip
 %Include qgspoint.sip
+%Include qgspointlocator.sip
 %Include qgsproject.sip
 %Include qgsprojectproperty.sip
 %Include qgsprojectversion.sip
@@ -92,10 +97,14 @@
 %Include qgsrendercontext.sip
 %Include qgsrunprocess.sip
 %Include qgsscalecalculator.sip
+%Include qgsscaleexpression.sip
 %Include qgsscaleutils.sip
 %Include qgssimplifymethod.sip
 %Include qgssnapper.sip
+%Include qgssnappingutils.sip
 %Include qgsspatialindex.sip
+%Include qgsstatisticalsummary.sip
+%Include qgsstringutils.sip
 %Include qgstolerance.sip
 %Include qgsvectordataprovider.sip
 %Include qgsvectorfilewriter.sip
@@ -107,6 +116,8 @@
 %Include qgsvectorlayerundocommand.sip
 %Include qgsvectorsimplifymethod.sip
 %Include qgsfontutils.sip
+%Include qgsdartmeasurement.sip
+%Include qgsexpressionfieldbuffer.sip
 
 %Include qgscachedfeatureiterator.sip
 %Include qgscacheindex.sip
@@ -116,6 +127,7 @@
 %Include qgsprojectfiletransform.sip
 %Include qgsvectorlayereditutils.sip
 %Include qgsvectorlayerfeatureiterator.sip
+%Include qgslayerdefinition.sip
 
 %Include composer/qgsaddremoveitemcommand.sip
 %Include composer/qgsaddremovemultiframecommand.sip
@@ -165,6 +177,16 @@
 %Include diagram/qgshistogramdiagram.sip
 %Include diagram/qgspiediagram.sip
 %Include diagram/qgstextdiagram.sip
+
+%Include effects/qgsimageoperation.sip
+%Include effects/qgspainteffect.sip
+%Include effects/qgseffectstack.sip
+%Include effects/qgsblureffect.sip
+%Include effects/qgsshadoweffect.sip
+%Include effects/qgsgloweffect.sip
+%Include effects/qgstransformeffect.sip
+%Include effects/qgscoloreffect.sip
+%Include effects/qgspainteffectregistry.sip
 
 %Include gps/qgsgpsconnection.sip
 %Include gps/qgsgpsconnectionregistry.sip
@@ -253,3 +275,22 @@
 %Include symbology-ng/qgssymbologyv2conversion.sip
 
 %Include dxf/qgsdxfexport.sip
+
+%Include geometry/qgsgeometry.sip
+%Include geometry/qgsabstractgeometryv2.sip
+%Include geometry/qgscircularstringv2.sip
+%Include geometry/qgscompoundcurvev2.sip
+%Include geometry/qgscurvepolygonv2.sip
+%Include geometry/qgscurvev2.sip
+%Include geometry/qgsgeometrycollectionv2.sip
+%Include geometry/qgsgeometryengine.sip
+%Include geometry/qgslinestringv2.sip
+%Include geometry/qgsmulticurvev2.sip
+%Include geometry/qgsmultilinestringv2.sip
+%Include geometry/qgsmultipointv2.sip
+%Include geometry/qgsmultipolygonv2.sip
+%Include geometry/qgsmultisurfacev2.sip
+%Include geometry/qgspointv2.sip
+%Include geometry/qgspolygonv2.sip
+%Include geometry/qgssurfacev2.sip
+%Include geometry/qgswkbtypes.sip

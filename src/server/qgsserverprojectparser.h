@@ -29,10 +29,10 @@ class QgsMapLayer;
 class QgsRectangle;
 class QDomDocument;
 
-class QgsServerProjectParser
+class SERVER_EXPORT QgsServerProjectParser
 {
   public:
-    /**Takes ownership of the document*/
+
     QgsServerProjectParser( QDomDocument* xmlDoc, const QString& filePath );
     ~QgsServerProjectParser();
 
@@ -70,8 +70,6 @@ class QgsServerProjectParser
 
     QStringList supportedOutputCrsList() const;
 
-    static QString editTypeString( QgsVectorLayer::EditType type );
-
     const QList<QDomElement>& projectLayerElements() const { return mProjectLayerElements; }
 
     const QList<QDomElement>& legendGroupElements() const { return mLegendGroupElements; }
@@ -91,6 +89,7 @@ class QgsServerProjectParser
     void layerFromLegendLayer( const QDomElement& legendLayerElem, QMap< int, QgsMapLayer*>& layers, bool useCache = true ) const;
 
     QStringList wfsLayerNames() const;
+    QStringList wcsLayerNames() const;
 
     QDomElement firstComposerLegendElement() const;
 
@@ -103,12 +102,17 @@ class QgsServerProjectParser
     QString layerName( const QDomElement& layerElem ) const;
 
     QString serviceUrl() const;
+    QString wfsServiceUrl() const;
+    QString wcsServiceUrl() const;
 
     QStringList wfsLayers() const;
+    QStringList wcsLayers() const;
 
-    void addJoinLayersForElement( const QDomElement& layerElem, bool useCache = true ) const;
+    void addJoinLayersForElement( const QDomElement& layerElem ) const;
 
-    void addValueRelationLayersForElement( const QDomElement& layerElem, bool useCache = true ) const;
+    void addValueRelationLayersForLayer( const QgsVectorLayer *vl ) const;
+    /**Add layers which are necessary for the evaluation of the expression function 'getFeature( layer, attributField, value)'*/
+    void addGetFeatureLayers( const QDomElement& layerElem ) const;
 
     /**Returns the text of the <id> element for a layer element
     @return id or a null string in case of error*/
@@ -121,6 +125,8 @@ class QgsServerProjectParser
     bool updateLegendDrawingOrder() const;
 
     void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& service, bool sia2045 = false ) const;
+
+    QStringList customLayerOrder() const { return mCustomLayerOrder; }
 
   private:
 
@@ -151,6 +157,8 @@ class QgsServerProjectParser
 
     /**Returns a complete string set with all the restricted layer names (layers/groups that are not to be published)*/
     QSet<QString> findRestrictedLayers() const;
+
+    QStringList mCustomLayerOrder;
 
     bool findUseLayerIDs() const;
 

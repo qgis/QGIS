@@ -543,7 +543,7 @@ void eVisGenericEventBrowserGui::displayImage()
       if ( 0 == myFeature )
         return;
 
-      QgsPoint myPoint = myFeature->geometry()->asPoint();
+      QgsPoint myPoint = myFeature->constGeometry()->asPoint();
       myPoint = mCanvas->mapSettings().layerToMapCoordinates( mVectorLayer, myPoint );
       //keep the extent the same just center the map canvas in the display so our feature is in the middle
       QgsRectangle myRect( myPoint.x() - ( mCanvas->extent().width() / 2 ), myPoint.y() - ( mCanvas->extent().height() / 2 ), myPoint.x() + ( mCanvas->extent().width() / 2 ), myPoint.y() + ( mCanvas->extent().height() / 2 ) );
@@ -595,7 +595,7 @@ void eVisGenericEventBrowserGui::loadRecord()
   QString myCompassOffsetField = cboxCompassOffsetField->currentText();
   QString myEventImagePathField = cboxEventImagePathField->currentText();
   const QgsFields& myFields = mDataProvider->fields();
-  const QgsAttributes& myAttrs = myFeature->attributes();
+  QgsAttributes myAttrs = myFeature->attributes();
   //loop through the attributes and display their contents
   for ( int i = 0; i < myAttrs.count(); ++i )
   {
@@ -681,11 +681,8 @@ void eVisGenericEventBrowserGui::restoreDefaultOptions()
  */
 void eVisGenericEventBrowserGui::setBasePathToDataSource()
 {
-  //Noticed some strangeness here while cleaning up for migration to the QGIS trunk - PJE 2009-07-01
-  //TODO: The check for windows paths not longer does anything, remove or fix
-
   int myPathMarker = 0;
-  bool isWindows = false;
+
   QString mySourceUri = mDataProvider->dataSourceUri();
   //Check to see which way the directory symbol goes, I think this is actually unnecessary in qt
   if ( mySourceUri.contains( '/' ) )
@@ -701,22 +698,19 @@ void eVisGenericEventBrowserGui::setBasePathToDataSource()
   mySourceUri.truncate( myPathMarker + 1 );
 
   //check for duplicate directory symbols when concatinating the two strings
-  if ( isWindows )
+#ifdef Q_OS_WIN
+  mySourceUri.replace( "\\\\", "\\" );
+#else
+  if ( mySourceUri.startsWith( "http://", Qt::CaseInsensitive ) )
   {
-    mySourceUri.replace( "\\\\", "\\" );
+    mySourceUri.replace( "//", "/" );
+    mySourceUri.replace( "http:/", "http://", Qt::CaseInsensitive );
   }
   else
   {
-    if ( mySourceUri.startsWith( "http://", Qt::CaseInsensitive ) )
-    {
-      mySourceUri.replace( "//", "/" );
-      mySourceUri.replace( "http:/", "http://", Qt::CaseInsensitive );
-    }
-    else
-    {
-      mySourceUri.replace( "//", "/" );
-    }
+    mySourceUri.replace( "//", "/" );
   }
+#endif
 
   leBasePath->setText( mySourceUri );
 }
@@ -848,7 +842,7 @@ void eVisGenericEventBrowserGui::on_cboxEventImagePathField_currentIndexChanged(
     if ( 0 == myFeature )
       return;
 
-    const QgsAttributes& myAttrs = myFeature->attributes();
+    QgsAttributes myAttrs = myFeature->attributes();
     for ( int i = 0 ; i < myAttrs.count(); ++i )
     {
       if ( myFields[i].name() == cboxEventImagePathField->currentText() )
@@ -876,7 +870,7 @@ void eVisGenericEventBrowserGui::on_cboxCompassBearingField_currentIndexChanged(
     if ( 0 == myFeature )
       return;
 
-    const QgsAttributes& myAttrs = myFeature->attributes();
+    QgsAttributes myAttrs = myFeature->attributes();
     for ( int i = 0; i < myAttrs.count(); ++i )
     {
       if ( myFields[i].name() == cboxCompassBearingField->currentText() )
@@ -904,7 +898,7 @@ void eVisGenericEventBrowserGui::on_cboxCompassOffsetField_currentIndexChanged( 
     if ( 0 == myFeature )
       return;
 
-    const QgsAttributes& myAttrs = myFeature->attributes();
+    QgsAttributes myAttrs = myFeature->attributes();
     for ( int i = 0; i < myAttrs.count(); ++i )
     {
       if ( myFields[i].name() == cboxCompassOffsetField->currentText() )
@@ -1132,7 +1126,7 @@ void eVisGenericEventBrowserGui::renderSymbol( QPainter* thePainter )
     if ( 0 == myFeature )
       return;
 
-    QgsPoint myPoint = myFeature->geometry()->asPoint();
+    QgsPoint myPoint = myFeature->constGeometry()->asPoint();
     myPoint = mCanvas->mapSettings().layerToMapCoordinates( mVectorLayer, myPoint );
 
     mCanvas->getCoordinateTransform()->transform( &myPoint );

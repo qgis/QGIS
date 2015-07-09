@@ -25,20 +25,25 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import os.path
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+import os
+
+from PyQt4.QtGui import QIcon
+
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.gui.EditScriptAction import EditScriptAction
 from processing.gui.DeleteScriptAction import DeleteScriptAction
 from processing.gui.CreateNewScriptAction import CreateNewScriptAction
+from processing.script.WrongScriptException import WrongScriptException
+from processing.gui.GetScriptsAndModels import GetRScriptsAction
+from processing.tools.system import isWindows
+
 from RUtils import RUtils
 from RAlgorithm import RAlgorithm
-from processing.script.WrongScriptException import WrongScriptException
-from processing.tools.system import *
-import processing.resources_rc
+
+pluginPath = os.path.normpath(os.path.join(
+    os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
 
 class RAlgorithmProvider(AlgorithmProvider):
@@ -46,32 +51,42 @@ class RAlgorithmProvider(AlgorithmProvider):
     def __init__(self):
         AlgorithmProvider.__init__(self)
         self.activate = False
-        self.actions.append(CreateNewScriptAction('Create new R script',
-                            CreateNewScriptAction.SCRIPT_R))
+        self.actions.append(CreateNewScriptAction(
+            self.tr('Create new R script'), CreateNewScriptAction.SCRIPT_R))
+        self.actions.append(GetRScriptsAction())
         self.contextMenuActions = \
             [EditScriptAction(EditScriptAction.SCRIPT_R),
              DeleteScriptAction(DeleteScriptAction.SCRIPT_R)]
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
-        ProcessingConfig.addSetting(Setting(self.getDescription(),
-                                    RUtils.RSCRIPTS_FOLDER, 'R Scripts folder'
-                                    , RUtils.RScriptsFolder()))
+        ProcessingConfig.addSetting(Setting(
+            self.getDescription(), RUtils.RSCRIPTS_FOLDER,
+            self.tr('R Scripts folder'), RUtils.RScriptsFolder(),
+            valuetype=Setting.FOLDER))
         if isWindows():
-            ProcessingConfig.addSetting(Setting(self.getDescription(),
-                    RUtils.R_FOLDER, 'R folder', RUtils.RFolder()))
-            ProcessingConfig.addSetting(Setting(self.getDescription(),
-                    RUtils.R_USE64, 'Use 64 bit version', False))
+            ProcessingConfig.addSetting(Setting(
+                self.getDescription(),
+                RUtils.R_FOLDER, self.tr('R folder'), RUtils.RFolder(),
+                valuetype=Setting.FOLDER))
+            ProcessingConfig.addSetting(Setting(
+                self.getDescription(),
+                RUtils.R_LIBS_USER, self.tr('R user library folder'),
+                RUtils.RLibs(), valuetype=Setting.FOLDER))
+            ProcessingConfig.addSetting(Setting(
+                self.getDescription(),
+                RUtils.R_USE64, self.tr('Use 64 bit version'), False))
 
     def unload(self):
         AlgorithmProvider.unload(self)
         ProcessingConfig.removeSetting(RUtils.RSCRIPTS_FOLDER)
         if isWindows():
             ProcessingConfig.removeSetting(RUtils.R_FOLDER)
+            ProcessingConfig.removeSetting(RUtils.R_LIBS_USER)
             ProcessingConfig.removeSetting(RUtils.R_USE64)
 
     def getIcon(self):
-        return QIcon(':/processing/images/r.png')
+        return QIcon(os.path.join(pluginPath, 'images', 'r.png'))
 
     def getDescription(self):
         return 'R scripts'
@@ -99,6 +114,6 @@ class RAlgorithmProvider(AlgorithmProvider):
                     except WrongScriptException, e:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, e.msg)
                     except Exception, e:
-                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                'Could not load R script:' + descriptionFile + '\n'
-                                 + unicode(e))
+                        ProcessingLog.addToLog(
+                            ProcessingLog.LOG_ERROR,
+                            self.tr('Could not load R script: %s\n%s' % (descriptionFile, unicode(e))))

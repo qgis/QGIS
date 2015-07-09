@@ -56,9 +56,9 @@ class QgsSpatialQueryPlugin: public QObject, public QgisPlugin
 
   public slots:
     //! init the gui
-    void initGui();
+    void initGui() override;
     //! unload the plugin
-    void unload();
+    void unload() override;
     //! Show the dialog box
     void run();
     //! update the plugins theme when the app tells us its theme is changed

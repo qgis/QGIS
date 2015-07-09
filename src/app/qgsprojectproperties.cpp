@@ -45,7 +45,6 @@
 #include "qgssymbolv2selectordialog.h"
 #include "qgsrelationmanagerdialog.h"
 #include "qgsrelationmanager.h"
-#include "qgisapp.h"
 #include "qgscolorschemeregistry.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgscolordialog.h"
@@ -525,6 +524,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
     on_cbxProjectionEnabled_toggled( myProjectionEnabled );
   }
 
+  projectionSelectorInitialized();
   restoreOptionsBaseUi();
   restoreState();
 }

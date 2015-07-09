@@ -31,9 +31,10 @@ class QgsColorSchemeRegistry;
  * \note Added in version 2.5
  */
 
-class GUI_EXPORT QgsColorButtonV2: public QToolButton
+class GUI_EXPORT QgsColorButtonV2 : public QToolButton
 {
     Q_OBJECT
+    Q_ENUMS( Behaviour )
     Q_PROPERTY( QString colorDialogTitle READ colorDialogTitle WRITE setColorDialogTitle )
     Q_PROPERTY( bool acceptLiveUpdates READ acceptLiveUpdates WRITE setAcceptLiveUpdates )
     Q_PROPERTY( QColor color READ color WRITE setColor )
@@ -65,7 +66,7 @@ class GUI_EXPORT QgsColorButtonV2: public QToolButton
 
     virtual ~QgsColorButtonV2();
 
-    virtual QSize sizeHint() const;
+    virtual QSize sizeHint() const override;
 
     /**Return the currently selected color.
      * @returns currently selected color
@@ -286,9 +287,9 @@ class GUI_EXPORT QgsColorButtonV2: public QToolButton
 
   protected:
 
-    void changeEvent( QEvent* e );
-    void showEvent( QShowEvent* e );
-    void resizeEvent( QResizeEvent *event );
+    void changeEvent( QEvent* e ) override;
+    void showEvent( QShowEvent* e ) override;
+    void resizeEvent( QResizeEvent *event ) override;
 
     /**Returns a checkboard pattern pixmap for use as a background to transparent colors
      */
@@ -297,37 +298,37 @@ class GUI_EXPORT QgsColorButtonV2: public QToolButton
     /**
      * Reimplemented to detect right mouse button clicks on the color button and allow dragging colors
      */
-    void mousePressEvent( QMouseEvent* e );
+    void mousePressEvent( QMouseEvent* e ) override;
 
     /**
      * Reimplemented to allow dragging colors from button
      */
-    void mouseMoveEvent( QMouseEvent *e );
+    void mouseMoveEvent( QMouseEvent *e ) override;
 
     /**
      * Reimplemented to allow color picking
      */
-    void mouseReleaseEvent( QMouseEvent *e );
+    void mouseReleaseEvent( QMouseEvent *e ) override;
 
     /**
      * Reimplemented to allow cancelling color pick via keypress, and sample via space bar press
      */
-    void keyPressEvent( QKeyEvent *e );
+    void keyPressEvent( QKeyEvent *e ) override;
 
     /**
      * Reimplemented to accept dragged colors
      */
-    void dragEnterEvent( QDragEnterEvent * e );
+    void dragEnterEvent( QDragEnterEvent * e ) override;
 
     /**
      * Reimplemented to reset button appearance after drag leave
      */
-    void dragLeaveEvent( QDragLeaveEvent *e );
+    void dragLeaveEvent( QDragLeaveEvent *e ) override;
 
     /**
      * Reimplemented to accept dropped colors
      */
-    void dropEvent( QDropEvent *e );
+    void dropEvent( QDropEvent *e ) override;
 
   private:
 

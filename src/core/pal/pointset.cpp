@@ -34,18 +34,11 @@
 #include <iostream>
 #endif
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include <qglobal.h>
 
 #include "pointset.h"
 #include "util.h"
-
-#include <pal/pal.h>
-
-
+#include "pal.h"
 #include "geomfunction.h"
 
 namespace pal
@@ -53,6 +46,12 @@ namespace pal
 
 
   PointSet::PointSet()
+      : holeOf( NULL )
+      , parent( NULL )
+      , xmin( DBL_MAX )
+      , xmax( -DBL_MAX )
+      , ymin( DBL_MAX )
+      , ymax( -DBL_MAX )
   {
     nbPoints = cHullSize =  0;
     x = NULL;
@@ -62,6 +61,13 @@ namespace pal
   }
 
   PointSet::PointSet( int nbPoints, double *x, double *y )
+      : cHullSize( 0 )
+      , holeOf( NULL )
+      , parent( NULL )
+      , xmin( DBL_MAX )
+      , xmax( -DBL_MAX )
+      , ymin( DBL_MAX )
+      , ymax( -DBL_MAX )
   {
     this->nbPoints = nbPoints;
     this->x = new double[nbPoints];
@@ -77,13 +83,15 @@ namespace pal
     cHull = NULL;
   }
 
-  PointSet::PointSet( double x, double y )
+  PointSet::PointSet( double aX, double aY )
+      : xmin( aX ), xmax( aY )
+      , ymin( aX ), ymax( aY )
   {
-    nbPoints = cHullSize =  1;
-    this->x = new double[1];
-    this->y = new double[1];
-    this->x[0] = x;
-    this->y[0] = y;
+    nbPoints = cHullSize = 1;
+    x = new double[1];
+    y = new double[1];
+    x[0] = aX;
+    y[0] = aY;
 
     cHull = NULL;
     parent = NULL;
@@ -93,13 +101,17 @@ namespace pal
   }
 
   PointSet::PointSet( PointSet &ps )
+      : parent( 0 )
+      , xmin( DBL_MAX )
+      , xmax( -DBL_MAX )
+      , ymin( DBL_MAX )
+      , ymax( -DBL_MAX )
   {
     int i;
 
     nbPoints = ps.nbPoints;
     x = new double[nbPoints];
     y = new double[nbPoints];
-
 
     for ( i = 0; i < nbPoints; i++ )
     {
@@ -110,6 +122,7 @@ namespace pal
     if ( ps.cHull )
     {
       cHullSize = ps.cHullSize;
+      cHull = new int[cHullSize];
       for ( i = 0; i < cHullSize; i++ )
       {
         cHull[i] = ps.cHull[i];
@@ -193,9 +206,9 @@ namespace pal
   }
 
 
-  void PointSet::splitPolygons( LinkedList<PointSet*> *shapes_toProcess,
-                                LinkedList<PointSet*> *shapes_final,
-                                double xrm, double yrm, char *uid )
+  void PointSet::splitPolygons( QLinkedList<PointSet*> &shapes_toProcess,
+                                QLinkedList<PointSet*> &shapes_final,
+                                double xrm, double yrm, const QString& uid )
   {
 #ifdef _DEBUG_
     std::cout << "splitPolygons: " << uid << std::endl;
@@ -239,12 +252,12 @@ namespace pal
 
     PointSet *shape;
 
-    while ( shapes_toProcess->size() > 0 )
+    while ( shapes_toProcess.size() > 0 )
     {
 #ifdef _DEBUG_FULL_
       std::cout << "Shape popping()" << std::endl;
 #endif
-      shape = shapes_toProcess->pop_front();
+      shape = shapes_toProcess.takeFirst();
 
       x = shape->x;
       y = shape->y;
@@ -498,7 +511,7 @@ namespace pal
         // check for useless spliting
         else if ( imax == imin || nbPtSh1 <= 2 || nbPtSh2 <= 2 || nbPtSh1 == nbp  || nbPtSh2 == nbp )
         {
-          shapes_final->push_back( shape );
+          shapes_final.append( shape );
         }
         else
         {
@@ -519,7 +532,7 @@ namespace pal
           }
 #endif
 
-          shapes_toProcess->push_back( newShape );
+          shapes_toProcess.append( newShape );
 
           if ( imax == fps )
             imax = fpe;
@@ -540,7 +553,7 @@ namespace pal
             std::cout << newShape->x[i] << ";" << newShape->y[i] << std::endl;
           }
 #endif
-          shapes_toProcess->push_back( newShape );
+          shapes_toProcess.append( newShape );
 
           if ( shape->parent )
             delete shape;
@@ -551,7 +564,7 @@ namespace pal
 #ifdef _DEBUG_FULL_
         std::cout << "Put shape into shapes_final" << std::endl;
 #endif
-        shapes_final->push_back( shape );
+        shapes_final.append( shape );
       }
       delete[] pts;
     }
@@ -761,131 +774,6 @@ namespace pal
 
     return finalBb;
   }
-
-#if 0
-  double PointSet::getDistInside( double px, double py )
-  {
-
-    double dist[8];
-    double rpx[8];
-    double rpy[8];
-    bool ok[8];
-
-    if ( !isPointInPolygon( nbPoints, x, y, px, py ) )
-    {
-      double d = getDist( px, py );
-      //std::cout << "Outside : " << d << std::endl;
-      if ( d < 0 )
-      {
-        d = -( d * d * d * d );
-      }
-      else
-      {
-        d = d * d * d * d;
-      }
-      return d;
-    }
-
-    int i;
-
-    double width = ( xmax - xmin ) * 2;
-    double height = ( ymax - ymin ) * 2;
-
-    /*
-               1  0   7
-                \ | /
-              2 --x -- 6
-                / | \
-              3   4  5
-    */
-
-    // Compute references points
-    for ( i = 0; i < 8; i++ )
-    {
-      dist[i] = DBL_MAX;
-      ok[i] = false;
-      rpx[i] = px;
-      rpy[i] = py;
-    }
-
-    rpx[0] += 0;
-    rpy[0] += height;
-
-    rpx[1] -= width;
-    rpy[1] += height;
-
-    rpx[2] -= width;
-    rpy[2] += 0;
-
-    rpx[3] -= width;
-    rpy[3] -= height;
-
-    rpx[4] += 0;
-    rpy[4] -= height;
-
-    rpx[5] += width;
-    rpy[5] -= height;
-
-    rpx[6] += width;
-    rpy[6] += 0;
-
-    rpx[7] += width;
-    rpy[7] += height;
-
-    int j, k;
-    for ( i = 0; i < nbPoints; i++ )
-    {
-      j = ( i + 1 ) % nbPoints;
-
-      for ( k = 0; k < 8; k++ )
-      {
-        double ix, iy;
-        if ( computeSegIntersection( px, py, rpx[k], rpy[k], x[i], y[i], x[j], y[j], &ix, &iy ) )
-        {
-          double d = dist_euc2d_sq( px, py, ix, iy );
-          if ( dist[k] > d )
-          {
-            dist[k] = d;
-            ok[k] = true;
-            //std::cout << "new dist for " << k << ": " << dist[k] << std::endl;
-          }
-        }
-      }
-    }
-
-    double a, b, c, d;
-
-
-    for ( i = 0; i < 8; i++ )
-    {
-      if ( !ok[i] )
-      {
-        std::cout << "ERROR!!!!!!!!!!!!!!!!!" << std::endl;
-        dist[i] = 0;
-      }
-      //std::cout << "dist[" << i << "]: " << dist[i] << std::endl;
-    }
-
-    a = min( dist[0], dist[4] );
-    b = min( dist[1], dist[5] );
-    c = min( dist[2], dist[6] );
-    d = min( dist[3], dist[7] );
-    /*
-        std::cout << "a: " << a << std::endl;
-        std::cout << "b: " << b << std::endl;
-        std::cout << "c: " << c << std::endl;
-        std::cout << "d: " << d << std::endl;
-      */
-    //a = (a+b+c+d)/4.0;
-
-    //a = min(a,b);
-    //c = min(c,d);
-    //return min(a,c);
-
-
-    return ( a*b*c*d );
-  }
-#endif
 
   double PointSet::getDist( double px, double py, double *rx, double *ry )
   {

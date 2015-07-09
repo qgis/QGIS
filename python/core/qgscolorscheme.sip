@@ -22,9 +22,9 @@ class QgsColorScheme
      */
     enum SchemeFlag
     {
-      ShowInColorDialog, /*< show scheme in color picker dialog */
-      ShowInColorButtonMenu, /*< show scheme in color button drop down menu */
-      ShowInAllContexts /*< show scheme in all contexts */
+      ShowInColorDialog, /*!< show scheme in color picker dialog */
+      ShowInColorButtonMenu, /*!< show scheme in color button drop down menu */
+      ShowInAllContexts /*!< show scheme in all contexts */
     };
     typedef QFlags<QgsColorScheme::SchemeFlag> SchemeFlags;
 
@@ -179,7 +179,7 @@ class QgsRecentColorScheme : QgsColorScheme
                                            const QColor &baseColor = QColor() );
 
     QgsColorScheme* clone() const /Factory/;
-}; // class QgsRecentColorScheme
+};
 
 /** \ingroup core
  * \class QgsCustomColorScheme
@@ -210,7 +210,7 @@ class QgsCustomColorScheme : QgsColorScheme
     virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() );
 
     QgsColorScheme* clone() const /Factory/;
-}; // class QgsCustomColorScheme
+};
 
 /** \ingroup core
  * \class QgsProjectColorScheme
@@ -240,4 +240,4 @@ class QgsProjectColorScheme : QgsColorScheme
     virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() );
 
     QgsColorScheme* clone() const /Factory/;
-}; // class QgsProjectColorScheme
+};

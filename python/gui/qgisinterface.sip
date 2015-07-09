@@ -165,6 +165,9 @@ class QgisInterface : QObject
     /** Return the message bar of the main app */
     virtual QgsMessageBar * messageBar() = 0;
 
+    /** Adds a widget to the user input tool bar.*/
+    virtual void addUserInputWidget( QWidget* widget ) = 0;
+
     /** Return mainwindows / composer views of running composer instances (currently only one) */
     virtual QList<QgsComposerView*> activeComposers() = 0;
 
@@ -209,7 +212,7 @@ class QgisInterface : QObject
     /** Add "add layer" action to layer menu */
     virtual void insertAddLayerAction( QAction *action ) = 0;
 
-    /** Remove "add layer" action from layer menu  */
+    /** Remove "add layer" action from layer menu */
     virtual void removeAddLayerAction( QAction *action ) = 0;
 
     /** Add action to the Database menu */
@@ -256,12 +259,10 @@ class QgisInterface : QObject
      * windows which are hidden rather than deleted when closed. */
     virtual void removeWindow( QAction *action ) = 0;
 
-    /** Register action to the shortcuts manager so its shortcut can be changed in GUI
-    */
+    /** Register action to the shortcuts manager so its shortcut can be changed in GUI */
     virtual bool registerMainWindowAction( QAction* action, QString defaultShortcut ) = 0;
 
-    /** Unregister a previously registered action. (e.g. when plugin is going to be unloaded)
-    */
+    /** Unregister a previously registered action. (e.g. when plugin is going to be unloaded) */
     virtual bool unregisterMainWindowAction( QAction* action ) = 0;
 
     // @todo is this deprecated in favour of QgsContextHelp?
@@ -502,6 +503,11 @@ class QgisInterface : QObject
      * This signal is emitted before a new composer instance is going to be removed
      */
     void composerWillBeRemoved( QgsComposerView* v );
+
+    /** This signal is emitted when a composer instance has been removed
+       @note added in version 2.9 */
+    void composerRemoved( QgsComposerView* v );
+
     /**
      * This signal is emitted when the initialization is complete
      */
@@ -522,4 +528,10 @@ class QgisInterface : QObject
         signal for when this happens.
       */
     void newProjectCreated();
+
+    /**This signal is emitted when a layer has been saved using save as
+       @note
+       added in version 2.7
+    */
+    void layerSavedAs( QgsMapLayer* l, QString path );
 };

@@ -25,27 +25,30 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import os.path
 import re
+import os
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-
-from qgis.gui import *
+from PyQt4 import uic
+from PyQt4.QtCore import QCoreApplication, QSettings
+from PyQt4.QtGui import QDialog, QMenu, QAction, QCursor, QFileDialog
+from qgis.gui import QgsEncodingFileDialog
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.outputs import OutputVector
 from processing.core.outputs import OutputDirectory
 
-from processing.ui.ui_widgetBaseSelector import Ui_Form
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'widgetBaseSelector.ui'))
 
-class OutputSelectionPanel(QWidget, Ui_Form):
+
+class OutputSelectionPanel(BASE, WIDGET):
 
     SAVE_TO_TEMP_FILE = QCoreApplication.translate(
         'OutputSelectionPanel', '[Save to temporary file]')
 
     def __init__(self, output, alg):
-        QWidget.__init__(self)
+        super(OutputSelectionPanel, self).__init__(None)
         self.setupUi(self)
 
         self.output = output
@@ -110,8 +113,8 @@ class OutputSelectionPanel(QWidget, Ui_Form):
             fileName = unicode(files[0])
             selectedFileFilter = unicode(fileDialog.selectedNameFilter())
             if not fileName.lower().endswith(
-                    tuple(re.findall("\*(\.[a-z]{1,5})", fileFilter))):
-                ext = re.search("\*(\.[a-z]{1,5})", selectedFileFilter)
+                    tuple(re.findall("\*(\.[a-z]{1,10})", fileFilter))):
+                ext = re.search("\*(\.[a-z]{1,10})", selectedFileFilter)
                 if ext:
                     fileName += ext.group(1)
             self.leText.setText(fileName)

@@ -29,8 +29,7 @@ import unittest
 import processing
 from processing.tools import dataobjects
 
-from processing.tests.TestData import points, points2, polygons, polygons2, \
-    lines, union, table
+from processing.tests.TestData import polygons, union
 
 
 class ScriptTest(unittest.TestCase):

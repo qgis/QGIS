@@ -61,7 +61,7 @@ class QgsComposerView : QGraphicsView
       ActiveUntilMouseRelease
     };
 
-    QgsComposerView( QWidget* parent = 0, const char* name = 0, Qt::WindowFlags f = 0 );
+    QgsComposerView( QWidget* parent /TransferThis/ = 0, const char* name = 0, Qt::WindowFlags f = 0 );
 
     /**Add an item group containing the selected items*/
     void groupItems();

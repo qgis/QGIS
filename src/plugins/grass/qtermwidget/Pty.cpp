@@ -226,9 +226,9 @@ void Pty::setWriteable( bool writeable )
   struct stat sbuf;
   stat( pty()->ttyName(), &sbuf );
   if ( writeable )
-    chmod( pty()->ttyName(), sbuf.st_mode | S_IWGRP );
+    (void)chmod( pty()->ttyName(), sbuf.st_mode | S_IWGRP );
   else
-    chmod( pty()->ttyName(), sbuf.st_mode & ~( S_IWGRP | S_IWOTH ) );
+    (void)chmod( pty()->ttyName(), sbuf.st_mode & ~( S_IWGRP | S_IWOTH ) );
 }
 
 Pty::Pty()

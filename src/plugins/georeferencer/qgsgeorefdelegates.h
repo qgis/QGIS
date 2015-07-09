@@ -25,7 +25,7 @@ class QgsNonEditableDelegate : public QStyledItemDelegate
     QgsNonEditableDelegate( QWidget *parent = 0 );
 
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option,
-                           const QModelIndex &index ) const
+                           const QModelIndex &index ) const override
     {
       Q_UNUSED( parent );
       Q_UNUSED( option );
@@ -42,17 +42,17 @@ class QgsDmsAndDdDelegate : public QStyledItemDelegate
     QgsDmsAndDdDelegate( QWidget *parent = 0 );
 
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option,
-                           const QModelIndex &index ) const;
+                           const QModelIndex &index ) const override;
 
-    void setEditorData( QWidget *editor, const QModelIndex &index ) const;
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
     void setModelData( QWidget *editor, QAbstractItemModel *model,
-                       const QModelIndex &index ) const;
+                       const QModelIndex &index ) const override;
 
     void updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option,
-                               const QModelIndex &index ) const;
+                               const QModelIndex &index ) const override;
 
   private:
-    QString dmsToDD( QString dms ) const;
+    double dmsToDD( QString dms ) const;
 };
 
 class QgsCoordDelegate : public QStyledItemDelegate
@@ -63,14 +63,14 @@ class QgsCoordDelegate : public QStyledItemDelegate
     QgsCoordDelegate( QWidget *parent = 0 );
 
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option,
-                           const QModelIndex &index ) const;
+                           const QModelIndex &index ) const override;
 
-//  void setEditorData(QWidget *editor, const QModelIndex &index);
-//  void setModelData(QWidget *editor, QAbstractItemModel *model,
-//                    const QModelIndex &index);
-//
-//  void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option,
-//                            const QModelIndex &index);
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
+    void setModelData( QWidget *editor, QAbstractItemModel *model,
+                       const QModelIndex &index ) const override;
+
+    void updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option,
+                               const QModelIndex &index ) const override;
 };
 
 #endif // QGSDELEGATES_H

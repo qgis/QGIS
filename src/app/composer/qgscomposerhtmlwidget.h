@@ -55,7 +55,7 @@ class QgsComposerHtmlWidget: public QgsComposerItemBaseWidget, private Ui::QgsCo
 
   protected:
 
-    QgsComposerItem::DataDefinedProperty ddPropertyForWidget( QgsDataDefinedButton *widget );
+    QgsComposerItem::DataDefinedProperty ddPropertyForWidget( QgsDataDefinedButton *widget ) override;
 
   protected slots:
     /**Initializes data defined buttons to current atlas coverage layer*/

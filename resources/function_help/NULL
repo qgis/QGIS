@@ -1,0 +1,14 @@
+<h3>NULL value</h3>
+Equates to a null value.
+
+<h4>Syntax</h4>
+<pre>NULL</pre>
+
+<h4>Arguments</h4>
+None
+
+<h4>Example</h4>
+<pre> NULL &rarr; returns a null value </pre>
+
+<h4>Note:</h4>
+<p>To test for NULL use an <pre>IS NULL</pre> or <pre>IS NOT NULL</pre> expression.</p>

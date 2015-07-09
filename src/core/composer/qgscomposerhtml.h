@@ -35,14 +35,11 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
     */
     enum ContentMode
     {
-      Url, /*< Using this mode item fetches its content via a url*/
-      ManualHtml /*< HTML content is manually set for the item*/
+      Url, /*!< Using this mode item fetches its content via a url*/
+      ManualHtml /*!< HTML content is manually set for the item*/
     };
 
     QgsComposerHtml( QgsComposition* c, bool createUndoCommands );
-
-    //should be private - fix for QGIS 3.0
-    QgsComposerHtml();
 
     ~QgsComposerHtml();
 
@@ -199,14 +196,14 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      */
     bool userStylesheetEnabled() const { return mEnableUserStylesheet; }
 
-    virtual QString displayName() const;
-    QSizeF totalSize() const;
-    void render( QPainter* p, const QRectF& renderExtent, const int frameIndex );
-    bool writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const;
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false );
-    void addFrame( QgsComposerFrame* frame, bool recalcFrameSizes = true );
+    virtual QString displayName() const override;
+    QSizeF totalSize() const override;
+    void render( QPainter* p, const QRectF& renderExtent, const int frameIndex ) override;
+    bool writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const override;
+    bool readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false ) override;
+    void addFrame( QgsComposerFrame* frame, bool recalcFrameSizes = true ) override;
     //overriden to break frames without dividing lines of text
-    double findNearbyPageBreak( double yPos );
+    double findNearbyPageBreak( double yPos ) override;
 
   public slots:
 
@@ -219,10 +216,10 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
     void loadHtml( const bool useCache = false );
 
     /**Recalculates the frame sizes for the current viewport dimensions*/
-    void recalculateFrameSizes();
+    void recalculateFrameSizes() override;
     void refreshExpressionContext();
 
-    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );
+    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties ) override;
 
   private slots:
     void frameLoaded( bool ok = true );

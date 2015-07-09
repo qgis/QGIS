@@ -1,0 +1,17 @@
+<h3>longest_common_substring function</h3>
+Returns the longest common substring between two strings. This substring is the longest
+string that is a substring of the two input strings. Eg, the longest common substring
+of "ABABC" and "BABCA" is "ABC". The substring is case sensitive.
+
+<h4>Syntax</h4>
+<pre>longest_common_substring(string1,string2)</pre>
+
+<h4>Arguments</h4>
+string1 &rarr; a string<br />
+string2 &rarr; a string<br />
+
+<h4>Example</h4>
+<pre> longest_common_substring('ABABC','BABCA') &rarr; 'ABC'</pre><br />
+<pre> longest_common_substring('abcDeF','abcdef') &rarr; 'abc'</pre><br />
+<pre> longest_common_substring(upper('abcDeF'),upper('abcdex')) &rarr; 'ABCDE'</pre>
+

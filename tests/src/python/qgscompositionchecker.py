@@ -14,11 +14,12 @@ qgscompositionchecker.py - check rendering of Qgscomposition against an expected
  *                                                                         *
  ***************************************************************************/
 '''
+
 import qgis
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
+from PyQt4.QtCore import QSize, QDir, QFileInfo
+from PyQt4.QtGui import QImage, QPainter
+from qgis.core import QgsMultiRenderChecker, QgsComposition
 
 class QgsCompositionChecker(QgsMultiRenderChecker):
     def __init__(self,  mTestName, mComposition ):
@@ -30,14 +31,14 @@ class QgsCompositionChecker(QgsMultiRenderChecker):
         self.setColorTolerance( 5 )
 
     def testComposition(self, page=0, pixelDiff=0 ):
-        if ( self.mComposition == None):
+        if self.mComposition is None:
             myMessage = "Composition not valid"
             return False, myMessage
 
         #load expected image
-        self.setControlName("expected_"+self.mTestName);
+        self.setControlName("expected_"+self.mTestName)
 
-         #get width/height, create image and render the composition to it
+        # get width/height, create image and render the composition to it
         outputImage = QImage( self.mSize, QImage.Format_RGB32 )
 
         self.mComposition.setPlotStyle( QgsComposition.Print )
@@ -56,4 +57,3 @@ class QgsCompositionChecker(QgsMultiRenderChecker):
         testResult = self.runTest( self.mTestName, pixelDiff )
 
         return testResult, self.report()
-

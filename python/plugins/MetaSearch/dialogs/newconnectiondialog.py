@@ -57,6 +57,11 @@ class NewConnectionDialog(QDialog, BASE_CLASS):
                                 self.tr('Both Name and URL must be provided'))
             return
 
+        if '/' in conn_name:
+            QMessageBox.warning(self, self.tr('Save connection'),
+                                self.tr('Name cannot contain \'/\''))
+            return
+
         if conn_name is not None:
             key = '/MetaSearch/%s' % conn_name
             keyurl = '%s/url' % key

@@ -32,7 +32,6 @@ from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputRaster
 from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.tools.system import *
 
 
 class roughness(GdalAlgorithm):
@@ -45,14 +44,15 @@ class roughness(GdalAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Roughness'
         self.group = '[GDAL] Analysis'
-        self.addParameter(ParameterRaster(self.INPUT, 'Input layer'))
-        self.addParameter(ParameterNumber(self.BAND, 'Band number', 1, 99, 1))
-        self.addParameter(ParameterBoolean(self.COMPUTE_EDGES, 'Compute edges',
-                          False))
+        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
+        self.addParameter(ParameterNumber(self.BAND,
+            self.tr('Band number'), 1, 99, 1))
+        self.addParameter(ParameterBoolean(self.COMPUTE_EDGES,
+            self.tr('Compute edges'), False))
 
-        self.addOutput(OutputRaster(self.OUTPUT, 'Output file'))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Roughness')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         arguments = ['roughness']
         arguments.append(unicode(self.getParameterValue(self.INPUT)))
         output = unicode(self.getOutputValue(self.OUTPUT))
@@ -64,10 +64,7 @@ class roughness(GdalAlgorithm):
         arguments.append('-b')
         arguments.append(str(self.getParameterValue(self.BAND)))
 
-
-
         if self.getParameterValue(self.COMPUTE_EDGES):
             arguments.append('-compute_edges')
 
-        GdalUtils.runGdal(['gdaldem',
-                          GdalUtils.escapeAndJoin(arguments)], progress)
+        return ['gdaldem', GdalUtils.escapeAndJoin(arguments)]

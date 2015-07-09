@@ -94,14 +94,14 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     //! Destructor
     virtual ~QgsWcsProvider();
 
-    QgsRasterInterface * clone() const;
+    QgsRasterInterface * clone() const override;
 
     /*! Get the QgsCoordinateReferenceSystem for this layer
      * @note Must be reimplemented by each provider.
      * If the provider isn't capable of returning
      * its projection an empty srs will be return, ti will return 0
      */
-    virtual QgsCoordinateReferenceSystem crs();
+    virtual QgsCoordinateReferenceSystem crs() override;
 
     /**
      * Get the coverage format used in the transfer from the WCS server
@@ -134,22 +134,22 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      *  \warning A pointer to an QImage is used, as a plain QImage seems to have difficulty being
      *           shared across library boundaries
      */
-    QImage *draw( QgsRectangle const &  viewExtent, int pixelWidth, int pixelHeight );
+    QImage *draw( QgsRectangle const &  viewExtent, int pixelWidth, int pixelHeight ) override;
 
-    void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data );
+    void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data ) override;
 
-    void readBlock( int theBandNo, int xBlock, int yBlock, void *block );
+    void readBlock( int theBandNo, int xBlock, int yBlock, void *block ) override;
 
     /** Download cache */
     void getCache( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QString crs = "" );
 
     /** Return the extent for this data layer
     */
-    virtual QgsRectangle extent();
+    virtual QgsRectangle extent() override;
 
     /**Returns true if layer is valid
      */
-    bool isValid();
+    bool isValid() override;
 
     /**Returns the base url
      */
@@ -159,24 +159,26 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QString wcsVersion();
 
     // Reimplemented QgsRasterDataProvider virtual methods
-    int capabilities() const;
-    QGis::DataType dataType( int bandNo ) const;
-    QGis::DataType srcDataType( int bandNo ) const;
-    int bandCount() const;
+    int capabilities() const override;
+    QGis::DataType dataType( int bandNo ) const override;
+    QGis::DataType srcDataType( int bandNo ) const override;
+    int bandCount() const override;
     //double noDataValue() const;
-    int xBlockSize() const;
-    int yBlockSize() const;
-    int xSize() const;
-    int ySize() const;
-    QString metadata();
-    QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
-    QString lastErrorTitle();
-    QString lastError();
-    QString lastErrorFormat();
-    QString name() const;
-    QString description() const;
-    void reloadData();
-    QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const;
+    int xBlockSize() const override;
+    int yBlockSize() const override;
+    int xSize() const override;
+    int ySize() const override;
+    QString metadata() override;
+    QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 ) override;
+    QString lastErrorTitle() override;
+    QString lastError() override;
+    QString lastErrorFormat() override;
+    QString name() const override;
+    QString description() const override;
+    void reloadData() override;
+    QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const override;
+
+    int colorInterpretation( int bandNo ) const override;
 
     static QMap<QString, QString> supportedMimes();
 
@@ -232,7 +234,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      */
     QString prepareUri( QString uri ) const;
 
-    QString coverageMetadata( QgsWcsCoverageSummary c );
+    QString coverageMetadata( const QgsWcsCoverageSummary& c );
 
     //! remove query item and replace it with a new value
     void setQueryItem( QUrl &url, QString key, QString value );
@@ -297,10 +299,10 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     /** \brief Gdal data types used to represent data in in QGIS,
                may be longer than source data type to keep nulls
                indexed from 0 */
-    QList<int>mGdalDataType;
+    QList<GDALDataType> mGdalDataType;
 
     /** GDAL source data types, indexed from 0 */
-    QList<int>mSrcGdalDataType;
+    QList<GDALDataType> mSrcGdalDataType;
 
     /** \brief Cell value representing no data. e.g. -9999, indexed from 0  */
     //QList<double> mNoDataValue;

@@ -27,20 +27,24 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+from PyQt4 import uic
+from PyQt4.QtCore import QSettings
+from PyQt4.QtGui import QIcon, QFileDialog
+from processing.tools import dataobjects
 
-from processing.ui.ui_widgetLayerSelector import Ui_Form
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'widgetLayerSelector.ui'))
 
 
-class InputLayerSelectorPanel(QWidget, Ui_Form):
+class InputLayerSelectorPanel(BASE, WIDGET):
 
     def __init__(self, options, param):
-        QWidget.__init__(self)
+        super(InputLayerSelectorPanel, self).__init__(None)
         self.setupUi(self)
 
         self.btnIterate.setIcon(
-            QIcon(os.path.dirname(__file__) + '/../images/iterate.png'))
+            QIcon(os.path.join(pluginPath, 'images', 'iterate.png')))
         self.btnIterate.hide()
 
         self.param = param
@@ -65,10 +69,12 @@ class InputLayerSelectorPanel(QWidget, Ui_Form):
         filename = QFileDialog.getOpenFileName(self, self.tr('Select file'),
             path, self.tr('All files (*.*);;') + self.param.getFileFilter())
         if filename:
-            self.cmbText.addItem(filename, filename)
-            self.cmbText.setCurrentIndex(self.cmbText.count() - 1)
             settings.setValue('/Processing/LastInputPath',
                               os.path.dirname(unicode(filename)))
+            filename = dataobjects.getRasterSublayer(filename, self.param)
+            self.cmbText.addItem(filename, filename)
+            self.cmbText.setCurrentIndex(self.cmbText.count() - 1)
+
 
     def getValue(self):
         return self.cmbText.itemData(self.cmbText.currentIndex())

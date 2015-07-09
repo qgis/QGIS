@@ -36,12 +36,16 @@ QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
     , mFilterModel( NULL )
     , mFeatureSelectionModel( NULL )
     , mFeatureSelectionManager( NULL )
+    , mModel( NULL )
     , mActionPopup( NULL )
+    , mLayerCache( NULL )
+    , mRowSectionAnchor( 0 )
+    , mCtrlDragSelectionFlag( QItemSelectionModel::Select )
 {
   QSettings settings;
   restoreGeometry( settings.value( "/BetterAttributeTable/geometry" ).toByteArray() );
 
-  verticalHeader()->setDefaultSectionSize( 20 );
+  //verticalHeader()->setDefaultSectionSize( 20 );
   horizontalHeader()->setHighlightSections( false );
 
   mTableDelegate = new QgsAttributeTableDelegate( this );
@@ -61,30 +65,7 @@ QgsAttributeTableView::~QgsAttributeTableView()
 {
   delete mActionPopup;
 }
-#if 0
-void QgsAttributeTableView::setCanvasAndLayerCache( QgsMapCanvas *canvas, QgsVectorLayerCache *layerCache )
-{
-  QgsAttributeTableModel* oldModel = mMasterModel;
-  QgsAttributeTableFilterModel* filterModel = mFilterModel;
 
-  mMasterModel = new QgsAttributeTableModel( layerCache, this );
-
-  mLayerCache = layerCache;
-
-  mMasterModel->loadLayer();
-
-  mFilterModel = new QgsAttributeTableFilterModel( canvas, mMasterModel, mMasterModel );
-  setModel( mFilterModel );
-  delete mFeatureSelectionModel;
-  mFeatureSelectionModel = new QgsFeatureSelectionModel( mFilterModel, mFilterModel, new QgsVectorLayerSelectionManager( layerCache->layer(), mFilterModel ), mFilterModel );
-  connect( mFeatureSelectionModel, SIGNAL( requestRepaint( QModelIndexList ) ), this, SLOT( repaintRequested( QModelIndexList ) ) );
-  connect( mFeatureSelectionModel, SIGNAL( requestRepaint() ), this, SLOT( repaintRequested() ) );
-  setSelectionModel( mFeatureSelectionModel );
-
-  delete oldModel;
-  delete filterModel;
-}
-#endif
 bool QgsAttributeTableView::eventFilter( QObject *object, QEvent *event )
 {
   if ( object == verticalHeader()->viewport() )

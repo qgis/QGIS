@@ -25,8 +25,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from qgis.core import QGis, QgsProject, QgsCoordinateTransform, QgsFeature, QgsGeometry, QgsField
+from PyQt4.QtCore import QVariant
 from qgis.utils import iface
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -43,51 +43,41 @@ class ExportGeometryInfo(GeoAlgorithm):
 
     CALC_METHODS = ['Layer CRS', 'Project CRS', 'Ellipsoidal']
 
-    #==========================================================================
-    #def getIcon(self):
-    #   return QIcon(os.path.dirname(__file__) + "/icons/export_geometry.png")
-    #=========================================================================
-
     def defineCharacteristics(self):
         self.name = 'Export/Add geometry columns'
         self.group = 'Vector table tools'
 
-        self.addParameter(ParameterVector(self.INPUT, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterSelection(self.METHOD, 'Calculate using',
-                          self.CALC_METHODS, 0))
+        self.addParameter(ParameterVector(self.INPUT,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterSelection(self.METHOD,
+            self.tr('Calculate using'), self.CALC_METHODS, 0))
 
-        self.addOutput(OutputVector(self.OUTPUT, 'Output layer'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Added geom info')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.INPUT))
+            self.getParameterValue(self.INPUT))
         method = self.getParameterValue(self.METHOD)
 
         geometryType = layer.geometryType()
-
-        idx1 = -1
-        idx2 = -1
         fields = layer.pendingFields()
 
         if geometryType == QGis.Polygon:
-            (idx1, fields) = vector.findOrCreateField(layer, fields, 'area',
-                    21, 6)
-            (idx2, fields) = vector.findOrCreateField(layer, fields,
-                    'perimeter', 21, 6)
+            areaName = vector.createUniqueFieldName('area', fields)
+            fields.append(QgsField(areaName, QVariant.Double))
+            perimeterName = vector.createUniqueFieldName('perimeter', fields)
+            fields.append(QgsField(perimeterName, QVariant.Double))
         elif geometryType == QGis.Line:
-            (idx1, fields) = vector.findOrCreateField(layer, fields, 'length',
-                    21, 6)
-            idx2 = idx1
+            lengthName = vector.createUniqueFieldName('length', fields)
+            fields.append(QgsField(lengthName, QVariant.Double))
         else:
-            (idx1, fields) = vector.findOrCreateField(layer, fields, 'xcoord',
-                    21, 6)
-            (idx2, fields) = vector.findOrCreateField(layer, fields, 'ycoord',
-                    21, 6)
+            xName = vector.createUniqueFieldName('xcoord', fields)
+            fields.append(QgsField(xName, QVariant.Double))
+            yName = vector.createUniqueFieldName('ycoord', fields)
+            fields.append(QgsField(yName, QVariant.Double))
 
-        writer = self.getOutputFromName(
-                self.OUTPUT).getVectorWriter(fields.toList(),
-                        layer.dataProvider().geometryType(), layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
+                    fields.toList(), layer.dataProvider().geometryType(), layer.crs())
 
         ellips = None
         crs = None
@@ -126,9 +116,9 @@ class ExportGeometryInfo(GeoAlgorithm):
 
             outFeat.setGeometry(inGeom)
             attrs = f.attributes()
-            attrs.insert(idx1, attr1)
+            attrs.append(attr1)
             if attr2 is not None:
-                attrs.insert(idx2, attr2)
+                attrs.append(attr2)
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
 

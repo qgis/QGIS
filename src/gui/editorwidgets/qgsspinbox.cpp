@@ -63,6 +63,12 @@ void QgsSpinBox::changeEvent( QEvent *event )
   mClearButton->setVisible( shouldShowClearForValue( value() ) );
 }
 
+void QgsSpinBox::paintEvent( QPaintEvent *event )
+{
+  mClearButton->setVisible( shouldShowClearForValue( value() ) );
+  QSpinBox::paintEvent( event );
+}
+
 void QgsSpinBox::changed( const int& value )
 {
   mClearButton->setVisible( shouldShowClearForValue( value ) );

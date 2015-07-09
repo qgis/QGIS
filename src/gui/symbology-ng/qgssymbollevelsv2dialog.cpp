@@ -29,7 +29,7 @@ class SpinBoxDelegate : public QItemDelegate
   public:
     SpinBoxDelegate( QObject *parent = 0 ) : QItemDelegate( parent ) {}
 
-    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem & /*option*/, const QModelIndex &/*index*/ ) const
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem & /*option*/, const QModelIndex &/*index*/ ) const override
     {
       QSpinBox *editor = new QSpinBox( parent );
       editor->setMinimum( 0 );
@@ -37,14 +37,14 @@ class SpinBoxDelegate : public QItemDelegate
       return editor;
     }
 
-    void setEditorData( QWidget *editor, const QModelIndex &index ) const
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const override
     {
       int value = index.model()->data( index, Qt::EditRole ).toInt();
       QSpinBox *spinBox = static_cast<QSpinBox*>( editor );
       spinBox->setValue( value );
     }
 
-    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
+    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override
     {
       QSpinBox *spinBox = static_cast<QSpinBox*>( editor );
       spinBox->interpretText();
@@ -53,7 +53,7 @@ class SpinBoxDelegate : public QItemDelegate
       model->setData( index, value, Qt::EditRole );
     }
 
-    void updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex & /*index*/ ) const
+    void updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex & /*index*/ ) const override
     {
       editor->setGeometry( option.rect );
     }

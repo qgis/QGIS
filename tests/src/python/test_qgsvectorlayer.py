@@ -12,8 +12,9 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os
 import qgis
+import os
+
 from PyQt4.QtCore import QVariant, QObject, SIGNAL
 from PyQt4.QtGui import QPainter
 
@@ -33,8 +34,7 @@ from utilities import (unitTestDataPath,
                        getQgisTestApp,
                        TestCase,
                        unittest,
-                       #expectedFailure
-                      )
+                       )
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
 def createEmptyLayer():
@@ -179,6 +179,7 @@ class TestQgsVectorLayer(TestCase):
 
             # check feature at id
             f2 = layer.getFeatures(QgsFeatureRequest(fid)).next()
+            assert f2.id() == fid
 
         checkBefore()
 
@@ -255,7 +256,6 @@ class TestQgsVectorLayer(TestCase):
     def test_ChangeAttribute(self):
         layer = createLayerWithOnePoint()
         fid = 1
-        f = QgsFeature()
 
         def checkAfter():
             # check select+nextFeature
@@ -831,19 +831,20 @@ class TestQgsVectorLayer(TestCase):
 
         f = QgsFeature()
         fi = layer.getFeatures()
-        assert fi.nextFeature(f) == True
-        assert f.isValid() == True
+        assert fi.nextFeature(f)
+        assert f.isValid()
         assert f.id() == 1
         assert f.geometry().asPoint() == QgsPoint(100,200)
         assert f["fldtxt"] == "test"
         assert f["fldint"] == 123
 
-        assert fi.nextFeature(f) == False
+        assert not fi.nextFeature(f)
 
     def test_join(self):
 
         joinLayer = createJoinLayer()
-        QgsMapLayerRegistry.instance().addMapLayers([joinLayer])
+        joinLayer2 = createJoinLayer()
+        QgsMapLayerRegistry.instance().addMapLayers([joinLayer,joinLayer2])
 
         layer = createLayerWithOnePoint()
 
@@ -855,10 +856,21 @@ class TestQgsVectorLayer(TestCase):
 
         layer.addJoin(join)
 
+        join2 = QgsVectorJoinInfo()
+        join2.targetFieldName = "fldint"
+        join2.joinLayerId = joinLayer2.id()
+        join2.joinFieldName = "y"
+        join2.memoryCache = True
+        join2.prefix = "custom-prefix_"
+
+        layer.addJoin(join2)
+
         flds = layer.pendingFields()
-        assert len(flds) == 4
+        assert len(flds) == 6
         assert flds[2].name() == "joinlayer_x"
         assert flds[3].name() == "joinlayer_z"
+        assert flds[4].name() == "custom-prefix_x"
+        assert flds[5].name() == "custom-prefix_z"
         assert flds.fieldOrigin(0) == QgsFields.OriginProvider
         assert flds.fieldOrigin(2) == QgsFields.OriginJoin
         assert flds.fieldOrigin(3) == QgsFields.OriginJoin
@@ -868,17 +880,17 @@ class TestQgsVectorLayer(TestCase):
 
         f = QgsFeature()
         fi = layer.getFeatures()
-        assert fi.nextFeature(f) == True
+        assert fi.nextFeature(f)
         attrs = f.attributes()
-        assert len(attrs) == 4
+        assert len(attrs) == 6
         assert attrs[0] == "test"
         assert attrs[1] == 123
         assert attrs[2] == "foo"
         assert attrs[3] == 321
-        assert fi.nextFeature(f) == False
+        assert not fi.nextFeature(f)
 
         f2 = layer.getFeatures(QgsFeatureRequest( f.id() )).next()
-        assert len(f2.attributes()) == 4
+        assert len(f2.attributes()) == 6
         assert f2[2] == "foo"
         assert f2[3] == 321
 
@@ -942,6 +954,24 @@ class TestQgsVectorLayer(TestCase):
         assert self.blendModeTest == QPainter.CompositionMode_Screen
         assert layer.featureBlendMode() == QPainter.CompositionMode_Screen
 
+    def test_ExpressionField( self ):
+        layer = createLayerWithOnePoint()
+
+        cnt = layer.pendingFields().count()
+
+        idx = layer.addExpressionField( '5', QgsField( 'test', QVariant.LongLong ) )
+
+        assert( layer.getFeatures().next()[idx] == 5 )
+        assert( layer.pendingFields().count() == cnt + 1 )
+
+        layer.updateExpressionField( idx, '9' )
+
+        assert( layer.getFeatures().next()[idx] == 9 )
+
+        layer.removeExpressionField( idx )
+
+        assert( layer.pendingFields().count() == cnt )
+
     def onLayerTransparencyChanged( self, tr ):
         self.transparencyTest = tr
 
@@ -957,6 +987,7 @@ class TestQgsVectorLayer(TestCase):
 
     def onRendererChanged( self ):
         self.rendererChanged = True
+
     def test_setRendererV2( self ):
         layer = createLayerWithOnePoint()
 
@@ -966,7 +997,7 @@ class TestQgsVectorLayer(TestCase):
 
         r = QgsSingleSymbolRendererV2( QgsSymbolV2.defaultSymbol( QGis.Point ) )
         layer.setRendererV2( r )
-        assert self.rendererChanged == True
+        assert self.rendererChanged
         assert layer.rendererV2() == r
 
 # TODO:

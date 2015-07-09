@@ -32,13 +32,13 @@ class CORE_EXPORT QgsProjectVersion
 
   public:
 
-    QgsProjectVersion() {};
-    ~QgsProjectVersion() {};
+    QgsProjectVersion() : mMajor( 0 ), mMinor( 0 ), mSub( 0 ) {}
+    ~QgsProjectVersion() {}
     QgsProjectVersion( int major, int minor, int sub, QString name = "" );
     QgsProjectVersion( QString string );
-    int majorVersion() { return mMajor;};
-    int minorVersion() { return mMinor;};
-    int subVersion()   { return mSub;};
+    int majorVersion() { return mMajor;}
+    int minorVersion() { return mMinor;}
+    int subVersion()   { return mSub;}
     QString text();
 
     /*! Boolean equal operator

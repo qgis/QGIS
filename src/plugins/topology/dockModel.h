@@ -41,36 +41,36 @@ class DockModel: public QAbstractTableModel
      * @param orientation horizontal or vertical orientation
      * @param role data role
      */
-    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
     /**
      * Returns data on the given index
      * @param index model index
      * @param role data role
      */
-    virtual QVariant data( const QModelIndex &index, int role ) const;
+    virtual QVariant data( const QModelIndex &index, int role ) const override;
     /**
      * Updates data on given index
      * @param index model index
      * @param value new data value
      * @param role data role
      */
-    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
+    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
     /**
      * Returns item flags for the index
      * @param index model index
      */
-    Qt::ItemFlags flags( const QModelIndex &index ) const;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
     /**
      * Returns the number of rows
      * @param parent parent index
      */
-    int rowCount( const QModelIndex &parent ) const;
+    int rowCount( const QModelIndex &parent ) const override;
     /**
      * Returns the number of columns
      * @param parent parent index
      */
-    int columnCount( const QModelIndex &parent ) const;
+    int columnCount( const QModelIndex &parent ) const override;
 
     /**
      * Reloads the model data between indices

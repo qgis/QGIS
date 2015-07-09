@@ -25,19 +25,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import os
-
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-
-from qgis.core import *
-
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
-from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 
-from processing.tools.system import *
+from processing.tools.system import isWindows
 
 from processing.algs.gdal.OgrAlgorithm import OgrAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -53,20 +45,20 @@ class Ogr2OgrClip(OgrAlgorithm):
         self.name = 'Clip vectors by polygon'
         self.group = '[OGR] Geoprocessing'
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_ANY], False))
-        self.addParameter(ParameterVector(self.CLIP_LAYER, 'Clip layer',
-                          [ParameterVector.VECTOR_TYPE_POLYGON], False))
-        self.addParameter(ParameterString(self.OPTIONS, 'Additional creation Options',
-                          '', optional=True))
+        self.addParameter(ParameterVector(self.INPUT_LAYER,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
+        self.addParameter(ParameterVector(self.CLIP_LAYER,
+            self.tr('Clip layer'), [ParameterVector.VECTOR_TYPE_POLYGON], False))
+        self.addParameter(ParameterString(self.OPTIONS,
+            self.tr('Additional creation options'), '', optional=True))
 
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, 'Output layer'))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Clipped (polygon)')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
-        ogrLayer = self.ogrConnectionString(inLayer)
+        ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
         clipLayer = self.getParameterValue(self.CLIP_LAYER)
-        ogrClipLayer = self.ogrConnectionString(clipLayer)
+        ogrClipLayer = self.ogrConnectionString(clipLayer)[1:-1]
 
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         outFile = output.value
@@ -77,11 +69,14 @@ class Ogr2OgrClip(OgrAlgorithm):
         arguments = []
         arguments.append('-clipsrc')
         arguments.append(ogrClipLayer)
+        arguments.append("-clipsrclayer")
+        arguments.append(self.ogrLayerName(clipLayer))
         if len(options) > 0:
             arguments.append(options)
 
         arguments.append(output)
         arguments.append(ogrLayer)
+        arguments.append(self.ogrLayerName(inLayer))
 
         commands = []
         if isWindows():
@@ -90,4 +85,7 @@ class Ogr2OgrClip(OgrAlgorithm):
         else:
             commands = ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]
 
-        GdalUtils.runGdal(commands, progress)
+        return commands
+    
+    def commandName(self):
+        return "ogr2ogr"

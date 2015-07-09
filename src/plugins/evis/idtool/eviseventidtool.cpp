@@ -42,6 +42,7 @@
 */
 eVisEventIdTool::eVisEventIdTool( QgsMapCanvas* theCanvas )
     : QgsMapTool( theCanvas )
+    , mBrowser( NULL )
 {
   //set cursor
   QPixmap myIdentifyQPixmap = QPixmap(( const char ** ) identify_cursor );

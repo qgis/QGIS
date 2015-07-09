@@ -87,13 +87,15 @@ QgsRasterBlock* QgsSingleBandColorDataRenderer::block( int bandNo, QgsRectangle 
     return outputBlock;
   }
 
+  // make sure input is also premultiplied!
+  inputBlock->convert( QGis::ARGB32_Premultiplied );
+
+  QRgb* inputBits = ( QRgb* )inputBlock->bits();
+  QRgb* outputBits = ( QRgb* )outputBlock->bits();
   for ( qgssize i = 0; i < ( qgssize )width*height; i++ )
   {
-    QRgb pixelColor;
-    QRgb c = inputBlock->color( i );
-    double alpha = qAlpha( c );
-    pixelColor = qRgba( mOpacity * qRed( c ), mOpacity * qGreen( c ), mOpacity * qBlue( c ), mOpacity * alpha );
-    outputBlock->setColor( i,  pixelColor );
+    QRgb c = inputBits[i];
+    outputBits[i] = qRgba( mOpacity * qRed( c ), mOpacity * qGreen( c ), mOpacity * qBlue( c ), mOpacity * qAlpha( c ) );
   }
 
   delete inputBlock;

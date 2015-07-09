@@ -27,7 +27,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef WIN32
+#ifdef Q_OS_WIN
 // Open files in binary mode
 #include <fcntl.h> /*  _O_BINARY */
 #ifdef MSVC
@@ -61,7 +61,7 @@ typedef SInt32 SRefCon;
 #include "qgslogger.h"
 
 
-/** print usage text
+/** Print usage text
  */
 void usage( std::string const & appName )
 {
@@ -112,13 +112,13 @@ static QStringList myFileList;
 
 int main( int argc, char *argv[] )
 {
-#ifdef WIN32  // Windows
+#ifdef Q_OS_WIN  // Windows
 #ifdef _MSC_VER
   _set_fmode( _O_BINARY );
 #else //MinGW
   _fmode = _O_BINARY;
 #endif  // _MSC_VER
-#endif  // WIN32
+#endif  // Q_OS_WIN
 
   /////////////////////////////////////////////////////////////////
   // Command line options 'behaviour' flag setup
@@ -152,7 +152,7 @@ int main( int argc, char *argv[] )
   // user settings (~/.qgis) and it will be used for QSettings INI file
   QString configpath;
 
-#ifndef WIN32
+#ifndef Q_OS_WIN
   ////////////////////////////////////////////////////////////////
   // USe the GNU Getopts utility to parse cli arguments
   // Invokes ctor `GetOpt (int argc, char **argv,  char *optstring);'
@@ -349,7 +349,7 @@ int main( int argc, char *argv[] )
       myFileList.append( QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[i] ) ).absoluteFilePath() ) );
     }
   }
-#endif //WIN32
+#endif // Q_OS_WIN
 
   /////////////////////////////////////////////////////////////////////
   // Now we have the handlers for the different behaviours...
@@ -407,6 +407,24 @@ int main( int argc, char *argv[] )
   {
     setenv( "GDAL_DRIVER_PATH", gdalPlugins.toUtf8(), 1 );
   }
+
+  // Point GDAL_DATA at any GDAL share directory embedded in the app bundle
+  if ( !getenv( "GDAL_DATA" ) )
+  {
+    QStringList gdalShares;
+    QString appResources( QDir::cleanPath( QgsApplication::pkgDataPath() ) );
+    gdalShares << QCoreApplication::applicationDirPath().append( "/share/gdal" )
+    << appResources.append( "/share/gdal" )
+    << appResources.append( "/gdal" );
+    Q_FOREACH( const QString& gdalShare, gdalShares )
+    {
+      if ( QFile::exists( gdalShare ) )
+      {
+        setenv( "GDAL_DATA", gdalShare.toUtf8().constData(), 1 );
+        break;
+      }
+    }
+  }
 #endif
 
   QSettings mySettings;
@@ -415,7 +433,7 @@ int main( int argc, char *argv[] )
   // we need to be sure we can find the qt image
   // plugins. In mac be sure to look in the
   // application bundle...
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
   QCoreApplication::addLibraryPath( QApplication::applicationDirPath()
                                     + QDir::separator() + "qtplugins" );
 #endif

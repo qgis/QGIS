@@ -29,14 +29,13 @@ __revision__ = '$Format:%H$'
 # setLastUsedDir( QString *file_or_dir path )
 # -------------------------------------------------
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import QObject, QSettings, QFileInfo, SIGNAL, QDir, QCoreApplication
+from PyQt4.QtGui import QFileDialog
 
-from qgis.core import *
-from qgis.gui import *
+from qgis.core import QgsApplication, QgsMapLayerRegistry, QgsRectangle, QgsProviderRegistry, QgsLogger
+from qgis.gui import QgsEncodingFileDialog
 
 from osgeo import gdal, ogr, osr
-from osgeo.gdalconst import *
 
 import os
 # to know the os
@@ -135,7 +134,7 @@ class LayerRegistry(QObject):
 
     @staticmethod
     def instance():
-      if LayerRegistry._instance == None:
+      if LayerRegistry._instance is None:
         LayerRegistry._instance = LayerRegistry()
       return LayerRegistry._instance
 
@@ -147,7 +146,7 @@ class LayerRegistry(QObject):
 
     def __init__(self):
       QObject.__init__(self)
-      if LayerRegistry._instance != None:
+      if LayerRegistry._instance is not None:
         return
 
       LayerRegistry.layers = self.getAllLayers()
@@ -222,18 +221,18 @@ def getRasterFiles(path, recursive=False):
 
   return rasters
 
-def fillRasterOutputFormat(aFilter = None, filename = None):
+def fillRasterOutputFormat(aFilter=None, filename=None):
   shortName = ''
 
-  if aFilter != None:
+  if aFilter is not None:
     supportedRasters = GdalConfig.getSupportedRasters()
     filterName = re.sub('^.*\] ', '', FileFilter.getFilterName( aFilter ))
-    if supportedRasters.has_key( filterName ):
+    if filterName is supportedRasters:
       return supportedRasters[ filterName ][ "SHORTNAME" ]
 
     shortName = GdalConfig.SupportedRasters.long2ShortName(filterName)
 
-  if shortName == '' and filename != None:
+  if shortName == '' and filename is not None:
     shortName = GdalConfig.SupportedRasters.filename2ShortName(filename)
 
   if shortName == '':
@@ -241,19 +240,19 @@ def fillRasterOutputFormat(aFilter = None, filename = None):
 
   return shortName
 
-def fillVectorOutputFormat(aFilter = None, filename = None):
+def fillVectorOutputFormat(aFilter=None, filename=None):
   shortName = ''
 
-  if aFilter != None:
+  if aFilter is not None:
     supportedVectors = GdalConfig.getSupportedVectors()
     filterName = re.sub('^.*\] ', '', FileFilter.getFilterName( aFilter ))
-    if supportedVectors.has_key( filterName ):
+    if filterName in supportedVectors:
       return supportedVectors[ filterName ][ "SHORTNAME" ]
 
-    pass #shortName = GdalConfig.SupportedVectors.long2ShortName(filterName)
+    pass  # shortName = GdalConfig.SupportedVectors.long2ShortName(filterName)
 
-  if shortName == '' and filename != None:
-    pass #shortName = GdalConfig.SupportedVectors.filename2ShortName(filename)
+  if shortName == '' and filename is not None:
+    pass  # shortName = GdalConfig.SupportedVectors.filename2ShortName(filename)
 
   if shortName == '':
     shortName = "ESRI Shapefile"
@@ -267,7 +266,7 @@ class UnsupportedOGRFormat(Exception):
 
 def getVectorFields(vectorFile):
     hds = ogr.Open( unicode(vectorFile).encode('utf8') )
-    if hds == None:
+    if hds is None:
       raise UnsupportedOGRFormat()
 
     fields = []
@@ -339,7 +338,7 @@ def getRasterExtent(parent, fileName):
 # so sometimes the dialog excedes the screen width
 class FileDialog:
   @classmethod
-  def getDialog(self, parent = None, caption = '', acceptMode = QFileDialog.AcceptOpen, fileMode = QFileDialog.ExistingFile, filter = '', selectedFilter = None, useEncoding = False):
+  def getDialog(self, parent=None, caption='', acceptMode=QFileDialog.AcceptOpen, fileMode=QFileDialog.ExistingFile, filter='', selectedFilter=None, useEncoding=False):
     if useEncoding:
       dialog = QgsEncodingFileDialog(parent, caption, getLastUsedDir(), filter, getLastUsedEncoding())
     else:
@@ -374,10 +373,10 @@ class FileDialog:
               firstExt = None
               break
 
-            if firstExt == None:
+            if firstExt is None:
               firstExt = ext
 
-          if firstExt != None:
+          if firstExt is not None:
             if firstExt.startswith('*'):
               files += firstExt[1:]
 
@@ -390,19 +389,19 @@ class FileDialog:
     return files
 
   @classmethod
-  def getOpenFileNames(self, parent = None, caption = '', filter = '', selectedFilter = None, useEncoding = False):
+  def getOpenFileNames(self, parent=None, caption='', filter='', selectedFilter=None, useEncoding=False):
     return self.getDialog(parent, caption, QFileDialog.AcceptOpen, QFileDialog.ExistingFiles, filter, selectedFilter, useEncoding)
 
   @classmethod
-  def getOpenFileName(self, parent = None, caption = '', filter = '', selectedFilter = None, useEncoding = False):
+  def getOpenFileName(self, parent=None, caption='', filter='', selectedFilter=None, useEncoding=False):
     return self.getDialog(parent, caption, QFileDialog.AcceptOpen, QFileDialog.ExistingFile, filter, selectedFilter, useEncoding)
 
   @classmethod
-  def getSaveFileName(self, parent = None, caption = '', filter = '', selectedFilter = None, useEncoding = False):
+  def getSaveFileName(self, parent=None, caption='', filter='', selectedFilter=None, useEncoding=False):
     return self.getDialog(parent, caption, QFileDialog.AcceptSave, QFileDialog.AnyFile, filter, selectedFilter, useEncoding)
 
   @classmethod
-  def getExistingDirectory(self, parent = None, caption = '', useEncoding = False):
+  def getExistingDirectory(self, parent=None, caption='', useEncoding=False):
     return self.getDialog(parent, caption, QFileDialog.AcceptOpen, QFileDialog.DirectoryOnly, '', None, useEncoding)
 
 class FileFilter:
@@ -443,7 +442,7 @@ class FileFilter:
     for f in available:
       if "*.tif" in f:
         filters.append( f )
-	break
+        break
 
     for f in available:
       if "*.tif" in f or "*.zip" in f or "(*)" in f:
@@ -528,7 +527,7 @@ class GdalConfig:
   # retrieve the supported rasters info
   @classmethod
   def getSupportedRasters(self):
-    if self.supportedRasters != None:
+    if self.supportedRasters is not None:
       return self.supportedRasters
 
     # first get the GDAL driver manager
@@ -542,7 +541,7 @@ class GdalConfig:
     for i in range(gdal.GetDriverCount()):
       driver = gdal.GetDriver(i)
 
-      if driver == None:
+      if driver is None:
         QgsLogger.warning("unable to get driver " + str(i))
         continue
 
@@ -557,7 +556,7 @@ class GdalConfig:
       glob = []
 
       metadata = driver.GetMetadata()
-      if metadata.has_key(gdal.DMD_EXTENSION):
+      if gdal.DMD_EXTENSION in metadata:
         extensions = str(metadata[gdal.DMD_EXTENSION])
 
       if longName != '':
@@ -569,8 +568,8 @@ class GdalConfig:
           glob.append(string.split("*." + string.replace(extensions,"/", " *."), sep=(" ")))
 
           # Add only the first JP2 driver found to the filter list (it's the one GDAL uses)
-          if description == "JPEG2000" or description.startswith("JP2"): # JP2ECW, JP2KAK, JP2MrSID
-            if jp2Driver != None:
+          if description == "JPEG2000" or description.startswith("JP2"):  # JP2ECW, JP2KAK, JP2MrSID
+            if jp2Driver is not None:
               continue               # skip if already found a JP2 driver
             jp2Driver = driver   # first JP2 driver found
             glob.append("*.j2k")           # add alternate extension
@@ -601,7 +600,7 @@ class GdalConfig:
   # retrieve the supported vectors info
   @classmethod
   def getSupportedVectors(self):
-    if self.supportedVectors != None:
+    if self.supportedVectors is not None:
       return self.supportedVectors
 
     # first get the OGR driver manager
@@ -613,7 +612,7 @@ class GdalConfig:
     for i in range(ogr.GetDriverCount()):
       driver = ogr.GetDriver(i)
 
-      if driver == None:
+      if driver is None:
         QgsLogger.warning("unable to get driver " + str(i))
         continue
 
@@ -622,7 +621,7 @@ class GdalConfig:
       glob = []
 
       if driverName.startswith( "AVCBin" ):
-        pass #myDirectoryDrivers += "Arc/Info Binary Coverage,AVCBin"
+        pass  # myDirectoryDrivers += "Arc/Info Binary Coverage,AVCBin"
       elif driverName.startswith( "AVCE00" ):
         longName = "Arc/Info ASCII Coverage"
         glob.append("*.e00")
@@ -633,16 +632,16 @@ class GdalConfig:
         longName = "Comma Separated Value"
         glob.append("*.csv")
       elif driverName.startswith( "DODS" ):
-        pass #myProtocolDrivers += "DODS/OPeNDAP,DODS"
+        pass  # myProtocolDrivers += "DODS/OPeNDAP,DODS"
       elif driverName.startswith( "PGeo" ):
-        pass #myDatabaseDrivers += "ESRI Personal GeoDatabase,PGeo"
+        pass  # myDatabaseDrivers += "ESRI Personal GeoDatabase,PGeo"
 
         # on Windows add a pair to the dict for this driver
         if platform.system() == "Windows":
           longName = "ESRI Personal GeoDatabase"
           glob.append("*.mdb")
       elif driverName.startswith( "SDE" ):
-        pass #myDatabaseDrivers += "ESRI ArcSDE,SDE"
+        pass  # myDatabaseDrivers += "ESRI ArcSDE,SDE"
       elif driverName.startswith( "ESRI" ):
         longName = "ESRI Shapefiles"
         glob.append("*.shp")
@@ -650,7 +649,7 @@ class GdalConfig:
         longName = "FMEObjects Gateway"
         glob.append("*.fdd")
       elif driverName.startswith( "GeoJSON" ):
-        pass #myProtocolDrivers += "GeoJSON,GeoJSON"
+        pass  # myProtocolDrivers += "GeoJSON,GeoJSON"
         longName = "GeoJSON"
         glob.append("*.geojson")
       elif driverName.startswith( "GeoRSS" ):
@@ -666,9 +665,9 @@ class GdalConfig:
         longName = "GPX"
         glob.append("*.gpx")
       elif driverName.startswith( "GRASS" ):
-        pass #myDirectoryDrivers += "Grass Vector,GRASS"
+        pass  # myDirectoryDrivers += "Grass Vector,GRASS"
       elif driverName.startswith( "IDB" ):
-        pass #myDatabaseDrivers += "Informix DataBlade,IDB"
+        pass  # myDatabaseDrivers += "Informix DataBlade,IDB"
       elif driverName.startswith( "Interlis 1" ):
         longName = "INTERLIS 1"
         glob.append("*.itf")
@@ -680,7 +679,7 @@ class GdalConfig:
         glob.append("*.xml")
         glob.append("*.ili")
       elif driverName.startswith( "INGRES" ):
-        pass #myDatabaseDrivers += "INGRES,INGRES"
+        pass  # myDatabaseDrivers += "INGRES,INGRES"
       elif driverName.startswith( "KML" ):
         longName = "KML"
         glob.append("*.kml")
@@ -692,15 +691,15 @@ class GdalConfig:
         longName = "Microstation DGN"
         glob.append("*.dgn")
       elif driverName.startswith( "MySQL" ):
-        pass #myDatabaseDrivers += "MySQL,MySQL"
+        pass  # myDatabaseDrivers += "MySQL,MySQL"
       elif driverName.startswith( "OCI" ):
-        pass #myDatabaseDrivers += "Oracle Spatial,OCI"
+        pass  # myDatabaseDrivers += "Oracle Spatial,OCI"
       elif driverName.startswith( "ODBC" ):
-        pass #myDatabaseDrivers += "ODBC,ODBC"
+        pass  # myDatabaseDrivers += "ODBC,ODBC"
       elif driverName.startswith( "OGDI" ):
-        pass #myDatabaseDrivers += "OGDI Vectors,OGDI"
+        pass  # myDatabaseDrivers += "OGDI Vectors,OGDI"
       elif driverName.startswith( "PostgreSQL" ):
-        pass #myDatabaseDrivers += "PostgreSQL,PostgreSQL"
+        pass  # myDatabaseDrivers += "PostgreSQL,PostgreSQL"
       elif driverName.startswith( "S57" ):
         longName = "S-57 Base file"
         glob.append("*.000")
@@ -711,9 +710,9 @@ class GdalConfig:
         longName = "SQLite"
         glob.append("*.sqlite")
       elif driverName.startswith( "UK .NTF" ):
-        pass #myDirectoryDrivers += "UK. NTF,UK. NTF"
+        pass  # myDirectoryDrivers += "UK. NTF,UK. NTF"
       elif driverName.startswith( "TIGER" ):
-        pass #myDirectoryDrivers += "U.S. Census TIGER/Line,TIGER"
+        pass  # myDirectoryDrivers += "U.S. Census TIGER/Line,TIGER"
       elif driverName.startswith( "VRT" ):
         longName = "VRT - Virtual Datasource "
         glob.append("*.vrt")
@@ -742,7 +741,7 @@ class GdalConfig:
       if longName == '':
         return ''
 
-      if self.dict_long2shortName.has_key(longName):
+      if longName in self.dict_long2shortName:
         return self.dict_long2shortName[longName]
 
       # first get the GDAL driver manager
@@ -754,7 +753,7 @@ class GdalConfig:
       # for each loaded GDAL driver
       for i in range(gdal.GetDriverCount()):
         driver = gdal.GetDriver(i)
-        if driver == None:
+        if driver is None:
           continue
 
         # if this is the driver we searched for then return its short name
@@ -838,19 +837,19 @@ def setProcessEnvironment(process):
     sep = os.pathsep
 
     for name, val in envvar_list.iteritems():
-      if val == None or val == "":
+      if val is None or val == "":
         continue
 
       envval = os.getenv(name)
-      if envval == None or envval == "":
+      if envval is None or envval == "":
         envval = str(val)
       elif (platform.system() == "Windows" and val.lower() not in envval.lower().split( sep )) or \
-          (platform.system() != "Windows" and val not in envval.split( sep )):
+           (platform.system() != "Windows" and val not in envval.split( sep )):
         envval += "%s%s" % (sep, str(val))
       else:
         envval = None
 
-      if envval != None:
+      if envval is not None:
         os.putenv( name, envval )
 
 def setMacOSXDefaultEnvironment():
@@ -898,4 +897,3 @@ def setMacOSXDefaultEnvironment():
 # setup the MacOSX path to both GDAL executables and python modules
 if platform.system() == "Darwin":
   setMacOSXDefaultEnvironment()
-

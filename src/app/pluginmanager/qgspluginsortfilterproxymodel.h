@@ -67,7 +67,7 @@ class QgsPluginSortFilterProxyModel : public QSortFilterProxyModel
     bool filterByPhrase( QModelIndex &index ) const;
 
     //! The main filter method
-    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
+    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
   private:
     QStringList mAcceptedStatuses;

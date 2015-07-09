@@ -32,7 +32,6 @@
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgswmsconnection.h"
-#include "qgswmsprovider.h"
 #include "qgswmssourceselect.h"
 #include "qgswmtsdimensions.h"
 #include "qgsnetworkaccessmanager.h"
@@ -475,6 +474,8 @@ void QgsWMSSourceSelect::on_btnConnect_clicked()
     return;
   }
 
+  mFeatureCount->setEnabled( caps.identifyCapabilities() != QgsRasterInterface::NoCapabilities );
+
   populateLayerList( caps );
 }
 
@@ -523,7 +524,8 @@ void QgsWMSSourceSelect::addClicked()
       }
     }
 
-    Q_ASSERT( layer );
+    if ( !layer )
+      return;
 
     if ( !layer->dimensions.isEmpty() )
     {
@@ -564,6 +566,8 @@ void QgsWMSSourceSelect::addClicked()
   {
     uri.setParam( "featureCount", mFeatureCount->text() );
   }
+
+  uri.setParam( "contextualWMSLegend", mContextualLegendCheckbox->isChecked() ? "1" : "0" );
 
   emit addRasterLayer( uri.encodedUri(),
                        leLayerName->text().isEmpty() ? titles.join( "/" ) : leLayerName->text(),

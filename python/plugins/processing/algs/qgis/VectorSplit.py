@@ -25,14 +25,14 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
+import os
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputDirectory
 from processing.tools import dataobjects, vector
-
+from processing.tools.system import mkdir
 
 class VectorSplit(GeoAlgorithm):
 
@@ -44,41 +44,35 @@ class VectorSplit(GeoAlgorithm):
         self.name = 'Split vector layer'
         self.group = 'Vector general tools'
         self.addParameter(ParameterVector(self.INPUT,
-            'Input layer', [ParameterVector.VECTOR_TYPE_ANY]))
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterTableField(self.FIELD,
-            'Unique ID field', self.INPUT))
+            self.tr('Unique ID field'), self.INPUT))
 
-        self.addOutput(OutputDirectory(self.OUTPUT, 'Output directory'))
+        self.addOutput(OutputDirectory(self.OUTPUT, self.tr('Output directory')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
         fieldName = self.getParameterValue(self.FIELD)
-
         directory = self.getOutputValue(self.OUTPUT)
 
-        if directory.find('\\') != -1:
-            directory.replace('\\', '/')
-
-        if not directory.endswith("/"):
-            directory += '/'
+        mkdir(directory)
 
         fieldIndex = layer.fieldNameIndex(fieldName)
         uniqueValues = vector.uniqueValues(layer, fieldIndex)
-        baseName = '{0}{1}_{2}'.format(directory, layer.name(), fieldName)
+        baseName = os.path.join(directory, '{0}_{1}'.format(layer.name(), fieldName))
 
         fields = layer.pendingFields()
         crs = layer.dataProvider().crs()
         geomType = layer.wkbType()
 
         total = 100.0 / len(uniqueValues)
-        features = vector.features(layer)
 
         for count, i in enumerate(uniqueValues):
-            fName = '{0}_{1}.shp'.format(baseName, unicode(i).strip())
+            fName = u'{0}_{1}.shp'.format(baseName, unicode(i).strip())
 
             writer = vector.VectorWriter(fName, None, fields, geomType, crs)
-            for f in features:
+            for f in vector.features(layer):
                 if f[fieldName] == i:
                     writer.addFeature(f)
             del writer

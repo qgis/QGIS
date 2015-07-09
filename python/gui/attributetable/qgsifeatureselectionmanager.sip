@@ -25,7 +25,7 @@ class QgsIFeatureSelectionManager : QObject
 #include <qgsifeatureselectionmanager.h>
 %End
   public:
-    QgsIFeatureSelectionManager( QObject* parent );
+    QgsIFeatureSelectionManager( QObject* parent /TransferThis/ );
 
     /**
      * The number of features that are selected in this layer

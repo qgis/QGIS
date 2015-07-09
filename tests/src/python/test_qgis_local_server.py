@@ -21,9 +21,12 @@ __revision__ = '$Format:%H$'
 import os
 import sys
 import datetime
-import urllib2
 import StringIO
 import tempfile
+
+if os.name == 'nt':
+	print "TestQgisLocalServer currently doesn't support windows"
+	sys.exit(0)
 
 from qgis.core import (
     QgsRectangle,
@@ -31,19 +34,12 @@ from qgis.core import (
     QgsRenderChecker
 )
 
-from qgis_local_server import (
-    QgisLocalServer,
-    FcgiServerProcess,
-    WebServerProcess,
-    getLocalServer
-)
+from qgis_local_server import getLocalServer
 
 from utilities import (
     TestCase,
     getQgisTestApp,
     unittest,
-    expectedFailure,
-    unitTestDataPath,
     openInBrowserTab
 )
 
@@ -125,7 +121,7 @@ class TestQgisLocalServer(TestCase):
         # chk.setMapRenderer(None)
         res = chk.compareImages(test_name, 0, str(img_path))
         if QGIS_TEST_REPORT and not res:  # don't report ok checks
-            TESTREPORTS[test_name] = str(chk.report().toLocal8Bit())
+            TESTREPORTS[test_name] = chk.report()
         msg = '\nRender check failed for "{0}"'.format(test_name)
         assert res, msg
 

@@ -23,10 +23,10 @@
 #include "qgscomposermapwidget.h"
 #include "qgscomposeritemwidget.h"
 #include "qgscomposition.h"
+#include "qgsmaplayerstylemanager.h"
 #include "qgsmaprenderer.h"
 #include "qgsstylev2.h"
 #include "qgssymbolv2.h"
-//#include "qgssymbolv2propertiesdialog.h"
 #include "qgssymbolv2selectordialog.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgsvectorlayer.h"
@@ -38,15 +38,15 @@
 #include "qgsgenericprojectionselector.h"
 #include "qgsproject.h"
 #include "qgsvisibilitypresets.h"
-#include <QColorDialog>
-#include <QFontDialog>
+#include "qgisgui.h"
+
 #include <QMessageBox>
 
-QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QgsComposerItemBaseWidget( 0, composerMap ), mComposerMap( composerMap )
+QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap )
+    : QgsComposerItemBaseWidget( 0, composerMap )
+    , mComposerMap( composerMap )
 {
   setupUi( this );
-
-  mLabel->setText( tr( "Map %1" ).arg( composerMap->id() ) );
 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, composerMap );
@@ -132,6 +132,8 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QgsCo
 
   if ( composerMap )
   {
+    mLabel->setText( tr( "Map %1" ).arg( composerMap->id() ) );
+
     connect( composerMap, SIGNAL( itemChanged() ), this, SLOT( setGuiElementValues() ) );
 
     QgsAtlasComposition* atlas = atlasComposition();
@@ -272,14 +274,14 @@ void QgsComposerMapWidget::aboutToShowVisibilityPresetsMenu()
   if ( !menu )
     return;
 
-  QgsVisibilityPresets::PresetRecord rec = QgsVisibilityPresets::instance()->currentStateFromLayerList( mComposerMap->layerSet() );
-
   menu->clear();
   foreach ( QString presetName, QgsVisibilityPresets::instance()->presets() )
   {
     QAction* a = menu->addAction( presetName, this, SLOT( visibilityPresetSelected() ) );
     a->setCheckable( true );
-    if ( rec == QgsVisibilityPresets::instance()->presetState( presetName ) )
+    QStringList layers = QgsVisibilityPresets::instance()->presetVisibleLayers( presetName );
+    QMap<QString, QString> styles = QgsVisibilityPresets::instance()->presetStyleOverrides( presetName );
+    if ( layers == mComposerMap->layerSet() && styles == mComposerMap->layerStyleOverrides() )
       a->setChecked( true );
   }
 
@@ -293,15 +295,16 @@ void QgsComposerMapWidget::visibilityPresetSelected()
   if ( !action )
     return;
 
-  QStringList lst = QgsVisibilityPresets::instance()->presetVisibleLayers( action->text() );
+  QString presetName = action->text();
+  QStringList lst = QgsVisibilityPresets::instance()->presetVisibleLayers( presetName );
   if ( mComposerMap )
   {
     mKeepLayerListCheckBox->setChecked( true );
     mComposerMap->setLayerSet( lst );
 
-    // also apply legend node check states
-    foreach ( QString layerID, lst )
-      QgsVisibilityPresets::instance()->applyPresetCheckedLegendNodesToLayer( action->text(), layerID );
+    mKeepLayerStylesCheckBox->setChecked( true );
+
+    mComposerMap->setLayerStyleOverrides( QgsVisibilityPresets::instance()->presetStyleOverrides( presetName ) );
 
     mComposerMap->cache();
     mComposerMap->update();
@@ -642,6 +645,9 @@ void QgsComposerMapWidget::updateGuiElements()
     mKeepLayerListCheckBox->setCheckState( Qt::Unchecked );
   }
 
+  mKeepLayerStylesCheckBox->setEnabled( mComposerMap->keepLayerSet() );
+  mKeepLayerStylesCheckBox->setCheckState( mComposerMap->keepLayerStyles() ? Qt::Checked : Qt::Unchecked );
+
   //draw canvas items
   if ( mComposerMap->drawCanvasItems() )
   {
@@ -759,6 +765,7 @@ void QgsComposerMapWidget::blockAllSignals( bool b )
   mAtlasFixedScaleRadio->blockSignals( b );
   mAtlasMarginRadio->blockSignals( b );
   mKeepLayerListCheckBox->blockSignals( b );
+  mKeepLayerStylesCheckBox->blockSignals( b );
   mSetToMapCanvasExtentButton->blockSignals( b );
   mUpdatePreviewButton->blockSignals( b );
 
@@ -873,6 +880,29 @@ void QgsComposerMapWidget::on_mKeepLayerListCheckBox_stateChanged( int state )
     QStringList emptyLayerSet;
     mComposerMap->setLayerSet( emptyLayerSet );
     mComposerMap->setKeepLayerSet( false );
+
+    mKeepLayerStylesCheckBox->setChecked( Qt::Unchecked );
+  }
+
+  mKeepLayerStylesCheckBox->setEnabled( state == Qt::Checked );
+}
+
+void QgsComposerMapWidget::on_mKeepLayerStylesCheckBox_stateChanged( int state )
+{
+  if ( !mComposerMap )
+  {
+    return;
+  }
+
+  if ( state == Qt::Checked )
+  {
+    mComposerMap->storeCurrentLayerStyles();
+    mComposerMap->setKeepLayerStyles( true );
+  }
+  else
+  {
+    mComposerMap->setLayerStyleOverrides( QMap<QString, QString>() );
+    mComposerMap->setKeepLayerStyles( false );
   }
 }
 
@@ -1525,7 +1555,7 @@ void QgsComposerMapWidget::on_mGridLineStyleButton_clicked()
   }
 
   QgsLineSymbolV2* newSymbol = dynamic_cast<QgsLineSymbolV2*>( grid->lineSymbol()->clone() );
-  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), 0 );
+  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), 0, this );
 
   if ( d.exec() == QDialog::Accepted )
   {
@@ -1550,7 +1580,7 @@ void QgsComposerMapWidget::on_mGridMarkerStyleButton_clicked()
   }
 
   QgsMarkerSymbolV2* newSymbol = dynamic_cast<QgsMarkerSymbolV2*>( grid->markerSymbol()->clone() );
-  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), 0 );
+  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), 0, this );
 
   if ( d.exec() == QDialog::Accepted )
   {
@@ -2055,12 +2085,7 @@ void QgsComposerMapWidget::on_mAnnotationFontButton_clicked()
   }
 
   bool ok;
-#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
-  // Native Mac dialog works only for Qt Carbon
-  QFont newFont = QFontDialog::getFont( &ok, grid->annotationFont(), 0, QString(), QFontDialog::DontUseNativeDialog );
-#else
-  QFont newFont = QFontDialog::getFont( &ok, grid->annotationFont() );
-#endif
+  QFont newFont = QgisGui::getFont( ok, grid->annotationFont() );
   if ( ok )
   {
     mComposerMap->beginCommand( tr( "Annotation font changed" ) );
@@ -2530,7 +2555,7 @@ void QgsComposerMapWidget::on_mOverviewFrameStyleButton_clicked()
   }
 
   QgsFillSymbolV2* newSymbol = dynamic_cast<QgsFillSymbolV2*>( overview->frameSymbol()->clone() );
-  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), 0 );
+  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), 0, this );
 
   if ( d.exec() == QDialog::Accepted )
   {

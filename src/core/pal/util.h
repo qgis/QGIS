@@ -27,10 +27,6 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #ifndef _UTIL_H
 #define _UTIL_H
 
@@ -39,8 +35,7 @@
 #include <stddef.h>
 #include <geos_c.h>
 
-#include <pal/pal.h>
-
+#include "pal.h"
 #include "rtree.hpp"
 #include "pointset.h"
 
@@ -51,7 +46,7 @@ namespace pal
   class Layer;
   class FeaturePart;
 
-  LinkedList<const GEOSGeometry*> * unmulti( const GEOSGeometry* the_geom );
+  QLinkedList<const GEOSGeometry*> * unmulti( const GEOSGeometry* the_geom );
 
   /**
    * \brief For usage in problem solving algorithm

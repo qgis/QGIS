@@ -143,7 +143,18 @@ void QgsRelationEditorWidget::setRelationFeature( const QgsRelation& relation, c
   QgsVectorLayer* lyr = relation.referencingLayer();
 
   bool canChangeAttributes = lyr->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
-  mToggleEditingButton->setEnabled( canChangeAttributes && !lyr->isReadOnly() );
+  if ( canChangeAttributes && !lyr->isReadOnly() )
+  {
+    mToggleEditingButton->setEnabled( true );
+    referencingLayerEditingToggled();
+  }
+  else
+  {
+    mToggleEditingButton->setEnabled( false );
+  }
+
+  setObjectName( mRelation.name() );
+  loadState();
 
   // If not yet initialized, it is not (yet) visible, so we don't load it to be faster (lazy loading)
   // If it is already initialized, it has been set visible before and the currently shown feature is changing
@@ -166,6 +177,14 @@ void QgsRelationEditorWidget::setViewMode( QgsDualView::ViewMode mode )
 {
   mDualView->setView( mode );
   mViewMode = mode;
+}
+
+void QgsRelationEditorWidget::setQgisRelation( QString qgisRelationId )
+{
+  mRelationId = qgisRelationId;
+  // by setting the object name appropriately we can properly save the collapsed state
+  setObjectName( qgisRelationId );
+  loadState();
 }
 
 void QgsRelationEditorWidget::referencingLayerEditingToggled()
@@ -238,6 +257,11 @@ void QgsRelationEditorWidget::unlinkFeature()
   Q_FOREACH ( const QgsRelation::FieldPair fieldPair, mRelation.fieldPairs() )
   {
     int idx = mRelation.referencingLayer()->fieldNameIndex( fieldPair.referencingField() );
+    if ( idx < 0 )
+    {
+      QgsDebugMsg( QString( "referencing field %1 not found" ).arg( fieldPair.referencingField() ) );
+      return;
+    }
     QgsField fld = mRelation.referencingLayer()->pendingFields().at( idx );
     keyFields.insert( idx, fld );
   }

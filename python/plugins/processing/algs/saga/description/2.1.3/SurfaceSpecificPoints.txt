@@ -1,0 +1,6 @@
+Surface Specific Points
+ta_morphometry
+ParameterRaster|ELEVATION|Elevation|False
+ParameterSelection|METHOD|Method|[0] Mark Highest Neighbour;[1] Opposite Neighbours;[2] Flow Direction;[3] Flow Direction (up and down);[4] Peucker & Douglas
+ParameterNumber|THRESHOLD|Threshold|None|None|2.0
+OutputRaster|RESULT|Result

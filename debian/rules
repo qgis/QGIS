@@ -16,6 +16,7 @@ DEB_BUILD_MULTIARCH ?= $(shell dpkg-architecture -qDEB_BUILD_MULTIARCH)
 QT_PLUGIN_DIR = usr/lib/$(DEB_BUILD_MULTIARCH)/qt4/plugins
 
 DEB_TEST_TARGET ?= Experimental
+BUILDDIR ?= debian/build
 
 QGIS_VERSION=$(shell dpkg-parsechangelog | sed -ne 's/^Version: \(.*\)-.*/\1/p')
 
@@ -23,7 +24,7 @@ ifeq (,$(DISTRIBUTION))
 	DISTRIBUTION := $(shell dpkg-parsechangelog --format rfc822 | sed -ne "s/^Distribution: //p")
 endif
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"wheezy jessie precise saucy trusty utopic sid-oracle"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"wheezy jessie stretch precise trusty utopic vivid sid-oracle"))
 	DISTRIBUTION := sid
 endif
 
@@ -39,19 +40,20 @@ QGIS_MAJOR=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_MAJOR "\([0-9]*\)")/\1/p
 QGIS_MINOR=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_MINOR "\([0-9]*\)")/\1/p' CMakeLists.txt)
 QGIS_PATCH=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_PATCH "\([0-9]*\)")/\1/p' CMakeLists.txt)
 QGIS_ABI=$(QGIS_MAJOR).$(QGIS_MINOR).$(QGIS_PATCH)
-GRASS_ABI=$(subst .,,$(shell pkg-config --modversion grass|sed -e "s/\.//g" -e "s/RC/-/"))
 GRASS=grass$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1,2))
+GRASSVER=$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1))
 
 CMAKE_OPTS := \
 	-DBUILDNAME=$(DEB_BUILD_NAME) \
 	-DCMAKE_VERBOSE_MAKEFILE=1 \
 	-DCMAKE_INSTALL_PREFIX=/usr \
-	-DGRASS_PREFIX=/usr/lib/grass64 \
+	-DGRASS_PREFIX=/usr/lib/$(GRASS) \
 	-DBINDINGS_GLOBAL_INSTALL=TRUE \
 	-DPEDANTIC=TRUE \
 	-DWITH_QSPATIALITE=TRUE \
 	-DWITH_SERVER=TRUE \
 	-DWITH_SERVER_PLUGINS=TRUE \
+	-DWITH_GRASS7=FALSE \
 	-DSERVER_SKIP_ECW=TRUE \
 	-DQGIS_CGIBIN_SUBDIR=/usr/lib/cgi-bin \
 	-DWITH_APIDOC=TRUE \
@@ -63,22 +65,24 @@ CMAKE_OPTS := \
 	-DWITH_INTERNAL_PYGMENTS=FALSE \
 	-DWITH_INTERNAL_DATEUTIL=FALSE \
 	-DWITH_INTERNAL_PYTZ=FALSE \
-	-DWITH_INTERNAL_SIX=FALSE
+	-DWITH_INTERNAL_SIX=FALSE \
+	-DQT_TAG_FILE=/usr/share/qt4/doc/html/qt.tags \
+	-DQT_DOC_URL=/usr/share/qt4/doc/html/
 
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 	NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 	MAKEFLAGS += -j$(NUMJOBS)
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"wheezy jessie sid precise saucy"))
+ifneq (,$(findstring $(DISTRIBUTION),"wheezy precise"))
 	CMAKE_OPTS += -DWITH_PYSPATIALITE=TRUE
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid sid-oracle"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid sid-oracle stretch"))
 	CMAKE_OPTS += -DPOSTGRES_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpq.so
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"jessie saucy trusty utopic sid sid-oracle"))
+ifneq (,$(findstring $(DISTRIBUTION),"jessie stretch trusty utopic vivid sid sid-oracle"))
 	CMAKE_OPTS += -DPYTHON_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpython2.7.so
 endif
 
@@ -86,12 +90,15 @@ ifneq (,$(findstring -oracle,$(DISTRIBUTION)))
 	CMAKE_OPTS += -DWITH_ORACLE=TRUE
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid stretch jessie"))
 	CMAKE_OPTS += -DSPATIALINDEX_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libspatialindex.so
 endif
 
 ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
 	CMAKE_OPTS += -DCMAKE_BUILD_TYPE=Debug
+ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
+	CMAKE_OPTS += -DENABLE_COVERAGE=TRUE
+endif
 endif
 
 ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
@@ -100,7 +107,7 @@ else
 	CMAKE_OPTS += -DENABLE_TESTS=TRUE
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"wheezy jessie saucy trusty sid sid-oracle"))
+ifneq (,$(findstring $(DISTRIBUTION),"wheezy jessie stretch trusty sid sid-oracle"))
 CPPFLAGS := $(shell dpkg-buildflags --get CPPFLAGS)
 CFLAGS   := $(shell dpkg-buildflags --get CFLAGS) $(CPPFLAGS)
 CXXFLAGS := $(shell dpkg-buildflags --get CXXFLAGS) $(CPPFLAGS)
@@ -134,7 +141,8 @@ $(2): $(1)
 		-e "s#\{QT_PLUGIN_DIR\}#$(QT_PLUGIN_DIR)#g" \
 		-e "s/\{QGIS_ABI\}/$(QGIS_ABI)/g" \
 		-e "s/\{GRASS\}/$(GRASS)/g" \
-		-e "s/\{GRASS_ABI\}/$(GRASS_ABI)/g" $$^ >$$@
+		-e "s/\{GRASSVER\}/$(GRASSVER)/g" \
+		$$^ >$$@
 
 templates:: $(2)
 
@@ -149,8 +157,8 @@ cleantemplates:
 	$(MAKE) -f debian/rules templateclean
 	$(MAKE) -f debian/rules debian/control debian/compat
 
-binary build clean install:
-	dh $@ --with python2 --parallel --builddirectory=debian/build
+binary binary-arch binary-indep build build-arch build-indep clean install install-arch install-indep:
+	dh $@ --with python2 --parallel --builddirectory=$(BUILDDIR)
 
 override_dh_clean: cleantemplates
 	dh_clean
@@ -159,7 +167,7 @@ override_dh_clean: cleantemplates
 	-$(RM) $(CURDIR)/src/core/qgscontexthelp_texts.cpp
 	-$(RM) $(CURDIR)/src/core/qgsexpression_texts.cpp
 
-	-$(RM) -r $(CURDIR)/debian/build/
+	-$(RM) -r $(CURDIR)/$(BUILDDIR)/
 
 override_dh_auto_configure: templates
 	dh_auto_configure -- $(CMAKE_OPTS)
@@ -171,9 +179,9 @@ override_dh_auto_test:
 	localedef -f UTF-8 -i en_US ./debian/tmp/locale/en_US.UTF-8/
 	-LOCPATH=$(CURDIR)/debian/tmp/locale/ \
 	LC_ALL=en_US.UTF-8 \
-	LD_LIBRARY_PATH=$(CURDIR)/debian/build/output/lib:$(LD_LIBRARY_PATH) \
+	LD_LIBRARY_PATH=$(CURDIR)/$(BUILDDIR)/output/lib:$(LD_LIBRARY_PATH) \
 	PATH=/usr/sbin:$(PATH) \
-	$(TESTMAKE) -C debian/build $(DEB_TEST_TARGET)
+	$(TESTMAKE) -C $(BUILDDIR) $(DEB_TEST_TARGET)
 else
 override_dh_auto_test:
 	@echo Skipping tests.
@@ -185,18 +193,23 @@ override_dh_auto_install:
 	# Install menu pixmap
 	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/pixmaps
 	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis_icon.svg $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis.svg
+	install -o root -g root -m 644 $(CURDIR)/images/icons/qbrowser_icon.svg $(CURDIR)/debian/tmp/usr/share/pixmaps/qbrowser.svg
 	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis-icon.png $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis.png
+	install -o root -g root -m 644 $(CURDIR)/images/icons/qbrowser-icon.png $(CURDIR)/debian/tmp/usr/share/pixmaps/qbrowser.png
 	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis-mime-icon.png $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis-mime.png
 	install -o root -g root -m 644 $(CURDIR)/debian/qgis-icon.xpm $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis.xpm
+	install -o root -g root -m 644 $(CURDIR)/debian/qbrowser-icon.xpm $(CURDIR)/debian/tmp/usr/share/pixmaps/qbrowser.xpm
 
 	# Install application icon
 	for size in 8x8 16x16 22x22 24x24 32x32 36x36 42x42 48x48 64x64 72x72 80x80 96x96 128x128 192x192 256x256 512x512; do \
 		install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/apps ; \
 		install -o root -g root -m 644 $(CURDIR)/debian/qgis-icon$${size}.png $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/apps/qgis.png ; \
+		install -o root -g root -m 644 $(CURDIR)/debian/qbrowser-icon$${size}.png $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/apps/qbrowser.png ; \
 	done
 	
 	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/icons/scalable/apps
 	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis_icon.svg $(CURDIR)/debian/tmp/usr/share/icons/scalable/apps/qgis.svg
+	install -o root -g root -m 644 $(CURDIR)/images/icons/qbrowser_icon.svg $(CURDIR)/debian/tmp/usr/share/icons/scalable/apps/qbrowser.svg
 
 	# Install desktop files
 	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/applications
@@ -240,6 +253,7 @@ override_dh_install:
 	-find $(CURDIR)/debian/tmp/usr/share/qgis/resources/cpt-city-qgis-min/ -name COPYING.xml -delete
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/LICENSE
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/python/plugins/db_manager/LICENSE
+	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/python/plugins/MetaSearch/LICENSE.txt
 
 	# Man pages are installed by dh_installman
 	$(RM) $(CURDIR)/debian/tmp/usr/man/man1/qgis.1
@@ -264,7 +278,11 @@ override_dh_compress:
 	dh_compress --exclude=pdf
 
 override_dh_makeshlibs:
-	dh_makeshlibs -Xqgis-plugin-grass -Xlibqgis-customwidgets$(QGIS_ABI) -- -c0 -v$(QGIS_VERSION)
+	dh_makeshlibs -Xqgis-plugin-grass -Xlibqgis-customwidgets -- -c0 -v$(QGIS_VERSION)
 
 override_dh_shlibdeps:
 	dh_shlibdeps -l/usr/lib/$(GRASS)/lib
+
+override_dh_strip:
+	dh_strip --dbg-package=qgis-dbg
+

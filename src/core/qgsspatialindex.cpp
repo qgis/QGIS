@@ -34,16 +34,16 @@ class QgisVisitor : public SpatialIndex::IVisitor
     QgisVisitor( QList<QgsFeatureId> & list )
         : mList( list ) {}
 
-    void visitNode( const INode& n )
-    { Q_UNUSED( n ); }
+    void visitNode( const INode& n ) override
+      { Q_UNUSED( n ); }
 
-    void visitData( const IData& d )
+    void visitData( const IData& d ) override
     {
       mList.append( d.getIdentifier() );
     }
 
-    void visitData( std::vector<const IData*>& v )
-    { Q_UNUSED( v ); }
+    void visitData( std::vector<const IData*>& v ) override
+      { Q_UNUSED( v ); }
 
   private:
     QList<QgsFeatureId>& mList;
@@ -55,10 +55,10 @@ class QgsSpatialIndexCopyVisitor : public SpatialIndex::IVisitor
     QgsSpatialIndexCopyVisitor( SpatialIndex::ISpatialIndex* newIndex )
         : mNewIndex( newIndex ) {}
 
-    void visitNode( const INode& n )
-    { Q_UNUSED( n ); }
+    void visitNode( const INode& n ) override
+      { Q_UNUSED( n ); }
 
-    void visitData( const IData& d )
+    void visitData( const IData& d ) override
     {
       SpatialIndex::IShape* shape;
       d.getShape( &shape );
@@ -66,8 +66,8 @@ class QgsSpatialIndexCopyVisitor : public SpatialIndex::IVisitor
       delete shape;
     }
 
-    void visitData( std::vector<const IData*>& v )
-    { Q_UNUSED( v ); }
+    void visitData( std::vector<const IData*>& v ) override
+      { Q_UNUSED( v ); }
 
   private:
     SpatialIndex::ISpatialIndex* mNewIndex;
@@ -90,7 +90,7 @@ class QgsFeatureIteratorDataStream : public IDataStream
     }
 
     //! returns a pointer to the next entry in the stream or 0 at the end of the stream.
-    virtual IData* getNext()
+    virtual IData* getNext() override
     {
       RTree::Data* ret = mNextData;
       mNextData = 0;
@@ -99,13 +99,13 @@ class QgsFeatureIteratorDataStream : public IDataStream
     }
 
     //! returns true if there are more items in the stream.
-    virtual bool hasNext() { return mNextData != 0; }
+    virtual bool hasNext() override { return mNextData != 0; }
 
     //! returns the total number of entries available in the stream.
-    virtual uint32_t size() { Q_ASSERT( 0 && "not available" ); return 0; }
+    virtual uint32_t size() override { Q_ASSERT( 0 && "not available" ); return 0; }
 
     //! sets the stream pointer to the first entry, if possible.
-    virtual void rewind() { Q_ASSERT( 0 && "not available" ); }
+    virtual void rewind() override { Q_ASSERT( 0 && "not available" ); }
 
   protected:
     void readNextEntry()
@@ -234,12 +234,13 @@ Region QgsSpatialIndex::rectToRegion( QgsRectangle rect )
 
 bool QgsSpatialIndex::featureInfo( const QgsFeature& f, SpatialIndex::Region& r, QgsFeatureId &id )
 {
-  QgsGeometry *g = f.geometry();
-  if ( !g )
+  if ( !f.constGeometry() )
     return false;
 
+  QgsGeometry g( *f.constGeometry() );
+
   id = f.id();
-  r = rectToRegion( g->boundingBox() );
+  r = rectToRegion( g.boundingBox() );
   return true;
 }
 

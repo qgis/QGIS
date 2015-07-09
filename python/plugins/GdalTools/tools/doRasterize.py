@@ -23,11 +23,8 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from qgis.gui import *
-from osgeo import ogr
+from PyQt4.QtCore import SIGNAL, QFileInfo, QTextCodec
+from PyQt4.QtGui import QWidget, QMessageBox, QErrorMessage
 
 from ui_widgetRasterize import Ui_GdalToolsWidget as Ui_Widget
 from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
@@ -52,15 +49,13 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
       self.lastEncoding = Utils.getLastUsedEncoding()
 
-      self.setParamsStatus(
-        [
+      self.setParamsStatus([
           (self.inSelector, SIGNAL("filenameChanged()")),
           (self.outSelector, SIGNAL("filenameChanged()")),
           (self.attributeComboBox, SIGNAL("currentIndexChanged(int)")),
           ( [self.widthSpin, self.heightSpin], SIGNAL( "valueChanged(int)" )),
           ( [self.horizresSpin, self.vertresSpin], SIGNAL( "valueChanged(double)" ))
-        ]
-      )
+      ])
 
       self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
       self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
@@ -72,7 +67,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.inSelector.setLayers( Utils.LayerRegistry.instance().getVectorLayers() )
 
   def fillFieldsCombo(self):
-      if self.inSelector.layer() == None:
+      if self.inSelector.layer() is None:
         return
       self.lastEncoding = self.inSelector.layer().dataProvider().encoding()
       self.loadFields( self.getInputFileName() )

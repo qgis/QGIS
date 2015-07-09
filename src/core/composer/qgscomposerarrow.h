@@ -51,14 +51,14 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     ~QgsComposerArrow();
 
     /** Return composer item type. */
-    virtual int type() const { return ComposerArrow; }
+    virtual int type() const override { return ComposerArrow; }
 
     /** \brief Reimplementation of QCanvasItem::paint - draw on canvas */
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
+    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
 
     /**Modifies position of start and endpoint and calls QgsComposerItem::setSceneRect
     */
-    void setSceneRect( const QRectF& rectangle );
+    void setSceneRect( const QRectF& rectangle ) override;
 
     /**Sets the width of the arrow head in mm
      * @param width width of arrow head
@@ -198,13 +198,13 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     * @param elem is DOM element corresponding to 'Composer' tag
     * @param doc document
     */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
 
     /**Sets state from DOM document
     * @param itemElem is DOM node corresponding to item tag
     * @param doc is the document to read
     */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
   private:
 

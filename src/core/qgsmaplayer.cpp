@@ -17,44 +17,47 @@
 
 
 #include <QDateTime>
-#include <QDomNode>
-#include <QFileInfo>
-#include <QSettings> // TODO: get rid of it [MD]
 #include <QDir>
-#include <QFile>
 #include <QDomDocument>
 #include <QDomElement>
 #include <QDomImplementation>
+#include <QDomNode>
+#include <QFile>
+#include <QFileInfo>
+#include <QSettings> // TODO: get rid of it [MD]
 #include <QTextStream>
 #include <QUrl>
 
 #include <sqlite3.h>
 
-#include "qgslogger.h"
-#include "qgsrectangle.h"
-#include "qgsmaplayer.h"
-#include "qgscoordinatereferencesystem.h"
 #include "qgsapplication.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsdatasourceuri.h"
+#include "qgslogger.h"
+#include "qgsmaplayer.h"
 #include "qgsmaplayerlegend.h"
-#include "qgsproject.h"
+#include "qgsmaplayerstylemanager.h"
+#include "qgspluginlayer.h"
 #include "qgspluginlayerregistry.h"
 #include "qgsprojectfiletransform.h"
-#include "qgsdatasourceuri.h"
-#include "qgsvectorlayer.h"
-#include "qgsrasterlayer.h"
-#include "qgspluginlayer.h"
+#include "qgsproject.h"
 #include "qgsproviderregistry.h"
+#include "qgsrasterlayer.h"
+#include "qgsrectangle.h"
+#include "qgsvectorlayer.h"
+
 
 QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
                           QString lyrname,
-                          QString source ) :
-    mValid( false ), // assume the layer is invalid
-    mDataSource( source ),
-    mLayerOrigName( lyrname ), // store the original name
-    mID( "" ),
-    mLayerType( type ),
-    mBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal blending
+                          QString source )
+    : mValid( false ) // assume the layer is invalid
+    , mDataSource( source )
+    , mLayerOrigName( lyrname ) // store the original name
+    , mID( "" )
+    , mLayerType( type )
+    , mBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal blending
     , mLegend( 0 )
+    , mStyleManager( new QgsMapLayerStyleManager( this ) )
 {
   mCRS = new QgsCoordinateReferenceSystem();
 
@@ -84,6 +87,7 @@ QgsMapLayer::~QgsMapLayer()
 {
   delete mCRS;
   delete mLegend;
+  delete mStyleManager;
 }
 
 QgsMapLayer::LayerType QgsMapLayer::type() const
@@ -290,7 +294,67 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
   }
   else
   {
-    mDataSource = QgsProject::instance()->readPath( mDataSource );
+    bool handled = false;
+
+    if ( provider == "gdal" )
+    {
+      if ( mDataSource.startsWith( "NETCDF:" ) )
+      {
+        // NETCDF:filename:variable
+        // filename can be quoted with " as it can contain colons
+        QRegExp r( "NETCDF:(.+):([^:]+)" );
+        if ( r.exactMatch( mDataSource ) )
+        {
+          QString filename = r.cap( 1 );
+          if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
+            filename = filename.mid( 1, filename.length() - 2 );
+          mDataSource = "NETCDF:\"" + QgsProject::instance()->readPath( filename ) + "\":" + r.cap( 2 );
+          handled = true;
+        }
+      }
+      else if ( mDataSource.startsWith( "HDF4_SDS:" ) )
+      {
+        // HDF4_SDS:subdataset_type:file_name:subdataset_index
+        // filename can be quoted with " as it can contain colons
+        QRegExp r( "HDF4_SDS:([^:]+):(.+):([^:]+)" );
+        if ( r.exactMatch( mDataSource ) )
+        {
+          QString filename = r.cap( 2 );
+          if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
+            filename = filename.mid( 1, filename.length() - 2 );
+          mDataSource = "HDF4_SDS:" + r.cap( 1 ) + ":\"" + QgsProject::instance()->readPath( filename ) + "\":" + r.cap( 3 );
+          handled = true;
+        }
+      }
+      else if ( mDataSource.startsWith( "HDF5:" ) )
+      {
+        // HDF5:file_name:subdataset
+        // filename can be quoted with " as it can contain colons
+        QRegExp r( "HDF5:(.+):([^:]+)" );
+        if ( r.exactMatch( mDataSource ) )
+        {
+          QString filename = r.cap( 1 );
+          if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
+            filename = filename.mid( 1, filename.length() - 2 );
+          mDataSource = "HDF5:\"" + QgsProject::instance()->readPath( filename ) + "\":" + r.cap( 2 );
+          handled = true;
+        }
+      }
+      else if ( mDataSource.contains( QRegExp( "^(NITF_IM|RADARSAT_2_CALIB):" ) ) )
+      {
+        // NITF_IM:0:filename
+        // RADARSAT_2_CALIB:?:filename
+        QRegExp r( "([^:]+):([^:]+):(.+)" );
+        if ( r.exactMatch( mDataSource ) )
+        {
+          mDataSource = r.cap( 1 ) + ":" + r.cap( 2 ) + ":" + QgsProject::instance()->readPath( r.cap( 3 ) );
+          handled = true;
+        }
+      }
+    }
+
+    if ( !handled )
+      mDataSource = QgsProject::instance()->readPath( mDataSource );
   }
 
   // Set the CRS from project file, asking the user if necessary.
@@ -487,7 +551,72 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
   }
   else
   {
-    src = QgsProject::instance()->writePath( src, relativeBasePath );
+    bool handled = false;
+
+    if ( !vlayer )
+    {
+      QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( this );
+      // Update path for subdataset
+      if ( rlayer && rlayer->providerType() == "gdal" )
+      {
+        if ( src.startsWith( "NETCDF:" ) )
+        {
+          // NETCDF:filename:variable
+          // filename can be quoted with " as it can contain colons
+          QRegExp r( "NETCDF:(.+):([^:]+)" );
+          if ( r.exactMatch( src ) )
+          {
+            QString filename = r.cap( 1 );
+            if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
+              filename = filename.mid( 1, filename.length() - 2 );
+            src = "NETCDF:\"" + QgsProject::instance()->writePath( filename, relativeBasePath ) + "\":" + r.cap( 2 );
+            handled = true;
+          }
+        }
+        else if ( src.startsWith( "HDF4_SDS:" ) )
+        {
+          // HDF4_SDS:subdataset_type:file_name:subdataset_index
+          // filename can be quoted with " as it can contain colons
+          QRegExp r( "HDF4_SDS:([^:]+):(.+):([^:]+)" );
+          if ( r.exactMatch( src ) )
+          {
+            QString filename = r.cap( 2 );
+            if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
+              filename = filename.mid( 1, filename.length() - 2 );
+            src = "HDF4_SDS:" + r.cap( 1 ) + ":\"" + QgsProject::instance()->writePath( filename, relativeBasePath ) + "\":" + r.cap( 3 );
+            handled = true;
+          }
+        }
+        else if ( src.startsWith( "HDF5:" ) )
+        {
+          // HDF5:file_name:subdataset
+          // filename can be quoted with " as it can contain colons
+          QRegExp r( "HDF5:(.+):([^:]+)" );
+          if ( r.exactMatch( src ) )
+          {
+            QString filename = r.cap( 1 );
+            if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
+              filename = filename.mid( 1, filename.length() - 2 );
+            src = "HDF5:\"" + QgsProject::instance()->writePath( filename, relativeBasePath ) + "\":" + r.cap( 2 );
+            handled = true;
+          }
+        }
+        else if ( src.contains( QRegExp( "^(NITF_IM|RADARSAT_2_CALIB):" ) ) )
+        {
+          // NITF_IM:0:filename
+          // RADARSAT_2_CALIB:?:filename
+          QRegExp r( "([^:]+):([^:]+):(.+)" );
+          if ( r.exactMatch( src ) )
+          {
+            src = r.cap( 1 ) + ":" + r.cap( 2 ) + ":" + QgsProject::instance()->writePath( r.cap( 3 ), relativeBasePath );
+            handled = true;
+          }
+        }
+      }
+    }
+
+    if ( !handled )
+      src = QgsProject::instance()->writePath( src, relativeBasePath );
   }
 
   QDomText dataSourceText = document.createTextNode( src );
@@ -614,15 +743,16 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
 QDomDocument QgsMapLayer::asLayerDefinition( QList<QgsMapLayer *> layers, QString relativeBasePath )
 {
   QDomDocument doc( "qgis-layer-definition" );
+  QDomElement qgiselm = doc.createElement( "qlr" );
+  doc.appendChild( qgiselm );
   QDomElement layerselm = doc.createElement( "maplayers" );
   foreach ( QgsMapLayer* layer, layers )
   {
     QDomElement layerelm = doc.createElement( "maplayer" );
     layer->writeLayerXML( layerelm, doc, relativeBasePath );
-    layerelm.removeChild( layerelm.firstChildElement( "id" ) );
     layerselm.appendChild( layerelm );
   }
-  doc.appendChild( layerselm );
+  qgiselm.appendChild( layerselm );
   return doc;
 }
 
@@ -637,7 +767,7 @@ QList<QgsMapLayer*> QgsMapLayer::fromLayerDefinition( QDomDocument& document )
 
     QString type = layerElem.attribute( "type" );
     QgsDebugMsg( type );
-    QgsMapLayer *layer = NULL;
+    QgsMapLayer *layer = 0;
 
     if ( type == "vector" )
     {
@@ -652,6 +782,9 @@ QList<QgsMapLayer*> QgsMapLayer::fromLayerDefinition( QDomDocument& document )
       QString typeName = layerElem.attribute( "name" );
       layer = QgsPluginLayerRegistry::instance()->createLayer( typeName );
     }
+
+    if ( !layer )
+      continue;
 
     bool ok = layer->readLayerXML( layerElem );
     if ( ok )
@@ -702,6 +835,25 @@ void QgsMapLayer::writeCustomProperties( QDomNode &layerNode, QDomDocument &doc 
   mCustomProperties.writeXml( layerNode, doc );
 }
 
+void QgsMapLayer::readStyleManager( const QDomNode& layerNode )
+{
+  QDomElement styleMgrElem = layerNode.firstChildElement( "map-layer-style-manager" );
+  if ( !styleMgrElem.isNull() )
+    mStyleManager->readXml( styleMgrElem );
+  else
+    mStyleManager->reset();
+}
+
+void QgsMapLayer::writeStyleManager( QDomNode& layerNode, QDomDocument& doc ) const
+{
+  if ( mStyleManager )
+  {
+    QDomElement styleMgrElem = doc.createElement( "map-layer-style-manager" );
+    mStyleManager->writeXml( styleMgrElem );
+    layerNode.appendChild( styleMgrElem );
+  }
+}
+
 
 
 
@@ -728,12 +880,13 @@ QString QgsMapLayer::lastError()
   return QString();
 }
 
+#if 0
 void QgsMapLayer::connectNotify( const char * signal )
 {
   Q_UNUSED( signal );
   QgsDebugMsgLevel( "QgsMapLayer connected to " + QString( signal ), 3 );
 } //  QgsMapLayer::connectNotify
-
+#endif
 
 
 void QgsMapLayer::toggleScaleBasedVisibility( bool theVisibilityFlag )
@@ -895,7 +1048,7 @@ bool QgsMapLayer::loadNamedStyleFromDb( const QString &db, const QString &theURI
 
   QgsDebugMsg( QString( "Trying to load style for \"%1\" from \"%2\"" ).arg( theURI ).arg( db ) );
 
-  if ( !QFile( db ).exists() )
+  if ( db.isEmpty() || !QFile( db ).exists() )
     return false;
 
   myResult = sqlite3_open_v2( db.toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, NULL );
@@ -924,6 +1077,7 @@ bool QgsMapLayer::loadNamedStyleFromDb( const QString &db, const QString &theURI
 
   return theResultFlag;
 }
+
 
 QString QgsMapLayer::loadNamedStyle( const QString &theURI, bool &theResultFlag )
 {
@@ -973,6 +1127,16 @@ QString QgsMapLayer::loadNamedStyle( const QString &theURI, bool &theResultFlag 
     return myErrorMessage;
   }
 
+  theResultFlag = importNamedStyle( myDocument, myErrorMessage );
+  if ( !theResultFlag )
+    myErrorMessage = tr( "Loading style file %1 failed because:\n%2" ).arg( theURI ).arg( myErrorMessage );
+
+  return myErrorMessage;
+}
+
+
+bool QgsMapLayer::importNamedStyle( QDomDocument& myDocument, QString& myErrorMessage )
+{
   // get style file version string, if any
   QgsProjectVersion fileVersion( myDocument.firstChildElement( "qgis" ).attribute( "version" ) );
   QgsProjectVersion thisVersion( QGis::QGIS_VERSION );
@@ -995,9 +1159,8 @@ QString QgsMapLayer::loadNamedStyle( const QString &theURI, bool &theResultFlag 
   QDomElement myRoot = myDocument.firstChildElement( "qgis" );
   if ( myRoot.isNull() )
   {
-    myErrorMessage = tr( "Error: qgis element could not be found in %1" ).arg( theURI );
-    theResultFlag = false;
-    return myErrorMessage;
+    myErrorMessage = tr( "Root <qgis> element could not be found" );
+    return false;
   }
 
   // use scale dependent visibility flag
@@ -1017,15 +1180,7 @@ QString QgsMapLayer::loadNamedStyle( const QString &theURI, bool &theResultFlag 
   }
 #endif
 
-  QString errorMsg;
-  theResultFlag = readSymbology( myRoot, errorMsg );
-  if ( !theResultFlag )
-  {
-    myErrorMessage = tr( "Loading style file %1 failed because:\n%2" ).arg( theURI ).arg( errorMsg );
-    return myErrorMessage;
-  }
-
-  return "";
+  return readSymbology( myRoot, myErrorMessage );
 }
 
 void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg )
@@ -1422,6 +1577,11 @@ void QgsMapLayer::setLegend( QgsMapLayerLegend* legend )
 QgsMapLayerLegend*QgsMapLayer::legend() const
 {
   return mLegend;
+}
+
+QgsMapLayerStyleManager* QgsMapLayer::styleManager() const
+{
+  return mStyleManager;
 }
 
 void QgsMapLayer::clearCacheImage()

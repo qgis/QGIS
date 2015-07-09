@@ -34,6 +34,7 @@ QgsRendererV2Widget* QgsHeatmapRendererWidget::create( QgsVectorLayer* layer, Qg
 
 QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
     : QgsRendererV2Widget( layer, style )
+    , mRenderer( NULL )
 {
   if ( !layer )
   {
@@ -53,7 +54,7 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer* layer, QgsSt
   }
 
   setupUi( this );
-  mRadiusUnitWidget->setUnits( QStringList() << tr( "Pixels" ) << tr( "Millimeter" ) << tr( "Map unit" ), 2 );
+  mRadiusUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::Pixel << QgsSymbolV2::MapUnit );
 
   if ( renderer )
   {
@@ -77,19 +78,7 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer* layer, QgsSt
   mRadiusSpinBox->setValue( mRenderer->radius() );
   mRadiusSpinBox->blockSignals( false );
   mRadiusUnitWidget->blockSignals( true );
-  switch ( mRenderer->radiusUnit() )
-  {
-    case QgsSymbolV2::MM:
-      mRadiusUnitWidget->setUnit( 1 );
-      break;
-    case QgsSymbolV2::MapUnit:
-      mRadiusUnitWidget->setUnit( 2 );
-      break;
-    case QgsSymbolV2::Pixel:
-    default:
-      mRadiusUnitWidget->setUnit( 0 );
-      break;
-  }
+  mRadiusUnitWidget->setUnit( mRenderer->radiusUnit() );
   mRadiusUnitWidget->setMapUnitScale( mRenderer->radiusMapUnitScale() );
   mRadiusUnitWidget->blockSignals( false );
   mMaxSpinBox->blockSignals( true );
@@ -154,21 +143,8 @@ void QgsHeatmapRendererWidget::on_mRadiusUnitWidget_changed()
   {
     return;
   }
-  QgsSymbolV2::OutputUnit unit;
-  switch ( mRadiusUnitWidget->getUnit() )
-  {
-    case 0:
-      unit = QgsSymbolV2::Pixel;
-      break;
-    case 1:
-      unit = QgsSymbolV2::MM;
-      break;
-    case 2:
-      unit = QgsSymbolV2::MapUnit;
-      break;
-  }
 
-  mRenderer->setRadiusUnit( unit );
+  mRenderer->setRadiusUnit( mRadiusUnitWidget->unit() );
   mRenderer->setRadiusMapUnitScale( mRadiusUnitWidget->getMapUnitScale() );
 }
 

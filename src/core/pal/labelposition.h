@@ -27,15 +27,12 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #ifndef _LABELPOSITION_H
 #define _LABELPOSITION_H
 
 #include <fstream>
 
+#include "pointset.h"
 #include "rtree.hpp"
 
 
@@ -48,43 +45,31 @@ namespace pal
 
 
   /**
-   * \brief LabelPositon is a candidate feature label position
+   * \brief LabelPosition is a candidate feature label position
    */
   class CORE_EXPORT LabelPosition
   {
       friend class CostCalculator;
       friend class PolygonCostCalculator;
 
-    protected:
-
-      int id;
-      double cost;
-      FeaturePart *feature;
-
-      // bug # 1 (maxence 10/23/2008)
-      int probFeat;
-
-      int nbOverlap;
-
-      double x[4], y[4];
-      double alpha;
-      double w;
-      double h;
-
-      LabelPosition* nextPart;
-      int partId;
-
-      //True if label direction is the same as line / polygon ring direction.
-      //Could be used by the application to draw a directional arrow ('<' or '>')
-      //if the layer arrangement is P_LINE
-      bool reversed;
-
-      bool upsideDown;
-
-      bool isInConflictSinglePart( LabelPosition* lp );
-      bool isInConflictMultiPart( LabelPosition* lp );
-
     public:
+
+      /**
+       * \brief Position of label candidate relative to feature.
+       */
+      enum Quadrant
+      {
+        QuadrantAboveLeft,
+        QuadrantAbove,
+        QuadrantAboveRight,
+        QuadrantLeft,
+        QuadrantOver,
+        QuadrantRight,
+        QuadrantBelowLeft,
+        QuadrantBelow,
+        QuadrantBelowRight
+      };
+
       /**
        * \brief create a new LabelPosition
        *
@@ -97,13 +82,14 @@ namespace pal
        * \param cost geographic cost
        * \param feature labelpos owners
        * \param isReversed label is reversed
+       * \param quadrant relative position of label to feature
        */
       LabelPosition( int id, double x1, double y1,
                      double w, double h,
                      double alpha, double cost,
-                     FeaturePart *feature, bool isReversed = false );
+                     FeaturePart *feature, bool isReversed = false, Quadrant quadrant = QuadrantOver );
 
-      /** copy constructor */
+      /** Copy constructor */
       LabelPosition( const LabelPosition& other );
 
       ~LabelPosition() { delete nextPart; }
@@ -138,21 +124,20 @@ namespace pal
        */
       bool isInConflict( LabelPosition *ls );
 
-      /** return bounding box - amin: xmin,ymin - amax: xmax,ymax */
+      /** Return bounding box - amin: xmin,ymin - amax: xmax,ymax */
       void getBoundingBox( double amin[2], double amax[2] ) const;
 
-      /** get distance from this label to a point. If point lies inside, returns negative number. */
+      /** Get distance from this label to a point. If point lies inside, returns negative number. */
       double getDistanceToPoint( double xp, double yp );
 
-      /** returns true if this label crosses the specified line */
+      /** Returns true if this label crosses the specified line */
       bool isBorderCrossingLine( PointSet* feat );
 
-      /** returns number of intersections with polygon (testing border and center) */
+      /** Returns number of intersections with polygon (testing border and center) */
       int getNumPointsInPolygon( int npol, double *xp, double *yp );
 
-      /** shift the label by specified offset */
+      /** Shift the label by specified offset */
       void offsetPosition( double xOffset, double yOffset );
-
 
       /** \brief return id
        * \return id
@@ -169,7 +154,7 @@ namespace pal
       void resetNumOverlaps() { nbOverlap = 0; } // called from problem.cpp, pal.cpp
 
       int getProblemFeatureId() const { return probFeat; }
-      /** set problem feature ID and assigned label candidate ID.
+      /** Set problem feature ID and assigned label candidate ID.
        *  called from pal.cpp during extraction */
       void setProblemIds( int probFid, int lpId )
       {
@@ -177,8 +162,8 @@ namespace pal
         if ( nextPart ) nextPart->setProblemIds( probFid, lpId );
       }
 
-      /** return pointer to layer's name. used for stats */
-      char* getLayerName() const;
+      /** Return pointer to layer's name. used for stats */
+      QString getLayerName() const;
 
       /**
        * \brief get the position geographical cost
@@ -191,7 +176,6 @@ namespace pal
 
       /** Make sure the cost is less than 1 */
       void validateCost();
-
 
       /**
        * \brief get the down-left x coordinate
@@ -214,6 +198,8 @@ namespace pal
       double getAlpha() const;
       bool getReversed() const { return reversed; }
       bool getUpsideDown() const { return upsideDown; }
+
+      Quadrant getQuadrant() const { return quadrant; }
 
       void print();
 
@@ -264,8 +250,39 @@ namespace pal
       // for polygon cost calculation
       static bool polygonObstacleCallback( PointSet *feat, void *ctx );
 
+    protected:
+
+      int id;
+      double cost;
+      FeaturePart *feature;
+
+      // bug # 1 (maxence 10/23/2008)
+      int probFeat;
+
+      int nbOverlap;
+
+      double x[4], y[4];
+      double alpha;
+      double w;
+      double h;
+
+      LabelPosition* nextPart;
+      int partId;
+
+      //True if label direction is the same as line / polygon ring direction.
+      //Could be used by the application to draw a directional arrow ('<' or '>')
+      //if the layer arrangement is P_LINE
+      bool reversed;
+
+      bool upsideDown;
+
+      LabelPosition::Quadrant quadrant;
+
+      bool isInConflictSinglePart( LabelPosition* lp );
+      bool isInConflictMultiPart( LabelPosition* lp );
+
   };
 
-} // end namespac
+} // end namespace
 
 #endif

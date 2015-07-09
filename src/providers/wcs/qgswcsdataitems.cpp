@@ -24,7 +24,7 @@
 #include <QFileInfo>
 #include <QSettings>
 
-QgsWCSConnectionItem::QgsWCSConnectionItem( QgsDataItem* parent, QString name, QString path , QString uri )
+QgsWCSConnectionItem::QgsWCSConnectionItem( QgsDataItem* parent, QString name, QString path, QString uri )
     : QgsDataCollectionItem( parent, name, path )
     , mUri( uri )
 {
@@ -119,12 +119,13 @@ void QgsWCSConnectionItem::deleteConnection()
 
 // ---------------------------------------------------------------------------
 
-QgsWCSLayerItem::QgsWCSLayerItem( QgsDataItem* parent, QString name, QString path, QgsWcsCapabilitiesProperty capabilitiesProperty, QgsDataSourceURI dataSourceUri, QgsWcsCoverageSummary coverageSummary )
-    : QgsLayerItem( parent, name, path, QString(), QgsLayerItem::Raster, "wcs" ),
-    mCapabilities( capabilitiesProperty ),
-    mDataSourceUri( dataSourceUri ),
-    mCoverageSummary( coverageSummary )
+QgsWCSLayerItem::QgsWCSLayerItem( QgsDataItem* parent, QString name, QString path, const QgsWcsCapabilitiesProperty& capabilitiesProperty, QgsDataSourceURI dataSourceUri, const QgsWcsCoverageSummary& coverageSummary )
+    : QgsLayerItem( parent, name, path, QString(), QgsLayerItem::Raster, "wcs" )
+    , mCapabilities( capabilitiesProperty )
+    , mDataSourceUri( dataSourceUri )
+    , mCoverageSummary( coverageSummary )
 {
+  mSupportedCRS = mCoverageSummary.supportedCrs;
   QgsDebugMsg( "uri = " + mDataSourceUri.encodedUri() );
   mUri = createUri();
   // Populate everything, it costs nothing, all info about layers is collected
@@ -141,7 +142,7 @@ QgsWCSLayerItem::QgsWCSLayerItem( QgsDataItem* parent, QString name, QString pat
   {
     mIconName = "mIconWcs.svg";
   }
-  mPopulated = true;
+  setState( Populated );
 }
 
 QgsWCSLayerItem::~QgsWCSLayerItem()
@@ -312,3 +313,4 @@ QGISEXTERN QgsWCSSourceSelect * selectWidget( QWidget * parent, Qt::WindowFlags 
 {
   return new QgsWCSSourceSelect( parent, fl );
 }
+

@@ -636,7 +636,7 @@ string ASBeautifier::beautify(const string &originalLine)
 {
 	string line;
 	bool isInLineComment = false;
-	bool lineStartsInComment = false;
+	bool lineStartsInComment;
 	bool isInClass = false;
 	bool isInSwitch = false;
 	bool isImmediatelyAfterConst = false;

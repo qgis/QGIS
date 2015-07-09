@@ -244,7 +244,6 @@ void QgsSpit::addFile()
         else
         {
           error1 += name + "\n";
-          is_error = true;
           delete file;
         }
       }

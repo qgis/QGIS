@@ -33,7 +33,7 @@
            </property>
            <property name="icon">
             <iconset resource="../../images/images.qrc">
-             <normaloff>:/images/themes/default/symbologyUp.png</normaloff>:/images/themes/default/symbologyUp.png</iconset>
+             <normaloff>:/images/themes/default/symbologyUp.svg</normaloff>:/images/themes/default/symbologyUp.svg</iconset>
            </property>
           </widget>
          </item>
@@ -44,7 +44,7 @@
            </property>
            <property name="icon">
             <iconset resource="../../images/images.qrc">
-             <normaloff>:/images/themes/default/symbologyDown.png</normaloff>:/images/themes/default/symbologyDown.png</iconset>
+             <normaloff>:/images/themes/default/symbologyDown.svg</normaloff>:/images/themes/default/symbologyDown.svg</iconset>
            </property>
           </widget>
          </item>
@@ -55,7 +55,7 @@
            </property>
            <property name="icon">
             <iconset resource="../../images/images.qrc">
-             <normaloff>:/images/themes/default/symbologyAdd.png</normaloff>:/images/themes/default/symbologyAdd.png</iconset>
+             <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
            </property>
           </widget>
          </item>
@@ -66,7 +66,7 @@
            </property>
            <property name="icon">
             <iconset resource="../../images/images.qrc">
-             <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
+             <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
            </property>
           </widget>
          </item>
@@ -168,7 +168,7 @@
            </property>
            <property name="icon">
             <iconset resource="../../images/images.qrc">
-             <normaloff>:/images/themes/default/symbologyAdd.png</normaloff>:/images/themes/default/symbologyAdd.png</iconset>
+             <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
            </property>
           </widget>
          </item>
@@ -205,7 +205,7 @@
            </property>
            <property name="icon">
             <iconset resource="../../images/images.qrc">
-             <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
+             <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
            </property>
           </widget>
          </item>
@@ -253,6 +253,22 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mColumnsTableView</tabstop>
+  <tabstop>mColumnUpPushButton</tabstop>
+  <tabstop>mColumnDownPushButton</tabstop>
+  <tabstop>mAddColumnPushButton</tabstop>
+  <tabstop>mRemoveColumnPushButton</tabstop>
+  <tabstop>mResetColumnsPushButton</tabstop>
+  <tabstop>mSortColumnComboBox</tabstop>
+  <tabstop>mOrderComboBox</tabstop>
+  <tabstop>mAddSortColumnPushButton</tabstop>
+  <tabstop>mSortColumnTableView</tabstop>
+  <tabstop>mSortColumnUpPushButton</tabstop>
+  <tabstop>mSortColumnDownPushButton</tabstop>
+  <tabstop>mRemoveSortColumnPushButton</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>

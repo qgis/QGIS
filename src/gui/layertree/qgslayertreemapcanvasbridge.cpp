@@ -65,12 +65,12 @@ void QgsLayerTreeMapCanvasBridge::defaultLayerOrder( QgsLayerTreeNode* node, QSt
 }
 
 
-void QgsLayerTreeMapCanvasBridge::setHasCustomLayerOrder( bool override )
+void QgsLayerTreeMapCanvasBridge::setHasCustomLayerOrder( bool state )
 {
-  if ( mHasCustomLayerOrder == override )
+  if ( mHasCustomLayerOrder == state )
     return;
 
-  mHasCustomLayerOrder = override;
+  mHasCustomLayerOrder = state;
   emit hasCustomLayerOrderChanged( mHasCustomLayerOrder );
 
   deferredSetCanvasLayers();
@@ -82,14 +82,31 @@ void QgsLayerTreeMapCanvasBridge::setCustomLayerOrder( const QStringList& order 
     return;
 
   // verify that the new order is correct
-  QStringList defOrder = defaultLayerOrder();
-  QStringList sortedNewOrder = order;
+  QStringList defOrder( defaultLayerOrder() );
+  QStringList newOrder( order );
+  QStringList sortedNewOrder( order );
   qSort( defOrder );
   qSort( sortedNewOrder );
+
+  if ( defOrder.size() < sortedNewOrder.size() )
+  {
+    // might contain bad layers, but also duplicates
+    QSet<QString> ids( defOrder.toSet() );
+
+    for ( int i = 0; i < sortedNewOrder.size(); i++ )
+    {
+      if ( !ids.contains( sortedNewOrder[i] ) )
+      {
+        newOrder.removeAll( sortedNewOrder[i] );
+        sortedNewOrder.removeAt( i-- );
+      }
+    }
+  }
+
   if ( defOrder != sortedNewOrder )
     return; // must be permutation of the default order
 
-  mCustomLayerOrder = order;
+  mCustomLayerOrder = newOrder;
   emit customLayerOrderChanged( mCustomLayerOrder );
 
   if ( mHasCustomLayerOrder )
@@ -182,6 +199,8 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
 
 void QgsLayerTreeMapCanvasBridge::readProject( const QDomDocument& doc )
 {
+  mFirstCRS = QgsCoordinateReferenceSystem(); // invalidate on project load
+
   QDomElement elem = doc.documentElement().firstChildElement( "layer-tree-canvas" );
   if ( elem.isNull() )
   {

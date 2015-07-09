@@ -69,5 +69,5 @@ class QgsRasterFileWriter
 
     void setPyramidsConfigOptions( const QStringList& list );
     QStringList pyramidsConfigOptions() const;
-};
 
+};

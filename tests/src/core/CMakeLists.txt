@@ -9,6 +9,8 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/composer
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/layertree
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
@@ -66,7 +68,7 @@ MACRO (ADD_QGIS_TEST testname testsrc)
     ${GEOS_LIBRARY}
     ${GDAL_LIBRARY}
     qgis_core)
-  ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname})
+  ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname} -maxwarnings 10000)
   #SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES
   #  INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${QGIS_LIB_DIR}
   #  INSTALL_RPATH_USE_LINK_PATH true )
@@ -75,12 +77,16 @@ ENDMACRO (ADD_QGIS_TEST)
 #############################################################
 # Tests:
 
+ADD_QGIS_TEST(qgistest testqgis.cpp)
 ADD_QGIS_TEST(clippertest testqgsclipper.cpp)
 ADD_QGIS_TEST(distanceareatest testqgsdistancearea.cpp)
 ADD_QGIS_TEST(applicationtest testqgsapplication.cpp)
 ADD_QGIS_TEST(diagramtest testqgsdiagram.cpp)
-ADD_QGIS_TEST(diagramexpressiontest testqgsdiagramexpression.cpp)
 ADD_QGIS_TEST(expressiontest testqgsexpression.cpp)
+ADD_QGIS_TEST(fieldtest testqgsfield.cpp)
+ADD_QGIS_TEST(fieldstest testqgsfields.cpp)
+ADD_QGIS_TEST(featuretest testqgsfeature.cpp)
+ADD_QGIS_TEST(scaleexpressiontest testqgsscaleexpression.cpp)
 ADD_QGIS_TEST(filewritertest testqgsvectorfilewriter.cpp)
 ADD_QGIS_TEST(projecttest testqgsproject.cpp)
 ADD_QGIS_TEST(regression992 regression992.cpp)
@@ -95,6 +101,7 @@ ADD_QGIS_TEST(maprenderertest testqgsmaprenderer.cpp)
 ADD_QGIS_TEST(blendmodestest testqgsblendmodes.cpp)
 ADD_QGIS_TEST(geometrytest testqgsgeometry.cpp)
 ADD_QGIS_TEST(geometryimporttest testqgsgeometryimport.cpp)
+ADD_QGIS_TEST(geometryutilstest testqgsgeometryutils.cpp)
 ADD_QGIS_TEST(coordinatereferencesystemtest testqgscoordinatereferencesystem.cpp)
 ADD_QGIS_TEST(coordinatetransformtest testqgscoordinatetransform.cpp)
 ADD_DEPENDENCIES(qgis_coordinatereferencesystemtest synccrsdb)
@@ -139,6 +146,22 @@ ADD_QGIS_TEST(invertedpolygontest testqgsinvertedpolygonrenderer.cpp )
 ADD_QGIS_TEST(colorschemeregistry testqgscolorschemeregistry.cpp)
 ADD_QGIS_TEST(colorscheme testqgscolorscheme.cpp)
 ADD_QGIS_TEST(maptopixeltest testqgsmaptopixel.cpp)
+ADD_QGIS_TEST(maprotationtest testqgsmaprotation.cpp)
+ADD_QGIS_TEST(mapsettingstest testqgsmapsettings.cpp)
 ADD_QGIS_TEST(networkcontentfetcher testqgsnetworkcontentfetcher.cpp )
 ADD_QGIS_TEST(legendrenderertest testqgslegendrenderer.cpp )
 ADD_QGIS_TEST(vectorlayerjoinbuffer testqgsvectorlayerjoinbuffer.cpp )
+ADD_QGIS_TEST(maplayerstylemanager testqgsmaplayerstylemanager.cpp )
+ADD_QGIS_TEST(pointlocatortest testqgspointlocator.cpp )
+ADD_QGIS_TEST(snappingutilstest testqgssnappingutils.cpp )
+ADD_QGIS_TEST(imageoperationtest testqgsimageoperation.cpp)
+ADD_QGIS_TEST(painteffecttest testqgspainteffect.cpp)
+ADD_QGIS_TEST(painteffectregistrytest testqgspainteffectregistry.cpp)
+ADD_QGIS_TEST(statisticalsummarytest testqgsstatisticalsummary.cpp)
+ADD_QGIS_TEST(histogramtest testqgshistogram.cpp)
+ADD_QGIS_TEST(pallabelingtest testqgspallabeling.cpp)
+ADD_QGIS_TEST(graduatedsymbolrenderertest testqgsgraduatedsymbolrenderer.cpp)
+ADD_QGIS_TEST(fontutils testqgsfontutils.cpp)
+ADD_QGIS_TEST(stringutilstest testqgsstringutils.cpp)
+
+

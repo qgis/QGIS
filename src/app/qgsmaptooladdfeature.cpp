@@ -137,6 +137,7 @@ void QgsMapToolAddFeature::canvasMapReleaseEvent( QgsMapMouseEvent* e )
       }
 
       f.setGeometry( g );
+      f.setValid( true );
 
       addFeature( vlayer, &f, false );
 
@@ -217,6 +218,7 @@ void QgsMapToolAddFeature::canvasMapReleaseEvent( QgsMapMouseEvent* e )
         {
           emit messageEmitted( tr( "Cannot add feature. Unknown WKB type" ), QgsMessageBar::CRITICAL );
           stopCapturing();
+          delete f;
           return; //unknown wkbtype
         }
 
@@ -236,6 +238,7 @@ void QgsMapToolAddFeature::canvasMapReleaseEvent( QgsMapMouseEvent* e )
         {
           emit messageEmitted( tr( "Cannot add feature. Unknown WKB type" ), QgsMessageBar::CRITICAL );
           stopCapturing();
+          delete f;
           return; //unknown wkbtype
         }
 
@@ -267,7 +270,7 @@ void QgsMapToolAddFeature::canvasMapReleaseEvent( QgsMapMouseEvent* e )
           emit messageEmitted( tr( "An error was reported during intersection removal" ), QgsMessageBar::CRITICAL );
         }
 
-        if ( !f->geometry()->asWkb() ) //avoid intersection might have removed the whole geometry
+        if ( !f->constGeometry()->asWkb() ) //avoid intersection might have removed the whole geometry
         {
           QString reason;
           if ( avoidIntersectionsReturn != 2 )
@@ -304,13 +307,13 @@ void QgsMapToolAddFeature::canvasMapReleaseEvent( QgsMapMouseEvent* e )
             //can only add topological points if background layer is editable...
             if ( vl && vl->geometryType() == QGis::Polygon && vl->isEditable() )
             {
-              vl->addTopologicalPoints( f->geometry() );
+              vl->addTopologicalPoints( f->constGeometry() );
             }
           }
         }
         else if ( topologicalEditing )
         {
-          vlayer->addTopologicalPoints( f->geometry() );
+          vlayer->addTopologicalPoints( f->constGeometry() );
         }
       }
 

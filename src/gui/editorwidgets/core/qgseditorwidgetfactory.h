@@ -18,6 +18,7 @@
 
 #include "qgseditorwidgetwrapper.h"
 #include "qgsapplication.h"
+#include "qgssearchwidgetwrapper.h"
 
 #include <QDomNode>
 #include <QMap>
@@ -59,6 +60,8 @@ class GUI_EXPORT QgsEditorWidgetFactory
      * @return         A new widget wrapper
      */
     virtual QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const = 0;
+
+    virtual QgsSearchWidgetWrapper* createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const;
 
     /**
      * Return The human readable identifier name of this widget type
@@ -136,7 +139,6 @@ class GUI_EXPORT QgsEditorWidgetFactory
      */
     virtual QVariant createCache( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config );
 
-  private:
     /**
      * Read the config from an XML file and map it to a proper {@link QgsEditorWidgetConfig}.
      *
@@ -148,6 +150,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      */
     virtual QgsEditorWidgetConfig readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx );
 
+  private:
     /**
      * This method allows disabling this editor widget type for a certain field.
      * By default, it returns true for all fields.

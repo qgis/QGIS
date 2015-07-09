@@ -46,6 +46,13 @@ class QgsMapSettings
     //! The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
     void setLayers( const QStringList& layers );
 
+    //! Get map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
+    //! @note added in 2.8
+    QMap<QString, QString> layerStyleOverrides() const;
+    //! Set map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
+    //! @note added in 2.8
+    void setLayerStyleOverrides( const QMap<QString, QString>& overrides );
+
     //! sets whether to use projections for this layer set
     void setCrsTransformEnabled( bool enabled );
     //! returns true if projections are enabled for this layer set
@@ -103,6 +110,9 @@ class QgsMapSettings
     bool hasValidSettings() const;
     //! Return the actual extent derived from requested extent that takes takes output image size into account
     QgsRectangle visibleExtent() const;
+    //! Return the visible area as a polygon (may be rotated)
+    //! @note added in 2.8
+    QPolygonF visiblePolygon() const;
     //! Return the distance in geographical coordinates that equals to one pixel in the map
     double mapUnitsPerPixel() const;
     //! Return the calculated scale of the map

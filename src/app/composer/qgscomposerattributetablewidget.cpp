@@ -28,8 +28,7 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
-#include <QColorDialog>
-#include <QFontDialog>
+#include "qgisgui.h"
 
 QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAttributeTableV2* table, QgsComposerFrame* frame )
     : QgsComposerItemBaseWidget( 0, table )
@@ -182,7 +181,7 @@ void QgsComposerAttributeTableWidget::on_mAttributesPushButton_clicked()
   //temporarily block updates for the window, to stop table trying to repaint under windows (#11462)
   window()->setUpdatesEnabled( false );
 
-  QgsAttributeSelectionDialog d( mComposerTable, mComposerTable->sourceLayer(), 0 );
+  QgsAttributeSelectionDialog d( mComposerTable, mComposerTable->sourceLayer(), this );
   if ( d.exec() == QDialog::Accepted )
   {
     mComposerTable->refreshAttributes();
@@ -283,29 +282,20 @@ void QgsComposerAttributeTableWidget::on_mMarginSpinBox_valueChanged( double d )
 void QgsComposerAttributeTableWidget::on_mHeaderFontPushButton_clicked()
 {
   if ( !mComposerTable )
-  {
     return;
-  }
 
   bool ok;
-#if defined(Q_WS_MAC) && defined(QT_MAC_USE_COCOA)
-  // Native Mac dialog works only for Qt Carbon
-  QFont newFont = QFontDialog::getFont( &ok, mComposerTable->headerFont(), 0, tr( "Select Font" ), QFontDialog::DontUseNativeDialog );
-#else
-  QFont newFont = QFontDialog::getFont( &ok, mComposerTable->headerFont(), 0, tr( "Select Font" ) );
-#endif
+  QFont newFont = QgisGui::getFont( ok, mComposerTable->headerFont(), tr( "Select Font" ) );
   if ( ok )
   {
-    QgsComposition* composition = mComposerTable->composition();
+    QgsComposition *composition = mComposerTable->composition();
     if ( composition )
-    {
       composition->beginMultiFrameCommand( mComposerTable, tr( "Table header font" ) );
-    }
+
     mComposerTable->setHeaderFont( newFont );
+
     if ( composition )
-    {
       composition->endMultiFrameCommand();
-    }
   }
 }
 
@@ -336,24 +326,17 @@ void QgsComposerAttributeTableWidget::on_mContentFontPushButton_clicked()
   }
 
   bool ok;
-#if defined(Q_WS_MAC) && defined(QT_MAC_USE_COCOA)
-  // Native Mac dialog works only for Qt Carbon
-  QFont newFont = QFontDialog::getFont( &ok, mComposerTable->contentFont(), 0, tr( "Select Font" ), QFontDialog::DontUseNativeDialog );
-#else
-  QFont newFont = QFontDialog::getFont( &ok, mComposerTable->contentFont(), 0, tr( "Select Font" ) );
-#endif
+  QFont newFont = QgisGui::getFont( ok, mComposerTable->contentFont(), tr( "Select Font" ) );
   if ( ok )
   {
     QgsComposition* composition = mComposerTable->composition();
     if ( composition )
-    {
       composition->beginMultiFrameCommand( mComposerTable, tr( "Table content font" ) );
-    }
+
     mComposerTable->setContentFont( newFont );
+
     if ( composition )
-    {
       composition->endMultiFrameCommand();
-    }
   }
 }
 
@@ -386,7 +369,7 @@ void QgsComposerAttributeTableWidget::on_mGridStrokeWidthSpinBox_valueChanged( d
   QgsComposition* composition = mComposerTable->composition();
   if ( composition )
   {
-    composition->beginMultiFrameCommand( mComposerTable, tr( "Table grid stroke" ), QgsComposerMultiFrameMergeCommand::TableGridStrokeWidth );
+    composition->beginMultiFrameCommand( mComposerTable, tr( "Table grid line" ), QgsComposerMultiFrameMergeCommand::TableGridStrokeWidth );
   }
   mComposerTable->setGridStrokeWidth( d );
   if ( composition )
@@ -553,11 +536,14 @@ void QgsComposerAttributeTableWidget::atlasToggled()
   bool atlasEnabled = atlasComposition() && atlasComposition()->enabled();
   toggleAtlasSpecificControls( atlasEnabled );
 
+  if ( !mComposerTable )
+    return;
+
   mSourceComboBox->blockSignals( true );
   mSourceComboBox->setCurrentIndex( mSourceComboBox->findData( mComposerTable->source() ) );
   mSourceComboBox->blockSignals( false );
 
-  if ( !atlasEnabled && mComposerTable && mComposerTable->filterToAtlasFeature() )
+  if ( !atlasEnabled && mComposerTable->filterToAtlasFeature() )
   {
     mComposerTable->setFilterToAtlasFeature( false );
   }

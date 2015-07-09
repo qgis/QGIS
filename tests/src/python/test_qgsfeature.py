@@ -12,15 +12,14 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import qgis
 import os
 
-import qgis
 from qgis.core import QgsFeature, QgsGeometry, QgsPoint, QgsVectorLayer
 from utilities import (unitTestDataPath,
                        getQgisTestApp,
                        TestCase,
-                       unittest,
-                       #expectedFailure
+                       unittest
                        )
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
@@ -47,7 +46,7 @@ class TestQgsFeature(TestCase):
         fit.close()
         myValidValue = feat.isValid()
         myMessage = '\nExpected: %s\nGot: %s' % ("True", myValidValue)
-        assert myValidValue == True, myMessage
+        assert myValidValue, myMessage
 
     def test_Attributes(self):
         myPath = os.path.join(unitTestDataPath(), 'lines.shp')
@@ -61,12 +60,11 @@ class TestQgsFeature(TestCase):
         myExpectedAttributes = [ "Highway", 1 ]
 
         # Only for printing purposes
-        myAttributeDict = [
-            myAttributes[0],
-            myAttributes[1] ]
         myExpectedAttributes = [ "Highway",  1 ]
-        myMessage = '\nExpected: %s\nGot: %s' % (myExpectedAttributes,
-            myAttributes)
+        myMessage = '\nExpected: %s\nGot: %s' % (
+            myExpectedAttributes,
+            myAttributes
+        )
 
         assert myAttributes == myExpectedAttributes, myMessage
 
@@ -88,7 +86,7 @@ class TestQgsFeature(TestCase):
         myGeometry = feat.geometry()
         myExpectedGeometry = "!None"
         myMessage = '\nExpected: %s\nGot: %s' % (myExpectedGeometry, myGeometry)
-        assert myGeometry != None, myMessage
+        assert myGeometry is not None, myMessage
 
 if __name__ == '__main__':
     unittest.main()

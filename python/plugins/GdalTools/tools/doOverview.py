@@ -23,16 +23,13 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from qgis.gui import *
+from PyQt4.QtCore import QObject, SIGNAL, QCoreApplication
+from PyQt4.QtGui import QWidget
+from qgis.core import QgsRaster
 
 from ui_widgetOverview import Ui_GdalToolsWidget as Ui_Widget
 from widgetBatchBase import GdalToolsBaseBatchWidget as BaseBatchWidget
 import GdalTools_utils as Utils
-
-import platform
 
 class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
 
@@ -51,19 +48,17 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
       # we don't need load to canvas functionality
       self.base.loadCheckBox.hide()
 
-      self.setParamsStatus(
-        [
+      self.setParamsStatus([
           ( self.inSelector, SIGNAL("filenameChanged()")),
           ( self.cleanCheck, SIGNAL( "stateChanged(int)" ), None, 1700 ),
           ( self.mPyramidOptionsWidget, SIGNAL( "overviewListChanged()" )),
           ( self.mPyramidOptionsWidget, SIGNAL( "someValueChanged()" ))
-        ]
-      )
+      ])
 
       self.connect( self.inSelector, SIGNAL( "selectClicked()" ), self.fillInputFile )
       self.connect( self.batchCheck, SIGNAL( "stateChanged( int )" ), self.switchToolMode )
 
-      self.init = False #workaround bug that pyramid options widgets are not initialized at first
+      self.init = False  # workaround bug that pyramid options widgets are not initialized at first
 
   # make sure we get a command line when dialog appears
   def show_(self):
@@ -165,7 +160,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
   def addLayerIntoCanvas(self, fileInfo):
       self.iface.addRasterLayer(fileInfo.filePath())
 
-  def getBatchArguments(self, inFile, outFile = None):
+  def getBatchArguments(self, inFile, outFile=None):
       arguments = self.getArguments()
       arguments.append(inFile)
       if len(self.mPyramidOptionsWidget.overviewList()) == 0:
@@ -200,4 +195,3 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
         self.progressBar.setValue( index + 1 )
       else:
         self.progressBar.setValue( 0 )
-

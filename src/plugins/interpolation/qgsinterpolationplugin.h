@@ -34,9 +34,9 @@ class QgsInterpolationPlugin: public QObject, public QgisPlugin
     QgsInterpolationPlugin( QgisInterface* iface );
     ~QgsInterpolationPlugin();
     /**initialize connection to GUI*/
-    void initGui();
+    void initGui() override;
     /**Unload the plugin and cleanup the GUI*/
-    void unload();
+    void unload() override;
 
   private slots:
     void showInterpolationDialog();

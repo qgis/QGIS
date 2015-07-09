@@ -25,12 +25,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import os
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-
-from qgis.core import *
+from PyQt4.QtCore import QSettings
 
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
@@ -38,10 +34,9 @@ from processing.core.parameters import ParameterCrs
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterExtent
-from processing.tools import dataobjects
-from processing.algs.qgis import postgis_utils
+from processing.core.parameters import ParameterTableField
 
-from processing.tools.system import *
+from processing.tools.system import isWindows
 
 from processing.algs.gdal.OgrAlgorithm import OgrAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -54,6 +49,7 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
     GEOMTYPE = ['','NONE','GEOMETRY','POINT','LINESTRING','POLYGON','GEOMETRYCOLLECTION','MULTIPOINT','MULTIPOLYGON','MULTILINESTRING']
     S_SRS = 'S_SRS'
     T_SRS = 'T_SRS'
+    A_SRS = 'A_SRS'
     HOST = 'HOST'
     PORT= 'PORT'
     USER = 'USER'
@@ -62,6 +58,7 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
     SCHEMA = 'SCHEMA'
     TABLE = 'TABLE'
     PK = 'PK'
+    PRIMARY_KEY = 'PRIMARY_KEY'
     GEOCOLUMN = 'GEOCOLUMN'
     DIM = 'DIM'
     DIMLIST = ['2','3']
@@ -77,6 +74,8 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
     LAUNDER = 'LAUNDER'
     INDEX = 'INDEX'
     SKIPFAILURES = 'SKIPFAILURES'
+    PRECISION = 'PRECISION'
+    PROMOTETOMULTI = 'PROMOTETOMULTI'
     OPTIONS = 'OPTIONS'
 
     def dbConnectionNames(self):
@@ -88,52 +87,71 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
         self.name = 'Import Vector into PostGIS database (available connections)'
         self.group = '[OGR] Miscellaneous'
         self.DB_CONNECTIONS = self.dbConnectionNames()
-        self.addParameter(ParameterSelection(self.DATABASE, 'Database (connection name)',
-                          self.DB_CONNECTIONS))
-        self.addParameter(ParameterVector(self.INPUT_LAYER, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_ANY], False))
-        self.addParameter(ParameterSelection(self.GTYPE, 'Output geometry type',self.GEOMTYPE, 5))
-        self.addParameter(ParameterCrs(self.S_SRS, 'Input CRS (EPSG Code)',
-                          'EPSG:4326'))
-        self.addParameter(ParameterCrs(self.T_SRS, 'Output CRS (EPSG Code)',
-                          'EPSG:4326'))
-        self.addParameter(ParameterString(self.SCHEMA, 'Schema name',
-                          'public', optional=True))
-	self.addParameter(ParameterString(self.TABLE, 'Table name, leave blank to use input name',
-                          '', optional=True))
-        self.addParameter(ParameterString(self.PK, 'Primary Key',
-                          'id', optional=True))
-        self.addParameter(ParameterString(self.GEOCOLUMN, 'Geometry column name',
-                          'geom', optional=True))
-        self.addParameter(ParameterSelection(self.DIM, 'Vector dimensions',self.DIMLIST, 0))
-        self.addParameter(ParameterString(self.SIMPLIFY, 'Distance tolerance for simplification',
-                          '', optional=True))
-        self.addParameter(ParameterString(self.SEGMENTIZE, 'Maximum distance between 2 nodes (densification)',
-                          '', optional=True))
+        self.addParameter(ParameterSelection(self.DATABASE,
+            self.tr('Database (connection name)'), self.DB_CONNECTIONS))
+        self.addParameter(ParameterVector(self.INPUT_LAYER,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
+        self.addParameter(ParameterSelection(self.GTYPE,
+            self.tr('Output geometry type'), self.GEOMTYPE, 0))
+        self.addParameter(ParameterCrs(self.A_SRS,
+            self.tr('Assign an output CRS'), ''))
+        self.addParameter(ParameterCrs(self.T_SRS,
+            self.tr('Reproject to this CRS on output '), ''))
+        self.addParameter(ParameterCrs(self.S_SRS,
+            self.tr('Override source CRS'), ''))
+        self.addParameter(ParameterString(self.SCHEMA,
+            self.tr('Schema name'), 'public', optional=True))
+        self.addParameter(ParameterString(self.TABLE,
+            self.tr('Table name, leave blank to use input name'),
+            '', optional=True))
+        self.addParameter(ParameterString(self.PK,
+            self.tr('Primary key (new field)'), 'id', optional=True))
+        self.addParameter(ParameterTableField(self.PRIMARY_KEY,
+            self.tr('Primary key (existing field, used if the above option is left empty)'), self.INPUT_LAYER, optional=True))
+        self.addParameter(ParameterString(self.GEOCOLUMN,
+            self.tr('Geometry column name'), 'geom', optional=True))
+        self.addParameter(ParameterSelection(self.DIM,
+            self.tr('Vector dimensions'), self.DIMLIST, 0))
+        self.addParameter(ParameterString(self.SIMPLIFY,
+            self.tr('Distance tolerance for simplification'),
+            '', optional=True))
+        self.addParameter(ParameterString(self.SEGMENTIZE,
+            self.tr('Maximum distance between 2 nodes (densification)'),
+            '', optional=True))
         self.addParameter(ParameterExtent(self.SPAT,
-                          'Select features by extent (defined in input layer CRS)'))
+            self.tr('Select features by extent (defined in input layer CRS)')))
         self.addParameter(ParameterBoolean(self.CLIP,
-                          'Clip the input layer using the above (rectangle) extent', False))
-        self.addParameter(ParameterString(self.WHERE, 'Select features using a SQL "WHERE" statement (Ex: column="value")',
-                          '', optional=True))
-        self.addParameter(ParameterString(self.GT, 'Group "n" features per transaction (Default: 20000)',
-                          '', optional=True))
+            self.tr('Clip the input layer using the above (rectangle) extent'),
+            False))
+        self.addParameter(ParameterString(self.WHERE,
+            self.tr('Select features using a SQL "WHERE" statement (Ex: column=\'value\')'),
+            '', optional=True))
+        self.addParameter(ParameterString(self.GT,
+            self.tr('Group N features per transaction (Default: 20000)'),
+            '', optional=True))
         self.addParameter(ParameterBoolean(self.OVERWRITE,
-                          'Overwrite existing table?', True))
+            self.tr('Overwrite existing table'), True))
         self.addParameter(ParameterBoolean(self.APPEND,
-                          'Append to existing table?', False))
+            self.tr('Append to existing table'), False))
         self.addParameter(ParameterBoolean(self.ADDFIELDS,
-                          'Append and add new fields to existing table?', False))
+            self.tr('Append and add new fields to existing table'), False))
         self.addParameter(ParameterBoolean(self.LAUNDER,
-                          'Do not launder columns/table name/s?', False))
+            self.tr('Do not launder columns/table names'), False))
         self.addParameter(ParameterBoolean(self.INDEX,
-                          'Do not create Spatial Index?', False))
+            self.tr('Do not create spatial index'), False))
         self.addParameter(ParameterBoolean(self.SKIPFAILURES,
-                          'Continue after a failure, skipping the failed feature', False))
-        self.addParameter(ParameterString(self.OPTIONS, 'Additional creation options',
-                          '', optional=True))
+            self.tr('Continue after a failure, skipping the failed feature'),
+            False))
+        self.addParameter(ParameterBoolean(self.PROMOTETOMULTI,
+            self.tr('Promote to Multipart'),
+            True))
+        self.addParameter(ParameterBoolean(self.PRECISION,
+            self.tr('Keep width and precision of input attributes'),
+            True))
+        self.addParameter(ParameterString(self.OPTIONS,
+            self.tr('Additional creation options'), '', optional=True))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         connection = self.DB_CONNECTIONS[self.getParameterValue(self.DATABASE)]
         settings = QSettings()
         mySettings = '/PostgreSQL/connections/' + connection
@@ -143,14 +161,16 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
         port = settings.value(mySettings + '/port')
         password = settings.value(mySettings + '/password')
         inLayer = self.getParameterValue(self.INPUT_LAYER)
-        ogrLayer = self.ogrConnectionString(inLayer)
+        ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
         ssrs = unicode(self.getParameterValue(self.S_SRS))
         tsrs = unicode(self.getParameterValue(self.T_SRS))
+        asrs = unicode(self.getParameterValue(self.A_SRS))
         schema = unicode(self.getParameterValue(self.SCHEMA))
         schemastring = "-lco SCHEMA="+schema
         table = unicode(self.getParameterValue(self.TABLE))
         pk = unicode(self.getParameterValue(self.PK))
         pkstring = "-lco FID="+pk
+        primary_key = self.getParameterValue(self.PRIMARY_KEY)
         geocolumn = unicode(self.getParameterValue(self.GEOCOLUMN))
         geocolumnstring = "-lco GEOMETRY_NAME="+geocolumn
         dim = self.DIMLIST[self.getParameterValue(self.DIM)]
@@ -161,7 +181,7 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
         ogrspat = self.ogrConnectionString(spat)
         clip = self.getParameterValue(self.CLIP)
         where = unicode(self.getParameterValue(self.WHERE))
-        wherestring = "-where '"+where+"'"
+        wherestring = '-where "'+where+'"'
         gt = unicode(self.getParameterValue(self.GT))
         overwrite = self.getParameterValue(self.OVERWRITE)
         append = self.getParameterValue(self.APPEND)
@@ -171,6 +191,8 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
         index = self.getParameterValue(self.INDEX)
         indexstring = "-lco SPATIAL_INDEX=OFF"
         skipfailures = self.getParameterValue(self.SKIPFAILURES)
+        promotetomulti = self.getParameterValue(self.PROMOTETOMULTI)
+        precision = self.getParameterValue(self.PRECISION)
         options = unicode(self.getParameterValue(self.OPTIONS))
 
         arguments = []
@@ -178,23 +200,20 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
         arguments.append('--config PG_USE_COPY YES')
         arguments.append('-f')
         arguments.append('PostgreSQL')
-        arguments.append('PG:"host=')
-        arguments.append(host)
-        arguments.append('port=')
-        arguments.append(port)
-        arguments.append('user=')
-        arguments.append(user)
-        arguments.append('dbname=')
-        arguments.append(dbname)
-        arguments.append('password=')
-        arguments.append(password)
-        arguments.append('"')
+        arguments.append('PG:"host='+host)
+        arguments.append('port='+port)
+        if len(dbname) > 0:
+            arguments.append('dbname='+dbname)
+        if len(password) > 0:
+            arguments.append('password='+password)
+        arguments.append('user='+user+'"')
         arguments.append(dimstring)
         arguments.append(ogrLayer)
+        arguments.append(self.ogrLayerName(inLayer))
         if index:
-           arguments.append(indexstring)
+            arguments.append(indexstring)
         if launder:
-           arguments.append(launderstring)
+            arguments.append(launderstring)
         if append:
             arguments.append('-append')
         if addfields:
@@ -210,6 +229,8 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
             arguments.append(geocolumnstring)
         if len(pk) > 0:
             arguments.append(pkstring)
+        elif primary_key is not None:
+            arguments.append("-lco FID="+primary_key)
         if len(table) > 0:
             arguments.append('-nln')
             arguments.append(table)
@@ -219,6 +240,9 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
         if len(tsrs) > 0:
             arguments.append('-t_srs')
             arguments.append(tsrs)
+        if len(asrs) > 0:
+            arguments.append('-a_srs')
+            arguments.append(asrs)
         if len(spat) > 0:
             regionCoords = ogrspat.split(',')
             arguments.append('-spat')
@@ -227,11 +251,11 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
             arguments.append(regionCoords[1])
             arguments.append(regionCoords[3])
             if clip:
-	      arguments.append('-clipsrc spat_extent')
+                arguments.append('-clipsrc spat_extent')
         if skipfailures:
-           arguments.append('-skipfailures')
+            arguments.append('-skipfailures')
         if where:
-           arguments.append(wherestring)
+            arguments.append(wherestring)
         if len(simplify) > 0:
             arguments.append('-simplify')
             arguments.append(simplify)
@@ -241,6 +265,10 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
         if len(gt) > 0:
             arguments.append('-gt')
             arguments.append(gt)
+        if promotetomulti:
+            arguments.append('-nlt PROMOTE_TO_MULTI')
+        if precision is False:
+            arguments.append('-lco PRECISION=NO')
         if len(options) > 0:
             arguments.append(options)
 
@@ -251,4 +279,7 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
         else:
             commands = ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]
 
-        GdalUtils.runGdal(commands, progress)
+        return commands
+
+    def commandName(self):
+        return "ogr2ogr"

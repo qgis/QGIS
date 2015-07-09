@@ -16,6 +16,7 @@
 QgsFeatureListViewDelegate::QgsFeatureListViewDelegate( QgsFeatureListModel *listModel, QObject *parent )
     : QItemDelegate( parent )
     , mFeatureSelectionModel( NULL )
+    , mEditSelectionModel( NULL )
     , mListModel( listModel )
     , mCurrentFeatureEdited( false )
 {
@@ -59,7 +60,7 @@ void QgsFeatureListViewDelegate::paint( QPainter *painter, const QStyleOptionVie
   QString text = index.model()->data( index, Qt::EditRole ).toString();
   QgsFeatureListModel::FeatureInfo featInfo = index.model()->data( index, Qt::UserRole ).value<QgsFeatureListModel::FeatureInfo>();
 
-  bool isEditSelection = mEditSelectionModel->isSelected( mListModel->mapToMaster( index ) );
+  bool isEditSelection = mEditSelectionModel && mEditSelectionModel->isSelected( mListModel->mapToMaster( index ) );
 
   // Icon layout options
   QStyleOptionViewItem iconOption;

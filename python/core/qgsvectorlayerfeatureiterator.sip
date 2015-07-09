@@ -28,6 +28,7 @@ class QgsVectorLayerFeatureIterator : QgsAbstractFeatureIterator
     virtual bool prepareSimplification( const QgsSimplifyMethod& simplifyMethod );
     void rewindEditBuffer();
     void prepareJoins();
+    void prepareExpressions();
     bool fetchNextAddedFeature( QgsFeature& f );
     bool fetchNextChangedGeomFeature( QgsFeature& f );
     bool fetchNextChangedAttributeFeature( QgsFeature& f );
@@ -35,6 +36,15 @@ class QgsVectorLayerFeatureIterator : QgsAbstractFeatureIterator
     void useChangedAttributeFeature( QgsFeatureId fid, const QgsGeometry& geom, QgsFeature& f );
     bool nextFeatureFid( QgsFeature& f );
     void addJoinedAttributes( QgsFeature &f );
+    /**
+     * Adds attributes that don't source from the provider but are added inside QGIS
+     * Includes
+     *  - Joined fields
+     *  - Expression fields
+     *
+     * @param f The feature will be modified
+     */
+    void addVirtualAttributes( QgsFeature &f );
 
     /** Update feature with uncommited attribute updates */
     void updateChangedAttributes( QgsFeature& f );

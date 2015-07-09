@@ -79,15 +79,15 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     //! Read group (tree) from XML element <layer-tree-group> and return the newly created group (or null on error)
     static QgsLayerTreeGroup* readXML( QDomElement& element );
     //! Write group (tree) as XML element <layer-tree-group> and add it to the given parent element
-    virtual void writeXML( QDomElement& parentElement );
+    virtual void writeXML( QDomElement& parentElement ) override;
     //! Read children from XML and append them to the group.
     void readChildrenFromXML( QDomElement& element );
 
     //! Return text representation of the tree. For debugging purposes only.
-    virtual QString dump() const;
+    virtual QString dump() const override;
 
     //! Return a clone of the group. The children are cloned too.
-    virtual QgsLayerTreeNode* clone() const;
+    virtual QgsLayerTreeNode* clone() const override;
 
     //! Return the check state of the group node
     Qt::CheckState isVisible() const { return mChecked; }

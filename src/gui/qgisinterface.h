@@ -35,6 +35,7 @@ class QgsMapLayer;
 class QgsMessageBar;
 class QgsPluginManagerInterface;
 class QgsRasterLayer;
+class QgsSnappingUtils;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
 
@@ -43,7 +44,7 @@ class QgsVectorLayerTools;
 #include <QPair>
 #include <map>
 
-#include <qgis.h>
+#include "qgis.h"
 
 
 /** \ingroup gui
@@ -210,6 +211,9 @@ class GUI_EXPORT QgisInterface : public QObject
     /** Return the message bar of the main app */
     virtual QgsMessageBar * messageBar() = 0;
 
+    /** Adds a widget to the user input tool bar.*/
+    virtual void addUserInputWidget( QWidget* widget ) = 0;
+
     /** Return mainwindows / composer views of running composer instances (currently only one) */
     virtual QList<QgsComposerView*> activeComposers() = 0;
 
@@ -228,7 +232,7 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual QgsComposerView* duplicateComposer( QgsComposerView* composerView, QString title = QString( "" ) ) = 0;
 
-    /** Deletes parent composer of composer view, after closing composer window  */
+    /** Deletes parent composer of composer view, after closing composer window */
     virtual void deleteComposer( QgsComposerView* composerView ) = 0;
 
     /** Return changeable options built from settings and/or defaults */
@@ -301,7 +305,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * windows which are hidden rather than deleted when closed. */
     virtual void removeWindow( QAction *action ) = 0;
 
-    /** Register action to the shortcuts manager so its shortcut can be changed in GUI  */
+    /** Register action to the shortcuts manager so its shortcut can be changed in GUI */
     virtual bool registerMainWindowAction( QAction* action, QString defaultShortcut ) = 0;
 
     /** Unregister a previously registered action. (e.g. when plugin is going to be unloaded) */
@@ -555,6 +559,11 @@ class GUI_EXPORT QgisInterface : public QObject
      * This signal is emitted before a new composer instance is going to be removed
      */
     void composerWillBeRemoved( QgsComposerView* v );
+
+    /** This signal is emitted when a composer instance has been removed
+       @note added in version 2.9 */
+    void composerRemoved( QgsComposerView* v );
+
     /**
      * This signal is emitted when the initialization is complete
      */
@@ -575,15 +584,12 @@ class GUI_EXPORT QgisInterface : public QObject
         signal for when this happens.
       */
     void newProjectCreated();
-};
 
-// FIXME: also in core/qgis.h
-#ifndef QGISEXTERN
-#ifdef WIN32
-#  define QGISEXTERN extern "C" __declspec( dllexport )
-#else
-#  define QGISEXTERN extern "C"
-#endif
-#endif
+    /**This signal is emitted when a layer has been saved using save as
+       @note
+       added in version 2.7
+    */
+    void layerSavedAs( QgsMapLayer* l, QString path );
+};
 
 #endif //#ifndef QGISINTERFACE_H

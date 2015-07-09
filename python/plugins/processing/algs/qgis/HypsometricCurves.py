@@ -31,7 +31,7 @@ import os
 import numpy
 from osgeo import gdal, ogr, osr
 
-from qgis.core import *
+from qgis.core import QgsRectangle, QgsGeometry
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
@@ -57,15 +57,17 @@ class HypsometricCurves(GeoAlgorithm):
         self.name = 'Hypsometric curves'
         self.group = 'Raster tools'
 
-        self.addParameter(ParameterRaster(self.INPUT_DEM, 'DEM to analyze'))
-        self.addParameter(ParameterVector(self.BOUNDARY_LAYER, 'Boundary layer',
-                          ParameterVector.VECTOR_TYPE_POLYGON))
-        self.addParameter(ParameterNumber(self.STEP, 'Step',
-                          0.0, 999999999.999999, 100.0))
+        self.addParameter(ParameterRaster(self.INPUT_DEM,
+            self.tr('DEM to analyze')))
+        self.addParameter(ParameterVector(self.BOUNDARY_LAYER,
+            self.tr('Boundary layer'), ParameterVector.VECTOR_TYPE_POLYGON))
+        self.addParameter(ParameterNumber(self.STEP,
+            self.tr('Step'), 0.0, 999999999.999999, 100.0))
         self.addParameter(ParameterBoolean(self.USE_PERCENTAGE,
-                         'Use % of area instead of absolute value', False))
+            self.tr('Use % of area instead of absolute value'), False))
 
-        self.addOutput(OutputDirectory(self.OUTPUT_DIRECTORY, 'Output directory'))
+        self.addOutput(OutputDirectory(self.OUTPUT_DIRECTORY,
+            self.tr('Hypsometric curves')))
 
     def processAlgorithm(self, progress):
         rasterPath = self.getParameterValue(self.INPUT_DEM)
@@ -106,8 +108,9 @@ class HypsometricCurves(GeoAlgorithm):
             intersectedGeom = rasterGeom.intersection(geom)
 
             if intersectedGeom.isGeosEmpty():
-                progress.setInfo('Feature %d does not intersect raster or '
-                                 'entirely located in NODATA area' % f.id())
+                progress.setInfo(
+                    self.tr('Feature %d does not intersect raster or '
+                            'entirely located in NODATA area' % f.id()))
                 continue
 
             fName = os.path.join(
@@ -129,6 +132,12 @@ class HypsometricCurves(GeoAlgorithm):
             srcOffset = (startColumn, startRow, width, height)
             srcArray = rasterBand.ReadAsArray(*srcOffset)
 
+            if srcOffset[2] == 0 or srcOffset[3] == 0:
+                progress.setInfo(
+                    self.tr('Feature %d is smaller than raster '
+                            'cell size' % f.id()))
+                continue
+
             newGeoTransform = (
                 geoTransform[0] + srcOffset[0] * geoTransform[1],
                 geoTransform[1],
@@ -136,7 +145,7 @@ class HypsometricCurves(GeoAlgorithm):
                 geoTransform[3] + srcOffset[1] * geoTransform[5],
                 0.0,
                 geoTransform[5]
-                )
+            )
 
             memVDS = memVectorDriver.CreateDataSource('out')
             memLayer = memVDS.CreateLayer('poly', crs, ogr.wkbPolygon)
@@ -171,8 +180,9 @@ class HypsometricCurves(GeoAlgorithm):
         out = dict()
         d = data.compressed()
         if d.size == 0:
-            progress.setInfo('Feature %d does not intersect raster or '
-                             'entirely located in NODATA area' % fid)
+            progress.setInfo(
+                self.tr('Feature %d does not intersect raster or '
+                        'entirely located in NODATA area' % fid))
             return
 
         minValue = d.min()
@@ -200,7 +210,7 @@ class HypsometricCurves(GeoAlgorithm):
                 out[i[0]] = i[1] + out[prev]
             prev = i[0]
 
-        writer = vector.TableWriter(fName, 'utf-8', ['Area', 'Elevation'])
+        writer = vector.TableWriter(fName, 'utf-8', [self.tr('Area'), self.tr('Elevation')])
         for i in sorted(out.items()):
             writer.addRecord([i[1], i[0]])
         del writer

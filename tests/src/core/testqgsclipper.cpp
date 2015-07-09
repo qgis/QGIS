@@ -55,11 +55,11 @@ void TestQgsClipper::basic()
   QgsClipper::trimPolygon( polygon, clipRect );
 
   // Check nothing sticks out.
-  QVERIFY( checkBoundingBox( polygon , clipRect ) );
+  QVERIFY( checkBoundingBox( polygon, clipRect ) );
   // Check that it didn't clip too much
   QgsRectangle clipRectInner( clipRect );
   clipRectInner.scale( 0.999 );
-  QVERIFY( ! checkBoundingBox( polygon , clipRectInner ) );
+  QVERIFY( ! checkBoundingBox( polygon, clipRectInner ) );
 
   // A more complex example
   polygon.clear();
@@ -71,11 +71,11 @@ void TestQgsClipper::basic()
   // We should have 5 vertices now?
   QCOMPARE( polygon.size(), 5 );
   // Check nothing sticks out.
-  QVERIFY( checkBoundingBox( polygon , clipRect ) );
+  QVERIFY( checkBoundingBox( polygon, clipRect ) );
   // Check that it didn't clip too much
   clipRectInner = clipRect;
   clipRectInner.scale( 0.999 );
-  QVERIFY( ! checkBoundingBox( polygon , clipRectInner ) );
+  QVERIFY( ! checkBoundingBox( polygon, clipRectInner ) );
 };
 
 bool TestQgsClipper::checkBoundingBox( QPolygonF polygon, QgsRectangle clipRect )

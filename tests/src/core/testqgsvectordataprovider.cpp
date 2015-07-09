@@ -15,7 +15,6 @@
 #include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
-#include <QObject>
 
 #include <qgsapplication.h>
 #include <qgsgeometry.h>
@@ -23,16 +22,17 @@
 #include <qgsvectordataprovider.h>
 #include <qgsvectorlayer.h>
 
-#if QT_VERSION < 0x40701
-// See http://hub.qgis.org/issues/4284
-Q_DECLARE_METATYPE( QVariant )
-#endif
-
 Q_DECLARE_METATYPE( QgsFeatureRequest );
 
 class TestQgsVectorDataProvider : public QObject
 {
     Q_OBJECT
+  public:
+    TestQgsVectorDataProvider()
+        : vlayerPoints( 0 )
+        , vlayerLines( 0 )
+    {}
+
   private slots:
 
     void initTestCase();// will be called before the first testfunction is executed.
@@ -63,8 +63,8 @@ void TestQgsVectorDataProvider::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  QString layerPointsUrl = QString( TEST_DATA_DIR ) + QDir::separator() + QString( "points.shp" );
-  QString layerLinesUrl = QString( TEST_DATA_DIR ) + QDir::separator() + QString( "lines.shp" );
+  QString layerPointsUrl = QString( TEST_DATA_DIR ) + "/points.shp";
+  QString layerLinesUrl = QString( TEST_DATA_DIR ) + "/lines.shp";
 
   // load layers
 
@@ -114,14 +114,14 @@ static void checkFid4( QgsFeature& f, bool hasGeometry, bool hasAttrs, int onlyO
 
   if ( hasGeometry )
   {
-    QVERIFY( f.geometry() );
-    QVERIFY( f.geometry()->wkbType() == QGis::WKBPoint );
-    QCOMPARE( keep6digits( f.geometry()->asPoint().x() ), -88.302277 );
-    QCOMPARE( keep6digits( f.geometry()->asPoint().y() ),  33.731884 );
+    QVERIFY( f.constGeometry() );
+    QVERIFY( f.constGeometry()->wkbType() == QGis::WKBPoint );
+    QCOMPARE( keep6digits( f.constGeometry()->asPoint().x() ), -88.302277 );
+    QCOMPARE( keep6digits( f.constGeometry()->asPoint().y() ),  33.731884 );
   }
   else
   {
-    QVERIFY( !f.geometry() );
+    QVERIFY( !f.constGeometry() );
   }
 }
 

@@ -40,12 +40,11 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 
-
 QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* parent )
     : QDialog( parent ), mStyle( style ), mModified( false )
 {
   setupUi( this );
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   setWindowModality( Qt::WindowModal );
 #endif
 
@@ -57,12 +56,6 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   tabItemType->setDocumentMode( true );
   searchBox->setPlaceholderText( tr( "Type here to filter symbols..." ) );
 
-  // setup icons
-  btnAddItem->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.png" ) ) );
-  btnEditItem->setIcon( QIcon( QgsApplication::iconPath( "symbologyEdit.png" ) ) );
-  btnRemoveItem->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.png" ) ) );
-  btnShare->setIcon( QIcon( QgsApplication::iconPath( "user.png" ) ) );
-
   connect( this, SIGNAL( finished( int ) ), this, SLOT( onFinished() ) );
 
   connect( listItems, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( editItem() ) );
@@ -72,8 +65,16 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   connect( btnRemoveItem, SIGNAL( clicked() ), this, SLOT( removeItem() ) );
 
   QMenu *shareMenu = new QMenu( tr( "Share Menu" ), this );
+  QAction *exportAsPNGAction = shareMenu->addAction( tr( "Export as PNG" ) );
+  QAction *exportAsSVGAction = shareMenu->addAction( tr( "Export as SVG" ) );
   QAction *exportAction = shareMenu->addAction( tr( "Export" ) );
   QAction *importAction = shareMenu->addAction( tr( "Import" ) );
+  exportAsPNGAction->setIcon( QIcon( QgsApplication::iconPath( "mActionSharingExport.svg" ) ) );
+  exportAsSVGAction->setIcon( QIcon( QgsApplication::iconPath( "mActionSharingExport.svg" ) ) );
+  exportAction->setIcon( QIcon( QgsApplication::iconPath( "mActionSharingExport.svg" ) ) );
+  importAction->setIcon( QIcon( QgsApplication::iconPath( "mActionSharingImport.svg" ) ) );
+  connect( exportAsPNGAction, SIGNAL( triggered() ), this, SLOT( exportItemsPNG() ) );
+  connect( exportAsSVGAction, SIGNAL( triggered() ), this, SLOT( exportItemsSVG() ) );
   connect( exportAction, SIGNAL( triggered() ), this, SLOT( exportItems() ) );
   connect( importAction, SIGNAL( triggered() ), this, SLOT( importItems() ) );
   btnShare->setMenu( shareMenu );
@@ -242,7 +243,7 @@ void QgsStyleV2ManagerDialog::populateSymbols( QStringList symbolNames, bool che
   {
     QString name = symbolNames[i];
     QgsSymbolV2* symbol = mStyle->symbol( name );
-    if ( symbol->type() == type )
+    if ( symbol && symbol->type() == type )
     {
       QStandardItem* item = new QStandardItem( name );
       QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( symbol, listItems->iconSize() );
@@ -726,7 +727,46 @@ void QgsStyleV2ManagerDialog::itemChanged( QStandardItem* item )
     populateList();
     mModified = true;
   }
+  else
+  {
+    QMessageBox::critical( this, tr( "Cannot rename item" ),
+                           tr( "Name is already taken by another item. Choose a different name." ) );
+    item->setText( oldName );
+  }
+}
 
+void QgsStyleV2ManagerDialog::exportItemsPNG()
+{
+  QString dir = QFileDialog::getExistingDirectory( this, tr( "Exported selected symbols as PNG" ),
+                QDir::home().absolutePath(),
+                QFileDialog::ShowDirsOnly
+                | QFileDialog::DontResolveSymlinks );
+  exportSelectedItemsImages( dir, "png", QSize( 32, 32 ) );
+}
+
+void QgsStyleV2ManagerDialog::exportItemsSVG()
+{
+  QString dir = QFileDialog::getExistingDirectory( this, tr( "Exported selected symbols as SVG" ),
+                QDir::home().absolutePath(),
+                QFileDialog::ShowDirsOnly
+                | QFileDialog::DontResolveSymlinks );
+  exportSelectedItemsImages( dir, "svg", QSize( 32, 32 ) );
+}
+
+
+void QgsStyleV2ManagerDialog::exportSelectedItemsImages( QString dir, QString format, QSize size )
+{
+  if ( dir.isEmpty() )
+    return;
+
+  QModelIndexList indexes =  listItems->selectionModel()->selection().indexes();
+  foreach ( QModelIndex index, indexes )
+  {
+    QString name = index.data().toString();
+    QString path = dir + "/" + name + "." + format;
+    QgsSymbolV2 *sym = mStyle->symbol( name );
+    sym->exportImage( path, format, size );
+  }
 }
 
 void QgsStyleV2ManagerDialog::exportItems()
@@ -1243,7 +1283,9 @@ void QgsStyleV2ManagerDialog::enableItemsForGroupingMode( bool enable )
   // NOTE: if you ever change the layout name in the .ui file edit here too
   for ( int i = 0; i < symbolBtnsLayout->count(); i++ )
   {
-    symbolBtnsLayout->itemAt( i )->widget()->setEnabled( enable );
+    QWidget *w = qobject_cast<QWidget*>( symbolBtnsLayout->itemAt( i )->widget() );
+    if ( w )
+      w->setEnabled( enable );
   }
 
 }

@@ -26,7 +26,7 @@ __copyright__ = 'Copyright (c) 2010 by Ivan Mincik, ivan.mincik@gista.sk \
 
 from PyQt4.QtCore import QObject
 from qgis.core import QgsMapLayerRegistry
-from qgis.core import *
+from qgis.core import QgsRasterLayer, QgsVectorLayer
 
 
 class QgisInterface(QObject):

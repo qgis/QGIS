@@ -351,7 +351,7 @@ void QgsPluginRegistry::loadCppPlugin( QString theFullPathName )
             QgsDebugMsg( QString( "plugin object name: %1" ).arg( o->objectName() ) );
             if ( o->objectName().isEmpty() )
             {
-#ifndef WIN32
+#ifndef Q_OS_WIN
               baseName = baseName.mid( 3 );
 #endif
               QgsDebugMsg( QString( "object name to %1" ).arg( baseName ) );
@@ -449,7 +449,7 @@ void QgsPluginRegistry::restoreSessionPlugins( QString thePluginDirString )
 {
   QSettings mySettings;
 
-#if defined(WIN32) || defined(__CYGWIN__)
+#if defined(Q_OS_WIN) || defined(__CYGWIN__)
   QString pluginExt = "*.dll";
 #elif ANDROID
   QString pluginExt = "*plugin.so";

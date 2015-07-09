@@ -55,7 +55,7 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
     void updateScales( const QStringList &scales = QStringList() );
 
   protected:
-    void showPopup();
+    void showPopup() override;
 
   private slots:
     void fixupScale();

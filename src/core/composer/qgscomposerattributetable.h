@@ -54,24 +54,24 @@ class CORE_EXPORT QgsComposerAttributeTable: public QgsComposerTable
     ~QgsComposerAttributeTable();
 
     /** return correct graphics item type. */
-    virtual int type() const { return ComposerAttributeTable; }
+    virtual int type() const override { return ComposerAttributeTable; }
 
     /** \brief Reimplementation of QCanvasItem::paint*/
-    virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
+    virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
 
     /**Writes properties specific to attribute tables
      * @param elem an existing QDomElement in which to store the attribute table's properties.
      * @param doc QDomDocument for the destination xml.
      * @see readXML
      */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
 
     /**Reads the properties specific to an attribute table from xml.
      * @param itemElem a QDomElement holding the attribute table's desired properties.
      * @param doc QDomDocument for the source xml.
      * @see writeXML
      */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
     /**Sets the vector layer from which to display feature attributes
      * @param layer Vector layer for attribute table
@@ -221,7 +221,7 @@ class CORE_EXPORT QgsComposerAttributeTable: public QgsComposerTable
      * @see maximumNumberOfFeatures
      * @see setMaximumNumberOfFeatures
      */
-    void setSceneRect( const QRectF& rectangle );
+    void setSceneRect( const QRectF& rectangle ) override;
 
     /**Sets the attributes to use to sort the table's features.
      * @param att QList integers/bool pairs, where the integer refers to the attribute index and
@@ -248,7 +248,7 @@ class CORE_EXPORT QgsComposerAttributeTable: public QgsComposerTable
      * @returns true if attributes were successfully fetched
      * @note not available in python bindings
      */
-    bool getFeatureAttributes( QList<QgsAttributeMap>& attributeMaps );
+    bool getFeatureAttributes( QList<QgsAttributeMap>& attributeMaps ) override;
 
   private:
     /**Associated vector layer*/

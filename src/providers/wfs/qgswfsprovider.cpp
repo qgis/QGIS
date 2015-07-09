@@ -64,7 +64,9 @@ QgsWFSProvider::QgsWFSProvider( const QString& uri )
     , mSourceCRS( 0 )
     , mFeatureCount( 0 )
     , mValid( true )
+    , mCached( false )
     , mPendingRetrieval( false )
+    , mCapabilities( 0 )
 #if 0
     , mLayer( 0 )
     , mGetRenderedOnly( false )
@@ -120,11 +122,16 @@ QgsWFSProvider::QgsWFSProvider( const QString& uri )
     setDataSourceUri( bkUri );
   }
 
+#if 0 //non-cached mode is broken
   mCached = !uri.contains( "BBOX=" );
   if ( mCached )
   { //"Cache Features" option; get all features in layer immediately
     reloadData();
   } //otherwise, defer feature retrieval until layer is first rendered
+#endif //0
+
+  mCached = true;
+  reloadData();
 
   if ( mValid )
   {
@@ -334,7 +341,7 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist )
 
     //add geometry column (as gml)
     QDomElement geomElem = transactionDoc.createElementNS( mWfsNamespace, mGeometryAttribute );
-    QDomElement gmlElem = QgsOgcUtils::geometryToGML( featureIt->geometry(), transactionDoc );
+    QDomElement gmlElem = QgsOgcUtils::geometryToGML( featureIt->constGeometry(), transactionDoc );
     if ( !gmlElem.isNull() )
     {
       gmlElem.setAttribute( "srsName", crs().authid() );
@@ -928,7 +935,8 @@ int QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc, QString& 
     //is it a geometry attribute?
     //MH 090428: sometimes the <element> tags for geometry attributes have only attribute ref="gml:polygonProperty" and no name
     QRegExp gmlPT( "gml:(.*)PropertyType" );
-    if ( type.indexOf( gmlPT ) == 0 || name.isEmpty() )
+    // the GeometryAssociationType has been seen in #11785
+    if ( type.indexOf( gmlPT ) == 0 || type == "gml:GeometryAssociationType" || name.isEmpty() )
     {
       foundGeometryAttribute = true;
       geometryAttribute = name;
@@ -1176,8 +1184,6 @@ int QgsWFSProvider::getFeaturesFromGML2( const QDomElement& wfsCollectionElement
   QDomNode currentAttributeChild;
   QDomElement currentAttributeElement;
   QgsFeature* f = 0;
-  unsigned char* wkb = 0;
-  int wkbSize = 0;
   mFeatureCount = 0;
 
   for ( int i = 0; i < featureTypeNodeList.size(); ++i )
@@ -1216,7 +1222,7 @@ int QgsWFSProvider::getFeaturesFromGML2( const QDomElement& wfsCollectionElement
       }
       currentAttributeChild = currentAttributeChild.nextSibling();
     }
-    if ( wkb && wkbSize > 0 )
+    if ( f->constGeometry() )
     {
       //insert bbox and pointer to feature into search tree
       mSpatialIndex->insertFeature( *f );

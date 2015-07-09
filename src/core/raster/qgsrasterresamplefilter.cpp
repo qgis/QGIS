@@ -33,9 +33,10 @@
 #include <QPainter>
 
 QgsRasterResampleFilter::QgsRasterResampleFilter( QgsRasterInterface* input )
-    : QgsRasterInterface( input ),
-    mZoomedInResampler( 0 ), mZoomedOutResampler( 0 ),
-    mMaxOversampling( 2.0 )
+    : QgsRasterInterface( input )
+    , mZoomedInResampler( 0 )
+    , mZoomedOutResampler( 0 )
+    , mMaxOversampling( 2.0 )
 {
 }
 
@@ -167,6 +168,7 @@ QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const
   if ((( oversampling < 1.0 || qgsDoubleNear( oversampling, 1.0 ) ) && !mZoomedInResampler ) || ( oversampling > 1.0 && !mZoomedOutResampler ) )
   {
     QgsDebugMsg( "No oversampling." );
+    delete outputBlock;
     return mInput->block( bandNumber, extent, width, height );
   }
 

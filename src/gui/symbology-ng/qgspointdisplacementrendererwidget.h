@@ -31,7 +31,7 @@ class GUI_EXPORT QgsPointDisplacementRendererWidget: public QgsRendererV2Widget,
     QgsPointDisplacementRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
     ~QgsPointDisplacementRendererWidget();
 
-    QgsFeatureRendererV2* renderer();
+    QgsFeatureRendererV2* renderer() override;
 
   private:
     QgsPointDisplacementRenderer* mRenderer;

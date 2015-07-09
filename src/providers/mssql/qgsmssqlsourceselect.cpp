@@ -122,6 +122,7 @@ QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl,
     , mManagerMode( managerMode )
     , mEmbeddedMode( embeddedMode )
     , mColumnTypeThread( NULL )
+    , mUseEstimatedMetadata( false )
 {
   setupUi( this );
 
@@ -518,6 +519,27 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
 
   QString connectionName = db.connectionName();
 
+  // Test for geometry columns table first.  Don't use it if not found.
+  QSqlQuery q = QSqlQuery( db );
+  q.setForwardOnly( true );
+
+  if ( useGeometryColumns )
+  {
+    QString testquery( "SELECT count(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'geometry_columns'" );
+    if ( !q.exec( testquery ) || !q.first() || q.value( 0 ).toInt() == 0 )
+    {
+      QMessageBox::StandardButtons reply;
+      reply = QMessageBox::question( this, "Scan full database?",
+                                     "No geometry_columns table found. \nWould you like to search full database (might be slower)? ",
+                                     QMessageBox::Yes | QMessageBox::No
+                                   );
+      if ( reply == QMessageBox::Yes )
+        useGeometryColumns = false;
+      else
+        return;
+    }
+  }
+
   // Read supported layers from database
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
@@ -538,9 +560,9 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
   }
 
   // issue the sql query
-  QSqlQuery q = QSqlQuery( db );
+  q = QSqlQuery( db );
   q.setForwardOnly( true );
-  q.exec( query );
+  ( void )q.exec( query );
 
   if ( q.isActive() )
   {
@@ -553,6 +575,7 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
       layer.srid = q.value( 3 ).toString();
       layer.type = q.value( 4 ).toString();
       layer.pkCols = QStringList(); //TODO
+      layer.isGeography = false;
 
       QString type = layer.type;
       QString srid = layer.srid;

@@ -17,7 +17,6 @@
 #define QGSMAPTOOLMEASUREANGLE_H
 
 #include "qgsmaptool.h"
-#include "qgsmapcanvassnapper.h"
 #include "qgspoint.h"
 #include "qgsdistancearea.h"
 
@@ -33,23 +32,22 @@ class APP_EXPORT QgsMapToolMeasureAngle: public QgsMapTool
     ~QgsMapToolMeasureAngle();
 
     //! Mouse move event for overridingqgs
-    void canvasMoveEvent( QMouseEvent * e );
+    void canvasMoveEvent( QMouseEvent * e ) override;
 
     //! Mouse release event for overriding
-    void canvasReleaseEvent( QMouseEvent * e );
+    void canvasReleaseEvent( QMouseEvent * e ) override;
 
     //! called when set as currently active map tool
-    void activate();
+    void activate() override;
 
     //! called when map tool is being deactivated
-    void deactivate();
+    void deactivate() override;
 
   private:
     /**Points defining the angle (three for measuring)*/
     QList<QgsPoint> mAnglePoints;
     QgsRubberBand* mRubberBand;
     QgsDisplayAngle* mResultDisplay;
-    QgsMapCanvasSnapper mSnapper;
 
     /**Creates a new rubber band and deletes the old one*/
     void createRubberBand();

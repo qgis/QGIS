@@ -23,11 +23,8 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from qgis.gui import *
-from osgeo import ogr
+from PyQt4.QtCore import SIGNAL
+from PyQt4.QtGui import QWidget
 
 from ui_widgetNearBlack import Ui_GdalToolsWidget as Ui_Widget
 from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
@@ -47,14 +44,12 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       # set the default QSpinBoxes value
       self.nearSpin.setValue(15)
 
-      self.setParamsStatus(
-        [
+      self.setParamsStatus([
           (self.inSelector, SIGNAL("filenameChanged()")),
           (self.outSelector, SIGNAL("filenameChanged()")),
           (self.nearSpin, SIGNAL("valueChanged(int)"), self.nearCheck),
           (self.whiteCheckBox, SIGNAL("stateChanged(int)"))
-        ]
-      )
+      ])
 
       self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
       self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
@@ -100,4 +95,3 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
   def addLayerIntoCanvas(self, fileInfo):
       self.iface.addRasterLayer(fileInfo.filePath())
-

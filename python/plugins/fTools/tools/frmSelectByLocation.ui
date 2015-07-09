@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>423</width>
-    <height>308</height>
+    <width>534</width>
+    <height>321</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,20 +19,20 @@
   <property name="minimumSize">
    <size>
     <width>0</width>
-    <height>308</height>
+    <height>321</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>16777215</width>
-    <height>308</height>
+    <height>321</height>
    </size>
   </property>
   <property name="windowTitle">
    <string>Select by location</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
       <widget class="QLabel" name="label_3">
@@ -46,7 +46,7 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="0">
+   <item>
     <layout class="QVBoxLayout" name="verticalLayout_3">
      <item>
       <widget class="QLabel" name="label_4">
@@ -60,44 +60,48 @@
      </item>
     </layout>
    </item>
-   <item row="2" column="0">
+   <item>
+    <widget class="QCheckBox" name="chkIntersects">
+     <property name="text">
+      <string>Include input features that intersect the selection features</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QCheckBox" name="chkTouches">
      <property name="text">
       <string>Include input features that touch the selection features</string>
      </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item>
     <widget class="QCheckBox" name="chkOverlaps">
      <property name="text">
       <string>Include input features that overlap/cross the selection features</string>
      </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
     </widget>
    </item>
-   <item row="4" column="0">
+   <item>
     <widget class="QCheckBox" name="chkContains">
      <property name="text">
       <string>Include input features completely within the selection features</string>
      </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
     </widget>
    </item>
-   <item row="5" column="0">
+   <item>
     <widget class="QCheckBox" name="chkSelected">
      <property name="text">
       <string>Only selected features</string>
      </property>
     </widget>
    </item>
-   <item row="7" column="0">
+   <item>
+    <widget class="QComboBox" name="cmbModify"/>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QProgressBar" name="progressBar">
@@ -124,11 +128,19 @@
      </item>
     </layout>
    </item>
-   <item row="6" column="0">
-    <widget class="QComboBox" name="cmbModify"/>
-   </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>inPolygon</tabstop>
+  <tabstop>inPoint</tabstop>
+  <tabstop>chkIntersects</tabstop>
+  <tabstop>chkTouches</tabstop>
+  <tabstop>chkOverlaps</tabstop>
+  <tabstop>chkContains</tabstop>
+  <tabstop>chkSelected</tabstop>
+  <tabstop>cmbModify</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

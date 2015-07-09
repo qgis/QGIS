@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.tools.system import *
+from processing.tools.system import isWindows
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputRaster
@@ -43,15 +43,16 @@ class pct2rgb(GdalAlgorithm):
     def defineCharacteristics(self):
         self.name = 'PCT to RGB'
         self.group = '[GDAL] Conversion'
-        self.addParameter(ParameterRaster(pct2rgb.INPUT, 'Input layer', False))
+        self.addParameter(ParameterRaster(pct2rgb.INPUT,
+            self.tr('Input layer'), False))
         options = []
         for i in range(25):
             options.append(str(i + 1))
-        self.addParameter(ParameterSelection(pct2rgb.NBAND, 'Band to convert',
-                          options))
-        self.addOutput(OutputRaster(pct2rgb.OUTPUT, 'Output layer'))
+        self.addParameter(ParameterSelection(pct2rgb.NBAND,
+            self.tr('Band to convert'), options))
+        self.addOutput(OutputRaster(pct2rgb.OUTPUT, self.tr('PCT to RGB')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         arguments = []
         arguments.append('-b')
         arguments.append(str(self.getParameterValue(pct2rgb.NBAND) + 1))
@@ -68,4 +69,4 @@ class pct2rgb(GdalAlgorithm):
         else:
             commands = ['pct2rgb.py', GdalUtils.escapeAndJoin(arguments)]
 
-        GdalUtils.runGdal(commands, progress)
+        return commands

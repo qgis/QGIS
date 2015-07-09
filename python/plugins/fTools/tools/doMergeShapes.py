@@ -17,11 +17,9 @@
 ***************************************************************************
 """
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-
-from qgis.core import *
-from qgis.gui import *
+from PyQt4.QtCore import QObject, SIGNAL, QSettings, QDir, QFileInfo, QFile, QThread, QMutex
+from PyQt4.QtGui import QDialog, QDialogButtonBox, QFileDialog, QMessageBox
+from qgis.core import QgsVectorFileWriter, QgsVectorLayer, QgsFields, QgsFeature, QgsGeometry
 
 import ftools_utils
 
@@ -49,9 +47,11 @@ class Dialog( QDialog, Ui_Dialog ):
   def inputDir( self ):
     settings = QSettings()
     lastDir = settings.value( "/fTools/lastShapeDir", "." )
-    inDir = QFileDialog.getExistingDirectory( self,
-              self.tr( "Select directory with shapefiles to merge" ),
-              lastDir )
+    inDir = QFileDialog.getExistingDirectory(
+        self,
+        self.tr( "Select directory with shapefiles to merge" ),
+        lastDir
+    )
 
     if not inDir:
       return
@@ -62,8 +62,9 @@ class Dialog( QDialog, Ui_Dialog ):
     workDir.setNameFilters( nameFilter )
     self.inputFiles = workDir.entryList()
     if len( self.inputFiles ) == 0:
-      QMessageBox.warning( self, self.tr( "No shapefiles found" ),
-        self.tr( "There are no shapefiles in this directory. Please select another one." ) )
+      QMessageBox.warning(
+          self, self.tr( "No shapefiles found" ),
+          self.tr( "There are no shapefiles in this directory. Please select another one." ) )
       self.inputFiles = None
       return
 
@@ -122,14 +123,16 @@ class Dialog( QDialog, Ui_Dialog ):
       workDir.setNameFilters( nameFilter )
       self.inputFiles = workDir.entryList()
       if len( self.inputFiles ) == 0:
-        QMessageBox.warning( self, self.tr( "No shapefiles found" ),
-          self.tr( "There are no shapefiles in this directory. Please select another one." ) )
+        QMessageBox.warning(
+            self, self.tr( "No shapefiles found" ),
+            self.tr( "There are no shapefiles in this directory. Please select another one." ) )
         self.inputFiles = None
         return
 
     if self.outFileName is None:
-      QMessageBox.warning( self, self.tr( "No output file" ),
-        self.tr( "Please specify output file." ) )
+      QMessageBox.warning(
+          self, self.tr( "No output file" ),
+          self.tr( "Please specify output file." ) )
       return
 
     if self.chkListMode.isChecked():
@@ -140,8 +143,9 @@ class Dialog( QDialog, Ui_Dialog ):
       # look for shapes with specified geometry type
       self.inputFiles = ftools_utils.getShapesByGeometryType( baseDir, self.inputFiles, self.cmbGeometry.currentIndex() )
       if self.inputFiles is None:
-        QMessageBox.warning( self, self.tr( "No shapefiles found" ),
-          self.tr( "There are no shapefiles with the given geometry type. Please select an available geometry type." ) )
+        QMessageBox.warning(
+            self, self.tr( "No shapefiles found" ),
+            self.tr( "There are no shapefiles with the given geometry type. Please select an available geometry type." ) )
         return
       self.progressFiles.setRange( 0, len( self.inputFiles ) )
 
@@ -151,7 +155,7 @@ class Dialog( QDialog, Ui_Dialog ):
         QMessageBox.warning( self, self.tr( "Delete error" ), self.tr( "Can't delete file %s" ) % ( self.outFileName ) )
         return
 
-    if self.inEncoding == None:
+    if self.inEncoding is None:
       self.inEncoding = "System"
 
     self.btnOk.setEnabled( False )
@@ -205,7 +209,7 @@ class Dialog( QDialog, Ui_Dialog ):
     self.restoreGui()
 
   def stopProcessing( self ):
-    if self.mergeThread != None:
+    if self.mergeThread is not None:
       self.mergeThread.stop()
       self.mergeThread = None
 
@@ -288,8 +292,9 @@ class ShapeMergeThread( QThread ):
     for f in mergedFields:
       fields.append(f)
 
-    writer = QgsVectorFileWriter( self.outputFileName, self.outputEncoding,
-                 fields, self.geom, self.crs )
+    writer = QgsVectorFileWriter(
+        self.outputFileName, self.outputEncoding,
+        fields, self.geom, self.crs )
 
     shapeIndex = 0
     for fileName in self.shapes:
@@ -299,7 +304,6 @@ class ShapeMergeThread( QThread ):
         continue
       newLayer.setProviderEncoding( self.inputEncoding )
       vprovider = newLayer.dataProvider()
-      layerFields = vprovider.fields()
       nFeat = vprovider.featureCount()
       self.emit( SIGNAL( "rangeChanged( PyQt_PyObject )" ), nFeat )
       self.emit( SIGNAL( "fileNameChanged( PyQt_PyObject )" ), fileName )
@@ -313,7 +317,7 @@ class ShapeMergeThread( QThread ):
         # fill available attributes with values
         fieldIndex = 0
         for v in inFeat.attributes():
-          if fieldMap.has_key(shapeIndex) and fieldMap[shapeIndex].has_key(fieldIndex):
+          if shapeIndex in fieldMap and fieldIndex in fieldMap[shapeIndex]:
             mergedAttrs[ fieldMap[shapeIndex][fieldIndex] ] = v
           fieldIndex += 1
 

@@ -30,10 +30,11 @@
 
 QgsMapToolPinLabels::QgsMapToolPinLabels( QgsMapCanvas* canvas )
     : QgsMapToolLabel( canvas )
+    , mDragging( false )
+    , mShowPinned( false )
+    , mRubberBand( 0 )
 {
   mToolName = tr( "Pin labels" );
-  mRubberBand = 0;
-  mShowPinned = false;
 
   connect( QgisApp::instance()->actionToggleEditing(), SIGNAL( triggered() ), this, SLOT( updatePinnedLabels() ) );
   connect( canvas, SIGNAL( renderComplete( QPainter * ) ), this, SLOT( highlightPinnedLabels() ) );

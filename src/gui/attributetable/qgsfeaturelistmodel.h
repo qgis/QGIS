@@ -38,13 +38,27 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
     };
 
   public:
-    explicit QgsFeatureListModel( QgsAttributeTableFilterModel *sourceModel, QObject* parent = NULL );
+    explicit QgsFeatureListModel( QgsAttributeTableFilterModel *sourceModel, QObject* parent = 0 );
     virtual ~QgsFeatureListModel();
 
     virtual void setSourceModel( QgsAttributeTableFilterModel* sourceModel );
     QgsVectorLayerCache* layerCache();
-    virtual QVariant data( const QModelIndex& index, int role ) const;
-    virtual Qt::ItemFlags flags( const QModelIndex& index ) const;
+    virtual QVariant data( const QModelIndex& index, int role ) const override;
+    virtual Qt::ItemFlags flags( const QModelIndex& index ) const override;
+
+    /**
+     * @brief If true is specified, a NULL value will be injected
+     * @param injectNull state of null value injection
+     * @note added in 2.9
+     */
+    void setInjectNull( bool injectNull );
+
+    /**
+     * @brief Returns the current state of null value injection
+     * @return If a NULL value is added
+     * @note added in 2.9
+     */
+    bool injectNull();
 
     QgsAttributeTableModel* masterModel();
 
@@ -67,8 +81,8 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
     QgsFeatureId idxToFid( const QModelIndex& index ) const;
     QModelIndex fidToIdx( const QgsFeatureId fid ) const;
 
-    virtual QModelIndex mapToSource( const QModelIndex& proxyIndex ) const;
-    virtual QModelIndex mapFromSource( const QModelIndex& sourceIndex ) const;
+    virtual QModelIndex mapToSource( const QModelIndex& proxyIndex ) const override;
+    virtual QModelIndex mapFromSource( const QModelIndex& sourceIndex ) const override;
 
     virtual QModelIndex mapToMaster( const QModelIndex& proxyIndex ) const;
     virtual QModelIndex mapFromMaster( const QModelIndex& sourceIndex ) const;
@@ -76,12 +90,12 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
     virtual QItemSelection mapSelectionFromMaster( const QItemSelection& selection ) const;
     virtual QItemSelection mapSelectionToMaster( const QItemSelection& selection ) const;
 
-    virtual QModelIndex index( int row, int column, const QModelIndex& parent = QModelIndex() ) const;
-    virtual QModelIndex parent( const QModelIndex& child ) const;
-    virtual int columnCount( const QModelIndex&parent = QModelIndex() ) const;
-    virtual int rowCount( const QModelIndex& parent = QModelIndex() ) const;
+    virtual QModelIndex index( int row, int column, const QModelIndex& parent = QModelIndex() ) const override;
+    virtual QModelIndex parent( const QModelIndex& child ) const override;
+    virtual int columnCount( const QModelIndex&parent = QModelIndex() ) const override;
+    virtual int rowCount( const QModelIndex& parent = QModelIndex() ) const override;
 
-    QModelIndex fidToIndex( QgsFeatureId fid );
+    QModelIndex fidToIndex( QgsFeatureId fid ) override;
     QModelIndexList fidToIndexList( QgsFeatureId fid );
 
   public slots:
@@ -94,6 +108,7 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
     QgsExpression* mExpression;
     QgsAttributeTableFilterModel* mFilterModel;
     QString mParserErrorString;
+    bool mInjectNull;
 };
 
 Q_DECLARE_METATYPE( QgsFeatureListModel::FeatureInfo )

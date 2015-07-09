@@ -10,12 +10,12 @@ class QgsComposerHtml: QgsComposerMultiFrame
     */
     enum ContentMode
     {
-      Url, /*< Using this mode item fetches its content via a url*/
-      ManualHtml /*< HTML content is manually set for the item*/
+      Url, /*!< Using this mode item fetches its content via a url*/
+      ManualHtml /*!< HTML content is manually set for the item*/
     };
 
     QgsComposerHtml( QgsComposition* c /TransferThis/, bool createUndoCommands );
-    QgsComposerHtml();
+
     ~QgsComposerHtml();
 
     /**Sets the source mode for item's HTML content.
@@ -192,7 +192,6 @@ class QgsComposerHtml: QgsComposerMultiFrame
 
     /**Recalculates the frame sizes for the current viewport dimensions*/
     void recalculateFrameSizes();
-
     void refreshExpressionContext();
 
     virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );

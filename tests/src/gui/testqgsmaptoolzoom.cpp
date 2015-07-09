@@ -15,7 +15,6 @@
 #include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
-#include <QObject>
 #include <QCoreApplication>
 #include <QWidget>
 #include <QMouseEvent>
@@ -25,9 +24,14 @@
 #include <qgsmapcanvas.h>
 #include <qgslogger.h>
 
-class TestQgsMapToolZoom: public QObject
+class TestQgsMapToolZoom : public QObject
 {
     Q_OBJECT
+  public:
+    TestQgsMapToolZoom()
+        : canvas( 0 )
+    {}
+
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.

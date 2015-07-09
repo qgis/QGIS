@@ -27,21 +27,17 @@ __revision__ = '$Format:%H$'
 
 import os
 from datetime import datetime
-from datetime import timedelta
 
-from PyQt4.QtCore import *
-
-from qgis.core import *
+from PyQt4.QtCore import QVariant
+from qgis.core import QGis, QgsFeature, QgsFields, QgsField, QgsGeometry, QgsDistanceArea
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterString
-#from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputVector
 from processing.core.outputs import OutputDirectory
-from processing.tools import dataobjects, vector, system
+from processing.tools import dataobjects, vector
 
 
 class PointsToPaths(GeoAlgorithm):
@@ -58,18 +54,18 @@ class PointsToPaths(GeoAlgorithm):
         self.name = 'Points to path'
         self.group = 'Vector creation tools'
         self.addParameter(ParameterVector(self.VECTOR,
-            'Input point layer', [ParameterVector.VECTOR_TYPE_POINT]))
-        self.addParameter(
-            ParameterTableField(self.GROUP_FIELD, 'Group field', self.VECTOR))
-        self.addParameter(
-            ParameterTableField(self.ORDER_FIELD, 'Order field', self.VECTOR))
+            self.tr('Input point layer'), [ParameterVector.VECTOR_TYPE_POINT]))
+        self.addParameter(ParameterTableField(self.GROUP_FIELD,
+            self.tr('Group field'), self.VECTOR))
+        self.addParameter(ParameterTableField(self.ORDER_FIELD,
+            self.tr('Order field'), self.VECTOR))
         self.addParameter(ParameterString(self.DATE_FORMAT,
-            'Date format (if order field is DateTime)', '', optional=True))
+            self.tr('Date format (if order field is DateTime)'), '', optional=True))
         #self.addParameter(ParameterNumber(
         #    self.GAP_PERIOD,
         #    'Gap period (if order field is DateTime)', 0, 60, 0))
-        self.addOutput(OutputVector(self.OUTPUT_LINES, 'Paths'))
-        self.addOutput(OutputDirectory(self.OUTPUT_TEXT, 'Directory'))
+        self.addOutput(OutputVector(self.OUTPUT_LINES, self.tr('Paths')))
+        self.addOutput(OutputDirectory(self.OUTPUT_TEXT, self.tr('Directory')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(

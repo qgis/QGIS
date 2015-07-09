@@ -69,7 +69,7 @@ class QgsExpressionBuilderWidget : QWidget
 %End
 
   public:
-    QgsExpressionBuilderWidget( QWidget *parent );
+    QgsExpressionBuilderWidget( QWidget *parent /TransferThis/ );
     ~QgsExpressionBuilderWidget();
 
     /** Sets layer in order to get the fields and values
@@ -83,6 +83,12 @@ class QgsExpressionBuilderWidget : QWidget
     void loadFieldNames();
 
     void loadFieldNames( const QgsFields& fields );
+
+    /** Loads field names and values from the specified map.
+     *  @note The field values must be quoted appropriately if they are strings.
+     *  @note added in QGIS 2.12
+     */
+    void loadFieldsAndValues(const QMap<QString, QStringList>& fieldValues );
 
     /** Sets geometry calculator used in distance/area calculations. */
     void setGeomCalculator( const QgsDistanceArea & da );
@@ -111,8 +117,32 @@ class QgsExpressionBuilderWidget : QWidget
 
     void loadRecent( QString key );
 
+    /** Create a new file in the function editor
+     */
+    void newFunctionFile( QString fileName = "scratch" );
+
+    /** Save the current function editor text to the given file.
+     */
+    void saveFunctionFile( QString fileName );
+
+    /** Load code from the given file into the function editor
+     */
+    void loadCodeFromFile( QString path );
+
+    /** Load code into the function editor
+     */
+    void loadFunctionCode( QString code );
+
+    /** Update the list of function files found at the given path
+     */
+    void updateFunctionFileList( QString path );
+
   public slots:
     void currentChanged( const QModelIndex &index, const QModelIndex & );
+    void on_btnRun_pressed();
+    void on_btnNewFile_pressed();
+    void on_cmbFileNames_currentIndexChanged( int index );
+    void on_btnSaveFile_pressed();
     void on_expressionTree_doubleClicked( const QModelIndex &index );
     void on_txtExpressionString_textChanged();
     void on_txtSearchEdit_textChanged();

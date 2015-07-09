@@ -33,15 +33,15 @@ class ANALYSIS_EXPORT NormVecDecorator: public TriDecorator
     NormVecDecorator( Triangulation* tin );
     virtual ~NormVecDecorator();
     /**Adds a point to the triangulation*/
-    int addPoint( Point3D* p );
+    int addPoint( Point3D* p ) override;
     /**Calculates the normal at a point on the surface and assigns it to 'result'. Returns true in case of success and false in case of failure*/
-    bool calcNormal( double x, double y, Vector3D* result );
+    bool calcNormal( double x, double y, Vector3D* result ) override;
     /**Calculates the normal of a triangle-point for the point with coordinates x and y. This is needed, if a point is on a break line and there is no unique normal stored in 'mNormVec'. Returns false, it something went wrong and true otherwise*/
     bool calcNormalForPoint( double x, double y, int point, Vector3D* result );
     /**Calculates x-, y and z-value of the point on the surface and assigns it to 'result'. Returns true in case of success and flase in case of failure*/
-    bool calcPoint( double x, double y, Point3D* result );
+    bool calcPoint( double x, double y, Point3D* result ) override;
     /**Eliminates the horizontal triangles by swapping or by insertion of new points. If alreadyestimated is true, a re-estimation of the normals will be done*/
-    virtual void eliminateHorizontalTriangles();
+    virtual void eliminateHorizontalTriangles() override;
     /**Estimates the first derivative a point. Return true in case of succes and false otherwise*/
     bool estimateFirstDerivative( int pointno );
     /**This method adds the functionality of estimating normals at the data points. Return true in the case of success and false otherwise*/
@@ -56,12 +56,12 @@ class ANALYSIS_EXPORT NormVecDecorator: public TriDecorator
     /**Returns the state of the point with the number 'pointno'*/
     pointState getState( int pointno ) const;
     /**Sets an interpolator*/
-    void setTriangleInterpolator( TriangleInterpolator* inter );
+    void setTriangleInterpolator( TriangleInterpolator* inter ) override;
     /**Swaps the edge which is closest to the point with x and y coordinates (if this is possible) and forces recalculation of the concerned normals (if alreadyestimated is true)*/
-    virtual bool swapEdge( double x, double y );
+    virtual bool swapEdge( double x, double y ) override;
     /**Saves the triangulation as a (line) shapefile
       @return true in case of success*/
-    virtual bool saveAsShapefile( const QString& fileName ) const;
+    virtual bool saveAsShapefile( const QString& fileName ) const override;
 
   protected:
     /**Is true, if the normals already have been estimated*/

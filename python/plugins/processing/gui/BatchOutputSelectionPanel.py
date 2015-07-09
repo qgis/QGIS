@@ -27,8 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+from PyQt4.QtGui import QWidget, QPushButton, QLineEdit, QHBoxLayout, QSizePolicy, QFileDialog
+from PyQt4.QtCore import QSettings
 
 from processing.gui.AutofillDialog import AutofillDialog
 from processing.core.parameters import ParameterMultipleInput
@@ -38,6 +38,7 @@ from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterFixedTable
+from processing.core.outputs import OutputDirectory
 
 
 class BatchOutputSelectionPanel(QWidget):
@@ -55,6 +56,7 @@ class BatchOutputSelectionPanel(QWidget):
         self.horizontalLayout.setMargin(0)
         self.text = QLineEdit()
         self.text.setText('')
+        self.text.setMinimumWidth(300)
         self.text.setSizePolicy(QSizePolicy.Expanding,
                                 QSizePolicy.Expanding)
         self.horizontalLayout.addWidget(self.text)
@@ -65,6 +67,10 @@ class BatchOutputSelectionPanel(QWidget):
         self.setLayout(self.horizontalLayout)
 
     def showSelectionDialog(self):
+        if isinstance(self.output, OutputDirectory):
+            self.selectDirectory()
+            return
+
         filefilter = self.output.getFileFilter(self.alg)
         settings = QSettings()
         if settings.contains('/Processing/LastBatchOutputPath'):
@@ -116,6 +122,21 @@ class BatchOutputSelectionPanel(QWidget):
                                     self.col).setValue(name)
                 except:
                     pass
+
+    def selectDirectory(self):
+
+        settings = QSettings()
+        if settings.contains('/Processing/LastBatchOutputPath'):
+            lastDir = unicode(settings.value('/Processing/LastBatchOutputPath'))
+        else:
+            lastDir = ''
+
+        dirName = QFileDialog.getExistingDirectory(self,
+            self.tr('Select directory'), lastDir, QFileDialog.ShowDirsOnly)
+
+        if dirName:
+            self.table.cellWidget(self.row, self.col).setValue(dirName)
+            settings.setValue('/Processing/LastBatchOutputPath', dirName)
 
     def setValue(self, text):
         return self.text.setText(text)

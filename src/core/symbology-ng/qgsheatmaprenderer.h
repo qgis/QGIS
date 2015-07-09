@@ -38,21 +38,21 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRendererV2
     virtual ~QgsHeatmapRenderer();
 
     //reimplemented methods
-    virtual QgsFeatureRendererV2* clone() const;
-    virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
-    virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
-    virtual void stopRender( QgsRenderContext& context );
-    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature );
-    virtual QgsSymbolV2List symbols();
-    virtual QString dump() const;
-    virtual QList<QString> usedAttributes();
+    virtual QgsFeatureRendererV2* clone() const override;
+    virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
+    virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
+    virtual void stopRender( QgsRenderContext& context ) override;
+    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature ) override;
+    virtual QgsSymbolV2List symbols() override;
+    virtual QString dump() const override;
+    virtual QList<QString> usedAttributes() override;
     static QgsFeatureRendererV2* create( QDomElement& element );
-    virtual QDomElement save( QDomDocument& doc );
+    virtual QDomElement save( QDomDocument& doc ) override;
     static QgsHeatmapRenderer* convertFromRenderer( const QgsFeatureRendererV2* renderer );
 
     //reimplemented to extent the request so that points up to heatmap's radius distance outside
     //visible area are included
-    virtual void modifyRequestExtent( QgsRectangle& extent, QgsRenderContext& context );
+    virtual void modifyRequestExtent( QgsRectangle& extent, QgsRenderContext& context ) override;
 
     //heatmap specific methods
 
@@ -197,7 +197,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRendererV2
     double epanechnikovKernel( const double distance, const int bandwidth ) const;
     double triangularKernel( const double distance, const int bandwidth ) const;
 
-    QgsMultiPoint convertToMultipoint( QgsGeometry *geom );
+    QgsMultiPoint convertToMultipoint( const QgsGeometry *geom );
     void initializeValues( QgsRenderContext& context );
     void renderImage( QgsRenderContext &context );
 };

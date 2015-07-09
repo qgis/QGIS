@@ -178,7 +178,7 @@ bool BlockArray::setHistorySize( size_t newsize )
 
   if ( !size )
   {
-    FILE* tmp = tmpfile();
+    FILE *tmp = tmpfile();
     if ( !tmp )
     {
       perror( "konsole: cannot open temp file.\n" );
@@ -189,9 +189,10 @@ bool BlockArray::setHistorySize( size_t newsize )
       if ( ion < 0 )
       {
         perror( "konsole: cannot dup temp file.\n" );
-        fclose( tmp );
       }
+      fclose( tmp );
     }
+
     if ( ion < 0 )
       return false;
 

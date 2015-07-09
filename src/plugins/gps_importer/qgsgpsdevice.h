@@ -36,9 +36,9 @@ class QgsGPSDevice : public QgsBabelFormat
                   const QString& trkDlCmd, const QString& trkUlCmd );
 
     QStringList importCommand( const QString& babel, const QString& type,
-                               const QString& in, const QString& out ) const;
+                               const QString& in, const QString& out ) const override;
     QStringList exportCommand( const QString& babel, const QString& type,
-                               const QString& in, const QString& out ) const;
+                               const QString& in, const QString& out ) const override;
 
   private:
 

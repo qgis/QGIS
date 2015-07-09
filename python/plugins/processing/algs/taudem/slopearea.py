@@ -27,10 +27,9 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtGui import *
+from PyQt4.QtGui import QIcon
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import \
     GeoAlgorithmExecutionException
@@ -38,8 +37,6 @@ from processing.core.GeoAlgorithmExecutionException import \
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputRaster
-
-from processing.tools.system import *
 
 from TauDEMUtils import TauDEMUtils
 
@@ -61,16 +58,17 @@ class SlopeArea(GeoAlgorithm):
         self.cmdName = 'slopearea'
         self.group = 'Stream Network Analysis tools'
 
-        self.addParameter(ParameterRaster(self.SLOPE_GRID, 'Slope Grid',
-                          False))
+        self.addParameter(ParameterRaster(self.SLOPE_GRID,
+            self.tr('Slope Grid'), False))
         self.addParameter(ParameterRaster(self.AREA_GRID,
-                          'Contributing Area Grid', False))
-        self.addParameter(ParameterNumber(self.SLOPE_EXPONENT, 'Slope Exponent'
-                          , 0, None, 2))
-        self.addParameter(ParameterNumber(self.AREA_EXPONENT, 'Area Exponent',
-                          0, None, 1))
+            self.tr('Contributing Area Grid'), False))
+        self.addParameter(ParameterNumber(self.SLOPE_EXPONENT,
+            self.tr('Slope Exponent'), 0, None, 2))
+        self.addParameter(ParameterNumber(self.AREA_EXPONENT,
+            self.tr('Area Exponent'), 0, None, 1))
 
-        self.addOutput(OutputRaster(self.SLOPE_AREA_GRID, 'Slope Area Grid'))
+        self.addOutput(OutputRaster(self.SLOPE_AREA_GRID,
+            self.tr('Slope Area Grid')))
 
     def processAlgorithm(self, progress):
         commands = []
@@ -78,9 +76,9 @@ class SlopeArea(GeoAlgorithm):
 
         processNum = ProcessingConfig.getSetting(TauDEMUtils.MPI_PROCESSES)
         if processNum <= 0:
-            raise GeoAlgorithmExecutionException('Wrong number of MPI \
-                processes used.\nPlease set correct number before running \
-                TauDEM algorithms.')
+            raise GeoAlgorithmExecutionException(
+                self.tr('Wrong number of MPI processes used. Please set '
+                        'correct number before running TauDEM algorithms.'))
 
         commands.append('-n')
         commands.append(str(processNum))
@@ -94,11 +92,5 @@ class SlopeArea(GeoAlgorithm):
         commands.append(str(self.getParameterValue(self.AREA_EXPONENT)))
         commands.append('-sa')
         commands.append(self.getOutputValue(self.SLOPE_AREA_GRID))
-
-        loglines = []
-        loglines.append('TauDEM execution command')
-        for line in commands:
-            loglines.append(line)
-        ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
 
         TauDEMUtils.executeTauDEM(commands, progress)

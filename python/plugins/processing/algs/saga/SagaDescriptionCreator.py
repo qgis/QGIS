@@ -44,7 +44,7 @@ class SagaDescriptionCreator:
                 stdin=open(os.devnull),
                 stderr=subprocess.STDOUT,
                 universal_newlines=True,
-                )
+            )
             f2.close()
         f.close()
 
@@ -80,7 +80,7 @@ class SagaDescriptionCreator:
                     stdin=open(os.devnull),
                     stderr=f,
                     universal_newlines=True,
-                    )
+                )
                 f.close()
 
     def create(self):

@@ -28,6 +28,9 @@
 
 QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char *name, Qt::WindowFlags fl )
     : QWidget( parent, fl )
+    , mUserProjList( NULL )
+    , mGeoList( NULL )
+    , mProjList( NULL )
     , mProjListDone( false )
     , mUserProjListDone( false )
     , mRecentProjListDone( false )
@@ -60,42 +63,7 @@ QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char *name,
   // Hide (internal) ID column
   lstRecent->setColumnHidden( QGIS_CRS_ID_COLUMN, true );
 
-  // Read settings from persistent storage
-  QSettings settings;
-  mRecentProjections = settings.value( "/UI/recentProjections" ).toStringList();
-  /*** The reading (above) of internal id from persistent storage should be removed sometime in the future */
-  /*** This is kept now for backwards compatibility */
-
-  QStringList projectionsProj4  = settings.value( "/UI/recentProjectionsProj4" ).toStringList();
-  QStringList projectionsAuthId = settings.value( "/UI/recentProjectionsAuthId" ).toStringList();
-  if ( projectionsAuthId.size() >= mRecentProjections.size() )
-  {
-    // We had saved state with AuthId and Proj4. Use that instead
-    // to find out the crs id
-    QgsDebugMsg( "Use popular projection list from AuthId/Proj4 saved state" );
-    mRecentProjections.clear();
-    for ( int i = 0; i <  projectionsAuthId.size(); i++ )
-    {
-      // Create a crs from the EPSG
-      QgsCoordinateReferenceSystem crs;
-      crs.createFromOgcWmsCrs( projectionsAuthId.at( i ) );
-      if ( ! crs.isValid() )
-      {
-        // Couldn't create from EPSG, try the Proj4 string instead
-        if ( i >= projectionsProj4.size() || !crs.createFromProj4( projectionsProj4.at( i ) ) )
-        {
-          // No? Skip this entry
-          continue;
-        }
-        //If the CRS can be created but do not correspond to a CRS in the database, skip it (for example a deleted custom CRS)
-        if ( crs.srsid() == 0 )
-        {
-          continue;
-        }
-      }
-      mRecentProjections << QString::number( crs.srsid() );
-    }
-  }
+  mRecentProjections = QgsCoordinateReferenceSystem::recentProjections();
 }
 
 QgsProjectionSelector::~QgsProjectionSelector()
@@ -468,7 +436,6 @@ QString QgsProjectionSelector::selectedAuthId()
     return getSelectedExpression( "upper(auth_name||':'||auth_id)" );
 }
 
-
 long QgsProjectionSelector::selectedCrsId()
 {
   QTreeWidgetItem* item = lstCoordinateSystems->currentItem();
@@ -614,22 +581,14 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> *crsFilter )
     showDBMissingWarning( mSrsDatabaseFileName );
     return;
   }
-  // prepare the sql statement
+
   const char *tail;
   sqlite3_stmt *stmt;
-  // get total count of records in the projection table
-  QString sql = "select count(*) from tbl_srs";
-
-  rc = sqlite3_prepare( database, sql.toUtf8(), sql.toUtf8().length(), &stmt, &tail );
-  Q_ASSERT( rc == SQLITE_OK );
-  sqlite3_step( stmt );
-  sqlite3_finalize( stmt );
-
   // Set up the query to retrieve the projection information needed to populate the list
   //note I am giving the full field names for clarity here and in case someone
   //changes the underlying view TS
-  sql = QString( "select description, srs_id, upper(auth_name||':'||auth_id), is_geo, name, parameters, deprecated from vw_srs where %1 order by name,description" )
-        .arg( sqlFilter );
+  QString sql = QString( "select description, srs_id, upper(auth_name||':'||auth_id), is_geo, name, parameters, deprecated from vw_srs where %1 order by name,description" )
+                .arg( sqlFilter );
 
   rc = sqlite3_prepare( database, sql.toUtf8(), sql.toUtf8().length(), &stmt, &tail );
   // XXX Need to free memory from the error msg if one is set

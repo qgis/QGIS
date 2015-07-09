@@ -25,39 +25,50 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtGui import *
+import os
 
-from qgis.gui import *
-from qgis.core import *
+from PyQt4 import uic
 
-from processing.ui.ui_widgetBaseSelector import Ui_Form
+from qgis.core import QgsCoordinateReferenceSystem
+from qgis.gui import QgsGenericProjectionSelector
 
-class CrsSelectionPanel(QWidget, Ui_Form):
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'widgetBaseSelector.ui'))
+
+
+class CrsSelectionPanel(BASE, WIDGET):
 
     def __init__(self, default):
-        QWidget.__init__(self)
+        super(CrsSelectionPanel, self).__init__(None)
         self.setupUi(self)
 
         self.leText.setEnabled(False)
 
         self.btnSelect.clicked.connect(self.browseCRS)
-        self.authId = QgsCoordinateReferenceSystem(default).authid()
+        self.crs = QgsCoordinateReferenceSystem(default).authid()
         self.updateText()
 
     def setAuthId(self, authid):
-        self.authId = authid
+        self.crs = authid
         self.updateText()
 
     def browseCRS(self):
         selector = QgsGenericProjectionSelector()
-        selector.setSelectedAuthId(self.authId)
+        selector.setSelectedAuthId(self.crs)
         if selector.exec_():
-            self.authId = selector.selectedAuthId()
+            authId = selector.selectedAuthId()
+            if authId.upper().startswith("EPSG:"):
+                self.crs = authId
+            else:
+                proj = QgsCoordinateReferenceSystem()
+                proj.createFromSrsId(selector.selectedCrsId())
+                self.crs = proj.toProj4()
             self.updateText()
 
     def updateText(self):
-        if self.authId is not None:
-            self.leText.setText(self.authId)
+        if self.crs is not None:
+            self.leText.setText(self.crs)
 
     def getValue(self):
-        return self.authId
+        return self.crs

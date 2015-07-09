@@ -19,7 +19,6 @@
 #include "ui_qgscomposerbase.h"
 #include "qgscomposermap.h"
 #include "qgscontexthelp.h"
-#include <QPrinter>
 #include <QDockWidget>
 
 class QgisApp;
@@ -52,6 +51,7 @@ class QUndoView;
 class QComboBox;
 class QLabel;
 class QTreeView;
+class QPrinter;
 
 /** \ingroup MapComposer
  * \brief A gui for composing a printable map.
@@ -105,19 +105,18 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
   protected:
     //! Move event
-    virtual void moveEvent( QMoveEvent * );
+    virtual void moveEvent( QMoveEvent * ) override;
 
-    virtual void closeEvent( QCloseEvent * );
+    virtual void closeEvent( QCloseEvent * ) override;
 
     //! Resize event
-    virtual void resizeEvent( QResizeEvent * );
+    virtual void resizeEvent( QResizeEvent * ) override;
 
-    virtual void showEvent( QShowEvent* event );
-
-#ifdef Q_WS_MAC
-    //! Change event (update window menu on ActivationChange)
-    virtual void changeEvent( QEvent * );
+#ifdef Q_OS_MAC
+    virtual void showEvent( QShowEvent* event ) override;
 #endif
+
+    virtual void changeEvent( QEvent *ev ) override;
 
   signals:
     //! Is emitted every time the view zoom has changed
@@ -509,6 +508,8 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Load predefined scales from the project's properties
     void loadAtlasPredefinedScalesFromProject();
 
+    QPrinter* printer();
+
     /**Composer title*/
     QString mTitle;
 
@@ -558,7 +559,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     QAction *mActionPaste;
 
     //! Page & Printer Setup
-    QPrinter mPrinter;
+    QPrinter* mPrinter;
 
     QUndoView* mUndoView;
 
@@ -593,6 +594,15 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     QMenu* mHelpMenu;
 
     QgsMapLayerAction* mAtlasFeatureAction;
+
+    struct PanelStatus
+    {
+      PanelStatus( bool visible = true, bool active = false ) : isVisible( visible ), isActive( active ) {}
+      bool isVisible;
+      bool isActive;
+    };
+
+    QMap< QString, PanelStatus > mPanelStatus;
 
   signals:
     void printAsRasterChanged( bool state );
@@ -636,6 +646,8 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Sets the composition for the composer window
     void setComposition( QgsComposition* composition );
+
+    void dockVisibilityChanged( bool visible );
 
 };
 

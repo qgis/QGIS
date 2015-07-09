@@ -107,7 +107,7 @@ class CORE_EXPORT QgsCredentialsConsole : public QObject, public QgsCredentials
     void destroyed();
 
   protected:
-    virtual bool request( QString realm, QString &username, QString &password, QString message = QString::null );
+    virtual bool request( QString realm, QString &username, QString &password, QString message = QString::null ) override;
 };
 
 #endif

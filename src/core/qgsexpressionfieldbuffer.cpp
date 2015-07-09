@@ -33,6 +33,11 @@ void QgsExpressionFieldBuffer::removeExpression( int index )
   mExpressions.removeAt( index );
 }
 
+void QgsExpressionFieldBuffer::updateExpression( int index, const QString& exp )
+{
+  mExpressions[index].expression = exp;
+}
+
 void QgsExpressionFieldBuffer::writeXml( QDomNode& layerNode, QDomDocument& document ) const
 {
   QDomElement expressionFieldsElem = document.createElement( "expressionfields" );

@@ -53,6 +53,7 @@ class QgsLayerTreeModel : QAbstractItemModel
       // display flags
       ShowLegend,              //!< Add legend nodes for layer nodes
       ShowSymbology,           //!< deprecated - use ShowLegend
+      ShowLegendAsTree,        //!< For legends that support it, will show them in a tree instead of a list (needs also ShowLegend). Added in 2.8
 
       // behavioral flags
       AllowNodeReorder,           //!< Allow reordering with drag'n'drop
@@ -140,6 +141,13 @@ class QgsLayerTreeModel : QAbstractItemModel
     //! If there are no valid map view data (from previous call to setLegendMapViewData()), returned values are zeros.
     //! @note added in 2.6
     void legendMapViewData( double *mapUnitsPerPixel /Out/, int *dpi /Out/, double *scale /Out/ );
+
+    //! Get map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
+    //! @note added in 2.10
+    QMap<QString, QString> layerStyleOverrides() const;
+    //! Set map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
+    //! @note added in 2.10
+    void setLayerStyleOverrides( const QMap<QString, QString>& overrides );
 
     //! Return true if index represents a legend node (instead of layer node)
     //! @deprecated use index2legendNode()

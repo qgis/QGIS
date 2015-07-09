@@ -27,10 +27,6 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #define _CRT_SECURE_NO_DEPRECATE
 
 #include <iostream>
@@ -39,9 +35,8 @@
 #include <cstring>
 #include <cfloat>
 
-#include <pal/layer.h>
-#include <pal/pal.h>
-
+#include "layer.h"
+#include "pal.h"
 #include "costcalculator.h"
 #include "feature.h"
 #include "geomfunction.h"
@@ -54,8 +49,20 @@
 
 namespace pal
 {
-  LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, double alpha, double cost, FeaturePart *feature, bool isReversed )
-      : id( id ), cost( cost ), feature( feature ), nbOverlap( 0 ), alpha( alpha ), w( w ), h( h ), nextPart( NULL ), partId( -1 ), reversed( isReversed ), upsideDown( false )
+  LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, double alpha, double cost, FeaturePart *feature, bool isReversed, Quadrant quadrant )
+      : id( id )
+      , cost( cost )
+      , feature( feature )
+      , probFeat( 0 )
+      , nbOverlap( 0 )
+      , alpha( alpha )
+      , w( w )
+      , h( h )
+      , nextPart( NULL )
+      , partId( -1 )
+      , reversed( isReversed )
+      , upsideDown( false )
+      , quadrant( quadrant )
   {
 
     // alpha take his value bw 0 and 2*pi rad
@@ -65,7 +72,7 @@ namespace pal
     while ( this->alpha < 0 )
       this->alpha += 2 * M_PI;
 
-    register double beta = this->alpha + ( M_PI / 2 );
+    double beta = this->alpha + ( M_PI / 2 );
 
     double dx1, dx2, dy1, dy2;
 
@@ -165,6 +172,8 @@ namespace pal
       nextPart = NULL;
     partId = other.partId;
     upsideDown = other.upsideDown;
+    reversed = other.reversed;
+    quadrant = other.quadrant;
   }
 
   bool LabelPosition::isIn( double *bbox )
@@ -220,7 +229,7 @@ namespace pal
 
   void LabelPosition::print()
   {
-    std::cout << feature->getLayer()->getName() << "/" << feature->getUID() << "/" << id;
+    //  std::cout << feature->getLayer()->getName() << "/" << feature->getUID() << "/" << id;
     std::cout << " cost: " << cost;
     std::cout << " alpha" << alpha << std::endl;
     std::cout << x[0] << ", " << y[0] << std::endl;
@@ -340,7 +349,7 @@ namespace pal
   {
     if ( cost >= 1 )
     {
-      std::cout << " Warning: lp->cost == " << cost << " (from feat: " << feature->getUID() << "/" << getLayerName() << ")" << std::endl;
+      //   std::cout << " Warning: lp->cost == " << cost << " (from feat: " << feature->getUID() << "/" << getLayerName() << ")" << std::endl;
       cost -= int ( cost ); // label cost up to 1
     }
   }
@@ -377,7 +386,7 @@ namespace pal
     }
   }
 
-  char* LabelPosition::getLayerName() const
+  QString LabelPosition::getLayerName() const
   {
     return feature->getLayer()->name;
   }

@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgsgrasstools.h"
-#include "qgsgrassbrowser.h"
 #include "qgsgrassmodule.h"
 #include "qgsgrassshell.h"
 #include "qgsgrass.h"
@@ -43,12 +42,17 @@
 #include <QSortFilterProxyModel>
 #include <QStandardItem>
 
+#ifdef Q_OS_WIN
+#include "qgsgrassutils.h"
+#endif
 
-QgsGrassTools::QgsGrassTools( QgisInterface *iface,
-                              QWidget * parent, const char * name, Qt::WindowFlags f )
-    : QDialog( parent, f ), QgsGrassToolsBase()
-    , mBrowser( 0 )
-    , mModulesListModel( 0 ), mModelProxy( 0 ), mDirectModulesListModel( 0 ), mDirectModelProxy( 0 )
+
+QgsGrassTools::QgsGrassTools( QgisInterface *iface, QWidget * parent, const char * name, Qt::WindowFlags f )
+    : QDockWidget( parent, f )
+    , mModulesListModel( 0 )
+    , mModelProxy( 0 )
+    , mDirectModulesListModel( 0 )
+    , mDirectModelProxy( 0 )
 {
   Q_UNUSED( name );
   setupUi( this );
@@ -61,20 +65,11 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface,
   mIface = iface;
   mCanvas = mIface->mapCanvas();
 
-  connect( qApp, SIGNAL( aboutToQuit() ),
-           this, SLOT( closeTools() ) );
-
   //statusBar()->hide();
 
   // set the dialog title
   QString title = tr( "GRASS Tools: %1/%2" ).arg( QgsGrass::getDefaultLocation() ).arg( QgsGrass::getDefaultMapset() );
   setWindowTitle( title );
-
-  // Add map browser
-  mBrowser = new QgsGrassBrowser( mIface, this );
-
-  connect( mBrowser, SIGNAL( regionChanged() ),
-           this, SLOT( emitRegionChanged() ) );
 
   // Tree view code.
   mModulesTree->header()->hide();
@@ -117,27 +112,34 @@ void QgsGrassTools::showTabs()
   if ( QgsGrass::activeMode() )
   {
     title = tr( "GRASS Tools: %1/%2" ).arg( QgsGrass::getDefaultLocation() ).arg( QgsGrass::getDefaultMapset() );
-    mBrowser->setLocation( QgsGrass::getDefaultGisdbase(), QgsGrass::getDefaultLocation() );
   }
   else
   {
+#ifdef GRASS_DIRECT
     title = tr( "GRASS Direct Tools" );
+#else
+    title = tr( "GRASS Tools" );
+#endif
   }
   setWindowTitle( title );
 
-  mTabWidget->removeTab( mTabWidget->indexOf( mModulesTreeTab ) );
+  // we always show tabs but disabled if not active
+  // direct mode currently disabled
   mTabWidget->removeTab( mTabWidget->indexOf( mDirectModulesTreeTab ) );
-  mTabWidget->removeTab( mTabWidget->indexOf( mModulesListTab ) );
   mTabWidget->removeTab( mTabWidget->indexOf( mDirectModulesListTab ) );
-  mTabWidget->removeTab( mTabWidget->indexOf( mBrowser ) );
+#if 0
+  mTabWidget->removeTab( mTabWidget->indexOf( mModulesListTab ) );
+  mTabWidget->removeTab( mTabWidget->indexOf( mModulesTreeTab ) );
+
+  mTabWidget->insertTab( 0, mModulesTreeTab, tr( "Modules Tree" ) );
+  mTabWidget->insertTab( 1, mModulesListTab, tr( "Modules List" ) );
+
+  repaint();
+#endif
 
   QString conf = QgsApplication::pkgDataPath() + "/grass/config/default.qgc";
   if ( QgsGrass::activeMode() )
   {
-    mTabWidget->insertTab( 0, mModulesTreeTab, tr( "Modules Tree" ) );
-    mTabWidget->insertTab( 1, mModulesListTab, tr( "Modules List" ) );
-    mTabWidget->insertTab( 2, mBrowser, tr( "Browser" ) );
-    repaint();
     QgsDebugMsg( QString( "topLevelItemCount = %1" ).arg( mModulesTree->topLevelItemCount() ) );
     if ( mModulesTree->topLevelItemCount() == 0 )
     {
@@ -147,9 +149,11 @@ void QgsGrassTools::showTabs()
       QApplication::restoreOverrideCursor();
     }
     QgsDebugMsg( QString( "topLevelItemCount = %1" ).arg( mModulesTree->topLevelItemCount() ) );
+    mTabWidget->setEnabled( true );
   }
   else
   {
+#ifdef GRASS_DIRECT
     // Remove open indirect modules tabs
     for ( int i = mTabWidget->count() - 1; i >= 0; i-- )
     {
@@ -170,6 +174,9 @@ void QgsGrassTools::showTabs()
       loadConfig( conf, mDirectModulesTree, mDirectModulesListModel, true );
       QApplication::restoreOverrideCursor();
     }
+#else
+    mTabWidget->setEnabled( false );
+#endif
   }
 }
 
@@ -212,7 +219,7 @@ void QgsGrassTools::runModule( QString name, bool direct )
   if ( name == "shell" )
   {
 #ifdef Q_OS_WIN
-    QgsGrass::putEnv( "GRASS_HTML_BROWSER", QgsApplication::libexecPath() + "grass/bin/qgis.g.browser" );
+    QgsGrass::putEnv( "GRASS_HTML_BROWSER", QgsGrassUtils::htmlBrowserPath() );
     if ( !QProcess::startDetached( getenv( "COMSPEC" ) ) )
     {
       QMessageBox::warning( 0, "Warning", tr( "Cannot start command shell (%1)" ).arg( getenv( "COMSPEC" ) ) );
@@ -232,9 +239,6 @@ void QgsGrassTools::runModule( QString name, bool direct )
   else
   {
     QgsGrassModule *gmod = new QgsGrassModule( this, name, mIface, path, direct, mTabWidget );
-    connect( gmod, SIGNAL( moduleStarted() ), mBrowser, SLOT( moduleStarted() ) );
-    connect( gmod, SIGNAL( moduleFinished() ), mBrowser, SLOT( moduleFinished() ) );
-
     m = qobject_cast<QWidget *>( gmod );
   }
 
@@ -459,7 +463,7 @@ void QgsGrassTools::mapsetChanged()
 {
   QgsDebugMsg( "entered." );
 
-  //closeTools();
+  closeTools();
   showTabs();
 }
 
@@ -513,19 +517,15 @@ void QgsGrassTools::closeTools()
 {
   QgsDebugMsg( "entered." );
 
-  for ( int i = mTabWidget->count() - 1; i > 2; i-- )
+  for ( int i = mTabWidget->count() - 1; i > 1; i-- ) // first two are module tree and module list
   {
     delete mTabWidget->widget( i );
-    mTabWidget->removeTab( i );
   }
 }
-
-
 
 //
 // Helper function for Tim's experimental model list
 //
-
 void QgsGrassTools::on_mFilterInput_textChanged( QString theText )
 {
   QgsDebugMsg( "GRASS modules filter changed to :" + theText );

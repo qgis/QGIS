@@ -8,6 +8,22 @@ class QgsAttributeEditorElement : QObject
 #include "qgsvectorlayer.h"
 %End
 
+%ConvertToSubClassCode
+  QgsAttributeEditorElement* e = qobject_cast<QgsAttributeEditorElement*>( sipCpp );
+
+  sipClass = 0;
+  if ( e )
+  {
+    switch ( e->type() )
+    {
+      case QgsAttributeEditorElement::AeTypeContainer: sipClass = sipClass_QgsAttributeEditorContainer; break;
+      case QgsAttributeEditorElement::AeTypeField:   sipClass = sipClass_QgsAttributeEditorField; break;
+      case QgsAttributeEditorElement::AeTypeRelation:  sipClass = sipClass_QgsAttributeEditorRelation; break;
+    }
+  }
+%End
+
+
   public:
 
     enum AttributeEditorType
@@ -43,6 +59,7 @@ class QgsAttributeEditorContainer : QgsAttributeEditorElement
     virtual void addChildElement( QgsAttributeEditorElement *widget );
     virtual void setIsGroupBox( bool isGroupBox );
     virtual bool isGroupBox() const;
+    virtual void setName( const QString& name );
     QList<QgsAttributeEditorElement*> children() const;
 };
 
@@ -88,20 +105,25 @@ struct QgsVectorJoinInfo
 #include "qgsvectorlayer.h"
 %End
 
-  /**Join field in the target layer*/
+  /** Join field in the target layer*/
   QString targetFieldName;
-  /**Source layer*/
+  /** Source layer*/
   QString joinLayerId;
-  /**Join field in the source layer*/
+  /** Join field in the source layer*/
   QString joinFieldName;
-  /**True if the join is cached in virtual memory*/
+  /** True if the join is cached in virtual memory*/
   bool memoryCache;
-  /**Cache for joined attributes to provide fast lookup (size is 0 if no memory caching)
+  /** Cache for joined attributes to provide fast lookup (size is 0 if no memory caching)
     @note not available in python bindings
     */
   // QHash< QString, QgsAttributeMap> cachedAttributes;
 
   bool operator==( const QgsVectorJoinInfo& other ) const;
+
+  /** An optional prefix. If it is a Null string "{layername}_" will be used
+   * @note Added in 2.8
+   */
+  QString prefix;
 
   /** Set subset of fields to be used from joined layer. Takes ownership of the passed pointer. Null pointer tells to use all fields.
     @note added in 2.6 */
@@ -279,7 +301,7 @@ class QgsVectorLayer : QgsMapLayer
     /** Removes a vector layer join */
     void removeJoin( const QString& joinLayerId );
 
-    const QList< QgsVectorJoinInfo >& vectorJoins() const;
+    const QList< QgsVectorJoinInfo > vectorJoins() const;
 
     /**
      * Add a new field which is calculated by the expression specified
@@ -287,9 +309,11 @@ class QgsVectorLayer : QgsMapLayer
      * @param exp The expression which calculates the field
      * @param fld The field to calculate
      *
-     * @note added in 2.6
+     * @return The index of the new field
+     *
+     * @note added in 2.6, return value added in 2.9
      */
-    void addExpressionField( const QString& exp, const QgsField& fld );
+    int addExpressionField( const QString& exp, const QgsField& fld );
 
     /**
      * Remove an expression field
@@ -299,6 +323,28 @@ class QgsVectorLayer : QgsMapLayer
      * @note added in 2.6
      */
     void removeExpressionField( int index );
+
+    /**
+     * Returns the expressoin used for a given expression field
+     *
+     * @param index An index of an epxression based (virtual) field
+     *
+     * @return The expression for the field at index
+     *
+     * @note added in 2.9
+     */
+    const QString expressionField( int index );
+
+    /**
+     * Changes the expression used to define an expression based (virtual) field
+     *
+     * @param index The index of the expression to change
+     *
+     * @param exp The new expression to set
+     *
+     * @note added in 2.9
+     */
+    void updateExpressionField( int index, const QString& exp );
 
     /** Get the label object associated with this layer */
     QgsLabel *label();
@@ -398,6 +444,18 @@ class QgsVectorLayer : QgsMapLayer
     /** Returns the bounding box of the selected features. If there is no selection, QgsRectangle(0,0,0,0) is returned */
     QgsRectangle boundingBoxOfSelected();
 
+    /** Returns whether the layer contains labels which are enabled and should be drawn.
+     * @return true if layer contains enabled labels
+     * @note added in QGIS 2.9
+     */
+    bool labelsEnabled() const;
+
+    /** Returns whether the layer contains diagrams which are enabled and should be drawn.
+     * @return true if layer contains enabled diagrams
+     * @note added in QGIS 2.9
+     */
+    bool diagramsEnabled() const;
+
     /** Sets diagram rendering object (takes ownership) */
     void setDiagramRenderer( QgsDiagramRendererV2* r /Transfer/ );
     const QgsDiagramRendererV2* diagramRenderer() const;
@@ -474,7 +532,17 @@ class QgsVectorLayer : QgsMapLayer
      */
     virtual QString loadNamedStyle( const QString &theURI, bool &theResultFlag );
 
-    virtual bool applyNamedStyle( QString namedStyle, QString errorMsg );
+    /**
+     * Will load a named style from a provided QML string.
+     *
+     * @param namedStyle  A QML string
+     * @param errorMsg    An error message indicating problems if any
+     *
+     * @return true on success
+     *
+     * @deprecated Will be removed for QGIS 3 in favor of importNamedStyle
+     */
+    virtual bool applyNamedStyle( QString namedStyle, QString &errorMsg /Out/ );
 
     /** convert a saved attribute editor element into a AttributeEditor structure as it's used internally.
      * @param elem the DOM element
@@ -508,6 +576,18 @@ class QgsVectorLayer : QgsMapLayer
      * @return long containing number of features
      */
     virtual long featureCount() const;
+
+    /**
+     * Update the data source of the layer. The layer's renderer and legend will be preserved only
+     * if the geometry type of the new data source matches the current geometry type of the layer.
+     * @param dataSource new layer data source
+     * @param baseName base name of the layer
+     * @param provider provider string
+     * @param loadDefaultStyleFlag set to true to reset the layer's style to the default for the
+     * data source
+     * @note added in QGIS 2.10
+     */
+    void setDataSource( QString dataSource, QString baseName, QString provider, bool loadDefaultStyleFlag = false );
 
     /**
      * Number of features rendered with specified symbol. Features must be first
@@ -578,7 +658,7 @@ class QgsVectorLayer : QgsMapLayer
     /** Deletes the selected features
      *  @return true in case of success and false otherwise
      */
-    bool deleteSelectedFeatures();
+    bool deleteSelectedFeatures( int *deletedCount = 0 );
 
     /**Adds a ring to polygon/multipolygon features
      @return
@@ -643,7 +723,7 @@ class QgsVectorLayer : QgsMapLayer
      * @note geom is not going to be modified by the function
      * @return 0 in case of success
      */
-    int addTopologicalPoints( QgsGeometry* geom );
+    int addTopologicalPoints( const QgsGeometry* geom );
 
     /** Adds a vertex to segments which intersect point p but don't
      * already have a vertex there. If a feature already has a vertex at position p,
@@ -661,11 +741,15 @@ class QgsVectorLayer : QgsMapLayer
      */
     int insertSegmentVerticesForSnap( const QList<QgsSnappingResult>& snapResults );
 
-    /** Set labels on */
-    void enableLabels( bool on );
+    /** Set labels on
+     * @deprecated this method is for the old labeling engine
+    */
+    void enableLabels( bool on ) /Deprecated/;
 
-    /** Label is on */
-    bool hasLabelsEnabled() const;
+    /** Label is on
+     * @deprecated this method is for the old labeling engine, use labelsEnabled instead
+    */
+    bool hasLabelsEnabled() const /Deprecated/;
 
     /** Returns true if the provider is in editing mode */
     virtual bool isEditable() const;
@@ -709,8 +793,10 @@ class QgsVectorLayer : QgsMapLayer
      */
     bool draw( QgsRenderContext& rendererContext );
 
-    /** Draws the layer labels using coordinate transformation */
-    void drawLabels( QgsRenderContext& rendererContext );
+    /** Draws the layer labels using the old labeling engine
+     * @note deprecated
+    */
+    void drawLabels( QgsRenderContext& rendererContext ) /Deprecated/;
 
     /** Return the extent of the layer as a QRect */
     QgsRectangle extent();
@@ -1074,14 +1160,36 @@ class QgsVectorLayer : QgsMapLayer
     /**Returns maximum value for an attribute column or invalid variant in case of error */
     QVariant maximumValue( int index );
 
-    /* Set the blending mode used for rendering each feature */
+    /** Fetches all values from a specified field name or expression.
+     * @param fieldOrExpression field name or an expression string
+     * @param ok will be set to false if field or expression is invalid, otherwise true
+     * @param selectedOnly set to true to get values from selected features only
+     * @returns list of fetched values
+     * @note added in QGIS 2.9
+     * @see getDoubleValues
+     */
+    QList< QVariant > getValues( const QString &fieldOrExpression, bool &ok, bool selectedOnly = false );
+
+    /** Fetches all double values from a specified field name or expression. Null values or
+     * invalid expression results are skipped.
+     * @param fieldOrExpression field name or an expression string evaluating to a double value
+     * @param ok will be set to false if field or expression is invalid, otherwise true
+     * @param selectedOnly set to true to get values from selected features only
+     * @param nullCount optional pointer to integer to store number of null values encountered in
+     * @returns list of fetched values
+     * @note added in QGIS 2.9
+     * @see getValues
+     */
+    QList< double > getDoubleValues( const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, int* nullCount = 0 );
+
+    /** Set the blending mode used for rendering each feature */
     void setFeatureBlendMode( const QPainter::CompositionMode &blendMode );
-    /* Returns the current blending mode for features */
+    /** Returns the current blending mode for features */
     QPainter::CompositionMode featureBlendMode() const;
 
-    /* Set the transparency for the vector layer */
+    /** Set the transparency for the vector layer */
     void setLayerTransparency( int layerTransparency );
-    /* Returns the current transparency for the vector layer */
+    /** Returns the current transparency for the vector layer */
     int layerTransparency() const;
 
     QString metadata();
@@ -1211,6 +1319,16 @@ class QgsVectorLayer : QgsMapLayer
     void attributeDeleted( int idx );
     void featureAdded( QgsFeatureId fid );
     void featureDeleted( QgsFeatureId fid );
+    /**
+     * Emitted when features have been deleted.
+     *
+     * If features are deleted within an edit command, this will only be emitted once at the end
+     * to allow connected slots to minimize the overhead.
+     * If features are delted outside of an edit command, this signal will be emitted once per feature.
+     *
+     * @param fids The feature ids that have been deleted.
+     */
+    void featuresDeleted( QgsFeatureIds fids );
     /**
      * Is emitted, whenever the fields available from this layer have been changed.
      * This can be due to manually adding attributes or due to a join.

@@ -83,10 +83,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   mStyleSheetNewOpts = mStyleSheetBuilder->defaultOptions();
   mStyleSheetOldOpts = QMap<QString, QVariant>( mStyleSheetNewOpts );
 
-  connect( cmbTheme, SIGNAL( activated( const QString& ) ), this, SLOT( themeChanged( const QString& ) ) );
-  connect( cmbTheme, SIGNAL( highlighted( const QString& ) ), this, SLOT( themeChanged( const QString& ) ) );
-  connect( cmbTheme, SIGNAL( textChanged( const QString& ) ), this, SLOT( themeChanged( const QString& ) ) );
-
   connect( mFontFamilyRadioCustom, SIGNAL( toggled( bool ) ), mFontFamilyComboBox, SLOT( setEnabled( bool ) ) );
 
   connect( cmbIconSize, SIGNAL( activated( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
@@ -301,9 +297,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   //wms search server
   leWmsSearch->setText( settings.value( "/qgis/WMSSearchUrl", "http://geopole.org/wms/search?search=%1&type=rss" ).toString() );
 
-  // set the current theme
-  cmbTheme->setItemText( cmbTheme->currentIndex(), settings.value( "/Themes" ).toString() );
-
   // set the attribute table default filter
   cmbAttrTableBehaviour->clear();
   cmbAttrTableBehaviour->addItem( tr( "Show all features" ), QgsAttributeTableFilterModel::ShowAll );
@@ -363,8 +356,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   }
   QString myLayerDefaultCrs = settings.value( "/Projections/layerDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString();
   mLayerDefaultCrs.createFromOgcWmsCrs( myLayerDefaultCrs );
-  //display the crs as friendly text rather than in wkt
-  leLayerGlobalCrs->setText( mLayerDefaultCrs.authid() + " - " + mLayerDefaultCrs.description() );
+  leLayerGlobalCrs->setCrs( mLayerDefaultCrs );
 
   //on the fly CRS transformation settings
   //it would be logical to have single settings value but originaly the radio buttons were checkboxes
@@ -383,8 +375,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
 
   QString myDefaultCrs = settings.value( "/Projections/projectDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString();
   mDefaultCrs.createFromOgcWmsCrs( myDefaultCrs );
-  //display the crs as friendly text rather than in wkt
-  leProjectGlobalCrs->setText( mDefaultCrs.authid() + " - " + mDefaultCrs.description() );
+  leProjectGlobalCrs->setCrs( mDefaultCrs );
+  leProjectGlobalCrs->setOptionVisible( QgsProjectionSelectionWidget::DefaultCrs, false );
 
   //default datum transformations
   settings.beginGroup( "/Projections" );
@@ -489,22 +481,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
     mKeepBaseUnitCheckBox->setChecked( false );
   }
 
-
-  // add the themes to the combo box on the option dialog
-  QDir myThemeDir( ":/images/themes/" );
-  myThemeDir.setFilter( QDir::Dirs );
-  QStringList myDirList = myThemeDir.entryList( QStringList( "*" ) );
-  cmbTheme->clear();
-  for ( int i = 0; i < myDirList.count(); i++ )
-  {
-    if ( myDirList[i] != "." && myDirList[i] != ".." )
-    {
-      cmbTheme->addItem( myDirList[i] );
-    }
-  }
-
-  // set the theme combo
-  cmbTheme->setCurrentIndex( cmbTheme->findText( settings.value( "/Themes", "default" ).toString() ) );
   cmbIconSize->setCurrentIndex( cmbIconSize->findText( settings.value( "/IconSize", QGIS_ICON_SIZE ).toString() ) );
 
   // set font size and family
@@ -537,8 +513,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
 
   // custom group boxes
   mCustomGroupBoxChkBx->setChecked( mStyleSheetOldOpts.value( "groupBoxCustom" ).toBool() );
-  mCustomSideBarSide->setChecked( mStyleSheetOldOpts.value( "sidebarStyle" ).toBool() );
-  mBoldGroupBoxTitleChkBx->setChecked( mStyleSheetOldOpts.value( "groupBoxBoldTitle" ).toBool() );
 
   mMessageTimeoutSpnBx->setValue( settings.value( "/qgis/messageTimeout", 5 ).toInt() );
 
@@ -576,15 +550,17 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   mLegendLayersBoldChkBx->setChecked( settings.value( "/qgis/legendLayersBold", true ).toBool() );
   mLegendGroupsBoldChkBx->setChecked( settings.value( "/qgis/legendGroupsBold", false ).toBool() );
   cbxHideSplash->setChecked( settings.value( "/qgis/hideSplash", false ).toBool() );
-  cbxShowTips->setChecked( settings.value( "/qgis/showTips", true ).toBool() );
+  cbxShowTips->setChecked( settings.value( QString( "/qgis/showTips%1" ).arg( QGis::QGIS_VERSION_INT / 100 ), true ).toBool() );
   cbxAttributeTableDocked->setChecked( settings.value( "/qgis/dockAttributeTable", false ).toBool() );
   cbxSnappingOptionsDocked->setChecked( settings.value( "/qgis/dockSnapping", false ).toBool() );
   cbxAddPostgisDC->setChecked( settings.value( "/qgis/addPostgisDC", false ).toBool() );
   cbxAddOracleDC->setChecked( settings.value( "/qgis/addOracleDC", false ).toBool() );
+  cbxCompileExpressions->setChecked( settings.value( "/qgis/postgres/compileExpressions", false ).toBool() );
   cbxCreateRasterLegendIcons->setChecked( settings.value( "/qgis/createRasterLegendIcons", false ).toBool() );
   cbxCopyWKTGeomFromTable->setChecked( settings.value( "/qgis/copyGeometryAsWKT", true ).toBool() );
   leNullValue->setText( settings.value( "qgis/nullValue", "NULL" ).toString() );
   cbxIgnoreShapeEncoding->setChecked( settings.value( "/qgis/ignoreShapeEncoding", true ).toBool() );
+  cbxCanvasRotation->setChecked( QgsMapCanvas::rotationEnabled() );
 
   cmbLegendDoubleClickAction->setCurrentIndex( settings.value( "/qgis/legendDoubleClickAction", 0 ).toInt() );
 
@@ -770,11 +746,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   QStringList myI18nList = i18nList();
   foreach ( QString l, myI18nList )
   {
-#if QT_VERSION >= 0x040800
     cboLocale->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( l ) ), QLocale( l ).nativeLanguageName(), l );
-#else
-    cboLocale->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( l ) ), l, l );
-#endif
   }
   cboLocale->setCurrentIndex( cboLocale->findData( myUserLocale ) );
   bool myLocaleOverrideFlag = settings.value( "locale/overrideFlag", false ).toBool();
@@ -801,7 +773,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   mDefaultSnapModeComboBox->setCurrentIndex( mDefaultSnapModeComboBox->findData( defaultSnapString ) );
   mDefaultSnappingToleranceSpinBox->setValue( settings.value( "/qgis/digitizing/default_snapping_tolerance", 0 ).toDouble() );
   mSearchRadiusVertexEditSpinBox->setValue( settings.value( "/qgis/digitizing/search_radius_vertex_edit", 10 ).toDouble() );
-  if ( settings.value( "/qgis/digitizing/default_snapping_tolerance_unit", 0 ).toInt() == QgsTolerance::MapUnits )
+  int defSnapUnits = settings.value( "/qgis/digitizing/default_snapping_tolerance_unit", QgsTolerance::ProjectUnits ).toInt();
+  if ( defSnapUnits == QgsTolerance::ProjectUnits || defSnapUnits == QgsTolerance::LayerUnits )
   {
     index = mDefaultSnappingToleranceComboBox->findText( tr( "map units" ) );
   }
@@ -810,7 +783,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
     index = mDefaultSnappingToleranceComboBox->findText( tr( "pixels" ) );
   }
   mDefaultSnappingToleranceComboBox->setCurrentIndex( index );
-  if ( settings.value( "/qgis/digitizing/search_radius_vertex_edit_unit", QgsTolerance::Pixels ).toInt() == QgsTolerance::MapUnits )
+  int defRadiusUnits = settings.value( "/qgis/digitizing/search_radius_vertex_edit_unit", QgsTolerance::Pixels ).toInt();
+  if ( defRadiusUnits == QgsTolerance::ProjectUnits || defRadiusUnits == QgsTolerance::LayerUnits )
   {
     index = mSearchRadiusVertexEditComboBox->findText( tr( "map units" ) );
   }
@@ -890,10 +864,7 @@ void QgsOptions::setCurrentPage( QString pageWidgetName )
 
 void QgsOptions::on_mProxyTypeComboBox_currentIndexChanged( int idx )
 {
-  leProxyHost->setEnabled( idx != 0 );
-  leProxyPort->setEnabled( idx != 0 );
-  leProxyUser->setEnabled( idx != 0 );
-  leProxyPassword->setEnabled( idx != 0 );
+  frameManualProxy->setEnabled( idx != 0 );
 }
 
 void QgsOptions::on_cbxProjectDefaultNew_toggled( bool checked )
@@ -947,12 +918,6 @@ void QgsOptions::on_pbnTemplateFolderReset_pressed()
   leTemplateFolder->setText( QgsApplication::qgisSettingsDirPath() + QString( "project_templates" ) );
 }
 
-void QgsOptions::themeChanged( const QString &newThemeName )
-{
-  // Slot to change the theme as user scrolls through the choices
-  QgisApp::instance()->setTheme( newThemeName );
-}
-
 void QgsOptions::iconSizeChanged( const QString &iconSize )
 {
   QgisApp::instance()->setIconSizes( iconSize.toInt() );
@@ -978,12 +943,6 @@ void QgsOptions::on_mProjectOnLaunchPushBtn_pressed()
   {
     mProjectOnLaunchLineEdit->setText( projPath );
   }
-}
-
-QString QgsOptions::theme()
-{
-  // returns the current theme (as selected in the cmbTheme combo box)
-  return cmbTheme->currentText();
 }
 
 void QgsOptions::saveOptions()
@@ -1083,7 +1042,7 @@ void QgsOptions::saveOptions()
   bool legendGroupsBold = settings.value( "/qgis/legendGroupsBold", false ).toBool();
   settings.setValue( "/qgis/legendGroupsBold", mLegendGroupsBoldChkBx->isChecked() );
   settings.setValue( "/qgis/hideSplash", cbxHideSplash->isChecked() );
-  settings.setValue( "/qgis/showTips", cbxShowTips->isChecked() );
+  settings.setValue( QString( "/qgis/showTips%1" ).arg( QGis::QGIS_VERSION_INT / 100 ), cbxShowTips->isChecked() );
   settings.setValue( "/qgis/dockAttributeTable", cbxAttributeTableDocked->isChecked() );
   settings.setValue( "/qgis/attributeTableBehaviour", cmbAttrTableBehaviour->itemData( cmbAttrTableBehaviour->currentIndex() ) );
   settings.setValue( "/qgis/attributeTableRowCache", spinBoxAttrTableRowCache->value() );
@@ -1096,6 +1055,7 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/dockSnapping", cbxSnappingOptionsDocked->isChecked() );
   settings.setValue( "/qgis/addPostgisDC", cbxAddPostgisDC->isChecked() );
   settings.setValue( "/qgis/addOracleDC", cbxAddOracleDC->isChecked() );
+  settings.setValue( "/qgis/postgres/compileExpressions", cbxCompileExpressions->isChecked() );
   settings.setValue( "/qgis/defaultLegendGraphicResolution", mLegendGraphicResolutionSpinBox->value() );
   bool createRasterLegendIcons = settings.value( "/qgis/createRasterLegendIcons", false ).toBool();
   settings.setValue( "/qgis/createRasterLegendIcons", cbxCreateRasterLegendIcons->isChecked() );
@@ -1112,6 +1072,7 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/legendDoubleClickAction", cmbLegendDoubleClickAction->currentIndex() );
   bool legendLayersCapitalise = settings.value( "/qgis/capitaliseLayerName", false ).toBool();
   settings.setValue( "/qgis/capitaliseLayerName", capitaliseCheckBox->isChecked() );
+  QgsMapCanvas::enableRotation( cbxCanvasRotation->isChecked() );
 
   // Default simplify drawing configuration
   QgsVectorSimplifyMethod::SimplifyHints simplifyHints = QgsVectorSimplifyMethod::NoSimplification;
@@ -1143,16 +1104,6 @@ void QgsOptions::saveOptions()
 
   settings.setValue( "/qgis/nullValue", leNullValue->text() );
   settings.setValue( "/qgis/style", cmbStyle->currentText() );
-
-  if ( cmbTheme->currentText().length() == 0 )
-  {
-    settings.setValue( "/Themes", "default" );
-  }
-  else
-  {
-    settings.setValue( "/Themes", cmbTheme->currentText() );
-  }
-
   settings.setValue( "/IconSize", cmbIconSize->currentText() );
 
   settings.setValue( "/qgis/messageTimeout", mMessageTimeoutSpnBx->value() );
@@ -1274,9 +1225,9 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/digitizing/default_snapping_tolerance", mDefaultSnappingToleranceSpinBox->value() );
   settings.setValue( "/qgis/digitizing/search_radius_vertex_edit", mSearchRadiusVertexEditSpinBox->value() );
   settings.setValue( "/qgis/digitizing/default_snapping_tolerance_unit",
-                     ( mDefaultSnappingToleranceComboBox->currentIndex() == 0 ? QgsTolerance::MapUnits : QgsTolerance::Pixels ) );
+                     ( mDefaultSnappingToleranceComboBox->currentIndex() == 0 ? QgsTolerance::ProjectUnits : QgsTolerance::Pixels ) );
   settings.setValue( "/qgis/digitizing/search_radius_vertex_edit_unit",
-                     ( mSearchRadiusVertexEditComboBox->currentIndex()  == 0 ? QgsTolerance::MapUnits : QgsTolerance::Pixels ) );
+                     ( mSearchRadiusVertexEditComboBox->currentIndex()  == 0 ? QgsTolerance::ProjectUnits : QgsTolerance::Pixels ) );
 
   settings.setValue( "/qgis/digitizing/marker_only_for_selected", mMarkersOnlyForSelectedCheckBox->isChecked() );
 
@@ -1440,61 +1391,14 @@ void QgsOptions::on_mCustomGroupBoxChkBx_clicked( bool chkd )
   mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
 }
 
-void QgsOptions::on_mCustomSideBarSide_clicked( bool chkd )
+void QgsOptions::on_leProjectGlobalCrs_crsChanged( QgsCoordinateReferenceSystem crs )
 {
-  mStyleSheetNewOpts.insert( "sidebarStyle", chkd );
-  mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
+  mDefaultCrs = crs;
 }
 
-void QgsOptions::on_mBoldGroupBoxTitleChkBx_clicked( bool chkd )
+void QgsOptions::on_leLayerGlobalCrs_crsChanged( QgsCoordinateReferenceSystem crs )
 {
-  mStyleSheetNewOpts.insert( "groupBoxBoldTitle", QVariant( chkd ) );
-  mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
-}
-
-void QgsOptions::on_pbnSelectProjection_clicked()
-{
-  QSettings settings;
-  QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector( this );
-
-  //find out crs id of current proj4 string
-  mySelector->setSelectedCrsId( mLayerDefaultCrs.srsid() );
-
-  if ( mySelector->exec() )
-  {
-    mLayerDefaultCrs.createFromOgcWmsCrs( mySelector->selectedAuthId() );
-    QgsDebugMsg( QString( "Setting default project CRS to : %1" ).arg( mySelector->selectedAuthId() ) );
-    leLayerGlobalCrs->setText( mLayerDefaultCrs.authid() + " - " + mLayerDefaultCrs.description() );
-    QgsDebugMsg( QString( "------ Global Layer Default Projection Selection set to ----------\n%1" ).arg( leLayerGlobalCrs->text() ) );
-  }
-  else
-  {
-    QgsDebugMsg( "------ Global Layer Default Projection Selection change cancelled ----------" );
-    QApplication::restoreOverrideCursor();
-  }
-
-}
-
-void QgsOptions::on_pbnSelectOtfProjection_clicked()
-{
-  QSettings settings;
-  QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector( this );
-
-  //find out crs id of current proj4 string
-  mySelector->setSelectedCrsId( mDefaultCrs.srsid() );
-
-  if ( mySelector->exec() )
-  {
-    mDefaultCrs.createFromOgcWmsCrs( mySelector->selectedAuthId() );
-    QgsDebugMsg( QString( "Setting default project CRS to : %1" ).arg( mySelector->selectedAuthId() ) );
-    leProjectGlobalCrs->setText( mDefaultCrs.authid() + " - " + mDefaultCrs.description() );
-    QgsDebugMsg( QString( "------ Global OTF Projection Selection set to ----------\n%1" ).arg( leProjectGlobalCrs->text() ) );
-  }
-  else
-  {
-    QgsDebugMsg( "------ Global OTF Projection Selection change cancelled ----------" );
-    QApplication::restoreOverrideCursor();
-  }
+  mLayerDefaultCrs = crs;
 }
 
 void QgsOptions::on_lstGdalDrivers_itemDoubleClicked( QTreeWidgetItem * item, int column )

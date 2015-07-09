@@ -26,7 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4 import QtGui
+from PyQt4.QtGui import QMessageBox
 from processing.gui.ContextAction import ContextAction
 from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 
@@ -40,11 +40,12 @@ class DeleteModelAction(ContextAction):
         return isinstance(self.alg, ModelerAlgorithm)
 
     def execute(self):
-        reply = QtGui.QMessageBox.question(None,
-           self.tr('Confirmation', 'DeleteModelAction'),
-           self.tr('Are you sure you want to delete this model?', 'DeleteModelAction'),
-                QtGui.QMessageBox.Yes | QtGui.QMessageBox.No,
-                QtGui.QMessageBox.No)
-        if reply == QtGui.QMessageBox.Yes:
+        reply = QMessageBox.question(
+            None,
+            self.tr('Confirmation', 'DeleteModelAction'),
+            self.tr('Are you sure you want to delete this model?', 'DeleteModelAction'),
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.No)
+        if reply == QMessageBox.Yes:
             os.remove(self.alg.descriptionFile)
             self.toolbox.updateProvider('model')

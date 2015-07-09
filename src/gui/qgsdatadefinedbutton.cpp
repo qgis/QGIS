@@ -84,6 +84,11 @@ QgsDataDefinedButton::QgsDataDefinedButton( QWidget* parent,
   mActionPasteExpr = new QAction( tr( "Paste" ), this );
   mActionCopyExpr = new QAction( tr( "Copy" ), this );
   mActionClearExpr = new QAction( tr( "Clear" ), this );
+  mActionAssistant = new QAction( tr( "Assistant..." ), this );
+  QFont assistantFont = mActionAssistant->font();
+  assistantFont.setBold( true );
+  mActionAssistant->setFont( assistantFont );
+  mDefineMenu->addAction( mActionAssistant );
 
   // set up sibling widget connections
   connect( this, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( disableEnabledWidgets( bool ) ) );
@@ -169,7 +174,7 @@ void QgsDataDefinedButton::init( const QgsVectorLayer* vl,
           fieldType = tr( "string" );
           break;
         case QVariant::Int:
-          fieldMatch = mDataTypes.testFlag( Int );
+          fieldMatch = mDataTypes.testFlag( Int ) || mDataTypes.testFlag( Double );
           fieldType = tr( "integer" );
           break;
         case QVariant::Double:
@@ -190,6 +195,24 @@ void QgsDataDefinedButton::init( const QgsVectorLayer* vl,
   }
 
   updateGui();
+}
+
+void QgsDataDefinedButton::updateDataDefined( QgsDataDefined *dd ) const
+{
+  if ( !dd )
+    return;
+
+  dd->setActive( isActive() );
+  dd->setUseExpression( useExpression() );
+  dd->setExpressionString( getExpression() );
+  dd->setField( getField() );
+}
+
+QgsDataDefined QgsDataDefinedButton::currentDataDefined() const
+{
+  QgsDataDefined dd;
+  updateDataDefined( &dd );
+  return dd;
 }
 
 void QgsDataDefinedButton::mouseReleaseEvent( QMouseEvent *event )
@@ -250,6 +273,7 @@ void QgsDataDefinedButton::aboutToShowMenu()
 
   mDefineMenu->addSeparator();
 
+  bool fieldActive = false;
   if ( !mDataTypesString.isEmpty() )
   {
     QAction* fieldTitleAct = mDefineMenu->addAction( tr( "Attribute field" ) );
@@ -272,6 +296,7 @@ void QgsDataDefinedButton::aboutToShowMenu()
         {
           act->setCheckable( true );
           act->setChecked( !useExpression() );
+          fieldActive = !useExpression();
         }
       }
     }
@@ -283,6 +308,9 @@ void QgsDataDefinedButton::aboutToShowMenu()
 
     mDefineMenu->addSeparator();
   }
+
+  mFieldsMenu->menuAction()->setCheckable( true );
+  mFieldsMenu->menuAction()->setChecked( fieldActive );
 
   QAction* exprTitleAct = mDefineMenu->addAction( tr( "Expression" ) );
   exprTitleAct->setFont( titlefont );
@@ -322,6 +350,11 @@ void QgsDataDefinedButton::aboutToShowMenu()
     mDefineMenu->addAction( mActionPasteExpr );
   }
 
+  if ( mAssistant.data() )
+  {
+    mDefineMenu->addSeparator();
+    mDefineMenu->addAction( mActionAssistant );
+  }
 }
 
 void QgsDataDefinedButton::menuActionTriggered( QAction* action )
@@ -371,6 +404,10 @@ void QgsDataDefinedButton::menuActionTriggered( QAction* action )
     setExpression( QString( "" ) );
     updateGui();
   }
+  else if ( action == mActionAssistant )
+  {
+    showAssistant();
+  }
   else if ( mFieldsMenu->actions().contains( action ) )  // a field name clicked
   {
     if ( action->isEnabled() )
@@ -392,6 +429,25 @@ void QgsDataDefinedButton::showDescriptionDialog()
   mv->setWindowTitle( tr( "Data definition description" ) );
   mv->setMessageAsHtml( mFullDescription );
   mv->exec();
+}
+
+void QgsDataDefinedButton::showAssistant()
+{
+  if ( !mAssistant.data() )
+    return;
+
+  if ( mAssistant->exec() == QDialog::Accepted )
+  {
+    QgsDataDefined dd = mAssistant->dataDefined();
+    setUseExpression( dd.useExpression() );
+    setActive( dd.isActive() );
+    if ( dd.isActive() && dd.useExpression() )
+      setExpression( dd.expressionString() );
+    else if ( dd.isActive() )
+      setField( dd.field() );
+    updateGui();
+  }
+  activateWindow(); // reset focus to parent window
 }
 
 void QgsDataDefinedButton::showExpressionDialog()
@@ -576,6 +632,13 @@ QList<QWidget*> QgsDataDefinedButton::registeredCheckedWidgets()
   return wdgtList;
 }
 
+void QgsDataDefinedButton::setAssistant( const QString& title, QgsDataDefinedAssistant *assistant )
+{
+  mActionAssistant->setText( title.isEmpty() ? tr( "Assistant..." ) : title );
+  mAssistant.reset( assistant );
+  mAssistant.data()->setParent( this, Qt::Dialog );
+}
+
 void QgsDataDefinedButton::checkCheckedWidgets( bool check )
 {
   // don't uncheck, only set to checked
@@ -603,6 +666,11 @@ QString QgsDataDefinedButton::trString()
 {
   // just something to reduce translation redundancy
   return tr( "string " );
+}
+
+QString QgsDataDefinedButton::charDesc()
+{
+  return tr( "single character" );
 }
 
 QString QgsDataDefinedButton::boolDesc()
@@ -638,6 +706,11 @@ QString QgsDataDefinedButton::doubleDesc()
 QString QgsDataDefinedButton::doublePosDesc()
 {
   return tr( "double [&gt;= 0.0]" );
+}
+
+QString QgsDataDefinedButton::double0to1Desc()
+{
+  return tr( "double [0.0-1.0]" );
 }
 
 QString QgsDataDefinedButton::doubleXYDesc()
@@ -687,7 +760,7 @@ QString QgsDataDefinedButton::textVertAlignDesc()
 
 QString QgsDataDefinedButton::penJoinStyleDesc()
 {
-  return trString() + "[<b>Bevel</b>|<b>Miter</b>|<b>Round</b>]";
+  return trString() + "[<b>bevel</b>|<b>miter</b>|<b>round</b>]";
 }
 
 QString QgsDataDefinedButton::blendModesDesc()
@@ -704,6 +777,11 @@ QString QgsDataDefinedButton::svgPathDesc()
                                "project-relative|URL" );
 }
 
+QString QgsDataDefinedButton::filePathDesc()
+{
+  return tr( "string [<b>filepath</b>]" );
+}
+
 QString QgsDataDefinedButton::paperSizeDesc()
 {
   return trString() + QString( "[<b>A5</b>|<b>A4</b>|<b>A3</b>|<b>A2</b>|<b>A1</b>|<b>A0</b>"
@@ -716,4 +794,56 @@ QString QgsDataDefinedButton::paperSizeDesc()
 QString QgsDataDefinedButton::paperOrientationDesc()
 {
   return trString() + QString( "[<b>portrait</b>|<b>landscape</b>]" );
+}
+
+QString QgsDataDefinedButton::horizontalAnchorDesc()
+{
+  return trString() + QString( "[<b>left</b>|<b>center</b>|<b>right</b>]" );
+}
+
+QString QgsDataDefinedButton::verticalAnchorDesc()
+{
+  return trString() + QString( "[<b>top</b>|<b>center</b>|<b>bottom</b>]" );
+}
+
+QString QgsDataDefinedButton::gradientTypeDesc()
+{
+  return trString() + QString( "[<b>linear</b>|<b>radial</b>|<b>conical</b>]" );
+}
+
+QString QgsDataDefinedButton::gradientCoordModeDesc()
+{
+  return trString() + QString( "[<b>feature</b>|<b>viewport</b>]" );
+}
+
+QString QgsDataDefinedButton::gradientSpreadDesc()
+{
+  return trString() + QString( "[<b>pad</b>|<b>repeat</b>|<b>reflect</b>]" );
+}
+
+QString QgsDataDefinedButton::lineStyleDesc()
+{
+  return trString() + QString( "[<b>no</b>|<b>solid</b>|<b>dash</b>|<b>dot</b>|<b>dash dot</b>|<b>dash dot dot</b>]" );
+}
+
+QString QgsDataDefinedButton::capStyleDesc()
+{
+  return trString() + QString( "[<b>square</b>|<b>flat</b>|<b>round</b>]" );
+}
+
+QString QgsDataDefinedButton::fillStyleDesc()
+{
+  return trString() + QString( "[<b>solid</b>|<b>horizontal</b>|<b>vertical</b>|<b>cross</b>|<b>b_diagonal</b>|<b>f_diagonal"
+                               "</b>|<b>diagonal_x</b>|<b>dense1</b>|<b>dense2</b>|<b>dense3</b>|<b>dense4</b>|<b>dense5"
+                               "</b>|<b>dense6</b>|<b>dense7</b>|<b>no]" );
+}
+
+QString QgsDataDefinedButton::markerStyleDesc()
+{
+  return trString() + QString( "[<b>circle</b>|<b>rectangle</b>|<b>cross</b>|<b>triangle</b>]" );
+}
+
+QString QgsDataDefinedButton::customDashDesc()
+{
+  return tr( "[<b><dash>;<space></b>] e.g. '8;2;1;2'" );
 }

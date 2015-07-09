@@ -27,10 +27,6 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #define _CRT_SECURE_NO_DEPRECATE
 
 
@@ -38,22 +34,20 @@
 #include <iostream>
 #endif
 
-#include <qglobal.h>
+#include <QLinkedList>
 
 #include <cmath>
 #include <cstring>
 #include <cfloat>
 
-#include <pal/pal.h>
-#include <pal/layer.h>
-
-#include "linkedlist.hpp"
+#include "pal.h"
+#include "layer.h"
 #include "feature.h"
 #include "geomfunction.h"
 #include "labelposition.h"
 #include "pointset.h"
-#include "simplemutex.h"
 #include "util.h"
+#include "qgis.h"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -61,19 +55,41 @@
 
 namespace pal
 {
-  Feature::Feature( Layer* l, const char* geom_id, PalGeometry* userG, double lx, double ly )
-      : layer( l ), userGeom( userG ), label_x( lx ), label_y( ly ), distlabel( 0 ), labelInfo( NULL ), fixedPos( false ),
-      quadOffset( false ), offsetPos( false ), fixedRotation( false ), alwaysShow( false )
+  Feature::Feature( Layer* l, const QString &geom_id, PalGeometry* userG, double lx, double ly )
+      : layer( l )
+      , userGeom( userG )
+      , label_x( lx )
+      , label_y( ly )
+      , distlabel( 0 )
+      , labelInfo( NULL )
+      , uid( geom_id )
+      , fixedPos( false )
+      , fixedPosX( 0.0 )
+      , fixedPosY( 0.0 )
+      , quadOffset( false )
+      , quadOffsetX( 0.0 )
+      , quadOffsetY( 0.0 )
+      , offsetPos( false )
+      , offsetPosX( 0.0 )
+      , offsetPosY( 0.0 )
+      , fixedRotation( false )
+      , fixedAngle( 0.0 )
+      , repeatDist( 0.0 )
+      , alwaysShow( false )
+      , mFixedQuadrant( false )
+      , mPriority( -1.0 )
   {
     assert( finite( lx ) && finite( ly ) );
-
-    uid = new char[strlen( geom_id ) +1];
-    strcpy( uid, geom_id );
   }
 
   Feature::~Feature()
   {
-    delete[] uid;
+
+  }
+
+  double Feature::calculatePriority() const
+  {
+    return mPriority >= 0 ? mPriority : layer->getPriority();
   }
 
   ////////////
@@ -114,10 +130,6 @@ namespace pal
     }
   }
 
-
-  /*
-   * \brief read coordinates from a GEOS geom
-   */
   void FeaturePart::extractCoords( const GEOSGeometry* geom )
   {
     int i, j;
@@ -253,33 +265,88 @@ namespace pal
   }
 
 
-  const char * FeaturePart::getUID()
+  QString FeaturePart::getUID() const
   {
     return f->uid;
+  }
+
+  LabelPosition::Quadrant FeaturePart::quadrantFromOffset() const
+  {
+    if ( f->quadOffsetX < 0 )
+    {
+      if ( f->quadOffsetY < 0 )
+      {
+        return LabelPosition::QuadrantAboveLeft;
+      }
+      else if ( f->quadOffsetY > 0 )
+      {
+        return LabelPosition::QuadrantBelowLeft;
+      }
+      else
+      {
+        return LabelPosition::QuadrantLeft;
+      }
+    }
+    else  if ( f->quadOffsetX > 0 )
+    {
+      if ( f->quadOffsetY < 0 )
+      {
+        return LabelPosition::QuadrantAboveRight;
+      }
+      else if ( f->quadOffsetY > 0 )
+      {
+        return LabelPosition::QuadrantBelowRight;
+      }
+      else
+      {
+        return LabelPosition::QuadrantRight;
+      }
+    }
+    else
+    {
+      if ( f->quadOffsetY < 0 )
+      {
+        return LabelPosition::QuadrantAbove;
+      }
+      else if ( f->quadOffsetY > 0 )
+      {
+        return LabelPosition::QuadrantBelow;
+      }
+      else
+      {
+        return LabelPosition::QuadrantOver;
+      }
+    }
   }
 
   int FeaturePart::setPositionOverPoint( double x, double y, double scale, LabelPosition ***lPos, double delta_width, double angle )
   {
     Q_UNUSED( scale );
     Q_UNUSED( delta_width );
-    int nbp = 3;
+    int nbp = 1;
     *lPos = new LabelPosition *[nbp];
 
     // get from feature
-    double label_x = f->label_x;
-    double label_y = f->label_y;
     double labelW = f->label_x;
     double labelH = f->label_y;
 
-    double xdiff = 0.0;
-    double ydiff = 0.0;
-    double lx = 0.0;
-    double ly = 0.0;
     double cost = 0.0001;
     int id = 0;
 
-    xdiff -= label_x / 2.0;
-    ydiff -= label_y / 2.0;
+    double xdiff = -labelW / 2.0;
+    double ydiff = -labelH / 2.0;
+
+    if ( f->quadOffset )
+    {
+      if ( f->quadOffsetX != 0 )
+      {
+        xdiff += labelW / 2.0 * f->quadOffsetX;
+      }
+      if ( f->quadOffsetY != 0 )
+      {
+        ydiff += labelH / 2.0 * f->quadOffsetY;
+      }
+    }
 
     if ( ! f->fixedPosition() )
     {
@@ -292,32 +359,25 @@ namespace pal
       }
     }
 
-    if ( angle != 0 )
+    if ( f->layer->getArrangement() == P_POINT )
     {
-      // use LabelPosition construction to calculate new rotated label dimensions
-      pal::LabelPosition* lp  = new LabelPosition( 1, lx, ly, label_x, label_y, angle, 0.0, this );
-
-      double amin[2], amax[2];
-      lp->getBoundingBox( amin, amax );
-      labelW = amax[0] - amin[0];
-      labelH = amax[1] - amin[1];
-
-      delete lp;
-    }
-
-    if ( f->quadOffset )
-    {
-      if ( f->quadOffsetX != 0 )
+      //if in "around point" placement mode, then we use the label distance to determine
+      //the label's offset
+      if ( qgsDoubleNear( f->quadOffsetX , 0.0 ) )
       {
-        xdiff += labelW / 2 * f->quadOffsetX;
+        ydiff += f->quadOffsetY * f->distlabel;
       }
-      if ( f->quadOffsetY != 0 )
+      else if ( qgsDoubleNear( f->quadOffsetY, 0.0 ) )
       {
-        ydiff += labelH / 2 * f->quadOffsetY;
+        xdiff += f->quadOffsetX * f->distlabel;
+      }
+      else
+      {
+        xdiff += f->quadOffsetX * M_SQRT1_2 * f->distlabel;
+        ydiff += f->quadOffsetY * M_SQRT1_2 * f->distlabel;
       }
     }
-
-    if ( f->offsetPos )
+    else if ( f->offsetPos )
     {
       if ( f->offsetPosX != 0 )
       {
@@ -329,18 +389,10 @@ namespace pal
       }
     }
 
-    lx = x + xdiff;
-    ly = y + ydiff;
+    double lx = x + xdiff;
+    double ly = y + ydiff;
 
-//    double offset = label_x / 4;
-    double offset = 0.0; // don't shift what is supposed to be fixed
-
-    // at the center
-    ( *lPos )[0] = new LabelPosition( id, lx, ly, label_x, label_y, angle, cost, this );
-    // shifted to the sides - with higher cost
-    cost = 0.0021;
-    ( *lPos )[1] = new LabelPosition( id, lx + offset, ly, label_x, label_y, angle, cost, this );
-    ( *lPos )[2] = new LabelPosition( id, lx - offset, ly, label_x, label_y, angle, cost, this );
+    ( *lPos )[0] = new LabelPosition( id, lx, ly, labelW, labelH, angle, cost, this, false, quadrantFromOffset() );
     return nbp;
   }
 
@@ -368,36 +420,19 @@ namespace pal
                         f->layer->pal->map_unit,
                         dpi, scale, delta_width );
 
-    int nbp = f->layer->pal->point_p;
+    int numberCandidates = f->layer->pal->point_p;
 
     //std::cout << "Nbp : " << nbp << std::endl;
-
-    int i;
     int icost = 0;
     int inc = 2;
 
-    double alpha;
-    double beta = 2 * M_PI / nbp; /* angle bw 2 pos */
+    double candidateAngleIncrement = 2 * M_PI / numberCandidates; /* angle bw 2 pos */
 
-    // uncomment for Wolff 2 position model test on RailwayStation
-    //if (nbp==2)
-    //   beta = M_PI/2;
-
-#if 0
-    double distlabel =  unit_convert( this->distlabel,
-                                      pal::PIXEL,
-                                      layer->pal->map_unit,
-                                      dpi, scale, delta_width );
-#endif
-
-    double lx, ly; /* label pos */
-
-    /* various alpha */
+    /* various angles */
     double a90  = M_PI / 2;
     double a180 = M_PI;
     double a270 = a180 + a90;
     double a360 = 2 * M_PI;
-
 
     double gamma1, gamma2;
 
@@ -411,7 +446,6 @@ namespace pal
       gamma1 = gamma2 = a90 / 3.0;
     }
 
-
     if ( gamma1 > a90 / 3.0 )
       gamma1 = a90 / 3.0;
 
@@ -424,90 +458,103 @@ namespace pal
       std::cout << "Oups... label size error..." << std::endl;
     }
 
-    *lPos = new LabelPosition *[nbp];
+    *lPos = new LabelPosition *[numberCandidates];
 
-    for ( i = 0, alpha = M_PI / 4; i < nbp; i++, alpha += beta )
+    int i;
+    double angleToCandidate;
+    for ( i = 0, angleToCandidate = M_PI / 4; i < numberCandidates; i++, angleToCandidate += candidateAngleIncrement )
     {
-      lx = x;
-      ly = y;
+      double labelX = x;
+      double labelY = y;
 
-      if ( alpha > a360 )
-        alpha -= a360;
+      if ( angleToCandidate > a360 )
+        angleToCandidate -= a360;
 
-      if ( alpha < gamma1 || alpha > a360 - gamma1 )  // on the right
+      LabelPosition::Quadrant quadrant = LabelPosition::QuadrantOver;
+
+      if ( angleToCandidate < gamma1 || angleToCandidate > a360 - gamma1 )  // on the right
       {
-        lx += distlabel;
-        double iota = ( alpha + gamma1 );
+        labelX += distlabel;
+        double iota = ( angleToCandidate + gamma1 );
         if ( iota > a360 - gamma1 )
           iota -= a360;
 
         //ly += -yrm/2.0 + tan(alpha)*(distlabel + xrm/2);
-        ly += -yrm + yrm * iota / ( 2 * gamma1 );
+        labelY += -yrm + yrm * iota / ( 2 * gamma1 );
+
+        quadrant = LabelPosition::QuadrantRight;
       }
-      else if ( alpha < a90 - gamma2 )  // top-right
+      else if ( angleToCandidate < a90 - gamma2 )  // top-right
       {
-        lx += distlabel * cos( alpha );
-        ly += distlabel * sin( alpha );
+        labelX += distlabel * cos( angleToCandidate );
+        labelY += distlabel * sin( angleToCandidate );
+        quadrant = LabelPosition::QuadrantAboveRight;
       }
-      else if ( alpha < a90 + gamma2 ) // top
+      else if ( angleToCandidate < a90 + gamma2 ) // top
       {
         //lx += -xrm/2.0 - tan(alpha+a90)*(distlabel + yrm/2);
-        lx += -xrm * ( alpha - a90 + gamma2 ) / ( 2 * gamma2 );
-        ly += distlabel;
+        labelX += -xrm * ( angleToCandidate - a90 + gamma2 ) / ( 2 * gamma2 );
+        labelY += distlabel;
+        quadrant = LabelPosition::QuadrantAbove;
       }
-      else if ( alpha < a180 - gamma1 )  // top left
+      else if ( angleToCandidate < a180 - gamma1 )  // top left
       {
-        lx += distlabel * cos( alpha ) - xrm;
-        ly += distlabel * sin( alpha );
+        labelX += distlabel * cos( angleToCandidate ) - xrm;
+        labelY += distlabel * sin( angleToCandidate );
+        quadrant = LabelPosition::QuadrantAboveLeft;
       }
-      else if ( alpha < a180 + gamma1 ) // left
+      else if ( angleToCandidate < a180 + gamma1 ) // left
       {
-        lx += -distlabel - xrm;
+        labelX += -distlabel - xrm;
         //ly += -yrm/2.0 - tan(alpha)*(distlabel + xrm/2);
-        ly += - ( alpha - a180 + gamma1 ) * yrm / ( 2 * gamma1 );
+        labelY += - ( angleToCandidate - a180 + gamma1 ) * yrm / ( 2 * gamma1 );
+        quadrant = LabelPosition::QuadrantLeft;
       }
-      else if ( alpha < a270 - gamma2 ) // down - left
+      else if ( angleToCandidate < a270 - gamma2 ) // down - left
       {
-        lx += distlabel * cos( alpha ) - xrm;
-        ly += distlabel * sin( alpha ) - yrm;
+        labelX += distlabel * cos( angleToCandidate ) - xrm;
+        labelY += distlabel * sin( angleToCandidate ) - yrm;
+        quadrant = LabelPosition::QuadrantBelowLeft;
       }
-      else if ( alpha < a270 + gamma2 ) // down
+      else if ( angleToCandidate < a270 + gamma2 ) // down
       {
-        ly += -distlabel - yrm;
+        labelY += -distlabel - yrm;
         //lx += -xrm/2.0 + tan(alpha+a90)*(distlabel + yrm/2);
-        lx += -xrm + ( alpha - a270 + gamma2 ) * xrm / ( 2 * gamma2 );
+        labelX += -xrm + ( angleToCandidate - a270 + gamma2 ) * xrm / ( 2 * gamma2 );
+        quadrant = LabelPosition::QuadrantBelow;
       }
-      else if ( alpha < a360 )
+      else if ( angleToCandidate < a360 ) // down - right
       {
-        lx += distlabel * cos( alpha );
-        ly += distlabel * sin( alpha ) - yrm;
+        labelX += distlabel * cos( angleToCandidate );
+        labelY += distlabel * sin( angleToCandidate ) - yrm;
+        quadrant = LabelPosition::QuadrantBelowRight;
       }
 
       double cost;
 
-      if ( nbp == 1 )
+      if ( numberCandidates == 1 )
         cost = 0.0001;
       else
-        cost = 0.0001 + 0.0020 * double( icost ) / double( nbp - 1 );
+        cost = 0.0001 + 0.0020 * double( icost ) / double( numberCandidates - 1 );
 
-      ( *lPos )[i] = new LabelPosition( i, lx, ly, xrm, yrm, angle, cost, this );
+      ( *lPos )[i] = new LabelPosition( i, labelX, labelY, xrm, yrm, angle, cost, this, false, quadrant );
 
       icost += inc;
 
-      if ( icost == nbp )
+      if ( icost == numberCandidates )
       {
-        icost = nbp - 1;
+        icost = numberCandidates - 1;
         inc = -2;
       }
-      else if ( icost > nbp )
+      else if ( icost > numberCandidates )
       {
-        icost = nbp - 2;
+        icost = numberCandidates - 2;
         inc = -2;
       }
 
     }
 
-    return nbp;
+    return numberCandidates;
   }
 
 // TODO work with squared distance by remonving call to sqrt or dist_euc2d
@@ -531,15 +578,6 @@ namespace pal
                         f->layer->pal->map_unit,
                         dpi, scale, delta_width );
 
-
-#if 0
-    double distlabel = unit_convert( this->distlabel,
-                                     pal::PIXEL,
-                                     layer->pal->map_unit,
-                                     dpi, scale, delta_width );
-#endif
-
-
     double *d; // segments lengths distance bw pt[i] && pt[i+1]
     double *ad;  // absolute distance bw pt[0] and pt[i] along the line
     double ll; // line length
@@ -553,11 +591,7 @@ namespace pal
     if ( flags == 0 )
       flags = FLAG_ON_LINE; // default flag
 
-    //LinkedList<PointSet*> *shapes_final;
-
-    //shapes_final     = new LinkedList<PointSet*>(ptrPSetCompare);
-
-    LinkedList<LabelPosition*> *positions = new LinkedList<LabelPosition*> ( ptrLPosCompare );
+    QLinkedList<LabelPosition*> positions;
 
     int nbPoints;
     double *x;
@@ -671,16 +705,15 @@ namespace pal
         bool belowLine = ( !reversed && ( flags & FLAG_BELOW_LINE ) ) || ( reversed && ( flags & FLAG_ABOVE_LINE ) );
 
         if ( aboveLine )
-          positions->push_back( new LabelPosition( i, bx + cos( beta ) *distlabel, by + sin( beta ) *distlabel, xrm, yrm, alpha, cost, this, isRightToLeft ) ); // Line
+          positions.append( new LabelPosition( i, bx + cos( beta ) *distlabel, by + sin( beta ) *distlabel, xrm, yrm, alpha, cost, this, isRightToLeft ) ); // Line
         if ( belowLine )
-          positions->push_back( new LabelPosition( i, bx - cos( beta ) *( distlabel + yrm ), by - sin( beta ) *( distlabel + yrm ), xrm, yrm, alpha, cost, this, isRightToLeft ) );   // Line
+          positions.append( new LabelPosition( i, bx - cos( beta ) *( distlabel + yrm ), by - sin( beta ) *( distlabel + yrm ), xrm, yrm, alpha, cost, this, isRightToLeft ) );   // Line
         if ( flags & FLAG_ON_LINE )
-          positions->push_back( new LabelPosition( i, bx - yrm*cos( beta ) / 2, by - yrm*sin( beta ) / 2, xrm, yrm, alpha, cost, this, isRightToLeft ) ); // Line
+          positions.append( new LabelPosition( i, bx - yrm*cos( beta ) / 2, by - yrm*sin( beta ) / 2, xrm, yrm, alpha, cost, this, isRightToLeft ) ); // Line
       }
       else if ( f->layer->arrangement == P_HORIZ )
       {
-        positions->push_back( new LabelPosition( i, bx - xrm / 2, by - yrm / 2, xrm, yrm, 0, cost, this ) ); // Line
-        //positions->push_back( new LabelPosition(i, bx -yrm/2, by - yrm*sin(beta)/2, xrm, yrm, alpha, cost, this, line)); // Line
+        positions.append( new LabelPosition( i, bx - xrm / 2, by - yrm / 2, xrm, yrm, 0, cost, this ) ); // Line
       }
       else
       {
@@ -700,16 +733,14 @@ namespace pal
     delete[] d;
     delete[] ad;
 
-    int nbp = positions->size();
+    int nbp = positions.size();
     *lPos = new LabelPosition *[nbp];
     i = 0;
-    while ( positions->size() > 0 )
+    while ( positions.size() > 0 )
     {
-      ( *lPos )[i] = positions->pop_front();
+      ( *lPos )[i] = positions.takeFirst();
       i++;
     }
-
-    delete positions;
 
     return nbp;
   }
@@ -947,7 +978,7 @@ namespace pal
       return 0;
     }
 
-    LinkedList<LabelPosition*> *positions = new LinkedList<LabelPosition*> ( ptrLPosCompare );
+    QLinkedList<LabelPosition*> positions;
     double delta = max( f->labelInfo->label_height, total_distance / 10.0 );
 
     unsigned long flags = f->layer->getArrangementFlags();
@@ -997,11 +1028,11 @@ namespace pal
         double angle_avg = atan2( sin_avg / f->labelInfo->char_num, cos_avg / f->labelInfo->char_num );
         // displacement
         if ( flags & FLAG_ABOVE_LINE )
-          positions->push_back( _createCurvedCandidate( slp, angle_avg, f->distlabel ) );
+          positions.append( _createCurvedCandidate( slp, angle_avg, f->distlabel ) );
         if ( flags & FLAG_ON_LINE )
-          positions->push_back( _createCurvedCandidate( slp, angle_avg, -f->labelInfo->label_height / 2 ) );
+          positions.append( _createCurvedCandidate( slp, angle_avg, -f->labelInfo->label_height / 2 ) );
         if ( flags & FLAG_BELOW_LINE )
-          positions->push_back( _createCurvedCandidate( slp, angle_avg, -f->labelInfo->label_height - f->distlabel ) );
+          positions.append( _createCurvedCandidate( slp, angle_avg, -f->labelInfo->label_height - f->distlabel ) );
 
         // delete original candidate
         delete slp;
@@ -1009,13 +1040,12 @@ namespace pal
     }
 
 
-    int nbp = positions->size();
+    int nbp = positions.size();
     ( *lPos ) = new LabelPosition*[nbp];
     for ( int i = 0; i < nbp; i++ )
     {
-      ( *lPos )[i] = positions->pop_front();
+      ( *lPos )[i] = positions.takeFirst();
     }
-    delete positions;
     delete[] path_distances;
 
     return nbp;
@@ -1061,28 +1091,20 @@ namespace pal
 
     //print();
 
-    //LinkedList<PointSet*> *shapes_toCut;
-    LinkedList<PointSet*> *shapes_toProcess;
-    LinkedList<PointSet*> *shapes_final;
-
-    //shapes_toCut     = new LinkedList<PointSet*>(ptrPSetCompare);
-    shapes_toProcess = new LinkedList<PointSet*> ( ptrPSetCompare );
-    shapes_final     = new LinkedList<PointSet*> ( ptrPSetCompare );
+    QLinkedList<PointSet*> shapes_toProcess;
+    QLinkedList<PointSet*> shapes_final;
 
     mapShape->parent = NULL;
 
-    shapes_toProcess->push_back( mapShape );
+    shapes_toProcess.append( mapShape );
 
     splitPolygons( shapes_toProcess, shapes_final, xrm, yrm, f->uid );
 
-
-    delete shapes_toProcess;
-
     int nbp;
 
-    if ( shapes_final->size() > 0 )
+    if ( shapes_final.size() > 0 )
     {
-      LinkedList<LabelPosition*> *positions = new LinkedList<LabelPosition*> ( ptrLPosCompare );
+      QLinkedList<LabelPosition*> positions;
 
       int id = 0; // ids for candidates
       double dlx, dly; // delta from label center and bottom-left corner
@@ -1094,13 +1116,13 @@ namespace pal
       double beta;
       double diago = sqrt( xrm * xrm / 4.0 + yrm * yrm / 4 );
       double rx, ry;
-      CHullBox **boxes = new CHullBox*[shapes_final->size()];
+      CHullBox **boxes = new CHullBox*[shapes_final.size()];
       j = 0;
 
       // Compute bounding box foreach finalShape
-      while ( shapes_final->size() > 0 )
+      while ( shapes_final.size() > 0 )
       {
-        PointSet *shape = shapes_final->pop_front();
+        PointSet *shape = shapes_final.takeFirst();
         boxes[j] = shape->compute_chull_bbox();
 
         if ( shape->parent )
@@ -1228,13 +1250,13 @@ namespace pal
               if ( isPointInPolygon( mapShape->nbPoints, mapShape->x, mapShape->y, rx, ry ) )
               {
                 // cost is set to minimal value, evaluated later
-                positions->push_back( new LabelPosition( id++, rx - dlx, ry - dly, xrm, yrm, alpha, 0.0001, this ) ); // Polygon
+                positions.append( new LabelPosition( id++, rx - dlx, ry - dly, xrm, yrm, alpha, 0.0001, this ) ); // Polygon
               }
             }
           }
         } // forall box
 
-        nbp = positions->size();
+        nbp = positions.size();
         if ( nbp == 0 )
         {
           dx /= 2;
@@ -1244,12 +1266,12 @@ namespace pal
       }
       while ( nbp == 0 && num_try < max_try );
 
-      nbp = positions->size();
+      nbp = positions.size();
 
       ( *lPos ) = new LabelPosition*[nbp];
       for ( i = 0; i < nbp; i++ )
       {
-        ( *lPos )[i] = positions->pop_front();
+        ( *lPos )[i] = positions.takeFirst();
       }
 
       for ( bbid = 0; bbid < j; bbid++ )
@@ -1258,14 +1280,11 @@ namespace pal
       }
 
       delete[] boxes;
-      delete positions;
     }
     else
     {
       nbp = 0;
     }
-
-    delete shapes_final;
 
 #ifdef _DEBUG_FULL_
     std::cout << "NbLabelPosition: " << nbp << std::endl;
@@ -1273,6 +1292,7 @@ namespace pal
     return nbp;
   }
 
+#if 0
   void FeaturePart::print()
   {
     int i, j;
@@ -1295,22 +1315,15 @@ namespace pal
 
     std::cout << std::endl;
   }
+#endif
 
   int FeaturePart::setPosition( double scale, LabelPosition ***lPos,
                                 double bbox_min[2], double bbox_max[2],
-                                PointSet *mapShape, RTree<LabelPosition*, double, 2, double> *candidates
-#ifdef _EXPORT_MAP_
-                                , std::ofstream &svgmap
-#endif
-                              )
+                                PointSet *mapShape, RTree<LabelPosition*, double, 2, double> *candidates )
   {
     int nbp = 0;
     int i;
     double bbox[4];
-
-#ifdef _EXPORT_MAP_
-    int dpi = layer->pal->getDpi();
-#endif
 
     bbox[0] = bbox_min[0];
     bbox[1] = bbox_min[1];
@@ -1331,7 +1344,7 @@ namespace pal
       switch ( type )
       {
         case GEOS_POINT:
-          if ( f->layer->getArrangement() == P_POINT_OVER )
+          if ( f->layer->getArrangement() == P_POINT_OVER || f->fixedQuadrant() )
             nbp = setPositionOverPoint( x[0], y[0], scale, lPos, delta, angle );
           else
             nbp = setPositionForPoint( x[0], y[0], scale, lPos, delta, angle );

@@ -31,7 +31,7 @@ from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputRaster
-from processing.tools.system import *
+from processing.tools.system import isWindows
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 
@@ -46,7 +46,7 @@ class proximity(GdalAlgorithm):
     OUTPUT = 'OUTPUT'
     RTYPE = 'RTYPE'
 
-    TYPE = ['Byte','Int16','UInt16','UInt32','Int32','Float32','Float64','CInt16','CInt32','CFloat32','CFloat64']
+    TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64']
 
     DISTUNITS = ['GEO', 'PIXEL']
 
@@ -56,22 +56,24 @@ class proximity(GdalAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Proximity (raster distance)'
         self.group = '[GDAL] Analysis'
-        self.addParameter(ParameterRaster(self.INPUT, 'Input layer', False))
-        self.addParameter(ParameterString(self.VALUES, 'Values', ''))
-        self.addParameter(ParameterSelection(self.UNITS, 'Dist units',
-                          self.DISTUNITS, 0))
+        self.addParameter(ParameterRaster(self.INPUT,
+            self.tr('Input layer'), False))
+        self.addParameter(ParameterString(self.VALUES,
+            self.tr('Values'), ''))
+        self.addParameter(ParameterSelection(self.UNITS,
+            self.tr('Distance units'), self.DISTUNITS, 0))
         self.addParameter(ParameterNumber(self.MAX_DIST,
-                          'Max dist (negative value to ignore)', -1, 9999, -1))
+            self.tr('Max distance (negative value to ignore)'), -1, 9999, -1))
         self.addParameter(ParameterNumber(self.NODATA,
-                          'No data (negative value to ignore)', -1, 9999, -1))
+            self.tr('Nodata (negative value to ignore)'), -1, 9999, -1))
         self.addParameter(ParameterNumber(self.BUF_VAL,
-                          'Fixed buf val (negative value to ignore)', -1,
-                          9999, -1))
-        self.addParameter(ParameterSelection(self.RTYPE, 'Output raster type',
-			  self.TYPE, 5))
-        self.addOutput(OutputRaster(self.OUTPUT, 'Output layer'))
+            self.tr('Fixed buf value (negative value to ignore)'),
+            -1, 9999, -1))
+        self.addParameter(ParameterSelection(self.RTYPE,
+            self.tr('Output raster type'), self.TYPE, 5))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Distance')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         output = self.getOutputValue(self.OUTPUT)
 
         arguments = []
@@ -114,4 +116,4 @@ class proximity(GdalAlgorithm):
             commands = ['gdal_proximity.py',
                         GdalUtils.escapeAndJoin(arguments)]
 
-        GdalUtils.runGdal(commands, progress)
+        return commands

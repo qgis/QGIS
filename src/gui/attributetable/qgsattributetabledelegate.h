@@ -40,21 +40,21 @@ class GUI_EXPORT QgsAttributeTableDelegate : public QItemDelegate
     /** Constructor
      * @param parent parent object
      */
-    QgsAttributeTableDelegate( QObject* parent = NULL ) :
-        QItemDelegate( parent ) {}
+    QgsAttributeTableDelegate( QObject* parent = 0 ) :
+        QItemDelegate( parent ), mFeatureSelectionModel( NULL ) {}
 
     /** Used to create an editor for when the user tries to
      * change the contents of a cell */
     QWidget * createEditor(
       QWidget *parent,
       const QStyleOptionViewItem &option,
-      const QModelIndex &index ) const;
+      const QModelIndex &index ) const override;
 
     /** Overloads the paint method form the QItemDelegate bas class */
     void paint(
       QPainter * painter,
       const QStyleOptionViewItem & option,
-      const QModelIndex & index ) const;
+      const QModelIndex & index ) const override;
 
     /**
      * Sets data from editor back to model. Overloads default method
@@ -62,14 +62,14 @@ class GUI_EXPORT QgsAttributeTableDelegate : public QItemDelegate
      * @param model model where data should be updated
      * @param index index of field which is to be modified
      */
-    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const;
+    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
 
     /**
      * Sets data from model into the editor. Overloads default method
      * @param editor editor which was created by create editor function in this class
      * @param index index of field which is to be retrieved
      */
-    void setEditorData( QWidget *editor, const QModelIndex &index ) const;
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
 
     void setFeatureSelectionModel( QgsFeatureSelectionModel* featureSelectionModel );
 

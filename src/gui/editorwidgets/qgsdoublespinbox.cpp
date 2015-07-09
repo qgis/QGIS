@@ -63,6 +63,12 @@ void QgsDoubleSpinBox::changeEvent( QEvent *event )
   mClearButton->setVisible( shouldShowClearForValue( value() ) );
 }
 
+void QgsDoubleSpinBox::paintEvent( QPaintEvent *event )
+{
+  mClearButton->setVisible( shouldShowClearForValue( value() ) );
+  QDoubleSpinBox::paintEvent( event );
+}
+
 void QgsDoubleSpinBox::changed( const double& value )
 {
   mClearButton->setVisible( shouldShowClearForValue( value ) );
@@ -73,7 +79,7 @@ void QgsDoubleSpinBox::clear()
   setValue( clearValue() );
 }
 
-void QgsDoubleSpinBox::setClearValue( double customValue , QString specialValueText )
+void QgsDoubleSpinBox::setClearValue( double customValue, QString specialValueText )
 {
   mClearValueMode = CustomValue;
   mCustomClearValue = customValue;

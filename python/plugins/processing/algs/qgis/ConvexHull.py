@@ -25,12 +25,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
+from PyQt4.QtCore import QVariant
+
+from qgis.core import QGis, QgsField, QgsFeature, QgsGeometry
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import \
-        GeoAlgorithmExecutionException
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterSelection
@@ -50,15 +49,14 @@ class ConvexHull(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Convex hull'
         self.group = 'Vector geometry tools'
-        self.addParameter(ParameterVector(
-            self.INPUT, 'Input layer', [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterTableField(
-            self.FIELD,
-            'Field (optional, only used if creating convex hulls by classes)',
+        self.addParameter(ParameterVector(self.INPUT,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterTableField(self.FIELD,
+            self.tr('Field (optional, only used if creating convex hulls by classes)'),
             self.INPUT, optional=True))
-        self.addParameter(ParameterSelection(
-            self.METHOD, 'Method', self.METHODS))
-        self.addOutput(OutputVector(self.OUTPUT, 'Convex hull'))
+        self.addParameter(ParameterSelection(self.METHOD,
+            self.tr('Method'), self.METHODS))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Convex hull')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
@@ -66,7 +64,7 @@ class ConvexHull(GeoAlgorithm):
         useField = self.getParameterValue(self.METHOD) == 1
         fieldName = self.getParameterValue(self.FIELD)
 
-        f = QgsField('value')
+        f = QgsField('value', QVariant.String, '', 255)
         if useField:
             index = layer.fieldNameIndex(fieldName)
             fType = layer.pendingFields()[index].type()
@@ -129,7 +127,7 @@ class ConvexHull(GeoAlgorithm):
                         writer.addFeature(outFeat)
                     except:
                         raise GeoAlgorithmExecutionException(
-                                'Exception while computing convex hull')
+                            self.tr('Exception while computing convex hull'))
                 fid += 1
         else:
             hull = []
@@ -151,6 +149,6 @@ class ConvexHull(GeoAlgorithm):
                 writer.addFeature(outFeat)
             except:
                 raise GeoAlgorithmExecutionException(
-                        'Exception while computing convex hull')
+                    self.tr('Exception while computing convex hull'))
 
         del writer

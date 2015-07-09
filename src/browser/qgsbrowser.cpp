@@ -78,15 +78,8 @@ QgsBrowser::QgsBrowser( QWidget *parent, Qt::WindowFlags flags )
 
   mapCanvas->setCanvasColor( Qt::white );
 
-  QSettings settings;
-  QString lastPath =  settings.value( "/Browser/lastExpanded" ).toString();
-  QgsDebugMsg( "lastPath = " + lastPath );
-  if ( !lastPath.isEmpty() )
-  {
-    expandPath( lastPath );
-  }
-
   //Set the icon size of for all the toolbars created in the future.
+  QSettings settings;
   int size = settings.value( "/IconSize", QGIS_ICON_SIZE ).toInt();
   setIconSize( QSize( size, size ) );
 
@@ -258,34 +251,18 @@ void QgsBrowser::itemDoubleClicked( const QModelIndex& index )
   QgsDebugMsg( QString( "%1 %2 %3" ).arg( index.row() ).arg( index.column() ).arg( item->name() ) );
 }
 
-void QgsBrowser::itemExpanded( const QModelIndex& index )
-{
-  QSettings settings;
-  QgsDataItem *item = mModel->dataItem( index );
-  if ( !item )
-    return;
-
-#if 0
-  if ( item->mType == QgsDataItem::Directory || item->mType == QgsDataItem::Collection )
-  {
-    QgsDirectoryItem *i = qobject_cast<QgsDirectoryItem*>( item );
-    settings.setValue( "/Browser/lastExpandedDir", i->mPath );
-  }
-#endif
-
-  // TODO: save separately each type (FS, WMS)
-  settings.setValue( "/Browser/lastExpanded", item->path() );
-  QgsDebugMsg( "last expanded: " + item->path() );
-}
-
 void QgsBrowser::newVectorLayer()
 {
   // Set file dialog to last selected dir
-  QSettings settings;
-  QString lastPath =  settings.value( "/Browser/lastExpanded" ).toString();
-  if ( !lastPath.isEmpty() )
+  QModelIndex selectedIndex = treeView->selectionModel()->currentIndex();
+  if ( selectedIndex.isValid() )
   {
-    settings.setValue( "/UI/lastVectorFileFilterDir", lastPath );
+    QgsDirectoryItem * dirItem = qobject_cast<QgsDirectoryItem *>( mModel->dataItem( selectedIndex ) );
+    if ( dirItem )
+    {
+      QSettings settings;
+      settings.setValue( "/UI/lastVectorFileFilterDir", dirItem->dirPath() );
+    }
   }
 
   QString fileName = QgsNewVectorLayerDialog::runAndCreateLayer( this );

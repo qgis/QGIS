@@ -25,9 +25,6 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-
-from PyQt4.QtGui import *
-
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterBoolean
@@ -36,7 +33,6 @@ from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputRaster
 from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.tools.system import *
 
 
 class ColorRelief(GdalAlgorithm):
@@ -57,18 +53,19 @@ class ColorRelief(GdalAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Color relief'
         self.group = '[GDAL] Analysis'
-        self.addParameter(ParameterRaster(self.INPUT, 'Input layer'))
-        self.addParameter(ParameterNumber(self.BAND, 'Band number', 1, 99, 1))
-        self.addParameter(ParameterBoolean(self.COMPUTE_EDGES, 'Compute edges',
-                          False))
+        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
+        self.addParameter(ParameterNumber(
+            self.BAND, self.tr('Band number'), 1, 99, 1))
+        self.addParameter(ParameterBoolean(self.COMPUTE_EDGES,
+            self.tr('Compute edges'), False))
         self.addParameter(ParameterFile(self.COLOR_TABLE,
-                          'Color configuration file', optional=False))
+            self.tr('Color configuration file'), optional=False))
         self.addParameter(ParameterSelection(self.MATCH_MODE,
-                          'Matching mode', self.MATCHING_MODES, 0))
+            self.tr('Matching mode'), self.MATCHING_MODES, 0))
 
-        self.addOutput(OutputRaster(self.OUTPUT, 'Output file'))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Color relief')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         arguments = ['color-relief']
         arguments.append(unicode(self.getParameterValue(self.INPUT)))
         arguments.append(unicode(self.getParameterValue(self.COLOR_TABLE)))
@@ -90,5 +87,4 @@ class ColorRelief(GdalAlgorithm):
         elif mode == 2:
             arguments.append('-nearest_color_entry')
 
-        GdalUtils.runGdal(['gdaldem',
-                          GdalUtils.escapeAndJoin(arguments)], progress)
+        return ['gdaldem', GdalUtils.escapeAndJoin(arguments)]

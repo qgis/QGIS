@@ -1,6 +1,6 @@
 /***************************************************************************
                           qgsseerverfilter.cpp
- Server I/O filters class for Qgis Mapserver for use by plugins
+ Server I/O filters class for QGIS Server for use by plugins
                              -------------------
   begin                : 2014-09-10
   copyright            : (C) 2014 by Alessandro Pasotti
@@ -22,7 +22,7 @@
 
 /**
  * QgsServerFilter
- * Class defining I/O filters for Qgis Mapserver and
+ * Class defining I/O filters for QGIS Server and
  * implemented in plugins
  *
  */

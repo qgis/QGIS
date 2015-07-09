@@ -662,7 +662,6 @@ bool QgsLegendModel::readXML( const QDomElement& legendModelElem, const QDomDocu
 
   QDomNodeList topLevelItemList = legendModelElem.childNodes();
   QDomElement currentElem;
-  QgsComposerLegendItem* currentItem = 0;
 
   int nTopLevelItems =  topLevelItemList.size();
   for ( int i = 0; i < nTopLevelItems; ++i )
@@ -674,6 +673,7 @@ bool QgsLegendModel::readXML( const QDomElement& legendModelElem, const QDomDocu
     }
 
     //toplevel items can be groups or layers
+    QgsComposerLegendItem* currentItem = 0;
     if ( currentElem.tagName() == "LayerItem" )
     {
       currentItem = new QgsComposerLayerItem();
@@ -682,6 +682,10 @@ bool QgsLegendModel::readXML( const QDomElement& legendModelElem, const QDomDocu
     {
       currentItem = new QgsComposerGroupItem();
     }
+
+    if ( !currentItem )
+      continue;
+
     currentItem->readXML( currentElem, mHasTopLevelWindow );
 
     QList<QStandardItem *> itemsList;

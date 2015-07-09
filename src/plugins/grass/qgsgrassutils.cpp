@@ -17,6 +17,7 @@
 #include "qgsgrass.h"
 
 #include "qgisinterface.h"
+#include "qgsapplication.h"
 #include "qgslogger.h"
 
 #include <QFileInfo>
@@ -37,7 +38,16 @@ QString QgsGrassUtils::vectorLayerName( QString map, QString layer,
 void QgsGrassUtils::addVectorLayers( QgisInterface *iface,
                                      QString gisbase, QString location, QString mapset, QString map )
 {
-  QStringList layers = QgsGrass::vectorLayers( gisbase, location, mapset, map );
+  QStringList layers;
+  try
+  {
+    layers = QgsGrass::vectorLayers( gisbase, location, mapset, map );
+  }
+  catch ( QgsGrass::Exception &e )
+  {
+    QgsDebugMsg( e.what() );
+    return;
+  }
 
   for ( int i = 0; i < layers.count(); i++ )
   {
@@ -65,7 +75,21 @@ bool QgsGrassUtils::itemExists( QString element, QString item )
   return fi.exists();
 }
 
-QgsGrassElementDialog::QgsGrassElementDialog( QWidget *parent ) : QObject(), mParent( parent )
+
+QString QgsGrassUtils::htmlBrowserPath()
+{
+  return QgsApplication::libexecPath() + "grass/bin/qgis.g.browser"  + QString::number( QgsGrass::versionMajor() );
+}
+
+QgsGrassElementDialog::QgsGrassElementDialog( QWidget *parent )
+    : QObject()
+    , mDialog( 0 )
+    , mLineEdit( 0 )
+    , mLabel( 0 )
+    , mErrorLabel( 0 )
+    , mOkButton( 0 )
+    , mCancelButton( 0 )
+    , mParent( parent )
 {
 }
 
@@ -149,7 +173,7 @@ void QgsGrassElementDialog::textChanged()
     return;
   }
 
-#ifdef WIN32
+#ifdef Q_OS_WIN
   if ( !mSource.isNull() && text.toLower() == mSource.toLower() )
 #else
   if ( !mSource.isNull() && text == mSource )

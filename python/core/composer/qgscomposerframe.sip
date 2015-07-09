@@ -5,8 +5,9 @@ class QgsComposerFrame: QgsComposerItem
 #include "qgscomposerframe.h"
 %End
 
- public:
+  public:
     QgsComposerFrame( QgsComposition* c /TransferThis/, QgsComposerMultiFrame* mf, qreal x, qreal y, qreal width, qreal height );
+
     ~QgsComposerFrame();
 
     /**Sets the visible part of the multiframe's content which is visible within

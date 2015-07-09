@@ -29,6 +29,12 @@ class QgsSingleBandPseudoColorRenderer: QgsRasterRenderer
      */
     int band() const;
 
+     /** Sets the band used by the renderer.
+     * @see band
+     * @note added in QGIS 2.10
+     */
+    void setBand(int bandNo);
+
     double classificationMin() const;
     double classificationMax() const;
     void setClassificationMin( double min );

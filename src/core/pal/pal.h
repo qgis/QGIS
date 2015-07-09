@@ -27,18 +27,15 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #ifndef _PAL_H
 #define _PAL_H
-
 
 #include <QList>
 #include <iostream>
 #include <ctime>
 #include <geos_c.h>
+#include <QMutex>
+#include <QStringList>
 
 // TODO ${MAJOR} ${MINOR} etc instead of 0.2
 
@@ -62,7 +59,6 @@ namespace pal
   class PalStat;
   class Problem;
   class PointSet;
-  class SimpleMutex;
 
   /** Units for label sizes and distlabel */
   enum _Units
@@ -103,10 +99,10 @@ namespace pal
     P_FREE /**< Only for polygon, arranges candidates with respect of polygon orientation */
   };
 
-  /** typedef for _arrangement enumeration */
+  /** Typedef for _arrangement enumeration */
   typedef enum _arrangement Arrangement;
 
-  /** enumeration line arrangement flags. Flags can be combined. */
+  /** Enumeration line arrangement flags. Flags can be combined. */
   enum LineArrangementFlags
   {
     FLAG_ON_LINE     = 1,
@@ -128,130 +124,6 @@ namespace pal
       friend class Problem;
       friend class FeaturePart;
       friend class Layer;
-    private:
-      QList<Layer*> *layers;
-
-      SimpleMutex *lyrsMutex;
-
-      // TODO remove after tests !!!
-      clock_t tmpTime;
-
-      Units map_unit;
-
-      /**
-       * \brief maximum # candidates for a point
-       */
-      int point_p;
-
-      /**
-       * \brief maximum # candidates for a line
-       */
-      int line_p;
-
-      /**
-       * \brief maximum # candidates for a polygon
-       */
-      int poly_p;
-
-      SearchMethod searchMethod;
-
-      /*
-       * POPMUSIC Tuning
-       */
-      int popmusic_r;
-
-      int tabuMaxIt;
-      int tabuMinIt;
-
-      int dpi;
-
-      int ejChainDeg;
-      int tenure;
-      double candListSize;
-
-      /**
-       * \brief show partial labels (cut-off by the map canvas) or not
-       */
-      bool showPartial;
-
-
-      typedef bool ( *FnIsCancelled )( void* ctx );
-      /** Callback that may be called from PAL to check whether the job has not been cancelled in meanwhile */
-      FnIsCancelled fnIsCancelled;
-      /** Application-specific context for the cancellation check function */
-      void* fnIsCancelledContext;
-
-      /**
-       * \brief Problem factory
-       * Extract features to label and generates candidates for them,
-       * respects to a bounding box and a map scale
-       *
-       * @param nbLayers  number of layers to extract
-       * @param layersName layers name to be extracted
-       * @param layersFactor layer's factor (priority between layers, 0 is the best, 1 the worst)
-       * @param lambda_min xMin bounding-box
-       * @param phi_min yMin bounding-box
-       * @param lambda_max xMax bounding-box
-       * @param phi_max yMax bounding-box
-       * @param scale the scale (1:scale)
-       * @param svgmap stream to wrtie the svg map (need _EXPORT_MAP_ defined to work)
-       */
-      Problem* extract( int nbLayers, char **layersName, double *layersFactor,
-                        double lambda_min, double phi_min,
-                        double lambda_max, double phi_max,
-                        double scale, std::ofstream *svgmap );
-
-
-      /**
-       * \brief Choose the size of popmusic subpart's
-       * @param r subpart size
-       */
-      void setPopmusicR( int r );
-
-
-
-      /**
-       * \brief minimum # of iteration for search method POPMUSIC_TABU, POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN
-       * @param min_it Sub part optimization min # of iteration
-       */
-      void setMinIt( int min_it );
-
-      /**
-       * \brief maximum \# of iteration for search method POPMUSIC_TABU, POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN
-       * @param max_it Sub part optimization max # of iteration
-       */
-      void setMaxIt( int max_it );
-
-      /**
-       * \brief For tabu search : how many iteration a feature will be tabu
-       * @param tenure consiser a feature as tabu for tenure iteration after updating feature in solution
-       */
-      void setTenure( int tenure );
-
-      /**
-       * \brief For *CHAIN, select the max size of a transformation chain
-       * @param degree maximum soze of a transformation chain
-       */
-      void setEjChainDeg( int degree );
-
-      /**
-       * \brief How many candidates will be tested by a tabu iteration
-       * @param fact the ration (0..1) of candidates to test
-       */
-      void setCandListSize( double fact );
-
-
-      /**
-       * \brief Get the minimum # of iteration doing in POPMUSIC_TABU, POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN
-       * @return minimum # of iteration
-       */
-      int getMinIt();
-      /**
-       * \brief Get the maximum # of iteration doing in POPMUSIC_TABU, POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN
-       * @return maximum # of iteration
-       */
-      int getMaxIt();
-
 
     public:
 
@@ -283,7 +155,7 @@ namespace pal
        *
        * @todo add symbolUnit
        */
-      Layer * addLayer( const char *lyrName, double min_scale, double max_scale, Arrangement arrangement, Units label_unit, double defaultPriority, bool obstacle, bool active, bool toLabel, bool displayAll = false );
+      Layer * addLayer( const QString& lyrName, double min_scale, double max_scale, Arrangement arrangement, Units label_unit, double defaultPriority, bool obstacle, bool active, bool toLabel, bool displayAll = false );
 
       /**
        * \brief Look for a layer
@@ -294,7 +166,7 @@ namespace pal
        *
        * @return a pointer on layer or NULL if layer not exist
        */
-      Layer *getLayer( const char *lyrName );
+      Layer *getLayer( const QString &lyrName );
 
       /**
        * \brief get all layers
@@ -323,7 +195,6 @@ namespace pal
        */
       std::list<LabelPosition*> *labeller( double scale, double bbox[4], PalStat **stats, bool displayAll );
 
-
       /**
        * \brief the labeling machine
        * Active layers are specifiend through layersName array
@@ -331,7 +202,6 @@ namespace pal
        *
        * @param nbLayers # layers
        * @param layersName names of layers to label
-       * @param layersFactor layers priorities array
        * @param scale map scale is  '1:scale'
        * @param bbox map extent
        * @param stat will be filled with labelling process statistics, can be NULL
@@ -342,11 +212,12 @@ namespace pal
        * @return A list of label to display on map
        */
       std::list<LabelPosition*> *labeller( int nbLayers,
-                                           char **layersName,
-                                           double *layersFactor,
+                                           const QStringList &layersName,
                                            double scale, double bbox[4],
                                            PalStat **stat,
                                            bool displayAll );
+
+      typedef bool ( *FnIsCancelled )( void* ctx );
 
       /** Register a function that returns whether this job has been cancelled - PAL calls it during the computation */
       void registerCancellationCallback( FnIsCancelled fnCancelled, void* context );
@@ -451,6 +322,123 @@ namespace pal
        * @return the search method
        */
       SearchMethod getSearch();
+
+    private:
+      QList<Layer*> *layers;
+
+      QMutex mMutex;
+
+      Units map_unit;
+
+      /**
+       * \brief maximum # candidates for a point
+       */
+      int point_p;
+
+      /**
+       * \brief maximum # candidates for a line
+       */
+      int line_p;
+
+      /**
+       * \brief maximum # candidates for a polygon
+       */
+      int poly_p;
+
+      SearchMethod searchMethod;
+
+      /*
+       * POPMUSIC Tuning
+       */
+      int popmusic_r;
+
+      int tabuMaxIt;
+      int tabuMinIt;
+
+      int dpi;
+
+      int ejChainDeg;
+      int tenure;
+      double candListSize;
+
+      /**
+       * \brief show partial labels (cut-off by the map canvas) or not
+       */
+      bool showPartial;
+
+      /** Callback that may be called from PAL to check whether the job has not been cancelled in meanwhile */
+      FnIsCancelled fnIsCancelled;
+      /** Application-specific context for the cancellation check function */
+      void* fnIsCancelledContext;
+
+      /**
+       * \brief Problem factory
+       * Extract features to label and generates candidates for them,
+       * respects to a bounding box and a map scale
+       *
+       * @param nbLayers  number of layers to extract
+       * @param layersName layers name to be extracted
+       * @param lambda_min xMin bounding-box
+       * @param phi_min yMin bounding-box
+       * @param lambda_max xMax bounding-box
+       * @param phi_max yMax bounding-box
+       * @param scale the scale (1:scale)
+       */
+      Problem* extract( int nbLayers, const QStringList& layersName,
+                        double lambda_min, double phi_min,
+                        double lambda_max, double phi_max,
+                        double scale );
+
+
+      /**
+       * \brief Choose the size of popmusic subpart's
+       * @param r subpart size
+       */
+      void setPopmusicR( int r );
+
+
+
+      /**
+       * \brief minimum # of iteration for search method POPMUSIC_TABU, POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN
+       * @param min_it Sub part optimization min # of iteration
+       */
+      void setMinIt( int min_it );
+
+      /**
+       * \brief maximum \# of iteration for search method POPMUSIC_TABU, POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN
+       * @param max_it Sub part optimization max # of iteration
+       */
+      void setMaxIt( int max_it );
+
+      /**
+       * \brief For tabu search : how many iteration a feature will be tabu
+       * @param tenure consiser a feature as tabu for tenure iteration after updating feature in solution
+       */
+      void setTenure( int tenure );
+
+      /**
+       * \brief For *CHAIN, select the max size of a transformation chain
+       * @param degree maximum soze of a transformation chain
+       */
+      void setEjChainDeg( int degree );
+
+      /**
+       * \brief How many candidates will be tested by a tabu iteration
+       * @param fact the ration (0..1) of candidates to test
+       */
+      void setCandListSize( double fact );
+
+
+      /**
+       * \brief Get the minimum # of iteration doing in POPMUSIC_TABU, POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN
+       * @return minimum # of iteration
+       */
+      int getMinIt();
+      /**
+       * \brief Get the maximum # of iteration doing in POPMUSIC_TABU, POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN
+       * @return maximum # of iteration
+       */
+      int getMaxIt();
   };
 } // end namespace pal
 #endif

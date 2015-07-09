@@ -42,10 +42,9 @@ try:
 except ImportError, e:
     raise Exception("Processing must be installed and available in PYTHONPATH")
 
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 
-from OTBUtils import *
+from OTBUtils import OTBUtils
 
 
 
@@ -106,7 +105,7 @@ def adaptSplitImage(commands_list):
             item = item.replace(".file", ".tif")
         if item == "-out":
             index = commands_list.index(item)
-            if not "." in os.path.basename(commands_list[index + 1] ):
+            if "." not in os.path.basename(commands_list[index + 1] ):
                 commands_list[index + 1] = commands_list[index + 1][:-1] + ".tif" + commands_list[index + 1][-1]
         commands_list2.append(item)
     return commands_list2
@@ -123,7 +122,7 @@ def adaptLSMSVectorization(commands_list):
             item = item.replace(".file", ".shp")
         if item == "-out":
             index = commands_list.index(item)
-            if not "." in os.path.basename(commands_list[index + 1] ):
+            if "." not in os.path.basename(commands_list[index + 1] ):
                 commands_list[index + 1] = commands_list[index + 1][:-1] + ".shp" + commands_list[index + 1][-1]
         commands_list2.append(item)
 
@@ -141,7 +140,7 @@ def adaptComputeImagesStatistics(commands_list):
         commands_list2.append(item)
         if item == "-out":
             index = commands_list.index(item)
-            if not "." in os.path.basename(commands_list[index + 1] ):
+            if "." not in os.path.basename(commands_list[index + 1] ):
                 commands_list[index + 1] = commands_list[index + 1][:-1] + ".xml" + commands_list[index + 1][-1]
 
     return commands_list2
@@ -160,7 +159,7 @@ def adaptKmzExport(commands_list):
             item = item.replace(".file", ".kmz")
         if item == "-out":
             index = commands_list.index(item)
-            if not "." in os.path.basename(commands_list[index + 1] ):
+            if "." not in os.path.basename(commands_list[index + 1] ):
                 commands_list[index + 1] = commands_list[index + 1][:-1] + ".kmz" + commands_list[index + 1][-1]
 
         commands_list2.append(item)
@@ -205,7 +204,7 @@ def adaptComputeConfusionMatrix(commands_list):
             item = item.replace(".file", ".csv")
         if item == "-out":
             index = commands_list.index(item)
-            if not "." in os.path.basename(commands_list[index + 1] ):
+            if "." not in os.path.basename(commands_list[index + 1] ):
                 commands_list[index + 1] = commands_list[index + 1][:-1] + ".csv" + commands_list[index + 1][-1]
 
         commands_list2.append(item)
@@ -316,11 +315,11 @@ def adaptGeoidSrtm(commands_list):
 
 def ckeckGeoidSrtmSettings():
     folder = ProcessingConfig.getSetting(OTBUtils.OTB_SRTM_FOLDER)
-    if folder == None:
+    if folder is None:
         folder =""
 
     filepath = ProcessingConfig.getSetting(OTBUtils.OTB_GEOID_FILE)
-    if filepath == None:
+    if filepath is None:
         filepath =""
 
     return folder, filepath

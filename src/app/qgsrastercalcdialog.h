@@ -32,6 +32,7 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
     QString formulaString() const;
     QString outputFile() const;
     QString outputFormat() const;
+    QgsCoordinateReferenceSystem outputCrs() const;
     bool addLayerToProject() const;
 
     /**Bounding box for output raster*/
@@ -63,6 +64,9 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
     void on_mSinButton_clicked();
     void on_mASinButton_clicked();
     void on_mExpButton_clicked();
+    void on_mLnButton_clicked();
+    void on_mLogButton_clicked();
+    void on_mNotEqualButton_clicked();
     void on_mTanButton_clicked();
     void on_mACosButton_clicked();
     void on_mATanButton_clicked();

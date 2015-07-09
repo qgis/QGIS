@@ -33,7 +33,7 @@ class CORE_EXPORT QgsDbFilterProxyModel: public QSortFilterProxyModel
     void _setFilterRegExp( const QString& pattern );
 
   protected:
-    virtual bool filterAcceptsRow( int row, const QModelIndex & source_parent ) const;
+    virtual bool filterAcceptsRow( int row, const QModelIndex & source_parent ) const override;
 };
 
 #endif

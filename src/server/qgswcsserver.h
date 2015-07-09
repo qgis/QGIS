@@ -40,7 +40,7 @@ class QgsWCSServer: public QgsOWSServer
                   QgsRequestHandler* rh );
     ~QgsWCSServer();
 
-    void executeRequest();
+    void executeRequest() override;
 
     /**Returns an XML file with the capabilities description (as described in the WFS specs)*/
     QDomDocument getCapabilities();

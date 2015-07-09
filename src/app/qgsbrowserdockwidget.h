@@ -17,20 +17,91 @@
 
 #include <QDockWidget>
 #include <ui_qgsbrowserdockwidgetbase.h>
+#include <ui_qgsbrowserlayerpropertiesbase.h>
+#include <ui_qgsbrowserdirectorypropertiesbase.h>
+#include <ui_qgsbrowserpropertiesdialogbase.h>
+
+#include "qgsdataitem.h"
 
 class QgsBrowserModel;
 class QModelIndex;
-class QgsBrowserTreeView;
+class QgsDockBrowserTreeView;
 class QgsLayerItem;
 class QgsDataItem;
 class QgsBrowserTreeFilterProxyModel;
+
+// hack to show wrapped text without spaces
+class QgsBrowserPropertiesWrapLabel : public QTextEdit
+{
+    Q_OBJECT
+  public:
+    QgsBrowserPropertiesWrapLabel( const QString& text, QWidget* parent = 0 );
+
+  private slots:
+    void adjustHeight( const QSizeF& size );
+};
+
+class QgsBrowserPropertiesWidget : public QWidget
+{
+    Q_OBJECT
+  public:
+    QgsBrowserPropertiesWidget( QWidget* parent = 0 );
+    static QgsBrowserPropertiesWidget* createWidget( QgsDataItem* item, QWidget* parent = 0 );
+    virtual void setItem( QgsDataItem* item ) = 0;
+
+    /** Sets whether the properties widget should display in condensed mode, ie, for display in a dock
+     * widget rather than it's own separate dialog.
+     * @param condensedMode set to true to enable condensed mode
+     * @note added in QGIS 2.10
+     */
+    virtual void setCondensedMode( bool condensedMode ) { Q_UNUSED( condensedMode ); }
+};
+
+class QgsBrowserLayerProperties : public QgsBrowserPropertiesWidget, private Ui::QgsBrowserLayerPropertiesBase
+{
+    Q_OBJECT
+  public:
+    QgsBrowserLayerProperties( QWidget* parent = 0 );
+    void setItem( QgsDataItem* item ) override;
+
+    virtual void setCondensedMode( bool condensedMode ) override;
+
+  private:
+    QgsBrowserPropertiesWrapLabel *mUriLabel;
+};
+
+class QgsBrowserDirectoryProperties : public QgsBrowserPropertiesWidget , private Ui::QgsBrowserDirectoryPropertiesBase
+{
+    Q_OBJECT
+  public:
+    QgsBrowserDirectoryProperties( QWidget* parent = 0 );
+
+    void setItem( QgsDataItem* item ) override;
+  private:
+    QgsDirectoryParamWidget* mDirectoryWidget;
+    QgsBrowserPropertiesWrapLabel *mPathLabel;
+};
+
+class QgsBrowserPropertiesDialog : public QDialog , private Ui::QgsBrowserPropertiesDialogBase
+{
+    Q_OBJECT
+  public:
+    QgsBrowserPropertiesDialog( QString settingsSection, QWidget* parent = 0 );
+    ~QgsBrowserPropertiesDialog();
+
+    void setItem( QgsDataItem* item );
+
+  private:
+    QgsBrowserPropertiesWidget* mPropertiesWidget;
+    QString mSettingsSection;
+};
 
 class APP_EXPORT QgsBrowserDockWidget : public QDockWidget, private Ui::QgsBrowserDockWidgetBase
 {
     Q_OBJECT
   public:
     explicit QgsBrowserDockWidget( QString name, QWidget *parent = 0 );
-    //~QgsBrowserDockWidget();
+    ~QgsBrowserDockWidget();
     void addFavouriteDirectory( QString favDir );
 
   public slots:
@@ -44,6 +115,7 @@ class APP_EXPORT QgsBrowserDockWidget : public QDockWidget, private Ui::QgsBrows
     void refresh();
 
     void showFilterWidget( bool visible );
+    void enablePropertiesWidget( bool enable );
     void setFilterSyntax( QAction * );
     void setCaseSensitive( bool caseSensitive );
     void setFilter();
@@ -54,36 +126,28 @@ class APP_EXPORT QgsBrowserDockWidget : public QDockWidget, private Ui::QgsBrows
     void showProperties();
     void toggleFastScan();
 
-    void fetchFinished( const QModelIndex & index );
+    void selectionChanged( const QItemSelection & selected, const QItemSelection & deselected );
+    void splitterMoved();
 
   protected:
     void refreshModel( const QModelIndex& index );
-
-    void showEvent( QShowEvent * event );
-
-    void hideEvent( QHideEvent * event );
-
+    void showEvent( QShowEvent * event ) override;
     void addLayer( QgsLayerItem *layerItem );
+    void clearPropertiesWidget();
+    void setPropertiesWidget();
 
-    QgsBrowserTreeView* mBrowserView;
+    int selectedItemsCount();
+    QString settingsSection() { return objectName().toLower(); }
+
+    QgsDockBrowserTreeView* mBrowserView;
     QgsBrowserModel* mModel;
     QgsBrowserTreeFilterProxyModel* mProxyModel;
     QString mInitPath;
+    bool mPropertiesWidgetEnabled;
+    // height fraction
+    float mPropertiesWidgetHeight;
 
   private:
-    QString expandedPathsKey() const;
-    // Get list of expanded items paths recursively
-    QStringList expandedPathsList( const QModelIndex & proxyIndex );
-
-    // Expand path recursively to root
-    void expand( const QModelIndex & proxyIndex );
-    // returns true if expanded from root to item
-    bool treeExpanded( const QModelIndex & proxyIndex );
-
-    void saveState();
-    void restoreState();
-    // returns true if at least one descendat is expanded, used in refresh
-    bool hasExpandedDescendant( const QModelIndex& proxyIndex ) const;
 };
 
 #endif // QGSBROWSERDOCKWIDGET_H

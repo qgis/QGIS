@@ -19,15 +19,24 @@
 #define QGSSERVERPLUGINS_H
 
 #include "qgsrequesthandler.h"
-#include "qgspythonutils.h"
 #include "qgsserverinterface.h"
+
+// This is needed by SIP otherwise it doesn't find QgsPythonUtils header
+class QgsPythonUtils;
 
 class SERVER_EXPORT QgsServerPlugins
 {
   public:
     explicit QgsServerPlugins();
+    /**
+       * Initialise the python plugins
+       * @param interface QgsServerInterface
+       * @return bool true on success
+       */
     static bool initPlugins( QgsServerInterface* interface );
+    //! Pointer to QgsPythonUtils
     static QgsPythonUtils* mPythonUtils;
+    //! List of available server plugin names
     static QStringList mServerPlugins;
 };
 

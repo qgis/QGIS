@@ -85,8 +85,6 @@ class QgsCompassPlugin: public QObject, public QgisPlugin, private Ui::QgsCompas
     QString pluginDescriptionQString;
     //! Category of the plugin
     QString pluginCategoryQString;
-    //! Plugin type as defined in Plugin::PLUGINTYPE
-    int pluginType;
     //! Pointer to the QGIS interface object
     QgisInterface *mQGisIface;
     //! Pointer to the QAction object used in the menu and toolbar

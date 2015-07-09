@@ -24,6 +24,7 @@
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgsvectorlayer.h"
+#include "qgswkbptr.h"
 #include <QProgressDialog>
 
 QgsTINInterpolator::QgsTINInterpolator( const QList<LayerData>& inputData, TIN_INTERPOLATION interpolation, bool showProgressDialog )
@@ -172,7 +173,7 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
     return 1;
   }
 
-  QgsGeometry* g = f->geometry();
+  const QgsGeometry* g = f->constGeometry();
   {
     if ( !g )
     {

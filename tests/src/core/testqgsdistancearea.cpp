@@ -80,12 +80,10 @@ void TestQgsDistanceArea::basic()
   QVERIFY( ! qFuzzyCompare( resultA, resultB ) );
 
   // Test assignment
-  QgsDistanceArea * daC;
-  daC = new QgsDistanceArea;
+  QSharedPointer<QgsDistanceArea> daC( new QgsDistanceArea );
   *daC = daB;
   resultC = daC->measureLine( p1, p2 );
   QCOMPARE( resultB, resultC );
-  delete daC;
 
   // Use parameter setting of ellipsoid radii (from WGS72 )
   daA.setEllipsoid( 6378135.0, 6378135.0 - ( 6378135.0 / 298.26 ) );
@@ -110,7 +108,7 @@ void TestQgsDistanceArea::test_distances()
   myDa.setEllipsoidalMode( true );
   myDa.setEllipsoid( "WGS84" );
 
-  QString myFileName = QString( TEST_DATA_DIR ) + QDir::separator() + "GeodTest-nano.dat";
+  QString myFileName = QString( TEST_DATA_DIR ) + "/GeodTest-nano.dat";
 
   QFile myFile( myFileName );
   if ( ! myFile.open( QIODevice::ReadOnly | QIODevice::Text ) )

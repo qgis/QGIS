@@ -7,6 +7,7 @@
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreeviewdefaultactions.h"
+#include "qgsmaplayerstyleguiutils.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectordataprovider.h"
@@ -33,8 +34,8 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
     // global menu
     menu->addAction( actions->actionAddGroup( menu ) );
 
-    menu->addAction( QgsApplication::getThemeIcon( "/mActionExpandTree.png" ), tr( "&Expand All" ), mView, SLOT( expandAll() ) );
-    menu->addAction( QgsApplication::getThemeIcon( "/mActionCollapseTree.png" ), tr( "&Collapse All" ), mView, SLOT( collapseAll() ) );
+    menu->addAction( QgsApplication::getThemeIcon( "/mActionExpandTree.svg" ), tr( "&Expand All" ), mView, SLOT( expandAll() ) );
+    menu->addAction( QgsApplication::getThemeIcon( "/mActionCollapseTree.svg" ), tr( "&Collapse All" ), mView, SLOT( collapseAll() ) );
 
     // TODO: update drawing order
   }
@@ -55,21 +56,24 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
       if ( mView->selectedNodes( true ).count() >= 2 )
         menu->addAction( actions->actionGroupSelected( menu ) );
 
+      menu->addAction( tr( "Save As Layer Definition File..." ), QgisApp::instance(), SLOT( saveAsLayerDefinition() ) );
+
       menu->addAction( actions->actionAddGroup( menu ) );
     }
     else if ( QgsLayerTree::isLayer( node ) )
     {
-      QgsMapLayer* layer = QgsLayerTree::toLayer( node )->layer();
+      QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer();
+      QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
+      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
 
       menu->addAction( actions->actionZoomToLayer( mCanvas, menu ) );
       menu->addAction( actions->actionShowInOverview( menu ) );
 
-      if ( layer && layer->type() == QgsMapLayer::RasterLayer )
+      if ( rlayer )
       {
         menu->addAction( tr( "&Zoom to Best Scale (100%)" ), QgisApp::instance(), SLOT( legendLayerZoomNative() ) );
 
-        QgsRasterLayer* rasterLayer =  qobject_cast<QgsRasterLayer *>( layer );
-        if ( rasterLayer && rasterLayer->rasterType() != QgsRasterLayer::Palette )
+        if ( rlayer->rasterType() != QgsRasterLayer::Palette )
           menu->addAction( tr( "&Stretch Using Current Extent" ), QgisApp::instance(), SLOT( legendLayerStretchUsingCurrentExtent() ) );
       }
 
@@ -78,21 +82,40 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
       // duplicate layer
       QAction* duplicateLayersAction = menu->addAction( QgsApplication::getThemeIcon( "/mActionDuplicateLayer.svg" ), tr( "&Duplicate" ), QgisApp::instance(), SLOT( duplicateLayers() ) );
 
-      // set layer scale visibility
-      menu->addAction( tr( "&Set Layer Scale Visibility" ), QgisApp::instance(), SLOT( setLayerScaleVisibility() ) );
+      if ( !vlayer || vlayer->geometryType() != QGis::NoGeometry )
+      {
+        // set layer scale visibility
+        menu->addAction( tr( "&Set Layer Scale Visibility" ), QgisApp::instance(), SLOT( setLayerScaleVisibility() ) );
 
-      // set layer crs
-      menu->addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ), tr( "&Set Layer CRS" ), QgisApp::instance(), SLOT( setLayerCRS() ) );
+        // set layer crs
+        menu->addAction( QgsApplication::getThemeIcon( "/mActionSetCRS.png" ), tr( "&Set Layer CRS" ), QgisApp::instance(), SLOT( setLayerCRS() ) );
 
-      // assign layer crs to project
-      menu->addAction( QgsApplication::getThemeIcon( "/mActionSetProjectCRS.png" ), tr( "Set &Project CRS from Layer" ), QgisApp::instance(), SLOT( setProjectCRSFromLayer() ) );
+        // assign layer crs to project
+        menu->addAction( QgsApplication::getThemeIcon( "/mActionSetProjectCRS.png" ), tr( "Set &Project CRS from Layer" ), QgisApp::instance(), SLOT( setProjectCRSFromLayer() ) );
+      }
+
+      // style-related actions
+      if ( layer && mView->selectedLayerNodes().count() == 1 )
+      {
+        QMenu *menuStyleManager = new QMenu( tr( "Styles" ) );
+
+        QgisApp *app = QgisApp::instance();
+        menuStyleManager->addAction( tr( "Copy Style" ), app, SLOT( copyStyle() ) );
+        if ( app->clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
+        {
+          menuStyleManager->addAction( tr( "Paste Style" ), app, SLOT( pasteStyle() ) );
+        }
+
+        menuStyleManager->addSeparator();
+        QgsMapLayerStyleGuiUtils::instance()->addStyleManagerActions( menuStyleManager, layer );
+
+        menu->addMenu( menuStyleManager );
+      }
 
       menu->addSeparator();
 
-      if ( layer && layer->type() == QgsMapLayer::VectorLayer )
+      if ( vlayer )
       {
-        QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( layer );
-
         QAction *toggleEditingAction = QgisApp::instance()->actionToggleEditing();
         QAction *saveLayerEditsAction = QgisApp::instance()->actionSaveActiveLayerEdits();
         QAction *allEditsAction = QgisApp::instance()->actionAllEdits();
@@ -127,14 +150,17 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
         menu->addAction( tr( "Save As..." ), QgisApp::instance(), SLOT( saveAsFile() ) );
         menu->addAction( tr( "Save As Layer Definition File..." ), QgisApp::instance(), SLOT( saveAsLayerDefinition() ) );
 
-        if ( !vlayer->isEditable() && vlayer->dataProvider()->supportsSubsetString() && vlayer->vectorJoins().isEmpty() )
-          menu->addAction( tr( "&Filter..." ), QgisApp::instance(), SLOT( layerSubsetString() ) );
+        if ( vlayer->dataProvider()->supportsSubsetString() )
+        {
+          QAction *action = menu->addAction( tr( "&Filter..." ), QgisApp::instance(), SLOT( layerSubsetString() ) );
+          action->setEnabled( !vlayer->isEditable() );
+        }
 
         menu->addAction( actions->actionShowFeatureCount( menu ) );
 
         menu->addSeparator();
       }
-      else if ( layer && layer->type() == QgsMapLayer::RasterLayer )
+      else if ( rlayer )
       {
         menu->addAction( tr( "Save As..." ), QgisApp::instance(), SLOT( saveAsRasterFile() ) );
         menu->addAction( tr( "Save As Layer Definition File..." ), QgisApp::instance(), SLOT( saveAsLayerDefinition() ) );
@@ -157,16 +183,6 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       if ( mView->selectedNodes( true ).count() >= 2 )
         menu->addAction( actions->actionGroupSelected( menu ) );
-
-      if ( mView->selectedLayerNodes().count() == 1 )
-      {
-        QgisApp* app = QgisApp::instance();
-        menu->addAction( tr( "Copy Style" ), app, SLOT( copyStyle() ) );
-        if ( app->clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
-        {
-          menu->addAction( tr( "Paste Style" ), app, SLOT( pasteStyle() ) );
-        }
-      }
     }
 
   }
@@ -206,8 +222,11 @@ bool QgsAppLayerTreeViewMenuProvider::removeLegendLayerAction( QAction* action )
 
 void QgsAppLayerTreeViewMenuProvider::addLegendLayerActionForLayer( QAction* action, QgsMapLayer* layer )
 {
+  if ( !action || !layer )
+    return;
+
   legendLayerActions( layer->type() );
-  if ( !action || !layer || ! mLegendLayerActionMap.contains( layer->type() ) )
+  if ( !mLegendLayerActionMap.contains( layer->type() ) )
     return;
 
   QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > >::iterator it
@@ -277,7 +296,7 @@ void QgsAppLayerTreeViewMenuProvider::addCustomLayerActions( QMenu* menu, QgsMap
           // find or create menu for given menu name
           // adapted from QgisApp::getPluginMenu( QString menuName )
           QString menuName = lyrActions[i].menu;
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
           // Mac doesn't have '&' keyboard shortcuts.
           menuName.remove( QChar( '&' ) );
 #endif

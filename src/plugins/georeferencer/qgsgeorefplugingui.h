@@ -19,6 +19,7 @@
 #include "qgsgcplist.h"
 #include "qgsmapcoordsdialog.h"
 #include "qgsimagewarper.h"
+#include "qgscoordinatereferencesystem.h"
 
 #include <QPointer>
 
@@ -37,6 +38,7 @@ class QgsMapCoordsDialog;
 class QgsPoint;
 class QgsRasterLayer;
 class QgsRectangle;
+class QgsMessageBar;
 
 class QgsGeorefDockWidget : public QDockWidget
 {
@@ -54,10 +56,11 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     ~QgsGeorefPluginGui();
 
   protected:
-    void closeEvent( QCloseEvent * );
+    void closeEvent( QCloseEvent * ) override;
 
   private slots:
     // file
+    void reset();
     void openRaster();
     void doGeoreference();
     void generateGDALScript();
@@ -149,7 +152,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     void writeSettings();
 
     // gcp points
-    void loadGCPs( /*bool verbose = true*/ );
+    bool loadGCPs( /*bool verbose = true*/ );
     void saveGCPs();
     QgsGeorefPluginGui::SaveGCPs checkNeedGCPSave();
 
@@ -197,7 +200,9 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     /**Docks / undocks this window*/
     void dockThisWindow( bool dock );
 
+    QGridLayout* mCentralLayout;
 
+    QgsMessageBar* mMessageBar;
     QMenu *mPanelMenu;
     QMenu *mToolbarMenu;
 
@@ -216,7 +221,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     QString mWorldFileName;
     QString mTranslatedRasterFileName;
     QString mGCPpointsFileName;
-    QString mProjection;
+    QgsCoordinateReferenceSystem mProjection;
     QString mPdfOutputFile;
     QString mPdfOutputMapFile;
     double  mUserResX, mUserResY;  // User specified target scale
@@ -252,6 +257,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     bool mLoadInQgis;
 
     QDockWidget* mDock;
+    int messageTimeout();
 };
 
 #endif

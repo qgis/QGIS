@@ -26,7 +26,7 @@
 #include "qgsconfig.h"
 
 #ifndef CMAKE_SOURCE_DIR
-#error CMAKE_SOURCE_DIR undefinied
+#error CMAKE_SOURCE_DIR undefined
 #endif // CMAKE_SOURCE_DIR
 
 int QgsLogger::sDebugLevel = -999; // undefined value
@@ -146,7 +146,8 @@ void QgsLogger::logMessageToFile( QString theMessage )
 
   //Maybe more efficient to keep the file open for the life of qgis...
   QFile file( sLogFile );
-  file.open( QIODevice::Append );
+  if ( !file.open( QIODevice::Append ) )
+    return;
   file.write( theMessage.toLocal8Bit().constData() );
   file.write( "\n" );
   file.close();

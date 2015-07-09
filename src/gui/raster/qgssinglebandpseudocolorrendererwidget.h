@@ -38,7 +38,7 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
     ~QgsSingleBandPseudoColorRendererWidget();
 
     static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &theExtent ) { return new QgsSingleBandPseudoColorRendererWidget( layer, theExtent ); }
-    QgsRasterRenderer* renderer();
+    QgsRasterRenderer* renderer() override;
 
     void setFromRenderer( const QgsRasterRenderer* r );
 

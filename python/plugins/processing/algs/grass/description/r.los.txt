@@ -7,4 +7,4 @@ ParameterRaster|patt_map|Binary (1/0) raster layer to use as a mask|True
 ParameterString|obs_elev|Viewing position height above the ground|1.75
 ParameterString|max_dist|Maximum distance from the viewing point (meters)|10000
 ParameterBoolean|-c|Consider earth curvature (current ellipsoid)|False
-OutputRaster|output|Output raster layer
+OutputRaster|output|Intervisibility

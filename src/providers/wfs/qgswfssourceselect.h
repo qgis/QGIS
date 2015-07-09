@@ -36,7 +36,7 @@ class QgsWFSItemDelegate : public QItemDelegate
 
     QgsWFSItemDelegate( QObject *parent = 0 ) : QItemDelegate( parent ) { }
 
-    virtual QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+    virtual QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 
 };
 

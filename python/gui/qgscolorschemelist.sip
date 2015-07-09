@@ -17,6 +17,7 @@ class QgsColorSwatchDelegate : QAbstractItemDelegate
     bool editorEvent( QEvent * event, QAbstractItemModel * model, const QStyleOptionViewItem & option, const QModelIndex & index );
 };
 
+
 /** \ingroup gui
  * \class QgsColorSchemeModel
  * A model for colors in a color scheme
@@ -37,7 +38,7 @@ class QgsColorSchemeModel: QAbstractItemModel
      * @param baseColor base color for color scheme
      * @param parent parent object
      */
-    explicit QgsColorSchemeModel( QgsColorScheme* scheme, const QString context = QString(), const QColor &baseColor = QColor(), QObject* parent /TransferThis/ = 0 );
+    explicit QgsColorSchemeModel( QgsColorScheme* scheme, const QString &context = QString(), const QColor &baseColor = QColor(), QObject* parent /TransferThis/ = 0 );
 
     ~QgsColorSchemeModel();
 
@@ -85,7 +86,7 @@ class QgsColorSchemeModel: QAbstractItemModel
      * @param color color to add
      * @param label label for color
      */
-    void addColor( const QColor color, const QString label = QString() );
+    void addColor( const QColor color, const QString &label = QString() );
 
     /**Returns whether the color scheme model has been modified
      * @returns true if colors have been modified

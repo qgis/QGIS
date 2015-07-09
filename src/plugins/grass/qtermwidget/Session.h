@@ -487,8 +487,6 @@ namespace Konsole
       void updateTerminalSize();
       WId windowId() const;
 
-      int            _uniqueIdentifier;
-
       Pty*          _shellProcess;
       Emulation*    _emulation;
 

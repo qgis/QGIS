@@ -8,6 +8,7 @@
 
 #include "qwt_polar_plot.h"
 #include "qwt_polar_item.h"
+#include <qwt_scale_div.h>
 #include <qwt_legend.h>
 #include <qwt_legend_item.h>
 #include <qpainter.h>

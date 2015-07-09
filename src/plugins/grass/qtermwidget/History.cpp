@@ -84,9 +84,10 @@ FIXME: There is noticeable decrease in speed, also. Perhaps,
 */
 
 HistoryFile::HistoryFile()
-    : ion( -1 ),
-    length( 0 ),
-    fileMap( 0 )
+    : ion( -1 )
+    , length( 0 )
+    , fileMap( 0 )
+    , readWriteBalance( 0 )
 {
   if ( tmpFile.open() )
   {
@@ -281,7 +282,7 @@ void HistoryScrollFile::addLine( bool previousWrapped )
 // History Scroll Buffer //////////////////////////////////////
 HistoryScrollBuffer::HistoryScrollBuffer( unsigned int maxLineCount )
     : HistoryScroll( new HistoryTypeBuffer( maxLineCount ) )
-    , _historyBuffer()
+    , _historyBuffer( 0 )
     , _maxLineCount( 0 )
     , _usedLines( 0 )
     , _head( 0 )

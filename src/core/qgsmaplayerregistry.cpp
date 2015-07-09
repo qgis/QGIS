@@ -20,6 +20,15 @@
 #include "qgslogger.h"
 
 //
+// Static calls to enforce singleton behaviour
+//
+QgsMapLayerRegistry *QgsMapLayerRegistry::instance()
+{
+  static QgsMapLayerRegistry sInstance;
+  return &sInstance;
+}
+
+//
 // Main class begins now...
 //
 
@@ -161,9 +170,10 @@ const QMap<QString, QgsMapLayer*>& QgsMapLayerRegistry::mapLayers()
 }
 
 
-
+#if 0
 void QgsMapLayerRegistry::connectNotify( const char * signal )
 {
   Q_UNUSED( signal );
   //QgsDebugMsg("QgsMapLayerRegistry connected to " + QString(signal));
 } //  QgsMapLayerRegistry::connectNotify
+#endif

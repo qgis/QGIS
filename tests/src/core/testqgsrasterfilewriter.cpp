@@ -16,8 +16,6 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QObject>
-#include <iostream>
 #include <QApplication>
 #include <QFileInfo>
 #include <QDir>
@@ -67,7 +65,7 @@ void TestQgsRasterFileWriter::initTestCase()
   mySettings = mySettings.replace( "\n", "<br />" );
   //create some objects that will be used in all tests...
   //create a raster layer that will be used in all tests...
-  mTestDataDir = QString( TEST_DATA_DIR ) + QDir::separator(); //defined in CmakeLists.txt
+  mTestDataDir = QString( TEST_DATA_DIR ) + "/"; //defined in CmakeLists.txt
   mReport += "<h1>Raster File Writer Tests</h1>\n";
   mReport += "<p>" + mySettings + "</p>";
 }
@@ -75,7 +73,7 @@ void TestQgsRasterFileWriter::initTestCase()
 void TestQgsRasterFileWriter::cleanupTestCase()
 {
   QgsApplication::exitQgis();
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -134,6 +132,7 @@ bool TestQgsRasterFileWriter::writeTest( QString theRasterName )
   if ( !pipe->set( provider->clone() ) )
   {
     logError( "Cannot set pipe provider" );
+    delete pipe;
     return false;
   }
   qDebug() << "provider set";
@@ -147,6 +146,7 @@ bool TestQgsRasterFileWriter::writeTest( QString theRasterName )
   if ( !pipe->insert( 1, nuller ) )
   {
     logError( "Cannot set pipe nuller" );
+    delete pipe;
     return false;
   }
   qDebug() << "nuller set";
@@ -157,6 +157,7 @@ bool TestQgsRasterFileWriter::writeTest( QString theRasterName )
   if ( !pipe->insert( 2, projector ) )
   {
     logError( "Cannot set pipe projector" );
+    delete pipe;
     return false;
   }
   qDebug() << "projector set";

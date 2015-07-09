@@ -2,8 +2,8 @@ v.surf.bspline
 v.surf.bspline.lambda - Bicubic or bilinear spline interpolation with Tykhonov regularization.
 Vector (v.*)
 ParameterVector|input|Input points layer|-1|False
-ParameterNumber|sie|Length of each spline step in the east-west direction|None|None|4
-ParameterNumber|sin|Length of each spline step in the north-south direction|None|None|4
+ParameterNumber|ew_step|Length of each spline step in the east-west direction|None|None|4
+ParameterNumber|ns_step|Length of each spline step in the north-south direction|None|None|4
 ParameterSelection|method|Spline interpolation algorithm|bilinear;bicubic
 ParameterTableField|column|Attribute table column with values to interpolate|input|-1|False
 ParameterBoolean|-c|Find the best Tykhonov regularizing parameter using a "leave-one-out" cross validation method|True

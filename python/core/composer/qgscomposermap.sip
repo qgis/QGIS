@@ -87,13 +87,13 @@ class QgsComposerMap : QgsComposerItem
      */
     enum AtlasScalingMode
     {
-      Fixed,      /*< The current scale of the map is used for each feature of the atlas */
-      Predefined, /*< A scale is chosen from the predefined scales. The smallest scale from
+      Fixed,      /*!< The current scale of the map is used for each feature of the atlas */
+      Predefined, /*!< A scale is chosen from the predefined scales. The smallest scale from
                     the list of scales where the atlas feature is fully visible is chosen.
                     @see QgsAtlasComposition::setPredefinedScales.
                     @note This mode is only valid for polygon or line atlas coverage layers
                 */
-      Auto        /*< The extent is adjusted so that each feature is fully visible.
+      Auto        /*!< The extent is adjusted so that each feature is fully visible.
                     A margin is applied around the center @see setAtlasMargin
                     @note This mode is only valid for polygon or line atlas coverage layers*/
     };
@@ -182,7 +182,7 @@ class QgsComposerMap : QgsComposerItem
     /**Called when atlas preview is toggled, to force map item to update its extent and redraw
      * @deprecated no longer required
     */
-    void toggleAtlasPreview();
+    void toggleAtlasPreview() /Deprecated/;
 
     /**Returns a pointer to the current map extent, which is either the original user specified
      * extent or the temporary atlas-driven feature extent depending on the current atlas state
@@ -207,6 +207,18 @@ class QgsComposerMap : QgsComposerItem
     void setLayerSet( const QStringList& layerSet );
     /**Stores the current layer set of the qgis mapcanvas in mLayerSet*/
     void storeCurrentLayerSet();
+
+    /**Getter for flag that determines if current styles of layers should be overridden by previously stored styles. @note added in 2.8 */
+    bool keepLayerStyles() const;
+    /**Setter for flag that determines if current styles of layers should be overridden by previously stored styles. @note added in 2.8 */
+    void setKeepLayerStyles( bool enabled );
+
+    /**Getter for stored overrides of styles for layers. @note added in 2.8 */
+    QMap<QString, QString> layerStyleOverrides() const;
+    /**Setter for stored overrides of styles for layers. @note added in 2.8 */
+    void setLayerStyleOverrides( const QMap<QString, QString>& overrides );
+    /**Stores the current layer styles into style overrides. @note added in 2.8 */
+    void storeCurrentLayerStyles();
 
     // Set cache outdated
     void setCacheUpdated( bool u = false );
@@ -509,7 +521,7 @@ class QgsComposerMap : QgsComposerItem
      */
     QgsComposerMapGrid* grid();
 
-    /**Returns the map item's overview stack, which is used to control how over
+    /**Returns the map item's overview stack, which is used to control how overviews
      * are drawn over the map's contents.
      * @returns pointer to overview stack
      * @see overview()
@@ -608,7 +620,7 @@ class QgsComposerMap : QgsComposerItem
     /** Returns true if the extent is forced to center on the overview
      * @deprecated use overview()->centered() or overviews() instead
     */
-    bool overviewCentered() const;
+    bool overviewCentered() const /Deprecated/;
 
     /** Set the overview's centering mode
      * @deprecated use overview()->setCentered() or overviews() instead
@@ -743,11 +755,20 @@ class QgsComposerMap : QgsComposerItem
     /**Is emitted when the map has been prepared for atlas rendering, just before actual rendering*/
     void preparedForAtlas();
 
+    /** Emitted when layer style overrides are changed... a means to let
+     * associated legend items know they should update
+     * @note added in 2.10
+     */
+    void layerStyleOverridesChanged();
+
   public slots:
 
-    /**Called if map canvas has changed*/
+    /**Forces an update of the cached map image*/
     void updateCachedImage();
-    /**Call updateCachedImage if item is in render mode*/
+
+    /**Updates the cached map image if the map is set to Render mode
+     * @see updateCachedImage
+    */
     void renderModeUpdateCachedImage();
 
     /**Updates the bounding rect of this item. Call this function before doing any changes related to annotation out of the map rectangle */
@@ -757,4 +778,13 @@ class QgsComposerMap : QgsComposerItem
     void overviewExtentChanged();
 
     virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );
+
+  protected slots:
+
+    /**Called when layers are added or removed from the layer registry. Updates the maps
+     * layer set and redraws the map if required.
+     * @note added in QGIS 2.9
+    */
+    void layersChanged();
+
 };

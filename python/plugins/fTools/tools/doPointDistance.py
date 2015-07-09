@@ -28,14 +28,16 @@
 #
 #---------------------------------------------------------------------
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import QObject, SIGNAL, QVariant, QFileInfo
+from PyQt4.QtGui import QDialog, QDialogButtonBox, QMessageBox, QFileDialog
+from qgis.core import QGis, QgsSpatialIndex, QgsFeature, QgsDistanceArea, QgsGeometry, QgsFeatureRequest
 
-from qgis.core import *
 from ui_frmPointDistance import Ui_Dialog
-import csv, codecs, cStringIO
+import csv
+import codecs
+import cStringIO
 import ftools_utils
-from math import *
+from math import sqrt
 
 class UnicodeWriter:
     """
@@ -84,7 +86,6 @@ class Dialog(QDialog, Ui_Dialog):
         # populate layer list
         self.setWindowTitle(self.tr("Distance matrix"))
         self.progressBar.setValue(0)
-        mapCanvas = self.iface.mapCanvas()
         layers = ftools_utils.getLayerNames( [ QGis.Point ] )
         self.inPoint1.addItems(layers)
         self.inPoint2.addItems(layers)
@@ -128,11 +129,11 @@ class Dialog(QDialog, Ui_Dialog):
             else: matType = "Summary"
             if self.chkNearest.isChecked(): nearest = self.spnNearest.value()
             else: nearest = 0
-            outName = ftools_utils.getShapefileName(outPath,'.csv')
+            # outName = ftools_utils.getShapefileName(outPath,'.csv')
             self.outFile.clear()
             self.compute(point1, point2, field1, field2, outPath, matType, nearest, self.progressBar)
             self.progressBar.setValue(100)
-            addToTOC = QMessageBox.information(self, "Create Point Distance Matrix", self.tr("Created output matrix:\n") + outPath)
+            # addToTOC = QMessageBox.information(self, "Create Point Distance Matrix", self.tr("Created output matrix:\n") + outPath)
         self.progressBar.setValue(0)
         self.buttonOk.setEnabled( True )
 
@@ -140,7 +141,6 @@ class Dialog(QDialog, Ui_Dialog):
         self.outFile.clear()
         fileDialog = QFileDialog()
         outName = fileDialog.getSaveFileName(self, "Output Distance Matrix",".", "Delimited txt file (*.csv)")
-        fileCheck = QFile(outName)
         filePath = QFileInfo(outName).absoluteFilePath()
         if filePath[-4:] != ".csv": filePath = filePath + ".csv"
         if outName:
@@ -163,14 +163,14 @@ class Dialog(QDialog, Ui_Dialog):
         else: nearest = nearest
         index1 = provider1.fieldNameIndex(field1)
         index2 = provider2.fieldNameIndex(field2)
-        sRs = provider1.crs()
         distArea = QgsDistanceArea()
         #use srs of the first layer (users should ensure that they are both in the same projection)
-        #distArea.setSourceSRS(sRs)
+        # sRs = provider1.crs()
+        # distArea.setSourceSRS(sRs)
 
         f = open(unicode(outPath), "wb")
         writer = UnicodeWriter(f)
-        if matType <> "Standard":
+        if matType != "Standard":
             if matType == "Linear":
                 writer.writerow(["InputID", "TargetID", "Distance"])
             else:

@@ -19,8 +19,8 @@ email                : lrssvtml (at) gmail (dot) com
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import Qt, QTimer, QSettings, QCoreApplication, QSize, QByteArray, QFileInfo, SIGNAL
+from PyQt4.QtGui import QDockWidget, QToolBar, QToolButton, QWidget, QSplitter, QTreeWidget, QAction, QFileDialog, QCheckBox, QSizePolicy, QMenu, QGridLayout, QApplication
 from PyQt4 import pyqtconfig
 from qgis.utils import iface
 from console_sci import ShellScintilla
@@ -31,7 +31,6 @@ from qgis.core import QgsApplication, QgsContextHelp
 from qgis.gui import QgsFilterLineEdit
 
 import sys
-import os
 
 _console = None
 
@@ -361,7 +360,7 @@ class PythonConsoleWidget(QWidget):
         self.toolBar.setFocusPolicy(Qt.NoFocus)
         self.toolBar.setContextMenuPolicy(Qt.DefaultContextMenu)
         self.toolBar.setLayoutDirection(Qt.LeftToRight)
-        self.toolBar.setIconSize(QSize(24, 24))
+        self.toolBar.setIconSize(QSize(16, 16))
         self.toolBar.setOrientation(Qt.Vertical)
         self.toolBar.setMovable(True)
         self.toolBar.setFloatable(True)
@@ -374,13 +373,6 @@ class PythonConsoleWidget(QWidget):
         self.toolBar.addAction(self.optionsButton)
         self.toolBar.addAction(self.helpButton)
 
-        if sys.platform.startswith('win'):
-            bkgrcolor = ['170', '170', '170']
-            bordercl = ['125', '125', '125']
-        else:
-            bkgrcolor = ['200', '200', '200']
-            bordercl = ['155', '155', '155']
-
         self.toolBarEditor = QToolBar()
         # self.toolBarEditor.setStyleSheet('QToolBar{background-color: rgb(%s, %s, %s' % tuple(bkgrcolor) + ');\
         #                                   border-right: 1px solid rgb(%s, %s, %s' % tuple(bordercl) + ');}')
@@ -388,7 +380,7 @@ class PythonConsoleWidget(QWidget):
         self.toolBarEditor.setFocusPolicy(Qt.NoFocus)
         self.toolBarEditor.setContextMenuPolicy(Qt.DefaultContextMenu)
         self.toolBarEditor.setLayoutDirection(Qt.LeftToRight)
-        self.toolBarEditor.setIconSize(QSize(18, 18))
+        self.toolBarEditor.setIconSize(QSize(16, 16))
         self.toolBarEditor.setOrientation(Qt.Vertical)
         self.toolBarEditor.setMovable(True)
         self.toolBarEditor.setFloatable(True)
@@ -616,7 +608,7 @@ class PythonConsoleWidget(QWidget):
         lastDirPath = self.settings.value("pythonConsole/lastDirPath", "")
         openFileTr = QCoreApplication.translate("PythonConsole", "Open File")
         fileList = QFileDialog.getOpenFileNames(
-                        self, openFileTr, lastDirPath, "Script file (*.py)")
+            self, openFileTr, lastDirPath, "Script file (*.py)")
         if fileList:
             for pyFile in fileList:
                 for i in range(self.tabEditorWidget.count()):
@@ -637,7 +629,6 @@ class PythonConsoleWidget(QWidget):
         try:
             tabWidget.save()
         except (IOError, OSError), error:
-            errTr = QCoreApplication.translate("PythonConsole", "Save Error")
             msgText = QCoreApplication.translate('PythonConsole',
                                                  'The file <b>{0}</b> could not be saved. Error: {1}').format(tabWidget.path,
                                                                                                               error.strerror)
@@ -661,7 +652,6 @@ class PythonConsoleWidget(QWidget):
             try:
                 tabWidget.save(filename)
             except (IOError, OSError), error:
-                errTr = QCoreApplication.translate("PythonConsole", "Save Error")
                 msgText = QCoreApplication.translate('PythonConsole',
                                                      'The file <b>{0}</b> could not be saved. Error: {1}').format(tabWidget.path,
                                                                                                                   error.strerror)

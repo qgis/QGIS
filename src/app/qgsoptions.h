@@ -46,11 +46,6 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     QgsOptions( QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     //! Destructor
     ~QgsOptions();
-    /**
-     * Return the currently selected theme
-     * @return theme name (a directory name in the themes directory)
-     */
-    QString theme();
 
     /** Sets the page with the specified widget name as the current page
      * @note added in QGIS 2.1
@@ -64,9 +59,9 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void on_pbnTemplateFolderBrowse_pressed();
     void on_pbnTemplateFolderReset_pressed();
     //! Slot called when user chooses to change the project wide projection.
-    void on_pbnSelectProjection_clicked();
+    void on_leProjectGlobalCrs_crsChanged( QgsCoordinateReferenceSystem crs );
     //! Slot called when user chooses to change the default 'on the fly' projection.
-    void on_pbnSelectOtfProjection_clicked();
+    void on_leLayerGlobalCrs_crsChanged( QgsCoordinateReferenceSystem crs );
     void on_lstGdalDrivers_itemDoubleClicked( QTreeWidgetItem * item, int column );
     void on_pbnEditCreateOptions_pressed();
     void on_pbnEditPyramidsOptions_pressed();
@@ -76,8 +71,6 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     * Slot to reset any temporarily applied options on dialog close/cancel */
     void rejectOptions();
     //! Slot to change the theme this is handled when the user
-    // activates or highlights a theme name in the drop-down list
-    void themeChanged( const QString & );
 
     void iconSizeChanged( const QString &iconSize );
 
@@ -109,14 +102,6 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
     /** Slot to set whether to use custom group boxes */
     void on_mCustomGroupBoxChkBx_clicked( bool chkd );
-
-    /** Slot to set whether to use custom side bar style
-      * @note added in QGIS 2.2
-      */
-    void on_mCustomSideBarSide_clicked( bool chkd );
-
-    /** Slot to set whether to bold group box title. */
-    void on_mBoldGroupBoxTitleChkBx_clicked( bool chkd );
 
     void on_mProxyTypeComboBox_currentIndexChanged( int idx );
 

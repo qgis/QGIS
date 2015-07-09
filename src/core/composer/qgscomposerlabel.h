@@ -35,10 +35,10 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     ~QgsComposerLabel();
 
     /** return correct graphics item type. */
-    virtual int type() const { return ComposerLabel; }
+    virtual int type() const override { return ComposerLabel; }
 
     /** \brief Reimplementation of QCanvasItem::paint*/
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
+    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
 
     /**resizes the widget such that the text fits to the item. Keeps top left point*/
     void adjustSizeToText();
@@ -133,29 +133,29 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
        * @param elem is Dom element corresponding to 'Composer' tag
        * @param doc document
        */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
 
     /** sets state from Dom document
        * @param itemElem is Dom element corresponding to 'ComposerLabel' tag
        * @param doc document
        */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
     //Overriden to contain part of label's text
-    virtual QString displayName() const;
+    virtual QString displayName() const override;
 
     /**In case of negative margins, the bounding rect may be larger than the
      * label's frame
     */
-    QRectF boundingRect() const;
+    QRectF boundingRect() const override;
 
     /**Reimplemented to call prepareGeometryChange after toggling frame
     */
-    virtual void setFrameEnabled( const bool drawFrame );
+    virtual void setFrameEnabled( const bool drawFrame ) override;
 
     /**Reimplemented to call prepareGeometryChange after changing outline width
     */
-    virtual void setFrameOutlineWidth( const double outlineWidth );
+    virtual void setFrameOutlineWidth( const double outlineWidth ) override;
 
   public slots:
     void refreshExpressionContext();

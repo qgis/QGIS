@@ -85,8 +85,8 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
     void warnAboutMissingObjects();
 
   protected:
-    void showEvent( QShowEvent* e );
-    void paintEvent( QPaintEvent* e );
+    void showEvent( QShowEvent* e ) override;
+    void paintEvent( QPaintEvent* e ) override;
 
     virtual void updateWindowTitle();
 

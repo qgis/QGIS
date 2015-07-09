@@ -103,6 +103,16 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static QPainter::CompositionMode decodeBlendMode( const QString& s );
 
     static QIcon symbolPreviewIcon( QgsSymbolV2* symbol, QSize size );
+
+    /** Draws a symbol layer preview to a QPicture
+     * @param layer symbol layer to draw
+     * @param units size units
+     * @param size target size of preview picture
+     * @param scale map unit scale for preview
+     * @returns QPicture containing symbol layer preview
+     * @note added in QGIS 2.9
+     */
+    static QPicture symbolLayerPreviewPicture( QgsSymbolLayerV2* layer, QgsSymbolV2::OutputUnit units, QSize size, const QgsMapUnitScale& scale = QgsMapUnitScale() );
     static QIcon symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, QgsSymbolV2::OutputUnit u, QSize size, const QgsMapUnitScale& scale = QgsMapUnitScale() );
     static QIcon colorRampPreviewIcon( QgsVectorColorRampV2* ramp, QSize size );
 
@@ -115,7 +125,35 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     /**Returns the maximum estimated bleed for the symbol */
     static double estimateMaxSymbolBleed( QgsSymbolV2* symbol );
 
-    static QgsSymbolV2* loadSymbol( QDomElement& element );
+    /**Attempts to load a symbol from a DOM element
+     * @param element DOM element representing symbol
+     * @returns decoded symbol, if possible
+     */
+    static QgsSymbolV2* loadSymbol( const QDomElement& element );
+
+    /**Attempts to load a symbol from a DOM element and cast it to a particular symbol
+     * type.
+     * @param element DOM element representing symbol
+     * @returns decoded symbol cast to specified type, if possible
+     * @note not available in python bindings
+     */
+    template <class SymbolType> static SymbolType* loadSymbol( const QDomElement& element )
+    {
+      QgsSymbolV2* tmpSymbol = QgsSymbolLayerV2Utils::loadSymbol( element );
+      SymbolType* symbolCastToType = dynamic_cast<SymbolType*>( tmpSymbol );
+
+      if ( symbolCastToType )
+      {
+        return symbolCastToType;
+      }
+      else
+      {
+        //could not cast
+        delete tmpSymbol;
+        return NULL;
+      }
+    }
+
     static QgsSymbolLayerV2* loadSymbolLayer( QDomElement& element );
     static QDomElement saveSymbol( QString symbolName, QgsSymbolV2* symbol, QDomDocument& doc );
 
@@ -387,6 +425,13 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
      * @note added in 2.2
      */
     static QString fieldOrExpressionFromExpression( QgsExpression* expression );
+
+    /** Computes a sequence of about 'classes' equally spaced round values
+     *  which cover the range of values from 'minimum' to 'maximum'.
+     *  The values are chosen so that they are 1, 2 or 5 times a power of 10.
+     * @note added in 2.10
+     */
+    static QList<double> prettyBreaks( double minimum, double maximum, int classes );
 
 };
 

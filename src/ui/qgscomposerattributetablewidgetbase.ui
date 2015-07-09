@@ -17,7 +17,16 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -47,7 +56,7 @@
         <x>0</x>
         <y>0</y>
         <width>392</width>
-        <height>1202</height>
+        <height>1192</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -156,7 +165,7 @@
             <property name="maximum">
              <number>99999</number>
             </property>
-            <property name="showClearButton">
+            <property name="showClearButton" stdset="0">
              <bool>false</bool>
             </property>
            </widget>
@@ -267,7 +276,10 @@
             <property name="suffix">
              <string> mm</string>
             </property>
-            <property name="showClearButton">
+            <property name="singleStep">
+             <double>0.100000000000000</double>
+            </property>
+            <property name="showClearButton" stdset="0">
              <bool>false</bool>
             </property>
            </widget>
@@ -392,7 +404,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="mGridStrokeWidthLabel">
             <property name="text">
-             <string>Stroke width</string>
+             <string>Line width</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -407,7 +419,10 @@
             <property name="suffix">
              <string> mm</string>
             </property>
-            <property name="showClearButton">
+            <property name="singleStep">
+             <double>0.100000000000000</double>
+            </property>
+            <property name="showClearButton" stdset="0">
              <bool>false</bool>
             </property>
            </widget>
@@ -726,11 +741,6 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsMapLayerComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsmaplayercombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsSpinBox</class>
    <extends>QSpinBox</extends>
    <header>qgsspinbox.h</header>
@@ -740,6 +750,11 @@
    <extends>QGroupBox</extends>
    <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsMapLayerComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsmaplayercombobox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

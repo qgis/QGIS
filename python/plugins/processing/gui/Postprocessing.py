@@ -26,9 +26,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
-from qgis.core import *
+from PyQt4.QtGui import QApplication
+from PyQt4.QtCore import QCoreApplication
+from qgis.core import QgsMapLayerRegistry
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingResults import ProcessingResults
@@ -71,7 +71,7 @@ def handleAlgorithmResults(alg, progress=None, showResults=True):
                             RenderingStyles.getStyle(alg.commandLineName(),
                             out.name))
             except Exception, e:
-                wrongLayers.append(out)
+                wrongLayers.append(out.description)
         elif isinstance(out, OutputHTML):
             ProcessingResults.addResult(out.description, out.value)
             htmlResults = True
@@ -80,10 +80,15 @@ def handleAlgorithmResults(alg, progress=None, showResults=True):
         QApplication.restoreOverrideCursor()
         dlg = MessageDialog()
         dlg.setTitle(QCoreApplication.translate('Postprocessing', 'Problem loading output layers'))
-        dlg.setMessage(alg.getPostProcessingErrorMessage(wrongLayers))
+        msg = "The following layers were not correctly generated.<ul>"
+        msg += "".join(["<li>%s</li>" % lay for lay in wrongLayers]) + "</ul>"
+        msg += "You can check the <a href='log'>log messages</a> to find more information about the execution of the algorithm"
+        dlg.setMessage(msg)
         dlg.exec_()
 
     if showResults and htmlResults and not wrongLayers:
         QApplication.restoreOverrideCursor()
         dlg = ResultsDialog()
         dlg.exec_()
+        
+    return len(wrongLayers) == 0

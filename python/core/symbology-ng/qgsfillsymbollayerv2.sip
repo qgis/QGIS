@@ -91,6 +91,8 @@ class QgsSimpleFillSymbolLayerV2 : QgsFillSymbolLayerV2
     double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
     QColor dxfColor( const QgsSymbolV2RenderContext& context ) const;
     Qt::PenStyle dxfPenStyle() const;
+    QColor dxfBrushColor( const QgsSymbolV2RenderContext& context ) const;
+    Qt::BrushStyle dxfBrushStyle() const;
 };
 
 class QgsGradientFillSymbolLayerV2 : QgsFillSymbolLayerV2
@@ -195,10 +197,6 @@ class QgsGradientFillSymbolLayerV2 : QgsFillSymbolLayerV2
     /**Sets the end point of the gradient to be the feature centroid*/
     void setReferencePoint2IsCentroid( bool isCentroid );
     bool referencePoint2IsCentroid() const;
-
-    /**Rotation angle for gradient fill. Can be used to rotate a gradient around its centre point*/
-    void setAngle( double angle );
-    double angle() const;
 
     /**Offset for gradient fill*/
     void setOffset( QPointF offset );
@@ -760,6 +758,8 @@ class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
 
     bool setSubSymbol( QgsSymbolV2* symbol );
     QgsSymbolV2* subSymbol();
+
+    QSet<QString> usedAttributes() const;
 
 };
 

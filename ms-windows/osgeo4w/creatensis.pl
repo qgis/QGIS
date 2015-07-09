@@ -63,7 +63,7 @@ my $packages    = "packages" . ($arch eq "" ? "" : "-$arch");
 mkdir $packages, 0755 unless -d $packages;
 chdir $packages;
 
-system "wget $wgetopt -c http://nsis.sourceforge.net/mediawiki/images/9/9d/Untgz.zip" unless -f "Untgz.zip";
+system "wget $wgetopt -c http://qgis.org/downloads/Untgz.zip" unless -f "Untgz.zip";
 die "download of Untgz.zip failed" if $?;
 
 my %dep;
@@ -73,7 +73,7 @@ my %sdesc;
 my %md5;
 my $package;
 
-system "wget $wgetopt -O setup.ini -c $root$archpath/$ininame";
+system "wget $wgetopt -O setup.ini $root$archpath/$ininame";
 die "download of setup.ini failed" if $?;
 open F, "setup.ini" || die "setup.ini not found";
 while(<F>) {

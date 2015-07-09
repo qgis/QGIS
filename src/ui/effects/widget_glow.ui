@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>WidgetGlow</class>
+ <widget class="QWidget" name="WidgetGlow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>553</width>
+    <height>367</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QGridLayout" name="gridLayout_38">
+     <item row="0" column="0" colspan="2">
+      <widget class="QFrame" name="mShadowFrame">
+       <layout class="QGridLayout" name="gridLayout_7" columnstretch="0,1,0">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item row="4" column="0">
+         <widget class="QRadioButton" name="radioColorRamp">
+          <property name="text">
+           <string>Color ramp</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_9">
+          <property name="text">
+           <string>Spread</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QgsColorButtonV2" name="mColorBtn">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>120</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>120</width>
+            <height>16777215</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_27">
+          <property name="text">
+           <string>Blur radius</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_28">
+          <property name="text">
+           <string>Transparency</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QRadioButton" name="radioSingleColor">
+          <property name="text">
+           <string>Single color</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="label_30">
+          <property name="text">
+           <string>Blend mode</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QgsDoubleSpinBox" name="mSpreadSpnBx">
+          <property name="decimals">
+           <number>4</number>
+          </property>
+          <property name="minimum">
+           <double>0.000000000000000</double>
+          </property>
+          <property name="maximum">
+           <double>9999999.000000000000000</double>
+          </property>
+          <property name="showClearButton" stdset="0">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QgsUnitSelectionWidget" name="mSpreadUnitWidget" native="true">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1" colspan="2">
+         <widget class="QgsSpinBox" name="mBlurRadiusSpnBx">
+          <property name="maximum">
+           <number>16</number>
+          </property>
+          <property name="showClearButton" stdset="0">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1" colspan="2">
+         <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0,0">
+          <item>
+           <widget class="QgsColorRampComboBox" name="mRampComboBox"/>
+          </item>
+          <item>
+           <widget class="QPushButton" name="mButtonEditRamp">
+            <property name="maximumSize">
+             <size>
+              <width>100</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Edit</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="mInvertCheckBox">
+            <property name="text">
+             <string>Invert</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="5" column="1" colspan="2">
+         <widget class="QgsBlendModeComboBox" name="mBlendCmbBx"/>
+        </item>
+        <item row="2" column="1" colspan="2">
+         <layout class="QHBoxLayout" name="horizontalLayout_28">
+          <item>
+           <widget class="QSlider" name="mTranspSlider">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>50</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximum">
+             <number>1000</number>
+            </property>
+            <property name="singleStep">
+             <number>10</number>
+            </property>
+            <property name="pageStep">
+             <number>100</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QgsDoubleSpinBox" name="mTranspSpnBx">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+            <property name="suffix">
+             <string> %</string>
+            </property>
+            <property name="decimals">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <double>100.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="6" column="1" colspan="2">
+         <widget class="QgsEffectDrawModeComboBox" name="mDrawModeComboBox"/>
+        </item>
+        <item row="6" column="0">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Draw mode</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsColorButtonV2</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbuttonv2.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsUnitSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsunitselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsBlendModeComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsblendmodecombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorRampComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgscolorrampcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsEffectDrawModeComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgseffectdrawmodecombobox.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>radioSingleColor</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mColorBtn</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>64</x>
+     <y>124</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>185</x>
+     <y>124</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioColorRamp</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mRampComboBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>64</x>
+     <y>156</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>250</x>
+     <y>157</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioColorRamp</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mButtonEditRamp</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>64</x>
+     <y>156</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>423</x>
+     <y>157</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioColorRamp</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mInvertCheckBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>64</x>
+     <y>156</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>506</x>
+     <y>156</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

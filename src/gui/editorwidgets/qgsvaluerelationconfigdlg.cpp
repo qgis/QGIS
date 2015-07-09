@@ -32,13 +32,14 @@ QgsEditorWidgetConfig QgsValueRelationConfigDlg::config()
 {
   QgsEditorWidgetConfig cfg;
 
-  cfg.insert( "Layer", mLayerName->currentLayer()->id() );
+  cfg.insert( "Layer", mLayerName->currentLayer() ? mLayerName->currentLayer()->id() : QString() );
   cfg.insert( "Key", mKeyColumn->currentField() );
   cfg.insert( "Value", mValueColumn->currentField() );
   cfg.insert( "AllowMulti", mAllowMulti->isChecked() );
   cfg.insert( "AllowNull", mAllowNull->isChecked() );
   cfg.insert( "OrderByValue", mOrderByValue->isChecked() );
   cfg.insert( "FilterExpression", mFilterExpression->toPlainText() );
+  cfg.insert( "UseCompleter", mUseCompleter->isChecked() );
 
   return cfg;
 }
@@ -53,6 +54,7 @@ void QgsValueRelationConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
   mAllowNull->setChecked( config.value( "AllowNull" ).toBool() );
   mOrderByValue->setChecked( config.value( "OrderByValue" ).toBool() );
   mFilterExpression->setPlainText( config.value( "FilterExpression" ).toString() );
+  mUseCompleter->setChecked( config.value( "UseCompleter" ).toBool() );
 }
 
 void QgsValueRelationConfigDlg::editExpression()

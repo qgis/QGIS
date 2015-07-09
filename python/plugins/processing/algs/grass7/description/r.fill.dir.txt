@@ -2,7 +2,7 @@ r.fill.dir
 r.fill.dir - Filters and generates a depressionless elevation layer and a flow direction layer from a given elevation raster layer.
 Raster (r.*)
 ParameterRaster|input|Elevation|False
-ParameterSelection|type|Output aspect direction format|grass;agnps;answers
-OutputRaster|elevation|Depressionless DEM
+ParameterSelection|format|Output aspect direction format|grass;agnps;answers
+OutputRaster|output|Depressionless DEM
 OutputRaster|direction|Flow direction
 OutputRaster|areas|Problem areas

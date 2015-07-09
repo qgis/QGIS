@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>311</width>
-    <height>352</height>
+    <width>399</width>
+    <height>431</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -250,11 +250,15 @@
   <tabstop>txtService</tabstop>
   <tabstop>txtHost</tabstop>
   <tabstop>txtDatabase</tabstop>
+  <tabstop>cb_trustedConnection</tabstop>
   <tabstop>txtUsername</tabstop>
   <tabstop>txtPassword</tabstop>
   <tabstop>chkStoreUsername</tabstop>
   <tabstop>chkStorePassword</tabstop>
   <tabstop>btnConnect</tabstop>
+  <tabstop>cb_geometryColumns</tabstop>
+  <tabstop>cb_allowGeometrylessTables</tabstop>
+  <tabstop>cb_useEstimatedMetadata</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>

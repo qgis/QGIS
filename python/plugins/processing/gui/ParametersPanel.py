@@ -33,8 +33,9 @@ __revision__ = '$Format:%H$'
 import os
 import locale
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4 import uic
+from PyQt4.QtCore import QCoreApplication, QVariant
+from PyQt4.QtGui import QWidget, QLayout, QVBoxLayout, QHBoxLayout, QToolButton, QIcon, QLabel, QCheckBox, QComboBox, QLineEdit, QPlainTextEdit
 
 from processing.core.ProcessingConfig import ProcessingConfig
 
@@ -47,6 +48,8 @@ from processing.gui.NumberInputPanel import NumberInputPanel
 from processing.gui.ExtentSelectionPanel import ExtentSelectionPanel
 from processing.gui.FileSelectionPanel import FileSelectionPanel
 from processing.gui.CrsSelectionPanel import CrsSelectionPanel
+from processing.gui.GeometryPredicateSelectionPanel import \
+    GeometryPredicateSelectionPanel
 
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector
@@ -62,6 +65,7 @@ from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterCrs
 from processing.core.parameters import ParameterString
+from processing.core.parameters import ParameterGeometryPredicate
 
 from processing.core.outputs import OutputRaster
 from processing.core.outputs import OutputTable
@@ -69,15 +73,17 @@ from processing.core.outputs import OutputVector
 
 from processing.tools import dataobjects
 
-from processing.ui.ui_widgetParametersPanel import Ui_Form
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'widgetParametersPanel.ui'))
 
 
-class ParametersPanel(QWidget, Ui_Form):
+class ParametersPanel(BASE, WIDGET):
 
     NOT_SELECTED = QCoreApplication.translate('ParametersPanel', '[Not selected]')
 
     def __init__(self, parent, alg):
-        QWidget.__init__(self)
+        super(ParametersPanel, self).__init__(None)
         self.setupUi(self)
 
         self.grpAdvanced.hide()
@@ -129,8 +135,7 @@ class ParametersPanel(QWidget, Ui_Form):
                 layout.setMargin(0)
                 layout.addWidget(widget)
                 button = QToolButton()
-                icon = QIcon(
-                    os.path.dirname(__file__) + '/../images/iterate.png')
+                icon = QIcon(os.path.join(pluginPath, 'images', 'iterate.png'))
                 button.setIcon(icon)
                 button.setToolTip(self.tr('Iterate over this layer'))
                 button.setCheckable(True)
@@ -195,7 +200,7 @@ class ParametersPanel(QWidget, Ui_Form):
         authid = layer.crs().authid()
         if ProcessingConfig.getSetting(ProcessingConfig.SHOW_CRS_DEF) \
                 and authid is not None:
-            return '{} [{}]'.format(layer.name(), authid)
+            return u'{} [{}]'.format(layer.name(), authid)
         else:
             return layer.name()
 
@@ -214,7 +219,7 @@ class ParametersPanel(QWidget, Ui_Form):
             if self.somethingDependsOnThisParameter(param) or self.alg.allowOnlyOpenedLayers:
                 item = QComboBox()
                 layers = dataobjects.getVectorLayers(param.shapetype)
-                layers.sort(key = lambda lay: lay.name())
+                layers.sort(key=lambda lay: lay.name())
                 if param.optional:
                     item.addItem(self.NOT_SELECTED, None)
                 for layer in layers:
@@ -313,7 +318,7 @@ class ParametersPanel(QWidget, Ui_Form):
             if param.multiline:
                 verticalLayout = QVBoxLayout()
                 verticalLayout.setSizeConstraint(
-                        QLayout.SetDefaultConstraint)
+                    QLayout.SetDefaultConstraint)
                 textEdit = QPlainTextEdit()
                 textEdit.setPlainText(param.default)
                 verticalLayout.addWidget(textEdit)
@@ -321,6 +326,22 @@ class ParametersPanel(QWidget, Ui_Form):
             else:
                 item = QLineEdit()
                 item.setText(str(param.default))
+        elif isinstance(param, ParameterGeometryPredicate):
+            item = GeometryPredicateSelectionPanel(param.enabledPredicates)
+            if param.left:
+                widget = self.valueItems[param.left]
+                if isinstance(widget, InputLayerSelectorPanel):
+                    widget = widget.cmbText
+                widget.currentIndexChanged.connect(item.onLeftLayerChange)
+                item.leftLayer = widget.itemData(widget.currentIndex())
+            if param.right:
+                widget = self.valueItems[param.right]
+                if isinstance(widget, InputLayerSelectorPanel):
+                    widget = widget.cmbText
+                widget.currentIndexChanged.connect(item.onRightLayerChange)
+                item.rightLayer = widget.itemData(widget.currentIndex())
+            item.updatePredicates()
+            item.setValue(param.default)
         else:
             item = QLineEdit()
             item.setText(str(param.default))
@@ -331,7 +352,7 @@ class ParametersPanel(QWidget, Ui_Form):
         sender = self.sender()
         if not isinstance(sender, QComboBox):
             return
-        if not sender.name in self.dependentItems:
+        if sender.name not in self.dependentItems:
             return
         layer = sender.itemData(sender.currentIndex())
         children = self.dependentItems[sender.name]
@@ -348,7 +369,8 @@ class ParametersPanel(QWidget, Ui_Form):
         if datatype == ParameterTableField.DATA_TYPE_STRING:
             fieldTypes = [QVariant.String]
         elif datatype == ParameterTableField.DATA_TYPE_NUMBER:
-            fieldTypes = [QVariant.Int, QVariant.Double]
+            fieldTypes = [QVariant.Int, QVariant.Double, QVariant.ULongLong,
+                          QVariant.UInt]
 
         fieldNames = set()
         for field in layer.pendingFields():

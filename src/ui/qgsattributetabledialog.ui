@@ -97,7 +97,7 @@
         </size>
        </property>
        <property name="shortcut">
-        <string>Ctrl+E</string>
+        <string>Ctrl+S</string>
        </property>
        <property name="checkable">
         <bool>false</bool>
@@ -263,7 +263,7 @@
         </size>
        </property>
        <property name="shortcut">
-        <string>Ctrl+S</string>
+        <string>Ctrl+R</string>
        </property>
        <property name="autoRaise">
         <bool>true</bool>
@@ -351,6 +351,35 @@
        </property>
        <property name="shortcut">
         <string>Ctrl+C</string>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mPasteFeatures">
+       <property name="toolTip">
+        <string>Paste features from clipboard (Ctrl+V)</string>
+       </property>
+       <property name="whatsThis">
+        <string/>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionEditPaste.png</normaloff>:/images/themes/default/mActionEditPaste.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>18</width>
+         <height>18</height>
+        </size>
+       </property>
+       <property name="shortcut">
+        <string>Ctrl+V</string>
        </property>
        <property name="autoRaise">
         <bool>true</bool>
@@ -521,10 +550,28 @@
       </widget>
      </item>
      <item>
-      <widget class="QgsFilterLineEdit" name="mFilterQuery"/>
-     </item>
-     <item>
-      <widget class="QWidget" name="mSpacer" native="true"/>
+      <widget class="QWidget" name="mFilterContainer" native="true">
+       <layout class="QGridLayout" name="mFilterLayout">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetDefaultConstraint</enum>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QgsFilterLineEdit" name="mFilterQuery"/>
+        </item>
+       </layout>
+      </widget>
      </item>
      <item>
       <widget class="QToolButton" name="mApplyFilterButton">
@@ -536,16 +583,6 @@
        </property>
        <property name="toolButtonStyle">
         <enum>Qt::ToolButtonTextOnly</enum>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="mCbxCaseSensitive">
-       <property name="text">
-        <string>Case sensitive</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -730,6 +767,12 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsFieldExpressionWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">qgsfieldexpressionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
    <header>qgsfilterlineedit.h</header>
@@ -739,11 +782,6 @@
    <extends>QStackedWidget</extends>
    <header>qgsdualview.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsFieldExpressionWidget</class>
-   <extends>QWidget</extends>
-   <header location="global">qgsfieldexpressionwidget.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

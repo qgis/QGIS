@@ -213,8 +213,10 @@ void QgsSingleBandGrayRenderer::legendSymbologyItems( QList< QPair< QString, QCo
 {
   if ( mContrastEnhancement && mContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement )
   {
-    symbolItems.push_back( qMakePair( QString::number( mContrastEnhancement->minimumValue() ), QColor( 0, 0, 0 ) ) );
-    symbolItems.push_back( qMakePair( QString::number( mContrastEnhancement->maximumValue() ), QColor( 255, 255, 255 ) ) );
+    QColor minColor = ( mGradient == BlackToWhite ) ? Qt::black : Qt::white;
+    QColor maxColor = ( mGradient == BlackToWhite ) ? Qt::white : Qt::black;
+    symbolItems.push_back( qMakePair( QString::number( mContrastEnhancement->minimumValue() ), minColor ) );
+    symbolItems.push_back( qMakePair( QString::number( mContrastEnhancement->maximumValue() ), maxColor ) );
   }
 }
 

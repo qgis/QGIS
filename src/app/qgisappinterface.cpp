@@ -46,9 +46,10 @@
 
 
 QgisAppInterface::QgisAppInterface( QgisApp * _qgis )
-    : qgis( _qgis ),
-    legendIface( _qgis->layerTreeView() ),
-    pluginManagerIface( _qgis->pluginManager() )
+    : qgis( _qgis )
+    , mTimer( NULL )
+    , legendIface( _qgis->layerTreeView() )
+    , pluginManagerIface( _qgis->pluginManager() )
 {
   // connect signals
   connect( qgis->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
@@ -59,12 +60,16 @@ QgisAppInterface::QgisAppInterface( QgisApp * _qgis )
            this, SIGNAL( composerAdded( QgsComposerView* ) ) );
   connect( qgis, SIGNAL( composerWillBeRemoved( QgsComposerView* ) ),
            this, SIGNAL( composerWillBeRemoved( QgsComposerView* ) ) );
+  connect( qgis, SIGNAL( composerRemoved( QgsComposerView* ) ),
+           this, SIGNAL( composerRemoved( QgsComposerView* ) ) );
   connect( qgis, SIGNAL( initializationCompleted() ),
            this, SIGNAL( initializationCompleted() ) );
   connect( qgis, SIGNAL( newProject() ),
            this, SIGNAL( newProjectCreated() ) );
   connect( qgis, SIGNAL( projectRead() ),
            this, SIGNAL( projectRead() ) );
+  connect( qgis, SIGNAL( layerSavedAs( QgsMapLayer*, QString ) ),
+           this, SIGNAL( layerSavedAs( QgsMapLayer*, QString ) ) );
 }
 
 QgisAppInterface::~QgisAppInterface()
@@ -314,6 +319,11 @@ QWidget * QgisAppInterface::mainWindow()
 QgsMessageBar * QgisAppInterface::messageBar()
 {
   return qgis->messageBar();
+}
+
+void QgisAppInterface::addUserInputWidget( QWidget *widget )
+{
+  qgis->addUserInputWidget( widget );
 }
 
 QList<QgsComposerView*> QgisAppInterface::activeComposers()

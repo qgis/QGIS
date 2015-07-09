@@ -40,6 +40,10 @@ QgsGeorefDataPoint::QgsGeorefDataPoint( QgsMapCanvas* srcCanvas, QgsMapCanvas *d
 
 QgsGeorefDataPoint::QgsGeorefDataPoint( const QgsGeorefDataPoint &p )
     : QObject()
+    , mSrcCanvas( NULL )
+    , mDstCanvas( NULL )
+    , mGCPSourceItem( NULL )
+    , mGCPDestinationItem( NULL )
 {
   Q_UNUSED( p );
   // we share item representation on canvas between all points

@@ -154,7 +154,30 @@ class QgsAttributeTableModel : QAbstractTableModel
      */
     void prefetchColumnData( int column );
 
+    /**
+     * Set a request that will be used to fill this attribute table model.
+     * In contrast to a filter, the request will constrain the data shown without the possibility
+     * to dynamically adjust it.
+     *
+     * @param request The request to use to fill this table model.
+     */
     void setRequest( const QgsFeatureRequest& request );
+
+    /**
+     * Sets the context in which this table is shown.
+     * Will be forwarded to any editor widget created when editing data on this model.
+     *
+     * @param context The context
+     */
+    void setEditorContext( const QgsAttributeEditorContext& context );
+
+    /**
+     * Returns the context in which this table is shown.
+     * Will be forwarded to any editor widget created when editing data on this model.
+     *
+     * @return The context
+     */
+    const QgsAttributeEditorContext& editorContext() const;
 
   signals:
     /**
@@ -175,10 +198,10 @@ class QgsAttributeTableModel : QAbstractTableModel
      */
     virtual void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
     /**
-     * Launched when a feature has been deleted
-     * @param fid feature id
+     * Launched when eatures have been deleted
+     * @param fids feature ids
      */
-    virtual void featureDeleted( QgsFeatureId fid );
+    virtual void featuresDeleted( QgsFeatureIds fid );
     /**
      * Launched when a feature has been added
      * @param fid feature id

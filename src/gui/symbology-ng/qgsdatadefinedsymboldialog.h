@@ -8,7 +8,10 @@ class QgsVectorLayer;
 class QComboBox;
 
 
-
+/** \ingroup gui
+ * \class QgsDataDefinedSymbolDialog
+ * \deprecated no longer used and will be removed in QGIS 3.0
+ */
 class GUI_EXPORT QgsDataDefinedSymbolDialog: public QDialog, private Ui::QgsDataDefinedSymbolDialog
 {
     Q_OBJECT
@@ -24,21 +27,25 @@ class GUI_EXPORT QgsDataDefinedSymbolDialog: public QDialog, private Ui::QgsData
       QString helpText;
     };
 
-    QgsDataDefinedSymbolDialog( const QList< DataDefinedSymbolEntry >& entries, const QgsVectorLayer* vl, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    Q_DECL_DEPRECATED QgsDataDefinedSymbolDialog( const QList< DataDefinedSymbolEntry >& entries, const QgsVectorLayer* vl, QWidget * parent = 0, Qt::WindowFlags f = 0 );
     ~QgsDataDefinedSymbolDialog();
-    QMap< QString, QString > dataDefinedProperties() const;
+    Q_DECL_DEPRECATED QMap< QString, QString > dataDefinedProperties() const;
 
     //common help texts
-    static QString doubleHelpText();
-    static QString colorHelpText();
-    static QString offsetHelpText();
-    static QString fileNameHelpText();
-    static QString horizontalAnchorHelpText();
-    static QString verticalAnchorHelpText();
-    static QString gradientTypeHelpText();
-    static QString gradientCoordModeHelpText();
-    static QString gradientSpreadHelpText();
-    static QString boolHelpText();
+    Q_DECL_DEPRECATED static QString doubleHelpText();
+    Q_DECL_DEPRECATED static QString colorHelpText();
+    Q_DECL_DEPRECATED static QString offsetHelpText();
+    Q_DECL_DEPRECATED static QString fileNameHelpText();
+    Q_DECL_DEPRECATED static QString horizontalAnchorHelpText();
+    Q_DECL_DEPRECATED static QString verticalAnchorHelpText();
+    Q_DECL_DEPRECATED static QString gradientTypeHelpText();
+    Q_DECL_DEPRECATED static QString gradientCoordModeHelpText();
+    Q_DECL_DEPRECATED static QString gradientSpreadHelpText();
+    Q_DECL_DEPRECATED static QString boolHelpText();
+    Q_DECL_DEPRECATED static QString lineStyleHelpText();
+    Q_DECL_DEPRECATED static QString joinStyleHelpText();
+    Q_DECL_DEPRECATED static QString capStyleHelpText();
+    Q_DECL_DEPRECATED static QString fillStyleHelpText();
 
   private:
     const QgsVectorLayer* mVectorLayer;

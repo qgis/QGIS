@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSSMARTGROUPCONDITION_H
-#define QGSSMARTGROUPCONDITION_H
+#ifndef QGSSMARTGROUPEDITORDIALOG_H
+#define QGSSMARTGROUPEDITORDIALOG_H
 
 #include "ui_qgssmartgroupconditionwidget.h"
 
@@ -51,11 +51,6 @@ class GUI_EXPORT QgsSmartGroupCondition : public QWidget, private Ui::QgsSmartGr
 
 };
 
-#endif //QGSSMARTGROUPCONDITION
-
-
-#ifndef QGSSMARTGROUPEDITORDIALOG_H
-#define QGSSMARTGROUPEDITORDIALOG_H
 
 #include <QDialog>
 
@@ -113,4 +108,3 @@ class GUI_EXPORT QgsSmartGroupEditorDialog : public QDialog, private Ui::QgsSmar
 };
 
 #endif // QGSSMARTGROUPEDITORDIALOG_H
-

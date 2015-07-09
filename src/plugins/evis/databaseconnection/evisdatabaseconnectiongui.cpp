@@ -65,7 +65,7 @@ eVisDatabaseConnectionGui::eVisDatabaseConnectionGui( QList<QTemporaryFile*>* th
   connect( mDatabaseLayerFieldSelector, SIGNAL( eVisDatabaseLayerFieldsSelected( QString, QString, QString ) ), this, SLOT( drawNewVectorLayer( QString, QString, QString ) ) );
 
   //Populate gui components
-#ifdef WIN32
+#ifdef Q_OS_WIN
   cboxDatabaseType->insertItem( 0, "MSAccess" );
 #endif
   cboxDatabaseType->insertItem( 0, "MYSQL" );
@@ -478,7 +478,7 @@ void eVisDatabaseConnectionGui::on_pbtnRunQuery_clicked()
       else if ( myResults->isSelect() )
       {
         //if valid and a select query, save results into temporary file and load as layer
-        myResults->next();
+        ( void )myResults->next();
         if ( myResults->isValid() )
         {
           mTempOutputFileList->append( new QTemporaryFile() );
@@ -519,7 +519,7 @@ void eVisDatabaseConnectionGui::on_pbtnRunQuery_clicked()
                 }
               }
               outputStream << endl;
-              myResults->next();
+              ( void )myResults->next();
             }
             mTempOutputFileList->last()->close();
             mDatabaseLayerFieldSelector->setFieldList( &fieldList );

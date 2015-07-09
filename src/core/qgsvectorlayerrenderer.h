@@ -53,7 +53,7 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRenderContext& context );
     ~QgsVectorLayerRenderer();
 
-    virtual bool render();
+    virtual bool render() override;
 
     //! where to save the cached geometries
     //! @note The way how geometries are cached is really suboptimal - this method may be removed in future releases
@@ -92,7 +92,6 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
     QgsFeatureRendererV2 *mRendererV2;
 
-    bool mCacheFeatures;
     QgsGeometryCache* mCache;
 
     bool mDrawVertexMarkers;

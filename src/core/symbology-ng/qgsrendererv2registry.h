@@ -105,11 +105,11 @@ class CORE_EXPORT QgsRendererV2Metadata : public QgsRendererV2AbstractMetadata
 
     virtual ~QgsRendererV2Metadata();
 
-    virtual QgsFeatureRendererV2* createRenderer( QDomElement& elem ) { return mCreateFunc ? mCreateFunc( elem ) : NULL; }
-    virtual QgsRendererV2Widget* createRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
-    { return mWidgetFunc ? mWidgetFunc( layer, style, renderer ) : NULL; }
-    virtual QgsFeatureRendererV2* createRendererFromSld( QDomElement& elem, QGis::GeometryType geomType )
-    { return mCreateFromSldFunc ? mCreateFromSldFunc( elem, geomType ) : NULL; }
+    virtual QgsFeatureRendererV2* createRenderer( QDomElement& elem ) override { return mCreateFunc ? mCreateFunc( elem ) : NULL; }
+    virtual QgsRendererV2Widget* createRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer ) override
+      { return mWidgetFunc ? mWidgetFunc( layer, style, renderer ) : NULL; }
+    virtual QgsFeatureRendererV2* createRendererFromSld( QDomElement& elem, QGis::GeometryType geomType ) override
+      { return mCreateFromSldFunc ? mCreateFromSldFunc( elem, geomType ) : NULL; }
 
     //! @note not available in python bindings
     QgsRendererV2CreateFunc createFunction() const { return mCreateFunc; }

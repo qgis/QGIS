@@ -32,7 +32,7 @@ class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
     QgsSpatiaLiteFeatureSource( const QgsSpatiaLiteProvider* p );
     ~QgsSpatiaLiteFeatureSource();
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
 
   protected:
     QString mGeometryColumn;
@@ -59,18 +59,19 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource
     ~QgsSpatiaLiteFeatureIterator();
 
     //! reset the iterator to the starting position
-    virtual bool rewind();
+    virtual bool rewind() override;
 
     //! end of iterating: free the resources / lock
-    virtual bool close();
+    virtual bool close() override;
 
   protected:
 
     //! fetch next feature, return true on success
-    virtual bool fetchFeature( QgsFeature& feature );
+    virtual bool fetchFeature( QgsFeature& feature ) override;
 
     QString whereClauseRect();
     QString whereClauseFid();
+    QString whereClauseFids();
     QString mbr( const QgsRectangle& rect );
     bool prepareStatement( QString whereClause );
     QString quotedPrimaryKey();
@@ -92,6 +93,9 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource
 
     //! Set to true, if geometry is in the requested columns
     bool mFetchGeometry;
+
+    bool mHasPrimaryKey;
+    QgsFeatureId mRowNumber;
 };
 
 #endif // QGSSPATIALITEFEATUREITERATOR_H

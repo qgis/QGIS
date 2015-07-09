@@ -25,7 +25,7 @@
 #include "qgis.h"
 #include "qgsfieldcombobox.h"
 #include "qgisapp.h"
-#include "qgsmapcanvas.h"
+#include "qgslayertreemapcanvasbridge.h"
 #include "qgsvisibilitypresets.h"
 
 #include <QFileDialog>
@@ -69,7 +69,7 @@ void FieldSelectorDelegate::setEditorData( QWidget *editor, const QModelIndex &i
   if ( !fcb )
     return;
 
-  int idx = m->mAttributeIdx.value( vl, -1 );
+  int idx = m->attributeIndex( vl );
   if ( vl->pendingFields().exists( idx ) )
     fcb->setField( vl->pendingFields()[ idx ].name() );
 }
@@ -127,12 +127,61 @@ QgsVectorLayer *QgsVectorLayerAndAttributeModel::vectorLayer( const QModelIndex 
   return dynamic_cast<QgsVectorLayer *>( QgsLayerTree::toLayer( n )->layer() );
 }
 
+int QgsVectorLayerAndAttributeModel::attributeIndex( const QgsVectorLayer *vl ) const
+{
+  return mAttributeIdx.value( vl, -1 );
+}
+
 QVariant QgsVectorLayerAndAttributeModel::data( const QModelIndex& idx, int role ) const
 {
   if ( idx.column() == 0 )
   {
     if ( role == Qt::CheckStateRole )
-      return mCheckedIndexes.contains( idx ) ? Qt::Checked : Qt::Unchecked;
+    {
+      if ( !idx.isValid() )
+        return QVariant();
+
+      if ( mCheckedLeafs.contains( idx ) )
+        return Qt::Checked;
+
+      bool hasChecked = false, hasUnchecked = false;
+      int n;
+      for ( n = 0; !hasChecked || !hasUnchecked; n++ )
+      {
+        QVariant v = data( idx.child( n, 0 ), role );
+        if ( !v.isValid() )
+          break;
+
+        switch ( v.toInt() )
+        {
+          case Qt::PartiallyChecked:
+            // parent of partially checked child shared state
+            return Qt::PartiallyChecked;
+
+          case Qt::Checked:
+            hasChecked = true;
+            break;
+
+          case Qt::Unchecked:
+            hasUnchecked = true;
+            break;
+        }
+      }
+
+      // unchecked leaf
+      if ( n == 0 )
+        return Qt::Unchecked;
+
+      // both
+      if ( hasChecked && hasUnchecked )
+        return Qt::PartiallyChecked;
+
+      if ( hasChecked )
+        return Qt::Checked;
+
+      Q_ASSERT( hasUnchecked );
+      return Qt::Unchecked;
+    }
     else
       return QgsLayerTreeModel::data( idx, role );
   }
@@ -160,10 +209,28 @@ bool QgsVectorLayerAndAttributeModel::setData( const QModelIndex &index, const Q
 {
   if ( index.column() == 0 && role == Qt::CheckStateRole )
   {
-    if ( value.toInt() == Qt::Checked )
-      mCheckedIndexes.append( index );
-    else
-      mCheckedIndexes.removeAll( index );
+    int i = 0;
+    for ( i = 0; ; i++ )
+    {
+      QModelIndex child = index.child( i, 0 );
+      if ( !child.isValid() )
+        break;
+
+      setData( child, value, role );
+    }
+
+    if ( i == 0 )
+    {
+      if ( value.toInt() == Qt::Checked )
+        mCheckedLeafs.insert( index );
+      else if ( value.toInt() == Qt::Unchecked )
+        mCheckedLeafs.remove( index );
+      else
+        Q_ASSERT( "expected checked or unchecked" );
+
+      emit dataChanged( QModelIndex(), index );
+    }
+
     return true;
   }
 
@@ -187,9 +254,9 @@ bool QgsVectorLayerAndAttributeModel::setData( const QModelIndex &index, const Q
 QList< QPair<QgsVectorLayer *, int> > QgsVectorLayerAndAttributeModel::layers() const
 {
   QList< QPair<QgsVectorLayer *, int> > layers;
-  QHash< QgsMapLayer *, int > layerIdx;
+  QHash< QString, int > layerIdx;
 
-  foreach ( const QModelIndex &idx, mCheckedIndexes )
+  foreach ( const QModelIndex &idx, mCheckedLeafs )
   {
     QgsLayerTreeNode *node = index2node( idx );
     if ( QgsLayerTree::isGroup( node ) )
@@ -198,9 +265,9 @@ QList< QPair<QgsVectorLayer *, int> > QgsVectorLayerAndAttributeModel::layers() 
       {
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( treeLayer->layer() );
         Q_ASSERT( vl );
-        if ( !layerIdx.contains( vl ) )
+        if ( !layerIdx.contains( vl->id() ) )
         {
-          layerIdx.insert( vl, layers.size() );
+          layerIdx.insert( vl->id(), layers.size() );
           layers << qMakePair<QgsVectorLayer *, int>( vl, mAttributeIdx.value( vl, -1 ) );
         }
       }
@@ -209,15 +276,16 @@ QList< QPair<QgsVectorLayer *, int> > QgsVectorLayerAndAttributeModel::layers() 
     {
       QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( QgsLayerTree::toLayer( node )->layer() );
       Q_ASSERT( vl );
-      if ( !layerIdx.contains( vl ) )
+      if ( !layerIdx.contains( vl->id() ) )
       {
-        layerIdx.insert( vl, layers.size() );
+        layerIdx.insert( vl->id(), layers.size() );
         layers << qMakePair<QgsVectorLayer *, int>( vl, mAttributeIdx.value( vl, -1 ) );
       }
     }
   }
 
-  QList<QgsMapLayer*> inDrawingOrder = QgisApp::instance()->mapCanvas()->layers();
+  QgsLayerTreeMapCanvasBridge* bridge = QgisApp::instance()->layerTreeCanvasBridge();
+  QStringList inDrawingOrder = bridge->hasCustomLayerOrder() ? bridge->customLayerOrder() : bridge->defaultLayerOrder();
   QList< QPair<QgsVectorLayer *, int> > layersInROrder;
 
   for ( int i = inDrawingOrder.size() - 1; i >= 0; i-- )
@@ -240,7 +308,7 @@ void QgsVectorLayerAndAttributeModel::applyVisibilityPreset( const QString &name
   if ( visibleLayers.isEmpty() )
     return;
 
-  mCheckedIndexes.clear();
+  mCheckedLeafs.clear();
   applyVisibility( visibleLayers, rootGroup() );
 
   emit dataChanged( QModelIndex(), QModelIndex() );
@@ -248,7 +316,7 @@ void QgsVectorLayerAndAttributeModel::applyVisibilityPreset( const QString &name
 
 void QgsVectorLayerAndAttributeModel::applyVisibility( QSet<QString> &visibleLayers, QgsLayerTreeNode *node )
 {
-  QgsLayerTreeGroup *group = QgsLayerTree::toGroup( node );
+  QgsLayerTreeGroup *group = QgsLayerTree::isGroup( node ) ? QgsLayerTree::toGroup( node ) : 0;
   if ( !group )
     return;
 
@@ -260,13 +328,49 @@ void QgsVectorLayerAndAttributeModel::applyVisibility( QSet<QString> &visibleLay
       if ( vl && visibleLayers.contains( vl->id() ) )
       {
         visibleLayers.remove( vl->id() );
-        mCheckedIndexes.append( node2index( child ) );
+        mCheckedLeafs.insert( node2index( child ) );
       }
       continue;
     }
 
     applyVisibility( visibleLayers, child );
   }
+}
+
+void QgsVectorLayerAndAttributeModel::retrieveAllLayers( QgsLayerTreeNode *node, QSet<QString> &set )
+{
+  if ( QgsLayerTree::isLayer( node ) )
+  {
+    set << QgsLayerTree::toLayer( node )->layer()->id();
+  }
+  else if ( QgsLayerTree::isGroup( node ) )
+  {
+    foreach ( QgsLayerTreeNode *child, QgsLayerTree::toGroup( node )->children() )
+    {
+      retrieveAllLayers( child, set );
+    }
+  }
+}
+
+void QgsVectorLayerAndAttributeModel::selectAll()
+{
+  mCheckedLeafs.clear();
+
+  QSet<QString> allLayers;
+  retrieveAllLayers( rootGroup(), allLayers );
+  applyVisibility( allLayers, rootGroup() );
+
+  emit dataChanged( QModelIndex(), QModelIndex() );
+}
+
+void QgsVectorLayerAndAttributeModel::unSelectAll()
+{
+  mCheckedLeafs.clear();
+
+  QSet<QString> noLayers;
+  applyVisibility( noLayers, rootGroup() );
+
+  emit dataChanged( QModelIndex(), QModelIndex() );
 }
 
 QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
@@ -295,7 +399,8 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   QSettings s;
   mSymbologyModeComboBox->setCurrentIndex( s.value( "qgis/lastDxfSymbologyMode", "2" ).toInt() );
   //last symbol scale
-  mSymbologyScaleLineEdit->setText( s.value( "qgis/lastSymbologyExportScale", "50000" ).toString() );
+  mScaleWidget->setMapCanvas( QgisApp::instance()->mapCanvas() );
+  mScaleWidget->setScale( s.value( "qgis/lastSymbologyExportScale", "1/50000" ).toDouble() );
   mMapExtentCheckBox->setChecked( s.value( "qgis/lastDxfMapRectangle", "false" ).toBool() );
 
   QStringList ids = QgsVisibilityPresets::instance()->presets();
@@ -304,6 +409,8 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
 
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
   restoreGeometry( s.value( "/Windows/DxfExport/geometry" ).toByteArray() );
+  mEncoding->addItems( QgsDxfExport::encodings() );
+  mEncoding->setCurrentIndex( mEncoding->findText( s.value( "qgis/lastDxfEncoding", "CP1252" ).toString() ) );
 }
 
 
@@ -324,7 +431,7 @@ void QgsDxfExportDialog::on_mVisibilityPresets_currentIndexChanged( int index )
 
 void QgsDxfExportDialog::cleanGroup( QgsLayerTreeNode *node )
 {
-  QgsLayerTreeGroup *group = QgsLayerTree::toGroup( node );
+  QgsLayerTreeGroup *group = QgsLayerTree::isGroup( node ) ? QgsLayerTree::toGroup( node ) : 0;
   if ( !group )
     return;
 
@@ -350,13 +457,16 @@ void QgsDxfExportDialog::cleanGroup( QgsLayerTreeNode *node )
 
 void QgsDxfExportDialog::selectAll()
 {
-  mTreeView->selectAll();
+  QgsVectorLayerAndAttributeModel *model = dynamic_cast< QgsVectorLayerAndAttributeModel *>( mTreeView->model() );
+  Q_ASSERT( model );
+  model->selectAll();
 }
-
 
 void QgsDxfExportDialog::unSelectAll()
 {
-  mTreeView->clearSelection();
+  QgsVectorLayerAndAttributeModel *model = dynamic_cast< QgsVectorLayerAndAttributeModel *>( mTreeView->model() );
+  Q_ASSERT( model );
+  model->unSelectAll();
 }
 
 
@@ -370,7 +480,7 @@ QList< QPair<QgsVectorLayer *, int> > QgsDxfExportDialog::layers() const
 
 double QgsDxfExportDialog::symbologyScale() const
 {
-  double scale = mSymbologyScaleLineEdit->text().toDouble();
+  double scale = 1 / mScaleWidget->scale();
   if ( qgsDoubleNear( scale, 0.0 ) )
   {
     return 1.0;
@@ -432,6 +542,12 @@ void QgsDxfExportDialog::saveSettings()
   QFileInfo dxfFileInfo( mFileLineEdit->text() );
   s.setValue( "qgis/lastDxfDir", dxfFileInfo.absolutePath() );
   s.setValue( "qgis/lastDxfSymbologyMode", mSymbologyModeComboBox->currentIndex() );
-  s.setValue( "qgis/lastSymbologyExportScale", mSymbologyScaleLineEdit->text() );
+  s.setValue( "qgis/lastSymbologyExportScale", mScaleWidget->scale() );
   s.setValue( "qgis/lastDxfMapRectangle", mMapExtentCheckBox->isChecked() );
+  s.setValue( "qgis/lastDxfEncoding", mEncoding->currentText() );
+}
+
+QString QgsDxfExportDialog::encoding() const
+{
+  return mEncoding->currentText();
 }

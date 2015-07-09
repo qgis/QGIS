@@ -16,6 +16,7 @@ class QgsGraduatedSymbolRendererV2Widget : QgsRendererV2Widget
     void graduatedColumnChanged( QString field );
     void classifyGraduated();
     void reapplyColorRamp();
+    void reapplySizes();
     void rangesDoubleClicked( const QModelIndex & idx );
     void rangesClicked( const QModelIndex & idx );
     void changeCurrentValue( QStandardItem * item );
@@ -40,7 +41,7 @@ class QgsGraduatedSymbolRendererV2Widget : QgsRendererV2Widget
     void modelDataChanged();
 
   protected:
-    void updateUiFromRenderer( bool updateCount=true );
+    void updateUiFromRenderer( bool updateCount = true );
     void connectUpdateHandlers();
     void disconnectUpdateHandlers();
     bool rowsOrdered();

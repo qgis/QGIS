@@ -35,7 +35,7 @@ class QgsInterpolationLayerBuilder: public QgsMSLayerBuilder
        @param layersToRemove list to append layers that should be removed after the request
        @param allowCaching flag if layers are allowed to be fetched from layer cache or not
      @return the created layer or 0 in case of error*/
-    QgsMapLayer* createMapLayer( const QDomElement& elem, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching = true ) const;
+    QgsMapLayer* createMapLayer( const QDomElement& elem, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching = true ) const override;
 
   private:
     QgsInterpolationLayerBuilder(); //forbidden

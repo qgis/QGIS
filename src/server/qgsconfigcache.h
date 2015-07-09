@@ -30,7 +30,7 @@ class QgsWMSConfigParser;
 
 class QDomDocument;
 
-class QgsConfigCache: public QObject
+class SERVER_EXPORT QgsConfigCache : public QObject
 {
     Q_OBJECT
   public:
@@ -44,7 +44,6 @@ class QgsConfigCache: public QObject
 
   private:
     QgsConfigCache();
-    static QgsConfigCache* mInstance;
 
     /**Check for configuration file updates (remove entry from cache if file changes)*/
     QFileSystemWatcher mFileSystemWatcher;

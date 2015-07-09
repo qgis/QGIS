@@ -30,12 +30,11 @@ QGIS utilities module
 
 from PyQt4.QtCore import QCoreApplication, QLocale
 from qgis.core import QGis, QgsExpression, QgsMessageLog, qgsfunction
-from string import Template
+
 import sys
 import traceback
 import glob
 import os.path
-import re
 import ConfigParser
 import warnings
 import codecs
@@ -63,15 +62,15 @@ warnings.showwarning = showWarning
 
 def showException(type, value, tb, msg):
     lst = traceback.format_exception(type, value, tb)
-    if msg == None:
+    if msg is None:
         msg = QCoreApplication.translate('Python', 'An error has occured while executing Python code:')
     txt = '<font color="red">%s</font><br><br><pre>' % msg
     for s in lst:
         txt += s.decode('utf-8', 'replace')
     txt += '</pre><br>%s<br>%s<br><br>' % (QCoreApplication.translate('Python', 'Python version:'), sys.version)
     txt += '<br>%s<br>%s %s, %s<br><br>' % (
-    QCoreApplication.translate('Python', 'QGIS version:'), QGis.QGIS_VERSION, QGis.QGIS_RELEASE_NAME,
-    QGis.QGIS_DEV_VERSION)
+        QCoreApplication.translate('Python', 'QGIS version:'), QGis.QGIS_VERSION, QGis.QGIS_RELEASE_NAME,
+        QGis.QGIS_DEV_VERSION)
     txt += '%s %s' % (QCoreApplication.translate('Python', 'Python path:'), str(sys.path))
     txt = txt.replace('\n', '<br>')
     txt = txt.replace('  ', '&nbsp; ')  # preserve whitespaces for nicer output
@@ -246,7 +245,7 @@ def canUninstallPlugin(packageName):
     """ confirm that the plugin can be uninstalled """
     global plugins, active_plugins
 
-    if not plugins.has_key(packageName): return False
+    if packageName not in plugins: return False
     if packageName not in active_plugins: return False
 
     try:
@@ -264,7 +263,7 @@ def unloadPlugin(packageName):
     """ unload and delete plugin! """
     global plugins, active_plugins
 
-    if not plugins.has_key(packageName): return False
+    if packageName not in plugins: return False
     if packageName not in active_plugins: return False
 
     try:
@@ -306,7 +305,7 @@ def isPluginLoaded(packageName):
     """ find out whether a plugin is active (i.e. has been started) """
     global plugins, active_plugins
 
-    if not plugins.has_key(packageName): return False
+    if packageName not in plugins: return False
     return (packageName in active_plugins)
 
 

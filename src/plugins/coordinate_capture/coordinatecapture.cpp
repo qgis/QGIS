@@ -68,7 +68,15 @@ static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
  */
 CoordinateCapture::CoordinateCapture( QgisInterface * theQgisInterface )
     : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
+    , mpMapTool( NULL )
+    , mpTrackMouseButton( NULL )
+    , mpCaptureButton( NULL )
+    , mypUserCrsToolButton( NULL )
+    , mypCRSLabel( NULL )
+    , mCanvasDisplayPrecision( 5 )
+    , mUserCrsDisplayPrecision( 5 )
     , mQGisIface( theQgisInterface )
+    , mQActionPointer( NULL )
 {
 }
 

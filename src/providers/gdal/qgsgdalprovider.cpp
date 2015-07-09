@@ -45,7 +45,6 @@
 #include <QFile>
 #include <QHash>
 #include <QTime>
-#include <QSettings>
 #include <QTextDocument>
 #include <QDebug>
 
@@ -97,9 +96,16 @@ int CPL_STDCALL progressCallback( double dfComplete,
 
 QgsGdalProvider::QgsGdalProvider( const QString &uri, QgsError error )
     : QgsRasterDataProvider( uri )
+    , mUpdate( false )
     , mValid( false )
+    , mHasPyramids( false )
+    , mWidth( 0 )
+    , mHeight( 0 )
+    , mXBlockSize( 0 )
+    , mYBlockSize( 0 )
     , mGdalBaseDataset( 0 )
     , mGdalDataset( 0 )
+    , mGeoTransform()
 {
   setError( error );
 }
@@ -109,6 +115,11 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, bool update )
     , QgsGdalProviderBase()
     , mUpdate( update )
     , mValid( false )
+    , mHasPyramids( false )
+    , mWidth( 0 )
+    , mHeight( 0 )
+    , mXBlockSize( 0 )
+    , mYBlockSize( 0 )
     , mGdalBaseDataset( 0 )
     , mGdalDataset( 0 )
 {
@@ -1079,9 +1090,9 @@ QGis::DataType QgsGdalProvider::srcDataType( int bandNo ) const
   // define if the band has scale and offset to apply
   double myScale = bandScale( bandNo );
   double myOffset = bandOffset( bandNo );
-  if ( myScale != 1.0 && myOffset != 0.0 )
+  if ( myScale != 1.0 || myOffset != 0.0 )
   {
-    // if the band has scale and offset to apply change dataType
+    // if the band has scale or offset to apply change dataType
     switch ( myDataType )
     {
       case QGis::UnknownDataType:
@@ -1997,7 +2008,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
 
     // presumably we know we've run out of metadta if either the
     // address is 0, or the first character is null
-    while ( myGdalDriverMetadata && '\0' != myGdalDriverMetadata[0] )
+    while ( myGdalDriverMetadata && myGdalDriverMetadata[0] )
     {
       metadataTokens = QString( *myGdalDriverMetadata ).split( "=", QString::SkipEmptyParts );
       // QgsDebugMsg(QString("\t%1").arg(*myGdalDriverMetadata));
@@ -2474,7 +2485,7 @@ void QgsGdalProvider::initBaseDataset()
     }
     else
     {
-      GDALGetGeoTransform( mGdalDataset, mGeoTransform );
+      hasGeoTransform = GDALGetGeoTransform( mGdalDataset, mGeoTransform ) == CE_None;
     }
   }
   else
@@ -2638,9 +2649,9 @@ void QgsGdalProvider::initBaseDataset()
     // define if the band has scale and offset to apply
     double myScale = bandScale( i );
     double myOffset = bandOffset( i );
-    if ( myScale != 1.0 && myOffset != 0.0 )
+    if ( !qgsDoubleNear( myScale, 1.0 ) || !qgsDoubleNear( myOffset, 0.0 ) )
     {
-      // if the band has scale and offset to apply change dataType
+      // if the band has scale or offset to apply change dataType
       switch ( myGdalDataType )
       {
         case GDT_Unknown:

@@ -84,12 +84,12 @@ namespace Konsole
        */
       bool trailingWhitespace() const;
 
-      virtual void begin( QTextStream* output );
-      virtual void end();
+      virtual void begin( QTextStream* output ) override;
+      virtual void end() override;
 
       virtual void decodeLine( const Character* const characters,
                                int count,
-                               LineProperty properties );
+                               LineProperty properties ) override;
 
 
     private:
@@ -116,10 +116,10 @@ namespace Konsole
 
       virtual void decodeLine( const Character* const characters,
                                int count,
-                               LineProperty properties );
+                               LineProperty properties ) override;
 
-      virtual void begin( QTextStream* output );
-      virtual void end();
+      virtual void begin( QTextStream* output ) override;
+      virtual void end() override;
 
     private:
       void openSpan( QString& text , const QString& style );

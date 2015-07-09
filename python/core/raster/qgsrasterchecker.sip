@@ -10,6 +10,7 @@ class QgsRasterChecker
 
     QgsRasterChecker();
 
+    //! Destructor
     ~QgsRasterChecker();
 
     QString report();

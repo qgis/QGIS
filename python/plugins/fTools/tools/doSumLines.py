@@ -28,10 +28,10 @@
 #
 #---------------------------------------------------------------------
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import QObject, SIGNAL, QVariant, QFile
+from PyQt4.QtGui import QDialog, QDialogButtonBox, QMessageBox
 import ftools_utils
-from qgis.core import *
+from qgis.core import QGis, QgsField, QgsFeature, QgsGeometry, QgsDistanceArea, QgsVectorFileWriter, QgsFeatureRequest
 from ui_frmSumLines import Ui_Dialog
 
 class Dialog(QDialog, Ui_Dialog):
@@ -70,7 +70,6 @@ class Dialog(QDialog, Ui_Dialog):
             inLns = self.inPoint.currentText()
             inField = self.lnField.text()
             outPath = self.outShape.text()
-            outName = ftools_utils.getShapefileName( outPath )
             self.compute(inPoly, inLns, inField, outPath, self.progressBar)
             self.outShape.clear()
             if self.addToCanvasCheck.isChecked():
@@ -95,7 +94,7 @@ class Dialog(QDialog, Ui_Dialog):
         lineLayer = ftools_utils.getVectorLayerByName(inLns)
         polyProvider = polyLayer.dataProvider()
         lineProvider = lineLayer.dataProvider()
-        if polyProvider.crs() <> lineProvider.crs():
+        if polyProvider.crs() != lineProvider.crs():
             QMessageBox.warning(self, self.tr("CRS warning!"), self.tr("Warning: Input layers have non-matching CRS.\nThis may cause unexpected results."))
         fieldList = ftools_utils.getFieldList(polyLayer)
         index = polyProvider.fieldNameIndex(unicode(inField))

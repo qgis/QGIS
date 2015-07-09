@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -27,27 +28,32 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4 import uic
+from PyQt4.QtCore import Qt, QEvent
+from PyQt4.QtGui import (QFileDialog, QDialog, QIcon, QStyle,
+    QStandardItemModel, QStandardItem, QMessageBox, QStyledItemDelegate,
+    QLineEdit, QSpinBox, QDoubleSpinBox, QWidget, QToolButton, QHBoxLayout)
 
-from processing.core.ProcessingConfig import ProcessingConfig
+from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.Processing import Processing
-from processing.ui.ui_DlgConfig import Ui_DlgConfig
 
-import processing.resources_rc
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'DlgConfig.ui'))
 
 
-class ConfigDialog(QDialog, Ui_DlgConfig):
+class ConfigDialog(BASE, WIDGET):
 
     def __init__(self, toolbox):
-        QDialog.__init__(self)
+        super(ConfigDialog, self).__init__(None)
         self.setupUi(self)
+
         self.toolbox = toolbox
         self.groupIcon = QIcon()
         self.groupIcon.addPixmap(self.style().standardPixmap(
-                QStyle.SP_DirClosedIcon), QIcon.Normal, QIcon.Off)
+            QStyle.SP_DirClosedIcon), QIcon.Normal, QIcon.Off)
         self.groupIcon.addPixmap(self.style().standardPixmap(
-                QStyle.SP_DirOpenIcon), QIcon.Normal, QIcon.On)
+            QStyle.SP_DirOpenIcon), QIcon.Normal, QIcon.On)
 
         if hasattr(self.searchBox, 'setPlaceholderText'):
             self.searchBox.setPlaceholderText(self.tr('Search...'))
@@ -98,7 +104,7 @@ class ConfigDialog(QDialog, Ui_DlgConfig):
                 self.tree.expand(groupItem.index())
 
         providersItem = QStandardItem(self.tr('Providers'))
-        icon = QIcon(':/processing/images/alg.png')
+        icon = QIcon(os.path.join(pluginPath, 'images', 'alg.png'))
         providersItem.setIcon(icon)
         providersItem.setEditable(False)
         emptyItem = QStandardItem()
@@ -160,7 +166,7 @@ class SettingItem(QStandardItem):
     def __init__(self, setting):
         QStandardItem.__init__(self)
         self.setting = setting
-
+        self.setData(setting.valuetype, Qt.UserRole)
         if isinstance(setting.value, bool):
             self.setCheckable(True)
             self.setEditable(False)
@@ -182,7 +188,7 @@ class SettingDelegate(QStyledItemDelegate):
         parent,
         options,
         index,
-        ):
+    ):
         value = self.convertValue(index.model().data(index, Qt.EditRole))
         if isinstance(value, (int, long)):
             spnBox = QSpinBox(parent)
@@ -194,10 +200,9 @@ class SettingDelegate(QStyledItemDelegate):
             spnBox.setDecimals(6)
             return spnBox
         elif isinstance(value, (str, unicode)):
-            if os.path.isdir(value):
+            valuetype = self.convertValue(index.model().data(index, Qt.UserRole))
+            if valuetype == Setting.FOLDER:
                 return FileDirectorySelector(parent)
-            elif os.path.isfile(value):
-                return FileDirectorySelector(parent, True)
             else:
                 return FileDirectorySelector(parent, True)
 
@@ -229,7 +234,7 @@ class SettingDelegate(QStyledItemDelegate):
         return QStyledItemDelegate.eventFilter(self, editor, event)
 
     def convertValue(self, value):
-	if value is None:
+        if value is None:
             return ""
         try:
             return int(value)
@@ -267,12 +272,12 @@ class FileDirectorySelector(QWidget):
         lastDir = ''
         if not self.selectFile:
             selectedPath = QFileDialog.getExistingDirectory(None,
-                    self.tr('Select directory'), lastDir,
-                    QFileDialog.ShowDirsOnly)
+                self.tr('Select directory'), lastDir,
+                QFileDialog.ShowDirsOnly)
         else:
             selectedPath = QFileDialog.getOpenFileName(None,
-                    self.tr('Select file'), lastDir, self.tr('All files (*.*)'
-                    ))
+                self.tr('Select file'), lastDir, self.tr('All files (*.*)')
+            )
 
         if not selectedPath:
             return

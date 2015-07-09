@@ -26,16 +26,15 @@ __copyright__ = '(C) 2012, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4.QtGui import *
+from PyQt4.QtGui import QIcon
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import \
     GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputRaster
-from processing.tools.system import *
+
 from TauDEMUtils import TauDEMUtils
 
 
@@ -56,17 +55,17 @@ class PeukerDouglas(GeoAlgorithm):
         self.cmdName = 'peukerdouglas'
         self.group = 'Stream Network Analysis tools'
 
-        self.addParameter(ParameterRaster(self.ELEVATION_GRID, 'Elevation Grid'
-                          , False))
+        self.addParameter(ParameterRaster(self.ELEVATION_GRID,
+            self.tr('Elevation Grid'), False))
         self.addParameter(ParameterNumber(self.CENTER_WEIGHT,
-                          'Center Smoothing Weight', 0, None, 0.4))
+            self.tr('Center Smoothing Weight'), 0, None, 0.4))
         self.addParameter(ParameterNumber(self.SIDE_WEIGHT,
-                          'Side Smoothing Weight', 0, None, 0.1))
+            self.tr('Side Smoothing Weight'), 0, None, 0.1))
         self.addParameter(ParameterNumber(self.DIAGONAL_WEIGHT,
-                          'Diagonal Smoothing Weight', 0, None, 0.05))
+            self.tr('Diagonal Smoothing Weight'), 0, None, 0.05))
 
         self.addOutput(OutputRaster(self.STREAM_SOURCE_GRID,
-                       'Stream Source Grid'))
+            self.tr('Stream Source Grid')))
 
     def processAlgorithm(self, progress):
         commands = []
@@ -74,9 +73,9 @@ class PeukerDouglas(GeoAlgorithm):
 
         processNum = ProcessingConfig.getSetting(TauDEMUtils.MPI_PROCESSES)
         if processNum <= 0:
-            raise GeoAlgorithmExecutionException('Wrong number of MPI \
-                processes used.\nPlease set correct number before running \
-                TauDEM algorithms.')
+            raise GeoAlgorithmExecutionException(
+                self.tr('Wrong number of MPI processes used. Please set '
+                        'correct number before running TauDEM algorithms.'))
 
         commands.append('-n')
         commands.append(str(processNum))
@@ -89,11 +88,5 @@ class PeukerDouglas(GeoAlgorithm):
         commands.append(str(self.getParameterValue(self.DIAGONAL_WEIGHT)))
         commands.append('-ss')
         commands.append(self.getOutputValue(self.STREAM_SOURCE_GRID))
-
-        loglines = []
-        loglines.append('TauDEM execution command')
-        for line in commands:
-            loglines.append(line)
-        ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
 
         TauDEMUtils.executeTauDEM(commands, progress)

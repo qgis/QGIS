@@ -27,10 +27,6 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #ifndef _POINTSET_H
 #define _POINTSET_H
 
@@ -39,9 +35,9 @@
 #include <cmath>
 #include <stddef.h>
 #include <geos_c.h>
+#include <QLinkedList>
 
 #include "rtree.hpp"
-#include "linkedlist.hpp"
 
 namespace pal
 {
@@ -97,30 +93,6 @@ namespace pal
       friend class PolygonCostCalculator;
       friend class Layer;
 
-    protected:
-      int nbPoints;
-      double *x;
-      double *y;   // points order is counterclockwise
-
-      int *cHull;
-      int cHullSize;
-
-      int type;
-
-      PointSet* holeOf;
-      PointSet* parent;
-
-      PointSet( double x, double y );
-
-      PointSet( PointSet &ps );
-
-      void deleteCoords();
-
-      double xmin;
-      double xmax;
-      double ymin;
-      double ymax;
-
     public:
       PointSet();
       PointSet( int nbPoints, double *x, double *y );
@@ -137,9 +109,9 @@ namespace pal
        * split a concave shape into several convex shapes
        *
        */
-      static void splitPolygons( LinkedList<PointSet*> *shapes_toProcess,
-                                 LinkedList<PointSet*> *shapes_final,
-                                 double xrm, double yrm, char *uid );
+      static void splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
+                                 QLinkedList<PointSet *> &shapes_final,
+                                 double xrm, double yrm, const QString &uid );
 
 
 
@@ -171,7 +143,7 @@ namespace pal
         max[0] = xmax; max[1] = ymax;
       }
 
-      /** returns NULL if this isn't a hole. Otherwise returns pointer to parent pointset. */
+      /** Returns NULL if this isn't a hole. Otherwise returns pointer to parent pointset. */
       PointSet* getHoleOf() { return holeOf; }
 
       int getNumPoints() const { return nbPoints; }
@@ -226,6 +198,30 @@ namespace pal
           *py = y[i];
         }
       }
+
+    protected:
+      int nbPoints;
+      double *x;
+      double *y;   // points order is counterclockwise
+
+      int *cHull;
+      int cHullSize;
+
+      int type;
+
+      PointSet* holeOf;
+      PointSet* parent;
+
+      PointSet( double x, double y );
+
+      PointSet( PointSet &ps );
+
+      void deleteCoords();
+
+      double xmin;
+      double xmax;
+      double ymin;
+      double ymax;
   };
 
 } // namespace pal

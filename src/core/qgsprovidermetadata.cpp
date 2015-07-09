@@ -23,9 +23,9 @@
 QgsProviderMetadata::QgsProviderMetadata( QString const & _key,
     QString const & _description,
     QString const & _library )
-    : key_( _key ),
-    description_( _description ),
-    library_( _library )
+    : key_( _key )
+    , description_( _description )
+    , library_( _library )
 {}
 
 QString const & QgsProviderMetadata::key() const

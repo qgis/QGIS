@@ -47,13 +47,13 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
     virtual ~QgsComposerTable();
 
     /** return correct graphics item type. */
-    virtual int type() const { return ComposerTable; }
+    virtual int type() const override { return ComposerTable; }
 
     /** \brief Reimplementation of QCanvasItem::paint*/
-    virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
+    virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
 
-    virtual bool writeXML( QDomElement& elem, QDomDocument & doc ) const = 0;
-    virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) = 0;
+    virtual bool writeXML( QDomElement& elem, QDomDocument & doc ) const override = 0;
+    virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override = 0;
 
     /**Sets the margin distance between cell borders and their contents.
      * @param d margin for cell contents

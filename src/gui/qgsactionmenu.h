@@ -44,6 +44,8 @@ class QgsActionMenu : public QMenu
       ActionData()
           : actionType( Invalid )
           , actionId( 0 )
+          , featureId( 0 )
+          , mapLayer( NULL )
       {}
 
       ActionData( int actionId, QgsFeatureId featureId, QgsMapLayer* mapLayer )

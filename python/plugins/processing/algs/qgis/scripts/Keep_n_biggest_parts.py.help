@@ -1,1 +1,0 @@
-{"ALG_CREATOR": "Chourmo - v1", "To_keep": "Number of parts to keep, must be larger than 0", "ALG_DESC": "Keep n biggest sub polygon in a multipolygon, without exploding it...", "ALG_HELP_CREATOR": "Chourmo - v1", "Polygons": "Input layer"}

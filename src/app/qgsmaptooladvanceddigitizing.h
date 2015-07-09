@@ -19,7 +19,6 @@
 
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsmaptool.h"
-#include "qgsmapcanvassnapper.h"
 
 class QgsMapMouseEvent;
 
@@ -48,17 +47,17 @@ class APP_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapTool
     ~QgsMapToolAdvancedDigitizing();
 
     //! catch the mouse press event, filters it, transforms it to map coordinates and send it to virtual method
-    void canvasPressEvent( QMouseEvent* e );
+    void canvasPressEvent( QMouseEvent* e ) override;
     //! catch the mouse release event, filters it, transforms it to map coordinates and send it to virtual method
-    void canvasReleaseEvent( QMouseEvent* e );
+    void canvasReleaseEvent( QMouseEvent* e ) override;
     //! catch the mouse move event, filters it, transforms it to map coordinates and send it to virtual method
-    void canvasMoveEvent( QMouseEvent* e );
+    void canvasMoveEvent( QMouseEvent* e ) override;
     //! catch the mouse double click event, filters it, transforms it to map coordinates and send it to virtual method
-    void canvasDoubleClickEvent( QMouseEvent* e );
+    void canvasDoubleClickEvent( QMouseEvent* e ) override;
     //! catch the key press event, filters it and send it to virtual method
-    void keyPressEvent( QKeyEvent* event );
+    void keyPressEvent( QKeyEvent* event ) override;
     //! catch the key release event, filters it and send it to virtual method
-    void keyReleaseEvent( QKeyEvent* event );
+    void keyReleaseEvent( QKeyEvent* event ) override;
 
     //! mouse press event in map coordinates (eventually filtered) to be redefined in subclass
     virtual void canvasMapPressEvent( QgsMapMouseEvent* e );
@@ -80,8 +79,6 @@ class APP_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapTool
     CaptureMode mode() { return mCaptureMode; }
 
   protected:
-    // CADTODO: remove
-    QgsMapCanvasSnapper mSnapper;
 
     QgsAdvancedDigitizingDockWidget* mCadDockWidget;
 

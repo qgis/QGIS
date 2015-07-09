@@ -24,15 +24,18 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsmslayercache.h"
 #include "qgsrasterlayer.h"
+#include "qgseditorwidgetregistry.h"
 
 #include <QDomDocument>
 #include <QFileInfo>
 #include <QStringList>
+#include <QTextStream>
 #include <QUrl>
 
 QgsServerProjectParser::QgsServerProjectParser( QDomDocument* xmlDoc, const QString& filePath )
     : mXMLDoc( xmlDoc )
     , mProjectPath( filePath )
+    , mUseLayerIDs( false )
 {
   //accelerate the search for layers, groups and the creation of annotation items
   if ( mXMLDoc )
@@ -60,6 +63,18 @@ QgsServerProjectParser::QgsServerProjectParser( QDomDocument* xmlDoc, const QStr
 
     mRestrictedLayers = findRestrictedLayers();
     mUseLayerIDs = findUseLayerIDs();
+
+    mCustomLayerOrder.clear();
+
+    QDomElement customOrder = mXMLDoc->documentElement().firstChildElement( "layer-tree-canvas" ).firstChildElement( "custom-order" );
+    if ( customOrder.attribute( "enabled" ) == "1" )
+    {
+      QDomNodeList items = customOrder.childNodes();
+      for ( int i = 0; i < items.size(); ++i )
+      {
+        mCustomLayerOrder << items.item( i ).toElement().text();
+      }
+    }
   }
 }
 
@@ -71,7 +86,7 @@ QgsServerProjectParser::QgsServerProjectParser()
 
 QgsServerProjectParser::~QgsServerProjectParser()
 {
-  delete mXMLDoc;
+
 }
 
 void QgsServerProjectParser::projectLayerMap( QMap<QString, QgsMapLayer*>& layerMap ) const
@@ -148,8 +163,8 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
     return 0;
   }
 
-  addJoinLayersForElement( elem, useCache );
-  addValueRelationLayersForElement( elem, useCache );
+  addJoinLayersForElement( elem );
+  addGetFeatureLayers( elem );
 
   QDomElement dataSourceElem = elem.firstChildElement( "datasource" );
   QString uri = dataSourceElem.text();
@@ -206,11 +221,14 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
   QgsMapLayer* layer = 0;
   if ( useCache )
   {
-    layer = QgsMSLayerCache::instance()->searchLayer( absoluteUri, id );
+    layer = QgsMSLayerCache::instance()->searchLayer( absoluteUri, id, mProjectPath );
   }
 
   if ( layer )
   {
+    if ( layer->type() == QgsMapLayer::VectorLayer )
+      addValueRelationLayersForLayer( dynamic_cast<QgsVectorLayer *>( layer ) );
+
     return layer;
   }
 
@@ -238,8 +256,20 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
 
   if ( layer )
   {
+    if ( layer->type() == QgsMapLayer::VectorLayer )
+    {
+      // see QgsEditorWidgetRegistry::mapLayerAdded()
+      QObject::connect( layer, SIGNAL( readCustomSymbology( const QDomElement&, QString& ) ), QgsEditorWidgetRegistry::instance(), SLOT( readSymbology( const QDomElement&, QString& ) ) );
+    }
+
     layer->readLayerXML( const_cast<QDomElement&>( elem ) ); //should be changed to const in QgsMapLayer
     layer->setLayerName( layerName( elem ) );
+
+    if ( layer->type() == QgsMapLayer::VectorLayer )
+    {
+      addValueRelationLayersForLayer( dynamic_cast<QgsVectorLayer *>( layer ) );
+    }
+
     if ( useCache )
     {
       QgsMSLayerCache::instance()->insertLayer( absoluteUri, id, layer, mProjectPath );
@@ -331,7 +361,7 @@ int QgsServerProjectParser::numberOfLayers() const
 
 bool QgsServerProjectParser::updateLegendDrawingOrder() const
 {
-  return legendElem().attribute( "updateDrawingOrder", "true" ).compare( "true", Qt::CaseInsensitive ) == 0;
+  return !mCustomLayerOrder.isEmpty();
 }
 
 void QgsServerProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& service, bool sia2045 ) const
@@ -555,6 +585,48 @@ QString QgsServerProjectParser::serviceUrl() const
   return url;
 }
 
+QString QgsServerProjectParser::wfsServiceUrl() const
+{
+  QString url;
+
+  if ( !mXMLDoc )
+  {
+    return url;
+  }
+
+  QDomElement propertiesElement = propertiesElem();
+  if ( !propertiesElement.isNull() )
+  {
+    QDomElement wfsUrlElem = propertiesElement.firstChildElement( "WFSUrl" );
+    if ( !wfsUrlElem.isNull() )
+    {
+      url = wfsUrlElem.text();
+    }
+  }
+  return url;
+}
+
+QString QgsServerProjectParser::wcsServiceUrl() const
+{
+  QString url;
+
+  if ( !mXMLDoc )
+  {
+    return url;
+  }
+
+  QDomElement propertiesElement = propertiesElem();
+  if ( !propertiesElement.isNull() )
+  {
+    QDomElement wcsUrlElem = propertiesElement.firstChildElement( "WCSUrl" );
+    if ( !wcsUrlElem.isNull() )
+    {
+      url = wcsUrlElem.text();
+    }
+  }
+  return url;
+}
+
 void QgsServerProjectParser::combineExtentAndCrsOfGroupChildren( QDomElement& groupElem, QDomDocument& doc, bool considerMapExtent ) const
 {
   QgsRectangle combinedBBox;
@@ -662,6 +734,10 @@ void QgsServerProjectParser::addLayerProjectSettings( QDomElement& layerElem, QD
     }
     //displayfield
     layerElem.setAttribute( "displayField", displayField );
+
+    //geometry type
+    layerElem.setAttribute( "geometryType", QGis::featureType( vLayer->wkbType() ) );
+
     layerElem.appendChild( attributesElem );
   }
 }
@@ -842,67 +918,36 @@ QStringList QgsServerProjectParser::supportedOutputCrsList() const
   else
   {
     QDomElement wmsEpsgElem = propertiesElem.firstChildElement( "WMSEpsgList" );
-    if ( wmsEpsgElem.isNull() )
+    if ( !wmsEpsgElem.isNull() )
     {
-      return crsList;
-    }
-    QDomNodeList valueList = wmsEpsgElem.elementsByTagName( "value" );
-    bool conversionOk;
-    for ( int i = 0; i < valueList.size(); ++i )
-    {
-      int epsgNr = valueList.at( i ).toElement().text().toInt( &conversionOk );
-      if ( conversionOk )
+      QDomNodeList valueList = wmsEpsgElem.elementsByTagName( "value" );
+      bool conversionOk;
+      for ( int i = 0; i < valueList.size(); ++i )
       {
-        crsList.append( QString( "EPSG:%1" ).arg( epsgNr ) );
+        int epsgNr = valueList.at( i ).toElement().text().toInt( &conversionOk );
+        if ( conversionOk )
+        {
+          crsList.append( QString( "EPSG:%1" ).arg( epsgNr ) );
+        }
+      }
+    }
+    else
+    {
+      //no CRS restriction defined in the project. Provide project CRS, wgs84 and pseudo mercator
+      QString projectCrsId = projectCRS().authid();
+      crsList.append( projectCrsId );
+      if ( projectCrsId.compare( "EPSG:4326", Qt::CaseInsensitive ) != 0 )
+      {
+        crsList.append( QString( "EPSG:%1" ).arg( 4326 ) );
+      }
+      if ( projectCrsId.compare( "EPSG:3857", Qt::CaseInsensitive ) != 0 )
+      {
+        crsList.append( QString( "EPSG:%1" ).arg( 3857 ) );
       }
     }
   }
 
   return crsList;
-}
-
-//not very nice, needs to be kept in sync with QgsVectorLayer class...
-QString QgsServerProjectParser::editTypeString( QgsVectorLayer::EditType type )
-{
-  switch ( type )
-  {
-    case QgsVectorLayer::LineEdit:
-      return "LineEdit";
-    case QgsVectorLayer::UniqueValues:
-      return "UniqueValues";
-    case QgsVectorLayer::UniqueValuesEditable:
-      return "UniqueValuesEditable";
-    case QgsVectorLayer::ValueMap:
-      return "ValueMap";
-    case QgsVectorLayer::Classification:
-      return "Classification";
-    case QgsVectorLayer::EditRange:
-      return "EditRange";
-    case QgsVectorLayer::SliderRange:
-      return "SliderRange";
-    case QgsVectorLayer::CheckBox:
-      return "CheckBox";
-    case QgsVectorLayer::FileName:
-      return "FileName";
-    case QgsVectorLayer::Enumeration:
-      return "Enumeration";
-    case QgsVectorLayer::Immutable:
-      return "Immutable";
-    case QgsVectorLayer::Hidden:
-      return "Hidden";
-    case QgsVectorLayer::TextEdit:
-      return "TextEdit";
-    case QgsVectorLayer::Calendar:
-      return "Calendar";
-    case QgsVectorLayer::DialRange:
-      return "DialRange";
-    case QgsVectorLayer::ValueRelation:
-      return "ValueRelation";
-    case QgsVectorLayer::UuidGenerator:
-      return "UuidGenerator";
-    default:
-      return "Unknown";
-  }
 }
 
 QString QgsServerProjectParser::projectTitle() const
@@ -1040,7 +1085,7 @@ bool QgsServerProjectParser::findUseLayerIDs() const
 void QgsServerProjectParser::layerFromLegendLayer( const QDomElement& legendLayerElem, QMap< int, QgsMapLayer*>& layers, bool useCache ) const
 {
   QString id = legendLayerElem.firstChild().firstChild().toElement().attribute( "layerid" );
-  int drawingOrder = updateLegendDrawingOrder() ? -1 : legendLayerElem.attribute( "drawingOrder", "-1" ).toInt();
+  int drawingOrder = updateLegendDrawingOrder() ? -1 : mCustomLayerOrder.indexOf( id );
 
   QHash< QString, QDomElement >::const_iterator layerIt = mProjectLayerElementsById.find( id );
   if ( layerIt != mProjectLayerElementsById.constEnd() )
@@ -1113,6 +1158,32 @@ QStringList QgsServerProjectParser::wfsLayerNames() const
   for ( ; wfsIdIt != wfsIdList.constEnd(); ++wfsIdIt )
   {
     QMap<QString, QgsMapLayer*>::const_iterator layerMapIt = layerMap.find( *wfsIdIt );
+    if ( layerMapIt != layerMap.constEnd() )
+    {
+      currentLayer = layerMapIt.value();
+      if ( currentLayer )
+      {
+        layerNameList.append( mUseLayerIDs ? currentLayer->id() : currentLayer->name() );
+      }
+    }
+  }
+
+  return layerNameList;
+}
+
+QStringList QgsServerProjectParser::wcsLayerNames() const
+{
+  QStringList layerNameList;
+
+  QMap<QString, QgsMapLayer*> layerMap;
+  projectLayerMap( layerMap );
+
+  QgsMapLayer* currentLayer = 0;
+  QStringList wcsIdList = wcsLayers();
+  QStringList::const_iterator wcsIdIt = wcsIdList.constBegin();
+  for ( ; wcsIdIt != wcsIdList.constEnd(); ++wcsIdIt )
+  {
+    QMap<QString, QgsMapLayer*>::const_iterator layerMapIt = layerMap.find( *wcsIdIt );
     if ( layerMapIt != layerMap.constEnd() )
     {
       currentLayer = layerMapIt.value();
@@ -1254,7 +1325,38 @@ QStringList QgsServerProjectParser::wfsLayers() const
   return wfsList;
 }
 
-void QgsServerProjectParser::addJoinLayersForElement( const QDomElement& layerElem, bool useCache ) const
+QStringList QgsServerProjectParser::wcsLayers() const
+{
+  QStringList wcsList;
+  if ( !mXMLDoc )
+  {
+    return wcsList;
+  }
+
+  QDomElement qgisElem = mXMLDoc->documentElement();
+  if ( qgisElem.isNull() )
+  {
+    return wcsList;
+  }
+  QDomElement propertiesElem = qgisElem.firstChildElement( "properties" );
+  if ( propertiesElem.isNull() )
+  {
+    return wcsList;
+  }
+  QDomElement wcsLayersElem = propertiesElem.firstChildElement( "WCSLayers" );
+  if ( wcsLayersElem.isNull() )
+  {
+    return wcsList;
+  }
+  QDomNodeList valueList = wcsLayersElem.elementsByTagName( "value" );
+  for ( int i = 0; i < valueList.size(); ++i )
+  {
+    wcsList << valueList.at( i ).toElement().text();
+  }
+  return wcsList;
+}
+
+void QgsServerProjectParser::addJoinLayersForElement( const QDomElement& layerElem ) const
 {
   QDomElement vectorJoinsElem = layerElem.firstChildElement( "vectorjoins" );
   if ( vectorJoinsElem.isNull() )
@@ -1263,15 +1365,10 @@ void QgsServerProjectParser::addJoinLayersForElement( const QDomElement& layerEl
   }
 
   QDomNodeList joinNodeList = vectorJoinsElem.elementsByTagName( "join" );
-  if ( joinNodeList.size() > 1 )
-  {
-    return;
-  }
-
   for ( int i = 0; i < joinNodeList.size(); ++i )
   {
     QString id = joinNodeList.at( i ).toElement().attribute( "joinLayerId" );
-    QgsMapLayer* layer = mapLayerFromLayerId( id, useCache );
+    QgsMapLayer* layer = mapLayerFromLayerId( id );
     if ( layer )
     {
       QgsMapLayerRegistry::instance()->addMapLayer( layer, false, false );
@@ -1279,33 +1376,64 @@ void QgsServerProjectParser::addJoinLayersForElement( const QDomElement& layerEl
   }
 }
 
-void QgsServerProjectParser::addValueRelationLayersForElement( const QDomElement& layerElem, bool useCache ) const
+void QgsServerProjectParser::addValueRelationLayersForLayer( const QgsVectorLayer *vl ) const
 {
-  QDomElement editTypesElem = layerElem.firstChildElement( "edittypes" );
-  if ( editTypesElem.isNull() )
-  {
+  if ( !vl )
     return;
-  }
 
-  QDomNodeList editTypeNodeList = editTypesElem.elementsByTagName( "edittype" );
-  for ( int i = 0; i < editTypeNodeList.size(); ++i )
+  for ( int idx = 0; idx < vl->pendingFields().size(); idx++ )
   {
-    QDomElement editTypeElem = editTypeNodeList.at( i ).toElement();
-    int type = editTypeElem.attribute( "type" ).toInt();
-    if ( type == QgsVectorLayer::ValueRelation )
-    {
-      QString layerId = editTypeElem.attribute( "layer" );
-#if 0
-      QString keyAttribute = editTypeEleml.attribute( "id" ); //relation attribute in other layer
-      QString valueAttribute = editTypeElem.attribute( "value" ); //value attribute in other layer
-      QString relationAttribute = editTypeElem.attribute( "name" );
-#endif
+    if ( vl->editorWidgetV2( idx ) != "ValueRelation" )
+      continue;
 
-      QgsMapLayer* layer = mapLayerFromLayerId( layerId, useCache );
-      if ( layer )
-      {
-        QgsMapLayerRegistry::instance()->addMapLayer( layer, false, false );
-      }
-    }
+    QgsEditorWidgetConfig cfg( vl->editorWidgetV2Config( idx ) );
+    if ( !cfg.contains( "Layer" ) )
+      continue;
+
+    QString layerId = cfg.value( "Layer" ).toString();
+    if ( QgsMapLayerRegistry::instance()->mapLayer( layerId ) )
+      continue;
+
+    QgsMapLayer *layer = mapLayerFromLayerId( layerId );
+    if ( !layer )
+      continue;
+
+    QgsMapLayerRegistry::instance()->addMapLayer( layer, false, false );
   }
 }
+
+void QgsServerProjectParser::addGetFeatureLayers( const QDomElement& layerElem ) const
+{
+  QString str;
+  QTextStream stream( &str );
+  layerElem.save( stream, 2 );
+
+  QRegExp rx( "getFeature\\('([^']*)'" );
+  int idx = 0;
+  while (( idx = rx.indexIn( str, idx ) ) != -1 )
+  {
+    QString name = rx.cap( 1 );
+    QgsMapLayer* ml = 0;
+    QHash< QString, QDomElement >::const_iterator layerElemIt = mProjectLayerElementsById.find( name );
+    if ( layerElemIt != mProjectLayerElementsById.constEnd() )
+    {
+      ml = createLayerFromElement( layerElemIt.value() );
+    }
+    else
+    {
+      layerElemIt = mProjectLayerElementsByName.find( name );
+      if ( layerElemIt != mProjectLayerElementsByName.constEnd() )
+      {
+        ml = createLayerFromElement( layerElemIt.value() );
+      }
+    }
+
+    if ( ml )
+    {
+      QgsMapLayerRegistry::instance()->addMapLayer( ml, false, false );
+    }
+    idx += rx.matchedLength();
+  }
+}
+
+

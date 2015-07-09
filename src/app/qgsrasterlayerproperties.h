@@ -65,8 +65,8 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     void on_pbnAddValuesFromDisplay_clicked();
     /** \brief slot executed when user presses "Add Values Manually" button on the transparency page */
     void on_pbnAddValuesManually_clicked();
-    /** Override the CRS specified when the layer was loaded */
-    void on_pbnChangeSpatialRefSys_clicked();
+    /** \brief slot executed when user changes the layer's CRS */
+    void on_mCrsSelector_crsChanged( QgsCoordinateReferenceSystem crs );
     /** \brief slot executed when user wishes to reset noNoDataValue and transparencyTable to default value */
     void on_pbnDefaultValues_clicked();
     /** \brief slot executed when user wishes to export transparency values */
@@ -88,13 +88,13 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
   private slots:
     void on_mRenderTypeComboBox_currentIndexChanged( int index );
     /** Load the default style when appropriate button is pressed. */
-    void on_pbnLoadDefaultStyle_clicked();
+    void loadDefaultStyle_clicked();
     /** Save the default style when appropriate button is pressed. */
-    void on_pbnSaveDefaultStyle_clicked();
+    void saveDefaultStyle_clicked();
     /** Load a saved style when appropriate button is pressed. */
-    void on_pbnLoadStyle_clicked();
+    void loadStyle_clicked();
     /** Save a style when appriate button is pressed. */
-    void on_pbnSaveStyleAs_clicked();
+    void saveStyleAs_clicked();
     /** Help button */
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
@@ -112,6 +112,11 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
 
     /** Transparency cell changed */
     void transparencyCellTextEdited( const QString & text );
+
+    void aboutToShowStyleMenu();
+
+    /** make GUI reflect the layer's state */
+    void syncToLayer();
 
   signals:
     /** emitted when changes to layer were saved to update legend */

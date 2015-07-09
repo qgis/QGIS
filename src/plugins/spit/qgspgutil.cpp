@@ -21,6 +21,7 @@ QgsPgUtil *QgsPgUtil::instance()
 }
 
 QgsPgUtil::QgsPgUtil()
+    : mPgConnection( NULL )
 {
 }
 

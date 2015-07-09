@@ -46,33 +46,30 @@
 ***************************************************************************
 """
 
-import math
-from PyQt4 import QtCore, QtGui
+from PyQt4.QtCore import Qt, QPointF
+from PyQt4.QtGui import QGraphicsPathItem, QPen, QGraphicsItem, QPainterPath, QPolygonF, QPainter
 from processing.modeler.ModelerGraphicItem import ModelerGraphicItem
 from processing.modeler.ModelerAlgorithm import Algorithm
 
-class ModelerArrowItem(QtGui.QGraphicsPathItem):
+class ModelerArrowItem(QGraphicsPathItem):
 
     def __init__(self, startItem, startIndex, endItem, endIndex,
                  parent=None, scene=None):
         super(ModelerArrowItem, self).__init__(parent, scene)
-        self.arrowHead = QtGui.QPolygonF()
+        self.arrowHead = QPolygonF()
         self.endIndex = endIndex
         self.startIndex = startIndex
         self.startItem = startItem
         self.endItem = endItem
-        self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable, False)
-        self.myColor = QtCore.Qt.gray
-        self.setPen(QtGui.QPen(self.myColor, 1, QtCore.Qt.SolidLine,
-                    QtCore.Qt.RoundCap, QtCore.Qt.RoundJoin))
+        self.endPoints = []
+        self.setFlag(QGraphicsItem.ItemIsSelectable, False)
+        self.myColor = Qt.gray
+        self.setPen(QPen(self.myColor, 1, Qt.SolidLine,
+                    Qt.RoundCap, Qt.RoundJoin))
         self.setZValue(0)
 
-    def paint(self, painter, option, widget=None):
-        myPen = self.pen()
-        myPen.setColor(self.myColor)
-        painter.setPen(myPen)
-        painter.setBrush(self.myColor)
-
+    def updatePath(self):
+        self.endPoints = []
         controlPoints = []
         endPt = self.endItem.getLinkPointForParameter(self.endIndex)
         startPt = self.startItem.getLinkPointForOutput(self.startIndex)
@@ -80,37 +77,46 @@ class ModelerArrowItem(QtGui.QGraphicsPathItem):
             if self.startIndex != -1:
                 controlPoints.append(self.startItem.pos() + startPt)
                 controlPoints.append(self.startItem.pos() + startPt
-                        + QtCore.QPointF(ModelerGraphicItem.BOX_WIDTH / 2, 0))
+                        + QPointF(ModelerGraphicItem.BOX_WIDTH / 3, 0))
                 controlPoints.append(self.endItem.pos() + endPt
-                        - QtCore.QPointF(ModelerGraphicItem.BOX_WIDTH / 2, 0))
+                        - QPointF(ModelerGraphicItem.BOX_WIDTH / 3, 0))
                 controlPoints.append(self.endItem.pos() + endPt)
-                pt = QtCore.QPointF(self.startItem.pos() + startPt
-                        + QtCore.QPointF(-3, -3))
-                painter.drawEllipse(pt.x(), pt.y(), 6, 6)
-                pt = QtCore.QPointF(self.endItem.pos() + endPt +
-                        QtCore.QPointF(-3, -3))
-                painter.drawEllipse(pt.x(), pt.y(), 6, 6)
+                pt = QPointF(self.startItem.pos() + startPt
+                        + QPointF(-3, -3))
+                self.endPoints.append(pt)
+                pt = QPointF(self.endItem.pos() + endPt +
+                        QPointF(-3, -3))
+                self.endPoints.append(pt)
             else:
                 # Case where there is a dependency on an algorithm not
                 # on an output
                 controlPoints.append(self.startItem.pos() + startPt)
                 controlPoints.append(self.startItem.pos() + startPt
-                        + QtCore.QPointF(ModelerGraphicItem.BOX_WIDTH / 2, 0))
+                        + QPointF(ModelerGraphicItem.BOX_WIDTH / 3, 0))
                 controlPoints.append(self.endItem.pos() + endPt
-                        - QtCore.QPointF(ModelerGraphicItem.BOX_WIDTH / 2, 0))
+                        - QPointF(ModelerGraphicItem.BOX_WIDTH / 3, 0))
                 controlPoints.append(self.endItem.pos() + endPt)
         else:
             controlPoints.append(self.startItem.pos())
             controlPoints.append(self.startItem.pos()
-                    + QtCore.QPointF(ModelerGraphicItem.BOX_WIDTH / 2, 0))
+                    + QPointF(ModelerGraphicItem.BOX_WIDTH / 3, 0))
             controlPoints.append(self.endItem.pos() + endPt
-                    - QtCore.QPointF(ModelerGraphicItem.BOX_WIDTH / 2, 0))
+                    - QPointF(ModelerGraphicItem.BOX_WIDTH / 3, 0))
             controlPoints.append(self.endItem.pos() + endPt)
-            pt = QtCore.QPointF(self.endItem.pos() + endPt + QtCore.QPointF(-3, -3))
-            painter.drawEllipse(pt.x(), pt.y(), 6, 6)
-
-        path = QtGui.QPainterPath()
+            pt = QPointF(self.endItem.pos() + endPt + QPointF(-3, -3))
+            self.endPoints.append(pt)
+        path = QPainterPath()
         path.moveTo(controlPoints[0])
         path.cubicTo(*controlPoints[1:])
-        painter.strokePath(path, painter.pen())
         self.setPath(path)
+
+    def paint(self, painter, option, widget=None):
+        myPen = self.pen()
+        myPen.setColor(self.myColor)
+        painter.setPen(myPen)
+        painter.setBrush(self.myColor)
+        painter.setRenderHint(QPainter.Antialiasing)
+
+        for point in self.endPoints:
+            painter.drawEllipse(point.x(), point.y(), 6, 6)
+        painter.strokePath(self.shape(), painter.pen())

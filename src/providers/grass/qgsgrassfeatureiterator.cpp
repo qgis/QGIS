@@ -67,7 +67,7 @@ QMutex QgsGrassFeatureIterator::sMutex;
 
 
 QgsGrassFeatureIterator::QgsGrassFeatureIterator( QgsGrassFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
-    : QgsAbstractFeatureIteratorFromSource( source, ownSource, request )
+    : QgsAbstractFeatureIteratorFromSource<QgsGrassFeatureSource>( source, ownSource, request )
 {
   sMutex.lock();
 
@@ -258,7 +258,7 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
 
   feature.setFeatureId( featureId );
   feature.initAttributes( mSource->mFields.count() );
-  feature.setFields( &mSource->mFields ); // allow name-based attribute lookups
+  feature.setFields( mSource->mFields ); // allow name-based attribute lookups
 
   if ( mRequest.flags() & QgsFeatureRequest::NoGeometry )
     feature.setGeometry( 0 );
@@ -624,6 +624,7 @@ QgsGrassFeatureSource::QgsGrassFeatureSource( const QgsGrassProvider* p )
   int layerId = QgsGrassProvider::openLayer( p->mGisdbase, p->mLocation, p->mMapset, p->mMapName, p->mLayerField );
 
   Q_ASSERT( layerId == mLayerId );
+  Q_UNUSED( layerId ); //avoid compilier warning
 }
 
 QgsGrassFeatureSource::~QgsGrassFeatureSource()

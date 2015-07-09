@@ -75,7 +75,7 @@ class eVisImageDisplayWidget : public QWidget
     void setZoomSteps( int steps ) { ZOOM_STEPS = steps; }
 
   protected:
-    void resizeEvent( QResizeEvent *event );
+    void resizeEvent( QResizeEvent *event ) override;
 
   private:
 

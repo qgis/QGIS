@@ -26,10 +26,10 @@ class QgsWCSConnectionItem : public QgsDataCollectionItem
     QgsWCSConnectionItem( QgsDataItem* parent, QString name, QString path, QString uri );
     ~QgsWCSConnectionItem();
 
-    QVector<QgsDataItem*> createChildren();
-    virtual bool equal( const QgsDataItem *other );
+    QVector<QgsDataItem*> createChildren() override;
+    virtual bool equal( const QgsDataItem *other ) override;
 
-    virtual QList<QAction*> actions();
+    virtual QList<QAction*> actions() override;
 
     QgsWcsCapabilities mCapabilities;
     QVector<QgsWcsCoverageSummary> mLayerProperties;
@@ -49,7 +49,7 @@ class QgsWCSLayerItem : public QgsLayerItem
     Q_OBJECT
   public:
     QgsWCSLayerItem( QgsDataItem* parent, QString name, QString path,
-                     QgsWcsCapabilitiesProperty capabilitiesProperty, QgsDataSourceURI dataSourceUri, QgsWcsCoverageSummary coverageSummary );
+                     const QgsWcsCapabilitiesProperty& capabilitiesProperty, QgsDataSourceURI dataSourceUri, const QgsWcsCoverageSummary& coverageSummary );
     ~QgsWCSLayerItem();
 
     QString createUri();
@@ -66,11 +66,11 @@ class QgsWCSRootItem : public QgsDataCollectionItem
     QgsWCSRootItem( QgsDataItem* parent, QString name, QString path );
     ~QgsWCSRootItem();
 
-    QVector<QgsDataItem*> createChildren();
+    QVector<QgsDataItem*> createChildren() override;
 
-    virtual QList<QAction*> actions();
+    virtual QList<QAction*> actions() override;
 
-    virtual QWidget * paramWidget();
+    virtual QWidget * paramWidget() override;
 
   public slots:
     void connectionsChanged();

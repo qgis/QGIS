@@ -18,35 +18,39 @@
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgsmapcanvas.h"
 
+#include "qgisapp.h"
+#include "qgssnappingutils.h"
 
-QgsMapMouseEvent::QgsMapMouseEvent( QgsMapToolAdvancedDigitizing* mapTool, QMouseEvent* event , bool doSnap )
+QgsMapMouseEvent::QgsMapMouseEvent( QgsMapToolAdvancedDigitizing* mapTool, QMouseEvent* event, SnappingMode mode )
     :  QMouseEvent( event->type(), event->pos(), event->globalPos(), event->button(), event->buttons(), event->modifiers() )
     , mMapPoint( mapTool->canvas()->mapSettings().mapToPixel().toMapCoordinates( event->pos() ) )
-    , mSnapped( false )
     , mMapTool( mapTool )
-    , mSnapResults()
+    , mSnapMatch( QgsPointLocator::Match() )
+    , mSnappingMode( mode )
 {
   mOriginalPoint = mMapPoint;
-
-  if ( doSnap )
-    snapPoint();
+  snapPoint();
 }
+
+struct EdgesOnlyFilter : public QgsPointLocator::MatchFilter
+{
+  bool acceptMatch( const QgsPointLocator::Match& m ) override { return m.hasEdge(); }
+};
 
 QgsMapMouseEvent::QgsMapMouseEvent( QgsMapToolAdvancedDigitizing* mapTool, QgsPoint point,
                                     Qt::MouseButton button, Qt::KeyboardModifiers modifiers,
-                                    QEvent::Type eventType, bool doSnap )
+                                    QEvent::Type eventType, SnappingMode mode )
     : QMouseEvent( eventType,
                    mapToPixelCoordinates( mapTool->canvas(), point ),
                    mapTool->canvas()->mapToGlobal( mapToPixelCoordinates( mapTool->canvas(), point ) ),
                    button, button, modifiers )
     , mMapPoint( point )
     , mOriginalPoint( point )
-    , mSnapped( false )
     , mMapTool( mapTool )
-    , mSnapResults()
+    , mSnapMatch( QgsPointLocator::Match() )
+    , mSnappingMode( mode )
 {
-  if ( doSnap )
-    snapPoint();
+  snapPoint();
 }
 
 void QgsMapMouseEvent::setPoint( const QgsPoint& point )
@@ -54,57 +58,80 @@ void QgsMapMouseEvent::setPoint( const QgsPoint& point )
   mMapPoint.set( point.x(), point.y() );
 }
 
-bool QgsMapMouseEvent::snapPoint()
+void QgsMapMouseEvent::snapPoint()
 {
-  QgsMapCanvasSnapper snapper;
-  snapper.setMapCanvas( mMapTool->canvas() );
-  mSnapped = false;
-  if ( snapper.snapToBackgroundLayers( mMapPoint, mSnapResults ) == 0 )
+  if ( mSnappingMode == NoSnapping )
+    return;
+
+  QgsSnappingUtils* snappingUtils = mMapTool->canvas()->snappingUtils();
+  QgsSnappingUtils::SnapToMapMode canvasMode = snappingUtils->snapToMapMode();
+  if ( mSnappingMode == SnapAllLayers )
   {
-    mSnapped = !mSnapResults.isEmpty();
-  }
-  if ( mSnapped )
-  {
-    mMapPoint = mSnapResults.constBegin()->snappedVertex;
+    int type;
+    double tolerance;
+    QgsTolerance::UnitType unit;
+    snappingUtils->defaultSettings( type, tolerance, unit );
+    snappingUtils->setSnapToMapMode( QgsSnappingUtils::SnapAllLayers );
+    snappingUtils->setDefaultSettings( QgsPointLocator::Vertex | QgsPointLocator::Edge, tolerance, unit );
+    mSnapMatch = snappingUtils->snapToMap( mMapPoint );
+    snappingUtils->setSnapToMapMode( canvasMode );
+    snappingUtils->setDefaultSettings( type, tolerance, unit );
   }
   else
   {
-    mMapPoint = mOriginalPoint;
+    mSnapMatch = snappingUtils->snapToMap( mMapPoint );
   }
-  return mSnapped;
+  mMapPoint = mSnapMatch.isValid() ? mSnapMatch.point() : mOriginalPoint;
 }
 
 QPoint QgsMapMouseEvent::mapToPixelCoordinates( QgsMapCanvas* canvas, const QgsPoint& point )
 {
-  double x = point.x();
-  double y = point.y();
+  qreal x = point.x(), y = point.y();
 
   canvas->mapSettings().mapToPixel().transformInPlace( x, y );
 
   return QPoint( qRound( x ), qRound( y ) );
 }
 
-QgsPoint QgsMapMouseEvent::mapPoint( bool* snappedPoint ) const
-{
-  if ( snappedPoint )
-  {
-    *snappedPoint = mSnapped && mSnapResults.constBegin()->snappedVertexNr != -1;
-  }
-  return mMapPoint;
-}
-
-QList<QgsPoint> QgsMapMouseEvent::snappedSegment( bool* snapped ) const
+QList<QgsPoint> QgsMapMouseEvent::snapSegment( bool* snapped, bool allLayers ) const
 {
   QList<QgsPoint> segment =  QList<QgsPoint>();
-  if ( mSnapped )
+  QgsPoint pt1, pt2;
+
+  if ( mSnapMatch.hasEdge() )
   {
-    foreach ( const QgsSnappingResult result, mSnapResults )
+    mSnapMatch.edgePoints( pt1, pt2 );
+    segment << pt1 << pt2;
+  }
+
+  else if ( mSnappingMode != NoSnapping )
+  {
+    QgsPointLocator::Match match;
+    if ( mSnappingMode == SnapProjectConfig && !allLayers )
     {
-      if ( result.beforeVertexNr != -1 && result.afterVertexNr != -1 )
-      {
-        segment << result.beforeVertex << result.afterVertex;
-        break;
-      }
+      // run snapToMap with only segments
+      EdgesOnlyFilter filter;
+      match = mMapTool->canvas()->snappingUtils()->snapToMap( mOriginalPoint, &filter );
+    }
+    else if ( mSnappingMode == SnapAllLayers || allLayers )
+    {
+      // run snapToMap with only edges on all layers
+      QgsSnappingUtils* snappingUtils = mMapTool->canvas()->snappingUtils();
+      QgsSnappingUtils::SnapToMapMode canvasMode = snappingUtils->snapToMapMode();
+      int type;
+      double tolerance;
+      QgsTolerance::UnitType unit;
+      snappingUtils->defaultSettings( type, tolerance, unit );
+      snappingUtils->setSnapToMapMode( QgsSnappingUtils::SnapAllLayers );
+      snappingUtils->setDefaultSettings( QgsPointLocator::Edge, tolerance, unit );
+      match = snappingUtils->snapToMap( mOriginalPoint );
+      snappingUtils->setSnapToMapMode( canvasMode );
+      snappingUtils->setDefaultSettings( type, tolerance, unit );
+    }
+    if ( match.isValid() && match.hasEdge() )
+    {
+      match.edgePoints( pt1, pt2 );
+      segment << pt1 << pt2;
     }
   }
 

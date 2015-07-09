@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsspatialiteconnection.h"
+#include "qgsslconnect.h"
 
 #include <QFileInfo>
 #include <QSettings>
@@ -67,7 +68,7 @@ QgsSpatiaLiteConnection::Error QgsSpatiaLiteConnection::fetchTables( bool loadGe
     return NotExists;
   }
 
-  sqlite3* handle = openSpatiaLiteDb( fi.canonicalFilePath() );
+  sqlite3 *handle = openSpatiaLiteDb( fi.canonicalFilePath() );
   if ( handle == NULL )
   {
     return FailedToOpen;
@@ -138,11 +139,8 @@ sqlite3 *QgsSpatiaLiteConnection::openSpatiaLiteDb( QString path )
 {
   sqlite3 *handle = NULL;
   int ret;
-  // activating the SpatiaLite library
-  spatialite_init( 0 );
-
   // trying to open the SQLite DB
-  ret = sqlite3_open_v2( path.toUtf8().constData(), &handle, SQLITE_OPEN_READWRITE, NULL );
+  ret = QgsSLConnect::sqlite3_open_v2( path.toUtf8().constData(), &handle, SQLITE_OPEN_READWRITE, NULL );
   if ( ret )
   {
     // failure
@@ -155,7 +153,7 @@ sqlite3 *QgsSpatiaLiteConnection::openSpatiaLiteDb( QString path )
 void QgsSpatiaLiteConnection::closeSpatiaLiteDb( sqlite3 * handle )
 {
   if ( handle )
-    sqlite3_close( handle );
+    QgsSLConnect::sqlite3_close( handle );
 }
 
 int QgsSpatiaLiteConnection::checkHasMetadataTables( sqlite3* handle )
@@ -613,7 +611,9 @@ bool QgsSpatiaLiteConnection::isRasterlite1Datasource( sqlite3 * handle, const c
   char table_raster[4192];
   char sql[4192];
 
-  strcpy( table_raster, table );
+  strncpy( table_raster, table, sizeof sql );
+  table_raster[ sizeof sql - 1 ] = '\0';
+
   len =  strlen( table_raster );
   if ( strlen( table_raster ) < 9 )
     return false;
@@ -743,7 +743,7 @@ QgsSqliteHandle* QgsSqliteHandle::openDb( const QString & dbPath, bool shared )
   }
 
   QgsDebugMsg( QString( "New sqlite connection for " ) + dbPath );
-  if ( sqlite3_open_v2( dbPath.toUtf8().constData(), &sqlite_handle, shared ? SQLITE_OPEN_READWRITE : SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX, NULL ) )
+  if ( QgsSLConnect::sqlite3_open_v2( dbPath.toUtf8().constData(), &sqlite_handle, shared ? SQLITE_OPEN_READWRITE : SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX, NULL ) )
   {
     // failure
     QgsDebugMsg( QString( "Failure while connecting to: %1\n%2" )
@@ -757,11 +757,11 @@ QgsSqliteHandle* QgsSqliteHandle::openDb( const QString & dbPath, bool shared )
   {
     // failure
     QgsDebugMsg( QString( "Failure while connecting to: %1\n\ninvalid metadata tables" ).arg( dbPath ) );
-    sqlite3_close( sqlite_handle );
+    QgsSLConnect::sqlite3_close( sqlite_handle );
     return NULL;
   }
   // activating Foreign Key constraints
-  sqlite3_exec( sqlite_handle, "PRAGMA foreign_keys = 1", NULL, 0, NULL );
+  ( void )sqlite3_exec( sqlite_handle, "PRAGMA foreign_keys = 1", NULL, 0, NULL );
 
   QgsDebugMsg( "Connection to the database was successful" );
 
@@ -816,7 +816,7 @@ void QgsSqliteHandle::sqliteClose()
 {
   if ( sqlite_handle )
   {
-    sqlite3_close( sqlite_handle );
+    QgsSLConnect::sqlite3_close( sqlite_handle );
     sqlite_handle = NULL;
   }
 }

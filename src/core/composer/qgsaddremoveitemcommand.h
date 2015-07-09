@@ -38,8 +38,8 @@ class CORE_EXPORT QgsAddRemoveItemCommand: public QObject, public QUndoCommand
     QgsAddRemoveItemCommand( State s, QgsComposerItem* item, QgsComposition* c, const QString& text, QUndoCommand* parent = 0 );
     ~QgsAddRemoveItemCommand();
 
-    void redo();
-    void undo();
+    void redo() override;
+    void undo() override;
 
   signals:
     void itemAdded( QgsComposerItem* item );

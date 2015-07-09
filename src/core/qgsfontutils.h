@@ -18,6 +18,7 @@
 
 #include <QFont>
 #include <QString>
+#include <QDomElement>
 
 class CORE_EXPORT QgsFontUtils
 {
@@ -79,6 +80,55 @@ class CORE_EXPORT QgsFontUtils
      * @note Added in QGIS 2.1
      */
     static QFont getStandardTestFont( const QString& style = "Roman", int pointsize = 12 );
+
+    /**Returns a DOM element containing the properties of the font.
+     * @param font font
+     * @param document DOM document
+     * @param elementName name for DOM element
+     * @returns DOM element containing font settings
+     * @note added in QGIS 2.10
+     * @see setFromXmlElement
+     */
+    static QDomElement toXmlElement( const QFont& font, QDomDocument &document, const QString &elementName );
+
+    /**Sets the properties of a font to match the properties stored in an XML element. Calling
+     * this will overwrite the current properties of the font.
+     * @param font font to update
+     * @param element DOM element
+     * @returns true if properties were successfully read from element
+     * @note added in QGIS 2.10
+     * @see toXmlElement
+     * @see setFromXmlChildNode
+     */
+    static bool setFromXmlElement( QFont& font, const QDomElement& element );
+
+    /**Sets the properties of a font to match the properties stored in an XML child node. Calling
+     * this will overwrite the current properties of the font.
+     * @param font font to update
+     * @param element DOM element
+     * @param childNode name of child node
+     * @returns true if child node exists and properties were successfully read from node
+     * @note added in QGIS 2.10
+     * @see setFromXmlElement
+     * @see toXmlElement
+     */
+    static bool setFromXmlChildNode( QFont& font, const QDomElement& element, const QString& childNode );
+
+    /**Returns the localized named style of a font, if such a translation is available.
+     * @param namedStyle a named style, i.e. "Bold", "Italic", etc
+     * @returns The localized named style
+     * @note added in QGIS 2.12
+     * @see untranslateNamedStyle
+     */
+    static QString translateNamedStyle( const QString& namedStyle );
+
+    /**Returns the english named style of a font, if possible.
+     * @param namedStyle a localized named style, i.e. "Fett", "Kursiv", etc
+     * @returns The english named style
+     * @note added in QGIS 2.12
+     * @see translateNamedStyle
+     */
+    static QString untranslateNamedStyle( const QString& namedStyle );
 };
 
 #endif // QGSFONTUTILS_H

@@ -26,7 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import math
-from qgis.core import *
+from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsDistanceArea
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterVector
@@ -54,31 +54,29 @@ class PointDistance(GeoAlgorithm):
         self.name = 'Distance matrix'
         self.group = 'Vector analysis tools'
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER, 'Input point layer'
-                          , [ParameterVector.VECTOR_TYPE_POINT]))
+        self.addParameter(ParameterVector(self.INPUT_LAYER,
+            self.tr('Input point layer'), [ParameterVector.VECTOR_TYPE_POINT]))
         self.addParameter(ParameterTableField(self.INPUT_FIELD,
-                          'Input unique ID field', self.INPUT_LAYER,
-                          ParameterTableField.DATA_TYPE_ANY))
+            self.tr('Input unique ID field'), self.INPUT_LAYER,
+            ParameterTableField.DATA_TYPE_ANY))
         self.addParameter(ParameterVector(self.TARGET_LAYER,
-                          'Target point layer',
-                          ParameterVector.VECTOR_TYPE_POINT))
+            self.tr('Target point layer'), ParameterVector.VECTOR_TYPE_POINT))
         self.addParameter(ParameterTableField(self.TARGET_FIELD,
-                          'Target unique ID field', self.TARGET_LAYER,
-                          ParameterTableField.DATA_TYPE_ANY))
+            self.tr('Target unique ID field'), self.TARGET_LAYER,
+            ParameterTableField.DATA_TYPE_ANY))
         self.addParameter(ParameterSelection(self.MATRIX_TYPE,
-                          'Output matrix type', self.MAT_TYPES, 0))
+            self.tr('Output matrix type'), self.MAT_TYPES, 0))
         self.addParameter(ParameterNumber(self.NEAREST_POINTS,
-                          'Use only the nearest (k) target points', 0, 9999,
-                          0))
+            self.tr('Use only the nearest (k) target points'), 0, 9999, 0))
 
-        self.addOutput(OutputTable(self.DISTANCE_MATRIX, 'Distance matrix'))
+        self.addOutput(OutputTable(self.DISTANCE_MATRIX, self.tr('Distance matrix')))
 
     def processAlgorithm(self, progress):
         inLayer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.INPUT_LAYER))
+            self.getParameterValue(self.INPUT_LAYER))
         inField = self.getParameterValue(self.INPUT_FIELD)
         targetLayer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.TARGET_LAYER))
+            self.getParameterValue(self.TARGET_LAYER))
         targetField = self.getParameterValue(self.TARGET_FIELD)
         matType = self.getParameterValue(self.MATRIX_TYPE)
         nPoints = self.getParameterValue(self.NEAREST_POINTS)
@@ -158,7 +156,6 @@ class PointDistance(GeoAlgorithm):
         index = vector.spatialindex(targetLayer)
 
         inIdx = inLayer.fieldNameIndex(inField)
-        outIdx = targetLayer.fieldNameIndex(inField)
 
         outFeat = QgsFeature()
         inGeom = QgsGeometry()

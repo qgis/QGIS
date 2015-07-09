@@ -38,7 +38,7 @@
 #include <qgswcscapabilities.h>
 #include <testqgswcspublicservers.h>
 
-#ifdef WIN32
+#ifdef Q_OS_WIN
 // Open files in binary mode
 #include <fcntl.h> /*  _O_BINARY */
 #ifdef MSVC
@@ -58,6 +58,7 @@ TestQgsWcsPublicServers::TestQgsWcsPublicServers( const QString & cacheDirPath, 
     , mVersion( version )
     , mForce( force )
     , mTimeout( 300000 )
+    , mOrigTimeout( 20000 )
 {
 
 }
@@ -283,14 +284,14 @@ void TestQgsWcsPublicServers::test()
     myServerDirName.replace( QRegExp( "\\.$" ), "" );
     QgsDebugMsg( "myServerDirName = " + myServerDirName );
 
-    QDir myServerDir( mCacheDir.absolutePath() + QDir::separator() + myServerDirName );
+    QDir myServerDir( mCacheDir.absolutePath() + "/" + myServerDirName );
 
     if ( !myServerDir.exists() )
     {
       mCacheDir.mkdir( myServerDirName );
     }
 
-    QString myServerLogPath = myServerDir.absolutePath() + QDir::separator() + "server.log";
+    QString myServerLogPath = myServerDir.absolutePath() + "/server.log";
 
     foreach ( QString version, versions )
     {
@@ -299,9 +300,9 @@ void TestQgsWcsPublicServers::test()
       myVersionLog << "version:" + version;
 
       QString myVersionDirName = "v" + version;
-      QString myVersionDirPath = myServerDir.absolutePath() + QDir::separator() + myVersionDirName;
+      QString myVersionDirPath = myServerDir.absolutePath() + "/" + myVersionDirName;
 
-      QString myVersionLogPath = myVersionDirPath + QDir::separator() + "version.log";
+      QString myVersionLogPath = myVersionDirPath + "/version.log";
 
       QDir myVersionDir( myVersionDirPath );
       if ( !myVersionDir.exists() )
@@ -371,7 +372,7 @@ void TestQgsWcsPublicServers::test()
         if ( myCoverageCount > mMaxCoverages ) break;
 
 
-        QString myPath = myVersionDirPath + QDir::separator() + myCoverage.identifier;
+        QString myPath = myVersionDirPath + "/" + myCoverage.identifier;
         QString myLogPath = myPath + ".log";
 
         if ( QFileInfo( myLogPath ).exists() && !mForce )
@@ -422,7 +423,7 @@ void TestQgsWcsPublicServers::test()
           {
             uri = myPath + "-gdal.xml";
             QFile myGdalXmlFile( uri );
-            myGdalXmlFile.open( QIODevice::WriteOnly | QIODevice::Text );
+            Q_ASSERT( myGdalXmlFile.open( QIODevice::WriteOnly | QIODevice::Text ) );
             QTextStream myStream( &myGdalXmlFile );
             myStream << "<WCS_GDAL>\n";
             myStream << "  <ServiceURL>" + serverUrl + "?" + "</ServiceURL>\n";
@@ -527,7 +528,7 @@ void TestQgsWcsPublicServers::test()
 
         QFile myLogFile( myLogPath );
 
-        myLogFile.open( QIODevice::WriteOnly | QIODevice::Text );
+        Q_ASSERT( myLogFile.open( QIODevice::WriteOnly | QIODevice::Text ) );
         QTextStream myStream( &myLogFile );
         myStream << myLog.join( "\n" );
 
@@ -539,13 +540,13 @@ void TestQgsWcsPublicServers::test()
         QgsDebugMsg( "Coverage not found" );
       }
       QFile myVersionLogFile( myVersionLogPath );
-      myVersionLogFile.open( QIODevice::WriteOnly | QIODevice::Text );
+      Q_ASSERT( myVersionLogFile.open( QIODevice::WriteOnly | QIODevice::Text ) );
       QTextStream myVersionStream( &myVersionLogFile );
       myVersionStream << myVersionLog.join( "\n" );
       myVersionLogFile.close();
     }
     QFile myServerLogFile( myServerLogPath );
-    myServerLogFile.open( QIODevice::WriteOnly | QIODevice::Text );
+    Q_ASSERT( myServerLogFile.open( QIODevice::WriteOnly | QIODevice::Text ) );
     QTextStream myServerStream( &myServerLogFile );
     myServerStream << myServerLog.join( "\n" );
     myServerLogFile.close();
@@ -554,7 +555,7 @@ void TestQgsWcsPublicServers::test()
 
 void TestQgsWcsPublicServers::writeReport( QString theReport )
 {
-  QString myReportFile = mCacheDir.absolutePath() + QDir::separator() + "index.html";
+  QString myReportFile = mCacheDir.absolutePath() + "/index.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly ) )
   {
@@ -579,9 +580,9 @@ void TestQgsWcsPublicServers::report()
   foreach ( QString myServerDirName, mCacheDir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
   {
     myServerCount++;
-    QDir myServerDir( mCacheDir.absolutePath() + QDir::separator() + myServerDirName );
+    QDir myServerDir( mCacheDir.absolutePath() + "/" + myServerDirName );
 
-    QString myServerLogPath = myServerDir.absolutePath() + QDir::separator() + "server.log";
+    QString myServerLogPath = myServerDir.absolutePath() + "/server.log";
     QMap<QString, QString> myServerLog = readLog( myServerLogPath );
 
     myReport += QString( "<h2>Server: %1</h2>" ).arg( myServerLog.value( "server" ) );
@@ -611,8 +612,8 @@ void TestQgsWcsPublicServers::report()
       int myVersionErrCount = 0;
       int myVersionWarnCount = 0;
 
-      QString myVersionDirPath = myServerDir.absolutePath() + QDir::separator() + myVersionDirName;
-      QString myVersionLogPath = myVersionDirPath + QDir::separator() + "version.log";
+      QString myVersionDirPath = myServerDir.absolutePath() + "/" + myVersionDirName;
+      QString myVersionLogPath = myVersionDirPath + "/version.log";
       QMap<QString, QString> myVersionLog = readLog( myVersionLogPath );
       QDir myVersionDir( myVersionDirPath );
 
@@ -642,7 +643,7 @@ void TestQgsWcsPublicServers::report()
           myVersionCoverageCount++;
           myCoverageCount++;
 
-          QString myLogPath = myVersionDir.absolutePath() + QDir::separator() + myLogFileName;
+          QString myLogPath = myVersionDir.absolutePath() + "/" + myLogFileName;
           QMap<QString, QString>myLog = readLog( myLogPath );
           myVersionReport += "<tr>";
 
@@ -661,7 +662,7 @@ void TestQgsWcsPublicServers::report()
           bool hasErr = false;
           foreach ( QString provider, providers )
           {
-            QString imgPath = myVersionDir.absolutePath() + QDir::separator() + QFileInfo( myLogPath ).completeBaseName() + "-" + provider + ".png";
+            QString imgPath = myVersionDir.absolutePath() + "/" + QFileInfo( myLogPath ).completeBaseName() + "-" + provider + ".png";
 
 
             if ( !myLog.value( provider + "_error" ).isEmpty() )
@@ -874,21 +875,21 @@ void usage( std::string const & appName )
 
 int main( int argc, char *argv[] )
 {
-#ifdef WIN32  // Windows
+#ifdef Q_OS_WIN // Windows
 #ifdef _MSC_VER
   _set_fmode( _O_BINARY );
 #else //MinGW
   _fmode = _O_BINARY;
 #endif  // _MSC_VER
-#endif  // WIN32
+#endif  // Q_OS_WIN
 
   QString myServer;
   QString myCoverage;
   QString myVersion;
   int myMaxCoverages = 2;
-  bool myForce;
+  bool myForce = false;
 
-#ifndef WIN32
+#ifndef Q_OS_WIN
   int optionChar;
   static struct option long_options[] =
   {

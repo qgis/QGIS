@@ -27,17 +27,9 @@ __revision__ = '$Format:%H$'
 
 import re
 import os
+import psycopg2
 
-try:
-    from osgeo import ogr
-    ogrAvailable = True
-except:
-    ogrAvailable = False
-
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-
-from qgis.core import *
+from qgis.core import QgsDataSourceURI, QgsCredentials
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.tools import dataobjects
@@ -62,17 +54,67 @@ class OgrAlgorithm(GdalAlgorithm):
             # user='ktryjh_iuuqef' password='xyqwer' sslmode=disable
             # key='gid' estimatedmetadata=true srid=4326 type=MULTIPOLYGON
             # table="t4" (geom) sql=
-            s = re.sub(''' sslmode=.+''', '', unicode(layer.source()))
-            ogrstr = 'PG:%s' % s
+            dsUri = QgsDataSourceURI(layer.dataProvider().dataSourceUri())
+            conninfo = dsUri.connectionInfo()
+            conn = None
+            ok = False
+            while not conn:
+                try:
+                    conn = psycopg2.connect(dsUri.connectionInfo())
+                except psycopg2.OperationalError, e:
+                    (ok, user, passwd ) = QgsCredentials.instance().get(conninfo, dsUri.username(), dsUri.password())
+                    if not ok:
+                        break
+
+                    dsUri.setUsername(user)
+                    dsUri.setPassword(passwd)
+
+            if not conn:
+                raise RuntimeError('Could not connect to PostgreSQL database - check connection info')
+
+            if ok:
+                QgsCredentials.instance().put(conninfo, user, passwd)
+
+            ogrstr = "PG:%s" % dsUri.connectionInfo()
+        elif provider == "oracle":
+            # OCI:user/password@host:port/service:table
+            dsUri = QgsDataSourceURI(layer.dataProvider().dataSourceUri())
+            ogrstr = "OCI:"
+            if dsUri.username() != "":
+                ogrstr += dsUri.username()
+                if dsUri.password() != "":
+                    ogrstr += "/" + dsUri.password()
+                delim = "@"
+
+            if dsUri.host() != "":
+                ogrstr += delim + dsUri.host()
+                delim = ""
+                if dsUri.port() != "" and dsUri.port() != '1521':
+                    ogrstr += ":" + dsUri.port()
+                ogrstr += "/"
+                if dsUri.database() != "":
+                    ogrstr += dsUri.database()
+            elif dsUri.database() != "":
+                ogrstr += delim + dsUri.database()
+
+            if ogrstr == "OCI:":
+                raise RuntimeError('Invalid oracle data source - check connection info')
+
+            ogrstr += ":"
+            if dsUri.schema() != "":
+                ogrstr += dsUri.schema() + "."
+
+            ogrstr += dsUri.table()
         else:
-            ogrstr = unicode(layer.source())
-        return ogrstr
+            ogrstr = unicode(layer.source()).split("|")[0]
+
+        return '"' + ogrstr + '"'
 
     def ogrLayerName(self, uri):
         if 'host' in uri:
             regex = re.compile('(table=")(.+?)(\.)(.+?)"')
             r = regex.search(uri)
-            return r.groups()[1] + '.' + r.groups()[3]
+            return '"' + r.groups()[1] + '.' + r.groups()[3] +'"'
         elif 'dbname' in uri:
             regex = re.compile('(table=")(.+?)"')
             r = regex.search(uri)

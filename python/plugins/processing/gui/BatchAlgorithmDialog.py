@@ -25,8 +25,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+from PyQt4.QtGui import QApplication, QCursor, QMessageBox
+from PyQt4.QtCore import Qt
 
 from processing.gui.BatchPanel import BatchPanel
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
@@ -45,9 +45,14 @@ from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterFixedTable
 from processing.core.parameters import ParameterMultipleInput
+from processing.core.parameters import ParameterGeometryPredicate
 from processing.core.outputs import OutputNumber
 from processing.core.outputs import OutputString
 from processing.core.outputs import OutputHTML
+
+from processing.tools.system import getTempFilename
+
+import codecs
 
 class BatchAlgorithmDialog(AlgorithmDialogBase):
 
@@ -80,6 +85,8 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
             return param.setValue(widget.getValue())
         elif isinstance(param, (ParameterCrs, ParameterFile)):
             return param.setValue(widget.getValue())
+        elif isinstance(param, ParameterGeometryPredicate):
+            return param.setValue(widget.value())
         else:
             return param.setValue(widget.text())
 

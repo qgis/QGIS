@@ -42,10 +42,16 @@ class flightlinesToSingleCHMpitFree(LAStoolsAlgorithm):
         self.name = "flightlinesToSingleCHMpitFree"
         self.group = "LAStools Pipelines"
         self.addParametersPointInputFolderGUI()
-        self.addParameter(ParameterNumber(flightlinesToSingleCHMpitFree.TILE_SIZE, "tile size (side length of square tile)",  0, None, 1000.0))
-        self.addParameter(ParameterNumber(flightlinesToSingleCHMpitFree.BUFFER, "buffer around each tile (avoids edge artifacts)",  0, None, 25.0))
-        self.addParameter(ParameterSelection(flightlinesToSingleCHMpitFree.TERRAIN, "terrain type", flightlinesToSingleCHMpitFree.TERRAINS, 1))
-        self.addParameter(ParameterNumber(flightlinesToSingleCHMpitFree.BEAM_WIDTH, "laser beam width (diameter of laser footprint)",  0, None, 0.2))
+        self.addParameter(ParameterNumber(flightlinesToSingleCHMpitFree.TILE_SIZE,
+            self.tr("tile size (side length of square tile)"),
+            0, None, 1000.0))
+        self.addParameter(ParameterNumber(flightlinesToSingleCHMpitFree.BUFFER,
+            self.tr("buffer around each tile (avoids edge artifacts)"),
+            0, None, 25.0))
+        self.addParameter(ParameterSelection(flightlinesToSingleCHMpitFree.TERRAIN,
+            self.tr("terrain type"), flightlinesToSingleCHMpitFree.TERRAINS, 1))
+        self.addParameter(ParameterNumber(flightlinesToSingleCHMpitFree.BEAM_WIDTH,
+            self.tr("laser beam width (diameter of laser footprint)"), 0, None, 0.2))
         self.addParametersStepGUI()
         self.addParametersTemporaryDirectoryGUI()
         self.addParametersRasterOutputGUI()
@@ -53,14 +59,11 @@ class flightlinesToSingleCHMpitFree(LAStoolsAlgorithm):
         self.addParametersVerboseGUI()
 
     def processAlgorithm(self, progress):
-
-#   needed for thinning and killing
-
+        # needed for thinning and killing
         step = self.getParametersStepValue()
 
-#   first we tile the data
-
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lastile.exe")]
+        # first we tile the data
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lastile")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputFolderCommands(commands)
         commands.append("-files_are_flightlines")
@@ -77,9 +80,8 @@ class flightlinesToSingleCHMpitFree(LAStoolsAlgorithm):
 
         LAStoolsUtils.runLAStools(commands, progress)
 
-#   then we ground classify the tiles
-
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasground.exe")]
+        # then we ground classify the tiles
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasground")]
         self.addParametersVerboseCommands(commands)
         self.addParametersTemporaryDirectoryAsInputFilesCommands(commands, "tile*.laz")
         method = self.getParameterValue(flightlinesToSingleCHMpitFree.TERRAIN)
@@ -99,9 +101,8 @@ class flightlinesToSingleCHMpitFree(LAStoolsAlgorithm):
 
         LAStoolsUtils.runLAStools(commands, progress)
 
-#   then we height-normalize the tiles
-
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasheight.exe")]
+        # then we height-normalize the tiles
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasheight")]
         self.addParametersVerboseCommands(commands)
         self.addParametersTemporaryDirectoryAsInputFilesCommands(commands, "tile*_g.laz")
         commands.append("-replace_z")
@@ -113,9 +114,8 @@ class flightlinesToSingleCHMpitFree(LAStoolsAlgorithm):
 
         LAStoolsUtils.runLAStools(commands, progress)
 
-#   then we thin and splat the tiles
-
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasthin.exe")]
+        # then we thin and splat the tiles
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasthin")]
         self.addParametersVerboseCommands(commands)
         self.addParametersTemporaryDirectoryAsInputFilesCommands(commands, "tile*_gh.laz")
         beam_width = self.getParameterValue(flightlinesToSingleCHMpitFree.BEAM_WIDTH)
@@ -133,9 +133,8 @@ class flightlinesToSingleCHMpitFree(LAStoolsAlgorithm):
 
         LAStoolsUtils.runLAStools(commands, progress)
 
-#   then we rasterize the classified tiles into the partial CHMs at level 00
-
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2dem.exe")]
+        # then we rasterize the classified tiles into the partial CHMs at level 00
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2dem")]
         self.addParametersVerboseCommands(commands)
         self.addParametersTemporaryDirectoryAsInputFilesCommands(commands, "tile*_ght.laz")
         self.addParametersStepCommands(commands)
@@ -150,9 +149,8 @@ class flightlinesToSingleCHMpitFree(LAStoolsAlgorithm):
 
         LAStoolsUtils.runLAStools(commands, progress)
 
-#   then we rasterize the classified tiles into the partial CHMs at level 02
-
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2dem.exe")]
+        # then we rasterize the classified tiles into the partial CHMs at level 02
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2dem")]
         self.addParametersVerboseCommands(commands)
         self.addParametersTemporaryDirectoryAsInputFilesCommands(commands, "tile*_ght.laz")
         commands.append("-drop_z_below")
@@ -171,9 +169,8 @@ class flightlinesToSingleCHMpitFree(LAStoolsAlgorithm):
 
         LAStoolsUtils.runLAStools(commands, progress)
 
-#   then we rasterize the classified tiles into the partial CHMs at level 05
-
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2dem.exe")]
+        # then we rasterize the classified tiles into the partial CHMs at level 05
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2dem")]
         self.addParametersVerboseCommands(commands)
         self.addParametersTemporaryDirectoryAsInputFilesCommands(commands, "tile*_ght.laz")
         commands.append("-drop_z_below")
@@ -192,9 +189,8 @@ class flightlinesToSingleCHMpitFree(LAStoolsAlgorithm):
 
         LAStoolsUtils.runLAStools(commands, progress)
 
-#   then we rasterize the classified tiles into the partial CHMs at level 10
-
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2dem.exe")]
+        # then we rasterize the classified tiles into the partial CHMs at level 10
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2dem")]
         self.addParametersVerboseCommands(commands)
         self.addParametersTemporaryDirectoryAsInputFilesCommands(commands, "tile*_ght.laz")
         commands.append("-drop_z_below")
@@ -213,9 +209,8 @@ class flightlinesToSingleCHMpitFree(LAStoolsAlgorithm):
 
         LAStoolsUtils.runLAStools(commands, progress)
 
-#   then we rasterize the classified tiles into the partial CHMs at level 15
-
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2dem.exe")]
+        # then we rasterize the classified tiles into the partial CHMs at level 15
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2dem")]
         self.addParametersVerboseCommands(commands)
         self.addParametersTemporaryDirectoryAsInputFilesCommands(commands, "tile*_ght.laz")
         commands.append("-drop_z_below")
@@ -234,9 +229,8 @@ class flightlinesToSingleCHMpitFree(LAStoolsAlgorithm):
 
         LAStoolsUtils.runLAStools(commands, progress)
 
-#   then we rasterize the classified tiles into the partial CHMs at level 20
-
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2dem.exe")]
+        # then we rasterize the classified tiles into the partial CHMs at level 20
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2dem")]
         self.addParametersVerboseCommands(commands)
         self.addParametersTemporaryDirectoryAsInputFilesCommands(commands, "tile*_ght.laz")
         commands.append("-drop_z_below")
@@ -255,9 +249,8 @@ class flightlinesToSingleCHMpitFree(LAStoolsAlgorithm):
 
         LAStoolsUtils.runLAStools(commands, progress)
 
-#   then we combine the partial CHMs into a single output CHM
-
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasgrid.exe")]
+        # then we combine the partial CHMs into a single output CHM
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasgrid")]
         self.addParametersVerboseCommands(commands)
         self.addParametersTemporaryDirectoryAsInputFilesCommands(commands, "tile_chm*.bil")
         commands.append("-highest")

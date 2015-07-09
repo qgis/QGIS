@@ -25,10 +25,12 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+import os
 
-from qgis.core import *
+from PyQt4 import uic
+from PyQt4.QtGui import QWidget, QIcon, QTableWidgetItem, QComboBox, QLineEdit, QHeaderView
+
+from qgis.core import QgsApplication
 
 from processing.gui.FileSelectionPanel import FileSelectionPanel
 from processing.gui.CrsSelectionPanel import CrsSelectionPanel
@@ -36,6 +38,7 @@ from processing.gui.ExtentSelectionPanel import ExtentSelectionPanel
 from processing.gui.FixedTablePanel import FixedTablePanel
 from processing.gui.BatchInputSelectionPanel import BatchInputSelectionPanel
 from processing.gui.BatchOutputSelectionPanel import BatchOutputSelectionPanel
+from processing.gui.GeometryPredicateSelectionPanel import GeometryPredicateSelectionPanel
 
 from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterRaster
@@ -47,24 +50,24 @@ from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterFixedTable
 from processing.core.parameters import ParameterMultipleInput
+from processing.core.parameters import ParameterGeometryPredicate
 
-from processing.ui.ui_widgetBatchPanel import Ui_Form
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'widgetBatchPanel.ui'))
 
-
-class BatchPanel(QWidget, Ui_Form):
+class BatchPanel(BASE, WIDGET):
 
     def __init__(self, parent, alg):
-        QWidget.__init__(self)
+        super(BatchPanel, self).__init__(None)
         self.setupUi(self)
 
         self.btnAdvanced.hide()
 
         # Set icons
-        self.btnAdd.setIcon(
-                QgsApplication.getThemeIcon('/mActionSignPlus.png'))
-        self.btnRemove.setIcon(
-                QgsApplication.getThemeIcon('/mActionSignMinus.png'))
-        self.btnAdvanced.setIcon(QIcon(':/processing/images/alg.png'))
+        self.btnAdd.setIcon(QgsApplication.getThemeIcon('/symbologyAdd.svg'))
+        self.btnRemove.setIcon(QgsApplication.getThemeIcon('/symbologyRemove.svg'))
+        self.btnAdvanced.setIcon(QIcon(os.path.join(pluginPath, 'images', 'alg.png')))
 
         self.alg = alg
         self.parent = parent
@@ -116,6 +119,15 @@ class BatchPanel(QWidget, Ui_Form):
         for i in xrange(3):
             self.addRow()
 
+        self.tblParameters.horizontalHeader().setResizeMode(QHeaderView.Interactive)
+        self.tblParameters.horizontalHeader().setDefaultSectionSize(250)
+        self.tblParameters.horizontalHeader().setMinimumSectionSize(150)
+        self.tblParameters.horizontalHeader().setResizeMode(QHeaderView.ResizeToContents)
+        self.tblParameters.verticalHeader().setResizeMode(QHeaderView.ResizeToContents)
+        self.tblParameters.horizontalHeader().setStretchLastSection(True)
+
+
+
     def getWidgetFromParameter(self, param, row, col):
         if isinstance(param, (ParameterRaster, ParameterVector, ParameterTable,
                               ParameterMultipleInput)):
@@ -139,10 +151,15 @@ class BatchPanel(QWidget, Ui_Form):
             item = CrsSelectionPanel(param.default)
         elif isinstance(param, ParameterFile):
             item = FileSelectionPanel(param.isFolder)
+        elif isinstance(param, ParameterGeometryPredicate):
+            item = GeometryPredicateSelectionPanel(param.enabledPredicates, rows=1)
+            width = max(self.tblParameters.columnWidth(col),
+                        item.sizeHint().width())
+            self.tblParameters.setColumnWidth(col, width)
         else:
             item = QLineEdit()
             try:
-                item.setText(param.default)
+                item.setText(str(param.default))
             except:
                 pass
 
@@ -193,30 +210,34 @@ class BatchPanel(QWidget, Ui_Form):
         if isinstance(widget, QComboBox):
             widgetValue = widget.currentIndex()
             for row in range(1, self.tblParameters.rowCount()):
-                self.tblParameters.cellWidget(row, col).setCurrentIndex(widgetValue)
+                self.tblParameters.cellWidget(row, column).setCurrentIndex(widgetValue)
         elif isinstance(widget, ExtentSelectionPanel):
             widgetValue = widget.getValue()
             for row in range(1, self.tblParameters.rowCount()):
                 if widgetValue is not None:
-                    self.tblParameters.cellWidget(row, col).text.setText(widgetValue)
+                    self.tblParameters.cellWidget(row, column).setExtentFromString(widgetValue)
                 else:
-                    self.tblParameters.cellWidget(row, col).text.setText('')
+                    self.tblParameters.cellWidget(row, column).setExtentFromString('')
         elif isinstance(widget, CrsSelectionPanel):
             widgetValue = widget.getValue()
             for row in range(1, self.tblParameters.rowCount()):
-                self.tblParameters.cellWidget(row, col).setAuthId(widgetValue)
+                self.tblParameters.cellWidget(row, column).setAuthId(widgetValue)
         elif isinstance(widget, FileSelectionPanel):
             widgetValue = widget.getValue()
             for row in range(1, self.tblParameters.rowCount()):
-                self.tblParameters.cellWidget(row, col).setText(widgetValue)
+                self.tblParameters.cellWidget(row, column).setText(widgetValue)
         elif isinstance(widget, QLineEdit):
             widgetValue = widget.text()
             for row in range(1, self.tblParameters.rowCount()):
-                self.tblParameters.cellWidget(row, col).setText(widgetValue)
+                self.tblParameters.cellWidget(row, column).setText(widgetValue)
         elif isinstance(widget, BatchInputSelectionPanel):
             widgetValue = widget.getText()
             for row in range(1, self.tblParameters.rowCount()):
-                self.tblParameters.cellWidget(row, col).setText(widgetValue)
+                self.tblParameters.cellWidget(row, column).setText(widgetValue)
+        elif isinstance(widget, GeometryPredicateSelectionPanel):
+            widgetValue = widget.value()
+            for row in range(1, self.tblParameters.rowCount()):
+                self.tblParameters.cellWidget(row, column).setValue(widgetValue)
         else:
             pass
 

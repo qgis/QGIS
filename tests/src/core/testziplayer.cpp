@@ -15,7 +15,6 @@
 #include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
-#include <QObject>
 #include <QApplication>
 #include <QFileInfo>
 
@@ -110,7 +109,7 @@ QgsMapLayer *TestZipLayer::getLayer( QString myPath, QString myName, QString myP
   }
   else if ( myProviderKey == "gdal" )
   {
-    myLayer = new QgsRasterLayer( myPath, myName, "gdal" );
+    myLayer = new QgsRasterLayer( myPath, myName, QString( "gdal" ) );
   }
   // item should not have other provider key, but if it does will return NULL
 
@@ -148,13 +147,22 @@ bool TestZipLayer::testZipItem( QString myFileName, QString myChildName, QString
   QFileInfo myFileInfo( myFileName );
   QgsZipItem *myZipItem = new QgsZipItem( NULL, myFileInfo.fileName(), myFileName );
   myZipItem->populate();
+  // wait until populated in separate thread
+  QTime time;
+  time.start();
+  while ( myZipItem->state() != QgsDataItem::Populated && time.elapsed() < 5000 )
+  {
+    QTest::qSleep( 100 );
+    QCoreApplication::processEvents();
+  }
+  QgsDebugMsg( QString( "time.elapsed() = %1 ms" ).arg( time.elapsed() ) );
   bool ok = false;
   QString driverName;
   QVector<QgsDataItem*> myChildren = myZipItem->children();
 
+  QgsDebugMsg( QString( "has %1 items" ).arg( myChildren.size() ) );
   if ( myChildren.size() > 0 )
   {
-    QgsDebugMsg( QString( "has %1 items" ).arg( myChildren.size() ) );
     foreach ( QgsDataItem* item, myChildren )
     {
       QgsDebugMsg( QString( "child name=%1" ).arg( item->name() ) );
@@ -205,7 +213,7 @@ bool TestZipLayer::testZipItem( QString myFileName, QString myChildName, QString
       }
       else
       {
-        QWARN( QString( "Invalid layer %1" ).arg( layerItem->path() ).toLocal8Bit().data() );
+        QWARN( QString( "Invalid layer %1" ).arg( layerItem ? layerItem->path() : "(null)" ).toLocal8Bit().data() );
         break;
       }
     }
@@ -275,8 +283,8 @@ void TestZipLayer::initTestCase()
 
   // save data dir
   QFile::remove( QDir::tempPath() + "/testzip.zip" );
-  QVERIFY( QFile::copy( QString( TEST_DATA_DIR ) + QDir::separator() + "zip" + QDir::separator() + "testzip.zip", QDir::tempPath() + "/testzip.zip" ) );
-  mDataDir = QString( TEST_DATA_DIR ) + QDir::separator() + "zip" + QDir::separator();
+  QVERIFY( QFile::copy( QString( TEST_DATA_DIR ) + "/zip/" + "testzip.zip", QDir::tempPath() + "/testzip.zip" ) );
+  mDataDir = QString( TEST_DATA_DIR ) + "/zip/";
   // Set up the QSettings environment
   QCoreApplication::setOrganizationName( "QGIS" );
   QCoreApplication::setOrganizationDomain( "qgis.org" );

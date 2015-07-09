@@ -12,7 +12,7 @@ class QgsStyleV2ExportImportDialog : QDialog
 
     // constructor
     // mode argument must be 0 for saving and 1 for loading
-    QgsStyleV2ExportImportDialog( QgsStyleV2* style, QWidget *parent = NULL, Mode mode = Export );
+    QgsStyleV2ExportImportDialog( QgsStyleV2* style, QWidget *parent /TransferThis/ = NULL, Mode mode = Export );
     ~QgsStyleV2ExportImportDialog();
 
   public slots:

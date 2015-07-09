@@ -29,16 +29,19 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4 import uic
+from PyQt4.QtCore import QSettings
+from PyQt4.QtGui import QDialog, QAbstractItemView, QPushButton, QDialogButtonBox, QFileDialog, QStandardItemModel, QStandardItem
 
-from processing.ui.ui_DlgMultipleSelection import Ui_DlgMultipleSelection
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'DlgMultipleSelection.ui'))
 
 
-class MultipleFileInputDialog(QDialog, Ui_DlgMultipleSelection):
+class MultipleFileInputDialog(BASE, WIDGET):
 
     def __init__(self, options):
-        QDialog.__init__(self)
+        super(MultipleFileInputDialog, self).__init__(None)
         self.setupUi(self)
 
         self.lstLayers.setSelectionMode(QAbstractItemView.ExtendedSelection)
@@ -90,6 +93,9 @@ class MultipleFileInputDialog(QDialog, Ui_DlgMultipleSelection):
 
         files = QFileDialog.getOpenFileNames(self,
             self.tr('Select file(s)'), path, self.tr('All files (*.*)'))
+
+        if len(files) == 0:
+            return
 
         model = self.lstLayers.model()
         for filePath in files:

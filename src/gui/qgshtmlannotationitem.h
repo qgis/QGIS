@@ -20,9 +20,10 @@
 
 #include "qgsannotationitem.h"
 #include "qgsfeature.h"
+#include "qgswebview.h"
+#include "qgswebframe.h"
+
 #include <QObject>
-#include <QWebView>
-#include <QWebFrame>
 
 class QGraphicsProxyWidget;
 
@@ -34,21 +35,21 @@ class GUI_EXPORT QgsHtmlAnnotationItem: public QObject, public QgsAnnotationItem
     QgsHtmlAnnotationItem( QgsMapCanvas* canvas, QgsVectorLayer* vlayer = 0, bool hasFeature = false, int feature = 0 );
     ~QgsHtmlAnnotationItem();
 
-    void paint( QPainter * painter );
+    void paint( QPainter * painter ) override;
 
     //! paint function called by map canvas
-    void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 );
+    void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 ) override;
 
-    QSizeF minimumFrameSize() const;
+    QSizeF minimumFrameSize() const override;
 
     /**Reimplemented from QgsAnnotationItem*/
-    void setMapPosition( const QgsPoint& pos );
+    void setMapPosition( const QgsPoint& pos ) override;
 
     void setHTMLPage( const QString& htmlFile );
     QString htmlPage() const { return mHtmlFile; }
 
-    void writeXML( QDomDocument& doc ) const;
-    void readXML( const QDomDocument& doc, const QDomElement& itemElem );
+    void writeXML( QDomDocument& doc ) const override;
+    void readXML( const QDomDocument& doc, const QDomElement& itemElem ) override;
 
     QgsVectorLayer* vectorLayer() const { return mVectorLayer; }
 
@@ -62,7 +63,7 @@ class GUI_EXPORT QgsHtmlAnnotationItem: public QObject, public QgsAnnotationItem
 
   private:
     QGraphicsProxyWidget* mWidgetContainer;
-    QWebView* mWebView;
+    QgsWebView* mWebView;
     /**Associated vectorlayer (or 0 if attributes are not supposed to be replaced)*/
     QgsVectorLayer* mVectorLayer;
     /**True if the item is related to a vector feature*/

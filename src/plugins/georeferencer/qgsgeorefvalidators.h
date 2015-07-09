@@ -22,7 +22,7 @@ class QgsDMSAndDDValidator : public QValidator
 {
   public:
     QgsDMSAndDDValidator( QObject *parent );
-    State validate( QString &input, int &pos ) const;
+    State validate( QString &input, int &pos ) const override;
 };
 
 #endif // QGSGEOREFVALIDATORS_H

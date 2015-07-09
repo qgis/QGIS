@@ -16,8 +16,6 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QObject>
-#include <iostream>
 #include <QApplication>
 #include <QFileInfo>
 #include <QDir>
@@ -45,9 +43,15 @@ class TestSignalReceiver : public QObject
 /** \ingroup UnitTests
  * This is a unit test for the QgsMapLayer class.
  */
-class TestQgsMapLayer: public QObject
+class TestQgsMapLayer : public QObject
 {
     Q_OBJECT
+
+  public:
+    TestQgsMapLayer()
+        : mpLayer( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -74,7 +78,7 @@ void TestQgsMapLayer::initTestCase()
   //create some objects that will be used in all tests...
   //create a map layer that will be used in all tests...
   QString myFileName( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  myFileName = myFileName + QDir::separator() + "points.shp";
+  myFileName = myFileName + "/points.shp";
   QFileInfo myMapFileInfo( myFileName );
   mpLayer = new QgsVectorLayer( myMapFileInfo.filePath(),
                                 myMapFileInfo.completeBaseName(), "ogr" );

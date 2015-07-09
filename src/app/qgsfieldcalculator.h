@@ -32,7 +32,7 @@ class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
     int changedAttributeId() const { return mAttributeId; }
 
   public slots:
-    void accept();
+    void accept() override;
 
     void on_mNewFieldGroupBox_toggled( bool on );
     void on_mUpdateExistingGroupBox_toggled( bool on );
@@ -70,8 +70,6 @@ class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
 
     /**idx of changed attribute*/
     int mAttributeId;
-
-    bool mExpressionValid;
 };
 
 #endif // QGSFIELDCALCULATOR_H

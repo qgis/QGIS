@@ -27,7 +27,6 @@ __revision__ = '$Format:%H$'
 
 import unittest
 from processing.tests import QgisAlgsTest
-from processing.tests import ParametersTest
 from processing.tests import ModelerAlgorithmTest
 from processing.tests import ProcessingToolsTest
 from processing.tests import ScriptTest

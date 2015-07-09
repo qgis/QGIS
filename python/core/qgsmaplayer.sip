@@ -103,9 +103,9 @@ class QgsMapLayer : QObject
     void setMetadataUrlFormat( const QString& metaUrlFormat );
     const QString& metadataUrlFormat() const;
 
-    /* Set the blending mode used for rendering a layer */
+    /** Set the blending mode used for rendering a layer */
     void setBlendMode( const QPainter::CompositionMode &blendMode );
-    /* Returns the current blending mode for a layer */
+    /** Returns the current blending mode for a layer */
     QPainter::CompositionMode blendMode() const;
 
     /**Synchronises with changes in the datasource
@@ -279,7 +279,16 @@ class QgsMapLayer : QObject
 
     virtual bool loadNamedStyleFromDb( const QString &db, const QString &theURI, QString &qml /Out/ );
 
-    //TODO edit infos
+    /**
+     * Import the properties of this layer from a QDomDocument
+     * @param doc source QDomDocument
+     * @param errorMsg this QString will be initialized on error
+     * during the execution of readSymbology
+     * @return true on success
+     * @note added in 2.8
+     */
+    virtual bool importNamedStyle( QDomDocument& doc, QString &errorMsg /Out/ );
+
     /**
      * Export the properties of this layer as named style in a QDomDocument
      * @param doc the target QDomDocument
@@ -370,6 +379,12 @@ class QgsMapLayer : QObject
      */
     QgsMapLayerLegend* legend() const;
 
+    /**
+     * Get access to the layer's style manager. Style manager allows switching between multiple styles.
+     * @note added in 2.8
+     */
+    QgsMapLayerStyleManager* styleManager() const;
+
     /**Returns the minimum scale denominator at which the layer is visible.
      * Scale based visibility is only used if hasScaleBasedVisibility is true.
      * @returns minimum scale denominator at which the layer will render
@@ -431,7 +446,6 @@ class QgsMapLayer : QObject
      * @deprecated use setScaleBasedVisibility instead
     */
     void toggleScaleBasedVisibility( bool theVisibilityFlag ) /Deprecated/;
-
 
     /** Clear cached image
      *  @deprecated in 2.4 - use triggerRepaint() - caches automatically listen to repaintRequested() signal to invalidate the cached image */
@@ -516,6 +530,11 @@ class QgsMapLayer : QObject
 
     /** Write custom properties to project file. */
     void writeCustomProperties( QDomNode & layerNode, QDomDocument & doc ) const;
+
+    /** Read style manager's configuration (if any). To be called by subclasses. */
+    void readStyleManager( const QDomNode& layerNode );
+    /** Write style manager's configuration (if exists). To be called by subclasses. */
+    void writeStyleManager( QDomNode& layerNode, QDomDocument& doc ) const;
 
     /** debugging member - invoked when a connect() is made to this object */
     void connectNotify( const char * signal );

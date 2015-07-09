@@ -128,27 +128,27 @@ class CORE_EXPORT QgsPropertyValue : public QgsProperty
     virtual ~QgsPropertyValue() {}
 
     /** returns true if is a QgsPropertyKey */
-    virtual bool isKey() const { return false; }
+    virtual bool isKey() const override { return false; }
 
     /** returns true if is a QgsPropertyValue */
-    virtual bool isValue() const { return true; }
+    virtual bool isValue() const override { return true; }
 
-    QVariant value() const { return value_; }
+    QVariant value() const override { return value_; }
 
     /** returns true if is a leaf node
 
     @note I suppose, in a way, value nodes can also be qualified as leaf
     nodes even though we're only counting key nodes.
     */
-    bool isLeaf() const { return true; }
+    bool isLeaf() const override { return true; }
 
-    void dump( int tabs = 0 ) const;
+    void dump( int tabs = 0 ) const override;
 
-    bool readXML( QDomNode & keyNode );
+    bool readXML( QDomNode & keyNode ) override;
 
     bool writeXML( const QString & nodeName,
                    QDomElement   & element,
-                   QDomDocument  & document );
+                   QDomDocument  & document ) override;
 
     int count() const { return 0; }
 
@@ -204,7 +204,7 @@ class CORE_EXPORT QgsPropertyKey : public QgsProperty
     /** if this key has a value, it will be stored by its name in its
      * properties
      */
-    QVariant value() const;
+    QVariant value() const override;
 
 
     /// add the given property key
@@ -248,11 +248,11 @@ class CORE_EXPORT QgsPropertyKey : public QgsProperty
 
 
 
-    void dump( int tabs = 0 ) const;
+    void dump( int tabs = 0 ) const override;
 
-    bool readXML( QDomNode & keyNode );
+    bool readXML( QDomNode & keyNode ) override;
 
-    bool writeXML( const QString &nodeName, QDomElement & element, QDomDocument & document );
+    bool writeXML( const QString &nodeName, QDomElement & element, QDomDocument & document ) override;
 
     /// how many elements are contained within this one?
     int count() const { return mProperties.count(); }
@@ -261,10 +261,10 @@ class CORE_EXPORT QgsPropertyKey : public QgsProperty
     /* virtual */ bool isEmpty() const { return mProperties.isEmpty(); }
 
     /** returns true if is a QgsPropertyKey */
-    virtual bool isKey() const { return true; }
+    virtual bool isKey() const override { return true; }
 
     /** returns true if is a QgsPropertyValue */
-    virtual bool isValue() const { return false; }
+    virtual bool isValue() const override { return false; }
 
     /// return keys that do not contain other keys
     void entryList( QStringList & entries ) const;
@@ -277,7 +277,7 @@ class CORE_EXPORT QgsPropertyKey : public QgsProperty
     A leaf node is a key node that has either no value or a single value.  A
     non-leaf node would be a key node with key sub-nodes.
     */
-    bool isLeaf() const;
+    bool isLeaf() const override;
 
     /// reset the QgsProperty key to prestine state
     virtual void clear()

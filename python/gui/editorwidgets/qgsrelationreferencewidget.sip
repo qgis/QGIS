@@ -17,7 +17,7 @@ class QgsRelationReferenceWidget : QWidget
 
     ~QgsRelationReferenceWidget();
 
-    void setRelation( QgsRelation relation , bool allowNullValue );
+    void setRelation( QgsRelation relation, bool allowNullValue );
 
     void setRelationEditable( bool editable );
 
@@ -27,7 +27,7 @@ class QgsRelationReferenceWidget : QWidget
     //! returns the related feature foreign key
     QVariant foreignKey();
 
-    void setEditorContext( QgsAttributeEditorContext context, QgsMapCanvas* canvas, QgsMessageBar* messageBar );
+    void setEditorContext( const QgsAttributeEditorContext& context, QgsMapCanvas* canvas, QgsMessageBar* messageBar );
 
     //! determines if the form of the related feature will be shown
     bool embedForm();
@@ -40,6 +40,11 @@ class QgsRelationReferenceWidget : QWidget
     //! determines if the widge offers the possibility to select the related feature on the map (using a dedicated map tool)
     bool allowMapIdentification();
     void setAllowMapIdentification( bool allowMapIdentification );
+
+    //! If the widget will order the combobox entries by value
+    bool orderByValue();
+    //! Set if the widget will order the combobox entries by value
+    void setOrderByValue( bool orderByValue );
 
     //! determines the open form button is visible in the widget
     bool openFormButtonVisible();
@@ -59,12 +64,11 @@ class QgsRelationReferenceWidget : QWidget
     //! unset the currently related feature
     void deleteForeignKey();
 
-
   protected:
     virtual void showEvent( QShowEvent* e );
 
     void init();
 
-   signals:
+  signals:
     void foreignKeyChanged( QVariant );
 };

@@ -420,7 +420,7 @@ enum QgsWmsDpiMode
   dpiQGIS = 1,
   dpiUMN = 2,
   dpiGeoServer = 4,
-  dpiAll = dpiQGIS | dpiUMN | dpiUMN,
+  dpiAll = dpiQGIS | dpiUMN | dpiGeoServer,
 };
 
 
@@ -524,11 +524,13 @@ class QgsWmsSettings
 
     QString mCrsId;
 
+    bool mEnableContextualLegend;
+
     friend class QgsWmsProvider;
 };
 
 
-/** keeps information about capabilities of particular URI */
+/** Keeps information about capabilities of particular URI */
 class QgsWmsCapabilities
 {
   public:
@@ -574,6 +576,9 @@ class QgsWmsCapabilities
 
     /** Find out whether to invert axis orientation when parsing/writing coordinates */
     bool shouldInvertAxisOrientation( const QString& ogcCrs );
+
+    /** Find out identify capabilities */
+    int identifyCapabilities() const;
 
   protected:
     bool parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapabilitiesProperty& capabilitiesProperty );
@@ -672,7 +677,7 @@ class QgsWmsCapabilities
 
 
 
-/** class that handles download of capabilities */
+/** Class that handles download of capabilities */
 class QgsWmsCapabilitiesDownload : public QObject
 {
     Q_OBJECT

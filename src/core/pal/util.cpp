@@ -27,10 +27,6 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include <stddef.h>
 #include <geos_c.h>
 
@@ -42,8 +38,7 @@
 #include <cstdarg>
 #include <ctime>
 
-#include <pal/layer.h>
-
+#include "layer.h"
 #include "internalexception.h"
 #include "util.h"
 #include "labelposition.h"
@@ -183,57 +178,46 @@ namespace pal
     }
   }
 
-
-
-
-//inline bool ptrGeomEq (const geos::geom::Geometry *l, const geos::geom::Geometry *r){
   inline bool ptrGeomEq( const GEOSGeometry *l, const GEOSGeometry *r )
   {
     return l == r;
   }
 
-//LinkedList<const geos::geom::Geometry*> * unmulti (geos::geom::Geometry *the_geom){
-  LinkedList<const GEOSGeometry*> * unmulti( const GEOSGeometry *the_geom )
+  QLinkedList<const GEOSGeometry *> *unmulti( const GEOSGeometry *the_geom )
   {
+    QLinkedList<const GEOSGeometry*> *queue = new QLinkedList<const GEOSGeometry*>;
+    QLinkedList<const GEOSGeometry*> *final_queue = new QLinkedList<const GEOSGeometry*>;
 
-    //LinkedList<const geos::geom::Geometry*> *queue = new  LinkedList<const geos::geom::Geometry*>(ptrGeomEq);
-    //LinkedList<const geos::geom::Geometry*> *final_queue = new  LinkedList<const geos::geom::Geometry*>(ptrGeomEq);
-    LinkedList<const GEOSGeometry*> *queue = new  LinkedList<const GEOSGeometry*> ( ptrGeomEq );
-    LinkedList<const GEOSGeometry*> *final_queue = new  LinkedList<const GEOSGeometry*> ( ptrGeomEq );
-
-    //const geos::geom::Geometry *geom;
     const GEOSGeometry *geom;
 
-    queue->push_back( the_geom );
+    queue->append( the_geom );
     int nGeom;
     int i;
 
     while ( queue->size() > 0 )
     {
-      geom = queue->pop_front();
+      geom = queue->takeFirst();
       GEOSContextHandle_t geosctxt = geosContext();
       switch ( GEOSGeomTypeId_r( geosctxt, geom ) )
       {
-          //case geos::geom::GEOS_MULTIPOINT:
-          //case geos::geom::GEOS_MULTILINESTRING:
-          //case geos::geom::GEOS_MULTIPOLYGON:
         case GEOS_MULTIPOINT:
         case GEOS_MULTILINESTRING:
         case GEOS_MULTIPOLYGON:
           nGeom = GEOSGetNumGeometries_r( geosctxt, geom );
           for ( i = 0; i < nGeom; i++ )
           {
-            queue->push_back( GEOSGetGeometryN_r( geosctxt, geom, i ) );
+            queue->append( GEOSGetGeometryN_r( geosctxt, geom, i ) );
           }
           break;
         case GEOS_POINT:
         case GEOS_LINESTRING:
         case GEOS_POLYGON:
-          final_queue->push_back( geom );
+          final_queue->append( geom );
           break;
         default:
           delete final_queue;
-          final_queue = NULL;
+          delete queue;
+          return NULL;
       }
     }
     delete queue;

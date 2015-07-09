@@ -3,11 +3,12 @@ SET(QGIS_APP_SRCS
   qgisappinterface.cpp
   qgisappstylesheet.cpp
   qgsabout.cpp
+  qgsalignrasterdialog.cpp
   qgsapplayertreeviewmenuprovider.cpp
   qgssponsors.cpp
   qgsaddattrdialog.cpp
   qgsaddtaborgroup.cpp
-  qgsaddjoindialog.cpp
+  qgsjoindialog.cpp
   qgsannotationwidget.cpp
   qgsattributeactiondialog.cpp
   qgsattributetypedialog.cpp
@@ -45,6 +46,7 @@ SET(QGIS_APP_SRCS
   qgslabelinggui.cpp
   qgslabelpreview.cpp
   qgsloadstylefromdbdialog.cpp
+  qgsmaplayerstyleguiutils.cpp
   qgsmapmouseevent.cpp
   qgssavestyletodbdialog.cpp
   qgsguivectorlayertools.cpp
@@ -86,7 +88,6 @@ SET(QGIS_APP_SRCS
   qgsmaptoolsplitparts.cpp
   qgsmaptoolsvgannotation.cpp
   qgsmaptooltextannotation.cpp
-  qgsmaptoolvertexedit.cpp
 
   nodetool/qgsmaptoolnodetool.cpp
   nodetool/qgsselectedfeature.cpp
@@ -103,6 +104,7 @@ SET(QGIS_APP_SRCS
   qgsprojectproperties.cpp
   qgsrastercalcdialog.cpp
   qgsrasterlayerproperties.cpp
+  qgsstatisticalsummarydockwidget.cpp
   qgstextannotationdialog.cpp
   qgsshortcutsmanager.cpp
   qgsguivectorlayertools.h
@@ -163,7 +165,8 @@ SET (QGIS_APP_MOC_HDRS
   qgisappstylesheet.h
   qgsabout.h
   qgsaddattrdialog.h
-  qgsaddjoindialog.h
+  qgsalignrasterdialog.h
+  qgsjoindialog.h
   qgsaddtaborgroup.h
   qgsannotationwidget.h
   qgsattributeactiondialog.h
@@ -200,6 +203,7 @@ SET (QGIS_APP_MOC_HDRS
   qgslabelinggui.h
   qgslabelpropertydialog.h
   qgsloadstylefromdbdialog.h
+  qgsmaplayerstyleguiutils.h
   qgssavestyletodbdialog.h
   qgsshortcutsmanager.h
   qgsapplayertreeviewmenuprovider.h
@@ -233,7 +237,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolsimplify.h
   qgsmaptoolsplitfeatures.h
   qgsmaptoolsplitparts.h
-  qgsmaptoolvertexedit.h
 
   nodetool/qgsmaptoolnodetool.h
   nodetool/qgsselectedfeature.h
@@ -248,6 +251,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsrasterlayerproperties.h
   qgssnappingdialog.h
   qgssponsors.h
+  qgsstatisticalsummarydockwidget.h
   qgssvgannotationdialog.h
   qgstextannotationdialog.h
   qgstipgui.h
@@ -294,73 +298,91 @@ SET (QGIS_APP_MOC_HDRS
   qgsnewspatialitelayerdialog.h
   )
 
-IF(WITH_INTERNAL_QWTPOLAR)
-  IF(QWT_VERSION_STR VERSION_LESS "6.0.0")
-    SET(QGIS_APP_SRCS
-      ${QGIS_APP_SRCS}
-      gps/qwtpolar-0.1/qwt_polar_canvas.cpp
-      gps/qwtpolar-0.1/qwt_polar_curve.cpp
-      gps/qwtpolar-0.1/qwt_polar_fitter.cpp
-      gps/qwtpolar-0.1/qwt_polar_grid.cpp
-      gps/qwtpolar-0.1/qwt_polar_itemdict.cpp
-      gps/qwtpolar-0.1/qwt_polar_item.cpp
-      gps/qwtpolar-0.1/qwt_polar_layout.cpp
-      gps/qwtpolar-0.1/qwt_polar_magnifier.cpp
-      gps/qwtpolar-0.1/qwt_polar_marker.cpp
-      gps/qwtpolar-0.1/qwt_polar_panner.cpp
-      gps/qwtpolar-0.1/qwt_polar_plot.cpp
-      gps/qwtpolar-0.1/qwt_polar_point.cpp
-      gps/qwtpolar-0.1/qwt_polar_spectrogram.cpp
-    )
+SET (WITH_QWTPOLAR TRUE CACHE BOOL "Determines whether QwtPolar should be built")
 
-    SET (QGIS_APP_MOC_HDRS
-      ${QGIS_APP_MOC_HDRS}
-      gps/qwtpolar-0.1/qwt_polar_canvas.h
-      gps/qwtpolar-0.1/qwt_polar_magnifier.h
-      gps/qwtpolar-0.1/qwt_polar_panner.h
-      gps/qwtpolar-0.1/qwt_polar_plot.h
-    )
+IF (WITH_QWTPOLAR)
+  ADD_DEFINITIONS(-DWITH_QWTPOLAR)
+  # Try to find QwtPolar on the system
+  FIND_PACKAGE(QwtPolar)
+  # If not found on the system, offer the possibility to build QwtPolar
+  # internally
+  IF(NOT FOUND_QwtPolar)
+    SET(DEFAULT_WITH_INTERNAL_QWTPOLAR TRUE)
+  ELSE(NOT FOUND_QwtPolar)
+    SET(DEFAULT_WITH_INTERNAL_QWTPOLAR FALSE)
+  ENDIF(NOT FOUND_QwtPolar)
+  SET (WITH_INTERNAL_QWTPOLAR DEFAULT_WITH_INTERNAL_QWTPOLAR CACHE BOOL "Use internal build of QwtPolar")
 
-    SET(QWTPOLAR_INCLUDE_DIR gps/qwtpolar-0.1)
-  ELSE(QWT_VERSION_STR VERSION_LESS "6.0.0")
-    IF(NOT QWT_VERSION_STR VERSION_LESS "6.1.0")
-      MESSAGE(FATAL_ERROR "Internal QwtPolar does not support Qwt 6.1 and above")
-    ENDIF(NOT QWT_VERSION_STR VERSION_LESS "6.1.0")
+  IF(WITH_INTERNAL_QWTPOLAR)
+    IF(QWT_VERSION_STR VERSION_LESS "6.0.0")
+      SET(QGIS_APP_SRCS
+        ${QGIS_APP_SRCS}
+        gps/qwtpolar-0.1/qwt_polar_canvas.cpp
+        gps/qwtpolar-0.1/qwt_polar_curve.cpp
+        gps/qwtpolar-0.1/qwt_polar_fitter.cpp
+        gps/qwtpolar-0.1/qwt_polar_grid.cpp
+        gps/qwtpolar-0.1/qwt_polar_itemdict.cpp
+        gps/qwtpolar-0.1/qwt_polar_item.cpp
+        gps/qwtpolar-0.1/qwt_polar_layout.cpp
+        gps/qwtpolar-0.1/qwt_polar_magnifier.cpp
+        gps/qwtpolar-0.1/qwt_polar_marker.cpp
+        gps/qwtpolar-0.1/qwt_polar_panner.cpp
+        gps/qwtpolar-0.1/qwt_polar_plot.cpp
+        gps/qwtpolar-0.1/qwt_polar_point.cpp
+        gps/qwtpolar-0.1/qwt_polar_spectrogram.cpp
+      )
 
-    SET(QGIS_APP_SRCS
-      ${QGIS_APP_SRCS}
-      gps/qwtpolar-1.0/qwt_polar_canvas.cpp
-      gps/qwtpolar-1.0/qwt_polar_curve.cpp
-      gps/qwtpolar-1.0/qwt_polar_fitter.cpp
-      gps/qwtpolar-1.0/qwt_polar_grid.cpp
-      gps/qwtpolar-1.0/qwt_polar_item.cpp
-      gps/qwtpolar-1.0/qwt_polar_itemdict.cpp
-      gps/qwtpolar-1.0/qwt_polar_layout.cpp
-      gps/qwtpolar-1.0/qwt_polar_magnifier.cpp
-      gps/qwtpolar-1.0/qwt_polar_marker.cpp
-      gps/qwtpolar-1.0/qwt_polar_panner.cpp
-      gps/qwtpolar-1.0/qwt_polar_picker.cpp
-      gps/qwtpolar-1.0/qwt_polar_plot.cpp
-      gps/qwtpolar-1.0/qwt_polar_renderer.cpp
-      gps/qwtpolar-1.0/qwt_polar_spectrogram.cpp
-    )
+      SET (QGIS_APP_MOC_HDRS
+        ${QGIS_APP_MOC_HDRS}
+        gps/qwtpolar-0.1/qwt_polar_canvas.h
+        gps/qwtpolar-0.1/qwt_polar_magnifier.h
+        gps/qwtpolar-0.1/qwt_polar_panner.h
+        gps/qwtpolar-0.1/qwt_polar_plot.h
+      )
 
-    SET (QGIS_APP_MOC_HDRS
-      ${QGIS_APP_MOC_HDRS}
-      gps/qwtpolar-1.0/qwt_polar_canvas.h
-      gps/qwtpolar-1.0/qwt_polar_magnifier.h
-      gps/qwtpolar-1.0/qwt_polar_panner.h
-      gps/qwtpolar-1.0/qwt_polar_picker.h
-      gps/qwtpolar-1.0/qwt_polar_plot.h
-      gps/qwtpolar-1.0/qwt_polar_renderer.h
-    )
+      SET(QWTPOLAR_INCLUDE_DIR gps/qwtpolar-0.1)
+    ELSE(QWT_VERSION_STR VERSION_LESS "6.0.0")
+      IF(NOT QWT_VERSION_STR VERSION_LESS "6.1.0")
+        MESSAGE(FATAL_ERROR "Internal QwtPolar does not support Qwt 6.1 and above")
+      ENDIF(NOT QWT_VERSION_STR VERSION_LESS "6.1.0")
 
-    SET(QWTPOLAR_INCLUDE_DIR gps/qwtpolar-1.0)
-  ENDIF(QWT_VERSION_STR VERSION_LESS "6.0.0")
+      SET(QGIS_APP_SRCS
+        ${QGIS_APP_SRCS}
+        gps/qwtpolar-1.0/qwt_polar_canvas.cpp
+        gps/qwtpolar-1.0/qwt_polar_curve.cpp
+        gps/qwtpolar-1.0/qwt_polar_fitter.cpp
+        gps/qwtpolar-1.0/qwt_polar_grid.cpp
+        gps/qwtpolar-1.0/qwt_polar_item.cpp
+        gps/qwtpolar-1.0/qwt_polar_itemdict.cpp
+        gps/qwtpolar-1.0/qwt_polar_layout.cpp
+        gps/qwtpolar-1.0/qwt_polar_magnifier.cpp
+        gps/qwtpolar-1.0/qwt_polar_marker.cpp
+        gps/qwtpolar-1.0/qwt_polar_panner.cpp
+        gps/qwtpolar-1.0/qwt_polar_picker.cpp
+        gps/qwtpolar-1.0/qwt_polar_plot.cpp
+        gps/qwtpolar-1.0/qwt_polar_renderer.cpp
+        gps/qwtpolar-1.0/qwt_polar_spectrogram.cpp
+      )
 
+      SET (QGIS_APP_MOC_HDRS
+        ${QGIS_APP_MOC_HDRS}
+        gps/qwtpolar-1.0/qwt_polar_canvas.h
+        gps/qwtpolar-1.0/qwt_polar_magnifier.h
+        gps/qwtpolar-1.0/qwt_polar_panner.h
+        gps/qwtpolar-1.0/qwt_polar_picker.h
+        gps/qwtpolar-1.0/qwt_polar_plot.h
+        gps/qwtpolar-1.0/qwt_polar_renderer.h
+      )
+
+      SET(QWTPOLAR_INCLUDE_DIR gps/qwtpolar-1.0)
+    ENDIF(QWT_VERSION_STR VERSION_LESS "6.0.0")
+
+    SET(QWTPOLAR_LIBRARY "")
+  ENDIF(WITH_INTERNAL_QWTPOLAR)
+ELSE(WITH_QWTPOLAR)
   SET(QWTPOLAR_LIBRARY "")
-ENDIF(WITH_INTERNAL_QWTPOLAR)
-
+  SET(QWTPOLAR_INCLUDE_DIR "")
+ENDIF(WITH_QWTPOLAR)
 
 IF (POSTGRES_FOUND)
   IF(HAVE_PGCONFIG)
@@ -434,6 +456,7 @@ INCLUDE_DIRECTORIES(
   ../core/gps
   ../core/composer
   ../core/dxf
+  ../core/geometry
   ../core/layertree
   ../core/raster
   ../core/symbology-ng
@@ -448,27 +471,21 @@ INCLUDE_DIRECTORIES(
   ../python
   gps
   openstreetmap
-  )
-
-IF (ANDROID)
-  INCLUDE_DIRECTORIES(${ANDROID_NDK_TOOLCHAIN_ROOT}/sysroot/usr/include)
-ENDIF (ANDROID)
-
-IF (WITH_INTERNAL_SPATIALITE)
-  INCLUDE_DIRECTORIES(../core/spatialite/headers)
-  INCLUDE_DIRECTORIES(../core/spatialite/headers/spatialite)
-ELSE (WITH_INTERNAL_SPATIALITE)
-  INCLUDE_DIRECTORIES(${SPATIALITE_INCLUDE_DIR})
-  INCLUDE_DIRECTORIES(${SQLITE3_INCLUDE_DIR})
-  ADD_DEFINITIONS(-DEXTERNAL_SPATIALITE)
-ENDIF (WITH_INTERNAL_SPATIALITE)
-
-INCLUDE_DIRECTORIES(
+  ${SPATIALITE_INCLUDE_DIR}
+  ${SQLITE3_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
   ${QWTPOLAR_INCLUDE_DIR}
-)
+  )
+
+IF(ENABLE_MODELTEST)
+  INCLUDE_DIRECTORIES(../../tests/qt_modeltest)
+ENDIF(ENABLE_MODELTEST)
+
+IF (ANDROID)
+  INCLUDE_DIRECTORIES(${ANDROID_NDK_TOOLCHAIN_ROOT}/sysroot/usr/include)
+ENDIF (ANDROID)
 
 IF (POSTGRES_FOUND)
   INCLUDE_DIRECTORIES(${POSTGRES_INCLUDE_DIR})
@@ -481,18 +498,13 @@ ELSE (ANDROID)
   ADD_EXECUTABLE(${QGIS_APP_NAME} MACOSX_BUNDLE WIN32 main.cpp ${QGIS_APP_SRCS} ${QGIS_APP_MOC_SRCS} ${IMAGE_RCC_SRCS} ${TEST_RCC_SRCS})
 ENDIF (ANDROID)
 
-
-QT4_WRAP_CPP(tst_moc_srcs maprenderertest.h)
-ADD_EXECUTABLE(maprenderertest maprenderertest.cpp ${tst_moc_srcs})
-TARGET_LINK_LIBRARIES(maprenderertest   qgis_core qgis_gui)
-
-IF (WIN32)
-  IF (MSVC)
-    ADD_DEFINITIONS("-DAPP_EXPORT=${DLLEXPORT}")
-  ELSE (MSVC)
-    ADD_DEFINITIONS("-UAPP_EXPORT \"-DAPP_EXPORT=${DLLEXPORT}\"")
-  ENDIF (MSVC)
-ENDIF (WIN32)
+IF (NOT MSVC)
+  ADD_DEFINITIONS("-UAPP_EXPORT")
+  IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU" OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden")
+  ENDIF()
+ENDIF (NOT MSVC)
+ADD_DEFINITIONS("\"-DAPP_EXPORT=${DLLEXPORT}\"")
 
 # shared library used by tests - TODO: use it also for qgis executable?
 ADD_LIBRARY(qgis_app SHARED ${QGIS_APP_SRCS} ${QGIS_APP_MOC_SRCS} ${QGIS_APP_HDRS} ${QGIS_APP_MOC_HDRS} ${IMAGE_RCC_SRCS})

@@ -26,8 +26,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import math
-from PyQt4.QtCore import *
-from qgis.core import *
 from processing.core.outputs import OutputTable
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.tools import dataobjects, vector
@@ -47,24 +45,20 @@ class StatisticsByCategories(GeoAlgorithm):
         self.group = 'Vector table tools'
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-                          'Input vector layer',
-                          [ParameterVector.VECTOR_TYPE_ANY], False))
+            self.tr('Input vector layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
         self.addParameter(ParameterTableField(self.VALUES_FIELD_NAME,
-                          'Field to calculate statistics on',
-                          self.INPUT_LAYER,
-                          ParameterTableField.DATA_TYPE_NUMBER))
+            self.tr('Field to calculate statistics on'),
+            self.INPUT_LAYER, ParameterTableField.DATA_TYPE_NUMBER))
         self.addParameter(ParameterTableField(self.CATEGORIES_FIELD_NAME,
-                          'Field with categories', self.INPUT_LAYER,
-                          ParameterTableField.DATA_TYPE_ANY))
+            self.tr('Field with categories'),
+            self.INPUT_LAYER, ParameterTableField.DATA_TYPE_ANY))
 
-        self.addOutput(OutputTable(self.OUTPUT, 'Statistics'))
+        self.addOutput(OutputTable(self.OUTPUT, self.tr('Statistics by category')))
 
     def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.INPUT_LAYER))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
         valuesFieldName = self.getParameterValue(self.VALUES_FIELD_NAME)
-        categoriesFieldName = self.getParameterValue(
-                self.CATEGORIES_FIELD_NAME)
+        categoriesFieldName = self.getParameterValue(self.CATEGORIES_FIELD_NAME)
 
         output = self.getOutputFromName(self.OUTPUT)
         valuesField = layer.fieldNameIndex(valuesFieldName)
@@ -87,11 +81,11 @@ class StatisticsByCategories(GeoAlgorithm):
             except:
                 pass
 
-        fields = ['category', 'min', 'max', 'mean', 'stddev', 'count']
+        fields = ['category', 'min', 'max', 'mean', 'stddev', 'sum', 'count']
         writer = output.getTableWriter(fields)
         for (cat, v) in values.items():
-            (min, max, mean, stddev) = calculateStats(v)
-            record = [cat, min, max, mean, stddev, len(v)]
+            (min, max, mean, stddev, sum) = calculateStats(v)
+            record = [cat, min, max, mean, stddev, sum, len(v)]
             writer.addRecord(record)
 
 
@@ -121,4 +115,4 @@ def calculateStats(values):
     else:
         variance = 0
     stddev = math.sqrt(variance)
-    return (minvalue, maxvalue, mean, stddev)
+    return (minvalue, maxvalue, mean, stddev, sum)

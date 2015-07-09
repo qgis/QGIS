@@ -42,13 +42,17 @@ class lassplit(LAStoolsAlgorithm):
         self.group = "LAStools"
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addParameter(ParameterNumber(lassplit.DIGITS, "number of digits for file names", 0, None, 5))
-        self.addParameter(ParameterSelection(lassplit.OPERATION, "how to split", lassplit.OPERATIONS, 0))
-        self.addParameter(ParameterNumber(lassplit.INTERVAL, "interval or number", 0, None, 5))
+        self.addParameter(ParameterNumber(lassplit.DIGITS,
+            self.tr("number of digits for file names"), 0, None, 5))
+        self.addParameter(ParameterSelection(lassplit.OPERATION,
+            self.tr("how to split"), lassplit.OPERATIONS, 0))
+        self.addParameter(ParameterNumber(lassplit.INTERVAL,
+            self.tr("interval or number"), 0, None, 5))
         self.addParametersPointOutputGUI()
+        self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lassplit.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lassplit")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
         digits = self.getParameterValue(lassplit.DIGITS)
@@ -65,5 +69,6 @@ class lassplit(LAStoolsAlgorithm):
             interval = self.getParameterValue(lassplit.INTERVAL)
             commands.append(str(interval))
         self.addParametersPointOutputCommands(commands)
+        self.addParametersAdditionalCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

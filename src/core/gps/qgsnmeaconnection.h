@@ -30,7 +30,7 @@ class CORE_EXPORT QgsNMEAConnection: public QgsGPSConnection
 
   protected slots:
     /**Parse available data source content*/
-    void parseData();
+    void parseData() override;
 
   protected:
     /**Store data from the device before it is processed*/

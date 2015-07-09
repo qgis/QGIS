@@ -28,11 +28,7 @@ __revision__ = '$Format:%H$'
 import struct
 import numpy
 from osgeo import gdal
-from osgeo.gdalconst import *
-from osgeo import osr
-from PyQt4.QtCore import *
-from qgis.core import *
-
+from osgeo.gdalconst import GA_ReadOnly
 
 
 def scanraster(layer, progress):
@@ -40,11 +36,27 @@ def scanraster(layer, progress):
     dataset = gdal.Open(filename, GA_ReadOnly)
     band = dataset.GetRasterBand(1)
     nodata = band.GetNoDataValue()
+    bandtype = gdal.GetDataTypeName(band.DataType)
     for y in xrange(band.YSize):
         progress.setPercentage(y / float(band.YSize) * 100)
         scanline = band.ReadRaster(0, y, band.XSize, 1, band.XSize, 1,
                                    band.DataType)
-        values = struct.unpack('f' * band.XSize, scanline)
+        if bandtype == 'Byte':
+            values = struct.unpack('B' * band.XSize, scanline)
+        elif bandtype == 'Int16':
+            values = struct.unpack('h' * band.XSize, scanline)
+        elif bandtype == 'UInt16':
+            values = struct.unpack('H' * band.XSize, scanline)
+        elif bandtype == 'Int32':
+            values = struct.unpack('i' * band.XSize, scanline)
+        elif bandtype == 'UInt32':
+            values = struct.unpack('I' * band.XSize, scanline)
+        elif bandtype == 'Float32':
+            values = struct.unpack('f' * band.XSize, scanline)
+        elif bandtype == 'Float64':
+            values = struct.unpack('d' * band.XSize, scanline)
+        else:
+            raise GeoAlgorithmExecutionException('Raster format not supported')
         for value in values:
             if value == nodata:
                 value = None

@@ -3,4 +3,4 @@ r.resamp.interp - Resamples raster map to a finer grid using interpolation.
 Raster (r.*)
 ParameterRaster|input|Input raster layer|False
 ParameterSelection|method|Sampling interpolation method|nearest;bilinear;bicubic;lanczos
-OutputRaster|output|Output raster layer
+OutputRaster|output|Resampled interpolated

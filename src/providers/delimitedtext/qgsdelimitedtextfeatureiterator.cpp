@@ -26,7 +26,8 @@
 #include <QTextStream>
 
 QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTextFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
-    : QgsAbstractFeatureIteratorFromSource( source, ownSource, request )
+    : QgsAbstractFeatureIteratorFromSource<QgsDelimitedTextFeatureSource>( source, ownSource, request )
+    , mTestGeometryExact( false )
 {
 
   // Determine mode to use based on request...
@@ -287,17 +288,21 @@ bool QgsDelimitedTextFeatureIterator::nextFeatureInternal( QgsFeature& feature )
 
     if ( mLoadGeometry )
     {
+      bool nullGeom = false;
       if ( mSource->mGeomRep == QgsDelimitedTextProvider::GeomAsWkt )
       {
-        geom = loadGeometryWkt( tokens );
+        geom = loadGeometryWkt( tokens, nullGeom );
       }
       else if ( mSource->mGeomRep == QgsDelimitedTextProvider::GeomAsXy )
       {
-        geom = loadGeometryXY( tokens );
+        geom = loadGeometryXY( tokens, nullGeom );
       }
 
-      if ( ! geom )
+      if (( !geom && !nullGeom ) || ( nullGeom && mTestGeometry ) )
       {
+        // if we didn't get a geom and not because it's null, or we got a null
+        // geom and we are testing for intersecting geometries then ignore this
+        // record
         continue;
       }
     }
@@ -305,7 +310,7 @@ bool QgsDelimitedTextFeatureIterator::nextFeatureInternal( QgsFeature& feature )
     // At this point the current feature values are valid
 
     feature.setValid( true );
-    feature.setFields( &mSource->mFields ); // allow name-based attribute lookups
+    feature.setFields( mSource->mFields ); // allow name-based attribute lookups
     feature.setFeatureId( fid );
     feature.initAttributes( mSource->mFields.count() );
 
@@ -354,11 +359,17 @@ bool QgsDelimitedTextFeatureIterator::setNextFeatureId( qint64 fid )
 
 
 
-QgsGeometry* QgsDelimitedTextFeatureIterator::loadGeometryWkt( const QStringList& tokens )
+QgsGeometry* QgsDelimitedTextFeatureIterator::loadGeometryWkt( const QStringList& tokens, bool &isNull )
 {
   QgsGeometry* geom = 0;
   QString sWkt = tokens[mSource->mWktFieldIndex];
+  if ( sWkt.isEmpty() )
+  {
+    isNull = true;
+    return 0;
+  }
 
+  isNull = false;
   geom = QgsDelimitedTextProvider::geomFromWkt( sWkt, mSource->mWktHasPrefix, mSource->mWktHasZM );
 
   if ( geom && geom->type() != mSource->mGeometryType )
@@ -374,10 +385,16 @@ QgsGeometry* QgsDelimitedTextFeatureIterator::loadGeometryWkt( const QStringList
   return geom;
 }
 
-QgsGeometry* QgsDelimitedTextFeatureIterator::loadGeometryXY( const QStringList& tokens )
+QgsGeometry* QgsDelimitedTextFeatureIterator::loadGeometryXY( const QStringList& tokens, bool &isNull )
 {
   QString sX = tokens[mSource->mXFieldIndex];
   QString sY = tokens[mSource->mYFieldIndex];
+  if ( sX.isEmpty() && sY.isEmpty() )
+  {
+    isNull = true;
+    return 0;
+  }
+  isNull = false;
   QgsPoint pt;
   bool ok = QgsDelimitedTextProvider::pointFromXY( sX, sY, pt, mSource->mDecimalPoint, mSource->mXyDms );
 
@@ -446,7 +463,7 @@ void QgsDelimitedTextFeatureIterator::fetchAttribute( QgsFeature& feature, int f
 
 QgsDelimitedTextFeatureSource::QgsDelimitedTextFeatureSource( const QgsDelimitedTextProvider* p )
     : mGeomRep( p->mGeomRep )
-    , mSubsetExpression( p->mSubsetExpression )
+    , mSubsetExpression( p->mSubsetExpression ? new QgsExpression( p->mSubsetExpression->expression() ) : 0 )
     , mExtent( p->mExtent )
     , mUseSpatialIndex( p->mUseSpatialIndex )
     , mSpatialIndex( p->mSpatialIndex ? new QgsSpatialIndex( *p->mSpatialIndex ) : 0 )
@@ -471,6 +488,7 @@ QgsDelimitedTextFeatureSource::QgsDelimitedTextFeatureSource( const QgsDelimited
 
 QgsDelimitedTextFeatureSource::~QgsDelimitedTextFeatureSource()
 {
+  delete mSubsetExpression;
   delete mSpatialIndex;
   delete mFile;
 }

@@ -95,10 +95,10 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      */
     enum ZoomMode
     {
-      Zoom = 0, /*< Zoom to center of content */
-      ZoomRecenter, /*< Zoom and recenter content to point */
-      ZoomToPoint, /*< Zoom while maintaining relative position of point */
-      NoZoom /*< No zoom */
+      Zoom = 0, /*!< Zoom to center of content */
+      ZoomRecenter, /*!< Zoom and recenter content to point */
+      ZoomToPoint, /*!< Zoom while maintaining relative position of point */
+      NoZoom /*!< No zoom */
     };
 
     /**Constructor
@@ -116,7 +116,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     virtual ~QgsComposerItem();
 
     /** return correct graphics item type. */
-    virtual int type() const { return ComposerItem; }
+    virtual int type() const override { return ComposerItem; }
 
     /**Returns whether this item has been removed from the composition. Items removed
      * from the composition are not deleted so that they can be restored via an undo
@@ -192,17 +192,24 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     */
     void updatePagePos( double newPageWidth, double newPageHeight );
 
-    /**Moves the item to a new position (in canvas coordinates)*/
+    /**Moves the item to a new position (in canvas coordinates)
+      @param x item position x (mm)
+      @param y item position y (mm)
+      @param itemPoint reference point which coincides with specified position
+      @param page if page > 0, y is interpreted as relative to the origin of the specified page, if page <= 0, y is in absolute canvas coordinates.
+       a page number of 1 corresponds to the first page.
+      */
     void setItemPosition( double x, double y, ItemPositionMode itemPoint = UpperLeft, int page = -1 );
 
     /**Sets item position and width / height in one go
-      @param x item position x
-      @param y item position y
-      @param width item width
-      @param height item height
-      @param itemPoint item position mode
+      @param x item position x (mm)
+      @param y item position y (mm)
+      @param width item width (mm)
+      @param height item height (mm)
+      @param itemPoint reference point which coincides with specified position
       @param posIncludesFrame set to true if the position and size arguments include the item's frame border
-      @param page if page > 0, y is interpreted as relative to the origin of the specified page, if page <= 0, y is in absolute canvas coordinates
+      @param page if page > 0, y is interpreted as relative to the origin of the specified page, if page <= 0, y is in absolute canvas coordinates.
+       a page number of 1 corresponds to the first page.
       */
     void setItemPosition( double x, double y, double width, double height, ItemPositionMode itemPoint = UpperLeft, bool posIncludesFrame = false, int page = -1 );
 
@@ -590,7 +597,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     */
     virtual void setItemRotation( const double r, const bool adjustPosition = false );
 
-    void repaint();
+    void repaint() override;
 
     /**Refreshes a data defined property for the item by reevaluating the property's value
      * and redrawing the item with this new value.
@@ -599,7 +606,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * refreshed.
      * @note this method was added in version 2.5
     */
-    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );
+    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties ) override;
 
   protected:
     /**True if item has been removed from the composition*/

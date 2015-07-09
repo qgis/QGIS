@@ -6,4 +6,4 @@ ParameterRaster|reference|Raster layer containing reference classes|False
 ParameterString|title|Title for error matrix and kappa|ACCURACY ASSESSMENT
 ParameterBoolean|-h|No header in the report|False
 ParameterBoolean|-w|Wide report (132 columns)|False
-OutputFile|output|Output file containing error matrix and kappa
+OutputFile|output|Error matrix and kappa

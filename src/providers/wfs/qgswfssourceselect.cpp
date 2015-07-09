@@ -403,8 +403,10 @@ void QgsWFSSourceSelect::addLayer()
       layerName = titleName;
     }
     QgsDebugMsg( "Layer " + typeName + " Filter is " + filter );
+
     //is "cache features" checked?
-    if ( mModel->item( row, 3 )->checkState() == Qt::Checked )
+    //non-cached mode does not work anymore
+    if ( !cbxFeatureCurrentViewExtent->isChecked() && mModel->item( row, 3 )->checkState() == Qt::Checked )
     { //yes: entire WFS layer will be retrieved and cached
       mUri = conn.uriGetFeature( typeName, pCrsString, filter );
     }

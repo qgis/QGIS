@@ -57,10 +57,10 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     ~QgsComposerPicture();
 
     /** return correct graphics item type. */
-    virtual int type() const { return ComposerPicture; }
+    virtual int type() const override { return ComposerPicture; }
 
     /**Reimplementation of QCanvasItem::paint*/
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
+    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
 
     /**Sets the source file of the image (may be svg or a raster format). Data defined
      * picture source may override this value.
@@ -102,19 +102,19 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     /**Sets this items bound in scene coordinates such that 1 item size units
      * corresponds to 1 scene size unit and resizes the svg symbol / image
     */
-    void setSceneRect( const QRectF& rectangle );
+    void setSceneRect( const QRectF& rectangle ) override;
 
     /**Stores state in Dom element
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param doc is Dom document
      */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
 
     /**Sets state from Dom document
      * @param itemElem is Dom node corresponding to item tag
      * @param doc is Dom document
      */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
     /**Returns the rotation used for drawing the picture within the composer item
      * @deprecated Use pictureRotation() instead
@@ -229,7 +229,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      * the item rectangle, only the way the picture is drawn within the item.
      * @deprecated Use setPictureRotation( double rotation ) instead
      */
-    virtual void setRotation( double r );
+    virtual void setRotation( double r ) override;
 
     /**Sets the picture rotation within the item bounds. This does not affect
      * the item's frame, only the way the picture is drawn within the item.
@@ -285,7 +285,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      */
     void recalculateSize();
 
-    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );
+    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties ) override;
 
   signals:
     /**Is emitted on picture rotation change*/

@@ -16,7 +16,6 @@ class QgsComposerAttributeTableColumnModelV2: QAbstractTableModel
     };
 
     /**Constructor for QgsComposerAttributeTableColumnModel.
-    /**Constructor for QgsComposerAttributeTableColumnModel.
      * @param composerTable QgsComposerAttributeTable the model is attached to
      * @param parent optional parent
      */
@@ -41,7 +40,7 @@ class QgsComposerAttributeTableColumnModelV2: QAbstractTableModel
      * @param direction direction to move the attribute table column
      * @note added in 2.3
      */
-    bool moveRow( int row , ShiftDirection direction );
+    bool moveRow( int row, ShiftDirection direction );
 
     /**Resets the attribute table's columns to match the source layer's fields. Remove all existing
      * attribute table columns and column customisations.

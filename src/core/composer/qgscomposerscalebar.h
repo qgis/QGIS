@@ -48,14 +48,22 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
       NauticalMiles
     };
 
+    /** Modes for setting size for scale bar segments
+    */
+    enum SegmentSizeMode
+    {
+      SegmentSizeFixed = 0, /*!< Scale bar segment size is fixed to a map unit*/
+      SegmentSizeFitWidth = 1 /*!< Scale bar segment size is calculated to fit a size range*/
+    };
+
     QgsComposerScaleBar( QgsComposition* composition );
     ~QgsComposerScaleBar();
 
     /** return correct graphics item type. */
-    virtual int type() const { return ComposerScaleBar; }
+    virtual int type() const override { return ComposerScaleBar; }
 
     /** \brief Reimplementation of QCanvasItem::paint*/
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
+    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
 
     //getters and setters
     int numSegments() const {return mNumSegments;}
@@ -66,6 +74,65 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
 
     double numUnitsPerSegment() const {return mNumUnitsPerSegment;}
     void setNumUnitsPerSegment( double units );
+
+    /** Returns the size mode for scale bar segments.
+     * @see setSegmentSizeMode
+     * @see minBarWidth
+     * @see maxBarWidth
+     * @note added in QGIS 2.9
+     */
+    SegmentSizeMode segmentSizeMode() const { return mSegmentSizeMode; }
+
+    /** Sets the size mode for scale bar segments.
+     * @param mode size mode
+     * @see segmentSizeMode
+     * @see setMinBarWidth
+     * @see setMaxBarWidth
+     * @note added in QGIS 2.9
+     */
+    void setSegmentSizeMode( SegmentSizeMode mode );
+
+    /** Returns the minimum size (in millimeters) for scale bar segments. This
+     * property is only effective if the @link segmentSizeMode @endlink is set
+     * to @link SegmentSizeFitWidth @endlink.
+     * @see segmentSizeMode
+     * @see setMinBarWidth
+     * @see maxBarWidth
+     * @note added in QGIS 2.9
+     */
+    double minBarWidth() const { return mMinBarWidth; }
+
+    /** Sets the minimum size (in millimeters) for scale bar segments. This
+     * property is only effective if the @link segmentSizeMode @endlink is set
+     * to @link SegmentSizeFitWidth @endlink.
+     * @param minWidth minimum width in millimeters
+     * @see minBarWidth
+     * @see setMaxBarWidth
+     * @see setSegmentSizeMode
+     * @note added in QGIS 2.9
+     */
+    void setMinBarWidth( double minWidth );
+
+    /** Returns the maximum size (in millimeters) for scale bar segments. This
+     * property is only effective if the @link segmentSizeMode @endlink is set
+     * to @link SegmentSizeFitWidth @endlink.
+     * @see segmentSizeMode
+     * @see setMaxBarWidth
+     * @see minBarWidth
+     * @note added in QGIS 2.9
+     */
+    double maxBarWidth() const { return mMaxBarWidth; }
+
+    /** Sets the maximum size (in millimeters) for scale bar segments. This
+     * property is only effective if the @link segmentSizeMode @endlink is set
+     * to @link SegmentSizeFitWidth @endlink.
+     * @param maxWidth maximum width in millimeters
+     * @see minBarWidth
+     * @see setMaxBarWidth
+     * @see setSegmentSizeMode
+     * @note added in QGIS 2.9
+     */
+    void setMaxBarWidth( double maxWidth );
 
     double numMapUnitsPerScaleBarUnit() const {return mNumMapUnitsPerScaleBarUnit;}
     void setNumMapUnitsPerScaleBarUnit( double d ) {mNumMapUnitsPerScaleBarUnit = d;}
@@ -218,19 +285,19 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
        * @param elem is Dom element corresponding to 'Composer' tag
        * @param doc Dom document
        */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
 
     /** sets state from Dom document
        * @param itemElem is Dom node corresponding to item tag
        * @param doc is Dom document
        */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
     /**Moves scalebar position to the left / right depending on alignment and change in item width*/
     void correctXPositionAlignment( double width, double widthAfter );
 
     //overriden to apply minimum size
-    void setSceneRect( const QRectF &rectangle );
+    void setSceneRect( const QRectF &rectangle ) override;
 
   public slots:
     void updateSegmentSize();
@@ -249,6 +316,12 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     double mNumUnitsPerSegment;
     /**Number of map units per scale bar units (e.g. 1000 to have km for a map with m units)*/
     double mNumMapUnitsPerScaleBarUnit;
+    /**Either fixed (i.e. mNumUnitsPerSegment) or try to best fit scale bar width (mMinBarWidth, mMaxBarWidth)*/
+    SegmentSizeMode mSegmentSizeMode;
+    /**Minimum allowed bar width, when mSegmentSizeMode is FitWidth*/
+    double mMinBarWidth;
+    /**Maximum allowed bar width, when mSegmentSizeMode is FitWidth*/
+    double mMaxBarWidth;
 
     /**Labeling of map units*/
     QString mUnitLabeling;

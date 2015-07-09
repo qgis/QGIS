@@ -4,7 +4,7 @@ class QgsColorRampComboBox : QComboBox
 #include <qgscolorrampcombobox.h>
 %End
   public:
-    QgsColorRampComboBox( QWidget *parent = 0 );
+    QgsColorRampComboBox( QWidget *parent /TransferThis/ = 0 );
 
     ~QgsColorRampComboBox();
 

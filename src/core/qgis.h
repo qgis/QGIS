@@ -203,21 +203,21 @@ class CORE_EXPORT QGis
      */
     enum DataType
     {
-      /*! Unknown or unspecified type */                UnknownDataType = 0,
-      /*! Eight bit unsigned integer (quint8) */        Byte = 1,
-      /*! Sixteen bit unsigned integer (quint16) */     UInt16 = 2,
-      /*! Sixteen bit signed integer (qint16) */        Int16 = 3,
-      /*! Thirty two bit unsigned integer (quint32) */  UInt32 = 4,
-      /*! Thirty two bit signed integer (qint32) */     Int32 = 5,
-      /*! Thirty two bit floating point (float) */      Float32 = 6,
-      /*! Sixty four bit floating point (double) */     Float64 = 7,
-      /*! Complex Int16 */                              CInt16 = 8,
-      /*! Complex Int32 */                              CInt32 = 9,
-      /*! Complex Float32 */                            CFloat32 = 10,
-      /*! Complex Float64 */                            CFloat64 = 11,
-      /*! Color, alpha, red, green, blue, 4 bytes the same as
+      /** Unknown or unspecified type */                UnknownDataType = 0,
+      /** Eight bit unsigned integer (quint8) */        Byte = 1,
+      /** Sixteen bit unsigned integer (quint16) */     UInt16 = 2,
+      /** Sixteen bit signed integer (qint16) */        Int16 = 3,
+      /** Thirty two bit unsigned integer (quint32) */  UInt32 = 4,
+      /** Thirty two bit signed integer (qint32) */     Int32 = 5,
+      /** Thirty two bit floating point (float) */      Float32 = 6,
+      /** Sixty four bit floating point (double) */     Float64 = 7,
+      /** Complex Int16 */                              CInt16 = 8,
+      /** Complex Int32 */                              CInt32 = 9,
+      /** Complex Float32 */                            CFloat32 = 10,
+      /** Complex Float64 */                            CFloat64 = 11,
+      /** Color, alpha, red, green, blue, 4 bytes the same as
           QImage::Format_ARGB32 */                      ARGB32 = 12,
-      /*! Color, alpha, red, green, blue, 4 bytes  the same as
+      /** Color, alpha, red, green, blue, 4 bytes  the same as
           QImage::Format_ARGB32_Premultiplied */        ARGB32_Premultiplied = 13
     };
 
@@ -246,8 +246,30 @@ class CORE_EXPORT QGis
     static UnitType fromLiteral( QString  literal, QGis::UnitType defaultType = UnknownUnit );
     //! Provides translated version of the type value
     static QString tr( QGis::UnitType unit );
+    //! Provides type value from translated version
+    static UnitType fromTr( QString literal, QGis::UnitType defaultType = UnknownUnit );
     //! Returns the conversion factor between the specified units
     static double fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit );
+
+    /** Converts a string to a double in a permissive way, eg allowing for incorrect
+     * numbers of digits between thousand separators
+     * @param string string to convert
+     * @param ok will be set to true if conversion was successful
+     * @returns string converted to double if possible
+     * @note added in version 2.9
+     * @see permissiveToInt
+     */
+    static double permissiveToDouble( QString string, bool& ok );
+
+    /** Converts a string to an integer in a permissive way, eg allowing for incorrect
+     * numbers of digits between thousand separators
+     * @param string string to convert
+     * @param ok will be set to true if conversion was successful
+     * @returns string converted to int if possible
+     * @note added in version 2.9
+     * @see permissiveToDouble
+     */
+    static int permissiveToInt( QString string, bool& ok );
 
     //! User defined event types
     enum UserEvent
@@ -316,7 +338,10 @@ inline void ( *cast_to_fptr( void *p ) )()
 //
 inline QString qgsDoubleToString( const double &a, const int &precision = 17 )
 {
-  return QString::number( a, 'f', precision ).remove( QRegExp( "\\.?0+$" ) );
+  if ( precision )
+    return QString::number( a, 'f', precision ).remove( QRegExp( "\\.?0+$" ) );
+  else
+    return QString::number( a, 'f', precision );
 }
 
 //
@@ -350,7 +375,7 @@ bool qgsVariantLessThan( const QVariant& lhs, const QVariant& rhs );
 
 bool qgsVariantGreaterThan( const QVariant& lhs, const QVariant& rhs );
 
-QString qgsVsiPrefix( QString path );
+CORE_EXPORT QString qgsVsiPrefix( QString path );
 
 /** Allocates size bytes and returns a pointer to the allocated  memory.
     Works like C malloc() but prints debug message by QgsLogger if allocation fails.
@@ -410,12 +435,12 @@ const double MINIMUM_POINT_SIZE = 0.1;
 const double DEFAULT_POINT_SIZE = 2.0;
 const double DEFAULT_LINE_WIDTH = 0.26;
 
-/** default snapping tolerance for segments */
+/** Default snapping tolerance for segments */
 const double DEFAULT_SEGMENT_EPSILON = 1e-8;
 
 typedef QMap<QString, QString> QgsStringMap;
 
-/** qgssize is used instead of size_t, because size_t is stdlib type, unknown
+/** Qgssize is used instead of size_t, because size_t is stdlib type, unknown
  *  by SIP, and it would be hard to define size_t correctly in SIP.
  *  Currently used "unsigned long long" was introduced in C++11 (2011)
  *  but it was supported already before C++11 on common platforms.
@@ -426,9 +451,9 @@ typedef unsigned long long qgssize;
 #if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) || defined(__clang__)
 #define Q_NOWARN_DEPRECATED_PUSH \
   _Pragma("GCC diagnostic push") \
-  _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
+  _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"");
 #define Q_NOWARN_DEPRECATED_POP \
-  _Pragma("GCC diagnostic pop")
+  _Pragma("GCC diagnostic pop");
 #elif defined(_MSC_VER)
 #define Q_NOWARN_DEPRECATED_PUSH \
   __pragma(warning(push)) \
@@ -440,16 +465,19 @@ typedef unsigned long long qgssize;
 #define Q_NOWARN_DEPRECATED_POP
 #endif
 
-// FIXME: also in qgisinterface.h
 #ifndef QGISEXTERN
-#ifdef WIN32
+#ifdef Q_OS_WIN
 #  define QGISEXTERN extern "C" __declspec( dllexport )
 #  ifdef _MSC_VER
 // do not warn about C bindings returing QString
 #    pragma warning(disable:4190)
 #  endif
 #else
-#  define QGISEXTERN extern "C"
+#  if defined(__GNUC__) || defined(__clang__)
+#    define QGISEXTERN extern "C" __attribute__ ((visibility ("default")))
+#  else
+#    define QGISEXTERN extern "C"
+#  endif
 #endif
 #endif
 #endif

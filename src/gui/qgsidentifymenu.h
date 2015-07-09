@@ -45,6 +45,12 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     {
       ActionData()
           : mIsValid( false )
+          , mAllResults( false )
+          , mIsExternalAction( false )
+          , mLayer( NULL )
+          , mFeatureId( 0 )
+          , mLevel( LayerLevel )
+          , mMapLayerAction( NULL )
       {}
 
       ActionData( QgsMapLayer* layer, QgsMapLayerAction* mapLayerAction = 0 )
@@ -52,6 +58,7 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
           , mAllResults( layer == 0 )
           , mIsExternalAction( mapLayerAction != 0 )
           , mLayer( layer )
+          , mFeatureId( 0 )
           , mLevel( LayerLevel )
           , mMapLayerAction( mapLayerAction )
       {}
@@ -130,7 +137,7 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     QList<QgsMapToolIdentify::IdentifyResult> exec( const QList<QgsMapToolIdentify::IdentifyResult> idResults, QPoint pos );
 
   protected:
-    virtual void closeEvent( QCloseEvent *e );
+    virtual void closeEvent( QCloseEvent *e ) override;
 
   private slots:
     void handleMenuHover();

@@ -14,8 +14,7 @@
  ***************************************************************************/
 
 #include "qgsosmimport.h"
-
-#include <spatialite.h>
+#include "qgsslconnect.h"
 
 #include <QStringList>
 #include <QXmlStreamReader>
@@ -56,9 +55,6 @@ bool QgsOSMXmlImport::import()
       return false;
     }
   }
-
-  // load spatialite extension
-  spatialite_init( 0 );
 
   if ( !createDatabase() )
   {
@@ -137,7 +133,7 @@ bool QgsOSMXmlImport::createDatabase()
 {
   char **results;
   int rows, columns;
-  if ( sqlite3_open_v2( mDbFileName.toUtf8().data(), &mDatabase, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, 0 ) != SQLITE_OK )
+  if ( QgsSLConnect::sqlite3_open_v2( mDbFileName.toUtf8().data(), &mDatabase, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, 0 ) != SQLITE_OK )
     return false;
 
   bool above41 = false;
@@ -238,7 +234,7 @@ bool QgsOSMXmlImport::closeDatabase()
 
   Q_ASSERT( mStmtInsertNode == 0 );
 
-  sqlite3_close( mDatabase );
+  QgsSLConnect::sqlite3_close( mDatabase );
   mDatabase = 0;
   return true;
 }

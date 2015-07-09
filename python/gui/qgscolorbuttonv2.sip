@@ -7,7 +7,7 @@
  * \note Added in version 2.5
  */
 
-class QgsColorButtonV2: QToolButton
+class QgsColorButtonV2 : QToolButton
 {
 %TypeHeaderCode
 #include <qgscolorbuttonv2.h>

@@ -26,11 +26,11 @@ class QgsWFSRootItem : public QgsDataCollectionItem
     QgsWFSRootItem( QgsDataItem* parent, QString name, QString path );
     ~QgsWFSRootItem();
 
-    QVector<QgsDataItem*> createChildren();
+    QVector<QgsDataItem*> createChildren() override;
 
-    virtual QList<QAction*> actions();
+    virtual QList<QAction*> actions() override;
 
-    virtual QWidget * paramWidget();
+    virtual QWidget * paramWidget() override;
 
   public slots:
     void connectionsChanged();
@@ -46,10 +46,10 @@ class QgsWFSConnectionItem : public QgsDataCollectionItem
     QgsWFSConnectionItem( QgsDataItem* parent, QString name, QString path, QString uri );
     ~QgsWFSConnectionItem();
 
-    QVector<QgsDataItem*> createChildren();
+    QVector<QgsDataItem*> createChildren() override;
     //virtual bool equal( const QgsDataItem *other );
 
-    virtual QList<QAction*> actions();
+    virtual QList<QAction*> actions() override;
 
   private slots:
     void gotCapabilities();

@@ -14,7 +14,16 @@
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>1</number>
+   </property>
+   <property name="topMargin">
+    <number>1</number>
+   </property>
+   <property name="rightMargin">
+    <number>1</number>
+   </property>
+   <property name="bottomMargin">
     <number>1</number>
    </property>
    <item>
@@ -108,10 +117,19 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="decimals">
+        <number>2</number>
+       </property>
+       <property name="maximum">
+        <double>9999999.000000000000000</double>
+       </property>
        <property name="singleStep">
         <double>0.200000000000000</double>
        </property>
-       <property name="showClearButton">
+       <property name="value">
+        <double>1.000000000000000</double>
+       </property>
+       <property name="showClearButton" stdset="0">
         <bool>false</bool>
        </property>
       </widget>

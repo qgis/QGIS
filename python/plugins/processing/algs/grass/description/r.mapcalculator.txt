@@ -8,4 +8,4 @@ ParameterRaster|dmap|Raster layer D|True
 ParameterRaster|emap|Raster layer E|True
 ParameterRaster|fmap|Raster layer F|True
 ParameterString|formula|Formula| A*C+B
-OutputRaster|outfile|Output raster layer
+OutputRaster|outfile|Calculated

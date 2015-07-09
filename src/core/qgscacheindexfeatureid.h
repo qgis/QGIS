@@ -29,13 +29,13 @@ class CORE_EXPORT QgsCacheIndexFeatureId : public QgsAbstractCacheIndex
      * Is called, whenever a feature is removed from the cache. You should update your indexes, so
      * they become invalid in case this feature was required to successfuly answer a request.
      */
-    virtual void flushFeature( const QgsFeatureId fid );
+    virtual void flushFeature( const QgsFeatureId fid ) override;
 
     /**
      * Sometimes, the whole cache changes its state and its easier to just withdraw everything.
      * In this case, this method is issued. Be sure to clear all cache information in here.
      */
-    virtual void flush();
+    virtual void flush() override;
 
     /**
      * @brief
@@ -46,7 +46,7 @@ class CORE_EXPORT QgsCacheIndexFeatureId : public QgsAbstractCacheIndex
      * @param featureRequest  The feature request that was answered
      * @param fids            The feature ids that have been returned
      */
-    virtual void requestCompleted( QgsFeatureRequest featureRequest, QgsFeatureIds fids );
+    virtual void requestCompleted( QgsFeatureRequest featureRequest, QgsFeatureIds fids ) override;
 
     /**
      * Is called, when a feature request is issued on a cached layer.
@@ -62,7 +62,7 @@ class CORE_EXPORT QgsCacheIndexFeatureId : public QgsAbstractCacheIndex
      * @return   True, if this index holds the information to answer the request.
      *
      */
-    virtual bool getCacheIterator( QgsFeatureIterator& featureIterator, const QgsFeatureRequest& featureRequest );
+    virtual bool getCacheIterator( QgsFeatureIterator& featureIterator, const QgsFeatureRequest& featureRequest ) override;
 
   private:
     QgsVectorLayerCache* C;

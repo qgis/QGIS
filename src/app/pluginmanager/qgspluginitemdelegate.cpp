@@ -31,7 +31,9 @@ QSize QgsPluginItemDelegate::sizeHint( const QStyleOptionViewItem & option, cons
 {
   Q_UNUSED( option );
   Q_UNUSED( index );
-  return QSize( 20, 20 );
+  // Calculate row height, adds some 20% padding
+  int pixelsHigh = QApplication::fontMetrics().height() * 1.4;
+  return QSize( pixelsHigh, pixelsHigh );
 }
 
 
@@ -40,6 +42,7 @@ void QgsPluginItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
   painter->save();
   painter->setRenderHint( QPainter::SmoothPixmapTransform );
   QStyle *style = QApplication::style();
+  int pixelsHigh = QApplication::fontMetrics().height();
 
   // Draw the background
   style->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter, NULL );
@@ -65,8 +68,8 @@ void QgsPluginItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
 
   if ( !iconPixmap.isNull() )
   {
-    int iconSize = option.rect.height();
-    painter->drawPixmap( option.rect.left() + 24, option.rect.top(), iconSize, iconSize, iconPixmap );
+    int iconSize = pixelsHigh;
+    painter->drawPixmap( option.rect.left() + 1.2 * pixelsHigh, option.rect.top() + 0.2 * pixelsHigh, iconSize, iconSize, iconPixmap );
   }
 
   // Draw the text
@@ -92,8 +95,7 @@ void QgsPluginItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem
     font.setBold( true );
     painter->setFont( font );
   }
-
-  painter->drawText( option.rect.left() + 48, option.rect.bottom() - 3, index.data( Qt::DisplayRole ).toString() );
+  painter->drawText( option.rect.left() + pixelsHigh * 2.4, option.rect.bottom() - pixelsHigh * 0.4, index.data( Qt::DisplayRole ).toString() );
 
   painter->restore();
 }

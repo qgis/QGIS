@@ -48,7 +48,7 @@ class QgsOgrTopologyPreservingSimplifier : public QgsOgrAbstractGeometrySimplifi
     virtual ~QgsOgrTopologyPreservingSimplifier();
 
     //! Simplifies the specified geometry
-    virtual bool simplifyGeometry( OGRGeometryH geometry );
+    virtual bool simplifyGeometry( OGRGeometryH geometry ) override;
 };
 #endif
 

@@ -48,12 +48,12 @@ class QgsRasterMatrix
 
     /**Returns data array (but not ownership)*/
     //! @note not available in python bindings
-    // float* data();
+    // double* data();
     /**Returns data and ownership. Sets data and nrows, ncols of this matrix to 0*/
     //! @note not available in python bindings
-    // float* takeData();
+    // double* takeData();
 
-    void setData( int cols, int rows, float* data, double nodataValue );
+    void setData( int cols, int rows, double* data, double nodataValue );
 
     int nColumns() const;
     int nRows() const;

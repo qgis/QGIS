@@ -19,6 +19,7 @@
 #include "qgscomposertablecolumn.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgscomposerutils.h"
+#include "qgsfontutils.h"
 #include <QPainter>
 #include <QSettings>
 
@@ -267,10 +268,10 @@ void QgsComposerTable::setColumns( QList<QgsComposerTableColumn*> columns )
 bool QgsComposerTable::tableWriteXML( QDomElement& elem, QDomDocument & doc ) const
 {
   elem.setAttribute( "lineTextDist", QString::number( mLineTextDistance ) );
-  elem.setAttribute( "headerFont", mHeaderFont.toString() );
+  elem.appendChild( QgsFontUtils::toXmlElement( mHeaderFont, doc, "headerFontProperties" ) );
   elem.setAttribute( "headerFontColor", QgsSymbolLayerV2Utils::encodeColor( mHeaderFontColor ) );
   elem.setAttribute( "headerHAlignment", QString::number(( int )mHeaderHAlignment ) );
-  elem.setAttribute( "contentFont", mContentFont.toString() );
+  elem.appendChild( QgsFontUtils::toXmlElement( mContentFont, doc, "contentFontProperties" ) );
   elem.setAttribute( "contentFontColor", QgsSymbolLayerV2Utils::encodeColor( mContentFontColor ) );
   elem.setAttribute( "gridStrokeWidth", QString::number( mGridStrokeWidth ) );
   elem.setAttribute( "gridColor", QgsSymbolLayerV2Utils::encodeColor( mGridColor ) );
@@ -297,10 +298,16 @@ bool QgsComposerTable::tableReadXML( const QDomElement& itemElem, const QDomDocu
     return false;
   }
 
-  mHeaderFont.fromString( itemElem.attribute( "headerFont", "" ) );
+  if ( !QgsFontUtils::setFromXmlChildNode( mHeaderFont, itemElem, "headerFontProperties" ) )
+  {
+    mHeaderFont.fromString( itemElem.attribute( "headerFont", "" ) );
+  }
   mHeaderFontColor = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "headerFontColor", "0,0,0,255" ) );
   mHeaderHAlignment = QgsComposerTable::HeaderHAlignment( itemElem.attribute( "headerHAlignment", "0" ).toInt() );
-  mContentFont.fromString( itemElem.attribute( "contentFont", "" ) );
+  if ( !QgsFontUtils::setFromXmlChildNode( mContentFont, itemElem, "contentFontProperties" ) )
+  {
+    mContentFont.fromString( itemElem.attribute( "contentFont", "" ) );
+  }
   mContentFontColor = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "contentFontColor", "0,0,0,255" ) );
   mLineTextDistance = itemElem.attribute( "lineTextDist", "1.0" ).toDouble();
   mGridStrokeWidth = itemElem.attribute( "gridStrokeWidth", "0.5" ).toDouble();

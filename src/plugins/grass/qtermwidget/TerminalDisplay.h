@@ -269,7 +269,7 @@ namespace Konsole
       void setFixedSize( int cols, int lins );
 
       // reimplemented
-      QSize sizeHint() const;
+      QSize sizeHint() const override;
 
       /**
        * Sets which characters, in addition to letters and numbers,
@@ -496,29 +496,29 @@ namespace Konsole
       void sendStringToEmu( const char* );
 
     protected:
-      virtual bool event( QEvent * );
+      virtual bool event( QEvent * ) override;
 
-      virtual void paintEvent( QPaintEvent * );
+      virtual void paintEvent( QPaintEvent * ) override;
 
-      virtual void showEvent( QShowEvent* );
-      virtual void hideEvent( QHideEvent* );
-      virtual void resizeEvent( QResizeEvent* );
+      virtual void showEvent( QShowEvent* ) override;
+      virtual void hideEvent( QHideEvent* ) override;
+      virtual void resizeEvent( QResizeEvent* ) override;
 
-      virtual void fontChange( const QFont &font );
+      virtual void fontChange( const QFont &font ) override;
 
-      virtual void keyPressEvent( QKeyEvent* event );
-      virtual void mouseDoubleClickEvent( QMouseEvent* ev );
-      virtual void mousePressEvent( QMouseEvent* );
-      virtual void mouseReleaseEvent( QMouseEvent* );
-      virtual void mouseMoveEvent( QMouseEvent* );
+      virtual void keyPressEvent( QKeyEvent* event ) override;
+      virtual void mouseDoubleClickEvent( QMouseEvent* ev ) override;
+      virtual void mousePressEvent( QMouseEvent* ) override;
+      virtual void mouseReleaseEvent( QMouseEvent* ) override;
+      virtual void mouseMoveEvent( QMouseEvent* ) override;
       virtual void extendSelection( const QPoint& pos );
-      virtual void wheelEvent( QWheelEvent* );
+      virtual void wheelEvent( QWheelEvent* ) override;
 
-      virtual bool focusNextPrevChild( bool next );
+      virtual bool focusNextPrevChild( bool next ) override;
 
       // drag and drop
-      virtual void dragEnterEvent( QDragEnterEvent* event );
-      virtual void dropEvent( QDropEvent* event );
+      virtual void dragEnterEvent( QDragEnterEvent* event ) override;
+      virtual void dropEvent( QDropEvent* event ) override;
       void doDrag();
       enum DragState { diNone, diPending, diDragging };
 
@@ -536,8 +536,8 @@ namespace Konsole
       void mouseTripleClickEvent( QMouseEvent* ev );
 
       // reimplemented
-      virtual void inputMethodEvent( QInputMethodEvent* event );
-      virtual QVariant inputMethodQuery( Qt::InputMethodQuery query ) const;
+      virtual void inputMethodEvent( QInputMethodEvent* event ) override;
+      virtual QVariant inputMethodQuery( Qt::InputMethodQuery query ) const override;
 
     protected slots:
 

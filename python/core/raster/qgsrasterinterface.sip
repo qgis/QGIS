@@ -106,7 +106,7 @@ class QgsRasterInterface
      */
     virtual QgsRectangle extent();
 
-    int dataTypeSize ( int bandNo );
+    int dataTypeSize( int bandNo );
 
     /** Get number of bands */
     virtual int bandCount() const = 0;
@@ -130,7 +130,7 @@ class QgsRasterInterface
      * @param width pixel width of block
      * @param height pixel height of block
      */
-    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) = 0 / Factory /;
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) = 0 /Factory/;
 
     /** Set input.
       * Returns true if set correctly, false if cannot use that input */

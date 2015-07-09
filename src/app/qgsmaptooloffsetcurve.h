@@ -18,10 +18,10 @@
 
 #include "qgsmaptooledit.h"
 #include "qgsgeometry.h"
-#include "qgssnapper.h"
+#include "qgspointlocator.h"
 
 class QgsVertexMarker;
-class QDoubleSpinBox;
+class QgsDoubleSpinBox;
 class QGraphicsProxyWidget;
 
 class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
@@ -31,16 +31,17 @@ class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
     QgsMapToolOffsetCurve( QgsMapCanvas* canvas );
     ~QgsMapToolOffsetCurve();
 
-    void canvasPressEvent( QMouseEvent * e );
-    void canvasReleaseEvent( QMouseEvent * e );
-    void canvasMoveEvent( QMouseEvent * e );
+    void canvasReleaseEvent( QMouseEvent * e ) override;
+    void canvasMoveEvent( QMouseEvent * e ) override;
 
   private slots:
-    /**Places curve offset to value entered in the spin box*/
+    /** Places curve offset to value entered in the spin box*/
     void placeOffsetCurveToValue();
 
-  private:
+    /** Apply the offset either from the spin box or from the mouse event */
+    void applyOffset();
 
+  private:
     /**Rubberband that shows the position of the offset curve*/
     QgsRubberBand* mRubberBand;
     /**Geometry to manipulate*/
@@ -53,10 +54,8 @@ class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
     QString mSourceLayerId;
     /**Internal flag to distinguish move from click*/
     bool mGeometryModified;
-    /**Embedded item widget for distance spinbox*/
-    QGraphicsProxyWidget* mDistanceItem;
     /**Shows current distance value and allows numerical editing*/
-    QDoubleSpinBox* mDistanceSpinBox;
+    QgsDoubleSpinBox* mDistanceWidget;
     /**Marker to show the cursor was snapped to another location*/
     QgsVertexMarker* mSnapVertexMarker;
     /**Forces geometry copy (no modification of geometry in current layer)*/
@@ -65,14 +64,12 @@ class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
 
 
     void deleteRubberBandAndGeometry();
-    QgsGeometry* createOriginGeometry( QgsVectorLayer* vl, const QgsSnappingResult& sr, QgsFeature& snappedFeature );
-    void createDistanceItem();
-    void deleteDistanceItem();
-    void setOffsetForRubberBand( double offset, bool leftSide );
+    QgsGeometry* createOriginGeometry( QgsVectorLayer* vl, const QgsPointLocator::Match& match, QgsFeature& snappedFeature );
+    void createDistanceWidget();
+    void deleteDistanceWidget();
+    void setOffsetForRubberBand( double offset );
     /**Creates a linestring from the polygon ring containing the snapped vertex. Caller takes ownership of the created object*/
-    QgsGeometry* linestringFromPolygon( QgsGeometry* featureGeom, int vertex );
-    /**Sets snapping with default vertex search tolerance to all layers (to vertex and segment)*/
-    void configureSnapper( QgsSnapper& s );
+    QgsGeometry* linestringFromPolygon( const QgsGeometry *featureGeom, int vertex );
     /**Returns a single line from a multiline (or does nothing if geometry is already a single line). Deletes the input geometry*/
     QgsGeometry* convertToSingleLine( QgsGeometry* geom, int vertex, bool& isMulti );
     /**Converts offset line back to a multiline if necessary*/

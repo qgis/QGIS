@@ -23,7 +23,7 @@ class QgsSLLayerItem : public QgsLayerItem
   public:
     QgsSLLayerItem( QgsDataItem* parent, QString name, QString path, QString uri, LayerType layerType );
 
-    QList<QAction*> actions();
+    QList<QAction*> actions() override;
 
   public slots:
     void deleteLayer();
@@ -36,13 +36,13 @@ class QgsSLConnectionItem : public QgsDataCollectionItem
     QgsSLConnectionItem( QgsDataItem* parent, QString name, QString path );
     ~QgsSLConnectionItem();
 
-    QVector<QgsDataItem*> createChildren();
-    virtual bool equal( const QgsDataItem *other );
+    QVector<QgsDataItem*> createChildren() override;
+    virtual bool equal( const QgsDataItem *other ) override;
 
-    virtual QList<QAction*> actions();
+    virtual QList<QAction*> actions() override;
 
-    virtual bool acceptDrop() { return true; }
-    virtual bool handleDrop( const QMimeData * data, Qt::DropAction action );
+    virtual bool acceptDrop() override { return true; }
+    virtual bool handleDrop( const QMimeData * data, Qt::DropAction action ) override;
 
   public slots:
     void editConnection();
@@ -59,11 +59,11 @@ class QgsSLRootItem : public QgsDataCollectionItem
     QgsSLRootItem( QgsDataItem* parent, QString name, QString path );
     ~QgsSLRootItem();
 
-    QVector<QgsDataItem*> createChildren();
+    QVector<QgsDataItem*> createChildren() override;
 
-    virtual QWidget * paramWidget();
+    virtual QWidget * paramWidget() override;
 
-    virtual QList<QAction*> actions();
+    virtual QList<QAction*> actions() override;
 
   public slots:
     void connectionsChanged();

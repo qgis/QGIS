@@ -45,16 +45,7 @@
       <item>
        <widget class="QWidget" name="mCadWidget" native="true">
         <layout class="QVBoxLayout" name="verticalLayout">
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
+         <property name="margin">
           <number>0</number>
          </property>
          <item>
@@ -87,16 +78,7 @@
               </sizepolicy>
              </property>
              <layout class="QGridLayout" name="gridLayout_2">
-              <property name="leftMargin">
-               <number>0</number>
-              </property>
-              <property name="topMargin">
-               <number>0</number>
-              </property>
-              <property name="rightMargin">
-               <number>0</number>
-              </property>
-              <property name="bottomMargin">
+              <property name="margin">
                <number>0</number>
               </property>
               <property name="spacing">
@@ -206,16 +188,7 @@
          <item>
           <widget class="QWidget" name="mInputWidgets" native="true">
            <layout class="QGridLayout" name="mInputLayout">
-            <property name="leftMargin">
-             <number>0</number>
-            </property>
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <property name="rightMargin">
-             <number>0</number>
-            </property>
-            <property name="bottomMargin">
+            <property name="margin">
              <number>0</number>
             </property>
             <property name="spacing">
@@ -386,9 +359,27 @@
    </layout>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>mEnabledButton</tabstop>
+  <tabstop>mConstructionModeButton</tabstop>
+  <tabstop>mPerpendicularButton</tabstop>
+  <tabstop>mParallelButton</tabstop>
+  <tabstop>mSettingsButton</tabstop>
+  <tabstop>mDistanceLineEdit</tabstop>
+  <tabstop>mLockDistanceButton</tabstop>
+  <tabstop>mRelativeAngleButton</tabstop>
+  <tabstop>mAngleLineEdit</tabstop>
+  <tabstop>mLockAngleButton</tabstop>
+  <tabstop>mRelativeXButton</tabstop>
+  <tabstop>mXLineEdit</tabstop>
+  <tabstop>mLockXButton</tabstop>
+  <tabstop>mRelativeYButton</tabstop>
+  <tabstop>mYLineEdit</tabstop>
+  <tabstop>mLockYButton</tabstop>
+ </tabstops>
  <resources>
-  <include location="../plugins/georeferencer/georeferencer.qrc"/>
   <include location="../../images/images.qrc"/>
+  <include location="../plugins/georeferencer/georeferencer.qrc"/>
  </resources>
  <connections/>
 </ui>

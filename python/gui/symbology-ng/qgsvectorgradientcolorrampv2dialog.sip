@@ -5,7 +5,7 @@ class QgsVectorGradientColorRampV2Dialog : QDialog
 %End
 
   public:
-    QgsVectorGradientColorRampV2Dialog( QgsVectorGradientColorRampV2* ramp, QWidget* parent = NULL );
+    QgsVectorGradientColorRampV2Dialog( QgsVectorGradientColorRampV2* ramp, QWidget* parent /TransferThis/ = NULL );
 
   public slots:
     void setColor1( const QColor& color );
@@ -17,6 +17,10 @@ class QgsVectorGradientColorRampV2Dialog : QDialog
 
     void stopDoubleClicked( QTreeWidgetItem* item, int column );
     void setItemStopColor( const QColor& newColor );
+
+  protected slots:
+    void on_cboType_currentIndexChanged( int index );
+    void on_btnInformation_pressed();
 
   protected:
 

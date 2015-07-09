@@ -3,4 +3,4 @@ r.mode - Finds the mode of values in a cover layer within areas assigned the sam
 Raster (r.*)
 ParameterRaster|base|Base layer to be reclassified|False
 ParameterRaster|cover|Categories layer|False
-OutputRaster|output|Output layer
+OutputRaster|output|Mode

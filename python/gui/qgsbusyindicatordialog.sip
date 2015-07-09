@@ -15,7 +15,7 @@ class QgsBusyIndicatorDialog : QDialog
      * @param parent parent object (owner)
      * @param fl widget flags
     */
-    QgsBusyIndicatorDialog( const QString& message = "", QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsBusyIndicatorDialog( const QString& message = "", QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     ~QgsBusyIndicatorDialog();
 
     QString message() const;

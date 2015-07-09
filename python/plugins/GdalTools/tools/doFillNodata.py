@@ -23,16 +23,13 @@ __copyright__ = '(C) 2011, Alexander Bruy'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from qgis.gui import *
+from PyQt4.QtCore import Qt, QObject, SIGNAL, QCoreApplication, QDir
+from PyQt4.QtGui import QWidget
 
 from ui_widgetFillNodata import Ui_GdalToolsWidget as Ui_Widget
 from widgetBatchBase import GdalToolsBaseBatchWidget as BaseBatchWidget
 import GdalTools_utils as Utils
 
-import os.path
 import re
 
 class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
@@ -54,8 +51,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
 
       self.outputFormat = Utils.fillRasterOutputFormat()
 
-      self.setParamsStatus(
-        [
+      self.setParamsStatus([
           ( self.inSelector, SIGNAL( "filenameChanged()" ) ),
           ( self.outSelector, SIGNAL( "filenameChanged()" ) ),
           ( self.maskSelector, SIGNAL( "filenameChanged()" ), self.maskCheck ),
@@ -63,8 +59,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
           ( self.smoothSpin, SIGNAL( "valueChanged( int )" ), self.smoothCheck ),
           ( self.bandSpin, SIGNAL( "valueChanged( int )" ), self.bandCheck ),
           ( self.nomaskCheck, SIGNAL( "stateChanged( int )" ) )
-        ]
-      )
+      ])
 
       self.connect( self.inSelector, SIGNAL( "selectClicked()" ), self.fillInputFile )
       self.connect( self.outSelector, SIGNAL( "selectClicked()" ), self.fillOutputFile)
@@ -228,7 +223,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
 
       for f in files:
         self.inFiles.append( inDir + "/" + f )
-        if outDir != None:
+        if outDir is not None:
           outFile = re.sub( "\.[a-zA-Z0-9]{2,4}", outExt, f )
           self.outFiles.append( outDir + "/" + outFile )
 

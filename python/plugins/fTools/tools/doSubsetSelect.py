@@ -28,10 +28,13 @@
 #
 #---------------------------------------------------------------------
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-import random, ftools_utils
-from qgis.core import *
+from PyQt4.QtCore import SIGNAL, QObject
+from PyQt4.QtGui import QDialog, QDialogButtonBox, QMessageBox
+from qgis.core import QGis, QgsFeature
+
+import random
+import ftools_utils
+
 from ui_frmSubsetSelect import Ui_Dialog
 
 class Dialog(QDialog, Ui_Dialog):
@@ -46,7 +49,6 @@ class Dialog(QDialog, Ui_Dialog):
         self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
         # populate layer list
         self.progressBar.setValue(0)
-        mapCanvas = self.iface.mapCanvas()
         layers = ftools_utils.getLayerNames([QGis.Point, QGis.Line, QGis.Polygon])
         self.inShape.addItems(layers)
 

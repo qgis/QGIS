@@ -158,8 +158,10 @@ extern "C"
 // private data //
 //////////////////
 
-KPtyPrivate::KPtyPrivate() :
-    masterFd( -1 ), slaveFd( -1 )
+KPtyPrivate::KPtyPrivate()
+  : masterFd( -1 )
+  , slaveFd( -1 )
+  , q_ptr( 0 )
 {
 }
 
@@ -368,8 +370,8 @@ grantedpt:
 
 //#endif /* HAVE_OPENPTY */
 
-  fcntl( d->masterFd, F_SETFD, FD_CLOEXEC );
-  fcntl( d->slaveFd, F_SETFD, FD_CLOEXEC );
+  (void)fcntl( d->masterFd, F_SETFD, FD_CLOEXEC );
+  (void)fcntl( d->slaveFd, F_SETFD, FD_CLOEXEC );
 
   return true;
 }
@@ -401,12 +403,12 @@ void KPty::close()
       {
         if( chown( d->ttyName.data(), 0, st.st_gid == getgid() ? 0 : -1 ) < 0 )
           perror( "chown" );
-        chmod( d->ttyName.data(), S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH );
+        (void)chmod( d->ttyName.data(), S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH );
       }
     }
     else
     {
-      fcntl( d->masterFd, F_SETFD, 0 );
+      (void)fcntl( d->masterFd, F_SETFD, 0 );
       d->chownpty( false );
     }
   }

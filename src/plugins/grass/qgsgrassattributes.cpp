@@ -264,19 +264,16 @@ void QgsGrassAttributes::updateAttributes()
 
     QgsDebugMsg( QString( "sql: %1" ).arg( sql ) );
 
-    QString *error = mProvider->updateAttributes( tb->item( 0, 1 )->text().toInt(), tb->item( 1, 1 )->text().toInt(), sql );
-
-    if ( !error->isEmpty() )
+    QString error = mProvider->updateAttributes( tb->item( 0, 1 )->text().toInt(), tb->item( 1, 1 )->text().toInt(), sql );
+    if ( !error.isEmpty() )
     {
-      QMessageBox::warning( 0, tr( "Warning" ), *error );
+      QMessageBox::warning( 0, tr( "Warning" ), error );
       resultLabel->setText( tr( "ERROR" ) );
     }
     else
     {
       resultLabel->setText( tr( "OK" ) );
     }
-
-    delete error;
   }
 }
 

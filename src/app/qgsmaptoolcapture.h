@@ -41,16 +41,16 @@ class APP_EXPORT QgsMapToolCapture : public QgsMapToolEdit
     virtual ~QgsMapToolCapture();
 
     //! Overridden mouse move event
-    virtual void canvasMapMoveEvent( QgsMapMouseEvent* e );
+    virtual void canvasMapMoveEvent( QgsMapMouseEvent* e ) override;
 
     //! Overridden mouse press event
-    virtual void canvasMapPressEvent( QgsMapMouseEvent * e );
+    virtual void canvasMapPressEvent( QgsMapMouseEvent * e ) override;
 
     //! Overridden key press event
-    virtual void canvasKeyPressEvent( QKeyEvent* e );
+    virtual void canvasKeyPressEvent( QKeyEvent* e ) override;
 
     //! deactive the tool
-    virtual void deactivate();
+    virtual void deactivate() override;
 
   public slots:
     void currentLayerChanged( QgsMapLayer *layer );

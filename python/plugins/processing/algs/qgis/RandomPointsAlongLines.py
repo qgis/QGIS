@@ -25,18 +25,15 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-import math
 import random
 
-from PyQt4.QtCore import *
-
-from qgis.core import *
+from PyQt4.QtCore import QVariant
+from qgis.core import QGis, QgsFields, QgsField, QgsGeometry, QgsSpatialIndex, QgsDistanceArea, QgsFeatureRequest, QgsFeature, QgsPoint
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
@@ -52,12 +49,13 @@ class RandomPointsAlongLines(GeoAlgorithm):
         self.name = 'Random points along line'
         self.group = 'Vector creation tools'
         self.addParameter(ParameterVector(self.VECTOR,
-            'Input layer',[ParameterVector.VECTOR_TYPE_LINE]))
-        self.addParameter(ParameterNumber
-            (self.POINT_NUMBER, 'Number of points', 1, 9999999, 1))
-        self.addParameter(ParameterNumber(
-            self.MIN_DISTANCE, 'Minimum distance', 0.0, 9999999.0, 0.0))
-        self.addOutput(OutputVector(self.OUTPUT, 'Random points'))
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE]))
+        self.addParameter(ParameterNumber(self.POINT_NUMBER,
+            self.tr('Number of points'), 1, 9999999, 1))
+        self.addParameter(ParameterNumber(self.MIN_DISTANCE,
+            self.tr('Minimum distance'), 0.0, 9999999.0, 0.0))
+
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
@@ -130,9 +128,8 @@ class RandomPointsAlongLines(GeoAlgorithm):
             nIterations += 1
 
         if nPoints < pointCount:
-            ProcessingLog.addToLog(
-                 ProcessingLog.LOG_INFO,
-                 'Can not generate requested number of random points. Maximum '
-                 'number of attempts exceeded.')
+            ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
+                 self.tr('Can not generate requested number of random points. '
+                         'Maximum number of attempts exceeded.'))
 
         del writer

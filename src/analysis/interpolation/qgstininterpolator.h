@@ -43,7 +43,7 @@ class ANALYSIS_EXPORT QgsTINInterpolator: public QgsInterpolator
        @param y y-coordinate (in map units)
        @param result out: interpolation result
        @return 0 in case of success*/
-    int interpolatePoint( double x, double y, double& result );
+    int interpolatePoint( double x, double y, double& result ) override;
 
     void setExportTriangulationToFile( bool e ) {mExportTriangulationToFile = e;}
     void setTriangulationFilePath( const QString& filepath ) {mTriangulationFilePath = filepath;}

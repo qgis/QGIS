@@ -1,9 +1,0 @@
-Vector Ruggedness Measure (VRM)
-ta_morphometry
-ParameterRaster|DEM|Elevation|False
-ParameterNumber|RADIUS|Radius (Cells)|None|None|1
-ParameterSelection|DISTANCE_WEIGHTING_WEIGHTING|Distance Weighting|[0] no distance weighting;[1] inverse distance to a power;[2] exponential;[3] gaussian weighting
-ParameterNumber|DISTANCE_WEIGHTING_IDW_POWER|Inverse Distance Weighting Power|0.0|None|1
-ParameterBoolean|DISTANCE_WEIGHTING_IDW_OFFSET     |Inverse Distance Offset|True
-ParameterNumber|DISTANCE_WEIGHTING_BANDWIDTH|Gaussian and Exponential Weighting Bandwidth|0.0|None|1
-OutputRaster|VRM|Vector Terrain Ruggedness (VRM)

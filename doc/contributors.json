@@ -294,13 +294,13 @@
         "Committer": "Yes",
         "First Commit Message": "Add backbuffering option to resolve flickering on X11 systems",
         "First Commit Date": "07-08-2012",
-        "GIT Nickname": "matthias-kuhn"
+        "GIT Nickname": "m-kuhn"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          8.740423321723938,
-          47.4989812888759
+          7.6256,
+          46.7542
         ]
       }
     },
@@ -564,6 +564,125 @@
         "coordinates": [
           14.99380588531494,
           48.791220421656064
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Martin Dobias",
+        "Committer": "Yes",
+        "First Commit Message": "Patch to allow setting extents from cli on startup",
+        "First Commit Date": "03-06-2005",
+        "GIT Nickname": "wonder"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          14.42916,
+          50.06681
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Marcel Dancak",
+        "Committer": "No",
+        "First Commit Message": "fixed occurrence of gml:featureMember elements in GetFeatureInfo response in application/vnd.ogc.gml format",
+        "First Commit Date": "20-02-2014",
+        "GIT Nickname": "marcel-dancak"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          21.28868,
+          49.04914
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Ivan Mincik",
+        "Committer": "No",
+        "First Commit Message": "Updating Slovak translation strings file.",
+        "First Commit Date": "23-05-2013",
+        "GIT Nickname": "imincik"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          21.19637,
+          49.04172
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Giovanni Manghi",
+        "Committer": "No",
+        "First Commit Message": "Makes SAGA supervised classification work also with SAGA 2.0.8.",
+        "First Commit Date": "30-09-2013",
+        "GIT Nickname": "gioman"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -7.917703,
+          38.596288
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Tom Kralidis",
+        "Committer": "Yes",
+        "First Commit Message": "add MetaSearch 0.2.0",
+        "First Commit Date": "07-05-2014",
+        "GIT Nickname": "tomkralidis"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -79.383184,
+           43.653226
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Alessandro Pasotti",
+        "Committer": "Yes",
+        "First Commit Message": "Initial GetStyles implementation",
+        "First Commit Date": "06-01-2014",
+        "GIT Nickname": "elpaso"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.251318,
+          44.815437
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Stéphane Brunner",
+        "Committer": "No",
+        "First Commit Message": "Typo in qgis_fr.ts",
+        "First Commit Date": "23-07-2013",
+        "GIT Nickname": "sbrunner"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.66946,
+          46.50825
         ]
       }
     }

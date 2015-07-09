@@ -17,6 +17,7 @@
 
 #include "qgscomposerlegendstyle.h"
 #include "qgscomposition.h"
+#include "qgsfontutils.h"
 #include <QFont>
 #include <QMap>
 #include <QSettings>
@@ -61,7 +62,7 @@ void QgsComposerLegendStyle::writeXML( QString name, QDomElement& elem, QDomDocu
   if ( mMarginMap[Left] != 0 ) styleElem.setAttribute( "marginLeft", QString::number( mMarginMap[Left] ) );
   if ( mMarginMap[Right] != 0 ) styleElem.setAttribute( "marginRight", QString::number( mMarginMap[Right] ) );
 
-  styleElem.setAttribute( "font", mFont.toString() );
+  styleElem.appendChild( QgsFontUtils::toXmlElement( mFont, doc, "styleFont" ) );
 
   elem.appendChild( styleElem );
 }
@@ -71,7 +72,10 @@ void QgsComposerLegendStyle::readXML( const QDomElement& elem, const QDomDocumen
   Q_UNUSED( doc );
   if ( elem.isNull() ) return;
 
-  mFont.fromString( elem.attribute( "font" ) );
+  if ( !QgsFontUtils::setFromXmlChildNode( mFont, elem, "styleFont" ) )
+  {
+    mFont.fromString( elem.attribute( "font" ) );
+  }
 
   mMarginMap[Top] = elem.attribute( "marginTop", "0" ).toDouble();
   mMarginMap[Bottom] = elem.attribute( "marginBottom", "0" ).toDouble();

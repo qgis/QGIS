@@ -31,7 +31,7 @@ class QgsComposerTableWidget: public QgsComposerItemBaseWidget, private Ui::QgsC
     ~QgsComposerTableWidget();
 
   protected:
-    void showEvent( QShowEvent * event );
+    void showEvent( QShowEvent * event ) override;
 
   private:
     QgsComposerAttributeTable* mComposerTable;

@@ -19,7 +19,6 @@ import shutil
 import platform
 import subprocess
 import time
-import inspect
 import urllib
 import urllib2
 import tempfile

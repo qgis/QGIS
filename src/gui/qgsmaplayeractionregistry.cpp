@@ -21,16 +21,18 @@ QgsMapLayerAction::QgsMapLayerAction( QString name, QObject* parent, Targets tar
     , mSingleLayer( false )
     , mActionLayer( 0 )
     , mSpecificLayerType( false )
+    , mLayerType( QgsMapLayer::VectorLayer )
     , mTargets( targets )
 {
 }
 
 /**Creates a map layer action which can run only on a specific layer*/
-QgsMapLayerAction::QgsMapLayerAction( QString name, QObject* parent, QgsMapLayer* layer , Targets targets, QIcon icon )
+QgsMapLayerAction::QgsMapLayerAction( QString name, QObject* parent, QgsMapLayer* layer, Targets targets, QIcon icon )
     : QAction( icon, name, parent )
     , mSingleLayer( true )
     , mActionLayer( layer )
     , mSpecificLayerType( false )
+    , mLayerType( QgsMapLayer::VectorLayer )
     , mTargets( targets )
 {
 }

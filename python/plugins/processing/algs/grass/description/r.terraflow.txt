@@ -3,9 +3,9 @@ r.terraflow - Flow computation for massive grids (float version).
 Raster (r.*)
 ParameterRaster|elevation|Name of elevation raster map|False
 ParameterBoolean|-s|SFD (D8) flow (default is MFD)|False
-OutputRaster|filled|Name for output filled (flooded) elevation raster map
-OutputRaster|direction|Name for output flow direction raster map
-OutputRaster|swatershed|Name for output sink-watershed raster map
-OutputRaster|accumulation|Name for output flow accumulation raster map
-OutputRaster|tci|Name for output topographic convergence index (tci) raster map
-OutputFile|stats|Name of file containing runtime statistics
+OutputRaster|filled|Filled (flooded) elevation
+OutputRaster|direction|Flow direction
+OutputRaster|swatershed|Sink-watershed
+OutputRaster|accumulation|Flow accumulation
+OutputRaster|tci|Topographic convergence index (tci)
+OutputFile|stats|Runtime statistics

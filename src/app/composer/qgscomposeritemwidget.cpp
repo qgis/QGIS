@@ -176,7 +176,14 @@ QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* 
   connect( mExcludePrintsDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
 }
 
-QgsComposerItemWidget::QgsComposerItemWidget(): QgsComposerItemBaseWidget( 0, 0 )
+QgsComposerItemWidget::QgsComposerItemWidget()
+    : QgsComposerItemBaseWidget( 0, 0 )
+    , mItem( NULL )
+    , mFreezeXPosSpin( false )
+    , mFreezeYPosSpin( false )
+    , mFreezeWidthSpin( false )
+    , mFreezeHeightSpin( false )
+    , mFreezePageSpin( false )
 {
 
 }

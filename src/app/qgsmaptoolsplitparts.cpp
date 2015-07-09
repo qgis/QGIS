@@ -18,6 +18,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgsmaptoolsplitparts.h"
+#include "qgssnappingutils.h"
 #include "qgsvectorlayer.h"
 
 #include <QMouseEvent>
@@ -55,17 +56,13 @@ void QgsMapToolSplitParts::canvasMapReleaseEvent( QgsMapMouseEvent * e )
   //add point to list and to rubber band
   if ( e->button() == Qt::LeftButton )
   {
-    QList<QgsSnappingResult> snapResults;
-
     //If we snap the first point on a vertex of a line layer, we directly split the feature at this point
     if ( vlayer->geometryType() == QGis::Line && points().isEmpty() )
     {
-      if ( mSnapper.snapToCurrentLayer( e->pos(), snapResults, QgsSnapper::SnapToVertex ) == 0 )
+      QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::Vertex );
+      if ( m.isValid() )
       {
-        if ( snapResults.size() > 0 )
-        {
-          split = true;
-        }
+        split = true;
       }
     }
 

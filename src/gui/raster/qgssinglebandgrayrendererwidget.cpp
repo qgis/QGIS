@@ -19,7 +19,9 @@
 #include "qgssinglebandgrayrenderer.h"
 #include "qgsrasterlayer.h"
 
-QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent ): QgsRasterRendererWidget( layer, extent )
+QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent )
+    : QgsRasterRendererWidget( layer, extent )
+    , mMinMaxWidget( NULL )
 {
   setupUi( this );
 

@@ -14,8 +14,7 @@ __revision__ = '$Format:%H$'
 
 import qgis
 from utilities import unittest, TestCase
-from qgis.core import QgsColorSchemeRegistry, QgsColorScheme, QgsRecentColorScheme
-from PyQt4.QtGui import QColor
+from qgis.core import QgsColorSchemeRegistry, QgsRecentColorScheme
 
 class TestQgsColorSchemeRegistry(TestCase):
 
@@ -71,4 +70,4 @@ class TestQgsColorSchemeRegistry(TestCase):
 
 
 if __name__ == "__main__":
-	unittest.main()
+        unittest.main()

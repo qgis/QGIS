@@ -34,9 +34,20 @@
 #include <QObject>
 #include <QtTest/QtTest>
 
-class TestQgsComposerTableV2: public QObject
+class TestQgsComposerTableV2 : public QObject
 {
     Q_OBJECT
+
+  public:
+    TestQgsComposerTableV2()
+        : mComposition( 0 )
+        , mMapSettings( 0 )
+        , mVectorLayer( 0 )
+        , mComposerAttributeTable( 0 )
+        , mFrame1( 0 )
+        , mFrame2( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -61,7 +72,7 @@ class TestQgsComposerTableV2: public QObject
 
   private:
     QgsComposition* mComposition;
-    QgsMapSettings mMapSettings;
+    QgsMapSettings *mMapSettings;
     QgsVectorLayer* mVectorLayer;
     QgsComposerAttributeTableV2* mComposerAttributeTable;
     QgsComposerFrame* mFrame1;
@@ -77,17 +88,40 @@ void TestQgsComposerTableV2::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
+  mMapSettings = new QgsMapSettings();
+
   //create maplayers from testdata and add to layer registry
-  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "points.shp" );
+  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + "/points.shp" );
   mVectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
                                      vectorFileInfo.completeBaseName(),
                                      "ogr" );
   QgsMapLayerRegistry::instance()->addMapLayer( mVectorLayer );
 
+  mMapSettings->setLayers( QStringList() << mVectorLayer->id() );
+  mMapSettings->setCrsTransformEnabled( false );
+
+  mReport = "<h1>Composer TableV2 Tests</h1>\n";
+}
+
+void TestQgsComposerTableV2::cleanupTestCase()
+{
+  delete mMapSettings;
+
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
+  QFile myFile( myReportFile );
+  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
+  {
+    QTextStream myQTextStream( &myFile );
+    myQTextStream << mReport;
+    myFile.close();
+  }
+  QgsApplication::exitQgis();
+}
+
+void TestQgsComposerTableV2::init()
+{
   //create composition with composer map
-  mMapSettings.setLayers( QStringList() << mVectorLayer->id() );
-  mMapSettings.setCrsTransformEnabled( false );
-  mComposition = new QgsComposition( mMapSettings );
+  mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 portrait
 
   mComposerAttributeTable = new QgsComposerAttributeTableV2( mComposition, false );
@@ -108,31 +142,11 @@ void TestQgsComposerTableV2::initTestCase()
   mComposerAttributeTable->setContentFont( QgsFontUtils::getStandardTestFont() );
   mComposerAttributeTable->setHeaderFont( QgsFontUtils::getStandardTestFont() );
   mComposerAttributeTable->setBackgroundColor( Qt::yellow );
-
-  mReport = "<h1>Composer TableV2 Tests</h1>\n";
-}
-
-void TestQgsComposerTableV2::cleanupTestCase()
-{
-  delete mComposition;
-
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
-  QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
-  {
-    QTextStream myQTextStream( &myFile );
-    myQTextStream << mReport;
-    myFile.close();
-  }
-  QgsApplication::exitQgis();
-}
-
-void TestQgsComposerTableV2::init()
-{
 }
 
 void TestQgsComposerTableV2::cleanup()
 {
+  delete mComposition;
 }
 
 void TestQgsComposerTableV2::attributeTableHeadings()
@@ -405,7 +419,7 @@ void TestQgsComposerTableV2::attributeTableAtlasSource()
 
   //setup atlas
   QgsVectorLayer* vectorLayer;
-  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "points.shp" );
+  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + "/points.shp" );
   vectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
                                     vectorFileInfo.completeBaseName(),
                                     "ogr" );
@@ -461,7 +475,7 @@ void TestQgsComposerTableV2::attributeTableAtlasSource()
 
 void TestQgsComposerTableV2::attributeTableRelationSource()
 {
-  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "points_relations.shp" );
+  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + "/points_relations.shp" );
   QgsVectorLayer* atlasLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
       vectorFileInfo.completeBaseName(),
       "ogr" );
@@ -616,4 +630,3 @@ void TestQgsComposerTableV2::removeDuplicates()
 
 QTEST_MAIN( TestQgsComposerTableV2 )
 #include "testqgscomposertablev2.moc"
-

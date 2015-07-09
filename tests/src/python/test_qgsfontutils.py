@@ -14,19 +14,13 @@ __copyright__ = 'Copyright 2014, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import qgis
 
-from PyQt4.QtGui import *
-
-from qgis.core import (
-    QgsFontUtils
-)
-
+from qgis.core import QgsFontUtils
 from utilities import (
     TestCase,
     getQgisTestApp,
     unittest,
-    expectedFailure,
-    unitTestDataPath,
     getTestFontFamily,
     loadTestFonts
 )

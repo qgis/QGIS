@@ -17,6 +17,7 @@
 
 #include "qgscomposertexttable.h"
 #include "qgscomposertablecolumn.h"
+#include "qgscomposerframe.h"
 
 QgsComposerTextTable::QgsComposerTextTable( QgsComposition* c ): QgsComposerTable( c )
 {
@@ -83,4 +84,73 @@ bool QgsComposerTextTable::getFeatureAttributes( QList<QgsAttributeMap>& attribu
   }
 
   return true;
+}
+
+
+QgsComposerTextTableV2::QgsComposerTextTableV2( QgsComposition* c, bool createUndoCommands )
+    : QgsComposerTableV2( c, createUndoCommands )
+{
+
+}
+
+QgsComposerTextTableV2::~QgsComposerTextTableV2()
+{
+
+}
+
+void QgsComposerTextTableV2::addRow( const QStringList& row )
+{
+  mRowText.append( row );
+  refreshAttributes();
+}
+
+void QgsComposerTextTableV2::setContents( const QList<QStringList>& contents )
+{
+  mRowText = contents;
+  refreshAttributes();
+}
+
+bool QgsComposerTextTableV2::getTableContents( QgsComposerTableContents& contents )
+{
+  contents.clear();
+
+  QList< QStringList >::const_iterator rowIt = mRowText.constBegin();
+  for ( ; rowIt != mRowText.constEnd(); ++rowIt )
+  {
+    QgsComposerTableRow currentRow;
+
+    for ( int i = 0; i < mColumns.count(); ++i )
+    {
+      if ( i < ( *rowIt ).count() )
+      {
+        currentRow << ( *rowIt ).at( i );
+      }
+      else
+      {
+        currentRow << QString();
+      }
+    }
+    contents << currentRow;
+  }
+
+  recalculateTableSize();
+  return true;
+}
+
+void QgsComposerTextTableV2::addFrame( QgsComposerFrame* frame, bool recalcFrameSizes )
+{
+  mFrameItems.push_back( frame );
+  connect( frame, SIGNAL( sizeChanged() ), this, SLOT( recalculateFrameSizes() ) );
+
+  if ( mComposition )
+  {
+    //TODO - if QgsComposerTextTableV2 gains a UI, this will need a dedicated add method
+    //added to QgsComposition
+    mComposition->addItem( frame );
+  }
+
+  if ( recalcFrameSizes )
+  {
+    recalculateFrameSizes();
+  }
 }

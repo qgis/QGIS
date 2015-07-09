@@ -113,7 +113,7 @@ void QgsLayerTreeNode::insertChildrenPrivate( int index, QList<QgsLayerTreeNode*
   if ( nodes.count() == 0 )
     return;
 
-  foreach ( QgsLayerTreeNode* node, nodes )
+  foreach ( QgsLayerTreeNode *node, nodes )
   {
     Q_ASSERT( node->mParent == 0 );
     node->mParent = this;
@@ -140,7 +140,7 @@ void QgsLayerTreeNode::insertChildrenPrivate( int index, QList<QgsLayerTreeNode*
   emit addedChildren( this, index, indexTo );
 }
 
-void QgsLayerTreeNode::removeChildrenPrivate( int from, int count )
+void QgsLayerTreeNode::removeChildrenPrivate( int from, int count, bool destroy )
 {
   if ( from < 0 || count <= 0 )
     return;
@@ -151,9 +151,23 @@ void QgsLayerTreeNode::removeChildrenPrivate( int from, int count )
   emit willRemoveChildren( this, from, to );
   while ( --count >= 0 )
   {
-    QgsLayerTreeNode* node = mChildren.takeAt( from );
+    QgsLayerTreeNode *node = mChildren.takeAt( from );
     node->mParent = 0;
-    delete node;
+    if ( destroy )
+      delete node;
   }
   emit removedChildren( this, from, to );
+}
+
+bool QgsLayerTreeNode::takeChild( QgsLayerTreeNode *node )
+{
+  int index = mChildren.indexOf( node );
+  if ( index < 0 )
+    return false;
+
+  int n = mChildren.size();
+
+  removeChildrenPrivate( index, 1, false );
+
+  return mChildren.size() < n;
 }

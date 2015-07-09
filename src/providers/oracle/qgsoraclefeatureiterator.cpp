@@ -23,7 +23,7 @@
 #include <QObject>
 
 QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource* source, bool ownSource, const QgsFeatureRequest &request )
-    : QgsAbstractFeatureIteratorFromSource( source, ownSource, request )
+    : QgsAbstractFeatureIteratorFromSource<QgsOracleFeatureSource>( source, ownSource, request )
     , mRewind( false )
 {
   mConnection = QgsOracleConn::connectDb( mSource->mUri.connectionInfo() );
@@ -66,14 +66,13 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource* sour
                        .arg( qgsDoubleToString( rect.yMaximum() ) );
 
         whereClause = QString( "sdo_filter(%1,%2)='TRUE'" ).arg( QgsOracleProvider::quotedIdentifier( mSource->mGeometryColumn ) ).arg( bbox );
-#if 0
-        if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
+
+        if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect && mConnection->hasSpatial() )
         {
           whereClause += QString( " AND sdo_relate(%1,%2,'mask=ANYINTERACT')='TRUE'" )
-                         .arg( quotedIdentifier( P->mGeometryColumn ) )
+                         .arg( QgsOracleProvider::quotedIdentifier( mSource->mGeometryColumn ) )
                          .arg( bbox );
         }
-#endif
       }
       break;
 
@@ -138,7 +137,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
     int col = 0;
 
     if ((( mRequest.flags() & QgsFeatureRequest::NoGeometry ) == 0 && !mSource->mGeometryColumn.isNull() ) ||
-        (( mRequest.flags() & QgsFeatureRequest::ExactIntersect ) != 0 && !mConnection->hasSpatial() ) )
+        (( mRequest.flags() & QgsFeatureRequest::ExactIntersect ) != 0 && ( !mConnection->hasSpatial() || !mSource->mHasSpatialIndex ) ) )
     {
       QByteArray *ba = static_cast<QByteArray*>( mQry.value( col++ ).data() );
       unsigned char *copy = new unsigned char[ba->size()];
@@ -146,10 +145,9 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
 
       feature.setGeometryAndOwnership( copy, ba->size() );
 
-      if ( !mConnection->hasSpatial() &&
-           mRequest.filterType() == QgsFeatureRequest::FilterRect &&
-           ( mRequest.flags() & QgsFeatureRequest::ExactIntersect ) != 0 &&
-           ( !feature.geometry() || !feature.geometry()->intersects( mRequest.filterRect() ) ) )
+      if (( mRequest.flags() & QgsFeatureRequest::ExactIntersect ) != 0 && ( !mConnection->hasSpatial() || !mSource->mHasSpatialIndex ) &&
+          mRequest.filterType() == QgsFeatureRequest::FilterRect &&
+          ( !feature.geometry() || !feature.geometry()->intersects( mRequest.filterRect() ) ) )
       {
         // skip feature that don't intersect with our rectangle
         QgsDebugMsg( "no intersect" );
@@ -230,7 +228,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature& feature )
     }
 
     feature.setValid( true );
-    feature.setFields( &mSource->mFields ); // allow name-based attribute lookups
+    feature.setFields( mSource->mFields ); // allow name-based attribute lookups
 
     return true;
   }

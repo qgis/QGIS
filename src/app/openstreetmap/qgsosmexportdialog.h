@@ -38,6 +38,8 @@ class QgsOSMExportDialog : public QDialog, private Ui::QgsOSMExportDialog
     void onBrowse();
     void updateLayerName();
     void onLoadTags();
+    void onSelectAll();
+    void onUnselectAll();
 
     void onOK();
     void onClose();

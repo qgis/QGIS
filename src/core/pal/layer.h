@@ -27,32 +27,25 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #ifndef _LAYER_H_
 #define _LAYER_H_
 
 #include <fstream>
 
-#include <pal/pal.h>
-#include <pal/palgeometry.h>
-
+#include "pal.h"
+#include "palgeometry.h"
+#include <QMutex>
+#include <QLinkedList>
+#include <QHash>
 
 namespace pal
 {
-
-  template <class Type> class LinkedList;
-  template <class Type> class Cell;
-  template <typename Data> class HashTable;
 
   template<class DATATYPE, class ELEMTYPE, int NUMDIMS, class ELEMTYPEREAL, int TMAXNODES, int TMINNODES> class RTree;
 
   class Feature;
   class FeaturePart;
   class Pal;
-  class SimpleMutex;
   class LabelInfo;
 
   /**
@@ -84,81 +77,6 @@ namespace pal
 
       bool getDisplayAll() const { return displayAll; }
 
-    protected:
-      char *name; /* unique */
-
-      /** list of feature parts */
-      LinkedList<FeaturePart*> *featureParts;
-
-      /** list of features - for deletion */
-      LinkedList<Feature*> *features;
-
-      Pal *pal;
-
-      double defaultPriority;
-
-      bool obstacle;
-      bool active;
-      bool toLabel;
-      bool displayAll;
-      bool centroidInside;
-
-      Units label_unit;
-
-      double min_scale;
-      double max_scale;
-
-      /** optional flags used for some placement methods */
-      Arrangement arrangement;
-      unsigned long arrangementFlags;
-      LabelMode mode;
-      bool mergeLines;
-      double repeatDistance;
-
-      UpsideDownLabels upsidedownLabels;
-
-      // indexes (spatial and id)
-      RTree<FeaturePart*, double, 2, double, 8, 4> *rtree;
-      HashTable<Feature*> *hashtable;
-
-      HashTable< LinkedList<FeaturePart*>* > * connectedHashtable;
-      LinkedList< char* >* connectedTexts;
-
-      SimpleMutex *modMutex;
-
-      /**
-       * \brief Create a new layer
-       *
-       * @param lyrName layer's name
-       * @param min_scale bellow this scale: no labeling
-       * @param max_scale above this scale: no labeling
-       * @param arrangement Arrangement mode : how to place candidates
-       * @param label_unit Unit for labels sizes
-       * @param defaultPriority layer's prioriry (0 is the best, 1 the worst)
-       * @param obstacle 'true' will discourage other label to be placed above features of this layer
-       * @param active is the layer is active (currently displayed)
-       * @param toLabel the layer will be labeled whether toLablel is true
-       * @param pal pointer to the pal object
-       * @param displayAll if true, all features will be labelled even though overlaps occur
-       *
-       */
-      Layer( const char *lyrName, double min_scale, double max_scale, Arrangement arrangement, Units label_unit, double defaultPriority, bool obstacle, bool active, bool toLabel, Pal *pal, bool displayAll = false );
-
-      /**
-       * \brief Delete the layer
-       */
-      virtual ~Layer();
-
-      /**
-       * \brief check if the scal is in the scale range min_scale -> max_scale
-       * @param scale the scale to check
-       */
-      bool isScaleValid( double scale );
-
-      /** add newly creted feature part into r tree and to the list */
-      void addFeaturePart( FeaturePart* fpart, const char* labelText = NULL );
-
-    public:
       /**
        * \brief get the number of features into layer
        */
@@ -167,7 +85,7 @@ namespace pal
       /**
        * \brief get layer's name
        */
-      const char * getName();
+      QString getName();
 
 
       /**
@@ -274,7 +192,6 @@ namespace pal
        * \ brief set the layer priority
        *
        * The best priority is 0, the worst is 1
-       * Should be links with a slider in a nice gui
        */
       void setPriority( double priority );
 
@@ -290,8 +207,8 @@ namespace pal
       void setMergeConnectedLines( bool m ) { mergeLines = m; }
       bool getMergeConnectedLines() const { return mergeLines; }
 
-      void setRepeatDistance( double distance ) { repeatDistance = distance; }
-      double getRepeatDistance() const { return repeatDistance; }
+      // void setRepeatDistance( double distance ) { repeatDistance = distance; }
+      // double getRepeatDistance() const { return repeatDistance; }
 
       void setUpsidedownLabels( UpsideDownLabels ud ) { upsidedownLabels = ud; }
       UpsideDownLabels getUpsidedownLabels() const { return upsidedownLabels; }
@@ -323,21 +240,93 @@ namespace pal
        *
        * @return true on success (i.e. valid geometry)
        */
-      bool registerFeature( const char *geom_id, PalGeometry *userGeom, double label_x = -1, double label_y = -1,
-                            const char* labelText = NULL, double labelPosX = 0.0, double labelPosY = 0.0,
+      bool registerFeature( const QString &geom_id, PalGeometry *userGeom, double label_x = -1, double label_y = -1,
+                            const QString& labelText = QString(), double labelPosX = 0.0, double labelPosY = 0.0,
                             bool fixedPos = false, double angle = 0.0, bool fixedAngle = false,
                             int xQuadOffset = 0, int yQuadOffset = 0, double xOffset = 0.0, double yOffset = 0.0,
                             bool alwaysShow = false, double repeatDistance = 0 );
 
-      /** return pointer to feature or NULL if doesn't exist */
-      Feature* getFeature( const char* geom_id );
+      /** Return pointer to feature or NULL if doesn't exist */
+      Feature* getFeature( const QString &geom_id );
 
-      /** join connected features with the same label text */
+      /** Join connected features with the same label text */
       void joinConnectedFeatures();
 
-      /** chop layer features at the repeat distance **/
+      /** Chop layer features at the repeat distance **/
       void chopFeaturesAtRepeatDistance();
 
+    protected:
+      QString name; /* unique */
+
+      /** List of feature parts */
+      QLinkedList<FeaturePart*> *featureParts;
+
+      /** List of features - for deletion */
+      QLinkedList<Feature*> *features;
+
+      Pal *pal;
+
+      double defaultPriority;
+
+      bool obstacle;
+      bool active;
+      bool toLabel;
+      bool displayAll;
+      bool centroidInside;
+
+      Units label_unit;
+
+      double min_scale;
+      double max_scale;
+
+      /** Optional flags used for some placement methods */
+      Arrangement arrangement;
+      unsigned long arrangementFlags;
+      LabelMode mode;
+      bool mergeLines;
+
+      UpsideDownLabels upsidedownLabels;
+
+      // indexes (spatial and id)
+      RTree<FeaturePart*, double, 2, double, 8, 4> *rtree;
+      QHash< QString, Feature*> *hashtable;
+
+      QHash< QString, QLinkedList<FeaturePart*>* >* connectedHashtable;
+      QLinkedList< QString >* connectedTexts;
+
+      QMutex mMutex;
+
+      /**
+       * \brief Create a new layer
+       *
+       * @param lyrName layer's name
+       * @param min_scale bellow this scale: no labeling
+       * @param max_scale above this scale: no labeling
+       * @param arrangement Arrangement mode : how to place candidates
+       * @param label_unit Unit for labels sizes
+       * @param defaultPriority layer's prioriry (0 is the best, 1 the worst)
+       * @param obstacle 'true' will discourage other label to be placed above features of this layer
+       * @param active is the layer is active (currently displayed)
+       * @param toLabel the layer will be labeled whether toLablel is true
+       * @param pal pointer to the pal object
+       * @param displayAll if true, all features will be labelled even though overlaps occur
+       *
+       */
+      Layer( const QString& lyrName, double min_scale, double max_scale, Arrangement arrangement, Units label_unit, double defaultPriority, bool obstacle, bool active, bool toLabel, Pal *pal, bool displayAll = false );
+
+      /**
+       * \brief Delete the layer
+       */
+      virtual ~Layer();
+
+      /**
+       * \brief check if the scal is in the scale range min_scale -> max_scale
+       * @param scale the scale to check
+       */
+      bool isScaleValid( double scale );
+
+      /** Add newly created feature part into r tree and to the list */
+      void addFeaturePart( FeaturePart* fpart, const QString &labelText = QString() );
   };
 
 } // end namespace pal

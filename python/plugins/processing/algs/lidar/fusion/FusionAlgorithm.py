@@ -43,12 +43,12 @@ class FusionAlgorithm(GeoAlgorithm):
     def checkBeforeOpeningParametersDialog(self):
         path = FusionUtils.FusionPath()
         if path == '':
-            return 'Fusion folder is not configured.\nPlease configure it \
-                    before running Fusion algorithms.'
+            return self.tr('Fusion folder is not configured.\nPlease '
+                           'configure it before running Fusion algorithms.')
 
     def addAdvancedModifiers(self):
-        param = ParameterString(self.ADVANCED_MODIFIERS, 'Additional modifiers'
-                                , '')
+        param = ParameterString(
+            self.ADVANCED_MODIFIERS, self.tr('Additional modifiers'), '')
         param.isAdvanced = True
         self.addParameter(param)
 

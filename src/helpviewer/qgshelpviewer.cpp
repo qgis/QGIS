@@ -75,7 +75,7 @@ void QgsHelpViewer::showHelp( QString help )
   webView->setHtml( helpContents );
   setWindowTitle( tr( "QGIS Help" ) );
 
-#ifndef WIN32
+#ifndef Q_OS_WIN
   setWindowState( windowState() & ~Qt::WindowMinimized );
 #endif
   raise();

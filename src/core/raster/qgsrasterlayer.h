@@ -110,12 +110,6 @@ typedef QList < QPair< QString, QColor > > QgsLegendColorList;
  *     QObject::connect( myRasterLayer, SIGNAL(repaintRequested()), mapCanvas, SLOT(refresh()) );
  * \endcode
  *
- *  A raster layer can also export its legend as a pixmap:
- *
- * \code
- *     QPixmap myQPixmap = myRasterLayer->legendPixmap();
- * \endcode
- *
  * Once a layer has been created you can find out what type of layer it is (GrayOrUndefined, Palette or Multiband):
  *
  * \code
@@ -130,24 +124,6 @@ typedef QList < QPair< QString, QColor > > QgsLegendColorList;
  *    else // QgsRasterLayer::GrayOrUndefined
  *    {
  *      //do something.
- *    }
- * \endcode
- *
- * You can combine layer type detection with the setDrawingStyle method to override the default drawing style assigned
- * when a layer is loaded:
- *
-  * \code
- *    if (rasterLayer->rasterType()==QgsRasterLayer::Multiband)
- *    {
- *       myRasterLayer->setDrawingStyle(QgsRasterLayer::MultiBandSingleBandPseudoColor);
- *    }
- *    else if (rasterLayer->rasterType()==QgsRasterLayer::Palette)
- *    {
- *      myRasterLayer->setDrawingStyle(QgsRasterLayer::PalettedSingleBandPseudoColor);
- *    }
- *    else // QgsRasterLayer::GrayOrUndefined
- *    {
- *      myRasterLayer->setDrawingStyle(QgsRasterLayer::SingleBandPseudoColor);
  *    }
  * \endcode
  *
@@ -198,14 +174,19 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      *
      * -
      * */
-    QgsRasterLayer( const QString & path,
-                    const QString &  baseName = QString::null,
+    QgsRasterLayer( const QString &path,
+                    const QString &baseName = QString::null,
                     bool loadDefaultStyleFlag = true );
 
+    //TODO - QGIS 3.0
+    //This constructor is confusing if used with string literals for providerKey,
+    //as the previous constructor will be called with the literal for providerKey
+    //implicitly converted to a bool.
+    //for QGIS 3.0, make either constructor explicit or alter the signatures
     /**  \brief [ data provider interface ] Constructor in provider mode */
-    QgsRasterLayer( const QString & uri,
-                    const QString & baseName,
-                    const QString & providerKey,
+    QgsRasterLayer( const QString &uri,
+                    const QString &baseName,
+                    const QString &providerKey,
                     bool loadDefaultStyleFlag = true );
 
     /** \brief The destructor */
@@ -281,15 +262,15 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     const QgsRasterDataProvider* dataProvider() const;
 
     /**Synchronises with changes in the datasource */
-    virtual void reload();
+    virtual void reload() override;
 
     /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
      * @note added in 2.4
      */
-    virtual QgsMapLayerRenderer* createMapRenderer( QgsRenderContext& rendererContext );
+    virtual QgsMapLayerRenderer* createMapRenderer( QgsRenderContext& rendererContext ) override;
 
     /** \brief This is called when the view on the raster layer needs to be redrawn */
-    bool draw( QgsRenderContext& rendererContext );
+    bool draw( QgsRenderContext& rendererContext ) override;
 
     /** \brief This is an overloaded version of the draw() function that is called by both draw() and thumbnailAsPixmap */
     void draw( QPainter * theQPainter,
@@ -300,7 +281,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     QgsLegendColorList legendSymbologyItems() const;
 
     /** \brief Obtain GDAL Metadata for this layer */
-    QString metadata();
+    QString metadata() override;
 
     /** \brief Get an 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned */
     QPixmap paletteAsPixmap( int theBandNumber = 1 );
@@ -329,14 +310,16 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Set default contrast enhancement */
     void setDefaultContrastEnhancement();
 
-    /** \brief Overloaded version of the above function for convenience when restoring from xml */
-    void setDrawingStyle( const QString & theDrawingStyleQString );
+    /** \brief Overloaded version of the above function for convenience when restoring from xml
+     * @note Deprecated since QGIS 2.10. Use setRendererForDrawingStyle() or directly setRenderer()
+     */
+    Q_DECL_DEPRECATED void setDrawingStyle( const QString & theDrawingStyleQString );
 
     /**  \brief [ data provider interface ] A wrapper function to emit a progress update signal */
     void showProgress( int theValue );
 
     /** \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS */
-    virtual QStringList subLayers() const;
+    virtual QStringList subLayers() const override;
 
     /** \brief Draws a preview of the rasterlayer into a pixmap
     @note - use previewAsImage() for rendering with QGIS>=2.4 */
@@ -353,15 +336,15 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * (Useful for providers that manage their own layers, such as WMS)
      *
      */
-    virtual void setLayerOrder( const QStringList &layers );
+    virtual void setLayerOrder( const QStringList &layers ) override;
 
     /**
      * Set the visibility of the given sublayer name
      */
-    virtual void setSubLayerVisibility( QString name, bool vis );
+    virtual void setSubLayerVisibility( QString name, bool vis ) override;
 
     /** Time stamp of data source in the moment when data/metadata were loaded by provider */
-    virtual QDateTime timestamp() const { return mDataProvider->timestamp() ; }
+    virtual QDateTime timestamp() const override { return mDataProvider->timestamp() ; }
 
   public slots:
     void showStatusMessage( const QString & theMessage );
@@ -376,23 +359,18 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Signal for notifying listeners of long running processes */
     void progressUpdate( int theValue );
 
-    /**
-     *   This is emitted whenever data or metadata (e.g. color table, extent) has changed
-     */
-    void dataChanged();
-
   protected:
     /** \brief Read the symbology for the current layer from the Dom node supplied */
-    bool readSymbology( const QDomNode& node, QString& errorMessage );
+    bool readSymbology( const QDomNode& node, QString& errorMessage ) override;
 
     /** \brief Reads layer specific state from project file Dom node */
-    bool readXml( const QDomNode& layer_node );
+    bool readXml( const QDomNode& layer_node ) override;
 
     /** \brief Write the symbology for the layer into the docment provided */
-    bool writeSymbology( QDomNode&, QDomDocument& doc, QString& errorMessage ) const;
+    bool writeSymbology( QDomNode&, QDomDocument& doc, QString& errorMessage ) const override;
 
     /** \brief Write layer specific state to project file Dom node */
-    bool writeXml( QDomNode & layer_node, QDomDocument & doc );
+    bool writeXml( QDomNode & layer_node, QDomDocument & doc ) override;
 
   private:
     /** \brief Initialize default values */
@@ -413,8 +391,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /** Pointer to data provider */
     QgsRasterDataProvider* mDataProvider;
-
-    //DrawingStyle mDrawingStyle;
 
     /**  [ data provider interface ] Timestamp, the last modified time of the data source when the layer was created */
     QDateTime mLastModified;

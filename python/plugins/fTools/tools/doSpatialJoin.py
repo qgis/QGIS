@@ -28,10 +28,11 @@
 #
 #---------------------------------------------------------------------
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import QObject, SIGNAL, QVariant, QFile
+from PyQt4.QtGui import QDialog, QDialogButtonBox, QMessageBox
+from qgis.core import QGis, QgsVectorFileWriter, QgsVectorLayer, QgsMapLayerRegistry, QgsFields, QgsField, QgsFeature, QgsGeometry, NULL
+
 import ftools_utils
-from qgis.core import *
 from ui_frmSpatialJoin import Ui_Dialog
 
 def myself(L):
@@ -53,7 +54,7 @@ def myself(L):
 
 def filter_null(vals):
     """Takes an iterator of values and returns a new iterator returning the same values but skipping any NULL values"""
-    return (v for v in vals if v != NULL)
+    return (v for v in vals if v is not None)
 
 class Dialog(QDialog, Ui_Dialog):
 
@@ -67,7 +68,6 @@ class Dialog(QDialog, Ui_Dialog):
         self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
         # populate layer list
         self.progressBar.setValue(0)
-        mapCanvas = self.iface.mapCanvas()
         layers = ftools_utils.getLayerNames([QGis.Point, QGis.Line, QGis.Polygon])
         self.inShape.addItems(layers)
         self.joinShape.addItems(layers)
@@ -103,8 +103,10 @@ class Dialog(QDialog, Ui_Dialog):
             res = self.compute(inName, joinName, outPath, summary, sumList, keep, self.progressBar)
             self.outShape.clear()
             if res:
-              addToTOC = QMessageBox.question(self, self.tr("Spatial Join"),
-                      self.tr("Created output shapefile:\n%s\n\nWould you like to add the new layer to the TOC?") % (unicode(outPath)), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
+              addToTOC = QMessageBox.question(
+                  self, self.tr("Spatial Join"),
+                  self.tr("Created output shapefile:\n%s\n\nWould you like to add the new layer to the TOC?") % (unicode(outPath)),
+                  QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
               if addToTOC == QMessageBox.Yes:
                 self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
                 QgsMapLayerRegistry.instance().addMapLayers([self.vlayer])
@@ -155,8 +157,9 @@ class Dialog(QDialog, Ui_Dialog):
         check = QFile(self.shapefileName)
         if check.exists():
             if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
-                QMessageBox.warning( self, self.tr( 'Error deleting shapefile' ),
-                            self.tr( "Can't delete existing shapefile\n%s" ) % ( self.shapefileName ) )
+                QMessageBox.warning(
+                    self, self.tr( 'Error deleting shapefile' ),
+                    self.tr( "Can't delete existing shapefile\n%s" ) % ( self.shapefileName ) )
                 return False
         fields = QgsFields()
         for f in fieldList1.values():

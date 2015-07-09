@@ -98,7 +98,6 @@ class QgsComposerMapOverviewStack : QgsComposerMapItemStack
 
 };
 
-
 /**\ingroup MapComposer
  * \class QgsComposerMapOverview
  * \brief An individual overview which is drawn above the map content in a
@@ -173,7 +172,7 @@ class QgsComposerMapOverview : QgsComposerMapItem
     QPainter::CompositionMode blendMode() const;
 
     /**Sets the blending mode used for drawing the overview.
-     * @param mode blending mode for overview
+     * @param blendMode blending mode for overview
      * @see blendMode
     */
     void setBlendMode( const QPainter::CompositionMode blendMode );

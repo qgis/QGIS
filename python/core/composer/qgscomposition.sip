@@ -502,7 +502,7 @@ class QgsComposition : QGraphicsScene
     void addComposerTable( QgsComposerAttributeTable* table );
     /**Adds composer html frame and advises composer to create a widget for it (through signal)*/
     void addComposerHtmlFrame( QgsComposerHtml* html /Transfer/, QgsComposerFrame* frame /Transfer/);
-     /**Adds composer tablev2 frame and advises composer to create a widget for it (through signal)*/
+    /**Adds composer tablev2 frame and advises composer to create a widget for it (through signal)*/
     void addComposerTableFrame( QgsComposerAttributeTableV2* table /Transfer/, QgsComposerFrame* frame /Transfer/);
 
     /**Remove item from the graphics scene. Additionally to QGraphicsScene::removeItem, this function considers undo/redo command*/

@@ -69,7 +69,7 @@ QVector<QgsDataItem*> QgsOWSConnectionItem::createChildren()
       continue;
     }
 
-    item->populate();
+    item->populate( true ); // populate in foreground - this is already run in a thread
 
     layerCount += item->rowCount();
     if ( item->rowCount() > 0 )
@@ -126,7 +126,7 @@ bool QgsOWSConnectionItem::equal( const QgsDataItem *other )
     return false;
   }
   const QgsOWSConnectionItem *o = dynamic_cast<const QgsOWSConnectionItem *>( other );
-  return ( mPath == o->mPath && mName == o->mName );
+  return ( o && mPath == o->mPath && mName == o->mName );
 }
 
 QList<QAction*> QgsOWSConnectionItem::actions()

@@ -39,6 +39,7 @@ extern "C"
 
 QgsCoordinateTransform::QgsCoordinateTransform()
     : QObject()
+    , mShortCircuit( false )
     , mInitialisedFlag( false )
     , mSourceProjection( 0 )
     , mDestinationProjection( 0 )
@@ -50,6 +51,7 @@ QgsCoordinateTransform::QgsCoordinateTransform()
 
 QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem& source, const QgsCoordinateReferenceSystem& dest )
     : QObject()
+    , mShortCircuit( false )
     , mInitialisedFlag( false )
     , mSourceProjection( 0 )
     , mDestinationProjection( 0 )
@@ -696,14 +698,20 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
 
     dir = ( direction == ForwardTransform ) ? tr( "forward transform" ) : tr( "inverse transform" );
 
+    char *srcdef = pj_get_def( mSourceProjection, 0 );
+    char *dstdef = pj_get_def( mDestinationProjection, 0 );
+
     QString msg = tr( "%1 of\n"
                       "%2"
                       "PROJ.4: %3 +to %4\n"
                       "Error: %5" )
                   .arg( dir )
                   .arg( points )
-                  .arg( mSourceCRS.toProj4() ).arg( mDestCRS.toProj4() )
+                  .arg( srcdef ).arg( dstdef )
                   .arg( QString::fromUtf8( pj_strerrno( projResult ) ) );
+
+    pj_dalloc( srcdef );
+    pj_dalloc( dstdef );
 
     QgsDebugMsg( "Projection failed emitting invalid transform signal: " + msg );
 
@@ -775,7 +783,7 @@ bool QgsCoordinateTransform::writeXML( QDomNode & theNode, QDomDocument & theDoc
 const char *finder( const char *name )
 {
   QString proj;
-#ifdef WIN32
+#ifdef Q_OS_WIN
   proj = QApplication::applicationDirPath()
          + "/share/proj/" + QString( name );
 #else

@@ -48,9 +48,9 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
     virtual ~QgsInvertedPolygonRenderer();
 
     /** Used to clone this feature renderer.*/
-    virtual QgsFeatureRendererV2* clone() const;
+    virtual QgsFeatureRendererV2* clone() const override;
 
-    virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
+    virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
 
     /** Renders a given feature.
      * This will here collect features. The actual rendering will be postponed to stopRender()
@@ -61,39 +61,39 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
      * @param drawVertexMarker whether this feature has vertex markers (in edit mode usually)
      * @returns true if the rendering was ok
      */
-    virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
+    virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
 
     /**
      * The actual rendering will take place here.
      * Features collected during renderFeature() are rendered using the embedded feature renderer
      */
-    virtual void stopRender( QgsRenderContext& context );
+    virtual void stopRender( QgsRenderContext& context ) override;
 
     /** @returns a textual representation of the renderer */
-    virtual QString dump() const;
+    virtual QString dump() const override;
 
     /** Proxy that will call this method on the embedded renderer. */
-    virtual QList<QString> usedAttributes();
+    virtual QList<QString> usedAttributes() override;
     /** Proxy that will call this method on the embedded renderer. */
-    virtual int capabilities();
+    virtual int capabilities() override;
     /** Proxy that will call this method on the embedded renderer. */
-    virtual QgsSymbolV2List symbols();
+    virtual QgsSymbolV2List symbols() override;
     /** Proxy that will call this method on the embedded renderer. */
-    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature );
+    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature ) override;
     /** Proxy that will call this method on the embedded renderer. */
-    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feat );
+    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feat ) override;
     /** Proxy that will call this method on the embedded renderer. */
-    virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat );
+    virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat ) override;
     /** Proxy that will call this method on the embedded renderer. */
-    virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat );
+    virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat ) override;
     /** Proxy that will call this method on the embedded renderer. */
-    virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
+    virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ) override;
     /** Proxy that will call this method on the embedded renderer.
       @note not available in python bindings
      */
-    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = "" );
+    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = "" ) override;
     /** Proxy that will call this method on the embedded renderer. */
-    virtual bool willRenderFeature( QgsFeature& feat );
+    virtual bool willRenderFeature( QgsFeature& feat ) override;
 
     /** Creates a renderer out of an XML, for loading*/
     static QgsFeatureRendererV2* create( QDomElement& element );
@@ -102,7 +102,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
      * @param doc the XML document where to create the XML subtree
      * @returns the created XML subtree
      */
-    virtual QDomElement save( QDomDocument& doc );
+    virtual QDomElement save( QDomDocument& doc ) override;
 
     /** sets the embedded renderer
      * @param subRenderer the embedded renderer (will be cloned)

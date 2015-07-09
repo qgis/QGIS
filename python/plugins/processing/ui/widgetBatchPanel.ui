@@ -80,6 +80,12 @@
      <property name="selectionBehavior">
       <enum>QAbstractItemView::SelectRows</enum>
      </property>
+     <attribute name="horizontalHeaderDefaultSectionSize">
+      <number>250</number>
+     </attribute>
+     <attribute name="horizontalHeaderMinimumSectionSize">
+      <number>150</number>
+     </attribute>
      <attribute name="horizontalHeaderStretchLastSection">
       <bool>true</bool>
      </attribute>

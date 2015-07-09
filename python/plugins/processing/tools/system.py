@@ -30,9 +30,8 @@ import time
 import sys
 import uuid
 
-from PyQt4.QtCore import *
-
-from qgis.core import *
+from PyQt4.QtCore import QFileInfo, QDir
+from qgis.core import QgsApplication
 
 numExported = 1
 
@@ -70,7 +69,7 @@ def setTempOutput(out, alg):
         out.value = getTempFilenameInTempFolder(out.name + '.' + ext)
 
 
-def getTempFilename(ext = None):
+def getTempFilename(ext=None):
     path = tempFolder()
     if ext is None:
         filename = path + os.sep + str(time.time()) \

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>388</width>
-    <height>159</height>
+    <height>164</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -150,6 +150,14 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mYMaxLineEdit</tabstop>
+  <tabstop>mXMinLineEdit</tabstop>
+  <tabstop>mXMaxLineEdit</tabstop>
+  <tabstop>mYMinLineEdit</tabstop>
+  <tabstop>mOriginalExtentButton</tabstop>
+  <tabstop>mCurrentExtentButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

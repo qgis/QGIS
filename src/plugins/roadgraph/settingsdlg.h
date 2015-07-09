@@ -60,8 +60,6 @@ class RgSettingsDlg : public QDialog
     void on_buttonBox_helpRequested();
 
   private:
-    // futurame by used
-    QComboBox *mcbGraphDirector;
 
     /**
      * current graph settings object

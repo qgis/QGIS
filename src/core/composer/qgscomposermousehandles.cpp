@@ -30,18 +30,20 @@
 #include "qgslogger.h"
 #include "qgsproject.h"
 
-QgsComposerMouseHandles::QgsComposerMouseHandles( QgsComposition *composition ) : QObject( 0 ),
-    QGraphicsRectItem( 0 ),
-    mComposition( composition ),
-    mGraphicsView( 0 ),
-    mBeginHandleWidth( 0 ),
-    mBeginHandleHeight( 0 ),
-    mResizeMoveX( 0 ),
-    mResizeMoveY( 0 ),
-    mIsDragging( false ),
-    mIsResizing( false ),
-    mHAlignSnapItem( 0 ),
-    mVAlignSnapItem( 0 )
+QgsComposerMouseHandles::QgsComposerMouseHandles( QgsComposition *composition )
+    : QObject( 0 )
+    , QGraphicsRectItem( 0 )
+    , mComposition( composition )
+    , mGraphicsView( 0 )
+    , mCurrentMouseMoveAction( NoAction )
+    , mBeginHandleWidth( 0 )
+    , mBeginHandleHeight( 0 )
+    , mResizeMoveX( 0 )
+    , mResizeMoveY( 0 )
+    , mIsDragging( false )
+    , mIsResizing( false )
+    , mHAlignSnapItem( 0 )
+    , mVAlignSnapItem( 0 )
 {
   //listen for selection changes, and update handles accordingly
   QObject::connect( mComposition, SIGNAL( selectionChanged() ), this, SLOT( selectionChanged() ) );
@@ -822,7 +824,7 @@ void QgsComposerMouseHandles::dragMouseMove( const QPointF& currentPosition, boo
   {
     //constrained (shift) moving should lock to horizontal/vertical movement
     //reset the smaller of the x/y movements
-    if ( abs( moveRectX ) <= abs( moveRectY ) )
+    if ( qAbs( moveRectX ) <= qAbs( moveRectY ) )
     {
       moveRectX = 0;
     }
@@ -1281,7 +1283,7 @@ void QgsComposerMouseHandles::collectAlignCoordinates( QMap< double, const QgsCo
       {
         //if snapping to paper use the paper item's rect rather then the bounding rect,
         //since we want to snap to the page edge and not any outlines drawn around the page
-        itemRect = currentItem->rect();
+        itemRect = currentItem->mapRectToScene( currentItem->rect() );
       }
       else
       {

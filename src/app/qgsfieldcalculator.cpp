@@ -137,6 +137,9 @@ void QgsFieldCalculator::accept()
 {
   builder->saveToRecent( "fieldcalc" );
 
+  if ( !mVectorLayer )
+    return;
+
   // Set up QgsDistanceArea each time we (re-)calculate
   QgsDistanceArea myDa;
 
@@ -149,16 +152,17 @@ void QgsFieldCalculator::accept()
   QgsExpression exp( calcString );
   exp.setGeomCalculator( myDa );
 
-  if ( !mVectorLayer )
-    return;
-
   if ( ! exp.prepare( mVectorLayer->pendingFields() ) )
   {
     QMessageBox::critical( 0, tr( "Evaluation error" ), exp.evalErrorString() );
     return;
   }
 
-  if ( mNewFieldGroupBox->isEnabled() && mCreateVirtualFieldCheckbox->isChecked() )
+  // Test for creating expression field based on ! mUpdateExistingGroupBox checked rather
+  // than on mNewFieldGroupBox checked, as if the provider does not support adding attributes
+  // then mUpdateExistingGroupBox is set to not checkable, and hence is not checked.  This
+  // is a minimum fix to resolve this - better would be some GUI redesign...
+  if ( ! mUpdateExistingGroupBox->isChecked() && mCreateVirtualFieldCheckbox->isChecked() )
   {
     mVectorLayer->addExpressionField( calcString, fieldDefinition() );
   }

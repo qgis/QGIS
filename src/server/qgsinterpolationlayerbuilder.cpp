@@ -126,9 +126,10 @@ QgsMapLayer* QgsInterpolationLayerBuilder::createMapLayer( const QDomElement &el
     QDomElement resolutionElem = resolutionNodeList.at( 0 ).toElement();
     nCols = resolutionElem.attribute( "ncols" ).toInt();
     nRows = resolutionElem.attribute( "nrows" ).toInt();
-    if ( nCols == 0 && nRows == 0 )
+    if ( nCols == 0 || nRows == 0 )
     {
       QgsDebugMsg( "Reading of resolution failed" );
+      delete theInterpolator;
       return 0;
     }
   }
@@ -136,7 +137,10 @@ QgsMapLayer* QgsInterpolationLayerBuilder::createMapLayer( const QDomElement &el
   QTemporaryFile* tmpFile = new QTemporaryFile();
   if ( !tmpFile->open() )
   {
+    QgsDebugMsg( "Opening temporary file failed" );
     delete tmpFile;
+    delete theInterpolator;
+    return 0;
   }
 
   QgsRectangle extent = mVectorLayer->extent();

@@ -19,14 +19,12 @@
 #include <cstring>
 #include <cfloat>
 
-#include <pal/layer.h>
-#include <pal/pal.h>
-
+#include "layer.h"
+#include "pal.h"
 #include "feature.h"
 #include "geomfunction.h"
 #include "labelposition.h"
 #include "util.h"
-
 #include "costcalculator.h"
 
 namespace pal
@@ -37,12 +35,6 @@ namespace pal
     int n = 0;
     double dist;
     double distlabel = lp->feature->getLabelDistance();
-#if 0
-    unit_convert( double( lp->feature->distlabel ),
-                  pal::PIXEL,
-                  pal->map_unit,
-                  pal->dpi, scale, 1 );
-#endif
 
     switch ( feat->getGeosType() )
     {

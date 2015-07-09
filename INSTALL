@@ -1,10 +1,10 @@
 QGIS
 Building QGIS from source - step by step
-Monday November 24, 2014
+Wednesday June 24, 2015
 
 
-Last Updated: Monday November 24, 2014
-Last Change : Monday November 24, 2014
+Last Updated: Wednesday June 24, 2015
+Last Change : Wednesday June 24, 2015
 
 
   1. Introduction
@@ -97,7 +97,7 @@ Required build tools:
 
 Required build dependencies:
 
-- Qt >= 4.7.0
+- Qt >= 4.8.0
 - Proj >= 4.4.x
 - GEOS >= 3.0
 - Sqlite3 >= 3.0.0
@@ -108,7 +108,10 @@ Required build dependencies:
 
 Optional dependencies:
 
-- for GRASS plugin - GRASS >= 6.0.0 (libraries compiled with exceptions support on Linux 32bit)
+- for GRASS providers and plugin - GRASS >= 6.0.0. QGIS may be compiled with GRASS 6 or GRASS 7.
+  It can also be compiled with both GRASS versions in a single build but only if QGIS
+  is not installed with rpath. The desired GRASS version is chosen on runtime by setting
+  LD_LIBRARY_PATH or PATH.
 - for georeferencer - GSL >= 1.8
 - for postgis support and SPIT plugin - PostgreSQL >= 8.0.x
 - for gps plugin - gpsbabel
@@ -175,15 +178,16 @@ Now update your local sources database:
   ===============================
 
   || Distribution | install command for packages |
-  | wheezy | ``apt-get install bison cmake doxygen flex git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal1-dev libgeos-dev libgsl0-dev libopenscenegraph-dev libosgearth-dev libpq-dev libproj-dev libqscintilla2-dev libqt4-dev libqt4-opengl-dev libqtwebkit-dev libqwt-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales pkg-config poppler-utils pyqt4-dev-tools python python-dev python-qscintilla2 python-qt4 python-qt4-dev python-sip python-sip-dev spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb`` |
-  | jessie | ``apt-get install bison cmake doxygen flex git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl0-dev libopenscenegraph-dev libosgearth-dev libpq-dev libproj-dev libqscintilla2-dev libqt4-dev libqt4-opengl-dev libqtwebkit-dev libqwt-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales pkg-config poppler-utils pyqt4-dev-tools python-all python-all-dev python-qscintilla2 python-qt4 python-qt4-dev python-sip python-sip-dev spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb`` |
-  | precise | ``apt-get install bison cmake doxygen flex git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl0-dev libopenscenegraph-dev libosgearth-dev libpq-dev libproj-dev libqscintilla2-dev libqt4-dev libqt4-opengl-dev libqtwebkit-dev libqwt5-qt4-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales pkg-config poppler-utils pyqt4-dev-tools python python-qscintilla2 python-qt4 python-qt4-dev python-sip python-sip-dev spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb`` |
-  | saucy | ``apt-get install bison cmake doxygen flex git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl0-dev libopenscenegraph-dev libosgearth-dev libpq-dev libproj-dev libpython2.7-dev libqscintilla2-dev libqt4-dev libqt4-opengl-dev libqtwebkit-dev libqwt5-qt4-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales pkg-config poppler-utils pyqt4-dev-tools python python-dev python-qscintilla2 python-qt4 python-qt4-dev python-sip python-sip-dev spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb`` |
-  | trusty | ``apt-get install bison cmake doxygen flex git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl0-dev libopenscenegraph-dev libosgearth-dev libpq-dev libproj-dev libqscintilla2-dev libqt4-dev libqt4-opengl-dev libqtwebkit-dev libqwt5-qt4-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales pkg-config poppler-utils pyqt4-dev-tools python-all python-all-dev python-qscintilla2 python-qt4 python-qt4-dev python-sip python-sip-dev spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb`` |
-  | utopic | ``apt-get install bison cmake doxygen flex git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl0-dev libopenscenegraph-dev libosgearth-dev libpq-dev libproj-dev libqscintilla2-dev libqt4-dev libqt4-opengl-dev libqtwebkit-dev libqwt5-qt4-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales pkg-config poppler-utils pyqt4-dev-tools python-all python-all-dev python-qscintilla2 python-qt4 python-qt4-dev python-sip python-sip-dev spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb`` |
-  | sid | ``apt-get install bison cmake doxygen flex git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl0-dev libopenscenegraph-dev libosgearth-dev libpq-dev libproj-dev libqscintilla2-dev libqt4-dev libqt4-opengl-dev libqtwebkit-dev libqwt-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales pkg-config poppler-utils pyqt4-dev-tools pyqt4.qsci-dev python-all python-all-dev python-qscintilla2 python-qt4 python-qt4-dev python-sip python-sip-dev spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb`` |
+  | wheezy | ``apt-get install bison cmake doxygen flex git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal1-dev libgeos-dev libgsl0-dev libopenscenegraph-dev libosgearth-dev libpq-dev libproj-dev libqscintilla2-dev libqt4-dev libqt4-opengl-dev libqt4-sql-sqlite libqtwebkit-dev libqwt-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales pkg-config poppler-utils pyqt4-dev-tools python python-dev python-qscintilla2 python-qt4 python-qt4-dev python-sip python-sip-dev qt4-doc-html spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui`` |
+  | jessie | ``apt-get install bison cmake doxygen flex git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl0-dev libopenscenegraph-dev libosgearth-dev libpq-dev libproj-dev libqscintilla2-dev libqt4-dev libqt4-opengl-dev libqt4-sql-sqlite libqtwebkit-dev libqwt-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales pkg-config poppler-utils pyqt4-dev-tools pyqt4.qsci-dev python-all python-all-dev python-pyspatialite python-qscintilla2 python-qt4 python-qt4-dev python-sip python-sip-dev qt4-doc-html spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui`` |
+  | stretch | ``apt-get install bison cmake doxygen flex git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl0-dev libopenscenegraph-dev libosgearth-dev libpq-dev libproj-dev libqscintilla2-dev libqt4-dev libqt4-opengl-dev libqt4-sql-sqlite libqtwebkit-dev libqwt-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales pkg-config poppler-utils pyqt4-dev-tools pyqt4.qsci-dev python-all python-all-dev python-pyspatialite python-qscintilla2 python-qt4 python-qt4-dev python-sip python-sip-dev qt4-doc-html spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui`` |
+  | precise | ``apt-get install bison cmake doxygen flex git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl0-dev libopenscenegraph-dev libosgearth-dev libpq-dev libproj-dev libqscintilla2-dev libqt4-dev libqt4-opengl-dev libqt4-sql-sqlite libqtwebkit-dev libqwt5-qt4-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales pkg-config poppler-utils pyqt4-dev-tools python python-qscintilla2 python-qt4 python-qt4-dev python-sip python-sip-dev qt4-doc-html spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui`` |
+  | trusty | ``apt-get install bison cmake doxygen flex git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl0-dev libopenscenegraph-dev libosgearth-dev libpq-dev libproj-dev libqscintilla2-dev libqt4-dev libqt4-opengl-dev libqt4-sql-sqlite libqtwebkit-dev libqwt5-qt4-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales pkg-config poppler-utils pyqt4-dev-tools python-all python-all-dev python-pyspatialite python-qscintilla2 python-qt4 python-qt4-dev python-sip python-sip-dev qt4-doc-html spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui`` |
+  | utopic | ``apt-get install bison cmake doxygen flex git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl0-dev libopenscenegraph-dev libosgearth-dev libpq-dev libproj-dev libqscintilla2-dev libqt4-dev libqt4-opengl-dev libqt4-sql-sqlite libqtwebkit-dev libqwt5-qt4-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales pkg-config poppler-utils pyqt4-dev-tools python-all python-all-dev python-pyspatialite python-qscintilla2 python-qt4 python-qt4-dev python-sip python-sip-dev qt4-doc-html spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui`` |
+  | vivid | ``apt-get install bison cmake doxygen flex git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl0-dev libopenscenegraph-dev libosgearth-dev libpq-dev libproj-dev libqscintilla2-dev libqt4-dev libqt4-opengl-dev libqt4-sql-sqlite libqtwebkit-dev libqwt5-qt4-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales pkg-config poppler-utils pyqt4-dev-tools python-all python-all-dev python-pyspatialite python-qscintilla2 python-qt4 python-qt4-dev python-sip python-sip-dev qt4-doc-html spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui`` |
+  | sid | ``apt-get install bison cmake doxygen flex git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl0-dev libopenscenegraph-dev libosgearth-dev libpq-dev libproj-dev libqscintilla2-dev libqt4-dev libqt4-opengl-dev libqt4-sql-sqlite libqtwebkit-dev libqwt-dev libspatialindex-dev libspatialite-dev libsqlite3-dev lighttpd locales pkg-config poppler-utils pyqt4-dev-tools pyqt4.qsci-dev python-all python-all-dev python-pyspatialite python-qscintilla2 python-qt4 python-qt4-dev python-sip python-sip-dev qt4-doc-html spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb cmake-curses-gui`` |
 
-(extracted from the respective control files in debian/)
+(extracted from the control.in file in debian/)
 
 
   3.4. Setup ccache (Optional)
@@ -246,8 +250,9 @@ Now we create a build directory and run ccmake:
   ccmake ..
 
 When you run ccmake (note the .. is required!), a menu will appear where
-you can configure various aspects of the build. If you do not have root
-access or do not want to overwrite existing QGIS installs (by your
+you can configure various aspects of the build. If you want QGIS to have
+debugging capabilities then set CMAKE_BUILD_TYPE to Debug. If you do not have
+root access or do not want to overwrite existing QGIS installs (by your
 packagemanager for example), set the CMAKE_INSTALL_PREFIX to somewhere you
 have write access to (I usually use ${HOME}/apps). Now press
 'c' to configure, 'e' to dismiss any error messages that may appear.
@@ -268,7 +273,10 @@ After that you can try to run QGIS:
   $HOME/apps/bin/qgis
 
 If all has worked properly the QGIS application should start up and appear
-on your screen.
+on your screen.  If you get the error message "error while loading shared libraries",
+execute this command in your shell.
+
+  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${HOME}/apps/lib/
 
 
   3.8. Building Debian packages
@@ -329,12 +337,6 @@ build QGIS.
     =================================
 
 The free (as in free beer) Express Edition installer is available under:
-
-Currently we use Visual C++ 2008 Express for 32bit builds:
-
-  http://download.microsoft.com/download/d/c/3/dc3439e7-5533-4f4c-9ba0-8577685b6e7e/vcsetup.exe
-
-And Visual C++ 2010 Express for 64bit builds:
 
   http://download.microsoft.com/download/c/d/7/cd7d4dfb-5290-4cc7-9f85-ab9e3c9af796/vc_web.exe
 
@@ -554,23 +556,23 @@ it, just point the installer to c:\msys\mingw
 
 When Qt installation is complete:
 
-Edit C:\Qt\4.7.0\bin\qtvars.bat and add the following lines:
+Edit C:\Qt\4.8.0\bin\qtvars.bat and add the following lines:
 
   set PATH=%PATH%;C:\msys\local\bin;c:\msys\local\lib 
   set PATH=%PATH%;"C:\Program Files\Subversion\bin" 
 
-I suggest you also add C:\Qt\4.7.0\bin\ to your Environment Variables Path in
+I suggest you also add C:\Qt\4.8.0\bin\ to your Environment Variables Path in
 the windows system preferences.
 
 If you plan to do some debugging, you'll need to compile debug version of Qt:
-C:\Qt\4.7.0\bin\qtvars.bat compile_debug
+C:\Qt\4.8.0\bin\qtvars.bat compile_debug
 
 Note: there is a problem when compiling debug version of Qt 4.7, the script ends with
 this message  "mingw32-make: *** No rule to make target `debug'.  Stop.". To 
 compile the debug version you have to go out of src directory and execute the
 following command:
 
-  c:\Qt\4.7.0 make 
+  c:\Qt\4.8.0 make 
 
 
     4.2.3. Flex and Bison
@@ -610,7 +612,7 @@ to get versions that match your current Qt installed version.
       4.2.4.3. Compile SIP
       ====================
 
-  c:\Qt\4.7.0\bin\qtvars.bat 
+  c:\Qt\4.8.0\bin\qtvars.bat 
   python configure.py -p win32-g++ 
   make 
   make install 
@@ -619,7 +621,7 @@ to get versions that match your current Qt installed version.
       4.2.4.4. Compile PyQt
       =====================
 
-  c:\Qt\4.7.0\bin\qtvars.bat 
+  c:\Qt\4.8.0\bin\qtvars.bat 
   python configure.py 
   make 
   make install 
@@ -672,9 +674,9 @@ this document.
 Start a cmd.exe window ( Start -> Run -> cmd.exe ) if you don't have one
 already.  Add paths to compiler and our MSYS environment:
 
-  c:\Qt\4.7.0\bin\qtvars.bat 
+  c:\Qt\4.8.0\bin\qtvars.bat 
 
-For ease of use add c:\Qt\4.7.0\bin\ to your system path in system
+For ease of use add c:\Qt\4.8.0\bin\ to your system path in system
 properties so you can just type qtvars.bat when you open the cmd console.
 Create build directory and set it as current directory:
 
@@ -1690,7 +1692,7 @@ In a Terminal cd to the qgis source folder previously downloaded, then:
   cd build
   cmake -D CMAKE_INSTALL_PREFIX=~/Applications \
   -D CMAKE_BUILD_TYPE=MINSIZEREL -D ENABLE_TESTS=FALSE \
-  -D WITH_INTERNAL_SPATIALITE=FALSE -D WITH_PYSPATIALITE=FALSE \
+  -D WITH_PYSPATIALITE=FALSE \
   -D SPATIALINDEX_LIBRARY=/usr/local/lib/libspatialindex.dylib \
   -D SPATIALINDEX_INCLUDE_DIR=/usr/local/include/spatialindex \
   -D QWT_LIBRARY=/usr/local/qwt-6.0.2/lib/libqwt.dylib \
@@ -1749,7 +1751,7 @@ Leopard and Snow Leopard, but was dropped at Lion.  To build the Mapserver
 component on Leopard and Snow, add the following line before the last line in
 the above configuration:
 
-  -D WITH_MAPSERVER=TRUE \
+  -D WITH_SERVER=TRUE \
 
 On Lion you are on your own to figure out how to install libfcgi and add fcgi
 support to the system Apache.  Not recommended for the average user.

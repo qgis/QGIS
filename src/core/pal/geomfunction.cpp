@@ -27,14 +27,7 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #include "geomfunction.h"
-
-//#include <pal/Layer.h>
-
 #include "feature.h"
 #include "util.h"
 
@@ -579,52 +572,6 @@ namespace pal
     }
     return c;
   }
-
-#ifdef _EXPORT_MAP_
-  void toSVGPath( int nbPoints, int geomType, double *x, double *y,
-                  int dpi, double scale, int xmin, int ymax,
-                  char *layername, char *objectID,
-                  std::ostream &out )
-  {
-    int i;
-
-    if ( nbPoints > 1 )
-    {
-      out << "  <path style=\"fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1\" d=\"M " << convert2pt( x[0], scale, dpi ) - xmin << "," << ymax - convert2pt( y[0], scale, dpi ) << " ";
-      for ( i = 1; i < nbPoints; i++ )
-      {
-        out << "L " << convert2pt( x[i], scale, dpi ) - xmin  << ", " << ymax - convert2pt( y[i], scale, dpi ) << " ";
-      }
-
-      if ( geomType == GEOS_POLYGON )
-      {
-        out << " z ";
-      }
-
-      out << "\" ";
-      out << "id=\"" << layername << "-" << objectID << "\" ";
-      out << "inkscape:label=\"#path-" << layername << "-" << objectID << "\"/>\n";
-    }
-    else
-    {
-      int cx = convert2pt( x[0], scale, dpi ) - xmin;
-      int cy = ymax - convert2pt( y[0], scale, dpi );
-      out << "   <path ";
-      out << "      sodipodi:type=\"arc\" ";
-      out << "      style=\"opacity:1;fill:#bcbcbc;fill-opacity:l;stroke:#000000;stroke-opacity:1;stroke-width:0.5;stroke-linejoin:miter;stroke-dasharray:none;display:inline\"";
-      out << "      id=\"" << layername << "-" << objectID << "\" ";
-      out << "      sodipodi:cx=\"" << cx << "\" ";
-      out << "      sodipodi:cy=\"" << cy << "\" ";
-      out << "      sodipodi:rx=\"1\" ";
-      out << "      sodipodi:ry=\"1\" ";
-      out << "      d=\"M " << cx + 1 << " " << cy << " A 1 1 0 1 1 "
-      << cx - 1 << "," << cy << " A 1 1 0 1 1 "
-      << cx + 1 << " " << cy << " z\" ";
-      out << "      inkscape:label=\"#path-" << layername << "-" << objectID << "\" />\n";
-    }
-  }
-#endif
-
 
   void findLineCircleIntersection( double cx, double cy, double radius,
                                    double x1, double y1, double x2, double y2,

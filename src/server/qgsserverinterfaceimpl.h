@@ -1,6 +1,6 @@
 /***************************************************************************
                           qgsseerversinterface.h
- Interface class for exposing functions in Qgis Mapserver for use by plugins
+ Interface class for exposing functions in QGIS Server for use by plugins
                              -------------------
   begin                : 2014-09-10
   copyright            : (C) 2014 by Alessandro Pasotti
@@ -28,7 +28,7 @@
 
 /**
  * QgsServerInterface
- * Class defining interfaces exposed by Qgis Mapserver and
+ * Class defining interfaces exposed by QGIS Server and
  * made available to plugins.
  *
  */
@@ -44,15 +44,18 @@ class QgsServerInterfaceImpl : public QgsServerInterface
     /** Destructor */
     ~QgsServerInterfaceImpl();
 
-    void setRequestHandler( QgsRequestHandler* requestHandler );
-    QgsCapabilitiesCache* capabiblitiesCache() { return mCapabilitiesCache; }
-    QgsRequestHandler*  requestHandler( ) { return mRequestHandler; }
-    void registerFilter( QgsServerFilter *filter, int priority = 0 );
-    QgsServerFiltersMap filters( ) { return mFilters; }
-    QString getEnv( const QString& name ) const;
+    void setRequestHandler( QgsRequestHandler* requestHandler ) override;
+    QgsCapabilitiesCache* capabiblitiesCache() override { return mCapabilitiesCache; }
+    QgsRequestHandler*  requestHandler( ) override { return mRequestHandler; }
+    void registerFilter( QgsServerFilter *filter, int priority = 0 ) override;
+    QgsServerFiltersMap filters( ) override { return mFilters; }
+    QString getEnv( const QString& name ) const override;
+    QString configFilePath( ) override { return mConfigFilePath; }
+    void setConfigFilePath( QString configFilePath ) override;
 
   private:
 
+    QString mConfigFilePath;
     QgsServerFiltersMap mFilters;
     QgsCapabilitiesCache* mCapabilitiesCache;
     QgsRequestHandler* mRequestHandler;

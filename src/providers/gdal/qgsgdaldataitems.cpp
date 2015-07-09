@@ -34,10 +34,19 @@ QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem* parent,
   if ( theSublayers && theSublayers->size() > 0 )
   {
     sublayers = *theSublayers;
-    mPopulated = false;
+    setState( NotPopulated );
   }
   else
-    mPopulated = true;
+    setState( Populated );
+
+  GDALAllRegister();
+  GDALDatasetH hDS = GDALOpen( TO8F( mPath ), GA_Update );
+
+  if ( hDS )
+  {
+    mCapabilities |= SetCrs;
+    GDALClose( hDS );
+  }
 }
 
 QgsGdalLayerItem::~QgsGdalLayerItem()
@@ -46,32 +55,23 @@ QgsGdalLayerItem::~QgsGdalLayerItem()
 
 QgsLayerItem::Capability QgsGdalLayerItem::capabilities()
 {
-  // Check if data source can be opened for update
-  QgsDebugMsg( "mPath = " + mPath );
-  GDALAllRegister();
-  GDALDatasetH hDS = GDALOpen( TO8F( mPath ), GA_Update );
-
-  if ( !hDS )
-    return NoCapabilities;
-
-  return SetCrs;
+  return mCapabilities & SetCrs ? SetCrs : NoCapabilities;
 }
 
 bool QgsGdalLayerItem::setCrs( QgsCoordinateReferenceSystem crs )
 {
-  QgsDebugMsg( "mPath = " + mPath );
-  GDALAllRegister();
   GDALDatasetH hDS = GDALOpen( TO8F( mPath ), GA_Update );
-
   if ( !hDS )
     return false;
 
   QString wkt = crs.toWkt();
   if ( GDALSetProjection( hDS, wkt.toLocal8Bit().data() ) != CE_None )
   {
+    GDALClose( hDS );
     QgsDebugMsg( "Could not set CRS" );
     return false;
   }
+
   GDALClose( hDS );
   return true;
 }
@@ -129,6 +129,7 @@ QString QgsGdalLayerItem::layerName() const
 static QString filterString;
 static QStringList extensions = QStringList();
 static QStringList wildcards = QStringList();
+static QMutex gBuildingFilters;
 
 QGISEXTERN int dataCapabilities()
 {
@@ -157,8 +158,8 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   bool scanExtSetting = false;
   if (( settings.value( "/qgis/scanItemsInBrowser2",
                         "extension" ).toString() == "extension" ) ||
-      ( settings.value( "/qgis/scanItemsFastScanUris",
-                        QStringList() ).toStringList().contains( parentItem->path() ) ) ||
+      ( parentItem && settings.value( "/qgis/scanItemsFastScanUris",
+                                      QStringList() ).toStringList().contains( parentItem->path() ) ) ||
       (( is_vsizip || is_vsitar ) && parentItem && parentItem->parent() &&
        settings.value( "/qgis/scanItemsFastScanUris",
                        QStringList() ).toStringList().contains( parentItem->parent()->path() ) ) )
@@ -186,9 +187,15 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   // get supported extensions
   if ( extensions.isEmpty() )
   {
-    buildSupportedRasterFileFilterAndExtensions( filterString, extensions, wildcards );
-    QgsDebugMsgLevel( "extensions: " + extensions.join( " " ), 2 );
-    QgsDebugMsgLevel( "wildcards: " + wildcards.join( " " ), 2 );
+    // this code may be executed by more threads at once!
+    // use a mutex to make sure this does not happen (so there's no crash on start)
+    QMutexLocker locker( &gBuildingFilters );
+    if ( extensions.isEmpty() )
+    {
+      buildSupportedRasterFileFilterAndExtensions( filterString, extensions, wildcards );
+      QgsDebugMsgLevel( "extensions: " + extensions.join( " " ), 2 );
+      QgsDebugMsgLevel( "wildcards: " + wildcards.join( " " ), 2 );
+    }
   }
 
   // skip *.aux.xml files (GDAL auxilary metadata files),
@@ -228,11 +235,14 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
     if ( !thePath.startsWith( vsiPrefix ) )
       thePath = vsiPrefix + thePath;
     // if this is a /vsigzip/path_to_zip.zip/file_inside_zip remove the full path from the name
+    // no need to change the name I believe
+    /*
     if (( is_vsizip || is_vsitar ) && ( thePath != vsiPrefix + parentItem->path() ) )
     {
       name = thePath;
       name = name.replace( vsiPrefix + parentItem->path() + "/", "" );
     }
+    */
   }
 
   // return item without testing if:

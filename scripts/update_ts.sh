@@ -88,7 +88,7 @@ fi
 
 echo Updating python translations
 cd python
-pylupdate4 utils.py {console,pyplugin_installer}/*.{py,ui} -ts python-i18n.ts
+pylupdate4 user.py utils.py {console,pyplugin_installer}/*.{py,ui} -ts python-i18n.ts
 perl ../scripts/ts2cpp.pl python-i18n.ts python-i18n.cpp
 rm python-i18n.ts
 cd ..
@@ -107,7 +107,7 @@ echo Creating qmake project file
 $QMAKE -project -o qgis_ts.pro -nopwd src python i18n
 
 echo Updating translations
-$LUPDATE -locations none -verbose qgis_ts.pro
+$LUPDATE -locations absolute -verbose qgis_ts.pro
 
 if [ $1 = push ]; then
 	echo Pushing translation...

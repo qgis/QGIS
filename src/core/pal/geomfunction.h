@@ -27,10 +27,6 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #ifndef _GEOM_FUNCTION_
 #define _GEOM_FUNCTION_
 
@@ -125,31 +121,6 @@ namespace pal
   bool computeLineIntersection( double x1, double y1, double x2, double y2,  // 1st line (segment)
                                 double x3, double y3, double x4, double y4,  // 2nd line segment
                                 double *x, double *y );
-
-#ifdef _EXPORT_MAP_
-  /**
-   * \brief generate SVG code for a geometry
-   *
-   * @param nbPoints # points in x and y vector
-   * @param typeID from geos
-   * @param x x coordinates
-   * @param y y coordinates
-   * @param dpi map resolution
-   * @param scale map scale is 1:scale
-   * @param xmin minimum x value in mapExtent
-   * @param ymax maximum y value in mapExtent
-   * @param layername SVG layer name
-   * @param objectID SVG ID
-   * @param out stream to write
-   */
-  void toSVGPath( int nbPoints, int geomType,
-                  double *x, double *y,
-                  int dpi, double scale,
-                  int xmin, int ymax,
-                  char *layername,
-                  char *objectID,
-                  std::ostream &out );
-#endif
 
   int reorderPolygon( int nbPoints, double *x, double *y );
 

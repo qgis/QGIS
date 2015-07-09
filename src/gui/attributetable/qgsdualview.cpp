@@ -25,7 +25,6 @@
 #include "qgsmaplayeractionregistry.h"
 #include "qgsmessagelog.h"
 #include "qgsvectordataprovider.h"
-#include "qgsvectordataprovider.h"
 #include "qgsvectorlayercache.h"
 
 #include <QDialog>
@@ -60,13 +59,13 @@ QgsDualView::QgsDualView( QWidget* parent )
   connect( mFeatureList, SIGNAL( displayExpressionChanged( QString ) ), this, SLOT( previewExpressionChanged( QString ) ) );
 }
 
-void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const QgsFeatureRequest &request, QgsAttributeEditorContext context )
+void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const QgsFeatureRequest &request, const QgsAttributeEditorContext &context )
 {
   mEditorContext = context;
 
   connect( mTableView, SIGNAL( willShowContextMenu( QMenu*, QModelIndex ) ), this, SLOT( viewWillShowContextMenu( QMenu*, QModelIndex ) ) );
 
-  initLayerCache( layer );
+  initLayerCache( layer, request.filterType() == QgsFeatureRequest::FilterRect );
   initModels( mapCanvas, request );
 
   mTableView->setModel( mFilterModel );
@@ -79,6 +78,7 @@ void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const Qg
   mAttributeForm->hideButtonBox();
 
   connect( mAttributeForm, SIGNAL( attributeChanged( QString, QVariant ) ), this, SLOT( featureFormAttributeChanged() ) );
+  connect( mMasterModel, SIGNAL( modelChanged() ), mAttributeForm, SLOT( refreshFeature() ) );
 
   if ( mFeatureListPreviewButton->defaultAction() )
     mFeatureList->setDisplayExpression( mDisplayExpression );
@@ -154,7 +154,11 @@ void QgsDualView::columnBoxInit()
 
   Q_FOREACH ( const QgsField& field, fields )
   {
-    if ( mLayerCache->layer()->editorWidgetV2( mLayerCache->layer()->fieldNameIndex( field.name() ) ) != "Hidden" )
+    int fieldIndex = mLayerCache->layer()->fieldNameIndex( field.name() );
+    if ( fieldIndex == -1 )
+      continue;
+
+    if ( mLayerCache->layer()->editorWidgetV2( fieldIndex ) != "Hidden" )
     {
       QIcon icon = QgsApplication::getThemeIcon( "/mActionNewAttribute.png" );
       QString text = field.name();
@@ -201,13 +205,13 @@ void QgsDualView::setSelectedOnTop( bool selectedOnTop )
   mFilterModel->setSelectedOnTop( selectedOnTop );
 }
 
-void QgsDualView::initLayerCache( QgsVectorLayer* layer )
+void QgsDualView::initLayerCache( QgsVectorLayer* layer, bool cacheGeometry )
 {
   // Initialize the cache
   QSettings settings;
   int cacheSize = settings.value( "/qgis/attributeTableRowCache", "10000" ).toInt();
   mLayerCache = new QgsVectorLayerCache( layer, cacheSize, this );
-  mLayerCache->setCacheGeometry( false );
+  mLayerCache->setCacheGeometry( cacheGeometry );
   if ( 0 == cacheSize || 0 == ( QgsVectorDataProvider::SelectAtId & mLayerCache->layer()->dataProvider()->capabilities() ) )
   {
     connect( mLayerCache, SIGNAL( progress( int, bool & ) ), this, SLOT( progress( int, bool & ) ) );
@@ -412,7 +416,7 @@ void QgsDualView::progress( int i, bool& cancel )
 
   QCoreApplication::processEvents();
 
-  cancel = mProgressDlg->wasCanceled();
+  cancel = mProgressDlg && mProgressDlg->wasCanceled();
 }
 
 void QgsDualView::finished()

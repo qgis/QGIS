@@ -23,7 +23,6 @@
 #include "ui_qgsunitselectionwidget.h"
 #include "ui_qgsmapunitscaledialog.h"
 
-
 /** Dialog allowing the user to choose the minimum and maximum scale of an object in map units */
 class GUI_EXPORT QgsMapUnitScaleDialog : public QDialog, private Ui::QgsMapUnitScaleDialog
 {
@@ -55,15 +54,40 @@ class GUI_EXPORT QgsUnitSelectionWidget : public QWidget, private Ui::QgsUnitSel
   public:
     QgsUnitSelectionWidget( QWidget* parent = 0 );
 
-    /** Sets the units which the user can choose from in the combobox. mapUnitIdx specifies which entry corresponds to the map units, or -1 if none */
+    /** Sets the units which the user can choose from in the combobox.
+     * @param units list of strings for custom units to display in the widget
+     * @param mapUnitIdx specifies which entry corresponds to the map units, or -1 if none
+    */
     void setUnits( const QStringList& units, int mapUnitIdx );
+
+    /** Sets the units which the user can choose from in the combobox. Clears any existing units.
+     * @param units list of valid units
+     * @note added in QGIS 2.9
+    */
+    void setUnits( const QgsSymbolV2::OutputUnitList& units );
 
     /** Get the selected unit index */
     int getUnit() const { return mUnitCombo->currentIndex(); }
-    /** Sets the selected unit index */
+
+    /** Returns the current predefined selected unit (if applicable).
+     * @returns selected output unit, or QgsSymbolV2::Mixed if the widget was populated with custom unit types
+     * @note added in QGIS 2.9
+    */
+    QgsSymbolV2::OutputUnit unit() const;
+
+    /** Sets the selected unit index
+     * @param unitIndex index of unit to set as current
+    */
     void setUnit( int unitIndex );
+
+    /** Sets the selected unit
+     * @param unit predefined unit to set as current
+    */
+    void setUnit( QgsSymbolV2::OutputUnit unit );
+
     /** Returns the map unit scale */
     QgsMapUnitScale getMapUnitScale() const { return mUnitScaleDialog->getMapUnitScale(); }
+
     /** Sets the map unit scale */
     void setMapUnitScale( const QgsMapUnitScale& scale ) { mUnitScaleDialog->setMapUnitScale( scale ); }
 

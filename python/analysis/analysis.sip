@@ -34,6 +34,7 @@
 %Include interpolation/qgsidwinterpolator.sip
 %Include interpolation/qgstininterpolator.sip
 
+%Include raster/qgsalignraster.sip
 %Include raster/qgsderivativefilter.sip
 %Include raster/qgsaspectfilter.sip
 %Include raster/qgshillshadefilter.sip

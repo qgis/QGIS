@@ -48,22 +48,26 @@ class GUI_EXPORT QgsMessageBar: public QFrame
     {
       INFO = 0,
       WARNING = 1,
-      CRITICAL = 2
+      CRITICAL = 2,
+      SUCCESS = 3
     };
 
     QgsMessageBar( QWidget *parent = 0 );
     ~QgsMessageBar();
 
-    /*! display a message item on the bar after hiding the currently visible one
-     *  and putting it in a stack.
-     * @param item item to display
+    /**
+     * Display a message item on the bar after hiding the currently visible one
+     * and putting it in a stack.
+     * The message bar will take ownership of the item.
+     *
+     * @param item Item to display
      */
     void pushItem( QgsMessageBarItem *item );
 
     /*! display a widget as a message on the bar after hiding the currently visible one
      *  and putting it in a stack.
      * @param widget message widget to display
-     * @param level is QgsMessageBar::INFO, WARNING or CRITICAL
+     * @param level is QgsMessageBar::INFO, WARNING, CRITICAL or SUCCESS
      * @param duration timeout duration of message in seconds, 0 value indicates no timeout
      */
     QgsMessageBarItem *pushWidget( QWidget *widget, MessageLevel level = INFO, int duration = 0 );
@@ -96,7 +100,7 @@ class GUI_EXPORT QgsMessageBar: public QFrame
 
   public slots:
     /*! remove the currently displayed widget from the bar and
-     *  display the next in the stack if any or hide the bar
+     *  display the next in the stack if any or hide the bar.
      *  @return true if the widget was removed, false otherwise
      */
     bool popWidget();
@@ -106,8 +110,40 @@ class GUI_EXPORT QgsMessageBar: public QFrame
      */
     bool clearWidgets();
 
+    /**
+     * Pushes a success message with default timeout to the message bar
+     * @param title title string for message
+     * @param message The message to be displayed
+     * @note added in 2.8
+     */
+    void pushSuccess( const QString& title, const QString& message );
+
+    /**
+     * Pushes a information message with default timeout to the message bar
+     * @param title title string for message
+     * @param message The message to be displayed
+     * @note added in 2.8
+     */
+    void pushInfo( const QString& title, const QString& message );
+
+    /**
+     * Pushes a warning with default timeout to the message bar
+     * @param title title string for message
+     * @param message The message to be displayed
+     * @note added in 2.8
+     */
+    void pushWarning( const QString& title, const QString& message );
+
+    /**
+     * Pushes a critical warning with default timeout to the message bar
+     * @param title title string for message
+     * @param message The message to be displayed
+     * @note added in 2.8
+     */
+    void pushCritical( const QString& title, const QString& message );
+
   protected:
-    void mousePressEvent( QMouseEvent * e );
+    void mousePressEvent( QMouseEvent * e ) override;
 
   private:
     void popItem( QgsMessageBarItem *item );

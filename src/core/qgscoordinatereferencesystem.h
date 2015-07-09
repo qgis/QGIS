@@ -350,6 +350,12 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /**Returns auth id of related geographic CRS*/
     QString geographicCRSAuthId() const;
 
+    /**Returns a list of recently used projections
+     * @returns list of srsid for recently used projections
+     * @note added in QGIS 2.7
+     */
+    static QStringList recentProjections();
+
     // Mutators -----------------------------------
     // We don't want to expose these to the public api since they wont create
     // a fully valid crs. Programmers should use the createFrom* methods rather
@@ -372,8 +378,9 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @param theDescription A textual description of the srs.
      */
     void setDescription( QString theDescription );
-    /* Set the Proj Proj4String.
-     * @param  QString theProj4String Proj4 format specifies
+
+    /*! Set the Proj Proj4String.
+     * @param theProj4String Proj4 format specifies
      * (excluding proj and ellips) that define this srs.
      * @note some content of the PROJ4 string may be stripped off by this
      * method due to the parsing of the string by OSRNewSpatialReference .
@@ -383,6 +390,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * +proj=longlat +datum=WGS84 +no_defs
      */
     void setProj4String( QString theProj4String );
+
     /*! Set this Geographic? flag
      * @param theGeoFlag Whether this is a geographic or projected coordinate system
      */

@@ -200,12 +200,12 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
      * Flag to indicate whether the coordinate systems have been initialised
      * @return true if initialised, otherwise false
      */
-    bool isInitialised() const {return mInitialisedFlag;};
+    bool isInitialised() const {return mInitialisedFlag;}
 
     /*! See if the transform short circuits because src and dest are equivalent
      * @return bool True if it short circuits
      */
-    bool isShortCircuited() {return mShortCircuit;};
+    bool isShortCircuited() {return mShortCircuit;}
 
     /*! Change the destination coordinate system by passing it a qgis srsid
     * A QGIS srsid is a unique key value to an entry on the tbl_srs in the

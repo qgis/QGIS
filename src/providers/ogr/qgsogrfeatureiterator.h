@@ -16,6 +16,7 @@
 #define QGSOGRFEATUREITERATOR_H
 
 #include "qgsfeatureiterator.h"
+#include "qgsogrconnpool.h"
 
 #include <ogr_api.h>
 
@@ -28,7 +29,7 @@ class QgsOgrFeatureSource : public QgsAbstractFeatureSource
   public:
     QgsOgrFeatureSource( const QgsOgrProvider* p );
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
 
   protected:
     QString mFilePath;
@@ -51,17 +52,17 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgr
     ~QgsOgrFeatureIterator();
 
     //! reset the iterator to the starting position
-    virtual bool rewind();
+    virtual bool rewind() override;
 
     //! end of iterating: free the resources / lock
-    virtual bool close();
+    virtual bool close() override;
 
   protected:
     //! fetch next feature, return true on success
-    virtual bool fetchFeature( QgsFeature& feature );
+    virtual bool fetchFeature( QgsFeature& feature ) override;
 
     //! Setup the simplification of geometries to fetch using the specified simplify method
-    virtual bool prepareSimplification( const QgsSimplifyMethod& simplifyMethod );
+    virtual bool prepareSimplification( const QgsSimplifyMethod& simplifyMethod ) override;
 
 
     bool readFeature( OGRFeatureH fet, QgsFeature& feature );
@@ -71,7 +72,7 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgr
 
     bool mFeatureFetched;
 
-    OGRDataSourceH ogrDataSource;
+    QgsOgrConn* mConn;
     OGRLayerH ogrLayer;
 
     bool mSubsetStringSet;
@@ -84,7 +85,7 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgr
     QgsOgrAbstractGeometrySimplifier* mGeometrySimplifier;
 
     //! returns whether the iterator supports simplify geometries on provider side
-    virtual bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const;
+    virtual bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const override;
 };
 
 #endif // QGSOGRFEATUREITERATOR_H

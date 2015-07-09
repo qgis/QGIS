@@ -24,7 +24,6 @@
 #include "qgsexpression.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsmapmouseevent.h"
 #include "qgsmaptoolcapture.h"
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgsmessagebaritem.h"
@@ -47,7 +46,7 @@ bool QgsAdvancedDigitizingDockWidget::lineCircleIntersection( const QgsPoint& ce
   const double dr = sqrt( pow( dx, 2 ) + pow( dy, 2 ) );
   const double d = x1 * y2 - x2 * y1;
 
-  const double disc = pow( radius , 2 ) * pow( dr, 2 ) - pow( d, 2 );
+  const double disc = pow( radius, 2 ) * pow( dr, 2 ) - pow( d, 2 );
 
   if ( disc < 0 )
   {
@@ -88,11 +87,12 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* 
     , mCurrentMapTool( 0 )
     , mCadEnabled( false )
     , mConstructionMode( false )
-    , mSnappingEnabled( true )
+    , mSnappingMode(( QgsMapMouseEvent::SnappingMode ) QSettings().value( "/Cad/SnappingMode", ( int )QgsMapMouseEvent::SnapProjectConfig ).toInt() )
     , mCommonAngleConstraint( QSettings().value( "/Cad/CommonAngle", 90 ).toInt() )
     , mCadPointList( QList<QgsPoint>() )
-    , mPointSnapped( false )
+    , mSnappedToVertex( false )
     , mSnappedSegment( QList<QgsPoint>() )
+    , mErrorMessage( 0 )
 {
   setupUi( this );
 
@@ -137,38 +137,45 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* 
   connect( mXLineEdit, SIGNAL( returnPressed() ), this, SLOT( lockConstraint() ) );
   connect( mYLineEdit, SIGNAL( returnPressed() ), this, SLOT( lockConstraint() ) );
 
-  // errors messages
-  mErrorMessage = new QgsMessageBarItem( tr( "CAD tools" ),
-                                         tr( "Some constraints are incompatible. Resulting point might be incorrect." ),
-                                         QgsMessageBar::WARNING, 0 );
-  mErrorMessageDisplayed = false;
   mapToolChanged( NULL );
 
   // config menu
   QMenu *menu = new QMenu( this );
   // common angles
-  QActionGroup* actionGroup = new QActionGroup( menu ); // actions are exclusive for common angles
+  QActionGroup* angleButtonGroup = new QActionGroup( menu ); // actions are exclusive for common angles
   mCommonAngleActions = QMap<QAction*, int>();
   QList< QPair< int, QString > > commonAngles;
+  commonAngles << QPair<int, QString>( 0, tr( "Do not snap to common angles" ) );
   commonAngles << QPair<int, QString>( 30, tr( "Snap to 30%1 angles" ).arg( QString::fromUtf8( "°" ) ) );
   commonAngles << QPair<int, QString>( 45, tr( "Snap to 45%1 angles" ).arg( QString::fromUtf8( "°" ) ) );
   commonAngles << QPair<int, QString>( 90, tr( "Snap to 90%1 angles" ).arg( QString::fromUtf8( "°" ) ) );
-  commonAngles << QPair<int, QString>( 0, tr( "Do not snap to common angles" ) );
-  for ( QList< QPair< int, QString > >::const_iterator it = commonAngles.begin(); it != commonAngles.end(); it++ )
+  for ( QList< QPair< int, QString > >::const_iterator it = commonAngles.begin(); it != commonAngles.end(); ++it )
   {
     QAction* action = new QAction( it->second, menu );
     action->setCheckable( true );
     action->setChecked( it->first == mCommonAngleConstraint );
     menu->addAction( action );
-    actionGroup->addAction( action );
+    angleButtonGroup->addAction( action );
     mCommonAngleActions.insert( action, it->first );
   }
   // snapping on layers
   menu->addSeparator();
-  mSnappingEnabledAction = new QAction( tr( "Snap on layers" ), menu );
-  mSnappingEnabledAction->setCheckable( true );
-  mSnappingEnabledAction->setChecked( mSnappingEnabled );
-  menu->addAction( mSnappingEnabledAction );
+  QActionGroup* snapButtonGroup = new QActionGroup( menu ); // actions are exclusive for snapping modes
+  mSnappingActions = QMap<QAction*, QgsMapMouseEvent::SnappingMode>();
+  QList< QPair< QgsMapMouseEvent::SnappingMode, QString > > snappingModes;
+  snappingModes << QPair<QgsMapMouseEvent::SnappingMode, QString>( QgsMapMouseEvent::NoSnapping, tr( "Do not snap to vertices or segment" ) );
+  snappingModes << QPair<QgsMapMouseEvent::SnappingMode, QString>( QgsMapMouseEvent::SnapProjectConfig, tr( "Snap according to project configuration" ) );
+  snappingModes << QPair<QgsMapMouseEvent::SnappingMode, QString>( QgsMapMouseEvent::SnapAllLayers, tr( "Snap to all layers" ) );
+  for ( QList< QPair< QgsMapMouseEvent::SnappingMode, QString > >::const_iterator it = snappingModes.begin(); it != snappingModes.end(); ++it )
+  {
+    QAction* action = new QAction( it->second, menu );
+    action->setCheckable( true );
+    action->setChecked( it->first == mSnappingMode );
+    menu->addAction( action );
+    snapButtonGroup->addAction( action );
+    mSnappingActions.insert( action, it->first );
+  }
+
   mSettingsButton->setMenu( menu );
   connect( mSettingsButton, SIGNAL( triggered( QAction* ) ), this, SLOT( settingsButtonTriggered( QAction* ) ) );
 
@@ -257,9 +264,10 @@ void QgsAdvancedDigitizingDockWidget::activateCad( bool enabled )
 {
   enabled &= mCurrentMapTool != 0;
 
-  if ( mErrorMessageDisplayed )
+  if ( mErrorMessage )
   {
     QgisApp::instance()->messageBar()->popWidget( mErrorMessage );
+    mErrorMessage = 0;
   }
   QSettings().setValue( "/Cad/SessionActive", enabled );
 
@@ -314,20 +322,22 @@ void QgsAdvancedDigitizingDockWidget::setConstructionMode( bool enabled )
 void QgsAdvancedDigitizingDockWidget::settingsButtonTriggered( QAction* action )
 {
   // snapping
-  if ( action == mSnappingEnabledAction )
+  QMap<QAction*, QgsMapMouseEvent::SnappingMode>::const_iterator isn = mSnappingActions.find( action );
+  if ( isn != mSnappingActions.end() )
   {
-    mSnappingEnabled = !mSnappingEnabled;
-    mSnappingEnabledAction->setChecked( mSnappingEnabled );
+    isn.key()->setChecked( true );
+    mSnappingMode = isn.value();
+    QSettings().setValue( "/Cad/SnappingMode", ( int )isn.value() );
     return;
   }
 
   // common angles
-  QMap<QAction*, int>::const_iterator i = mCommonAngleActions.find( action );
-  if ( i != mCommonAngleActions.end() )
+  QMap<QAction*, int>::const_iterator ica = mCommonAngleActions.find( action );
+  if ( ica != mCommonAngleActions.end() )
   {
-    i.key()->setChecked( true );
-    mCommonAngleConstraint = i.value();
-    QSettings().setValue( "/Cad/CommonAngle", i.value() );
+    ica.key()->setChecked( true );
+    mCommonAngleConstraint = ica.value();
+    QSettings().setValue( "/Cad/CommonAngle", ica.value() );
     return;
   }
 }
@@ -501,14 +511,15 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent* e )
 {
   bool res = true;
 
-  QgsDebugMsg( "Contraints (locked / relative / value" );
+  QgsDebugMsg( "Constraints (locked / relative / value" );
   QgsDebugMsg( QString( "Angle:    %1 %2 %3" ).arg( mAngleConstraint->isLocked() ).arg( mAngleConstraint->relative() ).arg( mAngleConstraint->value() ) );
   QgsDebugMsg( QString( "Distance: %1 %2 %3" ).arg( mDistanceConstraint->isLocked() ).arg( mDistanceConstraint->relative() ).arg( mDistanceConstraint->value() ) );
   QgsDebugMsg( QString( "X:        %1 %2 %3" ).arg( mXConstraint->isLocked() ).arg( mXConstraint->relative() ).arg( mXConstraint->value() ) );
   QgsDebugMsg( QString( "Y:        %1 %2 %3" ).arg( mYConstraint->isLocked() ).arg( mYConstraint->relative() ).arg( mYConstraint->value() ) );
 
-  QgsPoint point = e->mapPoint( &mPointSnapped );
-  mSnappedSegment = e->snappedSegment();
+  QgsPoint point = e->mapPoint();
+  mSnappedToVertex = e->isSnappedToVertex();
+  mSnappedSegment = e->snapSegment();
 
   bool previousPointExist, penulPointExist;
   QgsPoint previousPt = previousPoint( &previousPointExist );
@@ -620,36 +631,40 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent* e )
     double cosa = qCos( angleValue );
     double sina = qSin( angleValue );
     double v = ( point.x() - previousPt.x() ) * cosa + ( point.y() - previousPt.y() ) * sina ;
-    if ( mXConstraint->isLocked() || mYConstraint->isLocked() )
+    if ( mXConstraint->isLocked() && mYConstraint->isLocked() )
     {
-      // perform both to detect errors in contraints
-      if ( mXConstraint->isLocked() )
+      // do nothing if both X,Y are already locked
+    }
+    else if ( mXConstraint->isLocked() )
+    {
+      if ( cosa == 0 )
       {
-        if ( cosa == 0 )
-        {
-          res = false;
-        }
-        else
-        {
-          double x = mXConstraint->value();
-          if ( !mXConstraint->relative() )
-          {
-            x -= previousPt.x();
-          }
-          point.setY( previousPt.y() + x * sina / cosa );
-        }
+        res = false;
       }
-      else if ( mYConstraint->isLocked() )
+      else
       {
-        if ( sina == 0 )
+        double x = mXConstraint->value();
+        if ( !mXConstraint->relative() )
         {
-          double y = mYConstraint->value();
-          if ( !mYConstraint->relative() )
-          {
-            y -= previousPt.y();
-          }
-          point.setX( previousPt.x() + y * cosa / sina );
+          x -= previousPt.x();
         }
+        point.setY( previousPt.y() + x * sina / cosa );
+      }
+    }
+    else if ( mYConstraint->isLocked() )
+    {
+      if ( sina == 0 )
+      {
+        res = false;
+      }
+      else
+      {
+        double y = mYConstraint->value();
+        if ( !mYConstraint->relative() )
+        {
+          y -= previousPt.y();
+        }
+        point.setX( previousPt.x() + y * cosa / sina );
       }
     }
     else
@@ -690,7 +705,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent* e )
   {
     if ( mXConstraint->isLocked() || mYConstraint->isLocked() )
     {
-      // perform both to detect errors in contraints
+      // perform both to detect errors in constraints
       if ( mXConstraint->isLocked() )
       {
         const QList<QgsPoint> verticalSegment = QList<QgsPoint>()
@@ -805,7 +820,7 @@ bool QgsAdvancedDigitizingDockWidget::alignToSegment( QgsMapMouseEvent* e, CadCo
   bool previousPointExist, penulPointExist, mSnappedSegmentExist;
   QgsPoint previousPt = previousPoint( &previousPointExist );
   QgsPoint penultimatePt = penultimatePoint( &penulPointExist );
-  QList<QgsPoint> mSnappedSegment = e->snappedSegment( &mSnappedSegmentExist );
+  QList<QgsPoint> mSnappedSegment = e->snapSegment( &mSnappedSegmentExist, true );
 
   if ( !previousPointExist || !mSnappedSegmentExist )
   {
@@ -848,10 +863,10 @@ bool QgsAdvancedDigitizingDockWidget::canvasReleaseEventFilter( QgsMapMouseEvent
   if ( !mCadEnabled )
     return false;
 
-  if ( mErrorMessageDisplayed )
+  if ( mErrorMessage )
   {
     QgisApp::instance()->messageBar()->popWidget( mErrorMessage );
-    mErrorMessageDisplayed = false;
+    mErrorMessage = 0;
   }
 
   if ( e->button() == Qt::RightButton )
@@ -897,16 +912,20 @@ bool QgsAdvancedDigitizingDockWidget::canvasMoveEventFilter( QgsMapMouseEvent* e
 
   if ( !applyConstraints( e ) )
   {
-    if ( !mErrorMessageDisplayed )
+    if ( !mErrorMessage )
     {
+      // errors messages
+      mErrorMessage = new QgsMessageBarItem( tr( "CAD tools" ),
+                                             tr( "Some constraints are incompatible. Resulting point might be incorrect." ),
+                                             QgsMessageBar::WARNING, 0 );
+
       QgisApp::instance()->messageBar()->pushItem( mErrorMessage );
-      mErrorMessageDisplayed = true;
     }
   }
-  else if ( mErrorMessageDisplayed )
+  else if ( mErrorMessage )
   {
     QgisApp::instance()->messageBar()->popWidget( mErrorMessage );
-    mErrorMessageDisplayed = false;
+    mErrorMessage = 0;
   }
 
   // perpendicular/parallel constraint
@@ -1110,7 +1129,6 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent* e )
     default:
     {
       return false; // continues
-      break;
     }
   }
   return true; // stop the event
@@ -1120,7 +1138,7 @@ QgsPoint QgsAdvancedDigitizingDockWidget::currentPoint( bool* exist ) const
 {
   if ( exist )
     *exist = pointsCount() > 0;
-  if ( pointsCount() > 1 )
+  if ( pointsCount() > 0 )
     return mCadPointList.at( 0 );
   else
     return QgsPoint();
@@ -1174,7 +1192,7 @@ void QgsAdvancedDigitizingDockWidget::clearPoints()
 {
   mCadPointList.clear();
   mSnappedSegment.clear();
-  mPointSnapped = false;
+  mSnappedToVertex = false;
 
   updateCapacity();
 }

@@ -16,8 +16,6 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QObject>
-#include <iostream>
 #include <QApplication>
 #include <QFileInfo>
 #include <QDir>
@@ -40,14 +38,18 @@
 /** \ingroup UnitTests
  * This is a regression test for ticket #992.
  */
-class Regression992: public QObject
+class Regression992 : public QObject
 {
     Q_OBJECT
+
+  public:
+    Regression992();
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {};// will be called before each testfunction is executed.
-    void cleanup() {};// will be called after every testfunction.
+    void init() {}// will be called before each testfunction is executed.
+    void cleanup() {}// will be called after every testfunction.
 
     void regression992();
   private:
@@ -56,6 +58,12 @@ class Regression992: public QObject
     QgsRasterLayer *mpRasterLayer;
     QString mReport;
 };
+
+Regression992::Regression992()
+    : mpRasterLayer( NULL )
+{
+
+}
 
 //runs before all tests
 void Regression992::initTestCase()
@@ -69,7 +77,7 @@ void Regression992::initTestCase()
 
   //create some objects that will be used in all tests...
   //create a raster layer that will be used in all tests...
-  mTestDataDir = QString( TEST_DATA_DIR ) + QDir::separator(); //defined in CMakeLists.txt
+  mTestDataDir = QString( TEST_DATA_DIR ) + "/"; //defined in CMakeLists.txt
   QString myFileName = mTestDataDir + "rgbwcmyk01_YeGeo.jp2";
   QFileInfo myRasterFileInfo( myFileName );
   mpRasterLayer = new QgsRasterLayer( myRasterFileInfo.filePath(),
@@ -95,7 +103,7 @@ void Regression992::initTestCase()
 //runs after all tests
 void Regression992::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {

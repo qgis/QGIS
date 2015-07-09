@@ -131,14 +131,14 @@ class Context(object):
         elif(self.triangulate):
             pass
         elif(self.plot):
-            self.circle (s.x, s.y, cradius)
+            self.circle (s.x, s.y, None )  # no radius
         elif(self.doPrint):
             print "s %f %f" % (s.x, s.y)
 
     def outVertex(self,s):
         self.vertices.append((s.x,s.y))
         if(self.debug):
-            print  "vertex(%d) at %f %f" % (s.sitenum, s.x, s.y)
+            print "vertex(%d) at %f %f" % (s.sitenum, s.x, s.y)
         elif(self.triangulate):
             pass
         elif(self.doPrint and not self.plot):
@@ -307,7 +307,7 @@ def voronoi(siteList,context):
               # the left HE, and reinsert it
               p = llbnd.intersect(bisector)
               if p is not None:
-                  priorityQ.delete(llbnd);
+                  priorityQ.delete(llbnd)
                   priorityQ.insert(llbnd, p, bot.distance(p))
 
               # if right HE and the new bisector don't intersect, then reinsert it
@@ -485,7 +485,7 @@ class Halfedge(object):
         if(e.a == 1.0):
             dyp = pt.y - topsite.y
             dxp = pt.x - topsite.x
-            fast = 0;
+            fast = 0
             if ((not right_of_site and e.b < 0.0) or (right_of_site and e.b >= 0.0)):
                 above = dyp >= e.b * dxp
                 fast = above
@@ -538,7 +538,7 @@ class Halfedge(object):
             e = e2
 
         rightOfSite = xint >= e.reg[1].x
-        if((rightOfSite     and he.pm == Edge.LE) or
+        if((rightOfSite and he.pm == Edge.LE) or
            (not rightOfSite and he.pm == Edge.RE)):
             return None
 
@@ -593,7 +593,7 @@ class EdgeList(object):
         bucket = int(((pt.x - self.xmin)/self.deltax * self.hashsize))
 
         if(bucket < 0):
-            bucket =0;
+            bucket =0
 
         if(bucket >=self.hashsize):
             bucket = self.hashsize-1
@@ -603,9 +603,9 @@ class EdgeList(object):
             i = 1
             while True:
                 he = self.gethash(bucket-i)
-                if (he is not None): break;
+                if (he is not None): break
                 he = self.gethash(bucket+i)
-                if (he is not None): break;
+                if (he is not None): break
                 i += 1
 
         # Now search linear list of halfedges for the corect one
@@ -613,7 +613,7 @@ class EdgeList(object):
             he = he.right
             while he is not self.rightend and he.isPointRightOf(pt):
                 he = he.right
-            he = he.left;
+            he = he.left
         else:
             he = he.left
             while (he is not self.leftend and not he.isPointRightOf(pt)):
@@ -710,7 +710,9 @@ class SiteList(object):
 
     class Iterator(object):
         def __init__(this,lst):  this.generator = (s for s in lst)
-        def __iter__(this):      return this
+
+        def __iter__(this): return this
+
         def next(this):
             try:
                 return this.generator.next()
@@ -727,9 +729,13 @@ class SiteList(object):
         return len(self.__sites)
 
     def _getxmin(self): return self.__xmin
+
     def _getymin(self): return self.__ymin
+
     def _getxmax(self): return self.__xmax
+
     def _getymax(self): return self.__ymax
+
     xmin = property(_getxmin)
     ymin = property(_getymin)
     xmax = property(_getxmax)
@@ -763,7 +769,7 @@ def computeDelaunayTriangulation(points):
     """
     siteList = SiteList(points)
     context  = Context()
-    context.triangulate = true
+    context.triangulate = True
     voronoi(siteList,context)
     return context.triangles
 
@@ -802,4 +808,3 @@ if __name__=="__main__":
 
     sl = SiteList(pts)
     voronoi(sl,c)
-

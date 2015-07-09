@@ -18,7 +18,6 @@
 #define QGSMEASURETOOL_H
 
 #include "qgsmaptool.h"
-#include "qgsmapcanvassnapper.h"
 
 class QgsDistanceArea;
 class QgsMapCanvas;
@@ -55,21 +54,21 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     // Inherited from QgsMapTool
 
     //! Mouse move event for overriding
-    virtual void canvasMoveEvent( QMouseEvent * e );
+    virtual void canvasMoveEvent( QMouseEvent * e ) override;
 
     //! Mouse press event for overriding
-    virtual void canvasPressEvent( QMouseEvent * e );
+    virtual void canvasPressEvent( QMouseEvent * e ) override;
 
     //! Mouse release event for overriding
-    virtual void canvasReleaseEvent( QMouseEvent * e );
+    virtual void canvasReleaseEvent( QMouseEvent * e ) override;
 
     //! called when set as currently active map tool
-    virtual void activate();
+    virtual void activate() override;
 
     //! called when map tool is being deactivated
-    virtual void deactivate();
+    virtual void deactivate() override;
 
-    virtual void keyPressEvent( QKeyEvent* e );
+    virtual void keyPressEvent( QKeyEvent* e ) override;
 
   public slots:
     //! updates the projections we're using
@@ -96,8 +95,6 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     //! indicates whether we've recently warned the user about having the wrong
     // project projection
     bool mWrongProjectProjection;
-
-    QgsMapCanvasSnapper mSnapper;
 
     //! Returns the snapped (map) coordinate
     //@param p (pixel) coordinate

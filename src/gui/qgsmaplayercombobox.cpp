@@ -24,11 +24,8 @@ QgsMapLayerComboBox::QgsMapLayerComboBox( QWidget *parent ) :
   setModel( mProxyModel );
 
   connect( this, SIGNAL( activated( int ) ), this, SLOT( indexChanged( int ) ) );
-}
-
-void QgsMapLayerComboBox::setFilters( QgsMapLayerProxyModel::Filters filters )
-{
-  mProxyModel->setFilters( filters );
+  connect( mProxyModel, SIGNAL( rowsInserted( QModelIndex, int, int ) ), this, SLOT( rowsChanged() ) );
+  connect( mProxyModel, SIGNAL( rowsRemoved( QModelIndex, int, int ) ), this, SLOT( rowsChanged() ) );
 }
 
 void QgsMapLayerComboBox::setLayer( QgsMapLayer *layer )
@@ -50,9 +47,12 @@ void QgsMapLayerComboBox::setLayer( QgsMapLayer *layer )
 
 QgsMapLayer* QgsMapLayerComboBox::currentLayer() const
 {
-  int i = currentIndex();
+  return layer( currentIndex() );
+}
 
-  const QModelIndex proxyIndex = mProxyModel->index( i, 0 );
+QgsMapLayer *QgsMapLayerComboBox::layer( int layerIndex ) const
+{
+  const QModelIndex proxyIndex = mProxyModel->index( layerIndex, 0 );
   if ( !proxyIndex.isValid() )
   {
     return 0;
@@ -78,3 +78,17 @@ void QgsMapLayerComboBox::indexChanged( int i )
   QgsMapLayer* layer = currentLayer();
   emit layerChanged( layer );
 }
+
+void QgsMapLayerComboBox::rowsChanged()
+{
+  if ( count() == 1 )
+  {
+    //currently selected layer item has changed
+    emit layerChanged( currentLayer() );
+  }
+  else if ( count() == 0 )
+  {
+    emit layerChanged( 0 );
+  }
+}
+

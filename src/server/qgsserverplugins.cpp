@@ -15,10 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
+
 #include "qgsserverplugins.h"
 #include "qgsmapserviceexception.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgspythonutils.h"
 #include "qgsserverlogger.h"
 #include "qgsmsutils.h"
 
@@ -38,7 +40,7 @@ bool QgsServerPlugins::initPlugins( QgsServerInterface *interface )
 {
 
   QString pythonlibName( "qgispython" );
-#if defined(Q_WS_MAC) || defined(Q_OS_LINUX)
+#if defined(Q_OS_MAC) || defined(Q_OS_LINUX)
   pythonlibName.prepend( QgsApplication::libraryPath() );
 #endif
 #ifdef __MINGW32__
@@ -115,3 +117,4 @@ bool QgsServerPlugins::initPlugins( QgsServerInterface *interface )
   }
   return mPythonUtils && mPythonUtils->isEnabled() && atLeastOneEnabled;
 }
+

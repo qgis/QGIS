@@ -22,11 +22,9 @@ __revision__ = '$Format:%H$'
 
 import unittest
 import signal
-import sys
 import os
-import traceback
-import xml.etree.ElementTree as ET
-import shlex, subprocess
+import shlex
+import subprocess
 import shelve
 
 try:
@@ -39,8 +37,7 @@ try:
 except ImportError, e:
     raise Exception("OTB python plugins must be installed and available in PYTHONPATH")
 
-from processing.algs.otb.OTBAlgorithm import OTBAlgorithm
-from processing.algs.otb.OTBHelper import *
+from processing.algs.otb.OTBHelper import get_OTB_log, create_xml_descriptors
 from processing.algs.otb.OTBTester import MakefileParser
 
 class Alarm(Exception):
@@ -82,11 +79,11 @@ def ut_generator(test_name, a_tuple):
             black_list = []
 
             ut_command = a_tuple[0]
-            self.assertTrue(ut_command != None)
+            self.assertTrue(ut_command is not None)
             self.assertTrue(ut_command != "")
 
             ut_command_validation = a_tuple[1]
-            self.assertTrue(ut_command_validation != None)
+            self.assertTrue(ut_command_validation is not None)
             self.assertTrue(ut_command_validation != "")
 
             if ut_command.split(" ")[0] in black_list:
@@ -192,7 +189,6 @@ def test_xml_generation():
     create_xml_descriptors()
 
 if __name__ == '__main__':
-    import processing
     mkf = MakefileParser()
     the_tests = mkf.test_algos()
     for t in the_tests:

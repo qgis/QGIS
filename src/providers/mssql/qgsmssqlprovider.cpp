@@ -55,6 +55,7 @@ int QgsMssqlProvider::sConnectionId = 0;
 
 QgsMssqlProvider::QgsMssqlProvider( QString uri )
     : QgsVectorDataProvider( uri )
+    , mNumberFeatures( 0 )
     , mCrs()
     , mWkbType( QGis::WKBUnknown )
 {
@@ -131,7 +132,9 @@ QgsMssqlProvider::QgsMssqlProvider( QString uri )
       mGeometryColName = anUri.geometryColumn();
 
     if ( mSRId < 0 || mWkbType == QGis::WKBUnknown || mGeometryColName.isEmpty() )
+    {
       loadMetadata();
+    }
     loadFields();
     UpdateStatistics( mUseEstimatedMetadata );
 
@@ -242,7 +245,7 @@ QSqlDatabase QgsMssqlProvider::GetDatabase( QString service, QString host, QStri
   }
   else
   {
-#ifdef WIN32
+#ifdef Q_OS_WIN
     connectionString = "driver={SQL Server}";
 #else
     connectionString = "driver={FreeTDS};port=1433";
@@ -308,15 +311,15 @@ QVariant::Type QgsMssqlProvider::DecodeSqlType( QString sqlTypeName )
   {
     type = QVariant::ByteArray;
   }
-  else if ( sqlTypeName.startsWith( "date", Qt::CaseInsensitive ) )
-  {
-    type = QVariant::Date;
-  }
   else if ( sqlTypeName.startsWith( "datetime", Qt::CaseInsensitive ) ||
             sqlTypeName.startsWith( "smalldatetime", Qt::CaseInsensitive ) ||
             sqlTypeName.startsWith( "datetime2", Qt::CaseInsensitive ) )
   {
     type = QVariant::DateTime;
+  }
+  else if ( sqlTypeName.startsWith( "date", Qt::CaseInsensitive ) )
+  {
+    type = QVariant::Date;
   }
   else if ( sqlTypeName.startsWith( "time", Qt::CaseInsensitive ) ||
             sqlTypeName.startsWith( "timestamp", Qt::CaseInsensitive ) )
@@ -600,9 +603,12 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate )
 
   if ( query.exec( statement ) )
   {
-    QgsDebugMsg( "Found extents in spatial index" );
-    if ( query.next() )
+    if ( query.next() && ( !query.value( 0 ).isNull() ||
+                           !query.value( 1 ).isNull() ||
+                           !query.value( 2 ).isNull() ||
+                           !query.value( 3 ).isNull() ) )
     {
+      QgsDebugMsg( "Found extents in spatial index" );
       mExtent.setXMinimum( query.value( 0 ).toDouble() );
       mExtent.setYMinimum( query.value( 1 ).toDouble() );
       mExtent.setXMaximum( query.value( 2 ).toDouble() );
@@ -761,7 +767,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
     QSqlQuery query = QSqlQuery( mDatabase );
     query.setForwardOnly( true );
 
-    const QgsAttributes& attrs = it->attributes();
+    QgsAttributes attrs = it->attributes();
 
     for ( int i = 0; i < attrs.count(); ++i )
     {
@@ -873,6 +879,21 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
         // binding a TEXT value
         query.addBindValue( attrs[i].toString() );
       }
+      else if ( type == QVariant::Time )
+      {
+        // binding a TIME value
+        query.addBindValue( attrs[i].toTime().toString( Qt::ISODate ) );
+      }
+      else if ( type == QVariant::Date )
+      {
+        // binding a DATE value
+        query.addBindValue( attrs[i].toDate().toString( Qt::ISODate ) );
+      }
+      else if ( type == QVariant::DateTime )
+      {
+        // binding a DATETIME value
+        query.addBindValue( attrs[i].toDateTime().toString( Qt::ISODate ) );
+      }
       else
       {
         query.addBindValue( attrs[i] );
@@ -881,10 +902,10 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
 
     if ( !mGeometryColName.isEmpty() )
     {
-      QgsGeometry *geom = it->geometry();
+      const QgsGeometry *geom = it->constGeometry();
       if ( mUseWkb )
       {
-        QByteArray bytea = QByteArray(( char* )geom->asWkb(), geom->wkbSize() );
+        QByteArray bytea = QByteArray(( char* )geom->asWkb(), ( int ) geom->wkbSize() );
         query.addBindValue( bytea, QSql::In | QSql::Binary );
       }
       else
@@ -919,7 +940,16 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
       }
     }
 
-    query.next();
+    if ( !query.next() )
+    {
+      QString msg = query.lastError().text();
+      QgsDebugMsg( msg );
+      if ( !mSkipFailures )
+      {
+        pushError( msg );
+        return false;
+      }
+    }
     it->setFeatureId( query.value( 0 ).toLongLong() );
   }
 
@@ -1008,7 +1038,7 @@ bool QgsMssqlProvider::deleteAttributes( const QgsAttributeIds &attributes )
 }
 
 
-bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap & attr_map )
+bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
   if ( attr_map.isEmpty() )
     return true;
@@ -1024,8 +1054,11 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap & at
     if ( FID_IS_NEW( fid ) )
       continue;
 
-    QString statement;
-    statement = QString( "UPDATE [%1].[%2] SET " ).arg( mSchemaName, mTableName );
+    const QgsAttributeMap& attrs = it.value();
+    if ( attrs.isEmpty() )
+      continue;
+
+    QString statement = QString( "UPDATE [%1].[%2] SET " ).arg( mSchemaName, mTableName );
 
     bool first = true;
     if ( !mDatabase.isOpen() )
@@ -1034,8 +1067,6 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap & at
     }
     QSqlQuery query = QSqlQuery( mDatabase );
     query.setForwardOnly( true );
-
-    const QgsAttributeMap& attrs = it.value();
 
     for ( QgsAttributeMap::const_iterator it2 = attrs.begin(); it2 != attrs.end(); ++it2 )
     {
@@ -1102,6 +1133,21 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap & at
       {
         // binding a TEXT value
         query.addBindValue( it2->toString() );
+      }
+      else if ( type == QVariant::DateTime )
+      {
+        // binding a DATETIME value
+        query.addBindValue( it2->toDateTime().toString( Qt::ISODate ) );
+      }
+      else if ( type == QVariant::Date )
+      {
+        // binding a DATE value
+        query.addBindValue( it2->toDate().toString( Qt::ISODate ) );
+      }
+      else if ( type == QVariant::Time )
+      {
+        // binding a TIME value
+        query.addBindValue( it2->toTime().toString( Qt::ISODate ) );
       }
       else
       {
@@ -1177,7 +1223,7 @@ bool QgsMssqlProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
     // add geometry param
     if ( mUseWkb )
     {
-      QByteArray bytea = QByteArray(( char* )it->asWkb(), it->wkbSize() );
+      QByteArray bytea = QByteArray(( char* )it->asWkb(), ( int ) it->wkbSize() );
       query.addBindValue( bytea, QSql::In | QSql::Binary );
     }
     else
@@ -1310,11 +1356,15 @@ QgsCoordinateReferenceSystem QgsMssqlProvider::crs()
 {
   if ( !mCrs.isValid() && mSRId > 0 )
   {
-    // try to load crs
+    mCrs.createFromSrid( mSRId );
+    if ( mCrs.isValid() )
+      return mCrs;
+
+    // try to load crs from the database tables as a fallback
     QSqlQuery query = QSqlQuery( mDatabase );
     query.setForwardOnly( true );
-    query.exec( QString( "select srtext from spatial_ref_sys where srid = %1" ).arg( QString::number( mSRId ) ) );
-    if ( query.isActive() )
+    bool execOk = query.exec( QString( "select srtext from spatial_ref_sys where srid = %1" ).arg( QString::number( mSRId ) ) );
+    if ( execOk && query.isActive() )
     {
       if ( query.next() && mCrs.createFromWkt( query.value( 0 ).toString() ) )
         return mCrs;
@@ -1322,8 +1372,10 @@ QgsCoordinateReferenceSystem QgsMssqlProvider::crs()
       query.finish();
     }
     query.clear();
-    query.exec( QString( "select well_known_text from sys.spatial_reference_systems where spatial_reference_id = %1" ).arg( QString::number( mSRId ) ) );
-    if ( query.isActive() && query.next() && mCrs.createFromWkt( query.value( 0 ).toString() ) )
+
+    // Look in the system reference table for the data if we can't find it yet
+    execOk = query.exec( QString( "select well_known_text from sys.spatial_reference_systems where spatial_reference_id = %1" ).arg( QString::number( mSRId ) ) );
+    if ( execOk && query.isActive() && query.next() && mCrs.createFromWkt( query.value( 0 ).toString() ) )
       return mCrs;
   }
   return mCrs;
@@ -1727,7 +1779,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer(
     for ( int i = 0, n = fields.size(); i < n; ++i )
     {
       QgsField fld = fields[i];
-      if ( fld.name() == primaryKey )
+      if ( oldToNewAttrIdxMap && fld.name() == primaryKey )
       {
         oldToNewAttrIdxMap->insert( fields.indexFromName( fld.name() ), 0 );
         continue;

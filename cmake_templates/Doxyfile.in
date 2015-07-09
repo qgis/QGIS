@@ -575,6 +575,8 @@ INPUT                  = @CMAKE_SOURCE_DIR@/doc \
                          @CMAKE_SOURCE_DIR@/src/core/composer \
                          @CMAKE_SOURCE_DIR@/src/core/diagram \
                          @CMAKE_SOURCE_DIR@/src/core/dxf \
+                         @CMAKE_SOURCE_DIR@/src/core/effects \
+                         @CMAKE_SOURCE_DIR@/src/core/geometry \
                          @CMAKE_SOURCE_DIR@/src/core/gps \
                          @CMAKE_SOURCE_DIR@/src/core/layertree \
                          @CMAKE_SOURCE_DIR@/src/core/pal \
@@ -584,6 +586,7 @@ INPUT                  = @CMAKE_SOURCE_DIR@/doc \
                          @CMAKE_SOURCE_DIR@/src/gui/attributetable \
                          @CMAKE_SOURCE_DIR@/src/gui/editorwidgets \
                          @CMAKE_SOURCE_DIR@/src/gui/editorwidgets/core \
+                         @CMAKE_SOURCE_DIR@/src/gui/effects \
                          @CMAKE_SOURCE_DIR@/src/gui/layertree \
                          @CMAKE_SOURCE_DIR@/src/gui/raster \
                          @CMAKE_SOURCE_DIR@/src/gui/symbology-ng \
@@ -593,7 +596,13 @@ INPUT                  = @CMAKE_SOURCE_DIR@/doc \
                          @CMAKE_SOURCE_DIR@/src/analysis/openstreetmap \
                          @CMAKE_SOURCE_DIR@/src/analysis/raster \
                          @CMAKE_SOURCE_DIR@/src/analysis/vector \
-                         @CMAKE_SOURCE_DIR@/src/plugins
+                         @CMAKE_SOURCE_DIR@/src/plugins \
+                         @CMAKE_SOURCE_DIR@/src/server/qgsserver.h \
+                         @CMAKE_SOURCE_DIR@/src/server/qgscapabilitiescache.h \
+                         @CMAKE_SOURCE_DIR@/src/server/qgsmapserviceexception.h \
+                         @CMAKE_SOURCE_DIR@/src/server/qgsrequesthandler.h \
+                         @CMAKE_SOURCE_DIR@/src/server/qgsserverfilter.h \
+                         @CMAKE_SOURCE_DIR@/src/server/qgsserverinterface.h
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding, which is
@@ -1248,25 +1257,13 @@ MAN_LINKS              = NO
 # generate an XML file that captures the structure of
 # the code including all documentation.
 
-GENERATE_XML           = NO
+GENERATE_XML           = YES
 
 # The XML_OUTPUT tag is used to specify where the XML pages will be put.
 # If a relative path is entered the value of OUTPUT_DIRECTORY will be
 # put in front of it. If left blank `xml' will be used as the default path.
 
 XML_OUTPUT             = xml
-
-# The XML_SCHEMA tag can be used to specify an XML schema,
-# which can be used by a validating XML parser to check the
-# syntax of the XML files.
-
-XML_SCHEMA             =
-
-# The XML_DTD tag can be used to specify an XML DTD,
-# which can be used by a validating XML parser to check the
-# syntax of the XML files.
-
-XML_DTD                =
 
 # If the XML_PROGRAMLISTING tag is set to YES Doxygen will
 # dump the program listings (including syntax highlighting
@@ -1409,7 +1406,7 @@ SKIP_FUNCTION_MACROS   = YES
 # If a tag file is not located in the directory in which doxygen
 # is run, you must also specify the path to the tagfile here.
 
-TAGFILES               =
+TAGFILES               = @DOXYGEN_TAGS@
 
 # When a file name is specified after GENERATE_TAGFILE, doxygen will create
 # a tag file that is based on the input files it reads.

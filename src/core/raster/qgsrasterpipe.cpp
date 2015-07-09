@@ -97,9 +97,10 @@ bool QgsRasterPipe::insert( int idx, QgsRasterInterface* theInterface )
 
 bool QgsRasterPipe::replace( int idx, QgsRasterInterface* theInterface )
 {
+  if ( !theInterface ) return false;
+
   QgsDebugMsg( QString( "replace by %1 at %2" ).arg( typeid( *theInterface ).name() ).arg( idx ) );
   if ( !checkBounds( idx ) ) return false;
-  if ( !theInterface ) return false;
 
   // make a copy of pipe to test connection, we test the connections
   // of the whole pipe, because the types and band numbers may change
@@ -152,10 +153,9 @@ void QgsRasterPipe::unsetRole( QgsRasterInterface * theInterface )
 
 bool QgsRasterPipe::set( QgsRasterInterface* theInterface )
 {
-  QgsDebugMsg( QString( "%1" ).arg( typeid( *theInterface ).name() ) );
-
   if ( !theInterface ) return false;
 
+  QgsDebugMsg( QString( "%1" ).arg( typeid( *theInterface ).name() ) );
   Role role = interfaceRole( theInterface );
 
   // We don't know where to place unknown interface

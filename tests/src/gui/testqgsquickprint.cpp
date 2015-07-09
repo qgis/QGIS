@@ -15,13 +15,11 @@
 #include <QtTest/QtTest>
 #include <QObject>
 #include <QStringList>
-#include <QObject>
 #include <QApplication>
 #include <QFileInfo>
 #include <QDir>
 #include <QDesktopServices>
 
-#include <iostream>
 //qgis includes...
 #include <qgsmaprenderer.h>
 #include <qgsmaplayer.h>
@@ -36,9 +34,17 @@
 /** \ingroup UnitTests
  * This is a unit test for the different renderers for vector layers.
  */
-class TestQgsQuickPrint: public QObject
+class TestQgsQuickPrint : public QObject
 {
     Q_OBJECT
+  public:
+    TestQgsQuickPrint()
+        : mpMapRenderer( 0 )
+        , mpPointsLayer( 0 )
+        , mpLinesLayer( 0 )
+        , mpPolysLayer( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -70,7 +76,7 @@ void TestQgsQuickPrint::initTestCase()
   //create a point layer that will be used in all tests...
   //
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  mTestDataDir = myDataDir + QDir::separator();
+  mTestDataDir = myDataDir + "/";
   QString myPointsFileName = mTestDataDir + "points.shp";
   QFileInfo myPointFileInfo( myPointsFileName );
   mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
@@ -113,18 +119,17 @@ void TestQgsQuickPrint::initTestCase()
 }
 void TestQgsQuickPrint::cleanupTestCase()
 {
-  /*
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "quickprinttest.html";
-  QFile myFile ( myReportFile);
-  if ( myFile.open ( QIODevice::WriteOnly ) )
+#if 0
+  QString myReportFile = QDir::tempPath() + "/quickprinttest.html";
+  QFile myFile( myReportFile );
+  if ( myFile.open( QIODevice::WriteOnly ) )
   {
-    QTextStream myQTextStream ( &myFile );
+    QTextStream myQTextStream( &myFile );
     myQTextStream << mReport;
     myFile.close();
-    QDesktopServices::openUrl("file://"+myReportFile);
+    QDesktopServices::openUrl( "file://" + myReportFile );
   }
-  */
-
+#endif
 }
 
 void TestQgsQuickPrint::basicMapTest()
@@ -138,7 +143,7 @@ void TestQgsQuickPrint::basicMapTest()
   //now print the map
   QgsQuickPrint myQuickPrint;
   myQuickPrint.setMapBackgroundColor( Qt::cyan );
-  myQuickPrint.setOutputPdf( QDir::tempPath() + QDir::separator() + "quickprinttest.pdf" );
+  myQuickPrint.setOutputPdf( QDir::tempPath() + "/quickprinttest.pdf" );
   myQuickPrint.setMapRenderer( mpMapRenderer );
   myQuickPrint.setTitle( "Map Title" );
   myQuickPrint.setName( "Map Name" );
@@ -170,4 +175,3 @@ bool TestQgsQuickPrint::imageCheck( QString theTestType )
 
 QTEST_MAIN( TestQgsQuickPrint )
 #include "testqgsquickprint.moc"
-

@@ -12,9 +12,10 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import qgis
 import unittest
 import os
-import qgis
+
 from PyQt4.QtCore import QUrl, qDebug
 from PyQt4.QtXml import QDomDocument
 from qgis.core import (QgsComposition,
@@ -27,8 +28,8 @@ from qgscompositionchecker import QgsCompositionChecker
 
 from utilities import (unitTestDataPath,
                        getQgisTestApp,
-                       TestCase,
-                       expectedFailure)
+                       TestCase
+                       )
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 TEST_DATA_DIR = unitTestDataPath()
 
@@ -39,7 +40,7 @@ class TestQgsComposerHtml(TestCase):
         """Run before each test."""
         self.mapSettings = QgsMapSettings()
         self.mComposition = QgsComposition(self.mapSettings)
-        self.mComposition.setPaperSize(297, 210) #A4 landscape
+        self.mComposition.setPaperSize(297, 210)  # A4 landscape
 
     def tearDown(self):
         """Run after each test."""

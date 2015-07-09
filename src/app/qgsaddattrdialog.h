@@ -38,7 +38,7 @@ class APP_EXPORT QgsAddAttrDialog: public QDialog, private Ui::QgsAddAttrDialogB
   public slots:
     void on_mTypeBox_currentIndexChanged( int idx );
     void on_mLength_editingFinished();
-    void accept();
+    void accept() override;
 
   private:
     bool mIsShapeFile;

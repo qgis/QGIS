@@ -14,8 +14,8 @@ ParameterNumber|nwalk|Number of walkers|None|None|1
 ParameterNumber|niter|Time used for iterations [minutes]|None|None|10
 ParameterNumber|outiter|Time interval for creating output maps [minutes]|None|None|2
 ParameterNumber|diffc|Water diffusion constant|None|None|0.8
-OutputRaster|tc|Output transport capacity raster map [kg/ms]
-OutputRaster|et|Output transp.limited erosion-deposition raster map [kg/m2s]
-OutputRaster|conc|Output sediment concentration raster map [particle/m3]
-OutputRaster|flux|Output sediment flux raster map [kg/ms]
-OutputRaster|erdep|Output erosion-deposition raster map [kg/m2s]
+OutputRaster|tc|Transport capacity [kg/ms]
+OutputRaster|et|Transport limited erosion-deposition [kg/m2s]
+OutputRaster|conc|Sediment concentration [particle/m3]
+OutputRaster|flux|Sediment flux [kg/ms]
+OutputRaster|erdep|Erosion-deposition [kg/m2s]

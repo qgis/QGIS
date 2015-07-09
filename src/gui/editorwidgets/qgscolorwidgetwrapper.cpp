@@ -15,8 +15,9 @@
 
 #include "qgscolorwidgetwrapper.h"
 
-QgsColorWidgetWrapper::QgsColorWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) :
-    QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+QgsColorWidgetWrapper::QgsColorWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
+    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+    , mColorButton( NULL )
 {
 }
 

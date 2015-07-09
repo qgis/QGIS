@@ -36,6 +36,8 @@ class APP_EXPORT QgsProjectLayerGroupDialog: public QDialog, private Ui::QgsProj
     QStringList selectedLayerNames() const;
     QString selectedProjectFile() const;
 
+    bool isValid() const;
+
   private slots:
     void on_mBrowseFileToolButton_clicked();
     void on_mProjectFileLineEdit_editingFinished();

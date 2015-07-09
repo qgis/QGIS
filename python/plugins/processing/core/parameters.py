@@ -27,11 +27,14 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import sys
-from PyQt4.QtCore import *
-from qgis.core import *
-from processing.tools.system import *
-from processing.tools import dataobjects
+import os
+import re
 
+from processing.tools.vector import resolveFieldIndex, features
+from PyQt4.QtCore import QCoreApplication
+from qgis.core import QgsRasterLayer, QgsVectorLayer
+from processing.tools.system import isWindows
+from processing.tools import dataobjects
 
 def getParameterFromString(s):
     tokens = s.split("|")
@@ -118,7 +121,10 @@ class ParameterBoolean(Parameter):
 class ParameterCrs(Parameter):
 
     def __init__(self, name='', description='', default='EPSG:4326'):
-        '''The value is the auth id of the CRS'''
+        '''The value is a string that uniquely identifies the
+        coordinate reference system. Typically it is the auth id of the CRS
+        (if the authority is EPSG) or proj4 string of the CRS (in case
+        of other authorities or user defined projections).'''
         Parameter.__init__(self, name, description)
         self.value = None
         self.default = default
@@ -142,11 +148,9 @@ class ParameterDataObject(Parameter):
         if self.value is None:
             return unicode(None)
         else:
-            if not isWindows():
-                return '"' + unicode(self.value) + '"'
-            else:
-                return '"' + unicode(self.value).replace('\\', '\\\\') + '"'
-
+            s = dataobjects.normalizeLayerSource(unicode(self.value))
+            s = '"%s"' % s
+            return s
 
 class ParameterExtent(Parameter):
 
@@ -166,10 +170,10 @@ class ParameterExtent(Parameter):
         if len(tokens) != 4:
             return False
         try:
-            n1 = float(tokens[0])
-            n2 = float(tokens[1])
-            n3 = float(tokens[2])
-            n4 = float(tokens[3])
+            float(tokens[0])
+            float(tokens[1])
+            float(tokens[2])
+            float(tokens[3])
             self.value = text
             return True
         except:
@@ -181,7 +185,7 @@ class ParameterExtent(Parameter):
 
 class ParameterFile(Parameter):
 
-    def __init__(self, name='', description='', isFolder=False, optional=True, ext = None):
+    def __init__(self, name='', description='', isFolder=False, optional=True, ext=None):
         Parameter.__init__(self, name, description)
         self.value = None
         self.ext = ext
@@ -436,8 +440,8 @@ class ParameterRange(Parameter):
 
         values = default.split(',')
         try:
-            minVal = int(values[0])
-            maxVal = int(values[1])
+            int(values[0])
+            int(values[1])
             self.isInteger = True
         except:
             self.isInteger = False
@@ -450,8 +454,8 @@ class ParameterRange(Parameter):
         if len(tokens) != 2:
             return False
         try:
-            n1 = float(tokens[0])
-            n2 = float(tokens[1])
+            float(tokens[0])
+            float(tokens[1])
             self.value = text
             return True
         except:
@@ -463,8 +467,9 @@ class ParameterRange(Parameter):
 
 class ParameterRaster(ParameterDataObject):
 
-    def __init__(self, name='', description='', optional=False):
+    def __init__(self, name='', description='', optional=False, showSublayersDialog=True):
         ParameterDataObject.__init__(self, name, description)
+        self.showSublayersDialog = parseBool(showSublayersDialog)
         self.optional = parseBool(optional)
         self.value = None
         self.exported = None
@@ -510,12 +515,8 @@ class ParameterRaster(ParameterDataObject):
             return True
         else:
             self.value = unicode(obj)
-            layers = dataobjects.getRasterLayers()
-            for layer in layers:
-                if layer.name() == self.value:
-                    self.value = unicode(layer.dataProvider().dataSourceUri())
-                    return True
-            return os.path.exists(self.value)
+            return True
+
 
     def getFileFilter(self):
         exts = dataobjects.getSupportedOutputRasterLayerExtensions()
@@ -526,10 +527,21 @@ class ParameterRaster(ParameterDataObject):
 
 class ParameterSelection(Parameter):
 
-    def __init__(self, name='', description='', options=[], default=0):
+    def __init__(self, name='', description='', options=[], default=0, isSource = False):
         Parameter.__init__(self, name, description)
         self.options = options
-        if isinstance(self.options, basestring):
+        if isSource:
+            self.options = []
+            layer = QgsVectorLayer(options[0], "layer", "ogr")
+            if layer.isValid():
+                try:
+                    index = resolveFieldIndex(layer, options[1])
+                    feats = features(layer)
+                    for feature in feats:
+                        self.options.append(unicode(feature.attributes()[index]))
+                except ValueError:
+                    pass
+        elif isinstance(self.options, basestring):
             self.options = self.options.split(";")
         self.value = None
         self.default = int(default)
@@ -566,8 +578,10 @@ class ParameterString(Parameter):
                 return True
             self.value = self.default
             return True
-        self.value = unicode(obj).replace(ParameterString.ESCAPED_NEWLINE,
-                ParameterString.NEWLINE)
+        self.value = unicode(obj).replace(
+            ParameterString.ESCAPED_NEWLINE,
+            ParameterString.NEWLINE
+        )
         return True
 
     def getValueAsCommandLineParameter(self):
@@ -596,9 +610,10 @@ class ParameterTable(ParameterDataObject):
             self.value = source
             return True
         else:
-            layers = dataobjects.getVectorLayers()
+            self.value = unicode(obj)
+            layers = dataobjects.getTables()
             for layer in layers:
-                if layer.name() == self.value:
+                if layer.name() == self.value or layer.source() == self.value:
                     source = unicode(layer.source())
                     self.value = source
                     return True
@@ -712,12 +727,8 @@ class ParameterVector(ParameterDataObject):
             return True
         else:
             self.value = unicode(obj)
-            layers = dataobjects.getVectorLayers(self.shapetype)
-            for layer in layers:
-                if layer.name() == self.value or layer.source() == self.value:
-                    self.value = unicode(layer.source())
-                    return True
-            return os.path.exists(self.value)
+            return True
+
 
     def getSafeExportedLayer(self):
         """Returns not the value entered by the user, but a string with
@@ -770,3 +781,41 @@ class ParameterVector(ParameterDataObject):
                 types += 'any, '
 
         return types[:-2]
+
+
+class ParameterGeometryPredicate(Parameter):
+
+    predicates = ('intersects',
+                  'contains',
+                  'disjoint',
+                  'equals',
+                  'touches',
+                  'overlaps',
+                  'within',
+                  'crosses')
+
+    def __init__(self, name='', description='', left=None, right=None,
+                 optional=False, enabledPredicates=None):
+        Parameter.__init__(self, name, description)
+        self.left = left
+        self.right = right
+        self.value = None
+        self.default = []
+        self.optional = parseBool(optional)
+        self.enabledPredicates = enabledPredicates
+        if self.enabledPredicates is None:
+            self.enabledPredicates = self.predicates
+
+    def getValueAsCommandLineParameter(self):
+        return '"' + unicode(self.value) + '"'
+
+    def setValue(self, value):
+        if value is None:
+            return self.optional
+        elif len(value) == 0:
+            return self.optional
+        if isinstance(value, unicode):
+            self.value = value.split(';') # relates to ModelerAlgorithm.resolveValue
+        else:
+            self.value = value
+        return True

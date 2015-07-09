@@ -86,6 +86,7 @@ class QgsComposerMapItem : QgsComposerObject
 };
 
 
+
 /**\ingroup MapComposer
  * \class QgsComposerMapItemStack
  * \brief A collection of map items which are drawn above the map content in a
@@ -154,7 +155,7 @@ class QgsComposerMapItemStack
     void addItem( QgsComposerMapItem* item /Transfer/);
 
     /**Removes an item from the stack and deletes the corresponding QgsComposerMapItem
-     * @param QgsComposerMapItem id for the QgsComposerMapItem to remove
+     * @param itemId id for the QgsComposerMapItem to remove
      * @note after removing an item from the stack, update()
      * should be called for the QgsComposerMap to prevent rendering artifacts
      * @see addItem
@@ -205,7 +206,7 @@ class QgsComposerMapItemStack
      * @see item
      * @note not available in python bindings
     */
-    //QgsComposerMapItem &operator[]( int idx );
+    // QgsComposerMapItem &operator[]( int idx );
 
     /**Returns a list of QgsComposerMapItems contained by the stack
      * @returns list of items

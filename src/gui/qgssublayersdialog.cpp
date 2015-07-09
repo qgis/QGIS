@@ -81,10 +81,16 @@ QStringList QgsSublayersDialog::selectionNames()
         count++;
       }
     }
+
     if ( count > 1 )
     {
       name += ":" + layersTable->selectedItems().at( i )->text( 3 );
     }
+    else
+    {
+      name += ":any";
+    }
+
     list << name;
   }
   return list;
@@ -104,7 +110,13 @@ void QgsSublayersDialog::populateLayerTable( QStringList theList, QString delim 
 {
   foreach ( QString item, theList )
   {
-    layersTable->addTopLevelItem( new QTreeWidgetItem( item.split( delim ) ) );
+    QStringList elements = item.split( delim );
+    while ( elements.size() > 4 )
+    {
+      elements[1] += delim + elements[2];
+      elements.removeAt( 2 );
+    }
+    layersTable->addTopLevelItem( new QTreeWidgetItem( elements ) );
   }
 
   // resize columns
@@ -153,14 +165,14 @@ int QgsSublayersDialog::exec()
   // if we got here, disable override cursor, open dialog and return result
   // TODO add override cursor where it is missing (e.g. when opening via "Add Raster")
   QCursor cursor;
-  bool override = ( QApplication::overrideCursor() != 0 );
-  if ( override )
+  bool overrideCursor = ( QApplication::overrideCursor() != 0 );
+  if ( overrideCursor )
   {
     cursor = QCursor( * QApplication::overrideCursor() );
     QApplication::restoreOverrideCursor();
   }
   int ret = QDialog::exec();
-  if ( override )
+  if ( overrideCursor )
     QApplication::setOverrideCursor( cursor );
   return ret;
 }

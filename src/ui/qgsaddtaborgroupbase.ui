@@ -93,6 +93,13 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mName</tabstop>
+  <tabstop>mTabButton</tabstop>
+  <tabstop>mGroupButton</tabstop>
+  <tabstop>mTabList</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

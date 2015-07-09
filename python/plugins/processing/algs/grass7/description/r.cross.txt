@@ -3,4 +3,4 @@ r.cross - Creates a cross product of the category values from multiple raster ma
 Raster (r.*)
 ParameterMultipleInput|input|Input raster layers|3.0|False
 ParameterBoolean|-z|Non-zero data only|False
-OutputRaster|output|Output layer
+OutputRaster|output|Cross product

@@ -65,7 +65,7 @@ class QgsWMSServer: public QgsOWSServer
                   QgsMapRenderer* renderer, QgsCapabilitiesCache* capCache );
     ~QgsWMSServer();
 
-    void executeRequest();
+    void executeRequest() override;
 
     /**Returns an XML file with the capabilities description (as described in the WMS specs)
         @param version WMS version (1.1.1 or 1.3.0)
@@ -84,10 +84,14 @@ class QgsWMSServer: public QgsOWSServer
     of the image object). If an instance to existing hit test structure is passed, instead of rendering
     it will fill the structure with symbols that would be used for rendering */
     QImage* getMap( HitTest* hitTest = 0 );
+    /**GetMap request with vector format output. This output is usually symbolized (difference to WFS GetFeature)*/
+    void getMapAsDxf();
     /**Returns an SLD file with the style of the requested layer. Exception is raised in case of troubles :-)*/
     QDomDocument getStyle();
     /**Returns an SLD file with the styles of the requested layers. Exception is raised in case of troubles :-)*/
     QDomDocument getStyles();
+    /**Returns a describeLayer file with the onlineResource of the requested layers. Exception is raised in case of troubles :-)*/
+    QDomDocument describeLayer();
 
     /**Returns printed page as binary
       @param formatString out: format of the print output (e.g. pdf, svg, png, ...)
@@ -132,13 +136,7 @@ class QgsWMSServer: public QgsOWSServer
     set to the layer and style names according to the SLD
     @return 0 in case of success*/
     int initializeSLDParser( QStringList& layersList, QStringList& stylesList );
-    /**Calculates the location of a feature info point in layer coordinates
-     @param i pixel x-coordinate
-    @param j pixel y-coordinate
-    @param layerCoords calculated layer coordinates are assigned to this point
-    @return 0 in case of success*/
-    int infoPointToLayerCoordinates( int i, int j, QgsPoint* layerCoords, QgsMapRenderer* mapRender,
-                                     QgsMapLayer* layer ) const;
+    static bool infoPointToMapCoordinates( int i, int j, QgsPoint* infoPoint, QgsMapRenderer* mapRenderer );
     /**Appends feature info xml for the layer to the layer element of the feature info dom document
     @param featureBBox the bounding box of the selected features in output CRS
     @return 0 in case of success*/
@@ -249,13 +247,19 @@ class QgsWMSServer: public QgsOWSServer
 
     /**Replaces attribute value with ValueRelation or ValueRelation if defined. Otherwise returns the original value*/
     static QString replaceValueMapAndRelation( QgsVectorLayer* vl, int idx, const QString& attributeVal );
-    static QString relationValue( const QString& attributeVal, QgsVectorLayer* layer, const QString& key, const QString& value );
 
     /** Return the image quality to use for getMap request */
     int getImageQuality() const;
 
     /** Return precision to use for GetFeatureInfo request */
     int getWMSPrecision( int defaultValue ) const;
+
+    /**Gets layer search rectangle (depending on request parameter, layer type, map and layer crs)*/
+    QgsRectangle featureInfoSearchRect( QgsVectorLayer* ml, QgsMapRenderer* mr, const QgsRenderContext& rct, const QgsPoint& infoPoint ) const;
+
+    /**Reads and extracts the different options in the FORMAT_OPTIONS parameter*/
+    void readFormatOptions( QMap<QString, QString>& formatOptions ) const;
+    void readDxfLayerSettings( QList< QPair<QgsVectorLayer *, int > >& layers, const QMap<QString, QString>& formatOptionsMap ) const;
 };
 
 #endif

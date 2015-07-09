@@ -26,15 +26,12 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 
-from PyQt4.QtGui import *
-
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputRaster
 from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.tools.system import *
 
 
 class tri(GdalAlgorithm):
@@ -47,14 +44,15 @@ class tri(GdalAlgorithm):
     def defineCharacteristics(self):
         self.name = 'TRI (Terrain Ruggedness Index)'
         self.group = '[GDAL] Analysis'
-        self.addParameter(ParameterRaster(self.INPUT, 'Input layer'))
-        self.addParameter(ParameterNumber(self.BAND, 'Band number', 1, 99, 1))
-        self.addParameter(ParameterBoolean(self.COMPUTE_EDGES, 'Compute edges',
-                          False))
+        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
+        self.addParameter(ParameterNumber(self.BAND,
+            self.tr('Band number'), 1, 99, 1))
+        self.addParameter(ParameterBoolean(self.COMPUTE_EDGES,
+            self.tr('Compute edges'), False))
 
-        self.addOutput(OutputRaster(self.OUTPUT, 'Output file'))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Terrain Ruggedness Index')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         arguments = ['TRI']
         arguments.append(unicode(self.getParameterValue(self.INPUT)))
         arguments.append(unicode(self.getOutputValue(self.OUTPUT)))
@@ -65,5 +63,4 @@ class tri(GdalAlgorithm):
         if self.getParameterValue(self.COMPUTE_EDGES):
             arguments.append('-compute_edges')
 
-        GdalUtils.runGdal(['gdaldem',
-                          GdalUtils.escapeAndJoin(arguments)], progress)
+        return ['gdaldem', GdalUtils.escapeAndJoin(arguments)]

@@ -41,7 +41,9 @@
 #include "qgsmessagebar.h"
 #include "qgsexpressionselectiondialog.h"
 #include "qgsfeaturelistmodel.h"
-#include "qgsexpressionbuilderdialog.h"
+#include "qgsrubberband.h"
+#include "qgsfield.h"
+#include "qgseditorwidgetregistry.h"
 
 class QgsAttributeTableDock : public QDockWidget
 {
@@ -52,7 +54,7 @@ class QgsAttributeTableDock : public QDockWidget
       setObjectName( "AttributeTable" ); // set object name so the position can be saved
     }
 
-    virtual void closeEvent( QCloseEvent * ev )
+    virtual void closeEvent( QCloseEvent * ev ) override
     {
       Q_UNUSED( ev );
       deleteLater();
@@ -63,6 +65,8 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
     : QDialog( parent, flags )
     , mDock( 0 )
     , mLayer( theLayer )
+    , mRubberBand( 0 )
+    , mCurrentSearchWidgetWrapper( 0 )
 {
   setupUi( this );
 
@@ -87,8 +91,24 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   context.setDistanceArea( *myDa );
   context.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );
 
+  QgsFeatureRequest r;
+  if ( mLayer->geometryType() != QGis::NoGeometry &&
+       settings.value( "/qgis/attributeTableBehaviour", QgsAttributeTableFilterModel::ShowAll ).toInt() == QgsAttributeTableFilterModel::ShowVisible )
+  {
+    QgsMapCanvas *mc = QgisApp::instance()->mapCanvas();
+    QgsRectangle extent( mc->mapSettings().mapToLayerCoordinates( theLayer, mc->extent() ) );
+    r.setFilterRect( extent );
+
+    QgsGeometry *g = QgsGeometry::fromRect( extent );
+    mRubberBand = new QgsRubberBand( mc, true );
+    mRubberBand->setToGeometry( g, theLayer );
+    delete g;
+
+    mActionShowAllFilter->setText( tr( "Show All Features In Initial Canvas Extent" ) );
+  }
+
   // Initialize dual view
-  mMainView->init( mLayer, QgisApp::instance()->mapCanvas(), QgsFeatureRequest(), context );
+  mMainView->init( mLayer, QgisApp::instance()->mapCanvas(), r, context );
 
   // Initialize filter gui elements
   mFilterActionMapper = new QSignalMapper( this );
@@ -119,6 +139,8 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   connect( mLayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
   connect( mLayer, SIGNAL( layerDeleted() ), this, SLOT( close() ) );
   connect( mLayer, SIGNAL( selectionChanged() ), this, SLOT( updateTitle() ) );
+  connect( mLayer, SIGNAL( featureAdded( QgsFeatureId ) ), this, SLOT( updateTitle() ) );
+  connect( mLayer, SIGNAL( featuresDeleted( QgsFeatureIds ) ), this, SLOT( updateTitle() ) );
   connect( mLayer, SIGNAL( attributeAdded( int ) ), this, SLOT( columnBoxInit() ) );
   connect( mLayer, SIGNAL( attributeDeleted( int ) ), this, SLOT( columnBoxInit() ) );
 
@@ -215,16 +237,18 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
 QgsAttributeTableDialog::~QgsAttributeTableDialog()
 {
   delete myDa;
+  delete mRubberBand;
 }
 
 void QgsAttributeTableDialog::updateTitle()
 {
   QWidget *w = mDock ? qobject_cast<QWidget*>( mDock ) : qobject_cast<QWidget*>( this );
-  w->setWindowTitle( tr( "Attribute table - %1 :: Features total: %2, filtered: %3, selected: %4" )
+  w->setWindowTitle( tr( "Attribute table - %1 :: Features total: %2, filtered: %3, selected: %4%5" )
                      .arg( mLayer->name() )
                      .arg( mMainView->featureCount() )
                      .arg( mMainView->filteredFeatureCount() )
                      .arg( mLayer->selectedFeatureCount() )
+                     .arg( mRubberBand ? tr( ", spatially limited" ) : "" )
                    );
 
   if ( mMainView->filterMode() == QgsAttributeTableFilterModel::ShowAll )
@@ -287,7 +311,11 @@ void QgsAttributeTableDialog::columnBoxInit()
 
   foreach ( const QgsField field, fields )
   {
-    if ( mLayer->editorWidgetV2( mLayer->fieldNameIndex( field.name() ) ) != "Hidden" )
+    int idx = mLayer->fieldNameIndex( field.name() );
+    if ( idx < 0 )
+      continue;
+
+    if ( mLayer->editorWidgetV2( idx ) != "Hidden" )
     {
       QIcon icon = QgsApplication::getThemeIcon( "/mActionNewAttribute.png" );
       QString text = field.name();
@@ -301,19 +329,17 @@ void QgsAttributeTableDialog::columnBoxInit()
   }
 }
 
-
 void QgsAttributeTableDialog::updateFieldFromExpression()
 {
-
   bool filtered = mMainView->filterMode() != QgsAttributeTableFilterModel::ShowAll;
   QgsFeatureIds filteredIds = filtered ? mMainView->filteredFeatures() : QgsFeatureIds();
-  this->runFieldCalculation( mLayer, mFieldCombo->currentText(), mUpdateExpressionText->currentField(), filteredIds );
+  runFieldCalculation( mLayer, mFieldCombo->currentText(), mUpdateExpressionText->currentField(), filteredIds );
 }
 
 void QgsAttributeTableDialog::updateFieldFromExpressionSelected()
 {
   QgsFeatureIds filteredIds = mLayer->selectedFeaturesIds();
-  this->runFieldCalculation( mLayer, mFieldCombo->currentText(), mUpdateExpressionText->currentField(), filteredIds );
+  runFieldCalculation( mLayer, mFieldCombo->currentText(), mUpdateExpressionText->currentField(), filteredIds );
 }
 
 void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, QString fieldName, QString expression, QgsFeatureIds filteredIds )
@@ -328,15 +354,17 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, QStrin
   bool calculationSuccess = true;
   QString error;
 
-
   QgsExpression exp( expression );
   exp.setGeomCalculator( *myDa );
   bool useGeometry = exp.needsGeometry();
 
-  QgsFeatureRequest request;
+  QgsFeatureRequest request( mMainView->masterModel()->request() );
+  useGeometry |= request.filterType() == QgsFeatureRequest::FilterRect;
   request.setFlags( useGeometry ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry );
 
   int rownum = 1;
+
+  const QgsField &fld = layer->pendingFields()[ fieldindex ];
 
   //go through all the features and change the new attributes
   QgsFeatureIterator fit = layer->getFeatures( request );
@@ -350,6 +378,7 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, QStrin
 
     exp.setCurrentRowNumber( rownum );
     QVariant value = exp.evaluate( &feature );
+    fld.convertCompatible( value );
     // Bail if we have a update error
     if ( exp.hasEvalError() )
     {
@@ -378,13 +407,46 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, QStrin
   mLayer->endEditCommand();
 }
 
+void QgsAttributeTableDialog::replaceSearchWidget( QWidget* oldw, QWidget* neww )
+{
+  mFilterLayout->removeWidget( oldw );
+  oldw->setVisible( false );
+  mFilterLayout->addWidget( neww, 0, 0, 0 );
+  neww->setVisible( true );
+}
+
 void QgsAttributeTableDialog::filterColumnChanged( QObject* filterAction )
 {
   mFilterButton->setDefaultAction( qobject_cast<QAction *>( filterAction ) );
   mFilterButton->setPopupMode( QToolButton::InstantPopup );
-  mCbxCaseSensitive->setVisible( true );
-  mFilterQuery->setVisible( true );
-  mApplyFilterButton->setVisible( true );
+  // replace the search line edit with a search widget that is suited to the selected field
+  // delete previous widget
+  if ( mCurrentSearchWidgetWrapper != 0 )
+  {
+    mCurrentSearchWidgetWrapper->widget()->setVisible( false );
+    delete mCurrentSearchWidgetWrapper;
+  }
+  QString fieldName = mFilterButton->defaultAction()->text();
+  // get the search widget
+  int fldIdx = mLayer->fieldNameIndex( fieldName );
+  if ( fldIdx < 0 )
+    return;
+  const QString widgetType = mLayer->editorWidgetV2( fldIdx );
+  const QgsEditorWidgetConfig widgetConfig = mLayer->editorWidgetV2Config( fldIdx );
+  mCurrentSearchWidgetWrapper = QgsEditorWidgetRegistry::instance()->
+                                createSearchWidget( widgetType, mLayer, fldIdx, widgetConfig, mFilterContainer );
+  if ( mCurrentSearchWidgetWrapper->applyDirectly() )
+  {
+    connect( mCurrentSearchWidgetWrapper, SIGNAL( expressionChanged( QString ) ), SLOT( filterQueryChanged( QString ) ) );
+    mApplyFilterButton->setVisible( false );
+  }
+  else
+  {
+    mApplyFilterButton->setVisible( true );
+  }
+
+  replaceSearchWidget( mFilterQuery, mCurrentSearchWidgetWrapper->widget() );
+
 }
 
 void QgsAttributeTableDialog::filterExpressionBuilder()
@@ -409,7 +471,6 @@ void QgsAttributeTableDialog::filterShowAll()
 {
   mFilterButton->setDefaultAction( mActionShowAllFilter );
   mFilterButton->setPopupMode( QToolButton::InstantPopup );
-  mCbxCaseSensitive->setVisible( false );
   mFilterQuery->setVisible( false );
   mApplyFilterButton->setVisible( false );
   mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowAll );
@@ -420,7 +481,6 @@ void QgsAttributeTableDialog::filterSelected()
 {
   mFilterButton->setDefaultAction( mActionSelectedFilter );
   mFilterButton->setPopupMode( QToolButton::InstantPopup );
-  mCbxCaseSensitive->setVisible( false );
   mFilterQuery->setVisible( false );
   mApplyFilterButton->setVisible( false );
   mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowSelected );
@@ -436,7 +496,6 @@ void QgsAttributeTableDialog::filterVisible()
 
   mFilterButton->setDefaultAction( mActionVisibleFilter );
   mFilterButton->setPopupMode( QToolButton::InstantPopup );
-  mCbxCaseSensitive->setVisible( false );
   mFilterQuery->setVisible( false );
   mApplyFilterButton->setVisible( false );
   mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowVisible );
@@ -446,7 +505,6 @@ void QgsAttributeTableDialog::filterEdited()
 {
   mFilterButton->setDefaultAction( mActionEditedFilter );
   mFilterButton->setPopupMode( QToolButton::InstantPopup );
-  mCbxCaseSensitive->setVisible( false );
   mFilterQuery->setVisible( false );
   mApplyFilterButton->setVisible( false );
   mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowEdited );
@@ -511,6 +569,12 @@ void QgsAttributeTableDialog::on_mCopySelectedRowsButton_clicked()
 {
   QgisApp::instance()->editCopy( mLayer );
 }
+
+void QgsAttributeTableDialog::on_mPasteFeatures_clicked()
+{
+  QgisApp::instance()->editPaste( mLayer );
+}
+
 
 void QgsAttributeTableDialog::on_mZoomMapToSelectedRowsButton_clicked()
 {
@@ -646,36 +710,7 @@ void QgsAttributeTableDialog::filterQueryChanged( const QString& query )
   }
   else
   {
-    QString fieldName = mFilterButton->defaultAction()->text();
-
-    const QgsFields& flds = mLayer->pendingFields();
-    int fldIndex = mLayer->fieldNameIndex( fieldName );
-    QVariant::Type fldType = flds[fldIndex].type();
-    bool numeric = ( fldType == QVariant::Int || fldType == QVariant::Double );
-
-    QString sensString = "ILIKE";
-    if ( mCbxCaseSensitive->isChecked() )
-    {
-      sensString = "LIKE";
-    }
-
-    QSettings settings;
-    QString nullValue = settings.value( "qgis/nullValue", "NULL" ).toString();
-
-    if ( mFilterQuery->displayText() == nullValue )
-    {
-      str = QString( "%1 IS NULL" ).arg( QgsExpression::quotedColumnRef( fieldName ) );
-    }
-    else
-    {
-      str = QString( "%1 %2 '%3'" )
-            .arg( QgsExpression::quotedColumnRef( fieldName ) )
-            .arg( numeric ? "=" : sensString )
-            .arg( numeric
-                  ? mFilterQuery->displayText().replace( "'", "''" )
-                  :
-                  "%" + mFilterQuery->displayText().replace( "'", "''" ) + "%" ); // escape quotes
-    }
+    str = mCurrentSearchWidgetWrapper->expression();
   }
 
   setFilterExpression( str );
@@ -684,7 +719,9 @@ void QgsAttributeTableDialog::filterQueryChanged( const QString& query )
 
 void QgsAttributeTableDialog::filterQueryAccepted()
 {
-  if ( mFilterQuery->text().isEmpty() )
+  if (( mFilterQuery->isVisible() && mFilterQuery->text().isEmpty() ) ||
+      ( mCurrentSearchWidgetWrapper != 0 && mCurrentSearchWidgetWrapper->widget()->isVisible()
+        && mCurrentSearchWidgetWrapper->expression().isEmpty() ) )
   {
     filterShowAll();
     return;
@@ -694,12 +731,20 @@ void QgsAttributeTableDialog::filterQueryAccepted()
 
 void QgsAttributeTableDialog::setFilterExpression( QString filterString )
 {
-  mFilterQuery->setText( filterString );
-  mFilterButton->setDefaultAction( mActionAdvancedFilter );
-  mFilterButton->setPopupMode( QToolButton::MenuButtonPopup );
-  mCbxCaseSensitive->setVisible( false );
-  mFilterQuery->setVisible( true );
-  mApplyFilterButton->setVisible( true );
+  if ( mCurrentSearchWidgetWrapper == 0 || !mCurrentSearchWidgetWrapper->applyDirectly() )
+  {
+    mFilterQuery->setText( filterString );
+    mFilterButton->setDefaultAction( mActionAdvancedFilter );
+    mFilterButton->setPopupMode( QToolButton::MenuButtonPopup );
+    mFilterQuery->setVisible( true );
+    mApplyFilterButton->setVisible( true );
+    if ( mCurrentSearchWidgetWrapper != 0 )
+    {
+      // replace search widget widget with the normal filter query line edit
+      replaceSearchWidget( mCurrentSearchWidgetWrapper->widget(), mFilterQuery );
+    }
+  }
+
   mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowFilteredList );
 
   QgsFeatureIds filteredFeatures;
@@ -727,7 +772,7 @@ void QgsAttributeTableDialog::setFilterExpression( QString filterString )
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   filterExpression.setGeomCalculator( myDa );
-  QgsFeatureRequest request;
+  QgsFeatureRequest request( mMainView->masterModel()->request() );
   request.setSubsetOfAttributes( filterExpression.referencedColumns(), mLayer->pendingFields() );
   if ( !fetchGeom )
   {

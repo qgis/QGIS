@@ -27,15 +27,11 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
 #ifndef _PROBLEM_H
 #define _PROBLEM_H
 
 #include <list>
-#include <pal/pal.h>
+#include "pal.h"
 #include "rtree.hpp"
 
 namespace pal
@@ -98,17 +94,82 @@ namespace pal
 
       friend class Pal;
 
+    public:
+      Problem();
+
+      //Problem(char *lorena_file, bool displayAll);
+
+      ~Problem();
+
+      /////////////////
+      // problem inspection functions
+      int getNumFeatures() { return nbft; }
+      // features counted 0...n-1
+      int getFeatureCandidateCount( int i ) { return featNbLp[i]; }
+      // both features and candidates counted 0..n-1
+      LabelPosition* getFeatureCandidate( int fi, int ci ) { return labelpositions[ featStartId[fi] + ci]; }
+      /////////////////
+
+
+      void reduce();
+
+      /**
+       * \brief popmusic framework
+       */
+      void popmusic();
+
+      /**
+       * \brief Test with very-large scale neighborhood
+       */
+      void chain_search();
+
+      std::list<LabelPosition*> * getSolution( bool returnInactive );
+
+      PalStat * getStats();
+
+      /* useful only for postscript post-conversion*/
+      //void toFile(char *label_file);
+
+      SubPart *subPart( int r, int featseed, int *isIn );
+
+      void initialization();
+
+      double compute_feature_cost( SubPart *part, int feat_id, int label_id, int *nbOverlap );
+      double compute_subsolution_cost( SubPart *part, int *s, int * nbOverlap );
+
+      /**
+       *  POPMUSIC, chain
+       */
+      double popmusic_chain( SubPart *part );
+
+      double popmusic_tabu( SubPart *part );
+
+      /**
+       *
+       * POPMUSIC, Tabu search with  chain'
+       *
+       */
+      double popmusic_tabu_chain( SubPart *part );
+
+      /**
+       * \brief Basic initial solution : every feature to -1
+       */
+      void init_sol_empty();
+      void init_sol_falp();
+
+      static bool compareLabelArea( pal::LabelPosition* l1, pal::LabelPosition* l2 );
+
     private:
 
       /**
-       * How many layers are lebelled ?
+       * How many layers are labelled ?
        */
       int nbLabelledLayers;
 
       /**
        * Names of the labelled layers
        */
-      char **labelledLayersName;
+      QStringList labelledLayersName;
 
       /**
        * # active candidates (remaining after reduce())
@@ -169,68 +230,6 @@ namespace pal
 
       void solution_cost();
       void check_solution();
-
-    public:
-      Problem();
-
-      //Problem(char *lorena_file, bool displayAll);
-
-      ~Problem();
-
-      /////////////////
-      // problem inspection functions
-      int getNumFeatures() { return nbft; }
-      // features counted 0...n-1
-      int getFeatureCandidateCount( int i ) { return featNbLp[i]; }
-      // both features and candidates counted 0..n-1
-      LabelPosition* getFeatureCandidate( int fi, int ci ) { return labelpositions[ featStartId[fi] + ci]; }
-      /////////////////
-
-
-      void reduce();
-
-
-      void post_optimization();
-
-
-      /**
-       * \brief popmusic framework
-       */
-      void popmusic();
-
-      /**
-       * \brief Test with very-large scale neighborhood
-       */
-      void chain_search();
-
-      std::list<LabelPosition*> * getSolution( bool returnInactive );
-
-      PalStat * getStats();
-
-      /* useful only for postscript post-conversion*/
-      //void toFile(char *label_file);
-
-      SubPart *subPart( int r, int featseed, int *isIn );
-
-      void initialization();
-
-      double compute_feature_cost( SubPart *part, int feat_id, int label_id, int *nbOverlap );
-      double compute_subsolution_cost( SubPart *part, int *s, int * nbOverlap );
-
-      double popmusic_chain( SubPart *part );
-
-      double popmusic_tabu( SubPart *part );
-      double popmusic_tabu_chain( SubPart *part );
-
-      void init_sol_empty();
-      void init_sol_falp();
-
-      static bool compareLabelArea( pal::LabelPosition* l1, pal::LabelPosition* l2 );
-
-#ifdef _EXPORT_MAP_
-      void drawLabels( std::ofstream &svgmap );
-#endif
-
   };
 
 } // namespace

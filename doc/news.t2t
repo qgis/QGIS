@@ -38,6 +38,85 @@ Change history for the QGIS Project
 Last Updated: %%date(%A %B %d, %Y)
 Last Change : %%mtime(%A %B %d, %Y)
 
+= What's new in Version 2.10 'Pisa'? =
+
+This is a minor release increment with the following new features:
+
+- New statistical summary dock widget.
+- Use logarithmic functions in the raster calculator.
+- New zonal statistics features.
+- New browser properties widget.
+- New browser icon.
+- PostGIS: support for Pointcloud layers.
+- PostGIS: provider side expression filters.
+- GRASS plugin/provider improvements.
+- DXF Export Improvements.
+- Virtual fields are now updatable.
+- Line edit with auto-completer for ValueRelation edit widget.
+- Improvements to DB Manager.
+- Filter chaining for relation reference widget.
+- Diagram improvements.
+- Improved geometry rotation tool.
+- New geometry engine.
+- Improved handling of potential project file overwrites.
+- Join parameters can now be edited.
+- Layers with joins can now be filtered.
+- Tweaks to label properties dialog.
+- Support for non-latin scripts for curved labels.
+- "Follow point" alignment for multiline labels.
+- Support overriden layer styles also in the composer legend.
+- Add scalebar sizing mode to fit a desired scalebar width.
+- Plugins can now create their own entries in the browser.
+- More uniform and predictable names for processing outputs.
+- Allow changing vector layer data source.
+- Implicit sharing of classes.
+- New QgsStatisticalSummary class for calculating statistics from a list of numbers.
+- Qt minimum increased to 4.8.
+- GetFeature without geometry.
+- Support for tolerance parameter in WMS GetFeatureInfo requests.
+- Data defined properties for font marker.
+- Size scale and rotation have been removed from the advanced menu.
+- Match categories to existing styles.
+- New option for preventing the automatic clipping of features to the map extent.
+- Size, rotation and stroke-width expressions at the symbollist level.
+- Live layer effects for layers and symbol layers.
+- Visualise and modify the graduated renderer using a histogram.
+- Vary symbol sizes using the graduated renderer.
+- User interface improvements.
+-
+
+= What's new in Version 2.8 'Wien'? =
+
+This is a minor release increment with the following feature:
+- QGIS 2.8 is the basis for a long term release (which will be maintained for a year).
+- >1000 issues which were flagged by static analysis tools have been fixed.
+- New code commits and pull requests are now automatically tested against our testing framework.
+- More responsive QGIS Browser thanks to multithreading support.
+- Support for contextual WMS legend graphics.
+- Custom prefixes for joins.
+- Creation of memory layers is now a core feature.
+- New field calculator bar in attribute table.
+- DXF export improvements.
+- Advanced digitizing tools.
+- Improved snapping options and behaviour.
+- Better simplify tool - including support for on the fly reprojection being enabled.
+- Qt5 support (optional - default packages are still currently built against Qt4).
+- Spatial bookmark import/export.
+- Composer user interface improvements.
+- Grid overlay improvements for composer maps.
+- Raster image fill type.
+- Live heatmap renderer.
+- You can now use multiple styles per layer.
+- Rotation of map canvas is now supported.
+- Improved user interface for data defined symbology.
+- New algorithms in processing.
+- Expressions are now extendable with custom python functions.
+- Comments are now supported in expressions.
+- QGIS server improvements: better caching, layer style support, value relations,
+  DescribeLayer, python plugins.
+-
+
+
 = What's new in Version 2.6.0 'Brighton'? =
 
 This is a minor release increment with the following new features:

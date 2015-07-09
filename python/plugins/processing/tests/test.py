@@ -22,18 +22,13 @@ __copyright__ = \
 import os
 import sys
 import time
-import itertools
 import unittest
 
-from PyQt4.QtGui import QWidget
-from qgis.gui import QgsMapCanvas
-from qgis.core import *
+import qgis
 
 import processing
 from processing.ProcessingPlugin import ProcessingPlugin
 from processing.core.Processing import Processing
-from processing.core.ProcessingLog import ProcessingLog
-from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 from processing.modeler.Providers import Providers
@@ -45,7 +40,6 @@ from processing.parameters.ParameterBoolean import ParameterBoolean
 from processing.core.outputs import OutputRaster
 from processing.core.outputs import OutputVector
 
-from qgis_interface import QgisInterface
 from utilities_test import getQgisTestApp
 
 # Add parent directory to path to make test aware of other modules
@@ -90,7 +84,7 @@ class ProcessingProviderTestCase(unittest.TestCase):
         alg,
         threaded,
         dialog='none',
-        ):
+    ):
         self.algId = algId
         self.alg = alg
         self.threaded = threaded

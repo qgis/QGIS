@@ -29,13 +29,24 @@ QgsRasterCalcDialog::QgsRasterCalcDialog( QWidget * parent, Qt::WindowFlags f ):
 {
   setupUi( this );
 
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/RasterCalc/geometry" ).toByteArray() );
+
   //add supported output formats
   insertAvailableOutputFormats();
   insertAvailableRasterBands();
+
+  if ( !mAvailableRasterBands.isEmpty() )
+  {
+    //grab default crs from first raster
+    mCrsSelector->setCrs( mAvailableRasterBands.at( 0 ).raster->crs() );
+  }
 }
 
 QgsRasterCalcDialog::~QgsRasterCalcDialog()
 {
+  QSettings settings;
+  settings.setValue( "/Windows/RasterCalc/geometry", saveGeometry() );
 }
 
 QString QgsRasterCalcDialog::formulaString() const
@@ -67,7 +78,7 @@ QString QgsRasterCalcDialog::outputFile() const
     return outputFileName;
   }
 
-  return ( outputFileName + "." + it.value() );
+  return outputFileName + "." + it.value();
 }
 
 QString QgsRasterCalcDialog::outputFormat() const
@@ -78,6 +89,11 @@ QString QgsRasterCalcDialog::outputFormat() const
     return "";
   }
   return mOutputFormatComboBox->itemData( index ).toString();
+}
+
+QgsCoordinateReferenceSystem QgsRasterCalcDialog::outputCrs() const
+{
+  return mCrsSelector->crs();
 }
 
 bool QgsRasterCalcDialog::addLayerToProject() const
@@ -130,7 +146,7 @@ void QgsRasterCalcDialog::insertAvailableRasterBands()
         QgsRasterCalculatorEntry entry;
         entry.raster = rlayer;
         entry.bandNumber = i + 1;
-        entry.ref = quoteBandEntry( rlayer->name() + "@" + QString::number( i + 1 ) );
+        entry.ref = rlayer->name() + "@" + QString::number( i + 1 );
         mAvailableRasterBands.push_back( entry );
         mRasterBandsListWidget->addItem( entry.ref );
       }
@@ -146,7 +162,7 @@ void QgsRasterCalcDialog::insertAvailableOutputFormats()
   for ( int i = 0; i < nDrivers; ++i )
   {
     GDALDriverH driver = GDALGetDriver( i );
-    if ( driver != NULL )
+    if ( driver )
     {
       char** driverMetadata = GDALGetMetadata( driver, NULL );
       if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) )
@@ -243,6 +259,7 @@ void QgsRasterCalcDialog::on_mCurrentLayerExtentButton_clicked()
     mYMaxSpinBox->setValue( layerExtent.yMaximum() );
     mNColumnsSpinBox->setValue( rlayer->width() );
     mNRowsSpinBox->setValue( rlayer->height() );
+    mCrsSelector->setCrs( rlayer->crs() );
   }
 }
 
@@ -296,20 +313,17 @@ bool QgsRasterCalcDialog::expressionValid() const
 
 bool QgsRasterCalcDialog::filePathValid() const
 {
-  QString outputPath = QFileInfo( mOutputLayerLineEdit->text() ).absolutePath();
-  if ( QFileInfo( outputPath ).isWritable() )
-  {
-    return true;
-  }
-  else
-  {
+  QString outputPath = mOutputLayerLineEdit->text();
+  if ( outputPath.isEmpty() )
     return false;
-  }
+
+  outputPath = QFileInfo( outputPath ).absolutePath();
+  return QFileInfo( outputPath ).isWritable();
 }
 
 void QgsRasterCalcDialog::on_mRasterBandsListWidget_itemDoubleClicked( QListWidgetItem* item )
 {
-  mExpressionTextEdit->insertPlainText( item->text() );
+  mExpressionTextEdit->insertPlainText( quoteBandEntry( item->text() ) );
 }
 
 void QgsRasterCalcDialog::on_mPlusPushButton_clicked()
@@ -370,6 +384,21 @@ void QgsRasterCalcDialog::on_mACosButton_clicked()
 void QgsRasterCalcDialog::on_mATanButton_clicked()
 {
   mExpressionTextEdit->insertPlainText( " atan ( " );
+}
+
+void QgsRasterCalcDialog::on_mLnButton_clicked()
+{
+  mExpressionTextEdit->insertPlainText( " ln ( " );
+}
+
+void QgsRasterCalcDialog::on_mLogButton_clicked()
+{
+  mExpressionTextEdit->insertPlainText( " log10 ( " );
+}
+
+void QgsRasterCalcDialog::on_mNotEqualButton_clicked()
+{
+  mExpressionTextEdit->insertPlainText( " != " );
 }
 
 void QgsRasterCalcDialog::on_mOpenBracketPushButton_clicked()

@@ -13,6 +13,7 @@ __revision__ = '$Format:%H$'
 
 import qgis
 from utilities import getQgisTestApp, unittest
+
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
 
@@ -24,9 +25,8 @@ class TestPyQgsApplication(unittest.TestCase):
         myExpectedResult = 'default'
         myResult = QGISAPP.themeName()
         myMessage = ('Expected:\n%s\nGot:\n%s\n' %
-                      (myExpectedResult, myResult))
+                     (myExpectedResult, myResult))
         assert myExpectedResult == myResult, myMessage
 
 if __name__ == '__main__':
     unittest.main()
-

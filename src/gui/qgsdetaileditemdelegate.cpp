@@ -111,7 +111,6 @@ void QgsDetailedItemDelegate::paintManually( QPainter *thepPainter,
 
   QFontMetrics myTitleMetrics( titleFont( theOption ) );
   QFontMetrics myDetailMetrics( detailFont( theOption ) );
-  QFontMetrics myCategoryMetrics( categoryFont( theOption ) );
   int myTextStartX = theOption.rect.x() + horizontalSpacing();
   int myTextStartY = theOption.rect.y() + verticalSpacing();
   int myHeight = myTitleMetrics.height() + verticalSpacing();
@@ -147,6 +146,7 @@ void QgsDetailedItemDelegate::paintManually( QPainter *thepPainter,
   QPixmap myDecoPixmap = theData.icon();
   if ( !myDecoPixmap.isNull() )
   {
+    myIconFlag = true;
     int iconWidth = 32, iconHeight = 32;
 
     if ( myDecoPixmap.width() <= iconWidth && myDecoPixmap.height() <= iconHeight )

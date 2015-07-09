@@ -18,7 +18,7 @@
 
 #include <QString>
 
-class QgsDartMeasurement
+class CORE_EXPORT QgsDartMeasurement
 {
   public:
     enum Type

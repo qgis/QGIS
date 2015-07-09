@@ -20,6 +20,7 @@
 #include "qgscomposertablecolumn.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgscomposerframe.h"
+#include "qgsfontutils.h"
 
 QgsComposerTableV2::QgsComposerTableV2( QgsComposition *composition, bool createUndoCommands )
     : QgsComposerMultiFrame( composition, createUndoCommands )
@@ -53,6 +54,17 @@ QgsComposerTableV2::QgsComposerTableV2( QgsComposition *composition, bool create
 
 QgsComposerTableV2::QgsComposerTableV2()
     : QgsComposerMultiFrame( 0, false )
+    , mCellMargin( 1.0 )
+    , mEmptyTableMode( HeadersOnly )
+    , mShowEmptyRows( false )
+    , mHeaderFontColor( Qt::black )
+    , mHeaderHAlignment( FollowColumn )
+    , mHeaderMode( FirstFrame )
+    , mContentFontColor( Qt::black )
+    , mShowGrid( true )
+    , mGridStrokeWidth( 0.5 )
+    , mGridColor( Qt::black )
+    , mBackgroundColor( Qt::white )
 {
 
 }
@@ -69,11 +81,11 @@ bool QgsComposerTableV2::writeXML( QDomElement& elem, QDomDocument & doc, bool i
   elem.setAttribute( "emptyTableMode", QString::number(( int )mEmptyTableMode ) );
   elem.setAttribute( "emptyTableMessage", mEmptyTableMessage );
   elem.setAttribute( "showEmptyRows", mShowEmptyRows );
-  elem.setAttribute( "headerFont", mHeaderFont.toString() );
+  elem.appendChild( QgsFontUtils::toXmlElement( mHeaderFont, doc, "headerFontProperties" ) );
   elem.setAttribute( "headerFontColor", QgsSymbolLayerV2Utils::encodeColor( mHeaderFontColor ) );
   elem.setAttribute( "headerHAlignment", QString::number(( int )mHeaderHAlignment ) );
   elem.setAttribute( "headerMode", QString::number(( int )mHeaderMode ) );
-  elem.setAttribute( "contentFont", mContentFont.toString() );
+  elem.appendChild( QgsFontUtils::toXmlElement( mContentFont, doc, "contentFontProperties" ) );
   elem.setAttribute( "contentFontColor", QgsSymbolLayerV2Utils::encodeColor( mContentFontColor ) );
   elem.setAttribute( "gridStrokeWidth", QString::number( mGridStrokeWidth ) );
   elem.setAttribute( "gridColor", QgsSymbolLayerV2Utils::encodeColor( mGridColor ) );
@@ -113,11 +125,17 @@ bool QgsComposerTableV2::readXML( const QDomElement &itemElem, const QDomDocumen
   mEmptyTableMode = QgsComposerTableV2::EmptyTableMode( itemElem.attribute( "emptyTableMode", "0" ).toInt() );
   mEmptyTableMessage = itemElem.attribute( "emptyTableMessage", tr( "No matching records" ) );
   mShowEmptyRows = itemElem.attribute( "showEmptyRows", "0" ).toInt();
-  mHeaderFont.fromString( itemElem.attribute( "headerFont", "" ) );
+  if ( !QgsFontUtils::setFromXmlChildNode( mHeaderFont, itemElem, "headerFontProperties" ) )
+  {
+    mHeaderFont.fromString( itemElem.attribute( "headerFont", "" ) );
+  }
   mHeaderFontColor = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "headerFontColor", "0,0,0,255" ) );
   mHeaderHAlignment = QgsComposerTableV2::HeaderHAlignment( itemElem.attribute( "headerHAlignment", "0" ).toInt() );
   mHeaderMode = QgsComposerTableV2::HeaderMode( itemElem.attribute( "headerMode", "0" ).toInt() );
-  mContentFont.fromString( itemElem.attribute( "contentFont", "" ) );
+  if ( !QgsFontUtils::setFromXmlChildNode( mContentFont, itemElem, "contentFontProperties" ) )
+  {
+    mContentFont.fromString( itemElem.attribute( "contentFont", "" ) );
+  }
   mContentFontColor = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "contentFontColor", "0,0,0,255" ) );
   mCellMargin = itemElem.attribute( "cellMargin", "1.0" ).toDouble();
   mGridStrokeWidth = itemElem.attribute( "gridStrokeWidth", "0.5" ).toDouble();
@@ -247,9 +265,6 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &renderExtent, const 
     return;
   }
 
-  //calculate which rows to show in this frame
-  QPair< int, int > rowsToShow = rowRange( renderExtent, frameIndex );
-
   if ( mComposition->plotStyle() == QgsComposition::Print ||
        mComposition->plotStyle() == QgsComposition::Postscript )
   {
@@ -257,6 +272,9 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &renderExtent, const 
     //we do this in case vector layer has changed via an external source (eg, another database user)
     refreshAttributes();
   }
+
+  //calculate which rows to show in this frame
+  QPair< int, int > rowsToShow = rowRange( renderExtent, frameIndex );
 
   double gridSize = mShowGrid ? mGridStrokeWidth : 0;
   QList<QgsComposerTableColumn*>::const_iterator columnIt = mColumns.constBegin();

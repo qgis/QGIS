@@ -23,6 +23,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsrendererv2.h"
 #include "qgsvectorlayer.h"
+#include "qgsdiagramrendererv2.h"
 
 
 QgsMapLayerLegend::QgsMapLayerLegend( QObject *parent ) :
@@ -198,13 +199,47 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultVectorLayerLegend::createLayerTree
     nodes.append( new QgsSimpleLegendNode( nodeLayer, r->legendClassificationAttribute() ) );
   }
 
+  // we have varying icon sizes, and we want icon to be centered and
+  // text to be left aligned, so we have to compute the max width of icons
+  //
+  // we do that for nodes who share a common parent
+
+  QList<QgsSymbolV2LegendNode*> symbolNodes;
+  QMap<QString, int> widthMax;
   foreach ( const QgsLegendSymbolItemV2& i, r->legendSymbolItemsV2() )
   {
-    nodes.append( new QgsSymbolV2LegendNode( nodeLayer, i ) );
+    QgsSymbolV2LegendNode * n = new QgsSymbolV2LegendNode( nodeLayer, i );
+    nodes.append( n );
+    if ( i.symbol() )
+    {
+      const QSize sz( n->minimumIconSize() );
+      const QString parentKey( n->data( QgsLayerTreeModelLegendNode::ParentRuleKeyRole ).toString() );
+      widthMax[parentKey] = qMax( sz.width(), widthMax.contains( parentKey ) ? widthMax[parentKey] : 0 );
+      n->setIconSize( sz );
+      symbolNodes.append( n );
+    }
+  }
+
+  foreach ( QgsSymbolV2LegendNode* n, symbolNodes )
+  {
+    const QString parentKey( n->data( QgsLayerTreeModelLegendNode::ParentRuleKeyRole ).toString() );
+    Q_ASSERT( widthMax[parentKey] > 0 );
+    const int twiceMarginWidth = 2; // a one pixel margin avoids hugly rendering of icon
+    n->setIconSize( QSize( widthMax[parentKey] + twiceMarginWidth, n->iconSize().rheight() + twiceMarginWidth ) );
   }
 
   if ( nodes.count() == 1 && nodes[0]->data( Qt::EditRole ).toString().isEmpty() )
     nodes[0]->setEmbeddedInParent( true );
+
+
+  if ( mLayer->diagramsEnabled() )
+  {
+    foreach ( QgsLayerTreeModelLegendNode * i, mLayer->diagramRenderer()->legendItems( nodeLayer ) )
+    {
+      nodes.append( i );
+    }
+  }
+
 
   return nodes;
 }
@@ -227,12 +262,7 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultRasterLayerLegend::createLayerTree
   // temporary solution for WMS. Ideally should be done with a delegate.
   if ( mLayer->providerType() == "wms" )
   {
-    QImage legendGraphic = mLayer->dataProvider()->getLegendGraphic();
-    if ( !legendGraphic.isNull() )
-    {
-      QgsDebugMsg( QString( "downloaded legend with dimension width:" ) + QString::number( legendGraphic.width() ) + QString( " and Height:" ) + QString::number( legendGraphic.height() ) );
-      nodes << new QgsImageLegendNode( nodeLayer, legendGraphic );
-    }
+    nodes << new QgsWMSLegendNode( nodeLayer );
   }
 
   QgsLegendColorList rasterItemList = mLayer->legendSymbologyItems();

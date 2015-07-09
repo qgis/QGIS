@@ -29,8 +29,10 @@
 #include <QSettings>
 #include <QTextStream>
 
-QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent ):
-    QgsRasterRendererWidget( layer, extent )
+QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent )
+    : QgsRasterRendererWidget( layer, extent )
+    , mMinMaxWidget( NULL )
+    , mMinMaxOrigin( 0 )
 {
   QSettings settings;
 

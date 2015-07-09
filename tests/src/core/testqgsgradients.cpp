@@ -16,13 +16,11 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QObject>
 #include <QApplication>
 #include <QFileInfo>
 #include <QDir>
 #include <QDesktopServices>
 
-#include <iostream>
 //qgis includes...
 #include <qgsmaprenderer.h>
 #include <qgsmaplayer.h>
@@ -40,9 +38,19 @@
 /** \ingroup UnitTests
  * This is a unit test for gradient fill types.
  */
-class TestQgsGradients: public QObject
+class TestQgsGradients : public QObject
 {
     Q_OBJECT
+
+  public:
+    TestQgsGradients()
+        : mTestHasError( false )
+        , mpPolysLayer( 0 )
+        , mGradientFill( 0 )
+        , mFillSymbol( 0 )
+        , mSymbolRenderer( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -85,7 +93,7 @@ void TestQgsGradients::initTestCase()
 
   //create some objects that will be used in all tests...
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  mTestDataDir = myDataDir + QDir::separator();
+  mTestDataDir = myDataDir + "/";
 
   //
   //create a poly layer that will be used in all tests...
@@ -120,7 +128,7 @@ void TestQgsGradients::initTestCase()
 }
 void TestQgsGradients::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {

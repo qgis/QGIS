@@ -36,8 +36,8 @@ class QgsSymbolV2;
 class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
 {
   public:
-    QgsHighlight( QgsMapCanvas *mapCanvas, QgsGeometry *geom, QgsMapLayer *layer );
-    QgsHighlight( QgsMapCanvas *mapCanvas, QgsGeometry *geom, QgsVectorLayer *layer );
+    QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry *geom, QgsMapLayer *layer );
+    QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry *geom, QgsVectorLayer *layer );
     /** Constructor for highlighting true feature shape using feature attributes
      * and renderer.
      * @param mapCanvas map canvas
@@ -68,8 +68,10 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
 
     const QgsMapLayer *layer() const { return mLayer; }
 
+    virtual void updatePosition() override;
+
   protected:
-    virtual void paint( QPainter* p );
+    virtual void paint( QPainter* p ) override;
 
     //! recalculates needed rectangle
     void updateRect();

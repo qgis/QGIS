@@ -19,7 +19,9 @@
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsrasterlayer.h"
 
-QgsMultiBandColorRendererWidget::QgsMultiBandColorRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent ): QgsRasterRendererWidget( layer, extent )
+QgsMultiBandColorRendererWidget::QgsMultiBandColorRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent )
+    : QgsRasterRendererWidget( layer, extent )
+    , mMinMaxWidget( NULL )
 {
   setupUi( this );
   createValidators();

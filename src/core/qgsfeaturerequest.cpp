@@ -24,6 +24,7 @@ const QString QgsFeatureRequest::AllAttributes = QString( "#!allattributes!#" );
 
 QgsFeatureRequest::QgsFeatureRequest()
     : mFilter( FilterNone )
+    , mFilterFid( -1 )
     , mFilterExpression( 0 )
     , mFlags( 0 )
 {
@@ -40,6 +41,7 @@ QgsFeatureRequest::QgsFeatureRequest( QgsFeatureId fid )
 QgsFeatureRequest::QgsFeatureRequest( const QgsRectangle& rect )
     : mFilter( FilterRect )
     , mFilterRect( rect )
+    , mFilterFid( -1 )
     , mFilterExpression( 0 )
     , mFlags( 0 )
 {
@@ -47,6 +49,7 @@ QgsFeatureRequest::QgsFeatureRequest( const QgsRectangle& rect )
 
 QgsFeatureRequest::QgsFeatureRequest( const QgsExpression& expr )
     : mFilter( FilterExpression )
+    , mFilterFid( -1 )
     , mFilterExpression( new QgsExpression( expr.expression() ) )
     , mFlags( 0 )
 {
@@ -160,7 +163,7 @@ bool QgsFeatureRequest::acceptFeature( const QgsFeature& feature )
       break;
 
     case QgsFeatureRequest::FilterRect:
-      if ( feature.geometry() && feature.geometry()->intersects( mFilterRect ) )
+      if ( feature.constGeometry() && feature.constGeometry()->intersects( mFilterRect ) )
         return true;
       else
         return false;

@@ -79,6 +79,7 @@ class QgsSimpleMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
     void drawMarker( QPainter* p, QgsSymbolV2RenderContext& context );
 
     bool prepareShape( QString name = QString() );
+    bool prepareShape( QString name, QPolygonF &polygon ) const;
     bool preparePath( QString name = QString() );
 
     /**Prepares cache image
@@ -158,6 +159,8 @@ class QgsFontMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
                                 double pointSize = DEFAULT_FONTMARKER_SIZE,
                                 QColor color = DEFAULT_FONTMARKER_COLOR,
                                 double angle = DEFAULT_FONTMARKER_ANGLE );
+
+    ~QgsFontMarkerSymbolLayerV2();
 
     // static stuff
 

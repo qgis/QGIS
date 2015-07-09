@@ -5,7 +5,7 @@ class QgsStyleV2ManagerDialog : QDialog
 %End
 
   public:
-    QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* parent = NULL );
+    QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* parent /TransferThis/ = NULL );
 
     //! open add color ramp dialog, return color ramp's name if the ramp has been added
     static QString addColorRampStatic( QWidget* parent, QgsStyleV2* style,
@@ -101,7 +101,7 @@ class QgsStyleV2ManagerDialog : QDialog
     void enableItemsForGroupingMode( bool );
 
     //! Event filter to capture tagsLineEdit out of focus
-    bool eventFilter( QObject* , QEvent* );
+    bool eventFilter( QObject*, QEvent* );
 
     //! sets the text of the item with bold font
     void setBold( QStandardItem* );

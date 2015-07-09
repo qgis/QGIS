@@ -43,7 +43,8 @@ QMap< QString, QgsCptCityArchive* > QgsCptCityArchive::archiveRegistry() { retur
 QMap< QString, QMap< QString, QString > > QgsCptCityArchive::mCopyingInfoMap;
 
 QgsCptCityArchive::QgsCptCityArchive( QString archiveName, QString baseDir )
-    : mArchiveName( archiveName ), mBaseDir( baseDir )
+    : mArchiveName( archiveName )
+    , mBaseDir( baseDir )
 {
   QgsDebugMsg( "archiveName = " + archiveName + " baseDir = " + baseDir );
 
@@ -496,8 +497,9 @@ void QgsCptCityArchive::clearArchives()
 QgsCptCityDataItem::QgsCptCityDataItem( QgsCptCityDataItem::Type type, QgsCptCityDataItem* parent,
                                         QString name, QString path )
 // Do not pass parent to QObject, Qt would delete this when parent is deleted
-    : QObject(), mType( type ), mParent( parent ), mPopulated( false ),
-    mName( name ), mPath( path ), mValid( true )
+    : QObject()
+    , mType( type ), mParent( parent ), mPopulated( false )
+    , mName( name ), mPath( path ), mValid( true )
 {
 }
 
@@ -709,8 +711,9 @@ bool QgsCptCityDataItem::equal( const QgsCptCityDataItem *other )
 
 QgsCptCityColorRampItem::QgsCptCityColorRampItem( QgsCptCityDataItem* parent,
     QString name, QString path, QString variantName, bool initialize )
-    : QgsCptCityDataItem( ColorRamp, parent, name, path ),
-    mInitialised( false ), mRamp( path, variantName, false )
+    : QgsCptCityDataItem( ColorRamp, parent, name, path )
+    , mInitialised( false )
+    , mRamp( path, variantName, false )
 {
   // QgsDebugMsg( "name= " + name + " path= " + path );
   mPopulated = true;
@@ -720,8 +723,9 @@ QgsCptCityColorRampItem::QgsCptCityColorRampItem( QgsCptCityDataItem* parent,
 
 QgsCptCityColorRampItem::QgsCptCityColorRampItem( QgsCptCityDataItem* parent,
     QString name, QString path, QStringList variantList, bool initialize )
-    : QgsCptCityDataItem( ColorRamp, parent, name, path ),
-    mInitialised( false ), mRamp( path, variantList, QString(), false )
+    : QgsCptCityDataItem( ColorRamp, parent, name, path )
+    , mInitialised( false )
+    , mRamp( path, variantList, QString(), false )
 {
   // QgsDebugMsg( "name= " + name + " path= " + path );
   mPopulated = true;
@@ -794,8 +798,10 @@ bool QgsCptCityColorRampItem::equal( const QgsCptCityDataItem *other )
   }
   //const QgsCptCityColorRampItem *o = qobject_cast<const QgsCptCityColorRampItem *> ( other );
   const QgsCptCityColorRampItem *o = dynamic_cast<const QgsCptCityColorRampItem *>( other );
-  return ( mPath == o->mPath && mName == o->mName &&
-           ramp().variantName() == o->ramp().variantName() );
+  return o &&
+         mPath == o->mPath &&
+         mName == o->mName &&
+         ramp().variantName() == o->ramp().variantName();
 }
 
 QIcon QgsCptCityColorRampItem::icon()
@@ -834,7 +840,8 @@ QIcon QgsCptCityColorRampItem::icon( const QSize& size )
 // ---------------------------------------------------------------------
 QgsCptCityCollectionItem::QgsCptCityCollectionItem( QgsCptCityDataItem* parent,
     QString name, QString path )
-    : QgsCptCityDataItem( Collection, parent, name, path ), mPopulatedRamps( false )
+    : QgsCptCityDataItem( Collection, parent, name, path )
+    , mPopulatedRamps( false )
 {
 }
 
@@ -965,8 +972,7 @@ QMap< QString, QStringList > QgsCptCityDirectoryItem::rampsMap()
   QString curName, prevName, prevPath, curVariant, curSep, schemeName;
   QStringList listVariant;
   QStringList schemeNamesAll, schemeNames;
-  int num;
-  bool ok, prevAdd, curAdd;
+  bool prevAdd, curAdd;
 
   QDir dir( QgsCptCityArchive::defaultBaseDir() + "/" + mPath );
   schemeNamesAll = dir.entryList( QStringList( "*.svg" ), QDir::Files, QDir::Name );
@@ -982,7 +988,7 @@ QMap< QString, QStringList > QgsCptCityDirectoryItem::rampsMap()
     curName = schemeName;
     curVariant = "";
 
-    // stupid code to find if name ends with 1-3 digit number - should use regexp
+    // find if name ends with 1-3 digit number
     // TODO need to detect if ends with b/c also
     if ( schemeName.length() > 1 && schemeName.endsWith( "a" ) && ! listVariant.isEmpty() &&
          (( prevName + listVariant.last()  + "a" ) == curName ) )
@@ -992,32 +998,15 @@ QMap< QString, QStringList > QgsCptCityDirectoryItem::rampsMap()
     }
     else
     {
-      num = schemeName.right( 3 ).toInt( &ok );
-      Q_UNUSED( num );
-      if ( ok )
+      QRegExp rxVariant( "^(.*[^\\d])(\\d{1,3})$" );
+      int pos = rxVariant.indexIn( schemeName );
+      if ( pos > -1 )
       {
-        curName = schemeName.left( schemeName.size() - 3 );
-        curVariant = schemeName.right( 3 );
-      }
-      else
-      {
-        num = schemeName.right( 2 ).toInt( &ok );
-        if ( ok )
-        {
-          curName = schemeName.left( schemeName.size() - 2 );
-          curVariant = schemeName.right( 2 );
-        }
-        else
-        {
-          num = schemeName.right( 1 ).toInt( &ok );
-          if ( ok )
-          {
-            curName = schemeName.left( schemeName.size() - 1 );
-            curVariant = schemeName.right( 1 );
-          }
-        }
+        curName = rxVariant.cap( 1 );
+        curVariant = rxVariant.cap( 2 );
       }
     }
+
     curSep = curName.right( 1 );
     if ( curSep == "-" || curSep == "_" )
     {
@@ -1547,15 +1536,18 @@ QModelIndex QgsCptCityBrowserModel::findPath( QString path )
       if ( item->type() == QgsCptCityDataItem::Selection )
       {
         const QgsCptCitySelectionItem* selItem = dynamic_cast<const QgsCptCitySelectionItem *>( item );
-        foreach ( QString childPath, selItem->selectionsList() )
+        if ( selItem )
         {
-          if ( childPath.endsWith( "/" ) )
-            childPath.chop( 1 );
-          // QgsDebugMsg( "childPath= " + childPath );
-          if ( path.startsWith( childPath ) )
+          foreach ( QString childPath, selItem->selectionsList() )
           {
-            foundParent = true;
-            break;
+            if ( childPath.endsWith( "/" ) )
+              childPath.chop( 1 );
+            // QgsDebugMsg( "childPath= " + childPath );
+            if ( path.startsWith( childPath ) )
+            {
+              foundParent = true;
+              break;
+            }
           }
         }
       }
@@ -1708,8 +1700,10 @@ void QgsCptCityBrowserModel::fetchMore( const QModelIndex & parent )
 {
   QgsCptCityDataItem* item = dataItem( parent );
   if ( item )
+  {
     item->populate();
-  QgsDebugMsg( "path = " + item->path() );
+    QgsDebugMsg( "path = " + item->path() );
+  }
 }
 
 

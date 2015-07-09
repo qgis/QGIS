@@ -24,7 +24,7 @@
  ***************************************************************************/
 """
 
-from PyQt4.QtGui import *
+from PyQt4.QtGui import QDialog, QDialogButtonBox
 
 from ui_qgsplugininstallerrepositorybase import Ui_QgsPluginInstallerRepositoryDetailsDialogBase
 

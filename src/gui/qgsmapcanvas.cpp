@@ -44,6 +44,7 @@ email                : sherman at mrcc.com
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvasmap.h"
+#include "qgsmapcanvassnappingutils.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaptoolpan.h"
@@ -190,6 +191,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
     , mDrawRenderingStats( false )
     , mCache( 0 )
     , mPreviewEffect( 0 )
+    , mSnappingUtils( 0 )
 {
   setObjectName( name );
   mScene = new QGraphicsScene();
@@ -221,7 +223,6 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
 
   // create map canvas item which will show the map
   mMap = new QgsMapCanvasMap( this );
-  mScene->addItem( mMap );
 
   // project handling
   connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ),
@@ -288,7 +289,7 @@ QgsMapCanvas::~QgsMapCanvas()
   mScene->deleteLater();  // crashes in python tests on windows
 
   delete mMapRenderer;
-  // mCanvasProperties auto-deleted via std::auto_ptr
+  // mCanvasProperties auto-deleted via QScopedPointer
   // CanvasProperties struct has its own dtor for freeing resources
 
   if ( mJob )
@@ -340,6 +341,7 @@ QgsMapLayer* QgsMapCanvas::layer( int index )
 void QgsMapCanvas::setCurrentLayer( QgsMapLayer* layer )
 {
   mCurrentLayer = layer;
+  emit currentLayerChanged( layer );
 }
 
 double QgsMapCanvas::scale()
@@ -415,6 +417,7 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
       if ( !currentLayer )
         continue;
       disconnect( currentLayer, SIGNAL( repaintRequested() ), this, SLOT( refresh() ) );
+      disconnect( currentLayer, SIGNAL( layerCrsChanged() ), this, SLOT( layerCrsChange() ) );
       QgsVectorLayer *isVectLyr = qobject_cast<QgsVectorLayer *>( currentLayer );
       if ( isVectLyr )
       {
@@ -430,6 +433,7 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
       // Ticket #811 - racicot
       QgsMapLayer *currentLayer = layer( i );
       connect( currentLayer, SIGNAL( repaintRequested() ), this, SLOT( refresh() ) );
+      connect( currentLayer, SIGNAL( layerCrsChanged() ), this, SLOT( layerCrsChange() ) );
       QgsVectorLayer *isVectLyr = qobject_cast<QgsVectorLayer *>( currentLayer );
       if ( isVectLyr )
       {
@@ -515,7 +519,14 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
     if ( !mSettings.visibleExtent().isEmpty() )
     {
       QgsCoordinateTransform transform( mSettings.destinationCrs(), crs );
-      rect = transform.transformBoundingBox( mSettings.visibleExtent() );
+      try
+      {
+        rect = transform.transformBoundingBox( mSettings.visibleExtent() );
+      }
+      catch ( QgsCsException &e )
+      {
+        QgsDebugMsg( QString( "Transform error caught: %1" ).arg( e.what() ) );
+      }
     }
     if ( !rect.isEmpty() )
     {
@@ -542,6 +553,12 @@ void QgsMapCanvas::setCachingEnabled( bool enabled )
 {
   if ( enabled == isCachingEnabled() )
     return;
+
+  if ( mJob && mJob->isActive() )
+  {
+    // wait for the current rendering to finish, before touching the cache
+    mJob->waitForFinished();
+  }
 
   if ( enabled )
   {
@@ -723,8 +740,7 @@ void QgsMapCanvas::rendererJobFinished()
 
     p.end();
 
-    QgsRectangle rect = mSettings.visibleExtent();
-    mMap->setContent( img, rect );
+    mMap->setContent( img, imageRect( img, mJob->mapSettings() ) );
   }
 
   // now we are in a slot called from mJob - do not delete it immediately
@@ -735,9 +751,21 @@ void QgsMapCanvas::rendererJobFinished()
   emit mapCanvasRefreshed();
 }
 
+QgsRectangle QgsMapCanvas::imageRect( const QImage& img, const QgsMapSettings& mapSettings )
+{
+  // This is a hack to pass QgsMapCanvasItem::setRect what it
+  // expects (encoding of position and size of the item)
+  const QgsMapToPixel& m2p = mapSettings.mapToPixel();
+  QgsPoint topLeft = m2p.toMapPoint( 0, 0 );
+  double res = m2p.mapUnitsPerPixel();
+  QgsRectangle rect( topLeft.x(), topLeft.y(), topLeft.x() + img.width()*res, topLeft.y() - img.height()*res );
+  return rect;
+}
+
 void QgsMapCanvas::mapUpdateTimeout()
 {
-  mMap->setContent( mJob->renderedImage(), mJob->mapSettings().visibleExtent() );
+  const QImage& img = mJob->renderedImage();
+  mMap->setContent( img, imageRect( img, mJob->mapSettings() ) );
 }
 
 void QgsMapCanvas::stopRendering()
@@ -829,6 +857,14 @@ void QgsMapCanvas::setExtent( QgsRectangle const & r )
 
   if ( r.isEmpty() )
   {
+    if ( !mSettings.hasValidSettings() )
+    {
+      // we can't even just move the map center
+      QgsDebugMsg( "Empty extent - ignoring" );
+      return;
+    }
+
+    // ### QGIS 3: do not allow empty extent - require users to call setCenter() explicitly
     QgsDebugMsg( "Empty extent - keeping old scale with new center!" );
     setCenter( r.center() );
   }
@@ -893,6 +929,9 @@ double QgsMapCanvas::rotation() const
 
 void QgsMapCanvas::setRotation( double degrees )
 {
+  if ( !rotationEnabled() )
+    return;
+
   double current = rotation();
 
   if ( degrees == current )
@@ -1547,6 +1586,15 @@ void QgsMapCanvas::layerStateChange()
 
 } // layerStateChange
 
+void QgsMapCanvas::layerCrsChange()
+{
+  // called when a layer's CRS has been changed
+  QObject *theSender = sender();
+  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( theSender );
+  QString destAuthId = mSettings.destinationCrs().authid();
+  getDatumTransformInfo( layer, layer->crs().authid(), destAuthId );
+
+} // layerCrsChange
 
 
 void QgsMapCanvas::freeze( bool frz )
@@ -1594,6 +1642,20 @@ QGis::UnitType QgsMapCanvas::mapUnits() const
   return mapSettings().mapUnits();
 }
 
+QMap<QString, QString> QgsMapCanvas::layerStyleOverrides() const
+{
+  return mSettings.layerStyleOverrides();
+}
+
+void QgsMapCanvas::setLayerStyleOverrides( const QMap<QString, QString>& overrides )
+{
+  if ( overrides == mSettings.layerStyleOverrides() )
+    return;
+
+  mSettings.setLayerStyleOverrides( overrides );
+  emit layerStyleOverridesChanged();
+}
+
 
 void QgsMapCanvas::setRenderFlag( bool theFlag )
 {
@@ -1607,12 +1669,13 @@ void QgsMapCanvas::setRenderFlag( bool theFlag )
     stopRendering();
 }
 
+#if 0
 void QgsMapCanvas::connectNotify( const char * signal )
 {
   Q_UNUSED( signal );
   QgsDebugMsg( "QgsMapCanvas connected to " + QString( signal ) );
 } //connectNotify
-
+#endif
 
 void QgsMapCanvas::updateDatumTransformEntries()
 {
@@ -1727,6 +1790,22 @@ QgsPreviewEffect::PreviewMode QgsMapCanvas::previewMode() const
   }
 
   return mPreviewEffect->mode();
+}
+
+QgsSnappingUtils* QgsMapCanvas::snappingUtils() const
+{
+  if ( !mSnappingUtils )
+  {
+    // associate a dummy instance, but better than null pointer
+    QgsMapCanvas* c = const_cast<QgsMapCanvas*>( this );
+    c->mSnappingUtils = new QgsMapCanvasSnappingUtils( c, c );
+  }
+  return mSnappingUtils;
+}
+
+void QgsMapCanvas::setSnappingUtils( QgsSnappingUtils* utils )
+{
+  mSnappingUtils = utils;
 }
 
 void QgsMapCanvas::readProject( const QDomDocument & doc )
@@ -1891,3 +1970,30 @@ bool QgsMapCanvas::event( QEvent * e )
   return done;
 }
 #endif
+
+bool QgsMapCanvas::rotationEnabled()
+{
+  return QSettings().value( "/qgis/canvasRotation", true ).toBool();
+}
+
+void QgsMapCanvas::enableRotation( bool enable )
+{
+  QSettings().setValue( "/qgis/canvasRotation", enable );
+}
+
+void QgsMapCanvas::refreshAllLayers()
+{
+  // reload all layers in canvas
+  for ( int i = 0; i < layerCount(); i++ )
+  {
+    QgsMapLayer *l = layer( i );
+    if ( l )
+      l->reload();
+  }
+
+  // clear the cache
+  clearCache();
+
+  // and then refresh
+  refresh();
+}

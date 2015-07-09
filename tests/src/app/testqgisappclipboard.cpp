@@ -12,10 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <iostream>
-
 #include <QApplication>
-#include <QObject>
 #include <QObject>
 #include <QSplashScreen>
 #include <QString>
@@ -33,14 +30,18 @@
 /** \ingroup UnitTests
  * This is a unit test for the QgisApp clipboard.
  */
-class TestQgisAppClipboard: public QObject
+class TestQgisAppClipboard : public QObject
 {
     Q_OBJECT
+
+  public:
+    TestQgisAppClipboard();
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {};// will be called before each testfunction is executed.
-    void cleanup() {};// will be called after every testfunction.
+    void init() {} // will be called before each testfunction is executed.
+    void cleanup() {} // will be called after every testfunction.
 
     void copyPaste();
 
@@ -49,6 +50,12 @@ class TestQgisAppClipboard: public QObject
     QString mTestDataDir;
 };
 
+TestQgisAppClipboard::TestQgisAppClipboard()
+    : mQgisApp( NULL )
+{
+
+}
+
 //runs before all tests
 void TestQgisAppClipboard::initTestCase()
 {
@@ -56,7 +63,7 @@ void TestQgisAppClipboard::initTestCase()
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();
-  mTestDataDir = QString( TEST_DATA_DIR ) + QDir::separator(); //defined in CmakeLists.txt
+  mTestDataDir = QString( TEST_DATA_DIR ) + "/"; //defined in CmakeLists.txt
   mQgisApp = new QgisApp();
 }
 

@@ -16,7 +16,6 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QObject>
 #include <QPainter>
 #include <QTime>
 
@@ -50,6 +49,10 @@
 class Regression1141: public QObject
 {
     Q_OBJECT
+
+  public:
+    Regression1141();
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -68,6 +71,12 @@ class Regression1141: public QObject
     QString mFileName;
 };
 
+Regression1141::Regression1141()
+    : mError( QgsVectorFileWriter::NoError )
+{
+
+}
+
 void Regression1141::initTestCase()
 {
   //
@@ -78,7 +87,7 @@ void Regression1141::initTestCase()
   QgsApplication::initQgis();
   QgsApplication::showSettings();
   // compute our test file name:
-  QString myTmpDir = QDir::tempPath() + QDir::separator();
+  QString myTmpDir = QDir::tempPath() + "/";
   mFileName = myTmpDir +  "ąęćń.shp";
 }
 

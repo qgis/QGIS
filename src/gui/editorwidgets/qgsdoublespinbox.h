@@ -41,6 +41,7 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     explicit QgsDoubleSpinBox( QWidget *parent = 0 );
 
     //! determines if the widget will show a clear button
+    //! @note the clear button will set the widget to its minimum value
     void setShowClearButton( const bool showClearButton );
     bool showClearButton() const {return mShowClearButton;}
 
@@ -58,7 +59,7 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     bool expressionsEnabled() const {return mExpressionsEnabled;}
 
     //! Set the current value to the value defined by the clear value.
-    virtual void clear();
+    virtual void clear() override;
 
     /**
      * @brief setClearValue defines the clear value as a custom value and will automatically set the clear value mode to CustomValue
@@ -76,12 +77,13 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     //! returns the value used when clear() is called.
     double clearValue() const;
 
-    virtual double valueFromText( const QString & text ) const;
-    virtual QValidator::State validate( QString & input, int & pos ) const;
+    virtual double valueFromText( const QString & text ) const override;
+    virtual QValidator::State validate( QString & input, int & pos ) const override;
 
   protected:
-    virtual void resizeEvent( QResizeEvent* event );
-    virtual void changeEvent( QEvent* event );
+    virtual void resizeEvent( QResizeEvent* event ) override;
+    virtual void changeEvent( QEvent* event ) override;
+    virtual void paintEvent( QPaintEvent* event ) override;
 
   private slots:
     void changed( const double &value );

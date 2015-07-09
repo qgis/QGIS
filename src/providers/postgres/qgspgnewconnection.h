@@ -35,7 +35,7 @@ class QgsPgNewConnection : public QDialog, private Ui::QgsPgNewConnectionBase
     //! Tests the connection using the parameters supplied
     void testConnection();
   public slots:
-    void accept();
+    void accept() override;
     void on_btnConnect_clicked();
     void on_cb_geometryColumnsOnly_clicked();
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }

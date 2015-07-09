@@ -40,13 +40,17 @@ class shp2las(LAStoolsAlgorithm):
         self.name = "shp2las"
         self.group = "LAStools"
         self.addParametersVerboseGUI()
-        self.addParameter(ParameterFile(shp2las.INPUT, "Input SHP file"))
-        self.addParameter(ParameterNumber(shp2las.SCALE_FACTOR_XY, "resolution of x and y coordinate", False, False, 0.01))
-        self.addParameter(ParameterNumber(shp2las.SCALE_FACTOR_Z, "resolution of z coordinate", False, False, 0.01))
+        self.addParameter(ParameterFile(shp2las.INPUT,
+            self.tr("Input SHP file")))
+        self.addParameter(ParameterNumber(shp2las.SCALE_FACTOR_XY,
+            self.tr("resolution of x and y coordinate"), False, False, 0.01))
+        self.addParameter(ParameterNumber(shp2las.SCALE_FACTOR_Z,
+            self.tr("resolution of z coordinate"), False, False, 0.01))
         self.addParametersPointOutputGUI()
+        self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "shp2las.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "shp2las")]
         self.addParametersVerboseCommands(commands)
         commands.append("-i")
         commands.append(self.getParameterValue(shp2las.INPUT))
@@ -56,5 +60,6 @@ class shp2las(LAStoolsAlgorithm):
             commands.append("-set_scale_factor")
             commands.append(str(scale_factor_xy) + " " + str(scale_factor_xy) + " " + str(scale_factor_z))
         self.addParametersPointOutputCommands(commands)
+        self.addParametersAdditionalCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

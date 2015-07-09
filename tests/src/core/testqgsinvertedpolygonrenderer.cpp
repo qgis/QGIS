@@ -16,13 +16,11 @@
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QObject>
 #include <QApplication>
 #include <QFileInfo>
 #include <QDir>
 #include <QDesktopServices>
 
-#include <iostream>
 //qgis includes...
 #include <qgsmaprenderer.h>
 #include <qgsmaplayer.h>
@@ -36,14 +34,18 @@
 /** \ingroup UnitTests
  * This is a unit test for the different renderers for vector layers.
  */
-class TestQgsInvertedPolygon: public QObject
+class TestQgsInvertedPolygon : public QObject
 {
     Q_OBJECT
+
+  public:
+    TestQgsInvertedPolygon();
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {};// will be called before each testfunction is executed.
-    void cleanup() {};// will be called after every testfunction.
+    void init() {} // will be called before each testfunction is executed.
+    void cleanup() {} // will be called after every testfunction.
 
     void singleSubRenderer();
     void graduatedSubRenderer();
@@ -61,6 +63,13 @@ class TestQgsInvertedPolygon: public QObject
 };
 
 
+TestQgsInvertedPolygon::TestQgsInvertedPolygon()
+    : mTestHasError( false )
+    , mpPolysLayer( NULL )
+{
+
+}
+
 void TestQgsInvertedPolygon::initTestCase()
 {
   mTestHasError = false;
@@ -70,7 +79,7 @@ void TestQgsInvertedPolygon::initTestCase()
   QgsApplication::showSettings();
 
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  mTestDataDir = myDataDir + QDir::separator();
+  mTestDataDir = myDataDir + "/";
 
   //
   //create a poly layer that will be used in all tests...
@@ -93,7 +102,7 @@ void TestQgsInvertedPolygon::initTestCase()
 
 void TestQgsInvertedPolygon::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -172,6 +181,7 @@ bool TestQgsInvertedPolygon::imageCheck( QString theTestType, const QgsRectangle
   {
     mMapSettings.setExtent( *extent );
   }
+  mMapSettings.setOutputDpi( 96 );
   QgsMultiRenderChecker myChecker;
   myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapSettings( mMapSettings );

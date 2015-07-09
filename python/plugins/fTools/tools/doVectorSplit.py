@@ -28,9 +28,10 @@
 #
 #---------------------------------------------------------------------
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
+from PyQt4.QtCore import QObject, SIGNAL, QThread, QMutex, QFile
+from PyQt4.QtGui import QDialog, QDialogButtonBox, QMessageBox, QErrorMessage
+from qgis.core import QGis, QgsFeature, QgsVectorFileWriter
+
 import ftools_utils
 from ui_frmVectorSplit import Ui_Dialog
 
@@ -51,7 +52,6 @@ class Dialog(QDialog, Ui_Dialog):
         self.btnClose = self.buttonBox_2.button( QDialogButtonBox.Close )
 
         # populate layer list
-        mapCanvas = self.iface.mapCanvas()
         layers = ftools_utils.getLayerNames([QGis.Point, QGis.Line, QGis.Polygon])
         self.inShape.addItems(layers)
 
@@ -111,7 +111,7 @@ class Dialog(QDialog, Ui_Dialog):
         self.btnOk.setEnabled(True)
 
     def stopProcessing(self):
-        if self.workThread != None:
+        if self.workThread is not None:
             self.workThread.stop()
             self.workThread = None
 

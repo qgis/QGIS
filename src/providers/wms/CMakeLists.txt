@@ -1,3 +1,8 @@
+IF (QT5_BUILD)
+  FIND_PACKAGE(Qt5XmlPatterns REQUIRED)
+ENDIF()
+
+
 SET (WMS_SRCS
   qgswmscapabilities.cpp
   qgswmsprovider.cpp
@@ -19,7 +24,7 @@ SET (WMS_MOC_HDRS
 
 QT4_WRAP_CPP (WMS_MOC_SRCS ${WMS_MOC_HDRS})
 
-INCLUDE_DIRECTORIES( . ../../core ../../core/raster ../../gui
+INCLUDE_DIRECTORIES( . ../../core ../../core/geometry ../../core/raster ../../gui
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
   ${GDAL_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}

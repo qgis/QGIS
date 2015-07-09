@@ -64,7 +64,7 @@ class QgsWFSServer: public QgsOWSServer
                   QgsRequestHandler* rh );
     ~QgsWFSServer();
 
-    void executeRequest();
+    void executeRequest() override;
 
     /**Returns an XML file with the capabilities description (as described in the WFS specs)*/
     QDomDocument getCapabilities();
@@ -95,6 +95,7 @@ class QgsWFSServer: public QgsOWSServer
     /* The list of Feature's Type requested */
     QStringList mTypeNames;
     QString mPropertyName;
+    QString mGeometryName;
     bool mWithGeom;
     /* Error messages */
     QStringList mErrors;

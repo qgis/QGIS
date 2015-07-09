@@ -23,14 +23,18 @@
 /** \ingroup UnitTests
  * This is a unit test for the zonal statistics class
  */
-class TestQgsZonalStatistics: public QObject
+class TestQgsZonalStatistics : public QObject
 {
     Q_OBJECT
+
+  public:
+    TestQgsZonalStatistics();
+
   private slots:
     void initTestCase();
     void cleanupTestCase();
-    void init() {};
-    void cleanup() {};
+    void init() {}
+    void cleanup() {}
 
     void testStatistics();
 
@@ -39,6 +43,12 @@ class TestQgsZonalStatistics: public QObject
     QString mRasterPath;
 };
 
+TestQgsZonalStatistics::TestQgsZonalStatistics()
+    : mVectorLayer( NULL )
+{
+
+}
+
 void TestQgsZonalStatistics::initTestCase()
 {
   QgsApplication::init();
@@ -46,8 +56,8 @@ void TestQgsZonalStatistics::initTestCase()
   QgsApplication::showSettings();
 
   QString myDataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  QString myTestDataPath = myDataPath + QDir::separator() + "zonalstatistics" + QDir::separator();
-  QString myTempPath = QDir::tempPath() + QDir::separator();
+  QString myTestDataPath = myDataPath + "/zonalstatistics/";
+  QString myTempPath = QDir::tempPath() + "/";
 
   // copy test data to temp directory
   QDir testDir( myTestDataPath );

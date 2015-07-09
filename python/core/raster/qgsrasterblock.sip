@@ -180,6 +180,23 @@ class QgsRasterBlock
      *  @return true on success */
     bool setIsNoDataExcept( const QRect & theExceptRect );
 
+    /** \brief Remove no data flag on pixel. If the raster block does not have an explicit
+     * no data value set then an internal map of no data pixels is maintained for the block.
+     * In this case it is possible to reset a pixel to flag it as having valid data using this
+     * method. This method has no effect for raster blocks with an explicit no data value set.
+     *  @param row row index
+     *  @param column column index
+     *  @note added in QGIS 2.10 */
+    void setIsData( int row, int column );
+
+    /** \brief Remove no data flag on pixel. If the raster block does not have an explicit
+     * no data value set then an internal map of no data pixels is maintained for the block.
+     * In this case it is possible to reset a pixel to flag it as having valid data using this
+     * method. This method has no effect for raster blocks with an explicit no data value set.
+     *  @param index data matrix index (long type in Python)
+     *  @note added in QGIS 2.10 */
+    void setIsData( qgssize index );
+
     /** \brief Get pointer to data
      *  @param row row index
      *  @param column column index
@@ -249,5 +266,17 @@ class QgsRasterBlock
      * @return the rectangle covered by sub extent
      */
     static QRect subRect( const QgsRectangle &theExtent, int theWidth, int theHeight, const QgsRectangle &theSubExtent );
+
+    /** Returns the width (number of columns) of the raster block.
+     * @see height
+     * @note added in QGIS 2.10
+     */
+    int width() const;
+
+    /** Returns the height (number of rows) of the raster block.
+     * @see width
+     * @note added in QGIS 2.10
+     */
+    int height() const;
 };
 

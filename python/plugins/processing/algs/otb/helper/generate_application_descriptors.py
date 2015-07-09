@@ -26,7 +26,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-import sys
 import otbApplication
 from qgis.core import QgsApplication
 
@@ -109,7 +108,7 @@ def get_group(appInstance):
         'Stereo',
         'Learning',
         'Segmentation',
-        ]
+    ]
     for sectionTag in sectionTags:
         for tag in tags:
             if tag == sectionTag:
@@ -140,9 +139,9 @@ def generate_param_descriptor(appInstance, paramKey):
         otbApplication.ParameterType_ComplexInputImage: generate_parameter_ComplexInputImage,
         otbApplication.ParameterType_ComplexOutputImage: generate_parameter_ComplexOutputImage,
         otbApplication.ParameterType_RAM: generate_parameter_RAM,
-        }
-    return paramcreationfunction[appInstance.GetParameterType(paramKey)](appInstance,
-            paramKey)
+    }
+    return paramcreationfunction[appInstance.GetParameterType(paramKey)](
+        appInstance, paramKey)
 
 
 def generate_parameter_Empty(appInstance, paramKey):
