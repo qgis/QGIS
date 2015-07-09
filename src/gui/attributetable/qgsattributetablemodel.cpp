@@ -495,14 +495,19 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
       return tr( "feature id" );
     }
   }
-  else if ( role == Qt::DecorationRole && orientation == Qt::Vertical )
+  else if ( role == Qt::DecorationRole
+            && orientation == Qt::Vertical
+            && layer()->geometryType() != QGis::NoGeometry )
   {
     QgsRenderContext ctx;
-    layer()->rendererV2()->startRender( ctx, layer()->pendingFields() );
-    QgsFeatureId id = mRowIdMap[section];
     QgsFeature feature;
-    mLayerCache->featureAtId( id, feature );
+    mLayerCache->featureAtId( mRowIdMap[section], feature );
+
+    layer()->rendererV2()->startRender( ctx, layer()->pendingFields() );
     QgsSymbolV2List symbols = layer()->rendererV2()->symbolsForFeature( feature );
+    if ( symbols.count() == 0 )
+      return 0;
+
     QgsSymbolV2* symbol = symbols.first();
     QPixmap pix = QgsSymbolLayerV2Utils::symbolPreviewPixmap( symbol, mIconSize );
     layer()->rendererV2()->stopRender( ctx );
