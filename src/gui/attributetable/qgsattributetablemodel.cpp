@@ -506,7 +506,10 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
     layer()->rendererV2()->startRender( ctx, layer()->pendingFields() );
     QgsSymbolV2List symbols = layer()->rendererV2()->symbolsForFeature( feature );
     if ( symbols.count() == 0 )
+      {
+    layer()->rendererV2()->stopRender( ctx );
       return 0;
+      }
 
     QgsSymbolV2* symbol = symbols.first();
     QPixmap pix = QgsSymbolLayerV2Utils::symbolPreviewPixmap( symbol, mIconSize );
