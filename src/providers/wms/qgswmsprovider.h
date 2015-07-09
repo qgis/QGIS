@@ -367,6 +367,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
   private slots:
     void identifyReplyFinished();
     void getLegendGraphicReplyFinished( const QImage& );
+    void getLegendGraphicReplyErrored( const QString& message );
     void getLegendGraphicReplyProgress( qint64, qint64 );
 
   private:
