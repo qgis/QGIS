@@ -27,58 +27,59 @@ QgsPseudoColorShader::QgsPseudoColorShader( double theMinimumValue, double theMa
   setClassBreaks();
 }
 
-
-bool QgsPseudoColorShader::shade( double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
+bool QgsPseudoColorShader::shade(double theValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue, int *theReturnAlphaValue)
 {
-  double myPixelValue = theValue;
+   double myPixelValue = theValue;
 
-  //double check that myInt >= min and <= max
-  //this is relevant if we are plotting within stddevs
-  if ( myPixelValue < mMinimumValue )
-  {
-    myPixelValue = mMinimumValue;
-  }
-  if ( myPixelValue > mMaximumValue )
-  {
-    myPixelValue = mMaximumValue;
-  }
+   //double check that myInt >= min and <= max
+   //this is relevant if we are plotting within stddevs
+   if (myPixelValue < mMinimumValue)
+   {
+      myPixelValue = mMinimumValue;
+   }
+   if (myPixelValue > mMaximumValue)
+   {
+      myPixelValue = mMaximumValue;
+   }
 
-  //check if we are in the first class break
-  if (( myPixelValue >= mClassBreakMin1 ) && ( myPixelValue < mClassBreakMax1 ) )
-  {
-    *theReturnRedValue = 0;
-    *theReturnGreenValue = static_cast < int >((( 255 / mMinimumMaximumRange ) * ( myPixelValue - mClassBreakMin1 ) ) * 3 );
-    *theReturnBlueValue = 255;
-  }
-  //check if we are in the second class break
-  else if (( myPixelValue >= mClassBreakMin2 ) && ( myPixelValue < mClassBreakMax2 ) )
-  {
-    *theReturnRedValue = static_cast < int >((( 255 / mMinimumMaximumRange ) * (( myPixelValue - mClassBreakMin2 ) / 1 ) ) * 3 );
-    *theReturnGreenValue = 255;
-    *theReturnBlueValue = static_cast < int >( 255 - ((( 255 / mMinimumMaximumRange ) * (( myPixelValue - mClassBreakMin2 ) / 1 ) ) * 3 ) );
-  }
-  //otherwise we must be in the third classbreak
-  else
-  {
-    *theReturnRedValue = 255;
-    *theReturnGreenValue = static_cast < int >( 255 - ((( 255 / mMinimumMaximumRange ) * (( myPixelValue - mClassBreakMin3 ) / 1 ) * 3 ) ) );
-    *theReturnBlueValue = 0;
-  }
-
-  return true;
+   //check if we are in the first class break
+   if ((myPixelValue >= mClassBreakMin1) && (myPixelValue < mClassBreakMax1))
+   {
+      *theReturnRedValue = 0;
+      *theReturnGreenValue = static_cast < int >(((255 / mMinimumMaximumRange) * (myPixelValue - mClassBreakMin1)) * 3);
+      *theReturnBlueValue = 255;
+   }
+   //check if we are in the second class break
+   else if ((myPixelValue >= mClassBreakMin2) && (myPixelValue < mClassBreakMax2))
+   {
+      *theReturnRedValue = static_cast < int >(((255 / mMinimumMaximumRange) * ((myPixelValue - mClassBreakMin2) / 1)) * 3);
+      *theReturnGreenValue = 255;
+      *theReturnBlueValue = static_cast < int >(255 - (((255 / mMinimumMaximumRange) * ((myPixelValue - mClassBreakMin2) / 1)) * 3));
+   }
+   //otherwise we must be in the third classbreak
+   else
+   {
+      *theReturnRedValue = 255;
+      *theReturnGreenValue = static_cast < int >(255 - (((255 / mMinimumMaximumRange) * ((myPixelValue - mClassBreakMin3) / 1) * 3)));
+      *theReturnBlueValue = 0;
+   }
+   *theReturnAlphaValue = 255;
+   return true;
 }
 
-bool QgsPseudoColorShader::shade( double theRedValue, double theGreenValue, double theBlueValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
+bool QgsPseudoColorShader::shade(double theRedValue, double theGreenValue, double theBlueValue, double theAlphaValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue, int* theReturnAlphaValue)
 {
-  Q_UNUSED( theRedValue );
-  Q_UNUSED( theGreenValue );
-  Q_UNUSED( theBlueValue );
+   Q_UNUSED(theRedValue);
+   Q_UNUSED(theGreenValue);
+   Q_UNUSED(theBlueValue);
+   Q_UNUSED(theAlphaValue);
 
-  *theReturnRedValue = 0;
-  *theReturnGreenValue = 0;
-  *theReturnBlueValue = 0;
+   *theReturnRedValue = 0;
+   *theReturnGreenValue = 0;
+   *theReturnBlueValue = 0;
+   *theReturnAlphaValue = 0;
 
-  return false;
+   return false;
 }
 
 void QgsPseudoColorShader::setClassBreaks()
@@ -114,4 +115,10 @@ void QgsPseudoColorShader::setMinimumValue( double theValue )
   mMinimumValue = theValue;
   mMinimumMaximumRange = mMaximumValue - mMinimumValue;
   setClassBreaks();
+}
+
+void QgsPseudoColorShader::legendSymbologyItems(QList< QPair< QString, QColor > >& symbolItems) const
+{
+   symbolItems.push_back(qMakePair(QString::number(mMinimumValue), QColor(0, 0, 255)));
+   symbolItems.push_back(qMakePair(QString::number(mMaximumValue), QColor(255, 0, 0)));
 }
