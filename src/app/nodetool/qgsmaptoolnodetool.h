@@ -34,13 +34,9 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
     QgsMapToolNodeTool( QgsMapCanvas* canvas );
     virtual ~QgsMapToolNodeTool();
 
-    void canvasMoveEvent( QMouseEvent * e );
-
     void canvasDoubleClickEvent( QMouseEvent * e );
 
     void canvasPressEvent( QMouseEvent * e );
-
-    void canvasReleaseEvent( QMouseEvent * e );
 
     void keyPressEvent( QKeyEvent* e );
 
@@ -80,11 +76,6 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
     bool checkCorrectnessOfFeature( QgsVectorLayer* vlayer );
 
     /**
-     * Creates rubber bands for ther features when topology editing is enabled
-     */
-    void createTopologyRubberBands();
-
-    /**
      * Returns the index of first selected vertex, -1 when all unselected
      */
     int firstSelectedVertex();
@@ -112,12 +103,6 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
     and applies it to the map canvas*/
     QgsMapCanvasSnapper mSnapper;
 
-    /** Rubber bands during node move */
-    QMap<QgsFeatureId, QgsGeometryRubberBand*> mMoveRubberBands;
-
-    /** Vertices of features to move */
-    QMap<QgsFeatureId, QList< QPair<QgsVertexId, QgsPointV2> > > mMoveVertices;
-
     /** Object containing selected feature and it's vertexes */
     QgsSelectedFeature *mSelectedFeature;
 
@@ -138,9 +123,6 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
 
     /** Closest vertex to click in map coordinates */
     QgsPoint mClosestMapVertex;
-
-    /** Active rubberband for selecting vertexes */
-    QRubberBand *mSelectionRubberBand;
 
     /** Rectangle defining area for selecting vertexes */
     QRect* mRect;

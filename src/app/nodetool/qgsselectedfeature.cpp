@@ -490,3 +490,17 @@ QgsVectorLayer* QgsSelectedFeature::vlayer()
 {
   return mVlayer;
 }
+
+bool QgsSelectedFeature::hasSelection() const
+{
+  bool hasSelection = false;
+  QList<QgsVertexEntry*>::const_iterator vertexIt = mVertexMap.constBegin();
+  for ( ; vertexIt != mVertexMap.constEnd(); ++vertexIt )
+  {
+    if (( *vertexIt )->isSelected() )
+    {
+      return true;
+    }
+  }
+  return hasSelection;
+}
