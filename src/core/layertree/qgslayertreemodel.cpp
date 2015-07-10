@@ -477,6 +477,8 @@ void QgsLayerTreeModel::refreshLayerLegend( QgsLayerTreeLayer* nodeLayer )
 
   // update children
   int oldNodeCount = rowCount( idx );
+  if (oldNodeCount == 0) // In case of EmbeddedInParent (in vector layers without children)
+     ++oldNodeCount;
   beginRemoveRows( idx, 0, oldNodeCount - 1 );
   removeLegendFromLayer( nodeLayer );
   endRemoveRows();
