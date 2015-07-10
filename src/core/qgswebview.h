@@ -20,7 +20,7 @@
 #include <QPrinter>
 
 #ifdef WITH_QTWEBKIT
-#include <QtWebKit/QWebView>
+#include <QWebView>
 
 class CORE_EXPORT QgsWebView : public QWebView
 {
