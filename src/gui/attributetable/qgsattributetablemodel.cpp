@@ -494,6 +494,27 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
       return tr( "feature id" );
     }
   }
+  else if ( role == Qt::DecorationRole
+            && orientation == Qt::Vertical
+            && layer()->geometryType() != QGis::NoGeometry )
+  {
+    QgsRenderContext ctx;
+    QgsFeature feature;
+    mLayerCache->featureAtId( mRowIdMap[section], feature );
+
+    layer()->rendererV2()->startRender( ctx, layer()->pendingFields() );
+    QgsSymbolV2List symbols = layer()->rendererV2()->symbolsForFeature( feature );
+    if ( symbols.count() == 0 )
+    {
+      layer()->rendererV2()->stopRender( ctx );
+      return 0;
+    }
+
+    QgsSymbolV2* symbol = symbols.first();
+    QPixmap pix = QgsSymbolLayerV2Utils::symbolPreviewPixmap( symbol, mIconSize );
+    layer()->rendererV2()->stopRender( ctx );
+    return pix;
+  }
   else
   {
     return QVariant();
@@ -509,6 +530,9 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
          && role != SortRole
          && role != FeatureIdRole
          && role != FieldIndexRole
+         && role != Qt::BackgroundColorRole
+         && role != Qt::TextColorRole
+
        )
      )
     return QVariant();
@@ -563,6 +587,21 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   if ( role == Qt::DisplayRole )
   {
     return mWidgetFactories[ index.column()]->representValue( layer(), fieldId, mWidgetConfigs[ index.column()], mAttributeWidgetCaches[ index.column()], val );
+  }
+
+  QHash<int, QList<QgsCellFormat>> cellFormats = layer()->getCellFormats();
+  if ( cellFormats.contains( fieldId ) )
+  {
+    QList<QgsCellFormat> rules = cellFormats[fieldId];
+    foreach ( QgsCellFormat rule, rules )
+    {
+      QgsExpression exp( QString( rule.rule ).replace( "@value", val.toString() ) );
+      bool result = exp.evaluate().toBool();
+      if ( result && role == Qt::BackgroundColorRole )
+        return rule.backColor;
+      if ( result && role == Qt::TextColorRole )
+        return rule.textColor;
+    }
   }
 
   return val;

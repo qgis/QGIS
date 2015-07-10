@@ -23,6 +23,8 @@
 #include <QSet>
 #include <QList>
 #include <QStringList>
+#include <Qcolor>
+#include <QFont>
 
 #include "qgis.h"
 #include "qgsmaplayer.h"
@@ -63,6 +65,17 @@ class QgsVectorLayerJoinBuffer;
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
+
+
+class CORE_EXPORT QgsCellFormat
+{
+  public:
+    QString rule;
+    QFont font;
+    QColor backColor;
+    QColor textColor;
+};
+
 
 /**
  * This is an abstract base class for any elements of a drag and drop form.
@@ -1036,6 +1049,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     virtual bool applyNamedStyle( QString namedStyle, QString &errorMsg );
 
+    void addCellRule( int colIndex, QgsCellFormat format );
+
+    QHash<int, QList<QgsCellFormat>> getCellFormats() {return mCellFormatsMap; }
+
     /** convert a saved attribute editor element into a AttributeEditor structure as it's used internally.
      * @param elem the DOM element
      * @param parent the QObject which will own this object
@@ -2008,6 +2025,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Label */
     QgsLabel *mLabel;
+
+    QHash<int, QList<QgsCellFormat>> mCellFormatsMap;
 
     /** Display labels */
     bool mLabelOn;

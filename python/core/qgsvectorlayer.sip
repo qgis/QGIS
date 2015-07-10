@@ -2,6 +2,19 @@
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
 
+class QgsCellFormat
+{
+%TypeHeaderCode
+#include "qgsvectorlayer.h"
+%End
+
+  public:
+    QString rule;
+    QFont font;
+    QColor backColor;
+    QColor textColor;
+};
+
 class QgsAttributeEditorElement : QObject
 {
 %TypeHeaderCode
@@ -543,6 +556,8 @@ class QgsVectorLayer : QgsMapLayer
      * @deprecated Will be removed for QGIS 3 in favor of importNamedStyle
      */
     virtual bool applyNamedStyle( QString namedStyle, QString &errorMsg /Out/ );
+
+    void addCellRule( int colIndex, QgsCellFormat format );
 
     /** convert a saved attribute editor element into a AttributeEditor structure as it's used internally.
      * @param elem the DOM element

@@ -4020,6 +4020,16 @@ bool QgsVectorLayer::applyNamedStyle( QString namedStyle, QString& errorMsg )
   return importNamedStyle( myDocument, errorMsg );
 }
 
+void QgsVectorLayer::addCellRule( int colIndex, QgsCellFormat format )
+{
+  if ( !mCellFormatsMap.contains( colIndex ) )
+  {
+    mCellFormatsMap.insert( colIndex, QList<QgsCellFormat>() );
+  }
+  mCellFormatsMap[colIndex].append( format );
+}
+
+
 
 QDomElement QgsAttributeEditorRelation::toDomElement( QDomDocument& doc ) const
 {
