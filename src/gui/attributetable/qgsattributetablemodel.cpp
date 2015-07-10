@@ -27,6 +27,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsrendererv2.h"
 #include "qgsvectorlayer.h"
+#include "qgssymbollayerv2utils.h"
 
 #include <QVariant>
 
@@ -494,27 +495,6 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
       return tr( "feature id" );
     }
   }
-  else if ( role == Qt::DecorationRole
-            && orientation == Qt::Vertical
-            && layer()->geometryType() != QGis::NoGeometry )
-  {
-    QgsRenderContext ctx;
-    QgsFeature feature;
-    mLayerCache->featureAtId( mRowIdMap[section], feature );
-
-    layer()->rendererV2()->startRender( ctx, layer()->pendingFields() );
-    QgsSymbolV2List symbols = layer()->rendererV2()->symbolsForFeature( feature );
-    if ( symbols.count() == 0 )
-    {
-      layer()->rendererV2()->stopRender( ctx );
-      return 0;
-    }
-
-    QgsSymbolV2* symbol = symbols.first();
-    QPixmap pix = QgsSymbolLayerV2Utils::symbolPreviewPixmap( symbol, mIconSize );
-    layer()->rendererV2()->stopRender( ctx );
-    return pix;
-  }
   else
   {
     return QVariant();
@@ -532,7 +512,8 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
          && role != FieldIndexRole
          && role != Qt::BackgroundColorRole
          && role != Qt::TextColorRole
-
+         && role != Qt::DecorationRole
+         && role != Qt::FontRole
        )
      )
     return QVariant();
@@ -589,18 +570,21 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     return mWidgetFactories[ index.column()]->representValue( layer(), fieldId, mWidgetConfigs[ index.column()], mAttributeWidgetCaches[ index.column()], val );
   }
 
-  QHash<int, QList<QgsCellFormat>> cellFormats = layer()->getCellFormats();
-  if ( cellFormats.contains( fieldId ) )
+  QList<QgsCellFormat> rules = layer()->fieldCellFormats( fieldId );
+  foreach ( QgsCellFormat rule, rules )
   {
-    QList<QgsCellFormat> rules = cellFormats[fieldId];
-    foreach ( QgsCellFormat rule, rules )
+    QgsExpression exp( QString( rule.rule ).replace( "@value", val.toString() ) );
+    bool result = exp.evaluate().toBool();
+    if ( result )
     {
-      QgsExpression exp( QString( rule.rule ).replace( "@value", val.toString() ) );
-      bool result = exp.evaluate().toBool();
-      if ( result && role == Qt::BackgroundColorRole )
+      if ( role == Qt::BackgroundColorRole && rule.backColor.isValid() )
         return rule.backColor;
-      if ( result && role == Qt::TextColorRole )
+      if ( role == Qt::TextColorRole && rule.textColor.isValid() )
         return rule.textColor;
+      if ( role == Qt::DecorationRole )
+        return rule.icon;
+      if ( role == Qt::FontRole )
+        return rule.font;
     }
   }
 

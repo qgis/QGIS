@@ -13,6 +13,7 @@ class QgsCellFormat
     QFont font;
     QColor backColor;
     QColor textColor;
+    QPixmap icon;
 };
 
 class QgsAttributeEditorElement : QObject
@@ -557,7 +558,9 @@ class QgsVectorLayer : QgsMapLayer
      */
     virtual bool applyNamedStyle( QString namedStyle, QString &errorMsg /Out/ );
 
-    void addCellRule( int colIndex, QgsCellFormat format );
+    void addFieldCellFormats( int fieldIndex, QList<QgsCellFormat> formatters );
+
+    QList<QgsCellFormat> fieldCellFormats( int fieldIndex );
 
     /** convert a saved attribute editor element into a AttributeEditor structure as it's used internally.
      * @param elem the DOM element

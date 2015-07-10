@@ -4020,13 +4020,19 @@ bool QgsVectorLayer::applyNamedStyle( QString namedStyle, QString& errorMsg )
   return importNamedStyle( myDocument, errorMsg );
 }
 
-void QgsVectorLayer::addCellRule( int colIndex, QgsCellFormat format )
+void QgsVectorLayer::addFieldCellFormats( int fieldIndex, QList<QgsCellFormat> formatters )
 {
-  if ( !mCellFormatsMap.contains( colIndex ) )
+  // TODO Check for valid field index
+  mCellFormatsMap.insert( fieldIndex, formatters );
+}
+
+QList<QgsCellFormat> QgsVectorLayer::fieldCellFormats( int fieldIndex )
+{
+  if ( mCellFormatsMap.contains( fieldIndex ) )
   {
-    mCellFormatsMap.insert( colIndex, QList<QgsCellFormat>() );
+    return mCellFormatsMap[fieldIndex];
   }
-  mCellFormatsMap[colIndex].append( format );
+  return QList<QgsCellFormat>();
 }
 
 
