@@ -158,22 +158,18 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
     // and y variables in place. The second one works with good old-fashioned
     // C style arrays.
     void transformInPlace( double& x, double& y, double &z, TransformDirection direction = ForwardTransform ) const;
-#ifdef QT_ARCH_ARM
-    void transformInPlace( qreal& x, qreal& y, double &z, TransformDirection direction = ForwardTransform ) const;
-#endif
+    void transformInPlace( float& x, float& y, double &z, TransformDirection direction = ForwardTransform ) const;
+    void transformInPlace( float& x, float& y, float& z, TransformDirection direction = ForwardTransform ) const;
+
+    void transformInPlace( QVector<float>& x, QVector<float>& y, QVector<float>& z,
+                           TransformDirection direction = ForwardTransform ) const;
+
 
     //! @note not available in python bindings
     void transformInPlace( QVector<double>& x, QVector<double>& y, QVector<double>& z,
                            TransformDirection direction = ForwardTransform ) const;
 
     void transformPolygon( QPolygonF& poly, TransformDirection direction = ForwardTransform ) const;
-
-#ifdef ANDROID
-    void transformInPlace( float& x, float& y, float& z, TransformDirection direction = ForwardTransform ) const;
-
-    void transformInPlace( QVector<float>& x, QVector<float>& y, QVector<float>& z,
-                           TransformDirection direction = ForwardTransform ) const;
-#endif
 
     /** Transform a QgsRectangle to the dest Coordinate system
      * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,

@@ -241,11 +241,7 @@ bool QgsPointV2::nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const
 
 void QgsPointV2::transform( const QTransform& t )
 {
-#ifdef QT_ARCH_ARM
   qreal x, y;
   t.map( mX, mY, &x, &y );
   mX = x; mY = y;
-#else
-  t.map( mX, mY, &mX, &mY );
-#endif
 }
