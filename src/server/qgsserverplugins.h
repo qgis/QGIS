@@ -24,15 +24,18 @@
 // This is needed by SIP otherwise it doesn't find QgsPythonUtils header
 class QgsPythonUtils;
 
+/**
+ * @brief Init Python server plugins and store a list of server plugin names
+ */
 class SERVER_EXPORT QgsServerPlugins
 {
   public:
     explicit QgsServerPlugins();
     /**
-       * Initialise the python plugins
-       * @param interface QgsServerInterface
-       * @return bool true on success
-       */
+     * Initialise the python plugins
+     * @param interface QgsServerInterface
+     * @return bool true on success
+     */
     static bool initPlugins( QgsServerInterface* interface );
     //! Pointer to QgsPythonUtils
     static QgsPythonUtils* mPythonUtils;

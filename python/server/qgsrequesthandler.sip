@@ -61,7 +61,7 @@ class QgsRequestHandler
     /**Remove a request parameter*/
     virtual int removeParameter( const QString &key ) = 0;
     /**Return a request parameter*/
-    virtual QString parameter( const QString &key ) const = 0;
+    virtual QString parameter( const QString &key) const = 0;
     /**Return the requested format string*/
     QString format() const;
     /**Return the mime type for the response*/

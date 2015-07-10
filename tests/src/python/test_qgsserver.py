@@ -104,7 +104,8 @@ class TestQgsServer(unittest.TestCase):
     ## WMS tests
     def wms_request_compare(self, request):
         map = self.testdata_path + "testproject.qgs"
-        response = str(self.server.handleRequest('MAP=%s&SERVICE=WMS&VERSION=1.3&REQUEST=%s' % (map, request)))
+        query_string = 'MAP=%s&SERVICE=WMS&VERSION=1.3&REQUEST=%s' % (map, request)
+        response = str(self.server.handleRequest(query_string))
         f = open(self.testdata_path + request.lower() + '.txt')
         expected = f.read()
         f.close()

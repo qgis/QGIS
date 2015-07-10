@@ -38,6 +38,12 @@ QgsServerInterfaceImpl::~QgsServerInterfaceImpl()
 {
 }
 
+
+void QgsServerInterfaceImpl::clearRequestHandler( )
+{
+  mRequestHandler = NULL;
+}
+
 void QgsServerInterfaceImpl::setRequestHandler( QgsRequestHandler * requestHandler )
 {
   mRequestHandler = requestHandler;
