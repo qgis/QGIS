@@ -158,21 +158,7 @@ bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature& feature )
     return false;
   }
 
-  // Now return the next feature from the queue
-  if ( !mFetchGeometry )
-  {
-    feature.setGeometryAndOwnership( 0, 0 );
-  }
-  else
-  {
-    Q_NOWARN_DEPRECATED_PUSH
-    feature.setGeometry( mFeatureQueue.front().geometryAndOwnership() );
-    Q_NOWARN_DEPRECATED_POP
-  }
-  feature.setFeatureId( mFeatureQueue.front().id() );
-  feature.setAttributes( mFeatureQueue.front().attributes() );
-
-  mFeatureQueue.dequeue();
+  feature = mFeatureQueue.dequeue();
   mFetched++;
 
   feature.setValid( true );
