@@ -172,6 +172,9 @@ class CORE_EXPORT QgsProviderRegistry
     /** ctor private since instance() creates it */
     QgsProviderRegistry( QString pluginPath );
 
+    void init();
+    void clean();
+
     /** associative container of provider metadata handles */
     Providers mProviders;
 
