@@ -72,10 +72,13 @@ def updateMask(control_image_path, rendered_image_path, mask_image_path):
   if not rendered_image:
     error('Could not read rendered image {}'.format(rendered_image_path))
   if not rendered_image.width() == control_image.width() or not rendered_image.height() == control_image.height():
-    error('Size mismatch - control image is {}x{}, rendered image is {}x{}'.format(control_image.width(),
+    print ('Size mismatch - control image is {}x{}, rendered image is {}x{}'.format(control_image.width(),
                                                                                    control_image.height(),
                                                                                    rendered_image.width(),
                                                                                    rendered_image.height()))
+
+  max_width = min( rendered_image.width(), control_image.width() )
+  max_height = min( rendered_image.height(), control_image.height() )
 
   #read current mask, if it exist
   mask_image = imageFromPath( mask_image_path )
@@ -86,15 +89,13 @@ def updateMask(control_image_path, rendered_image_path, mask_image_path):
 
   #loop through pixels in rendered image and compare
   mismatch_count = 0
-  width = control_image.width()
-  height = control_image.height()
-  linebytes = width * 4
-  for y in xrange( height ):
+  linebytes = max_width * 4
+  for y in xrange( max_height ):
     control_scanline = control_image.constScanLine( y ).asstring(linebytes)
     rendered_scanline = rendered_image.constScanLine( y ).asstring(linebytes)
     mask_scanline = mask_image.scanLine( y ).asstring(linebytes)
 
-    for x in xrange( width ):
+    for x in xrange( max_width ):
       currentTolerance = qRed( struct.unpack('I', mask_scanline[ x*4:x*4+4 ] )[0] )
 
       if currentTolerance == 255:
