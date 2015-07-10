@@ -48,6 +48,13 @@ class SERVER_EXPORT QgsServerInterface
     virtual void setRequestHandler( QgsRequestHandler* requestHandler ) = 0;
 
     /**
+     * Clear the request handler
+     *
+     * @note not available in python bindings
+     */
+    virtual void clearRequestHandler( ) = 0;
+
+    /**
      * Get pointer to the capabiblities cache
      * @return QgsCapabilitiesCache
      */

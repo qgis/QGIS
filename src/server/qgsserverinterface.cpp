@@ -21,8 +21,6 @@
 QgsServerInterface::QgsServerInterface():
     mConfigFilePath( QString() )
 {
-
-
 }
 
 QgsServerInterface::~QgsServerInterface()
