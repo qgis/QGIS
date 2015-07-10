@@ -7,50 +7,45 @@
 # NOTE: regular project 'make install' is unaffected
 
 FILE(WRITE ${CMAKE_BINARY_DIR}/stagecount 0)
-SET(PYTHON_BINARY_TOPDIR ${CMAKE_CURRENT_BINARY_DIR})
 
 MACRO (PLUGIN_INSTALL plugin subdir )
+  FILE(READ ${CMAKE_BINARY_DIR}/stagecount n)
+  MATH(EXPR n "${n}+1")
+  FILE(WRITE ${CMAKE_BINARY_DIR}/stagecount ${n})
+
   # regular project build's install command and target
   INSTALL(FILES ${ARGN} DESTINATION ${QGIS_DATA_DIR}/python/plugins/${plugin}/${subdir})
 
-  SET(_cmake ${PYTHON_BINARY_TOPDIR}/${plugin}-stageinstall.cmake)
+  SET(_cmake ${CMAKE_BINARY_DIR}/python/plugins/${plugin}/stageinstall.cmake)
 
-  IF(NOT TARGET ${plugin}-stageinstall)
-    FILE(WRITE ${_cmake} "")
-  ENDIF(NOT TARGET ${plugin}-stageinstall)
+  IF(NOT TARGET zzz-${plugin}-stageinstall)
+    ADD_CUSTOM_TARGET(zzz-${plugin}-stageinstall)
+    ADD_CUSTOM_TARGET(zzz-${plugin}-depend)
+    ADD_DEPENDENCIES(zzz-${plugin}-stageinstall zzz-${plugin}-depend)
 
-  SET(_out "FILE(MAKE_DIRECTORY \"${PYTHON_OUTPUT_DIRECTORY}/plugins/${plugin}/${subdir}\")
+    ADD_CUSTOM_COMMAND(TARGET zzz-${plugin}-stageinstall
+	COMMAND ${CMAKE_COMMAND} -P ${_cmake}
+    )
+
+    ADD_CUSTOM_TARGET(clean-staged-${plugin}
+      COMMAND ${CMAKE_COMMAND} -E remove_directory ${PYTHON_OUTPUT_DIRECTORY}/plugins/${plugin}
+    )
+
+    ADD_DEPENDENCIES(staged-plugins zzz-${plugin}-stageinstall)
+    ADD_CUSTOM_TARGET(staged-${plugin} DEPENDS zzz-${plugin}-stageinstall)
+  ENDIF(NOT TARGET zzz-${plugin}-stageinstall)
+
+  ADD_CUSTOM_TARGET(zzz-${plugin}-${n}-depend DEPENDS ${ARGN})
+  ADD_DEPENDENCIES(zzz-${plugin}-depend zzz-${plugin}-${n}-depend)
+
+  FILE(APPEND ${_cmake} "FILE(MAKE_DIRECTORY \"${PYTHON_OUTPUT_DIRECTORY}/plugins/${plugin}/${subdir}\")
 ")
 
   FOREACH(file ${ARGN})
     GET_FILENAME_COMPONENT(_file "${file}" ABSOLUTE)
-    SET(_out "${_out}FILE(COPY \"${_file}\" DESTINATION \"${PYTHON_OUTPUT_DIRECTORY}/plugins/${plugin}/${subdir}\")
+    FILE(APPEND ${_cmake} "FILE(COPY \"${_file}\" DESTINATION \"${PYTHON_OUTPUT_DIRECTORY}/plugins/${plugin}/${subdir}\")
 ")
   ENDFOREACH(file)
-
-  FILE(APPEND ${_cmake} "${_out}")
-
-  IF(NOT TARGET ${plugin}-stageinstall)
-    # for staged plugin install (to run from build directory)
-    ADD_CUSTOM_TARGET(${plugin}-stageinstall)
-
-    ADD_CUSTOM_COMMAND(TARGET ${plugin}-stageinstall
-      POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -P ${_cmake}
-      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    )
-    ADD_DEPENDENCIES(staged-plugins ${plugin}-stageinstall)
-  ENDIF(NOT TARGET ${plugin}-stageinstall)
-
-  IF(TARGET staged-${plugin})
-    ADD_DEPENDENCIES(staged-${plugin} ${plugin}-stageinstall)
-  ELSE(TARGET staged-${plugin})
-    ADD_CUSTOM_TARGET(staged-${plugin} DEPENDS ${plugin}-stageinstall)
-    ADD_CUSTOM_TARGET(clean-staged-${plugin}
-      COMMAND ${CMAKE_COMMAND} -E remove_directory ${PYTHON_OUTPUT_DIRECTORY}/plugins/${plugin}
-    )
-  ENDIF(TARGET staged-${plugin})
-
 ENDMACRO (PLUGIN_INSTALL)
 
 ADD_SUBDIRECTORY(fTools)
