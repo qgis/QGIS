@@ -44,7 +44,7 @@ class lasmergePro(LAStoolsAlgorithm):
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputFolderCommands(commands)
         self.addParametersFilesAreFlightlinesCommands(commands)
-        self.addParametersApplyFileSourceIdsCommands(commands)
+        self.addParametersApplyFileSourceIdCommands(commands)
         self.addParametersPointOutputCommands(commands)
         self.addParametersAdditionalCommands(commands)
 

@@ -83,7 +83,7 @@ class lasmerge(LAStoolsAlgorithm):
             commands.append("-i")
             commands.append(file7)
         self.addParametersFilesAreFlightlinesCommands(commands)
-        self.addParametersApplyFileSourceIdsCommands(commands)
+        self.addParametersApplyFileSourceIdCommands(commands)
         self.addParametersPointOutputCommands(commands)
         self.addParametersAdditionalCommands(commands)
 
