@@ -67,6 +67,7 @@ static bool _verifyImage( const QString& testName, QString &report )
   QgsRenderChecker checker;
   checker.setControlName( "expected_" + testName );
   checker.setRenderedImage( _fileNameForTest( testName ) );
+  checker.setSizeTolerance( 3, 3 );
   bool equal = checker.compareImages( testName, 500 );
   report += checker.report();
   return equal;

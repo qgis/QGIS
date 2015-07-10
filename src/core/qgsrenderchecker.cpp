@@ -37,6 +37,8 @@ QgsRenderChecker::QgsRenderChecker()
     , mExpectedImageFile( "" )
     , mMismatchCount( 0 )
     , mColorTolerance( 0 )
+    , mMaxSizeDifferenceX( 0 )
+    , mMaxSizeDifferenceY( 0 )
     , mElapsedTimeTarget( 0 )
     , mBufferDashMessages( false )
 {
@@ -374,13 +376,24 @@ bool QgsRenderChecker::compareImages( QString theTestName,
 
   if ( mMatchTarget != myPixelCount )
   {
-    qDebug( "Test image and result image for %s are different dimensions - FAILING!", theTestName.toLocal8Bit().constData() );
-    mReport += "<tr><td colspan=3>";
-    mReport += "<font color=red>Expected image and result image for " + theTestName + " are different dimensions - FAILING!</font>";
-    mReport += "</td></tr>";
-    mReport += myImagesString;
-    delete maskImage;
-    return false;
+    qDebug( "Test image and result image for %s are different dimensions", theTestName.toLocal8Bit().constData() );
+
+    if ( qAbs( myExpectedImage.width() - myResultImage.width() ) > mMaxSizeDifferenceX ||
+         qAbs( myExpectedImage.height() - myResultImage.height() ) > mMaxSizeDifferenceY )
+    {
+      mReport += "<tr><td colspan=3>";
+      mReport += "<font color=red>Expected image and result image for " + theTestName + " are different dimensions - FAILING!</font>";
+      mReport += "</td></tr>";
+      mReport += myImagesString;
+      delete maskImage;
+      return false;
+    }
+    else
+    {
+      mReport += "<tr><td colspan=3>";
+      mReport += "Expected image and result image for " + theTestName + " are different dimensions, but within tolerance";
+      mReport += "</td></tr>";
+    }
   }
 
   //
@@ -388,16 +401,19 @@ bool QgsRenderChecker::compareImages( QString theTestName,
   // dissimilar pixel values there are
   //
 
+  int maxHeight = qMin( myExpectedImage.height(), myResultImage.height() );
+  int maxWidth = qMin( myExpectedImage.width(), myResultImage.width() );
+
   mMismatchCount = 0;
   int colorTolerance = ( int ) mColorTolerance;
-  for ( int y = 0; y < myExpectedImage.height(); ++y )
+  for ( int y = 0; y < maxHeight; ++y )
   {
     const QRgb* expectedScanline = ( const QRgb* )myExpectedImage.constScanLine( y );
     const QRgb* resultScanline = ( const QRgb* )myResultImage.constScanLine( y );
     const QRgb* maskScanline = hasMask ? ( const QRgb* )maskImage->constScanLine( y ) : 0;
     QRgb* diffScanline = ( QRgb* )myDifferenceImage.scanLine( y );
 
-    for ( int x = 0; x < myExpectedImage.width(); ++x )
+    for ( int x = 0; x < maxWidth; ++x )
     {
       int maskTolerance = hasMask ? qRed( maskScanline[ x ] ) : 0;
       int pixelTolerance = qMax( colorTolerance, maskTolerance );
