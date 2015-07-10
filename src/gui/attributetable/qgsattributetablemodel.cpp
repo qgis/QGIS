@@ -236,6 +236,7 @@ void QgsAttributeTableModel::layerDeleted()
   mAttributeWidgetCaches.clear();
   mAttributes.clear();
   mWidgetFactories.clear();
+  mWidgetConfigs.clear();
 }
 
 void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
