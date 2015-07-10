@@ -34,13 +34,12 @@ QgsMapToolNodeTool::QgsMapToolNodeTool( QgsMapCanvas* canvas )
     : QgsMapToolEdit( canvas )
     , mSelectedFeature( 0 )
     , mNodeEditor( 0 )
-    , mMoving( true )
-    , mSelectAnother( false )
     , mRect( 0 )
     , mIsPoint( false )
-    , mDeselectOnRelease( -1 )
 {
   mSnapper.setMapCanvas( canvas );
+  mCadAllowed = true;
+  mSnapOnPress = true;
 }
 
 QgsMapToolNodeTool::~QgsMapToolNodeTool()
@@ -48,7 +47,7 @@ QgsMapToolNodeTool::~QgsMapToolNodeTool()
   cleanTool();
 }
 
-void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
+void QgsMapToolNodeTool::canvasMapPressEvent( QgsMapMouseEvent* e )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
   if ( !vlayer )
@@ -66,6 +65,7 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
   }
 
   bool hasVertexSelection = mSelectedFeature && mSelectedFeature->hasSelection();
+
   if ( !mSelectedFeature || !hasVertexSelection )
   {
     //try to select feature
@@ -101,22 +101,17 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
   {
     if ( mSelectedFeature->hasSelection() && !ctrlModifier ) //move vertices
     {
-      //move selected nodes and deselect all //where does 'mClosestMapVertex' come from?
-      QList<QgsSnappingResult> snapResults;
-      mSnapper.snapToBackgroundLayers( e->pos(), snapResults, QList<QgsPoint>() << mClosestMapVertex );
-      QgsPoint targetCoords = toLayerCoordinates( vlayer, snapPointFromResults( snapResults, e->pos() ) );
+      QgsPoint targetCoords = e->mapPoint();
       mSelectedFeature->moveSelectedVertexes( targetCoords - mClosestMapVertex );
       mCanvas->refresh();
       mSelectedFeature->deselectAllVertexes();
     }
     else //add vertex selection
     {
-      //snap and add to selection
-      QgsPoint layerCoordPoint = toLayerCoordinates( vlayer, e->pos() );
       int atVertex, beforeVertex, afterVertex;
       double dist;
 
-      QgsPoint closestLayerVertex = mSelectedFeature->geometry()->closestVertex( layerCoordPoint, atVertex, beforeVertex, afterVertex, dist );
+      QgsPoint closestLayerVertex = mSelectedFeature->geometry()->closestVertex( e->mapPoint(), atVertex, beforeVertex, afterVertex, dist );
       mSelectedFeature->selectVertex( atVertex );
       mClosestMapVertex = toMapCoordinates( vlayer, closestLayerVertex );
     }
@@ -145,9 +140,6 @@ void QgsMapToolNodeTool::editingToggled()
 void QgsMapToolNodeTool::deactivate()
 {
   cleanTool();
-  mSelectAnother = false;
-  mMoving = true;
-
   QgsMapTool::deactivate();
 }
 
@@ -184,7 +176,6 @@ void QgsMapToolNodeTool::canvasDoubleClickEvent( QMouseEvent * e )
   QMultiMap<double, QgsSnappingResult> currentResultList;
 
   QList<QgsSnappingResult> snapResults;
-  mMoving = false;
   double tol = QgsTolerance::vertexSearchRadius( vlayer, mCanvas->mapSettings() );
   mSnapper.snapToCurrentLayer( e->pos(), snapResults, QgsSnapper::SnapToSegment, tol );
   if ( snapResults.size() < 1 ||

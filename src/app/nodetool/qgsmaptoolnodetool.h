@@ -36,7 +36,8 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
 
     void canvasDoubleClickEvent( QMouseEvent * e );
 
-    void canvasPressEvent( QMouseEvent * e );
+    //! mouse press event in map coordinates (eventually filtered) to be redefined in subclass
+    void canvasMapPressEvent( QgsMapMouseEvent* e ) override;
 
     void keyPressEvent( QKeyEvent* e );
 
@@ -109,12 +110,6 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
     /** Dock widget which allows to edit vertices */
     QgsNodeEditor* mNodeEditor;
 
-    /** Flag if moving of vertexes is occuring */
-    bool mMoving;
-
-    /** Flag if selection of another feature can occur */
-    bool mSelectAnother;
-
     /** Feature id of another feature where user clicked */
     QgsFeatureId mAnother;
 
@@ -129,9 +124,6 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
 
     /** Flag to tell if edition points */
     bool mIsPoint;
-
-    /** Vertex to deselect on release */
-    int mDeselectOnRelease;
 };
 
 #endif
