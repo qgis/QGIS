@@ -242,6 +242,13 @@ class SagaAlgorithm212(GeoAlgorithm):
             ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
         SagaUtils.executeSaga(progress)
 
+        if self.crs is not None:
+            for out in self.outputs:
+                if isinstance(out, (OutputVector, OutputRaster)):
+                    prjFile = os.path.splitext(out.getCompatibleFileName(self))[0] + ".prj"
+                with open(prjFile, "w") as f:
+                    f.write(self.crs.toWkt())
+
 
     def preProcessInputs(self):
         name = self.commandLineName().replace('.', '_')[len('saga:'):]
