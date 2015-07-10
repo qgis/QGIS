@@ -18,6 +18,7 @@ email                : ersts@amnh.org
 
 #include "qgslogger.h"
 #include "qgscolorrampshader.h"
+#include "qgspseudocolorshader.h"
 #include "qgsrastershader.h"
 #include <QDomDocument>
 #include <QDomElement>
@@ -158,7 +159,15 @@ void QgsRasterShader::writeXML( QDomDocument& doc, QDomElement& parent ) const
     }
     rasterShaderElem.appendChild( colorRampShaderElem );
   }
-  parent.appendChild( rasterShaderElem );
+  QgsPseudoColorShader * pseudoColorShader = dynamic_cast< QgsPseudoColorShader *>(mRasterShaderFunction);
+  if (pseudoColorShader)
+  {
+     QDomElement pseudoColorShaderElem = doc.createElement("pseudocolorshader");
+     pseudoColorShaderElem.setAttribute("minval", pseudoColorShader->minimumValue());
+     pseudoColorShaderElem.setAttribute("maxval", pseudoColorShader->maximumValue());
+     rasterShaderElem.appendChild(pseudoColorShaderElem);
+  }
+  parent.appendChild(rasterShaderElem);
 }
 
 void QgsRasterShader::readXML( const QDomElement& elem )
@@ -190,5 +199,13 @@ void QgsRasterShader::readXML( const QDomElement& elem )
     }
     colorRampShader->setColorRampItemList( itemList );
     setRasterShaderFunction( colorRampShader );
+  }
+  QDomElement pseudoColorShaderElem = elem.firstChildElement("pseudocolorshader");
+  if (!pseudoColorShaderElem.isNull())
+  {
+     mMinimumValue = pseudoColorShaderElem.attribute("minval", "0.0").toDouble();
+     mMaximumValue = pseudoColorShaderElem.attribute("maxval", "255.0").toDouble();
+     QgsPseudoColorShader* pseudoColorShader = new QgsPseudoColorShader(mMinimumValue, mMaximumValue);
+     setRasterShaderFunction(pseudoColorShader);
   }
 }
