@@ -25,6 +25,7 @@
 #include "qgsserverfilter.h"
 
 /**
+ * \ingroup server
  * QgsServerInterface
  * Class defining interfaces exposed by QGIS Server and
  * made available to plugins.

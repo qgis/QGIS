@@ -37,8 +37,13 @@ class QDomDocument;
 class QImage;
 class QgsMapServiceException;
 
-/** This class is an interface hiding the details of reading input and writing output from/to a wms request mechanism.
-Examples of possible mechanisms are cgi Get, cgi Post, SOAP or the usage as a standalone command line executable*/
+/**
+ * \ingroup server
+ * This class is an interface hiding the details of reading input and writing
+ * output from/to a wms request mechanism.
+ * Examples of possible mechanisms are cgi Get, cgi Post, SOAP or the usage
+ * as a standalone command line executable
+ */
 class QgsRequestHandler
 {
 

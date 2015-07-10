@@ -41,24 +41,26 @@
 #endif
 
 
-/**
+/** \ingroup server
  * The QgsServer class provides OGC web services.
  */
-class  SERVER_EXPORT QgsServer
+class SERVER_EXPORT QgsServer
 {
   public:
     QgsServer();
     ~QgsServer();
     /** Server initialisation: intialise QGIS ang QT core application.
      * This method is automatically called by handleRequest if it wasn't
-     * explicitly called before */
+     * explicitly called before
+     * @note Not available in Python bindings
+     */
     static bool init( int & argc, char ** argv );
     //! The following is mainly for python bindings, that do not pass argc/argv
     static bool init();
 
-    /** Handle the request. The output is normally printed trough FCGI printf
+    /** Handles the request. The output is normally printed trough FCGI printf
      * by the request handler or, in case the server has been invoked from python
-     * bindings, a flag is set that capures all the output headers and body, instead
+     * bindings, a flag is set that captures all the output headers and body, instead
      * of printing it returns the output as a QByteArray.
      * When calling handleRequest() from python bindings an additional argument
      * specify if we only want the headers or the body back, this is mainly useful

@@ -25,6 +25,7 @@
 class QgsServerInterface;
 
 /**
+ * \ingroup server
  * \class QgsServerFilter
  * \brief Class defining I/O filters for QGIS Server and
  * implemented in plugins.
