@@ -315,8 +315,6 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     /** Allows caching of one specific column (used for sorting) */
     QHash<QgsFeatureId, QVariant> mFieldCache;
 
-    QSize mIconSize;
-
     /**
      * Holds the bounds of changed cells while an update operation is running
      * top    = min row
