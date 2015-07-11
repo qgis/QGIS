@@ -101,6 +101,8 @@ QgsVectorJoinInfo QgsJoinDialog::joinInfo() const
   info.joinFieldName = mJoinFieldComboBox->currentField();
   info.targetFieldName = mTargetFieldComboBox->currentField();
   info.memoryCache = mCacheInMemoryCheckBox->isChecked();
+  info.targetFieldIndex = -1;
+  info.joinFieldIndex = -1;
 
   if ( mUseCustomPrefix->isChecked() )
     info.prefix = mCustomPrefix->text();
