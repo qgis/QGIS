@@ -70,7 +70,6 @@ class TestQgsFeature(TestCase):
 
         assert myAttributes == myExpectedAttributes, myMessage
 
-    @expectedFailure
     def test_SetAttribute(self):
         feat = QgsFeature()
         feat.initAttributes(1)
