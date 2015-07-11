@@ -1611,14 +1611,22 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     QDomElement singleCatDiagramElem = node.firstChildElement( "SingleCategoryDiagramRenderer" );
     if ( !singleCatDiagramElem.isNull() )
     {
-      mDiagramRenderer = new QgsSingleCategoryDiagramRenderer();
-      mDiagramRenderer->readXML( singleCatDiagramElem, this );
+      QDomElement catElem = singleCatDiagramElem.firstChildElement( "DiagramCategory" );
+      if ( !catElem.isNull() && catElem.attribute( "enabled", "1" ) != "0" )
+      {
+        mDiagramRenderer = new QgsSingleCategoryDiagramRenderer();
+        mDiagramRenderer->readXML( singleCatDiagramElem, this );
+      }
     }
     QDomElement linearDiagramElem = node.firstChildElement( "LinearlyInterpolatedDiagramRenderer" );
     if ( !linearDiagramElem.isNull() )
     {
-      mDiagramRenderer = new QgsLinearlyInterpolatedDiagramRenderer();
-      mDiagramRenderer->readXML( linearDiagramElem, this );
+      QDomElement catElem = linearDiagramElem.firstChildElement( "DiagramCategory" );
+      if ( !catElem.isNull() && catElem.attribute( "enabled", "1" ) != "0" )
+      {
+        mDiagramRenderer = new QgsLinearlyInterpolatedDiagramRenderer();
+        mDiagramRenderer->readXML( linearDiagramElem, this );
+      }
     }
 
     if ( mDiagramRenderer )
