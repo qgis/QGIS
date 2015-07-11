@@ -1,15 +1,13 @@
 
 typedef qint64 QgsFeatureId;
-
-// key = field index, value = field value
 typedef QMap<int, QVariant> QgsAttributeMap;
-
 typedef QVector<QVariant> QgsAttributes;
+
 // QgsAttributes is implemented as a Python list of Python objects.
 %MappedType QgsAttributes /DocType="list-of-attributes"/
 {
 %TypeHeaderCode
-#include <qvector.h>
+#include <qgsfeature.h>
 %End
 
 %ConvertFromTypeCode
@@ -53,7 +51,7 @@ typedef QVector<QVariant> QgsAttributes;
       return 1;
     }
 
-    QVector<QVariant> *qv = new QVector<QVariant>;
+    QgsAttributes* qv = new QgsAttributes;
 
     for (SIP_SSIZE_T i = 0; i < PyList_GET_SIZE(sipPy); ++i)
     {
