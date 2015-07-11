@@ -117,8 +117,7 @@ void QgsMapToolZoom::canvasReleaseEvent( QMouseEvent * e )
     const QgsMapToPixel* m2p = mCanvas->getCoordinateTransform();
     QgsPoint c = m2p->toMapCoordinates( mZoomRect.center() );
 
-    mCanvas->setCenter( c );
-    mCanvas->zoomByFactor( mZoomOut ? 1.0 / sf : sf );
+    mCanvas->zoomByFactor( mZoomOut ? 1.0 / sf : sf, &c );
 
     mCanvas->refresh();
   }
