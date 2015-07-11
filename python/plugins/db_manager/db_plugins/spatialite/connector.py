@@ -126,8 +126,8 @@ class SpatiaLiteDBConnector(DBConnector):
         return True
 
     def isgpkg(self):
-        info = float( ".".join( self.getInfo()[0].split('.')[0:2] ) )
-        if info < 4.2:
+        info = map( int, self.getInfo()[0].split('.')[0:2] )
+        if info[0] < 4 or (info[0]==4 and info[1]<2):
             result = self.uri().database()[-5:] == ".gpkg"
         else:
             sql = u"SELECT HasGeoPackage()"
