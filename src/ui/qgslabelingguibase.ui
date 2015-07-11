@@ -3659,7 +3659,7 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>-450</y>
+                       <y>0</y>
                        <width>566</width>
                        <height>829</height>
                       </rect>
@@ -3919,7 +3919,7 @@ font-style: italic;</string>
                             </sizepolicy>
                            </property>
                            <property name="text">
-                            <string>Position</string>
+                            <string>Allowed positions</string>
                            </property>
                           </widget>
                          </item>
@@ -5121,8 +5121,8 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>-243</y>
-                       <width>566</width>
+                       <y>0</y>
+                       <width>429</width>
                        <height>622</height>
                       </rect>
                      </property>
