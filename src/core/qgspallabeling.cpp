@@ -167,7 +167,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
 
   // placement
   placement = AroundPoint;
-  placementFlags = 0;
+  placementFlags = AboveLine | MapOrientation;
   centroidWhole = false;
   centroidInside = false;
   quadOffset = QuadrantOver;

@@ -298,27 +298,31 @@ void QgsLabelingGui::init()
   // populate placement options
   mCentroidRadioWhole->setChecked( lyr.centroidWhole );
   mCentroidInsideCheckBox->setChecked( lyr.centroidInside );
+  mLineDistanceSpnBx->setValue( lyr.dist );
+  mLineDistanceUnitWidget->setUnit( lyr.distInMapUnits ? QgsSymbolV2::MapUnit : QgsSymbolV2::MM );
+  mLineDistanceUnitWidget->setMapUnitScale( lyr.distMapUnitScale );
+  mQuadrantBtnGrp->button(( int )lyr.quadOffset )->setChecked( true );
+  mPointOffsetXSpinBox->setValue( lyr.xOffset );
+  mPointOffsetYSpinBox->setValue( lyr.yOffset );
+  mPointOffsetUnitWidget->setUnit( lyr.labelOffsetInMapUnits ? QgsSymbolV2::MapUnit : QgsSymbolV2::MM );
+  mPointOffsetUnitWidget->setMapUnitScale( lyr.labelOffsetMapUnitScale );
+  mPointAngleSpinBox->setValue( lyr.angleOffset );
+  chkLineAbove->setChecked( lyr.placementFlags & QgsPalLayerSettings::AboveLine );
+  chkLineBelow->setChecked( lyr.placementFlags & QgsPalLayerSettings::BelowLine );
+  chkLineOn->setChecked( lyr.placementFlags & QgsPalLayerSettings::OnLine );
+  if ( !( lyr.placementFlags & QgsPalLayerSettings::MapOrientation ) )
+    chkLineOrientationDependent->setChecked( true );
+
   switch ( lyr.placement )
   {
     case QgsPalLayerSettings::AroundPoint:
       radAroundPoint->setChecked( true );
       radAroundCentroid->setChecked( true );
-
-      mLineDistanceSpnBx->setValue( lyr.dist );
-      mLineDistanceUnitWidget->setUnit( lyr.distInMapUnits ? QgsSymbolV2::MapUnit : QgsSymbolV2::MM );
-      mLineDistanceUnitWidget->setMapUnitScale( lyr.distMapUnitScale );
       //spinAngle->setValue( lyr.angle ); // TODO: uncomment when supported
       break;
     case QgsPalLayerSettings::OverPoint:
       radOverPoint->setChecked( true );
       radOverCentroid->setChecked( true );
-
-      mQuadrantBtnGrp->button(( int )lyr.quadOffset )->setChecked( true );
-      mPointOffsetXSpinBox->setValue( lyr.xOffset );
-      mPointOffsetYSpinBox->setValue( lyr.yOffset );
-      mPointOffsetUnitWidget->setUnit( lyr.labelOffsetInMapUnits ? QgsSymbolV2::MapUnit : QgsSymbolV2::MM );
-      mPointOffsetUnitWidget->setMapUnitScale( lyr.labelOffsetMapUnitScale );
-      mPointAngleSpinBox->setValue( lyr.angleOffset );
       break;
     case QgsPalLayerSettings::Line:
       radLineParallel->setChecked( true );
@@ -334,18 +338,6 @@ void QgsLabelingGui::init()
     case QgsPalLayerSettings::Free:
       radPolygonFree->setChecked( true );
       break;
-  }
-
-  if ( lyr.placement == QgsPalLayerSettings::Line || lyr.placement == QgsPalLayerSettings::Curved )
-  {
-    mLineDistanceSpnBx->setValue( lyr.dist );
-    mLineDistanceUnitWidget->setUnit( lyr.distInMapUnits ? QgsSymbolV2::MapUnit : QgsSymbolV2::MM );
-    mLineDistanceUnitWidget->setMapUnitScale( lyr.distMapUnitScale );
-    chkLineAbove->setChecked( lyr.placementFlags & QgsPalLayerSettings::AboveLine );
-    chkLineBelow->setChecked( lyr.placementFlags & QgsPalLayerSettings::BelowLine );
-    chkLineOn->setChecked( lyr.placementFlags & QgsPalLayerSettings::OnLine );
-    if ( !( lyr.placementFlags & QgsPalLayerSettings::MapOrientation ) )
-      chkLineOrientationDependent->setChecked( true );
   }
 
   // Label repeat distance
@@ -586,24 +578,32 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   QWidget* curPlacementWdgt = stackedPlacement->currentWidget();
   lyr.centroidWhole = mCentroidRadioWhole->isChecked();
   lyr.centroidInside = mCentroidInsideCheckBox->isChecked();
+  lyr.dist = mLineDistanceSpnBx->value();
+  lyr.distInMapUnits = ( mLineDistanceUnitWidget->unit() == QgsSymbolV2::MapUnit );
+  lyr.distMapUnitScale = mLineDistanceUnitWidget->getMapUnitScale();
+  lyr.quadOffset = ( QgsPalLayerSettings::QuadrantPosition )mQuadrantBtnGrp->checkedId();
+  lyr.xOffset = mPointOffsetXSpinBox->value();
+  lyr.yOffset = mPointOffsetYSpinBox->value();
+  lyr.labelOffsetInMapUnits = ( mPointOffsetUnitWidget->unit() == QgsSymbolV2::MapUnit );
+  lyr.labelOffsetMapUnitScale = mPointOffsetUnitWidget->getMapUnitScale();
+  lyr.angleOffset = mPointAngleSpinBox->value();
+  if ( chkLineAbove->isChecked() )
+    lyr.placementFlags |= QgsPalLayerSettings::AboveLine;
+  if ( chkLineBelow->isChecked() )
+    lyr.placementFlags |= QgsPalLayerSettings::BelowLine;
+  if ( chkLineOn->isChecked() )
+    lyr.placementFlags |= QgsPalLayerSettings::OnLine;
+  if ( ! chkLineOrientationDependent->isChecked() )
+    lyr.placementFlags |= QgsPalLayerSettings::MapOrientation;
   if (( curPlacementWdgt == pagePoint && radAroundPoint->isChecked() )
       || ( curPlacementWdgt == pagePolygon && radAroundCentroid->isChecked() ) )
   {
     lyr.placement = QgsPalLayerSettings::AroundPoint;
-    lyr.dist = mLineDistanceSpnBx->value();
-    lyr.distInMapUnits = ( mLineDistanceUnitWidget->unit() == QgsSymbolV2::MapUnit );
-    lyr.distMapUnitScale = mLineDistanceUnitWidget->getMapUnitScale();
   }
   else if (( curPlacementWdgt == pagePoint && radOverPoint->isChecked() )
            || ( curPlacementWdgt == pagePolygon && radOverCentroid->isChecked() ) )
   {
     lyr.placement = QgsPalLayerSettings::OverPoint;
-    lyr.quadOffset = ( QgsPalLayerSettings::QuadrantPosition )mQuadrantBtnGrp->checkedId();
-    lyr.xOffset = mPointOffsetXSpinBox->value();
-    lyr.yOffset = mPointOffsetYSpinBox->value();
-    lyr.labelOffsetInMapUnits = ( mPointOffsetUnitWidget->unit() == QgsSymbolV2::MapUnit );
-    lyr.labelOffsetMapUnitScale = mPointOffsetUnitWidget->getMapUnitScale();
-    lyr.angleOffset = mPointAngleSpinBox->value();
   }
   else if (( curPlacementWdgt == pageLine && radLineParallel->isChecked() )
            || ( curPlacementWdgt == pagePolygon && radPolygonPerimeter->isChecked() )
@@ -611,18 +611,6 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   {
     bool curved = ( curPlacementWdgt == pageLine && radLineCurved->isChecked() );
     lyr.placement = ( curved ? QgsPalLayerSettings::Curved : QgsPalLayerSettings::Line );
-    lyr.dist = mLineDistanceSpnBx->value();
-    lyr.distInMapUnits = ( mLineDistanceUnitWidget->unit() == QgsSymbolV2::MapUnit );
-    lyr.distMapUnitScale = mLineDistanceUnitWidget->getMapUnitScale();
-    if ( chkLineAbove->isChecked() )
-      lyr.placementFlags |= QgsPalLayerSettings::AboveLine;
-    if ( chkLineBelow->isChecked() )
-      lyr.placementFlags |= QgsPalLayerSettings::BelowLine;
-    if ( chkLineOn->isChecked() )
-      lyr.placementFlags |= QgsPalLayerSettings::OnLine;
-
-    if ( ! chkLineOrientationDependent->isChecked() )
-      lyr.placementFlags |= QgsPalLayerSettings::MapOrientation;
   }
   else if (( curPlacementWdgt == pageLine && radLineHorizontal->isChecked() )
            || ( curPlacementWdgt == pagePolygon && radPolygonHorizontal->isChecked() ) )
