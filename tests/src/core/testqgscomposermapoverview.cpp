@@ -36,6 +36,7 @@ class TestQgsComposerMapOverview : public QObject
     TestQgsComposerMapOverview()
         : mComposition( 0 )
         , mComposerMap( 0 )
+        , mMapSettings( 0 )
         , mRasterLayer( 0 )
     {}
 
