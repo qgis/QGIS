@@ -710,43 +710,28 @@ FIND_FILE(GIT_MARKER index PATHS ${CMAKE_SOURCE_DIR}/.git)
 IF (GIT_MARKER)
   FIND_PROGRAM(GITCOMMAND git PATHS c:/cygwin/bin)
   IF(GITCOMMAND)
-    IF(MSVC)
+    FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h "")
+    EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E touch ${GIT_MARKER})
+    IF(WIN32)
       ADD_CUSTOM_COMMAND(
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
-        COMMAND for /f \"usebackq tokens=1\" %%a in "(`\"${GITCOMMAND}\" log -n1 --oneline`)" do echo \#define QGSVERSION \"%%a\" >${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
+        COMMAND for /f \"usebackq tokens=1\" %%a in "(`\"${GITCOMMAND}\" log -n1 --oneline`)" do echo \#define QGSVERSION \"%%a\" >${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h.temp
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h.temp ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
         MAIN_DEPENDENCY ${GIT_MARKER}
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
       )
-    ELSE(MSVC)
-      EXECUTE_PROCESS(
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        COMMAND ${GITCOMMAND} log -n1 --pretty=%h OUTPUT_VARIABLE REVISION
-      )
-      STRING(STRIP "${REVISION}" REVISION)
-      # Get GIT remote and branch
-      EXECUTE_PROCESS(
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        COMMAND ${GITCOMMAND} name-rev --name-only HEAD OUTPUT_VARIABLE GIT_LOCAL_BRANCH
-      )
-      STRING(STRIP "${GIT_LOCAL_BRANCH}" GIT_LOCAL_BRANCH)
-      EXECUTE_PROCESS(
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        COMMAND ${GITCOMMAND} config branch.${GIT_LOCAL_BRANCH}.remote OUTPUT_VARIABLE GIT_REMOTE
-      )
-      STRING(STRIP "${GIT_REMOTE}" GIT_REMOTE)
-      EXECUTE_PROCESS(
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        COMMAND ${GITCOMMAND} config remote.${GIT_REMOTE}.url OUTPUT_VARIABLE GIT_REMOTE_URL
-      )
-      STRING(STRIP "${GIT_REMOTE_URL}" GIT_REMOTE_URL)
+    ELSE(WIN32)
       ADD_CUSTOM_COMMAND(
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
-        COMMAND echo \\\#define QGSVERSION \\\"${REVISION}\\\" >${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
-        COMMAND echo \\\#define QGS_GIT_REMOTE_URL \\\"${GIT_REMOTE_URL}\\\" >>${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
+        COMMAND ${GITCOMMAND} log -n1 --pretty=\#define\\ QGSVERSION\\ \\"%h\\" >${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h.temp
+        COMMAND ${GITCOMMAND} config remote.$$\(${GITCOMMAND} config branch.$$\(${GITCOMMAND} name-rev --name-only HEAD\).remote\).url | sed -e 's/^/\#define QGS_GIT_REMOTE_URL \"/' -e 's/$$/\"/' >>${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h.temp
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h.temp ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
+        # COMMAND echo \\\#define QGSVERSION \\\"${REVISION}\\\" >${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
+        # COMMAND echo \\\#define QGS_GIT_REMOTE_URL \\\"${GIT_REMOTE_URL}\\\" >>${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
         MAIN_DEPENDENCY ${GIT_MARKER}
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
       )
-    ENDIF(MSVC)
+    ENDIF(WIN32)
   ELSE(GITCOMMAND)
     MESSAGE(STATUS "git marker, but no git found - version will be unknown")
     SET(REVISION "unknown")
