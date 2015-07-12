@@ -256,7 +256,7 @@ void TestQgsFeature::geometry()
   copy = feature;
   QCOMPARE( *copy.constGeometry()->asWkb(), *mGeometry.data()->asWkb() );
   size_t wkbSize = mGeometry2->wkbSize();
-  unsigned char* wkb = ( unsigned char* )malloc( wkbSize );
+  unsigned char* wkb = new unsigned char[wkbSize];
   memcpy( wkb, mGeometry2->asWkb(), wkbSize );
   copy.setGeometryAndOwnership( wkb, wkbSize );
   QCOMPARE( *copy.constGeometry()->asWkb(), *mGeometry2->asWkb() );
