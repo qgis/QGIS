@@ -52,7 +52,7 @@ void TestQGis::cleanupTestCase()
 {
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
+  if ( myFile.open( QIODevice::WriteOnly ) )
   {
     QTextStream myQTextStream( &myFile );
     myQTextStream << mReport;
