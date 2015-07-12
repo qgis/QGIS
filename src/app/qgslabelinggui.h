@@ -90,7 +90,7 @@ class APP_EXPORT QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void populatePlacementMethods();
     void populateFieldNames();
     void populateDataDefinedButtons( QgsPalLayerSettings& s );
-    /**Sets data defined property attribute to map */
+    /** Sets data defined property attribute to map */
     void setDataDefinedProperty( const QgsDataDefinedButton* ddBtn, QgsPalLayerSettings::DataDefinedProperties p, QgsPalLayerSettings& lyr );
     void updateFont( QFont font );
 
@@ -123,6 +123,7 @@ class APP_EXPORT QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void showBackgroundRadius( bool show );
     void showBackgroundPenStyle( bool show );
     void on_mShapeSVGPathLineEdit_textChanged( const QString& text );
+    void updateLinePlacementOptions();
 };
 
 #endif

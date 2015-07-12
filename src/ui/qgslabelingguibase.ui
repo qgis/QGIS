@@ -3891,6 +3891,9 @@ font-style: italic;</string>
                           <height>0</height>
                          </size>
                         </property>
+                        <property name="toolTip">
+                         <string>Allowed label placement for lines. At least one position must be selected.</string>
+                        </property>
                         <property name="frameShape">
                          <enum>QFrame::NoFrame</enum>
                         </property>
