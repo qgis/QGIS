@@ -207,11 +207,13 @@ SET (QGIS_APP_MOC_HDRS
   qgssavestyletodbdialog.h
   qgsshortcutsmanager.h
   qgsapplayertreeviewmenuprovider.h
+  qgsguivectorlayertools.h
 
   qgsmaptooladdfeature.h
   qgsmaptoolcapture.h
   qgsmaptooladdpart.h
   qgsmaptooladdring.h
+  qgsmaptooledit.h
   qgsmaptoolfillring.h
   qgsmaptoolchangelabelproperties.h
   qgsmaptooldeletepart.h

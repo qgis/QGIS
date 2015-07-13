@@ -90,6 +90,8 @@ class CORE_EXPORT QgsMapLayerLegendUtils
  */
 class CORE_EXPORT QgsDefaultVectorLayerLegend : public QgsMapLayerLegend
 {
+    Q_OBJECT
+
   public:
     explicit QgsDefaultVectorLayerLegend( QgsVectorLayer* vl );
 
@@ -105,6 +107,8 @@ class CORE_EXPORT QgsDefaultVectorLayerLegend : public QgsMapLayerLegend
  */
 class CORE_EXPORT QgsDefaultRasterLayerLegend : public QgsMapLayerLegend
 {
+    Q_OBJECT
+
   public:
     explicit QgsDefaultRasterLayerLegend( QgsRasterLayer* rl );
 
@@ -120,6 +124,8 @@ class CORE_EXPORT QgsDefaultRasterLayerLegend : public QgsMapLayerLegend
  */
 class CORE_EXPORT QgsDefaultPluginLayerLegend : public QgsMapLayerLegend
 {
+    Q_OBJECT
+
   public:
     explicit QgsDefaultPluginLayerLegend( QgsPluginLayer* pl );
 

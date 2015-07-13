@@ -261,11 +261,11 @@ SET(QGIS_GUI_MOC_HDRS
   qgsattributeform.h
   qgsattributetypeloaddialog.h
   qgsblendmodecombobox.h
+  qgsbrowsertreeview.h
   qgsbusyindicatordialog.h
   qgscharacterselectdialog.h
-  qgsbrowsertreeview.h
-  qgscodeeditor.h
   qgscodeeditorcss.h
+  qgscodeeditor.h
   qgscodeeditorhtml.h
   qgscodeeditorpython.h
   qgscodeeditorsql.h
@@ -314,10 +314,12 @@ SET(QGIS_GUI_MOC_HDRS
   qgsmaplayermodel.h
   qgsmaplayerproxymodel.h
   qgsmapoverviewcanvas.h
-  qgsmaptool.h
   qgsmaptoolemitpoint.h
-  qgsmaptoolidentify.h
+  qgsmaptool.h
   qgsmaptoolidentifyfeature.h
+  qgsmaptoolidentify.h
+  qgsmaptoolpan.h
+  qgsmaptoolzoom.h
   qgsmessagebar.h
   qgsmessagebaritem.h
   qgsmessagelogviewer.h

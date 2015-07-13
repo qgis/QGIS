@@ -1444,10 +1444,10 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
   layerOptions.clear();
 
 #if 0
-//  datasetOptions.insert( "HEADER", new StringOption(
-  QObject::tr( "Override the header file used - in place of header.dxf." ),
-  ""  // Default value
-  ) );
+  datasetOptions.insert( "HEADER", new StringOption(
+                           QObject::tr( "Override the header file used - in place of header.dxf." ),
+                           ""  // Default value
+                         ) );
 
   datasetOptions.insert( "TRAILER", new StringOption(
                            QObject::tr( "Override the trailer file used - in place of trailer.dxf." ),
@@ -1530,9 +1530,9 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                          )
                        );
   return driverMetadata;
-       }
+}
 
-       bool QgsVectorFileWriter::driverMetadata( const QString& driverName, QgsVectorFileWriter::MetaData& driverMetadata )
+bool QgsVectorFileWriter::driverMetadata( const QString& driverName, QgsVectorFileWriter::MetaData& driverMetadata )
 {
   static const QMap<QString, MetaData> sDriverMetadata = initMetaData();
 
