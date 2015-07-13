@@ -2487,8 +2487,8 @@ QgsRectangle QgsPostgresProvider::extent()
             sql = QString( "SELECT %1(%2,%3,%4)" )
                   .arg( connectionRO()->majorVersion() < 2 ? "estimated_extent" :
                         ( connectionRO()->majorVersion() == 2 && connectionRO()->minorVersion() < 1 ? "st_estimated_extent" : "st_estimatedextent" ) )
-                  .arg( quotedValue( quotedIdentifier( mSchemaName ) ) )
-                  .arg( quotedValue( quotedIdentifier( mTableName ) ) )
+                  .arg( quotedValue( mSchemaName ) )
+                  .arg( quotedValue( mTableName ) )
                   .arg( quotedValue( mGeometryColumn ) );
             result = mConnectionRO->PQexec( sql );
             if ( result.PQresultStatus() == PGRES_TUPLES_OK && result.PQntuples() == 1 && !result.PQgetisnull( 0, 0 ) )
