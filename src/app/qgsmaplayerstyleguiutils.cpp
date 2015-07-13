@@ -33,7 +33,7 @@ QgsMapLayerStyleGuiUtils* QgsMapLayerStyleGuiUtils::instance()
 
 QAction* QgsMapLayerStyleGuiUtils::actionAddStyle( QgsMapLayer* layer, QObject* parent )
 {
-  QAction* a = new QAction( tr( "Add" ), parent );
+  QAction* a = new QAction( tr( "Add..." ), parent );
   a->setData( QVariant::fromValue<QObject*>( layer ) );
   connect( a, SIGNAL( triggered() ), this, SLOT( addStyle() ) );
   return a;
@@ -50,7 +50,7 @@ QAction* QgsMapLayerStyleGuiUtils::actionRemoveStyle( QgsMapLayer* layer, QObjec
 
 QAction* QgsMapLayerStyleGuiUtils::actionRenameStyle( QgsMapLayer* layer, QObject* parent )
 {
-  QAction* a = new QAction( tr( "Rename Current" ), parent );
+  QAction* a = new QAction( tr( "Rename Current..." ), parent );
   a->connect( a, SIGNAL( triggered() ), this, SLOT( renameStyle() ) );
   a->setData( QVariant::fromValue<QObject*>( layer ) );
   return a;
