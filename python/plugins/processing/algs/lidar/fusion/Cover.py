@@ -50,7 +50,7 @@ class Cover(FusionAlgorithm):
         self.name = 'Cover'
         self.group = 'Points'
         self.addParameter(ParameterFile(
-            self.INPUT, self.tr('Input las layer')))
+            self.INPUT, self.tr('Input LAS layer')))
         self.addParameter(ParameterFile(
             self.GROUND, self.tr('Input ground DTM layer')))
         self.addParameter(ParameterNumber(

@@ -49,7 +49,7 @@ class CloudMetrics(FusionAlgorithm):
         self.name = 'Cloud Metrics'
         self.group = 'Points'
         self.addParameter(ParameterFile(
-            self.INPUT, self.tr('Input las layer')))
+            self.INPUT, self.tr('Input LAS layer')))
         self.addOutput(OutputFile(
             self.OUTPUT, self.tr('Output file with tabular metric information'), 'dtm'))
         above = ParameterString(self.ABOVE, self.tr('Above'), '', False)

@@ -56,7 +56,7 @@ class CanopyModel(FusionAlgorithm):
         self.name = 'Canopy Model'
         self.group = 'Points'
         self.addParameter(ParameterFile(
-            self.INPUT, self.tr('Input las layer')))
+            self.INPUT, self.tr('Input LAS layer')))
         self.addParameter(ParameterNumber(
             self.CELLSIZE, self.tr('Cellsize'), 0, None, 10.0))
         self.addParameter(ParameterSelection(

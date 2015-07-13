@@ -46,13 +46,13 @@ class FilterData(FusionAlgorithm):
         self.name = 'Filter Data outliers'
         self.group = 'Points'
         self.addParameter(ParameterFile(
-            self.INPUT, self.tr('Input las layer')))
+            self.INPUT, self.tr('Input LAS layer')))
         self.addParameter(ParameterNumber(
             self.VALUE, self.tr('Standard Deviation multiplier')))
         self.addParameter(ParameterNumber(
             self.VALUE, self.tr('Window size'), None, None, 10))
         self.addOutput(OutputFile(
-            self.OUTPUT, self.tr('Output filtered las file')))
+            self.OUTPUT, self.tr('Output filtered LAS file')))
         self.addAdvancedModifiers()
 
     def processAlgorithm(self, progress):

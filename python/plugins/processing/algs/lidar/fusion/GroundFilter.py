@@ -44,11 +44,11 @@ class GroundFilter(FusionAlgorithm):
         self.name = 'Ground Filter'
         self.group = 'Points'
         self.addParameter(ParameterFile(
-            self.INPUT, self.tr('Input las layer')))
+            self.INPUT, self.tr('Input LAS layer')))
         self.addParameter(ParameterNumber(self.CELLSIZE,
             self.tr('Cellsize for intermediate surfaces'), 0, None, 10))
         self.addOutput(OutputFile(
-            self.OUTPUT, self.tr('Output ground las file')))
+            self.OUTPUT, self.tr('Output ground LAS file')))
         self.addAdvancedModifiers()
 
     def processAlgorithm(self, progress):

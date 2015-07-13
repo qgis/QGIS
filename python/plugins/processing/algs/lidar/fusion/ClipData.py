@@ -46,12 +46,12 @@ class ClipData(FusionAlgorithm):
         self.name = 'Clip Data'
         self.group = 'Points'
         self.addParameter(ParameterFile(
-            self.INPUT, self.tr('Input las layer')))
+            self.INPUT, self.tr('Input LAS layer')))
         self.addParameter(ParameterExtent(self.EXTENT, self.tr('Extent')))
         self.addParameter(ParameterSelection(
             self.SHAPE, self.tr('Shape'), ['Rectangle', 'Circle']))
         self.addOutput(OutputFile(
-            self.OUTPUT, self.tr('Output clipped las file')))
+            self.OUTPUT, self.tr('Output clipped LAS file')))
         self.addAdvancedModifiers()
 
     def processAlgorithm(self, progress):
