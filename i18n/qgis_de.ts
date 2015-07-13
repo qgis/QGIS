@@ -62099,6 +62099,38 @@ Gibt den kleinste Y-Koordinate einer Geometrie zurück. Berechnung erfolgt im r�
 &lt;!-- Show example of function.--&gt;
 &lt;pre&gt;ymin($geometry) &amp;rarr; ergibt die minimale Y-Koordinate von $geometry&lt;/pre&gt;</translation>
     </message>
+    <message>
+        <source>&lt;h3&gt;NULL value&lt;/h3&gt;
+Equates to a null value.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;NULL&lt;/pre&gt;
+
+&lt;h4&gt;Arguments&lt;/h4&gt;
+None
+
+&lt;h4&gt;Example&lt;/h4&gt;
+&lt;pre&gt; NULL &amp;rarr; returns a null value &lt;/pre&gt;
+
+&lt;h4&gt;Note:&lt;/h4&gt;
+&lt;p&gt;To test for NULL use an &lt;pre&gt;IS NULL&lt;/pre&gt; or &lt;pre&gt;IS NOT NULL&lt;/pre&gt; expression.&lt;/p&gt;
+</source>
+        <translation type="unfinished">&lt;h3&gt;NULL-Wert&lt;/h3&gt;
+Entspricht dem Leerwert.
+
+&lt;h4&gt;Syntax&lt;/h4&gt;
+&lt;pre&gt;NULL&lt;/pre&gt;
+
+&lt;h4&gt;Argumente&lt;/h4&gt;
+Keine
+
+&lt;h4&gt;Beispiel&lt;/h4&gt;
+&lt;pre&gt; NULL &amp;rarr; ergibt einen Leerwert&lt;/pre&gt;
+
+&lt;h4&gt;Hinweis:&lt;/h4&gt;
+&lt;p&gt;Um auf einen NULL-Wert zu testen ist &lt;pre&gt;IS NULL&lt;/pre&gt; oder &lt;pre&gt;IS NOT NULL&lt;/pre&gt; in Ausdrücken zu verwendenj.&lt;/p&gt;
+</translation>
+    </message>
 </context>
 <context>
     <name>gdal2xyz</name>
