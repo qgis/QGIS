@@ -116,7 +116,7 @@ void QgsNewNameDialog::nameChanged()
 
   if ( !conflicts.isEmpty() )
   {
-    mErrorLabel->setText( highlightText( tr( "Name(s) %1 exists", 0, conflicts.size() ).arg( conflicts.join( ", " ) ) ) );
+    mErrorLabel->setText( highlightText( tr( "%n Name(s) %1 exists", 0, conflicts.size() ).arg( conflicts.join( ", " ) ) ) );
     okButton->setText( tr( "Overwrite" ) );
     return;
   }
