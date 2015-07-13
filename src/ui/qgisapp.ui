@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1050</width>
-     <height>27</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="mProjectMenu">
@@ -1908,10 +1908,10 @@ Acts on currently active editable layer</string>
      <normaloff>:/images/themes/default/mActionFormAnnotation.png</normaloff>:/images/themes/default/mActionFormAnnotation.png</iconset>
    </property>
    <property name="text">
-    <string>Html Annotation</string>
+    <string>HTML Annotation</string>
    </property>
    <property name="toolTip">
-    <string>Html Annotation</string>
+    <string>HTML Annotation</string>
    </property>
   </action>
   <action name="mActionDuplicateLayer">

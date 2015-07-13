@@ -21,16 +21,7 @@
     <bool>true</bool>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <property name="leftMargin">
-     <number>0</number>
-    </property>
-    <property name="topMargin">
-     <number>0</number>
-    </property>
-    <property name="rightMargin">
-     <number>0</number>
-    </property>
-    <property name="bottomMargin">
+    <property name="margin">
      <number>0</number>
     </property>
     <item row="0" column="0">
@@ -715,7 +706,7 @@
     <string>Add &amp;HTML</string>
    </property>
    <property name="toolTip">
-    <string>Add html frame</string>
+    <string>Add HTML frame</string>
    </property>
   </action>
   <action name="mActionComposerManager">
@@ -1053,8 +1044,8 @@
   </action>
  </widget>
  <resources>
-  <include location="../../python/plugins/fTools/resources.qrc"/>
   <include location="../../images/images.qrc"/>
+  <include location="../../python/plugins/fTools/resources.qrc"/>
  </resources>
  <connections/>
 </ui>

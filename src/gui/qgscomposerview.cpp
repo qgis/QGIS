@@ -937,12 +937,12 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
       {
         QgsComposerHtml* composerHtml = new QgsComposerHtml( composition(), true );
         QgsAddRemoveMultiFrameCommand* command = new QgsAddRemoveMultiFrameCommand( QgsAddRemoveMultiFrameCommand::Added,
-            composerHtml, composition(), tr( "Html item added" ) );
+            composerHtml, composition(), tr( "HTML item added" ) );
         composition()->undoStack()->push( command );
         QgsComposerFrame* frame = new QgsComposerFrame( composition(), composerHtml, mRubberBandItem->transform().dx(),
             mRubberBandItem->transform().dy(), mRubberBandItem->rect().width(),
             mRubberBandItem->rect().height() );
-        composition()->beginMultiFrameCommand( composerHtml, tr( "Html frame added" ) );
+        composition()->beginMultiFrameCommand( composerHtml, tr( "HTML frame added" ) );
         composerHtml->addFrame( frame );
         composition()->endMultiFrameCommand();
 

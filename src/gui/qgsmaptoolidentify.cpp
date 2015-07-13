@@ -525,7 +525,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
     }
     else // text or html
     {
-      QgsDebugMsg( QString( "%1 html or text values" ).arg( values.size() ) );
+      QgsDebugMsg( QString( "%1 HTML or text values" ).arg( values.size() ) );
       foreach ( int bandNo, values.keys() )
       {
         QString value = values.value( bandNo ).toString();
