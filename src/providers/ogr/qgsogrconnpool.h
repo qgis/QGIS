@@ -61,7 +61,13 @@ class QgsOgrConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsOgr
     Q_OBJECT
 
   public:
-    QgsOgrConnPoolGroup( QString name ) : QgsConnectionPoolGroup<QgsOgrConn*>( name ) { initTimer( this ); }
+    QgsOgrConnPoolGroup( QString name ) : QgsConnectionPoolGroup<QgsOgrConn*>( name ), mRefCount( 0 ) { initTimer( this ); }
+    void ref() { ++mRefCount; }
+    bool unref()
+    {
+      Q_ASSERT( mRefCount > 0 );
+      return --mRefCount == 0;
+    }
 
   protected slots:
     void handleConnectionExpired() { onConnectionExpired(); }
@@ -71,6 +77,9 @@ class QgsOgrConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsOgr
   protected:
     Q_DISABLE_COPY( QgsOgrConnPoolGroup )
 
+  private:
+    int mRefCount;
+
 };
 
 /** Ogr connection pool - singleton */
@@ -78,6 +87,29 @@ class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn*, QgsOgrConnPoolGroup
 {
   public:
     static QgsOgrConnPool* instance();
+
+    void ref( const QString& connInfo )
+    {
+      mMutex.lock();
+      T_Groups::iterator it = mGroups.find( connInfo );
+      if ( it == mGroups.end() )
+        it = mGroups.insert( connInfo, new QgsOgrConnPoolGroup( connInfo ) );
+      it.value()->ref();
+      mMutex.unlock();
+    }
+
+    void unref( const QString& connInfo )
+    {
+      mMutex.lock();
+      T_Groups::iterator it = mGroups.find( connInfo );
+      Q_ASSERT( it != mGroups.end() );
+      if ( it.value()->unref() )
+      {
+        delete it.value();
+        mGroups.erase( it );
+      }
+      mMutex.unlock();
+    }
 
   protected:
     Q_DISABLE_COPY( QgsOgrConnPool )
