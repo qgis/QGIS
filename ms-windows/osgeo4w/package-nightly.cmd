@@ -207,7 +207,13 @@ if exist ..\skiptests goto skiptests
 
 echo RUN_TESTS: %DATE% %TIME%
 
+set oldtemp=%TEMP%
 set oldpath=%PATH%
+
+set TEMP=%TEMP%\%PACKAGE%-%ARCH%
+if exist %TEMP% rmdir /s /q %TEMP%
+mkdir %TEMP%
+
 for %%g IN (%GRASS_VERSIONS%) do (
 	set path=!path!;%OSGEO4W_ROOT%\apps\grass\grass-%%g\lib
 	set GISBASE=%OSGEO4W_ROOT%\apps\grass\grass-%%g
@@ -217,6 +223,7 @@ PATH %path%;%BUILDDIR%\output\plugins\%BUILDCONF%
 cmake --build %BUILDDIR% --target Nightly --config %BUILDCONF%
 if errorlevel 1 echo TESTS WERE NOT SUCCESSFUL.
 
+set TEMP=%oldtemp%
 PATH %oldpath%
 
 :skiptests
