@@ -396,7 +396,7 @@ void QgsCategorizedSymbolRendererV2::sortByLabel( Qt::SortOrder order )
   }
 }
 
-void QgsCategorizedSymbolRendererV2::startRender( QgsRenderContext& context, const QgsFields& fields )
+QgsRenderOptions QgsCategorizedSymbolRendererV2::startRender( QgsRenderContext& context, const QgsFields& fields )
 {
   mCounting = context.rendererScale() == 0.0;
 
@@ -425,6 +425,7 @@ void QgsCategorizedSymbolRendererV2::startRender( QgsRenderContext& context, con
       mTempSymbols[ it->symbol()] = tempSymbol;
     }
   }
+  return QgsRenderOptions();
 }
 
 void QgsCategorizedSymbolRendererV2::stopRender( QgsRenderContext& context )

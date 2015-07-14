@@ -39,7 +39,7 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRendererV2
 
     //reimplemented methods
     virtual QgsFeatureRendererV2* clone() const override;
-    virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
+    virtual QgsRenderOptions startRender( QgsRenderContext& context, const QgsFields& fields ) override;
     virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
     virtual void stopRender( QgsRenderContext& context ) override;
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature ) override;

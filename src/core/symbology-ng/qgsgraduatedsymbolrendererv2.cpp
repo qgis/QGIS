@@ -369,7 +369,7 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2::originalSymbolForFeature( QgsFeature&
   return symbolForValue( value.toDouble() );
 }
 
-void QgsGraduatedSymbolRendererV2::startRender( QgsRenderContext& context, const QgsFields& fields )
+QgsRenderOptions QgsGraduatedSymbolRendererV2::startRender( QgsRenderContext& context, const QgsFields& fields )
 {
   mCounting = context.rendererScale() == 0.0;
 
@@ -399,6 +399,7 @@ void QgsGraduatedSymbolRendererV2::startRender( QgsRenderContext& context, const
       mTempSymbols[ it->symbol()] = tempSymbol;
     }
   }
+  return QgsRenderOptions();
 }
 
 void QgsGraduatedSymbolRendererV2::stopRender( QgsRenderContext& context )

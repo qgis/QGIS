@@ -779,7 +779,7 @@ bool QgsRuleBasedRendererV2::renderFeature( QgsFeature& feature,
 }
 
 
-void QgsRuleBasedRendererV2::startRender( QgsRenderContext& context, const QgsFields& fields )
+QgsRenderOptions QgsRuleBasedRendererV2::startRender( QgsRenderContext& context, const QgsFields& fields )
 {
   // prepare active children
   mRootRule->startRender( context, fields );
@@ -800,6 +800,7 @@ void QgsRuleBasedRendererV2::startRender( QgsRenderContext& context, const QgsFi
   }
 
   mRootRule->setNormZLevels( zLevelsToNormLevels );
+  return QgsRenderOptions();
 }
 
 void QgsRuleBasedRendererV2::stopRender( QgsRenderContext& context )

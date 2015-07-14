@@ -63,12 +63,12 @@ void QgsHeatmapRenderer::initializeValues( QgsRenderContext& context )
   mRadiusSquared = mRadiusPixels * mRadiusPixels;
 }
 
-void QgsHeatmapRenderer::startRender( QgsRenderContext& context, const QgsFields& fields )
+QgsRenderOptions QgsHeatmapRenderer::startRender( QgsRenderContext& context, const QgsFields& fields )
 {
   Q_UNUSED( fields );
   if ( !context.painter() )
   {
-    return;
+    return QgsRenderOptions();
   }
 
   // find out classification attribute index from name
@@ -80,6 +80,7 @@ void QgsHeatmapRenderer::startRender( QgsRenderContext& context, const QgsFields
   }
 
   initializeValues( context );
+  return QgsRenderOptions();
 }
 
 QgsMultiPoint QgsHeatmapRenderer::convertToMultipoint( const QgsGeometry* geom )

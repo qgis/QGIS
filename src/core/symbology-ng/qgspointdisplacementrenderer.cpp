@@ -279,7 +279,7 @@ bool QgsPointDisplacementRenderer::willRenderFeature( QgsFeature& feat )
 }
 
 
-void QgsPointDisplacementRenderer::startRender( QgsRenderContext& context, const QgsFields& fields )
+QgsRenderOptions QgsPointDisplacementRenderer::startRender( QgsRenderContext& context, const QgsFields& fields )
 {
   mRenderer->startRender( context, fields );
 
@@ -310,6 +310,7 @@ void QgsPointDisplacementRenderer::startRender( QgsRenderContext& context, const
   {
     mCenterSymbol->startRender( context, &fields );
   }
+  return QgsRenderOptions();
 }
 
 void QgsPointDisplacementRenderer::stopRender( QgsRenderContext& context )

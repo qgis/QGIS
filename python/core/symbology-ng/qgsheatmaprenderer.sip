@@ -10,7 +10,7 @@ class QgsHeatmapRenderer : QgsFeatureRendererV2
 
     //reimplemented methods
     virtual QgsFeatureRendererV2* clone() const /Factory/;
-    virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
+    virtual QgsRenderOptions startRender( QgsRenderContext& context, const QgsFields& fields );
     virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
     virtual void stopRender( QgsRenderContext& context );
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature );

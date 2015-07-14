@@ -58,7 +58,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
     /** Proxy that will call this method on the embedded renderer. */
     virtual bool willRenderFeature( QgsFeature& feat ) override;
 
-    void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
+    QgsRenderOptions startRender( QgsRenderContext& context, const QgsFields& fields ) override;
 
     void stopRender( QgsRenderContext& context ) override;
 
