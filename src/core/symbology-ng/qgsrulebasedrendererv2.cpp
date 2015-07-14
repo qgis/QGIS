@@ -420,6 +420,44 @@ bool QgsRuleBasedRendererV2::Rule::startRender( QgsRenderContext& context, const
   return true;
 }
 
+bool QgsRuleBasedRendererV2::Rule::startRender( QgsRenderContext& context, const QgsFields& fields, QString& filter )
+{
+  mActiveChildren.clear();
+
+  if ( ! mCheckState )
+    return false;
+
+  // filter out rules which are not compatible with this scale
+  if ( !isScaleOK( context.rendererScale() ) )
+    return false;
+
+  // init this rule
+  if ( mFilter )
+    mFilter->prepare( fields );
+  if ( mSymbol )
+    mSymbol->startRender( context, &fields );
+
+  // init children
+  // build temporary list of active rules (usable with this scale)
+  QStringList subfilters;
+  for ( RuleList::iterator it = mChildren.begin(); it != mChildren.end(); ++it )
+  {
+    QString subfilter;
+    Rule* rule = *it;
+    if ( rule->startRender( context, fields , subfilter ) )
+    {
+      // only add those which are active with current scale
+      mActiveChildren.append( rule );
+      subfilters.append( subfilter );
+    }
+  }
+
+  // subfilters (on the same level) are joined with OR and finally joined with AND with their parent (this) filter
+  QString sf = subfilters.join( ") OR (" ).prepend( "(" ).append( ")" );
+  filter = QString( "(%1) AND (%2)" ).arg( mFilterExp ).arg( sf );
+  return true;
+}
+
 QSet<int> QgsRuleBasedRendererV2::Rule::collectZLevels()
 {
   QSet<int> symbolZLevelsSet;
@@ -781,8 +819,9 @@ bool QgsRuleBasedRendererV2::renderFeature( QgsFeature& feature,
 
 QgsRenderOptions QgsRuleBasedRendererV2::startRender( QgsRenderContext& context, const QgsFields& fields )
 {
+  QString filter;
   // prepare active children
-  mRootRule->startRender( context, fields );
+  mRootRule->startRender( context, fields, filter );
 
   QSet<int> symbolZLevelsSet = mRootRule->collectZLevels();
   QList<int> symbolZLevels = symbolZLevelsSet.toList();
@@ -800,7 +839,7 @@ QgsRenderOptions QgsRuleBasedRendererV2::startRender( QgsRenderContext& context,
   }
 
   mRootRule->setNormZLevels( zLevelsToNormLevels );
-  return QgsRenderOptions();
+  return QgsRenderOptions( filter );
 }
 
 void QgsRuleBasedRendererV2::stopRender( QgsRenderContext& context )
