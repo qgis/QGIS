@@ -24,6 +24,8 @@
 #include <QColor>
 #include <QPixmap>
 
+#include "qgsfeature.h"
+
 typedef QList<int> QgsAttributeList;
 
 class QgsExpression;
@@ -36,6 +38,7 @@ class QgsFieldsPrivate;
 class CORE_EXPORT QgsConditionalStyle
 {
   public:
+    bool matchForFeature( QString fieldName, QgsFeature *feature, QgsFields fields );
     bool matchForValue( QVariant value );
     QPixmap renderPreview();
     QString rule;

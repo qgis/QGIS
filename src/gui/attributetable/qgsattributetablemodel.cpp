@@ -570,10 +570,10 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     return mWidgetFactories[ index.column()]->representValue( layer(), fieldId, mWidgetConfigs[ index.column()], mAttributeWidgetCaches[ index.column()], val );
   }
 
-  QList<QgsConditionalStyle> rules = layer()->fieldUIProperties(field.name()).getConditionalStyles();
+  QList<QgsConditionalStyle> rules = layer()->fieldUIProperties( field.name() ).getConditionalStyles();
   foreach ( QgsConditionalStyle rule, rules )
   {
-    if ( rule.matchForValue( val ) )
+    if ( rule.matchForFeature( field.name(), &mFeat, layer()->pendingFields() ) )
     {
       if ( role == Qt::BackgroundColorRole && rule.backColor.isValid() )
         return rule.backColor;

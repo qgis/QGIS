@@ -37,6 +37,13 @@ QgsField::QgsField( QString nam, QString typ, int len, int prec, bool num,
 }
 #endif
 
+bool QgsConditionalStyle::matchForFeature( QString fieldName, QgsFeature *feature, QgsFields fields )
+{
+  fieldName = QString( """%1""" ).arg( fieldName );
+  QgsExpression exp( QString( rule ).replace( "@value", fieldName ) );
+  return exp.evaluate( feature, fields ).toBool();
+}
+
 bool QgsConditionalStyle::matchForValue( QVariant value )
 {
   QgsExpression exp( QString( rule ).replace( "@value", value.toString() ) );
@@ -45,21 +52,21 @@ bool QgsConditionalStyle::matchForValue( QVariant value )
 
 QPixmap QgsConditionalStyle::renderPreview()
 {
-  QPixmap pixmap(64, 32);
-  QPainter painter(&pixmap);
+  QPixmap pixmap( 64, 32 );
+  QPainter painter( &pixmap );
 
-  if (backColor.isValid())
-    painter.setBrush(backColor);
+  if ( backColor.isValid() )
+    painter.setBrush( backColor );
   else
-    painter.setBrush(QColor(Qt::white));
+    painter.setBrush( QColor( Qt::white ) );
 
-  QRect rect(0,0,64,32);
-  painter.drawRect(rect);
+  QRect rect( 0, 0, 64, 32 );
+  painter.drawRect( rect );
 
-  if (textColor.isValid())
-    painter.setPen(textColor);
+  if ( textColor.isValid() )
+    painter.setPen( textColor );
 
-  painter.drawText(rect, Qt::AlignCenter, "abc\n123");
+  painter.drawText( rect, Qt::AlignCenter, "abc\n123" );
   painter.end();
   return pixmap;
 }
