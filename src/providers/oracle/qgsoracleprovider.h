@@ -423,6 +423,8 @@ class QgsOracleUtils
                                 QgsOraclePrimaryKeyType primaryKeyType,
                                 const QList<int>& primaryKeyAttrs,
                                 QSharedPointer<QgsOracleSharedData> sharedData );
+
+    static QString andWhereClauses( const QString& c1, const QString& c2 );
 };
 
 

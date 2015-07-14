@@ -176,7 +176,7 @@ bool QgsGPXFeatureIterator::readFid( QgsFeature& feature )
 
 bool QgsGPXFeatureIterator::readWaypoint( const QgsWaypoint& wpt, QgsFeature& feature )
 {
-  if ( mRequest.filterType() == QgsFeatureRequest::FilterRect )
+  if ( !mRequest.filterRect().isNull() )
   {
     const QgsRectangle& rect = mRequest.filterRect();
     if ( ! rect.contains( QgsPoint( wpt.lon, wpt.lat ) ) )
@@ -206,7 +206,7 @@ bool QgsGPXFeatureIterator::readRoute( const QgsRoute& rte, QgsFeature& feature 
 
   QgsGeometry* theGeometry = readRouteGeometry( rte );
 
-  if ( mRequest.filterType() == QgsFeatureRequest::FilterRect )
+  if ( !mRequest.filterRect().isNull() )
   {
     const QgsRectangle& rect = mRequest.filterRect();
     if (( rte.xMax < rect.xMinimum() ) || ( rte.xMin > rect.xMaximum() ) ||
@@ -248,7 +248,7 @@ bool QgsGPXFeatureIterator::readTrack( const QgsTrack& trk, QgsFeature& feature 
 
   QgsGeometry* theGeometry = readTrackGeometry( trk );
 
-  if ( mRequest.filterType() == QgsFeatureRequest::FilterRect )
+  if ( !mRequest.filterRect().isNull() )
   {
     const QgsRectangle& rect = mRequest.filterRect();
     if (( trk.xMax < rect.xMinimum() ) || ( trk.xMin > rect.xMaximum() ) ||

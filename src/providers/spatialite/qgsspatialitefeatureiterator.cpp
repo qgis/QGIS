@@ -35,7 +35,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
   mRowNumber = 0;
 
   QString whereClause;
-  if ( request.filterType() == QgsFeatureRequest::FilterRect && !mSource->mGeometryColumn.isNull() )
+  if ( !request.filterRect().isNull() && !mSource->mGeometryColumn.isNull() )
   {
     // some kind of MBR spatial filtering is required
     whereClause += whereClauseRect();
@@ -45,8 +45,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
   {
     whereClause += whereClauseFid();
   }
-
-  if ( request.filterType() == QgsFeatureRequest::FilterFids )
+  else if ( request.filterType() == QgsFeatureRequest::FilterFids )
   {
     whereClause += whereClauseFids();
   }

@@ -176,7 +176,7 @@ bool QgsVectorLayerFeatureIterator::fetchFeature( QgsFeature& f )
     return res;
   }
 
-  if ( mRequest.filterType() == QgsFeatureRequest::FilterRect )
+  if ( !mRequest.filterRect().isNull() )
   {
     if ( fetchNextChangedGeomFeature( f ) )
       return true;
@@ -352,6 +352,10 @@ bool QgsVectorLayerFeatureIterator::fetchNextChangedAttributeFeature( QgsFeature
 {
   while ( mChangedFeaturesIterator.nextFeature( f ) )
   {
+    if ( mFetchConsidered.contains( f.id() ) )
+      // skip deleted features and those already handled by the geometry
+      continue;
+
     mFetchConsidered << f.id();
 
     updateChangedAttributes( f );
@@ -359,14 +363,7 @@ bool QgsVectorLayerFeatureIterator::fetchNextChangedAttributeFeature( QgsFeature
     if ( mHasVirtualAttributes )
       addVirtualAttributes( f );
 
-    if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
-    {
-      if ( mRequest.filterExpression()->evaluate( &f ).toBool() )
-      {
-        return true;
-      }
-    }
-    else
+    if ( mRequest.filterExpression()->evaluate( &f ).toBool() )
     {
       return true;
     }

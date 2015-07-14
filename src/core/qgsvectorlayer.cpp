@@ -2220,11 +2220,6 @@ bool QgsVectorLayer::deleteFeature( QgsFeatureId fid )
   return res;
 }
 
-const QgsFields &QgsVectorLayer::pendingFields() const
-{
-  return mUpdatedFields;
-}
-
 QgsAttributeList QgsVectorLayer::pendingAllAttributesList()
 {
   return mUpdatedFields.allAttributesList();

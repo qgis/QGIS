@@ -501,6 +501,8 @@ class QgsPostgresUtils
                                 QgsPostgresPrimaryKeyType pkType,
                                 const QList<int>& pkAttrs,
                                 QSharedPointer<QgsPostgresSharedData> sharedData );
+
+    static QString andWhereClauses( const QString& c1, const QString& c2 );
 };
 
 /** Data shared between provider class and its feature sources. Ideally there should

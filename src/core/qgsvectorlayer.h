@@ -1300,8 +1300,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Return the extent of the layer as a QRect */
     QgsRectangle extent() override;
 
-    /** Returns field list in the to-be-committed state */
-    const QgsFields &pendingFields() const;
+    /**
+     * Returns the list of fields of this layer.
+     * This also includes fields which have not yet been saved to the provider.
+     *
+     * @return A list of fields
+     */
+    const QgsFields &pendingFields() const { return mUpdatedFields; }
 
     /** Returns list of attributes */
     QgsAttributeList pendingAllAttributesList();
