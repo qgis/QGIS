@@ -4,12 +4,14 @@
 
 QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget(QWidget *parent) :
   QWidget(parent)
+        , mEditing( false )
 {
   setupUi( this );
   connect( mFieldCombo, SIGNAL( fieldChanged(QString) ), SLOT( fieldChanged(QString) ) );
   connect( mNewButton, SIGNAL( clicked() ), SLOT( addNewRule() ) );
   connect( mSaveRule, SIGNAL( clicked() ), SLOT( saveRule() ) );
   connect( mCancelButton, SIGNAL( clicked() ), SLOT( cancelRule() ) );
+  connect( mDeleteButton, SIGNAL( clicked() ), SLOT( deleteRule() ) );
   connect( listView, SIGNAL( clicked(QModelIndex)), SLOT( ruleClicked(QModelIndex) ));
   mModel = new QStandardItemModel();
   listView->setModel(mModel);
@@ -27,9 +29,30 @@ void QgsFieldConditionalFormatWidget::ruleClicked(QModelIndex index)
   QgsFieldUIProperties props = mLayer->fieldUIProperties(mFieldCombo->currentField());
   QList<QgsConditionalStyle> styles = props.getConditionalStyles();
   QgsConditionalStyle style = styles.at(index.row());
-  pages->setCurrentIndex(1);
-  mRuleEdit->setText(style.rule);
+  editStyle(index.row(), style);
 }
+
+void QgsFieldConditionalFormatWidget::editStyle(int editIndex, QgsConditionalStyle style)
+{
+  pages->setCurrentIndex(1);
+  mEditIndex = editIndex;
+  mEditing = true;
+  mRuleEdit->setText(style.rule);
+  // TODO Match the colors
+}
+
+void QgsFieldConditionalFormatWidget::deleteRule()
+{
+  QgsFieldUIProperties props = mLayer->fieldUIProperties(mFieldCombo->currentField());
+  QList<QgsConditionalStyle> styles = props.getConditionalStyles();
+  styles.removeAt(mEditIndex);
+  props.setConditionalStyles(styles);
+  mLayer->setFieldUIProperties(mFieldCombo->currentField(), props);
+  pages->setCurrentIndex(0);
+  reloadStyles();
+  emit rulesUpdates();
+}
+
 void QgsFieldConditionalFormatWidget::cancelRule()
 {
   pages->setCurrentIndex(0);
@@ -54,11 +77,19 @@ void QgsFieldConditionalFormatWidget::saveRule()
   QColor fontColor = button->property("fontColor").value<QColor>();
   style.backColor = backColor;
   style.textColor = fontColor;
-  styles.append(style);
+  if (mEditing)
+    {
+      styles.replace(mEditIndex, style);
+    }
+  else
+    {
+          styles.append(style);
+    }
   props.setConditionalStyles(styles);
   mLayer->setFieldUIProperties(mFieldCombo->currentField(), props);
   pages->setCurrentIndex(0);
   reloadStyles();
+  emit rulesUpdates();
 }
 
 void QgsFieldConditionalFormatWidget::reloadStyles()

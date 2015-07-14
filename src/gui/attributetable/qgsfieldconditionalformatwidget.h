@@ -36,18 +36,24 @@ public:
 
   void setLayer(QgsVectorLayer* theLayer);
 
+  void editStyle(int index, QgsConditionalStyle style);
+
 signals:
+  void rulesUpdates();
 
 public slots:
 
 private:
   QgsVectorLayer* mLayer;
+  int mEditIndex;
+  bool mEditing;
   QStandardItemModel* mModel;
 
 private slots:
   void ruleClicked(QModelIndex index);
   void reloadStyles();
   void cancelRule();
+  void deleteRule();
   void saveRule();
   void addNewRule();
   void fieldChanged(QString fieldName);
