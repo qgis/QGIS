@@ -61,6 +61,15 @@ class CORE_EXPORT QgsSymbolV2LevelItem
     int mLayer;
 };
 
+class CORE_EXPORT QgsRenderOptions
+{
+  public:
+    void setWhereClause( const QString& whereClause ) { mWhereClause = whereClause; }
+    QString whereClause() { return mWhereClause; }
+  private:
+    QString mWhereClause;
+};
+
 // every level has list of items: symbol + symbol layer num
 typedef QList< QgsSymbolV2LevelItem > QgsSymbolV2Level;
 
@@ -95,7 +104,14 @@ class CORE_EXPORT QgsFeatureRendererV2
      */
     virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature ) { return symbolForFeature( feature ); }
 
-    virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) = 0;
+    /**
+     * Needs to be called when a new render cycle is started
+     *
+     * @param context  Additional information passed to the renderer about the job which will be rendered
+     * @param fields   The fields available for rendering
+     * @return         Information passed back from the renderer that can e.g. be used to reduce the amount of requested features
+     */
+    virtual QgsRenderOptions startRender( QgsRenderContext& context, const QgsFields& fields ) = 0;
 
     //! @deprecated since 2.4 - not using QgsVectorLayer directly anymore
     Q_DECL_DEPRECATED virtual void startRender( QgsRenderContext& context, const QgsVectorLayer* vlayer );

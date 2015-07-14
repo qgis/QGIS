@@ -220,7 +220,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
 
     virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
 
-    virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
+    virtual QgsRenderOptions startRender( QgsRenderContext& context, const QgsFields& fields ) override;
 
     virtual void stopRender( QgsRenderContext& context ) override;
 

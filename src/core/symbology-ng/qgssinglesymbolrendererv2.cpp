@@ -79,9 +79,10 @@ QgsSymbolV2* QgsSingleSymbolRendererV2::originalSymbolForFeature( QgsFeature& fe
   return mSymbol.data();
 }
 
-void QgsSingleSymbolRendererV2::startRender( QgsRenderContext& context, const QgsFields& fields )
+QgsRenderOptions QgsSingleSymbolRendererV2::startRender( QgsRenderContext& context, const QgsFields& fields )
 {
-  if ( !mSymbol.data() ) return;
+  if ( !mSymbol.data() )
+    return QgsRenderOptions();
 
   mSymbol->startRender( context, &fields );
 
@@ -112,6 +113,8 @@ void QgsSingleSymbolRendererV2::startRender( QgsRenderContext& context, const Qg
       mOrigSize = 0;
     }
   }
+
+  return QgsRenderOptions();
 }
 
 void QgsSingleSymbolRendererV2::stopRender( QgsRenderContext& context )
