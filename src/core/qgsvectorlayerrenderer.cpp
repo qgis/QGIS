@@ -134,7 +134,7 @@ bool QgsVectorLayerRenderer::render()
     mContext.painter()->setCompositionMode( mFeatureBlendMode );
   }
 
-  mRendererV2->startRender( mContext, mFields );
+  QgsRenderOptions opts = mRendererV2->startRender( mContext, mFields );
 
   QgsRectangle requestExtent = mContext.extent();
   mRendererV2->modifyRequestExtent( requestExtent, mContext );
@@ -142,6 +142,11 @@ bool QgsVectorLayerRenderer::render()
   QgsFeatureRequest featureRequest = QgsFeatureRequest()
                                      .setFilterRect( requestExtent )
                                      .setSubsetOfAttributes( mAttrNames, mFields );
+
+  if ( !opts.whereClause().isNull() )
+  {
+    featureRequest.setFilterExpression( opts.whereClause() );
+  }
 
   // enable the simplification of the geometries (Using the current map2pixel context) before send it to renderer engine.
   if ( mSimplifyGeometry )

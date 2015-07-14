@@ -64,6 +64,9 @@ class CORE_EXPORT QgsSymbolV2LevelItem
 class CORE_EXPORT QgsRenderOptions
 {
   public:
+    QgsRenderOptions() {}
+    QgsRenderOptions( const QString& whereClause ) { mWhereClause = whereClause; }
+
     void setWhereClause( const QString& whereClause ) { mWhereClause = whereClause; }
     QString whereClause() { return mWhereClause; }
   private:

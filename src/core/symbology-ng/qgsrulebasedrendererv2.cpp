@@ -391,6 +391,12 @@ void QgsRuleBasedRendererV2::Rule::toSld( QDomDocument& doc, QDomElement &elemen
 
 bool QgsRuleBasedRendererV2::Rule::startRender( QgsRenderContext& context, const QgsFields& fields )
 {
+  QString filter;
+  return startRender( context, fields, filter );
+}
+
+bool QgsRuleBasedRendererV2::Rule::startRender( QgsRenderContext& context, const QgsFields& fields, QString& filter )
+{
   mActiveChildren.clear();
 
   if ( ! mCheckState )
@@ -408,15 +414,37 @@ bool QgsRuleBasedRendererV2::Rule::startRender( QgsRenderContext& context, const
 
   // init children
   // build temporary list of active rules (usable with this scale)
+  QStringList subfilters;
   for ( RuleList::iterator it = mChildren.begin(); it != mChildren.end(); ++it )
   {
+    QString subfilter;
     Rule* rule = *it;
-    if ( rule->startRender( context, fields ) )
+    if ( rule->startRender( context, fields , subfilter ) )
     {
       // only add those which are active with current scale
       mActiveChildren.append( rule );
+      subfilters.append( subfilter );
     }
   }
+
+  // subfilters (on the same level) are joined with OR and finally joined with AND with their parent (this) filter
+  QString sf;
+  if ( subfilters.length() )
+    sf = subfilters.join( ") OR (" ).prepend( "(" ).append( ")" );
+
+  if ( isElse() )
+  {
+    if ( !sf.length() )
+      filter = "1";
+    else
+      filter = sf;
+  }
+  else if ( mFilterExp.length() && sf.length() )
+    filter = QString( "(%1) AND (%2)" ).arg( mFilterExp ).arg( sf );
+  else if ( mFilterExp.length() )
+    filter = mFilterExp;
+  else
+    filter = sf;
   return true;
 }
 
@@ -781,8 +809,9 @@ bool QgsRuleBasedRendererV2::renderFeature( QgsFeature& feature,
 
 QgsRenderOptions QgsRuleBasedRendererV2::startRender( QgsRenderContext& context, const QgsFields& fields )
 {
+  QString filter;
   // prepare active children
-  mRootRule->startRender( context, fields );
+  mRootRule->startRender( context, fields, filter );
 
   QSet<int> symbolZLevelsSet = mRootRule->collectZLevels();
   QList<int> symbolZLevels = symbolZLevelsSet.toList();
@@ -800,7 +829,7 @@ QgsRenderOptions QgsRuleBasedRendererV2::startRender( QgsRenderContext& context,
   }
 
   mRootRule->setNormZLevels( zLevelsToNormLevels );
-  return QgsRenderOptions();
+  return QgsRenderOptions( filter );
 }
 
 void QgsRuleBasedRendererV2::stopRender( QgsRenderContext& context )
