@@ -20,6 +20,7 @@
 
 #include <QSettings>
 #include <QtCore/qmath.h>
+#include <QPainter>
 
 
 #if 0
@@ -40,6 +41,27 @@ bool QgsConditionalStyle::matchForValue( QVariant value )
 {
   QgsExpression exp( QString( rule ).replace( "@value", value.toString() ) );
   return exp.evaluate().toBool();
+}
+
+QPixmap QgsConditionalStyle::renderPreview()
+{
+  QPixmap pixmap(64, 32);
+  QPainter painter(&pixmap);
+
+  if (backColor.isValid())
+    painter.setBrush(backColor);
+  else
+    painter.setBrush(QColor(Qt::white));
+
+  QRect rect(0,0,64,32);
+  painter.drawRect(rect);
+
+  if (textColor.isValid())
+    painter.setPen(textColor);
+
+  painter.drawText(rect, Qt::AlignCenter, "abc\n123");
+  painter.end();
+  return pixmap;
 }
 
 

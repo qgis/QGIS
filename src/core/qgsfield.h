@@ -37,6 +37,7 @@ class CORE_EXPORT QgsConditionalStyle
 {
   public:
     bool matchForValue( QVariant value );
+    QPixmap renderPreview();
     QString rule;
     QFont font;
     QColor backColor;
