@@ -570,12 +570,10 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     return mWidgetFactories[ index.column()]->representValue( layer(), fieldId, mWidgetConfigs[ index.column()], mAttributeWidgetCaches[ index.column()], val );
   }
 
-  QList<QgsCellFormat> rules = layer()->fieldCellFormats( fieldId );
-  foreach ( QgsCellFormat rule, rules )
+  QList<QgsConditionalStyle> rules = layer()->fieldUIProperties(field.name()).getConditionalStyles();
+  foreach ( QgsConditionalStyle rule, rules )
   {
-    QgsExpression exp( QString( rule.rule ).replace( "@value", val.toString() ) );
-    bool result = exp.evaluate().toBool();
-    if ( result )
+    if ( rule.matchForValue( val ) )
     {
       if ( role == Qt::BackgroundColorRole && rule.backColor.isValid() )
         return rule.backColor;

@@ -67,17 +67,6 @@ typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
 
 
-class CORE_EXPORT QgsCellFormat
-{
-  public:
-    QString rule;
-    QFont font;
-    QColor backColor;
-    QColor textColor;
-    QPixmap icon;
-};
-
-
 /**
  * This is an abstract base class for any elements of a drag and drop form.
  *
@@ -368,6 +357,8 @@ protected:
   /** Subset of fields to use from joined layer. null = use all fields*/
   QSharedPointer<QStringList> joinFieldsSubset;
 };
+
+
 
 /** \ingroup core
  * Represents a vector layer which manages a vector based data sets.
@@ -1050,10 +1041,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     virtual bool applyNamedStyle( QString namedStyle, QString &errorMsg );
 
-    void addFieldCellFormats( int fieldIndex, QList<QgsCellFormat> formatters );
-
-    QList<QgsCellFormat> fieldCellFormats( int fieldIndex );
-
     /** Convert a saved attribute editor element into a AttributeEditor structure as it's used internally.
      * @param elem the DOM element
      * @param parent the QObject which will own this object
@@ -1722,6 +1709,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     bool simplifyDrawingCanbeApplied( const QgsRenderContext& renderContext, QgsVectorSimplifyMethod::SimplifyHint simplifyHint ) const;
 
+    QgsFieldUIProperties fieldUIProperties( QString fieldName );
+
+    void setFieldUIProperties( QString fieldNamem, QgsFieldUIProperties props );
+
   public slots:
     /**
      * Select feature by its ID
@@ -1924,6 +1915,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     void writeCustomSymbology( QDomElement& element, QDomDocument& doc, QString& errorMessage ) const;
 
+
   private slots:
     void onRelationsLoaded();
     void onJoinedFieldsChanged();
@@ -1973,6 +1965,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void readSldLabeling( const QDomNode& node );
 
   private:                       // Private attributes
+
+    QHash<QString, QgsFieldUIProperties> mFieldProperties;
 
     /** Pointer to data provider derived from the abastract base class QgsDataProvider */
     QgsVectorDataProvider *mDataProvider;
@@ -2026,8 +2020,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Label */
     QgsLabel *mLabel;
-
-    QHash<int, QList<QgsCellFormat>> mCellFormatsMap;
 
     /** Display labels */
     bool mLabelOn;

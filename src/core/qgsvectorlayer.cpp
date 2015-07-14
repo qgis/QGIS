@@ -2008,6 +2008,20 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   return true;
 }
 
+QgsFieldUIProperties QgsVectorLayer::fieldUIProperties( QString fieldName )
+{
+  if ( mFieldProperties.contains( fieldName ) )
+        {
+      return mFieldProperties[fieldName];
+         }
+  return QgsFieldUIProperties();
+}
+
+void QgsVectorLayer::setFieldUIProperties(QString fieldNamem, QgsFieldUIProperties props)
+{
+  mFieldProperties.insert(fieldNamem, props );
+}
+
 bool QgsVectorLayer::readSld( const QDomNode& node, QString& errorMessage )
 {
   // get the Name element
@@ -4019,22 +4033,6 @@ bool QgsVectorLayer::applyNamedStyle( QString namedStyle, QString& errorMsg )
 
   return importNamedStyle( myDocument, errorMsg );
 }
-
-void QgsVectorLayer::addFieldCellFormats( int fieldIndex, QList<QgsCellFormat> formatters )
-{
-  // TODO Check for valid field index
-  mCellFormatsMap.insert( fieldIndex, formatters );
-}
-
-QList<QgsCellFormat> QgsVectorLayer::fieldCellFormats( int fieldIndex )
-{
-  if ( mCellFormatsMap.contains( fieldIndex ) )
-  {
-    return mCellFormatsMap[fieldIndex];
-  }
-  return QList<QgsCellFormat>();
-}
-
 
 
 QDomElement QgsAttributeEditorRelation::toDomElement( QDomDocument& doc ) const

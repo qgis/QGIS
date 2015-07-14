@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsFieldConditionalWidget</class>
+ <widget class="QWidget" name="QgsFieldConditionalWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>297</width>
+    <height>228</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="margin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QStackedWidget" name="pages">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="page">
+      <layout class="QGridLayout" name="gridLayout">
+       <property name="margin">
+        <number>0</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Field</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" colspan="2">
+        <widget class="QListView" name="listView">
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QgsFieldComboBox" name="mFieldCombo"/>
+       </item>
+       <item row="2" column="0" colspan="2">
+        <widget class="QPushButton" name="mNewButton">
+         <property name="text">
+          <string>New Rule</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="page_2">
+      <layout class="QFormLayout" name="formLayout">
+       <property name="fieldGrowthPolicy">
+        <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+       </property>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Rule</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="mRuleEdit"/>
+       </item>
+       <item row="2" column="1">
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Expanding</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="1">
+        <layout class="QGridLayout" name="gridLayout_2">
+         <item row="1" column="1">
+          <widget class="QPushButton" name="pushButton_7">
+           <property name="styleSheet">
+            <string notr="true">color: rgb(170, 64, 75);</string>
+           </property>
+           <property name="text">
+            <string>abc - 123</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="fontColor" stdset="0">
+            <color>
+             <red>188</red>
+             <green>54</green>
+             <blue>49</blue>
+            </color>
+           </property>
+           <attribute name="buttonGroup">
+            <string notr="true">mDefaultButtons</string>
+           </attribute>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QPushButton" name="mDefault3">
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(240, 204, 146);
+color: rgb(209, 166, 57);</string>
+           </property>
+           <property name="text">
+            <string>abc - 123</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="backColor" stdset="0">
+            <color>
+             <red>241</red>
+             <green>186</green>
+             <blue>118</blue>
+            </color>
+           </property>
+           <property name="fontColor" stdset="0">
+            <color>
+             <red>207</red>
+             <green>141</green>
+             <blue>61</blue>
+            </color>
+           </property>
+           <attribute name="buttonGroup">
+            <string notr="true">mDefaultButtons</string>
+           </attribute>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <widget class="QPushButton" name="pushButton_8">
+           <property name="styleSheet">
+            <string notr="true">color: rgb(209, 166, 57);</string>
+           </property>
+           <property name="text">
+            <string>abc - 123</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="fontColor" stdset="0">
+            <color>
+             <red>207</red>
+             <green>141</green>
+             <blue>61</blue>
+            </color>
+           </property>
+           <attribute name="buttonGroup">
+            <string notr="true">mDefaultButtons</string>
+           </attribute>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QPushButton" name="pushButton_3">
+           <property name="styleSheet">
+            <string notr="true">color: rgb(98, 136, 78);</string>
+           </property>
+           <property name="text">
+            <string>abc - 123</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="fontColor" stdset="0">
+            <color>
+             <red>80</red>
+             <green>157</green>
+             <blue>52</blue>
+            </color>
+           </property>
+           <attribute name="buttonGroup">
+            <string notr="true">mDefaultButtons</string>
+           </attribute>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QPushButton" name="mDefault1">
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(208, 255, 187);
+color: rgb(98, 136, 78);</string>
+           </property>
+           <property name="text">
+            <string>abc - 123</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="backColor" stdset="0">
+            <color>
+             <red>154</red>
+             <green>216</green>
+             <blue>113</blue>
+            </color>
+           </property>
+           <property name="fontColor" stdset="0">
+            <color>
+             <red>80</red>
+             <green>157</green>
+             <blue>52</blue>
+            </color>
+           </property>
+           <attribute name="buttonGroup">
+            <string notr="true">mDefaultButtons</string>
+           </attribute>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QPushButton" name="mDefault2">
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(255, 167, 151);
+color: rgb(170, 64, 75);</string>
+           </property>
+           <property name="text">
+            <string>abc - 123</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="backColor" stdset="0">
+            <color>
+             <red>255</red>
+             <green>130</green>
+             <blue>130</blue>
+            </color>
+           </property>
+           <property name="fontColor" stdset="0">
+            <color>
+             <red>188</red>
+             <green>54</green>
+             <blue>49</blue>
+            </color>
+           </property>
+           <attribute name="buttonGroup">
+            <string notr="true">mDefaultButtons</string>
+           </attribute>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Format</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QPushButton" name="mSaveRule">
+           <property name="text">
+            <string>Done</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="mCancelButton">
+           <property name="text">
+            <string>Cancel</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsFieldComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsfieldcombobox.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+ <buttongroups>
+  <buttongroup name="mDefaultButtons"/>
+ </buttongroups>
+</ui>

@@ -16,9 +16,11 @@
 
 #include "qgsfield.h"
 #include "qgsfield_p.h"
+#include "qgsexpression.h"
 
 #include <QSettings>
 #include <QtCore/qmath.h>
+
 
 #if 0
 QgsField::QgsField( QString nam, QString typ, int len, int prec, bool num,
@@ -34,7 +36,30 @@ QgsField::QgsField( QString nam, QString typ, int len, int prec, bool num,
 }
 #endif
 
-QgsField::QgsField( QString name, QVariant::Type type, QString typeName, int len, int prec, QString comment )
+bool QgsConditionalStyle::matchForValue( QVariant value )
+{
+  QgsExpression exp( QString( rule ).replace( "@value", value.toString() ) );
+  return exp.evaluate().toBool();
+}
+
+
+QgsFieldUIProperties::QgsFieldUIProperties()
+    : mStyles( QList<QgsConditionalStyle>() )
+{}
+
+void QgsFieldUIProperties::setConditionalStyles( QList<QgsConditionalStyle> styles )
+{
+  mStyles = styles;
+}
+
+QList<QgsConditionalStyle> QgsFieldUIProperties::getConditionalStyles()
+{
+  return mStyles;
+}
+
+
+QgsField::QgsField( QString name, QVariant::Type type,
+                    QString typeName, int len, int prec, QString comment )
 {
   d = new QgsFieldPrivate( name, type, typeName, len, prec, comment );
 }
@@ -175,6 +200,7 @@ bool QgsField::convertCompatible( QVariant& v ) const
 
   return true;
 }
+
 
 QDataStream& operator<<( QDataStream& out, const QgsField& field )
 {

@@ -48,6 +48,7 @@ SET(QGIS_GUI_SRCS
 
   attributetable/qgsattributetabledelegate.cpp
   attributetable/qgsattributetablefiltermodel.cpp
+  attributetable/qgsfieldconditionalformatwidget.cpp
   attributetable/qgsattributetablemodel.cpp
   attributetable/qgsattributetableview.cpp
   attributetable/qgsdualview.cpp
@@ -395,6 +396,7 @@ SET(QGIS_GUI_MOC_HDRS
   attributetable/qgsattributetablemodel.h
   attributetable/qgsattributetableview.h
   attributetable/qgsdualview.h
+  attributetable/qgsfieldconditionalformatwidget.h
   attributetable/qgsfeaturelistmodel.h
   attributetable/qgsfeaturelistview.h
   attributetable/qgsfeaturelistviewdelegate.h

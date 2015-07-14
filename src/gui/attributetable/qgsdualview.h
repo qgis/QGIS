@@ -20,6 +20,7 @@
 
 #include "ui_qgsdualviewbase.h"
 
+#include "qgsfieldconditionalformatwidget.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgscachedfeatureiterator.h"
@@ -161,6 +162,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      *         validation logic.
      */
     bool saveEditChanges();
+
+    void openConditionalStyles();
 
   signals:
     /**

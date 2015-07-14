@@ -1,3 +1,33 @@
+/** \class QgsFieldFormat
+ * Hold formatting rules and style information for a field
+ */
+class QgsConditionalStyle
+{
+
+%TypeHeaderCode
+#include <qgsfield.h>
+%End
+
+  public:
+    QString rule;
+    QFont font;
+    QColor backColor;
+    QColor textColor;
+    QPixmap icon;
+};
+
+/** \class QgsFieldUIProperties
+ *
+ */
+class QgsFieldUIProperties
+{
+public:
+  QgsFieldUIProperties();
+    void setConditionalStyles( QList<QgsConditionalStyle> styles);
+
+    QList<QgsConditionalStyle> getConditionalStyles();
+};
+
 /** \class QgsField
   * \ingroup core
   * Encapsulate a field in an attribute table or data source.

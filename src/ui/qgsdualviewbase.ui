@@ -15,22 +15,26 @@
   </property>
   <widget class="QWidget" name="mPageTableView">
    <layout class="QGridLayout" name="gridLayout_3">
-    <property name="leftMargin">
+    <property name="margin">
      <number>0</number>
     </property>
-    <property name="topMargin">
+    <property name="spacing">
      <number>0</number>
     </property>
-    <property name="rightMargin">
-     <number>0</number>
-    </property>
-    <property name="bottomMargin">
-     <number>0</number>
-    </property>
-    <item row="0" column="0">
+    <item row="0" column="1">
      <widget class="QgsAttributeTableView" name="mTableView">
       <property name="alternatingRowColors">
        <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <widget class="QgsFieldConditionalFormatWidget" name="mConditionalFormatWidget" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
      </widget>
     </item>
@@ -38,16 +42,7 @@
   </widget>
   <widget class="QWidget" name="mPageAttributeEditor">
    <layout class="QGridLayout" name="gridLayout_2">
-    <property name="leftMargin">
-     <number>0</number>
-    </property>
-    <property name="topMargin">
-     <number>0</number>
-    </property>
-    <property name="rightMargin">
-     <number>0</number>
-    </property>
-    <property name="bottomMargin">
+    <property name="margin">
      <number>0</number>
     </property>
     <item row="0" column="0">
@@ -57,16 +52,7 @@
       </property>
       <widget class="QWidget" name="listViewWdg" native="true">
        <layout class="QVBoxLayout" name="verticalLayout_2">
-        <property name="leftMargin">
-         <number>0</number>
-        </property>
-        <property name="topMargin">
-         <number>0</number>
-        </property>
-        <property name="rightMargin">
-         <number>0</number>
-        </property>
-        <property name="bottomMargin">
+        <property name="margin">
          <number>0</number>
         </property>
         <item>
@@ -120,16 +106,7 @@
         <enum>QFrame::Raised</enum>
        </property>
        <layout class="QGridLayout" name="gridLayout">
-        <property name="leftMargin">
-         <number>0</number>
-        </property>
-        <property name="topMargin">
-         <number>0</number>
-        </property>
-        <property name="rightMargin">
-         <number>0</number>
-        </property>
-        <property name="bottomMargin">
+        <property name="margin">
          <number>0</number>
         </property>
         <item row="0" column="0">
@@ -142,8 +119,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>229</width>
-             <height>503</height>
+             <width>43</width>
+             <height>26</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout_4"/>
@@ -181,6 +158,12 @@
    <class>QgsFeatureListView</class>
    <extends>QListView</extends>
    <header>attributetable/qgsfeaturelistview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFieldConditionalFormatWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfieldconditionalformatwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

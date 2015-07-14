@@ -45,6 +45,8 @@ QgsDualView::QgsDualView( QWidget* parent )
 {
   setupUi( this );
 
+  mConditionalFormatWidget->hide();
+
   mPreviewActionMapper = new QSignalMapper( this );
 
   mPreviewColumnsMenu = new QMenu( this );
@@ -67,6 +69,8 @@ void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const Qg
 
   initLayerCache( layer, request.filterType() == QgsFeatureRequest::FilterRect );
   initModels( mapCanvas, request );
+
+  mConditionalFormatWidget->setLayer( layer );
 
   mTableView->setModel( mFilterModel );
   mFeatureList->setModel( mFeatureListModel );
@@ -271,6 +275,12 @@ void QgsDualView::setCurrentEditSelection( const QgsFeatureIds& fids )
 bool QgsDualView::saveEditChanges()
 {
   return mAttributeForm->save();
+}
+
+void QgsDualView::openConditionalStyles()
+{
+  mConditionalFormatWidget->setVisible( !mConditionalFormatWidget->isVisible() );
+  mConditionalFormatWidget->viewRules();
 }
 
 void QgsDualView::previewExpressionBuilder()
