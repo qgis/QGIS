@@ -453,8 +453,15 @@ bool QgsRuleBasedRendererV2::Rule::startRender( QgsRenderContext& context, const
   }
 
   // subfilters (on the same level) are joined with OR and finally joined with AND with their parent (this) filter
-  QString sf = subfilters.join( ") OR (" ).prepend( "(" ).append( ")" );
-  filter = QString( "(%1) AND (%2)" ).arg( mFilterExp ).arg( sf );
+  QString sf;
+  if ( subfilters.length() )
+    sf = subfilters.join( ") OR (" ).prepend( "(" ).append( ")" );
+  if ( mFilterExp.length() && sf.length() )
+    filter = QString( "(%1) AND (%2)" ).arg( mFilterExp ).arg( sf );
+  else if ( mFilterExp.length() )
+    filter = mFilterExp;
+  else
+    filter = sf;
   return true;
 }
 

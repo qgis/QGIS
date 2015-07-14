@@ -87,7 +87,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
       */
     virtual QString storageType() const;
 
-    /*! Get the QgsCoordinateReferenceSystem for this layer
+    /** Get the QgsCoordinateReferenceSystem for this layer
      * @note Must be reimplemented by each provider.
      * If the provider isn't capable of returning
      * its projection an empty srs will be returned
@@ -105,7 +105,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
      */
     QGis::WkbType geometryType() const;
 
-    /** return the number of layers for the current data source
+    /** Return the number of layers for the current data source
      * @note Should this be subLayerCount() instead?
     */
     size_t layerCount() const;
@@ -172,38 +172,38 @@ class QgsOracleProvider : public QgsVectorDataProvider
      *  @param values reference to the list of unique values */
     virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 );
 
-    /**Returns true if layer is valid
+    /** Returns true if layer is valid
     */
     bool isValid();
 
     QgsAttributeList pkAttributeIndexes() { return mPrimaryKeyAttrs; }
 
-    /**Returns the default value for field specified by @c fieldName */
+    /** Returns the default value for field specified by @c fieldName */
     QVariant defaultValue( QString fieldName, QString tableName = QString::null, QString schemaName = QString::null );
 
-    /**Returns the default value for field specified by @c fieldId */
+    /** Returns the default value for field specified by @c fieldId */
     QVariant defaultValue( int fieldId );
 
-    /**Adds a list of features
+    /** Adds a list of features
       @return true in case of success and false in case of failure*/
     bool addFeatures( QgsFeatureList & flist );
 
-    /**Deletes a list of features
+    /** Deletes a list of features
       @param id list of feature ids
       @return true in case of success and false in case of failure*/
     bool deleteFeatures( const QgsFeatureIds & id );
 
-    /**Adds new attributes
+    /** Adds new attributes
       @param name map with attribute name as key and type as value
       @return true in case of success and false in case of failure*/
     bool addAttributes( const QList<QgsField> &attributes );
 
-    /**Deletes existing attributes
+    /** Deletes existing attributes
       @param names of the attributes to delete
       @return true in case of success and false in case of failure*/
     bool deleteAttributes( const QgsAttributeIds & name );
 
-    /**Changes attribute values of existing features
+    /** Changes attribute values of existing features
       @param attr_map a map containing the new attributes. The integer is the feature id,
       the first QString is the attribute name and the second one is the new attribute value
       @return true in case of success and false in case of failure*/
@@ -217,7 +217,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
      */
     bool changeGeometryValues( QgsGeometryMap & geometry_map );
 
-    /**Tries to create an spatial index file for faster access if only a subset of the features is required
+    /** Tries to create an spatial index file for faster access if only a subset of the features is required
      @return true in case of success*/
     bool createSpatialIndex();
 
@@ -227,15 +227,15 @@ class QgsOracleProvider : public QgsVectorDataProvider
     /** Accessor for sql where clause used to limit dataset */
     QString subsetString();
 
-    /** mutator for sql where clause used to limit dataset size */
+    /** Mutator for sql where clause used to limit dataset size */
     bool setSubsetString( QString theSQL, bool updateFeatureCount = true );
 
     virtual bool supportsSubsetString() { return true; }
 
-    /**Returns a bitmask containing the supported capabilities*/
+    /** Returns a bitmask containing the supported capabilities*/
     int capabilities() const;
 
-    /** return a provider name
+    /** Return a provider name
 
     Essentially just returns the provider key.  Should be used to build file
     dialogs so that providers can be shown with their supported types. Thus
@@ -251,7 +251,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
     */
     QString name() const;
 
-    /** return description
+    /** Return description
 
     Return a terse string describing what the provider is.
 
@@ -286,7 +286,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
     */
     bool loadFields();
 
-    /** convert a QgsField to work with Oracle */
+    /** Convert a QgsField to work with Oracle */
     static bool convertField( QgsField &field );
 
     QgsFields mAttributeFields;  //! List of fields
@@ -423,6 +423,8 @@ class QgsOracleUtils
                                 QgsOraclePrimaryKeyType primaryKeyType,
                                 const QList<int>& primaryKeyAttrs,
                                 QSharedPointer<QgsOracleSharedData> sharedData );
+
+    static QString andWhereClauses( const QString& c1, const QString& c2 );
 };
 
 

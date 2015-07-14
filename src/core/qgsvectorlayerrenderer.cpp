@@ -136,6 +136,7 @@ bool QgsVectorLayerRenderer::render()
 
   QgsRenderOptions opts = mRendererV2->startRender( mContext, mFields );
 
+  QgsDebugMsg( opts.whereClause() );
   QgsRectangle requestExtent = mContext.extent();
   mRendererV2->modifyRequestExtent( requestExtent, mContext );
 

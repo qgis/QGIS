@@ -464,6 +464,15 @@ QString QgsOracleUtils::whereClause( QgsFeatureIds featureIds, const QgsFields &
   return whereClauses.isEmpty() ? "" : whereClauses.join( " OR " ).prepend( "(" ).append( ")" );
 }
 
+QString QgsOracleUtils::andWhereClauses( const QString& c1, const QString& c2 )
+{
+  if ( c1.isNull() )
+    return c2;
+  if ( c2.isNull() )
+    return c1;
+
+  return QString( "(%1) AND (%2)" ).arg( c1 ).arg( c2 );
+}
 
 QString QgsOracleProvider::whereClause( QgsFeatureId featureId ) const
 {

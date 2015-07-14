@@ -801,8 +801,21 @@ class QgsVectorLayer : QgsMapLayer
     /** Return the extent of the layer as a QRect */
     QgsRectangle extent();
 
-    /** returns field list in the to-be-committed state */
+    /**
+     * Returns the list of fields of this layer.
+     * This also includes fields which have not yet been saved to the provider.
+     *
+     * @return A list of fields
+     */
     const QgsFields &pendingFields() const;
+
+    /**
+     * Returns the list of fields of this layer.
+     * This also includes fields which have not yet been saved to the provider.
+     *
+     * @return A list of fields
+     */
+    const QgsFields &fields() const;
 
     /** returns list of attributes */
     QList<int> pendingAllAttributesList();

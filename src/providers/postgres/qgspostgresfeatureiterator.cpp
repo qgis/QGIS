@@ -58,17 +58,22 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
   mCursorName = mConn->uniqueCursorName();
   QString whereClause;
 
-  if ( request.filterType() == QgsFeatureRequest::FilterRect && !mSource->mGeometryColumn.isNull() )
+  if ( !request.filterRect().isNull() && !mSource->mGeometryColumn.isNull() )
   {
     whereClause = whereClauseRect();
   }
-  else if ( request.filterType() == QgsFeatureRequest::FilterFid )
+
+  if ( request.filterType() == QgsFeatureRequest::FilterFid )
   {
-    whereClause = QgsPostgresUtils::whereClause( mRequest.filterFid(), mSource->mFields, mConn, mSource->mPrimaryKeyType, mSource->mPrimaryKeyAttrs, mSource->mShared );
+    QString fidWhereClause = QgsPostgresUtils::whereClause( mRequest.filterFid(), mSource->mFields, mConn, mSource->mPrimaryKeyType, mSource->mPrimaryKeyAttrs, mSource->mShared );
+
+    whereClause = QgsPostgresUtils::andWhereClauses( whereClause, fidWhereClause );
   }
   else if ( request.filterType() == QgsFeatureRequest::FilterFids )
   {
-    whereClause = QgsPostgresUtils::whereClause( mRequest.filterFids(), mSource->mFields, mConn, mSource->mPrimaryKeyType, mSource->mPrimaryKeyAttrs, mSource->mShared );
+    QString fidsWhereClause = QgsPostgresUtils::whereClause( mRequest.filterFids(), mSource->mFields, mConn, mSource->mPrimaryKeyType, mSource->mPrimaryKeyAttrs, mSource->mShared );
+
+    whereClause = QgsPostgresUtils::andWhereClauses( whereClause, fidsWhereClause );
   }
   else if ( request.filterType() == QgsFeatureRequest::FilterExpression
             && QSettings().value( "/qgis/postgres/compileExpressions", false ).toBool() )
@@ -77,7 +82,7 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
 
     if ( compiler.compile( request.filterExpression() ) == QgsPostgresExpressionCompiler::Complete )
     {
-      whereClause = compiler.result();
+      whereClause = QgsPostgresUtils::andWhereClauses( whereClause, compiler.result() );
       mExpressionCompiled = true;
     }
   }

@@ -72,6 +72,15 @@ class ProviderTestCase(object):
         features = [f['pk'] for f in self.provider.getFeatures(QgsFeatureRequest().setFilterRect(extent))]
         assert set(features) == set([2L, 4L]), 'Got {} instead'.format(features)
 
+    def testRectAndExpression(self):
+        extent = QgsRectangle(-70, 67, -60, 80)
+        result = set([f['pk'] for f in self.provider.getFeatures(
+            QgsFeatureRequest()
+                .setFilterExpression('"cnt">200')
+                .setFilterRect(extent))])
+        expected=[4L]
+        assert set(expected) == result, 'Expected {} and got {} when testing for combination of filterRect and expression'.format(set(expected), result)
+
     def testMinValue(self):
         assert self.provider.minimumValue(1) == -200
         assert self.provider.minimumValue(2) == 'Apple'
