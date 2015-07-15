@@ -563,7 +563,7 @@ namespace pal
     double alpha;
     double cost;
 
-    unsigned long flags = f->layer->arrangementFlags();
+    LineArrangementFlags flags = f->layer->arrangementFlags();
     if ( flags == 0 )
       flags = FLAG_ON_LINE; // default flag
 

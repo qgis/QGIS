@@ -98,13 +98,13 @@ namespace pal
       /** Returns the layer's arrangement flags.
        * @see setArrangementFlags
        */
-      unsigned long arrangementFlags() const { return mArrangementFlags; }
+      LineArrangementFlags arrangementFlags() const { return mArrangementFlags; }
 
       /** Sets the layer's arrangement flags.
        * @param flags arrangement flags
        * @see arrangementFlags
        */
-      void setArrangementFlags( unsigned long flags ) { mArrangementFlags = flags; }
+      void setArrangementFlags( LineArrangementFlags flags ) { mArrangementFlags = flags; }
 
       /**
        * \brief Sets whether the layer is currently active.
@@ -267,7 +267,7 @@ namespace pal
 
       /** Optional flags used for some placement methods */
       Arrangement mArrangement;
-      unsigned long mArrangementFlags;
+      LineArrangementFlags mArrangementFlags;
       LabelMode mMode;
       bool mMergeLines;
 

@@ -3237,7 +3237,7 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames,
                              lyr.displayAll );
 
   if ( lyr.placementFlags )
-    l->setArrangementFlags( lyr.placementFlags );
+    l->setArrangementFlags(( LineArrangementFlags )lyr.placementFlags );
 
   // set label mode (label per feature is the default)
   l->setLabelMode( lyr.labelPerPart ? Layer::LabelPerFeaturePart : Layer::LabelPerFeature );
@@ -3324,7 +3324,7 @@ int QgsPalLabeling::addDiagramLayer( QgsVectorLayer* layer, const QgsDiagramLaye
 {
   double priority = 1 - s->priority / 10.0; // convert 0..10 --> 1..0
   Layer* l = mPal->addLayer( layer->id().append( "d" ).toUtf8().data(), pal::Arrangement( s->placement ), priority, s->obstacle, true, true );
-  l->setArrangementFlags( s->placementFlags );
+  l->setArrangementFlags(( LineArrangementFlags )s->placementFlags );
 
   mActiveDiagramLayers.insert( layer->id(), *s );
   // initialize the local copy

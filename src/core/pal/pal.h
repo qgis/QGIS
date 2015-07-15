@@ -59,7 +59,7 @@ namespace pal
   class PointSet;
 
   /** Search method to use */
-  enum _searchMethod
+  enum SearchMethod
   {
     CHAIN = 0, /**< is the worst but fastest method */
     POPMUSIC_TABU_CHAIN = 1, /**< is the best but slowest */
@@ -68,14 +68,11 @@ namespace pal
     FALP = 4 /** only initial solution */
   };
 
-  /** Typedef for _Units enumeration */
-  typedef enum _searchMethod SearchMethod;
-
   /** The way to arrange labels against spatial entities
    *
    * image html arrangement.png "Arrangement modes" width=7cm
    * */
-  enum _arrangement
+  enum Arrangement
   {
     P_POINT = 0, /**< arranges candidates around a point (centroid for polygon)*/
     P_POINT_OVER, /** arranges candidates over a point (centroid for polygon)*/
@@ -85,17 +82,15 @@ namespace pal
     P_FREE /**< Only for polygon, arranges candidates with respect of polygon orientation */
   };
 
-  /** Typedef for _arrangement enumeration */
-  typedef enum _arrangement Arrangement;
-
   /** Enumeration line arrangement flags. Flags can be combined. */
-  enum LineArrangementFlags
+  enum LineArrangementFlag
   {
     FLAG_ON_LINE     = 1,
     FLAG_ABOVE_LINE  = 2,
     FLAG_BELOW_LINE  = 4,
     FLAG_MAP_ORIENTATION = 8
   };
+  Q_DECLARE_FLAGS( LineArrangementFlags, LineArrangementFlag )
 
   /**
    *  \brief Pal main class.
@@ -389,5 +384,9 @@ namespace pal
        */
       int getMaxIt();
   };
+
 } // end namespace pal
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( pal::LineArrangementFlags )
+
 #endif
