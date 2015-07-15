@@ -1302,5 +1302,17 @@ class TestQgsGeometry(TestCase):
         wkt = p.exportToWkt()
         assert compareWkt( expWkt, wkt ), "testRegression13053 failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
 
+    def testRegression13055(self):
+        """ See http://hub.qgis.org/issues/13055
+            Testing that invalid WKT with z values but not using PolygonZ is still parsed
+            by QGIS.
+        """
+        p = QgsGeometry.fromWkt('Polygon((0 0 0, 0 1 0, 1 1 0, 0 0 0 ))')
+        assert p is not None
+
+        expWkt ='Polygon ((0 0, 0 1, 1 1, 0 0))'
+        wkt = p.exportToWkt()
+        assert compareWkt( expWkt, wkt ), "testRegression13055 failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
+
 if __name__ == '__main__':
     unittest.main()
