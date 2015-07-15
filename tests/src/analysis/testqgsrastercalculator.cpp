@@ -72,7 +72,7 @@ void  TestQgsRasterCalculator::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  QString testDataDir = QString( TEST_DATA_DIR ) + QDir::separator(); //defined in CmakeLists.txt
+  QString testDataDir = QString( TEST_DATA_DIR ) + "/"; //defined in CmakeLists.txt
 
   QString landsatFileName = testDataDir + "landsat.tif";
   QFileInfo landsatRasterFileInfo( landsatFileName );
@@ -431,7 +431,7 @@ void TestQgsRasterCalculator::calcWithLayers()
 
   QgsCoordinateReferenceSystem crs;
   crs.createFromId( 32633, QgsCoordinateReferenceSystem::EpsgCrsId );
-  QgsRectangle extent( 783270, 3348110, 783370, 3347910 );
+  QgsRectangle extent( 783235, 3348110, 783350, 3347960 );
 
   QTemporaryFile tmpFile;
   tmpFile.open(); // fileName is no avialable until open
@@ -451,10 +451,10 @@ void TestQgsRasterCalculator::calcWithLayers()
   QgsRasterBlock* block = result->dataProvider()->block( 1, extent, 2, 3 );
   QCOMPARE( block->value( 0, 0 ), 127.0 );
   QCOMPARE( block->value( 0, 1 ), 127.0 );
-  QCOMPARE( block->value( 1, 0 ), 127.0 );
-  QCOMPARE( block->value( 1, 1 ), 126.0 );
-  QCOMPARE( block->value( 2, 0 ), 128.0 );
-  QCOMPARE( block->value( 2, 1 ), 129.0 );
+  QCOMPARE( block->value( 1, 0 ), 126.0 );
+  QCOMPARE( block->value( 1, 1 ), 127.0 );
+  QCOMPARE( block->value( 2, 0 ), 127.0 );
+  QCOMPARE( block->value( 2, 1 ), 126.0 );
   delete result;
   delete block;
 
@@ -472,10 +472,10 @@ void TestQgsRasterCalculator::calcWithLayers()
   block = result->dataProvider()->block( 1, extent, 2, 3 );
   QCOMPARE( block->value( 0, 0 ), 265.0 );
   QCOMPARE( block->value( 0, 1 ), 263.0 );
-  QCOMPARE( block->value( 1, 0 ), 266.0 );
-  QCOMPARE( block->value( 1, 1 ), 261.0 );
+  QCOMPARE( block->value( 1, 0 ), 263.0 );
+  QCOMPARE( block->value( 1, 1 ), 264.0 );
   QCOMPARE( block->value( 2, 0 ), 266.0 );
-  QCOMPARE( block->value( 2, 1 ), 268.0 );
+  QCOMPARE( block->value( 2, 1 ), 261.0 );
   delete result;
   delete block;
 }
@@ -497,7 +497,7 @@ void TestQgsRasterCalculator::calcWithReprojectedLayers()
 
   QgsCoordinateReferenceSystem crs;
   crs.createFromId( 32633, QgsCoordinateReferenceSystem::EpsgCrsId );
-  QgsRectangle extent( 783270, 3348110, 783370, 3347910 );
+  QgsRectangle extent( 783235, 3348110, 783350, 3347960 );
 
   QTemporaryFile tmpFile;
   tmpFile.open(); // fileName is no avialable until open
@@ -515,12 +515,12 @@ void TestQgsRasterCalculator::calcWithReprojectedLayers()
   QCOMPARE( result->width(), 2 );
   QCOMPARE( result->height(), 3 );
   QgsRasterBlock* block = result->dataProvider()->block( 1, extent, 2, 3 );
-  QCOMPARE( block->value( 0, 0 ), 263.0 );
+  QCOMPARE( block->value( 0, 0 ), 264.0 );
   QCOMPARE( block->value( 0, 1 ), 263.0 );
-  QCOMPARE( block->value( 1, 0 ), 262.0 );
-  QCOMPARE( block->value( 1, 1 ), 261.0 );
-  QCOMPARE( block->value( 2, 0 ), 267.0 );
-  QCOMPARE( block->value( 2, 1 ), 268.0 );
+  QCOMPARE( block->value( 1, 0 ), 264.0 );
+  QCOMPARE( block->value( 1, 1 ), 264.0 );
+  QCOMPARE( block->value( 2, 0 ), 266.0 );
+  QCOMPARE( block->value( 2, 1 ), 261.0 );
   delete result;
   delete block;
 }

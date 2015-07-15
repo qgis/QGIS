@@ -129,7 +129,7 @@ void TestQgsScaleComboBox::basic()
   QCOMPARE( s->scale(), ( double ) 1.0 / ( double ) 240.0 );
 
   // Test setting programatically illegal string
-  s->setScaleString( QString( "1:2.4" ) );
+  s->setScaleString( QString( "1:2" ) + QLocale::system().decimalPoint() + "4" );
   QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( QLocale::system().toString( 240 ) ) );
   QCOMPARE( s->scale(), ( double ) 1.0 / ( double ) 240.0 );
 

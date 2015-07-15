@@ -51,18 +51,8 @@ class TestPyQgsPostgresProvider(TestCase, ProviderTestCase):
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
-        shutil.rmtree(cls.basetestpath)
-        shutil.rmtree(cls.repackfilepath)
-
-    def testUnique(self):
-        """
-        Override parent method because OGR doesn't return NULL values in SELECT DISTINCT...
-        This is only to make the tests pass, not to define this as expected behavior so if it is possible to remove this
-        in the future even better.
-        """
-        assert set(self.provider.uniqueValues(1)) == set([-200, 100, 200, 300, 400])
-        assert set([u'Apple', u'Honey', u'Orange', u'Pear']) == set(self.provider.uniqueValues(2)), 'Got {}'.format(
-            set(self.provider.uniqueValues(2)))
+        shutil.rmtree(cls.basetestpath, True)
+        shutil.rmtree(cls.repackfilepath, True)
 
     def testRepack(self):
         vl = QgsVectorLayer(u'{}|layerid=0'.format(self.repackfile), u'test', u'ogr')

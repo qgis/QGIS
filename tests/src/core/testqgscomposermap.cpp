@@ -34,6 +34,7 @@ class TestQgsComposerMap : public QObject
     TestQgsComposerMap()
         : mComposition( 0 )
         , mComposerMap( 0 )
+        , mMapSettings( 0 )
         , mRasterLayer( 0 )
     {}
 
@@ -48,9 +49,9 @@ class TestQgsComposerMap : public QObject
     void mapPolygonVertices(); // test mapPolygon function with no map rotation
 
   private:
-    QgsComposition* mComposition;
-    QgsComposerMap* mComposerMap;
-    QgsMapSettings mMapSettings;
+    QgsComposition *mComposition;
+    QgsComposerMap *mComposerMap;
+    QgsMapSettings *mMapSettings;
     QgsRasterLayer* mRasterLayer;
     QString mReport;
 };
@@ -60,8 +61,10 @@ void TestQgsComposerMap::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
+  mMapSettings = new QgsMapSettings();
+
   //create maplayers from testdata and add to layer registry
-  QFileInfo rasterFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "landsat.tif" );
+  QFileInfo rasterFileInfo( QString( TEST_DATA_DIR ) + "/landsat.tif" );
   mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
                                      rasterFileInfo.completeBaseName() );
   QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 2, 3, 4 );
@@ -70,9 +73,9 @@ void TestQgsComposerMap::initTestCase()
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mRasterLayer );
 
   //create composition with composer map
-  mMapSettings.setLayers( QStringList() << mRasterLayer->id() );
-  mMapSettings.setCrsTransformEnabled( false );
-  mComposition = new QgsComposition( mMapSettings );
+  mMapSettings->setLayers( QStringList() << mRasterLayer->id() );
+  mMapSettings->setCrsTransformEnabled( false );
+  mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
   mComposerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
   mComposerMap->setFrameEnabled( true );
@@ -84,8 +87,9 @@ void TestQgsComposerMap::initTestCase()
 void TestQgsComposerMap::cleanupTestCase()
 {
   delete mComposition;
+  delete mMapSettings;
 
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {

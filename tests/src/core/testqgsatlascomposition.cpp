@@ -44,10 +44,13 @@ class TestQgsAtlasComposition : public QObject
         , mLabel2( 0 )
         , mAtlasMap( 0 )
         , mOverview( 0 )
+        , mMapSettings( 0 )
         , mVectorLayer( 0 )
         , mVectorLayer2( 0 )
         , mAtlas( 0 )
     {}
+
+    ~TestQgsAtlasComposition();
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -86,8 +89,7 @@ class TestQgsAtlasComposition : public QObject
     QgsComposerLabel* mLabel2;
     QgsComposerMap* mAtlasMap;
     QgsComposerMap* mOverview;
-    //QgsMapRenderer* mMapRenderer;
-    QgsMapSettings mMapSettings;
+    QgsMapSettings *mMapSettings;
     QgsVectorLayer* mVectorLayer;
     QgsVectorLayer* mVectorLayer2;
     QgsAtlasComposition* mAtlas;
@@ -99,8 +101,10 @@ void TestQgsAtlasComposition::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
+  mMapSettings = new QgsMapSettings();
+
   //create maplayers from testdata and add to layer registry
-  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "france_parts.shp" );
+  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + "/france_parts.shp" );
   mVectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
                                      vectorFileInfo.completeBaseName(),
                                      "ogr" );
@@ -117,12 +121,18 @@ void TestQgsAtlasComposition::initTestCase()
   mReport = "<h1>Composer Atlas Tests</h1>\n";
 }
 
+TestQgsAtlasComposition::~TestQgsAtlasComposition()
+{
+  delete mMapSettings;
+}
+
+
 void TestQgsAtlasComposition::cleanupTestCase()
 {
   delete mComposition;
   QgsApplication::exitQgis();
 
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -135,15 +145,15 @@ void TestQgsAtlasComposition::cleanupTestCase()
 void TestQgsAtlasComposition::init()
 {
   //create composition with composer map
-  mMapSettings.setLayers( QStringList() << mVectorLayer->id() );
-  mMapSettings.setCrsTransformEnabled( true );
-  mMapSettings.setMapUnits( QGis::Meters );
+  mMapSettings->setLayers( QStringList() << mVectorLayer->id() );
+  mMapSettings->setCrsTransformEnabled( true );
+  mMapSettings->setMapUnits( QGis::Meters );
 
   // select epsg:2154
   QgsCoordinateReferenceSystem crs;
   crs.createFromSrid( 2154 );
-  mMapSettings.setDestinationCrs( crs );
-  mComposition = new QgsComposition( mMapSettings );
+  mMapSettings->setDestinationCrs( crs );
+  mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   // fix the renderer, fill with green

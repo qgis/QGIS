@@ -41,11 +41,12 @@ class CORE_EXPORT QgsRenderChecker
     QgsRenderChecker();
 
     //! Destructor
-    ~QgsRenderChecker() {};
+    ~QgsRenderChecker() {}
 
     QString controlImagePath() const;
 
-    QString report() { return mReport; };
+    QString report() { return mReport; }
+
     float matchPercent()
     {
       return static_cast<float>( mMismatchCount ) /
@@ -55,7 +56,7 @@ class CORE_EXPORT QgsRenderChecker
     unsigned int matchTarget() { return mMatchTarget; }
     //only records time for actual render part
     int elapsedTime() { return mElapsedTime; }
-    void setElapsedTimeTarget( int theTarget ) { mElapsedTimeTarget = theTarget; };
+    void setElapsedTimeTarget( int theTarget ) { mElapsedTimeTarget = theTarget; }
 
     /** Base directory name for the control image (with control image path
       * suffixed) the path to the image will be constructed like this:
@@ -66,9 +67,9 @@ class CORE_EXPORT QgsRenderChecker
     /** Prefix where the control images are kept.
      * This will be appended to controlImagePath
       */
-    void setControlPathPrefix( const QString &theName ) { mControlPathPrefix = theName + QDir::separator(); }
+    void setControlPathPrefix( const QString &theName ) { mControlPathPrefix = theName + "/"; }
 
-    void setControlPathSuffix( const QString& theName ) { mControlPathSuffix = theName + QDir::separator(); }
+    void setControlPathSuffix( const QString& theName ) { mControlPathSuffix = theName + "/"; }
 
     /** Get an md5 hash that uniquely identifies an image */
     QString imageToHash( QString theImageFile );
@@ -96,6 +97,14 @@ class CORE_EXPORT QgsRenderChecker
      * @note added in 2.1
      */
     void setColorTolerance( unsigned int theColorTolerance ) { mColorTolerance = theColorTolerance; }
+
+    /** Sets the largest allowable difference in size between the rendered and the expected image.
+     * @param xTolerance x tolerance in pixels
+     * @param yTolerance y tolerance in pixels
+     * @note added in QGIS 2.12
+     */
+    void setSizeTolerance( int xTolerance, int yTolerance ) { mMaxSizeDifferenceX = xTolerance; mMaxSizeDifferenceY = yTolerance; }
+
     /**
      * Test using renderer to generate the image to be compared.
      * @param theTestName - to be used as the basis for writing a file to
@@ -129,7 +138,7 @@ class CORE_EXPORT QgsRenderChecker
     */
     bool isKnownAnomaly( QString theDiffImageFile );
 
-    /**Draws a checkboard pattern for image backgrounds, so that transparency is visible
+    /** Draws a checkboard pattern for image backgrounds, so that transparency is visible
      * without requiring a transparent background for the image
      */
     static void drawBackground( QImage* image );
@@ -173,6 +182,8 @@ class CORE_EXPORT QgsRenderChecker
     QString mControlName;
     unsigned int mMismatchCount;
     unsigned int mColorTolerance;
+    int mMaxSizeDifferenceX;
+    int mMaxSizeDifferenceY;
     int mElapsedTimeTarget;
     QgsMapSettings mMapSettings;
     QString mControlPathPrefix;

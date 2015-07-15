@@ -37,6 +37,7 @@ class TestQgsComposerTable : public QObject
         : mComposition( 0 )
         , mComposerMap( 0 )
         , mComposerTextTable( 0 )
+        , mMapSettings( 0 )
         , mVectorLayer( 0 )
         , mComposerAttributeTable( 0 )
     {}
@@ -64,7 +65,7 @@ class TestQgsComposerTable : public QObject
     QgsComposition* mComposition;
     QgsComposerMap* mComposerMap;
     QgsComposerTextTable* mComposerTextTable;
-    QgsMapSettings mMapSettings;
+    QgsMapSettings *mMapSettings;
     QgsVectorLayer* mVectorLayer;
     QgsComposerAttributeTable* mComposerAttributeTable;
 
@@ -77,16 +78,18 @@ void TestQgsComposerTable::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
+  mMapSettings = new QgsMapSettings();
+
   //create maplayers from testdata and add to layer registry
-  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "points.shp" );
+  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + "/" +  "points.shp" );
   mVectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
                                      vectorFileInfo.completeBaseName(),
                                      "ogr" );
 
   //create composition with composer map
-  mMapSettings.setLayers( QStringList() << mVectorLayer->id() );
-  mMapSettings.setCrsTransformEnabled( false );
-  mComposition = new QgsComposition( mMapSettings );
+  mMapSettings->setLayers( QStringList() << mVectorLayer->id() );
+  mMapSettings->setCrsTransformEnabled( false );
+  mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   mComposerTextTable = new QgsComposerTextTable( mComposition );
@@ -102,6 +105,7 @@ void TestQgsComposerTable::initTestCase()
 void TestQgsComposerTable::cleanupTestCase()
 {
   delete mComposition;
+  delete mMapSettings;
 
   QgsApplication::exitQgis();
 }

@@ -40,6 +40,7 @@ class TestQgsComposerPaper : public QObject
         , mMarkerLine( 0 )
         , mFillSymbol( 0 )
         , mMarkerLineSymbol( 0 )
+        , mMapSettings( 0 )
     {}
 
   private slots:
@@ -59,7 +60,7 @@ class TestQgsComposerPaper : public QObject
     QgsMarkerLineSymbolLayerV2* mMarkerLine;
     QgsFillSymbolV2* mFillSymbol;
     QgsFillSymbolV2* mMarkerLineSymbol;
-    QgsMapSettings mMapSettings;
+    QgsMapSettings *mMapSettings;
     // QgsSingleSymbolRendererV2* mSymbolRenderer;
 
 };
@@ -70,7 +71,8 @@ void TestQgsComposerPaper::initTestCase()
   QgsApplication::initQgis();
 
   //create empty composition
-  mComposition = new QgsComposition( mMapSettings );
+  mMapSettings = new QgsMapSettings();
+  mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   //setup simple fill
@@ -89,8 +91,9 @@ void TestQgsComposerPaper::initTestCase()
 void TestQgsComposerPaper::cleanupTestCase()
 {
   delete mComposition;
+  delete mMapSettings;
 
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {

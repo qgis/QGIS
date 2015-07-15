@@ -41,12 +41,17 @@ class TestQgsBlendModes : public QObject
 
   public:
     TestQgsBlendModes()
-        : mpPointsLayer( 0 )
+        : mMapSettings( 0 )
+        , mpPointsLayer( 0 )
         , mpPolysLayer( 0 )
         , mpLinesLayer( 0 )
         , mRasterLayer1( 0 )
         , mRasterLayer2( 0 )
     {}
+    ~TestQgsBlendModes()
+    {
+      delete mMapSettings;
+    }
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -60,7 +65,7 @@ class TestQgsBlendModes : public QObject
     void rasterBlending();
   private:
     bool imageCheck( QString theType ); //as above
-    QgsMapSettings mMapSettings;
+    QgsMapSettings *mMapSettings;
     QgsMapLayer * mpPointsLayer;
     QgsVectorLayer * mpPolysLayer;
     QgsVectorLayer * mpLinesLayer;
@@ -80,11 +85,13 @@ void TestQgsBlendModes::initTestCase()
   QgsApplication::initQgis();
   QgsApplication::showSettings();
 
+  mMapSettings = new QgsMapSettings();
+
   //create some objects that will be used in tests
 
   //create a point layer
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-  mTestDataDir = myDataDir + QDir::separator();
+  mTestDataDir = myDataDir + "/";
   QString myPointsFileName = mTestDataDir + "points.shp";
   QFileInfo myPointFileInfo( myPointsFileName );
   mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
@@ -133,7 +140,7 @@ void TestQgsBlendModes::initTestCase()
 }
 void TestQgsBlendModes::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -151,12 +158,12 @@ void TestQgsBlendModes::vectorBlending()
   QStringList myLayers;
   myLayers << mpLinesLayer->id();
   myLayers << mpPolysLayer->id();
-  mMapSettings.setLayers( myLayers );
+  mMapSettings->setLayers( myLayers );
 
   //Set blending modes for both layers
   mpLinesLayer->setBlendMode( QPainter::CompositionMode_Difference );
   mpPolysLayer->setBlendMode( QPainter::CompositionMode_Difference );
-  mMapSettings.setExtent( mExtent );
+  mMapSettings->setExtent( mExtent );
   bool res = imageCheck( "vector_blendmodes" );
 
   //Reset layers
@@ -172,11 +179,11 @@ void TestQgsBlendModes::featureBlending()
   QStringList myLayers;
   myLayers << mpLinesLayer->id();
   myLayers << mpPolysLayer->id();
-  mMapSettings.setLayers( myLayers );
+  mMapSettings->setLayers( myLayers );
 
   //Set feature blending modes for point layer
   mpLinesLayer->setFeatureBlendMode( QPainter::CompositionMode_Plus );
-  mMapSettings.setExtent( mExtent );
+  mMapSettings->setExtent( mExtent );
   bool res = imageCheck( "vector_featureblendmodes" );
 
   //Reset layers
@@ -191,11 +198,11 @@ void TestQgsBlendModes::vectorLayerTransparency()
   QStringList myLayers;
   myLayers << mpLinesLayer->id();
   myLayers << mpPolysLayer->id();
-  mMapSettings.setLayers( myLayers );
+  mMapSettings->setLayers( myLayers );
 
   //Set feature blending modes for point layer
   mpLinesLayer->setLayerTransparency( 50 );
-  mMapSettings.setExtent( mExtent );
+  mMapSettings->setExtent( mExtent );
   bool res = imageCheck( "vector_layertransparency" );
 
   //Reset layers
@@ -210,8 +217,8 @@ void TestQgsBlendModes::rasterBlending()
   QStringList myLayers;
   myLayers << mRasterLayer1->id();
   myLayers << mRasterLayer2->id();
-  mMapSettings.setLayers( myLayers );
-  mMapSettings.setExtent( mRasterLayer1->extent() );
+  mMapSettings->setLayers( myLayers );
+  mMapSettings->setExtent( mRasterLayer1->extent() );
 
   // set blending mode for top layer
   mRasterLayer1->setBlendMode( QPainter::CompositionMode_Difference );
@@ -226,10 +233,10 @@ bool TestQgsBlendModes::imageCheck( QString theTestType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
-  mMapSettings.setOutputDpi( 96 );
+  mMapSettings->setOutputDpi( 96 );
   QgsMultiRenderChecker myChecker;
   myChecker.setControlName( "expected_" + theTestType );
-  myChecker.setMapSettings( mMapSettings );
+  myChecker.setMapSettings( *mMapSettings );
   myChecker.setColorTolerance( 1 );
   bool myResultFlag = myChecker.runTest( theTestType, 20 );
   mReport += myChecker.report();

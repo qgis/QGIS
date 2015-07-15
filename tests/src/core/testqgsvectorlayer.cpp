@@ -21,7 +21,6 @@
 #include <QDir>
 #include <QDesktopServices>
 
-#include <iostream>
 //qgis includes...
 #include <qgsmaprenderer.h>
 #include <qgsmaplayer.h>
@@ -40,10 +39,11 @@ class TestSignalReceiver : public QObject
     Q_OBJECT
 
   public:
-    TestSignalReceiver() : QObject( 0 ),
-        rendererChanged( false ),
-        featureBlendMode( QPainter::CompositionMode( 0 ) ),
-        transparency( 0 )
+    TestSignalReceiver()
+        : QObject( 0 )
+        , rendererChanged( false )
+        , featureBlendMode( QPainter::CompositionMode( 0 ) )
+        , transparency( 0 )
     {}
     bool rendererChanged;
     QPainter::CompositionMode featureBlendMode;
@@ -106,7 +106,7 @@ class TestQgsVectorLayer : public QObject
       //create a non spatial layer that will be used in all tests...
       //
       QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
-      mTestDataDir = myDataDir + QDir::separator();
+      mTestDataDir = myDataDir + "/";
       QString myDbfFileName = mTestDataDir + "nonspatial.dbf";
       QFileInfo myDbfFileInfo( myDbfFileName );
       mpNonSpatialLayer = new QgsVectorLayer( myDbfFileInfo.filePath(),
@@ -163,7 +163,7 @@ class TestQgsVectorLayer : public QObject
     // will be called after the last testfunction was executed.
     void cleanupTestCase()
     {
-      QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+      QString myReportFile = QDir::tempPath() + "/qgistest.html";
       QFile myFile( myReportFile );
       if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
       {

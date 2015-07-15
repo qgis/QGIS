@@ -93,9 +93,9 @@ void TestQgsMapRendererJob::testNormal()
 
   // TODO: custom painter
 
-  imgS.save( "/tmp/imgS.png" );
-  imgP.save( "/tmp/imgP.png" );
-  //img.save("/tmp/img5.png");
+  imgS.save( QDir::tempPath() + "/imgS.png" );
+  imgP.save( QDir::tempPath() + "/imgP.png" );
+  //img.save( QDir::tempPath() + "/img5.png");
 
   QCOMPARE( imgS, imgP );
 }

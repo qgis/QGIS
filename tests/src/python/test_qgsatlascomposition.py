@@ -116,10 +116,9 @@ class TestQgsAtlasComposition(unittest.TestCase):
         self.predefinedscales_render_test()
         self.hidden_render_test()
 
-        shutil.rmtree(tmppath)
+        shutil.rmtree(tmppath, True)
 
     def filename_test(self):
-
         self.mAtlas.setFilenamePattern("'output_' || $feature")
         self.mAtlas.beginRender()
         for i in range(0, self.mAtlas.numFeatures()):

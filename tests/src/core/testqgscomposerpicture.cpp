@@ -59,20 +59,19 @@ class TestQgsComposerPicture : public QObject
     void pictureExpression();
     void pictureInvalidExpression();
 
-    void pictureRemoteUrl(); //test fetching picture from a url
-
   private:
     QgsComposition* mComposition;
     QgsComposerPicture* mComposerPicture;
-    QgsMapSettings mMapSettings;
+    QgsMapSettings *mMapSettings;
     QString mReport;
     QString mPngImage;
     QString mSvgImage;
 };
 
 TestQgsComposerPicture::TestQgsComposerPicture()
-    : mComposition( NULL )
-    , mComposerPicture( NULL )
+    : mComposition( 0 )
+    , mComposerPicture( 0 )
+    , mMapSettings( 0 )
 {
 
 }
@@ -82,10 +81,12 @@ void TestQgsComposerPicture::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  mPngImage = QString( TEST_DATA_DIR ) + QDir::separator() +  "sample_image.png";
-  mSvgImage = QString( TEST_DATA_DIR ) + QDir::separator() +  "sample_svg.svg";
+  mMapSettings = new QgsMapSettings();
 
-  mComposition = new QgsComposition( mMapSettings );
+  mPngImage = QString( TEST_DATA_DIR ) + "/sample_image.png";
+  mSvgImage = QString( TEST_DATA_DIR ) + "/sample_svg.svg";
+
+  mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   mComposerPicture = new QgsComposerPicture( mComposition );
@@ -99,8 +100,9 @@ void TestQgsComposerPicture::initTestCase()
 void TestQgsComposerPicture::cleanupTestCase()
 {
   delete mComposition;
+  delete mMapSettings;
 
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -351,8 +353,7 @@ void TestQgsComposerPicture::pictureExpression()
   //test picture source via expression
   mComposition->addComposerPicture( mComposerPicture );
 
-  QString expr = QString( "'" ) + QString( TEST_DATA_DIR ) + QDir::separator()
-                 + QString( "' || 'sample_svg.svg'" );
+  QString expr = QString( "'%1' || '/sample_svg.svg'" ).arg( TEST_DATA_DIR );
   mComposerPicture->setPictureExpression( expr );
   mComposerPicture->setUsePictureExpression( true );
 
@@ -373,20 +374,6 @@ void TestQgsComposerPicture::pictureInvalidExpression()
   mComposerPicture->setUsePictureExpression( true );
 
   QgsCompositionChecker checker( "composerpicture_badexpression", mComposition );
-  QVERIFY( checker.testComposition( mReport, 0, 0 ) );
-
-  mComposition->removeItem( mComposerPicture );
-  mComposerPicture->setUsePictureExpression( false );
-}
-
-void TestQgsComposerPicture::pictureRemoteUrl()
-{
-  //test picture source via bad expression
-  mComposition->addComposerPicture( mComposerPicture );
-
-  mComposerPicture->setPicturePath( "http://www.qgis.org/en/_static/logo.png" );
-
-  QgsCompositionChecker checker( "composerpicture_remote", mComposition );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 
   mComposition->removeItem( mComposerPicture );

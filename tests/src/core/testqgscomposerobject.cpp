@@ -20,6 +20,8 @@
 #include "qgscompositionchecker.h"
 #include "qgsdatadefined.h"
 #include "qgsexpression.h"
+#include "qgsapplication.h"
+
 #include <QObject>
 #include <QtTest/QtTest>
 
@@ -28,7 +30,11 @@ class TestQgsComposerObject : public QObject
     Q_OBJECT
 
   public:
-    TestQgsComposerObject();
+    TestQgsComposerObject()
+        : mComposition( 0 )
+        , mMapSettings( 0 )
+    {
+    }
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -44,21 +50,19 @@ class TestQgsComposerObject : public QObject
 
   private:
     bool renderCheck( QString testName, QImage &image, int mismatchCount = 0 );
-    QgsComposition* mComposition;
-    QgsMapSettings mMapSettings;
+    QgsComposition *mComposition;
+    QgsMapSettings *mMapSettings;
     QString mReport;
 
 };
 
-TestQgsComposerObject::TestQgsComposerObject()
-    : mComposition( NULL )
-{
-
-}
-
 void TestQgsComposerObject::initTestCase()
 {
-  mComposition = new QgsComposition( mMapSettings );
+  QgsApplication::init();
+  QgsApplication::initQgis();
+
+  mMapSettings = new QgsMapSettings();
+  mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   mReport = "<h1>Composer Object Tests</h1>\n";
@@ -67,8 +71,9 @@ void TestQgsComposerObject::initTestCase()
 void TestQgsComposerObject::cleanupTestCase()
 {
   delete mComposition;
+  delete mMapSettings;
 
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
@@ -80,12 +85,10 @@ void TestQgsComposerObject::cleanupTestCase()
 
 void TestQgsComposerObject::init()
 {
-
 }
 
 void TestQgsComposerObject::cleanup()
 {
-
 }
 
 void TestQgsComposerObject::creation()
@@ -230,7 +233,7 @@ void TestQgsComposerObject::writeRetrieveDDProperty()
 bool TestQgsComposerObject::renderCheck( QString testName, QImage &image, int mismatchCount )
 {
   mReport += "<h2>" + testName + "</h2>\n";
-  QString myTmpDir = QDir::tempPath() + QDir::separator();
+  QString myTmpDir = QDir::tempPath() + "/";
   QString myFileName = myTmpDir + testName + ".png";
   image.save( myFileName, "PNG" );
   QgsRenderChecker myChecker;

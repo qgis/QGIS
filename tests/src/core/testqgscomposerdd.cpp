@@ -39,6 +39,7 @@ class TestQgsComposerDD : public QObject
   public:
     TestQgsComposerDD()
         : mComposition( 0 )
+        , mMapSettings( 0 )
         , mVectorLayer( 0 )
         , mAtlasMap( 0 )
         , mAtlas( 0 )
@@ -53,8 +54,8 @@ class TestQgsComposerDD : public QObject
     void ddEvaluate(); //test setting/evaluating data defined value
 
   private:
-    QgsComposition* mComposition;
-    QgsMapSettings mMapSettings;
+    QgsComposition *mComposition;
+    QgsMapSettings *mMapSettings;
     QgsVectorLayer* mVectorLayer;
     QgsComposerMap* mAtlasMap;
     QgsAtlasComposition* mAtlas;
@@ -66,8 +67,10 @@ void TestQgsComposerDD::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
+  mMapSettings = new QgsMapSettings();
+
   //create maplayers from testdata and add to layer registry
-  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "france_parts.shp" );
+  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + "/france_parts.shp" );
   mVectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
                                      vectorFileInfo.completeBaseName(),
                                      "ogr" );
@@ -79,15 +82,15 @@ void TestQgsComposerDD::initTestCase()
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mVectorLayer );
 
   //create composition with composer map
-  mMapSettings.setLayers( QStringList() << mVectorLayer->id() );
-  mMapSettings.setCrsTransformEnabled( true );
-  mMapSettings.setMapUnits( QGis::Meters );
+  mMapSettings->setLayers( QStringList() << mVectorLayer->id() );
+  mMapSettings->setCrsTransformEnabled( true );
+  mMapSettings->setMapUnits( QGis::Meters );
 
   // select epsg:2154
   QgsCoordinateReferenceSystem crs;
   crs.createFromSrid( 2154 );
-  mMapSettings.setDestinationCrs( crs );
-  mComposition = new QgsComposition( mMapSettings );
+  mMapSettings->setDestinationCrs( crs );
+  mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   // fix the renderer, fill with green
@@ -114,8 +117,9 @@ void TestQgsComposerDD::initTestCase()
 void TestQgsComposerDD::cleanupTestCase()
 {
   delete mComposition;
+  delete mMapSettings;
 
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {

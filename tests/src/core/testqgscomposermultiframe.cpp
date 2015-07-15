@@ -20,6 +20,8 @@
 #include "qgscomposerlabel.h"
 #include "qgscomposition.h"
 #include "qgscompositionchecker.h"
+#include "qgsapplication.h"
+
 #include <QObject>
 #include <QtTest/QtTest>
 
@@ -42,20 +44,24 @@ class TestQgsComposerMultiFrame : public QObject
     void undoRedoRemovedFrame(); //test that undo doesn't crash with removed frames
 
   private:
-    QgsComposition* mComposition;
-    QgsMapSettings mMapSettings;
+    QgsComposition *mComposition;
+    QgsMapSettings *mMapSettings;
     QString mReport;
 };
 
 TestQgsComposerMultiFrame::TestQgsComposerMultiFrame()
-    : mComposition( NULL )
+    : mComposition( 0 )
+    , mMapSettings( 0 )
 {
-
 }
 
 void TestQgsComposerMultiFrame::initTestCase()
 {
-  mComposition = new QgsComposition( mMapSettings );
+  QgsApplication::init();
+  QgsApplication::initQgis();
+
+  mMapSettings = new QgsMapSettings();
+  mComposition = new QgsComposition( *mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 landscape
 
   mReport = "<h1>Composer MultiFrame Tests</h1>\n";
@@ -64,8 +70,9 @@ void TestQgsComposerMultiFrame::initTestCase()
 void TestQgsComposerMultiFrame::cleanupTestCase()
 {
   delete mComposition;
+  delete mMapSettings;
 
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
+  QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {

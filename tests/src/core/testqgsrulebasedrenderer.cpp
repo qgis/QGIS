@@ -132,7 +132,7 @@ class TestQgsRuleBasedRenderer: public QObject
   private:
     void xml2domElement( QString testFile, QDomDocument& doc )
     {
-      QString fileName = QString( TEST_DATA_DIR ) + QDir::separator() + testFile;
+      QString fileName = QString( TEST_DATA_DIR ) + "/" + testFile;
       QFile f( fileName );
       bool fileOpen = f.open( QIODevice::ReadOnly );
       QVERIFY( fileOpen );
