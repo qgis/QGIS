@@ -372,7 +372,7 @@ void myMessageOutput( QtMsgType type, const char *msg )
   }
 }
 
-int main( int argc, char *argv[] )
+APP_EXPORT int main( int argc, char *argv[] )
 {
 #ifdef Q_OS_MACX
   // Increase file resource limits (i.e., number of allowed open files)
