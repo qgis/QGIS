@@ -1763,7 +1763,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     {
       return;
     }
-    mFeatsRegPal = palLayer->getNbFeatures();
+    mFeatsRegPal = palLayer->featureCount();
     if ( mFeatsRegPal >= maxNumLabels )
     {
       return;

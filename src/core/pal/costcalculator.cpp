@@ -191,7 +191,7 @@ namespace pal
 
     if ( feat->feature->getGeosType() == GEOS_POLYGON )
     {
-      int arrangement = feat->feature->getLayer()->getArrangement();
+      int arrangement = feat->feature->getLayer()->arrangement();
       if ( arrangement == P_FREE || arrangement == P_HORIZ )
         setPolygonCandidatesCost( stop, ( LabelPosition** ) feat->lPos, max_p, obstacles, bbx, bby );
     }

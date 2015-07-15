@@ -89,7 +89,7 @@ namespace pal
 
   double Feature::calculatePriority() const
   {
-    return mPriority >= 0 ? mPriority : layer->getPriority();
+    return mPriority >= 0 ? mPriority : layer->priority();
   }
 
   ////////////
@@ -357,7 +357,7 @@ namespace pal
       }
     }
 
-    if ( f->layer->getArrangement() == P_POINT )
+    if ( f->layer->arrangement() == P_POINT )
     {
       //if in "around point" placement mode, then we use the label distance to determine
       //the label's offset
@@ -563,7 +563,7 @@ namespace pal
     double alpha;
     double cost;
 
-    unsigned long flags = f->layer->getArrangementFlags();
+    unsigned long flags = f->layer->arrangementFlags();
     if ( flags == 0 )
       flags = FLAG_ON_LINE; // default flag
 
@@ -669,7 +669,7 @@ namespace pal
 #ifdef _DEBUG_FULL_
       std::cout << "  Create new label" << std::endl;
 #endif
-      if ( f->layer->arrangement == P_LINE )
+      if ( f->layer->arrangement() == P_LINE )
       {
         // find out whether the line direction for this candidate is from right to left
         bool isRightToLeft = ( alpha > M_PI / 2 || alpha <= -M_PI / 2 );
@@ -686,7 +686,7 @@ namespace pal
         if ( flags & FLAG_ON_LINE )
           positions.append( new LabelPosition( i, bx - yrm*cos( beta ) / 2, by - yrm*sin( beta ) / 2, xrm, yrm, alpha, cost, this, isRightToLeft ) ); // Line
       }
-      else if ( f->layer->arrangement == P_HORIZ )
+      else if ( f->layer->arrangement() == P_HORIZ )
       {
         positions.append( new LabelPosition( i, bx - xrm / 2, by - yrm / 2, xrm, yrm, 0, cost, this ) ); // Line
       }
@@ -956,7 +956,7 @@ namespace pal
     QLinkedList<LabelPosition*> positions;
     double delta = qMax( f->labelInfo->label_height, total_distance / 10.0 );
 
-    unsigned long flags = f->layer->getArrangementFlags();
+    unsigned long flags = f->layer->arrangementFlags();
     if ( flags == 0 )
       flags = FLAG_ON_LINE; // default flag
 
@@ -1129,7 +1129,7 @@ namespace pal
 #endif
 
           bool enoughPlace = false;
-          if ( f->layer->getArrangement() == P_FREE )
+          if ( f->layer->arrangement() == P_FREE )
           {
             enoughPlace = true;
             px = ( box->x[0] + box->x[2] ) / 2 - xrm;
@@ -1158,7 +1158,7 @@ namespace pal
 
           } // arrangement== FREE ?
 
-          if ( f->layer->getArrangement() == P_HORIZ || enoughPlace )
+          if ( f->layer->arrangement() == P_HORIZ || enoughPlace )
           {
             alpha = 0.0; // HORIZ
           }
@@ -1308,26 +1308,26 @@ namespace pal
       switch ( type )
       {
         case GEOS_POINT:
-          if ( f->layer->getArrangement() == P_POINT_OVER || f->fixedQuadrant() )
+          if ( f->layer->arrangement() == P_POINT_OVER || f->fixedQuadrant() )
             nbp = setPositionOverPoint( x[0], y[0], lPos, angle );
           else
             nbp = setPositionForPoint( x[0], y[0], lPos, angle );
           break;
         case GEOS_LINESTRING:
-          if ( f->layer->getArrangement() == P_CURVED )
+          if ( f->layer->arrangement() == P_CURVED )
             nbp = setPositionForLineCurved( lPos, mapShape );
           else
             nbp = setPositionForLine( lPos, mapShape );
           break;
 
         case GEOS_POLYGON:
-          switch ( f->layer->getArrangement() )
+          switch ( f->layer->arrangement() )
           {
             case P_POINT:
             case P_POINT_OVER:
               double cx, cy;
-              mapShape->getCentroid( cx, cy, f->layer->getCentroidInside() );
-              if ( f->layer->getArrangement() == P_POINT_OVER )
+              mapShape->getCentroid( cx, cy, f->layer->centroidInside() );
+              if ( f->layer->arrangement() == P_POINT_OVER )
                 nbp = setPositionOverPoint( cx, cy, lPos, angle );
               else
                 nbp = setPositionForPoint( cx, cy, lPos, angle );

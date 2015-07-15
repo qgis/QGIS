@@ -97,12 +97,12 @@ namespace pal
     y[3] = y1 + dy2;
 
     // upside down ? (curved labels are always correct)
-    if ( feature->getLayer()->getArrangement() != P_CURVED &&
+    if ( feature->getLayer()->arrangement() != P_CURVED &&
          this->alpha > M_PI / 2 && this->alpha <= 3*M_PI / 2 )
     {
       bool uprightLabel = false;
 
-      switch ( feature->getLayer()->getUpsidedownLabels() )
+      switch ( feature->getLayer()->upsidedownLabels() )
       {
         case Layer::Upright:
           uprightLabel = true;
@@ -388,7 +388,7 @@ namespace pal
 
   QString LabelPosition::getLayerName() const
   {
-    return feature->getLayer()->name;
+    return feature->getLayer()->name();
   }
 
   bool LabelPosition::costShrink( void *l, void *r )
