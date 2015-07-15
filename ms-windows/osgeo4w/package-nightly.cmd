@@ -208,9 +208,11 @@ if exist ..\skiptests goto skiptests
 echo RUN_TESTS: %DATE% %TIME%
 
 set oldtemp=%TEMP%
+set oldtmp=%TMP%
 set oldpath=%PATH%
 
-set TEMP=%TEMP%\%PACKAGE%-%ARCH%
+set TEMP=%TEMP%\%PACKAGENAME%-%ARCH%
+set TMP=%TEMP%
 if exist %TEMP% rmdir /s /q %TEMP%
 mkdir %TEMP%
 
@@ -224,6 +226,7 @@ cmake --build %BUILDDIR% --target Nightly --config %BUILDCONF%
 if errorlevel 1 echo TESTS WERE NOT SUCCESSFUL.
 
 set TEMP=%oldtemp%
+set TMP=%oldtmp%
 PATH %oldpath%
 
 :skiptests
