@@ -91,6 +91,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
     , expression( 0 )
 {
   enabled = false;
+  drawLabels = true;
   isExpression = false;
   fieldIndex = 0;
 
@@ -333,6 +334,7 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   // copy only permanent stuff
 
   enabled = s.enabled;
+  drawLabels = s.drawLabels;
 
   // text style
   fieldName = s.fieldName;
@@ -717,6 +719,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   // NOTE: set defaults for newly added properties, for backwards compatibility
 
   enabled = layer->labelsEnabled();
+  drawLabels = layer->customProperty( "labeling/drawLabels", true ).toBool();
 
   // text style
   fieldName = layer->customProperty( "labeling/fieldName" ).toString();
@@ -927,6 +930,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling", "pal" );
 
   layer->setCustomProperty( "labeling/enabled", enabled );
+  layer->setCustomProperty( "labeling/drawLabels", drawLabels );
 
   // text style
   layer->setCustomProperty( "labeling/fieldName", fieldName );
@@ -1410,6 +1414,15 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
 
 void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext& context, QString dxfLayer )
 {
+  if ( !drawLabels )
+  {
+    if ( obstacle )
+    {
+      registerObstacleFeature( f, context, dxfLayer );
+    }
+    return;
+  }
+
   QVariant exprVal; // value() is repeatedly nulled on data defined evaluation and replaced when successful
   mCurFeat = &f;
 //  mCurFields = &layer->pendingFields();
@@ -2197,6 +2210,58 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
 
   // set geometry's pinned property
   lbl->setIsPinned( labelIsPinned );
+}
+
+void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, const QgsRenderContext& context, QString dxfLayer )
+{
+  mCurFeat = &f;
+
+  const QgsGeometry* geom = f.constGeometry();
+  if ( !geom )
+  {
+    return;
+  }
+
+  const GEOSGeometry* geos_geom = 0;
+  QScopedPointer<QgsGeometry> scopedPreparedGeom;
+
+  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, extentGeom ) )
+  {
+    scopedPreparedGeom.reset( QgsPalLabeling::prepareGeometry( geom, context, ct, extentGeom ) );
+    if ( !scopedPreparedGeom.data() )
+      return;
+    geos_geom = scopedPreparedGeom.data()->asGeos();
+  }
+  else
+  {
+    geos_geom = geom->asGeos();
+  }
+
+  if ( geos_geom == NULL )
+    return; // invalid geometry
+
+  GEOSGeometry* geos_geom_clone;
+  geos_geom_clone = GEOSGeom_clone_r( QgsGeometry::getGEOSHandler(), geos_geom );
+
+  QgsPalGeometry* lbl = new QgsPalGeometry( f.id(), QString(), geos_geom_clone );
+
+  lbl->setDxfLayer( dxfLayer );
+
+  // record the created geometry - it will be deleted at the end.
+  geometries.append( lbl );
+
+  //  feature to the layer
+  try
+  {
+    if ( !palLayer->registerFeature( lbl->strId(), lbl, 0, 0 ) )
+      return;
+  }
+  catch ( std::exception &e )
+  {
+    Q_UNUSED( e );
+    QgsDebugMsgLevel( QString( "Ignoring feature %1 due PAL exception:" ).arg( f.id() ) + QString::fromLatin1( e.what() ), 4 );
+    return;
+  }
 }
 
 bool QgsPalLayerSettings::dataDefinedValEval( const QString& valType,
@@ -3136,26 +3201,29 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames,
   QgsPalLayerSettings lyrTmp;
   lyrTmp.readFromLayer( layer );
 
-  if ( lyrTmp.fieldName.isEmpty() )
+  if ( lyrTmp.drawLabels )
   {
-    return 0;
-  }
-
-  if ( lyrTmp.isExpression )
-  {
-    QgsExpression exp( lyrTmp.fieldName );
-    if ( exp.hasEvalError() )
+    if ( lyrTmp.fieldName.isEmpty() )
     {
-      QgsDebugMsgLevel( "Prepare error:" + exp.evalErrorString(), 4 );
       return 0;
     }
-  }
-  else
-  {
-    // If we aren't an expression, we check to see if we can find the column.
-    if ( layer->fieldNameIndex( lyrTmp.fieldName ) == -1 )
+
+    if ( lyrTmp.isExpression )
     {
-      return 0;
+      QgsExpression exp( lyrTmp.fieldName );
+      if ( exp.hasEvalError() )
+      {
+        QgsDebugMsgLevel( "Prepare error:" + exp.evalErrorString(), 4 );
+        return 0;
+      }
+    }
+    else
+    {
+      // If we aren't an expression, we check to see if we can find the column.
+      if ( layer->fieldNameIndex( lyrTmp.fieldName ) == -1 )
+      {
+        return 0;
+      }
     }
   }
 
@@ -3166,52 +3234,55 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames,
 
   lyr.mCurFields = &( layer->pendingFields() );
 
-  // add field indices for label's text, from expression or field
-  if ( lyr.isExpression )
+  if ( lyrTmp.drawLabels )
   {
-    // prepare expression for use in QgsPalLayerSettings::registerFeature()
-    QgsExpression* exp = lyr.getLabelExpression();
-    exp->prepare( layer->pendingFields() );
-    if ( exp->hasEvalError() )
+    // add field indices for label's text, from expression or field
+    if ( lyr.isExpression )
     {
-      QgsDebugMsgLevel( "Prepare error:" + exp->evalErrorString(), 4 );
+      // prepare expression for use in QgsPalLayerSettings::registerFeature()
+      QgsExpression* exp = lyr.getLabelExpression();
+      exp->prepare( layer->pendingFields() );
+      if ( exp->hasEvalError() )
+      {
+        QgsDebugMsgLevel( "Prepare error:" + exp->evalErrorString(), 4 );
+      }
+      foreach ( QString name, exp->referencedColumns() )
+      {
+        QgsDebugMsgLevel( "REFERENCED COLUMN = " + name, 4 );
+        attrNames.append( name );
+      }
     }
-    foreach ( QString name, exp->referencedColumns() )
+    else
     {
-      QgsDebugMsgLevel( "REFERENCED COLUMN = " + name, 4 );
-      attrNames.append( name );
-    }
-  }
-  else
-  {
-    attrNames.append( lyr.fieldName );
-  }
-
-  // add field indices of data defined expression or field
-  QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::const_iterator dIt = lyr.dataDefinedProperties.constBegin();
-  for ( ; dIt != lyr.dataDefinedProperties.constEnd(); ++dIt )
-  {
-    QgsDataDefined* dd = dIt.value();
-    if ( !dd->isActive() )
-    {
-      continue;
+      attrNames.append( lyr.fieldName );
     }
 
-    // NOTE: the following also prepares any expressions for later use
-
-    // store parameters for data defined expressions
-    QMap<QString, QVariant> exprParams;
-    exprParams.insert( "scale", ctx.rendererScale() );
-
-    dd->setExpressionParams( exprParams );
-
-    // this will return columns for expressions or field name, depending upon what is set to be used
-    QStringList cols = dd->referencedColumns( layer ); // <-- prepares any expressions, too
-
-    //QgsDebugMsgLevel( QString( "Data defined referenced columns:" ) + cols.join( "," ), 4 );
-    foreach ( QString name, cols )
+    // add field indices of data defined expression or field
+    QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::const_iterator dIt = lyr.dataDefinedProperties.constBegin();
+    for ( ; dIt != lyr.dataDefinedProperties.constEnd(); ++dIt )
     {
-      attrNames.append( name );
+      QgsDataDefined* dd = dIt.value();
+      if ( !dd->isActive() )
+      {
+        continue;
+      }
+
+      // NOTE: the following also prepares any expressions for later use
+
+      // store parameters for data defined expressions
+      QMap<QString, QVariant> exprParams;
+      exprParams.insert( "scale", ctx.rendererScale() );
+
+      dd->setExpressionParams( exprParams );
+
+      // this will return columns for expressions or field name, depending upon what is set to be used
+      QStringList cols = dd->referencedColumns( layer ); // <-- prepares any expressions, too
+
+      //QgsDebugMsgLevel( QString( "Data defined referenced columns:" ) + cols.join( "," ), 4 );
+      foreach ( QString name, cols )
+      {
+        attrNames.append( name );
+      }
     }
   }
 
@@ -3233,7 +3304,7 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames,
 
   Layer* l = mPal->addLayer( layer->id().toUtf8().data(),
                              arrangement,
-                             priority, lyr.obstacle, true, true,
+                             priority, lyr.obstacle, true, lyr.drawLabels,
                              lyr.displayAll );
 
   if ( lyr.placementFlags )
@@ -4187,6 +4258,8 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
     }
 
     const QgsPalLayerSettings& lyr = layer( layerName );
+    if ( !lyr.drawLabels )
+      continue;
 
     // Copy to temp, editable layer settings
     // these settings will be changed by any data defined values, then used for rendering label components

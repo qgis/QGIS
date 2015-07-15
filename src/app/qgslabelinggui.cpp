@@ -84,10 +84,6 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
 
   mRefFont = lblFontPreview->font();
 
-  // main layer label-enabling connections
-  connect( chkEnableLabeling, SIGNAL( toggled( bool ) ), mFieldExpressionWidget, SLOT( setEnabled( bool ) ) );
-  connect( chkEnableLabeling, SIGNAL( toggled( bool ) ), mLabelingFrame, SLOT( setEnabled( bool ) ) );
-
   // connections for groupboxes with separate activation checkboxes (that need to honor data defined setting)
   connect( mBufferDrawChkBx, SIGNAL( toggled( bool ) ), this, SLOT( updateUi() ) );
   connect( mShapeDrawChkBx, SIGNAL( toggled( bool ) ), this, SLOT( updateUi() ) );
@@ -293,9 +289,16 @@ void QgsLabelingGui::init()
   blockInitSignals( true );
 
   // enable/disable main options based upon whether layer is being labeled
-  chkEnableLabeling->setChecked( lyr.enabled );
-  mFieldExpressionWidget->setEnabled( chkEnableLabeling->isChecked() );
-  mLabelingFrame->setEnabled( chkEnableLabeling->isChecked() );
+  if ( !lyr.enabled )
+  {
+    mLabelModeComboBox->setCurrentIndex( 0 );
+  }
+  else
+  {
+    mLabelModeComboBox->setCurrentIndex( lyr.drawLabels ? 1 : 2 );
+  }
+  mFieldExpressionWidget->setEnabled( mLabelModeComboBox->currentIndex() == 1 );
+  mLabelingFrame->setEnabled( mLabelModeComboBox->currentIndex() == 1 );
 
   // set the current field or add the current expression to the bottom of the list
   mFieldExpressionWidget->setField( lyr.fieldName );
@@ -572,7 +575,8 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 {
   QgsPalLayerSettings lyr;
 
-  lyr.enabled = chkEnableLabeling->isChecked();
+  lyr.enabled = mLabelModeComboBox->currentIndex() > 0;
+  lyr.drawLabels = mLabelModeComboBox->currentIndex() == 1;
 
   bool isExpression;
   lyr.fieldName = mFieldExpressionWidget->currentField( &isExpression );
@@ -1615,6 +1619,13 @@ void QgsLabelingGui::updateSvgWidgets( const QString& svgPath )
   //mShapeBorderWidthUnitWidget->setEnabled( validSVG && outlineWidthParam );
   //mShapeBorderUnitsDDBtn->setEnabled( validSVG && outlineWidthParam );
   mShapeSVGUnitsLabel->setEnabled( validSVG && outlineWidthParam );
+}
+
+void QgsLabelingGui::on_mLabelModeComboBox_currentIndexChanged( int index )
+{
+  bool labelsEnabled = ( index == 1 );
+  mFieldExpressionWidget->setEnabled( labelsEnabled );
+  mLabelingFrame->setEnabled( labelsEnabled );
 }
 
 void QgsLabelingGui::on_mShapeSVGSelectorBtn_clicked()

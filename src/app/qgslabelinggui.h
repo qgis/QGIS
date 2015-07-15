@@ -53,6 +53,7 @@ class APP_EXPORT QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void updatePlacementWidgets();
     void updateSvgWidgets( const QString& svgPath );
 
+    void on_mLabelModeComboBox_currentIndexChanged( int index );
     void on_mPreviewSizeSlider_valueChanged( int i );
     void on_mFontSizeSpinBox_valueChanged( double d );
     void on_mFontCapitalsComboBox_currentIndexChanged( int index );

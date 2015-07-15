@@ -294,6 +294,15 @@ class QgsPalLayerSettings
 
     // whether to label this layer
     bool enabled;
+    
+    /** Whether to draw labels for this layer. For some layers it may be desirable
+     * to register their features as obstacles for other labels without requiring
+     * labels to be drawn for the layer itself. In this case drawLabels can be set
+     * to false and obstacle set to true, which will result in the layer acting
+     * as an obstacle but having no labels of its own.
+     * @note added in QGIS 2.12
+     */
+    bool drawLabels;
 
     //-- text style
 
