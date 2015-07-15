@@ -5836,12 +5836,14 @@ bool QgisApp::loadAnnotationItemsFromProject( const QDomDocument& doc )
     newFormItem->readXML( doc, formItemList.at( i ).toElement() );
   }
 
+#ifdef WITH_QTWEBKIT
   QDomNodeList htmlItemList = doc.elementsByTagName( "HtmlAnnotationItem" );
   for ( int i = 0; i < htmlItemList.size(); ++i )
   {
     QgsHtmlAnnotationItem* newHtmlItem = new QgsHtmlAnnotationItem( mMapCanvas );
     newHtmlItem->readXML( doc, htmlItemList.at( i ).toElement() );
   }
+#endif
 
   QDomNodeList svgItemList = doc.elementsByTagName( "SVGAnnotationItem" );
   for ( int i = 0; i < svgItemList.size(); ++i )
