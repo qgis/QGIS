@@ -62,13 +62,21 @@ set(CMAKE_C_FLAGS_ASAN "-O1 -g ${ADDRESS_SANITIZER_FLAG} -fno-omit-frame-pointer
 set(CMAKE_CXX_FLAGS_ASAN "-O1 -g ${ADDRESS_SANITIZER_FLAG} -fno-omit-frame-pointer -fno-optimize-sibling-calls"
     CACHE STRING "Flags used by the C++ compiler during ASan builds."
     FORCE)
-set(CMAKE_EXE_LINKER_FLAGS_ASAN "${ADDRESS_SANITIZER_FLAG}"
-    CACHE STRING "Flags used for linking binaries during ASan builds."
-    FORCE)
-set(CMAKE_SHARED_LINKER_FLAGS_ASAN "${ADDRESS_SANITIZER_FLAG}"
-    CACHE STRING "Flags used by the shared libraries linker during ASan builds."
-    FORCE)
+#set(CMAKE_EXE_LINKER_FLAGS_ASAN "${ADDRESS_SANITIZER_FLAG}"
+#    CACHE STRING "Flags used for linking binaries during ASan builds."
+#    FORCE)
+#set(CMAKE_SHARED_LINKER_FLAGS_ASAN "${ADDRESS_SANITIZER_FLAG}"
+#    CACHE STRING "Flags used by the shared libraries linker during ASan builds."
+#    FORCE)
 mark_as_advanced(CMAKE_C_FLAGS_ASAN
                  CMAKE_CXX_FLAGS_ASAN
                  CMAKE_EXE_LINKER_FLAGS_ASAN
                  CMAKE_SHARED_LINKER_FLAGS_ASAN)
+
+macro (add_library _name)
+    # invoke built-in add_executable
+    _add_library(${ARGV})
+    if (TARGET ${_name})
+        target_link_libraries(${_name} asan)
+    endif()
+endmacro()
