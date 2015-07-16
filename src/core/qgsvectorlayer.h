@@ -23,7 +23,6 @@
 #include <QSet>
 #include <QList>
 #include <QStringList>
-#include <Qcolor>
 #include <QFont>
 
 #include "qgis.h"
