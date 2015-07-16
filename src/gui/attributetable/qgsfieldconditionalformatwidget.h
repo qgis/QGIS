@@ -28,35 +28,39 @@
 
 class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::QgsFieldConditionalWidget
 {
-  Q_OBJECT
-public:
-  explicit QgsFieldConditionalFormatWidget(QWidget *parent = 0);
+    Q_OBJECT
+  public:
+    explicit QgsFieldConditionalFormatWidget( QWidget *parent = 0 );
 
-  void viewRules();
+    void viewRules();
 
-  void setLayer(QgsVectorLayer* theLayer);
+    void setLayer( QgsVectorLayer* theLayer );
 
-  void editStyle(int index, QgsConditionalStyle style);
+    void editStyle( int index, QgsConditionalStyle style );
 
-signals:
-  void rulesUpdates();
+    void reset();
 
-public slots:
+  signals:
+    void rulesUpdates();
 
-private:
-  QgsVectorLayer* mLayer;
-  int mEditIndex;
-  bool mEditing;
-  QStandardItemModel* mModel;
+  public slots:
 
-private slots:
-  void ruleClicked(QModelIndex index);
-  void reloadStyles();
-  void cancelRule();
-  void deleteRule();
-  void saveRule();
-  void addNewRule();
-  void fieldChanged(QString fieldName);
+  private:
+    QgsVectorLayer* mLayer;
+    int mEditIndex;
+    bool mEditing;
+    QStandardItemModel* mModel;
+
+  private slots:
+    void defaultPressed( QAbstractButton*button );
+    bool isCustomSet();
+    void ruleClicked( QModelIndex index );
+    void reloadStyles();
+    void cancelRule();
+    void deleteRule();
+    void saveRule();
+    void addNewRule();
+    void fieldChanged( QString fieldName );
 
 };
 
