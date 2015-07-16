@@ -26,6 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+from PyQt4.QtCore import QCoreApplication
 
 displayNames = {}
 classification = {}
@@ -45,7 +46,7 @@ def loadClassification():
             raise Exception(line)
         line = lines.readline().strip('\n')
     lines.close()
-    
+
 def loadDisplayNames():
     global displayNames
     if not os.path.isfile(displayNamesFile()):
@@ -67,12 +68,23 @@ def classificationFile():
 def displayNamesFile():
     return os.path.join(os.path.dirname(__file__), 'algnames.txt')
 
-def getClassification(alg):
+def getClassificationEn(alg):
     if alg.commandLineName().lower() in classification:
         group, subgroup = classification[alg.commandLineName()]
         return group, subgroup
     else:
         return None, None
-    
-def getDisplayName(alg):
+
+def getClassification(alg):
+    group, subgroup = getClassificationEn(alg)
+    return (QCoreApplication.translate('AlgorithmClassification', group),
+            QCoreApplication.translate('AlgorithmClassification', subgroup))
+
+def getDisplayNameEn(alg):
     return displayNames.get(alg.commandLineName().lower(), alg.name)
+
+def getDisplayName(alg):
+    return QCoreApplication.translate(alg.__class__.__name__, getDisplayNameEn(alg))
+
+def getDisplayGroup(group):
+    return QCoreApplication.translate('AlgorithmClassification', group)
