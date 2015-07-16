@@ -358,7 +358,7 @@ bool QgsLineStringV2::insertVertex( const QgsVertexId& position, const QgsPointV
 
 bool QgsLineStringV2::moveVertex( const QgsVertexId& position, const QgsPointV2& newPos )
 {
-  if ( position.vertex < 0 || position.vertex > mCoords.size() )
+  if ( position.vertex < 0 || position.vertex >= mCoords.size() )
   {
     return false;
   }
@@ -378,7 +378,7 @@ bool QgsLineStringV2::moveVertex( const QgsVertexId& position, const QgsPointV2&
 
 bool QgsLineStringV2::deleteVertex( const QgsVertexId& position )
 {
-  if ( position.vertex > ( mCoords.size() - 1 ) || position.vertex < 0 )
+  if ( position.vertex >= mCoords.size() || position.vertex < 0 )
   {
     return false;
   }
