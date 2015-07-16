@@ -1,6 +1,6 @@
 #include "qgsfieldconditionalformatwidget.h"
 
-#include "qgsfield.h"
+#include "qgsfielduiproperties.h"
 
 QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget( QWidget *parent ) :
     QWidget( parent )

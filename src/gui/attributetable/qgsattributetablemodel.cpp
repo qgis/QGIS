@@ -20,6 +20,7 @@
 #include "qgsattributeaction.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgsexpression.h"
+#include "qgsfielduiproperties.h"
 #include "qgsfield.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
