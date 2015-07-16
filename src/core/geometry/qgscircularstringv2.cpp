@@ -695,7 +695,7 @@ bool QgsCircularStringV2::insertVertex( const QgsVertexId& position, const QgsPo
 
 bool QgsCircularStringV2::moveVertex( const QgsVertexId& position, const QgsPointV2& newPos )
 {
-  if ( position.vertex < 0 || position.vertex > mX.size() )
+  if ( position.vertex < 0 || position.vertex >= mX.size() )
   {
     return false;
   }

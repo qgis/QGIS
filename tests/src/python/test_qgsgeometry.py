@@ -751,6 +751,12 @@ class TestQgsGeometry(TestCase):
 
     def testMoveVertex(self):
         multipoint = QgsGeometry.fromWkt( "MultiPoint ((5 0),(0 0),(0 4),(5 4),(5 1),(1 1),(1 3),(4 3),(4 2),(2 2))" )
+
+        #try moving invalid vertices
+        assert not multipoint.moveVertex( 9, 9, -1 ), "move vertex succeeded when it should have failed"
+        assert not multipoint.moveVertex( 9, 9, 10 ), "move vertex succeeded when it should have failed"
+        assert not multipoint.moveVertex( 9, 9, 11 ), "move vertex succeeded when it should have failed"
+
         for i in range(0,10):
           assert multipoint.moveVertex( i+1, -1-i, i ), "move vertex %d failed" % i
         expwkt = "MultiPoint ((1 -1),(2 -2),(3 -3),(4 -4),(5 -5),(6 -6),(7 -7),(8 -8),(9 -9),(10 -10))"
@@ -767,6 +773,12 @@ class TestQgsGeometry(TestCase):
         # |
         # 1-+-+-+-+-0 !
         polyline = QgsGeometry.fromWkt( "LineString (5 0, 0 0, 0 4, 5 4, 5 1, 1 1, 1 3, 4 3, 4 2, 2 2)" )
+
+        #try moving invalid vertices
+        assert not polyline.moveVertex( 9, 9, -1 ), "move vertex succeeded when it should have failed"
+        assert not polyline.moveVertex( 9, 9, 10 ), "move vertex succeeded when it should have failed"
+        assert not polyline.moveVertex( 9, 9, 11 ), "move vertex succeeded when it should have failed"
+
         assert polyline.moveVertex( 5.5, 4.5, 3 ), "move vertex failed"
         expwkt = "LineString (5 0, 0 0, 0 4, 5.5 4.5, 5 1, 1 1, 1 3, 4 3, 4 2, 2 2)"
         wkt = polyline.exportToWkt()
@@ -781,6 +793,7 @@ class TestQgsGeometry(TestCase):
 
         assert not polygon.moveVertex( 3, 4, -10 ), "move vertex unexpectedly succeeded"
         assert not polygon.moveVertex( 3, 4, 7 ), "move vertex unexpectedly succeeded"
+        assert not polygon.moveVertex( 3, 4, 8 ), "move vertex unexpectedly succeeded"
 
         assert polygon.moveVertex( 1, 2, 0 ), "move vertex failed"
         expwkt = "Polygon ((1 2, 1 0, 1 1, 2 1, 2 2, 0 2, 1 2))"
@@ -803,6 +816,11 @@ class TestQgsGeometry(TestCase):
         # | |     | |
         # 0-1     7-8
         polygon = QgsGeometry.fromWkt( "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))" )
+
+        assert not polygon.moveVertex( 3, 4, -10 ), "move vertex unexpectedly succeeded"
+        assert not polygon.moveVertex( 3, 4, 14 ), "move vertex unexpectedly succeeded"
+        assert not polygon.moveVertex( 3, 4, 15 ), "move vertex unexpectedly succeeded"
+
         assert polygon.moveVertex( 6, 2, 9 ), "move vertex failed"
         expwkt = "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),((4 0, 5 0, 6 2, 3 2, 3 1, 4 1, 4 0)))"
         wkt = polygon.exportToWkt()
