@@ -571,20 +571,18 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     return mWidgetFactories[ index.column()]->representValue( layer(), fieldId, mWidgetConfigs[ index.column()], mAttributeWidgetCaches[ index.column()], val );
   }
 
-  QList<QgsConditionalStyle> rules = layer()->fieldUIProperties( field.name() ).getConditionalStyles();
-  foreach ( QgsConditionalStyle rule, rules )
+  QgsFieldUIProperties props = layer()->fieldUIProperties( field.name() );
+  QgsConditionalStyle style = props.getMatchingConditionalStyle( field.name(), &mFeat, layer()->pendingFields() );
+  if ( style.isValid() )
   {
-    if ( rule.matchForFeature( field.name(), &mFeat, layer()->pendingFields() ) )
-    {
-      if ( role == Qt::BackgroundColorRole && rule.backColor.isValid() )
-        return rule.backColor;
-      if ( role == Qt::TextColorRole && rule.textColor.isValid() )
-        return rule.textColor;
-      if ( role == Qt::DecorationRole )
-        return rule.icon;
-      if ( role == Qt::FontRole )
-        return rule.font;
-    }
+    if ( role == Qt::BackgroundColorRole && style.backgroundColor().isValid() )
+      return style.backgroundColor();
+    if ( role == Qt::TextColorRole && style.textColor().isValid() )
+      return style.textColor();
+    if ( role == Qt::DecorationRole )
+      return style.icon();
+    if ( role == Qt::FontRole )
+      return style.font();
   }
 
   return val;

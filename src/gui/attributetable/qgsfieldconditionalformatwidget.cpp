@@ -38,7 +38,7 @@ void QgsFieldConditionalFormatWidget::editStyle( int editIndex, QgsConditionalSt
   pages->setCurrentIndex( 1 );
   mEditIndex = editIndex;
   mEditing = true;
-  mRuleEdit->setText( style.rule );
+  mRuleEdit->setText( style.rule() );
   // TODO Match the colors
   mDeleteButton->show();
 }
@@ -74,12 +74,12 @@ void QgsFieldConditionalFormatWidget::saveRule()
   QgsFieldUIProperties props = mLayer->fieldUIProperties( mFieldCombo->currentField() );
   QList<QgsConditionalStyle> styles = props.getConditionalStyles();
   QgsConditionalStyle style = QgsConditionalStyle();
-  style.rule = mRuleEdit->text();
   QAbstractButton* button = mDefaultButtons->checkedButton();
   QColor backColor = button->property( "backColor" ).value<QColor>();
   QColor fontColor = button->property( "fontColor" ).value<QColor>();
-  style.backColor = backColor;
-  style.textColor = fontColor;
+  style.setRule( mRuleEdit->text() );
+  style.setBackgroundColor( backColor );
+  style.setTextColor( fontColor );
   if ( mEditing )
   {
     styles.replace( mEditIndex, style );
@@ -102,8 +102,8 @@ void QgsFieldConditionalFormatWidget::reloadStyles()
   QList<QgsConditionalStyle> styles = props.getConditionalStyles();
   foreach ( QgsConditionalStyle style, styles )
   {
-    QStandardItem* item = new QStandardItem( style.rule );
-    item->setIcon(QIcon(style.renderPreview()));
+    QStandardItem* item = new QStandardItem( style.rule() );
+    item->setIcon( QIcon( style.renderPreview() ) );
     mModel->appendRow( item );
   }
 }
