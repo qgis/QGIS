@@ -65,7 +65,7 @@ void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const Qg
 
   connect( mTableView, SIGNAL( willShowContextMenu( QMenu*, QModelIndex ) ), this, SLOT( viewWillShowContextMenu( QMenu*, QModelIndex ) ) );
 
-  initLayerCache( layer, request.filterType() == QgsFeatureRequest::FilterRect );
+  initLayerCache( layer, !request.filterRect().isNull() );
   initModels( mapCanvas, request );
 
   mTableView->setModel( mFilterModel );
