@@ -2098,9 +2098,10 @@ bool QgsVectorFileWriter::deleteShapeFile( QString theFileName )
   bool ok = true;
   foreach ( QString file, dir.entryList( filter ) )
   {
-    if ( !QFile::remove( dir.canonicalPath() + "/" + file ) )
+    QFile f( dir.canonicalPath() + "/" + file );
+    if ( !f.remove( ) )
     {
-      QgsDebugMsg( "Removing file failed : " + file );
+      QgsDebugMsg( QString( "Removing file %1 failed: %2" ).arg( file ).arg( f.errorString() ) );
       ok = false;
     }
   }

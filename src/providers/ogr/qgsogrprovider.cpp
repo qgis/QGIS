@@ -451,7 +451,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
     << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), "datetime", QVariant::DateTime );
   }
 
-  QgsOgrConnPool::instance()->ref( mFilePath );
+  QgsOgrConnPool::refS( mFilePath );
 }
 
 QgsOgrProvider::~QgsOgrProvider()
@@ -473,7 +473,7 @@ QgsOgrProvider::~QgsOgrProvider()
     extent_ = 0;
   }
 
-  QgsOgrConnPool::instance()->unref( mFilePath );
+  QgsOgrConnPool::unrefS( mFilePath );
 }
 
 QgsAbstractFeatureSource* QgsOgrProvider::featureSource() const
