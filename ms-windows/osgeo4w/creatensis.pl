@@ -141,7 +141,7 @@ my @desc;
 foreach my $p ( keys %pkgs ) {
 	my @f;
 	unless( exists $file{$p} ) {
-		print "No file for package $p found found.\n" if $verbose;
+		print "No file for package $p found.\n" if $verbose;
 		next;
 	}
 	push @f, "$root/$file{$p}";

@@ -29,7 +29,9 @@ if "%ARCH%"=="" goto usage
 if not "%SHA%"=="" set SHA=-%SHA%
 if "%SITE%"=="" set SITE=qgis.org
 
-set BUILDDIR=%CD%\build-nightly-%ARCH%
+if "%TESTTARGET%"=="" set TESTTARGET=Nightly
+
+set res=0
 
 if "%OSGEO4W_ROOT%"=="" (
 	if "%ARCH%"=="x86" (
@@ -39,6 +41,7 @@ if "%OSGEO4W_ROOT%"=="" (
 	)
 )
 
+set BUILDDIR=%CD%\build-nightly-%ARCH%
 if not exist "%BUILDDIR%" mkdir %BUILDDIR%
 if not exist "%BUILDDIR%" (echo could not create build directory %BUILDDIR% & goto error)
 
@@ -154,7 +157,7 @@ set LIB=%LIB%;%OSGEO4W_ROOT%\lib
 set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\include
 
 cmake %CMAKE_OPT% ^
-	-D BUILDNAME="%PACKAGENAME%-%VERSION%%SHA%-Nightly-VC10-%ARCH%" ^
+	-D BUILDNAME="%PACKAGENAME%-%VERSION%%SHA%-%TESTTARGET%-VC10-%ARCH%" ^
 	-D SITE="%SITE%" ^
 	-D PEDANTIC=TRUE ^
 	-D WITH_QSPATIALITE=TRUE ^
@@ -169,6 +172,7 @@ cmake %CMAKE_OPT% ^
 	-D WITH_TOUCH=TRUE ^
 	-D WITH_ORACLE=TRUE ^
 	-D WITH_CUSTOM_WIDGETS=TRUE ^
+	-D ENABLE_PGTEST=TRUE ^
 	-D CMAKE_BUILD_TYPE=%BUILDCONF% ^
 	-D CMAKE_CONFIGURATION_TYPES=%BUILDCONF% ^
 	-D GEOS_LIBRARY=%O4W_ROOT%/lib/geos_c.lib ^
@@ -198,19 +202,21 @@ cmake %CMAKE_OPT% ^
 if errorlevel 1 (echo cmake failed & goto error)
 
 :skipcmake
-if exist noclean (echo skip clean & goto skipclean)
+if exist ..\noclean (echo skip clean & goto skipclean)
 echo CLEAN: %DATE% %TIME%
 cmake --build %BUILDDIR% --target clean --config %BUILDCONF%
 if errorlevel 1 (echo clean failed & goto error)
 
 :skipclean
+if exist ..\nobuild (echo skip build & goto skipbuild)
 echo ALL_BUILD: %DATE% %TIME%
 cmake --build %BUILDDIR% --config %BUILDCONF%
+if errorlevel 1 echo retrying build
 if errorlevel 1 cmake --build %BUILDDIR% --config %BUILDCONF%
 if errorlevel 1 (echo build failed twice & goto error)
 
+:skipbuild
 if exist ..\skiptests goto skiptests
-
 echo RUN_TESTS: %DATE% %TIME%
 
 set oldtemp=%TEMP%
@@ -228,7 +234,7 @@ for %%g IN (%GRASS_VERSIONS%) do (
 )
 PATH %path%;%BUILDDIR%\output\plugins\%BUILDCONF%
 
-cmake --build %BUILDDIR% --target Nightly --config %BUILDCONF%
+cmake --build %BUILDDIR% --target %TESTTARGET% --config %BUILDCONF%
 if errorlevel 1 echo TESTS WERE NOT SUCCESSFUL.
 
 set TEMP=%oldtemp%
@@ -236,7 +242,7 @@ set TMP=%oldtmp%
 PATH %oldpath%
 
 :skiptests
-
+if exist noinstall goto end
 if exist "%PKGDIR%" (
 	echo REMOVE: %DATE% %TIME%
 	rmdir /s /q "%PKGDIR%"
@@ -247,6 +253,7 @@ cmake --build %BUILDDIR% --target INSTALL --config %BUILDCONF%
 if errorlevel 1 (echo INSTALL failed & goto error)
 
 :package
+if exist nopackage goto end
 echo PACKAGE: %DATE% %TIME%
 
 cd ..
@@ -328,10 +335,12 @@ echo sample: %0 2.11.0 38 qgis-dev x86_64 339dbf1 qgis.org
 exit
 
 :error
-echo BUILD ERROR %ERRORLEVEL%: %DATE% %TIME%
+set res=%ERRORLEVEL%
+echo BUILD ERROR %res%: %DATE% %TIME%
 if exist %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 del %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2
 
 :end
 echo FINISHED: %DATE% %TIME%
 
+exit /b %res%
 endlocal

@@ -1,0 +1,31 @@
+version: 2.11.0-{build}
+
+platform:
+  - x86_64
+  - x86
+
+configuration: Debug
+clone_folder: c:\src\qgis
+shallow_clone: true
+
+#cache:
+#  - c:\OSGeo4W
+#  - c:\OSGeo4W64
+
+services: postgresql
+
+skip_commits:
+  message: /ci skip/
+
+install:
+  - SET PATH=c:\cygwin\bin;%PATH%
+  - c:\cygwin\setup-x86.exe -qnNdO -R C:/cygwin -s http://cygwin.mirror.constant.com -l C:/cygwin/var/cache/setup -P flex -P poppler
+  - ps: cd ms-windows\osgeo4w
+  - perl osgeo4w-appveyor.pl -arch=%platform%
+
+build_script:
+  - touch noclean nobuild noinstall
+  - set TESTTARGET=Experimental
+  - package-nightly.cmd 2.11.0 %APPVEYOR_BUILD_NUMBER% qgis-dev %platform% %APPVEYOR_REPO_COMMIT:~1,7% appveyor
+
+deploy: off
