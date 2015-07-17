@@ -44,7 +44,7 @@ email                : morb at ozemail dot com dot au
 #include "qgspolygonv2.h"
 #include "qgslinestringv2.h"
 
-#ifndef Q_OS_WIN32
+#ifndef Q_OS_WIN
 #include <netinet/in.h>
 #else
 #include <winsock.h>
