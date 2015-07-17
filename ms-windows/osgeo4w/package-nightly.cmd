@@ -213,8 +213,8 @@ set oldpath=%PATH%
 
 set TEMP=%TEMP%\%PACKAGENAME%-%ARCH%
 set TMP=%TEMP%
-if exist %TEMP% rmdir /s /q %TEMP%
-mkdir %TEMP%
+if exist "%TEMP%" rmdir /s /q "%TEMP%"
+mkdir "%TEMP%"
 
 for %%g IN (%GRASS_VERSIONS%) do (
 	set path=!path!;%OSGEO4W_ROOT%\apps\grass\grass-%%g\lib
@@ -231,9 +231,9 @@ PATH %oldpath%
 
 :skiptests
 
-if exist %PKGDIR% (
+if exist "%PKGDIR%" (
 	echo REMOVE: %DATE% %TIME%
-	rmdir /s /q %PKGDIR%
+	rmdir /s /q "%PKGDIR%"
 )
 
 echo INSTALL: %DATE% %TIME%

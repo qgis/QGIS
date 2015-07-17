@@ -218,9 +218,9 @@ PATH %oldpath%
 :skiptests
 :package
 
-if exist %PKGDIR% (
+if exist "%PKGDIR%" (
 	echo REMOVE: %DATE% %TIME%
-	rmdir /s /q %PKGDIR%
+	rmdir /s /q "%PKGDIR%"
 )
 
 echo INSTALL: %DATE% %TIME%
