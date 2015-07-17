@@ -201,6 +201,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   limitNumLabels = false;
   maxNumLabels = 2000;
   obstacle = true;
+  obstacleType = PolygonInterior;
 
   // scale factors
   vectorScaleFactor = 1.0;
@@ -413,6 +414,7 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   limitNumLabels = s.limitNumLabels;
   maxNumLabels = s.maxNumLabels;
   obstacle = s.obstacle;
+  obstacleType = s.obstacleType;
 
   // shape background
   shapeDraw = s.shapeDraw;
@@ -920,6 +922,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   limitNumLabels = layer->customProperty( "labeling/limitNumLabels", QVariant( false ) ).toBool();
   maxNumLabels = layer->customProperty( "labeling/maxNumLabels", QVariant( 2000 ) ).toInt();
   obstacle = layer->customProperty( "labeling/obstacle", QVariant( true ) ).toBool();
+  obstacleType = ( ObstacleType )layer->customProperty( "labeling/obstacleType", QVariant( PolygonInterior ) ).toUInt();
 
   readDataDefinedPropertyMap( layer, dataDefinedProperties );
 }
@@ -1071,6 +1074,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/limitNumLabels", limitNumLabels );
   layer->setCustomProperty( "labeling/maxNumLabels", maxNumLabels );
   layer->setCustomProperty( "labeling/obstacle", obstacle );
+  layer->setCustomProperty( "labeling/obstacleType", ( unsigned int )obstacleType );
 
   writeDataDefinedPropertyMap( layer, dataDefinedProperties );
 }
@@ -3316,6 +3320,16 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames,
   // set whether adjacent lines should be merged
   l->setMergeConnectedLines( lyr.mergeLines );
 
+  // set obstacle type
+  switch ( lyr.obstacleType )
+  {
+    case PolygonInterior:
+      l->setObstacleType( pal::PolygonInterior );
+      break;
+    case PolygonBoundary:
+      l->setObstacleType( pal::PolygonBoundary );
+      break;
+  }
 
   // set whether location of centroid must be inside of polygons
   l->setCentroidInside( lyr.centroidInside );

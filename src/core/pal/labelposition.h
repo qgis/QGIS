@@ -217,7 +217,7 @@ namespace pal
       typedef struct
       {
         Pal* pal;
-        PointSet *obstacle;
+        FeaturePart *obstacle;
       } PruneCtx;
 
       /** Check whether the candidate in ctx overlap with obstacle feat */
@@ -247,7 +247,7 @@ namespace pal
       static bool removeOverlapCallback( LabelPosition *lp, void *ctx );
 
       // for polygon cost calculation
-      static bool polygonObstacleCallback( PointSet *feat, void *ctx );
+      static bool polygonObstacleCallback( pal::FeaturePart *obstacle, void *ctx );
 
     protected:
 

@@ -52,6 +52,7 @@ namespace pal
       : mName( lyrName )
       , pal( pal )
       , mObstacle( obstacle )
+      , mObstacleType( PolygonInterior )
       , mActive( active )
       , mLabelLayer( toLabel )
       , mDisplayAll( displayAll )

@@ -132,8 +132,6 @@ namespace pal
 
   void FeaturePart::extractCoords( const GEOSGeometry* geom )
   {
-    int i, j;
-
     const GEOSCoordSequence *coordSeq;
     GEOSContextHandle_t geosctxt = geosContext();
 
@@ -145,35 +143,15 @@ namespace pal
       {
         // set nbHoles, holes member variables
         nbHoles = GEOSGetNumInteriorRings_r( geosctxt, geom );
-        holes = new PointSet*[nbHoles];
+        holes = new FeaturePart*[nbHoles];
 
-        for ( i = 0; i < nbHoles; i++ )
+        for ( int i = 0; i < nbHoles; ++i )
         {
-          holes[i] = new PointSet();
-          holes[i]->holeOf = NULL;
-
           const GEOSGeometry* interior =  GEOSGetInteriorRingN_r( geosctxt, geom, i );
-          holes[i]->nbPoints = GEOSGetNumCoordinates_r( geosctxt, interior );
-          holes[i]->x = new double[holes[i]->nbPoints];
-          holes[i]->y = new double[holes[i]->nbPoints];
-
-          holes[i]->xmin = holes[i]->ymin = DBL_MAX;
-          holes[i]->xmax = holes[i]->ymax = -DBL_MAX;
-
-          coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, interior );
-
-          for ( j = 0; j < holes[i]->nbPoints; j++ )
-          {
-            GEOSCoordSeq_getX_r( geosctxt, coordSeq, j, &holes[i]->x[j] );
-            GEOSCoordSeq_getY_r( geosctxt, coordSeq, j, &holes[i]->y[j] );
-
-            holes[i]->xmax = holes[i]->x[j] > holes[i]->xmax ? holes[i]->x[j] : holes[i]->xmax;
-            holes[i]->xmin = holes[i]->x[j] < holes[i]->xmin ? holes[i]->x[j] : holes[i]->xmin;
-
-            holes[i]->ymax = holes[i]->y[j] > holes[i]->ymax ? holes[i]->y[j] : holes[i]->ymax;
-            holes[i]->ymin = holes[i]->y[j] < holes[i]->ymin ? holes[i]->y[j] : holes[i]->ymin;
-          }
-
+          holes[i] = new FeaturePart( f, interior );
+          holes[i]->holeOf = NULL;
+          // possibly not needed. it's not done for the exterior ring, so I'm not sure
+          // why it's just done here...
           reorderPolygon( holes[i]->nbPoints, holes[i]->x, holes[i]->y );
         }
       }
@@ -199,7 +177,7 @@ namespace pal
     x = new double[nbPoints];
     y = new double[nbPoints];
 
-    for ( i = 0; i < nbPoints; i++ )
+    for ( int i = 0; i < nbPoints; ++i )
     {
       GEOSCoordSeq_getX_r( geosctxt, coordSeq, i, &x[i] );
       GEOSCoordSeq_getY_r( geosctxt, coordSeq, i, &y[i] );
@@ -259,7 +237,7 @@ namespace pal
 
 
 
-  Layer *FeaturePart::getLayer()
+  Layer* FeaturePart::layer()
   {
     return f->layer;
   }

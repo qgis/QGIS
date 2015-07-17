@@ -92,6 +92,12 @@ namespace pal
   };
   Q_DECLARE_FLAGS( LineArrangementFlags, LineArrangementFlag )
 
+  enum ObstacleType
+  {
+    PolygonInterior,
+    PolygonBoundary
+  };
+
   /**
    *  \brief Pal main class.
    *

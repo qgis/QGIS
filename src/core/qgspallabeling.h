@@ -120,6 +120,17 @@ class CORE_EXPORT QgsPalLayerSettings
                                will be drawn with right alignment*/
     };
 
+    /** Valid obstacle types, which affect how features within the layer will act as obstacles
+     * for labels.
+     */
+    enum ObstacleType
+    {
+      PolygonInterior, /*!< avoid placing labels over interior of polygon (prefer placing labels totally
+       outside or just slightly inside polygon) */
+      PolygonBoundary /*!< avoid placing labels over boundary of polygon (prefer placing outside or
+       completely inside polygon) */
+    };
+
     enum ShapeType
     {
       ShapeRectangle = 0,
@@ -427,6 +438,10 @@ class CORE_EXPORT QgsPalLayerSettings
 
     double minFeatureSize; // minimum feature size to be labelled (in mm)
     bool obstacle; // whether features for layer are obstacles to labels of other layers
+
+    /** Controls how features act as obstacles for labels
+     */
+    ObstacleType obstacleType;
 
     //-- scale factors
     double vectorScaleFactor; //scale factor painter units->pixels

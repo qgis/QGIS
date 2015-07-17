@@ -80,6 +80,9 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   mFontLetterSpacingSpinBox->setClearValue( 0.0 );
   mFontWordSpacingSpinBox->setClearValue( 0.0 );
 
+  mObstacleTypeComboBox->addItem( tr( "Over the feature's interior" ), QgsPalLayerSettings::PolygonInterior );
+  mObstacleTypeComboBox->addItem( tr( "Over the feature's boundary" ), QgsPalLayerSettings::PolygonBoundary );
+
   mCharDlg = new QgsCharacterSelectorDialog( this );
 
   mRefFont = lblFontPreview->font();
@@ -152,6 +155,7 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   chkMergeLines->setVisible( layer->geometryType() == QGis::Line );
   mDirectSymbolsFrame->setVisible( layer->geometryType() == QGis::Line );
   mMinSizeFrame->setVisible( layer->geometryType() != QGis::Point );
+  mPolygonObstacleTypeFrame->setVisible( layer->geometryType() == QGis::Polygon );
 
   // field combo and expression button
   mFieldExpressionWidget->setLayer( mLayer );
@@ -354,7 +358,8 @@ void QgsLabelingGui::init()
   mRepeatDistanceUnitWidget->setMapUnitScale( lyr.repeatDistanceMapUnitScale );
 
   mPrioritySlider->setValue( lyr.priority );
-  chkNoObstacle->setChecked( lyr.obstacle );
+  mChkNoObstacle->setChecked( lyr.obstacle );
+  mObstacleTypeComboBox->setCurrentIndex( mObstacleTypeComboBox->findData( lyr.obstacleType ) );
   chkLabelPerFeaturePart->setChecked( lyr.labelPerPart );
   mPalShowAllLabelsForLayerChkBx->setChecked( lyr.displayAll );
   chkMergeLines->setChecked( lyr.mergeLines );
@@ -648,7 +653,8 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.previewBkgrdColor = mPreviewBackgroundBtn->color();
 
   lyr.priority = mPrioritySlider->value();
-  lyr.obstacle = chkNoObstacle->isChecked();
+  lyr.obstacle = mChkNoObstacle->isChecked();
+  lyr.obstacleType = ( QgsPalLayerSettings::ObstacleType )mObstacleTypeComboBox->itemData( mObstacleTypeComboBox->currentIndex() ).toInt();
   lyr.labelPerPart = chkLabelPerFeaturePart->isChecked();
   lyr.displayAll = mPalShowAllLabelsForLayerChkBx->isChecked();
   lyr.mergeLines = chkMergeLines->isChecked();
@@ -1696,6 +1702,11 @@ void QgsLabelingGui::on_mDirectSymbRightToolBtn_clicked()
 
   if ( !dirSymb.isNull() )
     mDirectSymbRightLineEdit->setText( QString( dirSymb ) );
+}
+
+void QgsLabelingGui::on_mChkNoObstacle_toggled( bool active )
+{
+  mPolygonObstacleTypeFrame->setEnabled( active );
 }
 
 void QgsLabelingGui::showBackgroundRadius( bool show )

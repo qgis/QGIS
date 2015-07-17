@@ -149,6 +149,19 @@ namespace pal
        */
       bool obstacle() const { return mObstacle; }
 
+      /** Returns the obstacle type, which controls how features within the layer
+       * act as obstacles for labels.
+       * @see setObstacleType
+       */
+      ObstacleType obstacleType() const { return mObstacleType; }
+
+      /** Sets the obstacle type, which controls how features within the layer
+       * act as obstacles for labels.
+       * @param obstacleType new obstacle type
+       * @see obstacleType
+       */
+      void setObstacleType( ObstacleType obstacleType ) { mObstacleType = obstacleType; }
+
       /** Sets the layer's priority.
        * @param priority layer priority, between 0 and 1. 0 corresponds to highest priority,
        * 1 to lowest priority.
@@ -260,6 +273,7 @@ namespace pal
       double mDefaultPriority;
 
       bool mObstacle;
+      ObstacleType mObstacleType;
       bool mActive;
       bool mLabelLayer;
       bool mDisplayAll;

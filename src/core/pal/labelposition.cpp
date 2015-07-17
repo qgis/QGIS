@@ -97,12 +97,12 @@ namespace pal
     y[3] = y1 + dy2;
 
     // upside down ? (curved labels are always correct)
-    if ( feature->getLayer()->arrangement() != P_CURVED &&
+    if ( feature->layer()->arrangement() != P_CURVED &&
          this->alpha > M_PI / 2 && this->alpha <= 3*M_PI / 2 )
     {
       bool uprightLabel = false;
 
-      switch ( feature->getLayer()->upsidedownLabels() )
+      switch ( feature->layer()->upsidedownLabels() )
       {
         case Layer::Upright:
           uprightLabel = true;
@@ -388,7 +388,7 @@ namespace pal
 
   QString LabelPosition::getLayerName() const
   {
-    return feature->getLayer()->name();
+    return feature->layer()->name();
   }
 
   bool LabelPosition::costShrink( void *l, void *r )
@@ -402,17 +402,17 @@ namespace pal
   }
 
 
-  bool LabelPosition::polygonObstacleCallback( PointSet *feat, void *ctx )
+  bool LabelPosition::polygonObstacleCallback( FeaturePart *obstacle, void *ctx )
   {
     PolygonCostCalculator *pCost = ( PolygonCostCalculator* ) ctx;
 
     LabelPosition *lp = pCost->getLabel();
-    if (( feat == lp->feature ) || ( feat->getHoleOf() && feat->getHoleOf() != lp->feature ) )
+    if (( obstacle == lp->feature ) || ( obstacle->getHoleOf() && obstacle->getHoleOf() != lp->feature ) )
     {
       return true;
     }
 
-    pCost->update( feat );
+    pCost->update( obstacle );
 
     return true;
   }
@@ -440,7 +440,7 @@ namespace pal
 
   bool LabelPosition::pruneCallback( LabelPosition *lp, void *ctx )
   {
-    PointSet *feat = (( PruneCtx* ) ctx )->obstacle;
+    FeaturePart *feat = (( PruneCtx* ) ctx )->obstacle;
 
     if (( feat == lp->feature ) || ( feat->getHoleOf() && feat->getHoleOf() != lp->feature ) )
     {

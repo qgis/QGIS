@@ -200,7 +200,7 @@ namespace pal
   {
     Layer *layer;
     QLinkedList<Feats*>* fFeats;
-    RTree<PointSet*, double, 2, double> *obstacles;
+    RTree<FeaturePart*, double, 2, double> *obstacles;
     RTree<LabelPosition*, double, 2, double> *candidates;
     double bbox_min[2];
     double bbox_max[2];
@@ -287,7 +287,7 @@ namespace pal
     Pal* pal;
   } FilterContext;
 
-  bool filteringCallback( PointSet *pset, void *ctx )
+  bool filteringCallback( FeaturePart *featurePart, void *ctx )
   {
 
     RTree<LabelPosition*, double, 2, double> *cdtsIndex = (( FilterContext* ) ctx )->cdtsIndex;
@@ -297,10 +297,10 @@ namespace pal
       return false; // do not continue searching
 
     double amin[2], amax[2];
-    pset->getBoundingBox( amin, amax );
+    featurePart->getBoundingBox( amin, amax );
 
     LabelPosition::PruneCtx pruneContext;
-    pruneContext.obstacle = pset;
+    pruneContext.obstacle = featurePart;
     pruneContext.pal = pal;
     cdtsIndex->Search( amin, amax, LabelPosition::pruneCallback, ( void* ) &pruneContext );
 
@@ -310,7 +310,7 @@ namespace pal
   Problem* Pal::extract( int nbLayers, const QStringList& layersName, double lambda_min, double phi_min, double lambda_max, double phi_max )
   {
     // to store obstacles
-    RTree<PointSet*, double, 2, double> *obstacles = new RTree<PointSet*, double, 2, double>();
+    RTree<FeaturePart*, double, 2, double> *obstacles = new RTree<FeaturePart*, double, 2, double>();
 
     Problem *prob = new Problem();
 

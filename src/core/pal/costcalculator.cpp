@@ -30,17 +30,17 @@
 namespace pal
 {
 
-  void CostCalculator::addObstacleCostPenalty( LabelPosition* lp, PointSet* feat )
+  void CostCalculator::addObstacleCostPenalty( LabelPosition* lp, FeaturePart* obstacle )
   {
     int n = 0;
     double dist;
     double distlabel = lp->feature->getLabelDistance();
 
-    switch ( feat->getGeosType() )
+    switch ( obstacle->getGeosType() )
     {
       case GEOS_POINT:
 
-        dist = lp->getDistanceToPoint( feat->x[0], feat->y[0] );
+        dist = lp->getDistanceToPoint( obstacle->x[0], obstacle->y[0] );
         if ( dist < 0 )
           n = 2;
         else if ( dist < distlabel )
@@ -52,11 +52,23 @@ namespace pal
       case GEOS_LINESTRING:
 
         // Is one of label's borders crossing the line ?
-        n = ( lp->isBorderCrossingLine( feat ) ? 1 : 0 );
+        n = ( lp->isBorderCrossingLine( obstacle ) ? 1 : 0 );
         break;
 
       case GEOS_POLYGON:
-        n = lp->getNumPointsInPolygon( feat->getNumPoints(), feat->x, feat->y );
+        // behaviour depends on obstacle avoid type
+        switch ( obstacle->layer()->obstacleType() )
+        {
+          case PolygonInterior:
+            // n ranges from 0 -> 12
+            n = lp->getNumPointsInPolygon( obstacle->getNumPoints(), obstacle->x, obstacle->y );
+            break;
+          case PolygonBoundary:
+            // penalty may need tweaking, given that interior mode ranges up to 12
+            n = ( lp->isBorderCrossingLine( obstacle ) ? 6 : 0 );
+            break;
+        }
+
         break;
     }
 
@@ -67,7 +79,7 @@ namespace pal
 
   ////////
 
-  void CostCalculator::setPolygonCandidatesCost( int nblp, LabelPosition **lPos, int max_p, RTree<PointSet*, double, 2, double> *obstacles, double bbx[4], double bby[4] )
+  void CostCalculator::setPolygonCandidatesCost( int nblp, LabelPosition **lPos, int max_p, RTree<FeaturePart*, double, 2, double> *obstacles, double bbx[4], double bby[4] )
   {
     int i;
 
@@ -125,7 +137,7 @@ namespace pal
   }
 
 
-  void CostCalculator::setCandidateCostFromPolygon( LabelPosition* lp, RTree <PointSet*, double, 2, double> *obstacles, double bbx[4], double bby[4] )
+  void CostCalculator::setCandidateCostFromPolygon( LabelPosition* lp, RTree <FeaturePart*, double, 2, double> *obstacles, double bbx[4], double bby[4] )
   {
 
     double amin[2];
@@ -153,7 +165,7 @@ namespace pal
     delete pCost;
   }
 
-  int CostCalculator::finalizeCandidatesCosts( Feats* feat, int max_p, RTree <PointSet*, double, 2, double> *obstacles, double bbx[4], double bby[4] )
+  int CostCalculator::finalizeCandidatesCosts( Feats* feat, int max_p, RTree <FeaturePart*, double, 2, double> *obstacles, double bbx[4], double bby[4] )
   {
     // If candidates list is smaller than expected
     if ( max_p > feat->nblp )
@@ -191,7 +203,7 @@ namespace pal
 
     if ( feat->feature->getGeosType() == GEOS_POLYGON )
     {
-      int arrangement = feat->feature->getLayer()->arrangement();
+      int arrangement = feat->feature->layer()->arrangement();
       if ( arrangement == P_FREE || arrangement == P_HORIZ )
         setPolygonCandidatesCost( stop, ( LabelPosition** ) feat->lPos, max_p, obstacles, bbx, bby );
     }

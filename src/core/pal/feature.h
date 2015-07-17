@@ -247,11 +247,9 @@ namespace pal
        */
       const GEOSGeometry* getGeometry() const { return the_geom; }
 
-      /**
-       * \brief return the layer that feature belongs to
-       * \return the layer of the feature
+      /** Returns the layer that feature belongs to.
        */
-      Layer * getLayer();
+      Layer* layer();
 
       /**
        * \brief generic method to generate candidates
@@ -295,7 +293,7 @@ namespace pal
       bool getAlwaysShow() { return f->alwaysShow; }
 
       int getNumSelfObstacles() const { return nbHoles; }
-      PointSet* getSelfObstacle( int i ) { return holes[i]; }
+      FeaturePart* getSelfObstacle( int i ) { return holes[i]; }
 
       /** Check whether this part is connected with some other part */
       bool isConnected( FeaturePart* p2 );
@@ -310,7 +308,7 @@ namespace pal
       Feature* f;
 
       int nbHoles;
-      PointSet **holes;
+      FeaturePart **holes;
 
       GEOSGeometry *the_geom;
       bool ownsGeom;
