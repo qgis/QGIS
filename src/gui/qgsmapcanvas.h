@@ -697,6 +697,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     QgsSnappingUtils* mSnappingUtils;
 
+    QCursor mOldCursor;
+
 }; // class QgsMapCanvas
 
 
