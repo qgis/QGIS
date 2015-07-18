@@ -1,6 +1,10 @@
 #include "qgsfieldconditionalformatwidget.h"
 
 #include "qgsfielduiproperties.h"
+#include "qgssymbolv2.h"
+#include "qgssymbolv2selectordialog.h"
+#include "qgssymbollayerv2utils.h"
+#include "qgsstylev2.h"
 
 QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget( QWidget *parent ) :
     QWidget( parent )
@@ -15,8 +19,25 @@ QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget( QWidget *paren
   connect( mDeleteButton, SIGNAL( clicked() ), SLOT( deleteRule() ) );
   connect( listView, SIGNAL( clicked( QModelIndex ) ), SLOT( ruleClicked( QModelIndex ) ) );
   connect( mDefaultButtons , SIGNAL( buttonPressed( QAbstractButton* ) ), SLOT( defaultPressed( QAbstractButton* ) ) );
+  connect( btnChangeIcon , SIGNAL( clicked() ), SLOT( updateIcon() ) );
   mModel = new QStandardItemModel();
   listView->setModel( mModel );
+}
+
+void QgsFieldConditionalFormatWidget::updateIcon()
+{
+  QgsSymbolV2* newSymbol = QgsSymbolV2::defaultSymbol( QGis::Point );
+
+  QgsSymbolV2SelectorDialog dlg( newSymbol, QgsStyleV2::defaultStyle(), 0, this );
+  if ( !dlg.exec() )
+  {
+    delete newSymbol;
+    return;
+  }
+
+  QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( newSymbol, btnChangeIcon->iconSize() );
+  btnChangeIcon->setIcon( icon );
+  delete newSymbol;
 }
 
 void QgsFieldConditionalFormatWidget::defaultPressed( QAbstractButton *button )
@@ -47,11 +68,28 @@ void QgsFieldConditionalFormatWidget::editStyle( int editIndex, QgsConditionalSt
   pages->setCurrentIndex( 1 );
   mEditIndex = editIndex;
   mEditing = true;
+
   mRuleEdit->setText( style.rule() );
-  // TODO Match the colors
   mDeleteButton->show();
   btnBackgroundColor->setColor( style.backgroundColor() );
   btnTextColor->setColor( style.textColor() );
+  if ( !style.icon().isNull() )
+  {
+    checkIcon->setChecked( true );
+    QIcon icon( style.icon() );
+    btnChangeIcon->setIcon( icon );
+  }
+  else
+  {
+    checkIcon->setChecked( false );
+    btnChangeIcon->setIcon( QIcon() );
+  }
+  QFont font = style.font();
+  mFontBoldBtn->setChecked(font.bold());
+  mFontItalicBtn->setChecked(font.italic());
+  mFontStrikethroughBtn->setChecked(font.strikeOut());
+  mFontUnderlineBtn->setChecked(font.underline());
+  mFontFamilyCmbBx->setFont(font);
 }
 
 void QgsFieldConditionalFormatWidget::deleteRule()
@@ -85,8 +123,16 @@ void QgsFieldConditionalFormatWidget::reset()
   btnBackgroundColor->setColor( QColor() );
   btnTextColor->setColor( QColor() );
   mDefault1->toggle();
+  defaultPressed( mDefault1 );
   mDeleteButton->hide();
   mEditing = false;
+  checkIcon->setChecked(false);
+  btnChangeIcon->setIcon(QIcon());
+
+  mFontBoldBtn->setChecked(false);
+  mFontItalicBtn->setChecked(false);
+  mFontStrikethroughBtn->setChecked(false);
+  mFontUnderlineBtn->setChecked(false);
 }
 
 void QgsFieldConditionalFormatWidget::saveRule()
@@ -107,6 +153,13 @@ void QgsFieldConditionalFormatWidget::saveRule()
   style.setFont( font );
   style.setBackgroundColor( backColor );
   style.setTextColor( fontColor );
+  QPixmap icon;
+  if ( checkIcon->isChecked() )
+  {
+    QIcon _icon = btnChangeIcon->icon();
+    icon = _icon.pixmap( 16, 16 );
+  }
+  style.setIcon( icon );
   if ( mEditing )
   {
     styles.replace( mEditIndex, style );

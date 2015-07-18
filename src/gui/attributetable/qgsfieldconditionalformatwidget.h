@@ -52,6 +52,7 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::Q
     QStandardItemModel* mModel;
 
   private slots:
+    void updateIcon();
     void defaultPressed( QAbstractButton*button );
     bool isCustomSet();
     void ruleClicked( QModelIndex index );
