@@ -15,7 +15,6 @@ __revision__ = '$Format:%H$'
 import os
 import re
 import unittest
-import tempfile
 from qgis.server import QgsServer
 from qgis.core import QgsMessageLog
 from utilities import unitTestDataPath
@@ -103,8 +102,10 @@ class TestQgsServer(unittest.TestCase):
 
     ## WMS tests
     def wms_request_compare(self, request):
-        map = self.testdata_path + "testproject.qgs"
-        query_string = 'MAP=%s&SERVICE=WMS&VERSION=1.3&REQUEST=%s' % (map, request)
+        project = self.testdata_path + "testproject.qgs"
+        assert os.path.exists(project), "Project file not found: " + project
+
+        query_string = 'MAP=%s&SERVICE=WMS&VERSION=1.3&REQUEST=%s' % (project, request)
         response = str(self.server.handleRequest(query_string))
         f = open(self.testdata_path + request.lower() + '.txt')
         expected = f.read()
@@ -120,7 +121,7 @@ class TestQgsServer(unittest.TestCase):
         """
         response = re.sub(RE_STRIP_PATH, '', response)
         expected = re.sub(RE_STRIP_PATH, '', expected)
-        self.assertEqual(response, expected, msg="request %s failed. Expected:\n%s\n\nResponse:\n%s" % (request, expected, response))
+        self.assertEqual(response, expected, msg="request %s failed.\n Query: %s\n Expected:\n%s\n\n Response:\n%s" % (query_string, request, expected, response))
 
 
     def test_project_wms(self):

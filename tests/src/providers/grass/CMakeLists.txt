@@ -31,15 +31,9 @@ MESSAGE(STATUS \"Running ${CMAKE_BINARY_DIR}/output/bin/\${CMAKE_BUILD_TYPE}/qgi
 EXECUTE_PROCESS(
   COMMAND ${CMAKE_BINARY_DIR}/output/bin/\${CMAKE_BUILD_TYPE}/qgis_${testname}${grass_build_version}
   RESULT_VARIABLE import_res
-  OUTPUT_VARIABLE import_output
-  ERROR_VARIABLE  import_output
 )
-# Pass the output back to ctest
-IF(import_output)
-  MESSAGE(" \${import_output} ")
-ENDIF(import_output)
 IF(import_res)
-  MESSAGE(SEND_ERROR " \${import_res} ")
+  MESSAGE(FATAL_ERROR \"Test failed: \${import_res}\")
 ENDIF(import_res)
 "
 )
