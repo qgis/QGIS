@@ -15,6 +15,7 @@ __revision__ = '$Format:%H$'
 import os
 import re
 import unittest
+import urllib
 from qgis.server import QgsServer
 from qgis.core import QgsMessageLog
 from utilities import unitTestDataPath
@@ -102,10 +103,10 @@ class TestQgsServer(unittest.TestCase):
 
     ## WMS tests
     def wms_request_compare(self, request):
-        project = self.testdata_path + "testproject.qgs"
+        project = self.testdata_path + "test+project.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
-        query_string = 'MAP=%s&SERVICE=WMS&VERSION=1.3&REQUEST=%s' % (project, request)
+        query_string = 'MAP=%s&SERVICE=WMS&VERSION=1.3&REQUEST=%s' % (urllib.quote(project), request)
         response = str(self.server.handleRequest(query_string))
         f = open(self.testdata_path + request.lower() + '.txt')
         expected = f.read()
