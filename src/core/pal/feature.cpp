@@ -116,11 +116,6 @@ namespace pal
     qDeleteAll( mHoles );
     mHoles.clear();
 
-    if ( mOwnsGeom )
-    {
-      GEOSGeom_destroy_r( geosContext(), mGeos );
-      mGeos = NULL;
-    }
   }
 
   void FeaturePart::extractCoords( const GEOSGeometry* geom )
@@ -1298,6 +1293,9 @@ namespace pal
 
   void FeaturePart::addSizePenalty( int nbp, LabelPosition** lPos, double bbx[4], double bby[4] )
   {
+    if ( !mGeos )
+      createGeosGeom();
+
     GEOSContextHandle_t ctxt = geosContext();
     int geomType = GEOSGeomTypeId_r( ctxt, mGeos );
 
@@ -1338,11 +1336,22 @@ namespace pal
 
   bool FeaturePart::isConnected( FeaturePart* p2 )
   {
+    if ( !mGeos )
+      createGeosGeom();
+
+    if ( !p2->mGeos )
+      p2->createGeosGeom();
+
     return ( GEOSTouches_r( geosContext(), mGeos, p2->mGeos ) == 1 );
   }
 
   bool FeaturePart::mergeWithFeaturePart( FeaturePart* other )
   {
+    if ( !mGeos )
+      createGeosGeom();
+    if ( !other->mGeos )
+      other->createGeosGeom();
+
     GEOSContextHandle_t ctxt = geosContext();
     GEOSGeometry* g1 = GEOSGeom_clone_r( ctxt, mGeos );
     GEOSGeometry* g2 = GEOSGeom_clone_r( ctxt, other->mGeos );

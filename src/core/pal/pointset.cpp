@@ -45,7 +45,9 @@ namespace pal
 
 
   PointSet::PointSet()
-      : holeOf( NULL )
+      : mGeos( 0 )
+      , mOwnsGeom( false )
+      , holeOf( NULL )
       , parent( NULL )
       , xmin( DBL_MAX )
       , xmax( -DBL_MAX )
@@ -60,7 +62,9 @@ namespace pal
   }
 
   PointSet::PointSet( int nbPoints, double *x, double *y )
-      : cHullSize( 0 )
+      : mGeos( 0 )
+      , mOwnsGeom( false )
+      , cHullSize( 0 )
       , holeOf( NULL )
       , parent( NULL )
       , xmin( DBL_MAX )
@@ -83,8 +87,12 @@ namespace pal
   }
 
   PointSet::PointSet( double aX, double aY )
-      : xmin( aX ), xmax( aY )
-      , ymin( aX ), ymax( aY )
+      : mGeos( 0 )
+      , mOwnsGeom( false )
+      , xmin( aX )
+      , xmax( aY )
+      , ymin( aX )
+      , ymax( aY )
   {
     nbPoints = cHullSize = 1;
     x = new double[1];
@@ -100,7 +108,9 @@ namespace pal
   }
 
   PointSet::PointSet( PointSet &ps )
-      : parent( 0 )
+      : mGeos( 0 )
+      , mOwnsGeom( false )
+      , parent( 0 )
       , xmin( DBL_MAX )
       , xmax( -DBL_MAX )
       , ymin( DBL_MAX )
@@ -138,8 +148,27 @@ namespace pal
     holeOf = ps.holeOf;
   }
 
+  void PointSet::createGeosGeom()
+  {
+    GEOSContextHandle_t geosctxt = geosContext();
+    GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, nbPoints, 2 );
+    for ( int i = 0; i < nbPoints; ++i )
+    {
+      GEOSCoordSeq_setX_r( geosctxt, coord, i, x[i] );
+      GEOSCoordSeq_setY_r( geosctxt, coord, i, y[i] );
+    }
+    mGeos = GEOSGeom_createPolygon_r( geosctxt, GEOSGeom_createLinearRing_r( geosctxt, coord ), 0, 0 );
+    mOwnsGeom = true;
+  }
+
   PointSet::~PointSet()
   {
+    if ( mOwnsGeom )
+    {
+      GEOSGeom_destroy_r( geosContext(), mGeos );
+      mGeos = NULL;
+    }
+
     deleteCoords();
 
     if ( cHull )
@@ -155,9 +184,6 @@ namespace pal
     x = NULL;
     y = NULL;
   }
-
-
-
 
   PointSet* PointSet::extractShape( int nbPtSh, int imin, int imax, int fps, int fpe, double fptx, double fpty )
   {
@@ -842,65 +868,38 @@ namespace pal
   }
 
 
-
   void PointSet::getCentroid( double &px, double &py, bool forceInside )
   {
-    // for explanation see this page:
-    // http://local.wasp.uwa.edu.au/~pbourke/geometry/polyarea/
+    if ( !mGeos )
+      createGeosGeom();
 
-    int i, j;
-    double cx = 0, cy = 0, A = 0, tmp, sumx = 0, sumy = 0;
-    for ( i = 0; i < nbPoints; i++ )
-    {
-      j = i + 1; if ( j == nbPoints ) j = 0;
-      tmp = (( x[i] - x[0] ) * ( y[j] - y[0] ) - ( x[j] - x[0] ) * ( y[i] - y[0] ) );
-      cx += ( x[i] + x[j] - 2 * x[0] ) * tmp;
-      cy += ( y[i] + y[j] - 2 * y[0] ) * tmp;
-      A += tmp;
-      sumx += x[i];
-      sumy += y[i];
-    }
+    if ( !mGeos )
+      return;
 
-    if ( A == 0 )
+    GEOSContextHandle_t geosctxt = geosContext();
+    GEOSGeometry *centroidGeom = GEOSGetCentroid_r( geosctxt, mGeos );
+    if ( centroidGeom )
     {
-      px = sumx / nbPoints;
-      py = sumy / nbPoints;
-    }
-    else
-    {
-      px = cx / ( 3 * A ) + x[0];
-      py = cy / ( 3 * A ) + y[0];
+      const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, centroidGeom );
+      GEOSCoordSeq_getX_r( geosctxt, coordSeq, 0, &px );
+      GEOSCoordSeq_getY_r( geosctxt, coordSeq, 0, &py );
     }
 
     // check if centroid inside in polygon
     if ( forceInside && !isPointInPolygon( nbPoints, x, y, px, py ) )
     {
-      GEOSContextHandle_t geosctxt = geosContext();
-      GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, nbPoints, 2 );
+      GEOSGeometry *pointGeom = GEOSPointOnSurface_r( geosctxt, mGeos );
 
-      for ( int i = 0; i < nbPoints; ++i )
+      if ( pointGeom )
       {
-        GEOSCoordSeq_setX_r( geosctxt, coord, i, x[i] );
-        GEOSCoordSeq_setY_r( geosctxt, coord, i, y[i] );
-      }
-
-      GEOSGeometry *geom = GEOSGeom_createPolygon_r( geosctxt, GEOSGeom_createLinearRing_r( geosctxt, coord ), 0, 0 );
-
-      if ( geom )
-      {
-        GEOSGeometry *pointGeom = GEOSPointOnSurface_r( geosctxt, geom );
-
-        if ( pointGeom )
-        {
-          const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, pointGeom );
-          GEOSCoordSeq_getX_r( geosctxt, coordSeq, 0, &px );
-          GEOSCoordSeq_getY_r( geosctxt, coordSeq, 0, &py );
-
-          GEOSGeom_destroy_r( geosctxt, pointGeom );
-        }
-        GEOSGeom_destroy_r( geosctxt, geom );
+        const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, pointGeom );
+        GEOSCoordSeq_getX_r( geosctxt, coordSeq, 0, &px );
+        GEOSCoordSeq_getY_r( geosctxt, coordSeq, 0, &py );
+        GEOSGeom_destroy_r( geosctxt, pointGeom );
       }
     }
+
+    GEOSGeom_destroy_r( geosctxt, centroidGeom );
   }
 
 } // end namespace

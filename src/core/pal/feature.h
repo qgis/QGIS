@@ -230,10 +230,6 @@ namespace pal
        */
       Feature* getFeature() { return mFeature; }
 
-      /** Returns the part's GEOS geometry.
-       */
-      const GEOSGeometry* getGeometry() const { return mGeos; }
-
       /** Returns the layer that feature belongs to.
        */
       Layer* layer();
@@ -292,8 +288,6 @@ namespace pal
 
       Feature* mFeature;
       QList<FeaturePart*> mHoles;
-      GEOSGeometry *mGeos;
-      bool mOwnsGeom;
 
       /** \brief read coordinates from a GEOS geom */
       void extractCoords( const GEOSGeometry* geom );

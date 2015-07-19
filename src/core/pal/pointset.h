@@ -95,6 +95,10 @@ namespace pal
       PointSet( int nbPoints, double *x, double *y );
       virtual ~PointSet();
 
+      /** Returns the point set's GEOS geometry.
+       */
+      const GEOSGeometry* getGeometry() const { return mGeos; }
+
       PointSet* extractShape( int nbPtSh, int imin, int imax, int fps, int fpe, double fptx, double fpty );
 
       PointSet* createProblemSpecificPointSet( double bbmin[2], double bbmax[2], bool *inside );
@@ -102,9 +106,7 @@ namespace pal
       CHullBox * compute_chull_bbox();
 
 
-      /*
-       * split a concave shape into several convex shapes
-       *
+      /** Split a concave shape into several convex shapes.
        */
       static void splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
                                  QLinkedList<PointSet *> &shapes_final,
@@ -112,25 +114,16 @@ namespace pal
 
 
 
-      /**
-       * \brief return the minimum distance bw this and the point (px,py)
-       *
-       * compute the minimum distance bw the point (px,py) and this.
-       * Optionnaly, store the nearest point in (rx,ry)
-       *
+      /** Return the minimum distance bw this and the point (px,py). Optionally, store the nearest point in (rx,ry).
        * @param px x coordinate of the point
        * @param py y coordinate of the points
        * @param rx pointer to x coorinates of the nearest point (can be NULL)
        * @param ry pointer to y coorinates of the nearest point (can be NULL)
+       * @returns minimum distance
        */
       double getDist( double px, double py, double *rx, double *ry );
 
-
-
-      //double getDistInside(double px, double py);
-
       void getCentroid( double &px, double &py, bool forceInside = false );
-
 
       int getGeosType() const { return type; }
 
@@ -145,8 +138,7 @@ namespace pal
 
       int getNumPoints() const { return nbPoints; }
 
-      /*
-       * Iterate on line by real step of dl on x,y points
+      /** Iterate on line by real step of dl on x,y points.
        * @param nbPoint # point in line
        * @param x x coord
        * @param y y coord
@@ -197,6 +189,9 @@ namespace pal
       }
 
     protected:
+      GEOSGeometry *mGeos;
+      bool mOwnsGeom;
+
       int nbPoints;
       double *x;
       double *y;   // points order is counterclockwise
@@ -214,11 +209,13 @@ namespace pal
       PointSet( PointSet &ps );
 
       void deleteCoords();
+      void createGeosGeom();
 
       double xmin;
       double xmax;
       double ymin;
       double ymax;
+
   };
 
 } // namespace pal
