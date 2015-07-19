@@ -38,13 +38,14 @@ pod2usage(1) if $help || $arch !~ /^x86(_64)?$/;
 my $wgetopt = $verbose ? "-nv" : "-q";
 
 my $unpacked = $arch eq "x86_64" ? "c:/osgeo4w64" : "c:/osgeo4w";
-my $packages = $ENV{'TEMP'} . "/osgeo4w-$arch";
+my $packages = "/cygdrive/c/temp/$arch";
 
 if(-d $unpacked) {
 	print "$unpacked already exists.";
 	exit 0;
 }
 
+mkdir "/cygdrive/c/temp", 0755 unless -d "/cygdrive/c/temp";
 mkdir $packages, 0755 unless -d $packages;
 chdir $packages;
 
@@ -208,8 +209,8 @@ print " postinstall.bat finished.\n" if $verbose;
 
 system "tar -C $unpacked -xjf /cygdrive/c/src/qgis/ms-windows/osgeo4w/4127.tar.bz2";
 
-print "SIZE $arch:";
-system "du -sch $unpacked";
+print "PACKAGES $arch:";
+system "du -sch $packages";
 
 =head1 NAME
 

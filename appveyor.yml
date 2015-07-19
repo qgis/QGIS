@@ -8,9 +8,8 @@ configuration: Debug
 clone_folder: c:\src\qgis
 shallow_clone: true
 
-#cache:
-#  - c:\OSGeo4W
-#  - c:\OSGeo4W64
+cache:
+  - c:\temp
 
 services: postgresql
 
@@ -19,13 +18,13 @@ skip_commits:
 
 install:
   - SET PATH=c:\cygwin\bin;%PATH%
-  - c:\cygwin\setup-x86.exe -qnNdO -R C:/cygwin -s http://cygwin.mirror.constant.com -l C:/cygwin/var/cache/setup -P flex -P poppler
+  - c:\cygwin\setup-x86.exe -qnNdO -R C:/cygwin -s http://cygwin.mirror.constant.com -l C:/temp/cygwin -P flex -P poppler -P doxygen
   - ps: cd ms-windows\osgeo4w
   - perl osgeo4w-appveyor.pl -arch=%platform%
+  - cmake --version
+  - ctest --version
 
 build_script:
-  - touch noclean nobuild noinstall
-  - set TESTTARGET=Experimental
-  - package-nightly.cmd 2.11.0 %APPVEYOR_BUILD_NUMBER% qgis-dev %platform% %APPVEYOR_REPO_COMMIT:~1,7% appveyor
+  - ctest -V -S %APPVEYOR_BUILD_FOLDER%\qgis-test-appveyor.ctest --output-on-failure
 
 deploy: off
