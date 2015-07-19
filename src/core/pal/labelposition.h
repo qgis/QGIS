@@ -30,11 +30,9 @@
 #ifndef _LABELPOSITION_H
 #define _LABELPOSITION_H
 
-#include <fstream>
-
 #include "pointset.h"
 #include "rtree.hpp"
-
+#include <fstream>
 
 namespace pal
 {

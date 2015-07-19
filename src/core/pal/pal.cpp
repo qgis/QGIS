@@ -28,19 +28,10 @@
  */
 
 //#define _VERBOSE_
-#include <QTime>
 
 #define _CRT_SECURE_NO_DEPRECATE
 
-#include <cstdarg>
-#include <iostream>
-#include <fstream>
-#include <cstring>
-#include <cfloat>
-#include <list>
-//#include <geos/geom/Geometry.h>
-#include <geos_c.h>
-
+#include "qgsgeometry.h"
 #include "pal.h"
 #include "layer.h"
 #include "palexception.h"
@@ -53,8 +44,12 @@
 #include "problem.h"
 #include "pointset.h"
 #include "util.h"
-
-#include <qgsgeometry.h> // for GEOS context
+#include <QTime>
+#include <cstdarg>
+#include <iostream>
+#include <fstream>
+#include <cfloat>
+#include <list>
 
 namespace pal
 {

@@ -29,14 +29,6 @@
 
 #define _CRT_SECURE_NO_DEPRECATE
 
-#include <stddef.h>
-#include <geos_c.h>
-
-#include <iostream>
-#include <cstring>
-#include <cmath>
-#include <vector>
-
 #include "pal.h"
 #include "layer.h"
 #include "palexception.h"
@@ -44,6 +36,9 @@
 #include "feature.h"
 #include "geomfunction.h"
 #include "util.h"
+#include <iostream>
+#include <cmath>
+#include <vector>
 
 namespace pal
 {

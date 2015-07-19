@@ -30,9 +30,9 @@
 #ifndef _PROBLEM_H
 #define _PROBLEM_H
 
-#include <list>
 #include "pal.h"
 #include "rtree.hpp"
+#include <list>
 
 namespace pal
 {

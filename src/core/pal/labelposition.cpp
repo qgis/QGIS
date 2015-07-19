@@ -29,18 +29,16 @@
 
 #define _CRT_SECURE_NO_DEPRECATE
 
-#include <iostream>
-#include <fstream>
-#include <cmath>
-#include <cstring>
-#include <cfloat>
-
 #include "layer.h"
 #include "pal.h"
 #include "costcalculator.h"
 #include "feature.h"
 #include "geomfunction.h"
 #include "labelposition.h"
+#include <iostream>
+#include <fstream>
+#include <cmath>
+#include <cfloat>
 
 #ifndef M_PI
 #define M_PI 3.1415926535897931159979634685

@@ -27,23 +27,17 @@
  *
  */
 
-#include <stddef.h>
-#include <geos_c.h>
-
-#include <sstream>
-
-#include <iostream>
-#include <cfloat>
-//#include <cfloat>
-#include <cstdarg>
-#include <ctime>
-
 #include "layer.h"
 #include "internalexception.h"
 #include "util.h"
 #include "labelposition.h"
 #include "feature.h"
 #include "geomfunction.h"
+#include <iostream>
+#include <cfloat>
+//#include <cfloat>
+#include <cstdarg>
+#include <ctime>
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846

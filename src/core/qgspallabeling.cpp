@@ -28,8 +28,6 @@
 #include <pal/problem.h>
 #include <pal/labelposition.h>
 
-#include <geos_c.h>
-
 #include <cmath>
 
 #include <QApplication>

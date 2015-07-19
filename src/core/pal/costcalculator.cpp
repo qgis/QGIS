@@ -13,12 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <iostream>
-#include <fstream>
-#include <cmath>
-#include <cstring>
-#include <cfloat>
-
 #include "layer.h"
 #include "pal.h"
 #include "feature.h"
@@ -26,6 +20,10 @@
 #include "labelposition.h"
 #include "util.h"
 #include "costcalculator.h"
+#include <iostream>
+#include <fstream>
+#include <cmath>
+#include <cfloat>
 
 namespace pal
 {

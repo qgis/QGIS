@@ -30,17 +30,15 @@
 #ifndef _FEATURE_H
 #define _FEATURE_H
 
-#include <iostream>
-#include <fstream>
-#include <cmath>
-#include <QString>
-
-#include <geos_c.h>
-
+#include "qgsgeometry.h"
 #include "palgeometry.h"
 #include "pointset.h"
 #include "util.h"
 #include "labelposition.h"
+#include <iostream>
+#include <fstream>
+#include <cmath>
+#include <QString>
 
 namespace pal
 {
@@ -160,10 +158,6 @@ namespace pal
 
       bool alwaysShow; //true is label is to always be shown (but causes overlapping)
 
-
-      // array of parts - possibly not necessary
-      //int nPart;
-      //FeaturePart** parts;
     private:
 
       bool mFixedQuadrant;
@@ -180,92 +174,82 @@ namespace pal
 
     public:
 
-      /**
-        * \brief create a new generic feature
-        *
-        * \param feat a pointer for a Feat which contains the spatial entites
-        * \param geom a pointer to a GEOS geometry
+      /** Creates a new generic feature.
+        * @param feat a pointer for a feature which contains the spatial entites
+        * @param geom a pointer to a GEOS geometry
         */
       FeaturePart( Feature *feat, const GEOSGeometry* geom );
 
-      /**
-       * \brief Delete the feature
+      /** Delete the feature
        */
       virtual ~FeaturePart();
 
-      /**
-       * \brief generate candidates for point feature
-       * Generate candidates for point features
-       * \param x x coordinates of the point
-       * \param y y coordinates of the point
-       * \param lPos pointer to an array of candidates, will be filled by generated candidates
-       * \param angle orientation of the label
-       * \return the number of generated cadidates
+      /** Generate candidates for point feature, located around a specified point.
+       * @param x x coordinate of the point
+       * @param y y coordinate of the point
+       * @param lPos pointer to an array of candidates, will be filled by generated candidates
+       * @param angle orientation of the label
+       * @returns the number of generated candidates
        */
       int setPositionForPoint( double x, double y, LabelPosition ***lPos, double angle );
 
-      /**
-       * generate one candidate over specified point
+      /** Generate one candidate over or offset the specified point.
+       * @param x x coordinate of the point
+       * @param y y coordinate of the point
+       * @param lPos pointer to an array of candidates, will be filled by generated candidate
+       * @param angle orientation of the label
+       * @returns the number of generated candidates (always 1)
        */
       int setPositionOverPoint( double x, double y, LabelPosition ***lPos, double angle );
 
-      /**
-       * \brief generate candidates for line feature
-       * Generate candidates for line features
-       * \param lPos pointer to an array of candidates, will be filled by generated candidates
-       * \param mapShape a pointer to the line
-       * \return the number of generated cadidates
+      /** Generate candidates for line feature.
+       * @param lPos pointer to an array of candidates, will be filled by generated candidates
+       * @param mapShape a pointer to the line
+       * @returns the number of generated candidates
        */
       int setPositionForLine( LabelPosition ***lPos, PointSet *mapShape );
 
       LabelPosition* curvedPlacementAtOffset( PointSet* path_positions, double* path_distances,
                                               int orientation, int index, double distance );
 
-      /**
-       * Generate curved candidates for line features
+      /** Generate curved candidates for line features.
+       * @param lPos pointer to an array of candidates, will be filled by generated candidates
+       * @param mapShape a pointer to the line
+       * @returns the number of generated candidates
        */
       int setPositionForLineCurved( LabelPosition ***lPos, PointSet* mapShape );
 
-      /**
-       * \brief generate candidates for point feature
-       * Generate candidates for point features
+      /** Generate candidates for polygon features.
        * \param lPos pointer to an array of candidates, will be filled by generated candidates
        * \param mapShape a pointer to the polygon
-       * \return the number of generated cadidates
+       * \return the number of generated candidates
        */
       int setPositionForPolygon( LabelPosition ***lPos, PointSet *mapShape );
 
-      /**
-       * \brief return the feature
-       * \return the feature
+      /** Returns the parent feature.
        */
-      Feature* getFeature() { return f; }
+      Feature* getFeature() { return mFeature; }
 
-      /**
-       * \brief return the geometry
-       * \return the geometry
+      /** Returns the part's GEOS geometry.
        */
-      const GEOSGeometry* getGeometry() const { return the_geom; }
+      const GEOSGeometry* getGeometry() const { return mGeos; }
 
       /** Returns the layer that feature belongs to.
        */
       Layer* layer();
 
-      /**
-       * \brief generic method to generate candidates
-       * This method will call either setPositionFromPoint(), setPositionFromLine or setPositionFromPolygon
-       * \param lPos pointer to candidates array in which candidates will be put
+      /** Generic method to generate candidates. This method will call either setPositionFromPoint(),
+       * setPositionFromLine or setPositionFromPolygon
+       * \param lPos pointer to an array of candidates, will be filled by generated candidates
        * \param bbox_min min values of the map extent
        * \param bbox_max max values of the map extent
-       * \param mapShape generate candidates for this spatial entites
+       * \param mapShape generate candidates for this spatial entity
        * \param candidates index for candidates
        * \return the number of candidates in *lPos
        */
       int setPosition( LabelPosition ***lPos, double bbox_min[2], double bbox_max[2], PointSet *mapShape, RTree<LabelPosition*, double, 2, double>*candidates );
 
-      /**
-       * \brief get the unique id of the feature
-       * \return the feature unique identifier
+      /** Returns the unique ID of the feature.
        */
       QString getUID() const;
 
@@ -278,22 +262,22 @@ namespace pal
       void print();
 #endif
 
-      PalGeometry* getUserGeometry() { return f->userGeom; }
+      PalGeometry* getUserGeometry() { return mFeature->userGeom; }
 
-      void setLabelSize( double lx, double ly ) { f->label_x = lx; f->label_y = ly; }
-      double getLabelWidth() const { return f->label_x; }
-      double getLabelHeight() const { return f->label_y; }
-      void setLabelDistance( double dist ) { f->distlabel = dist; }
-      double getLabelDistance() const { return f->distlabel; }
-      void setLabelInfo( LabelInfo* info ) { f->labelInfo = info; }
+      void setLabelSize( double lx, double ly ) { mFeature->label_x = lx; mFeature->label_y = ly; }
+      double getLabelWidth() const { return mFeature->label_x; }
+      double getLabelHeight() const { return mFeature->label_y; }
+      void setLabelDistance( double dist ) { mFeature->distlabel = dist; }
+      double getLabelDistance() const { return mFeature->distlabel; }
+      void setLabelInfo( LabelInfo* info ) { mFeature->labelInfo = info; }
 
-      bool getFixedRotation() { return f->fixedRotation; }
-      double getLabelAngle() { return f->fixedAngle; }
-      bool getFixedPosition() { return f->fixedPos; }
-      bool getAlwaysShow() { return f->alwaysShow; }
+      bool getFixedRotation() { return mFeature->fixedRotation; }
+      double getLabelAngle() { return mFeature->fixedAngle; }
+      bool getFixedPosition() { return mFeature->fixedPos; }
+      bool getAlwaysShow() { return mFeature->alwaysShow; }
 
-      int getNumSelfObstacles() const { return nbHoles; }
-      FeaturePart* getSelfObstacle( int i ) { return holes[i]; }
+      int getNumSelfObstacles() const { return mHoles.count(); }
+      FeaturePart* getSelfObstacle( int i ) { return mHoles.at( i ); }
 
       /** Check whether this part is connected with some other part */
       bool isConnected( FeaturePart* p2 );
@@ -305,21 +289,14 @@ namespace pal
       void addSizePenalty( int nbp, LabelPosition** lPos, double bbx[4], double bby[4] );
 
     protected:
-      Feature* f;
 
-      int nbHoles;
-      FeaturePart **holes;
-
-      GEOSGeometry *the_geom;
-      bool ownsGeom;
+      Feature* mFeature;
+      QList<FeaturePart*> mHoles;
+      GEOSGeometry *mGeos;
+      bool mOwnsGeom;
 
       /** \brief read coordinates from a GEOS geom */
       void extractCoords( const GEOSGeometry* geom );
-
-      /** Find duplicate (or nearly duplicate points) and remove them.
-       * Probably to avoid numerical errors in geometry algorithms.
-       */
-      void removeDuplicatePoints();
 
     private:
 

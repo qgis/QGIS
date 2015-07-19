@@ -30,13 +30,12 @@
 #ifndef _LAYER_H_
 #define _LAYER_H_
 
-#include <fstream>
-
 #include "pal.h"
 #include "palgeometry.h"
 #include <QMutex>
 #include <QLinkedList>
 #include <QHash>
+#include <fstream>
 
 namespace pal
 {

@@ -30,8 +30,7 @@
 #ifndef _PAL_GEOMETRY_H
 #define _PAL_GEOMETRY_H
 
-#include <cstdlib> // for size_t needed in geos_c.h
-#include <geos_c.h>
+#include "qgsgeometry.h"
 
 namespace pal
 {

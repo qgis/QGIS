@@ -34,12 +34,11 @@
 #include <iostream>
 #endif
 
-#include <qglobal.h>
-
 #include "pointset.h"
 #include "util.h"
 #include "pal.h"
 #include "geomfunction.h"
+#include <qglobal.h>
 
 namespace pal
 {

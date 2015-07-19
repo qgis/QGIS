@@ -30,14 +30,10 @@
 #ifndef _UTIL_H
 #define _UTIL_H
 
-#include <cmath>
-#include <cstring>
-#include <stddef.h>
-#include <geos_c.h>
-
 #include "pal.h"
 #include "rtree.hpp"
 #include "pointset.h"
+#include "qgsgeometry.h"
 
 namespace pal
 {

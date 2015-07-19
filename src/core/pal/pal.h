@@ -30,10 +30,10 @@
 #ifndef _PAL_H
 #define _PAL_H
 
+#include "qgsgeometry.h"
 #include <QList>
 #include <iostream>
 #include <ctime>
-#include <geos_c.h>
 #include <QMutex>
 #include <QStringList>
 
