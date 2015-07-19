@@ -391,33 +391,8 @@ void QgsRuleBasedRendererV2::Rule::toSld( QDomDocument& doc, QDomElement &elemen
 
 bool QgsRuleBasedRendererV2::Rule::startRender( QgsRenderContext& context, const QgsFields& fields )
 {
-  mActiveChildren.clear();
-
-  if ( ! mCheckState )
-    return false;
-
-  // filter out rules which are not compatible with this scale
-  if ( !isScaleOK( context.rendererScale() ) )
-    return false;
-
-  // init this rule
-  if ( mFilter )
-    mFilter->prepare( fields );
-  if ( mSymbol )
-    mSymbol->startRender( context, &fields );
-
-  // init children
-  // build temporary list of active rules (usable with this scale)
-  for ( RuleList::iterator it = mChildren.begin(); it != mChildren.end(); ++it )
-  {
-    Rule* rule = *it;
-    if ( rule->startRender( context, fields ) )
-    {
-      // only add those which are active with current scale
-      mActiveChildren.append( rule );
-    }
-  }
-  return true;
+  QString filter;
+  return startRender( context, fields, filter );
 }
 
 bool QgsRuleBasedRendererV2::Rule::startRender( QgsRenderContext& context, const QgsFields& fields, QString& filter )
