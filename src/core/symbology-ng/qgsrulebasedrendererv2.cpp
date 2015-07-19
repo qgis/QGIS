@@ -431,7 +431,15 @@ bool QgsRuleBasedRendererV2::Rule::startRender( QgsRenderContext& context, const
   QString sf;
   if ( subfilters.length() )
     sf = subfilters.join( ") OR (" ).prepend( "(" ).append( ")" );
-  if ( mFilterExp.length() && sf.length() )
+
+  if ( isElse() )
+  {
+    if ( !sf.length() )
+      filter = "1";
+    else
+      filter = sf;
+  }
+  else if ( mFilterExp.length() && sf.length() )
     filter = QString( "(%1) AND (%2)" ).arg( mFilterExp ).arg( sf );
   else if ( mFilterExp.length() )
     filter = mFilterExp;
