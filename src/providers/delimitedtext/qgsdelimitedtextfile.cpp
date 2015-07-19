@@ -20,6 +20,7 @@
 
 #include <QtGlobal>
 #include <QFile>
+#include <QFileInfo>
 #include <QDataStream>
 #include <QTextStream>
 #include <QFileSystemWatcher>
@@ -840,7 +841,6 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QString &buffer,
 
 bool QgsDelimitedTextFile::isValid()
 {
-
-  return mDefinitionValid && QFile::exists( mFileName );
+  return mDefinitionValid && QFile::exists( mFileName ) && QFileInfo( mFileName ).size() > 0;
 }
 

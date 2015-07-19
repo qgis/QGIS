@@ -147,7 +147,7 @@ class QgsGrass
     };
 
     //! Get info about the mode
-    /*! QgsGrass may be running in active or passive mode.
+    /** QgsGrass may be running in active or passive mode.
      *  Active mode means that GISRC is set up and GISRC file is available,
      *  in that case default GISDBASE, LOCATION and MAPSET may be read by GetDefaul*() functions.
      *  Passive mode means, that GISRC is not available. */
@@ -409,12 +409,21 @@ class QgsGrass
     // set environment variable
     static GRASS_LIB_EXPORT void putEnv( QString name, QString value );
 
-#if defined(WIN32)
+#ifdef Q_OS_WIN
     static GRASS_LIB_EXPORT QString shortPath( const QString &path );
 #endif
 
     // path to QGIS GRASS modules like qgis.g.info etc.
-    static GRASS_LIB_EXPORT QString qgisGrassModulePath() { return QgsApplication::libexecPath() + "grass/modules"; }
+    static GRASS_LIB_EXPORT QString qgisGrassModulePath()
+    {
+#ifdef _MSC_VER
+      if ( QgsApplication::isRunningFromBuildDir() )
+      {
+        return QCoreApplication::applicationDirPath() + "/../../grass/modules/" + QgsApplication::cfgIntDir();
+      }
+#endif
+      return QgsApplication::libexecPath() + "grass/modules";
+    }
 
     // Allocate struct Map_info
     static GRASS_LIB_EXPORT struct Map_info * vectNewMapStruct();
