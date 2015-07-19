@@ -586,12 +586,12 @@ namespace pal
     return false;
   }
 
-  int LabelPosition::getNumPointsInPolygon( int npol, double *xp, double *yp )
+  int LabelPosition::getNumPointsInPolygon( PointSet *polygon ) const
   {
     int a, k, count = 0;
     double px, py;
 
-    // cheack each corner
+    // check each corner
     for ( k = 0; k < 4; k++ )
     {
       px = x[k];
@@ -599,7 +599,7 @@ namespace pal
 
       for ( a = 0; a < 2; a++ ) // and each middle of segment
       {
-        if ( isPointInPolygon( npol, xp, yp, px, py ) )
+        if ( polygon->containsPoint( px, py ) )
           count++;
         px = ( x[k] + x[( k+1 ) %4] ) / 2.0;
         py = ( y[k] + y[( k+1 ) %4] ) / 2.0;
@@ -610,7 +610,7 @@ namespace pal
     py = ( y[0] + y[2] ) / 2.0;
 
     // and the label center
-    if ( isPointInPolygon( npol, xp, yp, px, py ) )
+    if ( polygon->containsPoint( px, py ) )
       count += 4; // virtually 4 points
 
     // TODO: count with nextFeature

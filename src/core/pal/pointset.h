@@ -101,6 +101,13 @@ namespace pal
 
       PointSet* extractShape( int nbPtSh, int imin, int imax, int fps, int fpe, double fptx, double fpty );
 
+      /** Tests whether point set contains a specified point.
+       * @param x x-coordinate of point
+       * @param y y-coordinate of point
+       * @returns true if point set contains a specified point
+       */
+      bool containsPoint( double x, double y ) const;
+
       PointSet* createProblemSpecificPointSet( double bbmin[2], double bbmax[2], bool *inside );
 
       CHullBox * compute_chull_bbox();
@@ -123,7 +130,7 @@ namespace pal
        */
       double getDist( double px, double py, double *rx, double *ry );
 
-      void getCentroid( double &px, double &py, bool forceInside = false );
+      void getCentroid( double &px, double &py, bool forceInside = false ) const;
 
       int getGeosType() const { return type; }
 
@@ -189,8 +196,8 @@ namespace pal
       }
 
     protected:
-      GEOSGeometry *mGeos;
-      bool mOwnsGeom;
+      mutable GEOSGeometry *mGeos;
+      mutable bool mOwnsGeom;
 
       int nbPoints;
       double *x;
@@ -209,12 +216,17 @@ namespace pal
       PointSet( PointSet &ps );
 
       void deleteCoords();
-      void createGeosGeom();
+      void createGeosGeom() const;
+      const GEOSPreparedGeometry* preparedGeom() const;
 
       double xmin;
       double xmax;
       double ymin;
       double ymax;
+
+    private:
+
+      mutable const GEOSPreparedGeometry* mPreparedGeom;
 
   };
 

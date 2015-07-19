@@ -132,7 +132,7 @@ namespace pal
       bool isBorderCrossingLine( PointSet* feat );
 
       /** Returns number of intersections with polygon (testing border and center) */
-      int getNumPointsInPolygon( int npol, double *xp, double *yp );
+      int getNumPointsInPolygon( PointSet* polygon ) const;
 
       /** Shift the label by specified offset */
       void offsetPosition( double xOffset, double yOffset );

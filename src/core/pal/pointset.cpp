@@ -43,7 +43,6 @@
 namespace pal
 {
 
-
   PointSet::PointSet()
       : mGeos( 0 )
       , mOwnsGeom( false )
@@ -53,6 +52,7 @@ namespace pal
       , xmax( -DBL_MAX )
       , ymin( DBL_MAX )
       , ymax( -DBL_MAX )
+      , mPreparedGeom( 0 )
   {
     nbPoints = cHullSize =  0;
     x = NULL;
@@ -71,6 +71,7 @@ namespace pal
       , xmax( -DBL_MAX )
       , ymin( DBL_MAX )
       , ymax( -DBL_MAX )
+      , mPreparedGeom( 0 )
   {
     this->nbPoints = nbPoints;
     this->x = new double[nbPoints];
@@ -93,6 +94,7 @@ namespace pal
       , xmax( aY )
       , ymin( aX )
       , ymax( aY )
+      , mPreparedGeom( 0 )
   {
     nbPoints = cHullSize = 1;
     x = new double[1];
@@ -115,6 +117,7 @@ namespace pal
       , xmax( -DBL_MAX )
       , ymin( DBL_MAX )
       , ymax( -DBL_MAX )
+      , mPreparedGeom( 0 )
   {
     int i;
 
@@ -148,7 +151,7 @@ namespace pal
     holeOf = ps.holeOf;
   }
 
-  void PointSet::createGeosGeom()
+  void PointSet::createGeosGeom() const
   {
     GEOSContextHandle_t geosctxt = geosContext();
     GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, nbPoints, 2 );
@@ -161,13 +164,28 @@ namespace pal
     mOwnsGeom = true;
   }
 
+  const GEOSPreparedGeometry *PointSet::preparedGeom() const
+  {
+    if ( !mGeos )
+      createGeosGeom();
+
+    if ( !mPreparedGeom )
+    {
+      mPreparedGeom = GEOSPrepare_r( geosContext(), mGeos );
+    }
+    return mPreparedGeom;
+  }
+
   PointSet::~PointSet()
   {
+    GEOSContextHandle_t geosctxt = geosContext();
+
     if ( mOwnsGeom )
     {
-      GEOSGeom_destroy_r( geosContext(), mGeos );
+      GEOSGeom_destroy_r( geosctxt, mGeos );
       mGeos = NULL;
     }
+    GEOSPreparedGeom_destroy_r( geosctxt, mPreparedGeom );
 
     deleteCoords();
 
@@ -230,6 +248,18 @@ namespace pal
     return newShape;
   }
 
+  bool PointSet::containsPoint( double x, double y ) const
+  {
+    GEOSContextHandle_t geosctxt = geosContext();
+    GEOSCoordSequence* seq = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
+    GEOSCoordSeq_setX_r( geosctxt, seq, 0, x );
+    GEOSCoordSeq_setY_r( geosctxt, seq, 0, y );
+    GEOSGeometry* point = GEOSGeom_createPoint_r( geosctxt, seq );
+
+    bool result = ( GEOSPreparedContains_r( geosctxt, preparedGeom(), point ) == 1 );
+    GEOSGeom_destroy_r( geosctxt, point );
+    return result;
+  }
 
   void PointSet::splitPolygons( QLinkedList<PointSet*> &shapes_toProcess,
                                 QLinkedList<PointSet*> &shapes_final,
@@ -868,7 +898,7 @@ namespace pal
   }
 
 
-  void PointSet::getCentroid( double &px, double &py, bool forceInside )
+  void PointSet::getCentroid( double &px, double &py, bool forceInside ) const
   {
     if ( !mGeos )
       createGeosGeom();
@@ -886,7 +916,7 @@ namespace pal
     }
 
     // check if centroid inside in polygon
-    if ( forceInside && !isPointInPolygon( nbPoints, x, y, px, py ) )
+    if ( forceInside && !containsPoint( px, py ) )
     {
       GEOSGeometry *pointGeom = GEOSPointOnSurface_r( geosctxt, mGeos );
 

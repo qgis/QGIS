@@ -59,8 +59,6 @@ namespace pal
     return ( x2 - x1 ) *( x2 - x1 ) + ( y2 - y1 ) *( y2 - y1 );
   }
 
-  bool isPointInPolygon( int npol, double *xp, double *yp, double x, double y );
-
   void findLineCircleIntersection( double cx, double cy, double radius,
                                    double x1, double y1, double x2, double y2,
                                    double& xRes, double& yRes );

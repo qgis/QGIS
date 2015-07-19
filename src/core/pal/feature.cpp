@@ -1061,8 +1061,7 @@ namespace pal
             {
               for ( ry = py, j = 0; j < 2; ry = ry + 2 * yrm, j++ )
               {
-                // TODO should test with the polyone insteand of the bbox
-                if ( !isPointInPolygon( 4, box->x, box->y, rx, ry ) )
+                if ( !mapShape->containsPoint( rx, ry ) )
                 {
                   enoughPlace = false;
                   break;
@@ -1130,7 +1129,7 @@ namespace pal
               ry += box->y[0];
 
               // Only accept candidate that center is in the polygon
-              if ( isPointInPolygon( mapShape->nbPoints, mapShape->x, mapShape->y, rx, ry ) )
+              if ( mapShape->containsPoint( rx, ry ) )
               {
                 // cost is set to minimal value, evaluated later
                 positions.append( new LabelPosition( id++, rx - dlx, ry - dly, xrm, yrm, alpha, 0.0001, this ) ); // Polygon
@@ -1336,13 +1335,10 @@ namespace pal
 
   bool FeaturePart::isConnected( FeaturePart* p2 )
   {
-    if ( !mGeos )
-      createGeosGeom();
-
     if ( !p2->mGeos )
       p2->createGeosGeom();
 
-    return ( GEOSTouches_r( geosContext(), mGeos, p2->mGeos ) == 1 );
+    return ( GEOSPreparedTouches_r( geosContext(), preparedGeom(), p2->mGeos ) == 1 );
   }
 
   bool FeaturePart::mergeWithFeaturePart( FeaturePart* other )
