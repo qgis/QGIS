@@ -25,6 +25,9 @@ install:
   - ctest --version
 
 build_script:
-  - ctest -V -S %APPVEYOR_BUILD_FOLDER%\qgis-test-appveyor.ctest --output-on-failure
+  - touch noclean nobuild noinstall
+  - set TESTTARGET=Experimental
+  - package-nightly.cmd 2.11.0 %APPVEYOR_BUILD_NUMBER% qgis-dev %platform% %APPVEYOR_REPO_COMMIT:~1,7% appveyor
+#  - ctest -V -S %APPVEYOR_BUILD_FOLDER%\qgis-test-appveyor.ctest --output-on-failure
 
 deploy: off
