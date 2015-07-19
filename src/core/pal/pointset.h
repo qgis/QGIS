@@ -146,14 +146,11 @@ namespace pal
       int getNumPoints() const { return nbPoints; }
 
       /** Iterate on line by real step of dl on x,y points.
-       * @param nbPoint # point in line
-       * @param x x coord
-       * @param y y coord
-       * @param d ??
-       * @param ad distance from pt0 to each point (ad0 = pt0->pt0)
-       * @param dl ??
-       * @param px current x coord on line
-       * @param py current y coord on line
+       * @param d array of distances between points
+       * @param ad absolute distance from pt0 to each point (ad0 = pt0->pt0)
+       * @param dl distance to traverse along line
+       * @param px final x coord on line
+       * @param py final y coord on line
        */
       inline void getPoint( double *d, double *ad, double dl,
                             double *px, double *py )
