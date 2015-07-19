@@ -105,7 +105,9 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
         QDomElement save( QDomDocument& doc, QgsSymbolV2Map& symbolMap );
 
         //! prepare the rule for rendering and its children (build active children array)
-        bool startRender( QgsRenderContext& context, const QgsFields& fields );
+        bool startRender( QgsRenderContext& context, const QgsFields& fields ) /Deprecated/;
+        //! prepare the rule for rendering and its children (build active children array)
+        bool startRender( QgsRenderContext& context, const QgsFields& fields, QString& filter );
         //! get all used z-levels from this rule and children
         QSet<int> collectZLevels();
         //! assign normalized z-levels [0..N-1] for this rule's symbol for quick access during rendering
