@@ -515,7 +515,7 @@ SET(QGIS_CORE_HDRS
   qgscolorschemeregistry.h
   qgsconnectionpool.h
   qgscontexthelp.h
-  qgscondtionalstyle.h
+  qgsconditionalstyle.h
   qgscoordinatereferencesystem.h
   qgscrscache.h
   qgscsexception.h
