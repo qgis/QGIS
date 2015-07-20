@@ -86,15 +86,18 @@ void QgsMapToolNodeTool::canvasMapPressEvent( QgsMapMouseEvent* e )
     // remove previous warning
     emit messageDiscarded();
 
-    delete mSelectedFeature;
-    mSelectedFeature = new QgsSelectedFeature( snapResults[0].snappedAtGeometry, vlayer, mCanvas );
-    connect( QgisApp::instance()->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ), this, SLOT( currentLayerChanged( QgsMapLayer* ) ) );
-    connect( mSelectedFeature, SIGNAL( destroyed() ), this, SLOT( selectedFeatureDestroyed() ) );
-    connect( mSelectedFeature, SIGNAL( lastVertexChanged( const QgsPointV2& ) ), this, SLOT( changeLastVertex( const QgsPointV2& ) ) );
-    connect( vlayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
-    mIsPoint = vlayer->geometryType() == QGis::Point;
-    mNodeEditor = new QgsNodeEditor( vlayer, mSelectedFeature, mCanvas );
-    QgisApp::instance()->addDockWidget( Qt::LeftDockWidgetArea, mNodeEditor );
+    if ( !mSelectedFeature || snapResults[0].snappedAtGeometry != mSelectedFeature->featureId() )
+    {
+      delete mSelectedFeature;
+      mSelectedFeature = new QgsSelectedFeature( snapResults[0].snappedAtGeometry, vlayer, mCanvas );
+      connect( QgisApp::instance()->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ), this, SLOT( currentLayerChanged( QgsMapLayer* ) ) );
+      connect( mSelectedFeature, SIGNAL( destroyed() ), this, SLOT( selectedFeatureDestroyed() ) );
+      connect( mSelectedFeature, SIGNAL( lastVertexChanged( const QgsPointV2& ) ), this, SLOT( changeLastVertex( const QgsPointV2& ) ) );
+      connect( vlayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
+      mIsPoint = vlayer->geometryType() == QGis::Point;
+      mNodeEditor = new QgsNodeEditor( vlayer, mSelectedFeature, mCanvas );
+      QgisApp::instance()->addDockWidget( Qt::LeftDockWidgetArea, mNodeEditor );
+    }
   }
 
   //select or move vertices if selected feature has not been changed
