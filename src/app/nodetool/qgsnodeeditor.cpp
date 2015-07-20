@@ -225,12 +225,14 @@ void QgsNodeEditor::updateTableSelection()
 
 void QgsNodeEditor::updateNodeSelection()
 {
-  mSelectedFeature->blockSignals( true );
+  disconnect( mSelectedFeature, SIGNAL( selectionChanged() ), this, SLOT( updateTableSelection() ) );
+
   mSelectedFeature->deselectAllVertexes();
   foreach ( const QModelIndex& index, mTableWidget->selectionModel()->selectedRows() )
   {
     int nodeIdx = mTableWidget->item( index.row(), 0 )->data( Qt::DisplayRole ).toInt();
     mSelectedFeature->selectVertex( nodeIdx );
   }
-  mSelectedFeature->blockSignals( false );
+
+  connect( mSelectedFeature, SIGNAL( selectionChanged() ), this, SLOT( updateTableSelection() ) );
 }

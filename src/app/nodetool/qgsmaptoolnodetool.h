@@ -57,6 +57,8 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
      */
     void editingToggled();
 
+    void changeLastVertex( const QgsPointV2& pt );
+
   private:
     /**
      * Deletes the rubber band pointers and clears mRubberBands

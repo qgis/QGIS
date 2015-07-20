@@ -90,6 +90,7 @@ void QgsMapToolNodeTool::canvasMapPressEvent( QgsMapMouseEvent* e )
     mSelectedFeature = new QgsSelectedFeature( snapResults[0].snappedAtGeometry, vlayer, mCanvas );
     connect( QgisApp::instance()->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ), this, SLOT( currentLayerChanged( QgsMapLayer* ) ) );
     connect( mSelectedFeature, SIGNAL( destroyed() ), this, SLOT( selectedFeatureDestroyed() ) );
+    connect( mSelectedFeature, SIGNAL( lastVertexChanged( const QgsPointV2& ) ), this, SLOT( changeLastVertex( const QgsPointV2& ) ) );
     connect( vlayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
     mIsPoint = vlayer->geometryType() == QGis::Point;
     mNodeEditor = new QgsNodeEditor( vlayer, mSelectedFeature, mCanvas );
@@ -113,7 +114,7 @@ void QgsMapToolNodeTool::canvasMapPressEvent( QgsMapMouseEvent* e )
 
       QgsPoint closestLayerVertex = mSelectedFeature->geometry()->closestVertex( e->mapPoint(), atVertex, beforeVertex, afterVertex, dist );
       mSelectedFeature->selectVertex( atVertex );
-      mClosestMapVertex = toMapCoordinates( vlayer, closestLayerVertex );
+      //mClosestMapVertex = toMapCoordinates( vlayer, closestLayerVertex );
     }
   }
 }
@@ -308,4 +309,9 @@ int QgsMapToolNodeTool::insertSegmentVerticesForSnap( const QList<QgsSnappingRes
   }
 
   return editedLayer->insertSegmentVerticesForSnap( transformedSnapResults );
+}
+
+void QgsMapToolNodeTool::changeLastVertex( const QgsPointV2& pt )
+{
+  mClosestMapVertex = toMapCoordinates( currentVectorLayer(), QgsPoint( pt.x(), pt.y() ) );
 }

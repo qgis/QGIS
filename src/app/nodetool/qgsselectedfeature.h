@@ -133,6 +133,7 @@ class QgsSelectedFeature: public QObject
 
   signals:
     void selectionChanged();
+    void lastVertexChanged( const QgsPointV2& pt );
     void vertexMapChanged();
 
   public slots:
