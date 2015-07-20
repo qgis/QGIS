@@ -378,7 +378,7 @@ namespace pal
     while ( !featureParts->isEmpty() )
     {
       FeaturePart* fpart = featureParts->takeFirst();
-      const GEOSGeometry* geom = fpart->getGeometry();
+      const GEOSGeometry* geom = fpart->geos();
       double chopInterval = fpart->getFeature()->repeatDistance();
       if ( chopInterval != 0. && GEOSGeomTypeId_r( geosctxt, geom ) == GEOS_LINESTRING )
       {

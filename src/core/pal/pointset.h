@@ -44,18 +44,6 @@ namespace pal
   class Projection;
   class LabelPosition;
 
-  typedef struct _cross
-  {
-    int pt;
-    double d;
-    double x;
-    double y;
-    int seg;        // seg{0,1,2,3}
-    int nextCorner; // pt{0,1,2,3}
-    int way;
-
-  } Crossing;
-
   class PointSet;
 
   typedef struct _cHullBox
@@ -68,18 +56,6 @@ namespace pal
     double width;
     double length;
   } CHullBox;
-
-
-
-  inline bool ptrCrossingCompare( Crossing * a, Crossing * b )
-  {
-    return a == b;
-  }
-
-  inline bool crossingDist( void *a, void *b )
-  {
-    return (( Crossing* ) a )->d > (( Crossing* ) b )->d;
-  }
 
 
   class CORE_EXPORT PointSet
@@ -95,10 +71,6 @@ namespace pal
       PointSet( int nbPoints, double *x, double *y );
       virtual ~PointSet();
 
-      /** Returns the point set's GEOS geometry.
-       */
-      const GEOSGeometry* getGeometry() const { return mGeos; }
-
       PointSet* extractShape( int nbPtSh, int imin, int imax, int fps, int fpe, double fptx, double fpty );
 
       /** Tests whether point set contains a specified point.
@@ -108,10 +80,7 @@ namespace pal
        */
       bool containsPoint( double x, double y ) const;
 
-      PointSet* createProblemSpecificPointSet( double bbmin[2], double bbmax[2], bool *inside );
-
       CHullBox * compute_chull_bbox();
-
 
       /** Split a concave shape into several convex shapes.
        */
@@ -119,16 +88,15 @@ namespace pal
                                  QLinkedList<PointSet *> &shapes_final,
                                  double xrm, double yrm, const QString &uid );
 
-
-
-      /** Return the minimum distance bw this and the point (px,py). Optionally, store the nearest point in (rx,ry).
+      /** Returns the minimum distance between the point set geometry and the point (px,py)
+       * Optionally, the nearest point is stored in (rx,ry).
        * @param px x coordinate of the point
        * @param py y coordinate of the points
        * @param rx pointer to x coorinates of the nearest point (can be NULL)
        * @param ry pointer to y coorinates of the nearest point (can be NULL)
        * @returns minimum distance
        */
-      double getDist( double px, double py, double *rx, double *ry );
+      double minDistanceToPoint( double px, double py, double *rx = 0, double *ry = 0 );
 
       void getCentroid( double &px, double &py, bool forceInside = false ) const;
 
@@ -151,7 +119,7 @@ namespace pal
        * @param dl distance to traverse along line
        * @param px final x coord on line
        * @param py final y coord on line
-       */
+      */
       inline void getPoint( double *d, double *ad, double dl,
                             double *px, double *py )
       {
@@ -191,6 +159,10 @@ namespace pal
           *py = y[i];
         }
       }
+
+      /** Returns the point set's GEOS geometry.
+      */
+      const GEOSGeometry* geos() const;
 
     protected:
       mutable GEOSGeometry *mGeos;

@@ -154,13 +154,29 @@ namespace pal
   void PointSet::createGeosGeom() const
   {
     GEOSContextHandle_t geosctxt = geosContext();
-    GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, nbPoints, 2 );
+
+    bool needClose = false;
+    if ( x[0] != x[ nbPoints - 1] || y[0] != y[ nbPoints - 1 ] )
+    {
+      needClose = true;
+    }
+
+    GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, nbPoints + ( needClose ? 1 : 0 ), 2 );
     for ( int i = 0; i < nbPoints; ++i )
     {
       GEOSCoordSeq_setX_r( geosctxt, coord, i, x[i] );
       GEOSCoordSeq_setY_r( geosctxt, coord, i, y[i] );
     }
+
+    //close ring if needed
+    if ( needClose )
+    {
+      GEOSCoordSeq_setX_r( geosctxt, coord, nbPoints, x[0] );
+      GEOSCoordSeq_setY_r( geosctxt, coord, nbPoints, y[0] );
+    }
+
     mGeos = GEOSGeom_createPolygon_r( geosctxt, GEOSGeom_createLinearRing_r( geosctxt, coord ), 0, 0 );
+
     mOwnsGeom = true;
   }
 
@@ -180,7 +196,7 @@ namespace pal
   {
     GEOSContextHandle_t geosctxt = geosContext();
 
-    if ( mOwnsGeom )
+    if ( mGeos && mOwnsGeom )
     {
       GEOSGeom_destroy_r( geosctxt, mGeos );
       mGeos = NULL;
@@ -625,44 +641,6 @@ namespace pal
     }
   }
 
-
-  PointSet* PointSet::createProblemSpecificPointSet( double bbmin[2], double bbmax[2], bool *inside )
-  {
-#ifdef _DEBUG_FULL_
-    std::cout << "CreateProblemSpecific:" << std::endl;
-#endif
-    PointSet *shape = new PointSet();
-    shape->x = new double[nbPoints];
-    shape->y = new double[nbPoints];
-    shape->nbPoints = nbPoints;
-    shape->type = type;
-
-    shape->xmin = xmin;
-    shape->xmax = xmax;
-    shape->ymin = ymin;
-    shape->ymax = ymax;
-
-    *inside = true;
-
-    for ( int i = 0; i < nbPoints; i++ )
-    {
-      shape->x[i] = this->x[i];
-      shape->y[i] = this->y[i];
-
-      // check whether it's not outside
-      if ( x[i] < bbmin[0] || x[i] > bbmax[0] || y[i] < bbmin[1] || y[i] > bbmax[1] )
-        *inside = false;
-    }
-
-    shape->holeOf = NULL;
-    shape->parent = NULL;
-
-    return shape;
-  }
-
-
-
-
   CHullBox * PointSet::compute_chull_bbox()
   {
     int i;
@@ -830,73 +808,46 @@ namespace pal
     return finalBb;
   }
 
-  double PointSet::getDist( double px, double py, double *rx, double *ry )
+  double PointSet::minDistanceToPoint( double px, double py, double *rx, double *ry )
   {
-    if ( nbPoints == 1 || type == GEOS_POINT )
+    if ( !mGeos )
+      createGeosGeom();
+
+    if ( !mGeos )
+      return 0;
+
+    GEOSContextHandle_t geosctxt = geosContext();
+
+    GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
+    GEOSCoordSeq_setX_r( geosctxt, coord, 0, px );
+    GEOSCoordSeq_setY_r( geosctxt, coord, 0, py );
+    GEOSGeometry* geosPt = GEOSGeom_createPoint_r( geosctxt, coord );
+
+    int type = GEOSGeomTypeId_r( geosctxt, mGeos );
+    const GEOSGeometry* extRing = 0;
+    if ( type != GEOS_POLYGON )
     {
-      if ( rx && ry )
-      {
-        *rx = x[0];
-        *ry = y[0];
-      }
-      return dist_euc2d_sq( x[0], y[0], px, py );
+      extRing = mGeos;
     }
-
-    int a, b;
-    int nbP = ( type == GEOS_POLYGON ? nbPoints : nbPoints - 1 );
-
-    double best_dist = DBL_MAX;
-    double d;
-
-    for ( a = 0; a < nbP; a++ )
+    else
     {
-      b = ( a + 1 ) % nbPoints;
+      //for polygons, we want distance to exterior ring (not an interior point)
+      extRing = GEOSGetExteriorRing_r( geosctxt, mGeos );
+    }
+    GEOSCoordSequence *nearestCoord = GEOSNearestPoints_r( geosctxt, extRing, geosPt );
+    double nx;
+    double ny;
+    ( void )GEOSCoordSeq_getX_r( geosctxt, nearestCoord, 0, &nx );
+    ( void )GEOSCoordSeq_getY_r( geosctxt, nearestCoord, 0, &ny );
+    GEOSGeom_destroy_r( geosctxt, geosPt );
 
-      double px2, py2;
-      px2 = px - y[b] + y[a];
-      py2 = py + x[b] - x[a];
-      double ix, iy;
+    if ( rx )
+      *rx = nx;
+    if ( ry )
+      *ry = ny;
 
-      // (px,py)->(px2,py2) is a line perpendicular to a->b
-      // Check the line p->p2 cross the segment a->b
-      if ( computeLineSegIntersection( px, py, px2, py2,
-                                       x[a], y[a], x[b], y[b],
-                                       &ix, &iy ) )
-      {
-        d = dist_euc2d_sq( px, py, ix, iy );
-      }
-      else
-      {
-        double d1 = dist_euc2d_sq( x[a], y[a], px, py );
-        double d2 = dist_euc2d_sq( x[b], y[b], px, py );
-        if ( d1 < d2 )
-        {
-          d = d1;
-          ix = x[a];
-          iy = y[a];
-        }
-        else
-        {
-          d = d2;
-          ix = x[b];
-          iy = y[b];
-        }
-      }
-
-      if ( d < best_dist )
-      {
-        best_dist = d;
-        if ( rx && ry )
-        {
-          *rx = ix;
-          *ry = iy;
-        }
-      }
-    } // end for (a in nbPoints)
-
-    return best_dist;
+    return dist_euc2d_sq( px, py, nx, ny );
   }
-
 
   void PointSet::getCentroid( double &px, double &py, bool forceInside ) const
   {
@@ -931,6 +882,15 @@ namespace pal
 
     GEOSGeom_destroy_r( geosctxt, centroidGeom );
   }
+
+  const GEOSGeometry *PointSet::geos() const
+  {
+    if ( !mGeos )
+      createGeosGeom();
+
+    return mGeos;
+  }
+
 
 } // end namespace
 

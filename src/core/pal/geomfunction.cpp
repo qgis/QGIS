@@ -146,24 +146,6 @@ namespace pal
   }
 
   /*
-   * \brief Intersection bw a line and a segment
-   * \return true if the point exist false otherwise
-   */
-  bool computeLineSegIntersection( double x1, double y1, double x2, double y2,  // 1st line
-                                   double x3, double y3, double x4, double y4,  // 2nd segment
-                                   double *x, double *y )
-  {
-    double cp1, cp2;
-    cp1 = cross_product( x1, y1, x2, y2, x3, y3 );
-    cp2 = cross_product( x1, y1, x2, y2, x4, y4 );
-
-    if ( cp1 * cp2 <= 0 )
-      return computeLineIntersection( x1, y1, x2, y2, x3, y3, x4, y4, x, y );
-
-    return false;
-  }
-
-  /*
    * \brief compute the point wherre two lines intersects
    * \return true if the ok false if line are parallel
    */

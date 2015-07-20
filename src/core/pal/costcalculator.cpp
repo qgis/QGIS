@@ -227,9 +227,7 @@ namespace pal
 
   void PolygonCostCalculator::update( PointSet *pset )
   {
-    double rx, ry;
-    pset->getDist( px, py, &rx, &ry );
-    double d = dist_euc2d_sq( px, py, rx, ry );
+    double d = pset->minDistanceToPoint( px, py );
     if ( d < dist )
     {
       dist = d;

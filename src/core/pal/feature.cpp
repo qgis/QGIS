@@ -1365,9 +1365,11 @@ namespace pal
 
     if ( mOwnsGeom ) // delete old geometry if we own it
       GEOSGeom_destroy_r( ctxt, mGeos );
+    GEOSPreparedGeom_destroy_r( ctxt, mPreparedGeom );
     // set up new geometry
     mGeos = gTmp;
     mOwnsGeom = true;
+    mPreparedGeom = 0;
 
     deleteCoords();
     qDeleteAll( mHoles );
