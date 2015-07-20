@@ -149,6 +149,12 @@ namespace pal
     type = ps.type;
 
     holeOf = ps.holeOf;
+
+    if ( ps.mGeos )
+    {
+      mGeos = GEOSGeom_clone_r( geosContext(), ps.mGeos );
+      mOwnsGeom = true;
+    }
   }
 
   void PointSet::createGeosGeom() const
@@ -156,7 +162,7 @@ namespace pal
     GEOSContextHandle_t geosctxt = geosContext();
 
     bool needClose = false;
-    if ( x[0] != x[ nbPoints - 1] || y[0] != y[ nbPoints - 1 ] )
+    if ( type == GEOS_POLYGON && ( x[0] != x[ nbPoints - 1] || y[0] != y[ nbPoints - 1 ] ) )
     {
       needClose = true;
     }
@@ -175,7 +181,20 @@ namespace pal
       GEOSCoordSeq_setY_r( geosctxt, coord, nbPoints, y[0] );
     }
 
-    mGeos = GEOSGeom_createPolygon_r( geosctxt, GEOSGeom_createLinearRing_r( geosctxt, coord ), 0, 0 );
+    switch ( type )
+    {
+      case GEOS_POLYGON:
+        mGeos = GEOSGeom_createPolygon_r( geosctxt, GEOSGeom_createLinearRing_r( geosctxt, coord ), 0, 0 );
+        break;
+
+      case GEOS_LINESTRING:
+        mGeos = GEOSGeom_createLineString_r( geosctxt, coord );
+        break;
+
+      case GEOS_POINT:
+        mGeos = GEOSGeom_createPoint_r( geosctxt, coord );
+        break;
+    }
 
     mOwnsGeom = true;
   }
