@@ -52,6 +52,7 @@ namespace pal
       , mLabelLayer( toLabel )
       , mDisplayAll( displayAll )
       , mCentroidInside( false )
+      , mFitInPolygon( false )
       , mArrangement( arrangement )
       , mArrangementFlags( 0 )
       , mMode( LabelPerFeature )

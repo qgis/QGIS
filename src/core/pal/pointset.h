@@ -80,6 +80,16 @@ namespace pal
        */
       bool containsPoint( double x, double y ) const;
 
+      /** Tests whether a possible label candidate will fit completely within the shape.
+       * @param x x-coordinate of label candidate
+       * @param y y-coordinate of label candidate
+       * @param width label width
+       * @param height label height
+       * @param alpha label angle
+       * @returns true if point set completely contains candidate label
+       */
+      bool containsLabelCandidate( double x, double y, double width, double height, double alpha = 0 ) const;
+
       CHullBox * compute_chull_bbox();
 
       /** Split a concave shape into several convex shapes.

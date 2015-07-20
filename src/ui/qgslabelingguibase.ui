@@ -524,7 +524,7 @@
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>578</width>
+                       <width>341</width>
                        <height>388</height>
                       </rect>
                      </property>
@@ -4818,9 +4818,9 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>-292</y>
+                       <y>-298</y>
                        <width>578</width>
-                       <height>655</height>
+                       <height>683</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -5433,6 +5433,28 @@ font-style: italic;</string>
                              <widget class="QLabel" name="label_19">
                               <property name="text">
                                <string>Suppress labeling of features smaller than</string>
+                              </property>
+                             </widget>
+                            </item>
+                           </layout>
+                          </widget>
+                         </item>
+                         <item>
+                          <widget class="QFrame" name="mPolygonFeatureOptionsFrame">
+                           <property name="frameShape">
+                            <enum>QFrame::NoFrame</enum>
+                           </property>
+                           <property name="frameShadow">
+                            <enum>QFrame::Raised</enum>
+                           </property>
+                           <layout class="QHBoxLayout" name="horizontalLayout_12">
+                            <property name="margin">
+                             <number>0</number>
+                            </property>
+                            <item>
+                             <widget class="QCheckBox" name="mFitInsidePolygonCheckBox">
+                              <property name="text">
+                               <string>Only draw labels which fit completely within feature</string>
                               </property>
                              </widget>
                             </item>

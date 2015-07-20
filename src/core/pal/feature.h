@@ -189,18 +189,20 @@ namespace pal
        * @param y y coordinate of the point
        * @param lPos pointer to an array of candidates, will be filled by generated candidates
        * @param angle orientation of the label
+       * @param mapShape optional geometry of source polygon
        * @returns the number of generated candidates
        */
-      int setPositionForPoint( double x, double y, LabelPosition ***lPos, double angle );
+      int setPositionForPoint( double x, double y, LabelPosition ***lPos, double angle, PointSet *mapShape = 0 );
 
       /** Generate one candidate over or offset the specified point.
        * @param x x coordinate of the point
        * @param y y coordinate of the point
        * @param lPos pointer to an array of candidates, will be filled by generated candidate
        * @param angle orientation of the label
+       * @param mapShape optional geometry of source polygon
        * @returns the number of generated candidates (always 1)
        */
-      int setPositionOverPoint( double x, double y, LabelPosition ***lPos, double angle );
+      int setPositionOverPoint( double x, double y, LabelPosition ***lPos, double angle, PointSet *mapShape = 0 );
 
       /** Generate candidates for line feature.
        * @param lPos pointer to an array of candidates, will be filled by generated candidates

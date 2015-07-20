@@ -169,6 +169,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   placementFlags = AboveLine | MapOrientation;
   centroidWhole = false;
   centroidInside = false;
+  fitInPolygonOnly = false;
   quadOffset = QuadrantOver;
   xOffset = 0;
   yOffset = 0;
@@ -379,6 +380,7 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   placementFlags = s.placementFlags;
   centroidWhole = s.centroidWhole;
   centroidInside = s.centroidInside;
+  fitInPolygonOnly = s.fitInPolygonOnly;
   quadOffset = s.quadOffset;
   xOffset = s.xOffset;
   yOffset = s.yOffset;
@@ -863,6 +865,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   placementFlags = layer->customProperty( "labeling/placementFlags" ).toUInt();
   centroidWhole = layer->customProperty( "labeling/centroidWhole", QVariant( false ) ).toBool();
   centroidInside = layer->customProperty( "labeling/centroidInside", QVariant( false ) ).toBool();
+  fitInPolygonOnly = layer->customProperty( "labeling/fitInPolygonOnly", QVariant( false ) ).toBool();
   dist = layer->customProperty( "labeling/dist" ).toDouble();
   distInMapUnits = layer->customProperty( "labeling/distInMapUnits" ).toBool();
   distMapUnitScale.minScale = layer->customProperty( "labeling/distMapUnitMinScale", 0.0 ).toDouble();
@@ -1036,6 +1039,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/placementFlags", ( unsigned int )placementFlags );
   layer->setCustomProperty( "labeling/centroidWhole", centroidWhole );
   layer->setCustomProperty( "labeling/centroidInside", centroidInside );
+  layer->setCustomProperty( "labeling/fitInPolygonOnly", fitInPolygonOnly );
   layer->setCustomProperty( "labeling/dist", dist );
   layer->setCustomProperty( "labeling/distInMapUnits", distInMapUnits );
   layer->setCustomProperty( "labeling/distMapUnitMinScale", distMapUnitScale.minScale );
@@ -3331,6 +3335,9 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames,
 
   // set whether location of centroid must be inside of polygons
   l->setCentroidInside( lyr.centroidInside );
+
+  // set whether labels must fall completely within the polygon
+  l->setFitInPolygonOnly( lyr.fitInPolygonOnly );
 
   // set how to show upside-down labels
   Layer::UpsideDownLabels upsdnlabels;

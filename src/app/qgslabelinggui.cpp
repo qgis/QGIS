@@ -156,6 +156,7 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   mDirectSymbolsFrame->setVisible( layer->geometryType() == QGis::Line );
   mMinSizeFrame->setVisible( layer->geometryType() != QGis::Point );
   mPolygonObstacleTypeFrame->setVisible( layer->geometryType() == QGis::Polygon );
+  mPolygonFeatureOptionsFrame->setVisible( layer->geometryType() == QGis::Polygon );
 
   // field combo and expression button
   mFieldExpressionWidget->setLayer( mLayer );
@@ -310,6 +311,7 @@ void QgsLabelingGui::init()
   // populate placement options
   mCentroidRadioWhole->setChecked( lyr.centroidWhole );
   mCentroidInsideCheckBox->setChecked( lyr.centroidInside );
+  mFitInsidePolygonCheckBox->setChecked( lyr.fitInPolygonOnly );
   mLineDistanceSpnBx->setValue( lyr.dist );
   mLineDistanceUnitWidget->setUnit( lyr.distInMapUnits ? QgsSymbolV2::MapUnit : QgsSymbolV2::MM );
   mLineDistanceUnitWidget->setMapUnitScale( lyr.distMapUnitScale );
@@ -593,6 +595,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   QWidget* curPlacementWdgt = stackedPlacement->currentWidget();
   lyr.centroidWhole = mCentroidRadioWhole->isChecked();
   lyr.centroidInside = mCentroidInsideCheckBox->isChecked();
+  lyr.fitInPolygonOnly = mFitInsidePolygonCheckBox->isChecked();
   lyr.dist = mLineDistanceSpnBx->value();
   lyr.distInMapUnits = ( mLineDistanceUnitWidget->unit() == QgsSymbolV2::MapUnit );
   lyr.distMapUnitScale = mLineDistanceUnitWidget->getMapUnitScale();
