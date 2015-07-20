@@ -190,6 +190,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "literal double" ) << ".000001" << false << QVariant( 0.000001 );
       QTest::newRow( "literal double" ) << "1.0e-6" << false << QVariant( 0.000001 );
       QTest::newRow( "literal double" ) << "1e-6" << false << QVariant( 0.000001 );
+      QTest::newRow( "literal FALSE" ) << "FALSE" << false << QVariant( false );
+      QTest::newRow( "literal TRUE" ) << "TRUE" << false << QVariant( true );
 
       // unary minus
       QTest::newRow( "unary minus double" ) << "-1.3" << false << QVariant( -1.3 );
@@ -491,6 +493,9 @@ class TestQgsExpression: public QObject
           break;
         case QVariant::Double:
           QCOMPARE( res.toDouble(), result.toDouble() );
+          break;
+        case QVariant::Bool:
+          QCOMPARE( res.toBool(), result.toBool() );
           break;
         case QVariant::String:
           QCOMPARE( res.toString(), result.toString() );

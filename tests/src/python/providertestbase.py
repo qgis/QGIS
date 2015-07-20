@@ -51,6 +51,7 @@ class ProviderTestCase(object):
         self.assert_query(provider, '"name" || \' \' || "cnt" = \'Orange 100\'', [1])
         self.assert_query(provider, 'cnt = 10 ^ 2', [1])
         self.assert_query(provider, '"name" ~ \'[OP]ra[gne]+\'', [1])
+        self.assert_query(provider, 'true', [1, 2, 3, 4, 5])
 
 
     def testGetFeaturesUncompiled(self):

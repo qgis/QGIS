@@ -2803,6 +2803,7 @@ QString QgsExpression::NodeLiteral::dump() const
     case QVariant::Int: return QString::number( mValue.toInt() );
     case QVariant::Double: return QString::number( mValue.toDouble() );
     case QVariant::String: return quotedString( mValue.toString() );
+    case QVariant::Bool: return mValue.toBool() ? "TRUE" : "FALSE";
     default: return QObject::tr( "[unsupported type;%1; value:%2]" ).arg( mValue.typeName() ).arg( mValue.toString() );
   }
 }

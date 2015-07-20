@@ -907,6 +907,9 @@ QString QgsPostgresConn::quotedValue( QVariant value )
     case QVariant::Double:
       return value.toString();
 
+    case QVariant::Bool:
+      return value.toBool() ? "TRUE" : "FALSE";
+
     default:
     case QVariant::String:
       QString v = value.toString();
