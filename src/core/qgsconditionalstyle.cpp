@@ -1,6 +1,6 @@
 #include <QPainter>
 
-#include "qgscondtionalstyle.h"
+#include "qgsconditionalstyle.h"
 #include "qgsexpression.h"
 
 QgsConditionalStyle::QgsConditionalStyle()

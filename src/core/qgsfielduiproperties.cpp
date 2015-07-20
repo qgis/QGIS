@@ -1,5 +1,5 @@
 
-#include "qgscondtionalstyle.h"
+#include "qgsconditionalstyle.h"
 #include "qgsfielduiproperties.h"
 
 

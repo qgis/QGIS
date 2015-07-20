@@ -20,7 +20,7 @@
 #include "qgsattributeaction.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgsexpression.h"
-#include "qgscondtionalstyle.h"
+#include "qgsconditionalstyle.h"
 #include "qgsfielduiproperties.h"
 #include "qgsfield.h"
 #include "qgslogger.h"

@@ -2,7 +2,7 @@
 #define QGSFIELDUIPROPERTIES_H
 
 #include "qgsfeature.h"
-#include "qgscondtionalstyle.h"
+#include "qgsconditionalstyle.h"
 
 /** \class QgsFieldUIProperties
  *
