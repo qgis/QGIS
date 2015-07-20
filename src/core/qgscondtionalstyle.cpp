@@ -37,13 +37,17 @@ QPixmap QgsConditionalStyle::renderPreview()
     painter.setBrush( QColor( Qt::white ) );
 
   QRect rect( 0, 0, 64, 32 );
+  painter.setPen( Qt::NoPen );
   painter.drawRect( rect );
 
   if ( mTextColor.isValid() )
     painter.setPen( mTextColor );
+  else
+    painter.setPen( Qt::black );
 
   painter.setRenderHint(QPainter::Antialiasing);
   painter.setRenderHint(QPainter::HighQualityAntialiasing);
+  painter.setFont( font() );
   painter.drawText( rect, Qt::AlignCenter, "abc\n123" );
   painter.end();
   return pixmap;
