@@ -123,56 +123,20 @@ namespace pal
 
       int getNumPoints() const { return nbPoints; }
 
-      /** Iterate on line by real step of dl on x,y points.
-       * @param d array of distances between points
-       * @param ad absolute distance from pt0 to each point (ad0 = pt0->pt0)
-       * @param dl distance to traverse along line
+      /** Get a point a set distance along a line geometry.
+       * @param distance distance to traverse along line
        * @param px final x coord on line
        * @param py final y coord on line
       */
-      inline void getPoint( double *d, double *ad, double dl,
-                            double *px, double *py )
-      {
-        int i;
-        double dx, dy, di;
-        double distr;
-
-        i = 0;
-        if ( dl >= 0 )
-        {
-          while ( i < nbPoints && ad[i] <= dl ) i++;
-          i--;
-        }
-
-        if ( i < nbPoints - 1 )
-        {
-          if ( dl < 0 )
-          {
-            dx = x[nbPoints-1] - x[0];
-            dy = y[nbPoints-1] - y[0];
-            di = sqrt( dx * dx + dy * dy );
-          }
-          else
-          {
-            dx = x[i+1] - x[i];
-            dy = y[i+1] - y[i];
-            di = d[i];
-          }
-
-          distr = dl - ad[i];
-          *px = x[i] + dx * distr / di;
-          *py = y[i] + dy * distr / di;
-        }
-        else    // just select last point...
-        {
-          *px = x[i];
-          *py = y[i];
-        }
-      }
+      void getPointByDistance( double distance, double *px, double *py ) const;
 
       /** Returns the point set's GEOS geometry.
       */
       const GEOSGeometry* geos() const;
+
+      /** Returns length of line geometry.
+       */
+      double length() const;
 
     protected:
       mutable GEOSGeometry *mGeos;

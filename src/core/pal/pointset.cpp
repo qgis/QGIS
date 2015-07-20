@@ -942,12 +942,46 @@ namespace pal
     GEOSGeom_destroy_r( geosctxt, centroidGeom );
   }
 
+  void PointSet::getPointByDistance( double distance, double *px, double *py ) const
+  {
+    if ( !mGeos )
+      createGeosGeom();
+
+    if ( !mGeos )
+      return;
+
+    GEOSContextHandle_t geosctxt = geosContext();
+    GEOSGeometry *point = GEOSInterpolate_r( geosctxt, mGeos, distance );
+    if ( point )
+    {
+      const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, point );
+      GEOSCoordSeq_getX_r( geosctxt, coordSeq, 0, px );
+      GEOSCoordSeq_getY_r( geosctxt, coordSeq, 0, py );
+    }
+    GEOSGeom_destroy_r( geosctxt, point );
+  }
+
   const GEOSGeometry *PointSet::geos() const
   {
     if ( !mGeos )
       createGeosGeom();
 
     return mGeos;
+  }
+
+  double PointSet::length() const
+  {
+    if ( !mGeos )
+      createGeosGeom();
+
+    if ( !mGeos )
+      return -1;
+
+    GEOSContextHandle_t geosctxt = geosContext();
+
+    double len = 0;
+    ( void )GEOSLength_r( geosctxt, mGeos, &len );
+    return len;
   }
 
 
