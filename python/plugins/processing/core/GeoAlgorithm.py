@@ -142,7 +142,7 @@ class GeoAlgorithm:
         return False, helpUrl
 
 
-    def processAlgorithm(self):
+    def processAlgorithm(self, progress):
         """Here goes the algorithm itself.
 
         There is no return value from this method.
@@ -229,10 +229,10 @@ class GeoAlgorithm:
             progress.setPercentage(100)
             self.convertUnsupportedFormats(progress)
             self.runPostExecutionScript(progress)
-        except GeoAlgorithmExecutionException, gaee:
+        except GeoAlgorithmExecutionException as gaee:
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, gaee.msg)
             raise gaee
-        except Exception, e:
+        except Exception as e:
             # If something goes wrong and is not caught in the
             # algorithm, we catch it here and wrap it
             lines = [self.tr('Uncaught error while executing algorithm')]

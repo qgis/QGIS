@@ -50,7 +50,7 @@ def runalg(alg, progress=None):
     try:
         alg.execute(progress)
         return True
-    except GeoAlgorithmExecutionException, e:
+    except GeoAlgorithmExecutionException as e:
         ProcessingLog.addToLog(sys.exc_info()[0], ProcessingLog.LOG_ERROR)
         progress.error(e.msg)
         return False
