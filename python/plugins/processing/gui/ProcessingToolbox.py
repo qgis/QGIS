@@ -388,8 +388,9 @@ class TreeProviderItem(QTreeWidgetItem):
                 groupItem = groups[alg.group]
             else:
                 groupItem = QTreeWidgetItem()
-                groupItem.setText(0, alg.group)
-                groupItem.setToolTip(0, alg.group)
+                name = AlgorithmClassification.getDisplayGroup(alg.group)
+                groupItem.setText(0, name)
+                groupItem.setToolTip(0, name)
                 groups[alg.group] = groupItem
             algItem = TreeAlgorithmItem(alg)
             groupItem.addChild(algItem)
