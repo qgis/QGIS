@@ -20,6 +20,7 @@
 #include "qgsattributeaction.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgsexpression.h"
+#include "qgscondtionalstyle.h"
 #include "qgsfielduiproperties.h"
 #include "qgsfield.h"
 #include "qgslogger.h"
@@ -572,7 +573,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   }
 
   QgsFieldUIProperties props = layer()->fieldUIProperties( field.name() );
-  QgsConditionalStyle style = props.getMatchingConditionalStyle( field.name(), &mFeat, layer()->pendingFields() );
+  QgsConditionalStyle style = props.matchingConditionalStyle( field.name(), &mFeat, layer()->pendingFields() );
   if ( style.isValid() )
   {
     if ( role == Qt::BackgroundColorRole && style.backgroundColor().isValid() )
