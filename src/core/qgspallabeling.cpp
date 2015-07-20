@@ -3308,7 +3308,7 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames,
   // create the pal layer
   double priority = 1 - lyr.priority / 10.0; // convert 0..10 --> 1..0
 
-  Layer* l = mPal->addLayer( layer->id().toUtf8().data(),
+  Layer* l = mPal->addLayer( layer->id(),
                              arrangement,
                              priority, lyr.obstacle, true, lyr.drawLabels,
                              lyr.displayAll );
