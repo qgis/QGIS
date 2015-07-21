@@ -98,7 +98,7 @@ namespace pal
                                  QLinkedList<PointSet *> &shapes_final,
                                  double xrm, double yrm, const QString &uid );
 
-      /** Returns the minimum distance between the point set geometry and the point (px,py)
+      /** Returns the squared minimum distance between the point set geometry and the point (px,py)
        * Optionally, the nearest point is stored in (rx,ry).
        * @param px x coordinate of the point
        * @param py y coordinate of the points
@@ -106,7 +106,7 @@ namespace pal
        * @param ry pointer to y coorinates of the nearest point (can be NULL)
        * @returns minimum distance
        */
-      double minDistanceToPoint( double px, double py, double *rx = 0, double *ry = 0 );
+      double minDistanceToPoint( double px, double py, double *rx = 0, double *ry = 0 ) const;
 
       void getCentroid( double &px, double &py, bool forceInside = false ) const;
 
@@ -156,11 +156,12 @@ namespace pal
 
       PointSet( double x, double y );
 
-      PointSet( PointSet &ps );
+      PointSet( const PointSet &ps );
 
       void deleteCoords();
       void createGeosGeom() const;
       const GEOSPreparedGeometry* preparedGeom() const;
+      void invalidateGeos();
 
       double xmin;
       double xmax;

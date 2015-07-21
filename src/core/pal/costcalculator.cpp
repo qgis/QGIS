@@ -42,6 +42,8 @@ namespace pal
         if ( dist < 0 )
           n = 2;
         else if ( dist < distlabel )
+          //note this never happens at the moment - points are not obstacles if they don't fall
+          //within the label
           n = 1;
         else
           n = 0;

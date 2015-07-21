@@ -45,7 +45,7 @@ namespace pal
   /**
    * \brief LabelPosition is a candidate feature label position
    */
-  class CORE_EXPORT LabelPosition
+  class CORE_EXPORT LabelPosition : public PointSet
   {
       friend class CostCalculator;
       friend class PolygonCostCalculator;
@@ -126,10 +126,10 @@ namespace pal
       void getBoundingBox( double amin[2], double amax[2] ) const;
 
       /** Get distance from this label to a point. If point lies inside, returns negative number. */
-      double getDistanceToPoint( double xp, double yp );
+      double getDistanceToPoint( double xp, double yp ) const;
 
       /** Returns true if this label crosses the specified line */
-      bool isBorderCrossingLine( PointSet* feat );
+      bool isBorderCrossingLine( PointSet* line ) const;
 
       /** Returns number of intersections with polygon (testing border and center) */
       int getNumPointsInPolygon( PointSet* polygon ) const;
@@ -258,7 +258,6 @@ namespace pal
 
       int nbOverlap;
 
-      double x[4], y[4];
       double alpha;
       double w;
       double h;

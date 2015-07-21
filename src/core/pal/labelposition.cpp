@@ -48,7 +48,8 @@
 namespace pal
 {
   LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, double alpha, double cost, FeaturePart *feature, bool isReversed, Quadrant quadrant )
-      : id( id )
+      : PointSet()
+      , id( id )
       , cost( cost )
       , feature( feature )
       , probFeat( 0 )
@@ -62,6 +63,10 @@ namespace pal
       , upsideDown( false )
       , quadrant( quadrant )
   {
+    type = GEOS_POLYGON;
+    nbPoints = 4;
+    x = new double[nbPoints];
+    y = new double[nbPoints];
 
     // alpha take his value bw 0 and 2*pi rad
     while ( this->alpha > 2*M_PI )
@@ -148,9 +153,18 @@ namespace pal
         upsideDown = true;
       }
     }
+
+    for ( int i = 0; i < nbPoints; ++i )
+    {
+      xmin = qMin( xmin, x[i] );
+      xmax = qMax( xmax, x[i] );
+      ymin = qMin( ymin, y[i] );
+      ymax = qMax( ymax, y[i] );
+    }
   }
 
   LabelPosition::LabelPosition( const LabelPosition& other )
+      : PointSet( other )
   {
     id = other.id;
     cost = other.cost;
@@ -250,39 +264,15 @@ namespace pal
 
   bool LabelPosition::isInConflictSinglePart( LabelPosition* lp )
   {
-    // TODO: add bounding box test to possibly avoid cross product calculation
+    if ( !mGeos )
+      createGeosGeom();
 
-    int i, i2, j;
-    int d1, d2;
-    double cp1, cp2;
+    if ( !lp->mGeos )
+      lp->createGeosGeom();
 
-    for ( i = 0; i < 4; i++ )
-    {
-      i2 = ( i + 1 ) % 4;
-      d1 = -1;
-      d2 = -1;
-
-      for ( j = 0; j < 4; j++ )
-      {
-        cp1 = cross_product( x[i], y[i], x[i2], y[i2], lp->x[j], lp->y[j] );
-        if ( cp1 > 0 )
-        {
-          d1 = 1;
-        }
-        cp2 = cross_product( lp->x[i], lp->y[i],
-                             lp->x[i2], lp->y[i2],
-                             x[j], y[j] );
-
-        if ( cp2 > 0 )
-        {
-          d2 = 1;
-        }
-      }
-
-      if ( d1 == -1 || d2 == -1 ) // disjoint
-        return false;
-    }
-    return true;
+    GEOSContextHandle_t geosctxt = geosContext();
+    bool result = ( GEOSPreparedIntersects_r( geosctxt, preparedGeom(), lp->mGeos ) == 1 );
+    return result;
   }
 
   bool LabelPosition::isInConflictMultiPart( LabelPosition* lp )
@@ -315,8 +305,9 @@ namespace pal
 
     if ( nextPart )
       nextPart->offsetPosition( xOffset, yOffset );
-  }
 
+    invalidateGeos();
+  }
 
   int LabelPosition::getId() const
   {
@@ -500,88 +491,35 @@ namespace pal
     return true;
   }
 
-
-
-  double LabelPosition::getDistanceToPoint( double xp, double yp )
+  double LabelPosition::getDistanceToPoint( double xp, double yp ) const
   {
-    int i;
-    int j;
+    //first check if inside, if so then distance is -1
+    double distance = ( containsPoint( xp, yp ) ? -1
+                        : sqrt( minDistanceToPoint( xp, yp ) ) );
 
-    double mx[4];
-    double my[4];
+    if ( nextPart && distance > 0 )
+      return qMin( distance, nextPart->getDistanceToPoint( xp, yp ) );
 
-    double dist_min = DBL_MAX;
-    double dist;
-
-    for ( i = 0; i < 4; i++ )
-    {
-      j = ( i + 1 ) % 4;
-      mx[i] = ( x[i] + x[j] ) / 2.0;
-      my[i] = ( y[i] + y[j] ) / 2.0;
-    }
-
-    if ( qAbs( cross_product( mx[0], my[0], mx[2], my[2], xp, yp ) / h ) < w / 2 )
-    {
-      dist = cross_product( x[1], y[1], x[0], y[0], xp, yp ) / w;
-      if ( qAbs( dist ) < qAbs( dist_min ) )
-        dist_min = dist;
-
-      dist = cross_product( x[3], y[3], x[2], y[2], xp, yp ) / w;
-      if ( qAbs( dist ) < qAbs( dist_min ) )
-        dist_min = dist;
-    }
-
-    if ( qAbs( cross_product( mx[1], my[1], mx[3], my[3], xp, yp ) / w ) < h / 2 )
-    {
-      dist = cross_product( x[2], y[2], x[1], y[1], xp, yp ) / h;
-      if ( qAbs( dist ) < qAbs( dist_min ) )
-        dist_min = dist;
-
-      dist = cross_product( x[0], y[0], x[3], y[3], xp, yp ) / h;
-      if ( qAbs( dist ) < qAbs( dist_min ) )
-        dist_min = dist;
-    }
-
-    for ( i = 0; i < 4; i++ )
-    {
-      dist = dist_euc2d( x[i], y[i], xp, yp );
-      if ( qAbs( dist ) < qAbs( dist_min ) )
-        dist_min = dist;
-    }
-
-    if ( nextPart && dist_min > 0 )
-      return qMin( dist_min, nextPart->getDistanceToPoint( xp, yp ) );
-
-    return dist_min;
+    return distance;
   }
 
-
-  bool LabelPosition::isBorderCrossingLine( PointSet* feat )
+  bool LabelPosition::isBorderCrossingLine( PointSet* line ) const
   {
-    double ca, cb;
-    for ( int i = 0; i < 4; i++ )
+    if ( !mGeos )
+      createGeosGeom();
+
+    if ( !line->mGeos )
+      line->createGeosGeom();
+
+    GEOSContextHandle_t geosctxt = geosContext();
+    if ( GEOSPreparedIntersects_r( geosctxt, preparedGeom(), line->mGeos ) == 1 )
     {
-      for ( int j = 0; j < feat->getNumPoints() - 1; j++ )
-      {
-        ca = cross_product( x[i], y[i], x[( i+1 ) %4], y[( i+1 ) %4],
-                            feat->x[j], feat->y[j] );
-        cb = cross_product( x[i], y[i], x[( i+1 ) %4], y[( i+1 ) %4],
-                            feat->x[j+1], feat->y[j+1] );
-
-        if (( ca < 0 && cb > 0 ) || ( ca > 0 && cb < 0 ) )
-        {
-          ca = cross_product( feat->x[j], feat->y[j], feat->x[j+1], feat->y[j+1],
-                              x[i], y[i] );
-          cb = cross_product( feat->x[j], feat->y[j], feat->x[j+1], feat->y[j+1],
-                              x[( i+1 ) %4], y[( i+1 ) %4] );
-          if (( ca < 0 && cb > 0 ) || ( ca > 0 && cb < 0 ) )
-            return true;
-        }
-      }
+      return true;
     }
-
-    if ( nextPart )
-      return nextPart->isBorderCrossingLine( feat );
+    else if ( nextPart )
+    {
+      return nextPart->isBorderCrossingLine( line );
+    }
 
     return false;
   }

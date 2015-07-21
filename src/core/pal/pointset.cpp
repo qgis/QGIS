@@ -109,7 +109,7 @@ namespace pal
     type = GEOS_POINT;
   }
 
-  PointSet::PointSet( PointSet &ps )
+  PointSet::PointSet( const PointSet &ps )
       : mGeos( 0 )
       , mOwnsGeom( false )
       , parent( 0 )
@@ -209,6 +209,17 @@ namespace pal
       mPreparedGeom = GEOSPrepare_r( geosContext(), mGeos );
     }
     return mPreparedGeom;
+  }
+
+  void PointSet::invalidateGeos()
+  {
+    GEOSContextHandle_t geosctxt = geosContext();
+    if ( mOwnsGeom ) // delete old geometry if we own it
+      GEOSGeom_destroy_r( geosctxt, mGeos );
+    GEOSPreparedGeom_destroy_r( geosctxt, mPreparedGeom );
+    mOwnsGeom = false;
+    mGeos = 0;
+    mPreparedGeom = 0;
   }
 
   PointSet::~PointSet()
@@ -867,7 +878,7 @@ namespace pal
     return finalBb;
   }
 
-  double PointSet::minDistanceToPoint( double px, double py, double *rx, double *ry )
+  double PointSet::minDistanceToPoint( double px, double py, double *rx, double *ry ) const
   {
     if ( !mGeos )
       createGeosGeom();
