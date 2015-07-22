@@ -79,7 +79,7 @@ void QgsSelectedFeature::updateGeometry( QgsGeometry *geom )
     QgsFeature f;
     if ( mVlayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeatureId ) ).nextFeature( f ) )
     {
-      mGeometry = new QgsGeometry( *f.geometry() );
+      mGeometry = new QgsGeometry( *f.constGeometry() );
     }
   }
   else

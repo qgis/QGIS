@@ -410,25 +410,25 @@ void QgsMapToolNodeTool::createTopologyRubberBands()
       }
       // Get VertexId of snapped vertex
       QgsVertexId vid;
-      if ( !feature.geometry()->vertexIdFromVertexNr( snapResult.snappedVertexNr, vid ) )
+      if ( !feature.constGeometry()->vertexIdFromVertexNr( snapResult.snappedVertexNr, vid ) )
       {
         continue;
       }
       // Add rubberband if not already added
       if ( !mMoveRubberBands.contains( snapFeatureId ) )
       {
-        QgsGeometryRubberBand* rb = new QgsGeometryRubberBand( mCanvas, feature.geometry()->type() );
+        QgsGeometryRubberBand* rb = new QgsGeometryRubberBand( mCanvas, feature.constGeometry()->type() );
         rb->setOutlineColor( Qt::blue );
         rb->setBrushStyle( Qt::NoBrush );
         rb->setOutlineWidth( 2 );
-        QgsAbstractGeometryV2* rbGeom = feature.geometry()->geometry()->clone();
+        QgsAbstractGeometryV2* rbGeom = feature.constGeometry()->geometry()->clone();
         if ( mCanvas->mapSettings().layerTransform( vlayer ) )
           rbGeom->transform( *mCanvas->mapSettings().layerTransform( vlayer ) );
         rb->setGeometry( rbGeom );
         mMoveRubberBands.insert( snapFeatureId, rb );
       }
       // Add to list of vertices to be moved
-      mMoveVertices[snapFeatureId].append( qMakePair( vid, toMapCoordinates( vlayer, feature.geometry()->geometry()->vertexAt( vid ) ) ) );
+      mMoveVertices[snapFeatureId].append( qMakePair( vid, toMapCoordinates( vlayer, feature.constGeometry()->geometry()->vertexAt( vid ) ) ) );
     }
   }
 }
