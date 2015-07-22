@@ -209,7 +209,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/gdal.png</normaloff>:/images/themes/default/propertyicons/gdal.png</iconset>
+            <normaloff>:/images/themes/default/propertyicons/gdal.svg</normaloff>:/images/themes/default/propertyicons/gdal.svg</iconset>
           </property>
          </item>
          <item>
@@ -3022,6 +3022,9 @@
                   </item>
                   <item row="4" column="0">
                    <widget class="QLabel" name="label_13">
+                    <property name="toolTip">
+                     <string>If unchecked large numbers will be converted from m. to km. and from ft. to miles</string>
+                    </property>
                     <property name="text">
                      <string>Keep base unit</string>
                     </property>
