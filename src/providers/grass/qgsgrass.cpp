@@ -1368,22 +1368,26 @@ bool GRASS_LIB_EXPORT QgsGrass::defaultRegion( const QString& gisdbase, const QS
   }
 }
 
-bool GRASS_LIB_EXPORT QgsGrass::region( const QString& gisdbase,
+void GRASS_LIB_EXPORT QgsGrass::region( const QString& gisdbase,
                                         const QString& location, const QString& mapset,
-                                        struct Cell_head *window )
+                                        struct Cell_head *window )  throw( QgsGrass::Exception )
 {
   QgsGrass::setLocation( gisdbase, location );
 
 #if GRASS_VERSION_MAJOR < 7
   if ( G__get_window( window, ( char * ) "", ( char * ) "WIND", mapset.toUtf8().data() ) )
   {
-    return false;
+    throw QgsGrass::Exception( QObject::tr( "Cannot get current region" ) );
   }
 #else
-  // TODO7: unfortunately G__get_window does not return error code and calls G_fatal_error on error
-  G__get_window( window, ( char * ) "", ( char * ) "WIND", mapset.toUtf8().data() );
+  // In GRASS 7 G__get_window does not return error code and calls G_fatal_error on error
+  G_FATAL_THROW( G__get_window( window, ( char * ) "", ( char * ) "WIND", mapset.toUtf8().data() ) );
 #endif
-  return true;
+}
+
+void GRASS_LIB_EXPORT QgsGrass::region( struct Cell_head *window ) throw( QgsGrass::Exception )
+{
+  region( getDefaultGisdbase(), getDefaultLocation(), getDefaultMapset(), window );
 }
 
 bool GRASS_LIB_EXPORT QgsGrass::writeRegion( const QString& gisbase,
@@ -1549,10 +1553,13 @@ bool GRASS_LIB_EXPORT QgsGrass::mapRegion( QgsGrassObject::Type type, QString gi
   else if ( type == QgsGrassObject::Vector )
   {
     // Get current projection
-    if ( !region( gisdbase, location, mapset, window ) )
+    try
     {
-      QMessageBox::warning( 0, QObject::tr( "Warning" ),
-                            QObject::tr( "Cannot read vector map region" ) );
+      QgsGrass::region( gisdbase, location, mapset, window );
+    }
+    catch ( QgsGrass::Exception &e )
+    {
+      QgsGrass::warning( e );
       return false;
     }
 
@@ -2166,6 +2173,19 @@ bool GRASS_LIB_EXPORT QgsGrass::isExternal( const QgsGrassObject & object )
   return isExternal;
 }
 
+void GRASS_LIB_EXPORT QgsGrass::adjustCellHead( struct Cell_head *cellhd, int row_flag, int col_flag ) throw( QgsGrass::Exception )
+{
+#if (GRASS_VERSION_MAJOR < 7)
+  char* err = G_adjust_Cell_head( cellhd, row_flag, col_flag );
+  if ( err )
+  {
+    throw QgsGrass::Exception( QObject::tr( "Cannot adjust region" ) + QString( err ) );
+  }
+#else
+  G_FATAL_THROW( G_adjust_Cell_head( cellhd, row_flag, col_flag ) );
+#endif
+}
+
 // GRASS version constants have been changed on 26.4.2007
 // http://freegis.org/cgi-bin/viewcvs.cgi/grass6/include/version.h.in.diff?r1=1.4&r2=1.5
 // The following lines workaround this change
@@ -2246,6 +2266,11 @@ void GRASS_LIB_EXPORT QgsGrass::putEnv( QString name, QString value )
   char *envChar = new char[env.toUtf8().length()+1];
   strcpy( envChar, env.toUtf8().constData() );
   putenv( envChar );
+}
+
+void GRASS_LIB_EXPORT QgsGrass::warning( QgsGrass::Exception &e )
+{
+  QMessageBox::warning( 0, QObject::tr( "Warning" ), e.what() );
 }
 
 struct Map_info GRASS_LIB_EXPORT *QgsGrass::vectNewMapStruct()

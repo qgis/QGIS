@@ -33,7 +33,7 @@
 #include <QSettings>
 
 
-/** map tool which uses rubber band for changing grass region */
+/** Map tool which uses rubber band for changing grass region */
 QgsGrassRegionEdit::QgsGrassRegionEdit( QgsMapCanvas* canvas )
     : QgsMapTool( canvas )
 {
@@ -232,22 +232,13 @@ QgsGrassRegion::QgsGrassRegion( QgsGrassPlugin *plugin,  QgisInterface *iface,
   connect( mRadioGroup, SIGNAL( buttonClicked( int ) ), this, SLOT( radioChanged() ) );
 
   // Set values to current region
-  QString gisdbase = QgsGrass::getDefaultGisdbase();
-  QString location = QgsGrass::getDefaultLocation();
-  QString mapset   = QgsGrass::getDefaultMapset();
-
-  if ( gisdbase.isEmpty() || location.isEmpty() || mapset.isEmpty() )
+  try
   {
-    QMessageBox::warning( 0, tr( "Warning" ),
-                          tr( "GISDBASE, LOCATION_NAME or MAPSET is not set, cannot display current region." ) );
+    QgsGrass::region( &mWindow );
   }
-
-  QgsGrass::setLocation( gisdbase, location );
-  char *err = G__get_window( &mWindow, ( char * ) "", ( char * ) "WIND", mapset.toLatin1().data() );
-
-  if ( err )
+  catch ( QgsGrass::Exception &e )
   {
-    QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot read current region: %1" ).arg( QString::fromUtf8( err ) ) );
+    QgsGrass::warning( e );
     return;
   }
 

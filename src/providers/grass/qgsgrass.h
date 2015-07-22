@@ -49,12 +49,20 @@ class QgsRectangle;
 #define EXPAND(x) STR(x)
 #define GRASS_VERSION_RELEASE_STRING EXPAND( GRASS_VERSION_RELEASE )
 
+// try/catch like macros using setjmp
 #if (GRASS_VERSION_MAJOR < 7)
-#define G_TRY try { if( !setjmp( QgsGrass::jumper ) )
+#define G_TRY try { if( !setjmp(QgsGrass::jumper) )
 #else
 #define G_TRY try { if( !setjmp(*G_fatal_longjmp(1)) )
 #endif
 #define G_CATCH else { throw QgsGrass::Exception( QgsGrass::errorMessage() ); } } catch
+
+// Throw QgsGrass::Exception if G_fatal_error happens when calling F
+#if (GRASS_VERSION_MAJOR < 7)
+#define G_FATAL_THROW(F) if( !setjmp(QgsGrass::jumper) ) { F; } else { throw QgsGrass::Exception( QgsGrass::errorMessage() ); }
+#else
+#define G_FATAL_THROW(F) if( !setjmp(*G_fatal_longjmp(1)) ) { F; } else { throw QgsGrass::Exception( QgsGrass::errorMessage() ); }
+#endif
 
 #if GRASS_VERSION_MAJOR >= 7
 #define G_available_mapsets G_get_available_mapsets
@@ -272,9 +280,16 @@ class QgsGrass
     static GRASS_LIB_EXPORT bool defaultRegion( const QString& gisdbase, const QString& location,
         struct Cell_head *window );
 
-    // ! Read current mapset region
-    static GRASS_LIB_EXPORT bool region( const QString& gisdbase, const QString& location, const QString& mapset,
-                                         struct Cell_head *window );
+    /** Read mapset current region (WIND)
+     * @throws QgsGrass::Exception
+     */
+    static GRASS_LIB_EXPORT void region( const QString& gisdbase, const QString& location, const QString& mapset,
+                                         struct Cell_head *window ) throw( QgsGrass::Exception );
+
+    /** Read default mapset current region (WIND)
+     * @throws QgsGrass::Exception
+     */
+    static GRASS_LIB_EXPORT void region( struct Cell_head *window ) throw( QgsGrass::Exception );
 
     // ! Write current mapset region
     static GRASS_LIB_EXPORT bool writeRegion( const QString& gisbase, const QString& location, const QString& mapset,
@@ -398,6 +413,10 @@ class QgsGrass
     /** Returns true if object is link to external data (created by r.external) */
     static GRASS_LIB_EXPORT bool isExternal( const QgsGrassObject & object );
 
+    /** Adjust cell header, G_adjust_Cell_head wrapper
+     * @throws QgsGrass::Exception */
+    static GRASS_LIB_EXPORT void adjustCellHead( struct Cell_head *cellhd, int row_flag, int col_flag ) throw( QgsGrass::Exception );
+
     //! Library version
     static GRASS_LIB_EXPORT int versionMajor();
     static GRASS_LIB_EXPORT int versionMinor();
@@ -424,6 +443,9 @@ class QgsGrass
 #endif
       return QgsApplication::libexecPath() + "grass/modules";
     }
+
+    /** Show warning dialog with exception message */
+    static GRASS_LIB_EXPORT void warning( QgsGrass::Exception &e );
 
     // Allocate struct Map_info
     static GRASS_LIB_EXPORT struct Map_info * vectNewMapStruct();

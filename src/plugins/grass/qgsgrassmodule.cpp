@@ -970,11 +970,13 @@ QStringList QgsGrassModuleStandardOptions::checkRegion()
   QStringList list;
 
   struct Cell_head currentWindow;
-  if ( !QgsGrass::region( QgsGrass::getDefaultGisdbase(),
-                          QgsGrass::getDefaultLocation(),
-                          QgsGrass::getDefaultMapset(), &currentWindow ) )
+  try
   {
-    QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot get current region" ) );
+    QgsGrass::region( &currentWindow );
+  }
+  catch ( QgsGrass::Exception &e )
+  {
+    QgsGrass::warning( e );
     return list;
   }
 
@@ -1047,10 +1049,13 @@ bool QgsGrassModuleStandardOptions::inputRegion( struct Cell_head *window, QgsCo
     window->rows = ( int ) mCanvas->mapSettings().outputSize().height();
     window->cols = ( int ) mCanvas->mapSettings().outputSize().width();
 
-    char* err = G_adjust_Cell_head( window, 1, 1 );
-    if ( err )
+    try
     {
-      QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot set region" ) + QString( err ) );
+      QgsGrass::adjustCellHead( window, 1, 1 );
+    }
+    catch ( QgsGrass::Exception &e )
+    {
+      QgsGrass::warning( e );
       return false;
     }
   }
@@ -1063,11 +1068,13 @@ bool QgsGrassModuleStandardOptions::inputRegion( struct Cell_head *window, QgsCo
     else
     {
       // Get current resolution
-      if ( !QgsGrass::region( QgsGrass::getDefaultGisdbase(),
-                              QgsGrass::getDefaultLocation(),
-                              QgsGrass::getDefaultMapset(), window ) )
+      try
       {
-        QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot get current region" ) );
+        QgsGrass::region( window );
+      }
+      catch ( QgsGrass::Exception &e )
+      {
+        QgsGrass::warning( e );
         return false;
       }
     }
@@ -1152,10 +1159,13 @@ bool QgsGrassModuleStandardOptions::inputRegion( struct Cell_head *window, QgsCo
           mapWindow.cols = provider->xSize();
           mapWindow.rows = provider->ySize();
 
-          char* err = G_adjust_Cell_head( &mapWindow, 1, 1 );
-          if ( err )
+          try
           {
-            QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot set region" ) + QString( err ) );
+            QgsGrass::adjustCellHead( &mapWindow, 1, 1 );
+          }
+          catch ( QgsGrass::Exception &e )
+          {
+            QgsGrass::warning( e );
             return false;
           }
         }
