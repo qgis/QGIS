@@ -2847,16 +2847,6 @@
                    </layout>
                   </item>
                   <item>
-                   <widget class="QLabel" name="textLabel2">
-                    <property name="text">
-                     <string>&lt;b&gt;Note:&lt;/b&gt; Specify the search radius as a percentage of the map width</string>
-                    </property>
-                    <property name="wordWrap">
-                     <bool>false</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
                    <layout class="QHBoxLayout" name="mIdentifyHighlightHorizontalLayout">
                     <item>
                      <widget class="QLabel" name="mIdentifyHighlighColorLabel">
