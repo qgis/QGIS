@@ -435,7 +435,7 @@ bool QgsRuleBasedRendererV2::Rule::startRender( QgsRenderContext& context, const
   if ( isElse() )
   {
     if ( !sf.length() )
-      filter = "1";
+      filter = "TRUE";
     else
       filter = sf;
   }

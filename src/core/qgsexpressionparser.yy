@@ -79,6 +79,7 @@ struct expression_parser_context
   QgsExpression::NodeList* nodelist;
   double numberFloat;
   int    numberInt;
+  bool   boolVal;
   QString* text;
   QgsExpression::BinaryOperator b_op;
   QgsExpression::UnaryOperator u_op;
@@ -101,6 +102,7 @@ struct expression_parser_context
 // literals
 %token <numberFloat> NUMBER_FLOAT
 %token <numberInt> NUMBER_INT
+%token <boolVal> BOOLEAN
 %token NULLVALUE
 
 // tokens for conditional expressions
@@ -254,6 +256,7 @@ expression:
     //  literals
     | NUMBER_FLOAT                { $$ = new QgsExpression::NodeLiteral( QVariant($1) ); }
     | NUMBER_INT                  { $$ = new QgsExpression::NodeLiteral( QVariant($1) ); }
+    | BOOLEAN                     { $$ = new QgsExpression::NodeLiteral( QVariant($1) ); }
     | STRING                      { $$ = new QgsExpression::NodeLiteral( QVariant(*$1) ); delete $1; }
     | NULLVALUE                   { $$ = new QgsExpression::NodeLiteral( QVariant() ); }
 ;
