@@ -40,6 +40,7 @@ class TestQgsExpressionContext : public QObject
 
     void globalScope();
     void projectScope();
+    void layerScope();
 
   private:
 
@@ -122,12 +123,14 @@ void TestQgsExpressionContext::contextScope()
   QVERIFY( !scope.hasVariable( "test" ) );
   QVERIFY( !scope.variable( "test" ).isValid() );
   QCOMPARE( scope.variableNames().length(), 0 );
+  QCOMPARE( scope.variableCount(), 0 );
 
   scope.setVariable( "test", 5 );
   QVERIFY( scope.hasVariable( "test" ) );
   QVERIFY( scope.variable( "test" ).isValid() );
   QCOMPARE( scope.variable( "test" ).toInt(), 5 );
   QCOMPARE( scope.variableNames().length(), 1 );
+  QCOMPARE( scope.variableCount(), 1 );
   QCOMPARE( scope.variableNames().at( 0 ), QString( "test" ) );
 
   scope.addVariable( QgsExpressionContextScope::StaticVariable( "readonly", QString( "readonly_test" ), true ) );
@@ -327,6 +330,28 @@ void TestQgsExpressionContext::projectScope()
   //test a preset project variable
   QgsProject::instance()->setTitle( "test project" );
   QCOMPARE( QgsExpressionContextUtils::projectScope().variable( "project_title" ).toString(), QString( "test project" ) );
+}
+
+void TestQgsExpressionContext::layerScope()
+{
+  //test passing no layer - should be no crash
+  QCOMPARE( QgsExpressionContextUtils::layerScope( 0 ).variableCount(), 0 );
+
+  //create a map layer
+  QScopedPointer<QgsVectorLayer> vectorLayer( new QgsVectorLayer( "Point?field=col1:integer&field=col2:integer&field=col3:integer", "test layer", "memory" ) );
+
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::layerScope( vectorLayer.data() );
+
+  QCOMPARE( context.variable( "layer_name" ).toString(), vectorLayer->name() );
+  QCOMPARE( context.variable( "layer_id" ).toString(), vectorLayer->id() );
+
+  QgsExpression expProject( "var('layer_name')" );
+  QCOMPARE( expProject.evaluate( &context ).toString(), vectorLayer->name() );
+
+  //check that fields were set
+  QgsFields fromVar = qvariant_cast<QgsFields>( context.variable( "_fields_" ) );
+  QCOMPARE( fromVar, vectorLayer->pendingFields() );
 }
 
 QTEST_MAIN( TestQgsExpressionContext )

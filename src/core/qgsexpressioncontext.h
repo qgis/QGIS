@@ -30,6 +30,7 @@ class QgsVectorLayer;
 class QgsFeature;
 class QgsRenderContext;
 class QgsProject;
+class QgsMapLayer;
 
 
 /** \ingroup core
@@ -86,6 +87,7 @@ class CORE_EXPORT QgsExpressionContextScope
     QVariant variable( const QString& name ) const;
     QStringList variableNames() const;
     bool isReadOnly( const QString& name ) const;
+    int variableCount() const { return mVariables.count(); }
 
     bool hasFunction( const QString &name ) const;
     QgsExpression::Function* function( const QString &name ) const;
@@ -201,6 +203,8 @@ class CORE_EXPORT QgsExpressionContextUtils
     static QgsExpressionContextScope projectScope();
 
     static void setProjectVariable( const QString& name, const QVariant& value );
+
+    static QgsExpressionContextScope layerScope( QgsMapLayer* layer );
 
 };
 

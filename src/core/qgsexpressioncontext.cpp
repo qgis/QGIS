@@ -284,10 +284,10 @@ QgsExpressionContextScope QgsExpressionContextUtils::projectScope()
   }
 
   //add other known project variables
-  scope.setVariable( "project_title", project->title() );
-  scope.setVariable( "project_path", project->fileInfo().filePath() );
-  scope.setVariable( "project_folder", project->fileInfo().dir().path() );
-  scope.setVariable( "project_filename", project->fileInfo().fileName() );
+  scope.addVariable( QgsExpressionContextScope::StaticVariable( "project_title", project->title(), true ) );
+  scope.addVariable( QgsExpressionContextScope::StaticVariable( "project_path", project->fileInfo().filePath(), true ) );
+  scope.addVariable( QgsExpressionContextScope::StaticVariable( "project_folder", project->fileInfo().dir().path(), true ) );
+  scope.addVariable( QgsExpressionContextScope::StaticVariable( "project_filename", project->fileInfo().fileName(), true ) );
   return scope;
 }
 
@@ -304,4 +304,23 @@ void QgsExpressionContextUtils::setProjectVariable( const QString& name, const Q
 
   project->writeEntry( "Variables", "/variableNames", variableNames );
   project->writeEntry( "Variables", "/variableValues", variableValues );
+}
+
+QgsExpressionContextScope QgsExpressionContextUtils::layerScope( QgsMapLayer* layer )
+{
+  QgsExpressionContextScope scope;
+
+  if ( !layer )
+    return scope;
+
+  scope.addVariable( QgsExpressionContextScope::StaticVariable( "layer_name", layer->name(), true ) );
+  scope.addVariable( QgsExpressionContextScope::StaticVariable( "layer_id", layer->id(), true ) );
+
+  QgsVectorLayer* vLayer = dynamic_cast< QgsVectorLayer* >( layer );
+  if ( vLayer )
+  {
+    scope.addVariable( QgsExpressionContextScope::StaticVariable( "_fields_", QVariant::fromValue( vLayer->pendingFields() ), true ) );
+  }
+
+  return scope;
 }
