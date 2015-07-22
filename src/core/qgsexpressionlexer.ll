@@ -108,6 +108,7 @@ col_next     [A-Za-z0-9_]|{non_ascii}
 column_ref  {col_first}{col_next}*
 
 special_col "$"{column_ref}
+variable "@"{column_ref}
 
 col_str_char  "\"\""|[^\"]
 column_ref_quoted  "\""{col_str_char}*"\""
@@ -194,6 +195,8 @@ string      "'"{str_char}*"'"
 {string}  { TEXT_FILTER(stripText); return STRING; }
 
 {special_col}        { TEXT; return SPECIAL_COL; }
+
+{variable}        { TEXT; return VARIABLE; }
 
 {column_ref}         { TEXT; return QgsExpression::isFunctionName(*yylval->text) ? FUNCTION : COLUMN_REF; }
 

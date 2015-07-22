@@ -264,6 +264,12 @@ void TestQgsExpressionContext::evaluate()
   QgsExpression expWithVariableBad( "var('bad')" );
   QVERIFY( !expWithVariableBad.evaluate( &context ).isValid() );
 
+  //test shorthand variables
+  QgsExpression expShorthand( "@test" );
+  QCOMPARE( expShorthand.evaluate( &context ).toInt(), 7 );
+  QgsExpression expShorthandBad( "@bad" );
+  QVERIFY( !expShorthandBad.evaluate( &context ).isValid() );
+
   //test with a function provided by a context
   QgsExpression::registerFunction( new ModifiableFunction( 0 ) );
   QgsExpression testExpWContextFunction( "test_function(1)" );
