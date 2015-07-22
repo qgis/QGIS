@@ -222,9 +222,11 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
 
     virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
 
-    virtual QgsRenderOptions startRender( QgsRenderContext& context, const QgsFields& fields ) override;
+    virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
 
     virtual void stopRender( QgsRenderContext& context ) override;
+
+    virtual QString filter() override;
 
     virtual QList<QString> usedAttributes() override;
 
@@ -308,6 +310,8 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
     // temporary
     RenderQueue mRenderQueue;
     QList<FeatureToRender> mCurrentFeatures;
+
+    QString mFilter;
 };
 
 #endif // QGSRULEBASEDRENDERERV2_H
