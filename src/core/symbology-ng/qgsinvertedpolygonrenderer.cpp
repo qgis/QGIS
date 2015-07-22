@@ -63,11 +63,11 @@ const QgsFeatureRendererV2* QgsInvertedPolygonRenderer::embeddedRenderer() const
   return mSubRenderer.data();
 }
 
-QgsRenderOptions QgsInvertedPolygonRenderer::startRender( QgsRenderContext& context, const QgsFields& fields )
+void QgsInvertedPolygonRenderer::startRender( QgsRenderContext& context, const QgsFields& fields )
 {
   if ( !mSubRenderer )
   {
-    return QgsRenderOptions();
+    return;
   }
 
   // first call start render on the sub renderer
@@ -85,7 +85,7 @@ QgsRenderOptions QgsInvertedPolygonRenderer::startRender( QgsRenderContext& cont
 
   if ( !context.painter() )
   {
-    return QgsRenderOptions();
+    return;
   }
 
   // convert viewport to dest CRS
@@ -120,7 +120,7 @@ QgsRenderOptions QgsInvertedPolygonRenderer::startRender( QgsRenderContext& cont
   mExtentPolygon.clear();
   mExtentPolygon.append( exteriorRing );
 
-  return QgsRenderOptions();
+  return;
 }
 
 bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )

@@ -91,7 +91,7 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
 
     virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature );
 
-    virtual QgsRenderOptions startRender( QgsRenderContext& context, const QgsFields& fields );
+    virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
 
     virtual void stopRender( QgsRenderContext& context );
 

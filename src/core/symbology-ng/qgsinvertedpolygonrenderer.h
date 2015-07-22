@@ -50,7 +50,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
     /** Used to clone this feature renderer.*/
     virtual QgsFeatureRendererV2* clone() const override;
 
-    virtual QgsRenderOptions startRender( QgsRenderContext& context, const QgsFields& fields ) override;
+    virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
 
     /** Renders a given feature.
      * This will here collect features. The actual rendering will be postponed to stopRender()

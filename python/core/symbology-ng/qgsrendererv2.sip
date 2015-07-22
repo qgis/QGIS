@@ -17,15 +17,6 @@ class QgsSymbolV2LevelItem
     int layer();
 };
 
-class QgsRenderOptions
-{
-%TypeHeaderCode
-#include <qgsrendererv2.h>
-%End
-  public:
-    void setWhereClause( const QString& whereClause );
-    QString whereClause();
-};
 
 // every level has list of items: symbol + symbol layer num
 // typedef QList< QgsSymbolV2LevelItem > QgsSymbolV2Level;
@@ -84,12 +75,14 @@ class QgsFeatureRendererV2
      */
     virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature );
 
-    virtual QgsRenderOptions startRender( QgsRenderContext& context, const QgsFields& fields ) = 0;
+    virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) = 0;
 
     //! @deprecated since 2.4 - not using QgsVectorLayer directly anymore
     virtual void startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer ) /Deprecated/;
 
     virtual void stopRender( QgsRenderContext& context ) = 0;
+
+    virtual QString filter();
 
     virtual QList<QString> usedAttributes() = 0;
 

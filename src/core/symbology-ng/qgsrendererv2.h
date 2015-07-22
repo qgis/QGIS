@@ -61,18 +61,6 @@ class CORE_EXPORT QgsSymbolV2LevelItem
     int mLayer;
 };
 
-class CORE_EXPORT QgsRenderOptions
-{
-  public:
-    QgsRenderOptions() {}
-    QgsRenderOptions( const QString& whereClause ) { mWhereClause = whereClause; }
-
-    void setWhereClause( const QString& whereClause ) { mWhereClause = whereClause; }
-    QString whereClause() { return mWhereClause; }
-  private:
-    QString mWhereClause;
-};
-
 // every level has list of items: symbol + symbol layer num
 typedef QList< QgsSymbolV2LevelItem > QgsSymbolV2Level;
 
@@ -114,12 +102,25 @@ class CORE_EXPORT QgsFeatureRendererV2
      * @param fields   The fields available for rendering
      * @return         Information passed back from the renderer that can e.g. be used to reduce the amount of requested features
      */
-    virtual QgsRenderOptions startRender( QgsRenderContext& context, const QgsFields& fields ) = 0;
+    virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) = 0;
 
     //! @deprecated since 2.4 - not using QgsVectorLayer directly anymore
     Q_DECL_DEPRECATED virtual void startRender( QgsRenderContext& context, const QgsVectorLayer* vlayer );
 
     virtual void stopRender( QgsRenderContext& context ) = 0;
+
+    /**
+     * If a renderer does not require all the features this method may be overridden
+     * and return an expression used as where clause.
+     * This will be called once after {@link startRender()} and before the first call
+     * to {@link renderFeature()}.
+     * By default this returns a null string and all features will be requested.
+     * You do not need to specify the extent in here, this is taken care of separately and
+     * will be combined with a filter returned from this method.
+     *
+     * @return An expresion used as where clause
+     */
+    virtual QString filter() { return QString::null; }
 
     virtual QList<QString> usedAttributes() = 0;
 

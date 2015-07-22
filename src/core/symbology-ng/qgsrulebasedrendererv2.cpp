@@ -807,11 +807,10 @@ bool QgsRuleBasedRendererV2::renderFeature( QgsFeature& feature,
 }
 
 
-QgsRenderOptions QgsRuleBasedRendererV2::startRender( QgsRenderContext& context, const QgsFields& fields )
+void QgsRuleBasedRendererV2::startRender( QgsRenderContext& context, const QgsFields& fields )
 {
-  QString filter;
   // prepare active children
-  mRootRule->startRender( context, fields, filter );
+  mRootRule->startRender( context, fields, mFilter );
 
   QSet<int> symbolZLevelsSet = mRootRule->collectZLevels();
   QList<int> symbolZLevels = symbolZLevelsSet.toList();
@@ -829,7 +828,6 @@ QgsRenderOptions QgsRuleBasedRendererV2::startRender( QgsRenderContext& context,
   }
 
   mRootRule->setNormZLevels( zLevelsToNormLevels );
-  return QgsRenderOptions( filter );
 }
 
 void QgsRuleBasedRendererV2::stopRender( QgsRenderContext& context )
@@ -871,6 +869,11 @@ void QgsRuleBasedRendererV2::stopRender( QgsRenderContext& context )
 
   // clean up rules from temporary stuff
   mRootRule->stopRender( context );
+}
+
+QString QgsRuleBasedRendererV2::filter()
+{
+  return mFilter;
 }
 
 QList<QString> QgsRuleBasedRendererV2::usedAttributes()

@@ -175,9 +175,11 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
 
     virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
-    virtual QgsRenderOptions startRender( QgsRenderContext& context, const QgsFields& fields );
+    virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
 
     virtual void stopRender( QgsRenderContext& context );
+
+    virtual QString filter();
 
     virtual QList<QString> usedAttributes();
 
