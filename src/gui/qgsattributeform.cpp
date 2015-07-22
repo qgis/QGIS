@@ -196,6 +196,7 @@ bool QgsAttributeForm::save()
         {
           mFeature.setAttributes( updatedFeature.attributes() );
           mLayer->endEditCommand();
+          mIsAddDialog = false;
           changedLayer = true;
         }
         else
