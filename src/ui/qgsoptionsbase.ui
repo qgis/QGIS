@@ -3194,14 +3194,14 @@
                     <item>
                      <widget class="QToolButton" name="pbnDefaultScaleValues">
                       <property name="toolTip">
-                       <string>Insert default scales</string>
+                       <string>Reset to default scales</string>
                       </property>
                       <property name="text">
                        <string>...</string>
                       </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">
-                        <normaloff>:/images/themes/default/mActionOpenTable.png</normaloff>:/images/themes/default/mActionOpenTable.png</iconset>
+                        <normaloff>:/images/themes/default/mActionUndo.png</normaloff>:/images/themes/default/mActionUndo.png</iconset>
                       </property>
                      </widget>
                     </item>
