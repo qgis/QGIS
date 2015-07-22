@@ -176,7 +176,13 @@ inline bool isDoubleSafe( const QVariant& v )
   if ( v.type() == QVariant::UInt ) return true;
   if ( v.type() == QVariant::LongLong ) return true;
   if ( v.type() == QVariant::ULongLong ) return true;
-  if ( v.type() == QVariant::String ) { bool ok; v.toString().toDouble( &ok ); return ok; }
+  if ( v.type() == QVariant::String )
+  {
+    bool ok;
+    double val = v.toString().toDouble( &ok );
+    ok = ok && qIsFinite( val ) && !qIsNaN( val );
+    return ok;
+  }
   return false;
 }
 
@@ -239,7 +245,7 @@ static double getDoubleValue( const QVariant& value, QgsExpression* parent )
 {
   bool ok;
   double x = value.toDouble( &ok );
-  if ( !ok )
+  if ( !ok || qIsNaN( x ) || !qIsFinite( x ) )
   {
     parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to double" ).arg( value.toString() ) );
     return 0;

@@ -202,7 +202,10 @@ class TestQgsExpression: public QObject
       QTest::newRow( "plus double" ) << "1+1.3" << false << QVariant( 2.3 );
       QTest::newRow( "plus with null" ) << "null+3" << false << QVariant();
       QTest::newRow( "plus invalid" ) << "1+'foo'" << true << QVariant();
+
       QTest::newRow( "minus int" ) << "1-3" << false << QVariant( -2 );
+      QTest::newRow( "minus nan" ) << "1-'nan'" << true << QVariant();
+      QTest::newRow( "minus inf" ) << "1-'inf'" << true << QVariant();
       QTest::newRow( "mul int" ) << "8*7" << false << QVariant( 56 );
       QTest::newRow( "div int" ) << "5/2" << false << QVariant( 2.5 );
       QTest::newRow( "mod int" ) << "20%6" << false << QVariant( 2 );
@@ -238,6 +241,10 @@ class TestQgsExpression: public QObject
       QTest::newRow( "ge int 2" ) << "3 >= 3" << false << QVariant( 1 );
       QTest::newRow( "lt text 1" ) << "'bar' < 'foo'" << false << QVariant( 1 );
       QTest::newRow( "lt text 2" ) << "'foo' < 'bar'" << false << QVariant( 0 );
+      QTest::newRow( "'nan'='nan'" ) << "'nan'='nan'" << false << QVariant( 1 );
+      QTest::newRow( "'nan'='x'" ) << "'nan'='x'" << false << QVariant( 0 );
+      QTest::newRow( "'inf'='inf'" ) << "'inf'='inf'" << false << QVariant( 1 );
+      QTest::newRow( "'inf'='x'" ) << "'inf'='x'" << false << QVariant( 0 );
 
       // is, is not
       QTest::newRow( "is null,null" ) << "null is null" << false << QVariant( 1 );
