@@ -28,6 +28,8 @@ QgsTransectSample::QgsTransectSample()
     , mShareBaseline( false )
     , mMinDistanceUnits( Meters )
     , mMinTransectLength( 0.0 )
+    , mBaselineBufferDistance( -1.0 )
+    , mBaselineSimplificationTolerance( -1.0 )
 {
 }
 
