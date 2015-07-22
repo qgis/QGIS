@@ -79,6 +79,7 @@
 #include "qgssymbologyv2conversion.h"
 #include "qgspallabeling.h"
 #include "qgssimplifymethod.h"
+#include "qgsexpressioncontext.h"
 
 #include "diagram/qgsdiagram.h"
 
@@ -3167,13 +3168,23 @@ QList<QVariant> QgsVectorLayer::getValues( const QString &fieldOrExpression, boo
   QList<QVariant> values;
 
   QScopedPointer<QgsExpression> expression;
+  QScopedPointer<QgsExpressionContext> context;
+  QgsExpressionContextScope* featureScope = 0;
+
   int attrNum = fieldNameIndex( fieldOrExpression );
 
   if ( attrNum == -1 )
   {
     // try to use expression
     expression.reset( new QgsExpression( fieldOrExpression ) );
-    if ( expression->hasParserError() || !expression->prepare( pendingFields() ) )
+    context.reset( new QgsExpressionContext() );
+    context.data()->operator <<( QgsExpressionContextUtils::globalScope() )
+    << QgsExpressionContextUtils::projectScope()
+    << QgsExpressionContextUtils::layerScope( this )
+    << QgsExpressionContextScope(); //feature scope
+
+    featureScope = context->scope( 3 );
+    if ( expression->hasParserError() || !expression->prepare( context.data() ) )
     {
       ok = false;
       return values;
@@ -3206,8 +3217,16 @@ QList<QVariant> QgsVectorLayer::getValues( const QString &fieldOrExpression, boo
   // create list of non-null attribute values
   while ( fit.nextFeature( f ) )
   {
-    QVariant v = expression ? expression->evaluate( f ) : f.attribute( attrNum );
-    values << v;
+    if ( expression )
+    {
+      featureScope->setVariable( "_feature_", QVariant::fromValue( f ) );
+      QVariant v = expression->evaluate( context.data() );
+      values << v;
+    }
+    else
+    {
+      values << f.attribute( attrNum );
+    }
   }
   ok = true;
   return values;
