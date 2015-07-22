@@ -39,6 +39,9 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
     //! mouse press event in map coordinates (eventually filtered) to be redefined in subclass
     void canvasMapPressEvent( QgsMapMouseEvent* e ) override;
 
+    //! mouse move event in map coordinates (eventually filtered) to be redefined in subclass
+    void canvasMapMoveEvent( QgsMapMouseEvent* e ) override;
+
     void keyPressEvent( QKeyEvent* e );
 
     //! called when map tool is being deactivated
@@ -64,6 +67,11 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
      * Deletes the rubber band pointers and clears mRubberBands
      */
     void removeRubberBands();
+
+    /**
+     * Creates rubber bands for ther features when topology editing is enabled
+      */
+    void createTopologyRubberBands();
 
     /**
      * Disconnects signals and clears objects
@@ -126,6 +134,12 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
 
     /** Flag to tell if edition points */
     bool mIsPoint;
+
+    /** Rubber bands during node move */
+    QMap<QgsFeatureId, QgsGeometryRubberBand*> mMoveRubberBands;
+
+    /** Vertices of features to move */
+    QMap<QgsFeatureId, QList< QPair<QgsVertexId, QgsPointV2> > > mMoveVertices;
 };
 
 #endif
