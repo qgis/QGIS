@@ -127,6 +127,8 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      * another suitable widget type instead.
      *
      * @return Validity status of this widget.
+     *
+     * @note Added in 2.12
      */
     virtual bool valid() = 0;
 
