@@ -203,7 +203,7 @@ namespace pal
 #endif
 
     // all feature which are obstacle will be inserted into obstacles
-    if ( context->layer->obstacle() )
+    if ( ft_ptr->getFeature()->isObstacle() )
     {
       ft_ptr->getBoundingBox( amin, amax );
       context->obstacles->Insert( amin, amax, ft_ptr );

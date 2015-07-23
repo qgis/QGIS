@@ -108,6 +108,18 @@ namespace pal
       double repeatDistance() const { return repeatDist; }
       void setAlwaysShow( bool bl ) { alwaysShow = bl; }
 
+      /** Sets whether the feature will act as an obstacle for labels.
+       * @param obstacle whether feature will act as an obstacle
+       * @see isObstacle
+       */
+      void setIsObstacle( bool obstacle ) { mIsObstacle = obstacle; }
+
+      /** Returns whether the feature will act as an obstacle for labels.
+       * @returns true if feature is an obstacle
+       * @see setIsObstacle
+       */
+      double isObstacle() const { return mIsObstacle; }
+
       /** Sets the priority for labeling the feature.
        * @param priority feature's priority, as a value between 0 (highest priority)
        * and 1 (lowest priority). Set to -1.0 to use the layer's default priority
@@ -161,9 +173,12 @@ namespace pal
     private:
 
       bool mFixedQuadrant;
+      bool mIsObstacle;
 
       //-1 if layer priority should be used
       double mPriority;
+
+
   };
 
   /**

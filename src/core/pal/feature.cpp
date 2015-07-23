@@ -75,6 +75,7 @@ namespace pal
       , repeatDist( 0.0 )
       , alwaysShow( false )
       , mFixedQuadrant( false )
+      , mIsObstacle( true )
       , mPriority( -1.0 )
   {
     assert( finite( lx ) && finite( ly ) );

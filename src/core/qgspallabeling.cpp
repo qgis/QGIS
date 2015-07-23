@@ -294,6 +294,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   mDataDefinedNames.insert( RepeatDistance, QPair<QString, int>( "RepeatDistance", -1 ) );
   mDataDefinedNames.insert( RepeatDistanceUnit, QPair<QString, int>( "RepeatDistanceUnit", -1 ) );
   mDataDefinedNames.insert( Priority, QPair<QString, int>( "Priority", -1 ) );
+  mDataDefinedNames.insert( IsObstacle, QPair<QString, int>( "IsObstacle", -1 ) );
 
   // (data defined only)
   mDataDefinedNames.insert( PositionX, QPair<QString, int>( "PositionX", 9 ) );
@@ -2205,6 +2206,12 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
       priorityD = 1 - priorityD / 10.0; // convert 0..10 --> 1..0
       feat->setPriority( priorityD );
     }
+  }
+
+  // data defined is obstacle?
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::IsObstacle, exprVal ) )
+  {
+    feat->setIsObstacle( exprVal.toBool() );
   }
 
   //add parameters for data defined labeling to QgsPalGeometry

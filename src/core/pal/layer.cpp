@@ -168,6 +168,9 @@ namespace pal
 
     f->setAlwaysShow( alwaysShow );
 
+    // feature inherits layer setting for acting as an obstacle
+    f->setIsObstacle( mObstacle );
+
     bool first_feat = true;
 
     double geom_size = -1, biggest_size = -1;

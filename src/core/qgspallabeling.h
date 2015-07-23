@@ -273,6 +273,8 @@ class CORE_EXPORT QgsPalLayerSettings
       FontLimitPixel = 24,
       FontMinPixel = 25,
       FontMaxPixel = 26,
+      IsObstacle = 88,
+
       // (data defined only)
       Show = 15,
       AlwaysShow = 20

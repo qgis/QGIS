@@ -656,7 +656,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.previewBkgrdColor = mPreviewBackgroundBtn->color();
 
   lyr.priority = mPrioritySlider->value();
-  lyr.obstacle = mChkNoObstacle->isChecked();
+  lyr.obstacle = mChkNoObstacle->isChecked() || mLabelModeComboBox->currentIndex() == 2;
   lyr.obstacleType = ( QgsPalLayerSettings::ObstacleType )mObstacleTypeComboBox->itemData( mObstacleTypeComboBox->currentIndex() ).toInt();
   lyr.labelPerPart = chkLabelPerFeaturePart->isChecked();
   lyr.displayAll = mPalShowAllLabelsForLayerChkBx->isChecked();
@@ -856,6 +856,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   setDataDefinedProperty( mFontMaxPixelDDBtn, QgsPalLayerSettings::FontMaxPixel, lyr );
   setDataDefinedProperty( mShowLabelDDBtn, QgsPalLayerSettings::Show, lyr );
   setDataDefinedProperty( mAlwaysShowDDBtn, QgsPalLayerSettings::AlwaysShow, lyr );
+  setDataDefinedProperty( mIsObstacleDDBtn, QgsPalLayerSettings::IsObstacle, lyr );
 
   return lyr;
 }
@@ -1120,6 +1121,9 @@ void QgsLabelingGui::populateDataDefinedButtons( QgsPalLayerSettings& s )
                          QgsDataDefinedButton::AnyType, QgsDataDefinedButton::boolDesc() );
 
   mAlwaysShowDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::AlwaysShow ),
+                          QgsDataDefinedButton::AnyType, QgsDataDefinedButton::boolDesc() );
+
+  mIsObstacleDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::IsObstacle ),
                           QgsDataDefinedButton::AnyType, QgsDataDefinedButton::boolDesc() );
 }
 

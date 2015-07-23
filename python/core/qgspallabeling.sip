@@ -298,6 +298,8 @@ class QgsPalLayerSettings
       FontLimitPixel,
       FontMinPixel,
       FontMaxPixel,
+      IsObstacle,
+      
       // (data defined only)
       Show,
       AlwaysShow
