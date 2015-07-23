@@ -30,13 +30,14 @@
 
 #include "qgsgrass.h"
 
-#include "qgslogger.h"
 #include "qgsapplication.h"
+#include "qgsconfig.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsfield.h"
-#include "qgsrectangle.h"
-#include "qgsconfig.h"
 #include "qgslocalec.h"
+#include "qgslogger.h"
+#include "qgsproject.h"
+#include "qgsrectangle.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -518,6 +519,12 @@ bool QgsGrass::isValidGrassBaseDir( const QString& gisBase )
   return false;
 }
 
+QgsGrass *QgsGrass::instance()
+{
+  static QgsGrass sInstance;
+  return &sInstance;
+}
+
 bool QgsGrass::activeMode()
 {
   init();
@@ -833,10 +840,12 @@ QString GRASS_LIB_EXPORT QgsGrass::openMapset( const QString& gisdbase,
 
   mMapsetLock = lock;
 
-  return NULL;
+  saveMapset();
+  emit QgsGrass::instance()->mapsetChanged();
+  return QString::null;
 }
 
-QString QgsGrass::closeMapset()
+QString GRASS_LIB_EXPORT QgsGrass::closeMapset()
 {
   QgsDebugMsg( "entered." );
 
@@ -894,7 +903,24 @@ QString QgsGrass::closeMapset()
     }
   }
 
-  return NULL;
+  saveMapset();
+  emit QgsGrass::instance()->mapsetChanged();
+  return QString::null;
+}
+
+void GRASS_LIB_EXPORT QgsGrass::saveMapset()
+{
+  QgsDebugMsg( "entered." );
+
+  // Save working mapset in project file
+  QgsProject::instance()->writeEntry( "GRASS", "/WorkingGisdbase",
+                                      QgsProject::instance()->writePath( getDefaultGisdbase() ) );
+
+  QgsProject::instance()->writeEntry( "GRASS", "/WorkingLocation",
+                                      getDefaultLocation() );
+
+  QgsProject::instance()->writeEntry( "GRASS", "/WorkingMapset",
+                                      getDefaultMapset() );
 }
 
 QStringList GRASS_LIB_EXPORT QgsGrass::locations( const QString& gisdbase )
@@ -2266,6 +2292,11 @@ void GRASS_LIB_EXPORT QgsGrass::putEnv( QString name, QString value )
   char *envChar = new char[env.toUtf8().length()+1];
   strcpy( envChar, env.toUtf8().constData() );
   putenv( envChar );
+}
+
+void GRASS_LIB_EXPORT QgsGrass::warning( const QString &message )
+{
+  QMessageBox::warning( 0, QObject::tr( "Warning" ), message );
 }
 
 void GRASS_LIB_EXPORT QgsGrass::warning( QgsGrass::Exception &e )

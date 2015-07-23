@@ -65,6 +65,7 @@ class QgsGrassMapsetItem : public QgsDirectoryItem
 
   public slots:
     void onImportFinished( QgsGrassImport* import );
+    void openMapset();
 
   private:
     bool objectInImports( QgsGrassObject grassObject );

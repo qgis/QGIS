@@ -15,9 +15,16 @@
   </property>
   <widget class="QWidget" name="mContents">
    <layout class="QVBoxLayout" name="verticalLayout">
-    <property name="margin">
-     <number>0</number>
-    </property>
+    <item>
+     <widget class="QLabel" name="mMessageLabel">
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No mapset is open. You can open a GRASS mapset from the browser using the mapset item's context menu action &lt;span style=&quot; font-style:italic;&quot;&gt;Open mapset&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
     <item>
      <widget class="QTabWidget" name="mTabWidget">
       <property name="currentIndex">
@@ -154,6 +161,8 @@
      </widget>
     </item>
    </layout>
+   <zorder>mTabWidget</zorder>
+   <zorder>mMessageLabel</zorder>
   </widget>
  </widget>
  <resources/>

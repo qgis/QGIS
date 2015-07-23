@@ -137,18 +137,21 @@ void QgsGrassTools::showTabs()
   repaint();
 #endif
 
-  QString conf = QgsApplication::pkgDataPath() + "/grass/config/default.qgc";
+  // Build modules tree if empty
+  QgsDebugMsg( QString( "topLevelItemCount = %1" ).arg( mModulesTree->topLevelItemCount() ) );
+  if ( mModulesTree->topLevelItemCount() == 0 )
+  {
+    // Load the modules lists
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+    QString conf = QgsApplication::pkgDataPath() + "/grass/config/default.qgc";
+    loadConfig( conf, mModulesTree, mModulesListModel, false );
+    QApplication::restoreOverrideCursor();
+    QgsDebugMsg( QString( "topLevelItemCount = %1" ).arg( mModulesTree->topLevelItemCount() ) );
+  }
+
   if ( QgsGrass::activeMode() )
   {
-    QgsDebugMsg( QString( "topLevelItemCount = %1" ).arg( mModulesTree->topLevelItemCount() ) );
-    if ( mModulesTree->topLevelItemCount() == 0 )
-    {
-      // Load the modules lists
-      QApplication::setOverrideCursor( Qt::WaitCursor );
-      loadConfig( conf, mModulesTree, mModulesListModel, false );
-      QApplication::restoreOverrideCursor();
-    }
-    QgsDebugMsg( QString( "topLevelItemCount = %1" ).arg( mModulesTree->topLevelItemCount() ) );
+    mMessageLabel->hide();
     mTabWidget->setEnabled( true );
   }
   else
@@ -175,6 +178,7 @@ void QgsGrassTools::showTabs()
       QApplication::restoreOverrideCursor();
     }
 #else
+    mMessageLabel->show();
     mTabWidget->setEnabled( false );
 #endif
   }

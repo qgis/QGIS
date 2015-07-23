@@ -128,8 +128,9 @@ class GRASS_LIB_EXPORT QgsGrassObject
 /*!
    Methods for C library initialization and error handling.
 */
-class QgsGrass
+class GRASS_LIB_EXPORT QgsGrass : public QObject
 {
+    Q_OBJECT
   public:
     static GRASS_LIB_EXPORT jmp_buf jumper; // used to get back from fatal error
 
@@ -153,6 +154,9 @@ class QgsGrass
       double value1, value2;
       int red1, red2, green1, green2, blue1, blue2;
     };
+
+    /** Get singleton instance of this class. Used as signals proxy between provider and plugin. */
+    static QgsGrass* instance();
 
     //! Get info about the mode
     /** QgsGrass may be running in active or passive mode.
@@ -202,17 +206,22 @@ class QgsGrass
     //! Get last error message
     static GRASS_LIB_EXPORT QString errorMessage( void );
 
-    /** \brief Open existing GRASS mapset
-     * \return NULL string or error message
+    /** Open existing GRASS mapset.
+     * Emits signal mapsetChanged().
+     * \return Empty string or error message
      */
     static GRASS_LIB_EXPORT QString openMapset( const QString& gisdbase,
         const QString& location, const QString& mapset );
 
     /** \brief Close mapset if it was opened from QGIS.
-     *         Delete GISRC, lock and temporary directory
-     * \return NULL string or error message
+     *         Delete GISRC, lock and temporary directory.
+     *         Emits signal mapsetChanged().
+     * \return Empty string or error message
      */
     static GRASS_LIB_EXPORT QString closeMapset();
+
+    /** \brief Save current mapset to project file. */
+    static GRASS_LIB_EXPORT void saveMapset();
 
     //! Check if given directory contains a GRASS installation
     static GRASS_LIB_EXPORT bool isValidGrassBaseDir( const QString& gisBase );
@@ -444,6 +453,9 @@ class QgsGrass
       return QgsApplication::libexecPath() + "grass/modules";
     }
 
+    /** Show warning dialog with message */
+    static GRASS_LIB_EXPORT void warning( const QString &message );
+
     /** Show warning dialog with exception message */
     static GRASS_LIB_EXPORT void warning( QgsGrass::Exception &e );
 
@@ -454,6 +466,10 @@ class QgsGrass
 
     // Sleep miliseconds (for debugging)
     static GRASS_LIB_EXPORT void sleep( int ms );
+
+  signals:
+    /** Signal emited after mapset was opened */
+    void mapsetChanged();
 
   private:
     static int initialized; // Set to 1 after initialization
