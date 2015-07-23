@@ -25,7 +25,7 @@
 #include <QCompleter>
 
 bool QgsValueRelationWidgetWrapper::orderByKeyLessThan( const QgsValueRelationWidgetWrapper::ValueRelationItem& p1
-                         , const QgsValueRelationWidgetWrapper::ValueRelationItem& p2 )
+    , const QgsValueRelationWidgetWrapper::ValueRelationItem& p2 )
 {
   switch ( p1.first.type() )
   {
@@ -44,7 +44,7 @@ bool QgsValueRelationWidgetWrapper::orderByKeyLessThan( const QgsValueRelationWi
 }
 
 bool QgsValueRelationWidgetWrapper::orderByValueLessThan( const QgsValueRelationWidgetWrapper::ValueRelationItem& p1
-                           , const QgsValueRelationWidgetWrapper::ValueRelationItem& p2 )
+    , const QgsValueRelationWidgetWrapper::ValueRelationItem& p2 )
 {
   return p1.second < p2.second;
 }
@@ -162,6 +162,11 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget* editor )
     completer->setCaseSensitivity( Qt::CaseInsensitive );
     mLineEdit->setCompleter( completer );
   }
+}
+
+bool QgsValueRelationWidgetWrapper::valid()
+{
+  return mListWidget || mLineEdit || mComboBox;
 }
 
 void QgsValueRelationWidgetWrapper::setValue( const QVariant& value )

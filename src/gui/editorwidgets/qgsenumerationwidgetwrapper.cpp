@@ -57,6 +57,11 @@ void QgsEnumerationWidgetWrapper::initWidget( QWidget* editor )
   }
 }
 
+bool QgsEnumerationWidgetWrapper::valid()
+{
+  return mComboBox;
+}
+
 void QgsEnumerationWidgetWrapper::setValue( const QVariant& value )
 {
   if ( mComboBox )

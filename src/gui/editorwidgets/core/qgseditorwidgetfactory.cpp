@@ -30,8 +30,9 @@ QgsEditorWidgetFactory::~QgsEditorWidgetFactory()
 {
 }
 
-/** Override in own factory to get something different than the default (a simple QgsFilterLineEdit)
- *
+/**
+ * By default a simple QgsFilterLineEdit is returned as search widget.
+ * Override in own factory to get something different than the default.
  */
 QgsSearchWidgetWrapper* QgsEditorWidgetFactory::createSearchWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
 {

@@ -55,6 +55,11 @@ void QgsValueMapWidgetWrapper::initWidget( QWidget* editor )
   }
 }
 
+bool QgsValueMapWidgetWrapper::valid()
+{
+  return mComboBox;
+}
+
 void QgsValueMapWidgetWrapper::setValue( const QVariant& value )
 {
   if ( mComboBox )

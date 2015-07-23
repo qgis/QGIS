@@ -88,6 +88,7 @@ class QgsEditorWidgetWrapper : QObject
      */
     void setEnabled( bool enabled );
 
+    virtual bool valid() = 0;
   protected:
     virtual QWidget* createWidget( QWidget* parent ) = 0;
 

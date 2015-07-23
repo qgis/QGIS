@@ -26,7 +26,7 @@ QgsDefaultSearchWidgetWrapper::QgsDefaultSearchWidgetWrapper( QgsVectorLayer* vl
     , mLineEdit( NULL )
     , mCheckbox( NULL )
     , mContainer( NULL )
-    , mCaseString(QString("LIKE"))
+    , mCaseString( QString( "LIKE" ) )
 {
 }
 
@@ -36,45 +36,45 @@ QString QgsDefaultSearchWidgetWrapper::expression()
   return mExpression;
 }
 
-void QgsDefaultSearchWidgetWrapper::setCaseString(int caseSensitiveCheckState)
+void QgsDefaultSearchWidgetWrapper::setCaseString( int caseSensitiveCheckState )
 {
-    if ( caseSensitiveCheckState == Qt::Checked) 
-    {
-        mCaseString = "LIKE";
-    }
-    else
-    {
-        mCaseString = "ILIKE";
-    }
-    // need to update also the line edit 
-    setExpression(mLineEdit->text());
+  if ( caseSensitiveCheckState == Qt::Checked )
+  {
+    mCaseString = "LIKE";
+  }
+  else
+  {
+    mCaseString = "ILIKE";
+  }
+  // need to update also the line edit
+  setExpression( mLineEdit->text() );
 }
 
-void QgsDefaultSearchWidgetWrapper::setExpression(QString exp)
+void QgsDefaultSearchWidgetWrapper::setExpression( QString exp )
 {
-    QVariant::Type fldType = layer()->pendingFields()[mFieldIdx].type();
-    bool numeric = ( fldType == QVariant::Int || fldType == QVariant::Double || fldType == QVariant::LongLong );
-    
-    QSettings settings;
-    QString nullValue = settings.value( "qgis/nullValue", "NULL" ).toString();
-    QString fieldName = layer()->pendingFields()[mFieldIdx].name();
-    QString str;
-    if ( exp == nullValue )
-    {
-      str = QString( "%1 IS NULL" ).arg( QgsExpression::quotedColumnRef( fieldName ) );
-    }
-    else
-    {
-      str = QString( "%1 %2 '%3'" )
-            .arg( QgsExpression::quotedColumnRef( fieldName ) )
-            .arg( numeric ? "=" : mCaseString )
-            .arg( numeric
-                  ? exp.replace( "'", "''" )
-                  :
-                  "%" + exp.replace( "'", "''" ) + "%" ); // escape quotes
-    }
-    mExpression = str;
-    emit expressionChanged(mExpression);
+  QVariant::Type fldType = layer()->pendingFields()[mFieldIdx].type();
+  bool numeric = ( fldType == QVariant::Int || fldType == QVariant::Double || fldType == QVariant::LongLong );
+
+  QSettings settings;
+  QString nullValue = settings.value( "qgis/nullValue", "NULL" ).toString();
+  QString fieldName = layer()->pendingFields()[mFieldIdx].name();
+  QString str;
+  if ( exp == nullValue )
+  {
+    str = QString( "%1 IS NULL" ).arg( QgsExpression::quotedColumnRef( fieldName ) );
+  }
+  else
+  {
+    str = QString( "%1 %2 '%3'" )
+          .arg( QgsExpression::quotedColumnRef( fieldName ) )
+          .arg( numeric ? "=" : mCaseString )
+          .arg( numeric
+                ? exp.replace( "'", "''" )
+                :
+                "%" + exp.replace( "'", "''" ) + "%" ); // escape quotes
+  }
+  mExpression = str;
+  emit expressionChanged( mExpression );
 }
 
 QWidget* QgsDefaultSearchWidgetWrapper::createWidget( QWidget* parent )
@@ -82,21 +82,26 @@ QWidget* QgsDefaultSearchWidgetWrapper::createWidget( QWidget* parent )
   return new QWidget( parent );
 }
 
-bool QgsDefaultSearchWidgetWrapper::applyDirectly() 
+bool QgsDefaultSearchWidgetWrapper::applyDirectly()
 {
-    return false;
+  return false;
 }
 
 void QgsDefaultSearchWidgetWrapper::initWidget( QWidget* widget )
 {
   mContainer = widget;
-  mContainer->setLayout(new QHBoxLayout() );
+  mContainer->setLayout( new QHBoxLayout() );
   mLineEdit = new QgsFilterLineEdit();
-  mCheckbox = new QCheckBox("Case sensitive");
-  mContainer->layout()->addWidget(mLineEdit);
-  mContainer->layout()->addWidget(mCheckbox);
+  mCheckbox = new QCheckBox( "Case sensitive" );
+  mContainer->layout()->addWidget( mLineEdit );
+  mContainer->layout()->addWidget( mCheckbox );
   connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( setExpression( QString ) ) );
-  connect( mCheckbox, SIGNAL( stateChanged( int ) ), this, SLOT( setCaseString(int) ) );
-  mCheckbox->setChecked(Qt::Unchecked);
+  connect( mCheckbox, SIGNAL( stateChanged( int ) ), this, SLOT( setCaseString( int ) ) );
+  mCheckbox->setChecked( Qt::Unchecked );
   mCaseString = "ILIKE";
+}
+
+bool QgsDefaultSearchWidgetWrapper::valid()
+{
+  return true;
 }

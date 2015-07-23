@@ -47,6 +47,11 @@ QVariant QgsFileNameWidgetWrapper::value()
   return value;
 }
 
+bool QgsFileNameWidgetWrapper::valid()
+{
+  return mLineEdit || mLabel;
+}
+
 QWidget* QgsFileNameWidgetWrapper::createWidget( QWidget* parent )
 {
   QWidget* container = new QWidget( parent );

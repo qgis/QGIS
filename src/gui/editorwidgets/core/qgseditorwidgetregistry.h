@@ -193,7 +193,10 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
     void writeSymbology( QDomElement& element, QDomDocument& doc, QString& errorMessage );
 
   private:
+    QString findSuitableWrapper( QWidget* editor );
+
     QMap<QString, QgsEditorWidgetFactory*> mWidgetFactories;
+    QMap<const char*, QPair<int, QgsEditorWidgetFactory*> > mFactoriesByType;
 };
 
 #endif // QGSEDITORWIDGETREGISTRY_H

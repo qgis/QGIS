@@ -95,9 +95,21 @@ QgsEditorWidgetWrapper* QgsEditorWidgetRegistry::create( const QString& widgetId
       // Make sure that there is a widget created at this point
       // so setValue() et al won't crash
       ww->widget();
+
+      // If we tried to set a widget which is not supported by this wrapper
+      if ( !ww->valid() )
+      {
+        delete ww;
+        QString wid = findSuitableWrapper( editor );
+        ww = mWidgetFactories[wid]->create( vl, fieldIdx, editor, parent );
+        ww->setConfig( config );
+        ww->setContext( context );
+      }
+
       return ww;
     }
   }
+
   return 0;
 }
 
@@ -164,6 +176,20 @@ bool QgsEditorWidgetRegistry::registerWidget( const QString& widgetId, QgsEditor
   else
   {
     mWidgetFactories.insert( widgetId, widgetFactory );
+
+    // Use this factory as default where it provides the heighest priority
+    QMap<const char*, int> types = widgetFactory->supportedWidgetTypes();
+    QMap<const char*, int>::ConstIterator it;
+    it = types.constBegin();
+
+    for ( ; it != types.constEnd(); ++it )
+    {
+      if ( it.value() > mFactoriesByType[it.key()].first )
+      {
+        mFactoriesByType[it.key()] = qMakePair( it.value(), widgetFactory );
+      }
+    }
+
     return true;
   }
 }
@@ -315,4 +341,33 @@ void QgsEditorWidgetRegistry::writeSymbology( QDomElement& element, QDomDocument
   Q_ASSERT( vl );
 
   writeMapLayer( vl, element, doc );
+}
+
+QString QgsEditorWidgetRegistry::findSuitableWrapper( QWidget* editor )
+{
+  QMap<const char*, QPair<int, QgsEditorWidgetFactory*> >::ConstIterator it;
+
+  QString widgetid;
+  int weight = 0;
+
+  it = mFactoriesByType.constBegin();
+  for ( ; it != mFactoriesByType.constEnd(); ++it )
+  {
+    if ( editor->staticMetaObject.className() == it.key() )
+    {
+      // if it's a perfect match: return it directly
+      return it.value().second->name();
+    }
+    else if ( editor->inherits( it.key() ) )
+    {
+      // if it's a subclass, continue evaluating, maybe we find a more-specific or one with more weight
+      if ( it.value().first > weight )
+      {
+        weight = it.value().first;
+        widgetid = it.value().second->name();
+      }
+    }
+  }
+
+  return widgetid;
 }

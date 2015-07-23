@@ -50,6 +50,7 @@ class GUI_EXPORT QgsRangeWidgetWrapper : public QgsEditorWidgetWrapper
   protected:
     virtual QWidget* createWidget( QWidget* parent ) override;
     virtual void initWidget( QWidget* editor ) override;
+    bool valid() override;
 
   public slots:
     virtual void setValue( const QVariant& value ) override;
