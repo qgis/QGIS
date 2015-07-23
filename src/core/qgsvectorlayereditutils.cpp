@@ -69,7 +69,7 @@ bool QgsVectorLayerEditUtils::moveVertex( const QgsPointV2& p, QgsFeatureId atFe
     if ( !L->getFeatures( QgsFeatureRequest().setFilterFid( atFeatureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) || !f.constGeometry() )
       return false; // geometry not found
 
-    geometry = *f.geometry();
+    geometry = *f.constGeometry();
   }
 
   geometry.moveVertex( p, atVertex );
