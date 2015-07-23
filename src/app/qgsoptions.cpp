@@ -1432,10 +1432,6 @@ void QgsOptions::editGdalDriver( const QString& driverName )
   if ( driverName == "_pyramids" )
     title = tr( "Create Options - pyramids" );
   dlg.setWindowTitle( title );
-  QLabel *label = new QLabel( title, &dlg );
-  label->setAlignment( Qt::AlignHCenter );
-  layout->addWidget( label );
-
   if ( driverName == "_pyramids" )
   {
     QgsRasterPyramidsOptionsWidget* optionsWidget =
