@@ -99,6 +99,8 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface, QWidget * parent, const char
   connect( mDirectListView, SIGNAL( clicked( const QModelIndex ) ),
            this, SLOT( directListItemClicked( const QModelIndex ) ) );
 
+  connect( QgsGrass::instance(), SIGNAL( modulesConfigChanged() ), SLOT( loadConfig() ) );
+
   // Show before loadConfig() so that user can see loading
   restorePosition();
   showTabs();
@@ -143,8 +145,7 @@ void QgsGrassTools::showTabs()
   {
     // Load the modules lists
     QApplication::setOverrideCursor( Qt::WaitCursor );
-    QString conf = QgsApplication::pkgDataPath() + "/grass/config/default.qgc";
-    loadConfig( conf, mModulesTree, mModulesListModel, false );
+    loadConfig();
     QApplication::restoreOverrideCursor();
     QgsDebugMsg( QString( "topLevelItemCount = %1" ).arg( mModulesTree->topLevelItemCount() ) );
   }
@@ -277,6 +278,12 @@ void QgsGrassTools::runModule( QString name, bool direct )
 #endif
 }
 
+bool QgsGrassTools::loadConfig()
+{
+  QString conf = QgsGrass::modulesConfigDirPath() + "/default.qgc";
+  return loadConfig( conf, mModulesTree, mModulesListModel, false );
+}
+
 bool QgsGrassTools::loadConfig( QString filePath, QTreeWidget *modulesTreeWidget, QStandardItemModel * modulesListModel, bool direct )
 {
   QgsDebugMsg( filePath );
@@ -385,7 +392,7 @@ void QgsGrassTools::addModules( QTreeWidgetItem *parent, QDomElement &element, Q
       else if ( e.tagName() == "grass" )
       { // GRASS module
         QString name = e.attribute( "name" );
-        QgsDebugMsg( QString( "name = %1" ).arg( name ) );
+        QgsDebugMsgLevel( QString( "name = %1" ).arg( name ), 1 );
 
         QString path = QgsApplication::pkgDataPath() + "/grass/modules/" + name;
         QgsGrassModule::Description description = QgsGrassModule::description( path );

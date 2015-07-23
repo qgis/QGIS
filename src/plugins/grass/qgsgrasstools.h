@@ -31,7 +31,7 @@ class QDomElement;
 class QSortFilterProxyModel;
 class QStandardItemModel;
 
-/*! \class QgsGrassTools
+/** \class QgsGrassTools
  *  \brief Interface to GRASS modules.
  *
  */
@@ -55,6 +55,8 @@ class QgsGrassTools: public QDockWidget, private Ui::QgsGrassToolsBase
     QString appDir();
 
   public slots:
+    bool loadConfig();
+
     //! Load configuration from file
     bool loadConfig( QString filePath, QTreeWidget *modulesTreeWidget, QStandardItemModel * modulesListModel, bool direct );
 

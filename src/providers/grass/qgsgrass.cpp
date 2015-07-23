@@ -2294,6 +2294,48 @@ void GRASS_LIB_EXPORT QgsGrass::putEnv( QString name, QString value )
   putenv( envChar );
 }
 
+QString GRASS_LIB_EXPORT QgsGrass::modulesConfigDefaultDirPath()
+{
+#ifdef _MSC_VER
+  if ( QgsApplication::isRunningFromBuildDir() )
+  {
+    return QgsApplication::buildSourcePath() + "/src/plugins/grass/modules";
+  }
+#endif
+  return QgsApplication::pkgDataPath() + "/grass/modules";
+}
+
+QString GRASS_LIB_EXPORT QgsGrass::modulesConfigDirPath()
+{
+  QSettings settings;
+  bool customModules = settings.value( "/GRASS/modules/config/custom", false ).toBool();
+  QString customModulesDir = settings.value( "/GRASS/modules/config/customDir" ).toString();
+
+  if ( customModules && !customModulesDir.isEmpty() )
+  {
+    return customModulesDir;
+  }
+  else
+  {
+    return modulesConfigDefaultDirPath();
+  }
+}
+
+void GRASS_LIB_EXPORT QgsGrass::setModulesConfig( bool custom, const QString &customDir )
+{
+  QSettings settings;
+
+  bool previousCustom = settings.value( "/GRASS/modules/config/custom", false ).toBool();
+  QString previousCustomDir = settings.value( "/GRASS/modules/config/customDir" ).toString();
+  settings.setValue( "/GRASS/modules/config/custom", custom );
+  settings.setValue( "/GRASS/modules/config/customDir", customDir );
+
+  if ( custom != previousCustom || ( custom && customDir != previousCustomDir ) )
+  {
+    emit modulesConfigChanged();
+  }
+}
+
 void GRASS_LIB_EXPORT QgsGrass::warning( const QString &message )
 {
   QMessageBox::warning( 0, QObject::tr( "Warning" ), message );

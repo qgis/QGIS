@@ -453,6 +453,14 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
       return QgsApplication::libexecPath() + "grass/modules";
     }
 
+    // path to default modules interface config dir
+    static GRASS_LIB_EXPORT QString modulesConfigDefaultDirPath();
+
+    // path to modules interface config dir (default or custom)
+    static GRASS_LIB_EXPORT QString modulesConfigDirPath();
+
+    void GRASS_LIB_EXPORT setModulesConfig( bool custom, const QString &customDir );
+
     /** Show warning dialog with message */
     static GRASS_LIB_EXPORT void warning( const QString &message );
 
@@ -470,6 +478,9 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
   signals:
     /** Signal emited after mapset was opened */
     void mapsetChanged();
+
+    /** Emited when path to modules config dir changed */
+    void modulesConfigChanged();
 
   private:
     static int initialized; // Set to 1 after initialization
