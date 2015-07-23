@@ -263,6 +263,7 @@ int QgsAtlasComposition::updateFeatures()
   }
 
   QgsExpression::setSpecialColumn( "$numfeatures", QVariant(( int )mFeatureIds.size() ) );
+  emit numberFeaturesChanged( mFeatureIds.size() );
 
   //jump to first feature if currently using an atlas preview
   //need to do this in case filtering/layer change has altered matching features
@@ -393,6 +394,11 @@ bool QgsAtlasComposition::prepareForFeature( const int featureI, const bool upda
   if ( mFeatureIds.size() == 0 )
   {
     emit statusMsgChanged( tr( "No matching atlas features" ) );
+    return false;
+  }
+
+  if ( featureI >= mFeatureIds.size() )
+  {
     return false;
   }
 

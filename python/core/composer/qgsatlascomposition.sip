@@ -216,6 +216,11 @@ public:
 
     /** Returns the current atlas feature. Must be called after prepareForFeature( i ). */
     QgsFeature* currentFeature();
+    
+    /** Returns the current feature number.
+     * @note added in QGIS 2.12
+     */
+    int currentFeatureNumber() const;
 
     /** Recalculates the bounds of an atlas driven map */
     void prepareMap( QgsComposerMap* map );
@@ -253,5 +258,9 @@ public:
 
     /**Is emitted when the current atlas feature changes*/
     void featureChanged( QgsFeature* feature );
-
+    
+    /** Is emitted when the number of features for the atlas changes.
+     * @note added in QGIS 2.12
+     */
+    void numberFeaturesChanged( int numFeatures );
 };
