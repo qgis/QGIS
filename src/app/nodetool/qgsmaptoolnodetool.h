@@ -127,7 +127,7 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
     QPoint mPressCoordinates;
 
     /** Closest vertex to click in map coordinates */
-    QgsPoint mClosestMapVertex;
+    QgsPoint mClosestLayerVertex;
 
     /** Rectangle defining area for selecting vertexes */
     QRect* mRect;

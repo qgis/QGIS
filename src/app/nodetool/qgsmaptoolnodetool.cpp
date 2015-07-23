@@ -102,12 +102,13 @@ void QgsMapToolNodeTool::canvasMapPressEvent( QgsMapMouseEvent* e )
   }
 
   //select or move vertices if selected feature has not been changed
+  QgsPoint layerPoint = toLayerCoordinates( vlayer, e->mapPoint() );
   if ( mSelectedFeature->featureId() == bkFeatureId )
   {
     if ( mSelectedFeature->hasSelection() && !ctrlModifier ) //move vertices
     {
-      QgsPoint targetCoords = e->mapPoint();
-      mSelectedFeature->moveSelectedVertexes( targetCoords - mClosestMapVertex );
+      QgsPoint targetCoords = layerPoint;
+      mSelectedFeature->moveSelectedVertexes( targetCoords - mClosestLayerVertex );
       mCanvas->refresh();
       mSelectedFeature->deselectAllVertexes();
     }
@@ -115,8 +116,7 @@ void QgsMapToolNodeTool::canvasMapPressEvent( QgsMapMouseEvent* e )
     {
       int atVertex, beforeVertex, afterVertex;
       double dist;
-
-      QgsPoint closestLayerVertex = mSelectedFeature->geometry()->closestVertex( e->mapPoint(), atVertex, beforeVertex, afterVertex, dist );
+      QgsPoint closestLayerVertex = mSelectedFeature->geometry()->closestVertex( layerPoint, atVertex, beforeVertex, afterVertex, dist );
       mSelectedFeature->selectVertex( atVertex );
     }
   }
@@ -160,11 +160,12 @@ void QgsMapToolNodeTool::canvasMapMoveEvent( QgsMapMouseEvent* e )
   {
     // move rubberband
     QList<QgsSnappingResult> snapResults;
-    mSnapper.snapToBackgroundLayers( e->pos(), snapResults, QList<QgsPoint>() << mClosestMapVertex );
+    mSnapper.snapToBackgroundLayers( e->pos(), snapResults, QList<QgsPoint>() << mClosestLayerVertex );
 
+    QgsPoint origPos = toMapCoordinates( vlayer, mClosestLayerVertex );
     QgsPoint curPos = snapPointFromResults( snapResults, e->pos() );
-    double diffX = curPos.x() - mClosestMapVertex.x();
-    double diffY = curPos.y() - mClosestMapVertex.y();
+    double diffX = curPos.x() - origPos.x();
+    double diffY = curPos.y() - origPos.y();
 
     foreach ( const QgsFeatureId& fid, mMoveRubberBands.keys() )
     {
@@ -375,7 +376,8 @@ int QgsMapToolNodeTool::insertSegmentVerticesForSnap( const QList<QgsSnappingRes
 
 void QgsMapToolNodeTool::changeLastVertex( const QgsPointV2& pt )
 {
-  mClosestMapVertex = toMapCoordinates( currentVectorLayer(), QgsPoint( pt.x(), pt.y() ) );
+  mClosestLayerVertex.setX( pt.x() );
+  mClosestLayerVertex.setY( pt.y() );
 }
 
 void QgsMapToolNodeTool::removeRubberBands()
