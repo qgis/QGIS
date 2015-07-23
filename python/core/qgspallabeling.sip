@@ -299,6 +299,7 @@ class QgsPalLayerSettings
       FontMinPixel,
       FontMaxPixel,
       IsObstacle,
+      ObstacleFactor,
       
       // (data defined only)
       Show,
@@ -469,6 +470,11 @@ class QgsPalLayerSettings
 
     double minFeatureSize; // minimum feature size to be labelled (in mm)
     bool obstacle; // whether features for layer are obstacles to labels of other layers
+    
+    /** Obstacle factor, where 1.0 = default, < 1.0 more likely to be covered by labels,
+     * > 1.0 less likely to be covered
+     */
+    double obstacleFactor;
 
     /** Controls how features act as obstacles for labels
      */

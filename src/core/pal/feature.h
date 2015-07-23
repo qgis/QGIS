@@ -120,6 +120,21 @@ namespace pal
        */
       double isObstacle() const { return mIsObstacle; }
 
+      /** Sets the obstacle factor for the feature. The factor controls the penalty
+       * for labels overlapping this feature.
+       * @param factor larger factors ( > 1.0 ) will result in labels
+       * which are less likely to cover this feature, smaller factors ( < 1.0 ) mean labels
+       * are more likely to cover this feature (where required)
+       * @see obstacleFactor
+       */
+      void setObstacleFactor( double factor ) { mObstacleFactor = factor; }
+
+      /** Returns the obstacle factor for the feature. The factor controls the penalty
+       * for labels overlapping this feature.
+       * @see setObstacleFactor
+       */
+      double obstacleFactor() const { return mObstacleFactor; }
+
       /** Sets the priority for labeling the feature.
        * @param priority feature's priority, as a value between 0 (highest priority)
        * and 1 (lowest priority). Set to -1.0 to use the layer's default priority
@@ -174,6 +189,7 @@ namespace pal
 
       bool mFixedQuadrant;
       bool mIsObstacle;
+      double mObstacleFactor;
 
       //-1 if layer priority should be used
       double mPriority;

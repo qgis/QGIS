@@ -72,8 +72,11 @@ namespace pal
         break;
     }
 
+    //scale cost by obstacle's factor
+    double obstacleCost = obstacle->getFeature()->obstacleFactor() * double( n );
+
     // label cost is penalized
-    lp->setCost( lp->getCost() + double( n ) );
+    lp->setCost( lp->getCost() + obstacleCost );
   }
 
 

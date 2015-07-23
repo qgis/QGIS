@@ -3488,8 +3488,8 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>0</y>
-                       <width>427</width>
+                       <y>-466</y>
+                       <width>578</width>
                        <height>829</height>
                       </rect>
                      </property>
@@ -4818,9 +4818,9 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>-361</y>
+                       <y>-401</y>
                        <width>578</width>
-                       <height>724</height>
+                       <height>764</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -5518,6 +5518,58 @@ font-style: italic;</string>
                           </layout>
                          </item>
                          <item>
+                          <widget class="QFrame" name="mObstaclePriorityFrame">
+                           <layout class="QHBoxLayout" name="horizontalLayout_18">
+                            <property name="margin">
+                             <number>0</number>
+                            </property>
+                            <item>
+                             <widget class="QLabel" name="label_40">
+                              <property name="text">
+                               <string>Low priority</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item>
+                             <widget class="QSlider" name="mObstacleFactorSlider">
+                              <property name="minimum">
+                               <number>0</number>
+                              </property>
+                              <property name="maximum">
+                               <number>100</number>
+                              </property>
+                              <property name="value">
+                               <number>50</number>
+                              </property>
+                              <property name="orientation">
+                               <enum>Qt::Horizontal</enum>
+                              </property>
+                              <property name="tickPosition">
+                               <enum>QSlider::TicksBelow</enum>
+                              </property>
+                              <property name="tickInterval">
+                               <number>10</number>
+                              </property>
+                             </widget>
+                            </item>
+                            <item>
+                             <widget class="QLabel" name="label_41">
+                              <property name="text">
+                               <string>High priority</string>
+                              </property>
+                             </widget>
+                            </item>
+                            <item>
+                             <widget class="QgsDataDefinedButton" name="mObstacleFactorDDBtn">
+                              <property name="text">
+                               <string>...</string>
+                              </property>
+                             </widget>
+                            </item>
+                           </layout>
+                          </widget>
+                         </item>
+                         <item>
                           <widget class="QFrame" name="mPolygonObstacleTypeFrame">
                            <property name="frameShape">
                             <enum>QFrame::NoFrame</enum>
@@ -5981,8 +6033,8 @@ font-style: italic;</string>
    <slot>setCurrentIndex(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>47</x>
-     <y>524</y>
+     <x>34</x>
+     <y>599</y>
     </hint>
     <hint type="destinationlabel">
      <x>633</x>

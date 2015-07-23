@@ -274,6 +274,7 @@ class CORE_EXPORT QgsPalLayerSettings
       FontMinPixel = 25,
       FontMaxPixel = 26,
       IsObstacle = 88,
+      ObstacleFactor = 89,
 
       // (data defined only)
       Show = 15,
@@ -444,6 +445,11 @@ class CORE_EXPORT QgsPalLayerSettings
 
     double minFeatureSize; // minimum feature size to be labelled (in mm)
     bool obstacle; // whether features for layer are obstacles to labels of other layers
+
+    /** Obstacle factor, where 1.0 = default, < 1.0 more likely to be covered by labels,
+     * > 1.0 less likely to be covered
+     */
+    double obstacleFactor;
 
     /** Controls how features act as obstacles for labels
      */

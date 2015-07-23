@@ -200,6 +200,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   limitNumLabels = false;
   maxNumLabels = 2000;
   obstacle = true;
+  obstacleFactor = 1.0;
   obstacleType = PolygonInterior;
 
   // scale factors
@@ -295,6 +296,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   mDataDefinedNames.insert( RepeatDistanceUnit, QPair<QString, int>( "RepeatDistanceUnit", -1 ) );
   mDataDefinedNames.insert( Priority, QPair<QString, int>( "Priority", -1 ) );
   mDataDefinedNames.insert( IsObstacle, QPair<QString, int>( "IsObstacle", -1 ) );
+  mDataDefinedNames.insert( ObstacleFactor, QPair<QString, int>( "ObstacleFactor", -1 ) );
 
   // (data defined only)
   mDataDefinedNames.insert( PositionX, QPair<QString, int>( "PositionX", 9 ) );
@@ -415,6 +417,7 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   limitNumLabels = s.limitNumLabels;
   maxNumLabels = s.maxNumLabels;
   obstacle = s.obstacle;
+  obstacleFactor = s.obstacleFactor;
   obstacleType = s.obstacleType;
 
   // shape background
@@ -924,6 +927,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   limitNumLabels = layer->customProperty( "labeling/limitNumLabels", QVariant( false ) ).toBool();
   maxNumLabels = layer->customProperty( "labeling/maxNumLabels", QVariant( 2000 ) ).toInt();
   obstacle = layer->customProperty( "labeling/obstacle", QVariant( true ) ).toBool();
+  obstacleFactor = layer->customProperty( "labeling/obstacleFactor", QVariant( 1.0 ) ).toDouble();
   obstacleType = ( ObstacleType )layer->customProperty( "labeling/obstacleType", QVariant( PolygonInterior ) ).toUInt();
 
   readDataDefinedPropertyMap( layer, dataDefinedProperties );
@@ -1077,6 +1081,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/limitNumLabels", limitNumLabels );
   layer->setCustomProperty( "labeling/maxNumLabels", maxNumLabels );
   layer->setCustomProperty( "labeling/obstacle", obstacle );
+  layer->setCustomProperty( "labeling/obstacleFactor", obstacleFactor );
   layer->setCustomProperty( "labeling/obstacleType", ( unsigned int )obstacleType );
 
   writeDataDefinedPropertyMap( layer, dataDefinedProperties );
@@ -2213,6 +2218,20 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   {
     feat->setIsObstacle( exprVal.toBool() );
   }
+
+  double featObstacleFactor = obstacleFactor;
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::ObstacleFactor, exprVal ) )
+  {
+    bool ok;
+    double factorD = exprVal.toDouble( &ok );
+    if ( ok )
+    {
+      factorD = qBound( 0.0, factorD, 10.0 );
+      factorD = factorD / 5.0 + 0.0001; // convert 0 -> 10 to 0.0001 -> 2.0
+      featObstacleFactor = factorD;
+    }
+  }
+  feat->setObstacleFactor( featObstacleFactor );
 
   //add parameters for data defined labeling to QgsPalGeometry
   QMap< DataDefinedProperties, QVariant >::const_iterator dIt = dataDefinedValues.constBegin();
