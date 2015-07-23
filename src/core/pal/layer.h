@@ -73,6 +73,8 @@ namespace pal
         ShowAll // show upside down for all labels, including dynamic ones
       };
 
+      virtual ~Layer();
+
       bool displayAll() const { return mDisplayAll; }
 
       /** Returns the number of features in layer.
@@ -325,11 +327,6 @@ namespace pal
        *
        */
       Layer( const QString& lyrName, Arrangement arrangement, double defaultPriority, bool obstacle, bool active, bool toLabel, Pal *pal, bool displayAll = false );
-
-      /**
-       * \brief Delete the layer
-       */
-      virtual ~Layer();
 
       /** Add newly created feature part into r tree and to the list */
       void addFeaturePart( FeaturePart* fpart, const QString &labelText = QString() );

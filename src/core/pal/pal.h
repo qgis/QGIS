@@ -127,7 +127,7 @@ namespace pal
       /**
        * \brief add a new layer
        *
-       * @param lyrName layer's name
+       * @param layerName layer's name
        * @param arrangement Howto place candidates
        * @param defaultPriority layer's prioriry (0 is the best, 1 the worst)
        * @param obstacle 'true' will discourage other label to be placed above features of this layer
@@ -139,25 +139,25 @@ namespace pal
        *
        * @todo add symbolUnit
        */
-      Layer* addLayer( const QString& lyrName, Arrangement arrangement, double defaultPriority, bool obstacle, bool active, bool toLabel, bool displayAll = false );
+      Layer* addLayer( const QString& layerName, Arrangement arrangement, double defaultPriority, bool obstacle, bool active, bool toLabel, bool displayAll = false );
 
       /**
        * \brief Look for a layer
        *
-       * @param lyrName name of layer to search
+       * @param layerName name of layer to search
        *
        * @throws PalException::UnkownLayer
        *
        * @return a pointer on layer or NULL if layer not exist
        */
-      Layer *getLayer( const QString &lyrName );
+      Layer *getLayer( const QString &layerName );
 
       /**
        * \brief get all layers
        *
        * @return a list of all layers
        */
-      QList<Layer*> *getLayers();
+      QList<Layer*> getLayers();
 
       /**
        * \brief remove a layer
@@ -182,9 +182,7 @@ namespace pal
        * \brief the labeling machine
        * Active layers are specifiend through layersName array
        * @todo add obstacles and tolabel arrays
-       *
-       * @param nbLayers # layers
-       * @param layersName names of layers to label
+       * @param layerNames names of layers to label
        * @param bbox map extent
        * @param stat will be filled with labelling process statistics, can be NULL
        * @param displayAll if true, all feature will be labelled even though overlaps occur
@@ -193,8 +191,7 @@ namespace pal
        *
        * @return A list of label to display on map
        */
-      std::list<LabelPosition*> *labeller( int nbLayers,
-                                           const QStringList &layersName,
+      std::list<LabelPosition*> *labeller( const QStringList& layerNames,
                                            double bbox[4],
                                            PalStat **stat,
                                            bool displayAll );
@@ -282,7 +279,8 @@ namespace pal
       SearchMethod getSearch();
 
     private:
-      QList<Layer*> *layers;
+
+      QHash< QString, Layer* > mLayers;
 
       QMutex mMutex;
 
@@ -329,15 +327,13 @@ namespace pal
        * \brief Problem factory
        * Extract features to label and generates candidates for them,
        * respects to a bounding box
-       *
-       * @param nbLayers  number of layers to extract
        * @param layersName layers name to be extracted
        * @param lambda_min xMin bounding-box
        * @param phi_min yMin bounding-box
        * @param lambda_max xMax bounding-box
        * @param phi_max yMax bounding-box
        */
-      Problem* extract( int nbLayers, const QStringList& layersName,
+      Problem* extract( const QStringList& layersName,
                         double lambda_min, double phi_min,
                         double lambda_max, double phi_max );
 

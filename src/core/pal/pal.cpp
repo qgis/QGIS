@@ -83,8 +83,6 @@ namespace pal
     fnIsCancelled = 0;
     fnIsCancelledContext = 0;
 
-    layers = new QList<Layer*>();
-
     ejChainDeg = 50;
     tenure = 10;
     candListSize = 0.2;
@@ -109,87 +107,73 @@ namespace pal
 
   }
 
-  QList<Layer*> *Pal::getLayers()
+  QList<Layer*> Pal::getLayers()
   {
     // TODO make const ! or whatever else
-    return layers;
+    return mLayers.values();
   }
 
-  Layer *Pal::getLayer( const QString& lyrName )
+  Layer *Pal::getLayer( const QString& layerName )
   {
     mMutex.lock();
-    for ( QList<Layer*>::iterator it = layers->begin(); it != layers->end(); ++it )
-      if (( *it )->name() == lyrName )
-      {
-        mMutex.unlock();
-        return *it;
-      }
+    if ( !mLayers.contains( layerName ) )
+    {
+      mMutex.unlock();
+      throw new PalException::UnknownLayer();
+    }
 
+    Layer* result = mLayers.value( layerName );
     mMutex.unlock();
-    throw new PalException::UnknownLayer();
+    return result;
   }
-
 
   void Pal::removeLayer( Layer *layer )
   {
+    if ( !layer )
+      return;
+
     mMutex.lock();
-    if ( layer )
+    QString key = mLayers.key( layer, QString() );
+    if ( !key.isEmpty() )
     {
-      layers->removeOne( layer );
-      delete layer;
+      mLayers.remove( key );
     }
+    delete layer;
     mMutex.unlock();
   }
-
 
   Pal::~Pal()
   {
 
     mMutex.lock();
-    while ( layers->size() > 0 )
-    {
-      delete layers->front();
-      layers->pop_front();
-    }
 
-    delete layers;
+    qDeleteAll( mLayers );
+    mLayers.clear();
     mMutex.unlock();
 
     // do not init and exit GEOS - we do it inside QGIS
     //finishGEOS();
   }
 
-
-  Layer * Pal::addLayer( const QString &lyrName, Arrangement arrangement, double defaultPriority, bool obstacle, bool active, bool toLabel, bool displayAll )
+  Layer* Pal::addLayer( const QString &layerName, Arrangement arrangement, double defaultPriority, bool obstacle, bool active, bool toLabel, bool displayAll )
   {
-    Layer *lyr;
     mMutex.lock();
 
-#ifdef _DEBUG_
-    std::cout << "Pal::addLayer" << std::endl;
-    std::cout << "lyrName:" << lyrName << std::endl;
-    std::cout << "nbLayers:" << layers->size() << std::endl;
-#endif
-
-    for ( QList<Layer*>::iterator it = layers->begin(); it != layers->end(); ++it )
+    //check if layer is already known
+    if ( mLayers.contains( layerName ) )
     {
-      if (( *it )->name() == lyrName )    // if layer already known
-      {
-        mMutex.unlock();
-        //There is already a layer with this name, so we just return the existing one.
-        //Sometimes the same layer is added twice (e.g. datetime split with otf-reprojection)
-        return *it;
-      }
+      mMutex.unlock();
+      //There is already a layer with this name, so we just return the existing one.
+      //Sometimes the same layer is added twice (e.g. datetime split with otf-reprojection)
+      return mLayers.value( layerName );
     }
 
-    lyr = new Layer( lyrName, arrangement, defaultPriority, obstacle, active, toLabel, this, displayAll );
-    layers->push_back( lyr );
-
+    Layer* layer = new Layer( layerName, arrangement, defaultPriority, obstacle, active, toLabel, this, displayAll );
+    mLayers.insert( layerName, layer );
     mMutex.unlock();
 
-    return lyr;
+    return layer;
   }
-
 
   typedef struct _featCbackCtx
   {
@@ -302,7 +286,7 @@ namespace pal
     return true;
   }
 
-  Problem* Pal::extract( int nbLayers, const QStringList& layersName, double lambda_min, double phi_min, double lambda_max, double phi_max )
+  Problem* Pal::extract( const QStringList& layerNames, double lambda_min, double phi_min, double lambda_max, double phi_max )
   {
     // to store obstacles
     RTree<FeaturePart*, double, 2, double> *obstacles = new RTree<FeaturePart*, double, 2, double>();
@@ -341,75 +325,50 @@ namespace pal
     context->bbox_max[0] = amax[0];
     context->bbox_max[1] = amax[1];
 
-#ifdef _VERBOSE_
-    std::cout <<  nbLayers << "/" << layers->size() << " layers to extract " << std::endl;
-#endif
+    // first step : extract features from layers
 
-
-    /* First step : extract feature from layers
-     *
-     * */
-    int oldNbft = 0;
+    int previousFeatureCount = 0;
     Layer *layer;
 
-    QStringList labLayers;
+    QStringList layersWithFeaturesInBBox;
 
     mMutex.lock();
-    for ( i = 0; i < nbLayers; i++ )
+    Q_FOREACH ( QString layerName, layerNames )
     {
-      for ( QList<Layer*>::iterator it = layers->begin(); it != layers->end(); ++it ) // iterate on pal->layers
+      layer = mLayers.value( layerName, 0 );
+      if ( !layer )
       {
-        layer = *it;
-        // Only select those who are active and labellable or those who are active and which must be treated as obstaclewhich must be treated as obstacle
-        if ( layer->active()
-             && ( layer->obstacle() || layer->labelLayer() ) )
-        {
-
-          // check if this selected layers has been selected by user
-          if ( layersName.at( i ) == layer->name() )
-          {
-            // check for connected features with the same label text and join them
-            if ( layer->mergeConnectedLines() )
-              layer->joinConnectedFeatures();
-
-            layer->chopFeaturesAtRepeatDistance();
-
-
-            context->layer = layer;
-            // lookup for feature (and generates candidates list)
-
-            context->layer->mMutex.lock();
-            context->layer->rtree->Search( amin, amax, extractFeatCallback, ( void* ) context );
-            context->layer->mMutex.unlock();
-
-#ifdef _VERBOSE_
-            std::cout << "Layer's name: " << layer->getName() << std::endl;
-            std::cout << "     active:" << layer->isToLabel() << std::endl;
-            std::cout << "     obstacle:" << layer->isObstacle() << std::endl;
-            std::cout << "     toLabel:" << layer->isToLabel() << std::endl;
-            std::cout << "     # features: " << layer->getNbFeatures() << std::endl;
-            std::cout << "     # extracted features: " << context->fFeats->size() - oldNbft << std::endl;
-#endif
-            if ( context->fFeats->size() - oldNbft > 0 )
-            {
-              labLayers << layer->name();
-            }
-            oldNbft = context->fFeats->size();
-
-
-            break;
-          }
-        }
+        // invalid layer name
+        continue;
       }
+
+      // only select those who are active
+      if ( !layer->active() )
+        continue;
+
+      // check for connected features with the same label text and join them
+      if ( layer->mergeConnectedLines() )
+        layer->joinConnectedFeatures();
+
+      layer->chopFeaturesAtRepeatDistance();
+
+      // find features within bounding box and generate candidates list
+      context->layer = layer;
+      context->layer->mMutex.lock();
+      context->layer->rtree->Search( amin, amax, extractFeatCallback, ( void* ) context );
+      context->layer->mMutex.unlock();
+
+      if ( context->fFeats->size() - previousFeatureCount > 0 )
+      {
+        layersWithFeaturesInBBox << layer->name();
+      }
+      previousFeatureCount = context->fFeats->size();
     }
     delete context;
     mMutex.unlock();
 
-    prob->nbLabelledLayers = labLayers.size();
-    for ( i = 0; i < prob->nbLabelledLayers; i++ )
-    {
-      prob->labelledLayersName << labLayers.takeFirst();
-    }
+    prob->nbLabelledLayers = layersWithFeaturesInBBox.size();
+    prob->labelledLayersName = layersWithFeaturesInBBox;
 
     if ( fFeats->size() == 0 )
     {
@@ -577,36 +536,13 @@ namespace pal
 
   std::list<LabelPosition*>* Pal::labeller( double bbox[4], PalStat **stats, bool displayAll )
   {
-
-#ifdef _DEBUG_FULL_
-    std::cout << "LABELLER (active)" << std::endl;
-#endif
-    int i;
-
-    mMutex.lock();
-    int nbLayers = layers->size();
-
-    QStringList layersName;
-    Layer *layer;
-    i = 0;
-    for ( QList<Layer*>::iterator it = layers->begin(); it != layers->end(); ++it )
-    {
-      layer = *it;
-      layersName << layer->name();
-      i++;
-    }
-    mMutex.unlock();
-
-    std::list<LabelPosition*> * solution = labeller( nbLayers, layersName, bbox, stats, displayAll );
-
-    return solution;
+    return labeller( mLayers.keys(), bbox, stats, displayAll );
   }
-
 
   /*
    * BIG MACHINE
    */
-  std::list<LabelPosition*>* Pal::labeller( int nbLayers, const QStringList& layersName, double bbox[4], PalStat **stats, bool displayAll )
+  std::list<LabelPosition*>* Pal::labeller( const QStringList& layerNames, double bbox[4], PalStat **stats, bool displayAll )
   {
 #ifdef _DEBUG_
     std::cout << "LABELLER (selection)" << std::endl;
@@ -631,7 +567,7 @@ namespace pal
     t.start();
 
     // First, extract the problem
-    if (( prob = extract( nbLayers, layersName, bbox[0], bbox[1], bbox[2], bbox[3] ) ) == NULL )
+    if (( prob = extract( layerNames, bbox[0], bbox[1], bbox[2], bbox[3] ) ) == NULL )
     {
       // nothing to be done => return an empty result set
       if ( stats )
@@ -706,24 +642,7 @@ namespace pal
 
   Problem* Pal::extractProblem( double bbox[4] )
   {
-    // find out: nbLayers, layersName, layersFactor
-    mMutex.lock();
-    int nbLayers = layers->size();
-
-    QStringList layersName;
-    Layer *layer;
-    int i = 0;
-    for ( QList<Layer*>::iterator it = layers->begin(); it != layers->end(); ++it )
-    {
-      layer = *it;
-      layersName << layer->name();
-      i++;
-    }
-    mMutex.unlock();
-
-    Problem* prob = extract( nbLayers, layersName, bbox[0], bbox[1], bbox[2], bbox[3] );
-
-    return prob;
+    return extract( mLayers.keys(), bbox[0], bbox[1], bbox[2], bbox[3] );
   }
 
   std::list<LabelPosition*>* Pal::solveProblem( Problem* prob, bool displayAll )
