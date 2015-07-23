@@ -132,6 +132,26 @@ int QgsVectorLayerAndAttributeModel::attributeIndex( const QgsVectorLayer *vl ) 
   return mAttributeIdx.value( vl, -1 );
 }
 
+QVariant QgsVectorLayerAndAttributeModel::headerData( int section, Qt::Orientation orientation, int role ) const
+{
+  if ( orientation == Qt::Horizontal )
+  {
+    if ( role == Qt::DisplayRole )
+    {
+      if ( section == 0 )
+        return tr( "Layer" );
+      else if ( section == 1 )
+        return tr( "Output layer attribute" );
+    }
+    else if ( role == Qt::ToolTipRole )
+    {
+      if ( section == 1 )
+        return tr( "Attribute containing the name of the destination layer in the DXF output." );
+    }
+  }
+  return QVariant();
+}
+
 QVariant QgsVectorLayerAndAttributeModel::data( const QModelIndex& idx, int role ) const
 {
   if ( idx.column() == 0 )
@@ -199,6 +219,11 @@ QVariant QgsVectorLayerAndAttributeModel::data( const QModelIndex& idx, int role
         return vl->pendingFields()[ idx ].name();
       else
         return vl->name();
+    }
+
+    if ( role == Qt::ToolTipRole )
+    {
+      return tr( "Attribute containing the name of the destination layer in the DXF output." );
     }
   }
 
@@ -389,6 +414,7 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   model->setFlags( 0 );
   mTreeView->setModel( model );
   mTreeView->resizeColumnToContents( 0 );
+  mTreeView->header()->show();
 
   connect( mFileLineEdit, SIGNAL( textChanged( const QString& ) ), this, SLOT( setOkEnabled() ) );
   connect( this, SIGNAL( accepted() ), this, SLOT( saveSettings() ) );

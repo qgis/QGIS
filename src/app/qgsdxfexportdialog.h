@@ -49,6 +49,7 @@ class QgsVectorLayerAndAttributeModel : public QgsLayerTreeModel
     ~QgsVectorLayerAndAttributeModel();
 
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
@@ -88,7 +89,7 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     QString encoding() const;
 
   public slots:
-    /** change the selection of layers in the list */
+    /** Change the selection of layers in the list */
     void selectAll();
     void unSelectAll();
 
