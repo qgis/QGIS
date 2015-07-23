@@ -27,6 +27,7 @@ class QgsAbstractGeometryV2;
 class QgsPointV2;
 struct QgsVertexId;
 
+/** A rubberband class for QgsAbstractGeometryV2 (considering curved geometries)*/
 class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
 {
   public:
@@ -63,15 +64,21 @@ class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
 
     /** Sets geometry (takes ownership). Geometry is expected to be in map coordinates */
     void setGeometry( QgsAbstractGeometryV2* geom );
+    /** Returns a pointer to the geometry*/
     const QgsAbstractGeometryV2* geometry() { return mGeometry; }
-
+    /** Moves vertex to new position (in map coordinates)*/
     void moveVertex( const QgsVertexId& id, const QgsPointV2& newPos );
-
+    /** Sets fill color for vertex markers*/
     void setFillColor( const QColor& c );
+    /** Sets outline color for vertex markes*/
     void setOutlineColor( const QColor& c );
+    /** Sets outline width*/
     void setOutlineWidth( int width );
-    void setLineStyle( Qt::PenStyle penStyle );
+    /** Sets pen style*/
+    void setLineStyle( Qt::PenStyle penStyle )
+    /** Sets brush style*/
     void setBrushStyle( Qt::BrushStyle brushStyle );
+    /** Sets vertex marker icon type*/
     void setIconType( IconType iconType ) { mIconType = iconType; }
 
   protected:

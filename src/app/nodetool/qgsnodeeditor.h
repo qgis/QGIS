@@ -27,6 +27,7 @@ class QgsSelectedFeature;
 class QgsVectorLayer;
 class QTableWidget;
 
+/** A widget to select and edit the vertex coordinates of a geometry numerically*/
 class QgsNodeEditor : public QDockWidget
 {
     Q_OBJECT
