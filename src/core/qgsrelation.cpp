@@ -216,9 +216,9 @@ QgsFeatureRequest QgsRelation::getReferencedFeatureRequest( const QgsFeature& fe
   return getReferencedFeatureRequest( feature.attributes() );
 }
 
-QgsFeature QgsRelation::getReferencedFeature( const QgsFeature& child ) const
+QgsFeature QgsRelation::getReferencedFeature( const QgsFeature& feature ) const
 {
-  QgsFeatureRequest request = getReferencedFeatureRequest( child );
+  QgsFeatureRequest request = getReferencedFeatureRequest( feature );
 
   QgsFeature f;
   mReferencedLayer->getFeatures( request ).nextFeature( f );

@@ -170,7 +170,7 @@ class CORE_EXPORT QgsRelation
      *
      * @return A request the referenced feature
      */
-    QgsFeature getReferencedFeature( const QgsFeature& child ) const;
+    QgsFeature getReferencedFeature( const QgsFeature& feature ) const;
 
     /**
      * Returns a human readable name for this relation. Mostly used as title for the children.
