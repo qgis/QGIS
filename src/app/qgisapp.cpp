@@ -10560,7 +10560,10 @@ QMenu* QgisApp::createPopupMenu()
 
     qSort( panels.begin(), panels.end(), cmpByText_ );
     QWidgetAction* panelstitle = new QWidgetAction( menu );
-    panelstitle->setDefaultWidget( new QLabel( QString( "<b>%1</b>" ).arg( tr( "Panels" ) ) ) );
+    QLabel* plabel = new QLabel( QString( "<b>%1</b>" ).arg( tr( "Panels" ) ) );
+    plabel->setMargin( 3 );
+    plabel->setAlignment( Qt::AlignHCenter );
+    panelstitle->setDefaultWidget( plabel );
     menu->addAction( panelstitle );
     foreach ( QAction* a, panels )
     {
@@ -10568,7 +10571,10 @@ QMenu* QgisApp::createPopupMenu()
     }
     menu->addSeparator();
     QWidgetAction* toolbarstitle = new QWidgetAction( menu );
-    toolbarstitle->setDefaultWidget( new QLabel( QString( "<b>%1</b>" ).arg( tr( "Toolbars" ) ) ) );
+    QLabel* tlabel = new QLabel( QString( "<b>%1</b>" ).arg( tr( "Toolbars" ) ) );
+    tlabel->setMargin( 3 );
+    tlabel->setAlignment( Qt::AlignHCenter );
+    toolbarstitle->setDefaultWidget( tlabel );
     menu->addAction( toolbarstitle );
     qSort( toolbars.begin(), toolbars.end(), cmpByText_ );
     foreach ( QAction* a, toolbars )
