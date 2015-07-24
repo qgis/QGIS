@@ -75,7 +75,7 @@ class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
     /** Sets outline width*/
     void setOutlineWidth( int width );
     /** Sets pen style*/
-    void setLineStyle( Qt::PenStyle penStyle )
+    void setLineStyle( Qt::PenStyle penStyle );
     /** Sets brush style*/
     void setBrushStyle( Qt::BrushStyle brushStyle );
     /** Sets vertex marker icon type*/
