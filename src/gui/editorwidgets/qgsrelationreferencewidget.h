@@ -184,7 +184,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QAction* mScaleHighlightFeatureAction;
     QAction* mPanHighlightFeatureAction;
     QComboBox* mComboBox;
-    QGroupBox* mChooserGroupBox;
+    QWidget* mChooserContainer;
     QWidget* mFilterContainer;
     QHBoxLayout* mFilterLayout;
     QgsCollapsibleGroupBox* mAttributeEditorFrame;

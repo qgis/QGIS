@@ -91,20 +91,20 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
   editLayout->setSpacing( 2 );
 
   // Prepare the container and layout for the filter comboboxes
-  mChooserGroupBox = new QGroupBox( this );
-  editLayout->addWidget( mChooserGroupBox );
+  mChooserContainer = new QWidget;
+  editLayout->addWidget( mChooserContainer );
   QHBoxLayout* chooserLayout = new QHBoxLayout;
   chooserLayout->setContentsMargins( 0, 0, 0, 0 );
   mFilterLayout = new QHBoxLayout;
   mFilterLayout->setContentsMargins( 0, 0, 0, 0 );
   mFilterContainer = new QWidget;
   mFilterContainer->setLayout( mFilterLayout );
-  mChooserGroupBox->setLayout( chooserLayout );
+  mChooserContainer->setLayout( chooserLayout );
   chooserLayout->addWidget( mFilterContainer );
 
   // combobox (for non-geometric relation)
   mComboBox = new QComboBox( this );
-  mChooserGroupBox->layout()->addWidget( mComboBox );
+  mChooserContainer->layout()->addWidget( mComboBox );
 
   // read-only line edit
   mLineEdit = new QLineEdit( this );
@@ -390,7 +390,7 @@ void QgsRelationReferenceWidget::setEmbedForm( bool display )
 
 void QgsRelationReferenceWidget::setReadOnlySelector( bool readOnly )
 {
-  mChooserGroupBox->setHidden( readOnly );
+  mChooserContainer->setHidden( readOnly );
   mLineEdit->setVisible( readOnly );
   mRemoveFKButton->setVisible( mAllowNull && readOnly );
   mReadOnlySelector = readOnly;
