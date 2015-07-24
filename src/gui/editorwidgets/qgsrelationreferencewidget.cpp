@@ -245,24 +245,12 @@ void QgsRelationReferenceWidget::setForeignKey( const QVariant& value )
   if ( !mReferencedLayer )
     return;
 
-  QgsFeatureIterator fit;
+  QgsAttributes attrs = QgsAttributes( mReferencingLayer->pendingFields().count() );
+  attrs[mFkeyFieldIdx] = value;
 
-  // TODO: Rewrite using expression
-  if ( mMasterModel )
-  {
-    fit = mMasterModel->layerCache()->getFeatures( QgsFeatureRequest() );
-  }
-  else
-  {
-    fit = mReferencedLayer->getFeatures( QgsFeatureRequest() );
-  }
-  while ( fit.nextFeature( mFeature ) )
-  {
-    if ( mFeature.attribute( mFkeyFieldIdx ) == value )
-    {
-      break;
-    }
-  }
+  QgsFeatureRequest request = mRelation.getReferencedFeatureRequest( attrs );
+
+  mReferencedLayer->getFeatures( request ).nextFeature( mFeature );
 
   if ( !mFeature.isValid() )
   {
@@ -284,7 +272,7 @@ void QgsRelationReferenceWidget::setForeignKey( const QVariant& value )
   }
   else
   {
-    int i = mComboBox->findData( value, QgsAttributeTableModel::FeatureIdRole );
+    int i = mComboBox->findData( mFeature.id(), QgsAttributeTableModel::FeatureIdRole );
     if ( i == -1 && mAllowNull )
     {
       mComboBox->setCurrentIndex( 0 );
@@ -358,10 +346,9 @@ QVariant QgsRelationReferenceWidget::foreignKey()
   }
   else
   {
-    QVariant varFid = mComboBox->itemData( mComboBox->currentIndex(), QgsAttributeTableModel::FeatureIdRole );
-    if ( varFid.isNull() )
+    if ( !mFeature.isValid() )
     {
-      return QVariant();
+      return QVariant( mReferencingLayer->pendingFields().at( mFkeyFieldIdx ).type() );
     }
     else
     {
