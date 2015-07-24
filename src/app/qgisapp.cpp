@@ -24,7 +24,6 @@
 #include <QApplication>
 #include <QBitmap>
 #include <QCheckBox>
-#include <QSpinBox>
 #include <QClipboard>
 #include <QColor>
 #include <QCursor>
@@ -55,18 +54,20 @@
 #include <QRegExp>
 #include <QRegExpValidator>
 #include <QSettings>
+#include <QSpinBox>
 #include <QSplashScreen>
 #include <QStatusBar>
 #include <QStringList>
 #include <QTcpSocket>
 #include <QTextStream>
 #include <QtGlobal>
+#include <QThread>
 #include <QTimer>
 #include <QToolButton>
 #include <QUuid>
 #include <QVBoxLayout>
 #include <QWhatsThis>
-#include <QThread>
+#include <QWidgetAction>
 
 #include <qgsnetworkaccessmanager.h>
 #include <qgsapplication.h>
@@ -322,7 +323,7 @@ extern "C"
 
 class QTreeWidgetItem;
 
-/** set the application title bar text
+/** Set the application title bar text
 
   If the current project title is null
   if the project file is null then
@@ -8056,7 +8057,7 @@ QgsMapLayer *QgisApp::activeLayer()
   return mLayerTreeView ? mLayerTreeView->currentLayer() : 0;
 }
 
-/** set the current layer */
+/** Set the current layer */
 bool QgisApp::setActiveLayer( QgsMapLayer *layer )
 {
   if ( !layer )
@@ -10558,11 +10559,17 @@ QMenu* QgisApp::createPopupMenu()
     }
 
     qSort( panels.begin(), panels.end(), cmpByText_ );
+    QWidgetAction* panelstitle = new QWidgetAction( menu );
+    panelstitle->setDefaultWidget( new QLabel( QString( "<b>%1</b>" ).arg( tr( "Panels" ) ) ) );
+    menu->addAction( panelstitle );
     foreach ( QAction* a, panels )
     {
       menu->addAction( a );
     }
     menu->addSeparator();
+    QWidgetAction* toolbarstitle = new QWidgetAction( menu );
+    toolbarstitle->setDefaultWidget( new QLabel( QString( "<b>%1</b>" ).arg( tr( "Toolbars" ) ) ) );
+    menu->addAction( toolbarstitle );
     qSort( toolbars.begin(), toolbars.end(), cmpByText_ );
     foreach ( QAction* a, toolbars )
     {
