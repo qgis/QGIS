@@ -34,7 +34,8 @@ class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
       ICON_NONE,
       ICON_CROSS,
       ICON_X,
-      ICON_BOX
+      ICON_BOX,
+      ICON_CIRCLE
     };
 
     QgsVertexMarker( QgsMapCanvas* mapCanvas );
