@@ -54,10 +54,9 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
     , mMinPixelLimit( 0 )
     , mLoadSvgParams( false )
 {
-  if ( !layer )
-    return;
-
   setupUi( this );
+
+
   mFontSizeUnitWidget->setUnits( QStringList() << tr( "Points" ) << tr( "Map unit" ), 1 );
   mBufferUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit );
   mShapeSizeUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit );
@@ -122,43 +121,6 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   connect( mLimitLabelChkBox, SIGNAL( toggled( bool ) ), mLimitLabelSpinBox, SLOT( setEnabled( bool ) ) );
 
   connect( btnEngineSettings, SIGNAL( clicked() ), this, SLOT( showEngineConfigDialog() ) );
-
-  // set placement methods page based on geometry type
-  switch ( layer->geometryType() )
-  {
-    case QGis::Point:
-      stackedPlacement->setCurrentWidget( pagePoint );
-      break;
-    case QGis::Line:
-      stackedPlacement->setCurrentWidget( pageLine );
-      break;
-    case QGis::Polygon:
-      stackedPlacement->setCurrentWidget( pagePolygon );
-      break;
-    case QGis::NoGeometry:
-      break;
-    case QGis::UnknownGeometry:
-      qFatal( "unknown geometry type unexpected" );
-  }
-
-  if ( layer->geometryType() == QGis::Point )
-  {
-    // follow placement alignment is only valid for point layers
-    mFontMultiLineAlignComboBox->addItem( tr( "Follow label placement" ) );
-  }
-
-  // show/hide options based upon geometry type
-  chkMergeLines->setVisible( layer->geometryType() == QGis::Line );
-  mDirectSymbolsFrame->setVisible( layer->geometryType() == QGis::Line );
-  mMinSizeFrame->setVisible( layer->geometryType() != QGis::Point );
-
-  // field combo and expression button
-  mFieldExpressionWidget->setLayer( mLayer );
-  QgsDistanceArea myDa;
-  myDa.setSourceCrs( mLayer->crs().srsid() );
-  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
-  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
-  mFieldExpressionWidget->setGeomCalculator( myDa );
 
   populateFontCapitalsComboBox();
 
@@ -277,6 +239,62 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   mLabelingOptionsSplitter->restoreState( settings.value( QString( "/Windows/Labeling/OptionsSplitState" ) ).toByteArray() );
 
   mLabelingOptionsListWidget->setCurrentRow( settings.value( QString( "/Windows/Labeling/Tab" ), 0 ).toInt() );
+}
+
+void QgsLabelingGui::dockMode(bool enabled)
+{
+  groupBox_mPreview->setVisible(!enabled);
+      mLabelingOptionsListFrame->setVisible(!enabled);
+  connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
+}
+
+void QgsLabelingGui::setLayer(QgsMapLayer* mapLayer)
+{
+  // TODO Fix me to handle non vector layers
+  if (!mapLayer->type() == QgsMapLayer::VectorLayer)
+    return;
+
+  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer*>( mapLayer );
+  mLayer = layer ;
+  // field combo and expression button
+  mFieldExpressionWidget->setLayer( mLayer );
+  QgsDistanceArea myDa;
+  myDa.setSourceCrs( mLayer->crs().srsid() );
+  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapSettings().hasCrsTransformEnabled() );
+  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+
+  mFieldExpressionWidget->setGeomCalculator( myDa );
+  // set placement methods page based on geometry type
+  switch ( layer->geometryType() )
+  {
+    case QGis::Point:
+      stackedPlacement->setCurrentWidget( pagePoint );
+      break;
+    case QGis::Line:
+      stackedPlacement->setCurrentWidget( pageLine );
+      break;
+    case QGis::Polygon:
+      stackedPlacement->setCurrentWidget( pagePolygon );
+      break;
+    case QGis::NoGeometry:
+      break;
+    case QGis::UnknownGeometry:
+      qFatal( "unknown geometry type unexpected" );
+  }
+
+  if ( layer->geometryType() == QGis::Point )
+  {
+    // follow placement alignment is only valid for point layers
+    mFontMultiLineAlignComboBox->addItem( tr( "Follow label placement" ) );
+  }
+
+  // show/hide options based upon geometry type
+  chkMergeLines->setVisible( layer->geometryType() == QGis::Line );
+  mDirectSymbolsFrame->setVisible( layer->geometryType() == QGis::Line );
+  mMinSizeFrame->setVisible( layer->geometryType() != QGis::Point );
+
+
+  init();
 }
 
 void QgsLabelingGui::init()

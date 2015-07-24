@@ -40,6 +40,8 @@ class APP_EXPORT QgsLabelingGui : public QWidget, private Ui::QgsLabelingGuiBase
     void writeSettingsToLayer();
 
   public slots:
+    void setLayer(QgsMapLayer *layer);
+    void dockMode(bool enabled);
     void init();
     void collapseSample( bool collapse );
     void apply();

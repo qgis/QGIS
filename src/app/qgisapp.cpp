@@ -636,6 +636,16 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   addDockWidget( Qt::LeftDockWidgetArea, mUndoWidget );
   mUndoWidget->hide();
 
+  mLabelingDock = new QDockWidget( this );
+  mLabelingDock->setWindowTitle( tr( "Layer labeling settings" ) );
+  mLabelingGui = new QgsLabelingGui( 0, mMapCanvas, mLabelingDock );
+  mLabelingGui->dockMode(true);
+  mLabelingGui->layout()->setContentsMargins( 0, 0, 0, 0 );
+  mLabelingDock->setWidget(mLabelingGui);
+
+  addDockWidget(Qt::RightDockWidgetArea, mLabelingDock);
+  mLabelingDock->hide();
+
   mSnappingDialog = new QgsSnappingDialog( this, mMapCanvas );
   mSnappingDialog->setObjectName( "SnappingOption" );
 
@@ -2192,6 +2202,8 @@ void QgisApp::setupConnections()
   // connect legend signals
   connect( mLayerTreeView, SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
            this, SLOT( activateDeactivateLayerRelatedActions( QgsMapLayer * ) ) );
+  connect( mLayerTreeView, SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
+           mLabelingGui, SLOT( setLayer( QgsMapLayer * ) ) );
   connect( mLayerTreeView->selectionModel(), SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ),
            this, SLOT( legendLayerSelectionChanged() ) );
   connect( mLayerTreeView->layerTreeModel()->rootGroup(), SIGNAL( addedChildren( QgsLayerTreeNode*, int, int ) ),
@@ -5049,45 +5061,11 @@ void QgisApp::labeling()
   }
 
 
-  QDialog *dlg = new QDialog( this );
-  dlg->setWindowTitle( tr( "Layer labeling settings" ) );
-  QgsLabelingGui *labelingGui = new QgsLabelingGui( vlayer, mMapCanvas, dlg );
-  labelingGui->init(); // load QgsPalLayerSettings for layer
-  labelingGui->layout()->setContentsMargins( 0, 0, 0, 0 );
-  QVBoxLayout *layout = new QVBoxLayout( dlg );
-  layout->addWidget( labelingGui );
+  mLabelingDock->show();
+  mLabelingGui->setLayer(vlayer);
 
-  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Apply, Qt::Horizontal, dlg );
-  layout->addWidget( buttonBox );
-
-  dlg->setLayout( layout );
-
-  QSettings settings;
-  dlg->restoreGeometry( settings.value( "/Windows/Labeling/geometry" ).toByteArray() );
-
-  connect( buttonBox->button( QDialogButtonBox::Ok ), SIGNAL( clicked() ), dlg, SLOT( accept() ) );
-  connect( buttonBox->button( QDialogButtonBox::Cancel ), SIGNAL( clicked() ), dlg, SLOT( reject() ) );
-  connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), labelingGui, SLOT( apply() ) );
-
-  if ( dlg->exec() )
-  {
-    labelingGui->apply();
-
-    settings.setValue( "/Windows/Labeling/geometry", dlg->saveGeometry() );
-
-    // alter labeling - save the changes
-    labelingGui->layerSettings().writeToLayer( vlayer );
-
-    // trigger refresh
-    if ( mMapCanvas )
-    {
-      mMapCanvas->refresh();
-    }
-  }
-
-  delete dlg;
-
-  activateDeactivateLayerRelatedActions( vlayer );
+  // TODO FIX ME
+  // activateDeactivateLayerRelatedActions( vlayer );
 }
 
 void QgisApp::setCadDockVisible( bool visible )

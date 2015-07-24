@@ -104,6 +104,7 @@ class QgsTileScaleWidget;
 #include "qgspluginmanager.h"
 #include "qgsmessagebar.h"
 #include "qgsbookmarks.h"
+#include "qgslabelinggui.h"
 
 #include "ui_qgisapp.h"
 
@@ -1617,6 +1618,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     static QgisApp *smInstance;
 
     QgsUndoWidget *mUndoWidget;
+    QDockWidget *mLabelingDock;
+    QgsLabelingGui *mLabelingGui;
 
     QgsBrowserDockWidget *mBrowserWidget;
     QgsBrowserDockWidget *mBrowserWidget2;
