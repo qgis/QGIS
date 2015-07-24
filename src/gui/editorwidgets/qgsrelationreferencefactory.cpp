@@ -93,3 +93,10 @@ void QgsRelationReferenceFactory::writeConfig( const QgsEditorWidgetConfig& conf
     filterFields.setAttribute( "ChainFilters", config["ChainFilters"].toBool() );
   }
 }
+
+QMap<const char*, int> QgsRelationReferenceFactory::supportedWidgetTypes()
+{
+  QMap<const char*, int> map = QMap<const char*, int>();
+  map.insert( QgsRelationReferenceWidget::staticMetaObject.className(), 10 );
+  return map;
+}
