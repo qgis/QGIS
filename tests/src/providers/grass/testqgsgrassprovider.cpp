@@ -342,6 +342,7 @@ void TestQgsGrassProvider::region()
   }
   catch ( QgsGrass::Exception &e )
   {
+    Q_UNUSED( e );
     reportRow( "QgsGrass::region() failed" );
     ok = false;
   }
