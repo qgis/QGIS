@@ -23,13 +23,11 @@ addons:
   postgresql: "9.1"
 
 before_install:
-  - sudo add-apt-repository ppa:ubuntugis/ppa -y
-  - sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable -y # For postgresql-9.1-postgis-2.1
+  - sudo rm /etc/apt/sources.list.d/ubuntugis-stable-source.list
   - sudo add-apt-repository ppa:smspillaz/cmake-3.0.2 -y
   - sudo add-apt-repository ppa:kedazo/doxygen-updates-precise -y # For doxygen 1.8.8
-  - sudo rm -f /etc/apt/sources.list.d/pgdg-source.list # postgis from pgdg requires different gdal package than the grass package
   - sudo apt-get update -qq
-  - sudo apt-get remove postgresql-9.1-postgis-2.1 # Remove postgis from pgdg, will install postgis from ubuntugis-unstable instead
+  - sudo apt-get install --force-yes libspatialite3/precise libgeos-dev/precise-pgdg libgeos-c1/precise-pgdg libgdal1/precise-pgdg libproj0/precise proj-data/precise proj-bin/precise
   - sudo apt-get install --no-install-recommends
                          bison cmake cmake-data doxygen flex git graphviz
                          grass-dev libexpat1-dev libfcgi-dev libgdal1-dev
