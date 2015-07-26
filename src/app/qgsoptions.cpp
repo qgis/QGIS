@@ -271,9 +271,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   QString proxyExcludedURLs = settings.value( "proxy/proxyExcludedUrls", "" ).toString();
   if ( !proxyExcludedURLs.isEmpty() )
   {
-    QStringList splittedUrls = proxyExcludedURLs.split( "|" );
-    QStringList::const_iterator urlIt = splittedUrls.constBegin();
-    for ( ; urlIt != splittedUrls.constEnd(); ++urlIt )
+    QStringList splitUrls = proxyExcludedURLs.split( "|" );
+    QStringList::const_iterator urlIt = splitUrls.constBegin();
+    for ( ; urlIt != splitUrls.constEnd(); ++urlIt )
     {
       QListWidgetItem* newItem = new QListWidgetItem( mExcludeUrlListWidget );
       newItem->setText( *urlIt );

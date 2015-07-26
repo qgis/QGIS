@@ -937,7 +937,7 @@ class OracleDBConnector(DBConnector):
         return res
 
     def getMViewInfo(self, table):
-        """Find some informations about materialized views"""
+        """Find some information about materialized views"""
         schema, tablename = self.getSchemaTableName(table)
         where = u" AND a.OWNER = {} ".format(
             self.quoteString(schema)) if schema else u""
@@ -959,7 +959,7 @@ class OracleDBConnector(DBConnector):
         return res
 
     def getTableConstraints(self, table):
-        """Find all the contraints for a table."""
+        """Find all the constraints for a table."""
         schema, tablename = self.getSchemaTableName(table)
         schema_where = u" AND c.OWNER={} ".format(
             self.quoteString(schema)) if schema else u""
@@ -1279,7 +1279,7 @@ class OracleDBConnector(DBConnector):
             # Calculate the extent
             extent = self.getTableExtent(view, geoCol)
 
-            # Insert informations into metadata table
+            # Insert information into metadata table
             self.insertMetadata(view, geoCol, extent, srids[0])
 
         return True
@@ -1454,7 +1454,7 @@ class OracleDBConnector(DBConnector):
 
     def updateMetadata(self, table, geom_column, new_geom_column=None,
                        new_table=None, extent=None, srid=None):
-        """update the metadata table with the new informations"""
+        """update the metadata table with the new information"""
 
         schema, tablename = self.getSchemaTableName(table)
         if not (self.getRawTablePrivileges('USER_SDO_GEOM_METADATA',
@@ -1694,7 +1694,7 @@ class OracleDBConnector(DBConnector):
         return getQueryBuilderDictionary()
 
     def getSqlDictionary(self):
-        """Returns the dictionnary for SQL dialog."""
+        """Returns the dictionary for SQL dialog."""
         from .sql_dictionary import getSqlDictionary
         sql_dict = getSqlDictionary()
 

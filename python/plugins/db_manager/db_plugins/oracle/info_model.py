@@ -470,14 +470,14 @@ class ORTableInfo(TableInfo):
                 HtmlSection(
                     QApplication.translate(
                         "DBManagerPlugin",
-                        'Materialized View informations'),
+                        'Materialized View information'),
                     mview_info))
 
         return ret
 
     def getMViewInfo(self):
         """If the table is a materialized view, grab more
-        informations...
+        information...
         """
         ret = []
         tbl = []

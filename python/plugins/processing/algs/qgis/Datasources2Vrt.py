@@ -44,8 +44,8 @@ class Datasources2Vrt(GeoAlgorithm):
     """ This algorithm merge the layers of different data sources in
     a single vrt file
 
-    This algo is expecially useful in case an algo need multiple layers
-    but accept only one vrt in wich the layers are specified
+    This algo is especially useful in case an algo need multiple layers
+    but accept only one vrt in which the layers are specified
     """
 
     # Constants used to refer to parameters and outputs.
@@ -124,7 +124,7 @@ class Datasources2Vrt(GeoAlgorithm):
 
 #######################################################
 # function to do the work
-# fuction so it can be included in other code
+# function so it can be included in other code
 # IT NOT POSSIBILE TO ADD THIS FUNCTION AS Datasources2Vrt
 # CLASS METHOD => SET AS SIMPLE FUNCTION
 #######################################################
@@ -132,7 +132,7 @@ def mergeDataSources2Vrt(data_sources=[],
                           outfile=None,
                           relative=False,
                           schema=False,
-                          progress=None): # progress is pased because of avoid interferences with GeoAlgorithm
+                          progress=None): # progress is passed because of avoid interferences with GeoAlgorithm
     '''Function to do the work of merging datasources in a single vrt format
 
     @param data_sources: Array of path strings

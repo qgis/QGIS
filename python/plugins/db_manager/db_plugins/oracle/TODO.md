@@ -73,7 +73,7 @@
   * Create view button.
   * Spatial Index tab (find if can be activated: no because Oracle use spatial index internally).
   * Can't open query builder.
-  * Modify dictionnary to add math/string/aggregates functions/operators.
+  * Modify dictionary to add math/string/aggregates functions/operators.
   * Can't open column values from query builder.
   * GEOM columns are not retrieved. (Done: don't grab them, just use GEOMETRY string instead to speed columns population)
   * Can't open a query in QGis.
@@ -124,7 +124,7 @@
   * For rows estimation: use a query to scan nb_rows in object !
   * Refresh on the fly data that are not stored in cache (comments/table type/row counts).
   * Bad comparison between metadata extent and calculated extent (was format syntax).
-  * If user can't udpate metadata, dont pull the link for update action.
+  * If user can't udpate metadata, don't pull the link for update action.
   * Can't update metadata extent: find if table is in USER_SDO_GEOM_METADATA.
   * Print QGis Geometry Type in string instead of int.
 
@@ -134,10 +134,10 @@
 
 * Indexes:
   * Add rebuild index action for indexes.
-  * Add more informations: Compression/Valid/Last analyzed/ityp_name.
+  * Add more information: Compression/Valid/Last analyzed/ityp_name.
 
 * Refresh:
-  * Make getTables and getVectorTables functions retrieve less informations and manage them on the fly.
+  * Make getTables and getVectorTables functions retrieve less information and manage them on the fly.
   * Refreshing a schema refresh only the schema, not the whole connection.	
   * Still problems with refreshing (QPyNullVariant for detectedSrid).
   * Mark views as views.
@@ -156,7 +156,7 @@
   * retrieve definition.
   * unitary comments retrieving.
   * Primary key mask.
-  * Refreshing informations.
+  * Refreshing information.
   * Action to refresh the mview.
   * View/MView definition is not interpreted as Html anymore.
 
