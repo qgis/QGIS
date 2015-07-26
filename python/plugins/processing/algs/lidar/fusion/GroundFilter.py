@@ -41,8 +41,8 @@ class GroundFilter(FusionAlgorithm):
     CELLSIZE = 'CELLSIZE'
 
     def defineCharacteristics(self):
-        self.name = 'Ground Filter'
-        self.group = 'Points'
+        self.name, self.i18n_name = self.trAlgorithm('Ground Filter')
+        self.group, self.i18n_group = self.trAlgorithm('Points')
         self.addParameter(ParameterFile(
             self.INPUT, self.tr('Input LAS layer')))
         self.addParameter(ParameterNumber(self.CELLSIZE,

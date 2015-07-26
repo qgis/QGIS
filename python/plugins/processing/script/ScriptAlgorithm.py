@@ -111,8 +111,8 @@ class ScriptAlgorithm(GeoAlgorithm):
     def defineCharacteristicsFromScript(self):
         lines = self.script.split('\n')
         self.silentOutputs = []
-        self.name = self.tr('[Unnamed algorithm]', 'ScriptAlgorithm')
-        self.group = self.tr('User scripts', 'ScriptAlgorithm')
+        self.name, self.i18n_name = self.trAlgorithm('[Unnamed algorithm]', 'ScriptAlgorithm')
+        self.group, self.i18n_group = self.trAlgorithm('User scripts', 'ScriptAlgorithm')
         for line in lines:
             if line.startswith('##'):
                 try:
@@ -140,10 +140,10 @@ class ScriptAlgorithm(GeoAlgorithm):
         tokens = line.split('=', 1)
         desc = self.createDescriptiveName(tokens[0])
         if tokens[1].lower().strip() == 'group':
-            self.group = tokens[0]
+            self.group = self.i18n_group = tokens[0]
             return
         if tokens[1].lower().strip() == 'name':
-            self.name = tokens[0]
+            self.name = self.i18n_name = tokens[0]
             return
         if tokens[1].lower().strip() == 'raster':
             param = ParameterRaster(tokens[0], desc, False)

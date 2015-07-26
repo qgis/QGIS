@@ -1,5 +1,5 @@
 v.lidar.growing
-v.lidar.growing - Building contour determination and Region Growing algorithm for determining the building inside
+Building contour determination and Region Growing algorithm for determining the building inside
 Vector (v.*)
 ParameterVector|input|Input vector (v.lidar.edgedetection output)|-1|False
 ParameterVector|first|First pulse vector layer|-1|False

@@ -1,5 +1,5 @@
 r.recode
-r.recode - Recodes categorical raster maps.
+Recodes categorical raster maps.
 Raster (r.*)
 ParameterRaster|input|Input layer|False
 ParameterFile|rules|File containing recode rules|False

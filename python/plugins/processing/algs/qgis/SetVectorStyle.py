@@ -42,8 +42,8 @@ class SetVectorStyle(GeoAlgorithm):
 
     def defineCharacteristics(self):
         #self.allowOnlyOpenedLayers = True
-        self.name = 'Set style for vector layer'
-        self.group = 'Vector general tools'
+        self.name, self.i18n_name = self.trAlgorithm('Set style for vector layer')
+        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
         self.addParameter(ParameterVector(self.INPUT,
             self.tr('Vector layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterFile(self.STYLE,

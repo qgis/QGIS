@@ -39,8 +39,8 @@ class flightlinesToSingleCHMpitFree(LAStoolsAlgorithm):
     BEAM_WIDTH = "BEAM_WIDTH"
 
     def defineCharacteristics(self):
-        self.name = "flightlinesToSingleCHMpitFree"
-        self.group = "LAStools Pipelines"
+        self.name, self.i18n_name = self.trAlgorithm('flightlinesToSingleCHMpitFree')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Pipelines')
         self.addParametersPointInputFolderGUI()
         self.addParameter(ParameterNumber(flightlinesToSingleCHMpitFree.TILE_SIZE,
             self.tr("tile size (side length of square tile)"),

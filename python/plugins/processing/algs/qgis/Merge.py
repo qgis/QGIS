@@ -38,8 +38,8 @@ class Merge(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Merge vector layers'
-        self.group = 'Vector general tools'
+        self.name, self.i18n_name = self.trAlgorithm('Merge vector layers')
+        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
 
         self.addParameter(ParameterVector(self.LAYER1,
             self.tr('Input layer 1'), [ParameterVector.VECTOR_TYPE_ANY]))

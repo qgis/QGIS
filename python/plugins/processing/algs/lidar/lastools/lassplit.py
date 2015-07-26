@@ -38,8 +38,8 @@ class lassplit(LAStoolsAlgorithm):
     INTERVAL = "INTERVAL"
 
     def defineCharacteristics(self):
-        self.name = "lassplit"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('lassplit')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterNumber(lassplit.DIGITS,

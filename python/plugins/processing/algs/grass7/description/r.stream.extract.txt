@@ -1,5 +1,5 @@
 r.stream.extract
-r.stream.extract - Stream network extraction
+Stream network extraction
 Raster (r.*)
 ParameterRaster|elevation|Input map: elevation map|False
 ParameterRaster|accumulation|Input map: accumulation map|True

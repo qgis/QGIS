@@ -37,8 +37,8 @@ class lasoverage(LAStoolsAlgorithm):
     OPERATIONS= ["classify as overlap", "flag as withheld", "remove from output"]
 
     def defineCharacteristics(self):
-        self.name = "lasoverage"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('lasoverage')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParametersHorizontalFeetGUI()

@@ -1,5 +1,5 @@
 v.class
-v.class - Classifies attribute data, e.g. for thematic mapping.
+Classifies attribute data, e.g. for thematic mapping.
 Vector (v.*)
 ParameterVector|map|Input vector layer|-1|False
 ParameterTableField|column|Column name or expression|map|-1|False

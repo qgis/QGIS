@@ -41,8 +41,8 @@ class Catalog(FusionAlgorithm):
     ADVANCED_MODIFIERS = 'ADVANCED_MODIFIERS'
 
     def defineCharacteristics(self):
-        self.name = 'Catalog'
-        self.group = 'Points'
+        self.name, self.i18n_name = self.trAlgorithm('Catalog')
+        self.group, self.i18n_group = self.trAlgorithm('Points')
         self.addParameter(ParameterFile(
             self.INPUT, self.tr('Input LAS layer')))
         self.addOutput(OutputFile(self.OUTPUT, self.tr('Output files')))

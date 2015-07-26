@@ -78,8 +78,8 @@ class PointsLayerFromTable(GeoAlgorithm):
         del writer
 
     def defineCharacteristics(self):
-        self.name = 'Points layer from table'
-        self.group = 'Vector creation tools'
+        self.name, self.i18n_name = self.trAlgorithm('Points layer from table')
+        self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
         self.addParameter(ParameterTable(self.INPUT,
             self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.XFIELD,

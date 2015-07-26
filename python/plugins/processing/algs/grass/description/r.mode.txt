@@ -1,5 +1,5 @@
 r.mode
-r.mode - Finds the mode of values in a cover layer within areas assigned the same category value in a user-specified base layer.
+Finds the mode of values in a cover layer within areas assigned the same category value in a user-specified base layer.
 Raster (r.*)
 ParameterRaster|base|Base layer to be reclassified|False
 ParameterRaster|cover|Categories layer|False

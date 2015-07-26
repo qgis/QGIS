@@ -46,8 +46,8 @@ class las2lasPro_project(LAStoolsAlgorithm):
     TARGET_SP = "TARGET_SP"
 
     def defineCharacteristics(self):
-        self.name = "las2lasPro_project"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('las2lasPro_project')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParameter(ParameterSelection(las2lasPro_project.SOURCE_PROJECTION,
             self.tr("source projection"), las2lasPro_project.PROJECTIONS, 0))

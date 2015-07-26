@@ -37,8 +37,8 @@ class las2las_transform(LAStoolsAlgorithm):
     OPERATIONARG = "OPERATIONARG"
 
     def defineCharacteristics(self):
-        self.name = "las2las_transform"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('las2las_transform')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParametersTransform1CoordinateGUI()

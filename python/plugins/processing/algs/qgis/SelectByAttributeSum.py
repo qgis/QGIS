@@ -43,8 +43,8 @@ class SelectByAttributeSum(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Select by attribute sum'
-        self.group = 'Vector selection tools'
+        self.name, self.i18n_name = self.trAlgorithm('Select by attribute sum')
+        self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
 
         self.addParameter(ParameterVector(self.INPUT,
             self.tr('Input Layer'), [ParameterVector.VECTOR_TYPE_ANY]))

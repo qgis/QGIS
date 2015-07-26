@@ -41,8 +41,8 @@ class lasthinPro(LAStoolsAlgorithm):
     CLASSIFY_AS_CLASS = "CLASSIFY_AS_CLASS"
 
     def defineCharacteristics(self):
-        self.name = "lasthinPro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('lasthinPro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParameter(ParameterNumber(lasthinPro.THIN_STEP,
             self.tr("size of grid used for thinning"), 0, None, 1.0))

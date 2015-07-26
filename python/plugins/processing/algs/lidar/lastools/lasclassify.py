@@ -34,8 +34,8 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 class lasclassify(LAStoolsAlgorithm):
 
     def defineCharacteristics(self):
-        self.name = "lasclassify"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('lasclassify')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParametersHorizontalAndVerticalFeetGUI()

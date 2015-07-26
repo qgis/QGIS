@@ -1,5 +1,5 @@
 r.describe
-r.describe - Prints terse list of category values found in a raster layer.
+Prints terse list of category values found in a raster layer.
 Raster (r.*)
 ParameterRaster|map|input raster layer|False
 ParameterNumber|nv|No-data cell value|None|None|0

@@ -81,10 +81,7 @@ def getClassification(alg):
             QCoreApplication.translate('AlgorithmClassification', subgroup))
 
 def getDisplayNameEn(alg):
-    return displayNames.get(alg.commandLineName().lower(), alg.name)
+    return alg.name
 
 def getDisplayName(alg):
-    return QCoreApplication.translate(alg.__class__.__name__, getDisplayNameEn(alg))
-
-def getDisplayGroup(group):
-    return QCoreApplication.translate('AlgorithmClassification', group)
+    return alg.i18n_name if alg.i18n_name else "[" + alg.name + "]"

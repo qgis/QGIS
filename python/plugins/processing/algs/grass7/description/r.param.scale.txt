@@ -1,5 +1,5 @@
 r.param.scale
-r.param.scale - Extracts terrain parameters from a DEM.
+Extracts terrain parameters from a DEM.
 Raster (r.*)
 ParameterRaster|input|Name of input raster map|False
 ParameterNumber|slope_tolerance|Slope tolerance that defines a 'flat' surface (degrees)|None|None|1.0

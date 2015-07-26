@@ -39,8 +39,8 @@ class las2shp(LAStoolsAlgorithm):
     OUTPUT = "OUTPUT"
 
     def defineCharacteristics(self):
-        self.name = "las2shp"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('las2shp')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterBoolean(las2shp.POINT_Z,

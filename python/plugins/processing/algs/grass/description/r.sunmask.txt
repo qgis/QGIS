@@ -1,5 +1,5 @@
 r.sunmask
-r.sunmask - Calculates cast shadow areas from sun position and elevation raster map.
+Calculates cast shadow areas from sun position and elevation raster map.
 Raster (r.*)
 ParameterRaster|elev|elev|False
 ParameterNumber|altitude|altitude|0|90|0.0

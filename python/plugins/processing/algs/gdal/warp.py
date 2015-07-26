@@ -60,8 +60,8 @@ class warp(GdalAlgorithm):
     TFW = 'TFW'
 
     def defineCharacteristics(self):
-        self.name = 'Warp (reproject)'
-        self.group = '[GDAL] Projections'
+        self.name, self.i18n_name = self.trAlgorithm('Warp (reproject)')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Projections')
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterCrs(self.SOURCE_SRS,
             self.tr('Source SRS'), ''))

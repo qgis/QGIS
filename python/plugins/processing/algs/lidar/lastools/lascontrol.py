@@ -41,8 +41,8 @@ class lascontrol(LAStoolsAlgorithm):
     CLASSIFY_AS = "CLASSIFY_AS"
 
     def defineCharacteristics(self):
-        self.name = "lascontrol"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('lascontrol')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterVector(lascontrol.POLYGON,

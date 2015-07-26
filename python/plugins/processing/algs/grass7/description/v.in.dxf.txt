@@ -1,5 +1,5 @@
 v.in.dxf
-v.in.dxf - Converts files in DXF format to GRASS vector map format.
+Converts files in DXF format to GRASS vector map format.
 Vector (v.*)
 ParameterFile|input|Name of input DXF file|False
 ParameterString|layers|List of layers to import|

@@ -51,9 +51,9 @@ class PeukerDouglas(GeoAlgorithm):
         return QIcon(os.path.dirname(__file__) + '/../../images/taudem.png')
 
     def defineCharacteristics(self):
-        self.name = 'Peuker Douglas'
+        self.name, self.i18n_name = self.trAlgorithm('Peuker Douglas')
         self.cmdName = 'peukerdouglas'
-        self.group = 'Stream Network Analysis tools'
+        self.group, self.i18n_group = self.trAlgorithm('Stream Network Analysis tools')
 
         self.addParameter(ParameterRaster(self.ELEVATION_GRID,
             self.tr('Elevation Grid'), False))

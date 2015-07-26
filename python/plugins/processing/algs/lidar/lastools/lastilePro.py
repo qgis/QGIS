@@ -39,8 +39,8 @@ class lastilePro(LAStoolsAlgorithm):
     BASE_NAME = "BASE_NAME"
 
     def defineCharacteristics(self):
-        self.name = "lastilePro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('lastilePro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersFilesAreFlightlinesGUI()
         self.addParametersApplyFileSourceIdGUI()

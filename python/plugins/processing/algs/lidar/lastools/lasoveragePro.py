@@ -37,8 +37,8 @@ class lasoveragePro(LAStoolsAlgorithm):
     OPERATIONS= ["classify as overlap", "flag as withheld", "remove from output"]
 
     def defineCharacteristics(self):
-        self.name = "lasoveragePro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('lasoveragePro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersHorizontalFeetGUI()
         self.addParametersFilesAreFlightlinesGUI()

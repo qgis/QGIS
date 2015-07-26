@@ -1,5 +1,5 @@
 r.info
-r.info - Output basic information about a raster layer.
+Output basic information about a raster layer.
 Raster (r.*)
 ParameterRaster|map|Raster layer|False
 ParameterBoolean|-r|Print range only|False

@@ -1,5 +1,5 @@
 r.sun
-r.sun - Solar irradiance and irradiation model.
+Solar irradiance and irradiation model.
 Raster (r.*)
 ParameterRaster|elevation|Elevation layer [meters]|False
 ParameterRaster|aspect|Aspect layer [decimal degrees]|False

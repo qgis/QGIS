@@ -73,13 +73,16 @@ class SagaAlgorithm212(GeoAlgorithm):
         if '|' in self.name:
             tokens = self.name.split('|')
             self.name = tokens[0]
+            self.i18n_name = QCoreApplication.translate("SAGAAlgorithm", unicode(self.name))
             self.cmdname = tokens[1]
         else:
             self.cmdname = self.name
+            self.i18n_name = QCoreApplication.translate("SAGAAlgorithm", unicode(self.name))
             self.name = self.name[0].upper() + self.name[1:].lower()
         line = lines.readline().strip('\n').strip()
         self.undecoratedGroup = line
         self.group = SagaGroupNameDecorator.getDecoratedName(self.undecoratedGroup)
+        self.i18n_name = QCoreApplication.translate("SAGAAlgorithm", self.group)
         line = lines.readline().strip('\n').strip()
         while line != '':
             if line.startswith('Hardcoded'):

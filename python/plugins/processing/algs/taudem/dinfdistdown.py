@@ -68,9 +68,9 @@ class DinfDistDown(GeoAlgorithm):
         return QIcon(os.path.dirname(__file__) + '/../../images/taudem.png')
 
     def defineCharacteristics(self):
-        self.name = 'D-Infinity Distance Down'
+        self.name, self.i18n_name = self.trAlgorithm('D-Infinity Distance Down')
         self.cmdName = 'dinfdistdown'
-        self.group = 'Specialized Grid Analysis tools'
+        self.group, self.i18n_group = self.trAlgorithm('Specialized Grid Analysis tools')
 
         self.addParameter(ParameterRaster(self.DINF_FLOW_DIR_GRID,
             self.tr('D-Infinity Flow Direction Grid'), False))

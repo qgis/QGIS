@@ -1,5 +1,5 @@
 r.gwflow
-r.gwflow - Numerical calculation program for transient, confined and unconfined groundwater flow in two dimensions.
+Numerical calculation program for transient, confined and unconfined groundwater flow in two dimensions.
 Raster (r.*)
 ParameterString|phead|The initial piezometric head in [m]|
 ParameterString|status|Boundary condition status, 0-inactive, 1-active, 2-dirichlet|

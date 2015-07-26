@@ -1,5 +1,5 @@
 r.stats
-r.stats - Generates area statistics for raster layers.
+Generates area statistics for raster layers.
 Raster (r.*)
 ParameterMultipleInput|input|Name of input raster map|3.0|False
 ParameterString|fs|Output field separator|space

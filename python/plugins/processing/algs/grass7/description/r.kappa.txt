@@ -1,5 +1,5 @@
 r.kappa
-r.kappa - Calculate error matrix and kappa parameter for accuracy assessment of classification result.
+Calculate error matrix and kappa parameter for accuracy assessment of classification result.
 Raster (r.*)
 ParameterRaster|classification|Raster layer containing classification result|False
 ParameterRaster|reference|Raster layer containing reference classes|False

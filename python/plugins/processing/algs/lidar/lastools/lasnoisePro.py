@@ -40,8 +40,8 @@ class lasnoisePro(LAStoolsAlgorithm):
     CLASSIFY_AS = "CLASSIFY_AS"
 
     def defineCharacteristics(self):
-        self.name = "lasnoisePro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('lasnoisePro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParameter(ParameterNumber(lasnoisePro.ISOLATED,
             self.tr("isolated if surrounding cells have only"), 0, None, 5))

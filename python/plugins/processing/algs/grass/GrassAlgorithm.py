@@ -31,6 +31,7 @@ import uuid
 import importlib
 import re
 
+from PyQt4.QtCore import QCoreApplication
 from PyQt4.QtGui import QIcon
 
 from qgis.core import QgsRasterLayer
@@ -106,8 +107,13 @@ class GrassAlgorithm(GeoAlgorithm):
         self.grassName = line
         line = lines.readline().strip('\n').strip()
         self.name = line
+        self.i18n_name = QCoreApplication.translate("GrassAlgorithm", line)
+        if not " - " in self.name:
+            self.name = self.grassName + " - " + self.name
+            self.i18n_name = self.grassName + " - " + self.i18n_name
         line = lines.readline().strip('\n').strip()
         self.group = line
+        self.i18n_group = QCoreApplication.translate("GrassAlgorithm", line)
         hasRasterOutput = False
         hasVectorInput = False
         vectorOutputs = 0
@@ -121,7 +127,7 @@ class GrassAlgorithm(GeoAlgorithm):
                     if isinstance(parameter, ParameterVector):
                         hasVectorInput = True
                     if isinstance(parameter, ParameterMultipleInput) \
-                                   and parameter.datatype < 3:
+                       and parameter.datatype < 3:
                         hasVectorInput = True
                 elif line.startswith('*Parameter'):
                     param = getParameterFromString(line[1:])
@@ -139,13 +145,16 @@ class GrassAlgorithm(GeoAlgorithm):
                                                   " (raw output)", "txt"))
                 line = lines.readline().strip('\n').strip()
             except Exception, e:
-                ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                ProcessingLog.addToLog(
+                    ProcessingLog.LOG_ERROR,
                     self.tr('Could not open GRASS algorithm: %s.\n%s' % (self.descriptionFile, line)))
                 raise e
         lines.close()
 
-        self.addParameter(ParameterExtent(self.GRASS_REGION_EXTENT_PARAMETER,
-            self.tr('GRASS region extent')))
+        self.addParameter(ParameterExtent(
+            self.GRASS_REGION_EXTENT_PARAMETER,
+            self.tr('GRASS region extent'))
+        )
         if hasRasterOutput:
             self.addParameter(ParameterNumber(
                 self.GRASS_REGION_CELLSIZE_PARAMETER,
@@ -189,7 +198,8 @@ class GrassAlgorithm(GeoAlgorithm):
                             cellsize = max(cellsize, (
                                 layer.extent().xMaximum()
                                 - layer.extent().xMinimum())
-                                / layer.width())
+                                / layer.width()
+                            )
 
         if cellsize == 0:
             cellsize = 100

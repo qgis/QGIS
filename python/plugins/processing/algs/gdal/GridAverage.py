@@ -54,8 +54,8 @@ class GridAverage(GdalAlgorithm):
         return "gdalogr:gridaverage"
 
     def defineCharacteristics(self):
-        self.name = 'Grid (Moving average)'
-        self.group = '[GDAL] Analysis'
+        self.name, self.i18n_name = self.trAlgorithm('Grid (Moving average)')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Analysis')
         self.addParameter(ParameterVector(self.INPUT,
             self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POINT]))
         self.addParameter(ParameterTableField(self.Z_FIELD,

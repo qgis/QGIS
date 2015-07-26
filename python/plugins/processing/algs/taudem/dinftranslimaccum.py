@@ -59,9 +59,9 @@ class DinfTransLimAccum(GeoAlgorithm):
         return QIcon(os.path.dirname(__file__) + '/../../images/taudem.png')
 
     def defineCharacteristics(self):
-        self.name = 'D-Infinity Transport Limited Accumulation'
+        self.name, self.i18n_name = self.trAlgorithm('D-Infinity Transport Limited Accumulation')
         self.cmdName = 'dinftranslimaccum'
-        self.group = 'Specialized Grid Analysis tools'
+        self.group, self.i18n_group = self.trAlgorithm('Specialized Grid Analysis tools')
 
         self.addParameter(ParameterRaster(self.DINF_FLOW_DIR_GRID,
             self.tr('D-Infinity Flow Direction Grid'), False))

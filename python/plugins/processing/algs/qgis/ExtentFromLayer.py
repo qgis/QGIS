@@ -42,8 +42,8 @@ class ExtentFromLayer(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Polygon from layer extent'
-        self.group = 'Vector general tools'
+        self.name, self.i18n_name = self.trAlgorithm('Polygon from layer extent')
+        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
             self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))

@@ -46,8 +46,8 @@ class PolarPlot(GeoAlgorithm):
     VALUE_FIELD = 'VALUE_FIELD'
 
     def defineCharacteristics(self):
-        self.name = 'Polar plot'
-        self.group = 'Graphics'
+        self.name, self.i18n_name = self.trAlgorithm('Polar plot')
+        self.group, self.i18n_group = self.trAlgorithm('Graphics')
 
         self.addParameter(ParameterTable(self.INPUT,
             self.tr('Input table')))

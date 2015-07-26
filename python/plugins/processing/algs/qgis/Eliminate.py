@@ -55,8 +55,8 @@ class Eliminate(GeoAlgorithm):
     MODE_BOUNDARY = 2
 
     def defineCharacteristics(self):
-        self.name = 'Eliminate sliver polygons'
-        self.group = 'Vector geometry tools'
+        self.name, self.i18n_name = self.trAlgorithm('Eliminate sliver polygons')
+        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
         self.addParameter(ParameterVector(self.INPUT,
             self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POLYGON]))
         self.addParameter(ParameterBoolean(self.KEEPSELECTION,

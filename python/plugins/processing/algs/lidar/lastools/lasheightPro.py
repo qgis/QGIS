@@ -39,8 +39,8 @@ class lasheightPro(LAStoolsAlgorithm):
     DROP_BELOW_HEIGHT = "DROP_BELOW_HEIGHT"
 
     def defineCharacteristics(self):
-        self.name = "lasheightPro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('lasheightPro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParameter(ParameterBoolean(lasheightPro.REPLACE_Z,
             self.tr("replace z"), False))

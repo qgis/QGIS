@@ -41,8 +41,8 @@ class lasthin(LAStoolsAlgorithm):
     CLASSIFY_AS_CLASS = "CLASSIFY_AS_CLASS"
 
     def defineCharacteristics(self):
-        self.name = "lasthin"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('lasthin')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterNumber(lasthin.THIN_STEP,

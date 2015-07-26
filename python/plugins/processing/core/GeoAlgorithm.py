@@ -57,8 +57,8 @@ class GeoAlgorithm:
         self.outputs = list()
 
         # Name and group for normal toolbox display
-        self.name = ''
-        self.group = ''
+        self.name, self.i18n_name = '', ''
+        self.group, self.i18n_group = '', ''
 
         # The crs taken from input layers (if possible), and used when
         # loading output layers
@@ -576,3 +576,8 @@ class GeoAlgorithm:
         if context == '':
             context = self.__class__.__name__
         return QCoreApplication.translate(context, string)
+
+    def trAlgorithm(self, string, context=''):
+        if context == '':
+            context = self.__class__.__name__
+        return string, QCoreApplication.translate(context, string)

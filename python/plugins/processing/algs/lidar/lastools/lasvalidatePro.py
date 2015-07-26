@@ -36,8 +36,8 @@ class lasvalidatePro(LAStoolsAlgorithm):
     OUTPUT = "OUTPUT"
 
     def defineCharacteristics(self):
-        self.name = "lasvalidatePro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('lasvalidatePro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParameter(ParameterBoolean(lasvalidatePro.ONE_REPORT_PER_FILE,
             self.tr("generate one '*_LVS.xml' report per file"), False))

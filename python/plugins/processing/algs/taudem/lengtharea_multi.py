@@ -54,9 +54,9 @@ class LengthAreaMulti(GeoAlgorithm):
         return QIcon(os.path.dirname(__file__) + '/../../images/taudem.png')
 
     def defineCharacteristics(self):
-        self.name = 'Length Area Stream Source (multifile)'
+        self.name, self.i18n_name = self.trAlgorithm('Length Area Stream Source (multifile)')
         self.cmdName = 'lengtharea'
-        self.group = 'Stream Network Analysis tools'
+        self.group, self.i18n_group = self.trAlgorithm('Stream Network Analysis tools')
 
         self.addParameter(ParameterFile(self.LENGTH_GRID,
             self.tr('Length Grid'), True, False))

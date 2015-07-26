@@ -49,8 +49,8 @@ class RegularPoints(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Regular points'
-        self.group = 'Vector creation tools'
+        self.name, self.i18n_name = self.trAlgorithm('Regular points')
+        self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
 
         self.addParameter(ParameterExtent(self.EXTENT,
             self.tr('Input extent')))

@@ -1,5 +1,5 @@
 r.watershed
-r.watershed - Watershed basin analysis program.
+Watershed basin analysis program.
 Raster (r.*)
 ParameterRaster|elevation|Elevation|False
 ParameterRaster|depression|Locations of real depressions|True

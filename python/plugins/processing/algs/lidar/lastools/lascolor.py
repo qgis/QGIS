@@ -38,8 +38,8 @@ class lascolor(LAStoolsAlgorithm):
     ORTHO = "ORTHO"
 
     def defineCharacteristics(self):
-        self.name = "lascolor"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('lascolor')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterRaster(lascolor.ORTHO,

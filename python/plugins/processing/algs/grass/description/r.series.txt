@@ -1,5 +1,5 @@
 r.series
-r.series - Makes each output cell value a function of the values assigned to the corresponding cells in the input raster layers.
+Makes each output cell value a function of the values assigned to the corresponding cells in the input raster layers.
 Raster (r.*)
 ParameterMultipleInput|input|Input raster layer(s)|3.0|False
 ParameterBoolean|-n|Propagate NULLs|False

@@ -31,6 +31,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import re
+from PyQt4.QtCore import QCoreApplication
 from PyQt4.QtGui import QIcon
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterMultipleInput
@@ -135,7 +136,9 @@ class OTBAlgorithm(GeoAlgorithm):
         self.appkey = dom_model.find('key').text
         self.cliName = dom_model.find('exec').text
         self.name = dom_model.find('longname').text
+	self.i18n_name = QCoreApplication.translate( "OTBAlgorithm", self.name )
         self.group = dom_model.find('group').text
+	self.i18n_group = QCoreApplication.translate( "OTBAlgorithm", self.group )
 
         rebu = None
         the_result = None

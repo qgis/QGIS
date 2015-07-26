@@ -38,8 +38,8 @@ class lasprecision(LAStoolsAlgorithm):
     OUTPUT = "OUTPUT"
 
     def defineCharacteristics(self):
-        self.name = "lasprecision"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('lasprecision')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addOutput(OutputFile(lasprecision.OUTPUT, self.tr("Output ASCII file")))

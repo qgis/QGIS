@@ -51,8 +51,8 @@ class txt2las(LAStoolsAlgorithm):
     SP = "SP"
 
     def defineCharacteristics(self):
-        self.name = "txt2las"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('txt2las')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParameter(ParameterFile(txt2las.INPUT,
             self.tr("Input ASCII file")))

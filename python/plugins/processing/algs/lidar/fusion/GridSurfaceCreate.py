@@ -55,8 +55,8 @@ class GridSurfaceCreate(FusionAlgorithm):
     ADVANCED_MODIFIERS = 'ADVANCED_MODIFIERS'
 
     def defineCharacteristics(self):
-        self.name = 'Grid Surface Create'
-        self.group = 'Surface'
+        self.name, self.i18n_name = self.trAlgorithm('Grid Surface Create')
+        self.group, self.i18n_group = self.trAlgorithm('Surface')
         self.addParameter(ParameterFile(
             self.INPUT, self.tr('Input LAS layer')))
         self.addParameter(ParameterNumber(

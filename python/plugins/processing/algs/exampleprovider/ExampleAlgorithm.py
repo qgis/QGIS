@@ -60,10 +60,10 @@ class ExampleAlgorithm(GeoAlgorithm):
         """
 
         # The name that the user will see in the toolbox
-        self.name = 'Create copy of layer'
+        self.name, self.i18n_name = self.trAlgorithm('Create copy of layer')
 
         # The branch of the toolbox under which the algorithm will appear
-        self.group = 'Algorithms for vector layers'
+        self.group, self.i18n_group = self.trAlgorithm('Algorithms for vector layers')
 
         # We add the input vector layer. It can have any kind of geometry
         # It is a mandatory (not optional) one, hence the False argument

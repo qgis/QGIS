@@ -47,8 +47,8 @@ class RandomExtract(GeoAlgorithm):
                'Percentage of selected features']
 
     def defineCharacteristics(self):
-        self.name = 'Random extract'
-        self.group = 'Vector selection tools'
+        self.name, self.i18n_name = self.trAlgorithm('Random extract')
+        self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
 
         self.addParameter(ParameterVector(self.INPUT,
             self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))

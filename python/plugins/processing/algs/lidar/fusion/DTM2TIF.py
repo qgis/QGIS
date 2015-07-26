@@ -40,8 +40,8 @@ class DTM2TIF(FusionAlgorithm):
 
 
     def defineCharacteristics(self):
-        self.name = "DTM to TIF"
-        self.group = "Conversion"
+        self.name, self.i18n_name = self.trAlgorithm('DTM to TIF')
+        self.group, self.i18n_group = self.trAlgorithm('Conversion')
         self.addParameter(ParameterFile(
             self.INPUT, self.tr("Input .dtm layer")))
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output file name')))

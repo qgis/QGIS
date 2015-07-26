@@ -119,8 +119,8 @@ class Dissolve(GeoAlgorithm):
         del writer
 
     def defineCharacteristics(self):
-        self.name = 'Dissolve'
-        self.group = 'Vector geometry tools'
+        self.name, self.i18n_name = self.trAlgorithm('Dissolve')
+        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
         self.addParameter(ParameterVector(Dissolve.INPUT,
             self.tr('Input layer'),
             [ParameterVector.VECTOR_TYPE_POLYGON, ParameterVector.VECTOR_TYPE_LINE]))

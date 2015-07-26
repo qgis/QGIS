@@ -1,5 +1,5 @@
 r.cost
-r.cost - Creates a raster layer of cumulative cost of moving across a raster layer whose cell values represent cost.
+Creates a raster layer of cumulative cost of moving across a raster layer whose cell values represent cost.
 Raster (r.*)
 ParameterRaster|input|Unit cost layer|False
 ParameterVector|start_points|Start points|0|False

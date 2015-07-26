@@ -47,8 +47,8 @@ class GeometryConvert(GeoAlgorithm):
              ]
 
     def defineCharacteristics(self):
-        self.name = 'Convert geometry type'
-        self.group = 'Vector geometry tools'
+        self.name, self.i18n_name = self.trAlgorithm('Convert geometry type')
+        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT,
             self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
