@@ -159,6 +159,9 @@ class QgisInterface : QObject
     /** Return a pointer to the map canvas */
     virtual QgsMapCanvas * mapCanvas() = 0;
 
+    /** Returns a pointer to the layer tree canvas bridge */
+    virtual QgsLayerTreeMapCanvasBridge* layerTreeCanvasBridge() = 0;
+
     /** Return a pointer to the main window (instance of QgisApp in case of QGIS) */
     virtual QWidget * mainWindow() = 0;
 
