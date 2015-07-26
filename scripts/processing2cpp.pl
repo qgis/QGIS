@@ -94,6 +94,7 @@ foreach my $k (keys %strings) {
 	foreach my $v (keys %{ $strings{$k} } ) {
 		$v =~ s/\\/\\\\/g;
 		$v =~ s/"/\\"/g;
+		$v =~ s/\n/\\n/g;
 
 		print F "translate(\"$k\", \"$v\");\n";
 	}
