@@ -30,7 +30,6 @@
 #include "qgsfeatureiterator.h"
 #include "qgseditorwidgetconfig.h"
 #include "qgsfield.h"
-#include "qgspointv2.h"
 #include "qgssnapper.h"
 #include "qgsrelation.h"
 #include "qgsvectorsimplifymethod.h"
@@ -61,6 +60,7 @@ class QgsSymbolV2;
 class QgsVectorDataProvider;
 class QgsVectorLayerEditBuffer;
 class QgsVectorLayerJoinBuffer;
+class QgsPointV2;
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;

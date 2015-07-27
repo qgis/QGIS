@@ -707,6 +707,7 @@ SET(QGIS_CORE_HDRS
   geometry/qgsgeometry.h
   geometry/qgsabstractgeometryv2.h
   geometry/qgswkbtypes.h
+  geometry/qgspointv2.h
 )
 
 IF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)

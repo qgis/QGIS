@@ -18,6 +18,7 @@
 #include "qgsgeometrycache.h"
 #include "qgsvectorlayereditbuffer.h"
 #include "qgslogger.h"
+#include "qgspointv2.h"
 
 #include <limits>
 
