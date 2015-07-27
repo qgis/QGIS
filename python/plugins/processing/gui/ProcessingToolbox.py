@@ -59,7 +59,7 @@ class ProcessingToolbox(BASE, WIDGET):
 
         self.modeComboBox.clear()
         self.modeComboBox.addItems([self.tr('Simplified interface'),
-                                   self.tr('Advanced interface']))
+                                   self.tr('Advanced interface')])
         settings = QSettings()
         if not settings.contains(self.USE_CATEGORIES):
             settings.setValue(self.USE_CATEGORIES, True)
