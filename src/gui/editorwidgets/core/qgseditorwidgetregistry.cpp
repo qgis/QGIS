@@ -100,7 +100,7 @@ QgsEditorWidgetWrapper* QgsEditorWidgetRegistry::create( const QString& widgetId
       if ( !ww->valid() )
       {
         delete ww;
-        QString wid = findSuitableWrapper( editor );
+        QString wid = findSuitableWrapper( editor, "TextEdit" );
         ww = mWidgetFactories[wid]->create( vl, fieldIdx, editor, parent );
         ww->setConfig( config );
         ww->setContext( context );
@@ -186,7 +186,7 @@ bool QgsEditorWidgetRegistry::registerWidget( const QString& widgetId, QgsEditor
     {
       if ( it.value() > mFactoriesByType[it.key()].first )
       {
-        mFactoriesByType[it.key()] = qMakePair( it.value(), widgetFactory );
+        mFactoriesByType[it.key()] = qMakePair( it.value(), widgetId );
       }
     }
 
@@ -343,9 +343,9 @@ void QgsEditorWidgetRegistry::writeSymbology( QDomElement& element, QDomDocument
   writeMapLayer( vl, element, doc );
 }
 
-QString QgsEditorWidgetRegistry::findSuitableWrapper( QWidget* editor )
+QString QgsEditorWidgetRegistry::findSuitableWrapper( QWidget* editor, const QString& defaultWidget )
 {
-  QMap<const char*, QPair<int, QgsEditorWidgetFactory*> >::ConstIterator it;
+  QMap<const char*, QPair<int, QString> >::ConstIterator it;
 
   QString widgetid;
   int weight = 0;
@@ -356,7 +356,7 @@ QString QgsEditorWidgetRegistry::findSuitableWrapper( QWidget* editor )
     if ( editor->staticMetaObject.className() == it.key() )
     {
       // if it's a perfect match: return it directly
-      return it.value().second->name();
+      return it.value().second;
     }
     else if ( editor->inherits( it.key() ) )
     {
@@ -364,10 +364,12 @@ QString QgsEditorWidgetRegistry::findSuitableWrapper( QWidget* editor )
       if ( it.value().first > weight )
       {
         weight = it.value().first;
-        widgetid = it.value().second->name();
+        widgetid = it.value().second;
       }
     }
   }
 
+  if ( widgetid.isNull() )
+    widgetid = defaultWidget;
   return widgetid;
 }

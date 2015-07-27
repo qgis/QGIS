@@ -55,3 +55,11 @@ void QgsCheckboxWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config,
   configElement.setAttribute( "CheckedState", config.value( "CheckedState", "1" ).toString() );
   configElement.setAttribute( "UncheckedState", config.value( "UncheckedState", "0" ).toString() );
 }
+
+QMap<const char*, int> QgsCheckboxWidgetFactory::supportedWidgetTypes()
+{
+  QMap<const char*, int> map = QMap<const char*, int>();
+  map.insert( QCheckBox::staticMetaObject.className(), 10 );
+  map.insert( QGroupBox::staticMetaObject.className(), 10 );
+  return map;
+}
