@@ -3,6 +3,9 @@ language: cpp
 compiler:
   - clang
 
+git:
+  depth: 1
+
 cache: apt
 
 notifications:
