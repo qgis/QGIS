@@ -20,6 +20,8 @@
 #include "qgscoordinatetransform.h"
 
 class QgsGeometry;
+class QgsAbstractGeometryV2;
+class QgsCurveV2;
 
 /** \ingroup core
 General purpose distance and area calculator.
@@ -110,9 +112,6 @@ class CORE_EXPORT QgsDistanceArea
     void convertMeasurement( double &measure, QGis::UnitType &measureUnits, QGis::UnitType displayUnits, bool isArea ) const;
 
   protected:
-    //! measures line distance, line points are extracted from WKB
-    // @note available in python bindings
-    const unsigned char* measureLine( const unsigned char* feature, double* area, bool hasZptr = false ) const;
     //! measures polygon area and perimeter, vertices are extracted from WKB
     // @note available in python bindings
     const unsigned char* measurePolygon( const unsigned char* feature, double* area, double* perimeter, bool hasZptr = false ) const;
@@ -171,6 +170,10 @@ class CORE_EXPORT QgsDistanceArea
 
     double getQ( double x ) const;
     double getQbar( double x ) const;
+
+    double measure( const QgsAbstractGeometryV2* geomV2 ) const;
+    double measureLine( const QgsCurveV2* curve ) const;
+    double measurePolygon( const QgsCurveV2* curve ) const;
 
     // temporary area measurement stuff
 
