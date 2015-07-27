@@ -141,6 +141,9 @@ SET (ENABLE_COVERAGE FALSE CACHE BOOL "Perform coverage tests?")
 # whether coverage documentation should be generated
 SET (GENERATE_COVERAGE_DOCS FALSE CACHE BOOL "Generate coverage docs (requires lcov)?")
 
+# whether address sanitizing should be performed
+SET (ENABLE_ASAN FALSE CACHE BOOL "Enable address sanitizer")
+
 # hide this variable because building of python bindings might fail
 # if set to other directory than expected
 MARK_AS_ADVANCED(LIBRARY_OUTPUT_PATH)
@@ -467,6 +470,15 @@ IF(ENABLE_COVERAGE)
   SETUP_TARGET_FOR_COVERAGE(qgis_coverage ctest coverage)
 ENDIF(ENABLE_COVERAGE)
 
+IF(ENABLE_ASAN)
+  include(FindASan)
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_CXX_FLAGS_ASAN}")
+  #  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${CMAKE_C_FLAGS_ASAN}")
+  SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${CMAKE_SHARED_LINKER_FLAGS_ASAN}")
+  SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${CMAKE_EXE_LINKER_FLAGS_ASAN}")
+ENDIF(ENABLE_ASAN)
+
+
 #############################################################
 # platform specific stuff
 
@@ -601,11 +613,11 @@ ELSE (WIN32)
     SET(DLLEXPORT "")
   ENDIF()
 
-  IF(PEDANTIC AND NOT APPLE)
+  IF(PEDANTIC AND NOT APPLE AND NOT ENABLE_ASAN)
     SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
     SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,--no-undefined")
     SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--no-undefined")
-  ENDIF(PEDANTIC AND NOT APPLE)
+  ENDIF(PEDANTIC AND NOT APPLE AND NOT ENABLE_ASAN)
 
 ENDIF(WIN32)
 
