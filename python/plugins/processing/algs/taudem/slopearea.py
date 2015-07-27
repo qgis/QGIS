@@ -54,9 +54,9 @@ class SlopeArea(GeoAlgorithm):
         return QIcon(os.path.dirname(__file__) + '/../../images/taudem.png')
 
     def defineCharacteristics(self):
-        self.name = 'Slope Area Combination'
+        self.name, self.i18n_name = self.trAlgorithm('Slope Area Combination')
         self.cmdName = 'slopearea'
-        self.group = 'Stream Network Analysis tools'
+        self.group, self.i18n_group = self.trAlgorithm('Stream Network Analysis tools')
 
         self.addParameter(ParameterRaster(self.SLOPE_GRID,
             self.tr('Slope Grid'), False))

@@ -42,8 +42,8 @@ class rgb2pct(GdalAlgorithm):
 
 
     def defineCharacteristics(self):
-        self.name = 'RGB to PCT'
-        self.group = '[GDAL] Conversion'
+        self.name, self.i18n_name = self.trAlgorithm('RGB to PCT')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Conversion')
         self.addParameter(ParameterRaster(rgb2pct.INPUT,
             self.tr('Input layer'), False))
         self.addParameter(ParameterNumber(rgb2pct.NCOLORS,

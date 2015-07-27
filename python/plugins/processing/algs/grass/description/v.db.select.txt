@@ -1,5 +1,5 @@
 v.db.select
-v.db.select - Prints vector map attributes
+Prints vector map attributes
 Vector (v.*)
 ParameterVector|map|Input vector map |-1|False
 ParameterNumber|layer|Layer Number|1|None|1

@@ -47,8 +47,8 @@ class buildvrt(GdalAlgorithm):
     RESOLUTION_OPTIONS = ['average', 'highest', 'lowest']
 
     def defineCharacteristics(self):
-        self.name = 'Build Virtual Raster'
-        self.group = '[GDAL] Miscellaneous'
+        self.name, self.i18n_name = self.trAlgorithm('Build Virtual Raster')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Miscellaneous')
         self.addParameter(ParameterMultipleInput(self.INPUT,
             self.tr('Input layers'), ParameterMultipleInput.TYPE_RASTER))
         self.addParameter(ParameterSelection(self.RESOLUTION,

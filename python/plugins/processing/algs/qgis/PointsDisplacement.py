@@ -43,8 +43,8 @@ class PointsDisplacement(GeoAlgorithm):
     OUTPUT_LAYER = 'OUTPUT_LAYER'
 
     def defineCharacteristics(self):
-        self.name = 'Points displacement'
-        self.group = 'Vector geometry tools'
+        self.name, self.i18n_name = self.trAlgorithm('Points displacement')
+        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
             self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POINT]))

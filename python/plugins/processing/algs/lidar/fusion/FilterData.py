@@ -43,8 +43,8 @@ class FilterData(FusionAlgorithm):
     WINDOWSIZE = 'WINDOWSIZE'
 
     def defineCharacteristics(self):
-        self.name = 'Filter Data outliers'
-        self.group = 'Points'
+        self.name, self.i18n_name = self.trAlgorithm('Filter Data outliers')
+        self.group, self.i18n_group = self.trAlgorithm('Points')
         self.addParameter(ParameterFile(
             self.INPUT, self.tr('Input LAS layer')))
         self.addParameter(ParameterNumber(

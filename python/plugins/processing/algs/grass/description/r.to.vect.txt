@@ -1,5 +1,5 @@
 r.to.vect
-r.to.vect - Converts a raster into a vector layer.
+Converts a raster into a vector layer.
 Raster (r.*)
 ParameterRaster|input|Input raster layer|False
 ParameterSelection|feature|Feature type|line;point;area

@@ -172,7 +172,7 @@ void QgsServer::printRequestParameters( const QMap< QString, QString>& parameter
 }
 
 /**
- * @brief QgsServer::printRequestInfos prints debug informations about the request
+ * @brief QgsServer::printRequestInfos prints debug information about the request
  */
 void QgsServer::printRequestInfos()
 {

@@ -39,8 +39,8 @@ class lasmerge(LAStoolsAlgorithm):
     FILE7 = "FILE7"
 
     def defineCharacteristics(self):
-        self.name = "lasmerge"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('lasmerge')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersFilesAreFlightlinesGUI()
         self.addParametersApplyFileSourceIdGUI()

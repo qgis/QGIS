@@ -91,20 +91,20 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
   editLayout->setSpacing( 2 );
 
   // Prepare the container and layout for the filter comboboxes
-  mChooserGroupBox = new QGroupBox( this );
-  editLayout->addWidget( mChooserGroupBox );
+  mChooserContainer = new QWidget;
+  editLayout->addWidget( mChooserContainer );
   QHBoxLayout* chooserLayout = new QHBoxLayout;
   chooserLayout->setContentsMargins( 0, 0, 0, 0 );
   mFilterLayout = new QHBoxLayout;
   mFilterLayout->setContentsMargins( 0, 0, 0, 0 );
   mFilterContainer = new QWidget;
   mFilterContainer->setLayout( mFilterLayout );
-  mChooserGroupBox->setLayout( chooserLayout );
+  mChooserContainer->setLayout( chooserLayout );
   chooserLayout->addWidget( mFilterContainer );
 
   // combobox (for non-geometric relation)
   mComboBox = new QComboBox( this );
-  mChooserGroupBox->layout()->addWidget( mComboBox );
+  mChooserContainer->layout()->addWidget( mComboBox );
 
   // read-only line edit
   mLineEdit = new QLineEdit( this );
@@ -245,24 +245,12 @@ void QgsRelationReferenceWidget::setForeignKey( const QVariant& value )
   if ( !mReferencedLayer )
     return;
 
-  QgsFeatureIterator fit;
+  QgsAttributes attrs = QgsAttributes( mReferencingLayer->pendingFields().count() );
+  attrs[mFkeyFieldIdx] = value;
 
-  // TODO: Rewrite using expression
-  if ( mMasterModel )
-  {
-    fit = mMasterModel->layerCache()->getFeatures( QgsFeatureRequest() );
-  }
-  else
-  {
-    fit = mReferencedLayer->getFeatures( QgsFeatureRequest() );
-  }
-  while ( fit.nextFeature( mFeature ) )
-  {
-    if ( mFeature.attribute( mFkeyFieldIdx ) == value )
-    {
-      break;
-    }
-  }
+  QgsFeatureRequest request = mRelation.getReferencedFeatureRequest( attrs );
+
+  mReferencedLayer->getFeatures( request ).nextFeature( mFeature );
 
   if ( !mFeature.isValid() )
   {
@@ -284,7 +272,7 @@ void QgsRelationReferenceWidget::setForeignKey( const QVariant& value )
   }
   else
   {
-    int i = mComboBox->findData( value, QgsAttributeTableModel::FeatureIdRole );
+    int i = mComboBox->findData( mFeature.id(), QgsAttributeTableModel::FeatureIdRole );
     if ( i == -1 && mAllowNull )
     {
       mComboBox->setCurrentIndex( 0 );
@@ -358,10 +346,9 @@ QVariant QgsRelationReferenceWidget::foreignKey()
   }
   else
   {
-    QVariant varFid = mComboBox->itemData( mComboBox->currentIndex(), QgsAttributeTableModel::FeatureIdRole );
-    if ( varFid.isNull() )
+    if ( !mFeature.isValid() )
     {
-      return QVariant();
+      return QVariant( mReferencingLayer->pendingFields().at( mFkeyFieldIdx ).type() );
     }
     else
     {
@@ -390,7 +377,7 @@ void QgsRelationReferenceWidget::setEmbedForm( bool display )
 
 void QgsRelationReferenceWidget::setReadOnlySelector( bool readOnly )
 {
-  mChooserGroupBox->setHidden( readOnly );
+  mChooserContainer->setHidden( readOnly );
   mLineEdit->setVisible( readOnly );
   mRemoveFKButton->setVisible( mAllowNull && readOnly );
   mReadOnlySelector = readOnly;

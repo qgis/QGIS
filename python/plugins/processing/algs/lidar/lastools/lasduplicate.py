@@ -38,8 +38,8 @@ class lasduplicate(LAStoolsAlgorithm):
     RECORD_REMOVED = "RECORD_REMOVED"
 
     def defineCharacteristics(self):
-        self.name = "lasduplicate"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('lasduplicate')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterBoolean(lasduplicate.LOWEST_Z,

@@ -66,8 +66,8 @@ class translate(GdalAlgorithm):
         return "gdalogr:translate"
 
     def defineCharacteristics(self):
-        self.name = 'Translate (convert format)'
-        self.group = '[GDAL] Conversion'
+        self.name, self.i18n_name = self.trAlgorithm('Translate (convert format)')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Conversion')
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'),
                           False))
         self.addParameter(ParameterNumber(self.OUTSIZE,

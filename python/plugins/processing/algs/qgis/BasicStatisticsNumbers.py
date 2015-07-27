@@ -53,8 +53,8 @@ class BasicStatisticsNumbers(GeoAlgorithm):
     UNIQUE = 'UNIQUE'
 
     def defineCharacteristics(self):
-        self.name = 'Basic statistics for numeric fields'
-        self.group = 'Vector table tools'
+        self.name, self.i18n_name = self.trAlgorithm('Basic statistics for numeric fields')
+        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
             self.tr('Input vector layer'), ParameterVector.VECTOR_TYPE_ANY, False))

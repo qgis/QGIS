@@ -1,5 +1,5 @@
 r.slope.aspect
-r.slope.aspect - Generates raster layers of slope, aspect, curvatures and partial derivatives from a elevation raster layer.
+Generates raster layers of slope, aspect, curvatures and partial derivatives from a elevation raster layer.
 Raster (r.*)
 ParameterRaster|elevation|Elevation|False
 ParameterSelection|format|Format for reporting the slope|degrees;percent

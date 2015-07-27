@@ -44,8 +44,8 @@ class ClipByExtent(GdalAlgorithm):
     EXTRA = 'EXTRA'
 
     def defineCharacteristics(self):
-        self.name = 'Clip raster by extent'
-        self.group = '[GDAL] Extraction'
+        self.name, self.i18n_name = self.trAlgorithm('Clip raster by extent')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Extraction')
         self.addParameter(ParameterRaster(
             self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterString(self.NO_DATA,

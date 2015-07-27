@@ -40,8 +40,8 @@ class TextToFloat(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Text to float'
-        self.group = 'Vector table tools'
+        self.name, self.i18n_name = self.trAlgorithm('Text to float')
+        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
 
         self.addParameter(ParameterVector(self.INPUT,
             self.tr('Input Layer'), [ParameterVector.VECTOR_TYPE_ANY]))

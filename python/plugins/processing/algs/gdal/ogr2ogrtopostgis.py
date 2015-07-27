@@ -75,8 +75,8 @@ class Ogr2OgrToPostGis(OgrAlgorithm):
     OPTIONS = 'OPTIONS'
 
     def defineCharacteristics(self):
-        self.name = 'Import Vector into PostGIS database (new connection)'
-        self.group = '[OGR] Miscellaneous'
+        self.name, self.i18n_name = self.trAlgorithm('Import Vector into PostGIS database (new connection)')
+        self.group, self.i18n_group = self.trAlgorithm('[OGR] Miscellaneous')
         self.addParameter(ParameterVector(self.INPUT_LAYER,
             self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
         self.addParameter(ParameterSelection(self.GTYPE,

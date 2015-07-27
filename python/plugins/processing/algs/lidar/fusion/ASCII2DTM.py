@@ -45,8 +45,8 @@ class ASCII2DTM(FusionAlgorithm):
     ZONE = 'ZONE'
 
     def defineCharacteristics(self):
-        self.name = 'ASCII to DTM'
-        self.group = 'Conversion'
+        self.name, self.i18n_name = self.trAlgorithm('ASCII to DTM')
+        self.group, self.i18n_group = self.trAlgorithm('Conversion')
         self.addParameter(ParameterFile(
             self.INPUT, self.tr('Input ESRI ASCII layer')))
         self.addParameter(ParameterSelection(

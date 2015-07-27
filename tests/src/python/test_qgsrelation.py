@@ -25,22 +25,25 @@ from utilities import (getQgisTestApp,
                        TestCase,
                        unittest
                        )
+
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+
 
 def createReferencingLayer():
     layer = QgsVectorLayer("Point?field=fldtxt:string&field=foreignkey:integer",
                            "referencinglayer", "memory")
     pr = layer.dataProvider()
     f1 = QgsFeature()
-    f1.setFields( layer.pendingFields() )
+    f1.setFields(layer.pendingFields())
     f1.setAttributes(["test1", 123])
-    f1.setGeometry(QgsGeometry.fromPoint(QgsPoint(100,200)))
+    f1.setGeometry(QgsGeometry.fromPoint(QgsPoint(100, 200)))
     f2 = QgsFeature()
-    f2.setFields( layer.pendingFields() )
+    f2.setFields(layer.pendingFields())
     f2.setAttributes(["test2", 123])
-    f2.setGeometry(QgsGeometry.fromPoint(QgsPoint(101,201)))
-    assert pr.addFeatures([f1,f2])
+    f2.setGeometry(QgsGeometry.fromPoint(QgsPoint(101, 201)))
+    assert pr.addFeatures([f1, f2])
     return layer
+
 
 def createReferencedLayer():
     layer = QgsVectorLayer(
@@ -48,87 +51,96 @@ def createReferencedLayer():
         "referencedlayer", "memory")
     pr = layer.dataProvider()
     f1 = QgsFeature()
-    f1.setFields( layer.pendingFields() )
+    f1.setFields(layer.pendingFields())
     f1.setAttributes(["foo", 123, 321])
-    f1.setGeometry(QgsGeometry.fromPoint(QgsPoint(1,1)))
+    f1.setGeometry(QgsGeometry.fromPoint(QgsPoint(1, 1)))
     f2 = QgsFeature()
-    f2.setFields( layer.pendingFields() )
+    f2.setFields(layer.pendingFields())
     f2.setAttributes(["bar", 456, 654])
-    f2.setGeometry(QgsGeometry.fromPoint(QgsPoint(2,2)))
+    f2.setGeometry(QgsGeometry.fromPoint(QgsPoint(2, 2)))
     f3 = QgsFeature()
-    f3.setFields( layer.pendingFields() )
+    f3.setFields(layer.pendingFields())
     f3.setAttributes(["foobar", 789, 554])
-    f3.setGeometry(QgsGeometry.fromPoint(QgsPoint(2,3)))
+    f3.setGeometry(QgsGeometry.fromPoint(QgsPoint(2, 3)))
     assert pr.addFeatures([f1, f2, f3])
     return layer
 
-def formatAttributes(attrs):
-    return repr([ unicode(a) for a in attrs ])
 
-class TestQgsRelation( TestCase ):
+def formatAttributes(attrs):
+    return repr([unicode(a) for a in attrs])
+
+
+class TestQgsRelation(TestCase):
+    def setUp(self):
+        self.referencedLayer = createReferencedLayer()
+        self.referencingLayer = createReferencingLayer()
+        QgsMapLayerRegistry.instance().addMapLayers([self.referencedLayer, self.referencingLayer])
+
+    def tearDown(self):
+        QgsMapLayerRegistry.instance().removeAllMapLayers()
 
     def test_isValid(self):
-        referencedLayer = createReferencedLayer()
-        referencingLayer = createReferencingLayer()
-        QgsMapLayerRegistry.instance().addMapLayers([referencedLayer,referencingLayer])
 
         rel = QgsRelation()
         assert not rel.isValid()
 
-        rel.setRelationId( 'rel1' )
+        rel.setRelationId('rel1')
         assert not rel.isValid()
 
-        rel.setRelationName( 'Relation Number One' )
+        rel.setRelationName('Relation Number One')
         assert not rel.isValid()
 
-        rel.setReferencingLayer( referencingLayer.id() )
+        rel.setReferencingLayer(self.referencingLayer.id())
         assert not rel.isValid()
 
-        rel.setReferencedLayer( referencedLayer.id() )
+        rel.setReferencedLayer(self.referencedLayer.id())
         assert not rel.isValid()
 
-        rel.addFieldPair( 'foreignkey', 'y' )
+        rel.addFieldPair('foreignkey', 'y')
         assert rel.isValid()
 
-        QgsMapLayerRegistry.instance().removeAllMapLayers()
 
     def test_getRelatedFeatures(self):
-        referencedLayer = createReferencedLayer()
-        referencingLayer = createReferencingLayer()
-        QgsMapLayerRegistry.instance().addMapLayers([referencedLayer,referencingLayer])
-
         rel = QgsRelation()
 
-        rel.setRelationId( 'rel1' )
-        rel.setRelationName( 'Relation Number One' )
-        rel.setReferencingLayer( referencingLayer.id() )
-        rel.setReferencedLayer( referencedLayer.id() )
-        rel.addFieldPair( 'foreignkey', 'y' )
+        rel.setRelationId('rel1')
+        rel.setRelationName('Relation Number One')
+        rel.setReferencingLayer(self.referencingLayer.id())
+        rel.setReferencedLayer(self.referencedLayer.id())
+        rel.addFieldPair('foreignkey', 'y')
 
-        feat = referencedLayer.getFeatures().next()
+        feat = self.referencedLayer.getFeatures().next()
 
-        it = rel.getRelatedFeatures( feat )
+        it = rel.getRelatedFeatures(feat)
 
-        [ a.attributes() for a in it ] == [[u'test1', 123], [u'test2', 123]]
+        assert [a.attributes() for a in it] == [[u'test1', 123], [u'test2', 123]]
 
-        QgsMapLayerRegistry.instance().removeAllMapLayers()
+    def test_getReferencedFeature(self):
+        rel = QgsRelation()
+        rel.setRelationId('rel1')
+        rel.setRelationName('Relation Number One')
+        rel.setReferencingLayer(self.referencingLayer.id())
+        rel.setReferencedLayer(self.referencedLayer.id())
+        rel.addFieldPair('foreignkey', 'y')
+
+        feat = self.referencingLayer.getFeatures().next()
+
+        f = rel.getReferencedFeature(feat)
+
+        assert f.isValid()
+        assert f[0] == 'foo'
+
 
     def test_fieldPairs(self):
-        referencedLayer = createReferencedLayer()
-        referencingLayer = createReferencingLayer()
-        QgsMapLayerRegistry.instance().addMapLayers([referencedLayer,referencingLayer])
-
         rel = QgsRelation()
 
-        rel.setRelationId( 'rel1' )
-        rel.setRelationName( 'Relation Number One' )
-        rel.setReferencingLayer( referencingLayer.id() )
-        rel.setReferencedLayer( referencedLayer.id() )
-        rel.addFieldPair( 'foreignkey', 'y' )
+        rel.setRelationId('rel1')
+        rel.setRelationName('Relation Number One')
+        rel.setReferencingLayer(self.referencingLayer.id())
+        rel.setReferencedLayer(self.referencedLayer.id())
+        rel.addFieldPair('foreignkey', 'y')
 
-        assert( rel.fieldPairs() == { 'foreignkey': 'y'} )
-
-        QgsMapLayerRegistry.instance().removeAllMapLayers()
+        assert (rel.fieldPairs() == {'foreignkey': 'y'})
 
 
 if __name__ == '__main__':

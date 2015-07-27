@@ -44,8 +44,8 @@ class ConcaveHull(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Concave hull'
-        self.group = 'Vector geometry tools'
+        self.name, self.i18n_name = self.trAlgorithm('Concave hull')
+        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
         self.addParameter(ParameterVector(ConcaveHull.INPUT,
             self.tr('Input point layer'), [ParameterVector.VECTOR_TYPE_POINT]))
         self.addParameter(ParameterNumber(self.ALPHA,

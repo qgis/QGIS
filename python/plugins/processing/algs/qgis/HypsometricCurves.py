@@ -54,8 +54,8 @@ class HypsometricCurves(GeoAlgorithm):
     OUTPUT_DIRECTORY = 'OUTPUT_DIRECTORY'
 
     def defineCharacteristics(self):
-        self.name = 'Hypsometric curves'
-        self.group = 'Raster tools'
+        self.name, self.i18n_name = self.trAlgorithm('Hypsometric curves')
+        self.group, self.i18n_group = self.trAlgorithm('Raster tools')
 
         self.addParameter(ParameterRaster(self.INPUT_DEM,
             self.tr('DEM to analyze')))

@@ -34,8 +34,8 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 class las2tin(LAStoolsAlgorithm):
 
     def defineCharacteristics(self):
-        self.name = "las2tin"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('las2tin')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParametersFilter1ReturnClassFlagsGUI()

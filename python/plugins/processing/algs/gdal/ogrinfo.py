@@ -39,8 +39,8 @@ class OgrInfo(OgrAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Information'
-        self.group = '[OGR] Miscellaneous'
+        self.name, self.i18n_name = self.trAlgorithm('Information')
+        self.group, self.i18n_group = self.trAlgorithm('[OGR] Miscellaneous')
 
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer'),
                           [ParameterVector.VECTOR_TYPE_ANY], False))

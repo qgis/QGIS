@@ -43,8 +43,8 @@ class MeanCoords(GeoAlgorithm):
     WEIGHT = 'WEIGHT'
 
     def defineCharacteristics(self):
-        self.name = 'Mean coordinate(s)'
-        self.group = 'Vector analysis tools'
+        self.name, self.i18n_name = self.trAlgorithm('Mean coordinate(s)')
+        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
 
         self.addParameter(ParameterVector(self.POINTS,
             self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))

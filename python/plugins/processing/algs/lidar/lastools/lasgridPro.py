@@ -39,8 +39,8 @@ class lasgridPro(LAStoolsAlgorithm):
     USE_TILE_BB = "USE_TILE_BB"
 
     def defineCharacteristics(self):
-        self.name = "lasgridPro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('lasgridPro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersPointInputMergedGUI()
         self.addParametersFilter1ReturnClassFlagsGUI()

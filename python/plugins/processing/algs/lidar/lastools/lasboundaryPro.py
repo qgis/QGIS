@@ -40,8 +40,8 @@ class lasboundaryPro(LAStoolsAlgorithm):
     HOLES = "HOLES"
 
     def defineCharacteristics(self):
-        self.name = "lasboundaryPro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('lasboundaryPro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersFilter1ReturnClassFlagsGUI()
         self.addParameter(ParameterSelection(lasboundaryPro.MODE,

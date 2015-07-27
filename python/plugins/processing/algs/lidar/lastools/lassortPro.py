@@ -35,8 +35,8 @@ class lassortPro(LAStoolsAlgorithm):
     BY_POINT_SOURCE_ID = "BY_POINT_SOURCE_ID"
 
     def defineCharacteristics(self):
-        self.name = "lassortPro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('lassortPro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParameter(ParameterBoolean(lassortPro.BY_GPS_TIME,
             self.tr("sort by GPS time"), False))

@@ -47,8 +47,8 @@ class SelectByLocation(GeoAlgorithm):
                'removing from current selection']
 
     def defineCharacteristics(self):
-        self.name = 'Select by location'
-        self.group = 'Vector selection tools'
+        self.name, self.i18n_name = self.trAlgorithm('Select by location')
+        self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
         self.addParameter(ParameterVector(self.INPUT,
             self.tr('Layer to select from'),
             [ParameterVector.VECTOR_TYPE_ANY]))

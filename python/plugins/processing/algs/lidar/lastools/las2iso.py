@@ -42,8 +42,8 @@ class las2iso(LAStoolsAlgorithm):
     CLEAN = "CLEAN"
 
     def defineCharacteristics(self):
-        self.name = "las2iso"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('las2iso')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterNumber(las2iso.SMOOTH,

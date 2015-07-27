@@ -526,7 +526,7 @@ class ModelerDialog(BASE, WIDGET):
                         groupItem = groups[alg.group]
                     else:
                         groupItem = QTreeWidgetItem()
-                        name = AlgorithmClassification.getDisplayGroup(alg.group)
+                        name = alg.i18n_group
                         groupItem.setText(0, name)
                         groupItem.setToolTip(0, name)
                         groups[alg.group] = groupItem
@@ -566,7 +566,7 @@ class ModelerDialog(BASE, WIDGET):
                         groupItem = groups[alg.group]
                     else:
                         groupItem = QTreeWidgetItem()
-                        name = AlgorithmClassification.getDisplayGroup(alg.group)
+                        name = alg.i18n_group
                         groupItem.setText(0, name)
                         groupItem.setToolTip(0, name)
                         groups[alg.group] = groupItem

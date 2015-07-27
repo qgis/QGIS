@@ -46,8 +46,8 @@ class CloudMetrics(FusionAlgorithm):
     HTMIN = 'HTMIN'
 
     def defineCharacteristics(self):
-        self.name = 'Cloud Metrics'
-        self.group = 'Points'
+        self.name, self.i18n_name = self.trAlgorithm('Cloud Metrics')
+        self.group, self.i18n_group = self.trAlgorithm('Points')
         self.addParameter(ParameterFile(
             self.INPUT, self.tr('Input LAS layer')))
         self.addOutput(OutputFile(

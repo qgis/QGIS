@@ -97,7 +97,7 @@ void QgsRelation::writeXML( QDomNode &node, QDomDocument &doc ) const
   elem.setAttribute( "referencingLayer", mReferencingLayerId );
   elem.setAttribute( "referencedLayer", mReferencedLayerId );
 
-  foreach ( FieldPair fields, mFieldPairs )
+  Q_FOREACH ( FieldPair fields, mFieldPairs )
   {
     QDomElement referenceElem = doc.createElement( "fieldRef" );
     referenceElem.setAttribute( "referencingField", fields.first );
@@ -153,22 +153,20 @@ QgsFeatureRequest QgsRelation::getRelatedFeaturesRequest( const QgsFeature& feat
 {
   QStringList conditions;
 
-  foreach ( const QgsRelation::FieldPair& fieldPair, mFieldPairs )
+  Q_FOREACH ( const QgsRelation::FieldPair& fieldPair, mFieldPairs )
   {
     int referencingIdx = referencingLayer()->pendingFields().indexFromName( fieldPair.referencingField() );
     QgsField referencingField = referencingLayer()->pendingFields().at( referencingIdx );
 
-    switch ( referencingField.type() )
+    if ( referencingField.type() == QVariant::String )
     {
-      case QVariant::String:
-        // Use quotes
-        conditions << QString( "\"%1\" = '%2'" ).arg( fieldPair.referencingField(), feature.attribute( fieldPair.referencedField() ).toString() );
-        break;
-
-      default:
-        // No quotes
-        conditions << QString( "\"%1\" = %2" ).arg( fieldPair.referencingField(), feature.attribute( fieldPair.referencedField() ).toString() );
-        break;
+      // Use quotes
+      conditions << QString( "\"%1\" = '%2'" ).arg( fieldPair.referencingField(), feature.attribute( fieldPair.referencedField() ).toString() );
+    }
+    else
+    {
+      // No quotes
+      conditions << QString( "\"%1\" = %2" ).arg( fieldPair.referencingField(), feature.attribute( fieldPair.referencedField() ).toString() );
     }
   }
 
@@ -181,12 +179,58 @@ QgsFeatureRequest QgsRelation::getRelatedFeaturesRequest( const QgsFeature& feat
   return myRequest;
 }
 
-const QString QgsRelation::name() const
+QgsFeatureRequest QgsRelation::getReferencedFeatureRequest( const QgsAttributes& attributes ) const
+{
+  QStringList conditions;
+
+  Q_FOREACH ( const QgsRelation::FieldPair& fieldPair, mFieldPairs )
+  {
+    int referencedIdx = referencedLayer()->pendingFields().indexFromName( fieldPair.referencedField() );
+    int referencingIdx = referencingLayer()->pendingFields().indexFromName( fieldPair.referencingField() );
+
+    QgsField referencedField = referencedLayer()->pendingFields().at( referencedIdx );
+
+    if ( referencedField.type() == QVariant::String )
+    {
+      // Use quotes
+      conditions << QString( "\"%1\" = '%2'" ).arg( fieldPair.referencedField(), attributes[referencingIdx].toString() );
+    }
+    else
+    {
+      // No quotes
+      conditions << QString( "\"%1\" = %2" ).arg( fieldPair.referencedField(), attributes[referencingIdx].toString() );
+    }
+  }
+
+  QgsFeatureRequest myRequest;
+
+  QgsDebugMsg( QString( "Filter conditions: '%1'" ).arg( conditions.join( " AND " ) ) );
+
+  myRequest.setFilterExpression( conditions.join( " AND " ) );
+
+  return myRequest;
+}
+
+QgsFeatureRequest QgsRelation::getReferencedFeatureRequest( const QgsFeature& feature ) const
+{
+  return getReferencedFeatureRequest( feature.attributes() );
+}
+
+QgsFeature QgsRelation::getReferencedFeature( const QgsFeature& feature ) const
+{
+  QgsFeatureRequest request = getReferencedFeatureRequest( feature );
+
+  QgsFeature f;
+  mReferencedLayer->getFeatures( request ).nextFeature( f );
+  return f;
+}
+
+QString QgsRelation::name() const
 {
   return mRelationName;
 }
 
-const QString& QgsRelation::id() const
+QString QgsRelation::id() const
 {
   return mRelationId;
 }
@@ -250,9 +294,4 @@ void QgsRelation::updateRelationStatus()
       }
     }
   }
-}
-
-void QgsRelation::runChecks()
-{
-
 }

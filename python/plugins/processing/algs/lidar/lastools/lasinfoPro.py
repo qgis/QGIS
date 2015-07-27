@@ -45,8 +45,8 @@ class lasinfoPro(LAStoolsAlgorithm):
     HISTO3_BIN = "HISTO3_BIN"
 
     def defineCharacteristics(self):
-        self.name = "lasinfoPro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('lasinfoPro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParameter(ParameterBoolean(lasinfoPro.COMPUTE_DENSITY,
             self.tr("compute density"), False))

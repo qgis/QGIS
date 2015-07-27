@@ -37,8 +37,8 @@ class lasduplicatePro(LAStoolsAlgorithm):
     RECORD_REMOVED = "RECORD_REMOVED"
 
     def defineCharacteristics(self):
-        self.name = "lasduplicatePro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('lasduplicatePro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParameter(ParameterBoolean(lasduplicatePro.LOWEST_Z,
             self.tr("keep duplicate with lowest z coordinate"), False))

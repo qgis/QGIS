@@ -41,8 +41,8 @@ class flightlinesToCHM(LAStoolsAlgorithm):
     BASE_NAME = "BASE_NAME"
 
     def defineCharacteristics(self):
-        self.name = "flightlinesToCHM"
-        self.group = "LAStools Pipelines"
+        self.name, self.i18n_name = self.trAlgorithm('flightlinesToCHM')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Pipelines')
         self.addParametersPointInputFolderGUI()
         self.addParameter(ParameterNumber(flightlinesToCHM.TILE_SIZE,
             self.tr("tile size (side length of square tile)"),

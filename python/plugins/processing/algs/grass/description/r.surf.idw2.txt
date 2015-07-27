@@ -1,5 +1,5 @@
 r.surf.idw2
-r.surf.idw2 - Surface generation.
+Surface generation.
 Raster (r.*)
 ParameterRaster|input|Input raster layer|False
 ParameterNumber|npoints|Number of interpolation points|1|None|12

@@ -1,5 +1,5 @@
 r.neighbors
-r.neighbors - Makes each cell category value a function of the category values assigned to the cells around it
+Makes each cell category value a function of the category values assigned to the cells around it
 Raster (r.*)
 ParameterRaster|input|Input raster layer|False
 ParameterSelection|method|Neighborhood operation|average;median;mode;minimum;maximum;stddev;sum;variance;diversity;interspersion

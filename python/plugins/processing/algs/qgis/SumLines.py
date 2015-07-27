@@ -42,8 +42,8 @@ class SumLines(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Sum line lengths'
-        self.group = 'Vector analysis tools'
+        self.name, self.i18n_name = self.trAlgorithm('Sum line lengths')
+        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
 
         self.addParameter(ParameterVector(self.LINES,
             self.tr('Lines'), [ParameterVector.VECTOR_TYPE_LINE]))

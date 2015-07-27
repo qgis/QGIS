@@ -56,8 +56,8 @@ class lascanopyPro(LAStoolsAlgorithm):
     FILES_ARE_PLOTS = "FILES_ARE_PLOTS"
 
     def defineCharacteristics(self):
-        self.name = "lascanopyPro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('lascanopyPro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersPointInputMergedGUI()
         self.addParameter(ParameterNumber(lascanopyPro.PLOT_SIZE,

@@ -51,8 +51,8 @@ class lasinfo(LAStoolsAlgorithm):
     OUTPUT = "OUTPUT"
 
     def defineCharacteristics(self):
-        self.name = "lasinfo"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('lasinfo')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterBoolean(lasinfo.COMPUTE_DENSITY,

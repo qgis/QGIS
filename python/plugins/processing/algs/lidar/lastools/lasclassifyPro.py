@@ -30,8 +30,8 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 class lasclassifyPro(LAStoolsAlgorithm):
 
     def defineCharacteristics(self):
-        self.name = "lasclassifyPro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('lasclassifyPro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersHorizontalAndVerticalFeetGUI()
         self.addParametersOutputDirectoryGUI()

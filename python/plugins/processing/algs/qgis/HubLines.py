@@ -42,8 +42,8 @@ class HubLines(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Hub lines'
-        self.group = 'Vector analysis tools'
+        self.name, self.i18n_name = self.trAlgorithm('Hub lines')
+        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
 
         self.addParameter(ParameterVector(self.HUBS,
             self.tr('Hub point layer'), [ParameterVector.VECTOR_TYPE_ANY]))

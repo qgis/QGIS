@@ -31,8 +31,8 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 class las2las_filter(LAStoolsAlgorithm):
 
     def defineCharacteristics(self):
-        self.name = "las2las_filter"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('las2las_filter')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParametersFilter1ReturnClassFlagsGUI()

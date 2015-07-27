@@ -30,10 +30,11 @@ import time
 import uuid
 import importlib
 
+from PyQt4.QtCore import QCoreApplication
+from PyQt4.QtGui import QIcon
+
 from qgis.core import QgsRasterLayer
 from qgis.utils import iface
-
-from PyQt4.QtGui import QIcon
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -41,7 +42,7 @@ from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 from processing.core.parameters import getParameterFromString, ParameterVector, ParameterMultipleInput, ParameterExtent, ParameterNumber, ParameterSelection, ParameterRaster, ParameterTable, ParameterBoolean, ParameterString
-from processing.core.outputs import getOutputFromString, OutputRaster, OutputVector, OutputHTML, OutputFile
+from processing.core.outputs import getOutputFromString, OutputRaster, OutputVector, OutputFile, OutputHTML
 
 from Grass7Utils import Grass7Utils
 
@@ -77,8 +78,7 @@ class Grass7Algorithm(GeoAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'grass.png'))
 
     def help(self):
-        return False, 'http://grass.osgeo.org/grass70/manuals/' + self.grass7Name \
-            + '.html'
+        return False, 'http://grass.osgeo.org/grass70/manuals/' + self.grass7Name + '.html'
 
     def getParameterDescriptions(self):
         descs = {}
@@ -106,8 +106,13 @@ class Grass7Algorithm(GeoAlgorithm):
         self.grass7Name = line
         line = lines.readline().strip('\n').strip()
         self.name = line
+	self.i18n_name = QCoreApplication.translate("GrassAlgorithm", line)
+        if not " - " in self.name:
+            self.name = self.grass7Name + " - " + self.name
+            self.i18n_name = self.grass7Name + " - " + self.i18n_name
         line = lines.readline().strip('\n').strip()
         self.group = line
+        self.i18n_group = QCoreApplication.translate("GrassAlgorithm", line)
         hasRasterOutput = False
         hasVectorInput = False
         vectorOutputs = 0
@@ -266,7 +271,8 @@ class Grass7Algorithm(GeoAlgorithm):
 
         self.setSessionProjectionFromProject(commands)
 
-        region = str(self.getParameterValue(self.GRASS_REGION_EXTENT_PARAMETER))
+        region = \
+            str(self.getParameterValue(self.GRASS_REGION_EXTENT_PARAMETER))
         regionCoords = region.split(',')
         command = 'g.region'
         command += ' -a'
@@ -291,12 +297,7 @@ class Grass7Algorithm(GeoAlgorithm):
         for param in self.parameters:
             if param.value is None or param.value == '':
                 continue
-            if param.name == self.GRASS_REGION_CELLSIZE_PARAMETER \
-               or param.name == self.GRASS_REGION_EXTENT_PARAMETER \
-               or param.name == self.GRASS_MIN_AREA_PARAMETER \
-               or param.name == self.GRASS_SNAP_TOLERANCE_PARAMETER \
-               or param.name == self.GRASS_OUTPUT_TYPE_PARAMETER \
-               or param.name == self.GRASS_REGION_ALIGN_TO_RESOLUTION:
+            if param.name in [ self.GRASS_REGION_CELLSIZE_PARAMETER, self.GRASS_REGION_EXTENT_PARAMETER, self.GRASS_MIN_AREA_PARAMETER, self.GRASS_SNAP_TOLERANCE_PARAMETER, self.GRASS_OUTPUT_TYPE_PARAMETER, self.GRASS_REGION_ALIGN_TO_RESOLUTION ]:
                 continue
             if isinstance(param, (ParameterRaster, ParameterVector)):
                 value = param.value
@@ -335,7 +336,6 @@ class Grass7Algorithm(GeoAlgorithm):
                 # Add output file to exported layers, to indicate that
                 # they are present in GRASS
                 self.exportedLayers[out.value] = uniqueOutputName
-
 
         command += ' --overwrite'
         commands.append(command)
@@ -435,6 +435,7 @@ class Grass7Algorithm(GeoAlgorithm):
             Grass7Utils.addSessionLayers(self.exportedLayers)
         else:
             Grass7Utils.endGrass7Session()
+
 
     def exportVectorLayer(self, orgFilename):
 

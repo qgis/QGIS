@@ -1,5 +1,5 @@
 r.statistics
-r.statistics - Calculates category or object oriented statistics.
+Calculates category or object oriented statistics.
 Raster (r.*)
 ParameterRaster|base|Base raster layer|False
 ParameterRaster|cover|Cover raster layer|False

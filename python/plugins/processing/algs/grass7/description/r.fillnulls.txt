@@ -1,5 +1,5 @@
 r.fillnulls
-r.fillnulls - Fills no-data areas in a raster layer using v.surf.rst splines interpolation or v.surf.bspline interpolation
+Fills no-data areas in a raster layer using v.surf.rst splines interpolation or v.surf.bspline interpolation
 Raster (r.*)
 ParameterRaster|input|Input raster layer to fill|False
 ParameterNumber|tension|Spline tension parameter|None|None|40.0

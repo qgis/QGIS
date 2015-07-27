@@ -1,4 +1,4 @@
-Modifed Quadratic Shepard
+Modified Quadratic Shepard
 grid_gridding
 ParameterVector|SHAPES|Points|0|False
 ParameterTableField|FIELD|Attribute|SHAPES|-1|False

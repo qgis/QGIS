@@ -34,9 +34,7 @@
 #include <QVector>
 
 #include "qgsvectorlayer.h"
-
 #include "qgsattributeaction.h"
-
 #include "qgis.h" //for globals
 #include "qgsapplication.h"
 #include "qgsclipper.h"
@@ -71,7 +69,7 @@
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsvectorlayerrenderer.h"
 #include "qgsvectorlayerundocommand.h"
-
+#include "qgspointv2.h"
 #include "qgsrendererv2.h"
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2.h"
@@ -990,6 +988,14 @@ bool QgsVectorLayer::moveVertex( double x, double y, QgsFeatureId atFeatureId, i
   return utils.moveVertex( x, y, atFeatureId, atVertex );
 }
 
+bool QgsVectorLayer::moveVertex( const QgsPointV2& p, QgsFeatureId atFeatureId, int atVertex )
+{
+  if ( !mEditBuffer || !mDataProvider )
+    return false;
+
+  QgsVectorLayerEditUtils utils( this );
+  return utils.moveVertex( p, atFeatureId, atVertex );
+}
 
 bool QgsVectorLayer::deleteVertex( QgsFeatureId atFeatureId, int atVertex )
 {

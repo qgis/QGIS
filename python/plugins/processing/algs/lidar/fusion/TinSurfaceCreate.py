@@ -44,8 +44,8 @@ class TinSurfaceCreate(FusionAlgorithm):
     CLASS = 'CLASS'
 
     def defineCharacteristics(self):
-        self.name = 'Tin Surface Create'
-        self.group = 'Surface'
+        self.name, self.i18n_name = self.trAlgorithm('Tin Surface Create')
+        self.group, self.i18n_group = self.trAlgorithm('Surface')
         self.addParameter(ParameterFile(
             self.INPUT, self.tr('Input LAS layer')))
         self.addParameter(ParameterNumber(self.CELLSIZE,

@@ -55,8 +55,8 @@ class FieldsCalculator(GeoAlgorithm):
     TYPES = [QVariant.Double, QVariant.Int, QVariant.String, QVariant.Date]
 
     def defineCharacteristics(self):
-        self.name = 'Field calculator'
-        self.group = 'Vector table tools'
+        self.name, self.i18n_name = self.trAlgorithm('Field calculator')
+        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
         self.addParameter(ParameterVector(self.INPUT_LAYER,
             self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
         self.addParameter(ParameterString(self.FIELD_NAME,

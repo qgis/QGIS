@@ -51,8 +51,8 @@ class PointDistance(GeoAlgorithm):
                  'Summary distance matrix (mean, std. dev., min, max)']
 
     def defineCharacteristics(self):
-        self.name = 'Distance matrix'
-        self.group = 'Vector analysis tools'
+        self.name, self.i18n_name = self.trAlgorithm('Distance matrix')
+        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
             self.tr('Input point layer'), [ParameterVector.VECTOR_TYPE_POINT]))

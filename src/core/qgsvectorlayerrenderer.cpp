@@ -276,14 +276,14 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
       bool sel = mContext.showSelection() && mSelectedFeatureIds.contains( fet.id() );
       bool drawMarker = ( mDrawVertexMarkers && mContext.drawEditingInformation() && ( !mVertexMarkerOnlyForSelection || sel ) );
 
-      // render feature
-      bool rendered = mRendererV2->renderFeature( fet, mContext, -1, sel, drawMarker );
-
       if ( mCache )
       {
         // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
         mCache->cacheGeometry( fet.id(), *fet.constGeometry() );
       }
+
+      // render feature
+      bool rendered = mRendererV2->renderFeature( fet, mContext, -1, sel, drawMarker );
 
       // labeling - register feature
       Q_UNUSED( rendered );

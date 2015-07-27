@@ -49,8 +49,8 @@ class txt2lasPro(LAStoolsAlgorithm):
     SP = "SP"
 
     def defineCharacteristics(self):
-        self.name = "txt2lasPro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('txt2lasPro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersGenericInputFolderGUI("*.txt")
         self.addParameter(ParameterString(txt2lasPro.PARSE,
             self.tr("parse lines as"), "xyz"))

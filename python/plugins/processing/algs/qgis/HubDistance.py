@@ -58,8 +58,8 @@ class HubDistance(GeoAlgorithm):
              ]
 
     def defineCharacteristics(self):
-        self.name = 'Distance to nearest hub'
-        self.group = 'Vector analysis tools'
+        self.name, self.i18n_name = self.trAlgorithm('Distance to nearest hub')
+        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
 
         self.addParameter(ParameterVector(self.POINTS,
             self.tr('Source points layer'), [ParameterVector.VECTOR_TYPE_ANY]))

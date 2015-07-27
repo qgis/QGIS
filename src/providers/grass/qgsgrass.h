@@ -476,7 +476,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     static void sleep( int ms );
 
   signals:
-    /** Signal emited after mapset was opened */
+    /** Signal emitted after mapset was opened */
     void mapsetChanged();
 
     /** Emitted when path to modules config dir changed */

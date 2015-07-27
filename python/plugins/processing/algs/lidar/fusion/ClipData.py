@@ -43,8 +43,8 @@ class ClipData(FusionAlgorithm):
     SHAPE = 'SHAPE'
 
     def defineCharacteristics(self):
-        self.name = 'Clip Data'
-        self.group = 'Points'
+        self.name, self.i18n_name = self.trAlgorithm('Clip Data')
+        self.group, self.i18n_group = self.trAlgorithm('Points')
         self.addParameter(ParameterFile(
             self.INPUT, self.tr('Input LAS layer')))
         self.addParameter(ParameterExtent(self.EXTENT, self.tr('Extent')))

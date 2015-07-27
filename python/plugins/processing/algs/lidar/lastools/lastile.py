@@ -36,8 +36,8 @@ class lastile(LAStoolsAlgorithm):
     REVERSIBLE = "REVERSIBLE"
 
     def defineCharacteristics(self):
-        self.name = "lastile"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('lastile')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParametersFilesAreFlightlinesGUI()

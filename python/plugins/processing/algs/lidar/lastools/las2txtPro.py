@@ -34,8 +34,8 @@ class las2txtPro(LAStoolsAlgorithm):
     PARSE = "PARSE"
 
     def defineCharacteristics(self):
-        self.name = "las2txtPro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('las2txtPro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParameter(ParameterString(las2txtPro.PARSE,
             self.tr("parse string"), "xyz"))

@@ -19,8 +19,6 @@
 .pydevproject
 /CMakeLists.txt.user
 /CMakeLists.txt.user.*
-/python/plugins/sextante/about/ui_aboutdialogbase.py
-/python/plugins/sextante/resources_rc.py
 api_doc
 build*
 debian/*.debhelper

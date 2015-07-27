@@ -136,8 +136,8 @@ class ImportIntoPostGIS(GeoAlgorithm):
         return settings.childGroups()
 
     def defineCharacteristics(self):
-        self.name = 'Import into PostGIS'
-        self.group = 'Database'
+        self.name, self.i18n_name = self.trAlgorithm('Import into PostGIS')
+        self.group, self.i18n_group = self.trAlgorithm('Database')
         self.addParameter(ParameterVector(self.INPUT,
             self.tr('Layer to import')))
 

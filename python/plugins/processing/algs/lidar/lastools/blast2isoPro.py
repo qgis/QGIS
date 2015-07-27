@@ -38,8 +38,8 @@ class blast2isoPro(LAStoolsAlgorithm):
     CLEAN = "CLEAN"
 
     def defineCharacteristics(self):
-        self.name = "blast2isoPro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('blast2isoPro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersPointInputMergedGUI()
         self.addParameter(ParameterNumber(blast2isoPro.SMOOTH,

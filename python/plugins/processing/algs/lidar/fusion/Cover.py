@@ -47,8 +47,8 @@ class Cover(FusionAlgorithm):
     UNITS = ['Meter', 'Feet']
 
     def defineCharacteristics(self):
-        self.name = 'Cover'
-        self.group = 'Points'
+        self.name, self.i18n_name = self.trAlgorithm('Cover')
+        self.group, self.i18n_group = self.trAlgorithm('Points')
         self.addParameter(ParameterFile(
             self.INPUT, self.tr('Input LAS layer')))
         self.addParameter(ParameterFile(

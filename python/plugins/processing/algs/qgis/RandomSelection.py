@@ -48,8 +48,8 @@ class RandomSelection(GeoAlgorithm):
 
     def defineCharacteristics(self):
         self.allowOnlyOpenedLayers = True
-        self.name = 'Random selection'
-        self.group = 'Vector selection tools'
+        self.name, self.i18n_name = self.trAlgorithm('Random selection')
+        self.group, self.i18n_group = self.trAlgorithm('Vector selection tools')
 
         self.addParameter(ParameterVector(self.INPUT,
             self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))

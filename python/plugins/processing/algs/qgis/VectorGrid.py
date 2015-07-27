@@ -51,8 +51,8 @@ class VectorGrid(GeoAlgorithm):
              ]
 
     def defineCharacteristics(self):
-        self.name = 'Vector grid'
-        self.group = 'Vector creation tools'
+        self.name, self.i18n_name = self.trAlgorithm('Vector grid')
+        self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
         self.addParameter(ParameterExtent(self.EXTENT,
             self.tr('Grid extent')))
         self.addParameter(ParameterNumber(self.STEP_X,

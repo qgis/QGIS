@@ -40,8 +40,8 @@ class CreateConstantRaster(GeoAlgorithm):
     NUMBER = 'NUMBER'
 
     def defineCharacteristics(self):
-        self.name = 'Create constant raster layer'
-        self.group = 'Raster tools'
+        self.name, self.i18n_name = self.trAlgorithm('Create constant raster layer')
+        self.group, self.i18n_group = self.trAlgorithm('Raster tools')
 
         self.addParameter(ParameterRaster(self.INPUT,
             self.tr('Reference layer')))

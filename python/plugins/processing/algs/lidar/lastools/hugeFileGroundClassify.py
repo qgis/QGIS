@@ -42,8 +42,8 @@ class hugeFileGroundClassify(LAStoolsAlgorithm):
     GRANULARITIES = ["coarse", "default", "fine", "extra_fine", "ultra_fine"]
 
     def defineCharacteristics(self):
-        self.name = "hugeFileGroundClassify"
-        self.group = "LAStools Pipelines"
+        self.name, self.i18n_name = self.trAlgorithm('hugeFileGroundClassify')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Pipelines')
         self.addParametersPointInputGUI()
         self.addParameter(ParameterNumber(
             hugeFileGroundClassify.TILE_SIZE,

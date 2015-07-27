@@ -44,8 +44,8 @@ class ExportGeometryInfo(GeoAlgorithm):
     CALC_METHODS = ['Layer CRS', 'Project CRS', 'Ellipsoidal']
 
     def defineCharacteristics(self):
-        self.name = 'Export/Add geometry columns'
-        self.group = 'Vector table tools'
+        self.name, self.i18n_name = self.trAlgorithm('Export/Add geometry columns')
+        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
 
         self.addParameter(ParameterVector(self.INPUT,
             self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))

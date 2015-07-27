@@ -37,8 +37,8 @@ class shp2las(LAStoolsAlgorithm):
     SCALE_FACTOR_Z = "SCALE_FACTOR_Z"
 
     def defineCharacteristics(self):
-        self.name = "shp2las"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('shp2las')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParameter(ParameterFile(shp2las.INPUT,
             self.tr("Input SHP file")))

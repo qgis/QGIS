@@ -1,5 +1,5 @@
 r.sim.water
-r.sim.water - Overland flow hydrologic simulation using path sampling method (SIMWE).
+Overland flow hydrologic simulation using path sampling method (SIMWE).
 Raster (r.*)
 ParameterRaster|elevin|Name of the elevation raster map [m]|False
 ParameterRaster|dxin|Name of the x-derivatives raster map [m/m]|False

@@ -2297,12 +2297,11 @@ void QgsGrass::putEnv( QString name, QString value )
 
 QString QgsGrass::modulesConfigDefaultDirPath()
 {
-#ifdef _MSC_VER
   if ( QgsApplication::isRunningFromBuildDir() )
   {
     return QgsApplication::buildSourcePath() + "/src/plugins/grass/modules";
   }
-#endif
+
   return QgsApplication::pkgDataPath() + "/grass/modules";
 }
 

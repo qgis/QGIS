@@ -42,6 +42,12 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      */
     bool moveVertex( double x, double y, QgsFeatureId atFeatureId, int atVertex );
 
+    /** Moves the vertex at the given position number,
+     *  ring and item (first number is index 0), and feature
+     *  to the given coordinates
+     */
+    bool moveVertex( const QgsPointV2& p, QgsFeatureId atFeatureId, int atVertex );
+
     /** Deletes a vertex from a feature
      */
     bool deleteVertex( QgsFeatureId atFeatureId, int atVertex );

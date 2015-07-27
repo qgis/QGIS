@@ -48,8 +48,8 @@ class RasterLayerHistogram(GeoAlgorithm):
     BINS = 'BINS'
 
     def defineCharacteristics(self):
-        self.name = 'Raster layer histogram'
-        self.group = 'Graphics'
+        self.name, self.i18n_name = self.trAlgorithm('Raster layer histogram')
+        self.group, self.i18n_group = self.trAlgorithm('Graphics')
 
         self.addParameter(ParameterRaster(self.INPUT,
             self.tr('Input layer')))

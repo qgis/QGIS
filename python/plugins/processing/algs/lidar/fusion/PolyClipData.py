@@ -44,8 +44,8 @@ class PolyClipData(FusionAlgorithm):
     VALUE = 'VALUE'
 
     def defineCharacteristics(self):
-        self.name = 'Poly Clip Data'
-        self.group = 'Points'
+        self.name, self.i18n_name = self.trAlgorithm('Poly Clip Data')
+        self.group, self.i18n_group = self.trAlgorithm('Points')
         self.addParameter(ParameterFile(
             self.INPUT, self.tr('Input LAS layer')))
         self.addParameter(ParameterFile(self.MASK, self.tr('Mask layer')))

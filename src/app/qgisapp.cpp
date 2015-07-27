@@ -24,7 +24,6 @@
 #include <QApplication>
 #include <QBitmap>
 #include <QCheckBox>
-#include <QSpinBox>
 #include <QClipboard>
 #include <QColor>
 #include <QCursor>
@@ -55,18 +54,20 @@
 #include <QRegExp>
 #include <QRegExpValidator>
 #include <QSettings>
+#include <QSpinBox>
 #include <QSplashScreen>
 #include <QStatusBar>
 #include <QStringList>
 #include <QTcpSocket>
 #include <QTextStream>
 #include <QtGlobal>
+#include <QThread>
 #include <QTimer>
 #include <QToolButton>
 #include <QUuid>
 #include <QVBoxLayout>
 #include <QWhatsThis>
-#include <QThread>
+#include <QWidgetAction>
 
 #include <qgsnetworkaccessmanager.h>
 #include <qgsapplication.h>
@@ -322,7 +323,7 @@ extern "C"
 
 class QTreeWidgetItem;
 
-/** set the application title bar text
+/** Set the application title bar text
 
   If the current project title is null
   if the project file is null then
@@ -639,12 +640,12 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mSnappingDialog = new QgsSnappingDialog( this, mMapCanvas );
   mSnappingDialog->setObjectName( "SnappingOption" );
 
-  mBrowserWidget = new QgsBrowserDockWidget( tr( "Browser" ), this );
+  mBrowserWidget = new QgsBrowserDockWidget( tr( "Browser Panel" ), this );
   mBrowserWidget->setObjectName( "Browser" );
   addDockWidget( Qt::LeftDockWidgetArea, mBrowserWidget );
   mBrowserWidget->hide();
 
-  mBrowserWidget2 = new QgsBrowserDockWidget( tr( "Browser (2)" ), this );
+  mBrowserWidget2 = new QgsBrowserDockWidget( tr( "Browser Panel (2)" ), this );
   mBrowserWidget2->setObjectName( "Browser2" );
   addDockWidget( Qt::LeftDockWidgetArea, mBrowserWidget2 );
   mBrowserWidget2->hide();
@@ -664,7 +665,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   // create the GPS tool on starting QGIS - this is like the browser
   mpGpsWidget = new QgsGPSInformationWidget( mMapCanvas );
   //create the dock widget
-  mpGpsDock = new QDockWidget( tr( "GPS Information" ), this );
+  mpGpsDock = new QDockWidget( tr( "GPS Information Panel" ), this );
   mpGpsDock->setObjectName( "GPSInformation" );
   mpGpsDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   addDockWidget( Qt::LeftDockWidgetArea, mpGpsDock );
@@ -677,7 +678,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
   mLogViewer = new QgsMessageLogViewer( statusBar(), this );
 
-  mLogDock = new QDockWidget( tr( "Log Messages" ), this );
+  mLogDock = new QDockWidget( tr( "Log Messages Panel" ), this );
   mLogDock->setObjectName( "MessageLog" );
   mLogDock->setAllowedAreas( Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea );
   addDockWidget( Qt::BottomDockWidgetArea, mLogDock );
@@ -2364,7 +2365,7 @@ void QgisApp::createOverview()
 //  QVBoxLayout *myOverviewLayout = new QVBoxLayout;
 //  myOverviewLayout->addWidget(overviewCanvas);
 //  overviewFrame->setLayout(myOverviewLayout);
-  mOverviewDock = new QDockWidget( tr( "Overview" ), this );
+  mOverviewDock = new QDockWidget( tr( "Overview Panel" ), this );
   mOverviewDock->setObjectName( "Overview" );
   mOverviewDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   mOverviewDock->setWidget( overviewCanvas );
@@ -2463,7 +2464,7 @@ void QgisApp::initLayerTreeView()
 {
   mLayerTreeView->setWhatsThis( tr( "Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties." ) );
 
-  mLayerTreeDock = new QDockWidget( tr( "Layers" ), this );
+  mLayerTreeDock = new QDockWidget( tr( "Layers Panel" ), this );
   mLayerTreeDock->setObjectName( "Layers" );
   mLayerTreeDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
 
@@ -2549,7 +2550,7 @@ void QgisApp::initLayerTreeView()
   mMapLayerOrder->setObjectName( "theMapLayerOrder" );
 
   mMapLayerOrder->setWhatsThis( tr( "Map layer list that displays all layers in drawing order." ) );
-  mLayerOrderDock = new QDockWidget( tr( "Layer order" ), this );
+  mLayerOrderDock = new QDockWidget( tr( "Layer Order Panel" ), this );
   mLayerOrderDock->setObjectName( "LayerOrder" );
   mLayerOrderDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
 
@@ -8056,7 +8057,7 @@ QgsMapLayer *QgisApp::activeLayer()
   return mLayerTreeView ? mLayerTreeView->currentLayer() : 0;
 }
 
-/** set the current layer */
+/** Set the current layer */
 bool QgisApp::setActiveLayer( QgsMapLayer *layer )
 {
   if ( !layer )
@@ -10558,11 +10559,23 @@ QMenu* QgisApp::createPopupMenu()
     }
 
     qSort( panels.begin(), panels.end(), cmpByText_ );
+    QWidgetAction* panelstitle = new QWidgetAction( menu );
+    QLabel* plabel = new QLabel( QString( "<b>%1</b>" ).arg( tr( "Panels" ) ) );
+    plabel->setMargin( 3 );
+    plabel->setAlignment( Qt::AlignHCenter );
+    panelstitle->setDefaultWidget( plabel );
+    menu->addAction( panelstitle );
     foreach ( QAction* a, panels )
     {
       menu->addAction( a );
     }
     menu->addSeparator();
+    QWidgetAction* toolbarstitle = new QWidgetAction( menu );
+    QLabel* tlabel = new QLabel( QString( "<b>%1</b>" ).arg( tr( "Toolbars" ) ) );
+    tlabel->setMargin( 3 );
+    tlabel->setAlignment( Qt::AlignHCenter );
+    toolbarstitle->setDefaultWidget( tlabel );
+    menu->addAction( toolbarstitle );
     qSort( toolbars.begin(), toolbars.end(), cmpByText_ );
     foreach ( QAction* a, toolbars )
     {

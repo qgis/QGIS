@@ -54,8 +54,8 @@ class Ogr2OgrOneSideBuffer(OgrAlgorithm):
     OPTIONS = 'OPTIONS'
 
     def defineCharacteristics(self):
-        self.name = 'Single sided buffers (and offset lines) for lines'
-        self.group = '[OGR] Geoprocessing'
+        self.name, self.i18n_name = self.trAlgorithm('Single sided buffers (and offset lines) for lines')
+        self.group, self.i18n_group = self.trAlgorithm('[OGR] Geoprocessing')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
             self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE], False))

@@ -100,8 +100,8 @@ class Intersection(GeoAlgorithm):
         del writer
 
     def defineCharacteristics(self):
-        self.name = 'Intersection'
-        self.group = 'Vector overlay tools'
+        self.name, self.i18n_name = self.trAlgorithm('Intersection')
+        self.group, self.i18n_group = self.trAlgorithm('Vector overlay tools')
         self.addParameter(ParameterVector(self.INPUT,
             self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterVector(self.INPUT2,

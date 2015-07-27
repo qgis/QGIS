@@ -83,6 +83,10 @@ void QgsVertexMarker::paint( QPainter* p )
       p->drawLine( QLineF( s, s, -s, s ) );
       p->drawLine( QLineF( -s, s, -s, -s ) );
       break;
+
+    case ICON_CIRCLE:
+      p->drawEllipse( QPointF( 0, 0 ), s, s );
+      break;
   }
 }
 

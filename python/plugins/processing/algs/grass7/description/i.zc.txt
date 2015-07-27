@@ -1,5 +1,5 @@
 i.zc
-i.zc - Zero-crossing "edge detection" raster function for image processing.
+Zero-crossing "edge detection" raster function for image processing.
 Imagery (i.*)
 ParameterRaster|input|Name of input raster map|False
 ParameterNumber|width|x-y extent of the Gaussian filter|1|None|9

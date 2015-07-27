@@ -58,8 +58,8 @@ class GridInvDist(GdalAlgorithm):
         return "gdalogr:gridinvdist"
 
     def defineCharacteristics(self):
-        self.name = 'Grid (Inverse distance to a power)'
-        self.group = '[GDAL] Analysis'
+        self.name, self.i18n_name = self.trAlgorithm('Grid (Inverse distance to a power)')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Analysis')
         self.addParameter(ParameterVector(self.INPUT,
            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POINT]))
         self.addParameter(ParameterTableField(self.Z_FIELD,
