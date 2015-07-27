@@ -77,6 +77,8 @@ def getClassificationEn(alg):
 
 def getClassification(alg):
     group, subgroup = getClassificationEn(alg)
+    if not group and not subgroup:
+        return None, None
     return (QCoreApplication.translate('AlgorithmClassification', group),
             QCoreApplication.translate('AlgorithmClassification', subgroup))
 
