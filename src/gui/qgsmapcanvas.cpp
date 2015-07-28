@@ -202,6 +202,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   mCurrentLayer = NULL;
   mMapOverview = NULL;
   mMapTool = NULL;
+  mOldCursor = cursor();
   mLastNonZoomMapTool = NULL;
 
   mFrozen = false;
@@ -1486,7 +1487,10 @@ void QgsMapCanvas::setMapTool( QgsMapTool* tool )
     disconnect( mMapTool, SIGNAL( destroyed() ), this, SLOT( mapToolDestroyed() ) );
     mMapTool->deactivate();
   }
-
+  else
+  {
+     mOldCursor = cursor();
+  }
   if ( tool->isTransient() && mMapTool && !mMapTool->isTransient() )
   {
     // if zoom or pan tool will be active, save old tool
@@ -1508,7 +1512,6 @@ void QgsMapCanvas::setMapTool( QgsMapTool* tool )
     connect( mMapTool, SIGNAL( destroyed() ), this, SLOT( mapToolDestroyed() ) );
     mMapTool->activate();
   }
-
   emit mapToolSet( mMapTool );
   emit mapToolSet( mMapTool, oldTool );
 } // setMapTool
@@ -1519,9 +1522,9 @@ void QgsMapCanvas::unsetMapTool( QgsMapTool* tool )
   {
     mMapTool->deactivate();
     mMapTool = NULL;
+    setCursor( mOldCursor );
     emit mapToolSet( NULL );
     emit mapToolSet( NULL, mMapTool );
-    setCursor( Qt::ArrowCursor );
   }
 
   if ( mLastNonZoomMapTool && mLastNonZoomMapTool == tool )

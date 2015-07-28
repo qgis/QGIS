@@ -69,6 +69,12 @@ QgsProviderRegistry::QgsProviderRegistry( QString pluginPath )
   QString mLibraryDirectory = baseDir + "/lib";
 #endif
   mLibraryDirectory = pluginPath;
+  init();
+} 
+
+
+void QgsProviderRegistry::init()
+{
   mLibraryDirectory.setSorting( QDir::Name | QDir::IgnoreCase );
   mLibraryDirectory.setFilter( QDir::Files | QDir::NoSymLinks );
 
@@ -220,7 +226,7 @@ QgsProviderRegistry::QgsProviderRegistry( QString pluginPath )
 // typedef for the unload dataprovider function
 typedef void cleanupProviderFunction_t();
 
-QgsProviderRegistry::~QgsProviderRegistry()
+void QgsProviderRegistry::clean()
 {
   QgsMapLayerRegistry::instance()->removeAllMapLayers();
 
@@ -239,6 +245,11 @@ QgsProviderRegistry::~QgsProviderRegistry()
     }
     ++it;
   }
+}
+
+QgsProviderRegistry::~QgsProviderRegistry()
+{
+   clean();
 }
 
 
@@ -312,12 +323,12 @@ QString QgsProviderRegistry::pluginList( bool asHTML ) const
   return list;
 }
 
-
 void QgsProviderRegistry::setLibraryDirectory( QDir const & path )
 {
   mLibraryDirectory = path;
+  clean();
+  init();
 }
-
 
 QDir const & QgsProviderRegistry::libraryDirectory() const
 {

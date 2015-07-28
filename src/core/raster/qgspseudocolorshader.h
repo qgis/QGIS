@@ -32,11 +32,13 @@ class CORE_EXPORT QgsPseudoColorShader : public QgsRasterShaderFunction
   public:
     QgsPseudoColorShader( double theMinimumValue = 0.0, double theMaximumValue = 255.0 );
 
-    /** \brief generates and new RGB value based on one input value */
-    bool shade( double, int*, int*, int* );
+    /** \brief Generates and new RGB value based on one input value */
+    bool shade(double, int*, int*, int*, int*) override;
 
-    /** \brief generates and new RGB value based on original RGB value */
-    bool shade( double, double, double, int*, int*, int* );
+    /** \brief Generates and new RGB value based on original RGB value */
+    bool shade(double, double, double, double, int*, int*, int*, int*) override;
+
+    void legendSymbologyItems(QList< QPair< QString, QColor > >& symbolItems) const override;
 
     /** \brief Set the maximum value */
     void setMaximumValue( double ) override;

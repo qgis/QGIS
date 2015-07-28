@@ -2060,8 +2060,10 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
           t.rotate( -m2p.mapRotation() );
           t.translate( -center.x(), -center.y() );
           qreal xPosR, yPosR;
-          t.map( xPos, yPos, &xPosR, &yPosR );
+          qreal xPos_qreal = xPos, yPos_qreal = yPos;
+          t.map( xPos_qreal, yPos_qreal, &xPosR, &yPosR );
           xPos = xPosR; yPos = yPosR;
+
         }
 
         xPos += xdiff;

@@ -35,7 +35,9 @@
 #include "qgsvaluerelationwidgetfactory.h"
 #include "qgsuuidwidgetfactory.h"
 #include "qgsphotowidgetfactory.h"
+#ifdef WITH_QTWEBKIT
 #include "qgswebviewwidgetfactory.h"
+#endif
 #include "qgscolorwidgetfactory.h"
 #include "qgsrelationreferencefactory.h"
 #include "qgsdatetimeeditfactory.h"

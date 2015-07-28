@@ -17,7 +17,7 @@
 #define QGSWEBFRAME_H
 
 #ifdef WITH_QTWEBKIT
-#include <QtWebKit/QWebFrame>
+#include <QWebFrame>
 #else
 
 #include <QObject>
