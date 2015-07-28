@@ -66,7 +66,8 @@ const unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRe
   unsigned int wkbType, nPoints;
   wkbPtr >> wkbType >> nPoints;
 
-  bool hasZValue = (( QgsWKBTypes::Type )wkbType == QgsWKBTypes::LineString25D ) || (( QgsWKBTypes::Type )wkbType == QgsWKBTypes::LineStringZ );
+  bool hasZValue = QgsWKBTypes::hasZ(( QgsWKBTypes::Type )wkbType );
+  bool hasMValue = QgsWKBTypes::hasM(( QgsWKBTypes::Type )wkbType );
 
   double x = 0.0;
   double y = 0.0;
@@ -90,6 +91,8 @@ const unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRe
     {
       wkbPtr >> x >> y;
       if ( hasZValue )
+        wkbPtr += sizeof( double );
+      if ( hasMValue )
         wkbPtr += sizeof( double );
 
       *ptr = QPointF( x, y );
@@ -121,7 +124,8 @@ const unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QP
   if ( numRings == 0 )  // sanity check for zero rings in polygon
     return wkbPtr;
 
-  bool hasZValue = (( QgsWKBTypes::Type )wkbType == QgsWKBTypes::Polygon25D ) || (( QgsWKBTypes::Type )wkbType == QgsWKBTypes::PolygonZ );
+  bool hasZValue = QgsWKBTypes::hasZ(( QgsWKBTypes::Type )wkbType );
+  bool hasMValue = QgsWKBTypes::hasM(( QgsWKBTypes::Type )wkbType );
 
   double x, y;
   holes.clear();
@@ -145,6 +149,8 @@ const unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QP
     {
       wkbPtr >> x >> y;
       if ( hasZValue )
+        wkbPtr += sizeof( double );
+      if ( hasMValue )
         wkbPtr += sizeof( double );
 
       *ptr = QPointF( x, y );
@@ -345,6 +351,7 @@ void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymb
     }
     break;
 
+    case QgsWKBTypes::MultiCurve:
     case QgsWKBTypes::MultiLineString:
     {
       if ( symbolType != QgsSymbolV2::Line )
@@ -370,6 +377,7 @@ void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymb
     }
     break;
 
+    case QgsWKBTypes::MultiSurface:
     case QgsWKBTypes::MultiPolygon:
     {
       if ( symbolType != QgsSymbolV2::Fill )

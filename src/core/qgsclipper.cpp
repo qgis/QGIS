@@ -45,7 +45,9 @@ const unsigned char* QgsClipper::clippedLineWKB( const unsigned char* wkb, const
 
   wkbPtr >> wkbType >> nPoints;
 
-  bool hasZValue = ( wkbType == QGis::WKBLineString25D );
+  bool hasZValue = QgsWKBTypes::hasZ(( QgsWKBTypes::Type )wkbType );
+  bool hasMValue = QgsWKBTypes::hasM(( QgsWKBTypes::Type )wkbType );
+
 
   double p0x, p0y, p1x = 0.0, p1y = 0.0; //original coordinates
   double p1x_c, p1y_c; //clipped end coordinates
@@ -61,6 +63,8 @@ const unsigned char* QgsClipper::clippedLineWKB( const unsigned char* wkb, const
       wkbPtr >> p1x >> p1y;
       if ( hasZValue )
         wkbPtr += sizeof( double );
+      if ( hasMValue )
+        wkbPtr += sizeof( double );
 
       continue;
     }
@@ -71,6 +75,8 @@ const unsigned char* QgsClipper::clippedLineWKB( const unsigned char* wkb, const
 
       wkbPtr >> p1x >> p1y;
       if ( hasZValue )
+        wkbPtr += sizeof( double );
+      if ( hasMValue )
         wkbPtr += sizeof( double );
 
       p1x_c = p1x; p1y_c = p1y;
