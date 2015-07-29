@@ -67,7 +67,7 @@ class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
 
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const override;
 
-    /**Sets base class members from xml. Usually called from create() methods of subclasses*/
+    /** Sets base class members from xml. Usually called from create() methods of subclasses*/
     void readXML( const QDomElement& filterElem ) override;
 
   private:
@@ -76,14 +76,14 @@ class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
     /** Process a colorization and update resultant HSL & RGB values*/
     void processColorization( int &r, int &g, int &b, int &h, int &s, int &l );
 
-    /**Current saturation value. Range: -100 (desaturated) ... 0 (no change) ... 100 (increased)*/
+    /** Current saturation value. Range: -100 (desaturated) ... 0 (no change) ... 100 (increased)*/
     int mSaturation;
     double mSaturationScale;
 
-    /**Current grayscale mode*/
+    /** Current grayscale mode*/
     QgsHueSaturationFilter::GrayscaleMode mGrayscaleMode;
 
-    /**Colorize settings*/
+    /** Colorize settings*/
     bool mColorizeOn;
     QColor mColorizeColor;
     int mColorizeH, mColorizeS;

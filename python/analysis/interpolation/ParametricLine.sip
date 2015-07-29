@@ -4,12 +4,12 @@ class ParametricLine
 #include <ParametricLine.h>
 %End
   public:
-    /**Default constructor*/
+    /** Default constructor*/
     ParametricLine();
-    /**Constructor, par is a pointer to the parent object, controlpoly the controlpolygon
+    /** Constructor, par is a pointer to the parent object, controlpoly the controlpolygon
       @note not available in python binding */
     // ParametricLine( ParametricLine* par /Transfer/, QVector<Point3D*>* controlpoly );
-    /**Destructor*/
+    /** Destructor*/
     virtual ~ParametricLine();
     virtual void add( ParametricLine* pl ) = 0;
     virtual void calcFirstDer( float t, Vector3D* v ) = 0;

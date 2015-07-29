@@ -32,7 +32,7 @@ class APP_EXPORT QgsTip
   public:
     /** Constructor */
     QgsTip() {};
-    /**Destructor */
+    /** Destructor */
     ~QgsTip() {};
     //
     // Accessors

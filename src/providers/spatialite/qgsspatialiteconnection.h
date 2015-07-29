@@ -29,7 +29,7 @@ class QgsSpatiaLiteConnection : public QObject
 {
     Q_OBJECT;
   public:
-    /** construct a connection. Name can be either stored connection name or a path to the database file */
+    /** Construct a connection. Name can be either stored connection name or a path to the database file */
     QgsSpatiaLiteConnection( QString name );
 
     QString path() { return mPath; }
@@ -65,13 +65,13 @@ class QgsSpatiaLiteConnection : public QObject
 
     Error fetchTables( bool loadGeometrylessTables );
 
-    /** return list of tables. fetchTables() function has to be called before */
+    /** Return list of tables. fetchTables() function has to be called before */
     QList<TableEntry> tables() { return mTables; }
 
-    /** return additional error message (if an error occurred before) */
+    /** Return additional error message (if an error occurred before) */
     QString errorMessage() { return mErrorMsg; }
 
-    /**Updates the Internal Statistics*/
+    /** Updates the Internal Statistics*/
     bool updateStatistics();
 
   protected:
@@ -79,10 +79,10 @@ class QgsSpatiaLiteConnection : public QObject
     sqlite3 *openSpatiaLiteDb( QString path );
     void closeSpatiaLiteDb( sqlite3 * handle );
 
-    /**Checks if geometry_columns and spatial_ref_sys exist and have expected layout*/
+    /** Checks if geometry_columns and spatial_ref_sys exist and have expected layout*/
     int checkHasMetadataTables( sqlite3* handle );
 
-    /**Inserts information about the spatial tables into mTables
+    /** Inserts information about the spatial tables into mTables
       @return true if querying of tables was successful, false on error */
     bool getTableInfo( sqlite3 * handle, bool loadGeometrylessTables );
 
@@ -100,22 +100,22 @@ class QgsSpatiaLiteConnection : public QObject
     bool getTableInfoAbstractInterface( sqlite3 * handle, bool loadGeometrylessTables );
 #endif
 
-    /**cleaning well-formatted SQL strings*/
+    /** Cleaning well-formatted SQL strings*/
     QString quotedValue( QString value ) const;
 
-    /**Checks if geometry_columns_auth table exists*/
+    /** Checks if geometry_columns_auth table exists*/
     bool checkGeometryColumnsAuth( sqlite3 * handle );
 
-    /**Checks if views_geometry_columns table exists*/
+    /** Checks if views_geometry_columns table exists*/
     bool checkViewsGeometryColumns( sqlite3 * handle );
 
-    /**Checks if virts_geometry_columns table exists*/
+    /** Checks if virts_geometry_columns table exists*/
     bool checkVirtsGeometryColumns( sqlite3 * handle );
 
-    /**Checks if this layer has been declared HIDDEN*/
+    /** Checks if this layer has been declared HIDDEN*/
     bool isDeclaredHidden( sqlite3 * handle, QString table, QString geom );
 
-    /**Checks if this layer is a RasterLite-1 datasource*/
+    /** Checks if this layer is a RasterLite-1 datasource*/
     bool isRasterlite1Datasource( sqlite3 * handle, const char * table );
 
     QString mErrorMsg;

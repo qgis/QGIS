@@ -54,7 +54,7 @@ QgsProjectVersion::QgsProjectVersion( QString string )
 
 }
 
-/*! Boolean equal operator
+/** Boolean equal operator
  */
 bool QgsProjectVersion::operator==( const QgsProjectVersion &other )
 {
@@ -63,7 +63,7 @@ bool QgsProjectVersion::operator==( const QgsProjectVersion &other )
           ( mSub == other.mSub ) );
 }
 
-/*! Boolean >= operator
+/** Boolean >= operator
  */
 bool QgsProjectVersion::operator>=( const QgsProjectVersion &other )
 {
@@ -72,7 +72,7 @@ bool QgsProjectVersion::operator>=( const QgsProjectVersion &other )
           (( mMajor == other.mMajor ) && ( mMinor == other.mMinor ) && ( mSub >= other.mSub ) ) );
 }
 
-/*! Boolean > operator
+/** Boolean > operator
  */
 bool QgsProjectVersion::operator>( const QgsProjectVersion &other )
 {

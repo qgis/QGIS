@@ -35,11 +35,11 @@ QgsValueRelationSearchWidgetWrapper::QgsValueRelationSearchWidgetWrapper( QgsVec
 
 bool QgsValueRelationSearchWidgetWrapper::applyDirectly()
 {
-    if ( mLineEdit ) 
-    {
-        return false;
-    }
-    return true;
+  if ( mLineEdit )
+  {
+    return false;
+  }
+  return true;
 }
 
 QVariant QgsValueRelationSearchWidgetWrapper::value()
@@ -85,7 +85,7 @@ QVariant QgsValueRelationSearchWidgetWrapper::value()
 
 void QgsValueRelationSearchWidgetWrapper::valueChanged()
 {
-    setExpression(value().toString());
+  setExpression( value().toString() );
 }
 
 QWidget* QgsValueRelationSearchWidgetWrapper::createWidget( QWidget* parent )
@@ -113,10 +113,10 @@ void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget* editor )
 
   if ( mComboBox )
   {
-    mComboBox->addItem( tr( "Please select" ), QVariant(layer()->pendingFields()[mFieldIdx].type()) );
+    mComboBox->addItem( tr( "Please select" ), QVariant( layer()->pendingFields()[mFieldIdx].type() ) );
     if ( config( "AllowNull" ).toBool() )
     {
-      mComboBox->addItem( tr( "(no selection)" ), QVariant(layer()->pendingFields()[mFieldIdx].type()) );
+      mComboBox->addItem( tr( "(no selection)" ), QVariant( layer()->pendingFields()[mFieldIdx].type() ) );
     }
 
     Q_FOREACH ( const ValueRelationItem& element, mCache )

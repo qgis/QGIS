@@ -82,7 +82,7 @@ class QgsSimpleMarkerSymbolLayerV2 : QgsMarkerSymbolLayerV2
     bool prepareShape( QString name, QPolygonF &polygon ) const;
     bool preparePath( QString name = QString() );
 
-    /**Prepares cache image
+    /** Prepares cache image
     @return true in case of success, false if cache image size too large*/
     bool prepareCache( QgsSymbolV2RenderContext& context );
 };

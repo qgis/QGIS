@@ -47,7 +47,7 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     //! schedules map canvas for repaint
     void updateCanvas();
 
-    /**Sets render context parameters
+    /** Sets render context parameters
     @param p painter for rendering
     @param context out: configured context
     @return true in case of success */

@@ -176,7 +176,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     /** Load info (mNumberFeatures, mCidxFieldIndex, mCidxFieldNumCats)  from map */
     void loadMapInfo();
 
-    /**Returns true if this is a valid layer
+    /** Returns true if this is a valid layer
      */
     bool isValid() override;
 
@@ -459,7 +459,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      */
     static int grassLayerType( QString );
 
-    /** return a provider name
+    /** Return a provider name
 
     Essentially just returns the provider key.  Should be used to build file
     dialogs so that providers can be shown with their supported types. Thus
@@ -476,7 +476,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     QString name() const override;
 
 
-    /** return description
+    /** Return description
 
     Return a terse string describing what the provider is.
 
@@ -546,7 +546,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      * Attributes are loaded from DB and stored in the memory when layer is opened.
      */
 
-    /*! Open layer. Layer for QgsGrassVector means Map+field
+    /** Open layer. Layer for QgsGrassVector means Map+field
      *  @param gisdbase
      *  @param location
      *  @param mapset
@@ -557,7 +557,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      */
     static int openLayer( QString gisdbase, QString location, QString mapset, QString mapName, int field );
 
-    /*! Load sources from the map.
+    /** Load sources from the map.
      *  Must be set: layer.mapId, layer.map, layer.field
      *  Updates: layer.fieldInfo, layer.nColumns, layer.nAttributes, layer.attributes, layer.keyColumn
      *  Unchanged: layer.valid
@@ -568,7 +568,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      */
     static void loadLayerSourcesFromMap( GLAYER &layer );
 
-    /*! Load attributes from database table.
+    /** Load attributes from database table.
      *  Must be set: layer.mapId, layer.map, layer.field
      *  Updates: layer.fieldInfo, layer.nColumns, layer.nAttributes, layer.attributes, layer.keyColumn
      *  Unchanged: layer.valid
@@ -579,12 +579,12 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      */
     static void loadAttributes( GLAYER &layer );
 
-    /*! Close layer.
+    /** Close layer.
      *  @param layerId
      */
     static void closeLayer( int layerId );
 
-    /*! Open map.
+    /** Open map.
      *  @param gisdbase
      *  @param location
      *  @param mapset
@@ -594,36 +594,36 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      */
     static int openMap( QString gisdbase, QString location, QString mapset, QString mapName );
 
-    /*! Close map.
+    /** Close map.
      *  @param mapId
      */
     static void closeMap( int mapId );
 
-    /*! Update map. Close and reopen vector, all layers in mLayers using this map are also updated.
+    /** Update map. Close and reopen vector, all layers in mLayers using this map are also updated.
      *  Instances of QgsGrassProvider are not updated and should call update() method.
      *  @param mapId
      */
     static void updateMap( int mapId );
 
-    /*! The map is outdated. The map was for example rewritten by GRASS module outside QGIS.
+    /** The map is outdated. The map was for example rewritten by GRASS module outside QGIS.
      *  This function checks internal timestamp stored in QGIS.
      *  @param mapId
      */
     static bool mapOutdated( int mapId );
 
-    /*! The attributes are outdated. The table was for example updated by GRASS module outside QGIS.
+    /** The attributes are outdated. The table was for example updated by GRASS module outside QGIS.
      *  This function checks internal timestamp stored in QGIS.
      *  @param mapId
      */
     static bool attributesOutdated( int mapId );
 
-    /*! Get layer map.
+    /** Get layer map.
      *  @param layerId
      *  @return pointer to Map_info structure
      */
     static struct Map_info *layerMap( int layerId );
 
-    /*! Get attribute by category(key) and attribute number.
+    /** Get attribute by category(key) and attribute number.
      *  @param layerId
      *  @param category (key)
      *  @param column column number ( < nColumns )
@@ -631,10 +631,10 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      */
     static char *attribute( int layerId, int cat, int column );
 
-    /** check if provider is outdated and update if necessary */
+    /** Check if provider is outdated and update if necessary */
     void ensureUpdated();
 
-    /** check if layer is topology layer TOPO_POINT, TOPO_NODE, TOPO_LINE */
+    /** Check if layer is topology layer TOPO_POINT, TOPO_NODE, TOPO_LINE */
     bool isTopoType() const;
 
     static bool isTopoType( int layerType );

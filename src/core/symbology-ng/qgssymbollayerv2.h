@@ -95,7 +95,7 @@ class CORE_EXPORT QgsSymbolLayerV2
     void setLocked( bool locked ) { mLocked = locked; }
     bool isLocked() const { return mLocked; }
 
-    /**Returns the estimated maximum distance which the layer style will bleed outside
+    /** Returns the estimated maximum distance which the layer style will bleed outside
       the drawn shape. Eg, polygons drawn with an outline will draw half the width
       of the outline outside of the polygon. This amount is estimated, since it may
       be affected by data defined symbology rules.*/
@@ -279,7 +279,7 @@ class CORE_EXPORT QgsSymbolLayerV2
     */
     void copyDataDefinedProperties( QgsSymbolLayerV2* destLayer ) const;
 
-    /**Copies paint effect of this layer to another symbol layer
+    /** Copies paint effect of this layer to another symbol layer
      * @param destLayer destination layer
      * @note added in QGIS 2.9
      */
@@ -511,7 +511,7 @@ class CORE_EXPORT QgsFillSymbolLayerV2 : public QgsSymbolLayerV2
 
   protected:
     QgsFillSymbolLayerV2( bool locked = false );
-    /**Default method to render polygon*/
+    /** Default method to render polygon*/
     void _renderPolygon( QPainter* p, const QPolygonF& points, const QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
 
     double mAngle;

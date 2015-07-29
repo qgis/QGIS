@@ -62,7 +62,7 @@ class QgsFontUtils
      */
     static QFont getStandardTestFont( const QString& style = "Roman", int pointsize = 12 );
 
-    /**Returns a DOM element containing the properties of the font.
+    /** Returns a DOM element containing the properties of the font.
      * @param document DOM document
      * @param elementName name for DOM element
      * @returns DOM element containing font settings
@@ -71,7 +71,7 @@ class QgsFontUtils
      */
     static QDomElement toXmlElement( const QFont& font, QDomDocument &document, const QString &elementName );
 
-    /**Sets the properties of a font to match the properties stored in an XML element. Calling
+    /** Sets the properties of a font to match the properties stored in an XML element. Calling
      * this will overwrite the current properties of the font.
      * @param font font to update
      * @param element DOM element
@@ -82,7 +82,7 @@ class QgsFontUtils
      */
     static bool setFromXmlElement( QFont& font, const QDomElement& element );
 
-    /**Sets the properties of a font to match the properties stored in an XML child node. Calling
+    /** Sets the properties of a font to match the properties stored in an XML child node. Calling
      * this will overwrite the current properties of the font.
      * @param font font to update
      * @param element DOM element
@@ -93,8 +93,8 @@ class QgsFontUtils
      * @see toXmlElement
      */
     static bool setFromXmlChildNode( QFont& font, const QDomElement& element, const QString& childNode );
-    
-    /**Returns the localized named style of a font, if such a translation is available.
+
+    /** Returns the localized named style of a font, if such a translation is available.
      * @param namedStyle a named style, i.e. "Bold", "Italic", etc
      * @returns The localized named style
      * @note added in QGIS 2.12
@@ -102,7 +102,7 @@ class QgsFontUtils
      */
     static QString translateNamedStyle( const QString& namedStyle );
 
-    /**Returns the english named style of a font, if possible.
+    /** Returns the english named style of a font, if possible.
      * @param namedStyle a localized named style, i.e. "Fett", "Kursiv", etc
      * @returns The english named style
      * @note added in QGIS 2.12

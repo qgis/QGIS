@@ -33,10 +33,10 @@ class CORE_EXPORT QgsGeometryCache
 
   protected:
 
-    /** cache of the committed geometries retrieved *for the current display* */
+    /** Cache of the committed geometries retrieved *for the current display* */
     QgsGeometryMap mCachedGeometries;
 
-    /** extent for which there are cached geometries */
+    /** Extent for which there are cached geometries */
     QgsRectangle mCachedGeometriesRect;
 
 };

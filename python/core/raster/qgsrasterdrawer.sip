@@ -10,7 +10,7 @@ class QgsRasterDrawer
     void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
 
   protected:
-    /**Draws raster part
+    /** Draws raster part
       @param p the painter to draw to
       @param viewPort view port to draw to
       @param img image to draw

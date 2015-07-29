@@ -82,37 +82,37 @@ class CORE_EXPORT QgsComposerObject: public QObject
       OriginalValue /*!< return the original, user set value */
     };
 
-    /**Constructor
+    /** Constructor
      * @param composition parent composition
      */
     QgsComposerObject( QgsComposition* composition );
     virtual ~QgsComposerObject();
 
-    /**Returns the composition the item is attached to.
+    /** Returns the composition the item is attached to.
      * @returns QgsComposition for item.
      */
     const QgsComposition* composition() const { return mComposition; }
     QgsComposition* composition() { return mComposition; }
 
-    /**Stores item state in DOM element
+    /** Stores item state in DOM element
      * @param elem is DOM element corresponding to item tag
      * @param doc is the DOM document
      */
     virtual bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
 
-    /**Sets item state from DOM element
+    /** Sets item state from DOM element
      * @param itemElem is DOM node corresponding to item tag
      * @param doc is DOM document
      */
     virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
-    /**Returns a reference to the data defined settings for one of the item's data defined properties.
+    /** Returns a reference to the data defined settings for one of the item's data defined properties.
      * @param property data defined property to return
      * @note this method was added in version 2.5
     */
     QgsDataDefined* dataDefinedProperty( const DataDefinedProperty property ) const;
 
-    /**Sets parameters for a data defined property for the item
+    /** Sets parameters for a data defined property for the item
      * @param property data defined property to set
      * @param active true if data defined property is active, false if it is disabled
      * @param useExpression true if the expression should be used
@@ -124,10 +124,10 @@ class CORE_EXPORT QgsComposerObject: public QObject
 
   public slots:
 
-    /**Triggers a redraw for the item*/
+    /** Triggers a redraw for the item*/
     virtual void repaint();
 
-    /**Refreshes a data defined property for the item by reevaluating the property's value
+    /** Refreshes a data defined property for the item by reevaluating the property's value
      * and redrawing the item with this new value.
      * @param property data defined property to refresh. If property is set to
      * QgsComposerItem::AllProperties then all data defined properties for the item will be
@@ -140,10 +140,10 @@ class CORE_EXPORT QgsComposerObject: public QObject
 
     QgsComposition* mComposition;
 
-    /**Map of data defined properties for the item to string name to use when exporting item to xml*/
+    /** Map of data defined properties for the item to string name to use when exporting item to xml*/
     QMap< QgsComposerObject::DataDefinedProperty, QString > mDataDefinedNames;
 
-    /**Evaluate a data defined property and return the calculated value
+    /** Evaluate a data defined property and return the calculated value
      * @returns true if data defined property could be successfully evaluated
      * @param property data defined property to evaluate
      * @param expressionValue QVariant for storing the evaluated value
@@ -152,20 +152,20 @@ class CORE_EXPORT QgsComposerObject: public QObject
     bool dataDefinedEvaluate( const QgsComposerObject::DataDefinedProperty property, QVariant &expressionValue );
 
   signals:
-    /**Emitted when the item changes. Signifies that the item widgets must update the
+    /** Emitted when the item changes. Signifies that the item widgets must update the
      * gui elements.
     */
     void itemChanged();
 
   private slots:
-    /**Prepares all composer item data defined expressions using the current atlas coverage layer if set.
+    /** Prepares all composer item data defined expressions using the current atlas coverage layer if set.
      * @note this method was added in version 2.5
     */
     void prepareDataDefinedExpressions() const;
 
   private:
 
-    /**Map of current data defined properties*/
+    /** Map of current data defined properties*/
     QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* > mDataDefinedProperties;
 
     friend class TestQgsComposerObject;

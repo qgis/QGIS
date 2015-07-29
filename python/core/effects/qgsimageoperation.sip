@@ -37,13 +37,13 @@ class QgsImageOperation
       FlipVertical /*!< flip the image vertically */
     };
 
-    /**Convert a QImage to a grayscale image. Alpha channel is preserved.
+    /** Convert a QImage to a grayscale image. Alpha channel is preserved.
      * @param image QImage to convert
      * @param mode mode to use during grayscale conversion
     */
     static void convertToGrayscale( QImage &image, const GrayscaleMode mode = GrayscaleLuminosity );
 
-    /**Alter the brightness or contrast of a QImage.
+    /** Alter the brightness or contrast of a QImage.
      * @param image QImage to alter
      * @param brightness brightness value, in the range -255 to 255. A brightness value of 0 indicates
      * no change to brightness, a negative value will darken the image, and a positive value will brighten
@@ -54,7 +54,7 @@ class QgsImageOperation
      */
     static void adjustBrightnessContrast( QImage &image, const int brightness, const double contrast );
 
-    /**Alter the hue or saturation of a QImage.
+    /** Alter the hue or saturation of a QImage.
      * @param image QImage to alter
      * @param saturation double between 0 and 2 inclusive, where 0 = desaturate and 1.0 = no change
      * @param colorizeColor color to use for colorizing image. Set to an invalid QColor to disable
@@ -64,41 +64,41 @@ class QgsImageOperation
     static void adjustHueSaturation( QImage &image, const double saturation, const QColor& colorizeColor = QColor(),
                                      const double colorizeStrength = 1.0 );
 
-    /**Multiplies opacity of image pixel values by a factor.
+    /** Multiplies opacity of image pixel values by a factor.
      * @param image QImage to alter
      * @param factor factor to multiple pixel's opacity by
      */
     static void multiplyOpacity( QImage &image, const double factor );
 
-    /**Overlays a color onto an image. This operation retains the alpha channel of the
+    /** Overlays a color onto an image. This operation retains the alpha channel of the
      * original image, but replaces all image pixel colors with the specified color.
      * @param image QImage to alter
      * @param color color to overlay (any alpha component of the color is ignored)
      */
     static void overlayColor( QImage &image, const QColor& color );
 
-    /**Struct for storing properties of a distance transform operation*/
+    /** Struct for storing properties of a distance transform operation*/
     struct DistanceTransformProperties
     {
-      /**Set to true to perform the distance transform on transparent pixels
+      /** Set to true to perform the distance transform on transparent pixels
        * in the source image, set to false to perform the distance transform
        * on opaque pixels
        */
       bool shadeExterior;
-      /**Set to true to automatically calculate the maximum distance in the
+      /** Set to true to automatically calculate the maximum distance in the
        * transform to use as the spread value
        */
       bool useMaxDistance;
-      /**Maximum distance (in pixels) for the distance transform shading to
+      /** Maximum distance (in pixels) for the distance transform shading to
        * spread
        */
       double spread;
-      /**Color ramp to use for shading the distance transform
+      /** Color ramp to use for shading the distance transform
        */
       QgsVectorColorRampV2* ramp;
     };
 
-    /**Performs a distance transform on the source image and shades the result
+    /** Performs a distance transform on the source image and shades the result
      * using a color ramp.
      * @param image QImage to alter
      * @param properties DistanceTransformProperties object with parameters
@@ -106,7 +106,7 @@ class QgsImageOperation
      */
     static void distanceTransform( QImage &image, const QgsImageOperation::DistanceTransformProperties& properties );
 
-    /**Performs a stack blur on an image. Stack blur represents a good balance between
+    /** Performs a stack blur on an image. Stack blur represents a good balance between
      * speed and blur quality.
      * @param image QImage to blur
      * @param radius blur radius in pixels, maximum value of 16
@@ -116,7 +116,7 @@ class QgsImageOperation
      */
     static void stackBlur( QImage &image, const int radius, const bool alphaOnly = false );
 
-    /**Performs a gaussian blur on an image. Gaussian blur is slower but results in a high
+    /** Performs a gaussian blur on an image. Gaussian blur is slower but results in a high
      * quality blur.
      * @param image QImage to blur
      * @param radius blur radius in pixels
@@ -125,7 +125,7 @@ class QgsImageOperation
      */
     static QImage* gaussianBlur( QImage &image, const int radius ) /Factory/;
 
-    /**Flips an image horizontally or vertically
+    /** Flips an image horizontally or vertically
      * @param image QImage to flip
      * @param type type of flip to perform (horizontal or vertical)
      */

@@ -196,7 +196,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! deletes provider registry and map layer registry
     static void exitQgis();
 
-    /** constants for endian-ness */
+    /** Constants for endian-ness */
     typedef enum ENDIAN
     {
       XDR = 0,  // network, or big-endian, byte order
@@ -241,9 +241,9 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static void registerOgrDrivers();
 
-    /**Converts absolute path to path relative to target */
+    /** Converts absolute path to path relative to target */
     static QString absolutePathToRelativePath( QString apath, QString targetPath );
-    /**Converts path relative to target to an absolute path */
+    /** Converts path relative to target to an absolute path */
     static QString relativePathToAbsolutePath( QString rpath, QString targetPath );
 
     /** Indicates whether running from build directory (not installed) */
@@ -314,15 +314,15 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     static QString ABISYM( mConfigPath );
 
-    /** true when running from build directory, i.e. without 'make install' */
+    /** True when running from build directory, i.e. without 'make install' */
     static bool ABISYM( mRunningFromBuildDir );
-    /** path to the source directory. valid only when running from build directory. */
+    /** Path to the source directory. valid only when running from build directory. */
     static QString ABISYM( mBuildSourcePath );
 #ifdef _MSC_VER
-    /** configuration internal dir */
+    /** Configuration internal dir */
     static QString ABISYM( mCfgIntDir );
 #endif
-    /** path to the output directory of the build. valid only when running from build directory */
+    /** Path to the output directory of the build. valid only when running from build directory */
     static QString ABISYM( mBuildOutputPath );
     /** List of gdal drivers to be skipped. Uses GDAL_SKIP to exclude them.
      * @see skipGdalDriver, restoreGdalDriver */

@@ -90,7 +90,7 @@ class CORE_EXPORT QgsProject : public QObject
      *  @note added in 2.4 */
     void setTitle( const QString& title );
 
-    /** returns title */
+    /** Returns title */
     const QString & title() const;
     //@}
 
@@ -116,7 +116,7 @@ class CORE_EXPORT QgsProject : public QObject
     //@{
     void setFileName( const QString & name );
 
-    /** returns file name */
+    /** Returns file name */
     QString fileName() const;
     //@}
 
@@ -126,7 +126,7 @@ class CORE_EXPORT QgsProject : public QObject
     void clear();
 
 
-    /** read project file
+    /** Read project file
 
        @note Any current plug-in state is erased
 
@@ -148,7 +148,7 @@ class CORE_EXPORT QgsProject : public QObject
     //@}
 
 
-    /** read the layer described in the associated Dom node
+    /** Read the layer described in the associated Dom node
 
         @param layerNode   represents a QgsProject Dom node that maps to a specific layer.
 
@@ -163,7 +163,7 @@ class CORE_EXPORT QgsProject : public QObject
     bool read( QDomNode & layerNode );
 
 
-    /** write project file
+    /** Write project file
 
        XXX How to best get read access to Qgis state?  Actually we can finagle
        that by searching for qgisapp in object hiearchy.
@@ -202,7 +202,7 @@ class CORE_EXPORT QgsProject : public QObject
     bool writeEntry( const QString & scope, const QString & key, const QStringList & value );
     //@}
 
-    /** key value accessors
+    /** Key value accessors
 
         keys would be the familiar QSettings-like '/' delimited entries,
         implying a hierarchy of keys and corresponding values
@@ -220,34 +220,34 @@ class CORE_EXPORT QgsProject : public QObject
     //@}
 
 
-    /** remove the given key */
+    /** Remove the given key */
     bool removeEntry( const QString & scope, const QString & key );
 
 
-    /** return keys with values -- do not return keys that contain other keys
+    /** Return keys with values -- do not return keys that contain other keys
 
       @note equivalent to QSettings entryList()
     */
     QStringList entryList( const QString & scope, const QString & key ) const;
 
-    /** return keys with keys -- do not return keys that contain only values
+    /** Return keys with keys -- do not return keys that contain only values
 
       @note equivalent to QSettings subkeyList()
     */
     QStringList subkeyList( const QString & scope, const QString & key ) const;
 
 
-    /** dump out current project properties to stderr
+    /** Dump out current project properties to stderr
 
       @todo XXX Now slightly broken since re-factoring.  Won't print out top-level key
                 and redundantly prints sub-keys.
     */
     void dumpProperties() const;
 
-    /** prepare a filename to save it to the project file */
+    /** Prepare a filename to save it to the project file */
     QString writePath( QString filename, QString relativeBasePath = QString::null ) const;
 
-    /** turn filename read from the project file to an absolute path */
+    /** Turn filename read from the project file to an absolute path */
     QString readPath( QString filename ) const;
 
     /** Return error message from previous read/write */
@@ -380,7 +380,7 @@ class CORE_EXPORT QgsProject : public QObject
 
     QgsProjectBadLayerHandler* mBadLayerHandler;
 
-    /**Embeded layers which are defined in other projects. Key: layer id,
+    /** Embeded layers which are defined in other projects. Key: layer id,
     value: pair< project file path, save layer yes / no (e.g. if the layer is part of an embedded group, loading/saving is done by the legend)
        If the project file path is empty, QgsProject is going to ignore the layer for saving (e.g. because it is part and managed by an embedded group)*/
     QHash< QString, QPair< QString, bool> > mEmbeddedLayers;

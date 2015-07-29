@@ -26,9 +26,9 @@ class QgsCapabilitiesCache: QObject
 %End
   public:
 
-    /**Returns cached capabilities document (or 0 if document for configuration file not in cache)*/
+    /** Returns cached capabilities document (or 0 if document for configuration file not in cache)*/
     const QDomDocument* searchCapabilitiesDocument( QString configFilePath, QString version );
-    /**Inserts new capabilities document (creates a copy of the document, does not take ownership)*/
+    /** Inserts new capabilities document (creates a copy of the document, does not take ownership)*/
     void insertCapabilitiesDocument( QString configFilePath, QString version, const QDomDocument* doc );
 
 };

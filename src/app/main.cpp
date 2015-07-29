@@ -95,7 +95,7 @@ typedef SInt32 SRefCon;
 #include <errno.h>
 #endif
 
-/** print usage text
+/** Print usage text
  */
 void usage( std::string const & appName )
 {

@@ -22,7 +22,7 @@
 class QgsComposition;
 class QImage;
 
-/**Renders a composition to an image and compares with an expected output*/
+/** Renders a composition to an image and compares with an expected output*/
 class QgsCompositionChecker : public QgsMultiRenderChecker
 {
   public:

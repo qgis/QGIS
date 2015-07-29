@@ -104,7 +104,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
      */
     virtual QDomElement save( QDomDocument& doc ) override;
 
-    /** sets the embedded renderer
+    /** Sets the embedded renderer
      * @param subRenderer the embedded renderer (will be cloned)
      */
     void setEmbeddedRenderer( const QgsFeatureRendererV2* subRenderer );
@@ -122,7 +122,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
     */
     void setPreprocessingEnabled( bool enabled ) { mPreprocessingEnabled = enabled; }
 
-    /** creates a QgsInvertedPolygonRenderer by a conversion from an existing renderer.
+    /** Creates a QgsInvertedPolygonRenderer by a conversion from an existing renderer.
         @note added in 2.5
         @returns a new renderer if the conversion was possible, otherwise 0.
         */
@@ -144,19 +144,19 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
       QgsFeature feature;             //< one feature (for attriute-based rendering)
     };
     typedef QVector<CombinedFeature> FeatureCategoryVector;
-    /** where features are stored, based on the index of their symbol category @see mSymbolCategories */
+    /** Where features are stored, based on the index of their symbol category @see mSymbolCategories */
     FeatureCategoryVector mFeaturesCategories;
 
-    /** maps a category to an index */
+    /** Maps a category to an index */
     QMap<QByteArray, int> mSymbolCategories;
 
-    /** the polygon used as exterior ring that covers the current extent */
+    /** The polygon used as exterior ring that covers the current extent */
     QgsPolygon mExtentPolygon;
 
-    /** the context used for rendering */
+    /** The context used for rendering */
     QgsRenderContext mContext;
 
-    /** fields of each feature*/
+    /** Fields of each feature*/
     QgsFields mFields;
 
     /** Class used to represent features that must be rendered
@@ -173,7 +173,7 @@ class CORE_EXPORT QgsInvertedPolygonRenderer : public QgsFeatureRendererV2
     };
     QList<FeatureDecoration> mFeatureDecorations;
 
-    /** whether to preprocess (merge) geometries before rendering*/
+    /** Whether to preprocess (merge) geometries before rendering*/
     bool mPreprocessingEnabled;
 };
 

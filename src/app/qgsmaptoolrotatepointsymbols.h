@@ -21,7 +21,7 @@
 
 class QgsPointRotationItem;
 
-/**A class that allows interactive manipulation the value of the rotation field(s) for point layers*/
+/** A class that allows interactive manipulation the value of the rotation field(s) for point layers*/
 class APP_EXPORT QgsMapToolRotatePointSymbols: public QgsMapToolEdit
 {
     Q_OBJECT
@@ -36,39 +36,39 @@ class APP_EXPORT QgsMapToolRotatePointSymbols: public QgsMapToolEdit
 
     bool isEditTool() override {return true;}
 
-    /**Returns true if the symbols of a maplayer can be rotated. This means the layer
+    /** Returns true if the symbols of a maplayer can be rotated. This means the layer
       is a vector layer, has type point or multipoint and has at least one rotation attribute in the renderer*/
     static bool layerIsRotatable( QgsMapLayer* ml );
 
   private:
     QgsVectorLayer* mActiveLayer;
     QgsFeatureId mFeatureNumber;
-    /**Last azimut between mouse and edited point*/
+    /** Last azimut between mouse and edited point*/
     double mCurrentMouseAzimut;
-    /**Last feature rotation*/
+    /** Last feature rotation*/
     double mCurrentRotationFeature;
     bool mRotating;
     QList<int> mCurrentRotationAttributes;
-    /**Screen coordinate of the snaped feature*/
+    /** Screen coordinate of the snaped feature*/
     QPoint mSnappedPoint;
-    /**Item that displays rotation during mouse move*/
+    /** Item that displays rotation during mouse move*/
     QgsPointRotationItem* mRotationItem;
-    /**True if ctrl was pressed during the last mouse move event*/
+    /** True if ctrl was pressed during the last mouse move event*/
     bool mCtrlPressed;
 
-    /**Finds out the rotation attributes of mActiveLayers
+    /** Finds out the rotation attributes of mActiveLayers
       @param vl the point vector layer
       @param attList out: the list containing the rotation indices
       @return 0 in case of success*/
     static int layerRotationAttributes( QgsVectorLayer* vl, QList<int>& attList );
     void drawArrow( double azimut ) const;
-    /**Calculates the azimut between mousePos and mSnappedPoint*/
+    /** Calculates the azimut between mousePos and mSnappedPoint*/
     double calculateAzimut( const QPoint& mousePos );
-    /**Create item with the point symbol for a specific feature. This will be used to show the rotation to the user*/
+    /** Create item with the point symbol for a specific feature. This will be used to show the rotation to the user*/
     void createPixmapItem( QgsFeature& f );
-    /**Sets the rotation of the pixmap item*/
+    /** Sets the rotation of the pixmap item*/
     void setPixmapItemRotation( double rotation );
-    /**Rounds value to 15 degree integer (used if ctrl pressed)*/
+    /** Rounds value to 15 degree integer (used if ctrl pressed)*/
     static int roundTo15Degrees( double n );
 };
 

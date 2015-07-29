@@ -41,7 +41,7 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
 {
     Q_OBJECT
   public:
-    /*! This constructor is used when the query builder is called from the
+    /** This constructor is used when the query builder is called from the
      * vector layer properties dialog
      * @param layer existing vector layer
      * @param parent Parent widget
@@ -80,7 +80,7 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
 
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
-    /*! Test the constructed sql statement to see if the database likes it.
+    /** Test the constructed sql statement to see if the database likes it.
      * The number of rows that would be returned is displayed in a message box.
      * The test uses a "select count(*) from ..." query to test the SQL
      * statement.

@@ -47,15 +47,15 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
     void setBlueBand( int band ) { mBlueBand = band; }
 
     const QgsContrastEnhancement* redContrastEnhancement() const { return mRedContrastEnhancement; }
-    /**Takes ownership*/
+    /** Takes ownership*/
     void setRedContrastEnhancement( QgsContrastEnhancement* ce );
 
     const QgsContrastEnhancement* greenContrastEnhancement() const { return mGreenContrastEnhancement; }
-    /**Takes ownership*/
+    /** Takes ownership*/
     void setGreenContrastEnhancement( QgsContrastEnhancement* ce );
 
     const QgsContrastEnhancement* blueContrastEnhancement() const { return mBlueContrastEnhancement; }
-    /**Takes ownership*/
+    /** Takes ownership*/
     void setBlueContrastEnhancement( QgsContrastEnhancement* ce );
 
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const override;

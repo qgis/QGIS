@@ -14,7 +14,7 @@ class QgsColorSwatchGrid : QWidget
 
   public:
 
-    /**Construct a new color swatch grid.
+    /** Construct a new color swatch grid.
      * @param scheme QgsColorScheme for colors to show in grid
      * @param context context string provided to color scheme
      * @param parent parent widget
@@ -29,49 +29,49 @@ class QgsColorSwatchGrid : QWidget
     //Reimplemented to set fixed size on widget
     virtual QSize sizeHint() const;
 
-    /**Get the current context for the grid
+    /** Get the current context for the grid
      * @returns context string which is passed to scheme for color generation
      * @see setContext
      */
     QString context() const;
 
-    /**Sets the current context for the grid
+    /** Sets the current context for the grid
      * @param context string which is passed to scheme for color generation
      * @see context
      */
     void setContext( const QString context );
 
-    /**Get the base color for the widget
+    /** Get the base color for the widget
      * @returns base color which is passed to scheme for color generation
      * @see setBaseColor
      */
     QColor baseColor() const;
 
-    /**Sets the base color for the widget
+    /** Sets the base color for the widget
      * @param baseColor base color to pass to scheme for color generation
      * @see baseColor
      */
     void setBaseColor( const QColor &baseColor );
 
-    /**Gets the list of colors shown in the grid
+    /** Gets the list of colors shown in the grid
      * @returns list of colors currently shown in the grid
      */
     QgsNamedColorList *colors();
 
   public slots:
 
-    /**Reload colors from scheme and redraws the widget
+    /** Reload colors from scheme and redraws the widget
      */
     void refreshColors();
 
   signals:
 
-    /**Emitted when a color has been selected from the widget
+    /** Emitted when a color has been selected from the widget
      * @param color selected color
      */
     void colorChanged( const QColor &color );
 
-    /**Emitted when mouse hovers over widget
+    /** Emitted when mouse hovers over widget
      */
     void hovered();
 
@@ -105,7 +105,7 @@ class QgsColorSwatchGridAction: QWidgetAction
 
   public:
 
-    /**Construct a new color swatch grid action.
+    /** Construct a new color swatch grid action.
      * @param scheme QgsColorScheme for colors to show in grid
      * @param menu parent menu
      * @param context context string provided to color scheme
@@ -115,25 +115,25 @@ class QgsColorSwatchGridAction: QWidgetAction
 
     virtual ~QgsColorSwatchGridAction();
 
-    /**Sets the base color for the color grid
+    /** Sets the base color for the color grid
      * @param baseColor base color to pass to scheme for color generation
      * @see baseColor
      */
     void setBaseColor( const QColor &baseColor );
 
-    /**Get the base color for the color grid
+    /** Get the base color for the color grid
      * @returns base color which is passed to scheme for color generation
      * @see setBaseColor
      */
     QColor baseColor() const;
 
-    /**Get the current context for the color grid
+    /** Get the current context for the color grid
      * @returns context string which is passed to scheme for color generation
      * @see setContext
      */
     QString context() const;
 
-    /**Sets the current context for the color grid
+    /** Sets the current context for the color grid
      * @param context string which is passed to scheme for color generation
      * @see context
      */
@@ -141,13 +141,13 @@ class QgsColorSwatchGridAction: QWidgetAction
 
   public slots:
 
-    /**Reload colors from scheme and redraws the widget
+    /** Reload colors from scheme and redraws the widget
      */
     void refreshColors();
 
   signals:
 
-    /**Emitted when a color has been selected from the widget
+    /** Emitted when a color has been selected from the widget
      * @param color selected color
      */
     void colorChanged( const QColor &color );

@@ -26,7 +26,7 @@ QgsMapLayerAction::QgsMapLayerAction( QString name, QObject* parent, Targets tar
 {
 }
 
-/**Creates a map layer action which can run only on a specific layer*/
+/** Creates a map layer action which can run only on a specific layer*/
 QgsMapLayerAction::QgsMapLayerAction( QString name, QObject* parent, QgsMapLayer* layer, Targets targets, QIcon icon )
     : QAction( icon, name, parent )
     , mSingleLayer( true )
@@ -37,7 +37,7 @@ QgsMapLayerAction::QgsMapLayerAction( QString name, QObject* parent, QgsMapLayer
 {
 }
 
-/**Creates a map layer action which can run on a specific type of layer*/
+/** Creates a map layer action which can run on a specific type of layer*/
 QgsMapLayerAction::QgsMapLayerAction( QString name, QObject* parent, QgsMapLayer::LayerType layerType, Targets targets, QIcon icon )
     : QAction( icon, name, parent )
     , mSingleLayer( false )

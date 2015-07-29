@@ -82,7 +82,7 @@ class QgsVectorGradientColorRampV2 : QgsVectorColorRampV2
     QgsStringMap info() const;
     void setInfo( const QgsStringMap& info );
 
-    /**copy color ramp stops to a QGradient
+    /** Copy color ramp stops to a QGradient
     * @note added in 2.1 */
     void addStopsToGradient( QGradient* gradient, double alpha = 1 );
 };

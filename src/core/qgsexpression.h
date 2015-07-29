@@ -205,7 +205,7 @@ class CORE_EXPORT QgsExpression
                                           const QgsDistanceArea* distanceArea = 0
                                         );
 
-    /**Attempts to evaluate a text string as an expression to a resultant double
+    /** Attempts to evaluate a text string as an expression to a resultant double
      * value.
      * @param text text to evaluate as expression
      * @param fallbackValue value to return if text can not be evaluated as a double
@@ -402,7 +402,7 @@ class CORE_EXPORT QgsExpression
     // return index of the function in Functions array
     static int functionIndex( const QString& name );
 
-    /**  Returns the number of functions defined in the parser
+    /** Returns the number of functions defined in the parser
       *  @return The number of function defined in the parser.
       */
     static int functionCount();
@@ -682,7 +682,7 @@ class CORE_EXPORT QgsExpression
 
     //////
 
-    /** support for visitor pattern - algorithms dealing with the expressions
+    /** Support for visitor pattern - algorithms dealing with the expressions
         may be implemented without modifying the Node classes */
     class CORE_EXPORT Visitor
     {
@@ -697,7 +697,7 @@ class CORE_EXPORT QgsExpression
         virtual void visit( const NodeCondition& n ) = 0;
     };
 
-    /** entry function for the visitor pattern */
+    /** Entry function for the visitor pattern */
     void acceptVisitor( Visitor& v ) const;
 
     static QString helptext( QString name );

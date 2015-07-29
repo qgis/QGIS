@@ -22,15 +22,15 @@ class QgsMultiBandColorRenderer: QgsRasterRenderer
     void setBlueBand( int band );
 
     const QgsContrastEnhancement* redContrastEnhancement() const;
-    /**Takes ownership*/
+    /** Takes ownership*/
     void setRedContrastEnhancement( QgsContrastEnhancement* ce /Transfer/ );
 
     const QgsContrastEnhancement* greenContrastEnhancement() const;
-    /**Takes ownership*/
+    /** Takes ownership*/
     void setGreenContrastEnhancement( QgsContrastEnhancement* ce /Transfer/ );
 
     const QgsContrastEnhancement* blueContrastEnhancement() const;
-    /**Takes ownership*/
+    /** Takes ownership*/
     void setBlueContrastEnhancement( QgsContrastEnhancement* ce /Transfer/ );
 
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;

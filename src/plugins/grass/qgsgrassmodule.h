@@ -42,7 +42,7 @@ class QDomElement;
 class QLineEdit;
 class QValidator;
 
-/*! \class QgsGrassModule
+/** \class QgsGrassModule
  *  \brief Interface to GRASS modules.
  *
  */
@@ -193,7 +193,7 @@ class QgsGrassModule : public QDialog, private  Ui::QgsGrassModuleBase
     bool mDirect;
 };
 
-/*! \class QgsGrassModuleOptions
+/** \class QgsGrassModuleOptions
  *  \brief Widget with GRASS options.
  *
  */
@@ -285,7 +285,7 @@ class QgsGrassModuleOptions
     bool mDirect;
 };
 
-/*! \class QgsGrassModuleStandardOptions
+/** \class QgsGrassModuleStandardOptions
  *  \brief Widget with GRASS standard options.
  *
  */
@@ -352,7 +352,7 @@ class QgsGrassModuleStandardOptions: QWidget, public QgsGrassModuleOptions
 
 /****************** QgsGrassModuleGroupBoxItem ************************/
 
-/*! \class QgsGrassModuleCheckBox
+/** \class QgsGrassModuleCheckBox
  *  \brief Checkbox with elided text
  */
 class QgsGrassModuleCheckBox : public QCheckBox
@@ -360,7 +360,7 @@ class QgsGrassModuleCheckBox : public QCheckBox
     Q_OBJECT
 
   public:
-    /*! \brief Constructor
+    /** \brief Constructor
      */
     QgsGrassModuleCheckBox( const QString & text, QWidget * parent = 0 );
 
@@ -383,13 +383,13 @@ class QgsGrassModuleCheckBox : public QCheckBox
     QString mTip;
 };
 
-/*! \class QgsGrassModuleItem
+/** \class QgsGrassModuleItem
  *  \brief GRASS module option
  */
 class QgsGrassModuleItem
 {
   public:
-    /*! \brief Constructor
+    /** \brief Constructor
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
      * \param gnode option node in GRASS module XML description file
@@ -450,7 +450,7 @@ class QgsGrassModuleItem
 
 /****************** QgsGrassModuleGroupBoxItem ************************/
 
-/*! \class QgsGrassModuleGroupBoxItem
+/** \class QgsGrassModuleGroupBoxItem
  *  \brief GRASS module option box
  */
 class QgsGrassModuleGroupBoxItem : public QGroupBox, public QgsGrassModuleItem
@@ -458,7 +458,7 @@ class QgsGrassModuleGroupBoxItem : public QGroupBox, public QgsGrassModuleItem
     Q_OBJECT
 
   public:
-    /*! \brief Constructor
+    /** \brief Constructor
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
      * \param gnode option node in GRASS module XML description file
@@ -480,7 +480,7 @@ class QgsGrassModuleGroupBoxItem : public QGroupBox, public QgsGrassModuleItem
 
 /****************** QgsGrassModuleOption ************************/
 
-/*! \class QgsGrassModuleOption
+/** \class QgsGrassModuleOption
  *  \brief  GRASS option
  */
 class QgsGrassModuleOption : public QgsGrassModuleGroupBoxItem
@@ -488,7 +488,7 @@ class QgsGrassModuleOption : public QgsGrassModuleGroupBoxItem
     Q_OBJECT
 
   public:
-    /*! \brief Constructor
+    /** \brief Constructor
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
      */
@@ -586,7 +586,7 @@ class QgsGrassModuleOption : public QgsGrassModuleGroupBoxItem
     bool mUsesRegion;
 };
 /********************** QgsGrassModuleFlag ************************/
-/*! \class QgsGrassModuleFlag
+/** \class QgsGrassModuleFlag
  *  \brief  GRASS flag
  */
 class QgsGrassModuleFlag : public QgsGrassModuleCheckBox, public QgsGrassModuleItem
@@ -594,7 +594,7 @@ class QgsGrassModuleFlag : public QgsGrassModuleCheckBox, public QgsGrassModuleI
     Q_OBJECT
 
   public:
-    /*! \brief Constructor
+    /** \brief Constructor
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
      */
@@ -612,7 +612,7 @@ class QgsGrassModuleFlag : public QgsGrassModuleCheckBox, public QgsGrassModuleI
 
 /************************ QgsGrassModuleInput **********************/
 
-/*! \class QgsGrassModuleInput
+/** \class QgsGrassModuleInput
  *  \brief Class representing raster or vector module input
  */
 class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
@@ -620,7 +620,7 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
     Q_OBJECT
 
   public:
-    /*! \brief Constructor
+    /** \brief Constructor
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
      */
@@ -725,7 +725,7 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
 
 /*********************** QgsGrassModuleGdalInput **********************/
 
-/*! \class QgsGrassModuleGdalInput
+/** \class QgsGrassModuleGdalInput
  *  \brief GDAL/OGR module input
  */
 class QgsGrassModuleGdalInput : public QgsGrassModuleGroupBoxItem
@@ -733,7 +733,7 @@ class QgsGrassModuleGdalInput : public QgsGrassModuleGroupBoxItem
     Q_OBJECT
 
   public:
-    /*! \brief Constructor
+    /** \brief Constructor
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
      */
@@ -787,7 +787,7 @@ class QgsGrassModuleGdalInput : public QgsGrassModuleGroupBoxItem
 
 /*********************** QgsGrassModuleField **********************/
 
-/*! \class QgsGrassModuleField
+/** \class QgsGrassModuleField
  *  \brief GRASS vector attribute column.
  */
 class QgsGrassModuleField : public QgsGrassModuleGroupBoxItem
@@ -795,7 +795,7 @@ class QgsGrassModuleField : public QgsGrassModuleGroupBoxItem
     Q_OBJECT
 
   public:
-    /*! \brief Constructor
+    /** \brief Constructor
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
      */
@@ -834,7 +834,7 @@ class QgsGrassModuleField : public QgsGrassModuleGroupBoxItem
 
 /*********************** QgsGrassModuleSelection **********************/
 
-/*! \class QgsGrassModuleSelection
+/** \class QgsGrassModuleSelection
  *  \brief List of categories taken from current layer selection.
  */
 class QgsGrassModuleSelection : public QgsGrassModuleGroupBoxItem
@@ -842,7 +842,7 @@ class QgsGrassModuleSelection : public QgsGrassModuleGroupBoxItem
     Q_OBJECT
 
   public:
-    /*! \brief Constructor
+    /** \brief Constructor
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
      */
@@ -885,7 +885,7 @@ class QgsGrassModuleSelection : public QgsGrassModuleGroupBoxItem
 
 /*********************** QgsGrassModuleFile **********************/
 
-/*! \class QgsGrassModuleFile
+/** \class QgsGrassModuleFile
  *  \brief Input/output file.
  */
 class QgsGrassModuleFile : public QgsGrassModuleGroupBoxItem
@@ -893,7 +893,7 @@ class QgsGrassModuleFile : public QgsGrassModuleGroupBoxItem
     Q_OBJECT
 
   public:
-    /*! \brief Constructor
+    /** \brief Constructor
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
      */

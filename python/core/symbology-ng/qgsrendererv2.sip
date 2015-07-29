@@ -60,7 +60,7 @@ class QgsFeatureRendererV2
 
     QString type() const;
 
-    /** to be overridden
+    /** To be overridden
      * @param feature feature
      * @return returns pointer to symbol or 0 if symbol was not found
      */
@@ -123,7 +123,7 @@ class QgsFeatureRendererV2
     //! @note added in 2.8
     virtual QDomElement writeSld( QDomDocument& doc, const QString& styleName ) const;
 
-    /** create a new renderer according to the information contained in
+    /** Create a new renderer according to the information contained in
      * the UserStyle element of a SLD style document
      * @param node the node in the SLD document whose the UserStyle element
      * is a child
@@ -189,7 +189,7 @@ class QgsFeatureRendererV2
     //! @note added in 2.6
     virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat );
 
-    /**Allows for a renderer to modify the extent of a feature request prior to rendering
+    /** Allows for a renderer to modify the extent of a feature request prior to rendering
      * @param extent reference to request's filter extent. Modify extent to change the
      * extent of feature request
      * @param context render context

@@ -155,7 +155,7 @@ class QgsPalLayerSettings
       PolygonBoundary /*!< avoid placing labels over boundary of polygon (prefer placing outside or
        completely inside polygon) */
     };
-    
+
     enum ShapeType
     {
       ShapeRectangle,
@@ -300,7 +300,7 @@ class QgsPalLayerSettings
       FontMaxPixel,
       IsObstacle,
       ObstacleFactor,
-      
+
       // (data defined only)
       Show,
       AlwaysShow
@@ -308,7 +308,7 @@ class QgsPalLayerSettings
 
     // whether to label this layer
     bool enabled;
-    
+
     /** Whether to draw labels for this layer. For some layers it may be desirable
      * to register their features as obstacles for other labels without requiring
      * labels to be drawn for the layer itself. In this case drawLabels can be set
@@ -421,7 +421,7 @@ class QgsPalLayerSettings
 
     bool centroidWhole; // whether centroid calculated from whole or visible polygon
     bool centroidInside; // whether centroid-point calculated must be inside polygon
-    
+
     /** True if only labels which completely fit within a polygon are allowed.
      */
     bool fitInPolygonOnly;
@@ -470,7 +470,7 @@ class QgsPalLayerSettings
 
     double minFeatureSize; // minimum feature size to be labelled (in mm)
     bool obstacle; // whether features for layer are obstacles to labels of other layers
-    
+
     /** Obstacle factor, where 1.0 = default, < 1.0 more likely to be covered by labels,
      * > 1.0 less likely to be covered
      */

@@ -18,7 +18,7 @@ email                : marco.hugentobler at sourcepole dot com
 
 #include "qgsmultisurfacev2.h"
 
-/**\ingroup core
+/** \ingroup core
  * \class QgsMultiPolygonV2
  * \brief Multi polygon geometry collection.
  * \note added in QGIS 2.10
@@ -40,7 +40,7 @@ class CORE_EXPORT QgsMultiPolygonV2: public QgsMultiSurfaceV2
     QString asJSON( int precision = 17 ) const override;
 
 
-    /**Adds a geometry and takes ownership. Returns true in case of success*/
+    /** Adds a geometry and takes ownership. Returns true in case of success*/
     virtual bool addGeometry( QgsAbstractGeometryV2* g ) override;
 };
 

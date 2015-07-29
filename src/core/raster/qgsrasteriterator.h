@@ -34,7 +34,7 @@ class CORE_EXPORT QgsRasterIterator
     QgsRasterIterator( QgsRasterInterface* input );
     ~QgsRasterIterator();
 
-    /**Start reading of raster band. Raster data can then be retrieved by calling readNextRasterPart until it returns false.
+    /** Start reading of raster band. Raster data can then be retrieved by calling readNextRasterPart until it returns false.
       @param bandNumber number of raster band to read
       @param nCols number of columns
       @param nRows number of rows
@@ -42,7 +42,7 @@ class CORE_EXPORT QgsRasterIterator
      */
     void startRasterRead( int bandNumber, int nCols, int nRows, const QgsRectangle& extent );
 
-    /**Fetches next part of raster data, caller takes ownership of the block and
+    /** Fetches next part of raster data, caller takes ownership of the block and
        caller should delete the block.
        @param bandNumber band to read
        @param nCols number of columns on output device
@@ -84,7 +84,7 @@ class CORE_EXPORT QgsRasterIterator
     int mMaximumTileWidth;
     int mMaximumTileHeight;
 
-    /**Remove part into and release memory*/
+    /** Remove part into and release memory*/
     void removePartInfo( int bandNumber );
 };
 

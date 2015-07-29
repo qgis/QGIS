@@ -108,7 +108,7 @@ class QgsMapLayer : QObject
     /** Returns the current blending mode for a layer */
     QPainter::CompositionMode blendMode() const;
 
-    /**Synchronises with changes in the datasource
+    /** Synchronises with changes in the datasource
         */
     virtual void reload();
 
@@ -133,13 +133,13 @@ class QgsMapLayer : QObject
     /** Return the extent of the layer */
     virtual QgsRectangle extent();
 
-    /*! Return the status of the layer. An invalid layer is one which has a bad datasource
+    /** Return the status of the layer. An invalid layer is one which has a bad datasource
      * or other problem. Child classes set this flag when intialized
      * @return True if the layer is valid and can be accessed
      */
     bool isValid();
 
-    /*! Gets a version of the internal layer definition that has sensitive
+    /** Gets a version of the internal layer definition that has sensitive
       *  bits removed (for example, the password). This function should
       * be used when displaying the source name for general viewing.
      */
@@ -166,7 +166,7 @@ class QgsMapLayer : QObject
     /** True if the layer can be edited */
     virtual bool isEditable() const;
 
-    /** sets state from Dom document
+    /** Sets state from Dom document
        @param layerElement The Dom element corresponding to ``maplayer'' tag
        @note
 
@@ -183,7 +183,7 @@ class QgsMapLayer : QObject
     bool readLayerXML( const QDomElement& layerElement );
 
 
-    /** stores state in Dom node
+    /** Stores state in Dom node
        @param layerElement is a Dom element corresponding to ``maplayer'' tag
        @param document is a the dom document being written
        @param relativeBasePath base path for relative paths
@@ -385,7 +385,7 @@ class QgsMapLayer : QObject
      */
     QgsMapLayerStyleManager* styleManager() const;
 
-    /**Returns the minimum scale denominator at which the layer is visible.
+    /** Returns the minimum scale denominator at which the layer is visible.
      * Scale based visibility is only used if hasScaleBasedVisibility is true.
      * @returns minimum scale denominator at which the layer will render
      * @see setMinimumScale
@@ -394,7 +394,7 @@ class QgsMapLayer : QObject
      */
     float minimumScale() const;
 
-    /**Returns the maximum scale denominator at which the layer is visible.
+    /** Returns the maximum scale denominator at which the layer is visible.
      * Scale based visibility is only used if hasScaleBasedVisibility is true.
      * @returns minimum scale denominator at which the layer will render
      * @see setMaximumScale
@@ -403,7 +403,7 @@ class QgsMapLayer : QObject
      */
     float maximumScale() const;
 
-    /**Returns whether scale based visibility is enabled for the layer.
+    /** Returns whether scale based visibility is enabled for the layer.
      * @returns true if scale based visibility is enabled
      * @see minimumScale
      * @see maximumScale
@@ -416,7 +416,7 @@ class QgsMapLayer : QObject
     /** Event handler for when a coordinate transform fails due to bad vertex error */
     virtual void invalidTransformInput();
 
-    /**Sets the minimum scale denominator at which the layer will be visible.
+    /** Sets the minimum scale denominator at which the layer will be visible.
      * Scale based visibility is only used if setScaleBasedVisibility is set to true.
      * @param theMinScale minimum scale denominator at which the layer should render
      * @see minimumScale
@@ -425,7 +425,7 @@ class QgsMapLayer : QObject
      */
     void setMinimumScale( const float theMinScale );
 
-    /**Sets the maximum scale denominator at which the layer will be visible.
+    /** Sets the maximum scale denominator at which the layer will be visible.
      * Scale based visibility is only used if setScaleBasedVisibility is set to true.
      * @param theMaxScale maximum scale denominator at which the layer should render
      * @see maximumScale
@@ -434,7 +434,7 @@ class QgsMapLayer : QObject
      */
     void setMaximumScale( const float theMaxScale );
 
-    /**Sets whether scale based visibility is enabled for the layer.
+    /** Sets whether scale based visibility is enabled for the layer.
      * @param enabled set to true to enable scale based visibility
      * @see setMinimumScale
      * @see setMaximumScale
@@ -442,7 +442,7 @@ class QgsMapLayer : QObject
      */
     void setScaleBasedVisibility( const bool enabled );
 
-    /**Accessor for the scale based visilibility flag
+    /** Accessor for the scale based visilibility flag
      * @deprecated use setScaleBasedVisibility instead
     */
     void toggleScaleBasedVisibility( bool theVisibilityFlag ) /Deprecated/;
@@ -490,7 +490,7 @@ class QgsMapLayer : QObject
     /** This is used to send a request that any mapcanvas using this layer update its extents */
     void recalculateExtents();
 
-    /** data of layer changed */
+    /** Data of layer changed */
     void dataChanged();
 
     /** Signal emitted when the blend mode is changed, through QgsMapLayer::setBlendMode() */
@@ -509,15 +509,15 @@ class QgsMapLayer : QObject
     /** Set the extent */
     virtual void setExtent( const QgsRectangle &rect );
 
-    /** set whether layer is valid or not - should be used in constructor. */
+    /** Set whether layer is valid or not - should be used in constructor. */
     void setValid( bool valid );
 
-    /** called by readLayerXML(), used by children to read state specific to them from
+    /** Called by readLayerXML(), used by children to read state specific to them from
         project files.
     */
     virtual bool readXml( const QDomNode& layer_node );
 
-    /** called by writeLayerXML(), used by children to write state specific to them to
+    /** Called by writeLayerXML(), used by children to write state specific to them to
         project files.
     */
     virtual bool writeXml( QDomNode & layer_node, QDomDocument & document );
@@ -536,7 +536,7 @@ class QgsMapLayer : QObject
     /** Write style manager's configuration (if exists). To be called by subclasses. */
     void writeStyleManager( QDomNode& layerNode, QDomDocument& doc ) const;
 
-    /** debugging member - invoked when a connect() is made to this object */
+    /** Debugging member - invoked when a connect() is made to this object */
     void connectNotify( const char * signal );
 
     /** Add error message */

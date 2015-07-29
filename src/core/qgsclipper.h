@@ -80,7 +80,7 @@ class CORE_EXPORT QgsClipper
 
     static void trimPolygon( QPolygonF& pts, const QgsRectangle& clipRect );
 
-    /**Reads a polyline from WKB and clips it to clipExtent
+    /** Reads a polyline from WKB and clips it to clipExtent
       @param wkb pointer to the start of the line wkb
       @param clipExtent clipping bounds
       @param line out: clipped line coordinates*/
@@ -120,7 +120,7 @@ class CORE_EXPORT QgsClipper
     //Implementation of 'Fast clipping' algorithm (Sobkow et al. 1987, Computers & Graphics Vol.11, 4, p.459-467)
     static bool clipLineSegment( double xLeft, double xRight, double yBottom, double yTop, double& x0, double& y0, double& x1, double& y1 );
 
-    /**Connects two lines split by the clip (by inserting points on the clip border)
+    /** Connects two lines split by the clip (by inserting points on the clip border)
       @param x0 x-coordinate of the first line end
       @param y0 y-coordinate of the first line end
       @param x1 x-coordinate of the second line start

@@ -20,7 +20,7 @@
 
 #include "qgscurvev2.h"
 
-/**\ingroup core
+/** \ingroup core
  * \class QgsCompoundCurveV2
  * \brief Compound curve geometry type
  * \note added in QGIS 2.10
@@ -102,7 +102,7 @@ class CORE_EXPORT QgsCompoundCurveV2: public QgsCurveV2
 
   private:
     QList< QgsCurveV2* > mCurves;
-    /**Turns a vertex id for the compound curve into one or more ids for the subcurves
+    /** Turns a vertex id for the compound curve into one or more ids for the subcurves
         @return the index of the subcurve or -1 in case of error*/
     QList< QPair<int, QgsVertexId> > curveVertexId( const QgsVertexId& id ) const;
 };

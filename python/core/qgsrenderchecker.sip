@@ -1,5 +1,5 @@
 
-/**  Render checker for tests in python */
+/** Render checker for tests in python */
 
 class QgsRenderChecker
 {
@@ -103,7 +103,7 @@ class QgsRenderChecker
     */
     bool isKnownAnomaly( QString theDiffImageFile );
 
-    /**Draws a checkboard pattern for image backgrounds, so that transparency is visible
+    /** Draws a checkboard pattern for image backgrounds, so that transparency is visible
      * without requiring a transparent background for the image
      */
     static void drawBackground( QImage* image );

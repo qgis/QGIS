@@ -130,7 +130,7 @@ void QgsSearchQueryBuilder::getFieldValues( int limit )
   mModelValues->blockSignals( true );
   lstValues->setUpdatesEnabled( false );
 
-  /**MH: keep already inserted values in a set. Querying is much faster compared to QStandardItemModel::findItems*/
+  /** MH: keep already inserted values in a set. Querying is much faster compared to QStandardItemModel::findItems*/
   QSet<QString> insertedValues;
 
   while ( fit.nextFeature( feat ) &&

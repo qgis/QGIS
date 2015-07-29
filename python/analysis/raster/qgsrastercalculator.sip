@@ -9,7 +9,7 @@ struct QgsRasterCalculatorEntry
   int bandNumber; //raster band number
 };
 
-/**Raster calculator class*/
+/** Raster calculator class*/
 class QgsRasterCalculator
 {
 %TypeHeaderCode
@@ -46,7 +46,7 @@ class QgsRasterCalculator
 
     ~QgsRasterCalculator();
 
-    /**Starts the calculation and writes new raster
+    /** Starts the calculation and writes new raster
       @param p progress bar (or 0 if called from non-gui code)
       @return 0 in case of success*/
     int processCalculation( QProgressDialog* p = 0 );

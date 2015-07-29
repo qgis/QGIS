@@ -19,38 +19,38 @@
 
 #include <cmath>
 
-/**Point3D is a class to represent a three dimensional point*/
+/** Point3D is a class to represent a three dimensional point*/
 class ANALYSIS_EXPORT Point3D
 {
   protected:
-    /**X-coordinate*/
+    /** X-coordinate*/
     double mX;
-    /**Y-coordinate*/
+    /** Y-coordinate*/
     double mY;
-    /**Z-coordinate*/
+    /** Z-coordinate*/
     double mZ;
   public:
     Point3D();
-    /**Constructor with the x-, y- and z-coordinate as arguments*/
+    /** Constructor with the x-, y- and z-coordinate as arguments*/
     Point3D( double x, double y, double z );
     Point3D( const Point3D& p );
     ~Point3D();
     Point3D& operator=( const Point3D& p );
     bool operator==( const Point3D& p );
     bool operator!=( const Point3D& p );
-    /**calculates the three-dimensional distance to another point*/
+    /** Calculates the three-dimensional distance to another point*/
     double dist3D( Point3D* p ) const;
-    /**Returns the x-coordinate of the point*/
+    /** Returns the x-coordinate of the point*/
     double getX() const;
-    /**Returns the y-coordinate of the point*/
+    /** Returns the y-coordinate of the point*/
     double getY() const;
-    /**Returns the z-coordinate of the point*/
+    /** Returns the z-coordinate of the point*/
     double getZ() const;
-    /**Sets the x-coordinate of the point*/
+    /** Sets the x-coordinate of the point*/
     void setX( double x );
-    /**Sets the y-coordinate of the point*/
+    /** Sets the y-coordinate of the point*/
     void setY( double y );
-    /**Sets the z-coordinate of the point*/
+    /** Sets the z-coordinate of the point*/
     void setZ( double z );
 };
 

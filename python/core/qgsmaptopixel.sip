@@ -1,5 +1,5 @@
 
-/*! \class QgsMapToPixel
+/** \class QgsMapToPixel
 * \brief Class for doing transforms between map coordinates and device coordinates.
 *
 * This class can convert device coordinates to map coordinates and vice versa.
@@ -20,31 +20,31 @@ class QgsMapToPixel
     QgsMapToPixel( double mapUnitsPerPixel = 0, double height = 0, double ymin = 0, double xmin = 0 );
     //! destructor
     ~QgsMapToPixel();
-    /*! Transform the point from map (world) coordinates to device coordinates
+    /** Transform the point from map (world) coordinates to device coordinates
     * @param p Point to transform
     * @return QgsPoint in device coordinates
     */
     QgsPoint transform( const QgsPoint& p ) const;
     void transform( QgsPoint* p ) const;
-    /*! Transform the point specified by x,y from map (world)
+    /** Transform the point specified by x,y from map (world)
      * coordinates to device coordinates
      * @param x x cordinate o point to transform
      * @param y y coordinate of point to transform
      * @return QgsPoint in device coordinates
     */
     QgsPoint transform( double x, double y ) const;
-    /*! Transform device coordinates to map (world) coordinates
+    /** Transform device coordinates to map (world) coordinates
     * @param x x coordinate of point to be converted to map cooordinates
     * @param y y coordinate of point to be converted to map cooordinates
     * @return QgsPoint in map coordinates
     */
 
-    /*! Transform device coordinates to map coordinates. Modifies the
+    /** Transform device coordinates to map coordinates. Modifies the
        given coordinates in place. Intended as a fast way to do the
        transform. */
     void transformInPlace( qreal& x, qreal& y ) const;
 
-    /*! Transform device coordinates to map coordinates. Modifies the
+    /** Transform device coordinates to map coordinates. Modifies the
        given coordinates in place. Intended as a fast way to do the
        transform.
        @note not available in python bindings
@@ -54,10 +54,10 @@ class QgsMapToPixel
 
     QgsPoint toMapCoordinates( int x, int y ) const;
 
-    /*! Transform device coordinates to map (world) coordinates */
+    /** Transform device coordinates to map (world) coordinates */
     QgsPoint toMapCoordinatesF( double x, double y ) const;
 
-    /*! Transform device coordinates to map (world) coordinates
+    /** Transform device coordinates to map (world) coordinates
      * @param p Point to be converted to map cooordinates
      * @return QgsPoint in map coorndiates
      */
@@ -65,7 +65,7 @@ class QgsMapToPixel
 
     QgsPoint toMapPoint( double x, double y ) const;
 
-    /*! Set map units per pixel
+    /** Set map units per pixel
     * @param mapUnitsPerPixel Map units per pixel
     */
     void setMapUnitsPerPixel( double mapUnitsPerPixel );
@@ -106,7 +106,7 @@ class QgsMapToPixel
     // @deprecated in 2.8, use setParameters
     void setXMinimum( double xmin ) /Deprecated/;
 
-    /*! Set parameters for use in transforming coordinates
+    /** Set parameters for use in transforming coordinates
     * @param mapUnitsPerPixel Map units per pixel
     * @param xmin Minimum x value
     * @param ymin Minimum y value
@@ -115,7 +115,7 @@ class QgsMapToPixel
     */
     // void setParameters( double mapUnitsPerPixel, double xmin, double ymin, double ymax );
 
-    /*! Set parameters for use in transforming coordinates
+    /** Set parameters for use in transforming coordinates
     * @param mapUnitsPerPixel Map units per pixel
     * @param xc X ordinate of map center, in geographical units
     * @param yc Y ordinate of map center, in geographical units

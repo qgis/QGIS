@@ -16,7 +16,7 @@ class QgsRelief
     QgsRelief( const QString& inputFile, const QString& outputFile, const QString& outputFormat );
     ~QgsRelief();
 
-    /**Starts the calculation, reads from mInputFile and stores the result in mOutputFile
+    /** Starts the calculation, reads from mInputFile and stores the result in mOutputFile
       @param p progress dialog that receives update and that is checked for abort. 0 if no progress bar is needed.
       @return 0 in case of success*/
     int processRaster( QProgressDialog* p );
@@ -29,10 +29,10 @@ class QgsRelief
     const QList< QgsRelief::ReliefColor >& reliefColors() const;
     void setReliefColors( const QList< QgsRelief::ReliefColor >& c );
 
-    /**Calculates class breaks according with the method of Buenzli (2011) using an iterative algorithm for segmented regression
+    /** Calculates class breaks according with the method of Buenzli (2011) using an iterative algorithm for segmented regression
       @return true in case of success*/
     QList< QgsRelief::ReliefColor > calculateOptimizedReliefClasses();
 
-    /**Write frequency of elevation values to file for manual inspection*/
+    /** Write frequency of elevation values to file for manual inspection*/
     bool exportFrequencyDistributionToCsv( const QString& file );
 };

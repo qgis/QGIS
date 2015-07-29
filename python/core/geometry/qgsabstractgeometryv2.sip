@@ -95,7 +95,7 @@ class QgsAbstractGeometryV2
     //virtual void clip( const QgsRectangle& rect );
     virtual void draw( QPainter& p ) const = 0;
 
-    /**Returns next vertex id and coordinates
+    /** Returns next vertex id and coordinates
     @return false if at end*/
     virtual bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const = 0;
 
@@ -109,11 +109,11 @@ class QgsAbstractGeometryV2
     virtual bool moveVertex( const QgsVertexId& position, const QgsPointV2& newPos ) = 0;
     virtual bool deleteVertex( const QgsVertexId& position ) = 0;
 
-    /**Length for linear geometries,perimeter for area geometries*/
+    /** Length for linear geometries,perimeter for area geometries*/
     virtual double length() const;
     virtual double area() const;
 
     virtual bool hasCurvedSegments() const;
-    /**Returns a geometry without curves. Caller takes ownership*/
+    /** Returns a geometry without curves. Caller takes ownership*/
     virtual QgsAbstractGeometryV2* segmentize() const /Factory/;
 };

@@ -17,6 +17,6 @@ public:
   QString asJSON( int precision = 17 ) const;
 
 
-  /**Adds a geometry and takes ownership. Returns true in case of success*/
+  /** Adds a geometry and takes ownership. Returns true in case of success*/
   virtual bool addGeometry( QgsAbstractGeometryV2* g );
 };

@@ -11,13 +11,13 @@ class QgsTolerance
      * For map (project) units, use ProjectUnits. Try to avoid using MapUnits value and use LayerUnits instead. */
     enum UnitType
     {
-      /**Layer unit value. @note deprecated: use LayerUnits */
+      /** Layer unit value. @note deprecated: use LayerUnits */
       MapUnits,
-      /**Layer unit value */
+      /** Layer unit value */
       LayerUnits,
-      /**Pixels unit of tolerance*/
+      /** Pixels unit of tolerance*/
       Pixels,
-      /**Map (project) units. Added in 2.8 */
+      /** Map (project) units. Added in 2.8 */
       ProjectUnits
     };
 

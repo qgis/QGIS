@@ -8,21 +8,21 @@ class QgsOgcUtils
 
   public:
 
-    /** static method that creates geometry from GML
+    /** Static method that creates geometry from GML
      @param xmlString xml representation of the geometry. GML elements are expected to be
        in default namespace (\verbatim {<Point>...</Point> \endverbatim) or in
        "gml" namespace (\verbatim <gml:Point>...</gml:Point> \endverbatim)
      */
     static QgsGeometry* geometryFromGML( const QString& xmlString ) /Factory/;
 
-    /** static method that creates geometry from GML
+    /** Static method that creates geometry from GML
       */
     static QgsGeometry* geometryFromGML( const QDomNode& geometryNode ) /Factory/;
 
-    /** read rectangle from GML2 Box */
+    /** Read rectangle from GML2 Box */
     static QgsRectangle rectangleFromGMLBox( const QDomNode& boxNode );
 
-    /** read rectangle from GML3 Envelope */
+    /** Read rectangle from GML3 Envelope */
     static QgsRectangle rectangleFromGMLEnvelope( const QDomNode& envelopeNode );
 
     /** Exports the geometry to GML2 or GML3

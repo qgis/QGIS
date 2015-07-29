@@ -10,7 +10,7 @@ class QgsGeometryAnalyzer
 
   public:
 
-    /**Simplify vector layer using (a modified) Douglas-Peucker algorithm
+    /** Simplify vector layer using (a modified) Douglas-Peucker algorithm
      and write it to a new shape file
       @param layer input vector layer
       @param shapefileName path to the output shp
@@ -21,7 +21,7 @@ class QgsGeometryAnalyzer
     bool simplify( QgsVectorLayer* layer, const QString& shapefileName, double tolerance,
                    bool onlySelectedFeatures = false, QProgressDialog* p = 0 );
 
-    /**Calculate the true centroids, or 'center of mass' for a vector layer and
+    /** Calculate the true centroids, or 'center of mass' for a vector layer and
        write it to a new shape file
       @param layer input vector layer
       @param shapefileName path to the output shp
@@ -31,7 +31,7 @@ class QgsGeometryAnalyzer
     bool centroids( QgsVectorLayer* layer, const QString& shapefileName,
                     bool onlySelectedFeatures = false, QProgressDialog* p = 0 );
 
-    /**Create a polygon based on the extent of all (selected) features and write it to a new shape file
+    /** Create a polygon based on the extent of all (selected) features and write it to a new shape file
       @param layer input vector layer
       @param shapefileName path to the output shp
       @param onlySelectedFeatures if true, only selected features are considered, else all the features
@@ -39,7 +39,7 @@ class QgsGeometryAnalyzer
       */
     bool extent( QgsVectorLayer* layer, const QString& shapefileName, bool onlySelectedFeatures = false, QProgressDialog* p = 0 );
 
-    /**Create buffers for a vector layer and write it to a new shape file
+    /** Create buffers for a vector layer and write it to a new shape file
       @param layer input vector layer
       @param shapefileName path to the output shp
       @param bufferDistance distance for buffering (if no buffer field is specified)
@@ -51,7 +51,7 @@ class QgsGeometryAnalyzer
     bool buffer( QgsVectorLayer* layer, const QString& shapefileName, double bufferDistance,
                  bool onlySelectedFeatures = false, bool dissolve = false, int bufferDistanceField = -1, QProgressDialog* p = 0 );
 
-    /**Create convex hull(s) of a vector layer and write it to a new shape file
+    /** Create convex hull(s) of a vector layer and write it to a new shape file
       @param layer input vector layer
       @param shapefileName path to the output shp
       @param onlySelectedFeatures if true, only selected features are considered, else all the features
@@ -62,7 +62,7 @@ class QgsGeometryAnalyzer
     bool convexHull( QgsVectorLayer* layer, const QString& shapefileName, bool onlySelectedFeatures = false,
                      int uniqueIdField = -1, QProgressDialog* p = 0 );
 
-    /**Dissolve a vector layer and write it to a new shape file
+    /** Dissolve a vector layer and write it to a new shape file
       @param layer input vector layer
       @param shapefileName path to the output shp
       @param onlySelectedFeatures if true, only selected features are considered, else all the features
@@ -73,7 +73,7 @@ class QgsGeometryAnalyzer
     bool dissolve( QgsVectorLayer* layer, const QString& shapefileName, bool onlySelectedFeatures = false,
                    int uniqueIdField = -1, QProgressDialog* p = 0 );
 
-    /**Creates an event layer (multipoint or multiline) by locating features from a (non-spatial) event table along the features of a line layer.
+    /** Creates an event layer (multipoint or multiline) by locating features from a (non-spatial) event table along the features of a line layer.
         Note that currently (until QgsGeometry supports m-values) the z-coordinate of the line layer is used for linear referencing
       @param lineLayer layer with the line geometry
       @param eventLayer layer with features and location field
@@ -94,9 +94,9 @@ class QgsGeometryAnalyzer
                      const QString& outputFormat, int locationField1, int locationField2 = -1, int offsetField = -1, double offsetScale = 1.0,
                      bool forceSingleGeometry = false, QgsVectorDataProvider* memoryProvider = 0, QProgressDialog* p = 0 );
 
-    /**Returns linear reference geometry as a multiline (or 0 if no match). Currently, the z-coordinates are considered to be the measures (no support for m-values in QGIS)*/
+    /** Returns linear reference geometry as a multiline (or 0 if no match). Currently, the z-coordinates are considered to be the measures (no support for m-values in QGIS)*/
     QgsGeometry* locateBetweenMeasures( double fromMeasure, double toMeasure, const QgsGeometry* lineGeom );
-    /**Returns linear reference geometry. Unlike the PostGIS function, this method always returns multipoint or 0 if no match (not geometry collection).
+    /** Returns linear reference geometry. Unlike the PostGIS function, this method always returns multipoint or 0 if no match (not geometry collection).
       Currently, the z-coordinates are considered to be the measures (no support for m-values in QGIS)*/
     QgsGeometry* locateAlongMeasure( double measure, const QgsGeometry* lineGeom );
 

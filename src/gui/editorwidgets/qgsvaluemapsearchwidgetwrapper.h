@@ -27,13 +27,13 @@ class GUI_EXPORT QgsValueMapSearchWidgetWrapper : public QgsDefaultSearchWidgetW
   public:
     explicit QgsValueMapSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent = 0 );
     bool applyDirectly() override;
-    
+
   protected:
     QWidget* createWidget( QWidget* parent ) override;
     void initWidget( QWidget* editor ) override;
 
   private slots:
-      void comboBoxIndexChanged(int);
+    void comboBoxIndexChanged( int );
 
   private:
     QComboBox * mComboBox;

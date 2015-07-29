@@ -24,7 +24,7 @@
 class QgisInterface;
 class QAction;
 
-/**A plugin that does interpolation on vertices of
+/** A plugin that does interpolation on vertices of
 a vector layer*/
 class QgsInterpolationPlugin: public QObject, public QgisPlugin
 {
@@ -33,9 +33,9 @@ class QgsInterpolationPlugin: public QObject, public QgisPlugin
   public:
     QgsInterpolationPlugin( QgisInterface* iface );
     ~QgsInterpolationPlugin();
-    /**initialize connection to GUI*/
+    /** Initialize connection to GUI*/
     void initGui() override;
-    /**Unload the plugin and cleanup the GUI*/
+    /** Unload the plugin and cleanup the GUI*/
     void unload() override;
 
   private slots:

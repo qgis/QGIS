@@ -34,7 +34,7 @@ class QgsZonalStatistics
                         QgsZonalStatistics::Statistics stats = QgsZonalStatistics::Statistics( QgsZonalStatistics::Count | QgsZonalStatistics::Sum | QgsZonalStatistics::Mean) );
     ~QgsZonalStatistics();
 
-    /**Starts the calculation
+    /** Starts the calculation
       @return 0 in case of success*/
     int calculateStatistics( QProgressDialog* p );
 };

@@ -63,10 +63,10 @@ class QgsFeaturePrivate : public QSharedData
     //! feature id
     QgsFeatureId fid;
 
-    /** attributes accessed by field index */
+    /** Attributes accessed by field index */
     QgsAttributes attributes;
 
-    /** pointer to geometry in binary WKB format
+    /** Pointer to geometry in binary WKB format
 
        This is usually set by a call to OGRGeometry::exportToWkb()
      */

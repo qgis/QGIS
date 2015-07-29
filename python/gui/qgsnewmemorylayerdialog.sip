@@ -6,7 +6,7 @@ class QgsNewMemoryLayerDialog : QDialog
 
   public:
 
-    /**Runs the dialoag and creates a new memory layer
+    /** Runs the dialoag and creates a new memory layer
      * @param parent parent widget
      * @returns new memory layer
      */
@@ -15,13 +15,13 @@ class QgsNewMemoryLayerDialog : QDialog
     QgsNewMemoryLayerDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     ~QgsNewMemoryLayerDialog();
 
-    /**Returns the selected geometry type*/
+    /** Returns the selected geometry type*/
     QGis::WkbType selectedType() const;
 
-    /**Returns the selected crs*/
+    /** Returns the selected crs*/
     QgsCoordinateReferenceSystem crs() const;
 
-    /**Returns the layer name*/
+    /** Returns the layer name*/
     QString layerName() const;
 
 };

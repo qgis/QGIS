@@ -10,13 +10,13 @@ class QgsComposerLabel : QgsComposerItem
     QgsComposerLabel( QgsComposition *composition /TransferThis/);
     ~QgsComposerLabel();
 
-    /** return correct graphics item type. */
+    /** Return correct graphics item type. */
     virtual int type() const;
 
     /** \brief Reimplementation of QCanvasItem::paint*/
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
 
-    /**resizes the widget such that the text fits to the item. Keeps top left point*/
+    /** Resizes the widget such that the text fits to the item. Keeps top left point*/
     void adjustSizeToText();
 
     QString text();
@@ -25,7 +25,7 @@ class QgsComposerLabel : QgsComposerItem
     int htmlState();
     void setHtmlState( int state );
 
-    /**Returns the text as it appears on screen (with replaced data field) */
+    /** Returns the text as it appears on screen (with replaced data field) */
     QString displayText() const;
 
     /** Sets the current feature, the current layer and a list of local variable substitutions for evaluating expressions */
@@ -52,27 +52,27 @@ class QgsComposerLabel : QgsComposerItem
      */
     void setVAlign( Qt::AlignmentFlag a );
 
-    /**Returns the margin between the edge of the frame and the label contents
+    /** Returns the margin between the edge of the frame and the label contents
      * @returns margin in mm
      * @deprecated use marginX and marginY instead
     */
     double margin() /Deprecated/;
 
-    /**Returns the horizontal margin between the edge of the frame and the label
+    /** Returns the horizontal margin between the edge of the frame and the label
      * contents.
      * @returns horizontal margin in mm
      * @note added in QGIS 2.7
     */
     double marginX() const;
 
-    /**Returns the vertical margin between the edge of the frame and the label
+    /** Returns the vertical margin between the edge of the frame and the label
      * contents.
      * @returns vertical margin in mm
      * @note added in QGIS 2.7
     */
     double marginY() const;
 
-    /**Sets the margin between the edge of the frame and the label contents.
+    /** Sets the margin between the edge of the frame and the label contents.
      * This method sets both the horizontal and vertical margins to the same
      * value. The margins can be individually controlled using the setMarginX
      * and setMarginY methods.
@@ -82,7 +82,7 @@ class QgsComposerLabel : QgsComposerItem
     */
     void setMargin( const double m );
 
-    /**Sets the horizontal margin between the edge of the frame and the label
+    /** Sets the horizontal margin between the edge of the frame and the label
      * contents.
      * @param margin horizontal margin in mm
      * @see setMargin
@@ -91,7 +91,7 @@ class QgsComposerLabel : QgsComposerItem
     */
     void setMarginX( const double margin );
 
-    /**Sets the vertical margin between the edge of the frame and the label
+    /** Sets the vertical margin between the edge of the frame and the label
      * contents.
      * @param margin vertical margin in mm
      * @see setMargin
@@ -100,18 +100,18 @@ class QgsComposerLabel : QgsComposerItem
     */
     void setMarginY( const double margin );
 
-    /**Sets text color */
+    /** Sets text color */
     void setFontColor( const QColor& c );
-    /**Get font color */
+    /** Get font color */
     QColor fontColor() const;
 
-    /** stores state in Dom element
+    /** Stores state in Dom element
        * @param elem is Dom element corresponding to 'Composer' tag
        * @param doc document
        */
     bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
 
-    /** sets state from Dom document
+    /** Sets state from Dom document
        * @param itemElem is Dom element corresponding to 'ComposerLabel' tag
        * @param doc document
        */
@@ -120,16 +120,16 @@ class QgsComposerLabel : QgsComposerItem
     //Overriden to contain part of label's text
     virtual QString displayName() const;
 
-    /**In case of negative margins, the bounding rect may be larger than the
+    /** In case of negative margins, the bounding rect may be larger than the
      * label's frame
     */
     QRectF boundingRect() const;
 
-    /**Reimplemented to call prepareGeometryChange after toggling frame
+    /** Reimplemented to call prepareGeometryChange after toggling frame
     */
     virtual void setFrameEnabled( const bool drawFrame );
 
-    /**Reimplemented to call prepareGeometryChange after changing outline width
+    /** Reimplemented to call prepareGeometryChange after changing outline width
     */
     virtual void setFrameOutlineWidth( const double outlineWidth );
 

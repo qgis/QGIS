@@ -24,7 +24,7 @@
 
 QgsValueMapSearchWidgetWrapper::QgsValueMapSearchWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
     : QgsDefaultSearchWidgetWrapper( vl, fieldIdx, parent ),
-      mComboBox( NULL )
+    mComboBox( NULL )
 {
 }
 
@@ -33,15 +33,15 @@ QWidget* QgsValueMapSearchWidgetWrapper::createWidget( QWidget* parent )
   return new QComboBox( parent );
 }
 
-void QgsValueMapSearchWidgetWrapper::comboBoxIndexChanged(int)
+void QgsValueMapSearchWidgetWrapper::comboBoxIndexChanged( int )
 {
   if ( mComboBox )
-    setExpression(mComboBox->itemData( mComboBox->currentIndex()).toString());
+    setExpression( mComboBox->itemData( mComboBox->currentIndex() ).toString() );
 }
 
-bool QgsValueMapSearchWidgetWrapper::applyDirectly() 
+bool QgsValueMapSearchWidgetWrapper::applyDirectly()
 {
-    return true;
+  return true;
 }
 
 void QgsValueMapSearchWidgetWrapper::initWidget( QWidget* editor )
@@ -52,14 +52,14 @@ void QgsValueMapSearchWidgetWrapper::initWidget( QWidget* editor )
   {
     const QgsEditorWidgetConfig cfg = config();
     QgsEditorWidgetConfig::ConstIterator it = cfg.constBegin();
-    mComboBox->addItem( tr( "Please select" ), "");
+    mComboBox->addItem( tr( "Please select" ), "" );
 
     while ( it != cfg.constEnd() )
     {
       mComboBox->addItem( it.key(), it.value() );
       ++it;
     }
-    connect( mComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( comboBoxIndexChanged(int) ) );
+    connect( mComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( comboBoxIndexChanged( int ) ) );
   }
 }
 

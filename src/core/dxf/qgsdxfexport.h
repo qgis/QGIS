@@ -121,9 +121,9 @@ class CORE_EXPORT QgsDxfExport
   private:
     QList< QPair<QgsVectorLayer*, int> > mLayers;
 
-    /**Extent for export, only intersecting features are exported. If the extent is an empty rectangle, all features are exported*/
+    /** Extent for export, only intersecting features are exported. If the extent is an empty rectangle, all features are exported*/
     QgsRectangle mExtent;
-    /**Scale for symbology export (used if symbols units are mm)*/
+    /** Scale for symbology export (used if symbols units are mm)*/
     double mSymbologyScaleDenominator;
     SymbologyExport mSymbologyExport;
     QGis::UnitType mMapUnits;

@@ -22,7 +22,7 @@
 #include "qgsfeature.h"
 
 
-/**A map tool for showing or hidding a feature's label*/
+/** A map tool for showing or hidding a feature's label*/
 class APP_EXPORT QgsMapToolShowHideLabels : public QgsMapToolLabel
 {
     Q_OBJECT

@@ -34,7 +34,7 @@ class QgsRasterRenderer;
 class QgsRasterRendererWidget;
 class QgsRasterHistogramWidget;
 
-/**Property sheet for a raster map layer
+/** Property sheet for a raster map layer
   *@author Tim Sutton
   */
 
@@ -50,7 +50,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     /** \brief Destructor */
     ~QgsRasterLayerProperties();
 
-    /** synchronize state with associated raster layer */
+    /** Synchronize state with associated raster layer */
     void sync();
 
   public slots:
@@ -101,13 +101,13 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     /** Slot to reset all color rendering options to default */
     void on_mResetColorRenderingBtn_clicked();
 
-    /**Enable or disable Build pyramids button depending on selection in pyramids list*/
+    /** Enable or disable Build pyramids button depending on selection in pyramids list*/
     void toggleBuildPyramidsButton();
 
-    /**Enable or disable saturation controls depending on choice of grayscale mode */
+    /** Enable or disable saturation controls depending on choice of grayscale mode */
     void toggleSaturationControls( int grayscaleMode );
 
-    /**Enable or disable colorize controls depending on checkbox */
+    /** Enable or disable colorize controls depending on checkbox */
     void toggleColorizeControls( bool colorizeEnabled );
 
     /** Transparency cell changed */
@@ -115,11 +115,11 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
 
     void aboutToShowStyleMenu();
 
-    /** make GUI reflect the layer's state */
+    /** Make GUI reflect the layer's state */
     void syncToLayer();
 
   signals:
-    /** emitted when changes to layer were saved to update legend */
+    /** Emitted when changes to layer were saved to update legend */
     void refreshLegend( QString layerID, bool expandItem );
 
   private:

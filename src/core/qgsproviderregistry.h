@@ -47,7 +47,7 @@ class CORE_EXPORT QgsProviderRegistry
 
   public:
 
-    /** means of accessing canonical single instance  */
+    /** Means of accessing canonical single instance  */
     static QgsProviderRegistry* instance( QString pluginPath = QString::null );
 
     /** Virtual dectructor */
@@ -59,7 +59,7 @@ class CORE_EXPORT QgsProviderRegistry
     /** Return list of provider plugins found */
     QString pluginList( bool asHtml = false ) const;
 
-    /** return library directory where plugins are found */
+    /** Return library directory where plugins are found */
     const QDir & libraryDirectory() const;
 
     /** Set library directory where to search for plugins */
@@ -108,7 +108,7 @@ class CORE_EXPORT QgsProviderRegistry
     /** Return metadata of the provider or NULL if not found */
     const QgsProviderMetadata* providerMetadata( const QString& providerKey ) const;
 
-    /** return vector file filter string
+    /** Return vector file filter string
 
       Returns a string suitable for a QFileDialog of vector file formats
       supported by all data providers.
@@ -121,7 +121,7 @@ class CORE_EXPORT QgsProviderRegistry
       It'd be nice to eventually be raster/vector neutral.
     */
     virtual QString fileVectorFilters() const;
-    /** return raster file filter string
+    /** Return raster file filter string
 
       Returns a string suitable for a QFileDialog of raster file formats
       supported by all data providers.
@@ -132,16 +132,16 @@ class CORE_EXPORT QgsProviderRegistry
       @note This replaces QgsRasterLayer::buildSupportedRasterFileFilter()
     */
     virtual QString fileRasterFilters() const;
-    /** return a string containing the available database drivers */
+    /** Return a string containing the available database drivers */
     virtual QString databaseDrivers() const;
-    /** return a string containing the available directory drivers */
+    /** Return a string containing the available directory drivers */
     virtual QString directoryDrivers() const;
-    /** return a string containing the available protocol drivers */
+    /** Return a string containing the available protocol drivers */
     virtual QString protocolDrivers() const;
 
     void registerGuis( QWidget *widget );
 
-    /** open the given vector data source
+    /** Open the given vector data source
 
     Similar to open(QString const &), except that the user specifies a data provider
     with which to open the data source instead of using the default data provider
@@ -165,20 +165,20 @@ class CORE_EXPORT QgsProviderRegistry
     //QgsDataProvider * openVector( QString const & dataSource, QString const & providerKey );
 
 
-    /** type for data provider metadata associative container */
+    /** Type for data provider metadata associative container */
     typedef std::map<QString, QgsProviderMetadata*> Providers;
 
   private:
-    /** ctor private since instance() creates it */
+    /** Ctor private since instance() creates it */
     QgsProviderRegistry( QString pluginPath );
 
-    /** associative container of provider metadata handles */
+    /** Associative container of provider metadata handles */
     Providers mProviders;
 
-    /** directory in which provider plugins are installed */
+    /** Directory in which provider plugins are installed */
     QDir mLibraryDirectory;
 
-    /** file filter string for vector files
+    /** File filter string for vector files
 
         Built once when registry is constructed by appending strings returned
         from iteratively calling vectorFileFilter() for each visited data
@@ -187,7 +187,7 @@ class CORE_EXPORT QgsProviderRegistry
         one time.
      */
     QString mVectorFileFilters;
-    /** file filter string for raster files
+    /** File filter string for raster files
      */
     QString mRasterFileFilters;
     /** Available database drivers string for vector databases

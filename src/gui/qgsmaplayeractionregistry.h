@@ -113,18 +113,18 @@ class GUI_EXPORT QgsMapLayerActionRegistry : public QObject
 
     ~QgsMapLayerActionRegistry();
 
-    /**Adds a map layer action to the registry*/
+    /** Adds a map layer action to the registry*/
     void addMapLayerAction( QgsMapLayerAction * action );
 
-    /**Returns the map layer actions which can run on the specified layer*/
+    /** Returns the map layer actions which can run on the specified layer*/
     QList<QgsMapLayerAction *> mapLayerActions( QgsMapLayer* layer, QgsMapLayerAction::Targets targets = QgsMapLayerAction::AllActions );
 
-    /**Removes a map layer action from the registry*/
+    /** Removes a map layer action from the registry*/
     bool removeMapLayerAction( QgsMapLayerAction *action );
 
-    /**Sets the default action for a layer*/
+    /** Sets the default action for a layer*/
     void setDefaultActionForLayer( QgsMapLayer* layer, QgsMapLayerAction* action );
-    /**Returns the default action for a layer*/
+    /** Returns the default action for a layer*/
     QgsMapLayerAction * defaultActionForLayer( QgsMapLayer* layer );
 
   protected:

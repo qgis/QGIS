@@ -133,7 +133,7 @@ void QgsMssqlNewConnection::on_cb_trustedConnection_clicked()
   }
 }
 
-/** end  Autoconnected SLOTS **/
+/** End  Autoconnected SLOTS **/
 
 QgsMssqlNewConnection::~QgsMssqlNewConnection()
 {

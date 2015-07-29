@@ -55,7 +55,7 @@ class QgsDataDefined
 
     virtual ~QgsDataDefined();
 
-    /**Returns whether the data defined container is set to all the default
+    /** Returns whether the data defined container is set to all the default
      * values, ie, disabled, with empty expression and no assigned field
      * @returns true if data defined container is set to default values
      * @note added in QGIS 2.7
@@ -118,7 +118,7 @@ class QgsDataDefined
      */
     QMap< QString, QString > toMap( const QString& baseName = QString() ) const;
 
-    /**Returns a DOM element containing the properties of the data defined container.
+    /** Returns a DOM element containing the properties of the data defined container.
      * @param document DOM document
      * @param elementName name for DOM element
      * @returns DOM element corresponding to data defined container
@@ -127,7 +127,7 @@ class QgsDataDefined
      */
     QDomElement toXmlElement( QDomDocument &document, const QString &elementName ) const;
 
-    /**Sets the properties of the data defined container from an XML element. Calling
+    /** Sets the properties of the data defined container from an XML element. Calling
      * this will overwrite all the current properties of the container.
      * @param element DOM element
      * @returns true if properties were successfully read from element

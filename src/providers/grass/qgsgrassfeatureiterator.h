@@ -73,13 +73,13 @@ class QgsGrassFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsG
     void setFeatureGeometry( QgsFeature& feature, int id, int type );
 
 
-    /*! Set feature attributes.
+    /** Set feature attributes.
      *  @param feature
      *  @param cat category number
      */
     void setFeatureAttributes( int cat, QgsFeature *feature );
 
-    /*! Set feature attributes.
+    /** Set feature attributes.
      *  @param feature
      *  @param cat category number
      *  @param attlist a list containing the index number of the fields to set
@@ -104,10 +104,10 @@ class QgsGrassFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsG
     int    mNextCidx;          // !UPDATE! Next index in cidxFieldIndex to be read, used to find nextFeature
     int    mNextTopoId;          // !UPDATE! Next topology id to be read, used to find nextFeature, starts from 1
 
-    /*! reset selection */
+    /** Reset selection */
     void resetSelection( bool sel );
 
-    /*! Allocate sellection array for given map id. The array is large enough for lines or areas
+    /** Allocate sellection array for given map id. The array is large enough for lines or areas
      *  (bigger from num lines and num areas)
      *  @param map pointer to map structure
      */

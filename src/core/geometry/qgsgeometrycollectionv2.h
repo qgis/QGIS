@@ -19,7 +19,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsabstractgeometryv2.h"
 #include <QVector>
 
-/**\ingroup core
+/** \ingroup core
  * \class QgsGeometryCollectionV2
  * \brief Geometry collection
  * \note added in QGIS 2.10
@@ -54,7 +54,7 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
     virtual QString geometryType() const override { return "GeometryCollection"; }
     virtual void clear() override;
 
-    /**Adds a geometry and takes ownership. Returns true in case of success.*/
+    /** Adds a geometry and takes ownership. Returns true in case of success.*/
     virtual bool addGeometry( QgsAbstractGeometryV2* g );
 
     /** Removes a geometry from the collection.
@@ -95,7 +95,7 @@ class CORE_EXPORT QgsGeometryCollectionV2: public QgsAbstractGeometryV2
 
     bool hasCurvedSegments() const override;
 
-    /**Returns a geometry without curves. Caller takes ownership*/
+    /** Returns a geometry without curves. Caller takes ownership*/
     QgsAbstractGeometryV2* segmentize() const override;
 
   protected:

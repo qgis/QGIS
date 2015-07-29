@@ -16,22 +16,22 @@ class QgsRendererV2Widget : QWidget
     void showSymbolLevelsDialog( QgsFeatureRendererV2* r );
 
   protected:
-    /**Subclasses may provide the capability of changing multiple symbols at once by implementing the following two methods
+    /** Subclasses may provide the capability of changing multiple symbols at once by implementing the following two methods
       and by connecting the slot contextMenuViewCategories(const QPoint&)*/
     virtual QList<QgsSymbolV2*> selectedSymbols();
     virtual void refreshSymbolView();
 
   protected slots:
     void  contextMenuViewCategories( const QPoint& p );
-    /**Change color of selected symbols*/
+    /** Change color of selected symbols*/
     void changeSymbolColor();
-    /**Change opacity of selected symbols*/
+    /** Change opacity of selected symbols*/
     void changeSymbolTransparency();
-    /**Change units mm/map units of selected symbols*/
+    /** Change units mm/map units of selected symbols*/
     void changeSymbolUnit();
-    /**Change line widths of selected symbols*/
+    /** Change line widths of selected symbols*/
     void changeSymbolWidth();
-    /**Change marker sizes of selected symbols*/
+    /** Change marker sizes of selected symbols*/
     void changeSymbolSize();
 
     virtual void copy();

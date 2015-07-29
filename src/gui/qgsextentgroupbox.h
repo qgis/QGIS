@@ -23,7 +23,7 @@ class QgsCoordinateReferenceSystem;
 class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::QgsExtentGroupBoxWidget
 {
     Q_OBJECT
-    Q_PROPERTY(QString titleBase READ titleBase WRITE setTitleBase )
+    Q_PROPERTY( QString titleBase READ titleBase WRITE setTitleBase )
 
   public:
     explicit QgsExtentGroupBox( QWidget* parent = 0 );

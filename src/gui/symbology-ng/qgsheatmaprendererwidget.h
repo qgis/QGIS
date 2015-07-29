@@ -26,7 +26,7 @@ class GUI_EXPORT QgsHeatmapRendererWidget : public QgsRendererV2Widget, private 
     Q_OBJECT
 
   public:
-    /** static creation method
+    /** Static creation method
      * @param layer the layer where this renderer is applied
      * @param style
      * @param renderer the mask renderer (will take ownership)

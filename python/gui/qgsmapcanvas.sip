@@ -182,7 +182,7 @@ class QgsMapCanvas : QGraphicsView
      */
     void unsetMapTool( QgsMapTool* mapTool );
 
-    /**Returns the currently active tool*/
+    /** Returns the currently active tool*/
     QgsMapTool* mapTool();
 
     /** Write property of QColor bgColor. */
@@ -210,14 +210,14 @@ class QgsMapCanvas : QGraphicsView
     //! return list of layers within map canvas.
     QList<QgsMapLayer*> layers() const;
 
-    /*! Freeze/thaw the map canvas. This is used to prevent the canvas from
+    /** Freeze/thaw the map canvas. This is used to prevent the canvas from
      * responding to events while layers are being added/removed etc.
      * @param frz Boolean specifying if the canvas should be frozen (true) or
      * thawed (false). Default is true.
      */
     void freeze( bool frz = true );
 
-    /*! Accessor for frozen status of canvas */
+    /** Accessor for frozen status of canvas */
     bool isFrozen();
 
     //! Flag the canvas as dirty and needed a refresh
@@ -340,7 +340,7 @@ class QgsMapCanvas : QGraphicsView
 
   public slots:
 
-    /**Repaints the canvas map*/
+    /** Repaints the canvas map*/
     void refresh();
 
     //! Receives signal about selection change, and pass it on with layer info
@@ -395,7 +395,7 @@ class QgsMapCanvas : QGraphicsView
     //! @deprecated since 2.4 - already unused in 2.0 anyway
     void setProgress( int, int ) /Deprecated/;
 
-    /** emits current mouse position
+    /** Emits current mouse position
         \note changed in 1.3 */
     void xyCoordinates( const QgsPoint &p );
 

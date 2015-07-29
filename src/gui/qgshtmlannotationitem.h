@@ -27,7 +27,7 @@
 
 class QGraphicsProxyWidget;
 
-/**An annotation item that embedds a designer form showing the feature attribute*/
+/** An annotation item that embedds a designer form showing the feature attribute*/
 class GUI_EXPORT QgsHtmlAnnotationItem: public QObject, public QgsAnnotationItem
 {
     Q_OBJECT
@@ -42,7 +42,7 @@ class GUI_EXPORT QgsHtmlAnnotationItem: public QObject, public QgsAnnotationItem
 
     QSizeF minimumFrameSize() const override;
 
-    /**Reimplemented from QgsAnnotationItem*/
+    /** Reimplemented from QgsAnnotationItem*/
     void setMapPosition( const QgsPoint& pos ) override;
 
     void setHTMLPage( const QString& htmlFile );
@@ -54,9 +54,9 @@ class GUI_EXPORT QgsHtmlAnnotationItem: public QObject, public QgsAnnotationItem
     QgsVectorLayer* vectorLayer() const { return mVectorLayer; }
 
   private slots:
-    /**Sets a feature for the current map position and updates the dialog*/
+    /** Sets a feature for the current map position and updates the dialog*/
     void setFeatureForMapPosition();
-    /**Sets visibility status based on mVectorLayer visibility*/
+    /** Sets visibility status based on mVectorLayer visibility*/
     void updateVisibility();
 
     void javascript();
@@ -64,11 +64,11 @@ class GUI_EXPORT QgsHtmlAnnotationItem: public QObject, public QgsAnnotationItem
   private:
     QGraphicsProxyWidget* mWidgetContainer;
     QgsWebView* mWebView;
-    /**Associated vectorlayer (or 0 if attributes are not supposed to be replaced)*/
+    /** Associated vectorlayer (or 0 if attributes are not supposed to be replaced)*/
     QgsVectorLayer* mVectorLayer;
-    /**True if the item is related to a vector feature*/
+    /** True if the item is related to a vector feature*/
     bool mHasAssociatedFeature;
-    /**Associated feature*/
+    /** Associated feature*/
     QgsFeatureId mFeatureId;
     QgsFeature mFeature;
     QString mHtmlFile;

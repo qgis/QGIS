@@ -43,7 +43,7 @@ class QgsGrassAttributesKeyPress : public QObject
 };
 
 
-/*! \class QgsGrassAttributes
+/** \class QgsGrassAttributes
  *  \brief GRASS attributes.
  *
  */

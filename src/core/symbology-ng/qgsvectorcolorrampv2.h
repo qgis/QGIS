@@ -93,7 +93,7 @@ class CORE_EXPORT QgsVectorGradientColorRampV2 : public QgsVectorColorRampV2
     QgsStringMap info() const { return mInfo; }
     void setInfo( const QgsStringMap& info ) { mInfo = info; }
 
-    /**copy color ramp stops to a QGradient
+    /** Copy color ramp stops to a QGradient
     * @note added in 2.1 */
     void addStopsToGradient( QGradient* gradient, double alpha = 1 );
 
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsVectorRandomColorRampV2 : public QgsVectorColorRampV2
 
     virtual QgsStringMap properties() const override;
 
-    /** get a list of random colors
+    /** Get a list of random colors
     * @note added in 2.4 */
     static QList<QColor> randomColors( int count,
                                        int hueMax = DEFAULT_RANDOM_HUE_MAX, int hueMin = DEFAULT_RANDOM_HUE_MIN,

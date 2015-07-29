@@ -56,7 +56,7 @@ class QgsWFSFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsWFS
   protected:
     bool fetchFeature( QgsFeature& f ) override;
 
-    /**Copies feature attributes / geometry from f to feature*/
+    /** Copies feature attributes / geometry from f to feature*/
     void copyFeature( const QgsFeature* f, QgsFeature& feature, bool fetchGeometry );
 
   private:

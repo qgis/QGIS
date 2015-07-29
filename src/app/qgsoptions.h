@@ -105,13 +105,13 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
     void on_mProxyTypeComboBox_currentIndexChanged( int idx );
 
-    /**Add a new URL to exclude from Proxy*/
+    /** Add a new URL to exclude from Proxy*/
     void on_mAddUrlPushButton_clicked();
 
-    /**Remove an URL to exclude from Proxy*/
+    /** Remove an URL to exclude from Proxy*/
     void on_mRemoveUrlPushButton_clicked();
 
-    /**Slot to flag restoring/delete window state settings upon restart*/
+    /** Slot to flag restoring/delete window state settings upon restart*/
     void on_mRestoreDefaultWindowStateBtn_clicked();
 
     /** Slot to enable custom environment variables table and buttons */

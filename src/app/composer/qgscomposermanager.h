@@ -24,7 +24,7 @@
 class QListWidgetItem;
 class QgsComposer;
 
-/**Delegate for a line edit for renaming a composer. Prevents entry of duplicate composer names.*/
+/** Delegate for a line edit for renaming a composer. Prevents entry of duplicate composer names.*/
 class QgsComposerNameDelegate : public QItemDelegate
 {
     Q_OBJECT
@@ -43,7 +43,7 @@ class QgsComposerNameDelegate : public QItemDelegate
                                const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 };
 
-/**A dialog that shows the existing composer instances. Lets the user add new
+/** A dialog that shows the existing composer instances. Lets the user add new
 instances and change title of existing ones*/
 class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
 {
@@ -57,7 +57,7 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
     void activate();
 
   private:
-    /**Stores the relation between items and composer pointers. A 0 pointer for the composer means that
+    /** Stores the relation between items and composer pointers. A 0 pointer for the composer means that
       this composer needs to be created from a default template*/
     QMap<QListWidgetItem*, QgsComposer*> mItemComposerMap;
 

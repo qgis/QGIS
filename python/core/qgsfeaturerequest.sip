@@ -87,7 +87,7 @@ class QgsFeatureRequest
 };
 
 
-/** base class that can be used for any class that is capable of returning features
+/** Base class that can be used for any class that is capable of returning features
  * @note added in 2.4
  */
 class QgsAbstractFeatureSource

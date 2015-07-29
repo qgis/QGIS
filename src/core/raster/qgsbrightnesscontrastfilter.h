@@ -50,11 +50,11 @@ class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface
 
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const override;
 
-    /**Sets base class members from xml. Usually called from create() methods of subclasses*/
+    /** Sets base class members from xml. Usually called from create() methods of subclasses*/
     void readXML( const QDomElement& filterElem ) override;
 
   private:
-    /**Adjusts a color component by the specified brightness and contrast factor*/
+    /** Adjusts a color component by the specified brightness and contrast factor*/
     int  adjustColorComponent( int colorComponent, int alpha, int brightness, double contrastFactor ) const;
 
     /** Current brightness coefficient value. Default: 0. Range: -255...255 */

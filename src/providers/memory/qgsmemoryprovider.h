@@ -114,7 +114,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
     /** Accessor for sql where clause used to limit dataset */
     QString subsetString() override;
 
-    /** mutator for sql where clause used to limit dataset size */
+    /** Mutator for sql where clause used to limit dataset size */
     bool setSubsetString( QString theSQL, bool updateFeatureCount = true ) override;
 
     virtual bool supportsSubsetString() override { return true; }

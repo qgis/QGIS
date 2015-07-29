@@ -38,7 +38,7 @@ struct QgsGPSInformation
   bool satInfoComplete; // based on GPGSV sentences - to be used to determine when to graph signal and satellite position
 };
 
-/**Abstract base class for connection to a GPS device*/
+/** Abstract base class for connection to a GPS device*/
 class QgsGPSConnection: QObject
 {
 %TypeHeaderCode
@@ -66,23 +66,23 @@ class QgsGPSConnection: QObject
       GPSDataReceived
     };
 
-    /**Constructor
+    /** Constructor
         @param dev input device for the connection (e.g. serial device). The class takes ownership of the object
       */
     QgsGPSConnection( QIODevice* dev /Transfer/ );
     virtual ~QgsGPSConnection();
-    /**Opens connection to device*/
+    /** Opens connection to device*/
     bool connect();
-    /**Closes connection to device*/
+    /** Closes connection to device*/
     bool close();
 
-    /**Sets the GPS source. The class takes ownership of the device class*/
+    /** Sets the GPS source. The class takes ownership of the device class*/
     void setSource( QIODevice* source /Transfer/ );
 
-    /**Returns the status. Possible state are not connected, connected, data received*/
+    /** Returns the status. Possible state are not connected, connected, data received*/
     Status status() const;
 
-    /**Returns the current gps information (lat, lon, etc.)*/
+    /** Returns the current gps information (lat, lon, etc.)*/
     QgsGPSInformation currentGPSInformation() const;
 
   signals:
@@ -90,6 +90,6 @@ class QgsGPSConnection: QObject
     void nmeaSentenceReceived( const QString& substring ); // added to capture 'raw' data
 
   protected slots:
-    /**Parse available data source content*/
+    /** Parse available data source content*/
     virtual void parseData() = 0;
 };

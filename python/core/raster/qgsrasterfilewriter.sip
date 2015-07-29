@@ -1,5 +1,5 @@
 
-/**  Raster file writer */
+/** Raster file writer */
 
 class QgsRasterFileWriter
 {
@@ -27,7 +27,7 @@ class QgsRasterFileWriter
     QgsRasterFileWriter( const QString& outputUrl );
     ~QgsRasterFileWriter();
 
-    /**Write raster file
+    /** Write raster file
         @param pipe raster pipe
         @param nCols number of output columns
         @param nRows number of output rows (or -1 to automatically calculate row number to have square pixels)

@@ -58,7 +58,7 @@ class GUI_EXPORT QgsRasterRendererWidget: public QWidget
 
   protected:
     QgsRasterLayer* mRasterLayer;
-    /**Returns a band name for display. First choice is color name, otherwise band number*/
+    /** Returns a band name for display. First choice is color name, otherwise band number*/
     QString displayBandName( int band ) const;
 
     /** Current extent */

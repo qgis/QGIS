@@ -209,7 +209,7 @@ class CORE_EXPORT QgsVectorFileWriter
                                             const QgsRectangle* filterExtent = 0 // added in 2.4
                                           );
 
-    /** create shapefile and initialize it */
+    /** Create shapefile and initialize it */
     QgsVectorFileWriter( const QString& vectorFileName,
                          const QString& fileEncoding,
                          const QgsFields& fields,
@@ -222,37 +222,37 @@ class CORE_EXPORT QgsVectorFileWriter
                          SymbologyExport symbologyExport = NoSymbology
                        );
 
-    /**Returns map with format filter string as key and OGR format key as value*/
+    /** Returns map with format filter string as key and OGR format key as value*/
     static QMap< QString, QString> supportedFiltersAndFormats();
 
-    /**Returns driver list that can be used for dialogs. It contains all OGR drivers
+    /** Returns driver list that can be used for dialogs. It contains all OGR drivers
      * + some additional internal QGIS driver names to distinguish between more
      * supported formats of the same OGR driver
      */
     static QMap< QString, QString> ogrDriverList();
 
-    /**Returns filter string that can be used for dialogs*/
+    /** Returns filter string that can be used for dialogs*/
     static QString fileFilterString();
 
-    /**Creates a filter for an OGR driver key*/
+    /** Creates a filter for an OGR driver key*/
     static QString filterForDriver( const QString& driverName );
 
-    /**Converts codec name to string passed to ENCODING layer creation option of OGR Shapefile*/
+    /** Converts codec name to string passed to ENCODING layer creation option of OGR Shapefile*/
     static QString convertCodecNameForEncodingOption( const QString &codecName );
 
-    /** checks whether there were any errors in constructor */
+    /** Checks whether there were any errors in constructor */
     WriterError hasError();
 
-    /** retrieves error message */
+    /** Retrieves error message */
     QString errorMessage();
 
-    /** add feature to the currently opened shapefile */
+    /** Add feature to the currently opened shapefile */
     bool addFeature( QgsFeature& feature, QgsFeatureRendererV2* renderer = 0, QGis::UnitType outputUnit = QGis::Meters );
 
     //! @note not available in python bindings
     QMap<int, int> attrIdxToOgrIdx() { return mAttrIdxToOgrIdx; }
 
-    /** close opened shapefile for writing */
+    /** Close opened shapefile for writing */
     ~QgsVectorFileWriter();
 
     /** Delete a shapefile (and its accompanying shx / dbf / prf)
@@ -279,16 +279,16 @@ class CORE_EXPORT QgsVectorFileWriter
 
     QgsFields mFields;
 
-    /** contains error value if construction was not successful */
+    /** Contains error value if construction was not successful */
     WriterError mError;
     QString mErrorMessage;
 
     QTextCodec *mCodec;
 
-    /** geometry type which is being used */
+    /** Geometry type which is being used */
     QGis::WkbType mWkbType;
 
-    /** map attribute indizes to OGR field indexes */
+    /** Map attribute indizes to OGR field indexes */
     QMap<int, int> mAttrIdxToOgrIdx;
 
     SymbologyExport mSymbologyExport;
@@ -297,7 +297,7 @@ class CORE_EXPORT QgsVectorFileWriter
     QMap< QgsSymbolLayerV2*, QString > mSymbolLayerTable;
 #endif
 
-    /**Scale for symbology export (e.g. for symbols units in map units)*/
+    /** Scale for symbology export (e.g. for symbols units in map units)*/
     double mSymbologyScaleDenominator;
 
   private:
@@ -310,7 +310,7 @@ class CORE_EXPORT QgsVectorFileWriter
     OGRFeatureH createFeature( QgsFeature& feature );
     bool writeFeature( OGRLayerH layer, OGRFeatureH feature );
 
-    /**Writes features considering symbol level order*/
+    /** Writes features considering symbol level order*/
     WriterError exportFeaturesSymbolLevels( QgsVectorLayer* layer, QgsFeatureIterator& fit, const QgsCoordinateTransform* ct, QString* errorMessage = 0 );
     double mmScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits );
     double mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits );
@@ -318,7 +318,7 @@ class CORE_EXPORT QgsVectorFileWriter
     void startRender( QgsVectorLayer* vl ) const;
     void stopRender( QgsVectorLayer* vl ) const;
     QgsFeatureRendererV2* symbologyRenderer( QgsVectorLayer* vl ) const;
-    /**Adds attributes needed for classification*/
+    /** Adds attributes needed for classification*/
     void addRendererAttributes( QgsVectorLayer* vl, QgsAttributeList& attList );
     static QMap<QString, MetaData> sDriverMetadata;
 };

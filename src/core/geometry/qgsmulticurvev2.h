@@ -18,7 +18,7 @@ email                : marco.hugentobler at sourcepole dot com
 
 #include "qgsgeometrycollectionv2.h"
 
-/**\ingroup core
+/** \ingroup core
  * \class QgsMultiCurveV2
  * \brief Multi curve geometry collection.
  * \note added in QGIS 2.10
@@ -40,7 +40,7 @@ class CORE_EXPORT QgsMultiCurveV2: public QgsGeometryCollectionV2
     QString asJSON( int precision = 17 ) const override;
 
 
-    /**Adds a geometry and takes ownership. Returns true in case of success*/
+    /** Adds a geometry and takes ownership. Returns true in case of success*/
     virtual bool addGeometry( QgsAbstractGeometryV2* g ) override;
 };
 

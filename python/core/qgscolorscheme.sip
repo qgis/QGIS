@@ -1,4 +1,4 @@
-/**List of colors paired with a friendly display name identifying the color*/
+/** List of colors paired with a friendly display name identifying the color*/
 typedef QList< QPair< QColor, QString > > QgsNamedColorList;
 
 /** \ingroup core
@@ -32,17 +32,17 @@ class QgsColorScheme
 
     virtual ~QgsColorScheme();
 
-    /**Gets the name for the color scheme
+    /** Gets the name for the color scheme
      * @returns color scheme name
     */
     virtual QString schemeName() const = 0;
 
-    /**Returns the current flags for the color scheme.
+    /** Returns the current flags for the color scheme.
      * @returns current flags
     */
     virtual SchemeFlags flags() const;
 
-    /**Gets a list of colors from the scheme. The colors can optionally
+    /** Gets a list of colors from the scheme. The colors can optionally
      * be generated using the supplied context and base color.
      * @param context string specifiying an optional context for the returned
      * colors. For instance, a "recent colors" scheme may filter returned colors
@@ -55,13 +55,13 @@ class QgsColorScheme
     virtual QgsNamedColorList fetchColors( const QString &context = QString(),
                                            const QColor &baseColor = QColor() ) = 0;
 
-    /**Returns whether the color scheme is editable
+    /** Returns whether the color scheme is editable
      * @returns true if scheme is editable
      * @see setColors
     */
     virtual bool isEditable() const;
 
-    /**Sets the colors for the scheme. This method is only valid for editable color schemes.
+    /** Sets the colors for the scheme. This method is only valid for editable color schemes.
      * @param colors list of colors for the scheme
      * @param context to set colors for
      * @param baseColor base color to set colors for
@@ -70,7 +70,7 @@ class QgsColorScheme
     */
     virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() );
 
-    /**Clones a color scheme
+    /** Clones a color scheme
      * @returns copy of color scheme
     */
     virtual QgsColorScheme* clone() const = 0 /Factory/;
@@ -104,7 +104,7 @@ class QgsGplColorScheme : QgsColorScheme
 
   protected:
 
-    /**Returns the file path for the associated gpl palette file
+    /** Returns the file path for the associated gpl palette file
      * @returns gpl file path
     */
     virtual QString gplFilePath() = 0;
@@ -125,7 +125,7 @@ class QgsUserColorScheme : QgsGplColorScheme
 
   public:
 
-    /**Constructs a new user color scheme, using a specified gpl palette file
+    /** Constructs a new user color scheme, using a specified gpl palette file
      * @param filename filename of gpl palette file stored in the users "palettes" folder
     */
     QgsUserColorScheme( const QString &filename );
@@ -138,12 +138,12 @@ class QgsUserColorScheme : QgsGplColorScheme
 
     virtual bool isEditable() const;
 
-    /**Sets the name for the scheme
+    /** Sets the name for the scheme
      * @param name new name
     */
     void setName( const QString &name );
 
-    /**Erases the associated gpl palette file from the users "palettes" folder
+    /** Erases the associated gpl palette file from the users "palettes" folder
      * @returns true if erase was successful
     */
     bool erase();

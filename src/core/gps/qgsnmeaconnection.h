@@ -20,7 +20,7 @@
 
 #include "qgsgpsconnection.h"
 
-/**Evaluates NMEA sentences coming from a GPS device*/
+/** Evaluates NMEA sentences coming from a GPS device*/
 class CORE_EXPORT QgsNMEAConnection: public QgsGPSConnection
 {
     Q_OBJECT
@@ -29,13 +29,13 @@ class CORE_EXPORT QgsNMEAConnection: public QgsGPSConnection
     ~QgsNMEAConnection();
 
   protected slots:
-    /**Parse available data source content*/
+    /** Parse available data source content*/
     void parseData() override;
 
   protected:
-    /**Store data from the device before it is processed*/
+    /** Store data from the device before it is processed*/
     QString mStringBuffer;
-    /**Splits mStringBuffer into sentences and calls libnmea*/
+    /** Splits mStringBuffer into sentences and calls libnmea*/
     void processStringBuffer();
     //handle the different sentence type
     void processGGASentence( const char* data, int len );

@@ -163,7 +163,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureRequest::Flags )
 class QgsFeatureIterator;
 class QgsAbstractFeatureIterator;
 
-/** base class that can be used for any class that is capable of returning features
+/** Base class that can be used for any class that is capable of returning features
  * @note added in 2.4
  */
 class CORE_EXPORT QgsAbstractFeatureSource
