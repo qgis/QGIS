@@ -1375,7 +1375,7 @@ GEOSCoordSequence* QgsGeos::createCoordinateSequence( const QgsCurveV2* curve )
   }
 
   bool hasZ = line->is3D();
-  bool hasM = line->isMeasure();
+  bool hasM = false; //line->isMeasure(); //disabled until geos supports m-coordinates
   int coordDims = 2;
   if ( hasZ )
   {
@@ -1432,7 +1432,7 @@ GEOSGeometry* QgsGeos::createGeosPoint( const QgsAbstractGeometryV2* point, int 
     {
       GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, 0, 2, pt->z() );
     }
-    if ( pt->isMeasure() )
+    if ( 0 /*pt->isMeasure()*/ ) //disabled until geos supports m-coordinates
     {
       GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, 0, 3, pt->m() );
     }
