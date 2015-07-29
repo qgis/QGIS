@@ -897,11 +897,11 @@ void QgsWmsCapabilities::parseLayer( QDomElement const & e, QgsWmsLayerProperty&
       }
       else if ( tagName == "MinScaleDenominator" )
       {
-        // TODO
+	layerProperty.minimumScaleDenominator = e1.text().toDouble();
       }
       else if ( tagName == "MaxScaleDenominator" )
       {
-        // TODO
+        layerProperty.maximumScaleDenominator = e1.text().toDouble();
       }
       // If we got here then it's not in the WMS 1.3 standard
 

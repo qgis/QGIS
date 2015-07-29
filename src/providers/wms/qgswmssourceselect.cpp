@@ -232,7 +232,7 @@ QgsNumericSortTreeWidgetItem *QgsWMSSourceSelect::createItem(
   QMap<int, QgsNumericSortTreeWidgetItem *> &items,
   int &layerAndStyleCount,
   const QMap<int, int> &layerParents,
-  const QMap<int, QStringList> &layerParentNames )
+  const QMap<int, QStringList> &layerParentNames)
 {
   if ( items.contains( id ) )
     return items[id];
@@ -309,12 +309,14 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities& capabiliti
         layer != layers.end();
         ++layer )
   {
-    QgsNumericSortTreeWidgetItem *lItem = createItem( layer->orderId, QStringList() << layer->name << layer->title << layer->abstract, items, layerAndStyleCount, layerParents, layerParentNames );
+    QgsNumericSortTreeWidgetItem *lItem = createItem( layer->orderId, QStringList() << layer->name << layer->title << layer->abstract, items, layerAndStyleCount, layerParents, layerParentNames);
 
     lItem->setData( 0, Qt::UserRole + 0, layer->name );
     lItem->setData( 0, Qt::UserRole + 1, "" );
     lItem->setData( 0, Qt::UserRole + 2, layer->crs );
     lItem->setData( 0, Qt::UserRole + 3, layer->title.isEmpty() ? layer->name : layer->title );
+    lItem->setData( 0, Qt::UserRole + 4, layer->minimumScaleDenominator );
+    lItem->setData( 0, Qt::UserRole + 5, QString::number(layer->maximumScaleDenominator) );
 
     // Also insert the styles
     // Layer Styles
@@ -331,6 +333,8 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities& capabiliti
       lItem2->setData( 0, Qt::UserRole + 0, layer->name );
       lItem2->setData( 0, Qt::UserRole + 1, layer->style[j].name );
       lItem2->setData( 0, Qt::UserRole + 3, layer->style[j].title.isEmpty() ? layer->style[j].name : layer->style[j].title );
+      lItem2->setData( 0, Qt::UserRole + 4, layer->minimumScaleDenominator );
+      lItem2->setData( 0, Qt::UserRole + 5, QString::number(layer->maximumScaleDenominator) );
     }
   }
 
@@ -486,6 +490,8 @@ void QgsWMSSourceSelect::addClicked()
   QStringList titles;
   QString format;
   QString crs;
+  double minScaleDenominator = 0;
+  double maxScaleDenominator = 0;
 
   QgsDataSourceURI uri = mUri;
 
@@ -497,9 +503,15 @@ void QgsWMSSourceSelect::addClicked()
 
   if ( lstTilesets->selectedItems().isEmpty() )
   {
-    collectSelectedLayers( layers, styles, titles );
+    collectSelectedLayers( layers, styles, titles, &minScaleDenominator, &maxScaleDenominator );
     crs = mCRS;
     format = mFormats[ mImageFormatGroup->checkedId()].format;
+    if (minScaleDenominator != 0){
+      uri.setParam( "minScaleDenominator", QString::number( minScaleDenominator ) );
+    }
+    if (maxScaleDenominator != 0){
+      uri.setParam( "maxScaleDenominator", QString::number( maxScaleDenominator ) );
+    }
   }
   else
   {
@@ -778,6 +790,8 @@ void QgsWMSSourceSelect::on_lstLayers_itemSelectionChanged()
   QStringList layers;
   QStringList styles;
   QStringList titles;
+  QList<double> minScaleDenominators;
+  QList<double> maxScaleDenominators;
 
   mCRSs.clear();
 
@@ -787,6 +801,8 @@ void QgsWMSSourceSelect::on_lstLayers_itemSelectionChanged()
     QString layerName = item->data( 0, Qt::UserRole + 0 ).toString();
     QString styleName = item->data( 0, Qt::UserRole + 1 ).toString();
     QString titleName = item->data( 0, Qt::UserRole + 3 ).toString();
+    double minScaleDenominator = item->data( 0, Qt::UserRole + 4 ).toDouble();
+    double maxScaleDenominator = item->data( 0, Qt::UserRole + 5 ).toDouble();
 
     if ( layerName.isEmpty() )
     {
@@ -799,6 +815,8 @@ void QgsWMSSourceSelect::on_lstLayers_itemSelectionChanged()
       layers << layerName;
       styles << "";
       titles << titleName;
+      minScaleDenominators << minScaleDenominator;
+      maxScaleDenominators << maxScaleDenominator;
       if ( mCRSs.isEmpty() )
         mCRSs = item->data( 0, Qt::UserRole + 2 ).toStringList().toSet();
       else
@@ -855,7 +873,7 @@ void QgsWMSSourceSelect::on_lstLayers_itemSelectionChanged()
     labelCoordRefSys->setText( "" );
   }
 
-  updateLayerOrderTab( layers, styles, titles );
+  updateLayerOrderTab( layers, styles, titles, minScaleDenominators, maxScaleDenominators );
   updateButtons();
 }
 
@@ -967,7 +985,7 @@ void QgsWMSSourceSelect::updateButtons()
       else
       {
         QStringList layers, styles, titles;
-        collectSelectedLayers( layers, styles, titles );
+        collectSelectedLayers( layers, styles, titles, NULL, NULL );
         mLastLayerName = titles.join( "/" );
         leLayerName->setText( mLastLayerName );
       }
@@ -986,15 +1004,28 @@ QString QgsWMSSourceSelect::connName()
   return mConnName;
 }
 
-void QgsWMSSourceSelect::collectSelectedLayers( QStringList &layers, QStringList &styles, QStringList &titles )
+void QgsWMSSourceSelect::collectSelectedLayers( QStringList &layers, QStringList &styles, QStringList &titles, double* minScaleDenominator, double* maxScaleDenominator )
 {
   //go through list in layer order tab
   QStringList selectedLayerList;
+  double cD;
   for ( int i = mLayerOrderTreeWidget->topLevelItemCount() - 1; i >= 0; --i )
   {
     layers << mLayerOrderTreeWidget->topLevelItem( i )->text( 0 );
     styles << mLayerOrderTreeWidget->topLevelItem( i )->text( 1 );
     titles << mLayerOrderTreeWidget->topLevelItem( i )->text( 2 );
+    if (minScaleDenominator != NULL){
+      cD = mLayerOrderTreeWidget->topLevelItem( i )->data( 0, Qt::UserRole + 4 ).toDouble();
+      if (cD > *minScaleDenominator){
+	*minScaleDenominator = cD;
+      }
+    }
+    if (maxScaleDenominator != NULL){
+      cD = mLayerOrderTreeWidget->topLevelItem( i )->data( 0, Qt::UserRole + 5 ).toDouble();
+      if (cD < *maxScaleDenominator || *maxScaleDenominator == 0 ){
+	*maxScaleDenominator = cD;
+      }
+    }
   }
 }
 
@@ -1287,7 +1318,7 @@ void QgsWMSSourceSelect::on_mLayerDownButton_clicked()
   updateButtons();
 }
 
-void QgsWMSSourceSelect::updateLayerOrderTab( const QStringList& newLayerList, const QStringList& newStyleList, const QStringList &newTitleList )
+void QgsWMSSourceSelect::updateLayerOrderTab( const QStringList& newLayerList, const QStringList& newStyleList, const QStringList &newTitleList, const QList<double> &minScaleDenominators, const QList<double> &maxScaleDenominators )
 {
   //check, if each layer / style combination is already contained in the  layer order tab
   //if not, add it to the top of the list
@@ -1295,6 +1326,8 @@ void QgsWMSSourceSelect::updateLayerOrderTab( const QStringList& newLayerList, c
   QStringList::const_iterator layerListIt = newLayerList.constBegin();
   QStringList::const_iterator styleListIt = newStyleList.constBegin();
   QStringList::const_iterator titleListIt = newTitleList.constBegin();
+  QList<double>::const_iterator minScaleDenominatorIt = minScaleDenominators.constBegin();
+  QList<double>::const_iterator maxScaleDenominatorIt = maxScaleDenominators.constBegin();
 
   for ( ; layerListIt != newLayerList.constEnd(); ++layerListIt, ++styleListIt, ++titleListIt )
   {
@@ -1315,6 +1348,8 @@ void QgsWMSSourceSelect::updateLayerOrderTab( const QStringList& newLayerList, c
       newItem->setText( 0, *layerListIt );
       newItem->setText( 1, *styleListIt );
       newItem->setText( 2, *titleListIt );
+      newItem->setData( 0, Qt::UserRole + 4, *minScaleDenominatorIt );
+      newItem->setData( 0, Qt::UserRole + 5, *maxScaleDenominatorIt );
       mLayerOrderTreeWidget->addTopLevelItem( newItem );
     }
 

@@ -1698,8 +1698,36 @@ void QgsWFSProvider::extendExtent( const QgsRectangle &extent )
 
   QgsRectangle r( mExtent.intersect( &extent ) );
 
-  if ( mGetExtent.contains( r ) )
-    return;
+  
+  if ( mGetExtent.contains( r ) && mForceSmallBbox == false)
+  {
+    /*Patch Thibault Coupin 2014-10-27 thibault.coupin (at) ign.fr
+      On Zoom In, mGetExtent always contains r. If the current number of features match the maxFeature parameter, are we sure that all data has been loaded ? NO.
+      => force redefinition of mGetExtent
+    */
+
+    QUrl mqurl( dataSourceUri() );
+
+    if ( mqurl.hasQueryItem( "MAXFEATURES" ) )
+    {
+      QString mMaxFeatures = mqurl.queryItemValue( "MAXFEATURES" );
+      bool ok = false;
+      long lgMaxFeature = mMaxFeatures.toLong( &ok, 10);
+      if ( !ok )
+      {
+        return;
+      }
+      if ( lgMaxFeature>featureCount() )
+      {
+        return;
+      }
+      mForceSmallBbox = true;
+    }
+    else
+    {
+      return;
+    }
+  }
 
   if ( mGetExtent.isEmpty() )
   {
@@ -1714,7 +1742,16 @@ void QgsWFSProvider::extendExtent( const QgsRectangle &extent )
   }
   else
   {
-    mGetExtent.combineExtentWith( &r );
+    if (mForceSmallBbox)
+    {
+      mForceSmallBbox = false;
+      mGetExtent.set(r.xMinimum(),r.yMinimum(),r.xMaximum(), r.yMaximum());
+    }
+    else
+    {
+      mGetExtent.combineExtentWith( &r );
+    }
+    
   }
 
   setDataSourceUri( dataSourceUri().replace( QRegExp( "BBOX=[^&]*" ),

@@ -153,13 +153,13 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
         QMap<int, QgsNumericSortTreeWidgetItem *> &items,
         int &layerAndStyleCount,
         const QMap<int, int> &layerParents,
-        const QMap<int, QStringList> &layerParentNames );
+        const QMap<int, QStringList> &layerParentNames);
 
     //! Returns a textual description for the authority id
     QString descriptionForAuthId( QString authId );
 
     //! Keeps the layer order list up-to-date with changed layers and styles
-    void updateLayerOrderTab( const QStringList& newLayerList, const QStringList& newStyleList, const QStringList &newTitleList );
+    void updateLayerOrderTab( const QStringList& newLayerList, const QStringList& newStyleList, const QStringList &newTitleList, const QList<double> &minScaleDenominators, const QList<double> &maxScaleDenominators );
 
     //! Name for selected connection
     QString mConnName;
@@ -184,7 +184,7 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     void collectNamedLayers( QTreeWidgetItem *item, QStringList &layers, QStringList &styles, QStringList &titles );
     void enableLayersForCrs( QTreeWidgetItem *item );
 
-    void collectSelectedLayers( QStringList &layers, QStringList &styles, QStringList &titles );
+    void collectSelectedLayers( QStringList &layers, QStringList &styles, QStringList &titles, double* minScaleDenominator, double* maxScaleDenominator );
     QString selectedImageEncoding();
 
     QList<QTreeWidgetItem*> mCurrentSelection;
