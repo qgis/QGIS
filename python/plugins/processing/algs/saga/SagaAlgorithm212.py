@@ -29,6 +29,7 @@ __revision__ = '$Format:%H$'
 import os
 import importlib
 import subprocess
+from PyQt4.QtCore import QCoreApplication
 from PyQt4.QtGui import QIcon
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -82,7 +83,7 @@ class SagaAlgorithm212(GeoAlgorithm):
         line = lines.readline().strip('\n').strip()
         self.undecoratedGroup = line
         self.group = SagaGroupNameDecorator.getDecoratedName(self.undecoratedGroup)
-        self.i18n_name = QCoreApplication.translate("SAGAAlgorithm", self.group)
+        self.i18n_group = QCoreApplication.translate("SAGAAlgorithm", self.group)
         line = lines.readline().strip('\n').strip()
         while line != '':
             if line.startswith('Hardcoded'):
