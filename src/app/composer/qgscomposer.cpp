@@ -146,6 +146,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mItemActionToolbar->addWidget( alignToolButton );
 
   QToolButton* shapeToolButton = new QToolButton( mItemToolbar );
+  shapeToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionAddBasicShape.png" ) );
   shapeToolButton->setCheckable( true );
   shapeToolButton->setPopupMode( QToolButton::InstantPopup );
   shapeToolButton->setAutoRaise( true );
@@ -153,7 +154,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   shapeToolButton->addAction( mActionAddRectangle );
   shapeToolButton->addAction( mActionAddTriangle );
   shapeToolButton->addAction( mActionAddEllipse );
-  shapeToolButton->setDefaultAction( mActionAddEllipse );
+  shapeToolButton->setToolTip( tr( "Add Shape" ) );
   mItemToolbar->insertWidget( mActionAddArrow, shapeToolButton );
 
   QActionGroup* toggleActionGroup = new QActionGroup( this );
