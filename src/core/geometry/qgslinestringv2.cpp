@@ -294,6 +294,11 @@ void QgsLineStringV2::append( const QgsLineStringV2* line )
     return;
   }
 
+  if ( numPoints() < 1 )
+  {
+    setZMTypeFromSubGeometry( line, QgsWKBTypes::LineString );
+  }
+
   mCoords += line->mCoords;
   mZ += line->mZ;
   mM += line->mM;
