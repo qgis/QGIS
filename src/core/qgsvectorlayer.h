@@ -1297,7 +1297,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     */
     Q_DECL_DEPRECATED void drawLabels( QgsRenderContext& rendererContext ) override;
 
-    /** Return the extent of the layer as a QRect */
+    /** Return the extent of the layer */
     QgsRectangle extent() override;
 
     /**
