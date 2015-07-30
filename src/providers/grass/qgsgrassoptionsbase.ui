@@ -185,6 +185,13 @@
                 </widget>
                </item>
                <item>
+                <widget class="QCheckBox" name="mModulesDebugCheckBox">
+                 <property name="text">
+                  <string>Debug mode</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
                 <spacer name="verticalSpacer_2">
                  <property name="orientation">
                   <enum>Qt::Vertical</enum>
@@ -227,8 +234,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>447</width>
-                <height>358</height>
+                <width>286</width>
+                <height>98</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">

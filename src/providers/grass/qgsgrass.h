@@ -437,9 +437,19 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     // set environment variable
     static void putEnv( QString name, QString value );
 
+    // platform dependent PATH separator
+    static QString pathSeparator();
 #ifdef Q_OS_WIN
     static QString shortPath( const QString &path );
 #endif
+
+    // Dirs where GRASS modules (executables or scripts) should be searched for
+    // On windows it also includes path to msys/bin/ for commands like sed, grep etc. (should be separated?)
+    // It does not contain paths from PATH environment variable
+    static QStringList grassModulesPaths()
+    {
+      return mGrassModulesPaths;
+    }
 
     // path to QGIS GRASS modules like qgis.g.info etc.
     static QString qgisGrassModulePath()
@@ -460,6 +470,12 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     static QString modulesConfigDirPath();
 
     void setModulesConfig( bool custom, const QString &customDir );
+
+    // Modules UI debug
+    static bool modulesDebug();
+
+    // Switch modules UI debug
+    void setModulesDebug( bool debug );
 
     /** Show warning dialog with message */
     static void warning( const QString &message );
@@ -482,9 +498,13 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     /** Emitted when path to modules config dir changed */
     void modulesConfigChanged();
 
+    /** Emitted when modules debug mode changed */
+    void modulesDebugChanged();
+
   private:
     static int initialized; // Set to 1 after initialization
     static bool active; // is active mode
+    static QStringList mGrassModulesPaths;
     static QString defaultGisdbase;
     static QString defaultLocation;
     static QString defaultMapset;

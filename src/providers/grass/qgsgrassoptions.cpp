@@ -43,6 +43,7 @@ QgsGrassOptions::QgsGrassOptions( QWidget *parent )
   mModulesConfigDefaultRadioButton->setChecked( !customModules );
   mModulesConfigCustomRadioButton->setChecked( customModules );
   mModulesConfigDirLineEdit->setText( customModulesDir );
+  mModulesDebugCheckBox->setChecked( QgsGrass::modulesDebug() );
 
   // Browser
   QgsRasterProjector::Precision crsTransform = ( QgsRasterProjector::Precision ) settings.value( mImportSettingsPath + "/crsTransform", QgsRasterProjector::Approximate ).toInt();
@@ -79,6 +80,7 @@ void QgsGrassOptions::saveOptions()
   bool customModules = mModulesConfigCustomRadioButton->isChecked();
   QString customModulesDir = mModulesConfigDirLineEdit->text();
   QgsGrass::instance()->setModulesConfig( customModules, customModulesDir );
+  QgsGrass::instance()->setModulesDebug( mModulesDebugCheckBox->isChecked() );
 
   // Browser
   settings.setValue( mImportSettingsPath + "/crsTransform",

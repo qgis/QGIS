@@ -235,6 +235,15 @@ bool QgsGrassObject::operator==( const QgsGrassObject& other ) const
          && mName == other.mName && mType == other.mType;
 }
 
+QString QgsGrass::pathSeparator()
+{
+#ifdef Q_OS_WIN
+  return ";";
+#else
+  return ":";
+#endif
+}
+
 #ifdef Q_OS_WIN
 #include <windows.h>
 QString QgsGrass::shortPath( const QString &path )
@@ -405,41 +414,45 @@ void QgsGrass::init( void )
   QgsDebugMsg( QString( "Valid GRASS gisBase is: %1" ).arg( gisBase ) );
   putEnv( "GISBASE", gisBase );
 
-  // Add path to GRASS modules
-#ifdef Q_OS_WIN
-  QString sep = ";";
-#else
-  QString sep = ":";
-#endif
-  QString path = gisBase + "/bin";
-  path.append( sep + gisBase + "/scripts" );
-  path.append( sep +  QgsApplication::pkgDataPath() + "/grass/scripts/" );
+  // Create list of paths to GRASS modules
+  // PATH environment variable is not used to search for modules (since 2.12) because it could
+  // create a lot of confusion especially if both GRASS 6 and 7 are installed and path to one version
+  // $GISBASE/bin somehow gets to PATH and another version plugin is loaded to QGIS, because if a module
+  // is missing in one version, it could be found in another $GISBASE/bin and misleadin error could be reported
+  mGrassModulesPaths.clear();
+  mGrassModulesPaths << gisBase + "/bin";
+  mGrassModulesPaths << gisBase + "/scripts";
+  mGrassModulesPaths << QgsApplication::pkgDataPath() + "/grass/scripts";
 
   // On windows the GRASS libraries are in
   // QgsApplication::prefixPath(), we have to add them
   // to PATH to enable running of GRASS modules
   // and database drivers
 #ifdef Q_OS_WIN
-  // It seems that QgsApplication::prefixPath()
-  // is not initialized at this point
-  path.append( sep + shortPath( QCoreApplication::applicationDirPath() ) );
+  // It seems that QgsApplication::prefixPath() is not initialized at this point
+  // TODO: verify if this is required and why (PATH to required libs should be set in qgis-grass.bat)
+  //mGrassModulesPaths << shortPath( QCoreApplication::applicationDirPath() ) );
 
   // Add path to MSYS bin
   // Warning: MSYS sh.exe will translate this path to '/bin'
-  if ( QFileInfo( QCoreApplication::applicationDirPath() + "/msys/bin/" ).isDir() )
-    path.append( sep + shortPath( QCoreApplication::applicationDirPath() + "/msys/bin/" ) );
+  QString msysBin = QCoreApplication::applicationDirPath() + "/msys/bin/";
+  if ( QFileInfo( msysBin ).isDir() )
+  {
+    mGrassModulesPaths << shortPath( QCoreApplication::applicationDirPath() + "/msys/bin/" );
+  }
 #endif
 
-  QString p = getenv( "PATH" );
-  path.append( sep + p );
+  //QString p = getenv( "PATH" );
+  //path.append( sep + p );
 
-  QgsDebugMsg( QString( "set PATH: %1" ).arg( path ) );
-  putEnv( "PATH", path );
+  QgsDebugMsg( "mGrassModulesPaths = " + mGrassModulesPaths.join( "," ) );
+  //putEnv( "PATH", path );
 
+  // TODO: move setting of PYTHONPATH to QProcess where necessary
   // Set PYTHONPATH
   QString pythonpath = gisBase + "/etc/python";
   QString pp = getenv( "PYTHONPATH" );
-  pythonpath.append( sep + pp );
+  pythonpath.append( pathSeparator() + pp );
   QgsDebugMsg( QString( "set PYTHONPATH: %1" ).arg( pythonpath ) );
   putEnv( "PYTHONPATH", pythonpath );
 
@@ -596,6 +609,7 @@ QgsGrass::GERROR QgsGrass::lastError = QgsGrass::OK;
 
 QString QgsGrass::error_message;
 
+QStringList QgsGrass::mGrassModulesPaths;
 QString QgsGrass::defaultGisdbase;
 QString QgsGrass::defaultLocation;
 QString QgsGrass::defaultMapset;
@@ -2333,6 +2347,23 @@ void QgsGrass::setModulesConfig( bool custom, const QString &customDir )
   if ( custom != previousCustom || ( custom && customDir != previousCustomDir ) )
   {
     emit modulesConfigChanged();
+  }
+}
+
+bool QgsGrass::modulesDebug()
+{
+  QSettings settings;
+  return settings.value( "/GRASS/modules/debug", false ).toBool();
+}
+
+void QgsGrass::setModulesDebug( bool debug )
+{
+  QSettings settings;
+  bool previous = modulesDebug();
+  settings.setValue( "/GRASS/modules/debug", debug );
+  if ( previous != debug )
+  {
+    emit modulesDebugChanged();
   }
 }
 

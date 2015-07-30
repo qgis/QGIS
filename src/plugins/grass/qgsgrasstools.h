@@ -60,6 +60,8 @@ class QgsGrassTools: public QDockWidget, private Ui::QgsGrassToolsBase
     //! Load configuration from file
     bool loadConfig( QString filePath, QTreeWidget *modulesTreeWidget, QStandardItemModel * modulesListModel, bool direct );
 
+    void debugChanged();
+
     //! Close
     void close( void );
 
@@ -93,10 +95,22 @@ class QgsGrassTools: public QDockWidget, private Ui::QgsGrassToolsBase
     void directListItemClicked( const QModelIndex &theIndex );
     //! Run a module given its module name e.g. r.in.gdal
     void runModule( QString name, bool direct );
+    void on_mDebugButton_clicked();
+    void on_mCloseDebugButton_clicked();
   signals:
     void regionChanged();
 
   private:
+    // data offset to Qt::UserRole for items data
+    enum DataOffset
+    {
+      Label, // original label
+      Name // module name
+    };
+
+    // debug item recursively, return number of errors
+    int debug( QTreeWidgetItem *item );
+
     //! Pointer to the QGIS interface object
     QgisInterface *mIface;
 
