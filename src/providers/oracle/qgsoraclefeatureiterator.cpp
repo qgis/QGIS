@@ -46,7 +46,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource* sour
 
   QString whereClause;
 
-  if ( !mRequest.filterRect().isNull && !mSource->mGeometryColumn.isNull() && mSource->mHasSpatialIndex )
+  if ( !mRequest.filterRect().isNull() && !mSource->mGeometryColumn.isNull() && mSource->mHasSpatialIndex )
   {
     QgsRectangle rect( mRequest.filterRect() );
     QString bbox = QString( "mdsys.sdo_geometry(2003,%1,NULL,"
@@ -72,14 +72,18 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource* sour
   switch ( request.filterType() )
   {
     case QgsFeatureRequest::FilterFid:
+    {
       QString fidWhereClause = QgsOracleUtils::whereClause( request.filterFid(), mSource->mFields, mSource->mPrimaryKeyType, mSource->mPrimaryKeyAttrs, mSource->mShared );
-      whereClause = QgsPostgresUtils::andWhereClauses( whereClause, fidWhereClause );
-      break;
+      whereClause = QgsOracleUtils::andWhereClauses( whereClause, fidWhereClause );
+    }
+    break;
 
     case QgsFeatureRequest::FilterFids:
+    {
       QString fidsWhereClause = QgsOracleUtils::whereClause( request.filterFids(), mSource->mFields, mSource->mPrimaryKeyType, mSource->mPrimaryKeyAttrs, mSource->mShared );
-      whereClause = QgsPostgresUtils::andWhereClauses( whereClause, fidsWhereClause );
-      break;
+      whereClause = QgsOracleUtils::andWhereClauses( whereClause, fidsWhereClause );
+    }
+    break;
 
     case QgsFeatureRequest::FilterNone:
       break;

@@ -33,6 +33,7 @@ MACRO (PLUGIN_INSTALL plugin subdir )
 
     ADD_DEPENDENCIES(staged-plugins zzz-${plugin}-stageinstall)
     ADD_CUSTOM_TARGET(staged-${plugin} DEPENDS zzz-${plugin}-stageinstall)
+    FILE(WRITE ${_cmake} "")
   ENDIF(NOT TARGET zzz-${plugin}-stageinstall)
 
   ADD_CUSTOM_TARGET(zzz-${plugin}-${n}-depend DEPENDS ${ARGN})
