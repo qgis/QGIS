@@ -3,6 +3,31 @@ class QgsDataItem : QObject
 %TypeHeaderCode
 #include <qgsdataitem.h>
 %End
+
+%ConvertToSubClassCode
+  if (sipCpp->inherits("QgsDataItem"))
+  {
+    sipClass = sipClass_QgsDataItem;
+    QgsDataItem* obj = qobject_cast<QgsDataItem*>(sipCpp);
+    if (qobject_cast<QgsLayerItem*>(obj))
+      sipClass = sipClass_QgsLayerItem;
+    else if (qobject_cast<QgsDataCollectionItem*>(obj))
+      sipClass = sipClass_QgsDataCollectionItem;
+    else if (qobject_cast<QgsDirectoryItem*>(obj))
+      sipClass = sipClass_QgsDirectoryItem;
+    else if (qobject_cast<QgsErrorItem*>(obj))
+      sipClass = sipClass_QgsErrorItem;
+    else if (qobject_cast<QgsFavouritesItem*>(obj))
+      sipClass = sipClass_QgsFavouritesItem;
+    else if (qobject_cast<QgsZipItem*>(obj))
+      sipClass = sipClass_QgsZipItem;
+  }
+  else
+  {
+    sipClass = 0;
+  }
+
+%End
   public:
     enum Type
     {
