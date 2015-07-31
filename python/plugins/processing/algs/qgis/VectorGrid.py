@@ -90,7 +90,7 @@ class VectorGrid(GeoAlgorithm):
             fields.append(QgsField('coord', QVariant.Double, '', 24, 15))
             fieldCount = 2
             writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-                fields, QGis.WKBPolygon, mapCRS)
+                fields, QGis.WKBLineString, mapCRS)
 
         feat = QgsFeature()
         feat.initAttributes(fieldCount)
