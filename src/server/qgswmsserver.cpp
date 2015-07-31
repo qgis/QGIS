@@ -112,7 +112,7 @@ void QgsWMSServer::executeRequest()
   QString request = mParameters.value( "REQUEST" );
   if ( request.isEmpty() )
   {
-    QgsDebugMsg( "unable to find 'REQUEST' parameter, exiting..." );
+    QgsMessageLog::logMessage( "unable to find 'REQUEST' parameter, exiting..." );
     mRequestHandler->setServiceException( QgsMapServiceException( "OperationNotSupported", "Please check the value of the REQUEST parameter" ) );
     cleanupAfterRequest();
     return;
@@ -132,7 +132,7 @@ void QgsWMSServer::executeRequest()
     const QDomDocument* capabilitiesDocument = mCapabilitiesCache->searchCapabilitiesDocument( mConfigFilePath, getProjectSettings ? "projectSettings" : version );
     if ( !capabilitiesDocument ) //capabilities xml not in cache. Create a new one
     {
-      QgsDebugMsg( "Capabilities document not found in cache" );
+      QgsMessageLog::logMessage( "Capabilities document not found in cache" );
       QDomDocument doc;
       try
       {
@@ -149,7 +149,7 @@ void QgsWMSServer::executeRequest()
     }
     else
     {
-      QgsDebugMsg( "Found capabilities document in cache" );
+      QgsMessageLog::logMessage( "Found capabilities document in cache" );
     }
 
     if ( capabilitiesDocument )
@@ -172,7 +172,7 @@ void QgsWMSServer::executeRequest()
       }
       catch ( QgsMapServiceException& ex )
       {
-        QgsDebugMsg( "Caught exception during GetMap request" );
+        QgsMessageLog::logMessage( "Caught exception during GetMap request" );
         mRequestHandler->setServiceException( ex );
         cleanupAfterRequest();
         return;
@@ -186,7 +186,7 @@ void QgsWMSServer::executeRequest()
     }
     catch ( QgsMapServiceException& ex )
     {
-      QgsDebugMsg( "Caught exception during GetMap request" );
+      QgsMessageLog::logMessage( "Caught exception during GetMap request" );
       mRequestHandler->setServiceException( ex );
       cleanupAfterRequest();
       return;
@@ -194,14 +194,14 @@ void QgsWMSServer::executeRequest()
 
     if ( result )
     {
-      QgsDebugMsg( "Setting GetMap response" );
+      QgsMessageLog::logMessage( "Setting GetMap response" );
       mRequestHandler->setGetMapResponse( "WMS", result, getImageQuality() );
-      QgsDebugMsg( "Response sent" );
+      QgsMessageLog::logMessage( "Response sent" );
     }
     else
     {
       //do some error handling
-      QgsDebugMsg( "result image is 0" );
+      QgsMessageLog::logMessage( "result image is 0" );
     }
     delete result;
   }
@@ -308,21 +308,21 @@ void QgsWMSServer::executeRequest()
     }
     catch ( QgsMapServiceException& ex )
     {
-      QgsDebugMsg( "Caught exception during GetLegendGraphic request" );
+      QgsMessageLog::logMessage( "Caught exception during GetLegendGraphic request" );
       mRequestHandler->setServiceException( ex );
     }
 
     if ( result )
     {
-      QgsDebugMsg( "Setting GetLegendGraphic response" );
+      QgsMessageLog::logMessage( "Setting GetLegendGraphic response" );
       //setting is the same for GetMap and GetLegendGraphic
       mRequestHandler->setGetMapResponse( "WMS", result, getImageQuality() );
-      QgsDebugMsg( "Response sent" );
+      QgsMessageLog::logMessage( "Response sent" );
     }
     else
     {
       //do some error handling
-      QgsDebugMsg( "result image is 0" );
+      QgsMessageLog::logMessage( "result image is 0" );
     }
     delete result;
   }
@@ -365,7 +365,7 @@ void QgsWMSServer::appendFormats( QDomDocument &doc, QDomElement &elem, const QS
 
 QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInformation )
 {
-  QgsDebugMsg( "Entering." );
+  QgsMessageLog::logMessage( "Entering." );
   QDomDocument doc;
   QDomElement wmsCapabilitiesElement;
 
@@ -547,12 +547,12 @@ QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInf
   }
 
   //add the xml content for the individual layers/styles
-  QgsDebugMsg( "calling layersAndStylesCapabilities" );
+  QgsMessageLog::logMessage( "calling layersAndStylesCapabilities" );
   if ( mConfigParser )
   {
     mConfigParser->layersAndStylesCapabilities( capabilityElement, doc, version, fullProjectInformation );
   }
-  QgsDebugMsg( "layersAndStylesCapabilities returned" );
+  QgsMessageLog::logMessage( "layersAndStylesCapabilities returned" );
 
 #if 0
   //for debugging: save the document to disk
@@ -674,7 +674,7 @@ QImage* QgsWMSServer::getLegendGraphics()
 
   if ( readLayersAndStyles( layersList, stylesList ) != 0 )
   {
-    QgsDebugMsg( "error reading layers and styles" );
+    QgsMessageLog::logMessage( "error reading layers and styles" );
     return 0;
   }
 
@@ -1322,7 +1322,7 @@ QImage* QgsWMSServer::getMap( HitTest* hitTest )
   restoreLayerFilters( originalLayerFilters );
   clearFeatureSelections( selectedLayerIdList );
 
-  // QgsDebugMsg( "clearing filters" );
+  // QgsMessageLog::logMessage( "clearing filters" );
   if ( !hitTest )
     QgsMapLayerRegistry::instance()->removeAllMapLayers();
 
@@ -1416,7 +1416,7 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, const QString& version )
 
   for ( QMap<QString, QString>::iterator it = mParameters.begin(); it != mParameters.end(); ++it )
   {
-    QgsDebugMsg( QString( "%1 // %2" ).arg( it.key() ).arg( it.value() ) );
+    QgsMessageLog::logMessage( QString( "%1 // %2" ).arg( it.key() ).arg( it.value() ) );
   }
 
   if ( readLayersAndStyles( layersList, stylesList ) != 0 )
@@ -1440,9 +1440,9 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, const QString& version )
     return 2;
   }
 
-  QgsDebugMsg( "mMapRenderer->extent(): " +  mMapRenderer->extent().toString() );
-  QgsDebugMsg( QString( "mMapRenderer width = %1 height = %2" ).arg( mMapRenderer->outputSize().width() ).arg( mMapRenderer->outputSize().height() ) );
-  QgsDebugMsg( QString( "mMapRenderer->mapUnitsPerPixel() = %1" ).arg( mMapRenderer->mapUnitsPerPixel() ) );
+  QgsMessageLog::logMessage( "mMapRenderer->extent(): " +  mMapRenderer->extent().toString() );
+  QgsMessageLog::logMessage( QString( "mMapRenderer width = %1 height = %2" ).arg( mMapRenderer->outputSize().width() ).arg( mMapRenderer->outputSize().height() ) );
+  QgsMessageLog::logMessage( QString( "mMapRenderer->mapUnitsPerPixel() = %1" ).arg( mMapRenderer->mapUnitsPerPixel() ) );
 
   //find out the current scale denominator and set it to the SLD parser
   QgsScaleCalculator scaleCalc(( outputImage->logicalDpiX() + outputImage->logicalDpiY() ) / 2, mMapRenderer->destinationCrs().mapUnits() );
@@ -1717,19 +1717,19 @@ QImage* QgsWMSServer::initializeRendering( QStringList& layersList, QStringList&
 {
   if ( !mConfigParser )
   {
-    QgsDebugMsg( "Error: mSLDParser is 0" );
+    QgsMessageLog::logMessage( "Error: mSLDParser is 0" );
     return 0;
   }
 
   if ( !mMapRenderer )
   {
-    QgsDebugMsg( "Error: mMapRenderer is 0" );
+    QgsMessageLog::logMessage( "Error: mMapRenderer is 0" );
     return 0;
   }
 
   if ( readLayersAndStyles( layersList, stylesList ) != 0 )
   {
-    QgsDebugMsg( "error reading layers and styles" );
+    QgsMessageLog::logMessage( "error reading layers and styles" );
     return 0;
   }
 
@@ -1745,12 +1745,12 @@ QImage* QgsWMSServer::initializeRendering( QStringList& layersList, QStringList&
     if ( gmlDoc->setContent( gml, true ) )
     {
       QString layerName = gmlDoc->documentElement().attribute( "layerName" );
-      QgsDebugMsg( "Adding entry with key: " + layerName + " to external GML data" );
+      QgsMessageLog::logMessage( "Adding entry with key: " + layerName + " to external GML data" );
       mConfigParser->addExternalGMLData( layerName, gmlDoc );
     }
     else
     {
-      QgsDebugMsg( "Error, could not add external GML to QgsSLDParser" );
+      QgsMessageLog::logMessage( "Error, could not add external GML to QgsSLDParser" );
       delete gmlDoc;
     }
   }
@@ -1774,7 +1774,7 @@ QImage* QgsWMSServer::initializeRendering( QStringList& layersList, QStringList&
 
   layerIdList = layerSet( layersList, stylesList, mMapRenderer->destinationCrs() );
 #ifdef QGISDEBUG
-  QgsDebugMsg( QString( "Number of layers to be rendered. %1" ).arg( layerIdList.count() ) );
+  QgsMessageLog::logMessage( QString( "Number of layers to be rendered. %1" ).arg( layerIdList.count() ) );
 #endif
   mMapRenderer->setLayerSet( layerIdList );
 
@@ -1889,14 +1889,14 @@ int QgsWMSServer::configureMapRender( const QPaintDevice* paintDevice ) const
   else
   {
     //enable on the fly projection
-    QgsDebugMsg( "enable on the fly projection" );
+    QgsMessageLog::logMessage( "enable on the fly projection" );
     QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectionsEnabled", 1 );
 
     //destination SRS
     outputCRS = QgsCRSCache::instance()->crsByAuthId( crs );
     if ( !outputCRS.isValid() )
     {
-      QgsDebugMsg( "Error, could not create output CRS from EPSG" );
+      QgsMessageLog::logMessage( "Error, could not create output CRS from EPSG" );
       throw QgsMapServiceException( "InvalidCRS", "Could not create output CRS" );
     }
 
@@ -1964,8 +1964,8 @@ int QgsWMSServer::initializeSLDParser( QStringList& layersList, QStringList& sty
     if ( !theDocument->setContent( xml, true, &errorMsg, &errorLine, &errorColumn ) )
     {
       //std::cout << xml.toAscii().data() << std::endl;
-      QgsDebugMsg( "Error, could not create DomDocument from SLD" );
-      QgsDebugMsg( QString( "The error message is: %1" ).arg( errorMsg ) );
+      QgsMessageLog::logMessage( "Error, could not create DomDocument from SLD" );
+      QgsMessageLog::logMessage( QString( "The error message is: %1" ).arg( errorMsg ) );
       delete theDocument;
       return 1;
     }
@@ -1981,7 +1981,7 @@ int QgsWMSServer::initializeSLDParser( QStringList& layersList, QStringList& sty
     QStringList stylesSTDList;
     if ( mConfigParser->layersAndStyles( layersSTDList, stylesSTDList ) != 0 )
     {
-      QgsDebugMsg( "Error, no layers and styles found in SLD" );
+      QgsMessageLog::logMessage( "Error, no layers and styles found in SLD" );
       return 2;
     }
     QStringList::const_iterator layersIt;
@@ -2215,7 +2215,7 @@ int QgsWMSServer::featureInfoFromRasterLayer( QgsRasterLayer* layer,
     return 1;
   }
 
-  QgsDebugMsg( QString( "infoPoint: %1 %2" ).arg( infoPoint->x() ).arg( infoPoint->y() ) );
+  QgsMessageLog::logMessage( QString( "infoPoint: %1 %2" ).arg( infoPoint->x() ).arg( infoPoint->y() ) );
 
   if ( !( layer->dataProvider()->capabilities() & QgsRasterDataProvider::IdentifyValue ) )
   {
@@ -2274,7 +2274,7 @@ QStringList QgsWMSServer::layerSet( const QStringList &layersList,
   QStringList::const_iterator llstIt;
   QStringList::const_iterator slstIt;
   QgsMapLayer* theMapLayer = 0;
-  QgsDebugMsg( QString( "Calculating layerset using %1 layers, %2 styles and CRS %3" ).arg( layersList.count() ).arg( stylesList.count() ).arg( destCRS.description() ) );
+  QgsMessageLog::logMessage( QString( "Calculating layerset using %1 layers, %2 styles and CRS %3" ).arg( layersList.count() ).arg( stylesList.count() ).arg( destCRS.description() ) );
   for ( llstIt = layersList.begin(), slstIt = stylesList.begin(); llstIt != layersList.end(); ++llstIt )
   {
     QString styleName;
@@ -2282,7 +2282,7 @@ QStringList QgsWMSServer::layerSet( const QStringList &layersList,
     {
       styleName = *slstIt;
     }
-    QgsDebugMsg( "Trying to get layer " + *llstIt + "//" + styleName );
+    QgsMessageLog::logMessage( "Trying to get layer " + *llstIt + "//" + styleName );
 
     //does the layer name appear several times in the layer list?
     //if yes, layer caching must be disabled because several named layers could have
@@ -2301,7 +2301,7 @@ QStringList QgsWMSServer::layerSet( const QStringList &layersList,
       theMapLayer = layerList.at( listIndex );
       if ( theMapLayer )
       {
-        QgsDebugMsg( QString( "Checking layer: %1" ).arg( mConfigParser && mConfigParser->useLayerIDs() ? theMapLayer->id() : theMapLayer->name() ) );
+        QgsMessageLog::logMessage( QString( "Checking layer: %1" ).arg( mConfigParser && mConfigParser->useLayerIDs() ? theMapLayer->id() : theMapLayer->name() ) );
         //test if layer is visible in requested scale
         bool useScaleConstraint = ( scaleDenominator > 0 && theMapLayer->hasScaleBasedVisibility() );
         if ( !useScaleConstraint ||
@@ -2314,7 +2314,7 @@ QStringList QgsWMSServer::layerSet( const QStringList &layersList,
       }
       else
       {
-        QgsDebugMsg( "Layer or style not defined, aborting" );
+        QgsMessageLog::logMessage( "Layer or style not defined, aborting" );
         throw QgsMapServiceException( "LayerNotDefined", "Layer '" + *llstIt + "' and/or style '" + styleName + "' not defined" );
       }
     }
@@ -3020,7 +3020,7 @@ QDomElement QgsWMSServer::createFeatureGML(
       }
       catch ( QgsCsException &e )
       {
-        QgsDebugMsg( QString( "Transform error caught: %1" ).arg( e.what() ) );
+        QgsMessageLog::logMessage( QString( "Transform error caught: %1" ).arg( e.what() ) );
       }
     }
 

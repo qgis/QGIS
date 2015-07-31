@@ -47,7 +47,7 @@ bool QgsServerPlugins::initPlugins( QgsServerInterface *interface )
   pythonlibName.prepend( "lib" );
 #endif
   QString version = QString( "%1.%2.%3" ).arg( QGis::QGIS_VERSION_INT / 10000 ).arg( QGis::QGIS_VERSION_INT / 100 % 100 ).arg( QGis::QGIS_VERSION_INT % 100 );
-  QgsDebugMsg( QString( "load library %1 (%2)" ).arg( pythonlibName ).arg( version ) );
+  QgsMessageLog::logMessage( QString( "load library %1 (%2)" ).arg( pythonlibName ).arg( version ), __FILE__, QgsMessageLog::INFO );
   QLibrary pythonlib( pythonlibName, version );
   // It's necessary to set these two load hints, otherwise Python library won't work correctly
   // see http://lists.kde.org/?l=pykde&m=117190116820758&w=2
@@ -57,12 +57,12 @@ bool QgsServerPlugins::initPlugins( QgsServerInterface *interface )
     pythonlib.setFileName( pythonlibName );
     if ( !pythonlib.load() )
     {
-      QgsDebugMsg( QString( "Couldn't load Python support library: %1" ).arg( pythonlib.errorString() ) );
+      QgsMessageLog::logMessage( QString( "Couldn't load Python support library: %1" ).arg( pythonlib.errorString() ) );
       return false;
     }
   }
 
-  QgsDebugMsg( "Python support library loaded successfully." );
+  QgsMessageLog::logMessage( "Python support library loaded successfully.", __FILE__, QgsMessageLog::INFO );
   typedef QgsPythonUtils*( *inst )();
   inst pythonlib_inst = ( inst ) cast_to_fptr( pythonlib.resolve( "instance" ) );
   if ( !pythonlib_inst )

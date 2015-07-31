@@ -94,12 +94,12 @@ void QgsServer::setupNetworkAccessManager()
   QNetworkDiskCache *cache = new QNetworkDiskCache( 0 );
   QString cacheDirectory = settings.value( "cache/directory", QgsApplication::qgisSettingsDirPath() + "cache" ).toString();
   qint64 cacheSize = settings.value( "cache/size", 50 * 1024 * 1024 ).toULongLong();
-  QgsDebugMsg( QString( "setCacheDirectory: %1" ).arg( cacheDirectory ) );
-  QgsDebugMsg( QString( "setMaximumCacheSize: %1" ).arg( cacheSize ) );
+  QgsMessageLog::logMessage( QString( "setCacheDirectory: %1" ).arg( cacheDirectory ), "Server", QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( QString( "setMaximumCacheSize: %1" ).arg( cacheSize ), "Server", QgsMessageLog::INFO );
   cache->setCacheDirectory( cacheDirectory );
   cache->setMaximumCacheSize( cacheSize );
-  QgsDebugMsg( QString( "cacheDirectory: %1" ).arg( cache->cacheDirectory() ) );
-  QgsDebugMsg( QString( "maximumCacheSize: %1" ).arg( cache->maximumCacheSize() ) );
+  QgsMessageLog::logMessage( QString( "cacheDirectory: %1" ).arg( cache->cacheDirectory() ), "Server", QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( QString( "maximumCacheSize: %1" ).arg( cache->maximumCacheSize() ), "Server", QgsMessageLog::INFO );
   nam->setCache( cache );
 }
 
@@ -144,7 +144,7 @@ QFileInfo QgsServer::defaultProjectFile()
   QFileInfoList projectFiles = currentDir.entryInfoList( nameFilterList, QDir::Files, QDir::Name );
   for ( int x = 0; x < projectFiles.size(); x++ )
   {
-    QgsDebugMsg( projectFiles.at( x ).absoluteFilePath() );
+    QgsMessageLog::logMessage( projectFiles.at( x ).absoluteFilePath(), "Server", QgsMessageLog::INFO );
   }
   if ( projectFiles.size() < 1 )
   {
@@ -271,7 +271,7 @@ QString QgsServer::configPath( const QString& defaultConfigPath, const QMap<QStr
     QMap<QString, QString>::const_iterator paramIt = parameters.find( "MAP" );
     if ( paramIt == parameters.constEnd() )
     {
-      QgsDebugMsg( QString( "Using default configuration file path: %1" ).arg( defaultConfigPath ) );
+      QgsMessageLog::logMessage( QString( "Using default configuration file path: %1" ).arg( defaultConfigPath ), "Server", QgsMessageLog::INFO );
     }
     else
     {
@@ -311,6 +311,8 @@ bool QgsServer::init( int & argc, char ** argv )
     return false;
   }
 
+  QgsServerLogger::instance();
+
 #ifndef _MSC_VER
   qInstallMsgHandler( dummyMessageHandler );
 #endif
@@ -318,7 +320,7 @@ bool QgsServer::init( int & argc, char ** argv )
   QString optionsPath = getenv( "QGIS_OPTIONS_PATH" );
   if ( !optionsPath.isEmpty() )
   {
-    QgsDebugMsg( "Options PATH: " + optionsPath );
+    QgsMessageLog::logMessage( "Options PATH: " + optionsPath, "Server", QgsMessageLog::INFO );
     QSettings::setDefaultFormat( QSettings::IniFormat );
     QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, optionsPath );
   }
@@ -337,7 +339,7 @@ bool QgsServer::init( int & argc, char ** argv )
 #endif
 
 #if defined(SERVER_SKIP_ECW)
-  QgsDebugMsg( "Skipping GDAL ECW drivers in server." );
+  QgsMessageLog::logMessage( "Skipping GDAL ECW drivers in server.", "Server", QgsMessageLog::INFO );
   QgsApplication::skipGdalDriver( "ECW" );
   QgsApplication::skipGdalDriver( "JP2ECW" );
 #endif
@@ -347,12 +349,12 @@ bool QgsServer::init( int & argc, char ** argv )
 
   // Instantiate the plugin directory so that providers are loaded
   QgsProviderRegistry::instance( QgsApplication::pluginPath() );
-  QgsDebugMsg( "Prefix  PATH: " + QgsApplication::prefixPath() );
-  QgsDebugMsg( "Plugin  PATH: " + QgsApplication::pluginPath() );
-  QgsDebugMsg( "PkgData PATH: " + QgsApplication::pkgDataPath() );
-  QgsDebugMsg( "User DB PATH: " + QgsApplication::qgisUserDbFilePath() );
-  QgsDebugMsg( "Auth DB PATH: " + QgsApplication::qgisAuthDbFilePath() );
-  QgsDebugMsg( "SVG PATHS: " + QgsApplication::svgPaths().join( ":" ) );
+  QgsMessageLog::logMessage( "Prefix  PATH: " + QgsApplication::prefixPath(), "Server", QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( "Plugin  PATH: " + QgsApplication::pluginPath(), "Server", QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( "PkgData PATH: " + QgsApplication::pkgDataPath(), "Server", QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( "User DB PATH: " + QgsApplication::qgisUserDbFilePath(), "Server", QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( "Auth DB PATH: " + QgsApplication::qgisAuthDbFilePath(), "Server", QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( "SVG PATHS: " + QgsApplication::svgPaths().join( ":" ), "Server", QgsMessageLog::INFO );
 
   QgsApplication::createDB(); //init qgis.db (e.g. necessary for user crs)
 
@@ -367,7 +369,7 @@ bool QgsServer::init( int & argc, char ** argv )
   if ( projectFileInfo.exists() )
   {
     defaultConfigFilePath = projectFileInfo.absoluteFilePath();
-    QgsDebugMsg( "Using default project file: " + defaultConfigFilePath );
+    QgsMessageLog::logMessage( "Using default project file: " + defaultConfigFilePath, "Server", QgsMessageLog::INFO );
   }
   else
   {
@@ -406,8 +408,6 @@ bool QgsServer::init( int & argc, char ** argv )
     }
   }
 #endif
-
-  QgsServerLogger::instance();
 
   QgsEditorWidgetRegistry::initEditors();
   mInitialised = true;

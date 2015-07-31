@@ -31,7 +31,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgslogger.h"
+#include "qgsmessagelog.h"
 #include "qgsmapserviceexception.h"
 #include "qgssymbolv2.h"
 #include "qgslegendmodel.h"
@@ -96,7 +96,7 @@ void QgsWFSServer::executeRequest()
   if ( request.isEmpty() )
   {
     //do some error handling
-    QgsDebugMsg( "unable to find 'REQUEST' parameter, exiting..." );
+    QgsMessageLog::logMessage( "unable to find 'REQUEST' parameter, exiting..." );
     mRequestHandler->setServiceException( QgsMapServiceException( "OperationNotSupported", "Please check the value of the REQUEST parameter" ) );
     return;
   }
@@ -113,7 +113,7 @@ void QgsWFSServer::executeRequest()
       mRequestHandler->setServiceException( ex );
       return;
     }
-    QgsDebugMsg( "Setting GetCapabilities response" );
+    QgsMessageLog::logMessage( "Setting GetCapabilities response" );
     mRequestHandler->setGetCapabilitiesResponse( capabilitiesDocument );
     return;
   }
@@ -129,7 +129,7 @@ void QgsWFSServer::executeRequest()
       mRequestHandler->setServiceException( ex );
       return;
     }
-    QgsDebugMsg( "Setting GetCapabilities response" );
+    QgsMessageLog::logMessage( "Setting GetCapabilities response" );
     mRequestHandler->setGetCapabilitiesResponse( describeDocument );
     return;
   }
@@ -160,7 +160,7 @@ void QgsWFSServer::executeRequest()
       mRequestHandler->setServiceException( ex );
       return;
     }
-    QgsDebugMsg( "Setting Transaction response" );
+    QgsMessageLog::logMessage( "Setting Transaction response" );
     mRequestHandler->setGetCapabilitiesResponse( transactionDocument );
     return;
   }
@@ -168,7 +168,7 @@ void QgsWFSServer::executeRequest()
 
 QDomDocument QgsWFSServer::getCapabilities()
 {
-  QgsDebugMsg( "Entering." );
+  QgsMessageLog::logMessage( "Entering." );
   QDomDocument doc;
 
   //wfs:WFS_Capabilities element
@@ -313,7 +313,7 @@ QDomDocument QgsWFSServer::getCapabilities()
 
 QDomDocument QgsWFSServer::describeFeatureType()
 {
-  QgsDebugMsg( "Entering." );
+  QgsMessageLog::logMessage( "Entering." );
   QDomDocument doc;
 
   //xsd:schema
@@ -376,7 +376,7 @@ QDomDocument QgsWFSServer::describeFeatureType()
 
 int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format )
 {
-  QgsDebugMsg( "Info format is:" + format );
+  QgsMessageLog::logMessage( "Info format is:" + format );
 
   QStringList wfsLayersId = mConfigParser->wfsLayers();
 
@@ -641,6 +641,8 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
       }
 
     }
+
+    QgsMessageLog::logMessage( mErrors.join( "\n" ) );
 
     QgsMapLayerRegistry::instance()->removeAllMapLayers();
     if ( featureCounter == 0 )
@@ -1575,7 +1577,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
                   const QgsField& field = fields[fieldMapIt.value()];
                   QString attrValue = currentAttributeElement.text();
                   int attrType = field.type();
-                  QgsDebugMsg( QString( "attr: name=%1 idx=%2 value=%3" ).arg( attrName ).arg( fieldMapIt.value() ).arg( attrValue ) );
+                  QgsMessageLog::logMessage( QString( "attr: name=%1 idx=%2 value=%3" ).arg( attrName ).arg( fieldMapIt.value() ).arg( attrValue ) );
                   if ( attrType == QVariant::Int )
                     inFeatList.last().setAttribute( fieldMapIt.value(), attrValue.toInt() );
                   else if ( attrType == QVariant::Double )
