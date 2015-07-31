@@ -550,9 +550,9 @@ QString QgsPostgresUtils::whereClause( QgsFeatureIds featureIds, const QgsFields
 
 QString QgsPostgresUtils::andWhereClauses( const QString& c1, const QString& c2 )
 {
-  if ( c1.isNull() )
+  if ( c1.isEmpty() )
     return c2;
-  if ( c2.isNull() )
+  if ( c2.isEmpty() )
     return c1;
 
   return QString( "(%1) AND (%2)" ).arg( c1 ).arg( c2 );
