@@ -109,7 +109,7 @@ void QgsGeometry::detach( bool cloneGeom )
 
   if ( d->ref > 1 )
   {
-    d->ref.deref();
+    ( void )d->ref.deref();
     QgsAbstractGeometryV2* cGeom = 0;
 
     if ( d->geometry && cloneGeom )

@@ -73,7 +73,7 @@ void QgsGeometryRubberBand::paint( QPainter* painter )
 
 void QgsGeometryRubberBand::drawVertex( QPainter* p, double x, double y )
 {
-  qreal s = ( mIconSize - 1 ) / 2;
+  qreal s = ( mIconSize - 1 ) / 2.0;
 
   switch ( mIconType )
   {

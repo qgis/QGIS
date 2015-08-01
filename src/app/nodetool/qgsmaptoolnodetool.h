@@ -120,9 +120,6 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
     /** Dock widget which allows to edit vertices */
     QgsNodeEditor* mNodeEditor;
 
-    /** Feature id of another feature where user clicked */
-    QgsFeatureId mAnother;
-
     /** Stored position of last press down action to count how much vertexes should be moved */
     QPoint mPressCoordinates;
 
