@@ -91,7 +91,7 @@ void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const Qg
 void QgsDualView::columnBoxInit()
 {
   // load fields
-  QList<QgsField> fields = mLayerCache->layer()->pendingFields().toList();
+  QList<QgsField> fields = mLayerCache->layer()->fields().toList();
 
   QString defaultField;
 

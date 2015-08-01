@@ -807,7 +807,16 @@ class QgsVectorLayer : QgsMapLayer
      *
      * @return A list of fields
      */
-    const QgsFields &pendingFields() const;
+    const QgsFields fields() const;
+
+    /**
+     * Returns the list of fields of this layer.
+     * This also includes fields which have not yet been saved to the provider.
+     * Alias for {@link fields()}
+     *
+     * @return A list of fields
+     */
+    const QgsFields pendingFields() const;
 
     /** Returns list of attributes */
     QList<int> pendingAllAttributesList();

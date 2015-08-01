@@ -26,7 +26,7 @@
 QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( QgsVectorLayer *layer )
 {
   mProviderFeatureSource = layer->dataProvider()->featureSource();
-  mFields = layer->pendingFields();
+  mFields = layer->fields();
   mJoinBuffer = layer->mJoinBuffer->clone();
   mExpressionFieldBuffer = new QgsExpressionFieldBuffer( *layer->mExpressionFieldBuffer );
 
@@ -465,7 +465,7 @@ void QgsVectorLayerFeatureIterator::prepareJoins()
       if ( joinInfo->joinFieldName.isEmpty() )
         info.joinField = joinInfo->joinFieldIndex;      //for compatibility with 1.x
       else
-        info.joinField = joinLayer->pendingFields().indexFromName( joinInfo->joinFieldName );
+        info.joinField = joinLayer->fields().indexFromName( joinInfo->joinFieldName );
 
       // for joined fields, we always need to request the targetField from the provider too
       if ( !fetchAttributes.contains( info.targetField ) )
@@ -632,8 +632,8 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
   }
 
   QString joinFieldName;
-  if ( joinInfo->joinFieldName.isEmpty() && joinInfo->joinFieldIndex >= 0 && joinInfo->joinFieldIndex < joinLayer->pendingFields().count() )
-    joinFieldName = joinLayer->pendingFields().field( joinInfo->joinFieldIndex ).name();   // for compatibility with 1.x
+  if ( joinInfo->joinFieldName.isEmpty() && joinInfo->joinFieldIndex >= 0 && joinInfo->joinFieldIndex < joinLayer->fields().count() )
+    joinFieldName = joinLayer->fields().field( joinInfo->joinFieldIndex ).name();   // for compatibility with 1.x
   else
     joinFieldName = joinInfo->joinFieldName;
 

@@ -79,7 +79,6 @@ QgsPalLayerSettings::QgsPalLayerSettings()
     : upsidedownLabels( Upright )
     , palLayer( NULL )
     , mCurFeat( 0 )
-    , mCurFields( 0 )
     , xform( NULL )
     , ct( NULL )
     , extentGeom( NULL )
@@ -323,7 +322,6 @@ QgsPalLayerSettings::QgsPalLayerSettings()
 QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
     : palLayer( NULL )
     , mCurFeat( NULL )
-    , mCurFields( NULL )
     , fieldIndex( 0 )
     , xform( NULL )
     , ct( NULL )
@@ -1221,7 +1219,7 @@ bool QgsPalLayerSettings::dataDefinedEvaluate( DataDefinedProperties p, QVariant
   // null passed-around QVariant
   exprVal.clear();
 
-  QVariant result = dataDefinedValue( p, *mCurFeat, *mCurFields );
+  QVariant result = dataDefinedValue( p, *mCurFeat, mCurFields );
 
   if ( result.isValid() && !result.isNull() )
   {
@@ -1317,13 +1315,13 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
   }
   else // called externally with passed-in feature, evaluate data defined
   {
-    QVariant exprVal = dataDefinedValue( QgsPalLayerSettings::MultiLineWrapChar, *f, *mCurFields );
+    QVariant exprVal = dataDefinedValue( QgsPalLayerSettings::MultiLineWrapChar, *f, mCurFields );
     if ( exprVal.isValid() )
     {
       wrapchr = exprVal.toString();
     }
     exprVal.clear();
-    exprVal = dataDefinedValue( QgsPalLayerSettings::MultiLineHeight, *f, *mCurFields );
+    exprVal = dataDefinedValue( QgsPalLayerSettings::MultiLineHeight, *f, mCurFields );
     if ( exprVal.isValid() )
     {
       bool ok;
@@ -1335,7 +1333,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
     }
 
     exprVal.clear();
-    exprVal = dataDefinedValue( QgsPalLayerSettings::DirSymbDraw, *f, *mCurFields );
+    exprVal = dataDefinedValue( QgsPalLayerSettings::DirSymbDraw, *f, mCurFields );
     if ( exprVal.isValid() )
     {
       addDirSymb = exprVal.toBool();
@@ -1344,19 +1342,19 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
     if ( addDirSymb ) // don't do extra evaluations if not adding a direction symbol
     {
       exprVal.clear();
-      exprVal = dataDefinedValue( QgsPalLayerSettings::DirSymbLeft, *f, *mCurFields );
+      exprVal = dataDefinedValue( QgsPalLayerSettings::DirSymbLeft, *f, mCurFields );
       if ( exprVal.isValid() )
       {
         leftDirSymb = exprVal.toString();
       }
       exprVal.clear();
-      exprVal = dataDefinedValue( QgsPalLayerSettings::DirSymbRight, *f, *mCurFields );
+      exprVal = dataDefinedValue( QgsPalLayerSettings::DirSymbRight, *f, mCurFields );
       if ( exprVal.isValid() )
       {
         rightDirSymb = exprVal.toString();
       }
       exprVal.clear();
-      exprVal = dataDefinedValue( QgsPalLayerSettings::DirSymbPlacement, *f, *mCurFields );
+      exprVal = dataDefinedValue( QgsPalLayerSettings::DirSymbPlacement, *f, mCurFields );
       if ( exprVal.isValid() )
       {
         bool ok;
@@ -3266,7 +3264,7 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames,
   // start using the reference to the layer in hashtable instead of local instance
   QgsPalLayerSettings& lyr = mActiveLayers[layer->id()];
 
-  lyr.mCurFields = &( layer->pendingFields() );
+  lyr.mCurFields = layer->fields();
 
   if ( lyrTmp.drawLabels )
   {
@@ -3275,7 +3273,7 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames,
     {
       // prepare expression for use in QgsPalLayerSettings::registerFeature()
       QgsExpression* exp = lyr.getLabelExpression();
-      exp->prepare( layer->pendingFields() );
+      exp->prepare( layer->fields() );
       if ( exp->hasEvalError() )
       {
         QgsDebugMsgLevel( "Prepare error:" + exp->evalErrorString(), 4 );
@@ -3455,7 +3453,7 @@ int QgsPalLabeling::addDiagramLayer( QgsVectorLayer* layer, const QgsDiagramLaye
 
   s2.xform = &mMapSettings->mapToPixel();
 
-  s2.fields = layer->pendingFields();
+  s2.fields = layer->fields();
 
   s2.renderer = layer->diagramRenderer()->clone();
 

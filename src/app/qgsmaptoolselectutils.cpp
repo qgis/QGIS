@@ -139,13 +139,13 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
   QgsRenderContext context = QgsRenderContext::fromMapSettings( canvas->mapSettings() );
   QgsFeatureRendererV2* r = vlayer->rendererV2();
   if ( r )
-    r->startRender( context, vlayer->pendingFields() );
+    r->startRender( context, vlayer->fields() );
 
   QgsFeatureRequest request;
   request.setFilterRect( selectGeomTrans.boundingBox() );
   request.setFlags( QgsFeatureRequest::ExactIntersect );
   if ( r )
-    request.setSubsetOfAttributes( r->usedAttributes(), vlayer->pendingFields() );
+    request.setSubsetOfAttributes( r->usedAttributes(), vlayer->fields() );
   else
     request.setSubsetOfAttributes( QgsAttributeList() );
 

@@ -3049,13 +3049,13 @@ bool QgsComposition::dataDefinedEvaluate( QgsComposerObject::DataDefinedProperty
 
   //get fields and feature from atlas
   const QgsFeature* currentFeature = 0;
-  const QgsFields* layerFields = 0;
+  QgsFields layerFields;
   if ( mAtlasComposition.enabled() )
   {
     QgsVectorLayer* atlasLayer = mAtlasComposition.coverageLayer();
     if ( atlasLayer )
     {
-      layerFields = &atlasLayer->pendingFields();
+      layerFields = atlasLayer->fields();
     }
     if ( mAtlasMode != QgsComposition::AtlasOff )
     {
@@ -3104,7 +3104,7 @@ bool QgsComposition::dataDefinedActive( const QgsComposerObject::DataDefinedProp
   return dd->isActive();
 }
 
-QVariant QgsComposition::dataDefinedValue( QgsComposerObject::DataDefinedProperty property, const QgsFeature *feature, const QgsFields *fields, QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties ) const
+QVariant QgsComposition::dataDefinedValue( QgsComposerObject::DataDefinedProperty property, const QgsFeature *feature, const QgsFields& fields, QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties ) const
 {
   if ( property == QgsComposerObject::AllProperties || property == QgsComposerObject::NoProperty )
   {
@@ -3154,14 +3154,14 @@ QVariant QgsComposition::dataDefinedValue( QgsComposerObject::DataDefinedPropert
       return QVariant();
     }
   }
-  else if ( !useExpression && !field.isEmpty() && fields )
+  else if ( !useExpression && !field.isEmpty() )
   {
     if ( !feature )
     {
       return QVariant();
     }
     // use direct attribute access instead of evaluating "field" expression (much faster)
-    int indx = fields->indexFromName( field );
+    int indx = fields.indexFromName( field );
     if ( indx != -1 )
     {
       result = feature->attribute( indx );

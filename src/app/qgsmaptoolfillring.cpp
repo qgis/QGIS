@@ -153,7 +153,7 @@ void QgsMapToolFillRing::canvasMapReleaseEvent( QgsMapMouseEvent * e )
       while ( fit.nextFeature( f ) )
       {
         //create QgsFeature with wkb representation
-        QgsFeature* ft = new QgsFeature( vlayer->pendingFields(), 0 );
+        QgsFeature* ft = new QgsFeature( vlayer->fields(), 0 );
 
         QgsGeometry *g;
         g = QgsGeometry::fromPolygon( QgsPolygon() << points().toVector() );

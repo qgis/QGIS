@@ -196,9 +196,9 @@ bool QgsVectorLayerEditBuffer::changeAttributeValue( QgsFeatureId fid, int field
     return false;
   }
 
-  if ( field < 0 || field >= L->pendingFields().count() ||
-       L->pendingFields().fieldOrigin( field ) == QgsFields::OriginJoin ||
-       L->pendingFields().fieldOrigin( field ) == QgsFields::OriginExpression )
+  if ( field < 0 || field >= L->fields().count() ||
+       L->fields().fieldOrigin( field ) == QgsFields::OriginJoin ||
+       L->fields().fieldOrigin( field ) == QgsFields::OriginExpression )
     return false;
 
   L->undoStack()->push( new QgsVectorLayerUndoCommandChangeAttribute( this, fid, field, newValue, oldValue ) );
@@ -214,7 +214,7 @@ bool QgsVectorLayerEditBuffer::addAttribute( const QgsField &field )
   if ( field.name().isEmpty() )
     return false;
 
-  const QgsFields& updatedFields = L->pendingFields();
+  const QgsFields& updatedFields = L->fields();
   for ( int idx = 0; idx < updatedFields.count(); ++idx )
   {
     if ( updatedFields[idx].name() == field.name() )
@@ -234,12 +234,12 @@ bool QgsVectorLayerEditBuffer::deleteAttribute( int index )
   if ( !( L->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteAttributes ) )
     return false;
 
-  if ( index < 0 || index >= L->pendingFields().count() )
+  if ( index < 0 || index >= L->fields().count() )
     return false;
 
   // find out source of the field
-  QgsFields::FieldOrigin origin = L->pendingFields().fieldOrigin( index );
-  int originIndex = L->pendingFields().fieldOriginIndex( index );
+  QgsFields::FieldOrigin origin = L->fields().fieldOrigin( index );
+  int originIndex = L->fields().fieldOriginIndex( index );
 
   if ( origin == QgsFields::OriginProvider && mDeletedAttributeIds.contains( originIndex ) )
     return false;
@@ -260,7 +260,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
   int cap = provider->capabilities();
   bool success = true;
 
-  QgsFields oldFields = L->pendingFields();
+  QgsFields oldFields = L->fields();
 
   //
   // delete attributes
@@ -328,7 +328,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
   if ( attributesChanged )
   {
     L->updateFields();
-    QgsFields newFields = L->pendingFields();
+    QgsFields newFields = L->fields();
 
     if ( oldFields.count() != newFields.count() )
     {

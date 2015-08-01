@@ -282,9 +282,9 @@ void QgsEditorWidgetRegistry::writeMapLayer( QgsMapLayer* mapLayer, QDomElement&
 
   QDomNode editTypesNode = doc.createElement( "edittypes" );
 
-  for ( int idx = 0; idx < vectorLayer->pendingFields().count(); ++idx )
+  for ( int idx = 0; idx < vectorLayer->fields().count(); ++idx )
   {
-    const QgsField &field = vectorLayer->pendingFields()[ idx ];
+    const QgsField &field = vectorLayer->fields()[ idx ];
     const QString& widgetType = vectorLayer->editorWidgetV2( idx );
     if ( !mWidgetFactories.contains( widgetType ) )
     {

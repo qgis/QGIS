@@ -838,7 +838,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      * @param dataDefinedProperties map of data defined properties to QgsDataDefined
      * @note this method was added in version 2.5
     */
-    QVariant dataDefinedValue( QgsComposerObject::DataDefinedProperty property, const QgsFeature *feature, const QgsFields *fields,
+    QVariant dataDefinedValue( QgsComposerObject::DataDefinedProperty property, const QgsFeature *feature, const QgsFields& fields,
                                QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties ) const;
 
 

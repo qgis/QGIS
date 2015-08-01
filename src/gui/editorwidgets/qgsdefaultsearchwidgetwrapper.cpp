@@ -52,12 +52,12 @@ void QgsDefaultSearchWidgetWrapper::setCaseString( int caseSensitiveCheckState )
 
 void QgsDefaultSearchWidgetWrapper::setExpression( QString exp )
 {
-  QVariant::Type fldType = layer()->pendingFields()[mFieldIdx].type();
+  QVariant::Type fldType = layer()->fields()[mFieldIdx].type();
   bool numeric = ( fldType == QVariant::Int || fldType == QVariant::Double || fldType == QVariant::LongLong );
 
   QSettings settings;
   QString nullValue = settings.value( "qgis/nullValue", "NULL" ).toString();
-  QString fieldName = layer()->pendingFields()[mFieldIdx].name();
+  QString fieldName = layer()->fields()[mFieldIdx].name();
   QString str;
   if ( exp == nullValue )
   {

@@ -66,7 +66,7 @@ QString QgsEditorWidgetFactory::representValue( QgsVectorLayer* vl, int fieldIdx
   Q_UNUSED( cache )
   Q_UNUSED( value )
 
-  const QgsField &fld = vl->pendingFields().at( fieldIdx );
+  const QgsField &fld = vl->fields().at( fieldIdx );
   return fld.displayString( value );
 }
 

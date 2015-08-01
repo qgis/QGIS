@@ -87,7 +87,7 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
   mTableWidget->setRowCount( mFeatureList.size() + 2 );
 
   //create combo boxes and insert attribute names
-  const QgsFields& fields = mVectorLayer->pendingFields();
+  const QgsFields& fields = mVectorLayer->fields();
   QSet<int> pkAttrList = mVectorLayer->pendingPkAttributesList().toSet();
 
   int col = 0;
@@ -305,7 +305,7 @@ QVariant QgsMergeAttributesDialog::featureAttribute( int featureId, int col )
   }
   else
   {
-    return QVariant( mVectorLayer->pendingFields()[col].type() );
+    return QVariant( mVectorLayer->fields()[col].type() );
   }
 }
 
@@ -331,7 +331,7 @@ QVariant QgsMergeAttributesDialog::minimumAttribute( int col )
 
   if ( numberOfConsideredFeatures < 1 )
   {
-    return QVariant( mVectorLayer->pendingFields()[col].type() );
+    return QVariant( mVectorLayer->fields()[col].type() );
   }
 
   return QVariant( minimumValue );
@@ -359,7 +359,7 @@ QVariant QgsMergeAttributesDialog::maximumAttribute( int col )
 
   if ( numberOfConsideredFeatures < 1 )
   {
-    return QVariant( mVectorLayer->pendingFields()[col].type() );
+    return QVariant( mVectorLayer->fields()[col].type() );
   }
 
   return QVariant( maximumValue );
@@ -384,7 +384,7 @@ QVariant QgsMergeAttributesDialog::meanAttribute( int col )
 
   if ( numberOfConsideredFeatures < 1 )
   {
-    return QVariant( mVectorLayer->pendingFields()[col].type() );
+    return QVariant( mVectorLayer->fields()[col].type() );
   }
 
   double mean = sum / numberOfConsideredFeatures;
@@ -415,7 +415,7 @@ QVariant QgsMergeAttributesDialog::medianAttribute( int col )
 
   if ( size < 1 )
   {
-    return QVariant( mVectorLayer->pendingFields()[col].type() );
+    return QVariant( mVectorLayer->fields()[col].type() );
   }
 
   bool even = ( size % 2 ) < 1;
@@ -585,7 +585,7 @@ QgsAttributes QgsMergeAttributesDialog::mergedAttributes() const
     return QgsAttributes();
   }
 
-  QgsFields fields = mVectorLayer->pendingFields();
+  QgsFields fields = mVectorLayer->fields();
 
   QgsAttributes results( mTableWidget->columnCount() );
   for ( int i = 0; i < mTableWidget->columnCount(); i++ )

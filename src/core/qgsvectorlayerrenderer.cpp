@@ -40,7 +40,7 @@
 QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRenderContext& context )
     : QgsMapLayerRenderer( layer->id() )
     , mContext( context )
-    , mFields( layer->pendingFields() )
+    , mFields( layer->fields() )
     , mRendererV2( 0 )
     , mCache( 0 )
     , mLabeling( false )

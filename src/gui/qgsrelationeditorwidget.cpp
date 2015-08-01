@@ -207,7 +207,7 @@ void QgsRelationEditorWidget::addFeature()
 {
   QgsAttributeMap keyAttrs;
 
-  QgsFields fields = mRelation.referencingLayer()->pendingFields();
+  QgsFields fields = mRelation.referencingLayer()->fields();
 
   Q_FOREACH ( QgsRelation::FieldPair fieldPair, mRelation.fieldPairs() )
   {
@@ -262,7 +262,7 @@ void QgsRelationEditorWidget::unlinkFeature()
       QgsDebugMsg( QString( "referencing field %1 not found" ).arg( fieldPair.referencingField() ) );
       return;
     }
-    QgsField fld = mRelation.referencingLayer()->pendingFields().at( idx );
+    QgsField fld = mRelation.referencingLayer()->fields().at( idx );
     keyFields.insert( idx, fld );
   }
 

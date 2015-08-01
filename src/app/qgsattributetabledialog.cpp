@@ -307,7 +307,7 @@ void QgsAttributeTableDialog::columnBoxInit()
   mFilterButton->addAction( mActionFilterColumnsMenu );
   mFilterButton->addAction( mActionAdvancedFilter );
 
-  QList<QgsField> fields = mLayer->pendingFields().toList();
+  QList<QgsField> fields = mLayer->fields().toList();
 
   foreach ( const QgsField field, fields )
   {
@@ -364,7 +364,7 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, QStrin
 
   int rownum = 1;
 
-  const QgsField &fld = layer->pendingFields()[ fieldindex ];
+  const QgsField &fld = layer->fields()[ fieldindex ];
 
   //go through all the features and change the new attributes
   QgsFeatureIterator fit = layer->getFeatures( request );
@@ -762,7 +762,7 @@ void QgsAttributeTableDialog::setFilterExpression( QString filterString )
     return;
   }
 
-  if ( ! filterExpression.prepare( mLayer->pendingFields() ) )
+  if ( ! filterExpression.prepare( mLayer->fields() ) )
   {
     QgisApp::instance()->messageBar()->pushMessage( tr( "Evaluation error" ), filterExpression.evalErrorString(), QgsMessageBar::WARNING, QgisApp::instance()->messageTimeout() );
   }
@@ -773,7 +773,7 @@ void QgsAttributeTableDialog::setFilterExpression( QString filterString )
 
   filterExpression.setGeomCalculator( myDa );
   QgsFeatureRequest request( mMainView->masterModel()->request() );
-  request.setSubsetOfAttributes( filterExpression.referencedColumns(), mLayer->pendingFields() );
+  request.setSubsetOfAttributes( filterExpression.referencedColumns(), mLayer->fields() );
   if ( !fetchGeom )
   {
     request.setFlags( QgsFeatureRequest::NoGeometry );

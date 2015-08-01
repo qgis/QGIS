@@ -205,7 +205,7 @@ void QgsFieldsProperties::loadAttributeEditorTree()
 void QgsFieldsProperties::loadRows()
 {
   disconnect( mFieldsList, SIGNAL( cellChanged( int, int ) ), this, SLOT( attributesListCellChanged( int, int ) ) );
-  const QgsFields &fields = mLayer->pendingFields();
+  const QgsFields &fields = mLayer->fields();
 
   mIndexedWidgets.clear();
   mFieldsList->setRowCount( 0 );
@@ -223,7 +223,7 @@ void QgsFieldsProperties::setRow( int row, int idx, const QgsField& field )
   dataItem->setData( Qt::DisplayRole, idx );
   DesignerTreeItemData itemData( DesignerTreeItemData::Field, field.name() );
   dataItem->setData( DesignerTreeRole, itemData.asQVariant() );
-  switch ( mLayer->pendingFields().fieldOrigin( idx ) )
+  switch ( mLayer->fields().fieldOrigin( idx ) )
   {
     case QgsFields::OriginExpression:
       dataItem->setIcon( QgsApplication::getThemeIcon( "/mIconExpression.svg" ) );
@@ -244,7 +244,7 @@ void QgsFieldsProperties::setRow( int row, int idx, const QgsField& field )
   mFieldsList->setItem( row, attrTypeNameCol, new QTableWidgetItem( field.typeName() ) );
   mFieldsList->setItem( row, attrLengthCol, new QTableWidgetItem( QString::number( field.length() ) ) );
   mFieldsList->setItem( row, attrPrecCol, new QTableWidgetItem( QString::number( field.precision() ) ) );
-  if ( mLayer->pendingFields().fieldOrigin( idx ) == QgsFields::OriginExpression )
+  if ( mLayer->fields().fieldOrigin( idx ) == QgsFields::OriginExpression )
   {
     QWidget* expressionWidget = new QWidget;
     expressionWidget->setLayout( new QHBoxLayout );
@@ -476,7 +476,7 @@ void QgsFieldsProperties::attributeAdded( int idx )
   if ( sorted )
     mFieldsList->setSortingEnabled( false );
 
-  const QgsFields &fields = mLayer->pendingFields();
+  const QgsFields &fields = mLayer->fields();
   int row = mFieldsList->rowCount();
   mFieldsList->insertRow( row );
   setRow( row, idx, fields[idx] );
@@ -574,7 +574,7 @@ void QgsFieldsProperties::on_mDeleteAttributeButton_clicked()
       if ( idx < 0 )
         continue;
 
-      if ( mLayer->pendingFields().fieldOrigin( idx ) == QgsFields::OriginExpression )
+      if ( mLayer->fields().fieldOrigin( idx ) == QgsFields::OriginExpression )
         expressionFields << idx;
       else
         providerFields << idx;
@@ -620,7 +620,7 @@ void QgsFieldsProperties::updateButtons()
       if ( item->column() == 0 )
       {
         int idx = mIndexedWidgets.indexOf( item );
-        if ( mLayer->pendingFields().fieldOrigin( idx ) != QgsFields::OriginExpression )
+        if ( mLayer->fields().fieldOrigin( idx ) != QgsFields::OriginExpression )
         {
           mDeleteAttributeButton->setEnabled( false );
           break;
@@ -637,7 +637,7 @@ void QgsFieldsProperties::attributesListCellChanged( int row, int column )
   {
     int idx = mFieldsList->item( row, attrIdCol )->text().toInt();
 
-    const QgsFields &fields = mLayer->pendingFields();
+    const QgsFields &fields = mLayer->fields();
 
     if ( idx >= fields.count() )
     {
@@ -860,8 +860,8 @@ QgsFieldsProperties::FieldConfig::FieldConfig( QgsVectorLayer* layer, int idx )
     : mButton( 0 )
 {
   mEditable = layer->fieldEditable( idx );
-  mEditableEnabled = layer->pendingFields().fieldOrigin( idx ) != QgsFields::OriginJoin
-                     && layer->pendingFields().fieldOrigin( idx ) != QgsFields::OriginExpression;
+  mEditableEnabled = layer->fields().fieldOrigin( idx ) != QgsFields::OriginJoin
+                     && layer->fields().fieldOrigin( idx ) != QgsFields::OriginExpression;
   mLabelOnTop = layer->labelOnTop( idx );
   mEditorWidgetV2Type = layer->editorWidgetV2( idx );
   mEditorWidgetV2Config = layer->editorWidgetV2Config( idx );

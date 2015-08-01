@@ -712,7 +712,7 @@ void QgsOfflineEditing::applyFeaturesAdded( QgsVectorLayer* offlineLayer, QgsVec
   QList<int> newFeatureIds = sqlQueryInts( db, sql );
 
   // get default value for each field
-  const QgsFields& remoteFlds = remoteLayer->pendingFields();
+  const QgsFields& remoteFlds = remoteLayer->fields();
   QVector<QVariant> defaultValues( remoteFlds.count() );
   for ( int i = 0; i < remoteFlds.count(); ++i )
   {
@@ -735,7 +735,7 @@ void QgsOfflineEditing::applyFeaturesAdded( QgsVectorLayer* offlineLayer, QgsVec
   emit progressModeSet( QgsOfflineEditing::AddFeatures, features.size() );
 
   int i = 1;
-  int newAttrsCount = remoteLayer->pendingFields().count();
+  int newAttrsCount = remoteLayer->fields().count();
   for ( QgsFeatureList::iterator it = features.begin(); it != features.end(); ++it )
   {
     QgsFeature f = *it;

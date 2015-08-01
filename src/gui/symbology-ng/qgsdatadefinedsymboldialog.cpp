@@ -17,7 +17,7 @@ QgsDataDefinedSymbolDialog::QgsDataDefinedSymbolDialog( const QList< DataDefined
   QgsFields attributeFields;
   if ( mVectorLayer )
   {
-    attributeFields = mVectorLayer->pendingFields();
+    attributeFields = mVectorLayer->fields();
   }
 
   int i = 0;

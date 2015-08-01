@@ -276,7 +276,7 @@ void QgsRendererV2DataDefinedMenus::populateMenu( QMenu* menu, QString fieldName
   menu->addSeparator();
 
   bool hasField = false;
-  const QgsFields & flds = mLayer->pendingFields();
+  const QgsFields & flds = mLayer->fields();
   for ( int idx = 0; idx < flds.count(); ++idx )
   {
     const QgsField& fld = flds[idx];

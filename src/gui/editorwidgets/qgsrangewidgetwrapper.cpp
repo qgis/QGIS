@@ -45,8 +45,8 @@ QWidget* QgsRangeWidgetWrapper::createWidget( QWidget* parent )
   }
   else
   {
-    QgsDebugMsg( QString( "%1" ).arg(( int )layer()->pendingFields()[fieldIdx()].type() ) );
-    switch ( layer()->pendingFields()[fieldIdx()].type() )
+    QgsDebugMsg( QString( "%1" ).arg(( int )layer()->fields()[fieldIdx()].type() ) );
+    switch ( layer()->fields()[fieldIdx()].type() )
     {
       case QVariant::Double:
       {
@@ -82,10 +82,10 @@ void QgsRangeWidgetWrapper::initWidget( QWidget* editor )
   if ( mDoubleSpinBox )
   {
     // set the precision if field is integer
-    int precision = layer()->pendingFields()[fieldIdx()].precision();
+    int precision = layer()->fields()[fieldIdx()].precision();
     if ( precision > 0 )
     {
-      mDoubleSpinBox->setDecimals( layer()->pendingFields()[fieldIdx()].precision() );
+      mDoubleSpinBox->setDecimals( layer()->fields()[fieldIdx()].precision() );
     }
 
     double minval = min.toDouble();

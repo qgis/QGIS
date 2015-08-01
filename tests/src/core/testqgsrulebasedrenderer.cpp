@@ -84,7 +84,7 @@ class TestQgsRuleBasedRenderer: public QObject
       QVERIFY( r.capabilities() & QgsFeatureRendererV2::MoreSymbolsPerFeature );
 
       QgsRenderContext ctx; // dummy render context
-      r.startRender( ctx, layer->pendingFields() );
+      r.startRender( ctx, layer->fields() );
 
       // test willRenderFeature
       QVERIFY( r.willRenderFeature( f1 ) );

@@ -155,8 +155,8 @@ QgsFeatureRequest QgsRelation::getRelatedFeaturesRequest( const QgsFeature& feat
 
   Q_FOREACH ( const QgsRelation::FieldPair& fieldPair, mFieldPairs )
   {
-    int referencingIdx = referencingLayer()->pendingFields().indexFromName( fieldPair.referencingField() );
-    QgsField referencingField = referencingLayer()->pendingFields().at( referencingIdx );
+    int referencingIdx = referencingLayer()->fields().indexFromName( fieldPair.referencingField() );
+    QgsField referencingField = referencingLayer()->fields().at( referencingIdx );
 
     if ( referencingField.type() == QVariant::String )
     {
@@ -185,10 +185,10 @@ QgsFeatureRequest QgsRelation::getReferencedFeatureRequest( const QgsAttributes&
 
   Q_FOREACH ( const QgsRelation::FieldPair& fieldPair, mFieldPairs )
   {
-    int referencedIdx = referencedLayer()->pendingFields().indexFromName( fieldPair.referencedField() );
-    int referencingIdx = referencingLayer()->pendingFields().indexFromName( fieldPair.referencingField() );
+    int referencedIdx = referencedLayer()->fields().indexFromName( fieldPair.referencedField() );
+    int referencingIdx = referencingLayer()->fields().indexFromName( fieldPair.referencingField() );
 
-    QgsField referencedField = referencedLayer()->pendingFields().at( referencedIdx );
+    QgsField referencedField = referencedLayer()->fields().at( referencedIdx );
 
     if ( referencedField.type() == QVariant::String )
     {

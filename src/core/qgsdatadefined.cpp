@@ -150,7 +150,7 @@ bool QgsDataDefined::prepareExpression( QgsVectorLayer* layer )
 {
   if ( layer )
   {
-    return prepareExpression( layer->pendingFields() );
+    return prepareExpression( layer->fields() );
   }
   else
   {
@@ -221,7 +221,7 @@ QStringList QgsDataDefined::referencedColumns( QgsVectorLayer* layer )
 {
   if ( layer )
   {
-    return referencedColumns( layer->pendingFields() );
+    return referencedColumns( layer->fields() );
   }
   else
   {
