@@ -55,7 +55,7 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
   QVariant::Type stratumIdType = QVariant::Int;
   if ( !mStrataIdAttribute.isEmpty() )
   {
-    stratumIdType = mStrataLayer->pendingFields().field( mStrataIdAttribute ).type();
+    stratumIdType = mStrataLayer->fields().field( mStrataIdAttribute ).type();
   }
 
   //create vector file writers for output
@@ -118,7 +118,7 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
   mt_srand( QTime::currentTime().msec() );
 
   QgsFeatureRequest fr;
-  fr.setSubsetOfAttributes( QStringList() << mStrataIdAttribute << mMinDistanceAttribute << mNPointsAttribute, mStrataLayer->pendingFields() );
+  fr.setSubsetOfAttributes( QStringList() << mStrataIdAttribute << mMinDistanceAttribute << mNPointsAttribute, mStrataLayer->fields() );
   QgsFeatureIterator strataIt = mStrataLayer->getFeatures( fr );
 
   QgsFeature fet;
@@ -333,7 +333,7 @@ QgsGeometry* QgsTransectSample::findBaselineGeometry( QVariant strataId )
     return 0;
   }
 
-  QgsFeatureIterator baseLineIt = mBaselineLayer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QStringList( mBaselineStrataId ), mBaselineLayer->pendingFields() ) );
+  QgsFeatureIterator baseLineIt = mBaselineLayer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QStringList( mBaselineStrataId ), mBaselineLayer->fields() ) );
   QgsFeature fet;
 
   while ( baseLineIt.nextFeature( fet ) ) //todo: cache this in case there are many baslines

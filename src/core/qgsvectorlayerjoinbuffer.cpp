@@ -123,9 +123,9 @@ void QgsVectorLayerJoinBuffer::cacheJoinLayer( QgsVectorJoinInfo& joinInfo )
     if ( joinInfo.joinFieldName.isEmpty() )
       joinFieldIndex = joinInfo.joinFieldIndex;   //for compatibility with 1.x
     else
-      joinFieldIndex = cacheLayer->pendingFields().indexFromName( joinInfo.joinFieldName );
+      joinFieldIndex = cacheLayer->fields().indexFromName( joinInfo.joinFieldName );
 
-    if ( joinFieldIndex < 0 || joinFieldIndex >= cacheLayer->pendingFields().count() )
+    if ( joinFieldIndex < 0 || joinFieldIndex >= cacheLayer->fields().count() )
       return;
 
     joinInfo.cachedAttributes.clear();
@@ -175,7 +175,7 @@ void QgsVectorLayerJoinBuffer::cacheJoinLayer( QgsVectorJoinInfo& joinInfo )
 QVector<int> QgsVectorLayerJoinBuffer::joinSubsetIndices( QgsVectorLayer* joinLayer, const QStringList& joinFieldsSubset )
 {
   QVector<int> subsetIndices;
-  const QgsFields& fields = joinLayer->pendingFields();
+  const QgsFields& fields = joinLayer->fields();
   for ( int i = 0; i < joinFieldsSubset.count(); ++i )
   {
     QString joinedFieldName = joinFieldsSubset.at( i );
@@ -206,7 +206,7 @@ void QgsVectorLayerJoinBuffer::updateFields( QgsFields& fields )
       continue;
     }
 
-    const QgsFields& joinFields = joinLayer->pendingFields();
+    const QgsFields& joinFields = joinLayer->fields();
     QString joinFieldName;
     if ( joinIt->joinFieldName.isEmpty() && joinIt->joinFieldIndex >= 0 && joinIt->joinFieldIndex < joinFields.count() )
       joinFieldName = joinFields.field( joinIt->joinFieldIndex ).name();  //for compatibility with 1.x

@@ -1306,7 +1306,16 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *
      * @return A list of fields
      */
-    const QgsFields &pendingFields() const { return mUpdatedFields; }
+    const inline QgsFields fields() const { return mUpdatedFields; }
+
+    /**
+     * Returns the list of fields of this layer.
+     * This also includes fields which have not yet been saved to the provider.
+     * Alias for {@link fields()}
+     *
+     * @return A list of fields
+     */
+    const inline QgsFields pendingFields() const { return mUpdatedFields; }
 
     /** Returns list of attributes */
     QgsAttributeList pendingAllAttributesList();

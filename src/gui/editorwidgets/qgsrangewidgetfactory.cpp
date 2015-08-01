@@ -73,7 +73,7 @@ void QgsRangeWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config, QD
 
 bool QgsRangeWidgetFactory::isFieldSupported( QgsVectorLayer* vl, int fieldIdx )
 {
-  switch ( vl->pendingFields()[fieldIdx].type() )
+  switch ( vl->fields()[fieldIdx].type() )
   {
     case QVariant::LongLong:
     case QVariant::Double:

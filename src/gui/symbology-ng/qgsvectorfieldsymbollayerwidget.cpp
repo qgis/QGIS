@@ -24,7 +24,7 @@ QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( const QgsVecto
 
   if ( mVectorLayer )
   {
-    const QgsFields& fm = mVectorLayer->pendingFields();
+    const QgsFields& fm = mVectorLayer->fields();
     mXAttributeComboBox->addItem( "" );
     mYAttributeComboBox->addItem( "" );
     for ( int idx = 0; idx < fm.count(); ++idx )

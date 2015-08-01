@@ -140,7 +140,7 @@ const QString QgsLegacyHelpers::convertEditType( QgsVectorLayer::EditType editTy
     {
       widgetType = "TextEdit";
       cfg.insert( "IsMultiline", false );
-      vl->setFieldEditable( vl->pendingFields().fieldNameIndex( name ), false );
+      vl->setFieldEditable( vl->fields().fieldNameIndex( name ), false );
       break;
     }
 

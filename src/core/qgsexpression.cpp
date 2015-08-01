@@ -2177,7 +2177,7 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsFe
     QVariant result;
     if ( layer )
     {
-      result = exp.evaluate( feat, layer->pendingFields() );
+      result = exp.evaluate( feat, layer->fields() );
     }
     else
     {

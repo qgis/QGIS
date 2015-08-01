@@ -67,7 +67,7 @@ int QgsPointSample::createRandomPoints( QProgressDialog* pd )
   mNCreatedPoints = 0;
 
   QgsFeatureIterator fIt = mInputLayer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes(
-                             QStringList() << mNumberOfPointsAttribute << mMinDistanceAttribute, mInputLayer->pendingFields() ) );
+                             QStringList() << mNumberOfPointsAttribute << mMinDistanceAttribute, mInputLayer->fields() ) );
   while ( fIt.nextFeature( fet ) )
   {
     nPoints = fet.attribute( mNumberOfPointsAttribute ).toInt();

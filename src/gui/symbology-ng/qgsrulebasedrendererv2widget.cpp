@@ -504,7 +504,7 @@ void QgsRuleBasedRendererV2Widget::countFeatures()
 
   QgsRenderContext renderContext;
   renderContext.setRendererScale( 0 ); // ignore scale
-  mRenderer->startRender( renderContext, mLayer->pendingFields() );
+  mRenderer->startRender( renderContext, mLayer->fields() );
 
   int nFeatures = mLayer->pendingFeatureCount();
   QProgressDialog p( tr( "Calculating feature count." ), tr( "Abort" ), 0, nFeatures );
@@ -633,7 +633,7 @@ void QgsRendererRulePropsDialog::testFilter()
     return;
   }
 
-  const QgsFields& fields = mLayer->pendingFields();
+  const QgsFields& fields = mLayer->fields();
 
   if ( !filter.prepare( fields ) )
   {

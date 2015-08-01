@@ -1872,7 +1872,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
   }
 
   QGis::WkbType wkbType = layer->wkbType();
-  QgsFields fields = skipAttributeCreation ? QgsFields() : layer->pendingFields();
+  QgsFields fields = skipAttributeCreation ? QgsFields() : layer->fields();
 
   if ( layer->providerType() == "ogr" && layer->dataProvider() )
   {
@@ -2672,7 +2672,7 @@ void QgsVectorFileWriter::startRender( QgsVectorLayer* vl ) const
   }
 
   QgsRenderContext ctx = renderContext();
-  renderer->startRender( ctx, vl->pendingFields() );
+  renderer->startRender( ctx, vl->fields() );
 }
 
 void QgsVectorFileWriter::stopRender( QgsVectorLayer* vl ) const

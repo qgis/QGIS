@@ -168,7 +168,7 @@ void QgsAtlasComposition::setSortKeyAttributeIndex( int idx )
 {
   if ( mCoverageLayer )
   {
-    const QgsFields fields = mCoverageLayer->pendingFields();
+    const QgsFields fields = mCoverageLayer->fields();
     if ( idx >= 0 && idx < fields.count() )
     {
       mSortKeyAttributeName = fields[idx].name();
@@ -263,7 +263,7 @@ int QgsAtlasComposition::updateFeatures()
     QString pageName;
     if ( !nameExpression.isNull() )
     {
-      QVariant result = nameExpression->evaluate( &feat, mCoverageLayer->pendingFields() );
+      QVariant result = nameExpression->evaluate( &feat, mCoverageLayer->fields() );
       if ( nameExpression->hasEvalError() )
       {
         QgsMessageLog::logMessage( tr( "Atlas name eval error: %1" ).arg( nameExpression->evalErrorString() ), tr( "Composer" ) );
@@ -744,7 +744,7 @@ void QgsAtlasComposition::readXML( const QDomElement& atlasElem, const QDomDocum
     int idx = mSortKeyAttributeName.toInt( &isIndex );
     if ( isIndex && mCoverageLayer )
     {
-      const QgsFields fields = mCoverageLayer->pendingFields();
+      const QgsFields fields = mCoverageLayer->fields();
       if ( idx >= 0 && idx < fields.count() )
       {
         mSortKeyAttributeName = fields[idx].name();
@@ -823,7 +823,7 @@ bool QgsAtlasComposition::updateFilenameExpression()
     return false;
   }
 
-  const QgsFields& fields = mCoverageLayer->pendingFields();
+  const QgsFields& fields = mCoverageLayer->fields();
 
   if ( mFilenamePattern.size() > 0 )
   {
@@ -853,7 +853,7 @@ bool QgsAtlasComposition::evalFeatureFilename()
   //generate filename for current atlas feature
   if ( mFilenamePattern.size() > 0 && !mFilenameExpr.isNull() )
   {
-    QVariant filenameRes = mFilenameExpr->evaluate( &mCurrentFeature, mCoverageLayer->pendingFields() );
+    QVariant filenameRes = mFilenameExpr->evaluate( &mCurrentFeature, mCoverageLayer->fields() );
     if ( mFilenameExpr->hasEvalError() )
     {
       QgsMessageLog::logMessage( tr( "Atlas filename evaluation error: %1" ).arg( mFilenameExpr->evalErrorString() ), tr( "Composer" ) );

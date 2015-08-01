@@ -157,7 +157,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   mSizeFieldExpressionWidget->setGeomCalculator( myDa );
 
   //insert all attributes into the combo boxes
-  const QgsFields& layerFields = layer->pendingFields();
+  const QgsFields& layerFields = layer->fields();
   for ( int idx = 0; idx < layerFields.count(); ++idx )
   {
     QTreeWidgetItem *newItem = new QTreeWidgetItem( mAttributesTreeWidget );
@@ -342,7 +342,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
         }
         else
         {
-          mSizeFieldExpressionWidget->setField( mLayer->pendingFields().at( lidr->classificationAttribute() ).name() );
+          mSizeFieldExpressionWidget->setField( mLayer->fields().at( lidr->classificationAttribute() ).name() );
         }
       }
     }
@@ -526,7 +526,7 @@ void QgsDiagramProperties::on_mFindMaximumValueButton_clicked()
   if ( isExpression )
   {
     QgsExpression exp( sizeFieldNameOrExp );
-    exp.prepare( mLayer->pendingFields() );
+    exp.prepare( mLayer->fields() );
     if ( !exp.hasEvalError() )
     {
       QgsFeature feature;
@@ -543,7 +543,7 @@ void QgsDiagramProperties::on_mFindMaximumValueButton_clicked()
   }
   else
   {
-    int attributeNumber = mLayer->pendingFields().fieldNameIndex( sizeFieldNameOrExp );
+    int attributeNumber = mLayer->fields().fieldNameIndex( sizeFieldNameOrExp );
     maxValue = mLayer->maximumValue( attributeNumber ).toFloat();
   }
 
@@ -726,7 +726,7 @@ void QgsDiagramProperties::apply()
     }
     else
     {
-      int attributeNumber = mLayer->pendingFields().fieldNameIndex( sizeFieldNameOrExp );
+      int attributeNumber = mLayer->fields().fieldNameIndex( sizeFieldNameOrExp );
       dr->setClassificationAttribute( attributeNumber );
     }
     dr->setDiagram( diagram );

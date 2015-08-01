@@ -161,7 +161,7 @@ void TestVectorLayerCache::testCacheAttrActions()
   QVERIFY( mVectorLayerCache->featureAtId( 15, f ) );
   QVERIFY( f.attribute( "newAttr" ).isValid() );
 
-  QgsFields allFields = mPointsLayer->pendingFields();
+  QgsFields allFields = mPointsLayer->fields();
   int idx = allFields.indexFromName( "newAttr" );
 
   mPointsLayer->startEditing();
@@ -203,7 +203,7 @@ void TestVectorLayerCache::testSubsetRequest()
 {
   QgsFeature f;
 
-  QgsFields fields = mPointsLayer->pendingFields();
+  QgsFields fields = mPointsLayer->fields();
   QStringList requiredFields;
   requiredFields << "Class" << "Cabin Crew";
 

@@ -368,7 +368,7 @@ void QgsHighlight::paint( QPainter* p )
 
       context.setPainter( imagePainter );
 
-      renderer->startRender( context, layer->pendingFields() );
+      renderer->startRender( context, layer->fields() );
       renderer->renderFeature( mFeature, context );
       renderer->stopRender( context );
 

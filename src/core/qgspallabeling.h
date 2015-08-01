@@ -547,7 +547,7 @@ class CORE_EXPORT QgsPalLayerSettings
     // NOTE: not in Python binding
     pal::Layer* palLayer;
     QgsFeature* mCurFeat;
-    const QgsFields* mCurFields;
+    QgsFields mCurFields;
     int fieldIndex;
     const QgsMapToPixel* xform;
     const QgsCoordinateTransform* ct;

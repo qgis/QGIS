@@ -33,8 +33,8 @@ int QgsEditorWidgetWrapper::fieldIdx()
 
 QgsField QgsEditorWidgetWrapper::field()
 {
-  if ( mFieldIdx < layer()->pendingFields().count() )
-    return layer()->pendingFields()[mFieldIdx];
+  if ( mFieldIdx < layer()->fields().count() )
+    return layer()->fields()[mFieldIdx];
   else
     return QgsField();
 }

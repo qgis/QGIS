@@ -651,7 +651,7 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
   {
     // Lets assume it's an expression
     QgsExpression* expression = new QgsExpression( attrName );
-    expression->prepare( mLayer->pendingFields() );
+    expression->prepare( mLayer->fields() );
     QgsFeatureIterator fit = mLayer->getFeatures();
     QgsFeature feature;
     while ( fit.nextFeature( feature ) )

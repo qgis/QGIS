@@ -245,7 +245,7 @@ void QgsRelationReferenceWidget::setForeignKey( const QVariant& value )
   if ( !mReferencedLayer )
     return;
 
-  QgsAttributes attrs = QgsAttributes( mReferencingLayer->pendingFields().count() );
+  QgsAttributes attrs = QgsAttributes( mReferencingLayer->fields().count() );
   attrs[mFkeyFieldIdx] = value;
 
   QgsFeatureRequest request = mRelation.getReferencedFeatureRequest( attrs );
@@ -348,7 +348,7 @@ QVariant QgsRelationReferenceWidget::foreignKey()
   {
     if ( !mFeature.isValid() )
     {
-      return QVariant( mReferencingLayer->pendingFields().at( mFkeyFieldIdx ).type() );
+      return QVariant( mReferencingLayer->fields().at( mFkeyFieldIdx ).type() );
     }
     else
     {
@@ -442,7 +442,7 @@ void QgsRelationReferenceWidget::init()
         mReferencedLayer->uniqueValues( idx, uniqueValues );
         cb->addItem( mReferencedLayer->attributeAlias( idx ).isEmpty() ? fieldName : mReferencedLayer->attributeAlias( idx ) );
         QVariant nullValue = QSettings().value( "qgis/nullValue", "NULL" );
-        cb->addItem( nullValue.toString(), QVariant( mReferencedLayer->pendingFields()[idx].type() ) );
+        cb->addItem( nullValue.toString(), QVariant( mReferencedLayer->fields()[idx].type() ) );
 
         Q_FOREACH ( QVariant v, uniqueValues )
         {
@@ -488,7 +488,7 @@ void QgsRelationReferenceWidget::init()
 
     layerCache->setCacheSubsetOfAttributes( attributes );
     mMasterModel = new QgsAttributeTableModel( layerCache );
-    mMasterModel->setRequest( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( requestedAttrs.toList(), mReferencedLayer->pendingFields() ) );
+    mMasterModel->setRequest( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( requestedAttrs.toList(), mReferencedLayer->fields() ) );
     mFilterModel = new QgsAttributeTableFilterModel( mCanvas, mMasterModel, mMasterModel );
     mFeatureListModel = new QgsFeatureListModel( mFilterModel, this );
     mFeatureListModel->setDisplayExpression( mReferencedLayer->displayExpression() );
@@ -801,7 +801,7 @@ void QgsRelationReferenceWidget::filterChanged()
       }
       else
       {
-        if ( mReferencedLayer->pendingFields().field( fieldName ).type() == QVariant::String )
+        if ( mReferencedLayer->fields().field( fieldName ).type() == QVariant::String )
         {
           filters << QString( "\"%1\" = '%2'" ).arg( fieldName ).arg( cb->currentText() );
         }

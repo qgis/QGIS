@@ -278,8 +278,8 @@ void QgsAttributeForm::onAttributeAdded( int idx )
   if ( mFeature.isValid() )
   {
     QgsAttributes attrs = mFeature.attributes();
-    attrs.insert( idx, QVariant( layer()->pendingFields()[idx].type() ) );
-    mFeature.setFields( layer()->pendingFields() );
+    attrs.insert( idx, QVariant( layer()->fields()[idx].type() ) );
+    mFeature.setFields( layer()->fields() );
     mFeature.setAttributes( attrs );
   }
   init();
@@ -292,7 +292,7 @@ void QgsAttributeForm::onAttributeDeleted( int idx )
   {
     QgsAttributes attrs = mFeature.attributes();
     attrs.remove( idx );
-    mFeature.setFields( layer()->pendingFields() );
+    mFeature.setFields( layer()->fields() );
     mFeature.setAttributes( attrs );
   }
   init();
@@ -436,7 +436,7 @@ void QgsAttributeForm::init()
     layout()->addWidget( scrollArea );
 
     int row = 0;
-    Q_FOREACH ( const QgsField& field, mLayer->pendingFields().toList() )
+    Q_FOREACH ( const QgsField& field, mLayer->fields().toList() )
     {
       int idx = mLayer->fieldNameIndex( field.name() );
       if ( idx < 0 )
@@ -588,7 +588,7 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
         break;
 
       int fldIdx = vl->fieldNameIndex( fieldDef->name() );
-      if ( fldIdx < vl->pendingFields().count() && fldIdx >= 0 )
+      if ( fldIdx < vl->fields().count() && fldIdx >= 0 )
       {
         const QString widgetType = mLayer->editorWidgetV2( fldIdx );
         const QgsEditorWidgetConfig widgetConfig = mLayer->editorWidgetV2Config( fldIdx );
@@ -597,7 +597,7 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
         newWidget = eww->widget();
         addWidgetWrapper( eww );
 
-        newWidget->setObjectName( mLayer->pendingFields()[ fldIdx ].name() );
+        newWidget->setObjectName( mLayer->fields()[ fldIdx ].name() );
       }
 
       labelOnTop = mLayer->labelOnTop( fieldDef->idx() );
@@ -720,7 +720,7 @@ void QgsAttributeForm::addWidgetWrapper( QgsEditorWidgetWrapper* eww )
 void QgsAttributeForm::createWrappers()
 {
   QList<QWidget*> myWidgets = findChildren<QWidget*>();
-  const QList<QgsField> fields = mLayer->pendingFields().toList();
+  const QList<QgsField> fields = mLayer->fields().toList();
 
   Q_FOREACH ( QWidget* myWidget, myWidgets )
   {

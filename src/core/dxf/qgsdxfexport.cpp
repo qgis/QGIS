@@ -901,12 +901,12 @@ void QgsDxfExport::writeEntities()
     {
       continue;
     }
-    renderer->startRender( ctx, vl->pendingFields() );
+    renderer->startRender( ctx, vl->fields() );
 
     QStringList attributes = renderer->usedAttributes();
-    if ( vl->pendingFields().exists( layerIt->second ) )
+    if ( vl->fields().exists( layerIt->second ) )
     {
-      QString layerAttr = vl->pendingFields().at( layerIt->second ).name();
+      QString layerAttr = vl->fields().at( layerIt->second ).name();
       if ( !attributes.contains( layerAttr ) )
         attributes << layerAttr;
     }
@@ -922,7 +922,7 @@ void QgsDxfExport::writeEntities()
       continue;
     }
 
-    QgsFeatureRequest freq = QgsFeatureRequest().setSubsetOfAttributes( attributes, vl->pendingFields() );
+    QgsFeatureRequest freq = QgsFeatureRequest().setSubsetOfAttributes( attributes, vl->fields() );
     if ( !mExtent.isEmpty() )
     {
       freq.setFilterRect( mExtent );
@@ -1001,7 +1001,7 @@ void QgsDxfExport::writeEntitiesSymbolLevels( QgsVectorLayer* layer )
 
   QgsRenderContext ctx = renderContext();
   QgsSymbolV2RenderContext sctx( ctx, QgsSymbolV2::MM, 1.0, false, 0, 0 );
-  renderer->startRender( ctx, layer->pendingFields() );
+  renderer->startRender( ctx, layer->fields() );
 
   // get iterator
   QgsFeatureRequest req;
@@ -1009,7 +1009,7 @@ void QgsDxfExport::writeEntitiesSymbolLevels( QgsVectorLayer* layer )
   {
     req.setFlags( QgsFeatureRequest::NoGeometry );
   }
-  req.setSubsetOfAttributes( QStringList( renderer->usedAttributes() ), layer->pendingFields() );
+  req.setSubsetOfAttributes( QStringList( renderer->usedAttributes() ), layer->fields() );
   if ( !mExtent.isEmpty() )
   {
     req.setFilterRect( mExtent );

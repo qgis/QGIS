@@ -233,7 +233,7 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::defaultRenderer( QGis::GeometryType 
 
 void QgsFeatureRendererV2::startRender( QgsRenderContext& context, const QgsVectorLayer* vlayer )
 {
-  startRender( context, vlayer->pendingFields() );
+  startRender( context, vlayer->fields() );
 }
 
 bool QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )

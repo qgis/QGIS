@@ -289,7 +289,7 @@ void QgsAttributeTableModel::loadAttributes()
   bool ins = false, rm = false;
 
   QgsAttributeList attributes;
-  const QgsFields& fields = layer()->pendingFields();
+  const QgsFields& fields = layer()->fields();
 
   mWidgetFactories.clear();
   mAttributeWidgetCaches.clear();
@@ -484,7 +484,7 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
       QString attributeName = layer()->attributeAlias( mAttributes[section] );
       if ( attributeName.isEmpty() )
       {
-        QgsField field = layer()->pendingFields()[ mAttributes[section] ];
+        QgsField field = layer()->fields()[ mAttributes[section] ];
         attributeName = field.name();
       }
       return QVariant( attributeName );
@@ -526,7 +526,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   if ( role == FieldIndexRole )
     return fieldId;
 
-  const QgsField& field = layer()->pendingFields()[ fieldId ];
+  const QgsField& field = layer()->fields()[ fieldId ];
 
   QVariant::Type fldType = field.type();
   bool fldNumeric = ( fldType == QVariant::Int || fldType == QVariant::Double || fldType == QVariant::LongLong );
@@ -668,7 +668,7 @@ void QgsAttributeTableModel::prefetchColumnData( int column )
     if ( column >= mAttributes.count() )
       return;
     int fieldId = mAttributes[ column ];
-    const QgsFields& fields = layer()->pendingFields();
+    const QgsFields& fields = layer()->fields();
     QStringList fldNames;
     fldNames << fields[ fieldId ].name();
 

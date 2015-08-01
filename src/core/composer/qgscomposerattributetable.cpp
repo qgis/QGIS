@@ -181,7 +181,7 @@ void QgsComposerAttributeTable::resetColumns()
   mColumns.clear();
 
   //rebuild columns list from vector layer fields
-  const QgsFields& fields = mVectorLayer->pendingFields();
+  const QgsFields& fields = mVectorLayer->fields();
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
     QString currentAlias = mVectorLayer->attributeDisplayName( idx );
@@ -274,7 +274,7 @@ void QgsComposerAttributeTable::setDisplayAttributes( const QSet<int>& attr, boo
   qDeleteAll( mColumns );
   mColumns.clear();
 
-  const QgsFields& fields = mVectorLayer->pendingFields();
+  const QgsFields& fields = mVectorLayer->fields();
 
   if ( !attr.empty() )
   {
@@ -424,7 +424,7 @@ bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributeMap> &at
     //check feature against filter
     if ( activeFilter && !filterExpression.isNull() )
     {
-      QVariant result = filterExpression->evaluate( &f, mVectorLayer->pendingFields() );
+      QVariant result = filterExpression->evaluate( &f, mVectorLayer->fields() );
       // skip this feature if the filter evaluation is false
       if ( !result.toBool() )
       {
@@ -448,7 +448,7 @@ bool QgsComposerAttributeTable::getFeatureAttributes( QList<QgsAttributeMap> &at
         // Lets assume it's an expression
         QgsExpression* expression = new QgsExpression(( *columnIt )->attribute() );
         expression->setCurrentRowNumber( counter + 1 );
-        expression->prepare( mVectorLayer->pendingFields() );
+        expression->prepare( mVectorLayer->fields() );
         QVariant value = expression->evaluate( f );
         attributeMaps.last().insert( i, value.toString() );
       }
@@ -684,7 +684,7 @@ bool QgsComposerAttributeTable::readXML( const QDomElement& itemElem, const QDom
   if ( !sortColumnsElem.isNull() && mVectorLayer )
   {
     QDomNodeList columns = sortColumnsElem.elementsByTagName( "column" );
-    const QgsFields& fields = mVectorLayer->pendingFields();
+    const QgsFields& fields = mVectorLayer->fields();
 
     for ( int i = 0; i < columns.size(); ++i )
     {

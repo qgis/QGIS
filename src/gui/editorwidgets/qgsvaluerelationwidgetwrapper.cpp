@@ -221,7 +221,7 @@ QgsValueRelationWidgetWrapper::ValueRelationCache QgsValueRelationWidgetWrapper:
     if ( !config.value( "FilterExpression" ).toString().isEmpty() )
     {
       e = new QgsExpression( config.value( "FilterExpression" ).toString() );
-      if ( e->hasParserError() || !e->prepare( layer->pendingFields() ) )
+      if ( e->hasParserError() || !e->prepare( layer->fields() ) )
         ki = -1;
     }
 
