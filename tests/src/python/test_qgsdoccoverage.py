@@ -27,12 +27,12 @@ from PyQt4.QtCore import qDebug
 
 # DOCUMENTATION THRESHOLD
 #
-# The minimum coverage of public/protected member functions in QGIS api
+# The minimum number of undocumented public/protected member functions in QGIS api
 #
-# DON'T LOWER THIS THRESHOLD UNLESS MEMBERS HAVE BEEN REMOVED FROM THE API
-# (changes which raise this threshold are welcomed though!)
+# DON'T RAISE THIS THRESHOLD!!!
+# (changes which lower this threshold are welcomed though!)
 
-ACCEPTABLE_COVERAGE = 55.187
+ACCEPTABLE_MISSING_DOCS = 4427
 
 
 def elemIsDocumentableClass(elem):
@@ -117,7 +117,7 @@ def parseDocs(path):
         documentable_members += members
         documented_members += documented
 
-    return 100.0 * documented_members / documentable_members
+    return documentable_members, documented_members
 
 class TestQgsDocCoverage(TestCase):
 
@@ -126,11 +126,18 @@ class TestQgsDocCoverage(TestCase):
         prefixPath = os.environ['QGIS_PREFIX_PATH']
         docPath = os.path.join(prefixPath, '..', 'doc', 'api', 'xml' )
 
-        coverage = parseDocs(docPath)
-        print "Documentation coverage {}".format(coverage)
+        documentable, documented = parseDocs(docPath)
+        coverage = 100.0 * documented / documentable
+        missing = documentable - documented 
 
-        assert coverage >= ACCEPTABLE_COVERAGE, 'Minimum coverage: %f\nActual coverage: %f\n' % (ACCEPTABLE_COVERAGE, coverage)
+        print "---------------------------------"
+        print "{} total documentable members".format(documentable)
+        print "{} total contain valid documentation".format(documented)
+        print "Total documentation coverage {}%".format(coverage)
+        print "---------------------------------"
+        print "{} members missing documentation, out of {} allowed".format(missing, ACCEPTABLE_MISSING_DOCS)
 
+        assert missing <= ACCEPTABLE_MISSING_DOCS, 'FAIL: new undocumented members have been introduced, please add documentation for these members'
 
 if __name__ == '__main__':
     unittest.main()
