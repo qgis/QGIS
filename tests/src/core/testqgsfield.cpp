@@ -38,6 +38,7 @@ class TestQgsField: public QObject
     void asVariant(); //test conversion to and from a QVariant
     void displayString();
     void convertCompatible();
+    void dataStream();
 
   private:
 };
@@ -282,6 +283,29 @@ void TestQgsField::convertCompatible()
   QVERIFY( !stringWithLen.convertCompatible( stringVar ) );
   QCOMPARE( stringVar.type(), QVariant::String );
   QCOMPARE( stringVar.toString(), QString( "lon" ) );
+}
+
+void TestQgsField::dataStream()
+{
+  QgsField original;
+  original.setName( "name" );
+  original.setType( QVariant::Int );
+  original.setLength( 5 );
+  original.setPrecision( 2 );
+  original.setTypeName( "typename1" );
+  original.setComment( "comment1" );
+
+  QByteArray ba;
+  QDataStream ds( &ba, QIODevice::ReadWrite );;
+  ds << original;
+
+  QgsField result;
+  ds.device()->seek( 0 );
+  ds >> result;
+
+  QCOMPARE( result, original );
+  QCOMPARE( result.typeName(), original.typeName() ); //typename is NOT required for equality
+  QCOMPARE( result.comment(), original.comment() ); //comment is NOT required for equality
 }
 
 QTEST_MAIN( TestQgsField )
