@@ -883,8 +883,8 @@ void QgsOfflineEditing::copySymbology( QgsVectorLayer* sourceLayer, QgsVectorLay
 // NOTE: use this to map column indices in case the remote geometry column is not last
 QMap<int, int> QgsOfflineEditing::attributeLookup( QgsVectorLayer* offlineLayer, QgsVectorLayer* remoteLayer )
 {
-  const QgsAttributeList& offlineAttrs = offlineLayer->pendingAllAttributesList();
-  const QgsAttributeList& remoteAttrs = remoteLayer->pendingAllAttributesList();
+  const QgsAttributeList& offlineAttrs = offlineLayer->attributeList();
+  const QgsAttributeList& remoteAttrs = remoteLayer->attributeList();
 
   QMap < int /*offline attr*/, int /*remote attr*/ > attrLookup;
   // NOTE: use size of remoteAttrs, as offlineAttrs can have new attributes not yet synced

@@ -77,7 +77,7 @@ void TestVectorLayerJoinBuffer::initTestCase()
   QgsFeature fA2( mLayerA->dataProvider()->fields(), 2 );
   fA2.setAttribute( "id_a", 2 );
   mLayerA->dataProvider()->addFeatures( QgsFeatureList() << fA1 << fA2 );
-  QVERIFY( mLayerA->pendingFeatureCount() == 2 );
+  QVERIFY( mLayerA->featureCount() == 2 );
 
   // LAYER B //
 
@@ -92,7 +92,7 @@ void TestVectorLayerJoinBuffer::initTestCase()
   fB2.setAttribute( "id_b", 2 );
   fB2.setAttribute( "value_b", 12 );
   mLayerB->dataProvider()->addFeatures( QgsFeatureList() << fB1 << fB2 );
-  QVERIFY( mLayerB->pendingFeatureCount() == 2 );
+  QVERIFY( mLayerB->featureCount() == 2 );
 
   // LAYER C //
 
@@ -104,7 +104,7 @@ void TestVectorLayerJoinBuffer::initTestCase()
   fC1.setAttribute( "id_c", 1 );
   fC1.setAttribute( "value_c", 101 );
   mLayerC->dataProvider()->addFeatures( QgsFeatureList() << fC1 );
-  QVERIFY( mLayerC->pendingFeatureCount() == 1 );
+  QVERIFY( mLayerC->featureCount() == 1 );
 
   QgsMapLayerRegistry::instance()->addMapLayer( mLayerA );
   QgsMapLayerRegistry::instance()->addMapLayer( mLayerB );
@@ -259,7 +259,7 @@ void TestVectorLayerJoinBuffer::testJoinSubset()
   fX1.setAttribute( "value_x1", 111 );
   fX1.setAttribute( "value_x2", 222 );
   layerX->dataProvider()->addFeatures( QgsFeatureList() << fX1 );
-  QVERIFY( layerX->pendingFeatureCount() == 1 );
+  QVERIFY( layerX->featureCount() == 1 );
 
   QgsMapLayerRegistry::instance()->addMapLayer( layerX );
 

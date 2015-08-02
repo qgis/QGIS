@@ -111,7 +111,7 @@ void QgsDualView::columnBoxInit()
   // if neither diaplay expression nor display field is saved...
   if ( displayExpression == "" )
   {
-    QgsAttributeList pkAttrs = mLayerCache->layer()->pendingPkAttributesList();
+    QgsAttributeList pkAttrs = mLayerCache->layer()->pkAttributeList();
 
     if ( pkAttrs.size() > 0 )
     {

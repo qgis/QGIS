@@ -961,7 +961,7 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
   QgsGeometry* lrsGeom = 0;
   double measure1, measure2 = 0.0;
 
-  int nEventFeatures = eventLayer->pendingFeatureCount();
+  int nEventFeatures = eventLayer->featureCount();
   int featureCounter = 0;
   int nOutputFeatures = 0; //number of output features for the current event feature
   if ( p )
