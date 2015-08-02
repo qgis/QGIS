@@ -88,7 +88,7 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
 
   //create combo boxes and insert attribute names
   const QgsFields& fields = mVectorLayer->fields();
-  QSet<int> pkAttrList = mVectorLayer->pendingPkAttributesList().toSet();
+  QSet<int> pkAttrList = mVectorLayer->pkAttributeList().toSet();
 
   int col = 0;
   for ( int idx = 0; idx < fields.count(); ++idx )
@@ -487,7 +487,7 @@ void QgsMergeAttributesDialog::on_mFromSelectedPushButton_clicked()
     return;
   }
 
-  QSet<int> pkAttributes = mVectorLayer->pendingPkAttributesList().toSet();
+  QSet<int> pkAttributes = mVectorLayer->pkAttributeList().toSet();
   for ( int i = 0; i < mTableWidget->columnCount(); ++i )
   {
     if ( pkAttributes.contains( i ) )

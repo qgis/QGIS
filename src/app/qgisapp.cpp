@@ -6285,7 +6285,7 @@ void QgisApp::editPaste( QgsMapLayer *destinationLayer )
 
   QHash<int, int> remap;
   const QgsFields &fields = clipboard()->fields();
-  QgsAttributeList pkAttrList = pasteVectorLayer->pendingPkAttributesList();
+  QgsAttributeList pkAttrList = pasteVectorLayer->pkAttributeList();
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
     int dst = pasteVectorLayer->fieldNameIndex( fields[idx].name() );

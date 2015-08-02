@@ -31,7 +31,7 @@ QgsVectorLayerCache::QgsVectorLayerCache( QgsVectorLayer* layer, int cacheSize, 
   connect( mLayer, SIGNAL( layerDeleted() ), SLOT( layerDeleted() ) );
 
   setCacheGeometry( true );
-  setCacheSubsetOfAttributes( mLayer->pendingAllAttributesList() );
+  setCacheSubsetOfAttributes( mLayer->attributeList() );
   setCacheAddedAttributes( true );
 
   connect( mLayer, SIGNAL( attributeDeleted( int ) ), SLOT( attributeDeleted( int ) ) );
@@ -330,7 +330,7 @@ bool QgsVectorLayerCache::checkInformationCovered( const QgsFeatureRequest& feat
 
   if ( !featureRequest.flags().testFlag( QgsFeatureRequest::SubsetOfAttributes ) )
   {
-    requestedAttributes = mLayer->pendingAllAttributesList();
+    requestedAttributes = mLayer->attributeList();
   }
   else
   {

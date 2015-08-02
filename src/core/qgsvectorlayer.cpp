@@ -675,17 +675,6 @@ bool QgsVectorLayer::diagramsEnabled() const
   return false;
 }
 
-long QgsVectorLayer::featureCount() const
-{
-  if ( !mDataProvider )
-  {
-    QgsDebugMsg( "invoked with null mDataProvider" );
-    return 0;
-  }
-
-  return mDataProvider->featureCount();
-}
-
 long QgsVectorLayer::featureCount( QgsSymbolV2* symbol )
 {
   if ( !mSymbolFeatureCounted ) return -1;
@@ -716,7 +705,7 @@ bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
     mSymbolFeatureCountMap.insert( symbolIt->second, 0 );
   }
 
-  long nFeatures = pendingFeatureCount();
+  long nFeatures = featureCount();
   QProgressDialog progressDialog( tr( "Updating feature count for layer %1" ).arg( name() ), tr( "Abort" ), 0, nFeatures );
   progressDialog.setWindowTitle( tr( "QGIS" ) );
   progressDialog.setWindowModality( Qt::WindowModal );
@@ -2218,12 +2207,7 @@ bool QgsVectorLayer::deleteFeature( QgsFeatureId fid )
   return res;
 }
 
-QgsAttributeList QgsVectorLayer::pendingAllAttributesList()
-{
-  return mUpdatedFields.allAttributesList();
-}
-
-QgsAttributeList QgsVectorLayer::pendingPkAttributesList()
+QgsAttributeList QgsVectorLayer::pkAttributeList() const
 {
   QgsAttributeList pkAttributesList;
 
@@ -2238,7 +2222,7 @@ QgsAttributeList QgsVectorLayer::pendingPkAttributesList()
   return pkAttributesList;
 }
 
-int QgsVectorLayer::pendingFeatureCount()
+long QgsVectorLayer::featureCount() const
 {
   return mDataProvider->featureCount() +
          ( mEditBuffer ? mEditBuffer->mAddedFeatures.size() - mEditBuffer->mDeletedFeatureIds.size() : 0 );
@@ -3563,7 +3547,7 @@ QString QgsVectorLayer::metadata()
     myMetadata += "</p>\n";
   }
 
-  QgsAttributeList pkAttrList = pendingPkAttributesList();
+  QgsAttributeList pkAttrList = pkAttributeList();
   if ( !pkAttrList.isEmpty() )
   {
     myMetadata += "<p class=\"glossy\">" + tr( "Primary key attributes" ) + "</p>\n";

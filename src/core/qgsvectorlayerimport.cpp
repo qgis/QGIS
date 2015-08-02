@@ -302,7 +302,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     errorMessage->clear();
   }
 
-  QgsAttributeList allAttr = skipAttributeCreation ? QgsAttributeList() : layer->pendingAllAttributesList();
+  QgsAttributeList allAttr = skipAttributeCreation ? QgsAttributeList() : layer->attributeList();
   QgsFeature fet;
 
   QgsFeatureRequest req;

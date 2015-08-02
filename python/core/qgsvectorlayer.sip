@@ -569,15 +569,6 @@ class QgsVectorLayer : QgsMapLayer
     bool readSld( const QDomNode& node, QString& errorMessage );
 
     /**
-     * Number of features in the layer. This is necessary if features are
-     * added/deleted or the layer has been subsetted. If the data provider
-     * chooses not to support this feature, the total number of features
-     * can be returned.
-     * @return long containing number of features
-     */
-    virtual long featureCount() const;
-
-    /**
      * Update the data source of the layer. The layer's renderer and legend will be preserved only
      * if the geometry type of the new data source matches the current geometry type of the layer.
      * @param dataSource new layer data source
@@ -816,16 +807,40 @@ class QgsVectorLayer : QgsMapLayer
      *
      * @return A list of fields
      */
-    const QgsFields pendingFields() const;
+    QgsFields pendingFields() const;
 
-    /** Returns list of attributes */
-    QList<int> pendingAllAttributesList();
+    /**
+     * Returns list of attribute indexes. i.e. a list from 0 ... fieldCount()
+     * Alias for {@link attributeList()}
+     */
+    QgsAttributeList pendingAllAttributesList() const;
 
-    /** Returns list of attribute making up the primary key */
-    QList<int> pendingPkAttributesList();
+    /**
+     * Returns list of attribute indexes. i.e. a list from 0 ... fieldCount()
+     * Alias for {@link attributeList()}
+     */
+    QgsAttributeList attributeList() const;
 
-    /** Returns feature count after commit */
-    int pendingFeatureCount();
+    /**
+     * Returns list of attributes making up the primary key
+     * Alias for {@link pkAttributeList()}
+     */
+    QgsAttributeList pendingPkAttributesList() const;
+
+    /** Returns list of attributes making up the primary key */
+    QgsAttributeList pkAttributeList() const;
+
+    /**
+     * Returns feature count including changes which have not yet been committed
+     * Alias for {@link featureCount()}
+     */
+    long pendingFeatureCount() const;
+
+    /**
+     * Returns feature count including changes which have not yet been committed
+     * If you need only the count of committed features call this method on this layer's provider.
+     */
+    long featureCount() const;
 
     /** Make layer read-only (editing disabled) or not
      *  @return false if the layer is in editing yet

@@ -1945,7 +1945,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
     errorMessage->clear();
   }
 
-  QgsAttributeList allAttr = skipAttributeCreation ? QgsAttributeList() : layer->pendingAllAttributesList();
+  QgsAttributeList allAttr = skipAttributeCreation ? QgsAttributeList() : layer->attributeList();
   QgsFeature fet;
 
   //add possible attributes needed by renderer
