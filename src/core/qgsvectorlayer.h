@@ -957,7 +957,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     const QgsDiagramLayerSettings *diagramLayerSettings() const { return mDiagramLayerSettings; }
 
     /** Return renderer V2. */
-    QgsFeatureRendererV2* rendererV2();
+    QgsFeatureRendererV2* rendererV2() const;
     /** Set renderer V2. */
     void setRendererV2( QgsFeatureRendererV2* r );
 
@@ -1322,7 +1322,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     bool setReadOnly( bool readonly = true );
 
-    /** Make layer editable */
+    /**
+     * Make layer editable.
+     * This starts an edit session on this layer. Changes made in this edit session will not
+     * be made persistent until {@link commitChanges()} is called and can be reverted by calling
+     * {@link rollBack()}.
+     */
     bool startEditing();
 
     /** Change feature's geometry */

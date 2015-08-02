@@ -2775,7 +2775,7 @@ void QgsVectorLayer::setLabelOnTop( int idx, bool onTop )
     mLabelOnTop[ fields[idx].name()] = onTop;
 }
 
-QgsFeatureRendererV2* QgsVectorLayer::rendererV2()
+QgsFeatureRendererV2* QgsVectorLayer::rendererV2() const
 {
   return mRendererV2;
 }
