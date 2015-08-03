@@ -221,7 +221,7 @@ int QgsAtlasComposition::updateFeatures()
   updateFilenameExpression();
 
   // select all features with all attributes
-  QgsFeatureIterator fit = mCoverageLayer->getFeatures();
+  QgsFeatureRequest req;
 
   QScopedPointer<QgsExpression> filterExpression;
   if ( mFilterFeatures && !mFeatureFilter.isEmpty() )
@@ -232,8 +232,13 @@ int QgsAtlasComposition::updateFeatures()
       mFilterParserError = filterExpression->parserErrorString();
       return 0;
     }
+
+    //filter good to go
+    req.setFilterExpression( mFeatureFilter );
   }
   mFilterParserError = QString();
+
+  QgsFeatureIterator fit = mCoverageLayer->getFeatures( req );
 
   QScopedPointer<QgsExpression> nameExpression;
   if ( !mPageNameExpression.isEmpty() )
@@ -264,21 +269,6 @@ int QgsAtlasComposition::updateFeatures()
         QgsMessageLog::logMessage( tr( "Atlas name eval error: %1" ).arg( nameExpression->evalErrorString() ), tr( "Composer" ) );
       }
       pageName = result.toString();
-    }
-
-    if ( !filterExpression.isNull() )
-    {
-      QVariant result = filterExpression->evaluate( &feat, mCoverageLayer->pendingFields() );
-      if ( filterExpression->hasEvalError() )
-      {
-        QgsMessageLog::logMessage( tr( "Atlas filter eval error: %1" ).arg( filterExpression->evalErrorString() ), tr( "Composer" ) );
-      }
-
-      // skip this feature if the filter evaluation if false
-      if ( !result.toBool() )
-      {
-        continue;
-      }
     }
 
     mFeatureIds.push_back( qMakePair( feat.id(), pageName ) );
