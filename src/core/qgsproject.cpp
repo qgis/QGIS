@@ -42,6 +42,7 @@
 #include <QDomNode>
 #include <QObject>
 #include <QTextStream>
+#include <QDir>
 
 // canonical project instance
 QgsProject *QgsProject::theProject_ = 0;
@@ -332,7 +333,6 @@ QgsProject::QgsProject()
   // whenever layers are added to or removed from the registry,
   // layer tree will be updated
   mLayerTreeRegistryBridge = new QgsLayerTreeRegistryBridge( mRootGroup, this );
-
 } // QgsProject ctor
 
 
@@ -406,7 +406,12 @@ void QgsProject::setFileName( QString const &name )
 QString QgsProject::fileName() const
 {
   return imp_->file.fileName();
-} // QString QgsProject::fileName() const
+}
+
+QFileInfo QgsProject::fileInfo() const
+{
+  return QFileInfo( imp_->file );
+}
 
 void QgsProject::clear()
 {

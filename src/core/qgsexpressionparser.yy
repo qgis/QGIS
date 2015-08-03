@@ -108,7 +108,7 @@ struct expression_parser_context
 // tokens for conditional expressions
 %token CASE WHEN THEN ELSE END
 
-%token <text> STRING COLUMN_REF FUNCTION SPECIAL_COL
+%token <text> STRING COLUMN_REF FUNCTION SPECIAL_COL VARIABLE
 
 %token COMMA
 
@@ -251,6 +251,17 @@ expression:
 	    $$ = new QgsExpression::NodeFunction( fnIndex, NULL );
 	    delete $1;
 	  }
+        }
+
+    // variables
+    | VARIABLE
+        {
+	  // @var is equivalent to var( "var" )
+	  QgsExpression::NodeList* args = new QgsExpression::NodeList();
+	  QgsExpression::NodeLiteral* literal = new QgsExpression::NodeLiteral( QString(*$1).mid(1) );
+	  args->append( literal );
+          $$ = new QgsExpression::NodeFunction( QgsExpression::functionIndex( "var" ), args );
+          delete $1;
         }
 
     //  literals

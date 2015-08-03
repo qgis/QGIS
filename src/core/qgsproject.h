@@ -27,6 +27,7 @@
 #include <QList>
 #include <QObject>
 #include <QPair>
+#include <QFileInfo>
 
 //for the snap settings
 #include "qgssnapper.h"
@@ -119,6 +120,11 @@ class CORE_EXPORT QgsProject : public QObject
     /** Returns file name */
     QString fileName() const;
     //@}
+
+    /** Returns QFileInfo object for the project's associated file.
+     * @note added in QGIS 2.9
+     */
+    QFileInfo fileInfo() const;
 
     /** Clear the project
      * @note added in 2.4
