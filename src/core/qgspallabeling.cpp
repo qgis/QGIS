@@ -4218,7 +4218,6 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
   mCandidates.clear();
   if ( mShowingCandidates && problem )
   {
-    painter->setPen( QColor( 0, 0, 0, 64 ) );
     painter->setBrush( Qt::NoBrush );
     for ( int i = 0; i < problem->getNumFeatures(); i++ )
     {
@@ -4527,12 +4526,20 @@ void QgsPalLabeling::drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* p
   painter->rotate( -lp->getAlpha() * 180 / M_PI );
 #endif
 
+  if ( lp->conflictsWithObstacle() )
+  {
+    painter->setPen( QColor( 255, 0, 0, 64 ) );
+  }
+  else
+  {
+    painter->setPen( QColor( 0, 0, 0, 64 ) );
+  }
   painter->drawRect( rect );
   painter->restore();
 
   // save the rect
   rect.moveTo( outPt.x(), outPt.y() );
-  mCandidates.append( QgsLabelCandidate( rect, lp->getCost() * 1000 ) );
+  mCandidates.append( QgsLabelCandidate( rect, lp->cost() * 1000 ) );
 
   // show all parts of the multipart label
   if ( lp->getNextPart() )

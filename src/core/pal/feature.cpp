@@ -1349,7 +1349,7 @@ namespace pal
     // apply the penalty
     for ( int i = 0; i < nbp; i++ )
     {
-      lPos[i]->setCost( lPos[i]->getCost() + sizeCost / 100 );
+      lPos[i]->setCost( lPos[i]->cost() + sizeCost / 100 );
     }
   }
 

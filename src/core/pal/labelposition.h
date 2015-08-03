@@ -92,7 +92,6 @@ namespace pal
 
       ~LabelPosition() { delete nextPart; }
 
-
       /**
        * \brief Is the labelposition in the bounding-box ? (intersect or inside????)
        *
@@ -163,14 +162,27 @@ namespace pal
       /** Return pointer to layer's name. used for stats */
       QString getLayerName() const;
 
-      /**
-       * \brief get the position geographical cost
-       * \return geographical cost
+      /** Returns the candidate label position's geographical cost.
+       * @see setCost
        */
-      double getCost() const;
+      double cost() const { return mCost; }
 
-      /** Modify candidate's cost */
-      void setCost( double newCost ) { cost = newCost; }
+      /** Sets the candidate label position's geographical cost.
+       * @param newCost new cost for position
+       * @see cost
+      */
+      void setCost( double newCost ) { mCost = newCost; }
+
+      /** Sets whether the position is marked as conflicting with an obstacle feature.
+       * @param conflicts set to true to mark candidate as being in conflict
+       * @see conflictsWithObstacle
+       */
+      void setConflictsWithObstacle( bool conflicts ) { mHasObstacleConflict = conflicts; }
+
+      /** Returns whether the position is marked as conflicting with an obstacle feature.
+       * @see setConflictsWithObstacle
+       */
+      bool conflictsWithObstacle() const { return mHasObstacleConflict; }
 
       /** Make sure the cost is less than 1 */
       void validateCost();
@@ -250,7 +262,7 @@ namespace pal
     protected:
 
       int id;
-      double cost;
+
       FeaturePart *feature;
 
       // bug # 1 (maxence 10/23/2008)
@@ -276,6 +288,10 @@ namespace pal
 
       bool isInConflictSinglePart( LabelPosition* lp );
       bool isInConflictMultiPart( LabelPosition* lp );
+
+    private:
+      double mCost;
+      bool mHasObstacleConflict;
 
   };
 

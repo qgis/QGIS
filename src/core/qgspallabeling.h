@@ -828,6 +828,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
 
     //! @note not available in python bindings
     void drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform );
+
     //!drawLabel
     //! @note not available in python bindings
     virtual void drawLabel( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, DrawLabelType drawType, double dpiRatio = 1.0 );

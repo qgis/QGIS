@@ -50,7 +50,6 @@ namespace pal
   LabelPosition::LabelPosition( int id, double x1, double y1, double w, double h, double alpha, double cost, FeaturePart *feature, bool isReversed, Quadrant quadrant )
       : PointSet()
       , id( id )
-      , cost( cost )
       , feature( feature )
       , probFeat( 0 )
       , nbOverlap( 0 )
@@ -62,6 +61,8 @@ namespace pal
       , reversed( isReversed )
       , upsideDown( false )
       , quadrant( quadrant )
+      , mCost( cost )
+      , mHasObstacleConflict( false )
   {
     type = GEOS_POLYGON;
     nbPoints = 4;
@@ -167,7 +168,7 @@ namespace pal
       : PointSet( other )
   {
     id = other.id;
-    cost = other.cost;
+    mCost = other.mCost;
     feature = other.feature;
     probFeat = other.probFeat;
     nbOverlap = other.nbOverlap;
@@ -186,6 +187,7 @@ namespace pal
     upsideDown = other.upsideDown;
     reversed = other.reversed;
     quadrant = other.quadrant;
+    mHasObstacleConflict = other.mHasObstacleConflict;
   }
 
   bool LabelPosition::isIn( double *bbox )
@@ -242,7 +244,7 @@ namespace pal
   void LabelPosition::print()
   {
     //  std::cout << feature->getLayer()->getName() << "/" << feature->getUID() << "/" << id;
-    std::cout << " cost: " << cost;
+    std::cout << " cost: " << mCost;
     std::cout << " alpha" << alpha << std::endl;
     std::cout << x[0] << ", " << y[0] << std::endl;
     std::cout << x[1] << ", " << y[1] << std::endl;
@@ -329,17 +331,12 @@ namespace pal
     return alpha;
   }
 
-  double LabelPosition::getCost() const
-  {
-    return cost;
-  }
-
   void LabelPosition::validateCost()
   {
-    if ( cost >= 1 )
+    if ( mCost >= 1 )
     {
       //   std::cout << " Warning: lp->cost == " << cost << " (from feat: " << feature->getUID() << "/" << getLayerName() << ")" << std::endl;
-      cost -= int ( cost ); // label cost up to 1
+      mCost -= int ( mCost ); // label cost up to 1
     }
   }
 
@@ -382,12 +379,12 @@ namespace pal
 
   bool LabelPosition::costShrink( void *l, void *r )
   {
-    return (( LabelPosition* ) l )->cost < (( LabelPosition* ) r )->cost;
+    return (( LabelPosition* ) l )->mCost < (( LabelPosition* ) r )->mCost;
   }
 
   bool LabelPosition::costGrow( void *l, void *r )
   {
-    return (( LabelPosition* ) l )->cost > (( LabelPosition* ) r )->cost;
+    return (( LabelPosition* ) l )->mCost > (( LabelPosition* ) r )->mCost;
   }
 
 
@@ -469,7 +466,7 @@ namespace pal
       std::cout <<  "count overlap : " << lp->id << "<->" << lp2->id << std::endl;
 #endif
       ( *nbOv ) ++;
-      *cost += inactiveCost[lp->probFeat] + lp->getCost();
+      *cost += inactiveCost[lp->probFeat] + lp->cost();
 
     }
 

@@ -72,11 +72,14 @@ namespace pal
         break;
     }
 
+    if ( n > 0 )
+      lp->setConflictsWithObstacle( true );
+
     //scale cost by obstacle's factor
     double obstacleCost = obstacle->getFeature()->obstacleFactor() * double( n );
 
     // label cost is penalized
-    lp->setCost( lp->getCost() + obstacleCost );
+    lp->setCost( lp->cost() + obstacleCost );
   }
 
 
@@ -101,8 +104,8 @@ namespace pal
 
 
     // define the value's range
-    double cost_max = lPos[0]->getCost();
-    double cost_min = lPos[max_p-1]->getCost();
+    double cost_max = lPos[0]->cost();
+    double cost_min = lPos[max_p-1]->cost();
 
     cost_max -= cost_min;
 
@@ -125,12 +128,12 @@ namespace pal
       //if (cost_max - cost_min < EPSILON)
       if ( cost_max > EPSILON )
       {
-        lPos[i]->cost = 0.0021 - ( lPos[i]->getCost() - cost_min ) * normalizer;
+        lPos[i]->mCost = 0.0021 - ( lPos[i]->cost() - cost_min ) * normalizer;
       }
       else
       {
         //lPos[i]->cost = 0.0001 + (lPos[i]->cost - cost_min) * normalizer;
-        lPos[i]->cost = 0.0001;
+        lPos[i]->mCost = 0.0001;
       }
 
 #ifdef _DEBUG_
@@ -183,10 +186,10 @@ namespace pal
     do
     {
       discrim += 1.0;
-      for ( stop = 0; stop < feat->nblp && feat->lPos[stop]->getCost() < discrim; stop++ )
+      for ( stop = 0; stop < feat->nblp && feat->lPos[stop]->cost() < discrim; stop++ )
         ;
     }
-    while ( stop == 0 && discrim < feat->lPos[feat->nblp-1]->getCost() + 2.0 );
+    while ( stop == 0 && discrim < feat->lPos[feat->nblp-1]->cost() + 2.0 );
 
     if ( discrim > 1.5 )
     {
