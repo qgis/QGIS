@@ -997,9 +997,6 @@ void QgsComposer::toggleAtlasControls( bool atlasEnabled )
 
 void QgsComposer::updateAtlasPageComboBox( int pageCount )
 {
-  if ( pageCount == mAtlasPageComboBox->count() )
-    return;
-
   if ( !mComposition )
     return;
 
