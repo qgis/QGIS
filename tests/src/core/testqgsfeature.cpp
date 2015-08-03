@@ -32,7 +32,8 @@ class TestQgsFeature: public QObject
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
-    void create();//test creating a data defined container
+    void attributesTest(); //test QgsAttributes
+    void create();//test creating a feature
     void copy();// test cpy destruction (double delete)
     void assignment();
     void gettersSetters(); //test getters and setters
@@ -41,6 +42,7 @@ class TestQgsFeature: public QObject
     void asVariant(); //test conversion to and from a QVariant
     void fields();
     void attributeUsingField();
+    void dataStream();
 
 
   private:
@@ -81,6 +83,40 @@ void TestQgsFeature::init()
 void TestQgsFeature::cleanup()
 {
 
+}
+
+void TestQgsFeature::attributesTest()
+{
+  QgsAttributes attr1;
+  attr1 << QVariant( 5 ) << QVariant( 7 ) << QVariant( "val" );
+  QgsAttributes attr2;
+  attr2 << QVariant( 5 ) << QVariant( 7 ) << QVariant( "val" );
+  QCOMPARE( attr1, attr2 );
+
+  //different size
+  QgsAttributes attr3;
+  attr3 << QVariant( 5 ) << QVariant( 7 );
+  QVERIFY( attr1 != attr3 );
+
+  //different value
+  QgsAttributes attr4;
+  attr4 << QVariant( 5 ) << QVariant( 10 ) << QVariant( "val" );
+  QVERIFY( attr1 != attr4 );
+
+  //null value
+  QVariant nullDouble( QVariant::Double );
+  QgsAttributes attr5;
+  attr5 << QVariant( 5 ) << nullDouble << QVariant( "val" );
+  QVERIFY( attr1 != attr5 );
+
+  //null compared to 0 (see note at QgsAttributes::operator== )
+  QgsAttributes attr6;
+  attr6 << QVariant( 5 ) << QVariant( 0.0 ) << QVariant( "val" );
+  QVERIFY( attr5 != attr6 );
+
+  //constructed with size
+  QgsAttributes attr7( 5 );
+  QCOMPARE( attr7.size(), 5 );
 }
 
 void TestQgsFeature::create()
@@ -298,6 +334,13 @@ void TestQgsFeature::fields()
   QgsFeature copy( original );
   QCOMPARE( *copy.fields(), *original.fields() );
 
+  Q_NOWARN_DEPRECATED_PUSH
+  //test deprecated setFields( QgsFields* ) method
+  QgsFeature feature2;
+  feature2.setFields( &mFields );
+  QCOMPARE( *feature2.fields(), mFields );
+  Q_NOWARN_DEPRECATED_POP
+
   //test detach
   QgsFields newFields( mFields );
   newFields.remove( 2 );
@@ -368,6 +411,39 @@ void TestQgsFeature::attributeUsingField()
   QVERIFY( copy.deleteAttribute( "field1" ) );
   QVERIFY( !copy.attribute( "field1" ).isValid() );
   QVERIFY( feature.attribute( "field1" ).isValid() );
+}
+
+void TestQgsFeature::dataStream()
+{
+  QgsFeature originalFeature;
+  originalFeature.setGeometry( new QgsGeometry( *mGeometry.data() ) );
+
+  QByteArray ba;
+  QDataStream ds( &ba, QIODevice::ReadWrite );;
+  ds << originalFeature;
+
+  QgsFeature resultFeature;
+  ds.device()->seek( 0 );
+  ds >> resultFeature;
+
+  QCOMPARE( resultFeature.id(), originalFeature.id() );
+  QCOMPARE( resultFeature.attributes(), originalFeature.attributes() );
+  QCOMPARE( *resultFeature.constGeometry()->asWkb(), *originalFeature.constGeometry()->asWkb() );
+  QCOMPARE( resultFeature.isValid(), originalFeature.isValid() );
+
+  //also test with feature without geometry
+  originalFeature.setGeometry( new QgsGeometry() );
+  QByteArray ba2;
+  QDataStream ds2( &ba2, QIODevice::ReadWrite );;
+  ds2 << originalFeature;
+
+  ds2.device()->seek( 0 );
+  ds2 >> resultFeature;
+
+  QCOMPARE( resultFeature.id(), originalFeature.id() );
+  QCOMPARE( resultFeature.attributes(), originalFeature.attributes() );
+  QVERIFY( resultFeature.constGeometry()->isEmpty() );
+  QCOMPARE( resultFeature.isValid(), originalFeature.isValid() );
 }
 
 QTEST_MAIN( TestQgsFeature )
