@@ -657,6 +657,8 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     /** Repopulates the atlas page combo box with valid items.
      */
     void updateAtlasPageComboBox( int pageCount );
+
+    void atlasFeatureChanged( QgsFeature* feature );
 };
 
 #endif
