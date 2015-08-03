@@ -20,6 +20,7 @@
 #include "qgsfield.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
+#include "qgssymbollayerv2utils.h"
 #include <QSettings>
 #include <QDir>
 
@@ -137,6 +138,16 @@ QgsExpressionContextScope::QgsExpressionContextScope( const QString& name )
 
 }
 
+QgsExpressionContextScope::QgsExpressionContextScope( const QgsExpressionContextScope& other )
+    : mName( other.mName )
+    , mVariables( other.mVariables )
+{
+  Q_FOREACH ( QString key, other.mFunctions.keys() )
+  {
+    mFunctions.insert( key, other.mFunctions.value( key )->clone() );
+  }
+}
+
 QgsExpressionContextScope::~QgsExpressionContextScope()
 {
   qDeleteAll( mFunctions );
@@ -197,7 +208,7 @@ QgsExpression::Function* QgsExpressionContextScope::function( const QString& nam
   return mFunctions.contains( name ) ? mFunctions.value( name ) : 0;
 }
 
-void QgsExpressionContextScope::addFunction( const QString& name, QgsExpression::Function* function )
+void QgsExpressionContextScope::addFunction( const QString& name, QgsScopedExpressionFunction* function )
 {
   mFunctions.insert( name, function );
 }
@@ -260,6 +271,56 @@ void QgsExpressionContextUtils::setGlobalVariable( const QString& name, const QV
   settings.setValue( QString( "/variables/values" ), customVariableVariants );
 }
 
+
+class GetNamedProjectColor : public QgsScopedExpressionFunction
+{
+  public:
+    GetNamedProjectColor()
+        : QgsScopedExpressionFunction( "project_color", 1, "Colors" )
+    {
+      //build up color list from project. Do this in advance for speed
+      QStringList colorStrings = QgsProject::instance()->readListEntry( "Palette", "/Colors" );
+      QStringList colorLabels = QgsProject::instance()->readListEntry( "Palette", "/Labels" );
+
+      //generate list from custom colors
+      int colorIndex = 0;
+      for ( QStringList::iterator it = colorStrings.begin();
+            it != colorStrings.end(); ++it )
+      {
+        QColor color = QgsSymbolLayerV2Utils::decodeColor( *it );
+        QString label;
+        if ( colorLabels.length() > colorIndex )
+        {
+          label = colorLabels.at( colorIndex );
+        }
+
+        mColors.insert( label.toLower(), color );
+        colorIndex++;
+      }
+    }
+
+    virtual QVariant func( const QVariantList& values, const QgsExpressionContext*, QgsExpression* ) override
+    {
+      QString colorName = values.at( 0 ).toString().toLower();
+      if ( mColors.contains( colorName ) )
+      {
+        return QString( "%1,%2,%3" ).arg( mColors.value( colorName ).red() ).arg( mColors.value( colorName ).green() ).arg( mColors.value( colorName ).blue() );
+      }
+      else
+        return QVariant();
+    }
+
+    QgsScopedExpressionFunction* clone() const override
+    {
+      return new GetNamedProjectColor();
+    }
+
+  private:
+
+    QHash< QString, QColor > mColors;
+
+};
+
 QgsExpressionContextScope QgsExpressionContextUtils::projectScope()
 {
   QgsProject* project = QgsProject::instance();
@@ -288,6 +349,8 @@ QgsExpressionContextScope QgsExpressionContextUtils::projectScope()
   scope.addVariable( QgsExpressionContextScope::StaticVariable( "project_path", project->fileInfo().filePath(), true ) );
   scope.addVariable( QgsExpressionContextScope::StaticVariable( "project_folder", project->fileInfo().dir().path(), true ) );
   scope.addVariable( QgsExpressionContextScope::StaticVariable( "project_filename", project->fileInfo().fileName(), true ) );
+
+  scope.addFunction( "project_color", new GetNamedProjectColor() );
   return scope;
 }
 
@@ -323,4 +386,9 @@ QgsExpressionContextScope QgsExpressionContextUtils::layerScope( QgsMapLayer* la
   }
 
   return scope;
+}
+
+void QgsExpressionContextUtils::registerContextFunctions()
+{
+  QgsExpression::registerFunction( new GetNamedProjectColor() );
 }

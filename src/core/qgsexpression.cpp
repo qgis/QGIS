@@ -1901,6 +1901,8 @@ const QList<QgsExpression::Function*>& QgsExpression::Functions()
 
     << new StaticFunction( "_specialcol_", 1, fcnSpecialColumn, "Special" )
     ;
+
+    QgsExpressionContextUtils::registerContextFunctions();
   }
   return gmFunctions;
 }

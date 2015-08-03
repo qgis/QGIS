@@ -20,6 +20,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsapplication.h"
 #include "qgsproject.h"
+#include "qgscolorscheme.h"
 #include <QObject>
 #include <QtTest/QtTest>
 
@@ -44,36 +45,46 @@ class TestQgsExpressionContext : public QObject
 
   private:
 
-    class GetTestValueFunction : public QgsExpression::Function
+    class GetTestValueFunction : public QgsScopedExpressionFunction
     {
       public:
         GetTestValueFunction()
-            : QgsExpression::Function( "get_test_value", 1, "test" ) {}
+            : QgsScopedExpressionFunction( "get_test_value", 1, "test" ) {}
 
         virtual QVariant func( const QVariantList&, const QgsExpressionContext*, QgsExpression* ) override
         {
           return 42;
         }
 
+        QgsScopedExpressionFunction* clone() const override
+        {
+          return new GetTestValueFunction();
+        }
+
     };
 
-    class GetTestValueFunction2 : public QgsExpression::Function
+    class GetTestValueFunction2 : public QgsScopedExpressionFunction
     {
       public:
         GetTestValueFunction2()
-            : QgsExpression::Function( "get_test_value", 1, "test" ) {}
+            : QgsScopedExpressionFunction( "get_test_value", 1, "test" ) {}
 
         virtual QVariant func( const QVariantList&, const QgsExpressionContext*, QgsExpression* ) override
         {
           return 43;
         }
+
+        QgsScopedExpressionFunction* clone() const override
+        {
+          return new GetTestValueFunction2();
+        }
     };
 
-    class ModifiableFunction : public QgsExpression::Function
+    class ModifiableFunction : public QgsScopedExpressionFunction
     {
       public:
         ModifiableFunction( int* v )
-            : QgsExpression::Function( "test_function", 1, "test" )
+            : QgsScopedExpressionFunction( "test_function", 1, "test" )
             , mVal( v )
         {}
 
@@ -84,6 +95,12 @@ class TestQgsExpressionContext : public QObject
 
           return ++( *mVal );
         }
+
+        QgsScopedExpressionFunction* clone() const override
+        {
+          return new ModifiableFunction( mVal );
+        }
+
       private:
 
         int* mVal;
@@ -336,6 +353,31 @@ void TestQgsExpressionContext::projectScope()
   //test a preset project variable
   QgsProject::instance()->setTitle( "test project" );
   QCOMPARE( QgsExpressionContextUtils::projectScope().variable( "project_title" ).toString(), QString( "test project" ) );
+
+  //test project scope functions
+
+  //project_color function
+  QgsProjectColorScheme s;
+  QgsNamedColorList colorList;
+  colorList << qMakePair( QColor( 200, 255, 0 ), QString( "vomit yellow" ) );
+  colorList << qMakePair( QColor( 30, 60, 20 ), QString( "murky depths of hades" ) );
+  s.setColors( colorList );
+  QgsExpressionContext contextColors;
+  contextColors << QgsExpressionContextUtils::projectScope();
+
+  QgsExpression expProjectColor( "project_color('murky depths of hades')" );
+  QCOMPARE( expProjectColor.evaluate( &contextColors ).toString(), QString( "30,60,20" ) );
+  //matching color names should be case insensitive
+  QgsExpression expProjectColorCaseInsensitive( "project_color('Murky Depths of hades')" );
+  QCOMPARE( expProjectColorCaseInsensitive.evaluate( &contextColors ).toString(), QString( "30,60,20" ) );
+  QgsExpression badProjectColor( "project_color('dusk falls in san juan del sur')" );
+  QCOMPARE( badProjectColor.evaluate( &contextColors ), QVariant() );
+
+
+
+
+
+
 }
 
 void TestQgsExpressionContext::layerScope()

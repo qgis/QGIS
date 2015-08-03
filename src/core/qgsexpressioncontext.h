@@ -32,6 +32,28 @@ class QgsRenderContext;
 class QgsProject;
 class QgsMapLayer;
 
+class QgsScopedExpressionFunction : public QgsExpression::Function
+{
+  public:
+    QgsScopedExpressionFunction( QString fnname,
+                                 int params,
+                                 QString group,
+                                 QString helpText = QString(),
+                                 bool usesGeometry = false,
+                                 QStringList referencedColumns = QStringList(),
+                                 bool lazyEval = false,
+                                 bool handlesNull = false )
+        : QgsExpression::Function( fnname, params, group, helpText, usesGeometry, referencedColumns, lazyEval, handlesNull )
+    {}
+
+    virtual ~QgsScopedExpressionFunction() {}
+
+    virtual QVariant func( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent ) override = 0;
+
+    virtual QgsScopedExpressionFunction* clone() const = 0;
+
+};
+
 
 /** \ingroup core
  * \class QgsExpressionContextScope
@@ -55,6 +77,8 @@ class CORE_EXPORT QgsExpressionContextScope
      * @param name friendly display name for the context scope
      */
     QgsExpressionContextScope( const QString& name = QString() );
+
+    QgsExpressionContextScope( const QgsExpressionContextScope& other );
 
     virtual ~QgsExpressionContextScope();
 
@@ -91,12 +115,12 @@ class CORE_EXPORT QgsExpressionContextScope
 
     bool hasFunction( const QString &name ) const;
     QgsExpression::Function* function( const QString &name ) const;
-    void addFunction( const QString& name, QgsExpression::Function* function );
+    void addFunction( const QString& name, QgsScopedExpressionFunction* function );
 
   private:
-    QMap<QString, StaticVariable> mVariables;
-    QHash<QString, QgsExpression::Function*> mFunctions;
     QString mName;
+    QHash<QString, StaticVariable> mVariables;
+    QHash<QString, QgsScopedExpressionFunction* > mFunctions;
 
 };
 
@@ -196,6 +220,7 @@ class CORE_EXPORT QgsExpressionContext
 class CORE_EXPORT QgsExpressionContextUtils
 {
   public:
+
     static QgsExpressionContextScope globalScope();
 
     static void setGlobalVariable( const QString& name, const QVariant& value );
@@ -205,6 +230,8 @@ class CORE_EXPORT QgsExpressionContextUtils
     static void setProjectVariable( const QString& name, const QVariant& value );
 
     static QgsExpressionContextScope layerScope( QgsMapLayer* layer );
+
+    static void registerContextFunctions();
 
 };
 
