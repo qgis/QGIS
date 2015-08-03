@@ -415,6 +415,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mAtlasPageComboBox->setMinimumHeight( mAtlasToolbar->height() );
   mAtlasPageComboBox->setMinimumContentsLength( 6 );
   mAtlasPageComboBox->setMaxVisibleItems( 20 );
+  mAtlasPageComboBox->setSizeAdjustPolicy( QComboBox::AdjustToContents );
   mAtlasPageComboBox->setInsertPolicy( QComboBox::NoInsert );
   connect( mAtlasPageComboBox->lineEdit(), SIGNAL( editingFinished() ), this, SLOT( atlasPageComboEditingFinished() ) );
   connect( mAtlasPageComboBox, SIGNAL( currentIndexChanged( QString ) ), this, SLOT( atlasPageComboEditingFinished() ) );
@@ -999,11 +1000,19 @@ void QgsComposer::updateAtlasPageComboBox( int pageCount )
   if ( pageCount == mAtlasPageComboBox->count() )
     return;
 
+  if ( !mComposition )
+    return;
+
   mAtlasPageComboBox->blockSignals( true );
   mAtlasPageComboBox->clear();
   for ( int i = 1; i <= pageCount && i < 500; ++i )
   {
-    mAtlasPageComboBox->addItem( QString::number( i ), i );
+    QString name = mComposition->atlasComposition().nameForPage( i - 1 );
+    QString fullName = ( !name.isEmpty() ? QString( "%1: %2" ).arg( i ).arg( name ) : QString::number( i ) );
+
+    mAtlasPageComboBox->addItem( fullName, i );
+    mAtlasPageComboBox->setItemData( i - 1, name, Qt::UserRole + 1 );
+    mAtlasPageComboBox->setItemData( i - 1, fullName, Qt::UserRole + 2 );
   }
   mAtlasPageComboBox->blockSignals( false );
 }
@@ -1154,8 +1163,21 @@ void QgsComposer::on_mActionAtlasLast_triggered()
 void QgsComposer::atlasPageComboEditingFinished()
 {
   QString text = mAtlasPageComboBox->lineEdit()->text();
-  bool ok = false;
-  int page = text.toInt( &ok );
+
+  //find matching record in combo box
+  int page = -1;
+  for ( int i = 0; i < mAtlasPageComboBox->count(); ++i )
+  {
+    if ( text.compare( mAtlasPageComboBox->itemData( i, Qt::UserRole + 1 ).toString(), Qt::CaseInsensitive ) == 0
+         || text.compare( mAtlasPageComboBox->itemData( i, Qt::UserRole + 2 ).toString(), Qt::CaseInsensitive ) == 0
+         || QString::number( i + 1 ) == text )
+    {
+      page = i + 1;
+      break;
+    }
+  }
+  bool ok = ( page > 0 );
+
   if ( !ok || page >= mComposition->atlasComposition().numFeatures() || page < 1 )
   {
     mAtlasPageComboBox->blockSignals( true );

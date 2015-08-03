@@ -28,15 +28,17 @@
 #include "qgsproject.h"
 #include "qgsmessagelog.h"
 
-QgsAtlasComposition::QgsAtlasComposition( QgsComposition* composition ) :
-    mComposition( composition ),
-    mEnabled( false ),
-    mHideCoverage( false ), mFilenamePattern( "'output_'||$feature" ),
-    mCoverageLayer( 0 ), mSingleFile( false ),
-    mSortFeatures( false ), mSortAscending( true ), mCurrentFeatureNo( 0 ),
-    mFilterFeatures( false ), mFeatureFilter( "" ),
-    mFilenameParserError( QString() ),
-    mFilterParserError( QString() )
+QgsAtlasComposition::QgsAtlasComposition( QgsComposition* composition )
+    : mComposition( composition )
+    , mEnabled( false )
+    , mHideCoverage( false )
+    , mFilenamePattern( "'output_'||$feature" )
+    , mCoverageLayer( 0 )
+    , mSingleFile( false )
+    , mSortFeatures( false )
+    , mSortAscending( true )
+    , mCurrentFeatureNo( 0 )
+    , mFilterFeatures( false )
 {
 
   // declare special columns with a default value
@@ -113,6 +115,14 @@ void QgsAtlasComposition::setCoverageLayer( QgsVectorLayer* layer )
   emit coverageLayerChanged( layer );
 }
 
+QString QgsAtlasComposition::nameForPage( int pageNumber ) const
+{
+  if ( pageNumber < 0 || pageNumber >= mFeatureIds.count() )
+    return QString();
+
+  return mFeatureIds.at( pageNumber ).second;
+}
+
 QgsComposerMap* QgsAtlasComposition::composerMap() const
 {
   //deprecated method. Until removed just return the first atlas-enabled composer map
@@ -175,21 +185,21 @@ class FieldSorter
   public:
     FieldSorter( QgsAtlasComposition::SorterKeys& keys, bool ascending = true ) : mKeys( keys ), mAscending( ascending ) {}
 
-    bool operator()( const QgsFeatureId& id1, const QgsFeatureId& id2 )
+    bool operator()( const QPair< QgsFeatureId, QString > & id1, const QPair< QgsFeatureId, QString >& id2 )
     {
       bool result = true;
 
-      if ( mKeys[ id1 ].type() == QVariant::Int )
+      if ( mKeys[ id1.first ].type() == QVariant::Int )
       {
-        result = mKeys[ id1 ].toInt() < mKeys[ id2 ].toInt();
+        result = mKeys[ id1.first ].toInt() < mKeys[ id2.first ].toInt();
       }
-      else if ( mKeys[ id1 ].type() == QVariant::Double )
+      else if ( mKeys[ id1.first ].type() == QVariant::Double )
       {
-        result = mKeys[ id1 ].toDouble() < mKeys[ id2 ].toDouble();
+        result = mKeys[ id1.first ].toDouble() < mKeys[ id2.first ].toDouble();
       }
-      else if ( mKeys[ id1 ].type() == QVariant::String )
+      else if ( mKeys[ id1.first ].type() == QVariant::String )
       {
-        result = ( QString::localeAwareCompare( mKeys[ id1 ].toString(), mKeys[ id2 ].toString() ) < 0 );
+        result = ( QString::localeAwareCompare( mKeys[ id1.first ].toString(), mKeys[ id2.first ].toString() ) < 0 );
       }
 
       return mAscending ? result : !result;
@@ -225,14 +235,37 @@ int QgsAtlasComposition::updateFeatures()
   }
   mFilterParserError = QString();
 
+  QScopedPointer<QgsExpression> nameExpression;
+  if ( !mPageNameExpression.isEmpty() )
+  {
+    nameExpression.reset( new QgsExpression( mPageNameExpression ) );
+    if ( nameExpression->hasParserError() )
+    {
+      nameExpression.reset( 0 );
+    }
+    nameExpression->prepare( mCoverageLayer->pendingFields() );
+  }
+
   // We cannot use nextFeature() directly since the feature pointer is rewinded by the rendering process
   // We thus store the feature ids for future extraction
   QgsFeature feat;
   mFeatureIds.clear();
   mFeatureKeys.clear();
   int sortIdx = mCoverageLayer->fieldNameIndex( mSortKeyAttributeName );
+
   while ( fit.nextFeature( feat ) )
   {
+    QString pageName;
+    if ( !nameExpression.isNull() )
+    {
+      QVariant result = nameExpression->evaluate( &feat, mCoverageLayer->pendingFields() );
+      if ( nameExpression->hasEvalError() )
+      {
+        QgsMessageLog::logMessage( tr( "Atlas name eval error: %1" ).arg( nameExpression->evalErrorString() ), tr( "Composer" ) );
+      }
+      pageName = result.toString();
+    }
+
     if ( !filterExpression.isNull() )
     {
       QVariant result = filterExpression->evaluate( &feat, mCoverageLayer->pendingFields() );
@@ -247,7 +280,8 @@ int QgsAtlasComposition::updateFeatures()
         continue;
       }
     }
-    mFeatureIds.push_back( feat.id() );
+
+    mFeatureIds.push_back( qMakePair( feat.id(), pageName ) );
 
     if ( mSortFeatures && sortIdx != -1 )
     {
@@ -369,7 +403,18 @@ void QgsAtlasComposition::lastFeature()
 
 bool QgsAtlasComposition::prepareForFeature( const QgsFeature * feat )
 {
-  int featureI = mFeatureIds.indexOf( feat->id() );
+  int featureI = -1;
+  QVector< QPair<QgsFeatureId, QString> >::const_iterator it = mFeatureIds.constBegin();
+  int currentIdx = 0;
+  for ( ; it != mFeatureIds.constEnd(); ++it, ++currentIdx )
+  {
+    if (( *it ).first == feat->id() )
+    {
+      featureI = currentIdx;
+      break;
+    }
+  }
+
   if ( featureI < 0 )
   {
     //feature not found
@@ -405,7 +450,7 @@ bool QgsAtlasComposition::prepareForFeature( const int featureI, const bool upda
   mCurrentFeatureNo = featureI;
 
   // retrieve the next feature, based on its id
-  mCoverageLayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeatureIds[ featureI ] ) ).nextFeature( mCurrentFeature );
+  mCoverageLayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeatureIds[ featureI ].first ) ).nextFeature( mCurrentFeature );
 
   QgsExpression::setSpecialColumn( "$atlasfeatureid", mCurrentFeature.id() );
   QgsExpression::setSpecialColumn( "$atlasgeometry", QVariant::fromValue( *mCurrentFeature.constGeometry() ) );
@@ -655,6 +700,7 @@ void QgsAtlasComposition::writeXML( QDomElement& elem, QDomDocument& doc ) const
   atlasElem.setAttribute( "hideCoverage", mHideCoverage ? "true" : "false" );
   atlasElem.setAttribute( "singleFile", mSingleFile ? "true" : "false" );
   atlasElem.setAttribute( "filenamePattern", mFilenamePattern );
+  atlasElem.setAttribute( "pageNameExpression", mPageNameExpression );
 
   atlasElem.setAttribute( "sortFeatures", mSortFeatures ? "true" : "false" );
   if ( mSortFeatures )
@@ -693,6 +739,7 @@ void QgsAtlasComposition::readXML( const QDomElement& atlasElem, const QDomDocum
     }
   }
 
+  mPageNameExpression = atlasElem.attribute( "pageNameExpression", QString() );
   mSingleFile = atlasElem.attribute( "singleFile", "false" ) == "true" ? true : false;
   mFilenamePattern = atlasElem.attribute( "filenamePattern", "" );
 

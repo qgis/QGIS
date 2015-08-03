@@ -57,16 +57,6 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      */
     void setEnabled( bool enabled );
 
-    /** Returns the map used by the atlas
-     * @deprecated Use QgsComposerMap::atlasDriven() instead
-     */
-    Q_DECL_DEPRECATED QgsComposerMap* composerMap() const;
-
-    /** Sets the map used by the atlas
-     * @deprecated Use QgsComposerMap::setAtlasDriven( true ) instead
-     */
-    Q_DECL_DEPRECATED void setComposerMap( QgsComposerMap* map );
-
     /** Returns true if the atlas is set to hide the coverage layer
      * @returns true if coverage layer is hidden
      * @see setHideCoverage
@@ -78,26 +68,6 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      * @see hideCoverage
      */
     void setHideCoverage( bool hide );
-
-    /** Returns whether the atlas map uses a fixed scale
-     * @deprecated since 2.4 Use QgsComposerMap::atlasScalingMode() instead
-     */
-    Q_DECL_DEPRECATED bool fixedScale() const;
-
-    /** Sets whether the atlas map should use a fixed scale
-     * @deprecated since 2.4 Use QgsComposerMap::setAtlasScalingMode() instead
-     */
-    Q_DECL_DEPRECATED void setFixedScale( bool fixed );
-
-    /** Returns the margin for the atlas map
-     * @deprecated Use QgsComposerMap::atlasMargin() instead
-     */
-    Q_DECL_DEPRECATED float margin() const;
-
-    /** Sets the margin for the atlas map
-     * @deprecated Use QgsComposerMap::setAtlasMargin( double ) instead
-     */
-    Q_DECL_DEPRECATED void setMargin( float margin );
 
     /** Returns the filename expression used for generating output filenames for each
      * atlas page.
@@ -137,6 +107,29 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
      */
     void setCoverageLayer( QgsVectorLayer* layer );
 
+    /** Returns the expression used for calculating the page name.
+     * @returns expression string, or field name from coverage layer
+     * @see setPageNameExpression
+     * @see nameForPage
+     * @note added in QGIS 2.12
+     */
+    QString pageNameExpression() const { return mPageNameExpression; }
+
+    /** Sets the expression used for calculating the page name.
+     * @param pageNameExpression expression string, or field name from coverage layer
+     * @see pageNameExpression
+     * @note added in QGIS 2.12
+     */
+    void setPageNameExpression( const QString& pageNameExpression ) { mPageNameExpression = pageNameExpression; }
+
+    /** Returns the calculated name for a specified atlas page number.
+     * @param pageNumber number of page, where 0 = first page
+     * @returns page name
+     * @see pageNameExpression
+     * @note added in QGIS 2.12
+     */
+    QString nameForPage( int pageNumber ) const;
+
     /** Returns whether the atlas will be exported to a single file. This is only
      * applicable for PDF exports.
      * @returns true if atlas will be exported to a single file
@@ -174,9 +167,6 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     QString sortKeyAttributeName() const { return mSortKeyAttributeName; }
     void setSortKeyAttributeName( QString fieldName ) { mSortKeyAttributeName = fieldName; }
-
-    Q_DECL_DEPRECATED int sortKeyAttributeIndex() const;
-    Q_DECL_DEPRECATED void setSortKeyAttributeIndex( int idx );
 
     /** Returns the current list of predefined scales for the atlas. This is used
      * for maps which are set to the predefined atlas scaling mode.
@@ -253,6 +243,42 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     /** Recalculates the bounds of an atlas driven map */
     void prepareMap( QgsComposerMap* map );
+
+
+    //deprecated methods
+
+    /** Returns the map used by the atlas
+     * @deprecated Use QgsComposerMap::atlasDriven() instead
+     */
+    Q_DECL_DEPRECATED QgsComposerMap* composerMap() const;
+
+    /** Sets the map used by the atlas
+     * @deprecated Use QgsComposerMap::setAtlasDriven( true ) instead
+     */
+    Q_DECL_DEPRECATED void setComposerMap( QgsComposerMap* map );
+
+    /** Returns whether the atlas map uses a fixed scale
+     * @deprecated since 2.4 Use QgsComposerMap::atlasScalingMode() instead
+     */
+    Q_DECL_DEPRECATED bool fixedScale() const;
+
+    /** Sets whether the atlas map should use a fixed scale
+     * @deprecated since 2.4 Use QgsComposerMap::setAtlasScalingMode() instead
+     */
+    Q_DECL_DEPRECATED void setFixedScale( bool fixed );
+
+    /** Returns the margin for the atlas map
+     * @deprecated Use QgsComposerMap::atlasMargin() instead
+     */
+    Q_DECL_DEPRECATED float margin() const;
+
+    /** Sets the margin for the atlas map
+     * @deprecated Use QgsComposerMap::setAtlasMargin( double ) instead
+     */
+    Q_DECL_DEPRECATED void setMargin( float margin );
+
+    Q_DECL_DEPRECATED int sortKeyAttributeIndex() const;
+    Q_DECL_DEPRECATED void setSortKeyAttributeIndex( int idx );
 
   public slots:
 
@@ -334,13 +360,15 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     // key (attribute index) used for ordering
     QString mSortKeyAttributeName;
 
+    QString mPageNameExpression;
+
     // feature filtering
     bool mFilterFeatures;
     // feature expression filter
     QString mFeatureFilter;
 
-    // id of each iterated feature (after filtering and sorting)
-    QVector<QgsFeatureId> mFeatureIds;
+    // id of each iterated feature (after filtering and sorting) paired with atlas page name
+    QVector< QPair<QgsFeatureId, QString> > mFeatureIds;
 
     QgsFeature mCurrentFeature;
 

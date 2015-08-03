@@ -35,6 +35,7 @@ QgsAtlasCompositionWidget::QgsAtlasCompositionWidget( QWidget* parent, QgsCompos
   connect( mAtlasCoverageLayerComboBox, SIGNAL( layerChanged( QgsMapLayer* ) ), mAtlasSortFeatureKeyComboBox, SLOT( setLayer( QgsMapLayer* ) ) );
   connect( mAtlasCoverageLayerComboBox, SIGNAL( layerChanged( QgsMapLayer* ) ), this, SLOT( changeCoverageLayer( QgsMapLayer* ) ) );
   connect( mAtlasSortFeatureKeyComboBox, SIGNAL( fieldChanged( QString ) ), this, SLOT( changesSortFeatureField( QString ) ) );
+  connect( mPageNameWidget, SIGNAL( fieldChanged( QString, bool ) ), this, SLOT( pageNameExpressionChanged( QString, bool ) ) );
 
   // Sort direction
   mAtlasSortFeatureDirectionButton->setEnabled( false );
@@ -253,6 +254,17 @@ void QgsAtlasCompositionWidget::on_mAtlasFeatureFilterCheckBox_stateChanged( int
   updateAtlasFeatures();
 }
 
+void QgsAtlasCompositionWidget::pageNameExpressionChanged( QString expression, bool valid )
+{
+  QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
+  if ( !atlasMap || ( !valid && !expression.isEmpty() ) )
+  {
+    return;
+  }
+
+  atlasMap->setPageNameExpression( expression );
+}
+
 void QgsAtlasCompositionWidget::on_mAtlasFeatureFilterEdit_editingFinished()
 {
   QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
@@ -313,6 +325,8 @@ void QgsAtlasCompositionWidget::updateGuiElements()
   mOutputGroup->setEnabled( atlasMap->enabled() );
 
   mAtlasCoverageLayerComboBox->setLayer( atlasMap->coverageLayer() );
+  mPageNameWidget->setLayer( atlasMap->coverageLayer() );
+  mPageNameWidget->setField( atlasMap->pageNameExpression() );
 
   mAtlasSortFeatureKeyComboBox->setLayer( atlasMap->coverageLayer() );
   mAtlasSortFeatureKeyComboBox->setField( atlasMap->sortKeyAttributeName() );
@@ -344,6 +358,7 @@ void QgsAtlasCompositionWidget::blockAllSignals( bool b )
   mConfigurationGroup->blockSignals( b );
   mOutputGroup->blockSignals( b );
   mAtlasCoverageLayerComboBox->blockSignals( b );
+  mPageNameWidget->blockSignals( b );
   mAtlasSortFeatureKeyComboBox->blockSignals( b );
   mAtlasFilenamePatternEdit->blockSignals( b );
   mAtlasHideCoverageCheckBox->blockSignals( b );
