@@ -27,6 +27,7 @@
 #include <QList>
 #include <QObject>
 #include <QPair>
+#include <QFileInfo>
 
 //for the snap settings
 #include "qgssnapper.h"
@@ -45,6 +46,8 @@ class QgsMapLayer;
 class QgsProjectBadLayerHandler;
 class QgsRelationManager;
 class QgsVectorLayer;
+class QgsProjectExpressionContext;
+class QgsExpressionContextStack;
 
 /** \ingroup core
  * Reads and writes project states.
@@ -119,6 +122,11 @@ class CORE_EXPORT QgsProject : public QObject
     /** Returns file name */
     QString fileName() const;
     //@}
+
+    /** Returns QFileInfo object for the project's associated file.
+     * @note added in QGIS 2.9
+     */
+    QFileInfo fileInfo() const;
 
     /** Clear the project
      * @note added in 2.4
@@ -301,6 +309,19 @@ class CORE_EXPORT QgsProject : public QObject
      */
     QgsLayerTreeRegistryBridge* layerTreeRegistryBridge() const { return mLayerTreeRegistryBridge; }
 
+    /** Return pointer to the project's expression context. This context contains variables
+     * which are stored in the project file
+     * @returns project context
+     * @note added in 2.9
+     */
+    QgsProjectExpressionContext* projectExpressionContext() const { return mProjectContext; }
+
+    /** Return pointer to the expression context stack at project level. This stack includes
+     * both the project's expression context and any contexts from lower level components.
+     * @note added in 2.9
+     */
+    QgsExpressionContextStack* expressionContextStack() const { return mContextStack; }
+
   protected:
 
     /** Set error message from read/write operation */
@@ -393,6 +414,9 @@ class CORE_EXPORT QgsProject : public QObject
     QgsLayerTreeGroup* mRootGroup;
 
     QgsLayerTreeRegistryBridge* mLayerTreeRegistryBridge;
+
+    QgsProjectExpressionContext* mProjectContext;
+    QgsExpressionContextStack* mContextStack;
 
 }; // QgsProject
 

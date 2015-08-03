@@ -36,12 +36,14 @@
 #include "qgsrectangle.h"
 #include "qgsrelationmanager.h"
 #include "qgsvectorlayer.h"
+#include "qgsexpressioncontext.h"
 
 #include <QApplication>
 #include <QFileInfo>
 #include <QDomNode>
 #include <QObject>
 #include <QTextStream>
+#include <QDir>
 
 // canonical project instance
 QgsProject *QgsProject::theProject_ = 0;
@@ -325,6 +327,8 @@ QgsProject::QgsProject()
     , mBadLayerHandler( new QgsProjectBadLayerDefaultHandler() )
     , mRelationManager( new QgsRelationManager( this ) )
     , mRootGroup( new QgsLayerTreeGroup )
+    , mProjectContext( new QgsProjectExpressionContext( this ) )
+    , mContextStack( new QgsExpressionContextStack() )
 {
   clear();
 
@@ -333,6 +337,10 @@ QgsProject::QgsProject()
   // layer tree will be updated
   mLayerTreeRegistryBridge = new QgsLayerTreeRegistryBridge( mRootGroup, this );
 
+  //project expression context stack consists of the global expression context
+  //plus a specific project context
+  mContextStack->appendContext( QgsGlobalExpressionContext::instance() );
+  mContextStack->appendContext( mProjectContext );
 } // QgsProject ctor
 
 
@@ -342,6 +350,9 @@ QgsProject::~QgsProject()
   delete mBadLayerHandler;
   delete mRelationManager;
   delete mRootGroup;
+
+  delete mContextStack;
+  delete mProjectContext;
 
   // note that QScopedPointer automatically deletes imp_ when it's destroyed
 } // QgsProject dtor
@@ -406,13 +417,19 @@ void QgsProject::setFileName( QString const &name )
 QString QgsProject::fileName() const
 {
   return imp_->file.fileName();
-} // QString QgsProject::fileName() const
+}
+
+QFileInfo QgsProject::fileInfo() const
+{
+  return QFileInfo( imp_->file );
+}
 
 void QgsProject::clear()
 {
   imp_->clear();
   mEmbeddedLayers.clear();
   mRelationManager->clear();
+  mProjectContext->clear();
 
   mRootGroup->removeAllChildren();
 
@@ -896,6 +913,8 @@ bool QgsProject::read()
 
   // read the project: used by map canvas and legend
   emit readProject( *doc );
+
+  mProjectContext->load();
 
   // if all went well, we're allegedly in pristine state
   if ( clean )
