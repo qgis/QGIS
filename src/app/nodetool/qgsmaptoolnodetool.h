@@ -34,7 +34,7 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
     QgsMapToolNodeTool( QgsMapCanvas* canvas );
     virtual ~QgsMapToolNodeTool();
 
-    void canvasDoubleClickEvent( QMouseEvent * e );
+    void canvasDoubleClickEvent( QMouseEvent * e ) override;
 
     //! mouse press event in map coordinates (eventually filtered) to be redefined in subclass
     void canvasMapPressEvent( QgsMapMouseEvent* e ) override;
@@ -42,10 +42,10 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
     //! mouse move event in map coordinates (eventually filtered) to be redefined in subclass
     void canvasMapMoveEvent( QgsMapMouseEvent* e ) override;
 
-    void keyPressEvent( QKeyEvent* e );
+    void keyPressEvent( QKeyEvent* e ) override;
 
     //! called when map tool is being deactivated
-    void deactivate();
+    void deactivate() override;
 
   public slots:
     void selectedFeatureDestroyed();

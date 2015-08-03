@@ -82,7 +82,7 @@ class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
     void setIconType( IconType iconType ) { mIconType = iconType; }
 
   protected:
-    virtual void paint( QPainter* painter );
+    virtual void paint( QPainter* painter ) override;
 
   private:
     QgsAbstractGeometryV2* mGeometry;

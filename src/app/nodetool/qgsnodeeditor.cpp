@@ -36,13 +36,15 @@ static const int MinRadiusRole = Qt::UserRole + 1;
 class CoordinateItemDelegate : public QStyledItemDelegate
 {
   public:
-    QString displayText( const QVariant & value, const QLocale & locale ) const
+
+    QString displayText( const QVariant & value, const QLocale & locale ) const override
     {
       return locale.toString( value.toDouble(), 'f', 4 );
     }
 
   protected:
-    QWidget* createEditor( QWidget * parent, const QStyleOptionViewItem & /*option*/, const QModelIndex & index ) const
+
+    QWidget* createEditor( QWidget * parent, const QStyleOptionViewItem &, const QModelIndex & index ) const override
     {
       QLineEdit* lineEdit = new QLineEdit( parent );
       QDoubleValidator* validator = new QDoubleValidator();
@@ -51,7 +53,8 @@ class CoordinateItemDelegate : public QStyledItemDelegate
       lineEdit->setValidator( validator );
       return lineEdit;
     }
-    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
+
+    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override
     {
       QLineEdit* lineEdit = qobject_cast<QLineEdit*>( editor );
       if ( lineEdit->hasAcceptableInput() )
