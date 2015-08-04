@@ -295,7 +295,7 @@ double QgsVectorRandomColorRampV2::value( int index ) const
 QColor QgsVectorRandomColorRampV2::color( double value ) const
 {
   int colorCnt = mColors.count();
-  int colorIdx = ( int )( value * colorCnt );
+  int colorIdx = ( int )( value * ( colorCnt - 1 ) );
 
   if ( colorIdx >= 0 && colorIdx < colorCnt )
     return mColors.at( colorIdx );
