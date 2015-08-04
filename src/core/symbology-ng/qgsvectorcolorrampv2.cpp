@@ -289,7 +289,7 @@ QgsVectorColorRampV2* QgsVectorRandomColorRampV2::create( const QgsStringMap& pr
 double QgsVectorRandomColorRampV2::value( int index ) const
 {
   if ( mColors.size() < 1 ) return 0;
-  return index / mColors.size() - 1;
+  return ( double )index / ( mColors.size() - 1 );
 }
 
 QColor QgsVectorRandomColorRampV2::color( double value ) const
@@ -487,7 +487,7 @@ QList<int> QgsVectorColorBrewerColorRampV2::listSchemeVariants( QString schemeNa
 double QgsVectorColorBrewerColorRampV2::value( int index ) const
 {
   if ( mPalette.size() < 1 ) return 0;
-  return index / mPalette.size() - 1;
+  return ( double )index / ( mPalette.size() - 1 );
 }
 
 QColor QgsVectorColorBrewerColorRampV2::color( double value ) const
