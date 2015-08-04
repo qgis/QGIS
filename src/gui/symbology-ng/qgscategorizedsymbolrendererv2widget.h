@@ -156,8 +156,6 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widg
 
     QgsSymbolV2* mCategorizedSymbol;
 
-    QgsRendererV2DataDefinedMenus* mDataDefinedMenus;
-
     QgsCategorizedSymbolRendererV2Model* mModel;
 
   private:
