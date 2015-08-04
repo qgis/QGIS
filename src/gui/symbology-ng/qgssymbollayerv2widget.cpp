@@ -755,6 +755,8 @@ QgsGradientFillSymbolLayerV2Widget::QgsGradientFillSymbolLayerV2Widget( const Qg
   connect( btnChangeColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor( const QColor& ) ) );
   connect( btnChangeColor2, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor2( const QColor& ) ) );
   connect( cboGradientColorRamp, SIGNAL( currentIndexChanged( int ) ), this, SLOT( applyColorRamp() ) );
+  connect( cboGradientColorRamp, SIGNAL( sourceRampEdited() ), this, SLOT( applyColorRamp() ) );
+  connect( mButtonEditRamp, SIGNAL( clicked() ), cboGradientColorRamp, SLOT( editSourceRamp() ) );
   connect( cboGradientType, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setGradientType( int ) ) );
   connect( cboCoordinateMode, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setCoordinateMode( int ) ) );
   connect( cboGradientSpread, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setGradientSpread( int ) ) );
@@ -948,29 +950,6 @@ void QgsGradientFillSymbolLayerV2Widget::applyColorRamp()
   emit changed();
 }
 
-void QgsGradientFillSymbolLayerV2Widget::on_mButtonEditRamp_clicked()
-{
-  if ( mLayer->colorRamp()->type() == "gradient" )
-  {
-    QgsVectorColorRampV2* ramp = mLayer->colorRamp()->clone();
-    QgsVectorGradientColorRampV2* gradRamp = static_cast<QgsVectorGradientColorRampV2*>( ramp );
-    QgsVectorGradientColorRampV2Dialog dlg( gradRamp, this );
-
-    if ( dlg.exec() && gradRamp )
-    {
-      mLayer->setColorRamp( gradRamp );
-      cboGradientColorRamp->blockSignals( true );
-      cboGradientColorRamp->setSourceColorRamp( mLayer->colorRamp() );
-      cboGradientColorRamp->blockSignals( false );
-      emit changed();
-    }
-    else
-    {
-      delete ramp;
-    }
-  }
-}
-
 void QgsGradientFillSymbolLayerV2Widget::setGradientType( int index )
 {
   switch ( index )
@@ -1102,10 +1081,12 @@ QgsShapeburstFillSymbolLayerV2Widget::QgsShapeburstFillSymbolLayerV2Widget( cons
   spinOffsetX->setClearValue( 0.0 );
   spinOffsetY->setClearValue( 0.0 );
 
-  cboGradientColorRamp->setShowGradientOnly( true );
   cboGradientColorRamp->populate( QgsStyleV2::defaultStyle() );
 
   connect( cboGradientColorRamp, SIGNAL( currentIndexChanged( int ) ), this, SLOT( applyColorRamp() ) );
+  connect( cboGradientColorRamp, SIGNAL( sourceRampEdited() ), this, SLOT( applyColorRamp() ) );
+  connect( mButtonEditRamp, SIGNAL( clicked() ), cboGradientColorRamp, SLOT( editSourceRamp() ) );
+
   connect( btnChangeColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor( const QColor& ) ) );
   connect( btnChangeColor2, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor2( const QColor& ) ) );
   connect( radioTwoColor, SIGNAL( toggled( bool ) ), this, SLOT( colorModeChanged() ) );
@@ -1295,29 +1276,6 @@ void QgsShapeburstFillSymbolLayerV2Widget::applyColorRamp()
 
   mLayer->setColorRamp( ramp );
   emit changed();
-}
-
-void QgsShapeburstFillSymbolLayerV2Widget::on_mButtonEditRamp_clicked()
-{
-  if ( mLayer->colorRamp()->type() == "gradient" )
-  {
-    QgsVectorColorRampV2* ramp = mLayer->colorRamp()->clone();
-    QgsVectorGradientColorRampV2* gradRamp = static_cast<QgsVectorGradientColorRampV2*>( ramp );
-    QgsVectorGradientColorRampV2Dialog dlg( gradRamp, this );
-
-    if ( dlg.exec() && gradRamp )
-    {
-      mLayer->setColorRamp( gradRamp );
-      cboGradientColorRamp->blockSignals( true );
-      cboGradientColorRamp->setSourceColorRamp( mLayer->colorRamp() );
-      cboGradientColorRamp->blockSignals( false );
-      emit changed();
-    }
-    else
-    {
-      delete ramp;
-    }
-  }
 }
 
 void QgsShapeburstFillSymbolLayerV2Widget::offsetChanged()

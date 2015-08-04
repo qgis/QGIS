@@ -197,7 +197,6 @@ class GUI_EXPORT QgsGradientFillSymbolLayerV2Widget : public QgsSymbolLayerV2Wid
     void setColor( const QColor& color );
     void setColor2( const QColor& color );
     void applyColorRamp();
-    void on_mButtonEditRamp_clicked();
     void setGradientType( int index );
     void setCoordinateMode( int index );
     void setGradientSpread( int index );
@@ -239,7 +238,6 @@ class GUI_EXPORT QgsShapeburstFillSymbolLayerV2Widget : public QgsSymbolLayerV2W
     void on_mDistanceUnitWidget_changed();
     void on_mRadioUseWholeShape_toggled( bool value );
     void applyColorRamp();
-    void on_mButtonEditRamp_clicked();
     void offsetChanged();
     void on_mOffsetUnitWidget_changed();
     void on_mIgnoreRingsCheckBox_stateChanged( int state );

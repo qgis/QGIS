@@ -49,7 +49,6 @@ class GUI_EXPORT QgsHeatmapRendererWidget : public QgsRendererV2Widget, private 
   private slots:
 
     void applyColorRamp();
-    void on_mButtonEditRamp_clicked();
     void on_mRadiusUnitWidget_changed();
     void on_mRadiusSpinBox_valueChanged( double d );
     void on_mMaxSpinBox_valueChanged( double d );

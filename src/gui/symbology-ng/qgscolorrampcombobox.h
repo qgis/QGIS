@@ -54,6 +54,21 @@ class GUI_EXPORT QgsColorRampComboBox : public QComboBox
   public slots:
     void colorRampChanged( int index );
 
+    /** Triggers a dialog which allows users to edit the current source
+     * ramp for the combo box.
+     * @see sourceRampEdited
+     * @note added in QGIS 2.12
+     */
+    void editSourceRamp();
+
+  signals:
+
+    /** Emitted when the user has edited the current source ramp.
+     * @see editSourceRamp
+     * @note added in QGIS 2.12
+     */
+    void sourceRampEdited();
+
   protected:
     QgsStyleV2* mStyle;
     QgsVectorColorRampV2* mSourceColorRamp; // owns the copy
