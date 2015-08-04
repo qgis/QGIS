@@ -95,7 +95,10 @@ class TestQgsServer(unittest.TestCase):
 
 
         serverIface = self.server.serverInterface()
-        serverIface.registerFilter(SimpleHelloFilter(serverIface), 100 )
+        filter = SimpleHelloFilter(serverIface)
+        serverIface.registerFilter(filter, 100 )
+        # Get registered filters
+        self.assertEqual(filter, serverIface.filters()[100][0])
         response = str(self.server.handleRequest('service=simple'))
         expected = 'Content-type: text/plain\n\nHello from SimpleServer!'
         self.assertEqual(response, expected)
