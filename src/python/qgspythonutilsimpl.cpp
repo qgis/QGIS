@@ -229,10 +229,7 @@ void QgsPythonUtilsImpl::initServerPython( QgsServerInterface* interface )
   }
   // This is the other main difference with initInterface() for desktop plugins
   runString( "qgis.utils.initServerInterface(" + QString::number(( unsigned long ) interface ) + ")" );
-  if (!checkQgisUser()){
-      exitPython();
-      return;
-  }
+
   doUserImports();
   finish();
 }
