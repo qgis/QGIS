@@ -346,7 +346,7 @@ QList<QColor> QgsVectorRandomColorRampV2::randomColors( int count,
     currentHueAngle += 137.50776;
     //scale hue to between hueMax and hueMin
     h = qBound( 0, qRound(( fmod( currentHueAngle, 360.0 ) / 360.0 ) * ( safeHueMax - safeHueMin ) + safeHueMin ), 359 );
-    s = qBound( 0, ( qrand() % ( safeSatMax - safeSatMin + 1 ) ) + safeValMax, 255 );
+    s = qBound( 0, ( qrand() % ( safeSatMax - safeSatMin + 1 ) ) + safeSatMin, 255 );
     v = qBound( 0, ( qrand() % ( safeValMax - safeValMin + 1 ) ) + safeValMin, 255 );
     colors.append( QColor::fromHsv( h, s, v ) );
   }
