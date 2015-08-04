@@ -374,7 +374,7 @@ QgsRandomColorsV2::~QgsRandomColorsV2()
 
 int QgsRandomColorsV2::count() const
 {
-  return INT_MAX;
+  return -1;
 }
 
 double QgsRandomColorsV2::value( int index ) const
