@@ -173,9 +173,9 @@ class QgsFeatureRendererV2
     void setVertexMarkerAppearance( int type, int size );
 
     //! return rotation field name (or empty string if not set or not supported by renderer)
-    virtual QString rotationField() const;
+    virtual QString rotationField() const /Deprecated/;
     //! sets rotation field of renderer (if supported by the renderer)
-    virtual void setRotationField( QString fieldName );
+    virtual void setRotationField( QString fieldName ) /Deprecated/;
 
     //! return whether the renderer will render a feature or not.
     //! Must be called between startRender() and stopRender() calls.

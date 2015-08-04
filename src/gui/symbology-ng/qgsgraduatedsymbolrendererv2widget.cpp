@@ -466,11 +466,6 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
 
   advMenu->addAction( tr( "Symbol levels..." ), this, SLOT( showSymbolLevels() ) );
 
-  mDataDefinedMenus = new QgsRendererV2DataDefinedMenus( advMenu, mLayer,
-      mRenderer->rotationField(), mRenderer->sizeScaleField(), mRenderer->scaleMethod() );
-  connect( mDataDefinedMenus, SIGNAL( rotationFieldChanged( QString ) ), this, SLOT( rotationFieldChanged( QString ) ) );
-  connect( mDataDefinedMenus, SIGNAL( sizeScaleFieldChanged( QString ) ), this, SLOT( sizeScaleFieldChanged( QString ) ) );
-  connect( mDataDefinedMenus, SIGNAL( scaleMethodChanged( QgsSymbolV2::ScaleMethod ) ), this, SLOT( scaleMethodChanged( QgsSymbolV2::ScaleMethod ) ) );
   btnAdvanced->setMenu( advMenu );
 
   mHistogramWidget->setLayer( mLayer );

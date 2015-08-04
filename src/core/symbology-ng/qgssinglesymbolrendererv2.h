@@ -42,8 +42,8 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
     QgsSymbolV2* symbol() const;
     void setSymbol( QgsSymbolV2* s );
 
-    void setRotationField( QString fieldOrExpression ) override;
-    QString rotationField() const override;
+    Q_DECL_DEPRECATED void setRotationField( QString fieldOrExpression ) override;
+    Q_DECL_DEPRECATED QString rotationField() const override;
 
     void setSizeScaleField( QString fieldOrExpression );
     QString sizeScaleField() const;

@@ -48,8 +48,6 @@ class GUI_EXPORT QgsSingleSymbolRendererV2Widget : public QgsRendererV2Widget
     QgsSingleSymbolRendererV2* mRenderer;
     QgsSymbolV2SelectorDialog* mSelector;
     QgsSymbolV2* mSingleSymbol;
-
-    QgsRendererV2DataDefinedMenus* mDataDefinedMenus;
 };
 
 

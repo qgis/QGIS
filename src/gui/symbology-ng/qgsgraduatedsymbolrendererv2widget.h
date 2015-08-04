@@ -143,8 +143,6 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
 
     int mRowSelected;
 
-    QgsRendererV2DataDefinedMenus* mDataDefinedMenus;
-
     QgsGraduatedSymbolRendererV2Model* mModel;
 
     QgsRangeList mCopyBuffer;

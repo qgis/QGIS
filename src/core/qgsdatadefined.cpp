@@ -135,6 +135,11 @@ void QgsDataDefined::setExpressionString( const QString &expr )
   d->exprRefColumns.clear();
 }
 
+QString QgsDataDefined::expressionOrField() const
+{
+  return d->useExpression ? d->expressionString : QString( "\"%1\"" ).arg( d->field );
+}
+
 QMap<QString, QVariant> QgsDataDefined::expressionParams() const
 {
   return d->expressionParams;
