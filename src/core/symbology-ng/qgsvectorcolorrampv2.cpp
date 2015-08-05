@@ -495,7 +495,7 @@ double QgsVectorColorBrewerColorRampV2::value( int index ) const
 QColor QgsVectorColorBrewerColorRampV2::color( double value ) const
 {
   if ( mPalette.isEmpty() || value < 0 || value > 1 )
-    return QColor( 255, 0, 0 ); // red color as a warning :)
+    return QColor();
 
   int paletteEntry = ( int )( value * mPalette.count() );
   if ( paletteEntry >= mPalette.count() )
