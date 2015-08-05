@@ -42,9 +42,9 @@ inline
 QgsDataDefined* rotateWholeSymbol( double additionalRotation, const QgsDataDefined& dd )
 {
   QgsDataDefined* rotatedDD = new QgsDataDefined( dd );
-  rotatedDD->setUseExpression( true );
   QString exprString = dd.useExpression() ? dd.expressionString() : dd.field();
   rotatedDD->setExpressionString( QString::number( additionalRotation ) + " + (" + exprString + ")" );
+  rotatedDD->setUseExpression( true );
   return rotatedDD;
 }
 
@@ -52,9 +52,9 @@ inline
 QgsDataDefined* scaleWholeSymbol( double scaleFactor, const QgsDataDefined& dd )
 {
   QgsDataDefined* scaledDD = new QgsDataDefined( dd );
-  scaledDD->setUseExpression( true );
   QString exprString = dd.useExpression() ? dd.expressionString() : dd.field();
   scaledDD->setExpressionString( QString::number( scaleFactor ) + "*(" + exprString + ")" );
+  scaledDD->setUseExpression( true );
   return scaledDD;
 }
 
@@ -62,12 +62,12 @@ inline
 QgsDataDefined* scaleWholeSymbol( double scaleFactorX, double scaleFactorY, const QgsDataDefined& dd )
 {
   QgsDataDefined* scaledDD = new QgsDataDefined( dd );
-  scaledDD->setUseExpression( true );
   QString exprString = dd.useExpression() ? dd.expressionString() : dd.field();
   scaledDD->setExpressionString(
     ( scaleFactorX ? "tostring(" + QString::number( scaleFactorX ) + "*(" + exprString + "))" : "'0'" ) +
     "|| ',' || " +
     ( scaleFactorY ? "tostring(" + QString::number( scaleFactorY ) + "*(" + exprString + "))" : "'0'" ) );
+  scaledDD->setUseExpression( true );
   return scaledDD;
 }
 

@@ -121,9 +121,9 @@ void QgsComposerObject::setDataDefinedProperty( const QgsComposerObject::DataDef
     {
       QgsDataDefined* dd = it.value();
       dd->setActive( active );
-      dd->setUseExpression( useExpression );
       dd->setExpressionString( expression );
       dd->setField( field );
+      dd->setUseExpression( useExpression );
     }
   }
   else if ( !defaultVals )
