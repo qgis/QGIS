@@ -39,12 +39,12 @@ class QgsDataDefinedPrivate : public QSharedData
     QgsDataDefinedPrivate( bool active = false,
                            bool useExpression = false,
                            const QString& expressionString = QString(),
-                           const QString& field = QString() )
+                           QString field = QString() )
         : expression( 0 )
         , active( active )
         , useExpression( useExpression )
         , expressionString( expressionString )
-        , field( field )
+        , field( field.remove( QRegExp( "^\"|\"$" ) ) )
         , expressionPrepared( false )
     {
     }

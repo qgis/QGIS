@@ -165,7 +165,7 @@ QString QgsSingleSymbolRendererV2::rotationField() const
   if ( mSymbol->type() == QgsSymbolV2::Marker )
   {
     QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( mSymbol.data() );
-    return s->dataDefinedAngle().field();
+    return s->dataDefinedAngle().expressionOrField();
   }
 
   return QString();

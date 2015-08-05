@@ -91,15 +91,54 @@ class CORE_EXPORT QgsDataDefined
     bool isActive() const;
     void setActive( bool active );
 
+    /**
+     * Returns if the field or the expression part is active.
+     *
+     * @return True if it is in expression mode.
+     */
     bool useExpression() const;
+
+    /**
+     * Controls if the field or the expression part is active.
+     * For QGIS<=2.10 it is mandatory to call this after {@link setExpressionString}
+     * or {@link setField}.
+     *
+     * @param use True if it should be set to expression mode.
+     */
     void setUseExpression( bool use );
 
+    /**
+     * Returns the expression string of this QgsDataDefined.
+     *
+     * @return An expression
+     *
+     * @see field()
+     * @see expressionOrField()
+     */
     QString expressionString() const;
+
+    /**
+     * Sets the expression for this QgsDataDefined.
+     * Will also set useExpression to true.
+     *
+     * @param expr The expression to set
+     *
+     * @see setField
+     */
     void setExpressionString( const QString& expr );
 
-    // @note not available in python bindings
+    /**
+     * Returns an expression which represents a single field if useExpression returns false
+     *
+     * @return An expression
+     *
+     * @note added in 2.12
+     */
+    QString expressionOrField() const;
+
+    //! @note not available in python bindings
     QMap<QString, QVariant> expressionParams() const;
-    // @note not available in python bindings
+    //! @note not available in python bindings
     void setExpressionParams( QMap<QString, QVariant> params );
     void insertExpressionParam( QString key, QVariant param );
 
@@ -134,7 +173,22 @@ class CORE_EXPORT QgsDataDefined
      */
     QStringList referencedColumns( const QgsFields& fields = QgsFields() );
 
+    /**
+     * Get the field which this QgsDataDefined represents. Be aware that this may return
+     * a field name which may not be active if useExpression is true.
+     *
+     * @return A fieldname
+     *
+     * @see expressionOrField()
+     */
     QString field() const;
+
+    /**
+     * Set the field name which this QgsDataDefined represents.
+     * Will set useExpression to false.
+     *
+     * @param field
+     */
     void setField( const QString& field );
 
     /** Encodes the QgsDataDefined into a string map.

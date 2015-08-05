@@ -249,8 +249,8 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
     //! @note added in 2.10
     void setGraduatedMethod( GraduatedMethod method );
 
-    void setRotationField( QString fieldOrExpression );
-    QString rotationField() const;
+    void setRotationField( QString fieldOrExpression ) /Deprecated/;
+    QString rotationField() const /Deprecated/;
 
     void setSizeScaleField( QString fieldOrExpression );
     QString sizeScaleField() const;
