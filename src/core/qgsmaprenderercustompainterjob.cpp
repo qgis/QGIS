@@ -342,7 +342,7 @@ bool QgsMapRendererJob::needTemporaryImage( QgsMapLayer* ml )
   if ( ml->type() == QgsMapLayer::VectorLayer )
   {
     QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
-    if ( vl->rendererV2()->forceRasterRender() )
+    if ( vl->rendererV2() && vl->rendererV2()->forceRasterRender() )
     {
       //raster rendering is forced for this layer
       return true;
