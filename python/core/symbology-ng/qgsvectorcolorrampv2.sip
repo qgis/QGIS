@@ -6,9 +6,15 @@ class QgsVectorColorRampV2
 
 %ConvertToSubClassCode
   if (sipCpp->type() == "gradient")
-  {
     sipClass = sipClass_QgsVectorGradientColorRampV2;
-  }
+  else if (sipCpp->type() == "random")
+    sipClass = sipClass_QgsVectorRandomColorRampV2;
+  else if (sipCpp->type() == "randomcolors")
+    sipClass = sipClass_QgsRandomColorsV2;
+  else if (sipCpp->type() == "colorbrewer")
+    sipClass = sipClass_QgsVectorColorBrewerColorRampV2;
+  else if (sipCpp->type() == "cpt-city")
+    sipClass = sipClass_QgsCptCityColorRampV2;
   else
     sipClass = 0;
 %End
@@ -109,6 +115,13 @@ class QgsVectorRandomColorRampV2 : QgsVectorColorRampV2
     virtual QgsVectorColorRampV2* clone() const /Factory/;
 
     virtual QgsStringMap properties() const;
+
+    /** Get a list of random colors
+     * @note added in 2.4 */
+    static QList<QColor> randomColors( int count,
+                                       int hueMax = DEFAULT_RANDOM_HUE_MAX, int hueMin = DEFAULT_RANDOM_HUE_MIN,
+                                       int satMax = DEFAULT_RANDOM_SAT_MAX, int satMin = DEFAULT_RANDOM_SAT_MIN,
+                                       int valMax = DEFAULT_RANDOM_VAL_MAX, int valMin = DEFAULT_RANDOM_VAL_MIN );
 
     void updateColors();
 
