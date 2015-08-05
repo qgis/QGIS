@@ -395,7 +395,7 @@ QColor QgsRandomColorsV2::color( double value ) const
   }
 
   //can't use precalculated hues, use a totally random hue
-  int h = 1 + ( int )( 360.0 * qrand() / ( RAND_MAX + 1.0 ) );
+  int h = ( int )( 360.0 * qrand() / ( RAND_MAX + 1.0 ) );
   int s = ( qrand() % ( DEFAULT_RANDOM_SAT_MAX - DEFAULT_RANDOM_SAT_MIN + 1 ) ) + DEFAULT_RANDOM_SAT_MIN;
   int v = ( qrand() % ( maxVal - minVal + 1 ) ) + minVal;
   return QColor::fromHsv( h, s, v );
