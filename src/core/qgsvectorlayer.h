@@ -957,7 +957,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     const QgsDiagramLayerSettings *diagramLayerSettings() const { return mDiagramLayerSettings; }
 
     /** Return renderer V2. */
-    QgsFeatureRendererV2* rendererV2() const;
+    QgsFeatureRendererV2* rendererV2() { return mRendererV2; }
+
+    /** Return const renderer V2. */
+    const QgsFeatureRendererV2* rendererV2() const { return mRendererV2; }
+
     /** Set renderer V2. */
     void setRendererV2( QgsFeatureRendererV2* r );
 

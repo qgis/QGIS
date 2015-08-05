@@ -2753,11 +2753,6 @@ void QgsVectorLayer::setLabelOnTop( int idx, bool onTop )
     mLabelOnTop[ mUpdatedFields[idx].name()] = onTop;
 }
 
-QgsFeatureRendererV2* QgsVectorLayer::rendererV2() const
-{
-  return mRendererV2;
-}
-
 void QgsVectorLayer::setRendererV2( QgsFeatureRendererV2 *r )
 {
   if ( !hasGeometryType() )
