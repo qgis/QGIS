@@ -526,7 +526,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   if ( role == FieldIndexRole )
     return fieldId;
 
-  const QgsField& field = layer()->fields()[ fieldId ];
+  const QgsField& field = layer()->fields().at( fieldId );
 
   QVariant::Type fldType = field.type();
   bool fldNumeric = ( fldType == QVariant::Int || fldType == QVariant::Double || fldType == QVariant::LongLong );

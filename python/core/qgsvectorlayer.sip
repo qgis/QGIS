@@ -798,7 +798,7 @@ class QgsVectorLayer : QgsMapLayer
      *
      * @return A list of fields
      */
-    const QgsFields fields() const;
+    QgsFields fields() const;
 
     /**
      * Returns the list of fields of this layer.
