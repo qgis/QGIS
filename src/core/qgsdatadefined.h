@@ -98,6 +98,13 @@ class CORE_EXPORT QgsDataDefined
      */
     bool useExpression() const;
 
+    /**
+     * Controls if the field or the expression part is active.
+     * For QGIS<=2.10 it is mandatory to call this after {@link setExpressionString}
+     * or {@link setField}.
+     *
+     * @param use True if it should be set to expression mode.
+     */
     void setUseExpression( bool use );
 
     /**
@@ -110,6 +117,14 @@ class CORE_EXPORT QgsDataDefined
      */
     QString expressionString() const;
 
+    /**
+     * Sets the expression for this QgsDataDefined.
+     * Will also set useExpression to true.
+     *
+     * @param expr The expression to set
+     *
+     * @see setField
+     */
     void setExpressionString( const QString& expr );
 
     /**
@@ -168,6 +183,12 @@ class CORE_EXPORT QgsDataDefined
      */
     QString field() const;
 
+    /**
+     * Set the field name which this QgsDataDefined represents.
+     * Will set useExpression to false.
+     *
+     * @param field
+     */
     void setField( const QString& field );
 
     /** Encodes the QgsDataDefined into a string map.
