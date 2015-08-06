@@ -1376,7 +1376,8 @@ QString QgsGraduatedSymbolRendererV2::rotationField() const
   if ( mSourceSymbol->type() == QgsSymbolV2::Marker )
   {
     QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( mSourceSymbol.data() );
-    return s->dataDefinedAngle().expressionOrField();
+    QgsDataDefined ddAngle = s->dataDefinedAngle();
+    return ddAngle.useExpression() ? ddAngle.expressionString() : ddAngle.field();
   }
 
   return QString();
