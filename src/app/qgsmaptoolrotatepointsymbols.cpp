@@ -21,6 +21,7 @@
 #include "qgssnappingutils.h"
 #include "qgssymbolv2.h"
 #include "qgsvectorlayer.h"
+#include "qgsdatadefined.h"
 #include <QGraphicsPixmapItem>
 #include <QMouseEvent>
 
@@ -239,8 +240,10 @@ int QgsMapToolRotatePointSymbols::layerRotationAttributes( QgsVectorLayer* vl, Q
   const QgsFeatureRendererV2* symbologyNgRenderer = vl->rendererV2();
   if ( symbologyNgRenderer )
   {
-    //rotation field is supported for QgsSingleSymbolRendererV2, QgsCategorizedRendererV2, QgsUniqueCategorizedRendererV2
+    //TODO - replace this method with code which handles data defined rotation on the symbol level
+    Q_NOWARN_DEPRECATED_PUSH
     QString rotationFieldName = symbologyNgRenderer->rotationField();
+    Q_NOWARN_DEPRECATED_POP
 
     if ( !rotationFieldName.isEmpty() )
     {
@@ -277,13 +280,14 @@ void QgsMapToolRotatePointSymbols::createPixmapItem( QgsFeature& f )
   if ( mActiveLayer && mActiveLayer->rendererV2() ) //symbology-ng
   {
     QgsFeatureRendererV2* rv2 = mActiveLayer->rendererV2()->clone();
-    rv2->setRotationField( "" );
     rv2->startRender( renderContext, mActiveLayer->fields() );
 
     QgsSymbolV2* symbolV2 = rv2->symbolForFeature( f );
-    if ( symbolV2 )
+    if ( symbolV2 && symbolV2->type() == QgsSymbolV2::Marker )
     {
-      pointImage = symbolV2->bigSymbolPreviewImage();
+      QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( symbolV2 );
+      markerSymbol->setDataDefinedAngle( QgsDataDefined() );
+      pointImage = markerSymbol->bigSymbolPreviewImage();
     }
     rv2->stopRender( renderContext );
     delete rv2;

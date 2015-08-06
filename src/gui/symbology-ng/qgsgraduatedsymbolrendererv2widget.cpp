@@ -985,11 +985,6 @@ void QgsGraduatedSymbolRendererV2Widget::changeCurrentValue( QStandardItem * ite
   }
 }
 
-void QgsGraduatedSymbolRendererV2Widget::rotationFieldChanged( QString fldName )
-{
-  mRenderer->setRotationField( fldName );
-}
-
 void QgsGraduatedSymbolRendererV2Widget::sizeScaleFieldChanged( QString fldName )
 {
   mRenderer->setSizeScaleField( fldName );

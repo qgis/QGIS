@@ -749,7 +749,6 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
   r->setSourceSymbol( mCategorizedSymbol->clone() );
   r->setScaleMethod( mRenderer->scaleMethod() );
   r->setSizeScaleField( mRenderer->sizeScaleField() );
-  r->setRotationField( mRenderer->rotationField() );
   r->setInvertedColorRamp( cbxInvertedColorRamp->isChecked() );
   QgsVectorColorRampV2* ramp = getColorRamp();
   if ( ramp ) r->setSourceColorRamp( ramp->clone() );
@@ -813,11 +812,6 @@ void QgsCategorizedSymbolRendererV2Widget::addCategory()
   QgsSymbolV2 *symbol = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
   QgsRendererCategoryV2 cat( QString(), symbol, QString(), true );
   mModel->addCategory( cat );
-}
-
-void QgsCategorizedSymbolRendererV2Widget::rotationFieldChanged( QString fldName )
-{
-  mRenderer->setRotationField( fldName );
 }
 
 void QgsCategorizedSymbolRendererV2Widget::sizeScaleFieldChanged( QString fldName )
