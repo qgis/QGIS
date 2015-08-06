@@ -1455,7 +1455,7 @@ void QgsIdentifyResultsDialog::attributeValueChanged( QgsFeatureId fid, int idx,
   if ( idx >= vlayer->fields().size() )
     return;
 
-  const QgsField &fld = vlayer->fields().at( idx );
+  QgsField fld = vlayer->fields().at( idx );
 
   for ( int i = 0; i < layItem->childCount(); i++ )
   {

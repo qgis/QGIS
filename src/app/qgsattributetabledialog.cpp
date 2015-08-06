@@ -364,7 +364,7 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, QStrin
 
   int rownum = 1;
 
-  const QgsField &fld = layer->fields()[ fieldindex ];
+  QgsField fld = layer->fields()[ fieldindex ];
 
   //go through all the features and change the new attributes
   QgsFeatureIterator fit = layer->getFeatures( request );
