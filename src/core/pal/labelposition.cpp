@@ -377,6 +377,13 @@ namespace pal
     return feature->layer()->name();
   }
 
+  void LabelPosition::setConflictsWithObstacle( bool conflicts )
+  {
+    mHasObstacleConflict = conflicts;
+    if ( nextPart )
+      nextPart->setConflictsWithObstacle( conflicts );
+  }
+
   bool LabelPosition::costShrink( void *l, void *r )
   {
     return (( LabelPosition* ) l )->mCost < (( LabelPosition* ) r )->mCost;

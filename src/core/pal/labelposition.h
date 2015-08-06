@@ -178,9 +178,10 @@ namespace pal
 
       /** Sets whether the position is marked as conflicting with an obstacle feature.
        * @param conflicts set to true to mark candidate as being in conflict
+       * @note This method applies to all label parts for the candidate position.
        * @see conflictsWithObstacle
        */
-      void setConflictsWithObstacle( bool conflicts ) { mHasObstacleConflict = conflicts; }
+      void setConflictsWithObstacle( bool conflicts );
 
       /** Returns whether the position is marked as conflicting with an obstacle feature.
        * @see setConflictsWithObstacle
