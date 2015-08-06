@@ -113,8 +113,8 @@ class CORE_EXPORT QgsDataDefined
     void setExpressionString( const QString& expr );
 
     /**
-     * Returns an expression which represents a single field if useExpression returns false
-     *
+     * Returns an expression which represents a single field if useExpression returns false, otherwise
+     * returns the current expression string.
      * @return An expression
      *
      * @note added in 2.12
