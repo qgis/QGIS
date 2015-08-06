@@ -58,3 +58,8 @@ void QgsServerInterfaceImpl::registerFilter( QgsServerFilter *filter, int priori
 {
   mFilters.insert( priority, filter );
 }
+
+void QgsServerInterfaceImpl::setFilters( QgsServerFiltersMap* filters )
+{
+  mFilters = *filters;
+}

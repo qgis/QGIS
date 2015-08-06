@@ -55,7 +55,8 @@ class QgsServerInterfaceImpl : public QgsServerInterface
     QString configFilePath( ) override { return mConfigFilePath; }
     void setConfigFilePath( QString configFilePath ) override;
 
-  private:
+    void setFilters(QgsServerFiltersMap *filters) override;
+private:
 
     QString mConfigFilePath;
     QgsServerFiltersMap mFilters;

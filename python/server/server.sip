@@ -7,6 +7,9 @@
 %Import QtGui/QtGuimod.sip
 %Import QtXml/QtXmlmod.sip
 
+
+%Include conversions.sip
+
 %Import core/core.sip
 
 %Feature HAVE_SERVER_PYTHON_PLUGINS
