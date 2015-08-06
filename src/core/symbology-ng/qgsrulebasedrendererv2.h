@@ -301,7 +301,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
     static QgsRuleBasedRendererV2* convertFromRenderer( const QgsFeatureRendererV2 *renderer );
 
     //! helper function to convert the size scale and rotation fields present in some other renderers to data defined symbology
-    static void convertToDataDefinedSymbology( QgsSymbolV2* symbol, QString sizeScaleField, QString rotationField );
+    static void convertToDataDefinedSymbology( QgsSymbolV2* symbol, QString sizeScaleField, QString rotationField = QString() );
 
   protected:
     //! the root node with hierarchical list of rules

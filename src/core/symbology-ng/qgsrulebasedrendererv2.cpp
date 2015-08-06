@@ -1125,7 +1125,7 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFe
       return 0;
 
     QgsSymbolV2* origSymbol = singleSymbolRenderer->symbol()->clone();
-    convertToDataDefinedSymbology( origSymbol, singleSymbolRenderer->sizeScaleField(), singleSymbolRenderer->rotationField() );
+    convertToDataDefinedSymbology( origSymbol, singleSymbolRenderer->sizeScaleField() );
     return new QgsRuleBasedRendererV2( origSymbol );
   }
 
@@ -1174,7 +1174,7 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFe
       //data dependent area and rotation, so we need to convert these to obtain the same rendering
 
       QgsSymbolV2* origSymbol = category.symbol()->clone();
-      convertToDataDefinedSymbology( origSymbol, categorizedRenderer->sizeScaleField(), categorizedRenderer->rotationField() );
+      convertToDataDefinedSymbology( origSymbol, categorizedRenderer->sizeScaleField() );
       rule->setSymbol( origSymbol );
 
       rootrule->appendChild( rule );
@@ -1216,7 +1216,7 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFe
       //data dependent area and rotation, so we need to convert these to obtain the same rendering
 
       QgsSymbolV2* symbol = range.symbol()->clone();
-      convertToDataDefinedSymbology( symbol, graduatedRenderer->sizeScaleField(), graduatedRenderer->rotationField() );
+      convertToDataDefinedSymbology( symbol, graduatedRenderer->sizeScaleField() );
 
       rule->setSymbol( symbol );
 
@@ -1251,19 +1251,19 @@ void QgsRuleBasedRendererV2::convertToDataDefinedSymbology( QgsSymbolV2* symbol,
       for ( int j = 0; j < symbol->symbolLayerCount();++j )
       {
         QgsMarkerSymbolLayerV2* msl = static_cast<QgsMarkerSymbolLayerV2*>( symbol->symbolLayer( j ) );
-        if ( ! sizeScaleField.isNull() )
+        if ( ! sizeScaleField.isEmpty() )
         {
           sizeExpression = QString( "%1*(%2)" ).arg( msl->size() ).arg( sizeScaleField );
           msl->setDataDefinedProperty( "size", new QgsDataDefined( sizeExpression ) );
         }
-        if ( ! rotationField.isNull() )
+        if ( ! rotationField.isEmpty() )
         {
           msl->setDataDefinedProperty( "angle", new QgsDataDefined( true, false, QString(), rotationField ) );
         }
       }
       break;
     case QgsSymbolV2::Line:
-      if ( ! sizeScaleField.isNull() )
+      if ( ! sizeScaleField.isEmpty() )
       {
         for ( int j = 0; j < symbol->symbolLayerCount();++j )
         {

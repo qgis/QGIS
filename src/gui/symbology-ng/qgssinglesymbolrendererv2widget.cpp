@@ -86,11 +86,6 @@ void QgsSingleSymbolRendererV2Widget::changeSingleSymbol()
   mRenderer->setSymbol( mSingleSymbol->clone() );
 }
 
-void QgsSingleSymbolRendererV2Widget::rotationFieldChanged( QString fldName )
-{
-  mRenderer->setRotationField( fldName );
-}
-
 void QgsSingleSymbolRendererV2Widget::sizeScaleFieldChanged( QString fldName )
 {
   mRenderer->setSizeScaleField( fldName );
