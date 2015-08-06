@@ -203,9 +203,9 @@ void QgsDataDefinedButton::updateDataDefined( QgsDataDefined *dd ) const
     return;
 
   dd->setActive( isActive() );
-  dd->setUseExpression( useExpression() );
   dd->setExpressionString( getExpression() );
   dd->setField( getField() );
+  dd->setUseExpression( useExpression() );
 }
 
 QgsDataDefined QgsDataDefinedButton::currentDataDefined() const

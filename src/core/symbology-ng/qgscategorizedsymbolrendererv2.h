@@ -156,8 +156,8 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     //! @note added in 2.5
     void updateColorRamp( QgsVectorColorRampV2* ramp, bool inverted = false );
 
-    void setRotationField( QString fieldOrExpression ) override;
-    QString rotationField() const override;
+    Q_DECL_DEPRECATED void setRotationField( QString fieldOrExpression ) override;
+    Q_DECL_DEPRECATED QString rotationField() const override;
 
     void setSizeScaleField( QString fieldOrExpression );
     QString sizeScaleField() const;

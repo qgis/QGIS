@@ -130,9 +130,15 @@ void QgsDataDefined::setExpressionString( const QString &expr )
 
   d.detach();
 
+  d->useExpression = true;
   d->expressionString = expr;
   d->expressionPrepared = false;
   d->exprRefColumns.clear();
+}
+
+QString QgsDataDefined::expressionOrField() const
+{
+  return d->useExpression ? d->expressionString : d->field;
 }
 
 QMap<QString, QVariant> QgsDataDefined::expressionParams() const
@@ -263,6 +269,7 @@ void QgsDataDefined::setField( const QString &field )
     return;
 
   d.detach();
+  d->useExpression = false;
   d->field = field;
   d->exprRefColumns.clear();
 }

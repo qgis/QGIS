@@ -1097,9 +1097,9 @@ void QgsPalLayerSettings::setDataDefinedProperty( QgsPalLayerSettings::DataDefin
     {
       QgsDataDefined* dd = it.value();
       dd->setActive( active );
-      dd->setUseExpression( useExpr );
       dd->setExpressionString( expr );
       dd->setField( field );
+      dd->setUseExpression( useExpr );
     }
   }
   else if ( !defaultVals )

@@ -42,6 +42,7 @@ class TestQgsDataDefined: public QObject
     void xmlMethods(); //test saving and reading from xml
     void mapMethods(); //test saving and reading from a string map
     void referencedColumns(); //test referenced columns method
+    void expressionOrString();
 
   private:
 };
@@ -305,6 +306,19 @@ void TestQgsDataDefined::referencedColumns()
   QVERIFY( cols.contains( QString( "col1" ) ) );
   QVERIFY( cols.contains( QString( "col2" ) ) );
   QVERIFY( cols.contains( QString( "col3" ) ) );
+}
+
+void TestQgsDataDefined::expressionOrString()
+{
+  QgsDataDefined dd;
+  dd.setActive( true );
+  dd.setField( "field" );
+  dd.setExpressionString( "1+col1+col2" );
+  dd.setUseExpression( true );
+  QCOMPARE( dd.expressionOrField(), QString( "1+col1+col2" ) );
+
+  dd.setUseExpression( false );
+  QCOMPARE( dd.expressionOrField(), QString( "field" ) );
 }
 
 QTEST_MAIN( TestQgsDataDefined )
