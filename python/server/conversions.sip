@@ -1,7 +1,10 @@
 /***************************************************************************
-                          qgsserverinterface.sip
+                       conversions.sip
 
-  Class defining the interface made available to QGIS Server plugins.
+  This file contains code for conversion between mapped types:
+
+  QMultiMap<int, TYPE2*>
+
   -------------------
   begin                : 2015-08-06
   copyright            : (C) 2015 by Alessandro Pasotti
