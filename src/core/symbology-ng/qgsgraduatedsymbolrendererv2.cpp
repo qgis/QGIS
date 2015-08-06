@@ -518,9 +518,7 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::clone() const
     r->setInvertedColorRamp( mInvertedColorRamp );
   }
   r->setUsingSymbolLevels( usingSymbolLevels() );
-  r->setRotationField( rotationField() );
   r->setSizeScaleField( sizeScaleField() );
-  //r->setScaleMethod( scaleMethod() );
   r->setLabelFormat( labelFormat() );
   r->setGraduatedMethod( graduatedMethod() );
   copyPaintEffect( r );
@@ -1365,12 +1363,23 @@ void QgsGraduatedSymbolRendererV2::updateSymbols( QgsSymbolV2 *sym )
 
 void QgsGraduatedSymbolRendererV2::setRotationField( QString fieldOrExpression )
 {
-  mRotation.reset( QgsSymbolLayerV2Utils::fieldOrExpressionToExpression( fieldOrExpression ) );
+  if ( mSourceSymbol->type() == QgsSymbolV2::Marker )
+  {
+    QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( mSourceSymbol.data() );
+    s->setDataDefinedAngle( QgsDataDefined( fieldOrExpression ) );
+  }
+
 }
 
 QString QgsGraduatedSymbolRendererV2::rotationField() const
 {
-  return mRotation.data() ? QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( mRotation.data() ) : QString();
+  if ( mSourceSymbol->type() == QgsSymbolV2::Marker )
+  {
+    QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( mSourceSymbol.data() );
+    return s->dataDefinedAngle().expressionOrField();
+  }
+
+  return QString();
 }
 
 void QgsGraduatedSymbolRendererV2::setSizeScaleField( QString fieldOrExpression )

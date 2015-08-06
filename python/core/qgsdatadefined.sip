@@ -71,6 +71,15 @@ class QgsDataDefined
     QString expressionString() const;
     void setExpressionString( const QString& expr );
 
+    /**
+     * Returns an expression which represents a single field if useExpression returns false
+     *
+     * @return An expression
+     *
+     * @note added in 2.12
+     */
+    QString expressionOrField() const;
+
     // @note not available in python bindings
     //QMap<QString, QVariant> expressionParams() const;
     // @note not available in python bindings

@@ -365,6 +365,8 @@ void QgsComposerUtils::readDataDefinedProperty( const QgsComposerObject::DataDef
   {
     dd->setActive( false );
   }
+  dd->setField( ddElem.attribute( "field" ) );
+  dd->setExpressionString( ddElem.attribute( "expr" ) );
   QString useExpr = ddElem.attribute( "useExpr" );
   if ( useExpr.compare( "true", Qt::CaseInsensitive ) == 0 )
   {
@@ -374,8 +376,6 @@ void QgsComposerUtils::readDataDefinedProperty( const QgsComposerObject::DataDef
   {
     dd->setUseExpression( false );
   }
-  dd->setField( ddElem.attribute( "field" ) );
-  dd->setExpressionString( ddElem.attribute( "expr" ) );
 }
 
 void QgsComposerUtils::writeDataDefinedPropertyMap( QDomElement &itemElem, QDomDocument &doc, const QMap<QgsComposerObject::DataDefinedProperty, QString> *dataDefinedNames, const QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties )
