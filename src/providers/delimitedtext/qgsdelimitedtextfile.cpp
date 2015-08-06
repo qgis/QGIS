@@ -52,7 +52,6 @@ QgsDelimitedTextFile::QgsDelimitedTextFile( QString url ) :
     mMaxRecordNumber( -1 ),
     mMaxFieldCount( 0 ),
     mDefaultFieldName( "field_%1" ),
-    mInvalidFieldRegexp( "^\\d*(\\.\\d*)?$" ),
     // field_ is optional in following regexp to simplify QgsDelimitedTextFile::fieldNumber()
     mDefaultFieldRegexp( "^(?:field_)?(\\d+)$", Qt::CaseInsensitive )
 {
@@ -429,8 +428,8 @@ void QgsDelimitedTextFile::setFieldNames( const QStringList &names )
     name = name.trimmed();
     if ( name.length() > mMaxNameLength ) name = name.mid( 0, mMaxNameLength );
 
-    // If the name is invalid then reset it to default name
-    if ( mInvalidFieldRegexp.exactMatch( name ) )
+    // If the name is empty then reset it to default name
+    if ( name.length() == 0 )
     {
       name = mDefaultFieldName.arg( fieldNo );
     }

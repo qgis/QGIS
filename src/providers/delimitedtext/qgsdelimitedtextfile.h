@@ -381,7 +381,6 @@ class QgsDelimitedTextFile : public QObject
     int mMaxFieldCount;
 
     QString mDefaultFieldName;
-    QRegExp mInvalidFieldRegexp;
     QRegExp mDefaultFieldRegexp;
 };
 
