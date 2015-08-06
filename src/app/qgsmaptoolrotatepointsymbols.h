@@ -20,6 +20,7 @@
 #include "qgsfeature.h"
 
 class QgsPointRotationItem;
+class QgsMarkerSymbolV2;
 
 /** A class that allows interactive manipulation the value of the rotation field(s) for point layers*/
 class APP_EXPORT QgsMapToolRotatePointSymbols: public QgsMapToolEdit
@@ -56,16 +57,11 @@ class APP_EXPORT QgsMapToolRotatePointSymbols: public QgsMapToolEdit
     /** True if ctrl was pressed during the last mouse move event*/
     bool mCtrlPressed;
 
-    /** Finds out the rotation attributes of mActiveLayers
-      @param vl the point vector layer
-      @param attList out: the list containing the rotation indices
-      @return 0 in case of success*/
-    static int layerRotationAttributes( QgsVectorLayer* vl, QList<int>& attList );
     void drawArrow( double azimut ) const;
     /** Calculates the azimut between mousePos and mSnappedPoint*/
     double calculateAzimut( const QPoint& mousePos );
     /** Create item with the point symbol for a specific feature. This will be used to show the rotation to the user*/
-    void createPixmapItem( QgsFeature& f );
+    void createPixmapItem( QgsMarkerSymbolV2 *markerSymbol );
     /** Sets the rotation of the pixmap item*/
     void setPixmapItemRotation( double rotation );
     /** Rounds value to 15 degree integer (used if ctrl pressed)*/
