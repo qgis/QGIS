@@ -108,7 +108,9 @@ class QgsRequestHandler
     /** Return true if the HTTP headers were already sent to the client*/
     bool headersSent() { return mHeadersSent; }
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    /** Allow core services to call plugin hooks through sendResponse() */
+    /** Allow core services to call plugin hooks through sendResponse()
+    * @note: not in the bindings
+    */
     virtual void setPluginFilters( QgsServerFiltersMap pluginFilters ) = 0;
 #endif
     // TODO: if HAVE_SERVER_PYTHON

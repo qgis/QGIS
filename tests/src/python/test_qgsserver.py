@@ -95,10 +95,49 @@ class TestQgsServer(unittest.TestCase):
 
 
         serverIface = self.server.serverInterface()
-        serverIface.registerFilter(SimpleHelloFilter(serverIface), 100 )
+        filter = SimpleHelloFilter(serverIface)
+        serverIface.registerFilter(filter, 100 )
+        # Get registered filters
+        self.assertEqual(filter, serverIface.filters()[100][0])
+
+        # Register some more filters
+        class Filter1(QgsServerFilter):
+            def responseComplete(self):
+                request = self.serverInterface().requestHandler()
+                params = request.parameterMap()
+                if params.get('SERVICE', '').upper() == 'SIMPLE':
+                    request.appendBody('Hello from Filter1!')
+
+        class Filter2(QgsServerFilter):
+            def responseComplete(self):
+                request = self.serverInterface().requestHandler()
+                params = request.parameterMap()
+                if params.get('SERVICE', '').upper() == 'SIMPLE':
+                    request.appendBody('Hello from Filter2!')
+
+        filter1 = Filter1(serverIface)
+        filter2 = Filter2(serverIface)
+        serverIface.registerFilter(filter1, 101)
+        serverIface.registerFilter(filter2, 200 )
+        serverIface.registerFilter(filter2, 100 )
+        self.assertTrue(filter2 in serverIface.filters()[100])
+        self.assertEqual(filter1, serverIface.filters()[101][0])
+        self.assertEqual(filter2, serverIface.filters()[200][0])
         response = str(self.server.handleRequest('service=simple'))
-        expected = 'Content-type: text/plain\n\nHello from SimpleServer!'
+        expected = 'Content-type: text/plain\n\nHello from SimpleServer!Hello from Filter1!Hello from Filter2!'
         self.assertEqual(response, expected)
+
+        # Test that the bindings for complex type QgsServerFiltersMap are working
+        filters = { 100: [filter, filter2], 101: [filter1], 200: [filter2] }
+        serverIface.setFilters(filters)
+        self.assertTrue(filter in serverIface.filters()[100])
+        self.assertTrue(filter2 in serverIface.filters()[100])
+        self.assertEqual(filter1, serverIface.filters()[101][0])
+        self.assertEqual(filter2, serverIface.filters()[200][0])
+        response = str(self.server.handleRequest('service=simple'))
+        expected = 'Content-type: text/plain\n\nHello from SimpleServer!Hello from Filter1!Hello from Filter2!'
+        self.assertEqual(response, expected)
+
 
 
     ## WMS tests

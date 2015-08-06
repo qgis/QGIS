@@ -68,7 +68,6 @@ class QgsRequestHandler
     QString infoFormat() const;
     /** Return true if the HTTP headers were already sent to the client*/
     bool headersSent();
-
 private:
     /** Parses the input and creates a request neutral Parameter/Value map*/
     virtual void parseInput() = 0;

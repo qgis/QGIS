@@ -75,6 +75,12 @@ class SERVER_EXPORT QgsServerInterface
     virtual void registerFilter( QgsServerFilter* filter, int priority = 0 ) = 0;
 
     /**
+     * Set the filters map
+     * @param filters the QgsServerFiltersMap
+     */
+    virtual void setFilters( QgsServerFiltersMap* filters ) = 0;
+
+    /**
      * Return the list of current QgsServerFilter
      * @return QgsServerFiltersMap list of QgsServerFilter
      */
