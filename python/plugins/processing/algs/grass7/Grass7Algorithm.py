@@ -422,6 +422,8 @@ class Grass7Algorithm(GeoAlgorithm):
         if ProcessingConfig.getSetting(Grass7Utils.GRASS_LOG_COMMANDS):
             ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
 
+        Grass7Utils.executeGrass7(commands, progress, outputCommands)
+
         for out in self.outputs:
             if isinstance(out, OutputHTML):
                 with open(self.getOutputFromName("rawoutput").value) as f:
@@ -510,14 +512,7 @@ class Grass7Algorithm(GeoAlgorithm):
     def checkBeforeOpeningParametersDialog(self):
         msg = Grass7Utils.checkGrass7IsInstalled()
         if msg is not None:
-            html = self.tr(
-                '<p>This algorithm requires GRASS GIS 7 to be run. '
-                'Unfortunately, it seems that GRASS GIS 7 is not installed in '
-                'your system, or it is not correctly configured to be used '
-                'from QGIS</p>'
-                '<p><a href="http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html">Click here</a> '
-                'to know more about how to install and configure GRASS GIS 7 to be used with QGIS</p>') # FIXME update URL or page
-            return html
+            return msg
 
     def checkParameterValuesBeforeExecuting(self):
         name = self.commandLineName().replace('.', '_')[len('grass7:'):]
