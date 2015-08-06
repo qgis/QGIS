@@ -48,6 +48,7 @@ class QgsServerInterface
     /** Register a filter with the given priority. The filter's requestReady()
      * and responseReady() methods will be called from the loop*/
     virtual void registerFilter( QgsServerFilter* filter /Transfer/, int priority = 0 ) = 0;
+    /** Set the filters map */
     virtual void setFilters( QgsServerFiltersMap* filters /Transfer/) = 0;
     /** Return an environment variable set by FCGI*/
     virtual QString getEnv(const QString& name ) const = 0;
