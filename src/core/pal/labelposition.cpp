@@ -500,7 +500,7 @@ namespace pal
     return distance;
   }
 
-  bool LabelPosition::isBorderCrossingLine( PointSet* line ) const
+  bool LabelPosition::crossesLine( PointSet* line ) const
   {
     if ( !mGeos )
       createGeosGeom();
@@ -509,13 +509,35 @@ namespace pal
       line->createGeosGeom();
 
     GEOSContextHandle_t geosctxt = geosContext();
-    if ( GEOSPreparedIntersects_r( geosctxt, preparedGeom(), line->mGeos ) == 1 )
+    if ( GEOSPreparedIntersects_r( geosctxt, line->preparedGeom(), mGeos ) == 1 )
     {
       return true;
     }
     else if ( nextPart )
     {
-      return nextPart->isBorderCrossingLine( line );
+      return nextPart->crossesLine( line );
+    }
+
+    return false;
+  }
+
+  bool LabelPosition::crossesBoundary( PointSet *polygon ) const
+  {
+    if ( !mGeos )
+      createGeosGeom();
+
+    if ( !polygon->mGeos )
+      polygon->createGeosGeom();
+
+    GEOSContextHandle_t geosctxt = geosContext();
+    if ( GEOSPreparedOverlaps_r( geosctxt, polygon->preparedGeom(), mGeos ) == 1
+         || GEOSPreparedTouches_r( geosctxt, polygon->preparedGeom(), mGeos ) == 1 )
+    {
+      return true;
+    }
+    else if ( nextPart )
+    {
+      return nextPart->crossesBoundary( polygon );
     }
 
     return false;

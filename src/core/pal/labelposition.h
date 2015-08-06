@@ -128,7 +128,10 @@ namespace pal
       double getDistanceToPoint( double xp, double yp ) const;
 
       /** Returns true if this label crosses the specified line */
-      bool isBorderCrossingLine( PointSet* line ) const;
+      bool crossesLine( PointSet* line ) const;
+
+      /** Returns true if this label crosses the boundary of the specified polygon */
+      bool crossesBoundary( PointSet* polygon ) const;
 
       /** Returns number of intersections with polygon (testing border and center) */
       int getNumPointsInPolygon( PointSet* polygon ) const;

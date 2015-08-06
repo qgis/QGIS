@@ -52,7 +52,7 @@ namespace pal
       case GEOS_LINESTRING:
 
         // Is one of label's borders crossing the line ?
-        n = ( lp->isBorderCrossingLine( obstacle ) ? 1 : 0 );
+        n = ( lp->crossesLine( obstacle ) ? 1 : 0 );
         break;
 
       case GEOS_POLYGON:
@@ -65,7 +65,7 @@ namespace pal
             break;
           case PolygonBoundary:
             // penalty may need tweaking, given that interior mode ranges up to 12
-            n = ( lp->isBorderCrossingLine( obstacle ) ? 6 : 0 );
+            n = ( lp->crossesBoundary( obstacle ) ? 6 : 0 );
             break;
         }
 
