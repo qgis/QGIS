@@ -75,6 +75,11 @@ class QgsProject : QObject
     QString fileName() const;
     //@}
 
+    /** Returns QFileInfo object for the project's associated file.
+     * @note added in QGIS 2.9
+     */
+    QFileInfo fileInfo() const;
+
     /** Clear the project
      * @note added in 2.4
      */
