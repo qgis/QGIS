@@ -44,7 +44,7 @@ class QgsDataDefinedPrivate : public QSharedData
         , active( active )
         , useExpression( useExpression )
         , expressionString( expressionString )
-        , field( field.remove( QRegExp( "^\"|\"$" ) ) )
+        , field( field )
         , expressionPrepared( false )
     {
     }
