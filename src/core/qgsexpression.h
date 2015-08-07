@@ -21,6 +21,7 @@
 #include <QVariant>
 #include <QList>
 #include <QDomDocument>
+#include "qgis.h"
 
 class QgsFeature;
 class QgsGeometry;
@@ -31,6 +32,7 @@ class QgsField;
 class QgsFields;
 class QgsDistanceArea;
 class QDomElement;
+class QgsExpressionContext;
 
 /**
 Class for parsing and evaluation of expressions (formerly called "search strings").
@@ -100,7 +102,13 @@ class CORE_EXPORT QgsExpression
     const Node* rootNode() const { return mRootNode; }
 
     //! Get the expression ready for evaluation - find out column indexes.
-    bool prepare( const QgsFields &fields );
+    Q_DECL_DEPRECATED bool prepare( const QgsFields &fields );
+
+    /** Get the expression ready for evaluation - find out column indexes.
+     * @param context context for preparing expression
+     * @note added in QGIS 2.12
+     */
+    bool prepare( const QgsExpressionContext *context );
 
     /**
      * Get list of columns referenced by the expression.
@@ -117,28 +125,41 @@ class CORE_EXPORT QgsExpression
 
     //! Evaluate the feature and return the result
     //! @note prepare() should be called before calling this method
-    QVariant evaluate( const QgsFeature* f = NULL );
+    Q_DECL_DEPRECATED QVariant evaluate( const QgsFeature* f );
 
     //! Evaluate the feature and return the result
     //! @note prepare() should be called before calling this method
     //! @note available in python bindings as evaluatePrepared
-    inline QVariant evaluate( const QgsFeature& f ) { return evaluate( &f ); }
+    Q_DECL_DEPRECATED inline QVariant evaluate( const QgsFeature& f ) { Q_NOWARN_DEPRECATED_PUSH return evaluate( &f ); Q_NOWARN_DEPRECATED_POP }
 
     //! Evaluate the feature and return the result
     //! @note this method does not expect that prepare() has been called on this instance
-    QVariant evaluate( const QgsFeature* f, const QgsFields& fields );
+    Q_DECL_DEPRECATED QVariant evaluate( const QgsFeature* f, const QgsFields& fields );
 
     //! Evaluate the feature and return the result
     //! @note this method does not expect that prepare() has been called on this instance
     //! @note not available in python bindings
-    inline QVariant evaluate( const QgsFeature& f, const QgsFields& fields ) { return evaluate( &f, fields ); }
+    Q_DECL_DEPRECATED inline QVariant evaluate( const QgsFeature& f, const QgsFields& fields );
+
+    /** Evaluate the feature and return the result.
+     * @note this method does not expect that prepare() has been called on this instance
+     * @note added in QGIS 2.12
+     */
+    QVariant evaluate();
+
+    /** Evaluate the expression against the specified context and return the result.
+     * @param context context for evaluating expression
+     * @note prepare() should be called before calling this method.
+     * @note added in QGIS 2.12
+     */
+    QVariant evaluate( const QgsExpressionContext* context );
 
     //! Returns true if an error occurred when evaluating last input
     bool hasEvalError() const { return !mEvalErrorString.isNull(); }
     //! Returns evaluation error
     QString evalErrorString() const { return mEvalErrorString; }
     //! Set evaluation error (used internally by evaluation functions)
-    void setEvalErrorString( QString str ) { mEvalErrorString = str; }
+    void setEvalErrorString( const QString& str ) { mEvalErrorString = str; }
 
     //! Set the number for $rownum special column
     void setCurrentRowNumber( int rowNumber ) { mRowNumber = rowNumber; }
@@ -160,7 +181,16 @@ class CORE_EXPORT QgsExpression
      */
     bool isField() const { return rootNode() && dynamic_cast<const NodeColumnRef*>( rootNode() ) ;}
 
-    static bool isValid( const QString& text, const QgsFields& fields, QString &errorMessage );
+    Q_DECL_DEPRECATED static bool isValid( const QString& text, const QgsFields& fields, QString &errorMessage );
+
+    /** Tests whether a string is a valid expression.
+     * @param text string to test
+     * @param context optional expression context
+     * @param errorMessage will be filled with any error message from the validation
+     * @returns true if string is a valid expression
+     * @note added in QGIS 2.12
+     */
+    static bool isValid( const QString& text, const QgsExpressionContext* context, QString &errorMessage );
 
     void setScale( double scale ) { mScale = scale; }
 
@@ -199,8 +229,24 @@ class CORE_EXPORT QgsExpression
        @param distanceArea optional QgsDistanceArea. If specified, the QgsDistanceArea is used for distance
        and area conversion
     */
-    static QString replaceExpressionText( const QString &action, const QgsFeature *feat,
-                                          QgsVectorLayer *layer,
+    Q_DECL_DEPRECATED static QString replaceExpressionText( const QString &action, const QgsFeature *feat,
+        QgsVectorLayer *layer,
+        const QMap<QString, QVariant> *substitutionMap = 0,
+        const QgsDistanceArea* distanceArea = 0
+                                                          );
+
+    /** This function replaces each expression between [% and %]
+       in the string with the result of its evaluation with the specified context
+
+       Additional substitutions can be passed through the substitutionMap parameter
+       @param action
+       @param context expression context
+       @param substitutionMap
+       @param distanceArea optional QgsDistanceArea. If specified, the QgsDistanceArea is used for distance
+       and area conversion
+       @note added in QGIS 2.12
+    */
+    static QString replaceExpressionText( const QString &action, const QgsExpressionContext* context,
                                           const QMap<QString, QVariant> *substitutionMap = 0,
                                           const QgsDistanceArea* distanceArea = 0
                                         );
@@ -211,6 +257,8 @@ class CORE_EXPORT QgsExpression
      * @param fallbackValue value to return if text can not be evaluated as a double
      * @returns evaluated double value, or fallback value
      * @note added in QGIS 2.7
+     * @note this method is inefficient for bulk evaluation of expressions, it is intended
+     * for one-off evaluations only.
     */
     static double evaluateToDouble( const QString& text, const double fallbackValue );
 
@@ -278,7 +326,7 @@ class CORE_EXPORT QgsExpression
     static const char* UnaryOperatorText[];
 
     typedef QVariant( *FcnEval )( const QVariantList& values, const QgsFeature* f, QgsExpression* parent );
-
+    typedef QVariant( *FcnEvalContext )( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent );
 
     /**
       * A abstract base class for defining QgsExpression functions.
@@ -332,7 +380,15 @@ class CORE_EXPORT QgsExpression
         /** The help text for the function. */
         const QString helptext() { return mHelpText.isEmpty() ? QgsExpression::helptext( mName ) : mHelpText; }
 
-        virtual QVariant func( const QVariantList& values, const QgsFeature* f, QgsExpression* parent ) = 0;
+        Q_DECL_DEPRECATED virtual QVariant func( const QVariantList&, const QgsFeature*, QgsExpression* );
+
+        /** Returns result of evaluating the function.
+         * @param values list of values passed to the function
+         * @param context context expression is being evaluated against
+         * @param parent parent expression
+         * @returns result of function
+         */
+        virtual QVariant func( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent );
 
         bool operator==( const Function& other ) const
         {
@@ -358,9 +414,28 @@ class CORE_EXPORT QgsExpression
     class StaticFunction : public Function
     {
       public:
+        Q_DECL_DEPRECATED StaticFunction( QString fnname,
+                                          int params,
+                                          FcnEval fcn,
+                                          QString group,
+                                          QString helpText = QString(),
+                                          bool usesGeometry = false,
+                                          QStringList referencedColumns = QStringList(),
+                                          bool lazyEval = false,
+                                          const QStringList& aliases = QStringList(),
+                                          bool handlesNull = false )
+            : Function( fnname, params, group, helpText, usesGeometry, referencedColumns, lazyEval, handlesNull )
+            , mFnc( fcn )
+            , mAliases( aliases )
+        {}
+
+        virtual ~StaticFunction() {}
+
+        /** Static function for evaluation against a QgsExpressionContext
+         */
         StaticFunction( QString fnname,
                         int params,
-                        FcnEval fcn,
+                        FcnEvalContext fcn,
                         QString group,
                         QString helpText = QString(),
                         bool usesGeometry = false,
@@ -369,21 +444,32 @@ class CORE_EXPORT QgsExpression
                         const QStringList& aliases = QStringList(),
                         bool handlesNull = false )
             : Function( fnname, params, group, helpText, usesGeometry, referencedColumns, lazyEval, handlesNull )
-            , mFnc( fcn )
+            , mContextFnc( fcn )
             , mAliases( aliases )
         {}
-
-        virtual ~StaticFunction() {}
-
-        virtual QVariant func( const QVariantList& values, const QgsFeature* f, QgsExpression* parent ) override
+        Q_DECL_DEPRECATED virtual QVariant func( const QVariantList& values, const QgsFeature* f, QgsExpression* parent ) override
         {
+          Q_NOWARN_DEPRECATED_PUSH
           return mFnc( values, f, parent );
+          Q_NOWARN_DEPRECATED_POP
+        }
+
+        /** Returns result of evaluating the function.
+         * @param values list of values passed to the function
+         * @param context context expression is being evaluated against
+         * @param parent parent expression
+         * @returns result of function
+         */
+        virtual QVariant func( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent ) override
+        {
+          return mContextFnc( values, context, parent );
         }
 
         virtual QStringList aliases() const override { return mAliases; }
 
       private:
         FcnEval mFnc;
+        FcnEvalContext mContextFnc;
         QStringList mAliases;
     };
 
@@ -397,7 +483,7 @@ class CORE_EXPORT QgsExpression
     static bool unregisterFunction( QString name );
 
     // tells whether the identifier is a name of existing function
-    static bool isFunctionName( QString name );
+    static bool isFunctionName( const QString& name );
 
     // return index of the function in Functions array
     static int functionIndex( const QString& name );
@@ -443,17 +529,32 @@ class CORE_EXPORT QgsExpression
          * @return The type of this node
          */
         virtual NodeType nodeType() const = 0;
-        /**
+        
+       /**
          * Abstract virtual eval method
          * Errors are reported to the parent
          */
-        virtual QVariant eval( QgsExpression* parent, const QgsFeature* f ) = 0;
+        Q_DECL_DEPRECATED virtual QVariant eval( QgsExpression* parent, const QgsFeature* f );
+
+        /**
+         * Abstract virtual eval method
+         * Errors are reported to the parent
+         * @note added in QGIS 2.12
+         */
+        virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context );
 
         /**
          * Abstract virtual preparation method
          * Errors are reported to the parent
          */
-        virtual bool prepare( QgsExpression* parent, const QgsFields &fields ) = 0;
+        Q_DECL_DEPRECATED virtual bool prepare( QgsExpression* parent, const QgsFields &fields );
+
+        /**
+         * Abstract virtual preparation method
+         * Errors are reported to the parent
+         * @note added in QGIS 2.12
+         */
+        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context );
 
         /**
          * Abstract virtual dump method
@@ -558,8 +659,8 @@ class CORE_EXPORT QgsExpression
         Node* operand() const { return mOperand; }
 
         virtual NodeType nodeType() const override { return ntUnaryOperator; }
-        virtual bool prepare( QgsExpression* parent, const QgsFields &fields ) override;
-        virtual QVariant eval( QgsExpression* parent, const QgsFeature* f ) override;
+        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context ) override;
+        virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) override;
         virtual QString dump() const override;
 
         virtual QStringList referencedColumns() const override { return mOperand->referencedColumns(); }
@@ -582,8 +683,8 @@ class CORE_EXPORT QgsExpression
         Node* opRight() const { return mOpRight; }
 
         virtual NodeType nodeType() const override { return ntBinaryOperator; }
-        virtual bool prepare( QgsExpression* parent, const QgsFields &fields ) override;
-        virtual QVariant eval( QgsExpression* parent, const QgsFeature* f ) override;
+        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context ) override;
+        virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) override;
         virtual QString dump() const override;
 
         virtual QStringList referencedColumns() const override { return mOpLeft->referencedColumns() + mOpRight->referencedColumns(); }
@@ -615,8 +716,8 @@ class CORE_EXPORT QgsExpression
         NodeList* list() const { return mList; }
 
         virtual NodeType nodeType() const override { return ntInOperator; }
-        virtual bool prepare( QgsExpression* parent, const QgsFields &fields ) override;
-        virtual QVariant eval( QgsExpression* parent, const QgsFeature* f ) override;
+        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context ) override;
+        virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) override;
         virtual QString dump() const override;
 
         virtual QStringList referencedColumns() const override { QStringList lst( mNode->referencedColumns() ); foreach ( Node* n, mList->list() ) lst.append( n->referencedColumns() ); return lst; }
@@ -640,8 +741,8 @@ class CORE_EXPORT QgsExpression
         NodeList* args() const { return mArgs; }
 
         virtual NodeType nodeType() const override { return ntFunction; }
-        virtual bool prepare( QgsExpression* parent, const QgsFields &fields ) override;
-        virtual QVariant eval( QgsExpression* parent, const QgsFeature* f ) override;
+        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context ) override;
+        virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) override;
         virtual QString dump() const override;
 
         virtual QStringList referencedColumns() const override;
@@ -652,6 +753,10 @@ class CORE_EXPORT QgsExpression
         //QString mName;
         int mFnIndex;
         NodeList* mArgs;
+
+      private:
+
+        QgsExpression::Function* getFunc() const;
     };
 
     class CORE_EXPORT NodeLiteral : public Node
@@ -662,8 +767,8 @@ class CORE_EXPORT QgsExpression
         inline QVariant value() const { return mValue; }
 
         virtual NodeType nodeType() const override { return ntLiteral; }
-        virtual bool prepare( QgsExpression* parent, const QgsFields &fields ) override;
-        virtual QVariant eval( QgsExpression* parent, const QgsFeature* f ) override;
+        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context ) override;
+        virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) override;
         virtual QString dump() const override;
 
         virtual QStringList referencedColumns() const override { return QStringList(); }
@@ -682,8 +787,8 @@ class CORE_EXPORT QgsExpression
         QString name() const { return mName; }
 
         virtual NodeType nodeType() const override { return ntColumnRef; }
-        virtual bool prepare( QgsExpression* parent, const QgsFields &fields ) override;
-        virtual QVariant eval( QgsExpression* parent, const QgsFeature* f ) override;
+        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context ) override;
+        virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) override;
         virtual QString dump() const override;
 
         virtual QStringList referencedColumns() const override { return QStringList( mName ); }
@@ -715,8 +820,8 @@ class CORE_EXPORT QgsExpression
         ~NodeCondition() { delete mElseExp; qDeleteAll( mConditions ); }
 
         virtual NodeType nodeType() const override { return ntCondition; }
-        virtual QVariant eval( QgsExpression* parent, const QgsFeature* f ) override;
-        virtual bool prepare( QgsExpression* parent, const QgsFields &fields ) override;
+        virtual QVariant eval( QgsExpression* parent, const QgsExpressionContext* context ) override;
+        virtual bool prepare( QgsExpression* parent, const QgsExpressionContext* context ) override;
         virtual QString dump() const override;
 
         virtual QStringList referencedColumns() const override;
