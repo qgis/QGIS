@@ -2928,6 +2928,10 @@ void QgsVectorLayer::uniqueValues( int index, QList<QVariant> &uniqueValues, int
   }
 
   QgsFields::FieldOrigin origin = mUpdatedFields.fieldOrigin( index );
+  if ( origin == QgsFields::OriginUnknown )
+  {
+    return;
+  }
 
   if ( origin == QgsFields::OriginProvider ) //a provider field
   {
@@ -3018,6 +3022,10 @@ QVariant QgsVectorLayer::minimumValue( int index )
   }
 
   QgsFields::FieldOrigin origin = mUpdatedFields.fieldOrigin( index );
+  if ( origin == QgsFields::OriginUnknown )
+  {
+    return QVariant();
+  }
 
   if ( origin == QgsFields::OriginProvider ) //a provider field
   {
@@ -3080,6 +3088,10 @@ QVariant QgsVectorLayer::maximumValue( int index )
   }
 
   QgsFields::FieldOrigin origin = mUpdatedFields.fieldOrigin( index );
+  if ( origin == QgsFields::OriginUnknown )
+  {
+    return QVariant();
+  }
 
   if ( origin == QgsFields::OriginProvider ) //a provider field
   {
