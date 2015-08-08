@@ -21,6 +21,7 @@ Some portions of code were taken from https://code.google.com/p/pydee/
 
 from PyQt4.QtCore import Qt, QTimer, QSettings, QCoreApplication, QSize, QByteArray, QFileInfo, SIGNAL
 from PyQt4.QtGui import QDockWidget, QToolBar, QToolButton, QWidget, QSplitter, QTreeWidget, QAction, QFileDialog, QCheckBox, QSizePolicy, QMenu, QGridLayout, QApplication
+from PyQt4.QtGui import QVBoxLayout
 from PyQt4 import pyqtconfig
 from qgis.utils import iface
 from console_sci import ShellScintilla
@@ -106,12 +107,19 @@ class PythonConsoleWidget(QWidget):
         self.splitterEditor.setOrientation(Qt.Horizontal)
         self.splitterEditor.setHandleWidth(6)
         self.splitterEditor.setChildrenCollapsible(True)
+
+        self.shellOutWidget = QWidget(self)
+        self.shellOutWidget.setLayout(QVBoxLayout())
+        self.shellOutWidget.layout().setContentsMargins(0,0,0,0)
+        self.shellOutWidget.layout().addWidget(self.shellOut)
+
         self.splitter = QSplitter(self.splitterEditor)
         self.splitter.setOrientation(Qt.Vertical)
         self.splitter.setHandleWidth(3)
         self.splitter.setChildrenCollapsible(False)
-        self.splitter.addWidget(self.shellOut)
+        self.splitter.addWidget(self.shellOutWidget)
         self.splitter.addWidget(self.shell)
+
         #self.splitterEditor.addWidget(self.tabEditorWidget)
 
         self.splitterObj = QSplitter(self.splitterEditor)
@@ -361,9 +369,8 @@ class PythonConsoleWidget(QWidget):
         self.toolBar.setContextMenuPolicy(Qt.DefaultContextMenu)
         self.toolBar.setLayoutDirection(Qt.LeftToRight)
         self.toolBar.setIconSize(QSize(16, 16))
-        self.toolBar.setOrientation(Qt.Vertical)
-        self.toolBar.setMovable(True)
-        self.toolBar.setFloatable(True)
+        self.toolBar.setMovable(False)
+        self.toolBar.setFloatable(False)
         self.toolBar.addAction(self.clearButton)
         self.toolBar.addAction(self.actionClass)
         self.toolBar.addAction(self.runButton)
@@ -374,16 +381,13 @@ class PythonConsoleWidget(QWidget):
         self.toolBar.addAction(self.helpButton)
 
         self.toolBarEditor = QToolBar()
-        # self.toolBarEditor.setStyleSheet('QToolBar{background-color: rgb(%s, %s, %s' % tuple(bkgrcolor) + ');\
-        #                                   border-right: 1px solid rgb(%s, %s, %s' % tuple(bordercl) + ');}')
         self.toolBarEditor.setEnabled(False)
         self.toolBarEditor.setFocusPolicy(Qt.NoFocus)
         self.toolBarEditor.setContextMenuPolicy(Qt.DefaultContextMenu)
         self.toolBarEditor.setLayoutDirection(Qt.LeftToRight)
         self.toolBarEditor.setIconSize(QSize(16, 16))
-        self.toolBarEditor.setOrientation(Qt.Vertical)
-        self.toolBarEditor.setMovable(True)
-        self.toolBarEditor.setFloatable(True)
+        self.toolBarEditor.setMovable(False)
+        self.toolBarEditor.setFloatable(False)
         self.toolBarEditor.addAction(self.openFileButton)
         self.toolBarEditor.addSeparator()
         self.toolBarEditor.addAction(self.saveFileButton)
@@ -442,21 +446,15 @@ class PythonConsoleWidget(QWidget):
         self.mainLayout.addWidget(self.widgetButton, 0, 0, 1, 1)
         self.mainLayout.addWidget(self.splitterEditor, 0, 1, 1, 1)
 
+        self.shellOutWidget.layout().insertWidget(0, self.toolBar)
+
         self.layoutEditor = QGridLayout(self.widgetEditor)
         self.layoutEditor.setMargin(0)
         self.layoutEditor.setSpacing(0)
-        self.layoutEditor.addWidget(self.widgetButtonEditor, 0, 0, 2, 1)
-        self.layoutEditor.addWidget(self.tabEditorWidget, 0, 1, 1, 1)
-        self.layoutEditor.addWidget(self.widgetFind, 1, 1, 1, 1)
-
-        self.toolBarLayout = QGridLayout(self.widgetButton)
-        self.toolBarLayout.setMargin(0)
-        self.toolBarLayout.setSpacing(0)
-        self.toolBarLayout.addWidget(self.toolBar)
-        self.toolBarEditorLayout = QGridLayout(self.widgetButtonEditor)
-        self.toolBarEditorLayout.setMargin(0)
-        self.toolBarEditorLayout.setSpacing(0)
-        self.toolBarEditorLayout.addWidget(self.toolBarEditor)
+        self.layoutEditor.addWidget(self.toolBarEditor, 0, 1, 1, 1)
+        self.layoutEditor.addWidget(self.widgetButtonEditor, 1, 0, 2, 1)
+        self.layoutEditor.addWidget(self.tabEditorWidget, 1, 1, 1, 1)
+        self.layoutEditor.addWidget(self.widgetFind, 2, 1, 1, 1)
 
         ## Layout for the find widget
         self.layoutFind = QGridLayout(self.widgetFind)
