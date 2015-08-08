@@ -41,11 +41,15 @@ class CORE_EXPORT QgsSvgCacheEntry
      * @param rasterScaleFactor raster scale factor
      * @param fill color of fill
      * @param outline color of outline
+     * @param lookupKey the key string used in QgsSvgCache for quick lookup of this entry (relative or absolute path)
      */
-    QgsSvgCacheEntry( const QString& file, double size, double outlineWidth, double widthScaleFactor, double rasterScaleFactor, const QColor& fill, const QColor& outline );
+    QgsSvgCacheEntry( const QString& file, double size, double outlineWidth, double widthScaleFactor, double rasterScaleFactor, const QColor& fill, const QColor& outline, const QString& lookupKey = QString() );
     ~QgsSvgCacheEntry();
 
+    //! Absolute path to SVG file
     QString file;
+    //! Lookup key used by QgsSvgCache's hashtable (relative or absolute path). Needed for removal from the hashtable
+    QString lookupKey;
     double size; //size in pixels (cast to int for QImage)
     double outlineWidth;
     double widthScaleFactor;

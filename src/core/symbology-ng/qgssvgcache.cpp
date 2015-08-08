@@ -51,8 +51,9 @@ QgsSvgCacheEntry::QgsSvgCacheEntry()
 {
 }
 
-QgsSvgCacheEntry::QgsSvgCacheEntry( const QString& f, double s, double ow, double wsf, double rsf, const QColor& fi, const QColor& ou )
+QgsSvgCacheEntry::QgsSvgCacheEntry( const QString& f, double s, double ow, double wsf, double rsf, const QColor& fi, const QColor& ou, const QString& lk )
     : file( f )
+    , lookupKey( lk.isEmpty() ? f : lk )
     , size( s )
     , outlineWidth( ow )
     , widthScaleFactor( wsf )
@@ -197,7 +198,7 @@ QgsSvgCacheEntry* QgsSvgCache::insertSVG( const QString& file, double size, cons
   // The file may be relative path (e.g. if path is data defined)
   QString path = QgsSymbolLayerV2Utils::symbolNameToPath( file );
 
-  QgsSvgCacheEntry* entry = new QgsSvgCacheEntry( path, size, outlineWidth, widthScaleFactor, rasterScaleFactor, fill, outline );
+  QgsSvgCacheEntry* entry = new QgsSvgCacheEntry( path, size, outlineWidth, widthScaleFactor, rasterScaleFactor, fill, outline, file );
 
   replaceParamsAndCacheSvg( entry );
 
@@ -724,7 +725,7 @@ void QgsSvgCache::trimToMaximumSize()
     entry = entry->nextEntry;
 
     takeEntryFromList( bkEntry );
-    mEntryLookup.remove( bkEntry->file, bkEntry );
+    mEntryLookup.remove( bkEntry->lookupKey, bkEntry );
     mTotalSize -= bkEntry->dataSize();
     delete bkEntry;
   }

@@ -28,10 +28,12 @@ class CORE_EXPORT QgsVectorColorRampV2
 
     virtual ~QgsVectorColorRampV2() {}
 
-    // Number of defined colors
+    /** Returns number of defined colors, or -1 if undefined
+     */
     virtual int count() const = 0;
 
-    // Relative value (0,1) of color at index
+    /** Returns relative value between [0,1] of color at specified index
+     */
     virtual double value( int index ) const = 0;
 
     virtual QColor color( double value ) const = 0;
