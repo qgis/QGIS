@@ -63,6 +63,10 @@ QString QgsGrassModule::findExec( QString file )
 #ifdef Q_OS_WIN
     mExecPath = path.split( ";" );
     mExecPath.prepend( QgsGrass::shortPath( QgsApplication::applicationDirPath() ) );
+#elif defined(Q_OS_MACX)
+    mExecPath = path.split( ":" );
+    mExecPath.prepend( QgsApplication::applicationDirPath() + "/bin" );
+    mExecPath.prepend( QgsApplication::applicationDirPath() + "/grass/bin" );
 #else
     mExecPath = path.split( ":" );
     mExecPath.prepend( QgsApplication::applicationDirPath() );
