@@ -955,21 +955,44 @@ namespace pal
 
   void PointSet::getPointByDistance( double distance, double *px, double *py ) const
   {
-    if ( !mGeos )
-      createGeosGeom();
+    //if anything fails, return the first point
+    *px = x[0];
+    *py = y[0];
 
-    if ( !mGeos )
-      return;
-
-    GEOSContextHandle_t geosctxt = geosContext();
-    GEOSGeometry *point = GEOSInterpolate_r( geosctxt, mGeos, distance );
-    if ( point )
+    if ( distance >= 0 )
     {
-      const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, point );
-      GEOSCoordSeq_getX_r( geosctxt, coordSeq, 0, px );
-      GEOSCoordSeq_getY_r( geosctxt, coordSeq, 0, py );
+      //positive distance, use GEOS for interpolation
+      if ( !mGeos )
+        createGeosGeom();
+
+      if ( !mGeos )
+        return;
+
+      GEOSContextHandle_t geosctxt = geosContext();
+
+      GEOSGeometry *point = GEOSInterpolate_r( geosctxt, mGeos, distance );
+      if ( point )
+      {
+        const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, point );
+        GEOSCoordSeq_getX_r( geosctxt, coordSeq, 0, px );
+        GEOSCoordSeq_getY_r( geosctxt, coordSeq, 0, py );
+      }
+      GEOSGeom_destroy_r( geosctxt, point );
     }
-    GEOSGeom_destroy_r( geosctxt, point );
+    else
+    {
+      //negative distance. In this case we extrapolate backward from the first point,
+      //using the gradient of the entire linestring
+      double dx = x[nbPoints-1] - x[0];
+      double dy = y[nbPoints-1] - y[0];
+      double di = sqrt( dx * dx + dy * dy );
+
+      if ( di != 0.0 )
+      {
+        *px = x[0] + distance * dx / di;
+        *py = y[0] + distance * dy / di;
+      }
+    }
   }
 
   const GEOSGeometry *PointSet::geos() const
