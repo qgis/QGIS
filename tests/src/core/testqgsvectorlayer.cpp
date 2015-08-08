@@ -101,6 +101,9 @@ class TestQgsVectorLayer : public QObject
     void QgsVectorLayersetRendererV2();
     void QgsVectorLayersetFeatureBlendMode();
     void QgsVectorLayersetLayerTransparency();
+    void uniqueValues();
+    void minimumValue();
+    void maximumValue();
 };
 
 void TestQgsVectorLayer::initTestCase()
@@ -310,6 +313,32 @@ void TestQgsVectorLayer::QgsVectorLayersetLayerTransparency()
   vLayer->setLayerTransparency( 50 );
   QCOMPARE( receiver.transparency, 50 );
   QCOMPARE( vLayer->layerTransparency(), 50 );
+}
+
+void TestQgsVectorLayer::uniqueValues()
+{
+  QgsVectorLayer* vLayer = static_cast< QgsVectorLayer * >( mpPointsLayer );
+
+  //test with invalid field
+  QList<QVariant> values;
+  vLayer->uniqueValues( 1000, values );
+  QCOMPARE( values.length(), 0 );
+}
+
+void TestQgsVectorLayer::minimumValue()
+{
+  QgsVectorLayer* vLayer = static_cast< QgsVectorLayer * >( mpPointsLayer );
+
+  //test with invalid field
+  QCOMPARE( vLayer->minimumValue( 1000 ), QVariant() );
+}
+
+void TestQgsVectorLayer::maximumValue()
+{
+  QgsVectorLayer* vLayer = static_cast< QgsVectorLayer * >( mpPointsLayer );
+
+  //test with invalid field
+  QCOMPARE( vLayer->maximumValue( 1000 ), QVariant() );
 }
 
 QTEST_MAIN( TestQgsVectorLayer )
