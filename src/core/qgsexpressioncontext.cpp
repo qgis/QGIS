@@ -21,6 +21,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgsgeometry.h"
 #include <QSettings>
 #include <QDir>
 
@@ -497,16 +498,92 @@ QgsExpressionContextScope* QgsExpressionContextUtils::layerScope( QgsMapLayer* l
   if ( !layer )
     return scope;
 
+  //add variables defined in layer properties
+  QStringList variableNames = layer->customProperty( "variableNames" ).toStringList();
+  QStringList variableValues = layer->customProperty( "variableValues" ).toStringList();
+
+  int varIndex = 0;
+  foreach ( QString variableName, variableNames )
+  {
+    if ( varIndex >= variableValues.length() )
+    {
+      break;
+    }
+
+    QVariant varValue = variableValues.at( varIndex );
+    varIndex++;
+    scope->setVariable( variableName, varValue );
+  }
+
+  //TODO - add tests for all of these:
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_name", layer->name(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_id", layer->id(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_title", layer->title(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_abstract", layer->abstract(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_keywords", layer->keywordList(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_dataurl", layer->dataUrl(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_attribution", layer->attribution(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_attributionurl", layer->attributionUrl(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_source", layer->publicSource(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_minscale", layer->minimumScale(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_maxscale", layer->maximumScale(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_crs", layer->crs().authid(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_crsdefinition", layer->crs().toProj4(), true ) );
+
+  QgsGeometry* extentGeom = QgsGeometry::fromRect( layer->extent() );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_extent", QVariant::fromValue( *extentGeom ), true ) );
+  delete extentGeom;
 
   QgsVectorLayer* vLayer = dynamic_cast< QgsVectorLayer* >( layer );
   if ( vLayer )
   {
-    scope->addVariable( QgsExpressionContextScope::StaticVariable( "_fields_", QVariant::fromValue( vLayer->pendingFields() ), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_geometrytype", vLayer->type(), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_storagetype", vLayer->storageType(), true ) );
+    QString typeString( QGis::vectorGeometryType( vLayer->geometryType() ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_geometrytype", typeString, true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_featurecount", QVariant::fromValue( vLayer->featureCount() ), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( "_fields_", QVariant::fromValue( vLayer->fields() ), true ) );
   }
 
+  //TODO - add functions. Possibilities include:
+  //is_selected
+  //field summary stats
+
   return scope;
+}
+
+void QgsExpressionContextUtils::setLayerVariable( QgsMapLayer* layer, const QString& name, const QVariant& value )
+{
+  if ( !layer )
+    return;
+
+  //write variable to layer
+  QStringList variableNames = layer->customProperty( "variableNames" ).toStringList();
+  QStringList variableValues = layer->customProperty( "variableValues" ).toStringList();
+
+  variableNames << name;
+  variableValues << value.toString();
+
+  layer->setCustomProperty( "variableNames", variableNames );
+  layer->setCustomProperty( "variableValues", variableValues );
+}
+
+void QgsExpressionContextUtils::setLayerVariables( QgsMapLayer* layer, const QgsStringMap variables )
+{
+  if ( !layer )
+    return;
+
+  QStringList variableNames;
+  QStringList variableValues;
+
+  Q_FOREACH ( QString variable, variables.keys() )
+  {
+    variableNames << variable;
+    variableValues << variables.value( variable );
+  }
+
+  layer->setCustomProperty( "variableNames", variableNames );
+  layer->setCustomProperty( "variableValues", variableValues );
 }
 
 QgsExpressionContext QgsExpressionContextUtils::createFeatureBasedContext( const QgsFeature &feature, const QgsFields &fields )

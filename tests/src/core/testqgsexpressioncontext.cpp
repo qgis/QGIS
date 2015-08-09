@@ -554,6 +554,22 @@ void TestQgsExpressionContext::layerScope()
   //check that fields were set
   QgsFields fromVar = qvariant_cast<QgsFields>( context.variable( QgsExpressionContext::EXPR_FIELDS ) );
   QCOMPARE( fromVar, vectorLayer->pendingFields() );
+
+  //test setting layer variables
+  QgsExpressionContextUtils::setLayerVariable( vectorLayer.data(), "testvar", "testval" );
+  delete layerScope;
+  layerScope = QgsExpressionContextUtils::layerScope( vectorLayer.data() );
+  QCOMPARE( layerScope->variable( "testvar" ).toString(), QString( "testval" ) );
+
+  QgsStringMap variables;
+  variables.insert( "var1", "val1" );
+  variables.insert( "var2", "val2" );
+  QgsExpressionContextUtils::setLayerVariables( vectorLayer.data(), variables );
+  delete layerScope;
+  layerScope = QgsExpressionContextUtils::layerScope( vectorLayer.data() );
+  QCOMPARE( layerScope->variable( "testvar" ), QVariant() );
+  QCOMPARE( layerScope->variable( "var1" ).toString(), QString( "val1" ) );
+  QCOMPARE( layerScope->variable( "var2" ).toString(), QString( "val2" ) );
 }
 
 void TestQgsExpressionContext::featureBasedContext()

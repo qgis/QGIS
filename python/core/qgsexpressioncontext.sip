@@ -385,6 +385,25 @@ class QgsExpressionContextUtils
      */
     static QgsExpressionContext createFeatureBasedContext( const QgsFeature& feature, const QgsFields& fields );    
 
+    /** Sets a layer context variable. This variable will be contained within scopes retrieved via
+     * layerScope().
+     * @param layer map layer
+     * @param name variable name
+     * @param value variable value
+     * @see setLayerVariables()
+     * @see layerScope()
+     */
+    static void setLayerVariable( QgsMapLayer* layer, const QString& name, const QVariant& value );
+
+    /** Sets all layer context variables. Existing layer variables will be removed and replaced
+     * with the variables specified.
+     * @param layer map layer
+     * @param variables new set of layer variables
+     * @see setLayerVariable()
+     * @see layerScope()
+     */
+    static void setLayerVariables( QgsMapLayer* layer, const QgsStringMap variables );
+
     /** Registers all known core functions provided by QgsExpressionContextScope objects.
      */
     static void registerContextFunctions();
