@@ -411,6 +411,25 @@ class CORE_EXPORT QgsExpressionContextUtils
      */
     static QgsExpressionContextScope* layerScope( QgsMapLayer* layer );
 
+    /** Sets a layer context variable. This variable will be contained within scopes retrieved via
+     * layerScope().
+     * @param layer map layer
+     * @param name variable name
+     * @param value variable value
+     * @see setLayerVariables()
+     * @see layerScope()
+     */
+    static void setLayerVariable( QgsMapLayer* layer, const QString& name, const QVariant& value );
+
+    /** Sets all layer context variables. Existing layer variables will be removed and replaced
+     * with the variables specified.
+     * @param layer map layer
+     * @param variables new set of layer variables
+     * @see setLayerVariable()
+     * @see layerScope()
+     */
+    static void setLayerVariables( QgsMapLayer* layer, const QgsStringMap variables );
+
     /** Helper function for creating an expression context which contains just a feature and fields
      * collection. Generally this method should not be used as the created context does not include
      * standard scopes such as the global and project scopes.
