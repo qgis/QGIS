@@ -13,15 +13,15 @@ QgsConditionalStyle::QgsConditionalStyle( QString rule )
   setRule( rule );
 }
 
-bool QgsConditionalStyle::matchForFeature( QString fieldName, QgsFeature *feature, QgsFields fields )
+bool QgsConditionalStyle::matchForFeature( QgsFeature *feature, QgsFields fields )
 {
-  fieldName = QString( """%1""" ).arg( fieldName );
-  QgsExpression exp( QString( mRule ).replace( "@value", fieldName ) );
+  QgsExpression exp( mRule );
   return exp.evaluate( feature, fields ).toBool();
 }
 
 bool QgsConditionalStyle::matchForValue( QVariant value )
 {
+  // TODO Replace with Nyall's context based expressions.
   QgsExpression exp( QString( mRule ).replace( "@value", value.toString() ) );
   return exp.evaluate().toBool();
 }

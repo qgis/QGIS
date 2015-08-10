@@ -8,14 +8,21 @@
 #include "qgsfeature.h"
 
 /** \class QgsFieldFormat
- * Hold formatting rules and style information for a field
+ * Conditional styling for a rule.
  */
 class CORE_EXPORT QgsConditionalStyle
 {
   public:
     QgsConditionalStyle();
     QgsConditionalStyle( QString rule );
-    bool matchForFeature( QString fieldName, QgsFeature *feature, QgsFields fields );
+    /**
+     * @brief matchForFeature Check if the given feature matches the rule set for the style:
+     * @param fieldName field name
+     * @param feature
+     * @param fields
+     * @return
+     */
+    bool matchForFeature(QgsFeature *feature, QgsFields fields );
     bool matchForValue( QVariant value );
     QPixmap renderPreview();
 

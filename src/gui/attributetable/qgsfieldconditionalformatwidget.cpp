@@ -140,7 +140,11 @@ void QgsFieldConditionalFormatWidget::saveRule()
   QgsFieldUIProperties props = mLayer->fieldUIProperties( mFieldCombo->currentField() );
   QList<QgsConditionalStyle> styles = props.getConditionalStyles();
   QgsConditionalStyle style = QgsConditionalStyle();
-  style.setRule( mRuleEdit->text() );
+
+  // TODO Replace with Nyall's context based expressions.
+  QString fieldName = QString( """%1""" ).arg( mFieldCombo->currentField() );
+  QString rule =  QString( mRuleEdit->text() ).replace( "@value", fieldName );
+  style.setRule( rule );
 
   QColor backColor = btnBackgroundColor->color();
   QColor fontColor = btnTextColor->color();

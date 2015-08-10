@@ -14,7 +14,7 @@ class CORE_EXPORT QgsFieldUIProperties
     void setConditionalStyles( QList<QgsConditionalStyle> styles );
 
     QList<QgsConditionalStyle> getConditionalStyles();
-    QgsConditionalStyle matchingConditionalStyle( QString fieldName, QgsFeature* feature, QgsFields fields );
+    QgsConditionalStyle matchingConditionalStyle( QgsFeature* feature, QgsFields fields );
 
   private:
     QList<QgsConditionalStyle> mStyles;
