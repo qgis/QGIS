@@ -1368,6 +1368,32 @@ void QgsComposerMapGrid::drawAnnotation( QPainter* p, const QPointF& pos, int ro
 
 QString QgsComposerMapGrid::gridAnnotationString( double value, QgsComposerMapGrid::AnnotationCoordinate coord ) const
 {
+  //check if we are using degrees (ie, geographic crs)
+  bool geographic = false;
+  if ( mCRS.isValid() && mCRS.geographicFlag() )
+  {
+    geographic = true;
+  }
+  else if ( mComposerMap && mComposerMap->composition() )
+  {
+    geographic = mComposerMap->composition()->mapSettings().destinationCrs().geographicFlag();
+  }
+
+  if ( geographic && coord == QgsComposerMapGrid::Longitude &&
+       ( mGridAnnotationFormat == QgsComposerMapGrid::Decimal || mGridAnnotationFormat == QgsComposerMapGrid::DecimalWithSuffix ) )
+  {
+    // wrap around longitudes > 180 or < -180 degrees, so that eg "190E" -> "170W"
+    double wrappedX = fmod( value, 360.0 );
+    if ( wrappedX > 180.0 )
+    {
+      value = wrappedX - 360.0;
+    }
+    else if ( wrappedX < -180.0 )
+    {
+      value = wrappedX + 360.0;
+    }
+  }
+
   if ( mGridAnnotationFormat == QgsComposerMapGrid::Decimal )
   {
     return QString::number( value, 'f', mGridAnnotationPrecision );
@@ -1375,17 +1401,6 @@ QString QgsComposerMapGrid::gridAnnotationString( double value, QgsComposerMapGr
   else if ( mGridAnnotationFormat == QgsComposerMapGrid::DecimalWithSuffix )
   {
     QString hemisphere;
-
-    //check if we are using degrees (ie, geographic crs)
-    bool geographic = false;
-    if ( mCRS.isValid() && mCRS.geographicFlag() )
-    {
-      geographic = true;
-    }
-    else if ( mComposerMap && mComposerMap->composition() )
-    {
-      geographic = mComposerMap->composition()->mapSettings().destinationCrs().geographicFlag();
-    }
 
     double coordRounded = qRound( value * pow( 10.0, mGridAnnotationPrecision ) ) / pow( 10.0, mGridAnnotationPrecision );
     if ( coord == QgsComposerMapGrid::Longitude )
