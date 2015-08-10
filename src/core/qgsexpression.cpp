@@ -1124,20 +1124,17 @@ static QVariant fcnGeomFromWKT( const QVariantList& values, const QgsFeature*, Q
 {
   QString wkt = getStringValue( values.at( 0 ), parent );
   QgsGeometry* geom = QgsGeometry::fromWkt( wkt );
-  if ( geom )
-    return QVariant::fromValue( *geom );
-  else
-    return QVariant();
+  QVariant result = geom ? QVariant::fromValue( *geom ) : QVariant();
+  delete geom;
+  return result;
 }
 static QVariant fcnGeomFromGML( const QVariantList& values, const QgsFeature*, QgsExpression* parent )
 {
   QString gml = getStringValue( values.at( 0 ), parent );
   QgsGeometry* geom = QgsOgcUtils::geometryFromGML( gml );
-
-  if ( geom )
-    return QVariant::fromValue( *geom );
-  else
-    return QVariant();
+  QVariant result = geom ? QVariant::fromValue( *geom ) : QVariant();
+  delete geom;
+  return result;
 }
 
 static QVariant fcnGeomArea( const QVariantList&, const QgsFeature* f, QgsExpression* parent )
@@ -1163,14 +1160,9 @@ static QVariant fcnBounds( const QVariantList& values, const QgsFeature*, QgsExp
 {
   QgsGeometry geom = getGeometry( values.at( 0 ), parent );
   QgsGeometry* geomBounds = QgsGeometry::fromRect( geom.boundingBox() );
-  if ( geomBounds )
-  {
-    return QVariant::fromValue( *geomBounds );
-  }
-  else
-  {
-    return QVariant();
-  }
+  QVariant result = geomBounds ? QVariant::fromValue( *geomBounds ) : QVariant();
+  delete geomBounds;
+  return result;
 }
 
 static QVariant fcnBoundsWidth( const QVariantList& values, const QgsFeature*, QgsExpression* parent )
@@ -1269,34 +1261,34 @@ static QVariant fcnBuffer( const QVariantList& values, const QgsFeature*, QgsExp
     seg = getIntValue( values.at( 2 ), parent );
 
   QgsGeometry* geom = fGeom.buffer( dist, seg );
-  if ( geom )
-    return QVariant::fromValue( *geom );
-  return QVariant();
+  QVariant result = geom ? QVariant::fromValue( *geom ) : QVariant();
+  delete geom;
+  return result;
 }
 static QVariant fcnCentroid( const QVariantList& values, const QgsFeature*, QgsExpression* parent )
 {
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
   QgsGeometry* geom = fGeom.centroid();
-  if ( geom )
-    return QVariant::fromValue( *geom );
-  return QVariant();
+  QVariant result = geom ? QVariant::fromValue( *geom ) : QVariant();
+  delete geom;
+  return result;
 }
 static QVariant fcnConvexHull( const QVariantList& values, const QgsFeature*, QgsExpression* parent )
 {
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
   QgsGeometry* geom = fGeom.convexHull();
-  if ( geom )
-    return QVariant::fromValue( *geom );
-  return QVariant();
+  QVariant result = geom ? QVariant::fromValue( *geom ) : QVariant();
+  delete geom;
+  return result;
 }
 static QVariant fcnDifference( const QVariantList& values, const QgsFeature*, QgsExpression* parent )
 {
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
   QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
   QgsGeometry* geom = fGeom.difference( &sGeom );
-  if ( geom )
-    return QVariant::fromValue( *geom );
-  return QVariant();
+  QVariant result = geom ? QVariant::fromValue( *geom ) : QVariant();
+  delete geom;
+  return result;
 }
 static QVariant fcnDistance( const QVariantList& values, const QgsFeature*, QgsExpression* parent )
 {
@@ -1309,27 +1301,27 @@ static QVariant fcnIntersection( const QVariantList& values, const QgsFeature*, 
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
   QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
   QgsGeometry* geom = fGeom.intersection( &sGeom );
-  if ( geom )
-    return QVariant::fromValue( *geom );
-  return QVariant();
+  QVariant result = geom ? QVariant::fromValue( *geom ) : QVariant();
+  delete geom;
+  return result;
 }
 static QVariant fcnSymDifference( const QVariantList& values, const QgsFeature*, QgsExpression* parent )
 {
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
   QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
   QgsGeometry* geom = fGeom.symDifference( &sGeom );
-  if ( geom )
-    return QVariant::fromValue( *geom );
-  return QVariant();
+  QVariant result = geom ? QVariant::fromValue( *geom ) : QVariant();
+  delete geom;
+  return result;
 }
 static QVariant fcnCombine( const QVariantList& values, const QgsFeature*, QgsExpression* parent )
 {
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
   QgsGeometry sGeom = getGeometry( values.at( 1 ), parent );
   QgsGeometry* geom = fGeom.combine( &sGeom );
-  if ( geom )
-    return QVariant::fromValue( *geom );
-  return QVariant();
+  QVariant result = geom ? QVariant::fromValue( *geom ) : QVariant();
+  delete geom;
+  return result;
 }
 static QVariant fcnGeomToWKT( const QVariantList& values, const QgsFeature*, QgsExpression* parent )
 {
