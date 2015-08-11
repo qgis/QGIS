@@ -17,11 +17,11 @@ QList<QgsConditionalStyle> QgsFieldUIProperties::getConditionalStyles()
   return mStyles;
 }
 
-QgsConditionalStyle QgsFieldUIProperties::matchingConditionalStyle( QgsFeature *feature, QgsFields fields )
+QgsConditionalStyle QgsFieldUIProperties::matchingConditionalStyle( QVariant value,  QgsFeature *feature )
 {
   foreach ( QgsConditionalStyle style, mStyles )
   {
-    if ( style.matchForFeature( feature, fields ) )
+    if ( style.matches( value, feature ) )
       return style;
   }
   return QgsConditionalStyle();

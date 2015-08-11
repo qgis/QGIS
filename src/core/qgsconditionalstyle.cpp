@@ -13,17 +13,17 @@ QgsConditionalStyle::QgsConditionalStyle( QString rule )
   setRule( rule );
 }
 
-bool QgsConditionalStyle::matchForFeature( QgsFeature *feature, QgsFields fields )
+bool QgsConditionalStyle::matches( QVariant value, QgsFeature *feature )
 {
-  QgsExpression exp( mRule );
-  return exp.evaluate( feature, fields ).toBool();
-}
-
-bool QgsConditionalStyle::matchForValue( QVariant value )
-{
-  // TODO Replace with Nyall's context based expressions.
+  // TODO Replace with expression context
   QgsExpression exp( QString( mRule ).replace( "@value", value.toString() ) );
-  return exp.evaluate().toBool();
+  if ( feature )
+  {
+    return exp.evaluate( feature, *feature->fields() ).toBool();
+  }
+  {
+    return exp.evaluate().toBool();
+  }
 }
 
 QPixmap QgsConditionalStyle::renderPreview()
@@ -39,15 +39,15 @@ QPixmap QgsConditionalStyle::renderPreview()
   QRect rect = QRect( 0, 0, 64, 32 );
   painter.setPen( Qt::NoPen );
   painter.drawRect( rect );
-  painter.drawPixmap(8, 8, icon() );
+  painter.drawPixmap( 8, 8, icon() );
 
   if ( mTextColor.isValid() )
     painter.setPen( mTextColor );
   else
     painter.setPen( Qt::black );
 
-  painter.setRenderHint(QPainter::Antialiasing);
-  painter.setRenderHint(QPainter::HighQualityAntialiasing);
+  painter.setRenderHint( QPainter::Antialiasing );
+  painter.setRenderHint( QPainter::HighQualityAntialiasing );
   painter.setFont( font() );
   rect = QRect( 32, 0, 32, 32 );
   painter.drawText( rect, Qt::AlignCenter, "abc\n123" );
