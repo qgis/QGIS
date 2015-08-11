@@ -17,10 +17,9 @@
 #ifndef QGSCOMPOSEROBJECT_H
 #define QGSCOMPOSEROBJECT_H
 
+#include "qgsobjectcustomproperties.h"
 #include <QObject>
 #include <QDomNode>
-#include <QPointF>
-#include <QRectF>
 #include <QMap>
 
 class QgsComposition;
@@ -122,6 +121,44 @@ class CORE_EXPORT QgsComposerObject: public QObject
     */
     void setDataDefinedProperty( const DataDefinedProperty property, const bool active, const bool useExpression, const QString &expression, const QString &field );
 
+    /** Set a custom property for the object.
+     * @param key property key. If a property with the same key already exists it will be overwritten.
+     * @param value property value
+     * @see customProperty()
+     * @see removeCustomProperty()
+     * @see customProperties()
+     * @note added in QGIS 2.12
+    */
+    void setCustomProperty( const QString &key, const QVariant &value );
+
+    /** Read a custom property from the object.
+     * @param key property key
+     * @param defaultValue default value to return if property with matching key does not exist
+     * @returns value of matching property
+     * @see setCustomProperty()
+     * @see removeCustomProperty()
+     * @see customProperties()
+     * @note added in QGIS 2.12
+     */
+    QVariant customProperty( const QString &key, const QVariant &defaultValue = QVariant() ) const;
+
+    /** Remove a custom property from the object.
+     * @param key property key
+     * @see setCustomProperty()
+     * @see customProperty()
+     * @see customProperties()
+     * @note added in QGIS 2.12
+     */
+    void removeCustomProperty( const QString &key );
+
+    /** Return list of keys stored in custom properties for the object.
+     * @see setCustomProperty()
+     * @see customProperty()
+     * @see removeCustomProperty()
+     * @note added in QGIS 2.12
+     */
+    QStringList customProperties() const;
+
   public slots:
 
     /** Triggers a redraw for the item*/
@@ -142,6 +179,9 @@ class CORE_EXPORT QgsComposerObject: public QObject
 
     /** Map of data defined properties for the item to string name to use when exporting item to xml*/
     QMap< QgsComposerObject::DataDefinedProperty, QString > mDataDefinedNames;
+
+    /** Custom properties for object*/
+    QgsObjectCustomProperties mCustomProperties;
 
     /** Evaluate a data defined property and return the calculated value
      * @returns true if data defined property could be successfully evaluated

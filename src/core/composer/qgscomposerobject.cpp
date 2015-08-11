@@ -68,6 +68,9 @@ bool QgsComposerObject::writeXML( QDomElement &elem, QDomDocument &doc ) const
   //data defined properties
   QgsComposerUtils::writeDataDefinedPropertyMap( elem, doc, &mDataDefinedNames, &mDataDefinedProperties );
 
+  //custom properties
+  mCustomProperties.writeXml( elem, doc );
+
   return true;
 }
 
@@ -81,6 +84,9 @@ bool QgsComposerObject::readXML( const QDomElement &itemElem, const QDomDocument
 
   //data defined properties
   QgsComposerUtils::readDataDefinedPropertyMap( itemElem, &mDataDefinedNames, &mDataDefinedProperties );
+
+  //custom properties
+  mCustomProperties.readXml( itemElem );
 
   return true;
 }
@@ -173,4 +179,24 @@ void QgsComposerObject::prepareDataDefinedExpressions() const
   {
     it.value()->prepareExpression( atlasLayer );
   }
+}
+
+void QgsComposerObject::setCustomProperty( const QString& key, const QVariant& value )
+{
+  mCustomProperties.setValue( key, value );
+}
+
+QVariant QgsComposerObject::customProperty( const QString& key, const QVariant& defaultValue ) const
+{
+  return mCustomProperties.value( key, defaultValue );
+}
+
+void QgsComposerObject::removeCustomProperty( const QString& key )
+{
+  mCustomProperties.remove( key );
+}
+
+QStringList QgsComposerObject::customProperties() const
+{
+  return mCustomProperties.keys();
 }
