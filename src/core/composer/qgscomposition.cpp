@@ -847,6 +847,9 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
   //data defined properties
   QgsComposerUtils::writeDataDefinedPropertyMap( compositionElem, doc, &mDataDefinedNames, &mDataDefinedProperties );
 
+  //custom properties
+  mCustomProperties.writeXml( compositionElem, doc );
+
   return true;
 }
 
@@ -914,6 +917,9 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
 
   //data defined properties
   QgsComposerUtils::readDataDefinedPropertyMap( compositionElem, &mDataDefinedNames, &mDataDefinedProperties );
+
+  //custom properties
+  mCustomProperties.readXml( compositionElem );
 
   updatePaperItems();
 
@@ -3034,6 +3040,26 @@ void QgsComposition::setDataDefinedProperty( const QgsComposerObject::DataDefine
     QgsDataDefined* dd = new QgsDataDefined( active, useExpression, expression, field );
     mDataDefinedProperties.insert( property, dd );
   }
+}
+
+void QgsComposition::setCustomProperty( const QString& key, const QVariant& value )
+{
+  mCustomProperties.setValue( key, value );
+}
+
+QVariant QgsComposition::customProperty( const QString& key, const QVariant& defaultValue ) const
+{
+  return mCustomProperties.value( key, defaultValue );
+}
+
+void QgsComposition::removeCustomProperty( const QString& key )
+{
+  mCustomProperties.remove( key );
+}
+
+QStringList QgsComposition::customProperties() const
+{
+  return mCustomProperties.keys();
 }
 
 bool QgsComposition::dataDefinedEvaluate( QgsComposerObject::DataDefinedProperty property, QVariant &expressionValue, QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties )

@@ -43,11 +43,14 @@ class TestQgsComposition : public QObject
     void itemsOnPage(); //test fetching matching items on a set page
     void shouldExportPage(); //test the shouldExportPage method
     void pageIsEmpty(); //test the pageIsEmpty method
+    void customProperties();
+    void writeRetrieveCustomProperties();
 
   private:
     QgsComposition *mComposition;
     QgsMapSettings *mMapSettings;
     QString mReport;
+
 };
 
 TestQgsComposition::TestQgsComposition()
@@ -252,6 +255,70 @@ void TestQgsComposition::pageIsEmpty()
   QCOMPARE( mComposition->pageIsEmpty( 1 ), true );
   QCOMPARE( mComposition->pageIsEmpty( 2 ), true );
   QCOMPARE( mComposition->pageIsEmpty( 3 ), true );
+}
+
+
+void TestQgsComposition::customProperties()
+{
+  QgsComposition* composition = new QgsComposition( *mMapSettings );
+
+  QCOMPARE( composition->customProperty( "noprop", "defaultval" ).toString(), QString( "defaultval" ) );
+  QVERIFY( composition->customProperties().isEmpty() );
+  composition->setCustomProperty( "testprop", "testval" );
+  QCOMPARE( composition->customProperty( "testprop", "defaultval" ).toString(), QString( "testval" ) );
+  QCOMPARE( composition->customProperties().length(), 1 );
+  QCOMPARE( composition->customProperties().at( 0 ), QString( "testprop" ) );
+
+  //test no crash
+  composition->removeCustomProperty( "badprop" );
+
+  composition->removeCustomProperty( "testprop" );
+  QVERIFY( composition->customProperties().isEmpty() );
+  QCOMPARE( composition->customProperty( "noprop", "defaultval" ).toString(), QString( "defaultval" ) );
+
+  composition->setCustomProperty( "testprop1", "testval1" );
+  composition->setCustomProperty( "testprop2", "testval2" );
+  QStringList keys = composition->customProperties();
+  QCOMPARE( keys.length(), 2 );
+  QVERIFY( keys.contains( "testprop1" ) );
+  QVERIFY( keys.contains( "testprop2" ) );
+
+  delete composition;
+}
+
+void TestQgsComposition::writeRetrieveCustomProperties()
+{
+  QgsComposition* composition = new QgsComposition( *mMapSettings );
+  composition->setCustomProperty( "testprop", "testval" );
+  composition->setCustomProperty( "testprop2", 5 );
+
+  //test writing composition with custom properties
+  QDomImplementation DomImplementation;
+  QDomDocumentType documentType =
+    DomImplementation.createDocumentType(
+      "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
+  QDomDocument doc( documentType );
+  QDomElement rootNode = doc.createElement( "qgis" );
+  QVERIFY( composition->writeXML( rootNode, doc ) );
+
+  //check if composition node was written
+  QDomNodeList evalNodeList = rootNode.elementsByTagName( "Composition" );
+  QCOMPARE( evalNodeList.count(), 1 );
+  QDomElement compositionElem = evalNodeList.at( 0 ).toElement();
+
+  //test reading node containing custom properties
+  QgsComposition* readComposition = new QgsComposition( *mMapSettings );
+  QVERIFY( readComposition->readXML( compositionElem, doc ) );
+
+  //test retrieved custom properties
+  QCOMPARE( readComposition->customProperties().length(), 2 );
+  QVERIFY( readComposition->customProperties().contains( QString( "testprop" ) ) );
+  QVERIFY( readComposition->customProperties().contains( QString( "testprop2" ) ) );
+  QCOMPARE( readComposition->customProperty( "testprop" ).toString(), QString( "testval" ) );
+  QCOMPARE( readComposition->customProperty( "testprop2" ).toInt(), 5 );
+
+  delete composition;
+  delete readComposition;
 }
 
 QTEST_MAIN( TestQgsComposition )

@@ -35,6 +35,7 @@
 #include "qgspaperitem.h"
 #include "qgscomposerobject.h"
 #include "qgscomposeritem.h"
+#include "qgsobjectcustomproperties.h"
 
 class QgisApp;
 class QgsComposerFrame;
@@ -666,6 +667,44 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     */
     QgsComposerModel * itemsModel() { return mItemsModel; }
 
+    /** Set a custom property for the composition.
+     * @param key property key. If a property with the same key already exists it will be overwritten.
+     * @param value property value
+     * @see customProperty()
+     * @see removeCustomProperty()
+     * @see customProperties()
+     * @note added in QGIS 2.12
+    */
+    void setCustomProperty( const QString &key, const QVariant &value );
+
+    /** Read a custom property from the composition.
+     * @param key property key
+     * @param defaultValue default value to return if property with matching key does not exist
+     * @returns value of matching property
+     * @see setCustomProperty()
+     * @see removeCustomProperty()
+     * @see customProperties()
+     * @note added in QGIS 2.12
+     */
+    QVariant customProperty( const QString &key, const QVariant &defaultValue = QVariant() ) const;
+
+    /** Remove a custom property from the composition.
+     * @param key property key
+     * @see setCustomProperty()
+     * @see customProperty()
+     * @see customProperties()
+     * @note added in QGIS 2.12
+     */
+    void removeCustomProperty( const QString &key );
+
+    /** Return list of keys stored in custom properties for composition.
+     * @see setCustomProperty()
+     * @see customProperty()
+     * @see removeCustomProperty()
+     * @note added in QGIS 2.12
+     */
+    QStringList customProperties() const;
+
   public slots:
     /** Casts object to the proper subclass type and calls corresponding itemAdded signal*/
     void sendItemAddedSignal( QgsComposerItem* item );
@@ -776,6 +815,8 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     QMap< QgsComposerObject::DataDefinedProperty, QString > mDataDefinedNames;
     /** Map of current data defined properties to QgsDataDefined for the composition*/
     QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* > mDataDefinedProperties;
+
+    QgsObjectCustomProperties mCustomProperties;
 
     QgsComposition(); //default constructor is forbidden
 
