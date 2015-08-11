@@ -1349,7 +1349,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * If you need only the count of committed features call this method on this layer's provider.
      */
     long featureCount() const;
->>>>>>> master
 
     /** Make layer read-only (editing disabled) or not
      *  @return false if the layer is in editing yet
