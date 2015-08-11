@@ -92,6 +92,10 @@ void QgsAbstractFeatureIterator::ref()
   if ( refs == 0 )
   {
     prepareSimplification( mRequest.simplifyMethod() );
+    if (mRequest.hasOrderBy())
+    {
+        prepareOrderBy( mRequest.orderBy());
+    }
   }
   refs++;
 }
@@ -101,6 +105,12 @@ void QgsAbstractFeatureIterator::deref()
   refs--;
   if ( !refs )
     delete this;
+}
+
+
+void QgsAbstractFeatureIterator::prepareOrderBy( const QStringList& orderByColumns )
+{
+    // FIXME log perhaps that nothing was done? 
 }
 
 bool QgsAbstractFeatureIterator::prepareSimplification( const QgsSimplifyMethod& simplifyMethod )
