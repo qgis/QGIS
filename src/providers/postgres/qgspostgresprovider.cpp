@@ -548,6 +548,16 @@ QString QgsPostgresUtils::whereClause( QgsFeatureIds featureIds, const QgsFields
   return whereClauses.isEmpty() ? "" : whereClauses.join( " OR " ).prepend( "(" ).append( ")" );
 }
 
+QString QgsPostgresUtils::andWhereClauses( const QString& c1, const QString& c2 )
+{
+  if ( c1.isEmpty() )
+    return c2;
+  if ( c2.isEmpty() )
+    return c1;
+
+  return QString( "(%1) AND (%2)" ).arg( c1 ).arg( c2 );
+}
+
 QString QgsPostgresProvider::filterWhereClause() const
 {
   QString where;
@@ -2487,8 +2497,8 @@ QgsRectangle QgsPostgresProvider::extent()
             sql = QString( "SELECT %1(%2,%3,%4)" )
                   .arg( connectionRO()->majorVersion() < 2 ? "estimated_extent" :
                         ( connectionRO()->majorVersion() == 2 && connectionRO()->minorVersion() < 1 ? "st_estimated_extent" : "st_estimatedextent" ) )
-                  .arg( quotedValue( quotedIdentifier( mSchemaName ) ) )
-                  .arg( quotedValue( quotedIdentifier( mTableName ) ) )
+                  .arg( quotedValue( mSchemaName ) )
+                  .arg( quotedValue( mTableName ) )
                   .arg( quotedValue( mGeometryColumn ) );
             result = mConnectionRO->PQexec( sql );
             if ( result.PQresultStatus() == PGRES_TUPLES_OK && result.PQntuples() == 1 && !result.PQgetisnull( 0, 0 ) )
@@ -2660,8 +2670,6 @@ bool QgsPostgresProvider::getGeometryDetails()
     {
       detectedType = result.PQgetvalue( 0, 0 );
       detectedSrid = result.PQgetvalue( 0, 1 );
-      if ( result.PQgetvalue( 0, 2 ).toInt() == 4 )
-        mForce2d = true;
       mSpatialColType = sctGeometry;
     }
     else
@@ -2878,7 +2886,7 @@ bool QgsPostgresProvider::getGeometryDetails()
     // explicitly disable adding new features and editing of geometries
     // as this would lead to corruption of measures
     QgsMessageLog::logMessage( tr( "Editing and adding disabled for 2D+ layer (%1; %2)" ).arg( mGeometryColumn ).arg( mQuery ) );
-    mEnabledCapabilities &= ~( QgsVectorDataProvider::ChangeGeometries | QgsVectorDataProvider::AddFeatures );
+    mEnabledCapabilities &= ~( QgsVectorDataProvider::AddFeatures );
   }
 
   QgsDebugMsg( QString( "Feature type name is %1" ).arg( QGis::featureType( geometryType() ) ) );

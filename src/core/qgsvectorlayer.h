@@ -62,6 +62,7 @@ class QgsSymbolV2;
 class QgsVectorDataProvider;
 class QgsVectorLayerEditBuffer;
 class QgsVectorLayerJoinBuffer;
+class QgsPointV2;
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
@@ -961,7 +962,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     const QgsDiagramLayerSettings *diagramLayerSettings() const { return mDiagramLayerSettings; }
 
     /** Return renderer V2. */
-    QgsFeatureRendererV2* rendererV2();
+    QgsFeatureRendererV2* rendererV2() { return mRendererV2; }
+
+    /** Return const renderer V2. */
+    const QgsFeatureRendererV2* rendererV2() const { return mRendererV2; }
+
     /** Set renderer V2. */
     void setRendererV2( QgsFeatureRendererV2* r );
 
@@ -1066,15 +1071,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     bool readSld( const QDomNode& node, QString& errorMessage ) override;
 
     /**
-     * Number of features in the layer. This is necessary if features are
-     * added/deleted or the layer has been subsetted. If the data provider
-     * chooses not to support this feature, the total number of features
-     * can be returned.
-     * @return long containing number of features
-     */
-    virtual long featureCount() const;
-
-    /**
      * Number of features rendered with specified symbol. Features must be first
      * calculated by countSymbolFeatures()
      * @param symbol the symbol
@@ -1147,6 +1143,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *  to the given coordinates
      */
     bool moveVertex( double x, double y, QgsFeatureId atFeatureId, int atVertex );
+
+    /** Moves the vertex at the given position number,
+     *  ring and item (first number is index 0), and feature
+     *  to the given coordinates
+     */
+    bool moveVertex( const QgsPointV2& p, QgsFeatureId atFeatureId, int atVertex );
 
     /** Deletes a vertex from a feature
      */
@@ -1295,27 +1297,71 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     */
     Q_DECL_DEPRECATED void drawLabels( QgsRenderContext& rendererContext ) override;
 
-    /** Return the extent of the layer as a QRect */
+    /** Return the extent of the layer */
     QgsRectangle extent() override;
 
-    /** Returns field list in the to-be-committed state */
-    const QgsFields &pendingFields() const;
+    /**
+     * Returns the list of fields of this layer.
+     * This also includes fields which have not yet been saved to the provider.
+     *
+     * @return A list of fields
+     */
+    inline QgsFields fields() const { return mUpdatedFields; }
 
-    /** Returns list of attributes */
-    QgsAttributeList pendingAllAttributesList();
+    /**
+     * Returns the list of fields of this layer.
+     * This also includes fields which have not yet been saved to the provider.
+     * Alias for {@link fields()}
+     *
+     * @return A list of fields
+     */
+    inline QgsFields pendingFields() const { return mUpdatedFields; }
 
-    /** Returns list of attribute making up the primary key */
-    QgsAttributeList pendingPkAttributesList();
+    /**
+     * Returns list of attribute indexes. i.e. a list from 0 ... fieldCount()
+     * Alias for {@link attributeList()}
+     */
+    inline QgsAttributeList pendingAllAttributesList() const { return mUpdatedFields.allAttributesList(); }
 
-    /** Returns feature count after commit */
-    int pendingFeatureCount();
+    /**
+     * Returns list of attribute indexes. i.e. a list from 0 ... fieldCount()
+     * Alias for {@link attributeList()}
+     */
+    inline QgsAttributeList attributeList() const { return mUpdatedFields.allAttributesList(); }
+
+    /**
+     * Returns list of attributes making up the primary key
+     * Alias for {@link pkAttributeList()}
+     */
+    inline QgsAttributeList pendingPkAttributesList() const { return pkAttributeList(); }
+
+    /** Returns list of attributes making up the primary key */
+    QgsAttributeList pkAttributeList() const;
+
+    /**
+     * Returns feature count including changes which have not yet been committed
+     * Alias for {@link featureCount()}
+     */
+    inline long pendingFeatureCount() const { return featureCount(); }
+
+    /**
+     * Returns feature count including changes which have not yet been committed
+     * If you need only the count of committed features call this method on this layer's provider.
+     */
+    long featureCount() const;
+>>>>>>> master
 
     /** Make layer read-only (editing disabled) or not
      *  @return false if the layer is in editing yet
      */
     bool setReadOnly( bool readonly = true );
 
-    /** Make layer editable */
+    /**
+     * Make layer editable.
+     * This starts an edit session on this layer. Changes made in this edit session will not
+     * be made persistent until {@link commitChanges()} is called and can be reverted by calling
+     * {@link rollBack()}.
+     */
     bool startEditing();
 
     /** Change feature's geometry */

@@ -121,6 +121,11 @@ void QgsWebViewWidgetWrapper::initWidget( QWidget* editor )
   }
 }
 
+bool QgsWebViewWidgetWrapper::valid()
+{
+  return mWebView || mButton || mLineEdit;
+}
+
 void QgsWebViewWidgetWrapper::setValue( const QVariant& value )
 {
   if ( mLineEdit )

@@ -70,8 +70,8 @@ class Ogr2OgrTableToPostGisList(OgrAlgorithm):
         return settings.childGroups()
 
     def defineCharacteristics(self):
-        self.name = 'Import layer/table as geometryless table into PostgreSQL database'
-        self.group = '[OGR] Miscellaneous'
+        self.name, self.i18n_name = self.trAlgorithm('Import layer/table as geometryless table into PostgreSQL database')
+        self.group, self.i18n_group = self.trAlgorithm('[OGR] Miscellaneous')
         self.DB_CONNECTIONS = self.dbConnectionNames()
         self.addParameter(ParameterSelection(self.DATABASE,
             self.tr('Database (connection name)'), self.DB_CONNECTIONS))
@@ -193,6 +193,6 @@ class Ogr2OgrTableToPostGisList(OgrAlgorithm):
             commands = ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]
 
         return commands
-    
+
     def commandName(self):
         return "ogr2ogr"

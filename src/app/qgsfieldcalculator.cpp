@@ -152,7 +152,7 @@ void QgsFieldCalculator::accept()
   QgsExpression exp( calcString );
   exp.setGeomCalculator( myDa );
 
-  if ( ! exp.prepare( mVectorLayer->pendingFields() ) )
+  if ( ! exp.prepare( mVectorLayer->fields() ) )
   {
     QMessageBox::critical( 0, tr( "Evaluation error" ), exp.evalErrorString() );
     return;
@@ -198,7 +198,7 @@ void QgsFieldCalculator::accept()
       }
 
       //get index of the new field
-      const QgsFields& fields = mVectorLayer->pendingFields();
+      const QgsFields& fields = mVectorLayer->fields();
 
       for ( int idx = 0; idx < fields.count(); ++idx )
       {
@@ -209,7 +209,7 @@ void QgsFieldCalculator::accept()
         }
       }
 
-      if ( ! exp.prepare( mVectorLayer->pendingFields() ) )
+      if ( ! exp.prepare( mVectorLayer->fields() ) )
       {
         QApplication::restoreOverrideCursor();
         QMessageBox::critical( 0, tr( "Evaluation error" ), exp.evalErrorString() );
@@ -235,7 +235,7 @@ void QgsFieldCalculator::accept()
     bool useGeometry = exp.needsGeometry();
     int rownum = 1;
 
-    const QgsField& field = mVectorLayer->pendingFields()[mAttributeId];
+    QgsField field = mVectorLayer->fields()[mAttributeId];
 
     bool newField = !mUpdateExistingGroupBox->isChecked();
     QVariant emptyAttribute;
@@ -400,7 +400,7 @@ void QgsFieldCalculator::populateFields()
   if ( !mVectorLayer )
     return;
 
-  const QgsFields& fields = mVectorLayer->pendingFields();
+  const QgsFields& fields = mVectorLayer->fields();
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
 

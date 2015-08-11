@@ -1,5 +1,5 @@
 i.atcorr
-i.atcorr - Performs atmospheric correction using the 6S algorithm.
+Performs atmospheric correction using the 6S algorithm.
 Imagery (i.*)
 ParameterRaster|iimg|Name of input raster map|False
 ParameterBoolean|-a|Input from ETM+ image taken after July 1, 2000|False

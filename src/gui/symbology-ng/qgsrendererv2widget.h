@@ -94,6 +94,7 @@ class QgsFields;
 
 /**
 Utility class for providing GUI for data-defined rendering.
+@deprecated unused, will be removed in QGIS 3.0
 */
 class QgsRendererV2DataDefinedMenus : public QObject
 {
@@ -101,7 +102,7 @@ class QgsRendererV2DataDefinedMenus : public QObject
 
   public:
 
-    QgsRendererV2DataDefinedMenus( QMenu* menu, QgsVectorLayer* layer, QString rotationField, QString sizeScaleField, QgsSymbolV2::ScaleMethod scaleMethod );
+    Q_DECL_DEPRECATED QgsRendererV2DataDefinedMenus( QMenu* menu, QgsVectorLayer* layer, QString rotationField, QString sizeScaleField, QgsSymbolV2::ScaleMethod scaleMethod );
     ~QgsRendererV2DataDefinedMenus();
 
     void populateMenu( QMenu* menu, QString fieldName, QActionGroup *actionGroup );

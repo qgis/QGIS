@@ -20,7 +20,7 @@ class QgsComposerView : QGraphicsView
 
   public:
 
-    /**Current tool*/
+    /** Current tool*/
     enum Tool
     {
       Select,          // Select/Move item
@@ -63,63 +63,63 @@ class QgsComposerView : QGraphicsView
 
     QgsComposerView( QWidget* parent /TransferThis/ = 0, const char* name = 0, Qt::WindowFlags f = 0 );
 
-    /**Add an item group containing the selected items*/
+    /** Add an item group containing the selected items*/
     void groupItems();
 
-    /**Ungroups the selected items*/
+    /** Ungroups the selected items*/
     void ungroupItems();
 
-    /**Cuts or copies the selected items*/
+    /** Cuts or copies the selected items*/
     void copyItems( ClipboardMode mode );
 
-    /**Pastes items from clipboard*/
+    /** Pastes items from clipboard*/
     void pasteItems( PasteMode mode );
 
-    /**Deletes selected items*/
+    /** Deletes selected items*/
     void deleteSelectedItems();
 
-    /**Selects all items*/
+    /** Selects all items*/
     void selectAll();
 
-    /**Deselects all items*/
+    /** Deselects all items*/
     void selectNone();
 
-    /**Inverts current selection*/
+    /** Inverts current selection*/
     void selectInvert();
 
     QgsComposerView::Tool currentTool() const;
     void setCurrentTool( QgsComposerView::Tool t );
 
-    /**Sets the composition for the view. If the composition is being set manually and not by a QgsComposer, then this must
+    /** Sets the composition for the view. If the composition is being set manually and not by a QgsComposer, then this must
      * be set BEFORE adding any items to the composition.
     */
     void setComposition( QgsComposition* c /KeepReference/ );
 
-    /**Returns the composition or 0 in case of error*/
+    /** Returns the composition or 0 in case of error*/
     QgsComposition* composition();
 
-    /**Returns the composer main window*/
+    /** Returns the composer main window*/
     QMainWindow* composerWindow();
 
     void setPaintingEnabled( bool enabled );
     bool paintingEnabled() const;
 
-    /**Update rulers with current scene rect*/
+    /** Update rulers with current scene rect*/
     void updateRulers();
 
     void setHorizontalRuler( QgsComposerRuler* r );
     void setVerticalRuler( QgsComposerRuler* r );
 
-    /**Set zoom level, where a zoom level of 1.0 corresponds to 100%*/
+    /** Set zoom level, where a zoom level of 1.0 corresponds to 100%*/
     void setZoomLevel( double zoomLevel );
 
-    /**Sets whether a preview effect should be used to alter the view's appearance
+    /** Sets whether a preview effect should be used to alter the view's appearance
      * @param enabled Set to true to enable the preview effect on the view
      * @note added in 2.3
      * @see setPreviewMode
     */
     void setPreviewModeEnabled( bool enabled );
-    /**Sets the preview mode which should be used to modify the view's appearance. Preview modes are only used
+    /** Sets the preview mode which should be used to modify the view's appearance. Preview modes are only used
      * if setPreviewMode is set to true.
      * @param mode PreviewMode to be used to draw the view
      * @note added in 2.3
@@ -146,23 +146,23 @@ class QgsComposerView : QGraphicsView
     void resizeEvent( QResizeEvent* event );
     void scrollContentsBy( int dx, int dy );
   signals:
-    /**Is emitted when selected item changed. If 0, no item is selected*/
+    /** Is emitted when selected item changed. If 0, no item is selected*/
     void selectedItemChanged( QgsComposerItem* selected );
-    /**Is emitted when a composer item has been removed from the scene*/
+    /** Is emitted when a composer item has been removed from the scene*/
     void itemRemoved( QgsComposerItem* );
-    /**Current action (e.g. adding composer map) has been finished. The purpose of this signal is that
+    /** Current action (e.g. adding composer map) has been finished. The purpose of this signal is that
      QgsComposer may set the selection tool again*/
     void actionFinished();
-    /**Is emitted when mouse cursor coordinates change*/
+    /** Is emitted when mouse cursor coordinates change*/
     void cursorPosChanged( QPointF );
-    /**Is emitted when the view zoom changes*/
+    /** Is emitted when the view zoom changes*/
     void zoomLevelChanged();
 
-    /**Emitted before composerview is shown*/
+    /** Emitted before composerview is shown*/
     void composerViewShow( QgsComposerView* );
-    /**Emitted before composerview is hidden*/
+    /** Emitted before composerview is hidden*/
     void composerViewHide( QgsComposerView* );
 
-    /**Emitted when the composition is set for the view*/
+    /** Emitted when the composition is set for the view*/
     void compositionSet( QgsComposition* );
 };

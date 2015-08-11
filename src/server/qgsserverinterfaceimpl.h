@@ -45,13 +45,16 @@ class QgsServerInterfaceImpl : public QgsServerInterface
     ~QgsServerInterfaceImpl();
 
     void setRequestHandler( QgsRequestHandler* requestHandler ) override;
+    void clearRequestHandler( ) override;
     QgsCapabilitiesCache* capabiblitiesCache() override { return mCapabilitiesCache; }
+    //! Return the QgsRequestHandler, to be used only in server plugins
     QgsRequestHandler*  requestHandler( ) override { return mRequestHandler; }
     void registerFilter( QgsServerFilter *filter, int priority = 0 ) override;
     QgsServerFiltersMap filters( ) override { return mFilters; }
     QString getEnv( const QString& name ) const override;
     QString configFilePath( ) override { return mConfigFilePath; }
     void setConfigFilePath( QString configFilePath ) override;
+    void setFilters( QgsServerFiltersMap *filters ) override;
 
   private:
 

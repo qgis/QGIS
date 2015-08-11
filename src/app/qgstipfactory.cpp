@@ -196,7 +196,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
   myTip.setTitle( tr( "Add an action to layer" ) );
   myTip.setContent( tr( "Action in a layer allow user to trigger action when clicking on a geometry"
                         " with 'Run Feature Action' tools."
-                        "For example, you can open an html page using the field value of the geometry "
+                        "For example, you can open a HTML page using the field value of the geometry "
                         "as a parameter. Look at the <a href=\"http://docs.qgis.org/latest/en/docs/user_manual/working_with_vector/vector_properties.html?#actions-menu\">documentation</a>."
                       ) );
   addGuiTip( myTip );

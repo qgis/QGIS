@@ -115,6 +115,7 @@ column_ref_quoted  "\""{col_str_char}*"\""
 dig         [0-9]
 num_int     {dig}+
 num_float   {dig}*(\.{dig}+([eE][-+]?{dig}+)?|[eE][-+]?{dig}+)
+boolean     "TRUE"|"FALSE"
 
 str_char    ('')|(\\.)|[^'\\]
 string      "'"{str_char}*"'"
@@ -187,6 +188,8 @@ string      "'"{str_char}*"'"
 
 	return Unknown_CHARACTER;
 }
+
+{boolean} { yylval->boolVal = QString( yytext ).compare( "true", Qt::CaseInsensitive ) == 0; return BOOLEAN; }
 
 {string}  { TEXT_FILTER(stripText); return STRING; }
 

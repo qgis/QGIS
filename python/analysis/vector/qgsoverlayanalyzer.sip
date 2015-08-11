@@ -11,7 +11,7 @@ class QgsOverlayAnalyzer
 
   public:
 
-    /**Perform an intersection on two input vector layers and write output to a new shape file
+    /** Perform an intersection on two input vector layers and write output to a new shape file
       @param layerA input vector layer
       @param layerB input vector layer
       @param shapefileName path to the output shp

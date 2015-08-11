@@ -17,6 +17,7 @@ class QgsSymbolV2LevelItem
     int layer();
 };
 
+
 // every level has list of items: symbol + symbol layer num
 // typedef QList< QgsSymbolV2LevelItem > QgsSymbolV2Level;
 
@@ -60,7 +61,7 @@ class QgsFeatureRendererV2
 
     QString type() const;
 
-    /** to be overridden
+    /** To be overridden
      * @param feature feature
      * @return returns pointer to symbol or 0 if symbol was not found
      */
@@ -80,6 +81,8 @@ class QgsFeatureRendererV2
     virtual void startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer ) /Deprecated/;
 
     virtual void stopRender( QgsRenderContext& context ) = 0;
+
+    virtual QString filter();
 
     virtual QList<QString> usedAttributes() = 0;
 
@@ -123,7 +126,7 @@ class QgsFeatureRendererV2
     //! @note added in 2.8
     virtual QDomElement writeSld( QDomDocument& doc, const QString& styleName ) const;
 
-    /** create a new renderer according to the information contained in
+    /** Create a new renderer according to the information contained in
      * the UserStyle element of a SLD style document
      * @param node the node in the SLD document whose the UserStyle element
      * is a child
@@ -170,9 +173,9 @@ class QgsFeatureRendererV2
     void setVertexMarkerAppearance( int type, int size );
 
     //! return rotation field name (or empty string if not set or not supported by renderer)
-    virtual QString rotationField() const;
+    virtual QString rotationField() const /Deprecated/;
     //! sets rotation field of renderer (if supported by the renderer)
-    virtual void setRotationField( QString fieldName );
+    virtual void setRotationField( QString fieldName ) /Deprecated/;
 
     //! return whether the renderer will render a feature or not.
     //! Must be called between startRender() and stopRender() calls.
@@ -189,7 +192,7 @@ class QgsFeatureRendererV2
     //! @note added in 2.6
     virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat );
 
-    /**Allows for a renderer to modify the extent of a feature request prior to rendering
+    /** Allows for a renderer to modify the extent of a feature request prior to rendering
      * @param extent reference to request's filter extent. Modify extent to change the
      * extent of feature request
      * @param context render context
@@ -210,6 +213,21 @@ class QgsFeatureRendererV2
      * @see paintEffect
      */
     void setPaintEffect( QgsPaintEffect* effect /Transfer/);
+
+    /** Returns whether the renderer must render as a raster.
+     * @note added in QGIS 2.12
+     * @see setForceRasterRender
+     */
+    bool forceRasterRender() const;
+
+    /** Sets whether the renderer should be rendered to a raster destination.
+     * @param forceRaster set to true if renderer must be drawn on a raster surface.
+     * This may be desirable for highly detailed layers where rendering as a vector
+     * would result in a large, complex vector output.
+     * @see forceRasterRender
+     * @note added in QGIS 2.12
+     */
+    void setForceRasterRender( bool forceRaster );
 
   protected:
     QgsFeatureRendererV2( QString type );

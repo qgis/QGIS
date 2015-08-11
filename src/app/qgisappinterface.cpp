@@ -311,6 +311,11 @@ QgsMapCanvas * QgisAppInterface::mapCanvas()
   return qgis->mapCanvas();
 }
 
+QgsLayerTreeMapCanvasBridge* QgisAppInterface::layerTreeCanvasBridge()
+{
+  return qgis->layerTreeCanvasBridge();
+}
+
 QWidget * QgisAppInterface::mainWindow()
 {
   return qgis;

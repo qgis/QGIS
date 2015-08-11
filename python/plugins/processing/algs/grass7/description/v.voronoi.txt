@@ -1,5 +1,5 @@
 v.voronoi
-v.voronoi - Creates a Voronoi diagram from an input vector layer containing points.
+Creates a Voronoi diagram from an input vector layer containing points.
 Vector (v.*)
 ParameterVector|input|Input points layer|0|False
 ParameterBoolean|-l|Output tessellation as a graph (lines), not areas|False

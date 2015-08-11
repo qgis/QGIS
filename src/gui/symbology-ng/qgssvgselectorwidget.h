@@ -37,6 +37,8 @@ class QTreeView;
 
 class GUI_EXPORT QgsSvgSelectorListModel : public QAbstractListModel
 {
+    Q_OBJECT
+
   public:
     QgsSvgSelectorListModel( QObject* parent );
 
@@ -53,6 +55,8 @@ class GUI_EXPORT QgsSvgSelectorListModel : public QAbstractListModel
 
 class GUI_EXPORT QgsSvgSelectorGroupsModel : public QStandardItemModel
 {
+    Q_OBJECT
+
   public:
     QgsSvgSelectorGroupsModel( QObject* parent );
 

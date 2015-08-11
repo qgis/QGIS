@@ -35,8 +35,8 @@ class lasindex(LAStoolsAlgorithm):
     APPEND_LAX = "APPEND_LAX"
 
     def defineCharacteristics(self):
-        self.name = "lasindex"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('lasindex')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterBoolean(lasindex.APPEND_LAX,

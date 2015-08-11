@@ -291,13 +291,13 @@ QgsVectorColorRampV2* QgsVectorRandomColorRampV2::create( const QgsStringMap& pr
 double QgsVectorRandomColorRampV2::value( int index ) const
 {
   if ( mColors.size() < 1 ) return 0;
-  return index / mColors.size() - 1;
+  return ( double )index / ( mColors.size() - 1 );
 }
 
 QColor QgsVectorRandomColorRampV2::color( double value ) const
 {
   int colorCnt = mColors.count();
-  int colorIdx = ( int )( value * colorCnt );
+  int colorIdx = ( int )( value * ( colorCnt - 1 ) );
 
   if ( colorIdx >= 0 && colorIdx < colorCnt )
     return mColors.at( colorIdx );
@@ -348,7 +348,7 @@ QList<QColor> QgsVectorRandomColorRampV2::randomColors( int count,
     currentHueAngle += 137.50776;
     //scale hue to between hueMax and hueMin
     h = qBound( 0, qRound(( fmod( currentHueAngle, 360.0 ) / 360.0 ) * ( safeHueMax - safeHueMin ) + safeHueMin ), 359 );
-    s = qBound( 0, ( qrand() % ( safeSatMax - safeSatMin + 1 ) ) + safeValMax, 255 );
+    s = qBound( 0, ( qrand() % ( safeSatMax - safeSatMin + 1 ) ) + safeSatMin, 255 );
     v = qBound( 0, ( qrand() % ( safeValMax - safeValMin + 1 ) ) + safeValMin, 255 );
     colors.append( QColor::fromHsv( h, s, v ) );
   }
@@ -374,7 +374,7 @@ QgsRandomColorsV2::~QgsRandomColorsV2()
 
 int QgsRandomColorsV2::count() const
 {
-  return INT_MAX;
+  return -1;
 }
 
 double QgsRandomColorsV2::value( int index ) const
@@ -397,7 +397,7 @@ QColor QgsRandomColorsV2::color( double value ) const
   }
 
   //can't use precalculated hues, use a totally random hue
-  int h = 1 + ( int )( 360.0 * qrand() / ( RAND_MAX + 1.0 ) );
+  int h = ( int )( 360.0 * qrand() / ( RAND_MAX + 1.0 ) );
   int s = ( qrand() % ( DEFAULT_RANDOM_SAT_MAX - DEFAULT_RANDOM_SAT_MIN + 1 ) ) + DEFAULT_RANDOM_SAT_MIN;
   int v = ( qrand() % ( maxVal - minVal + 1 ) ) + minVal;
   return QColor::fromHsv( h, s, v );
@@ -489,13 +489,13 @@ QList<int> QgsVectorColorBrewerColorRampV2::listSchemeVariants( QString schemeNa
 double QgsVectorColorBrewerColorRampV2::value( int index ) const
 {
   if ( mPalette.size() < 1 ) return 0;
-  return index / mPalette.size() - 1;
+  return ( double )index / ( mPalette.size() - 1 );
 }
 
 QColor QgsVectorColorBrewerColorRampV2::color( double value ) const
 {
   if ( mPalette.isEmpty() || value < 0 || value > 1 )
-    return QColor( 255, 0, 0 ); // red color as a warning :)
+    return QColor();
 
   int paletteEntry = ( int )( value * mPalette.count() );
   if ( paletteEntry >= mPalette.count() )

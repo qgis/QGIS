@@ -53,6 +53,11 @@ void QgsCheckboxWidgetWrapper::initWidget( QWidget* editor )
     connect( mGroupBox, SIGNAL( toggled( bool ) ), this, SLOT( valueChanged( bool ) ) );
 }
 
+bool QgsCheckboxWidgetWrapper::valid()
+{
+  return mCheckBox || mGroupBox;
+}
+
 void QgsCheckboxWidgetWrapper::setValue( const QVariant& value )
 {
   if ( mGroupBox )

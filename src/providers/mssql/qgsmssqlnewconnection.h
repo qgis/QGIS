@@ -20,7 +20,7 @@
 #include "qgisgui.h"
 #include "qgscontexthelp.h"
 
-/*! \class QgsMssqlNewConnection
+/** \class QgsMssqlNewConnection
  * \brief Dialog to allow the user to configure and save connection
  * information for an MSSQL database
  */

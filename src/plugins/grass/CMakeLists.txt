@@ -25,6 +25,7 @@ SET (GRASS_PLUGIN_SRCS
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrasstools.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmapcalc.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmodule.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmoduleoptions.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassnewmapset.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassattributes.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassregion.cpp
@@ -51,6 +52,7 @@ SET (GRASS_PLUGIN_MOC_HDRS
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrasstools.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmapcalc.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmodule.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmoduleoptions.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassnewmapset.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassattributes.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassregion.h
@@ -126,6 +128,7 @@ INCLUDE_DIRECTORIES(
   ${GDAL_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
+  ${POSTGRES_INCLUDE_DIR}
   qtermwidget
 )
 
@@ -195,7 +198,7 @@ INSTALL (FILES ${GMLS}
 INSTALL (FILES themes/default/grass_arrow.svg themes/default/grass_plus.svg themes/default/grass_arrow.png themes/default/grass_plus.png
          DESTINATION ${QGIS_DATA_DIR}/grass/modules)
 
-FOREACH(GRASS_BUILD_VERSION 6) # GRASS 6, but not yet GRASS 7
+FOREACH(GRASS_BUILD_VERSION 6 7) # GRASS 6 and GRASS 7
   IF(GRASS_FOUND${GRASS_BUILD_VERSION})
     ADD_SUBDIRECTORY(${GRASS_BUILD_VERSION})
   ENDIF(GRASS_FOUND${GRASS_BUILD_VERSION})

@@ -258,7 +258,7 @@ void QgsExpressionBuilderWidget::loadFieldNames()
   if ( !mLayer )
     return;
 
-  loadFieldNames( mLayer->pendingFields() );
+  loadFieldNames( mLayer->fields() );
 }
 
 void QgsExpressionBuilderWidget::loadFieldNames( const QgsFields& fields )
@@ -500,7 +500,7 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
 
     if ( mFeature.isValid() )
     {
-      QVariant value = exp.evaluate( &mFeature, mLayer->pendingFields() );
+      QVariant value = exp.evaluate( &mFeature, mLayer->fields() );
       if ( !exp.hasEvalError() )
         lblPreview->setText( formatPreviewString( value.toString() ) );
     }

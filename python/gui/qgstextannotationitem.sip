@@ -7,9 +7,9 @@ class QgsTextAnnotationItem: QgsAnnotationItem
     QgsTextAnnotationItem( QgsMapCanvas* canvas /TransferThis/ );
     ~QgsTextAnnotationItem();
 
-    /**Returns document (caller takes ownership)*/
+    /** Returns document (caller takes ownership)*/
     QTextDocument* document() const /Factory/;
-    /**Sets document (does not take ownership)*/
+    /** Sets document (does not take ownership)*/
     void setDocument( const QTextDocument* doc );
 
     void writeXML( QDomDocument& doc ) const;

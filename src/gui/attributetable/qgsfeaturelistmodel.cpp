@@ -73,7 +73,7 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
 
     mFilterModel->layerCache()->featureAtId( idxToFid( index ), feat );
 
-    const QgsFields fields = mFilterModel->layer()->pendingFields();
+    const QgsFields fields = mFilterModel->layer()->fields();
 
     return mExpression->evaluate( &feat, fields );
   }

@@ -335,12 +335,19 @@ void TestQgsGrassProvider::region()
   reportHeader( "TestQgsGrassProvider::region" );
   struct Cell_head window;
   struct Cell_head windowCopy;
-  bool ok = QgsGrass::region( mGisdbase, mLocation, "PERMANENT", &window );
-  if ( !ok )
+  bool ok = true;
+  try
   {
-    reportRow( "QgsGrass::region() failed" );
+    QgsGrass::region( mGisdbase, mLocation, "PERMANENT", &window );
   }
-  else
+  catch ( QgsGrass::Exception &e )
+  {
+    Q_UNUSED( e );
+    reportRow( "QgsGrass::region() failed" );
+    ok = false;
+  }
+
+  if ( ok )
   {
     QString expectedRegion = "proj:3;zone:0;north:90N;south:90S;east:180E;west:180W;cols:1000;rows:500;e-w resol:0:21:36;n-s resol:0:21:36;";
     QString region = QgsGrass::regionString( &window );

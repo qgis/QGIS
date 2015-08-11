@@ -25,18 +25,18 @@ namespace pal
   {
     public:
       /** Increase candidate's cost according to its collision with passed feature */
-      static void addObstacleCostPenalty( LabelPosition* lp, PointSet* feat );
+      static void addObstacleCostPenalty( LabelPosition* lp, pal::FeaturePart *obstacle );
 
-      static void setPolygonCandidatesCost( int nblp, LabelPosition **lPos, int max_p, RTree<PointSet*, double, 2, double> *obstacles, double bbx[4], double bby[4] );
+      static void setPolygonCandidatesCost( int nblp, LabelPosition **lPos, int max_p, RTree<pal::FeaturePart*, double, 2, double> *obstacles, double bbx[4], double bby[4] );
 
       /** Set cost to the smallest distance between lPos's centroid and a polygon stored in geoetry field */
-      static void setCandidateCostFromPolygon( LabelPosition* lp, RTree <PointSet*, double, 2, double> *obstacles, double bbx[4], double bby[4] );
+      static void setCandidateCostFromPolygon( LabelPosition* lp, RTree<pal::FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] );
 
       /** Sort candidates by costs, skip the worse ones, evaluate polygon candidates */
-      static int finalizeCandidatesCosts( Feats* feat, int max_p, RTree <PointSet*, double, 2, double> *obstacles, double bbx[4], double bby[4] );
+      static int finalizeCandidatesCosts( Feats* feat, int max_p, RTree<pal::FeaturePart *, double, 2, double> *obstacles, double bbx[4], double bby[4] );
   };
 
-  /** 
+  /**
    * \brief Data structure to compute polygon's candidates costs
    *
    *  eight segment from center of candidat to (rpx,rpy) points (0°, 45°, 90°, ..., 315°)
@@ -49,7 +49,7 @@ namespace pal
     public:
       PolygonCostCalculator( LabelPosition *lp );
 
-      void update( PointSet *pset );
+      void update( pal::PointSet *pset );
 
       double getCost();
 

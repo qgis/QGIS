@@ -149,7 +149,7 @@ QString QgsAttributeAction::expandAction( QString action, const QgsAttributeMap 
   else
     expanded_action = action;
 
-  const QgsFields &fields = mLayer->pendingFields();
+  const QgsFields &fields = mLayer->fields();
 
   for ( int i = 0; i < 4; i++ )
   {
@@ -215,7 +215,7 @@ QString QgsAttributeAction::expandAction( QString action, QgsFeature &feat, cons
       continue;
     }
 
-    QVariant result = exp.evaluate( &feat, mLayer->pendingFields() );
+    QVariant result = exp.evaluate( &feat, mLayer->fields() );
     if ( exp.hasEvalError() )
     {
       QgsDebugMsg( "Expression parser eval error: " + exp.evalErrorString() );

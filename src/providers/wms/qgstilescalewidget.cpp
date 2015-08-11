@@ -139,7 +139,7 @@ void QgsTileScaleWidget::showTileScale( QMainWindow *mainWindow )
   }
 
   //create the dock widget
-  dock = new QDockWidget( tr( "Tile scale" ), mainWindow );
+  dock = new QDockWidget( tr( "Tile Scale Panel" ), mainWindow );
   dock->setObjectName( "theTileScaleDock" );
   dock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   mainWindow->addDockWidget( Qt::RightDockWidgetArea, dock );

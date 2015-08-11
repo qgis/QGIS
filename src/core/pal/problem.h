@@ -30,9 +30,9 @@
 #ifndef _PROBLEM_H
 #define _PROBLEM_H
 
-#include <list>
 #include "pal.h"
 #include "rtree.hpp"
+#include <list>
 
 namespace pal
 {
@@ -195,11 +195,6 @@ namespace pal
        * Map extent (xmin, ymin, xmax, ymax)
        */
       double bbox[4];
-
-      /**
-       * map scale is 1:scale
-       */
-      double scale;
 
       double *labelPositionCost;
       int *nbOlap;

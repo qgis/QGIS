@@ -41,8 +41,8 @@ class pct2rgb(GdalAlgorithm):
     NBAND = 'NBAND'
 
     def defineCharacteristics(self):
-        self.name = 'PCT to RGB'
-        self.group = '[GDAL] Conversion'
+        self.name, self.i18n_name = self.trAlgorithm('PCT to RGB')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Conversion')
         self.addParameter(ParameterRaster(pct2rgb.INPUT,
             self.tr('Input layer'), False))
         options = []

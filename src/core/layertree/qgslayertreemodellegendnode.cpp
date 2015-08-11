@@ -413,8 +413,8 @@ void QgsSymbolV2LegendNode::updateLabel()
       layerName = mLayerNode->customProperty( "legend/title-label" ).toString();
 
     mLabel = mUserLabel.isEmpty() ? layerName : mUserLabel;
-    if ( showFeatureCount && vl && vl->pendingFeatureCount() >= 0 )
-      mLabel += QString( " [%1]" ).arg( vl->pendingFeatureCount() );
+    if ( showFeatureCount && vl && vl->featureCount() >= 0 )
+      mLabel += QString( " [%1]" ).arg( vl->featureCount() );
   }
   else
   {

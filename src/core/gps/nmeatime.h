@@ -24,7 +24,7 @@
  *
  */
 
-/*! \file */
+/** \file */
 
 #ifndef __NMEA_TIME_H__
 #define __NMEA_TIME_H__

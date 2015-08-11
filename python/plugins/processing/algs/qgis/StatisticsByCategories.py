@@ -41,8 +41,8 @@ class StatisticsByCategories(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Statistics by categories'
-        self.group = 'Vector table tools'
+        self.name, self.i18n_name = self.trAlgorithm('Statistics by categories')
+        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
             self.tr('Input vector layer'), [ParameterVector.VECTOR_TYPE_ANY], False))

@@ -39,7 +39,7 @@ class QgsAction
     bool runable() const;
 };
 
-/*! \class QgsAttributeAction
+/** \class QgsAttributeAction
  * \brief Storage and management of actions associated with Qgis layer
  * attributes.
  */
@@ -75,7 +75,7 @@ class QgsAttributeAction
     //! Remove an action at given index
     void removeAction( int index );
 
-    /*! Does the given values. defaultValueIndex is the index of the
+    /** Does the given values. defaultValueIndex is the index of the
      *  field to be used if the action has a $currfield placeholder.
      *  @note available in python bindings as doActionFeature
      */
@@ -83,7 +83,7 @@ class QgsAttributeAction
                    const QgsFeature &feat,
                    int defaultValueIndex = 0 ) /PyName=doActionFeature/;
 
-    /*! Does the action using the expression builder to expand it
+    /** Does the action using the expression builder to expand it
      *  and getting values from the passed feature attribute map.
      *  substitutionMap is used to pass custom substitutions, to replace
      *  each key in the map with the associated value
@@ -102,12 +102,12 @@ class QgsAttributeAction
     //! Return the layer
     QgsVectorLayer *layer();
 
-    /*! Expands the given action, replacing all %'s with the value as
+    /** Expands the given action, replacing all %'s with the value as
      *  given.
      */
     QString expandAction( QString action, const QMap<int, QVariant> &attributes, uint defaultValueIndex );
 
-    /*! Expands the given action using the expression builder
+    /** Expands the given action using the expression builder
      *  This function currently replaces each expression between [% and %]
      *  placeholders in the action with the result of its evaluation on
      *  the feature passed as argument.

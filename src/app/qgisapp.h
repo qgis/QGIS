@@ -116,7 +116,7 @@ class QgsTileScaleWidget;
 #include <windows.h>
 #endif
 
-/*! \class QgisApp
+/** \class QgisApp
  * \brief Main window for the Qgis application
  */
 class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
@@ -142,14 +142,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     bool addVectorLayers( const QStringList &theLayerQStringList, const QString &enc, const QString &dataSourceType );
 
-    /** overloaded vesion of the private addRasterLayer()
+    /** Overloaded vesion of the private addRasterLayer()
       Method that takes a list of file names instead of prompting
       user with a dialog.
       @returns true if successfully added layer(s)
       */
     bool addRasterLayers( const QStringList &theLayerQStringList, bool guiWarning = true );
 
-    /** open a raster layer for the given file
+    /** Open a raster layer for the given file
       @returns false if unable to open a raster layer for rasterFile
       @note
       This is essentially a simplified version of the above
@@ -181,7 +181,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void openProject( const QString & fileName );
 
     void openLayerDefinition( const QString & filename );
-    /** opens a qgis project file
+    /** Opens a qgis project file
       @returns false if unable to open the project
       */
     bool addProject( QString projectFile );
@@ -246,7 +246,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * windows which are hidden rather than deleted when closed. */
     void removeWindow( QAction *action );
 
-    /**Returns the print composers*/
+    /** Returns the print composers*/
     QSet<QgsComposer*> printComposers() const {return mPrintComposers;}
     /** Get a unique title from user for new and duplicate composers
      * @param acceptEmpty whether to accept empty titles (one will be generated)
@@ -254,15 +254,15 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * @return QString::null if user cancels input dialog
      */
     QString uniqueComposerTitle( QWidget *parent, bool acceptEmpty, const QString& currentTitle = QString( "" ) );
-    /**Creates a new composer and returns a pointer to it*/
+    /** Creates a new composer and returns a pointer to it*/
     QgsComposer* createNewComposer( QString title = QString( "" ) );
-    /**Deletes a composer and removes entry from Set*/
+    /** Deletes a composer and removes entry from Set*/
     void deleteComposer( QgsComposer *c );
     /** Duplicates a composer and adds it to Set
      */
     QgsComposer *duplicateComposer( QgsComposer *currentComposer, QString title = QString( "" ) );
 
-    /** overloaded function used to sort menu entries alphabetically */
+    /** Overloaded function used to sort menu entries alphabetically */
     QMenu* createPopupMenu() override;
 
     /**
@@ -594,7 +594,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void loadOGRSublayers( QString layertype, QString uri, QStringList list );
     void loadGDALSublayers( QString uri, QStringList list );
 
-    /**Deletes the selected attributes for the currently selected vector layer*/
+    /** Deletes the selected attributes for the currently selected vector layer*/
     void deleteSelected( QgsMapLayer *layer = 0, QWidget *parent = 0, bool promptConfirmation = false );
 
     //! project was written
@@ -724,15 +724,15 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Assign layer CRS to project
     void setProjectCRSFromLayer();
 
-    /**Zooms so that the pixels of the raster layer occupies exactly one screen pixel.
+    /** Zooms so that the pixels of the raster layer occupies exactly one screen pixel.
         Only works on raster layers*/
     void legendLayerZoomNative();
 
-    /**Stretches the raster layer, if stretching is active, based on the min and max of the current extent.
+    /** Stretches the raster layer, if stretching is active, based on the min and max of the current extent.
         Only workds on raster layers*/
     void legendLayerStretchUsingCurrentExtent();
 
-    /**Set the CRS of the current legend group*/
+    /** Set the CRS of the current legend group*/
     void legendGroupSetCRS();
 
     //! zoom to extent of layer
@@ -743,7 +743,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * (stretch based on pixel values in view extent).
      * Valid for non wms raster layers only. */
     void localHistogramStretch();
-    /** perform a full histogram stretch on the active raster layer
+    /** Perform a full histogram stretch on the active raster layer
      * (stretch based on pixels values in full dataset)
      * Valid for non wms raster layers only. */
     void fullHistogramStretch();
@@ -1162,7 +1162,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void writeAnnotationItemsToProject( QDomDocument& doc );
 
-    /**Creates the composer instances in a project file and adds them to the menu*/
+    /** Creates the composer instances in a project file and adds them to the menu*/
     bool loadComposersFromProject( const QDomDocument& doc );
 
     /** Slot to handle display of composers menu, e.g. sorting */
@@ -1234,18 +1234,18 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void showStatisticsDockWidget();
 
   signals:
-    /** emitted when a key is pressed and we want non widget sublasses to be able
+    /** Emitted when a key is pressed and we want non widget sublasses to be able
       to pick up on this (e.g. maplayer) */
     void keyPressed( QKeyEvent *e );
 
-    /** emitted when a project file is successfully read
+    /** Emitted when a project file is successfully read
       @note
       This is useful for plug-ins that store properties with project files.  A
       plug-in can connect to this signal.  When it is emitted, the plug-in
       knows to then check the project properties for any relevant state.
       */
     void projectRead();
-    /** emitted when starting an entirely new project
+    /** Emitted when starting an entirely new project
       @note
       This is similar to projectRead(); plug-ins might want to be notified
       that they're in a new project.  Yes, projectRead() could have been
@@ -1259,24 +1259,24 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * can change there tool button icons. */
     void currentThemeChanged( QString );
 
-    /**This signal is emitted when a new composer instance has been created
+    /** This signal is emitted when a new composer instance has been created
        */
     void composerAdded( QgsComposerView* v );
 
-    /**This signal is emitted before a new composer instance is going to be removed
+    /** This signal is emitted before a new composer instance is going to be removed
       */
     void composerWillBeRemoved( QgsComposerView* v );
 
-    /**This signal is emitted when a composer instance has been removed
+    /** This signal is emitted when a composer instance has been removed
        @note added in version 2.3*/
     void composerRemoved( QgsComposerView* v );
 
-    /**This signal is emitted when QGIS' initialization is complete */
+    /** This signal is emitted when QGIS' initialization is complete */
     void initializationCompleted();
 
     void customSrsValidation( QgsCoordinateReferenceSystem &crs );
 
-    /**This signal is emitted when a layer has been saved using save as
+    /** This signal is emitted when a layer has been saved using save as
        @note added in version 2.7
     */
     void layerSavedAs( QgsMapLayer* l, QString path );
@@ -1305,7 +1305,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
                                            const QString & providerKey, bool guiWarning,
                                            bool guiUpdate );
 
-    /** add this file to the recently opened/saved projects list
+    /** Add this file to the recently opened/saved projects list
      *  pass settings by reference since creating more than one
      * instance simultaneously results in data loss.
      */
@@ -1322,7 +1322,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
       @return 0 in case of error or if canceled */
     QgsGeometry* unionGeometries( const QgsVectorLayer* vl, QgsFeatureList& featureList, bool &canceled );
 
-    /**Deletes all the composer objects and clears mPrintComposers*/
+    /** Deletes all the composer objects and clears mPrintComposers*/
     void deletePrintComposers();
 
     void saveAsVectorFileGeneral( QgsVectorLayer* vlayer = 0, bool symbologyOption = true );
@@ -1333,9 +1333,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     QgsVectorLayer * pasteToNewMemoryVector();
 
-    /**Returns all annotation items in the canvas*/
+    /** Returns all annotation items in the canvas*/
     QList<QgsAnnotationItem*> annotationItems();
-    /**Removes annotation items in the canvas*/
+    /** Removes annotation items in the canvas*/
     void removeAnnotationItems();
 
     //! Configure layer tree view according to the user options from QSettings
@@ -1361,10 +1361,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void updateCRSStatusBar();
     void createDecorations();
 
-    /**Do histogram stretch for singleband gray / multiband color rasters*/
+    /** Do histogram stretch for singleband gray / multiband color rasters*/
     void histogramStretch( bool visibleAreaOnly = false, QgsRaster::ContrastEnhancementLimits theLimits = QgsRaster::ContrastEnhancementMinMax );
 
-    /**Apply raster brightness */
+    /** Apply raster brightness */
     void adjustBrightnessContrast( int delta, bool updateBrightness = true );
 
     QgisAppStyleSheet *mStyleSheetBuilder;

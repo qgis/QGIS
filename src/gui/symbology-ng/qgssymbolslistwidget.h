@@ -69,7 +69,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     void updateSymbolInfo();
 
   private:
-    /**Displays alpha value as transparency in mTransparencyLabel*/
+    /** Displays alpha value as transparency in mTransparencyLabel*/
     void displayTransparency( double alpha );
     /** Recursive function to create the group tree in the widget */
     void populateGroups( QString parent = "", QString prepend = "" );

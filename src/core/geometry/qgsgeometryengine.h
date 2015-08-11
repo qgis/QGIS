@@ -24,7 +24,7 @@ email                : marco.hugentobler at sourcepole dot com
 class QgsAbstractGeometryV2;
 
 
-/**\ingroup core
+/** \ingroup core
  * \class QgsGeometryEngine
  * \brief Contains geometry relation and modification algorithms.
  * \note added in QGIS 2.10

@@ -22,7 +22,7 @@
 #include "qgswkbptr.h"
 #include <QPolygonF>
 
-/**\ingroup core
+/** \ingroup core
  * \class QgsLineStringV2
  * \brief Line string geometry type.
  * \note added in QGIS 2.10
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsLineStringV2: public QgsCurveV2
 
     void sumUpArea( double& sum ) const override;
 
-    /**Appends first point if not already closed*/
+    /** Appends first point if not already closed*/
     void close();
 
   private:

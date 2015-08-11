@@ -28,8 +28,6 @@
 #include <pal/problem.h>
 #include <pal/labelposition.h>
 
-#include <geos_c.h>
-
 #include <cmath>
 
 #include <QApplication>
@@ -81,7 +79,6 @@ QgsPalLayerSettings::QgsPalLayerSettings()
     : upsidedownLabels( Upright )
     , palLayer( NULL )
     , mCurFeat( 0 )
-    , mCurFields( 0 )
     , xform( NULL )
     , ct( NULL )
     , extentGeom( NULL )
@@ -91,6 +88,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
     , expression( 0 )
 {
   enabled = false;
+  drawLabels = true;
   isExpression = false;
   fieldIndex = 0;
 
@@ -167,9 +165,10 @@ QgsPalLayerSettings::QgsPalLayerSettings()
 
   // placement
   placement = AroundPoint;
-  placementFlags = 0;
+  placementFlags = AboveLine | MapOrientation;
   centroidWhole = false;
   centroidInside = false;
+  fitInPolygonOnly = false;
   quadOffset = QuadrantOver;
   xOffset = 0;
   yOffset = 0;
@@ -200,6 +199,8 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   limitNumLabels = false;
   maxNumLabels = 2000;
   obstacle = true;
+  obstacleFactor = 1.0;
+  obstacleType = PolygonInterior;
 
   // scale factors
   vectorScaleFactor = 1.0;
@@ -293,6 +294,8 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   mDataDefinedNames.insert( RepeatDistance, QPair<QString, int>( "RepeatDistance", -1 ) );
   mDataDefinedNames.insert( RepeatDistanceUnit, QPair<QString, int>( "RepeatDistanceUnit", -1 ) );
   mDataDefinedNames.insert( Priority, QPair<QString, int>( "Priority", -1 ) );
+  mDataDefinedNames.insert( IsObstacle, QPair<QString, int>( "IsObstacle", -1 ) );
+  mDataDefinedNames.insert( ObstacleFactor, QPair<QString, int>( "ObstacleFactor", -1 ) );
 
   // (data defined only)
   mDataDefinedNames.insert( PositionX, QPair<QString, int>( "PositionX", 9 ) );
@@ -319,7 +322,6 @@ QgsPalLayerSettings::QgsPalLayerSettings()
 QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
     : palLayer( NULL )
     , mCurFeat( NULL )
-    , mCurFields( NULL )
     , fieldIndex( 0 )
     , xform( NULL )
     , ct( NULL )
@@ -333,6 +335,7 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   // copy only permanent stuff
 
   enabled = s.enabled;
+  drawLabels = s.drawLabels;
 
   // text style
   fieldName = s.fieldName;
@@ -378,6 +381,7 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   placementFlags = s.placementFlags;
   centroidWhole = s.centroidWhole;
   centroidInside = s.centroidInside;
+  fitInPolygonOnly = s.fitInPolygonOnly;
   quadOffset = s.quadOffset;
   xOffset = s.xOffset;
   yOffset = s.yOffset;
@@ -411,6 +415,8 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   limitNumLabels = s.limitNumLabels;
   maxNumLabels = s.maxNumLabels;
   obstacle = s.obstacle;
+  obstacleFactor = s.obstacleFactor;
+  obstacleType = s.obstacleType;
 
   // shape background
   shapeDraw = s.shapeDraw;
@@ -717,6 +723,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   // NOTE: set defaults for newly added properties, for backwards compatibility
 
   enabled = layer->labelsEnabled();
+  drawLabels = layer->customProperty( "labeling/drawLabels", true ).toBool();
 
   // text style
   fieldName = layer->customProperty( "labeling/fieldName" ).toString();
@@ -860,6 +867,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   placementFlags = layer->customProperty( "labeling/placementFlags" ).toUInt();
   centroidWhole = layer->customProperty( "labeling/centroidWhole", QVariant( false ) ).toBool();
   centroidInside = layer->customProperty( "labeling/centroidInside", QVariant( false ) ).toBool();
+  fitInPolygonOnly = layer->customProperty( "labeling/fitInPolygonOnly", QVariant( false ) ).toBool();
   dist = layer->customProperty( "labeling/dist" ).toDouble();
   distInMapUnits = layer->customProperty( "labeling/distInMapUnits" ).toBool();
   distMapUnitScale.minScale = layer->customProperty( "labeling/distMapUnitMinScale", 0.0 ).toDouble();
@@ -917,6 +925,8 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   limitNumLabels = layer->customProperty( "labeling/limitNumLabels", QVariant( false ) ).toBool();
   maxNumLabels = layer->customProperty( "labeling/maxNumLabels", QVariant( 2000 ) ).toInt();
   obstacle = layer->customProperty( "labeling/obstacle", QVariant( true ) ).toBool();
+  obstacleFactor = layer->customProperty( "labeling/obstacleFactor", QVariant( 1.0 ) ).toDouble();
+  obstacleType = ( ObstacleType )layer->customProperty( "labeling/obstacleType", QVariant( PolygonInterior ) ).toUInt();
 
   readDataDefinedPropertyMap( layer, dataDefinedProperties );
 }
@@ -927,6 +937,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling", "pal" );
 
   layer->setCustomProperty( "labeling/enabled", enabled );
+  layer->setCustomProperty( "labeling/drawLabels", drawLabels );
 
   // text style
   layer->setCustomProperty( "labeling/fieldName", fieldName );
@@ -1031,6 +1042,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/placementFlags", ( unsigned int )placementFlags );
   layer->setCustomProperty( "labeling/centroidWhole", centroidWhole );
   layer->setCustomProperty( "labeling/centroidInside", centroidInside );
+  layer->setCustomProperty( "labeling/fitInPolygonOnly", fitInPolygonOnly );
   layer->setCustomProperty( "labeling/dist", dist );
   layer->setCustomProperty( "labeling/distInMapUnits", distInMapUnits );
   layer->setCustomProperty( "labeling/distMapUnitMinScale", distMapUnitScale.minScale );
@@ -1067,6 +1079,8 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/limitNumLabels", limitNumLabels );
   layer->setCustomProperty( "labeling/maxNumLabels", maxNumLabels );
   layer->setCustomProperty( "labeling/obstacle", obstacle );
+  layer->setCustomProperty( "labeling/obstacleFactor", obstacleFactor );
+  layer->setCustomProperty( "labeling/obstacleType", ( unsigned int )obstacleType );
 
   writeDataDefinedPropertyMap( layer, dataDefinedProperties );
 }
@@ -1083,9 +1097,9 @@ void QgsPalLayerSettings::setDataDefinedProperty( QgsPalLayerSettings::DataDefin
     {
       QgsDataDefined* dd = it.value();
       dd->setActive( active );
-      dd->setUseExpression( useExpr );
       dd->setExpressionString( expr );
       dd->setField( field );
+      dd->setUseExpression( useExpr );
     }
   }
   else if ( !defaultVals )
@@ -1205,7 +1219,7 @@ bool QgsPalLayerSettings::dataDefinedEvaluate( DataDefinedProperties p, QVariant
   // null passed-around QVariant
   exprVal.clear();
 
-  QVariant result = dataDefinedValue( p, *mCurFeat, *mCurFields );
+  QVariant result = dataDefinedValue( p, *mCurFeat, mCurFields );
 
   if ( result.isValid() && !result.isNull() )
   {
@@ -1301,13 +1315,13 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
   }
   else // called externally with passed-in feature, evaluate data defined
   {
-    QVariant exprVal = dataDefinedValue( QgsPalLayerSettings::MultiLineWrapChar, *f, *mCurFields );
+    QVariant exprVal = dataDefinedValue( QgsPalLayerSettings::MultiLineWrapChar, *f, mCurFields );
     if ( exprVal.isValid() )
     {
       wrapchr = exprVal.toString();
     }
     exprVal.clear();
-    exprVal = dataDefinedValue( QgsPalLayerSettings::MultiLineHeight, *f, *mCurFields );
+    exprVal = dataDefinedValue( QgsPalLayerSettings::MultiLineHeight, *f, mCurFields );
     if ( exprVal.isValid() )
     {
       bool ok;
@@ -1319,7 +1333,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
     }
 
     exprVal.clear();
-    exprVal = dataDefinedValue( QgsPalLayerSettings::DirSymbDraw, *f, *mCurFields );
+    exprVal = dataDefinedValue( QgsPalLayerSettings::DirSymbDraw, *f, mCurFields );
     if ( exprVal.isValid() )
     {
       addDirSymb = exprVal.toBool();
@@ -1328,19 +1342,19 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
     if ( addDirSymb ) // don't do extra evaluations if not adding a direction symbol
     {
       exprVal.clear();
-      exprVal = dataDefinedValue( QgsPalLayerSettings::DirSymbLeft, *f, *mCurFields );
+      exprVal = dataDefinedValue( QgsPalLayerSettings::DirSymbLeft, *f, mCurFields );
       if ( exprVal.isValid() )
       {
         leftDirSymb = exprVal.toString();
       }
       exprVal.clear();
-      exprVal = dataDefinedValue( QgsPalLayerSettings::DirSymbRight, *f, *mCurFields );
+      exprVal = dataDefinedValue( QgsPalLayerSettings::DirSymbRight, *f, mCurFields );
       if ( exprVal.isValid() )
       {
         rightDirSymb = exprVal.toString();
       }
       exprVal.clear();
-      exprVal = dataDefinedValue( QgsPalLayerSettings::DirSymbPlacement, *f, *mCurFields );
+      exprVal = dataDefinedValue( QgsPalLayerSettings::DirSymbPlacement, *f, mCurFields );
       if ( exprVal.isValid() )
       {
         bool ok;
@@ -1410,6 +1424,15 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
 
 void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext& context, QString dxfLayer )
 {
+  if ( !drawLabels )
+  {
+    if ( obstacle )
+    {
+      registerObstacleFeature( f, context, dxfLayer );
+    }
+    return;
+  }
+
   QVariant exprVal; // value() is repeatedly nulled on data defined evaluation and replaced when successful
   mCurFeat = &f;
 //  mCurFields = &layer->pendingFields();
@@ -1733,15 +1756,15 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
 
   const GEOSGeometry* geos_geom = 0;
   const QgsGeometry* preparedGeom = geom;
-  QScopedPointer<QgsGeometry> scpoedPreparedGeom;
+  QScopedPointer<QgsGeometry> scopedPreparedGeom;
 
   if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, doClip ? extentGeom : 0 ) )
   {
-    scpoedPreparedGeom.reset( QgsPalLabeling::prepareGeometry( geom, context, ct, doClip ? extentGeom : 0 ) );
-    if ( !scpoedPreparedGeom.data() )
+    scopedPreparedGeom.reset( QgsPalLabeling::prepareGeometry( geom, context, ct, doClip ? extentGeom : 0 ) );
+    if ( !scopedPreparedGeom.data() )
       return;
-    preparedGeom = scpoedPreparedGeom.data();
-    geos_geom = scpoedPreparedGeom.data()->asGeos();
+    preparedGeom = scopedPreparedGeom.data();
+    geos_geom = scopedPreparedGeom.data()->asGeos();
   }
   else
   {
@@ -1763,7 +1786,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     {
       return;
     }
-    mFeatsRegPal = palLayer->getNbFeatures();
+    mFeatsRegPal = palLayer->featureCount();
     if ( mFeatsRegPal >= maxNumLabels )
     {
       return;
@@ -2035,8 +2058,10 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
           t.rotate( -m2p.mapRotation() );
           t.translate( -center.x(), -center.y() );
           qreal xPosR, yPosR;
-          t.map( xPos, yPos, &xPosR, &yPosR );
+          qreal xPos_qreal = xPos, yPos_qreal = yPos;
+          t.map( xPos_qreal, yPos_qreal, &xPosR, &yPosR );
           xPos = xPosR; yPos = yPosR;
+
         }
 
         xPos += xdiff;
@@ -2188,6 +2213,26 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     }
   }
 
+  // data defined is obstacle?
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::IsObstacle, exprVal ) )
+  {
+    feat->setIsObstacle( exprVal.toBool() );
+  }
+
+  double featObstacleFactor = obstacleFactor;
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::ObstacleFactor, exprVal ) )
+  {
+    bool ok;
+    double factorD = exprVal.toDouble( &ok );
+    if ( ok )
+    {
+      factorD = qBound( 0.0, factorD, 10.0 );
+      factorD = factorD / 5.0 + 0.0001; // convert 0 -> 10 to 0.0001 -> 2.0
+      featObstacleFactor = factorD;
+    }
+  }
+  feat->setObstacleFactor( featObstacleFactor );
+
   //add parameters for data defined labeling to QgsPalGeometry
   QMap< DataDefinedProperties, QVariant >::const_iterator dIt = dataDefinedValues.constBegin();
   for ( ; dIt != dataDefinedValues.constEnd(); ++dIt )
@@ -2197,6 +2242,58 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
 
   // set geometry's pinned property
   lbl->setIsPinned( labelIsPinned );
+}
+
+void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, const QgsRenderContext& context, QString dxfLayer )
+{
+  mCurFeat = &f;
+
+  const QgsGeometry* geom = f.constGeometry();
+  if ( !geom )
+  {
+    return;
+  }
+
+  const GEOSGeometry* geos_geom = 0;
+  QScopedPointer<QgsGeometry> scopedPreparedGeom;
+
+  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, extentGeom ) )
+  {
+    scopedPreparedGeom.reset( QgsPalLabeling::prepareGeometry( geom, context, ct, extentGeom ) );
+    if ( !scopedPreparedGeom.data() )
+      return;
+    geos_geom = scopedPreparedGeom.data()->asGeos();
+  }
+  else
+  {
+    geos_geom = geom->asGeos();
+  }
+
+  if ( geos_geom == NULL )
+    return; // invalid geometry
+
+  GEOSGeometry* geos_geom_clone;
+  geos_geom_clone = GEOSGeom_clone_r( QgsGeometry::getGEOSHandler(), geos_geom );
+
+  QgsPalGeometry* lbl = new QgsPalGeometry( f.id(), QString(), geos_geom_clone );
+
+  lbl->setDxfLayer( dxfLayer );
+
+  // record the created geometry - it will be deleted at the end.
+  geometries.append( lbl );
+
+  //  feature to the layer
+  try
+  {
+    if ( !palLayer->registerFeature( lbl->strId(), lbl, 0, 0 ) )
+      return;
+  }
+  catch ( std::exception &e )
+  {
+    Q_UNUSED( e );
+    QgsDebugMsgLevel( QString( "Ignoring feature %1 due PAL exception:" ).arg( f.id() ) + QString::fromLatin1( e.what() ), 4 );
+    return;
+  }
 }
 
 bool QgsPalLayerSettings::dataDefinedValEval( const QString& valType,
@@ -3136,26 +3233,29 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames,
   QgsPalLayerSettings lyrTmp;
   lyrTmp.readFromLayer( layer );
 
-  if ( lyrTmp.fieldName.isEmpty() )
+  if ( lyrTmp.drawLabels )
   {
-    return 0;
-  }
-
-  if ( lyrTmp.isExpression )
-  {
-    QgsExpression exp( lyrTmp.fieldName );
-    if ( exp.hasEvalError() )
+    if ( lyrTmp.fieldName.isEmpty() )
     {
-      QgsDebugMsgLevel( "Prepare error:" + exp.evalErrorString(), 4 );
       return 0;
     }
-  }
-  else
-  {
-    // If we aren't an expression, we check to see if we can find the column.
-    if ( layer->fieldNameIndex( lyrTmp.fieldName ) == -1 )
+
+    if ( lyrTmp.isExpression )
     {
-      return 0;
+      QgsExpression exp( lyrTmp.fieldName );
+      if ( exp.hasEvalError() )
+      {
+        QgsDebugMsgLevel( "Prepare error:" + exp.evalErrorString(), 4 );
+        return 0;
+      }
+    }
+    else
+    {
+      // If we aren't an expression, we check to see if we can find the column.
+      if ( layer->fieldNameIndex( lyrTmp.fieldName ) == -1 )
+      {
+        return 0;
+      }
     }
   }
 
@@ -3164,54 +3264,57 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames,
   // start using the reference to the layer in hashtable instead of local instance
   QgsPalLayerSettings& lyr = mActiveLayers[layer->id()];
 
-  lyr.mCurFields = &( layer->pendingFields() );
+  lyr.mCurFields = layer->fields();
 
-  // add field indices for label's text, from expression or field
-  if ( lyr.isExpression )
+  if ( lyrTmp.drawLabels )
   {
-    // prepare expression for use in QgsPalLayerSettings::registerFeature()
-    QgsExpression* exp = lyr.getLabelExpression();
-    exp->prepare( layer->pendingFields() );
-    if ( exp->hasEvalError() )
+    // add field indices for label's text, from expression or field
+    if ( lyr.isExpression )
     {
-      QgsDebugMsgLevel( "Prepare error:" + exp->evalErrorString(), 4 );
+      // prepare expression for use in QgsPalLayerSettings::registerFeature()
+      QgsExpression* exp = lyr.getLabelExpression();
+      exp->prepare( layer->fields() );
+      if ( exp->hasEvalError() )
+      {
+        QgsDebugMsgLevel( "Prepare error:" + exp->evalErrorString(), 4 );
+      }
+      foreach ( QString name, exp->referencedColumns() )
+      {
+        QgsDebugMsgLevel( "REFERENCED COLUMN = " + name, 4 );
+        attrNames.append( name );
+      }
     }
-    foreach ( QString name, exp->referencedColumns() )
+    else
     {
-      QgsDebugMsgLevel( "REFERENCED COLUMN = " + name, 4 );
-      attrNames.append( name );
-    }
-  }
-  else
-  {
-    attrNames.append( lyr.fieldName );
-  }
-
-  // add field indices of data defined expression or field
-  QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::const_iterator dIt = lyr.dataDefinedProperties.constBegin();
-  for ( ; dIt != lyr.dataDefinedProperties.constEnd(); ++dIt )
-  {
-    QgsDataDefined* dd = dIt.value();
-    if ( !dd->isActive() )
-    {
-      continue;
+      attrNames.append( lyr.fieldName );
     }
 
-    // NOTE: the following also prepares any expressions for later use
-
-    // store parameters for data defined expressions
-    QMap<QString, QVariant> exprParams;
-    exprParams.insert( "scale", ctx.rendererScale() );
-
-    dd->setExpressionParams( exprParams );
-
-    // this will return columns for expressions or field name, depending upon what is set to be used
-    QStringList cols = dd->referencedColumns( layer ); // <-- prepares any expressions, too
-
-    //QgsDebugMsgLevel( QString( "Data defined referenced columns:" ) + cols.join( "," ), 4 );
-    foreach ( QString name, cols )
+    // add field indices of data defined expression or field
+    QMap< QgsPalLayerSettings::DataDefinedProperties, QgsDataDefined* >::const_iterator dIt = lyr.dataDefinedProperties.constBegin();
+    for ( ; dIt != lyr.dataDefinedProperties.constEnd(); ++dIt )
     {
-      attrNames.append( name );
+      QgsDataDefined* dd = dIt.value();
+      if ( !dd->isActive() )
+      {
+        continue;
+      }
+
+      // NOTE: the following also prepares any expressions for later use
+
+      // store parameters for data defined expressions
+      QMap<QString, QVariant> exprParams;
+      exprParams.insert( "scale", ctx.rendererScale() );
+
+      dd->setExpressionParams( exprParams );
+
+      // this will return columns for expressions or field name, depending upon what is set to be used
+      QStringList cols = dd->referencedColumns( layer ); // <-- prepares any expressions, too
+
+      //QgsDebugMsgLevel( QString( "Data defined referenced columns:" ) + cols.join( "," ), 4 );
+      foreach ( QString name, cols )
+      {
+        attrNames.append( name );
+      }
     }
   }
 
@@ -3230,22 +3333,14 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames,
 
   // create the pal layer
   double priority = 1 - lyr.priority / 10.0; // convert 0..10 --> 1..0
-  double min_scale = -1, max_scale = -1;
 
-  // handled in QgsPalLayerSettings::registerFeature now
-  //if ( lyr.scaleVisibility && !lyr.dataDefinedIsActive( QgsPalLayerSettings::ScaleVisibility ) )
-  //{
-  //  min_scale = lyr.scaleMin;
-  //  max_scale = lyr.scaleMax;
-  //}
-
-  Layer* l = mPal->addLayer( layer->id().toUtf8().data(),
-                             min_scale, max_scale, arrangement,
-                             METER, priority, lyr.obstacle, true, true,
+  Layer* l = mPal->addLayer( layer->id(),
+                             arrangement,
+                             priority, lyr.obstacle, true, lyr.drawLabels,
                              lyr.displayAll );
 
   if ( lyr.placementFlags )
-    l->setArrangementFlags( lyr.placementFlags );
+    l->setArrangementFlags(( LineArrangementFlags )lyr.placementFlags );
 
   // set label mode (label per feature is the default)
   l->setLabelMode( lyr.labelPerPart ? Layer::LabelPerFeaturePart : Layer::LabelPerFeature );
@@ -3253,9 +3348,22 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames,
   // set whether adjacent lines should be merged
   l->setMergeConnectedLines( lyr.mergeLines );
 
+  // set obstacle type
+  switch ( lyr.obstacleType )
+  {
+    case PolygonInterior:
+      l->setObstacleType( pal::PolygonInterior );
+      break;
+    case PolygonBoundary:
+      l->setObstacleType( pal::PolygonBoundary );
+      break;
+  }
 
   // set whether location of centroid must be inside of polygons
   l->setCentroidInside( lyr.centroidInside );
+
+  // set whether labels must fall completely within the polygon
+  l->setFitInPolygonOnly( lyr.fitInPolygonOnly );
 
   // set how to show upside-down labels
   Layer::UpsideDownLabels upsdnlabels;
@@ -3331,8 +3439,8 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames,
 int QgsPalLabeling::addDiagramLayer( QgsVectorLayer* layer, const QgsDiagramLayerSettings *s )
 {
   double priority = 1 - s->priority / 10.0; // convert 0..10 --> 1..0
-  Layer* l = mPal->addLayer( layer->id().append( "d" ).toUtf8().data(), -1, -1, pal::Arrangement( s->placement ), METER, priority, s->obstacle, true, true );
-  l->setArrangementFlags( s->placementFlags );
+  Layer* l = mPal->addLayer( layer->id().append( "d" ).toUtf8().data(), pal::Arrangement( s->placement ), priority, s->obstacle, true, true );
+  l->setArrangementFlags(( LineArrangementFlags )s->placementFlags );
 
   mActiveDiagramLayers.insert( layer->id(), *s );
   // initialize the local copy
@@ -3345,7 +3453,7 @@ int QgsPalLabeling::addDiagramLayer( QgsVectorLayer* layer, const QgsDiagramLaye
 
   s2.xform = &mMapSettings->mapToPixel();
 
-  s2.fields = layer->pendingFields();
+  s2.fields = layer->fields();
 
   s2.renderer = layer->diagramRenderer()->clone();
 
@@ -4069,14 +4177,13 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
   t.start();
 
   // do the labeling itself
-  double scale = mMapSettings->scale(); // scale denominator
   double bbox[] = { extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum() };
 
   std::list<LabelPosition*>* labels;
   pal::Problem *problem;
   try
   {
-    problem = mPal->extractProblem( scale, bbox );
+    problem = mPal->extractProblem( bbox );
   }
   catch ( std::exception& e )
   {
@@ -4109,7 +4216,6 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
   mCandidates.clear();
   if ( mShowingCandidates && problem )
   {
-    painter->setPen( QColor( 0, 0, 0, 64 ) );
     painter->setBrush( Qt::NoBrush );
     for ( int i = 0; i < problem->getNumFeatures(); i++ )
     {
@@ -4196,6 +4302,8 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
     }
 
     const QgsPalLayerSettings& lyr = layer( layerName );
+    if ( !lyr.drawLabels )
+      continue;
 
     // Copy to temp, editable layer settings
     // these settings will be changed by any data defined values, then used for rendering label components
@@ -4416,12 +4524,20 @@ void QgsPalLabeling::drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* p
   painter->rotate( -lp->getAlpha() * 180 / M_PI );
 #endif
 
+  if ( lp->conflictsWithObstacle() )
+  {
+    painter->setPen( QColor( 255, 0, 0, 64 ) );
+  }
+  else
+  {
+    painter->setPen( QColor( 0, 0, 0, 64 ) );
+  }
   painter->drawRect( rect );
   painter->restore();
 
   // save the rect
   rect.moveTo( outPt.x(), outPt.y() );
-  mCandidates.append( QgsLabelCandidate( rect, lp->getCost() * 1000 ) );
+  mCandidates.append( QgsLabelCandidate( rect, lp->cost() * 1000 ) );
 
   // show all parts of the multipart label
   if ( lp->getNextPart() )

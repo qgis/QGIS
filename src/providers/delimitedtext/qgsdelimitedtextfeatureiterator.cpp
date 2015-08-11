@@ -44,21 +44,8 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
   mTestGeometry = false;
 
   mMode = FileScan;
-  if ( request.filterType() == QgsFeatureRequest::FilterFid )
-  {
-    QgsDebugMsg( "Configuring for returning single id" );
-    mFeatureIds.append( request.filterFid() );
-    mMode = FeatureIds;
-    mTestSubset = false;
-  }
-  // If have geometry and testing geometry then evaluate options...
-  // If we don't have geometry then all records pass geometry filter.
-  // CC: 2013-05-09
-  // Not sure about intended relationship between filtering on geometry and
-  // requesting no geometry? Have preserved current logic of ignoring spatial filter
-  // if not requesting geometry.
 
-  else if ( request.filterType() == QgsFeatureRequest::FilterRect && hasGeometry )
+  if ( !request.filterRect().isNull() && hasGeometry )
   {
     QgsDebugMsg( "Configuring for rectangle select" );
     mTestGeometry = true;
@@ -98,13 +85,32 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
     }
   }
 
-  // If we have a subset index then use it..
-  if ( mMode == FileScan && mSource->mUseSubsetIndex )
+  if ( request.filterType() == QgsFeatureRequest::FilterFid )
   {
-    QgsDebugMsg( QString( "Layer has subset index - use %1 items from subset index" ).arg( mSource->mSubsetIndex.size() ) );
+    QgsDebugMsg( "Configuring for returning single id" );
+    if ( request.filterRect().isNull() || ( !request.filterRect().isNull() && mFeatureIds.contains( request.filterFid() ) ) )
+    {
+      mFeatureIds = QList<QgsFeatureId>() << request.filterFid();
+    }
+    mMode = FeatureIds;
     mTestSubset = false;
-    mMode = SubsetIndex;
   }
+  // If have geometry and testing geometry then evaluate options...
+  // If we don't have geometry then all records pass geometry filter.
+  // CC: 2013-05-09
+  // Not sure about intended relationship between filtering on geometry and
+  // requesting no geometry? Have preserved current logic of ignoring spatial filter
+  // if not requesting geometry.
+
+  else
+
+    // If we have a subset index then use it..
+    if ( mMode == FileScan && mSource->mUseSubsetIndex )
+    {
+      QgsDebugMsg( QString( "Layer has subset index - use %1 items from subset index" ).arg( mSource->mSubsetIndex.size() ) );
+      mTestSubset = false;
+      mMode = SubsetIndex;
+    }
 
   // Otherwise just have to scan the file
   if ( mMode == FileScan )

@@ -28,7 +28,7 @@ class QgsLayerItem;
 class QgsDataItem;
 class QgsBrowserTreeFilterProxyModel;
 
-/**A dock widget which displays a statistical summary of the values in a field or expression
+/** A dock widget which displays a statistical summary of the values in a field or expression
  */
 class APP_EXPORT QgsStatisticalSummaryDockWidget : public QDockWidget, private Ui::QgsStatisticalSummaryWidgetBase
 {
@@ -40,7 +40,7 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QDockWidget, private U
 
   public slots:
 
-    /**Recalculates the displayed statistics
+    /** Recalculates the displayed statistics
      */
     void refreshStatistics();
 

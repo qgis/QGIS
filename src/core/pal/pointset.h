@@ -30,14 +30,11 @@
 #ifndef _POINTSET_H
 #define _POINTSET_H
 
-#include <cfloat>
-
-#include <cmath>
-#include <stddef.h>
-#include <geos_c.h>
-#include <QLinkedList>
-
+#include "qgsgeometry.h"
 #include "rtree.hpp"
+#include <cfloat>
+#include <cmath>
+#include <QLinkedList>
 
 namespace pal
 {
@@ -46,18 +43,6 @@ namespace pal
   class Feature;
   class Projection;
   class LabelPosition;
-
-  typedef struct _cross
-  {
-    int pt;
-    double d;
-    double x;
-    double y;
-    int seg;        // seg{0,1,2,3}
-    int nextCorner; // pt{0,1,2,3}
-    int way;
-
-  } Crossing;
 
   class PointSet;
 
@@ -71,18 +56,6 @@ namespace pal
     double width;
     double length;
   } CHullBox;
-
-
-
-  inline bool ptrCrossingCompare( Crossing * a, Crossing * b )
-  {
-    return a == b;
-  }
-
-  inline bool crossingDist( void *a, void *b )
-  {
-    return (( Crossing* ) a )->d > (( Crossing* ) b )->d;
-  }
 
 
   class CORE_EXPORT PointSet
@@ -100,40 +73,42 @@ namespace pal
 
       PointSet* extractShape( int nbPtSh, int imin, int imax, int fps, int fpe, double fptx, double fpty );
 
-      PointSet* createProblemSpecificPointSet( double bbmin[2], double bbmax[2], bool *inside );
+      /** Tests whether point set contains a specified point.
+       * @param x x-coordinate of point
+       * @param y y-coordinate of point
+       * @returns true if point set contains a specified point
+       */
+      bool containsPoint( double x, double y ) const;
+
+      /** Tests whether a possible label candidate will fit completely within the shape.
+       * @param x x-coordinate of label candidate
+       * @param y y-coordinate of label candidate
+       * @param width label width
+       * @param height label height
+       * @param alpha label angle
+       * @returns true if point set completely contains candidate label
+       */
+      bool containsLabelCandidate( double x, double y, double width, double height, double alpha = 0 ) const;
 
       CHullBox * compute_chull_bbox();
 
-
-      /*
-       * split a concave shape into several convex shapes
-       *
+      /** Split a concave shape into several convex shapes.
        */
       static void splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
                                  QLinkedList<PointSet *> &shapes_final,
                                  double xrm, double yrm, const QString &uid );
 
-
-
-      /**
-       * \brief return the minimum distance bw this and the point (px,py)
-       *
-       * compute the minimum distance bw the point (px,py) and this.
-       * Optionnaly, store the nearest point in (rx,ry)
-       *
+      /** Returns the squared minimum distance between the point set geometry and the point (px,py)
+       * Optionally, the nearest point is stored in (rx,ry).
        * @param px x coordinate of the point
        * @param py y coordinate of the points
        * @param rx pointer to x coorinates of the nearest point (can be NULL)
        * @param ry pointer to y coorinates of the nearest point (can be NULL)
+       * @returns minimum distance
        */
-      double getDist( double px, double py, double *rx, double *ry );
+      double minDistanceToPoint( double px, double py, double *rx = 0, double *ry = 0 ) const;
 
-
-
-      //double getDistInside(double px, double py);
-
-      void getCentroid( double &px, double &py, bool forceInside = false );
-
+      void getCentroid( double &px, double &py, bool forceInside = false ) const;
 
       int getGeosType() const { return type; }
 
@@ -148,58 +123,25 @@ namespace pal
 
       int getNumPoints() const { return nbPoints; }
 
-      /*
-       * Iterate on line by real step of dl on x,y points
-       * @param nbPoint # point in line
-       * @param x x coord
-       * @param y y coord
-       * @param d ??
-       * @param ad distance from pt0 to each point (ad0 = pt0->pt0)
-       * @param dl ??
-       * @param px current x coord on line
-       * @param py current y coord on line
+      /** Get a point a set distance along a line geometry.
+       * @param distance distance to traverse along line
+       * @param px final x coord on line
+       * @param py final y coord on line
+      */
+      void getPointByDistance( double distance, double *px, double *py ) const;
+
+      /** Returns the point set's GEOS geometry.
+      */
+      const GEOSGeometry* geos() const;
+
+      /** Returns length of line geometry.
        */
-      inline void getPoint( double *d, double *ad, double dl,
-                            double *px, double *py )
-      {
-        int i;
-        double dx, dy, di;
-        double distr;
-
-        i = 0;
-        if ( dl >= 0 )
-        {
-          while ( i < nbPoints && ad[i] <= dl ) i++;
-          i--;
-        }
-
-        if ( i < nbPoints - 1 )
-        {
-          if ( dl < 0 )
-          {
-            dx = x[nbPoints-1] - x[0];
-            dy = y[nbPoints-1] - y[0];
-            di = sqrt( dx * dx + dy * dy );
-          }
-          else
-          {
-            dx = x[i+1] - x[i];
-            dy = y[i+1] - y[i];
-            di = d[i];
-          }
-
-          distr = dl - ad[i];
-          *px = x[i] + dx * distr / di;
-          *py = y[i] + dy * distr / di;
-        }
-        else    // just select last point...
-        {
-          *px = x[i];
-          *py = y[i];
-        }
-      }
+      double length() const;
 
     protected:
+      mutable GEOSGeometry *mGeos;
+      mutable bool mOwnsGeom;
+
       int nbPoints;
       double *x;
       double *y;   // points order is counterclockwise
@@ -214,14 +156,22 @@ namespace pal
 
       PointSet( double x, double y );
 
-      PointSet( PointSet &ps );
+      PointSet( const PointSet &ps );
 
       void deleteCoords();
+      void createGeosGeom() const;
+      const GEOSPreparedGeometry* preparedGeom() const;
+      void invalidateGeos();
 
       double xmin;
       double xmax;
       double ymin;
       double ymax;
+
+    private:
+
+      mutable const GEOSPreparedGeometry* mPreparedGeom;
+
   };
 
 } // namespace pal

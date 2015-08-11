@@ -36,7 +36,7 @@ QgsEditorWidgetWrapper* QgsValueRelationWidgetFactory::create( QgsVectorLayer* v
 
 QgsSearchWidgetWrapper *QgsValueRelationWidgetFactory::createSearchWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const
 {
-  return new QgsValueRelationSearchWidgetWrapper(vl, fieldIdx, parent);
+  return new QgsValueRelationSearchWidgetWrapper( vl, fieldIdx, parent );
 }
 
 QgsEditorConfigWidget* QgsValueRelationWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const

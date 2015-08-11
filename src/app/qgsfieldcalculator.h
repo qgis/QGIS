@@ -21,7 +21,7 @@
 
 class QgsVectorLayer;
 
-/**A dialog class that provides calculation of new fields using existing fields, values and a set of operators*/
+/** A dialog class that provides calculation of new fields using existing fields, values and a set of operators*/
 class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalculatorBase
 {
     Q_OBJECT
@@ -68,7 +68,7 @@ class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
                        mOutputFieldPrecisionSpinBox->value() );
     }
 
-    /**idx of changed attribute*/
+    /** Idx of changed attribute*/
     int mAttributeId;
 };
 

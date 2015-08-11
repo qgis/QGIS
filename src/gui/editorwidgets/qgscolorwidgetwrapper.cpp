@@ -46,6 +46,11 @@ void QgsColorWidgetWrapper::initWidget( QWidget* editor )
   connect( mColorButton, SIGNAL( colorChanged( QColor ) ), this, SLOT( valueChanged() ) );
 }
 
+bool QgsColorWidgetWrapper::valid()
+{
+  return mColorButton;
+}
+
 void QgsColorWidgetWrapper::setValue( const QVariant& value )
 {
   if ( mColorButton )

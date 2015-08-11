@@ -52,8 +52,8 @@ class Ogr2OgrDissolve(OgrAlgorithm):
     OPTIONS = 'OPTIONS'
 
     def defineCharacteristics(self):
-        self.name = 'Dissolve polygons'
-        self.group = '[OGR] Geoprocessing'
+        self.name, self.i18n_name = self.trAlgorithm('Dissolve polygons')
+        self.group, self.i18n_group = self.trAlgorithm('[OGR] Geoprocessing')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
             self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POLYGON], False))
@@ -138,6 +138,6 @@ class Ogr2OgrDissolve(OgrAlgorithm):
             commands = ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]
 
         return commands
-    
+
     def commandName(self):
         return "ogr2ogr"

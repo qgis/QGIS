@@ -43,8 +43,8 @@ class gdaltindex(GdalAlgorithm):
     PROJ_DIFFERENCE = 'PROJ_DIFFERENCE'
 
     def defineCharacteristics(self):
-        self.name = 'Tile Index'
-        self.group = '[GDAL] Miscellaneous'
+        self.name, self.i18n_name = self.trAlgorithm('Tile Index')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Miscellaneous')
         self.addParameter(ParameterMultipleInput(self.INPUT,
             self.tr('Input layers'), ParameterMultipleInput.TYPE_RASTER))
         self.addParameter(ParameterString(self.FIELD_NAME,

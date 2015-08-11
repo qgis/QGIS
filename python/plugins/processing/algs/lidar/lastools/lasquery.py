@@ -38,8 +38,8 @@ class lasquery(LAStoolsAlgorithm):
     AOI = "AOI"
 
     def defineCharacteristics(self):
-        self.name = "lasquery"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('lasquery')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParameter(ParameterExtent(self.AOI, self.tr('area of interest')))
         self.addParametersAdditionalGUI()

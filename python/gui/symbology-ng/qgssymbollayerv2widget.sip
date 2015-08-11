@@ -146,7 +146,6 @@ class QgsGradientFillSymbolLayerV2Widget : QgsSymbolLayerV2Widget
     void setColor( const QColor& color );
     void setColor2( const QColor& color );
     void applyColorRamp();
-    void on_mButtonEditRamp_clicked();
     void setGradientType( int index );
     void setCoordinateMode( int index );
     void setGradientSpread( int index );
@@ -182,7 +181,6 @@ class QgsShapeburstFillSymbolLayerV2Widget : QgsSymbolLayerV2Widget
     void on_mDistanceUnitWidget_changed();
     void on_mRadioUseWholeShape_toggled( bool value );
     void applyColorRamp();
-    void on_mButtonEditRamp_clicked();
     void offsetChanged();
     void on_mOffsetUnitWidget_changed();
     void on_mIgnoreRingsCheckBox_stateChanged( int state );
@@ -298,7 +296,7 @@ class QgsSVGFillSymbolLayerWidget : QgsSymbolLayerV2Widget
 
   protected:
     void insertIcons();
-    /**Enables or disables svg fill color, border color and border width based on whether the
+    /** Enables or disables svg fill color, border color and border width based on whether the
      * svg file supports custom parameters.
      * @param resetValues set to true to overwrite existing layer fill color, border color and border width
      * with default values from svg file

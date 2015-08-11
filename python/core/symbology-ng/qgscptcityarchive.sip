@@ -38,7 +38,7 @@ class QgsCptCityArchive
     QVector< QgsCptCityDataItem* > selectionItems() const;
 };
 
-/** base class for all items in the model */
+/** Base class for all items in the model */
 class QgsCptCityDataItem : QObject
 {
 %TypeHeaderCode

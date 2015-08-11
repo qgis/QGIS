@@ -73,7 +73,7 @@ void QgsExpressionSelectionDialog::on_mActionSelect_triggered()
   QgsFeatureIds newSelection;
   QgsExpression* expression = new QgsExpression( mExpressionBuilder->expressionText() );
 
-  const QgsFields fields = mLayer->pendingFields();
+  const QgsFields fields = mLayer->fields();
 
   QgsFeatureIterator features = mLayer->getFeatures();
 
@@ -101,7 +101,7 @@ void QgsExpressionSelectionDialog::on_mActionAddToSelection_triggered()
   QgsFeatureIds newSelection = mLayer->selectedFeaturesIds();
   QgsExpression* expression = new QgsExpression( mExpressionBuilder->expressionText() );
 
-  const QgsFields fields = mLayer->pendingFields();
+  const QgsFields fields = mLayer->fields();
 
   QgsFeatureIterator features = mLayer->getFeatures();
 
@@ -131,7 +131,7 @@ void QgsExpressionSelectionDialog::on_mActionSelectInstersect_triggered()
 
   QgsExpression* expression = new QgsExpression( mExpressionBuilder->expressionText() );
 
-  const QgsFields fields = mLayer->pendingFields();
+  const QgsFields fields = mLayer->fields();
 
   expression->prepare( fields );
 
@@ -168,7 +168,7 @@ void QgsExpressionSelectionDialog::on_mActionRemoveFromSelection_triggered()
 
   QgsExpression* expression = new QgsExpression( mExpressionBuilder->expressionText() );
 
-  const QgsFields fields = mLayer->pendingFields();
+  const QgsFields fields = mLayer->fields();
 
   expression->prepare( fields );
 

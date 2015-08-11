@@ -61,8 +61,8 @@ class gdaladdo(GdalAlgorithm):
         return "gdalogr:overviews"
 
     def defineCharacteristics(self):
-        self.name = 'Build overviews (pyramids)'
-        self.group = '[GDAL] Miscellaneous'
+        self.name, self.i18n_name = self.trAlgorithm('Build overviews (pyramids)')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Miscellaneous')
         self.addParameter(ParameterRaster(
             self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterString(self.LEVELS,

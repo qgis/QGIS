@@ -51,6 +51,7 @@ class ProviderTestCase(object):
         self.assert_query(provider, '"name" || \' \' || "cnt" = \'Orange 100\'', [1])
         self.assert_query(provider, 'cnt = 10 ^ 2', [1])
         self.assert_query(provider, '"name" ~ \'[OP]ra[gne]+\'', [1])
+        self.assert_query(provider, 'true', [1, 2, 3, 4, 5])
 
 
     def testGetFeaturesUncompiled(self):
@@ -71,6 +72,15 @@ class ProviderTestCase(object):
         extent = QgsRectangle(-70, 67, -60, 80)
         features = [f['pk'] for f in self.provider.getFeatures(QgsFeatureRequest().setFilterRect(extent))]
         assert set(features) == set([2L, 4L]), 'Got {} instead'.format(features)
+
+    def testRectAndExpression(self):
+        extent = QgsRectangle(-70, 67, -60, 80)
+        result = set([f['pk'] for f in self.provider.getFeatures(
+            QgsFeatureRequest()
+                .setFilterExpression('"cnt">200')
+                .setFilterRect(extent))])
+        expected=[4L]
+        assert set(expected) == result, 'Expected {} and got {} when testing for combination of filterRect and expression'.format(set(expected), result)
 
     def testMinValue(self):
         assert self.provider.minimumValue(1) == -200

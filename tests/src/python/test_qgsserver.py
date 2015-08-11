@@ -15,7 +15,7 @@ __revision__ = '$Format:%H$'
 import os
 import re
 import unittest
-import tempfile
+import urllib
 from qgis.server import QgsServer
 from qgis.core import QgsMessageLog
 from utilities import unitTestDataPath
@@ -95,16 +95,58 @@ class TestQgsServer(unittest.TestCase):
 
 
         serverIface = self.server.serverInterface()
-        serverIface.registerFilter(SimpleHelloFilter(serverIface), 100 )
+        filter = SimpleHelloFilter(serverIface)
+        serverIface.registerFilter(filter, 100 )
+        # Get registered filters
+        self.assertEqual(filter, serverIface.filters()[100][0])
+
+        # Register some more filters
+        class Filter1(QgsServerFilter):
+            def responseComplete(self):
+                request = self.serverInterface().requestHandler()
+                params = request.parameterMap()
+                if params.get('SERVICE', '').upper() == 'SIMPLE':
+                    request.appendBody('Hello from Filter1!')
+
+        class Filter2(QgsServerFilter):
+            def responseComplete(self):
+                request = self.serverInterface().requestHandler()
+                params = request.parameterMap()
+                if params.get('SERVICE', '').upper() == 'SIMPLE':
+                    request.appendBody('Hello from Filter2!')
+
+        filter1 = Filter1(serverIface)
+        filter2 = Filter2(serverIface)
+        serverIface.registerFilter(filter1, 101)
+        serverIface.registerFilter(filter2, 200 )
+        serverIface.registerFilter(filter2, 100 )
+        self.assertTrue(filter2 in serverIface.filters()[100])
+        self.assertEqual(filter1, serverIface.filters()[101][0])
+        self.assertEqual(filter2, serverIface.filters()[200][0])
         response = str(self.server.handleRequest('service=simple'))
-        expected = 'Content-type: text/plain\n\nHello from SimpleServer!'
+        expected = 'Content-type: text/plain\n\nHello from SimpleServer!Hello from Filter1!Hello from Filter2!'
         self.assertEqual(response, expected)
+
+        # Test that the bindings for complex type QgsServerFiltersMap are working
+        filters = { 100: [filter, filter2], 101: [filter1], 200: [filter2] }
+        serverIface.setFilters(filters)
+        self.assertTrue(filter in serverIface.filters()[100])
+        self.assertTrue(filter2 in serverIface.filters()[100])
+        self.assertEqual(filter1, serverIface.filters()[101][0])
+        self.assertEqual(filter2, serverIface.filters()[200][0])
+        response = str(self.server.handleRequest('service=simple'))
+        expected = 'Content-type: text/plain\n\nHello from SimpleServer!Hello from Filter1!Hello from Filter2!'
+        self.assertEqual(response, expected)
+
 
 
     ## WMS tests
     def wms_request_compare(self, request):
-        map = self.testdata_path + "testproject.qgs"
-        response = str(self.server.handleRequest('MAP=%s&SERVICE=WMS&VERSION=1.3&REQUEST=%s' % (map, request)))
+        project = self.testdata_path + "test+project.qgs"
+        assert os.path.exists(project), "Project file not found: " + project
+
+        query_string = 'MAP=%s&SERVICE=WMS&VERSION=1.3&REQUEST=%s' % (urllib.quote(project), request)
+        response = str(self.server.handleRequest(query_string))
         f = open(self.testdata_path + request.lower() + '.txt')
         expected = f.read()
         f.close()
@@ -119,7 +161,7 @@ class TestQgsServer(unittest.TestCase):
         """
         response = re.sub(RE_STRIP_PATH, '', response)
         expected = re.sub(RE_STRIP_PATH, '', expected)
-        self.assertEqual(response, expected, msg="request %s failed. Expected:\n%s\n\nResponse:\n%s" % (request, expected, response))
+        self.assertEqual(response, expected, msg="request %s failed.\n Query: %s\n Expected:\n%s\n\n Response:\n%s" % (query_string, request, expected, response))
 
 
     def test_project_wms(self):

@@ -70,8 +70,8 @@ void FieldSelectorDelegate::setEditorData( QWidget *editor, const QModelIndex &i
     return;
 
   int idx = m->attributeIndex( vl );
-  if ( vl->pendingFields().exists( idx ) )
-    fcb->setField( vl->pendingFields()[ idx ].name() );
+  if ( vl->fields().exists( idx ) )
+    fcb->setField( vl->fields()[ idx ].name() );
 }
 
 void FieldSelectorDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
@@ -130,6 +130,26 @@ QgsVectorLayer *QgsVectorLayerAndAttributeModel::vectorLayer( const QModelIndex 
 int QgsVectorLayerAndAttributeModel::attributeIndex( const QgsVectorLayer *vl ) const
 {
   return mAttributeIdx.value( vl, -1 );
+}
+
+QVariant QgsVectorLayerAndAttributeModel::headerData( int section, Qt::Orientation orientation, int role ) const
+{
+  if ( orientation == Qt::Horizontal )
+  {
+    if ( role == Qt::DisplayRole )
+    {
+      if ( section == 0 )
+        return tr( "Layer" );
+      else if ( section == 1 )
+        return tr( "Output layer attribute" );
+    }
+    else if ( role == Qt::ToolTipRole )
+    {
+      if ( section == 1 )
+        return tr( "Attribute containing the name of the destination layer in the DXF output." );
+    }
+  }
+  return QVariant();
 }
 
 QVariant QgsVectorLayerAndAttributeModel::data( const QModelIndex& idx, int role ) const
@@ -195,10 +215,15 @@ QVariant QgsVectorLayerAndAttributeModel::data( const QModelIndex& idx, int role
 
     if ( role == Qt::DisplayRole )
     {
-      if ( vl->pendingFields().exists( idx ) )
-        return vl->pendingFields()[ idx ].name();
+      if ( vl->fields().exists( idx ) )
+        return vl->fields()[ idx ].name();
       else
         return vl->name();
+    }
+
+    if ( role == Qt::ToolTipRole )
+    {
+      return tr( "Attribute containing the name of the destination layer in the DXF output." );
     }
   }
 
@@ -389,6 +414,7 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   model->setFlags( 0 );
   mTreeView->setModel( model );
   mTreeView->resizeColumnToContents( 0 );
+  mTreeView->header()->show();
 
   connect( mFileLineEdit, SIGNAL( textChanged( const QString& ) ), this, SLOT( setOkEnabled() ) );
   connect( this, SIGNAL( accepted() ), this, SLOT( saveSettings() ) );

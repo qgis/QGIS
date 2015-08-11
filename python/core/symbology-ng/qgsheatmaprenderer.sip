@@ -27,38 +27,38 @@ class QgsHeatmapRenderer : QgsFeatureRendererV2
 
     //heatmap specific methods
 
-    /**Returns the color ramp used for shading the heatmap.
+    /** Returns the color ramp used for shading the heatmap.
      * @returns color ramp for heatmap
      * @see setColorRamp
     */
     QgsVectorColorRampV2* colorRamp() const;
-    /**Sets the color ramp to use for shading the heatmap.
+    /** Sets the color ramp to use for shading the heatmap.
      * @param ramp color ramp for heatmap. Ownership of ramp is transferred to the renderer.
      * @see colorRamp
     */
     void setColorRamp( QgsVectorColorRampV2* ramp /Transfer/ );
 
-    /**Returns whether the ramp is inverted
+    /** Returns whether the ramp is inverted
      * @returns true if color ramp is inverted
      * @see setInvertRamp
      * @see colorRamp
     */
     double invertRamp() const;
-    /**Sets whether the ramp is inverted
+    /** Sets whether the ramp is inverted
      * @param invert set to true to invert color ramp
      * @see invertRamp
      * @see setColorRamp
     */
     void setInvertRamp( const bool invert );
 
-    /**Returns the radius for the heatmap
+    /** Returns the radius for the heatmap
      * @returns heatmap radius
      * @see setRadius
      * @see radiusUnit
      * @see radiusMapUnitScale
     */
     double radius() const;
-    /**Sets the radius for the heatmap
+    /** Sets the radius for the heatmap
      * @param radius heatmap radius
      * @see radius
      * @see setRadiusUnit
@@ -66,14 +66,14 @@ class QgsHeatmapRenderer : QgsFeatureRendererV2
     */
     void setRadius( const double radius );
 
-    /**Returns the units used for the heatmap's radius
+    /** Returns the units used for the heatmap's radius
      * @returns units for heatmap radius
      * @see radius
      * @see setRadiusUnit
      * @see radiusMapUnitScale
     */
     QgsSymbolV2::OutputUnit radiusUnit() const;
-    /**Sets the units used for the heatmap's radius
+    /** Sets the units used for the heatmap's radius
      * @param unit units for heatmap radius
      * @see radiusUnit
      * @see setRadius
@@ -81,14 +81,14 @@ class QgsHeatmapRenderer : QgsFeatureRendererV2
     */
     void setRadiusUnit( const QgsSymbolV2::OutputUnit unit );
 
-    /**Returns the map unit scale used for the heatmap's radius
+    /** Returns the map unit scale used for the heatmap's radius
      * @returns map unit scale for heatmap's radius
      * @see radius
      * @see radiusUnit
      * @see setRadiusMapUnitScale
     */
     const QgsMapUnitScale& radiusMapUnitScale() const;
-    /**Sets the map unit scale used for the heatmap's radius
+    /** Sets the map unit scale used for the heatmap's radius
      * @param scale map unit scale for heatmap's radius
      * @see setRadius
      * @see setRadiusUnit
@@ -96,39 +96,39 @@ class QgsHeatmapRenderer : QgsFeatureRendererV2
     */
     void setRadiusMapUnitScale( const QgsMapUnitScale& scale );
 
-    /**Returns the maximum value used for shading the heatmap.
+    /** Returns the maximum value used for shading the heatmap.
      * @returns maximum value for heatmap shading. If 0, then maximum value will be automatically
      * calculated.
      * @see setMaximumValue
     */
     double maximumValue() const;
-    /**Sets the maximum value used for shading the heatmap.
+    /** Sets the maximum value used for shading the heatmap.
      * @param value maximum value for heatmap shading. Set to 0 for automatic calculation of
      * maximum value.
      * @see maximumValue
     */
     void setMaximumValue( const double value );
 
-    /**Returns the render quality used for drawing the heatmap.
+    /** Returns the render quality used for drawing the heatmap.
      * @returns render quality. A value of 1 indicates maximum quality, and increasing the
      * value will result in faster drawing but lower quality rendering.
      * @see setRenderQuality
     */
     double renderQuality() const;
-    /**Sets the render quality used for drawing the heatmap.
+    /** Sets the render quality used for drawing the heatmap.
      * @param quality render quality. A value of 1 indicates maximum quality, and increasing the
      * value will result in faster drawing but lower quality rendering.
      * @see renderQuality
     */
     void setRenderQuality( const int quality );
 
-    /**Returns the expression used for weighting points when generating the heatmap.
+    /** Returns the expression used for weighting points when generating the heatmap.
      * @returns point weight expression. If empty, all points are equally weighted.
      * @see setWeightExpression
     */
     QString weightExpression() const;
 
-    /**Sets the expression used for weighting points when generating the heatmap.
+    /** Sets the expression used for weighting points when generating the heatmap.
      * @param expression point weight expression. If set to empty, all points are equally weighted.
      * @see weightExpression
     */

@@ -147,7 +147,7 @@ QgsProperty *findKey_( QString const &scope,
 
 
 
-/** add the given key and value
+/** Add the given key and value
 
 @param scope scope of key
 @param key key name
@@ -304,7 +304,7 @@ struct QgsProject::Imp
     properties_.name() = "properties"; // root property node always this value
   }
 
-  /** clear project properties when a new project is started
+  /** Clear project properties when a new project is started
    */
   void clear()
   {
@@ -545,7 +545,7 @@ static void _getTitle( QDomDocument const &doc, QString &title )
 } // _getTitle
 
 
-/** return the version string found in the given Dom document
+/** Return the version string found in the given Dom document
 
    @returns the version string or an empty string if none found
  */

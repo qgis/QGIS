@@ -73,7 +73,7 @@ void QgsSearchQueryBuilder::populateFields()
     return;
 
   QgsDebugMsg( "entering." );
-  const QgsFields& fields = mLayer->pendingFields();
+  const QgsFields& fields = mLayer->fields();
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
     QString fieldName = fields[idx].name();
@@ -114,7 +114,7 @@ void QgsSearchQueryBuilder::getFieldValues( int limit )
   // determine the field type
   QString fieldName = mModelFields->data( lstFields->currentIndex() ).toString();
   int fieldIndex = mFieldMap[fieldName];
-  QgsField field = mLayer->pendingFields()[fieldIndex];//provider->fields()[fieldIndex];
+  QgsField field = mLayer->fields()[fieldIndex];//provider->fields()[fieldIndex];
   bool numeric = ( field.type() == QVariant::Int || field.type() == QVariant::Double );
 
   QgsFeature feat;
@@ -130,7 +130,7 @@ void QgsSearchQueryBuilder::getFieldValues( int limit )
   mModelValues->blockSignals( true );
   lstValues->setUpdatesEnabled( false );
 
-  /**MH: keep already inserted values in a set. Querying is much faster compared to QStandardItemModel::findItems*/
+  /** MH: keep already inserted values in a set. Querying is much faster compared to QStandardItemModel::findItems*/
   QSet<QString> insertedValues;
 
   while ( fit.nextFeature( feat ) &&
@@ -199,7 +199,7 @@ long QgsSearchQueryBuilder::countRecords( QString searchString )
 
   int count = 0;
   QgsFeature feat;
-  const QgsFields& fields = mLayer->pendingFields();
+  const QgsFields& fields = mLayer->fields();
 
   if ( !search.prepare( fields ) )
   {

@@ -31,6 +31,8 @@
 
 typedef QMultiMap<int, QgsServerFilter*> QgsServerFiltersMap;
 
+
+
 class QgsServerInterface
 {
 %TypeHeaderCode
@@ -38,19 +40,21 @@ class QgsServerInterface
 %End
 
   public:
-    /**Returns the current request handler*/
+    /** Returns the current request handler*/
     virtual QgsRequestHandler* requestHandler( ) = 0 /KeepReference/;
-    /**Returns the capabilities cache*/
+    /** Returns the capabilities cache*/
     virtual QgsCapabilitiesCache* capabiblitiesCache() = 0 /KeepReference/;
     // Tansfer ownership to avoid garbage collector to call dtor
     /** Register a filter with the given priority. The filter's requestReady()
      * and responseReady() methods will be called from the loop*/
     virtual void registerFilter( QgsServerFilter* filter /Transfer/, int priority = 0 ) = 0;
-    /**Return an environment variable set by FCGI*/
+    /** Set the filters map */
+    virtual void setFilters( QgsServerFiltersMap* filters /Transfer/) = 0;
+    /** Return an environment variable set by FCGI*/
     virtual QString getEnv(const QString& name ) const = 0;
     // Commented because of problems with typedef QgsServerFiltersMap, provided
     // methods to alter the filters map into QgsRequestHandler API
-    // virtual QgsServerFiltersMap filters( ) = 0;
+    virtual QgsServerFiltersMap filters( ) = 0;
     /** Returns the configFilePath as seen by the server, this value is only
      * available after requestReady has been called.*/
     virtual QString configFilePath( ) = 0;

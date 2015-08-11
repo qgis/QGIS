@@ -27,7 +27,7 @@ class QgsMapCanvas;
 class QgsRelationManagerDialog;
 class QgsStyleV2;
 
-/*!  Dialog to set project level properties
+/** Dialog to set project level properties
 
   @note actual state is stored in QgsProject singleton instance
 
@@ -43,7 +43,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     //! Destructor
     ~QgsProjectProperties();
 
-    /*! Gets the currently select map units
+    /** Gets the currently select map units
      */
     QGis::UnitType mapUnits() const;
 
@@ -58,10 +58,10 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     QString title() const;
     void title( QString const & title );
 
-    /*! Accessor for projection */
+    /** Accessor for projection */
     QString projectionWkt();
 
-    /*! Indicates that the projection switch is on */
+    /** Indicates that the projection switch is on */
     bool isProjected();
 
   public slots:
@@ -75,11 +75,11 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
      */
     void showProjectionsTab();
 
-    /*! Let the user add a scale to the list of project scales
+    /** Let the user add a scale to the list of project scales
      * used in scale combobox instead of global ones */
     void on_pbnAddScale_clicked();
 
-    /*! Let the user remove a scale from the list of project scales
+    /** Let the user remove a scale from the list of project scales
      * used in scale combobox instead of global ones */
     void on_pbnRemoveScale_clicked();
 

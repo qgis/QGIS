@@ -102,7 +102,9 @@ class CORE_EXPORT QgsMapToPixel
      * given coordinates in place. Intended as a fast way to do the
      * transform.
      */
-    void transformInPlace( qreal& x, qreal& y ) const;
+    void transformInPlace( double& x, double& y ) const;
+    void transformInPlace( float& x, float& y ) const;
+
 
     /**
      * Transform device coordinates to map coordinates. Modifies the
@@ -130,7 +132,7 @@ class CORE_EXPORT QgsMapToPixel
      */
     QgsPoint toMapCoordinates( QPoint p ) const;
 
-    QgsPoint toMapPoint( qreal x, qreal y ) const;
+    QgsPoint toMapPoint( double x, double y ) const;
 
     /**
      * Set map units per pixel

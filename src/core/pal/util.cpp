@@ -27,23 +27,17 @@
  *
  */
 
-#include <stddef.h>
-#include <geos_c.h>
-
-#include <sstream>
-
-#include <iostream>
-#include <cfloat>
-//#include <cfloat>
-#include <cstdarg>
-#include <ctime>
-
 #include "layer.h"
 #include "internalexception.h"
 #include "util.h"
 #include "labelposition.h"
 #include "feature.h"
 #include "geomfunction.h"
+#include <iostream>
+#include <cfloat>
+//#include <cfloat>
+#include <cstdarg>
+#include <ctime>
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -63,73 +57,6 @@
 
 namespace pal
 {
-
-  void sort( double* heap, int* x, int* y, int N )
-  {
-    unsigned int n = N, i = n / 2, parent, child;
-    double t;
-    int tx;
-    int ty;
-    for ( ;; )
-    {
-      if ( i > 0 )
-      {
-        i--;
-        t = heap[i];
-        tx = x[i];
-        ty = y[i];
-      }
-      else
-      {
-        n--;
-        if ( n == 0 ) return;
-        t = heap[n];
-        tx = x[n];
-        ty = y[n];
-        heap[n] = heap[0];
-        x[n] = x[0];
-        y[n] = y[0];
-      }
-      parent = i;
-      child = i * 2 + 1;
-      while ( child < n )
-      {
-        if ( child + 1 < n  &&  heap[child + 1] > heap[child] )
-        {
-          child++;
-        }
-        if ( heap[child] > t )
-        {
-          heap[parent] = heap[child];
-          x[parent] = x[child];
-          y[parent] = y[child];
-          parent = child;
-          child = parent * 2 + 1;
-        }
-        else
-        {
-          break;
-        }
-      }
-      heap[parent] = t;
-      x[parent] = tx;
-      y[parent] = ty;
-    }
-  }
-
-  void tabcpy( int n, const int* const x, const int* const y,
-               const double* const prob, int *cx, int *cy, double *p )
-  {
-    int i;
-
-    for ( i = 0; i < n; i++ )
-    {
-      cx[i] = x[i];
-      cy[i] = y[i];
-      p[i] = prob[i];
-    }
-  }
-
 
   void sort( void** items, int N, bool ( *greater )( void *l, void *r ) )
   {

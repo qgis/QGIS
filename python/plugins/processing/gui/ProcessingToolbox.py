@@ -58,8 +58,8 @@ class ProcessingToolbox(BASE, WIDGET):
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
 
         self.modeComboBox.clear()
-        self.modeComboBox.addItems(['Simplified interface',
-                                   'Advanced interface'])
+        self.modeComboBox.addItems([self.tr('Simplified interface'),
+                                   self.tr('Advanced interface')])
         settings = QSettings()
         if not settings.contains(self.USE_CATEGORIES):
             settings.setValue(self.USE_CATEGORIES, True)
@@ -388,8 +388,9 @@ class TreeProviderItem(QTreeWidgetItem):
                 groupItem = groups[alg.group]
             else:
                 groupItem = QTreeWidgetItem()
-                groupItem.setText(0, alg.group)
-                groupItem.setToolTip(0, alg.group)
+                name = alg.i18n_group if alg.i18n_group else "[" + alg.group + "]"
+                groupItem.setText(0, name)
+                groupItem.setToolTip(0, name)
                 groups[alg.group] = groupItem
             algItem = TreeAlgorithmItem(alg)
             groupItem.addChild(algItem)

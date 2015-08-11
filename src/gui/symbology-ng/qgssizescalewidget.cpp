@@ -207,7 +207,7 @@ void QgsSizeScaleWidget::computeFromLayerTriggered()
     return;
 
   QgsExpression expression( mExpressionWidget->currentField() );
-  if ( ! expression.prepare( mLayer->pendingFields() ) )
+  if ( ! expression.prepare( mLayer->fields() ) )
     return;
 
   QStringList lst( expression.referencedColumns() );
@@ -216,7 +216,7 @@ void QgsSizeScaleWidget::computeFromLayerTriggered()
                              QgsFeatureRequest().setFlags( expression.needsGeometry()
                                                            ? QgsFeatureRequest::NoFlags
                                                            : QgsFeatureRequest::NoGeometry )
-                             .setSubsetOfAttributes( lst, mLayer->pendingFields() ) );
+                             .setSubsetOfAttributes( lst, mLayer->fields() ) );
 
   // create list of non-null attribute values
   double min = DBL_MAX;

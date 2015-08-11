@@ -66,7 +66,7 @@ class PostGISExecuteSQL(GeoAlgorithm):
                 self.tr('Error executing SQL:\n%s' % e.message))
 
     def defineCharacteristics(self):
-        self.name = 'PostGIS execute SQL'
-        self.group = 'Database'
+        self.name, self.i18n_name = self.trAlgorithm('PostGIS execute SQL')
+        self.group, self.i18n_group = self.trAlgorithm('Database')
         self.addParameter(ParameterString(self.DATABASE, self.tr('Database')))
         self.addParameter(ParameterString(self.SQL, self.tr('SQL query'), '', True))

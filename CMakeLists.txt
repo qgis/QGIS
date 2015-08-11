@@ -352,13 +352,13 @@ FIND_PROGRAM(QT_LRELEASE_EXECUTABLE
 #   or definitely Apple LLVM 5.0 (based on LLVM 3.3svn, in Xcode 5+):
 #   https://gist.github.com/yamaya/2924292
 
-IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
+IF (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
   EXECUTE_PROCESS(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
   IF (GCC_VERSION VERSION_GREATER 4.7 OR GCC_VERSION VERSION_EQUAL 4.7)
     SET(USE_CXX_11 TRUE)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
   ENDIF()
-ELSEIF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+ELSEIF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   IF ((NOT APPLE AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "3.2")
        OR (APPLE AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "4.1"))
     SET(USE_CXX_11 TRUE)
@@ -432,13 +432,13 @@ IF (PEDANTIC)
 
 ENDIF (PEDANTIC)
 
-IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+IF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Qunused-arguments")
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Qunused-arguments")
   SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Qunused-arguments")
   SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Qunused-arguments")
   SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Qunused-arguments")
-ENDIF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+ENDIF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 
 IF(CMAKE_SYSTEM_PROCESSOR MATCHES "^(powerpc|ppc)")
   # spatialite crashes on ppc - see bugs.debian.org/603986
@@ -710,43 +710,24 @@ FIND_FILE(GIT_MARKER index PATHS ${CMAKE_SOURCE_DIR}/.git)
 IF (GIT_MARKER)
   FIND_PROGRAM(GITCOMMAND git PATHS c:/cygwin/bin)
   IF(GITCOMMAND)
-    IF(MSVC)
+    IF(WIN32)
       ADD_CUSTOM_COMMAND(
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
-        COMMAND for /f \"usebackq tokens=1\" %%a in "(`\"${GITCOMMAND}\" log -n1 --oneline`)" do echo \#define QGSVERSION \"%%a\" >${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
+        COMMAND for /f \"usebackq tokens=1\" %%a in "(`\"${GITCOMMAND}\" log -n1 --oneline`)" do echo \#define QGSVERSION \"%%a\" >${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h.temp
+        COMMAND ${CMAKE_COMMAND} -DSRC=${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h.temp -DDST=${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h -P ${CMAKE_SOURCE_DIR}/cmake/CopyIfChanged.cmake
         MAIN_DEPENDENCY ${GIT_MARKER}
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
       )
-    ELSE(MSVC)
-      EXECUTE_PROCESS(
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        COMMAND ${GITCOMMAND} log -n1 --pretty=%h OUTPUT_VARIABLE REVISION
-      )
-      STRING(STRIP "${REVISION}" REVISION)
-      # Get GIT remote and branch
-      EXECUTE_PROCESS(
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        COMMAND ${GITCOMMAND} name-rev --name-only HEAD OUTPUT_VARIABLE GIT_LOCAL_BRANCH
-      )
-      STRING(STRIP "${GIT_LOCAL_BRANCH}" GIT_LOCAL_BRANCH)
-      EXECUTE_PROCESS(
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        COMMAND ${GITCOMMAND} config branch.${GIT_LOCAL_BRANCH}.remote OUTPUT_VARIABLE GIT_REMOTE
-      )
-      STRING(STRIP "${GIT_REMOTE}" GIT_REMOTE)
-      EXECUTE_PROCESS(
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        COMMAND ${GITCOMMAND} config remote.${GIT_REMOTE}.url OUTPUT_VARIABLE GIT_REMOTE_URL
-      )
-      STRING(STRIP "${GIT_REMOTE_URL}" GIT_REMOTE_URL)
+    ELSE(WIN32)
       ADD_CUSTOM_COMMAND(
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
-        COMMAND echo \\\#define QGSVERSION \\\"${REVISION}\\\" >${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
-        COMMAND echo \\\#define QGS_GIT_REMOTE_URL \\\"${GIT_REMOTE_URL}\\\" >>${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
+        COMMAND ${GITCOMMAND} log -n1 --pretty=\#define\\ QGSVERSION\\ \\"%h\\" >${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h.temp
+        COMMAND ${GITCOMMAND} config remote.$$\(${GITCOMMAND} config branch.$$\(${GITCOMMAND} name-rev --name-only HEAD\).remote\).url | sed -e 's/^/\#define QGS_GIT_REMOTE_URL \"/' -e 's/$$/\"/' >>${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h.temp
+        COMMAND ${CMAKE_COMMAND} -DSRC=${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h.temp -DDST=${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h -P ${CMAKE_SOURCE_DIR}/cmake/CopyIfChanged.cmake
         MAIN_DEPENDENCY ${GIT_MARKER}
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
       )
-    ENDIF(MSVC)
+    ENDIF(WIN32)
   ELSE(GITCOMMAND)
     MESSAGE(STATUS "git marker, but no git found - version will be unknown")
     SET(REVISION "unknown")

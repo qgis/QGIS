@@ -23,7 +23,7 @@
 class QgsDisplayAngle;
 class QgsRubberBand;
 
-/**Map tool to measure angle between two segments*/
+/** Map tool to measure angle between two segments*/
 class APP_EXPORT QgsMapToolMeasureAngle: public QgsMapTool
 {
     Q_OBJECT
@@ -44,25 +44,25 @@ class APP_EXPORT QgsMapToolMeasureAngle: public QgsMapTool
     void deactivate() override;
 
   private:
-    /**Points defining the angle (three for measuring)*/
+    /** Points defining the angle (three for measuring)*/
     QList<QgsPoint> mAnglePoints;
     QgsRubberBand* mRubberBand;
     QgsDisplayAngle* mResultDisplay;
 
-    /**Creates a new rubber band and deletes the old one*/
+    /** Creates a new rubber band and deletes the old one*/
     void createRubberBand();
-    /**Snaps point to background layers*/
+    /** Snaps point to background layers*/
     QgsPoint snapPoint( const QPoint& p );
 
-    /** tool for measuring */
+    /** Tool for measuring */
     QgsDistanceArea mDa;
 
   public slots:
-    /** recalculate angle if projection state changed*/
+    /** Recalculate angle if projection state changed*/
     void updateSettings();
 
   private slots:
-    /**Deletes the rubber band and the dialog*/
+    /** Deletes the rubber band and the dialog*/
     void stopMeasuring();
 
     /** Configures distance area objects with ellipsoid / output crs*/

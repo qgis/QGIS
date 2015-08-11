@@ -1,5 +1,5 @@
 r.surf.idw
-r.surf.idw - Surface interpolation utility for raster layers.
+Surface interpolation utility for raster layers.
 Raster (r.*)
 ParameterRaster|input|Name of input raster layer|False
 ParameterNumber|npoints|Number of interpolation points|1|None|12

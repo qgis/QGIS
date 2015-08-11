@@ -25,7 +25,7 @@
 #include <QString>
 #include <QTextStream>
 
-/**Writes message log into server logfile*/
+/** Writes message log into server logfile*/
 class QgsServerLogger: public QObject
 {
     Q_OBJECT

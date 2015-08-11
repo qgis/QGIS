@@ -32,7 +32,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     QgsGeos( const QgsAbstractGeometryV2* geometry );
     ~QgsGeos();
 
-    /**Removes caches*/
+    /** Removes caches*/
     void geometryChanged() override;
     void prepareGeometry() override;
 
@@ -62,7 +62,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     bool isEqual( const QgsAbstractGeometryV2& geom ) const override;
     bool isEmpty() const override;
 
-    /**Splits this geometry according to a given line.
+    /** Splits this geometry according to a given line.
     @param splitLine the line that splits the geometry
     @param[out] newGeometries list of new geometries that have been created with the split
     @param topological true if topological editing is enabled

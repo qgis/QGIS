@@ -51,7 +51,7 @@ class CORE_EXPORT QgsRasterFileWriter
     QgsRasterFileWriter( const QString& outputUrl );
     ~QgsRasterFileWriter();
 
-    /**Write raster file
+    /** Write raster file
         @param pipe raster pipe
         @param nCols number of output columns
         @param nRows number of output rows (or -1 to automatically calculate row number to have square pixels)
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsRasterFileWriter
     void addToVRT( const QString& filename, int band, int xSize, int ySize, int xOffset, int yOffset );
     void buildPyramids( const QString& filename );
 
-    /**Create provider and datasource for a part image (vrt mode)*/
+    /** Create provider and datasource for a part image (vrt mode)*/
     QgsRasterDataProvider* createPartProvider( const QgsRectangle& extent, int nCols, int iterCols, int iterRows,
         int iterLeft, int iterTop,
         const QString& outputUrl, int fileIndex, int nBands, QGis::DataType type,
@@ -151,7 +151,7 @@ class CORE_EXPORT QgsRasterFileWriter
                                        QGis::DataType type,
                                        QList<bool> destHasNoDataValueList = QList<bool>(), QList<double> destNoDataValueList = QList<double>() );
 
-    /**Calculate nRows, geotransform and pixel size for output*/
+    /** Calculate nRows, geotransform and pixel size for output*/
     void globalOutputParameters( const QgsRectangle& extent, int nCols, int& nRows, double* geoTransform, double& pixelSize );
 
     QString partFileName( int fileIndex );
@@ -164,7 +164,7 @@ class CORE_EXPORT QgsRasterFileWriter
     QStringList mCreateOptions;
     QgsCoordinateReferenceSystem mOutputCRS;
 
-    /**False: Write one file, true: create a directory and add the files numbered*/
+    /** False: Write one file, true: create a directory and add the files numbered*/
     bool mTiledMode;
     double mMaxTileWidth;
     double mMaxTileHeight;

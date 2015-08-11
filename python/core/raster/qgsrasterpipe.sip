@@ -1,5 +1,5 @@
 
-/**  Raster pipe */
+/** Raster pipe */
 
 class QgsRasterPipe
 {

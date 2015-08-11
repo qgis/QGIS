@@ -24,7 +24,7 @@
 class QgsDxfExport;
 class QPaintEngine;
 
-/**A paint device for drawing into dxf files*/
+/** A paint device for drawing into dxf files*/
 
 class CORE_EXPORT QgsDxfPaintDevice: public QPaintDevice
 {
@@ -37,10 +37,10 @@ class CORE_EXPORT QgsDxfPaintDevice: public QPaintDevice
     void setDrawingSize( const QSizeF& size ) { mDrawingSize = size; }
     void setOutputSize( const QRectF& r ) { mRectangle = r; }
 
-    /**Returns scale factor for line width*/
+    /** Returns scale factor for line width*/
     double widthScaleFactor() const;
 
-    /**Converts a point from device coordinates to dxf coordinates*/
+    /** Converts a point from device coordinates to dxf coordinates*/
     QPointF dxfCoordinates( const QPointF& pt ) const;
 
     /*int height() const { return mDrawingSize.height(); }

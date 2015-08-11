@@ -385,7 +385,7 @@ Negative rounds to powers of 10</string>
         <number>0</number>
        </property>
        <widget class="QWidget" name="page">
-        <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,1,0,0">
+        <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,1,0,0,0">
          <property name="margin">
           <number>0</number>
          </property>
@@ -401,6 +401,13 @@ Negative rounds to powers of 10</string>
          </item>
          <item>
           <widget class="QgsColorRampComboBox" name="cboGraduatedColorRamp"/>
+         </item>
+         <item>
+          <widget class="QPushButton" name="mButtonEditRamp">
+           <property name="text">
+            <string>Edit</string>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QCheckBox" name="cbxInvertedColorRamp">
@@ -507,6 +514,17 @@ Negative rounds to powers of 10</string>
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsFieldExpressionWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">qgsfieldexpressionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorRampComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgscolorrampcombobox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
@@ -516,17 +534,6 @@ Negative rounds to powers of 10</string>
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsFieldExpressionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsfieldexpressionwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorRampComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgscolorrampcombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsGraduatedHistogramWidget</class>
@@ -540,13 +547,24 @@ Negative rounds to powers of 10</string>
   <tabstop>btnChangeGraduatedSymbol</tabstop>
   <tabstop>txtLegendFormat</tabstop>
   <tabstop>spinPrecision</tabstop>
+  <tabstop>cbxTrimTrailingZeroes</tabstop>
   <tabstop>methodComboBox</tabstop>
   <tabstop>cboGraduatedColorRamp</tabstop>
+  <tabstop>mButtonEditRamp</tabstop>
   <tabstop>cbxInvertedColorRamp</tabstop>
-  <tabstop>minSizeSpinBox</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>cboGraduatedMode</tabstop>
+  <tabstop>spinGraduatedClasses</tabstop>
+  <tabstop>btnGraduatedClassify</tabstop>
+  <tabstop>viewGraduated</tabstop>
+  <tabstop>btnGraduatedAdd</tabstop>
+  <tabstop>btnGraduatedDelete</tabstop>
+  <tabstop>btnDeleteAllClasses</tabstop>
+  <tabstop>cbxLinkBoundaries</tabstop>
   <tabstop>maxSizeSpinBox</tabstop>
   <tabstop>mSizeUnitWidget</tabstop>
   <tabstop>btnAdvanced</tabstop>
+  <tabstop>minSizeSpinBox</tabstop>
  </tabstops>
  <resources/>
  <connections/>

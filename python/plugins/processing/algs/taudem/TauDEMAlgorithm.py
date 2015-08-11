@@ -26,6 +26,7 @@ __copyright__ = '(C) 2012, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 import os
+from PyQt4.QtCore import QCoreApplication
 from PyQt4.QtGui import QIcon
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -64,10 +65,12 @@ class TauDEMAlgorithm(GeoAlgorithm):
         lines = open(self.descriptionFile)
         line = lines.readline().strip('\n').strip()
         self.name = line
+        self.i18n_name = QCoreApplication.translate("TAUDEMAlgorithm", line)
         line = lines.readline().strip('\n').strip()
         self.cmdName = line
         line = lines.readline().strip('\n').strip()
         self.group = line
+        self.i18n_group = QCoreApplication.translate("TAUDEMAlgorithm", line)
 
         line = lines.readline().strip('\n').strip()
         while line != '':

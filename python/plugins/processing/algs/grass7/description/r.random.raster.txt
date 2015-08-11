@@ -1,5 +1,5 @@
 r.random.raster
-r.random.raster - Create random raster
+Create random raster
 Raster (r.*)
 ParameterRaster|raster|Name of input raster map|False
 ParameterNumber|value|The number of points to allocate |None|None|1

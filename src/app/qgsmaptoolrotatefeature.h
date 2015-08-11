@@ -93,14 +93,14 @@ class APP_EXPORT QgsMapToolRotateFeature: public QgsMapToolEdit
     void createRotationWidget();
     void deleteRotationWidget();
 
-    /**Start point of the move in map coordinates*/
+    /** Start point of the move in map coordinates*/
     QgsPoint mStartPointMapCoords;
     QPointF mInitialPos;
 
-    /**Rubberband that shows the feature being moved*/
+    /** Rubberband that shows the feature being moved*/
     QgsRubberBand* mRubberBand;
 
-    /**Id of moved feature*/
+    /** Id of moved feature*/
     QgsFeatureIds mRotatedFeatures;
     double mRotation;
     double mRotationOffset;

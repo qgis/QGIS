@@ -80,7 +80,7 @@ QgsGrassFeatureIterator::QgsGrassFeatureIterator( QgsGrassFeatureSource* source,
   allocateSelection( mSource->mMap );
   resetSelection( 1 );
 
-  if ( request.filterType() == QgsFeatureRequest::FilterRect )
+  if ( !request.filterRect().isNull() )
   {
     setSelectionRect( request.filterRect(), request.flags() & QgsFeatureRequest::ExactIntersect );
   }

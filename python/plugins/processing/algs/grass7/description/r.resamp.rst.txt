@@ -1,5 +1,5 @@
 r.resamp.rst
-r.resamp.rst - Reinterpolates using regularized spline with tension and smoothing.
+Reinterpolates using regularized spline with tension and smoothing.
 Raster (r.*)
 ParameterRaster|input|Raster layer|False
 ParameterNumber|ew_res|Desired east-west resolution|0.0|None|1

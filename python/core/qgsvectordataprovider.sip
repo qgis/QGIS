@@ -13,25 +13,25 @@ class QgsVectorDataProvider : QgsDataProvider
      */
     enum Capability
     {
-      /** provider has no capabilities */
+      /** Provider has no capabilities */
       NoCapabilities,
-      /** allows adding features */
+      /** Allows adding features */
       AddFeatures,
-      /** allows deletion of features */
+      /** Allows deletion of features */
       DeleteFeatures,
-      /** allows modification of attribute values */
+      /** Allows modification of attribute values */
       ChangeAttributeValues,
-      /** allows addition of new attributes (fields) */
+      /** Allows addition of new attributes (fields) */
       AddAttributes,
-      /** allows deletion of attributes (fields) */
+      /** Allows deletion of attributes (fields) */
       DeleteAttributes,
       /** DEPRECATED - do not use */
       SaveAsShapefile,
-      /** allows creation of spatial index */
+      /** Allows creation of spatial index */
       CreateSpatialIndex,
-      /** fast access to features using their ID */
+      /** Fast access to features using their ID */
       SelectAtId,
-      /** allows modifications of geometries */
+      /** Allows modifications of geometries */
       ChangeGeometries,
       /** DEPRECATED - do not use */
       SelectGeometryAtId,
@@ -40,17 +40,17 @@ class QgsVectorDataProvider : QgsDataProvider
       /** DEPRECATED - do not use */
       SequentialSelectGeometryAtId,
       CreateAttributeIndex,
-      /** allows user to select encoding */
+      /** Allows user to select encoding */
       SelectEncoding,
-      /** supports simplification of geometries on provider side according to a distance tolerance */
+      /** Supports simplification of geometries on provider side according to a distance tolerance */
       SimplifyGeometries,
-      /** supports topological simplification of geometries on provider side according to a distance tolerance */
+      /** Supports topological simplification of geometries on provider side according to a distance tolerance */
       SimplifyGeometriesWithTopologicalValidation,
-      /** supports transactions*/
+      /** Supports transactions*/
       TransactionSupport
     };
 
-    /** bitmask of all provider's editing capabilities */
+    /** Bitmask of all provider's editing capabilities */
     static const int EditingCapabilities;
 
     /**
@@ -209,7 +209,7 @@ class QgsVectorDataProvider : QgsDataProvider
      */
     virtual bool createSpatialIndex();
 
-    /**Create an attribute index on the datasource*/
+    /** Create an attribute index on the datasource*/
     virtual bool createAttributeIndex( int field );
 
     /** Returns a bitmask containing the supported capabilities

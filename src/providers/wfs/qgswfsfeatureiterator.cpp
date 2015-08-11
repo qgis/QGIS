@@ -21,20 +21,18 @@
 QgsWFSFeatureIterator::QgsWFSFeatureIterator( QgsWFSFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
     : QgsAbstractFeatureIteratorFromSource<QgsWFSFeatureSource>( source, ownSource, request )
 {
-  switch ( request.filterType() )
+  if ( !request.filterRect().isNull() && mSource->mSpatialIndex )
   {
-    case QgsFeatureRequest::FilterRect:
-      if ( mSource->mSpatialIndex )
-      {
-        mSelectedFeatures = mSource->mSpatialIndex->intersects( request.filterRect() );
-      }
-      break;
-    case QgsFeatureRequest::FilterFid:
-      mSelectedFeatures.push_back( request.filterFid() );
-      break;
-    case QgsFeatureRequest::FilterNone:
-    default:
-      mSelectedFeatures = mSource->mFeatures.keys();
+    mSelectedFeatures = mSource->mSpatialIndex->intersects( request.filterRect() );
+  }
+
+  if ( request.filterType() == QgsFeatureRequest::FilterFid )
+  {
+    mSelectedFeatures.push_back( request.filterFid() );
+  }
+  else
+  {
+    mSelectedFeatures = mSource->mFeatures.keys();
   }
 
   mFeatureIterator = mSelectedFeatures.constBegin();
@@ -164,7 +162,7 @@ QgsWFSFeatureSource::~QgsWFSFeatureSource()
 
 QgsFeatureIterator QgsWFSFeatureSource::getFeatures( const QgsFeatureRequest& request )
 {
-  if ( request.filterType() == QgsFeatureRequest::FilterRect )
+  if ( !request.filterRect().isNull() )
     emit extentRequested( request.filterRect() );
   return QgsFeatureIterator( new QgsWFSFeatureIterator( this, false, request ) );
 }

@@ -111,13 +111,14 @@ bool QgsMapToPixel::updateMatrix()
   return true;
 }
 
-QgsPoint QgsMapToPixel::toMapPoint( qreal x, qreal y ) const
+QgsPoint QgsMapToPixel::toMapPoint( double x, double y ) const
 {
   bool invertible;
   QTransform matrix = mMatrix.inverted( &invertible );
   assert( invertible );
   qreal mx, my;
-  matrix.map( x, y, &mx, &my );
+  qreal x_qreal = x, y_qreal = y;
+  matrix.map( x_qreal, y_qreal, &mx, &my );
   //QgsDebugMsg(QString("XXX toMapPoint x:%1 y:%2 -> x:%3 y:%4").arg(x).arg(y).arg(mx).arg(my));
   return QgsPoint( mx, my );
 }
@@ -315,12 +316,20 @@ void QgsMapToPixel::transform( QgsPoint *p ) const
   p->set( x, y );
 }
 
-void QgsMapToPixel::transformInPlace( qreal &x, qreal &y ) const
+void QgsMapToPixel::transformInPlace( double& x, double& y ) const
 {
   // Map 2 Pixel
   qreal mx, my;
-  mMatrix.map( x, y, &mx, &my );
+  qreal x_qreal = x, y_qreal = y;
+  mMatrix.map( x_qreal, y_qreal, &mx, &my );
   //QgsDebugMsg(QString("XXX transformInPlace X : %1-->%2, Y: %3 -->%4").arg(x).arg(mx).arg(y).arg(my));
+  x = mx; y = my;
+}
+
+void QgsMapToPixel::transformInPlace( float& x, float& y ) const
+{
+  double mx = x, my = y;
+  transformInPlace( mx, my );
   x = mx; y = my;
 }
 

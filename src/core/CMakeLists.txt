@@ -46,7 +46,7 @@ SET(QGIS_CORE_SRCS
   diagram/qgspiediagram.cpp
   diagram/qgstextdiagram.cpp
   diagram/qgshistogramdiagram.cpp
-  
+
   effects/qgsimageoperation.cpp
   effects/qgspainteffect.cpp
   effects/qgseffectstack.cpp
@@ -291,7 +291,7 @@ SET(QGIS_CORE_SRCS
   raster/qgssinglebandpseudocolorrenderer.cpp
   raster/qgsbrightnesscontrastfilter.cpp
   raster/qgshuesaturationfilter.cpp
-  
+
   geometry/qgsabstractgeometryv2.cpp
   geometry/qgscircularstringv2.cpp
   geometry/qgscompoundcurvev2.cpp
@@ -336,10 +336,10 @@ IF (NOT QT5_BUILD)
   )
 ENDIF (NOT QT5_BUILD)
 
-IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+IF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   # spatialindex headers produce warnings
   SET_SOURCE_FILES_PROPERTIES(qgsspatialindex.cpp PROPERTIES COMPILE_FLAGS -Wno-overloaded-virtual)
-ENDIF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+ENDIF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 
 IF (WITH_INTERNAL_QEXTSERIALPORT)
   SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
@@ -414,32 +414,33 @@ SET(QGIS_CORE_MOC_HDRS
   qgswebview.h
 
   composer/qgsaddremoveitemcommand.h
-  composer/qgscomposerlegend.h
-  composer/qgscomposermap.h
-  composer/qgscomposermapitem.h
-  composer/qgscomposermapgrid.h
-  composer/qgscomposermapoverview.h
-  composer/qgscomposerpicture.h
-  composer/qgscomposerscalebar.h
-  composer/qgscomposerobject.h
-  composer/qgscomposeritem.h
-  composer/qgscomposeritemgroup.h
-  composer/qgscomposermousehandles.h
-  composer/qgscomposerlabel.h
-  composer/qgscomposershape.h
+  composer/qgsatlascomposition.h
   composer/qgscomposerattributetable.h
-  composer/qgscomposerattributetablev2.h
   composer/qgscomposerattributetablemodel.h
   composer/qgscomposerattributetablemodelv2.h
+  composer/qgscomposerattributetablev2.h
+  composer/qgscomposereffect.h
+  composer/qgscomposerframe.h
+  composer/qgscomposerhtml.h
+  composer/qgscomposeritemgroup.h
+  composer/qgscomposeritem.h
+  composer/qgscomposerlabel.h
+  composer/qgscomposerlegend.h
+  composer/qgscomposermapgrid.h
+  composer/qgscomposermap.h
+  composer/qgscomposermapitem.h
+  composer/qgscomposermapoverview.h
+  composer/qgscomposermodel.h
+  composer/qgscomposermousehandles.h
+  composer/qgscomposermultiframe.h
+  composer/qgscomposerobject.h
+  composer/qgscomposerpicture.h
+  composer/qgscomposerscalebar.h
+  composer/qgscomposershape.h
+  composer/qgscomposertablecolumn.h
   composer/qgscomposertable.h
   composer/qgscomposertablev2.h
-  composer/qgscomposertablecolumn.h
   composer/qgscomposertexttable.h
-  composer/qgscomposerhtml.h
-  composer/qgscomposermultiframe.h
-  composer/qgscomposereffect.h
-  composer/qgsatlascomposition.h
-  composer/qgscomposermodel.h
   composer/qgscomposition.h
   composer/qgslegendmodel.h
 
@@ -706,10 +707,11 @@ SET(QGIS_CORE_HDRS
 
   layertree/qgslayertree.h
   layertree/qgslayertreeutils.h
-  
+
   geometry/qgsgeometry.h
   geometry/qgsabstractgeometryv2.h
   geometry/qgswkbtypes.h
+  geometry/qgspointv2.h
 )
 
 IF (QT_MOBILITY_LOCATION_FOUND OR Qt5Positioning_FOUND)

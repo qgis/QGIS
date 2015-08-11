@@ -45,8 +45,8 @@ class Difference(GeoAlgorithm):
     #==========================================================================
 
     def defineCharacteristics(self):
-        self.name = 'Difference'
-        self.group = 'Vector overlay tools'
+        self.name, self.i18n_name = self.trAlgorithm('Difference')
+        self.group, self.i18n_group = self.trAlgorithm('Vector overlay tools')
         self.addParameter(ParameterVector(Difference.INPUT,
             self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterVector(Difference.OVERLAY,

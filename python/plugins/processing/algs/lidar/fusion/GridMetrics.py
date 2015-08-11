@@ -53,10 +53,10 @@ class GridMetrics(FusionAlgorithm):
     CLASS = 'CLASS'
 
     def defineCharacteristics(self):
-        self.name = 'Grid Metrics'
-        self.group = 'Points'
+        self.name, self.i18n_name = self.trAlgorithm('Grid Metrics')
+        self.group, self.i18n_group = self.trAlgorithm('Points')
         self.addParameter(ParameterFile(
-            self.INPUT, self.tr('Input las layer')))
+            self.INPUT, self.tr('Input LAS layer')))
         self.addParameter(ParameterFile(
             self.GROUND, self.tr('Input ground DTM layer')))
         self.addParameter(ParameterNumber(

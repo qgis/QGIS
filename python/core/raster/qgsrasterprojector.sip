@@ -1,5 +1,5 @@
 
-/**  Raster projector */
+/** Raster projector */
 
 class QgsRasterProjector : QgsRasterInterface
 {

@@ -64,7 +64,7 @@ class APP_EXPORT QgsMapToolCapture : public QgsMapToolEdit
      @return 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed*/
     int addVertex( const QgsPoint& point );
 
-    /**Removes the last vertex from mRubberBand and mCaptureList*/
+    /** Removes the last vertex from mRubberBand and mCaptureList*/
     void undo();
 
     void startCapturing();
@@ -83,10 +83,10 @@ class APP_EXPORT QgsMapToolCapture : public QgsMapToolEdit
     /** Flag to indicate a map canvas capture operation is taking place */
     bool mCapturing;
 
-    /** rubber band for polylines and polygons */
+    /** Rubber band for polylines and polygons */
     QgsRubberBand* mRubberBand;
 
-    /** temporary rubber band for polylines and polygons. this connects the last added point to the mouse cursor position */
+    /** Temporary rubber band for polylines and polygons. this connects the last added point to the mouse cursor position */
     QgsRubberBand* mTempRubberBand;
 
     /** List to store the points of digitised lines and polygons (in layer coordinates)*/

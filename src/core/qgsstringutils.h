@@ -34,7 +34,7 @@ class CORE_EXPORT QgsStringUtils
      * @param string1 first string
      * @param string2 second string
      * @param caseSensitive set to true for case sensitive comparison
-     * @returns edit distance. Lower distances indicate more similiar strings.
+     * @returns edit distance. Lower distances indicate more similar strings.
      */
     static int levenshteinDistance( const QString &string1, const QString &string2, bool caseSensitive = false );
 

@@ -28,7 +28,7 @@ class QgsVectorLayer;
 class QComboBox;
 
 
-/**A dialog to insert the merge behaviour for attributes (e.g. for the union features editing tool)*/
+/** A dialog to insert the merge behaviour for attributes (e.g. for the union features editing tool)*/
 class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeAttributesDialogBase
 {
     Q_OBJECT
@@ -46,34 +46,34 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
   private:
     QgsMergeAttributesDialog(); //default constructor forbidden
     void createTableWidgetContents();
-    /**Create new combo box with the options for featureXX / mean / min / max */
+    /** Create new combo box with the options for featureXX / mean / min / max */
     QComboBox* createMergeComboBox( QVariant::Type columnType ) const;
-    /**Returns the table widget column index of a combo box
+    /** Returns the table widget column index of a combo box
     @return the column index or -1 in case of error*/
     int findComboColumn( QComboBox* c ) const;
-    /**Calculates the merged value of a column (depending on the selected merge behaviour) and inserts the value in the corresponding cell*/
+    /** Calculates the merged value of a column (depending on the selected merge behaviour) and inserts the value in the corresponding cell*/
     void refreshMergedValue( int col );
-    /**Inserts the attribute value of a specific feature into the row of merged attributes*/
+    /** Inserts the attribute value of a specific feature into the row of merged attributes*/
     QVariant featureAttribute( int featureId, int col );
-    /**Calculates and inserts the minimum attribute value of a column*/
+    /** Calculates and inserts the minimum attribute value of a column*/
     QVariant minimumAttribute( int col );
-    /**Calculates and inserts the maximum value of a column*/
+    /** Calculates and inserts the maximum value of a column*/
     QVariant maximumAttribute( int col );
-    /**Calculates and inserts the mean value of a column*/
+    /** Calculates and inserts the mean value of a column*/
     QVariant meanAttribute( int col );
-    /**Calculates and inserts the median value of a column*/
+    /** Calculates and inserts the median value of a column*/
     QVariant medianAttribute( int col );
-    /**Calculates and inserts the sum of a column*/
+    /** Calculates and inserts the sum of a column*/
     QVariant sumAttribute( int col );
-    /**Appends the values of the features for the final value*/
+    /** Appends the values of the features for the final value*/
     QVariant concatenationAttribute( int col );
-    /**Sets mSelectionRubberBand to a new feature*/
+    /** Sets mSelectionRubberBand to a new feature*/
     void createRubberBandForFeature( int featureId );
 
     QgsFeatureList mFeatureList;
     QgsVectorLayer* mVectorLayer;
     QgsMapCanvas* mMapCanvas;
-    /**Item that highlights the selected feature in the merge table*/
+    /** Item that highlights the selected feature in the merge table*/
     QgsRubberBand* mSelectionRubberBand;
 };
 

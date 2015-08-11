@@ -30,8 +30,8 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 class lasmergePro(LAStoolsAlgorithm):
 
     def defineCharacteristics(self):
-        self.name = "lasmergePro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('lasmergePro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersFilesAreFlightlinesGUI()
         self.addParametersApplyFileSourceIdGUI()
@@ -44,7 +44,7 @@ class lasmergePro(LAStoolsAlgorithm):
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputFolderCommands(commands)
         self.addParametersFilesAreFlightlinesCommands(commands)
-        self.addParametersApplyFileSourceIdsCommands(commands)
+        self.addParametersApplyFileSourceIdCommands(commands)
         self.addParametersPointOutputCommands(commands)
         self.addParametersAdditionalCommands(commands)
 

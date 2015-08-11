@@ -4,7 +4,7 @@ class QgsSingleBandPseudoColorRenderer: QgsRasterRenderer
     #include "qgssinglebandpseudocolorrenderer.h"
 %End
   public:
-    /**Note: takes ownership of QgsRasterShader*/
+    /** Note: takes ownership of QgsRasterShader*/
     QgsSingleBandPseudoColorRenderer( QgsRasterDataProvider* provider, int band, QgsRasterShader* shader /Transfer/ );
     ~QgsSingleBandPseudoColorRenderer();
     QgsRasterInterface * clone() const /Factory/;
@@ -13,7 +13,7 @@ class QgsSingleBandPseudoColorRenderer: QgsRasterRenderer
 
     QgsRasterBlock* block( int bandNo, const QgsRectangle & extent, int width, int height ) / Factory /;
 
-    /**Takes ownership of the shader*/
+    /** Takes ownership of the shader*/
     void setShader( QgsRasterShader* shader /Transfer/ );
     QgsRasterShader* shader();
     const QgsRasterShader* shader() const /PyName=constShader/;
@@ -24,7 +24,7 @@ class QgsSingleBandPseudoColorRenderer: QgsRasterRenderer
 
     QList<int> usesBands() const;
 
-    /**Returns the band used by the renderer
+    /** Returns the band used by the renderer
      * @note added in QGIS 2.7
      */
     int band() const;

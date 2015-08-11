@@ -32,13 +32,13 @@ class QgsRasterRenderer : QgsRasterInterface
     void setAlphaBand( int band );
     int alphaBand() const;
 
-    /**Get symbology items if provided by renderer*/
+    /** Get symbology items if provided by renderer*/
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
 
-    /**Sets base class members from xml. Usually called from create() methods of subclasses*/
+    /** Sets base class members from xml. Usually called from create() methods of subclasses*/
     void readXML( const QDomElement& rendererElem );
 
-    /**Returns a list of band numbers used by the renderer*/
+    /** Returns a list of band numbers used by the renderer*/
     virtual QList<int> usesBands() const;
 
     static QString minMaxOriginName( int theOrigin );
@@ -47,7 +47,7 @@ class QgsRasterRenderer : QgsRasterInterface
 
   protected:
 
-    /**Write upper class info into rasterrenderer element (called by writeXML method of subclasses)*/
+    /** Write upper class info into rasterrenderer element (called by writeXML method of subclasses)*/
     void _writeXML( QDomDocument& doc, QDomElement& rasterRendererElem ) const;
 
 };

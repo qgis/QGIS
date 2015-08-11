@@ -36,8 +36,8 @@ class laszipPro(LAStoolsAlgorithm):
     APPEND_LAX = "APPEND_LAX"
 
     def defineCharacteristics(self):
-        self.name = "laszipPro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('laszipPro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParameter(ParameterBoolean(laszipPro.REPORT_SIZE,
             self.tr("only report size"), False))

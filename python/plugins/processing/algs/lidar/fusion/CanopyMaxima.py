@@ -45,8 +45,8 @@ class CanopyMaxima(FusionAlgorithm):
     PARAM_C = 'PARAM_C'
 
     def defineCharacteristics(self):
-        self.name = 'Canopy Maxima'
-        self.group = 'Points'
+        self.name, self.i18n_name = self.trAlgorithm('Canopy Maxima')
+        self.group, self.i18n_group = self.trAlgorithm('Points')
         self.addParameter(ParameterFile(
             self.INPUT, self.tr('Input FUSION canopy height model')))
         self.addParameter(ParameterFile(

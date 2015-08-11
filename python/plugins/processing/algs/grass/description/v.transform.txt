@@ -1,5 +1,5 @@
 v.transform
-v.transform - Performs an affine transformation on a vector layer.
+Performs an affine transformation on a vector layer.
 Vector (v.*)
 ParameterVector|input|Input vector layer|-1|False
 ParameterNumber|xshift|X shift|None|None|0.0

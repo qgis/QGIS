@@ -54,7 +54,7 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer* vl, SymbolV2Set& usedSymbol
 {
   QgsFeatureRendererV2* r = vl->rendererV2();
   bool moreSymbolsPerFeature = r->capabilities() & QgsFeatureRendererV2::MoreSymbolsPerFeature;
-  r->startRender( context, vl->pendingFields() );
+  r->startRender( context, vl->fields() );
   QgsFeature f;
   QgsFeatureRequest request( context.extent() );
   request.setFlags( QgsFeatureRequest::ExactIntersect );

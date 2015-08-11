@@ -68,7 +68,7 @@ class QgsInvertedPolygonRenderer : QgsFeatureRendererV2
      */
     virtual QDomElement save( QDomDocument& doc );
 
-    /** sets the embedded renderer
+    /** Sets the embedded renderer
      * @param subRenderer the embedded renderer (will be cloned)
      */
     void setEmbeddedRenderer( const QgsFeatureRendererV2* subRenderer );
@@ -86,7 +86,7 @@ class QgsInvertedPolygonRenderer : QgsFeatureRendererV2
     */
     void setPreprocessingEnabled( bool enabled );
 
-    /** creates a QgsInvertedPolygonRenderer by a conversion from an existing renderer.
+    /** Creates a QgsInvertedPolygonRenderer by a conversion from an existing renderer.
         @note added in 2.5
         @returns a new renderer if the conversion was possible, otherwise 0.
         */

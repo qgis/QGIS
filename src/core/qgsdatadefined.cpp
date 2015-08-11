@@ -130,9 +130,15 @@ void QgsDataDefined::setExpressionString( const QString &expr )
 
   d.detach();
 
+  d->useExpression = true;
   d->expressionString = expr;
   d->expressionPrepared = false;
   d->exprRefColumns.clear();
+}
+
+QString QgsDataDefined::expressionOrField() const
+{
+  return d->useExpression ? d->expressionString : QString( "\"%1\"" ).arg( d->field );
 }
 
 QMap<QString, QVariant> QgsDataDefined::expressionParams() const
@@ -150,7 +156,7 @@ bool QgsDataDefined::prepareExpression( QgsVectorLayer* layer )
 {
   if ( layer )
   {
-    return prepareExpression( layer->pendingFields() );
+    return prepareExpression( layer->fields() );
   }
   else
   {
@@ -221,7 +227,7 @@ QStringList QgsDataDefined::referencedColumns( QgsVectorLayer* layer )
 {
   if ( layer )
   {
-    return referencedColumns( layer->pendingFields() );
+    return referencedColumns( layer->fields() );
   }
   else
   {
@@ -263,6 +269,7 @@ void QgsDataDefined::setField( const QString &field )
     return;
 
   d.detach();
+  d->useExpression = false;
   d->field = field;
   d->exprRefColumns.clear();
 }

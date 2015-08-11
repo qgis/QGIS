@@ -42,8 +42,8 @@ class lasoverlapPro(LAStoolsAlgorithm):
     CREATE_DIFFERENCE_RASTER = "CREATE_DIFFERENCE_RASTER"
 
     def defineCharacteristics(self):
-        self.name = "lasoverlapPro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('lasoverlapPro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersFilesAreFlightlinesGUI()
         self.addParametersFilter1ReturnClassFlagsGUI()

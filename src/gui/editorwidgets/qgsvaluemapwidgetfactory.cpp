@@ -88,3 +88,10 @@ QString QgsValueMapWidgetFactory::representValue( QgsVectorLayer* vl, int fieldI
 
   return config.key( value, QVariant( QString( "(%1)" ).arg( value.toString() ) ).toString() );
 }
+
+QMap<const char*, int> QgsValueMapWidgetFactory::supportedWidgetTypes()
+{
+  QMap<const char*, int> map = QMap<const char*, int>();
+  map.insert( QComboBox::staticMetaObject.className(), 10 );
+  return map;
+}

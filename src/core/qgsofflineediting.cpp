@@ -712,7 +712,7 @@ void QgsOfflineEditing::applyFeaturesAdded( QgsVectorLayer* offlineLayer, QgsVec
   QList<int> newFeatureIds = sqlQueryInts( db, sql );
 
   // get default value for each field
-  const QgsFields& remoteFlds = remoteLayer->pendingFields();
+  const QgsFields& remoteFlds = remoteLayer->fields();
   QVector<QVariant> defaultValues( remoteFlds.count() );
   for ( int i = 0; i < remoteFlds.count(); ++i )
   {
@@ -735,7 +735,7 @@ void QgsOfflineEditing::applyFeaturesAdded( QgsVectorLayer* offlineLayer, QgsVec
   emit progressModeSet( QgsOfflineEditing::AddFeatures, features.size() );
 
   int i = 1;
-  int newAttrsCount = remoteLayer->pendingFields().count();
+  int newAttrsCount = remoteLayer->fields().count();
   for ( QgsFeatureList::iterator it = features.begin(); it != features.end(); ++it )
   {
     QgsFeature f = *it;
@@ -883,8 +883,8 @@ void QgsOfflineEditing::copySymbology( QgsVectorLayer* sourceLayer, QgsVectorLay
 // NOTE: use this to map column indices in case the remote geometry column is not last
 QMap<int, int> QgsOfflineEditing::attributeLookup( QgsVectorLayer* offlineLayer, QgsVectorLayer* remoteLayer )
 {
-  const QgsAttributeList& offlineAttrs = offlineLayer->pendingAllAttributesList();
-  const QgsAttributeList& remoteAttrs = remoteLayer->pendingAllAttributesList();
+  const QgsAttributeList& offlineAttrs = offlineLayer->attributeList();
+  const QgsAttributeList& remoteAttrs = remoteLayer->attributeList();
 
   QMap < int /*offline attr*/, int /*remote attr*/ > attrLookup;
   // NOTE: use size of remoteAttrs, as offlineAttrs can have new attributes not yet synced

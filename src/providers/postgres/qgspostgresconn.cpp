@@ -907,6 +907,9 @@ QString QgsPostgresConn::quotedValue( QVariant value )
     case QVariant::Double:
       return value.toString();
 
+    case QVariant::Bool:
+      return value.toBool() ? "TRUE" : "FALSE";
+
     default:
     case QVariant::String:
       QString v = value.toString();
@@ -1520,28 +1523,13 @@ QGis::WkbType QgsPostgresConn::wkbTypeFromPostgis( QString type )
   return ( QGis::WkbType )QgsWKBTypes::parseType( type );
 }
 
-QGis::WkbType QgsPostgresConn::wkbTypeFromOgcWkbType( unsigned int wkbType )
+QgsWKBTypes::Type QgsPostgresConn::wkbTypeFromOgcWkbType( unsigned int wkbType )
 {
   // polyhedralsurface / TIN / triangle => MultiPolygon
   if ( wkbType % 100 >= 15 )
     wkbType = wkbType / 1000 * 1000 + QGis::WKBMultiPolygon;
 
-  switch ( wkbType / 1000 )
-  {
-    case 0:
-      break;
-    case 1: // Z
-      wkbType = 0x80000000 + wkbType % 100;
-      break;
-    case 2: // M => Z
-      wkbType = 0x80000000 + wkbType % 100;
-      break;
-    case 3: // ZM
-      wkbType = 0xc0000000 + wkbType % 100;
-      break;
-  }
-
-  return ( QGis::WkbType ) wkbType;
+  return ( QgsWKBTypes::Type ) wkbType;
 }
 
 QString QgsPostgresConn::displayStringForWkbType( QGis::WkbType type )

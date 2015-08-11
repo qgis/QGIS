@@ -19,7 +19,7 @@
 #include "qgsmaptoolcapture.h"
 #include "qgsmapmouseevent.h"
 
-/**A map tool that draws a line and splits the parts cut by the line*/
+/** A map tool that draws a line and splits the parts cut by the line*/
 class QgsMapToolSplitParts: public QgsMapToolCapture
 {
     Q_OBJECT

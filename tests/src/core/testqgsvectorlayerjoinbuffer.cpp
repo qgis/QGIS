@@ -70,20 +70,20 @@ void TestVectorLayerJoinBuffer::initTestCase()
 
   mLayerA = new QgsVectorLayer( "Point?field=id_a:integer", "A", "memory" );
   QVERIFY( mLayerA->isValid() );
-  QVERIFY( mLayerA->pendingFields().count() == 1 );
+  QVERIFY( mLayerA->fields().count() == 1 );
 
   QgsFeature fA1( mLayerA->dataProvider()->fields(), 1 );
   fA1.setAttribute( "id_a", 1 );
   QgsFeature fA2( mLayerA->dataProvider()->fields(), 2 );
   fA2.setAttribute( "id_a", 2 );
   mLayerA->dataProvider()->addFeatures( QgsFeatureList() << fA1 << fA2 );
-  QVERIFY( mLayerA->pendingFeatureCount() == 2 );
+  QVERIFY( mLayerA->featureCount() == 2 );
 
   // LAYER B //
 
   mLayerB = new QgsVectorLayer( "Point?field=id_b:integer&field=value_b", "B", "memory" );
   QVERIFY( mLayerB->isValid() );
-  QVERIFY( mLayerB->pendingFields().count() == 2 );
+  QVERIFY( mLayerB->fields().count() == 2 );
 
   QgsFeature fB1( mLayerB->dataProvider()->fields(), 1 );
   fB1.setAttribute( "id_b", 1 );
@@ -92,19 +92,19 @@ void TestVectorLayerJoinBuffer::initTestCase()
   fB2.setAttribute( "id_b", 2 );
   fB2.setAttribute( "value_b", 12 );
   mLayerB->dataProvider()->addFeatures( QgsFeatureList() << fB1 << fB2 );
-  QVERIFY( mLayerB->pendingFeatureCount() == 2 );
+  QVERIFY( mLayerB->featureCount() == 2 );
 
   // LAYER C //
 
   mLayerC = new QgsVectorLayer( "Point?field=id_c:integer&field=value_c", "C", "memory" );
   QVERIFY( mLayerC->isValid() );
-  QVERIFY( mLayerC->pendingFields().count() == 2 );
+  QVERIFY( mLayerC->fields().count() == 2 );
 
   QgsFeature fC1( mLayerC->dataProvider()->fields(), 1 );
   fC1.setAttribute( "id_c", 1 );
   fC1.setAttribute( "value_c", 101 );
   mLayerC->dataProvider()->addFeatures( QgsFeatureList() << fC1 );
-  QVERIFY( mLayerC->pendingFeatureCount() == 1 );
+  QVERIFY( mLayerC->featureCount() == 1 );
 
   QgsMapLayerRegistry::instance()->addMapLayer( mLayerA );
   QgsMapLayerRegistry::instance()->addMapLayer( mLayerB );
@@ -136,7 +136,7 @@ void TestVectorLayerJoinBuffer::testJoinBasic()
 {
   QFETCH( bool, memoryCache );
 
-  QVERIFY( mLayerA->pendingFields().count() == 1 );
+  QVERIFY( mLayerA->fields().count() == 1 );
 
   QgsVectorJoinInfo joinInfo;
   joinInfo.targetFieldName = "id_a";
@@ -145,7 +145,7 @@ void TestVectorLayerJoinBuffer::testJoinBasic()
   joinInfo.memoryCache = memoryCache;
   mLayerA->addJoin( joinInfo );
 
-  QVERIFY( mLayerA->pendingFields().count() == 2 );
+  QVERIFY( mLayerA->fields().count() == 2 );
 
   QgsFeatureIterator fi = mLayerA->getFeatures();
   QgsFeature fA1, fA2;
@@ -158,7 +158,7 @@ void TestVectorLayerJoinBuffer::testJoinBasic()
 
   mLayerA->removeJoin( mLayerB->id() );
 
-  QVERIFY( mLayerA->pendingFields().count() == 1 );
+  QVERIFY( mLayerA->fields().count() == 1 );
 }
 
 void TestVectorLayerJoinBuffer::testJoinTransitive()
@@ -167,7 +167,7 @@ void TestVectorLayerJoinBuffer::testJoinTransitive()
   // first we join A -> B and after that B -> C
   // layer A should automatically update to include joined data from C
 
-  QVERIFY( mLayerA->pendingFields().count() == 1 ); // id_a
+  QVERIFY( mLayerA->fields().count() == 1 ); // id_a
 
   // add join A -> B
 
@@ -177,7 +177,7 @@ void TestVectorLayerJoinBuffer::testJoinTransitive()
   joinInfo1.joinFieldName = "id_b";
   joinInfo1.memoryCache = true;
   mLayerA->addJoin( joinInfo1 );
-  QVERIFY( mLayerA->pendingFields().count() == 2 ); // id_a, B_value_b
+  QVERIFY( mLayerA->fields().count() == 2 ); // id_a, B_value_b
 
   // add join B -> C
 
@@ -187,10 +187,10 @@ void TestVectorLayerJoinBuffer::testJoinTransitive()
   joinInfo2.joinFieldName = "id_c";
   joinInfo2.memoryCache = true;
   mLayerB->addJoin( joinInfo2 );
-  QVERIFY( mLayerB->pendingFields().count() == 3 ); // id_b, value_b, C_value_c
+  QVERIFY( mLayerB->fields().count() == 3 ); // id_b, value_b, C_value_c
 
   // now layer A must include also data from layer C
-  QVERIFY( mLayerA->pendingFields().count() == 3 ); // id_a, B_value_b, B_C_value_c
+  QVERIFY( mLayerA->fields().count() == 3 ); // id_a, B_value_b, B_C_value_c
 
   QgsFeatureIterator fi = mLayerA->getFeatures();
   QgsFeature fA1;
@@ -201,7 +201,7 @@ void TestVectorLayerJoinBuffer::testJoinTransitive()
 
   // test that layer A gets updated when layer C changes its fields
   mLayerC->addExpressionField( "123", QgsField( "dummy", QVariant::Int ) );
-  QVERIFY( mLayerA->pendingFields().count() == 4 ); // id_a, B_value_b, B_C_value_c, B_C_dummy
+  QVERIFY( mLayerA->fields().count() == 4 ); // id_a, B_value_b, B_C_value_c, B_C_dummy
   mLayerC->removeExpressionField( 0 );
 
   // cleanup
@@ -252,14 +252,14 @@ void TestVectorLayerJoinBuffer::testJoinSubset()
 
   QgsVectorLayer* layerX = new QgsVectorLayer( "Point?field=id_x:integer&field=value_x1:integer&field=value_x2", "X", "memory" );
   QVERIFY( layerX->isValid() );
-  QVERIFY( layerX->pendingFields().count() == 3 );
+  QVERIFY( layerX->fields().count() == 3 );
 
   QgsFeature fX1( layerX->dataProvider()->fields(), 1 );
   fX1.setAttribute( "id_x", 1 );
   fX1.setAttribute( "value_x1", 111 );
   fX1.setAttribute( "value_x2", 222 );
   layerX->dataProvider()->addFeatures( QgsFeatureList() << fX1 );
-  QVERIFY( layerX->pendingFeatureCount() == 1 );
+  QVERIFY( layerX->featureCount() == 1 );
 
   QgsMapLayerRegistry::instance()->addMapLayer( layerX );
 
@@ -272,7 +272,7 @@ void TestVectorLayerJoinBuffer::testJoinSubset()
   joinInfo.memoryCache = memoryCache;
   mLayerA->addJoin( joinInfo );
 
-  QCOMPARE( mLayerA->pendingFields().count(), 3 ); // id_a, X_value_x1, X_value_x2
+  QCOMPARE( mLayerA->fields().count(), 3 ); // id_a, X_value_x1, X_value_x2
   QgsFeatureIterator fi = mLayerA->getFeatures();
   QgsFeature fAX;
   fi.nextFeature( fAX );
@@ -289,7 +289,7 @@ void TestVectorLayerJoinBuffer::testJoinSubset()
   joinInfo.setJoinFieldNamesSubset( subset );
   mLayerA->addJoin( joinInfo );
 
-  QCOMPARE( mLayerA->pendingFields().count(), 2 ); // id_a, X_value_x2
+  QCOMPARE( mLayerA->fields().count(), 2 ); // id_a, X_value_x2
 
   fi = mLayerA->getFeatures();
   fi.nextFeature( fAX );
@@ -304,7 +304,7 @@ void TestVectorLayerJoinBuffer::testJoinSubset()
 
 void TestVectorLayerJoinBuffer::testJoinTwoTimes()
 {
-  QVERIFY( mLayerA->pendingFields().count() == 1 );
+  QVERIFY( mLayerA->fields().count() == 1 );
 
   QgsVectorJoinInfo joinInfo1;
   joinInfo1.targetFieldName = "id_a";
@@ -324,7 +324,7 @@ void TestVectorLayerJoinBuffer::testJoinTwoTimes()
 
   QCOMPARE( mLayerA->vectorJoins().count(), 2 );
 
-  QVERIFY( mLayerA->pendingFields().count() == 3 );
+  QVERIFY( mLayerA->fields().count() == 3 );
 
   QgsFeatureIterator fi = mLayerA->getFeatures();
   QgsFeature fA1; //, fA2;

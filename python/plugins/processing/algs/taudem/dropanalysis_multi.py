@@ -63,9 +63,9 @@ class DropAnalysisMulti(GeoAlgorithm):
         return QIcon(os.path.dirname(__file__) + '/../../images/taudem.png')
 
     def defineCharacteristics(self):
-        self.name = 'Stream Drop Analysis (multifile)'
+        self.name, self.i18n_name = self.trAlgorithm('Stream Drop Analysis (multifile)')
         self.cmdName = 'dropanalysis'
-        self.group = 'Stream Network Analysis tools'
+        self.group, self.i18n_group = self.trAlgorithm('Stream Network Analysis tools')
 
         self.addParameter(ParameterFile(self.D8_CONTRIB_AREA_GRID,
             self.tr('D8 Contributing Area Grid'), True, False))

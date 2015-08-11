@@ -263,10 +263,10 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
     filter = renderer && renderer->capabilities() & QgsFeatureRendererV2::Filter;
   }
 
-  renderer->startRender( renderContext, layer()->pendingFields() );
+  renderer->startRender( renderContext, layer()->fields() );
 
   QgsFeatureRequest r( masterModel()->request() );
-  if ( r.filterType() == QgsFeatureRequest::FilterRect )
+  if ( !r.filterRect().isNull() )
   {
     r.setFilterRect( r.filterRect().intersect( &rect ) );
   }

@@ -24,7 +24,7 @@ class QgsRasterBandStats
 
     QgsRasterBandStats();
 
-    /*! Compares region, size etc. not collected statistics */
+    /** Compares region, size etc. not collected statistics */
     bool contains( const QgsRasterBandStats &s ) const;
 
     /** \brief The gdal band number (starts at 1)*/

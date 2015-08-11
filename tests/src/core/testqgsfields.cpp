@@ -49,6 +49,8 @@ class TestQgsFields: public QObject
     void toList();
     void allAttrsList();
     void appendExpressionField();
+    void dataStream();
+    void field(); //test QgsFields::Field
 
   private:
 };
@@ -398,6 +400,71 @@ void TestQgsFields::appendExpressionField()
   QCOMPARE( fields.count(), 3 );
   QCOMPARE( fields.fieldOrigin( 2 ), QgsFields::OriginExpression );
   QCOMPARE( fields.fieldOriginIndex( 2 ), 5 );
+}
+
+void TestQgsFields::dataStream()
+{
+  QgsField original1;
+  original1.setName( "name" );
+  original1.setType( QVariant::Int );
+  original1.setLength( 5 );
+  original1.setPrecision( 2 );
+  original1.setTypeName( "typename1" );
+  original1.setComment( "comment1" );
+
+  QgsField original2;
+  original2.setName( "next name" );
+  original2.setType( QVariant::Double );
+  original2.setLength( 15 );
+  original2.setPrecision( 3 );
+  original2.setTypeName( "double" );
+  original2.setComment( "comment for field 2" );
+
+  QgsFields originalFields;
+  originalFields.append( original1 );
+  originalFields.append( original2 );
+
+  QByteArray ba;
+  QDataStream ds( &ba, QIODevice::ReadWrite );;
+  ds << originalFields;
+
+  QgsFields resultFields;
+  ds.device()->seek( 0 );
+  ds >> resultFields;
+
+  QCOMPARE( resultFields, originalFields );
+  QCOMPARE( resultFields.field( 0 ).typeName(), originalFields.field( 0 ).typeName() ); //typename is NOT required for equality
+  QCOMPARE( resultFields.field( 0 ).comment(), originalFields.field( 0 ).comment() ); //comment is NOT required for equality
+  QCOMPARE( resultFields.field( 1 ).typeName(), originalFields.field( 1 ).typeName() );
+  QCOMPARE( resultFields.field( 1 ).comment(), originalFields.field( 1 ).comment() );
+}
+
+void TestQgsFields::field()
+{
+  QgsField original;
+  original.setName( "name" );
+  original.setType( QVariant::Int );
+  original.setLength( 5 );
+  original.setPrecision( 2 );
+
+  //test constructors for QgsFields::Field
+  QgsFields::Field fieldConstructor1( original, QgsFields::OriginJoin, 5 );
+  QCOMPARE( fieldConstructor1.field, original );
+  QCOMPARE( fieldConstructor1.origin, QgsFields::OriginJoin );
+  QCOMPARE( fieldConstructor1.originIndex, 5 );
+
+  QgsFields::Field fieldConstructor2;
+  QCOMPARE( fieldConstructor2.origin, QgsFields::OriginUnknown );
+  QCOMPARE( fieldConstructor2.originIndex, -1 );
+
+  //test equality operators
+  QgsFields::Field field1( original, QgsFields::OriginJoin, 5 );
+  QgsFields::Field field2( original, QgsFields::OriginJoin, 5 );
+  QVERIFY( field1 == field2 );
+  QgsFields::Field field3( original, QgsFields::OriginEdit, 5 );
+  QVERIFY( field1 != field3 );
+  QgsFields::Field field4( original, QgsFields::OriginJoin, 6 );
+  QVERIFY( field1 != field4 );
 }
 
 QTEST_MAIN( TestQgsFields )

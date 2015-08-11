@@ -47,8 +47,8 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
     Z_SCORE = 'Z_SCORE'
 
     def defineCharacteristics(self):
-        self.name = 'Nearest neighbour analysis'
-        self.group = 'Vector analysis tools'
+        self.name, self.i18n_name = self.trAlgorithm('Nearest neighbour analysis')
+        self.group, self.i18n_group = self.trAlgorithm('Vector analysis tools')
 
         self.addParameter(ParameterVector(self.POINTS,
             self.tr('Points'), [ParameterVector.VECTOR_TYPE_POINT]))

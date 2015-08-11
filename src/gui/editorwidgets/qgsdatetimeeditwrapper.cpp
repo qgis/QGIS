@@ -90,6 +90,11 @@ void QgsDateTimeEditWrapper::initWidget( QWidget *editor )
   }
 }
 
+bool QgsDateTimeEditWrapper::valid()
+{
+  return mQgsDateTimeEdit || mQDateTimeEdit;
+}
+
 void QgsDateTimeEditWrapper::dateTimeChanged( const QDateTime& dateTime )
 {
   const QString fieldFormat = config( "field_format", QGSDATETIMEEDIT_DATEFORMAT ).toString();

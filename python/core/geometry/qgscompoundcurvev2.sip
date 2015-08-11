@@ -37,11 +37,11 @@ class QgsCompoundCurveV2: public QgsCurveV2
     int nCurves() const;
     const QgsCurveV2* curveAt( int i ) const;
 
-    /**Adds curve (takes ownership)*/
+    /** Adds curve (takes ownership)*/
     void addCurve( QgsCurveV2* c /Transfer/ );
     void removeCurve( int i );
     void addVertex( const QgsPointV2& pt );
-    /**Returns closed ring based on curve (connects to start point if not already done)*/
+    /** Returns closed ring based on curve (connects to start point if not already done)*/
     void close();
 
     void draw( QPainter& p ) const;

@@ -34,18 +34,18 @@ class APP_EXPORT QgsMapToolAnnotation: public QgsMapTool
     void keyPressEvent( QKeyEvent* e ) override;
 
   protected:
-    /**Creates a new item. To be implemented by subclasses. Returns 0 by default*/
+    /** Creates a new item. To be implemented by subclasses. Returns 0 by default*/
     virtual QgsAnnotationItem* createItem( QMouseEvent* e );
-    /**Creates an editor widget (caller takes ownership)*/
+    /** Creates an editor widget (caller takes ownership)*/
     QDialog* createItemEditor( QgsAnnotationItem* item );
 
   private:
-    /**Returns the topmost annotation item at the position (or 0 if none)*/
+    /** Returns the topmost annotation item at the position (or 0 if none)*/
     QgsAnnotationItem* itemAtPos( const QPointF& pos );
     QgsAnnotationItem* selectedItem();
-    /**Returns a list of all annotationitems in the canvas*/
+    /** Returns a list of all annotationitems in the canvas*/
     QList<QgsAnnotationItem*> annotationItems();
-    /**Switches visibility states of text items*/
+    /** Switches visibility states of text items*/
     void toggleTextItemVisibilities();
 
     QgsAnnotationItem::MouseMoveAction mCurrentMoveAction;

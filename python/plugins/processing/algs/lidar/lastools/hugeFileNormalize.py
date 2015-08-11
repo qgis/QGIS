@@ -42,8 +42,8 @@ class hugeFileNormalize(LAStoolsAlgorithm):
     GRANULARITIES = ["coarse", "default", "fine", "extra_fine", "ultra_fine"]
 
     def defineCharacteristics(self):
-        self.name = "hugeFileNormalize"
-        self.group = "LAStools Pipelines"
+        self.name, self.i18n_name = self.trAlgorithm('hugeFileNormalize')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Pipelines')
         self.addParametersPointInputGUI()
         self.addParameter(ParameterNumber(hugeFileNormalize.TILE_SIZE,
             self.tr("tile size (side length of square tile)"),

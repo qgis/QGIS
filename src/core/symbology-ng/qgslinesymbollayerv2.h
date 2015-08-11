@@ -118,7 +118,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     QgsSymbolV2::OutputUnit mCustomDashPatternUnit;
     QgsMapUnitScale mCustomDashPatternMapUnitScale;
 
-    /**Vector with an even number of entries for the */
+    /** Vector with an even number of entries for the */
     QVector<qreal> mCustomDashVector;
 
     bool mDrawInsidePolygon;
@@ -195,7 +195,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     Placement placement() const { return mPlacement; }
     void setPlacement( Placement p ) { mPlacement = p; }
 
-    /**Returns the offset along the line for the marker placement. For Interval placements, this is the distance
+    /** Returns the offset along the line for the marker placement. For Interval placements, this is the distance
      * between the start of the line and the first marker. For FirstVertex and LastVertex placements, this is the
      * distance between the marker and the start of the line or the end of the line respectively.
      * This setting has no effect for Vertex or CentralPoint placements.
@@ -207,7 +207,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     */
     double offsetAlongLine() const { return mOffsetAlongLine; }
 
-    /**Sets the the offset along the line for the marker placement. For Interval placements, this is the distance
+    /** Sets the the offset along the line for the marker placement. For Interval placements, this is the distance
      * between the start of the line and the first marker. For FirstVertex and LastVertex placements, this is the
      * distance between the marker and the start of the line or the end of the line respectively.
      * This setting has no effect for Vertex or CentralPoint placements.
@@ -220,26 +220,26 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     */
     void setOffsetAlongLine( double offsetAlongLine ) { mOffsetAlongLine = offsetAlongLine; }
 
-    /**Returns the unit used for calculating the offset along line for markers.
+    /** Returns the unit used for calculating the offset along line for markers.
      * @returns Offset along line unit type.
      * @see setOffsetAlongLineUnit
      * @see offsetAlongLine
     */
     QgsSymbolV2::OutputUnit offsetAlongLineUnit() const { return mOffsetAlongLineUnit; }
 
-    /**Sets the unit used for calculating the offset along line for markers.
+    /** Sets the unit used for calculating the offset along line for markers.
      * @param unit Offset along line unit type.
      * @see offsetAlongLineUnit
      * @see setOffsetAlongLine
     */
     void setOffsetAlongLineUnit( QgsSymbolV2::OutputUnit unit ) { mOffsetAlongLineUnit = unit; }
 
-    /**Returns the map unit scale used for calculating the offset in map units along line for markers.
+    /** Returns the map unit scale used for calculating the offset in map units along line for markers.
      * @returns Offset along line map unit scale.
      */
     const QgsMapUnitScale& offsetAlongLineMapUnitScale() const { return mOffsetAlongLineMapUnitScale; }
 
-    /**Sets the map unit scale used for calculating the offset in map units along line for markers.
+    /** Sets the map unit scale used for calculating the offset in map units along line for markers.
      * @param scale Offset along line map unit scale.
      */
     void setOffsetAlongLineMapUnitScale( const QgsMapUnitScale& scale ) { mOffsetAlongLineMapUnitScale = scale; }
@@ -277,7 +277,7 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 
   private:
 
-    /**Renders a marker by offseting a vertex along the line by a specified distance.
+    /** Renders a marker by offseting a vertex along the line by a specified distance.
      * @param points vertices making up the line
      * @param vertex vertex number to begin offset at
      * @param distance distance to offset from vertex. If distance is positive, offset is calculated

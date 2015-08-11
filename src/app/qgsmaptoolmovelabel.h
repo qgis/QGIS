@@ -20,7 +20,7 @@
 
 #include "qgsmaptoollabel.h"
 
-/**A map tool for dragging label positions*/
+/** A map tool for dragging label positions*/
 class APP_EXPORT QgsMapToolMoveLabel: public QgsMapToolLabel
 {
     Q_OBJECT
@@ -37,7 +37,7 @@ class APP_EXPORT QgsMapToolMoveLabel: public QgsMapToolLabel
 
   protected:
 
-    /**Start point of the move in map coordinates*/
+    /** Start point of the move in map coordinates*/
     QgsPoint mStartPointMapCoords;
 
     double mClickOffsetX;

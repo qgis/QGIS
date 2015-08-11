@@ -149,24 +149,24 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
 
     void addPageToToolbox( QWidget * widget, const QString& name );
 
-    /**Sets the current composer map values to the GUI elements*/
+    /** Sets the current composer map values to the GUI elements*/
     virtual void updateGuiElements();
 
     QgsComposerObject::DataDefinedProperty ddPropertyForWidget( QgsDataDefinedButton *widget ) override;
 
   protected slots:
-    /**Initializes data defined buttons to current atlas coverage layer*/
+    /** Initializes data defined buttons to current atlas coverage layer*/
     void populateDataDefinedButtons();
 
   private slots:
 
-    /**Sets the GUI elements to the values of mPicture*/
+    /** Sets the GUI elements to the values of mPicture*/
     void setGuiElementValues();
 
-    /**Enables or disables the atlas margin around feature option depending on coverage layer type*/
+    /** Enables or disables the atlas margin around feature option depending on coverage layer type*/
     void atlasLayerChanged( QgsVectorLayer* layer );
 
-    /**Enables or disables the atlas controls when composer atlas is toggled on/off*/
+    /** Enables or disables the atlas controls when composer atlas is toggled on/off*/
     void compositionAtlasToggled( bool atlasEnabled );
 
     void aboutToShowVisibilityPresetsMenu();
@@ -176,10 +176,10 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
   private:
     QgsComposerMap* mComposerMap;
 
-    /**Sets extent of composer map from line edits*/
+    /** Sets extent of composer map from line edits*/
     void updateComposerExtentFromGui();
 
-    /**Blocks / unblocks the signals of all GUI elements*/
+    /** Blocks / unblocks the signals of all GUI elements*/
     void blockAllSignals( bool b );
 
     void handleChangedFrameDisplay( QgsComposerMapGrid::BorderSide border, const QgsComposerMapGrid::DisplayMode mode );
@@ -200,19 +200,19 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     void updateGridLineSymbolMarker( const QgsComposerMapGrid* grid );
     void updateGridMarkerSymbolMarker( const QgsComposerMapGrid* grid );
 
-    /**Updates the map combo box with the current composer map ids*/
+    /** Updates the map combo box with the current composer map ids*/
     void refreshMapComboBox();
 
-    /**Enables/disables grid frame related controls*/
+    /** Enables/disables grid frame related controls*/
     void toggleFrameControls( bool frameEnabled, bool frameFillEnabled, bool frameSizeEnabled );
 
-    /**Enables or disables the atlas margin and predefined scales radio depending on the atlas coverage layer type*/
+    /** Enables or disables the atlas margin and predefined scales radio depending on the atlas coverage layer type*/
     void toggleAtlasScalingOptionsByLayerType();
 
-    /**Recalculates the bounds for an atlas map when atlas properties change*/
+    /** Recalculates the bounds for an atlas map when atlas properties change*/
     void updateMapForAtlas();
 
-    /**Is there some predefined scales, globally or as project's options ?*/
+    /** Is there some predefined scales, globally or as project's options ?*/
     bool hasPredefinedScales() const;
 
     QListWidgetItem* addGridListItem( const QString& id, const QString& name );

@@ -45,7 +45,7 @@ class CORE_EXPORT QgsRasterHistogram
       valid = false;
     }
 
-    /*! Compares region, size etc. not histogram itself */
+    /** Compares region, size etc. not histogram itself */
     bool operator==( const QgsRasterHistogram &h ) const
     {
       return ( h.bandNumber == bandNumber &&

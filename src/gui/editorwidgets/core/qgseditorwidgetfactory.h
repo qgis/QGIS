@@ -116,6 +116,15 @@ class GUI_EXPORT QgsEditorWidgetFactory
     inline bool supportsField( QgsVectorLayer* vl, int fieldIdx ) { return isFieldSupported( vl, fieldIdx ); }
 
     /**
+     * Returns a list of widget types which this editor widget supports.
+     * Each widget type can have a priority value attached, the factory with the highest one
+     * will be used.
+     *
+     * @return A map of widget type names and weight values
+     */
+    virtual QMap<const char*, int> supportedWidgetTypes() { return QMap<const char*, int>(); }
+
+    /**
      * Create a pretty String representation of the value.
      *
      * @param vl        The vector layer.

@@ -32,7 +32,6 @@ class QgsCategorizedSymbolRendererV2Widget : QgsRendererV2Widget
     void deleteCategories();
     void deleteAllCategories();
 
-    void rotationFieldChanged( QString fldName );
     void sizeScaleFieldChanged( QString fldName );
     void scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod );
 

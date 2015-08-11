@@ -126,8 +126,8 @@ class SpatiaLiteDBConnector(DBConnector):
         return True
 
     def isgpkg(self):
-        info = float(self.getInfo()[0][:-2])
-        if info < 4.2:
+        info = map( int, self.getInfo()[0].split('.')[0:2] )
+        if info[0] < 4 or (info[0]==4 and info[1]<2):
             result = self.uri().database()[-5:] == ".gpkg"
         else:
             sql = u"SELECT HasGeoPackage()"
@@ -501,7 +501,7 @@ class SpatiaLiteDBConnector(DBConnector):
         sql = u"PRAGMA table_info(%s)" % self.quoteString(view)
         c = self._execute( None, sql )
         geom_col = None
-        for r in c.fetchall():        
+        for r in c.fetchall():
             if r[2].upper() in ('POINT', 'LINESTRING', 'POLYGON',
                                 'MULTIPOINT', 'MULTILINESTRING', 'MULTIPOLYGON'):
                 geom_col = r[1]
@@ -530,7 +530,7 @@ class SpatiaLiteDBConnector(DBConnector):
             wkbType += 1000
         if 'M' in gdim:
             wkbType += 2000
-        
+
         sql = u"""INSERT INTO geometry_columns (f_table_name, f_geometry_column, geometry_type, coord_dimension, srid, spatial_index_enabled)
                                         VALUES (%s, %s, %s, %s, %s, 0)""" % (self.quoteId(view), self.quoteId(geom_col), wkbType, len(gdim), gsrid)
         self._execute_and_commit(sql)

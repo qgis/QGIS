@@ -29,14 +29,6 @@
 
 #define _CRT_SECURE_NO_DEPRECATE
 
-#include <stddef.h>
-#include <geos_c.h>
-
-#include <iostream>
-#include <cstring>
-#include <cmath>
-#include <vector>
-
 #include "pal.h"
 #include "layer.h"
 #include "palexception.h"
@@ -44,26 +36,28 @@
 #include "feature.h"
 #include "geomfunction.h"
 #include "util.h"
+#include <iostream>
+#include <cmath>
+#include <vector>
 
 namespace pal
 {
 
-  Layer::Layer( const QString &lyrName, double min_scale, double max_scale, Arrangement arrangement, Units label_unit, double defaultPriority, bool obstacle, bool active, bool toLabel, Pal *pal, bool displayAll )
-      : name( lyrName )
+  Layer::Layer( const QString &lyrName, Arrangement arrangement, double defaultPriority, bool obstacle, bool active, bool toLabel, Pal *pal, bool displayAll )
+      : mName( lyrName )
       , pal( pal )
-      , obstacle( obstacle )
-      , active( active )
-      , toLabel( toLabel )
-      , displayAll( displayAll )
-      , centroidInside( false )
-      , label_unit( label_unit )
-      , min_scale( min_scale )
-      , max_scale( max_scale )
-      , arrangement( arrangement )
-      , arrangementFlags( 0 )
-      , mode( LabelPerFeature )
-      , mergeLines( false )
-      , upsidedownLabels( Upright )
+      , mObstacle( obstacle )
+      , mObstacleType( PolygonInterior )
+      , mActive( active )
+      , mLabelLayer( toLabel )
+      , mDisplayAll( displayAll )
+      , mCentroidInside( false )
+      , mFitInPolygon( false )
+      , mArrangement( arrangement )
+      , mArrangementFlags( 0 )
+      , mMode( LabelPerFeature )
+      , mMergeLines( false )
+      , mUpsidedownLabels( Upright )
   {
     rtree = new RTree<FeaturePart*, double, 2, double>();
     hashtable = new QHash< QString, Feature*>;
@@ -72,11 +66,11 @@ namespace pal
     connectedTexts = new QLinkedList< QString >;
 
     if ( defaultPriority < 0.0001 )
-      this->defaultPriority = 0.0001;
+      mDefaultPriority = 0.0001;
     else if ( defaultPriority > 1.0 )
-      this->defaultPriority = 1.0;
+      mDefaultPriority = 1.0;
     else
-      this->defaultPriority = defaultPriority;
+      mDefaultPriority = defaultPriority;
 
     featureParts = new QLinkedList<FeaturePart*>;
     features = new QLinkedList<Feature*>;
@@ -118,102 +112,15 @@ namespace pal
       return 0;
   }
 
-
-  bool Layer::isScaleValid( double scale )
-  {
-    return ( scale >= min_scale || min_scale == -1 )
-           && ( scale <= max_scale || max_scale == -1 );
-  }
-
-
-  int Layer::getNbFeatures()
-  {
-    return features->size();
-  }
-
-  QString Layer::getName()
-  {
-    return name;
-  }
-
-  Arrangement Layer::getArrangement()
-  {
-    return arrangement;
-  }
-
-  void Layer::setArrangement( Arrangement arrangement )
-  {
-    this->arrangement = arrangement;
-  }
-
-
-  bool Layer::isObstacle()
-  {
-    return obstacle;
-  }
-
-  bool Layer::isToLabel()
-  {
-    return toLabel;
-  }
-
-  bool Layer::isActive()
-  {
-    return active;
-  }
-
-
-  double Layer::getMinScale()
-  {
-    return min_scale;
-  }
-
-  double Layer::getMaxScale()
-  {
-    return max_scale;
-  }
-
-  double Layer::getPriority()
-  {
-    return defaultPriority;
-  }
-
-  void Layer::setObstacle( bool obstacle )
-  {
-    this->obstacle = obstacle;
-  }
-
-  void Layer::setActive( bool active )
-  {
-    this->active = active;
-  }
-
-  void Layer::setToLabel( bool toLabel )
-  {
-    this->toLabel = toLabel;
-  }
-
-  void Layer::setMinScale( double min_scale )
-  {
-    this->min_scale = min_scale;
-  }
-
-  void Layer::setMaxScale( double max_scale )
-  {
-    this->max_scale = max_scale;
-  }
-
   void Layer::setPriority( double priority )
   {
     if ( priority >= 1.0 ) // low priority
-      defaultPriority = 1.0;
+      mDefaultPriority = 1.0;
     else if ( priority <= 0.0001 )
-      defaultPriority = 0.0001; // high priority
+      mDefaultPriority = 0.0001; // high priority
     else
-      defaultPriority = priority;
+      mDefaultPriority = priority;
   }
-
-
 
   bool Layer::registerFeature( const QString& geom_id, PalGeometry *userGeom, double label_x, double label_y, const QString &labelText,
                                double labelPosX, double labelPosY, bool fixedPos, double angle, bool fixedAngle,
@@ -260,6 +167,9 @@ namespace pal
     f->setRepeatDistance( repeatDistance );
 
     f->setAlwaysShow( alwaysShow );
+
+    // feature inherits layer setting for acting as an obstacle
+    f->setIsObstacle( mObstacle );
 
     bool first_feat = true;
 
@@ -312,7 +222,7 @@ namespace pal
         continue;
       }
 
-      if ( mode == LabelPerFeature && ( type == GEOS_POLYGON || type == GEOS_LINESTRING ) )
+      if ( mMode == LabelPerFeature && ( type == GEOS_POLYGON || type == GEOS_LINESTRING ) )
       {
         if ( type == GEOS_LINESTRING )
           GEOSLength_r( geosctxt, geom, &geom_size );
@@ -341,7 +251,7 @@ namespace pal
     mMutex.unlock();
 
     // if using only biggest parts...
-    if (( mode == LabelPerFeature || f->fixedPosition() ) && biggest_part != NULL )
+    if (( mMode == LabelPerFeature || f->fixedPosition() ) && biggest_part != NULL )
     {
       addFeaturePart( biggest_part, labelText );
       first_feat = false;
@@ -374,7 +284,7 @@ namespace pal
     rtree->Insert( bmin, bmax, fpart );
 
     // add to hashtable with equally named feature parts
-    if ( mergeLines && !labelText.isEmpty() )
+    if ( mMergeLines && !labelText.isEmpty() )
     {
       QHash< QString, QLinkedList<FeaturePart*>* >::const_iterator lstPtr = connectedHashtable->find( labelText );
       QLinkedList< FeaturePart*>* lst;
@@ -392,19 +302,6 @@ namespace pal
       lst->append( fpart ); // add to the list
     }
   }
-
-
-  void Layer::setLabelUnit( Units label_unit )
-  {
-    if ( label_unit == PIXEL || label_unit == METER )
-      this->label_unit = label_unit;
-  }
-
-  Units Layer::getLabelUnit()
-  {
-    return label_unit;
-  }
-
 
   static FeaturePart* _findConnectedPart( FeaturePart* partCheck, QLinkedList<FeaturePart*>* otherParts )
   {
@@ -485,7 +382,7 @@ namespace pal
     while ( !featureParts->isEmpty() )
     {
       FeaturePart* fpart = featureParts->takeFirst();
-      const GEOSGeometry* geom = fpart->getGeometry();
+      const GEOSGeometry* geom = fpart->geos();
       double chopInterval = fpart->getFeature()->repeatDistance();
       if ( chopInterval != 0. && GEOSGeomTypeId_r( geosctxt, geom ) == GEOS_LINESTRING )
       {

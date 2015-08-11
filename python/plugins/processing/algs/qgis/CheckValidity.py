@@ -49,8 +49,8 @@ class CheckValidity(GeoAlgorithm):
                'GEOS']
 
     def defineCharacteristics(self):
-        self.name = 'Check validity'
-        self.group = 'Vector geometry tools'
+        self.name, self.i18n_name = self.trAlgorithm('Check validity')
+        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
 
         self.addParameter(ParameterVector(
             self.INPUT_LAYER,

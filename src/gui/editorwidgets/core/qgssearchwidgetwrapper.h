@@ -69,11 +69,11 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
 
   signals:
 
-   void expressionChanged(QString exp);
+    void expressionChanged( QString exp );
 
   protected slots:
 
-    virtual void setExpression(QString value) = 0;
+    virtual void setExpression( QString value ) = 0;
     void setFeature( const QgsFeature& feature ) override;
 
   protected:

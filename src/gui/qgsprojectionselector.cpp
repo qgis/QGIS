@@ -938,7 +938,7 @@ QStringList QgsProjectionSelector::authorities()
   return authorities;
 }
 
-/*!linfinity qtcreator qgis
+/** Linfinity qtcreator qgis
 * \brief Make the string safe for use in SQL statements.
 *  This involves escaping single quotes, double quotes, backslashes,
 *  and optionally, percentage symbols.  Percentage symbols are used

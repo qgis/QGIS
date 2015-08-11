@@ -97,7 +97,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   m->addAction( tr( "Load Style..." ), this, SLOT( loadStyle_clicked() ) );
   m->addAction( tr( "Save Style..." ), this, SLOT( saveStyleAs_clicked() ) );
   m->addSeparator();
-  m->addAction( tr( "Save As Default" ), this, SLOT( saveDefaultStyle_clicked() ) );
+  m->addAction( tr( "Save as Default" ), this, SLOT( saveDefaultStyle_clicked() ) );
   m->addAction( tr( "Restore Default" ), this, SLOT( loadDefaultStyle_clicked() ) );
   b->setMenu( m );
   connect( m, SIGNAL( aboutToShow() ), this, SLOT( aboutToShowStyleMenu() ) );

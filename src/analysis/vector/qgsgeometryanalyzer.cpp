@@ -47,7 +47,7 @@ bool QgsGeometryAnalyzer::simplify( QgsVectorLayer* layer,
   QGis::WkbType outputType = dp->geometryType();
   const QgsCoordinateReferenceSystem crs = layer->crs();
 
-  QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), layer->pendingFields(), outputType, &crs );
+  QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), layer->fields(), outputType, &crs );
   QgsFeature currentFeature;
 
   //take only selection
@@ -163,7 +163,7 @@ bool QgsGeometryAnalyzer::centroids( QgsVectorLayer* layer, const QString& shape
   QGis::WkbType outputType = QGis::WKBPoint;
   const QgsCoordinateReferenceSystem crs = layer->crs();
 
-  QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), layer->pendingFields(), outputType, &crs );
+  QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), layer->fields(), outputType, &crs );
   QgsFeature currentFeature;
 
   //take only selection
@@ -622,7 +622,7 @@ bool QgsGeometryAnalyzer::dissolve( QgsVectorLayer* layer, const QString& shapef
   QGis::WkbType outputType = dp->geometryType();
   const QgsCoordinateReferenceSystem crs = layer->crs();
 
-  QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), layer->pendingFields(), outputType, &crs );
+  QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), layer->fields(), outputType, &crs );
   QgsFeature currentFeature;
   QMultiMap<QString, QgsFeatureId> map;
 
@@ -775,7 +775,7 @@ bool QgsGeometryAnalyzer::buffer( QgsVectorLayer* layer, const QString& shapefil
   }
   const QgsCoordinateReferenceSystem crs = layer->crs();
 
-  QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), layer->pendingFields(), outputType, &crs );
+  QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), layer->fields(), outputType, &crs );
   QgsFeature currentFeature;
   QgsGeometry *dissolveGeometry = 0; //dissolve geometry (if dissolve enabled)
 
@@ -946,14 +946,14 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
     }
     fileWriter = new QgsVectorFileWriter( outputLayer,
                                           eventLayer->dataProvider()->encoding(),
-                                          eventLayer->pendingFields(),
+                                          eventLayer->fields(),
                                           memoryProviderType,
                                           &( lineLayer->crs() ),
                                           outputFormat );
   }
   else
   {
-    memoryProvider->addAttributes( eventLayer->pendingFields().toList() );
+    memoryProvider->addAttributes( eventLayer->fields().toList() );
   }
 
   //iterate over eventLayer and write new features to output file or layer
@@ -961,7 +961,7 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
   QgsGeometry* lrsGeom = 0;
   double measure1, measure2 = 0.0;
 
-  int nEventFeatures = eventLayer->pendingFeatureCount();
+  int nEventFeatures = eventLayer->featureCount();
   int featureCounter = 0;
   int nOutputFeatures = 0; //number of output features for the current event feature
   if ( p )

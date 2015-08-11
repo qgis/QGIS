@@ -55,8 +55,8 @@ class SpatialJoin(GeoAlgorithm):
     ]
 
     def defineCharacteristics(self):
-        self.name = "Join attributes by location"
-        self.group = "Vector general tools"
+        self.name, self.i18n_name = self.trAlgorithm('Join attributes by location')
+        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
 
         self.addParameter(ParameterVector(self.TARGET,
             self.tr('Target vector layer'),

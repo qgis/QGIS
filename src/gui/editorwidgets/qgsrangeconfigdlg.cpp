@@ -24,13 +24,13 @@ QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget 
 
   QString text;
 
-  switch ( vl->pendingFields()[fieldIdx].type() )
+  switch ( vl->fields()[fieldIdx].type() )
   {
     case QVariant::Int:
     case QVariant::LongLong:
     case QVariant::Double:
     {
-      rangeStackedWidget->setCurrentIndex( vl->pendingFields()[fieldIdx].type() == QVariant::Double ? 1 : 0 );
+      rangeStackedWidget->setCurrentIndex( vl->fields()[fieldIdx].type() == QVariant::Double ? 1 : 0 );
 
       rangeWidget->clear();
       rangeWidget->addItem( tr( "Editable" ), "SpinBox" );
@@ -58,7 +58,7 @@ QgsEditorWidgetConfig QgsRangeConfigDlg::config()
 {
   QgsEditorWidgetConfig cfg;
 
-  switch ( layer()->pendingFields()[field()].type() )
+  switch ( layer()->fields()[field()].type() )
   {
     case QVariant::Int:
     case QVariant::LongLong:

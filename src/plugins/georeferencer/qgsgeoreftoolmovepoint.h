@@ -41,10 +41,10 @@ class QgsGeorefToolMovePoint : public QgsMapTool
     void pointReleased( const QPoint &p );
 
   private:
-    /**Start point of the move in map coordinates*/
+    /** Start point of the move in map coordinates*/
     QPoint mStartPointMapCoords;
 
-    /**Rubberband that shows the feature being moved*/
+    /** Rubberband that shows the feature being moved*/
     QRubberBand *mRubberBand;
 };
 

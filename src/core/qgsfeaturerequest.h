@@ -70,7 +70,7 @@ class CORE_EXPORT QgsFeatureRequest
     enum FilterType
     {
       FilterNone,       //!< No filter is applied
-      FilterRect,       //!< Filter using a rectangle, no need to set NoGeometry
+      FilterRect,       //!< Obsolete, will be ignored. If a filterRect is set it will be used anyway. Filter using a rectangle, no need to set NoGeometry. Instead check for request.filterRect().isNull()
       FilterFid,        //!< Filter using feature ID
       FilterExpression, //!< Filter using expression
       FilterFids        //!< Filter using feature IDs
@@ -93,7 +93,7 @@ class CORE_EXPORT QgsFeatureRequest
 
     ~QgsFeatureRequest();
 
-    FilterType filterType() const { return mFilter; }
+    FilterType filterType() const { if ( mFilter == FilterNone && !mFilterRect.isNull() ) return FilterRect; else return mFilter; }
 
     //! Set rectangle from which features will be taken. Empty rectangle removes the filter.
     //!
@@ -163,7 +163,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureRequest::Flags )
 class QgsFeatureIterator;
 class QgsAbstractFeatureIterator;
 
-/** base class that can be used for any class that is capable of returning features
+/** Base class that can be used for any class that is capable of returning features
  * @note added in 2.4
  */
 class CORE_EXPORT QgsAbstractFeatureSource

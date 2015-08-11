@@ -146,6 +146,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mItemActionToolbar->addWidget( alignToolButton );
 
   QToolButton* shapeToolButton = new QToolButton( mItemToolbar );
+  shapeToolButton->setIcon( QgsApplication::getThemeIcon( "/mActionAddBasicShape.png" ) );
   shapeToolButton->setCheckable( true );
   shapeToolButton->setPopupMode( QToolButton::InstantPopup );
   shapeToolButton->setAutoRaise( true );
@@ -153,7 +154,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   shapeToolButton->addAction( mActionAddRectangle );
   shapeToolButton->addAction( mActionAddTriangle );
   shapeToolButton->addAction( mActionAddEllipse );
-  shapeToolButton->setDefaultAction( mActionAddEllipse );
+  shapeToolButton->setToolTip( tr( "Add Shape" ) );
   mItemToolbar->insertWidget( mActionAddArrow, shapeToolButton );
 
   QActionGroup* toggleActionGroup = new QActionGroup( this );
@@ -407,6 +408,18 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   atlasExportToolButton->addAction( mActionExportAtlasAsPDF );
   atlasExportToolButton->setDefaultAction( mActionExportAtlasAsImage );
   mAtlasToolbar->insertWidget( mActionAtlasSettings, atlasExportToolButton );
+  mAtlasPageComboBox = new QComboBox();
+  mAtlasPageComboBox->setEditable( true );
+  mAtlasPageComboBox->addItem( QString::number( 1 ) );
+  mAtlasPageComboBox->setCurrentIndex( 0 );
+  mAtlasPageComboBox->setMinimumHeight( mAtlasToolbar->height() );
+  mAtlasPageComboBox->setMinimumContentsLength( 6 );
+  mAtlasPageComboBox->setMaxVisibleItems( 20 );
+  mAtlasPageComboBox->setSizeAdjustPolicy( QComboBox::AdjustToContents );
+  mAtlasPageComboBox->setInsertPolicy( QComboBox::NoInsert );
+  connect( mAtlasPageComboBox->lineEdit(), SIGNAL( editingFinished() ), this, SLOT( atlasPageComboEditingFinished() ) );
+  connect( mAtlasPageComboBox, SIGNAL( currentIndexChanged( QString ) ), this, SLOT( atlasPageComboEditingFinished() ) );
+  mAtlasToolbar->insertWidget( mActionAtlasNext, mAtlasPageComboBox );
 
   QMenu *settingsMenu = menuBar()->addMenu( tr( "&Settings" ) );
   settingsMenu->addAction( mActionOptions );
@@ -613,12 +626,15 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mActionAtlasNext->setEnabled( false );
   mActionAtlasPrev->setEnabled( false );
   mActionPrintAtlas->setEnabled( false );
+  mAtlasPageComboBox->setEnabled( false );
   mActionExportAtlasAsImage->setEnabled( false );
   mActionExportAtlasAsSVG->setEnabled( false );
   mActionExportAtlasAsPDF->setEnabled( false );
   QgsAtlasComposition* atlasMap = &mComposition->atlasComposition();
   connect( atlasMap, SIGNAL( toggled( bool ) ), this, SLOT( toggleAtlasControls( bool ) ) );
   connect( atlasMap, SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ), this, SLOT( updateAtlasMapLayerAction( QgsVectorLayer * ) ) );
+  connect( atlasMap, SIGNAL( numberFeaturesChanged( int ) ), this, SLOT( updateAtlasPageComboBox( int ) ) );
+  connect( atlasMap, SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( atlasFeatureChanged( QgsFeature* ) ) );
 
   //default printer page setup
   setPrinterPageDefaults();
@@ -968,6 +984,7 @@ void QgsComposer::toggleAtlasControls( bool atlasEnabled )
   mActionAtlasLast->setEnabled( false );
   mActionAtlasNext->setEnabled( false );
   mActionAtlasPrev->setEnabled( false );
+  mAtlasPageComboBox->setEnabled( false );
   mActionAtlasPreview->blockSignals( false );
   mActionAtlasPreview->setEnabled( atlasEnabled );
   mActionPrintAtlas->setEnabled( atlasEnabled );
@@ -976,6 +993,46 @@ void QgsComposer::toggleAtlasControls( bool atlasEnabled )
   mActionExportAtlasAsPDF->setEnabled( atlasEnabled );
 
   updateAtlasMapLayerAction( atlasEnabled );
+}
+
+void QgsComposer::updateAtlasPageComboBox( int pageCount )
+{
+  if ( !mComposition )
+    return;
+
+  mAtlasPageComboBox->blockSignals( true );
+  mAtlasPageComboBox->clear();
+  for ( int i = 1; i <= pageCount && i < 500; ++i )
+  {
+    QString name = mComposition->atlasComposition().nameForPage( i - 1 );
+    QString fullName = ( !name.isEmpty() ? QString( "%1: %2" ).arg( i ).arg( name ) : QString::number( i ) );
+
+    mAtlasPageComboBox->addItem( fullName, i );
+    mAtlasPageComboBox->setItemData( i - 1, name, Qt::UserRole + 1 );
+    mAtlasPageComboBox->setItemData( i - 1, fullName, Qt::UserRole + 2 );
+  }
+  mAtlasPageComboBox->blockSignals( false );
+}
+
+void QgsComposer::atlasFeatureChanged( QgsFeature *feature )
+{
+  Q_UNUSED( feature );
+
+  if ( !mComposition )
+    return;
+
+  mAtlasPageComboBox->blockSignals( true );
+  //prefer to set index of current atlas page, if combo box is showing enough page items
+  if ( mComposition->atlasComposition().currentFeatureNumber() < mAtlasPageComboBox->count() )
+  {
+    mAtlasPageComboBox->setCurrentIndex( mComposition->atlasComposition().currentFeatureNumber() );
+  }
+  else
+  {
+    //fallback to setting the combo text to the page number
+    mAtlasPageComboBox->setEditText( QString::number( mComposition->atlasComposition().currentFeatureNumber() + 1 ) );
+  }
+  mAtlasPageComboBox->blockSignals( false );
 }
 
 void QgsComposer::on_mActionAtlasPreview_triggered( bool checked )
@@ -1002,6 +1059,7 @@ void QgsComposer::on_mActionAtlasPreview_triggered( bool checked )
   mActionAtlasLast->setEnabled( checked );
   mActionAtlasNext->setEnabled( checked );
   mActionAtlasPrev->setEnabled( checked );
+  mAtlasPageComboBox->setEnabled( checked );
 
   if ( checked )
   {
@@ -1022,6 +1080,7 @@ void QgsComposer::on_mActionAtlasPreview_triggered( bool checked )
     mActionAtlasLast->setEnabled( false );
     mActionAtlasNext->setEnabled( false );
     mActionAtlasPrev->setEnabled( false );
+    mAtlasPageComboBox->setEnabled( false );
     mActionAtlasPreview->blockSignals( false );
     mStatusAtlasLabel->setText( QString() );
     return;
@@ -1036,9 +1095,7 @@ void QgsComposer::on_mActionAtlasPreview_triggered( bool checked )
   {
     mStatusAtlasLabel->setText( QString() );
   }
-
 }
-
 
 void QgsComposer::on_mActionAtlasNext_triggered()
 {
@@ -1098,6 +1155,36 @@ void QgsComposer::on_mActionAtlasLast_triggered()
   loadAtlasPredefinedScalesFromProject();
   atlasMap->lastFeature();
   emit atlasPreviewFeatureChanged();
+}
+
+void QgsComposer::atlasPageComboEditingFinished()
+{
+  QString text = mAtlasPageComboBox->lineEdit()->text();
+
+  //find matching record in combo box
+  int page = -1;
+  for ( int i = 0; i < mAtlasPageComboBox->count(); ++i )
+  {
+    if ( text.compare( mAtlasPageComboBox->itemData( i, Qt::UserRole + 1 ).toString(), Qt::CaseInsensitive ) == 0
+         || text.compare( mAtlasPageComboBox->itemData( i, Qt::UserRole + 2 ).toString(), Qt::CaseInsensitive ) == 0
+         || QString::number( i + 1 ) == text )
+    {
+      page = i + 1;
+      break;
+    }
+  }
+  bool ok = ( page > 0 );
+
+  if ( !ok || page >= mComposition->atlasComposition().numFeatures() || page < 1 )
+  {
+    mAtlasPageComboBox->blockSignals( true );
+    mAtlasPageComboBox->setCurrentIndex( mComposition->atlasComposition().currentFeatureNumber() );
+    mAtlasPageComboBox->blockSignals( false );
+  }
+  else if ( page != mComposition->atlasComposition().currentFeatureNumber() + 1 )
+  {
+    mComposition->atlasComposition().prepareForFeature( page - 1 );
+  }
 }
 
 QgsMapCanvas *QgsComposer::mapCanvas( void )
@@ -1415,6 +1502,8 @@ void QgsComposer::setComposition( QgsComposition* composition )
   toggleAtlasControls( atlasMap->enabled() );
   connect( atlasMap, SIGNAL( toggled( bool ) ), this, SLOT( toggleAtlasControls( bool ) ) );
   connect( atlasMap, SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ), this, SLOT( updateAtlasMapLayerAction( QgsVectorLayer * ) ) );
+  connect( atlasMap, SIGNAL( numberFeaturesChanged( int ) ), this, SLOT( updateAtlasPageComboBox( int ) ) );
+  connect( atlasMap, SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( atlasFeatureChanged( QgsFeature* ) ) );
 
   //default printer page setup
   setPrinterPageDefaults();
@@ -3233,6 +3322,8 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
   toggleAtlasControls( atlasMap->enabled() );
   connect( atlasMap, SIGNAL( toggled( bool ) ), this, SLOT( toggleAtlasControls( bool ) ) );
   connect( atlasMap, SIGNAL( coverageLayerChanged( QgsVectorLayer* ) ), this, SLOT( updateAtlasMapLayerAction( QgsVectorLayer * ) ) );
+  connect( atlasMap, SIGNAL( numberFeaturesChanged( int ) ), this, SLOT( updateAtlasPageComboBox( int ) ) );
+  connect( atlasMap, SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( atlasFeatureChanged( QgsFeature* ) ) );
 
   //default printer page setup
   setPrinterPageDefaults();
@@ -3716,6 +3807,7 @@ void QgsComposer::setAtlasFeature( QgsMapLayer* layer, const QgsFeature& feat )
     mActionAtlasLast->setEnabled( true );
     mActionAtlasNext->setEnabled( true );
     mActionAtlasPrev->setEnabled( true );
+    mAtlasPageComboBox->setEnabled( true );
   }
 
   //bring composer window to foreground

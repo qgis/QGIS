@@ -20,7 +20,7 @@
 
 #include "qgsabstractgeometryv2.h"
 
-/**\ingroup core
+/** \ingroup core
  * \class QgsPointV2
  * \brief Point geometry type.
  * \note added in QGIS 2.10

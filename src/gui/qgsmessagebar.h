@@ -64,7 +64,7 @@ class GUI_EXPORT QgsMessageBar: public QFrame
      */
     void pushItem( QgsMessageBarItem *item );
 
-    /*! display a widget as a message on the bar after hiding the currently visible one
+    /** Display a widget as a message on the bar after hiding the currently visible one
      *  and putting it in a stack.
      * @param widget message widget to display
      * @param level is QgsMessageBar::INFO, WARNING, CRITICAL or SUCCESS
@@ -72,7 +72,7 @@ class GUI_EXPORT QgsMessageBar: public QFrame
      */
     QgsMessageBarItem *pushWidget( QWidget *widget, MessageLevel level = INFO, int duration = 0 );
 
-    /*! remove the passed widget from the bar (if previously added),
+    /** Remove the passed widget from the bar (if previously added),
      *  then display the next one in the stack if any or hide the bar
      *  @param item item to remove
      *  @return true if the widget was removed, false otherwise
@@ -99,13 +99,13 @@ class GUI_EXPORT QgsMessageBar: public QFrame
     void widgetRemoved( QgsMessageBarItem *item );
 
   public slots:
-    /*! remove the currently displayed widget from the bar and
+    /** Remove the currently displayed widget from the bar and
      *  display the next in the stack if any or hide the bar.
      *  @return true if the widget was removed, false otherwise
      */
     bool popWidget();
 
-    /*! remove all items from the bar's widget list
+    /** Remove all items from the bar's widget list
      *  @return true if all items were removed, false otherwise
      */
     bool clearWidgets();

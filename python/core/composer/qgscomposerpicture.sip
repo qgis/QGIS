@@ -10,7 +10,7 @@ class QgsComposerPicture: QgsComposerItem
 
   public:
 
-    /*! Controls how pictures are scaled within the item's frame
+    /** Controls how pictures are scaled within the item's frame
      */
     enum ResizeMode
     {
@@ -21,7 +21,7 @@ class QgsComposerPicture: QgsComposerItem
       FrameToImageSize /*!< sets size of frame to match original size of image without scaling */
     };
 
-    /*! Format of source image
+    /** Format of source image
      */
     enum Mode
     {
@@ -33,13 +33,13 @@ class QgsComposerPicture: QgsComposerItem
     QgsComposerPicture( QgsComposition *composition /TransferThis/);
     ~QgsComposerPicture();
 
-    /** return correct graphics item type. */
+    /** Return correct graphics item type. */
     virtual int type() const;
 
-    /**Reimplementation of QCanvasItem::paint*/
+    /** Reimplementation of QCanvasItem::paint*/
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
 
-    /**Sets the source file of the image (may be svg or a raster format). Data defined
+    /** Sets the source file of the image (may be svg or a raster format). Data defined
      * picture source may override this value.
      * @param path full path to the source image
      * @see usePictureExpression
@@ -48,7 +48,7 @@ class QgsComposerPicture: QgsComposerItem
     */
     void setPictureFile( const QString& path ) /Deprecated/;
 
-    /**Returns the path of the source image file. Data defined picture source may override
+    /** Returns the path of the source image file. Data defined picture source may override
      * this value.
      * @returns path to the source image
      * @see usePictureExpression
@@ -57,7 +57,7 @@ class QgsComposerPicture: QgsComposerItem
     */
     QString pictureFile() const /Deprecated/;
 
-    /**Sets the source path of the image (may be svg or a raster format). Data defined
+    /** Sets the source path of the image (may be svg or a raster format). Data defined
      * picture source may override this value. The path can either be a local path
      * or a remote (http) path.
      * @param path path for the source image
@@ -67,7 +67,7 @@ class QgsComposerPicture: QgsComposerItem
     */
     void setPicturePath( const QString& path );
 
-    /**Returns the path of the source image. Data defined picture source may override
+    /** Returns the path of the source image. Data defined picture source may override
      * this value. The path can either be a local path or a remote (http) path.
      * @returns path for the source image
      * @see usePictureExpression
@@ -76,29 +76,29 @@ class QgsComposerPicture: QgsComposerItem
     */
     QString picturePath() const;
 
-    /**Sets this items bound in scene coordinates such that 1 item size units
+    /** Sets this items bound in scene coordinates such that 1 item size units
      * corresponds to 1 scene size unit and resizes the svg symbol / image
     */
     void setSceneRect( const QRectF& rectangle );
 
-    /**Stores state in Dom element
+    /** Stores state in Dom element
      * @param elem is Dom element corresponding to 'Composer' tag
      * @param doc is Dom document
      */
     bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
 
-    /**Sets state from Dom document
+    /** Sets state from Dom document
      * @param itemElem is Dom node corresponding to item tag
      * @param doc is Dom document
      */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
-    /**Returns the rotation used for drawing the picture within the composer item
+    /** Returns the rotation used for drawing the picture within the composer item
      * @deprecated Use pictureRotation() instead
      */
     double rotation() const /Deprecated/;
 
-    /**Returns the rotation used for drawing the picture within the item's frame
+    /** Returns the rotation used for drawing the picture within the item's frame
      * @returns picture rotation in degrees
      * @note added in 2.2
      * @see setPictureRotation
@@ -106,7 +106,7 @@ class QgsComposerPicture: QgsComposerItem
     */
     double pictureRotation() const;
 
-    /**Sets the map object for rotation (by id). A value of -1 disables the map
+    /** Sets the map object for rotation (by id). A value of -1 disables the map
      * rotation.  If this is set then the picture will be rotated by the same
      * amount as the specified map object. This is useful especially for
      * syncing north arrows with a map item.
@@ -116,7 +116,7 @@ class QgsComposerPicture: QgsComposerItem
      */
     void setRotationMap( int composerMapId );
 
-    /**Returns the id of the rotation map.  A value of -1 means map rotation is
+    /** Returns the id of the rotation map.  A value of -1 means map rotation is
      * disabled.  If this is set then the picture is rotated by the same amount
      * as the specified map object.
      * @returns id of map object
@@ -125,14 +125,14 @@ class QgsComposerPicture: QgsComposerItem
      */
     int rotationMap() const;
 
-    /**True if the picture rotation is matched to a map item.
+    /** True if the picture rotation is matched to a map item.
      * @returns true if rotation map is in use
      * @see rotationMap
      * @see setRotationMap
      */
     bool useRotationMap() const;
 
-    /**Returns the resize mode used for drawing the picture within the composer
+    /** Returns the resize mode used for drawing the picture within the composer
      * item's frame.
      * @returns resize mode of picture
      * @note added in 2.3
@@ -140,7 +140,7 @@ class QgsComposerPicture: QgsComposerItem
      */
     ResizeMode resizeMode() const;
 
-    /**Sets the picture's anchor point, which controls how it is placed
+    /** Sets the picture's anchor point, which controls how it is placed
      * within the picture item's frame.
      * @param anchor anchor point for picture
      * @note added in 2.3
@@ -148,7 +148,7 @@ class QgsComposerPicture: QgsComposerItem
      */
     void setPictureAnchor( QgsComposerItem::ItemPositionMode anchor );
 
-    /**Returns the picture's current anchor, which controls how it is placed
+    /** Returns the picture's current anchor, which controls how it is placed
      * within the picture item's frame.
      * @returns anchor point for picture
      * @note added in 2.3
@@ -156,7 +156,7 @@ class QgsComposerPicture: QgsComposerItem
      */
     ItemPositionMode pictureAnchor() const;
 
-    /**Returns whether the picture item is using an expression for the image source.
+    /** Returns whether the picture item is using an expression for the image source.
      * @returns true if the picture is using an expression for the source, false if
      * it is using a single static file path for the source.
      * @note added in 2.3
@@ -167,7 +167,7 @@ class QgsComposerPicture: QgsComposerItem
      */
     bool usePictureExpression() const /Deprecated/;
 
-    /**Returns the expression the item is using for the picture source. This is only
+    /** Returns the expression the item is using for the picture source. This is only
      * used if usePictureExpression() is true.
      * @returns expression for the picture item's image path
      * @note added in 2.3
@@ -177,38 +177,38 @@ class QgsComposerPicture: QgsComposerItem
      */
     QString pictureExpression() const /Deprecated/;
 
-    /**Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation
+    /** Calculates width and hight of the picture (in mm) such that it fits into the item frame with the given rotation
      * @deprecated Use bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& height, double rotation )
      * instead
      */
     bool imageSizeConsideringRotation( double& width, double& height ) const /Deprecated/;
 
-    /**Calculates corner point after rotation and scaling
+    /** Calculates corner point after rotation and scaling
      * @deprecated Use QgsComposerItem::cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height, double rotation )
      * instead
      */
     bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const /Deprecated/;
 
-    /**Calculates width / height of the bounding box of a rotated rectangle
+    /** Calculates width / height of the bounding box of a rotated rectangle
      * @deprecated Use QgsComposerItem::sizeChangedByRotation( double& width, double& height, double rotation )
      * instead
      */
     void sizeChangedByRotation( double& width, double& height ) /Deprecated/;
 
-    /**Returns the current picture mode (image format).
+    /** Returns the current picture mode (image format).
      * @returns picture mode
      * @note added in 2.3
      */
     Mode mode() const;
 
   public slots:
-    /**Sets the picture rotation within the item bounds. This does not affect
+    /** Sets the picture rotation within the item bounds. This does not affect
      * the item rectangle, only the way the picture is drawn within the item.
      * @deprecated Use setPictureRotation( double rotation ) instead
      */
     virtual void setRotation( double r ) /Deprecated/;
 
-    /**Sets the picture rotation within the item bounds. This does not affect
+    /** Sets the picture rotation within the item bounds. This does not affect
      * the item's frame, only the way the picture is drawn within the item.
      * @param r rotation in degrees clockwise
      * @see pictureRotation
@@ -216,14 +216,14 @@ class QgsComposerPicture: QgsComposerItem
      */
     virtual void setPictureRotation( double r );
 
-    /**Sets the resize mode used for drawing the picture within the item bounds.
+    /** Sets the resize mode used for drawing the picture within the item bounds.
      * @param mode ResizeMode to use for image file
      * @note added in 2.3
      * @see resizeMode
      */
     virtual void setResizeMode( ResizeMode mode );
 
-    /**Sets whether the picture should use an expression based image source path
+    /** Sets whether the picture should use an expression based image source path
      * @param useExpression set to true to use an expression based image source,
      * set to false to use a single image source path
      * @note added in 2.3
@@ -234,7 +234,7 @@ class QgsComposerPicture: QgsComposerItem
      */
     virtual void setUsePictureExpression( bool useExpression ) /Deprecated/;
 
-    /**Sets an expression to use for the picture source. This expression is only
+    /** Sets an expression to use for the picture source. This expression is only
      * used if usePictureExpression() is true.
      * @param expression to use for picture path
      * @note added in 2.3
@@ -244,20 +244,20 @@ class QgsComposerPicture: QgsComposerItem
      */
     virtual void setPictureExpression( QString expression ) /Deprecated/;
 
-    /**Recalculates the source image (if using an expression for picture's source)
+    /** Recalculates the source image (if using an expression for picture's source)
      * and reloads and redraws the picture.
      * @note added in 2.3
      */
     void refreshPicture();
 
-    /**Prepares the picture's source expression after it is altered or the compositions
+    /** Prepares the picture's source expression after it is altered or the compositions
      * atlas coverage layer changes.
      * @note added in 2.3
      * @deprecated no longer required
      */
     void updatePictureExpression() /Deprecated/;
 
-    /**Forces a recalculation of the picture's frame size
+    /** Forces a recalculation of the picture's frame size
      * @note added in 2.3
      */
     void recalculateSize();
@@ -265,6 +265,6 @@ class QgsComposerPicture: QgsComposerItem
     virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );
 
   signals:
-    /**Is emitted on picture rotation change*/
+    /** Is emitted on picture rotation change*/
     void pictureRotationChanged( double newRotation );
 };

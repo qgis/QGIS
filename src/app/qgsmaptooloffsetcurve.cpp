@@ -162,8 +162,8 @@ void QgsMapToolOffsetCurve::applyOffset()
     f.setGeometry( mModifiedGeometry );
 
     //add empty values for all fields (allows inserting attribute values via the feature form in the same session)
-    QgsAttributes attrs( layer->pendingFields().count() );
-    const QgsFields& fields = layer->pendingFields();
+    QgsAttributes attrs( layer->fields().count() );
+    const QgsFields& fields = layer->fields();
     for ( int idx = 0; idx < fields.count(); ++idx )
     {
       attrs[idx] = QVariant();

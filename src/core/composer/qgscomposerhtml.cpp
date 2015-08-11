@@ -454,7 +454,7 @@ void QgsComposerHtml::setUserStylesheetEnabled( const bool stylesheetEnabled )
 
 QString QgsComposerHtml::displayName() const
 {
-  return tr( "<html frame>" );
+  return tr( "<HTML frame>" );
 }
 
 bool QgsComposerHtml::writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames ) const

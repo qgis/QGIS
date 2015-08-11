@@ -46,45 +46,53 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource* sour
 
   QString whereClause;
 
+  if ( !mRequest.filterRect().isNull() && !mSource->mGeometryColumn.isNull() && mSource->mHasSpatialIndex )
+  {
+    QgsRectangle rect( mRequest.filterRect() );
+    QString bbox = QString( "mdsys.sdo_geometry(2003,%1,NULL,"
+                            "mdsys.sdo_elem_info_array(1,1003,3),"
+                            "mdsys.sdo_ordinate_array(%2,%3,%4,%5)"
+                            ")" )
+                   .arg( mSource->mSrid < 1 ? "NULL" : QString::number( mSource->mSrid ) )
+                   .arg( qgsDoubleToString( rect.xMinimum() ) )
+                   .arg( qgsDoubleToString( rect.yMinimum() ) )
+                   .arg( qgsDoubleToString( rect.xMaximum() ) )
+                   .arg( qgsDoubleToString( rect.yMaximum() ) );
+
+    whereClause = QString( "sdo_filter(%1,%2)='TRUE'" ).arg( QgsOracleProvider::quotedIdentifier( mSource->mGeometryColumn ) ).arg( bbox );
+
+    if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect && mConnection->hasSpatial() )
+    {
+      whereClause += QString( " AND sdo_relate(%1,%2,'mask=ANYINTERACT')='TRUE'" )
+                     .arg( QgsOracleProvider::quotedIdentifier( mSource->mGeometryColumn ) )
+                     .arg( bbox );
+    }
+  }
+
   switch ( request.filterType() )
   {
+    case QgsFeatureRequest::FilterFid:
+    {
+      QString fidWhereClause = QgsOracleUtils::whereClause( request.filterFid(), mSource->mFields, mSource->mPrimaryKeyType, mSource->mPrimaryKeyAttrs, mSource->mShared );
+      whereClause = QgsOracleUtils::andWhereClauses( whereClause, fidWhereClause );
+    }
+    break;
+
+    case QgsFeatureRequest::FilterFids:
+    {
+      QString fidsWhereClause = QgsOracleUtils::whereClause( request.filterFids(), mSource->mFields, mSource->mPrimaryKeyType, mSource->mPrimaryKeyAttrs, mSource->mShared );
+      whereClause = QgsOracleUtils::andWhereClauses( whereClause, fidsWhereClause );
+    }
+    break;
+
+    case QgsFeatureRequest::FilterNone:
+      break;
+
     case QgsFeatureRequest::FilterExpression:
       break;
 
     case QgsFeatureRequest::FilterRect:
-      if ( !mSource->mGeometryColumn.isNull() && mSource->mHasSpatialIndex )
-      {
-        QgsRectangle rect( mRequest.filterRect() );
-        QString bbox = QString( "mdsys.sdo_geometry(2003,%1,NULL,"
-                                "mdsys.sdo_elem_info_array(1,1003,3),"
-                                "mdsys.sdo_ordinate_array(%2,%3,%4,%5)"
-                                ")" )
-                       .arg( mSource->mSrid < 1 ? "NULL" : QString::number( mSource->mSrid ) )
-                       .arg( qgsDoubleToString( rect.xMinimum() ) )
-                       .arg( qgsDoubleToString( rect.yMinimum() ) )
-                       .arg( qgsDoubleToString( rect.xMaximum() ) )
-                       .arg( qgsDoubleToString( rect.yMaximum() ) );
-
-        whereClause = QString( "sdo_filter(%1,%2)='TRUE'" ).arg( QgsOracleProvider::quotedIdentifier( mSource->mGeometryColumn ) ).arg( bbox );
-
-        if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect && mConnection->hasSpatial() )
-        {
-          whereClause += QString( " AND sdo_relate(%1,%2,'mask=ANYINTERACT')='TRUE'" )
-                         .arg( QgsOracleProvider::quotedIdentifier( mSource->mGeometryColumn ) )
-                         .arg( bbox );
-        }
-      }
-      break;
-
-    case QgsFeatureRequest::FilterFid:
-      whereClause = QgsOracleUtils::whereClause( request.filterFid(), mSource->mFields, mSource->mPrimaryKeyType, mSource->mPrimaryKeyAttrs, mSource->mShared );
-      break;
-
-    case QgsFeatureRequest::FilterFids:
-      whereClause = QgsOracleUtils::whereClause( request.filterFids(), mSource->mFields, mSource->mPrimaryKeyType, mSource->mPrimaryKeyAttrs, mSource->mShared );
-      break;
-
-    case QgsFeatureRequest::FilterNone:
+      // Handled in the if-statement above
       break;
   }
 

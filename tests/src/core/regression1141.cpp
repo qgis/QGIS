@@ -126,42 +126,45 @@ void Regression1141::diacriticalTest()
   {
     qDebug( "Creating test dataset: " );
 
-    QgsVectorFileWriter myWriter( mFileName,
-                                  mEncoding,
-                                  mFields,
-                                  QGis::WKBPoint,
-                                  &mCRS );
-
-    QgsPoint myPoint = QgsPoint( 10.0, 10.0 );
-    // NOTE: don't delete this pointer again -
-    // ownership is passed to the feature which will
-    // delete it in its dtor!
-    QgsGeometry * mypPointGeometry = QgsGeometry::fromPoint( myPoint );
-    QgsFeature myFeature;
-    myFeature.setGeometry( mypPointGeometry );
-    myFeature.initAttributes( 1 );
-    myFeature.setAttribute( 0, 10 );
-    //
-    // Write the feature to the filewriter
-    // and check for errors
-    //
-    QVERIFY( myWriter.addFeature( myFeature ) );
-    mError = myWriter.hasError();
-
-    if ( mError == QgsVectorFileWriter::ErrDriverNotFound )
     {
-      std::cout << "Driver not found error" << std::endl;
-    }
-    else if ( mError == QgsVectorFileWriter::ErrCreateDataSource )
-    {
-      std::cout << "Create data source error" << std::endl;
-    }
-    else if ( mError == QgsVectorFileWriter::ErrCreateLayer )
-    {
-      std::cout << "Create layer error" << std::endl;
+      QgsVectorFileWriter myWriter( mFileName,
+                                    mEncoding,
+                                    mFields,
+                                    QGis::WKBPoint,
+                                    &mCRS );
+
+      QgsPoint myPoint = QgsPoint( 10.0, 10.0 );
+      // NOTE: don't delete this pointer again -
+      // ownership is passed to the feature which will
+      // delete it in its dtor!
+      QgsGeometry * mypPointGeometry = QgsGeometry::fromPoint( myPoint );
+      QgsFeature myFeature;
+      myFeature.setGeometry( mypPointGeometry );
+      myFeature.initAttributes( 1 );
+      myFeature.setAttribute( 0, 10 );
+      //
+      // Write the feature to the filewriter
+      // and check for errors
+      //
+      QVERIFY( myWriter.addFeature( myFeature ) );
+      mError = myWriter.hasError();
+
+      if ( mError == QgsVectorFileWriter::ErrDriverNotFound )
+      {
+        std::cout << "Driver not found error" << std::endl;
+      }
+      else if ( mError == QgsVectorFileWriter::ErrCreateDataSource )
+      {
+        std::cout << "Create data source error" << std::endl;
+      }
+      else if ( mError == QgsVectorFileWriter::ErrCreateLayer )
+      {
+        std::cout << "Create layer error" << std::endl;
+      }
+
+      QVERIFY( mError == QgsVectorFileWriter::NoError );
     }
 
-    QVERIFY( mError == QgsVectorFileWriter::NoError );
     // Now check we can delete it again ok
     QVERIFY( QgsVectorFileWriter::deleteShapeFile( mFileName ) );
 

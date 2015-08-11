@@ -59,60 +59,15 @@ namespace pal
     return ( x2 - x1 ) *( x2 - x1 ) + ( y2 - y1 ) *( y2 - y1 );
   }
 
-  bool isPointInPolygon( int npol, double *xp, double *yp, double x, double y );
-  /*
-     // code from Randolph Franklin (found at http://local.wasp.uwa.edu.au/~pbourke/geometry/insidepoly/)
-     int i, j;
-     bool c = false;
-
-     for (i = 0, j = npol-1; i < npol; j = i++){
-        if ((( (yp[i] <= y) && (y < yp[j])) ||
-              ((yp[j] <= y) && (y < yp[i])))
-            && (x < (xp[j] - xp[i]) * (y - yp[i]) / (yp[j] - yp[i]) + xp[i])){
-           c = !c;
-        }
-     }
-     return c;
-  }*/
-
-
-
   void findLineCircleIntersection( double cx, double cy, double radius,
                                    double x1, double y1, double x2, double y2,
                                    double& xRes, double& yRes );
-
-
-  int convexHull( int *id, const double* const x, const double* const y, int n );
 
 
   int convexHullId( int *id, const double* const x, const double* const y, int n, int *&cHull );
 
   bool isSegIntersects( double x1, double y1, double x2, double y2,  // 1st segment
                         double x3, double y3, double x4, double y4 ); // 2nd segment
-
-  bool computeSegIntersectionExt( double x1, double y1, double x2, double y2, double xs1, double ys1,  // 1st (segment)
-                                  double x3, double y3, double x4, double y4, double xs2, double ys2, // 2nd segment
-                                  double *x, double *y );
-
-
-  /*
-   * \brief Intersection bw a line and a segment
-   * \return true if the point exist false otherwise
-   */
-  bool computeLineSegIntersection( double x1, double y1, double x2, double y2,  // 1st line
-                                   double x3, double y3, double x4, double y4,  // 2nd segment
-                                   double *x, double *y );
-
-
-
-  /*
-   * \brief compute the point wherre two segmentss intersects
-   * \return true if the point exists
-   */
-  bool computeSegIntersection( double x1, double y1, double x2, double y2,  // 1st line (segment)
-                               double x3, double y3, double x4, double y4,  // 2nd line segment
-                               double *x, double *y );
-
 
   /*
    * \brief compute the point wherre two lines intersects

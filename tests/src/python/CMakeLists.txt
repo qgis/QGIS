@@ -52,6 +52,7 @@ ADD_PYTHON_TEST(PyQgsAttributeTableModel test_qgsattributetablemodel.py)
 ADD_PYTHON_TEST(PyQgsSpatialiteProvider test_provider_spatialite.py)
 ADD_PYTHON_TEST(PyQgsShapefileProvider test_provider_shapefile.py)
 ADD_PYTHON_TEST(PyQgsMemoryProvider test_provider_memory.py)
+ADD_PYTHON_TEST(PyQgsVectorColorRamp test_qgsvectorcolorramp.py)
 
 IF (NOT WIN32)
   ADD_PYTHON_TEST(PyQgsLogger test_qgslogger.py)

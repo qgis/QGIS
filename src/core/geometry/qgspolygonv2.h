@@ -20,7 +20,7 @@
 
 #include "qgscurvepolygonv2.h"
 
-/**\ingroup core
+/** \ingroup core
  * \class QgsPolygonV2
  * \brief Polygon geometry type.
  * \note added in QGIS 2.10

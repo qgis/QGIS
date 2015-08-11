@@ -43,6 +43,8 @@ Tree model for the rules:
 */
 class GUI_EXPORT QgsRuleBasedRendererV2Model : public QAbstractItemModel
 {
+    Q_OBJECT
+
   public:
     QgsRuleBasedRendererV2Model( QgsRuleBasedRendererV2* r );
 

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>435</width>
-    <height>596</height>
+    <width>310</width>
+    <height>381</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -93,8 +93,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>431</width>
-           <height>567</height>
+           <width>306</width>
+           <height>352</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="mainLayout">
@@ -121,41 +121,31 @@
             <property name="collapsed" stdset="0">
              <bool>false</bool>
             </property>
-            <layout class="QGridLayout" name="gridLayout_2">
-             <item row="0" column="0">
-              <widget class="QLabel" name="mHorizontalAlignementLabel">
+            <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0,0">
+             <item row="4" column="2">
+              <widget class="QToolButton" name="mAtlasSortFeatureDirectionButton">
+               <property name="toolTip">
+                <string>Sort direction</string>
+               </property>
                <property name="text">
-                <string>Coverage layer </string>
+                <string>...</string>
+               </property>
+               <property name="arrowType">
+                <enum>Qt::UpArrow</enum>
                </property>
               </widget>
              </item>
-             <item row="2" column="0">
+             <item row="4" column="1">
+              <widget class="QgsFieldComboBox" name="mAtlasSortFeatureKeyComboBox"/>
+             </item>
+             <item row="3" column="0">
               <widget class="QCheckBox" name="mAtlasFeatureFilterCheckBox">
                <property name="text">
                 <string>Filter with</string>
                </property>
               </widget>
              </item>
-             <item row="0" column="1">
-              <spacer name="horizontalSpacer_3">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeType">
-                <enum>QSizePolicy::Preferred</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item row="2" column="2">
-              <widget class="QLineEdit" name="mAtlasFeatureFilterEdit"/>
-             </item>
-             <item row="2" column="3">
+             <item row="3" column="2">
               <widget class="QToolButton" name="mAtlasFeatureFilterButton">
                <property name="text">
                 <string>...</string>
@@ -166,14 +156,31 @@
                </property>
               </widget>
              </item>
-             <item row="1" column="0" colspan="4">
+             <item row="1" column="0" colspan="3">
               <widget class="QCheckBox" name="mAtlasHideCoverageCheckBox">
                <property name="text">
                 <string>Hidden coverage layer</string>
                </property>
               </widget>
              </item>
-             <item row="0" column="2" colspan="2">
+             <item row="0" column="0">
+              <widget class="QLabel" name="mHorizontalAlignementLabel">
+               <property name="text">
+                <string>Coverage layer </string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label">
+               <property name="text">
+                <string>Page name</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QLineEdit" name="mAtlasFeatureFilterEdit"/>
+             </item>
+             <item row="0" column="1" colspan="2">
               <widget class="QgsMapLayerComboBox" name="mAtlasCoverageLayerComboBox">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -182,6 +189,59 @@
                 </sizepolicy>
                </property>
               </widget>
+             </item>
+             <item row="2" column="1" colspan="2">
+              <widget class="QgsFieldExpressionWidget" name="mPageNameWidget" native="true">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0">
+              <widget class="QCheckBox" name="mAtlasSortFeatureCheckBox">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>Sort by</string>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="0" colspan="3">
+              <layout class="QHBoxLayout" name="horizontalLayout">
+               <item>
+                <spacer name="horizontalSpacer_3">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="mApplyConfigButton">
+                 <property name="text">
+                  <string>Apply configuration</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </item>
             </layout>
            </widget>
@@ -211,35 +271,6 @@
               <widget class="QLabel" name="label_4">
                <property name="text">
                 <string>Output filename expression</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="1">
-              <widget class="QgsFieldComboBox" name="mAtlasSortFeatureKeyComboBox"/>
-             </item>
-             <item row="3" column="0">
-              <widget class="QCheckBox" name="mAtlasSortFeatureCheckBox">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string>Sort by</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="2">
-              <widget class="QToolButton" name="mAtlasSortFeatureDirectionButton">
-               <property name="toolTip">
-                <string>Sort direction</string>
-               </property>
-               <property name="text">
-                <string>...</string>
-               </property>
-               <property name="arrowType">
-                <enum>Qt::UpArrow</enum>
                </property>
               </widget>
              </item>
@@ -306,22 +337,29 @@
    <extends>QComboBox</extends>
    <header location="global">qgsfieldcombobox.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsFieldExpressionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfieldexpressionwidget.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mUseAtlasCheckBox</tabstop>
+  <tabstop>scrollArea</tabstop>
   <tabstop>mConfigurationGroup</tabstop>
   <tabstop>mAtlasCoverageLayerComboBox</tabstop>
   <tabstop>mAtlasHideCoverageCheckBox</tabstop>
   <tabstop>mAtlasFeatureFilterCheckBox</tabstop>
   <tabstop>mAtlasFeatureFilterEdit</tabstop>
   <tabstop>mAtlasFeatureFilterButton</tabstop>
+  <tabstop>mAtlasSortFeatureCheckBox</tabstop>
+  <tabstop>mAtlasSortFeatureKeyComboBox</tabstop>
+  <tabstop>mAtlasSortFeatureDirectionButton</tabstop>
+  <tabstop>mApplyConfigButton</tabstop>
   <tabstop>mOutputGroup</tabstop>
   <tabstop>mAtlasFilenamePatternEdit</tabstop>
   <tabstop>mAtlasFilenameExpressionButton</tabstop>
   <tabstop>mAtlasSingleFileCheckBox</tabstop>
-  <tabstop>mAtlasSortFeatureCheckBox</tabstop>
-  <tabstop>mAtlasSortFeatureKeyComboBox</tabstop>
-  <tabstop>mAtlasSortFeatureDirectionButton</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

@@ -454,7 +454,7 @@ void QgsCircularStringV2::segmentize( const QgsPointV2& p1, const QgsPointV2& p2
   QgsGeometryUtils::circleCenterRadius( p1, p2, p3, radius, centerX, centerY );
   int segSide = segmentSide( p1, p3, p2 );
 
-  if ( radius < 0 || qgsDoubleNear( segSide, 0.0 ) ) //points are colinear
+  if ( p1 != p3 && ( radius < 0 || qgsDoubleNear( segSide, 0.0 ) ) ) //points are colinear
   {
     points.append( p1 );
     points.append( p2 );
@@ -479,7 +479,7 @@ void QgsCircularStringV2::segmentize( const QgsPointV2& p1, const QgsPointV2& p2
   {
     increment *= -1;
     /* Adjust a3 down so we can decrement from a1 to a3 cleanly */
-    if ( a3 > a1 )
+    if ( a3 >= a1 )
       a3 -= 2.0 * M_PI;
     if ( a2 > a1 )
       a2 -= 2.0 * M_PI;
@@ -487,7 +487,7 @@ void QgsCircularStringV2::segmentize( const QgsPointV2& p1, const QgsPointV2& p2
   else
   {
     /* Adjust a3 up so we can increment from a1 to a3 cleanly */
-    if ( a3 < a1 )
+    if ( a3 <= a1 )
       a3 += 2.0 * M_PI;
     if ( a2 < a1 )
       a2 += 2.0 * M_PI;
@@ -603,13 +603,9 @@ void QgsCircularStringV2::transform( const QTransform& t )
   int nPoints = numPoints();
   for ( int i = 0; i < nPoints; ++i )
   {
-#ifdef QT_ARCH_ARM
     qreal x, y;
     t.map( mX[i], mY[i], &x, &y );
     mX[i] = x; mY[i] = y;
-#else
-    t.map( mX[i], mY[i], &mX[i], &mY[i] );
-#endif
   }
 }
 
@@ -695,7 +691,7 @@ bool QgsCircularStringV2::insertVertex( const QgsVertexId& position, const QgsPo
 
 bool QgsCircularStringV2::moveVertex( const QgsVertexId& position, const QgsPointV2& newPos )
 {
-  if ( position.vertex < 0 || position.vertex > mX.size() )
+  if ( position.vertex < 0 || position.vertex >= mX.size() )
   {
     return false;
   }

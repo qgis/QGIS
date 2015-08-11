@@ -87,7 +87,6 @@ QgsFeatureRequest::~QgsFeatureRequest()
 
 QgsFeatureRequest& QgsFeatureRequest::setFilterRect( const QgsRectangle& rect )
 {
-  mFilter = FilterRect;
   mFilterRect = rect;
   return *this;
 }

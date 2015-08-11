@@ -15,12 +15,14 @@ __revision__ = '$Format:%H$'
 import qgis
 import os
 
-from qgis.core import QgsFeature, QgsGeometry, QgsPoint, QgsVectorLayer
+from qgis.core import QgsFeature, QgsGeometry, QgsPoint, QgsVectorLayer, NULL
 from utilities import (unitTestDataPath,
                        getQgisTestApp,
                        TestCase,
                        unittest
                        )
+from unittest import expectedFailure
+
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
 
@@ -67,6 +69,13 @@ class TestQgsFeature(TestCase):
         )
 
         assert myAttributes == myExpectedAttributes, myMessage
+
+    def test_SetAttribute(self):
+        feat = QgsFeature()
+        feat.initAttributes(1)
+        feat.setAttributes([0])
+        feat.setAttributes([NULL])
+        assert [NULL] == feat.attributes()
 
     def test_DeleteAttribute(self):
         feat = QgsFeature()

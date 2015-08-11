@@ -172,7 +172,7 @@ void QgsServer::printRequestParameters( const QMap< QString, QString>& parameter
 }
 
 /**
- * @brief QgsServer::printRequestInfos prints debug informations about the request
+ * @brief QgsServer::printRequestInfos prints debug information about the request
  */
 void QgsServer::printRequestInfos()
 {
@@ -590,6 +590,9 @@ QByteArray QgsServer::handleRequest( const QString queryString ,
   {
     filtersIterator.value()->responseComplete();
   }
+  // We are done using theRequestHandler in plugins, make sure we don't access
+  // to a deleted request handler from Python bindings
+  mServerInterface->clearRequestHandler( );
 #endif
 
   theRequestHandler->sendResponse();

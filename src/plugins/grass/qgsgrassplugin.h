@@ -119,8 +119,6 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     void projectRead();
     //! New project
     void newProject();
-    //! Save mapset to project
-    void saveMapset();
     //! Set edit action
     void setEditAction();
     //! Close the edit if layer is removed

@@ -24,20 +24,20 @@ class QgsVectorLayerEditBuffer : QObject
     /** Insert a copy of the given features into the layer  (but does not commit it) */
     bool addFeatures( QgsFeatureList& features );
 
-    /** delete a feature from the layer (but does not commit it) */
+    /** Delete a feature from the layer (but does not commit it) */
     bool deleteFeature( QgsFeatureId fid );
 
-    /** change feature's geometry */
+    /** Change feature's geometry */
     bool changeGeometry( QgsFeatureId fid, QgsGeometry* geom );
 
-    /** changed an attribute value (but does not commit it) */
+    /** Changed an attribute value (but does not commit it) */
     bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() );
 
-    /** add an attribute field (but does not commit it)
+    /** Add an attribute field (but does not commit it)
         returns true if the field was added */
     bool addAttribute( const QgsField &field );
 
-    /** delete an attribute field (but does not commit it) */
+    /** Delete an attribute field (but does not commit it) */
     bool deleteAttribute( int attr );
 
 
@@ -69,10 +69,10 @@ class QgsVectorLayerEditBuffer : QObject
     /** Changed attributes values which are not commited */
     const QgsChangedAttributesMap& changedAttributeValues();
 
-    /** deleted attributes fields which are not commited. The list is kept sorted. */
+    /** Deleted attributes fields which are not commited. The list is kept sorted. */
     const QgsAttributeList& deletedAttributeIds();
 
-    /** added attributes fields which are not commited */
+    /** Added attributes fields which are not commited */
     const QList<QgsField>& addedAttributes();
 
     /** Changed geometries which are not commited. */
@@ -113,10 +113,10 @@ class QgsVectorLayerEditBuffer : QObject
     /** Update feature with uncommited attribute updates */
     void updateChangedAttributes( QgsFeature &f );
 
-    /** update added and changed features after addition of an attribute */
+    /** Update added and changed features after addition of an attribute */
     void handleAttributeAdded( int index );
 
-    /** update added and changed features after removal of an attribute */
+    /** Update added and changed features after removal of an attribute */
     void handleAttributeDeleted( int index );
 
 

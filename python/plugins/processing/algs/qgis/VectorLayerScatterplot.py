@@ -45,8 +45,8 @@ class VectorLayerScatterplot(GeoAlgorithm):
     YFIELD = 'YFIELD'
 
     def defineCharacteristics(self):
-        self.name = 'Vector layer scatterplot'
-        self.group = 'Graphics'
+        self.name, self.i18n_name = self.trAlgorithm('Vector layer scatterplot')
+        self.group, self.i18n_group = self.trAlgorithm('Graphics')
 
         self.addParameter(ParameterVector(self.INPUT,
             self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))

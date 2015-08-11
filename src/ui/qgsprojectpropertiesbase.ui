@@ -1907,7 +1907,7 @@
                   </sizepolicy>
                  </property>
                  <property name="title">
-                  <string>WFS capabilities</string>
+                  <string>WFS capabilities (also influences DXF export)</string>
                  </property>
                  <property name="syncGroup">
                   <string notr="true">projowsserver</string>

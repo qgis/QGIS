@@ -30,7 +30,7 @@ class QgsConstWkbPtr;
 class QgsWkbPtr;
 class QPainter;
 
-/**\ingroup core
+/** \ingroup core
  * \class QgsVertexId
  * \brief Utility class for identifying a unique vertex within a geometry.
  * \note added in QGIS 2.10
@@ -67,7 +67,7 @@ struct CORE_EXPORT QgsVertexId
   VertexType type;
 };
 
-/**\ingroup core
+/** \ingroup core
  * \class QgsAbstractGeometryV2
  * \brief Abstract base class for all geometries
  * \note added in QGIS 2.10

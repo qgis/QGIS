@@ -121,4 +121,3 @@ void TestQgsStringUtils::soundex()
 
 QTEST_MAIN( TestQgsStringUtils )
 #include "testqgsstringutils.moc"
-

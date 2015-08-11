@@ -34,9 +34,7 @@
 #include <QVector>
 
 #include "qgsvectorlayer.h"
-
 #include "qgsattributeaction.h"
-
 #include "qgis.h" //for globals
 #include "qgsapplication.h"
 #include "qgsclipper.h"
@@ -71,7 +69,7 @@
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsvectorlayerrenderer.h"
 #include "qgsvectorlayerundocommand.h"
-
+#include "qgspointv2.h"
 #include "qgsrendererv2.h"
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2.h"
@@ -246,12 +244,11 @@ void QgsVectorLayer::setDisplayField( QString fldName )
   }
   else
   {
-    const QgsFields &fields = pendingFields();
-    int fieldsSize = fields.size();
+    int fieldsSize = mUpdatedFields.size();
 
-    for ( int idx = 0; idx < fields.count(); ++idx )
+    for ( int idx = 0; idx < mUpdatedFields.count(); ++idx )
     {
-      QString fldName = fields[idx].name();
+      QString fldName = mUpdatedFields[idx].name();
       QgsDebugMsg( "Checking field " + fldName + " of " + QString::number( fieldsSize ) + " total" );
 
       // Check the fields and keep the first one that matches.
@@ -297,7 +294,7 @@ void QgsVectorLayer::setDisplayField( QString fldName )
       }
       else
       {
-        mDisplayField = fields[0].name();
+        mDisplayField = mUpdatedFields[0].name();
       }
     }
 
@@ -326,7 +323,7 @@ void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
       attributes.append( attrNum );
     }
     // make sure the renderer is ready for classification ("symbolForFeature")
-    mRendererV2->startRender( rendererContext, pendingFields() );
+    mRendererV2->startRender( rendererContext, fields() );
 
     // Add fields required for labels
     mLabel->addRequiredFields( attributes );
@@ -678,17 +675,6 @@ bool QgsVectorLayer::diagramsEnabled() const
   return false;
 }
 
-long QgsVectorLayer::featureCount() const
-{
-  if ( !mDataProvider )
-  {
-    QgsDebugMsg( "invoked with null mDataProvider" );
-    return 0;
-  }
-
-  return mDataProvider->featureCount();
-}
-
 long QgsVectorLayer::featureCount( QgsSymbolV2* symbol )
 {
   if ( !mSymbolFeatureCounted ) return -1;
@@ -719,7 +705,7 @@ bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
     mSymbolFeatureCountMap.insert( symbolIt->second, 0 );
   }
 
-  long nFeatures = pendingFeatureCount();
+  long nFeatures = featureCount();
   QProgressDialog progressDialog( tr( "Updating feature count for layer %1" ).arg( name() ), tr( "Abort" ), 0, nFeatures );
   progressDialog.setWindowTitle( tr( "QGIS" ) );
   progressDialog.setWindowModality( Qt::WindowModal );
@@ -730,7 +716,7 @@ bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
   // Renderer (rule based) may depend on context scale, with scale is ignored if 0
   QgsRenderContext renderContext;
   renderContext.setRendererScale( 0 );
-  mRendererV2->startRender( renderContext, pendingFields() );
+  mRendererV2->startRender( renderContext, fields() );
 
   QgsFeature f;
   while ( fit.nextFeature( f ) )
@@ -990,6 +976,14 @@ bool QgsVectorLayer::moveVertex( double x, double y, QgsFeatureId atFeatureId, i
   return utils.moveVertex( x, y, atFeatureId, atVertex );
 }
 
+bool QgsVectorLayer::moveVertex( const QgsPointV2& p, QgsFeatureId atFeatureId, int atVertex )
+{
+  if ( !mEditBuffer || !mDataProvider )
+    return false;
+
+  QgsVectorLayerEditUtils utils( this );
+  return utils.moveVertex( p, atFeatureId, atVertex );
+}
 
 bool QgsVectorLayer::deleteVertex( QgsFeatureId atFeatureId, int atVertex )
 {
@@ -1698,8 +1692,8 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
       {
         int index = aliasElem.attribute( "index" ).toInt();
 
-        if ( index >= 0 && index < pendingFields().count() )
-          field = pendingFields()[ index ].name();
+        if ( index >= 0 && index < fields().count() )
+          field = fields()[ index ].name();
       }
 
       mAttributeAliasMap.insert( field, aliasElem.attribute( "name" ) );
@@ -2100,10 +2094,10 @@ bool QgsVectorLayer::addAttribute( const QgsField &field )
 
 void QgsVectorLayer::remAttributeAlias( int attIndex )
 {
-  if ( attIndex < 0 || attIndex >= pendingFields().count() )
+  if ( attIndex < 0 || attIndex >= fields().count() )
     return;
 
-  QString name = pendingFields()[ attIndex ].name();
+  QString name = fields()[ attIndex ].name();
   if ( mAttributeAliasMap.contains( name ) )
   {
     mAttributeAliasMap.remove( name );
@@ -2113,10 +2107,10 @@ void QgsVectorLayer::remAttributeAlias( int attIndex )
 
 void QgsVectorLayer::addAttributeAlias( int attIndex, QString aliasString )
 {
-  if ( attIndex < 0 || attIndex >= pendingFields().count() )
+  if ( attIndex < 0 || attIndex >= fields().count() )
     return;
 
-  QString name = pendingFields()[ attIndex ].name();
+  QString name = fields()[ attIndex ].name();
 
   mAttributeAliasMap.insert( name, aliasString );
   emit layerModified(); // TODO[MD]: should have a different signal?
@@ -2155,10 +2149,10 @@ const QgsEditorWidgetConfig QgsVectorLayer::editorWidgetV2Config( const QString&
 
 QString QgsVectorLayer::attributeAlias( int attributeIndex ) const
 {
-  if ( attributeIndex < 0 || attributeIndex >= pendingFields().count() )
+  if ( attributeIndex < 0 || attributeIndex >= fields().count() )
     return "";
 
-  QString name = pendingFields()[ attributeIndex ].name();
+  QString name = fields()[ attributeIndex ].name();
 
   return mAttributeAliasMap.value( name, "" );
 }
@@ -2168,10 +2162,9 @@ QString QgsVectorLayer::attributeDisplayName( int attributeIndex ) const
   QString displayName = attributeAlias( attributeIndex );
   if ( displayName.isEmpty() )
   {
-    const QgsFields& fields = pendingFields();
-    if ( attributeIndex >= 0 && attributeIndex < fields.count() )
+    if ( attributeIndex >= 0 && attributeIndex < mUpdatedFields.count() )
     {
-      displayName = fields[attributeIndex].name();
+      displayName = mUpdatedFields[attributeIndex].name();
     }
   }
   return displayName;
@@ -2179,7 +2172,7 @@ QString QgsVectorLayer::attributeDisplayName( int attributeIndex ) const
 
 bool QgsVectorLayer::deleteAttribute( int index )
 {
-  if ( index < 0 || index >= pendingFields().count() )
+  if ( index < 0 || index >= fields().count() )
     return false;
 
   if ( mUpdatedFields.fieldOrigin( index ) == QgsFields::OriginExpression )
@@ -2228,17 +2221,7 @@ bool QgsVectorLayer::deleteFeature( QgsFeatureId fid )
   return res;
 }
 
-const QgsFields &QgsVectorLayer::pendingFields() const
-{
-  return mUpdatedFields;
-}
-
-QgsAttributeList QgsVectorLayer::pendingAllAttributesList()
-{
-  return mUpdatedFields.allAttributesList();
-}
-
-QgsAttributeList QgsVectorLayer::pendingPkAttributesList()
+QgsAttributeList QgsVectorLayer::pkAttributeList() const
 {
   QgsAttributeList pkAttributesList;
 
@@ -2253,7 +2236,7 @@ QgsAttributeList QgsVectorLayer::pendingPkAttributesList()
   return pkAttributesList;
 }
 
-int QgsVectorLayer::pendingFeatureCount()
+long QgsVectorLayer::featureCount() const
 {
   return mDataProvider->featureCount() +
          ( mEditBuffer ? mEditBuffer->mAddedFeatures.size() - mEditBuffer->mDeletedFeatureIds.size() : 0 );
@@ -2753,13 +2736,12 @@ QSize QgsVectorLayer::widgetSize( int idx )
 
 bool QgsVectorLayer::fieldEditable( int idx )
 {
-  const QgsFields &fields = pendingFields();
-  if ( idx >= 0 && idx < fields.count() )
+  if ( idx >= 0 && idx < mUpdatedFields.count() )
   {
     if ( mUpdatedFields.fieldOrigin( idx ) == QgsFields::OriginJoin
          || mUpdatedFields.fieldOrigin( idx ) == QgsFields::OriginExpression )
       return false;
-    return mFieldEditables.value( fields[idx].name(), true );
+    return mFieldEditables.value( mUpdatedFields[idx].name(), true );
   }
   else
     return true;
@@ -2767,30 +2749,22 @@ bool QgsVectorLayer::fieldEditable( int idx )
 
 bool QgsVectorLayer::labelOnTop( int idx )
 {
-  const QgsFields &fields = pendingFields();
-  if ( idx >= 0 && idx < fields.count() )
-    return mLabelOnTop.value( fields[idx].name(), false );
+  if ( idx >= 0 && idx < mUpdatedFields.count() )
+    return mLabelOnTop.value( mUpdatedFields[idx].name(), false );
   else
     return false;
 }
 
 void QgsVectorLayer::setFieldEditable( int idx, bool editable )
 {
-  const QgsFields &fields = pendingFields();
-  if ( idx >= 0 && idx < fields.count() )
-    mFieldEditables[ fields[idx].name()] = editable;
+  if ( idx >= 0 && idx < mUpdatedFields.count() )
+    mFieldEditables[ mUpdatedFields[idx].name()] = editable;
 }
 
 void QgsVectorLayer::setLabelOnTop( int idx, bool onTop )
 {
-  const QgsFields &fields = pendingFields();
-  if ( idx >= 0 && idx < fields.count() )
-    mLabelOnTop[ fields[idx].name()] = onTop;
-}
-
-QgsFeatureRendererV2* QgsVectorLayer::rendererV2()
-{
-  return mRendererV2;
+  if ( idx >= 0 && idx < mUpdatedFields.count() )
+    mLabelOnTop[ mUpdatedFields[idx].name()] = onTop;
 }
 
 void QgsVectorLayer::setRendererV2( QgsFeatureRendererV2 *r )
@@ -2871,7 +2845,7 @@ void QgsVectorLayer::setCheckedState( int idx, QString checked, QString unchecke
 
 int QgsVectorLayer::fieldNameIndex( const QString& fieldName ) const
 {
-  return pendingFields().fieldNameIndex( fieldName );
+  return fields().fieldNameIndex( fieldName );
 }
 
 bool QgsVectorLayer::addJoin( const QgsVectorJoinInfo& joinInfo )
@@ -2969,6 +2943,10 @@ void QgsVectorLayer::uniqueValues( int index, QList<QVariant> &uniqueValues, int
   }
 
   QgsFields::FieldOrigin origin = mUpdatedFields.fieldOrigin( index );
+  if ( origin == QgsFields::OriginUnknown )
+  {
+    return;
+  }
 
   if ( origin == QgsFields::OriginProvider ) //a provider field
   {
@@ -3059,6 +3037,10 @@ QVariant QgsVectorLayer::minimumValue( int index )
   }
 
   QgsFields::FieldOrigin origin = mUpdatedFields.fieldOrigin( index );
+  if ( origin == QgsFields::OriginUnknown )
+  {
+    return QVariant();
+  }
 
   if ( origin == QgsFields::OriginProvider ) //a provider field
   {
@@ -3121,6 +3103,10 @@ QVariant QgsVectorLayer::maximumValue( int index )
   }
 
   QgsFields::FieldOrigin origin = mUpdatedFields.fieldOrigin( index );
+  if ( origin == QgsFields::OriginUnknown )
+  {
+    return QVariant();
+  }
 
   if ( origin == QgsFields::OriginProvider ) //a provider field
   {
@@ -3186,7 +3172,7 @@ QList<QVariant> QgsVectorLayer::getValues( const QString &fieldOrExpression, boo
   {
     // try to use expression
     expression.reset( new QgsExpression( fieldOrExpression ) );
-    if ( expression->hasParserError() || !expression->prepare( pendingFields() ) )
+    if ( expression->hasParserError() || !expression->prepare( fields() ) )
     {
       ok = false;
       return values;
@@ -3204,7 +3190,7 @@ QList<QVariant> QgsVectorLayer::getValues( const QString &fieldOrExpression, boo
                               .setFlags(( expression && expression->needsGeometry() ) ?
                                         QgsFeatureRequest::NoFlags :
                                         QgsFeatureRequest::NoGeometry )
-                              .setSubsetOfAttributes( lst, pendingFields() );
+                              .setSubsetOfAttributes( lst, fields() );
 
   QgsFeatureIterator fit;
   if ( !selectedOnly )
@@ -3582,14 +3568,14 @@ QString QgsVectorLayer::metadata()
     myMetadata += "</p>\n";
   }
 
-  QgsAttributeList pkAttrList = pendingPkAttributesList();
+  QgsAttributeList pkAttrList = pkAttributeList();
   if ( !pkAttrList.isEmpty() )
   {
     myMetadata += "<p class=\"glossy\">" + tr( "Primary key attributes" ) + "</p>\n";
     myMetadata += "<p>";
     foreach ( int idx, pkAttrList )
     {
-      myMetadata += pendingFields()[ idx ].name() + " ";
+      myMetadata += fields()[ idx ].name() + " ";
     }
     myMetadata += "</p>\n";
   }

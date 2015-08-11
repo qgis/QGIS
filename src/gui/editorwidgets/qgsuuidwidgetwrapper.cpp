@@ -49,6 +49,11 @@ void QgsUuidWidgetWrapper::initWidget( QWidget* editor )
     mLineEdit->setEnabled( false );
 }
 
+bool QgsUuidWidgetWrapper::valid()
+{
+  return mLineEdit || mLabel;
+}
+
 void QgsUuidWidgetWrapper::setValue( const QVariant& value )
 {
   if ( value.isNull() )

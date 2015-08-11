@@ -46,8 +46,8 @@ class RandomPointsExtent(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Random points in extent'
-        self.group = 'Vector creation tools'
+        self.name, self.i18n_name = self.trAlgorithm('Random points in extent')
+        self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
         self.addParameter(ParameterExtent(self.EXTENT,
             self.tr('Input extent')))
         self.addParameter(ParameterNumber(self.POINT_NUMBER,

@@ -369,6 +369,42 @@ void QgsCoordinateTransform::transformInPlace( double& x, double& y, double& z,
   }
 }
 
+void QgsCoordinateTransform::transformInPlace( float& x, float& y, double& z,
+    TransformDirection direction ) const
+{
+  double xd = ( double )x, yd = ( double )y;
+  transformInPlace( xd, yd, z, direction );
+  x = xd;
+  y = yd;
+}
+
+void QgsCoordinateTransform::transformInPlace( float& x, float& y, float& z,
+    TransformDirection direction ) const
+{
+  if ( mShortCircuit || !mInitialisedFlag )
+    return;
+#ifdef QGISDEBUG
+  // QgsDebugMsg(QString("Using transform in place %1 %2").arg(__FILE__).arg(__LINE__));
+#endif
+  // transform x
+  try
+  {
+    double xd = x;
+    double yd = y;
+    double zd = z;
+    transformCoords( 1, &xd, &yd, &zd, direction );
+    x = xd;
+    y = yd;
+    z = zd;
+  }
+  catch ( QgsCsException & )
+  {
+    // rethrow the exception
+    QgsDebugMsg( "rethrowing exception" );
+    throw;
+  }
+}
+
 void QgsCoordinateTransform::transformPolygon( QPolygonF& poly, TransformDirection direction ) const
 {
   if ( mShortCircuit || !mInitialisedFlag )
@@ -436,44 +472,6 @@ void QgsCoordinateTransform::transformInPlace(
   }
 }
 
-#ifdef QT_ARCH_ARM
-void QgsCoordinateTransform::transformInPlace( qreal& x, qreal& y, double& z,
-    TransformDirection direction ) const
-{
-  double xd = ( double ) x, yd = ( double ) y;
-  transformInPlace( xd, yd, z, direction );
-  x = xd;
-  y = yd;
-}
-#endif
-
-#ifdef ANDROID
-void QgsCoordinateTransform::transformInPlace( float& x, float& y, float& z,
-    TransformDirection direction ) const
-{
-  if ( mShortCircuit || !mInitialisedFlag )
-    return;
-#ifdef QGISDEBUG
-// QgsDebugMsg(QString("Using transform in place %1 %2").arg(__FILE__).arg(__LINE__));
-#endif
-  // transform x
-  try
-  {
-    double xd = x;
-    double yd = y;
-    double zd = z;
-    transformCoords( 1, &xd, &yd, &zd, direction );
-    x = xd;
-    y = yd;
-    z = zd;
-  }
-  catch ( QgsCsException & )
-  {
-    // rethrow the exception
-    QgsDebugMsg( "rethrowing exception" );
-    throw;
-  }
-}
 
 void QgsCoordinateTransform::transformInPlace(
   QVector<float>& x, QVector<float>& y, QVector<float>& z,
@@ -519,8 +517,6 @@ void QgsCoordinateTransform::transformInPlace(
     throw;
   }
 }
-#endif //ANDROID
-
 
 QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &rect, TransformDirection direction, const bool handle180Crossover ) const
 {

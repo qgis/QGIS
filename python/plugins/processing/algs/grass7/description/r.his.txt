@@ -1,5 +1,5 @@
 r.his
-r.his - Generates red, green and blue raster layers combining hue, intensity and saturation (HIS) values from user-specified input raster layers.
+Generates red, green and blue raster layers combining hue, intensity and saturation (HIS) values from user-specified input raster layers.
 Raster (r.*)
 ParameterRaster|hue|Hue|False
 ParameterRaster|intensity|Intensity|False

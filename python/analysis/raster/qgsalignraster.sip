@@ -4,7 +4,7 @@ class QgsAlignRaster
 %TypeHeaderCode
 #include <qgsalignraster.h>
 %End
-    
+
   public:
     QgsAlignRaster();
 

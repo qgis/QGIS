@@ -400,7 +400,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     connect( vlayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
   }
 
-  QgsIdentifyResultsFeatureItem *featItem = new QgsIdentifyResultsFeatureItem( vlayer->pendingFields(), f, vlayer->crs() );
+  QgsIdentifyResultsFeatureItem *featItem = new QgsIdentifyResultsFeatureItem( vlayer->fields(), f, vlayer->crs() );
   featItem->setData( 0, Qt::UserRole, FID_TO_STRING( f.id() ) );
   featItem->setData( 0, Qt::UserRole + 1, mFeatures.size() );
   mFeatures << f;
@@ -421,13 +421,13 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
   //get valid QgsMapLayerActions for this layer
   QList< QgsMapLayerAction* > registeredActions = QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer );
 
-  if ( vlayer->pendingFields().size() > 0 || vlayer->actions()->size() || registeredActions.size() )
+  if ( vlayer->fields().size() > 0 || vlayer->actions()->size() || registeredActions.size() )
   {
     QTreeWidgetItem *actionItem = new QTreeWidgetItem( QStringList() << tr( "(Actions)" ) );
     actionItem->setData( 0, Qt::UserRole, "actions" );
     featItem->addChild( actionItem );
 
-    if ( vlayer->pendingFields().size() > 0 )
+    if ( vlayer->fields().size() > 0 )
     {
       QTreeWidgetItem *editItem = new QTreeWidgetItem( QStringList() << "" << ( vlayer->isEditable() ? tr( "Edit feature form" ) : tr( "View feature form" ) ) );
       editItem->setIcon( 0, QgsApplication::getThemeIcon( "/mActionPropertyItem.png" ) );
@@ -463,7 +463,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     }
   }
 
-  const QgsFields &fields = vlayer->pendingFields();
+  const QgsFields &fields = vlayer->fields();
   QgsAttributes attrs = f.attributes();
   bool featureLabeled = false;
   for ( int i = 0; i < attrs.count(); ++i )
@@ -1156,7 +1156,7 @@ void QgsIdentifyResultsDialog::doAction( QTreeWidgetItem *item, int action )
   {
     QString fieldName = item->data( 0, Qt::DisplayRole ).toString();
 
-    const QgsFields& fields = layer->pendingFields();
+    const QgsFields& fields = layer->fields();
     for ( int fldIdx = 0; fldIdx < fields.count(); ++fldIdx )
     {
       if ( fields[fldIdx].name() == fieldName )
@@ -1452,10 +1452,10 @@ void QgsIdentifyResultsDialog::attributeValueChanged( QgsFeatureId fid, int idx,
   if ( !layItem )
     return;
 
-  if ( idx >= vlayer->pendingFields().size() )
+  if ( idx >= vlayer->fields().size() )
     return;
 
-  const QgsField &fld = vlayer->pendingFields().at( idx );
+  QgsField fld = vlayer->fields().at( idx );
 
   for ( int i = 0; i < layItem->childCount(); i++ )
   {
@@ -1688,7 +1688,7 @@ void QgsIdentifyResultsDialog::copyFeatureAttributes()
     QgsAttributeMap attributes;
     retrieveAttributes( lstResults->currentItem(), attributes, idx );
 
-    const QgsFields &fields = vlayer->pendingFields();
+    const QgsFields &fields = vlayer->fields();
 
     for ( QgsAttributeMap::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
     {

@@ -42,19 +42,19 @@ class QgsMapToPixel;
 class QPainter;
 class QgsPolygonV2;
 
-/** polyline is represented as a vector of points */
+/** Polyline is represented as a vector of points */
 typedef QVector<QgsPoint> QgsPolyline;
 
-/** polygon: first item of the list is outer ring, inner rings (if any) start from second item */
+/** Polygon: first item of the list is outer ring, inner rings (if any) start from second item */
 typedef QVector<QgsPolyline> QgsPolygon;
 
-/** a collection of QgsPoints that share a common collection of attributes */
+/** A collection of QgsPoints that share a common collection of attributes */
 typedef QVector<QgsPoint> QgsMultiPoint;
 
-/** a collection of QgsPolylines that share a common collection of attributes */
+/** A collection of QgsPolylines that share a common collection of attributes */
 typedef QVector<QgsPolyline> QgsMultiPolyline;
 
-/** a collection of QgsPolygons that share a common collection of attributes */
+/** A collection of QgsPolygons that share a common collection of attributes */
 typedef QVector<QgsPolygon> QgsMultiPolygon;
 
 class QgsRectangle;
@@ -78,10 +78,10 @@ class CORE_EXPORT QgsGeometry
     //! Constructor
     QgsGeometry();
 
-    /** copy constructor will prompt a deep copy of the object */
+    /** Copy constructor will prompt a deep copy of the object */
     QgsGeometry( const QgsGeometry & );
 
-    /** assignments will prompt a deep copy of the object
+    /** Assignments will prompt a deep copy of the object
       @note not available in python bindings
       */
     QgsGeometry & operator=( QgsGeometry const & rhs );
@@ -300,61 +300,61 @@ class CORE_EXPORT QgsGeometry
      */
     double closestSegmentWithContext( const QgsPoint& point, QgsPoint& minDistPoint, int& afterVertex, double* leftOf = 0, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
 
-    /**Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
+    /** Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
      @return 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
      3 ring is not valid geometry, 4 ring not disjoint with existing rings, 5 no polygon found which contained the ring*/
     int addRing( const QList<QgsPoint>& ring );
 
-    /**Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
+    /** Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
      @return 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
      3 ring is not valid geometry, 4 ring not disjoint with existing rings, 5 no polygon found which contained the ring*/
     int addRing( QgsCurveV2* ring );
 
-    /**Adds a new island polygon to a multipolygon feature
+    /** Adds a new island polygon to a multipolygon feature
      @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
      not disjoint with existing polygons of the feature*/
     int addPart( const QList<QgsPoint> &points, QGis::GeometryType geomType = QGis::UnknownGeometry );
 
-    /**Adds a new part to this geometry (takes ownership)
+    /** Adds a new part to this geometry (takes ownership)
      @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
      not disjoint with existing polygons of the feature*/
     int addPart( QgsAbstractGeometryV2* part );
 
-    /**Adds a new island polygon to a multipolygon feature
+    /** Adds a new island polygon to a multipolygon feature
      @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
      not disjoint with existing polygons of the feature
      @note not available in python bindings
      */
     int addPart( GEOSGeometry *newPart );
 
-    /**Adds a new island polygon to a multipolygon feature
+    /** Adds a new island polygon to a multipolygon feature
      @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
      not disjoint with existing polygons of the feature
      @note available in python bindings as addPartGeometry (added in 2.2)
      */
     int addPart( const QgsGeometry *newPart );
 
-    /**Translate this geometry by dx, dy
+    /** Translate this geometry by dx, dy
      @return 0 in case of success*/
     int translate( double dx, double dy );
 
-    /**Transform this geometry as described by CoordinateTransform ct
+    /** Transform this geometry as described by CoordinateTransform ct
      @return 0 in case of success*/
     int transform( const QgsCoordinateTransform& ct );
 
-    /**Transform this geometry as described by QTransform ct
+    /** Transform this geometry as described by QTransform ct
      @note added in 2.8
      @return 0 in case of success*/
     int transform( const QTransform& ct );
 
-    /**Rotate this geometry around the Z axis
+    /** Rotate this geometry around the Z axis
          @note added in 2.8
          @param rotation clockwise rotation in degrees
          @param center rotation center
          @return 0 in case of success*/
     int rotate( double rotation, const QgsPoint& center );
 
-    /**Splits this geometry according to a given line.
+    /** Splits this geometry according to a given line.
     @param splitLine the line that splits the geometry
     @param[out] newGeometries list of new geometries that have been created with the split
     @param topological true if topological editing is enabled
@@ -365,17 +365,17 @@ class CORE_EXPORT QgsGeometry
                        bool topological,
                        QList<QgsPoint> &topologyTestPoints );
 
-    /**Replaces a part of this geometry with another line
+    /** Replaces a part of this geometry with another line
       @return 0 in case of success
       @note: this function was added in version 1.3*/
     int reshapeGeometry( const QList<QgsPoint>& reshapeWithLine );
 
-    /**Changes this geometry such that it does not intersect the other geometry
+    /** Changes this geometry such that it does not intersect the other geometry
        @param other geometry that should not be intersect
        @return 0 in case of success*/
     int makeDifference( const QgsGeometry* other );
 
-    /**Returns the bounding box of this feature*/
+    /** Returns the bounding box of this feature*/
     QgsRectangle boundingBox() const;
 
     /** Test for intersection with a rectangle (uses GEOS) */
@@ -522,13 +522,13 @@ class CORE_EXPORT QgsGeometry
      @note added in version 1.1 */
     QList<QgsGeometry*> asGeometryCollection() const;
 
-    /**Return contents of the geometry as a QPointF if wkbType is WKBPoint,
+    /** Return contents of the geometry as a QPointF if wkbType is WKBPoint,
     * otherwise returns a null QPointF.
     * @note added in QGIS 2.7
     */
     QPointF asQPointF() const;
 
-    /**Return contents of the geometry as a QPolygonF. If geometry is a linestring,
+    /** Return contents of the geometry as a QPolygonF. If geometry is a linestring,
     * then the result will be an open QPolygonF. If the geometry is a polygon,
     * then the result will be a closed QPolygonF of the geometry's exterior ring.
     * @note added in QGIS 2.7
@@ -587,7 +587,7 @@ class CORE_EXPORT QgsGeometry
      **/
     void validateGeometry( QList<Error> &errors );
 
-    /** compute the unary union on a list of geometries. May be faster than an iterative union on a set of geometries.
+    /** Compute the unary union on a list of geometries. May be faster than an iterative union on a set of geometries.
         @param geometryList a list of QgsGeometry* as input
         @returns the new computed QgsGeometry, or null
     */
@@ -642,19 +642,19 @@ class CORE_EXPORT QgsGeometry
      */
     int vertexNrFromVertexId( const QgsVertexId& i ) const;
 
-    /** return GEOS context handle
+    /** Return GEOS context handle
      * @note added in 2.6
      * @note not available in Python
      */
     static GEOSContextHandle_t getGEOSHandler();
 
-    /**Construct geometry from a QPointF
+    /** Construct geometry from a QPointF
     * @param point source QPointF
     * @note added in QGIS 2.7
     */
     static QgsGeometry* fromQPointF( const QPointF& point );
 
-    /**Construct geometry from a QPolygonF. If the polygon is closed than
+    /** Construct geometry from a QPolygonF. If the polygon is closed than
     * the resultant geometry will be a polygon, if it is open than the
     * geometry will be a polyline.
     * @param polygon source QPolygonF
@@ -707,7 +707,7 @@ class CORE_EXPORT QgsGeometry
      */
     static bool compare( const QgsMultiPolygon& p1, const QgsMultiPolygon& p2, double epsilon = 4 * DBL_EPSILON );
 
-    /**Smooths a geometry by rounding off corners using the Chaikin algorithm. This operation
+    /** Smooths a geometry by rounding off corners using the Chaikin algorithm. This operation
     * roughly doubles the number of vertices in a geometry.
     * @param iterations number of smoothing iterations to run. More iterations results
     * in a smoother geometry
@@ -718,14 +718,18 @@ class CORE_EXPORT QgsGeometry
     */
     QgsGeometry* smooth( const unsigned int iterations = 1, const double offset = 0.25 ) const;
 
-    /**Smooths a polygon using the Chaikin algorithm*/
+    /** Smooths a polygon using the Chaikin algorithm*/
     QgsPolygon smoothPolygon( const QgsPolygon &polygon, const unsigned int iterations = 1, const double offset = 0.25 ) const;
-    /**Smooths a polyline using the Chaikin algorithm*/
+    /** Smooths a polyline using the Chaikin algorithm*/
     QgsPolyline smoothLine( const QgsPolyline &polyline, const unsigned int iterations = 1, const double offset = 0.25 ) const;
 
     /** Creates and returns a new geometry engine
      */
     static QgsGeometryEngine* createGeometryEngine( const QgsAbstractGeometryV2* geometry );
+
+    //convert point list from v1 to v2
+    static void convertPointList( const QList<QgsPoint>& input, QList<QgsPointV2>& output );
+    static void convertPointList( const QList<QgsPointV2>& input, QList<QgsPoint>& output );
 
   private:
 
@@ -734,17 +738,14 @@ class CORE_EXPORT QgsGeometry
     void detach( bool cloneGeom = true ); //make sure mGeometry only referenced from this instance
     void removeWkbGeos();
 
-    //convert point list from v1 to v2
-    static void convertPointList( const QList<QgsPoint>& input, QList<QgsPointV2>& output );
-    static void convertPointList( const QList<QgsPointV2>& input, QList<QgsPoint>& output );
     static void convertToPolyline( const QList<QgsPointV2>& input, QgsPolyline& output );
     static void convertPolygon( const QgsPolygonV2& input, QgsPolygon& output );
 
-    /** try to convert the geometry to a point */
+    /** Try to convert the geometry to a point */
     QgsGeometry* convertToPoint( bool destMultipart ) const;
-    /** try to convert the geometry to a line */
+    /** Try to convert the geometry to a line */
     QgsGeometry* convertToLine( bool destMultipart ) const;
-    /** try to convert the geometry to a polygon */
+    /** Try to convert the geometry to a polygon */
     QgsGeometry* convertToPolygon( bool destMultipart ) const;
 }; // class QgsGeometry
 

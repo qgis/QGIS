@@ -122,7 +122,7 @@ void QgsComposerHtmlWidget::on_mUrlLineEdit_editingFinished()
     QgsComposition* composition = mHtml->composition();
     if ( composition )
     {
-      composition->beginMultiFrameCommand( mHtml, tr( "Change html url" ) );
+      composition->beginMultiFrameCommand( mHtml, tr( "Change HTML url" ) );
       mHtml->setUrl( newUrl );
       mHtml->update();
       composition->endMultiFrameCommand();

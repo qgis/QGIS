@@ -23,9 +23,11 @@ class QgsRubberBand;
 class QgsVectorLayer;
 class QKeyEvent;
 
-/**Base class for map tools that edit vector geometry*/
+/** Base class for map tools that edit vector geometry*/
 class APP_EXPORT QgsMapToolEdit: public QgsMapToolAdvancedDigitizing
 {
+    Q_OBJECT
+
   public:
     QgsMapToolEdit( QgsMapCanvas* canvas );
     virtual ~QgsMapToolEdit();
@@ -42,17 +44,17 @@ class APP_EXPORT QgsMapToolEdit: public QgsMapToolAdvancedDigitizing
     */
     QgsRubberBand* createRubberBand( QGis::GeometryType geometryType = QGis::Line, bool alternativeBand = false );
 
-    /**Returns the current vector layer of the map canvas or 0*/
+    /** Returns the current vector layer of the map canvas or 0*/
     QgsVectorLayer* currentVectorLayer();
 
-    /**Adds vertices to other features to keep topology up to date, e.g. to neighbouring polygons.
+    /** Adds vertices to other features to keep topology up to date, e.g. to neighbouring polygons.
        @param geom list of points (in layer coordinate system)
        @return 0 in case of success*/
     int addTopologicalPoints( const QList<QgsPoint>& geom );
 
-    /**Display a timed message bar noting the active layer is not vector. */
+    /** Display a timed message bar noting the active layer is not vector. */
     void notifyNotVectorLayer();
-    /**Display a timed message bar noting the active vector layer is not editable. */
+    /** Display a timed message bar noting the active vector layer is not editable. */
     void notifyNotEditableLayer();
 };
 

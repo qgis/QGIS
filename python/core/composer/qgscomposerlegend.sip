@@ -34,19 +34,19 @@ class QgsComposerLegend : QgsComposerItem
     QgsComposerLegend( QgsComposition* composition /TransferThis/);
     ~QgsComposerLegend();
 
-    /** return correct graphics item type. Added in v1.7 */
+    /** Return correct graphics item type. Added in v1.7 */
     virtual int type() const;
 
     /** \brief Reimplementation of QCanvasItem::paint*/
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
 
-    /**Paints the legend and calculates its size. If painter is 0, only size is calculated*/
+    /** Paints the legend and calculates its size. If painter is 0, only size is calculated*/
     QSizeF paintAndDetermineSize( QPainter* painter );
 
-    /**Sets item box to the whole content*/
+    /** Sets item box to the whole content*/
     void adjustBoxSize();
 
-    /**Returns pointer to the legend model*/
+    /** Returns pointer to the legend model*/
     //! @note deprecated in 2.6 - use modelV2()
     QgsLegendModel* model() /Deprecated/;
 
@@ -69,13 +69,13 @@ class QgsComposerLegend : QgsComposerItem
     void setTitle( const QString& t );
     QString title() const;
 
-    /**Returns the alignment of the legend title
+    /** Returns the alignment of the legend title
      * @returns Qt::AlignmentFlag for the legend title
      * @note added in 2.3
      * @see setTitleAlignment
     */
     Qt::AlignmentFlag titleAlignment() const;
-    /**Sets the alignment of the legend title
+    /** Sets the alignment of the legend title
      * @param alignment Text alignment for drawing the legend title
      * @note added in 2.3
      * @see titleAlignment
@@ -132,24 +132,24 @@ class QgsComposerLegend : QgsComposerItem
     void setComposerMap( const QgsComposerMap* map );
     const QgsComposerMap* composerMap() const;
 
-    /**Updates the model and all legend entries*/
+    /** Updates the model and all legend entries*/
     void updateLegend();
 
-    /** stores state in Dom node
+    /** Stores state in Dom node
        * @param elem is Dom element corresponding to 'Composer' tag
        * @param doc Dom document
        */
     bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
 
-    /** sets state from Dom document
+    /** Sets state from Dom document
        * @param itemElem is Dom node corresponding to item tag
        * @param doc is Dom document
        */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
   public slots:
-    /**Data changed*/
+    /** Data changed*/
     void synchronizeWithModel();
-    /**Sets mCompositionMap to 0 if the map is deleted*/
+    /** Sets mCompositionMap to 0 if the map is deleted*/
     void invalidateCurrentMap();
 };

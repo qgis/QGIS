@@ -43,8 +43,8 @@ class lasgroundPro(LAStoolsAlgorithm):
     GRANULARITIES = ["coarse", "default", "fine", "extra_fine", "ultra_fine"]
 
     def defineCharacteristics(self):
-        self.name = "lasgroundPro"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('lasgroundPro')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersHorizontalAndVerticalFeetGUI()
         self.addParameter(ParameterBoolean(lasgroundPro.NO_BULGE,

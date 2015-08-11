@@ -29,7 +29,7 @@ class APP_EXPORT QgsHandleBadLayersHandler
   public:
     QgsHandleBadLayersHandler();
 
-    /** implementation of the handler */
+    /** Implementation of the handler */
     virtual void handleBadLayers( QList<QDomNode> layers, QDomDocument projectDom ) override;
 };
 

@@ -66,7 +66,8 @@ const unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRe
   unsigned int wkbType, nPoints;
   wkbPtr >> wkbType >> nPoints;
 
-  bool hasZValue = (( QgsWKBTypes::Type )wkbType == QgsWKBTypes::LineString25D ) || (( QgsWKBTypes::Type )wkbType == QgsWKBTypes::LineStringZ );
+  bool hasZValue = QgsWKBTypes::hasZ(( QgsWKBTypes::Type )wkbType );
+  bool hasMValue = QgsWKBTypes::hasM(( QgsWKBTypes::Type )wkbType );
 
   double x = 0.0;
   double y = 0.0;
@@ -90,6 +91,8 @@ const unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRe
     {
       wkbPtr >> x >> y;
       if ( hasZValue )
+        wkbPtr += sizeof( double );
+      if ( hasMValue )
         wkbPtr += sizeof( double );
 
       *ptr = QPointF( x, y );
@@ -121,7 +124,8 @@ const unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QP
   if ( numRings == 0 )  // sanity check for zero rings in polygon
     return wkbPtr;
 
-  bool hasZValue = (( QgsWKBTypes::Type )wkbType == QgsWKBTypes::Polygon25D ) || (( QgsWKBTypes::Type )wkbType == QgsWKBTypes::PolygonZ );
+  bool hasZValue = QgsWKBTypes::hasZ(( QgsWKBTypes::Type )wkbType );
+  bool hasMValue = QgsWKBTypes::hasM(( QgsWKBTypes::Type )wkbType );
 
   double x, y;
   holes.clear();
@@ -145,6 +149,8 @@ const unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QP
     {
       wkbPtr >> x >> y;
       if ( hasZValue )
+        wkbPtr += sizeof( double );
+      if ( hasMValue )
         wkbPtr += sizeof( double );
 
       *ptr = QPointF( x, y );
@@ -209,6 +215,7 @@ QgsFeatureRendererV2::QgsFeatureRendererV2( QString type )
     , mCurrentVertexMarkerType( QgsVectorLayer::Cross )
     , mCurrentVertexMarkerSize( 3 )
     , mPaintEffect( 0 )
+    , mForceRaster( false )
 {
   mPaintEffect = QgsPaintEffectRegistry::defaultStack();
   mPaintEffect->setEnabled( false );
@@ -226,7 +233,7 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::defaultRenderer( QGis::GeometryType 
 
 void QgsFeatureRendererV2::startRender( QgsRenderContext& context, const QgsVectorLayer* vlayer )
 {
-  startRender( context, vlayer->pendingFields() );
+  startRender( context, vlayer->fields() );
 }
 
 bool QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
@@ -344,6 +351,7 @@ void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymb
     }
     break;
 
+    case QgsWKBTypes::MultiCurve:
     case QgsWKBTypes::MultiLineString:
     {
       if ( symbolType != QgsSymbolV2::Line )
@@ -369,6 +377,7 @@ void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymb
     }
     break;
 
+    case QgsWKBTypes::MultiSurface:
     case QgsWKBTypes::MultiPolygon:
     {
       if ( symbolType != QgsSymbolV2::Fill )
@@ -423,6 +432,7 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::load( QDomElement& element )
   if ( r )
   {
     r->setUsingSymbolLevels( element.attribute( "symbollevels", "0" ).toInt() );
+    r->setForceRasterRender( element.attribute( "forceraster", "0" ).toInt() );
 
     //restore layer effect
     QDomElement effectElem = element.firstChildElement( "effect" );
@@ -438,6 +448,7 @@ QDomElement QgsFeatureRendererV2::save( QDomDocument& doc )
 {
   // create empty renderer element
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
+  rendererElem.setAttribute( "forceraster", ( mForceRaster ? "1" : "0" ) );
 
   if ( mPaintEffect )
     mPaintEffect->saveProperties( doc, rendererElem );

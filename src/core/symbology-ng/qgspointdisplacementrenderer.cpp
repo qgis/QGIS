@@ -310,6 +310,7 @@ void QgsPointDisplacementRenderer::startRender( QgsRenderContext& context, const
   {
     mCenterSymbol->startRender( context, &fields );
   }
+  return;
 }
 
 void QgsPointDisplacementRenderer::stopRender( QgsRenderContext& context )
@@ -370,6 +371,7 @@ QgsFeatureRendererV2* QgsPointDisplacementRenderer::create( QDomElement& symbolo
 QDomElement QgsPointDisplacementRenderer::save( QDomDocument& doc )
 {
   QDomElement rendererElement = doc.createElement( RENDERER_TAG_NAME );
+  rendererElement.setAttribute( "forceraster", ( mForceRaster ? "1" : "0" ) );
   rendererElement.setAttribute( "type", "pointDisplacement" );
   rendererElement.setAttribute( "labelAttributeName", mLabelAttributeName );
   rendererElement.appendChild( QgsFontUtils::toXmlElement( mLabelFont, doc, "labelFontProperties" ) );

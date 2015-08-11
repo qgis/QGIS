@@ -30,8 +30,8 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 class las2lasPro_filter(LAStoolsAlgorithm):
 
     def defineCharacteristics(self):
-        self.name = "las2lasPro_filter"
-        self.group = "LAStools Production"
+        self.name, self.i18n_name = self.trAlgorithm('las2lasPro_filter')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools Production')
         self.addParametersPointInputFolderGUI()
         self.addParametersFilter1ReturnClassFlagsGUI()
         self.addParametersFilter2ReturnClassFlagsGUI()

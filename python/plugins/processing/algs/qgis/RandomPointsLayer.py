@@ -46,8 +46,8 @@ class RandomPointsLayer(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Random points in layer bounds'
-        self.group = 'Vector creation tools'
+        self.name, self.i18n_name = self.trAlgorithm('Random points in layer bounds')
+        self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
         self.addParameter(ParameterVector(self.VECTOR,
             self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POLYGON]))
         self.addParameter(ParameterNumber(self.POINT_NUMBER,

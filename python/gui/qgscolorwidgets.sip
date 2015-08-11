@@ -15,7 +15,7 @@ class QgsColorWidget : QWidget
 
   public:
 
-    /*! Specifies the color component which the widget alters
+    /** Specifies the color component which the widget alters
      */
     enum ColorComponent
     {
@@ -29,7 +29,7 @@ class QgsColorWidget : QWidget
       Alpha /*!< alpha component (opacity) of color */
     };
 
-    /**Construct a new color widget.
+    /** Construct a new color widget.
      * @param parent parent QWidget for the widget
      * @param component color component the widget alters
      */
@@ -37,19 +37,19 @@ class QgsColorWidget : QWidget
 
     virtual ~QgsColorWidget();
 
-    /**Returns the current color for the widget
+    /** Returns the current color for the widget
      * @returns current widget color
      * @see setColor
      */
     QColor color() const;
 
-    /**Returns the color component which the widget controls
+    /** Returns the color component which the widget controls
      * @returns color component for widget
      * @see setComponent
      */
     ColorComponent component() const;
 
-    /**Returns the current value of the widget's color component
+    /** Returns the current value of the widget's color component
      * @returns value of color component, or -1 if widget has multiple components or an invalid color
      * set
      * @see setComponentValue
@@ -57,27 +57,27 @@ class QgsColorWidget : QWidget
      */
     int componentValue() const;
 
-    /**Create an icon for dragging colors
+    /** Create an icon for dragging colors
      * @param color for icon
      */
     static QPixmap createDragIcon( const QColor &color );
 
   public slots:
 
-    /**Sets the color for the widget
+    /** Sets the color for the widget
      * @param color widget color
      * @param emitSignals set to true to emit the colorChanged signal after setting color
      * @see color
      */
     virtual void setColor( const QColor &color, const bool emitSignals = false );
 
-    /**Sets the color component which the widget controls
+    /** Sets the color component which the widget controls
      * @param component color component for widget
      * @see component
      */
     virtual void setComponent( const ColorComponent component );
 
-    /**Alters the widget's color by setting the value for the widget's color component
+    /** Alters the widget's color by setting the value for the widget's color component
      * @param value value for widget's color component. This value is automatically
      * clipped to the range of valid values for the color component.
      * @see componentValue
@@ -89,24 +89,24 @@ class QgsColorWidget : QWidget
 
   signals:
 
-    /**Emitted when the widget's color changes
+    /** Emitted when the widget's color changes
      * @param color new widget color
      */
     void colorChanged( const QColor &color );
 
   protected:
 
-    /**Returns the range of valid values for the color widget's component
+    /** Returns the range of valid values for the color widget's component
      * @returns maximum value allowed for color component, or -1 if widget has multiple components
      */
     int componentRange() const;
 
-    /**Returns the range of valid values a color component
+    /** Returns the range of valid values a color component
      * @returns maximum value allowed for color component
      */
     int componentRange( const ColorComponent component ) const;
 
-    /**Returns the value of a component of the widget's current color. This method correctly
+    /** Returns the value of a component of the widget's current color. This method correctly
      * handles hue values when the color has an ambiguous hue (eg black or white shades)
      * @param component color component to return
      * @returns value of color component, or -1 if widget has an invalid color set
@@ -114,13 +114,13 @@ class QgsColorWidget : QWidget
      */
     int componentValue( const ColorComponent component ) const;
 
-    /**Returns the hue for the widget. This may differ from the hue for the QColor returned by color(),
+    /** Returns the hue for the widget. This may differ from the hue for the QColor returned by color(),
      * as QColor returns a hue of -1 if the color's hue is ambiguous (eg, if the saturation is zero).
      * @returns explicitly set hue for widget
      */
     int hue() const;
 
-    /**Alters a color by modifiying the value of a specific color component
+    /** Alters a color by modifiying the value of a specific color component
      * @param color color to alter
      * @param component color component to alter
      * @param newValue new value of color component. Values are automatically clipped to a
@@ -128,7 +128,7 @@ class QgsColorWidget : QWidget
      */
     void alterColor( QColor& color, const QgsColorWidget::ColorComponent component, const int newValue ) const;
 
-    /**Generates a checkboard pattern pixmap for use as a background to transparent colors
+    /** Generates a checkboard pattern pixmap for use as a background to transparent colors
      * @returns checkerboard pixmap
      */
     static const QPixmap& transparentBackground();
@@ -156,7 +156,7 @@ class QgsColorWheel : QgsColorWidget
 
   public:
 
-    /**Constructs a new color wheel widget.
+    /** Constructs a new color wheel widget.
      * @param parent parent QWidget for the widget
      */
     QgsColorWheel( QWidget* parent /TransferThis/ = 0 );
@@ -195,7 +195,7 @@ class QgsColorBox : QgsColorWidget
 
   public:
 
-    /**Construct a new color box widget.
+    /** Construct a new color box widget.
      * @param parent parent QWidget for the widget
      * @param component constant color component for the widget. The color components
      * which vary along the horizontal and vertical axis are automatically assigned
@@ -236,7 +236,7 @@ class QgsColorRampWidget : QgsColorWidget
 
   public:
 
-    /*! Specifies the orientation of a color ramp
+    /** Specifies the orientation of a color ramp
      */
     enum Orientation
     {
@@ -244,7 +244,7 @@ class QgsColorRampWidget : QgsColorWidget
       Vertical /*!< vertical ramp */
     };
 
-    /**Construct a new color ramp widget.
+    /** Construct a new color ramp widget.
      * @param parent parent QWidget for the widget
      * @param component color component which varies along the ramp
      * @param orientation orientation for widget
@@ -258,50 +258,50 @@ class QgsColorRampWidget : QgsColorWidget
     virtual QSize sizeHint() const;
     void paintEvent( QPaintEvent* event );
 
-    /**Sets the orientation for the color ramp
+    /** Sets the orientation for the color ramp
      * @param orientation new orientation for the ramp
      * @see orientation
      */
     void setOrientation( const Orientation orientation );
 
-    /**Fetches the orientation for the color ramp
+    /** Fetches the orientation for the color ramp
      * @returns orientation for the ramp
      * @see setOrientation
      */
     Orientation orientation() const;
 
-    /**Sets the margin between the edge of the widget and the ramp
+    /** Sets the margin between the edge of the widget and the ramp
      * @param margin margin around the ramp
      * @see interiorMargin
      */
     void setInteriorMargin( const int margin );
 
-    /**Fetches the margin between the edge of the widget and the ramp
+    /** Fetches the margin between the edge of the widget and the ramp
      * @returns margin around the ramp
      * @see setInteriorMargin
      */
     int interiorMargin() const;
 
-    /**Sets whether the ramp should be drawn within a frame
+    /** Sets whether the ramp should be drawn within a frame
      * @param showFrame set to true to draw a frame around the ramp
      * @see showFrame
      */
     void setShowFrame( const bool showFrame );
 
-    /**Fetches whether the ramp is drawn within a frame
+    /** Fetches whether the ramp is drawn within a frame
      * @returns true if a frame is drawn around the ramp
      * @see setShowFrame
      */
     bool showFrame() const;
 
-    /**Sets the size for drawing the triangular markers on the ramp
+    /** Sets the size for drawing the triangular markers on the ramp
      * @param markerSize marker size in pixels
      */
     void setMarkerSize( const int markerSize );
 
   signals:
 
-    /**Emitted when the widget's color component value changes
+    /** Emitted when the widget's color component value changes
      * @param value new value of color component
      */
     void valueChanged( const int value );
@@ -328,7 +328,7 @@ class QgsColorSliderWidget : QgsColorWidget
 
   public:
 
-    /**Construct a new color slider widget.
+    /** Construct a new color slider widget.
      * @param parent parent QWidget for the widget
      * @param component color component which is controlled by the slider
      */
@@ -358,7 +358,7 @@ class QgsColorTextWidget : QgsColorWidget
 
   public:
 
-    /**Construct a new color line edit widget.
+    /** Construct a new color line edit widget.
      * @param parent parent QWidget for the widget
      */
     QgsColorTextWidget( QWidget* parent /TransferThis/ = 0 );
@@ -387,7 +387,7 @@ class QgsColorPreviewWidget : QgsColorWidget
 
   public:
 
-    /**Construct a new color preview widget.
+    /** Construct a new color preview widget.
      * @param parent parent QWidget for the widget
      */
     QgsColorPreviewWidget( QWidget* parent /TransferThis/ = 0 );
@@ -396,7 +396,7 @@ class QgsColorPreviewWidget : QgsColorWidget
 
     void paintEvent( QPaintEvent* event );
 
-    /**Returns the secondary color for the widget
+    /** Returns the secondary color for the widget
      * @returns secondary widget color, or an invalid color if the widget
      * has no secondary color
      * @see color
@@ -406,7 +406,7 @@ class QgsColorPreviewWidget : QgsColorWidget
 
   public slots:
 
-    /**Sets the second color for the widget
+    /** Sets the second color for the widget
      * @param color secondary widget color. Set to an invalid color to prevent
      * drawing of a secondary color
      * @see setColor

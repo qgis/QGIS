@@ -120,6 +120,17 @@ class CORE_EXPORT QgsPalLayerSettings
                                will be drawn with right alignment*/
     };
 
+    /** Valid obstacle types, which affect how features within the layer will act as obstacles
+     * for labels.
+     */
+    enum ObstacleType
+    {
+      PolygonInterior, /*!< avoid placing labels over interior of polygon (prefer placing labels totally
+       outside or just slightly inside polygon) */
+      PolygonBoundary /*!< avoid placing labels over boundary of polygon (prefer placing outside or
+       completely inside polygon) */
+    };
+
     enum ShapeType
     {
       ShapeRectangle = 0,
@@ -262,6 +273,9 @@ class CORE_EXPORT QgsPalLayerSettings
       FontLimitPixel = 24,
       FontMinPixel = 25,
       FontMaxPixel = 26,
+      IsObstacle = 88,
+      ObstacleFactor = 89,
+
       // (data defined only)
       Show = 15,
       AlwaysShow = 20
@@ -269,6 +283,15 @@ class CORE_EXPORT QgsPalLayerSettings
 
     // whether to label this layer
     bool enabled;
+
+    /** Whether to draw labels for this layer. For some layers it may be desirable
+     * to register their features as obstacles for other labels without requiring
+     * labels to be drawn for the layer itself. In this case drawLabels can be set
+     * to false and obstacle set to true, which will result in the layer acting
+     * as an obstacle but having no labels of its own.
+     * @note added in QGIS 2.12
+     */
+    bool drawLabels;
 
     //-- text style
 
@@ -373,6 +396,10 @@ class CORE_EXPORT QgsPalLayerSettings
 
     bool centroidWhole; // whether centroid calculated from whole or visible polygon
     bool centroidInside; // whether centroid-point calculated must be inside polygon
+
+    /** True if only labels which completely fit within a polygon are allowed.
+     */
+    bool fitInPolygonOnly;
     double dist; // distance from the feature (in mm)
     bool distInMapUnits; //true if distance is in map units (otherwise in mm)
     QgsMapUnitScale distMapUnitScale;
@@ -418,6 +445,15 @@ class CORE_EXPORT QgsPalLayerSettings
 
     double minFeatureSize; // minimum feature size to be labelled (in mm)
     bool obstacle; // whether features for layer are obstacles to labels of other layers
+
+    /** Obstacle factor, where 1.0 = default, < 1.0 more likely to be covered by labels,
+     * > 1.0 less likely to be covered
+     */
+    double obstacleFactor;
+
+    /** Controls how features act as obstacles for labels
+     */
+    ObstacleType obstacleType;
 
     //-- scale factors
     double vectorScaleFactor; //scale factor painter units->pixels
@@ -511,7 +547,7 @@ class CORE_EXPORT QgsPalLayerSettings
     // NOTE: not in Python binding
     pal::Layer* palLayer;
     QgsFeature* mCurFeat;
-    const QgsFields* mCurFields;
+    QgsFields mCurFields;
     int fieldIndex;
     const QgsMapToPixel* xform;
     const QgsCoordinateTransform* ct;
@@ -561,6 +597,9 @@ class CORE_EXPORT QgsPalLayerSettings
     @return true if above size, false if below*/
     bool checkMinimumSizeMM( const QgsRenderContext& ct, const QgsGeometry* geom, double minSize ) const;
 
+    /** Registers a feature as an obstacle only (no label rendered)
+     */
+    void registerObstacleFeature( QgsFeature &f, const QgsRenderContext &context, QString dxfLayer );
 
     QMap<DataDefinedProperties, QVariant> dataDefinedValues;
     QgsExpression* expression;
@@ -789,6 +828,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
 
     //! @note not available in python bindings
     void drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform );
+
     //!drawLabel
     //! @note not available in python bindings
     virtual void drawLabel( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, DrawLabelType drawType, double dpiRatio = 1.0 );

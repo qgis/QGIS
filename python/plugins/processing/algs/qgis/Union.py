@@ -197,8 +197,8 @@ class Union(GeoAlgorithm):
                 self.tr('Feature exception while computing intersection'))
 
     def defineCharacteristics(self):
-        self.name = 'Union'
-        self.group = 'Vector overlay tools'
+        self.name, self.i18n_name = self.trAlgorithm('Union')
+        self.group, self.i18n_group = self.trAlgorithm('Vector overlay tools')
         self.addParameter(ParameterVector(Union.INPUT,
             self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterVector(Union.INPUT2,

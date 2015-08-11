@@ -1,8 +1,9 @@
 qgis (2.11.0) UNRELEASED; urgency=medium
 
   * New development version 2.11 after branch of 2.10
+  * moved grass default.qgc from config to modules
 
- -- Jürgen E. Fischer <jef@norbit.de>  Fri, 26 Jun 2015 14:39:39 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 24 Jul 2015 08:37:55 +0200
 
 qgis (2.10.0) unstable; urgency=medium
 

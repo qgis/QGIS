@@ -59,7 +59,7 @@ class DummyPaintEffect : public QgsPaintEffect
       props["testProp"] = mProp1;
       props["testProp2"] = mProp2;
       return props;
-  }
+    }
     virtual void readProperties( const QgsStringMap& props ) override
     {
       mProp1 = props["testProp"];

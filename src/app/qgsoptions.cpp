@@ -271,9 +271,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   QString proxyExcludedURLs = settings.value( "proxy/proxyExcludedUrls", "" ).toString();
   if ( !proxyExcludedURLs.isEmpty() )
   {
-    QStringList splittedUrls = proxyExcludedURLs.split( "|" );
-    QStringList::const_iterator urlIt = splittedUrls.constBegin();
-    for ( ; urlIt != splittedUrls.constEnd(); ++urlIt )
+    QStringList splitUrls = proxyExcludedURLs.split( "|" );
+    QStringList::const_iterator urlIt = splitUrls.constBegin();
+    for ( ; urlIt != splitUrls.constEnd(); ++urlIt )
     {
       QListWidgetItem* newItem = new QListWidgetItem( mExcludeUrlListWidget );
       newItem->setText( *urlIt );
@@ -1432,10 +1432,6 @@ void QgsOptions::editGdalDriver( const QString& driverName )
   if ( driverName == "_pyramids" )
     title = tr( "Create Options - pyramids" );
   dlg.setWindowTitle( title );
-  QLabel *label = new QLabel( title, &dlg );
-  label->setAlignment( Qt::AlignHCenter );
-  layout->addWidget( label );
-
   if ( driverName == "_pyramids" )
   {
     QgsRasterPyramidsOptionsWidget* optionsWidget =

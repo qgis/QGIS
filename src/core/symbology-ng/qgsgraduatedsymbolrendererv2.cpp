@@ -399,6 +399,7 @@ void QgsGraduatedSymbolRendererV2::startRender( QgsRenderContext& context, const
       mTempSymbols[ it->symbol()] = tempSymbol;
     }
   }
+  return;
 }
 
 void QgsGraduatedSymbolRendererV2::stopRender( QgsRenderContext& context )
@@ -517,9 +518,7 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::clone() const
     r->setInvertedColorRamp( mInvertedColorRamp );
   }
   r->setUsingSymbolLevels( usingSymbolLevels() );
-  r->setRotationField( rotationField() );
   r->setSizeScaleField( sizeScaleField() );
-  //r->setScaleMethod( scaleMethod() );
   r->setLabelFormat( labelFormat() );
   r->setGraduatedMethod( graduatedMethod() );
   copyPaintEffect( r );
@@ -1071,6 +1070,7 @@ QDomElement QgsGraduatedSymbolRendererV2::save( QDomDocument& doc )
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( "type", "graduatedSymbol" );
   rendererElem.setAttribute( "symbollevels", ( mUsingSymbolLevels ? "1" : "0" ) );
+  rendererElem.setAttribute( "forceraster", ( mForceRaster ? "1" : "0" ) );
   rendererElem.setAttribute( "attr", mAttrName );
   rendererElem.setAttribute( "graduatedMethod", graduatedMethodStr( mGraduatedMethod ) );
 
@@ -1363,12 +1363,24 @@ void QgsGraduatedSymbolRendererV2::updateSymbols( QgsSymbolV2 *sym )
 
 void QgsGraduatedSymbolRendererV2::setRotationField( QString fieldOrExpression )
 {
-  mRotation.reset( QgsSymbolLayerV2Utils::fieldOrExpressionToExpression( fieldOrExpression ) );
+  if ( mSourceSymbol->type() == QgsSymbolV2::Marker )
+  {
+    QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( mSourceSymbol.data() );
+    s->setDataDefinedAngle( QgsDataDefined( fieldOrExpression ) );
+  }
+
 }
 
 QString QgsGraduatedSymbolRendererV2::rotationField() const
 {
-  return mRotation.data() ? QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( mRotation.data() ) : QString();
+  if ( mSourceSymbol->type() == QgsSymbolV2::Marker )
+  {
+    QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( mSourceSymbol.data() );
+    QgsDataDefined ddAngle = s->dataDefinedAngle();
+    return ddAngle.useExpression() ? ddAngle.expressionString() : ddAngle.field();
+  }
+
+  return QString();
 }
 
 void QgsGraduatedSymbolRendererV2::setSizeScaleField( QString fieldOrExpression )

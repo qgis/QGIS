@@ -160,7 +160,7 @@ void QgsDataDefinedButton::init( const QgsVectorLayer* vl,
   if ( mVectorLayer )
   {
     // store just a list of fields of unknown type or those that match the expected type
-    const QgsFields& fields = mVectorLayer->pendingFields();
+    const QgsFields& fields = mVectorLayer->fields();
     for ( int i = 0; i < fields.count(); ++i )
     {
       const QgsField& f = fields.at( i );
@@ -203,9 +203,9 @@ void QgsDataDefinedButton::updateDataDefined( QgsDataDefined *dd ) const
     return;
 
   dd->setActive( isActive() );
-  dd->setUseExpression( useExpression() );
   dd->setExpressionString( getExpression() );
   dd->setField( getField() );
+  dd->setUseExpression( useExpression() );
 }
 
 QgsDataDefined QgsDataDefinedButton::currentDataDefined() const

@@ -93,7 +93,7 @@ void QgsLabelPropertyDialog::init( const QString& layerId, int featureId, const 
       if ( mCurLabelField >= 0 )
       {
         mLabelTextLineEdit->setText( attributeValues[mCurLabelField].toString() );
-        const QgsFields& layerFields = vlayer->pendingFields();
+        const QgsFields& layerFields = vlayer->fields();
         switch ( layerFields[mCurLabelField].type() )
         {
           case QVariant::Double:
@@ -218,7 +218,7 @@ void QgsLabelPropertyDialog::setDataDefinedValues( const QgsPalLayerSettings &la
       dd->prepareExpression( vlayer );
     }
 
-    QVariant result = layerSettings.dataDefinedValue( propIt.key(), mCurLabelFeat, vlayer->pendingFields() );
+    QVariant result = layerSettings.dataDefinedValue( propIt.key(), mCurLabelFeat, vlayer->fields() );
     if ( !result.isValid() || result.isNull() )
     {
       //could not evaluate data defined value

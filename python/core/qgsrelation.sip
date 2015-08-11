@@ -118,13 +118,22 @@ class QgsRelation
      */
     QgsFeatureRequest getRelatedFeaturesRequest( const QgsFeature& feature ) const;
 
-    const QString name() const;
+    QgsFeatureRequest getReferencedFeatureRequest( const QgsFeature& feature ) const;
+
+    QgsFeature getReferencedFeature( const QgsFeature& child ) const;
 
     /**
      * The id
      * @return
      */
-    const QString& id() const;
+    QString name() const;
+
+    /**
+     * A (project-wide) unique id for this relation
+     *
+     * @return The id
+     */
+    QString id() const;
 
     /**
      * Access the referencing (child) layer's id
@@ -182,5 +191,4 @@ class QgsRelation
 
   protected:
     void updateRelationStatus();
-    void runChecks();
 };

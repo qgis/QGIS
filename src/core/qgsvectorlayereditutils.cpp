@@ -18,6 +18,7 @@
 #include "qgsgeometrycache.h"
 #include "qgsvectorlayereditbuffer.h"
 #include "qgslogger.h"
+#include "qgspointv2.h"
 
 #include <limits>
 
@@ -52,6 +53,12 @@ bool QgsVectorLayerEditUtils::insertVertex( double x, double y, QgsFeatureId atF
 
 bool QgsVectorLayerEditUtils::moveVertex( double x, double y, QgsFeatureId atFeatureId, int atVertex )
 {
+  QgsPointV2 p( x, y );
+  return moveVertex( p, atFeatureId, atVertex );
+}
+
+bool QgsVectorLayerEditUtils::moveVertex( const QgsPointV2& p, QgsFeatureId atFeatureId, int atVertex )
+{
   if ( !L->hasGeometryType() )
     return false;
 
@@ -66,7 +73,7 @@ bool QgsVectorLayerEditUtils::moveVertex( double x, double y, QgsFeatureId atFea
     geometry = *f.constGeometry();
   }
 
-  geometry.moveVertex( x, y, atVertex );
+  geometry.moveVertex( p, atVertex );
 
   L->editBuffer()->changeGeometry( atFeatureId, &geometry );
   return true;

@@ -40,7 +40,7 @@
 QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRenderContext& context )
     : QgsMapLayerRenderer( layer->id() )
     , mContext( context )
-    , mFields( layer->pendingFields() )
+    , mFields( layer->fields() )
     , mRendererV2( 0 )
     , mCache( 0 )
     , mLabeling( false )
@@ -136,12 +136,19 @@ bool QgsVectorLayerRenderer::render()
 
   mRendererV2->startRender( mContext, mFields );
 
+  QString rendererFilter = mRendererV2->filter();
+
   QgsRectangle requestExtent = mContext.extent();
   mRendererV2->modifyRequestExtent( requestExtent, mContext );
 
   QgsFeatureRequest featureRequest = QgsFeatureRequest()
                                      .setFilterRect( requestExtent )
                                      .setSubsetOfAttributes( mAttrNames, mFields );
+
+  if ( !rendererFilter.isNull() )
+  {
+    featureRequest.setFilterExpression( rendererFilter );
+  }
 
   // enable the simplification of the geometries (Using the current map2pixel context) before send it to renderer engine.
   if ( mSimplifyGeometry )
@@ -276,14 +283,14 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
       bool sel = mContext.showSelection() && mSelectedFeatureIds.contains( fet.id() );
       bool drawMarker = ( mDrawVertexMarkers && mContext.drawEditingInformation() && ( !mVertexMarkerOnlyForSelection || sel ) );
 
-      // render feature
-      bool rendered = mRendererV2->renderFeature( fet, mContext, -1, sel, drawMarker );
-
       if ( mCache )
       {
         // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
         mCache->cacheGeometry( fet.id(), *fet.constGeometry() );
       }
+
+      // render feature
+      bool rendered = mRendererV2->renderFeature( fet, mContext, -1, sel, drawMarker );
 
       // labeling - register feature
       Q_UNUSED( rendered );

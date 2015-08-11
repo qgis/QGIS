@@ -9,7 +9,7 @@ struct QgsRasterCalculatorEntry
   int bandNumber; //raster band number
 };
 
-/**Raster calculator class*/
+/** Raster calculator class*/
 class QgsRasterCalculator
 {
 %TypeHeaderCode
@@ -34,7 +34,7 @@ class QgsRasterCalculator
      * @param formulaString formula for raster calculation
      * @param outputFile output file path
      * @param outputFormat output file format
-     * @param outputExtent output extent, CRS is specifed by outputCrs parameter
+     * @param outputExtent output extent, CRS is specified by outputCrs parameter
      * @param outputCrs destination CRS for output raster
      * @param nOutputColumns number of columns in output raster
      * @param nOutputRows number of rows in output raster
@@ -46,7 +46,7 @@ class QgsRasterCalculator
 
     ~QgsRasterCalculator();
 
-    /**Starts the calculation and writes new raster
+    /** Starts the calculation and writes new raster
       @param p progress bar (or 0 if called from non-gui code)
       @return 0 in case of success*/
     int processCalculation( QProgressDialog* p = 0 );

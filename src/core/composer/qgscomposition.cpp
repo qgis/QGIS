@@ -847,6 +847,9 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
   //data defined properties
   QgsComposerUtils::writeDataDefinedPropertyMap( compositionElem, doc, &mDataDefinedNames, &mDataDefinedProperties );
 
+  //custom properties
+  mCustomProperties.writeXml( compositionElem, doc );
+
   return true;
 }
 
@@ -914,6 +917,9 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
 
   //data defined properties
   QgsComposerUtils::readDataDefinedPropertyMap( compositionElem, &mDataDefinedNames, &mDataDefinedProperties );
+
+  //custom properties
+  mCustomProperties.readXml( compositionElem );
 
   updatePaperItems();
 
@@ -3024,9 +3030,9 @@ void QgsComposition::setDataDefinedProperty( const QgsComposerObject::DataDefine
     {
       QgsDataDefined* dd = it.value();
       dd->setActive( active );
-      dd->setUseExpression( useExpression );
       dd->setExpressionString( expression );
       dd->setField( field );
+      dd->setUseExpression( useExpression );
     }
   }
   else if ( !defaultVals )
@@ -3034,6 +3040,26 @@ void QgsComposition::setDataDefinedProperty( const QgsComposerObject::DataDefine
     QgsDataDefined* dd = new QgsDataDefined( active, useExpression, expression, field );
     mDataDefinedProperties.insert( property, dd );
   }
+}
+
+void QgsComposition::setCustomProperty( const QString& key, const QVariant& value )
+{
+  mCustomProperties.setValue( key, value );
+}
+
+QVariant QgsComposition::customProperty( const QString& key, const QVariant& defaultValue ) const
+{
+  return mCustomProperties.value( key, defaultValue );
+}
+
+void QgsComposition::removeCustomProperty( const QString& key )
+{
+  mCustomProperties.remove( key );
+}
+
+QStringList QgsComposition::customProperties() const
+{
+  return mCustomProperties.keys();
 }
 
 bool QgsComposition::dataDefinedEvaluate( QgsComposerObject::DataDefinedProperty property, QVariant &expressionValue, QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties )
@@ -3049,13 +3075,13 @@ bool QgsComposition::dataDefinedEvaluate( QgsComposerObject::DataDefinedProperty
 
   //get fields and feature from atlas
   const QgsFeature* currentFeature = 0;
-  const QgsFields* layerFields = 0;
+  QgsFields layerFields;
   if ( mAtlasComposition.enabled() )
   {
     QgsVectorLayer* atlasLayer = mAtlasComposition.coverageLayer();
     if ( atlasLayer )
     {
-      layerFields = &atlasLayer->pendingFields();
+      layerFields = atlasLayer->fields();
     }
     if ( mAtlasMode != QgsComposition::AtlasOff )
     {
@@ -3104,7 +3130,7 @@ bool QgsComposition::dataDefinedActive( const QgsComposerObject::DataDefinedProp
   return dd->isActive();
 }
 
-QVariant QgsComposition::dataDefinedValue( QgsComposerObject::DataDefinedProperty property, const QgsFeature *feature, const QgsFields *fields, QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties ) const
+QVariant QgsComposition::dataDefinedValue( QgsComposerObject::DataDefinedProperty property, const QgsFeature *feature, const QgsFields& fields, QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties ) const
 {
   if ( property == QgsComposerObject::AllProperties || property == QgsComposerObject::NoProperty )
   {
@@ -3154,14 +3180,14 @@ QVariant QgsComposition::dataDefinedValue( QgsComposerObject::DataDefinedPropert
       return QVariant();
     }
   }
-  else if ( !useExpression && !field.isEmpty() && fields )
+  else if ( !useExpression && !field.isEmpty() )
   {
     if ( !feature )
     {
       return QVariant();
     }
     // use direct attribute access instead of evaluating "field" expression (much faster)
-    int indx = fields->indexFromName( field );
+    int indx = fields.indexFromName( field );
     if ( indx != -1 )
     {
       result = feature->attribute( indx );

@@ -31,13 +31,13 @@ class QgsZonalStatisticsPlugin: public QObject, public QgisPlugin
     QgsZonalStatisticsPlugin( QgisInterface* iface );
     ~QgsZonalStatisticsPlugin();
 
-    /**initialize connection to GUI*/
+    /** Initialize connection to GUI*/
     void initGui() override;
-    /**Unload the plugin and cleanup the GUI*/
+    /** Unload the plugin and cleanup the GUI*/
     void unload() override;
 
   private slots:
-    /**Select input file, output file, format and analysis method*/
+    /** Select input file, output file, format and analysis method*/
     void run();
 
   private:

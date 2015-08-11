@@ -11,12 +11,12 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
 
-    /**Reimplemented from QgsFeatureRendererV2*/
+    /** Reimplemented from QgsFeatureRendererV2*/
     bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
     QgsSymbolV2* symbolForFeature( QgsFeature& feature );
 
-    void startRender( QgsRenderContext& context, const QgsFields& fields );
+    virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
 
     void stopRender( QgsRenderContext& context );
 
@@ -35,7 +35,7 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
     void setLabelAttributeName( const QString& name );
     QString labelAttributeName() const;
 
-    /**Sets embedded renderer (takes ownership)*/
+    /** Sets embedded renderer (takes ownership)*/
     void setEmbeddedRenderer( QgsFeatureRendererV2* r /Transfer/ );
     QgsFeatureRendererV2* embeddedRenderer();
 
@@ -61,9 +61,9 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
     void setMaxLabelScaleDenominator( double d );
     double maxLabelScaleDenominator() const;
 
-    /**Returns the symbol for the center of a displacement group (but _not_ ownership of the symbol)*/
+    /** Returns the symbol for the center of a displacement group (but _not_ ownership of the symbol)*/
     QgsMarkerSymbolV2* centerSymbol();
-    /**Sets the center symbol (takes ownership)*/
+    /** Sets the center symbol (takes ownership)*/
     void setCenterSymbol( QgsMarkerSymbolV2* symbol /Transfer/ );
 
     void setTolerance( double t );

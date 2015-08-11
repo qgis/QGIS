@@ -78,14 +78,14 @@ class RAlgorithm(GeoAlgorithm):
 
     def defineCharacteristicsFromScript(self):
         lines = self.script.split('\n')
-        self.name = '[Unnamed algorithm]'
-        self.group = 'User R scripts'
+        self.name, self.i18n_name = self.trAlgorithm('[Unnamed algorithm]')
+        self.group, self.i18n_group = self.trAlgorithm('User R scripts')
         self.parseDescription(iter(lines))
 
     def defineCharacteristicsFromFile(self):
         filename = os.path.basename(self.descriptionFile)
         self.name = filename[:filename.rfind('.')].replace('_', ' ')
-        self.group = 'User R scripts'
+        self.group, self.i18n_group = self.trAlgorithm('User R scripts')
         with open(self.descriptionFile, 'r') as f:
             lines = [line.strip() for line in f]
         self.parseDescription(iter(lines))

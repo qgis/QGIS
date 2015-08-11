@@ -25,6 +25,7 @@
 #include "qgsserverfilter.h"
 
 /**
+ * \ingroup server
  * QgsServerInterface
  * Class defining interfaces exposed by QGIS Server and
  * made available to plugins.
@@ -48,6 +49,13 @@ class SERVER_EXPORT QgsServerInterface
     virtual void setRequestHandler( QgsRequestHandler* requestHandler ) = 0;
 
     /**
+     * Clear the request handler
+     *
+     * @note not available in python bindings
+     */
+    virtual void clearRequestHandler( ) = 0;
+
+    /**
      * Get pointer to the capabiblities cache
      * @return QgsCapabilitiesCache
      */
@@ -65,6 +73,12 @@ class SERVER_EXPORT QgsServerInterface
      * @param priority an optional priority for the filter order
      */
     virtual void registerFilter( QgsServerFilter* filter, int priority = 0 ) = 0;
+
+    /**
+     * Set the filters map
+     * @param filters the QgsServerFiltersMap
+     */
+    virtual void setFilters( QgsServerFiltersMap* filters ) = 0;
 
     /**
      * Return the list of current QgsServerFilter

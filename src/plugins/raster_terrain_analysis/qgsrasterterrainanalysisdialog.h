@@ -58,7 +58,7 @@ class QgsRasterTerrainAnalysisDialog: public QDialog, private Ui::QgsRasterTerra
     void on_mButtonBox_accepted();
 
   private:
-    /**Stores relation between driver name and extension*/
+    /** Stores relation between driver name and extension*/
     QMap<QString, QString> mDriverExtensionMap;
 };
 

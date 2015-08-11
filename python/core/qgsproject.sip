@@ -45,7 +45,7 @@ class QgsProject : QObject
      *  @note added in 2.4 */
     void setTitle( const QString& title );
 
-    /** returns title */
+    /** Returns title */
     const QString & title() const;
     //@}
 
@@ -71,7 +71,7 @@ class QgsProject : QObject
     //@{
     void setFileName( const QString & name );
 
-    /** returns file name */
+    /** Returns file name */
     QString fileName() const;
     //@}
 
@@ -81,7 +81,7 @@ class QgsProject : QObject
     void clear();
 
 
-    /** read project file
+    /** Read project file
 
        @note Any current plug-in state is erased
 
@@ -103,7 +103,7 @@ class QgsProject : QObject
     //@}
 
 
-    /** read the layer described in the associated Dom node
+    /** Read the layer described in the associated Dom node
 
         @param layerNode   represents a QgsProject Dom node that maps to a specific layer.
 
@@ -118,7 +118,7 @@ class QgsProject : QObject
     bool read( QDomNode & layerNode );
 
 
-    /** write project file
+    /** Write project file
 
        XXX How to best get read access to Qgis state?  Actually we can finagle
        that by searching for qgisapp in object hiearchy.
@@ -157,7 +157,7 @@ class QgsProject : QObject
     bool writeEntry( const QString & scope, const QString & key, const QStringList & value );
     //@}
 
-    /** key value accessors
+    /** Key value accessors
 
         keys would be the familiar QSettings-like '/' delimited entries,
         implying a hierarchy of keys and corresponding values
@@ -175,34 +175,34 @@ class QgsProject : QObject
     //@}
 
 
-    /** remove the given key */
+    /** Remove the given key */
     bool removeEntry( const QString & scope, const QString & key );
 
 
-    /** return keys with values -- do not return keys that contain other keys
+    /** Return keys with values -- do not return keys that contain other keys
 
       @note equivalent to QSettings entryList()
     */
     QStringList entryList( const QString & scope, const QString & key ) const;
 
-    /** return keys with keys -- do not return keys that contain only values
+    /** Return keys with keys -- do not return keys that contain only values
 
       @note equivalent to QSettings subkeyList()
     */
     QStringList subkeyList( const QString & scope, const QString & key ) const;
 
 
-    /** dump out current project properties to stderr
+    /** Dump out current project properties to stderr
 
       @todo XXX Now slightly broken since re-factoring.  Won't print out top-level key
                 and redundantly prints sub-keys.
     */
     void dumpProperties() const;
 
-    /** prepare a filename to save it to the project file */
+    /** Prepare a filename to save it to the project file */
     QString writePath( QString filename, QString relativeBasePath = QString::null ) const;
 
-    /** turn filename read from the project file to an absolute path */
+    /** Turn filename read from the project file to an absolute path */
     QString readPath( QString filename ) const;
 
     /** Return error message from previous read/write */

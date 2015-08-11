@@ -22,17 +22,18 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
     SET(GRASS_MAJOR_VERSION ${GRASS_MAJOR_VERSION${GRASS_BUILD_VERSION}})
     SET(GRASS_MINOR_VERSION ${GRASS_MINOR_VERSION${GRASS_BUILD_VERSION}})
 
-    QT4_WRAP_CPP(GRASS_LIBRARY_MOC_SRCS 
-      ../qgsgrassprovider.h 
+    QT4_WRAP_CPP(GRASS_LIBRARY_MOC_SRCS
+      ../qgsgrass.h
+      ../qgsgrassprovider.h
       ../qgsgrassimport.h
       ../qgsgrassoptions.h
     )
 
     SET (GRASS_LIBRARY_SRCS
-      ../qgsgrass.cpp 
-      ../qgsgrassdatafile.cpp 
-      ../qgsgrassfeatureiterator.cpp 
-      ../qgsgrassprovider.cpp 
+      ../qgsgrass.cpp
+      ../qgsgrassdatafile.cpp
+      ../qgsgrassfeatureiterator.cpp
+      ../qgsgrassprovider.cpp
       ../qgsgrassimport.cpp
       ../qgsgrassoptions.cpp
     )
@@ -41,8 +42,8 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
       ../qgsgrassoptionsbase.ui
     )
 
-    ADD_LIBRARY(qgisgrass${GRASS_BUILD_VERSION} SHARED 
-      ${GRASS_LIBRARY_SRCS} 
+    ADD_LIBRARY(qgisgrass${GRASS_BUILD_VERSION} SHARED
+      ${GRASS_LIBRARY_SRCS}
       ${GRASS_LIBRARY_MOC_SRCS}
       ${GRASS_LIBRARY_UIS_H}
     )
@@ -177,7 +178,7 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
     #
     ADD_EXECUTABLE(qgis.r.in${GRASS_BUILD_VERSION} ../qgis.r.in.cpp)
     SET_TARGET_PROPERTIES(qgis.r.in${GRASS_BUILD_VERSION} PROPERTIES
-      COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\" \"-DGRASS_LIB_EXPORT=${DLLEXPORT}\" \"-DGRASS_EXPORT=${DLLIMPORT}\""
+      COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\" \"-DGRASS_LIB_EXPORT=${DLLIMPORT}\" \"-DGRASS_EXPORT=${DLLIMPORT}\""
     )
     IF (GRASS_MAJOR_VERSION LESS 7 )
       TARGET_LINK_LIBRARIES(qgis.r.in${GRASS_BUILD_VERSION}
@@ -203,7 +204,7 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
     #
     ADD_EXECUTABLE(qgis.v.in${GRASS_BUILD_VERSION} ../qgis.v.in.cpp)
     SET_TARGET_PROPERTIES(qgis.v.in${GRASS_BUILD_VERSION} PROPERTIES
-      COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\" \"-DGRASS_LIB_EXPORT=${DLLEXPORT}\" \"-DGRASS_EXPORT=${DLLIMPORT}\""
+      COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\" \"-DGRASS_LIB_EXPORT=${DLLIMPORT}\" \"-DGRASS_EXPORT=${DLLIMPORT}\""
     )
     TARGET_LINK_LIBRARIES(qgis.v.in${GRASS_BUILD_VERSION}
       qgisgrass${GRASS_BUILD_VERSION}
@@ -232,10 +233,10 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
       RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
       LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
 
-    INSTALL(TARGETS 
-      qgis.d.rast${GRASS_BUILD_VERSION} 
-      qgis.g.info${GRASS_BUILD_VERSION} 
-      qgis.r.in${GRASS_BUILD_VERSION} 
+    INSTALL(TARGETS
+      qgis.d.rast${GRASS_BUILD_VERSION}
+      qgis.g.info${GRASS_BUILD_VERSION}
+      qgis.r.in${GRASS_BUILD_VERSION}
       qgis.v.in${GRASS_BUILD_VERSION}
       RUNTIME DESTINATION ${QGIS_LIBEXEC_DIR}/grass/modules
       PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
@@ -705,7 +706,7 @@ IF(WITH_GRASS_DIRECT)
   ELSE(MSVC)
     SET (FAKE_LIB_GRASS_GIS "grass_gis.${GRASS_VERSION}")
   ENDIF(MSVC)
-  ADD_LIBRARY( ${FAKE_LIB_GRASS_GIS} MODULE qgsgrassgislib.cpp qgsgrassgislibfunctions.cpp )
+  ADD_LIBRARY(${FAKE_LIB_GRASS_GIS} MODULE qgsgrassgislib.cpp qgsgrassgislibfunctions.cpp )
 
   # GRASS_LIBRARY_gis is path to the GRASS library used for compilation, it is the same
   # on runtime on Linux and Mac but on Windows with OSGEO4W the GRASS may be installed

@@ -11,14 +11,21 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Grass Tools</string>
+   <string>GRASS Tools</string>
   </property>
   <widget class="QWidget" name="mContents">
-   <layout class="QVBoxLayout" name="verticalLayout">
-    <property name="margin">
-     <number>0</number>
-    </property>
-    <item>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QLabel" name="mMessageLabel">
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No mapset is open. You can open a GRASS mapset from the browser using the mapset item's context menu action &lt;span style=&quot; font-style:italic;&quot;&gt;Open mapset&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
      <widget class="QTabWidget" name="mTabWidget">
       <property name="currentIndex">
        <number>0</number>
@@ -27,11 +34,8 @@
        <attribute name="title">
         <string>Modules Tree</string>
        </attribute>
-       <layout class="QGridLayout">
-        <property name="margin">
-         <number>0</number>
-        </property>
-        <item row="0" column="0">
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
          <widget class="QTreeWidget" name="mModulesTree">
           <property name="indentation">
            <number>16</number>
@@ -47,6 +51,46 @@
             <string>1</string>
            </property>
           </column>
+         </widget>
+        </item>
+        <item>
+         <widget class="QWidget" name="mDebugWidget" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QLabel" name="mDebugLabel">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="mDebugReloadButton">
+             <property name="text">
+              <string>Reload tree</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="mDebugButton">
+             <property name="text">
+              <string>Run debug</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="mCloseDebugButton">
+             <property name="text">
+              <string>Close debug</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </item>
        </layout>
@@ -154,6 +198,8 @@
      </widget>
     </item>
    </layout>
+   <zorder>mTabWidget</zorder>
+   <zorder>mMessageLabel</zorder>
   </widget>
  </widget>
  <resources/>

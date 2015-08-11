@@ -112,16 +112,32 @@ class CORE_EXPORT QgsSymbolV2
      */
     int symbolLayerCount() { return mLayers.count(); }
 
-    //! insert symbol layer to specified index
+    /**
+     * Insert symbol layer to specified index
+     * Ownership will be transferred.
+     * @param index The index at which the layer should be added
+     * @param layer The symbol layer to add
+     * @return True if the layer is added, False if the index or the layer is bad
+     */
     bool insertSymbolLayer( int index, QgsSymbolLayerV2* layer );
 
-    //! append symbol layer at the end of the list
+    /**
+     * Append symbol layer at the end of the list
+     * Ownership will be transferred.
+     * @param layer The layer to add
+     * @return True if the layer is added, False if the layer is bad
+     */
     bool appendSymbolLayer( QgsSymbolLayerV2* layer );
 
     //! delete symbol layer at specified index
     bool deleteSymbolLayer( int index );
 
-    //! remove symbol layer from the list and return pointer to it
+    /**
+     * Remove symbol layer from the list and return pointer to it.
+     * Ownership is handed to the caller.
+     * @param index The index of the layer to remove
+     * @return A pointer to the removed layer
+     */
     QgsSymbolLayerV2* takeSymbolLayer( int index );
 
     //! delete layer at specified index and set a new one

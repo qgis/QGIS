@@ -197,7 +197,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
      */
     bool calculateMeanError( double& error ) const;
 
-    /**Docks / undocks this window*/
+    /** Docks / undocks this window*/
     void dockThisWindow( bool dock );
 
     QGridLayout* mCentralLayout;

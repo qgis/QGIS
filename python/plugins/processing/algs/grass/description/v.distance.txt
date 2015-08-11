@@ -1,5 +1,5 @@
 v.distance
-v.distance - Finds the nearest element in vector map 'to' for elements in vector map 'from'.
+Finds the nearest element in vector map 'to' for elements in vector map 'from'.
 Vector (v.*)
 ParameterVector|from|"from" input layer|0|False
 ParameterVector|to|"to" input layer|-1|False

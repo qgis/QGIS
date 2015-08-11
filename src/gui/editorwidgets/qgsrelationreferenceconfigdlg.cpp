@@ -156,7 +156,7 @@ void QgsRelationReferenceConfigDlg::loadFields()
   if ( mReferencedLayer )
   {
     QgsVectorLayer* l = mReferencedLayer;
-    const QgsFields& flds = l->pendingFields();
+    const QgsFields& flds = l->fields();
     for ( int i = 0; i < flds.count(); i++ )
     {
       mAvailableFieldsList->addItem( l->attributeAlias( i ).isEmpty() ? flds.at( i ).name() : l->attributeAlias( i ) );

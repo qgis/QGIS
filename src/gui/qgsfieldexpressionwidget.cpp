@@ -97,7 +97,7 @@ bool QgsFieldExpressionWidget::isValidExpression( QString *expressionError ) con
 {
   QString temp;
   QgsVectorLayer* vl = layer();
-  return QgsExpression::isValid( currentText(), vl ? vl->pendingFields() : QgsFields(), expressionError ? *expressionError : temp );
+  return QgsExpression::isValid( currentText(), vl ? vl->fields() : QgsFields(), expressionError ? *expressionError : temp );
 }
 
 bool QgsFieldExpressionWidget::isExpression() const
@@ -272,6 +272,6 @@ bool QgsFieldExpressionWidget::isExpressionValid( const QString expressionStr )
   QgsVectorLayer* vl = layer();
 
   QgsExpression expression( expressionStr );
-  expression.prepare( vl ? vl->pendingFields() : QgsFields() );
+  expression.prepare( vl ? vl->fields() : QgsFields() );
   return !expression.hasParserError();
 }

@@ -49,8 +49,8 @@ class AddTableField(GeoAlgorithm):
     TYPES = [QVariant.Int, QVariant.Double, QVariant.String]
 
     def defineCharacteristics(self):
-        self.name = 'Add field to attributes table'
-        self.group = 'Vector table tools'
+        self.name, self.i18n_name = self.trAlgorithm('Add field to attributes table')
+        self.group, self.i18n_group = self.trAlgorithm('Vector table tools')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
             self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))

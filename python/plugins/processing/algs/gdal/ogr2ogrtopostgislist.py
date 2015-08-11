@@ -84,8 +84,8 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
         return settings.childGroups()
 
     def defineCharacteristics(self):
-        self.name = 'Import Vector into PostGIS database (available connections)'
-        self.group = '[OGR] Miscellaneous'
+        self.name, self.i18n_name = self.trAlgorithm('Import Vector into PostGIS database (available connections)')
+        self.group, self.i18n_group = self.trAlgorithm('[OGR] Miscellaneous')
         self.DB_CONNECTIONS = self.dbConnectionNames()
         self.addParameter(ParameterSelection(self.DATABASE,
             self.tr('Database (connection name)'), self.DB_CONNECTIONS))

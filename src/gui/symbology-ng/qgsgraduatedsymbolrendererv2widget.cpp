@@ -466,11 +466,6 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
 
   advMenu->addAction( tr( "Symbol levels..." ), this, SLOT( showSymbolLevels() ) );
 
-  mDataDefinedMenus = new QgsRendererV2DataDefinedMenus( advMenu, mLayer,
-      mRenderer->rotationField(), mRenderer->sizeScaleField(), mRenderer->scaleMethod() );
-  connect( mDataDefinedMenus, SIGNAL( rotationFieldChanged( QString ) ), this, SLOT( rotationFieldChanged( QString ) ) );
-  connect( mDataDefinedMenus, SIGNAL( sizeScaleFieldChanged( QString ) ), this, SLOT( sizeScaleFieldChanged( QString ) ) );
-  connect( mDataDefinedMenus, SIGNAL( scaleMethodChanged( QgsSymbolV2::ScaleMethod ) ), this, SLOT( scaleMethodChanged( QgsSymbolV2::ScaleMethod ) ) );
   btnAdvanced->setMenu( advMenu );
 
   mHistogramWidget->setLayer( mLayer );
@@ -507,6 +502,8 @@ void QgsGraduatedSymbolRendererV2Widget::connectUpdateHandlers()
   connect( spinGraduatedClasses, SIGNAL( valueChanged( int ) ), this, SLOT( classifyGraduated() ) );
   connect( cboGraduatedMode, SIGNAL( currentIndexChanged( int ) ), this, SLOT( classifyGraduated() ) );
   connect( cboGraduatedColorRamp, SIGNAL( currentIndexChanged( int ) ), this, SLOT( reapplyColorRamp() ) );
+  connect( cboGraduatedColorRamp, SIGNAL( sourceRampEdited() ), this, SLOT( reapplyColorRamp() ) );
+  connect( mButtonEditRamp, SIGNAL( clicked() ), cboGraduatedColorRamp, SLOT( editSourceRamp() ) );
   connect( cbxInvertedColorRamp, SIGNAL( toggled( bool ) ), this, SLOT( reapplyColorRamp() ) );
   connect( spinPrecision, SIGNAL( valueChanged( int ) ), this, SLOT( labelFormatChanged() ) );
   connect( cbxTrimTrailingZeroes, SIGNAL( toggled( bool ) ), this, SLOT( labelFormatChanged() ) );
@@ -525,6 +522,8 @@ void QgsGraduatedSymbolRendererV2Widget::disconnectUpdateHandlers()
   disconnect( spinGraduatedClasses, SIGNAL( valueChanged( int ) ), this, SLOT( classifyGraduated() ) );
   disconnect( cboGraduatedMode, SIGNAL( currentIndexChanged( int ) ), this, SLOT( classifyGraduated() ) );
   disconnect( cboGraduatedColorRamp, SIGNAL( currentIndexChanged( int ) ), this, SLOT( reapplyColorRamp() ) );
+  disconnect( cboGraduatedColorRamp, SIGNAL( sourceRampEdited() ), this, SLOT( reapplyColorRamp() ) );
+  disconnect( mButtonEditRamp, SIGNAL( clicked() ), cboGraduatedColorRamp, SLOT( editSourceRamp() ) );
   disconnect( cbxInvertedColorRamp, SIGNAL( toggled( bool ) ), this, SLOT( reapplyColorRamp() ) );
   disconnect( spinPrecision, SIGNAL( valueChanged( int ) ), this, SLOT( labelFormatChanged() ) );
   disconnect( cbxTrimTrailingZeroes, SIGNAL( toggled( bool ) ), this, SLOT( labelFormatChanged() ) );
@@ -984,11 +983,6 @@ void QgsGraduatedSymbolRendererV2Widget::changeCurrentValue( QStandardItem * ite
     int idx = item->row();
     mRenderer->updateRangeLabel( idx, label );
   }
-}
-
-void QgsGraduatedSymbolRendererV2Widget::rotationFieldChanged( QString fldName )
-{
-  mRenderer->setRotationField( fldName );
 }
 
 void QgsGraduatedSymbolRendererV2Widget::sizeScaleFieldChanged( QString fldName )

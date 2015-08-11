@@ -21,7 +21,7 @@
 #include "qgscurvev2.h"
 #include <QVector>
 
-/**\ingroup core
+/** \ingroup core
  * \class QgsCircularStringV2
  * \brief Circular string geometry type
  * \note added in QGIS 2.10

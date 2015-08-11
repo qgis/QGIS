@@ -43,7 +43,7 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
     , mFieldIdx( fieldIdx )
 {
   setupUi( this );
-  setWindowTitle( tr( "Edit Widget Properties - %1 (%2)" ).arg( vl->pendingFields()[fieldIdx].name() ).arg( vl->name() ) );
+  setWindowTitle( tr( "Edit Widget Properties - %1 (%2)" ).arg( vl->fields()[fieldIdx].name() ).arg( vl->name() ) );
 
   connect( selectionListWidget, SIGNAL( currentRowChanged( int ) ), this, SLOT( setStackPage( int ) ) );
 
@@ -65,8 +65,8 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   selectionListWidget->setMaximumWidth( selectionListWidget->sizeHintForColumn( 0 )
                                         + 2 );
 
-  if ( vl->pendingFields().fieldOrigin( fieldIdx ) == QgsFields::OriginJoin ||
-       vl->pendingFields().fieldOrigin( fieldIdx ) == QgsFields::OriginExpression )
+  if ( vl->fields().fieldOrigin( fieldIdx ) == QgsFields::OriginJoin ||
+       vl->fields().fieldOrigin( fieldIdx ) == QgsFields::OriginExpression )
   {
     isFieldEditableCheckBox->setEnabled( false );
   }

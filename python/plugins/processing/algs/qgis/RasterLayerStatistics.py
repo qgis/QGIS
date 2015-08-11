@@ -101,8 +101,8 @@ class RasterLayerStatistics(GeoAlgorithm):
         self.setOutputValue(self.STD_DEV, stddev)
 
     def defineCharacteristics(self):
-        self.name = 'Raster layer statistics'
-        self.group = 'Raster tools'
+        self.name, self.i18n_name = self.trAlgorithm('Raster layer statistics')
+        self.group, self.i18n_group = self.trAlgorithm('Raster tools')
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
         self.addOutput(OutputHTML(self.OUTPUT_HTML_FILE, self.tr('Statistics')))
         self.addOutput(OutputNumber(self.MIN, self.tr('Minimum value')))

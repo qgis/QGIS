@@ -1444,10 +1444,10 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
   layerOptions.clear();
 
 #if 0
-//  datasetOptions.insert( "HEADER", new StringOption(
-  QObject::tr( "Override the header file used - in place of header.dxf." ),
-  ""  // Default value
-  ) );
+  datasetOptions.insert( "HEADER", new StringOption(
+                           QObject::tr( "Override the header file used - in place of header.dxf." ),
+                           ""  // Default value
+                         ) );
 
   datasetOptions.insert( "TRAILER", new StringOption(
                            QObject::tr( "Override the trailer file used - in place of trailer.dxf." ),
@@ -1530,9 +1530,9 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                          )
                        );
   return driverMetadata;
-       }
+}
 
-       bool QgsVectorFileWriter::driverMetadata( const QString& driverName, QgsVectorFileWriter::MetaData& driverMetadata )
+bool QgsVectorFileWriter::driverMetadata( const QString& driverName, QgsVectorFileWriter::MetaData& driverMetadata )
 {
   static const QMap<QString, MetaData> sDriverMetadata = initMetaData();
 
@@ -1872,7 +1872,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
   }
 
   QGis::WkbType wkbType = layer->wkbType();
-  QgsFields fields = skipAttributeCreation ? QgsFields() : layer->pendingFields();
+  QgsFields fields = skipAttributeCreation ? QgsFields() : layer->fields();
 
   if ( layer->providerType() == "ogr" && layer->dataProvider() )
   {
@@ -1945,7 +1945,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
     errorMessage->clear();
   }
 
-  QgsAttributeList allAttr = skipAttributeCreation ? QgsAttributeList() : layer->pendingAllAttributesList();
+  QgsAttributeList allAttr = skipAttributeCreation ? QgsAttributeList() : layer->attributeList();
   QgsFeature fet;
 
   //add possible attributes needed by renderer
@@ -2098,9 +2098,10 @@ bool QgsVectorFileWriter::deleteShapeFile( QString theFileName )
   bool ok = true;
   foreach ( QString file, dir.entryList( filter ) )
   {
-    if ( !QFile::remove( dir.canonicalPath() + "/" + file ) )
+    QFile f( dir.canonicalPath() + "/" + file );
+    if ( !f.remove( ) )
     {
-      QgsDebugMsg( "Removing file failed : " + file );
+      QgsDebugMsg( QString( "Removing file %1 failed: %2" ).arg( file ).arg( f.errorString() ) );
       ok = false;
     }
   }
@@ -2671,7 +2672,7 @@ void QgsVectorFileWriter::startRender( QgsVectorLayer* vl ) const
   }
 
   QgsRenderContext ctx = renderContext();
-  renderer->startRender( ctx, vl->pendingFields() );
+  renderer->startRender( ctx, vl->fields() );
 }
 
 void QgsVectorFileWriter::stopRender( QgsVectorLayer* vl ) const

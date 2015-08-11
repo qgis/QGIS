@@ -33,14 +33,14 @@ QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryFeatureSource* sour
     mSubsetExpression->prepare( mSource->mFields );
   }
 
-  if ( mRequest.filterType() == QgsFeatureRequest::FilterRect && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
+  if ( !mRequest.filterRect().isNull() && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
   {
     mSelectRectGeom = QgsGeometry::fromRect( request.filterRect() );
   }
 
   // if there's spatial index, use it!
   // (but don't use it when selection rect is not specified)
-  if ( mRequest.filterType() == QgsFeatureRequest::FilterRect && mSource->mSpatialIndex )
+  if ( !mRequest.filterRect().isNull() && mSource->mSpatialIndex )
   {
     mUsingFeatureIdList = true;
     mFeatureIdList = mSource->mSpatialIndex->intersects( mRequest.filterRect() );
@@ -90,7 +90,7 @@ bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature& feature )
   // option 1: we have a list of features to traverse
   while ( mFeatureIdListIterator != mFeatureIdList.constEnd() )
   {
-    if ( mRequest.filterType() == QgsFeatureRequest::FilterRect && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
+    if ( !mRequest.filterRect().isNull() && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
     {
       // do exact check in case we're doing intersection
       if ( mSource->mFeatures[*mFeatureIdListIterator].geometry() && mSource->mFeatures[*mFeatureIdListIterator].geometry()->intersects( mSelectRectGeom ) )
@@ -131,7 +131,7 @@ bool QgsMemoryFeatureIterator::nextFeatureTraverseAll( QgsFeature& feature )
   // option 2: traversing the whole layer
   while ( mSelectIterator != mSource->mFeatures.constEnd() )
   {
-    if ( mRequest.filterType() != QgsFeatureRequest::FilterRect )
+    if ( mRequest.filterRect().isNull() )
     {
       // selection rect empty => using all features
       hasFeature = true;

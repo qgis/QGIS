@@ -28,6 +28,7 @@ class QgsOgrFeatureSource : public QgsAbstractFeatureSource
 {
   public:
     QgsOgrFeatureSource( const QgsOgrProvider* p );
+    ~QgsOgrFeatureSource();
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
 

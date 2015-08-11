@@ -53,8 +53,8 @@ class Grid(GeoAlgorithm):
              ]
 
     def defineCharacteristics(self):
-        self.name = 'Create grid'
-        self.group = 'Vector creation tools'
+        self.name, self.i18n_name = self.trAlgorithm('Create grid')
+        self.group, self.i18n_group = self.trAlgorithm('Vector creation tools')
 
         self.addParameter(ParameterSelection(self.TYPE,
             self.tr('Grid type'), self.TYPES))

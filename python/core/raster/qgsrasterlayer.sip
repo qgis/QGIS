@@ -1,4 +1,4 @@
-/*! \class QgsRasterLayer
+/** \class QgsRasterLayer
  *  \brief This class provides qgis with the ability to render raster datasets
  *  onto the mapcanvas..
  */
@@ -10,16 +10,16 @@ class QgsRasterLayer : QgsMapLayer
 %End
 
   public:
-    /**  \brief Default cumulative cut lower limit */
+    /** \brief Default cumulative cut lower limit */
     static const double CUMULATIVE_CUT_LOWER;
 
-    /**  \brief Default cumulative cut upper limit */
+    /** \brief Default cumulative cut upper limit */
     static const double CUMULATIVE_CUT_UPPER;
 
-    /**  \brief Default sample size (number of pixels) for estimated statistics/histogram calculation */
+    /** \brief Default sample size (number of pixels) for estimated statistics/histogram calculation */
     static const double SAMPLE_SIZE;
 
-    /**  \brief Constructor. Provider is not set. */
+    /** \brief Constructor. Provider is not set. */
     QgsRasterLayer();
 
     /** \brief This is the constructor for the RasterLayer class.
@@ -42,7 +42,7 @@ class QgsRasterLayer : QgsMapLayer
                     const QString &  baseName = QString::null,
                     bool loadDefaultStyleFlag = true );
 
-    /**  \brief [ data provider interface ] Constructor in provider mode */
+    /** \brief [ data provider interface ] Constructor in provider mode */
     QgsRasterLayer( const QString & uri,
                     const QString & baseName,
                     const QString & providerKey,
@@ -81,17 +81,17 @@ class QgsRasterLayer : QgsMapLayer
     /** Return time stamp for given file name */
     static QDateTime lastModified( const QString &  name );
 
-    /**  [ data provider interface ] Set the data provider */
+    /** [ data provider interface ] Set the data provider */
     void setDataProvider( const QString & provider );
 
     /** \brief  Accessor for raster layer type (which is a read only property) */
     LayerType rasterType();
 
-    /**Set raster renderer. Takes ownership of the renderer object*/
+    /** Set raster renderer. Takes ownership of the renderer object*/
     void setRenderer( QgsRasterRenderer* theRenderer /Transfer/ );
     QgsRasterRenderer* renderer() const;
 
-    /**Set raster resample filter. Takes ownership of the resample filter object*/
+    /** Set raster resample filter. Takes ownership of the resample filter object*/
     QgsRasterResampleFilter * resampleFilter() const;
 
     QgsBrightnessContrastFilter * brightnessFilter() const;
@@ -120,7 +120,7 @@ class QgsRasterLayer : QgsMapLayer
      */
     const QgsRasterDataProvider* dataProvider() const /PyName=constDataProvider/;
 
-    /**Synchronises with changes in the datasource */
+    /** Synchronises with changes in the datasource */
     virtual void reload();
 
     /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
@@ -136,7 +136,7 @@ class QgsRasterLayer : QgsMapLayer
                QgsRasterViewPort * myRasterViewPort,
                const QgsMapToPixel* theQgsMapToPixel = 0 );
 
-    /**Returns a list with classification items (Text and color) */
+    /** Returns a list with classification items (Text and color) */
     QList< QPair< QString, QColor > > legendSymbologyItems() const;
 
     /** \brief Obtain GDAL Metadata for this layer */
@@ -145,7 +145,7 @@ class QgsRasterLayer : QgsMapLayer
     /** \brief Get an 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned */
     QPixmap paletteAsPixmap( int theBandNumber = 1 );
 
-    /**  \brief [ data provider interface ] Which provider is being used for this Raster Layer? */
+    /** \brief [ data provider interface ] Which provider is being used for this Raster Layer? */
     QString providerType() const;
 
     /** \brief Returns the number of raster units per each raster pixel. In a world file, this is normally the first row (without the sign) */
@@ -172,7 +172,7 @@ class QgsRasterLayer : QgsMapLayer
     /** \brief Overloaded version of the above function for convenience when restoring from xml */
     void setDrawingStyle( const QString & theDrawingStyleQString ) /Deprecated/;
 
-    /**  \brief [ data provider interface ] A wrapper function to emit a progress update signal */
+    /** \brief [ data provider interface ] A wrapper function to emit a progress update signal */
     void showProgress( int theValue );
 
     /** \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS */

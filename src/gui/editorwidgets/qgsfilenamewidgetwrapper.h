@@ -40,6 +40,7 @@ class GUI_EXPORT QgsFileNameWidgetWrapper : public QgsEditorWidgetWrapper
     // QgsEditorWidgetWrapper interface
   public:
     QVariant value() override;
+    bool valid() override;
 
   protected:
     QWidget* createWidget( QWidget* parent ) override;

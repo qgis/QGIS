@@ -65,7 +65,7 @@ email                : sherman at mrcc.com
 #include <math.h>
 
 
-/**  @deprecated to be deleted, stuff from here should be moved elsewhere */
+/** @deprecated to be deleted, stuff from here should be moved elsewhere */
 class QgsMapCanvas::CanvasProperties
 {
   public:
@@ -1851,7 +1851,7 @@ void QgsMapCanvas::writeProject( QDomDocument & doc )
   // TODO: store only units, extent, projections, dest CRS
 }
 
-/**Ask user which datum transform to use*/
+/** Ask user which datum transform to use*/
 void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId )
 {
   if ( !ml )

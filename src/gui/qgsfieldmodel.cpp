@@ -98,7 +98,7 @@ void QgsFieldModel::updateModel()
 {
   if ( mLayer )
   {
-    QgsFields newFields = mLayer->pendingFields();
+    QgsFields newFields = mLayer->fields();
     if ( mFields.toList() != newFields.toList() )
     {
       // Try to handle two special cases: addition of a new field and removal of a field.
@@ -152,7 +152,7 @@ void QgsFieldModel::updateModel()
 
       // general case with reset - not good - resets selections
       beginResetModel();
-      mFields = mLayer->pendingFields();
+      mFields = mLayer->fields();
       endResetModel();
     }
     else
@@ -289,7 +289,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       if ( exprIdx >= 0 )
       {
         QgsExpression exp( mExpression[exprIdx] );
-        exp.prepare( mLayer ? mLayer->pendingFields() : QgsFields() );
+        exp.prepare( mLayer ? mLayer->fields() : QgsFields() );
         return !exp.hasParserError();
       }
       return true;
@@ -330,7 +330,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       {
         // if expression, test validity
         QgsExpression exp( mExpression[exprIdx] );
-        exp.prepare( mLayer ? mLayer->pendingFields() : QgsFields() );
+        exp.prepare( mLayer ? mLayer->fields() : QgsFields() );
         if ( exp.hasParserError() )
         {
           return QBrush( QColor( Qt::red ) );

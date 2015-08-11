@@ -43,8 +43,8 @@ class information(GdalAlgorithm):
         return "gdalorg:rasterinfo"
 
     def defineCharacteristics(self):
-        self.name = 'Information'
-        self.group = '[GDAL] Miscellaneous'
+        self.name, self.i18n_name = self.trAlgorithm('Information')
+        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Miscellaneous')
         self.addParameter(ParameterRaster(information.INPUT,
             self.tr('Input layer'), False))
         self.addParameter(ParameterBoolean(information.NOGCP,

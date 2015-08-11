@@ -26,7 +26,7 @@ __copyright__ = '(C) 2013, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 
-class SilentProgress:
+class SilentProgress(object):
 
     def error(self, msg):
         print msg

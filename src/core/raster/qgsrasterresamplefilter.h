@@ -44,11 +44,11 @@ class CORE_EXPORT QgsRasterResampleFilter : public QgsRasterInterface
 
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) override;
 
-    /**Set resampler for zoomed in scales. Takes ownership of the object*/
+    /** Set resampler for zoomed in scales. Takes ownership of the object*/
     void setZoomedInResampler( QgsRasterResampler* r );
     const QgsRasterResampler* zoomedInResampler() const { return mZoomedInResampler; }
 
-    /**Set resampler for zoomed out scales. Takes ownership of the object*/
+    /** Set resampler for zoomed out scales. Takes ownership of the object*/
     void setZoomedOutResampler( QgsRasterResampler* r );
     const QgsRasterResampler* zoomedOutResampler() const { return mZoomedOutResampler; }
 
@@ -57,16 +57,16 @@ class CORE_EXPORT QgsRasterResampleFilter : public QgsRasterInterface
 
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const override;
 
-    /**Sets base class members from xml. Usually called from create() methods of subclasses*/
+    /** Sets base class members from xml. Usually called from create() methods of subclasses*/
     void readXML( const QDomElement& filterElem ) override;
 
   protected:
-    /**Resampler used if screen resolution is higher than raster resolution (zoomed in). 0 means no resampling (nearest neighbour)*/
+    /** Resampler used if screen resolution is higher than raster resolution (zoomed in). 0 means no resampling (nearest neighbour)*/
     QgsRasterResampler* mZoomedInResampler;
-    /**Resampler used if raster resolution is higher than raster resolution (zoomed out). 0 mean no resampling (nearest neighbour)*/
+    /** Resampler used if raster resolution is higher than raster resolution (zoomed out). 0 mean no resampling (nearest neighbour)*/
     QgsRasterResampler* mZoomedOutResampler;
 
-    /**Maximum boundary for oversampling (to avoid too much data traffic). Default: 2.0*/
+    /** Maximum boundary for oversampling (to avoid too much data traffic). Default: 2.0*/
     double mMaxOversampling;
 
   private:

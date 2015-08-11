@@ -26,7 +26,7 @@ class ANALYSIS_EXPORT QgsIDWInterpolator: public QgsInterpolator
     QgsIDWInterpolator( const QList<LayerData>& layerData );
     ~QgsIDWInterpolator();
 
-    /**Calculates interpolation value for map coordinates x, y
+    /** Calculates interpolation value for map coordinates x, y
        @param x x-coordinate (in map units)
        @param y y-coordinate (in map units)
        @param result out: interpolation result
@@ -39,7 +39,7 @@ class ANALYSIS_EXPORT QgsIDWInterpolator: public QgsInterpolator
 
     QgsIDWInterpolator(); //forbidden
 
-    /**The parameter that sets how the values are weighted with distance.
+    /** The parameter that sets how the values are weighted with distance.
        Smaller values mean sharper peaks at the data points. The default is a
        value of 2*/
     double mDistanceCoefficient;

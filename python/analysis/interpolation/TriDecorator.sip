@@ -1,4 +1,4 @@
-/**Decorator class for Triangulations (s. Decorator pattern in Gamma et al.)*/
+/** Decorator class for Triangulations (s. Decorator pattern in Gamma et al.)*/
 class TriDecorator : Triangulation
 {
 %TypeHeaderCode
@@ -11,9 +11,9 @@ class TriDecorator : Triangulation
     virtual ~TriDecorator();
     virtual void addLine( Line3D* line, bool breakline );
     virtual int addPoint( Point3D* p );
-    /**Adds an association to a triangulation*/
+    /** Adds an association to a triangulation*/
     virtual void addTriangulation( Triangulation* t );
-    /**Performs a consistency check, remove this later*/
+    /** Performs a consistency check, remove this later*/
     virtual void performConsistencyTest();
     virtual bool calcNormal( double x, double y, Vector3D* result );
     virtual bool calcPoint( double x, double y, Point3D* result );

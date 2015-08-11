@@ -67,7 +67,7 @@ void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const Qg
 
   connect( mTableView, SIGNAL( willShowContextMenu( QMenu*, QModelIndex ) ), this, SLOT( viewWillShowContextMenu( QMenu*, QModelIndex ) ) );
 
-  initLayerCache( layer, request.filterType() == QgsFeatureRequest::FilterRect );
+  initLayerCache( layer, !request.filterRect().isNull() );
   initModels( mapCanvas, request );
 
   mConditionalFormatWidget->setLayer( layer );
@@ -95,7 +95,7 @@ void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const Qg
 void QgsDualView::columnBoxInit()
 {
   // load fields
-  QList<QgsField> fields = mLayerCache->layer()->pendingFields().toList();
+  QList<QgsField> fields = mLayerCache->layer()->fields().toList();
 
   QString defaultField;
 
@@ -115,7 +115,7 @@ void QgsDualView::columnBoxInit()
   // if neither diaplay expression nor display field is saved...
   if ( displayExpression == "" )
   {
-    QgsAttributeList pkAttrs = mLayerCache->layer()->pendingPkAttributesList();
+    QgsAttributeList pkAttrs = mLayerCache->layer()->pkAttributeList();
 
     if ( pkAttrs.size() > 0 )
     {

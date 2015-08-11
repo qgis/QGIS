@@ -1,5 +1,5 @@
 v.out.dxf
-v.out.dxf - Exports GRASS vector map layers to DXF file format.
+Exports GRASS vector map layers to DXF file format.
 Vector (v.*)
 ParameterVector|input|Name of input vector map|-1|False
 OutputFile|output|DXF vector

@@ -56,7 +56,7 @@ if "%ARCH%"=="x86" goto devenv_x86
 goto devenv_x86_64
 
 :devenv_x86
-set GRASS_VERSIONS=6.4.4 7.0.1RC1
+set GRASS_VERSIONS=6.4.4 7.0.1
 call "%PF86%\Microsoft Visual Studio 10.0\VC\vcvarsall.bat" x86
 if exist "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" call "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" /x86 /Release
 path %path%;%PF86%\Microsoft Visual Studio 10.0\VC\bin
@@ -68,7 +68,7 @@ set CMAKE_OPT=^
 	-D WITH_GRASS=TRUE ^
 	-D WITH_GRASS7=TRUE ^
 	-D GRASS_PREFIX=%O4W_ROOT%/apps/grass/grass-6.4.4 ^
-	-D GRASS_PREFIX7=%O4W_ROOT%/apps/grass/grass-7.0.1RC1 ^
+	-D GRASS_PREFIX7=%O4W_ROOT%/apps/grass/grass-7.0.1 ^
 	-D CMAKE_CXX_FLAGS_RELWITHDEBINFO="/MD /ZI /MP /Od /D NDEBUG /D QGISDEBUG" ^
 	-D CMAKE_PDB_OUTPUT_DIRECTORY_RELWITHDEBINFO=%BUILDDIR%\apps\%PACKAGENAME%\pdb
 goto devenv
@@ -207,7 +207,15 @@ if exist ..\skiptests goto skiptests
 
 echo RUN_TESTS: %DATE% %TIME%
 
+set oldtemp=%TEMP%
+set oldtmp=%TMP%
 set oldpath=%PATH%
+
+set TEMP=%TEMP%\%PACKAGENAME%-%ARCH%
+set TMP=%TEMP%
+if exist "%TEMP%" rmdir /s /q "%TEMP%"
+mkdir "%TEMP%"
+
 for %%g IN (%GRASS_VERSIONS%) do (
 	set path=!path!;%OSGEO4W_ROOT%\apps\grass\grass-%%g\lib
 	set GISBASE=%OSGEO4W_ROOT%\apps\grass\grass-%%g
@@ -217,13 +225,15 @@ PATH %path%;%BUILDDIR%\output\plugins\%BUILDCONF%
 cmake --build %BUILDDIR% --target Nightly --config %BUILDCONF%
 if errorlevel 1 echo TESTS WERE NOT SUCCESSFUL.
 
+set TEMP=%oldtemp%
+set TMP=%oldtmp%
 PATH %oldpath%
 
 :skiptests
 
-if exist %PKGDIR% (
+if exist "%PKGDIR%" (
 	echo REMOVE: %DATE% %TIME%
-	rmdir /s /q %PKGDIR%
+	rmdir /s /q "%PKGDIR%"
 )
 
 echo INSTALL: %DATE% %TIME%

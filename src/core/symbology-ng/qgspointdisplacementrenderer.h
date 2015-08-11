@@ -27,7 +27,7 @@
 
 class QgsSpatialIndex;
 
-/**A renderer that automatically displaces points with the same position*/
+/** A renderer that automatically displaces points with the same position*/
 class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
 {
   public:
@@ -38,7 +38,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const override;
 
-    /**Reimplemented from QgsFeatureRendererV2*/
+    /** Reimplemented from QgsFeatureRendererV2*/
     bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
 
     /** Partial proxy that will call this method on the embedded renderer. */
@@ -58,7 +58,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
     /** Proxy that will call this method on the embedded renderer. */
     virtual bool willRenderFeature( QgsFeature& feat ) override;
 
-    void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
+    virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
 
     void stopRender( QgsRenderContext& context ) override;
 
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
     void setLabelAttributeName( const QString& name ) { mLabelAttributeName = name; }
     QString labelAttributeName() const { return mLabelAttributeName; }
 
-    /**Sets embedded renderer (takes ownership)*/
+    /** Sets embedded renderer (takes ownership)*/
     void setEmbeddedRenderer( QgsFeatureRendererV2* r );
     QgsFeatureRendererV2* embeddedRenderer() const { return mRenderer;}
 
@@ -100,9 +100,9 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
     void setMaxLabelScaleDenominator( double d ) { mMaxLabelScaleDenominator = d; }
     double maxLabelScaleDenominator() const { return mMaxLabelScaleDenominator; }
 
-    /**Returns the symbol for the center of a displacement group (but _not_ ownership of the symbol)*/
+    /** Returns the symbol for the center of a displacement group (but _not_ ownership of the symbol)*/
     QgsMarkerSymbolV2* centerSymbol() { return mCenterSymbol;}
-    /**Sets the center symbol (takes ownership)*/
+    /** Sets the center symbol (takes ownership)*/
     void setCenterSymbol( QgsMarkerSymbolV2* symbol );
 
     void setTolerance( double t ) { mTolerance = t; }
@@ -115,50 +115,50 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
 
   private:
 
-    /**Embedded renderer. Like This, it is possible to use a classification together with point displacement*/
+    /** Embedded renderer. Like This, it is possible to use a classification together with point displacement*/
     QgsFeatureRendererV2* mRenderer;
 
-    /**Attribute name for labeling. Empty string means no labelling will be done*/
+    /** Attribute name for labeling. Empty string means no labelling will be done*/
     QString mLabelAttributeName;
-    /**Label attribute index (or -1 if none). This index is not stored, it is requested in the startRender() method*/
+    /** Label attribute index (or -1 if none). This index is not stored, it is requested in the startRender() method*/
     int mLabelIndex;
 
-    /**Center symbol for a displacement group*/
+    /** Center symbol for a displacement group*/
     QgsMarkerSymbolV2* mCenterSymbol;
 
-    /**Tolerance. Points that are closer together are considered as equal*/
+    /** Tolerance. Points that are closer together are considered as equal*/
     double mTolerance;
 
-    /**Font that is passed to the renderer*/
+    /** Font that is passed to the renderer*/
     QFont mLabelFont;
     QColor mLabelColor;
-    /**Line width for the circle*/
+    /** Line width for the circle*/
     double mCircleWidth;
-    /**Color to draw the circle*/
+    /** Color to draw the circle*/
     QColor mCircleColor;
-    /**Addition to the default circle radius*/
+    /** Addition to the default circle radius*/
     double mCircleRadiusAddition;
-    /**Is set internally from startRender() depending on scale denominator*/
+    /** Is set internally from startRender() depending on scale denominator*/
     bool mDrawLabels;
-    /**Maximum scale denominator for label display. Negative number means no scale limitation*/
+    /** Maximum scale denominator for label display. Negative number means no scale limitation*/
     double mMaxLabelScaleDenominator;
 
     typedef QMap<QgsFeatureId, QPair< QgsFeature, QgsSymbolV2* > > DisplacementGroup;
-    /**Groups of features that have the same position*/
+    /** Groups of features that have the same position*/
     QList<DisplacementGroup> mDisplacementGroups;
-    /**Mapping from feature ID to its group index*/
+    /** Mapping from feature ID to its group index*/
     QMap<QgsFeatureId, int> mGroupIndex;
-    /**Spatial index for fast lookup of close points*/
+    /** Spatial index for fast lookup of close points*/
     QgsSpatialIndex* mSpatialIndex;
-    /** keeps trask which features are selected */
+    /** Keeps trask which features are selected */
     QSet<QgsFeatureId> mSelectedFeatures;
 
-    /**Creates a search rectangle with mTolerance*/
+    /** Creates a search rectangle with mTolerance*/
     QgsRectangle searchRect( const QgsPoint& p ) const;
-    /**This is a debugging function to check the entries in the displacement groups*/
+    /** This is a debugging function to check the entries in the displacement groups*/
     void printInfoDisplacementGroups();
 
-    /**Returns the label for a feature (using mLabelAttributeName as attribute field)*/
+    /** Returns the label for a feature (using mLabelAttributeName as attribute field)*/
     QString getLabel( const QgsFeature& f );
 
     //rendering methods
@@ -171,7 +171,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
     void drawCircle( double radiusPainterUnits, QgsSymbolV2RenderContext& context, const QPointF& centerPoint, int nSymbols );
     void drawSymbols( const QgsFeature& f, QgsRenderContext& context, const QList<QgsMarkerSymbolV2*>& symbolList, const QList<QPointF>& symbolPositions, bool selected = false );
     void drawLabels( const QPointF& centerPoint, QgsSymbolV2RenderContext& context, const QList<QPointF>& labelShifts, const QStringList& labelList );
-    /**Returns first symbol for feature or 0 if none*/
+    /** Returns first symbol for feature or 0 if none*/
     QgsSymbolV2* firstSymbolForFeature( QgsFeatureRendererV2* r, QgsFeature& f );
 };
 

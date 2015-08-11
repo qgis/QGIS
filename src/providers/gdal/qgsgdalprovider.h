@@ -79,7 +79,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      */
     QImage* draw( QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight ) override;
 
-    /** return a provider name
+    /** Return a provider name
 
     Essentially just returns the provider key.  Should be used to build file
     dialogs so that providers can be shown with their supported types. Thus
@@ -96,7 +96,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QString name() const override;
 
 
-    /** return description
+    /** Return description
 
     Return a terse string describing what the provider is.
 
@@ -109,7 +109,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     */
     QString description() const override;
 
-    /*! Get the QgsCoordinateReferenceSystem for this layer
+    /** Get the QgsCoordinateReferenceSystem for this layer
      * @note Must be reimplemented by each provider.
      * If the provider isn't capable of returning
      * its projection an empty srs will be return, ti will return 0
@@ -120,7 +120,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     */
     virtual QgsRectangle extent() override;
 
-    /**Returns true if layer is valid
+    /** Returns true if layer is valid
     */
     bool isValid() override;
 
@@ -169,7 +169,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     QString generateBandName( int theBandNumber ) const override;
 
-    /**Reimplemented from QgsRasterDataProvider to bypass second resampling (more efficient for local file based sources)*/
+    /** Reimplemented from QgsRasterDataProvider to bypass second resampling (more efficient for local file based sources)*/
     QgsRasterBlock *block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight ) override;
 
     void readBlock( int bandNo, int xBlock, int yBlock, void *data ) override;
@@ -235,12 +235,12 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     static QMap<QString, QString> supportedMimes();
 
-    /**Writes into the provider datasource*/
+    /** Writes into the provider datasource*/
     bool write( void* data, int band, int width, int height, int xOffset, int yOffset ) override;
 
     bool setNoDataValue( int bandNo, double noDataValue ) override;
 
-    /**Remove dataset*/
+    /** Remove dataset*/
     bool remove() override;
 
     QString validateCreationOptions( const QStringList& createOptions, QString format ) override;
@@ -257,7 +257,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     // initialize CRS from wkt
     bool crsFromWkt( const char *wkt );
 
-    /**Do some initialisation on the dataset (e.g. handling of south-up datasets)*/
+    /** Do some initialisation on the dataset (e.g. handling of south-up datasets)*/
     void initBaseDataset();
 
     /**

@@ -1,5 +1,5 @@
 v.random
-v.random - Randomly generate a 2D/3D vector points map.
+Randomly generate a 2D/3D vector points map.
 Vector (v.*)
 ParameterNumber|npoints|Number of points to be created|None|None|100
 ParameterNumber|zmin|Minimum z height for 3D output|None|None|0.0

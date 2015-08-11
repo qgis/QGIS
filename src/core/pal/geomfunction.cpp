@@ -30,6 +30,7 @@
 #include "geomfunction.h"
 #include "feature.h"
 #include "util.h"
+#include "qgis.h"
 
 namespace pal
 {
@@ -144,201 +145,6 @@ namespace pal
              && cross_product( x3, y3, x4, y4, x1, y1 ) * cross_product( x3, y3, x4, y4, x2, y2 ) < 0 );
   }
 
-
-
-
-  /*
-   */
-
-  bool computeSegIntersectionExt( double x1, double y1, double x2, double y2, double xs1, double ys1,  // 1st (segment)
-                                  double x3, double y3, double x4, double y4, double xs2, double ys2, // 2nd segment
-                                  double *x, double *y )
-  {
-    double cp1, cp2, cp3, cp4;
-    cp1 = cross_product( x1, y1, x2, y2, x3, y3 );
-    cp2 = cross_product( x1, y1, x2, y2, x4, y4 );
-    cp3 = cross_product( x3, y3, x4, y4, x1, y1 );
-    cp4 = cross_product( x3, y3, x4, y4, x2, y2 );
-
-
-    if ( cp1 == 0 && cp2 == 0 && cp3 == 0 && cp4 == 0 )
-    {
-#ifdef _DEBUG_FULL_
-      std::cout << "coolineaire..." << std::endl;
-#endif
-      return false;
-    }
-
-    // 1 ter
-    if ( cp1 == 0 && cp3 == 0 )
-    {
-#ifdef _DEBUG_FULL_
-      std::cout << "cp1 = cp3 = 0 => ignoring..." << std::endl;
-#endif
-      return false;
-    }
-
-    // 1 bis
-    if ( cp1 == 0 && cp4 == 0 )
-    {
-#ifdef _DEBUG_FULL_
-      std::cout << "cp1 = cp4 = 0 => ignoring..." << std::endl;
-#endif
-      return false;
-    }
-
-    // 1 bis
-    if ( cp2 == 0 && cp3 == 0 )
-    {
-#ifdef _DEBUG_FULL_
-      std::cout << "cp2 = cp3 = 0 => ignoring..." << std::endl;
-#endif
-      return false;
-    }
-
-    // 2bis and 3bis
-    if ( cp1 == 0 || cp3 == 0 )
-    {
-#ifdef _DEBUG_FULL_
-      std::cout << "skip..." << std::endl;
-#endif
-      return false;
-    }
-
-    // case 3
-    if ( cp4 == 0 && cp1 * cp1 < 0 )
-    {
-      if ( cross_product( x3, y3, x4, y4, xs1, ys1 ) * cp3 < 0 )
-      {
-        *x = x2;
-        *y = y2;
-        return true;
-      }
-      else
-        return false;
-    }
-
-    // case 2
-    if ( cp2 == 0 && cp3 * cp4 < 0 )
-    {
-      if ( cross_product( x1, y1, x2, y2, xs2, ys2 ) * cp1 < 0 )
-      {
-        *x = x4;
-        *y = y4;
-        return true;
-      }
-      else
-        return false;
-    }
-
-    // case 1
-    if ( cp2 == 0 && cp4 == 0 )
-    {
-      double distance[4];
-      double cx, cy;
-      double dx, dy;
-      double nx[4], ny[4];
-      double toDist;
-      double ratio;
-      int i;
-
-      cx = x2;
-      cy = y2;
-
-      nx[0] = x1;
-      ny[0] = y1;
-
-      nx[1] = xs1;
-      ny[1] = ys1;
-
-      nx[2] = x3;
-      ny[2] = y3;
-
-      nx[3] = xs2;
-      ny[3] = ys2;
-
-      distance[0] = dist_euc2d( cx, cy, x1, y1 ); // i
-      toDist = distance[0];
-
-      distance[1] = dist_euc2d( cx, cy, xs1, ys1 );// j2
-      toDist = max( toDist, distance[1] );
-
-      distance[2] = dist_euc2d( cx, cy, x3, y3 );// k
-      toDist = max( toDist, distance[2] );
-
-      distance[3] = dist_euc2d( cx, cy, xs2, ys2 ); // l2
-      toDist = max( toDist, distance[3] );
-
-      for ( i = 0; i < 4; i++ )
-      {
-        dx = nx[i] - cx;
-        dy = ny[i] - cy;
-
-        ratio = toDist / distance[i];
-
-        nx[i] = cx + dx * ratio;
-        ny[i] = cy + dy * ratio;
-      }
-
-      bool return_val =  computeSegIntersection( nx[0], ny[0], nx[1], ny[1], nx[2], ny[2], nx[3], ny[3], x, y );
-
-      return return_val;
-    }
-
-    if ( cp1 * cp2 <= 0
-         && cp3 *cp4 <= 0 )
-    {
-      return computeLineIntersection( x1, y1, x2, y2, x3, y3, x4, y4, x, y );
-    }
-
-    return false;
-  }
-
-
-
-
-  /*
-   * \brief Intersection bw a line and a segment
-   * \return true if the point exist false otherwise
-   */
-  bool computeLineSegIntersection( double x1, double y1, double x2, double y2,  // 1st line
-                                   double x3, double y3, double x4, double y4,  // 2nd segment
-                                   double *x, double *y )
-  {
-    double cp1, cp2;
-    cp1 = cross_product( x1, y1, x2, y2, x3, y3 );
-    cp2 = cross_product( x1, y1, x2, y2, x4, y4 );
-
-    if ( cp1 * cp2 <= 0 )
-      return computeLineIntersection( x1, y1, x2, y2, x3, y3, x4, y4, x, y );
-
-    return false;
-  }
-
-
-
-  /*
-   * \brief compute the point wherre two segment intersects
-   * \return true if the point exist false otherwise
-   */
-
-  bool computeSegIntersection( double x1, double y1, double x2, double y2,  // 1st (segment)
-                               double x3, double y3, double x4, double y4,  // 2nd segment
-                               double *x, double *y )
-  {
-    double cp1, cp2, cp3, cp4;
-    cp1 = cross_product( x1, y1, x2, y2, x3, y3 );
-    cp2 = cross_product( x1, y1, x2, y2, x4, y4 );
-    cp3 = cross_product( x3, y3, x4, y4, x1, y1 );
-    cp4 = cross_product( x3, y3, x4, y4, x2, y2 );
-
-    if ( cp1 * cp2 <= 0
-         && cp3 *cp4 <= 0 )
-      return computeLineIntersection( x1, y1, x2, y2, x3, y3, x4, y4, x, y );
-
-    return false;
-  }
-
   /*
    * \brief compute the point wherre two lines intersects
    * \return true if the ok false if line are parallel
@@ -409,14 +215,14 @@ namespace pal
 
     // find the lowest x value from the lowest y
     ref = 1;
-    while ( ref < n && vabs( y[id[cHull[ref]]] -  y[id[cHull[0]]] ) < EPSILON ) ref++;
+    while ( ref < n && qgsDoubleNear( y[id[cHull[ref]]], y[id[cHull[0]]] ) ) ref++;
 
     heapsort( cHull, id, x, ref );
 
     // the first point is now for sure in the hull as well as the ref one
     for ( i = ref; i < n; i++ )
     {
-      if ( vabs( y[id[cHull[i]]] - y[id[cHull[0]]] ) < EPSILON )
+      if ( qgsDoubleNear( y[id[cHull[i]]], y[id[cHull[0]]] ) )
         tan[i] = FLT_MAX;
       else
         tan[i] = ( x[id[cHull[0]]] - x[id[cHull[i]]] ) / ( y[id[cHull[i]]] - y[id[cHull[0]]] );
@@ -444,7 +250,7 @@ namespace pal
       result = cross_product( x[id[stack[second]]], y[id[stack[second]]],
                               x[id[stack[top]]], y[id[stack[top]]], x[id[cHull[i]]], y[id[cHull[i]]] );
       // Coolineaire !! garder le plus éloigné
-      if ( vabs( result ) < EPSILON )
+      if ( qgsDoubleNear( result, 0.0 ) )
       {
         if ( dist_euc2d_sq( x[id[stack[second]]], y[id[stack[second]]], x[id[cHull[i]]], y[id[cHull[i]]] )
              >  dist_euc2d_sq( x[id[stack[second]]], y[id[stack[second]]], x[id[stack[top]]], y[id[stack[top]]] ) )
@@ -552,25 +358,6 @@ namespace pal
 
     return 0;
 
-  }
-
-
-  bool isPointInPolygon( int npol, double *xp, double *yp, double x, double y )
-  {
-    // code from Randolph Franklin (found at http://local.wasp.uwa.edu.au/~pbourke/geometry/insidepoly/)
-    int i, j;
-    bool c = false;
-
-    for ( i = 0, j = npol - 1; i < npol; j = i++ )
-    {
-      if (((( yp[i] <= y ) && ( y < yp[j] ) ) ||
-           (( yp[j] <= y ) && ( y < yp[i] ) ) )
-          && ( x < ( xp[j] - xp[i] ) *( y - yp[i] ) / ( yp[j] - yp[i] ) + xp[i] ) )
-      {
-        c = !c;
-      }
-    }
-    return c;
   }
 
   void findLineCircleIntersection( double cx, double cy, double radius,

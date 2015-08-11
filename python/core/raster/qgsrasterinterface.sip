@@ -1,5 +1,5 @@
 
-/**  Base class for processing modules.
+/** Base class for processing modules.
  *
  */
 

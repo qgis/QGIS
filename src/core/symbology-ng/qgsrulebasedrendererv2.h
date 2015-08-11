@@ -135,7 +135,9 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         QDomElement save( QDomDocument& doc, QgsSymbolV2Map& symbolMap );
 
         //! prepare the rule for rendering and its children (build active children array)
-        bool startRender( QgsRenderContext& context, const QgsFields& fields );
+        Q_DECL_DEPRECATED bool startRender( QgsRenderContext& context, const QgsFields& fields );
+        //! prepare the rule for rendering and its children (build active children array)
+        bool startRender( QgsRenderContext& context, const QgsFields& fields, QString& filter );
         //! get all used z-levels from this rule and children
         QSet<int> collectZLevels();
         //! assign normalized z-levels [0..N-1] for this rule's symbol for quick access during rendering
@@ -224,6 +226,8 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
 
     virtual void stopRender( QgsRenderContext& context ) override;
 
+    virtual QString filter() override;
+
     virtual QList<QString> usedAttributes() override;
 
     virtual QgsFeatureRendererV2* clone() const override;
@@ -297,7 +301,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
     static QgsRuleBasedRendererV2* convertFromRenderer( const QgsFeatureRendererV2 *renderer );
 
     //! helper function to convert the size scale and rotation fields present in some other renderers to data defined symbology
-    static void convertToDataDefinedSymbology( QgsSymbolV2* symbol, QString sizeScaleField, QString rotationField );
+    static void convertToDataDefinedSymbology( QgsSymbolV2* symbol, QString sizeScaleField, QString rotationField = QString() );
 
   protected:
     //! the root node with hierarchical list of rules
@@ -306,6 +310,8 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
     // temporary
     RenderQueue mRenderQueue;
     QList<FeatureToRender> mCurrentFeatures;
+
+    QString mFilter;
 };
 
 #endif // QGSRULEBASEDRENDERERV2_H

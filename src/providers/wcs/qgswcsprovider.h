@@ -96,7 +96,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     QgsRasterInterface * clone() const override;
 
-    /*! Get the QgsCoordinateReferenceSystem for this layer
+    /** Get the QgsCoordinateReferenceSystem for this layer
      * @note Must be reimplemented by each provider.
      * If the provider isn't capable of returning
      * its projection an empty srs will be return, ti will return 0
@@ -147,11 +147,11 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     */
     virtual QgsRectangle extent() override;
 
-    /**Returns true if layer is valid
+    /** Returns true if layer is valid
      */
     bool isValid() override;
 
-    /**Returns the base url
+    /** Returns the base url
      */
     virtual QString baseUrl() const;
 

@@ -416,7 +416,7 @@ int main( int argc, char *argv[] )
     gdalShares << QCoreApplication::applicationDirPath().append( "/share/gdal" )
     << appResources.append( "/share/gdal" )
     << appResources.append( "/gdal" );
-    Q_FOREACH( const QString& gdalShare, gdalShares )
+    Q_FOREACH ( const QString& gdalShare, gdalShares )
     {
       if ( QFile::exists( gdalShare ) )
       {

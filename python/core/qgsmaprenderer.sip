@@ -91,7 +91,7 @@ class QgsMapRenderer : QObject
 
   public:
 
-    /**Output units for pen width and point marker width/height*/
+    /** Output units for pen width and point marker width/height*/
     enum OutputUnits
     {
       Millimeters,
@@ -151,7 +151,7 @@ class QgsMapRenderer : QObject
 
     //! Scale denominator
     double scale() const;
-    /**Sets scale for scale based visibility. Normally, the scale is calculated automatically. This
+    /** Sets scale for scale based visibility. Normally, the scale is calculated automatically. This
      function is only used to force a preview scale (e.g. for print composer)*/
     void setScale( double scale );
     double mapUnitsPerPixel() const;

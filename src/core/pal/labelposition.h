@@ -30,11 +30,9 @@
 #ifndef _LABELPOSITION_H
 #define _LABELPOSITION_H
 
-#include <fstream>
-
 #include "pointset.h"
 #include "rtree.hpp"
-
+#include <fstream>
 
 namespace pal
 {
@@ -47,7 +45,7 @@ namespace pal
   /**
    * \brief LabelPosition is a candidate feature label position
    */
-  class CORE_EXPORT LabelPosition
+  class CORE_EXPORT LabelPosition : public PointSet
   {
       friend class CostCalculator;
       friend class PolygonCostCalculator;
@@ -94,7 +92,6 @@ namespace pal
 
       ~LabelPosition() { delete nextPart; }
 
-
       /**
        * \brief Is the labelposition in the bounding-box ? (intersect or inside????)
        *
@@ -128,13 +125,16 @@ namespace pal
       void getBoundingBox( double amin[2], double amax[2] ) const;
 
       /** Get distance from this label to a point. If point lies inside, returns negative number. */
-      double getDistanceToPoint( double xp, double yp );
+      double getDistanceToPoint( double xp, double yp ) const;
 
       /** Returns true if this label crosses the specified line */
-      bool isBorderCrossingLine( PointSet* feat );
+      bool crossesLine( PointSet* line ) const;
+
+      /** Returns true if this label crosses the boundary of the specified polygon */
+      bool crossesBoundary( PointSet* polygon ) const;
 
       /** Returns number of intersections with polygon (testing border and center) */
-      int getNumPointsInPolygon( int npol, double *xp, double *yp );
+      int getNumPointsInPolygon( PointSet* polygon ) const;
 
       /** Shift the label by specified offset */
       void offsetPosition( double xOffset, double yOffset );
@@ -165,14 +165,28 @@ namespace pal
       /** Return pointer to layer's name. used for stats */
       QString getLayerName() const;
 
-      /**
-       * \brief get the position geographical cost
-       * \return geographical cost
+      /** Returns the candidate label position's geographical cost.
+       * @see setCost
        */
-      double getCost() const;
+      double cost() const { return mCost; }
 
-      /** Modify candidate's cost */
-      void setCost( double newCost ) { cost = newCost; }
+      /** Sets the candidate label position's geographical cost.
+       * @param newCost new cost for position
+       * @see cost
+      */
+      void setCost( double newCost ) { mCost = newCost; }
+
+      /** Sets whether the position is marked as conflicting with an obstacle feature.
+       * @param conflicts set to true to mark candidate as being in conflict
+       * @note This method applies to all label parts for the candidate position.
+       * @see conflictsWithObstacle
+       */
+      void setConflictsWithObstacle( bool conflicts );
+
+      /** Returns whether the position is marked as conflicting with an obstacle feature.
+       * @see setConflictsWithObstacle
+       */
+      bool conflictsWithObstacle() const { return mHasObstacleConflict; }
 
       /** Make sure the cost is less than 1 */
       void validateCost();
@@ -216,9 +230,8 @@ namespace pal
 
       typedef struct
       {
-        double scale;
         Pal* pal;
-        PointSet *obstacle;
+        FeaturePart *obstacle;
       } PruneCtx;
 
       /** Check whether the candidate in ctx overlap with obstacle feat */
@@ -248,12 +261,12 @@ namespace pal
       static bool removeOverlapCallback( LabelPosition *lp, void *ctx );
 
       // for polygon cost calculation
-      static bool polygonObstacleCallback( PointSet *feat, void *ctx );
+      static bool polygonObstacleCallback( pal::FeaturePart *obstacle, void *ctx );
 
     protected:
 
       int id;
-      double cost;
+
       FeaturePart *feature;
 
       // bug # 1 (maxence 10/23/2008)
@@ -261,7 +274,6 @@ namespace pal
 
       int nbOverlap;
 
-      double x[4], y[4];
       double alpha;
       double w;
       double h;
@@ -280,6 +292,10 @@ namespace pal
 
       bool isInConflictSinglePart( LabelPosition* lp );
       bool isInConflictMultiPart( LabelPosition* lp );
+
+    private:
+      double mCost;
+      bool mHasObstacleConflict;
 
   };
 

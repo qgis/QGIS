@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>590</width>
-    <height>400</height>
+    <width>616</width>
+    <height>411</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -76,10 +76,23 @@
          </property>
          <item>
           <property name="text">
+           <string>Modules</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../../images/images.qrc">
+            <normaloff>:/images/themes/default/grass_mapset.png</normaloff>:/images/themes/default/grass_mapset.png</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Browser</string>
           </property>
           <property name="toolTip">
            <string>Browser</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../../images/images.qrc">
+            <normaloff>:/images/icons/qbrowser-icon-60x60.png</normaloff>:/images/icons/qbrowser-icon-60x60.png</iconset>
           </property>
          </item>
         </widget>
@@ -97,37 +110,132 @@
        <enum>QFrame::NoFrame</enum>
       </property>
       <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
+       <enum>QFrame::Plain</enum>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <property name="margin">
-        <number>0</number>
-       </property>
+      <layout class="QVBoxLayout" name="verticalLayout_6">
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
+         <property name="lineWidth">
+          <number>0</number>
+         </property>
          <property name="currentIndex">
           <number>0</number>
          </property>
-         <widget class="QWidget" name="mBrowserOptionsPage">
+         <widget class="QWidget" name="mModulesPage">
+          <layout class="QVBoxLayout" name="verticalLayout_7">
+           <item>
+            <widget class="QScrollArea" name="mModulesScrollArea">
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Plain</enum>
+             </property>
+             <property name="lineWidth">
+              <number>0</number>
+             </property>
+             <property name="widgetResizable">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="mModulesContents">
+              <property name="geometry">
+               <rect>
+                <x>0</x>
+                <y>0</y>
+                <width>439</width>
+                <height>350</height>
+               </rect>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout">
+               <item>
+                <widget class="QgsCollapsibleGroupBox" name="mModulesConfigGroupBox">
+                 <property name="title">
+                  <string>Modules interface configuration</string>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_4">
+                  <item>
+                   <widget class="QRadioButton" name="mModulesConfigDefaultRadioButton">
+                    <property name="text">
+                     <string>Default</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_3">
+                    <item>
+                     <widget class="QRadioButton" name="mModulesConfigCustomRadioButton">
+                      <property name="text">
+                       <string>Custom</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLineEdit" name="mModulesConfigDirLineEdit"/>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="mModulesConfigBrowseButton">
+                      <property name="text">
+                       <string>Browse</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QCheckBox" name="mModulesDebugCheckBox">
+                 <property name="text">
+                  <string>Debug mode</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="verticalSpacer_2">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>246</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="mBrowserPage">
           <layout class="QVBoxLayout" name="verticalLayout_3">
            <property name="margin">
             <number>0</number>
            </property>
            <item>
-            <widget class="QScrollArea" name="mBrowserOptionsScrollArea">
+            <widget class="QScrollArea" name="mBrowserScrollArea">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Plain</enum>
+             </property>
+             <property name="lineWidth">
+              <number>0</number>
              </property>
              <property name="widgetResizable">
               <bool>true</bool>
              </property>
-             <widget class="QWidget" name="mBrowserOptionsScrollAreaContents">
+             <widget class="QWidget" name="mBrowserContents">
               <property name="geometry">
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>429</width>
-                <height>363</height>
+                <width>286</width>
+                <height>98</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -207,13 +315,31 @@
     </widget>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="mButtonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+    <widget class="QFrame" name="mButtonBoxFrame">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
      </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QDialogButtonBox" name="buttonBox">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="standardButtons">
+         <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>
@@ -231,34 +357,18 @@
  </resources>
  <connections>
   <connection>
-   <sender>mButtonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>QgsGrassOptionsBase</receiver>
-   <slot>accept()</slot>
+   <sender>mOptionsListWidget</sender>
+   <signal>currentRowChanged(int)</signal>
+   <receiver>mOptionsStackedWidget</receiver>
+   <slot>setCurrentIndex(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
+     <x>78</x>
+     <y>186</y>
     </hint>
     <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mButtonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>QgsGrassOptionsBase</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>286</x>
-     <y>274</y>
+     <x>384</x>
+     <y>186</y>
     </hint>
    </hints>
   </connection>

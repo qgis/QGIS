@@ -142,7 +142,7 @@ QgsRectangle QgsExtentGroupBox::outputExtent() const
                        mXMaxLineEdit->text().toDouble(), mYMaxLineEdit->text().toDouble() );
 }
 
-void QgsExtentGroupBox::setTitleBase(const QString& title)
+void QgsExtentGroupBox::setTitleBase( const QString& title )
 {
   mTitleBase = title;
   updateTitle();

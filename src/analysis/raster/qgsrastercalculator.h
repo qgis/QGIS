@@ -36,7 +36,7 @@ struct ANALYSIS_EXPORT QgsRasterCalculatorEntry
   int bandNumber; //raster band number
 };
 
-/**Raster calculator class*/
+/** Raster calculator class*/
 class ANALYSIS_EXPORT QgsRasterCalculator
 {
   public:
@@ -67,10 +67,9 @@ class ANALYSIS_EXPORT QgsRasterCalculator
     QgsRasterCalculator( const QString& formulaString, const QString& outputFile, const QString& outputFormat,
                          const QgsRectangle& outputExtent, const QgsCoordinateReferenceSystem& outputCrs, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry>& rasterEntries );
 
-
     ~QgsRasterCalculator();
 
-    /**Starts the calculation and writes new raster
+    /** Starts the calculation and writes new raster
       @param p progress bar (or 0 if called from non-gui code)
       @return 0 in case of success*/
     int processCalculation( QProgressDialog* p = 0 );
@@ -79,15 +78,15 @@ class ANALYSIS_EXPORT QgsRasterCalculator
     //default constructor forbidden. We need formula, output file, output format and output raster resolution obligatory
     QgsRasterCalculator();
 
-    /**Opens the output driver and tests if it supports the creation of a new dataset
+    /** Opens the output driver and tests if it supports the creation of a new dataset
       @return NULL on error and the driver handle on success*/
     GDALDriverH openOutputDriver();
 
-    /**Opens the output file and sets the same geotransform and CRS as the input data
+    /** Opens the output file and sets the same geotransform and CRS as the input data
       @return the output dataset or NULL in case of error*/
     GDALDatasetH openOutputFile( GDALDriverH outputDriver );
 
-    /**Sets gdal 6 parameters array from mOutputRectangle, mNumOutputColumns, mNumOutputRows
+    /** Sets gdal 6 parameters array from mOutputRectangle, mNumOutputColumns, mNumOutputRows
       @param transform double[6] array that receives the GDAL parameters*/
     void outputGeoTransform( double* transform ) const;
 
@@ -95,13 +94,13 @@ class ANALYSIS_EXPORT QgsRasterCalculator
     QString mOutputFile;
     QString mOutputFormat;
 
-    /**Output raster extent*/
+    /** Output raster extent*/
     QgsRectangle mOutputRectangle;
     QgsCoordinateReferenceSystem mOutputCrs;
 
-    /**Number of output columns*/
+    /** Number of output columns*/
     int mNumOutputColumns;
-    /**Number of output rows*/
+    /** Number of output rows*/
     int mNumOutputRows;
 
     /***/

@@ -33,7 +33,7 @@ typedef QVector<QgsPoint> QgsMultiPoint;
 typedef QVector<QgsPolyline> QgsMultiPolyline;
 typedef QVector<QgsPolygon> QgsMultiPolygon;
 
-/**\ingroup core
+/** \ingroup core
  * \class QgsGeometryFactory
  * \brief Contains geometry creation routines.
  * \note added in QGIS 2.10
@@ -50,21 +50,21 @@ class CORE_EXPORT QgsGeometryFactory
      */
     static QgsAbstractGeometryV2* geomFromWkt( const QString& text );
 
-    /** construct geometry from a point */
+    /** Construct geometry from a point */
     static QgsAbstractGeometryV2* fromPoint( const QgsPoint& point );
-    /** construct geometry from a multipoint */
+    /** Construct geometry from a multipoint */
     static QgsAbstractGeometryV2* fromMultiPoint( const QgsMultiPoint& multipoint );
-    /** construct geometry from a polyline */
+    /** Construct geometry from a polyline */
     static QgsAbstractGeometryV2* fromPolyline( const QgsPolyline& polyline );
-    /** construct geometry from a multipolyline*/
+    /** Construct geometry from a multipolyline*/
     static QgsAbstractGeometryV2* fromMultiPolyline( const QgsMultiPolyline& multiline );
-    /** construct geometry from a polygon */
+    /** Construct geometry from a polygon */
     static QgsAbstractGeometryV2* fromPolygon( const QgsPolygon& polygon );
-    /** construct geometry from a multipolygon */
+    /** Construct geometry from a multipolygon */
     static QgsAbstractGeometryV2* fromMultiPolygon( const QgsMultiPolygon& multipoly );
-    /** construct geometry from a rectangle */
+    /** Construct geometry from a rectangle */
     static QgsAbstractGeometryV2* fromRect( const QgsRectangle& rect );
-    /** return empty geometry from wkb type*/
+    /** Return empty geometry from wkb type*/
     static QgsAbstractGeometryV2* geomFromWkbType( QgsWKBTypes::Type t );
 
   private:

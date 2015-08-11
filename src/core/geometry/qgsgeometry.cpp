@@ -109,7 +109,7 @@ void QgsGeometry::detach( bool cloneGeom )
 
   if ( d->ref > 1 )
   {
-    d->ref.deref();
+    ( void )d->ref.deref();
     QgsAbstractGeometryV2* cGeom = 0;
 
     if ( d->geometry && cloneGeom )
@@ -692,7 +692,7 @@ int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeome
   return result;
 }
 
-/**Replaces a part of this geometry with another line*/
+/** Replaces a part of this geometry with another line*/
 int QgsGeometry::reshapeGeometry( const QList<QgsPoint>& reshapeWithLine )
 {
   if ( !d || !d->geometry )

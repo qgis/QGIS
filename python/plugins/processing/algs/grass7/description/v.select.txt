@@ -1,5 +1,5 @@
 v.select
-v.select - Selects features from vector map (A) by features from other vector map (B).
+Selects features from vector map (A) by features from other vector map (B).
 Vector (v.*)
 ParameterVector|ainput|Input layer (A)|-1|False
 ParameterSelection|atype|Input layer (A) Type|area;line;point

@@ -391,6 +391,12 @@ void QgsRuleBasedRendererV2::Rule::toSld( QDomDocument& doc, QDomElement &elemen
 
 bool QgsRuleBasedRendererV2::Rule::startRender( QgsRenderContext& context, const QgsFields& fields )
 {
+  QString filter;
+  return startRender( context, fields, filter );
+}
+
+bool QgsRuleBasedRendererV2::Rule::startRender( QgsRenderContext& context, const QgsFields& fields, QString& filter )
+{
   mActiveChildren.clear();
 
   if ( ! mCheckState )
@@ -408,15 +414,37 @@ bool QgsRuleBasedRendererV2::Rule::startRender( QgsRenderContext& context, const
 
   // init children
   // build temporary list of active rules (usable with this scale)
+  QStringList subfilters;
   for ( RuleList::iterator it = mChildren.begin(); it != mChildren.end(); ++it )
   {
+    QString subfilter;
     Rule* rule = *it;
-    if ( rule->startRender( context, fields ) )
+    if ( rule->startRender( context, fields , subfilter ) )
     {
       // only add those which are active with current scale
       mActiveChildren.append( rule );
+      subfilters.append( subfilter );
     }
   }
+
+  // subfilters (on the same level) are joined with OR and finally joined with AND with their parent (this) filter
+  QString sf;
+  if ( subfilters.length() )
+    sf = subfilters.join( ") OR (" ).prepend( "(" ).append( ")" );
+
+  if ( isElse() )
+  {
+    if ( !sf.length() )
+      filter = "TRUE";
+    else
+      filter = sf;
+  }
+  else if ( mFilterExp.length() && sf.length() )
+    filter = QString( "(%1) AND (%2)" ).arg( mFilterExp ).arg( sf );
+  else if ( mFilterExp.length() )
+    filter = mFilterExp;
+  else
+    filter = sf;
   return true;
 }
 
@@ -782,7 +810,7 @@ bool QgsRuleBasedRendererV2::renderFeature( QgsFeature& feature,
 void QgsRuleBasedRendererV2::startRender( QgsRenderContext& context, const QgsFields& fields )
 {
   // prepare active children
-  mRootRule->startRender( context, fields );
+  mRootRule->startRender( context, fields, mFilter );
 
   QSet<int> symbolZLevelsSet = mRootRule->collectZLevels();
   QList<int> symbolZLevels = symbolZLevelsSet.toList();
@@ -843,6 +871,11 @@ void QgsRuleBasedRendererV2::stopRender( QgsRenderContext& context )
   mRootRule->stopRender( context );
 }
 
+QString QgsRuleBasedRendererV2::filter()
+{
+  return mFilter;
+}
+
 QList<QString> QgsRuleBasedRendererV2::usedAttributes()
 {
   QSet<QString> attrs = mRootRule->usedAttributes();
@@ -885,6 +918,7 @@ QDomElement QgsRuleBasedRendererV2::save( QDomDocument& doc )
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( "type", "RuleRenderer" );
   rendererElem.setAttribute( "symbollevels", ( mUsingSymbolLevels ? "1" : "0" ) );
+  rendererElem.setAttribute( "forceraster", ( mForceRaster ? "1" : "0" ) );
 
   QgsSymbolV2Map symbols;
 
@@ -1091,7 +1125,7 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFe
       return 0;
 
     QgsSymbolV2* origSymbol = singleSymbolRenderer->symbol()->clone();
-    convertToDataDefinedSymbology( origSymbol, singleSymbolRenderer->sizeScaleField(), singleSymbolRenderer->rotationField() );
+    convertToDataDefinedSymbology( origSymbol, singleSymbolRenderer->sizeScaleField() );
     return new QgsRuleBasedRendererV2( origSymbol );
   }
 
@@ -1140,7 +1174,7 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFe
       //data dependent area and rotation, so we need to convert these to obtain the same rendering
 
       QgsSymbolV2* origSymbol = category.symbol()->clone();
-      convertToDataDefinedSymbology( origSymbol, categorizedRenderer->sizeScaleField(), categorizedRenderer->rotationField() );
+      convertToDataDefinedSymbology( origSymbol, categorizedRenderer->sizeScaleField() );
       rule->setSymbol( origSymbol );
 
       rootrule->appendChild( rule );
@@ -1182,7 +1216,7 @@ QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFe
       //data dependent area and rotation, so we need to convert these to obtain the same rendering
 
       QgsSymbolV2* symbol = range.symbol()->clone();
-      convertToDataDefinedSymbology( symbol, graduatedRenderer->sizeScaleField(), graduatedRenderer->rotationField() );
+      convertToDataDefinedSymbology( symbol, graduatedRenderer->sizeScaleField() );
 
       rule->setSymbol( symbol );
 
@@ -1217,19 +1251,19 @@ void QgsRuleBasedRendererV2::convertToDataDefinedSymbology( QgsSymbolV2* symbol,
       for ( int j = 0; j < symbol->symbolLayerCount();++j )
       {
         QgsMarkerSymbolLayerV2* msl = static_cast<QgsMarkerSymbolLayerV2*>( symbol->symbolLayer( j ) );
-        if ( ! sizeScaleField.isNull() )
+        if ( ! sizeScaleField.isEmpty() )
         {
           sizeExpression = QString( "%1*(%2)" ).arg( msl->size() ).arg( sizeScaleField );
           msl->setDataDefinedProperty( "size", new QgsDataDefined( sizeExpression ) );
         }
-        if ( ! rotationField.isNull() )
+        if ( ! rotationField.isEmpty() )
         {
           msl->setDataDefinedProperty( "angle", new QgsDataDefined( true, false, QString(), rotationField ) );
         }
       }
       break;
     case QgsSymbolV2::Line:
-      if ( ! sizeScaleField.isNull() )
+      if ( ! sizeScaleField.isEmpty() )
       {
         for ( int j = 0; j < symbol->symbolLayerCount();++j )
         {

@@ -66,13 +66,13 @@ class QgsHistogramWidget : QWidget
      */
     QBrush brush() const;
 
-    /** Sets the graduated ranges associated with the histogram. If set, the ranges will be used to colour the histogram
+    /** Sets the graduated ranges associated with the histogram. If set, the ranges will be used to color the histogram
      * bars and for showing vertical dividers at the histogram breaks.
      * @param ranges graduated range list
      */
     void setGraduatedRanges( const QgsRangeList& ranges );
 
-    /** Returns the graduated ranges associated with the histogram. If set, the ranges will be used to colour the histogram
+    /** Returns the graduated ranges associated with the histogram. If set, the ranges will be used to color the histogram
      * bars and for showing vertical dividers at the histogram breaks.
      * @returns graduated range list
      * @see setGraduatedRanges

@@ -53,10 +53,10 @@ class CanopyModel(FusionAlgorithm):
     ADVANCED_MODIFIERS = 'ADVANCED_MODIFIERS'
 
     def defineCharacteristics(self):
-        self.name = 'Canopy Model'
-        self.group = 'Points'
+        self.name, self.i18n_name = self.trAlgorithm('Canopy Model')
+        self.group, self.i18n_group = self.trAlgorithm('Points')
         self.addParameter(ParameterFile(
-            self.INPUT, self.tr('Input las layer')))
+            self.INPUT, self.tr('Input LAS layer')))
         self.addParameter(ParameterNumber(
             self.CELLSIZE, self.tr('Cellsize'), 0, None, 10.0))
         self.addParameter(ParameterSelection(

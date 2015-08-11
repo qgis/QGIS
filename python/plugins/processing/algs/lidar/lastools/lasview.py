@@ -45,8 +45,8 @@ class lasview(LAStoolsAlgorithm):
     COLORINGS = ["default", "classification", "elevation1", "elevation2", "intensity", "return", "flightline", "rgb"]
 
     def defineCharacteristics(self):
-        self.name = "lasview"
-        self.group = "LAStools"
+        self.name, self.i18n_name = self.trAlgorithm('lasview')
+        self.group, self.i18n_group = self.trAlgorithm('LAStools')
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterNumber(lasview.POINTS,

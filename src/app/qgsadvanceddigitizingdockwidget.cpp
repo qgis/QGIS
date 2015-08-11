@@ -853,8 +853,7 @@ bool QgsAdvancedDigitizingDockWidget::alignToSegment( QgsMapMouseEvent* e, CadCo
 
 bool QgsAdvancedDigitizingDockWidget::canvasPressEventFilter( QgsMapMouseEvent* e )
 {
-  Q_UNUSED( e );
-
+  applyConstraints( e );
   return mCadEnabled && mConstructionMode;
 }
 

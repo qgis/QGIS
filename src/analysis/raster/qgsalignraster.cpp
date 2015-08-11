@@ -556,7 +556,9 @@ bool QgsAlignRaster::suggestedWarpOutput( const QgsAlignRaster::RasterInfo& info
 
 
 QgsAlignRaster::RasterInfo::RasterInfo( const QString& layerpath )
-    : mBandCnt( 0 )
+    : mXSize( 0 )
+    , mYSize( 0 )
+    , mBandCnt( 0 )
 {
   mDataset = GDALOpen( layerpath.toLocal8Bit().constData(), GA_ReadOnly );
   if ( !mDataset )

@@ -225,6 +225,8 @@ void QgsGrassPlugin::initGui()
   connect( qGisInterface, SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
            this, SLOT( setEditAction() ) );
 
+  connect( QgsGrass::instance(), SIGNAL( mapsetChanged() ), SLOT( mapsetChanged() ) );
+
   // Init Region symbology
   mRegionPen.setColor( QColor( settings.value( "/GRASS/region/color", "#ff0000" ).toString() ) );
   mRegionPen.setWidth( settings.value( "/GRASS/region/width", 0 ).toInt() );
@@ -240,6 +242,7 @@ void QgsGrassPlugin::initGui()
 
 void QgsGrassPlugin::mapsetChanged()
 {
+  QgsDebugMsg( "entered" );
   if ( !QgsGrass::activeMode() )
   {
     mRegionAction->setEnabled( false );
@@ -260,11 +263,6 @@ void QgsGrassPlugin::mapsetChanged()
     mRegionAction->setChecked( on );
     switchRegion( on );
 
-    if ( mTools )
-    {
-      mTools->mapsetChanged();
-    }
-
     QString gisdbase = QgsGrass::getDefaultGisdbase();
     QString location = QgsGrass::getDefaultLocation();
     try
@@ -281,21 +279,11 @@ void QgsGrassPlugin::mapsetChanged()
     setTransform();
     redrawRegion();
   }
-}
 
-void QgsGrassPlugin::saveMapset()
-{
-// QgsDebugMsg("entered.");
-
-  // Save working mapset in project file
-  QgsProject::instance()->writeEntry( "GRASS", "/WorkingGisdbase",
-                                      QgsProject::instance()->writePath( QgsGrass::getDefaultGisdbase() ) );
-
-  QgsProject::instance()->writeEntry( "GRASS", "/WorkingLocation",
-                                      QgsGrass::getDefaultLocation() );
-
-  QgsProject::instance()->writeEntry( "GRASS", "/WorkingMapset",
-                                      QgsGrass::getDefaultMapset() );
+  if ( mTools )
+  {
+    mTools->mapsetChanged();
+  }
 }
 
 // Open tools
@@ -485,25 +473,14 @@ void QgsGrassPlugin::displayRegion()
   if ( !QgsGrass::activeMode() )
     return;
 
-  QString gisdbase = QgsGrass::getDefaultGisdbase();
-  QString location = QgsGrass::getDefaultLocation();
-  QString mapset   = QgsGrass::getDefaultMapset();
-
-  if ( gisdbase.isEmpty() || location.isEmpty() || mapset.isEmpty() )
-  {
-    QMessageBox::warning( 0, tr( "Warning" ),
-                          tr( "GISDBASE, LOCATION_NAME or MAPSET is not set, cannot display current region." ) );
-    return;
-  }
-
-  QgsGrass::setLocation( gisdbase, location );
-
   struct Cell_head window;
-  char *err = G__get_window( &window, ( char * ) "", ( char * ) "WIND", mapset.toLatin1().data() );
-
-  if ( err )
+  try
   {
-    QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot read current region: %1" ).arg( err ) );
+    QgsGrass::region( &window );
+  }
+  catch ( QgsGrass::Exception &e )
+  {
+    QgsGrass::warning( e );
     return;
   }
 
@@ -595,9 +572,6 @@ void QgsGrassPlugin::openMapset()
     QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot open the mapset. %1" ).arg( err ) );
     return;
   }
-
-  saveMapset();
-  mapsetChanged();
 }
 
 void QgsGrassPlugin::closeMapset()
@@ -611,9 +585,6 @@ void QgsGrassPlugin::closeMapset()
     QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot close mapset. %1" ).arg( err ) );
     return;
   }
-
-  saveMapset();
-  mapsetChanged();
 }
 
 void QgsGrassPlugin::newMapset()
@@ -667,7 +638,6 @@ void QgsGrassPlugin::projectRead()
     QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot close current mapset. %1" ).arg( err ) );
     return;
   }
-  mapsetChanged();
 
   err = QgsGrass::openMapset( gisdbase, location, mapset );
 
@@ -676,8 +646,6 @@ void QgsGrassPlugin::projectRead()
     QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot open GRASS mapset. %1" ).arg( err ) );
     return;
   }
-
-  mapsetChanged();
 }
 
 void QgsGrassPlugin::newProject()

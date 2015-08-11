@@ -21,7 +21,6 @@
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorcolorrampv2.h"
-#include "qgsvectorgradientcolorrampv2dialog.h"
 #include "qgsstylev2.h"
 #include "qgsproject.h"
 #include <QGridLayout>
@@ -68,6 +67,9 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer* layer, QgsSt
   mRampComboBox->setShowGradientOnly( true );
   mRampComboBox->populate( QgsStyleV2::defaultStyle() );
   connect( mRampComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( applyColorRamp() ) );
+  connect( mRampComboBox, SIGNAL( sourceRampEdited() ), this, SLOT( applyColorRamp() ) );
+  connect( mButtonEditRamp, SIGNAL( clicked() ), mRampComboBox, SLOT( editSourceRamp() ) );
+
   if ( mRenderer->colorRamp() )
   {
     mRampComboBox->blockSignals( true );
@@ -113,28 +115,6 @@ void QgsHeatmapRendererWidget::applyColorRamp()
     return;
 
   mRenderer->setColorRamp( ramp );
-}
-
-void QgsHeatmapRendererWidget::on_mButtonEditRamp_clicked()
-{
-  if ( mRenderer && mRenderer->colorRamp()->type() == "gradient" )
-  {
-    QgsVectorColorRampV2* ramp = mRenderer->colorRamp()->clone();
-    QgsVectorGradientColorRampV2* gradRamp = static_cast<QgsVectorGradientColorRampV2*>( ramp );
-    QgsVectorGradientColorRampV2Dialog dlg( gradRamp, this );
-
-    if ( dlg.exec() && gradRamp )
-    {
-      mRenderer->setColorRamp( gradRamp );
-      mRampComboBox->blockSignals( true );
-      mRampComboBox->setSourceColorRamp( mRenderer->colorRamp() );
-      mRampComboBox->blockSignals( false );
-    }
-    else
-    {
-      delete ramp;
-    }
-  }
 }
 
 void QgsHeatmapRendererWidget::on_mRadiusUnitWidget_changed()

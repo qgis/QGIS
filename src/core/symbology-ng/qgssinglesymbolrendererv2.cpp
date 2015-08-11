@@ -81,7 +81,8 @@ QgsSymbolV2* QgsSingleSymbolRendererV2::originalSymbolForFeature( QgsFeature& fe
 
 void QgsSingleSymbolRendererV2::startRender( QgsRenderContext& context, const QgsFields& fields )
 {
-  if ( !mSymbol.data() ) return;
+  if ( !mSymbol.data() )
+    return;
 
   mSymbol->startRender( context, &fields );
 
@@ -112,6 +113,8 @@ void QgsSingleSymbolRendererV2::startRender( QgsRenderContext& context, const Qg
       mOrigSize = 0;
     }
   }
+
+  return;
 }
 
 void QgsSingleSymbolRendererV2::stopRender( QgsRenderContext& context )
@@ -150,12 +153,23 @@ void QgsSingleSymbolRendererV2::setSymbol( QgsSymbolV2* s )
 
 void QgsSingleSymbolRendererV2::setRotationField( QString fieldOrExpression )
 {
-  mRotation.reset( QgsSymbolLayerV2Utils::fieldOrExpressionToExpression( fieldOrExpression ) );
+  if ( mSymbol->type() == QgsSymbolV2::Marker )
+  {
+    QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( mSymbol.data() );
+    s->setDataDefinedAngle( QgsDataDefined( fieldOrExpression ) );
+  }
 }
 
 QString QgsSingleSymbolRendererV2::rotationField() const
 {
-  return mRotation.data() ? QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( mRotation.data() ) : QString();
+  if ( mSymbol->type() == QgsSymbolV2::Marker )
+  {
+    QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( mSymbol.data() );
+    QgsDataDefined ddAngle = s->dataDefinedAngle();
+    return ddAngle.useExpression() ? ddAngle.expressionString() : ddAngle.field();
+  }
+
+  return QString();
 }
 
 void QgsSingleSymbolRendererV2::setSizeScaleField( QString fieldOrExpression )
@@ -183,9 +197,7 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::clone() const
 {
   QgsSingleSymbolRendererV2* r = new QgsSingleSymbolRendererV2( mSymbol->clone() );
   r->setUsingSymbolLevels( usingSymbolLevels() );
-  r->setRotationField( rotationField() );
   r->setSizeScaleField( sizeScaleField() );
-  //r->setScaleMethod( scaleMethod() );
   copyPaintEffect( r );
   return r;
 }
@@ -344,6 +356,7 @@ QDomElement QgsSingleSymbolRendererV2::save( QDomDocument& doc )
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( "type", "singleSymbol" );
   rendererElem.setAttribute( "symbollevels", ( mUsingSymbolLevels ? "1" : "0" ) );
+  rendererElem.setAttribute( "forceraster", ( mForceRaster ? "1" : "0" ) );
 
   QgsSymbolV2Map symbols;
   symbols["0"] = mSymbol.data();

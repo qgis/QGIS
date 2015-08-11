@@ -440,6 +440,8 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
   connect( btnAddCategory, SIGNAL( clicked() ), this, SLOT( addCategory() ) );
   connect( cbxInvertedColorRamp, SIGNAL( toggled( bool ) ), this, SLOT( applyColorRamp() ) );
   connect( cboCategorizedColorRamp, SIGNAL( currentIndexChanged( int ) ), this, SLOT( applyColorRamp() ) );
+  connect( cboCategorizedColorRamp, SIGNAL( sourceRampEdited() ), this, SLOT( applyColorRamp() ) );
+  connect( mButtonEditRamp, SIGNAL( clicked() ), cboCategorizedColorRamp, SLOT( editSourceRamp() ) );
 
   // menus for data-defined rotation/size
   QMenu* advMenu = new QMenu;
@@ -448,11 +450,6 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
   advMenu->addAction( tr( "Match to symbols from file..." ), this, SLOT( matchToSymbolsFromXml() ) );
   advMenu->addAction( tr( "Symbol levels..." ), this, SLOT( showSymbolLevels() ) );
 
-  mDataDefinedMenus = new QgsRendererV2DataDefinedMenus( advMenu, mLayer,
-      mRenderer->rotationField(), mRenderer->sizeScaleField(), mRenderer->scaleMethod() );
-  connect( mDataDefinedMenus, SIGNAL( rotationFieldChanged( QString ) ), this, SLOT( rotationFieldChanged( QString ) ) );
-  connect( mDataDefinedMenus, SIGNAL( sizeScaleFieldChanged( QString ) ), this, SLOT( sizeScaleFieldChanged( QString ) ) );
-  connect( mDataDefinedMenus, SIGNAL( scaleMethodChanged( QgsSymbolV2::ScaleMethod ) ), this, SLOT( scaleMethodChanged( QgsSymbolV2::ScaleMethod ) ) );
   btnAdvanced->setMenu( advMenu );
 }
 
@@ -649,7 +646,7 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
   {
     // Lets assume it's an expression
     QgsExpression* expression = new QgsExpression( attrName );
-    expression->prepare( mLayer->pendingFields() );
+    expression->prepare( mLayer->fields() );
     QgsFeatureIterator fit = mLayer->getFeatures();
     QgsFeature feature;
     while ( fit.nextFeature( feature ) )
@@ -752,7 +749,6 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
   r->setSourceSymbol( mCategorizedSymbol->clone() );
   r->setScaleMethod( mRenderer->scaleMethod() );
   r->setSizeScaleField( mRenderer->sizeScaleField() );
-  r->setRotationField( mRenderer->rotationField() );
   r->setInvertedColorRamp( cbxInvertedColorRamp->isChecked() );
   QgsVectorColorRampV2* ramp = getColorRamp();
   if ( ramp ) r->setSourceColorRamp( ramp->clone() );
@@ -816,11 +812,6 @@ void QgsCategorizedSymbolRendererV2Widget::addCategory()
   QgsSymbolV2 *symbol = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
   QgsRendererCategoryV2 cat( QString(), symbol, QString(), true );
   mModel->addCategory( cat );
-}
-
-void QgsCategorizedSymbolRendererV2Widget::rotationFieldChanged( QString fldName )
-{
-  mRenderer->setRotationField( fldName );
 }
 
 void QgsCategorizedSymbolRendererV2Widget::sizeScaleFieldChanged( QString fldName )

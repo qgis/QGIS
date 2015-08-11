@@ -3,7 +3,7 @@
   <exec>otbcli_ClassificationMapRegularization</exec>
   <longname>Classification Map Regularization</longname>
   <group>Learning</group>
-  <description>Filters the input labeled image using Majority Voting in a ball shaped neighbordhood.</description>
+  <description>Filters the input labeled image using Majority Voting in a ball shaped neighborhood.</description>
   <parameter>
     <parameter_type source_parameter_type="ParameterType_InputImage">ParameterRaster</parameter_type>
     <key>io.in</key>

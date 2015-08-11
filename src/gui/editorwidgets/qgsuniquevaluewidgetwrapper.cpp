@@ -100,6 +100,11 @@ void QgsUniqueValuesWidgetWrapper::initWidget( QWidget* editor )
   }
 }
 
+bool QgsUniqueValuesWidgetWrapper::valid()
+{
+  return mComboBox || mLineEdit;
+}
+
 void QgsUniqueValuesWidgetWrapper::setValue( const QVariant& value )
 {
   if ( mComboBox )

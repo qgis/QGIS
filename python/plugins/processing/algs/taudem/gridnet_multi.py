@@ -57,9 +57,9 @@ class GridNetMulti(GeoAlgorithm):
         return QIcon(os.path.dirname(__file__) + '/../../images/taudem.png')
 
     def defineCharacteristics(self):
-        self.name = 'Grid Network (multifile)'
+        self.name, self.i18n_name = self.trAlgorithm('Grid Network (multifile)')
         self.cmdName = 'gridnet'
-        self.group = 'Basic Grid Analysis tools'
+        self.group, self.i18n_group = self.trAlgorithm('Basic Grid Analysis tools')
 
         self.addParameter(ParameterFile(self.D8_FLOW_DIR_GRID,
             self.tr('D8 Flow Direction Grid'), True, False))

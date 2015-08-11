@@ -253,7 +253,7 @@ void QgsComposerAttributeTableV2::resetColumns()
   mColumns.clear();
 
   //rebuild columns list from vector layer fields
-  const QgsFields& fields = source->pendingFields();
+  const QgsFields& fields = source->fields();
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
     QString currentAlias = source->attributeDisplayName( idx );
@@ -371,7 +371,7 @@ void QgsComposerAttributeTableV2::setDisplayAttributes( const QSet<int>& attr, b
   qDeleteAll( mColumns );
   mColumns.clear();
 
-  const QgsFields& fields = source->pendingFields();
+  const QgsFields& fields = source->fields();
 
   if ( !attr.empty() )
   {
@@ -530,7 +530,7 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
     //check feature against filter
     if ( activeFilter && !filterExpression.isNull() )
     {
-      QVariant result = filterExpression->evaluate( &f, layer->pendingFields() );
+      QVariant result = filterExpression->evaluate( &f, layer->fields() );
       // skip this feature if the filter evaluation is false
       if ( !result.toBool() )
       {
@@ -568,7 +568,7 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
         // Lets assume it's an expression
         QgsExpression* expression = new QgsExpression(( *columnIt )->attribute() );
         expression->setCurrentRowNumber( counter + 1 );
-        expression->prepare( layer->pendingFields() );
+        expression->prepare( layer->fields() );
         QVariant value = expression->evaluate( f );
         currentRow << value;
       }

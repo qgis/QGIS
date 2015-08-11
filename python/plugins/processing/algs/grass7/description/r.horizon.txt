@@ -1,5 +1,5 @@
 r.horizon
-r.horizon - Horizon angle computation from a digital elevation model.
+Horizon angle computation from a digital elevation model.
 Raster (r.*)
 ParameterRaster|elevation|Name of input elevation raster map|False
 ParameterNumber|direction|Direction in which you want to know the horizon height|0|360|0.0

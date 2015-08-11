@@ -96,8 +96,8 @@ class Ogr2Ogr(OgrAlgorithm):
     OPTIONS = 'OPTIONS'
 
     def defineCharacteristics(self):
-        self.name = 'Convert format'
-        self.group = '[OGR] Conversion'
+        self.name, self.i18n_name = self.trAlgorithm('Convert format')
+        self.group, self.i18n_group = self.trAlgorithm('[OGR] Conversion')
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
             self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))

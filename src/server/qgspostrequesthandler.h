@@ -20,14 +20,14 @@
 
 #include "qgshttprequesthandler.h"
 
-/**Request handler for HTTP POST*/
+/** Request handler for HTTP POST*/
 class QgsPostRequestHandler: public QgsHttpRequestHandler
 {
   public:
     QgsPostRequestHandler( const bool captureOutput = FALSE );
     ~QgsPostRequestHandler();
 
-    /**Parses the input and creates a request neutral Parameter/Value map*/
+    /** Parses the input and creates a request neutral Parameter/Value map*/
     void parseInput() override;
 };
 
