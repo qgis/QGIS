@@ -24,6 +24,7 @@
 #include "qgseffectstack.h"
 #include "qgspainteffectregistry.h"
 #include "qgsdatadefined.h"
+#include "qgsexpressioncontext.h"
 
 #include <QSize>
 #include <QPainter>
@@ -189,7 +190,8 @@ QVariant QgsSymbolLayerV2::evaluateDataDefinedProperty( const QString &property,
   {
     if ( dd->expression() )
     {
-      QVariant result = dd->expression()->evaluate( feature );
+      QgsExpressionContext context = feature ? QgsExpressionContextUtils::createFeatureBasedContext( *feature, QgsFields() ) : QgsExpressionContext();
+      QVariant result = dd->expression()->evaluate( &context );
       if ( result.isValid() )
       {
         if ( ok )
@@ -212,6 +214,47 @@ QVariant QgsSymbolLayerV2::evaluateDataDefinedProperty( const QString &property,
       if ( ok )
         *ok = true;
       return feature->attribute( attributeIndex );
+    }
+  }
+  return defaultVal;
+}
+
+QVariant QgsSymbolLayerV2::evaluateDataDefinedProperty( const QString& property, const QgsSymbolV2RenderContext& context, const QVariant& defaultVal, bool* ok ) const
+{
+  if ( ok )
+    *ok = false;
+
+  QgsDataDefined* dd = getDataDefinedProperty( property );
+  if ( !dd || !dd->isActive() )
+    return defaultVal;
+
+  if ( dd->useExpression() )
+  {
+    if ( dd->expression() )
+    {
+      QVariant result = dd->expression()->evaluate( &context.renderContext().expressionContext() );
+      if ( result.isValid() )
+      {
+        if ( ok )
+          *ok = true;
+        return result;
+      }
+      else
+        return defaultVal;
+    }
+    else
+    {
+      return defaultVal;
+    }
+  }
+  else if ( context.feature() && !dd->field().isEmpty() && !mFields.isEmpty() )
+  {
+    int attributeIndex = mFields.fieldNameIndex( dd->field() );
+    if ( attributeIndex >= 0 )
+    {
+      if ( ok )
+        *ok = true;
+      return context.feature()->attribute( attributeIndex );
     }
   }
   return defaultVal;
@@ -312,7 +355,7 @@ void QgsSymbolLayerV2::prepareExpressions( const QgsFields* fields, double scale
 
       if ( fields )
       {
-        it.value()->prepareExpression( *fields );
+        it.value()->prepareExpression( QgsExpressionContextUtils::createFeatureBasedContext( QgsFeature(), *fields ) );
       }
       else
       {
@@ -325,6 +368,30 @@ void QgsSymbolLayerV2::prepareExpressions( const QgsFields* fields, double scale
   {
     //QgsFields is implicitly shared, so it's cheap to make a copy
     mFields = *fields;
+  }
+}
+
+void QgsSymbolLayerV2::prepareExpressions( const QgsSymbolV2RenderContext& context )
+{
+  QMap< QString, QgsDataDefined* >::iterator it = mDataDefinedProperties.begin();
+  for ( ; it != mDataDefinedProperties.end(); ++it )
+  {
+    if ( it.value() )
+    {
+      QMap<QString, QVariant> params;
+      if ( context.renderContext().rendererScale() > 0 )
+      {
+        params.insert( "scale", context.renderContext().rendererScale() );
+      }
+      it.value()->setExpressionParams( params );
+      it.value()->prepareExpression( context.renderContext().expressionContext() );
+    }
+  }
+
+  if ( context.fields() )
+  {
+    //QgsFields is implicitly shared, so it's cheap to make a copy
+    mFields = *context.fields();
   }
 }
 
@@ -475,7 +542,7 @@ void QgsMarkerSymbolLayerV2::markerOffset( const QgsSymbolV2RenderContext& conte
 
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OFFSET ) )
   {
-    QPointF offset = QgsSymbolLayerV2Utils::decodePoint( evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_OFFSET, context.feature() ).toString() );
+    QPointF offset = QgsSymbolLayerV2Utils::decodePoint( evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_OFFSET, context ).toString() );
     offsetX = offset.x();
     offsetY = offset.y();
   }
@@ -487,11 +554,11 @@ void QgsMarkerSymbolLayerV2::markerOffset( const QgsSymbolV2RenderContext& conte
   VerticalAnchorPoint verticalAnchorPoint = mVerticalAnchorPoint;
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_HORIZONTAL_ANCHOR_POINT ) )
   {
-    horizontalAnchorPoint = decodeHorizontalAnchorPoint( evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_HORIZONTAL_ANCHOR_POINT , context.feature() ).toString() );
+    horizontalAnchorPoint = decodeHorizontalAnchorPoint( evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_HORIZONTAL_ANCHOR_POINT , context ).toString() );
   }
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_VERTICAL_ANCHOR_POINT ) )
   {
-    verticalAnchorPoint = decodeVerticalAnchorPoint( evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_VERTICAL_ANCHOR_POINT, context.feature() ).toString() );
+    verticalAnchorPoint = decodeVerticalAnchorPoint( evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_VERTICAL_ANCHOR_POINT, context ).toString() );
   }
 
   //correct horizontal position according to anchor point
