@@ -95,6 +95,8 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
     whereClause += "(" + mSource->mSqlWhereClause + ")";
   }
 
+  prepareOrderBy(mRequest.orderBy());
+
   if ( !declareCursor( whereClause ) )
   {
     mClosed = true;
@@ -178,6 +180,19 @@ bool QgsPostgresFeatureIterator::nextFeatureFilterExpression( QgsFeature& f )
     return QgsAbstractFeatureIterator::nextFeatureFilterExpression( f );
   else
     return fetchFeature( f );
+}
+
+void QgsPostgresFeatureIterator::prepareOrderBy( const QStringList& orderByColumns )
+{
+    if (!orderByColumns.isEmpty())
+    {
+        mOrderByClause = " ORDER BY "+ orderByColumns.join(","); 
+    }
+    else 
+    {
+        mOrderByClause = "";
+    }
+
 }
 
 bool QgsPostgresFeatureIterator::prepareSimplification( const QgsSimplifyMethod& simplifyMethod )
@@ -382,7 +397,7 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
 {
     case pktOid:
       query += delim + "oid";
-      delim = ",";
+      delim = ","; // FIXME what is this line for?
       break;
 
     case pktTid:
@@ -421,7 +436,7 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
   query += " FROM " + mSource->mQuery;
 
   if ( !whereClause.isEmpty() )
-    query += QString( " WHERE %1" ).arg( whereClause );
+    query += QString( " WHERE %1 %2" ).arg( whereClause, mOrderByClause );
 
   if ( !mConn->openCursor( mCursorName, query ) )
   {

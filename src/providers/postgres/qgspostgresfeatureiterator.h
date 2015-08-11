@@ -91,6 +91,9 @@ class QgsPostgresFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Q
     //! Setup the simplification of geometries to fetch using the specified simplify method
     virtual bool prepareSimplification( const QgsSimplifyMethod& simplifyMethod ) override;
 
+    virtual void prepareOrderBy( const QStringList& orderByColumns ) override;
+    QString mOrderByClause;
+
     QgsPostgresConn* mConn;
 
 

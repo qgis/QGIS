@@ -130,6 +130,10 @@ class CORE_EXPORT QgsFeatureRequest
     //! Get simplification method for geometries that will be fetched
     //! @note added in 2.2
     const QgsSimplifyMethod& simplifyMethod() const { return mSimplifyMethod; }
+    //! Set order by attributes (order by needs to be supported by the feature iterator)
+    QgsFeatureRequest& setOrderBy(const QStringList& attrNames);
+    bool hasOrderBy();
+    const QStringList& orderBy() const { return mOrderBy; }
 
     /**
      * Check if a feature is accepted by this requests filter
@@ -154,6 +158,7 @@ class CORE_EXPORT QgsFeatureRequest
     QgsExpression* mFilterExpression;
     Flags mFlags;
     QgsAttributeList mAttrs;
+    QStringList mOrderBy;
     QgsSimplifyMethod mSimplifyMethod;
 };
 

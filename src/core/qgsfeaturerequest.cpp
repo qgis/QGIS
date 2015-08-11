@@ -27,6 +27,7 @@ QgsFeatureRequest::QgsFeatureRequest()
     , mFilterFid( -1 )
     , mFilterExpression( 0 )
     , mFlags( 0 )
+    , mOrderBy( QStringList() )
 {
 }
 
@@ -35,6 +36,7 @@ QgsFeatureRequest::QgsFeatureRequest( QgsFeatureId fid )
     , mFilterFid( fid )
     , mFilterExpression( 0 )
     , mFlags( 0 )
+    , mOrderBy( QStringList() )
 {
 }
 
@@ -44,6 +46,7 @@ QgsFeatureRequest::QgsFeatureRequest( const QgsRectangle& rect )
     , mFilterFid( -1 )
     , mFilterExpression( 0 )
     , mFlags( 0 )
+    , mOrderBy( QStringList() )
 {
 }
 
@@ -52,6 +55,7 @@ QgsFeatureRequest::QgsFeatureRequest( const QgsExpression& expr )
     , mFilterFid( -1 )
     , mFilterExpression( new QgsExpression( expr.expression() ) )
     , mFlags( 0 )
+    , mOrderBy( QStringList() )
 {
 }
 
@@ -151,6 +155,18 @@ QgsFeatureRequest& QgsFeatureRequest::setSimplifyMethod( const QgsSimplifyMethod
 {
   mSimplifyMethod = simplifyMethod;
   return *this;
+}
+
+QgsFeatureRequest& QgsFeatureRequest::setOrderBy(const QStringList& attrNames )
+{
+
+    mOrderBy = attrNames;
+    return *this;
+}
+
+bool QgsFeatureRequest::hasOrderBy()
+{
+    return !mOrderBy.isEmpty();
 }
 
 bool QgsFeatureRequest::acceptFeature( const QgsFeature& feature )

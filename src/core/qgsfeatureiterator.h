@@ -89,6 +89,9 @@ class CORE_EXPORT QgsAbstractFeatureIterator
 
     //! Setup the simplification of geometries to fetch using the specified simplify method
     virtual bool prepareSimplification( const QgsSimplifyMethod& simplifyMethod );
+    //! Prepare order by 
+    virtual void prepareOrderBy( const QStringList& orderByColumns );
+
 
   private:
     //! optional object to locally simplify geometries fetched by this feature iterator
