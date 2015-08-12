@@ -18,6 +18,7 @@ class CORE_EXPORT QgsConditionalStyle
 
     /**
      * @brief Check if the rule matches using the given value and feature
+     * @param value The current value being checked. \@value is replaced in the rule with this value.
      * @param feature The feature to match the values from.
      * @return True of the rule matches against the given feature
      */
@@ -32,7 +33,7 @@ class CORE_EXPORT QgsConditionalStyle
     /**
      * @brief Set the rule for the style.  Rules should be of QgsExpression syntax.
      * Special value of \@value is replaced at run time with the check value
-     * @param value
+     * @param value The QgsExpression style rule to use for this style
      */
     void setRule( QString value ) { mRule = value; mValid = true; }
 
