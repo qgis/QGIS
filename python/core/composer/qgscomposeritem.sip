@@ -630,6 +630,12 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
     */
     void setCurrentExportLayer( const int layerIdx = -1 );
 
+    /** Creates an expression context relating to the item's current state. The context includes
+     * scopes for global, project, composition, atlas and item properties.
+     * @note added in QGIS 2.12
+     */
+    QgsExpressionContext* createExpressionContext() const /Factory/;
+
   public slots:
     /** Sets the item rotation
      * @deprecated Use setItemRotation( double rotation ) instead

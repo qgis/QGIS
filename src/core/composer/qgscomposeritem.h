@@ -31,6 +31,7 @@ class QGraphicsLineItem;
 class QgsComposerItemGroup;
 class QgsDataDefined;
 class QgsComposition;
+class QgsExpressionContext;
 
 /** \ingroup MapComposer
  * A item that forms part of a map composition.
@@ -581,6 +582,12 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @see numberExportLayers
     */
     virtual void setCurrentExportLayer( const int layerIdx = -1 ) { mCurrentExportLayer = layerIdx; }
+
+    /** Creates an expression context relating to the item's current state. The context includes
+     * scopes for global, project, composition, atlas and item properties.
+     * @note added in QGIS 2.12
+     */
+    QgsExpressionContext* createExpressionContext() const;
 
   public slots:
     /** Sets the item rotation

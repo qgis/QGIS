@@ -25,6 +25,7 @@
 #include "qgsproject.h"
 #include "qgsdistancearea.h"
 #include "qgsfontutils.h"
+#include "qgsexpressioncontext.h"
 
 #include "qgswebview.h"
 #include "qgswebframe.h"
@@ -269,19 +270,16 @@ void QgsComposerLabel::refreshExpressionContext()
   if ( !mComposition )
     return;
 
+  QgsVectorLayer* layer = 0;
   if ( mComposition->atlasComposition().enabled() )
   {
-    mExpressionLayer = mComposition->atlasComposition().coverageLayer();
-    if ( mComposition->atlasMode() != QgsComposition::AtlasOff )
-    {
-      mExpressionFeature.reset( new QgsFeature( mComposition->atlasComposition().feature() ) );
-    }
+    layer = mComposition->atlasComposition().coverageLayer();
   }
 
   //setup distance area conversion
-  if ( mExpressionLayer )
+  if ( layer )
   {
-    mDistanceArea->setSourceCrs( mExpressionLayer->crs().srsid() );
+    mDistanceArea->setSourceCrs( layer->crs().srsid() );
   }
   else
   {
@@ -300,7 +298,16 @@ QString QgsComposerLabel::displayText() const
   replaceDateText( displayText );
   QMap<QString, QVariant> subs = mSubstitutions;
   subs[ "$page" ] = QVariant(( int )mComposition->itemPageNumber( this ) + 1 );
-  return QgsExpression::replaceExpressionText( displayText, mExpressionFeature.data(), mExpressionLayer, &subs, mDistanceArea );
+
+  QScopedPointer<QgsExpressionContext> context( createExpressionContext() );
+  //overwrite layer/feature if they have been set via setExpressionContext
+  //TODO remove when setExpressionContext is removed
+  if ( mExpressionFeature.data() )
+    context->setFeature( *mExpressionFeature.data() );
+  if ( mExpressionLayer )
+    context->setFields( mExpressionLayer->fields() );
+
+  return QgsExpression::replaceExpressionText( displayText, context.data(), &subs, mDistanceArea );
 }
 
 void QgsComposerLabel::replaceDateText( QString& text ) const

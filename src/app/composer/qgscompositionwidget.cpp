@@ -22,6 +22,7 @@
 #include "qgsstylev2.h"
 #include "qgssymbolv2selectordialog.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgsexpressioncontext.h"
 #include <QColorDialog>
 #include <QWidget>
 #include <QPrinter> //for screen resolution
@@ -43,6 +44,14 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
 
   //read with/height from composition and find suitable entries to display
   displayCompositionWidthHeight();
+
+  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::globalScope() );
+  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::projectScope() );
+  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::compositionScope( mComposition ) );
+  mVariableEditor->reloadContext();
+  mVariableEditor->setEditableScopeIndex( 2 );
+
+  connect( mVariableEditor, SIGNAL( scopeChanged() ), this, SLOT( variablesChanged() ) );
 
   if ( mComposition )
   {
@@ -168,6 +177,11 @@ void QgsCompositionWidget::populateDataDefinedButtons()
   mPaperHeightDDBtn->blockSignals( false );
   mNumPagesDDBtn->blockSignals( false );
   mPaperOrientationDDBtn->blockSignals( false );
+}
+
+void QgsCompositionWidget::variablesChanged()
+{
+  QgsExpressionContextUtils::setCompositionVariables( mComposition, mVariableEditor->variablesInActiveScope() );
 }
 
 void QgsCompositionWidget::setDataDefinedProperty( const QgsDataDefinedButton* ddBtn, QgsComposerObject::DataDefinedProperty property )
