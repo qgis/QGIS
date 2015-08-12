@@ -77,9 +77,9 @@ class QgsExpression
     void setEvalErrorString( const QString& str );
 
     //! Set the number for $rownum special column
-    void setCurrentRowNumber( int rowNumber );
+    void setCurrentRowNumber( int rowNumber ) /Deprecated/;
     //! Return the number used for $rownum special column
-    int currentRowNumber();
+    int currentRowNumber() /Deprecated/;
 
     //! Assign a special column
     static void setSpecialColumn( const QString& name, QVariant value );

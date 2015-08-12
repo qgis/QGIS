@@ -848,9 +848,15 @@ static QVariant fcnSubstr( const QVariantList& values, const QgsExpressionContex
   return QVariant( str.mid( from -1, len ) );
 }
 
-static QVariant fcnRowNumber( const QVariantList&, const QgsExpressionContext*, QgsExpression* parent )
+static QVariant fcnRowNumber( const QVariantList&, const QgsExpressionContext* context, QgsExpression* parent )
 {
+  if ( context && context->hasVariable( "_rownum_" ) )
+    return context->variable( "_rownum_" );
+
+  Q_NOWARN_DEPRECATED_PUSH
   return QVariant( parent->currentRowNumber() );
+  Q_NOWARN_DEPRECATED_POP
+  //when above is removed - return QVariant()
 }
 
 #define FEAT_FROM_CONTEXT(c, f) if (!c || !c->hasVariable(QgsExpressionContext::EXPR_FEATURE)) return QVariant(); \
