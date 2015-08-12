@@ -48,6 +48,7 @@
 #include "qgscolorschemeregistry.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgscolordialog.h"
+#include "qgsexpressioncontext.h"
 
 //qt includes
 #include <QInputDialog>
@@ -524,6 +525,11 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
     on_cbxProjectionEnabled_toggled( myProjectionEnabled );
   }
 
+  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::globalScope() );
+  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::projectScope() );
+  mVariableEditor->reloadContext();
+  mVariableEditor->setEditableScopeIndex( 1 );
+
   projectionSelectorInitialized();
   restoreOptionsBaseUi();
   restoreState();
@@ -918,6 +924,9 @@ void QgsProjectProperties::apply()
   QgsProject::instance()->writeEntry( "Macros", "/pythonCode", pythonMacros );
 
   QgsProject::instance()->relationManager()->setRelations( mRelationManagerDlg->relations() );
+
+  //save variables
+  QgsExpressionContextUtils::setProjectVariables( mVariableEditor->variablesInActiveScope() );
 
   emit refresh();
 }

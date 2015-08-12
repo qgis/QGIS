@@ -248,6 +248,15 @@
             <normaloff>:/images/themes/default/propertyicons/network_and_proxy.png</normaloff>:/images/themes/default/propertyicons/network_and_proxy.png</iconset>
           </property>
          </item>
+         <item>
+          <property name="text">
+           <string>Variables</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/mIconExpression.svg</normaloff>:/images/themes/default/mIconExpression.svg</iconset>
+          </property>
+         </item>
         </widget>
        </item>
       </layout>
@@ -4826,6 +4835,26 @@
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="page">
+          <layout class="QVBoxLayout" name="verticalLayout_40">
+           <item>
+            <widget class="QGroupBox" name="groupBox_25">
+             <property name="title">
+              <string>Variables</string>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_41">
+              <item>
+               <widget class="QgsVariableEditorWidget" name="mVariableEditor">
+                <property name="settingGroup" stdset="0">
+                 <string notr="true">globalOptions</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
         </widget>
        </item>
       </layout>
@@ -4909,6 +4938,12 @@
    <class>QgsProjectionSelectionWidget</class>
    <extends>QWidget</extends>
    <header location="global">qgsprojectionselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsVariableEditorWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">qgsvariableeditorwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

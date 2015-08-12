@@ -234,6 +234,7 @@ SET(QGIS_GUI_SRCS
   qgssvgannotationitem.cpp
   qgstextannotationitem.cpp
   qgsuserinputdockwidget.cpp
+  qgsvariableeditorwidget.cpp
   qgsvertexmarker.cpp
   qgsunitselectionwidget.cpp
 )
@@ -351,6 +352,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgssearchquerybuilder.h
   qgsslider.h
   qgssublayersdialog.h
+  qgsvariableeditorwidget.h
   qgsunitselectionwidget.h
   qgsuserinputdockwidget.h
 

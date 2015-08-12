@@ -42,7 +42,16 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
@@ -161,6 +170,15 @@
             <normaloff>:/images/themes/default/relation.svg</normaloff>:/images/themes/default/relation.svg</iconset>
           </property>
          </item>
+         <item>
+          <property name="text">
+           <string>Variables</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/mIconExpression.svg</normaloff>:/images/themes/default/mIconExpression.svg</iconset>
+          </property>
+         </item>
         </widget>
        </item>
       </layout>
@@ -179,7 +197,16 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
@@ -191,11 +218,20 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>4</number>
+          <number>7</number>
          </property>
          <widget class="QWidget" name="mProjOpts_01">
           <layout class="QVBoxLayout" name="verticalLayout_6">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -211,8 +247,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>683</width>
-                <height>780</height>
+                <width>656</width>
+                <height>657</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -227,7 +263,7 @@
                  <property name="title">
                   <string>General settings</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">projgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_26">
@@ -427,7 +463,7 @@
                  <property name="title">
                   <string>Measure tool</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">projgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayoutMeasureTool">
@@ -479,7 +515,7 @@
                  <property name="title">
                   <string>Canvas units</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">projgeneral</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_19">
@@ -596,7 +632,7 @@
                  <property name="title">
                   <string>Precision</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">projgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_28">
@@ -609,7 +645,16 @@
                      <enum>QFrame::Raised</enum>
                     </property>
                     <layout class="QHBoxLayout" name="horizontalLayout_4">
-                     <property name="margin">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
                       <number>0</number>
                      </property>
                      <item>
@@ -690,7 +735,7 @@
                  <property name="checked">
                   <bool>false</bool>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">projgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_7">
@@ -782,7 +827,16 @@
          </widget>
          <widget class="QWidget" name="mProjOpts_02">
           <layout class="QVBoxLayout" name="verticalLayout_5">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -798,8 +852,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>683</width>
-                <height>780</height>
+                <width>326</width>
+                <height>46</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -832,7 +886,16 @@
          </widget>
          <widget class="QWidget" name="mProjOpts_03">
           <layout class="QVBoxLayout" name="verticalLayout_9">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -848,8 +911,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>683</width>
-                <height>780</height>
+                <width>133</width>
+                <height>100</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -904,7 +967,16 @@
          </widget>
          <widget class="QWidget" name="mProjOpts_04">
           <layout class="QVBoxLayout" name="verticalLayout_11">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -920,8 +992,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>683</width>
-                <height>780</height>
+                <width>379</width>
+                <height>582</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -930,7 +1002,7 @@
                  <property name="title">
                   <string>Default symbols</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">projstyles</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_11">
@@ -1145,7 +1217,7 @@
                  <property name="title">
                   <string>Options</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">projstyles</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -1293,7 +1365,7 @@
                    </widget>
                   </item>
                   <item row="0" column="0" rowspan="8">
-                   <widget class="QgsColorSchemeList" name="mTreeProjectColors"/>
+                   <widget class="QgsColorSchemeList" name="mTreeProjectColors" native="true"/>
                   </item>
                   <item row="4" column="1">
                    <widget class="QPushButton" name="mButtonImportColors">
@@ -1320,7 +1392,16 @@
          </widget>
          <widget class="QWidget" name="mProjOpts_05">
           <layout class="QVBoxLayout" name="verticalLayout_14">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -1336,8 +1417,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>667</width>
-                <height>1562</height>
+                <width>542</width>
+                <height>1633</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1358,13 +1439,13 @@
                  <property name="checked">
                   <bool>false</bool>
                  </property>
-                 <property name="collapsed">
+                 <property name="collapsed" stdset="0">
                   <bool>false</bool>
                  </property>
-                 <property name="saveCollapsedState">
+                 <property name="saveCollapsedState" stdset="0">
                   <bool>true</bool>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">projowsserver</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_6">
@@ -1491,7 +1572,7 @@
                  <property name="title">
                   <string>WMS capabilities</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">projowsserver</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_13">
@@ -1506,10 +1587,10 @@
                     <property name="checked">
                      <bool>false</bool>
                     </property>
-                    <property name="collapsed">
+                    <property name="collapsed" stdset="0">
                      <bool>false</bool>
                     </property>
-                    <property name="saveCollapsedState">
+                    <property name="saveCollapsedState" stdset="0">
                      <bool>true</bool>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_10">
@@ -1565,10 +1646,10 @@
                     <property name="checked">
                      <bool>false</bool>
                     </property>
-                    <property name="collapsed">
+                    <property name="collapsed" stdset="0">
                      <bool>false</bool>
                     </property>
-                    <property name="saveCollapsedState">
+                    <property name="saveCollapsedState" stdset="0">
                      <bool>true</bool>
                     </property>
                     <layout class="QGridLayout" name="gridLayout">
@@ -1624,10 +1705,10 @@
                     <property name="checked">
                      <bool>false</bool>
                     </property>
-                    <property name="collapsed">
+                    <property name="collapsed" stdset="0">
                      <bool>false</bool>
                     </property>
-                    <property name="saveCollapsedState">
+                    <property name="saveCollapsedState" stdset="0">
                      <bool>true</bool>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_4">
@@ -1733,10 +1814,10 @@
                     <property name="checked">
                      <bool>false</bool>
                     </property>
-                    <property name="collapsed">
+                    <property name="collapsed" stdset="0">
                      <bool>false</bool>
                     </property>
-                    <property name="saveCollapsedState">
+                    <property name="saveCollapsedState" stdset="0">
                      <bool>true</bool>
                     </property>
                     <layout class="QGridLayout" name="gridLayout_5">
@@ -1909,7 +1990,7 @@
                  <property name="title">
                   <string>WFS capabilities (also influences DXF export)</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">projowsserver</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_8">
@@ -1995,7 +2076,7 @@
                  <property name="title">
                   <string>WCS capabilities</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">projowsserver</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_9">
@@ -2071,7 +2152,16 @@
          </widget>
          <widget class="QWidget" name="mProjOpts_06">
           <layout class="QVBoxLayout" name="verticalLayout_15">
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
@@ -2087,8 +2177,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>683</width>
-                <height>780</height>
+                <width>168</width>
+                <height>46</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -2124,9 +2214,38 @@
          </widget>
          <widget class="QWidget" name="mTabRelations">
           <layout class="QGridLayout" name="gridLayout_16">
-           <property name="margin">
+           <property name="leftMargin">
             <number>0</number>
            </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="page">
+          <layout class="QVBoxLayout" name="verticalLayout_23">
+           <item>
+            <widget class="QGroupBox" name="groupBox_4">
+             <property name="title">
+              <string>Variables</string>
+             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_7">
+              <item>
+               <widget class="QgsVariableEditorWidget" name="mVariableEditor" native="true">
+                <property name="settingGroup" stdset="0">
+                 <string notr="true">projectProperties</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
           </layout>
          </widget>
         </widget>
@@ -2150,7 +2269,16 @@
       <enum>QFrame::Raised</enum>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
-      <property name="margin">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
        <number>0</number>
       </property>
       <item>
@@ -2179,6 +2307,19 @@
    <class>QgsColorButtonV2</class>
    <extends>QToolButton</extends>
    <header>qgscolorbuttonv2.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorSchemeList</class>
+   <extends>QWidget</extends>
+   <header location="global">qgscolorschemelist.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsVariableEditorWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">qgsvariableeditorwidget.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsProjectionSelector</class>
@@ -2191,11 +2332,6 @@
    <extends>QWidget</extends>
    <header>qgscodeeditorpython.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorSchemeList</class>
-   <extends>QTreeView</extends>
-   <header>qgscolorschemelist.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
