@@ -100,3 +100,55 @@ def qgsfunction(args='auto', group='custom', **kwargs):
     def wrapper(func):
         return register_function(func, args, group, **kwargs)
     return wrapper
+
+try:
+    # Add a __nonzero__ method onto QPyNullVariant so we can check for null values easier.
+    #   >>> value = QPyNullVariant("int")
+    #   >>> if value:
+    #   >>>	  print "Not a null value"
+    from types import MethodType
+    from PyQt4.QtCore import QPyNullVariant
+
+    def __nonzero__(self):
+        return False
+
+    def __repr__(self):
+        return 'NULL'
+
+    def __eq__(self, other):
+        return isinstance(other, QPyNullVariant) or other is None
+
+    def __ne__(self, other):
+        return not isinstance(other, QPyNullVariant) and other is not None
+
+    def __hash__(self):
+        return 2178309
+
+    QPyNullVariant.__nonzero__ = MethodType(__nonzero__, None, QPyNullVariant)
+    QPyNullVariant.__repr__ = MethodType(__repr__, None, QPyNullVariant)
+    QPyNullVariant.__eq__ = MethodType(__eq__, None, QPyNullVariant)
+    QPyNullVariant.__ne__ = MethodType(__ne__, None, QPyNullVariant)
+    QPyNullVariant.__hash__ = MethodType(__hash__, None, QPyNullVariant)
+
+    NULL = QPyNullVariant( int )
+
+except ImportError:
+    pass
+
+# Define a `with edit(layer)` statement
+
+class edit:
+    def __init__(self,layer):
+        self.layer = layer
+
+    def __enter__(self):
+        assert self.layer.startEditing()
+        return self.layer
+
+    def __exit__(self, ex_type, ex_value, traceback):
+        if ex_type is None:
+            assert self.layer.commitChanges()
+            return True
+        else:
+            self.layer.rollBack()
+            return False
