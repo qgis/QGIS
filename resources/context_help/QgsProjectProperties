@@ -8,7 +8,7 @@
 <p>
 <a href="#general">General Tab</a><br/>
 <a href="#crs">Coordinate Reference System (CRS) Tab</a><br/>
-<a href="#layers">Identifiable layers Tab</a><br/>
+<a href="#layers">Identify layers Tab</a><br/>
 </p>
 
 <a name="general">
@@ -16,7 +16,7 @@
 </a>
 <table border=1>
 <tr>
-  <td><label>Project title</label></td>
+  <td><label>Project&nbsp;title</label></td>
   <td>
     <p>
       A descriptive title for the project. This title will be displayed in the
@@ -25,7 +25,7 @@
   </td>
 </tr>
 <tr>
-  <td><label>Selection color</label></td>
+  <td><label>Selection&nbsp;color</label></td>
   <td>
     <p>
       Selected features are displayed on the map using this color.
@@ -33,19 +33,30 @@
   </td>
 </tr>
 <tr>
-  <td><label>Background color</label></td>
+  <td><label>Background&nbsp;color</label></td>
   <td><p>The color of the map canvas.</p></td>
 </tr>
 <tr>
-  <td><label>Save paths</label></td>
+  <td><label>Save&nbsp;paths</label></td>
   <td>
     <p>
-      Ability to save the paths as absolute or relative.
+      Reference files by their absolute path or a path relative to the project
+      file.  If you are sharing your project file with others, or accessing it
+      from another machine, choose "relative".
     </p>
   </td>
 </tr>
 <tr>
-  <td><label>Layer units</label></td>
+  <td><label>Measure&nbsp;Tool</label></td>
+  <td>
+    <p>
+      Which ellipsoid should be used to calculate distances when using 'on the
+      fly' CRS transformation.
+    </p>
+  </td>
+</tr>
+<tr>
+  <td><label>Canvas&nbsp;units</label></td>
   <td>
     <p>
       Choose the units appropriate for the layers in the project.
@@ -104,15 +115,12 @@
 </p>
 <p>
   You can find a coordinate system by entering its name, EPSG code or the QGIS ID
-  and clicking the <label>Find</label> button.
-</p>
-<p>
-  The list of recently used coordinate systems will be available on the bottom
-  for quick access.
+  and clicking the <label>Find</label> button. The list of recently used
+  coordinate systems will be available on the bottom for quick access.
 </p>
 
 <a name="layers">
-<h4>Identifiable layers Tab</h4>
+<h4>Identify layers Tab</h4>
 </a>
 <p>
   On this tab you can choose on which layers the identify tool will work.
