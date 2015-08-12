@@ -1,3 +1,4 @@
+#include <QDomElement>
 
 #include "qgsconditionalstyle.h"
 #include "qgsfielduiproperties.h"
@@ -26,3 +27,19 @@ QgsConditionalStyle QgsFieldUIProperties::matchingConditionalStyle( QVariant val
   }
   return QgsConditionalStyle();
 }
+
+void QgsFieldUIProperties::writeXml(QDomNode &layer_node, QDomDocument &doc)
+{
+  QDomElement stylesel = document.createElement( "conditionalstyles" );
+  layer_node.appendChild( stylesel );
+  foreach ( QgsConditionalStyle style, mStyles)
+    {
+      style.writeXml(layer_node, doc);
+    }
+}
+
+void QgsFieldUIProperties::readXml(const QDomNode &layer_node)
+{
+
+}
+

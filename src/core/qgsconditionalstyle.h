@@ -98,6 +98,16 @@ class CORE_EXPORT QgsConditionalStyle
      */
     bool isValid() { return mValid; }
 
+    /** Reads vector layer specific state from project file Dom node.
+     *  @note Called by QgsMapLayer::readXML().
+     */
+    virtual bool readXml( const QDomNode& layer_node ) override;
+
+    /** Write vector layer specific state to project file Dom node.
+     *  @note Called by QgsMapLayer::writeXML().
+     */
+    virtual bool writeXml( QDomNode & layer_node, QDomDocument & doc ) override;
+
   private:
     bool mValid;
     QString mRule;

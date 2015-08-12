@@ -54,3 +54,21 @@ QPixmap QgsConditionalStyle::renderPreview()
   painter.end();
   return pixmap;
 }
+
+void QgsConditionalStyle::writeXml(QDomNode &layer_node, QDomDocument &doc)
+{
+  QDomElement stylesel = document.createElement( "style" );
+    stylesel.setAttribute( "rule", mRule );
+    stylesel.setAttribute( "background_color", mRule );
+    stylesel.setAttribute( "text_color", mRule );
+    stylesel.setAttribute( "font", mRule );
+    stylesel.setAttribute( "icon", mRule );
+
+  layer_node.appendChild( stylesel );
+}
+
+void QgsConditionalStyle::readXml(const QDomNode &layer_node)
+{
+
+}
+

@@ -1,6 +1,9 @@
 #ifndef QGSFIELDUIPROPERTIES_H
 #define QGSFIELDUIPROPERTIES_H
 
+#include <QDomDocument>
+#include <QDomNode>
+
 #include "qgsfeature.h"
 #include "qgsconditionalstyle.h"
 
@@ -37,6 +40,16 @@ class CORE_EXPORT QgsFieldUIProperties
      * Check with QgsCondtionalStyle::isValid()
      */
     QgsConditionalStyle matchingConditionalStyle( QVariant value, QgsFeature* feature );
+
+    /** Reads vector layer specific state from project file Dom node.
+     *  @note Called by QgsMapLayer::readXML().
+     */
+    virtual bool readXml( const QDomNode& layer_node ) override;
+
+    /** Write vector layer specific state to project file Dom node.
+     *  @note Called by QgsMapLayer::writeXML().
+     */
+    virtual bool writeXml( QDomNode & layer_node, QDomDocument & doc ) override;
 
   private:
     QList<QgsConditionalStyle> mStyles;
