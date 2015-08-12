@@ -68,13 +68,9 @@ QgsComposerLabel::QgsComposerLabel( QgsComposition *composition )
   //default to no background
   setBackgroundEnabled( false );
 
-  if ( mComposition && mComposition->atlasMode() == QgsComposition::PreviewAtlas )
-  {
-    //a label added while atlas preview is enabled needs to have the expression context set,
-    //otherwise fields in the label aren't correctly evaluated until atlas preview feature changes (#9457)
-    QgsFeature atlasFeature = mComposition->atlasComposition().feature();
-    setExpressionContext( &atlasFeature, mComposition->atlasComposition().coverageLayer() );
-  }
+  //a label added while atlas preview is enabled needs to have the expression context set,
+  //otherwise fields in the label aren't correctly evaluated until atlas preview feature changes (#9457)
+  refreshExpressionContext();
 
   if ( mComposition )
   {
@@ -236,7 +232,7 @@ void QgsComposerLabel::setHtmlState( int state )
 
 void QgsComposerLabel::setExpressionContext( QgsFeature *feature, QgsVectorLayer* layer, QMap<QString, QVariant> substitutions )
 {
-  mExpressionFeature = feature ? *feature : QgsFeature();
+  mExpressionFeature.reset( feature ? new QgsFeature( *feature ) : 0 );
   mExpressionLayer = layer;
   mSubstitutions = substitutions;
 
@@ -260,21 +256,42 @@ void QgsComposerLabel::setExpressionContext( QgsFeature *feature, QgsVectorLayer
   update();
 }
 
+void QgsComposerLabel::setSubstitutions( QMap<QString, QVariant> substitutions )
+{
+  mSubstitutions = substitutions;
+}
+
 void QgsComposerLabel::refreshExpressionContext()
 {
-  QgsVectorLayer * vl = 0;
-  QgsFeature feature;
+  mExpressionLayer = 0;
+  mExpressionFeature.reset();
+
+  if ( !mComposition )
+    return;
 
   if ( mComposition->atlasComposition().enabled() )
   {
-    vl = mComposition->atlasComposition().coverageLayer();
-  }
-  if ( mComposition->atlasMode() != QgsComposition::AtlasOff )
-  {
-    feature = mComposition->atlasComposition().feature();
+    mExpressionLayer = mComposition->atlasComposition().coverageLayer();
+    if ( mComposition->atlasMode() != QgsComposition::AtlasOff )
+    {
+      mExpressionFeature.reset( new QgsFeature( mComposition->atlasComposition().feature() ) );
+    }
   }
 
-  setExpressionContext( &feature, vl );
+  //setup distance area conversion
+  if ( mExpressionLayer )
+  {
+    mDistanceArea->setSourceCrs( mExpressionLayer->crs().srsid() );
+  }
+  else
+  {
+    //set to composition's mapsettings' crs
+    mDistanceArea->setSourceCrs( mComposition->mapSettings().destinationCrs().srsid() );
+  }
+  mDistanceArea->setEllipsoidalMode( mComposition->mapSettings().hasCrsTransformEnabled() );
+  mDistanceArea->setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
+
+  update();
 }
 
 QString QgsComposerLabel::displayText() const
@@ -283,7 +300,7 @@ QString QgsComposerLabel::displayText() const
   replaceDateText( displayText );
   QMap<QString, QVariant> subs = mSubstitutions;
   subs[ "$page" ] = QVariant(( int )mComposition->itemPageNumber( this ) + 1 );
-  return QgsExpression::replaceExpressionText( displayText, &mExpressionFeature, mExpressionLayer, &subs, mDistanceArea );
+  return QgsExpression::replaceExpressionText( displayText, mExpressionFeature.data(), mExpressionLayer, &subs, mDistanceArea );
 }
 
 void QgsComposerLabel::replaceDateText( QString& text ) const
