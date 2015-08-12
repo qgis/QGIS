@@ -118,6 +118,7 @@
 %Include qgssvgannotationitem.sip
 %Include qgstextannotationitem.sip
 %Include qgsuserinputdockwidget.sip
+%Include qgsvariableeditorwidget.sip
 %Include qgsvectorlayertools.sip
 %Include qgsvertexmarker.sip
 

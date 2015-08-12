@@ -314,6 +314,7 @@
         <file>themes/default/mIconClear.svg</file>
         <file>themes/default/mIconClose.png</file>
         <file>themes/default/mIconCollapse.png</file>
+        <file>themes/default/mIconCollapseSmall.svg</file>
         <file>themes/default/mIconColorBox.svg</file>
         <file>themes/default/mIconColorPicker.svg</file>
         <file>themes/default/mIconColorSwatches.svg</file>
@@ -333,6 +334,7 @@
         <file>themes/default/mIconEditable.png</file>
         <file>themes/default/mIconEditableEdits.png</file>
         <file>themes/default/mIconExpand.png</file>
+        <file>themes/default/mIconExpandSmall.svg</file>
         <file>themes/default/mIconExpression.svg</file>
         <file>themes/default/mIconExpressionEditorOpen.svg</file>
         <file>themes/default/mIconExpressionFilter.svg</file>
