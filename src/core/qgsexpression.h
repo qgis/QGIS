@@ -162,9 +162,9 @@ class CORE_EXPORT QgsExpression
     void setEvalErrorString( const QString& str ) { mEvalErrorString = str; }
 
     //! Set the number for $rownum special column
-    void setCurrentRowNumber( int rowNumber ) { mRowNumber = rowNumber; }
+    Q_DECL_DEPRECATED void setCurrentRowNumber( int rowNumber ) { mRowNumber = rowNumber; }
     //! Return the number used for $rownum special column
-    int currentRowNumber() { return mRowNumber; }
+    Q_DECL_DEPRECATED int currentRowNumber() { return mRowNumber; }
 
     //! Assign a special column
     static void setSpecialColumn( const QString& name, QVariant value );
