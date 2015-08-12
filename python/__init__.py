@@ -72,6 +72,27 @@ try:
 except ImportError:
     pass
 
+# Define a `with edit(layer)` statement
+
+class edit:
+    def __init__(self,layer):
+        self.layer = layer
+
+    def __enter__(self):
+        assert self.layer.startEditing()
+        return self.layer
+
+    def __exit__(self, ex_type, ex_value, traceback):
+        if ex_type is None:
+            assert self.layer.commitChanges()
+            return True
+        else:
+            self.layer.rollBack()
+            return False
+
+from qgis import core
+core.edit = edit
+
 
 def mapping_feature(feature):
     geom = feature.geometry()
