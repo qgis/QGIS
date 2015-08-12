@@ -404,6 +404,7 @@ APP_EXPORT int main( int argc, char *argv[] )
                      .arg( rescLimit.rlim_cur ).arg( rescLimit.rlim_max ) );
       }
     }
+    Q_UNUSED( oldSoft ); //avoid warnings
     QgsDebugMsg( QString( "Mac RLIMIT_NOFILE Soft/Hard ORIG: %1 / %2" )
                  .arg( oldSoft ).arg( oldHard ) );
   }

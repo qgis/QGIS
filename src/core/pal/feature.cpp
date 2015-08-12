@@ -79,7 +79,7 @@ namespace pal
       , mObstacleFactor( 1.0 )
       , mPriority( -1.0 )
   {
-    assert( finite( lx ) && finite( ly ) );
+    assert( qIsFinite( lx ) && qIsFinite( ly ) );
   }
 
   Feature::~Feature()
