@@ -30,17 +30,14 @@ addons:
   postgresql: "9.1"
 
 before_install:
-  - "if [ ${TRAVIS_OS_NAME:-'linux'} = 'linux' ]; then ./ci/travis/before_install-linux.sh; fi"
-  - "if [ ${TRAVIS_OS_NAME:-'linux'} = 'osx' ]; then ./ci/travis/before_install-osx.sh; fi"
+  - ./ci/travis/${TRAVIS_OS_NAME}/before_install.sh
 
 install:
-  - "if [ ${TRAVIS_OS_NAME:-'linux'} = 'linux' ]; then ./ci/travis/install-linux.sh; fi"
-  - "if [ ${TRAVIS_OS_NAME:-'linux'} = 'osx' ]; then ./ci/travis/install-osx.sh; fi"
+  - ./ci/travis/${TRAVIS_OS_NAME}/install.sh
 
 before_script:
-  - "if [ ${TRAVIS_OS_NAME:-'linux'} = 'linux' ]; then ./ci/travis/before_script-linux.sh; fi"
+  - ./ci/travis/${TRAVIS_OS_NAME}/before_script.sh
 
 script:
-  - "if [ ${TRAVIS_OS_NAME:-'linux'} = 'linux' ]; then ./ci/travis/script-linux.sh; fi"
-  - "if [ ${TRAVIS_OS_NAME:-'linux'} = 'osx' ]; then ./ci/travis/script-osx.sh; fi"
+  - ./ci/travis/${TRAVIS_OS_NAME}/script.sh
 
