@@ -75,8 +75,8 @@ class TestSyntacticSugar(TestCase):
 
         # Check that we get a QgsEditError exception when the commit fails
         with self.assertRaises(QgsEditError):
-          with edit(ml) as l:
-              l.rollBack()
+            with edit(ml) as l:
+                l.rollBack()
 
 if __name__ == "__main__":
         unittest.main()
