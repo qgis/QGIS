@@ -31,7 +31,7 @@ class CORE_EXPORT QgsConditionalStyle
 
     /**
      * @brief Set the rule for the style.  Rules should be of QgsExpression syntax.
-     * Special value of @value is replaced at run time with the check value
+     * Special value of \@value is replaced at run time with the check value
      * @param value
      */
     void setRule( QString value ) { mRule = value; mValid = true; }
@@ -84,11 +84,12 @@ class CORE_EXPORT QgsConditionalStyle
     QFont font() { return mFont; }
 
     /**
-     * @brief The condtion rule set for the style. Rule may contain variable @value
+     * @brief The condtion rule set for the style. Rule may contain variable \@value
      * to represent the current value
      * @return QString of the current set rule
      */
     QString rule() { return mRule; }
+
     /**
      * @brief isValid Check if this rule is valid.  A valid rule has one or more properties
      * set.
