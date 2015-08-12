@@ -199,7 +199,8 @@ void QgsPaperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
   {
     //using an atlas, so render using current atlas feature
     //since there may be data defined symbols using atlas feature properties
-    mComposition->pageStyleSymbol()->renderPolygon( pagePolygon, &rings, mComposition->atlasComposition().currentFeature(), context );
+    QgsFeature atlasFeature = mComposition->atlasComposition().feature();
+    mComposition->pageStyleSymbol()->renderPolygon( pagePolygon, &rings, &atlasFeature, context );
   }
   else
   {

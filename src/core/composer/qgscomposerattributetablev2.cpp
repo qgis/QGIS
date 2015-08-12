@@ -488,16 +488,8 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
   if ( mSource == QgsComposerAttributeTableV2::RelationChildren )
   {
     QgsRelation relation = QgsProject::instance()->relationManager()->relation( mRelationId );
-    QgsFeature* atlasFeature = mComposition->atlasComposition().currentFeature();
-    if ( atlasFeature )
-    {
-      req = relation.getRelatedFeaturesRequest( *atlasFeature );
-    }
-    else
-    {
-      //no atlas feature, so empty table
-      return true;
-    }
+    QgsFeature atlasFeature = mComposition->atlasComposition().feature();
+    req = relation.getRelatedFeaturesRequest( atlasFeature );
   }
 
   if ( !selectionRect.isEmpty() )
@@ -509,16 +501,8 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
        && mComposition->atlasComposition().enabled() )
   {
     //source mode is current atlas feature
-    QgsFeature* atlasFeature = mComposition->atlasComposition().currentFeature();
-    if ( atlasFeature )
-    {
-      req.setFilterFid( atlasFeature->id() );
-    }
-    else
-    {
-      //no atlas feature, so empty table
-      return true;
-    }
+    QgsFeature atlasFeature = mComposition->atlasComposition().feature();
+    req.setFilterFid( atlasFeature.id() );
   }
 
   QgsFeature f;
@@ -544,9 +528,9 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
       {
         continue;
       }
-      QgsFeature* atlasFeature = mComposition->atlasComposition().currentFeature();
-      if ( !atlasFeature || !atlasFeature->constGeometry() ||
-           !f.constGeometry()->intersects( atlasFeature->constGeometry() ) )
+      QgsFeature atlasFeature = mComposition->atlasComposition().feature();
+      if ( !atlasFeature.constGeometry() ||
+           !f.constGeometry()->intersects( atlasFeature.constGeometry() ) )
       {
         //feature falls outside current atlas feature
         continue;

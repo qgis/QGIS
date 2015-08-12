@@ -205,7 +205,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     */
     bool prepareForFeature( const QgsFeature *feat );
 
-    /** Returns the current filename. Must be called after prepareForFeature( i ) */
+    /** Returns the current filename. Must be called after prepareForFeature() */
     const QString& currentFilename() const;
 
     void writeXML( QDomElement& elem, QDomDocument& doc ) const;
@@ -230,13 +230,20 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     QgsComposition* composition() { return mComposition; }
 
     /** Requeries the current atlas coverage layer and applies filtering and sorting. Returns
-      number of matching features. Must be called after prepareForFeature( i ) */
+      number of matching features. Must be called after prepareForFeature() */
     int updateFeatures();
 
-    /** Returns the current atlas feature. Must be called after prepareForFeature( i ). */
-    QgsFeature* currentFeature() { return &mCurrentFeature; }
+    /** Returns the current atlas feature. Must be called after prepareForFeature().
+     * @note added in QGIS 2.12
+     */
+    QgsFeature feature() const { return mCurrentFeature; }
 
-    /** Returns the current feature number.
+    /** Returns the name of the page for the current atlas feature. Must be called after prepareForFeature().
+     * @note added in QGIS 2.12
+     */
+    QString currentPageName() const;
+
+    /** Returns the current feature number, where a value of 0 corresponds to the first feature.
      * @note added in QGIS 2.12
      */
     int currentFeatureNumber() const { return mCurrentFeatureNo; }
@@ -279,6 +286,9 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     Q_DECL_DEPRECATED int sortKeyAttributeIndex() const;
     Q_DECL_DEPRECATED void setSortKeyAttributeIndex( int idx );
+
+    /** Returns the current atlas feature. Must be called after prepareForFeature( i ). */
+    Q_DECL_DEPRECATED QgsFeature* currentFeature() { return &mCurrentFeature; }
 
   public slots:
 

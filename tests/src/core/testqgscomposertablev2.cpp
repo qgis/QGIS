@@ -502,7 +502,7 @@ void TestQgsComposerTableV2::attributeTableRelationSource()
   QVERIFY( mComposition->atlasComposition().beginRender() );
   QVERIFY( mComposition->atlasComposition().prepareForFeature( 0 ) );
 
-  QCOMPARE( mComposition->atlasComposition().currentFeature()->attribute( "Class" ).toString(), QString( "Jet" ) );
+  QCOMPARE( mComposition->atlasComposition().feature().attribute( "Class" ).toString(), QString( "Jet" ) );
   QCOMPARE( table->contents()->length(), 8 );
 
   QgsComposerTableRow row = table->contents()->at( 0 );
@@ -531,7 +531,7 @@ void TestQgsComposerTableV2::attributeTableRelationSource()
 
   //next atlas feature
   QVERIFY( mComposition->atlasComposition().prepareForFeature( 1 ) );
-  QCOMPARE( mComposition->atlasComposition().currentFeature()->attribute( "Class" ).toString(), QString( "Biplane" ) );
+  QCOMPARE( mComposition->atlasComposition().feature().attribute( "Class" ).toString(), QString( "Biplane" ) );
   QCOMPARE( table->contents()->length(), 5 );
   row = table->contents()->at( 0 );
   QCOMPARE( row.at( 0 ), QVariant( "Biplane" ) );

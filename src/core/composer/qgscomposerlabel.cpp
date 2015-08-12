@@ -48,7 +48,6 @@ QgsComposerLabel::QgsComposerLabel( QgsComposition *composition )
     , mFontColor( QColor( 0, 0, 0 ) )
     , mHAlignment( Qt::AlignLeft )
     , mVAlignment( Qt::AlignTop )
-    , mExpressionFeature( 0 )
     , mExpressionLayer( 0 )
     , mDistanceArea( 0 )
 {
@@ -73,7 +72,8 @@ QgsComposerLabel::QgsComposerLabel( QgsComposition *composition )
   {
     //a label added while atlas preview is enabled needs to have the expression context set,
     //otherwise fields in the label aren't correctly evaluated until atlas preview feature changes (#9457)
-    setExpressionContext( mComposition->atlasComposition().currentFeature(), mComposition->atlasComposition().coverageLayer() );
+    QgsFeature atlasFeature = mComposition->atlasComposition().feature();
+    setExpressionContext( &atlasFeature, mComposition->atlasComposition().coverageLayer() );
   }
 
   if ( mComposition )
@@ -234,9 +234,9 @@ void QgsComposerLabel::setHtmlState( int state )
   }
 }
 
-void QgsComposerLabel::setExpressionContext( QgsFeature* feature, QgsVectorLayer* layer, QMap<QString, QVariant> substitutions )
+void QgsComposerLabel::setExpressionContext( QgsFeature *feature, QgsVectorLayer* layer, QMap<QString, QVariant> substitutions )
 {
-  mExpressionFeature = feature;
+  mExpressionFeature = feature ? *feature : QgsFeature();
   mExpressionLayer = layer;
   mSubstitutions = substitutions;
 
@@ -263,7 +263,7 @@ void QgsComposerLabel::setExpressionContext( QgsFeature* feature, QgsVectorLayer
 void QgsComposerLabel::refreshExpressionContext()
 {
   QgsVectorLayer * vl = 0;
-  QgsFeature* feature = 0;
+  QgsFeature feature;
 
   if ( mComposition->atlasComposition().enabled() )
   {
@@ -271,10 +271,10 @@ void QgsComposerLabel::refreshExpressionContext()
   }
   if ( mComposition->atlasMode() != QgsComposition::AtlasOff )
   {
-    feature = mComposition->atlasComposition().currentFeature();
+    feature = mComposition->atlasComposition().feature();
   }
 
-  setExpressionContext( feature, vl );
+  setExpressionContext( &feature, vl );
 }
 
 QString QgsComposerLabel::displayText() const
@@ -283,7 +283,7 @@ QString QgsComposerLabel::displayText() const
   replaceDateText( displayText );
   QMap<QString, QVariant> subs = mSubstitutions;
   subs[ "$page" ] = QVariant(( int )mComposition->itemPageNumber( this ) + 1 );
-  return QgsExpression::replaceExpressionText( displayText, mExpressionFeature, mExpressionLayer, &subs, mDistanceArea );
+  return QgsExpression::replaceExpressionText( displayText, &mExpressionFeature, mExpressionLayer, &subs, mDistanceArea );
 }
 
 void QgsComposerLabel::replaceDateText( QString& text ) const

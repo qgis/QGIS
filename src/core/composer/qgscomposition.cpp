@@ -3074,8 +3074,9 @@ bool QgsComposition::dataDefinedEvaluate( QgsComposerObject::DataDefinedProperty
   expressionValue.clear();
 
   //get fields and feature from atlas
-  const QgsFeature* currentFeature = 0;
+  QgsFeature currentFeature;
   QgsFields layerFields;
+  bool useFeature = false;
   if ( mAtlasComposition.enabled() )
   {
     QgsVectorLayer* atlasLayer = mAtlasComposition.coverageLayer();
@@ -3085,12 +3086,12 @@ bool QgsComposition::dataDefinedEvaluate( QgsComposerObject::DataDefinedProperty
     }
     if ( mAtlasMode != QgsComposition::AtlasOff )
     {
-      currentFeature = mAtlasComposition.currentFeature();
+      currentFeature = mAtlasComposition.feature();
     }
   }
 
   //evaluate data defined property using current atlas context
-  QVariant result = dataDefinedValue( property, currentFeature, layerFields, dataDefinedProperties );
+  QVariant result = dataDefinedValue( property, useFeature ? &currentFeature : 0, layerFields, dataDefinedProperties );
 
   if ( result.isValid() )
   {

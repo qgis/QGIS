@@ -238,7 +238,8 @@ void QgsComposerShape::drawShapeUsingSymbol( QPainter* p )
   {
     //using an atlas, so render using current atlas feature
     //since there may be data defined symbols using atlas feature properties
-    mShapeStyleSymbol->renderPolygon( shapePolygon, &rings, mComposition->atlasComposition().currentFeature(), context );
+    QgsFeature atlasFeature = mComposition->atlasComposition().feature();
+    mShapeStyleSymbol->renderPolygon( shapePolygon, &rings, &atlasFeature, context );
   }
   else
   {
