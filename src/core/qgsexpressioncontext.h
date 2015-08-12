@@ -24,6 +24,9 @@
 
 class QgsExpression;
 class QgsMapLayer;
+class QgsComposition;
+class QgsComposerItem;
+class QgsAtlasComposition;
 
 /** \ingroup core
  * \class QgsScopedExpressionFunction
@@ -429,6 +432,62 @@ class CORE_EXPORT QgsExpressionContextUtils
      * @see layerScope()
      */
     static void setLayerVariables( QgsMapLayer* layer, const QgsStringMap variables );
+
+    /** Creates a new scope which contains variables and functions relating to a QgsComposition.
+     * For instance, number of pages and page sizes.
+     * @param composition source composition
+     */
+    static QgsExpressionContextScope* compositionScope( const QgsComposition *composition );
+
+    /** Sets a composition context variable. This variable will be contained within scopes retrieved via
+     * compositionScope().
+     * @param composition target composition
+     * @param name variable name
+     * @param value variable value
+     * @see setCompositionVariables()
+     * @see compositionScope()
+     */
+    static void setCompositionVariable( QgsComposition* composition, const QString& name, const QVariant& value );
+
+    /** Sets all composition context variables. Existing composition variables will be removed and replaced
+     * with the variables specified.
+     * @param composition target composition
+     * @param variables new set of layer variables
+     * @see setCompositionVariable()
+     * @see compositionScope()
+     */
+    static void setCompositionVariables( QgsComposition* composition, const QgsStringMap variables );
+
+    /** Creates a new scope which contains variables and functions relating to a QgsAtlasComposition.
+     * For instance, current page name and number.
+     * @param atlas source atlas
+     */
+    static QgsExpressionContextScope* atlasScope( const QgsAtlasComposition* atlas );
+
+    /** Creates a new scope which contains variables and functions relating to a QgsComposerItem.
+     * For instance, item size and position.
+     * @param composerItem source composer item
+     */
+    static QgsExpressionContextScope* composerItemScope( const QgsComposerItem *composerItem );
+
+    /** Sets a composer item context variable. This variable will be contained within scopes retrieved via
+     * composerItemScope().
+     * @param composerItem target composer item
+     * @param name variable name
+     * @param value variable value
+     * @see setComposerItemVariables()
+     * @see composerItemScope()
+     */
+    static void setComposerItemVariable( QgsComposerItem* composerItem, const QString& name, const QVariant& value );
+
+    /** Sets all composition context variables. Existing compositoin variables will be removed and replaced
+     * with the variables specified.
+     * @param composerItem target composer item
+     * @param variables new set of layer variables
+     * @see setComposerItemVariable()
+     * @see composerItemScope()
+     */
+    static void setComposerItemVariables( QgsComposerItem* composerItem, const QgsStringMap variables );
 
     /** Helper function for creating an expression context which contains just a feature and fields
      * collection. Generally this method should not be used as the created context does not include

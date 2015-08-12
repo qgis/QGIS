@@ -139,6 +139,11 @@ class QgsComposerItemWidget: public QgsComposerItemBaseWidget, private Ui::QgsCo
 //    void changeItemTransparency( int value );
     void changeItemPosition();
 
+  private slots:
+
+    void variablesChanged();
+
+
 };
 
 #endif //QGSCOMPOSERITEMWIDGET_H

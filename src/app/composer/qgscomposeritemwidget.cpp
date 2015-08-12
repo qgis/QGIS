@@ -22,6 +22,7 @@
 #include "qgscomposition.h"
 #include "qgspoint.h"
 #include "qgsdatadefinedbutton.h"
+#include "qgsexpressioncontext.h"
 #include <QColorDialog>
 #include <QPen>
 
@@ -139,6 +140,13 @@ QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* 
   connect( mItem, SIGNAL( itemChanged() ), this, SLOT( setValuesForGuiNonPositionElements() ) );
 
   connect( mTransparencySlider, SIGNAL( valueChanged( int ) ), mTransparencySpnBx, SLOT( setValue( int ) ) );
+
+  QgsExpressionContext* context = mItem->createExpressionContext();
+  mVariableEditor->setContext( context );
+  mVariableEditor->setEditableScopeIndex( context->scopeCount() - 1 );
+  delete context;
+
+  connect( mVariableEditor, SIGNAL( scopeChanged() ), this, SLOT( variablesChanged() ) );
 
   //connect atlas signals to data defined buttons
   QgsAtlasComposition* atlas = atlasComposition();
@@ -258,6 +266,11 @@ void QgsComposerItemWidget::changeItemPosition()
 
   mItem->update();
   mItem->endCommand();
+}
+
+void QgsComposerItemWidget::variablesChanged()
+{
+  QgsExpressionContextUtils::setComposerItemVariables( mItem, mVariableEditor->variablesInActiveScope() );
 }
 
 QgsComposerItem::ItemPositionMode QgsComposerItemWidget::positionMode() const

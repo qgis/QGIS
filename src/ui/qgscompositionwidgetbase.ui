@@ -23,7 +23,16 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -50,9 +59,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-337</y>
         <width>327</width>
-        <height>586</height>
+        <height>841</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -137,7 +146,7 @@
               <property name="maximum">
                <double>99999.000000000000000</double>
               </property>
-              <property name="showClearButton">
+              <property name="showClearButton" stdset="0">
                <bool>false</bool>
               </property>
              </widget>
@@ -180,7 +189,7 @@
               <property name="maximum">
                <double>99999.000000000000000</double>
               </property>
-              <property name="showClearButton">
+              <property name="showClearButton" stdset="0">
                <bool>false</bool>
               </property>
              </widget>
@@ -234,7 +243,7 @@
               <property name="minimum">
                <number>1</number>
               </property>
-              <property name="showClearButton">
+              <property name="showClearButton" stdset="0">
                <bool>false</bool>
               </property>
              </widget>
@@ -317,7 +326,7 @@
             <property name="maximum">
              <number>3000</number>
             </property>
-            <property name="showClearButton">
+            <property name="showClearButton" stdset="0">
              <bool>false</bool>
             </property>
            </widget>
@@ -406,7 +415,7 @@
             <property name="maximum">
              <double>9999.000000000000000</double>
             </property>
-            <property name="showClearButton">
+            <property name="showClearButton" stdset="0">
              <bool>false</bool>
             </property>
            </widget>
@@ -466,8 +475,27 @@
             <property name="maximum">
              <number>200</number>
             </property>
-            <property name="showClearButton">
+            <property name="showClearButton" stdset="0">
              <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QgsCollapsibleGroupBox" name="groupBox_2">
+         <property name="title">
+          <string>Variables</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <widget class="QgsVariableEditorWidget" name="mVariableEditor" native="true">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>200</height>
+             </size>
             </property>
            </widget>
           </item>
@@ -495,6 +523,18 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsVariableEditorWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">qgsvariableeditorwidget.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>QgsDataDefinedButton</class>
    <extends>QToolButton</extends>

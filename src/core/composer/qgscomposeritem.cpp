@@ -40,6 +40,7 @@
 #include "qgslogger.h"
 #include "qgssymbollayerv2utils.h" //for pointOnLineWithDistance
 #include "qgsmaprenderer.h" //for getCompositionMode
+#include "qgsexpressioncontext.h"
 
 #include <cmath>
 
@@ -844,6 +845,24 @@ bool QgsComposerItem::shouldDrawItem() const
 
   //exporting composition, so check if item is excluded from exports
   return !mEvaluatedExcludeFromExports;
+}
+
+QgsExpressionContext* QgsComposerItem::createExpressionContext() const
+{
+  QgsExpressionContext* context = new QgsExpressionContext();
+  context->appendScope( QgsExpressionContextUtils::globalScope() );
+  context->appendScope( QgsExpressionContextUtils::projectScope() );
+  if ( mComposition )
+  {
+    context->appendScope( QgsExpressionContextUtils::compositionScope( mComposition ) );
+    if ( mComposition->atlasComposition().enabled() )
+    {
+      context->appendScope( QgsExpressionContextUtils::atlasScope( &mComposition->atlasComposition() ) );
+    }
+  }
+
+  context->appendScope( QgsExpressionContextUtils::composerItemScope( this ) );
+  return context;
 }
 
 void QgsComposerItem::drawBackground( QPainter* p )
