@@ -21,7 +21,8 @@ from utilities import (unittest,
 from qgis.core import (edit,
                        QgsFeature,
                        QgsGeometry,
-                       QgsVectorLayer
+                       QgsVectorLayer,
+                       QgsEditError
                       )
 
 getQgisTestApp()
@@ -71,6 +72,11 @@ class TestSyntacticSugar(TestCase):
             assert l.updateFeature(f)
 
         assert ml.dataProvider().getFeatures().next()['value']==10
+
+        # Check that we get a QgsEditError exception when the commit fails
+        with self.assertRaises(QgsEditError):
+          with edit(ml) as l:
+              l.rollBack()
 
 if __name__ == "__main__":
         unittest.main()

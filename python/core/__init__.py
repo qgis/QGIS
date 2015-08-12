@@ -135,6 +135,13 @@ try:
 except ImportError:
     pass
 
+class QgsEditError(Exception):
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)
+
 # Define a `with edit(layer)` statement
 
 class edit:
@@ -147,7 +154,8 @@ class edit:
 
     def __exit__(self, ex_type, ex_value, traceback):
         if ex_type is None:
-            assert self.layer.commitChanges()
+            if not self.layer.commitChanges():
+                raise QgsEditError(self.layer.commitErrors())
             return True
         else:
             self.layer.rollBack()
