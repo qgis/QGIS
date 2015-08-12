@@ -22,9 +22,11 @@
 #include "qgsvectorlayereditbuffer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerjoinbuffer.h"
+#include "qgsexpressioncontext.h"
 
 QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( QgsVectorLayer *layer )
 {
+  mLayer = layer;
   mProviderFeatureSource = layer->dataProvider()->featureSource();
   mFields = layer->fields();
   mJoinBuffer = layer->mJoinBuffer->clone();
@@ -502,6 +504,11 @@ void QgsVectorLayerFeatureIterator::prepareExpressions()
 {
   const QList<QgsExpressionFieldBuffer::ExpressionField> exps = mSource->mExpressionFieldBuffer->expressions();
 
+  mExpressionContext.reset( new QgsExpressionContext() );
+  mExpressionContext->appendScope( QgsExpressionContextUtils::globalScope() );
+  mExpressionContext->appendScope( QgsExpressionContextUtils::projectScope() );
+  mExpressionContext->setFields( mSource->mFields );
+
   for ( int i = 0; i < mSource->mFields.count(); i++ )
   {
     if ( mSource->mFields.fieldOrigin( i ) == QgsFields::OriginExpression )
@@ -512,7 +519,7 @@ void QgsVectorLayerFeatureIterator::prepareExpressions()
       {
         int oi = mSource->mFields.fieldOriginIndex( i );
         QgsExpression* exp = new QgsExpression( exps[oi].expression );
-        exp->prepare( mSource->mFields );
+        exp->prepare( mExpressionContext.data() );
         mExpressionFieldInfo.insert( i, exp );
 
         if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
@@ -572,7 +579,8 @@ void QgsVectorLayerFeatureIterator::addVirtualAttributes( QgsFeature& f )
     for ( ; it != mExpressionFieldInfo.constEnd(); ++it )
     {
       QgsExpression* exp = it.value();
-      QVariant val = exp->evaluate( f );
+      mExpressionContext->setFeature( f );
+      QVariant val = exp->evaluate( mExpressionContext.data() );
       mSource->mFields.at( it.key() ).convertCompatible( val );;
       f.setAttribute( it.key(), val );
     }
