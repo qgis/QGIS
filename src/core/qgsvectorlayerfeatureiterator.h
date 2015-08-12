@@ -26,6 +26,7 @@ class QgsVectorLayer;
 class QgsVectorLayerEditBuffer;
 class QgsVectorLayerJoinBuffer;
 struct QgsVectorJoinInfo;
+class QgsExpressionContext;
 
 class QgsVectorLayerFeatureIterator;
 
@@ -41,6 +42,8 @@ class QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
     friend class QgsVectorLayerFeatureIterator;
 
   protected:
+
+    QgsVectorLayer* mLayer;
 
     QgsAbstractFeatureSource* mProviderFeatureSource;
 
@@ -157,6 +160,8 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
   private:
     //! optional object to locally simplify edited (changed or added) geometries fetched by this feature iterator
     QgsAbstractGeometrySimplifier* mEditGeometrySimplifier;
+
+    QScopedPointer<QgsExpressionContext> mExpressionContext;
 
     //! returns whether the iterator supports simplify geometries on provider side
     virtual bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const override;
