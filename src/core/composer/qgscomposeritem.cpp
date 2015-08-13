@@ -709,14 +709,24 @@ void QgsComposerItem::setSceneRect( const QRectF& rectangle )
   emit sizeChanged();
 }
 
-QRectF QgsComposerItem::evalItemRect( const QRectF &newRect, const bool resizeOnly )
+QRectF QgsComposerItem::evalItemRect( const QRectF &newRect, const bool resizeOnly, const QgsExpressionContext* context )
 {
   QRectF result = newRect;
+
+  //TODO QGIS 3.0
+  //maintain pre 2.12 API. remove when API break allowed
+  QScopedPointer< QgsExpressionContext > scopedContext;
+  const QgsExpressionContext* evalContext = context;
+  if ( !evalContext )
+  {
+    scopedContext.reset( createExpressionContext() );
+    evalContext = scopedContext.data();
+  }
 
   //data defined position or size set? if so, update rect with data defined values
   QVariant exprVal;
   //evaulate width and height first, since they may affect position if non-top-left reference point set
-  if ( dataDefinedEvaluate( QgsComposerObject::ItemWidth, exprVal ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::ItemWidth, exprVal, *evalContext ) )
   {
     bool ok;
     double width = exprVal.toDouble( &ok );
@@ -726,7 +736,7 @@ QRectF QgsComposerItem::evalItemRect( const QRectF &newRect, const bool resizeOn
       result.setWidth( width );
     }
   }
-  if ( dataDefinedEvaluate( QgsComposerObject::ItemHeight, exprVal ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::ItemHeight, exprVal, *evalContext ) )
   {
     bool ok;
     double height = exprVal.toDouble( &ok );
@@ -762,7 +772,7 @@ QRectF QgsComposerItem::evalItemRect( const QRectF &newRect, const bool resizeOn
       x += rect().width();
     }
   }
-  if ( dataDefinedEvaluate( QgsComposerObject::PositionX, exprVal ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::PositionX, exprVal, *evalContext ) )
   {
     bool ok;
     double positionX = exprVal.toDouble( &ok );
@@ -798,7 +808,7 @@ QRectF QgsComposerItem::evalItemRect( const QRectF &newRect, const bool resizeOn
       y += rect().height();
     }
   }
-  if ( dataDefinedEvaluate( QgsComposerObject::PositionY, exprVal ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::PositionY, exprVal, *evalContext ) )
   {
     bool ok;
     double positionY = exprVal.toDouble( &ok );
@@ -849,18 +859,7 @@ bool QgsComposerItem::shouldDrawItem() const
 
 QgsExpressionContext* QgsComposerItem::createExpressionContext() const
 {
-  QgsExpressionContext* context = new QgsExpressionContext();
-  context->appendScope( QgsExpressionContextUtils::globalScope() );
-  context->appendScope( QgsExpressionContextUtils::projectScope() );
-  if ( mComposition )
-  {
-    context->appendScope( QgsExpressionContextUtils::compositionScope( mComposition ) );
-    if ( mComposition->atlasComposition().enabled() )
-    {
-      context->appendScope( QgsExpressionContextUtils::atlasScope( &mComposition->atlasComposition() ) );
-    }
-  }
-
+  QgsExpressionContext* context = QgsComposerObject::createExpressionContext();
   context->appendScope( QgsExpressionContextUtils::composerItemScope( this ) );
   return context;
 }

@@ -583,11 +583,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     */
     virtual void setCurrentExportLayer( const int layerIdx = -1 ) { mCurrentExportLayer = layerIdx; }
 
-    /** Creates an expression context relating to the item's current state. The context includes
-     * scopes for global, project, composition, atlas and item properties.
-     * @note added in QGIS 2.12
-     */
-    QgsExpressionContext* createExpressionContext() const;
+    virtual QgsExpressionContext* createExpressionContext() const override;
 
   public slots:
     /** Sets the item rotation
