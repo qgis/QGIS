@@ -25,6 +25,7 @@
 class QgsComposition;
 class QPainter;
 class QgsDataDefined;
+class QgsExpressionContext;
 
 /** \ingroup MapComposer
  * A base class for objects which belong to a map composition.
@@ -161,6 +162,12 @@ class CORE_EXPORT QgsComposerObject: public QObject
      */
     QStringList customProperties() const;
 
+    /** Creates an expression context relating to the objects's current state. The context includes
+     * scopes for global, project and composition properties.
+     * @note added in QGIS 2.12
+     */
+    virtual QgsExpressionContext* createExpressionContext() const;
+
   public slots:
 
     /** Triggers a redraw for the item*/
@@ -189,9 +196,11 @@ class CORE_EXPORT QgsComposerObject: public QObject
      * @returns true if data defined property could be successfully evaluated
      * @param property data defined property to evaluate
      * @param expressionValue QVariant for storing the evaluated value
+     * @param context expression context for evaluating expressions. Must have feature and fields set to current
+     * atlas feature and coverage layer fields prior to calling this method.
      * @note this method was added in version 2.5
     */
-    bool dataDefinedEvaluate( const QgsComposerObject::DataDefinedProperty property, QVariant &expressionValue ) const;
+    bool dataDefinedEvaluate( const QgsComposerObject::DataDefinedProperty property, QVariant &expressionValue, const QgsExpressionContext& context ) const;
 
   signals:
     /** Emitted when the item changes. Signifies that the item widgets must update the
