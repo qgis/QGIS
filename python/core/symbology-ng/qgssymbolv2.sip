@@ -239,18 +239,48 @@ class QgsMarkerSymbolV2 : QgsSymbolV2
     QgsMarkerSymbolV2( QgsSymbolLayerV2List layers /Transfer/ = QgsSymbolLayerV2List() );
 
     void setAngle( double angle );
-    double angle();
+    double angle() const;
+
+    /** Set data defined angle for whole symbol (including all symbol layers).
+     * @param dd data defined angle
+     * @note added in QGIS 2.9
+     * @see dataDefinedAngle
+     */
+    void setDataDefinedAngle( const QgsDataDefined& dd );
+
+    /** Returns data defined angle for whole symbol (including all symbol layers).
+     * @returns data defined angle, or empty data defined if angle is not set
+     * at the marker level
+     * @note added in QGIS 2.9
+     * @see setDataDefinedAngle
+     */
+    QgsDataDefined dataDefinedAngle() const;
 
     /** Sets the line angle modification for the symbol's angle. This angle is added to
      * the marker's rotation and data defined rotation before rendering the symbol, and
      * is usually used for orienting symbols to match a line's angle.
-     * @param lineangle Angle in degrees, valid values are between 0 and 360
+     * @param lineAngle Angle in degrees, valid values are between 0 and 360
      * @note added in QGIS 2.9
     */
     void setLineAngle( double lineAngle );
 
     void setSize( double size );
-    double size();
+    double size() const;
+
+    /** Set data defined size for whole symbol (including all symbol layers).
+     * @param dd data defined size
+     * @note added in QGIS 2.9
+     * @see dataDefinedSize
+     */
+    void setDataDefinedSize( const QgsDataDefined& dd );
+
+    /** Returns data defined size for whole symbol (including all symbol layers).
+     * @returns data defined size, or empty data defined if size is not set
+     * at the marker level
+     * @note added in QGIS 2.9
+     * @see setDataDefinedSize
+     */
+    QgsDataDefined dataDefinedSize() const;
 
     void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
     ScaleMethod scaleMethod();
@@ -277,7 +307,22 @@ class QgsLineSymbolV2 : QgsSymbolV2
     QgsLineSymbolV2( QgsSymbolLayerV2List layers /Transfer/ = QgsSymbolLayerV2List() );
 
     void setWidth( double width );
-    double width();
+    double width() const;
+
+    /** Set data defined width for whole symbol (including all symbol layers).
+     * @param dd data defined width
+     * @note added in QGIS 2.9
+     * @see dataDefinedWidth
+     */
+    void setDataDefinedWidth( const QgsDataDefined& dd );
+
+    /** Returns data defined size for whole symbol (including all symbol layers).
+     * @returns data defined size, or empty data defined if size is not set
+     * at the line level
+     * @note added in QGIS 2.9
+     * @see setDataDefinedWidth
+     */
+    QgsDataDefined dataDefinedWidth() const;
 
     void renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
@@ -299,7 +344,6 @@ class QgsFillSymbolV2 : QgsSymbolV2
     static QgsFillSymbolV2* createSimple( const QgsStringMap& properties ) /Factory/;
 
     QgsFillSymbolV2( QgsSymbolLayerV2List layers /Transfer/ = QgsSymbolLayerV2List() );
-
     void setAngle( double angle );
     void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
