@@ -115,8 +115,8 @@
 </p>
 <p>
   You can find a coordinate system by entering its name, EPSG code or the QGIS ID
-  and clicking the <label>Find</label> button. The list of recently used
-  coordinate systems will be available on the bottom for quick access.
+  into the <label>Filter</label> text field. The list of recently used
+  coordinate systems are available at the top for quick access.
 </p>
 
 <a name="layers">
