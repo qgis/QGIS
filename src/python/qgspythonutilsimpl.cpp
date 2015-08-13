@@ -49,9 +49,8 @@ QgsPythonUtilsImpl::~QgsPythonUtilsImpl()
 #endif
 }
 
-bool QgsPythonUtilsImpl::checkSystemImports() {
-
-
+bool QgsPythonUtilsImpl::checkSystemImports()
+{
   runString( "import sys" ); // import sys module (for display / exception hooks)
   runString( "import os" ); // import os module (for user paths)
 
@@ -135,15 +134,6 @@ bool QgsPythonUtilsImpl::checkSystemImports() {
     return false;
   }
 
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-  // This is the main difference with initInterface() for desktop plugins
-  // import QGIS Server bindings
-  error_msg = QObject::tr( "Couldn't load PyQGIS Server." ) + "\n" + QObject::tr( "Python support will be disabled." );
-  if ( !runString( "from qgis.server import *", error_msg ) )
-  {
-    return false;
-  }
-#endif
   // import QGIS utils
   error_msg = QObject::tr( "Couldn't load QGIS utils." ) + "\n" + QObject::tr( "Python support will be disabled." );
   if ( !runString( "import qgis.utils", error_msg ) )
@@ -162,7 +152,9 @@ bool QgsPythonUtilsImpl::checkSystemImports() {
 
   return true;
 }
-void QgsPythonUtilsImpl::init() {
+
+void QgsPythonUtilsImpl::init()
+{
   // initialize python
   Py_Initialize();
   // initialize threading AND acquire GIL
@@ -174,7 +166,8 @@ void QgsPythonUtilsImpl::init() {
   mMainDict = PyModule_GetDict( mMainModule ); // borrowed reference
 }
 
-void QgsPythonUtilsImpl::finish() {
+void QgsPythonUtilsImpl::finish()
+{
   // release GIL!
   // Later on, we acquire GIL just before doing some Python calls and
   // release GIL again when the work with Python API is done.
@@ -183,7 +176,8 @@ void QgsPythonUtilsImpl::finish() {
   _mainState = PyEval_SaveThread();
 }
 
-bool QgsPythonUtilsImpl::checkQgisUser() {
+bool QgsPythonUtilsImpl::checkQgisUser()
+{
   // import QGIS user
   QString error_msg = QObject::tr( "Couldn't load qgis.user." ) + "\n" + QObject::tr( "Python support will be disabled." );
   if ( !runString( "import qgis.user", error_msg ) )
@@ -194,7 +188,8 @@ bool QgsPythonUtilsImpl::checkQgisUser() {
   return true;
 }
 
-void QgsPythonUtilsImpl::doUserImports() {
+void QgsPythonUtilsImpl::doUserImports()
+{
 
   QString startuppath = homePythonPath() + " + \"/startup.py\"";
   runString( "if os.path.exists(" + startuppath + "): from startup import *\n" );
@@ -203,15 +198,17 @@ void QgsPythonUtilsImpl::doUserImports() {
 void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
 {
   init();
-  if (!checkSystemImports()){
-      exitPython();
-      return;
+  if ( !checkSystemImports() )
+  {
+    exitPython();
+    return;
   }
   // initialize 'iface' object
   runString( "qgis.utils.initInterface(" + QString::number(( unsigned long ) interface ) + ")" );
-  if (!checkQgisUser()) {
-      exitPython();
-      return;
+  if ( !checkQgisUser() )
+  {
+    exitPython();
+    return;
   }
   doUserImports();
   finish();
@@ -221,12 +218,21 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 void QgsPythonUtilsImpl::initServerPython( QgsServerInterface* interface )
 {
-
   init();
-  if (!checkSystemImports()){
-      exitPython();
-      return;
+  if ( !checkSystemImports() )
+  {
+    exitPython();
+    return;
   }
+
+  // This is the main difference with initInterface() for desktop plugins
+  // import QGIS Server bindings
+  QString error_msg = QObject::tr( "Couldn't load PyQGIS Server." ) + "\n" + QObject::tr( "Python support will be disabled." );
+  if ( !runString( "from qgis.server import *", error_msg ) )
+  {
+    return;
+  }
+
   // This is the other main difference with initInterface() for desktop plugins
   runString( "qgis.utils.initServerInterface(" + QString::number(( unsigned long ) interface ) + ")" );
 
