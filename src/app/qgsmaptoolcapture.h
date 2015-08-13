@@ -18,6 +18,7 @@
 
 
 #include "qgsmaptooledit.h"
+#include "qgscompoundcurvev2.h"
 #include "qgspoint.h"
 #include "qgsgeometry.h"
 
@@ -64,6 +65,9 @@ class APP_EXPORT QgsMapToolCapture : public QgsMapToolEdit
      @return 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed*/
     int addVertex( const QgsPoint& point );
 
+    /** Adds a whole curve (e.g. circularstring) to the captured geometry. Curve must be in map CRS*/
+    int addCurve( QgsCurveV2* c );
+
     /** Removes the last vertex from mRubberBand and mCaptureList*/
     void undo();
 
@@ -72,11 +76,9 @@ class APP_EXPORT QgsMapToolCapture : public QgsMapToolEdit
     void stopCapturing();
     void deleteTempRubberBand();
 
-    int size() { return mCaptureList.size(); }
-    QList<QgsPoint>::iterator begin() { return mCaptureList.begin(); }
-    QList<QgsPoint>::iterator end() { return mCaptureList.end(); }
-    const QList<QgsPoint> &points() { return mCaptureList; }
-    void setPoints( const QList<QgsPoint>& pointList ) { mCaptureList = pointList; }
+    int size();
+    QList<QgsPoint> points();
+    void setPoints( const QList<QgsPoint>& pointList );
     void closePolygon();
 
   private:
@@ -90,7 +92,7 @@ class APP_EXPORT QgsMapToolCapture : public QgsMapToolEdit
     QgsRubberBand* mTempRubberBand;
 
     /** List to store the points of digitised lines and polygons (in layer coordinates)*/
-    QList<QgsPoint> mCaptureList;
+    QgsCompoundCurveV2 mCaptureCurve;
 
     void validateGeometry();
     QString mTip;
