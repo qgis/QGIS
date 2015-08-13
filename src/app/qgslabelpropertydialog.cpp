@@ -218,6 +218,7 @@ void QgsLabelPropertyDialog::setDataDefinedValues( const QgsPalLayerSettings &la
       dd->prepareExpression( vlayer );
     }
 
+    //TODO - pass expression context
     QVariant result = layerSettings.dataDefinedValue( propIt.key(), mCurLabelFeat, vlayer->fields() );
     if ( !result.isValid() || result.isNull() )
     {

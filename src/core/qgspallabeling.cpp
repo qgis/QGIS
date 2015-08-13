@@ -1157,12 +1157,22 @@ QMap<QString, QString> QgsPalLayerSettings::dataDefinedMap( DataDefinedPropertie
   return map;
 }
 
-QVariant QgsPalLayerSettings::dataDefinedValue( DataDefinedProperties p, QgsFeature& f, const QgsFields& fields ) const
+QVariant QgsPalLayerSettings::dataDefinedValue( DataDefinedProperties p, QgsFeature& f, const QgsFields& fields, const QgsExpressionContext *context ) const
 {
   if ( !dataDefinedProperties.contains( p ) )
   {
     return QVariant();
   }
+
+  //try to keep < 2.12 API - handle no passed expression context
+  QScopedPointer< QgsExpressionContext > scopedEc;
+  if ( !context )
+  {
+    scopedEc.reset( new QgsExpressionContext() );
+    scopedEc->setFeature( f );
+    scopedEc->setFields( fields );
+  }
+  const QgsExpressionContext* ec = context ? context : scopedEc.data();
 
   QgsDataDefined* dd = 0;
   QMap< DataDefinedProperties, QgsDataDefined* >::const_iterator it = dataDefinedProperties.find( p );
@@ -1195,7 +1205,7 @@ QVariant QgsPalLayerSettings::dataDefinedValue( DataDefinedProperties p, QgsFeat
     QgsExpression* expr = dd->expression();
     //QgsDebugMsgLevel( QString( "expr columns:" ) + expr->referencedColumns().join( "," ), 4 );
 
-    result = expr->evaluate( &f );
+    result = expr->evaluate( ec );
     if ( expr->hasEvalError() )
     {
       QgsDebugMsgLevel( QString( "Evaluate error:" ) + expr->evalErrorString(), 4 );
@@ -1214,12 +1224,23 @@ QVariant QgsPalLayerSettings::dataDefinedValue( DataDefinedProperties p, QgsFeat
   return result;
 }
 
-bool QgsPalLayerSettings::dataDefinedEvaluate( DataDefinedProperties p, QVariant& exprVal ) const
+bool QgsPalLayerSettings::dataDefinedEvaluate( DataDefinedProperties p, QVariant& exprVal, const QgsExpressionContext* context ) const
 {
   // null passed-around QVariant
   exprVal.clear();
 
-  QVariant result = dataDefinedValue( p, *mCurFeat, mCurFields );
+  //try to keep < 2.12 API - handle no passed expression context
+  QScopedPointer< QgsExpressionContext > scopedEc;
+  if ( !context )
+  {
+    scopedEc.reset( new QgsExpressionContext() );
+    if ( mCurFeat )
+      scopedEc->setFeature( *mCurFeat );
+    scopedEc->setFields( mCurFields );
+  }
+  const QgsExpressionContext* ec = context ? context : scopedEc.data();
+
+  QVariant result = dataDefinedValue( p, *mCurFeat, mCurFields, ec );
 
   if ( result.isValid() && !result.isNull() )
   {
@@ -1261,12 +1282,22 @@ bool QgsPalLayerSettings::checkMinimumSizeMM( const QgsRenderContext& ct, const 
   return QgsPalLabeling::checkMinimumSizeMM( ct, geom, minSize );
 }
 
-void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString text, double& labelX, double& labelY, QgsFeature* f )
+void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString text, double& labelX, double& labelY, QgsFeature* f, const QgsRenderContext *context )
 {
   if ( !fm || !f )
   {
     return;
   }
+
+  //try to keep < 2.12 API - handle no passed render context
+  QScopedPointer< QgsRenderContext > scopedRc;
+  if ( !context )
+  {
+    scopedRc.reset( new QgsRenderContext() );
+    if ( f )
+      scopedRc->expressionContext().setFeature( *f );
+  }
+  const QgsRenderContext* rc = context ? context : scopedRc.data();
 
   QString wrapchr = wrapChar;
   double multilineH = multilineHeight;
@@ -1315,13 +1346,13 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
   }
   else // called externally with passed-in feature, evaluate data defined
   {
-    QVariant exprVal = dataDefinedValue( QgsPalLayerSettings::MultiLineWrapChar, *f, mCurFields );
+    QVariant exprVal = dataDefinedValue( QgsPalLayerSettings::MultiLineWrapChar, *f, mCurFields, &rc->expressionContext() );
     if ( exprVal.isValid() )
     {
       wrapchr = exprVal.toString();
     }
     exprVal.clear();
-    exprVal = dataDefinedValue( QgsPalLayerSettings::MultiLineHeight, *f, mCurFields );
+    exprVal = dataDefinedValue( QgsPalLayerSettings::MultiLineHeight, *f, mCurFields, &rc->expressionContext() );
     if ( exprVal.isValid() )
     {
       bool ok;
@@ -1333,7 +1364,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
     }
 
     exprVal.clear();
-    exprVal = dataDefinedValue( QgsPalLayerSettings::DirSymbDraw, *f, mCurFields );
+    exprVal = dataDefinedValue( QgsPalLayerSettings::DirSymbDraw, *f, mCurFields, &rc->expressionContext() );
     if ( exprVal.isValid() )
     {
       addDirSymb = exprVal.toBool();
@@ -1342,19 +1373,19 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
     if ( addDirSymb ) // don't do extra evaluations if not adding a direction symbol
     {
       exprVal.clear();
-      exprVal = dataDefinedValue( QgsPalLayerSettings::DirSymbLeft, *f, mCurFields );
+      exprVal = dataDefinedValue( QgsPalLayerSettings::DirSymbLeft, *f, mCurFields, &rc->expressionContext() );
       if ( exprVal.isValid() )
       {
         leftDirSymb = exprVal.toString();
       }
       exprVal.clear();
-      exprVal = dataDefinedValue( QgsPalLayerSettings::DirSymbRight, *f, mCurFields );
+      exprVal = dataDefinedValue( QgsPalLayerSettings::DirSymbRight, *f, mCurFields, &rc->expressionContext() );
       if ( exprVal.isValid() )
       {
         rightDirSymb = exprVal.toString();
       }
       exprVal.clear();
-      exprVal = dataDefinedValue( QgsPalLayerSettings::DirSymbPlacement, *f, mCurFields );
+      exprVal = dataDefinedValue( QgsPalLayerSettings::DirSymbPlacement, *f, mCurFields, &rc->expressionContext() );
       if ( exprVal.isValid() )
       {
         bool ok;
@@ -1443,7 +1474,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   // data defined show label? defaults to show label if not 0
   if ( dataDefinedIsActive( QgsPalLayerSettings::Show ) )
   {
-    bool showLabel = dataDefinedEvaluate( QgsPalLayerSettings::Show, exprVal );
+    bool showLabel = dataDefinedEvaluate( QgsPalLayerSettings::Show, exprVal, &context.expressionContext() );
     showLabel = exprVal.toBool();
     QgsDebugMsgLevel( QString( "exprVal Show:%1" ).arg( showLabel ? "true" : "false" ), 4 );
     if ( !showLabel )
@@ -1454,7 +1485,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
 
   // data defined scale visibility?
   bool useScaleVisibility = scaleVisibility;
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::ScaleVisibility, exprVal ) )
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::ScaleVisibility, exprVal, &context.expressionContext() ) )
   {
     QgsDebugMsgLevel( QString( "exprVal ScaleVisibility:%1" ).arg( exprVal.toBool() ? "true" : "false" ), 4 );
     useScaleVisibility = exprVal.toBool();
@@ -1464,7 +1495,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   {
     // data defined min scale?
     double minScale = scaleMin;
-    if ( dataDefinedEvaluate( QgsPalLayerSettings::MinScale, exprVal ) )
+    if ( dataDefinedEvaluate( QgsPalLayerSettings::MinScale, exprVal, &context.expressionContext() ) )
     {
       QgsDebugMsgLevel( QString( "exprVal MinScale:%1" ).arg( exprVal.toDouble() ), 4 );
       bool conversionOk;
@@ -1488,7 +1519,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
 
     // data defined max scale?
     double maxScale = scaleMax;
-    if ( dataDefinedEvaluate( QgsPalLayerSettings::MaxScale, exprVal ) )
+    if ( dataDefinedEvaluate( QgsPalLayerSettings::MaxScale, exprVal, &context.expressionContext() ) )
     {
       QgsDebugMsgLevel( QString( "exprVal MaxScale:%1" ).arg( exprVal.toDouble() ), 4 );
       bool conversionOk;
@@ -1516,7 +1547,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
 
   // data defined font units?
   SizeUnit fontunits = fontSizeInMapUnits ? QgsPalLayerSettings::MapUnits : QgsPalLayerSettings::Points;
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::FontSizeUnit, exprVal ) )
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::FontSizeUnit, exprVal, &context.expressionContext() ) )
   {
     QString units = exprVal.toString().trimmed();
     QgsDebugMsgLevel( QString( "exprVal Font units:%1" ).arg( units ), 4 );
@@ -1528,7 +1559,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
 
   //data defined label size?
   double fontSize = labelFont.pointSizeF(); // font size doesn't have its own class data member
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::Size, exprVal ) )
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::Size, exprVal, &context.expressionContext() ) )
   {
     QgsDebugMsgLevel( QString( "exprVal Size:%1" ).arg( exprVal.toDouble() ), 4 );
     bool ok;
@@ -1557,7 +1588,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   if ( fontunits == QgsPalLayerSettings::MapUnits )
   {
     bool useFontLimitPixelSize = fontLimitPixelSize;
-    if ( dataDefinedEvaluate( QgsPalLayerSettings::FontLimitPixel, exprVal ) )
+    if ( dataDefinedEvaluate( QgsPalLayerSettings::FontLimitPixel, exprVal, &context.expressionContext() ) )
     {
       QgsDebugMsgLevel( QString( "exprVal FontLimitPixel:%1" ).arg( exprVal.toBool() ? "true" : "false" ), 4 );
       useFontLimitPixelSize = exprVal.toBool();
@@ -1566,7 +1597,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     if ( useFontLimitPixelSize )
     {
       int fontMinPixel = fontMinPixelSize;
-      if ( dataDefinedEvaluate( QgsPalLayerSettings::FontMinPixel, exprVal ) )
+      if ( dataDefinedEvaluate( QgsPalLayerSettings::FontMinPixel, exprVal, &context.expressionContext() ) )
       {
         bool ok;
         int sizeInt = exprVal.toInt( &ok );
@@ -1578,7 +1609,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
       }
 
       int fontMaxPixel = fontMaxPixelSize;
-      if ( dataDefinedEvaluate( QgsPalLayerSettings::FontMaxPixel, exprVal ) )
+      if ( dataDefinedEvaluate( QgsPalLayerSettings::FontMaxPixel, exprVal, &context.expressionContext() ) )
       {
         bool ok;
         int sizeInt = exprVal.toInt( &ok );
@@ -1602,10 +1633,10 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   // calculate rest of font attributes and store any data defined values
   // this is done here for later use in making label backgrounds part of collision management (when implemented)
   parseTextStyle( labelFont, fontunits, context );
-  parseTextFormatting();
-  parseTextBuffer();
-  parseShapeBackground();
-  parseDropShadow();
+  parseTextFormatting( context );
+  parseTextBuffer( context );
+  parseShapeBackground( context );
+  parseDropShadow( context );
 
   QString labelText;
 
@@ -1620,7 +1651,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     }
     exp->setScale( context.rendererScale() );
 //    QVariant result = exp->evaluate( &f, layer->pendingFields() );
-    QVariant result = exp->evaluate( &f ); // expression prepared in QgsPalLabeling::prepareLayer()
+    QVariant result = exp->evaluate( &context.expressionContext() ); // expression prepared in QgsPalLabeling::prepareLayer()
     if ( exp->hasEvalError() )
     {
       QgsDebugMsgLevel( QString( "Expression parser eval error:%1" ).arg( exp->evalErrorString() ), 4 );
@@ -1636,7 +1667,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
 
   // data defined format numbers?
   bool formatnum = formatNumbers;
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::NumFormat, exprVal ) )
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::NumFormat, exprVal, &context.expressionContext() ) )
   {
     formatnum = exprVal.toBool();
     QgsDebugMsgLevel( QString( "exprVal NumFormat:%1" ).arg( formatnum ? "true" : "false" ), 4 );
@@ -1647,7 +1678,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   {
     // data defined decimal places?
     int decimalPlaces = decimals;
-    if ( dataDefinedEvaluate( QgsPalLayerSettings::NumDecimals, exprVal ) )
+    if ( dataDefinedEvaluate( QgsPalLayerSettings::NumDecimals, exprVal, &context.expressionContext() ) )
     {
       bool ok;
       int dInt = exprVal.toInt( &ok );
@@ -1660,7 +1691,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
 
     // data defined plus sign?
     bool signPlus = plusSign;
-    if ( dataDefinedEvaluate( QgsPalLayerSettings::NumPlusSign, exprVal ) )
+    if ( dataDefinedEvaluate( QgsPalLayerSettings::NumPlusSign, exprVal, &context.expressionContext() ) )
     {
       signPlus = exprVal.toBool();
       QgsDebugMsgLevel( QString( "exprVal NumPlusSign:%1" ).arg( signPlus ? "true" : "false" ), 4 );
@@ -1685,7 +1716,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   // NOTE: this should come AFTER any option that affects font metrics
   QFontMetricsF* labelFontMetrics = new QFontMetricsF( labelFont );
   double labelX, labelY; // will receive label size
-  calculateLabelSize( labelFontMetrics, labelText, labelX, labelY, mCurFeat );
+  calculateLabelSize( labelFontMetrics, labelText, labelX, labelY, mCurFeat, &context );
 
 
   // maximum angle between curved label characters (hardcoded defaults used in QGIS <2.0)
@@ -1699,7 +1730,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     maxcharangleout = maxCurvedCharAngleOut;
 
     //data defined maximum angle between curved label characters?
-    if ( dataDefinedEvaluate( QgsPalLayerSettings::CurvedCharAngleInOut, exprVal ) )
+    if ( dataDefinedEvaluate( QgsPalLayerSettings::CurvedCharAngleInOut, exprVal, &context.expressionContext() ) )
     {
       QString ptstr = exprVal.toString().trimmed();
       QgsDebugMsgLevel( QString( "exprVal CurvedCharAngleInOut:%1" ).arg( ptstr ), 4 );
@@ -1717,7 +1748,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
 
   // data defined centroid whole or clipped?
   bool wholeCentroid = centroidWhole;
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::CentroidWhole, exprVal ) )
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::CentroidWhole, exprVal, &context.expressionContext() ) )
   {
     QString str = exprVal.toString().trimmed();
     QgsDebugMsgLevel( QString( "exprVal CentroidWhole:%1" ).arg( str ), 4 );
@@ -1826,7 +1857,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   //data defined quadrant offset?
   bool ddFixedQuad = false;
   QuadrantPosition quadOff = quadOffset;
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::OffsetQuad, exprVal ) )
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::OffsetQuad, exprVal, &context.expressionContext() ) )
   {
     bool ok;
     int quadInt = exprVal.toInt( &ok );
@@ -1881,7 +1912,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   //data defined label offset?
   double xOff = xOffset;
   double yOff = yOffset;
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::OffsetXY, exprVal ) )
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::OffsetXY, exprVal, &context.expressionContext() ) )
   {
     QString ptstr = exprVal.toString().trimmed();
     QgsDebugMsgLevel( QString( "exprVal OffsetXY:%1" ).arg( ptstr ), 4 );
@@ -1896,7 +1927,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
 
   // data defined label offset units?
   bool offinmapunits = labelOffsetInMapUnits;
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::OffsetUnits, exprVal ) )
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::OffsetUnits, exprVal, &context.expressionContext() ) )
   {
     QString units = exprVal.toString().trimmed();
     QgsDebugMsgLevel( QString( "exprVal OffsetUnits:%1" ).arg( units ), 4 );
@@ -1936,7 +1967,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
 
   const QgsMapToPixel& m2p = context.mapToPixel();
   //data defined rotation?
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::Rotation, exprVal ) )
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::Rotation, exprVal, &context.expressionContext() ) )
   {
     bool ok;
     double rotD = exprVal.toDouble( &ok );
@@ -1951,13 +1982,13 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     }
   }
 
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::PositionX, exprVal ) )
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::PositionX, exprVal, &context.expressionContext() ) )
   {
     if ( !exprVal.isNull() )
       xPos = exprVal.toDouble( &ddXPos );
     QgsDebugMsgLevel( QString( "exprVal PositionX:%1" ).arg( xPos ), 4 );
 
-    if ( dataDefinedEvaluate( QgsPalLayerSettings::PositionY, exprVal ) )
+    if ( dataDefinedEvaluate( QgsPalLayerSettings::PositionY, exprVal, &context.expressionContext() ) )
     {
       //data defined position. But field values could be NULL -> positions will be generated by PAL
       if ( !exprVal.isNull() )
@@ -1979,7 +2010,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
         double ydiff = 0.0;
 
         //horizontal alignment
-        if ( dataDefinedEvaluate( QgsPalLayerSettings::Hali, exprVal ) )
+        if ( dataDefinedEvaluate( QgsPalLayerSettings::Hali, exprVal, &context.expressionContext() ) )
         {
           QString haliString = exprVal.toString();
           QgsDebugMsgLevel( QString( "exprVal Hali:%1" ).arg( haliString ), 4 );
@@ -1994,7 +2025,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
         }
 
         //vertical alignment
-        if ( dataDefinedEvaluate( QgsPalLayerSettings::Vali, exprVal ) )
+        if ( dataDefinedEvaluate( QgsPalLayerSettings::Vali, exprVal, &context.expressionContext() ) )
         {
           QString valiString = exprVal.toString();
           QgsDebugMsgLevel( QString( "exprVal Vali:%1" ).arg( valiString ), 4 );
@@ -2080,7 +2111,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
 
   // data defined always show?
   bool alwaysShow = false;
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::AlwaysShow, exprVal ) )
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::AlwaysShow, exprVal, &context.expressionContext() ) )
   {
     alwaysShow = exprVal.toBool();
   }
@@ -2105,7 +2136,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   // set repeat distance
   // data defined repeat distance?
   double repeatDist = repeatDistance;
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::RepeatDistance, exprVal ) )
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::RepeatDistance, exprVal, &context.expressionContext() ) )
   {
     bool ok;
     double distD = exprVal.toDouble( &ok );
@@ -2117,7 +2148,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
 
   // data defined label-repeat distance units?
   bool repeatdistinmapunit = repeatDistanceUnit == QgsPalLayerSettings::MapUnits;
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::RepeatDistanceUnit, exprVal ) )
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::RepeatDistanceUnit, exprVal, &context.expressionContext() ) )
   {
     QString units = exprVal.toString().trimmed();
     QgsDebugMsgLevel( QString( "exprVal RepeatDistanceUnits:%1" ).arg( units ), 4 );
@@ -2160,7 +2191,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
 
   // data defined label-feature distance?
   double distance = dist;
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::LabelDistance, exprVal ) )
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::LabelDistance, exprVal, &context.expressionContext() ) )
   {
     bool ok;
     double distD = exprVal.toDouble( &ok );
@@ -2172,7 +2203,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
 
   // data defined label-feature distance units?
   bool distinmapunit = distInMapUnits;
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::DistanceUnits, exprVal ) )
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::DistanceUnits, exprVal, &context.expressionContext() ) )
   {
     QString units = exprVal.toString().trimmed();
     QgsDebugMsgLevel( QString( "exprVal DistanceUnits:%1" ).arg( units ), 4 );
@@ -2201,7 +2232,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   }
 
   // data defined priority?
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::Priority, exprVal ) )
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::Priority, exprVal, &context.expressionContext() ) )
   {
     bool ok;
     double priorityD = exprVal.toDouble( &ok );
@@ -2214,13 +2245,13 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   }
 
   // data defined is obstacle?
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::IsObstacle, exprVal ) )
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::IsObstacle, exprVal, &context.expressionContext() ) )
   {
     feat->setIsObstacle( exprVal.toBool() );
   }
 
   double featObstacleFactor = obstacleFactor;
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::ObstacleFactor, exprVal ) )
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::ObstacleFactor, exprVal, &context.expressionContext() ) )
   {
     bool ok;
     double factorD = exprVal.toDouble( &ok );
@@ -2298,9 +2329,9 @@ void QgsPalLayerSettings::registerObstacleFeature( QgsFeature& f, const QgsRende
 
 bool QgsPalLayerSettings::dataDefinedValEval( const QString& valType,
     QgsPalLayerSettings::DataDefinedProperties p,
-    QVariant& exprVal )
+    QVariant& exprVal, const QgsExpressionContext& context )
 {
-  if ( dataDefinedEvaluate( p, exprVal ) )
+  if ( dataDefinedEvaluate( p, exprVal, &context ) )
   {
     QString dbgStr = QString( "exprVal %1:" ).arg( mDataDefinedNames.value( p ).first ) + "%1";
 
@@ -2474,7 +2505,7 @@ void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
 
   // data defined font family?
   QString ddFontFamily( "" );
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::Family, exprVal ) )
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::Family, exprVal, &context.expressionContext() ) )
   {
     QString family = exprVal.toString().trimmed();
     QgsDebugMsgLevel( QString( "exprVal Font family:%1" ).arg( family ), 4 );
@@ -2492,7 +2523,7 @@ void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
 
   // data defined named font style?
   QString ddFontStyle( "" );
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::FontStyle, exprVal ) )
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::FontStyle, exprVal, &context.expressionContext() ) )
   {
     QString fontstyle = exprVal.toString().trimmed();
     QgsDebugMsgLevel( QString( "exprVal Font style:%1" ).arg( fontstyle ), 4 );
@@ -2501,7 +2532,7 @@ void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
 
   // data defined bold font style?
   bool ddBold = false;
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::Bold, exprVal ) )
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::Bold, exprVal, &context.expressionContext() ) )
   {
     bool bold = exprVal.toBool();
     QgsDebugMsgLevel( QString( "exprVal Font bold:%1" ).arg( bold ? "true" : "false" ), 4 );
@@ -2510,7 +2541,7 @@ void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
 
   // data defined italic font style?
   bool ddItalic = false;
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::Italic, exprVal ) )
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::Italic, exprVal, &context.expressionContext() ) )
   {
     bool italic = exprVal.toBool();
     QgsDebugMsgLevel( QString( "exprVal Font italic:%1" ).arg( italic ? "true" : "false" ), 4 );
@@ -2582,7 +2613,7 @@ void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
 
   // data defined word spacing?
   double wordspace = labelFont.wordSpacing();
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::FontWordSpacing, exprVal ) )
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::FontWordSpacing, exprVal, &context.expressionContext() ) )
   {
     bool ok;
     double wspacing = exprVal.toDouble( &ok );
@@ -2596,7 +2627,7 @@ void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
 
   // data defined letter spacing?
   double letterspace = labelFont.letterSpacing();
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::FontLetterSpacing, exprVal ) )
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::FontLetterSpacing, exprVal, &context.expressionContext() ) )
   {
     bool ok;
     double lspacing = exprVal.toDouble( &ok );
@@ -2610,7 +2641,7 @@ void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
 
   // data defined font capitalization?
   QFont::Capitalization fontcaps = labelFont.capitalization();
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::FontCase, exprVal ) )
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::FontCase, exprVal, &context.expressionContext() ) )
   {
     QString fcase = exprVal.toString().trimmed();
     QgsDebugMsgLevel( QString( "exprVal FontCase:%1" ).arg( fcase ), 4 );
@@ -2642,7 +2673,7 @@ void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
   }
 
   // data defined strikeout font style?
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::Strikeout, exprVal ) )
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::Strikeout, exprVal, &context.expressionContext() ) )
   {
     bool strikeout = exprVal.toBool();
     QgsDebugMsgLevel( QString( "exprVal Font strikeout:%1" ).arg( strikeout ? "true" : "false" ), 4 );
@@ -2650,7 +2681,7 @@ void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
   }
 
   // data defined underline font style?
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::Underline, exprVal ) )
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::Underline, exprVal, &context.expressionContext() ) )
   {
     bool underline = exprVal.toBool();
     QgsDebugMsgLevel( QString( "exprVal Font underline:%1" ).arg( underline ? "true" : "false" ), 4 );
@@ -2660,23 +2691,23 @@ void QgsPalLayerSettings::parseTextStyle( QFont& labelFont,
   // pass the rest on to QgsPalLabeling::drawLabeling
 
   // data defined font color?
-  dataDefinedValEval( "color", QgsPalLayerSettings::Color, exprVal );
+  dataDefinedValEval( "color", QgsPalLayerSettings::Color, exprVal, context.expressionContext() );
 
   // data defined font transparency?
-  dataDefinedValEval( "transp", QgsPalLayerSettings::FontTransp, exprVal );
+  dataDefinedValEval( "transp", QgsPalLayerSettings::FontTransp, exprVal, context.expressionContext() );
 
   // data defined font blend mode?
-  dataDefinedValEval( "blendmode", QgsPalLayerSettings::FontBlendMode, exprVal );
+  dataDefinedValEval( "blendmode", QgsPalLayerSettings::FontBlendMode, exprVal, context.expressionContext() );
 
 }
 
-void QgsPalLayerSettings::parseTextBuffer()
+void QgsPalLayerSettings::parseTextBuffer( const QgsRenderContext &context )
 {
   QVariant exprVal; // value() is repeatedly nulled on data defined evaluation and replaced when successful
 
   // data defined draw buffer?
   bool drawBuffer = bufferDraw;
-  if ( dataDefinedValEval( "bool", QgsPalLayerSettings::BufferDraw, exprVal ) )
+  if ( dataDefinedValEval( "bool", QgsPalLayerSettings::BufferDraw, exprVal, context.expressionContext() ) )
   {
     drawBuffer = exprVal.toBool();
   }
@@ -2688,14 +2719,14 @@ void QgsPalLayerSettings::parseTextBuffer()
 
   // data defined buffer size?
   double bufrSize = bufferSize;
-  if ( dataDefinedValEval( "doublepos", QgsPalLayerSettings::BufferSize, exprVal ) )
+  if ( dataDefinedValEval( "doublepos", QgsPalLayerSettings::BufferSize, exprVal, context.expressionContext() ) )
   {
     bufrSize = exprVal.toDouble();
   }
 
   // data defined buffer transparency?
   int bufTransp = bufferTransp;
-  if ( dataDefinedValEval( "transp", QgsPalLayerSettings::BufferTransp, exprVal ) )
+  if ( dataDefinedValEval( "transp", QgsPalLayerSettings::BufferTransp, exprVal, context.expressionContext() ) )
   {
     bufTransp = exprVal.toInt();
   }
@@ -2711,34 +2742,34 @@ void QgsPalLayerSettings::parseTextBuffer()
   }
 
   // data defined buffer units?
-  dataDefinedValEval( "units", QgsPalLayerSettings::BufferUnit, exprVal );
+  dataDefinedValEval( "units", QgsPalLayerSettings::BufferUnit, exprVal, context.expressionContext() );
 
   // data defined buffer color?
-  dataDefinedValEval( "color", QgsPalLayerSettings::BufferColor, exprVal );
+  dataDefinedValEval( "color", QgsPalLayerSettings::BufferColor, exprVal, context.expressionContext() );
 
   // data defined buffer pen join style?
-  dataDefinedValEval( "joinstyle", QgsPalLayerSettings::BufferJoinStyle, exprVal );
+  dataDefinedValEval( "joinstyle", QgsPalLayerSettings::BufferJoinStyle, exprVal, context.expressionContext() );
 
   // data defined buffer blend mode?
-  dataDefinedValEval( "blendmode", QgsPalLayerSettings::BufferBlendMode, exprVal );
+  dataDefinedValEval( "blendmode", QgsPalLayerSettings::BufferBlendMode, exprVal, context.expressionContext() );
 }
 
-void QgsPalLayerSettings::parseTextFormatting()
+void QgsPalLayerSettings::parseTextFormatting( const QgsRenderContext &context )
 {
   QVariant exprVal; // value() is repeatedly nulled on data defined evaluation and replaced when successful
 
   // data defined multiline wrap character?
   QString wrapchr = wrapChar;
-  if ( dataDefinedValEval( "string", QgsPalLayerSettings::MultiLineWrapChar, exprVal ) )
+  if ( dataDefinedValEval( "string", QgsPalLayerSettings::MultiLineWrapChar, exprVal, context.expressionContext() ) )
   {
     wrapchr = exprVal.toString();
   }
 
   // data defined multiline height?
-  dataDefinedValEval( "double", QgsPalLayerSettings::MultiLineHeight, exprVal );
+  dataDefinedValEval( "double", QgsPalLayerSettings::MultiLineHeight, exprVal, context.expressionContext() );
 
   // data defined multiline text align?
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::MultiLineAlignment, exprVal ) )
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::MultiLineAlignment, exprVal, &context.expressionContext() ) )
   {
     QString str = exprVal.toString().trimmed();
     QgsDebugMsgLevel( QString( "exprVal MultiLineAlignment:%1" ).arg( str ), 4 );
@@ -2766,7 +2797,7 @@ void QgsPalLayerSettings::parseTextFormatting()
 
   // data defined direction symbol?
   bool drawDirSymb = addDirectionSymbol;
-  if ( dataDefinedValEval( "bool", QgsPalLayerSettings::DirSymbDraw, exprVal ) )
+  if ( dataDefinedValEval( "bool", QgsPalLayerSettings::DirSymbDraw, exprVal, context.expressionContext() ) )
   {
     drawDirSymb = exprVal.toBool();
   }
@@ -2774,13 +2805,13 @@ void QgsPalLayerSettings::parseTextFormatting()
   if ( drawDirSymb )
   {
     // data defined direction left symbol?
-    dataDefinedValEval( "string", QgsPalLayerSettings::DirSymbLeft, exprVal );
+    dataDefinedValEval( "string", QgsPalLayerSettings::DirSymbLeft, exprVal, context.expressionContext() );
 
     // data defined direction right symbol?
-    dataDefinedValEval( "string", QgsPalLayerSettings::DirSymbRight, exprVal );
+    dataDefinedValEval( "string", QgsPalLayerSettings::DirSymbRight, exprVal, context.expressionContext() );
 
     // data defined direction symbol placement?
-    if ( dataDefinedEvaluate( QgsPalLayerSettings::DirSymbPlacement, exprVal ) )
+    if ( dataDefinedEvaluate( QgsPalLayerSettings::DirSymbPlacement, exprVal, &context.expressionContext() ) )
     {
       QString str = exprVal.toString().trimmed();
       QgsDebugMsgLevel( QString( "exprVal DirSymbPlacement:%1" ).arg( str ), 4 );
@@ -2803,19 +2834,19 @@ void QgsPalLayerSettings::parseTextFormatting()
     }
 
     // data defined direction symbol reversed?
-    dataDefinedValEval( "bool", QgsPalLayerSettings::DirSymbReverse, exprVal );
+    dataDefinedValEval( "bool", QgsPalLayerSettings::DirSymbReverse, exprVal, context.expressionContext() );
   }
 
   // formatting for numbers is inline with generation of base label text and not passed to label painting
 }
 
-void QgsPalLayerSettings::parseShapeBackground()
+void QgsPalLayerSettings::parseShapeBackground( const QgsRenderContext &context )
 {
   QVariant exprVal; // value() is repeatedly nulled on data defined evaluation and replaced when successful
 
   // data defined draw shape?
   bool drawShape = shapeDraw;
-  if ( dataDefinedValEval( "bool", QgsPalLayerSettings::ShapeDraw, exprVal ) )
+  if ( dataDefinedValEval( "bool", QgsPalLayerSettings::ShapeDraw, exprVal, context.expressionContext() ) )
   {
     drawShape = exprVal.toBool();
   }
@@ -2827,7 +2858,7 @@ void QgsPalLayerSettings::parseShapeBackground()
 
   // data defined shape transparency?
   int shapeTransp = shapeTransparency;
-  if ( dataDefinedValEval( "transp", QgsPalLayerSettings::ShapeTransparency, exprVal ) )
+  if ( dataDefinedValEval( "transp", QgsPalLayerSettings::ShapeTransparency, exprVal, context.expressionContext() ) )
   {
     shapeTransp = exprVal.toInt();
   }
@@ -2843,7 +2874,7 @@ void QgsPalLayerSettings::parseShapeBackground()
 
   // data defined shape kind?
   QgsPalLayerSettings::ShapeType shapeKind = shapeType;
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::ShapeKind, exprVal ) )
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::ShapeKind, exprVal, &context.expressionContext() ) )
   {
     QString skind = exprVal.toString().trimmed();
     QgsDebugMsgLevel( QString( "exprVal ShapeKind:%1" ).arg( skind ), 4 );
@@ -2876,7 +2907,7 @@ void QgsPalLayerSettings::parseShapeBackground()
 
   // data defined shape SVG path?
   QString svgPath = shapeSVGFile;
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::ShapeSVGFile, exprVal ) )
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::ShapeSVGFile, exprVal, &context.expressionContext() ) )
   {
     QString svgfile = exprVal.toString().trimmed();
     QgsDebugMsgLevel( QString( "exprVal ShapeSVGFile:%1" ).arg( svgfile ), 4 );
@@ -2888,7 +2919,7 @@ void QgsPalLayerSettings::parseShapeBackground()
 
   // data defined shape size type?
   QgsPalLayerSettings::SizeType shpSizeType = shapeSizeType;
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::ShapeSizeType, exprVal ) )
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::ShapeSizeType, exprVal, &context.expressionContext() ) )
   {
     QString stype = exprVal.toString().trimmed();
     QgsDebugMsgLevel( QString( "exprVal ShapeSizeType:%1" ).arg( stype ), 4 );
@@ -2909,14 +2940,14 @@ void QgsPalLayerSettings::parseShapeBackground()
 
   // data defined shape size X? (SVGs only use X for sizing)
   double ddShpSizeX = shapeSize.x();
-  if ( dataDefinedValEval( "double", QgsPalLayerSettings::ShapeSizeX, exprVal ) )
+  if ( dataDefinedValEval( "double", QgsPalLayerSettings::ShapeSizeX, exprVal, context.expressionContext() ) )
   {
     ddShpSizeX = exprVal.toDouble();
   }
 
   // data defined shape size Y?
   double ddShpSizeY = shapeSize.y();
-  if ( dataDefinedValEval( "double", QgsPalLayerSettings::ShapeSizeY, exprVal ) )
+  if ( dataDefinedValEval( "double", QgsPalLayerSettings::ShapeSizeY, exprVal, context.expressionContext() ) )
   {
     ddShpSizeY = exprVal.toDouble();
   }
@@ -2950,10 +2981,10 @@ void QgsPalLayerSettings::parseShapeBackground()
   }
 
   // data defined shape size units?
-  dataDefinedValEval( "units", QgsPalLayerSettings::ShapeSizeUnits, exprVal );
+  dataDefinedValEval( "units", QgsPalLayerSettings::ShapeSizeUnits, exprVal, context.expressionContext() );
 
   // data defined shape rotation type?
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::ShapeRotationType, exprVal ) )
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::ShapeRotationType, exprVal, &context.expressionContext() ) )
   {
     QString rotstr = exprVal.toString().trimmed();
     QgsDebugMsgLevel( QString( "exprVal ShapeRotationType:%1" ).arg( rotstr ), 4 );
@@ -2976,47 +3007,47 @@ void QgsPalLayerSettings::parseShapeBackground()
   }
 
   // data defined shape rotation?
-  dataDefinedValEval( "rotation180", QgsPalLayerSettings::ShapeRotation, exprVal );
+  dataDefinedValEval( "rotation180", QgsPalLayerSettings::ShapeRotation, exprVal, context.expressionContext() );
 
   // data defined shape offset?
-  dataDefinedValEval( "pointf", QgsPalLayerSettings::ShapeOffset, exprVal );
+  dataDefinedValEval( "pointf", QgsPalLayerSettings::ShapeOffset, exprVal, context.expressionContext() );
 
   // data defined shape offset units?
-  dataDefinedValEval( "units", QgsPalLayerSettings::ShapeOffsetUnits, exprVal );
+  dataDefinedValEval( "units", QgsPalLayerSettings::ShapeOffsetUnits, exprVal, context.expressionContext() );
 
   // data defined shape radii?
-  dataDefinedValEval( "pointf", QgsPalLayerSettings::ShapeRadii, exprVal );
+  dataDefinedValEval( "pointf", QgsPalLayerSettings::ShapeRadii, exprVal, context.expressionContext() );
 
   // data defined shape radii units?
-  dataDefinedValEval( "units", QgsPalLayerSettings::ShapeRadiiUnits, exprVal );
+  dataDefinedValEval( "units", QgsPalLayerSettings::ShapeRadiiUnits, exprVal, context.expressionContext() );
 
   // data defined shape blend mode?
-  dataDefinedValEval( "blendmode", QgsPalLayerSettings::ShapeBlendMode, exprVal );
+  dataDefinedValEval( "blendmode", QgsPalLayerSettings::ShapeBlendMode, exprVal, context.expressionContext() );
 
   // data defined shape fill color?
-  dataDefinedValEval( "color", QgsPalLayerSettings::ShapeFillColor, exprVal );
+  dataDefinedValEval( "color", QgsPalLayerSettings::ShapeFillColor, exprVal, context.expressionContext() );
 
   // data defined shape border color?
-  dataDefinedValEval( "color", QgsPalLayerSettings::ShapeBorderColor, exprVal );
+  dataDefinedValEval( "color", QgsPalLayerSettings::ShapeBorderColor, exprVal, context.expressionContext() );
 
   // data defined shape border width?
-  dataDefinedValEval( "doublepos", QgsPalLayerSettings::ShapeBorderWidth, exprVal );
+  dataDefinedValEval( "doublepos", QgsPalLayerSettings::ShapeBorderWidth, exprVal, context.expressionContext() );
 
   // data defined shape border width units?
-  dataDefinedValEval( "units", QgsPalLayerSettings::ShapeBorderWidthUnits, exprVal );
+  dataDefinedValEval( "units", QgsPalLayerSettings::ShapeBorderWidthUnits, exprVal, context.expressionContext() );
 
   // data defined shape join style?
-  dataDefinedValEval( "joinstyle", QgsPalLayerSettings::ShapeJoinStyle, exprVal );
+  dataDefinedValEval( "joinstyle", QgsPalLayerSettings::ShapeJoinStyle, exprVal, context.expressionContext() );
 
 }
 
-void QgsPalLayerSettings::parseDropShadow()
+void QgsPalLayerSettings::parseDropShadow( const QgsRenderContext &context )
 {
   QVariant exprVal; // value() is repeatedly nulled on data defined evaluation and replaced when successful
 
   // data defined draw shadow?
   bool drawShadow = shadowDraw;
-  if ( dataDefinedValEval( "bool", QgsPalLayerSettings::ShadowDraw, exprVal ) )
+  if ( dataDefinedValEval( "bool", QgsPalLayerSettings::ShadowDraw, exprVal, context.expressionContext() ) )
   {
     drawShadow = exprVal.toBool();
   }
@@ -3028,21 +3059,21 @@ void QgsPalLayerSettings::parseDropShadow()
 
   // data defined shadow transparency?
   int shadowTransp = shadowTransparency;
-  if ( dataDefinedValEval( "transp", QgsPalLayerSettings::ShadowTransparency, exprVal ) )
+  if ( dataDefinedValEval( "transp", QgsPalLayerSettings::ShadowTransparency, exprVal, context.expressionContext() ) )
   {
     shadowTransp = exprVal.toInt();
   }
 
   // data defined shadow offset distance?
   double shadowOffDist = shadowOffsetDist;
-  if ( dataDefinedValEval( "doublepos", QgsPalLayerSettings::ShadowOffsetDist, exprVal ) )
+  if ( dataDefinedValEval( "doublepos", QgsPalLayerSettings::ShadowOffsetDist, exprVal, context.expressionContext() ) )
   {
     shadowOffDist = exprVal.toDouble();
   }
 
   // data defined shadow offset distance?
   double shadowRad = shadowRadius;
-  if ( dataDefinedValEval( "doublepos", QgsPalLayerSettings::ShadowRadius, exprVal ) )
+  if ( dataDefinedValEval( "doublepos", QgsPalLayerSettings::ShadowRadius, exprVal, context.expressionContext() ) )
   {
     shadowRad = exprVal.toDouble();
   }
@@ -3059,7 +3090,7 @@ void QgsPalLayerSettings::parseDropShadow()
   }
 
   // data defined shadow under type?
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::ShadowUnder, exprVal ) )
+  if ( dataDefinedEvaluate( QgsPalLayerSettings::ShadowUnder, exprVal, &context.expressionContext() ) )
   {
     QString str = exprVal.toString().trimmed();
     QgsDebugMsgLevel( QString( "exprVal ShadowUnder:%1" ).arg( str ), 4 );
@@ -3086,25 +3117,25 @@ void QgsPalLayerSettings::parseDropShadow()
   }
 
   // data defined shadow offset angle?
-  dataDefinedValEval( "rotation180", QgsPalLayerSettings::ShadowOffsetAngle, exprVal );
+  dataDefinedValEval( "rotation180", QgsPalLayerSettings::ShadowOffsetAngle, exprVal, context.expressionContext() );
 
   // data defined shadow offset units?
-  dataDefinedValEval( "units", QgsPalLayerSettings::ShadowOffsetUnits, exprVal );
+  dataDefinedValEval( "units", QgsPalLayerSettings::ShadowOffsetUnits, exprVal, context.expressionContext() );
 
   // data defined shadow radius?
-  dataDefinedValEval( "double", QgsPalLayerSettings::ShadowRadius, exprVal );
+  dataDefinedValEval( "double", QgsPalLayerSettings::ShadowRadius, exprVal, context.expressionContext() );
 
   // data defined shadow radius units?
-  dataDefinedValEval( "units", QgsPalLayerSettings::ShadowRadiusUnits, exprVal );
+  dataDefinedValEval( "units", QgsPalLayerSettings::ShadowRadiusUnits, exprVal, context.expressionContext() );
 
   // data defined shadow scale?  ( gui bounds to 0-2000, no upper bound here )
-  dataDefinedValEval( "intpos", QgsPalLayerSettings::ShadowScale, exprVal );
+  dataDefinedValEval( "intpos", QgsPalLayerSettings::ShadowScale, exprVal, context.expressionContext() );
 
   // data defined shadow color?
-  dataDefinedValEval( "color", QgsPalLayerSettings::ShadowColor, exprVal );
+  dataDefinedValEval( "color", QgsPalLayerSettings::ShadowColor, exprVal, context.expressionContext() );
 
   // data defined shadow blend mode?
-  dataDefinedValEval( "blendmode", QgsPalLayerSettings::ShadowBlendMode, exprVal );
+  dataDefinedValEval( "blendmode", QgsPalLayerSettings::ShadowBlendMode, exprVal, context.expressionContext() );
 }
 
 int QgsPalLayerSettings::sizeToPixel( double size, const QgsRenderContext& c, SizeUnit unit, bool rasterfactor, const QgsMapUnitScale& mapUnitScale ) const
@@ -3273,7 +3304,7 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames,
     {
       // prepare expression for use in QgsPalLayerSettings::registerFeature()
       QgsExpression* exp = lyr.getLabelExpression();
-      exp->prepare( layer->fields() );
+      exp->prepare( &ctx.expressionContext() );
       if ( exp->hasEvalError() )
       {
         QgsDebugMsgLevel( "Prepare error:" + exp->evalErrorString(), 4 );
@@ -3308,7 +3339,7 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames,
       dd->setExpressionParams( exprParams );
 
       // this will return columns for expressions or field name, depending upon what is set to be used
-      QStringList cols = dd->referencedColumns( layer ); // <-- prepares any expressions, too
+      QStringList cols = dd->referencedColumns( ctx.expressionContext() ); // <-- prepares any expressions, too
 
       //QgsDebugMsgLevel( QString( "Data defined referenced columns:" ) + cols.join( "," ), 4 );
       foreach ( QString name, cols )
