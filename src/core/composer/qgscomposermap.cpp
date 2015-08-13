@@ -232,6 +232,10 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, const QS
     jobMapSettings.setFlag( QgsMapSettings::UseRenderingOptimization, false );
   }
 
+  QgsExpressionContext* context = createExpressionContext();
+  jobMapSettings.setExpressionContext( *context );
+  delete context;
+
   //update $map variable. Use QgsComposerItem's id since that is user-definable
   QgsExpression::setSpecialColumn( "$map", QgsComposerItem::id() );
 

@@ -92,6 +92,8 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRender
     mRendererV2->setVertexMarkerAppearance( mVertexMarkerStyle, mVertexMarkerSize );
   }
 
+  mContext.expressionContext() << QgsExpressionContextUtils::layerScope( layer );
+
   mAttrNames = mRendererV2->usedAttributes();
 
   //register label and diagram layer to the labeling engine
@@ -280,6 +282,8 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
         break;
       }
 
+      mContext.expressionContext().setFeature( fet );
+
       bool sel = mContext.showSelection() && mSelectedFeatureIds.contains( fet.id() );
       bool drawMarker = ( mDrawVertexMarkers && mContext.drawEditingInformation() && ( !mVertexMarkerOnlyForSelection || sel ) );
 
@@ -364,6 +368,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
 
     if ( mContext.labelingEngine() )
     {
+      mContext.expressionContext().setFeature( fet );
       if ( mLabeling )
       {
         mContext.labelingEngine()->registerFeature( mLayerID, fet, mContext );
@@ -419,6 +424,8 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
         bool sel = mSelectedFeatureIds.contains( fit->id() );
         // maybe vertex markers should be drawn only during the last pass...
         bool drawMarker = ( mDrawVertexMarkers && mContext.drawEditingInformation() && ( !mVertexMarkerOnlyForSelection || sel ) );
+
+        mContext.expressionContext().setFeature( *fit );
 
         try
         {
