@@ -3,15 +3,29 @@
 #include "qgsconditionalstyle.h"
 #include "qgsexpression.h"
 #include "qgsfontutils.h"
+#include "qgssymbollayerv2utils.h"
+#include "qgsmarkersymbollayerv2.h"
 
 QgsConditionalStyle::QgsConditionalStyle()
     : mValid( false )
+    , mSymbol( 0 )
 {}
 
 QgsConditionalStyle::QgsConditionalStyle( QString rule )
     : mValid( false )
+    , mSymbol( 0 )
 {
   setRule( rule );
+}
+
+void QgsConditionalStyle::setSymbol( QgsSymbolV2* value )
+{
+  mSymbol = value;
+  if ( mSymbol )
+  {
+    mIcon = QgsSymbolLayerV2Utils::symbolPreviewPixmap( mSymbol, QSize( 16, 16 ) );
+  }
+  mValid = true;
 }
 
 bool QgsConditionalStyle::matches( QVariant value, QgsFeature *feature )
@@ -65,7 +79,9 @@ bool QgsConditionalStyle::writeXml( QDomNode &node, QDomDocument &doc )
   QDomElement labelFontElem = QgsFontUtils::toXmlElement( mFont, doc, "font" );
   stylesel.appendChild( labelFontElem );
   // TODO
-  // stylesel.setAttribute( "icon", mRule );
+  QDomElement symbolElm = QgsSymbolLayerV2Utils::saveSymbol( "icon", mSymbol, doc );
+  stylesel.appendChild( symbolElm );
+
 
   node.appendChild( stylesel );
 }
@@ -77,6 +93,12 @@ bool QgsConditionalStyle::readXml( const QDomNode &node )
   setBackgroundColor( QColor( styleElm.attribute( "background_color" ) ) );
   setTextColor( QColor( styleElm.attribute( "text_color" ) ) );
   QgsFontUtils::setFromXmlChildNode( mFont, styleElm, "font" );
-  // TODO Load symbol
+  QDomElement symbolElm = styleElm.firstChildElement( "symbol" );
+  if ( !symbolElm.isNull() )
+  {
+    delete mSymbol;
+    mSymbol = QgsSymbolLayerV2Utils::loadSymbol<QgsMarkerSymbolV2>( symbolElm );
+    setSymbol( mSymbol );
+  }
 }
 

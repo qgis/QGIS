@@ -26,18 +26,16 @@ QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget( QWidget *paren
 
 void QgsFieldConditionalFormatWidget::updateIcon()
 {
-  QgsSymbolV2* newSymbol = QgsSymbolV2::defaultSymbol( QGis::Point );
+  mSymbol = QgsSymbolV2::defaultSymbol( QGis::Point );
 
-  QgsSymbolV2SelectorDialog dlg( newSymbol, QgsStyleV2::defaultStyle(), 0, this );
+  QgsSymbolV2SelectorDialog dlg( mSymbol, QgsStyleV2::defaultStyle(), 0, this );
   if ( !dlg.exec() )
   {
-    delete newSymbol;
     return;
   }
 
-  QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( newSymbol, btnChangeIcon->iconSize() );
+  QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mSymbol, btnChangeIcon->iconSize() );
   btnChangeIcon->setIcon( icon );
-  delete newSymbol;
 }
 
 void QgsFieldConditionalFormatWidget::defaultPressed( QAbstractButton *button )
@@ -84,6 +82,7 @@ void QgsFieldConditionalFormatWidget::editStyle( int editIndex, QgsConditionalSt
     checkIcon->setChecked( false );
     btnChangeIcon->setIcon( QIcon() );
   }
+  mSymbol = style.symbol();
   QFont font = style.font();
   mFontBoldBtn->setChecked( font.bold() );
   mFontItalicBtn->setChecked( font.italic() );
@@ -119,6 +118,7 @@ void QgsFieldConditionalFormatWidget::addNewRule()
 
 void QgsFieldConditionalFormatWidget::reset()
 {
+  mSymbol = 0;
   mRuleEdit->clear();
   btnBackgroundColor->setColor( QColor() );
   btnTextColor->setColor( QColor() );
@@ -145,7 +145,7 @@ void QgsFieldConditionalFormatWidget::saveRule()
 
   QColor backColor = btnBackgroundColor->color();
   QColor fontColor = btnTextColor->color();
-  // TODO Set font styles
+
   QFont font = mFontFamilyCmbBx->currentFont();
   font.setBold( mFontBoldBtn->isChecked() );
   font.setItalic( mFontItalicBtn->isChecked() );
@@ -154,13 +154,14 @@ void QgsFieldConditionalFormatWidget::saveRule()
   style.setFont( font );
   style.setBackgroundColor( backColor );
   style.setTextColor( fontColor );
-  QPixmap icon;
-  if ( checkIcon->isChecked() )
+  if ( mSymbol && checkIcon->isChecked() )
   {
-    QIcon _icon = btnChangeIcon->icon();
-    icon = _icon.pixmap( 16, 16 );
+    style.setSymbol( mSymbol->clone() );
   }
-  style.setIcon( icon );
+  else
+  {
+    style.setSymbol( 0 );
+  }
   if ( mEditing )
   {
     styles.replace( mEditIndex, style );

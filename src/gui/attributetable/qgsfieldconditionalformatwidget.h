@@ -50,6 +50,7 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::Q
     int mEditIndex;
     bool mEditing;
     QStandardItemModel* mModel;
+    QgsSymbolV2* mSymbol;
 
   private slots:
     void updateIcon();

@@ -8,6 +8,7 @@
 #include <QDomDocument>
 
 #include "qgsfeature.h"
+#include "qgssymbolv2.h"
 
 /** \class QgsFieldFormat
  * Conditional styling for a rule.
@@ -61,13 +62,15 @@ class CORE_EXPORT QgsConditionalStyle
      * @brief Set the icon for the style
      * @param value QIcon for style
      */
-    void setIcon( QPixmap value ) { mIcon = value; mValid = true; }
+    void setSymbol( QgsSymbolV2* value );
 
     /**
      * @brief The icon set for style
      * @return A QPixmap that was set for the icon
      */
     QPixmap icon() { return mIcon; }
+
+    QgsSymbolV2* symbol() { return mSymbol; }
 
     /**
      * @brief The text color set for style
@@ -113,6 +116,7 @@ class CORE_EXPORT QgsConditionalStyle
   private:
     bool mValid;
     QString mRule;
+    QgsSymbolV2* mSymbol;
     QFont mFont;
     QColor mBackColor;
     QColor mTextColor;
