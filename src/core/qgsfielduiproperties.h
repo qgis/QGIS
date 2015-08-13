@@ -44,12 +44,12 @@ class CORE_EXPORT QgsFieldUIProperties
     /** Reads vector layer specific state from project file Dom node.
      *  @note Called by QgsMapLayer::readXML().
      */
-    virtual bool readXml( const QDomNode& layer_node ) override;
+    virtual bool readXml( const QDomNode& node );
 
     /** Write vector layer specific state to project file Dom node.
      *  @note Called by QgsMapLayer::writeXML().
      */
-    virtual bool writeXml( QDomNode & layer_node, QDomDocument & doc ) override;
+    virtual bool writeXml( QDomNode & node, QDomDocument & doc );
 
   private:
     QList<QgsConditionalStyle> mStyles;

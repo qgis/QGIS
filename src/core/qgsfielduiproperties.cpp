@@ -28,18 +28,27 @@ QgsConditionalStyle QgsFieldUIProperties::matchingConditionalStyle( QVariant val
   return QgsConditionalStyle();
 }
 
-void QgsFieldUIProperties::writeXml(QDomNode &layer_node, QDomDocument &doc)
+bool QgsFieldUIProperties::writeXml( QDomNode &node, QDomDocument &doc )
 {
-  QDomElement stylesel = document.createElement( "conditionalstyles" );
-  layer_node.appendChild( stylesel );
-  foreach ( QgsConditionalStyle style, mStyles)
-    {
-      style.writeXml(layer_node, doc);
-    }
+  QDomElement stylesel = doc.createElement( "conditionalstyles" );
+  foreach ( QgsConditionalStyle style, mStyles )
+  {
+    style.writeXml( stylesel, doc );
+  }
+  node.appendChild( stylesel );
 }
 
-void QgsFieldUIProperties::readXml(const QDomNode &layer_node)
+bool QgsFieldUIProperties::readXml( const QDomNode &node )
 {
-
+  mStyles.clear();
+  QDomElement condel = node.firstChildElement( "conditionalstyles" );
+  QDomNodeList stylesList = condel.elementsByTagName( "style" );
+  for ( int i = 0; i < stylesList.size(); ++i )
+  {
+    QDomElement styleElm = stylesList.at( i ).toElement();
+    QgsConditionalStyle style = QgsConditionalStyle();
+    style.readXml( styleElm );
+    mStyles.append( style );
+  }
 }
 

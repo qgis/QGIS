@@ -2,6 +2,7 @@
 
 #include "qgsconditionalstyle.h"
 #include "qgsexpression.h"
+#include "qgsfontutils.h"
 
 QgsConditionalStyle::QgsConditionalStyle()
     : mValid( false )
@@ -55,20 +56,27 @@ QPixmap QgsConditionalStyle::renderPreview()
   return pixmap;
 }
 
-void QgsConditionalStyle::writeXml(QDomNode &layer_node, QDomDocument &doc)
+bool QgsConditionalStyle::writeXml( QDomNode &node, QDomDocument &doc )
 {
-  QDomElement stylesel = document.createElement( "style" );
-    stylesel.setAttribute( "rule", mRule );
-    stylesel.setAttribute( "background_color", mRule );
-    stylesel.setAttribute( "text_color", mRule );
-    stylesel.setAttribute( "font", mRule );
-    stylesel.setAttribute( "icon", mRule );
+  QDomElement stylesel = doc.createElement( "style" );
+  stylesel.setAttribute( "rule", mRule );
+  stylesel.setAttribute( "background_color", mBackColor.name() );
+  stylesel.setAttribute( "text_color", mTextColor.name() );
+  QDomElement labelFontElem = QgsFontUtils::toXmlElement( mFont, doc, "font" );
+  stylesel.appendChild( labelFontElem );
+  // TODO
+  // stylesel.setAttribute( "icon", mRule );
 
-  layer_node.appendChild( stylesel );
+  node.appendChild( stylesel );
 }
 
-void QgsConditionalStyle::readXml(const QDomNode &layer_node)
+bool QgsConditionalStyle::readXml( const QDomNode &node )
 {
-
+  QDomElement styleElm = node.toElement();
+  setRule( styleElm.attribute( "rule" ) );
+  setBackgroundColor( QColor( styleElm.attribute( "background_color" ) ) );
+  setTextColor( QColor( styleElm.attribute( "text_color" ) ) );
+  QgsFontUtils::setFromXmlChildNode( mFont, styleElm, "font" );
+  // TODO Load symbol
 }
 

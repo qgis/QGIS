@@ -85,11 +85,11 @@ void QgsFieldConditionalFormatWidget::editStyle( int editIndex, QgsConditionalSt
     btnChangeIcon->setIcon( QIcon() );
   }
   QFont font = style.font();
-  mFontBoldBtn->setChecked(font.bold());
-  mFontItalicBtn->setChecked(font.italic());
-  mFontStrikethroughBtn->setChecked(font.strikeOut());
-  mFontUnderlineBtn->setChecked(font.underline());
-  mFontFamilyCmbBx->setFont(font);
+  mFontBoldBtn->setChecked( font.bold() );
+  mFontItalicBtn->setChecked( font.italic() );
+  mFontStrikethroughBtn->setChecked( font.strikeOut() );
+  mFontUnderlineBtn->setChecked( font.underline() );
+  mFontFamilyCmbBx->setFont( font );
 }
 
 void QgsFieldConditionalFormatWidget::deleteRule()
@@ -126,13 +126,13 @@ void QgsFieldConditionalFormatWidget::reset()
   defaultPressed( mDefault1 );
   mDeleteButton->hide();
   mEditing = false;
-  checkIcon->setChecked(false);
-  btnChangeIcon->setIcon(QIcon());
+  checkIcon->setChecked( false );
+  btnChangeIcon->setIcon( QIcon() );
 
-  mFontBoldBtn->setChecked(false);
-  mFontItalicBtn->setChecked(false);
-  mFontStrikethroughBtn->setChecked(false);
-  mFontUnderlineBtn->setChecked(false);
+  mFontBoldBtn->setChecked( false );
+  mFontItalicBtn->setChecked( false );
+  mFontStrikethroughBtn->setChecked( false );
+  mFontUnderlineBtn->setChecked( false );
 }
 
 void QgsFieldConditionalFormatWidget::saveRule()
@@ -141,10 +141,7 @@ void QgsFieldConditionalFormatWidget::saveRule()
   QList<QgsConditionalStyle> styles = props.getConditionalStyles();
   QgsConditionalStyle style = QgsConditionalStyle();
 
-  // TODO Replace with Nyall's context based expressions.
-  QString fieldName = QString( """%1""" ).arg( mFieldCombo->currentField() );
-  QString rule =  QString( mRuleEdit->text() ).replace( "@value", fieldName );
-  style.setRule( rule );
+  style.setRule( mRuleEdit->text() );
 
   QColor backColor = btnBackgroundColor->color();
   QColor fontColor = btnTextColor->color();
