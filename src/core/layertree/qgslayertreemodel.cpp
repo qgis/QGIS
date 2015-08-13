@@ -1311,17 +1311,15 @@ void QgsLayerTreeModel::legendInvalidateMapBasedData()
   // we do that here because for symbols with size defined in map units
   // the symbol sizes changes depends on the zoom level
 
-  QList<QgsSymbolV2LegendNode*> symbolNodes;
-  QMap<QString, int> widthMax;
   foreach ( const LayerLegendData& data, mLegend )
   {
+    QList<QgsSymbolV2LegendNode*> symbolNodes;
+    QMap<QString, int> widthMax;
     foreach ( QgsLayerTreeModelLegendNode* legendNode, data.originalNodes )
     {
-      legendNode->invalidateMapBasedData();
       QgsSymbolV2LegendNode* n = dynamic_cast<QgsSymbolV2LegendNode*>( legendNode );
       if ( n )
       {
-        n->setParent( this ); // map scale are in the model, so the parent needs to be set
         const QSize sz( n->minimumIconSize() );
         const QString parentKey( n->data( QgsLayerTreeModelLegendNode::ParentRuleKeyRole ).toString() );
         widthMax[parentKey] = qMax( sz.width(), widthMax.contains( parentKey ) ? widthMax[parentKey] : 0 );
@@ -1329,16 +1327,17 @@ void QgsLayerTreeModel::legendInvalidateMapBasedData()
         symbolNodes.append( n );
       }
     }
+    foreach ( QgsSymbolV2LegendNode* n, symbolNodes )
+    {
+      const QString parentKey( n->data( QgsLayerTreeModelLegendNode::ParentRuleKeyRole ).toString() );
+      Q_ASSERT( widthMax[parentKey] > 0 );
+      const int twiceMarginWidth = 2; // a one pixel margin avoids hugly rendering of icon
+      n->setIconSize( QSize( widthMax[parentKey] + twiceMarginWidth, n->iconSize().rheight() + twiceMarginWidth ) );
+    }
+    foreach ( QgsLayerTreeModelLegendNode* legendNode, data.originalNodes )
+      legendNode->invalidateMapBasedData();
   }
 
-  foreach ( QgsSymbolV2LegendNode* n, symbolNodes )
-  {
-    const QString parentKey( n->data( QgsLayerTreeModelLegendNode::ParentRuleKeyRole ).toString() );
-    Q_ASSERT( widthMax[parentKey] > 0 );
-    const int twiceMarginWidth = 2; // a one pixel margin avoids hugly rendering of icon
-    n->setIconSize( QSize( widthMax[parentKey] + twiceMarginWidth, n->iconSize().rheight() + twiceMarginWidth ) );
-    n->invalidateMapBasedData();
-  }
 }
 
 // Legend nodes routines - end
