@@ -545,7 +545,7 @@ QgsExpressionContextScope* QgsExpressionContextUtils::layerScope( QgsMapLayer* l
     QString typeString( QGis::vectorGeometryType( vLayer->geometryType() ) );
     scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_geometrytype", typeString, true ) );
     scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_featurecount", QVariant::fromValue( vLayer->featureCount() ), true ) );
-    scope->addVariable( QgsExpressionContextScope::StaticVariable( "_fields_", QVariant::fromValue( vLayer->fields() ), true ) );
+    scope->setFields( vLayer->fields() );
   }
 
   //TODO - add functions. Possibilities include:
@@ -754,8 +754,8 @@ void QgsExpressionContextUtils::setComposerItemVariables( QgsComposerItem* compo
 QgsExpressionContext QgsExpressionContextUtils::createFeatureBasedContext( const QgsFeature &feature, const QgsFields &fields )
 {
   QgsExpressionContextScope* scope = new QgsExpressionContextScope();
-  scope->setVariable( QString( "_feature_" ), QVariant::fromValue( feature ) );
-  scope->setVariable( QString( "_fields_" ), QVariant::fromValue( fields ) );
+  scope->setFeature( feature );
+  scope->setFields( fields );
   return QgsExpressionContext() << scope;
 }
 
