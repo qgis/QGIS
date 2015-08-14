@@ -277,9 +277,6 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &renderExtent, const 
   QPair< int, int > rowsToShow = rowRange( renderExtent, frameIndex );
 
   double gridSize = mShowGrid ? mGridStrokeWidth : 0;
-  QList<QgsComposerTableColumn*>::const_iterator columnIt = mColumns.constBegin();
-
-  int col = 0;
   double cellHeaderHeight = QgsComposerUtils::fontAscentMM( mHeaderFont ) + 2 * mCellMargin;
   double cellBodyHeight = QgsComposerUtils::fontAscentMM( mContentFont ) + 2 * mCellMargin;
   QRectF cell;
@@ -326,26 +323,27 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &renderExtent, const 
   }
 
   //now draw the text
-  double currentX = gridSize;
-  double currentY;
   p->setPen( Qt::SolidLine );
-  for ( ; columnIt != mColumns.constEnd(); ++columnIt )
+
+  double currentX = gridSize;
+  double currentY = gridSize;
+  if ( drawHeader )
   {
-    currentY = gridSize;
-    currentX += mCellMargin;
-
-    Qt::TextFlag textFlag = ( Qt::TextFlag )0;
-    if (( *columnIt )->width() <= 0 )
+    //draw the headers
+    int col = 0;
+    for ( QList<QgsComposerTableColumn*>::const_iterator columnIt = mColumns.constBegin(); columnIt != mColumns.constEnd(); ++columnIt )
     {
-      //automatic column width, so we use the Qt::TextDontClip flag when drawing contents, as this works nicer for italicised text
-      //which may slightly exceed the calculated width
-      //if column size was manually set then we do apply text clipping, to avoid painting text outside of columns width
-      textFlag = Qt::TextDontClip;
-    }
+      currentX += mCellMargin;
 
-    if ( drawHeader )
-    {
-      //draw the header
+      Qt::TextFlag textFlag = ( Qt::TextFlag )0;
+      if (( *columnIt )->width() <= 0 )
+      {
+        //automatic column width, so we use the Qt::TextDontClip flag when drawing contents, as this works nicer for italicised text
+        //which may slightly exceed the calculated width
+        //if column size was manually set then we do apply text clipping, to avoid painting text outside of columns width
+        textFlag = Qt::TextDontClip;
+      }
+
       cell = QRectF( currentX, currentY, mMaxColumnWidthMap[col], cellHeaderHeight );
 
       //calculate alignment of header
@@ -368,15 +366,38 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &renderExtent, const 
 
       QgsComposerUtils::drawText( p, cell, ( *columnIt )->heading(), mHeaderFont, mHeaderFontColor, headerAlign, Qt::AlignVCenter, textFlag );
 
-      currentY += cellHeaderHeight;
-      currentY += gridSize;
+      currentX += mMaxColumnWidthMap[ col ];
+      currentX += mCellMargin;
+      currentX += gridSize;
+      col++;
     }
 
-    if ( drawContents )
+    currentY += cellHeaderHeight;
+    currentY += gridSize;
+  }
+
+  //now draw the body cells
+  if ( drawContents )
+  {
+    //draw the attribute values
+    for ( int row = rowsToShow.first; row < rowsToShow.second; ++row )
     {
-      //draw the attribute values
-      for ( int row = rowsToShow.first; row < rowsToShow.second; ++row )
+      currentX = gridSize;
+      int col = 0;
+      for ( QList<QgsComposerTableColumn*>::const_iterator columnIt = mColumns.constBegin(); columnIt != mColumns.constEnd(); ++columnIt )
       {
+        // currentY = gridSize;
+        currentX += mCellMargin;
+
+        Qt::TextFlag textFlag = ( Qt::TextFlag )0;
+        if (( *columnIt )->width() <= 0 )
+        {
+          //automatic column width, so we use the Qt::TextDontClip flag when drawing contents, as this works nicer for italicised text
+          //which may slightly exceed the calculated width
+          //if column size was manually set then we do apply text clipping, to avoid painting text outside of columns width
+          textFlag = Qt::TextDontClip;
+        }
+
         cell = QRectF( currentX, currentY, mMaxColumnWidthMap[col], cellBodyHeight );
 
         QVariant cellContents = mTableContents.at( row ).at( col );
@@ -384,15 +405,14 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &renderExtent, const 
 
         QgsComposerUtils::drawText( p, cell, str, mContentFont, mContentFontColor, ( *columnIt )->hAlignment(), Qt::AlignVCenter, textFlag );
 
-        currentY += cellBodyHeight;
-        currentY += gridSize;
+        currentX += mMaxColumnWidthMap[ col ];
+        currentX += mCellMargin;
+        currentX += gridSize;
+        col++;
       }
+      currentY += cellBodyHeight;
+      currentY += gridSize;
     }
-
-    currentX += mMaxColumnWidthMap[ col ];
-    currentX += mCellMargin;
-    currentX += gridSize;
-    col++;
   }
 
   //and the borders
