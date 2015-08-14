@@ -223,8 +223,21 @@ class CORE_EXPORT QgsComposerUtils
      * @see fontDescentMM
      * @see fontHeightMM
      * @see fontHeightCharacterMM
+     * @see textHeightMM
      */
     static double textWidthMM( const QFont& font, const QString& text );
+
+    /** Calculate font height in millimeters for a string, including workarounds for QT font
+     * rendering issues. Note that this method uses a non-standard measure of text height,
+     * where only the font ascent is considered for the first line of text.
+     * @param font input font
+     * @param text string to calculate height of
+     * @param multiLineHeight line spacing factor
+     * @returns string height in millimeters
+     * @note added in version 2.12
+     * @see textWidthMM
+     */
+    static double textHeightMM( const QFont& font, const QString& text, double multiLineHeight = 1.0 );
 
     /** Draws text on a painter at a specific position, taking care of composer specific issues (calculation to pixel,
      * scaling of font and painter to work around Qt font bugs)

@@ -481,6 +481,22 @@ double QgsComposerUtils::textWidthMM( const QFont &font, const QString &text )
   return ( fontMetrics.width( text ) / FONT_WORKAROUND_SCALE );
 }
 
+double QgsComposerUtils::textHeightMM( const QFont &font, const QString &text, double multiLineHeight )
+{
+  QStringList multiLineSplit =  text.split( "\n" );
+  int lines = multiLineSplit.size();
+
+  //upscale using FONT_WORKAROUND_SCALE
+  //ref: http://osgeo-org.1560.x6.nabble.com/Multi-line-labels-and-font-bug-td4157152.html
+  QFont metricsFont = scaledFontPixelSize( font );
+  QFontMetricsF fontMetrics( metricsFont );
+
+  double fontHeight = fontMetrics.ascent() + fontMetrics.descent(); // ignore +1 for baseline
+  double textHeight = fontMetrics.ascent() + ( double )(( lines - 1 ) * fontHeight * multiLineHeight );
+
+  return textHeight / FONT_WORKAROUND_SCALE;
+}
+
 void QgsComposerUtils::drawText( QPainter *painter, const QPointF &pos, const QString &text, const QFont &font, const QColor &color )
 {
   if ( !painter )

@@ -56,7 +56,8 @@ class TestQgsComposerUtils : public QObject
     void fontDescentMM(); //test calculating font descent in mm
     void fontHeightMM(); //test calculating font height in mm
     void fontHeightCharacterMM(); //test calculating font character height in mm
-    void textWidthMM(); //test calculting text width in mm
+    void textWidthMM(); //test calculating text width in mm
+    void textHeightMM(); //test calculating text height in mm
     void drawTextPos(); //test drawing text at a pos
     void drawTextRect(); //test drawing text in a rect
 
@@ -615,6 +616,20 @@ void TestQgsComposerUtils::textWidthMM()
   //platform specific font rendering differences mean this test needs to be very leniant
   mTestFont.setPointSize( 12 );
   QVERIFY( qgsDoubleNear( QgsComposerUtils::textWidthMM( mTestFont, QString( "test string" ) ), 20, 2 ) );
+}
+
+void TestQgsComposerUtils::textHeightMM()
+{
+  //platform specific font rendering differences mean this test needs to be very leniant
+  mTestFont.setPointSize( 12 );
+  QgsDebugMsg( QString( "height: %1" ).arg( QgsComposerUtils::textHeightMM( mTestFont, QString( "test string" ) ) ) );
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::textHeightMM( mTestFont, QString( "test string" ) ), 3.9, 0.2 ) );
+  QgsDebugMsg( QString( "height: %1" ).arg( QgsComposerUtils::textHeightMM( mTestFont, QString( "test\nstring" ) ) ) );
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::textHeightMM( mTestFont, QString( "test\nstring" ) ), 8.7, 0.2 ) );
+  QgsDebugMsg( QString( "height: %1" ).arg( QgsComposerUtils::textHeightMM( mTestFont, QString( "test\nstring" ), 2 ) ) );
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::textHeightMM( mTestFont, QString( "test\nstring" ), 2 ), 13.5, 0.2 ) );
+  QgsDebugMsg( QString( "height: %1" ).arg( QgsComposerUtils::textHeightMM( mTestFont, QString( "test\nstring\nstring" ) ) ) );
+  QVERIFY( qgsDoubleNear( QgsComposerUtils::textHeightMM( mTestFont, QString( "test\nstring\nstring" ) ), 13.5, 0.2 ) );
 }
 
 void TestQgsComposerUtils::drawTextPos()
