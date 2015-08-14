@@ -987,64 +987,42 @@ namespace pal
     }
   }
 
-  void PointSet::getPointByDistance( double distance, double *px, double *py ) const
+  void PointSet::getPointByDistance( double *d, double *ad, double dl, double *px, double *py )
   {
-    //if anything fails, return the first point
-    *px = x[0];
-    *py = y[0];
+    int i;
+    double dx, dy, di;
+    double distr;
 
-    if ( distance >= 0 )
+    i = 0;
+    if ( dl >= 0 )
     {
-      //positive distance, use GEOS for interpolation
-      if ( !mGeos )
-        createGeosGeom();
-
-      if ( !mGeos )
-        return;
-
-      GEOSContextHandle_t geosctxt = geosContext();
-      try
-      {
-        int type = GEOSGeomTypeId_r( geosctxt, mGeos );
-        const GEOSGeometry* lineString = 0;
-        if ( type != GEOS_POLYGON )
-        {
-          lineString = mGeos;
-        }
-        else
-        {
-          //for polygons, we need exterior ring
-          lineString = GEOSGetExteriorRing_r( geosctxt, mGeos );
-        }
-
-        GEOSGeometry *point = GEOSInterpolate_r( geosctxt, lineString, distance );
-        if ( point )
-        {
-          const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, point );
-          GEOSCoordSeq_getX_r( geosctxt, coordSeq, 0, px );
-          GEOSCoordSeq_getY_r( geosctxt, coordSeq, 0, py );
-        }
-        GEOSGeom_destroy_r( geosctxt, point );
-      }
-      catch ( GEOSException &e )
-      {
-        QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
-        return;
-      }
+      while ( i < nbPoints && ad[i] <= dl ) i++;
+      i--;
     }
-    else
-    {
-      //negative distance. In this case we extrapolate backward from the first point,
-      //using the gradient of the entire linestring
-      double dx = x[nbPoints-1] - x[0];
-      double dy = y[nbPoints-1] - y[0];
-      double di = sqrt( dx * dx + dy * dy );
 
-      if ( di != 0.0 )
+    if ( i < nbPoints - 1 )
+    {
+      if ( dl < 0 )
       {
-        *px = x[0] + distance * dx / di;
-        *py = y[0] + distance * dy / di;
+        dx = x[nbPoints-1] - x[0];
+        dy = y[nbPoints-1] - y[0];
+        di = sqrt( dx * dx + dy * dy );
       }
+      else
+      {
+        dx = x[i+1] - x[i];
+        dy = y[i+1] - y[i];
+        di = d[i];
+      }
+
+      distr = dl - ad[i];
+      *px = x[i] + dx * distr / di;
+      *py = y[i] + dy * distr / di;
+    }
+    else    // just select last point...
+    {
+      *px = x[i];
+      *py = y[i];
     }
   }
 

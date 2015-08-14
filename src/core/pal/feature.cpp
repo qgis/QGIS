@@ -504,6 +504,9 @@ namespace pal
     double xrm = mFeature->label_x;
     double yrm = mFeature->label_y;
 
+    double *d; // segments lengths distance bw pt[i] && pt[i+1]
+    double *ad;  // absolute distance bw pt[0] and pt[i] along the line
+    double ll; // line length
     double dist;
     double bx, by, ex, ey;
     int nbls;
@@ -529,7 +532,24 @@ namespace pal
     x = line->x;
     y = line->y;
 
-    double ll = line->length(); // line length
+    d = new double[nbPoints-1];
+    ad = new double[nbPoints];
+
+    ll = 0.0; // line length
+    for ( i = 0; i < line->nbPoints - 1; i++ )
+    {
+      if ( i == 0 )
+        ad[i] = 0;
+      else
+        ad[i] = ad[i-1] + d[i-1];
+
+      d[i] = dist_euc2d( x[i], y[i], x[i+1], y[i+1] );
+      ll += d[i];
+    }
+
+    ad[line->nbPoints-1] = ll;
+
+
     nbls = ( int )( ll / xrm ); // ratio bw line length and label width
 
 #ifdef _DEBUG_FULL_
@@ -564,9 +584,9 @@ namespace pal
     while ( l < ll - xrm )
     {
       // => bx, by
-      line->getPointByDistance( l, &bx, &by );
+      line->getPointByDistance( d, ad, l, &bx, &by );
       // same but l = l+xrm
-      line->getPointByDistance( l + xrm, &ex, &ey );
+      line->getPointByDistance( d, ad, l + xrm, &ex, &ey );
 
       // Label is bigger than line ...
       if ( l < 0 )
@@ -632,6 +652,11 @@ namespace pal
       if ( nbls == 0 )
         break;
     }
+
+    //delete line;
+
+    delete[] d;
+    delete[] ad;
 
     int nbp = positions.size();
     *lPos = new LabelPosition *[nbp];

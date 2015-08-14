@@ -124,11 +124,13 @@ namespace pal
       int getNumPoints() const { return nbPoints; }
 
       /** Get a point a set distance along a line geometry.
-       * @param distance distance to traverse along line
+       * @param d array of distances between points
+       * @param ad cumulative total distance from pt0 to each point (ad0 = pt0->pt0)
+       * @param dl distance to traverse along line
        * @param px final x coord on line
        * @param py final y coord on line
       */
-      void getPointByDistance( double distance, double *px, double *py ) const;
+      void getPointByDistance( double *d, double *ad, double dl, double *px, double *py );
 
       /** Returns the point set's GEOS geometry.
       */
