@@ -736,9 +736,10 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      * @param property data defined property to refresh. If property is set to
      * QgsComposerItem::AllProperties then all data defined properties for the composition will be
      * refreshed.
+     * @param context expression context for evaluating data defined expressions
      * @note this method was added in version 2.5
     */
-    void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );
+    void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = 0 );
 
   protected:
     void init();
@@ -851,8 +852,10 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     //tries to return the current QGraphicsView attached to the composition
     QGraphicsView* graphicsView() const;
 
-    /*Recalculates the page size using data defined page settings*/
-    void refreshPageSize();
+    /** Recalculates the page size using data defined page settings
+     * @param context expression context for data defined page sizes
+    */
+    void refreshPageSize( const QgsExpressionContext* context = 0 );
 
     /** Evaluate a data defined property and return the calculated value
      * @returns true if data defined property could be successfully evaluated

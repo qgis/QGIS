@@ -777,7 +777,7 @@ class QgsComposerMap : QgsComposerItem
     /** @deprecated use QgsComposerMapOverview::overviewExtentChanged instead*/
     void overviewExtentChanged();
 
-    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );
+    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = 0 );
 
   protected slots:
 

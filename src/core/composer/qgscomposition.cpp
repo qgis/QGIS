@@ -265,8 +265,16 @@ void QgsComposition::setAllUnselected()
   }
 }
 
-void QgsComposition::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property )
+void QgsComposition::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QgsExpressionContext* context )
 {
+  const QgsExpressionContext* evalContext = context;
+  QScopedPointer< QgsExpressionContext > scopedContext;
+  if ( !evalContext )
+  {
+    scopedContext.reset( createExpressionContext() );
+    evalContext = scopedContext.data();
+  }
+
   //updates data defined properties and redraws composition to match
   if ( property == QgsComposerObject::NumPages || property == QgsComposerObject::AllProperties )
   {
@@ -276,7 +284,7 @@ void QgsComposition::refreshDataDefinedProperty( const QgsComposerObject::DataDe
        property == QgsComposerObject::PaperOrientation || property == QgsComposerObject::PresetPaperSize ||
        property == QgsComposerObject::AllProperties )
   {
-    refreshPageSize();
+    refreshPageSize( evalContext );
   }
 }
 
@@ -376,7 +384,8 @@ void QgsComposition::setNumPages( const int pages )
 
   //data defined num pages set?
   QVariant exprVal;
-  if ( dataDefinedEvaluate( QgsComposerObject::NumPages, exprVal, &mDataDefinedProperties ) )
+  QScopedPointer< QgsExpressionContext > context( createExpressionContext() );
+  if ( dataDefinedEvaluate( QgsComposerObject::NumPages, exprVal, *context.data(), &mDataDefinedProperties ) )
   {
     bool ok = false;
     int pagesD = exprVal.toInt( &ok );
@@ -2924,14 +2933,22 @@ bool QgsComposition::ddPageSizeActive() const
          dataDefinedActive( QgsComposerObject::PaperOrientation, &mDataDefinedProperties );
 }
 
-void QgsComposition::refreshPageSize()
+void QgsComposition::refreshPageSize( const QgsExpressionContext* context )
 {
+  const QgsExpressionContext* evalContext = context;
+  QScopedPointer< QgsExpressionContext > scopedContext;
+  if ( !evalContext )
+  {
+    scopedContext.reset( createExpressionContext() );
+    evalContext = scopedContext.data();
+  }
+
   double pageWidth = mPageWidth;
   double pageHeight = mPageHeight;
 
   QVariant exprVal;
   //in order of precedence - first consider predefined page size
-  if ( dataDefinedEvaluate( QgsComposerObject::PresetPaperSize, exprVal, &mDataDefinedProperties ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::PresetPaperSize, exprVal, *evalContext, &mDataDefinedProperties ) )
   {
     QString presetString = exprVal.toString().trimmed();
     QgsDebugMsg( QString( "exprVal Paper Preset size :%1" ).arg( presetString ) );
@@ -2945,7 +2962,7 @@ void QgsComposition::refreshPageSize()
   }
 
   //which is overwritten by data defined width/height
-  if ( dataDefinedEvaluate( QgsComposerObject::PaperWidth, exprVal, &mDataDefinedProperties ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::PaperWidth, exprVal, *evalContext, &mDataDefinedProperties ) )
   {
     bool ok;
     double widthD = exprVal.toDouble( &ok );
@@ -2955,7 +2972,7 @@ void QgsComposition::refreshPageSize()
       pageWidth = widthD;
     }
   }
-  if ( dataDefinedEvaluate( QgsComposerObject::PaperHeight, exprVal, &mDataDefinedProperties ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::PaperHeight, exprVal, *evalContext, &mDataDefinedProperties ) )
   {
     bool ok;
     double heightD = exprVal.toDouble( &ok );
@@ -2967,7 +2984,7 @@ void QgsComposition::refreshPageSize()
   }
 
   //which is finally overwritten by data defined orientation
-  if ( dataDefinedEvaluate( QgsComposerObject::PaperOrientation, exprVal, &mDataDefinedProperties ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::PaperOrientation, exprVal, *evalContext, &mDataDefinedProperties ) )
   {
     bool ok;
     QString orientationString = exprVal.toString().trimmed();

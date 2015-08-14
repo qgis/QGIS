@@ -210,16 +210,17 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
     /** Reloads the html source from the url and redraws the item.
      * @param useCache set to true to use a cached copy of remote html
      * content
+     * @param context expression context for evaluating data defined urls and expressions in html
      * @see setUrl
      * @see url
      */
-    void loadHtml( const bool useCache = false );
+    void loadHtml( const bool useCache = false, const QgsExpressionContext* context = 0 );
 
     /** Recalculates the frame sizes for the current viewport dimensions*/
     void recalculateFrameSizes() override;
     void refreshExpressionContext();
 
-    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties ) override;
+    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = 0 ) override;
 
   private slots:
     void frameLoaded( bool ok = true );

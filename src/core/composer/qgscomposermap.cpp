@@ -949,8 +949,16 @@ double QgsComposerMap::mapRotation( QgsComposerObject::PropertyValueType valueTy
   return valueType == QgsComposerObject::EvaluatedValue ? mEvaluatedMapRotation : mMapRotation;
 }
 
-void QgsComposerMap::refreshMapExtents()
+void QgsComposerMap::refreshMapExtents( const QgsExpressionContext* context )
 {
+  const QgsExpressionContext* evalContext = context;
+  QScopedPointer< QgsExpressionContext > scopedContext;
+  if ( !evalContext )
+  {
+    scopedContext.reset( createExpressionContext() );
+    evalContext = scopedContext.data();
+  }
+
   //data defined map extents set?
   QVariant exprVal;
 
@@ -964,7 +972,7 @@ void QgsComposerMap::refreshMapExtents()
   double maxXD = 0;
   double maxYD = 0;
 
-  if ( dataDefinedEvaluate( QgsComposerObject::MapXMin, exprVal ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::MapXMin, exprVal, *evalContext ) )
   {
     bool ok;
     minXD = exprVal.toDouble( &ok );
@@ -975,7 +983,7 @@ void QgsComposerMap::refreshMapExtents()
       newExtent.setXMinimum( minXD );
     }
   }
-  if ( dataDefinedEvaluate( QgsComposerObject::MapYMin, exprVal ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::MapYMin, exprVal, *evalContext ) )
   {
     bool ok;
     minYD = exprVal.toDouble( &ok );
@@ -986,7 +994,7 @@ void QgsComposerMap::refreshMapExtents()
       newExtent.setYMinimum( minYD );
     }
   }
-  if ( dataDefinedEvaluate( QgsComposerObject::MapXMax, exprVal ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::MapXMax, exprVal, *evalContext ) )
   {
     bool ok;
     maxXD = exprVal.toDouble( &ok );
@@ -997,7 +1005,7 @@ void QgsComposerMap::refreshMapExtents()
       newExtent.setXMaximum( maxXD );
     }
   }
-  if ( dataDefinedEvaluate( QgsComposerObject::MapYMax, exprVal ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::MapYMax, exprVal, *evalContext ) )
   {
     bool ok;
     maxYD = exprVal.toDouble( &ok );
@@ -1041,7 +1049,7 @@ void QgsComposerMap::refreshMapExtents()
   //now refresh scale, as this potentially overrides extents
 
   //data defined map scale set?
-  if ( dataDefinedEvaluate( QgsComposerObject::MapScale, exprVal ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::MapScale, exprVal, *evalContext ) )
   {
     bool ok;
     double scaleD = exprVal.toDouble( &ok );
@@ -1092,7 +1100,7 @@ void QgsComposerMap::refreshMapExtents()
   double mapRotation = mMapRotation;
 
   //data defined map rotation set?
-  if ( dataDefinedEvaluate( QgsComposerObject::MapRotation, exprVal ) )
+  if ( dataDefinedEvaluate( QgsComposerObject::MapRotation, exprVal, *evalContext ) )
   {
     bool ok;
     double rotationD = exprVal.toDouble( &ok );
@@ -2134,8 +2142,16 @@ int QgsComposerMap::overviewFrameMapId() const
   return o->frameMapId();
 }
 
-void QgsComposerMap::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property )
+void QgsComposerMap::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QgsExpressionContext* context )
 {
+  const QgsExpressionContext* evalContext = context;
+  QScopedPointer< QgsExpressionContext > scopedContext;
+  if ( !evalContext )
+  {
+    scopedContext.reset( createExpressionContext() );
+    evalContext = scopedContext.data();
+  }
+
   //updates data defined properties and redraws item to match
   if ( property == QgsComposerObject::MapRotation || property == QgsComposerObject::MapScale ||
        property == QgsComposerObject::MapXMin || property == QgsComposerObject::MapYMin ||
@@ -2155,7 +2171,7 @@ void QgsComposerMap::refreshDataDefinedProperty( const QgsComposerObject::DataDe
   //force redraw
   mCacheUpdated = false;
 
-  QgsComposerItem::refreshDataDefinedProperty( property );
+  QgsComposerItem::refreshDataDefinedProperty( property, evalContext );
 }
 
 void QgsComposerMap::setOverviewFrameMapSymbol( QgsFillSymbolV2* symbol )
@@ -2441,7 +2457,8 @@ double QgsComposerMap::atlasMargin( const QgsComposerObject::PropertyValueType v
     //start with user specified margin
     double margin = mAtlasMargin;
     QVariant exprVal;
-    if ( dataDefinedEvaluate( QgsComposerObject::MapAtlasMargin, exprVal ) )
+    QScopedPointer< QgsExpressionContext > context( createExpressionContext() );
+    if ( dataDefinedEvaluate( QgsComposerObject::MapAtlasMargin, exprVal, *context.data() ) )
     {
       bool ok;
       double ddMargin = exprVal.toDouble( &ok );
