@@ -35,6 +35,8 @@
 #include "feature.h"
 #include "geomfunction.h"
 #include "labelposition.h"
+#include "qgsgeos.h"
+#include "qgsmessagelog.h"
 #include <iostream>
 #include <fstream>
 #include <cmath>
@@ -273,8 +275,16 @@ namespace pal
       lp->createGeosGeom();
 
     GEOSContextHandle_t geosctxt = geosContext();
-    bool result = ( GEOSPreparedIntersects_r( geosctxt, preparedGeom(), lp->mGeos ) == 1 );
-    return result;
+    try
+    {
+      bool result = ( GEOSPreparedIntersects_r( geosctxt, preparedGeom(), lp->mGeos ) == 1 );
+      return result;
+    }
+    catch ( GEOSException &e )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+      return false;
+    }
   }
 
   bool LabelPosition::isInConflictMultiPart( LabelPosition* lp )
@@ -516,13 +526,21 @@ namespace pal
       line->createGeosGeom();
 
     GEOSContextHandle_t geosctxt = geosContext();
-    if ( GEOSPreparedIntersects_r( geosctxt, line->preparedGeom(), mGeos ) == 1 )
+    try
     {
-      return true;
+      if ( GEOSPreparedIntersects_r( geosctxt, line->preparedGeom(), mGeos ) == 1 )
+      {
+        return true;
+      }
+      else if ( nextPart )
+      {
+        return nextPart->crossesLine( line );
+      }
     }
-    else if ( nextPart )
+    catch ( GEOSException &e )
     {
-      return nextPart->crossesLine( line );
+      QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+      return false;
     }
 
     return false;
@@ -537,14 +555,22 @@ namespace pal
       polygon->createGeosGeom();
 
     GEOSContextHandle_t geosctxt = geosContext();
-    if ( GEOSPreparedOverlaps_r( geosctxt, polygon->preparedGeom(), mGeos ) == 1
-         || GEOSPreparedTouches_r( geosctxt, polygon->preparedGeom(), mGeos ) == 1 )
+    try
     {
-      return true;
+      if ( GEOSPreparedOverlaps_r( geosctxt, polygon->preparedGeom(), mGeos ) == 1
+           || GEOSPreparedTouches_r( geosctxt, polygon->preparedGeom(), mGeos ) == 1 )
+      {
+        return true;
+      }
+      else if ( nextPart )
+      {
+        return nextPart->crossesBoundary( polygon );
+      }
     }
-    else if ( nextPart )
+    catch ( GEOSException &e )
     {
-      return nextPart->crossesBoundary( polygon );
+      QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+      return false;
     }
 
     return false;

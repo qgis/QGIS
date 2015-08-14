@@ -43,6 +43,8 @@
 #include "pointset.h"
 #include "util.h"
 #include "qgis.h"
+#include "qgsgeos.h"
+#include "qgsmessagelog.h"
 #include <QLinkedList>
 #include <cmath>
 #include <cfloat>
@@ -1322,8 +1324,16 @@ namespace pal
     if ( geomType == GEOS_LINESTRING )
     {
       double length;
-      if ( GEOSLength_r( ctxt, mGeos, &length ) != 1 )
-        return; // failed to calculate length
+      try
+      {
+        if ( GEOSLength_r( ctxt, mGeos, &length ) != 1 )
+          return; // failed to calculate length
+      }
+      catch ( GEOSException &e )
+      {
+        QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+        return;
+      }
       double bbox_length = qMax( bbx[2] - bbx[0], bby[2] - bby[0] );
       if ( length >= bbox_length / 4 )
         return; // the line is longer than quarter of height or width - don't penalize it
@@ -1333,8 +1343,16 @@ namespace pal
     else if ( geomType == GEOS_POLYGON )
     {
       double area;
-      if ( GEOSArea_r( ctxt, mGeos, &area ) != 1 )
+      try
+      {
+        if ( GEOSArea_r( ctxt, mGeos, &area ) != 1 )
+          return;
+      }
+      catch ( GEOSException &e )
+      {
+        QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
         return;
+      }
       double bbox_area = ( bbx[2] - bbx[0] ) * ( bby[2] - bby[0] );
       if ( area >= bbox_area / 16 )
         return; // covers more than 1/16 of our view - don't penalize it
@@ -1358,7 +1376,15 @@ namespace pal
     if ( !p2->mGeos )
       p2->createGeosGeom();
 
-    return ( GEOSPreparedTouches_r( geosContext(), preparedGeom(), p2->mGeos ) == 1 );
+    try
+    {
+      return ( GEOSPreparedTouches_r( geosContext(), preparedGeom(), p2->mGeos ) == 1 );
+    }
+    catch ( GEOSException &e )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+      return false;
+    }
   }
 
   bool FeaturePart::mergeWithFeaturePart( FeaturePart* other )
@@ -1369,31 +1395,38 @@ namespace pal
       other->createGeosGeom();
 
     GEOSContextHandle_t ctxt = geosContext();
-    GEOSGeometry* g1 = GEOSGeom_clone_r( ctxt, mGeos );
-    GEOSGeometry* g2 = GEOSGeom_clone_r( ctxt, other->mGeos );
-    GEOSGeometry* geoms[2] = { g1, g2 };
-    GEOSGeometry* g = GEOSGeom_createCollection_r( ctxt, GEOS_MULTILINESTRING, geoms, 2 );
-    GEOSGeometry* gTmp = GEOSLineMerge_r( ctxt, g );
-    GEOSGeom_destroy_r( ctxt, g );
-
-    if ( GEOSGeomTypeId_r( ctxt, gTmp ) != GEOS_LINESTRING )
+    try
     {
-      // sometimes it's not possible to merge lines (e.g. they don't touch at endpoints)
-      GEOSGeom_destroy_r( ctxt, gTmp );
+      GEOSGeometry* g1 = GEOSGeom_clone_r( ctxt, mGeos );
+      GEOSGeometry* g2 = GEOSGeom_clone_r( ctxt, other->mGeos );
+      GEOSGeometry* geoms[2] = { g1, g2 };
+      GEOSGeometry* g = GEOSGeom_createCollection_r( ctxt, GEOS_MULTILINESTRING, geoms, 2 );
+      GEOSGeometry* gTmp = GEOSLineMerge_r( ctxt, g );
+      GEOSGeom_destroy_r( ctxt, g );
+
+      if ( GEOSGeomTypeId_r( ctxt, gTmp ) != GEOS_LINESTRING )
+      {
+        // sometimes it's not possible to merge lines (e.g. they don't touch at endpoints)
+        GEOSGeom_destroy_r( ctxt, gTmp );
+        return false;
+      }
+      invalidateGeos();
+
+      // set up new geometry
+      mGeos = gTmp;
+      mOwnsGeom = true;
+
+      deleteCoords();
+      qDeleteAll( mHoles );
+      mHoles.clear();
+      extractCoords( mGeos );
+      return true;
+    }
+    catch ( GEOSException &e )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
       return false;
     }
-
-    invalidateGeos();
-
-    // set up new geometry
-    mGeos = gTmp;
-    mOwnsGeom = true;
-
-    deleteCoords();
-    qDeleteAll( mHoles );
-    mHoles.clear();
-    extractCoords( mGeos );
-    return true;
   }
 
 } // end namespace pal

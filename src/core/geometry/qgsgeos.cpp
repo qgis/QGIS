@@ -36,44 +36,6 @@ email                : marco.hugentobler at sourcepole dot com
     return r; \
   }
 
-class GEOSException
-{
-  public:
-    GEOSException( QString theMsg )
-    {
-      if ( theMsg == "Unknown exception thrown"  && lastMsg.isNull() )
-      {
-        msg = theMsg;
-      }
-      else
-      {
-        msg = theMsg;
-        lastMsg = msg;
-      }
-    }
-
-    // copy constructor
-    GEOSException( const GEOSException &rhs )
-    {
-      *this = rhs;
-    }
-
-    ~GEOSException()
-    {
-      if ( lastMsg == msg )
-        lastMsg = QString::null;
-    }
-
-    QString what()
-    {
-      return msg;
-    }
-
-  private:
-    QString msg;
-    static QString lastMsg;
-};
-
 QString GEOSException::lastMsg;
 
 static void throwGEOSException( const char *fmt, ... )
