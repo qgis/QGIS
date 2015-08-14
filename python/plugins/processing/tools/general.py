@@ -67,11 +67,11 @@ def alghelp(name):
         print 'Algorithm not found'
 
 
-def runalg(algOrName, *args):
-    alg = Processing.runAlgorithm(algOrName, None, *args)
+def runalg(algOrName, *args, **kwargs):
+    alg = Processing.runAlgorithm(algOrName, None, *args, **kwargs)
     if alg is not None:
         return alg.getOutputValuesAsDictionary()
 
 
-def runandload(name, *args):
-    return Processing.runAlgorithm(name, handleAlgorithmResults, *args)
+def runandload(name, *args, **kwargs):
+    return Processing.runAlgorithm(name, handleAlgorithmResults, *args, **kwargs)
