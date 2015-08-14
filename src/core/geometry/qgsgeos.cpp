@@ -36,7 +36,9 @@ email                : marco.hugentobler at sourcepole dot com
     return r; \
   }
 
+/// @cond
 QString GEOSException::lastMsg;
+/// @endcond
 
 static void throwGEOSException( const char *fmt, ... )
 {
