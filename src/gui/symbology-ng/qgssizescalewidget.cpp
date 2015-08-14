@@ -207,7 +207,13 @@ void QgsSizeScaleWidget::computeFromLayerTriggered()
     return;
 
   QgsExpression expression( mExpressionWidget->currentField() );
-  if ( ! expression.prepare( mLayer->fields() ) )
+
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( mLayer );
+
+  if ( ! expression.prepare( &context ) )
     return;
 
   QStringList lst( expression.referencedColumns() );
@@ -225,7 +231,8 @@ void QgsSizeScaleWidget::computeFromLayerTriggered()
   while ( fit.nextFeature( f ) )
   {
     bool ok;
-    const double value = expression.evaluate( f ).toDouble( &ok );
+    context.setFeature( f );
+    const double value = expression.evaluate( &context ).toDouble( &ok );
     if ( ok )
     {
       max = qMax( max, value );

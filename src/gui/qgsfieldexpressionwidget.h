@@ -137,6 +137,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     QgsFieldProxyModel* mFieldProxyModel;
     QString mExpressionDialogTitle;
     QSharedPointer<const QgsDistanceArea> mDa;
+    QScopedPointer< QgsExpressionContext > mExpressionContext;
 };
 
 #endif // QGSFIELDEXPRESSIONWIDGET_H
