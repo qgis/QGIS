@@ -145,10 +145,10 @@ class QgsComposerObject : QObject
      * @param property data defined property to refresh. If property is set to
      * QgsComposerItem::AllProperties then all data defined properties for the item will be
      * refreshed.
+     * @context expression context for evaluating data defined expressions
      * @note this method was added in version 2.5
     */
-    virtual void refreshDataDefinedProperty( const DataDefinedProperty property = AllProperties );
-
+    virtual void refreshDataDefinedProperty( const DataDefinedProperty property = AllProperties, const QgsExpressionContext* context = 0 );
 
   protected:
 
@@ -156,9 +156,11 @@ class QgsComposerObject : QObject
      * @returns true if data defined property could be successfully evaluated
      * @param property data defined property to evaluate
      * @param expressionValue QVariant for storing the evaluated value
+     * @param context expression context for evaluating expressions. Must have feature and fields set to current
+     * atlas feature and coverage layer fields prior to calling this method.
      * @note this method was added in version 2.5
     */
-    bool dataDefinedEvaluate( const QgsComposerObject::DataDefinedProperty property, QVariant &expressionValue ) const;
+    bool dataDefinedEvaluate( const QgsComposerObject::DataDefinedProperty property, QVariant &expressionValue, const QgsExpressionContext& context = QgsExpressionContext() ) const;
 
   signals:
     /** Emitted when the item changes. Signifies that the item widgets must update the

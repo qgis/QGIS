@@ -122,11 +122,19 @@ void QgsComposerHtml::setEvaluateExpressions( bool evaluateExpressions )
   emit changed();
 }
 
-void QgsComposerHtml::loadHtml( const bool useCache )
+void QgsComposerHtml::loadHtml( const bool useCache, const QgsExpressionContext *context )
 {
   if ( !mWebPage )
   {
     return;
+  }
+
+  const QgsExpressionContext* evalContext = context;
+  QScopedPointer< QgsExpressionContext > scopedContext;
+  if ( !evalContext )
+  {
+    scopedContext.reset( createExpressionContext() );
+    evalContext = scopedContext.data();
   }
 
   QString loadedHtml;
@@ -139,7 +147,7 @@ void QgsComposerHtml::loadHtml( const bool useCache )
 
       //data defined url set?
       QVariant exprVal;
-      if ( dataDefinedEvaluate( QgsComposerObject::SourceUrl, exprVal ) )
+      if ( dataDefinedEvaluate( QgsComposerObject::SourceUrl, exprVal, *evalContext ) )
       {
         currentUrl = exprVal.toString().trimmed();;
         QgsDebugMsg( QString( "exprVal Source Url:%1" ).arg( currentUrl ) );
@@ -168,7 +176,7 @@ void QgsComposerHtml::loadHtml( const bool useCache )
   //evaluate expressions
   if ( mEvaluateExpressions )
   {
-    loadedHtml = QgsExpression::replaceExpressionText( loadedHtml, &mExpressionFeature, mExpressionLayer, 0, mDistanceArea );
+    loadedHtml = QgsExpression::replaceExpressionText( loadedHtml, evalContext, 0, mDistanceArea );
   }
 
   mLoaded = false;
@@ -552,12 +560,20 @@ void QgsComposerHtml::refreshExpressionContext()
   loadHtml( true );
 }
 
-void QgsComposerHtml::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property )
+void QgsComposerHtml::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QgsExpressionContext* context )
 {
+  const QgsExpressionContext* evalContext = context;
+  QScopedPointer< QgsExpressionContext > scopedContext;
+  if ( !evalContext )
+  {
+    scopedContext.reset( createExpressionContext() );
+    evalContext = scopedContext.data();
+  }
+
   //updates data defined properties and redraws item to match
   if ( property == QgsComposerObject::SourceUrl || property == QgsComposerObject::AllProperties )
   {
-    loadHtml( true );
+    loadHtml( true, evalContext );
   }
-  QgsComposerObject::refreshDataDefinedProperty( property );
+  QgsComposerObject::refreshDataDefinedProperty( property, context );
 }

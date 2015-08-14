@@ -246,10 +246,11 @@ class QgsComposerPicture: QgsComposerItem
 
     /** Recalculates the source image (if using an expression for picture's source)
      * and reloads and redraws the picture.
+     * @param context expression context for evaluating data defined picture sources
      * @note added in 2.3
      */
-    void refreshPicture();
-
+    void refreshPicture( const QgsExpressionContext* context = 0 );
+    
     /** Prepares the picture's source expression after it is altered or the compositions
      * atlas coverage layer changes.
      * @note added in 2.3
@@ -262,7 +263,7 @@ class QgsComposerPicture: QgsComposerItem
      */
     void recalculateSize();
 
-    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );
+    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = 0 );
 
   signals:
     /** Is emitted on picture rotation change*/

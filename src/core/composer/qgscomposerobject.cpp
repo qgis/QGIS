@@ -21,7 +21,6 @@
 #include "qgscomposerutils.h"
 #include "qgscomposerobject.h"
 #include "qgsdatadefined.h"
-#include "qgsexpressioncontext.h"
 
 #define FONT_WORKAROUND_SCALE 10 //scale factor for upscaling fontsize and downscaling painter
 
@@ -145,9 +144,10 @@ void QgsComposerObject::repaint()
   //nothing to do in base class for now
 }
 
-void QgsComposerObject::refreshDataDefinedProperty( const DataDefinedProperty property )
+void QgsComposerObject::refreshDataDefinedProperty( const DataDefinedProperty property, const QgsExpressionContext *context )
 {
   Q_UNUSED( property );
+  Q_UNUSED( context );
 
   //nothing to do in base class for now
 }
