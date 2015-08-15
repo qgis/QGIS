@@ -271,7 +271,9 @@ void QgsOpenVectorLayerDialog::on_buttonSelectSrc_clicked()
 {
   if ( radioSrcFile->isChecked() )
   {
-    inputSrcDataset->setText( openFile().join( ";" ) );
+    QStringList selected = openFile();
+    if ( selected.count() > 0 )
+      inputSrcDataset->setText( selected.join( ";" ) );
   }
   else if ( radioSrcDirectory->isChecked() )
   {
