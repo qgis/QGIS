@@ -427,24 +427,33 @@ bool QgsRuleBasedRendererV2::Rule::startRender( QgsRenderContext& context, const
     }
   }
 
-  // subfilters (on the same level) are joined with OR and finally joined with AND with their parent (this) filter
+  // subfilters (on the same level) are joined with OR
+  // Finally they are joined with their parent (this) with AND
   QString sf;
-  if ( subfilters.length() )
+  // If there are subfilters present (and it's not a single empty one), group them and join them with OR
+  if ( subfilters.length() > 1 || subfilters.value( 0 ).trimmed().length() > 0 )
     sf = subfilters.join( ") OR (" ).prepend( "(" ).append( ")" );
+
+  // Now join the subfilters with their parent (this) based on if
+  // * The parent is an else rule
+  // * The existence of parent filter and subfilters
 
   if ( isElse() )
   {
-    if ( !sf.length() )
+    if ( !sf.trimmed().length() )
       filter = "TRUE";
     else
       filter = sf;
   }
-  else if ( mFilterExp.length() && sf.length() )
+  else if ( mFilterExp.trimmed().length() && sf.trimmed().length() )
     filter = QString( "(%1) AND (%2)" ).arg( mFilterExp ).arg( sf );
-  else if ( mFilterExp.length() )
+  else if ( mFilterExp.trimmed().length() )
     filter = mFilterExp;
   else
     filter = sf;
+
+  filter = filter.trimmed();
+
   return true;
 }
 
