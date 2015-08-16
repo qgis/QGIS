@@ -74,7 +74,7 @@ class lasoverlapPro(LAStoolsAlgorithm):
         step = self.getParameterValue(lasoverlapPro.CHECK_STEP)
         if step != 0.0:
             commands.append("-step")
-            commands.append(str(step))
+            commands.append(unicode(step))
         commands.append("-values")
         attribute = self.getParameterValue(lasoverlapPro.ATTRIBUTE)
         if attribute != 0:

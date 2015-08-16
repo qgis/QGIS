@@ -349,7 +349,7 @@ def voronoi(siteList,context):
       Edge.EDGE_NUM = 0
     except Exception, err:
       print "######################################################"
-      print str(err)
+      print unicode(err)
 
 #------------------------------------------------------------------
 def isEqual(a,b,relativeError=TOLERANCE):

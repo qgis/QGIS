@@ -103,19 +103,19 @@ class DinfDistUpMulti(GeoAlgorithm):
                         'correct number before running TauDEM algorithms.'))
 
         commands.append('-n')
-        commands.append(str(processNum))
+        commands.append(unicode(processNum))
         commands.append(os.path.join(TauDEMUtils.taudemMultifilePath(), self.cmdName))
         commands.append('-ang')
         commands.append(self.getParameterValue(self.DINF_FLOW_DIR_GRID))
         commands.append('-fel')
         commands.append(self.getParameterValue(self.PIT_FILLED_GRID))
         commands.append('-m')
-        commands.append(str(self.STAT_DICT[self.getParameterValue(
+        commands.append(unicode(self.STAT_DICT[self.getParameterValue(
             self.STAT_METHOD)]))
-        commands.append(str(self.DIST_DICT[self.getParameterValue(
+        commands.append(unicode(self.DIST_DICT[self.getParameterValue(
             self.DIST_METHOD)]))
         commands.append('-thresh')
-        commands.append(str(self.getParameterValue(self.THRESHOLD)))
+        commands.append(unicode(self.getParameterValue(self.THRESHOLD)))
         if not self.getParameterValue(self.EDGE_CONTAM):
             commands.append('-nc')
         commands.append('-du')

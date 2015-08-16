@@ -126,7 +126,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
       arguments = []
       if self.colorsCheck.isChecked():
         arguments.append( "-n")
-        arguments.append( str( self.colorsSpin.value() ))
+        arguments.append( unicode( self.colorsSpin.value() ))
       if self.isBatchEnabled():
         return arguments
 

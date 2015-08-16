@@ -70,7 +70,7 @@ class lascontrol(LAStoolsAlgorithm):
         if operation != 0:
             commands.append("-classify")
             classify_as = self.getParameterValue(lascontrol.CLASSIFY_AS)
-            commands.append(str(classify_as))
+            commands.append(unicode(classify_as))
         self.addParametersPointOutputCommands(commands)
         self.addParametersAdditionalCommands(commands)
 

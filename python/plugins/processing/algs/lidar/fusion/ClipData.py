@@ -58,7 +58,7 @@ class ClipData(FusionAlgorithm):
         commands = [os.path.join(FusionUtils.FusionPath(), 'FilterData.exe')]
         commands.append('/verbose')
         self.addAdvancedModifiersToCommand(commands)
-        commands.append('/shape:' + str(self.getParameterValue(self.SHAPE)))
+        commands.append('/shape:' + unicode(self.getParameterValue(self.SHAPE)))
         files = self.getParameterValue(self.INPUT).split(';')
         if len(files) == 1:
             commands.append(self.getParameterValue(self.INPUT))
@@ -67,7 +67,7 @@ class ClipData(FusionAlgorithm):
             commands.append(FusionUtils.tempFileListFilepath())
         outFile = self.getOutputValue(self.OUTPUT) + '.lda'
         commands.append(outFile)
-        extent = str(self.getParameterValue(self.EXTENT)).split(',')
+        extent = unicode(self.getParameterValue(self.EXTENT)).split(',')
         commands.append(extent[0])
         commands.append(extent[2])
         commands.append(extent[1])

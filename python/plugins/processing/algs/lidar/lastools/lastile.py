@@ -60,11 +60,11 @@ class lastile(LAStoolsAlgorithm):
         self.addParametersApplyFileSourceIdCommands(commands)
         tile_size = self.getParameterValue(lastile.TILE_SIZE)
         commands.append("-tile_size")
-        commands.append(str(tile_size))
+        commands.append(unicode(tile_size))
         buffer = self.getParameterValue(lastile.BUFFER)
         if buffer != 0.0:
             commands.append("-buffer")
-            commands.append(str(buffer))
+            commands.append(unicode(buffer))
         if self.getParameterValue(lastile.REVERSIBLE):
             commands.append("-reversible")
         self.addParametersPointOutputCommands(commands)

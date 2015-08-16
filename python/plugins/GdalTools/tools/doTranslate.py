@@ -198,7 +198,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
           arguments.append( self.expand_method[self.expandCombo.currentIndex()])
       if self.nodataCheck.isChecked():
           arguments.append( "-a_nodata")
-          arguments.append( str(self.nodataSpin.value()))
+          arguments.append( unicode(self.nodataSpin.value()))
       if self.sdsCheck.isChecked():
           arguments.append( "-sds")
       if self.srcwinCheck.isChecked() and self.srcwinEdit.text():

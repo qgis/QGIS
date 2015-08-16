@@ -56,7 +56,7 @@ class GroundFilter(FusionAlgorithm):
         commands.append('/verbose')
         self.addAdvancedModifiersToCommand(commands)
         outFile = self.getOutputValue(self.OUTPUT) + '.lda'
-        commands.append(str(self.getParameterValue(self.CELLSIZE)))
+        commands.append(unicode(self.getParameterValue(self.CELLSIZE)))
         commands.append(outFile)
         files = self.getParameterValue(self.INPUT).split(';')
         if len(files) == 1:

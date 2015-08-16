@@ -70,7 +70,7 @@ class UniqueValues(GeoAlgorithm):
         f.write('<html><head>')
         f.write('<meta http-equiv="Content-Type" content="text/html; \
                  charset=utf-8" /></head><body>')
-        f.write(self.tr('<p>Total unique values: ') + str(len(algData)) + '</p>')
+        f.write(self.tr('<p>Total unique values: ') + unicode(len(algData)) + '</p>')
         f.write(self.tr('<p>Unique values:</p>'))
         f.write('<ul>')
         for s in algData:

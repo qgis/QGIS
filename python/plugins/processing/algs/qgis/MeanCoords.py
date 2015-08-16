@@ -91,7 +91,7 @@ class MeanCoords(GeoAlgorithm):
             if uniqueIndex == -1:
                 clazz = "Single class"
             else:
-                clazz = str(feat.attributes()[uniqueIndex]).strip()
+                clazz = unicode(feat.attributes()[uniqueIndex]).strip()
             if weightIndex == -1:
                 weight = 1.00
             else:

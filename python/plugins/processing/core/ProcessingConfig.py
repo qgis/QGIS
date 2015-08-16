@@ -209,11 +209,11 @@ class Setting:
         value = qsettings.value(self.qname, None)
         if value is not None:
             if isinstance(self.value, bool):
-                value = str(value).lower() == str(True).lower()
+                value = unicode(value).lower() == unicode(True).lower()
             self.value = value
 
     def save(self):
         QSettings().setValue(self.qname, self.value)
 
     def __str__(self):
-        return self.name + '=' + str(self.value)
+        return self.name + '=' + unicode(self.value)

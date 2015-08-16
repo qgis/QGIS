@@ -62,7 +62,7 @@ class lasview(LAStoolsAlgorithm):
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
         points = self.getParameterValue(lasview.POINTS)
-        commands.append("-points " + str(points))
+        commands.append("-points " + unicode(points))
         coloring = self.getParameterValue(lasview.COLORING)
         if coloring != 0:
             commands.append("-color_by_" + lasview.COLORINGS[coloring])

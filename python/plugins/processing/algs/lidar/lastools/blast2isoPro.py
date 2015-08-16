@@ -71,21 +71,21 @@ class blast2isoPro(LAStoolsAlgorithm):
         smooth = self.getParameterValue(blast2isoPro.SMOOTH)
         if smooth != 0:
             commands.append("-smooth")
-            commands.append(str(smooth))
+            commands.append(unicode(smooth))
         commands.append("-iso_every")
-        commands.append(str(self.getParameterValue(blast2isoPro.ISO_EVERY)))
+        commands.append(unicode(self.getParameterValue(blast2isoPro.ISO_EVERY)))
         simplify_length = self.getParameterValue(blast2isoPro.SIMPLIFY_LENGTH)
         if simplify_length != 0:
             commands.append("-simplify_length")
-            commands.append(str(simplify_length))
+            commands.append(unicode(simplify_length))
         simplify_area = self.getParameterValue(blast2isoPro.SIMPLIFY_AREA)
         if simplify_area != 0:
             commands.append("-simplify_area")
-            commands.append(str(simplify_area))
+            commands.append(unicode(simplify_area))
         clean = self.getParameterValue(blast2isoPro.CLEAN)
         if clean != 0:
             commands.append("-clean")
-            commands.append(str(clean))
+            commands.append(unicode(clean))
         self.addParametersOutputDirectoryCommands(commands)
         self.addParametersOutputAppendixCommands(commands)
         self.addParametersVectorOutputFormatCommands(commands)

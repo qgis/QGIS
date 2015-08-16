@@ -62,7 +62,7 @@ class rasterize_over(OgrAlgorithm):
 
         arguments = []
         arguments.append('-a')
-        arguments.append(str(self.getParameterValue(self.FIELD)))
+        arguments.append(unicode(self.getParameterValue(self.FIELD)))
 
         arguments.append('-l')
         arguments.append(self.ogrLayerName(inLayer))

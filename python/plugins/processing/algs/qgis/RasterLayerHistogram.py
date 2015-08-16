@@ -82,7 +82,7 @@ class RasterLayerHistogram(GeoAlgorithm):
                   QgsField('NUM_ELEM', QVariant.Double)]
         writer = outputtable.getTableWriter(fields)
         for i in xrange(len(values)):
-            writer.addRecord([str(bins[i]) + '-' + str(bins[i + 1]), n[i]])
+            writer.addRecord([unicode(bins[i]) + '-' + unicode(bins[i + 1]), n[i]])
 
         plotFilename = outputplot + '.png'
         lab.savefig(plotFilename)

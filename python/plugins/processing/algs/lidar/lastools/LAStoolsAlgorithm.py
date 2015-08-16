@@ -129,7 +129,7 @@ class LAStoolsAlgorithm(GeoAlgorithm):
         cores = self.getParameterValue(LAStoolsAlgorithm.CORES)
         if cores != 1:
             commands.append("-cores")
-            commands.append(str(cores))
+            commands.append(unicode(cores))
 
     def addParametersPointInputGUI(self):
         self.addParameter(ParameterFile(LAStoolsAlgorithm.INPUT_LASLAZ, self.tr("input LAS/LAZ file"), False, False))
@@ -218,7 +218,7 @@ class LAStoolsAlgorithm(GeoAlgorithm):
         step = self.getParameterValue(LAStoolsAlgorithm.STEP)
         if step != 0.0:
             commands.append("-step")
-            commands.append(str(step))
+            commands.append(unicode(step))
 
     def getParametersStepValue(self):
         step = self.getParameterValue(LAStoolsAlgorithm.STEP)

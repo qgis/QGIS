@@ -141,7 +141,7 @@ def extent(layers):
     if first:
         return '0,0,0,0'
     else:
-        return str(xmin) + ',' + str(xmax) + ',' + str(ymin) + ',' + str(ymax)
+        return unicode(xmin) + ',' + unicode(xmax) + ',' + unicode(ymin) + ',' + unicode(ymax)
 
 
 def loadList(layers):
@@ -415,7 +415,7 @@ def getRasterSublayer(path, param):
                 if subLayer.endswith("\""):
                     subLayer = subLayer[:-1]
 
-                layers.append(str(subLayerNum)+"|"+subLayer)
+                layers.append(unicode(subLayerNum)+"|"+subLayer)
                 subLayerNum = subLayerNum + 1
 
             # Use QgsSublayersDialog

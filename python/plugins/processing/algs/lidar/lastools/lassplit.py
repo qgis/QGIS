@@ -58,7 +58,7 @@ class lassplit(LAStoolsAlgorithm):
         digits = self.getParameterValue(lassplit.DIGITS)
         if digits != 5:
             commands.append("-digits")
-            commands.append(str(digits))
+            commands.append(unicode(digits))
         operation = self.getParameterValue(lassplit.OPERATION)
         if operation != 0:
             if operation == 9:
@@ -67,7 +67,7 @@ class lassplit(LAStoolsAlgorithm):
                 commands.append("-" + lassplit.OPERATIONS[operation])
         if operation > 1 and operation < 10:
             interval = self.getParameterValue(lassplit.INTERVAL)
-            commands.append(str(interval))
+            commands.append(unicode(interval))
         self.addParametersPointOutputCommands(commands)
         self.addParametersAdditionalCommands(commands)
 

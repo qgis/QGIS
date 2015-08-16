@@ -213,7 +213,7 @@ class Database(DbItemObject):
 
         return SqlResultModel(self, sql, parent)
 
-    def columnUniqueValuesModel( self, col, table, limit = 10 ):
+    def columnUniqueValuesModel( self, col, table, limit=10 ):
         l = ""
         if limit is not None:
             l = "LIMIT %d" % limit
@@ -638,7 +638,7 @@ class Table(DbItemObject):
     def mimeUri(self):
         layerType = "raster" if self.type == Table.RasterType else "vector"
         if self.database().dbplugin().typeName() == "spatialite" and self.database().connector.isgpkg():
-            url = str(self.database().connector._connectionInfo() + "|layername=" + self.name)
+            url = unicode(self.database().connector._connectionInfo() + "|layername=" + self.name)
             return u"%s:%s:%s:%s" % (layerType, "ogr", self.name, url)
         return u"%s:%s:%s:%s" % (layerType, self.database().dbplugin().providerName(), self.name, self.uri().uri())
 

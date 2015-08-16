@@ -93,17 +93,17 @@ class proximity(GdalAlgorithm):
             arguments.append('-values')
             arguments.append(values)
 
-        values = str(self.getParameterValue(self.MAX_DIST))
+        values = unicode(self.getParameterValue(self.MAX_DIST))
         if values < 0:
             arguments.append('-maxdist')
             arguments.append(values)
 
-        values = str(self.getParameterValue(self.NODATA))
+        values = unicode(self.getParameterValue(self.NODATA))
         if values < 0:
             arguments.append('-nodata')
             arguments.append(values)
 
-        values = str(self.getParameterValue(self.BUF_VAL))
+        values = unicode(self.getParameterValue(self.BUF_VAL))
         if values < 0:
             arguments.append('-fixed-buf-val')
             arguments.append(values)

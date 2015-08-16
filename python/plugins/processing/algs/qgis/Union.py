@@ -49,7 +49,7 @@ class Union(GeoAlgorithm):
 
         fields = vector.combineVectorFields(vlayerA, vlayerB)
         names = [field.name() for field in fields]
-        ProcessingLog.addToLog(ProcessingLog.LOG_INFO, str(names))
+        ProcessingLog.addToLog(ProcessingLog.LOG_INFO, unicode(names))
         writer = self.getOutputFromName(Union.OUTPUT).getVectorWriter(fields,
                 vproviderA.geometryType(), vproviderA.crs())
         inFeatA = QgsFeature()

@@ -69,11 +69,11 @@ class Cover(FusionAlgorithm):
         commands.append('/verbose')
         self.addAdvancedModifiersToCommand(commands)
         ground = self.getParameterValue(self.GROUND)
-        if str(ground).strip() != '':
-            commands.append('/ground:' + str(ground))
+        if unicode(ground).strip() != '':
+            commands.append('/ground:' + unicode(ground))
         outFile = self.getOutputValue(self.OUTPUT) + '.dtm'
         commands.append(outFile)
-        commands.append(str(self.getParameterValue(self.CELLSIZE)))
+        commands.append(unicode(self.getParameterValue(self.CELLSIZE)))
         commands.append(self.UNITS[self.getParameterValue(self.XYUNITS)][0])
         commands.append(self.UNITS[self.getParameterValue(self.ZUNITS)][0])
         commands.append('0')

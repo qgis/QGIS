@@ -117,5 +117,5 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
     def createHTML(self, outputFile, algData):
         f = open(outputFile, 'w')
         for s in algData:
-            f.write('<p>' + str(s) + '</p>')
+            f.write('<p>' + unicode(s) + '</p>')
         f.close()

@@ -106,8 +106,8 @@ class Grass7Algorithm(GeoAlgorithm):
         self.grass7Name = line
         line = lines.readline().strip('\n').strip()
         self.name = line
-	self.i18n_name = QCoreApplication.translate("GrassAlgorithm", line)
-        if not " - " in self.name:
+        self.i18n_name = QCoreApplication.translate("GrassAlgorithm", line)
+        if " - " not in self.name:
             self.name = self.grass7Name + " - " + self.name
             self.i18n_name = self.grass7Name + " - " + self.i18n_name
         line = lines.readline().strip('\n').strip()
@@ -272,19 +272,19 @@ class Grass7Algorithm(GeoAlgorithm):
         self.setSessionProjectionFromProject(commands)
 
         region = \
-            str(self.getParameterValue(self.GRASS_REGION_EXTENT_PARAMETER))
+            unicode(self.getParameterValue(self.GRASS_REGION_EXTENT_PARAMETER))
         regionCoords = region.split(',')
         command = 'g.region'
         command += ' -a'
-        command += ' n=' + str(regionCoords[3])
-        command += ' s=' + str(regionCoords[2])
-        command += ' e=' + str(regionCoords[1])
-        command += ' w=' + str(regionCoords[0])
+        command += ' n=' + unicode(regionCoords[3])
+        command += ' s=' + unicode(regionCoords[2])
+        command += ' e=' + unicode(regionCoords[1])
+        command += ' w=' + unicode(regionCoords[0])
         cellsize = self.getParameterValue(self.GRASS_REGION_CELLSIZE_PARAMETER)
         if cellsize:
-            command += ' res=' + str(cellsize)
+            command += ' res=' + unicode(cellsize)
         else:
-            command += ' res=' + str(self.getDefaultCellsize())
+            command += ' res=' + unicode(self.getDefaultCellsize())
         alignToResolution = \
             self.getParameterValue(self.GRASS_REGION_ALIGN_TO_RESOLUTION)
         if alignToResolution:
@@ -317,13 +317,13 @@ class Grass7Algorithm(GeoAlgorithm):
                     command += ' ' + param.name
             elif isinstance(param, ParameterSelection):
                 idx = int(param.value)
-                command += ' ' + param.name + '=' + str(param.options[idx])
+                command += ' ' + param.name + '=' + unicode(param.options[idx])
             elif isinstance(param, ParameterString):
-                command += ' ' + param.name + '="' + str(param.value) + '"'
+                command += ' ' + param.name + '="' + unicode(param.value) + '"'
             else:
-                command += ' ' + param.name + '="' + str(param.value) + '"'
+                command += ' ' + param.name + '="' + unicode(param.value) + '"'
 
-        uniqueSufix = str(uuid.uuid4()).replace('-', '')
+        uniqueSufix = unicode(uuid.uuid4()).replace('-', '')
         for out in self.outputs:
             if isinstance(out, OutputFile):
                 command += ' > ' + out.value
@@ -391,8 +391,7 @@ class Grass7Algorithm(GeoAlgorithm):
             if isinstance(out, OutputVector):
                 filename = out.value
                 # FIXME: check if needed: -c   Also export features without category (not labeled). Otherwise only features with category are exported.
-                typeidx = \
-                        self.getParameterValue(self.GRASS_OUTPUT_TYPE_PARAMETER)
+                typeidx = self.getParameterValue(self.GRASS_OUTPUT_TYPE_PARAMETER)
                 outtype = ('auto' if typeidx
                         is None else self.OUTPUT_TYPES[typeidx])
                 if self.grass7Name == 'r.flow':
@@ -463,9 +462,9 @@ class Grass7Algorithm(GeoAlgorithm):
         self.exportedLayers[orgFilename] = destFilename
         command = 'v.in.ogr'
         min_area = self.getParameterValue(self.GRASS_MIN_AREA_PARAMETER)
-        command += ' min_area=' + str(min_area)
+        command += ' min_area=' + unicode(min_area)
         snap = self.getParameterValue(self.GRASS_SNAP_TOLERANCE_PARAMETER)
-        command += ' snap=' + str(snap)
+        command += ' snap=' + unicode(snap)
         command += ' input="' + os.path.dirname(filename) + '"'
         command += ' layer=' + os.path.basename(filename)[:-4]
         command += ' output=' + destFilename
@@ -485,7 +484,7 @@ class Grass7Algorithm(GeoAlgorithm):
         if not Grass7Utils.projectionSet:
             qGisLayer = dataobjects.getObjectFromUri(layer)
             if qGisLayer:
-                proj4 = str(qGisLayer.crs().toProj4())
+                proj4 = unicode(qGisLayer.crs().toProj4())
                 command = 'g.proj'
                 command += ' -c'
                 command += ' proj4="' + proj4 + '"'
@@ -503,8 +502,8 @@ class Grass7Algorithm(GeoAlgorithm):
         return command
 
     def getTempFilename(self):
-        filename = 'tmp' + str(time.time()).replace('.', '') \
-            + str(system.getNumExportedLayers())
+        filename = 'tmp' + unicode(time.time()).replace('.', '') \
+            + unicode(system.getNumExportedLayers())
         return filename
 
     def commandLineName(self):
@@ -524,4 +523,3 @@ class Grass7Algorithm(GeoAlgorithm):
         if hasattr(module, 'checkParameterValuesBeforeExecuting'):
             func = getattr(module, 'checkParameterValuesBeforeExecuting')
             return func(self)
-

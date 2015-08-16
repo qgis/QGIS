@@ -57,7 +57,7 @@ class nearblack(GdalAlgorithm):
         arguments.append('-o')
         arguments.append(self.getOutputValue(nearblack.OUTPUT))
         arguments.append('-near')
-        arguments.append(str(self.getParameterValue(nearblack.NEAR)))
+        arguments.append(unicode(self.getParameterValue(nearblack.NEAR)))
         if self.getParameterValue(nearblack.WHITE):
             arguments.append('-white')
         arguments.append(self.getParameterValue(nearblack.INPUT))

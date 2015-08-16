@@ -161,4 +161,4 @@ class TauDEMAlgorithmProvider(AlgorithmProvider):
                     self.tr('Could not open TauDEM algorithm: %s' % descriptionFile))
         except Exception, e:
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                self.tr('Could not open TauDEM algorithm %s:\n%s' % (descriptionFile, str(e))))
+                self.tr('Could not open TauDEM algorithm %s:\n%s' % (descriptionFile, unicode(e))))

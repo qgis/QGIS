@@ -55,7 +55,7 @@ class gdaltindex(GdalAlgorithm):
         self.addOutput(OutputVector(gdaltindex.OUTPUT, self.tr('Tile index')))
 
     def getConsoleCommands(self):
-        fieldName = str(self.getParameterValue(self.FIELD_NAME))
+        fieldName = unicode(self.getParameterValue(self.FIELD_NAME))
 
         arguments = []
         if len(fieldName) > 0:

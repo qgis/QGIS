@@ -70,11 +70,11 @@ class hugeFileNormalize(LAStoolsAlgorithm):
         self.addParametersPointInputCommands(commands)
         tile_size = self.getParameterValue(hugeFileNormalize.TILE_SIZE)
         commands.append("-tile_size")
-        commands.append(str(tile_size))
+        commands.append(unicode(tile_size))
         buffer = self.getParameterValue(hugeFileNormalize.BUFFER)
         if buffer != 0.0:
             commands.append("-buffer")
-            commands.append(str(buffer))
+            commands.append(unicode(buffer))
         commands.append("-reversible")
         self.addParametersTemporaryDirectoryAsOutputDirectoryCommands(commands)
         commands.append("-o")

@@ -79,7 +79,7 @@ class OTBAlgorithm(GeoAlgorithm):
 
     def help(self):
         folder = os.path.join( OTBUtils.otbDescriptionPath(), 'doc' )
-        helpfile = os.path.join( str(folder), self.appkey + ".html")
+        helpfile = os.path.join( unicode(folder), self.appkey + ".html")
         if os.path.exists(helpfile):
             return False, helpfile
         else:
@@ -98,10 +98,10 @@ class OTBAlgorithm(GeoAlgorithm):
 
         a_list[1] = "-%s" % a_list[1]
 
-        def mystr(par):
+        def myunicode(par):
             if isinstance(par, list):
                 return ";".join(par)
-            return str(par)
+            return unicode(par)
 
         b_list = map(mystr, a_list)
         res = "|".join(b_list)
@@ -136,9 +136,9 @@ class OTBAlgorithm(GeoAlgorithm):
         self.appkey = dom_model.find('key').text
         self.cliName = dom_model.find('exec').text
         self.name = dom_model.find('longname').text
-	self.i18n_name = QCoreApplication.translate( "OTBAlgorithm", self.name )
+        self.i18n_name = QCoreApplication.translate( "OTBAlgorithm", self.name )
         self.group = dom_model.find('group').text
-	self.i18n_group = QCoreApplication.translate( "OTBAlgorithm", self.group )
+        self.i18n_group = QCoreApplication.translate( "OTBAlgorithm", self.group )
 
         rebu = None
         the_result = None
@@ -240,7 +240,7 @@ class OTBAlgorithm(GeoAlgorithm):
 
                         if not indexSubdataset == -1 :
                             indexSubdataset = int(indexSubdataset) -1
-                            newParam = "\'" + data + "?&sdataidx=" + str(indexSubdataset) + "\'"
+                            newParam = "\'" + data + "?&sdataidx=" + unicode(indexSubdataset) + "\'"
 
                         else :
                             newParam = inputParameter
@@ -274,22 +274,22 @@ class OTBAlgorithm(GeoAlgorithm):
                     commands.append("\"" + param.value+ "\"")
             elif isinstance(param, ParameterMultipleInput):
                 commands.append(param.name)
-                files = str(param.value).split(";")
+                files = unicode(param.value).split(";")
                 paramvalue = " ".join(["\"" + f + " \"" for f in files])
                 commands.append(paramvalue)
             elif isinstance(param, ParameterSelection):
                 commands.append(param.name)
                 idx = int(param.value)
-                commands.append(str(param.options[idx]))
+                commands.append(unicode(param.options[idx]))
             elif isinstance(param, ParameterBoolean):
                 if param.value:
                     commands.append(param.name)
-                    commands.append(str(param.value).lower())
+                    commands.append(unicode(param.value).lower())
             elif isinstance(param, ParameterExtent):
                 self.roiValues = param.value.split(",")
             else:
                 commands.append(param.name)
-                commands.append(str(param.value))
+                commands.append(unicode(param.value))
 
         for out in self.outputs:
             commands.append(out.name)
@@ -302,10 +302,10 @@ class OTBAlgorithm(GeoAlgorithm):
                 "otbcli_ExtractROI",
                 "-in",       roiInput,
                 "-out",      roiFile,
-                "-startx",   str(startX),
-                "-starty",   str(startY),
-                "-sizex",    str(sizeX),
-                "-sizey",    str(sizeY)
+                "-startx",   unicode(startX),
+                "-starty",   unicode(startY),
+                "-sizex",    unicode(sizeX),
+                "-sizey",    unicode(sizeY)
             ]
             ProcessingLog.addToLog(ProcessingLog.LOG_INFO, helperCommands)
             progress.setCommand(helperCommands)

@@ -101,13 +101,13 @@ class PointsInPolygonWeighted(GeoAlgorithm):
                 hasIntersections = True
 
             if hasIntersections:
-                progress.setText(str(len(points)))
+                progress.setText(unicode(len(points)))
                 for i in points:
                     request = QgsFeatureRequest().setFilterFid(i)
                     ftPoint = pointLayer.getFeatures(request).next()
                     tmpGeom = QgsGeometry(ftPoint.geometry())
                     if geom.contains(tmpGeom):
-                        weight = str(ftPoint.attributes()[fieldIdx])
+                        weight = unicode(ftPoint.attributes()[fieldIdx])
                         try:
                             count += float(weight)
                         except:

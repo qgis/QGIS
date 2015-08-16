@@ -107,7 +107,7 @@ class FieldsPyculator(GeoAlgorithm):
         num = 0
         for field in fields:
             field_name = unicode(field.name())
-            replval = '__attr[' + str(num) + ']'
+            replval = '__attr[' + unicode(num) + ']'
             code = code.replace('<' + field_name + '>', replval)
             num += 1
 

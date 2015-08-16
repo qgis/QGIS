@@ -50,7 +50,7 @@ class lasquery(LAStoolsAlgorithm):
         self.addParametersVerboseCommands(commands)
 
     # get area-of-interest
-        aoi = str(self.getParameterValue(self.AOI))
+        aoi = unicode(self.getParameterValue(self.AOI))
         aoiCoords = aoi.split(',')
 
         # get layers

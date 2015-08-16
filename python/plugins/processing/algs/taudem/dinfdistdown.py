@@ -101,7 +101,7 @@ class DinfDistDown(GeoAlgorithm):
                         'correct number before running TauDEM algorithms.'))
 
         commands.append('-n')
-        commands.append(str(processNum))
+        commands.append(unicode(processNum))
         commands.append(os.path.join(TauDEMUtils.taudemPath(), self.cmdName))
         commands.append('-ang')
         commands.append(self.getParameterValue(self.DINF_FLOW_DIR_GRID))
@@ -114,9 +114,9 @@ class DinfDistDown(GeoAlgorithm):
             commands.append('-wg')
             commands.append(self.getParameterValue(self.WEIGHT_PATH_GRID))
         commands.append('-m')
-        commands.append(str(self.STAT_DICT[self.getParameterValue(
+        commands.append(unicode(self.STAT_DICT[self.getParameterValue(
             self.STAT_METHOD)]))
-        commands.append(str(self.DIST_DICT[self.getParameterValue(
+        commands.append(unicode(self.DIST_DICT[self.getParameterValue(
             self.DIST_METHOD)]))
         if not self.getParameterValue(self.EDGE_CONTAM):
             commands.append('-nc')

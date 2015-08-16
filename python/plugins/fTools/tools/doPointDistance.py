@@ -205,7 +205,7 @@ class Dialog(QDialog, Ui_Dialog):
                 provider2.getFeatures( QgsFeatureRequest().setFilterFid( int(j) ) ).nextFeature( outFeat )
                 outGeom = outFeat.geometry()
                 dist = distArea.measureLine(inGeom.asPoint(), outGeom.asPoint())
-                data.append(str(float(dist)))
+                data.append(unicode(float(dist)))
             writer.writerow(data)
             start = start + add
             progressBar.setValue(start)
@@ -231,14 +231,14 @@ class Dialog(QDialog, Ui_Dialog):
                 outGeom = outFeat.geometry()
                 dist = distArea.measureLine(inGeom.asPoint(), outGeom.asPoint())
                 if dist > 0:
-                    if matType == "Linear": writer.writerow([unicode(inID), unicode(outID), str(dist)])
+                    if matType == "Linear": writer.writerow([unicode(inID), unicode(outID), unicode(dist)])
                     else: distList.append(float(dist))
             if matType == "Summary":
                 mean = sum(distList) / len(distList)
                 for i in distList:
                     vari = vari + ((i - mean)*(i - mean))
                 vari = sqrt(vari / len(distList))
-                writer.writerow([unicode(inID), str(mean), str(vari), str(min(distList)), str(max(distList))])
+                writer.writerow([unicode(inID), unicode(mean), unicode(vari), unicode(min(distList)), unicode(max(distList))])
             start = start + add
             progressBar.setValue(start)
         del writer

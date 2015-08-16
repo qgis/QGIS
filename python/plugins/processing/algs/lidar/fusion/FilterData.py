@@ -60,8 +60,8 @@ class FilterData(FusionAlgorithm):
         commands.append('/verbose')
         self.addAdvancedModifiersToCommand(commands)
         commands.append('outlier')
-        commands.append(str(self.getParameterValue(self.VALUE)))
-        commands.append(str(self.getParameterValue(self.WINDOWSIZE)))
+        commands.append(unicode(self.getParameterValue(self.VALUE)))
+        commands.append(unicode(self.getParameterValue(self.WINDOWSIZE)))
         outFile = self.getOutputValue(self.OUTPUT) + '.lda'
         commands.append(outFile)
         files = self.getParameterValue(self.INPUT).split(';')

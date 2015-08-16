@@ -395,10 +395,10 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             maxx = extent.xMaximum()
             maxy = extent.yMaximum()
 
-        self.leNorth.setText(str(maxy)[0:9])
-        self.leSouth.setText(str(miny)[0:9])
-        self.leWest.setText(str(minx)[0:9])
-        self.leEast.setText(str(maxx)[0:9])
+        self.leNorth.setText(unicode(maxy)[0:9])
+        self.leSouth.setText(unicode(miny)[0:9])
+        self.leWest.setText(unicode(minx)[0:9])
+        self.leEast.setText(unicode(maxx)[0:9])
 
     def set_bbox_global(self):
         """set global bounding box"""
@@ -560,7 +560,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
                         QMessageBox.warning(
                             self,
                             self.tr('Coordinate Transformation Error'),
-                            str(err))
+                            unicode(err))
                 self.rubber_band.setToGeometry(geom, None)
 
         # figure out if the data is interactive and can be operated on

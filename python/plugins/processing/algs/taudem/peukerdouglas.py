@@ -78,14 +78,14 @@ class PeukerDouglas(GeoAlgorithm):
                         'correct number before running TauDEM algorithms.'))
 
         commands.append('-n')
-        commands.append(str(processNum))
+        commands.append(unicode(processNum))
         commands.append(os.path.join(TauDEMUtils.taudemPath(), self.cmdName))
         commands.append('-fel')
         commands.append(self.getParameterValue(self.ELEVATION_GRID))
         commands.append('-par')
-        commands.append(str(self.getParameterValue(self.CENTER_WEIGHT)))
-        commands.append(str(self.getParameterValue(self.SIDE_WEIGHT)))
-        commands.append(str(self.getParameterValue(self.DIAGONAL_WEIGHT)))
+        commands.append(unicode(self.getParameterValue(self.CENTER_WEIGHT)))
+        commands.append(unicode(self.getParameterValue(self.SIDE_WEIGHT)))
+        commands.append(unicode(self.getParameterValue(self.DIAGONAL_WEIGHT)))
         commands.append('-ss')
         commands.append(self.getOutputValue(self.STREAM_SOURCE_GRID))
 

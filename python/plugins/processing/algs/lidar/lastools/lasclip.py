@@ -74,7 +74,7 @@ class lasclip(LAStoolsAlgorithm):
         if operation != 0:
             commands.append("-classify")
             classify_as = self.getParameterValue(lasclip.CLASSIFY_AS)
-            commands.append(str(classify_as))
+            commands.append(unicode(classify_as))
         self.addParametersPointOutputCommands(commands)
         self.addParametersAdditionalCommands(commands)
 

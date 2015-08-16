@@ -245,7 +245,7 @@ class GeoAlgorithm:
             lines.append(errstring.replace('\n', '|'))
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, lines)
             raise GeoAlgorithmExecutionException(
-                str(e) + self.tr('\nSee log for more details'))
+                unicode(e) + self.tr('\nSee log for more details'))
 
     def _checkParameterValuesBeforeExecuting(self):
         for param in self.parameters:
@@ -515,9 +515,9 @@ class GeoAlgorithm:
     def __str__(self):
         s = 'ALGORITHM: ' + self.name + '\n'
         for param in self.parameters:
-            s += '\t' + str(param) + '\n'
+            s += '\t' + unicode(param) + '\n'
         for out in self.outputs:
-            s += '\t' + str(out) + '\n'
+            s += '\t' + unicode(out) + '\n'
         s += '\n'
         return s
 

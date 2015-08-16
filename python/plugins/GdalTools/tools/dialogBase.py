@@ -159,7 +159,7 @@ class GdalToolsBaseDialog(QDialog, Ui_Dialog):
       self.enableRun(False)
       self.setCursor(Qt.WaitCursor)
       if not self.commandIsEditable():
-        #print(self.command+' '+str(self.arguments))
+        #print(self.command+' '+unicode(self.arguments))
         self.process.start(self.command, self.arguments, QIODevice.ReadOnly)
       else:
         self.process.start(self.textEditCommand.toPlainText(), QIODevice.ReadOnly)
@@ -202,9 +202,9 @@ class GdalToolsBaseDialog(QDialog, Ui_Dialog):
         return
 
       # show the error message if there's one, otherwise show the process output message
-      msg = str(self.process.readAllStandardError())
+      msg = unicode(self.process.readAllStandardError())
       if msg == '':
-        outMessages = str(self.process.readAllStandardOutput()).splitlines()
+        outMessages = unicode(self.process.readAllStandardOutput()).splitlines()
 
         # make sure to not show the help
         for m in outMessages:

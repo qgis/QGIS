@@ -229,7 +229,7 @@ class Dialog(QDialog, Ui_Dialog):
                     if not fidList == "":
                         fidList += ", "
 
-                    fidList += str(fid)
+                    fidList += unicode(fid)
 
                 QMessageBox.information(
                     self,

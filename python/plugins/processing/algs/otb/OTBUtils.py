@@ -53,7 +53,7 @@ class OTBUtils:
         folder = None
         #try to configure the path automatically
         if isMac():
-            testfolder = os.path.join(str(QgsApplication.prefixPath()), "bin")
+            testfolder = os.path.join(unicode(QgsApplication.prefixPath()), "bin")
             if os.path.exists(os.path.join(testfolder, "otbcli")):
                 folder = testfolder
             else:
@@ -83,7 +83,7 @@ class OTBUtils:
         folder = None
         #try to configure the path automatically
         if isMac():
-            testfolder = os.path.join(str(QgsApplication.prefixPath()), "lib/otb/applications")
+            testfolder = os.path.join(unicode(QgsApplication.prefixPath()), "lib/otb/applications")
             if os.path.exists(testfolder):
                 folder = testfolder
             else:

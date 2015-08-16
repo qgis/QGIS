@@ -110,19 +110,19 @@ class rasterize(OgrAlgorithm):
     def getConsoleCommands(self):
         inLayer = self.getParameterValue(self.INPUT)
         ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
-        noData = str(self.getParameterValue(self.NO_DATA))
-        jpegcompression = str(self.getParameterValue(self.JPEGCOMPRESSION))
-        predictor = str(self.getParameterValue(self.PREDICTOR))
-        zlevel = str(self.getParameterValue(self.ZLEVEL))
-        tiled = str(self.getParameterValue(self.TILED))
+        noData = unicode(self.getParameterValue(self.NO_DATA))
+        jpegcompression = unicode(self.getParameterValue(self.JPEGCOMPRESSION))
+        predictor = unicode(self.getParameterValue(self.PREDICTOR))
+        zlevel = unicode(self.getParameterValue(self.ZLEVEL))
+        tiled = unicode(self.getParameterValue(self.TILED))
         compress = self.COMPRESSTYPE[self.getParameterValue(self.COMPRESS)]
         bigtiff = self.BIGTIFFTYPE[self.getParameterValue(self.BIGTIFF)]
-        tfw = str(self.getParameterValue(self.TFW))
+        tfw = unicode(self.getParameterValue(self.TFW))
         out = self.getOutputValue(self.OUTPUT)
 
         arguments = []
         arguments.append('-a')
-        arguments.append(str(self.getParameterValue(self.FIELD)))
+        arguments.append(unicode(self.getParameterValue(self.FIELD)))
 
 
         arguments.append('-ot')
@@ -131,13 +131,13 @@ class rasterize(OgrAlgorithm):
         if dimType == 0:
            # size in pixels
            arguments.append('-ts')
-           arguments.append(str(self.getParameterValue(self.WIDTH)))
-           arguments.append(str(self.getParameterValue(self.HEIGHT)))
+           arguments.append(unicode(self.getParameterValue(self.WIDTH)))
+           arguments.append(unicode(self.getParameterValue(self.HEIGHT)))
         else:
            # resolution in map units per pixel
            arguments.append('-tr')
-           arguments.append(str(self.getParameterValue(self.WIDTH)))
-           arguments.append(str(self.getParameterValue(self.HEIGHT)))
+           arguments.append(unicode(self.getParameterValue(self.WIDTH)))
+           arguments.append(unicode(self.getParameterValue(self.HEIGHT)))
 
         if len(noData) > 0:
            arguments.append('-a_nodata')

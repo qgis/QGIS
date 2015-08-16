@@ -179,7 +179,7 @@ class ExtentSelectionPanel(BASE, WIDGET):
         self.dialog.activateWindow()
 
     def getValue(self):
-        if str(self.leText.text()).strip() != '':
+        if unicode(self.leText.text()).strip() != '':
             return unicode(self.leText.text())
         else:
             return self.getMinCoveringExtent()

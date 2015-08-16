@@ -54,7 +54,7 @@ class File(list):
 
 class Comment(str):
     def __repr__(self):
-        return 'Comment(' + str(self) + ')'
+        return 'Comment(' + unicode(self) + ')'
 
 def Arg(contents, comments=None):
     return _Arg(contents, comments or [])
@@ -69,7 +69,7 @@ def prettify(s):
     """
     Returns the pretty-print of the contents of a CMakeLists file.
     """
-    return str(parse(s))
+    return unicode(parse(s))
 
 def parse(s):
     '''

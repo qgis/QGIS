@@ -78,7 +78,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       arguments = []
       if self.thresholdCheck.isChecked():
         arguments.append( "-st")
-        arguments.append( str(self.thresholdSpin.value()))
+        arguments.append( unicode(self.thresholdSpin.value()))
       if self.connectionsCheck.isChecked() and self.connectionsCombo.currentIndex() >= 0:
         arguments.append( "-" + self.connectionsCombo.currentText())
       outputFn = self.getOutputFileName()

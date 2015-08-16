@@ -74,7 +74,7 @@ class lasboundary(LAStoolsAlgorithm):
         else:
             concavity = self.getParameterValue(lasboundary.CONCAVITY)
             commands.append("-concavity")
-            commands.append(str(concavity))
+            commands.append(unicode(concavity))
             if self.getParameterValue(lasboundary.HOLES):
                 commands.append("-holes")
             if self.getParameterValue(lasboundary.DISJOINT):

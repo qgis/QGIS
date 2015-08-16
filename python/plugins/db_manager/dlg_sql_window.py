@@ -115,8 +115,8 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
         query = self._getSqlQuery()
         if query == "": return
         name = self.presetName.text()
-        QgsProject.instance().writeEntry('DBManager', 'savedQueries/q' + str(name.__hash__()) + '/name', name)
-        QgsProject.instance().writeEntry('DBManager', 'savedQueries/q' + str(name.__hash__()) + '/query', query)
+        QgsProject.instance().writeEntry('DBManager', 'savedQueries/q' + unicode(name.__hash__()) + '/name', name)
+        QgsProject.instance().writeEntry('DBManager', 'savedQueries/q' + unicode(name.__hash__()) + '/query', query)
         index = self.presetCombo.findText(name)
         if index == -1:
             self.presetCombo.addItem(name)
@@ -126,13 +126,13 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
 
     def deletePreset(self):
         name = self.presetCombo.currentText()
-        QgsProject.instance().removeEntry('DBManager', 'savedQueries/q' + str(name.__hash__()))
+        QgsProject.instance().removeEntry('DBManager', 'savedQueries/q' + unicode(name.__hash__()))
         self.presetCombo.removeItem(self.presetCombo.findText(name))
         self.presetCombo.setCurrentIndex(-1)
 
     def loadPreset(self, name):
-        query = QgsProject.instance().readEntry('DBManager', 'savedQueries/q' + str(name.__hash__()) + '/query')[0]
-        name = QgsProject.instance().readEntry('DBManager', 'savedQueries/q' + str(name.__hash__()) + '/name')[0]
+        query = QgsProject.instance().readEntry('DBManager', 'savedQueries/q' + unicode(name.__hash__()) + '/query')[0]
+        name = QgsProject.instance().readEntry('DBManager', 'savedQueries/q' + unicode(name.__hash__()) + '/name')[0]
         self.editSql.setText(query)
 
     def closeEvent(self, e):
@@ -334,7 +334,7 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
         self.editSql.lexer().setAPIs(api)
 
     def displayQueryBuilder( self ):
-        dlg = QueryBuilderDlg( self.iface, self.db, self, reset = self.queryBuilderFirst )
+        dlg = QueryBuilderDlg( self.iface, self.db, self, reset=self.queryBuilderFirst )
         self.queryBuilderFirst = False
         r = dlg.exec_()
         if r == QDialog.Accepted:
@@ -353,4 +353,3 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
         if len(sql) == 0:
             sql = self.editSql.text()
         return sql
-      

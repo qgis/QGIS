@@ -65,7 +65,7 @@ class RegularPoints(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Regular points')))
 
     def processAlgorithm(self, progress):
-        extent = str(self.getParameterValue(self.EXTENT)).split(',')
+        extent = unicode(self.getParameterValue(self.EXTENT)).split(',')
 
         spacing = float(self.getParameterValue(self.SPACING))
         inset = float(self.getParameterValue(self.INSET))

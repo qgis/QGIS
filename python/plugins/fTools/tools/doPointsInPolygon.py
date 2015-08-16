@@ -80,10 +80,10 @@ class Dialog(QDialog, Ui_Dialog):
                 if field.type() == QVariant.Int or field.type() ==QVariant.Double:
                     if field.type() == QVariant.Int:
                         global typeInt
-                        item = QListWidgetItem(str(field.name()), None, typeInt)
+                        item = QListWidgetItem(unicode(field.name()), None, typeInt)
                     else:
                         global typeDouble
-                        item = QListWidgetItem(str(field.name()), None, typeDouble)
+                        item = QListWidgetItem(unicode(field.name()), None, typeDouble)
                     item.setToolTip("Attribute <%s> of type %s" % (field.name(), field.typeName()))
                     self.attributeList.addItem(item)
 

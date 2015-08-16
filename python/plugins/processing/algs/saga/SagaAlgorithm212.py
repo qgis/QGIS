@@ -211,11 +211,11 @@ class SagaAlgorithm212(GeoAlgorithm):
                 values = param.value.split(',')
                 for i in range(4):
                     command += ' -' + self.extentParamNames[i] + ' ' \
-                        + str(float(values[i]) + offset[i])
+                        + unicode(float(values[i]) + offset[i])
             elif isinstance(param, (ParameterNumber, ParameterSelection)):
-                command += ' -' + param.name + ' ' + str(param.value)
+                command += ' -' + param.name + ' ' + unicode(param.value)
             else:
-                command += ' -' + param.name + ' "' + str(param.value) + '"'
+                command += ' -' + param.name + ' "' + unicode(param.value) + '"'
 
         for out in self.outputs:
             command += ' -' + out.name + ' "' + out.getCompatibleFileName(self) + '"'
@@ -300,7 +300,7 @@ class SagaAlgorithm212(GeoAlgorithm):
                 del sessionExportedLayers[source]
         layer = dataobjects.getObjectFromUri(source, False)
         if layer:
-            filename = str(layer.name())
+            filename = unicode(layer.name())
         else:
             filename = os.path.basename(source)
         validChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:'
@@ -332,7 +332,7 @@ class SagaAlgorithm212(GeoAlgorithm):
                     continue
                 if layer.bandCount() > 1:
                     return self.tr('Input layer %s has more than one band.\n'
-                                   'Multiband layers are not supported by SAGA' % str(layer.name()))
+                                   'Multiband layers are not supported by SAGA' % unicode(layer.name()))
                 if not self.allowUnmatchingGridExtents:
                     if extent is None:
                         extent = (layer.extent(), layer.height(), layer.width())

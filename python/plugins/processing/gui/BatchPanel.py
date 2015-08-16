@@ -159,7 +159,7 @@ class BatchPanel(BASE, WIDGET):
         else:
             item = QLineEdit()
             try:
-                item.setText(str(param.default))
+                item.setText(unicode(param.default))
             except:
                 pass
 

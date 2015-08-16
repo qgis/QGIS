@@ -80,7 +80,6 @@ class TestQgsRelation(TestCase):
         QgsMapLayerRegistry.instance().removeAllMapLayers()
 
     def test_isValid(self):
-
         rel = QgsRelation()
         assert not rel.isValid()
 
@@ -98,7 +97,6 @@ class TestQgsRelation(TestCase):
 
         rel.addFieldPair('foreignkey', 'y')
         assert rel.isValid()
-
 
     def test_getRelatedFeatures(self):
         rel = QgsRelation()
@@ -129,7 +127,6 @@ class TestQgsRelation(TestCase):
 
         assert f.isValid()
         assert f[0] == 'foo'
-
 
     def test_fieldPairs(self):
         rel = QgsRelation()
