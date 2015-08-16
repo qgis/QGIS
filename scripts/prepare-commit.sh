@@ -71,13 +71,7 @@ for f in $MODIFIED; do
 		continue
 		;;
 
-	*.cpp|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H|*.sip)
-		if [ -x "$f" ]; then
-			chmod a-x "$f"
-		fi
-		;;
-
-	*.py)
+	*.cpp|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H|*.sip|*.py)
 		;;
 
 	*)

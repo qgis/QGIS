@@ -38,7 +38,7 @@ public:
      * @param hide set to true to hide the coverage layer
      * @see hideCoverage
      */
-    void setHideCoverage( bool hide );    
+    void setHideCoverage( bool hide );
 
     /** Returns the filename expression used for generating output filenames for each
      * atlas page.
@@ -77,7 +77,7 @@ public:
      * @see coverageLayer
      */
     void setCoverageLayer( QgsVectorLayer* layer );
-    
+
     /** Returns the expression used for calculating the page name.
      * @returns expression string, or field name from coverage layer
      * @see setPageNameExpression
@@ -221,9 +221,9 @@ public:
 
     /** Recalculates the bounds of an atlas driven map */
     void prepareMap( QgsComposerMap* map );
-    
+
     //Deprecated methods
-    
+
     /** Returns the map used by the atlas
      * @deprecated Use QgsComposerMap::atlasDriven() instead
      */
@@ -233,7 +233,7 @@ public:
      * @deprecated Use QgsComposerMap::setAtlasDriven( true ) instead
      */
     void setComposerMap( QgsComposerMap* map ) /Deprecated/;
-    
+
     /** Returns whether the atlas map uses a fixed scale
      * @deprecated since 2.4 Use QgsComposerMap::atlasScalingMode() instead
      */
@@ -253,7 +253,7 @@ public:
      * @deprecated Use QgsComposerMap::setAtlasMargin( double ) instead
      */
     void setMargin( float margin ) /Deprecated/;
-    
+
     int sortKeyAttributeIndex() const /Deprecated/;
     void setSortKeyAttributeIndex( int idx ) /Deprecated/;
 

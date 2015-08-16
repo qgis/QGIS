@@ -119,7 +119,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
 
   if ( mProviderRequest.filterType() == QgsFeatureRequest::FilterExpression )
   {
-    Q_FOREACH( const QString& field, mProviderRequest.filterExpression()->referencedColumns() )
+    Q_FOREACH ( const QString& field, mProviderRequest.filterExpression()->referencedColumns() )
     {
       int idx = source->mFields.fieldNameIndex( field );
 

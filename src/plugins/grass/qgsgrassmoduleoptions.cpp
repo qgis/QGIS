@@ -110,7 +110,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
 
   QProcess process( this );
 
-  QProcessEnvironment environment = QgsGrassModule::processEnvironment(mDirect);
+  QProcessEnvironment environment = QgsGrassModule::processEnvironment( mDirect );
   process.setProcessEnvironment( environment );
   process.start( cmd, arguments );
 
@@ -128,7 +128,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
     QString msg = tr( "Cannot start module %1" ).arg( mXName )
                   + "<br>" + pathVariable + "=" + environment.value( pathVariable )
                   + "<br>PATH=" + getenv( "PATH" )
-                  + "<br>" + tr("command") + QString(": %1 %2<br>%3<br>%4" )
+                  + "<br>" + tr( "command" ) + QString( ": %1 %2<br>%3<br>%4" )
                   .arg( cmd ).arg( arguments.join( " " ) )
                   .arg( process.readAllStandardOutput().constData() )
                   .arg( process.readAllStandardError().constData() );
@@ -406,7 +406,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   if ( layout )
     layout->addStretch();
 
-  foreach( QgsGrassModuleItem* item, mItems )
+  foreach ( QgsGrassModuleItem* item, mItems )
   {
     mErrors << item->errors();
   }
