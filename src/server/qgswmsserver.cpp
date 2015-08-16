@@ -951,11 +951,11 @@ void QgsWMSServer::runHitTestLayer( QgsVectorLayer* vl, SymbolV2Set& usedSymbols
   {
     if ( moreSymbolsPerFeature )
     {
-      foreach ( QgsSymbolV2* s, r->originalSymbolsForFeature( f ) )
+      foreach ( QgsSymbolV2* s, r->originalSymbolsForFeature( f, context ) )
         usedSymbols.insert( s );
     }
     else
-      usedSymbols.insert( r->originalSymbolForFeature( f ) );
+      usedSymbols.insert( r->originalSymbolForFeature( f, context ) );
   }
   r->stopRender( context );
 }
@@ -2075,7 +2075,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
 
     //check if feature is rendered at all
     r2->startRender( renderContext, layer->pendingFields() );
-    bool renderV2 = r2->willRenderFeature( feature );
+    bool renderV2 = r2->willRenderFeature( feature, renderContext );
     r2->stopRender( renderContext );
     if ( !renderV2 )
     {
@@ -2682,7 +2682,8 @@ void QgsWMSServer::applyOpacities( const QStringList& layerList, QList< QPair< Q
       //backup old renderer
       vectorRenderers.push_back( qMakePair( vl, rendererV2->clone() ) );
       //modify symbols of current renderer
-      QgsSymbolV2List symbolList = rendererV2->symbols();
+      QgsRenderContext context;
+      QgsSymbolV2List symbolList = rendererV2->symbols( context );
       QgsSymbolV2List::iterator symbolIt = symbolList.begin();
       for ( ; symbolIt != symbolList.end(); ++symbolIt )
       {
