@@ -696,30 +696,34 @@ bool QgsPostgresProvider::loadFields()
         tableoids.insert( tableoid );
       }
     }
-    QStringList tableoidsList;
-    foreach ( int tableoid, tableoids )
-    {
-      tableoidsList.append( QString::number( tableoid ) );
-    }
 
-    QString tableoidsFilter = "(" + tableoidsList.join( "," ) + ")";
-
-    // Collect formatted field types
-    sql = "SELECT attrelid, attnum, pg_catalog.format_type(atttypid,atttypmod), pg_catalog.col_description(attrelid,attnum), pg_catalog.pg_get_expr(adbin,adrelid)"
-          " FROM pg_attribute"
-          " LEFT OUTER JOIN pg_attrdef ON attrelid=adrelid AND attnum=adnum"
-          " WHERE attrelid IN " + tableoidsFilter;
-    QgsPostgresResult fmtFieldTypeResult = connectionRO()->PQexec( sql );
-    for ( int i = 0; i < fmtFieldTypeResult.PQntuples(); ++i )
+    if ( !tableoids.isEmpty() )
     {
-      int attrelid = fmtFieldTypeResult.PQgetvalue( i, 0 ).toInt();
-      int attnum = fmtFieldTypeResult.PQgetvalue( i, 1 ).toInt();
-      QString formatType = fmtFieldTypeResult.PQgetvalue( i, 2 );
-      QString descr = fmtFieldTypeResult.PQgetvalue( i, 3 );
-      QString defVal = fmtFieldTypeResult.PQgetvalue( i, 4 );
-      fmtFieldTypeMap[attrelid][attnum] = formatType;
-      descrMap[attrelid][attnum] = descr;
-      defValMap[attrelid][attnum] = defVal;
+      QStringList tableoidsList;
+      foreach ( int tableoid, tableoids )
+      {
+        tableoidsList.append( QString::number( tableoid ) );
+      }
+
+      QString tableoidsFilter = "(" + tableoidsList.join( "," ) + ")";
+
+      // Collect formatted field types
+      sql = "SELECT attrelid, attnum, pg_catalog.format_type(atttypid,atttypmod), pg_catalog.col_description(attrelid,attnum), pg_catalog.pg_get_expr(adbin,adrelid)"
+            " FROM pg_attribute"
+            " LEFT OUTER JOIN pg_attrdef ON attrelid=adrelid AND attnum=adnum"
+            " WHERE attrelid IN " + tableoidsFilter;
+      QgsPostgresResult fmtFieldTypeResult = connectionRO()->PQexec( sql );
+      for ( int i = 0; i < fmtFieldTypeResult.PQntuples(); ++i )
+      {
+        int attrelid = fmtFieldTypeResult.PQgetvalue( i, 0 ).toInt();
+        int attnum = fmtFieldTypeResult.PQgetvalue( i, 1 ).toInt();
+        QString formatType = fmtFieldTypeResult.PQgetvalue( i, 2 );
+        QString descr = fmtFieldTypeResult.PQgetvalue( i, 3 );
+        QString defVal = fmtFieldTypeResult.PQgetvalue( i, 4 );
+        fmtFieldTypeMap[attrelid][attnum] = formatType;
+        descrMap[attrelid][attnum] = descr;
+        defValMap[attrelid][attnum] = defVal;
+      }
     }
   }
 
