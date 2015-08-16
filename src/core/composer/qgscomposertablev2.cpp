@@ -183,7 +183,9 @@ int QgsComposerTableV2::rowsVisible( const int frameIndex ) const
   {
     includeHeader = true;
   }
+  Q_NOWARN_DEPRECATED_PUSH
   return rowsVisible( frameExtent.height(), includeHeader );
+  Q_NOWARN_DEPRECATED_POP
 }
 
 int QgsComposerTableV2::rowsVisible( const double frameHeight, const bool includeHeader ) const
@@ -209,7 +211,62 @@ int QgsComposerTableV2::rowsVisible( const double frameHeight, const bool includ
   return qMax( floor( contentHeight / rowHeight ), 0.0 );
 }
 
-QPair< int, int > QgsComposerTableV2::rowRange( const QRectF &extent, const int frameIndex ) const
+int QgsComposerTableV2::rowsVisible( double frameHeight, int firstRow, bool includeHeader , bool includeEmptyRows ) const
+{
+  //calculate header height
+  double headerHeight = 0;
+  if ( includeHeader )
+  {
+    //frame has a header
+    headerHeight = 2 * ( mShowGrid ? mGridStrokeWidth : 0 ) + 2 * mCellMargin +  QgsComposerUtils::fontAscentMM( mHeaderFont );
+  }
+  else
+  {
+    //frame has no header text, just the stroke
+    headerHeight = ( mShowGrid ? mGridStrokeWidth : 0 );
+  }
+
+  //remaining height available for content rows
+  double contentHeight = frameHeight - headerHeight;
+
+  double gridHeight = ( mShowGrid ? mGridStrokeWidth : 0 );
+
+  int currentRow = firstRow;
+  while ( contentHeight > 0 && currentRow <= mTableContents.count() )
+  {
+    double currentRowHeight = mMaxRowHeightMap.value( currentRow + 1 ) + gridHeight + 2 * mCellMargin;
+    contentHeight -= currentRowHeight;
+    currentRow++;
+  }
+
+  if ( includeEmptyRows && contentHeight > 0 )
+  {
+    double rowHeight = ( mShowGrid ? mGridStrokeWidth : 0 ) + 2 * mCellMargin + QgsComposerUtils::fontAscentMM( mContentFont );
+    currentRow += qMax( floor( contentHeight / rowHeight ), 0.0 );
+  }
+
+  return currentRow - firstRow - 1;
+}
+
+int QgsComposerTableV2::rowsVisible( int frameIndex, int firstRow, bool includeEmptyRows ) const
+{
+  //get frame extent
+  if ( frameIndex >= frameCount() )
+  {
+    return 0;
+  }
+  QRectF frameExtent = frame( frameIndex )->extent();
+
+  bool includeHeader = false;
+  if (( mHeaderMode == QgsComposerTableV2::FirstFrame && frameIndex < 1 )
+      || ( mHeaderMode == QgsComposerTableV2::AllFrames ) )
+  {
+    includeHeader = true;
+  }
+  return rowsVisible( frameExtent.height(), firstRow, includeHeader, includeEmptyRows );
+}
+
+QPair<int, int> QgsComposerTableV2::rowRange( const int frameIndex ) const
 {
   //calculate row height
   if ( frameIndex >= frameCount() )
@@ -223,35 +280,25 @@ QPair< int, int > QgsComposerTableV2::rowRange( const QRectF &extent, const int 
   int rowsAlreadyShown = 0;
   for ( int idx = 0; idx < frameIndex; ++idx )
   {
-    rowsAlreadyShown += rowsVisible( idx );
+    rowsAlreadyShown += rowsVisible( idx, rowsAlreadyShown, false );
   }
-
-  double headerHeight = 0;
-  if (( mHeaderMode == QgsComposerTableV2::FirstFrame && frameIndex < 1 )
-      || ( mHeaderMode == QgsComposerTableV2::AllFrames ) )
-  {
-    //frame has a header
-    headerHeight = 2 * ( mShowGrid ? mGridStrokeWidth : 0 ) + 2 * mCellMargin +  QgsComposerUtils::fontAscentMM( mHeaderFont );
-  }
-  else
-  {
-    headerHeight = ( mShowGrid ? mGridStrokeWidth : 0 );
-  }
-
-  //remaining height available for content rows
-  double contentHeight = extent.height() - headerHeight;
-  double rowHeight = ( mShowGrid ? mGridStrokeWidth : 0 ) + 2 * mCellMargin + QgsComposerUtils::fontAscentMM( mContentFont );
 
   //using zero based indexes
   int firstVisible = qMin( rowsAlreadyShown, mTableContents.length() );
-  int rowsVisible = qMax( floor( contentHeight / rowHeight ), 0.0 );
-  int lastVisible = qMin( firstVisible + rowsVisible, mTableContents.length() );
+  int possibleRowsVisible = rowsVisible( frameIndex, rowsAlreadyShown, false );
+  int lastVisible = qMin( firstVisible + possibleRowsVisible, mTableContents.length() );
 
   return qMakePair( firstVisible, lastVisible );
 }
 
+QPair< int, int > QgsComposerTableV2::rowRange( const QRectF &extent, const int frameIndex ) const
+{
+  Q_UNUSED( extent );
+  return rowRange( frameIndex );
+}
 
-void QgsComposerTableV2::render( QPainter *p, const QRectF &renderExtent, const int frameIndex )
+
+void QgsComposerTableV2::render( QPainter *p, const QRectF &, const int frameIndex )
 {
   if ( !p )
   {
@@ -274,7 +321,7 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &renderExtent, const 
   }
 
   //calculate which rows to show in this frame
-  QPair< int, int > rowsToShow = rowRange( renderExtent, frameIndex );
+  QPair< int, int > rowsToShow = rowRange( frameIndex );
 
   double gridSize = mShowGrid ? mGridStrokeWidth : 0;
   double cellHeaderHeight = QgsComposerUtils::fontAscentMM( mHeaderFont ) + 2 * mCellMargin;
@@ -288,15 +335,18 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &renderExtent, const 
   bool drawContents = !( emptyTable && mEmptyTableMode == QgsComposerTableV2::ShowMessage );
 
   int numberRowsToDraw = rowsToShow.second - rowsToShow.first;
+  int numberEmptyRows = 0;
   if ( drawContents && mShowEmptyRows )
   {
-    numberRowsToDraw = rowsVisible( frameIndex );
+    numberRowsToDraw = rowsVisible( frameIndex, rowsToShow.first, true );
+    numberEmptyRows = numberRowsToDraw - rowsToShow.second + rowsToShow.first;
   }
   bool mergeCells = false;
   if ( emptyTable && mEmptyTableMode == QgsComposerTableV2::ShowMessage )
   {
     //draw a merged row for the empty table message
     numberRowsToDraw++;
+    rowsToShow.second++;
     mergeCells = true;
   }
 
@@ -311,8 +361,23 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &renderExtent, const 
     p->setPen( Qt::NoPen );
     p->setBrush( QBrush( mBackgroundColor ) );
     double totalHeight = ( drawHeader || ( numberRowsToDraw > 0 ) ? gridSize : 0 ) +
-                         ( drawHeader ? cellHeaderHeight + gridSize : 0.0 ) +
-                         ( drawContents ? numberRowsToDraw : 1 ) * ( cellBodyHeight + gridSize );
+                         ( drawHeader ? cellHeaderHeight + gridSize : 0.0 );
+    if ( drawContents )
+    {
+      for ( int row = rowsToShow.first; row < rowsToShow.second; ++row )
+      {
+        totalHeight += mMaxRowHeightMap[ row + 1 ] + 2 * mCellMargin + gridSize;
+      }
+      if ( numberEmptyRows > 0 )
+      {
+        //draw empty rows
+        totalHeight += ( cellBodyHeight + gridSize ) * numberEmptyRows;
+      }
+    }
+    else
+    {
+      totalHeight += cellBodyHeight + gridSize;
+    }
 
     if ( totalHeight > 0 )
     {
@@ -384,6 +449,11 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &renderExtent, const 
     {
       currentX = gridSize;
       int col = 0;
+
+      //calculate row height
+      double rowHeight = mMaxRowHeightMap[row + 1] + 2 * mCellMargin;
+
+
       for ( QList<QgsComposerTableColumn*>::const_iterator columnIt = mColumns.constBegin(); columnIt != mColumns.constEnd(); ++columnIt )
       {
         // currentY = gridSize;
@@ -398,7 +468,7 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &renderExtent, const 
           textFlag = Qt::TextDontClip;
         }
 
-        cell = QRectF( currentX, currentY, mMaxColumnWidthMap[col], cellBodyHeight );
+        cell = QRectF( currentX, currentY, mMaxColumnWidthMap[col], rowHeight );
 
         QVariant cellContents = mTableContents.at( row ).at( col );
         QString str = cellContents.toString();
@@ -410,7 +480,7 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &renderExtent, const 
         currentX += gridSize;
         col++;
       }
-      currentY += cellBodyHeight;
+      currentY += rowHeight;
       currentY += gridSize;
     }
   }
@@ -423,8 +493,8 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &renderExtent, const 
     gridPen.setColor( mGridColor );
     gridPen.setJoinStyle( Qt::MiterJoin );
     p->setPen( gridPen );
-    drawHorizontalGridLines( p, numberRowsToDraw, drawHeader );
-    drawVerticalGridLines( p, mMaxColumnWidthMap, numberRowsToDraw, drawHeader, mergeCells );
+    drawHorizontalGridLines( p, rowsToShow.first, rowsToShow.second + numberEmptyRows, drawHeader );
+    drawVerticalGridLines( p, mMaxColumnWidthMap, rowsToShow.first, rowsToShow.second + numberEmptyRows, drawHeader, mergeCells );
   }
 
   //special case - no records and table is set to ShowMessage mode
@@ -675,6 +745,7 @@ QSizeF QgsComposerTableV2::minFrameSize( const int frameIndex ) const
 void QgsComposerTableV2::refreshAttributes()
 {
   mMaxColumnWidthMap.clear();
+  mMaxRowHeightMap.clear();
   mTableContents.clear();
 
   //get new contents
@@ -694,43 +765,122 @@ bool QgsComposerTableV2::calculateMaxColumnWidths()
 {
   mMaxColumnWidthMap.clear();
 
-  //first, go through all the column headers and calculate the max width values
+  //total number of cells (rows + 1 for header)
+  int cols = mColumns.count();
+  int cells = cols * ( mTableContents.count() + 1 );
+  QVector< double > widths( cells );
+
+  //first, go through all the column headers and calculate the sizes
   QgsComposerTableColumns::const_iterator columnIt = mColumns.constBegin();
   int col = 0;
   for ( ; columnIt != mColumns.constEnd(); ++columnIt )
   {
-    double width = 0;
     if (( *columnIt )->width() > 0 )
     {
       //column has manually specified width
-      width = ( *columnIt )->width();
+      widths[col] = ( *columnIt )->width();
     }
     else if ( mHeaderMode != QgsComposerTableV2::NoHeaders )
     {
-      width = QgsComposerUtils::textWidthMM( mHeaderFont, ( *columnIt )->heading() );
+      widths[col] = QgsComposerUtils::textWidthMM( mHeaderFont, ( *columnIt )->heading() );
     }
-
-    mMaxColumnWidthMap.insert( col, width );
+    else
+    {
+      widths[col] = 0.0;
+    }
     col++;
   }
 
-  //next, go through all the table contents and calculate the max width values
+  //next, go through all the table contents and calculate the sizes
   QgsComposerTableContents::const_iterator rowIt = mTableContents.constBegin();
   double currentCellTextWidth;
+  int row = 1;
   for ( ; rowIt != mTableContents.constEnd(); ++rowIt )
   {
     QgsComposerTableRow::const_iterator colIt = rowIt->constBegin();
-    int columnNumber = 0;
+    col = 0;
     for ( ; colIt != rowIt->constEnd(); ++colIt )
     {
-      if ( mColumns.at( columnNumber )->width() <= 0 )
+      if ( mColumns.at( col )->width() <= 0 )
       {
         //column width set to automatic, so check content size
-        currentCellTextWidth = QgsComposerUtils::textWidthMM( mContentFont, ( *colIt ).toString() );
-        mMaxColumnWidthMap[ columnNumber ] = qMax( currentCellTextWidth, mMaxColumnWidthMap[ columnNumber ] );
+        QStringList multiLineSplit = ( *colIt ).toString().split( "\n" );
+        currentCellTextWidth = 0;
+        Q_FOREACH ( QString line, multiLineSplit )
+        {
+          currentCellTextWidth = qMax( currentCellTextWidth, QgsComposerUtils::textWidthMM( mContentFont, line ) );
+        }
+        widths[ row * cols + col ] = currentCellTextWidth;
       }
-      columnNumber++;
+      else
+      {
+        widths[ row * cols + col ] = 0;
+      }
+
+      col++;
     }
+    row++;
+  }
+
+  //calculate maximum
+  for ( int col = 0; col < cols; ++col )
+  {
+    double maxColWidth = 0;
+    for ( int row = 0; row < mTableContents.count() + 1; ++row )
+    {
+      maxColWidth = qMax( widths[ row * cols + col ], maxColWidth );
+    }
+    mMaxColumnWidthMap.insert( col, maxColWidth );
+  }
+
+  return true;
+}
+
+bool QgsComposerTableV2::calculateMaxRowHeights()
+{
+  mMaxRowHeightMap.clear();
+
+  //total number of cells (rows + 1 for header)
+  int cols = mColumns.count();
+  int cells = cols * ( mTableContents.count() + 1 );
+  QVector< double > heights( cells );
+
+  //first, go through all the column headers and calculate the sizes
+  QgsComposerTableColumns::const_iterator columnIt = mColumns.constBegin();
+  int col = 0;
+  for ( ; columnIt != mColumns.constEnd(); ++columnIt )
+  {
+    //height
+    heights[col] = mHeaderMode != QgsComposerTableV2::NoHeaders ? QgsComposerUtils::textHeightMM( mHeaderFont, ( *columnIt )->heading() ) : 0;
+    col++;
+  }
+
+  //next, go through all the table contents and calculate the sizes
+  QgsComposerTableContents::const_iterator rowIt = mTableContents.constBegin();
+  int row = 1;
+  for ( ; rowIt != mTableContents.constEnd(); ++rowIt )
+  {
+    QgsComposerTableRow::const_iterator colIt = rowIt->constBegin();
+    col = 0;
+    for ( ; colIt != rowIt->constEnd(); ++colIt )
+    {
+      //height
+      heights[ row * cols + col ] = QgsComposerUtils::textHeightMM( mContentFont, ( *colIt ).toString() );
+
+      col++;
+    }
+    row++;
+  }
+
+  //calculate maximum
+  for ( int row = 0; row < mTableContents.count() + 1; ++row )
+  {
+    double maxRowHeight = 0;
+    for ( int col = 0; col < cols; ++col )
+    {
+      maxRowHeight = qMax( heights[ row * cols + col ], maxRowHeight );
+    }
+    mMaxRowHeightMap.insert( row, maxRowHeight );
   }
 
   return true;
@@ -757,8 +907,14 @@ double QgsComposerTableV2::totalWidth()
   return totalWidth;
 }
 
-double QgsComposerTableV2::totalHeight() const
+double QgsComposerTableV2::totalHeight()
 {
+  //check how much space each row needs
+  if ( !calculateMaxRowHeights() )
+  {
+    return 0;
+  }
+
   double height = 0;
 
   //loop through all existing frames to calculate how many rows are visible in each
@@ -772,7 +928,7 @@ double QgsComposerTableV2::totalHeight() const
     bool hasHeader = (( mHeaderMode == QgsComposerTableV2::FirstFrame && idx == 0 )
                       || ( mHeaderMode == QgsComposerTableV2::AllFrames ) );
     heightOfLastFrame = frame( idx )->rect().height();
-    rowsVisibleInLastFrame = rowsVisible( heightOfLastFrame, hasHeader );
+    rowsVisibleInLastFrame = rowsVisible( heightOfLastFrame, rowsAlreadyShown, hasHeader, false );
     rowsAlreadyShown += rowsVisibleInLastFrame;
     height += heightOfLastFrame;
     if ( rowsAlreadyShown >= mTableContents.length() )
@@ -780,14 +936,6 @@ double QgsComposerTableV2::totalHeight() const
       //shown entire contents of table, nothing remaining
       return height;
     }
-  }
-
-  if ( mResizeMode == QgsComposerMultiFrame::ExtendToNextPage )
-  {
-    heightOfLastFrame = mComposition->paperHeight();
-    bool hasHeader = (( mHeaderMode == QgsComposerTableV2::FirstFrame && numberExistingFrames < 1 )
-                      || ( mHeaderMode == QgsComposerTableV2::AllFrames ) );
-    rowsVisibleInLastFrame = rowsVisible( heightOfLastFrame, hasHeader );
   }
 
   //calculate how many rows left to show
@@ -799,28 +947,52 @@ double QgsComposerTableV2::totalHeight() const
     return height;
   }
 
-  if ( rowsVisibleInLastFrame < 1 )
+  if ( mResizeMode == QgsComposerMultiFrame::ExtendToNextPage )
   {
-    //if no rows are visible in the last frame, calculation of missing frames
-    //is impossible. So just return total height of existing frames
-    return height;
+    heightOfLastFrame = mComposition->paperHeight();
+  }
+
+  bool hasHeader = (( mHeaderMode == QgsComposerTableV2::FirstFrame && numberExistingFrames < 1 )
+                    || ( mHeaderMode == QgsComposerTableV2::AllFrames ) );
+
+  int numberFramesMissing = 0;
+  while ( remainingRows > 0 )
+  {
+    numberFramesMissing++;
+
+    rowsVisibleInLastFrame = rowsVisible( heightOfLastFrame, rowsAlreadyShown, hasHeader, false );
+    if ( rowsVisibleInLastFrame < 1 )
+    {
+      //if no rows are visible in the last frame, calculation of missing frames
+      //is impossible. So just return total height of existing frames
+      return height;
+    }
+
+    rowsAlreadyShown += rowsVisibleInLastFrame;
+    remainingRows = mTableContents.length() - rowsAlreadyShown;
   }
 
   //rows remain unshown -- how many extra frames would we need to complete the table?
   //assume all added frames are same size as final frame
-  int numberFramesMissing = ceil(( double )remainingRows / ( double )rowsVisibleInLastFrame );
   height += heightOfLastFrame * numberFramesMissing;
   return height;
 }
 
 void QgsComposerTableV2::drawHorizontalGridLines( QPainter *painter, const int rows, const bool drawHeaderLines ) const
 {
+  //hacky shortcut to maintain 2.10 API without adding code - whooo!
+  drawHorizontalGridLines( painter, 100000, 100000 + rows, drawHeaderLines );
+}
+
+void QgsComposerTableV2::drawHorizontalGridLines( QPainter *painter, int firstRow, int lastRow, bool drawHeaderLines ) const
+{
   //horizontal lines
-  if ( rows < 1 && !drawHeaderLines )
+  if ( lastRow - firstRow < 1 && !drawHeaderLines )
   {
     return;
   }
 
+  double cellBodyHeight = QgsComposerUtils::fontAscentMM( mContentFont );
   double halfGridStrokeWidth = ( mShowGrid ? mGridStrokeWidth : 0 ) / 2.0;
   double currentY = 0;
   currentY = halfGridStrokeWidth;
@@ -830,19 +1002,26 @@ void QgsComposerTableV2::drawHorizontalGridLines( QPainter *painter, const int r
     currentY += ( mShowGrid ? mGridStrokeWidth : 0 );
     currentY += ( QgsComposerUtils::fontAscentMM( mHeaderFont ) + 2 * mCellMargin );
   }
-  for ( int row = 0; row < rows; ++row )
+  for ( int row = firstRow; row < lastRow; ++row )
   {
     painter->drawLine( QPointF( halfGridStrokeWidth, currentY ), QPointF( mTableSize.width() - halfGridStrokeWidth, currentY ) );
     currentY += ( mShowGrid ? mGridStrokeWidth : 0 );
-    currentY += ( QgsComposerUtils::fontAscentMM( mContentFont ) + 2 * mCellMargin );
+    double rowHeight = row < mTableContents.count() ? mMaxRowHeightMap[row + 1] : cellBodyHeight;
+    currentY += ( rowHeight + 2 * mCellMargin );
   }
   painter->drawLine( QPointF( halfGridStrokeWidth, currentY ), QPointF( mTableSize.width() - halfGridStrokeWidth, currentY ) );
 }
 
 void QgsComposerTableV2::drawVerticalGridLines( QPainter *painter, const QMap<int, double> &maxWidthMap, const int numberRows, const bool hasHeader, const bool mergeCells ) const
 {
+  //hacky shortcut to maintain 2.10 API without adding code - whooo!
+  drawVerticalGridLines( painter, maxWidthMap, 100000, 100000 + numberRows, hasHeader, mergeCells );
+}
+
+void QgsComposerTableV2::drawVerticalGridLines( QPainter *painter, const QMap<int, double> &maxWidthMap, int firstRow, int lastRow, bool hasHeader, bool mergeCells ) const
+{
   //vertical lines
-  if ( numberRows < 1 && !hasHeader )
+  if ( lastRow - firstRow < 1 && !hasHeader )
   {
     return;
   }
@@ -855,7 +1034,13 @@ void QgsComposerTableV2::drawVerticalGridLines( QPainter *painter, const QMap<in
   }
   tableHeight += ( mShowGrid ? mGridStrokeWidth : 0 );
   double headerHeight = tableHeight;
-  tableHeight += numberRows * (( mShowGrid ? mGridStrokeWidth : 0 ) + mCellMargin * 2 + QgsComposerUtils::fontAscentMM( mContentFont ) );
+
+  double cellBodyHeight = QgsComposerUtils::fontAscentMM( mContentFont );
+  for ( int row = firstRow; row < lastRow; ++row )
+  {
+    double rowHeight = row < mTableContents.count() ? mMaxRowHeightMap[row + 1] : cellBodyHeight;
+    tableHeight += rowHeight + ( mShowGrid ? mGridStrokeWidth : 0 ) + mCellMargin * 2;
+  }
 
   double halfGridStrokeWidth = ( mShowGrid ? mGridStrokeWidth : 0 ) / 2.0;
   double currentX = halfGridStrokeWidth;

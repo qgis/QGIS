@@ -70,6 +70,8 @@ class TestQgsComposerTableV2 : public QObject
     void contentsContainsRow(); //test the contentsContainsRow function
     void removeDuplicates(); //test removing duplicate rows
 
+    void multiLineText(); //test rendering a table with multiline text
+
   private:
     QgsComposition* mComposition;
     QgsMapSettings *mMapSettings;
@@ -626,6 +628,39 @@ void TestQgsComposerTableV2::removeDuplicates()
   mComposition->removeMultiFrame( table );
   delete table;
   delete dupesLayer;
+}
+
+void TestQgsComposerTableV2::multiLineText()
+{
+  QgsVectorLayer* multiLineLayer = new QgsVectorLayer( "Point?field=col1:string&field=col2:string&field=col3:string", "multiline", "memory" );
+  QVERIFY( multiLineLayer->isValid() );
+  QgsFeature f1( multiLineLayer->dataProvider()->fields(), 1 );
+  f1.setAttribute( "col1", "multiline\nstring" );
+  f1.setAttribute( "col2", "singleline string" );
+  f1.setAttribute( "col3", "singleline" );
+  QgsFeature f2( multiLineLayer->dataProvider()->fields(), 2 );
+  f2.setAttribute( "col1", "singleline string" );
+  f2.setAttribute( "col2", "multiline\nstring" );
+  f2.setAttribute( "col3", "singleline" );
+  QgsFeature f3( multiLineLayer->dataProvider()->fields(), 3 );
+  f3.setAttribute( "col1", "singleline" );
+  f3.setAttribute( "col2", "singleline" );
+  f3.setAttribute( "col3", "multiline\nstring" );
+  QgsFeature f4( multiLineLayer->dataProvider()->fields(), 4 );
+  f4.setAttribute( "col1", "long triple\nline\nstring" );
+  f4.setAttribute( "col2", "double\nlinestring" );
+  f4.setAttribute( "col3", "singleline" );
+  multiLineLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 << f4 );
+
+  mFrame2->setSceneRect( QRectF( 5, 40, 100, 90 ) );
+
+  mComposerAttributeTable->setMaximumNumberOfFeatures( 20 );
+  mComposerAttributeTable->setVectorLayer( multiLineLayer );
+  QgsCompositionChecker checker( "composerattributetable_multiline", mComposition );
+  bool result = checker.testComposition( mReport );
+  QVERIFY( result );
+
+  delete multiLineLayer;
 }
 
 QTEST_MAIN( TestQgsComposerTableV2 )
