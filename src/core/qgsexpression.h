@@ -436,21 +436,69 @@ class CORE_EXPORT QgsExpression
     {
       public:
         virtual ~Node() {}
+
+        /**
+         * Abstract virtual that returns the type of this node.
+         *
+         * @return The type of this node
+         */
         virtual NodeType nodeType() const = 0;
-        // abstract virtual eval function
-        // errors are reported to the parent
+        /**
+         * Abstract virtual eval method
+         * Errors are reported to the parent
+         */
         virtual QVariant eval( QgsExpression* parent, const QgsFeature* f ) = 0;
 
-        // abstract virtual preparation function
-        // errors are reported to the parent
+        /**
+         * Abstract virtual preparation method
+         * Errors are reported to the parent
+         */
         virtual bool prepare( QgsExpression* parent, const QgsFields &fields ) = 0;
 
+        /**
+         * Abstract virtual dump method
+         *
+         * @return An expression which represents this node as string
+         */
         virtual QString dump() const = 0;
 
+        /**
+         * Abstract virtual method which returns a list of columns required to
+         * evaluate this node.
+         *
+         * When reimplementing this, you need to return any column that is required to
+         * evaluate this node and in addition recursively collect all the columns required
+         * to evaluate child nodes.
+         *
+         * @return A list of columns required to evaluate this expression
+         */
         virtual QStringList referencedColumns() const = 0;
+
+        /**
+         * Abstract virtual method which returns if the geometry is required to evaluate
+         * this expression.
+         *
+         * This needs to call `needsGeometry()` recursively on any child nodes.
+         *
+         * @return true if a geometry is required to evaluate this expression
+         */
         virtual bool needsGeometry() const = 0;
 
-        // support for visitor pattern
+        /**
+         * Support the visitor pattern.
+         *
+         * For any implementation this should look like
+         *
+         * C++:
+         *
+         *     v.visit( *this );
+         *
+         * Python:
+         *
+         *     v.visit( self)
+         *
+         * @param v A visitor that visits this node.
+         */
         virtual void accept( Visitor& v ) const = 0;
     };
 
