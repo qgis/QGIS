@@ -142,7 +142,7 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
 
       const QgsAttributeMap &currentAttributeMap = *attIt;
       QString str = currentAttributeMap[ col ].toString();
-      QgsComposerUtils::drawText( painter, cell, str, mContentFont, mContentFontColor, ( *columnIt )->hAlignment(), Qt::AlignVCenter, Qt::TextDontClip );
+      QgsComposerUtils::drawText( painter, cell, str, mContentFont, mContentFontColor, ( *columnIt )->hAlignment(), ( *columnIt )->vAlignment(), Qt::TextDontClip );
 
       currentY += cellBodyHeight;
       currentY += mGridStrokeWidth;

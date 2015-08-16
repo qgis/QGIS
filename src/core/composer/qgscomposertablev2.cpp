@@ -473,7 +473,7 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &, const int frameInd
         QVariant cellContents = mTableContents.at( row ).at( col );
         QString str = cellContents.toString();
 
-        QgsComposerUtils::drawText( p, cell, str, mContentFont, mContentFontColor, ( *columnIt )->hAlignment(), Qt::AlignVCenter, textFlag );
+        QgsComposerUtils::drawText( p, cell, str, mContentFont, mContentFontColor, ( *columnIt )->hAlignment(), ( *columnIt )->vAlignment(), textFlag );
 
         currentX += mMaxColumnWidthMap[ col ];
         currentX += mCellMargin;
