@@ -518,6 +518,7 @@ void QgsComposerAttributeTableWidget::updateGuiElements()
   mEmptyMessageLineEdit->setEnabled( mComposerTable->emptyTableBehaviour() == QgsComposerTableV2::ShowMessage );
   mEmptyMessageLabel->setEnabled( mComposerTable->emptyTableBehaviour() == QgsComposerTableV2::ShowMessage );
   mDrawEmptyCheckBox->setChecked( mComposerTable->showEmptyRows() );
+  mWrapStringLineEdit->setText( mComposerTable->wrapString() );
 
   mResizeModeComboBox->setCurrentIndex( mResizeModeComboBox->findData( mComposerTable->resizeMode() ) );
   mAddFramePushButton->setEnabled( mComposerTable->resizeMode() == QgsComposerMultiFrame::UseExistingFrames );
@@ -634,6 +635,7 @@ void QgsComposerAttributeTableWidget::blockAllSignals( bool b )
   mEmptyFrameCheckBox->blockSignals( b );
   mHideEmptyBgCheckBox->blockSignals( b );
   mDrawEmptyCheckBox->blockSignals( b );
+  mWrapStringLineEdit->blockSignals( b );
 }
 
 void QgsComposerAttributeTableWidget::setMaximumNumberOfFeatures( int n )
@@ -846,6 +848,25 @@ void QgsComposerAttributeTableWidget::on_mHeaderModeComboBox_currentIndexChanged
     composition->beginMultiFrameCommand( mComposerTable, tr( "Table header mode changed" ) );
   }
   mComposerTable->setHeaderMode(( QgsComposerTableV2::HeaderMode )index );
+  if ( composition )
+  {
+    composition->endMultiFrameCommand();
+  }
+}
+
+void QgsComposerAttributeTableWidget::on_mWrapStringLineEdit_editingFinished()
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
+
+  QgsComposition* composition = mComposerTable->composition();
+  if ( composition )
+  {
+    composition->beginMultiFrameCommand( mComposerTable, tr( "Table wrap string changed" ) );
+  }
+  mComposerTable->setWrapString( mWrapStringLineEdit->text() );
   if ( composition )
   {
     composition->endMultiFrameCommand();

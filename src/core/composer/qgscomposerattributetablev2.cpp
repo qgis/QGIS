@@ -545,7 +545,7 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
       int idx = layer->fieldNameIndex(( *columnIt )->attribute() );
       if ( idx != -1 )
       {
-        currentRow << f.attributes()[idx];
+        currentRow << replaceWrapChar( f.attributes()[idx] );
       }
       else
       {
@@ -577,6 +577,17 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
 
   recalculateTableSize();
   return true;
+}
+
+QVariant QgsComposerAttributeTableV2::replaceWrapChar( const QVariant &variant ) const
+{
+  //avoid converting variants to string if not required (try to maintain original type for sorting)
+  if ( mWrapString.isEmpty() || !variant.toString().contains( mWrapString ) )
+    return variant;
+
+  QString replaced = variant.toString();
+  replaced.replace( mWrapString, "\n" );
+  return replaced;
 }
 
 QgsVectorLayer *QgsComposerAttributeTableV2::sourceLayer()
@@ -645,6 +656,18 @@ QList<QPair<int, bool> > QgsComposerAttributeTableV2::sortAttributes() const
   return attributesBySortRank;
 }
 
+void QgsComposerAttributeTableV2::setWrapString( const QString &wrapString )
+{
+  if ( wrapString == mWrapString )
+  {
+    return;
+  }
+
+  mWrapString = wrapString;
+  refreshAttributes();
+  emit changed();
+}
+
 bool QgsComposerAttributeTableV2::writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames ) const
 {
   QDomElement composerTableElem = doc.createElement( "ComposerAttributeTableV2" );
@@ -656,6 +679,7 @@ bool QgsComposerAttributeTableV2::writeXML( QDomElement& elem, QDomDocument & do
   composerTableElem.setAttribute( "maxFeatures", mMaximumNumberOfFeatures );
   composerTableElem.setAttribute( "filterFeatures", mFilterFeatures ? "true" : "false" );
   composerTableElem.setAttribute( "featureFilter", mFeatureFilter );
+  composerTableElem.setAttribute( "wrapString", mWrapString );
 
   if ( mComposerMap )
   {
@@ -711,6 +735,7 @@ bool QgsComposerAttributeTableV2::readXML( const QDomElement& itemElem, const QD
   mFilterFeatures = itemElem.attribute( "filterFeatures", "false" ) == "true" ? true : false;
   mFeatureFilter = itemElem.attribute( "featureFilter", "" );
   mMaximumNumberOfFeatures = itemElem.attribute( "maxFeatures", "5" ).toInt();
+  mWrapString = itemElem.attribute( "wrapString" );
 
   //composer map
   int composerMapId = itemElem.attribute( "composerMap", "-1" ).toInt();

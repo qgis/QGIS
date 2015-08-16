@@ -270,6 +270,22 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      */
     QList<QPair<int, bool> > sortAttributes() const;
 
+    /** Sets a string to wrap the contents of the table cells by. Occurances of this string will
+     * be replaced by a line break.
+     * @param wrapString string to replace with line break
+     * @note added in QGIS 2.12
+     * @see wrapString
+     */
+    void setWrapString( const QString& wrapString );
+
+    /** Returns the string used to wrap the contents of the table cells by. Occurances of this string will
+     * be replaced by a line break.
+     * @returns string which will be replaced with line break
+     * @note added in QGIS 2.12
+     * @see setWrapString
+     */
+    QString wrapString() const { return mWrapString; }
+
     /** Queries the attribute table's vector layer for attributes to show in the table.
      * @param contents table content
      * @returns true if attributes were successfully fetched
@@ -308,6 +324,8 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
     /** Feature filter expression*/
     QString mFeatureFilter;
 
+    QString mWrapString;
+
     /** Returns a list of attribute indices corresponding to displayed fields in the table.
      * @note kept for compatibility with 2.0 api only
      */
@@ -318,6 +336,11 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * corresponding field, and the integer is the field index from the vector layer
      */
     void restoreFieldAliasMap( const QMap<int, QString>& map );
+
+    /** Replaces occurences of the wrap character with line breaks.
+     * @param text input text
+     */
+    QVariant replaceWrapChar( const QVariant &variant ) const;
 
   private slots:
     /** Checks if this vector layer will be removed (and sets mVectorLayer to 0 if yes) */

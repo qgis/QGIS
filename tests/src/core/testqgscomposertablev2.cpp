@@ -71,6 +71,7 @@ class TestQgsComposerTableV2 : public QObject
     void removeDuplicates(); //test removing duplicate rows
     void multiLineText(); //test rendering a table with multiline text
     void align(); //test alignment of table cells
+    void wrapChar(); //test setting wrap character
 
   private:
     QgsComposition* mComposition;
@@ -701,6 +702,29 @@ void TestQgsComposerTableV2::align()
   QVERIFY( result );
 
   delete multiLineLayer;
+}
+
+void TestQgsComposerTableV2::wrapChar()
+{
+  QgsVectorLayer* multiLineLayer = new QgsVectorLayer( "Point?field=col1:string&field=col2:string&field=col3:string", "multiline", "memory" );
+  QVERIFY( multiLineLayer->isValid() );
+  QgsFeature f1( multiLineLayer->dataProvider()->fields(), 1 );
+  f1.setAttribute( "col1", "multiline\nstring" );
+  f1.setAttribute( "col2", "singleline string" );
+  f1.setAttribute( "col3", "singleline" );
+  multiLineLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
+
+  mComposerAttributeTable->setMaximumNumberOfFeatures( 1 );
+  mComposerAttributeTable->setVectorLayer( multiLineLayer );
+  mComposerAttributeTable->setWrapString( "in" );
+
+  QList<QStringList> expectedRows;
+  QStringList row;
+  row << "multil\ne\nstr\ng" << "s\nglel\ne str\ng" << "s\nglel\ne";
+  expectedRows.append( row );
+
+  //retrieve rows and check
+  compareTable( expectedRows );
 }
 
 QTEST_MAIN( TestQgsComposerTableV2 )
