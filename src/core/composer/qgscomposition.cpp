@@ -3086,6 +3086,7 @@ bool QgsComposition::dataDefinedEvaluate( QgsComposerObject::DataDefinedProperty
     }
     if ( mAtlasMode != QgsComposition::AtlasOff )
     {
+      useFeature = true;
       currentFeature = mAtlasComposition.feature();
     }
   }
