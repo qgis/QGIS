@@ -29,6 +29,7 @@ from qgis.core import (QgsGraduatedSymbolRendererV2,
                        QgsPoint,
                        QgsSymbolV2,
                        QgsSymbolLayerV2Utils,
+                       QgsRenderContext
                        )
 from PyQt4.QtCore import Qt
 from PyQt4.QtXml import QDomDocument
@@ -344,7 +345,8 @@ class TestQgsGraduatedSymbolRendererV2(TestCase):
         self.assertEqual(renderer.maxSymbolSize(), 13)
         self.assertEqual(renderer.minSymbolSize(), 2)
         refSizes = [2, (13+2)*.5, 13]
-        for idx, symbol in enumerate(renderer.symbols()):
+        ctx = QgsRenderContext()
+        for idx, symbol in enumerate(renderer.symbols(ctx)):
             self.assertEqual(symbol.size(), refSizes[idx])
 
 

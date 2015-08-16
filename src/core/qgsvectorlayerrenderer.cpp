@@ -344,7 +344,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
       return;
     }
 
-    QgsSymbolV2* sym = mRendererV2->symbolForFeature( fet );
+    QgsSymbolV2* sym = mRendererV2->symbolForFeature( fet, mContext );
     if ( !sym )
     {
       continue;
@@ -377,7 +377,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
 
   // find out the order
   QgsSymbolV2LevelOrder levels;
-  QgsSymbolV2List symbols = mRendererV2->symbols();
+  QgsSymbolV2List symbols = mRendererV2->symbols( mContext );
   for ( int i = 0; i < symbols.count(); i++ )
   {
     QgsSymbolV2* sym = symbols[i];

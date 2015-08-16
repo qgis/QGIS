@@ -514,7 +514,7 @@ void QgsRuleBasedRendererV2Widget::countFeatures()
   QgsFeature f;
   while ( fit.nextFeature( f ) )
   {
-    QgsRuleBasedRendererV2::RuleList featureRuleList = mRenderer->rootRule()->rulesForFeature( f );
+    QgsRuleBasedRendererV2::RuleList featureRuleList = mRenderer->rootRule()->rulesForFeature( f, &renderContext );
 
     foreach ( QgsRuleBasedRendererV2::Rule* rule, featureRuleList )
     {

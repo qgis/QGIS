@@ -45,8 +45,9 @@ QgsSingleSymbolRendererV2::~QgsSingleSymbolRendererV2()
 {
 }
 
-QgsSymbolV2* QgsSingleSymbolRendererV2::symbolForFeature( QgsFeature& feature )
+QgsSymbolV2* QgsSingleSymbolRendererV2::symbolForFeature( QgsFeature& feature, QgsRenderContext &context )
 {
+  Q_UNUSED( context );
   if ( !mRotation.data() && !mSizeScale.data() ) return mSymbol.data();
 
   const double rotation = mRotation.data() ? mRotation->evaluate( feature ).toDouble() : 0;
@@ -73,8 +74,9 @@ QgsSymbolV2* QgsSingleSymbolRendererV2::symbolForFeature( QgsFeature& feature )
   return mTempSymbol.data();
 }
 
-QgsSymbolV2* QgsSingleSymbolRendererV2::originalSymbolForFeature( QgsFeature& feature )
+QgsSymbolV2* QgsSingleSymbolRendererV2::originalSymbolForFeature( QgsFeature& feature, QgsRenderContext &context )
 {
+  Q_UNUSED( context );
   Q_UNUSED( feature );
   return mSymbol.data();
 }
@@ -221,8 +223,9 @@ void QgsSingleSymbolRendererV2::toSld( QDomDocument& doc, QDomElement &element )
   if ( mSymbol.data() ) mSymbol->toSld( doc, ruleElem, props );
 }
 
-QgsSymbolV2List QgsSingleSymbolRendererV2::symbols()
+QgsSymbolV2List QgsSingleSymbolRendererV2::symbols( QgsRenderContext &context )
 {
+  Q_UNUSED( context );
   QgsSymbolV2List lst;
   lst.append( mSymbol.data() );
   return lst;
@@ -450,7 +453,8 @@ QgsSingleSymbolRendererV2* QgsSingleSymbolRendererV2::convertFromRenderer( const
       return convertFromRenderer( invertedPolygonRenderer->embeddedRenderer() );
   }
 
-  QgsSymbolV2List symbols = const_cast<QgsFeatureRendererV2 *>( renderer )->symbols();
+  QgsRenderContext context;
+  QgsSymbolV2List symbols = const_cast<QgsFeatureRendererV2 *>( renderer )->symbols( context );
   if ( symbols.size() > 0 )
   {
     return new QgsSingleSymbolRendererV2( symbols.at( 0 )->clone() );

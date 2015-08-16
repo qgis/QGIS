@@ -14,14 +14,26 @@ class QgsPointDisplacementRenderer : QgsFeatureRendererV2
     /** Reimplemented from QgsFeatureRendererV2*/
     bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
-    QgsSymbolV2* symbolForFeature( QgsFeature& feature );
+    /** Partial proxy that will call this method on the embedded renderer. */
+    virtual QList<QString> usedAttributes();
+    /** Proxy that will call this method on the embedded renderer. */
+    virtual int capabilities();
+    /** Proxy that will call this method on the embedded renderer. */
+    virtual QgsSymbolV2List symbols( QgsRenderContext& context );
+    /** Proxy that will call this method on the embedded renderer. */
+    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context );
+    /** Proxy that will call this method on the embedded renderer. */
+    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feat, QgsRenderContext& context );
+    /** Proxy that will call this method on the embedded renderer. */
+    virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat, QgsRenderContext& context );
+    /** Proxy that will call this method on the embedded renderer. */
+    virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context );
+    /** Proxy that will call this method on the embedded renderer. */
+    virtual bool willRenderFeature( QgsFeature& feat, QgsRenderContext& context );
 
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
 
     void stopRender( QgsRenderContext& context );
-
-    QList<QString> usedAttributes();
-    QgsSymbolV2List symbols();
 
     //! create a renderer from XML element
     static QgsFeatureRendererV2* create( QDomElement& symbologyElem ) /Factory/;

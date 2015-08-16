@@ -258,7 +258,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
 
     QgsFeatureId fid = f_it->id();
 
-    if ( filter && !renderer->willRenderFeature( *f_it ) )
+    if ( filter && !renderer->willRenderFeature( *f_it, context ) )
       continue;
 
     featureCount++;

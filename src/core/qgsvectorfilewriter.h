@@ -265,7 +265,7 @@ class CORE_EXPORT QgsVectorFileWriter
     void setSymbologyExport( SymbologyExport symExport ) { mSymbologyExport = symExport; }
 
     double symbologyScaleDenominator() const { return mSymbologyScaleDenominator; }
-    void setSymbologyScaleDenominator( double d ) { mSymbologyScaleDenominator = d; }
+    void setSymbologyScaleDenominator( double d );
 
     static bool driverMetadata( const QString& driverName, MetaData& driverMetadata );
 
@@ -301,6 +301,8 @@ class CORE_EXPORT QgsVectorFileWriter
     double mSymbologyScaleDenominator;
 
   private:
+    QgsRenderContext mRenderContext;
+
     static QMap<QString, MetaData> initMetaData();
     /**
      * @deprecated
@@ -314,9 +316,9 @@ class CORE_EXPORT QgsVectorFileWriter
     WriterError exportFeaturesSymbolLevels( QgsVectorLayer* layer, QgsFeatureIterator& fit, const QgsCoordinateTransform* ct, QString* errorMessage = 0 );
     double mmScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits );
     double mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits );
-    QgsRenderContext renderContext() const;
-    void startRender( QgsVectorLayer* vl ) const;
-    void stopRender( QgsVectorLayer* vl ) const;
+
+    void startRender( QgsVectorLayer* vl );
+    void stopRender( QgsVectorLayer* vl );
     QgsFeatureRendererV2* symbologyRenderer( QgsVectorLayer* vl ) const;
     /** Adds attributes needed for classification*/
     void addRendererAttributes( QgsVectorLayer* vl, QgsAttributeList& attList );
