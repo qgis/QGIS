@@ -17,9 +17,12 @@
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
+#include "qgisapp.h"
+
 #include <QMouseEvent>
 
-QgsMapToolReshape::QgsMapToolReshape( QgsMapCanvas* canvas ): QgsMapToolCapture( canvas, QgsMapToolCapture::CaptureLine )
+QgsMapToolReshape::QgsMapToolReshape( QgsMapCanvas* canvas )
+    : QgsMapToolCapture( canvas, QgisApp::instance()->layerTreeView(), QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CaptureLine )
 {
 }
 

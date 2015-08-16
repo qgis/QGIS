@@ -18,13 +18,14 @@
 #include "qgsmapcanvas.h"
 #include "qgsvertexmarker.h"
 #include "qgsvectorlayer.h"
+#include "qgisapp.h"
 
 #include <QMouseEvent>
 #include <limits>
 
 QgsMapToolDeleteRing::QgsMapToolDeleteRing( QgsMapCanvas* canvas )
-    : QgsMapToolEdit( canvas )
-    , vlayer( NULL )
+    : QgsMapToolEdit( canvas, QgisApp::instance()->cadDockWidget() )
+    , vlayer( 0 )
     , mRubberBand( 0 )
     , mPressedFid( 0 )
     , mPressedPartNum( 0 )

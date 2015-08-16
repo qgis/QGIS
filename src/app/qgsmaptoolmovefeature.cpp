@@ -21,11 +21,14 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgstolerance.h"
+#include "qgisapp.h"
+
 #include <QMouseEvent>
 #include <QSettings>
 #include <limits>
+
 QgsMapToolMoveFeature::QgsMapToolMoveFeature( QgsMapCanvas* canvas )
-    : QgsMapToolEdit( canvas )
+    : QgsMapToolEdit( canvas, QgisApp::instance()->cadDockWidget() )
     , mRubberBand( 0 )
 {
   mToolName = tr( "Move feature" );

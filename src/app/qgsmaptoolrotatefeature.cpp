@@ -129,7 +129,7 @@ void QgsAngleMagnetWidget::angleSpinBoxValueChanged( double angle )
 }
 
 QgsMapToolRotateFeature::QgsMapToolRotateFeature( QgsMapCanvas* canvas )
-    : QgsMapToolEdit( canvas )
+    : QgsMapToolEdit( canvas, QgisApp::instance()->cadDockWidget() )
     , mRubberBand( 0 )
     , mRotation( 0 )
     , mRotationOffset( 0 )

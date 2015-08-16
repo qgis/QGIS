@@ -19,14 +19,14 @@
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
 #include "qgsattributedialog.h"
-#include <qgsapplication.h>
+#include "qgisapp.h"
 
 #include <QMouseEvent>
 
 #include <limits>
 
 QgsMapToolFillRing::QgsMapToolFillRing( QgsMapCanvas* canvas )
-    : QgsMapToolCapture( canvas, QgsMapToolCapture::CapturePolygon )
+    : QgsMapToolCapture( canvas, QgisApp::instance()->layerTreeView(), QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CapturePolygon )
 {
 }
 
@@ -160,7 +160,7 @@ void QgsMapToolFillRing::canvasMapReleaseEvent( QgsMapMouseEvent * e )
         ft->setGeometry( g );
         ft->setAttributes( f.attributes() );
 
-        if ( QgsApplication::keyboardModifiers() == Qt::ControlModifier )
+        if ( QApplication::keyboardModifiers() == Qt::ControlModifier )
         {
           res = vlayer->addFeature( *ft );
         }

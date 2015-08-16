@@ -31,7 +31,7 @@
 #include <QRubberBand>
 
 QgsMapToolNodeTool::QgsMapToolNodeTool( QgsMapCanvas* canvas )
-    : QgsMapToolEdit( canvas )
+    : QgsMapToolEdit( canvas, QgisApp::instance()->cadDockWidget() )
     , mSelectedFeature( 0 )
     , mNodeEditor( 0 )
     , mRect( 0 )

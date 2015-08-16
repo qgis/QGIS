@@ -30,12 +30,13 @@
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
 #include "qgsfeatureaction.h"
+#include "qgisapp.h"
 
 #include <QMouseEvent>
 #include <QSettings>
 
 QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas* canvas )
-    : QgsMapToolCapture( canvas )
+    : QgsMapToolCapture( canvas, QgisApp::instance()->layerTreeView(), QgisApp::instance()->cadDockWidget() )
 {
   mToolName = tr( "Add feature" );
 }

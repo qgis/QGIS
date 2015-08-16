@@ -41,7 +41,7 @@ static const double SoftConstraintToleranceDegrees = 10;
  * It handles both the UI and the constraints. Constraints are applied
  * by implemeting filters called from QgsMapToolAdvancedDigitizing.
  */
-class APP_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private Ui::QgsAdvancedDigitizingDockWidgetBase
+class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private Ui::QgsAdvancedDigitizingDockWidgetBase
 {
     Q_OBJECT
     Q_FLAGS( CadCapacities )
@@ -160,6 +160,11 @@ class APP_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
 
     //! return the action used to enable/disable the tools
     QAction* enableAction() { return mEnableAction; }
+
+  signals:
+    void pushWarning( const QString& message );
+
+    void popWarning();
 
   public slots:
     //! whenever a map tool changes, determines if the dock shall be activated or not

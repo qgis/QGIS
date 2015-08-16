@@ -15,7 +15,6 @@
 
 #include "qgsmaptoolcapture.h"
 
-#include "qgisapp.h"
 #include "qgscursors.h"
 #include "qgsgeometryvalidator.h"
 #include "qgslayertreeview.h"
@@ -35,8 +34,8 @@
 #include <QStatusBar>
 
 
-QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas* canvas, enum CaptureMode tool )
-    : QgsMapToolEdit( canvas )
+QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas* canvas, QgsLayerTreeView* layerTreeView, QgsAdvancedDigitizingDockWidget* cadDockWidget, enum CaptureMode tool )
+    : QgsMapToolEdit( canvas, cadDockWidget )
     , mRubberBand( 0 )
     , mTempRubberBand( 0 )
     , mValidator( 0 )
@@ -57,7 +56,7 @@ QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas* canvas, enum CaptureMode too
   QPixmap mySelectQPixmap = QPixmap(( const char ** ) capture_point_cursor );
   mCursor = QCursor( mySelectQPixmap, 8, 8 );
 
-  connect( QgisApp::instance()->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
+  connect( layerTreeView, SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
            this, SLOT( currentLayerChanged( QgsMapLayer * ) ) );
 }
 
@@ -80,6 +79,16 @@ void QgsMapToolCapture::deactivate()
   mSnappingMarker = 0;
 
   QgsMapToolEdit::deactivate();
+}
+
+void QgsMapToolCapture::validationFinished()
+{
+  emit messageDiscarded();
+  QString msgFinished = tr( "Validation finished" );
+  if ( mValidationWarnings.count() )
+    emit messageEmitted( mValidationWarnings.join( "\n" ).append( "\n" ).append( msgFinished ), QgsMessageBar::WARNING );
+  else
+    emit messageEmitted( msgFinished );
 }
 
 void QgsMapToolCapture::currentLayerChanged( QgsMapLayer *layer )
@@ -399,14 +408,14 @@ void QgsMapToolCapture::validateGeometry()
     mValidator = 0;
   }
 
-  mTip = "";
+  mValidationWarnings.clear();
   mGeomErrors.clear();
   while ( !mGeomErrorMarkers.isEmpty() )
   {
     delete mGeomErrorMarkers.takeFirst();
   }
 
-  QgsGeometry *g = 0;
+  QScopedPointer<QgsGeometry> g;
 
   switch ( mCaptureMode )
   {
@@ -416,7 +425,7 @@ void QgsMapToolCapture::validateGeometry()
     case CaptureLine:
       if ( size() < 2 )
         return;
-      g = new QgsGeometry( mCaptureCurve.curveToLine() );
+      g.reset( QgsGeometry::fromPolyline( mCaptureList.curveToLine() ) );
       break;
     case CapturePolygon:
       if ( size() < 3 )
@@ -429,17 +438,14 @@ void QgsMapToolCapture::validateGeometry()
       break;
   }
 
-  if ( !g )
+  if ( !g.data() )
     return;
 
-  mValidator = new QgsGeometryValidator( g );
+  mValidator = new QgsGeometryValidator( g.data() );
   connect( mValidator, SIGNAL( errorFound( QgsGeometry::Error ) ), this, SLOT( addError( QgsGeometry::Error ) ) );
   connect( mValidator, SIGNAL( finished() ), this, SLOT( validationFinished() ) );
   mValidator->start();
-
-  QStatusBar *sb = QgisApp::instance()->statusBar();
-  sb->showMessage( tr( "Validation started." ) );
-  delete g;
+  messageEmitted( tr( "Validation started" ) );
 }
 
 void QgsMapToolCapture::addError( QgsGeometry::Error e )
@@ -449,10 +455,7 @@ void QgsMapToolCapture::addError( QgsGeometry::Error e )
   if ( !vlayer )
     return;
 
-  if ( !mTip.isEmpty() )
-    mTip += "\n";
-
-  mTip += e.what();
+  mValidationWarnings << e.what();
 
   if ( e.hasWhere() )
   {
@@ -466,16 +469,8 @@ void QgsMapToolCapture::addError( QgsGeometry::Error e )
     mGeomErrorMarkers << vm;
   }
 
-  QStatusBar *sb = QgisApp::instance()->statusBar();
-  sb->showMessage( e.what() );
-  if ( !mTip.isEmpty() )
-    sb->setToolTip( mTip );
-}
-
-void QgsMapToolCapture::validationFinished()
-{
-  QStatusBar *sb = QgisApp::instance()->statusBar();
-  sb->showMessage( tr( "Validation finished." ) );
+  emit messageDiscarded();
+  emit messageEmitted( mValidationWarnings.join( "\n" ), QgsMessageBar::WARNING );
 }
 
 int QgsMapToolCapture::size()

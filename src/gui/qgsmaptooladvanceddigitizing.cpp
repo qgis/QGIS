@@ -15,11 +15,11 @@
 
 #include "qgsmapmouseevent.h"
 #include "qgsmaptooladvanceddigitizing.h"
-#include "qgisapp.h"
 
 
-QgsMapToolAdvancedDigitizing::QgsMapToolAdvancedDigitizing( QgsMapCanvas* canvas )
+QgsMapToolAdvancedDigitizing::QgsMapToolAdvancedDigitizing( QgsMapCanvas* canvas, QgsAdvancedDigitizingDockWidget* cadDockWidget )
     : QgsMapTool( canvas )
+    , mCadDockWidget( cadDockWidget )
     , mCadAllowed( false )
     , mCaptureMode( CapturePoint )
     , mSnapOnPress( false )
@@ -27,7 +27,6 @@ QgsMapToolAdvancedDigitizing::QgsMapToolAdvancedDigitizing( QgsMapCanvas* canvas
     , mSnapOnMove( false )
     , mSnapOnDoubleClick( false )
 {
-  mCadDockWidget = QgisApp::instance()->cadDockWidget();
 }
 
 QgsMapToolAdvancedDigitizing::~QgsMapToolAdvancedDigitizing()

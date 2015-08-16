@@ -17,8 +17,8 @@
 #ifndef QGSMAPTOOLADVANCEDDIGITIZE_H
 #define QGSMAPTOOLADVANCEDDIGITIZE_H
 
-#include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsmaptool.h"
+#include "qgsadvanceddigitizingdockwidget.h"
 
 class QgsMapMouseEvent;
 
@@ -30,7 +30,7 @@ class QgsMapMouseEvent;
  * @note at the momemt, the event filter is used by the CAD tools (@see QgsCadDocWidget).
  * @note the event filter definition is not exposed in python API to avoid any unexpected behavior.
  */
-class APP_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapTool
+class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapTool
 {
     Q_OBJECT
   public:
@@ -42,7 +42,7 @@ class APP_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapTool
       CapturePolygon
     };
 
-    explicit QgsMapToolAdvancedDigitizing( QgsMapCanvas* canvas );
+    explicit QgsMapToolAdvancedDigitizing( QgsMapCanvas* canvas, QgsAdvancedDigitizingDockWidget* cadDockWidget );
 
     ~QgsMapToolAdvancedDigitizing();
 
@@ -79,7 +79,6 @@ class APP_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapTool
     CaptureMode mode() { return mCaptureMode; }
 
   protected:
-
     QgsAdvancedDigitizingDockWidget* mCadDockWidget;
 
     bool mCadAllowed;

@@ -25,12 +25,12 @@ class QgsVectorLayer;
 class QKeyEvent;
 
 /** Base class for map tools that edit vector geometry*/
-class APP_EXPORT QgsMapToolEdit: public QgsMapToolAdvancedDigitizing
+class GUI_EXPORT QgsMapToolEdit: public QgsMapToolAdvancedDigitizing
 {
     Q_OBJECT
 
   public:
-    QgsMapToolEdit( QgsMapCanvas* canvas );
+    QgsMapToolEdit( QgsMapCanvas* canvas , QgsAdvancedDigitizingDockWidget* cadDockWidget );
     virtual ~QgsMapToolEdit();
 
     virtual bool isEditTool() override { return true; }

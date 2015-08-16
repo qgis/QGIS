@@ -14,10 +14,10 @@
  ***************************************************************************/
 
 #include <QSettings>
+#include <QMenu>
 
 #include "math.h"
 
-#include "qgisapp.h"
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsadvanceddigitizingcanvasitem.h"
 #include "qgsapplication.h"
@@ -28,6 +28,7 @@
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgsmessagebaritem.h"
 #include "qgspoint.h"
+#include "qgslinestringv2.h"
 
 
 bool QgsAdvancedDigitizingDockWidget::lineCircleIntersection( const QgsPoint& center, const double radius, const QList<QgsPoint>& segment, QgsPoint& intersection )
@@ -79,6 +80,7 @@ bool QgsAdvancedDigitizingDockWidget::lineCircleIntersection( const QgsPoint& ce
     return true;
   }
 }
+
 
 QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* canvas, QWidget *parent )
     : QDockWidget( parent )
@@ -269,11 +271,6 @@ void QgsAdvancedDigitizingDockWidget::activateCad( bool enabled )
 {
   enabled &= mCurrentMapTool != 0;
 
-  if ( mErrorMessage )
-  {
-    QgisApp::instance()->messageBar()->popWidget( mErrorMessage );
-    mErrorMessage = 0;
-  }
   QSettings().setValue( "/Cad/SessionActive", enabled );
 
   if ( enabled && !isVisible() )
@@ -867,11 +864,7 @@ bool QgsAdvancedDigitizingDockWidget::canvasReleaseEventFilter( QgsMapMouseEvent
   if ( !mCadEnabled )
     return false;
 
-  if ( mErrorMessage )
-  {
-    QgisApp::instance()->messageBar()->popWidget( mErrorMessage );
-    mErrorMessage = 0;
-  }
+  emit popWarning();
 
   if ( e->button() == Qt::RightButton )
   {
@@ -916,20 +909,11 @@ bool QgsAdvancedDigitizingDockWidget::canvasMoveEventFilter( QgsMapMouseEvent* e
 
   if ( !applyConstraints( e ) )
   {
-    if ( !mErrorMessage )
-    {
-      // errors messages
-      mErrorMessage = new QgsMessageBarItem( tr( "CAD tools" ),
-                                             tr( "Some constraints are incompatible. Resulting point might be incorrect." ),
-                                             QgsMessageBar::WARNING, 0 );
-
-      QgisApp::instance()->messageBar()->pushItem( mErrorMessage );
-    }
+    emit pushWarning( tr( "Some constraints are incompatible. Resulting point might be incorrect." ) );
   }
-  else if ( mErrorMessage )
+  else
   {
-    QgisApp::instance()->messageBar()->popWidget( mErrorMessage );
-    mErrorMessage = 0;
+    popWarning();
   }
 
   // perpendicular/parallel constraint

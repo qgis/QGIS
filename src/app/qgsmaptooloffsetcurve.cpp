@@ -27,7 +27,7 @@
 #include "qgisapp.h"
 
 QgsMapToolOffsetCurve::QgsMapToolOffsetCurve( QgsMapCanvas* canvas )
-    : QgsMapToolEdit( canvas )
+    : QgsMapToolEdit( canvas, QgisApp::instance()->cadDockWidget() )
     , mRubberBand( 0 )
     , mOriginalGeometry( 0 )
     , mModifiedFeature( -1 )

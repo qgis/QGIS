@@ -21,11 +21,12 @@
 #include "qgsgeometry.h"
 #include "qgssnappingutils.h"
 #include "qgstolerance.h"
+#include "qgisapp.h"
 
 #include <QMouseEvent>
 
 QgsMapToolDeletePart::QgsMapToolDeletePart( QgsMapCanvas* canvas )
-    : QgsMapToolEdit( canvas )
+    : QgsMapToolEdit( canvas, QgisApp::instance()->cadDockWidget() )
     , vlayer( NULL )
     , mRubberBand( 0 )
     , mPressedFid( 0 )

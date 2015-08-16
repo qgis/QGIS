@@ -24,7 +24,7 @@
 #include <QMouseEvent>
 
 QgsMapToolSplitFeatures::QgsMapToolSplitFeatures( QgsMapCanvas* canvas )
-    : QgsMapToolCapture( canvas, QgsMapToolCapture::CaptureLine )
+    : QgsMapToolCapture( canvas, QgisApp::instance()->layerTreeView(), QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CaptureLine )
 {
   mToolName = tr( "Split features" );
 }

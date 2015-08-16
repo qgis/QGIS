@@ -21,6 +21,7 @@
 #include "qgscompoundcurvev2.h"
 #include "qgspoint.h"
 #include "qgsgeometry.h"
+#include "qgslayertreeview.h"
 
 #include <QPoint>
 #include <QList>
@@ -30,13 +31,13 @@ class QgsVertexMarker;
 class QgsMapLayer;
 class QgsGeometryValidator;
 
-class APP_EXPORT QgsMapToolCapture : public QgsMapToolEdit
+class GUI_EXPORT QgsMapToolCapture : public QgsMapToolEdit
 {
     Q_OBJECT
 
   public:
     //! constructor
-    QgsMapToolCapture( QgsMapCanvas* canvas, CaptureMode mode = CaptureNone );
+    QgsMapToolCapture( QgsMapCanvas* canvas, QgsLayerTreeView* layerTreeView, QgsAdvancedDigitizingDockWidget* cadDockWidget, CaptureMode mode = CaptureNone );
 
     //! destructor
     virtual ~QgsMapToolCapture();
@@ -60,10 +61,12 @@ class APP_EXPORT QgsMapToolCapture : public QgsMapToolEdit
 
     void deleteTempRubberBand();
 
-  public slots:
+  private slots:
+    void validationFinished();
+
     void currentLayerChanged( QgsMapLayer *layer );
     void addError( QgsGeometry::Error );
-    void validationFinished();
+
 
   protected:
     int nextPoint( const QgsPoint& mapPoint, QgsPoint& layerPoint );
@@ -99,7 +102,7 @@ class APP_EXPORT QgsMapToolCapture : public QgsMapToolEdit
     QgsCompoundCurveV2 mCaptureCurve;
 
     void validateGeometry();
-    QString mTip;
+    QStringList mValidationWarnings;
     QgsGeometryValidator *mValidator;
     QList< QgsGeometry::Error > mGeomErrors;
     QList< QgsVertexMarker * > mGeomErrorMarkers;

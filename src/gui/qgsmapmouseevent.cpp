@@ -18,7 +18,6 @@
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgsmapcanvas.h"
 
-#include "qgisapp.h"
 #include "qgssnappingutils.h"
 
 QgsMapMouseEvent::QgsMapMouseEvent( QgsMapToolAdvancedDigitizing* mapTool, QMouseEvent* event, SnappingMode mode )
@@ -142,5 +141,3 @@ QList<QgsPoint> QgsMapMouseEvent::snapSegment( bool* snapped, bool allLayers ) c
 
   return segment;
 }
-
-

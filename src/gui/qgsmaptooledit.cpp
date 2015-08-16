@@ -24,8 +24,8 @@
 #include <QSettings>
 
 
-QgsMapToolEdit::QgsMapToolEdit( QgsMapCanvas* canvas )
-    : QgsMapToolAdvancedDigitizing( canvas )
+QgsMapToolEdit::QgsMapToolEdit( QgsMapCanvas* canvas, QgsAdvancedDigitizingDockWidget* cadDockWidget )
+    : QgsMapToolAdvancedDigitizing( canvas, cadDockWidget )
 {
 }
 

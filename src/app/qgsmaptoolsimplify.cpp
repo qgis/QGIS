@@ -20,6 +20,7 @@
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 #include "qgstolerance.h"
+#include "qgisapp.h"
 
 #include <QMouseEvent>
 
@@ -56,7 +57,7 @@ void QgsSimplifyDialog::enableOkButton( bool enabled )
 
 
 QgsMapToolSimplify::QgsMapToolSimplify( QgsMapCanvas* canvas )
-    : QgsMapToolEdit( canvas )
+    : QgsMapToolEdit( canvas, QgisApp::instance()->cadDockWidget() )
     , mSelectionRubberBand( 0 )
     , mDragging( false )
     , mOriginalVertexCount( 0 )

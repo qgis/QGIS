@@ -15,8 +15,6 @@ SET(QGIS_APP_SRCS
   qgsattributetabledialog.cpp
   qgsbookmarks.cpp
   qgsbrowserdockwidget.cpp
-  qgsadvanceddigitizingdockwidget.cpp
-  qgsadvanceddigitizingcanvasitem.cpp
   qgsclipboard.cpp
   qgsconfigureshortcutsdialog.cpp
   qgscustomization.cpp
@@ -47,7 +45,6 @@ SET(QGIS_APP_SRCS
   qgslabelpreview.cpp
   qgsloadstylefromdbdialog.cpp
   qgsmaplayerstyleguiutils.cpp
-  qgsmapmouseevent.cpp
   qgssavestyletodbdialog.cpp
   qgsguivectorlayertools.cpp
   qgswelcomepageitemsmodel.cpp
@@ -59,11 +56,9 @@ SET(QGIS_APP_SRCS
   qgsmaptooladdring.cpp
   qgsmaptoolfillring.cpp
   qgsmaptoolannotation.cpp
-  qgsmaptoolcapture.cpp
   qgsmaptoolchangelabelproperties.cpp
   qgsmaptooldeletering.cpp
   qgsmaptooldeletepart.cpp
-  qgsmaptooledit.cpp
   qgsmaptoolfeatureaction.cpp
   qgsmaptoolformannotation.cpp
   qgsmaptoolhtmlannotation.cpp
@@ -71,7 +66,6 @@ SET(QGIS_APP_SRCS
   qgsmaptoolshowhidelabels.cpp
   qgsmaptoolidentifyaction.cpp
   qgsmaptoollabel.cpp
-  qgsmaptooladvanceddigitizing.cpp
   qgsmaptoolmeasureangle.cpp
   qgsmaptoolmovefeature.cpp
   qgsmaptoolmovelabel.cpp
@@ -181,7 +175,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsattributetabledialog.h
   qgsbookmarks.h
   qgsbrowserdockwidget.h
-  qgsadvanceddigitizingdockwidget.h
   qgsclipboard.h
   qgsconfigureshortcutsdialog.h
   qgscustomization.h
@@ -220,11 +213,9 @@ SET (QGIS_APP_MOC_HDRS
   qgsversioninfo.h
 
   qgsmaptooladdfeature.h
-  qgsmaptoolcapture.h
   qgsmaptoolcircularstringradius.h
   qgsmaptooladdpart.h
   qgsmaptooladdring.h
-  qgsmaptooledit.h
   qgsmaptoolfillring.h
   qgsmaptoolchangelabelproperties.h
   qgsmaptooldeletepart.h
@@ -233,7 +224,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolpinlabels.h
   qgsmaptoolshowhidelabels.h
   qgsmaptoolidentifyaction.h
-  qgsmaptooladvanceddigitizing.h
   qgsmaptoolmeasureangle.h
   qgsmaptoolmovefeature.h
   qgsmaptoolmovelabel.h
