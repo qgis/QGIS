@@ -280,7 +280,7 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
 
   while ( features.nextFeature( f ) )
   {
-    if ( !filter || renderer->willRenderFeature( f ) )
+    if ( !filter || renderer->willRenderFeature( f, renderContext ) )
     {
       mFilteredFeatures << f.id();
     }
