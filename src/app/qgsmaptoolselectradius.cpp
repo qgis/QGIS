@@ -44,7 +44,7 @@ QgsMapToolSelectRadius::~QgsMapToolSelectRadius()
   delete mRubberBand;
 }
 
-void QgsMapToolSelectRadius::canvasPressEvent( QMouseEvent * e )
+void QgsMapToolSelectRadius::canvasPressEvent( QgsMapMouseEvent* e )
 {
   if ( e->button() != Qt::LeftButton )
   {
@@ -54,7 +54,7 @@ void QgsMapToolSelectRadius::canvasPressEvent( QMouseEvent * e )
 }
 
 
-void QgsMapToolSelectRadius::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolSelectRadius::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   if ( e->buttons() != Qt::LeftButton )
   {
@@ -75,7 +75,7 @@ void QgsMapToolSelectRadius::canvasMoveEvent( QMouseEvent * e )
 }
 
 
-void QgsMapToolSelectRadius::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolSelectRadius::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   if ( e->button() != Qt::LeftButton )
   {

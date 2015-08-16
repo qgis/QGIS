@@ -34,7 +34,7 @@ QgsMapToolPan::QgsMapToolPan( QgsMapCanvas* canvas )
 }
 
 
-void QgsMapToolPan::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolPan::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   if (( e->buttons() & Qt::LeftButton ) )
   {
@@ -44,7 +44,7 @@ void QgsMapToolPan::canvasMoveEvent( QMouseEvent * e )
   }
 }
 
-void QgsMapToolPan::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolPan::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   if ( e->button() == Qt::LeftButton )
   {

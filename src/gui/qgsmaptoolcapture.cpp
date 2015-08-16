@@ -15,7 +15,6 @@
 
 #include "qgsmaptoolcapture.h"
 
-#include "qgisapp.h"
 #include "qgscursors.h"
 #include "qgsgeometryvalidator.h"
 #include "qgslayertreeview.h"
@@ -35,15 +34,14 @@
 #include <QStatusBar>
 
 
-QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas* canvas, enum CaptureMode tool )
-    : QgsMapToolEdit( canvas )
+QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas* canvas, QgsAdvancedDigitizingDockWidget* cadDockWidget, CaptureMode mode )
+    : QgsMapToolAdvancedDigitizing( canvas, cadDockWidget )
     , mRubberBand( 0 )
     , mTempRubberBand( 0 )
     , mValidator( 0 )
     , mSnappingMarker( 0 )
 {
-  mCaptureMode = tool;
-  mCadAllowed = true;
+  mCaptureMode = mode;
 
   // enable the snapping on mouse move / release
   mSnapOnMove = true;
@@ -51,13 +49,13 @@ QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas* canvas, enum CaptureMode too
   mSnapOnDoubleClick = false;
   mSnapOnPress = false;
 
-  mCaptureModeFromLayer = tool == CaptureNone;
+  mCaptureModeFromLayer = mode == CaptureNone;
   mCapturing = false;
 
   QPixmap mySelectQPixmap = QPixmap(( const char ** ) capture_point_cursor );
-  mCursor = QCursor( mySelectQPixmap, 8, 8 );
+  setCursor( QCursor( mySelectQPixmap, 8, 8 ) );
 
-  connect( QgisApp::instance()->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
+  connect( canvas, SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
            this, SLOT( currentLayerChanged( QgsMapLayer * ) ) );
 }
 
@@ -80,6 +78,16 @@ void QgsMapToolCapture::deactivate()
   mSnappingMarker = 0;
 
   QgsMapToolEdit::deactivate();
+}
+
+void QgsMapToolCapture::validationFinished()
+{
+  emit messageDiscarded();
+  QString msgFinished = tr( "Validation finished" );
+  if ( mValidationWarnings.count() )
+    emit messageEmitted( mValidationWarnings.join( "\n" ).append( "\n" ).append( msgFinished ), QgsMessageBar::WARNING );
+  else
+    emit messageEmitted( msgFinished );
 }
 
 void QgsMapToolCapture::currentLayerChanged( QgsMapLayer *layer )
@@ -112,8 +120,9 @@ void QgsMapToolCapture::currentLayerChanged( QgsMapLayer *layer )
   }
 }
 
-void QgsMapToolCapture::canvasMapMoveEvent( QgsMapMouseEvent * e )
+void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent * e )
 {
+  QgsMapToolAdvancedDigitizing::cadCanvasMoveEvent( e );
   bool snapped = e->isSnapped();
   QgsPoint point = e->mapPoint();
 
@@ -147,13 +156,6 @@ void QgsMapToolCapture::canvasMapMoveEvent( QgsMapMouseEvent * e )
     mTempRubberBand->movePoint( point );
   }
 } // mouseMoveEvent
-
-
-void QgsMapToolCapture::canvasMapPressEvent( QgsMapMouseEvent* e )
-{
-  Q_UNUSED( e );
-  // nothing to be done
-}
 
 int QgsMapToolCapture::nextPoint( const QgsPoint& mapPoint, QgsPoint& layerPoint )
 {
@@ -314,7 +316,7 @@ void QgsMapToolCapture::undo()
   }
 }
 
-void QgsMapToolCapture::canvasKeyPressEvent( QKeyEvent* e )
+void QgsMapToolCapture::keyPressEvent( QKeyEvent* e )
 {
   if ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete )
   {
@@ -399,14 +401,14 @@ void QgsMapToolCapture::validateGeometry()
     mValidator = 0;
   }
 
-  mTip = "";
+  mValidationWarnings.clear();
   mGeomErrors.clear();
   while ( !mGeomErrorMarkers.isEmpty() )
   {
     delete mGeomErrorMarkers.takeFirst();
   }
 
-  QgsGeometry *g = 0;
+  QScopedPointer<QgsGeometry> g;
 
   switch ( mCaptureMode )
   {
@@ -416,7 +418,7 @@ void QgsMapToolCapture::validateGeometry()
     case CaptureLine:
       if ( size() < 2 )
         return;
-      g = new QgsGeometry( mCaptureCurve.curveToLine() );
+      g.reset( new QgsGeometry( mCaptureCurve.curveToLine() ) );
       break;
     case CapturePolygon:
       if ( size() < 3 )
@@ -425,21 +427,18 @@ void QgsMapToolCapture::validateGeometry()
       exteriorRing->close();
       QgsPolygonV2* polygon = new QgsPolygonV2();
       polygon->setExteriorRing( exteriorRing );
-      g = new QgsGeometry( polygon );
+      g.reset( new QgsGeometry( polygon ) );
       break;
   }
 
-  if ( !g )
+  if ( !g.data() )
     return;
 
-  mValidator = new QgsGeometryValidator( g );
+  mValidator = new QgsGeometryValidator( g.data() );
   connect( mValidator, SIGNAL( errorFound( QgsGeometry::Error ) ), this, SLOT( addError( QgsGeometry::Error ) ) );
   connect( mValidator, SIGNAL( finished() ), this, SLOT( validationFinished() ) );
   mValidator->start();
-
-  QStatusBar *sb = QgisApp::instance()->statusBar();
-  sb->showMessage( tr( "Validation started." ) );
-  delete g;
+  messageEmitted( tr( "Validation started" ) );
 }
 
 void QgsMapToolCapture::addError( QgsGeometry::Error e )
@@ -449,10 +448,7 @@ void QgsMapToolCapture::addError( QgsGeometry::Error e )
   if ( !vlayer )
     return;
 
-  if ( !mTip.isEmpty() )
-    mTip += "\n";
-
-  mTip += e.what();
+  mValidationWarnings << e.what();
 
   if ( e.hasWhere() )
   {
@@ -466,16 +462,8 @@ void QgsMapToolCapture::addError( QgsGeometry::Error e )
     mGeomErrorMarkers << vm;
   }
 
-  QStatusBar *sb = QgisApp::instance()->statusBar();
-  sb->showMessage( e.what() );
-  if ( !mTip.isEmpty() )
-    sb->setToolTip( mTip );
-}
-
-void QgsMapToolCapture::validationFinished()
-{
-  QStatusBar *sb = QgisApp::instance()->statusBar();
-  sb->showMessage( tr( "Validation finished." ) );
+  emit messageDiscarded();
+  emit messageEmitted( mValidationWarnings.join( "\n" ), QgsMessageBar::WARNING );
 }
 
 int QgsMapToolCapture::size()

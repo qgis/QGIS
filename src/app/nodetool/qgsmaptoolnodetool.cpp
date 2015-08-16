@@ -38,8 +38,6 @@ QgsMapToolNodeTool::QgsMapToolNodeTool( QgsMapCanvas* canvas )
     , mIsPoint( false )
 {
   mSnapper.setMapCanvas( canvas );
-  mCadAllowed = true;
-  mSnapOnPress = true;
 }
 
 QgsMapToolNodeTool::~QgsMapToolNodeTool()
@@ -47,7 +45,7 @@ QgsMapToolNodeTool::~QgsMapToolNodeTool()
   cleanTool();
 }
 
-void QgsMapToolNodeTool::canvasMapPressEvent( QgsMapMouseEvent* e )
+void QgsMapToolNodeTool::canvasPressEvent( QgsMapMouseEvent* e )
 {
   removeRubberBands();
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
@@ -122,7 +120,7 @@ void QgsMapToolNodeTool::canvasMapPressEvent( QgsMapMouseEvent* e )
   }
 }
 
-void QgsMapToolNodeTool::canvasMapMoveEvent( QgsMapMouseEvent* e )
+void QgsMapToolNodeTool::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   if ( !mSelectedFeature || !mSelectedFeature->hasSelection() )
   {
@@ -228,7 +226,7 @@ void QgsMapToolNodeTool::cleanTool( bool deleteSelectedFeature )
   }
 }
 
-void QgsMapToolNodeTool::canvasDoubleClickEvent( QMouseEvent * e )
+void QgsMapToolNodeTool::canvasDoubleClickEvent( QgsMapMouseEvent* e )
 {
   if ( !mSelectedFeature )
     return;

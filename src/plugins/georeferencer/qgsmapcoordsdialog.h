@@ -31,7 +31,7 @@ class QgsGeorefMapToolEmitPoint : public QgsMapToolEmitPoint
     {
     }
 
-    void canvasReleaseEvent( QMouseEvent *e ) override
+    void canvasReleaseEvent( QgsMapMouseEvent* e ) override
     {
       QgsMapToolEmitPoint::canvasReleaseEvent( e );
       emit mouseReleased();

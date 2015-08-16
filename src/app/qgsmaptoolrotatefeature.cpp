@@ -146,7 +146,7 @@ QgsMapToolRotateFeature::~QgsMapToolRotateFeature()
   deleteRubberband();
 }
 
-void QgsMapToolRotateFeature::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolRotateFeature::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   if ( mRotationActive )
   {
@@ -167,7 +167,7 @@ void QgsMapToolRotateFeature::canvasMoveEvent( QMouseEvent * e )
 }
 
 
-void QgsMapToolRotateFeature::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   deleteRotationWidget();
 

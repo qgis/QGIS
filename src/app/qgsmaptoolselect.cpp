@@ -37,7 +37,7 @@ QgsMapToolSelect::QgsMapToolSelect( QgsMapCanvas* canvas )
   mBorderColour = QColor( 254, 58, 29, 100 );
 }
 
-void QgsMapToolSelect::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolSelect::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   QgsVectorLayer* vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
   if ( vlayer == NULL )

@@ -30,12 +30,13 @@
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
 #include "qgsfeatureaction.h"
+#include "qgisapp.h"
 
 #include <QMouseEvent>
 #include <QSettings>
 
 QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas* canvas )
-    : QgsMapToolCapture( canvas )
+    : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget() )
 {
   mToolName = tr( "Add feature" );
 }
@@ -63,14 +64,12 @@ void QgsMapToolAddFeature::activate()
     return;
   }
 
-  QgsMapTool::activate();
+  QgsMapToolCapture::activate();
 }
 
-void QgsMapToolAddFeature::canvasMapReleaseEvent( QgsMapMouseEvent* e )
+void QgsMapToolAddFeature::cadCanvasReleaseEvent( QgsMapMouseEvent* e )
 {
-  QgsDebugMsg( "entered." );
-
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+  QgsVectorLayer* vlayer = currentVectorLayer();
 
   if ( !vlayer )
   {

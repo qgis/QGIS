@@ -17,10 +17,11 @@
 #define QGSMAPTOOLCAPTURE_H
 
 
-#include "qgsmaptooledit.h"
+#include "qgsmaptooladvanceddigitizing.h"
 #include "qgscompoundcurvev2.h"
 #include "qgspoint.h"
 #include "qgsgeometry.h"
+#include "qgslayertreeview.h"
 
 #include <QPoint>
 #include <QList>
@@ -30,25 +31,16 @@ class QgsVertexMarker;
 class QgsMapLayer;
 class QgsGeometryValidator;
 
-class APP_EXPORT QgsMapToolCapture : public QgsMapToolEdit
+class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 {
     Q_OBJECT
 
   public:
     //! constructor
-    QgsMapToolCapture( QgsMapCanvas* canvas, CaptureMode mode = CaptureNone );
+    QgsMapToolCapture( QgsMapCanvas* canvas, QgsAdvancedDigitizingDockWidget* cadDockWidget, CaptureMode mode = CaptureNone );
 
     //! destructor
     virtual ~QgsMapToolCapture();
-
-    //! Overridden mouse move event
-    virtual void canvasMapMoveEvent( QgsMapMouseEvent* e ) override;
-
-    //! Overridden mouse press event
-    virtual void canvasMapPressEvent( QgsMapMouseEvent * e ) override;
-
-    //! Overridden key press event
-    virtual void canvasKeyPressEvent( QKeyEvent* e ) override;
 
     //! deactive the tool
     virtual void deactivate() override;
@@ -59,11 +51,15 @@ class APP_EXPORT QgsMapToolCapture : public QgsMapToolEdit
     const QgsCompoundCurveV2* captureCurve() const { return &mCaptureCurve; }
 
     void deleteTempRubberBand();
+    void cadCanvasMoveEvent( QgsMapMouseEvent * e );
+    void keyPressEvent( QKeyEvent* e );
 
-  public slots:
+  private slots:
+    void validationFinished();
+
     void currentLayerChanged( QgsMapLayer *layer );
     void addError( QgsGeometry::Error );
-    void validationFinished();
+
 
   protected:
     int nextPoint( const QgsPoint& mapPoint, QgsPoint& layerPoint );
@@ -99,7 +95,7 @@ class APP_EXPORT QgsMapToolCapture : public QgsMapToolEdit
     QgsCompoundCurveV2 mCaptureCurve;
 
     void validateGeometry();
-    QString mTip;
+    QStringList mValidationWarnings;
     QgsGeometryValidator *mValidator;
     QList< QgsGeometry::Error > mGeomErrors;
     QList< QgsVertexMarker * > mGeomErrorMarkers;

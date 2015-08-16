@@ -125,6 +125,8 @@ SET(QGIS_GUI_SRCS
   qgisinterface.cpp
   qgsannotationitem.cpp
   qgsactionmenu.cpp
+  qgsadvanceddigitizingcanvasitem.cpp
+  qgsadvanceddigitizingdockwidget.cpp
   qgsattributedialog.cpp
   qgsattributeeditor.cpp
   qgsattributeform.cpp
@@ -193,9 +195,13 @@ SET(QGIS_GUI_SRCS
   qgsmaplayercombobox.cpp
   qgsmaplayermodel.cpp
   qgsmaplayerproxymodel.cpp
+  qgsmapmouseevent.cpp
   qgsmapoverviewcanvas.cpp
   qgsmaptip.cpp
   qgsmaptool.cpp
+  qgsmaptooladvanceddigitizing.cpp
+  qgsmaptoolcapture.cpp
+  qgsmaptooledit.cpp
   qgsmaptoolemitpoint.cpp
   qgsmaptoolidentify.cpp
   qgsmaptoolidentifyfeature.cpp
@@ -260,6 +266,7 @@ ENDIF (WITH_TOUCH)
 SET(QGIS_GUI_MOC_HDRS
   qgisinterface.h
   qgsactionmenu.h
+  qgsadvanceddigitizingdockwidget.h
   qgsattributedialog.h
   qgsattributeeditor.h
   qgsattributeform.h
@@ -318,11 +325,16 @@ SET(QGIS_GUI_MOC_HDRS
   qgsmaplayermodel.h
   qgsmaplayerproxymodel.h
   qgsmapoverviewcanvas.h
-  qgsmaptoolemitpoint.h
   qgsmaptool.h
-  qgsmaptoolidentifyfeature.h
+  qgsmaptooladvanceddigitizing.h
+  qgsmaptoolcapture.h
+  qgsmaptooledit.h
+  qgsmaptoolemitpoint.h
   qgsmaptoolidentify.h
+  qgsmaptoolidentifyfeature.h
   qgsmaptoolpan.h
+  qgsmaptoolpan.h
+  qgsmaptoolzoom.h
   qgsmaptoolzoom.h
   qgsmessagebar.h
   qgsmessagebaritem.h
@@ -500,8 +512,6 @@ SET(QGIS_GUI_HDRS
   qgsmapcanvassnapper.h
   qgsmapcanvassnappingutils.h
   qgsmaptip.h
-  qgsmaptoolpan.h
-  qgsmaptoolzoom.h
   qgsnumericsortlistviewitem.h
   qgsrubberband.h
   qgssvgannotationitem.h

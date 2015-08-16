@@ -20,6 +20,7 @@
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 #include "qgstolerance.h"
+#include "qgisapp.h"
 
 #include <QMouseEvent>
 
@@ -186,7 +187,7 @@ void QgsMapToolSimplify::storeSimplified()
 
 
 
-void QgsMapToolSimplify::canvasPressEvent( QMouseEvent * e )
+void QgsMapToolSimplify::canvasPressEvent( QgsMapMouseEvent* e )
 {
   if ( e->button() != Qt::LeftButton )
     return;
@@ -204,7 +205,7 @@ void QgsMapToolSimplify::canvasPressEvent( QMouseEvent * e )
 }
 
 
-void QgsMapToolSimplify::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolSimplify::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   if ( !( e->buttons() & Qt::LeftButton ) )
     return;
@@ -228,7 +229,7 @@ void QgsMapToolSimplify::canvasMoveEvent( QMouseEvent * e )
 }
 
 
-void QgsMapToolSimplify::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolSimplify::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   if ( e->button() != Qt::LeftButton )
     return;

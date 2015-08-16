@@ -48,13 +48,13 @@ class QgsMapToolIdentify : QgsMapTool
     virtual ~QgsMapToolIdentify();
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QMouseEvent * e );
+    virtual void canvasMoveEvent( QgsMapMouseEvent * e );
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QMouseEvent * e );
+    virtual void canvasPressEvent( QgsMapMouseEvent * e );
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QMouseEvent * e );
+    virtual void canvasReleaseEvent( QgsMapMouseEvent * e );
 
     virtual void activate();
 

@@ -54,7 +54,7 @@ QgsGrassRegionEdit::~QgsGrassRegionEdit()
 }
 
 //! mouse pressed in map canvas
-void QgsGrassRegionEdit::canvasPressEvent( QMouseEvent * event )
+void QgsGrassRegionEdit::canvasPressEvent( QgsMapMouseEvent * event )
 {
   QgsDebugMsg( "entered." );
   mDraw = true;
@@ -68,7 +68,7 @@ void QgsGrassRegionEdit::canvasPressEvent( QMouseEvent * event )
 }
 
 //! mouse movement in map canvas
-void QgsGrassRegionEdit::canvasMoveEvent( QMouseEvent * event )
+void QgsGrassRegionEdit::canvasMoveEvent( QgsMapMouseEvent * event )
 {
   if ( !mDraw )
     return;
@@ -78,7 +78,7 @@ void QgsGrassRegionEdit::canvasMoveEvent( QMouseEvent * event )
 }
 
 //! mouse button released
-void QgsGrassRegionEdit::canvasReleaseEvent( QMouseEvent * event )
+void QgsGrassRegionEdit::canvasReleaseEvent( QgsMapMouseEvent * event )
 {
   if ( !mDraw )
     return;

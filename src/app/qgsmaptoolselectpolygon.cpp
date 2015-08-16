@@ -37,7 +37,7 @@ QgsMapToolSelectPolygon::~QgsMapToolSelectPolygon()
   delete mRubberBand;
 }
 
-void QgsMapToolSelectPolygon::canvasPressEvent( QMouseEvent * e )
+void QgsMapToolSelectPolygon::canvasPressEvent( QgsMapMouseEvent* e )
 {
   if ( mRubberBand == NULL )
   {
@@ -63,7 +63,7 @@ void QgsMapToolSelectPolygon::canvasPressEvent( QMouseEvent * e )
   }
 }
 
-void QgsMapToolSelectPolygon::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolSelectPolygon::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   if ( mRubberBand == NULL )
   {

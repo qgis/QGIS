@@ -71,9 +71,9 @@ class APP_EXPORT QgsMapToolRotateFeature: public QgsMapToolEdit
     QgsMapToolRotateFeature( QgsMapCanvas* canvas );
     virtual ~QgsMapToolRotateFeature();
 
-    virtual void canvasMoveEvent( QMouseEvent * e ) override;
+    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
 
-    virtual void canvasReleaseEvent( QMouseEvent * e ) override;
+    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
 
     //! called when map tool is being deactivated
     void deactivate() override;

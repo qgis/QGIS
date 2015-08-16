@@ -142,22 +142,22 @@ void QgsMapTool::setCursor( QCursor cursor )
 }
 
 
-void QgsMapTool::canvasMoveEvent( QMouseEvent *e )
+void QgsMapTool::canvasMoveEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
 }
 
-void QgsMapTool::canvasDoubleClickEvent( QMouseEvent *e )
+void QgsMapTool::canvasDoubleClickEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
 }
 
-void QgsMapTool::canvasPressEvent( QMouseEvent *e )
+void QgsMapTool::canvasPressEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
 }
 
-void QgsMapTool::canvasReleaseEvent( QMouseEvent *e )
+void QgsMapTool::canvasReleaseEvent( QgsMapMouseEvent* e )
 {
   Q_UNUSED( e );
 }

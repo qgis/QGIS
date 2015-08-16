@@ -19,6 +19,7 @@
 #include <QDockWidget>
 
 #include "qgsmapmouseevent.h"
+#include "qgsmessagebaritem.h"
 
 #include <ui_qgsadvanceddigitizingdockwidgetbase.h>
 
@@ -27,7 +28,6 @@ class QgsAdvancedDigitizingCanvasItem;
 class QgsMapCanvas;
 class QgsMapTool;
 class QgsMapToolAdvancedDigitizing;
-class QgsMessageBarItem;
 class QgsPoint;
 
 // tolerances for soft constraints (last values, and common angles)
@@ -41,12 +41,13 @@ static const double SoftConstraintToleranceDegrees = 10;
  * It handles both the UI and the constraints. Constraints are applied
  * by implemeting filters called from QgsMapToolAdvancedDigitizing.
  */
-class APP_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private Ui::QgsAdvancedDigitizingDockWidgetBase
+class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private Ui::QgsAdvancedDigitizingDockWidgetBase
 {
     Q_OBJECT
     Q_FLAGS( CadCapacities )
 
   public:
+
     /**
      * @brief The CadCapacity enum defines the possible constraints to be set
      *  depending on the number of points in the CAD point list (the list of points
@@ -91,12 +92,12 @@ class APP_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
             , mValue( 0.0 )
         {}
 
-        LockMode lockMode() const { return mLockMode;}
-        bool isLocked() const {return mLockMode != NoLock;}
-        bool relative() const {return mRelative;}
-        double value() const {return mValue;}
+        LockMode lockMode() const { return mLockMode; }
+        bool isLocked() const { return mLockMode != NoLock; }
+        bool relative() const { return mRelative; }
+        double value() const { return mValue; }
 
-        QLineEdit* lineEdit() const {return mLineEdit;}
+        QLineEdit* lineEdit() const { return mLineEdit; }
 
         void setLockMode( LockMode mode );
         void setRelative( bool relative );
@@ -120,16 +121,20 @@ class APP_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
 
     explicit QgsAdvancedDigitizingDockWidget( QgsMapCanvas* canvas, QWidget *parent = 0 );
 
-    ~QgsAdvancedDigitizingDockWidget();
-
     void hideEvent( QHideEvent* ) override;
 
-    virtual bool canvasPressEventFilter( QgsMapMouseEvent* e );
-    virtual bool canvasReleaseEventFilter( QgsMapMouseEvent* e );
-    virtual bool canvasMoveEventFilter( QgsMapMouseEvent* e );
-    virtual bool canvasKeyPressEventFilter( QKeyEvent *e );
+    bool canvasPressEvent( QgsMapMouseEvent* e );
+    bool canvasReleaseEvent( QgsMapMouseEvent* e , bool captureSegment );
+    bool canvasMoveEvent( QgsMapMouseEvent* e );
+    bool canvasKeyPressEventFilter( QKeyEvent *e );
 
-    QgsMapMouseEvent::SnappingMode snappingMode() {return mSnappingMode;}
+    //! apply the CAD constraints. The will modify the position of the map event in map coordinates by applying the CAD constraints.
+    //! @return false if no solution was found (invalid constraints)
+    virtual bool applyConstraints( QgsMapMouseEvent* e );
+
+    void clear();
+
+    QgsMapMouseEvent::SnappingMode snappingMode() { return mSnappingMode; }
 
     //! key press event on the dock
     void keyPressEvent( QKeyEvent* e ) override;
@@ -138,32 +143,39 @@ class APP_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
     bool cadEnabled() const { return mCadEnabled; }
 
     //! construction mode is used to draw intermediate points. These points won't be given any further (i.e. to the map tools)
-    bool constructionMode() const {return mConstructionMode;}
+    bool constructionMode() const { return mConstructionMode; }
 
     //! Additional constraints are used to place perpendicular/parallel segments to snapped segments on the canvas
-    AdditionalConstraint additionalConstraint() const  {return mAdditionalConstraint;}
-    const CadConstraint* constraintAngle()const  {return mAngleConstraint;}
-    const CadConstraint* constraintDistance() const {return mDistanceConstraint;}
-    const CadConstraint* constraintX() const {return mXConstraint;}
-    const CadConstraint* constraintY() const {return mYConstraint;}
-    bool commonAngleConstraint() const {return mCommonAngleConstraint;}
+    AdditionalConstraint additionalConstraint() const  { return mAdditionalConstraint; }
+    const CadConstraint* constraintAngle()const  { return mAngleConstraint; }
+    const CadConstraint* constraintDistance() const { return mDistanceConstraint; }
+    const CadConstraint* constraintX() const { return mXConstraint; }
+    const CadConstraint* constraintY() const { return mYConstraint; }
+    bool commonAngleConstraint() const { return mCommonAngleConstraint; }
 
     /** Helpers for the CAD point list. The CAD point list is the list of points
      * currently digitized. It contains both  "normal" points and intermediate points (construction mode).
      */
-    QgsPoint currentPoint( bool *exist = 0 ) const;
-    QgsPoint previousPoint( bool *exist = 0 ) const;
-    QgsPoint penultimatePoint( bool *exist = 0 ) const;
-    int pointsCount() const {return mCadPointList.count();}
-    bool snappedToVertex() const {return mSnappedToVertex;}
-    const QList<QgsPoint>& snappedSegment() const {return mSnappedSegment;}
+    QgsPoint currentPoint( bool* exists  = 0 ) const;
+    QgsPoint previousPoint( bool* exists = 0 ) const;
+    QgsPoint penultimatePoint( bool* exists = 0 ) const;
+    inline int pointsCount() const { return mCadPointList.count(); }
+    inline bool snappedToVertex() const { return mSnappedToVertex; }
+    const QList<QgsPoint>& snappedSegment() const { return mSnappedSegment; }
 
     //! return the action used to enable/disable the tools
     QAction* enableAction() { return mEnableAction; }
 
-  public slots:
-    //! whenever a map tool changes, determines if the dock shall be activated or not
-    void mapToolChanged( QgsMapTool* tool );
+    void enable();
+
+    void disable();
+
+  signals:
+    void pushWarning( const QString& message );
+
+    void popWarning();
+
+    void pointChanged( const QgsPoint& point );
 
   private slots:
     //! set the additiona constraint by clicking on the perpendicular/parallel buttons
@@ -178,7 +190,7 @@ class APP_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
     //! set the relative properties of constraints
     void setConstraintRelative( bool activate );
 
-    //! activate/deactuvate tools. It is called when tools are activated manually (from the GUI)
+    //! activate/deactivate tools. It is called when tools are activated manually (from the GUI)
     //! it will call setCadEnabled to properly update the UI.
     void activateCad( bool enabled );
 
@@ -201,9 +213,7 @@ class APP_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
     //! defines the additional constraint to be used (no/parallel/perpendicular)
     void lockAdditionalConstraint( AdditionalConstraint constraint );
 
-    //! apply the CAD constraints. The will modify the position of the map event in map coordinates by applying the CAD constraints.
-    //! @return false if no solution was found (invalid constraints)
-    virtual bool applyConstraints( QgsMapMouseEvent* e );
+    QList<QgsPoint> snapSegment( const QgsPointLocator::Match& snapMatch );
 
     //! align to segment for additional constraint.
     //! If additional constraints are used, this will determine the angle to be locked depending on the snapped segment.
@@ -228,13 +238,14 @@ class APP_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
     //! trigger fake mouse move event to update map tool rubber band and/or show new constraints
     void triggerMouseMoveEvent();
 
+
+
     QgsMapCanvas* mMapCanvas;
     QgsAdvancedDigitizingCanvasItem* mCadPaintItem;
 
-    QList<QgsMapToolAdvancedDigitizing*> mMapToolList;
-    QgsMapToolAdvancedDigitizing* mCurrentMapTool;
-
     CadCapacities mCapacities;
+
+    bool mCurrentMapToolSupportsCad;
 
     // CAD properties
     //! is CAD currently enabled for current map tool
@@ -252,11 +263,13 @@ class APP_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
 
     // point list and current snap point / segment
     QList<QgsPoint> mCadPointList;
-    bool mSnappedToVertex;
     QList<QgsPoint> mSnappedSegment;
+    bool mSnappedToVertex;
+
+    bool mSessionActive;
 
     // error message
-    QgsMessageBarItem* mErrorMessage;
+    QScopedPointer<QgsMessageBarItem> mErrorMessage;
 
     // UI
     QAction* mEnableAction;

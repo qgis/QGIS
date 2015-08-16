@@ -34,13 +34,13 @@ class QgsMapToolNodeTool: public QgsMapToolEdit
     QgsMapToolNodeTool( QgsMapCanvas* canvas );
     virtual ~QgsMapToolNodeTool();
 
-    void canvasDoubleClickEvent( QMouseEvent * e ) override;
+    void canvasDoubleClickEvent( QgsMapMouseEvent* e ) override;
 
     //! mouse press event in map coordinates (eventually filtered) to be redefined in subclass
-    void canvasMapPressEvent( QgsMapMouseEvent* e ) override;
+    void canvasPressEvent( QgsMapMouseEvent* e ) override;
 
     //! mouse move event in map coordinates (eventually filtered) to be redefined in subclass
-    void canvasMapMoveEvent( QgsMapMouseEvent* e ) override;
+    void canvasMoveEvent( QgsMapMouseEvent* e ) override;
 
     void keyPressEvent( QKeyEvent* e ) override;
 

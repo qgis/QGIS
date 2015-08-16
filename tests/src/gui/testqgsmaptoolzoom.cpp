@@ -78,14 +78,19 @@ void TestQgsMapToolZoom::zeroDragArea()
   QMouseEvent releases( QEvent::MouseButtonRelease, point,
                         Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
 
+  QgsMapMouseEvent mapPress( 0, &press );
+  QgsMapMouseEvent mapMove( 0, &move );
+  QgsMapMouseEvent mapReleases( 0, &releases );
+
   QgsMapToolZoom* tool = new QgsMapToolZoom( canvas, false );
   // Just set some made up extent so that we can zoom.
   canvas->setExtent( QgsRectangle( 0, 0, 20, 20 ) );
 
   QgsRectangle before = canvas->extent();
-  tool->canvasPressEvent( &press );
-  tool->canvasMoveEvent( &move );
-  tool->canvasReleaseEvent( &releases );
+  tool->canvasPressEvent( &mapPress );
+  tool->canvasMoveEvent( &mapMove );
+  tool->canvasReleaseEvent( &mapReleases );
+
   QgsRectangle after = canvas->extent();
   // We don't really care if we zoom in or out here just that the extent did
   // change we
