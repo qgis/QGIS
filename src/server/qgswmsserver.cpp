@@ -2143,7 +2143,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
         attributeElement.setAttribute( "value",
                                        replaceValueMapAndRelation(
                                          layer, i,
-                                         featureAttributes[i].isNull() ?  QString::null : QgsExpression::replaceExpressionText( featureAttributes[i].toString(), &feature, layer )
+                                         featureAttributes[i].isNull() ?  QString::null : QgsExpression::replaceExpressionText( featureAttributes[i].toString(), &renderContext.expressionContext() )
                                        )
                                      );
         featureElement.appendChild( attributeElement );
@@ -2157,7 +2157,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
         {
           QDomElement maptipElem = infoDocument.createElement( "Attribute" );
           maptipElem.setAttribute( "name", "maptip" );
-          maptipElem.setAttribute( "value",  QgsExpression::replaceExpressionText( displayField, &feature, layer ) );
+          maptipElem.setAttribute( "value",  QgsExpression::replaceExpressionText( displayField, &renderContext.expressionContext() ) );
           featureElement.appendChild( maptipElem );
         }
       }
@@ -3001,6 +3001,13 @@ QDomElement QgsWMSServer::createFeatureGML(
 
   QgsGeometry* geom = feat->geometry();
 
+  QgsExpressionContext expressionContext;
+  expressionContext << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope();
+  if ( layer )
+    expressionContext << QgsExpressionContextUtils::layerScope( layer );
+  expressionContext.setFeature( *feat );
+
   // always add bounding box info if feature contains geometry
   if ( geom && geom->type() != QGis::UnknownGeometry &&  geom->type() != QGis::NoGeometry )
   {
@@ -3083,7 +3090,7 @@ QDomElement QgsWMSServer::createFeatureGML(
     QString fieldTextString = featureAttributes[i].toString();
     if ( layer )
     {
-      fieldTextString = replaceValueMapAndRelation( layer, i, QgsExpression::replaceExpressionText( fieldTextString, feat, layer ) );
+      fieldTextString = replaceValueMapAndRelation( layer, i, QgsExpression::replaceExpressionText( fieldTextString, &expressionContext ) );
     }
     QDomText fieldText = doc.createTextNode( fieldTextString );
     fieldElem.appendChild( fieldText );
@@ -3096,7 +3103,7 @@ QDomElement QgsWMSServer::createFeatureGML(
     QString displayField = layer->displayField();
     if ( !displayField.isEmpty() )
     {
-      QString fieldTextString = QgsExpression::replaceExpressionText( displayField, feat, layer );
+      QString fieldTextString = QgsExpression::replaceExpressionText( displayField, &expressionContext );
       QDomElement fieldElem = doc.createElement( "qgs:maptip" );
       QDomText maptipText = doc.createTextNode( fieldTextString );
       fieldElem.appendChild( maptipText );
