@@ -33,7 +33,7 @@ class QgsFeatureRequest
     //! construct a request with rectangle filter
     explicit QgsFeatureRequest( const QgsRectangle& rect );
     //! construct a request with a filter expression
-    explicit QgsFeatureRequest( const QgsExpression& expr );
+    explicit QgsFeatureRequest( const QgsExpression& expr, const QgsExpressionContext& context = QgsExpressionContext() );
 
     FilterType filterType() const;
 
@@ -53,6 +53,18 @@ class QgsFeatureRequest
     //! Set filter expression. {@see QgsExpression}
     QgsFeatureRequest& setFilterExpression( const QString& expression );
     QgsExpression* filterExpression() const;
+
+    /** Returns the expression context used to evaluate filter expressions.
+     * @note added in QGIS 2.12
+     * @see setExpressionContext
+     */
+    QgsExpressionContext* expressionContext();
+
+    /** Sets the expression context used to evaluate filter expressions.
+     * @note added in QGIS 2.12
+     * @see expressionContext
+     */
+    QgsFeatureRequest& setExpressionContext( const QgsExpressionContext& context );
 
     /**
      * Disables filter conditions.
