@@ -82,10 +82,10 @@ class CORE_EXPORT QgsProject : public QObject
     /**
        Every project has an associated title string
 
-       ### QGIS 3: remove in favor of setTitle(...)
+       @deprecated Use @link setTitle @endlink instead.
      */
     //@{
-    void title( const QString & title );
+    Q_DECL_DEPRECATED inline void title( const QString & title ) { setTitle( title ); }
 
     /** Set project title
      *  @note added in 2.4 */
