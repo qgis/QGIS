@@ -169,6 +169,13 @@ int QgsMapToolCapture::nextPoint( const QgsPoint& mapPoint, QgsPoint& layerPoint
   return 0;
 }
 
+int QgsMapToolCapture::nextPoint( const QPoint &p, QgsPoint &layerPoint, QgsPoint &mapPoint )
+{
+
+  mapPoint = toMapCoordinates( p );
+  return nextPoint( mapPoint, layerPoint );
+}
+
 int QgsMapToolCapture::addVertex( const QgsPoint& point )
 {
   if ( mode() == CaptureNone )
@@ -219,9 +226,6 @@ int QgsMapToolCapture::addVertex( const QgsPoint& point )
 
 int QgsMapToolCapture::addCurve( QgsCurveV2* c )
 {
-  return 1; //todo...
-
-#if 0
   if ( !c )
   {
     return 1;
@@ -253,12 +257,16 @@ int QgsMapToolCapture::addCurve( QgsCurveV2* c )
   QgsPointV2 endPt = c->endPoint();
   mTempRubberBand->addPoint( QgsPoint( endPt.x(), endPt.y() ) ); //add last point of c
 
-  //const QgsCoordinateTransform* ct =  mapCanvas()->mapSettings()->layerTransform( QgsMapLayer *layer ) const
-  //c->transform( ct, QgsCoordinateTransform::ReverseTransform);
-  //mCaptureCurve.addCurve( transformed curve );
+  //transform back to layer CRS in case map CRS and layer CRS are different
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+  const QgsCoordinateTransform* ct =  mCanvas->mapSettings().layerTransform( vlayer );
+  if ( ct )
+  {
+    c->transform( *ct, QgsCoordinateTransform::ReverseTransform );
+  }
+  mCaptureCurve.addCurve( c );
 
   return 0;
-#endif //0
 }
 
 

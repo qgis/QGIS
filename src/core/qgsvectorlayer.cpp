@@ -40,6 +40,7 @@
 #include "qgsclipper.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
+#include "qgscurvev2.h"
 #include "qgsdatasourceuri.h"
 #include "qgsexpressionfieldbuffer.h"
 #include "qgsfeature.h"
@@ -1036,6 +1037,27 @@ int QgsVectorLayer::addRing( const QList<QgsPoint>& ring )
   return utils.addRing( ring );
 }
 
+int QgsVectorLayer::addRing( QgsCurveV2* ring )
+{
+  if ( !mEditBuffer || !mDataProvider )
+  {
+    return 6;
+  }
+
+  if ( !ring )
+  {
+    return 1;
+  }
+
+  if ( !ring->isClosed() )
+  {
+    delete ring; return 2;
+  }
+
+  QgsVectorLayerEditUtils utils( this );
+  return utils.addRing( ring );
+}
+
 int QgsVectorLayer::addPart( const QList<QgsPoint> &points )
 {
   if ( !mEditBuffer || !mDataProvider )
@@ -1058,6 +1080,27 @@ int QgsVectorLayer::addPart( const QList<QgsPoint> &points )
   return utils.addPart( points, *mSelectedFeatureIds.constBegin() );
 }
 
+int QgsVectorLayer::addPart( QgsCurveV2* ring )
+{
+  if ( !mEditBuffer || !mDataProvider )
+    return 7;
+
+  //number of selected features must be 1
+
+  if ( mSelectedFeatureIds.size() < 1 )
+  {
+    QgsDebugMsg( "Number of selected features <1" );
+    return 4;
+  }
+  else if ( mSelectedFeatureIds.size() > 1 )
+  {
+    QgsDebugMsg( "Number of selected features >1" );
+    return 5;
+  }
+
+  QgsVectorLayerEditUtils utils( this );
+  return utils.addPart( ring, *mSelectedFeatureIds.constBegin() );
+}
 
 int QgsVectorLayer::translateFeature( QgsFeatureId featureId, double dx, double dy )
 {
@@ -2182,7 +2225,7 @@ bool QgsVectorLayer::deleteAttributes( QList<int> attrs )
 
   qSort( attrs.begin(), attrs.end(), qGreater<int>() );
 
-  Q_FOREACH ( int attr, attrs )
+  Q_FOREACH( int attr, attrs )
   {
     if ( deleteAttribute( attr ) )
     {
@@ -2941,7 +2984,7 @@ void QgsVectorLayer::uniqueValues( int index, QList<QVariant> &uniqueValues, int
     if ( mEditBuffer )
     {
       QSet<QString> vals;
-      Q_FOREACH ( const QVariant& v, uniqueValues )
+      Q_FOREACH( const QVariant& v, uniqueValues )
       {
         vals << v.toString();
       }
@@ -3757,7 +3800,7 @@ void QgsVectorLayer::invalidateSymbolCountedFlag()
 
 void QgsVectorLayer::onRelationsLoaded()
 {
-  Q_FOREACH ( QgsAttributeEditorElement* elem, mAttributeEditorElements )
+  Q_FOREACH( QgsAttributeEditorElement* elem, mAttributeEditorElements )
   {
     if ( elem->type() == QgsAttributeEditorElement::AeTypeContainer )
     {
@@ -3766,7 +3809,7 @@ void QgsVectorLayer::onRelationsLoaded()
         continue;
 
       QList<QgsAttributeEditorElement*> relations = cont->findElements( QgsAttributeEditorElement::AeTypeRelation );
-      Q_FOREACH ( QgsAttributeEditorElement* relElem, relations )
+      Q_FOREACH( QgsAttributeEditorElement* relElem, relations )
       {
         QgsAttributeEditorRelation* rel = dynamic_cast< QgsAttributeEditorRelation* >( relElem );
         if ( !rel )
@@ -3835,7 +3878,7 @@ QDomElement QgsAttributeEditorContainer::toDomElement( QDomDocument& doc ) const
   QDomElement elem = doc.createElement( "attributeEditorContainer" );
   elem.setAttribute( "name", mName );
 
-  Q_FOREACH ( QgsAttributeEditorElement* child, mChildren )
+  Q_FOREACH( QgsAttributeEditorElement* child, mChildren )
   {
     elem.appendChild( child->toDomElement( doc ) );
   }
@@ -3856,7 +3899,7 @@ QList<QgsAttributeEditorElement*> QgsAttributeEditorContainer::findElements( Qgs
 {
   QList<QgsAttributeEditorElement*> results;
 
-  Q_FOREACH ( QgsAttributeEditorElement* elem, mChildren )
+  Q_FOREACH( QgsAttributeEditorElement* elem, mChildren )
   {
     if ( elem->type() == type )
     {

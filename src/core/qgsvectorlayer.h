@@ -40,6 +40,7 @@ class QImage;
 class QgsAbstractGeometrySimplifier;
 class QgsAttributeAction;
 class QgsCoordinateTransform;
+class QgsCurveV2;
 class QgsDiagramLayerSettings;
 class QgsDiagramRendererV2;
 class QgsEditorWidgetWrapper;
@@ -1165,6 +1166,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
        6 layer not editable */
     int addRing( const QList<QgsPoint>& ring );
 
+    /** Adds a ring to polygon/multipolygon features (takes ownership)
+            @return
+            0 in case of success
+            1 problem with feature type
+            2 ring not closed
+            6 layer not editable*/
+    int addRing( QgsCurveV2* ring );
+
     /** Adds a new part polygon to a multipart feature
      @return
        0 in case of success,
@@ -1176,6 +1185,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
        6 if selected geometry not found
        7 layer not editable */
     int addPart( const QList<QgsPoint>& ring );
+
+    int addPart( QgsCurveV2* ring );
 
     /** Translates feature by dx, dy
        @param featureId id of the feature to translate

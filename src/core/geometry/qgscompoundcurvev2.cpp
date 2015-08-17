@@ -410,12 +410,12 @@ void QgsCompoundCurveV2::draw( QPainter& p ) const
   }
 }
 
-void QgsCompoundCurveV2::transform( const QgsCoordinateTransform& ct )
+void QgsCompoundCurveV2::transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d )
 {
   QList< QgsCurveV2* >::iterator it = mCurves.begin();
   for ( ; it != mCurves.end(); ++it )
   {
-    ( *it )->transform( ct );
+    ( *it )->transform( ct, d );
   }
 }
 

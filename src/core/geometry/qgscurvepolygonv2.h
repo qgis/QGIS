@@ -76,7 +76,7 @@ class CORE_EXPORT QgsCurvePolygonV2: public QgsSurfaceV2
     bool removeInteriorRing( int nr );
 
     virtual void draw( QPainter& p ) const override;
-    void transform( const QgsCoordinateTransform& ct ) override;
+    void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform ) override;
     void transform( const QTransform& t ) override;
 
     virtual bool insertVertex( const QgsVertexId& position, const QgsPointV2& vertex ) override;

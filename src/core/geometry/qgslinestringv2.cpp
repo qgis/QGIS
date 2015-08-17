@@ -333,9 +333,9 @@ void QgsLineStringV2::drawAsPolygon( QPainter& p ) const
   p.drawPolygon( mCoords );
 }
 
-void QgsLineStringV2::transform( const QgsCoordinateTransform& ct )
+void QgsLineStringV2::transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d )
 {
-  ct.transformPolygon( mCoords );
+  ct.transformPolygon( mCoords, d );
 }
 
 void QgsLineStringV2::transform( const QTransform& t )

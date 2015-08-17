@@ -38,7 +38,7 @@ class QgsLineStringV2: public QgsCurveV2
     void append( const QgsLineStringV2* line );
 
     void draw( QPainter& p ) const;
-    void transform( const QgsCoordinateTransform& ct );
+    void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform );
     void transform( const QTransform& t );
 
     void addToPainterPath( QPainterPath& path ) const;

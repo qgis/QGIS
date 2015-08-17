@@ -16,6 +16,7 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSABSTRACTGEOMETRYV2
 #define QGSABSTRACTGEOMETRYV2
 
+#include "qgscoordinatetransform.h"
 #include "qgsrectangle.h"
 #include "qgswkbtypes.h"
 #include <QString>
@@ -217,7 +218,7 @@ class CORE_EXPORT QgsAbstractGeometryV2
     /** Transforms the geometry using a coordinate transform
      * @param ct coordinate transform
      */
-    virtual void transform( const QgsCoordinateTransform& ct ) = 0;
+    virtual void transform( const QgsCoordinateTransform& ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform ) = 0;
 
     /** Transforms the geometry using a QTransform object
      * @param t QTransform transformation
