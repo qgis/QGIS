@@ -50,6 +50,8 @@ SET(QGIS_APP_SRCS
   qgsmapmouseevent.cpp
   qgssavestyletodbdialog.cpp
   qgsguivectorlayertools.cpp
+  qgswelcomepageitemsmodel.cpp
+  qgswelcomedialog.cpp
 
   qgsmaptooladdfeature.cpp
   qgsmaptooladdpart.cpp
@@ -108,7 +110,6 @@ SET(QGIS_APP_SRCS
   qgsstatisticalsummarydockwidget.cpp
   qgstextannotationdialog.cpp
   qgsshortcutsmanager.cpp
-  qgsguivectorlayertools.h
   qgssnappingdialog.cpp
   qgssvgannotationdialog.cpp
   qgsundowidget.cpp
@@ -209,6 +210,8 @@ SET (QGIS_APP_MOC_HDRS
   qgsshortcutsmanager.h
   qgsapplayertreeviewmenuprovider.h
   qgsguivectorlayertools.h
+  qgswelcomepageitemsmodel.h
+  qgswelcomedialog.h
 
   qgsmaptooladdfeature.h
   qgsmaptoolcapture.h

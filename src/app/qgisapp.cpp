@@ -211,6 +211,8 @@
 #include "qgsmessagelogviewer.h"
 #include "qgsdataitem.h"
 #include "qgsmaplayeractionregistry.h"
+#include "qgswelcomedialog.h"
+#include "qgsmaprendererparalleljob.h"
 
 #include "qgssublayersdialog.h"
 #include "ogr/qgsopenvectorlayerdialog.h"
@@ -869,6 +871,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 #ifdef ANDROID
   toggleFullScreen();
 #endif
+
+  QgsWelcomeDialog dlg;
+  dlg.setRecentProjects( mRecentProjects );
+  dlg.exec();
 } // QgisApp ctor
 
 QgisApp::QgisApp()
@@ -1123,8 +1129,22 @@ void QgisApp::readSettings()
   // 'gis' theme is new /themes/default directory (2013-04-15)
   setTheme( settings.value( "/Themes", "default" ).toString() );
 
-  // Add the recently accessed project file paths to the Project menu
-  mRecentProjectPaths = settings.value( "/UI/recentProjectsList" ).toStringList();
+  settings.beginGroup( "/UI/recentProjects" );
+  QStringList projectKeys = settings.childGroups();
+
+  mRecentProjects.clear();
+
+  Q_FOREACH( const QString& key, projectKeys )
+  {
+    QgsWelcomePageItemsModel::RecentProjectData data;
+    settings.beginGroup( key );
+    data.title = settings.value( "title" ).toString();
+    data.path = settings.value( "path" ).toString();
+    data.previewImagePath = settings.value( "previewImage" ).toString();
+    settings.endGroup();
+    mRecentProjects.prepend( data );
+  }
+  settings.endGroup();
 
   // this is a new session! reset enable macros value to "ask"
   // whether set to "just for this session"
@@ -2673,52 +2693,74 @@ void QgisApp::projectReadDecorationItems()
 // Update project menu with the current list of recently accessed projects
 void QgisApp::updateRecentProjectPaths()
 {
-  // Remove existing paths from the recent projects menu
-  int i;
+  mRecentProjectsMenu->clear();
 
-  int menusize = mRecentProjectsMenu->actions().size();
-
-  for ( i = menusize; i < mRecentProjectPaths.size(); i++ )
+  Q_FOREACH( const QgsWelcomePageItemsModel::RecentProjectData& recentProject, mRecentProjects )
   {
-    mRecentProjectsMenu->addAction( "Dummy text" );
-  }
-
-  QList<QAction *> menulist = mRecentProjectsMenu->actions();
-
-  assert( menulist.size() == mRecentProjectPaths.size() );
-
-  for ( i = 0; i < mRecentProjectPaths.size(); i++ )
-  {
-    menulist.at( i )->setText( mRecentProjectPaths.at( i ) );
-
-    // Disable this menu item if the file has been removed, if not enable it
-    menulist.at( i )->setEnabled( QFile::exists(( mRecentProjectPaths.at( i ) ) ) );
-
+    QAction* action = mRecentProjectsMenu->addAction( QString( "%1 (%2)" ).arg( recentProject.title ).arg( recentProject.path ) );
+    action->setEnabled( QFile::exists(( recentProject.path ) ) );
+    action->setData( recentProject.path );
   }
 } // QgisApp::updateRecentProjectPaths
 
 // add this file to the recently opened/saved projects list
-void QgisApp::saveRecentProjectPath( QString projectPath, QSettings & settings )
+void QgisApp::saveRecentProjectPath( QString projectPath, bool savePreviewImage )
 {
+  QSettings settings;
+
   // Get canonical absolute path
   QFileInfo myFileInfo( projectPath );
-  projectPath = myFileInfo.absoluteFilePath();
+  QgsWelcomePageItemsModel::RecentProjectData projectData;
+  projectData.path = myFileInfo.absoluteFilePath();
+  projectData.title = QgsProject::instance()->title();
+  if ( projectData.title.isEmpty() )
+    projectData.title = projectData.path;
 
-  // If this file is already in the list, remove it
-  mRecentProjectPaths.removeAll( projectPath );
-
-  // Prepend this file to the list
-  mRecentProjectPaths.prepend( projectPath );
-
-  // Keep the list to 8 items by trimming excess off the bottom
-  while ( mRecentProjectPaths.count() > 8 )
+  if ( savePreviewImage )
   {
-    mRecentProjectPaths.pop_back();
+    QgsMapSettings mapSettings = mMapCanvas->mapSettings();
+    mapSettings.setOutputSize( QSize( 200, 70 ) );
+    QgsMapRendererParallelJob job( mapSettings );
+    job.start();
+    job.waitForFinished();
+    QString fileName( QCryptographicHash::hash( ( projectData.path.toUtf8() ), QCryptographicHash::Md5 ).toHex() );
+    QString previewDir = QString( "%1/previewImages" ).arg( QgsApplication::qgisSettingsDirPath() );
+    projectData.previewImagePath = QString( "%1/%2.png" ).arg( previewDir ).arg( fileName );
+    QDir().mkdir( previewDir );
+    job.renderedImage().save( projectData.previewImagePath );
+  }
+  else
+  {
+    int idx = mRecentProjects.indexOf( projectData );
+    if ( idx != -1 )
+      projectData.previewImagePath = mRecentProjects.at( idx ).previewImagePath;
   }
 
-  // Persist the list
-  settings.setValue( "/UI/recentProjectsList", mRecentProjectPaths );
+  // If this file is already in the list, remove it
+  mRecentProjects.removeAll( projectData );
 
+  // Prepend this file to the list
+  mRecentProjects.prepend( projectData );
+
+  // Keep the list to 8 items by trimming excess off the bottom
+  while ( mRecentProjects.count() > 8 )
+  {
+    mRecentProjects.pop_back();
+  }
+
+  settings.remove( "/UI/recentProjects" );
+  int idx = 0;
+
+  // Persist the list
+  Q_FOREACH( const QgsWelcomePageItemsModel::RecentProjectData& recentProject, mRecentProjects )
+  {
+    ++idx;
+    settings.beginGroup( QString( "/UI/recentProjects/%1" ).arg( idx ) );
+    settings.setValue( "title", recentProject.title );
+    settings.setValue( "path", recentProject.path );
+    settings.setValue( "previewImage", recentProject.previewImagePath );
+    settings.endGroup();
+  }
 
   // Update menu list of paths
   updateRecentProjectPaths();
@@ -3834,9 +3876,9 @@ void QgisApp::fileOpenAfterLaunch()
 
   // get path of project file to open, or was attempted
   QString projPath = QString();
-  if ( projOpen == 1 && mRecentProjectPaths.size() > 0 ) // most recent project
+  if ( projOpen == 1 && mRecentProjects.size() > 0 ) // most recent project
   {
-    projPath = mRecentProjectPaths.at( 0 );
+    projPath = mRecentProjects.at( 0 ).path;
   }
   if ( projOpen == 2 ) // specific project
   {
@@ -4147,7 +4189,7 @@ bool QgisApp::addProject( QString projectFile )
   // specific plug-in state
 
   // add this to the list of recently used project files
-  saveRecentProjectPath( projectFile, settings );
+  saveRecentProjectPath( projectFile, false );
 
   QApplication::restoreOverrideCursor();
 
@@ -4201,6 +4243,7 @@ bool QgisApp::fileSave()
   else
   {
     QFileInfo fi( QgsProject::instance()->fileName() );
+    fullPath = fi.absoluteFilePath();
     if ( fi.exists() && !mProjectLastModified.isNull() && mProjectLastModified != fi.lastModified() )
     {
       if ( QMessageBox::warning( this,
@@ -4228,12 +4271,7 @@ bool QgisApp::fileSave()
     setTitleBarText_( *this ); // update title bar
     statusBar()->showMessage( tr( "Saved project to: %1" ).arg( QgsProject::instance()->fileName() ), 5000 );
 
-    if ( isNewProject )
-    {
-      // add this to the list of recently used project files
-      QSettings settings;
-      saveRecentProjectPath( fullPath.filePath(), settings );
-    }
+    saveRecentProjectPath( fullPath.filePath() );
 
     QFileInfo fi( QgsProject::instance()->fileName() );
     mProjectLastModified = fi.lastModified();
@@ -4285,7 +4323,7 @@ void QgisApp::fileSaveAs()
     setTitleBarText_( *this ); // update title bar
     statusBar()->showMessage( tr( "Saved project to: %1" ).arg( QgsProject::instance()->fileName() ), 5000 );
     // add this to the list of recently used project files
-    saveRecentProjectPath( fullPath.filePath(), settings );
+    saveRecentProjectPath( fullPath.filePath() );
   }
   else
   {
@@ -4352,7 +4390,7 @@ void QgisApp::openProject( QAction *action )
   QString debugme;
   assert( action != NULL );
 
-  debugme = action->text();
+  debugme = action->data().toString();
 
   if ( saveDirty() )
   {

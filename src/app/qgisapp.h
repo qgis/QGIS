@@ -104,6 +104,7 @@ class QgsTileScaleWidget;
 #include "qgspluginmanager.h"
 #include "qgsmessagebar.h"
 #include "qgsbookmarks.h"
+#include "qgswelcomepageitemsmodel.h"
 
 #include "ui_qgisapp.h"
 
@@ -1308,8 +1309,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /** Add this file to the recently opened/saved projects list
      *  pass settings by reference since creating more than one
      * instance simultaneously results in data loss.
+     *
+     * @param savePreviewImage Set to false when the preview image should not be saved. E.g. project load.
      */
-    void saveRecentProjectPath( QString projectPath, QSettings & settings );
+    void saveRecentProjectPath( QString projectPath, bool savePreviewImage = true );
     //! Update project menu with the current list of recently accessed projects
     void updateRecentProjectPaths();
     //! Read Well Known Binary stream from PostGIS
@@ -1570,7 +1573,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QSplashScreen *mSplash;
     //! list of recently opened/saved project files
-    QStringList mRecentProjectPaths;
+    QList<QgsWelcomePageItemsModel::RecentProjectData> mRecentProjects;
     //! Print composers of this project, accessible by id string
     QSet<QgsComposer*> mPrintComposers;
     //! The number of decimal places to use if not automatic

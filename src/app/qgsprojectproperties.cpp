@@ -564,7 +564,7 @@ QString QgsProjectProperties::title() const
 void QgsProjectProperties::title( QString const & title )
 {
   titleEdit->setText( title );
-  QgsProject::instance()->title( title );
+  QgsProject::instance()->setTitle( title );
 } // QgsProjectProperties::title( QString const & title )
 
 //when user clicks apply button
@@ -627,7 +627,7 @@ void QgsProjectProperties::apply()
   }
 
   // Set the project title
-  QgsProject::instance()->title( title() );
+  QgsProject::instance()->setTitle( title() );
 
   // set the mouse display precision method and the
   // number of decimal places for the manual option
