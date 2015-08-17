@@ -526,14 +526,20 @@ void QgsDiagramProperties::on_mFindMaximumValueButton_clicked()
   if ( isExpression )
   {
     QgsExpression exp( sizeFieldNameOrExp );
-    exp.prepare( mLayer->fields() );
+    QgsExpressionContext context;
+    context << QgsExpressionContextUtils::globalScope()
+    << QgsExpressionContextUtils::projectScope()
+    << QgsExpressionContextUtils::layerScope( mLayer );
+
+    exp.prepare( &context );
     if ( !exp.hasEvalError() )
     {
       QgsFeature feature;
       QgsFeatureIterator features = mLayer->getFeatures();
       while ( features.nextFeature( *&feature ) )
       {
-        maxValue = qMax( maxValue, exp.evaluate( &feature ).toFloat() );
+        context.setFeature( feature );
+        maxValue = qMax( maxValue, exp.evaluate( &context ).toFloat() );
       }
     }
     else
