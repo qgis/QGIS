@@ -10,7 +10,15 @@ class QgsDiagram
     virtual QgsDiagram* clone() const = 0;
 
     void clearCache();
-    QgsExpression* getExpression( const QString& expression, const QgsFields* fields );
+    QgsExpression* getExpression( const QString& expression, const QgsFields* fields ) /Deprecated/;
+
+    /** Returns a prepared expression for the specified context.
+     * @param expression expression string
+     * @param context expression context
+     * @note added in QGIS 2.12
+     */
+    QgsExpression* getExpression( const QString& expression, const QgsExpressionContext& context );
+
     /** @deprecated `void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )` should be used instead */
     virtual void renderDiagram( const QgsAttributes& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position ) /Deprecated/;
     /** Draws the diagram at the given position (in pixel coordinates)*/
