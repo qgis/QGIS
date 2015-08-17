@@ -27,7 +27,8 @@
 #include <QString>
 #include <QIcon>
 
-#include <qgsfeature.h>
+#include "qgsfeature.h"
+#include "qgsexpressioncontext.h"
 
 class QDomNode;
 class QDomDocument;
@@ -202,6 +203,8 @@ class  CORE_EXPORT QgsAttributeAction
                     void ( *executePython )( const QString & ) = 0 );
 
     int mDefaultAction;
+
+    QgsExpressionContext createExpressionContext() const;
 };
 
 #endif
