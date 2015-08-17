@@ -348,6 +348,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
       return;
     }
 
+    mContext.expressionContext().setFeature( fet );
     QgsSymbolV2* sym = mRendererV2->symbolForFeature( fet, mContext );
     if ( !sym )
     {

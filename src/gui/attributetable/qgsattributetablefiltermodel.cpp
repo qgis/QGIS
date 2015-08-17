@@ -230,6 +230,9 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
   bool filter = false;
   QgsRectangle rect = mCanvas->mapSettings().mapToLayerCoordinates( layer(), mCanvas->extent() );
   QgsRenderContext renderContext;
+  renderContext.expressionContext() << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( layer() );
   QgsFeatureRendererV2* renderer = layer()->rendererV2();
 
   mFilteredFeatures.clear();
@@ -280,6 +283,7 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
 
   while ( features.nextFeature( f ) )
   {
+    renderContext.expressionContext().setFeature( f );
     if ( !filter || renderer->willRenderFeature( f, renderContext ) )
     {
       mFilteredFeatures << f.id();
