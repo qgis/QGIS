@@ -131,6 +131,7 @@ void QgsComposerMap::init()
   mDataDefinedNames.insert( QgsComposerObject::MapXMax, QString( "dataDefinedMapXMax" ) );
   mDataDefinedNames.insert( QgsComposerObject::MapYMax, QString( "dataDefinedMapYMax" ) );
   mDataDefinedNames.insert( QgsComposerObject::MapAtlasMargin, QString( "dataDefinedMapAtlasMargin" ) );
+  mDataDefinedNames.insert( QgsComposerObject::MapLayers, QString( "dataDefinedMapLayers" ) );
 }
 
 void QgsComposerMap::updateToolTip()
@@ -530,6 +531,23 @@ QStringList QgsComposerMap::layersToRender() const
   else
   {
     renderLayerSet = mComposition->mapSettings().layers();
+  }
+
+  QVariant exprVal;
+  if ( dataDefinedEvaluate( QgsComposerObject::MapLayers, exprVal ) )
+  {
+    renderLayerSet.clear();
+
+    QStringList layerNames = exprVal.toString().split( "|" );
+    //need to convert layer names to layer ids
+    Q_FOREACH ( QString name, layerNames )
+    {
+      QList< QgsMapLayer* > matchingLayers = QgsMapLayerRegistry::instance()->mapLayersByName( name );
+      Q_FOREACH ( QgsMapLayer* layer, matchingLayers )
+      {
+        renderLayerSet << layer->id();
+      }
+    }
   }
 
   //remove atlas coverage layer if required
