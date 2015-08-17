@@ -345,7 +345,8 @@ bool QgsDelimitedTextFeatureIterator::nextFeatureInternal( QgsFeature& feature )
 
     if ( mTestSubset )
     {
-      QVariant isOk = mSource->mSubsetExpression->evaluate( &feature );
+      mSource->mExpressionContext.setFeature( feature );
+      QVariant isOk = mSource->mSubsetExpression->evaluate( &mSource->mExpressionContext );
       if ( mSource->mSubsetExpression->hasEvalError() ) continue;
       if ( ! isOk.toBool() ) continue;
     }
@@ -490,6 +491,10 @@ QgsDelimitedTextFeatureSource::QgsDelimitedTextFeatureSource( const QgsDelimited
 {
   mFile = new QgsDelimitedTextFile();
   mFile->setFromUrl( p->mFile->url() );
+
+  mExpressionContext << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope();
+  mExpressionContext.setFields( mFields );
 }
 
 QgsDelimitedTextFeatureSource::~QgsDelimitedTextFeatureSource()
