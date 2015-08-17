@@ -172,6 +172,9 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap )
   connect( mAtlasMarginDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
   connect( mAtlasMarginDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
 
+  connect( mLayersDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
+  connect( mLayersDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
+
   updateGuiElements();
   loadGridEntries();
   loadOverviewEntries();
@@ -194,6 +197,7 @@ void QgsComposerMapWidget::populateDataDefinedButtons()
   mXMaxDDBtn->blockSignals( true );
   mYMaxDDBtn->blockSignals( true );
   mAtlasMarginDDBtn->blockSignals( true );
+  mLayersDDBtn->blockSignals( true );
 
   //initialise buttons to use atlas coverage layer
   mScaleDDBtn->init( vl, mComposerMap->dataDefinedProperty( QgsComposerObject::MapScale ),
@@ -210,6 +214,8 @@ void QgsComposerMapWidget::populateDataDefinedButtons()
                     QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
   mAtlasMarginDDBtn->init( vl, mComposerMap->dataDefinedProperty( QgsComposerObject::MapAtlasMargin ),
                            QgsDataDefinedButton::AnyType, QgsDataDefinedButton::doubleDesc() );
+  mLayersDDBtn->init( vl, mComposerMap->dataDefinedProperty( QgsComposerObject::MapLayers ),
+                      QgsDataDefinedButton::String, tr( "list of map layer names separated by | characters" ) );
 
   //unblock signals from data defined buttons
   mScaleDDBtn->blockSignals( false );
@@ -219,6 +225,7 @@ void QgsComposerMapWidget::populateDataDefinedButtons()
   mXMaxDDBtn->blockSignals( false );
   mYMaxDDBtn->blockSignals( false );
   mAtlasMarginDDBtn->blockSignals( false );
+  mLayersDDBtn->blockSignals( false );
 }
 
 QgsComposerObject::DataDefinedProperty QgsComposerMapWidget::ddPropertyForWidget( QgsDataDefinedButton* widget )
@@ -251,7 +258,10 @@ QgsComposerObject::DataDefinedProperty QgsComposerMapWidget::ddPropertyForWidget
   {
     return QgsComposerObject::MapAtlasMargin;
   }
-
+  else if ( widget == mLayersDDBtn )
+  {
+    return QgsComposerObject::MapLayers;
+  }
   return QgsComposerObject::NoProperty;
 }
 

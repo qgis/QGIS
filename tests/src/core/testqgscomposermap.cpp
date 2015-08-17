@@ -23,6 +23,7 @@
 #include "qgsmaprenderer.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsrasterlayer.h"
+#include "qgsvectorlayer.h"
 #include <QObject>
 #include <QtTest/QtTest>
 
@@ -47,12 +48,16 @@ class TestQgsComposerMap : public QObject
     void uniqueId(); //test if map id is adapted when doing copy paste
     void worldFileGeneration(); // test world file generation
     void mapPolygonVertices(); // test mapPolygon function with no map rotation
+    void dataDefinedLayers(); //test data defined layer string
 
   private:
     QgsComposition *mComposition;
     QgsComposerMap *mComposerMap;
     QgsMapSettings *mMapSettings;
     QgsRasterLayer* mRasterLayer;
+    QgsVectorLayer* mPointsLayer;
+    QgsVectorLayer* mPolysLayer;
+    QgsVectorLayer* mLinesLayer;
     QString mReport;
 };
 
@@ -61,34 +66,32 @@ void TestQgsComposerMap::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  mMapSettings = new QgsMapSettings();
-
   //create maplayers from testdata and add to layer registry
   QFileInfo rasterFileInfo( QString( TEST_DATA_DIR ) + "/landsat.tif" );
   mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
                                      rasterFileInfo.completeBaseName() );
   QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 2, 3, 4 );
   mRasterLayer->setRenderer( rasterRenderer );
-
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mRasterLayer );
 
-  //create composition with composer map
-  mMapSettings->setLayers( QStringList() << mRasterLayer->id() );
-  mMapSettings->setCrsTransformEnabled( false );
-  mComposition = new QgsComposition( *mMapSettings );
-  mComposition->setPaperSize( 297, 210 ); //A4 landscape
-  mComposerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
-  mComposerMap->setFrameEnabled( true );
-  mComposition->addComposerMap( mComposerMap );
+  QFileInfo pointFileInfo( QString( TEST_DATA_DIR ) + "/points.shp" );
+  mPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(),
+                                     pointFileInfo.completeBaseName(), "ogr" );
+  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << mPointsLayer );
 
-  mReport = "<h1>Composer Map Tests</h1>\n";
+  QFileInfo polyFileInfo( QString( TEST_DATA_DIR ) + "/polys.shp" );
+  mPolysLayer = new QgsVectorLayer( polyFileInfo.filePath(),
+                                    polyFileInfo.completeBaseName(), "ogr" );
+  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << mPolysLayer );
+
+  QFileInfo lineFileInfo( QString( TEST_DATA_DIR ) + "/lines.shp" );
+  mLinesLayer = new QgsVectorLayer( lineFileInfo.filePath(),
+                                    lineFileInfo.completeBaseName(), "ogr" );
+  QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer *>() << mLinesLayer );
 }
 
 void TestQgsComposerMap::cleanupTestCase()
 {
-  delete mComposition;
-  delete mMapSettings;
-
   QString myReportFile = QDir::tempPath() + "/qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
@@ -103,11 +106,24 @@ void TestQgsComposerMap::cleanupTestCase()
 
 void TestQgsComposerMap::init()
 {
+  mMapSettings = new QgsMapSettings();
+
+  //create composition with composer map
+  mMapSettings->setLayers( QStringList() << mRasterLayer->id() );
+  mMapSettings->setCrsTransformEnabled( false );
+  mComposition = new QgsComposition( *mMapSettings );
+  mComposition->setPaperSize( 297, 210 ); //A4 landscape
+  mComposerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
+  mComposerMap->setFrameEnabled( true );
+  mComposition->addComposerMap( mComposerMap );
+
+  mReport = "<h1>Composer Map Tests</h1>\n";
 }
 
 void TestQgsComposerMap::cleanup()
 {
-
+  delete mComposition;
+  delete mMapSettings;
 }
 
 void TestQgsComposerMap::render()
@@ -208,6 +224,59 @@ void TestQgsComposerMap::mapPolygonVertices()
 
   mComposerMap->setMapRotation( 0 );
 
+}
+
+void TestQgsComposerMap::dataDefinedLayers()
+{
+  delete mComposition;
+  QgsMapSettings ms;
+  ms.setLayers( QStringList() << mRasterLayer->id() << mPolysLayer->id() << mPointsLayer->id() << mLinesLayer->id() );
+  ms.setCrsTransformEnabled( true );
+
+  mComposition = new QgsComposition( ms );
+  mComposition->setPaperSize( 297, 210 ); //A4 landscape
+  mComposerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
+  mComposerMap->setFrameEnabled( true );
+  mComposition->addComposerMap( mComposerMap );
+
+  //test malformed layer set string
+  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true, "'x'", QString() );
+  QStringList result = mComposerMap->layersToRender();
+  QVERIFY( result.isEmpty() );
+
+  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true, "'x|'", QString() );
+  result = mComposerMap->layersToRender();
+  QVERIFY( result.isEmpty() );
+
+  //test subset of valid layers
+  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true,
+                                        QString( "'%1|%2'" ).arg( mPolysLayer->name() ).arg( mRasterLayer->name() ), QString() );
+  result = mComposerMap->layersToRender();
+  QCOMPARE( result.count(), 2 );
+  QVERIFY( result.contains( mPolysLayer->id() ) );
+  QVERIFY( result.contains( mRasterLayer->id() ) );
+
+  //test non-existant layer
+  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true,
+                                        QString( "'x|%1|%2'" ).arg( mLinesLayer->name() ).arg( mPointsLayer->name() ), QString() );
+  result = mComposerMap->layersToRender();
+  QCOMPARE( result.count(), 2 );
+  QVERIFY( result.contains( mLinesLayer->id() ) );
+  QVERIFY( result.contains( mPointsLayer->id() ) );
+
+  //test no layers
+  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true,
+                                        QString( "''" ), QString() );
+  result = mComposerMap->layersToRender();
+  QVERIFY( result.isEmpty() );
+
+  //render test
+  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true,
+                                        QString( "'%1|%2'" ).arg( mPolysLayer->name() ).arg( mPointsLayer->name() ), QString() );
+  mComposerMap->setNewExtent( QgsRectangle( -110.0, 25.0, -90, 40.0 ) );
+
+  QgsCompositionChecker checker( "composermap_ddlayers", mComposition );
+  QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 }
 
 QTEST_MAIN( TestQgsComposerMap )

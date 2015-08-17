@@ -151,7 +151,7 @@ void QgsComposerObject::refreshDataDefinedProperty( const DataDefinedProperty pr
   //nothing to do in base class for now
 }
 
-bool QgsComposerObject::dataDefinedEvaluate( const DataDefinedProperty property, QVariant &expressionValue )
+bool QgsComposerObject::dataDefinedEvaluate( const DataDefinedProperty property, QVariant &expressionValue ) const
 {
   if ( !mComposition )
   {
