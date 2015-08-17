@@ -38,13 +38,16 @@ QgsDiagram* QgsTextDiagram::clone() const
 
 QSizeF QgsTextDiagram::diagramSize( const QgsFeature& feature, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is )
 {
-  Q_UNUSED( c );
+  QgsExpressionContext expressionContext = c.expressionContext();
+  expressionContext.setFeature( feature );
+  if ( feature.fields() )
+    expressionContext.setFields( *feature.fields() );
 
   QVariant attrVal;
   if ( is.classificationAttributeIsExpression )
   {
-    QgsExpression* expression = getExpression( is.classificationAttributeExpression, feature.fields() );
-    attrVal = expression->evaluate( feature );
+    QgsExpression* expression = getExpression( is.classificationAttributeExpression, expressionContext );
+    attrVal = expression->evaluate( &expressionContext );
   }
   else
   {
@@ -101,8 +104,6 @@ QSizeF QgsTextDiagram::diagramSize( const QgsAttributes& attributes, const QgsRe
 
 void QgsTextDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )
 {
-  Q_UNUSED( feature );
-
   QPainter* p = c.painter();
   if ( !p )
   {
@@ -218,10 +219,15 @@ void QgsTextDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext&
   QFontMetricsF fontMetrics( sFont );
   p->setFont( sFont );
 
+  QgsExpressionContext expressionContext = c.expressionContext();
+  expressionContext.setFeature( feature );
+  if ( feature.fields() )
+    expressionContext.setFields( *feature.fields() );
+
   for ( int i = 0; i < textPositions.size(); ++i )
   {
-    QgsExpression* expression = getExpression( s.categoryAttributes.at( i ), feature.fields() );
-    QString val = expression->evaluate( feature ).toString();
+    QgsExpression* expression = getExpression( s.categoryAttributes.at( i ), expressionContext );
+    QString val = expression->evaluate( &expressionContext ).toString();
 
     //find out dimesions
     double textWidth = fontMetrics.width( val );
