@@ -160,7 +160,8 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
 
   if ( mRequest.filterType() == QgsFeatureRequest::FilterExpression )
   {
-    mRequest.filterExpression()->prepare( mSource->mFields );
+    mRequest.expressionContext()->setFields( mSource->mFields );
+    mRequest.filterExpression()->prepare( mRequest.expressionContext() );
   }
 }
 
@@ -380,7 +381,8 @@ bool QgsVectorLayerFeatureIterator::fetchNextChangedAttributeFeature( QgsFeature
     if ( mHasVirtualAttributes )
       addVirtualAttributes( f );
 
-    if ( mRequest.filterExpression()->evaluate( &f ).toBool() )
+    mRequest.expressionContext()->setFeature( f );
+    if ( mRequest.filterExpression()->evaluate( mRequest.expressionContext() ).toBool() )
     {
       return true;
     }

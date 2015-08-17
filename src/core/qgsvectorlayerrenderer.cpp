@@ -150,6 +150,7 @@ bool QgsVectorLayerRenderer::render()
   if ( !rendererFilter.isEmpty() )
   {
     featureRequest.setFilterExpression( rendererFilter );
+    featureRequest.setExpressionContext( mContext.expressionContext() );
   }
 
   // enable the simplification of the geometries (Using the current map2pixel context) before send it to renderer engine.

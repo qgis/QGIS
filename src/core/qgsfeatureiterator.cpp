@@ -66,7 +66,8 @@ bool QgsAbstractFeatureIterator::nextFeatureFilterExpression( QgsFeature& f )
 {
   while ( fetchFeature( f ) )
   {
-    if ( mRequest.filterExpression()->evaluate( f ).toBool() )
+    mRequest.expressionContext()->setFeature( f );
+    if ( mRequest.filterExpression()->evaluate( mRequest.expressionContext() ).toBool() )
       return true;
   }
   return false;
