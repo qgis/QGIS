@@ -22,8 +22,9 @@ The content of this file is based on
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import Qt, QObject, QSettings, QByteArray, SIGNAL
-from PyQt4.QtGui import QDialog, QAction, QKeySequence, QDialogButtonBox, QApplication, QCursor, QMessageBox, QClipboard, QInputDialog, QIcon
+from PyQt4.QtCore import Qt, QObject, QSettings, QByteArray, SIGNAL, pyqtSignal
+from PyQt4.QtGui import QDialog, QWidget, QAction, QKeySequence, \
+                        QDialogButtonBox, QApplication, QCursor, QMessageBox, QClipboard, QInputDialog, QIcon
 from PyQt4.Qsci import QsciAPIs
 
 from qgis.core import QgsProject
@@ -45,9 +46,10 @@ from .ui.ui_DlgSqlWindow import Ui_DbManagerDlgSqlWindow as Ui_Dialog
 import re
 
 
-class DlgSqlWindow(QDialog, Ui_Dialog):
+class DlgSqlWindow(QWidget, Ui_Dialog):
+    nameChanged = pyqtSignal(str)
     def __init__(self, iface, db, parent=None):
-        QDialog.__init__(self, parent)
+        QWidget.__init__(self, parent)
         self.iface = iface
         self.db = db
         self.setupUi(self)
@@ -55,9 +57,6 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
             u"%s - %s [%s]" % (self.windowTitle(), db.connection().connectionName(), db.connection().typeNameString()))
 
         self.defaultLayerName = 'QueryLayer'
-
-        settings = QSettings()
-        self.restoreGeometry(settings.value("/DB_Manager/sqlWindow/geometry", QByteArray(), type=QByteArray))
 
         self.editSql.setFocus()
         self.editSql.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
@@ -67,16 +66,17 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
         copyAction = QAction("copy", self)
         self.viewResult.addAction(copyAction)
         copyAction.setShortcuts(QKeySequence.Copy)
-        QObject.connect(copyAction, SIGNAL("triggered()"), self.copySelectedResults)
 
-        self.connect(self.btnExecute, SIGNAL("clicked()"), self.executeSql)
-        self.connect(self.btnClear, SIGNAL("clicked()"), self.clearSql)
-        self.connect(self.buttonBox.button(QDialogButtonBox.Close), SIGNAL("clicked()"), self.close)
+        copyAction.triggered.connect(self.copySelectedResults)
 
-        self.connect(self.presetStore, SIGNAL("clicked()"), self.storePreset)
-        self.connect(self.presetDelete, SIGNAL("clicked()"), self.deletePreset)
-        self.connect(self.presetCombo, SIGNAL("activated(QString)"), self.loadPreset)
-        self.connect(self.presetCombo, SIGNAL("activated(QString)"), self.presetName.setText)
+        self.btnExecute.clicked.connect(self.executeSql)
+        self.btnClear.clicked.connect(self.clearSql)
+
+        self.presetStore.clicked.connect(self.storePreset)
+        self.presetDelete.clicked.connect(self.deletePreset)
+        self.presetCombo.activated[str].connect(self.loadPreset)
+        self.presetCombo.activated[str].connect(self.presetName.setText)
+
         self.updatePresetsCombobox()
 
         # hide the load query as layer if feature is not supported
@@ -84,19 +84,21 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
         self.loadAsLayerGroup.setVisible(self._loadAsLayerAvailable)
         if self._loadAsLayerAvailable:
             self.layerTypeWidget.hide()  # show if load as raster is supported
-            self.connect(self.loadLayerBtn, SIGNAL("clicked()"), self.loadSqlLayer)
-            self.connect(self.getColumnsBtn, SIGNAL("clicked()"), self.fillColumnCombos)
-            self.connect(self.loadAsLayerGroup, SIGNAL("toggled(bool)"), self.loadAsLayerToggled)
+            self.loadLayerBtn.clicked.connect(self.loadSqlLayer)
+            self.getColumnsBtn.clicked.connect(self.fillColumnCombos)
+            self.loadAsLayerGroup.toggled.connect(self.loadAsLayerToggled)
             self.loadAsLayerToggled(False)
 
         self._createViewAvailable = self.db.connector.hasCreateSpatialViewSupport()
         self.btnCreateView.setVisible( self._createViewAvailable )
         if self._createViewAvailable:
-            self.connect( self.btnCreateView, SIGNAL("clicked()"), self.createView )
+            self.btnCreateView.clicked.connect(self.createView)
 
         self.queryBuilderFirst = True
         self.queryBuilderBtn.setIcon(QIcon(":/db_manager/icons/sql.gif"))
-        self.connect( self.queryBuilderBtn, SIGNAL("clicked()"), self.displayQueryBuilder )
+        self.queryBuilderBtn.clicked.connect(self.displayQueryBuilder)
+
+        self.presetName.textChanged.connect(self.nameChanged)
 
     def updatePresetsCombobox(self):
         self.presetCombo.clear()
@@ -134,13 +136,6 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
         query = QgsProject.instance().readEntry('DBManager', 'savedQueries/q' + unicode(name.__hash__()) + '/query')[0]
         name = QgsProject.instance().readEntry('DBManager', 'savedQueries/q' + unicode(name.__hash__()) + '/name')[0]
         self.editSql.setText(query)
-
-    def closeEvent(self, e):
-        """ save window state """
-        settings = QSettings()
-        settings.setValue("/DB_Manager/sqlWindow/geometry", self.saveGeometry())
-
-        QDialog.closeEvent(self, e)
 
     def loadAsLayerToggled(self, checked):
         self.loadAsLayerGroup.setChecked(checked)

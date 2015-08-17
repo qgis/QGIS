@@ -22,6 +22,8 @@ The content of this file is based on
  ***************************************************************************/
 """
 
+import functools
+
 from PyQt4.QtCore import QObject, Qt, QSettings, QByteArray, SIGNAL, QSize
 from PyQt4.QtGui import QMainWindow, QApplication, QMenu, QIcon, QTabWidget, QGridLayout, QSpacerItem, QSizePolicy, \
     QDockWidget, QStatusBar, QMenuBar, QToolBar, QKeySequence
@@ -188,16 +190,21 @@ class DBManager(QMainWindow):
 
         from dlg_sql_window import DlgSqlWindow
 
-        dlg = DlgSqlWindow(self.iface, db, self)
-        # refreshDb = lambda x: self.refreshItem( db.connection() ) # refresh the database tree
-        #self.connect( dlg, SIGNAL( "queryExecuted(const QString &)" ), refreshDb )
-        dlg.show()
-        dlg.exec_()
+        query = DlgSqlWindow(self.iface, db, self)
+        index = self.tabs.addTab(query, self.tr("Query"))
+        self.tabs.setCurrentIndex(index)
+        try:
+            self.tabs.setTabIcon(index, self.tree.currentItem().icon())
+        except AttributeError:
+            pass
+        query.nameChanged.connect(functools.partial(self.update_tab_name, index))
 
+    def update_tab_name(self, index, name):
+        name = name + "(query)"
+        self.tabs.setTabText(index, name)
 
     def showSystemTables(self):
         self.tree.showSystemTables(self.actionShowSystemTables.isChecked())
-
 
     def registerAction(self, action, menuName, callback=None):
         """ register an action to the manager's main menu """
@@ -340,6 +347,12 @@ class DBManager(QMainWindow):
                 self.unregisterAction(action, menuName)
         del self._registeredDbActions
 
+    def close_tab(self, index):
+        widget = self.tabs.widget(index)
+        if widget not in [self.info, self.table, self.preview]:
+            self.tabs.removeTab(index)
+            widget.deleteLater()
+
     def setupUi(self):
         self.setWindowTitle(self.tr("DB Manager"))
         self.setWindowIcon(QIcon(":/db_manager/icon"))
@@ -347,6 +360,8 @@ class DBManager(QMainWindow):
 
         # create central tab widget
         self.tabs = QTabWidget()
+        self.tabs.setTabsClosable(True)
+        self.tabs.tabCloseRequested.connect(self.close_tab)
         self.info = InfoViewer(self)
         self.tabs.addTab(self.info, self.tr("Info"))
         self.table = TableViewer(self)
