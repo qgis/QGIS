@@ -76,7 +76,7 @@ void QgsHeatmapRenderer::startRender( QgsRenderContext& context, const QgsFields
   if ( mWeightAttrNum == -1 )
   {
     mWeightExpression.reset( new QgsExpression( mWeightExpressionString ) );
-    mWeightExpression->prepare( fields );
+    mWeightExpression->prepare( &context.expressionContext() );
   }
 
   initializeValues( context );
@@ -122,7 +122,7 @@ bool QgsHeatmapRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& c
     if ( mWeightAttrNum == -1 )
     {
       Q_ASSERT( mWeightExpression.data() );
-      value = mWeightExpression->evaluate( &feature );
+      value = mWeightExpression->evaluate( &context.expressionContext() );
     }
     else
     {

@@ -110,6 +110,8 @@ void QgsMapToolRotatePointSymbols::canvasPressEvent( QMouseEvent *e )
   if ( !renderer )
     return;
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mCanvas->mapSettings() );
+  context.expressionContext() << QgsExpressionContextUtils::layerScope( mActiveLayer );
+  context.expressionContext().setFeature( pointFeature );
   renderer->startRender( context, mActiveLayer->fields() );
 
   //find all rotation fields used by renderer for feature

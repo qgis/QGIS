@@ -234,6 +234,7 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::defaultRenderer( QGis::GeometryType 
 QgsSymbolV2* QgsFeatureRendererV2::symbolForFeature( QgsFeature& feature )
 {
   QgsRenderContext context;
+  context.setExpressionContext( QgsExpressionContextUtils::createFeatureBasedContext( feature, QgsFields() ) );
   return symbolForFeature( feature, context );
 }
 

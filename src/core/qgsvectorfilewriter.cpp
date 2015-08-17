@@ -1573,6 +1573,7 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature, QgsFeatureRendererV2*
   //add OGR feature style type
   if ( mSymbologyExport != NoSymbology && renderer )
   {
+    mRenderContext.expressionContext().setFeature( feature );
     //SymbolLayerSymbology: concatenate ogr styles of all symbollayers
     QgsSymbolV2List symbols = renderer->symbolsForFeature( feature, mRenderContext );
     QString styleString;
@@ -2500,6 +2501,11 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
   if ( !layer )
     return ErrInvalidLayer;
 
+  mRenderContext.expressionContext() = QgsExpressionContext();
+  mRenderContext.expressionContext() << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( layer );
+
   QgsFeatureRendererV2 *renderer = layer->rendererV2();
   if ( !renderer )
     return ErrInvalidLayer;
@@ -2540,6 +2546,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
         return ErrProjection;
       }
     }
+    mRenderContext.expressionContext().setFeature( fet );
 
     featureSymbol = renderer->symbolForFeature( fet, mRenderContext );
     if ( !featureSymbol )

@@ -211,8 +211,8 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForFeature( QgsFeature& featu
     return symbol; // no data-defined rotation/scaling - just return the symbol
 
   // find out rotation, size scale
-  const double rotation = mRotation.data() ? mRotation->evaluate( feature ).toDouble() : 0;
-  const double sizeScale = mSizeScale.data() ? mSizeScale->evaluate( feature ).toDouble() : 1.;
+  const double rotation = mRotation.data() ? mRotation->evaluate( &context.expressionContext() ).toDouble() : 0;
+  const double sizeScale = mSizeScale.data() ? mSizeScale->evaluate( &context.expressionContext() ).toDouble() : 1.;
 
   // take a temporary symbol (or create it if doesn't exist)
   QgsSymbolV2* tempSymbol = mTempSymbols[symbol];
@@ -243,7 +243,7 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::originalSymbolForFeature( QgsFeatur
   if ( mAttrNum == -1 )
   {
     Q_ASSERT( mExpression.data() );
-    value = mExpression->evaluate( &feature );
+    value = mExpression->evaluate( &context.expressionContext() );
   }
   else
   {
@@ -409,7 +409,7 @@ void QgsCategorizedSymbolRendererV2::startRender( QgsRenderContext& context, con
   if ( mAttrNum == -1 )
   {
     mExpression.reset( new QgsExpression( mAttrName ) );
-    mExpression->prepare( fields );
+    mExpression->prepare( &context.expressionContext() );
   }
 
   QgsCategoryList::iterator it = mCategories.begin();

@@ -504,6 +504,14 @@ void QgsRuleBasedRendererV2Widget::countFeatures()
 
   QgsRenderContext renderContext;
   renderContext.setRendererScale( 0 ); // ignore scale
+
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( mLayer );
+
+  renderContext.setExpressionContext( context );
+
   mRenderer->startRender( renderContext, mLayer->fields() );
 
   int nFeatures = mLayer->featureCount();
@@ -514,6 +522,7 @@ void QgsRuleBasedRendererV2Widget::countFeatures()
   QgsFeature f;
   while ( fit.nextFeature( f ) )
   {
+    renderContext.expressionContext().setFeature( f );
     QgsRuleBasedRendererV2::RuleList featureRuleList = mRenderer->rootRule()->rulesForFeature( f, &renderContext );
 
     foreach ( QgsRuleBasedRendererV2::Rule* rule, featureRuleList )
@@ -633,9 +642,12 @@ void QgsRendererRulePropsDialog::testFilter()
     return;
   }
 
-  const QgsFields& fields = mLayer->fields();
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( mLayer );
 
-  if ( !filter.prepare( fields ) )
+  if ( !filter.prepare( &context ) )
   {
     QMessageBox::critical( this, tr( "Evaluation error" ), filter.evalErrorString() );
     return;
@@ -649,7 +661,9 @@ void QgsRendererRulePropsDialog::testFilter()
   QgsFeature f;
   while ( fit.nextFeature( f ) )
   {
-    QVariant value = filter.evaluate( &f );
+    context.setFeature( f );
+
+    QVariant value = filter.evaluate( &context );
     if ( value.toInt() != 0 )
       count++;
     if ( filter.hasEvalError() )

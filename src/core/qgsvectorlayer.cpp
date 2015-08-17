@@ -718,11 +718,16 @@ bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
   // Renderer (rule based) may depend on context scale, with scale is ignored if 0
   QgsRenderContext renderContext;
   renderContext.setRendererScale( 0 );
+  renderContext.expressionContext() << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( this );
+
   mRendererV2->startRender( renderContext, fields() );
 
   QgsFeature f;
   while ( fit.nextFeature( f ) )
   {
+    renderContext.expressionContext().setFeature( f );
     QgsSymbolV2List featureSymbolList = mRendererV2->originalSymbolsForFeature( f, renderContext );
     for ( QgsSymbolV2List::iterator symbolIt = featureSymbolList.begin(); symbolIt != featureSymbolList.end(); ++symbolIt )
     {

@@ -47,11 +47,11 @@ QgsSingleSymbolRendererV2::~QgsSingleSymbolRendererV2()
 
 QgsSymbolV2* QgsSingleSymbolRendererV2::symbolForFeature( QgsFeature& feature, QgsRenderContext &context )
 {
-  Q_UNUSED( context );
+  context.expressionContext().setFeature( feature );
   if ( !mRotation.data() && !mSizeScale.data() ) return mSymbol.data();
 
-  const double rotation = mRotation.data() ? mRotation->evaluate( feature ).toDouble() : 0;
-  const double sizeScale = mSizeScale.data() ? mSizeScale->evaluate( feature ).toDouble() : 1.;
+  const double rotation = mRotation.data() ? mRotation->evaluate( &context.expressionContext() ).toDouble() : 0;
+  const double sizeScale = mSizeScale.data() ? mSizeScale->evaluate( &context.expressionContext() ).toDouble() : 1.;
 
   if ( mTempSymbol->type() == QgsSymbolV2::Marker )
   {

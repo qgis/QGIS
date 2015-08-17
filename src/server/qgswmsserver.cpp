@@ -949,6 +949,7 @@ void QgsWMSServer::runHitTestLayer( QgsVectorLayer* vl, SymbolV2Set& usedSymbols
   QgsFeatureIterator fi = vl->getFeatures( request );
   while ( fi.nextFeature( f ) )
   {
+    context.expressionContext().setFeature( f );
     if ( moreSymbolsPerFeature )
     {
       foreach ( QgsSymbolV2* s, r->originalSymbolsForFeature( f, context ) )
@@ -2073,6 +2074,8 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
       continue;
     }
 
+    renderContext.expressionContext().setFeature( feature );
+
     //check if feature is rendered at all
     r2->startRender( renderContext, layer->pendingFields() );
     bool renderV2 = r2->willRenderFeature( feature, renderContext );
@@ -2683,6 +2686,13 @@ void QgsWMSServer::applyOpacities( const QStringList& layerList, QList< QPair< Q
       vectorRenderers.push_back( qMakePair( vl, rendererV2->clone() ) );
       //modify symbols of current renderer
       QgsRenderContext context;
+      context.expressionContext() << QgsExpressionContextUtils::globalScope()
+      << QgsExpressionContextUtils::projectScope();
+      if ( vl )
+      {
+        context.expressionContext() << QgsExpressionContextUtils::layerScope( vl );
+      }
+
       QgsSymbolV2List symbolList = rendererV2->symbols( context );
       QgsSymbolV2List::iterator symbolIt = symbolList.begin();
       for ( ; symbolIt != symbolList.end(); ++symbolIt )

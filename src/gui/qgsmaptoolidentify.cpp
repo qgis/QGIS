@@ -244,6 +244,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
   bool filter = false;
 
   QgsRenderContext context( QgsRenderContext::fromMapSettings( mCanvas->mapSettings() ) );
+  context.expressionContext() << QgsExpressionContextUtils::layerScope( layer );
   QgsFeatureRendererV2* renderer = layer->rendererV2();
   if ( renderer && renderer->capabilities() & QgsFeatureRendererV2::ScaleDependent )
   {
@@ -257,6 +258,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<IdentifyResult> *results, Qg
     QMap< QString, QString > derivedAttributes = commonDerivedAttributes;
 
     QgsFeatureId fid = f_it->id();
+    context.expressionContext().setFeature( *f_it );
 
     if ( filter && !renderer->willRenderFeature( *f_it, context ) )
       continue;
