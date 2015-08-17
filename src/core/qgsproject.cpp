@@ -357,16 +357,11 @@ QgsProject *QgsProject::instance()
   return theProject_;
 } // QgsProject *instance()
 
-void QgsProject::title( QString const &title )
+void QgsProject::setTitle( const QString &title )
 {
   imp_->title = title;
 
   dirty( true );
-} // void QgsProject::title
-
-void QgsProject::setTitle( const QString &t )
-{
-  title( t );
 }
 
 

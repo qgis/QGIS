@@ -165,7 +165,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString& offlineDataPath,
         projectTitle = QFileInfo( QgsProject::instance()->fileName() ).fileName();
       }
       projectTitle += " (offline)";
-      QgsProject::instance()->title( projectTitle );
+      QgsProject::instance()->setTitle( projectTitle );
 
       QgsProject::instance()->writeEntry( PROJECT_ENTRY_SCOPE_OFFLINE, PROJECT_ENTRY_KEY_OFFLINE_DB_PATH, dbPath );
 
@@ -295,7 +295,7 @@ void QgsOfflineEditing::synchronize()
       // disable offline project
       QString projectTitle = QgsProject::instance()->title();
       projectTitle.remove( QRegExp( " \\(offline\\)$" ) );
-      QgsProject::instance()->title( projectTitle );
+      QgsProject::instance()->setTitle( projectTitle );
       QgsProject::instance()->removeEntry( PROJECT_ENTRY_SCOPE_OFFLINE, PROJECT_ENTRY_KEY_OFFLINE_DB_PATH );
       remoteLayer->reload(); //update with other changes
     }
