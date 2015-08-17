@@ -520,7 +520,7 @@ void QgsVectorLayerRenderer::prepareDiagrams( QgsVectorLayer* layer, QStringList
   QList<QString>::const_iterator attIt = att.constBegin();
   for ( ; attIt != att.constEnd(); ++attIt )
   {
-    QgsExpression* expression = diagRenderer->diagram()->getExpression( *attIt, &mFields );
+    QgsExpression* expression = diagRenderer->diagram()->getExpression( *attIt, mContext.expressionContext() );
     QStringList columns = expression->referencedColumns();
     QStringList::const_iterator columnsIterator = columns.constBegin();
     for ( ; columnsIterator != columns.constEnd(); ++columnsIterator )
@@ -535,7 +535,7 @@ void QgsVectorLayerRenderer::prepareDiagrams( QgsVectorLayer* layer, QStringList
   {
     if ( linearlyInterpolatedDiagramRenderer->classificationAttributeIsExpression() )
     {
-      QgsExpression* expression = diagRenderer->diagram()->getExpression( linearlyInterpolatedDiagramRenderer->classificationAttributeExpression(), &mFields );
+      QgsExpression* expression = diagRenderer->diagram()->getExpression( linearlyInterpolatedDiagramRenderer->classificationAttributeExpression(), mContext.expressionContext() );
       QStringList columns = expression->referencedColumns();
       QStringList::const_iterator columnsIterator = columns.constBegin();
       for ( ; columnsIterator != columns.constEnd(); ++columnsIterator )
