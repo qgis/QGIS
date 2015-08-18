@@ -33,6 +33,7 @@ class QgsWelcomePage : public QWidget
   private slots:
     void itemDoubleClicked(const QModelIndex& index );
     void versionInfoReceived();
+    void whatsNewLinkClicked(const QUrl& url );
 
   private:
     QgsWelcomePageItemsModel* mModel;

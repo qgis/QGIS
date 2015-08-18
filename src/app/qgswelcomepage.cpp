@@ -17,11 +17,13 @@
 #include "qgsproject.h"
 #include "qgisapp.h"
 #include "qgsversioninfo.h"
+#include "qgsapplication.h"
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QListView>
 #include <QSettings>
+#include <QDesktopServices>
 
 QgsWelcomePage::QgsWelcomePage( QWidget* parent )
    : QWidget( parent )
@@ -38,6 +40,7 @@ QgsWelcomePage::QgsWelcomePage( QWidget* parent )
   QListView* welcomeScreenListView = new QListView();
   mModel = new QgsWelcomePageItemsModel();
   welcomeScreenListView->setModel( mModel );
+  welcomeScreenListView->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
   layout->addWidget( welcomeScreenListView );
   welcomeScreenListView->setStyleSheet( "QListView::item {"
                                         "  margin-top: 5px;"
@@ -45,18 +48,22 @@ QgsWelcomePage::QgsWelcomePage( QWidget* parent )
                                         "  margin-left: 15px;"
                                         "  margin-right: 15px;"
                                         "  border-width: 1px;"
-                                        "  border-color: #535353;"
+                                        "  border-color: #999;"
                                         "  border-radius: 9px;"
-                                        "  background: #cccccc;"
+                                        "  background: #eee;"
                                         "  padding: 10px;"
                                         "}"
                                         "QListView::item:selected:active {"
                                         "  background: #aaaaaa;"
                                         "}");
 
-  QgsWebView* webView = new QgsWebView();
-  webView->setUrl( QUrl( "http://blog.qgis.org" ) );
-  layout->addWidget( webView );
+  QgsWebView* whatsNewPage = new QgsWebView();
+  whatsNewPage->setUrl( QUrl::fromLocalFile( QgsApplication::whatsNewFilePath() ) );
+  whatsNewPage->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
+  whatsNewPage->setContextMenuPolicy( Qt::NoContextMenu );
+  whatsNewPage->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+  layout->addWidget( whatsNewPage );
+  connect( whatsNewPage, SIGNAL(linkClicked(QUrl)), this, SLOT(whatsNewLinkClicked(QUrl)));
 
   mVersionInformation = new QLabel;
   mainLayout->addWidget( mVersionInformation );
@@ -84,7 +91,7 @@ void QgsWelcomePage::versionInfoReceived()
   QgsVersionInfo* versionInfo = qobject_cast<QgsVersionInfo*>( sender() );
   Q_ASSERT( versionInfo );
 
-  if ( versionInfo->isDevelopmentVersion() )
+  if ( versionInfo->newVersionAvailable() )
   {
     mVersionInformation->setVisible( true );
     mVersionInformation->setText( QString( "<b>%1</b>: %2")
@@ -95,4 +102,9 @@ void QgsWelcomePage::versionInfoReceived()
                                        "  padding: 5px;"
                                        "}");
   }
+}
+
+void QgsWelcomePage::whatsNewLinkClicked(const QUrl& url)
+{
+  QDesktopServices::openUrl( url );
 }
