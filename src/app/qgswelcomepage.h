@@ -16,16 +16,16 @@
 #ifndef QGSWELCOMEDIALOG_H
 #define QGSWELCOMEDIALOG_H
 
-#include <QDialog>
+#include <QWidget>
 
 #include "qgswelcomepageitemsmodel.h"
 
-class QgsWelcomeDialog : public QDialog
+class QgsWelcomePage : public QWidget
 {
     Q_OBJECT
 
   public:
-    QgsWelcomeDialog();
+    QgsWelcomePage(QWidget* parent = 0);
 
     void setRecentProjects( const QList<QgsWelcomePageItemsModel::RecentProjectData>& recentProjects );
 
@@ -34,9 +34,6 @@ class QgsWelcomeDialog : public QDialog
 
   private:
     QgsWelcomePageItemsModel* mModel;
-
-  public slots:
-    void done( int result );
 };
 
 #endif // QGSWELCOMEDIALOG_H

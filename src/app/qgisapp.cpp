@@ -211,7 +211,7 @@
 #include "qgsmessagelogviewer.h"
 #include "qgsdataitem.h"
 #include "qgsmaplayeractionregistry.h"
-#include "qgswelcomedialog.h"
+#include "qgswelcomepage.h"
 #include "qgsmaprendererparalleljob.h"
 
 #include "qgssublayersdialog.h"
@@ -578,7 +578,16 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   int myBlue = settings.value( "/qgis/default_canvas_color_blue", 255 ).toInt();
   mMapCanvas->setCanvasColor( QColor( myRed, myGreen, myBlue ) );
 
-  centralLayout->addWidget( mMapCanvas, 0, 0, 2, 1 );
+  mWelcomePage = new QgsWelcomePage;
+
+  mCentralContainer = new QStackedWidget;
+  mCentralContainer->insertWidget( 0, mMapCanvas );
+  mCentralContainer->insertWidget( 1, mWelcomePage );
+
+  connect( mMapCanvas, SIGNAL( layersChanged() ), this, SLOT( showMapCanvas() ) );
+  connect( this, SIGNAL( newProject() ), this, SLOT( showMapCanvas() ) );
+
+  centralLayout->addWidget( mCentralContainer, 0, 0, 2, 1 );
 
   // a bar to warn the user with non-blocking messages
   mInfoBar = new QgsMessageBar( centralWidget );
@@ -864,6 +873,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
   fileNewBlank(); // prepare empty project, also skips any default templates from loading
 
+  // Show the welcome page. Needs to be done after creating a new project because it gets hidden on new project
+  mCentralContainer->setCurrentIndex( 1 );
+
   // request notification of FileOpen events (double clicking a file icon in Mac OS X Finder)
   // should come after fileNewBlank to ensure project is properly set up to receive any data source files
   QgsApplication::setFileOpenEventReceiver( this );
@@ -871,10 +883,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 #ifdef ANDROID
   toggleFullScreen();
 #endif
-
-  QgsWelcomeDialog dlg;
-  dlg.setRecentProjects( mRecentProjects );
-  dlg.exec();
 } // QgisApp ctor
 
 QgisApp::QgisApp()
@@ -2701,6 +2709,8 @@ void QgisApp::updateRecentProjectPaths()
     action->setEnabled( QFile::exists(( recentProject.path ) ) );
     action->setData( recentProject.path );
   }
+
+  mWelcomePage->setRecentProjects( mRecentProjects );
 } // QgisApp::updateRecentProjectPaths
 
 // add this file to the recently opened/saved projects list
@@ -2718,16 +2728,24 @@ void QgisApp::saveRecentProjectPath( QString projectPath, bool savePreviewImage 
 
   if ( savePreviewImage )
   {
-    QgsMapSettings mapSettings = mMapCanvas->mapSettings();
-    mapSettings.setOutputSize( QSize( 200, 70 ) );
-    QgsMapRendererParallelJob job( mapSettings );
-    job.start();
-    job.waitForFinished();
+    // Generate a unique file name
     QString fileName( QCryptographicHash::hash( ( projectData.path.toUtf8() ), QCryptographicHash::Md5 ).toHex() );
     QString previewDir = QString( "%1/previewImages" ).arg( QgsApplication::qgisSettingsDirPath() );
     projectData.previewImagePath = QString( "%1/%2.png" ).arg( previewDir ).arg( fileName );
     QDir().mkdir( previewDir );
-    job.renderedImage().save( projectData.previewImagePath );
+
+    // Render the map canvas
+    QSize previewSize( 250, 177 ); // h = w / sqrt(2)
+    QRect previewRect( QPoint( ( mMapCanvas->width() - previewSize.width() ) / 2
+                             , ( mMapCanvas->height() - previewSize.height() ) / 2 )
+                     , previewSize );
+
+    QPixmap previewImage( previewSize );
+    QPainter previewPainter( &previewImage );
+    mMapCanvas->render( &previewPainter, QRect( QPoint(), previewSize ), previewRect );
+
+    // Save
+    previewImage.save( projectData.previewImagePath );
   }
   else
   {
@@ -9016,6 +9034,12 @@ void QgisApp::mapToolChanged( QgsMapTool *newTool, QgsMapTool *oldTool )
     connect( newTool, SIGNAL( messageEmitted( QString, QgsMessageBar::MessageLevel ) ), this, SLOT( displayMapToolMessage( QString, QgsMessageBar::MessageLevel ) ) );
     connect( newTool, SIGNAL( messageDiscarded() ), this, SLOT( removeMapToolMessage() ) );
   }
+}
+
+void QgisApp::showMapCanvas()
+{
+  // Map layers changed -> switch to map canvas
+  mCentralContainer->setCurrentIndex( 0 );
 }
 
 void QgisApp::extentsViewToggled( bool theFlag )

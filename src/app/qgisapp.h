@@ -42,12 +42,13 @@ class QgisAppStyleSheet;
 class QgsAnnotationItem;
 class QgsClipboard;
 class QgsComposer;
-class QgsComposerView;
 class QgsComposerManager;
+class QgsComposerView;
 class QgsContrastEnhancement;
 class QgsCustomLayerOrderWidget;
-class QgsGeometry;
+class QgsDoubleSpinBox;
 class QgsFeature;
+class QgsGeometry;
 class QgsLayerTreeMapCanvasBridge;
 class QgsLayerTreeView;
 class QgsMapCanvas;
@@ -65,7 +66,8 @@ class QgsUndoWidget;
 class QgsUserInputDockWidget;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
-class QgsDoubleSpinBox;
+class QgsWelcomePage;
+
 
 class QDomDocument;
 class QNetworkReply;
@@ -1038,6 +1040,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! map tool changed
     void mapToolChanged( QgsMapTool *newTool, QgsMapTool *oldTool );
 
+    //! map layers changed
+    void showMapCanvas();
+
     /** Called when some layer's editing mode was toggled on/off */
     void layerEditStateChanged();
 
@@ -1675,6 +1680,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QDateTime mProjectLastModified;
 
+    QgsWelcomePage* mWelcomePage;
+
+    QStackedWidget* mCentralContainer;
 #ifdef HAVE_TOUCH
     bool gestureEvent( QGestureEvent *event );
     void tapAndHoldTriggered( QTapAndHoldGesture *gesture );

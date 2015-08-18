@@ -51,7 +51,7 @@ SET(QGIS_APP_SRCS
   qgssavestyletodbdialog.cpp
   qgsguivectorlayertools.cpp
   qgswelcomepageitemsmodel.cpp
-  qgswelcomedialog.cpp
+  qgswelcomepage.cpp
 
   qgsmaptooladdfeature.cpp
   qgsmaptooladdpart.cpp
@@ -211,7 +211,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsapplayertreeviewmenuprovider.h
   qgsguivectorlayertools.h
   qgswelcomepageitemsmodel.h
-  qgswelcomedialog.h
+  qgswelcomepage.h
 
   qgsmaptooladdfeature.h
   qgsmaptoolcapture.h
