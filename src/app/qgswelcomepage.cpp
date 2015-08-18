@@ -26,7 +26,7 @@
 #include <QDesktopServices>
 
 QgsWelcomePage::QgsWelcomePage( QWidget* parent )
-   : QWidget( parent )
+    : QWidget( parent )
 {
   QVBoxLayout* mainLayout = new QVBoxLayout;
   mainLayout->setMargin( 0 );
@@ -39,13 +39,13 @@ QgsWelcomePage::QgsWelcomePage( QWidget* parent )
 
   QWidget* recentProjctsContainer = new QWidget;
   recentProjctsContainer->setLayout( new QVBoxLayout );
-  QLabel* recentProjectsTitle = new QLabel( QString( "<h1>%1</h1>").arg( tr( "Recent Projects" ) ) );
+  QLabel* recentProjectsTitle = new QLabel( QString( "<h1>%1</h1>" ).arg( tr( "Recent Projects" ) ) );
   recentProjctsContainer->layout()->addWidget( recentProjectsTitle );
 
   QListView* welcomeScreenListView = new QListView();
   mModel = new QgsWelcomePageItemsModel( welcomeScreenListView );
   welcomeScreenListView->setModel( mModel );
-  welcomeScreenListView->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::MinimumExpanding );
+  welcomeScreenListView->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::MinimumExpanding );
   welcomeScreenListView->setStyleSheet( "QListView::item {"
                                         "  margin-top: 5px;"
                                         "  margin-bottom: 5px;"
@@ -59,7 +59,7 @@ QgsWelcomePage::QgsWelcomePage( QWidget* parent )
                                         "}"
                                         "QListView::item:selected:active {"
                                         "  background: #aaaaaa;"
-                                        "}");
+                                        "}" );
 
   recentProjctsContainer->layout()->addWidget( welcomeScreenListView );
 
@@ -67,32 +67,32 @@ QgsWelcomePage::QgsWelcomePage( QWidget* parent )
 
   QWidget* whatsNewContainer = new QWidget;
   whatsNewContainer->setLayout( new QVBoxLayout );
-  QLabel* whatsNewTitle = new QLabel( QString( "<h1>%1</h1>").arg( tr( "QGIS News" ) ) );
+  QLabel* whatsNewTitle = new QLabel( QString( "<h1>%1</h1>" ).arg( tr( "QGIS News" ) ) );
   whatsNewContainer->layout()->addWidget( whatsNewTitle );
 
   QgsWebView* whatsNewPage = new QgsWebView();
   whatsNewPage->setUrl( QUrl::fromLocalFile( QgsApplication::whatsNewFilePath() ) );
   whatsNewPage->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
   whatsNewPage->setContextMenuPolicy( Qt::NoContextMenu );
-  whatsNewPage->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::MinimumExpanding );
+  whatsNewPage->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::MinimumExpanding );
 
   whatsNewContainer->layout()->addWidget( whatsNewPage );
   layout->addWidget( whatsNewContainer );
 
-  connect( whatsNewPage, SIGNAL(linkClicked(QUrl)), this, SLOT(whatsNewLinkClicked(QUrl)));
+  connect( whatsNewPage, SIGNAL( linkClicked( QUrl ) ), this, SLOT( whatsNewLinkClicked( QUrl ) ) );
 
   mVersionInformation = new QLabel;
   mainLayout->addWidget( mVersionInformation );
   mVersionInformation->setVisible( false );
 
   QgsVersionInfo* versionInfo = new QgsVersionInfo();
-  connect( versionInfo, SIGNAL(versionInfoAvailable()), this, SLOT(versionInfoReceived()));
+  connect( versionInfo, SIGNAL( versionInfoAvailable() ), this, SLOT( versionInfoReceived() ) );
   versionInfo->checkVersion();
 
   connect( welcomeScreenListView, SIGNAL( doubleClicked( QModelIndex ) ), this, SLOT( itemDoubleClicked( QModelIndex ) ) );
 }
 
-void QgsWelcomePage::setRecentProjects(const QList<QgsWelcomePageItemsModel::RecentProjectData>& recentProjects)
+void QgsWelcomePage::setRecentProjects( const QList<QgsWelcomePageItemsModel::RecentProjectData>& recentProjects )
 {
   mModel->setRecentProjects( recentProjects );
 }
@@ -110,17 +110,17 @@ void QgsWelcomePage::versionInfoReceived()
   if ( versionInfo->newVersionAvailable() )
   {
     mVersionInformation->setVisible( true );
-    mVersionInformation->setText( QString( "<b>%1</b>: %2")
+    mVersionInformation->setText( QString( "<b>%1</b>: %2" )
                                   .arg( tr( "There is a new QGIS version available" ) )
                                   .arg( versionInfo->downloadInfo() ) );
-    mVersionInformation->setStyleSheet("QLabel{"
-                                       "  background-color: #dddd00;"
-                                       "  padding: 5px;"
-                                       "}");
+    mVersionInformation->setStyleSheet( "QLabel{"
+                                        "  background-color: #dddd00;"
+                                        "  padding: 5px;"
+                                        "}" );
   }
 }
 
-void QgsWelcomePage::whatsNewLinkClicked(const QUrl& url)
+void QgsWelcomePage::whatsNewLinkClicked( const QUrl& url )
 {
   QDesktopServices::openUrl( url );
 }

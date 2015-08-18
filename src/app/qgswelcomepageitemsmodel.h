@@ -24,16 +24,17 @@ class QgsWelcomePageItemsModel : public QAbstractListModel
     Q_OBJECT
 
   public:
-    struct RecentProjectData {
-        bool operator==( const RecentProjectData& other ) { return other.path == this->path; }
-        QString path;
-        QString title;
-        QString previewImagePath;
+    struct RecentProjectData
+    {
+      bool operator==( const RecentProjectData& other ) { return other.path == this->path; }
+      QString path;
+      QString title;
+      QString previewImagePath;
     };
 
     QgsWelcomePageItemsModel( QObject* parent = 0 );
 
-    void setRecentProjects(const QList<RecentProjectData>& recentProjects );
+    void setRecentProjects( const QList<RecentProjectData>& recentProjects );
 
     int rowCount( const QModelIndex& parent ) const;
     QVariant data( const QModelIndex& index, int role ) const;

@@ -1158,7 +1158,7 @@ void QgisApp::readSettings()
 
 
 
-  Q_FOREACH( const QString& key, projectKeys )
+  Q_FOREACH ( const QString& key, projectKeys )
   {
     QgsWelcomePageItemsModel::RecentProjectData data;
     settings.beginGroup( key );
@@ -2719,7 +2719,7 @@ void QgisApp::updateRecentProjectPaths()
 {
   mRecentProjectsMenu->clear();
 
-  Q_FOREACH( const QgsWelcomePageItemsModel::RecentProjectData& recentProject, mRecentProjects )
+  Q_FOREACH ( const QgsWelcomePageItemsModel::RecentProjectData& recentProject, mRecentProjects )
   {
     QAction* action = mRecentProjectsMenu->addAction( QString( "%1 (%2)" ).arg( recentProject.title ).arg( recentProject.path ) );
     action->setEnabled( QFile::exists(( recentProject.path ) ) );
@@ -2745,16 +2745,16 @@ void QgisApp::saveRecentProjectPath( QString projectPath, bool savePreviewImage 
   if ( savePreviewImage )
   {
     // Generate a unique file name
-    QString fileName( QCryptographicHash::hash( ( projectData.path.toUtf8() ), QCryptographicHash::Md5 ).toHex() );
+    QString fileName( QCryptographicHash::hash(( projectData.path.toUtf8() ), QCryptographicHash::Md5 ).toHex() );
     QString previewDir = QString( "%1/previewImages" ).arg( QgsApplication::qgisSettingsDirPath() );
     projectData.previewImagePath = QString( "%1/%2.png" ).arg( previewDir ).arg( fileName );
     QDir().mkdir( previewDir );
 
     // Render the map canvas
     QSize previewSize( 250, 177 ); // h = w / sqrt(2)
-    QRect previewRect( QPoint( ( mMapCanvas->width() - previewSize.width() ) / 2
-                             , ( mMapCanvas->height() - previewSize.height() ) / 2 )
-                     , previewSize );
+    QRect previewRect( QPoint(( mMapCanvas->width() - previewSize.width() ) / 2
+                              , ( mMapCanvas->height() - previewSize.height() ) / 2 )
+                       , previewSize );
 
     QPixmap previewImage( previewSize );
     QPainter previewPainter( &previewImage );
@@ -2787,7 +2787,7 @@ void QgisApp::saveRecentProjectPath( QString projectPath, bool savePreviewImage 
   int idx = 0;
 
   // Persist the list
-  Q_FOREACH( const QgsWelcomePageItemsModel::RecentProjectData& recentProject, mRecentProjects )
+  Q_FOREACH ( const QgsWelcomePageItemsModel::RecentProjectData& recentProject, mRecentProjects )
   {
     ++idx;
     settings.beginGroup( QString( "/UI/recentProjects/%1" ).arg( idx ) );
@@ -7756,7 +7756,7 @@ void QgisApp::checkQgisVersion()
   QgsVersionInfo* versionInfo = new QgsVersionInfo();
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  connect( versionInfo, SIGNAL(versionInfoAvailable()), this, SLOT(versionReplyFinished()));
+  connect( versionInfo, SIGNAL( versionInfoAvailable() ), this, SLOT( versionReplyFinished() ) );
   versionInfo->checkVersion();
 }
 
@@ -7767,7 +7767,7 @@ void QgisApp::versionReplyFinished()
   QgsVersionInfo* versionInfo = qobject_cast<QgsVersionInfo*>( sender() );
   Q_ASSERT( versionInfo );
 
-  if( versionInfo->error() == QNetworkReply::NoError )
+  if ( versionInfo->error() == QNetworkReply::NoError )
   {
     QString info;
 

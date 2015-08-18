@@ -26,14 +26,14 @@ class QgsWelcomePage : public QWidget
     Q_OBJECT
 
   public:
-    QgsWelcomePage(QWidget* parent = 0);
+    QgsWelcomePage( QWidget* parent = 0 );
 
     void setRecentProjects( const QList<QgsWelcomePageItemsModel::RecentProjectData>& recentProjects );
 
   private slots:
-    void itemDoubleClicked(const QModelIndex& index );
+    void itemDoubleClicked( const QModelIndex& index );
     void versionInfoReceived();
-    void whatsNewLinkClicked(const QUrl& url );
+    void whatsNewLinkClicked( const QUrl& url );
 
   private:
     QgsWelcomePageItemsModel* mModel;
