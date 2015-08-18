@@ -80,6 +80,14 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
       ShowMessage /*!< shows preset message instead of table contents*/
     };
 
+    /** Controls how long strings in the table are handled
+     */
+    enum WrapBehaviour
+    {
+      TruncateText = 0, /*!< text which doesn't fit inside the cell is truncated */
+      WrapText /*!< text which doesn't fit inside the cell is wrapped. Note that this only applies to text in columns with a fixed width. */
+    };
+
     QgsComposerTableV2( QgsComposition* composition, bool createUndoCommands );
     QgsComposerTableV2();
 
@@ -288,6 +296,22 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      */
     QColor backgroundColor() const { return mBackgroundColor; }
 
+    /** Sets the wrap behaviour for the table, which controls how text within cells is
+     * automatically wrapped.
+     * @param behaviour wrap behaviour
+     * @see wrapBehaviour
+     * @note added in QGIS 2.12
+     */
+    void setWrapBehaviour( WrapBehaviour behaviour );
+
+    /** Returns the wrap behaviour for the table, which controls how text within cells is
+     * automatically wrapped.
+     * @returns current wrap behaviour
+     * @see setWrapBehaviour
+     * @note added in QGIS 2.12
+     */
+    WrapBehaviour wrapBehaviour() const { return mWrapBehaviour; }
+
     /** Returns a pointer to the list of QgsComposerTableColumns shown in the table
      * @returns pointer to list of columns in table
      * @see setColumns
@@ -397,6 +421,8 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     QMap<int, double> mMaxRowHeightMap;
 
     QSizeF mTableSize;
+
+    WrapBehaviour mWrapBehaviour;
 
     /** Calculates the maximum width of text shown in columns.
      */
@@ -536,6 +562,12 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * @note not available in python bindings
      */
     Q_DECL_DEPRECATED void drawVerticalGridLines( QPainter* painter, const QMap<int, double>& maxWidthMap, const int numberRows, const bool hasHeader, const bool mergeCells = false ) const;
+
+  private:
+
+    bool textRequiresWrapping( const QString& text, double columnWidth , const QFont &font ) const;
+
+    QString wrappedText( const QString &value, double columnWidth, const QFont &font ) const;
 
     friend class TestQgsComposerTableV2;
 };
