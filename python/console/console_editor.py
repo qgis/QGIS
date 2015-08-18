@@ -19,7 +19,7 @@ email                : lrssvtml (at) gmail (dot) com
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
 
-from PyQt4.QtCore import Qt, QObject, QEvent, QSettings, QCoreApplication, QFileInfo, QSize, SIGNAL
+from PyQt4.QtCore import Qt, QObject, QEvent, QSettings, QCoreApplication, QFileInfo, QSize, QDir, SIGNAL
 from PyQt4.QtGui import QFont, QFontMetrics, QColor, QShortcut, QKeySequence, QMenu, QApplication, QCursor, QWidget, QGridLayout, QSpacerItem, QSizePolicy, QFileDialog, QTabWidget, QTreeWidgetItem, QFrame, QLabel, QToolButton, QMessageBox
 from PyQt4.Qsci import (QsciScintilla,
                         QsciLexerPython,
@@ -828,6 +828,8 @@ class EditorTab(QWidget):
         self.newEditor.lastModified = QFileInfo(path).lastModified()
         self.pc.updateTabListScript(path, action='append')
         self.tw.listObject(self)
+        lastDirPath = QFileInfo(path).path()
+        self.pc.settings.setValue("pythonConsole/lastDirPath", lastDirPath)
 
     def modified(self, modified):
         self.tw.tabModified(self, modified)
@@ -1250,7 +1252,7 @@ class EditorTabWidget(QTabWidget):
 
     def changeLastDirPath(self, tab):
         tabWidget = self.widget(tab)
-        if tabWidget:
+        if tabWidget and tabWidget.path:
             self.settings.setValue("pythonConsole/lastDirPath", tabWidget.path)
 
     def widgetMessageBar(self, iface, text, level, timed=True):

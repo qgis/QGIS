@@ -20,7 +20,7 @@ Some portions of code were taken from https://code.google.com/p/pydee/
 """
 import os
 
-from PyQt4.QtCore import Qt, QTimer, QSettings, QCoreApplication, QSize, QByteArray, QFileInfo, SIGNAL, QUrl
+from PyQt4.QtCore import Qt, QTimer, QSettings, QCoreApplication, QSize, QByteArray, QFileInfo, SIGNAL, QUrl, QDir
 from PyQt4.QtGui import QDockWidget, QToolBar, QToolButton, QWidget,\
     QSplitter, QTreeWidget, QAction, QFileDialog, QCheckBox, QSizePolicy, QMenu, QGridLayout, QApplication, \
     QDesktopServices
@@ -627,7 +627,7 @@ class PythonConsoleWidget(QWidget):
             QDesktopServices.openUrl(QUrl.fromLocalFile(path))
 
     def openScriptFile(self):
-        lastDirPath = self.settings.value("pythonConsole/lastDirPath", "")
+        lastDirPath = self.settings.value("pythonConsole/lastDirPath", QDir.home())
         openFileTr = QCoreApplication.translate("PythonConsole", "Open File")
         fileList = QFileDialog.getOpenFileNames(
             self, openFileTr, lastDirPath, "Script file (*.py)")
@@ -661,7 +661,9 @@ class PythonConsoleWidget(QWidget):
         if not index:
             index = self.tabEditorWidget.currentIndex()
         if not tabWidget.path:
-            pathFileName = self.tabEditorWidget.tabText(index) + '.py'
+            fileName = self.tabEditorWidget.tabText(index) + '.py'
+            folder = self.settings.value("pythonConsole/lastDirPath", QDir.home())
+            pathFileName = os.path.join(folder,fileName)
             fileNone = True
         else:
             pathFileName = tabWidget.path
