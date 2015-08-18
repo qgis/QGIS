@@ -1138,10 +1138,25 @@ void QgisApp::readSettings()
   // 'gis' theme is new /themes/default directory (2013-04-15)
   setTheme( settings.value( "/Themes", "default" ).toString() );
 
+  // Read legacy settings
+  mRecentProjects.clear();
+
+  QStringList oldRecentProjects = settings.value( "/UI/recentProjectsList" ).toStringList();
+  settings.remove( "/UI/recentProjectsList" );
+
+  Q_FOREACH ( const QString& project, oldRecentProjects )
+  {
+    QgsWelcomePageItemsModel::RecentProjectData data;
+    data.path = project;
+    data.title = project;
+
+    mRecentProjects.prepend( data );
+  }
+
   settings.beginGroup( "/UI/recentProjects" );
   QStringList projectKeys = settings.childGroups();
 
-  mRecentProjects.clear();
+
 
   Q_FOREACH( const QString& key, projectKeys )
   {
