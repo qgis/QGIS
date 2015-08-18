@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgswelcomedialog.h"
+#include "qgswelcomepage.h"
 #include "qgsproject.h"
 #include "qgisapp.h"
 
@@ -21,9 +21,11 @@
 #include <QListView>
 #include <QSettings>
 
-QgsWelcomeDialog::QgsWelcomeDialog()
+QgsWelcomePage::QgsWelcomePage( QWidget* parent )
+   : QWidget( parent )
 {
   QHBoxLayout* layout = new QHBoxLayout();
+  layout->setMargin( 9 );
   setLayout( layout );
 
   QListView* welcomeScreenListView = new QListView();
@@ -33,27 +35,15 @@ QgsWelcomeDialog::QgsWelcomeDialog()
 
   setWindowTitle( tr( "Recent Projects..." ) );
 
-  QSettings settings;
-  restoreGeometry( settings.value( "/Windows/WelcomeDialog/geometry" ).toByteArray() );
-
   connect( welcomeScreenListView, SIGNAL( doubleClicked( QModelIndex ) ), this, SLOT( itemDoubleClicked( QModelIndex ) ) );
 }
 
-void QgsWelcomeDialog::setRecentProjects(const QList<QgsWelcomePageItemsModel::RecentProjectData>& recentProjects)
+void QgsWelcomePage::setRecentProjects(const QList<QgsWelcomePageItemsModel::RecentProjectData>& recentProjects)
 {
   mModel->setRecentProjects( recentProjects );
 }
 
-void QgsWelcomeDialog::itemDoubleClicked( const QModelIndex& index )
+void QgsWelcomePage::itemDoubleClicked( const QModelIndex& index )
 {
   QgisApp::instance()->openProject( mModel->data( index, Qt::ToolTipRole ).toString() );
-  accept();
-}
-
-
-void QgsWelcomeDialog::done( int result )
-{
-  QDialog::done( result );
-  QSettings settings;
-  settings.setValue( "/Windows/WelcomeDialog/geometry", saveGeometry() );
 }
