@@ -365,6 +365,11 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, QStrin
 
   int rownum = 1;
 
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( layer );
+
   QgsField fld = layer->fields()[ fieldindex ];
 
   //go through all the features and change the new attributes
@@ -377,8 +382,10 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, QStrin
       continue;
     }
 
-    exp.setCurrentRowNumber( rownum );
-    QVariant value = exp.evaluate( &feature );
+    context.setFeature( feature );
+    context.lastScope()->setVariable( QString( "_rownum_" ), rownum );
+
+    QVariant value = exp.evaluate( &context );
     fld.convertCompatible( value );
     // Bail if we have a update error
     if ( exp.hasEvalError() )
@@ -768,7 +775,12 @@ void QgsAttributeTableDialog::setFilterExpression( QString filterString )
     return;
   }
 
-  if ( ! filterExpression.prepare( mLayer->fields() ) )
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( mLayer );
+
+  if ( ! filterExpression.prepare( &context ) )
   {
     QgisApp::instance()->messageBar()->pushMessage( tr( "Evaluation error" ), filterExpression.evalErrorString(), QgsMessageBar::WARNING, QgisApp::instance()->messageTimeout() );
   }
@@ -790,7 +802,8 @@ void QgsAttributeTableDialog::setFilterExpression( QString filterString )
 
   while ( featIt.nextFeature( f ) )
   {
-    if ( filterExpression.evaluate( &f ).toInt() != 0 )
+    context.setFeature( f );
+    if ( filterExpression.evaluate( &context ).toInt() != 0 )
       filteredFeatures << f.id();
 
     // check if there were errors during evaluating
