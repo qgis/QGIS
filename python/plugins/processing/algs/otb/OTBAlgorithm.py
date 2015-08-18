@@ -97,13 +97,7 @@ class OTBAlgorithm(GeoAlgorithm):
                 a_list[3] = -1
 
         a_list[1] = "-%s" % a_list[1]
-
-        def myunicode(par):
-            if isinstance(par, list):
-                return ";".join(par)
-            return unicode(par)
-
-        b_list = map(mystr, a_list)
+        b_list = map(lambda x: ";".join(x) if isinstance(x,list) else unicode(x), a_list)
         res = "|".join(b_list)
         return res
 
