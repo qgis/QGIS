@@ -82,7 +82,7 @@ class CORE_EXPORT QgsProject : public QObject
     /**
        Every project has an associated title string
 
-       @deprecated Use @link setTitle @endlink instead.
+       @deprecated Use setTitle instead.
      */
     //@{
     Q_DECL_DEPRECATED inline void title( const QString & title ) { setTitle( title ); }

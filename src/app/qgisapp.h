@@ -480,7 +480,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     static LONG WINAPI qgisCrashDump( struct _EXCEPTION_POINTERS *ExceptionInfo );
 #endif
 
-    void parseVersionInfo(QNetworkReply* reply, int& latestVersion, QStringList& versionInfo );
+    void parseVersionInfo( QNetworkReply* reply, int& latestVersion, QStringList& versionInfo );
 
   public slots:
     void layerTreeViewDoubleClicked( const QModelIndex& index );
