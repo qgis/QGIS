@@ -353,6 +353,7 @@ SET(QGIS_GUI_MOC_HDRS
   raster/qgssinglebandgrayrendererwidget.h
   raster/qgssinglebandpseudocolorrendererwidget.h
   raster/qgsrasterhistogramwidget.h
+  raster/qgsrasterrendererwidget.h
 
   symbology-ng/characterwidget.h
   symbology-ng/qgsbrushstylecombobox.h
