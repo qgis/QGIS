@@ -246,7 +246,7 @@ class Grass7Utils:
         else:
             gisrc = userFolder() + os.sep + 'processing.gisrc7'
             os.putenv('GISRC', gisrc)
-            os.putenv('GRASS_MESSAGE_FORMAT', 'gui')
+            os.putenv('GRASS_MESSAGE_FORMAT', 'plain')
             os.putenv('GRASS_BATCH_JOB', Grass7Utils.grassBatchJobFilename())
             Grass7Utils.createGrass7BatchJobFileFromGrass7Commands(commands)
             os.chmod(Grass7Utils.grassBatchJobFilename(), stat.S_IEXEC
