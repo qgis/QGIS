@@ -72,6 +72,7 @@ class TestQgsComposerTableV2 : public QObject
     void multiLineText(); //test rendering a table with multiline text
     void align(); //test alignment of table cells
     void wrapChar(); //test setting wrap character
+    void autoWrap(); //test auto word wrap
 
   private:
     QgsComposition* mComposition;
@@ -725,6 +726,42 @@ void TestQgsComposerTableV2::wrapChar()
 
   //retrieve rows and check
   compareTable( expectedRows );
+}
+
+void TestQgsComposerTableV2::autoWrap()
+{
+  QgsVectorLayer* multiLineLayer = new QgsVectorLayer( "Point?field=col1:string&field=col2:string&field=col3:string", "multiline", "memory" );
+  QVERIFY( multiLineLayer->isValid() );
+  QgsFeature f1( multiLineLayer->dataProvider()->fields(), 1 );
+  f1.setAttribute( "col1", "long multiline\nstring" );
+  f1.setAttribute( "col2", "singleline string" );
+  f1.setAttribute( "col3", "singleline" );
+  QgsFeature f2( multiLineLayer->dataProvider()->fields(), 2 );
+  f2.setAttribute( "col1", "singleline string" );
+  f2.setAttribute( "col2", "multiline\nstring" );
+  f2.setAttribute( "col3", "singleline" );
+  QgsFeature f3( multiLineLayer->dataProvider()->fields(), 3 );
+  f3.setAttribute( "col1", "singleline" );
+  f3.setAttribute( "col2", "singleline" );
+  f3.setAttribute( "col3", "multiline\nstring" );
+  QgsFeature f4( multiLineLayer->dataProvider()->fields(), 4 );
+  f4.setAttribute( "col1", "a bit long triple line string" );
+  f4.setAttribute( "col2", "double toolongtofitononeline string with some more lines on the end andanotherreallylongline" );
+  f4.setAttribute( "col3", "singleline" );
+  multiLineLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 << f4 );
+
+  mFrame2->setSceneRect( QRectF( 5, 40, 100, 90 ) );
+
+  mComposerAttributeTable->setMaximumNumberOfFeatures( 20 );
+  mComposerAttributeTable->setVectorLayer( multiLineLayer );
+  mComposerAttributeTable->setWrapBehaviour( QgsComposerTableV2::WrapText );
+
+  mComposerAttributeTable->columns()->at( 0 )->setWidth( 25 );
+  mComposerAttributeTable->columns()->at( 1 )->setWidth( 25 );
+  QgsCompositionChecker checker( "composerattributetable_autowrap", mComposition );
+  bool result = checker.testComposition( mReport, 0 );
+  mComposerAttributeTable->columns()->at( 0 )->setWidth( 0 );
+  QVERIFY( result );
 }
 
 QTEST_MAIN( TestQgsComposerTableV2 )

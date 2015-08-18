@@ -35,6 +35,7 @@ QgsComposerTableV2::QgsComposerTableV2( QgsComposition *composition, bool create
     , mGridStrokeWidth( 0.5 )
     , mGridColor( Qt::black )
     , mBackgroundColor( Qt::white )
+    , mWrapBehaviour( TruncateText )
 {
 
   if ( mComposition )
@@ -65,6 +66,7 @@ QgsComposerTableV2::QgsComposerTableV2()
     , mGridStrokeWidth( 0.5 )
     , mGridColor( Qt::black )
     , mBackgroundColor( Qt::white )
+    , mWrapBehaviour( TruncateText )
 {
 
 }
@@ -91,6 +93,7 @@ bool QgsComposerTableV2::writeXML( QDomElement& elem, QDomDocument & doc, bool i
   elem.setAttribute( "gridColor", QgsSymbolLayerV2Utils::encodeColor( mGridColor ) );
   elem.setAttribute( "showGrid", mShowGrid );
   elem.setAttribute( "backgroundColor", QgsSymbolLayerV2Utils::encodeColor( mBackgroundColor ) );
+  elem.setAttribute( "wrapBehaviour", QString::number(( int )mWrapBehaviour ) );
 
   //columns
   QDomElement displayColumnsElem = doc.createElement( "displayColumns" );
@@ -142,6 +145,7 @@ bool QgsComposerTableV2::readXML( const QDomElement &itemElem, const QDomDocumen
   mShowGrid = itemElem.attribute( "showGrid", "1" ).toInt();
   mGridColor = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "gridColor", "0,0,0,255" ) );
   mBackgroundColor = QgsSymbolLayerV2Utils::decodeColor( itemElem.attribute( "backgroundColor", "255,255,255,0" ) );
+  mWrapBehaviour = QgsComposerTableV2::WrapBehaviour( itemElem.attribute( "wrapBehaviour", "0" ).toInt() );
 
   //restore column specifications
   qDeleteAll( mColumns );
@@ -459,20 +463,23 @@ void QgsComposerTableV2::render( QPainter *p, const QRectF &, const int frameInd
         // currentY = gridSize;
         currentX += mCellMargin;
 
+        QVariant cellContents = mTableContents.at( row ).at( col );
+        QString str = cellContents.toString();
+
         Qt::TextFlag textFlag = ( Qt::TextFlag )0;
-        if (( *columnIt )->width() <= 0 )
+        if (( *columnIt )->width() <= 0 && mWrapBehaviour == TruncateText )
         {
           //automatic column width, so we use the Qt::TextDontClip flag when drawing contents, as this works nicer for italicised text
           //which may slightly exceed the calculated width
           //if column size was manually set then we do apply text clipping, to avoid painting text outside of columns width
           textFlag = Qt::TextDontClip;
         }
+        else if ( textRequiresWrapping( str, ( *columnIt )->width(), mContentFont ) )
+        {
+          str = wrappedText( str, ( *columnIt )->width(), mContentFont );
+        }
 
         cell = QRectF( currentX, currentY, mMaxColumnWidthMap[col], rowHeight );
-
-        QVariant cellContents = mTableContents.at( row ).at( col );
-        QString str = cellContents.toString();
-
         QgsComposerUtils::drawText( p, cell, str, mContentFont, mContentFontColor, ( *columnIt )->hAlignment(), ( *columnIt )->vAlignment(), textFlag );
 
         currentX += mMaxColumnWidthMap[ col ];
@@ -701,6 +708,19 @@ void QgsComposerTableV2::setBackgroundColor( const QColor &color )
   emit changed();
 }
 
+void QgsComposerTableV2::setWrapBehaviour( QgsComposerTableV2::WrapBehaviour behaviour )
+{
+  if ( behaviour == mWrapBehaviour )
+  {
+    return;
+  }
+
+  mWrapBehaviour = behaviour;
+  recalculateTableSize();
+
+  emit changed();
+}
+
 void QgsComposerTableV2::setColumns( QgsComposerTableColumns columns )
 {
   //remove existing columns
@@ -864,8 +884,15 @@ bool QgsComposerTableV2::calculateMaxRowHeights()
     col = 0;
     for ( ; colIt != rowIt->constEnd(); ++colIt )
     {
-      //height
-      heights[ row * cols + col ] = QgsComposerUtils::textHeightMM( mContentFont, ( *colIt ).toString() );
+      if ( textRequiresWrapping(( *colIt ).toString(), mColumns.at( col )->width(), mContentFont ) )
+      {
+        //contents too wide for cell, need to wrap
+        heights[ row * cols + col ] = QgsComposerUtils::textHeightMM( mContentFont, wrappedText(( *colIt ).toString(), mColumns.at( col )->width(), mContentFont ) );
+      }
+      else
+      {
+        heights[ row * cols + col ] = QgsComposerUtils::textHeightMM( mContentFont, ( *colIt ).toString() );
+      }
 
       col++;
     }
@@ -1016,6 +1043,79 @@ void QgsComposerTableV2::drawVerticalGridLines( QPainter *painter, const QMap<in
 {
   //hacky shortcut to maintain 2.10 API without adding code - whooo!
   drawVerticalGridLines( painter, maxWidthMap, 100000, 100000 + numberRows, hasHeader, mergeCells );
+}
+
+bool QgsComposerTableV2::textRequiresWrapping( const QString& text, double columnWidth, const QFont &font ) const
+{
+  if ( columnWidth == 0 || mWrapBehaviour != WrapText )
+    return false;
+
+  QStringList multiLineSplit = text.split( "\n" );
+  double currentTextWidth = 0;
+  Q_FOREACH ( QString line, multiLineSplit )
+  {
+    currentTextWidth = qMax( currentTextWidth, QgsComposerUtils::textWidthMM( font, line ) );
+  }
+
+  return ( currentTextWidth > columnWidth );
+}
+
+QString QgsComposerTableV2::wrappedText( const QString &value, double columnWidth, const QFont &font ) const
+{
+  QStringList lines = value.split( "\n" );
+  QStringList outLines;
+  Q_FOREACH ( QString line, lines )
+  {
+    if ( textRequiresWrapping( line, columnWidth, font ) )
+    {
+      //first step is to identify words which must be on their own line (too long to fit)
+      QStringList words = line.split( " " );
+      QStringList linesToProcess;
+      QString wordsInCurrentLine;
+      Q_FOREACH ( QString word, words )
+      {
+        if ( textRequiresWrapping( word, columnWidth, font ) )
+        {
+          //too long to fit
+          if ( !wordsInCurrentLine.isEmpty() )
+            linesToProcess << wordsInCurrentLine;
+          wordsInCurrentLine.clear();
+          linesToProcess << word;
+        }
+        else
+        {
+          if ( !wordsInCurrentLine.isEmpty() )
+            wordsInCurrentLine.append( " " );
+          wordsInCurrentLine.append( word );
+        }
+      }
+      if ( !wordsInCurrentLine.isEmpty() )
+        linesToProcess << wordsInCurrentLine;
+
+      Q_FOREACH ( QString line, linesToProcess )
+      {
+        QString remainingText = line;
+        int lastPos = remainingText.lastIndexOf( " " );
+        while ( lastPos > -1 )
+        {
+          if ( !textRequiresWrapping( remainingText.left( lastPos ), columnWidth, font ) )
+          {
+            outLines << remainingText.left( lastPos );
+            remainingText = remainingText.mid( lastPos + 1 );
+            lastPos = 0;
+          }
+          lastPos = remainingText.lastIndexOf( " ", lastPos - 1 );
+        }
+        outLines << remainingText;
+      }
+    }
+    else
+    {
+      outLines << line;
+    }
+  }
+
+  return outLines.join( "\n" );
 }
 
 void QgsComposerTableV2::drawVerticalGridLines( QPainter *painter, const QMap<int, double> &maxWidthMap, int firstRow, int lastRow, bool hasHeader, bool mergeCells ) const

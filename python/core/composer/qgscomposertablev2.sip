@@ -55,6 +55,14 @@ class QgsComposerTableV2: QgsComposerMultiFrame
       ShowMessage /*!< shows preset message instead of table contents*/
     };
 
+    /** Controls how long strings in the table are handled
+     */
+    enum WrapBehaviour
+    {
+      TruncateText = 0, /*!< text which doesn't fit inside the cell is truncated */
+      WrapText /*!< text which doesn't fit inside the cell is wrapped. Note that this only applies to text in columns with a fixed width. */
+    };
+
     QgsComposerTableV2( QgsComposition* composition /TransferThis/, bool createUndoCommands );
     QgsComposerTableV2();
 
@@ -262,6 +270,22 @@ class QgsComposerTableV2: QgsComposerMultiFrame
      * @see gridColor
      */
     QColor backgroundColor() const;
+
+    /** Sets the wrap behaviour for the table, which controls how text within cells is
+     * automatically wrapped.
+     * @param behaviour wrap behaviour
+     * @see wrapBehaviour
+     * @note added in QGIS 2.12
+     */
+    void setWrapBehaviour( WrapBehaviour behaviour );
+
+    /** Returns the wrap behaviour for the table, which controls how text within cells is
+     * automatically wrapped.
+     * @returns current wrap behaviour
+     * @see setWrapBehaviour
+     * @note added in QGIS 2.12
+     */
+    WrapBehaviour wrapBehaviour() const;
 
     /** Returns a pointer to the list of QgsComposerTableColumns shown in the table
      * @returns pointer to list of columns in table

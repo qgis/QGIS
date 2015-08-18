@@ -79,6 +79,7 @@ class QgsComposerAttributeTableWidget: public QgsComposerItemBaseWidget, private
     void on_mUniqueOnlyCheckBox_stateChanged( int state );
     void on_mEmptyFrameCheckBox_toggled( bool checked );
     void on_mHideEmptyBgCheckBox_toggled( bool checked );
+    void on_mWrapBehaviourComboBox_currentIndexChanged( int index );
 
     /** Inserts a new maximum number of features into the spin box (without the spinbox emitting a signal)*/
     void setMaximumNumberOfFeatures( int n );
