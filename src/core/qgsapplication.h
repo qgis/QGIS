@@ -90,6 +90,10 @@ class CORE_EXPORT QgsApplication : public QApplication
      * @note this function was added in version 2.7 */
     static const QString developersMapFilePath();
 
+    /** Returns the path to the whats new html page
+     * @note this function was added in version 2.11 */
+    static const QString whatsNewFilePath();
+
     /** Returns the path to the sponsors file. */
     static const QString sponsorsFilePath();
 

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      html {
+        font-family: "Open Sans", "Helvetica Neue", Ubuntu, Arial, sans-serif;
+      }
+      a {
+        text-decoration: none;
+        color: #08c;
+      }
+
+      .feed-element {
+        margin: 1em;
+        background-color: #eee;
+        border-radius: 9px;
+        padding: 1em;
+        border: 1px solid #999;
+        overflow: auto;
+      }
+
+      .description {
+      }
+
+      .date {
+        font-size: 70%;
+        font-style: italic;
+        margin-bottom: 1em;
+        color: #666;
+      }
+
+      .feed-element .content-image {
+        float: left;
+        margin-right: 1em;
+      }
+    </style>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+
+    google.load("feeds", "1");
+
+    function initialize() {
+      var feed = new google.feeds.Feed('http://blog.qgis.org/feed/');
+      feed.load(function(result) {
+        if (!result.error) {
+          var container = document.getElementById("feed");
+          result.feed.entries.forEach(
+              function(entry) {
+                var div = document.createElement("div");
+                div.setAttribute('class', 'feed-element')
+
+                var link = document.createElement("a");
+                link.setAttribute('href', entry.link);
+
+                var title = document.createElement("h2");
+                title.appendChild(document.createTextNode(entry.title));
+                link.appendChild(title);
+                div.appendChild(link);
+
+                var date = document.createElement("div");
+                date.setAttribute('class', 'date');
+                date.appendChild(document.createTextNode(entry.publishedDate));
+                div.appendChild(date);
+
+                var img = document.createElement("img");
+                img.setAttribute('src', entry.mediaGroups[0].contents[0].url);
+                img.setAttribute('class', 'content-image');
+                div.appendChild(img);
+
+                var description = document.createElement("div");
+                description.setAttribute('class', 'description');
+                description.innerHTML=entry.contentSnippet;
+                div.appendChild(description);
+
+                container.appendChild(div);
+              }
+          )
+        }
+      });
+    }
+    google.setOnLoadCallback(initialize);
+
+    </script>
+  </head>
+  <body>
+    <h1>QGIS News</h1>
+    <div id="feed"></div>
+  </body>
+</html>
