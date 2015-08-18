@@ -31,7 +31,7 @@ fi
 if ! type -p flip >/dev/null; then
   if type -p dos2unix >/dev/null; then
     flip() {
-      exec dos2unix $2
+      dos2unix $2
     }
   else
     echo "flip not found" >&2
