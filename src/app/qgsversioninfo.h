@@ -13,30 +13,50 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSWELCOMEDIALOG_H
-#define QGSWELCOMEDIALOG_H
+#ifndef QGSVERSIONINFO_H
+#define QGSVERSIONINFO_H
 
-#include <QWidget>
-#include <QLabel>
+#include <QObject>
+#include <QNetworkReply>
 
-#include "qgswelcomepageitemsmodel.h"
-
-class QgsWelcomePage : public QWidget
+class QgsVersionInfo : public QObject
 {
     Q_OBJECT
-
   public:
-    QgsWelcomePage(QWidget* parent = 0);
+    explicit QgsVersionInfo( QObject *parent = 0 );
 
-    void setRecentProjects( const QList<QgsWelcomePageItemsModel::RecentProjectData>& recentProjects );
+  public slots:
+    /**
+     * Connects to qgis.org and checks for new versions.
+     */
+    void checkVersion();
+
+    QString html() const { return mAdditionalHtml; }
+
+    QString downloadInfo() const { return mDownloadInfo; }
+
+    int latestVersionCode() const { return mLatestVersion; }
+
+    bool newVersionAvailable() const;
+
+    bool isDevelopmentVersion() const;
+
+    QNetworkReply::NetworkError error() const { return mError; }
+
+    QString errorString() const { return mErrorString; }
 
   private slots:
-    void itemDoubleClicked(const QModelIndex& index );
-    void versionInfoReceived();
+    void versionReplyFinished();
+
+  signals:
+    void versionInfoAvailable();
 
   private:
-    QgsWelcomePageItemsModel* mModel;
-    QLabel* mVersionInformation;
+    int mLatestVersion;
+    QString mDownloadInfo;
+    QString mAdditionalHtml;
+    QNetworkReply::NetworkError mError;
+    QString mErrorString;
 };
 
-#endif // QGSWELCOMEDIALOG_H
+#endif // QGSVERSIONINFO_H

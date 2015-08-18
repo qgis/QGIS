@@ -213,6 +213,7 @@
 #include "qgsmaplayeractionregistry.h"
 #include "qgswelcomepage.h"
 #include "qgsmaprendererparalleljob.h"
+#include "qgsversioninfo.h"
 
 #include "qgssublayersdialog.h"
 #include "ogr/qgsopenvectorlayerdialog.h"
@@ -7734,102 +7735,51 @@ void QgisApp::loadPythonSupport()
 
 void QgisApp::checkQgisVersion()
 {
+  QgsVersionInfo* versionInfo = new QgsVersionInfo();
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( QNetworkRequest( QUrl( "http://qgis.org/version.txt" ) ) );
-  connect( reply, SIGNAL( finished() ), this, SLOT( versionReplyFinished() ) );
+  connect( versionInfo, SIGNAL(versionInfoAvailable()), this, SLOT(versionReplyFinished()));
+  versionInfo->checkVersion();
 }
 
 void QgisApp::versionReplyFinished()
 {
   QApplication::restoreOverrideCursor();
 
-  QNetworkReply *reply = qobject_cast<QNetworkReply*>( sender() );
-  if ( !reply )
-    return;
+  QgsVersionInfo* versionInfo = qobject_cast<QgsVersionInfo*>( sender() );
+  Q_ASSERT( versionInfo );
 
-  QNetworkReply::NetworkError error = reply->error();
-
-  if ( error == QNetworkReply::NoError )
+  if( versionInfo->error() == QNetworkReply::NoError )
   {
-    QString versionMessage = reply->readAll();
-    QgsDebugMsg( QString( "version message: %1" ).arg( versionMessage ) );
+    QString info;
 
-    // strip the header
-    QString contentFlag = "#QGIS Version";
-    int pos = versionMessage.indexOf( contentFlag );
-    if ( pos > -1 )
+    if ( versionInfo->newVersionAvailable() )
     {
-      pos += contentFlag.length();
-      QgsDebugMsg( QString( "Pos is %1" ).arg( pos ) );
-
-      versionMessage = versionMessage.mid( pos );
-      QStringList parts = versionMessage.split( "|", QString::SkipEmptyParts );
-      // check the version from the  server against our version
-      QString versionInfo;
-      int currentVersion = parts[0].toInt();
-      if ( currentVersion > QGis::QGIS_VERSION_INT )
-      {
-        // show version message from server
-        versionInfo = tr( "There is a new version of QGIS available" ) + "\n";
-      }
-      else if ( QGis::QGIS_VERSION_INT > currentVersion )
-      {
-        versionInfo = tr( "You are running a development version of QGIS" ) + "\n";
-      }
-      else
-      {
-        versionInfo = tr( "You are running the current version of QGIS" ) + "\n";
-      }
-
-      if ( parts.count() > 1 )
-      {
-        versionInfo += parts[1] + "\n\n" + tr( "Would you like more information?" );
-
-        QMessageBox::StandardButton result = QMessageBox::information( this,
-                                             tr( "QGIS Version Information" ), versionInfo, QMessageBox::Ok |
-                                             QMessageBox::Cancel );
-        if ( result == QMessageBox::Ok )
-        {
-          // show more info
-          QgsMessageViewer *mv = new QgsMessageViewer( this );
-          mv->setWindowTitle( tr( "QGIS - Changes since last release" ) );
-          mv->setMessageAsHtml( parts[2] );
-          mv->exec();
-        }
-      }
-      else
-      {
-        QMessageBox::information( this, tr( "QGIS Version Information" ), versionInfo );
-      }
+      info = tr( "There is a new version of QGIS available" );
+    }
+    else if ( versionInfo->isDevelopmentVersion() )
+    {
+      info = tr( "You are running a development version of QGIS" );
     }
     else
     {
-      QMessageBox::warning( this, tr( "QGIS Version Information" ), tr( "Unable to get current version information from server" ) );
+      info = tr( "You are running the current version of QGIS" );
     }
+
+    info = QString( "<b>%1</b>" ).arg( info );
+
+    info += "<br>" + versionInfo->downloadInfo();
+
+    QMessageBox mb( QMessageBox::Information, tr( "QGIS Version Information" ), info );
+    mb.setInformativeText( versionInfo->html() );
+    mb.exec();
   }
   else
   {
-    // get error type
-    QString detail;
-    switch ( error )
-    {
-      case QNetworkReply::ConnectionRefusedError:
-        detail = tr( "Connection refused - server may be down" );
-        break;
-      case QNetworkReply::HostNotFoundError:
-        detail = tr( "QGIS server was not found" );
-        break;
-      default:
-        detail = tr( "Unknown network socket error: %1" ).arg( error );
-        break;
-    }
-
-    // show version message from server
-    QMessageBox::critical( this, tr( "QGIS Version Information" ), tr( "Unable to communicate with QGIS Version server\n%1" ).arg( detail ) );
+    QMessageBox mb( QMessageBox::Warning, tr( "QGIS Version Information" ), tr( "Unable to get current version information from server" ) );
+    mb.setDetailedText( versionInfo->errorString() );
+    mb.exec();
   }
-
-  reply->deleteLater();
 }
 
 void QgisApp::configureShortcuts()
