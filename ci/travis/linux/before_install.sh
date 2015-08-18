@@ -27,6 +27,11 @@ if [${QT} == 5]; then
   sudo apt-get install --force-yes --no-install-recommends --no-install-suggests \
     qtbase5-dev qtdeclarative5-dev libqt5webkit5-dev qt5-default \
     qttools5-dev-tools
+
+  # Download build dependencies
+  git clone https://github.com/osakared/qwt.git
+  wget http://sourceforge.net/projects/pyqt/files/QScintilla2/QScintilla-2.9/QScintilla-gpl-2.9.tar.gz
+  tar -xvf QScintilla-gpl-2.9.tar.gz
 else
   sudo apt-get install --force-yes --no-install-recommends --no-install-suggests \
     libqt4-dev libqt4-opengl-dev libqt4-sql-sqlite libqtwebkit-dev \
