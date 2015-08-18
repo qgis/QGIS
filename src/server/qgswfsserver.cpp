@@ -468,9 +468,6 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
         }
 
         QgsFeature feature;
-        QgsAttributeMap featureAttributes;
-        //const QgsFields& fields = provider->fields();
-        const QgsFields& fields = layer->pendingFields();
 
         mWithGeom = true;
         //QgsAttributeList attrIndexes = provider->attributeIndexes();
@@ -821,9 +818,6 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
       }
 
       QgsFeature feature;
-      QgsAttributeMap featureAttributes;
-      //const QgsFields& fields = provider->fields();
-      const QgsFields& fields = layer->pendingFields();
 
       //map extent
       searchRect = layer->extent();

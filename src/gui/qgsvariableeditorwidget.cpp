@@ -54,9 +54,6 @@ class VariableEditorDelegate : public QItemDelegate
 
 QIcon QgsVariableEditorTree::mExpandIcon;
 
-/// @endcond
-
-
 //
 // QgsVariableEditorWidget
 //
@@ -754,3 +751,5 @@ void VariableEditorDelegate::setModelData( QWidget* widget, QAbstractItemModel *
   }
   mParentTree->refreshTree();
 }
+
+/// @endcond

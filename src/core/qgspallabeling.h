@@ -466,7 +466,7 @@ class CORE_EXPORT QgsPalLayerSettings
      * @param f feature to label
      * @param context render context. The QgsExpressionContext contained within the render context
      * must have already had the feature and fields sets prior to calling this method.
-     * @param dfxLayer dxfLayer name
+     * @param dxfLayer dxfLayer name
      */
     void registerFeature( QgsFeature& f, const QgsRenderContext& context, QString dxfLayer );
 
