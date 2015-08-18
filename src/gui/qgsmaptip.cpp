@@ -96,7 +96,14 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPoint &mapPosition, QgsM
 
   int idx = vlayer->fieldNameIndex( vlayer->displayField() );
   if ( idx < 0 )
-    return QgsExpression::replaceExpressionText( vlayer->displayField(), &feature, vlayer );
+  {
+    QgsExpressionContext context;
+    context << QgsExpressionContextUtils::globalScope()
+    << QgsExpressionContextUtils::projectScope()
+    << QgsExpressionContextUtils::layerScope( vlayer );
+    context.setFeature( feature );
+    return QgsExpression::replaceExpressionText( vlayer->displayField(), &context );
+  }
   else
     return feature.attribute( idx ).toString();
 }
