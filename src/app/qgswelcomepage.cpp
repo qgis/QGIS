@@ -37,11 +37,15 @@ QgsWelcomePage::QgsWelcomePage( QWidget* parent )
 
   mainLayout->addLayout( layout );
 
+  QWidget* recentProjctsContainer = new QWidget;
+  recentProjctsContainer->setLayout( new QVBoxLayout );
+  QLabel* recentProjectsTitle = new QLabel( QString( "<h1>%1</h1>").arg( tr( "Recent Projects" ) ) );
+  recentProjctsContainer->layout()->addWidget( recentProjectsTitle );
+
   QListView* welcomeScreenListView = new QListView();
   mModel = new QgsWelcomePageItemsModel();
   welcomeScreenListView->setModel( mModel );
-  welcomeScreenListView->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-  layout->addWidget( welcomeScreenListView );
+  welcomeScreenListView->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::MinimumExpanding );
   welcomeScreenListView->setStyleSheet( "QListView::item {"
                                         "  margin-top: 5px;"
                                         "  margin-bottom: 5px;"
@@ -57,12 +61,25 @@ QgsWelcomePage::QgsWelcomePage( QWidget* parent )
                                         "  background: #aaaaaa;"
                                         "}");
 
+  recentProjctsContainer->layout()->addWidget( welcomeScreenListView );
+
+  layout->addWidget( recentProjctsContainer );
+
+
+  QWidget* whatsNewContainer = new QWidget;
+  whatsNewContainer->setLayout( new QVBoxLayout );
+  QLabel* whatsNewTitle = new QLabel( QString( "<h1>%1</h1>").arg( tr( "QGIS News" ) ) );
+  whatsNewContainer->layout()->addWidget( whatsNewTitle );
+
   QgsWebView* whatsNewPage = new QgsWebView();
   whatsNewPage->setUrl( QUrl::fromLocalFile( QgsApplication::whatsNewFilePath() ) );
   whatsNewPage->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
   whatsNewPage->setContextMenuPolicy( Qt::NoContextMenu );
-  whatsNewPage->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-  layout->addWidget( whatsNewPage );
+  whatsNewPage->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::MinimumExpanding );
+
+  whatsNewContainer->layout()->addWidget( whatsNewPage );
+  layout->addWidget( whatsNewContainer );
+
   connect( whatsNewPage, SIGNAL(linkClicked(QUrl)), this, SLOT(whatsNewLinkClicked(QUrl)));
 
   mVersionInformation = new QLabel;
