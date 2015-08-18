@@ -43,7 +43,7 @@ QgsWelcomePage::QgsWelcomePage( QWidget* parent )
   recentProjctsContainer->layout()->addWidget( recentProjectsTitle );
 
   QListView* welcomeScreenListView = new QListView();
-  mModel = new QgsWelcomePageItemsModel();
+  mModel = new QgsWelcomePageItemsModel( welcomeScreenListView );
   welcomeScreenListView->setModel( mModel );
   welcomeScreenListView->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::MinimumExpanding );
   welcomeScreenListView->setStyleSheet( "QListView::item {"
@@ -64,7 +64,6 @@ QgsWelcomePage::QgsWelcomePage( QWidget* parent )
   recentProjctsContainer->layout()->addWidget( welcomeScreenListView );
 
   layout->addWidget( recentProjctsContainer );
-
 
   QWidget* whatsNewContainer = new QWidget;
   whatsNewContainer->setLayout( new QVBoxLayout );

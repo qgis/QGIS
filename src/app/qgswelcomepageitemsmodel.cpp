@@ -17,7 +17,8 @@
 
 #include <QPixmap>
 
-QgsWelcomePageItemsModel::QgsWelcomePageItemsModel()
+QgsWelcomePageItemsModel::QgsWelcomePageItemsModel(QObject* parent)
+  : QAbstractListModel( parent )
 {
 
 }

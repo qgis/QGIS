@@ -31,7 +31,7 @@ class QgsWelcomePageItemsModel : public QAbstractListModel
         QString previewImagePath;
     };
 
-    QgsWelcomePageItemsModel();
+    QgsWelcomePageItemsModel( QObject* parent = 0 );
 
     void setRecentProjects(const QList<RecentProjectData>& recentProjects );
 
