@@ -35,6 +35,11 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
 {
   setupUi( this );
 
+  //TODO - allow setting context for widget, so that preview has access to full context for expression
+  //and variables etc can be shown in builder widget
+  mExpressionContext << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope();
+
   mValueGroupBox->hide();
   mLoadGroupBox->hide();
 //  highlighter = new QgsExpressionHighlighter( txtExpressionString->document() );
@@ -98,6 +103,12 @@ QgsExpressionBuilderWidget::~QgsExpressionBuilderWidget()
 void QgsExpressionBuilderWidget::setLayer( QgsVectorLayer *layer )
 {
   mLayer = layer;
+
+  mExpressionContext = QgsExpressionContext();
+  mExpressionContext  << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope();
+  if ( mLayer )
+    mExpressionContext << QgsExpressionContextUtils::layerScope( mLayer );
 }
 
 void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const QModelIndex & )
@@ -487,6 +498,7 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
   }
 
   QgsExpression exp( text );
+  mExpressionContext.setFeature( QgsFeature() );
 
   if ( mLayer )
   {
@@ -500,7 +512,8 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
 
     if ( mFeature.isValid() )
     {
-      QVariant value = exp.evaluate( &mFeature, mLayer->fields() );
+      mExpressionContext.setFeature( mFeature );
+      QVariant value = exp.evaluate( &mExpressionContext );
       if ( !exp.hasEvalError() )
         lblPreview->setText( formatPreviewString( value.toString() ) );
     }
@@ -514,7 +527,7 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
   else
   {
     // No layer defined
-    QVariant value = exp.evaluate();
+    QVariant value = exp.evaluate( &mExpressionContext );
     if ( !exp.hasEvalError() )
     {
       lblPreview->setText( formatPreviewString( value.toString() ) );

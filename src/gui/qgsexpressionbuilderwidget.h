@@ -229,6 +229,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QgsDistanceArea mDa;
     QString mRecentKey;
     QMap<QString, QStringList> mFieldValues;
+    QgsExpressionContext mExpressionContext;
 
 };
 
