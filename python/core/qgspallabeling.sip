@@ -491,7 +491,7 @@ class QgsPalLayerSettings
      * @param f feature to label
      * @param context render context. The QgsExpressionContext contained within the render context
      * must have already had the feature and fields sets prior to calling this method.
-     * @param dfxLayer dxfLayer name
+     * @param dxfLayer dxfLayer name
      */
     void registerFeature( QgsFeature& f, const QgsRenderContext& context, QString dxfLayer );
 
@@ -746,7 +746,7 @@ class QgsPalLabeling : QgsLabelingEngineInterface
      * @param dxfLayer dxfLayer name
      */
     virtual void registerFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext(), QString dxfLayer = QString::null );
-    
+
     virtual void registerDiagramFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() );
     //! called when the map is drawn and labels should be placed
     virtual void drawLabeling( QgsRenderContext& context );
