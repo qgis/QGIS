@@ -16,9 +16,10 @@
 #include "qgswelcomepageitemsmodel.h"
 
 #include <QPixmap>
+#include <QFile>
 
-QgsWelcomePageItemsModel::QgsWelcomePageItemsModel(QObject* parent)
-  : QAbstractListModel( parent )
+QgsWelcomePageItemsModel::QgsWelcomePageItemsModel( QObject* parent )
+    : QAbstractListModel( parent )
 {
 
 }
@@ -31,15 +32,16 @@ void QgsWelcomePageItemsModel::setRecentProjects( const QList<RecentProjectData>
 }
 
 
-int QgsWelcomePageItemsModel::rowCount(const QModelIndex& parent) const
+int QgsWelcomePageItemsModel::rowCount( const QModelIndex& parent ) const
 {
   Q_UNUSED( parent )
   return mRecentProjects.size();
 }
 
-QVariant QgsWelcomePageItemsModel::data(const QModelIndex& index, int role) const
+QVariant QgsWelcomePageItemsModel::data( const QModelIndex& index, int role ) const
 {
-  switch ( role ) {
+  switch ( role )
+  {
     case Qt::DisplayRole:
       return mRecentProjects.at( index.row() ).title;
       break;
@@ -54,8 +56,23 @@ QVariant QgsWelcomePageItemsModel::data(const QModelIndex& index, int role) cons
 
     case Qt::ToolTipRole:
       return mRecentProjects.at( index.row() ).path;
+      break;
 
     default:
       return QVariant();
   }
+}
+
+
+Qt::ItemFlags QgsWelcomePageItemsModel::flags( const QModelIndex& index ) const
+{
+  Qt::ItemFlags flags = QAbstractItemModel::flags( index );
+
+  const RecentProjectData& projectData = mRecentProjects.at( index.row() );
+
+  if ( !QFile::exists(( projectData.path ) ) )
+    flags &= ~Qt::ItemIsEnabled;
+
+  return flags;
+
 }
