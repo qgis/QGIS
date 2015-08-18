@@ -570,15 +570,10 @@ class Editor(QsciScintilla):
                 self.parent.pc.callWidgetMessageBarEditor(msgEditorBlank, 0, True)
                 return
 
-        if self.isModified() and not autoSave:
-            self.parent.pc.callWidgetMessageBarEditor(msgEditorUnsaved, 0, True)
-            return
-
         if self.syntaxCheck(fromContextMenu=False):
-            if autoSave and filename:
+            if filename and self.isModified() and autoSave:
                 self.parent.save(filename)
-
-            if autoSave and not filename:
+            elif not filename or self.isModified():
                 # Create a new temp file if the file isn't already saved.
                 tmpFile = self.createTempFile()
                 filename = tmpFile
