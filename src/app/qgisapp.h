@@ -480,6 +480,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     static LONG WINAPI qgisCrashDump( struct _EXCEPTION_POINTERS *ExceptionInfo );
 #endif
 
+    void parseVersionInfo(QNetworkReply* reply, int& latestVersion, QStringList& versionInfo );
+
   public slots:
     void layerTreeViewDoubleClicked( const QModelIndex& index );
     //! Make sure the insertion point for new layers is up-to-date with the current item in layer tree view

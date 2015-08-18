@@ -52,6 +52,7 @@ SET(QGIS_APP_SRCS
   qgsguivectorlayertools.cpp
   qgswelcomepageitemsmodel.cpp
   qgswelcomepage.cpp
+  qgsversioninfo.cpp
 
   qgsmaptooladdfeature.cpp
   qgsmaptooladdpart.cpp
@@ -212,6 +213,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsguivectorlayertools.h
   qgswelcomepageitemsmodel.h
   qgswelcomepage.h
+  qgsversioninfo.h
 
   qgsmaptooladdfeature.h
   qgsmaptoolcapture.h

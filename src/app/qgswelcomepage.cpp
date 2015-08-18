@@ -16,24 +16,55 @@
 #include "qgswelcomepage.h"
 #include "qgsproject.h"
 #include "qgisapp.h"
+#include "qgsversioninfo.h"
 
 #include <QHBoxLayout>
+#include <QVBoxLayout>
 #include <QListView>
 #include <QSettings>
 
 QgsWelcomePage::QgsWelcomePage( QWidget* parent )
    : QWidget( parent )
 {
+  QVBoxLayout* mainLayout = new QVBoxLayout;
+  mainLayout->setMargin( 0 );
+  setLayout( mainLayout );
+
   QHBoxLayout* layout = new QHBoxLayout();
   layout->setMargin( 9 );
-  setLayout( layout );
+
+  mainLayout->addLayout( layout );
 
   QListView* welcomeScreenListView = new QListView();
   mModel = new QgsWelcomePageItemsModel();
   welcomeScreenListView->setModel( mModel );
   layout->addWidget( welcomeScreenListView );
+  welcomeScreenListView->setStyleSheet( "QListView::item {"
+                                        "  margin-top: 5px;"
+                                        "  margin-bottom: 5px;"
+                                        "  margin-left: 15px;"
+                                        "  margin-right: 15px;"
+                                        "  border-width: 1px;"
+                                        "  border-color: #535353;"
+                                        "  border-radius: 9px;"
+                                        "  background: #cccccc;"
+                                        "  padding: 10px;"
+                                        "}"
+                                        "QListView::item:selected:active {"
+                                        "  background: #aaaaaa;"
+                                        "}");
 
-  setWindowTitle( tr( "Recent Projects..." ) );
+  QgsWebView* webView = new QgsWebView();
+  webView->setUrl( QUrl( "http://blog.qgis.org" ) );
+  layout->addWidget( webView );
+
+  mVersionInformation = new QLabel;
+  mainLayout->addWidget( mVersionInformation );
+  mVersionInformation->setVisible( false );
+
+  QgsVersionInfo* versionInfo = new QgsVersionInfo();
+  connect( versionInfo, SIGNAL(versionInfoAvailable()), this, SLOT(versionInfoReceived()));
+  versionInfo->checkVersion();
 
   connect( welcomeScreenListView, SIGNAL( doubleClicked( QModelIndex ) ), this, SLOT( itemDoubleClicked( QModelIndex ) ) );
 }
@@ -46,4 +77,22 @@ void QgsWelcomePage::setRecentProjects(const QList<QgsWelcomePageItemsModel::Rec
 void QgsWelcomePage::itemDoubleClicked( const QModelIndex& index )
 {
   QgisApp::instance()->openProject( mModel->data( index, Qt::ToolTipRole ).toString() );
+}
+
+void QgsWelcomePage::versionInfoReceived()
+{
+  QgsVersionInfo* versionInfo = qobject_cast<QgsVersionInfo*>( sender() );
+  Q_ASSERT( versionInfo );
+
+  if ( versionInfo->isDevelopmentVersion() )
+  {
+    mVersionInformation->setVisible( true );
+    mVersionInformation->setText( QString( "<b>%1</b>: %2")
+                                  .arg( tr( "There is a new QGIS version available" ) )
+                                  .arg( versionInfo->downloadInfo() ) );
+    mVersionInformation->setStyleSheet("QLabel{"
+                                       "  background-color: #dddd00;"
+                                       "  padding: 5px;"
+                                       "}");
+  }
 }
