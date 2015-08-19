@@ -78,7 +78,7 @@ class QgsVisibilityPresetCollection : QObject
     QStringList presetVisibleLayers( const QString& name ) const;
 
     /** Apply check states of legend nodes of a given layer as defined in the preset.
-     * @param preset name
+     * @param name preset name
      * @param layerID layer ID
      */
     void applyPresetCheckedLegendNodesToLayer( const QString& name, const QString& layerID );
