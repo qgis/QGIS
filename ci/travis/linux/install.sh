@@ -1,5 +1,4 @@
 mkdir build
-cd build
 
 CMAKE_OPTS = -DWITH_SERVER=ON -DWITH_STAGED_PLUGINS=OFF -DWITH_GRASS=ON \
              -DWITH_GRASS7=ON \
@@ -20,13 +19,15 @@ if [ ${QT} == 5 ]; then
   make -j2
   popd
 
-  CMAKE_OPTS = ${CMAKE_OPTS} \
-    -D QSCINTILLA_INCLUDE_DIR:PATH=${TRAVIS_BUILD_DIR}/QScintilla-gpl-2.9/Qt4Qt5 \
-    -D QSCINTILLA_LIBRARY:FILEPATH=${TRAVIS_BUILD_DIR}/QScintilla-gpl-2.9/Qt4Qt5/libqscintilla2.so \
-    -D QWT_INCLUDE_DIR:PATH=${TRAVIS_BUILD_DIR}/qwt/qwt/src \
-    -D QWT_LIBRARY:FILEPATH=${TRAVIS_BUILD_DIR}/qwt/qwt/lib/libqwt.so \
-    -D WITH_QT5=ON \
-    -D WITH_BINDINGS=OFF
+  CMAKE_OPTS="${CMAKE_OPTS}
+    -DQSCINTILLA_INCLUDE_DIR:PATH=${TRAVIS_BUILD_DIR}/QScintilla-gpl-2.9/Qt4Qt5
+    -DQSCINTILLA_LIBRARY:FILEPATH=${TRAVIS_BUILD_DIR}/QScintilla-gpl-2.9/Qt4Qt5/libqscintilla2.so
+    -DQWT_INCLUDE_DIR:PATH=${TRAVIS_BUILD_DIR}/qwt/qwt/src
+    -DQWT_LIBRARY:FILEPATH=${TRAVIS_BUILD_DIR}/qwt/qwt/lib/libqwt.so
+    -DWITH_QT5=ON
+    -DWITH_BINDINGS=OFF
+    -DQT_QMAKE_EXECUTABLE=/usr/bin/qmake-qt5"
 fi
 
+cd build
 cmake ${CMAKE_OPTS} ..
