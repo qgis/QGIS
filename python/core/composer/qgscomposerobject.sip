@@ -41,6 +41,7 @@ class QgsComposerObject : QObject
       MapYMax, /*!< map extent y maximum */
       MapAtlasMargin, /*!< map atlas margin*/
       MapLayers, /*!< map layer set*/
+      MapStylePreset, /*!< layer and style visibility preset */
       //composer picture
       PictureSource, /*!< picture source url */
       //html item

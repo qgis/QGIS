@@ -33,6 +33,7 @@
 #include "qgsvectorlayer.h"
 #include "qgspallabeling.h"
 #include "qgsexpression.h"
+#include "qgsvisibilitypresetcollection.h"
 
 #include "qgslabel.h"
 #include "qgslabelattributes.h"
@@ -132,6 +133,7 @@ void QgsComposerMap::init()
   mDataDefinedNames.insert( QgsComposerObject::MapYMax, QString( "dataDefinedMapYMax" ) );
   mDataDefinedNames.insert( QgsComposerObject::MapAtlasMargin, QString( "dataDefinedMapAtlasMargin" ) );
   mDataDefinedNames.insert( QgsComposerObject::MapLayers, QString( "dataDefinedMapLayers" ) );
+  mDataDefinedNames.insert( QgsComposerObject::MapStylePreset, QString( "dataDefinedMapStylePreset" ) );
 }
 
 void QgsComposerMap::updateToolTip()
@@ -217,7 +219,7 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, const QS
       : QStringList(); //exporting decorations such as map frame/grid/overview, so no map layers required
   }
   jobMapSettings.setLayers( theLayerSet );
-  jobMapSettings.setLayerStyleOverrides( mLayerStyleOverrides );
+  jobMapSettings.setLayerStyleOverrides( layerStyleOverridesToRender() );
   jobMapSettings.setDestinationCrs( ms.destinationCrs() );
   jobMapSettings.setCrsTransformEnabled( ms.hasCrsTransformEnabled() );
   jobMapSettings.setFlags( ms.flags() );
@@ -522,18 +524,30 @@ const QgsMapRenderer *QgsComposerMap::mapRenderer() const
 
 QStringList QgsComposerMap::layersToRender() const
 {
-  //use stored layer set or read current set from main canvas
   QStringList renderLayerSet;
-  if ( mKeepLayerSet )
-  {
-    renderLayerSet = mLayerSet;
-  }
-  else
-  {
-    renderLayerSet = mComposition->mapSettings().layers();
-  }
 
   QVariant exprVal;
+  if ( dataDefinedEvaluate( QgsComposerObject::MapStylePreset, exprVal ) )
+  {
+    QString presetName = exprVal.toString();
+
+    if ( QgsProject::instance()->visibilityPresetCollection()->hasPreset( presetName ) )
+      renderLayerSet = QgsProject::instance()->visibilityPresetCollection()->presetVisibleLayers( presetName );
+  }
+
+  //use stored layer set or read current set from main canvas
+  if ( renderLayerSet.isEmpty() )
+  {
+    if ( mKeepLayerSet )
+    {
+      renderLayerSet = mLayerSet;
+    }
+    else
+    {
+      renderLayerSet = mComposition->mapSettings().layers();
+    }
+  }
+
   if ( dataDefinedEvaluate( QgsComposerObject::MapLayers, exprVal ) )
   {
     renderLayerSet.clear();
@@ -566,6 +580,20 @@ QStringList QgsComposerMap::layersToRender() const
   }
 
   return renderLayerSet;
+}
+
+QMap<QString, QString> QgsComposerMap::layerStyleOverridesToRender() const
+{
+  QVariant exprVal;
+  if ( dataDefinedEvaluate( QgsComposerObject::MapStylePreset, exprVal ) )
+  {
+    QString presetName = exprVal.toString();
+
+    if ( QgsProject::instance()->visibilityPresetCollection()->hasPreset( presetName ) )
+      return QgsProject::instance()->visibilityPresetCollection()->presetStyleOverrides( presetName );
+
+  }
+  return mLayerStyleOverrides;
 }
 
 double QgsComposerMap::scale() const

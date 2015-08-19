@@ -24,6 +24,8 @@
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
+#include "qgsproject.h"
+#include "qgsvisibilitypresetcollection.h"
 #include <QObject>
 #include <QtTest/QtTest>
 
@@ -49,6 +51,7 @@ class TestQgsComposerMap : public QObject
     void worldFileGeneration(); // test world file generation
     void mapPolygonVertices(); // test mapPolygon function with no map rotation
     void dataDefinedLayers(); //test data defined layer string
+    void dataDefinedStyles(); //test data defined styles
 
   private:
     QgsComposition *mComposition;
@@ -276,6 +279,61 @@ void TestQgsComposerMap::dataDefinedLayers()
   mComposerMap->setNewExtent( QgsRectangle( -110.0, 25.0, -90, 40.0 ) );
 
   QgsCompositionChecker checker( "composermap_ddlayers", mComposition );
+  QVERIFY( checker.testComposition( mReport, 0, 0 ) );
+}
+
+void TestQgsComposerMap::dataDefinedStyles()
+{
+  delete mComposition;
+  QgsMapSettings ms;
+  ms.setLayers( QStringList() << mRasterLayer->id() << mPolysLayer->id() << mPointsLayer->id() << mLinesLayer->id() );
+  ms.setCrsTransformEnabled( true );
+
+  mComposition = new QgsComposition( ms );
+  mComposition->setPaperSize( 297, 210 ); //A4 landscape
+  mComposerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
+  mComposerMap->setFrameEnabled( true );
+  mComposition->addComposerMap( mComposerMap );
+
+  QgsVisibilityPresetCollection::PresetRecord rec;
+  rec.mVisibleLayerIDs.insert( mPointsLayer->id() );
+  rec.mVisibleLayerIDs.insert( mLinesLayer->id() );
+
+  QgsProject::instance()->visibilityPresetCollection()->insert( "test preset", rec );
+
+  //test malformed style string
+  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapStylePreset, true, true, "5", QString() );
+  QSet<QString> result = mComposerMap->layersToRender().toSet();
+  QCOMPARE( result, ms.layers().toSet() );
+
+  //test valid preset
+  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapStylePreset, true, true, QString( "'test preset'" ), QString() );
+  result = mComposerMap->layersToRender().toSet();
+  QCOMPARE( result.count(), 2 );
+  QVERIFY( result.contains( mLinesLayer->id() ) );
+  QVERIFY( result.contains( mPointsLayer->id() ) );
+
+  //test non-existant preset
+  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapStylePreset, true, true,
+                                        QString( "'bad preset'" ), QString() );
+  result = mComposerMap->layersToRender().toSet();
+  QCOMPARE( result, ms.layers().toSet() );
+
+  //test that dd layer set overrides style layers
+  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapStylePreset, true, true, QString( "'test preset'" ), QString() );
+  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, true, true,
+                                        QString( "'%1'" ).arg( mPolysLayer->name() ), QString() );
+  result = mComposerMap->layersToRender().toSet();
+  QCOMPARE( result.count(), 1 );
+  QVERIFY( result.contains( mPolysLayer->id() ) );
+  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapLayers, false, true, QString(), QString() );
+
+  //render test
+  mComposerMap->setDataDefinedProperty( QgsComposerObject::MapStylePreset, true, true,
+                                        QString( "'test preset'" ), QString() );
+  mComposerMap->setNewExtent( QgsRectangle( -110.0, 25.0, -90, 40.0 ) );
+
+  QgsCompositionChecker checker( "composermap_ddstyles", mComposition );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 }
 
