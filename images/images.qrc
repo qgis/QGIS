@@ -348,6 +348,7 @@
         <file>themes/default/mIconLast.png</file>
         <file>themes/default/mIconLayer.png</file>
         <file>themes/default/mIconLineLayer.svg</file>
+        <file>themes/default/mIconListView.png</file>
         <file>themes/default/mIconLock.png</file>
         <file>themes/default/mIconLoading.gif</file>
         <file>themes/default/mIconMssql.svg</file>
@@ -381,6 +382,7 @@
         <file>themes/default/mIconTableLayer.png</file>
         <file>themes/default/mIconTimerContinue.png</file>
         <file>themes/default/mIconTimerPause.png</file>
+        <file>themes/default/mIconTreeView.png</file>
         <file>themes/default/mIconUnknownLayerType.png</file>
         <file>themes/default/mIconWaitingForLayerType.png</file>
         <file>themes/default/mIconWarn.png</file>
