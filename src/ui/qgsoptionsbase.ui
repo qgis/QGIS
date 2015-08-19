@@ -630,7 +630,7 @@
                       </property>
                       <item>
                        <property name="text">
-                        <string>New</string>
+                        <string>Welcome Page</string>
                        </property>
                       </item>
                       <item>
@@ -641,6 +641,11 @@
                       <item>
                        <property name="text">
                         <string>Specific</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>New</string>
                        </property>
                       </item>
                      </widget>

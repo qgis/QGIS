@@ -521,6 +521,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
     , mpGpsWidget( 0 )
     , mSnappingUtils( 0 )
     , mProjectLastModified()
+    , mWelcomePage( 0 )
+    , mCentralContainer( 0 )
 {
   if ( smInstance )
   {
@@ -579,16 +581,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   int myBlue = settings.value( "/qgis/default_canvas_color_blue", 255 ).toInt();
   mMapCanvas->setCanvasColor( QColor( myRed, myGreen, myBlue ) );
 
-  mWelcomePage = new QgsWelcomePage;
-
-  mCentralContainer = new QStackedWidget;
-  mCentralContainer->insertWidget( 0, mMapCanvas );
-  mCentralContainer->insertWidget( 1, mWelcomePage );
-
-  connect( mMapCanvas, SIGNAL( layersChanged() ), this, SLOT( showMapCanvas() ) );
-  connect( this, SIGNAL( newProject() ), this, SLOT( showMapCanvas() ) );
-
-  centralLayout->addWidget( mCentralContainer, 0, 0, 2, 1 );
+  centralLayout->addWidget( mMapCanvas, 0, 0, 2, 1 );
 
   // a bar to warn the user with non-blocking messages
   mInfoBar = new QgsMessageBar( centralWidget );
@@ -874,9 +867,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
   fileNewBlank(); // prepare empty project, also skips any default templates from loading
 
-  // Show the welcome page. Needs to be done after creating a new project because it gets hidden on new project
-  mCentralContainer->setCurrentIndex( 1 );
-
   // request notification of FileOpen events (double clicking a file icon in Mac OS X Finder)
   // should come after fileNewBlank to ensure project is properly set up to receive any data source files
   QgsApplication::setFileOpenEventReceiver( this );
@@ -965,6 +955,8 @@ QgisApp::QgisApp()
     , mActionFilterLegend( 0 )
     , mSnappingUtils( 0 )
     , mProjectLastModified()
+    , mWelcomePage( 0 )
+    , mCentralContainer( 0 )
 {
   smInstance = this;
   setupUi( this );
@@ -2726,7 +2718,8 @@ void QgisApp::updateRecentProjectPaths()
     action->setData( recentProject.path );
   }
 
-  mWelcomePage->setRecentProjects( mRecentProjects );
+  if ( mWelcomePage )
+    mWelcomePage->setRecentProjects( mRecentProjects );
 } // QgisApp::updateRecentProjectPaths
 
 // add this file to the recently opened/saved projects list
@@ -3909,6 +3902,23 @@ void QgisApp::fileOpenAfterLaunch()
 
   // get path of project file to open, or was attempted
   QString projPath = QString();
+  if ( projOpen == 0 ) // welcome page
+  {
+    mWelcomePage = new QgsWelcomePage;
+
+    mCentralContainer = new QStackedWidget;
+    mCentralContainer->insertWidget( 0, mMapCanvas );
+    mCentralContainer->insertWidget( 1, mWelcomePage );
+
+    connect( mMapCanvas, SIGNAL( layersChanged() ), this, SLOT( showMapCanvas() ) );
+    connect( this, SIGNAL( newProject() ), this, SLOT( showMapCanvas() ) );
+
+    qobject_cast<QGridLayout *>( centralWidget()->layout() )->addWidget( mCentralContainer, 0, 0, 2, 1 );
+
+    mCentralContainer->setCurrentIndex( 1 );
+
+    return;
+  }
   if ( projOpen == 1 && mRecentProjects.size() > 0 ) // most recent project
   {
     projPath = mRecentProjects.at( 0 ).path;
@@ -4241,15 +4251,8 @@ bool QgisApp::fileSave()
   // that the project file name is reset to null in fileNew()
   QFileInfo fullPath;
 
-  // we need to remember if this is a new project so that we know to later
-  // update the "last project dir" settings; we know it's a new project if
-  // the current project file name is empty
-  bool isNewProject = false;
-
   if ( QgsProject::instance()->fileName().isNull() )
   {
-    isNewProject = true;
-
     // Retrieve last used project dir from persistent settings
     QSettings settings;
     QString lastUsedDir = settings.value( "/UI/lastProjectDir", "." ).toString();
@@ -9005,7 +9008,8 @@ void QgisApp::mapToolChanged( QgsMapTool *newTool, QgsMapTool *oldTool )
 void QgisApp::showMapCanvas()
 {
   // Map layers changed -> switch to map canvas
-  mCentralContainer->setCurrentIndex( 0 );
+  if ( mCentralContainer )
+    mCentralContainer->setCurrentIndex( 0 );
 }
 
 void QgisApp::extentsViewToggled( bool theFlag )
