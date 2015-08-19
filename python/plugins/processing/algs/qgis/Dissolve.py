@@ -61,13 +61,17 @@ class Dissolve(GeoAlgorithm):
                                              vproviderA.crs())
         outFeat = QgsFeature()
         nElement = 0
-        nFeat = vproviderA.featureCount()
+        nFeat = vlayerA.selectedFeatureCount()
+
+        if nFeat == 0:
+            nFeat = vlayerA.featureCount()
+
         if not useField:
             first = True
             features = vector.features(vlayerA)
             for inFeat in features:
                 nElement += 1
-                progress.setPercentage(int(nElement / nFeat * 100))
+                progress.setPercentage(int(nElement * 100/ nFeat))
                 if first:
                     attrs = inFeat.attributes()
                     tmpInGeom = QgsGeometry(inFeat.geometry())
@@ -93,7 +97,7 @@ class Dissolve(GeoAlgorithm):
                 features = vector.features(vlayerA)
                 for inFeat in features:
                     nElement += 1
-                    progress.setPercentage(int(nElement / nFeat * 100))
+                    progress.setPercentage(int(nElement * 100/ nFeat))
                     atMap = inFeat.attributes()
                     tempItem = atMap[field]
                     if unicode(tempItem).strip() == unicode(item).strip():
