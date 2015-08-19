@@ -54,6 +54,7 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::Q
     QgsSymbolV2* mSymbol;
 
   private slots:
+    void setExpression();
     void updateIcon();
     void defaultPressed( QAbstractButton*button );
     bool isCustomSet();

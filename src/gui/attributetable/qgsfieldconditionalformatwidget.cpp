@@ -1,5 +1,6 @@
 #include "qgsfieldconditionalformatwidget.h"
 
+#include "qgsexpressionbuilderdialog.h"
 #include "qgsfielduiproperties.h"
 #include "qgssymbolv2.h"
 #include "qgssymbolv2selectordialog.h"
@@ -20,6 +21,7 @@ QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget( QWidget *paren
   connect( listView, SIGNAL( clicked( QModelIndex ) ), SLOT( ruleClicked( QModelIndex ) ) );
   connect( mDefaultButtons , SIGNAL( buttonPressed( QAbstractButton* ) ), SLOT( defaultPressed( QAbstractButton* ) ) );
   connect( btnChangeIcon , SIGNAL( clicked() ), SLOT( updateIcon() ) );
+  connect( btnBuildExpression , SIGNAL( clicked() ), SLOT( setExpression() ) );
   mModel = new QStandardItemModel();
   listView->setModel( mModel );
 }
@@ -36,6 +38,18 @@ void QgsFieldConditionalFormatWidget::updateIcon()
 
   QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mSymbol, btnChangeIcon->iconSize() );
   btnChangeIcon->setIcon( icon );
+}
+
+void QgsFieldConditionalFormatWidget::setExpression()
+{
+  QgsExpressionBuilderDialog dlg( mLayer, mRuleEdit->text(), this );
+  dlg.setWindowTitle( tr( "Conditional style rule expression" ) );
+
+  if ( dlg.exec() )
+  {
+    QString expression =  dlg.expressionBuilder()->expressionText();
+    mRuleEdit->setText( expression );
+  }
 }
 
 void QgsFieldConditionalFormatWidget::defaultPressed( QAbstractButton *button )
