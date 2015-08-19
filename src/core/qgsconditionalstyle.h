@@ -17,8 +17,11 @@ class CORE_EXPORT QgsConditionalStyle
 {
   public:
     QgsConditionalStyle();
+    QgsConditionalStyle( const QgsConditionalStyle& other );
     QgsConditionalStyle( QString rule );
     ~QgsConditionalStyle();
+
+    QgsConditionalStyle& operator=( const QgsConditionalStyle& other );
 
     /**
      * @brief Check if the rule matches using the given value and feature
@@ -69,44 +72,44 @@ class CORE_EXPORT QgsConditionalStyle
      * @brief The icon set for style generated from the set symbol
      * @return A QPixmap that was set for the icon using the symbol
      */
-    const QPixmap icon() { return mIcon; }
+    QPixmap icon() const { return mIcon; }
 
     /**
      * @brief The symbol used to generate the icon for the style
      * @return The QgsSymbolV2 used for the icon
      */
-    const QgsSymbolV2* symbol() { return mSymbol.data(); }
+    QgsSymbolV2* symbol() const { return mSymbol.data(); }
 
     /**
      * @brief The text color set for style
      * @return QColor for text color
      */
-    const QColor textColor() { return mTextColor; }
+    QColor textColor() const { return mTextColor; }
 
     /**
      * @brief The background color for style
      * @return QColor for background color
      */
-    const QColor backgroundColor() { return mBackColor; }
+    QColor backgroundColor() const { return mBackColor; }
     /**
      * @brief The font for the style
      * @return QFont for the style
      */
-    const QFont font() { return mFont; }
+    QFont font() const { return mFont; }
 
     /**
      * @brief The condtion rule set for the style. Rule may contain variable \@value
      * to represent the current value
      * @return QString of the current set rule
      */
-    const QString rule() { return mRule; }
+    QString rule() const { return mRule; }
 
     /**
      * @brief isValid Check if this rule is valid.  A valid rule has one or more properties
      * set.
      * @return True if the rule is valid.
      */
-    const bool isValid() { return mValid; }
+    bool isValid() const { return mValid; }
 
     /** Reads vector conditional style specific state from layer Dom node.
      */

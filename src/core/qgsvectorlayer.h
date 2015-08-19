@@ -30,7 +30,6 @@
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgseditorwidgetconfig.h"
-#include "qgsfielduiproperties.h"
 #include "qgsfield.h"
 #include "qgssnapper.h"
 #include "qgsrelation.h"
@@ -41,6 +40,7 @@ class QImage;
 
 class QgsAbstractGeometrySimplifier;
 class QgsAttributeAction;
+class QgsFieldUIProperties;
 class QgsCoordinateTransform;
 class QgsDiagramLayerSettings;
 class QgsDiagramRendererV2;

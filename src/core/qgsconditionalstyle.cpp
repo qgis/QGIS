@@ -18,6 +18,37 @@ QgsConditionalStyle::QgsConditionalStyle( QString rule )
   setRule( rule );
 }
 
+QgsConditionalStyle::QgsConditionalStyle( const QgsConditionalStyle &other )
+    : mValid( other.mValid )
+    , mRule( other.mRule )
+    , mFont( other.mFont )
+    , mBackColor( other.mBackColor )
+    , mTextColor( other.mTextColor )
+    , mIcon( other.mIcon )
+{
+  if ( other.mSymbol.data() )
+    mSymbol.reset( other.mSymbol->clone() );
+}
+
+QgsConditionalStyle& QgsConditionalStyle::operator=( const QgsConditionalStyle & other )
+{
+  mValid = other.mValid;
+  mRule = other.mRule;
+  mFont = other.mFont;
+  mBackColor = other.mBackColor;
+  mTextColor = other.mTextColor;
+  mIcon = other.mIcon;
+  if ( other.mSymbol.data() )
+  {
+    mSymbol.reset( other.mSymbol->clone() );
+  }
+  else
+  {
+    mSymbol.reset();
+  }
+  return ( *this );
+}
+
 QgsConditionalStyle::~QgsConditionalStyle()
 {
 }

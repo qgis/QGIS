@@ -45,6 +45,7 @@
 #include "qgsfeature.h"
 #include "qgsfeaturerequest.h"
 #include "qgsfield.h"
+#include "qgsfielduiproperties.h"
 #include "qgsgeometrycache.h"
 #include "qgsgeometry.h"
 #include "qgslabel.h"

@@ -59,43 +59,43 @@ class QgsConditionalStyle
      * @brief The symbol used to generate the icon for the style
      * @return The QgsSymbolV2 used for the icon
      */
-    const QgsSymbolV2* symbol();
+    QgsSymbolV2* symbol() const;
 
     /**
      * @brief The icon set for style
      * @return A QPixmap that was set for the icon
      */
-    const QPixmap icon();
+    QPixmap icon() const;
 
     /**
      * @brief The text color set for style
      * @return QColor for text color
      */
-    const QColor textColor();
+    QColor textColor() const;
 
     /**
      * @brief The background color for style
      * @return QColor for background color
      */
-    const QColor backgroundColor();
+    QColor backgroundColor() const;
     /**
      * @brief The font for the style
      * @return QFont for the style
      */
-    const QFont font();
+    QFont font() const;
 
     /**
      * @brief The condtion rule set for the style. Rule may contain variable @value
      * to represent the current value
      * @return QString of the current set rule
      */
-    const QString rule();
+    QString rule() const;
     /**
      * @brief isValid Check if this rule is valid.  A valid rule has one or more properties
      * set.
      * @return True if the rule is valid.
      */
-    const bool isValid();
+    bool isValid() const;
 
     /** Reads vector conditional style specific state from layer Dom node.
      */

@@ -24,6 +24,7 @@
 
 #include "ui_qgsfieldconditionalformatwidget.h"
 #include "qgsfieldcombobox.h"
+#include "qgsconditionalstyle.h"
 
 
 class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::QgsFieldConditionalWidget
