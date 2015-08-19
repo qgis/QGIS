@@ -44,7 +44,7 @@ QgsVisibilityPresets::QgsVisibilityPresets()
   mMenu->addAction( QgisApp::instance()->actionHideSelectedLayers() );
   mMenu->addSeparator();
 
-  mMenu->addAction( tr( "Add Preset..." ), this, SLOT( addPreset() ) );
+  mActionAddPreset = mMenu->addAction( tr( "Add Preset..." ), this, SLOT( addPreset() ) );
   mMenuSeparator = mMenu->addSeparator();
 
   mActionRemoveCurrentPreset = mMenu->addAction( tr( "Remove Current Preset" ), this, SLOT( removeCurrentPreset() ) );
@@ -263,5 +263,6 @@ void QgsVisibilityPresets::menuAboutToShow()
   }
   mMenu->insertActions( mMenuSeparator, mMenuPresetActions );
 
+  mActionAddPreset->setEnabled( !hasCurrent );
   mActionRemoveCurrentPreset->setEnabled( hasCurrent );
 }

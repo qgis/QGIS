@@ -87,6 +87,7 @@ class APP_EXPORT QgsVisibilityPresets : public QObject
 
     QMenu* mMenu;
     QAction* mMenuSeparator;
+    QAction* mActionAddPreset;
     QAction* mActionRemoveCurrentPreset;
     QList<QAction*> mMenuPresetActions;
 };
