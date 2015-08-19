@@ -7,7 +7,7 @@ CMAKE_OPTS = -DWITH_SERVER=ON -DWITH_STAGED_PLUGINS=OFF -DWITH_GRASS=ON \
              -DWITH_QWTPOLAR=OFF -DWITH_APIDOC=ON -DWITH_PYSPATIALITE=ON \
              -DGRASS_PREFIX7=/usr/lib/grass70 -DGRASS_INCLUDE_DIR7=/usr/lib/grass70/include
 
-if [${QT} == 5]; then
+if [ ${QT} == 5 ]; then
   # Build QWT
   pushd qwt/qwt
   qmake-qt5
