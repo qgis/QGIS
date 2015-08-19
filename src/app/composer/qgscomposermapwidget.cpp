@@ -37,7 +37,7 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgsproject.h"
-#include "qgsvisibilitypresets.h"
+#include "qgsvisibilitypresetcollection.h"
 #include "qgisgui.h"
 
 #include <QMessageBox>
@@ -285,12 +285,12 @@ void QgsComposerMapWidget::aboutToShowVisibilityPresetsMenu()
     return;
 
   menu->clear();
-  foreach ( QString presetName, QgsVisibilityPresets::instance()->presets() )
+  foreach ( QString presetName, QgsProject::instance()->visibilityPresetCollection()->presets() )
   {
     QAction* a = menu->addAction( presetName, this, SLOT( visibilityPresetSelected() ) );
     a->setCheckable( true );
-    QStringList layers = QgsVisibilityPresets::instance()->presetVisibleLayers( presetName );
-    QMap<QString, QString> styles = QgsVisibilityPresets::instance()->presetStyleOverrides( presetName );
+    QStringList layers = QgsProject::instance()->visibilityPresetCollection()->presetVisibleLayers( presetName );
+    QMap<QString, QString> styles = QgsProject::instance()->visibilityPresetCollection()->presetStyleOverrides( presetName );
     if ( layers == mComposerMap->layerSet() && styles == mComposerMap->layerStyleOverrides() )
       a->setChecked( true );
   }
@@ -306,7 +306,7 @@ void QgsComposerMapWidget::visibilityPresetSelected()
     return;
 
   QString presetName = action->text();
-  QStringList lst = QgsVisibilityPresets::instance()->presetVisibleLayers( presetName );
+  QStringList lst = QgsProject::instance()->visibilityPresetCollection()->presetVisibleLayers( presetName );
   if ( mComposerMap )
   {
     mKeepLayerListCheckBox->setChecked( true );
@@ -314,7 +314,7 @@ void QgsComposerMapWidget::visibilityPresetSelected()
 
     mKeepLayerStylesCheckBox->setChecked( true );
 
-    mComposerMap->setLayerStyleOverrides( QgsVisibilityPresets::instance()->presetStyleOverrides( presetName ) );
+    mComposerMap->setLayerStyleOverrides( QgsProject::instance()->visibilityPresetCollection()->presetStyleOverrides( presetName ) );
 
     mComposerMap->cache();
     mComposerMap->update();

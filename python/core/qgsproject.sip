@@ -258,6 +258,11 @@ class QgsProject : QObject
      */
     QgsLayerTreeRegistryBridge* layerTreeRegistryBridge() const;
 
+    /** Returns pointer to the project's visibility preset collection.
+     * @note added in QGIS 2.12
+     */
+    QgsVisibilityPresetCollection* visibilityPresetCollection();
+
   protected:
 
     /** Set error message from read/write operation */

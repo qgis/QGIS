@@ -127,6 +127,7 @@
 %Include qgsprojectfiletransform.sip
 %Include qgsvectorlayereditutils.sip
 %Include qgsvectorlayerfeatureiterator.sip
+%Include qgsvisibilitypresetcollection.sip
 %Include qgslayerdefinition.sip
 
 %Include composer/qgsaddremoveitemcommand.sip

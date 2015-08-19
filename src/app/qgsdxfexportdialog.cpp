@@ -26,7 +26,7 @@
 #include "qgsfieldcombobox.h"
 #include "qgisapp.h"
 #include "qgslayertreemapcanvasbridge.h"
-#include "qgsvisibilitypresets.h"
+#include "qgsvisibilitypresetcollection.h"
 
 #include <QFileDialog>
 #include <QPushButton>
@@ -329,7 +329,7 @@ QList< QPair<QgsVectorLayer *, int> > QgsVectorLayerAndAttributeModel::layers() 
 
 void QgsVectorLayerAndAttributeModel::applyVisibilityPreset( const QString &name )
 {
-  QSet<QString> visibleLayers = QgsVisibilityPresets::instance()->presetVisibleLayers( name ).toSet();
+  QSet<QString> visibleLayers = QgsProject::instance()->visibilityPresetCollection()->presetVisibleLayers( name ).toSet();
   if ( visibleLayers.isEmpty() )
     return;
 
@@ -429,7 +429,7 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   mScaleWidget->setScale( s.value( "qgis/lastSymbologyExportScale", "1/50000" ).toDouble() );
   mMapExtentCheckBox->setChecked( s.value( "qgis/lastDxfMapRectangle", "false" ).toBool() );
 
-  QStringList ids = QgsVisibilityPresets::instance()->presets();
+  QStringList ids = QgsProject::instance()->visibilityPresetCollection()->presets();
   ids.prepend( "" );
   mVisibilityPresets->addItems( ids );
 

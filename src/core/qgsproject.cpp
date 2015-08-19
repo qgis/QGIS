@@ -36,6 +36,7 @@
 #include "qgsrectangle.h"
 #include "qgsrelationmanager.h"
 #include "qgsvectorlayer.h"
+#include "qgsvisibilitypresetcollection.h"
 
 #include <QApplication>
 #include <QFileInfo>
@@ -413,6 +414,8 @@ void QgsProject::clear()
   imp_->clear();
   mEmbeddedLayers.clear();
   mRelationManager->clear();
+
+  mVisibilityPresetCollection.reset( new QgsVisibilityPresetCollection() );
 
   mRootGroup->removeAllChildren();
 
@@ -894,6 +897,9 @@ bool QgsProject::read()
 
   mRootGroup->removeCustomProperty( "loading" );
 
+  mVisibilityPresetCollection.reset( new QgsVisibilityPresetCollection() );
+  mVisibilityPresetCollection->readXML( *doc );
+
   // read the project: used by map canvas and legend
   emit readProject( *doc );
 
@@ -1092,6 +1098,8 @@ bool QgsProject::write()
   {
     imp_->properties_.writeXML( "properties", qgisNode, *doc );
   }
+
+  mVisibilityPresetCollection->writeXML( *doc );
 
   // now wrap it up and ship it to the project file
   doc->normalize();             // XXX I'm not entirely sure what this does
@@ -1965,4 +1973,9 @@ QgsRelationManager *QgsProject::relationManager() const
 QgsLayerTreeGroup *QgsProject::layerTreeRoot() const
 {
   return mRootGroup;
+}
+
+QgsVisibilityPresetCollection* QgsProject::visibilityPresetCollection()
+{
+  return mVisibilityPresetCollection.data();
 }
