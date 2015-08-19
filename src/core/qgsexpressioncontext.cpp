@@ -527,7 +527,7 @@ void QgsExpressionContextUtils::setProjectVariables( const QgsStringMap &variabl
   project->writeEntry( "Variables", "/variableValues", variableValues );
 }
 
-QgsExpressionContextScope* QgsExpressionContextUtils::layerScope( QgsMapLayer* layer )
+QgsExpressionContextScope* QgsExpressionContextUtils::layerScope( const QgsMapLayer* layer )
 {
   QgsExpressionContextScope* scope = new QgsExpressionContextScope( QObject::tr( "Layer" ) );
 
@@ -566,11 +566,13 @@ QgsExpressionContextScope* QgsExpressionContextUtils::layerScope( QgsMapLayer* l
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_crs", layer->crs().authid(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_crsdefinition", layer->crs().toProj4(), true ) );
 
-  QgsGeometry* extentGeom = QgsGeometry::fromRect( layer->extent() );
+  //some methods we want aren't const
+  QgsMapLayer* nonConstLayer = const_cast< QgsMapLayer* >( layer );
+  QgsGeometry* extentGeom = QgsGeometry::fromRect( nonConstLayer->extent() );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_extent", QVariant::fromValue( *extentGeom ), true ) );
   delete extentGeom;
 
-  QgsVectorLayer* vLayer = dynamic_cast< QgsVectorLayer* >( layer );
+  QgsVectorLayer* vLayer = dynamic_cast< QgsVectorLayer* >( nonConstLayer );
   if ( vLayer )
   {
     scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_geometrytype", vLayer->type(), true ) );

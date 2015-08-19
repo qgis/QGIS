@@ -400,7 +400,7 @@ class QgsExpressionContextUtils
     /** Creates a new scope which contains variables and functions relating to a QgsMapLayer.
      * For instance, layer name, id and fields.
      */
-    static QgsExpressionContextScope* layerScope( QgsMapLayer* layer ) /Factory/;
+    static QgsExpressionContextScope* layerScope( const QgsMapLayer* layer ) /Factory/;
 
     /** Helper function for creating an expression context which contains just a feature and fields
      * collection. Generally this method should not be used as the created context does not include

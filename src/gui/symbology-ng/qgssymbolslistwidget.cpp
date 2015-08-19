@@ -360,9 +360,27 @@ void QgsSymbolsListWidget::updateSymbolColor()
   btnColor->blockSignals( false );
 }
 
+static QgsExpressionContext _getExpressionContext( const void* context )
+{
+  QgsExpressionContext expContext;
+  expContext << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope();
+
+  const QgsVectorLayer* layer = ( const QgsVectorLayer* ) context;
+  if ( layer )
+    expContext << QgsExpressionContextUtils::layerScope( layer );
+
+  return expContext;
+}
+
 void QgsSymbolsListWidget::updateSymbolInfo()
 {
   updateSymbolColor();
+
+  Q_FOREACH ( QgsDataDefinedButton* button, findChildren< QgsDataDefinedButton* >() )
+  {
+    button->registerGetExpressionContextCallback( &_getExpressionContext, mLayer );
+  }
 
   if ( mSymbol->type() == QgsSymbolV2::Marker )
   {

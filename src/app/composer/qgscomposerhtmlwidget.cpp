@@ -482,12 +482,26 @@ QgsComposerItem::DataDefinedProperty QgsComposerHtmlWidget::ddPropertyForWidget(
   return QgsComposerItem::NoProperty;
 }
 
+static QgsExpressionContext _getExpressionContext( const void* context )
+{
+  const QgsComposerObject* composerObject = ( const QgsComposerObject* ) context;
+  if ( !composerObject )
+  {
+    return QgsExpressionContext();
+  }
+
+  QScopedPointer< QgsExpressionContext > expContext( composerObject->createExpressionContext() );
+  return QgsExpressionContext( *expContext );
+}
+
 void QgsComposerHtmlWidget::populateDataDefinedButtons()
 {
   QgsVectorLayer* vl = atlasCoverageLayer();
 
   //block signals from data defined buttons
   mUrlDDBtn->blockSignals( true );
+
+  mUrlDDBtn->registerGetExpressionContextCallback( &_getExpressionContext, mHtml );
 
   //initialise buttons to use atlas coverage layer
   mUrlDDBtn->init( vl, mHtml->dataDefinedProperty( QgsComposerItem::SourceUrl ),

@@ -435,7 +435,7 @@ class CORE_EXPORT QgsExpressionContextUtils
     /** Creates a new scope which contains variables and functions relating to a QgsMapLayer.
      * For instance, layer name, id and fields.
      */
-    static QgsExpressionContextScope* layerScope( QgsMapLayer* layer );
+    static QgsExpressionContextScope* layerScope( const QgsMapLayer *layer );
 
     /** Sets a layer context variable. This variable will be contained within scopes retrieved via
      * layerScope().
