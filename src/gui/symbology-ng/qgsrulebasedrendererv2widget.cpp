@@ -627,7 +627,12 @@ QgsRendererRulePropsDialog::~QgsRendererRulePropsDialog()
 
 void QgsRendererRulePropsDialog::buildExpression()
 {
-  QgsExpressionBuilderDialog dlg( mLayer, editFilter->text(), this );
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( mLayer );
+
+  QgsExpressionBuilderDialog dlg( mLayer, editFilter->text(), this, "generic", context );
 
   if ( dlg.exec() )
     editFilter->setText( dlg.expressionText() );

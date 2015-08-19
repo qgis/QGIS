@@ -669,7 +669,11 @@ void QgsFieldsProperties::updateExpression()
 
   const QString exp = mLayer->expressionField( index );
 
-  QgsExpressionBuilderDialog dlg( mLayer, exp );
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope();
+
+  QgsExpressionBuilderDialog dlg( mLayer, exp, 0, "generic", context );
 
   if ( dlg.exec() )
   {
