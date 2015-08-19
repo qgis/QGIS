@@ -188,20 +188,27 @@ QgsComposerMapWidget::~QgsComposerMapWidget()
 {
 }
 
+static QgsExpressionContext _getExpressionContext( const void* context )
+{
+  const QgsComposerObject* composerObject = ( const QgsComposerObject* ) context;
+  if ( !composerObject )
+  {
+    return QgsExpressionContext();
+  }
+
+  QScopedPointer< QgsExpressionContext > expContext( composerObject->createExpressionContext() );
+  return QgsExpressionContext( *expContext );
+}
+
 void QgsComposerMapWidget::populateDataDefinedButtons()
 {
   QgsVectorLayer* vl = atlasCoverageLayer();
 
-  //block signals from data defined buttons
-  mScaleDDBtn->blockSignals( true );
-  mMapRotationDDBtn->blockSignals( true );
-  mXMinDDBtn->blockSignals( true );
-  mYMinDDBtn->blockSignals( true );
-  mXMaxDDBtn->blockSignals( true );
-  mYMaxDDBtn->blockSignals( true );
-  mAtlasMarginDDBtn->blockSignals( true );
-  mStylePresetsDDBtn->blockSignals( true );
-  mLayersDDBtn->blockSignals( true );
+  Q_FOREACH ( QgsDataDefinedButton* button, findChildren< QgsDataDefinedButton* >() )
+  {
+    button->blockSignals( true );
+    button->registerGetExpressionContextCallback( &_getExpressionContext, mComposerMap );
+  }
 
   //initialise buttons to use atlas coverage layer
   mScaleDDBtn->init( vl, mComposerMap->dataDefinedProperty( QgsComposerObject::MapScale ),
@@ -223,16 +230,10 @@ void QgsComposerMapWidget::populateDataDefinedButtons()
   mLayersDDBtn->init( vl, mComposerMap->dataDefinedProperty( QgsComposerObject::MapLayers ),
                       QgsDataDefinedButton::String, tr( "list of map layer names separated by | characters" ) );
 
-  //unblock signals from data defined buttons
-  mScaleDDBtn->blockSignals( false );
-  mMapRotationDDBtn->blockSignals( false );
-  mXMinDDBtn->blockSignals( false );
-  mYMinDDBtn->blockSignals( false );
-  mXMaxDDBtn->blockSignals( false );
-  mYMaxDDBtn->blockSignals( false );
-  mAtlasMarginDDBtn->blockSignals( false );
-  mStylePresetsDDBtn->blockSignals( false );
-  mLayersDDBtn->blockSignals( false );
+  Q_FOREACH ( QgsDataDefinedButton* button, findChildren< QgsDataDefinedButton* >() )
+  {
+    button->blockSignals( false );
+  }
 }
 
 QgsComposerObject::DataDefinedProperty QgsComposerMapWidget::ddPropertyForWidget( QgsDataDefinedButton* widget )

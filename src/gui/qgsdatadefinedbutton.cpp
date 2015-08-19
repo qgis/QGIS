@@ -41,6 +41,8 @@ QgsDataDefinedButton::QgsDataDefinedButton( QWidget* parent,
     DataTypes datatypes,
     QString description )
     : QToolButton( parent )
+    , mExpressionContextCallback( 0 )
+    , mExpressionContextCallbackContext( 0 )
 {
   // set up static icons
   if ( mIconDataDefine.isNull() )
@@ -452,7 +454,9 @@ void QgsDataDefinedButton::showAssistant()
 
 void QgsDataDefinedButton::showExpressionDialog()
 {
-  QgsExpressionBuilderDialog d( const_cast<QgsVectorLayer*>( mVectorLayer ), getExpression() );
+  QgsExpressionContext context = mExpressionContextCallback ? mExpressionContextCallback( mExpressionContextCallbackContext ) : QgsExpressionContext();
+
+  QgsExpressionBuilderDialog d( const_cast<QgsVectorLayer*>( mVectorLayer ), getExpression(), this, "generic", context );
   if ( d.exec() == QDialog::Accepted )
   {
     QString newExp = d.expressionText();
@@ -630,6 +634,12 @@ QList<QWidget*> QgsDataDefinedButton::registeredCheckedWidgets()
     wdgtList << mCheckedWidgets.at( i );
   }
   return wdgtList;
+}
+
+void QgsDataDefinedButton::registerGetExpressionContextCallback( QgsDataDefinedButton::ExpressionContextCallback fnGetExpressionContext, const void *context )
+{
+  mExpressionContextCallback = fnGetExpressionContext;
+  mExpressionContextCallbackContext = context;
 }
 
 void QgsDataDefinedButton::setAssistant( const QString& title, QgsDataDefinedAssistant *assistant )

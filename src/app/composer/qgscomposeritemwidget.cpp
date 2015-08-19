@@ -550,19 +550,27 @@ void QgsComposerItemWidget::setValuesForGuiNonPositionElements()
   mExcludeFromPrintsCheckBox->blockSignals( false );
 }
 
+static QgsExpressionContext _getExpressionContext( const void* context )
+{
+  const QgsComposerObject* composerObject = ( const QgsComposerObject* ) context;
+  if ( !composerObject )
+  {
+    return QgsExpressionContext();
+  }
+
+  QScopedPointer< QgsExpressionContext > expContext( composerObject->createExpressionContext() );
+  return QgsExpressionContext( *expContext );
+}
+
 void QgsComposerItemWidget::populateDataDefinedButtons()
 {
   QgsVectorLayer* vl = atlasCoverageLayer();
 
-  //block signals from data defined buttons
-  mXPositionDDBtn->blockSignals( true );
-  mYPositionDDBtn->blockSignals( true );
-  mWidthDDBtn->blockSignals( true );
-  mHeightDDBtn->blockSignals( true );
-  mItemRotationDDBtn->blockSignals( true );
-  mTransparencyDDBtn->blockSignals( true );
-  mBlendModeDDBtn->blockSignals( true );
-  mExcludePrintsDDBtn->blockSignals( true );
+  Q_FOREACH ( QgsDataDefinedButton* button, findChildren< QgsDataDefinedButton* >() )
+  {
+    button->blockSignals( true );
+    button->registerGetExpressionContextCallback( &_getExpressionContext, mItem );
+  }
 
   //initialise buttons to use atlas coverage layer
   mXPositionDDBtn->init( vl, mItem->dataDefinedProperty( QgsComposerObject::PositionX ),
@@ -583,14 +591,10 @@ void QgsComposerItemWidget::populateDataDefinedButtons()
                              QgsDataDefinedButton::String, QgsDataDefinedButton::boolDesc() );
 
   //unblock signals from data defined buttons
-  mXPositionDDBtn->blockSignals( false );
-  mYPositionDDBtn->blockSignals( false );
-  mWidthDDBtn->blockSignals( false );
-  mHeightDDBtn->blockSignals( false );
-  mItemRotationDDBtn->blockSignals( false );
-  mTransparencyDDBtn->blockSignals( false );
-  mBlendModeDDBtn->blockSignals( false );
-  mExcludePrintsDDBtn->blockSignals( false );
+  Q_FOREACH ( QgsDataDefinedButton* button, findChildren< QgsDataDefinedButton* >() )
+  {
+    button->blockSignals( false );
+  }
 }
 
 QgsComposerObject::DataDefinedProperty QgsComposerItemWidget::ddPropertyForWidget( QgsDataDefinedButton* widget )
