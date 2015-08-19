@@ -20,11 +20,12 @@ QgsFeatureListViewDelegate::QgsFeatureListViewDelegate( QgsFeatureListModel *lis
     , mListModel( listModel )
     , mCurrentFeatureEdited( false )
 {
+  mIconSize = QApplication::fontMetrics().height();
 }
 
 QgsFeatureListViewDelegate::Element QgsFeatureListViewDelegate::positionToElement( const QPoint &pos )
 {
-  if ( pos.x() > sIconSize )
+  if ( pos.x() > mIconSize )
   {
     return EditElement;
   }
@@ -52,7 +53,7 @@ void QgsFeatureListViewDelegate::setEditSelectionModel( QItemSelectionModel* edi
 QSize QgsFeatureListViewDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const
 {
   Q_UNUSED( index )
-  return QSize( option.rect.width(), sIconSize );
+  return QSize( option.rect.width(), mIconSize );
 }
 
 void QgsFeatureListViewDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
@@ -78,6 +79,8 @@ void QgsFeatureListViewDelegate::paint( QPainter *painter, const QStyleOptionVie
   {
     icon = QgsApplication::getThemePixmap( "/mIconDeselected.svg" );
   }
+
+  icon = icon.scaled( QSize( mIconSize, mIconSize ) );
 
   // Text layout options
   QRect textLayoutBounds( iconLayoutBounds.x() + iconLayoutBounds.width(), option.rect.y(), option.rect.width() - ( iconLayoutBounds.x() + iconLayoutBounds.width() ), option.rect.height() );
