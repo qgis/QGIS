@@ -50,44 +50,58 @@ class QgsConditionalStyle
     void setFont( QFont value );
 
     /**
-     * @brief Set the icon for the style
-     * @param value QIcon for style
+     * @brief Set the icon for the style. Icons are generated from symbols
+     * @param value QgsSymbolV2 to be used when generating the icon
      */
-    void setIcon( QPixmap value );
+    void setSymbol( QgsSymbolV2* value );
+
+    /**
+     * @brief The symbol used to generate the icon for the style
+     * @return The QgsSymbolV2 used for the icon
+     */
+    const QgsSymbolV2* symbol();
 
     /**
      * @brief The icon set for style
      * @return A QPixmap that was set for the icon
      */
-    QPixmap icon();
+    const QPixmap icon();
 
     /**
      * @brief The text color set for style
      * @return QColor for text color
      */
-    QColor textColor();
+    const QColor textColor();
 
     /**
      * @brief The background color for style
      * @return QColor for background color
      */
-    QColor backgroundColor();
+    const QColor backgroundColor();
     /**
      * @brief The font for the style
      * @return QFont for the style
      */
-    QFont font();
+    const QFont font();
 
     /**
      * @brief The condtion rule set for the style. Rule may contain variable @value
      * to represent the current value
      * @return QString of the current set rule
      */
-    QString rule();
+    const QString rule();
     /**
      * @brief isValid Check if this rule is valid.  A valid rule has one or more properties
      * set.
      * @return True if the rule is valid.
      */
-    bool isValid();
+    const bool isValid();
+
+    /** Reads vector conditional style specific state from layer Dom node.
+     */
+    virtual bool readXml( const QDomNode& node );
+
+    /** Write vector conditional style specific state from layer Dom node.
+     */
+    virtual bool writeXml( QDomNode & node, QDomDocument & doc );
 };

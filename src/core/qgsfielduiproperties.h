@@ -41,13 +41,11 @@ class CORE_EXPORT QgsFieldUIProperties
      */
     QgsConditionalStyle matchingConditionalStyle( QVariant value, QgsFeature* feature );
 
-    /** Reads vector layer specific state from project file Dom node.
-     *  @note Called by QgsMapLayer::readXML().
+    /** Reads field ui properties specific state from Dom node.
      */
     virtual bool readXml( const QDomNode& node );
 
-    /** Write vector layer specific state to project file Dom node.
-     *  @note Called by QgsMapLayer::writeXML().
+    /** Write field ui properties specific state from Dom node.
      */
     virtual bool writeXml( QDomNode & node, QDomDocument & doc );
 

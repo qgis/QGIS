@@ -36,6 +36,7 @@ bool QgsFieldUIProperties::writeXml( QDomNode &node, QDomDocument &doc )
     style.writeXml( stylesel, doc );
   }
   node.appendChild( stylesel );
+  return true;
 }
 
 bool QgsFieldUIProperties::readXml( const QDomNode &node )
@@ -50,5 +51,6 @@ bool QgsFieldUIProperties::readXml( const QDomNode &node )
     style.readXml( styleElm );
     mStyles.append( style );
   }
+  return true;
 }
 

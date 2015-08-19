@@ -82,7 +82,14 @@ void QgsFieldConditionalFormatWidget::editStyle( int editIndex, QgsConditionalSt
     checkIcon->setChecked( false );
     btnChangeIcon->setIcon( QIcon() );
   }
-  mSymbol = style.symbol();
+  if ( style.symbol() )
+  {
+    mSymbol = style.symbol()->clone();
+  }
+  else
+  {
+    mSymbol = 0;
+  }
   QFont font = style.font();
   mFontBoldBtn->setChecked( font.bold() );
   mFontItalicBtn->setChecked( font.italic() );
@@ -156,7 +163,7 @@ void QgsFieldConditionalFormatWidget::saveRule()
   style.setTextColor( fontColor );
   if ( mSymbol && checkIcon->isChecked() )
   {
-    style.setSymbol( mSymbol->clone() );
+    style.setSymbol( mSymbol );
   }
   else
   {

@@ -23,7 +23,7 @@ class QgsFieldUIProperties
      * @brief Returns the condtional styles set for the field UI properties
      * @return A list of condtional styles that have been set.
      */
-    QList<QgsConditionalStyle> getConditionalStyles();
+    const QList<QgsConditionalStyle> getConditionalStyles();
 
     /**
      * @brief Find and return the matching style for the value and feature.
@@ -32,5 +32,14 @@ class QgsFieldUIProperties
      * @return A condtional style that matches the value and feature.
      * Check with QgsCondtionalStyle::isValid()
      */
-    QgsConditionalStyle matchingConditionalStyle( QVariant value, QgsFeature* feature );
+    const QgsConditionalStyle matchingConditionalStyle( QVariant value, QgsFeature* feature );
+
+    /** Reads field ui properties specific state from Dom node.
+     */
+    virtual bool readXml( const QDomNode& node );
+
+    /** Write field ui properties specific state from Dom node.
+     */
+    virtual bool writeXml( QDomNode & node, QDomDocument & doc );
+
 };

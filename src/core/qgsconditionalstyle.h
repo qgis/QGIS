@@ -1,5 +1,5 @@
-#ifndef QGSCONDTIONALSTYLE_H
-#define QGSCONDTIONALSTYLE_H
+#ifndef QGSCONDITIONALSTYLE_H
+#define QGSCONDITIONALSTYLE_H
 
 #include <QFont>
 #include <QColor>
@@ -18,6 +18,7 @@ class CORE_EXPORT QgsConditionalStyle
   public:
     QgsConditionalStyle();
     QgsConditionalStyle( QString rule );
+    ~QgsConditionalStyle();
 
     /**
      * @brief Check if the rule matches using the given value and feature
@@ -59,68 +60,69 @@ class CORE_EXPORT QgsConditionalStyle
     void setFont( QFont value ) { mFont = value; mValid = true; }
 
     /**
-     * @brief Set the icon for the style
-     * @param value QIcon for style
+     * @brief Set the icon for the style. Icons are generated from symbols
+     * @param value QgsSymbolV2 to be used when generating the icon
      */
     void setSymbol( QgsSymbolV2* value );
 
     /**
-     * @brief The icon set for style
-     * @return A QPixmap that was set for the icon
+     * @brief The icon set for style generated from the set symbol
+     * @return A QPixmap that was set for the icon using the symbol
      */
-    QPixmap icon() { return mIcon; }
+    const QPixmap icon() { return mIcon; }
 
-    QgsSymbolV2* symbol() { return mSymbol; }
+    /**
+     * @brief The symbol used to generate the icon for the style
+     * @return The QgsSymbolV2 used for the icon
+     */
+    const QgsSymbolV2* symbol() { return mSymbol.data(); }
 
     /**
      * @brief The text color set for style
      * @return QColor for text color
      */
-    QColor textColor() { return mTextColor; }
+    const QColor textColor() { return mTextColor; }
 
     /**
      * @brief The background color for style
      * @return QColor for background color
      */
-    QColor backgroundColor() { return mBackColor; }
+    const QColor backgroundColor() { return mBackColor; }
     /**
      * @brief The font for the style
      * @return QFont for the style
      */
-    QFont font() { return mFont; }
+    const QFont font() { return mFont; }
 
     /**
      * @brief The condtion rule set for the style. Rule may contain variable \@value
      * to represent the current value
      * @return QString of the current set rule
      */
-    QString rule() { return mRule; }
+    const QString rule() { return mRule; }
 
     /**
      * @brief isValid Check if this rule is valid.  A valid rule has one or more properties
      * set.
      * @return True if the rule is valid.
      */
-    bool isValid() { return mValid; }
+    const bool isValid() { return mValid; }
 
-    /** Reads vector layer specific state from project file Dom node.
-     *  @note Called by QgsMapLayer::readXML().
+    /** Reads vector conditional style specific state from layer Dom node.
      */
     virtual bool readXml( const QDomNode& node );
 
-    /** Write vector layer specific state to project file Dom node.
-     *  @note Called by QgsMapLayer::writeXML().
+    /** Write vector conditional style specific state from layer Dom node.
      */
     virtual bool writeXml( QDomNode & node, QDomDocument & doc );
 
-  private:
     bool mValid;
     QString mRule;
-    QgsSymbolV2* mSymbol;
+    QScopedPointer<QgsSymbolV2> mSymbol;
     QFont mFont;
     QColor mBackColor;
     QColor mTextColor;
     QPixmap mIcon;
 };
 
-#endif // QGSCONDTIONALSTYLE_H
+#endif // QGSCONDITIONALSTYLE_H

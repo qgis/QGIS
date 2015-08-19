@@ -18,14 +18,22 @@ QgsConditionalStyle::QgsConditionalStyle( QString rule )
   setRule( rule );
 }
 
+QgsConditionalStyle::~QgsConditionalStyle()
+{
+}
+
 void QgsConditionalStyle::setSymbol( QgsSymbolV2* value )
 {
-  mSymbol = value;
-  if ( mSymbol )
-  {
-    mIcon = QgsSymbolLayerV2Utils::symbolPreviewPixmap( mSymbol, QSize( 16, 16 ) );
-  }
   mValid = true;
+  if ( value )
+  {
+    mSymbol.reset( value->clone() );
+    mIcon = QgsSymbolLayerV2Utils::symbolPreviewPixmap( mSymbol.data(), QSize( 16, 16 ) );
+  }
+  else
+  {
+    mSymbol.reset();
+  }
 }
 
 bool QgsConditionalStyle::matches( QVariant value, QgsFeature *feature )
@@ -78,12 +86,13 @@ bool QgsConditionalStyle::writeXml( QDomNode &node, QDomDocument &doc )
   stylesel.setAttribute( "text_color", mTextColor.name() );
   QDomElement labelFontElem = QgsFontUtils::toXmlElement( mFont, doc, "font" );
   stylesel.appendChild( labelFontElem );
-  // TODO
-  QDomElement symbolElm = QgsSymbolLayerV2Utils::saveSymbol( "icon", mSymbol, doc );
-  stylesel.appendChild( symbolElm );
-
-
+  if ( ! mSymbol.isNull() )
+  {
+    QDomElement symbolElm = QgsSymbolLayerV2Utils::saveSymbol( "icon", mSymbol.data(), doc );
+    stylesel.appendChild( symbolElm );
+  }
   node.appendChild( stylesel );
+  return true;
 }
 
 bool QgsConditionalStyle::readXml( const QDomNode &node )
@@ -96,9 +105,9 @@ bool QgsConditionalStyle::readXml( const QDomNode &node )
   QDomElement symbolElm = styleElm.firstChildElement( "symbol" );
   if ( !symbolElm.isNull() )
   {
-    delete mSymbol;
-    mSymbol = QgsSymbolLayerV2Utils::loadSymbol<QgsMarkerSymbolV2>( symbolElm );
-    setSymbol( mSymbol );
+    QgsSymbolV2* symbol = QgsSymbolLayerV2Utils::loadSymbol<QgsMarkerSymbolV2>( symbolElm );
+    setSymbol( symbol );
   }
+  return true;
 }
 
