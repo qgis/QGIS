@@ -26,7 +26,8 @@ sudo apt-get install --force-yes --no-install-recommends --no-install-suggests \
 if [ ${QT} == 5 ]; then
   sudo apt-get install --force-yes --no-install-recommends --no-install-suggests \
     qtbase5-dev qtdeclarative5-dev libqt5webkit5-dev qt5-default \
-    qttools5-dev-tools
+    qttools5-dev-tools libqt5svg5-dev libqt5gui5-dev libqt5widgets5-dev libqt5network5-dev \
+    libqt5xml5-dev libqt5concurrent5-dev libqt5printsupport5-dev libqt5positioning5-dev
 
   # Download build dependencies
   git clone https://github.com/osakared/qwt.git
