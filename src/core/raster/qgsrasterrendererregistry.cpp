@@ -21,6 +21,7 @@
 #include "qgssinglebandcolordatarenderer.h"
 #include "qgssinglebandgrayrenderer.h"
 #include "qgssinglebandpseudocolorrenderer.h"
+#include "qgspseudocolorshader.h"
 #include <QSettings>
 
 QgsRasterRendererRegistryEntry::QgsRasterRendererRegistryEntry( const QString& theName, const QString& theVisibleName,
@@ -172,7 +173,9 @@ QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( co
       // TODO: avoid calculating statistics if not necessary (default style loaded)
       minMaxValuesForBand( bandNo, provider, minValue, maxValue );
       QgsRasterShader* shader = new QgsRasterShader( minValue, maxValue );
-      renderer = new QgsSingleBandPseudoColorRenderer( provider, bandNo, shader );
+      QgsRasterShaderFunction *fun = new QgsPseudoColorShader(minValue, maxValue);
+      shader->setRasterShaderFunction(fun);
+      renderer = new QgsSingleBandPseudoColorRenderer(provider, bandNo, shader);
       break;
     }
     case QgsRaster::MultiBandColor:

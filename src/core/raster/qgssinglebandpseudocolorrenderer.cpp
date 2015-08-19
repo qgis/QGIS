@@ -17,6 +17,7 @@
 
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgsrastershader.h"
+#include "qgspseudocolorshader.h"
 #include "qgsrastertransparency.h"
 #include "qgsrasterviewport.h"
 #include <QDomDocument>
@@ -55,9 +56,8 @@ QgsRasterInterface * QgsSingleBandPseudoColorRenderer::clone() const
   {
     shader = new QgsRasterShader( mShader->minimumValue(), mShader->maximumValue() );
 
-    // Shader function
+    // Shader functions
     const QgsColorRampShader* origColorRampShader = dynamic_cast<const QgsColorRampShader*>( mShader->rasterShaderFunction() );
-
     if ( origColorRampShader )
     {
       QgsColorRampShader * colorRampShader = new QgsColorRampShader( mShader->minimumValue(), mShader->maximumValue() );
@@ -67,6 +67,14 @@ QgsRasterInterface * QgsSingleBandPseudoColorRenderer::clone() const
       colorRampShader->setColorRampItemList( origColorRampShader->colorRampItemList() );
       shader->setRasterShaderFunction( colorRampShader );
     }
+
+    const QgsPseudoColorShader* origPseudoColorShader = dynamic_cast<const QgsPseudoColorShader*>( mShader->rasterShaderFunction() );
+    if (origPseudoColorShader)
+    {
+       QgsPseudoColorShader * pseudoColorShader = new QgsPseudoColorShader(mShader->minimumValue(), mShader->maximumValue());
+       shader->setRasterShaderFunction(pseudoColorShader);
+    }
+
   }
   QgsSingleBandPseudoColorRenderer * renderer = new QgsSingleBandPseudoColorRenderer( 0, mBand, shader );
 
