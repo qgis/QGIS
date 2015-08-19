@@ -137,15 +137,15 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       arguments = []
       if self.noDataCheck.isChecked():
         arguments.append("-a_nodata")
-        arguments.append( str(self.noDataSpin.value()))
+        arguments.append( unicode(self.noDataSpin.value()))
       if self.extentModeRadio.isChecked() and self.extentSelector.isCoordsValid():
         rect = self.extentSelector.getExtent()
         if rect is not None:
           arguments.append("-projwin")
-          arguments.append(str(rect.xMinimum()))
-          arguments.append(str(rect.yMaximum()))
-          arguments.append(str(rect.xMaximum()))
-          arguments.append(str(rect.yMinimum()))
+          arguments.append(unicode(rect.xMinimum()))
+          arguments.append(unicode(rect.yMaximum()))
+          arguments.append(unicode(rect.xMaximum()))
+          arguments.append(unicode(rect.yMinimum()))
       if not self.getOutputFileName() == '':
         arguments.append("-of")
         arguments.append(self.outputFormat)
@@ -158,7 +158,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       arguments = []
       if self.noDataCheck.isChecked():
         arguments.append("-dstnodata")
-        arguments.append(str(self.noDataSpin.value()))
+        arguments.append(unicode(self.noDataSpin.value()))
       if self.maskModeRadio.isChecked():
         mask = self.maskSelector.filename()
         if not mask == '':

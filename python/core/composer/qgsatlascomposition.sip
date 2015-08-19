@@ -38,7 +38,7 @@ public:
      * @param hide set to true to hide the coverage layer
      * @see hideCoverage
      */
-    void setHideCoverage( bool hide );    
+    void setHideCoverage( bool hide );
 
     /** Returns the filename expression used for generating output filenames for each
      * atlas page.
@@ -77,7 +77,7 @@ public:
      * @see coverageLayer
      */
     void setCoverageLayer( QgsVectorLayer* layer );
-    
+
     /** Returns the expression used for calculating the page name.
      * @returns expression string, or field name from coverage layer
      * @see setPageNameExpression
@@ -176,7 +176,7 @@ public:
     */
     bool prepareForFeature( const QgsFeature * feat );
 
-    /** Returns the current filename. Must be called after prepareForFeature( i ) */
+    /** Returns the current filename. Must be called after prepareForFeature() */
     const QString& currentFilename() const;
 
     void writeXML( QDomElement& elem, QDomDocument& doc ) const;
@@ -201,22 +201,29 @@ public:
     QgsComposition* composition();
 
     /** Requeries the current atlas coverage layer and applies filtering and sorting. Returns
-      number of matching features. Must be called after prepareForFeature( i ) */
+      number of matching features. Must be called before prepareForFeature() */
     int updateFeatures();
 
-    /** Returns the current atlas feature. Must be called after prepareForFeature( i ). */
-    QgsFeature* currentFeature();
+    /** Returns the current atlas feature. Must be called after prepareForFeature().
+     * @note added in QGIS 2.12
+     */
+    QgsFeature feature() const;
 
-    /** Returns the current feature number.
+    /** Returns the name of the page for the current atlas feature. Must be called after prepareForFeature().
+     * @note added in QGIS 2.12
+     */
+    QString currentPageName() const;
+
+    /** Returns the current feature number, where a value of 0 corresponds to the first feature.
      * @note added in QGIS 2.12
      */
     int currentFeatureNumber() const;
 
     /** Recalculates the bounds of an atlas driven map */
     void prepareMap( QgsComposerMap* map );
-    
+
     //Deprecated methods
-    
+
     /** Returns the map used by the atlas
      * @deprecated Use QgsComposerMap::atlasDriven() instead
      */
@@ -226,7 +233,7 @@ public:
      * @deprecated Use QgsComposerMap::setAtlasDriven( true ) instead
      */
     void setComposerMap( QgsComposerMap* map ) /Deprecated/;
-    
+
     /** Returns whether the atlas map uses a fixed scale
      * @deprecated since 2.4 Use QgsComposerMap::atlasScalingMode() instead
      */
@@ -246,9 +253,12 @@ public:
      * @deprecated Use QgsComposerMap::setAtlasMargin( double ) instead
      */
     void setMargin( float margin ) /Deprecated/;
-    
+
     int sortKeyAttributeIndex() const /Deprecated/;
     void setSortKeyAttributeIndex( int idx ) /Deprecated/;
+
+    /** Returns the current atlas feature. Must be called after prepareForFeature(). */
+    QgsFeature* currentFeature() /Deprecated/;
 
   public slots:
 

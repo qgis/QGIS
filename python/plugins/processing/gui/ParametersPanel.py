@@ -325,7 +325,7 @@ class ParametersPanel(BASE, WIDGET):
                 item = textEdit
             else:
                 item = QLineEdit()
-                item.setText(str(param.default))
+                item.setText(unicode(param.default))
         elif isinstance(param, ParameterGeometryPredicate):
             item = GeometryPredicateSelectionPanel(param.enabledPredicates)
             if param.left:
@@ -344,7 +344,7 @@ class ParametersPanel(BASE, WIDGET):
             item.setValue(param.default)
         else:
             item = QLineEdit()
-            item.setText(str(param.default))
+            item.setText(unicode(param.default))
 
         return item
 

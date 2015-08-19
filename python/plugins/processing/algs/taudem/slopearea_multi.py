@@ -81,15 +81,15 @@ class SlopeAreaMulti(GeoAlgorithm):
                         'correct number before running TauDEM algorithms.'))
 
         commands.append('-n')
-        commands.append(str(processNum))
+        commands.append(unicode(processNum))
         commands.append(os.path.join(TauDEMUtils.taudemMultifilePath(), self.cmdName))
         commands.append('-slp')
         commands.append(self.getParameterValue(self.SLOPE_GRID))
         commands.append('-sca')
         commands.append(self.getParameterValue(self.AREA_GRID))
         commands.append('-par')
-        commands.append(str(self.getParameterValue(self.SLOPE_EXPONENT)))
-        commands.append(str(self.getParameterValue(self.AREA_EXPONENT)))
+        commands.append(unicode(self.getParameterValue(self.SLOPE_EXPONENT)))
+        commands.append(unicode(self.getParameterValue(self.AREA_EXPONENT)))
         commands.append('-sa')
         commands.append(self.getOutputValue(self.SLOPE_AREA_GRID))
 

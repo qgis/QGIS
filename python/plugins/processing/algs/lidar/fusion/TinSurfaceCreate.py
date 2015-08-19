@@ -66,10 +66,10 @@ class TinSurfaceCreate(FusionAlgorithm):
         commands = [os.path.join(FusionUtils.FusionPath(), 'TINSurfaceCreate.exe')]
         commands.append('/verbose')
         class_var = self.getParameterValue(self.CLASS)
-        if str(class_var).strip() != '':
-            commands.append('/class:' + str(class_var))
+        if unicode(class_var).strip() != '':
+            commands.append('/class:' + unicode(class_var))
         commands.append(self.getOutputValue(self.OUTPUT_DTM))
-        commands.append(str(self.getParameterValue(self.CELLSIZE)))
+        commands.append(unicode(self.getParameterValue(self.CELLSIZE)))
         commands.append(self.UNITS[self.getParameterValue(self.XYUNITS)][0])
         commands.append(self.UNITS[self.getParameterValue(self.ZUNITS)][0])
         commands.append('0')

@@ -100,7 +100,7 @@ class DropAnalysis(GeoAlgorithm):
                         'correct number before running TauDEM algorithms.'))
 
         commands.append('-n')
-        commands.append(str(processNum))
+        commands.append(unicode(processNum))
         commands.append(os.path.join(TauDEMUtils.taudemPath(), self.cmdName))
         commands.append('-ad8')
         commands.append(self.getParameterValue(self.D8_CONTRIB_AREA_GRID))
@@ -113,10 +113,10 @@ class DropAnalysis(GeoAlgorithm):
         commands.append('-o')
         commands.append(self.getParameterValue(self.OUTLETS_SHAPE))
         commands.append('-par')
-        commands.append(str(self.getParameterValue(self.MIN_TRESHOLD)))
-        commands.append(str(self.getParameterValue(self.MAX_THRESHOLD)))
-        commands.append(str(self.getParameterValue(self.TRESHOLD_NUM)))
-        commands.append(str(self.getParameterValue(self.STEPS)))
+        commands.append(unicode(self.getParameterValue(self.MIN_TRESHOLD)))
+        commands.append(unicode(self.getParameterValue(self.MAX_THRESHOLD)))
+        commands.append(unicode(self.getParameterValue(self.TRESHOLD_NUM)))
+        commands.append(unicode(self.getParameterValue(self.STEPS)))
         commands.append('-drp')
         commands.append(self.getOutputValue(self.DROP_ANALYSIS_FILE))
 

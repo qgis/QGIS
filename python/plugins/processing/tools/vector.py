@@ -333,7 +333,7 @@ def duplicateInMemory(layer, newName='', addToRegistry=False):
         raise RuntimeError('Layer is not a VectorLayer')
 
     crs = layer.crs().authid().lower()
-    myUuid = str(uuid.uuid4())
+    myUuid = unicode(uuid.uuid4())
     uri = '%s?crs=%s&index=yes&uuid=%s' % (strType, crs, myUuid)
     memLayer = QgsVectorLayer(uri, newName, 'memory')
     memProvider = memLayer.dataProvider()
@@ -398,7 +398,7 @@ class VectorWriter:
         if self.fileName.startswith(self.MEMORY_LAYER_PREFIX):
             self.isMemory = True
 
-            uri = GEOM_TYPE_MAP[geometryType] + "?uuid=" + str(uuid.uuid4())
+            uri = GEOM_TYPE_MAP[geometryType] + "?uuid=" + unicode(uuid.uuid4())
             if crs.isValid():
                 uri += '&crs=' + crs.authid()
             fieldsdesc = []

@@ -123,7 +123,7 @@ void QgsMapToolRotatePointSymbols::canvasPressEvent( QMouseEvent *e )
       {
         markerSymbol = static_cast< QgsMarkerSymbolV2* >( s );
         QString rotationField = ( markerSymbol->dataDefinedAngle().isActive() && !markerSymbol->dataDefinedAngle().useExpression() ) ?
-                    markerSymbol->dataDefinedAngle().field() : QString();
+                                markerSymbol->dataDefinedAngle().field() : QString();
         if ( !rotationField.isEmpty() )
         {
           int fieldIndex = mActiveLayer->fields().indexFromName( rotationField );
@@ -138,11 +138,11 @@ void QgsMapToolRotatePointSymbols::canvasPressEvent( QMouseEvent *e )
     QgsSymbolV2* s = renderer->originalSymbolForFeature( pointFeature );
     if ( s && s->type() == QgsSymbolV2::Marker )
     {
-        markerSymbol = static_cast< QgsMarkerSymbolV2* >( s );
-        QString rotationField = ( markerSymbol->dataDefinedAngle().isActive() && !markerSymbol->dataDefinedAngle().useExpression() ) ?
-                    markerSymbol->dataDefinedAngle().field() : QString();
-        if ( !rotationField.isEmpty() )
-          mCurrentRotationAttributes << mActiveLayer->fields().indexFromName( rotationField );
+      markerSymbol = static_cast< QgsMarkerSymbolV2* >( s );
+      QString rotationField = ( markerSymbol->dataDefinedAngle().isActive() && !markerSymbol->dataDefinedAngle().useExpression() ) ?
+                              markerSymbol->dataDefinedAngle().field() : QString();
+      if ( !rotationField.isEmpty() )
+        mCurrentRotationAttributes << mActiveLayer->fields().indexFromName( rotationField );
     }
   }
 

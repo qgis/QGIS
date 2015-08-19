@@ -84,12 +84,12 @@ class txt2lasPro(LAStoolsAlgorithm):
         skip = self.getParameterValue(txt2lasPro.SKIP)
         if parse_string != 0:
             commands.append("-skip")
-            commands.append(str(skip))
+            commands.append(unicode(skip))
         scale_factor_xy = self.getParameterValue(txt2lasPro.SCALE_FACTOR_XY)
         scale_factor_z = self.getParameterValue(txt2lasPro.SCALE_FACTOR_Z)
         if scale_factor_xy != 0.01 or scale_factor_z != 0.01:
             commands.append("-set_scale")
-            commands.append(str(scale_factor_xy) + " " + str(scale_factor_xy) + " " + str(scale_factor_z))
+            commands.append(unicode(scale_factor_xy) + " " + unicode(scale_factor_xy) + " " + unicode(scale_factor_z))
         projection = self.getParameterValue(txt2lasPro.PROJECTION)
         if projection != 0:
             if projection == 1:
@@ -97,9 +97,9 @@ class txt2lasPro(LAStoolsAlgorithm):
                 if utm_zone != 0:
                     commands.append("-" + txt2lasPro.PROJECTIONS[projection])
                     if utm_zone > 60:
-                        commands.append(str(utm_zone - 60) + "M")
+                        commands.append(unicode(utm_zone - 60) + "M")
                     else:
-                        commands.append(str(utm_zone) + "N")
+                        commands.append(unicode(utm_zone) + "N")
             elif projection < 4:
                 sp_code = self.getParameterValue(txt2lasPro.SP)
                 if sp_code != 0:

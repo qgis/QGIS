@@ -87,6 +87,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * @returns horizontal alignment.
      * @note added in 2.3
      * @see setHAlignment
+     * @see vAlignment
      */
     Qt::AlignmentFlag hAlignment() const { return mHAlignment; }
 
@@ -95,8 +96,27 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
      * @param alignment horizontal alignment for cell.
      * @note added in 2.3
      * @see hAlignment
+     * @see setVAlignment
      */
     void setHAlignment( Qt::AlignmentFlag alignment ) { mHAlignment = alignment; }
+
+    /** Returns the vertical alignment for a column, which controls the alignment
+     * used for drawing column values within cells.
+     * @returns vertical alignment.
+     * @note added in 2.12
+     * @see setVAlignment
+     * @see hAlignment
+     */
+    Qt::AlignmentFlag vAlignment() const { return mVAlignment; }
+
+    /** Sets the vertical alignment for a column, which controls the alignment
+     * used for drawing column values within cells.
+     * @param alignment vertical alignment for cell.
+     * @note added in 2.12
+     * @see vAlignment
+     * @see setHAlignment
+     */
+    void setVAlignment( Qt::AlignmentFlag alignment ) { mVAlignment = alignment; }
 
     /** Returns the attribute name or expression used for the column's values. This property
      * is only used when the column is part of a QgsComposerAttributeTable.
@@ -174,6 +194,7 @@ class CORE_EXPORT QgsComposerTableColumn: public QObject
 
     QColor mBackgroundColor; //curently unused
     Qt::AlignmentFlag mHAlignment;
+    Qt::AlignmentFlag mVAlignment;
     QString mHeading;
     QString mAttribute;
     int mSortByRank;

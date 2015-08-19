@@ -60,7 +60,7 @@ class las2shp(LAStoolsAlgorithm):
         record_size = self.getParameterValue(las2shp.RECORD_SIZE)
         if record_size != 1024:
             commands.append("-record_size")
-            commands.append(str(record_size))
+            commands.append(unicode(record_size))
         commands.append("-o")
         commands.append(self.getOutputValue(las2shp.OUTPUT))
         self.addParametersAdditionalCommands(commands)

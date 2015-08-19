@@ -102,10 +102,10 @@ class gdalcalc(GdalAlgorithm):
 
     def getConsoleCommands(self):
         out = self.getOutputValue(self.OUTPUT)
-        extra = str(self.getParameterValue(self.EXTRA))
+        extra = unicode(self.getParameterValue(self.EXTRA))
         #debug = self.getParameterValue(self.DEBUG)
         formula = self.getParameterValue(self.FORMULA)
-        noData = str(self.getParameterValue(self.NO_DATA))
+        noData = unicode(self.getParameterValue(self.NO_DATA))
 
         arguments = []
         arguments.append('--calc')

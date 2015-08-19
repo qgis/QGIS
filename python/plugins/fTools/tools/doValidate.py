@@ -243,7 +243,7 @@ class ValidateDialog( QDialog, Ui_Dialog ):
           continue
         for err in rec[1]:  # for each error we find
           self.tblUnique.insertRow(count)
-          fidItem = QTableWidgetItem( str(rec[0]) )
+          fidItem = QTableWidgetItem( unicode(rec[0]) )
           self.tblUnique.setItem( count, 0, fidItem )
           message = err.what()
           errItem = QTableWidgetItem( message )
@@ -256,7 +256,7 @@ class ValidateDialog( QDialog, Ui_Dialog ):
       self.tblUnique.horizontalHeader().show()
       self.tblUnique.horizontalHeader().setResizeMode( 1, QHeaderView.Stretch )
       self.tblUnique.resizeRowsToContents()
-      self.lstCount.insert(str(count))
+      self.lstCount.insert(unicode(count))
     self.cancel_close.setText( "Close" )
     QObject.disconnect( self.cancel_close, SIGNAL( "clicked()" ), self.cancelThread )
     return True
@@ -324,7 +324,7 @@ class validateThread( QThread ):
         if len(rec[1]) < 1:
           continue
         for err in rec[1]:
-          fidItem = str(rec[0])
+          fidItem = unicode(rec[0])
           message = err.what()
           if err.hasWhere():
             locErr = err.where()

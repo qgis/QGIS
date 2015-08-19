@@ -67,11 +67,11 @@ class lastilePro(LAStoolsAlgorithm):
         self.addParametersApplyFileSourceIdCommands(commands)
         tile_size = self.getParameterValue(lastilePro.TILE_SIZE)
         commands.append("-tile_size")
-        commands.append(str(tile_size))
+        commands.append(unicode(tile_size))
         buffer = self.getParameterValue(lastilePro.BUFFER)
         if buffer != 0.0:
             commands.append("-buffer")
-            commands.append(str(buffer))
+            commands.append(unicode(buffer))
         if self.getParameterValue(lastilePro.EXTRA_PASS):
             commands.append("-extra_pass")
         self.addParametersOutputDirectoryCommands(commands)

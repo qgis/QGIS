@@ -107,7 +107,7 @@ class GrassUtils:
     def grassWinShell():
         folder = ProcessingConfig.getSetting(GrassUtils.GRASS_WIN_SHELL)
         if folder is None:
-            folder = os.path.dirname(str(QgsApplication.prefixPath()))
+            folder = os.path.dirname(unicode(QgsApplication.prefixPath()))
             folder = os.path.join(folder, 'msys')
         return folder
 

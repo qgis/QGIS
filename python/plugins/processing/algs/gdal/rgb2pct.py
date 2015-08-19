@@ -53,7 +53,7 @@ class rgb2pct(GdalAlgorithm):
     def getConsoleCommands(self):
         arguments = []
         arguments.append('-n')
-        arguments.append(str(self.getParameterValue(rgb2pct.NCOLORS)))
+        arguments.append(unicode(self.getParameterValue(rgb2pct.NCOLORS)))
         arguments.append('-of')
         out = self.getOutputValue(rgb2pct.OUTPUT)
         arguments.append(GdalUtils.getFormatShortNameFromFilename(out))

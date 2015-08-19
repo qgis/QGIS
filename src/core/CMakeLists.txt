@@ -187,6 +187,7 @@ SET(QGIS_CORE_SRCS
   qgsvectorlayerrenderer.cpp
   qgsvectorlayerundocommand.cpp
   qgsvectorsimplifymethod.cpp
+  qgsvisibilitypresetcollection.cpp
   qgsxmlutils.cpp
   qgsslconnect.cpp
   qgslocalec.cpp
@@ -410,6 +411,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsvectordataprovider.h
   qgsvectorlayercache.h
   qgsvectorlayerjoinbuffer.h
+  qgsvisibilitypresetcollection.h
   qgsgeometryvalidator.h
   qgswebview.h
 
@@ -606,6 +608,7 @@ SET(QGIS_CORE_HDRS
   qgsvectorlayerrenderer.h
   qgsvectorlayerundocommand.h
   qgsvectorsimplifymethod.h
+  qgsvisibilitypresetcollection.h
   qgsxmlutils.h
   qgswebpage.h
   qgswebframe.h

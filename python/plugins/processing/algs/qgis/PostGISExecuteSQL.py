@@ -60,7 +60,7 @@ class PostGISExecuteSQL(GeoAlgorithm):
 
         sql = self.getParameterValue(self.SQL).replace('\n', ' ')
         try:
-            self.db._exec_sql_and_commit(str(sql))
+            self.db._exec_sql_and_commit(unicode(sql))
         except postgis_utils.DbError, e:
             raise GeoAlgorithmExecutionException(
                 self.tr('Error executing SQL:\n%s' % e.message))

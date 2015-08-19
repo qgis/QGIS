@@ -63,7 +63,7 @@ class sieve(GdalAlgorithm):
 
         arguments = []
         arguments.append('-st')
-        arguments.append(str(self.getParameterValue(self.THRESHOLD)))
+        arguments.append(unicode(self.getParameterValue(self.THRESHOLD)))
 
         arguments.append('-' +
             self.PIXEL_CONNECTIONS[self.getParameterValue(

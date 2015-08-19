@@ -80,6 +80,14 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
       ShowMessage /*!< shows preset message instead of table contents*/
     };
 
+    /** Controls how long strings in the table are handled
+     */
+    enum WrapBehaviour
+    {
+      TruncateText = 0, /*!< text which doesn't fit inside the cell is truncated */
+      WrapText /*!< text which doesn't fit inside the cell is wrapped. Note that this only applies to text in columns with a fixed width. */
+    };
+
     QgsComposerTableV2( QgsComposition* composition, bool createUndoCommands );
     QgsComposerTableV2();
 
@@ -288,6 +296,22 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      */
     QColor backgroundColor() const { return mBackgroundColor; }
 
+    /** Sets the wrap behaviour for the table, which controls how text within cells is
+     * automatically wrapped.
+     * @param behaviour wrap behaviour
+     * @see wrapBehaviour
+     * @note added in QGIS 2.12
+     */
+    void setWrapBehaviour( WrapBehaviour behaviour );
+
+    /** Returns the wrap behaviour for the table, which controls how text within cells is
+     * automatically wrapped.
+     * @returns current wrap behaviour
+     * @see setWrapBehaviour
+     * @note added in QGIS 2.12
+     */
+    WrapBehaviour wrapBehaviour() const { return mWrapBehaviour; }
+
     /** Returns a pointer to the list of QgsComposerTableColumns shown in the table
      * @returns pointer to list of columns in table
      * @see setColumns
@@ -393,11 +417,21 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     /** Map of maximum width for each column*/
     QMap<int, double> mMaxColumnWidthMap;
 
+    /** Map of maximum height for each row*/
+    QMap<int, double> mMaxRowHeightMap;
+
     QSizeF mTableSize;
+
+    WrapBehaviour mWrapBehaviour;
 
     /** Calculates the maximum width of text shown in columns.
      */
     virtual bool calculateMaxColumnWidths();
+
+    /** Calculates the maximum height of text shown in rows.
+     * @note added in QGIS 2.12
+     */
+    virtual bool calculateMaxRowHeights();
 
     /** Returns total width of table contents.
      * @returns table width
@@ -410,13 +444,86 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * @returns total height
      * @see totalWidth
      */
-    double totalHeight() const;
+    //not const, as needs to call calculateMaxRowHeights()
+    double totalHeight();
+
+    /** Calculates how many content rows would be visible within a frame of the specified
+     * height.
+     * @param frameHeight height of frame
+     * @param firstRow index of first row visible in frame (where 0 = first row in table)
+     * @param includeHeader set to true if frame would include a header row
+     * @param includeEmptyRows set to true to also include rows which would be empty in the returned count. For instance,
+     * if the frame would include all table content rows and have space left for extra rows then setting this parameter
+     * to true would also include a count of these extra blank rows.
+     * @returns number of visible content rows (excluding header row)
+     * @note added in QGIS 2.12
+     */
+    int rowsVisible( double frameHeight, int firstRow, bool includeHeader, bool includeEmptyRows ) const;
+
+    /** Calculates how many content rows are visible within a given frame.
+     * @param frameIndex index number for frame
+     * @param firstRow index of first row visible in frame (where 0 = first row in table)
+     * @param includeEmptyRows set to true to also include rows which would be empty in the returned count. For instance,
+     * if the frame would include all table content rows and have space left for extra rows then setting this parameter
+     * to true would also include a count of these extra blank rows.
+     * @returns number of visible content rows (excludes header rows)
+     * @note added in QGIS 2.12
+     */
+    int rowsVisible( int frameIndex, int firstRow, bool includeEmptyRows ) const;
+
+    /** Calculates a range of rows which should be visible in a given frame.
+     * @param frameIndex index number for frame
+     * @returns row range
+     * @note added in QGIS 2.12
+     */
+    QPair<int, int> rowRange( const int frameIndex ) const;
+
+    /** Draws the horizontal grid lines for the table.
+     * @param painter destination painter for grid lines
+     * @param firstRow index corresponding to first row shown in frame
+     * @param lastRow index corresponding to last row shown in frame. If greater than the number of content rows in the
+     * table, then the default row height will be used for the remaining rows.
+     * @param drawHeaderLines set to true to include for the table header
+     * @see drawVerticalGridLines
+     * @note added in QGIS 2.12
+     */
+    void drawHorizontalGridLines( QPainter* painter, int firstRow, int lastRow, bool drawHeaderLines ) const;
+
+    /** Draws the vertical grid lines for the table.
+     * @param painter destination painter for grid lines
+     * @param maxWidthMap QMap of int to double, where the int contains the column number and the double is the
+     * maximum width of text present in the column.
+     * @param firstRow index corresponding to first row shown in frame
+     * @param lastRow index corresponding to last row shown in frame. If greater than the number of content rows in the
+     * table, then the default row height will be used for the remaining rows.
+     * @param hasHeader set to true if table frame includes header cells
+     * @param mergeCells set to true to merge table content cells
+     * @note not available in python bindings
+     * @see drawVerticalGridLines
+     * @see calculateMaxColumnWidths
+     * @note not available in python bindings
+     * @note added in QGIS 2.12
+     */
+    void drawVerticalGridLines( QPainter* painter, const QMap<int, double>& maxWidthMap, int firstRow, int lastRow, bool hasHeader, bool mergeCells = false ) const;
+
+    /** Recalculates and updates the size of the table and all table frames.
+     */
+    void recalculateTableSize();
+
+    /** Checks whether a table contents contains a given row
+     * @param contents table contents to check
+     * @param row row to check for
+     * @returns true if contents contains rows
+     */
+    bool contentsContainsRow( const QgsComposerTableContents &contents, const QgsComposerTableRow &row ) const;
+
+    //deprecated methods
 
     /** Calculates how many content rows are visible within a given frame
      * @param frameIndex index number for frame
      * @returns number of visible content rows (excludes header rows)
      */
-    int rowsVisible( const int frameIndex ) const;
+    Q_DECL_DEPRECATED int rowsVisible( const int frameIndex ) const;
 
     /** Calculates how many content rows would be visible within a specified
      * height.
@@ -424,7 +531,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * @param includeHeader set to true if frame would include a header row
      * @returns number of visible content rows (excluding header row)
      */
-    int rowsVisible( const double frameHeight, const bool includeHeader ) const;
+    Q_DECL_DEPRECATED int rowsVisible( const double frameHeight, const bool includeHeader ) const;
 
     /** Calculates a range of rows which should be visible in a given
      * frame extent.
@@ -432,7 +539,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * @param frameIndex index number for frame
      * @returns row range
      */
-    QPair<int, int> rowRange( const QRectF &extent, const int frameIndex ) const;
+    Q_DECL_DEPRECATED QPair<int, int> rowRange( const QRectF &extent, const int frameIndex ) const;
 
     /** Draws the horizontal grid lines for the table.
      * @param painter destination painter for grid lines
@@ -440,7 +547,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * @param drawHeaderLines set to true to include for the table header
      * @see drawVerticalGridLines
      */
-    void drawHorizontalGridLines( QPainter* painter, const int rows, const bool drawHeaderLines ) const;
+    Q_DECL_DEPRECATED void drawHorizontalGridLines( QPainter* painter, const int rows, const bool drawHeaderLines ) const;
 
     /** Draws the vertical grid lines for the table.
      * @param painter destination painter for grid lines
@@ -454,18 +561,13 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * @see calculateMaxColumnWidths
      * @note not available in python bindings
      */
-    void drawVerticalGridLines( QPainter* painter, const QMap<int, double>& maxWidthMap, const int numberRows, const bool hasHeader, const bool mergeCells = false ) const;
+    Q_DECL_DEPRECATED void drawVerticalGridLines( QPainter* painter, const QMap<int, double>& maxWidthMap, const int numberRows, const bool hasHeader, const bool mergeCells = false ) const;
 
-    /** Recalculates and updates the size of the table and all table frames.
-     */
-    void recalculateTableSize();
+  private:
 
-    /** Checks whether a table contents contains a given row
-     * @param contents table contents to check
-     * @param row row to check for
-     * @returns true if contents contains rows
-     */
-    bool contentsContainsRow( const QgsComposerTableContents &contents, const QgsComposerTableRow &row ) const;
+    bool textRequiresWrapping( const QString& text, double columnWidth , const QFont &font ) const;
+
+    QString wrappedText( const QString &value, double columnWidth, const QFont &font ) const;
 
     friend class TestQgsComposerTableV2;
 };

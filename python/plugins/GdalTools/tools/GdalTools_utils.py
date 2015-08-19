@@ -508,7 +508,7 @@ class FileFilter:
 
   @classmethod
   def filenameMatchesFilterExt(self, fileName, ext):
-    return re.match( '.'+str(ext), fileName ) is not None
+    return re.match( '.'+unicode(ext), fileName ) is not None
 
 # Retrieves gdal information
 class GdalConfig:
@@ -542,7 +542,7 @@ class GdalConfig:
       driver = gdal.GetDriver(i)
 
       if driver is None:
-        QgsLogger.warning("unable to get driver " + str(i))
+        QgsLogger.warning("unable to get driver " + unicode(i))
         continue
 
       # now we need to see if the driver is for something currently
@@ -557,7 +557,7 @@ class GdalConfig:
 
       metadata = driver.GetMetadata()
       if gdal.DMD_EXTENSION in metadata:
-        extensions = str(metadata[gdal.DMD_EXTENSION])
+        extensions = unicode(metadata[gdal.DMD_EXTENSION])
 
       if longName != '':
         if extensions != '':
@@ -613,7 +613,7 @@ class GdalConfig:
       driver = ogr.GetDriver(i)
 
       if driver is None:
-        QgsLogger.warning("unable to get driver " + str(i))
+        QgsLogger.warning("unable to get driver " + unicode(i))
         continue
 
       driverName = driver.GetName()
@@ -802,7 +802,7 @@ class Version:
   def string2vers(string):
       vers = ['0', '0', '0']
 
-      nums = str(string).split(".")
+      nums = unicode(string).split(".")
 
       if len(nums) > 0:
         vers[0] = nums[0]
@@ -842,10 +842,10 @@ def setProcessEnvironment(process):
 
       envval = os.getenv(name)
       if envval is None or envval == "":
-        envval = str(val)
+        envval = unicode(val)
       elif (platform.system() == "Windows" and val.lower() not in envval.lower().split( sep )) or \
            (platform.system() != "Windows" and val not in envval.split( sep )):
-        envval += "%s%s" % (sep, str(val))
+        envval += "%s%s" % (sep, unicode(val))
       else:
         envval = None
 
@@ -870,7 +870,7 @@ def setMacOSXDefaultEnvironment():
   qgis_standalone_gdal_path = u"%s/Frameworks/GDAL.framework" % qgis_app
 
   # path to the GDAL framework when installed as external framework
-  gdal_versionsplit = str(GdalConfig.version()).split('.')
+  gdal_versionsplit = unicode(GdalConfig.version()).split('.')
   gdal_base_path = u"/Library/Frameworks/GDAL.framework/Versions/%s.%s" % (gdal_versionsplit[0], gdal_versionsplit[1])
 
   if os.path.exists( qgis_standalone_gdal_path ):  # qgis standalone

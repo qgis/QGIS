@@ -40,6 +40,8 @@ class QgsComposerObject : QObject
       MapXMax, /*!< map extent x maximum */
       MapYMax, /*!< map extent y maximum */
       MapAtlasMargin, /*!< map atlas margin*/
+      MapLayers, /*!< map layer set*/
+      MapStylePreset, /*!< layer and style visibility preset */
       //composer picture
       PictureSource, /*!< picture source url */
       //html item
@@ -94,7 +96,7 @@ class QgsComposerObject : QObject
      * @note this method was added in version 2.5
     */
     void setDataDefinedProperty( const DataDefinedProperty property, const bool active, const bool useExpression, const QString &expression, const QString &field );
-    
+
     /** Set a custom property for the object.
      * @param key property key. If a property with the same key already exists it will be overwritten.
      * @param value property value
@@ -131,7 +133,7 @@ class QgsComposerObject : QObject
      * @see removeCustomProperty()
      * @note added in QGIS 2.12
      */
-    QStringList customProperties() const;    
+    QStringList customProperties() const;
 
   public slots:
 
@@ -156,7 +158,7 @@ class QgsComposerObject : QObject
      * @param expressionValue QVariant for storing the evaluated value
      * @note this method was added in version 2.5
     */
-    bool dataDefinedEvaluate( QgsComposerObject::DataDefinedProperty property, QVariant &expressionValue );
+    bool dataDefinedEvaluate( const QgsComposerObject::DataDefinedProperty property, QVariant &expressionValue ) const;
 
   signals:
     /** Emitted when the item changes. Signifies that the item widgets must update the

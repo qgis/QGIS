@@ -65,6 +65,8 @@ class CORE_EXPORT QgsComposerObject: public QObject
       MapXMax, /*!< map extent x maximum */
       MapYMax, /*!< map extent y maximum */
       MapAtlasMargin, /*!< map atlas margin*/
+      MapLayers, /*!< map layer set*/
+      MapStylePreset, /*!< layer and style visibility preset */
       //composer picture
       PictureSource, /*!< picture source url */
       //html item
@@ -189,7 +191,7 @@ class CORE_EXPORT QgsComposerObject: public QObject
      * @param expressionValue QVariant for storing the evaluated value
      * @note this method was added in version 2.5
     */
-    bool dataDefinedEvaluate( const QgsComposerObject::DataDefinedProperty property, QVariant &expressionValue );
+    bool dataDefinedEvaluate( const QgsComposerObject::DataDefinedProperty property, QVariant &expressionValue ) const;
 
   signals:
     /** Emitted when the item changes. Signifies that the item widgets must update the
@@ -206,7 +208,8 @@ class CORE_EXPORT QgsComposerObject: public QObject
   private:
 
     /** Map of current data defined properties*/
-    QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* > mDataDefinedProperties;
+    //mutable since expressions in data defineds need to be preparable
+    mutable QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* > mDataDefinedProperties;
 
     friend class TestQgsComposerObject;
 };

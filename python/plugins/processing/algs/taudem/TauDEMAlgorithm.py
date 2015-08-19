@@ -99,7 +99,7 @@ class TauDEMAlgorithm(GeoAlgorithm):
                         'correct number before running TauDEM algorithms.'))
 
         commands.append('-n')
-        commands.append(str(processNum))
+        commands.append(unicode(processNum))
         commands.append(os.path.join(TauDEMUtils.taudemPath(), self.cmdName))
 
         for param in self.parameters:
@@ -107,7 +107,7 @@ class TauDEMAlgorithm(GeoAlgorithm):
                 continue
             if isinstance(param, ParameterNumber):
                 commands.append(param.name)
-                commands.append(str(param.value))
+                commands.append(unicode(param.value))
             if isinstance(param, (ParameterRaster, ParameterVector)):
                 commands.append(param.name)
                 commands.append(param.value)
@@ -116,7 +116,7 @@ class TauDEMAlgorithm(GeoAlgorithm):
                     commands.append(param.name)
             elif isinstance(param, ParameterString):
                 commands.append(param.name)
-                commands.append(str(param.value))
+                commands.append(unicode(param.value))
 
         for out in self.outputs:
             commands.append(out.name)

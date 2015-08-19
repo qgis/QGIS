@@ -68,7 +68,7 @@ class lasthinPro(LAStoolsAlgorithm):
         step = self.getParameterValue(lasthinPro.THIN_STEP)
         if step != 0.0:
             commands.append("-step")
-            commands.append(str(step))
+            commands.append(unicode(step))
         operation = self.getParameterValue(lasthinPro.OPERATION)
         if operation != 0:
             commands.append("-" + self.OPERATIONS[operation])
@@ -76,7 +76,7 @@ class lasthinPro(LAStoolsAlgorithm):
             commands.append("-withheld")
         if self.getParameterValue(lasthinPro.CLASSIFY_AS):
             commands.append("-classify_as")
-            commands.append(str(self.getParameterValue(lasthinPro.CLASSIFY_AS_CLASS)))
+            commands.append(unicode(self.getParameterValue(lasthinPro.CLASSIFY_AS_CLASS)))
         self.addParametersOutputDirectoryCommands(commands)
         self.addParametersOutputAppendixCommands(commands)
         self.addParametersPointOutputFormatCommands(commands)

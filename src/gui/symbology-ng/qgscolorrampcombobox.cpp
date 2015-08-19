@@ -154,7 +154,7 @@ void QgsColorRampComboBox::editSourceRamp()
   {
     QgsVectorRandomColorRampV2* randRamp = static_cast<QgsVectorRandomColorRampV2*>( newRamp.data() );
     QgsVectorRandomColorRampV2Dialog dlg( randRamp, this );
-    if ( dlg.exec() && randRamp )
+    if ( dlg.exec() )
     {
       setSourceColorRamp( randRamp );
       emit sourceRampEdited();
@@ -164,7 +164,7 @@ void QgsColorRampComboBox::editSourceRamp()
   {
     QgsVectorColorBrewerColorRampV2* brewerRamp = static_cast<QgsVectorColorBrewerColorRampV2*>( newRamp.data() );
     QgsVectorColorBrewerColorRampV2Dialog dlg( brewerRamp, this );
-    if ( dlg.exec() && brewerRamp )
+    if ( dlg.exec() )
     {
       setSourceColorRamp( brewerRamp );
       emit sourceRampEdited();

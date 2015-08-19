@@ -18,9 +18,12 @@ email                : lrssvtml (at) gmail (dot) com
  ***************************************************************************/
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
+import os
 
-from PyQt4.QtCore import Qt, QTimer, QSettings, QCoreApplication, QSize, QByteArray, QFileInfo, SIGNAL
-from PyQt4.QtGui import QDockWidget, QToolBar, QToolButton, QWidget, QSplitter, QTreeWidget, QAction, QFileDialog, QCheckBox, QSizePolicy, QMenu, QGridLayout, QApplication
+from PyQt4.QtCore import Qt, QTimer, QSettings, QCoreApplication, QSize, QByteArray, QFileInfo, SIGNAL, QUrl, QDir
+from PyQt4.QtGui import QDockWidget, QToolBar, QToolButton, QWidget,\
+    QSplitter, QTreeWidget, QAction, QFileDialog, QCheckBox, QSizePolicy, QMenu, QGridLayout, QApplication, \
+    QDesktopServices
 from PyQt4.QtGui import QVBoxLayout
 from PyQt4 import pyqtconfig
 from qgis.utils import iface
@@ -168,6 +171,16 @@ class PythonConsoleWidget(QWidget):
         self.openFileButton.setIconVisibleInMenu(True)
         self.openFileButton.setToolTip(openFileBt)
         self.openFileButton.setText(openFileBt)
+
+        openExtEditorBt = QCoreApplication.translate("PythonConsole", "Open in external editor")
+        self.openInEditorButton = QAction(self)
+        self.openInEditorButton.setCheckable(False)
+        self.openInEditorButton.setEnabled(True)
+        self.openInEditorButton.setIcon(QgsApplication.getThemeIcon("console/iconShowEditorConsole.png"))
+        self.openInEditorButton.setMenuRole(QAction.PreferencesRole)
+        self.openInEditorButton.setIconVisibleInMenu(True)
+        self.openInEditorButton.setToolTip(openExtEditorBt)
+        self.openInEditorButton.setText(openExtEditorBt)
         ## Action for Save File
         saveFileBt = QCoreApplication.translate("PythonConsole", "Save")
         self.saveFileButton = QAction(self)
@@ -389,6 +402,7 @@ class PythonConsoleWidget(QWidget):
         self.toolBarEditor.setMovable(False)
         self.toolBarEditor.setFloatable(False)
         self.toolBarEditor.addAction(self.openFileButton)
+        self.toolBarEditor.addAction(self.openInEditorButton)
         self.toolBarEditor.addSeparator()
         self.toolBarEditor.addAction(self.saveFileButton)
         self.toolBarEditor.addAction(self.saveAsFileButton)
@@ -519,6 +533,7 @@ class PythonConsoleWidget(QWidget):
         self.loadQtGuiButton.triggered.connect(self.qtGui)
         self.runButton.triggered.connect(self.shell.entered)
         self.openFileButton.triggered.connect(self.openScriptFile)
+        self.openInEditorButton.triggered.connect(self.openScriptFileExtEditor)
         self.saveFileButton.triggered.connect(self.saveScriptFile)
         self.saveAsFileButton.triggered.connect(self.saveAsScriptFile)
         self.helpButton.triggered.connect(self.openHelp)
@@ -602,8 +617,17 @@ class PythonConsoleWidget(QWidget):
     def uncommentCode(self):
         self.tabEditorWidget.currentWidget().newEditor.commentEditorCode(False)
 
+    def openScriptFileExtEditor(self):
+        tabWidget = self.tabEditorWidget.currentWidget()
+        path = tabWidget.path
+        import subprocess
+        try:
+            subprocess.Popen([os.environ['EDITOR'], path])
+        except KeyError:
+            QDesktopServices.openUrl(QUrl.fromLocalFile(path))
+
     def openScriptFile(self):
-        lastDirPath = self.settings.value("pythonConsole/lastDirPath", "")
+        lastDirPath = self.settings.value("pythonConsole/lastDirPath", QDir.home())
         openFileTr = QCoreApplication.translate("PythonConsole", "Open File")
         fileList = QFileDialog.getOpenFileNames(
             self, openFileTr, lastDirPath, "Script file (*.py)")
@@ -637,7 +661,9 @@ class PythonConsoleWidget(QWidget):
         if not index:
             index = self.tabEditorWidget.currentIndex()
         if not tabWidget.path:
-            pathFileName = self.tabEditorWidget.tabText(index) + '.py'
+            fileName = self.tabEditorWidget.tabText(index) + '.py'
+            folder = self.settings.value("pythonConsole/lastDirPath", QDir.home())
+            pathFileName = os.path.join(folder,fileName)
             fileNone = True
         else:
             pathFileName = tabWidget.path

@@ -92,13 +92,13 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         arguments.append( self.distUnitsCombo.currentText())
       if self.maxDistCheck.isChecked():
         arguments.append( "-maxdist")
-        arguments.append( str(self.maxDistSpin.value()))
+        arguments.append( unicode(self.maxDistSpin.value()))
       if self.noDataCheck.isChecked():
         arguments.append( "-nodata")
-        arguments.append( str(self.noDataSpin.value()))
+        arguments.append( unicode(self.noDataSpin.value()))
       if self.fixedBufValCheck.isChecked():
         arguments.append( "-fixed-buf-val")
-        arguments.append( str(self.fixedBufValSpin.value()))
+        arguments.append( unicode(self.fixedBufValSpin.value()))
       if outputFn:
         arguments.append( "-of")
         arguments.append( self.outputFormat)

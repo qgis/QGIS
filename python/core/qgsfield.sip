@@ -215,6 +215,18 @@ class QgsFields
     bool appendExpressionField( const QgsField& field, int originIndex );
     //! Remove a field with the given index
     void remove( int fieldIdx );
+%MethodCode
+  if ( a0 < 0 || a0 >= sipCpp->count() )
+  {
+    PyErr_SetString(PyExc_KeyError, QByteArray::number(a0));
+    sipIsErr = 1;
+  }
+  else
+  {
+    sipCpp->remove( a0 );
+  }
+%End
+
     //! Extend with fields from another QgsFields container
     void extend( const QgsFields& other );
 
@@ -244,19 +256,78 @@ class QgsFields
     sipIsErr = 1;
   else
     sipRes = new QgsField(sipCpp->operator[](idx));
-
 %End
+
     //! Get field at particular index (must be in range 0..N-1)
-    const QgsField& at( int i ) const;
+    const QgsField& at( int i ) const /Factory/;
+%MethodCode
+  if ( a0 < 0 || a0 >= sipCpp->count() )
+  {
+    PyErr_SetString(PyExc_KeyError, QByteArray::number(a0));
+    sipIsErr = 1;
+  }
+  else
+  {
+    sipRes = new QgsField( sipCpp->at( a0 ) );
+  }
+%End
+
     //! Get field at particular index (must be in range 0..N-1)
-    const QgsField& field( int fieldIdx ) const;
+    const QgsField& field( int fieldIdx ) const /Factory/;
+%MethodCode
+  if ( a0 < 0 || a0 >= sipCpp->count() )
+  {
+    PyErr_SetString(PyExc_KeyError, QByteArray::number(a0));
+    sipIsErr = 1;
+  }
+  else
+  {
+    sipRes = new QgsField( sipCpp->field( a0 ) );
+  }
+%End
+
     //! Get field at particular index (must be in range 0..N-1)
-    const QgsField& field( const QString& name ) const;
+    const QgsField& field( const QString& name ) const /Factory/;
+%MethodCode
+  int fieldIdx = sipCpp->indexFromName(*a0);
+  if (fieldIdx == -1)
+  {
+    PyErr_SetString(PyExc_KeyError, a0->toAscii());
+    sipIsErr = 1;
+  }
+  else
+  {
+    sipRes = new QgsField( sipCpp->field( *a0 ) );
+  }
+%End
 
     //! Get field's origin (value from an enumeration)
     FieldOrigin fieldOrigin( int fieldIdx ) const;
+%MethodCode
+  if ( a0 < 0 || a0 >= sipCpp->count() )
+  {
+    PyErr_SetString(PyExc_KeyError, QByteArray::number(a0));
+    sipIsErr = 1;
+  }
+  else
+  {
+    sipRes = sipCpp->fieldOrigin( a0 );
+  }
+%End
+
     //! Get field's origin index (its meaning is specific to each type of origin)
     int fieldOriginIndex( int fieldIdx ) const;
+%MethodCode
+  if ( a0 < 0 || a0 >= sipCpp->count() )
+  {
+    PyErr_SetString(PyExc_KeyError, QByteArray::number(a0));
+    sipIsErr = 1;
+  }
+  else
+  {
+    sipRes = sipCpp->fieldOriginIndex( a0 );
+  }
+%End
 
     //! Look up field's index from name. Returns -1 on error
     int indexFromName( const QString& name ) const;

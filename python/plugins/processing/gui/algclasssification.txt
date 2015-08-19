@@ -51,7 +51,7 @@ otb:hyperspectraldataunmixing,Images/Miscellaneous
 otb:imageconversion,Images/Image Manipulation
 otb:imageenvelope,Images/Geometry
 otb:imageresamplingwitharigidtransform,Images/Geometry
-otb:imagescomparaison,Images/Miscellaneous
+otb:imagescomparison,Images/Miscellaneous
 otb:imagesconcatenation,Images/Image Manipulation
 otb:imagesvmclassification,Images/Learning
 otb:imagetokmzexport,Images/Miscellaneous

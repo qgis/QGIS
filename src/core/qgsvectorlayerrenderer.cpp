@@ -145,7 +145,7 @@ bool QgsVectorLayerRenderer::render()
                                      .setFilterRect( requestExtent )
                                      .setSubsetOfAttributes( mAttrNames, mFields );
 
-  if ( !rendererFilter.isNull() )
+  if ( !rendererFilter.isEmpty() )
   {
     featureRequest.setFilterExpression( rendererFilter );
   }

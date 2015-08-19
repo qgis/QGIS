@@ -90,7 +90,7 @@ def run(item, action, mainwindow):
         mainwindow.infoBar.pushMessage("WARNING", u'Topology "{0}" is registered as having a srid of {1} in topology.topology, we will assume 0 (for unknown)'.format(item.schema().name, res[0]), QgsMessageBar.WARNING, mainwindow.iface.messageTimeout())
         toposrid = '0'
     else:
-        toposrid = str(res[0])
+        toposrid = unicode(res[0])
 
     # load layers into the current project
     toponame = item.schema().name

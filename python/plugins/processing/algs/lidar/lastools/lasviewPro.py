@@ -60,7 +60,7 @@ class lasviewPro(LAStoolsAlgorithm):
         self.addParametersPointInputFolderCommands(commands)
         self.addParametersFilesAreFlightlinesCommands(commands)
         points = self.getParameterValue(lasviewPro.POINTS)
-        commands.append("-points " + str(points))
+        commands.append("-points " + unicode(points))
         self.addParametersAdditionalCommands(commands)
         coloring = self.getParameterValue(lasviewPro.COLORING)
         if coloring != 0:

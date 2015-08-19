@@ -45,6 +45,7 @@ class QgsMapLayer;
 class QgsProjectBadLayerHandler;
 class QgsRelationManager;
 class QgsVectorLayer;
+class QgsVisibilityPresetCollection;
 
 /** \ingroup core
  * Reads and writes project states.
@@ -301,6 +302,11 @@ class CORE_EXPORT QgsProject : public QObject
      */
     QgsLayerTreeRegistryBridge* layerTreeRegistryBridge() const { return mLayerTreeRegistryBridge; }
 
+    /** Returns pointer to the project's visibility preset collection.
+     * @note added in QGIS 2.12
+     */
+    QgsVisibilityPresetCollection* visibilityPresetCollection();
+
   protected:
 
     /** Set error message from read/write operation */
@@ -393,6 +399,8 @@ class CORE_EXPORT QgsProject : public QObject
     QgsLayerTreeGroup* mRootGroup;
 
     QgsLayerTreeRegistryBridge* mLayerTreeRegistryBridge;
+
+    QScopedPointer<QgsVisibilityPresetCollection> mVisibilityPresetCollection;
 
 }; // QgsProject
 

@@ -27,6 +27,8 @@ class QgsRasterRenderer;
 
 class GUI_EXPORT QgsRasterRendererWidget: public QWidget
 {
+    Q_OBJECT
+
   public:
     QgsRasterRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent ):
         mRasterLayer( layer )

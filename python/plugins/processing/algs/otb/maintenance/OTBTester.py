@@ -64,14 +64,14 @@ class MakefileParser(object):
                 content = file_input.read()
                 output = parse(content)
 
-                defined_paths = [each for each in output if 'Command' in str(type(each)) and "FIND_PATH" in each.name]
+                defined_paths = [each for each in output if 'Command' in unicode(type(each)) and "FIND_PATH" in each.name]
                 the_paths = {key.body[0].contents: [thing.contents for thing in key.body[1:]] for key in defined_paths}
 
-                the_sets = [each for each in output if 'Command' in str(type(each)) and "SET" in each.name.upper()]
+                the_sets = [each for each in output if 'Command' in unicode(type(each)) and "SET" in each.name.upper()]
                 the_sets = {key.body[0].contents: [thing.contents for thing in key.body[1:]] for key in the_sets}
                 the_sets = {key : " ".join(the_sets[key]) for key in the_sets}
 
-                the_strings = set([each.body[-1].contents for each in output if 'Command' in str(type(each)) and "STRING" in each.name.upper()] )
+                the_strings = set([each.body[-1].contents for each in output if 'Command' in unicode(type(each)) and "STRING" in each.name.upper()] )
 
                 def mini_clean(item):
                     if item.startswith('"') and item.endswith('"') and " " not in item:
@@ -118,7 +118,7 @@ class MakefileParser(object):
     def add_make(self, previous_context, new_file):
         input = open(new_file).read()
         output = parse(input)
-        apps = [each for each in output if 'Command' in str(type(each))]
+        apps = [each for each in output if 'Command' in unicode(type(each))]
         setcommands = [each for each in apps if 'SET' in each.name.upper()]
         stringcommands = [each for each in apps if 'STRING' in each.name.upper()]
 
@@ -161,14 +161,14 @@ class MakefileParser(object):
     def get_apps(self, the_makefile, the_dict):
         input = open(the_makefile).read()
         output = parse(input)
-        apps = [each for each in output if 'Command' in str(type(each))]
+        apps = [each for each in output if 'Command' in unicode(type(each))]
         otb_apps = [each for each in apps if 'OTB_TEST_APPLICATION' in each.name.upper()]
         return otb_apps
 
     def get_tests(self, the_makefile, the_dict):
         input = open(the_makefile).read()
         output = parse(input)
-        apps = [each for each in output if 'Command' in str(type(each))]
+        apps = [each for each in output if 'Command' in unicode(type(each))]
         otb_tests = [each for each in apps if 'ADD_TEST' in each.name.upper()]
         return otb_tests
 
@@ -177,7 +177,7 @@ class MakefileParser(object):
         output = parse(input)
 
         def is_a_command(item):
-            return 'Command' in str(type(item))
+            return 'Command' in unicode(type(item))
 
         appz = []
         context = []

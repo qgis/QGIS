@@ -115,7 +115,7 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
   protected:
 
     /* functions that do the initialization work */
-    
+
     //! initialize Python context
     void init();
 

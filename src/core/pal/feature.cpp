@@ -43,6 +43,8 @@
 #include "pointset.h"
 #include "util.h"
 #include "qgis.h"
+#include "qgsgeos.h"
+#include "qgsmessagelog.h"
 #include <QLinkedList>
 #include <cmath>
 #include <cfloat>
@@ -79,7 +81,7 @@ namespace pal
       , mObstacleFactor( 1.0 )
       , mPriority( -1.0 )
   {
-    assert( finite( lx ) && finite( ly ) );
+    assert( qIsFinite( lx ) && qIsFinite( ly ) );
   }
 
   Feature::~Feature()
@@ -502,6 +504,9 @@ namespace pal
     double xrm = mFeature->label_x;
     double yrm = mFeature->label_y;
 
+    double *d; // segments lengths distance bw pt[i] && pt[i+1]
+    double *ad;  // absolute distance bw pt[0] and pt[i] along the line
+    double ll; // line length
     double dist;
     double bx, by, ex, ey;
     int nbls;
@@ -527,7 +532,24 @@ namespace pal
     x = line->x;
     y = line->y;
 
-    double ll = line->length(); // line length
+    d = new double[nbPoints-1];
+    ad = new double[nbPoints];
+
+    ll = 0.0; // line length
+    for ( i = 0; i < line->nbPoints - 1; i++ )
+    {
+      if ( i == 0 )
+        ad[i] = 0;
+      else
+        ad[i] = ad[i-1] + d[i-1];
+
+      d[i] = dist_euc2d( x[i], y[i], x[i+1], y[i+1] );
+      ll += d[i];
+    }
+
+    ad[line->nbPoints-1] = ll;
+
+
     nbls = ( int )( ll / xrm ); // ratio bw line length and label width
 
 #ifdef _DEBUG_FULL_
@@ -562,9 +584,9 @@ namespace pal
     while ( l < ll - xrm )
     {
       // => bx, by
-      line->getPointByDistance( l, &bx, &by );
+      line->getPointByDistance( d, ad, l, &bx, &by );
       // same but l = l+xrm
-      line->getPointByDistance( l + xrm, &ex, &ey );
+      line->getPointByDistance( d, ad, l + xrm, &ex, &ey );
 
       // Label is bigger than line ...
       if ( l < 0 )
@@ -608,11 +630,20 @@ namespace pal
         bool belowLine = ( !reversed && ( flags & FLAG_BELOW_LINE ) ) || ( reversed && ( flags & FLAG_ABOVE_LINE ) );
 
         if ( aboveLine )
-          positions.append( new LabelPosition( i, bx + cos( beta ) *distlabel, by + sin( beta ) *distlabel, xrm, yrm, alpha, cost, this, isRightToLeft ) ); // Line
+        {
+          if ( !mFeature->layer->fitInPolygonOnly() || mapShape->containsLabelCandidate( bx + cos( beta ) *distlabel, by + sin( beta ) *distlabel, xrm, yrm, alpha ) )
+            positions.append( new LabelPosition( i, bx + cos( beta ) *distlabel, by + sin( beta ) *distlabel, xrm, yrm, alpha, cost, this, isRightToLeft ) ); // Line
+        }
         if ( belowLine )
-          positions.append( new LabelPosition( i, bx - cos( beta ) *( distlabel + yrm ), by - sin( beta ) *( distlabel + yrm ), xrm, yrm, alpha, cost, this, isRightToLeft ) );   // Line
+        {
+          if ( !mFeature->layer->fitInPolygonOnly() || mapShape->containsLabelCandidate( bx - cos( beta ) *( distlabel + yrm ), by - sin( beta ) *( distlabel + yrm ), xrm, yrm, alpha ) )
+            positions.append( new LabelPosition( i, bx - cos( beta ) *( distlabel + yrm ), by - sin( beta ) *( distlabel + yrm ), xrm, yrm, alpha, cost, this, isRightToLeft ) );   // Line
+        }
         if ( flags & FLAG_ON_LINE )
-          positions.append( new LabelPosition( i, bx - yrm*cos( beta ) / 2, by - yrm*sin( beta ) / 2, xrm, yrm, alpha, cost, this, isRightToLeft ) ); // Line
+        {
+          if ( !mFeature->layer->fitInPolygonOnly() || mapShape->containsLabelCandidate( bx - yrm*cos( beta ) / 2, by - yrm*sin( beta ) / 2, xrm, yrm, alpha ) )
+            positions.append( new LabelPosition( i, bx - yrm*cos( beta ) / 2, by - yrm*sin( beta ) / 2, xrm, yrm, alpha, cost, this, isRightToLeft ) ); // Line
+        }
       }
       else if ( mFeature->layer->arrangement() == P_HORIZ )
       {
@@ -630,6 +661,11 @@ namespace pal
       if ( nbls == 0 )
         break;
     }
+
+    //delete line;
+
+    delete[] d;
+    delete[] ad;
 
     int nbp = positions.size();
     *lPos = new LabelPosition *[nbp];
@@ -1322,8 +1358,16 @@ namespace pal
     if ( geomType == GEOS_LINESTRING )
     {
       double length;
-      if ( GEOSLength_r( ctxt, mGeos, &length ) != 1 )
-        return; // failed to calculate length
+      try
+      {
+        if ( GEOSLength_r( ctxt, mGeos, &length ) != 1 )
+          return; // failed to calculate length
+      }
+      catch ( GEOSException &e )
+      {
+        QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+        return;
+      }
       double bbox_length = qMax( bbx[2] - bbx[0], bby[2] - bby[0] );
       if ( length >= bbox_length / 4 )
         return; // the line is longer than quarter of height or width - don't penalize it
@@ -1333,8 +1377,16 @@ namespace pal
     else if ( geomType == GEOS_POLYGON )
     {
       double area;
-      if ( GEOSArea_r( ctxt, mGeos, &area ) != 1 )
+      try
+      {
+        if ( GEOSArea_r( ctxt, mGeos, &area ) != 1 )
+          return;
+      }
+      catch ( GEOSException &e )
+      {
+        QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
         return;
+      }
       double bbox_area = ( bbx[2] - bbx[0] ) * ( bby[2] - bby[0] );
       if ( area >= bbox_area / 16 )
         return; // covers more than 1/16 of our view - don't penalize it
@@ -1358,7 +1410,15 @@ namespace pal
     if ( !p2->mGeos )
       p2->createGeosGeom();
 
-    return ( GEOSPreparedTouches_r( geosContext(), preparedGeom(), p2->mGeos ) == 1 );
+    try
+    {
+      return ( GEOSPreparedTouches_r( geosContext(), preparedGeom(), p2->mGeos ) == 1 );
+    }
+    catch ( GEOSException &e )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+      return false;
+    }
   }
 
   bool FeaturePart::mergeWithFeaturePart( FeaturePart* other )
@@ -1369,31 +1429,38 @@ namespace pal
       other->createGeosGeom();
 
     GEOSContextHandle_t ctxt = geosContext();
-    GEOSGeometry* g1 = GEOSGeom_clone_r( ctxt, mGeos );
-    GEOSGeometry* g2 = GEOSGeom_clone_r( ctxt, other->mGeos );
-    GEOSGeometry* geoms[2] = { g1, g2 };
-    GEOSGeometry* g = GEOSGeom_createCollection_r( ctxt, GEOS_MULTILINESTRING, geoms, 2 );
-    GEOSGeometry* gTmp = GEOSLineMerge_r( ctxt, g );
-    GEOSGeom_destroy_r( ctxt, g );
-
-    if ( GEOSGeomTypeId_r( ctxt, gTmp ) != GEOS_LINESTRING )
+    try
     {
-      // sometimes it's not possible to merge lines (e.g. they don't touch at endpoints)
-      GEOSGeom_destroy_r( ctxt, gTmp );
+      GEOSGeometry* g1 = GEOSGeom_clone_r( ctxt, mGeos );
+      GEOSGeometry* g2 = GEOSGeom_clone_r( ctxt, other->mGeos );
+      GEOSGeometry* geoms[2] = { g1, g2 };
+      GEOSGeometry* g = GEOSGeom_createCollection_r( ctxt, GEOS_MULTILINESTRING, geoms, 2 );
+      GEOSGeometry* gTmp = GEOSLineMerge_r( ctxt, g );
+      GEOSGeom_destroy_r( ctxt, g );
+
+      if ( GEOSGeomTypeId_r( ctxt, gTmp ) != GEOS_LINESTRING )
+      {
+        // sometimes it's not possible to merge lines (e.g. they don't touch at endpoints)
+        GEOSGeom_destroy_r( ctxt, gTmp );
+        return false;
+      }
+      invalidateGeos();
+
+      // set up new geometry
+      mGeos = gTmp;
+      mOwnsGeom = true;
+
+      deleteCoords();
+      qDeleteAll( mHoles );
+      mHoles.clear();
+      extractCoords( mGeos );
+      return true;
+    }
+    catch ( GEOSException &e )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
       return false;
     }
-
-    invalidateGeos();
-
-    // set up new geometry
-    mGeos = gTmp;
-    mOwnsGeom = true;
-
-    deleteCoords();
-    qDeleteAll( mHoles );
-    mHoles.clear();
-    extractCoords( mGeos );
-    return true;
   }
 
 } // end namespace pal

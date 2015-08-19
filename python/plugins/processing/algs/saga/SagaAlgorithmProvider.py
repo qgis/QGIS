@@ -109,7 +109,7 @@ class SagaAlgorithmProvider(AlgorithmProvider):
                     self.tr('Could not open SAGA algorithm: %s' % descriptionFile))
         except Exception, e:
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                self.tr('Could not open SAGA algorithm: %s\n%s' % (descriptionFile, str(e))))
+                self.tr('Could not open SAGA algorithm: %s\n%s' % (descriptionFile, unicode(e))))
 
     def getDescription(self):
         version = SagaUtils.getSagaInstalledVersion()

@@ -53,16 +53,16 @@ class CalculatorModelerAlgorithm(GeoAlgorithm):
             self.tr('Formula', 'CalculatorModelerAlgorithm'), ''))
         for i in range(AVAILABLE_VARIABLES):
             self.addParameter(ParameterNumber(NUMBER
-                              + str(i), 'dummy'))
+                              + unicode(i), 'dummy'))
         self.addOutput(OutputNumber(RESULT,
             self.tr('Result', 'CalculatorModelerAlgorithm')))
 
     def processAlgorithm(self, progress):
         formula = self.getParameterValue(FORMULA)
         for i in range(AVAILABLE_VARIABLES):
-            name = NUMBER + str(i)
+            name = NUMBER + unicode(i)
             num = self.getParameterValue(name)
-            formula = formula.replace(chr(97 + i), str(num))
+            formula = formula.replace(chr(97 + i), unicode(num))
         try:
             result = eval(formula)
             self.setOutputValue(RESULT, result)
@@ -121,17 +121,17 @@ class CalculatorModelerParametersDialog(ModelerParametersDialog):
         alg.params[FORMULA] = formula
 
         for i in xrange(AVAILABLE_VARIABLES):
-            paramname = NUMBER + str(i)
+            paramname = NUMBER + unicode(i)
             alg.params[paramname] = None
 
         numbers = self.getAvailableValuesOfType(ParameterNumber, OutputNumber)
         used = []
         for i in range(len(numbers)):
-            if str(chr(i + 97)) in formula:
+            if unicode(chr(i + 97)) in formula:
                 used.append(numbers[i])
 
         for i, variable in enumerate(used):
-            paramname = NUMBER + str(i)
+            paramname = NUMBER + unicode(i)
             alg.params[paramname] = variable
 
         # TODO check formula is correct

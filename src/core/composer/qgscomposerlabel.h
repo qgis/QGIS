@@ -52,8 +52,15 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     /** Returns the text as it appears on screen (with replaced data field) */
     QString displayText() const;
 
-    /** Sets the current feature, the current layer and a list of local variable substitutions for evaluating expressions */
-    void setExpressionContext( QgsFeature* feature, QgsVectorLayer* layer, QMap<QString, QVariant> substitutions = ( QMap<QString, QVariant>() ) );
+    /** Sets the current feature, the current layer and a list of local variable substitutions for evaluating expressions.
+      * @deprecated use atlas features and setSubstitutions() instead
+     */
+    Q_DECL_DEPRECATED void setExpressionContext( QgsFeature* feature, QgsVectorLayer* layer, QMap<QString, QVariant> substitutions = ( QMap<QString, QVariant>() ) );
+
+    /** Sets the list of local variable substitutions for evaluating expressions in label text.
+     * @note added in QGIS 2.12
+     */
+    void setSubstitutions( QMap<QString, QVariant> substitutions = ( QMap<QString, QVariant>() ) );
 
     QFont font() const;
     void setFont( const QFont& f );
@@ -197,7 +204,7 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     /** Replaces replace '$CURRENT_DATE<(FORMAT)>' with the current date (e.g. $CURRENT_DATE(d 'June' yyyy)*/
     void replaceDateText( QString& text ) const;
 
-    QgsFeature* mExpressionFeature;
+    QScopedPointer<QgsFeature> mExpressionFeature;
     QgsVectorLayer* mExpressionLayer;
     QMap<QString, QVariant> mSubstitutions;
     QgsDistanceArea* mDistanceArea;

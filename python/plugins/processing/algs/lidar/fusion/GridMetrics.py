@@ -101,20 +101,20 @@ class GridMetrics(FusionAlgorithm):
         commands = [os.path.join(FusionUtils.FusionPath(), 'GridMetrics.exe')]
         commands.append('/verbose')
         outlier = self.getParameterValue(self.OUTLIER)
-        if str(outlier).strip() != '':
-            commands.append('/outlier:' + str(outlier))
+        if unicode(outlier).strip() != '':
+            commands.append('/outlier:' + unicode(outlier))
         first = self.getParameterValue(self.FIRST)
         if first:
-            commands.append('/first:' + str(first))
+            commands.append('/first:' + unicode(first))
         minht = self.getParameterValue(self.MINHT)
-        if str(minht).strip() != '':
-            commands.append('/minht:' + str(minht))
+        if unicode(minht).strip() != '':
+            commands.append('/minht:' + unicode(minht))
         class_var = self.getParameterValue(self.CLASS)
-        if str(class_var).strip() != '':
-            commands.append('/class:' + str(class_var))
+        if unicode(class_var).strip() != '':
+            commands.append('/class:' + unicode(class_var))
         commands.append(self.getParameterValue(self.GROUND))
-        commands.append(str(self.getParameterValue(self.HEIGHT)))
-        commands.append(str(self.getParameterValue(self.CELLSIZE)))
+        commands.append(unicode(self.getParameterValue(self.HEIGHT)))
+        commands.append(unicode(self.getParameterValue(self.CELLSIZE)))
         commands.append(self.getOutputValue(self.OUTPUT_CSV_ELEVATION))
         files = self.getParameterValue(self.INPUT).split(';')
         if len(files) == 1:

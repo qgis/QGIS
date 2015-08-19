@@ -106,11 +106,11 @@ class lascanopyPro(LAStoolsAlgorithm):
         plot_size = self.getParameterValue(lascanopyPro.PLOT_SIZE)
         if plot_size != 20:
             commands.append("-step")
-            commands.append(str(plot_size))
+            commands.append(unicode(plot_size))
         height_cutoff = self.getParameterValue(lascanopyPro.HEIGHT_CUTOFF)
         if height_cutoff != 1.37:
             commands.append("-height_cutoff")
-            commands.append(str(height_cutoff))
+            commands.append(unicode(height_cutoff))
         product = self.getParameterValue(lascanopyPro.PRODUCT1)
         if product != 0:
             commands.append("-" + lascanopyPro.PRODUCTS[product])

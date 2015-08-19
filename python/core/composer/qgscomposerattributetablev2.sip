@@ -248,6 +248,22 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
      */
     //QList<QPair<int, bool> > sortAttributes() const;
 
+    /** Sets a string to wrap the contents of the table cells by. Occurances of this string will
+     * be replaced by a line break.
+     * @param wrapString string to replace with line break
+     * @note added in QGIS 2.12
+     * @see wrapString
+     */
+    void setWrapString( const QString& wrapString );
+
+    /** Returns the string used to wrap the contents of the table cells by. Occurances of this string will
+     * be replaced by a line break.
+     * @returns string which will be replaced with line break
+     * @note added in QGIS 2.12
+     * @see setWrapString
+     */
+    QString wrapString() const;
+
     /** Queries the attribute table's vector layer for attributes to show in the table.
      * @param contents table content
      * @returns true if attributes were successfully fetched

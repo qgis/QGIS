@@ -67,10 +67,10 @@ class lasheightPro(LAStoolsAlgorithm):
             commands.append("-replace_z")
         if self.getParameterValue(lasheightPro.DROP_ABOVE):
             commands.append("-drop_above")
-            commands.append(str(self.getParameterValue(lasheightPro.DROP_ABOVE_HEIGHT)))
+            commands.append(unicode(self.getParameterValue(lasheightPro.DROP_ABOVE_HEIGHT)))
         if self.getParameterValue(lasheightPro.DROP_BELOW):
             commands.append("-drop_below")
-            commands.append(str(self.getParameterValue(lasheightPro.DROP_BELOW_HEIGHT)))
+            commands.append(unicode(self.getParameterValue(lasheightPro.DROP_BELOW_HEIGHT)))
         self.addParametersOutputDirectoryCommands(commands)
         self.addParametersOutputAppendixCommands(commands)
         self.addParametersPointOutputFormatCommands(commands)

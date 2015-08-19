@@ -658,7 +658,7 @@ class ORVectorTableInfo(ORTableInfo, VectorTableInfo):
                 HtmlParagraph(
                     QApplication.translate(
                         "DBManagerPlugin",
-                        "<warning> There isn't entry in geometry_columns!")))
+                        "<warning> There is no entry in geometry_columns!")))
 
         # find out whether the geometry column has spatial index on it
         if not self.table.isView:

@@ -86,17 +86,17 @@ class lasinfoPro(LAStoolsAlgorithm):
         if histo != 0:
             commands.append("-histo")
             commands.append(lasinfoPro.HISTOGRAM[histo])
-            commands.append(str(self.getParameterValue(lasinfoPro.HISTO1_BIN)))
+            commands.append(unicode(self.getParameterValue(lasinfoPro.HISTO1_BIN)))
         histo = self.getParameterValue(lasinfoPro.HISTO2)
         if histo != 0:
             commands.append("-histo")
             commands.append(lasinfoPro.HISTOGRAM[histo])
-            commands.append(str(self.getParameterValue(lasinfoPro.HISTO2_BIN)))
+            commands.append(unicode(self.getParameterValue(lasinfoPro.HISTO2_BIN)))
         histo = self.getParameterValue(lasinfoPro.HISTO3)
         if histo != 0:
             commands.append("-histo")
             commands.append(lasinfoPro.HISTOGRAM[histo])
-            commands.append(str(self.getParameterValue(lasinfoPro.HISTO3_BIN)))
+            commands.append(unicode(self.getParameterValue(lasinfoPro.HISTO3_BIN)))
         self.addParametersOutputDirectoryCommands(commands)
         self.addParametersOutputAppendixCommands(commands)
         commands.append("-otxt")

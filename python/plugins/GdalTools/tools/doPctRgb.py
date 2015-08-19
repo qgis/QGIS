@@ -129,7 +129,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
       arguments = []
       if self.bandCheck.isChecked():
         arguments.append( "-b")
-        arguments.append( str( self.bandSpin.value() ))
+        arguments.append( unicode( self.bandSpin.value() ))
       if self.isBatchEnabled():
         return arguments
 

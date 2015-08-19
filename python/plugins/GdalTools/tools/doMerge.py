@@ -136,16 +136,16 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       if self.intersectCheck.isChecked():
         if self.extent is not None:
           arguments.append("-ul_lr")
-          arguments.append(str( self.extent.xMinimum() ))
-          arguments.append(str( self.extent.yMaximum() ))
-          arguments.append(str( self.extent.xMaximum() ))
-          arguments.append(str( self.extent.yMinimum() ))
+          arguments.append(unicode( self.extent.xMinimum() ))
+          arguments.append(unicode( self.extent.yMaximum() ))
+          arguments.append(unicode( self.extent.xMaximum() ))
+          arguments.append(unicode( self.extent.yMinimum() ))
       if self.noDataCheck.isChecked():
         arguments.append("-n")
-        arguments.append(str(self.noDataSpin.value()))
+        arguments.append(unicode(self.noDataSpin.value()))
         if Utils.GdalConfig.versionNum() >= 1900:
           arguments.append("-a_nodata")
-          arguments.append(str(self.noDataSpin.value()))
+          arguments.append(unicode(self.noDataSpin.value()))
       if self.separateCheck.isChecked():
         arguments.append("-separate")
       if self.pctCheck.isChecked():

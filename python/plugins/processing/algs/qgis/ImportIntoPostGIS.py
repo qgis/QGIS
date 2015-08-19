@@ -106,7 +106,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
             geomColumn = None
 
         uri = QgsDataSourceURI()
-        uri.setConnection(host, str(port), database, username, password)
+        uri.setConnection(host, unicode(port), database, username, password)
         if primaryKeyField:
             uri.setDataSource(schema, table, geomColumn, '', primaryKeyField)
         else:

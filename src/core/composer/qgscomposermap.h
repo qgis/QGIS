@@ -921,6 +921,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /** Returns a list of the layers to render for this map item*/
     QStringList layersToRender() const;
 
+    /** Returns current layer style overrides for this map item*/
+    QMap<QString, QString> layerStyleOverridesToRender() const;
+
     /** Returns extent that considers mOffsetX / mOffsetY (during content move)*/
     QgsRectangle transformedExtent() const;
 
@@ -955,6 +958,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void refreshMapExtents();
 
     friend class QgsComposerMapOverview; //to access mXOffset, mYOffset
+    friend class TestQgsComposerMap;
 };
 Q_NOWARN_DEPRECATED_POP
 

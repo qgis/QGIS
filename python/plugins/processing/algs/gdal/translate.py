@@ -112,22 +112,22 @@ class translate(GdalAlgorithm):
 
     def getConsoleCommands(self):
         out = self.getOutputValue(translate.OUTPUT)
-        outsize = str(self.getParameterValue(self.OUTSIZE))
-        outsizePerc = str(self.getParameterValue(self.OUTSIZE_PERC))
-        noData = str(self.getParameterValue(self.NO_DATA))
-        expand = str(self.getParameterFromName(
+        outsize = unicode(self.getParameterValue(self.OUTSIZE))
+        outsizePerc = unicode(self.getParameterValue(self.OUTSIZE_PERC))
+        noData = unicode(self.getParameterValue(self.NO_DATA))
+        expand = unicode(self.getParameterFromName(
             self.EXPAND).options[self.getParameterValue(self.EXPAND)])
-        projwin = str(self.getParameterValue(self.PROJWIN))
+        projwin = unicode(self.getParameterValue(self.PROJWIN))
         crsId = self.getParameterValue(self.SRS)
         sds = self.getParameterValue(self.SDS)
-        extra = str(self.getParameterValue(self.EXTRA))
-        jpegcompression = str(self.getParameterValue(self.JPEGCOMPRESSION))
-        predictor = str(self.getParameterValue(self.PREDICTOR))
-        zlevel = str(self.getParameterValue(self.ZLEVEL))
-        tiled = str(self.getParameterValue(self.TILED))
+        extra = unicode(self.getParameterValue(self.EXTRA))
+        jpegcompression = unicode(self.getParameterValue(self.JPEGCOMPRESSION))
+        predictor = unicode(self.getParameterValue(self.PREDICTOR))
+        zlevel = unicode(self.getParameterValue(self.ZLEVEL))
+        tiled = unicode(self.getParameterValue(self.TILED))
         compress = self.COMPRESSTYPE[self.getParameterValue(self.COMPRESS)]
         bigtiff = self.BIGTIFFTYPE[self.getParameterValue(self.BIGTIFF)]
-        tfw = str(self.getParameterValue(self.TFW))
+        tfw = unicode(self.getParameterValue(self.TFW))
 
         arguments = []
         arguments.append('-of')
@@ -156,7 +156,7 @@ class translate(GdalAlgorithm):
         arguments.append(regionCoords[2])
         if crsId:
             arguments.append('-a_srs')
-            arguments.append(str(crsId))
+            arguments.append(unicode(crsId))
         if sds:
             arguments.append('-sds')
         if len(extra) > 0:

@@ -290,24 +290,24 @@ def get_param_descriptor(appkey, app_instance, our_descriptor, root):
             desc.text = app_instance.GetParameterDescription(our_descriptor)
         elif each == "optional":
             optional = ET.SubElement(param, 'optional')
-            optional.text = str(not app_instance.IsMandatory(our_descriptor))
+            optional.text = unicode(not app_instance.IsMandatory(our_descriptor))
         elif each == "default":
             done = False
             reason = []
             try:
-                default_value = str(app_instance.GetParameterAsString(our_descriptor))
+                default_value = unicode(app_instance.GetParameterAsString(our_descriptor))
                 done = True
             except:
                 reason.append(traceback.format_exc())
             if not done:
                 try:
-                    default_value = str(app_instance.GetParameterFloat(our_descriptor))
+                    default_value = unicode(app_instance.GetParameterFloat(our_descriptor))
                     done = True
                 except:
                     reason.append(traceback.format_exc())
             if not done:
                 try:
-                    default_value = str(app_instance.GetParameterInt(our_descriptor))
+                    default_value = unicode(app_instance.GetParameterInt(our_descriptor))
                     done = True
                 except:
                     reason.append(traceback.format_exc())
@@ -319,11 +319,11 @@ def get_param_descriptor(appkey, app_instance, our_descriptor, root):
                 if is_choice_type:
                     the_keys = [a_key for a_key in app_instance.GetChoiceKeys(our_descriptor)]
                     if default_value in the_keys:
-                        default.text = str(the_keys.index(default_value))
+                        default.text = unicode(the_keys.index(default_value))
                     else:
                         default.text = ''
             else:
-                logger.debug("A parameter transformation failed, trying default values : for %s, %s, type %s!, conversion message: %s" % (appkey, our_descriptor, parameters[app_instance.GetParameterType(our_descriptor)], str(reason)))
+                logger.debug("A parameter transformation failed, trying default values : for %s, %s, type %s!, conversion message: %s" % (appkey, our_descriptor, parameters[app_instance.GetParameterType(our_descriptor)], unicode(reason)))
                 the_type = parameters[app_instance.GetParameterType(our_descriptor)]
                 if the_type == "ParameterType_Int":
                     default_value = "0"
@@ -332,7 +332,7 @@ def get_param_descriptor(appkey, app_instance, our_descriptor, root):
                 elif the_type == "ParameterType_Empty":
                     default_value = "True"
                 else:
-                    raise Exception("Unable to adapt %s, %s, %s, conversion message: %s" % (appkey, our_descriptor, parameters[app_instance.GetParameterType(our_descriptor)], str(reason)))
+                    raise Exception("Unable to adapt %s, %s, %s, conversion message: %s" % (appkey, our_descriptor, parameters[app_instance.GetParameterType(our_descriptor)], unicode(reason)))
 
                 default = ET.SubElement(param, 'default')
                 default.text = default_value
@@ -415,10 +415,10 @@ dl { border: 3px double #ccc; padding: 0.5em; } dt { float: left; clear: left; t
                     if is_a_parameter(app_instance, param):
                         with tag('li', result):
                             result.append('<b>%s -%s</b> %s ' % ('[param]', param, escape_html(parameters[app_instance.GetParameterType(param)])  ))
-                            result.append('%s. Mandatory: %s. Default Value: &quot;%s&quot;' %(app_instance.GetParameterDescription(param), str(app_instance.IsMandatory(param)), get_default_parameter_value(app_instance, param)))
+                            result.append('%s. Mandatory: %s. Default Value: &quot;%s&quot;' %(app_instance.GetParameterDescription(param), unicode(app_instance.IsMandatory(param)), get_default_parameter_value(app_instance, param)))
                 choices_tags = [each for each in params if (not is_a_parameter(app_instance, each)) and '.' not in each]
                 for choice in choices_tags:
-                    result.append('<b>%s -%s</b> %s %s. Mandatory: %s. Default Value: &quot;%s&quot;' % ('[choice]', choice, app_instance.GetParameterDescription(choice), ','.join(app_instance.GetChoiceKeys(choice)), str(app_instance.IsMandatory(choice)), get_default_parameter_value(app_instance, choice)))
+                    result.append('<b>%s -%s</b> %s %s. Mandatory: %s. Default Value: &quot;%s&quot;' % ('[choice]', choice, app_instance.GetParameterDescription(choice), ','.join(app_instance.GetChoiceKeys(choice)), unicode(app_instance.IsMandatory(choice)), get_default_parameter_value(app_instance, choice)))
                     choices = app_instance.GetChoiceKeys(choice)
 
                     with tag('ul', result):
@@ -430,7 +430,7 @@ dl { border: 3px double #ccc; padding: 0.5em; } dt { float: left; clear: left; t
                                 for param_tag in param_tags:
                                     with tag('li', result):
                                         result.append('<b>%s -%s</b> ' % ('[param]', param_tag))
-                                        result.append("%s %s. Mandatory: %s. Default Value: &quot;%s&quot;" % ( escape_html(parameters[app_instance.GetParameterType(param_tag)]) ,app_instance.GetParameterDescription(param_tag), str(app_instance.IsMandatory(param_tag)), get_default_parameter_value(app_instance, param_tag)))
+                                        result.append("%s %s. Mandatory: %s. Default Value: &quot;%s&quot;" % ( escape_html(parameters[app_instance.GetParameterType(param_tag)]) ,app_instance.GetParameterDescription(param_tag), unicode(app_instance.IsMandatory(param_tag)), get_default_parameter_value(app_instance, param_tag)))
             with tag('h2', result):
                 result.append('Limitations')
             result.append(app_instance.GetDocLimitations())
@@ -498,10 +498,10 @@ def adapt_list_to_string(c_list):
 
     a_list[1]="-%s" % a_list[1]
 
-    def mystr(par):
+    def myunicode(par):
         if isinstance(par, list):
             return ";".join(par)
-        return str(par)
+        return unicode(par)
 
     if a_list[-1] is None:
         return ""

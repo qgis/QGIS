@@ -56,7 +56,7 @@
         <x>0</x>
         <y>0</y>
         <width>392</width>
-        <height>1192</height>
+        <height>1258</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -258,39 +258,6 @@
           <bool>false</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_6">
-          <item row="2" column="0">
-           <widget class="QLabel" name="mMarginLabel">
-            <property name="text">
-             <string>Cell margins</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-            <property name="buddy">
-             <cstring>mMarginSpinBox</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QgsDoubleSpinBox" name="mMarginSpinBox">
-            <property name="suffix">
-             <string> mm</string>
-            </property>
-            <property name="singleStep">
-             <double>0.100000000000000</double>
-            </property>
-            <property name="showClearButton" stdset="0">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_7">
-            <property name="text">
-             <string>Display header</string>
-            </property>
-           </widget>
-          </item>
           <item row="3" column="1">
            <widget class="QComboBox" name="mHeaderModeComboBox">
             <item>
@@ -314,26 +281,6 @@
            <widget class="QLabel" name="label_9">
             <property name="text">
              <string>Empty tables</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="1">
-           <widget class="QComboBox" name="mEmptyModeComboBox"/>
-          </item>
-          <item row="6" column="0">
-           <widget class="QLabel" name="mEmptyMessageLabel">
-            <property name="text">
-             <string>Message to display</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="1">
-           <widget class="QLineEdit" name="mEmptyMessageLineEdit"/>
-          </item>
-          <item row="7" column="0">
-           <widget class="QLabel" name="label_10">
-            <property name="text">
-             <string>Background color</string>
             </property>
            </widget>
           </item>
@@ -373,12 +320,92 @@
             </item>
            </layout>
           </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="mMarginLabel">
+            <property name="text">
+             <string>Cell margins</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+            <property name="buddy">
+             <cstring>mMarginSpinBox</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>Display header</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QgsDoubleSpinBox" name="mMarginSpinBox">
+            <property name="suffix">
+             <string> mm</string>
+            </property>
+            <property name="singleStep">
+             <double>0.100000000000000</double>
+            </property>
+            <property name="showClearButton" stdset="0">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="0">
+           <widget class="QLabel" name="label_10">
+            <property name="text">
+             <string>Background color</string>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="0" colspan="2">
            <widget class="QCheckBox" name="mDrawEmptyCheckBox">
             <property name="text">
              <string>Show empty rows</string>
             </property>
            </widget>
+          </item>
+          <item row="6" column="1">
+           <widget class="QLineEdit" name="mEmptyMessageLineEdit"/>
+          </item>
+          <item row="6" column="0">
+           <widget class="QLabel" name="mEmptyMessageLabel">
+            <property name="text">
+             <string>Message to display</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1">
+           <widget class="QComboBox" name="mEmptyModeComboBox"/>
+          </item>
+          <item row="8" column="1">
+           <widget class="QLineEdit" name="mWrapStringLineEdit">
+            <property name="frame">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="0">
+           <widget class="QLabel" name="label_11">
+            <property name="text">
+             <string>Wrap text on</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="9" column="0">
+           <widget class="QLabel" name="label_12">
+            <property name="text">
+             <string>Oversized text</string>
+            </property>
+           </widget>
+          </item>
+          <item row="9" column="1">
+           <widget class="QComboBox" name="mWrapBehaviourComboBox"/>
           </item>
          </layout>
         </widget>
@@ -736,16 +763,6 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
    <header location="global">qgscollapsiblegroupbox.h</header>
@@ -755,6 +772,16 @@
    <class>QgsMapLayerComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsmaplayercombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -781,6 +808,8 @@
   <tabstop>mEmptyModeComboBox</tabstop>
   <tabstop>mEmptyMessageLineEdit</tabstop>
   <tabstop>mBackgroundColorButton</tabstop>
+  <tabstop>mWrapStringLineEdit</tabstop>
+  <tabstop>mWrapBehaviourComboBox</tabstop>
   <tabstop>mShowGridGroupCheckBox</tabstop>
   <tabstop>mGridStrokeWidthSpinBox</tabstop>
   <tabstop>mGridColorButton</tabstop>

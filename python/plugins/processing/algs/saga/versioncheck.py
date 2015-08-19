@@ -66,7 +66,7 @@ def testDescriptionFile(f):
         print lines
         print usage
         print "Name in description:" + cmdname
-        print "Parameters in description:" + str(params)
+        print "Parameters in description:" + unicode(params)
         print "-" * 50
         print
 

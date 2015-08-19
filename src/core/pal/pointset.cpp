@@ -38,6 +38,8 @@
 #include "util.h"
 #include "pal.h"
 #include "geomfunction.h"
+#include "qgsgeos.h"
+#include "qgsmessagelog.h"
 #include <qglobal.h>
 
 namespace pal
@@ -297,14 +299,23 @@ namespace pal
   bool PointSet::containsPoint( double x, double y ) const
   {
     GEOSContextHandle_t geosctxt = geosContext();
-    GEOSCoordSequence* seq = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
-    GEOSCoordSeq_setX_r( geosctxt, seq, 0, x );
-    GEOSCoordSeq_setY_r( geosctxt, seq, 0, y );
-    GEOSGeometry* point = GEOSGeom_createPoint_r( geosctxt, seq );
+    try
+    {
+      GEOSCoordSequence* seq = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
+      GEOSCoordSeq_setX_r( geosctxt, seq, 0, x );
+      GEOSCoordSeq_setY_r( geosctxt, seq, 0, y );
+      GEOSGeometry* point = GEOSGeom_createPoint_r( geosctxt, seq );
+      bool result = ( GEOSPreparedContains_r( geosctxt, preparedGeom(), point ) == 1 );
+      GEOSGeom_destroy_r( geosctxt, point );
 
-    bool result = ( GEOSPreparedContains_r( geosctxt, preparedGeom(), point ) == 1 );
-    GEOSGeom_destroy_r( geosctxt, point );
-    return result;
+      return result;
+    }
+    catch ( GEOSException &e )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+      return false;
+    }
+
   }
 
   bool PointSet::containsLabelCandidate( double x, double y, double width, double height, double alpha ) const
@@ -341,10 +352,18 @@ namespace pal
     GEOSCoordSeq_setX_r( geosctxt, coord, 4, x );
     GEOSCoordSeq_setY_r( geosctxt, coord, 4, y );
 
-    GEOSGeometry* bboxGeos = GEOSGeom_createLinearRing_r( geosctxt, coord );
-    bool result = ( GEOSPreparedContains_r( geosctxt, preparedGeom(), bboxGeos ) == 1 );
-    GEOSGeom_destroy_r( geosctxt, bboxGeos );
-    return result;
+    try
+    {
+      GEOSGeometry* bboxGeos = GEOSGeom_createLinearRing_r( geosctxt, coord );
+      bool result = ( GEOSPreparedContains_r( geosctxt, preparedGeom(), bboxGeos ) == 1 );
+      GEOSGeom_destroy_r( geosctxt, bboxGeos );
+      return result;
+    }
+    catch ( GEOSException &e )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+      return false;
+    }
   }
 
   void PointSet::splitPolygons( QLinkedList<PointSet*> &shapes_toProcess,
@@ -887,36 +906,43 @@ namespace pal
       return 0;
 
     GEOSContextHandle_t geosctxt = geosContext();
-
-    GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
-    GEOSCoordSeq_setX_r( geosctxt, coord, 0, px );
-    GEOSCoordSeq_setY_r( geosctxt, coord, 0, py );
-    GEOSGeometry* geosPt = GEOSGeom_createPoint_r( geosctxt, coord );
-
-    int type = GEOSGeomTypeId_r( geosctxt, mGeos );
-    const GEOSGeometry* extRing = 0;
-    if ( type != GEOS_POLYGON )
+    try
     {
-      extRing = mGeos;
+      GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
+      GEOSCoordSeq_setX_r( geosctxt, coord, 0, px );
+      GEOSCoordSeq_setY_r( geosctxt, coord, 0, py );
+      GEOSGeometry* geosPt = GEOSGeom_createPoint_r( geosctxt, coord );
+
+      int type = GEOSGeomTypeId_r( geosctxt, mGeos );
+      const GEOSGeometry* extRing = 0;
+      if ( type != GEOS_POLYGON )
+      {
+        extRing = mGeos;
+      }
+      else
+      {
+        //for polygons, we want distance to exterior ring (not an interior point)
+        extRing = GEOSGetExteriorRing_r( geosctxt, mGeos );
+      }
+      GEOSCoordSequence *nearestCoord = GEOSNearestPoints_r( geosctxt, extRing, geosPt );
+      double nx;
+      double ny;
+      ( void )GEOSCoordSeq_getX_r( geosctxt, nearestCoord, 0, &nx );
+      ( void )GEOSCoordSeq_getY_r( geosctxt, nearestCoord, 0, &ny );
+      GEOSGeom_destroy_r( geosctxt, geosPt );
+
+      if ( rx )
+        *rx = nx;
+      if ( ry )
+        *ry = ny;
+
+      return dist_euc2d_sq( px, py, nx, ny );
     }
-    else
+    catch ( GEOSException &e )
     {
-      //for polygons, we want distance to exterior ring (not an interior point)
-      extRing = GEOSGetExteriorRing_r( geosctxt, mGeos );
+      QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+      return 0;
     }
-    GEOSCoordSequence *nearestCoord = GEOSNearestPoints_r( geosctxt, extRing, geosPt );
-    double nx;
-    double ny;
-    ( void )GEOSCoordSeq_getX_r( geosctxt, nearestCoord, 0, &nx );
-    ( void )GEOSCoordSeq_getY_r( geosctxt, nearestCoord, 0, &ny );
-    GEOSGeom_destroy_r( geosctxt, geosPt );
-
-    if ( rx )
-      *rx = nx;
-    if ( ry )
-      *ry = ny;
-
-    return dist_euc2d_sq( px, py, nx, ny );
   }
 
   void PointSet::getCentroid( double &px, double &py, bool forceInside ) const
@@ -927,71 +953,76 @@ namespace pal
     if ( !mGeos )
       return;
 
-    GEOSContextHandle_t geosctxt = geosContext();
-    GEOSGeometry *centroidGeom = GEOSGetCentroid_r( geosctxt, mGeos );
-    if ( centroidGeom )
+    try
     {
-      const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, centroidGeom );
-      GEOSCoordSeq_getX_r( geosctxt, coordSeq, 0, &px );
-      GEOSCoordSeq_getY_r( geosctxt, coordSeq, 0, &py );
-    }
-
-    // check if centroid inside in polygon
-    if ( forceInside && !containsPoint( px, py ) )
-    {
-      GEOSGeometry *pointGeom = GEOSPointOnSurface_r( geosctxt, mGeos );
-
-      if ( pointGeom )
+      GEOSContextHandle_t geosctxt = geosContext();
+      GEOSGeometry *centroidGeom = GEOSGetCentroid_r( geosctxt, mGeos );
+      if ( centroidGeom )
       {
-        const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, pointGeom );
+        const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, centroidGeom );
         GEOSCoordSeq_getX_r( geosctxt, coordSeq, 0, &px );
         GEOSCoordSeq_getY_r( geosctxt, coordSeq, 0, &py );
-        GEOSGeom_destroy_r( geosctxt, pointGeom );
       }
-    }
 
-    GEOSGeom_destroy_r( geosctxt, centroidGeom );
+      // check if centroid inside in polygon
+      if ( forceInside && !containsPoint( px, py ) )
+      {
+        GEOSGeometry *pointGeom = GEOSPointOnSurface_r( geosctxt, mGeos );
+
+        if ( pointGeom )
+        {
+          const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, pointGeom );
+          GEOSCoordSeq_getX_r( geosctxt, coordSeq, 0, &px );
+          GEOSCoordSeq_getY_r( geosctxt, coordSeq, 0, &py );
+          GEOSGeom_destroy_r( geosctxt, pointGeom );
+        }
+      }
+
+      GEOSGeom_destroy_r( geosctxt, centroidGeom );
+    }
+    catch ( GEOSException &e )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+      return;
+    }
   }
 
-  void PointSet::getPointByDistance( double distance, double *px, double *py ) const
+  void PointSet::getPointByDistance( double *d, double *ad, double dl, double *px, double *py )
   {
-    //if anything fails, return the first point
-    *px = x[0];
-    *py = y[0];
+    int i;
+    double dx, dy, di;
+    double distr;
 
-    if ( distance >= 0 )
+    i = 0;
+    if ( dl >= 0 )
     {
-      //positive distance, use GEOS for interpolation
-      if ( !mGeos )
-        createGeosGeom();
-
-      if ( !mGeos )
-        return;
-
-      GEOSContextHandle_t geosctxt = geosContext();
-
-      GEOSGeometry *point = GEOSInterpolate_r( geosctxt, mGeos, distance );
-      if ( point )
-      {
-        const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, point );
-        GEOSCoordSeq_getX_r( geosctxt, coordSeq, 0, px );
-        GEOSCoordSeq_getY_r( geosctxt, coordSeq, 0, py );
-      }
-      GEOSGeom_destroy_r( geosctxt, point );
+      while ( i < nbPoints && ad[i] <= dl ) i++;
+      i--;
     }
-    else
-    {
-      //negative distance. In this case we extrapolate backward from the first point,
-      //using the gradient of the entire linestring
-      double dx = x[nbPoints-1] - x[0];
-      double dy = y[nbPoints-1] - y[0];
-      double di = sqrt( dx * dx + dy * dy );
 
-      if ( di != 0.0 )
+    if ( i < nbPoints - 1 )
+    {
+      if ( dl < 0 )
       {
-        *px = x[0] + distance * dx / di;
-        *py = y[0] + distance * dy / di;
+        dx = x[nbPoints-1] - x[0];
+        dy = y[nbPoints-1] - y[0];
+        di = sqrt( dx * dx + dy * dy );
       }
+      else
+      {
+        dx = x[i+1] - x[i];
+        dy = y[i+1] - y[i];
+        di = d[i];
+      }
+
+      distr = dl - ad[i];
+      *px = x[i] + dx * distr / di;
+      *py = y[i] + dy * distr / di;
+    }
+    else    // just select last point...
+    {
+      *px = x[i];
+      *py = y[i];
     }
   }
 
@@ -1013,9 +1044,17 @@ namespace pal
 
     GEOSContextHandle_t geosctxt = geosContext();
 
-    double len = 0;
-    ( void )GEOSLength_r( geosctxt, mGeos, &len );
-    return len;
+    try
+    {
+      double len = 0;
+      ( void )GEOSLength_r( geosctxt, mGeos, &len );
+      return len;
+    }
+    catch ( GEOSException &e )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+      return -1;
+    }
   }
 
 

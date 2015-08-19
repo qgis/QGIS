@@ -179,7 +179,9 @@
 				<grass name="r.buffer"/>
 			</section>
 			<section label="Mask">
-				<grass name="r.mask"/>
+				<grass name="r.mask" version_max="6.4"/>
+				<grass name="r.mask.rast" version_min="7.0"/>
+				<grass name="r.mask.vect" version_min="7.0"/>
 			</section>
 			<section label="Map algebra">
 				<grass name="r.mapcalc"/>

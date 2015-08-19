@@ -17,11 +17,11 @@
 #define QGSCOMPOSERHTML_H
 
 #include "qgscomposermultiframe.h"
+#include "qgsfeature.h"
 #include <QUrl>
 
 class QWebPage;
 class QImage;
-class QgsFeature;
 class QgsVectorLayer;
 class QgsNetworkContentFetcher;
 class QgsDistanceArea;
@@ -240,7 +240,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
     bool mUseSmartBreaks;
     double mMaxBreakDistance;
 
-    QgsFeature* mExpressionFeature;
+    QgsFeature mExpressionFeature;
     QgsVectorLayer* mExpressionLayer;
     QgsDistanceArea* mDistanceArea;
 
@@ -258,7 +258,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
     QString fetchHtml( QUrl url );
 
     /** Sets the current feature, the current layer and a list of local variable substitutions for evaluating expressions */
-    void setExpressionContext( QgsFeature* feature, QgsVectorLayer* layer );
+    void setExpressionContext( const QgsFeature& feature, QgsVectorLayer* layer );
 
     /** Calculates the max width of frames in the html multiframe*/
     double maxFrameWidth() const;

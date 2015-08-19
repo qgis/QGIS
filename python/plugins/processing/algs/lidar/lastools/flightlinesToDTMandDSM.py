@@ -68,11 +68,11 @@ class flightlinesToDTMandDSM(LAStoolsAlgorithm):
         commands.append("-files_are_flightlines")
         tile_size = self.getParameterValue(flightlinesToDTMandDSM.TILE_SIZE)
         commands.append("-tile_size")
-        commands.append(str(tile_size))
+        commands.append(unicode(tile_size))
         buffer = self.getParameterValue(flightlinesToDTMandDSM.BUFFER)
         if buffer != 0.0:
             commands.append("-buffer")
-            commands.append(str(buffer))
+            commands.append(unicode(buffer))
         self.addParametersTemporaryDirectoryAsOutputDirectoryCommands(commands)
         base_name = self.getParameterValue(flightlinesToDTMandDSM.BASE_NAME)
         if base_name == "":

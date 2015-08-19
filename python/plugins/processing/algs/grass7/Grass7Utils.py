@@ -87,7 +87,7 @@ class Grass7Utils:
         folder = ProcessingConfig.getSetting(Grass7Utils.GRASS_FOLDER)
         if folder is None:
             if isWindows():
-                testfolder = os.path.dirname(str(QgsApplication.prefixPath()))
+                testfolder = os.path.dirname(unicode(QgsApplication.prefixPath()))
                 testfolder = os.path.join(testfolder, 'grass7')
                 if os.path.isdir(testfolder):
                     for subfolder in os.listdir(testfolder):
@@ -95,7 +95,7 @@ class Grass7Utils:
                             folder = os.path.join(testfolder, subfolder)
                             break
             else:
-                folder = os.path.join(str(QgsApplication.prefixPath()), 'grass7'
+                folder = os.path.join(unicode(QgsApplication.prefixPath()), 'grass7'
                                       )
                 if not os.path.isdir(folder):
                     folder = '/Applications/GRASS-7.0.app/Contents/MacOS'
@@ -106,7 +106,7 @@ class Grass7Utils:
     def grassWinShell():
         folder = ProcessingConfig.getSetting(Grass7Utils.GRASS_WIN_SHELL)
         if folder is None:
-            folder = os.path.dirname(str(QgsApplication.prefixPath()))
+            folder = os.path.dirname(unicode(QgsApplication.prefixPath()))
             folder = os.path.join(folder, 'msys')
         return folder
 

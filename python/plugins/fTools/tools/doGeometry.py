@@ -1083,7 +1083,7 @@ class geometryThread( QThread ):
       else:
         return QGis.WKBUnknown
     except Exception, err:
-      print str( err )
+      print unicode( err )
 
   def multiToSingleGeom( self, wkbType ):
     try:
@@ -1099,7 +1099,7 @@ class geometryThread( QThread ):
       else:
         return QGis.WKBUnknown
     except Exception, err:
-      print str( err )
+      print unicode( err )
 
   def extractAsSingle( self, geom ):
     multi_geom = QgsGeometry()

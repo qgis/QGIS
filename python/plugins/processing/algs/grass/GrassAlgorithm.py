@@ -108,7 +108,7 @@ class GrassAlgorithm(GeoAlgorithm):
         line = lines.readline().strip('\n').strip()
         self.name = line
         self.i18n_name = QCoreApplication.translate("GrassAlgorithm", line)
-        if not " - " in self.name:
+        if " - " not in self.name:
             self.name = self.grassName + " - " + self.name
             self.i18n_name = self.grassName + " - " + self.i18n_name
         line = lines.readline().strip('\n').strip()
@@ -276,18 +276,18 @@ class GrassAlgorithm(GeoAlgorithm):
         self.setSessionProjectionFromProject(commands)
 
         region = \
-            str(self.getParameterValue(self.GRASS_REGION_EXTENT_PARAMETER))
+            unicode(self.getParameterValue(self.GRASS_REGION_EXTENT_PARAMETER))
         regionCoords = region.split(',')
         command = 'g.region'
-        command += ' n=' + str(regionCoords[3])
-        command += ' s=' + str(regionCoords[2])
-        command += ' e=' + str(regionCoords[1])
-        command += ' w=' + str(regionCoords[0])
+        command += ' n=' + unicode(regionCoords[3])
+        command += ' s=' + unicode(regionCoords[2])
+        command += ' e=' + unicode(regionCoords[1])
+        command += ' w=' + unicode(regionCoords[0])
         cellsize = self.getParameterValue(self.GRASS_REGION_CELLSIZE_PARAMETER)
         if cellsize:
-            command += ' res=' + str(cellsize)
+            command += ' res=' + unicode(cellsize)
         else:
-            command += ' res=' + str(self.getDefaultCellsize())
+            command += ' res=' + unicode(self.getDefaultCellsize())
         alignToResolution = \
             self.getParameterValue(self.GRASS_REGION_ALIGN_TO_RESOLUTION)
         if alignToResolution:
@@ -320,13 +320,13 @@ class GrassAlgorithm(GeoAlgorithm):
                     command += ' ' + param.name
             elif isinstance(param, ParameterSelection):
                 idx = int(param.value)
-                command += ' ' + param.name + '=' + str(param.options[idx])
+                command += ' ' + param.name + '=' + unicode(param.options[idx])
             elif isinstance(param, ParameterString):
-                command += ' ' + param.name + '="' + str(param.value) + '"'
+                command += ' ' + param.name + '="' + unicode(param.value) + '"'
             else:
-                command += ' ' + param.name + '="' + str(param.value) + '"'
+                command += ' ' + param.name + '="' + unicode(param.value) + '"'
 
-        uniqueSufix = str(uuid.uuid4()).replace('-', '')
+        uniqueSufix = unicode(uuid.uuid4()).replace('-', '')
         for out in self.outputs:
             if isinstance(out, OutputFile):
                 command += ' > ' + out.value
@@ -437,9 +437,9 @@ class GrassAlgorithm(GeoAlgorithm):
         self.exportedLayers[orgFilename] = destFilename
         command = 'v.in.ogr'
         min_area = self.getParameterValue(self.GRASS_MIN_AREA_PARAMETER)
-        command += ' min_area=' + str(min_area)
+        command += ' min_area=' + unicode(min_area)
         snap = self.getParameterValue(self.GRASS_SNAP_TOLERANCE_PARAMETER)
-        command += ' snap=' + str(snap)
+        command += ' snap=' + unicode(snap)
         command += ' dsn="' + os.path.dirname(filename) + '"'
         command += ' layer=' + os.path.basename(filename)[:-4]
         command += ' output=' + destFilename
@@ -459,7 +459,7 @@ class GrassAlgorithm(GeoAlgorithm):
         if not GrassUtils.projectionSet:
             qGisLayer = dataobjects.getObjectFromUri(layer)
             if qGisLayer:
-                proj4 = str(qGisLayer.crs().toProj4())
+                proj4 = unicode(qGisLayer.crs().toProj4())
                 command = 'g.proj'
                 command += ' -c'
                 command += ' proj4="' + proj4 + '"'
@@ -480,8 +480,8 @@ class GrassAlgorithm(GeoAlgorithm):
         return command
 
     def getTempFilename(self):
-        filename = 'tmp' + str(time.time()).replace('.', '') \
-            + str(system.getNumExportedLayers())
+        filename = 'tmp' + unicode(time.time()).replace('.', '') \
+            + unicode(system.getNumExportedLayers())
         return filename
 
     def commandLineName(self):
@@ -507,4 +507,3 @@ class GrassAlgorithm(GeoAlgorithm):
         if hasattr(module, 'checkParameterValuesBeforeExecuting'):
             func = getattr(module, 'checkParameterValuesBeforeExecuting')
             return func(self)
-

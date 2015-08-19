@@ -55,7 +55,7 @@ class gdal2xyz(GdalAlgorithm):
     def getConsoleCommands(self):
         arguments = []
         arguments.append('-band')
-        arguments.append(str(self.getParameterValue(self.BAND)))
+        arguments.append(unicode(self.getParameterValue(self.BAND)))
 
         arguments.append('-csv')
         arguments.append(self.getParameterValue(self.INPUT))

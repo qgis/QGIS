@@ -53,7 +53,7 @@ class PostGisDBConnector(DBConnector):
         try:
             self.connection = psycopg2.connect(self._connectionInfo().encode('utf-8'))
         except self.connection_error_types(), e:
-            err = str(e)
+            err = unicode(e)
             uri = self.uri()
             conninfo = uri.connectionInfo()
 
@@ -75,7 +75,7 @@ class PostGisDBConnector(DBConnector):
                     if i == 2:
                         raise ConnectionError(e)
 
-                    err = str(e)
+                    err = unicode(e)
 
         self.connection.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
 
@@ -810,7 +810,7 @@ class PostGisDBConnector(DBConnector):
         if self.isGeometryColumn(table, column):
             # use postgis function to delete geometry column correctly
             schema, tablename = self.getSchemaTableName(table)
-            schema_part = u"%s, " % self._quote_str(schema) if schema else ""
+            schema_part = u"%s, " % self._quote_unicode(schema) if schema else ""
             sql = u"SELECT DropGeometryColumn(%s%s, %s)" % (
                 schema_part, self.quoteString(tablename), self.quoteString(column))
         else:
@@ -998,4 +998,3 @@ UNION SELECT attname FROM pg_attribute WHERE attnum > 0"""
         from .sql_dictionary import getQueryBuilderDictionary
 
         return getQueryBuilderDictionary()
-

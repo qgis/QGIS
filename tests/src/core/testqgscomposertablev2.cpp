@@ -69,6 +69,10 @@ class TestQgsComposerTableV2 : public QObject
     void attributeTableRelationSource(); //test attribute table in relation mode
     void contentsContainsRow(); //test the contentsContainsRow function
     void removeDuplicates(); //test removing duplicate rows
+    void multiLineText(); //test rendering a table with multiline text
+    void align(); //test alignment of table cells
+    void wrapChar(); //test setting wrap character
+    void autoWrap(); //test auto word wrap
 
   private:
     QgsComposition* mComposition;
@@ -502,7 +506,7 @@ void TestQgsComposerTableV2::attributeTableRelationSource()
   QVERIFY( mComposition->atlasComposition().beginRender() );
   QVERIFY( mComposition->atlasComposition().prepareForFeature( 0 ) );
 
-  QCOMPARE( mComposition->atlasComposition().currentFeature()->attribute( "Class" ).toString(), QString( "Jet" ) );
+  QCOMPARE( mComposition->atlasComposition().feature().attribute( "Class" ).toString(), QString( "Jet" ) );
   QCOMPARE( table->contents()->length(), 8 );
 
   QgsComposerTableRow row = table->contents()->at( 0 );
@@ -531,7 +535,7 @@ void TestQgsComposerTableV2::attributeTableRelationSource()
 
   //next atlas feature
   QVERIFY( mComposition->atlasComposition().prepareForFeature( 1 ) );
-  QCOMPARE( mComposition->atlasComposition().currentFeature()->attribute( "Class" ).toString(), QString( "Biplane" ) );
+  QCOMPARE( mComposition->atlasComposition().feature().attribute( "Class" ).toString(), QString( "Biplane" ) );
   QCOMPARE( table->contents()->length(), 5 );
   row = table->contents()->at( 0 );
   QCOMPARE( row.at( 0 ), QVariant( "Biplane" ) );
@@ -626,6 +630,138 @@ void TestQgsComposerTableV2::removeDuplicates()
   mComposition->removeMultiFrame( table );
   delete table;
   delete dupesLayer;
+}
+
+void TestQgsComposerTableV2::multiLineText()
+{
+  QgsVectorLayer* multiLineLayer = new QgsVectorLayer( "Point?field=col1:string&field=col2:string&field=col3:string", "multiline", "memory" );
+  QVERIFY( multiLineLayer->isValid() );
+  QgsFeature f1( multiLineLayer->dataProvider()->fields(), 1 );
+  f1.setAttribute( "col1", "multiline\nstring" );
+  f1.setAttribute( "col2", "singleline string" );
+  f1.setAttribute( "col3", "singleline" );
+  QgsFeature f2( multiLineLayer->dataProvider()->fields(), 2 );
+  f2.setAttribute( "col1", "singleline string" );
+  f2.setAttribute( "col2", "multiline\nstring" );
+  f2.setAttribute( "col3", "singleline" );
+  QgsFeature f3( multiLineLayer->dataProvider()->fields(), 3 );
+  f3.setAttribute( "col1", "singleline" );
+  f3.setAttribute( "col2", "singleline" );
+  f3.setAttribute( "col3", "multiline\nstring" );
+  QgsFeature f4( multiLineLayer->dataProvider()->fields(), 4 );
+  f4.setAttribute( "col1", "long triple\nline\nstring" );
+  f4.setAttribute( "col2", "double\nlinestring" );
+  f4.setAttribute( "col3", "singleline" );
+  multiLineLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 << f4 );
+
+  mFrame2->setSceneRect( QRectF( 5, 40, 100, 90 ) );
+
+  mComposerAttributeTable->setMaximumNumberOfFeatures( 20 );
+  mComposerAttributeTable->setVectorLayer( multiLineLayer );
+  QgsCompositionChecker checker( "composerattributetable_multiline", mComposition );
+  bool result = checker.testComposition( mReport );
+  QVERIFY( result );
+
+  delete multiLineLayer;
+}
+
+void TestQgsComposerTableV2::align()
+{
+  QgsVectorLayer* multiLineLayer = new QgsVectorLayer( "Point?field=col1:string&field=col2:string&field=col3:string", "multiline", "memory" );
+  QVERIFY( multiLineLayer->isValid() );
+  QgsFeature f1( multiLineLayer->dataProvider()->fields(), 1 );
+  f1.setAttribute( "col1", "multiline\nstring" );
+  f1.setAttribute( "col2", "singleline string" );
+  f1.setAttribute( "col3", "singleline" );
+  QgsFeature f2( multiLineLayer->dataProvider()->fields(), 2 );
+  f2.setAttribute( "col1", "singleline string" );
+  f2.setAttribute( "col2", "multiline\nstring" );
+  f2.setAttribute( "col3", "singleline" );
+  QgsFeature f3( multiLineLayer->dataProvider()->fields(), 3 );
+  f3.setAttribute( "col1", "singleline" );
+  f3.setAttribute( "col2", "singleline" );
+  f3.setAttribute( "col3", "multiline\nstring" );
+  QgsFeature f4( multiLineLayer->dataProvider()->fields(), 4 );
+  f4.setAttribute( "col1", "long triple\nline\nstring" );
+  f4.setAttribute( "col2", "double\nlinestring" );
+  f4.setAttribute( "col3", "singleline" );
+  multiLineLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 << f4 );
+
+  mFrame2->setSceneRect( QRectF( 5, 40, 100, 90 ) );
+
+  mComposerAttributeTable->setMaximumNumberOfFeatures( 20 );
+  mComposerAttributeTable->setVectorLayer( multiLineLayer );
+
+  mComposerAttributeTable->columns()->at( 0 )->setHAlignment( Qt::AlignLeft );
+  mComposerAttributeTable->columns()->at( 0 )->setVAlignment( Qt::AlignTop );
+  mComposerAttributeTable->columns()->at( 1 )->setHAlignment( Qt::AlignHCenter );
+  mComposerAttributeTable->columns()->at( 1 )->setVAlignment( Qt::AlignVCenter );
+  mComposerAttributeTable->columns()->at( 2 )->setHAlignment( Qt::AlignRight );
+  mComposerAttributeTable->columns()->at( 2 )->setVAlignment( Qt::AlignBottom );
+  QgsCompositionChecker checker( "composerattributetable_align", mComposition );
+  bool result = checker.testComposition( mReport );
+  QVERIFY( result );
+
+  delete multiLineLayer;
+}
+
+void TestQgsComposerTableV2::wrapChar()
+{
+  QgsVectorLayer* multiLineLayer = new QgsVectorLayer( "Point?field=col1:string&field=col2:string&field=col3:string", "multiline", "memory" );
+  QVERIFY( multiLineLayer->isValid() );
+  QgsFeature f1( multiLineLayer->dataProvider()->fields(), 1 );
+  f1.setAttribute( "col1", "multiline\nstring" );
+  f1.setAttribute( "col2", "singleline string" );
+  f1.setAttribute( "col3", "singleline" );
+  multiLineLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
+
+  mComposerAttributeTable->setMaximumNumberOfFeatures( 1 );
+  mComposerAttributeTable->setVectorLayer( multiLineLayer );
+  mComposerAttributeTable->setWrapString( "in" );
+
+  QList<QStringList> expectedRows;
+  QStringList row;
+  row << "multil\ne\nstr\ng" << "s\nglel\ne str\ng" << "s\nglel\ne";
+  expectedRows.append( row );
+
+  //retrieve rows and check
+  compareTable( expectedRows );
+}
+
+void TestQgsComposerTableV2::autoWrap()
+{
+  QgsVectorLayer* multiLineLayer = new QgsVectorLayer( "Point?field=col1:string&field=col2:string&field=col3:string", "multiline", "memory" );
+  QVERIFY( multiLineLayer->isValid() );
+  QgsFeature f1( multiLineLayer->dataProvider()->fields(), 1 );
+  f1.setAttribute( "col1", "long multiline\nstring" );
+  f1.setAttribute( "col2", "singleline string" );
+  f1.setAttribute( "col3", "singleline" );
+  QgsFeature f2( multiLineLayer->dataProvider()->fields(), 2 );
+  f2.setAttribute( "col1", "singleline string" );
+  f2.setAttribute( "col2", "multiline\nstring" );
+  f2.setAttribute( "col3", "singleline" );
+  QgsFeature f3( multiLineLayer->dataProvider()->fields(), 3 );
+  f3.setAttribute( "col1", "singleline" );
+  f3.setAttribute( "col2", "singleline" );
+  f3.setAttribute( "col3", "multiline\nstring" );
+  QgsFeature f4( multiLineLayer->dataProvider()->fields(), 4 );
+  f4.setAttribute( "col1", "a bit long triple line string" );
+  f4.setAttribute( "col2", "double toolongtofitononeline string with some more lines on the end andanotherreallylongline" );
+  f4.setAttribute( "col3", "singleline" );
+  multiLineLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 << f4 );
+
+  mFrame2->setSceneRect( QRectF( 5, 40, 100, 90 ) );
+
+  mComposerAttributeTable->setMaximumNumberOfFeatures( 20 );
+  mComposerAttributeTable->setVectorLayer( multiLineLayer );
+  mComposerAttributeTable->setWrapBehaviour( QgsComposerTableV2::WrapText );
+
+  mComposerAttributeTable->columns()->at( 0 )->setWidth( 25 );
+  mComposerAttributeTable->columns()->at( 1 )->setWidth( 25 );
+  QgsCompositionChecker checker( "composerattributetable_autowrap", mComposition );
+  bool result = checker.testComposition( mReport, 0 );
+  mComposerAttributeTable->columns()->at( 0 )->setWidth( 0 );
+  QVERIFY( result );
 }
 
 QTEST_MAIN( TestQgsComposerTableV2 )

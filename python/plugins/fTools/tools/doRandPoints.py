@@ -221,7 +221,7 @@ class Dialog(QDialog, Ui_Dialog):
           else:
             features_ids = []
             for feat in featErrors:
-              features_ids.append( str( feat.id() ) )
+              features_ids.append( unicode( feat.id() ) )
             erroneous_ids = ', '.join(features_ids)
             err_msg = "The following features IDs couldn't be calculated due to conversion error: %s" % erroneous_ids
           self.iface.messageBar().pushMessage("Errors", err_msg)

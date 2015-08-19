@@ -85,18 +85,18 @@ class nviz7(GeoAlgorithm):
         color = self.getParameterValue(self.COLOR)
 
         region = \
-            str(self.getParameterValue(self.GRASS_REGION_EXTENT_PARAMETER))
+            unicode(self.getParameterValue(self.GRASS_REGION_EXTENT_PARAMETER))
         regionCoords = region.split(',')
         command = 'g.region '
-        command += 'n=' + str(regionCoords[3])
-        command += ' s=' + str(regionCoords[2])
-        command += ' e=' + str(regionCoords[1])
-        command += ' w=' + str(regionCoords[0])
+        command += 'n=' + unicode(regionCoords[3])
+        command += ' s=' + unicode(regionCoords[2])
+        command += ' e=' + unicode(regionCoords[1])
+        command += ' w=' + unicode(regionCoords[0])
         cellsize = self.getParameterValue(self.GRASS_REGION_CELLSIZE_PARAMETER)
         if cellsize:
-            command += ' res=' + str(cellsize)
+            command += ' res=' + unicode(cellsize)
         else:
-            command += ' res=' + str(self.getDefaultCellsize())
+            command += ' res=' + unicode(self.getDefaultCellsize())
         commands.append(command)
 
         command = 'nviz7'
@@ -128,8 +128,8 @@ class nviz7(GeoAlgorithm):
         Grass7Utils.executeGrass7(commands, progress)
 
     def getTempFilename(self):
-        filename = 'tmp' + str(time.time()).replace('.', '') \
-            + str(getNumExportedLayers())
+        filename = 'tmp' + unicode(time.time()).replace('.', '') \
+            + unicode(getNumExportedLayers())
         return filename
 
     def exportVectorLayer(self, layer):

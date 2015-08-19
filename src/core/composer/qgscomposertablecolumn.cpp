@@ -20,6 +20,7 @@
 QgsComposerTableColumn::QgsComposerTableColumn( const QString& heading ) :
     mBackgroundColor( Qt::transparent ),
     mHAlignment( Qt::AlignLeft ),
+    mVAlignment( Qt::AlignVCenter ),
     mHeading( heading ),
     mSortByRank( 0 ),
     mSortOrder( Qt::AscendingOrder ),
@@ -45,6 +46,7 @@ bool QgsComposerTableColumn::writeXML( QDomElement& columnElem, QDomDocument& do
   columnElem.appendChild( bgColorElem );
 
   columnElem.setAttribute( "hAlignment", mHAlignment );
+  columnElem.setAttribute( "vAlignment", mVAlignment );
 
   columnElem.setAttribute( "heading", mHeading );
   columnElem.setAttribute( "attribute", mAttribute );
@@ -60,6 +62,7 @@ bool QgsComposerTableColumn::writeXML( QDomElement& columnElem, QDomDocument& do
 bool QgsComposerTableColumn::readXML( const QDomElement& columnElem )
 {
   mHAlignment = ( Qt::AlignmentFlag )columnElem.attribute( "hAlignment", QString::number( Qt::AlignLeft ) ).toInt();
+  mVAlignment = ( Qt::AlignmentFlag )columnElem.attribute( "vAlignment", QString::number( Qt::AlignVCenter ) ).toInt();
   mHeading = columnElem.attribute( "heading", "" );
   mAttribute = columnElem.attribute( "attribute", "" );
   mSortByRank = columnElem.attribute( "sortByRank", "0" ).toInt();
@@ -91,6 +94,7 @@ QgsComposerTableColumn* QgsComposerTableColumn::clone()
   newColumn->setAttribute( mAttribute );
   newColumn->setHeading( mHeading );
   newColumn->setHAlignment( mHAlignment );
+  newColumn->setVAlignment( mVAlignment );
   newColumn->setSortByRank( mSortByRank );
   newColumn->setSortOrder( mSortOrder );
   newColumn->setWidth( mWidth );

@@ -125,12 +125,12 @@ class NumberInputDialog(BASE, WIDGET):
     def addValue(self):
         item = self.treeValues.currentItem()
         if isinstance(item, TreeValueItem):
-            formula = self.leFormula.text() + ' ' + str(item.value)
+            formula = self.leFormula.text() + ' ' + unicode(item.value)
             self.leFormula.setText(formula.strip())
 
     def accept(self):
         try:
-            self.value = float(eval(str(self.leFormula.text())))
+            self.value = float(eval(unicode(self.leFormula.text())))
             if self.isInteger:
                 self.value = int(round(self.value))
             QDialog.accept(self)
@@ -148,4 +148,4 @@ class TreeValueItem(QTreeWidgetItem):
     def __init__(self, name, value):
         QTreeWidgetItem.__init__(self)
         self.value = value
-        self.setText(0, name + ': ' + str(value))
+        self.setText(0, name + ': ' + unicode(value))

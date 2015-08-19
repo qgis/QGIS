@@ -93,7 +93,7 @@ class BatchOutputSelectionPanel(QWidget):
                         n = self.table.rowCount() - self.row
                         for i in range(n):
                             name = filename[:filename.rfind('.')] \
-                                + str(i + 1) + filename[filename.rfind('.'):]
+                                + unicode(i + 1) + filename[filename.rfind('.'):]
                             self.table.cellWidget(i + self.row,
                                     self.col).setValue(name)
                     elif dlg.mode == AutofillDialog.FILL_WITH_PARAMETER:
@@ -109,7 +109,7 @@ class BatchOutputSelectionPanel(QWidget):
                                 s = os.path.basename(s)
                                 s = os.path.splitext(s)[0]
                             elif isinstance(param, ParameterBoolean):
-                                s = str(widget.currentIndex() == 0)
+                                s = unicode(widget.currentIndex() == 0)
                             elif isinstance(param, ParameterSelection):
                                 s = unicode(widget.currentText())
                             elif isinstance(param, ParameterFixedTable):

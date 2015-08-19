@@ -29,10 +29,16 @@ if [ -z "$ASTYLE" ]; then
 fi
 
 if ! type -p flip >/dev/null; then
-	echo "flip not found" >&2
-	flip() {
-		:
-	}
+  if type -p dos2unix >/dev/null; then
+    flip() {
+      exec dos2unix $2
+    }
+  else
+    echo "flip not found" >&2
+    flip() {
+      :
+    }
+  fi
 fi
 
 if ! type -p pep8 >/dev/null; then
@@ -75,6 +81,9 @@ for f in "$@"; do
                 ;;
 
         *.cpp|*.h|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H|*.hpp)
+                if [ -x "$f" ]; then
+                        chmod a-x "$f"
+                fi
                 cmd=astyleit
                 ;;
 

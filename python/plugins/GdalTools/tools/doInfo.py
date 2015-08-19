@@ -94,7 +94,7 @@ class GdalToolsDialog( QWidget, Ui_Widget, BasePluginWidget ):
 
   def finished( self ):
       self.rasterInfoList.clear()
-      arr = str(self.base.process.readAllStandardOutput()).strip()
+      arr = unicode(self.base.process.readAllStandardOutput()).strip()
       if platform.system() == "Windows":
         #info = QString.fromLocal8Bit( arr ).strip().split( "\r\n" )
         # TODO test

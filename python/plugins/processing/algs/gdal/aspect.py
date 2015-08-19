@@ -76,7 +76,7 @@ class aspect(GdalAlgorithm):
         arguments.append(GdalUtils.getFormatShortNameFromFilename(output))
 
         arguments.append('-b')
-        arguments.append(str(self.getParameterValue(self.BAND)))
+        arguments.append(unicode(self.getParameterValue(self.BAND)))
 
         if self.getParameterValue(self.COMPUTE_EDGES):
             arguments.append('-compute_edges')
@@ -92,4 +92,3 @@ class aspect(GdalAlgorithm):
             arguments.append('-zero_for_flat')
 
         return ['gdaldem', GdalUtils.escapeAndJoin(arguments)]
-

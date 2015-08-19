@@ -69,10 +69,10 @@ class ClipByMask(GdalAlgorithm):
     def getConsoleCommands(self):
         out = self.getOutputValue(self.OUTPUT)
         mask = self.getParameterValue(self.MASK)
-        noData = str(self.getParameterValue(self.NO_DATA))
+        noData = unicode(self.getParameterValue(self.NO_DATA))
         addAlphaBand = self.getParameterValue(self.ALPHA_BAND)
         keepResolution = self.getParameterValue(self.KEEP_RESOLUTION)
-        extra = str(self.getParameterValue(self.EXTRA))
+        extra = unicode(self.getParameterValue(self.EXTRA))
 
         arguments = []
         arguments.append('-q')
@@ -87,8 +87,8 @@ class ClipByMask(GdalAlgorithm):
             geoTransform = r.GetGeoTransform()
             r = None
             arguments.append('-tr')
-            arguments.append(str(geoTransform[1]))
-            arguments.append(str(geoTransform[5]))
+            arguments.append(unicode(geoTransform[1]))
+            arguments.append(unicode(geoTransform[5]))
             arguments.append('-tap')
 
         arguments.append('-cutline')

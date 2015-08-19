@@ -1542,7 +1542,7 @@ class OracleDBConnector(DBConnector):
                {3})
             """.format(self.quoteString(tablename),
                        self.quoteString(geom_column),
-                       sqlExtent, str(srid))
+                       sqlExtent, unicode(srid))
 
         self._execute_and_commit(sql)
 

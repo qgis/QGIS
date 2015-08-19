@@ -54,6 +54,16 @@ class QgsFeatureRequest
     QgsFeatureRequest& setFilterExpression( const QString& expression );
     QgsExpression* filterExpression() const;
 
+    /**
+     * Disables filter conditions.
+     * The spatial filter (filterRect) will be kept in place.
+     *
+     * @return The object the method is called on for chaining
+     *
+     * @note Added in 2.12
+     */
+    QgsFeatureRequest& disableFilter();
+
     //! Set flags that affect how features will be fetched
     QgsFeatureRequest& setFlags( Flags flags );
     const Flags& flags() const;

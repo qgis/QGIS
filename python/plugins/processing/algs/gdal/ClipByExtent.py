@@ -58,9 +58,9 @@ class ClipByExtent(GdalAlgorithm):
 
     def getConsoleCommands(self):
         out = self.getOutputValue(self.OUTPUT)
-        noData = str(self.getParameterValue(self.NO_DATA))
-        projwin = str(self.getParameterValue(self.PROJWIN))
-        extra = str(self.getParameterValue(self.EXTRA))
+        noData = unicode(self.getParameterValue(self.NO_DATA))
+        projwin = unicode(self.getParameterValue(self.PROJWIN))
+        extra = unicode(self.getParameterValue(self.EXTRA))
 
         arguments = []
         arguments.append('-of')

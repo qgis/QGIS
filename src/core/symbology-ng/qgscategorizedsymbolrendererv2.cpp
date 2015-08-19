@@ -813,7 +813,7 @@ void QgsCategorizedSymbolRendererV2::updateColorRamp( QgsVectorColorRampV2* ramp
 
 void QgsCategorizedSymbolRendererV2::setRotationField( QString fieldOrExpression )
 {
-  if ( mSourceSymbol->type() == QgsSymbolV2::Marker )
+  if ( mSourceSymbol && mSourceSymbol->type() == QgsSymbolV2::Marker )
   {
     QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( mSourceSymbol.data() );
     s->setDataDefinedAngle( QgsDataDefined( fieldOrExpression ) );
@@ -822,7 +822,7 @@ void QgsCategorizedSymbolRendererV2::setRotationField( QString fieldOrExpression
 
 QString QgsCategorizedSymbolRendererV2::rotationField() const
 {
-  if ( mSourceSymbol->type() == QgsSymbolV2::Marker )
+  if ( mSourceSymbol && mSourceSymbol->type() == QgsSymbolV2::Marker )
   {
     QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( mSourceSymbol.data() );
     QgsDataDefined ddAngle = s->dataDefinedAngle();

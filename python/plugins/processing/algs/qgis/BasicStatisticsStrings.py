@@ -149,6 +149,6 @@ class BasicStatisticsStrings(GeoAlgorithm):
         f.write('<meta http-equiv="Content-Type" content="text/html; \
                 charset=utf-8" /></head><body>')
         for s in algData:
-            f.write('<p>' + str(s) + '</p>')
+            f.write('<p>' + unicode(s) + '</p>')
         f.write('</body></html>')
         f.close()

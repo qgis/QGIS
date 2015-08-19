@@ -228,7 +228,7 @@ class GeoDB:
         c = self.con.cursor()
 
         if schema:
-            schema_where = " AND nspname = '%s' " % self._quote_str(schema)
+            schema_where = " AND nspname = '%s' " % self._quote_unicode(schema)
         else:
             schema_where = \
                 " AND (nspname != 'information_schema' AND nspname !~ 'pg_') "
@@ -302,7 +302,7 @@ class GeoDB:
 
         c = self.con.cursor()
         schema_where = (" AND nspname='%s' "
-                        % self._quote_str(schema) if schema is not None else ''
+                        % self._quote_unicode(schema) if schema is not None else ''
                         )
         sql = """SELECT a.attnum AS ordinal_position,
                         a.attname AS column_name,
@@ -322,7 +322,7 @@ class GeoDB:
                   c.relname = '%s' %s AND
                   a.attnum > 0
               ORDER BY a.attnum""" \
-              % (self._quote_str(table), schema_where)
+              % (self._quote_unicode(table), schema_where)
 
         self._exec_sql(c, sql)
         attrs = []
@@ -338,7 +338,7 @@ class GeoDB:
         c = self.con.cursor()
 
         schema_where = (" AND nspname='%s' "
-                        % self._quote_str(schema) if schema is not None else ''
+                        % self._quote_unicode(schema) if schema is not None else ''
                         )
         sql = """SELECT relname, indkey
               FROM pg_class, pg_index
@@ -349,7 +349,7 @@ class GeoDB:
                      WHERE pg_class.relname='%s' %s AND
                          pg_class.oid=pg_index.indrelid
                          AND indisunique != 't' AND indisprimary != 't' )""" \
-              % (self._quote_str(table), schema_where)
+              % (self._quote_unicode(table), schema_where)
         self._exec_sql(c, sql)
         indexes = []
         for row in c.fetchall():
@@ -360,7 +360,7 @@ class GeoDB:
         c = self.con.cursor()
 
         schema_where = (" AND nspname='%s' "
-                        % self._quote_str(schema) if schema is not None else ''
+                        % self._quote_unicode(schema) if schema is not None else ''
                         )
         sql = """SELECT c.conname, c.contype, c.condeferrable, c.condeferred,
                         array_to_string(c.conkey, ' '), c.consrc, t2.relname,
@@ -371,7 +371,7 @@ class GeoDB:
               LEFT JOIN pg_class t2 ON c.confrelid = t2.oid
               JOIN pg_namespace nsp ON t.relnamespace = nsp.oid
               WHERE t.relname = '%s' %s """ \
-              % (self._quote_str(table), schema_where)
+              % (self._quote_unicode(table), schema_where)
 
         self._exec_sql(c, sql)
 
@@ -384,13 +384,13 @@ class GeoDB:
         """Returns definition of the view."""
 
         schema_where = (" AND nspname='%s' "
-                        % self._quote_str(schema) if schema is not None else ''
+                        % self._quote_unicode(schema) if schema is not None else ''
                         )
         sql = """SELECT pg_get_viewdef(c.oid)
               FROM pg_class c
               JOIN pg_namespace nsp ON c.relnamespace = nsp.oid
               WHERE relname='%s' %s AND relkind='v'""" \
-              % (self._quote_str(view), schema_where)
+              % (self._quote_unicode(view), schema_where)
         c = self.con.cursor()
         self._exec_sql(c, sql)
         return c.fetchone()[0]
@@ -399,15 +399,15 @@ class GeoDB:
                             geom_column='the_geom', srid=-1, dim=2):
         # Use schema if explicitly specified
         if schema:
-            schema_part = "'%s', " % self._quote_str(schema)
+            schema_part = "'%s', " % self._quote_unicode(schema)
         else:
             schema_part = ''
         sql = "SELECT AddGeometryColumn(%s'%s', '%s', %d, '%s', %d)" % (
             schema_part,
-            self._quote_str(table),
-            self._quote_str(geom_column),
+            self._quote_unicode(table),
+            self._quote_unicode(geom_column),
             srid,
-            self._quote_str(geom_type),
+            self._quote_unicode(geom_type),
             dim,
         )
         self._exec_sql_and_commit(sql)
@@ -416,22 +416,22 @@ class GeoDB:
         """Use PostGIS function to delete geometry column correctly."""
 
         if schema:
-            schema_part = "'%s', " % self._quote_str(schema)
+            schema_part = "'%s', " % self._quote_unicode(schema)
         else:
             schema_part = ''
         sql = "SELECT DropGeometryColumn(%s'%s', '%s')" % (schema_part,
-                self._quote_str(table), self._quote_str(geom_column))
+                self._quote_unicode(table), self._quote_unicode(geom_column))
         self._exec_sql_and_commit(sql)
 
     def delete_geometry_table(self, table, schema=None):
         """Delete table with one or more geometries using postgis function."""
 
         if schema:
-            schema_part = "'%s', " % self._quote_str(schema)
+            schema_part = "'%s', " % self._quote_unicode(schema)
         else:
             schema_part = ''
         sql = "SELECT DropGeometryTable(%s'%s')" % (schema_part,
-                self._quote_str(table))
+                self._quote_unicode(table))
         self._exec_sql_and_commit(sql)
 
     def create_table(self, table, fields, pkey=None, schema=None):
@@ -481,9 +481,9 @@ class GeoDB:
         if self.has_postgis:
             sql = "UPDATE geometry_columns SET f_table_name='%s' \
                    WHERE f_table_name='%s'" \
-                   % (self._quote_str(new_table), self._quote_str(table))
+                   % (self._quote_unicode(new_table), self._quote_unicode(table))
             if schema is not None:
-                sql += " AND f_table_schema='%s'" % self._quote_str(schema)
+                sql += " AND f_table_schema='%s'" % self._quote_unicode(schema)
             self._exec_sql_and_commit(sql)
 
     def create_view(self, name, query, schema=None):
@@ -525,7 +525,7 @@ class GeoDB:
             sql = \
                 "UPDATE geometry_columns SET f_table_schema='%s' \
                  WHERE f_table_schema='%s'" \
-                 % (self._quote_str(new_schema), self._quote_str(schema))
+                 % (self._quote_unicode(new_schema), self._quote_unicode(schema))
             self._exec_sql_and_commit(sql)
 
     def table_add_column(self, table, field, schema=None):
@@ -554,8 +554,8 @@ class GeoDB:
         if self.has_postgis:
             sql = "UPDATE geometry_columns SET f_geometry_column='%s' \
                    WHERE f_geometry_column='%s' AND f_table_name='%s'" \
-                   % (self._quote_str(new_name), self._quote_str(name),
-                      self._quote_str(table))
+                   % (self._quote_unicode(new_name), self._quote_unicode(name),
+                      self._quote_unicode(table))
             if schema is not None:
                 sql += " AND f_table_schema='%s'" % self._quote(schema)
             self._exec_sql_and_commit(sql)
@@ -630,9 +630,9 @@ class GeoDB:
         if self.has_postgis:
             sql = "UPDATE geometry_columns SET f_table_schema='%s' \
                    WHERE f_table_name='%s'" \
-                   % (self._quote_str(new_schema), self._quote_str(table))
+                   % (self._quote_unicode(new_schema), self._quote_unicode(table))
             if schema is not None:
-                sql += " AND f_table_schema='%s'" % self._quote_str(schema)
+                sql += " AND f_table_schema='%s'" % self._quote_unicode(schema)
             self._exec_sql_and_commit(sql)
 
     def create_index(self, table, name, column, schema=None):
@@ -662,7 +662,7 @@ class GeoDB:
 
         sql = "SELECT has_database_privilege('%(d)s', 'CREATE'), \
                       has_database_privilege('%(d)s', 'TEMP')" \
-              % {'d': self._quote_str(self.dbname)}
+              % {'d': self._quote_unicode(self.dbname)}
         c = self.con.cursor()
         self._exec_sql(c, sql)
         return c.fetchone()
@@ -673,7 +673,7 @@ class GeoDB:
 
         sql = "SELECT has_schema_privilege('%(s)s', 'CREATE'), \
                       has_schema_privilege('%(s)s', 'USAGE')" \
-              % {'s': self._quote_str(schema)}
+              % {'s': self._quote_unicode(schema)}
         c = self.con.cursor()
         self._exec_sql(c, sql)
         return c.fetchone()
@@ -687,7 +687,7 @@ class GeoDB:
                         has_table_privilege('%(t)s', 'INSERT'),
                         has_table_privilege('%(t)s', 'UPDATE'),
                         has_table_privilege('%(t)s', 'DELETE')""" \
-              % {'t': self._quote_str(t)}
+              % {'t': self._quote_unicode(t)}
         c = self.con.cursor()
         self._exec_sql(c, sql)
         return c.fetchone()
@@ -778,7 +778,7 @@ class GeoDB:
         # It's needed - let's quote it (and double the double-quotes)
         return u'"%s"' % identifier.replace('"', '""')
 
-    def _quote_str(self, txt):
+    def _quote_unicode(self, txt):
         """Make the string safe - replace ' with ''.
         """
 

@@ -113,10 +113,10 @@ class Algorithm():
     def setName(self, model):
         if self.name is None:
             i = 1
-            name = self.consoleName + "_" + str(i)
+            name = self.consoleName + "_" + unicode(i)
             while name in model.algs:
                 i += 1
-                name = self.consoleName + "_" + str(i)
+                name = self.consoleName + "_" + unicode(i)
             self.name = name
 
 
@@ -223,9 +223,9 @@ class ModelerAlgorithm(GeoAlgorithm):
 
     def getNameForAlgorithm(self, alg):
         i = 1
-        while alg.consoleName.upper().replace(":", "") + "_" + str(i) in self.algs.keys():
+        while alg.consoleName.upper().replace(":", "") + "_" + unicode(i) in self.algs.keys():
             i += 1
-        return alg.consoleName.upper().replace(":", "") + "_" + str(i)
+        return alg.consoleName.upper().replace(":", "") + "_" + unicode(i)
 
     def updateAlgorithm(self, alg):
         alg.pos = self.algs[alg.name].pos
@@ -413,7 +413,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                         self.addToRegion(layer, first)
                         first = False
         if found:
-            return ','.join([str(v) for v in [self.xmin, self.xmax, self.ymin, self.ymax]])
+            return ','.join([unicode(v) for v in [self.xmin, self.xmax, self.ymin, self.ymax]])
         else:
             return None
 
@@ -614,7 +614,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                         for param in alg.parameters:
                             if not param.hidden:
                                 line = lines.readline().strip('\n').strip('\r')
-                                if line == str(None):
+                                if line == unicode(None):
                                     modelAlg.params[param.name]  = None
                                 else:
                                     tokens = line.split('|')
@@ -630,7 +630,7 @@ class ModelerAlgorithm(GeoAlgorithm):
                         for out in alg.outputs:
                             if not out.hidden:
                                 line = lines.readline().strip('\n').strip('\r')
-                                if str(None) != line:
+                                if unicode(None) != line:
                                     if '|' in line:
                                         tokens = line.split('|')
                                         name = tokens[0]

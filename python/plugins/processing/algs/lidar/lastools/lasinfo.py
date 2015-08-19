@@ -91,17 +91,17 @@ class lasinfo(LAStoolsAlgorithm):
         if histo != 0:
             commands.append("-histo")
             commands.append(lasinfo.HISTOGRAM[histo])
-            commands.append(str(self.getParameterValue(lasinfo.HISTO1_BIN)))
+            commands.append(unicode(self.getParameterValue(lasinfo.HISTO1_BIN)))
         histo = self.getParameterValue(lasinfo.HISTO2)
         if histo != 0:
             commands.append("-histo")
             commands.append(lasinfo.HISTOGRAM[histo])
-            commands.append(str(self.getParameterValue(lasinfo.HISTO2_BIN)))
+            commands.append(unicode(self.getParameterValue(lasinfo.HISTO2_BIN)))
         histo = self.getParameterValue(lasinfo.HISTO3)
         if histo != 0:
             commands.append("-histo")
             commands.append(lasinfo.HISTOGRAM[histo])
-            commands.append(str(self.getParameterValue(lasinfo.HISTO3_BIN)))
+            commands.append(unicode(self.getParameterValue(lasinfo.HISTO3_BIN)))
         commands.append("-o")
         commands.append(self.getOutputValue(lasinfo.OUTPUT))
         self.addParametersAdditionalCommands(commands)

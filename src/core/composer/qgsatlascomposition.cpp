@@ -299,6 +299,10 @@ int QgsAtlasComposition::updateFeatures()
   return mFeatureIds.size();
 }
 
+QString QgsAtlasComposition::currentPageName() const
+{
+  return nameForPage( currentFeatureNumber() );
+}
 
 bool QgsAtlasComposition::beginRender()
 {

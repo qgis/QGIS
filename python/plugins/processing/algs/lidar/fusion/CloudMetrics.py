@@ -71,8 +71,8 @@ class CloudMetrics(FusionAlgorithm):
         commands = [os.path.join(FusionUtils.FusionPath(), 'CloudMetrics.exe')]
         commands.append('/verbose')
         above = self.getParameterValue(self.ABOVE)
-        if str(above).strip() != '':
-            commands.append('/above:' + str(above))
+        if unicode(above).strip() != '':
+            commands.append('/above:' + unicode(above))
         firstImpulse = self.getParameterValue(self.FIRSTIMPULSE)
         if firstImpulse:
             commands.append('/firstinpulse:' + firstImpulse)
@@ -80,8 +80,8 @@ class CloudMetrics(FusionAlgorithm):
         if firstReturn:
             commands.append('/firstreturn:' + firstReturn)
         htmin = self.getParameterValue(self.HTMIN)
-        if str(htmin).strip() != '':
-            commands.append('/minht:' + str(htmin))
+        if unicode(htmin).strip() != '':
+            commands.append('/minht:' + unicode(htmin))
         files = self.getParameterValue(self.INPUT).split(';')
         if len(files) == 1:
             commands.append(self.getParameterValue(self.INPUT))

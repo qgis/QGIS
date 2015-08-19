@@ -3756,8 +3756,6 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
     fileNewFromDefaultTemplate();
   }
 
-  QgsVisibilityPresets::instance()->clear();
-
   // set the initial map tool
 #ifndef HAVE_TOUCH
   mMapCanvas->setMapTool( mMapTools.mPan );

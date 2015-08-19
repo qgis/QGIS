@@ -355,7 +355,7 @@ class ModelerDialog(BASE, WIDGET):
 
     def addInput(self):
         item = self.inputsTree.currentItem()
-        paramType = str(item.text(0))
+        paramType = unicode(item.text(0))
         self.addInputOfType(paramType)
 
     def addInputOfType(self, paramType, pos=None):

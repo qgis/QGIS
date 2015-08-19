@@ -81,7 +81,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         arguments.append( "-white")
       if self.nearCheck.isChecked():
         arguments.append( "-near")
-        arguments.append( str(self.nearSpin.value()))
+        arguments.append( unicode(self.nearSpin.value()))
       arguments.append( "-o")
       arguments.append( self.getOutputFileName())
       arguments.append( self.getInputFileName())

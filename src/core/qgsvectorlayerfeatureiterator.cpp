@@ -117,6 +117,21 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
     mProviderRequest.setSubsetOfAttributes( providerSubset );
   }
 
+  if ( mProviderRequest.filterType() == QgsFeatureRequest::FilterExpression )
+  {
+    Q_FOREACH ( const QString& field, mProviderRequest.filterExpression()->referencedColumns() )
+    {
+      int idx = source->mFields.fieldNameIndex( field );
+
+      // If there are fields in the expression which are not of origin provider, the provider will not be able to filter based on them.
+      // In this case we disable the expression filter.
+      if ( source->mFields.fieldOrigin( idx ) != QgsFields::OriginProvider )
+      {
+        mProviderRequest.disableFilter();
+      }
+    }
+  }
+
   if ( mSource->mHasEditBuffer )
   {
     mChangedFeaturesRequest = mProviderRequest;

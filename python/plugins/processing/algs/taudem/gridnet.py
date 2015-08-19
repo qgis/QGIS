@@ -89,7 +89,7 @@ class GridNet(GeoAlgorithm):
                         'correct number before running TauDEM algorithms.'))
 
         commands.append('-n')
-        commands.append(str(processNum))
+        commands.append(unicode(processNum))
         commands.append(os.path.join(TauDEMUtils.taudemPath(), self.cmdName))
         commands.append('-p')
         commands.append(self.getParameterValue(self.D8_FLOW_DIR_GRID))

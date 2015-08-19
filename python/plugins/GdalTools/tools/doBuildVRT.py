@@ -137,7 +137,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         arguments.append("-separate")
       if self.srcNoDataCheck.isChecked():
         arguments.append("-srcnodata")
-        arguments.append(str(self.srcNoDataSpin.value()))
+        arguments.append(unicode(self.srcNoDataSpin.value()))
       if self.allowProjDiffCheck.isChecked():
         arguments.append("-allow_projection_difference")
       arguments.append(self.getOutputFileName())

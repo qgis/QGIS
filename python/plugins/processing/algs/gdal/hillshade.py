@@ -76,15 +76,15 @@ class hillshade(GdalAlgorithm):
         arguments.append(unicode(self.getOutputValue(self.OUTPUT)))
 
         arguments.append('-b')
-        arguments.append(str(self.getParameterValue(self.BAND)))
+        arguments.append(unicode(self.getParameterValue(self.BAND)))
         arguments.append('-z')
-        arguments.append(str(self.getParameterValue(self.Z_FACTOR)))
+        arguments.append(unicode(self.getParameterValue(self.Z_FACTOR)))
         arguments.append('-s')
-        arguments.append(str(self.getParameterValue(self.SCALE)))
+        arguments.append(unicode(self.getParameterValue(self.SCALE)))
         arguments.append('-az')
-        arguments.append(str(self.getParameterValue(self.AZIMUTH)))
+        arguments.append(unicode(self.getParameterValue(self.AZIMUTH)))
         arguments.append('-alt')
-        arguments.append(str(self.getParameterValue(self.ALTITUDE)))
+        arguments.append(unicode(self.getParameterValue(self.ALTITUDE)))
 
         if self.getParameterValue(self.COMPUTE_EDGES):
             arguments.append('-compute_edges')

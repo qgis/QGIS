@@ -95,7 +95,7 @@ class DinfTransLimAccum2Multi(GeoAlgorithm):
                         'correct number before running TauDEM algorithms.'))
 
         commands.append('-n')
-        commands.append(str(processNum))
+        commands.append(unicode(processNum))
         commands.append(os.path.join(TauDEMUtils.taudemMultifilePath(), self.cmdName))
         commands.append('-ang')
         commands.append(self.getParameterValue(self.DINF_FLOW_DIR_GRID))

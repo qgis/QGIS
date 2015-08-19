@@ -62,9 +62,9 @@ class contour(GdalAlgorithm):
             self.tr('Contours')))
 
     def getConsoleCommands(self):
-        interval = str(self.getParameterValue(self.INTERVAL))
-        fieldName = str(self.getParameterValue(self.FIELD_NAME))
-        extra = str(self.getParameterValue(self.EXTRA))
+        interval = unicode(self.getParameterValue(self.INTERVAL))
+        fieldName = unicode(self.getParameterValue(self.FIELD_NAME))
+        extra = unicode(self.getParameterValue(self.EXTRA))
 
         arguments = []
         if len(fieldName) > 0:

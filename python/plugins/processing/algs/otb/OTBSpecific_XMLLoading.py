@@ -52,7 +52,7 @@ def adaptBinaryMorphologicalOperation(commands_list):
     val = commands_list[commands_list.index("-filter") + 1]
 
     def replace_dilate(param, value):
-        if ".dilate" in str(param):
+        if ".dilate" in unicode(param):
             return param.replace("dilate", value)
         else:
             return param
