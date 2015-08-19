@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSATTRIBUTELISTVIEW_H
-#define QGSATTRIBUTELISTVIEW_H
+#ifndef QGSFEATURELISTVIEW_H
+#define QGSFEATURELISTVIEW_H
 
 #include <QListView>
 #include <qdebug.h>
