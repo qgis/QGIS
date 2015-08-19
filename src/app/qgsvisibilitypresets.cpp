@@ -44,6 +44,8 @@ QgsVisibilityPresets::QgsVisibilityPresets()
   mMenu->addAction( QgisApp::instance()->actionHideSelectedLayers() );
   mMenu->addSeparator();
 
+  mReplaceMenu = new QMenu( tr( "Replace Preset" ) );
+  mMenu->addMenu( mReplaceMenu );
   mActionAddPreset = mMenu->addAction( tr( "Add Preset..." ), this, SLOT( addPreset() ) );
   mMenuSeparator = mMenu->addSeparator();
 
@@ -168,6 +170,15 @@ void QgsVisibilityPresets::presetTriggerred()
   applyState( actionPreset->text() );
 }
 
+void QgsVisibilityPresets::replaceTriggerred()
+{
+  QAction* actionPreset = qobject_cast<QAction*>( sender() );
+  if ( !actionPreset )
+    return;
+
+  //adding preset with same name is effectively a replace
+  addPreset( actionPreset->text() );
+}
 
 void QgsVisibilityPresets::applyStateToLayerTreeGroup( QgsLayerTreeGroup* parent, const QgsVisibilityPresetCollection::PresetRecord& rec )
 {
@@ -245,6 +256,9 @@ void QgsVisibilityPresets::menuAboutToShow()
 {
   qDeleteAll( mMenuPresetActions );
   mMenuPresetActions.clear();
+  mReplaceMenu->clear();
+  qDeleteAll( mMenuReplaceActions );
+  mMenuReplaceActions.clear();
 
   QgsVisibilityPresetCollection::PresetRecord rec = currentState();
   bool hasCurrent = false;
@@ -260,8 +274,14 @@ void QgsVisibilityPresets::menuAboutToShow()
     }
     connect( a, SIGNAL( triggered() ), this, SLOT( presetTriggerred() ) );
     mMenuPresetActions.append( a );
+
+    QAction* replaceAction = new QAction( grpName, mReplaceMenu );
+    replaceAction->setEnabled( !a->isChecked() ); //can't replace current preset
+    connect( replaceAction, SIGNAL( triggered() ), this, SLOT( replaceTriggerred() ) );
+    mReplaceMenu->addAction( replaceAction );
   }
   mMenu->insertActions( mMenuSeparator, mMenuPresetActions );
+  mReplaceMenu->addActions( mMenuReplaceActions );
 
   mActionAddPreset->setEnabled( !hasCurrent );
   mActionRemoveCurrentPreset->setEnabled( hasCurrent );

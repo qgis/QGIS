@@ -61,6 +61,9 @@ class APP_EXPORT QgsVisibilityPresets : public QObject
     //! Handles apply a preset to the map canvas
     void presetTriggerred();
 
+    //! Handles replacing a preset's state
+    void replaceTriggerred();
+
     //! Handles removal of current preset from the project's collection
     void removeCurrentPreset();
 
@@ -86,10 +89,12 @@ class APP_EXPORT QgsVisibilityPresets : public QObject
     static QgsVisibilityPresets* sInstance;
 
     QMenu* mMenu;
+    QMenu* mReplaceMenu;
     QAction* mMenuSeparator;
     QAction* mActionAddPreset;
     QAction* mActionRemoveCurrentPreset;
     QList<QAction*> mMenuPresetActions;
+    QList<QAction*> mMenuReplaceActions;
 };
 
 
