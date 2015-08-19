@@ -142,6 +142,21 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     /** Sets the expression string for the widget */
     void setExpressionText( const QString& expression );
 
+    /** Returns the expression context for the widget. The context is used for the expression
+     * preview result and for populating the list of available functions and variables.
+     * @see setExpressionContext
+     * @note added in QGIS 2.12
+     */
+    QgsExpressionContext expressionContext() const { return mExpressionContext; }
+
+    /** Sets the expression context for the widget. The context is used for the expression
+     * preview result and for populating the list of available functions and variables.
+     * @param context expression context
+     * @see expressionContext
+     * @note added in QGIS 2.12
+     */
+    void setExpressionContext( const QgsExpressionContext& context );
+
     /** Registers a node item for the expression builder.
       * @param group The group the item will be show in the tree view.  If the group doesn't exsit it will be created.
       * @param label The label that is show to the user for the item in the tree.
@@ -217,6 +232,8 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      * @param previewString expression preview result to format
      */
     QString formatPreviewString( const QString &previewString ) const;
+
+    void loadExpressionContext();
 
     QString mFunctionsPath;
     QgsVectorLayer *mLayer;

@@ -3041,6 +3041,7 @@ QString QgsExpression::group( QString name )
     gGroups.insert( "Color", QObject::tr( "Color" ) );
     gGroups.insert( "GeometryGroup", QObject::tr( "Geometry" ) );
     gGroups.insert( "Record", QObject::tr( "Record" ) );
+    gGroups.insert( "Variables", QObject::tr( "Variables" ) );
   }
 
   //return the translated name for this group. If group does not

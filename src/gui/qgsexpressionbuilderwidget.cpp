@@ -35,11 +35,6 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
 {
   setupUi( this );
 
-  //TODO - allow setting context for widget, so that preview has access to full context for expression
-  //and variables etc can be shown in builder widget
-  mExpressionContext << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope();
-
   mValueGroupBox->hide();
   mLoadGroupBox->hide();
 //  highlighter = new QgsExpressionHighlighter( txtExpressionString->document() );
@@ -104,9 +99,8 @@ void QgsExpressionBuilderWidget::setLayer( QgsVectorLayer *layer )
 {
   mLayer = layer;
 
-  mExpressionContext = QgsExpressionContext();
-  mExpressionContext  << QgsExpressionContextUtils::globalScope()
-  << QgsExpressionContextUtils::projectScope();
+  //TODO - remove existing layer scope from context
+
   if ( mLayer )
     mExpressionContext << QgsExpressionContextUtils::layerScope( mLayer );
 }
@@ -464,6 +458,8 @@ void QgsExpressionBuilderWidget::updateFunctionTree()
     QString name = specials[i]->name();
     registerItem( specials[i]->group(), name, " " + name + " " );
   }
+
+  loadExpressionContext();
 }
 
 void QgsExpressionBuilderWidget::setGeomCalculator( const QgsDistanceArea & da )
@@ -479,6 +475,13 @@ QString QgsExpressionBuilderWidget::expressionText()
 void QgsExpressionBuilderWidget::setExpressionText( const QString& expression )
 {
   txtExpressionString->setText( expression );
+}
+
+void QgsExpressionBuilderWidget::setExpressionContext( const QgsExpressionContext &context )
+{
+  mExpressionContext = context;
+
+  loadExpressionContext();
 }
 
 void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
@@ -498,7 +501,6 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
   }
 
   QgsExpression exp( text );
-  mExpressionContext.setFeature( QgsFeature() );
 
   if ( mLayer )
   {
@@ -565,6 +567,28 @@ QString QgsExpressionBuilderWidget::formatPreviewString( const QString& previewS
   else
   {
     return previewString;
+  }
+}
+
+void QgsExpressionBuilderWidget::loadExpressionContext()
+{
+  QStringList variableNames = mExpressionContext.filteredVariableNames();
+  Q_FOREACH ( QString variable, variableNames )
+  {
+    registerItem( "Variables", variable, " @" + variable + " " );
+  }
+
+  // Load the functions from the expression context
+  QStringList contextFunctions = mExpressionContext.functionNames();
+  Q_FOREACH ( QString functionName, contextFunctions )
+  {
+    QgsExpression::Function* func = mExpressionContext.function( functionName );
+    QString name = func->name();
+    if ( name.startsWith( "_" ) ) // do not display private functions
+      continue;
+    if ( func->params() != 0 )
+      name += "(";
+    registerItem( func->group(), func->name(), " " + name + " ", func->helptext() );
   }
 }
 
