@@ -776,7 +776,13 @@ void QgsDiagramProperties::showAddAttributeExpressionDialog()
   {
     expression = selections[0]->text( 0 );
   }
-  QgsExpressionBuilderDialog dlg( mLayer, expression, this );
+
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( mLayer );
+
+  QgsExpressionBuilderDialog dlg( mLayer, expression, this, "generic", context );
   dlg.setWindowTitle( tr( "Expression based attribute" ) );
 
   QgsDistanceArea myDa;

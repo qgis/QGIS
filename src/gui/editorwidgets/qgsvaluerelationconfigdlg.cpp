@@ -63,7 +63,12 @@ void QgsValueRelationConfigDlg::editExpression()
   if ( !vl )
     return;
 
-  QgsExpressionBuilderDialog dlg( vl, mFilterExpression->toPlainText(), this );
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( vl );
+
+  QgsExpressionBuilderDialog dlg( vl, mFilterExpression->toPlainText(), this, "generic", context );
   dlg.setWindowTitle( tr( "Edit filter expression" ) );
 
   if ( dlg.exec() == QDialog::Accepted )
