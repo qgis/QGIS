@@ -369,7 +369,8 @@ void QgsComposerHtmlWidget::on_mInsertExpressionButton_clicked()
 
   // use the atlas coverage layer, if any
   QgsVectorLayer* coverageLayer = atlasCoverageLayer();
-  QgsExpressionBuilderDialog exprDlg( coverageLayer, selText, this );
+  QScopedPointer<QgsExpressionContext> context( mHtml->createExpressionContext() );
+  QgsExpressionBuilderDialog exprDlg( coverageLayer, selText, this, "generic", *context );
   exprDlg.setWindowTitle( tr( "Insert expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {

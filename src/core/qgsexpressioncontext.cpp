@@ -127,6 +127,11 @@ QgsExpression::Function* QgsExpressionContextScope::function( const QString& nam
   return mFunctions.contains( name ) ? mFunctions.value( name ) : 0;
 }
 
+QStringList QgsExpressionContextScope::functionNames() const
+{
+  return mFunctions.keys();
+}
+
 void QgsExpressionContextScope::addFunction( const QString& name, QgsScopedExpressionFunction* function )
 {
   mFunctions.insert( name, function );
@@ -248,6 +253,22 @@ QStringList QgsExpressionContext::variableNames() const
   return names.toSet().toList();
 }
 
+QStringList QgsExpressionContext::filteredVariableNames() const
+{
+  QStringList allVariables = variableNames();
+  QStringList filtered;
+  Q_FOREACH ( QString variable, allVariables )
+  {
+    if ( variable.startsWith( "_" ) )
+      continue;
+
+    filtered << variable;
+  }
+
+  filtered.sort();
+  return filtered;
+}
+
 bool QgsExpressionContext::isReadOnly( const QString& name ) const { Q_UNUSED( name ); return true; }
 
 bool QgsExpressionContext::hasFunction( const QString &name ) const
@@ -258,6 +279,18 @@ bool QgsExpressionContext::hasFunction( const QString &name ) const
       return true;
   }
   return false;
+}
+
+QStringList QgsExpressionContext::functionNames() const
+{
+  QStringList result;
+  Q_FOREACH ( const QgsExpressionContextScope* scope, mStack )
+  {
+    result << scope->functionNames();
+  }
+  result = result.toSet().toList();
+  result.sort();
+  return result;
 }
 
 QgsExpression::Function *QgsExpressionContext::function( const QString &name ) const

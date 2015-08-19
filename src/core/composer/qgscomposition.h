@@ -741,6 +741,12 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     */
     void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = 0 );
 
+    /** Creates an expression context relating to the compositions's current state. The context includes
+     * scopes for global, project, composition and atlas properties.
+     * @note added in QGIS 2.12
+     */
+    QgsExpressionContext* createExpressionContext() const;
+
   protected:
     void init();
 
@@ -899,12 +905,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      * @note this method was added in version 2.5
     */
     void prepareDataDefinedExpression( QgsDataDefined *dd, QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties, const QgsExpressionContext& context ) const;
-
-    /** Creates an expression context relating to the compositions's current state. The context includes
-     * scopes for global, project, composition and atlas properties.
-     * @note added in QGIS 2.12
-     */
-    QgsExpressionContext* createExpressionContext() const;
 
     /** Check whether any data defined page settings are active.
      * @returns true if any data defined page settings are active.

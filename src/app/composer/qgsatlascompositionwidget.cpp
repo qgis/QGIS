@@ -94,8 +94,10 @@ void QgsAtlasCompositionWidget::on_mAtlasFilenameExpressionButton_clicked()
     return;
   }
 
-  QgsExpressionBuilderDialog exprDlg( atlasMap->coverageLayer(), mAtlasFilenamePatternEdit->text(), this );
+  QScopedPointer<QgsExpressionContext> context( mComposition->createExpressionContext() );
+  QgsExpressionBuilderDialog exprDlg( atlasMap->coverageLayer(), mAtlasFilenamePatternEdit->text(), this, "generic", *context );
   exprDlg.setWindowTitle( tr( "Expression based filename" ) );
+
   if ( exprDlg.exec() == QDialog::Accepted )
   {
     QString expression =  exprDlg.expressionText();
@@ -233,8 +235,10 @@ void QgsAtlasCompositionWidget::on_mAtlasFeatureFilterButton_clicked()
     return;
   }
 
-  QgsExpressionBuilderDialog exprDlg( vl, mAtlasFeatureFilterEdit->text(), this );
+  QScopedPointer<QgsExpressionContext> context( mComposition->createExpressionContext() );
+  QgsExpressionBuilderDialog exprDlg( vl, mAtlasFeatureFilterEdit->text(), this, "generic", *context );
   exprDlg.setWindowTitle( tr( "Expression based filter" ) );
+
   if ( exprDlg.exec() == QDialog::Accepted )
   {
     QString expression =  exprDlg.expressionText();

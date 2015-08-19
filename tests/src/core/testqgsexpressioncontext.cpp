@@ -203,6 +203,13 @@ void TestQgsExpressionContext::contextScopeFunctions()
   QVERIFY( scope.function( "get_test_value" ) );
   QgsExpressionContext temp;
   QCOMPARE( scope.function( "get_test_value" )->func( QVariantList(), &temp, 0 ).toInt(), 42 );
+
+  //test functionNames
+  scope.addFunction( "get_test_value2", new GetTestValueFunction() );
+  QStringList functionNames = scope.functionNames();
+  QCOMPARE( functionNames.count(), 2 );
+  QVERIFY( functionNames.contains( "get_test_value" ) );
+  QVERIFY( functionNames.contains( "get_test_value2" ) );
 }
 
 void TestQgsExpressionContext::contextStack()
@@ -261,6 +268,13 @@ void TestQgsExpressionContext::contextStack()
   QVERIFY( context.hasVariable( "test2" ) );
   QCOMPARE( context.variable( "test2" ).toInt(), 11 );
   QCOMPARE( context.variableNames().length(), 2 );
+
+  //check filteredVariableNames method
+  scope2->setVariable( "_hidden", 5 );
+  QStringList filteredNames = context.filteredVariableNames();
+  QCOMPARE( filteredNames.count(), 2 );
+  QCOMPARE( filteredNames.at( 0 ), QString( "test" ) );
+  QCOMPARE( filteredNames.at( 1 ), QString( "test2" ) );
 
   //test scopes method
   QList< QgsExpressionContextScope*> scopes = context.scopes();
@@ -325,6 +339,12 @@ void TestQgsExpressionContext::contextStackFunctions()
   QVERIFY( context.hasFunction( "get_test_value2" ) );
   QVERIFY( context.function( "get_test_value2" ) );
   QCOMPARE( context.function( "get_test_value2" )->func( QVariantList(), &temp, 0 ).toInt(), 42 );
+
+  //test functionNames
+  QStringList names = context.functionNames();
+  QCOMPARE( names.count(), 2 );
+  QCOMPARE( names.at( 0 ), QString( "get_test_value" ) );
+  QCOMPARE( names.at( 1 ), QString( "get_test_value2" ) );
 }
 
 void TestQgsExpressionContext::evaluate()

@@ -150,6 +150,7 @@ class CORE_EXPORT QgsExpressionContextScope
     QVariant variable( const QString& name ) const;
 
     /** Returns a list of variable names contained within the scope.
+     * @see functionNames()
      */
     QStringList variableNames() const;
 
@@ -176,9 +177,16 @@ class CORE_EXPORT QgsExpressionContextScope
      * @param name function name
      * @returns function, or null if matching function could not be found
      * @see hasFunction()
+     * @see functionNames()
      * @see variable()
      */
     QgsExpression::Function* function( const QString &name ) const;
+
+    /** Retrieves a list of names of functions contained in the scope.
+     * @see function()
+     * @see variableNames()
+     */
+    QStringList functionNames() const;
 
     /** Adds a function to the scope.
      * @param name function name
@@ -284,10 +292,19 @@ class CORE_EXPORT QgsExpressionContext
 
     /** Returns a list of variables names set by all scopes in the context.
      * @returns list of unique variable names
+     * @see filteredVariableNames
+     * @see functionNames
      * @see hasVariable
      * @see variable
      */
     QStringList variableNames() const;
+
+    /** Returns a filtered list of variables names set by all scopes in the context. The included
+     * variables are those which should be seen by users.
+     * @returns filtered list of unique variable names
+     * @see variableNames
+     */
+    QStringList filteredVariableNames() const;
 
     /** Returns whether a variable is read only, and should not be modifiable by users.
      * @param name variable name
@@ -302,6 +319,12 @@ class CORE_EXPORT QgsExpressionContext
      * @see function
      */
     bool hasFunction( const QString& name ) const;
+
+    /** Retrieves a list of function names contained in the context.
+     * @see function()
+     * @see variableNames()
+     */
+    QStringList functionNames() const;
 
     /** Fetches a matching function from the context. The function will be fetched
      * from the last scope contained within the context which has a matching

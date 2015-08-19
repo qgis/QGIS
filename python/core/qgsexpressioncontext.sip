@@ -121,6 +121,7 @@ class QgsExpressionContextScope
     QVariant variable( const QString& name ) const;
 
     /** Returns a list of variable names contained within the scope.
+     * @see functionNames()
      */
     QStringList variableNames() const;
 
@@ -147,9 +148,16 @@ class QgsExpressionContextScope
      * @param name function name
      * @returns function, or null if matching function could not be found
      * @see hasFunction()
+     * @see functionNames()
      * @see variable()
      */
     QgsExpression::Function* function( const QString &name ) const;
+
+    /** Retrieves a list of names of functions contained in the scope.
+     * @see function()
+     * @see variableNames()
+     */
+    QStringList functionNames() const;
 
     /** Adds a function to the scope.
      * @param name function name
@@ -163,7 +171,7 @@ class QgsExpressionContextScope
      * @param feature feature for scope
      */
     void setFeature( const QgsFeature& feature );
-    
+
     /** Convenience function for setting a fields for the scope. Any existing
      * fields set by the scope will be overwritten.
      * @param fields fields for scope
@@ -253,10 +261,19 @@ class QgsExpressionContext
 
     /** Returns a list of variables names set by all scopes in the context.
      * @returns list of unique variable names
+     * @see filteredVariableNames
+     * @see functionNames
      * @see hasVariable
      * @see variable
      */
     QStringList variableNames() const;
+
+    /** Returns a filtered list of variables names set by all scopes in the context. The included
+     * variables are those which should be seen by users.
+     * @returns filtered list of unique variable names
+     * @see variableNames
+     */
+    QStringList filteredVariableNames() const;
 
     /** Returns whether a variable is read only, and should not be modifiable by users.
      * @param name variable name
@@ -271,6 +288,12 @@ class QgsExpressionContext
      * @see function
      */
     bool hasFunction( const QString& name ) const;
+
+    /** Retrieves a list of function names contained in the context.
+     * @see function()
+     * @see variableNames()
+     */
+    QStringList functionNames() const;
 
     /** Fetches a matching function from the context. The function will be fetched
      * from the last scope contained within the context which has a matching
@@ -297,13 +320,13 @@ class QgsExpressionContext
      * context. Ownership of the scope is transferred to the stack.
      */
     QgsExpressionContext& operator<< ( QgsExpressionContextScope* scope /Transfer/ );
-    
+
     /** Convenience function for setting a feature for the context. The feature
      * will be set within the last scope of the context, so will override any
      * existing features within the context.
      * @param feature feature for context
      */
-    void setFeature( const QgsFeature& feature );    
+    void setFeature( const QgsFeature& feature );
 
     /** Convenience function for setting a fields for the context. The fields
      * will be set within the last scope of the context, so will override any
@@ -311,7 +334,7 @@ class QgsExpressionContext
      * @param fields fields for context
      */
     void setFields( const QgsFields& fields );
-    
+
 };
 
 /** \ingroup core
@@ -378,12 +401,12 @@ class QgsExpressionContextUtils
      * For instance, layer name, id and fields.
      */
     static QgsExpressionContextScope* layerScope( QgsMapLayer* layer ) /Factory/;
-    
+
     /** Helper function for creating an expression context which contains just a feature and fields
      * collection. Generally this method should not be used as the created context does not include
      * standard scopes such as the global and project scopes.
      */
-    static QgsExpressionContext createFeatureBasedContext( const QgsFeature& feature, const QgsFields& fields );    
+    static QgsExpressionContext createFeatureBasedContext( const QgsFeature& feature, const QgsFields& fields );
 
     /** Sets a layer context variable. This variable will be contained within scopes retrieved via
      * layerScope().
