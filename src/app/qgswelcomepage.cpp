@@ -74,6 +74,8 @@ QgsWelcomePage::QgsWelcomePage( QWidget* parent )
   whatsNewPage->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
   whatsNewPage->setContextMenuPolicy( Qt::NoContextMenu );
   whatsNewPage->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Expanding );
+  whatsNewPage->setStyleSheet( "background:transparent" );
+  whatsNewPage->setAttribute( Qt::WA_TranslucentBackground );
 
   whatsNewContainer->layout()->addWidget( whatsNewPage );
   whatsNewContainer->setMaximumWidth( 250 );
@@ -90,7 +92,7 @@ QgsWelcomePage::QgsWelcomePage( QWidget* parent )
   connect( versionInfo, SIGNAL( versionInfoAvailable() ), this, SLOT( versionInfoReceived() ) );
   versionInfo->checkVersion();
 
-  connect( recentProjectsListView, SIGNAL( doubleClicked( QModelIndex ) ), this, SLOT( itemDoubleClicked( QModelIndex ) ) );
+  connect( recentProjectsListView, SIGNAL( activated( QModelIndex ) ), this, SLOT( itemActivated( QModelIndex ) ) );
 }
 
 void QgsWelcomePage::setRecentProjects( const QList<QgsWelcomePageItemsModel::RecentProjectData>& recentProjects )
@@ -98,7 +100,7 @@ void QgsWelcomePage::setRecentProjects( const QList<QgsWelcomePageItemsModel::Re
   mModel->setRecentProjects( recentProjects );
 }
 
-void QgsWelcomePage::itemDoubleClicked( const QModelIndex& index )
+void QgsWelcomePage::itemActivated( const QModelIndex& index )
 {
   QgisApp::instance()->openProject( mModel->data( index, Qt::ToolTipRole ).toString() );
 }

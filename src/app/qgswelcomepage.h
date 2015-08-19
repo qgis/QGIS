@@ -31,7 +31,7 @@ class QgsWelcomePage : public QWidget
     void setRecentProjects( const QList<QgsWelcomePageItemsModel::RecentProjectData>& recentProjects );
 
   private slots:
-    void itemDoubleClicked( const QModelIndex& index );
+    void itemActivated( const QModelIndex& index );
     void versionInfoReceived();
     void whatsNewLinkClicked( const QUrl& url );
 
