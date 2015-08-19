@@ -31,6 +31,7 @@ from PyQt4.QtCore import Qt, QCoreApplication
 from PyQt4.QtGui import QApplication, QCursor
 
 from qgis.utils import iface
+from qgis.core import QgsMessageLog
 
 import processing
 from processing.gui import AlgorithmClassification
@@ -272,7 +273,7 @@ class Processing:
         else:
             alg = Processing.getAlgorithm(algOrName)
         if alg is None:
-            print 'Error: Algorithm not found\n'
+            QgsMessageLog.logMessage( Processing.tr( 'Error: Algorithm {0} not found\n' ).format( algOrName ), Processing.tr( "Processing" ) )
             return
         alg = alg.getCopy()
 
@@ -288,7 +289,7 @@ class Processing:
                 output = alg.getOutputFromName(name)
                 if output and output.setValue(value):
                     continue
-                print 'Error: Wrong parameter value %s for parameter %s.' % (value, name)
+                QgsMessageLog.logMessage( Processing.tr( 'Error: Wrong parameter value {0} for parameter {1}.' ).format(value, name), Processing.tr( "Processing" ) )
                 ProcessingLog.addToLog(
                     ProcessingLog.LOG_ERROR,
                     Processing.tr('Error in %s. Wrong parameter value %s for parameter %s.') % (
@@ -299,7 +300,7 @@ class Processing:
             for param in alg.parameters:
                 if param.name not in setParams:
                     if not param.setValue(None):
-                        print ('Error: Missing parameter value for parameter %s.' % (param.name))
+                        QgsMessageLog.logMessage( Processing.tr( 'Error: Missing parameter value for parameter {0}.' ).format(param.name), Processing.tr( "Processing" ) )
                         ProcessingLog.addToLog(
                             ProcessingLog.LOG_ERROR,
                             Processing.tr('Error in %s. Missing parameter value for parameter %s.') % (
@@ -308,33 +309,31 @@ class Processing:
                         return
         else:
             if len(args) != alg.getVisibleParametersCount() + alg.getVisibleOutputsCount():
-                print 'Error: Wrong number of parameters'
+                QgsMessageLog.logMessage( Processing.tr( 'Error: Wrong number of parameters' ), Processing.tr( "Processing" ) )
                 processing.alghelp(algOrName)
                 return
             i = 0
             for param in alg.parameters:
                 if not param.hidden:
                     if not param.setValue(args[i]):
-                        print 'Error: Wrong parameter value: ' \
-                            + unicode(args[i])
+                        QgsMessageLog.logMessage( Processing.tr( 'Error: Wrong parameter value: ' ) + unicode(args[i]), Processing.tr( "Processing" ) )
                         return
                     i = i + 1
 
             for output in alg.outputs:
                 if not output.hidden:
                     if not output.setValue(args[i]):
-                        print 'Error: Wrong output value: ' + unicode(args[i])
+                        QgsMessageLog.logMessage( Processing.tr( 'Error: Wrong output value: ' ) + unicode(args[i]), Processing.tr( "Processing" ) )
                         return
                     i = i + 1
 
         msg = alg._checkParameterValuesBeforeExecuting()
         if msg:
-            print 'Unable to execute algorithm\n' + msg
+            QgsMessageLog( Processing.tr( 'Unable to execute algorithm\n{0}' ).format( msg ), Processing.tr( "Processing" ) )
             return
 
         if not alg.checkInputCRS():
-            print 'Warning: Not all input layers use the same CRS.\n' \
-                + 'This can cause unexpected results.'
+            QgsMessageLog( Processing.tr( 'Warning: Not all input layers use the same CRS.\nThis can cause unexpected results.' ), Processing.tr("Processing") )
 
         if iface is not None:
           # Don't set the wait cursor twice, because then when you
@@ -353,8 +352,7 @@ class Processing:
             if onFinish is not None:
                 onFinish(alg, progress)
         else:
-            print ("There were errors executing the algorithm.\n"
-                    "Check the QGIS log to get more information")
+            QgsMessageLog( Processing.tr( "There were errors executing the algorithm.\nCheck the QGIS log to get more information"), Processing.tr("Processing") )
 
         if iface is not None:
           QApplication.restoreOverrideCursor()
