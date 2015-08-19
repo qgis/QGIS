@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSFEATURELIST_H
-#define QGSFEATURELIST_H
+#ifndef QGSDUALVIEW_H
+#define QGSDUALVIEW_H
 
 #include <QStackedWidget>
 
@@ -271,4 +271,4 @@ class GUI_EXPORT QgsAttributeTableMapLayerAction : public QAction
     QModelIndex mFieldIdx;
 };
 
-#endif // QGSFEATURELIST_H
+#endif // QGSDUALVIEW_H
