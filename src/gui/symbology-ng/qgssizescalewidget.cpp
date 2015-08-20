@@ -78,6 +78,19 @@ void QgsSizeScaleWidget::setFromSymbol()
   updatePreview();
 }
 
+static QgsExpressionContext _getExpressionContext( const void* context )
+{
+  QgsExpressionContext expContext;
+  expContext << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope();
+
+  const QgsVectorLayer* layer = ( const QgsVectorLayer* ) context;
+  if ( layer )
+    expContext << QgsExpressionContextUtils::layerScope( layer );
+
+  return expContext;
+}
+
 QgsSizeScaleWidget::QgsSizeScaleWidget( const QgsVectorLayer * layer, const QgsMarkerSymbolV2 * symbol )
     : mSymbol( symbol )
     // we just use the minimumValue and maximumValue from the layer, unfortunately they are
@@ -86,6 +99,8 @@ QgsSizeScaleWidget::QgsSizeScaleWidget( const QgsVectorLayer * layer, const QgsM
 {
   setupUi( this );
   setWindowFlags( Qt::WindowStaysOnTopHint );
+
+  mExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, mLayer );
 
   if ( mLayer )
   {

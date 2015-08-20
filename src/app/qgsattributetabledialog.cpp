@@ -61,6 +61,19 @@ class QgsAttributeTableDock : public QDockWidget
     }
 };
 
+static QgsExpressionContext _getExpressionContext( const void* context )
+{
+  QgsExpressionContext expContext;
+  expContext << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope();
+
+  const QgsVectorLayer* layer = ( const QgsVectorLayer* ) context;
+  if ( layer )
+    expContext << QgsExpressionContextUtils::layerScope( layer );
+
+  return expContext;
+}
+
 QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWidget *parent, Qt::WindowFlags flags )
     : QDialog( parent, flags )
     , mDock( 0 )
@@ -221,6 +234,8 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
       filterShowAll();
       break;
   }
+
+  mUpdateExpressionText->registerGetExpressionContextCallback( &_getExpressionContext, mLayer );
 
   mFieldModel = new QgsFieldModel();
   mFieldModel->setLayer( mLayer );

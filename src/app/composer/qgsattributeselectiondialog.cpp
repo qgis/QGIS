@@ -90,10 +90,24 @@ void QgsComposerColumnAlignmentDelegate::updateEditorGeometry( QWidget* editor, 
 
 // QgsComposerColumnSourceDelegate
 
-QgsComposerColumnSourceDelegate::QgsComposerColumnSourceDelegate( QgsVectorLayer* vlayer, QObject* parent ) : QItemDelegate( parent ),
-    mVectorLayer( vlayer )
+QgsComposerColumnSourceDelegate::QgsComposerColumnSourceDelegate( QgsVectorLayer* vlayer, QObject* parent, const QgsComposerObject* composerObject )
+    : QItemDelegate( parent )
+    , mVectorLayer( vlayer )
+    , mComposerObject( composerObject )
 {
 
+}
+
+static QgsExpressionContext _getExpressionContext( const void* context )
+{
+  const QgsComposerObject* object = ( const QgsComposerObject* ) context;
+  if ( !object )
+  {
+    return QgsExpressionContext();
+  }
+
+  QScopedPointer< QgsExpressionContext > expContext( object->createExpressionContext() );
+  return QgsExpressionContext( *expContext );
 }
 
 QWidget* QgsComposerColumnSourceDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const
@@ -103,6 +117,7 @@ QWidget* QgsComposerColumnSourceDelegate::createEditor( QWidget* parent, const Q
 
   QgsFieldExpressionWidget *fieldExpression = new QgsFieldExpressionWidget( parent );
   fieldExpression->setLayer( mVectorLayer );
+  fieldExpression->registerGetExpressionContextCallback( &_getExpressionContext, mComposerObject );
 
   //listen out for field changes
   connect( fieldExpression, SIGNAL( fieldChanged( QString ) ), this, SLOT( commitAndCloseEditor() ) );
@@ -281,7 +296,7 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTa
     mColumnsTableView->setModel( mColumnModel );
     mColumnsTableView->horizontalHeader()->setResizeMode( QHeaderView::Stretch );
 
-    mColumnSourceDelegate = new QgsComposerColumnSourceDelegate( vLayer, mColumnsTableView );
+    mColumnSourceDelegate = new QgsComposerColumnSourceDelegate( vLayer, mColumnsTableView, mComposerTable );
     mColumnsTableView->setItemDelegateForColumn( 0, mColumnSourceDelegate );
     mColumnAlignmentDelegate = new QgsComposerColumnAlignmentDelegate( mColumnsTableView );
     mColumnsTableView->setItemDelegateForColumn( 2, mColumnAlignmentDelegate );
@@ -336,7 +351,7 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTa
     mColumnsTableView->setModel( mColumnModelV1 );
     mColumnsTableView->horizontalHeader()->setResizeMode( QHeaderView::Stretch );
 
-    mColumnSourceDelegate = new QgsComposerColumnSourceDelegate( vLayer, mColumnsTableView );
+    mColumnSourceDelegate = new QgsComposerColumnSourceDelegate( vLayer, mColumnsTableView, mComposerTableV1 );
     mColumnsTableView->setItemDelegateForColumn( 0, mColumnSourceDelegate );
     mColumnAlignmentDelegate = new QgsComposerColumnAlignmentDelegate( mColumnsTableView );
     mColumnsTableView->setItemDelegateForColumn( 2, mColumnAlignmentDelegate );
