@@ -326,6 +326,9 @@ class CORE_EXPORT QgsExpression
     static const char* UnaryOperatorText[];
 
     typedef QVariant( *FcnEval )( const QVariantList& values, const QgsFeature* f, QgsExpression* parent );
+
+    /** Function definition for evaluation against an expression context
+     */
     typedef QVariant( *FcnEvalContext )( const QVariantList& values, const QgsExpressionContext* context, QgsExpression* parent );
 
     /**

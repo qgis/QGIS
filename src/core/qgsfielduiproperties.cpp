@@ -13,33 +13,33 @@ void QgsFieldUIProperties::setConditionalStyles( QList<QgsConditionalStyle> styl
   mStyles = styles;
 }
 
-QList<QgsConditionalStyle> QgsFieldUIProperties::getConditionalStyles()
+QList<QgsConditionalStyle> QgsFieldUIProperties::getConditionalStyles() const
 {
   return mStyles;
 }
 
-QList<QgsConditionalStyle> QgsFieldUIProperties::matchingConditionalStyles( QVariant value,  QgsFeature *feature )
+QList<QgsConditionalStyle> QgsFieldUIProperties::matchingConditionalStyles( QVariant value, QgsExpressionContext& context ) const
 {
   QList<QgsConditionalStyle> styles;
   foreach ( QgsConditionalStyle style, mStyles )
   {
-    if ( style.matches( value, feature ) )
+    if ( style.matches( value, context ) )
       styles.append( style );
   }
   return styles;
 }
 
-QgsConditionalStyle QgsFieldUIProperties::matchingConditionalStyle( QVariant value,  QgsFeature *feature )
+QgsConditionalStyle QgsFieldUIProperties::matchingConditionalStyle( QVariant value, QgsExpressionContext& context ) const
 {
   foreach ( QgsConditionalStyle style, mStyles )
   {
-    if ( style.matches( value, feature ) )
+    if ( style.matches( value, context ) )
       return style;
   }
   return QgsConditionalStyle();
 }
 
-bool QgsFieldUIProperties::writeXml( QDomNode &node, QDomDocument &doc )
+bool QgsFieldUIProperties::writeXml( QDomNode &node, QDomDocument &doc ) const
 {
   QDomElement stylesel = doc.createElement( "conditionalstyles" );
   foreach ( QgsConditionalStyle style, mStyles )

@@ -74,6 +74,8 @@ class QgsExpressionContextScope
      */
     QgsExpressionContextScope( const QString& name = QString() );
 
+    /** Copy constructor
+     */
     QgsExpressionContextScope( const QgsExpressionContextScope& other );
 
     ~QgsExpressionContextScope();
@@ -199,6 +201,9 @@ class QgsExpressionContext
   public:
 
     QgsExpressionContext( );
+
+    /** Copy constructor
+     */
     QgsExpressionContext( const QgsExpressionContext& other );
 
     ~QgsExpressionContext();
