@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>380</width>
-    <height>336</height>
+    <width>410</width>
+    <height>337</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -666,6 +666,31 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mFieldCombo</tabstop>
+  <tabstop>listView</tabstop>
+  <tabstop>mNewButton</tabstop>
+  <tabstop>mRuleEdit</tabstop>
+  <tabstop>btnBuildExpression</tabstop>
+  <tabstop>mDefault1</tabstop>
+  <tabstop>mDefault3</tabstop>
+  <tabstop>mDefault2</tabstop>
+  <tabstop>pushButton_3</tabstop>
+  <tabstop>pushButton_8</tabstop>
+  <tabstop>pushButton_7</tabstop>
+  <tabstop>btnBackgroundColor</tabstop>
+  <tabstop>btnTextColor</tabstop>
+  <tabstop>checkIcon</tabstop>
+  <tabstop>btnChangeIcon</tabstop>
+  <tabstop>mFontBoldBtn</tabstop>
+  <tabstop>mFontItalicBtn</tabstop>
+  <tabstop>mFontUnderlineBtn</tabstop>
+  <tabstop>mFontStrikethroughBtn</tabstop>
+  <tabstop>mFontFamilyCmbBx</tabstop>
+  <tabstop>mSaveRule</tabstop>
+  <tabstop>mCancelButton</tabstop>
+  <tabstop>mDeleteButton</tabstop>
+ </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>

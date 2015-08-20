@@ -22,6 +22,7 @@
 find . -name "*.orig" -exec rm -rf {} \;
 find . -name "*.prepare" -exec rm -rf {} \;
 find . -name "astyle*.diff" -exec rm -rf {} \;
+find . -name "*.astyle" -exec rm -rf {} \;
 find . -name "sha*.diff" -exec rm -rf {} \;
 
 

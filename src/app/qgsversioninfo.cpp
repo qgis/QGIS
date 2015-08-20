@@ -18,7 +18,7 @@
 
 #include "qgsnetworkaccessmanager.h"
 
-QgsVersionInfo::QgsVersionInfo( QObject *parent ) : QObject(parent)
+QgsVersionInfo::QgsVersionInfo( QObject *parent ) : QObject( parent )
 {
 
 }
