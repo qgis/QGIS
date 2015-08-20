@@ -416,7 +416,7 @@ class GetNamedProjectColor : public QgsScopedExpressionFunction
 {
   public:
     GetNamedProjectColor()
-        : QgsScopedExpressionFunction( "project_color", 1, "Colors" )
+        : QgsScopedExpressionFunction( "project_color", 1, "Color" )
     {
       //build up color list from project. Do this in advance for speed
       QStringList colorStrings = QgsProject::instance()->readListEntry( "Palette", "/Colors" );
@@ -575,7 +575,7 @@ QgsExpressionContextScope* QgsExpressionContextUtils::layerScope( const QgsMapLa
   QgsVectorLayer* vLayer = dynamic_cast< QgsVectorLayer* >( nonConstLayer );
   if ( vLayer )
   {
-    scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_geometrytype", vLayer->type(), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_type", vLayer->type(), true ) );
     scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_storagetype", vLayer->storageType(), true ) );
     QString typeString( QGis::vectorGeometryType( vLayer->geometryType() ) );
     scope->addVariable( QgsExpressionContextScope::StaticVariable( "layer_geometrytype", typeString, true ) );
@@ -648,10 +648,10 @@ QgsExpressionContextScope *QgsExpressionContextUtils::compositionScope( const Qg
   }
 
   //add known composition context variables
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( "composer_numpages", composition->numPages(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( "composer_page_height", composition->paperHeight(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( "composer_page_width", composition->paperWidth(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( "composer_dpi", composition->printResolution(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "layout_numpages", composition->numPages(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "layout_pageheight", composition->paperHeight(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "layout_pagewidth", composition->paperWidth(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "layout_dpi", composition->printResolution(), true ) );
 
   return scope;
 }
@@ -697,8 +697,8 @@ QgsExpressionContextScope* QgsExpressionContextUtils::atlasScope( const QgsAtlas
     return scope;
 
   //add known atlas variables
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( "atlas_numpages", atlas->numFeatures(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( "atlas_page", atlas->currentFeatureNumber() + 1, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "atlas_totalfeatures", atlas->numFeatures(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( "atlas_featurenumber", atlas->currentFeatureNumber() + 1, true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "atlas_filename", atlas->currentFilename(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( "atlas_pagename", atlas->currentPageName(), true ) );
 

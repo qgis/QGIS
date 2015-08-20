@@ -529,11 +529,11 @@ class CORE_EXPORT QgsExpression
          * @return The type of this node
          */
         virtual NodeType nodeType() const = 0;
-        
-       /**
-         * Abstract virtual eval method
-         * Errors are reported to the parent
-         */
+
+        /**
+          * Abstract virtual eval method
+          * Errors are reported to the parent
+          */
         Q_DECL_DEPRECATED virtual QVariant eval( QgsExpression* parent, const QgsFeature* f );
 
         /**
@@ -853,7 +853,24 @@ class CORE_EXPORT QgsExpression
     /** Entry function for the visitor pattern */
     void acceptVisitor( Visitor& v ) const;
 
+    /** Returns the help text for a specified function.
+     * @param name function name
+     * @see variableHelpText()
+     */
     static QString helptext( QString name );
+
+    /** Returns the help text for a specified variable.
+     * @param variableName name of variable
+     * @param showValue set to true to include current value of variable in help text
+     * @param value current value of variable to show in help text
+     * @see helptext()
+     * @note added in QGIS 2.12
+     */
+    static QString variableHelpText( const QString& variableName, bool showValue = true, const QVariant& value = QVariant() );
+
+    /** Returns the translated name for a function group.
+     * @param group untranslated group name
+     */
     static QString group( QString group );
 
   protected:
@@ -879,9 +896,11 @@ class CORE_EXPORT QgsExpression
     static QMap<QString, QString> gmSpecialColumnGroups;
 
     static QHash<QString, QString> gFunctionHelpTexts;
+    static QHash<QString, QString> gVariableHelpTexts;
     static QHash<QString, QString> gGroups;
 
     static void initFunctionHelp();
+    static void initVariableHelp();
 
     friend class QgsOgcUtils;
 
