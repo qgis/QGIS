@@ -1,0 +1,12 @@
+<h3>project_color function</h3>
+Returns a color from the project's color scheme.
+
+<h4>Syntax</h4>
+<pre>project_color( name )</pre>
+
+<h4>Arguments</h4>
+name &rarr; color name
+
+<h4>Example</h4>
+<pre> project_color('Logo color') &rarr; returns 20,140,50</pre>
+
