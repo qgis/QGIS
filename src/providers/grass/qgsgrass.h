@@ -217,6 +217,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     /** \brief Close mapset if it was opened from QGIS.
      *         Delete GISRC, lock and temporary directory.
      *         Emits signal mapsetChanged().
+     * \param showError show error dialog on error
      * \return Empty string or error message
      */
     static QString closeMapset();
@@ -502,6 +503,10 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
 
     // Sleep miliseconds (for debugging)
     static void sleep( int ms );
+
+  public slots:
+    /** Close mapset and show warning if closing failed */
+    bool closeMapsetWarn();
 
   signals:
     /** Signal emitted after mapset was opened */

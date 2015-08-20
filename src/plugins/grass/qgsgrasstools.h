@@ -95,6 +95,7 @@ class QgsGrassTools: public QDockWidget, private Ui::QgsGrassToolsBase
     void on_mDebugButton_clicked();
     void on_mCloseDebugButton_clicked();
     void on_mViewModeButton_clicked();
+
   signals:
     void regionChanged();
 

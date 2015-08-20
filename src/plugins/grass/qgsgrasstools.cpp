@@ -149,8 +149,12 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface, QWidget * parent, const char
     , mModelProxy( 0 )
 {
   Q_UNUSED( name );
-  setupUi( this );
   QgsDebugMsg( "QgsGrassTools()" );
+  setupUi( this );
+  QPushButton * closeMapsetButton = new QPushButton( QgsApplication::getThemeIcon( "mActionFileExit.png" ), tr( "Close mapset" ), this );
+  mTabWidget->setCornerWidget( closeMapsetButton );
+  connect( closeMapsetButton, SIGNAL( clicked() ), QgsGrass::instance(), SLOT( closeMapsetWarn() ) );
+
   qRegisterMetaType<QgsDetailedItemData>();
 
   setWindowTitle( tr( "GRASS Tools" ) );

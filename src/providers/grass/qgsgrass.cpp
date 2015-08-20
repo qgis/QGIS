@@ -922,6 +922,20 @@ QString QgsGrass::closeMapset()
   return QString::null;
 }
 
+bool QgsGrass::closeMapsetWarn()
+{
+  QgsDebugMsg( "entered" );
+
+  QString err = QgsGrass::closeMapset();
+
+  if ( !err.isNull() )
+  {
+    warning( tr( "Cannot close mapset. %1" ).arg( err ) );
+    return false;
+  }
+  return true;
+}
+
 void QgsGrass::saveMapset()
 {
   QgsDebugMsg( "entered." );

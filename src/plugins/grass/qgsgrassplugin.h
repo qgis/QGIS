@@ -99,8 +99,6 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     void newMapset();
     //! Open existing mapset
     void openMapset();
-    //! Close mapset
-    void closeMapset();
     //! Current mapset changed (opened/closed)
     void mapsetChanged();
     //! Create new vector

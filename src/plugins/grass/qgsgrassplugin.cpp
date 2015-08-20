@@ -90,8 +90,10 @@ QgsGrassPlugin::~QgsGrassPlugin()
   //if ( mTools )
   //  mTools->closeTools();
   if ( mEdit )
+  {
     mEdit->closeEdit();
-  QString err = QgsGrass::closeMapset();
+  }
+  QgsGrass::instance()->closeMapsetWarn();
 }
 
 /* Following functions return name, description, version, and type for the plugin */
@@ -179,7 +181,7 @@ void QgsGrassPlugin::initGui()
   connect( mRegionAction, SIGNAL( toggled( bool ) ), this, SLOT( switchRegion( bool ) ) );
   connect( mOpenMapsetAction, SIGNAL( triggered() ), this, SLOT( openMapset() ) );
   connect( mNewMapsetAction, SIGNAL( triggered() ), this, SLOT( newMapset() ) );
-  connect( mCloseMapsetAction, SIGNAL( triggered() ), this, SLOT( closeMapset() ) );
+  connect( mCloseMapsetAction, SIGNAL( triggered() ), QgsGrass::instance(), SLOT( closeMapsetWarn() ) );
 
   // Add actions to a GRASS plugin menu
   qGisInterface->addPluginToMenu( tr( "&GRASS" ), mOpenMapsetAction );
@@ -527,19 +529,6 @@ void QgsGrassPlugin::openMapset()
   }
 }
 
-void QgsGrassPlugin::closeMapset()
-{
-// QgsDebugMsg("entered.");
-
-  QString err = QgsGrass::closeMapset();
-
-  if ( !err.isNull() )
-  {
-    QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot close mapset. %1" ).arg( err ) );
-    return;
-  }
-}
-
 void QgsGrassPlugin::newMapset()
 {
   if ( !QgsGrassNewMapset::isRunning() )
@@ -585,14 +574,9 @@ void QgsGrassPlugin::projectRead()
     return;
   }
 
-  QString err = QgsGrass::closeMapset();
-  if ( !err.isNull() )
-  {
-    QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot close current mapset. %1" ).arg( err ) );
-    return;
-  }
+  QgsGrass::instance()->closeMapsetWarn();
 
-  err = QgsGrass::openMapset( gisdbase, location, mapset );
+  QString err = QgsGrass::openMapset( gisdbase, location, mapset );
 
   if ( !err.isNull() )
   {
@@ -610,7 +594,7 @@ void QgsGrassPlugin::newProject()
 void QgsGrassPlugin::unload()
 {
   // Close mapset
-  QString err = QgsGrass::closeMapset();
+  QgsGrass::instance()->closeMapsetWarn();
 
   // remove the GUI
   qGisInterface->removePluginMenu( tr( "&GRASS" ), mOpenMapsetAction );

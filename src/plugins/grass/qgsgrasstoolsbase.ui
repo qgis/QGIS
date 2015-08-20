@@ -32,7 +32,7 @@
       </property>
       <widget class="QWidget" name="mModulesTreeTab">
        <attribute name="title">
-        <string>Modules Tree</string>
+        <string>Modules</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
