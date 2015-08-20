@@ -123,6 +123,10 @@ class Union(GeoAlgorithm):
                         if len(lstIntersectingB) != 0:
                             intB = QgsGeometry.unaryUnion(lstIntersectingB)
                             diff_geom = diff_geom.difference(intB)
+                            if diff_geom.isGeosEmpty():
+                                # In 2.10, QgsGeometry doesn't raise an
+                                # exception if the geometry is empty.
+                                raise Exception
 
                         if diff_geom.wkbType() == 0:
                             temp_list = diff_geom.asGeometryCollection()
@@ -168,6 +172,10 @@ class Union(GeoAlgorithm):
                             add = True
                             diff_geom = QgsGeometry(
                                 diff_geom.difference(tmpGeom))
+                            if diff_geom.isGeosEmpty():
+                                # In 2.10, QgsGeometry doesn't raise an
+                                # exception if the geometry is empty.
+                                raise Exception
                         else:
                             # Ihis only happends if the bounding box
                             # intersects, but the geometry doesn't

@@ -89,6 +89,10 @@ class SymmetricalDifference(GeoAlgorithm):
                 try:
                     if diffGeom.intersects(tmpGeom):
                         diffGeom = QgsGeometry(diffGeom.difference(tmpGeom))
+                        if diffGeom.isGeosEmpty():
+                            # In 2.10, QgsGeometry doesn't raise an exception
+                            # if the geometry is empty.
+                            raise Exception
                 except:
                     add = False
                     GEOS_EXCEPT = False

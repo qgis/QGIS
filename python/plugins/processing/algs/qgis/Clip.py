@@ -107,6 +107,10 @@ class Clip(GeoAlgorithm):
                             int_com = QgsGeometry(geom.combine(cur_geom))
                             int_sym = QgsGeometry(geom.symDifference(cur_geom))
                             new_geom = QgsGeometry(int_com.difference(int_sym))
+                            if new_geom.isGeosEmpty():
+                                # In 2.10, QgsGeometry doesn't raise an
+                                # exception if the geometry is empty.
+                                raise Exception
                         try:
                             outFeat.setGeometry(new_geom)
                             outFeat.setAttributes(attrs)

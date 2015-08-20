@@ -82,6 +82,10 @@ class Intersection(GeoAlgorithm):
                             int_com = geom.combine(tmpGeom)
                             int_sym = geom.symDifference(tmpGeom)
                             int_geom = QgsGeometry(int_com.difference(int_sym))
+                            if int_geom.isGeosEmpty():
+                                # In 2.10, QgsGeometry doesn't raise an
+                                # exception if the geometry is empty.
+                                raise Exception
                         try:
                             if int_geom.wkbType() in wkbTypeGroups[wkbTypeGroups[int_geom.wkbType()]]:
                                 outFeat.setGeometry(int_geom)

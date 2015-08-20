@@ -119,6 +119,20 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
           self.geoprocessing( self.inShapeA.currentText(), self.inShapeB.currentText(),
                               parameter, self.mergeOutput.checkState(), self.useSelectedA.checkState(), self.useSelectedB.checkState(), self.spnSegments.value() )
 
+  def check_empty_geometry(self, geometry):
+    """Raise an exception if the geometry is empty.
+
+    In QGIS 2.10, QgsGeometry doesn't raise an exception anymore if the
+    geometry is empty after a difference operation.
+
+    :param geometry: The geometry to test.
+    :type geometry: QgsGeometry
+
+    :raise Exception
+    """
+    if geometry.isGeosEmpty():
+      raise Exception
+
   def outFile( self ):
     self.outShape.clear()
     ( self.shapefileName, self.encoding ) = ftools_utils.saveDialog( self )
@@ -799,6 +813,7 @@ class geoprocessingThread( QThread ):
               try:
                 if diff_geom.intersects( tmpGeom ):
                   diff_geom = QgsGeometry( diff_geom.difference( tmpGeom ) )
+                  self.check_empty_geometry(diff_geom)
               except:
                 GEOS_EXCEPT = False
                 add = False
@@ -827,6 +842,7 @@ class geoprocessingThread( QThread ):
             try:
               if diff_geom.intersects( tmpGeom ):
                 diff_geom = QgsGeometry( diff_geom.difference( tmpGeom ) )
+                self.check_empty_geometry(diff_geom)
             except:
               GEOS_EXCEPT = False
               add = False
@@ -864,6 +880,7 @@ class geoprocessingThread( QThread ):
               try:
                 if diff_geom.intersects( tmpGeom ):
                   diff_geom = QgsGeometry( diff_geom.difference( tmpGeom ) )
+                  self.check_empty_geometry(diff_geom)
               except:
                 GEOS_EXCEPT = False
                 add = False
@@ -893,10 +910,7 @@ class geoprocessingThread( QThread ):
             try:
               if diff_geom.intersects( tmpGeom ):
                 diff_geom = QgsGeometry( diff_geom.difference( tmpGeom ) )
-              if diff_geom.isGeosEmpty():
-                GEOS_EXCEPT = False
-                add = False
-                break
+                self.check_empty_geometry(diff_geom)
             except:
               GEOS_EXCEPT = False
               add = False
@@ -967,6 +981,7 @@ class geoprocessingThread( QThread ):
                     int_com = geom.combine( tmpGeom )
                     int_sym = geom.symDifference( tmpGeom )
                     int_geom = QgsGeometry( int_com.difference( int_sym ) )
+                    self.check_empty_geometry(int_geom)
                   try:
                     # Geometry list: prevents writing error
                     # in geometries of different types
@@ -1002,6 +1017,7 @@ class geoprocessingThread( QThread ):
                   int_com = geom.combine( tmpGeom )
                   int_sym = geom.symDifference( tmpGeom )
                   int_geom = QgsGeometry( int_com.difference( int_sym ) )
+                  self.check_empty_geometry(int_geom)
                 try:
                   gList = ftools_utils.getGeomType( geom.wkbType() )
                   if int_geom.wkbType() in gList:
@@ -1041,6 +1057,7 @@ class geoprocessingThread( QThread ):
                     int_com = geom.combine( tmpGeom )
                     int_sym = geom.symDifference( tmpGeom )
                     int_geom = QgsGeometry( int_com.difference( int_sym ) )
+                    self.check_empty_geometry(int_geom)
                   try:
                     gList = ftools_utils.getGeomType( geom.wkbType() )
                     if int_geom.wkbType() in gList:
@@ -1073,6 +1090,7 @@ class geoprocessingThread( QThread ):
                   int_com = geom.combine( tmpGeom )
                   int_sym = geom.symDifference( tmpGeom )
                   int_geom = QgsGeometry( int_com.difference( int_sym ) )
+                  self.check_empty_geometry(int_geom)
 
                 try:
                   gList = ftools_utils.getGeomType( geom.wkbType() )
@@ -1193,6 +1211,7 @@ class geoprocessingThread( QThread ):
             if len(lstIntersectingB) != 0:
                 intB = QgsGeometry.unaryUnion(lstIntersectingB)
                 diff_geom = diff_geom.difference(intB)
+                self.check_empty_geometry(diff_geom)
 
             if diff_geom.wkbType() == 0:
               temp_list = diff_geom.asGeometryCollection()
@@ -1232,6 +1251,7 @@ class geoprocessingThread( QThread ):
             if diff_geom.intersects( tmpGeom ):
               add = True
               diff_geom = QgsGeometry( diff_geom.difference( tmpGeom ) )
+              self.check_empty_geometry(diff_geom)
             else:
               # this only happends if the bounding box
               # intersects, but the geometry doesn't
@@ -1301,6 +1321,7 @@ class geoprocessingThread( QThread ):
         try:
           if diff_geom.intersects( tmpGeom ):
             diff_geom = QgsGeometry( diff_geom.difference( tmpGeom ) )
+            self.check_empty_geometry(diff_geom)
         except:
           add = False
           GEOS_EXCEPT = False
@@ -1332,6 +1353,7 @@ class geoprocessingThread( QThread ):
         try:
           if diff_geom.intersects( tmpGeom ):
             diff_geom = QgsGeometry( diff_geom.difference( tmpGeom ) )
+            self.check_empty_geometry(diff_geom)
         except:
           add = False
           GEOS_EXCEPT = False
@@ -1416,6 +1438,7 @@ class geoprocessingThread( QThread ):
                 int_com = QgsGeometry( geom.combine( cur_geom ) )
                 int_sym = QgsGeometry( geom.symDifference( cur_geom ) )
                 new_geom = QgsGeometry( int_com.difference( int_sym ) )
+                self.check_empty_geometry(new_geom)
               try:
                 outFeat.setGeometry( new_geom )
                 outFeat.setAttributes( atMap )
@@ -1460,6 +1483,7 @@ class geoprocessingThread( QThread ):
                 int_com = QgsGeometry( geom.combine( cur_geom ) )
                 int_sym = QgsGeometry( geom.symDifference( cur_geom ) )
                 new_geom = QgsGeometry( int_com.difference( int_sym ) )
+                self.check_empty_geometry(new_geom)
               try:
                 outFeat.setGeometry( new_geom )
                 outFeat.setAttributes( atMap )
@@ -1512,6 +1536,7 @@ class geoprocessingThread( QThread ):
                 int_com = QgsGeometry( geom.combine( cur_geom ) )
                 int_sym = QgsGeometry( geom.symDifference( cur_geom ) )
                 new_geom = QgsGeometry( int_com.difference( int_sym ) )
+                self.check_empty_geometry(new_geom)
               try:
                 outFeat.setGeometry( new_geom )
                 outFeat.setAttributes( atMap )
@@ -1558,6 +1583,7 @@ class geoprocessingThread( QThread ):
                   int_com = QgsGeometry( geom.combine( cur_geom ) )
                   int_sym = QgsGeometry( geom.symDifference( cur_geom ) )
                   new_geom = QgsGeometry( int_com.difference( int_sym ) )
+                  self.check_empty_geometry(new_geom)
                 try:
                   outFeat.setGeometry( new_geom )
                   outFeat.setAttributes( atMap )
