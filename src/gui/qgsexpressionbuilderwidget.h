@@ -45,6 +45,27 @@ class QgsExpressionItemSearchProxy : public QSortFilterProxyModel
 
       return QSortFilterProxyModel::filterAcceptsRow( source_row, source_parent );
     }
+
+  protected:
+
+    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override
+    {
+      int leftSort = sourceModel()->data( left, Qt::UserRole + 1 ).toInt();
+      int rightSort = sourceModel()->data( right, Qt::UserRole + 1 ).toInt();
+      if ( leftSort != rightSort )
+        return leftSort < rightSort;
+
+      QString leftString = sourceModel()->data( left, Qt::DisplayRole ).toString();
+      QString rightString = sourceModel()->data( right, Qt::DisplayRole ).toString();
+
+      //ignore $ prefixes when sorting
+      if ( leftString.startsWith( "$" ) )
+        leftString = leftString.mid( 1 );
+      if ( rightString.startsWith( "$" ) )
+        rightString = rightString.mid( 1 );
+
+      return QString::localeAwareCompare( leftString, rightString ) < 0;
+    }
 };
 
 /** An expression item that can be used in the QgsExpressionBuilderWidget tree.
@@ -164,11 +185,12 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
       * @param helpText The help text that the user will see when item is selected.
       * @param type The type of the expression item.
       * @param highlightedItem set to true to make the item highlighted, which inserts a bold copy of the item at the top level
+      * @param sortOrder sort ranking for item
       */
     void registerItem( QString group, QString label, QString expressionText,
                        QString helpText = "",
                        QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode,
-                       bool highlightedItem = false );
+                       bool highlightedItem = false, int sortOrder = 1 );
 
     bool isExpressionValid();
 
