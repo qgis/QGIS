@@ -27,6 +27,8 @@ class QgsExpression;
 class QgsFieldPrivate;
 class QgsFieldsPrivate;
 
+
+
 /** \class QgsField
   * \ingroup core
   * Encapsulate a field in an attribute table or data source.
@@ -148,9 +150,11 @@ class CORE_EXPORT QgsField
      */
     bool convertCompatible( QVariant& v ) const;
 
+
   private:
 
     QSharedDataPointer<QgsFieldPrivate> d;
+
 
 }; // class QgsField
 

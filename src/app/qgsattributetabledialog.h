@@ -152,6 +152,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     void filterEdited();
     void filterQueryChanged( const QString& query );
     void filterQueryAccepted();
+    void openConditionalStyles();
 
     /**
      * update window title
@@ -205,6 +206,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
 
     QDockWidget* mDock;
     QgsDistanceArea* myDa;
+
 
     QMenu* mFilterColumnsMenu;
     QSignalMapper* mFilterActionMapper;

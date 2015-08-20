@@ -20,6 +20,8 @@
 #include "qgsattributeaction.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgsexpression.h"
+#include "qgsconditionalstyle.h"
+#include "qgsfielduiproperties.h"
 #include "qgsfield.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -27,6 +29,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsrendererv2.h"
 #include "qgsvectorlayer.h"
+#include "qgssymbollayerv2utils.h"
 
 #include <QVariant>
 
@@ -509,6 +512,10 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
          && role != SortRole
          && role != FeatureIdRole
          && role != FieldIndexRole
+         && role != Qt::BackgroundColorRole
+         && role != Qt::TextColorRole
+         && role != Qt::DecorationRole
+         && role != Qt::FontRole
        )
      )
     return QVariant();
@@ -563,6 +570,20 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   if ( role == Qt::DisplayRole )
   {
     return mWidgetFactories[ index.column()]->representValue( layer(), fieldId, mWidgetConfigs[ index.column()], mAttributeWidgetCaches[ index.column()], val );
+  }
+
+  QgsFieldUIProperties props = layer()->fieldUIProperties( field.name() );
+  QgsConditionalStyle style = props.matchingConditionalStyle( val,  &mFeat );
+  if ( style.isValid() )
+  {
+    if ( role == Qt::BackgroundColorRole && style.backgroundColor().isValid() )
+      return style.backgroundColor();
+    if ( role == Qt::TextColorRole && style.textColor().isValid() )
+      return style.textColor();
+    if ( role == Qt::DecorationRole )
+      return style.icon();
+    if ( role == Qt::FontRole )
+      return style.font();
   }
 
   return val;

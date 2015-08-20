@@ -45,6 +45,7 @@
 #include "qgsfeature.h"
 #include "qgsfeaturerequest.h"
 #include "qgsfield.h"
+#include "qgsfielduiproperties.h"
 #include "qgsgeometrycache.h"
 #include "qgsgeometry.h"
 #include "qgslabel.h"
@@ -1315,6 +1316,19 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
 
   readStyleManager( layer_node );
 
+  mFieldProperties.clear();
+  QDomNodeList nodeList = layer_node.toElement().elementsByTagName( "fielduiproperty" );
+  for ( int i = 0;i < nodeList.count(); i++ )
+  {
+    QDomElement propElm = nodeList.at( i ).toElement();
+    QString fieldName = propElm.attribute( "fieldname" );
+    QgsDebugMsg( "FIELDS!!" );
+    QgsDebugMsg( fieldName );
+    QgsFieldUIProperties props = QgsFieldUIProperties();
+    props.readXml( propElm );
+    setFieldUIProperties( fieldName, props );
+  }
+
   setLegend( QgsMapLayerLegend::defaultVectorLegend( this ) );
 
   return mValid;               // should be true if read successfully
@@ -1507,6 +1521,19 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
   mExpressionFieldBuffer->writeXml( layer_node, document );
 
   writeStyleManager( layer_node, document );
+
+  QDomElement properties = document.createElement( "fielduiproperties" );
+  QHash<QString, QgsFieldUIProperties>::iterator props;
+  for ( props = mFieldProperties.begin(); props != mFieldProperties.end(); ++props )
+  {
+    QDomElement fielduipropel = document.createElement( "fielduiproperty" );
+    fielduipropel.setAttribute( "fieldname", props.key() );
+    QgsFieldUIProperties property = props.value();
+    property.writeXml( fielduipropel, document );
+    properties.appendChild( fielduipropel );
+  }
+
+  layer_node.appendChild( properties );
 
   // renderer specific settings
   QString errorMsg;
@@ -2000,6 +2027,20 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   mActions->writeXML( node, doc );
 
   return true;
+}
+
+QgsFieldUIProperties QgsVectorLayer::fieldUIProperties( QString fieldName )
+{
+  if ( mFieldProperties.contains( fieldName ) )
+  {
+    return mFieldProperties[fieldName];
+  }
+  return QgsFieldUIProperties();
+}
+
+void QgsVectorLayer::setFieldUIProperties( QString fieldNamem, QgsFieldUIProperties props )
+{
+  mFieldProperties.insert( fieldNamem, props );
 }
 
 bool QgsVectorLayer::readSld( const QDomNode& node, QString& errorMessage )

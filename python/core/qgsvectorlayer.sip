@@ -2,6 +2,7 @@
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
 
+
 class QgsAttributeEditorElement : QObject
 {
 %TypeHeaderCode
