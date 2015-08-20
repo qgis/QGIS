@@ -41,24 +41,24 @@ extern "C"
  *  \brief GRASS attributes.
  *
  */
-class QgsGrassRegion: public QDialog, private Ui::QgsGrassRegionBase
+class QgsGrassRegion: public QWidget, private Ui::QgsGrassRegionBase
 {
     Q_OBJECT
 
   public:
     //! Constructor
-    QgsGrassRegion( QgsGrassPlugin *plugin, QgisInterface *iface,
+    QgsGrassRegion( QgisInterface *iface,
                     QWidget * parent = 0, Qt::WindowFlags f = 0 );
 
     //! Destructor
     ~QgsGrassRegion();
 
   public slots:
-    //! OK
-    void accept( void ) override;
+    void buttonClicked( QAbstractButton *button );
 
-    //! Cancel
-    void reject( void ) override;
+    void mapsetChanged();
+
+    void reloadRegion();
 
     //! Mouse event receiver
     //void mouseEventReceiverMove ( QgsPoint & );
@@ -81,14 +81,15 @@ class QgsGrassRegion: public QDialog, private Ui::QgsGrassRegionBase
 
     void radioChanged( void );
 
-    void restorePosition( void );
-
     //! Called when the capture finished to refresh the mWindow values
     void onCaptureFinished();
 
+    void on_mDrawButton_clicked();
+
+    void canvasMapToolSet( QgsMapTool *tool );
   private:
     //! Pointer to plugin
-    QgsGrassPlugin *mPlugin;
+    //QgsGrassPlugin *mPlugin;
 
     //! Pointer to QGIS interface
     QgisInterface *mInterface;
@@ -101,8 +102,13 @@ class QgsGrassRegion: public QDialog, private Ui::QgsGrassRegionBase
     //! Current new region
     struct Cell_head mWindow;
 
+    QgsCoordinateReferenceSystem mCrs;
+
     //! Display current state of new region in XOR mode
     void displayRegion( void );
+
+    void readRegion();
+
 
     // Set region values in GUI from mWindow
     void refreshGui();
@@ -114,11 +120,9 @@ class QgsGrassRegion: public QDialog, private Ui::QgsGrassRegionBase
     //! Currently updating GUI, don't run *Changed methods
     bool mUpdatingGui;
 
-
-    void saveWindowLocation( void );
-
     // Format N, S, E, W value
-    QString formatEdge( double v );
+    QString formatExtent( double v );
+    QString formatResolution( double v );
 
     QgsGrassRegionEdit* mRegionEdit;
 };

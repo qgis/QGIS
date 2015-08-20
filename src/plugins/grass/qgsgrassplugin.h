@@ -89,10 +89,6 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     void displayRegion();
     //! Switch region on/off
     void switchRegion( bool on );
-    //! Change region
-    void changeRegion( void );
-    //! Region dialog closed
-    void regionClosed();
     //! Redraw region
     void redrawRegion( void );
     //! Post render
@@ -133,8 +129,7 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
 
     //! Pointer to Display region acction
     QAction *mRegionAction;
-    //! Region dialog
-    QgsGrassRegion *mRegion;
+
     // Region rubber band
     QgsRubberBand *mRegionBand;
     //! GRASS tools
@@ -151,7 +146,6 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     QAction *mNewMapsetAction;
     QAction *mCloseMapsetAction;
     QAction *mOpenToolsAction;
-    QAction *mEditRegionAction;
     QAction *mEditAction;
     QAction *mNewVectorAction;
 };

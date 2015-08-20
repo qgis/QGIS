@@ -1439,6 +1439,11 @@ bool QgsGrass::writeRegion( const QString& gisbase,
   QgsDebugMsg( QString( "n = %1 s = %2" ).arg( window->north ).arg( window->south ) );
   QgsDebugMsg( QString( "e = %1 w = %2" ).arg( window->east ).arg( window->west ) );
 
+  if ( !window )
+  {
+    return false;
+  }
+
   QgsGrass::setMapset( gisbase, location, mapset );
 
   if ( G_put_window( window ) == -1 )
@@ -1447,6 +1452,20 @@ bool QgsGrass::writeRegion( const QString& gisbase,
   }
 
   return true;
+}
+
+void QgsGrass::writeRegion( const struct Cell_head *window )
+{
+  QString error = tr( "Cannot write region" );
+  if ( !activeMode() )
+  {
+    throw QgsGrass::Exception( error += ", " + tr( "no mapset open" ) );
+  }
+  if ( !writeRegion( getDefaultGisdbase(), getDefaultLocation(), getDefaultMapset(), window ) )
+  {
+    throw QgsGrass::Exception( error );
+  }
+  emit regionChanged();
 }
 
 void QgsGrass::copyRegionExtent( struct Cell_head *source,

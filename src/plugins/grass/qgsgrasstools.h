@@ -28,6 +28,7 @@ class QStandardItemModel;
 class QgisInterface;
 class QgsMapCanvas;
 
+class QgsGrassRegion;
 class QgsGrassToolsTreeFilterProxyModel;
 
 /** \class QgsGrassTools
@@ -121,6 +122,9 @@ class QgsGrassTools: public QDockWidget, private Ui::QgsGrassToolsBase
     // For model & filtered model by Tim
     QStandardItemModel * mModulesListModel;
     QSortFilterProxyModel * mModelProxy;
+
+    // Region widget
+    QgsGrassRegion *mRegion;
 
     // this was used for direct
     void removeEmptyItems( QStandardItemModel *treeModel );

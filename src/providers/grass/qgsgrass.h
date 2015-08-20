@@ -275,6 +275,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     /** Init region, set extent, rows and cols and adjust.
      * Returns error if adjustment failed. */
     static QString setRegion( struct Cell_head *window, QgsRectangle rect, int rows, int cols );
+
     //! Get extent from region
     static QgsRectangle extent( struct Cell_head *window );
 
@@ -304,6 +305,11 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     // ! Write current mapset region
     static bool writeRegion( const QString& gisbase, const QString& location, const QString& mapset,
                              const struct Cell_head *window );
+
+    /** Write current mapset region
+     *  throws QgsGrass::Exception
+     *  Emits regionChanged */
+    void writeRegion( const struct Cell_head *window );
 
     // ! Set (copy) region extent, resolution is not changed
     static void copyRegionExtent( struct Cell_head *source,
@@ -474,6 +480,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
 
     static QPen regionPen();
 
+    /** Store region pen in settings, emits regionPenChanged */
     void setRegionPen( const QPen & pen );
 
     // Modules UI debug
@@ -505,6 +512,12 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
 
     /** Emitted when modules debug mode changed */
     void modulesDebugChanged();
+
+    /** Emitted when current region changed
+     *  TODO: currently only emited when writeRegion is called, add file system watcher
+     *  to get also changes done outside QGIS or by modules.
+     */
+    void regionChanged();
 
     /** Emitted when region pen changed */
     void regionPenChanged();

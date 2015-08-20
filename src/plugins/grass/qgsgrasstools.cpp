@@ -16,6 +16,7 @@
 
 #include "qgsgrasstools.h"
 #include "qgsgrassmodule.h"
+#include "qgsgrassregion.h"
 #include "qgsgrassshell.h"
 #include "qgsgrass.h"
 #include "qgsconfig.h"
@@ -197,6 +198,10 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface, QWidget * parent, const char
   connect( QgsGrass::instance(), SIGNAL( modulesDebugChanged() ), SLOT( debugChanged() ) );
 
   connect( mDebugReloadButton, SIGNAL( clicked() ), SLOT( loadConfig() ) );
+
+  // Region widget tab
+  mRegion = new QgsGrassRegion( mIface, this );
+  mTabWidget->addTab( mRegion, tr( "Region" ) );
 
   // Show before loadConfig() so that user can see loading
   restorePosition();
@@ -533,6 +538,7 @@ void QgsGrassTools::mapsetChanged()
   QgsDebugMsg( "entered." );
 
   closeTools();
+  mRegion->mapsetChanged();
   showTabs();
 }
 
@@ -586,7 +592,7 @@ void QgsGrassTools::closeTools()
 {
   QgsDebugMsg( "entered." );
 
-  for ( int i = mTabWidget->count() - 1; i > 0; i-- ) // first is module tree
+  for ( int i = mTabWidget->count() - 1; i > 1; i-- ) // first is module tree, second is region
   {
     delete mTabWidget->widget( i );
   }
