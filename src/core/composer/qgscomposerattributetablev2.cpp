@@ -583,6 +583,18 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
   return true;
 }
 
+QgsExpressionContext *QgsComposerAttributeTableV2::createExpressionContext() const
+{
+  QgsExpressionContext* context = QgsComposerTableV2::createExpressionContext();
+
+  if ( mSource == LayerAttributes )
+  {
+    context->appendScope( QgsExpressionContextUtils::layerScope( mVectorLayer ) );
+  }
+
+  return context;
+}
+
 QVariant QgsComposerAttributeTableV2::replaceWrapChar( const QVariant &variant ) const
 {
   //avoid converting variants to string if not required (try to maintain original type for sorting)
