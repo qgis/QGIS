@@ -45,6 +45,8 @@ QgsDualView::QgsDualView( QWidget* parent )
 {
   setupUi( this );
 
+  mConditionalFormatWidget->hide();
+
   mPreviewActionMapper = new QSignalMapper( this );
 
   mPreviewColumnsMenu = new QMenu( this );
@@ -68,6 +70,8 @@ void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const Qg
   initLayerCache( layer, !request.filterRect().isNull() );
   initModels( mapCanvas, request );
 
+  mConditionalFormatWidget->setLayer( layer );
+
   mTableView->setModel( mFilterModel );
   mFeatureList->setModel( mFeatureListModel );
   mAttributeForm = new QgsAttributeForm( layer, QgsFeature(), mEditorContext );
@@ -85,7 +89,8 @@ void QgsDualView::init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const Qg
   else
     columnBoxInit();
 
-  mTableView->resizeColumnsToContents();
+  // This slows down load of the attribute table heaps and uses loads of memory.
+  //mTableView->resizeColumnsToContents();
 
   mFeatureList->setEditSelection( QgsFeatureIds() << mFeatureListModel->idxToFid( mFeatureListModel->index( 0, 0 ) ) );
 }
@@ -273,6 +278,12 @@ void QgsDualView::setCurrentEditSelection( const QgsFeatureIds& fids )
 bool QgsDualView::saveEditChanges()
 {
   return mAttributeForm->save();
+}
+
+void QgsDualView::openConditionalStyles()
+{
+  mConditionalFormatWidget->setVisible( !mConditionalFormatWidget->isVisible() );
+  mConditionalFormatWidget->viewRules();
 }
 
 void QgsDualView::previewExpressionBuilder()

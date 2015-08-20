@@ -23,6 +23,7 @@
 #include <QSet>
 #include <QList>
 #include <QStringList>
+#include <QFont>
 
 #include "qgis.h"
 #include "qgsmaplayer.h"
@@ -39,6 +40,7 @@ class QImage;
 
 class QgsAbstractGeometrySimplifier;
 class QgsAttributeAction;
+class QgsFieldUIProperties;
 class QgsCoordinateTransform;
 class QgsDiagramLayerSettings;
 class QgsDiagramRendererV2;
@@ -64,6 +66,7 @@ class QgsPointV2;
 
 typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
+
 
 /**
  * This is an abstract base class for any elements of a drag and drop form.
@@ -355,6 +358,8 @@ protected:
   /** Subset of fields to use from joined layer. null = use all fields*/
   QSharedPointer<QStringList> joinFieldsSubset;
 };
+
+
 
 /** \ingroup core
  * Represents a vector layer which manages a vector based data sets.
@@ -1749,6 +1754,22 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     bool simplifyDrawingCanbeApplied( const QgsRenderContext& renderContext, QgsVectorSimplifyMethod::SimplifyHint simplifyHint ) const;
 
+    /**
+     * @brief Return the field properties that have been set for the given field.
+     * Field UI properties hold extra UI information for a field that can be used in the UI.
+     * @param fieldName The field name to get the field properties for.
+     * @return Return the UI properties set for the field.  Returns a new \class QgsFieldUIProperties if
+     * the none is currently set for the field.
+     */
+    QgsFieldUIProperties fieldUIProperties( QString fieldName );
+
+    /**
+     * @brief Set the the field UI properties for a given field.
+     * @param fieldName The field name.
+     * @param props The properties to assign to a field.
+     */
+    void setFieldUIProperties( QString fieldName, QgsFieldUIProperties props );
+
   public slots:
     /**
      * Select feature by its ID
@@ -1951,6 +1972,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     void writeCustomSymbology( QDomElement& element, QDomDocument& doc, QString& errorMessage ) const;
 
+
   private slots:
     void onRelationsLoaded();
     void onJoinedFieldsChanged();
@@ -2000,6 +2022,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void readSldLabeling( const QDomNode& node );
 
   private:                       // Private attributes
+
+    QHash<QString, QgsFieldUIProperties> mFieldProperties;
 
     /** Pointer to data provider derived from the abastract base class QgsDataProvider */
     QgsVectorDataProvider *mDataProvider;

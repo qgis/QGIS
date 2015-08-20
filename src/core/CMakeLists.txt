@@ -79,6 +79,7 @@ SET(QGIS_CORE_SRCS
   qgscontexthelp_texts.cpp
   qgscoordinatereferencesystem.cpp
   qgscoordinatetransform.cpp
+  qgsconditionalstyle.cpp
   qgscredentials.cpp
   qgsdartmeasurement.cpp
   qgscrscache.cpp
@@ -100,6 +101,7 @@ SET(QGIS_CORE_SRCS
   qgsfeaturerequest.cpp
   qgsfeaturestore.cpp
   qgsfield.cpp
+  qgsfielduiproperties.cpp
   qgsfontutils.cpp
   qgsgeometrycache.cpp
   qgsgeometrysimplifier.cpp
@@ -516,6 +518,7 @@ SET(QGIS_CORE_HDRS
   qgscolorschemeregistry.h
   qgsconnectionpool.h
   qgscontexthelp.h
+  qgsconditionalstyle.h
   qgscoordinatereferencesystem.h
   qgscrscache.h
   qgscsexception.h
@@ -541,6 +544,7 @@ SET(QGIS_CORE_HDRS
   qgsfeaturerequest.h
   qgsfeaturestore.h
   qgsfield.h
+  qgsfielduiproperties.h
   qgsfield_p.h
   qgsfontutils.h
   qgsgeometrycache.h

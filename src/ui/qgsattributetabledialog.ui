@@ -14,16 +14,7 @@
    <string>Attribute Table</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <property name="spacing">
@@ -485,6 +476,26 @@
       </spacer>
      </item>
      <item>
+      <widget class="QToolButton" name="mSetStyles">
+       <property name="text">
+        <string>Cond</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/rendererCategorizedSymbol.png</normaloff>:/images/themes/default/rendererCategorizedSymbol.png</iconset>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="autoRepeat">
+        <bool>false</bool>
+       </property>
+       <property name="autoRaise">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QToolButton" name="mHelpButton">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -555,16 +566,7 @@
         <property name="sizeConstraint">
          <enum>QLayout::SetDefaultConstraint</enum>
         </property>
-        <property name="leftMargin">
-         <number>0</number>
-        </property>
-        <property name="topMargin">
-         <number>0</number>
-        </property>
-        <property name="rightMargin">
-         <number>0</number>
-        </property>
-        <property name="bottomMargin">
+        <property name="margin">
          <number>0</number>
         </property>
         <item row="0" column="0">
@@ -673,7 +675,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QgsFieldExpressionWidget" name="mUpdateExpressionText" native="true">
+       <widget class="QgsFieldExpressionWidget" name="mUpdateExpressionText">
         <property name="sizePolicy">
          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -769,7 +771,7 @@
   <customwidget>
    <class>QgsFieldExpressionWidget</class>
    <extends>QWidget</extends>
-   <header location="global">qgsfieldexpressionwidget.h</header>
+   <header>qgsfieldexpressionwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

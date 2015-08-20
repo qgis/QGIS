@@ -133,6 +133,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   connect( mFilterActionMapper, SIGNAL( mapped( QObject* ) ), SLOT( filterColumnChanged( QObject* ) ) );
   connect( mFilterQuery, SIGNAL( returnPressed() ), SLOT( filterQueryAccepted() ) );
   connect( mActionApplyFilter, SIGNAL( triggered() ), SLOT( filterQueryAccepted() ) );
+  connect( mSetStyles, SIGNAL( pressed() ), SLOT( openConditionalStyles() ) );
 
   // info from layer to table
   connect( mLayer, SIGNAL( editingStarted() ), this, SLOT( editingToggled() ) );
@@ -727,6 +728,11 @@ void QgsAttributeTableDialog::filterQueryAccepted()
     return;
   }
   filterQueryChanged( mFilterQuery->text() );
+}
+
+void QgsAttributeTableDialog::openConditionalStyles()
+{
+  mMainView->openConditionalStyles();
 }
 
 void QgsAttributeTableDialog::setFilterExpression( QString filterString )

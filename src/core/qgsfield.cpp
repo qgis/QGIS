@@ -20,6 +20,7 @@
 #include <QSettings>
 #include <QtCore/qmath.h>
 
+
 #if 0
 QgsField::QgsField( QString nam, QString typ, int len, int prec, bool num,
                     QString comment )
@@ -33,8 +34,8 @@ QgsField::QgsField( QString nam, QString typ, int len, int prec, bool num,
   // names how they are now.
 }
 #endif
-
-QgsField::QgsField( QString name, QVariant::Type type, QString typeName, int len, int prec, QString comment )
+QgsField::QgsField( QString name, QVariant::Type type,
+                    QString typeName, int len, int prec, QString comment )
 {
   d = new QgsFieldPrivate( name, type, typeName, len, prec, comment );
 }
@@ -175,6 +176,7 @@ bool QgsField::convertCompatible( QVariant& v ) const
 
   return true;
 }
+
 
 QDataStream& operator<<( QDataStream& out, const QgsField& field )
 {
