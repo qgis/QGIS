@@ -47,6 +47,7 @@ QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer* laye
   context << QgsExpressionContextUtils::globalScope()
   << QgsExpressionContextUtils::projectScope()
   << QgsExpressionContextUtils::layerScope( mLayer );
+  context.setHighlightedVariables( QStringList() << "layer_id" << "layer_name" );
   mExpressionBuilder->setExpressionContext( context );
 
   QSettings settings;
