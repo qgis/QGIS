@@ -17,6 +17,7 @@
 #define QGSGRASS_H
 
 #include <QMutex>
+#include <QPen>
 
 #include <setjmp.h>
 
@@ -471,6 +472,10 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
 
     void setModulesConfig( bool custom, const QString &customDir );
 
+    static QPen regionPen();
+
+    void setRegionPen( const QPen & pen );
+
     // Modules UI debug
     static bool modulesDebug();
 
@@ -500,6 +505,9 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
 
     /** Emitted when modules debug mode changed */
     void modulesDebugChanged();
+
+    /** Emitted when region pen changed */
+    void regionPenChanged();
 
   private:
     static int initialized; // Set to 1 after initialization

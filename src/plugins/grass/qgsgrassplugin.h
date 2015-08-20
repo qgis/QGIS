@@ -19,8 +19,6 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include <QObject>
-#include <QPen>
-
 
 class QgsGrassTools;
 class QgsGrassNewMapset;
@@ -75,10 +73,6 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     //! Destructor
     virtual ~QgsGrassPlugin();
 
-    //! Get Region Pen
-    QPen & regionPen( void );
-    //! Set Region Pen
-    void setRegionPen( QPen & );
     //! Get an icon from the active theme if possible
     static QIcon getThemeIcon( const QString &theName );
 
@@ -139,8 +133,6 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
 
     //! Pointer to Display region acction
     QAction *mRegionAction;
-    //! Region width
-    QPen mRegionPen;
     //! Region dialog
     QgsGrassRegion *mRegion;
     // Region rubber band

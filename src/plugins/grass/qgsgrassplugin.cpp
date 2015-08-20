@@ -226,12 +226,7 @@ void QgsGrassPlugin::initGui()
            this, SLOT( setEditAction() ) );
 
   connect( QgsGrass::instance(), SIGNAL( mapsetChanged() ), SLOT( mapsetChanged() ) );
-
-  // Init Region symbology
-  mRegionPen.setColor( QColor( settings.value( "/GRASS/region/color", "#ff0000" ).toString() ) );
-  mRegionPen.setWidth( settings.value( "/GRASS/region/width", 0 ).toInt() );
-  mRegionBand->setColor( mRegionPen.color() );
-  mRegionBand->setWidth( mRegionPen.width() );
+  connect( QgsGrass::instance(), SIGNAL( regionPenChanged() ), SLOT( displayRegion() ) );
 
   mapsetChanged();
 
@@ -486,6 +481,10 @@ void QgsGrassPlugin::displayRegion()
 
   QgsRectangle rect( QgsPoint( window.west, window.north ), QgsPoint( window.east, window.south ) );
 
+  QPen regionPen = QgsGrass::regionPen();
+  mRegionBand->setColor( regionPen.color() );
+  mRegionBand->setWidth( regionPen.width() );
+
   QgsGrassRegionEdit::drawRegion( mCanvas, mRegionBand, rect, &mCoordinateTransform );
 }
 
@@ -534,23 +533,6 @@ void QgsGrassPlugin::changeRegion( void )
 void QgsGrassPlugin::regionClosed()
 {
   mRegion = 0;
-}
-
-QPen & QgsGrassPlugin::regionPen()
-{
-  return mRegionPen;
-}
-
-void QgsGrassPlugin::setRegionPen( QPen & pen )
-{
-  mRegionPen = pen;
-
-  mRegionBand->setColor( mRegionPen.color() );
-  mRegionBand->setWidth( mRegionPen.width() );
-
-  QSettings settings;
-  settings.setValue( "/GRASS/region/color", mRegionPen.color().name() );
-  settings.setValue( "/GRASS/region/width", ( int ) mRegionPen.width() );
 }
 
 void QgsGrassPlugin::openMapset()

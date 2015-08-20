@@ -258,31 +258,6 @@ QgsGrassRegion::QgsGrassRegion( QgsGrassPlugin *plugin,  QgisInterface *iface,
   connect( mEWRes, SIGNAL( editingFinished() ), this, SLOT( EWResChanged() ) );
   connect( mRows, SIGNAL( editingFinished() ), this, SLOT( rowsChanged() ) );
   connect( mCols, SIGNAL( editingFinished() ), this, SLOT( colsChanged() ) );
-
-  // Symbology
-  QPen pen = mPlugin->regionPen();
-  mColorButton->setContext( "gui" );
-  mColorButton->setColorDialogTitle( tr( "Select color" ) );
-  mColorButton->setColor( pen.color() );
-  connect( mColorButton, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( changeColor( const QColor& ) ) );
-
-  mWidthSpinBox->setValue( pen.width() );
-  connect( mWidthSpinBox, SIGNAL( valueChanged( int ) ), this, SLOT( changeWidth() ) );
-}
-
-void QgsGrassRegion::changeColor( const QColor& color )
-{
-  QPen pen = mPlugin->regionPen();
-  pen.setColor( color );
-  mPlugin->setRegionPen( pen );
-}
-
-void QgsGrassRegion::changeWidth( void )
-{
-  QPen pen = mPlugin->regionPen();
-
-  pen.setWidth( mWidthSpinBox->value() );
-  mPlugin->setRegionPen( pen );
 }
 
 QString QgsGrassRegion::formatEdge( double v )

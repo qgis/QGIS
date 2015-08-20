@@ -81,9 +81,6 @@ class QgsGrassRegion: public QDialog, private Ui::QgsGrassRegionBase
 
     void radioChanged( void );
 
-    void changeColor( const QColor& color );
-    void changeWidth( void );
-
     void restorePosition( void );
 
     //! Called when the capture finished to refresh the mWindow values

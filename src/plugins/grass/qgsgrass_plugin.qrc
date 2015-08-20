@@ -19,6 +19,7 @@
         <file alias="grass_new_point.png">themes/default/grass_new_point.png</file>
         <file alias="grass_new_vector_layer.png">themes/default/grass_new_vector_layer.png</file>
         <file alias="grass_open_mapset.png">themes/default/grass_open_mapset.png</file>
+        <file alias="grass_options_region.png">themes/default/grass_options_region.png</file>
         <file alias="grass_region_edit.png">themes/default/grass_region_edit.png</file>
         <file alias="grass_region.png">themes/default/grass_region.png</file>
         <file alias="grass_set_region.png">themes/default/grass_set_region.png</file>

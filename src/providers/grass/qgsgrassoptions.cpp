@@ -53,6 +53,13 @@ QgsGrassOptions::QgsGrassOptions( QWidget *parent )
 
   mImportExternalCheckBox->setChecked( settings.value( mImportSettingsPath + "/external", true ).toBool() );
 
+  // Region
+  QPen regionPen = QgsGrass::regionPen();
+  mRegionColorButton->setContext( "gui" );
+  mRegionColorButton->setColorDialogTitle( tr( "Select color" ) );
+  mRegionColorButton->setColor( regionPen.color() );
+  mRegionWidthSpinBox->setValue( regionPen.width() );
+
   restoreOptionsBaseUi();
 }
 
@@ -87,4 +94,10 @@ void QgsGrassOptions::saveOptions()
                      mCrsTransformationComboBox->itemData( mCrsTransformationComboBox->currentIndex() ).toInt() );
 
   settings.setValue( mImportSettingsPath + "/external", mImportExternalCheckBox->isChecked() );
+
+  // Region
+  QPen regionPen = QgsGrass::regionPen();
+  regionPen.setColor( mRegionColorButton->color() );
+  regionPen.setWidthF( mRegionWidthSpinBox->value() );
+  QgsGrass::instance()->setRegionPen( regionPen );
 }

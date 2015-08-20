@@ -2350,6 +2350,23 @@ void QgsGrass::setModulesConfig( bool custom, const QString &customDir )
   }
 }
 
+QPen QgsGrass::regionPen()
+{
+  QSettings settings;
+  QPen pen;
+  pen.setColor( QColor( settings.value( "/GRASS/region/color", "#ff0000" ).toString() ) );
+  pen.setWidthF( settings.value( "/GRASS/region/width", 0 ).toFloat() );
+  return pen;
+}
+
+void QgsGrass::setRegionPen( const QPen & pen )
+{
+  QSettings settings;
+  settings.setValue( "/GRASS/region/color", pen.color().name() );
+  settings.setValue( "/GRASS/region/width", pen.widthF() );
+  emit regionPenChanged();
+}
+
 bool QgsGrass::modulesDebug()
 {
   QSettings settings;

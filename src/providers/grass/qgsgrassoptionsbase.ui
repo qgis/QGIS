@@ -71,6 +71,9 @@
          <property name="resizeMode">
           <enum>QListView::Adjust</enum>
          </property>
+         <property name="uniformItemSizes">
+          <bool>false</bool>
+         </property>
          <property name="wordWrap">
           <bool>true</bool>
          </property>
@@ -93,6 +96,15 @@
           <property name="icon">
            <iconset resource="../../../images/images.qrc">
             <normaloff>:/images/icons/qbrowser-icon-60x60.png</normaloff>:/images/icons/qbrowser-icon-60x60.png</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Region</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../plugins/grass/qgsgrass_plugin.qrc">
+            <normaloff>:/images/themes/default/grass/grass_options_region.png</normaloff>:/images/themes/default/grass/grass_options_region.png</iconset>
           </property>
          </item>
         </widget>
@@ -119,7 +131,7 @@
           <number>0</number>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="mModulesPage">
           <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -234,8 +246,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>286</width>
-                <height>98</height>
+                <width>447</width>
+                <height>358</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -308,6 +320,92 @@
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="mRegionPage">
+          <layout class="QVBoxLayout" name="verticalLayout_9">
+           <item>
+            <widget class="QgsCollapsibleGroupBox" name="mRegionGroupBox">
+             <property name="title">
+              <string>Region border</string>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_8">
+              <item>
+               <layout class="QGridLayout" name="gridLayout_2">
+                <item row="0" column="0">
+                 <widget class="QLabel" name="mRegionColorLabel">
+                  <property name="text">
+                   <string>Color</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QgsColorButtonV2" name="mRegionColorButton">
+                  <property name="minimumSize">
+                   <size>
+                    <width>120</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>120</width>
+                    <height>16777215</height>
+                   </size>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="2">
+                 <spacer name="horizontalSpacer_2">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QLabel" name="mRegionWidthLabel">
+                  <property name="text">
+                   <string>Width</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QDoubleSpinBox" name="mRegionWidthSpinBox">
+                  <property name="decimals">
+                   <number>1</number>
+                  </property>
+                  <property name="singleStep">
+                   <double>0.200000000000000</double>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <spacer name="verticalSpacer_3">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
         </widget>
        </item>
       </layout>
@@ -346,6 +444,11 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsColorButtonV2</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbuttonv2.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
@@ -354,6 +457,7 @@
  </customwidgets>
  <resources>
   <include location="../../../images/images.qrc"/>
+  <include location="../../plugins/grass/qgsgrass_plugin.qrc"/>
  </resources>
  <connections>
   <connection>
