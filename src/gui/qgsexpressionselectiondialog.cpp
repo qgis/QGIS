@@ -43,6 +43,12 @@ QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer* laye
   mExpressionBuilder->loadFieldNames();
   mExpressionBuilder->loadRecent( "Selection" );
 
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( mLayer );
+  mExpressionBuilder->setExpressionContext( context );
+
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/ExpressionSelectionDialog/geometry" ).toByteArray() );
 }

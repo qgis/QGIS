@@ -3025,6 +3025,91 @@ QString QgsExpression::helptext( QString name )
   return gFunctionHelpTexts.value( name, QObject::tr( "function help for %1 missing" ).arg( name ) );
 }
 
+QHash<QString, QString> QgsExpression::gVariableHelpTexts;
+
+void QgsExpression::initVariableHelp()
+{
+  if ( !gVariableHelpTexts.isEmpty() )
+    return;
+
+  //global variables
+  gVariableHelpTexts.insert( "qgis_version", QCoreApplication::translate( "variable_help", "Current QGIS version string." ) );
+  gVariableHelpTexts.insert( "qgis_version_no", QCoreApplication::translate( "variable_help", "Current QGIS version number." ) );
+  gVariableHelpTexts.insert( "qgis_release_name", QCoreApplication::translate( "variable_help", "Current QGIS release name." ) );
+
+  //project variables
+  gVariableHelpTexts.insert( "project_title", QCoreApplication::translate( "variable_help", "Title of current project." ) );
+  gVariableHelpTexts.insert( "project_path", QCoreApplication::translate( "variable_help", "Full path (including file name) of current project." ) );
+  gVariableHelpTexts.insert( "project_folder", QCoreApplication::translate( "variable_help", "Folder for current project." ) );
+  gVariableHelpTexts.insert( "project_filename", QCoreApplication::translate( "variable_help", "Filename of current project." ) );
+
+  //layer variables
+  gVariableHelpTexts.insert( "layer_name", QCoreApplication::translate( "variable_help", "Name of current layer." ) );
+  gVariableHelpTexts.insert( "layer_id", QCoreApplication::translate( "variable_help", "ID of current project." ) );
+  gVariableHelpTexts.insert( "layer_title", QCoreApplication::translate( "variable_help", "Title of current layer." ) );
+  gVariableHelpTexts.insert( "layer_abstract", QCoreApplication::translate( "variable_help", "Metadata abstract for current layer." ) );
+  gVariableHelpTexts.insert( "layer_keywords", QCoreApplication::translate( "variable_help", "Metadata keywords for current layer." ) );
+  gVariableHelpTexts.insert( "layer_dataurl", QCoreApplication::translate( "variable_help", "Metadata data URL for current layer." ) );
+  gVariableHelpTexts.insert( "layer_attribution", QCoreApplication::translate( "variable_help", "Metadata attribution for current layer." ) );
+  gVariableHelpTexts.insert( "layer_attributionurl", QCoreApplication::translate( "variable_help", "Metadata attribution URL for current layer." ) );
+  gVariableHelpTexts.insert( "layer_source", QCoreApplication::translate( "variable_help", "Source of current layer." ) );
+  gVariableHelpTexts.insert( "layer_minscale", QCoreApplication::translate( "variable_help", "Minimum display scale for current layer." ) );
+  gVariableHelpTexts.insert( "layer_maxscale", QCoreApplication::translate( "variable_help", "Maximum display scale for current layer." ) );
+  gVariableHelpTexts.insert( "layer_crs", QCoreApplication::translate( "variable_help", "CRS of current layer." ) );
+  gVariableHelpTexts.insert( "layer_crsdefinition", QCoreApplication::translate( "variable_help", "CRS definition of current layer." ) );
+  gVariableHelpTexts.insert( "layer_extent", QCoreApplication::translate( "variable_help", "Extent of current layer (as a geometry object)." ) );
+  gVariableHelpTexts.insert( "layer_type", QCoreApplication::translate( "variable_help", "Type of current layer, eg raster/vector." ) );
+  gVariableHelpTexts.insert( "layer_storagetype", QCoreApplication::translate( "variable_help", "Storage format of current layer." ) );
+  gVariableHelpTexts.insert( "layer_geometrytype", QCoreApplication::translate( "variable_help", "Geometry type of current layer." ) );
+  gVariableHelpTexts.insert( "layer_featurecount", QCoreApplication::translate( "variable_help", "Approximate feature count for current layer." ) );
+
+  //composition variables
+  gVariableHelpTexts.insert( "layout_numpages", QCoreApplication::translate( "variable_help", "Number of pages in composition." ) );
+  gVariableHelpTexts.insert( "layout_pageheight", QCoreApplication::translate( "variable_help", "Composition page height in mm." ) );
+  gVariableHelpTexts.insert( "layout_pagewidth", QCoreApplication::translate( "variable_help", "Composition page width in mm." ) );
+  gVariableHelpTexts.insert( "layout_dpi", QCoreApplication::translate( "variable_help", "Composition resolution (DPI)." ) );
+
+  //atlas variables
+  gVariableHelpTexts.insert( "atlas_totalfeatures", QCoreApplication::translate( "variable_help", "Total number of features in atlas." ) );
+  gVariableHelpTexts.insert( "atlas_featurenumber", QCoreApplication::translate( "variable_help", "Current atlas feature number." ) );
+  gVariableHelpTexts.insert( "atlas_filename", QCoreApplication::translate( "variable_help", "Current atlas file name." ) );
+  gVariableHelpTexts.insert( "atlas_pagename", QCoreApplication::translate( "variable_help", "Current atlas page name." ) );
+  gVariableHelpTexts.insert( "atlas_feature", QCoreApplication::translate( "variable_help", "Current atlas feature (as feature object)." ) );
+  gVariableHelpTexts.insert( "atlas_featureid", QCoreApplication::translate( "variable_help", "Current atlas feature ID." ) );
+
+  //composer item variables
+  gVariableHelpTexts.insert( "item_id", QCoreApplication::translate( "variable_help", "Composer item user ID (not necessarily unique)." ) );
+  gVariableHelpTexts.insert( "item_uuid", QCoreApplication::translate( "variable_help", "Composer item unique ID." ) );
+  gVariableHelpTexts.insert( "item_left", QCoreApplication::translate( "variable_help", "Left position of composer item (in mm)." ) );
+  gVariableHelpTexts.insert( "item_top", QCoreApplication::translate( "variable_help", "Top position of composer item (in mm)." ) );
+  gVariableHelpTexts.insert( "item_width", QCoreApplication::translate( "variable_help", "Width of composer item (in mm)." ) );
+  gVariableHelpTexts.insert( "item_height", QCoreApplication::translate( "variable_help", "Height of composer item (in mm)." ) );
+}
+
+QString QgsExpression::variableHelpText( const QString &variableName, bool showValue, const QVariant &value )
+{
+  QgsExpression::initVariableHelp();
+  QString text = gVariableHelpTexts.contains( variableName ) ? QString( "<p>%1</p>" ).arg( gVariableHelpTexts.value( variableName ) ) : QString();
+  if ( showValue )
+  {
+    QString valueString;
+    if ( !value.isValid() )
+    {
+      valueString = QCoreApplication::translate( "variable_help", "not set" );
+    }
+    else if ( value.type() == QVariant::String )
+    {
+      valueString = QString( "'<b>%1</b>'" ).arg( value.toString() );
+    }
+    else
+    {
+      valueString = QString( "<b>%1</b>" ).arg( value.toString() );
+    }
+    text.append( QCoreApplication::translate( "variable_help", "<p>Current value: %1</p>" ).arg( valueString ) );
+  }
+  return text;
+}
+
 QHash<QString, QString> QgsExpression::gGroups;
 
 QString QgsExpression::group( QString name )

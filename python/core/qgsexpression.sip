@@ -575,7 +575,22 @@ class QgsExpression
     /** Entry function for the visitor pattern */
     void acceptVisitor( QgsExpression::Visitor& v ) const;
 
+    /** Returns the help text for a specified function.
+     * @param name function name
+     * @see variableHelpText()
+     */
     static QString helptext( QString name );
+
+    /** Returns the help text for a specified variable.
+     * @param variableName name of variable
+     * @see helptext()
+     * @note added in QGIS 2.12
+     */
+    static QString variableHelpText( const QString& variableName );
+
+    /** Returns the translated name for a function group.
+     * @param group untranslated group name
+     */
     static QString group( QString group );
 
   protected:

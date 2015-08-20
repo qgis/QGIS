@@ -575,7 +575,7 @@ void QgsExpressionBuilderWidget::loadExpressionContext()
   QStringList variableNames = mExpressionContext.filteredVariableNames();
   Q_FOREACH ( QString variable, variableNames )
   {
-    registerItem( "Variables", variable, " @" + variable + " " );
+    registerItem( "Variables", variable, " @" + variable + " ", QgsExpression::variableHelpText( variable, true, mExpressionContext.variable( variable ) ) );
   }
 
   // Load the functions from the expression context
