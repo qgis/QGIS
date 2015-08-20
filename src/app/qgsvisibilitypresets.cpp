@@ -27,6 +27,7 @@
 #include "qgsrendererv2.h"
 #include "qgsvectorlayer.h"
 #include "qgisapp.h"
+#include "qgsnewnamedialog.h"
 
 #include <QInputDialog>
 
@@ -152,12 +153,16 @@ QMenu* QgsVisibilityPresets::menu()
 
 void QgsVisibilityPresets::addPreset()
 {
-  bool ok;
-  QString name = QInputDialog::getText( 0, tr( "Visibility Presets" ), tr( "Name of the new preset" ), QLineEdit::Normal, QString(), &ok );
-  if ( !ok && name.isEmpty() )
+  QStringList existingNames = QgsProject::instance()->visibilityPresetCollection()->presets();
+  QgsNewNameDialog dlg( tr( "preset" ) , tr( "Preset" ), QStringList(), existingNames, QRegExp(), Qt::CaseInsensitive, mMenu );
+  dlg.setWindowTitle( tr( "Visibility Presets" ) );
+  dlg.setHintString( tr( "Name of the new preset" ) );
+  dlg.setOverwriteEnabled( false );
+  dlg.setConflictingNameWarning( tr( "A preset with this name already exists" ) );
+  if ( dlg.exec() != QDialog::Accepted || dlg.name().isEmpty() )
     return;
 
-  addPreset( name );
+  addPreset( dlg.name() );
 }
 
 
