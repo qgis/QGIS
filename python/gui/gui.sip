@@ -94,6 +94,7 @@
 %Include qgsmessageviewer.sip
 %Include qgsnewhttpconnection.sip
 %Include qgsnewmemorylayerdialog.sip
+%Include qgsnewnamedialog.sip
 %Include qgsnewvectorlayerdialog.sip
 %Include qgsnumericsortlistviewitem.sip
 %Include qgsoptionsdialogbase.sip
