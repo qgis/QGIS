@@ -341,7 +341,8 @@ class CORE_EXPORT QgsExpression
                   bool usesGeometry = false,
                   QStringList referencedColumns = QStringList(),
                   bool lazyEval = false,
-                  bool handlesNull = false )
+                  bool handlesNull = false,
+                  bool isContextual = false )
             : mName( fnname )
             , mParams( params )
             , mUsesGeometry( usesGeometry )
@@ -350,6 +351,7 @@ class CORE_EXPORT QgsExpression
             , mReferencedColumns( referencedColumns )
             , mLazyEval( lazyEval )
             , mHandlesNull( handlesNull )
+            , mIsContextual( isContextual )
         {}
 
         virtual ~Function() {}
@@ -374,6 +376,11 @@ class CORE_EXPORT QgsExpression
         bool lazyEval() { return mLazyEval; }
 
         virtual QStringList referencedColumns() const { return mReferencedColumns; }
+
+        /** Returns whether the function is only available if provided by a QgsExpressionContext object.
+         * @note added in QGIS 2.12
+         */
+        bool isContextual() const { return mIsContextual; }
 
         /** The group the function belongs to. */
         QString group() { return mGroup; }
@@ -409,6 +416,7 @@ class CORE_EXPORT QgsExpression
         QStringList mReferencedColumns;
         bool mLazyEval;
         bool mHandlesNull;
+        bool mIsContextual; //if true function is only available through an expression context
     };
 
     class StaticFunction : public Function

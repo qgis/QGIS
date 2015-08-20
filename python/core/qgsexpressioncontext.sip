@@ -19,7 +19,8 @@ class QgsScopedExpressionFunction : QgsExpression::Function
                                  bool usesGeometry = false,
                                  QStringList referencedColumns = QStringList(),
                                  bool lazyEval = false,
-                                 bool handlesNull = false );
+                                 bool handlesNull = false,
+                                 bool isContextual = true );
 
     virtual ~QgsScopedExpressionFunction();
 

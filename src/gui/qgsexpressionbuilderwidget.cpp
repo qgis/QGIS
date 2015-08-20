@@ -445,6 +445,12 @@ void QgsExpressionBuilderWidget::updateFunctionTree()
     QString name = func->name();
     if ( name.startsWith( "_" ) ) // do not display private functions
       continue;
+    if ( func->isContextual() )
+    {
+      //don't show contextual functions by default - it's up the the QgsExpressionContext
+      //object to provide them if supported
+      continue;
+    }
     if ( func->params() != 0 )
       name += "(";
     else if ( !name.startsWith( "$" ) )
