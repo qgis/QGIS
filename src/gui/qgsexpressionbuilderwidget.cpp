@@ -336,10 +336,11 @@ void QgsExpressionBuilderWidget::registerItem( QString group,
     QString label,
     QString expressionText,
     QString helpText,
-    QgsExpressionItem::ItemType type )
+    QgsExpressionItem::ItemType type, bool highlightedItem )
 {
   QgsExpressionItem* item = new QgsExpressionItem( label, expressionText, helpText, type );
   item->setData( label, Qt::UserRole );
+
   // Look up the group and insert the new function.
   if ( mExpressionGroups.contains( group ) )
   {
@@ -355,6 +356,18 @@ void QgsExpressionBuilderWidget::registerItem( QString group,
     mModel->appendRow( newgroupNode );
     mExpressionGroups.insert( group, newgroupNode );
   }
+
+  if ( highlightedItem )
+  {
+    //insert a copy as a top level item
+    QgsExpressionItem* topLevelItem = new QgsExpressionItem( label, expressionText, helpText, type );
+    topLevelItem->setData( label, Qt::UserRole );
+    QFont font = topLevelItem->font();
+    font.setBold( true );
+    topLevelItem->setFont( font );
+    mModel->appendRow( topLevelItem );
+  }
+
 }
 
 bool QgsExpressionBuilderWidget::isExpressionValid()
@@ -581,7 +594,10 @@ void QgsExpressionBuilderWidget::loadExpressionContext()
   QStringList variableNames = mExpressionContext.filteredVariableNames();
   Q_FOREACH ( QString variable, variableNames )
   {
-    registerItem( "Variables", variable, " @" + variable + " ", QgsExpression::variableHelpText( variable, true, mExpressionContext.variable( variable ) ) );
+    registerItem( "Variables", variable, " @" + variable + " ",
+                  QgsExpression::variableHelpText( variable, true, mExpressionContext.variable( variable ) ),
+                  QgsExpressionItem::ExpressionNode,
+                  mExpressionContext.isHighlightedVariable( variable ) );
   }
 
   // Load the functions from the expression context

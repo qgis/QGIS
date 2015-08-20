@@ -158,6 +158,7 @@ QgsExpressionContext::QgsExpressionContext( const QgsExpressionContext& other )
   {
     mStack << new QgsExpressionContextScope( *scope );
   }
+  mHighlightedVariables = other.mHighlightedVariables;
 }
 
 QgsExpressionContext& QgsExpressionContext::operator=( const QgsExpressionContext & other )
@@ -168,6 +169,7 @@ QgsExpressionContext& QgsExpressionContext::operator=( const QgsExpressionContex
   {
     mStack << new QgsExpressionContextScope( *scope );
   }
+  mHighlightedVariables = other.mHighlightedVariables;
   return *this;
 }
 
@@ -191,6 +193,16 @@ QVariant QgsExpressionContext::variable( const QString& name ) const
 {
   const QgsExpressionContextScope* scope = activeScopeForVariable( name );
   return scope ? scope->variable( name ) : QVariant();
+}
+
+bool QgsExpressionContext::isHighlightedVariable( const QString &name ) const
+{
+  return mHighlightedVariables.contains( name );
+}
+
+void QgsExpressionContext::setHighlightedVariables( const QStringList& variableNames )
+{
+  mHighlightedVariables = variableNames;
 }
 
 const QgsExpressionContextScope* QgsExpressionContext::activeScopeForVariable( const QString& name ) const
