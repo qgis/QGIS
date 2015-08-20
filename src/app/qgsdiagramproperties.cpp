@@ -36,11 +36,23 @@
 #include <QMessageBox>
 #include <QSettings>
 
+static QgsExpressionContext _getExpressionContext( const void* context )
+{
+  QgsExpressionContext expContext;
+  expContext << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope();
+
+  const QgsVectorLayer* layer = ( const QgsVectorLayer* ) context;
+  if ( layer )
+    expContext << QgsExpressionContextUtils::layerScope( layer );
+
+  return expContext;
+}
+
 QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* parent )
     : QWidget( parent )
 {
   mLayer = layer;
-
   if ( !layer )
   {
     return;
@@ -55,6 +67,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   connect( mEnableDiagramsCheckBox, SIGNAL( toggled( bool ) ), mDiagramFrame, SLOT( setEnabled( bool ) ) );
 
   mScaleRangeWidget->setMapCanvas( QgisApp::instance()->mapCanvas() );
+  mSizeFieldExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, mLayer );
 
   mBackgroundColorButton->setColorDialogTitle( tr( "Select background color" ) );
   mBackgroundColorButton->setAllowAlpha( true );

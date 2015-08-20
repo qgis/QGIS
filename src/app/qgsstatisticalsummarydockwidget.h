@@ -38,6 +38,11 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QDockWidget, private U
     QgsStatisticalSummaryDockWidget( QWidget *parent = 0 );
     ~QgsStatisticalSummaryDockWidget();
 
+    /** Returns the currently active layer for the widget
+     * @note added in QGIS 2.12
+     */
+    QgsVectorLayer* layer() const { return mLayer; }
+
   public slots:
 
     /** Recalculates the displayed statistics

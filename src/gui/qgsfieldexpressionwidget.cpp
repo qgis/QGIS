@@ -26,6 +26,8 @@ QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
     : QWidget( parent )
     , mExpressionDialogTitle( tr( "Expression dialog" ) )
     , mDa( 0 )
+    , mExpressionContextCallback( 0 )
+    , mExpressionContextCallbackContext( 0 )
 {
   QHBoxLayout* layout = new QHBoxLayout( this );
   layout->setContentsMargins( 0, 0, 0, 0 );
@@ -127,6 +129,12 @@ QgsVectorLayer *QgsFieldExpressionWidget::layer() const
   return mFieldProxyModel->sourceFieldModel()->layer();
 }
 
+void QgsFieldExpressionWidget::registerGetExpressionContextCallback( QgsFieldExpressionWidget::ExpressionContextCallback fnGetExpressionContext, const void *context )
+{
+  mExpressionContextCallback = fnGetExpressionContext;
+  mExpressionContextCallbackContext = context;
+}
+
 void QgsFieldExpressionWidget::setLayer( QgsMapLayer *layer )
 {
   QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer );
@@ -180,7 +188,9 @@ void QgsFieldExpressionWidget::editExpression()
   QString currentExpression = currentText();
   QgsVectorLayer* vl = layer();
 
-  QgsExpressionBuilderDialog dlg( vl, currentExpression );
+  QgsExpressionContext context = mExpressionContextCallback ? mExpressionContextCallback( mExpressionContextCallbackContext ) : *mExpressionContext;
+
+  QgsExpressionBuilderDialog dlg( vl, currentExpression, this, "generic", context );
   if ( !mDa.isNull() )
   {
     dlg.setGeomCalculator( *mDa );

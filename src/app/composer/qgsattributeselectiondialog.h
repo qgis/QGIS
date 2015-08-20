@@ -34,6 +34,7 @@ class QgsComposerAttributeTableColumnModelV2;
 class QgsComposerTableSortColumnsProxyModel;
 class QgsComposerTableSortColumnsProxyModelV2;
 class QgsComposerTableAvailableSortProxyModelV2;
+class QgsComposerObject;
 
 // QgsComposerColumnAlignmentDelegate
 
@@ -60,7 +61,7 @@ class QgsComposerColumnSourceDelegate : public QItemDelegate
     Q_OBJECT
 
   public:
-    QgsComposerColumnSourceDelegate( QgsVectorLayer* vlayer, QObject *parent = 0 );
+    QgsComposerColumnSourceDelegate( QgsVectorLayer* vlayer, QObject *parent = 0, const QgsComposerObject* composerObject = 0 );
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
@@ -69,6 +70,7 @@ class QgsComposerColumnSourceDelegate : public QItemDelegate
     void commitAndCloseEditor();
   private:
     QgsVectorLayer* mVectorLayer;
+    const QgsComposerObject* mComposerObject;
 };
 
 // QgsComposerColumnWidthDelegate
