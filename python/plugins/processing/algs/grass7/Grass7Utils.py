@@ -142,7 +142,7 @@ class Grass7Utils:
         output.write('set GISBASE=' + folder + '\n')
         output.write('set GRASS_PROJSHARE=' + folder + os.sep + 'share'
                      + os.sep + 'proj' + '\n')
-        output.write('set GRASS_MESSAGE_FORMAT=gui\n')
+        output.write('set GRASS_MESSAGE_FORMAT=plain\n')
 
         # Replacement code for etc/Init.bat
         output.write('if "%GRASS_ADDON_PATH%"=="" set PATH=%WINGISBASE%\\bin;%WINGISBASE%\\lib;%PATH%\n')
@@ -247,7 +247,7 @@ class Grass7Utils:
         else:
             gisrc = userFolder() + os.sep + 'processing.gisrc7'
             env['GISRC'] = gisrc
-            env['GRASS_MESSAGE_FORMAT'] = 'gui'
+            env['GRASS_MESSAGE_FORMAT'] = 'plain'
             env['GRASS_BATCH_JOB'] = Grass7Utils.grassBatchJobFilename()
             del env['GISBASE']
             Grass7Utils.createGrass7BatchJobFileFromGrass7Commands(commands)
