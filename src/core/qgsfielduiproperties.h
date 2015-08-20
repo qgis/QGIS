@@ -30,25 +30,28 @@ class CORE_EXPORT QgsFieldUIProperties
      * @brief Returns the condtional styles set for the field UI properties
      * @return A list of condtional styles that have been set.
      */
-    QList<QgsConditionalStyle> getConditionalStyles();
+    QList<QgsConditionalStyle> getConditionalStyles() const;
 
     /**
-     * @brief Find and return the matching styles for the value and feature.
-     * If no match is found a invalid QgsCondtionalStyle is return.
-     *
-     * @return A condtional style that matches the value and feature.
-     * Check with QgsCondtionalStyle::isValid()
+     * @brief Find and return all matching styles for a value and context.
+     * If no match is found an empty list is returned.
+     * @param value current cell value
+     * @param context expression context for evaluating conditional rules
+     * @return A list of conditional styles that matches the value and context.
+     * @see matchingConditionalStyle
      */
-    QList<QgsConditionalStyle> matchingConditionalStyles( QVariant value, QgsFeature* feature );
+    QList<QgsConditionalStyle> matchingConditionalStyles(QVariant value, QgsExpressionContext& context ) const;
 
     /**
-     * @brief Find and return the matching style for the value and feature.
-     * If no match is found a invalid QgsCondtionalStyle is return.
-     *
-     * @return A condtional style that matches the value and feature.
-     * Check with QgsCondtionalStyle::isValid()
+     * @brief Find and return the matching style for the value and context.
+     * If no match is found a invalid QgsConditionalStyle is return.
+     * @param value current cell value
+     * @param context expression context for evaluating conditional rules
+     * @return A conditional style that matches the value and context.
+     * Check with QgsConditionalStyle::isValid()
+     * @see matchingConditionalStyles
      */
-    QgsConditionalStyle matchingConditionalStyle( QVariant value, QgsFeature* feature );
+    QgsConditionalStyle matchingConditionalStyle( QVariant value, QgsExpressionContext& context ) const;
 
     /** Reads field ui properties specific state from Dom node.
      */
@@ -56,7 +59,7 @@ class CORE_EXPORT QgsFieldUIProperties
 
     /** Write field ui properties specific state from Dom node.
      */
-    virtual bool writeXml( QDomNode & node, QDomDocument & doc );
+    virtual bool writeXml( QDomNode & node, QDomDocument & doc ) const;
 
   private:
     QList<QgsConditionalStyle> mStyles;

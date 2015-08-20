@@ -13,13 +13,12 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsConditionalStyle, QgsFeature, QgsFields, QgsField
+from qgis.core import QgsConditionalStyle, QgsFeature, QgsFields, QgsField, QgsExpressionContextUtils
 from utilities import (unitTestDataPath,
                        getQgisTestApp,
                        unittest,
                        TestCase,
-                       compareWkt
-)
+                       compareWkt)
 from PyQt4.QtCore import QVariant
 #
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
@@ -29,11 +28,13 @@ TEST_DATA_DIR = unitTestDataPath()
 class TestPyQgsConditionalStyle(TestCase):
     def test_MatchesReturnsTrueForSimpleMatch(self):
         style = QgsConditionalStyle("@value > 10")
-        assert style.matches(20)
+        context = QgsExpressionContextUtils.createFeatureBasedContext( QgsFeature(), QgsFields() )
+        assert style.matches(20,context)
 
     def test_MatchesReturnsTrueForComplexMatch(self):
         style = QgsConditionalStyle("@value > 10 and @value = 20")
-        assert style.matches(20)
+        context = QgsExpressionContextUtils.createFeatureBasedContext( QgsFeature(), QgsFields() )
+        assert style.matches(20,context)
 
     def test_MatchesTrueForFields(self):
         feature = QgsFeature()
@@ -42,9 +43,9 @@ class TestPyQgsConditionalStyle(TestCase):
         feature.setFields(fields, True)
         feature["testfield"] = 20
         style = QgsConditionalStyle('"testfield" = @value')
-        assert style.matches(20, feature)
+        context = QgsExpressionContextUtils.createFeatureBasedContext(feature,fields)
+        assert style.matches(20, context)
 
 
 if __name__ == '__main__':
     unittest.main()
-

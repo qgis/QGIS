@@ -13,11 +13,11 @@ class QgsConditionalStyle
 
     /**
      * @brief Check if the rule matches using the given value and feature
-     * @param feature The feature to match the values from.
+     * @param value The current value being checked. The "value" variable from the context is replaced with this value.
+     * @param context Expression context for evaluating rule expression
      * @return True of the rule matches against the given feature
      */
-    bool matches( QVariant value, QgsFeature *feature = 0 );
-
+    bool matches( QVariant value, QgsExpressionContext& context ) const;
     /**
      * @brief Render a preview icon of the rule.
      * @return QPixmap preview of the style
