@@ -247,7 +247,8 @@ class QgsExpression
                   bool usesGeometry = false,
                   QStringList referencedColumns = QStringList(),
                   bool lazyEval = false,
-                  bool handlesNull = false );
+                  bool handlesNull = false,
+                  bool isContextual = false );
 
         virtual ~Function();
 
@@ -271,6 +272,11 @@ class QgsExpression
         bool lazyEval();
 
         virtual QStringList referencedColumns() const;
+
+        /** Returns whether the function is only available if provided by a QgsExpressionContext object.
+         * @note added in QGIS 2.12
+         */
+        bool isContextual() const;
 
         /** The group the function belongs to. */
         QString group();

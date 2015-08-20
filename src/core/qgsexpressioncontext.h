@@ -46,8 +46,9 @@ class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpression::Function
                                  bool usesGeometry = false,
                                  QStringList referencedColumns = QStringList(),
                                  bool lazyEval = false,
-                                 bool handlesNull = false )
-        : QgsExpression::Function( fnname, params, group, helpText, usesGeometry, referencedColumns, lazyEval, handlesNull )
+                                 bool handlesNull = false,
+                                 bool isContextual = true )
+        : QgsExpression::Function( fnname, params, group, helpText, usesGeometry, referencedColumns, lazyEval, handlesNull, isContextual )
     {}
 
     virtual ~QgsScopedExpressionFunction() {}
