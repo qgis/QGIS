@@ -221,6 +221,21 @@ class QgsExpressionContext
      */
     QVariant variable( const QString& name ) const;
 
+    /** Returns true if the specified variable name is intended to be highlighted to the
+     * user. This is used by the expression builder to more prominently display the
+     * variable.
+     * @param name variable name
+     * @see setHighlightedVariables()
+     */
+    bool isHighlightedVariable( const QString& name ) const;
+
+    /** Sets the list of variable names within the context intended to be highlighted to the user. This
+     * is used by the expression builder to more prominently display these variables.
+     * @param variableNames variable names to highlight
+     * @see isHighlightedVariable()
+     */
+    void setHighlightedVariables( const QStringList& variableNames );
+
     /** Returns the currently active scope from the context for a specified variable name.
      * As scopes later in the stack override earlier contexts, this will be the last matching
      * scope which contains a matching variable.

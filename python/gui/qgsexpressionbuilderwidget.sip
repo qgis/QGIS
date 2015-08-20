@@ -121,10 +121,12 @@ class QgsExpressionBuilderWidget : QWidget
       * @param expressionText The text that is inserted into the expression area when the user double clicks on the item.
       * @param helpText The help text that the user will see when item is selected.
       * @param type The type of the expression item.
+      * @param highlightedItem set to true to make the item highlighted, which inserts a bold copy of the item at the top level
       */
     void registerItem( QString group, QString label, QString expressionText,
                        QString helpText = "",
-                       QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode );
+                       QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode,
+                       bool highlightedItem = false );
 
     bool isExpressionValid();
 
