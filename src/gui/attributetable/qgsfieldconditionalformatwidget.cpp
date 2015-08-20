@@ -214,6 +214,7 @@ void QgsFieldConditionalFormatWidget::reloadStyles()
 
 void QgsFieldConditionalFormatWidget::fieldChanged( QString fieldName )
 {
+  Q_UNUSED( fieldName );
   reloadStyles();
 }
 

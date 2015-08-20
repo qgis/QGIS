@@ -1758,8 +1758,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @brief Return the field properties that have been set for the given field.
      * Field UI properties hold extra UI information for a field that can be used in the UI.
      * @param fieldName The field name to get the field properties for.
-     * @return Return the UI properties set for the field.  Returns a new \class QgsFieldUIProperties if
-     * the none is currently set for the field.
+     * @return Return the UI properties set for the field.  Returns a new QgsFieldUIProperties if
+     * none is currently set for the field.
+     * @note added in QGIS 2.12
      */
     QgsFieldUIProperties fieldUIProperties( QString fieldName );
 
@@ -1767,6 +1768,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @brief Set the the field UI properties for a given field.
      * @param fieldName The field name.
      * @param props The properties to assign to a field.
+     * @note added in QGIS 2.12
      */
     void setFieldUIProperties( QString fieldName, QgsFieldUIProperties props );
 

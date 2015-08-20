@@ -131,6 +131,7 @@
 %Include attributetable/qgsfeaturelistviewdelegate.sip
 %Include attributetable/qgsfeaturemodel.sip
 %Include attributetable/qgsfeatureselectionmodel.sip
+%Include attributetable/qgsfieldconditionalformatwidget.sip
 %Include attributetable/qgsifeatureselectionmanager.sip
 
 %Include layertree/qgscustomlayerorderwidget.sip
