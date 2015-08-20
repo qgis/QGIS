@@ -336,10 +336,10 @@ class Processing:
             print 'Warning: Not all input layers use the same CRS.\n' \
                 + 'This can cause unexpected results.'
 
+        # Don't set the wait cursor twice, because then when you
+        # restore it, it will still be a wait cursor.
+        overrideCursor = False
         if iface is not None:
-            # Don't set the wait cursor twice, because then when you
-            # restore it, it will still be a wait cursor.
-            overrideCursor = False
             cursor = QApplication.overrideCursor()
             if cursor is None or cursor == 0:
                 QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
@@ -353,6 +353,7 @@ class Processing:
             progress = kwargs["progress"] 
         elif iface is not None :
             progress = MessageBarProgress()
+        
         ret = runalg(alg, progress)
         if ret:
             if onFinish is not None:
@@ -361,7 +362,7 @@ class Processing:
             print ("There were errors executing the algorithm.\n"
                     "Check the QGIS log to get more information")
 
-        if iface is not None and overrideCursor:
+        if overrideCursor:
             QApplication.restoreOverrideCursor()
         if isinstance(progress, MessageBarProgress):
             progress.close()
