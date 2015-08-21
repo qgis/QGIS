@@ -42,6 +42,16 @@ def elemIsDocumentableClass(elem):
     #public or protected classes should be documented
     return elem.get('prot') in ('public','protected')
 
+def memberSignature(elem):
+    a = elem.find('argsstring')
+    try:
+        if a is not None:
+            return elem.find('name').text + a.text
+        else:
+            return elem.find('name').text
+    except:
+        return None
+
 def elemIsDocumentableMember(elem):
     if elem.get('kind') == 'variable':
         return False
@@ -60,8 +70,27 @@ def elemIsDocumentableMember(elem):
 
     #ignore destructor
     name = elem.find('name')
-    if name is not None and name.text and name.text.startswith('~'):
-        return False
+    try:
+        if name.text and name.text.startswith('~'):
+            return False
+    except:
+        pass
+
+    #ignore constructors with no arguments
+    definition = elem.find('definition')
+    argsstring = elem.find('argsstring')
+    try:
+        if definition.text == '{}::{}'.format(name.text,name.text) and argsstring.text == '()':
+            return False
+    except:
+        pass
+
+    #ignore certain obvious operators
+    try:
+        if name.text in ('operator=','operator=='):
+            return False
+    except:
+        pass
 
     return True
 
@@ -76,12 +105,15 @@ def memberIsDocumented(m):
 def parseClassElem(e):
     documentable_members = 0
     documented_members = 0
+    undocumented_members = []
     for m in e.getiterator('memberdef'):
         if elemIsDocumentableMember(m):
             documentable_members += 1
             if memberIsDocumented(m):
                 documented_members += 1
-    return documentable_members, documented_members
+            else:
+                undocumented_members.append(memberSignature(m))
+    return documentable_members, documented_members, undocumented_members
 
 def parseFile(f):
     documentable_members = 0
@@ -90,11 +122,14 @@ def parseFile(f):
         for event, elem in ET.iterparse(f):
             if event == 'end' and elem.tag == 'compounddef':
                 if elemIsDocumentableClass(elem):
-                    members, documented = parseClassElem(elem)
+                    members, documented, undocumented = parseClassElem(elem)
                     documentable_members += members
                     documented_members += documented
                     if documented < members:
                         print "Class {}, {}/{} members documented".format(elem.find('compoundname').text,documented,members)
+                        for u in undocumented:
+                            print ' Missing: {}'.format(u)
+                        print "\n"
                 elem.clear()
     except ET.ParseError as e:
         #sometimes Doxygen generates malformed xml (eg for < and > operators)
