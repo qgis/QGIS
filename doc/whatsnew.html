@@ -90,7 +90,7 @@
     google.load("feeds", "1");
 
     function initialize() {
-      var feed = new google.feeds.Feed('http://blog.qgis.org/feed/');
+      var feed = new google.feeds.Feed('https://qgisblog.wordpress.com/feed/');
       feed.load(function(result) {
         var spinner = document.getElementById("loader");
         spinner.parentNode.removeChild(spinner);
