@@ -144,7 +144,7 @@ void QgsFieldConditionalFormatWidget::addNewRule()
 void QgsFieldConditionalFormatWidget::reset()
 {
   mSymbol = 0;
-  mRuleEdit->clear();
+  mRuleEdit->setText( "@value " );
   btnBackgroundColor->setColor( QColor() );
   btnTextColor->setColor( QColor() );
   mDefault1->toggle();
