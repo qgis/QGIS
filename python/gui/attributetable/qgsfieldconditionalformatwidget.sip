@@ -39,6 +39,7 @@ class QgsFieldConditionalFormatWidget : QWidget
   signals:
 
     /** Emitted when the conditional styling rules are updated.
+     * @param fieldName name of field whose rules have been modified.
      */
-    void rulesUpdates();
+    void rulesUpdated( const QString& fieldName );
 };

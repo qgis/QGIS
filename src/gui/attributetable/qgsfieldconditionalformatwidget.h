@@ -63,8 +63,9 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::Q
   signals:
 
     /** Emitted when the conditional styling rules are updated.
+     * @param fieldName name of field whose rules have been modified.
      */
-    void rulesUpdates();
+    void rulesUpdated( const QString& fieldName );
 
   public slots:
 

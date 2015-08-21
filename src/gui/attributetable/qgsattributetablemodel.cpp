@@ -385,6 +385,17 @@ void QgsAttributeTableModel::loadLayer()
   endResetModel();
 }
 
+void QgsAttributeTableModel::fieldConditionalStyleChanged( const QString &fieldName )
+{
+  int fieldIndex = mLayerCache->layer()->fieldNameIndex( fieldName );
+  if ( fieldIndex == -1 )
+    return;
+
+  //whole column has changed
+  int col = fieldCol( fieldIndex );
+  emit dataChanged( index( 0, col ), index( rowCount() - 1, col ) );
+}
+
 void QgsAttributeTableModel::swapRows( QgsFeatureId a, QgsFeatureId b )
 {
   if ( a == b )

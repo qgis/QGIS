@@ -119,6 +119,8 @@ class CORE_EXPORT QgsConditionalStyle
      */
     virtual bool writeXml( QDomNode & node, QDomDocument & doc );
 
+  private:
+
     bool mValid;
     QString mRule;
     QScopedPointer<QgsSymbolV2> mSymbol;

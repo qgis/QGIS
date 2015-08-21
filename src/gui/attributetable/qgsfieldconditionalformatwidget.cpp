@@ -121,7 +121,7 @@ void QgsFieldConditionalFormatWidget::deleteRule()
   mLayer->setFieldUIProperties( mFieldCombo->currentField(), props );
   pages->setCurrentIndex( 0 );
   reloadStyles();
-  emit rulesUpdates();
+  emit rulesUpdated( mFieldCombo->currentField() );
 }
 
 void QgsFieldConditionalFormatWidget::cancelRule()
@@ -195,7 +195,7 @@ void QgsFieldConditionalFormatWidget::saveRule()
   mLayer->setFieldUIProperties( mFieldCombo->currentField(), props );
   pages->setCurrentIndex( 0 );
   reloadStyles();
-  emit rulesUpdates();
+  emit rulesUpdated( mFieldCombo->currentField() );
   reset();
 }
 
