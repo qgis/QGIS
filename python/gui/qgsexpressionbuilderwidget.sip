@@ -1,23 +1,3 @@
-/** Search proxy used to filter the QgsExpressionBuilderWidget tree.
-  * The default search for a tree model only searches top level this will handle one
-  * level down
-  */
-class QgsExpressionItemSearchProxy : QSortFilterProxyModel
-{
-%TypeHeaderCode
-#include <qgsexpressionbuilderwidget.h>
-%End
-
-  public:
-    QgsExpressionItemSearchProxy();
-
-    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const;
-
-  protected:
-
-    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
-};
-
 /** An expression item that can be used in the QgsExpressionBuilderWidget tree.
   */
 class QgsExpressionItem : QStandardItem
@@ -43,13 +23,13 @@ class QgsExpressionItem : QStandardItem
                        QString expressionText,
                        QgsExpressionItem::ItemType itemType = ExpressionNode );
 
-    QString getExpressionText();
+    QString getExpressionText() const;
 
     /** Get the help text that is associated with this expression item.
       *
       * @return The help text.
       */
-    QString getHelpText();
+    QString getHelpText() const;
     /** Set the help text for the current item
       *
       * @note The help text can be set as a html string.
@@ -60,7 +40,32 @@ class QgsExpressionItem : QStandardItem
       *
       * @return The QgsExpressionItem::ItemType
       */
-    QgsExpressionItem::ItemType getItemType();
+    QgsExpressionItem::ItemType getItemType() const;
+
+    //! Custom sort order role
+    static const int CustomSortRole;
+    //! Item type role
+    static const int ItemTypeRole;
+};
+
+/** Search proxy used to filter the QgsExpressionBuilderWidget tree.
+  * The default search for a tree model only searches top level this will handle one
+  * level down
+  */
+class QgsExpressionItemSearchProxy : QSortFilterProxyModel
+{
+%TypeHeaderCode
+#include <qgsexpressionbuilderwidget.h>
+%End
+
+  public:
+    QgsExpressionItemSearchProxy();
+
+    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const;
+
+  protected:
+
+    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
 };
 
 /** A reusable widget that can be used to build a expression string.

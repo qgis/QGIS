@@ -345,7 +345,7 @@ void QgsExpressionBuilderWidget::registerItem( QString group,
 {
   QgsExpressionItem* item = new QgsExpressionItem( label, expressionText, helpText, type );
   item->setData( label, Qt::UserRole );
-  item->setData( sortOrder, Qt::UserRole + 1 );
+  item->setData( sortOrder, QgsExpressionItem::CustomSortRole );
 
   // Look up the group and insert the new function.
   if ( mExpressionGroups.contains( group ) )
@@ -358,7 +358,7 @@ void QgsExpressionBuilderWidget::registerItem( QString group,
     // If the group doesn't exist yet we make it first.
     QgsExpressionItem *newgroupNode = new QgsExpressionItem( QgsExpression::group( group ), "", QgsExpressionItem::Header );
     newgroupNode->setData( group, Qt::UserRole );
-    newgroupNode->setData( group == "Recent (Selection)" ? 2 : 1, Qt::UserRole + 1 );
+    newgroupNode->setData( group == "Recent (Selection)" ? 2 : 1, QgsExpressionItem::CustomSortRole );
     newgroupNode->appendRow( item );
     mModel->appendRow( newgroupNode );
     mExpressionGroups.insert( group, newgroupNode );
@@ -369,7 +369,7 @@ void QgsExpressionBuilderWidget::registerItem( QString group,
     //insert a copy as a top level item
     QgsExpressionItem* topLevelItem = new QgsExpressionItem( label, expressionText, helpText, type );
     topLevelItem->setData( label, Qt::UserRole );
-    item->setData( 0, Qt::UserRole + 1 );
+    item->setData( 0, QgsExpressionItem::CustomSortRole );
     QFont font = topLevelItem->font();
     font.setBold( true );
     topLevelItem->setFont( font );
