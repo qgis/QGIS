@@ -454,7 +454,7 @@ class ModelerParametersDialog(QDialog):
             selected = []
             dependencies = self.getAvailableDependencies()
             for idx, dependency in enumerate(dependencies):
-                if dependency in alg.dependencies:
+                if dependency.name in alg.dependencies:
                     selected.append(idx)
 
             self.dependenciesPanel.setSelectedItems(selected)
