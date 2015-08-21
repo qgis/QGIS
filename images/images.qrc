@@ -505,6 +505,7 @@
         <file>flags/zh.png</file>
         <file>themes/default/mIconPaintEffects.svg</file>
 	<file>themes/default/mActionCircularStringCurvePoint.png</file>
+	<file>themes/default/mActionCircularStringRadius.png</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
