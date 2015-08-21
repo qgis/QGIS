@@ -290,18 +290,17 @@ class ModelerGraphicItem(QGraphicsItem):
 
     def getLinkPointForOutput(self, outputIndex):
         if isinstance(self.element, Algorithm):
-            outputIndex = (outputIndex if not self.element.outputsFolded else -1)
-            text = self.getAdjustedText(self.element.algorithm.outputs[outputIndex].description)
-            font = QFont('Verdana', 8)
-            fm = QFontMetricsF(font)
-            w = fm.width(text)
-            h = fm.height() * 1.2 * (outputIndex + 1) + fm.height() / 2.0
-            y = h + ModelerGraphicItem.BOX_HEIGHT / 2.0 + 5
-            x = (-ModelerGraphicItem.BOX_WIDTH / 2 + 33 + w
-                 + 5 if not self.element.outputsFolded else 10)
-            return QPointF(x, y)
-        else:
-            return QPointF(0, 0)
+            if not self.element.outputsFolded:
+                text = self.getAdjustedText(self.element.algorithm.outputs[outputIndex].description)
+                font = QFont('Verdana', 8)
+                fm = QFontMetricsF(font)
+                w = fm.width(text)
+                h = fm.height() * 1.2 * (outputIndex + 1) + fm.height() / 2.0
+                y = h + ModelerGraphicItem.BOX_HEIGHT / 2.0 + 5
+                x = (-ModelerGraphicItem.BOX_WIDTH / 2 + 33 + w
+                     + 5 if not self.element.outputsFolded else 10)
+                return QPointF(x, y)
+        return QPointF(0, 0)
 
     def itemChange(self, change, value):
         if change == QGraphicsItem.ItemPositionHasChanged:
