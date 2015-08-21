@@ -299,6 +299,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     QHash<QgsFeatureId, int> mIdRowMap;
     QHash<int, QgsFeatureId> mRowIdMap;
+    mutable QHash<int, QList<QgsConditionalStyle>> mRowStylesMap;
 
     /**
       * Gets mFieldCount, mAttributes and mValueMaps

@@ -111,6 +111,26 @@ class CORE_EXPORT QgsConditionalStyle
      */
     bool isValid() const { return mValid; }
 
+    /**
+     * @brief Find and return the matching styles for the value and feature.
+     * If no match is found a invalid QgsCondtionalStyle is return.
+     *
+     * @return A condtional style that matches the value and feature.
+     * Check with QgsCondtionalStyle::isValid()
+     */
+    static QList<QgsConditionalStyle> matchingConditionalStyles( QList<QgsConditionalStyle> styles, QVariant value, QgsFeature* feature );
+
+    /**
+     * @brief Find and return the matching style for the value and feature.
+     * If no match is found a invalid QgsCondtionalStyle is return.
+     *
+     * @return A condtional style that matches the value and feature.
+     * Check with QgsCondtionalStyle::isValid()
+     */
+    static QgsConditionalStyle matchingConditionalStyle( QList<QgsConditionalStyle> styles, QVariant value, QgsFeature* feature );
+
+    static QgsConditionalStyle stackStyles( QList<QgsConditionalStyle> styles );
+
     /** Reads vector conditional style specific state from layer Dom node.
      */
     virtual bool readXml( const QDomNode& node );
@@ -118,6 +138,7 @@ class CORE_EXPORT QgsConditionalStyle
     /** Write vector conditional style specific state from layer Dom node.
      */
     virtual bool writeXml( QDomNode & node, QDomDocument & doc );
+
 
   private:
 

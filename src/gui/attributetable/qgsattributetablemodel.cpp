@@ -583,19 +583,38 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     return mWidgetFactories[ index.column()]->representValue( layer(), fieldId, mWidgetConfigs[ index.column()], mAttributeWidgetCaches[ index.column()], val );
   }
 
-  QgsFieldUIProperties props = layer()->fieldUIProperties( field.name() );
-  QList<QgsConditionalStyle> styles = props.matchingConditionalStyles( val,  &mFeat );
-  QgsConditionalStyle style;
-  foreach ( QgsConditionalStyle s, styles )
+  QList<QgsConditionalStyle> styles;
+  if ( mRowStylesMap.contains( index.row() ) )
   {
-    style.setFont( s.font() );
-    if ( s.backgroundColor().isValid() && s.backgroundColor().alpha() != 0 )
-      style.setBackgroundColor( s.backgroundColor() );
-    if ( s.textColor().isValid() && s.textColor().alpha() != 0 )
-      style.setTextColor( s.textColor() );
-    if ( s.symbol() )
-      style.setSymbol( s.symbol() );
+    styles = mRowStylesMap[index.row()];
   }
+  else
+  {
+    styles = QgsConditionalStyle::matchingConditionalStyles( layer()->rowStyles(), QVariant(),  &mFeat );
+    mRowStylesMap.insert( index.row(), styles );
+
+  }
+  QgsConditionalStyle style = QgsConditionalStyle::stackStyles( styles );
+  // TODO Extract me out
+  foreach ( QgsConditionalStyle style, styles )
+  {
+    if ( style.isValid() )
+    {
+      if ( role == Qt::BackgroundColorRole && style.backgroundColor().isValid() )
+        return style.backgroundColor();
+      if ( role == Qt::TextColorRole && style.textColor().isValid() )
+        return style.textColor();
+      if ( role == Qt::DecorationRole )
+        return style.icon();
+      if ( role == Qt::FontRole )
+        return style.font();
+    }
+
+  }
+
+  QgsFieldUIProperties props = layer()->fieldUIProperties( field.name() );
+  styles = QgsConditionalStyle::matchingConditionalStyles( props.conditionalStyles(), val,  &mFeat );
+  style = QgsConditionalStyle::stackStyles( styles );
 
   if ( style.isValid() )
   {

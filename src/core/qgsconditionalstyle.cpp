@@ -109,6 +109,43 @@ QPixmap QgsConditionalStyle::renderPreview()
   return pixmap;
 }
 
+QList<QgsConditionalStyle> QgsConditionalStyle::matchingConditionalStyles( QList<QgsConditionalStyle> styles, QVariant value,  QgsFeature *feature )
+{
+  QList<QgsConditionalStyle> matchingstyles;
+  foreach ( QgsConditionalStyle style, styles )
+  {
+    if ( style.matches( value, feature ) )
+      matchingstyles.append( style );
+  }
+  return matchingstyles;
+}
+
+QgsConditionalStyle QgsConditionalStyle::matchingConditionalStyle( QList<QgsConditionalStyle> styles, QVariant value,  QgsFeature *feature )
+{
+  foreach ( QgsConditionalStyle style, styles )
+  {
+    if ( style.matches( value, feature ) )
+      return style;
+  }
+  return QgsConditionalStyle();
+}
+
+QgsConditionalStyle QgsConditionalStyle::stackStyles( QList<QgsConditionalStyle> styles )
+{
+  QgsConditionalStyle style;
+  foreach ( QgsConditionalStyle s, styles )
+  {
+    style.setFont( s.font() );
+    if ( s.backgroundColor().isValid() && s.backgroundColor().alpha() != 0 )
+      style.setBackgroundColor( s.backgroundColor() );
+    if ( s.textColor().isValid() && s.textColor().alpha() != 0 )
+      style.setTextColor( s.textColor() );
+    if ( s.symbol() )
+      style.setSymbol( s.symbol() );
+  }
+  return style;
+}
+
 bool QgsConditionalStyle::writeXml( QDomNode &node, QDomDocument &doc )
 {
   QDomElement stylesel = doc.createElement( "style" );

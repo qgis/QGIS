@@ -30,25 +30,7 @@ class CORE_EXPORT QgsFieldUIProperties
      * @brief Returns the condtional styles set for the field UI properties
      * @return A list of condtional styles that have been set.
      */
-    QList<QgsConditionalStyle> getConditionalStyles();
-
-    /**
-     * @brief Find and return the matching styles for the value and feature.
-     * If no match is found a invalid QgsCondtionalStyle is return.
-     *
-     * @return A condtional style that matches the value and feature.
-     * Check with QgsCondtionalStyle::isValid()
-     */
-    QList<QgsConditionalStyle> matchingConditionalStyles( QVariant value, QgsFeature* feature );
-
-    /**
-     * @brief Find and return the matching style for the value and feature.
-     * If no match is found a invalid QgsCondtionalStyle is return.
-     *
-     * @return A condtional style that matches the value and feature.
-     * Check with QgsCondtionalStyle::isValid()
-     */
-    QgsConditionalStyle matchingConditionalStyle( QVariant value, QgsFeature* feature );
+    QList<QgsConditionalStyle> conditionalStyles();
 
     /** Reads field ui properties specific state from Dom node.
      */

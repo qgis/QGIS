@@ -76,6 +76,8 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::Q
     QStandardItemModel* mModel;
     QgsSymbolV2* mSymbol;
 
+    QList<QgsConditionalStyle> getStyles();
+
   private slots:
     void setExpression();
     void updateIcon();

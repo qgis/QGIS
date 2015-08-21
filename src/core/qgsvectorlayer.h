@@ -27,6 +27,7 @@
 
 #include "qgis.h"
 #include "qgsmaplayer.h"
+#include "qgsconditionalstyle.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgseditorwidgetconfig.h"
@@ -1764,6 +1765,16 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     QgsFieldUIProperties fieldUIProperties( QString fieldName );
 
+    QList<QgsConditionalStyle> rowStyles();
+
+    /**
+     * @brief Set the conditional styles that apply to full rows of data in the attribute table.
+     * Each row will check be checked against each rule.
+     * @param styles The styles to assign to all the rows
+     * @note added in QGIS 2.12
+     */
+    void setRowStyles( QList<QgsConditionalStyle> styles );
+
     /**
      * @brief Set the the field UI properties for a given field.
      * @param fieldName The field name.
@@ -2026,6 +2037,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
   private:                       // Private attributes
 
     QHash<QString, QgsFieldUIProperties> mFieldProperties;
+    QList<QgsConditionalStyle> mRowStyles;
 
     /** Pointer to data provider derived from the abastract base class QgsDataProvider */
     QgsVectorDataProvider *mDataProvider;

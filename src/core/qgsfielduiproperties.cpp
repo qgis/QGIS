@@ -13,31 +13,11 @@ void QgsFieldUIProperties::setConditionalStyles( QList<QgsConditionalStyle> styl
   mStyles = styles;
 }
 
-QList<QgsConditionalStyle> QgsFieldUIProperties::getConditionalStyles()
+QList<QgsConditionalStyle> QgsFieldUIProperties::conditionalStyles()
 {
   return mStyles;
 }
 
-QList<QgsConditionalStyle> QgsFieldUIProperties::matchingConditionalStyles( QVariant value,  QgsFeature *feature )
-{
-  QList<QgsConditionalStyle> styles;
-  foreach ( QgsConditionalStyle style, mStyles )
-  {
-    if ( style.matches( value, feature ) )
-      styles.append( style );
-  }
-  return styles;
-}
-
-QgsConditionalStyle QgsFieldUIProperties::matchingConditionalStyle( QVariant value,  QgsFeature *feature )
-{
-  foreach ( QgsConditionalStyle style, mStyles )
-  {
-    if ( style.matches( value, feature ) )
-      return style;
-  }
-  return QgsConditionalStyle();
-}
 
 bool QgsFieldUIProperties::writeXml( QDomNode &node, QDomDocument &doc )
 {
