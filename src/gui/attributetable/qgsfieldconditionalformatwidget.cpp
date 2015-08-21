@@ -22,6 +22,10 @@ QgsFieldConditionalFormatWidget::QgsFieldConditionalFormatWidget( QWidget *paren
   connect( mDefaultButtons , SIGNAL( buttonPressed( QAbstractButton* ) ), SLOT( defaultPressed( QAbstractButton* ) ) );
   connect( btnChangeIcon , SIGNAL( clicked() ), SLOT( updateIcon() ) );
   connect( btnBuildExpression , SIGNAL( clicked() ), SLOT( setExpression() ) );
+  btnBackgroundColor->setAllowAlpha( true );
+  btnBackgroundColor->setShowNoColor( true );
+  btnTextColor->setAllowAlpha( true );
+  btnTextColor->setShowNoColor( true );
   mModel = new QStandardItemModel();
   listView->setModel( mModel );
 }

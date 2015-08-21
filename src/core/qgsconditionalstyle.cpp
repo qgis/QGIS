@@ -83,12 +83,12 @@ bool QgsConditionalStyle::matches( QVariant value, QgsFeature *feature )
 QPixmap QgsConditionalStyle::renderPreview()
 {
   QPixmap pixmap( 64, 32 );
+  pixmap.fill( Qt::transparent );
+
   QPainter painter( &pixmap );
 
   if ( mBackColor.isValid() )
     painter.setBrush( mBackColor );
-  else
-    painter.setBrush( QColor( Qt::white ) );
 
   QRect rect = QRect( 0, 0, 64, 32 );
   painter.setPen( Qt::NoPen );

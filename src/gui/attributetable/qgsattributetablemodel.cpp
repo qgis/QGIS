@@ -584,7 +584,19 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   }
 
   QgsFieldUIProperties props = layer()->fieldUIProperties( field.name() );
-  QgsConditionalStyle style = props.matchingConditionalStyle( val,  &mFeat );
+  QList<QgsConditionalStyle> styles = props.matchingConditionalStyles( val,  &mFeat );
+  QgsConditionalStyle style;
+  foreach ( QgsConditionalStyle s, styles )
+  {
+    style.setFont( s.font() );
+    if ( s.backgroundColor().isValid() && s.backgroundColor().alpha() != 0 )
+      style.setBackgroundColor( s.backgroundColor() );
+    if ( s.textColor().isValid() && s.textColor().alpha() != 0 )
+      style.setTextColor( s.textColor() );
+    if ( s.symbol() )
+      style.setSymbol( s.symbol() );
+  }
+
   if ( style.isValid() )
   {
     if ( role == Qt::BackgroundColorRole && style.backgroundColor().isValid() )

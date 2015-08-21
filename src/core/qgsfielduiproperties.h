@@ -33,6 +33,15 @@ class CORE_EXPORT QgsFieldUIProperties
     QList<QgsConditionalStyle> getConditionalStyles();
 
     /**
+     * @brief Find and return the matching styles for the value and feature.
+     * If no match is found a invalid QgsCondtionalStyle is return.
+     *
+     * @return A condtional style that matches the value and feature.
+     * Check with QgsCondtionalStyle::isValid()
+     */
+    QList<QgsConditionalStyle> matchingConditionalStyles( QVariant value, QgsFeature* feature );
+
+    /**
      * @brief Find and return the matching style for the value and feature.
      * If no match is found a invalid QgsCondtionalStyle is return.
      *
