@@ -69,10 +69,13 @@ QgsDataDefinedButton::QgsDataDefinedButton( QWidget* parent,
   setMenu( mDefineMenu );
 
   mFieldsMenu = new QMenu( this );
-
   mActionDataTypes = new QAction( this );
   // list fields and types in submenu, since there may be many
   mActionDataTypes->setMenu( mFieldsMenu );
+
+  mActionVariables = new QAction( tr( "Variable" ), this );
+  mVariablesMenu = new QMenu( this );
+  mActionVariables->setMenu( mVariablesMenu );
 
   mActionActive = new QAction( this );
   QFont f = mActionActive->font();
@@ -318,6 +321,39 @@ void QgsDataDefinedButton::aboutToShowMenu()
   exprTitleAct->setFont( titlefont );
   exprTitleAct->setEnabled( false );
 
+  mVariablesMenu->clear();
+  bool variableActive = false;
+  if ( mExpressionContextCallback )
+  {
+    QgsExpressionContext context = mExpressionContextCallback( mExpressionContextCallbackContext );
+    QStringList variables = context.variableNames();
+    Q_FOREACH ( QString variable, variables )
+    {
+      if ( context.isReadOnly( variable ) ) //only want to show user-set variables
+        continue;
+      if ( variable.startsWith( "_" ) ) //no hidden variables
+        continue;
+
+      QAction* act = mVariablesMenu->addAction( variable );
+      act->setData( QVariant( variable ) );
+
+      if ( useExpression() && hasExp && getExpression() == "@" + variable )
+      {
+        act->setCheckable( true );
+        act->setChecked( true );
+        variableActive = true;
+      }
+    }
+
+    if ( !variables.isEmpty() )
+    {
+      mDefineMenu->addAction( mActionVariables );
+    }
+  }
+
+  mVariablesMenu->menuAction()->setCheckable( true );
+  mVariablesMenu->menuAction()->setChecked( variableActive );
+
   if ( hasExp )
   {
     QString expString = getExpression();
@@ -339,7 +375,7 @@ void QgsDataDefinedButton::aboutToShowMenu()
       mActionExpression->setText( expString );
     }
     mDefineMenu->addAction( mActionExpression );
-    mActionExpression->setChecked( useExpression() );
+    mActionExpression->setChecked( useExpression() && !variableActive );
 
     mDefineMenu->addAction( mActionExpDialog );
     mDefineMenu->addAction( mActionCopyExpr );
@@ -422,6 +458,16 @@ void QgsDataDefinedButton::menuActionTriggered( QAction* action )
       setActive( true );
       updateGui();
     }
+  }
+  else if ( mVariablesMenu->actions().contains( action ) )  // a variable name clicked
+  {
+    if ( getExpression() != action->text().prepend( "@" ) )
+    {
+      setExpression( action->data().toString().prepend( "@" ) );
+    }
+    setUseExpression( true );
+    setActive( true );
+    updateGui();
   }
 }
 

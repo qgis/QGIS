@@ -319,6 +319,8 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     QMenu* mDefineMenu;
     QAction* mActionDataTypes;
     QMenu* mFieldsMenu;
+    QMenu* mVariablesMenu;
+    QAction* mActionVariables;
 
     QAction* mActionActive;
     QAction* mActionDescription;
