@@ -281,7 +281,15 @@ QStringList QgsExpressionContext::filteredVariableNames() const
   return filtered;
 }
 
-bool QgsExpressionContext::isReadOnly( const QString& name ) const { Q_UNUSED( name ); return true; }
+bool QgsExpressionContext::isReadOnly( const QString& name ) const
+{
+  Q_FOREACH ( const QgsExpressionContextScope* scope, mStack )
+  {
+    if ( scope->isReadOnly( name ) )
+      return true;
+  }
+  return false;
+}
 
 bool QgsExpressionContext::hasFunction( const QString &name ) const
 {
