@@ -46,17 +46,17 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
     /** Proxy that will call this method on the embedded renderer. */
     virtual int capabilities() override;
     /** Proxy that will call this method on the embedded renderer. */
-    virtual QgsSymbolV2List symbols() override;
+    virtual QgsSymbolV2List symbols( QgsRenderContext& context ) override;
     /** Proxy that will call this method on the embedded renderer. */
-    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature ) override;
+    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context ) override;
     /** Proxy that will call this method on the embedded renderer. */
-    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feat ) override;
+    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
     /** Proxy that will call this method on the embedded renderer. */
-    virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat ) override;
+    virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
     /** Proxy that will call this method on the embedded renderer. */
-    virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat ) override;
+    virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context ) override;
     /** Proxy that will call this method on the embedded renderer. */
-    virtual bool willRenderFeature( QgsFeature& feat ) override;
+    virtual bool willRenderFeature( QgsFeature& feat, QgsRenderContext& context ) override;
 
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
 
@@ -172,7 +172,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
     void drawSymbols( const QgsFeature& f, QgsRenderContext& context, const QList<QgsMarkerSymbolV2*>& symbolList, const QList<QPointF>& symbolPositions, bool selected = false );
     void drawLabels( const QPointF& centerPoint, QgsSymbolV2RenderContext& context, const QList<QPointF>& labelShifts, const QStringList& labelList );
     /** Returns first symbol for feature or 0 if none*/
-    QgsSymbolV2* firstSymbolForFeature( QgsFeatureRendererV2* r, QgsFeature& f );
+    QgsSymbolV2* firstSymbolForFeature( QgsFeatureRendererV2* r, QgsFeature& f, QgsRenderContext& context );
 };
 
 #endif // QGSPOINTDISPLACEMENTRENDERER_H

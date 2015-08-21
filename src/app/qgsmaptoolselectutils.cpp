@@ -159,7 +159,7 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
   while ( fit.nextFeature( f ) )
   {
     // make sure to only use features that are visible
-    if ( r && !r->willRenderFeature( f ) )
+    if ( r && !r->willRenderFeature( f, context ) )
       continue;
 
     const QgsGeometry* g = f.constGeometry();

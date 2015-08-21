@@ -88,7 +88,7 @@ bool QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRender
   if ( !feature.constGeometry() )
     return false;
 
-  QgsSymbolV2* symbol = firstSymbolForFeature( mRenderer, feature );
+  QgsSymbolV2* symbol = firstSymbolForFeature( mRenderer, feature, context );
 
   //if the feature has no symbol (eg, no matching rule in a rule-based renderer), skip it
   if ( !symbol )
@@ -228,54 +228,54 @@ int QgsPointDisplacementRenderer::capabilities()
   return mRenderer->capabilities();
 }
 
-QgsSymbolV2List QgsPointDisplacementRenderer::symbols()
+QgsSymbolV2List QgsPointDisplacementRenderer::symbols( QgsRenderContext& context )
 {
   if ( !mRenderer )
   {
     return QgsSymbolV2List();
   }
-  return mRenderer->symbols();
+  return mRenderer->symbols( context );
 }
 
-QgsSymbolV2* QgsPointDisplacementRenderer::symbolForFeature( QgsFeature& feature )
+QgsSymbolV2* QgsPointDisplacementRenderer::symbolForFeature( QgsFeature& feature, QgsRenderContext& context )
 {
   if ( !mRenderer )
   {
     return 0;
   }
-  return mRenderer->symbolForFeature( feature );
+  return mRenderer->symbolForFeature( feature, context );
 }
 
-QgsSymbolV2* QgsPointDisplacementRenderer::originalSymbolForFeature( QgsFeature& feat )
+QgsSymbolV2* QgsPointDisplacementRenderer::originalSymbolForFeature( QgsFeature& feat, QgsRenderContext& context )
 {
   if ( !mRenderer )
     return 0;
-  return mRenderer->originalSymbolForFeature( feat );
+  return mRenderer->originalSymbolForFeature( feat, context );
 }
 
-QgsSymbolV2List QgsPointDisplacementRenderer::symbolsForFeature( QgsFeature& feature )
+QgsSymbolV2List QgsPointDisplacementRenderer::symbolsForFeature( QgsFeature& feature, QgsRenderContext& context )
 {
   if ( !mRenderer )
   {
     return QgsSymbolV2List();
   }
-  return mRenderer->symbolsForFeature( feature );
+  return mRenderer->symbolsForFeature( feature, context );
 }
 
-QgsSymbolV2List QgsPointDisplacementRenderer::originalSymbolsForFeature( QgsFeature& feat )
+QgsSymbolV2List QgsPointDisplacementRenderer::originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context )
 {
   if ( !mRenderer )
     return QgsSymbolV2List();
-  return mRenderer->originalSymbolsForFeature( feat );
+  return mRenderer->originalSymbolsForFeature( feat, context );
 }
 
-bool QgsPointDisplacementRenderer::willRenderFeature( QgsFeature& feat )
+bool QgsPointDisplacementRenderer::willRenderFeature( QgsFeature& feat, QgsRenderContext& context )
 {
   if ( !mRenderer )
   {
     return false;
   }
-  return mRenderer->willRenderFeature( feat );
+  return mRenderer->willRenderFeature( feat, context );
 }
 
 
@@ -562,14 +562,14 @@ void QgsPointDisplacementRenderer::drawLabels( const QPointF& centerPoint, QgsSy
   }
 }
 
-QgsSymbolV2* QgsPointDisplacementRenderer::firstSymbolForFeature( QgsFeatureRendererV2* r, QgsFeature& f )
+QgsSymbolV2* QgsPointDisplacementRenderer::firstSymbolForFeature( QgsFeatureRendererV2* r, QgsFeature& f, QgsRenderContext &context )
 {
   if ( !r )
   {
     return 0;
   }
 
-  QgsSymbolV2List symbolList = r->symbolsForFeature( f );
+  QgsSymbolV2List symbolList = r->symbolsForFeature( f, context );
   if ( symbolList.size() < 1 )
   {
     return 0;
