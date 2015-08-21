@@ -281,6 +281,11 @@ void TestQgsExpressionContext::contextStack()
   QCOMPARE( scopes.length(), 2 );
   QCOMPARE( scopes.at( 0 ), scope1 );
   QCOMPARE( scopes.at( 1 ), scope2 );
+
+  //check isReadOnly
+  scope2->addVariable( QgsExpressionContextScope::StaticVariable( "readonly", 5, true ) );
+  QVERIFY( context.isReadOnly( "readonly" ) );
+  QVERIFY( !context.isReadOnly( "test" ) );
 }
 
 void TestQgsExpressionContext::contextCopy()
