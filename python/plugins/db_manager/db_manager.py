@@ -26,7 +26,7 @@ import functools
 
 from PyQt4.QtCore import QObject, Qt, QSettings, QByteArray, SIGNAL, QSize
 from PyQt4.QtGui import QMainWindow, QApplication, QMenu, QIcon, QTabWidget, QGridLayout, QSpacerItem, QSizePolicy, \
-    QDockWidget, QStatusBar, QMenuBar, QToolBar, QKeySequence
+    QDockWidget, QStatusBar, QMenuBar, QToolBar, QKeySequence, QTabBar
 
 from qgis.gui import QgsMessageBar
 from .info_viewer import InfoViewer
@@ -186,22 +186,24 @@ class DBManager(QMainWindow):
         if db is None:
             self.infoBar.pushMessage(self.tr("No database selected or you are not connected to it."),
                                      QgsMessageBar.INFO, self.iface.messageTimeout())
+            # force displaying of the message, it appears on the first tab (i.e. Info)
+            self.tabs.setCurrentIndex(0)
             return
 
         from dlg_sql_window import DlgSqlWindow
 
         query = DlgSqlWindow(self.iface, db, self)
-        index = self.tabs.addTab(query, self.tr("Query"))
+        dbname = db.connection().connectionName()
+        tabname = self.tr("Query") + u" (%s)" % dbname
+        index = self.tabs.addTab(query, tabname)
+        self.tabs.setTabIcon(index, db.connection().icon())
         self.tabs.setCurrentIndex(index)
-        try:
-            self.tabs.setTabIcon(index, self.tree.currentItem().icon())
-        except AttributeError:
-            pass
-        query.nameChanged.connect(functools.partial(self.update_tab_name, index))
+        query.nameChanged.connect(functools.partial(self.update_query_tab_name, index, dbname))
 
-    def update_tab_name(self, index, name):
-        name = name + "(query)"
-        self.tabs.setTabText(index, name)
+    def update_query_tab_name(self, index, dbname, queryname):
+        if not queryname: queryname = self.tr("Query")
+        tabname = u"%s (%s)" % (queryname, dbname)
+        self.tabs.setTabText(index, tabname)
 
     def showSystemTables(self):
         self.tree.showSystemTables(self.actionShowSystemTables.isChecked())
@@ -358,10 +360,8 @@ class DBManager(QMainWindow):
         self.setWindowIcon(QIcon(":/db_manager/icon"))
         self.resize(QSize(700, 500).expandedTo(self.minimumSizeHint()))
 
-        # create central tab widget
+        # create central tab widget and add the first 3 tabs: info, table and preview
         self.tabs = QTabWidget()
-        self.tabs.setTabsClosable(True)
-        self.tabs.tabCloseRequested.connect(self.close_tab)
         self.info = InfoViewer(self)
         self.tabs.addTab(self.info, self.tr("Info"))
         self.table = TableViewer(self)
@@ -369,6 +369,16 @@ class DBManager(QMainWindow):
         self.preview = LayerPreview(self)
         self.tabs.addTab(self.preview, self.tr("Preview"))
         self.setCentralWidget(self.tabs)
+
+        # display close button for all tabs but the first 3 ones, i.e.
+        # HACK: just hide the close button where not needed (GS)
+        self.tabs.setTabsClosable(True)
+        self.tabs.tabCloseRequested.connect(self.close_tab)
+        tabbar = self.tabs.tabBar()
+        for i in range(3):
+            btn = tabbar.tabButton(i, QTabBar.RightSide) if tabbar.tabButton(i, QTabBar.RightSide) else tabbar.tabButton(i, QTabBar.LeftSide)
+            btn.resize(0,0)
+            btn.hide()
 
         # Creates layout for message bar
         self.layout = QGridLayout(self.info)
