@@ -84,19 +84,26 @@ class TestQgsRuleBasedRenderer: public QObject
       QVERIFY( r.capabilities() & QgsFeatureRendererV2::MoreSymbolsPerFeature );
 
       QgsRenderContext ctx; // dummy render context
+      ctx.expressionContext().setFields( layer->fields() );
       r.startRender( ctx, layer->fields() );
 
       // test willRenderFeature
-      QVERIFY( r.willRenderFeature( f1 ) );
-      QVERIFY( r.willRenderFeature( f2 ) );
-      QVERIFY( !r.willRenderFeature( f3 ) );
+      ctx.expressionContext().setFeature( f1 );
+      QVERIFY( r.willRenderFeature( f1, ctx ) );
+      ctx.expressionContext().setFeature( f2 );
+      QVERIFY( r.willRenderFeature( f2, ctx ) );
+      ctx.expressionContext().setFeature( f3 );
+      QVERIFY( !r.willRenderFeature( f3, ctx ) );
 
       // test symbolsForFeature
-      QgsSymbolV2List lst1 = r.symbolsForFeature( f1 );
+      ctx.expressionContext().setFeature( f1 );
+      QgsSymbolV2List lst1 = r.symbolsForFeature( f1, ctx );
       QVERIFY( lst1.count() == 1 );
-      QgsSymbolV2List lst2 = r.symbolsForFeature( f2 );
+      ctx.expressionContext().setFeature( f2 );
+      QgsSymbolV2List lst2 = r.symbolsForFeature( f2, ctx );
       QVERIFY( lst2.count() == 2 );
-      QgsSymbolV2List lst3 = r.symbolsForFeature( f3 );
+      ctx.expressionContext().setFeature( f3 );
+      QgsSymbolV2List lst3 = r.symbolsForFeature( f3, ctx );
       QVERIFY( lst3.count() == 0 );
 
       r.stopRender( ctx );

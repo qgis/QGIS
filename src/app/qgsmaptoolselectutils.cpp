@@ -137,6 +137,7 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
   QgsDebugMsg( "doDifference: " + QString( doDifference ? "T" : "F" ) );
 
   QgsRenderContext context = QgsRenderContext::fromMapSettings( canvas->mapSettings() );
+  context.expressionContext() << QgsExpressionContextUtils::layerScope( vlayer );
   QgsFeatureRendererV2* r = vlayer->rendererV2();
   if ( r )
     r->startRender( context, vlayer->fields() );
@@ -158,8 +159,9 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
   double closestFeatureDist = std::numeric_limits<double>::max();
   while ( fit.nextFeature( f ) )
   {
+    context.expressionContext().setFeature( f );
     // make sure to only use features that are visible
-    if ( r && !r->willRenderFeature( f ) )
+    if ( r && !r->willRenderFeature( f, context ) )
       continue;
 
     const QgsGeometry* g = f.constGeometry();

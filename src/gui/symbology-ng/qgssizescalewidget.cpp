@@ -78,6 +78,19 @@ void QgsSizeScaleWidget::setFromSymbol()
   updatePreview();
 }
 
+static QgsExpressionContext _getExpressionContext( const void* context )
+{
+  QgsExpressionContext expContext;
+  expContext << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope();
+
+  const QgsVectorLayer* layer = ( const QgsVectorLayer* ) context;
+  if ( layer )
+    expContext << QgsExpressionContextUtils::layerScope( layer );
+
+  return expContext;
+}
+
 QgsSizeScaleWidget::QgsSizeScaleWidget( const QgsVectorLayer * layer, const QgsMarkerSymbolV2 * symbol )
     : mSymbol( symbol )
     // we just use the minimumValue and maximumValue from the layer, unfortunately they are
@@ -86,6 +99,8 @@ QgsSizeScaleWidget::QgsSizeScaleWidget( const QgsVectorLayer * layer, const QgsM
 {
   setupUi( this );
   setWindowFlags( Qt::WindowStaysOnTopHint );
+
+  mExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, mLayer );
 
   if ( mLayer )
   {
@@ -207,7 +222,13 @@ void QgsSizeScaleWidget::computeFromLayerTriggered()
     return;
 
   QgsExpression expression( mExpressionWidget->currentField() );
-  if ( ! expression.prepare( mLayer->fields() ) )
+
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( mLayer );
+
+  if ( ! expression.prepare( &context ) )
     return;
 
   QStringList lst( expression.referencedColumns() );
@@ -225,7 +246,8 @@ void QgsSizeScaleWidget::computeFromLayerTriggered()
   while ( fit.nextFeature( f ) )
   {
     bool ok;
-    const double value = expression.evaluate( f ).toDouble( &ok );
+    context.setFeature( f );
+    const double value = expression.evaluate( &context ).toDouble( &ok );
     if ( ok )
     {
       max = qMax( max, value );

@@ -199,9 +199,13 @@ long QgsSearchQueryBuilder::countRecords( QString searchString )
 
   int count = 0;
   QgsFeature feat;
-  const QgsFields& fields = mLayer->fields();
 
-  if ( !search.prepare( fields ) )
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( mLayer );
+
+  if ( !search.prepare( &context ) )
   {
     QMessageBox::critical( this, tr( "Evaluation error" ), search.evalErrorString() );
     return -1;
@@ -213,7 +217,8 @@ long QgsSearchQueryBuilder::countRecords( QString searchString )
 
   while ( fit.nextFeature( feat ) )
   {
-    QVariant value = search.evaluate( &feat );
+    context.setFeature( feat );
+    QVariant value = search.evaluate( &context );
     if ( value.toInt() != 0 )
     {
       count++;

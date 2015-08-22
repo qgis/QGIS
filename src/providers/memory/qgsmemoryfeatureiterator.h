@@ -16,6 +16,7 @@
 #define QGSMEMORYFEATUREITERATOR_H
 
 #include "qgsfeatureiterator.h"
+#include "qgsexpressioncontext.h"
 
 class QgsMemoryProvider;
 
@@ -37,6 +38,7 @@ class QgsMemoryFeatureSource : public QgsAbstractFeatureSource
     QgsFeatureMap mFeatures;
     QgsSpatialIndex* mSpatialIndex;
     QString mSubsetString;
+    QgsExpressionContext mExpressionContext;
 
     friend class QgsMemoryFeatureIterator;
 };

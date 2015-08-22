@@ -92,6 +92,8 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer* layer, QgsRender
     mRendererV2->setVertexMarkerAppearance( mVertexMarkerStyle, mVertexMarkerSize );
   }
 
+  mContext.expressionContext() << QgsExpressionContextUtils::layerScope( layer );
+
   mAttrNames = mRendererV2->usedAttributes();
 
   //register label and diagram layer to the labeling engine
@@ -148,6 +150,7 @@ bool QgsVectorLayerRenderer::render()
   if ( !rendererFilter.isEmpty() )
   {
     featureRequest.setFilterExpression( rendererFilter );
+    featureRequest.setExpressionContext( mContext.expressionContext() );
   }
 
   // enable the simplification of the geometries (Using the current map2pixel context) before send it to renderer engine.
@@ -280,6 +283,8 @@ void QgsVectorLayerRenderer::drawRendererV2( QgsFeatureIterator& fit )
         break;
       }
 
+      mContext.expressionContext().setFeature( fet );
+
       bool sel = mContext.showSelection() && mSelectedFeatureIds.contains( fet.id() );
       bool drawMarker = ( mDrawVertexMarkers && mContext.drawEditingInformation() && ( !mVertexMarkerOnlyForSelection || sel ) );
 
@@ -344,7 +349,8 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
       return;
     }
 
-    QgsSymbolV2* sym = mRendererV2->symbolForFeature( fet );
+    mContext.expressionContext().setFeature( fet );
+    QgsSymbolV2* sym = mRendererV2->symbolForFeature( fet, mContext );
     if ( !sym )
     {
       continue;
@@ -364,6 +370,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
 
     if ( mContext.labelingEngine() )
     {
+      mContext.expressionContext().setFeature( fet );
       if ( mLabeling )
       {
         mContext.labelingEngine()->registerFeature( mLayerID, fet, mContext );
@@ -377,7 +384,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
 
   // find out the order
   QgsSymbolV2LevelOrder levels;
-  QgsSymbolV2List symbols = mRendererV2->symbols();
+  QgsSymbolV2List symbols = mRendererV2->symbols( mContext );
   for ( int i = 0; i < symbols.count(); i++ )
   {
     QgsSymbolV2* sym = symbols[i];
@@ -419,6 +426,8 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
         bool sel = mSelectedFeatureIds.contains( fit->id() );
         // maybe vertex markers should be drawn only during the last pass...
         bool drawMarker = ( mDrawVertexMarkers && mContext.drawEditingInformation() && ( !mVertexMarkerOnlyForSelection || sel ) );
+
+        mContext.expressionContext().setFeature( *fit );
 
         try
         {
@@ -511,7 +520,7 @@ void QgsVectorLayerRenderer::prepareDiagrams( QgsVectorLayer* layer, QStringList
   QList<QString>::const_iterator attIt = att.constBegin();
   for ( ; attIt != att.constEnd(); ++attIt )
   {
-    QgsExpression* expression = diagRenderer->diagram()->getExpression( *attIt, &mFields );
+    QgsExpression* expression = diagRenderer->diagram()->getExpression( *attIt, mContext.expressionContext() );
     QStringList columns = expression->referencedColumns();
     QStringList::const_iterator columnsIterator = columns.constBegin();
     for ( ; columnsIterator != columns.constEnd(); ++columnsIterator )
@@ -526,7 +535,7 @@ void QgsVectorLayerRenderer::prepareDiagrams( QgsVectorLayer* layer, QStringList
   {
     if ( linearlyInterpolatedDiagramRenderer->classificationAttributeIsExpression() )
     {
-      QgsExpression* expression = diagRenderer->diagram()->getExpression( linearlyInterpolatedDiagramRenderer->classificationAttributeExpression(), &mFields );
+      QgsExpression* expression = diagRenderer->diagram()->getExpression( linearlyInterpolatedDiagramRenderer->classificationAttributeExpression(), mContext.expressionContext() );
       QStringList columns = expression->referencedColumns();
       QStringList::const_iterator columnsIterator = columns.constBegin();
       for ( ; columnsIterator != columns.constEnd(); ++columnsIterator )

@@ -26,27 +26,6 @@
 #include "QStandardItem"
 #include "QSortFilterProxyModel"
 
-/** Search proxy used to filter the QgsExpressionBuilderWidget tree.
-  * The default search for a tree model only searches top level this will handle one
-  * level down
-  */
-class QgsExpressionItemSearchProxy : public QSortFilterProxyModel
-{
-  public:
-    QgsExpressionItemSearchProxy()
-    {
-      setFilterCaseSensitivity( Qt::CaseInsensitive );
-    }
-
-    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override
-    {
-      if ( source_parent == qobject_cast<QStandardItemModel*>( sourceModel() )->invisibleRootItem()->index() )
-        return true;
-
-      return QSortFilterProxyModel::filterAcceptsRow( source_row, source_parent );
-    }
-};
-
 /** An expression item that can be used in the QgsExpressionBuilderWidget tree.
   */
 class QgsExpressionItem : public QStandardItem
@@ -68,6 +47,7 @@ class QgsExpressionItem : public QStandardItem
       mExpressionText = expressionText;
       mHelpText = helpText;
       mType = itemType;
+      setData( itemType, ItemTypeRole );
     }
 
     QgsExpressionItem( QString label,
@@ -77,15 +57,16 @@ class QgsExpressionItem : public QStandardItem
     {
       mExpressionText = expressionText;
       mType = itemType;
+      setData( itemType, ItemTypeRole );
     }
 
-    QString getExpressionText() { return mExpressionText; }
+    QString getExpressionText() const { return mExpressionText; }
 
     /** Get the help text that is associated with this expression item.
       *
       * @return The help text.
       */
-    QString getHelpText() {  return mHelpText; }
+    QString getHelpText() const { return mHelpText; }
     /** Set the help text for the current item
       *
       * @note The help text can be set as a html string.
@@ -96,12 +77,63 @@ class QgsExpressionItem : public QStandardItem
       *
       * @return The QgsExpressionItem::ItemType
       */
-    QgsExpressionItem::ItemType getItemType() { return mType; }
+    QgsExpressionItem::ItemType getItemType() const { return mType; }
+
+    //! Custom sort order role
+    static const int CustomSortRole = Qt::UserRole + 1;
+    //! Item type role
+    static const int ItemTypeRole = Qt::UserRole + 2;
 
   private:
     QString mExpressionText;
     QString mHelpText;
     QgsExpressionItem::ItemType mType;
+
+};
+
+/** Search proxy used to filter the QgsExpressionBuilderWidget tree.
+  * The default search for a tree model only searches top level this will handle one
+  * level down
+  */
+class QgsExpressionItemSearchProxy : public QSortFilterProxyModel
+{
+  public:
+    QgsExpressionItemSearchProxy()
+    {
+      setFilterCaseSensitivity( Qt::CaseInsensitive );
+    }
+
+    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override
+    {
+      QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
+      QgsExpressionItem::ItemType itemType = QgsExpressionItem::ItemType( sourceModel()->data( index, QgsExpressionItem::ItemTypeRole ).toInt() );
+
+      if ( itemType == QgsExpressionItem::Header )
+        return true;
+
+      return QSortFilterProxyModel::filterAcceptsRow( source_row, source_parent );
+    }
+
+  protected:
+
+    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override
+    {
+      int leftSort = sourceModel()->data( left, QgsExpressionItem::CustomSortRole ).toInt();
+      int rightSort = sourceModel()->data( right,  QgsExpressionItem::CustomSortRole ).toInt();
+      if ( leftSort != rightSort )
+        return leftSort < rightSort;
+
+      QString leftString = sourceModel()->data( left, Qt::DisplayRole ).toString();
+      QString rightString = sourceModel()->data( right, Qt::DisplayRole ).toString();
+
+      //ignore $ prefixes when sorting
+      if ( leftString.startsWith( "$" ) )
+        leftString = leftString.mid( 1 );
+      if ( rightString.startsWith( "$" ) )
+        rightString = rightString.mid( 1 );
+
+      return QString::localeAwareCompare( leftString, rightString ) < 0;
+    }
 };
 
 /** A reusable widget that can be used to build a expression string.
@@ -142,16 +174,34 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     /** Sets the expression string for the widget */
     void setExpressionText( const QString& expression );
 
+    /** Returns the expression context for the widget. The context is used for the expression
+     * preview result and for populating the list of available functions and variables.
+     * @see setExpressionContext
+     * @note added in QGIS 2.12
+     */
+    QgsExpressionContext expressionContext() const { return mExpressionContext; }
+
+    /** Sets the expression context for the widget. The context is used for the expression
+     * preview result and for populating the list of available functions and variables.
+     * @param context expression context
+     * @see expressionContext
+     * @note added in QGIS 2.12
+     */
+    void setExpressionContext( const QgsExpressionContext& context );
+
     /** Registers a node item for the expression builder.
       * @param group The group the item will be show in the tree view.  If the group doesn't exsit it will be created.
       * @param label The label that is show to the user for the item in the tree.
       * @param expressionText The text that is inserted into the expression area when the user double clicks on the item.
       * @param helpText The help text that the user will see when item is selected.
       * @param type The type of the expression item.
+      * @param highlightedItem set to true to make the item highlighted, which inserts a bold copy of the item at the top level
+      * @param sortOrder sort ranking for item
       */
     void registerItem( QString group, QString label, QString expressionText,
                        QString helpText = "",
-                       QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode );
+                       QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode,
+                       bool highlightedItem = false, int sortOrder = 1 );
 
     bool isExpressionValid();
 
@@ -218,6 +268,8 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      */
     QString formatPreviewString( const QString &previewString ) const;
 
+    void loadExpressionContext();
+
     QString mFunctionsPath;
     QgsVectorLayer *mLayer;
     QStandardItemModel *mModel;
@@ -229,6 +281,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QgsDistanceArea mDa;
     QString mRecentKey;
     QMap<QString, QStringList> mFieldValues;
+    QgsExpressionContext mExpressionContext;
 
 };
 

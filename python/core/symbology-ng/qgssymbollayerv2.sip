@@ -212,7 +212,22 @@ class QgsSymbolLayerV2
      * @see getDataDefinedProperty
      * @note added in QGIS 2.9
      */
-    virtual QVariant evaluateDataDefinedProperty( const QString& property, const QgsFeature* feature ) const;
+    virtual QVariant evaluateDataDefinedProperty( const QString& property, const QgsFeature* feature ) const /Deprecated/;
+
+    /** Evaluates the matching data defined property and returns the calculated
+     * value. Prior to evaluation the data defined property must be prepared
+     * by calling @link prepareExpressions @endlink.
+     * @param property property key
+     * @param context symbol render context
+     * @param defaultVal default value to return if evaluation was not successful
+     * @param ok if specified, will be set to true if evaluation was successful
+     * @returns calculated value for data defined property, or default value
+     * if property does not exist or is deactived.
+     * @see hasDataDefinedProperty
+     * @see getDataDefinedProperty
+     * @note added in QGIS 2.12
+     */
+    virtual QVariant evaluateDataDefinedProperty( const QString& property, const QgsSymbolV2RenderContext& context, const QVariant& defaultVal = QVariant(), bool *ok = 0 ) const;
 
     virtual bool writeDxf( QgsDxfExport& e,
                            double mmMapUnitScaleFactor,
@@ -253,7 +268,14 @@ class QgsSymbolLayerV2
      * @param fields associated layer fields
      * @param scale map scale
      */
-    virtual void prepareExpressions( const QgsFields* fields, double scale = -1.0 );
+    virtual void prepareExpressions( const QgsFields* fields, double scale = -1.0 ) /Deprecated/;
+
+    /** Prepares all data defined property expressions for evaluation. This should
+     * be called prior to evaluating data defined properties.
+     * @param context symbol render context
+     * @note added in QGIS 2.12
+     */
+    virtual void prepareExpressions( const QgsSymbolV2RenderContext& context );
 
     /** Returns the data defined expression associated with a property
      * @deprecated use getDataDefinedProperty or evaluateDataDefinedProperty instead

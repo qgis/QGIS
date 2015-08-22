@@ -24,6 +24,7 @@
 #include "qgsmaptopixel.h"
 #include "qgsrectangle.h"
 #include "qgsvectorsimplifymethod.h"
+#include "qgsexpressioncontext.h"
 
 class QPainter;
 
@@ -118,6 +119,27 @@ class CORE_EXPORT QgsRenderContext
     const QgsVectorSimplifyMethod& vectorSimplifyMethod() const { return mVectorSimplifyMethod; }
     void setVectorSimplifyMethod( const QgsVectorSimplifyMethod& simplifyMethod ) { mVectorSimplifyMethod = simplifyMethod; }
 
+    /** Sets the expression context. This context is used for all expression evaluation
+     * associated with this render context.
+     * @see expressionContext()
+     * @note added in QGIS 2.12
+     */
+    void setExpressionContext( const QgsExpressionContext& context ) { mExpressionContext = context; }
+
+    /** Gets the expression context. This context should be used for all expression evaluation
+     * associated with this render context.
+     * @see setExpressionContext()
+     * @note added in QGIS 2.12
+     */
+    QgsExpressionContext& expressionContext() { return mExpressionContext; }
+
+    /** Gets the expression context (const version). This context should be used for all expression evaluation
+     * associated with this render context.
+     * @see setExpressionContext()
+     * @note added in QGIS 2.12
+     */
+    const QgsExpressionContext& expressionContext() const { return mExpressionContext; }
+
   private:
 
     /** Painter for rendering operations*/
@@ -165,6 +187,9 @@ class CORE_EXPORT QgsRenderContext
 
     /** Simplification object which holds the information about how to simplify the features for fast rendering */
     QgsVectorSimplifyMethod mVectorSimplifyMethod;
+
+    /** Expression context */
+    QgsExpressionContext mExpressionContext;
 };
 
 #endif

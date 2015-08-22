@@ -263,7 +263,12 @@ void QgsRelationReferenceWidget::setForeignKey( const QVariant& value )
   if ( mReadOnlySelector )
   {
     QgsExpression expr( mReferencedLayer->displayExpression() );
-    QString title = expr.evaluate( &mFeature ).toString();
+    QgsExpressionContext context;
+    context << QgsExpressionContextUtils::globalScope()
+    << QgsExpressionContextUtils::projectScope()
+    << QgsExpressionContextUtils::layerScope( mReferencedLayer );
+    context.setFeature( mFeature );
+    QString title = expr.evaluate( &context ).toString();
     if ( expr.hasEvalError() )
     {
       title = mFeature.attribute( mFkeyFieldIdx ).toString();
@@ -688,7 +693,12 @@ void QgsRelationReferenceWidget::featureIdentified( const QgsFeature& feature )
   if ( mReadOnlySelector )
   {
     QgsExpression expr( mReferencedLayer->displayExpression() );
-    QString title = expr.evaluate( &feature ).toString();
+    QgsExpressionContext context;
+    context << QgsExpressionContextUtils::globalScope()
+    << QgsExpressionContextUtils::projectScope()
+    << QgsExpressionContextUtils::layerScope( mReferencedLayer );
+    context.setFeature( feature );
+    QString title = expr.evaluate( &context ).toString();
     if ( expr.hasEvalError() )
     {
       title = feature.attribute( mFkeyFieldIdx ).toString();

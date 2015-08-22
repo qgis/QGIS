@@ -179,7 +179,7 @@ QSet<QString> QgsRuleBasedRendererV2::Rule::usedAttributes()
   return attrs;
 }
 
-QgsSymbolV2List QgsRuleBasedRendererV2::Rule::symbols()
+QgsSymbolV2List QgsRuleBasedRendererV2::Rule::symbols( const QgsRenderContext& context )
 {
   QgsSymbolV2List lst;
   if ( mSymbol )
@@ -188,7 +188,7 @@ QgsSymbolV2List QgsRuleBasedRendererV2::Rule::symbols()
   for ( RuleList::iterator it = mChildren.begin(); it != mChildren.end(); ++it )
   {
     Rule* rule = *it;
-    lst += rule->symbols();
+    lst += rule->symbols( context );
   }
   return lst;
 }
@@ -233,12 +233,13 @@ QgsLegendSymbolListV2 QgsRuleBasedRendererV2::Rule::legendSymbolItemsV2( int cur
 }
 
 
-bool QgsRuleBasedRendererV2::Rule::isFilterOK( QgsFeature& f ) const
+bool QgsRuleBasedRendererV2::Rule::isFilterOK( QgsFeature& f, QgsRenderContext* context ) const
 {
   if ( ! mFilter || mElseRule )
     return true;
 
-  QVariant res = mFilter->evaluate( &f );
+  context->expressionContext().setFeature( f );
+  QVariant res = mFilter->evaluate( context ? &context->expressionContext() : 0 );
   return res.toInt() != 0;
 }
 
@@ -301,7 +302,8 @@ QDomElement QgsRuleBasedRendererV2::Rule::save( QDomDocument& doc, QgsSymbolV2Ma
 void QgsRuleBasedRendererV2::Rule::toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props )
 {
   // do not convert this rule if there are no symbols
-  if ( symbols().isEmpty() )
+  QgsRenderContext context;
+  if ( symbols( context ).isEmpty() )
     return;
 
   if ( !mFilterExp.isEmpty() )
@@ -408,7 +410,7 @@ bool QgsRuleBasedRendererV2::Rule::startRender( QgsRenderContext& context, const
 
   // init this rule
   if ( mFilter )
-    mFilter->prepare( fields );
+    mFilter->prepare( &context.expressionContext() );
   if ( mSymbol )
     mSymbol->startRender( context, &fields );
 
@@ -503,7 +505,7 @@ void QgsRuleBasedRendererV2::Rule::setNormZLevels( const QMap<int, int>& zLevels
 
 bool QgsRuleBasedRendererV2::Rule::renderFeature( QgsRuleBasedRendererV2::FeatureToRender& featToRender, QgsRenderContext& context, QgsRuleBasedRendererV2::RenderQueue& renderQueue )
 {
-  if ( !isFilterOK( featToRender.feat ) )
+  if ( !isFilterOK( featToRender.feat, &context ) )
     return false;
 
   bool rendered = false;
@@ -547,9 +549,9 @@ bool QgsRuleBasedRendererV2::Rule::renderFeature( QgsRuleBasedRendererV2::Featur
   return rendered;
 }
 
-bool QgsRuleBasedRendererV2::Rule::willRenderFeature( QgsFeature& feat )
+bool QgsRuleBasedRendererV2::Rule::willRenderFeature( QgsFeature& feat, QgsRenderContext *context )
 {
-  if ( !isFilterOK( feat ) )
+  if ( !isFilterOK( feat, context ) )
     return false;
   if ( mSymbol )
     return true;
@@ -557,16 +559,16 @@ bool QgsRuleBasedRendererV2::Rule::willRenderFeature( QgsFeature& feat )
   for ( QList<Rule*>::iterator it = mActiveChildren.begin(); it != mActiveChildren.end(); ++it )
   {
     Rule* rule = *it;
-    if ( rule->willRenderFeature( feat ) )
+    if ( rule->willRenderFeature( feat, context ) )
       return true;
   }
   return false;
 }
 
-QgsSymbolV2List QgsRuleBasedRendererV2::Rule::symbolsForFeature( QgsFeature& feat )
+QgsSymbolV2List QgsRuleBasedRendererV2::Rule::symbolsForFeature( QgsFeature& feat, QgsRenderContext* context )
 {
   QgsSymbolV2List lst;
-  if ( !isFilterOK( feat ) )
+  if ( !isFilterOK( feat, context ) )
     return lst;
   if ( mSymbol )
     lst.append( mSymbol );
@@ -574,15 +576,15 @@ QgsSymbolV2List QgsRuleBasedRendererV2::Rule::symbolsForFeature( QgsFeature& fea
   for ( QList<Rule*>::iterator it = mActiveChildren.begin(); it != mActiveChildren.end(); ++it )
   {
     Rule* rule = *it;
-    lst += rule->symbolsForFeature( feat );
+    lst += rule->symbolsForFeature( feat, context );
   }
   return lst;
 }
 
-QgsRuleBasedRendererV2::RuleList QgsRuleBasedRendererV2::Rule::rulesForFeature( QgsFeature& feat )
+QgsRuleBasedRendererV2::RuleList QgsRuleBasedRendererV2::Rule::rulesForFeature( QgsFeature& feat, QgsRenderContext* context )
 {
   RuleList lst;
-  if ( !isFilterOK( feat ) )
+  if ( !isFilterOK( feat, context ) )
     return lst;
 
   if ( mSymbol )
@@ -591,7 +593,7 @@ QgsRuleBasedRendererV2::RuleList QgsRuleBasedRendererV2::Rule::rulesForFeature( 
   for ( QList<Rule*>::iterator it = mActiveChildren.begin(); it != mActiveChildren.end(); ++it )
   {
     Rule* rule = *it;
-    lst += rule->rulesForFeature( feat );
+    lst += rule->rulesForFeature( feat, context );
   }
   return lst;
 }
@@ -794,7 +796,7 @@ QgsRuleBasedRendererV2::~QgsRuleBasedRendererV2()
 }
 
 
-QgsSymbolV2* QgsRuleBasedRendererV2::symbolForFeature( QgsFeature& )
+QgsSymbolV2* QgsRuleBasedRendererV2::symbolForFeature( QgsFeature& , QgsRenderContext& )
 {
   // not used at all
   return 0;
@@ -917,9 +919,9 @@ void QgsRuleBasedRendererV2::toSld( QDomDocument& doc, QDomElement &element ) co
 }
 
 // TODO: ideally this function should be removed in favor of legendSymbol(ogy)Items
-QgsSymbolV2List QgsRuleBasedRendererV2::symbols()
+QgsSymbolV2List QgsRuleBasedRendererV2::symbols( QgsRenderContext& context )
 {
-  return mRootRule->symbols();
+  return mRootRule->symbols( context );
 }
 
 QDomElement QgsRuleBasedRendererV2::save( QDomDocument& doc )
@@ -1105,19 +1107,19 @@ QString QgsRuleBasedRendererV2::dump() const
   return msg;
 }
 
-bool QgsRuleBasedRendererV2::willRenderFeature( QgsFeature& feat )
+bool QgsRuleBasedRendererV2::willRenderFeature( QgsFeature& feat, QgsRenderContext& context )
 {
-  return mRootRule->willRenderFeature( feat );
+  return mRootRule->willRenderFeature( feat, &context );
 }
 
-QgsSymbolV2List QgsRuleBasedRendererV2::symbolsForFeature( QgsFeature& feat )
+QgsSymbolV2List QgsRuleBasedRendererV2::symbolsForFeature( QgsFeature& feat, QgsRenderContext& context )
 {
-  return mRootRule->symbolsForFeature( feat );
+  return mRootRule->symbolsForFeature( feat, &context );
 }
 
-QgsSymbolV2List QgsRuleBasedRendererV2::originalSymbolsForFeature( QgsFeature& feat )
+QgsSymbolV2List QgsRuleBasedRendererV2::originalSymbolsForFeature( QgsFeature& feat, QgsRenderContext& context )
 {
-  return mRootRule->symbolsForFeature( feat );
+  return mRootRule->symbolsForFeature( feat, &context );
 }
 
 QgsRuleBasedRendererV2* QgsRuleBasedRendererV2::convertFromRenderer( const QgsFeatureRendererV2* renderer )

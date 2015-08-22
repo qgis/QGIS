@@ -26,6 +26,7 @@
 class QgsMapCanvas;
 class QgsRelationManagerDialog;
 class QgsStyleV2;
+class QgsExpressionContext;
 
 /** Dialog to set project level properties
 

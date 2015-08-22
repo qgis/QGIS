@@ -22,6 +22,7 @@
 #include "qgsstylev2.h"
 #include "qgssymbolv2selectordialog.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgsexpressioncontext.h"
 #include <QColorDialog>
 #include <QWidget>
 #include <QPrinter> //for screen resolution
@@ -43,6 +44,14 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
 
   //read with/height from composition and find suitable entries to display
   displayCompositionWidthHeight();
+
+  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::globalScope() );
+  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::projectScope() );
+  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::compositionScope( mComposition ) );
+  mVariableEditor->reloadContext();
+  mVariableEditor->setEditableScopeIndex( 2 );
+
+  connect( mVariableEditor, SIGNAL( scopeChanged() ), this, SLOT( variablesChanged() ) );
 
   if ( mComposition )
   {
@@ -128,6 +137,18 @@ QgsCompositionWidget::~QgsCompositionWidget()
 
 }
 
+static QgsExpressionContext _getExpressionContext( const void* context )
+{
+  const QgsComposition* composition = ( const QgsComposition* ) context;
+  if ( !composition )
+  {
+    return QgsExpressionContext();
+  }
+
+  QScopedPointer< QgsExpressionContext > expContext( composition->createExpressionContext() );
+  return QgsExpressionContext( *expContext );
+}
+
 void QgsCompositionWidget::populateDataDefinedButtons()
 {
   if ( !mComposition )
@@ -143,11 +164,11 @@ void QgsCompositionWidget::populateDataDefinedButtons()
     vl = atlas->coverageLayer();
   }
 
-  mPaperSizeDDBtn->blockSignals( true );
-  mPaperWidthDDBtn->blockSignals( true );
-  mPaperHeightDDBtn->blockSignals( true );
-  mNumPagesDDBtn->blockSignals( true );
-  mPaperOrientationDDBtn->blockSignals( true );
+  Q_FOREACH ( QgsDataDefinedButton* button, findChildren< QgsDataDefinedButton* >() )
+  {
+    button->blockSignals( true );
+    button->registerGetExpressionContextCallback( &_getExpressionContext, mComposition );
+  }
 
   mPaperSizeDDBtn->init( vl, mComposition->dataDefinedProperty( QgsComposerObject::PresetPaperSize ),
                          QgsDataDefinedButton::String, QgsDataDefinedButton::paperSizeDesc() );
@@ -163,11 +184,15 @@ void QgsCompositionWidget::populateDataDefinedButtons()
   //initial state of controls - disable related controls when dd buttons are active
   mPaperSizeComboBox->setEnabled( !mPaperSizeDDBtn->isActive() );
 
-  mPaperSizeDDBtn->blockSignals( false );
-  mPaperWidthDDBtn->blockSignals( false );
-  mPaperHeightDDBtn->blockSignals( false );
-  mNumPagesDDBtn->blockSignals( false );
-  mPaperOrientationDDBtn->blockSignals( false );
+  Q_FOREACH ( QgsDataDefinedButton* button, findChildren< QgsDataDefinedButton* >() )
+  {
+    button->blockSignals( false );
+  }
+}
+
+void QgsCompositionWidget::variablesChanged()
+{
+  QgsExpressionContextUtils::setCompositionVariables( mComposition, mVariableEditor->variablesInActiveScope() );
 }
 
 void QgsCompositionWidget::setDataDefinedProperty( const QgsDataDefinedButton* ddBtn, QgsComposerObject::DataDefinedProperty property )

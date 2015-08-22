@@ -798,7 +798,8 @@ void QgsComposerAttributeTableWidget::on_mFeatureFilterButton_clicked()
     return;
   }
 
-  QgsExpressionBuilderDialog exprDlg( mComposerTable->sourceLayer(), mFeatureFilterEdit->text(), this );
+  QScopedPointer<QgsExpressionContext> context( mComposerTable->createExpressionContext() );
+  QgsExpressionBuilderDialog exprDlg( mComposerTable->sourceLayer(), mFeatureFilterEdit->text(), this, "generic", *context );
   exprDlg.setWindowTitle( tr( "Expression based filter" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {

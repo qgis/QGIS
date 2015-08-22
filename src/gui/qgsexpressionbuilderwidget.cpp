@@ -27,6 +27,8 @@
 #include <QDir>
 #include <QComboBox>
 
+
+
 QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
     : QWidget( parent )
     , mLayer( NULL )
@@ -41,8 +43,11 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
 
   mModel = new QStandardItemModel();
   mProxyModel = new QgsExpressionItemSearchProxy();
+  mProxyModel->setDynamicSortFilter( true );
   mProxyModel->setSourceModel( mModel );
   expressionTree->setModel( mProxyModel );
+  expressionTree->setSortingEnabled( true );
+  expressionTree->sortByColumn( 0, Qt::AscendingOrder );
 
   expressionTree->setContextMenuPolicy( Qt::CustomContextMenu );
   connect( this, SIGNAL( expressionParsed( bool ) ), this, SLOT( setExpressionState( bool ) ) );
@@ -98,6 +103,11 @@ QgsExpressionBuilderWidget::~QgsExpressionBuilderWidget()
 void QgsExpressionBuilderWidget::setLayer( QgsVectorLayer *layer )
 {
   mLayer = layer;
+
+  //TODO - remove existing layer scope from context
+
+  if ( mLayer )
+    mExpressionContext << QgsExpressionContextUtils::layerScope( mLayer );
 }
 
 void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const QModelIndex & )
@@ -272,7 +282,7 @@ void QgsExpressionBuilderWidget::loadFieldNames( const QgsFields& fields )
   {
     QString fieldName = fields[i].name();
     fieldNames << fieldName;
-    registerItem( "Fields and Values", fieldName, " \"" + fieldName + "\" ", "", QgsExpressionItem::Field );
+    registerItem( "Fields and Values", fieldName, " \"" + fieldName + "\" ", "", QgsExpressionItem::Field, false, i );
   }
 //  highlighter->addFields( fieldNames );
 }
@@ -331,10 +341,12 @@ void QgsExpressionBuilderWidget::registerItem( QString group,
     QString label,
     QString expressionText,
     QString helpText,
-    QgsExpressionItem::ItemType type )
+    QgsExpressionItem::ItemType type, bool highlightedItem, int sortOrder )
 {
   QgsExpressionItem* item = new QgsExpressionItem( label, expressionText, helpText, type );
   item->setData( label, Qt::UserRole );
+  item->setData( sortOrder, QgsExpressionItem::CustomSortRole );
+
   // Look up the group and insert the new function.
   if ( mExpressionGroups.contains( group ) )
   {
@@ -346,10 +358,24 @@ void QgsExpressionBuilderWidget::registerItem( QString group,
     // If the group doesn't exist yet we make it first.
     QgsExpressionItem *newgroupNode = new QgsExpressionItem( QgsExpression::group( group ), "", QgsExpressionItem::Header );
     newgroupNode->setData( group, Qt::UserRole );
+    newgroupNode->setData( group == "Recent (Selection)" ? 2 : 1, QgsExpressionItem::CustomSortRole );
     newgroupNode->appendRow( item );
     mModel->appendRow( newgroupNode );
     mExpressionGroups.insert( group, newgroupNode );
   }
+
+  if ( highlightedItem )
+  {
+    //insert a copy as a top level item
+    QgsExpressionItem* topLevelItem = new QgsExpressionItem( label, expressionText, helpText, type );
+    topLevelItem->setData( label, Qt::UserRole );
+    item->setData( 0, QgsExpressionItem::CustomSortRole );
+    QFont font = topLevelItem->font();
+    font.setBold( true );
+    topLevelItem->setFont( font );
+    mModel->appendRow( topLevelItem );
+  }
+
 }
 
 bool QgsExpressionBuilderWidget::isExpressionValid()
@@ -440,6 +466,12 @@ void QgsExpressionBuilderWidget::updateFunctionTree()
     QString name = func->name();
     if ( name.startsWith( "_" ) ) // do not display private functions
       continue;
+    if ( func->isContextual() )
+    {
+      //don't show contextual functions by default - it's up the the QgsExpressionContext
+      //object to provide them if supported
+      continue;
+    }
     if ( func->params() != 0 )
       name += "(";
     else if ( !name.startsWith( "$" ) )
@@ -453,6 +485,8 @@ void QgsExpressionBuilderWidget::updateFunctionTree()
     QString name = specials[i]->name();
     registerItem( specials[i]->group(), name, " " + name + " " );
   }
+
+  loadExpressionContext();
 }
 
 void QgsExpressionBuilderWidget::setGeomCalculator( const QgsDistanceArea & da )
@@ -468,6 +502,13 @@ QString QgsExpressionBuilderWidget::expressionText()
 void QgsExpressionBuilderWidget::setExpressionText( const QString& expression )
 {
   txtExpressionString->setText( expression );
+}
+
+void QgsExpressionBuilderWidget::setExpressionContext( const QgsExpressionContext &context )
+{
+  mExpressionContext = context;
+
+  loadExpressionContext();
 }
 
 void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
@@ -500,7 +541,8 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
 
     if ( mFeature.isValid() )
     {
-      QVariant value = exp.evaluate( &mFeature, mLayer->fields() );
+      mExpressionContext.setFeature( mFeature );
+      QVariant value = exp.evaluate( &mExpressionContext );
       if ( !exp.hasEvalError() )
         lblPreview->setText( formatPreviewString( value.toString() ) );
     }
@@ -514,7 +556,7 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
   else
   {
     // No layer defined
-    QVariant value = exp.evaluate();
+    QVariant value = exp.evaluate( &mExpressionContext );
     if ( !exp.hasEvalError() )
     {
       lblPreview->setText( formatPreviewString( value.toString() ) );
@@ -552,6 +594,31 @@ QString QgsExpressionBuilderWidget::formatPreviewString( const QString& previewS
   else
   {
     return previewString;
+  }
+}
+
+void QgsExpressionBuilderWidget::loadExpressionContext()
+{
+  QStringList variableNames = mExpressionContext.filteredVariableNames();
+  Q_FOREACH ( QString variable, variableNames )
+  {
+    registerItem( "Variables", variable, " @" + variable + " ",
+                  QgsExpression::variableHelpText( variable, true, mExpressionContext.variable( variable ) ),
+                  QgsExpressionItem::ExpressionNode,
+                  mExpressionContext.isHighlightedVariable( variable ) );
+  }
+
+  // Load the functions from the expression context
+  QStringList contextFunctions = mExpressionContext.functionNames();
+  Q_FOREACH ( QString functionName, contextFunctions )
+  {
+    QgsExpression::Function* func = mExpressionContext.function( functionName );
+    QString name = func->name();
+    if ( name.startsWith( "_" ) ) // do not display private functions
+      continue;
+    if ( func->params() != 0 )
+      name += "(";
+    registerItem( func->group(), func->name(), " " + name + " ", func->helptext() );
   }
 }
 
@@ -658,3 +725,6 @@ QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem* express
   QString myStyle = QgsApplication::reportStyleSheet();
   return "<head><style>" + myStyle + "</style></head><body>" + helpContents + "</body>";
 }
+
+
+

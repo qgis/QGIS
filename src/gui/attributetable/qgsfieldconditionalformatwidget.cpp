@@ -46,7 +46,14 @@ void QgsFieldConditionalFormatWidget::updateIcon()
 
 void QgsFieldConditionalFormatWidget::setExpression()
 {
-  QgsExpressionBuilderDialog dlg( mLayer, mRuleEdit->text(), this );
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( mLayer );
+  context.lastScope()->setVariable( "value", 0 );
+  context.setHighlightedVariables( QStringList() << "value" );
+
+  QgsExpressionBuilderDialog dlg( mLayer, mRuleEdit->text(), this, "generic", context );
   dlg.setWindowTitle( tr( "Conditional style rule expression" ) );
 
   if ( dlg.exec() )

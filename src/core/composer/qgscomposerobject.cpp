@@ -144,40 +144,32 @@ void QgsComposerObject::repaint()
   //nothing to do in base class for now
 }
 
-void QgsComposerObject::refreshDataDefinedProperty( const DataDefinedProperty property )
+void QgsComposerObject::refreshDataDefinedProperty( const DataDefinedProperty property, const QgsExpressionContext *context )
 {
   Q_UNUSED( property );
+  Q_UNUSED( context );
 
   //nothing to do in base class for now
 }
 
-bool QgsComposerObject::dataDefinedEvaluate( const DataDefinedProperty property, QVariant &expressionValue ) const
+bool QgsComposerObject::dataDefinedEvaluate( const DataDefinedProperty property, QVariant &expressionValue, const QgsExpressionContext& context ) const
 {
   if ( !mComposition )
   {
     return false;
   }
-  return mComposition->dataDefinedEvaluate( property, expressionValue, &mDataDefinedProperties );
+  return mComposition->dataDefinedEvaluate( property, expressionValue, context, &mDataDefinedProperties );
 }
 
 void QgsComposerObject::prepareDataDefinedExpressions() const
 {
-  //use atlas coverage layer if set
-  QgsVectorLayer* atlasLayer = 0;
-  if ( mComposition )
-  {
-    QgsAtlasComposition* atlas = &mComposition->atlasComposition();
-    if ( atlas && atlas->enabled() )
-    {
-      atlasLayer = atlas->coverageLayer();
-    }
-  }
+  QScopedPointer< QgsExpressionContext > context( createExpressionContext() );
 
   //prepare all QgsDataDefineds
   QMap< DataDefinedProperty, QgsDataDefined* >::const_iterator it = mDataDefinedProperties.constBegin();
   if ( it != mDataDefinedProperties.constEnd() )
   {
-    it.value()->prepareExpression( atlasLayer );
+    it.value()->prepareExpression( *context.data() );
   }
 }
 
@@ -199,4 +191,20 @@ void QgsComposerObject::removeCustomProperty( const QString& key )
 QStringList QgsComposerObject::customProperties() const
 {
   return mCustomProperties.keys();
+}
+
+QgsExpressionContext* QgsComposerObject::createExpressionContext() const
+{
+  QgsExpressionContext* context = 0;
+  if ( mComposition )
+  {
+    context = mComposition->createExpressionContext();
+  }
+  else
+  {
+    context = new QgsExpressionContext();
+    context->appendScope( QgsExpressionContextUtils::globalScope() );
+    context->appendScope( QgsExpressionContextUtils::projectScope() );
+  }
+  return context;
 }

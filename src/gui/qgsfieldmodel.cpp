@@ -289,7 +289,11 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       if ( exprIdx >= 0 )
       {
         QgsExpression exp( mExpression[exprIdx] );
-        exp.prepare( mLayer ? mLayer->fields() : QgsFields() );
+        QgsExpressionContext context;
+        if ( mLayer )
+          context.setFields( mLayer->fields() );
+
+        exp.prepare( &context );
         return !exp.hasParserError();
       }
       return true;
@@ -330,7 +334,11 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       {
         // if expression, test validity
         QgsExpression exp( mExpression[exprIdx] );
-        exp.prepare( mLayer ? mLayer->fields() : QgsFields() );
+        QgsExpressionContext context;
+        if ( mLayer )
+          context.setFields( mLayer->fields() );
+
+        exp.prepare( &context );
         if ( exp.hasParserError() )
         {
           return QBrush( QColor( Qt::red ) );

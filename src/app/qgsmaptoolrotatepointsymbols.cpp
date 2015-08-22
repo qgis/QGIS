@@ -110,6 +110,8 @@ void QgsMapToolRotatePointSymbols::canvasPressEvent( QMouseEvent *e )
   if ( !renderer )
     return;
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mCanvas->mapSettings() );
+  context.expressionContext() << QgsExpressionContextUtils::layerScope( mActiveLayer );
+  context.expressionContext().setFeature( pointFeature );
   renderer->startRender( context, mActiveLayer->fields() );
 
   //find all rotation fields used by renderer for feature
@@ -117,7 +119,7 @@ void QgsMapToolRotatePointSymbols::canvasPressEvent( QMouseEvent *e )
   if ( renderer->capabilities() & QgsFeatureRendererV2::MoreSymbolsPerFeature )
   {
     //could be multiple symbols for this feature, so check them all
-    foreach ( QgsSymbolV2* s, renderer->originalSymbolsForFeature( pointFeature ) )
+    foreach ( QgsSymbolV2* s, renderer->originalSymbolsForFeature( pointFeature, context ) )
     {
       if ( s && s->type() == QgsSymbolV2::Marker )
       {
@@ -135,7 +137,7 @@ void QgsMapToolRotatePointSymbols::canvasPressEvent( QMouseEvent *e )
   }
   else
   {
-    QgsSymbolV2* s = renderer->originalSymbolForFeature( pointFeature );
+    QgsSymbolV2* s = renderer->originalSymbolForFeature( pointFeature, context );
     if ( s && s->type() == QgsSymbolV2::Marker )
     {
       markerSymbol = static_cast< QgsMarkerSymbolV2* >( s );

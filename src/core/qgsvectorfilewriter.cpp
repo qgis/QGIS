@@ -81,6 +81,8 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   QStringList layOptions = layerOptions;
   QStringList dsOptions = datasourceOptions;
 
+  mRenderContext.setRendererScale( mSymbologyScaleDenominator );
+
   if ( theVectorFileName.isEmpty() )
   {
     mErrorMessage = QObject::tr( "Empty filename given" );
@@ -1571,8 +1573,9 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature, QgsFeatureRendererV2*
   //add OGR feature style type
   if ( mSymbologyExport != NoSymbology && renderer )
   {
+    mRenderContext.expressionContext().setFeature( feature );
     //SymbolLayerSymbology: concatenate ogr styles of all symbollayers
-    QgsSymbolV2List symbols = renderer->symbolsForFeature( feature );
+    QgsSymbolV2List symbols = renderer->symbolsForFeature( feature, mRenderContext );
     QString styleString;
     QString currentStyle;
 
@@ -2109,6 +2112,12 @@ bool QgsVectorFileWriter::deleteShapeFile( QString theFileName )
   return ok;
 }
 
+void QgsVectorFileWriter::setSymbologyScaleDenominator( double d )
+{
+  mSymbologyScaleDenominator = d;
+  mRenderContext.setRendererScale( mSymbologyScaleDenominator );
+}
+
 QMap< QString, QString> QgsVectorFileWriter::supportedFiltersAndFormats()
 {
   QMap<QString, QString> resultMap;
@@ -2466,7 +2475,7 @@ void QgsVectorFileWriter::createSymbolLayerTable( QgsVectorLayer* vl,  const Qgs
 
   //get symbols
   int nTotalLevels = 0;
-  QgsSymbolV2List symbolList = renderer->symbols();
+  QgsSymbolV2List symbolList = renderer->symbols( mRenderContext );
   QgsSymbolV2List::iterator symbolIt = symbolList.begin();
   for ( ; symbolIt != symbolList.end(); ++symbolIt )
   {
@@ -2491,6 +2500,11 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
 {
   if ( !layer )
     return ErrInvalidLayer;
+
+  mRenderContext.expressionContext() = QgsExpressionContext();
+  mRenderContext.expressionContext() << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( layer );
 
   QgsFeatureRendererV2 *renderer = layer->rendererV2();
   if ( !renderer )
@@ -2532,8 +2546,9 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
         return ErrProjection;
       }
     }
+    mRenderContext.expressionContext().setFeature( fet );
 
-    featureSymbol = renderer->symbolForFeature( fet );
+    featureSymbol = renderer->symbolForFeature( fet, mRenderContext );
     if ( !featureSymbol )
     {
       continue;
@@ -2549,7 +2564,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
 
   //find out order
   QgsSymbolV2LevelOrder levels;
-  QgsSymbolV2List symbols = renderer->symbols();
+  QgsSymbolV2List symbols = renderer->symbols( mRenderContext );
   for ( int i = 0; i < symbols.count(); i++ )
   {
     QgsSymbolV2* sym = symbols[i];
@@ -2656,14 +2671,7 @@ double QgsVectorFileWriter::mapUnitScaleFactor( double scaleDenominator, QgsSymb
   return 1.0;
 }
 
-QgsRenderContext QgsVectorFileWriter::renderContext() const
-{
-  QgsRenderContext context;
-  context.setRendererScale( mSymbologyScaleDenominator );
-  return context;
-}
-
-void QgsVectorFileWriter::startRender( QgsVectorLayer* vl ) const
+void QgsVectorFileWriter::startRender( QgsVectorLayer* vl )
 {
   QgsFeatureRendererV2* renderer = symbologyRenderer( vl );
   if ( !renderer )
@@ -2671,11 +2679,10 @@ void QgsVectorFileWriter::startRender( QgsVectorLayer* vl ) const
     return;
   }
 
-  QgsRenderContext ctx = renderContext();
-  renderer->startRender( ctx, vl->fields() );
+  renderer->startRender( mRenderContext, vl->fields() );
 }
 
-void QgsVectorFileWriter::stopRender( QgsVectorLayer* vl ) const
+void QgsVectorFileWriter::stopRender( QgsVectorLayer* vl )
 {
   QgsFeatureRendererV2* renderer = symbologyRenderer( vl );
   if ( !renderer )
@@ -2683,8 +2690,7 @@ void QgsVectorFileWriter::stopRender( QgsVectorLayer* vl ) const
     return;
   }
 
-  QgsRenderContext ctx = renderContext();
-  renderer->stopRender( ctx );
+  renderer->stopRender( mRenderContext );
 }
 
 QgsFeatureRendererV2* QgsVectorFileWriter::symbologyRenderer( QgsVectorLayer* vl ) const

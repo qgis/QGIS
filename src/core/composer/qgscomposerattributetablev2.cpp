@@ -451,6 +451,9 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
     return false;
   }
 
+  QScopedPointer< QgsExpressionContext > context( createExpressionContext() );
+  context->setFields( layer->fields() );
+
   //prepare filter expression
   QScopedPointer<QgsExpression> filterExpression;
   bool activeFilter = false;
@@ -511,10 +514,11 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
 
   while ( fit.nextFeature( f ) && counter < mMaximumNumberOfFeatures )
   {
+    context->setFeature( f );
     //check feature against filter
     if ( activeFilter && !filterExpression.isNull() )
     {
-      QVariant result = filterExpression->evaluate( &f, layer->fields() );
+      QVariant result = filterExpression->evaluate( context.data() );
       // skip this feature if the filter evaluation is false
       if ( !result.toBool() )
       {
@@ -551,9 +555,9 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
       {
         // Lets assume it's an expression
         QgsExpression* expression = new QgsExpression(( *columnIt )->attribute() );
-        expression->setCurrentRowNumber( counter + 1 );
-        expression->prepare( layer->fields() );
-        QVariant value = expression->evaluate( f );
+        context->lastScope()->setVariable( QString( "_rownum_" ), counter + 1 );
+        expression->prepare( context.data() );
+        QVariant value = expression->evaluate( context.data() );
         currentRow << value;
       }
     }
@@ -577,6 +581,18 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
 
   recalculateTableSize();
   return true;
+}
+
+QgsExpressionContext *QgsComposerAttributeTableV2::createExpressionContext() const
+{
+  QgsExpressionContext* context = QgsComposerTableV2::createExpressionContext();
+
+  if ( mSource == LayerAttributes )
+  {
+    context->appendScope( QgsExpressionContextUtils::layerScope( mVectorLayer ) );
+  }
+
+  return context;
 }
 
 QVariant QgsComposerAttributeTableV2::replaceWrapChar( const QVariant &variant ) const

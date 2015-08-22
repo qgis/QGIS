@@ -38,6 +38,18 @@
 #include <QCheckBox>
 #include <QSettings>
 
+static QgsExpressionContext _getExpressionContext( const void* context )
+{
+  QgsExpressionContext expContext;
+  expContext << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope();
+
+  const QgsVectorLayer* layer = ( const QgsVectorLayer* ) context;
+  if ( layer )
+    expContext << QgsExpressionContextUtils::layerScope( layer );
+
+  return expContext;
+}
 
 QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QWidget* parent )
     : QWidget( parent )
@@ -58,6 +70,9 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
     return;
 
   setupUi( this );
+
+  mFieldExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, mLayer );
+
   mFontSizeUnitWidget->setUnits( QStringList() << tr( "Points" ) << tr( "Map unit" ), 1 );
   mBufferUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit );
   mShapeSizeUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit );
@@ -874,12 +889,18 @@ void QgsLabelingGui::setDataDefinedProperty( const QgsDataDefinedButton* ddBtn, 
 
 void QgsLabelingGui::populateDataDefinedButtons( QgsPalLayerSettings& s )
 {
+  Q_FOREACH ( QgsDataDefinedButton* button, findChildren< QgsDataDefinedButton* >() )
+  {
+    button->registerGetExpressionContextCallback( &_getExpressionContext, mLayer );
+  }
+
   // don't register enable/disable siblings, since visual feedback from data defined buttons should be enough,
   // and ability to edit layer-level setting should remain enabled regardless
 
   QString trString = tr( "string " );
 
   // text style
+
   mFontDDBtn->init( mLayer, s.dataDefinedProperty( QgsPalLayerSettings::Family ),
                     QgsDataDefinedButton::String,
                     trString + tr( "[<b>family</b>|<b>family[foundry]</b>],<br>"

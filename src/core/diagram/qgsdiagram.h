@@ -16,6 +16,7 @@
 #define QGSDIAGRAM_H
 
 #include "qgsfeature.h"
+#include "qgsexpressioncontext.h"
 #include <QPen>
 #include <QBrush>
 
@@ -40,7 +41,16 @@ class CORE_EXPORT QgsDiagram
     virtual QgsDiagram* clone() const = 0;
 
     void clearCache();
-    QgsExpression* getExpression( const QString& expression, const QgsFields* fields );
+
+    Q_DECL_DEPRECATED QgsExpression* getExpression( const QString& expression, const QgsFields* fields );
+
+    /** Returns a prepared expression for the specified context.
+     * @param expression expression string
+     * @param context expression context
+     * @note added in QGIS 2.12
+     */
+    QgsExpression* getExpression( const QString& expression, const QgsExpressionContext& context );
+
     /** @deprecated `void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )` should be used instead */
     virtual Q_DECL_DEPRECATED void renderDiagram( const QgsAttributes& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position );
     /** Draws the diagram at the given position (in pixel coordinates)*/

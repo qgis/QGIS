@@ -398,10 +398,24 @@ QgsDataDefinedValueDialog::QgsDataDefinedValueDialog( const QList<QgsSymbolV2*>&
 
 }
 
+static QgsExpressionContext _getExpressionContext( const void* context )
+{
+  QgsExpressionContext expContext;
+  expContext << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope();
+
+  const QgsVectorLayer* layer = ( const QgsVectorLayer* ) context;
+  if ( layer )
+    expContext << QgsExpressionContextUtils::layerScope( layer );
+
+  return expContext;
+}
+
 void QgsDataDefinedValueDialog::init( const QString & description )
 {
   QgsDataDefined dd = symbolDataDefined();
   mDDBtn->init( mLayer, &dd, QgsDataDefinedButton::Double, description );
+  mDDBtn->registerGetExpressionContextCallback( &_getExpressionContext, const_cast< QgsVectorLayer* >( mLayer ) );
   mSpinBox->setValue( value( mSymbolList.back() ) );
   mSpinBox->setEnabled( !mDDBtn->isActive() );
 }

@@ -20,6 +20,7 @@
 #include "qgsfeature.h"
 #include "qgsrectangle.h"
 #include "qgsexpression.h"
+#include "qgsexpressioncontext.h"
 #include "qgssimplifymethod.h"
 
 #include <QList>
@@ -85,7 +86,7 @@ class CORE_EXPORT QgsFeatureRequest
     //! construct a request with rectangle filter
     explicit QgsFeatureRequest( const QgsRectangle& rect );
     //! construct a request with a filter expression
-    explicit QgsFeatureRequest( const QgsExpression& expr );
+    explicit QgsFeatureRequest( const QgsExpression& expr, const QgsExpressionContext& context = QgsExpressionContext() );
     //! copy constructor
     QgsFeatureRequest( const QgsFeatureRequest& rh );
 
@@ -108,9 +109,32 @@ class CORE_EXPORT QgsFeatureRequest
     QgsFeatureRequest& setFilterFids( QgsFeatureIds fids );
     const QgsFeatureIds& filterFids() const { return mFilterFids; }
 
-    //! Set filter expression. {@see QgsExpression}
+    /** Set the filter expression. {@see QgsExpression}
+     * @param expression expression string
+     * @see filterExpression
+     * @see setExpressionContext
+     */
     QgsFeatureRequest& setFilterExpression( const QString& expression );
+
+    /** Returns the filter expression if set.
+     * @see setFilterExpression
+     * @see expressionContext
+     */
     QgsExpression* filterExpression() const { return mFilterExpression; }
+
+    /** Returns the expression context used to evaluate filter expressions.
+     * @note added in QGIS 2.12
+     * @see setExpressionContext
+     * @see filterExpression
+     */
+    QgsExpressionContext* expressionContext() { return &mExpressionContext; }
+
+    /** Sets the expression context used to evaluate filter expressions.
+     * @note added in QGIS 2.12
+     * @see expressionContext
+     * @see setFilterExpression
+     */
+    QgsFeatureRequest& setExpressionContext( const QgsExpressionContext& context );
 
     /**
      * Disables filter conditions.
@@ -162,6 +186,7 @@ class CORE_EXPORT QgsFeatureRequest
     QgsFeatureId mFilterFid;
     QgsFeatureIds mFilterFids;
     QgsExpression* mFilterExpression;
+    QgsExpressionContext mExpressionContext;
     Flags mFlags;
     QgsAttributeList mAttrs;
     QgsSimplifyMethod mSimplifyMethod;

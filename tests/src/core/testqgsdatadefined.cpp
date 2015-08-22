@@ -95,7 +95,7 @@ void TestQgsDataDefined::create()
 void TestQgsDataDefined::copy()
 {
   QgsDataDefined original( true, true, QString( "sqrt(2)" ), QString( "field" ) );
-  original.prepareExpression( NULL );
+  original.prepareExpression();
   QgsDataDefined copy( original );
   QVERIFY( copy == original );
 

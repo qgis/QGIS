@@ -67,17 +67,11 @@ void QgsConditionalStyle::setSymbol( QgsSymbolV2* value )
   }
 }
 
-bool QgsConditionalStyle::matches( QVariant value, QgsFeature *feature )
+bool QgsConditionalStyle::matches( QVariant value, QgsExpressionContext& context ) const
 {
-  // TODO Replace with expression context
-  QgsExpression exp( QString( mRule ).replace( "@value", value.toString() ) );
-  if ( feature )
-  {
-    return exp.evaluate( feature, *feature->fields() ).toBool();
-  }
-  {
-    return exp.evaluate().toBool();
-  }
+  QgsExpression exp( mRule );
+  context.lastScope()->setVariable( "value", value );
+  return exp.evaluate( &context ).toBool();
 }
 
 QPixmap QgsConditionalStyle::renderPreview()

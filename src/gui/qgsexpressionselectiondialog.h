@@ -66,7 +66,7 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
     void on_mActionSelect_triggered();
     void on_mActionAddToSelection_triggered();
     void on_mActionRemoveFromSelection_triggered();
-    void on_mActionSelectInstersect_triggered();
+    void on_mActionSelectIntersect_triggered();
     void on_mPbnClose_clicked();
 
   protected:

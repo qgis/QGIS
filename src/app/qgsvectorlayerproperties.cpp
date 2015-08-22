@@ -50,6 +50,7 @@
 #include "qgsquerybuilder.h"
 #include "qgsdatasourceuri.h"
 #include "qgsrendererv2.h"
+#include "qgsexpressioncontext.h"
 
 #include <QMessageBox>
 #include <QDir>
@@ -344,7 +345,12 @@ void QgsVectorLayerProperties::insertExpression()
     selText = selText.mid( 2, selText.size() - 4 );
 
   // display the expression builder
-  QgsExpressionBuilderDialog dlg( layer, selText.replace( QChar::ParagraphSeparator, '\n' ), this );
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope()
+  << QgsExpressionContextUtils::layerScope( layer );
+
+  QgsExpressionBuilderDialog dlg( layer, selText.replace( QChar::ParagraphSeparator, '\n' ), this, "generic", context );
   dlg.setWindowTitle( tr( "Insert expression" ) );
   if ( dlg.exec() == QDialog::Accepted )
   {
@@ -500,6 +506,12 @@ void QgsVectorLayerProperties::syncToLayer( void )
     }
   }
 
+  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::globalScope() );
+  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::projectScope() );
+  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::layerScope( layer ) );
+  mVariableEditor->reloadContext();
+  mVariableEditor->setEditableScopeIndex( 2 );
+
 } // syncToLayer()
 
 
@@ -609,6 +621,9 @@ void QgsVectorLayerProperties::apply()
     layer->rendererV2()->setForceRasterRender( mForceRasterCheckBox->isChecked() );
 
   mOldJoins = layer->vectorJoins();
+
+  //save variables
+  QgsExpressionContextUtils::setLayerVariables( layer, mVariableEditor->variablesInActiveScope() );
 
   // update symbology
   emit refreshLegend( layer->id() );

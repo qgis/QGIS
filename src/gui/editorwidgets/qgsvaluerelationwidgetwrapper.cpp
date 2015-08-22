@@ -217,11 +217,16 @@ QgsValueRelationWidgetWrapper::ValueRelationCache QgsValueRelationWidgetWrapper:
     int ki = layer->fieldNameIndex( config.value( "Key" ).toString() );
     int vi = layer->fieldNameIndex( config.value( "Value" ).toString() );
 
+    QgsExpressionContext context;
+    context << QgsExpressionContextUtils::globalScope()
+    << QgsExpressionContextUtils::projectScope()
+    << QgsExpressionContextUtils::layerScope( layer );
+
     QgsExpression *e = 0;
     if ( !config.value( "FilterExpression" ).toString().isEmpty() )
     {
       e = new QgsExpression( config.value( "FilterExpression" ).toString() );
-      if ( e->hasParserError() || !e->prepare( layer->fields() ) )
+      if ( e->hasParserError() || !e->prepare( &context ) )
         ki = -1;
     }
 
@@ -263,7 +268,8 @@ QgsValueRelationWidgetWrapper::ValueRelationCache QgsValueRelationWidgetWrapper:
       QgsFeature f;
       while ( fit.nextFeature( f ) )
       {
-        if ( e && !e->evaluate( &f ).toBool() )
+        context.setFeature( f );
+        if ( e && !e->evaluate( &context ).toBool() )
           continue;
 
         cache.append( ValueRelationItem( f.attribute( ki ), f.attribute( vi ).toString() ) );

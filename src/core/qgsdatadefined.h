@@ -21,6 +21,7 @@
 #include <QExplicitlySharedDataPointer>
 #include "qgis.h"
 #include "qgsfield.h"
+#include "qgsexpressioncontext.h"
 
 class QgsExpression;
 class QgsVectorLayer;
@@ -146,14 +147,21 @@ class CORE_EXPORT QgsDataDefined
      * @param layer vector layer
      * @returns true if expression was successfully prepared
      */
-    bool prepareExpression( QgsVectorLayer* layer );
+    Q_DECL_DEPRECATED bool prepareExpression( QgsVectorLayer* layer );
 
     /** Prepares the expression using a fields collection
      * @param fields
      * @returns true if expression was successfully prepared
      * @note added in QGIS 2.9
      */
-    bool prepareExpression( const QgsFields &fields = QgsFields() );
+    Q_DECL_DEPRECATED bool prepareExpression( const QgsFields &fields );
+
+    /** Prepares the expression using an expression context.
+     * @param context expression context
+     * @returns true if expression was successfully prepared
+     * @note added in QGIS 2.12
+     */
+    bool prepareExpression( const QgsExpressionContext &context = QgsExpressionContext() );
 
     /** Returns whether the data defined object's expression is prepared
      * @returns true if expression is prepared
@@ -165,13 +173,19 @@ class CORE_EXPORT QgsDataDefined
     /** Returns the columns referenced by the QgsDataDefined
      * @param layer vector layer, used for preparing the expression if required
      */
-    QStringList referencedColumns( QgsVectorLayer* layer );
+    Q_DECL_DEPRECATED QStringList referencedColumns( QgsVectorLayer* layer );
 
     /** Returns the columns referenced by the QgsDataDefined
      * @param fields vector layer, used for preparing the expression if required
      * @note added in QGIS 2.9
      */
-    QStringList referencedColumns( const QgsFields& fields = QgsFields() );
+    Q_DECL_DEPRECATED QStringList referencedColumns( const QgsFields& fields );
+
+    /** Returns the columns referenced by the QgsDataDefined
+     * @param context expression context, used for preparing the expression if required
+     * @note added in QGIS 2.12
+     */
+    QStringList referencedColumns( const QgsExpressionContext& context = QgsExpressionContext() );
 
     /**
      * Get the field which this QgsDataDefined represents. Be aware that this may return

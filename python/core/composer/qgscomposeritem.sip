@@ -630,6 +630,12 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
     */
     void setCurrentExportLayer( const int layerIdx = -1 );
 
+    /** Creates an expression context relating to the item's current state. The context includes
+     * scopes for global, project, composition, atlas and item properties.
+     * @note added in QGIS 2.12
+     */
+    QgsExpressionContext* createExpressionContext() const /Factory/;
+
   public slots:
     /** Sets the item rotation
      * @deprecated Use setItemRotation( double rotation ) instead
@@ -652,9 +658,10 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
      * @param property data defined property to refresh. If property is set to
      * QgsComposerItem::AllProperties then all data defined properties for the item will be
      * refreshed.
+     * @param context expression context for evaluating data defined expressions
      * @note this method was added in version 2.5
     */
-    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );
+    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = 0 );
 
   protected:
 
@@ -761,11 +768,12 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
      * @param resizeOnly set to true if the item is only being resized. If true then
      * the position of the returned rect will be adjusted to account for the item's
      * position mode
+     * @param context expression context for evaluating data defined expressions
      * @returns bounding box rectangle for item after data defined size and position have been
      * set and position mode has been accounted for
      * @note added in QGIS 2.5
     */
-    QRectF evalItemRect( const QRectF &newRect, const bool resizeOnly = false );
+    QRectF evalItemRect( const QRectF &newRect, const bool resizeOnly = false, const QgsExpressionContext* context = 0 );
 
     /** Returns whether the item should be drawn in the current context
      * @returns true if item should be drawn

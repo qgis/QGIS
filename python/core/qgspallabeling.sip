@@ -485,9 +485,14 @@ class QgsPalLayerSettings
     double rasterCompressFactor; //pixel resolution scale factor
 
     // called from register feature hook
-    void calculateLabelSize( const QFontMetricsF* fm, QString text, double& labelX, double& labelY, QgsFeature* f = 0 );
+    void calculateLabelSize( const QFontMetricsF* fm, QString text, double& labelX, double& labelY, QgsFeature* f = 0, const QgsRenderContext* context = 0 );
 
-    // implementation of register feature hook
+    /** Register a feature for labelling.
+     * @param f feature to label
+     * @param context render context. The QgsExpressionContext contained within the render context
+     * must have already had the feature and fields sets prior to calling this method.
+     * @param dxfLayer dxfLayer name
+     */
     void registerFeature( QgsFeature& f, const QgsRenderContext& context, QString dxfLayer );
 
     void readFromLayer( QgsVectorLayer* layer );
@@ -521,13 +526,14 @@ class QgsPalLayerSettings
      * @returns value inside QVariant
      * @note not available in python bindings
      */
-    QVariant dataDefinedValue( QgsPalLayerSettings::DataDefinedProperties p, QgsFeature& f, const QgsFields& fields ) const;
+    //QVariant dataDefinedValue( QgsPalLayerSettings::DataDefinedProperties p, QgsFeature& f, const QgsFields& fields,
+    //                           const QgsExpressionContext* context = 0 ) const;
 
     /** Get data defined property value from expression string or attribute field name
      * @returns true/false whether result is null or invalid
      * @note not available in python bindings
      */
-    bool dataDefinedEvaluate( QgsPalLayerSettings::DataDefinedProperties p, QVariant& exprVal ) const;
+    //bool dataDefinedEvaluate( QgsPalLayerSettings::DataDefinedProperties p, QVariant& exprVal, const QgsExpressionContext* context = 0 ) const;
 
     /** Whether data definition is active
      */
@@ -731,8 +737,16 @@ class QgsPalLabeling : QgsLabelingEngineInterface
     virtual int prepareLayer( QgsVectorLayer* layer, QStringList &attrNames, QgsRenderContext& ctx );
     //! adds a diagram layer to the labeling engine
     virtual int addDiagramLayer( QgsVectorLayer* layer, const QgsDiagramLayerSettings *s );
-    //! hook called when drawing for every feature in a layer
+
+    /** Register a feature for labelling.
+     * @param layerID string identifying layer associated with label
+     * @param feat feature to label
+     * @param context render context. The QgsExpressionContext contained within the render context
+     * must have already had the feature and fields sets prior to calling this method.
+     * @param dxfLayer dxfLayer name
+     */
     virtual void registerFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext(), QString dxfLayer = QString::null );
+
     virtual void registerDiagramFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() );
     //! called when the map is drawn and labels should be placed
     virtual void drawLabeling( QgsRenderContext& context );

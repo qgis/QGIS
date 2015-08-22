@@ -29,6 +29,8 @@
 
 #include <QList>
 
+class QgsExpressionContext;
+
 /**
  * \class QgsOptions
  * \brief Set user options and preferences

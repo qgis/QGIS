@@ -42,6 +42,7 @@ void QgsMapHitTest::run()
       context.setExtent( mSettings.outputExtentToLayerExtent( vl, mSettings.visibleExtent() ) );
     }
 
+    context.expressionContext() << QgsExpressionContextUtils::layerScope( vl );
     SymbolV2Set& usedSymbols = mHitTest[vl];
     runHitTestLayer( vl, usedSymbols, context );
   }
@@ -61,13 +62,14 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer* vl, SymbolV2Set& usedSymbol
   QgsFeatureIterator fi = vl->getFeatures( request );
   while ( fi.nextFeature( f ) )
   {
+    context.expressionContext().setFeature( f );
     if ( moreSymbolsPerFeature )
     {
-      foreach ( QgsSymbolV2* s, r->originalSymbolsForFeature( f ) )
+      foreach ( QgsSymbolV2* s, r->originalSymbolsForFeature( f, context ) )
         usedSymbols.insert( s );
     }
     else
-      usedSymbols.insert( r->originalSymbolForFeature( f ) );
+      usedSymbols.insert( r->originalSymbolForFeature( f, context ) );
   }
   r->stopRender( context );
 }

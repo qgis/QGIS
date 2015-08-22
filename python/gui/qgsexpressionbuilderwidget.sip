@@ -1,19 +1,3 @@
-/** Search proxy used to filter the QgsExpressionBuilderWidget tree.
-  * The default search for a tree model only searches top level this will handle one
-  * level down
-  */
-class QgsExpressionItemSearchProxy : QSortFilterProxyModel
-{
-%TypeHeaderCode
-#include <qgsexpressionbuilderwidget.h>
-%End
-
-  public:
-    QgsExpressionItemSearchProxy();
-
-    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const;
-};
-
 /** An expression item that can be used in the QgsExpressionBuilderWidget tree.
   */
 class QgsExpressionItem : QStandardItem
@@ -39,13 +23,13 @@ class QgsExpressionItem : QStandardItem
                        QString expressionText,
                        QgsExpressionItem::ItemType itemType = ExpressionNode );
 
-    QString getExpressionText();
+    QString getExpressionText() const;
 
     /** Get the help text that is associated with this expression item.
       *
       * @return The help text.
       */
-    QString getHelpText();
+    QString getHelpText() const;
     /** Set the help text for the current item
       *
       * @note The help text can be set as a html string.
@@ -56,7 +40,32 @@ class QgsExpressionItem : QStandardItem
       *
       * @return The QgsExpressionItem::ItemType
       */
-    QgsExpressionItem::ItemType getItemType();
+    QgsExpressionItem::ItemType getItemType() const;
+
+    //! Custom sort order role
+    static const int CustomSortRole;
+    //! Item type role
+    static const int ItemTypeRole;
+};
+
+/** Search proxy used to filter the QgsExpressionBuilderWidget tree.
+  * The default search for a tree model only searches top level this will handle one
+  * level down
+  */
+class QgsExpressionItemSearchProxy : QSortFilterProxyModel
+{
+%TypeHeaderCode
+#include <qgsexpressionbuilderwidget.h>
+%End
+
+  public:
+    QgsExpressionItemSearchProxy();
+
+    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const;
+
+  protected:
+
+    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
 };
 
 /** A reusable widget that can be used to build a expression string.
@@ -100,16 +109,34 @@ class QgsExpressionBuilderWidget : QWidget
     /** Sets the expression string for the widget */
     void setExpressionText( const QString& expression );
 
+    /** Returns the expression context for the widget. The context is used for the expression
+     * preview result and for populating the list of available functions and variables.
+     * @see setExpressionContext
+     * @note added in QGIS 2.12
+     */
+    QgsExpressionContext expressionContext() const;
+
+    /** Sets the expression context for the widget. The context is used for the expression
+     * preview result and for populating the list of available functions and variables.
+     * @param context expression context
+     * @see expressionContext
+     * @note added in QGIS 2.12
+     */
+    void setExpressionContext( const QgsExpressionContext& context );
+
     /** Registers a node item for the expression builder.
       * @param group The group the item will be show in the tree view.  If the group doesn't exsit it will be created.
       * @param label The label that is show to the user for the item in the tree.
       * @param expressionText The text that is inserted into the expression area when the user double clicks on the item.
       * @param helpText The help text that the user will see when item is selected.
       * @param type The type of the expression item.
+      * @param highlightedItem set to true to make the item highlighted, which inserts a bold copy of the item at the top level
+      * @param sortOrder sort ranking for item
       */
     void registerItem( QString group, QString label, QString expressionText,
                        QString helpText = "",
-                       QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode );
+                       QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode,
+                       bool highlightedItem = false, int sortOrder = 1 );
 
     bool isExpressionValid();
 

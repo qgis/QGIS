@@ -38,11 +38,28 @@ QList< QgsStatisticalSummary::Statistic > QgsStatisticalSummaryDockWidget::mDisp
 
 #define MISSING_VALUES -1
 
+static QgsExpressionContext _getExpressionContext( const void* context )
+{
+  QgsExpressionContext expContext;
+  expContext << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope();
+
+  const QgsStatisticalSummaryDockWidget* widget = ( const QgsStatisticalSummaryDockWidget* ) context;
+  if ( widget )
+  {
+    expContext << QgsExpressionContextUtils::layerScope( widget->layer() );
+  }
+
+  return expContext;
+}
+
 QgsStatisticalSummaryDockWidget::QgsStatisticalSummaryDockWidget( QWidget *parent )
     : QDockWidget( parent )
     , mLayer( 0 )
 {
   setupUi( this );
+
+  mFieldExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, this );
 
   mLayerComboBox->setFilters( QgsMapLayerProxyModel::VectorLayer );
   mFieldExpressionWidget->setFilters( QgsFieldProxyModel::Numeric );

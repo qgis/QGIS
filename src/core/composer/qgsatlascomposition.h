@@ -29,6 +29,7 @@ class QgsComposerMap;
 class QgsComposition;
 class QgsVectorLayer;
 class QgsExpression;
+class QgsExpressionContext;
 
 /** \ingroup MapComposer
  * Class used to render an Atlas, iterating over geometry features.
@@ -338,7 +339,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
     /** Evaluates filename for current feature
      * @returns true if feature filename was successfully evaluated
     */
-    bool evalFeatureFilename();
+    bool evalFeatureFilename( const QgsExpressionContext &context );
 
     QgsComposition* mComposition;
 
@@ -395,6 +396,8 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     //computes the extent of the current feature, in the crs of the specified map
     void computeExtent( QgsComposerMap *map );
+
+    QgsExpressionContext createExpressionContext();
 
     //list of predefined scales
     QVector<qreal> mPredefinedScales;

@@ -31,6 +31,7 @@ class QGraphicsLineItem;
 class QgsComposerItemGroup;
 class QgsDataDefined;
 class QgsComposition;
+class QgsExpressionContext;
 
 /** \ingroup MapComposer
  * A item that forms part of a map composition.
@@ -582,6 +583,8 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     */
     virtual void setCurrentExportLayer( const int layerIdx = -1 ) { mCurrentExportLayer = layerIdx; }
 
+    virtual QgsExpressionContext* createExpressionContext() const override;
+
   public slots:
     /** Sets the item rotation
      * @deprecated Use setItemRotation( double rotation ) instead
@@ -604,9 +607,10 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @param property data defined property to refresh. If property is set to
      * QgsComposerItem::AllProperties then all data defined properties for the item will be
      * refreshed.
+     * @param context expression context for evaluating data defined expressions
      * @note this method was added in version 2.5
     */
-    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties ) override;
+    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext* context = 0 ) override;
 
   protected:
     /** True if item has been removed from the composition*/
@@ -768,11 +772,12 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * @param resizeOnly set to true if the item is only being resized. If true then
      * the position of the returned rect will be adjusted to account for the item's
      * position mode
+     * @param context expression context for evaluating data defined expressions
      * @returns bounding box rectangle for item after data defined size and position have been
      * set and position mode has been accounted for
      * @note added in QGIS 2.5
     */
-    QRectF evalItemRect( const QRectF &newRect, const bool resizeOnly = false );
+    QRectF evalItemRect( const QRectF &newRect, const bool resizeOnly = false, const QgsExpressionContext* context = 0 );
 
     /** Returns whether the item should be drawn in the current context
      * @returns true if item should be drawn
@@ -808,21 +813,23 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
       *@param updateItem set to false to prevent the item being automatically updated
       *@param rotateAroundCenter set to true to rotate the item around its center rather
       * than its origin
+      * @param context expression context for evaulating data defined rotation
       * @note this method was added in version 2.5
      */
-    void refreshRotation( const bool updateItem = true, const bool rotateAroundCenter = false );
+    void refreshRotation( const bool updateItem = true, const bool rotateAroundCenter = false, const QgsExpressionContext &context = QgsExpressionContext() );
 
     /** Refresh item's transparency, considering data defined transparency
-      *@param updateItem set to false to prevent the item being automatically updated
+      * @param updateItem set to false to prevent the item being automatically updated
       * after the transparency is set
+      * @param context expression context for evaulating data defined transparency
       * @note this method was added in version 2.5
      */
-    void refreshTransparency( const bool updateItem = true );
+    void refreshTransparency( const bool updateItem = true, const QgsExpressionContext &context = QgsExpressionContext() );
 
     /** Refresh item's blend mode, considering data defined blend mode
      * @note this method was added in version 2.5
      */
-    void refreshBlendMode();
+    void refreshBlendMode( const QgsExpressionContext &context );
 
     void init( const bool manageZValue );
 

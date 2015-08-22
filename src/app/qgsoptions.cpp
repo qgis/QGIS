@@ -39,6 +39,7 @@
 #include "qgscolorschemeregistry.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgscolordialog.h"
+#include "qgsexpressioncontext.h"
 
 #include <QInputDialog>
 #include <QFileDialog>
@@ -838,6 +839,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   // load gdal driver list only when gdal tab is first opened
   mLoadedGdalDriverList = false;
 
+  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::globalScope() );
+  mVariableEditor->reloadContext();
+  mVariableEditor->setEditableScopeIndex( 0 );
+
   // restore window and widget geometry/state
   restoreOptionsBaseUi();
 }
@@ -1332,6 +1337,9 @@ void QgsOptions::saveOptions()
   {
     // TODO[MD] QgisApp::instance()->legend()->updateLegendItemSymbologies();
   }
+
+  //save variables
+  QgsExpressionContextUtils::setGlobalVariables( mVariableEditor->variablesInActiveScope() );
 
   // save app stylesheet last (in case reset becomes necessary)
   if ( mStyleSheetNewOpts != mStyleSheetOldOpts )

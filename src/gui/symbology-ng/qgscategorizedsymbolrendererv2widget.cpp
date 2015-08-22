@@ -370,6 +370,19 @@ QgsRendererV2Widget* QgsCategorizedSymbolRendererV2Widget::create( QgsVectorLaye
   return new QgsCategorizedSymbolRendererV2Widget( layer, style, renderer );
 }
 
+static QgsExpressionContext _getExpressionContext( const void* context )
+{
+  QgsExpressionContext expContext;
+  expContext << QgsExpressionContextUtils::globalScope()
+  << QgsExpressionContextUtils::projectScope();
+
+  const QgsVectorLayer* layer = ( const QgsVectorLayer* ) context;
+  if ( layer )
+    expContext << QgsExpressionContextUtils::layerScope( layer );
+
+  return expContext;
+}
+
 QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
     : QgsRendererV2Widget( layer, style )
     , mRenderer( 0 )
@@ -451,6 +464,8 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
   advMenu->addAction( tr( "Symbol levels..." ), this, SLOT( showSymbolLevels() ) );
 
   btnAdvanced->setMenu( advMenu );
+
+  mExpressionWidget->registerGetExpressionContextCallback( &_getExpressionContext, layer );
 }
 
 QgsCategorizedSymbolRendererV2Widget::~QgsCategorizedSymbolRendererV2Widget()
@@ -646,12 +661,18 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
   {
     // Lets assume it's an expression
     QgsExpression* expression = new QgsExpression( attrName );
-    expression->prepare( mLayer->fields() );
+    QgsExpressionContext context;
+    context << QgsExpressionContextUtils::globalScope()
+    << QgsExpressionContextUtils::projectScope()
+    << QgsExpressionContextUtils::layerScope( mLayer );
+
+    expression->prepare( &context );
     QgsFeatureIterator fit = mLayer->getFeatures();
     QgsFeature feature;
     while ( fit.nextFeature( feature ) )
     {
-      QVariant value = expression->evaluate( feature );
+      context.setFeature( feature );
+      QVariant value = expression->evaluate( &context );
       if ( unique_vals.contains( value ) )
         continue;
       unique_vals << value;

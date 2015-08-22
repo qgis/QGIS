@@ -45,9 +45,9 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
 
     virtual ~QgsCategorizedSymbolRendererV2();
 
-    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature );
+    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature, QgsRenderContext& context );
 
-    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature );
+    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature, QgsRenderContext& context );
 
     virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
 
@@ -64,7 +64,7 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
     //! returns bitwise OR-ed capabilities of the renderer
     virtual int capabilities();
 
-    virtual QgsSymbolV2List symbols();
+    virtual QgsSymbolV2List symbols( QgsRenderContext& context );
     void updateSymbols( QgsSymbolV2 * sym );
 
     const QgsCategoryList& categories() const;

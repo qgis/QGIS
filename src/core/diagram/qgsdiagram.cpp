@@ -46,10 +46,23 @@ void QgsDiagram::clearCache()
 
 QgsExpression* QgsDiagram::getExpression( const QString& expression, const QgsFields* fields )
 {
+  Q_NOWARN_DEPRECATED_PUSH
   if ( !mExpressions.contains( expression ) )
   {
     QgsExpression* expr = new QgsExpression( expression );
     expr->prepare( *fields );
+    mExpressions[expression] = expr;
+  }
+  return mExpressions[expression];
+  Q_NOWARN_DEPRECATED_POP
+}
+
+QgsExpression *QgsDiagram::getExpression( const QString &expression, const QgsExpressionContext &context )
+{
+  if ( !mExpressions.contains( expression ) )
+  {
+    QgsExpression* expr = new QgsExpression( expression );
+    expr->prepare( &context );
     mExpressions[expression] = expr;
   }
   return mExpressions[expression];
