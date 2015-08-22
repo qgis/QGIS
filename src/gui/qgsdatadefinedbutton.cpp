@@ -344,13 +344,15 @@ void QgsDataDefinedButton::aboutToShowMenu()
         variableActive = true;
       }
     }
-
-    if ( !variables.isEmpty() )
-    {
-      mDefineMenu->addAction( mActionVariables );
-    }
   }
 
+  if ( mVariablesMenu->actions().isEmpty() )
+  {
+    QAction* act = mVariablesMenu->addAction( tr( "No variables set" ) );
+    act->setEnabled( false );
+  }
+
+  mDefineMenu->addAction( mActionVariables );
   mVariablesMenu->menuAction()->setCheckable( true );
   mVariablesMenu->menuAction()->setChecked( variableActive );
 
