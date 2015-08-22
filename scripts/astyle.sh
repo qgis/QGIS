@@ -29,20 +29,20 @@ if [ -z "$ASTYLE" ]; then
 fi
 
 if ! type -p flip >/dev/null; then
-  if type -p dos2unix >/dev/null; then
-    flip() {
-      dos2unix $2
-    }
-  else
-    echo "flip not found" >&2
-    flip() {
-      :
-    }
-  fi
+	if type -p dos2unix >/dev/null; then
+		flip() {
+			dos2unix $2
+		}
+	else
+		echo "flip not found" >&2
+		flip() {
+			:
+		}
+	fi
 fi
 
-if ! type -p pep8 >/dev/null; then
-	pep8() {
+if ! type -p autopep8 >/dev/null; then
+	autopep8() {
 		:
 	}
 fi
@@ -92,7 +92,8 @@ for f in "$@"; do
                 ;;
 
 	*.py)
-		cmd="pep8 --ignore=E111,E128,E201,E202,E203,E211,E221,E222,E225,E226,E227,E231,E241,E261,E265,E272,E302,E303,E501,E701"
+		#cmd="autopep8 --in-place --ignore=E111,E128,E201,E202,E203,E211,E221,E222,E225,E226,E227,E231,E241,E261,E265,E272,E302,E303,E501,E701"
+		cmd="autopep8 --in-place --ignore=E261,E402,E501"
 		;;
 
         *.sip)
